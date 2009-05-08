@@ -18,7 +18,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using Gallio.Loader;
 using Gallio.Model;
-using Gallio.Reflection;
+using Gallio.Common.Reflection;
 using Gallio.ReSharperRunner.Properties;
 using Gallio.ReSharperRunner.Provider;
 using Gallio.ReSharperRunner.Provider.Facade;

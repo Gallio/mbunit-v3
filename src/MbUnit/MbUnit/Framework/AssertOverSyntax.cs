@@ -16,9 +16,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Gallio;
+using Gallio.Common;
 using Gallio.Framework.Assertions;
-using Gallio.Model.Diagnostics;
+using Gallio.Runtime.Diagnostics;
 
 namespace MbUnit.Framework
 {
@@ -26,7 +26,7 @@ namespace MbUnit.Framework
     /// Defines methods used with the <see cref="Assert.Over" /> syntax for mapping
     /// assertions over complex data structures.
     /// </summary>
-    [TestFrameworkInternal]
+    [SystemInternal]
     public sealed class AssertOverSyntax
     {
         internal static readonly AssertOverSyntax Instance = new AssertOverSyntax();

@@ -16,7 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using Gallio.Concurrency;
+using Gallio.Common.Concurrency;
 using Gallio.Icarus.Controllers;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Models;

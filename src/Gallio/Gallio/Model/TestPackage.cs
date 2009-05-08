@@ -16,7 +16,7 @@
 using System;
 using System.Collections.Generic;
 using Gallio.Runtime.Loader;
-using Gallio.Reflection;
+using Gallio.Common.Reflection;
 
 namespace Gallio.Model
 {

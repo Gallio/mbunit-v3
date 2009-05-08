@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.IO;
+using Gallio.Common.Platform;
 using Gallio.Runtime.Loader;
 
 namespace Gallio.Runtime.Loader
@@ -156,7 +157,7 @@ namespace Gallio.Runtime.Loader
 
             // On Mono, the Version is set to 0.0.0.0 but there's no public key token
             // during partial name resolution.
-            if (RuntimeDetection.IsUsingMono
+            if (DotNetRuntimeSupport.IsUsingMono
                 && name.Version == new Version(0, 0, 0, 0)
                 && name.GetPublicKeyToken() == null)
                 return true;
@@ -171,7 +172,7 @@ namespace Gallio.Runtime.Loader
 
         private void AddBuiltInHintDirectories()
         {
-            AddHintDirectory(Path.GetDirectoryName(Reflection.AssemblyUtils.GetFriendlyAssemblyLocation(typeof(DefaultAssemblyResolverManager).Assembly)));
+            AddHintDirectory(Path.GetDirectoryName(Common.Reflection.AssemblyUtils.GetFriendlyAssemblyLocation(typeof(DefaultAssemblyResolverManager).Assembly)));
         }
     }
 }

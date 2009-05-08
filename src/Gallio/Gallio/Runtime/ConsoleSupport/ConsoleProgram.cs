@@ -15,7 +15,7 @@
 
 using System;
 using Gallio.Properties;
-using Gallio.Reflection;
+using Gallio.Common.Reflection;
 
 namespace Gallio.Runtime.ConsoleSupport
 {

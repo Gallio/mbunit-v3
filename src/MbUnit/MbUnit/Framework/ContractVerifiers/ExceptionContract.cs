@@ -1,4 +1,4 @@
-﻿// Copyright 2005-2009 Gallio Project - http://www.gallio.org/
+// Copyright 2005-2009 Gallio Project - http://www.gallio.org/
 // Portions Copyright 2000-2004 Jonathan de Halleux
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,7 +19,7 @@ using System.IO;
 using System.Reflection;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
-using Gallio.Collections;
+using Gallio.Common.Collections;
 using Gallio.Framework.Assertions;
 
 namespace MbUnit.Framework.ContractVerifiers

@@ -18,7 +18,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using Gallio.Collections;
+using Gallio.Common.Collections;
 using Gallio.Framework;
 using Gallio.Model;
 using Gallio.Model.Logging;

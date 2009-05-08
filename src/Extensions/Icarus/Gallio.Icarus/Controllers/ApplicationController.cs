@@ -17,9 +17,9 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
+using Gallio.Common.IO;
 using Gallio.Icarus.Mediator.Interfaces;
 using Gallio.Runner.Projects;
-using Gallio.Utilities;
 
 namespace Gallio.Icarus.Controllers
 {

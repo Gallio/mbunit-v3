@@ -19,7 +19,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
-using Gallio.Collections;
+using Gallio.Common.Collections;
 using Gallio.Runtime;
 using Gallio.Runtime.Extensibility;
 using MbUnit.Framework;

@@ -16,7 +16,7 @@
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
-using Gallio.Collections;
+using Gallio.Common.Collections;
 using Gallio.Icarus.Services.Interfaces;
 using Gallio.Runner.Reports;
 using Gallio.Runtime.ProgressMonitoring;
@@ -31,7 +31,7 @@ namespace Gallio.Icarus.Services
         {
             get
             {
-                return GenericUtils.ConvertAllToArray(reportManager.FormatterHandles,
+                return GenericCollectionUtils.ConvertAllToArray(reportManager.FormatterHandles,
                     h => h.GetTraits().Name);
             }
         }

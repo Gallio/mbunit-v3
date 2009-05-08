@@ -16,11 +16,11 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Threading;
+using Gallio.Common.IO;
 using Gallio.Icarus.Controllers;
 using Gallio.Icarus.Services.Interfaces;
 using Gallio.Runner.Reports;
 using Gallio.Runtime.ProgressMonitoring;
-using Gallio.Utilities;
 using MbUnit.Framework;
 using Rhino.Mocks;
 

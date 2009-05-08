@@ -14,7 +14,7 @@
 // limitations under the License.
 
 using System;
-using Gallio.Model.Diagnostics;
+using Gallio.Runtime.Diagnostics;
 using Gallio.Runtime.Logging;
 
 namespace Gallio.Model.Logging

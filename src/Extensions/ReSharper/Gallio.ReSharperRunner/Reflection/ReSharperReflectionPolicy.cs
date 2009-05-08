@@ -15,8 +15,8 @@
 
 using System;
 using System.Collections.Generic;
-using Gallio.Reflection;
-using Gallio.Reflection.Impl;
+using Gallio.Common.Reflection;
+using Gallio.Common.Reflection.Impl;
 using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.Tree;
@@ -80,7 +80,7 @@ namespace Gallio.ReSharperRunner.Reflection
         /// <param name="value">The foreign constant value</param>
         /// <param name="typeConstructor">A function for resolving types</param>
         /// <returns>The native constant value</returns>
-        protected static ConstantValue ConvertConstantValue<TType>(object value, Func<TType, ITypeInfo> typeConstructor)
+        protected static ConstantValue ConvertConstantValue<TType>(object value, Common.Func<TType, ITypeInfo> typeConstructor)
             where TType : class
         {
             if (value == null)

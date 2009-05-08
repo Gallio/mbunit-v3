@@ -18,11 +18,11 @@ using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Text;
+using Gallio.Common.IO;
 using Gallio.Runtime.Debugging;
 using Gallio.Runtime.Logging;
 using Gallio.Runtime;
-using Gallio.Reflection;
-using Gallio.Utilities;
+using Gallio.Common.Reflection;
 
 namespace Gallio.Runtime.Hosting
 {

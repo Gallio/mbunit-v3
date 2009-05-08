@@ -15,7 +15,7 @@
 
 using System;
 using System.Linq;
-using Gallio.Reflection;
+using Gallio.Common.Reflection;
 using Gallio.Runner.Reports;
 using Gallio.Tests;
 using MbUnit.Framework;

@@ -17,7 +17,7 @@ using System;
 using System.IO;
 using System.Xml.Serialization;
 using Gallio.Model;
-using Gallio.Reflection;
+using Gallio.Common.Reflection;
 using Gallio.Runner.Reports;
 using MbUnit.Framework;
 using Gallio.Model.Serialization;

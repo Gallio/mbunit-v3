@@ -14,7 +14,7 @@
 // limitations under the License.
 
 using System;
-using Gallio.Collections;
+using Gallio.Common.Collections;
 using Gallio.Tests;
 using MbUnit.Framework;
 
@@ -48,7 +48,7 @@ namespace Gallio.Tests.Model.Filters
         [Row(false, new bool[] { false, false, false })]
         public void IsMatchCombinations(bool expectedMatch, bool[] states)
         {
-            Filter<object>[] filters = GenericUtils.ConvertAllToArray<bool, Filter<object>>(states, delegate(bool state)
+            Filter<object>[] filters = GenericCollectionUtils.ConvertAllToArray<bool, Filter<object>>(states, delegate(bool state)
             {
                 return state ? (Filter<object>)new AnyFilter<object>() : new NoneFilter<object>();
             });

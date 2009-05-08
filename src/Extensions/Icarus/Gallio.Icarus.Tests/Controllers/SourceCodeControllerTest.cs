@@ -14,11 +14,11 @@
 // limitations under the License.
 
 using System;
-using Gallio.Concurrency;
+using Gallio.Common.Concurrency;
 using Gallio.Icarus.Controllers;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Model.Serialization;
-using Gallio.Reflection;
+using Gallio.Common.Reflection;
 using Gallio.Runner.Reports;
 using MbUnit.Framework;
 using Rhino.Mocks;

@@ -15,10 +15,10 @@
 
 using System;
 using System.Collections.Generic;
-using Gallio.Runtime;
+using Gallio.Common;
+using Gallio.Common.Policies;
 using Gallio.Model;
-using Gallio.Reflection;
-using Gallio.Utilities;
+using Gallio.Common.Reflection;
 using System.Text;
 
 namespace Gallio.Framework.Pattern

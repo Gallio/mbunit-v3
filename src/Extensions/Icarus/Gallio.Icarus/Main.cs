@@ -24,19 +24,19 @@ using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
+using Gallio.Common.Concurrency;
+using Gallio.Common.Policies;
 using Gallio.Icarus.Controllers;
 using Gallio.Icarus.Controllers.EventArgs;
 using Gallio.Icarus.Mediator.Interfaces;
 using Gallio.Icarus.ProgressMonitoring.EventArgs;
-using Gallio.Reflection;
+using Gallio.Common.Reflection;
 using Gallio.Runner.Projects;
-using Gallio.Runtime;
-using Gallio.Utilities;
 using WeifenLuo.WinFormsUI.Docking;
 using Timer = System.Timers.Timer;
 using Gallio.Icarus.Utilities;
 using SynchronizationContext=System.Threading.SynchronizationContext;
-using UnhandledExceptionPolicy=Gallio.Runtime.UnhandledExceptionPolicy;
+using UnhandledExceptionPolicy=Gallio.Common.Policies.UnhandledExceptionPolicy;
 
 namespace Gallio.Icarus
 {

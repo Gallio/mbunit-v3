@@ -18,7 +18,7 @@ using System.Drawing;
 using System.IO;
 using System.Text;
 using System.Xml.Serialization;
-using Gallio.Model.Diagnostics;
+using Gallio.Runtime.Diagnostics;
 
 namespace Gallio.Model.Logging
 {

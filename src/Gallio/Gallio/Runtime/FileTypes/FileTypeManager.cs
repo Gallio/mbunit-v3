@@ -1,10 +1,10 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
-using Gallio.Collections;
+using Gallio.Common.Collections;
 using Gallio.Runtime.Extensibility;
 
 namespace Gallio.Runtime.FileTypes

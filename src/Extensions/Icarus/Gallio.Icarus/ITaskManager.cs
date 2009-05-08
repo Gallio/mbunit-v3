@@ -1,4 +1,6 @@
-﻿namespace Gallio.Icarus
+using Gallio.Common;
+
+namespace Gallio.Icarus
 {
     public interface ITaskManager
     {

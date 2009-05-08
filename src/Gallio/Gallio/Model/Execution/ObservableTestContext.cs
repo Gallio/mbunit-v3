@@ -16,12 +16,11 @@
 using System;
 using System.Diagnostics;
 using System.Threading;
-using Gallio.Collections;
+using Gallio.Common.Collections;
+using Gallio.Common.Policies;
 using Gallio.Model.Logging;
 using Gallio.Model.Messages;
-using Gallio.Runtime;
 using Gallio.Model.Serialization;
-using Gallio.Utilities;
 
 namespace Gallio.Model.Execution
 {
@@ -157,7 +156,7 @@ namespace Gallio.Model.Execution
                     }
                 }
 
-                EventHandlerUtils.SafeInvoke(value, this, EventArgs.Empty);
+                EventHandlerPolicy.SafeInvoke(value, this, EventArgs.Empty);
             }
             remove
             {
@@ -290,7 +289,7 @@ namespace Gallio.Model.Execution
                     parent.Finishing -= HandleParentFinishedBeforeThisContext;
 
                 using (Enter())
-                    EventHandlerUtils.SafeInvoke(cachedFinishingHandlers, this, EventArgs.Empty);
+                    EventHandlerPolicy.SafeInvoke(cachedFinishingHandlers, this, EventArgs.Empty);
 
                 if (isDisposing)
                     logWriter.Failures.Write("The test step was orphaned by the test runner!\n");

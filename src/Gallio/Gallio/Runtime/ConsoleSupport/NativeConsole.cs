@@ -17,7 +17,8 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using Gallio;
-using Gallio.Utilities;
+using Gallio.Common;
+using Gallio.Common.Policies;
 
 namespace Gallio.Runtime.ConsoleSupport
 {
@@ -167,7 +168,7 @@ namespace Gallio.Runtime.ConsoleSupport
                     currentCancelHandlers = cancelHandlers;
                 }
 
-                EventHandlerUtils.SafeInvoke(currentCancelHandlers, null, EventArgs.Empty);
+                EventHandlerPolicy.SafeInvoke(currentCancelHandlers, null, EventArgs.Empty);
             }
         }
 

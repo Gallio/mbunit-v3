@@ -17,9 +17,9 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Xml.Serialization;
+using Gallio.Common.Xml;
 using Gallio.Icarus.Controls;
 using Gallio.Runtime.Logging;
-using Gallio.Utilities;
 using Gallio.Runner;
 
 namespace Gallio.Icarus

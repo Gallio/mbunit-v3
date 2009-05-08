@@ -17,7 +17,7 @@ using System;
 using System.Diagnostics;
 using System.Drawing;
 using System.Xml.Serialization;
-using Gallio.Model.Diagnostics;
+using Gallio.Runtime.Diagnostics;
 using Gallio.Model.Logging;
 
 namespace Gallio.Framework

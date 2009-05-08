@@ -17,7 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Xml;
 using System.Xml.XPath;
-using Gallio.Collections;
+using Gallio.Common.Collections;
 using Gallio.Framework.Data;
 using Gallio.Model;
 using MbUnit.Framework;

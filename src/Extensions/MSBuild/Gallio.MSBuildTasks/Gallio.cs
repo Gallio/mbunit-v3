@@ -17,17 +17,17 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using Gallio.Common;
 using Gallio.Runtime;
 using Gallio.MSBuildTasks.Properties;
-using Gallio.Collections;
+using Gallio.Common.Collections;
 using Gallio.Runtime.Logging;
 using Gallio.Runtime.ProgressMonitoring;
 using Gallio.Model;
 using Gallio.Model.Filters;
-using Gallio.Reflection;
+using Gallio.Common.Reflection;
 using Gallio.Runner;
 using Gallio.Runner.Reports;
-using Gallio.Utilities;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
 using ILogger=Gallio.Runtime.Logging.ILogger;
@@ -788,11 +788,11 @@ namespace Gallio.MSBuildTasks
             if (!String.IsNullOrEmpty(reportNameFormat))
                 launcher.ReportNameFormat = reportNameFormat;
             if (reportTypes != null)
-                GenericUtils.AddAll(reportTypes, launcher.ReportFormats);
+                GenericCollectionUtils.AddAll(reportTypes, launcher.ReportFormats);
 
             launcher.TestRunnerFactoryName = runnerType;
             if (runnerExtensions != null)
-                GenericUtils.AddAll(runnerExtensions, launcher.TestRunnerExtensionSpecifications);
+                GenericCollectionUtils.AddAll(runnerExtensions, launcher.TestRunnerExtensionSpecifications);
 
             TestLauncherResult result = RunLauncher(launcher);
             exitCode = result.ResultCode;

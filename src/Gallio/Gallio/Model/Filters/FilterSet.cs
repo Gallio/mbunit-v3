@@ -1,4 +1,4 @@
-﻿// Copyright 2005-2009 Gallio Project - http://www.gallio.org/
+// Copyright 2005-2009 Gallio Project - http://www.gallio.org/
 // Portions Copyright 2000-2004 Jonathan de Halleux
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,7 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text;
-using Gallio.Collections;
+using Gallio.Common.Collections;
 
 namespace Gallio.Model.Filters
 {
@@ -52,7 +52,7 @@ namespace Gallio.Model.Filters
             if (rules == null || rules.Contains(null))
                 throw new ArgumentNullException("rules");
 
-            this.rules = GenericUtils.ToArray(rules);
+            this.rules = GenericCollectionUtils.ToArray(rules);
         }
 
         /// <summary>

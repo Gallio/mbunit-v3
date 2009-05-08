@@ -17,15 +17,16 @@ using System;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using Gallio;
-using Gallio.Collections;
+using Gallio.Common;
+using Gallio.Common.Collections;
+using Gallio.Common.Policies;
 using Gallio.Framework;
 using Gallio.Framework.Assertions;
 using Gallio.Model;
-using Gallio.Model.Diagnostics;
+using Gallio.Runtime.Diagnostics;
 using Gallio.Model.Execution;
 using Gallio.Model.Logging;
-using Gallio.Reflection;
-using Gallio.Utilities;
+using Gallio.Common.Reflection;
 
 namespace Gallio.Framework
 {
@@ -47,7 +48,7 @@ namespace Gallio.Framework
     /// </para>
     /// </summary>
     /// <seealso cref="Framework.TestStep"/>
-    [TestFrameworkInternal]
+    [SystemInternal]
     public sealed class TestContext
     {
         private static readonly Key<TestContext> GallioFrameworkContextKey = new Key<TestContext>("Gallio.Framework.Context");
@@ -529,7 +530,7 @@ namespace Gallio.Framework
         {
             try
             {
-                EventHandlerUtils.SafeInvoke(finishingHandlers, this, EventArgs.Empty);
+                EventHandlerPolicy.SafeInvoke(finishingHandlers, this, EventArgs.Empty);
             }
             catch (Exception ex)
             {

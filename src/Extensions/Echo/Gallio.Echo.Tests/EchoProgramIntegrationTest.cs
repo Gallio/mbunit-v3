@@ -15,10 +15,10 @@
 
 using System;
 using System.IO;
-using Gallio.Concurrency;
+using Gallio.Common.Concurrency;
 using Gallio.Runtime;
 using Gallio.Framework;
-using Gallio.Reflection;
+using Gallio.Common.Reflection;
 using MbUnit.Framework;
 using MbUnit.TestResources;
 

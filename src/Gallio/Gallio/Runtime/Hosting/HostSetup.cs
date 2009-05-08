@@ -18,8 +18,10 @@ using System.IO;
 using System.Reflection;
 using System.Threading;
 using System.Xml.Serialization;
-using Gallio.Collections;
-using Gallio.Utilities;
+using Gallio.Common.Collections;
+using Gallio.Common;
+using Gallio.Common.IO;
+using Gallio.Common.Xml;
 
 namespace Gallio.Runtime.Hosting
 {

@@ -17,20 +17,21 @@ using System;
 using System.ComponentModel;
 using System.IO;
 using System.Windows.Forms;
+using Gallio.Common.IO;
+using Gallio.Common.Xml;
 using Gallio.Icarus.Controllers;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Mediator.Interfaces;
 using Gallio.Icarus.Models;
 using Gallio.Icarus.Properties;
 using Gallio.Icarus.Remoting;
-using Gallio.Reflection;
+using Gallio.Common.Reflection;
 using Gallio.Runner;
 using Gallio.Runner.Projects;
 using Gallio.Runner.Reports;
 using Gallio.Runtime;
 using Gallio.Runtime.ConsoleSupport;
 using Gallio.Icarus.Services;
-using Gallio.Utilities;
 
 namespace Gallio.Icarus
 {

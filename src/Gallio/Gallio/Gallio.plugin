@@ -76,16 +76,16 @@
              serviceType="Gallio.Runtime.FileTypes.IFileTypeManager, Gallio" />
 
     <service serviceId="Gallio.Converter"
-             serviceType="Gallio.Framework.Conversions.IConverter, Gallio" />
+             serviceType="Gallio.Runtime.Conversions.IConverter, Gallio" />
 
     <service serviceId="Gallio.ConversionRule"
-             serviceType="Gallio.Framework.Conversions.IConversionRule, Gallio" />
+             serviceType="Gallio.Runtime.Conversions.IConversionRule, Gallio" />
 
     <service serviceId="Gallio.Formatter"
-             serviceType="Gallio.Framework.Formatting.IFormatter, Gallio" />
+             serviceType="Gallio.Runtime.Formatting.IFormatter, Gallio" />
 
     <service serviceId="Gallio.FormattingRule"
-             serviceType="Gallio.Framework.Formatting.IFormattingRule, Gallio" />
+             serviceType="Gallio.Runtime.Formatting.IFormattingRule, Gallio" />
   </services>
   
   <components>
@@ -210,112 +210,112 @@
     <!-- Converters -->
     <component componentId="Gallio.Converter"
                serviceId="Gallio.Converter"
-               componentType="Gallio.Framework.Conversions.RuleBasedConverter, Gallio" />
+               componentType="Gallio.Runtime.Conversions.RuleBasedConverter, Gallio" />
 
     <component componentId="Gallio.ArrayToArrayConversionRule"
                serviceId="Gallio.ConversionRule"
-               componentType="Gallio.Framework.Conversions.ArrayToArrayConversionRule, Gallio" />
+               componentType="Gallio.Runtime.Conversions.ArrayToArrayConversionRule, Gallio" />
 
     <component componentId="Gallio.ConvertibleToConvertibleConversionRule"
                serviceId="Gallio.ConversionRule"
-               componentType="Gallio.Framework.Conversions.ConvertibleToConvertibleConversionRule, Gallio" />
+               componentType="Gallio.Runtime.Conversions.ConvertibleToConvertibleConversionRule, Gallio" />
 
     <component componentId="Gallio.ObjectToStringConversionRule"
                serviceId="Gallio.ConversionRule"
-               componentType="Gallio.Framework.Conversions.ObjectToStringConversionRule, Gallio" />
+               componentType="Gallio.Runtime.Conversions.ObjectToStringConversionRule, Gallio" />
 
     <component componentId="Gallio.StringToXmlDocumentConversionRule"
                serviceId="Gallio.ConversionRule"
-               componentType="Gallio.Framework.Conversions.StringToXmlDocumentConversionRule, Gallio" />
+               componentType="Gallio.Runtime.Conversions.StringToXmlDocumentConversionRule, Gallio" />
 
     <component componentId="Gallio.XPathNavigableToXPathNavigatorConversionRule"
                serviceId="Gallio.ConversionRule"
-               componentType="Gallio.Framework.Conversions.XPathNavigableToXPathNavigatorConversionRule, Gallio" />
+               componentType="Gallio.Runtime.Conversions.XPathNavigableToXPathNavigatorConversionRule, Gallio" />
 
     <component componentId="Gallio.XPathNavigatorToStringConversionRule"
                serviceId="Gallio.ConversionRule"
-               componentType="Gallio.Framework.Conversions.XPathNavigatorToStringConversionRule, Gallio" />
+               componentType="Gallio.Runtime.Conversions.XPathNavigatorToStringConversionRule, Gallio" />
 
     <component componentId="Gallio.XPathNavigatorToXmlSerializableTypeConversionRule"
                serviceId="Gallio.ConversionRule"
-               componentType="Gallio.Framework.Conversions.XPathNavigatorToXmlSerializableTypeConversionRule, Gallio" />
+               componentType="Gallio.Runtime.Conversions.XPathNavigatorToXmlSerializableTypeConversionRule, Gallio" />
 
     <!-- Formatters -->
     <component componentId="Gallio.Formatter"
                serviceId="Gallio.Formatter"
-               componentType="Gallio.Framework.Formatting.RuleBasedFormatter, Gallio" />
+               componentType="Gallio.Runtime.Formatting.RuleBasedFormatter, Gallio" />
 
     <component componentId="Gallio.BooleanFormattingRule"
                serviceId="Gallio.FormattingRule"
-               componentType="Gallio.Framework.Formatting.BooleanFormattingRule, Gallio" />
+               componentType="Gallio.Runtime.Formatting.BooleanFormattingRule, Gallio" />
 
     <component componentId="Gallio.ByteFormattingRule"
                serviceId="Gallio.FormattingRule"
-               componentType="Gallio.Framework.Formatting.ByteFormattingRule, Gallio" />
+               componentType="Gallio.Runtime.Formatting.ByteFormattingRule, Gallio" />
 
     <component componentId="Gallio.CharFormattingRule"
                serviceId="Gallio.FormattingRule"
-               componentType="Gallio.Framework.Formatting.CharFormattingRule, Gallio" />
+               componentType="Gallio.Runtime.Formatting.CharFormattingRule, Gallio" />
 
     <component componentId="Gallio.ConvertToStringFormattingRule"
                serviceId="Gallio.FormattingRule"
-               componentType="Gallio.Framework.Formatting.ConvertToStringFormattingRule, Gallio" />
+               componentType="Gallio.Runtime.Formatting.ConvertToStringFormattingRule, Gallio" />
 
     <component componentId="Gallio.DateTimeFormattingRule"
                serviceId="Gallio.FormattingRule"
-               componentType="Gallio.Framework.Formatting.DateTimeFormattingRule, Gallio" />
+               componentType="Gallio.Runtime.Formatting.DateTimeFormattingRule, Gallio" />
 
     <component componentId="Gallio.DBNullFormattingRule"
                serviceId="Gallio.FormattingRule"
-               componentType="Gallio.Framework.Formatting.DBNullFormattingRule, Gallio" />
+               componentType="Gallio.Runtime.Formatting.DBNullFormattingRule, Gallio" />
 
     <component componentId="Gallio.DecimalFormattingRule"
                serviceId="Gallio.FormattingRule"
-               componentType="Gallio.Framework.Formatting.DecimalFormattingRule, Gallio" />
+               componentType="Gallio.Runtime.Formatting.DecimalFormattingRule, Gallio" />
 
     <component componentId="Gallio.DictionaryEntryFormattingRule"
                serviceId="Gallio.FormattingRule"
-               componentType="Gallio.Framework.Formatting.DictionaryEntryFormattingRule, Gallio" />
+               componentType="Gallio.Runtime.Formatting.DictionaryEntryFormattingRule, Gallio" />
 
     <component componentId="Gallio.DoubleFormattingRule"
                serviceId="Gallio.FormattingRule"
-               componentType="Gallio.Framework.Formatting.DoubleFormattingRule, Gallio" />
+               componentType="Gallio.Runtime.Formatting.DoubleFormattingRule, Gallio" />
 
     <component componentId="Gallio.EnumerableFormattingRule"
                serviceId="Gallio.FormattingRule"
-               componentType="Gallio.Framework.Formatting.EnumerableFormattingRule, Gallio" />
+               componentType="Gallio.Runtime.Formatting.EnumerableFormattingRule, Gallio" />
 
     <component componentId="Gallio.IntegerFormattingRule"
                serviceId="Gallio.FormattingRule"
-               componentType="Gallio.Framework.Formatting.IntegerFormattingRule, Gallio" />
+               componentType="Gallio.Runtime.Formatting.IntegerFormattingRule, Gallio" />
 
     <component componentId="Gallio.KeyValuePairFormattingRule"
                serviceId="Gallio.FormattingRule"
-               componentType="Gallio.Framework.Formatting.KeyValuePairFormattingRule, Gallio" />
+               componentType="Gallio.Runtime.Formatting.KeyValuePairFormattingRule, Gallio" />
 
     <component componentId="Gallio.SByteFormattingRule"
                serviceId="Gallio.FormattingRule"
-               componentType="Gallio.Framework.Formatting.SByteFormattingRule, Gallio" />
+               componentType="Gallio.Runtime.Formatting.SByteFormattingRule, Gallio" />
 
     <component componentId="Gallio.SingleFormattingRule"
                serviceId="Gallio.FormattingRule"
-               componentType="Gallio.Framework.Formatting.SingleFormattingRule, Gallio" />
+               componentType="Gallio.Runtime.Formatting.SingleFormattingRule, Gallio" />
 
     <component componentId="Gallio.StringFormattingRule"
                serviceId="Gallio.FormattingRule"
-               componentType="Gallio.Framework.Formatting.StringFormattingRule, Gallio" />
+               componentType="Gallio.Runtime.Formatting.StringFormattingRule, Gallio" />
 
     <component componentId="Gallio.TypeFormattingRule"
                serviceId="Gallio.FormattingRule"
-               componentType="Gallio.Framework.Formatting.TypeFormattingRule, Gallio" />
+               componentType="Gallio.Runtime.Formatting.TypeFormattingRule, Gallio" />
 
     <component componentId="Gallio.XPathNavigableFormattingRule"
                serviceId="Gallio.FormattingRule"
-               componentType="Gallio.Framework.Formatting.XPathNavigableFormattingRule, Gallio" />
+               componentType="Gallio.Runtime.Formatting.XPathNavigableFormattingRule, Gallio" />
 
     <component componentId="Gallio.StructuralFormattingRule"
                serviceId="Gallio.FormattingRule"
-               componentType="Gallio.Framework.Formatting.StructuralFormattingRule, Gallio" />
+               componentType="Gallio.Runtime.Formatting.StructuralFormattingRule, Gallio" />
     
     <!-- File types -->
 

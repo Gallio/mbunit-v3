@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Xml.Serialization;
+using Gallio.Common;
 
 namespace Gallio.Model.Logging.Tags
 {

@@ -16,14 +16,14 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Gallio.Collections;
+using Gallio.Common.Collections;
+using Gallio.Common;
 using Gallio.Framework.Data;
-using Gallio.Framework.Conversions;
-using Gallio.Framework.Formatting;
+using Gallio.Runtime.Conversions;
+using Gallio.Runtime.Formatting;
 using Gallio.Model;
-using Gallio.Model.Diagnostics;
-using Gallio.Reflection;
-using Gallio.Utilities;
+using Gallio.Runtime.Diagnostics;
+using Gallio.Common.Reflection;
 
 namespace Gallio.Framework.Pattern
 {
@@ -359,7 +359,7 @@ namespace Gallio.Framework.Pattern
         /// <exception cref="InvalidOperationException">Thrown if <see cref="FixtureType" /> is null</exception>
         /// <exception cref="Exception">Any exception thrown by the invoked method</exception>
         /// <seealso cref="MethodInvocationSpec"/>
-        [TestEntryPoint]
+        [UserCodeEntryPoint]
         public object InvokeFixtureMethod(IMethodInfo method, IEnumerable<KeyValuePair<ISlotInfo, object>> slotValues)
         {
             if (method == null)
@@ -381,7 +381,7 @@ namespace Gallio.Framework.Pattern
         /// </summary>
         /// <returns>The method return value, or null if there was none</returns>
         /// <exception cref="Exception">Any exception thrown by the invoked method</exception>
-        [TestEntryPoint]
+        [UserCodeEntryPoint]
         public object InvokeTestMethod()
         {
             if (testMethod != null && testArguments != null)
@@ -394,7 +394,7 @@ namespace Gallio.Framework.Pattern
         /// Runs the body of the test.
         /// </summary>
         /// <returns>The test outcome</returns>
-        [TestEntryPoint]
+        [UserCodeEntryPoint]
         public TestOutcome RunBody()
         {
             return body();

@@ -17,6 +17,7 @@ using System;
 using System.Threading;
 using Gallio.Tests;
 using MbUnit.Framework;
+using Action=Gallio.Common.Action;
 
 namespace Gallio.AutoCAD.Tests
 {
@@ -65,7 +66,7 @@ namespace Gallio.AutoCAD.Tests
             using (AcadThreadTestScope scope = new AcadThreadTestScope())
             {
                 object expected = new object();
-                object result = scope.AcadThread.Invoke(new Func<object>(delegate { return expected; }));
+                object result = scope.AcadThread.Invoke(new Common.Func<object>(delegate { return expected; }));
                 Assert.AreSame(expected, result);
             }
         }
@@ -167,9 +168,9 @@ namespace Gallio.AutoCAD.Tests
             
             using (AcadThreadTestScope scope = new AcadThreadTestScope())
             {
-                Assert.AreSame(first,  scope.AcadThread.Invoke(new Func<object, object>(x => x), first));
-                Assert.AreSame(second, scope.AcadThread.Invoke(new Func<object, object, object>((x, y) => y), first, second));
-                Assert.AreSame(third,  scope.AcadThread.Invoke(new Func<object, object, object, object>((x, y, z) => z), first, second, third));
+                Assert.AreSame(first,  scope.AcadThread.Invoke(new Common.Func<object, object>(x => x), first));
+                Assert.AreSame(second, scope.AcadThread.Invoke(new Common.Func<object, object, object>((x, y) => y), first, second));
+                Assert.AreSame(third,  scope.AcadThread.Invoke(new Common.Func<object, object, object, object>((x, y, z) => z), first, second, third));
             }
         }
 

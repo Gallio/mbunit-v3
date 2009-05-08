@@ -16,10 +16,10 @@
 using System;
 using System.Collections.Generic;
 using System.Xml.Serialization;
-using Gallio.Collections;
+using Gallio.Common.Collections;
+using Gallio.Common.Xml;
 using Gallio.Model;
 using Gallio.Model.Serialization;
-using Gallio.Utilities;
 
 namespace Gallio.Model.Serialization
 {
@@ -79,12 +79,12 @@ namespace Gallio.Model.Serialization
             children = new List<TestData>();
             parameters = new List<TestParameterData>();
 
-            GenericUtils.ConvertAndAddAll(source.Children, children, delegate(ITest child)
+            GenericCollectionUtils.ConvertAndAddAll(source.Children, children, delegate(ITest child)
             {
                 return new TestData(child);
             });
 
-            GenericUtils.ConvertAndAddAll(source.Parameters, parameters, delegate(ITestParameter parameter)
+            GenericCollectionUtils.ConvertAndAddAll(source.Parameters, parameters, delegate(ITestParameter parameter)
             {
                 return new TestParameterData(parameter);
             });

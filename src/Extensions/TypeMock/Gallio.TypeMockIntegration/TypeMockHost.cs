@@ -15,7 +15,7 @@
 
 using System;
 using Gallio.Runtime.Logging;
-using Gallio.Concurrency;
+using Gallio.Common.Concurrency;
 using Gallio.Runtime.Hosting;
 
 namespace Gallio.TypeMockIntegration

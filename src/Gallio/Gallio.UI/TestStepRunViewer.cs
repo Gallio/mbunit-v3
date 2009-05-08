@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Windows.Forms;
+using Gallio.Common;
 using Gallio.Model.Serialization;
 using Gallio.Runner.Reports;
 

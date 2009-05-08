@@ -16,12 +16,12 @@
 using System;
 using System.Diagnostics;
 using System.IO;
-using Gallio.Reflection;
+using Gallio.Common;
+using Gallio.Common.Policies;
+using Gallio.Common.Reflection;
 using Gallio.Runtime.Logging;
-using Gallio.Concurrency;
+using Gallio.Common.Concurrency;
 using Gallio.Runtime.Hosting;
-using Gallio.Runtime;
-using Gallio.Utilities;
 using NCover.Framework;
 
 namespace Gallio.NCoverIntegration

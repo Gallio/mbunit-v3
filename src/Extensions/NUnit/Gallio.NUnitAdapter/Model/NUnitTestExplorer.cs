@@ -18,7 +18,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using Gallio.Model;
-using Gallio.Reflection;
+using Gallio.Common.Reflection;
 using Gallio.NUnitAdapter.Properties;
 using NUnit.Util;
 using NUnitCoreExtensions = NUnit.Core.CoreExtensions;

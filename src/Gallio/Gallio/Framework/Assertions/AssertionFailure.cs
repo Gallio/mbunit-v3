@@ -17,9 +17,8 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
-using Gallio.Model.Diagnostics;
+using Gallio.Runtime.Diagnostics;
 using Gallio.Model.Logging;
-using Gallio.Utilities;
 
 namespace Gallio.Framework.Assertions
 {

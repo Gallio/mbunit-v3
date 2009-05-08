@@ -14,9 +14,10 @@
 // limitations under the License.
 
 using System;
+using Gallio.Common;
 using Gallio.Model.Execution;
 using Gallio.Model;
-using Gallio.Reflection;
+using Gallio.Common.Reflection;
 
 namespace Gallio.XunitAdapter.Model
 {

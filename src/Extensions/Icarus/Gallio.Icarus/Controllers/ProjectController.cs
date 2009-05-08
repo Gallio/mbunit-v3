@@ -17,6 +17,9 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
+using Gallio.Common.IO;
+using Gallio.Common.Policies;
+using Gallio.Common.Xml;
 using Gallio.Icarus.Controllers.EventArgs;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Models;
@@ -25,7 +28,6 @@ using Gallio.Model;
 using Gallio.Model.Filters;
 using Gallio.Runner.Projects;
 using Gallio.Runtime.ProgressMonitoring;
-using Gallio.Utilities;
 
 namespace Gallio.Icarus.Controllers
 {
@@ -129,7 +131,7 @@ namespace Gallio.Icarus.Controllers
             assemblyWatcher.AssemblyChangedEvent += delegate(string fullPath)
             {
                 string assemblyName = Path.GetFileNameWithoutExtension(fullPath);
-                EventHandlerUtils.SafeInvoke(AssemblyChanged, this, new AssemblyChangedEventArgs(assemblyName));
+                EventHandlerPolicy.SafeInvoke(AssemblyChanged, this, new AssemblyChangedEventArgs(assemblyName));
             };
 
             // default tree view category

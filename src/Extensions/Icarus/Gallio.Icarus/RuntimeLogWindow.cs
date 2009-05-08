@@ -16,9 +16,9 @@
 using System;
 using System.Drawing;
 using System.Windows.Forms;
+using Gallio.Common.Concurrency;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Runtime.Logging;
-using Gallio.Utilities;
 
 namespace Gallio.Icarus
 {

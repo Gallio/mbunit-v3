@@ -21,7 +21,6 @@ using System.Xml.Serialization;
 using Gallio.Model;
 using Gallio.Model.Logging;
 using Gallio.Runner.Reports;
-using Gallio.Utilities;
 using Microsoft.VisualStudio.TestTools.Common;
 using GallioTestOutcome = Gallio.Model.TestOutcome;
 using VSTestOutcome=Microsoft.VisualStudio.TestTools.Common.TestOutcome;

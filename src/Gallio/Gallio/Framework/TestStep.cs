@@ -16,10 +16,11 @@
 using System;
 using System.Runtime.CompilerServices;
 using Gallio;
+using Gallio.Common;
 using Gallio.Framework.Assertions;
 using Gallio.Model;
-using Gallio.Model.Diagnostics;
-using Gallio.Reflection;
+using Gallio.Runtime.Diagnostics;
+using Gallio.Common.Reflection;
 
 namespace Gallio.Framework
 {
@@ -99,7 +100,7 @@ namespace Gallio.Framework
     /// </code>
     /// </para>
     /// </example>
-    [TestFrameworkInternal]
+    [SystemInternal]
     public static class TestStep
     {
         /// <summary>

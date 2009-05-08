@@ -15,6 +15,7 @@
 
 using System;
 using System.Collections.Generic;
+using Gallio.Common;
 using Gallio.Model.Execution;
 
 namespace Gallio.Model
@@ -160,7 +161,7 @@ namespace Gallio.Model
         int Order { get; set; }
 
         /// <summary>
-        /// Gets a <see cref="ITestController" /> <see cref="Func{T}" /> to run this tes
+        /// Gets a <see cref="ITestController" /> <see cref="Func{TResult}" /> to run this tes
         /// and all of its children.  Returns null if this test is merely a container for
         /// other tests or if it otherwise does not require or provide its own controller.
         /// </summary>

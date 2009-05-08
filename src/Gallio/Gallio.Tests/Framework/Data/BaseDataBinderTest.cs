@@ -15,7 +15,7 @@
 
 using System;
 using Gallio.Framework.Data;
-using Gallio.Framework.Conversions;
+using Gallio.Runtime.Conversions;
 using MbUnit.Framework;
 
 namespace Gallio.Tests.Framework.Data

@@ -14,9 +14,8 @@
 // limitations under the License.
 
 using System;
-using Gallio.Model.Diagnostics;
+using Gallio.Runtime.Diagnostics;
 using Gallio.Runtime.Logging;
-using Gallio.Utilities;
 using Microsoft.VisualStudio.TestTools.Common;
 
 namespace Gallio.VisualStudio.Tip

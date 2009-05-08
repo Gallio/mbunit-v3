@@ -14,9 +14,9 @@
 // limitations under the License.
 
 using Gallio.Model;
-using Gallio.Reflection;
+using Gallio.Common.Reflection;
 using Gallio.ReSharperRunner.Reflection;
-using Gallio.Tests.Reflection;
+using Gallio.Tests.Common.Reflection;
 using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Psi;
 using MbUnit.Framework;

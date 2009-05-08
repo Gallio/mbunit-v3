@@ -16,10 +16,10 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Gallio.Collections;
+using Gallio.Common.Collections;
 using Gallio.Framework.Data;
 using Gallio.Model;
-using Gallio.Reflection;
+using Gallio.Common.Reflection;
 
 namespace Gallio.Framework.Pattern
 {

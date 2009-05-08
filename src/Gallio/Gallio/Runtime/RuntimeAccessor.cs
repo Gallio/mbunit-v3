@@ -14,9 +14,9 @@
 // limitations under the License.
 
 using System;
+using Gallio.Common.Policies;
 using Gallio.Runtime;
 using Gallio.Runtime.Extensibility;
-using Gallio.Utilities;
 using Gallio.Runtime.Logging;
 
 namespace Gallio.Runtime
@@ -122,7 +122,7 @@ namespace Gallio.Runtime
             EventHandler instanceChangedHandlers = InstanceChanged;
             instance = runtime;
 
-            EventHandlerUtils.SafeInvoke(instanceChangedHandlers, null, EventArgs.Empty);
+            EventHandlerPolicy.SafeInvoke(instanceChangedHandlers, null, EventArgs.Empty);
         }
     }
 }

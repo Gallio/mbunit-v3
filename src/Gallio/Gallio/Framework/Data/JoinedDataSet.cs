@@ -15,7 +15,7 @@
 
 using System;
 using System.Collections.Generic;
-using Gallio.Collections;
+using Gallio.Common.Collections;
 
 namespace Gallio.Framework.Data
 {
@@ -129,7 +129,7 @@ namespace Gallio.Framework.Data
         /// <inheritdoc />
         protected override IEnumerable<IDataItem> GetItemsImpl(ICollection<DataBinding> bindings, bool includeDynamicItems)
         {
-            IDataProvider[] providers = GenericUtils.ToArray(DataSets);
+            IDataProvider[] providers = GenericCollectionUtils.ToArray(DataSets);
             int providerCount = providers.Length;
 
             List<DataBinding>[] bindingsPerProvider = new List<DataBinding>[providerCount];
@@ -213,7 +213,7 @@ namespace Gallio.Framework.Data
 
             public override bool IsDynamic
             {
-                get { return GenericUtils.Find(items, delegate(IDataItem item) { return item.IsDynamic; }) != null; }
+                get { return GenericCollectionUtils.Find(items, delegate(IDataItem item) { return item.IsDynamic; }) != null; }
             }
 
             public override IEnumerable<DataBinding> GetBindingsForInformalDescription()

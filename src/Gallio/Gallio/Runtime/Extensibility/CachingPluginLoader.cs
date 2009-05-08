@@ -20,9 +20,9 @@ using System.IO;
 using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
+using Gallio.Common;
 using Gallio.Schema;
 using Gallio.Schema.Plugins;
-using Gallio.Utilities;
 
 namespace Gallio.Runtime.Extensibility
 {

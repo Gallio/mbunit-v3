@@ -14,9 +14,9 @@
 // limitations under the License.
 
 using System;
+using Gallio.Common.Policies;
 using Gallio.Icarus.ProgressMonitoring.EventArgs;
 using Gallio.Runtime.ProgressMonitoring;
-using Gallio.Utilities;
 
 namespace Gallio.Icarus.ProgressMonitoring
 {
@@ -32,7 +32,7 @@ namespace Gallio.Icarus.ProgressMonitoring
 
         private void HandleTaskStarting(object sender, System.EventArgs e)
         {
-            EventHandlerUtils.SafeInvoke(ProgressUpdate, this, new ProgressUpdateEventArgs(string.Empty, string.Empty, 0, ProgressMonitor.TotalWorkUnits));
+            EventHandlerPolicy.SafeInvoke(ProgressUpdate, this, new ProgressUpdateEventArgs(string.Empty, string.Empty, 0, ProgressMonitor.TotalWorkUnits));
         }
 
         /// <inheritdoc />
@@ -40,15 +40,15 @@ namespace Gallio.Icarus.ProgressMonitoring
         {
             if (ProgressMonitor.IsCanceled)
             {
-                EventHandlerUtils.SafeInvoke(ProgressUpdate, this, new ProgressUpdateEventArgs("Operation cancelled", string.Empty, 0, 0));
+                EventHandlerPolicy.SafeInvoke(ProgressUpdate, this, new ProgressUpdateEventArgs("Operation cancelled", string.Empty, 0, 0));
             }
             else if (ProgressMonitor.IsDone)
             {
-                EventHandlerUtils.SafeInvoke(ProgressUpdate, this, new ProgressUpdateEventArgs(string.Empty, string.Empty, 0, 0));
+                EventHandlerPolicy.SafeInvoke(ProgressUpdate, this, new ProgressUpdateEventArgs(string.Empty, string.Empty, 0, 0));
             }
             else
             {
-                EventHandlerUtils.SafeInvoke(ProgressUpdate, this,
+                EventHandlerPolicy.SafeInvoke(ProgressUpdate, this,
                     new ProgressUpdateEventArgs(ProgressMonitor.TaskName, ProgressMonitor.LeafSubTaskName,
                         ProgressMonitor.CompletedWorkUnits, ProgressMonitor.TotalWorkUnits));
             }

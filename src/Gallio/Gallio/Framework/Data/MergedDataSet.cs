@@ -15,7 +15,7 @@
 
 using System;
 using System.Collections.Generic;
-using Gallio.Collections;
+using Gallio.Common.Collections;
 
 namespace Gallio.Framework.Data
 {
@@ -74,7 +74,7 @@ namespace Gallio.Framework.Data
         /// <inheritdoc />
         protected override IEnumerable<IDataItem> GetItemsImpl(ICollection<DataBinding> bindings, bool includeDynamicItems)
         {
-            IDataProvider[] providers = GenericUtils.ToArray(DataSets);
+            IDataProvider[] providers = GenericCollectionUtils.ToArray(DataSets);
             return strategy.Merge(providers, bindings, includeDynamicItems);
         }
     }

@@ -15,7 +15,7 @@
 
 using System;
 using System.Collections.Generic;
-using Gallio.Collections;
+using Gallio.Common.Collections;
 using Gallio.Model;
 using Gallio.ReSharperRunner.Provider.Daemons;
 using Gallio.ReSharperRunner.Reflection;

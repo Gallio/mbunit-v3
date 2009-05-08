@@ -17,11 +17,12 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using Gallio.Common.IO;
+using Gallio.Common.Policies;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Services.Interfaces;
 using Gallio.Runner.Reports;
 using Gallio.Runtime.ProgressMonitoring;
-using Gallio.Utilities;
 
 namespace Gallio.Icarus.Controllers
 {
@@ -52,7 +53,7 @@ namespace Gallio.Icarus.Controllers
                 }
                 catch (Exception ex)
                 {
-                    Runtime.UnhandledExceptionPolicy.Report("Error deleting report", ex);
+                    UnhandledExceptionPolicy.Report("Error deleting report", ex);
                 }
             }
         }

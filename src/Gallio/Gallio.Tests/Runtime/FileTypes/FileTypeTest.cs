@@ -74,7 +74,7 @@ namespace Gallio.Tests.Runtime.FileTypes
             var type = new FileType("id", "description", superType);
             var unrelatedType = new FileType("otherId", "otherDescription", superType);
 
-            Assert.IsTrue(type.IsSameOrSubtypeOf(unrelatedType));
+            Assert.IsFalse(type.IsSameOrSubtypeOf(unrelatedType));
         }
 
         [Test]

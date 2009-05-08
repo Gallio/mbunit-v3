@@ -18,7 +18,7 @@ using System.Reflection;
 using Gallio.Framework.Pattern;
 using Gallio.Model;
 using Gallio.Model.Serialization;
-using Gallio.Reflection;
+using Gallio.Common.Reflection;
 using Gallio.Tests;
 using MbUnit.Framework;
 

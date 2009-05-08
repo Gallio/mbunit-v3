@@ -16,15 +16,16 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using Gallio.Collections;
+using Gallio.Common.Collections;
+using Gallio.Common;
+using Gallio.Common.IO;
 using Gallio.Runtime;
 using Gallio.Model;
 using System.Management.Automation;
 using Gallio.Model.Filters;
 using Gallio.PowerShellCommands.Properties;
-using Gallio.Reflection;
+using Gallio.Common.Reflection;
 using Gallio.Runner;
-using Gallio.Utilities;
 
 namespace Gallio.PowerShellCommands
 {
@@ -510,7 +511,7 @@ namespace Gallio.PowerShellCommands
 
             launcher.TestRunnerFactoryName = runnerType;
             if (runnerExtensions != null)
-                GenericUtils.AddAll(runnerExtensions, launcher.TestRunnerExtensionSpecifications);
+                GenericCollectionUtils.AddAll(runnerExtensions, launcher.TestRunnerExtensionSpecifications);
 
             launcher.RuntimeSetup = new RuntimeSetup();
 
@@ -539,7 +540,7 @@ namespace Gallio.PowerShellCommands
             if (!String.IsNullOrEmpty(reportNameFormat))
                 launcher.ReportNameFormat = reportNameFormat;
             if (reportTypes != null)
-                GenericUtils.AddAll(reportTypes, launcher.ReportFormats);
+                GenericCollectionUtils.AddAll(reportTypes, launcher.ReportFormats);
 
             TestLauncherResult result = RunLauncher(launcher);
             return result;

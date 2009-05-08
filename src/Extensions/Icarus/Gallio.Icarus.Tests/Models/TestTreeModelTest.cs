@@ -18,7 +18,7 @@ using Gallio.Icarus.Models;
 using Gallio.Model;
 using Gallio.Model.Filters;
 using Gallio.Model.Serialization;
-using Gallio.Reflection;
+using Gallio.Common.Reflection;
 using Gallio.Runtime.ProgressMonitoring;
 using MbUnit.Framework;
 

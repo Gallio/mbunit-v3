@@ -14,7 +14,7 @@
 // limitations under the License.
 
 using System;
-using Gallio.Concurrency;
+using Gallio.Common.Concurrency;
 using Gallio.Model.Execution;
 using Gallio.Runner.Events;
 using Gallio.Runner.Extensions;

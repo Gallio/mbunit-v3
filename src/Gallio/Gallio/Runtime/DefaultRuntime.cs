@@ -20,9 +20,10 @@ using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Xml;
-using Gallio.Collections;
+using Gallio.Common.Collections;
+using Gallio.Common.Platform;
 using Gallio.Properties;
-using Gallio.Reflection;
+using Gallio.Common.Reflection;
 using Gallio.Runtime.Extensibility;
 using Gallio.Runtime.Loader;
 using Gallio.Runtime.Logging;
@@ -270,7 +271,7 @@ namespace Gallio.Runtime
                 if (pluginId.Length == 0)
                     throw new InvalidOperationException(String.Format("Malformed plugin relative Uri: '{0}'.", uri));
 
-                IPluginDescriptor plugin = GenericUtils.Find(registry.Plugins,
+                IPluginDescriptor plugin = GenericCollectionUtils.Find(registry.Plugins,
                     p => string.Compare(pluginId, p.PluginId, true) == 0);
                 if (plugin == null)
                     throw new InvalidOperationException(String.Format("Unrecognized plugin id in Uri: '{0}'.", uri));
@@ -293,6 +294,16 @@ namespace Gallio.Runtime
             logger.Log(LogSeverity.Info, "Checking plugins.");
 
             bool success = true;
+
+            VerifyPlugins(ref success);
+            VerifyServices(ref success);
+            VerifyComponents(ref success);
+
+            return success;
+        }
+
+        private void VerifyPlugins(ref bool success)
+        {
             foreach (var plugin in registry.Plugins)
             {
                 if (plugin.IsDisabled)
@@ -346,7 +357,10 @@ namespace Gallio.Runtime
                     logger.Log(LogSeverity.Error, "Unresolvable plugin traits.", ex);
                 }
             }
+        }
 
+        private void VerifyServices(ref bool success)
+        {
             foreach (var service in registry.Services)
             {
                 if (service.IsDisabled)
@@ -372,7 +386,10 @@ namespace Gallio.Runtime
                     logger.Log(LogSeverity.Error, "Unresolvable service traits type.", ex);
                 }
             }
+        }
 
+        private void VerifyComponents(ref bool success)
+        {
             foreach (var component in registry.Components)
             {
                 if (component.IsDisabled)
@@ -398,8 +415,6 @@ namespace Gallio.Runtime
                     logger.Log(LogSeverity.Error, "Unresolvable component traits.", ex);
                 }
             }
-
-            return success;
         }
 
         private void ThrowIfDisposed()
@@ -450,12 +465,12 @@ namespace Gallio.Runtime
 
         private void ConfigurePluginLoaderForEnvironment()
         {
-            switch (RuntimeDetection.GetRuntimeVersion())
+            switch (DotNetFrameworkSupport.FrameworkVersion)
             {
-                case RuntimeVersion.DotNet40:
+                case DotNetFrameworkVersion.DotNet40:
                     pluginLoader.DefinePreprocessorConstant("NET40");
                     break;
-                case RuntimeVersion.DotNet35:
+                case DotNetFrameworkVersion.DotNet35:
                     pluginLoader.DefinePreprocessorConstant("NET35");
                     break;
                 default:

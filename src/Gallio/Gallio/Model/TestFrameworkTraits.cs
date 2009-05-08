@@ -17,7 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Text;
-using Gallio.Collections;
+using Gallio.Common.Collections;
 using Gallio.Runtime.Extensibility;
 
 namespace Gallio.Model

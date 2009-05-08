@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 using EnvDTE;
+using Gallio.Common;
 using Gallio.VisualStudio.Interop.Native;
 using Thread=System.Threading.Thread;
 

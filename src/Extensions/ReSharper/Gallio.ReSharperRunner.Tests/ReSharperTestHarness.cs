@@ -15,11 +15,13 @@
 
 using System.IO;
 using System.Reflection;
-using Gallio.Reflection;
+using Gallio.Common;
+using Gallio.Common.Reflection;
 using JetBrains.ProjectModel;
 using JetBrains.UI;
 using JetBrains.Util;
 using MbUnit.Framework;
+using Action = Gallio.Common.Action;
 
 #if RESHARPER_31
 using JetBrains.Shell;

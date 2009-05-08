@@ -15,7 +15,8 @@
 
 using System;
 using System.IO;
-using Gallio.Utilities;
+using Gallio.Common;
+using Gallio.Common.IO;
 
 namespace Gallio.Runner.Caching
 {

@@ -17,6 +17,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Gallio;
+using Gallio.Common;
 
 namespace Gallio.Framework.Data
 {

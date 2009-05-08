@@ -1,4 +1,4 @@
-﻿// Copyright 2005-2009 Gallio Project - http://www.gallio.org/
+// Copyright 2005-2009 Gallio Project - http://www.gallio.org/
 // Portions Copyright 2000-2004 Jonathan de Halleux
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,8 +16,8 @@
 using System;
 using Gallio.Framework;
 using Gallio.Framework.Pattern;
-using Gallio.Model.Diagnostics;
-using Gallio.Reflection;
+using Gallio.Runtime.Diagnostics;
+using Gallio.Common.Reflection;
 using Gallio.Model;
 using System.Reflection;
 using MbUnit.Framework.ContractVerifiers.Core;

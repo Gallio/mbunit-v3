@@ -19,7 +19,7 @@ using System.Globalization;
 using System.Reflection;
 using System.Windows.Forms;
 using Gallio.Icarus.Controllers.Interfaces;
-using Gallio.Reflection;
+using Gallio.Common.Reflection;
 
 namespace Gallio.Icarus
 {

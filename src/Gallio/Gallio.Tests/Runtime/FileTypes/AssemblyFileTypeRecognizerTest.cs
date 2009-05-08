@@ -1,10 +1,10 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using Gallio.Reflection;
+using Gallio.Common.Reflection;
 using Gallio.Runtime.FileTypes;
 using MbUnit.Framework;
 using Rhino.Mocks;

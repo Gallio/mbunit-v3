@@ -14,7 +14,7 @@
 // limitations under the License.
 
 using System;
-using Gallio.Collections;
+using Gallio.Common.Collections;
 
 namespace Gallio.Framework.Data
 {

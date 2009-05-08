@@ -16,20 +16,19 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Gallio.Reflection;
-using Gallio.Reflection.Impl;
+using Gallio.Common;
+using Gallio.Common.Reflection;
+using Gallio.Common.Reflection.Impl;
 using JetBrains.ProjectModel;
 using JetBrains.ProjectModel.Build;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.Caches;
-using Gallio.Collections;
+using Gallio.Common.Collections;
 using JetBrains.ReSharper.Psi.CSharp.Tree;
 using JetBrains.ReSharper.Psi.Impl.Caches2;
 using JetBrains.ReSharper.Psi.Impl.Special;
 using JetBrains.ReSharper.Psi.Resolve;
 using JetBrains.ReSharper.Psi.Tree;
-using Gallio.Utilities;
-
 #if RESHARPER_31
 using JetBrains.ReSharper.Editor;
 using ReSharperDocumentRange = JetBrains.ReSharper.Editor.DocumentRange;
@@ -307,7 +306,7 @@ namespace Gallio.ReSharperRunner.Reflection
             if (projectHandle != null)
             {
                 ICollection<IModuleReference> moduleRefs = projectHandle.GetModuleReferences();
-                return GenericUtils.ConvertAllToArray<IModuleReference, AssemblyName>(moduleRefs, delegate(IModuleReference moduleRef)
+                return GenericCollectionUtils.ConvertAllToArray<IModuleReference, AssemblyName>(moduleRefs, delegate(IModuleReference moduleRef)
                 {
                     return GetAssemblyName(moduleRef.ResolveReferencedModule());
                 });
@@ -567,7 +566,7 @@ namespace Gallio.ReSharperRunner.Reflection
 
             if (value.IsArray)
                 return new ConstantValue(MakeType(value.ArrayType),
-                    GenericUtils.ConvertAllToArray<AttributeValue, ConstantValue>(value.ArrayValue, ConvertConstantValue));
+                    GenericCollectionUtils.ConvertAllToArray<AttributeValue, ConstantValue>(value.ArrayValue, ConvertConstantValue));
 
             throw new NotSupportedException("Unsupported attribute value type.");
         }
@@ -789,7 +788,7 @@ namespace Gallio.ReSharperRunner.Reflection
         {
             IFunction functionHandle = (IFunction)function.Handle;
 
-            return GenericUtils.ConvertAllToArray<IParameter, StaticParameterWrapper>(functionHandle.Parameters, delegate(IParameter parameter)
+            return GenericCollectionUtils.ConvertAllToArray<IParameter, StaticParameterWrapper>(functionHandle.Parameters, delegate(IParameter parameter)
             {
                 return new StaticParameterWrapper(this, parameter, function);
             });
@@ -1224,7 +1223,7 @@ namespace Gallio.ReSharperRunner.Reflection
                 return type;
             }
 
-        ITypeInfo[] genericArguments = GenericUtils.ConvertAllToArray<ITypeParameter, ITypeInfo>(typeParameterHandles, delegate(ITypeParameter typeParameterHandle)
+        ITypeInfo[] genericArguments = GenericCollectionUtils.ConvertAllToArray<ITypeParameter, ITypeInfo>(typeParameterHandles, delegate(ITypeParameter typeParameterHandle)
             {
                 IType substitutedType = substitutionHandle.Apply(typeParameterHandle);
                 if (substitutedType.IsUnknown)
@@ -1292,7 +1291,7 @@ namespace Gallio.ReSharperRunner.Reflection
         protected override IList<StaticTypeWrapper> GetGenericParameterConstraints(StaticGenericParameterWrapper genericParameter)
         {
             ITypeParameter genericParameterHandle = (ITypeParameter)genericParameter.Handle;
-            return GenericUtils.ConvertAllToArray<IType, StaticTypeWrapper>(genericParameterHandle.TypeConstraints, MakeType);
+            return GenericCollectionUtils.ConvertAllToArray<IType, StaticTypeWrapper>(genericParameterHandle.TypeConstraints, MakeType);
         }
         #endregion
 

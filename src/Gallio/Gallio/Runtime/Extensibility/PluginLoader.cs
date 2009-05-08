@@ -19,9 +19,9 @@ using System.IO;
 using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
-using Gallio.Collections;
+using Gallio.Common.Collections;
+using Gallio.Common;
 using Gallio.Schema.Plugins;
-using Gallio.Utilities;
 
 namespace Gallio.Runtime.Extensibility
 {

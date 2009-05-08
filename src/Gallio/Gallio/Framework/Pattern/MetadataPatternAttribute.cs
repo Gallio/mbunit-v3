@@ -15,7 +15,7 @@
 
 using System;
 using System.Collections.Generic;
-using Gallio.Reflection;
+using Gallio.Common.Reflection;
 
 namespace Gallio.Framework.Pattern
 {

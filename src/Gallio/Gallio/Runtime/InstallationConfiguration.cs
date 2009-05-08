@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using Gallio.Common;
 using Microsoft.Win32;
 
 namespace Gallio.Runtime

@@ -13,7 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Gallio.Collections;
+using Gallio.Common.Collections;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Runner;
 using Gallio.Runtime;
@@ -30,7 +30,7 @@ namespace Gallio.Icarus.Options
 
             // retrieve list of possible factories
             ITestRunnerManager testRunnerManager = RuntimeAccessor.ServiceLocator.Resolve<ITestRunnerManager>();
-            string[] factories = GenericUtils.ConvertAllToArray(testRunnerManager.TestRunnerFactoryHandles,
+            string[] factories = GenericCollectionUtils.ConvertAllToArray(testRunnerManager.TestRunnerFactoryHandles,
                 h => h.GetTraits().Name);
 
             testRunnerFactories.Items.AddRange(factories);

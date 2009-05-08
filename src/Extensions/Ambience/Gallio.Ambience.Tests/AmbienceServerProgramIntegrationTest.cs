@@ -19,10 +19,10 @@ using System.Linq;
 using System.Net;
 using System.Threading;
 using Gallio.Ambience.Server;
-using Gallio.Concurrency;
+using Gallio.Common.Concurrency;
 using Gallio.Runtime;
 using Gallio.Framework;
-using Gallio.Reflection;
+using Gallio.Common.Reflection;
 using MbUnit.Framework;
 
 namespace Gallio.Ambience.Tests

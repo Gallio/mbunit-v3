@@ -17,8 +17,9 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using Gallio.Common;
 using Gallio.Model;
-using Gallio.Reflection;
+using Gallio.Common.Reflection;
 
 namespace Gallio.Framework.Data
 {

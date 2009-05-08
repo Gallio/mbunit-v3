@@ -15,13 +15,13 @@
 
 using System;
 using System.Collections.Generic;
-using Gallio;
-using Gallio.Collections;
+using Gallio.Common;
+using Gallio.Common.Collections;
 using Gallio.Framework;
 using Gallio.Framework.Pattern;
 using Gallio.Model;
-using Gallio.Model.Diagnostics;
-using Gallio.Reflection;
+using Gallio.Runtime.Diagnostics;
+using Gallio.Common.Reflection;
 
 namespace MbUnit.Framework
 {
@@ -140,7 +140,7 @@ namespace MbUnit.Framework
         }
 
         /// <inheritdoc />
-        [TestEntryPoint]
+        [UserCodeEntryPoint]
         protected override TestOutcome RunDynamicTest(ICodeElementInfo declaringCodeElement, Action setUp, Action tearDown)
         {
             return TestStep.RunStep(Name, () =>

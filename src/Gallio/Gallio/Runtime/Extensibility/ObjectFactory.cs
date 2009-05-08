@@ -20,7 +20,7 @@ using System.Globalization;
 using System.IO;
 using System.Reflection;
 using System.Text;
-using Gallio.Collections;
+using Gallio.Common.Collections;
 
 namespace Gallio.Runtime.Extensibility
 {
@@ -121,7 +121,7 @@ namespace Gallio.Runtime.Extensibility
 
         private object[] ResolveRequiredDependencies(ConstructorInfo constructor)
         {
-            object[] values = GenericUtils.ConvertAllToArray(constructor.GetParameters(),
+            object[] values = GenericCollectionUtils.ConvertAllToArray(constructor.GetParameters(),
                 parameter => ResolveDependency(parameter.Name, parameter.ParameterType, false).Value);
             return values;
         }

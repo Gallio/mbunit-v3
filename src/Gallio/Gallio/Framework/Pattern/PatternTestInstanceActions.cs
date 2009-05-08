@@ -14,8 +14,9 @@
 // limitations under the License.
 
 using System;
+using Gallio.Common;
 using Gallio.Model;
-using Gallio.Model.Diagnostics;
+using Gallio.Runtime.Diagnostics;
 
 namespace Gallio.Framework.Pattern
 {
@@ -172,63 +173,63 @@ namespace Gallio.Framework.Pattern
         }
 
         /// <inheritdoc />
-        [TestEntryPoint]
+        [UserCodeEntryPoint]
         public void BeforeTestInstance(PatternTestInstanceState testInstanceState)
         {
             beforeTestInstanceChain.Action(testInstanceState);
         }
 
         /// <inheritdoc />
-        [TestEntryPoint]
+        [UserCodeEntryPoint]
         public void InitializeTestInstance(PatternTestInstanceState testInstanceState)
         {
             initializeTestInstanceChain.Action(testInstanceState);
         }
 
         /// <inheritdoc />
-        [TestEntryPoint]
+        [UserCodeEntryPoint]
         public void SetUpTestInstance(PatternTestInstanceState testInstanceState)
         {
             setUpTestInstanceChain.Action(testInstanceState);
         }
 
         /// <inheritdoc />
-        [TestEntryPoint]
+        [UserCodeEntryPoint]
         public void ExecuteTestInstance(PatternTestInstanceState testInstanceState)
         {
             executeTestInstanceChain.Action(testInstanceState);
         }
 
         /// <inheritdoc />
-        [TestEntryPoint]
+        [UserCodeEntryPoint]
         public void TearDownTestInstance(PatternTestInstanceState testInstanceState)
         {
             tearDownTestInstanceChain.Action(testInstanceState);
         }
 
         /// <inheritdoc />
-        [TestEntryPoint]
+        [UserCodeEntryPoint]
         public void DisposeTestInstance(PatternTestInstanceState testInstanceState)
         {
             disposeTestInstanceChain.Action(testInstanceState);
         }
 
         /// <inheritdoc />
-        [TestEntryPoint]
+        [UserCodeEntryPoint]
         public void AfterTestInstance(PatternTestInstanceState testInstanceState)
         {
             afterTestInstanceChain.Action(testInstanceState);
         }
 
         /// <inheritdoc />
-        [TestEntryPoint]
+        [UserCodeEntryPoint]
         public void DecorateChildTest(PatternTestInstanceState testInstanceState, PatternTestActions decoratedChildTestActions)
         {
             decorateChildTestChain.Action(testInstanceState, decoratedChildTestActions);
         }
 
         /// <inheritdoc />
-        [TestEntryPoint]
+        [UserCodeEntryPoint]
         public TestOutcome RunTestInstanceBody(PatternTestInstanceState testInstanceState)
         {
             return runTestInstanceBodyChain.Func(testInstanceState);

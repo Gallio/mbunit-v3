@@ -1,4 +1,4 @@
-﻿// Copyright 2005-2009 Gallio Project - http://www.gallio.org/
+// Copyright 2005-2009 Gallio Project - http://www.gallio.org/
 // Portions Copyright 2000-2004 Jonathan de Halleux
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,8 +21,7 @@ using System.Globalization;
 using System.IO;
 using System.Reflection;
 using Gallio.Model;
-using Gallio.Reflection;
-using Gallio.Utilities;
+using Gallio.Common.Reflection;
 using AssemblyDependsOnAttribute2 = MbUnit2::MbUnit.Framework.AssemblyDependsOnAttribute;
 using TestFixturePatternAttribute2 = MbUnit2::MbUnit.Core.Framework.TestFixturePatternAttribute;
 using TestFixtureAttribute2 = MbUnit2::MbUnit.Framework.TestFixtureAttribute;

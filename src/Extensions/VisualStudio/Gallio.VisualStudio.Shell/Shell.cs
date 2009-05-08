@@ -17,6 +17,7 @@ using System;
 using System.ComponentModel.Design;
 using EnvDTE;
 using EnvDTE80;
+using Gallio.Common;
 using Gallio.VisualStudio.Shell.Actions;
 using Gallio.VisualStudio.Shell.UI;
 using Microsoft.VisualStudio.Shell.Interop;

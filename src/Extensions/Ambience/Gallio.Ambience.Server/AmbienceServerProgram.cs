@@ -18,8 +18,8 @@ using System.Net;
 using System.ServiceProcess;
 using System.Threading;
 using Gallio.Ambience.Server.Properties;
+using Gallio.Common.Platform;
 using Gallio.Runner;
-using Gallio.Runtime;
 using Gallio.Runtime.ConsoleSupport;
 
 namespace Gallio.Ambience.Server
@@ -58,7 +58,7 @@ namespace Gallio.Ambience.Server
             if (Arguments.DatabasePath != null)
                 configuration.DatabasePath = Arguments.DatabasePath;
 
-            if (ProcessTypeDetection.ProcessType == ProcessType.Service)
+            if (ProcessSupport.ProcessType == ProcessType.Service)
                 return RunAsService(configuration);
 
             return RunAsApplication(configuration);

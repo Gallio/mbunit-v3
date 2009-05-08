@@ -19,7 +19,7 @@ using Gallio.Runtime.Extensibility;
 using Gallio.Runtime.Loader;
 using Gallio.Runtime;
 using Gallio.Framework;
-using Gallio.Reflection;
+using Gallio.Common.Reflection;
 using Gallio.Model;
 using MbUnit.Framework;
 using Gallio.Runner.Harness;

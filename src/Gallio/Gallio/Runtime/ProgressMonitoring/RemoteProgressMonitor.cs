@@ -16,6 +16,7 @@
 using System;
 using System.Runtime.Remoting.Messaging;
 using System.Runtime.Serialization;
+using Gallio.Common.Policies;
 using Gallio.Runtime.Remoting;
 using Gallio.Runtime;
 

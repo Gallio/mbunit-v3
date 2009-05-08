@@ -1,4 +1,4 @@
-﻿// Copyright 2005-2009 Gallio Project - http://www.gallio.org/
+// Copyright 2005-2009 Gallio Project - http://www.gallio.org/
 // Portions Copyright 2000-2004 Jonathan de Halleux
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,7 +20,7 @@ using System.Text;
 using Gallio.Framework;
 using Gallio.Framework.Assertions;
 using Gallio.Model;
-using Gallio.Model.Diagnostics;
+using Gallio.Runtime.Diagnostics;
 using MbUnit.Framework;
 
 namespace MbUnit.Tests.Framework

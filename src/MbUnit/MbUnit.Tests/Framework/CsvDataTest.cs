@@ -17,10 +17,9 @@ using System;
 using System.IO;
 using Gallio.Framework;
 using Gallio.Model;
-using Gallio.Reflection;
+using Gallio.Common.Reflection;
 using Gallio.Runner.Reports;
 using Gallio.Tests;
-using Gallio.Utilities;
 using MbUnit.Framework;
 
 namespace MbUnit.Tests.Framework

@@ -19,16 +19,17 @@ using System.Globalization;
 using System.IO;
 using System.Text;
 using System.Xml;
-using Gallio.Collections;
+using Gallio.Common;
+using Gallio.Common.Collections;
+using Gallio.Common.IO;
 using Gallio.Model;
 using Gallio.Model.Logging;
 using Gallio.Model.Logging.Tags;
-using Gallio.Reflection;
+using Gallio.Common.Reflection;
 using Gallio.Runner.Reports;
 using Gallio.Runtime;
 using Gallio.Runner.Caching;
 using Gallio.Model.Serialization;
-using Gallio.Utilities;
 
 namespace Gallio.UI
 {

@@ -19,7 +19,7 @@ using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Text;
-using Gallio.Collections;
+using Gallio.Common.Collections;
 
 namespace Gallio.Runtime.Extensibility
 {

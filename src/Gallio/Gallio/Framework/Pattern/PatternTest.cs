@@ -15,9 +15,10 @@
 
 using System;
 using System.Threading;
+using Gallio.Common;
 using Gallio.Runtime;
 using Gallio.Model.Execution;
-using Gallio.Reflection;
+using Gallio.Common.Reflection;
 using Gallio.Model;
 using Gallio;
 

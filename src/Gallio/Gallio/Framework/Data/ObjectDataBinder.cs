@@ -15,9 +15,9 @@
 
 using System;
 using System.Collections.Generic;
-using Gallio.Collections;
-using Gallio.Framework.Conversions;
-using Gallio.Reflection;
+using Gallio.Common.Collections;
+using Gallio.Runtime.Conversions;
+using Gallio.Common.Reflection;
 
 namespace Gallio.Framework.Data
 {
@@ -92,7 +92,7 @@ namespace Gallio.Framework.Data
 
             protected override object GetValueImpl(IDataItem item)
             {
-                KeyValuePair<ISlotInfo, object>[] slotValues = GenericUtils.ConvertAllToArray<
+                KeyValuePair<ISlotInfo, object>[] slotValues = GenericCollectionUtils.ConvertAllToArray<
                     KeyValuePair<ISlotInfo, IDataAccessor>, KeyValuePair<ISlotInfo, object>>(slotAccessors,
                     delegate(KeyValuePair<ISlotInfo, IDataAccessor> slotAccessor)
                     {

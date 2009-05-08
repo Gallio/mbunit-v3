@@ -18,8 +18,9 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Threading;
 using System.Xml.Serialization;
+using Gallio.Common.IO;
+using Gallio.Common.Xml;
 using Gallio.Runtime.Hosting;
-using Gallio.Utilities;
 
 namespace Gallio.Model
 {

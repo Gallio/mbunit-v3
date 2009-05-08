@@ -14,12 +14,12 @@
 // limitations under the License.
 
 using System;
-using Gallio;
-using Gallio.Concurrency;
+using Gallio.Common;
+using Gallio.Common.Concurrency;
 using Gallio.Framework;
 using Gallio.Framework.Pattern;
 using Gallio.Model;
-using Gallio.Reflection;
+using Gallio.Common.Reflection;
 
 namespace MbUnit.Framework
 {

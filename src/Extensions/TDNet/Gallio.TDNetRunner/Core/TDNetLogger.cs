@@ -14,10 +14,9 @@
 // limitations under the License.
 
 using System;
-using Gallio.Model.Diagnostics;
+using Gallio.Runtime.Diagnostics;
 using Gallio.Runtime.Logging;
 using Gallio.TDNetRunner.Facade;
-using Gallio.Utilities;
 
 namespace Gallio.TDNetRunner.Core
 {

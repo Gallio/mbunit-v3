@@ -17,7 +17,7 @@ using System;
 using System.IO;
 using System.Reflection;
 using Gallio.Runtime.Logging;
-using Gallio.Concurrency;
+using Gallio.Common.Concurrency;
 using Gallio.Runtime.Hosting;
 
 namespace Gallio.NCoverIntegration

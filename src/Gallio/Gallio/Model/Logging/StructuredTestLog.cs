@@ -17,8 +17,8 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Xml.Serialization;
+using Gallio.Common.Xml;
 using Gallio.Model.Logging;
-using Gallio.Utilities;
 
 namespace Gallio.Model.Logging
 {

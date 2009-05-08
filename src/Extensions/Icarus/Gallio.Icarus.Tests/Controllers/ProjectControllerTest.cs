@@ -16,6 +16,8 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Reflection;
+using Gallio.Common.IO;
+using Gallio.Common.Xml;
 using Gallio.Icarus.Controllers;
 using Gallio.Icarus.Controllers.EventArgs;
 using Gallio.Icarus.Controllers.Interfaces;
@@ -27,7 +29,6 @@ using Gallio.Model;
 using Gallio.Model.Filters;
 using Gallio.Runner.Projects;
 using Gallio.Runtime.ProgressMonitoring;
-using Gallio.Utilities;
 using MbUnit.Framework;
 using Rhino.Mocks;
 using System;

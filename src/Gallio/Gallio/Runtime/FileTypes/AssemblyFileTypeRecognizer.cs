@@ -1,8 +1,9 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using Gallio.Reflection;
+using Gallio.Common.Platform;
+using Gallio.Common.Reflection;
 
 namespace Gallio.Runtime.FileTypes
 {
@@ -17,7 +18,7 @@ namespace Gallio.Runtime.FileTypes
             Stream stream;
             if (fileInspector.TryGetStream(out stream))
             {
-                return AssemblyUtils.IsAssembly(stream);
+                return DotNetRuntimeSupport.IsAssembly(stream);
             }
 
             return false;

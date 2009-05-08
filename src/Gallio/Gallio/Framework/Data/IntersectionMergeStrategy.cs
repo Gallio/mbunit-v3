@@ -14,7 +14,7 @@
 // limitations under the License.
 
 using System.Collections.Generic;
-using Gallio.Collections;
+using Gallio.Common.Collections;
 
 namespace Gallio.Framework.Data
 {
@@ -114,7 +114,7 @@ namespace Gallio.Framework.Data
         {
             try
             {
-                return GenericUtils.ConvertAllToArray<DataBinding, object>(bindings, delegate(DataBinding binding)
+                return GenericCollectionUtils.ConvertAllToArray<DataBinding, object>(bindings, delegate(DataBinding binding)
                 {
                     return item.GetValue(binding);
                 });

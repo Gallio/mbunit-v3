@@ -17,7 +17,7 @@ using System;
 using System.Configuration;
 using System.Diagnostics;
 using System.IO;
-using Gallio.Collections;
+using Gallio.Common.Collections;
 using Gallio.Framework;
 using Gallio.Model.Logging;
 using Gallio.Runtime.Hosting;

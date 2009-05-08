@@ -19,7 +19,7 @@ using System.Linq;
 using System.Text;
 using Gallio.Runtime.Extensibility;
 using MbUnit.Framework;
-using Gallio.Reflection;
+using Gallio.Common.Reflection;
 using Rhino.Mocks;
 using MbUnit.Framework.ContractVerifiers;
 

@@ -14,15 +14,15 @@
 // limitations under the License.
 
 using System;
+using Gallio.Common.Policies;
 using Gallio.Runtime.Logging;
-using Gallio.Utilities;
 
 namespace Gallio.Runner.Events
 {
     /// <summary>
     /// Dispatches test runner events to listeners.
     /// Each notification function ensures that the event is safely dispatched
-    /// via <see cref="EventHandlerUtils.SafeInvoke" />.
+    /// via <see cref="EventHandlerPolicy.SafeInvoke" />.
     /// </summary>
     public sealed class TestRunnerEventDispatcher : ITestRunnerEvents
     {
@@ -95,7 +95,7 @@ namespace Gallio.Runner.Events
         /// <param name="e">The event arguments</param>
         public void NotifyLogMessage(LogMessageEventArgs e)
         {
-            EventHandlerUtils.SafeInvoke(LogMessage, this, e);
+            EventHandlerPolicy.SafeInvoke(LogMessage, this, e);
         }
 
         /// <summary>
@@ -104,7 +104,7 @@ namespace Gallio.Runner.Events
         /// <param name="e">The event arguments</param>
         public void NotifyInitializeStarted(InitializeStartedEventArgs e)
         {
-            EventHandlerUtils.SafeInvoke(InitializeStarted, this, e);
+            EventHandlerPolicy.SafeInvoke(InitializeStarted, this, e);
         }
 
         /// <summary>
@@ -113,7 +113,7 @@ namespace Gallio.Runner.Events
         /// <param name="e">The event arguments</param>
         public void NotifyInitializeFinished(InitializeFinishedEventArgs e)
         {
-            EventHandlerUtils.SafeInvoke(InitializeFinished, this, e);
+            EventHandlerPolicy.SafeInvoke(InitializeFinished, this, e);
         }
 
         /// <summary>
@@ -122,7 +122,7 @@ namespace Gallio.Runner.Events
         /// <param name="e">The event arguments</param>
         public void NotifyDisposeStarted(DisposeStartedEventArgs e)
         {
-            EventHandlerUtils.SafeInvoke(DisposeStarted, this, e);
+            EventHandlerPolicy.SafeInvoke(DisposeStarted, this, e);
         }
 
         /// <summary>
@@ -131,7 +131,7 @@ namespace Gallio.Runner.Events
         /// <param name="e">The event arguments</param>
         public void NotifyDisposeFinished(DisposeFinishedEventArgs e)
         {
-            EventHandlerUtils.SafeInvoke(DisposeFinished, this, e);
+            EventHandlerPolicy.SafeInvoke(DisposeFinished, this, e);
         }
 
         /// <summary>
@@ -140,7 +140,7 @@ namespace Gallio.Runner.Events
         /// <param name="e">The event arguments</param>
         public void NotifyExploreStarted(ExploreStartedEventArgs e)
         {
-            EventHandlerUtils.SafeInvoke(ExploreStarted, this, e);
+            EventHandlerPolicy.SafeInvoke(ExploreStarted, this, e);
         }
 
         /// <summary>
@@ -149,7 +149,7 @@ namespace Gallio.Runner.Events
         /// <param name="e">The event arguments</param>
         public void NotifyExploreFinished(ExploreFinishedEventArgs e)
         {
-            EventHandlerUtils.SafeInvoke(ExploreFinished, this, e);
+            EventHandlerPolicy.SafeInvoke(ExploreFinished, this, e);
         }
 
         /// <summary>
@@ -158,7 +158,7 @@ namespace Gallio.Runner.Events
         /// <param name="e">The event arguments</param>
         public void NotifyRunStarted(RunStartedEventArgs e)
         {
-            EventHandlerUtils.SafeInvoke(RunStarted, this, e);
+            EventHandlerPolicy.SafeInvoke(RunStarted, this, e);
         }
 
         /// <summary>
@@ -167,7 +167,7 @@ namespace Gallio.Runner.Events
         /// <param name="e">The event arguments</param>
         public void NotifyRunFinished(RunFinishedEventArgs e)
         {
-            EventHandlerUtils.SafeInvoke(RunFinished, this, e);
+            EventHandlerPolicy.SafeInvoke(RunFinished, this, e);
         }
 
         /// <summary>
@@ -176,7 +176,7 @@ namespace Gallio.Runner.Events
         /// <param name="e">The event arguments</param>
         public void NotifyTestModelSubtreeMerged(TestModelSubtreeMergedEventArgs e)
         {
-            EventHandlerUtils.SafeInvoke(TestModelSubtreeMerged, this, e);
+            EventHandlerPolicy.SafeInvoke(TestModelSubtreeMerged, this, e);
         }
 
         /// <summary>
@@ -185,7 +185,7 @@ namespace Gallio.Runner.Events
         /// <param name="e">The event arguments</param>
         public void NotifyTestModelAnnotationAdded(TestModelAnnotationAddedEventArgs e)
         {
-            EventHandlerUtils.SafeInvoke(TestModelAnnotationAdded, this, e);
+            EventHandlerPolicy.SafeInvoke(TestModelAnnotationAdded, this, e);
         }
 
         /// <summary>
@@ -194,7 +194,7 @@ namespace Gallio.Runner.Events
         /// <param name="e">The event arguments</param>
         public void NotifyTestStepStarted(TestStepStartedEventArgs e)
         {
-            EventHandlerUtils.SafeInvoke(TestStepStarted, this, e);
+            EventHandlerPolicy.SafeInvoke(TestStepStarted, this, e);
         }
 
         /// <summary>
@@ -203,7 +203,7 @@ namespace Gallio.Runner.Events
         /// <param name="e">The event arguments</param>
         public void NotifyTestStepFinished(TestStepFinishedEventArgs e)
         {
-            EventHandlerUtils.SafeInvoke(TestStepFinished, this, e);
+            EventHandlerPolicy.SafeInvoke(TestStepFinished, this, e);
         }
 
         /// <summary>
@@ -212,7 +212,7 @@ namespace Gallio.Runner.Events
         /// <param name="e">The event arguments</param>
         public void NotifyTestStepLifecyclePhaseChanged(TestStepLifecyclePhaseChangedEventArgs e)
         {
-            EventHandlerUtils.SafeInvoke(TestStepLifecyclePhaseChanged, this, e);
+            EventHandlerPolicy.SafeInvoke(TestStepLifecyclePhaseChanged, this, e);
         }
 
         /// <summary>
@@ -221,7 +221,7 @@ namespace Gallio.Runner.Events
         /// <param name="e">The event arguments</param>
         public void NotifyTestStepMetadataAdded(TestStepMetadataAddedEventArgs e)
         {
-            EventHandlerUtils.SafeInvoke(TestStepMetadataAdded, this, e);
+            EventHandlerPolicy.SafeInvoke(TestStepMetadataAdded, this, e);
         }
 
         /// <summary>
@@ -230,7 +230,7 @@ namespace Gallio.Runner.Events
         /// <param name="e">The event arguments</param>
         public void NotifyTestStepLogAttach(TestStepLogAttachEventArgs e)
         {
-            EventHandlerUtils.SafeInvoke(TestStepLogAttach, this, e);
+            EventHandlerPolicy.SafeInvoke(TestStepLogAttach, this, e);
         }
 
         /// <summary>
@@ -239,7 +239,7 @@ namespace Gallio.Runner.Events
         /// <param name="e">The event arguments</param>
         public void NotifyTestStepLogStreamWrite(TestStepLogStreamWriteEventArgs e)
         {
-            EventHandlerUtils.SafeInvoke(TestStepLogStreamWrite, this, e);
+            EventHandlerPolicy.SafeInvoke(TestStepLogStreamWrite, this, e);
         }
 
         /// <summary>
@@ -248,7 +248,7 @@ namespace Gallio.Runner.Events
         /// <param name="e">The event arguments</param>
         public void NotifyTestStepLogStreamEmbed(TestStepLogStreamEmbedEventArgs e)
         {
-            EventHandlerUtils.SafeInvoke(TestStepLogStreamEmbed, this, e);
+            EventHandlerPolicy.SafeInvoke(TestStepLogStreamEmbed, this, e);
         }
 
         /// <summary>
@@ -257,7 +257,7 @@ namespace Gallio.Runner.Events
         /// <param name="e">The event arguments</param>
         public void NotifyTestStepLogStreamBeginSection(TestStepLogStreamBeginSectionEventArgs e)
         {
-            EventHandlerUtils.SafeInvoke(TestStepLogStreamBeginSection, this, e);
+            EventHandlerPolicy.SafeInvoke(TestStepLogStreamBeginSection, this, e);
         }
 
         /// <summary>
@@ -266,7 +266,7 @@ namespace Gallio.Runner.Events
         /// <param name="e">The event arguments</param>
         public void NotifyTestStepLogStreamBeginMarker(TestStepLogStreamBeginMarkerEventArgs e)
         {
-            EventHandlerUtils.SafeInvoke(TestStepLogStreamBeginMarker, this, e);
+            EventHandlerPolicy.SafeInvoke(TestStepLogStreamBeginMarker, this, e);
         }
 
         /// <summary>
@@ -275,7 +275,7 @@ namespace Gallio.Runner.Events
         /// <param name="e">The event arguments</param>
         public void NotifyTestStepLogStreamEnd(TestStepLogStreamEndEventArgs e)
         {
-            EventHandlerUtils.SafeInvoke(TestStepLogStreamEnd, this, e);
+            EventHandlerPolicy.SafeInvoke(TestStepLogStreamEnd, this, e);
         }
 
         /// <summary>

@@ -16,13 +16,13 @@
 using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using Gallio.Collections;
+using Gallio.Common.Collections;
 using Gallio.Runtime.Loader;
 using Gallio.Runtime;
 using Gallio.Model;
 using Gallio.Model.Execution;
 using Gallio.Model.Filters;
-using Gallio.Reflection;
+using Gallio.Common.Reflection;
 using MbUnit.Framework;
 
 namespace Gallio.Tests.Model.Execution

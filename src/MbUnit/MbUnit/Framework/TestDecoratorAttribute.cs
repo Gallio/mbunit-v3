@@ -15,10 +15,10 @@
 
 using System;
 using System.Threading;
-using Gallio;
-using Gallio.Collections;
+using Gallio.Common;
+using Gallio.Common.Collections;
 using Gallio.Framework.Pattern;
-using Gallio.Reflection;
+using Gallio.Common.Reflection;
 
 namespace MbUnit.Framework
 {

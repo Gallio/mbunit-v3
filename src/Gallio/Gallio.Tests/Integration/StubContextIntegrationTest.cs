@@ -18,7 +18,7 @@ using System.IO;
 using Gallio.Runtime;
 using Gallio.Framework;
 using Gallio.Model.Execution;
-using Gallio.Reflection;
+using Gallio.Common.Reflection;
 using MbUnit.Framework;
 
 namespace Gallio.Tests.Integration

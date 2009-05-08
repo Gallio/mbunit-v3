@@ -22,6 +22,7 @@ using System.Threading;
 using Gallio.Framework;
 using Gallio.Framework.Pattern;
 using MbUnit.Framework;
+using Action=Gallio.Common.Action;
 
 namespace Gallio.Tests.Framework.Pattern
 {

@@ -16,7 +16,7 @@
 using System;
 using System.Reflection;
 using Gallio.NUnitAdapter.Model;
-using Gallio.Reflection;
+using Gallio.Common.Reflection;
 using Gallio.Runtime;
 using Gallio.Runtime.Extensibility;
 using MbUnit.Framework;

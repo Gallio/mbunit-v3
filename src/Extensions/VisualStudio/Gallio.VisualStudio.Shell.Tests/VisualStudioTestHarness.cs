@@ -18,7 +18,7 @@ using System.IO;
 using EnvDTE;
 using EnvDTE80;
 using EnvDTE90;
-using Gallio.Reflection;
+using Gallio.Common.Reflection;
 using Gallio.Runtime.Logging;
 using Gallio.VisualStudio.Interop;
 using MbUnit.Framework;

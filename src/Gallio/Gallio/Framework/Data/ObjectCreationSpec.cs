@@ -17,10 +17,10 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
-using Gallio.Collections;
-using Gallio.Framework.Conversions;
-using Gallio.Framework.Formatting;
-using Gallio.Reflection;
+using Gallio.Common.Collections;
+using Gallio.Runtime.Conversions;
+using Gallio.Runtime.Formatting;
+using Gallio.Common.Reflection;
 
 namespace Gallio.Framework.Data
 {

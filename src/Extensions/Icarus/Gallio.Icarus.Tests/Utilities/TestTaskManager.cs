@@ -1,4 +1,6 @@
-﻿namespace Gallio.Icarus.Tests.Utilities
+using Gallio.Common;
+
+namespace Gallio.Icarus.Tests.Utilities
 {
     internal class TestTaskManager : ITaskManager
     {

@@ -16,12 +16,12 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using Gallio.Common.IO;
 using Gallio.Icarus.Controllers;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Mediator.Interfaces;
 using Gallio.Icarus.Tests.Utilities;
 using Gallio.Icarus.Utilities;
-using Gallio.Utilities;
 using MbUnit.Framework;
 using Rhino.Mocks;
 

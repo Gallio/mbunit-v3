@@ -17,7 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using Gallio.Concurrency;
+using Gallio.Common.Concurrency;
 using Gallio.Runtime;
 using Gallio.Framework;
 using MbUnit.Framework;

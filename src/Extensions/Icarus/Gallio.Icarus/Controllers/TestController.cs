@@ -18,8 +18,9 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Threading;
 using System.Windows.Forms;
-using Gallio.Collections;
-using Gallio.Concurrency;
+using Gallio.Common.Collections;
+using Gallio.Common.Policies;
+using Gallio.Common.Concurrency;
 using Gallio.Icarus.Controllers.EventArgs;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Models;
@@ -27,14 +28,13 @@ using Gallio.Model;
 using Gallio.Model.Execution;
 using Gallio.Model.Filters;
 using Gallio.Model.Serialization;
-using Gallio.Reflection;
+using Gallio.Common.Reflection;
 using Gallio.Runner;
 using Gallio.Runner.Events;
 using Gallio.Runner.Extensions;
 using Gallio.Runner.Reports;
 using Gallio.Runtime;
 using Gallio.Runtime.ProgressMonitoring;
-using Gallio.Utilities;
 
 namespace Gallio.Icarus.Controllers
 {
@@ -204,7 +204,7 @@ namespace Gallio.Icarus.Controllers
         {
             using (progressMonitor.BeginTask("Exploring the tests.", 100))
             {
-                EventHandlerUtils.SafeInvoke(ExploreStarted, this, System.EventArgs.Empty);
+                EventHandlerPolicy.SafeInvoke(ExploreStarted, this, System.EventArgs.Empty);
 
                 DoWithTestRunner(testRunner =>
                 {
@@ -216,7 +216,7 @@ namespace Gallio.Icarus.Controllers
                     RefreshTestTree(progressMonitor.CreateSubProgressMonitor(10));
                 }, progressMonitor, 10, testRunnerExtensions);
 
-                EventHandlerUtils.SafeInvoke(ExploreFinished, this, System.EventArgs.Empty);
+                EventHandlerPolicy.SafeInvoke(ExploreFinished, this, System.EventArgs.Empty);
             }
         }
 
@@ -226,7 +226,7 @@ namespace Gallio.Icarus.Controllers
 
             using (progressMonitor.BeginTask("Running the tests.", 100))
             {    
-                EventHandlerUtils.SafeInvoke(RunStarted, this, System.EventArgs.Empty);
+                EventHandlerPolicy.SafeInvoke(RunStarted, this, System.EventArgs.Empty);
 
                 progressMonitor.Worked(5);
 
@@ -247,7 +247,7 @@ namespace Gallio.Icarus.Controllers
 
                 }, progressMonitor, 5, testRunnerExtensions);
 
-                EventHandlerUtils.SafeInvoke(RunFinished, this, System.EventArgs.Empty);
+                EventHandlerPolicy.SafeInvoke(RunFinished, this, System.EventArgs.Empty);
             }
         }
 
@@ -315,7 +315,7 @@ namespace Gallio.Icarus.Controllers
                     return;
 
                 // fire event for view
-                EventHandlerUtils.SafeInvoke(ShowSourceCode, this, new ShowSourceCodeEventArgs(codeLocation));
+                EventHandlerPolicy.SafeInvoke(ShowSourceCode, this, new ShowSourceCodeEventArgs(codeLocation));
             }
         }
 
@@ -332,8 +332,8 @@ namespace Gallio.Icarus.Controllers
                 var logger = RuntimeAccessor.Logger;
 
                 List<string> extensionSpecifications = new List<string>();
-                GenericUtils.AddAllIfNotAlreadyPresent(testRunnerExtensions, extensionSpecifications);
-                GenericUtils.AddAllIfNotAlreadyPresent(optionsController.TestRunnerExtensions, 
+                GenericCollectionUtils.AddAllIfNotAlreadyPresent(testRunnerExtensions, extensionSpecifications);
+                GenericCollectionUtils.AddAllIfNotAlreadyPresent(optionsController.TestRunnerExtensions, 
                     extensionSpecifications);
 
                 foreach (string extensionSpecification in extensionSpecifications)
@@ -349,7 +349,7 @@ namespace Gallio.Icarus.Controllers
                 {
                     testTreeModel.UpdateTestStatus(e.Test, e.TestStepRun);
 
-                    EventHandlerUtils.SafeInvoke(TestStepFinished, this, e);
+                    EventHandlerPolicy.SafeInvoke(TestStepFinished, this, e);
 
                     if (e.TestStepRun.Result.Outcome.Status == TestStatus.Failed)
                         FailedTests = true;

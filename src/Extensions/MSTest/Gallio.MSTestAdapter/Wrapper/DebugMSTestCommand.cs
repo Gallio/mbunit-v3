@@ -17,9 +17,9 @@ using System;
 using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using Gallio.Reflection;
+using Gallio.Common.IO;
+using Gallio.Common.Reflection;
 using Gallio.Runtime.Hosting;
-using Gallio.Utilities;
 
 namespace Gallio.MSTestAdapter.Wrapper
 {

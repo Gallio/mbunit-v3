@@ -1,4 +1,4 @@
-﻿// Copyright 2005-2009 Gallio Project - http://www.gallio.org/
+// Copyright 2005-2009 Gallio Project - http://www.gallio.org/
 // Portions Copyright 2000-2004 Jonathan de Halleux
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,7 +18,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using Gallio.Collections;
+using Gallio.Common.Collections;
 using Gallio.Framework.Data;
 using Gallio.Model;
 using MbUnit.Framework;
@@ -38,7 +38,7 @@ namespace Gallio.Tests.Framework.Data
         [Test]
         public void DefaultFieldDelimiterIsComma()
         {
-            Func<TextReader> documentReaderProvider = delegate { return new StringReader(""); };
+            Gallio.Common.Func<TextReader> documentReaderProvider = delegate { return new StringReader(""); };
             CsvDataSet dataSet = new CsvDataSet(documentReaderProvider, false);
 
             Assert.AreEqual(',', dataSet.FieldDelimiter);
@@ -47,7 +47,7 @@ namespace Gallio.Tests.Framework.Data
         [Test]
         public void DefaultCommentPrefixIsPound()
         {
-            Func<TextReader> documentReaderProvider = delegate { return new StringReader(""); };
+            Gallio.Common.Func<TextReader> documentReaderProvider = delegate { return new StringReader(""); };
             CsvDataSet dataSet = new CsvDataSet(documentReaderProvider, false);
 
             Assert.AreEqual('#', dataSet.CommentPrefix);
@@ -56,7 +56,7 @@ namespace Gallio.Tests.Framework.Data
         [Test]
         public void DefaultHasHeaderIsFalse()
         {
-            Func<TextReader> documentReaderProvider = delegate { return new StringReader(""); };
+            Gallio.Common.Func<TextReader> documentReaderProvider = delegate { return new StringReader(""); };
             CsvDataSet dataSet = new CsvDataSet(documentReaderProvider, false);
 
             Assert.IsFalse(dataSet.HasHeader);
@@ -102,7 +102,7 @@ namespace Gallio.Tests.Framework.Data
         public void BindValues(string document, char fieldDelimiter, char commentPrefix, bool hasHeader,
             int? bindingIndex, string bindingPath, string[] expectedValues)
         {
-            Func<TextReader> documentReaderProvider = delegate { return new StringReader(document); };
+            Gallio.Common.Func<TextReader> documentReaderProvider = delegate { return new StringReader(document); };
             CsvDataSet dataSet = new CsvDataSet(documentReaderProvider, false);
 
             dataSet.FieldDelimiter = fieldDelimiter;
@@ -117,7 +117,7 @@ namespace Gallio.Tests.Framework.Data
             DataBinding binding = new DataBinding(bindingIndex, bindingPath);
             List<IDataItem> items = new List<IDataItem>(dataSet.GetItems(new DataBinding[] { binding }, true));
 
-            string[] actualValues = GenericUtils.ConvertAllToArray<IDataItem, string>(items, delegate(IDataItem item)
+            string[] actualValues = GenericCollectionUtils.ConvertAllToArray<IDataItem, string>(items, delegate(IDataItem item)
             {
                 return (string) item.GetValue(binding);
             });
@@ -129,7 +129,7 @@ namespace Gallio.Tests.Framework.Data
         public void ProducesMetadata()
         {
             string document = "value,[Metadata]\n123,abc\n456,def";
-            Func<TextReader> documentReaderProvider = delegate { return new StringReader(document); };
+            Gallio.Common.Func<TextReader> documentReaderProvider = delegate { return new StringReader(document); };
             CsvDataSet dataSet = new CsvDataSet(documentReaderProvider, false);
 
             dataSet.HasHeader = true;
@@ -179,7 +179,7 @@ namespace Gallio.Tests.Framework.Data
         public void IgnoresMissingMetadataColumns()
         {
             string document = "value,[Metadata]\n123";
-            Func<TextReader> documentReaderProvider = delegate { return new StringReader(document); };
+            Gallio.Common.Func<TextReader> documentReaderProvider = delegate { return new StringReader(document); };
             CsvDataSet dataSet = new CsvDataSet(documentReaderProvider, false)
             {
                 HasHeader = true

@@ -15,11 +15,12 @@
 
 using System.ComponentModel;
 using System.Drawing;
+using Gallio.Common.IO;
+using Gallio.Common.Xml;
 using Gallio.Icarus.Controllers;
 using Gallio.Icarus.Controls;
 using Gallio.Runner;
 using Gallio.Runtime.Logging;
-using Gallio.Utilities;
 using MbUnit.Framework;
 using System;
 using Gallio.Icarus.Utilities;

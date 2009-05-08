@@ -15,8 +15,8 @@
 
 using System;
 using System.Windows.Forms;
+using Gallio.Common.Concurrency;
 using Gallio.Icarus.Mediator.Interfaces;
-using Gallio.Utilities;
 
 namespace Gallio.Icarus
 {

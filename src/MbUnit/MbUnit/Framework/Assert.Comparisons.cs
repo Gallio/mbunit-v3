@@ -16,9 +16,9 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Gallio.Common;
 using Gallio.Framework;
 using Gallio.Framework.Assertions;
-using Gallio;
 
 namespace MbUnit.Framework
 {

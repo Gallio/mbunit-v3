@@ -17,8 +17,8 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text;
-using Gallio.Collections;
-using Gallio.Reflection;
+using Gallio.Common.Collections;
+using Gallio.Common.Reflection;
 
 namespace Gallio.Runtime.Extensibility
 {
@@ -70,7 +70,7 @@ namespace Gallio.Runtime.Extensibility
         public IList<IPluginDescriptor> GetPlugins()
         {
             if (plugins == null)
-                plugins = new ReadOnlyCollection<IPluginDescriptor>(GenericUtils.ToArray(pluginsByPluginId.Values));
+                plugins = new ReadOnlyCollection<IPluginDescriptor>(GenericCollectionUtils.ToArray(pluginsByPluginId.Values));
 
             return plugins;
         }
@@ -78,7 +78,7 @@ namespace Gallio.Runtime.Extensibility
         public IList<IServiceDescriptor> GetServices()
         {
             if (services == null)
-                services = new ReadOnlyCollection<IServiceDescriptor>(GenericUtils.ToArray(servicesByServiceId.Values));
+                services = new ReadOnlyCollection<IServiceDescriptor>(GenericCollectionUtils.ToArray(servicesByServiceId.Values));
 
             return services;
         }
@@ -86,7 +86,7 @@ namespace Gallio.Runtime.Extensibility
         public IList<IComponentDescriptor> GetComponents()
         {
             if (components == null)
-                components = new ReadOnlyCollection<IComponentDescriptor>(GenericUtils.ToArray(componentsByComponentId.Values));
+                components = new ReadOnlyCollection<IComponentDescriptor>(GenericCollectionUtils.ToArray(componentsByComponentId.Values));
 
             return components;
         }
@@ -111,7 +111,7 @@ namespace Gallio.Runtime.Extensibility
         {
             IList<ComponentDescriptor> components;
             if (componentsByServiceId.TryGetValue(serviceId, out components))
-                return new ReadOnlyCollection<IComponentDescriptor>(GenericUtils.ConvertAllToArray(components, d => d));
+                return new ReadOnlyCollection<IComponentDescriptor>(GenericCollectionUtils.ConvertAllToArray(components, d => d));
 
             return EmptyArray<IComponentDescriptor>.Instance;
         }

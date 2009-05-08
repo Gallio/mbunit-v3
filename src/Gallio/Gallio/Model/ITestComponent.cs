@@ -16,9 +16,9 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Gallio.Collections;
+using Gallio.Common.Collections;
 using Gallio.Model;
-using Gallio.Reflection;
+using Gallio.Common.Reflection;
 
 namespace Gallio.Model
 {

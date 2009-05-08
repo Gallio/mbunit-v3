@@ -16,7 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Gallio.Collections;
+using Gallio.Common.Collections;
 using MbUnit.Framework;
 using MbUnit.Framework.ContractVerifiers;
 

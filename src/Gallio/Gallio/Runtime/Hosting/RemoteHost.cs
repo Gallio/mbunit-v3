@@ -16,6 +16,7 @@
 using System;
 using System.Runtime.Remoting;
 using System.Threading;
+using Gallio.Common;
 using Gallio.Runtime.Logging;
 using Gallio.Runtime;
 using Gallio.Properties;

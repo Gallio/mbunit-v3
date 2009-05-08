@@ -14,7 +14,7 @@
 // limitations under the License.
 
 using System;
-using Gallio.Utilities;
+using Gallio.Common.Policies;
 
 namespace Gallio.Runtime.ProgressMonitoring
 {
@@ -129,7 +129,7 @@ namespace Gallio.Runtime.ProgressMonitoring
                 canceledHandler = null;
             }
 
-            EventHandlerUtils.SafeInvoke(currentCanceledHandler, this, EventArgs.Empty);
+            EventHandlerPolicy.SafeInvoke(currentCanceledHandler, this, EventArgs.Empty);
             return true;
         }
         

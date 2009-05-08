@@ -15,8 +15,9 @@
 
 #if ! RESHARPER_31
 using System;
+using Gallio.Common;
 using Gallio.Framework.Pattern;
-using Gallio.Reflection;
+using Gallio.Common.Reflection;
 using JetBrains.Application;
 using JetBrains.Application.Test;
 using MbUnit.Framework;

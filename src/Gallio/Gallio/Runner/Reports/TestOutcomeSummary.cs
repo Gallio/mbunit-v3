@@ -15,8 +15,8 @@
 
 using System;
 using System.Xml.Serialization;
+using Gallio.Common.Xml;
 using Gallio.Model;
-using Gallio.Utilities;
 
 namespace Gallio.Runner.Reports
 {

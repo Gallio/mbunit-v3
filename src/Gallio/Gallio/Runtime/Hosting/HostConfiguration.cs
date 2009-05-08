@@ -21,9 +21,9 @@ using System.Reflection;
 using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
-using Gallio.Collections;
-using Gallio.Reflection;
-using Gallio.Utilities;
+using Gallio.Common.Collections;
+using Gallio.Common.Xml;
+using Gallio.Common.Reflection;
 
 namespace Gallio.Runtime.Hosting
 {
@@ -390,9 +390,9 @@ namespace Gallio.Runtime.Hosting
                 && assertUiEnabled == other.assertUiEnabled
                 && remotingCustomErrorsEnabled == other.remotingCustomErrorsEnabled
                 && configurationXml == other.configurationXml
-                && GenericUtils.ElementsEqualOrderIndependent(assemblyQualifications, other.assemblyQualifications)
-                && GenericUtils.ElementsEqualOrderIndependent(assemblyDependencies, other.assemblyDependencies)
-                && GenericUtils.ElementsEqualOrderIndependent(supportedRuntimeVersions, other.supportedRuntimeVersions);
+                && GenericCollectionUtils.ElementsEqualOrderIndependent(assemblyQualifications, other.assemblyQualifications)
+                && GenericCollectionUtils.ElementsEqualOrderIndependent(assemblyDependencies, other.assemblyDependencies)
+                && GenericCollectionUtils.ElementsEqualOrderIndependent(supportedRuntimeVersions, other.supportedRuntimeVersions);
         }
 
         /// <inheritdoc />
@@ -757,8 +757,8 @@ namespace Gallio.Runtime.Hosting
                     && assemblyName == other.assemblyName
                     && assemblyProcessorArchitecture == other.assemblyProcessorArchitecture
                     && assemblyPublicKeyToken == other.assemblyPublicKeyToken
-                    && GenericUtils.ElementsEqualOrderIndependent(bindingRedirects, other.bindingRedirects)
-                    && GenericUtils.ElementsEqualOrderIndependent(codeBases, other.codeBases);
+                    && GenericCollectionUtils.ElementsEqualOrderIndependent(bindingRedirects, other.bindingRedirects)
+                    && GenericCollectionUtils.ElementsEqualOrderIndependent(codeBases, other.codeBases);
             }
 
             /// <inheritdoc />

@@ -18,7 +18,7 @@ using System.Collections.Generic;
 using System.Runtime.Remoting;
 using System.Runtime.Remoting.Messaging;
 using System.Threading;
-using Gallio.Runtime;
+using Gallio.Common.Platform;
 
 namespace Gallio.Model.Execution
 {
@@ -192,13 +192,13 @@ namespace Gallio.Model.Execution
 
         private static void LogicalSetData(string key, object value)
         {
-            if (! RuntimeDetection.IsUsingMono) // not implemented in mono
+            if (! DotNetRuntimeSupport.IsUsingMono) // not implemented in mono
                 CallContext.LogicalSetData(key, value);
         }
 
         private static object LogicalGetData(string key)
         {
-            if (!RuntimeDetection.IsUsingMono) // not implemented in mono
+            if (!DotNetRuntimeSupport.IsUsingMono) // not implemented in mono
                 return CallContext.LogicalGetData(key);
             return null;
         }

@@ -18,7 +18,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Xml.Serialization;
-using Gallio.Collections;
+using Gallio.Common.Collections;
 
 namespace Gallio.Model.Logging
 {

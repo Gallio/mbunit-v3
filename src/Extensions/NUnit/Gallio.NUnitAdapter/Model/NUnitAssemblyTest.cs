@@ -14,9 +14,10 @@
 // limitations under the License.
 
 using System;
+using Gallio.Common;
 using Gallio.Model;
 using Gallio.Model.Execution;
-using Gallio.Reflection;
+using Gallio.Common.Reflection;
 using NUnitTestRunner = NUnit.Core.TestRunner;
 using NUnitTestName = NUnit.Core.TestName;
 using NUnitITest = NUnit.Core.ITest;

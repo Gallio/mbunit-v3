@@ -15,8 +15,8 @@
 
 using System;
 using System.Collections.Generic;
-using Gallio.Collections;
-using Gallio.Reflection;
+using Gallio.Common.Collections;
+using Gallio.Common.Reflection;
 using Gallio.Framework.Pattern;
 
 namespace MbUnit.Framework

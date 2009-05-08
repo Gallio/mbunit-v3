@@ -15,6 +15,7 @@
 
 using System;
 using System.Diagnostics;
+using Gallio.Common.Policies;
 using Gallio.Runtime.Extensibility;
 using Gallio.Runtime.Loader;
 using Gallio.Runtime.Logging;

@@ -16,7 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Gallio.Runtime;
+using Gallio.Common.Policies;
 
 namespace Gallio.Icarus.Controllers.Interfaces
 {

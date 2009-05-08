@@ -14,9 +14,9 @@
 // limitations under the License.
 
 using System;
+using Gallio.Common;
 using Gallio.Framework;
 using Gallio.Framework.Assertions;
-using Gallio;
 using System.Collections.Generic;
 
 namespace MbUnit.Framework

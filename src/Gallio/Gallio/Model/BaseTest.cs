@@ -15,11 +15,11 @@
 
 using System;
 using System.Collections.Generic;
-using Gallio.Collections;
+using Gallio.Common.Collections;
+using Gallio.Common;
 using Gallio.Model.Execution;
-using Gallio.Reflection;
+using Gallio.Common.Reflection;
 using Gallio.Properties;
-using Gallio.Utilities;
 
 namespace Gallio.Model
 {

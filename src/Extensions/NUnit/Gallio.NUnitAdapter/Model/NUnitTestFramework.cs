@@ -15,7 +15,7 @@
 
 using System;
 using System.Collections.Generic;
-using Gallio.Reflection;
+using Gallio.Common.Reflection;
 using Gallio.NUnitAdapter.Properties;
 using Gallio.Model;
 

@@ -1,10 +1,10 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using Gallio.Collections;
+using Gallio.Common.Collections;
 using Gallio.Runtime.Extensibility;
 using Gallio.Runtime.FileTypes;
 using MbUnit.Framework;
@@ -352,7 +352,7 @@ namespace Gallio.Tests.Runtime.FileTypes
         private static ComponentHandle<IFileTypeRecognizer, FileTypeRecognizerTraits>[] CreateRecognizerHandles(
             params RecognizerInfo[] recognizerInfos)
         {
-            return GenericUtils.ConvertAllToArray(recognizerInfos, recognizerInfo =>
+            return GenericCollectionUtils.ConvertAllToArray(recognizerInfos, recognizerInfo =>
                 ComponentHandle.CreateStub("component",
                     recognizerInfo.Recognizer ?? MockRepository.GenerateStub<IFileTypeRecognizer>(),
                     recognizerInfo.Traits ?? new FileTypeRecognizerTraits("Dummy", "Dummy")));

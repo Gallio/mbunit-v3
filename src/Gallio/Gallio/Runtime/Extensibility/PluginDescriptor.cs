@@ -19,8 +19,9 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Text;
 using System.Threading;
-using Gallio.Collections;
-using Gallio.Reflection;
+using Gallio.Common;
+using Gallio.Common.Collections;
+using Gallio.Common.Reflection;
 
 namespace Gallio.Runtime.Extensibility
 {
@@ -55,9 +56,9 @@ namespace Gallio.Runtime.Extensibility
             traitsProperties = pluginRegistration.TraitsProperties.Copy().AsReadOnly();
             pluginHandlerFactory = pluginRegistration.PluginHandlerFactory;
             resourceLocator = new FileSystemResourceLocator(baseDirectory);
-            assemblyReferences = new ReadOnlyCollection<AssemblyReference>(GenericUtils.ToArray(pluginRegistration.AssemblyReferences));
+            assemblyReferences = new ReadOnlyCollection<AssemblyReference>(GenericCollectionUtils.ToArray(pluginRegistration.AssemblyReferences));
             pluginDependencies = new ReadOnlyCollection<IPluginDescriptor>(completePluginDependenciesCopy);
-            probingPaths = new ReadOnlyCollection<string>(GenericUtils.ToArray(pluginRegistration.ProbingPaths));
+            probingPaths = new ReadOnlyCollection<string>(GenericCollectionUtils.ToArray(pluginRegistration.ProbingPaths));
         }
 
         // Used by unit tests.
@@ -140,7 +141,7 @@ namespace Gallio.Runtime.Extensibility
 
         private IPluginDescriptor FirstDisabledPluginDependency
         {
-            get { return GenericUtils.Find(pluginDependencies, p => p.IsDisabled); }
+            get { return GenericCollectionUtils.Find(pluginDependencies, p => p.IsDisabled); }
         }
 
         public IList<IPluginDescriptor> PluginDependencies

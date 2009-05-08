@@ -17,7 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using Gallio.Collections;
+using Gallio.Common.Collections;
 using Gallio.Runtime.Extensibility;
 using Gallio.Runtime.ProgressMonitoring;
 using Gallio.Runtime;
@@ -57,7 +57,7 @@ namespace Gallio.Runner.Reports
                 throw new ArgumentNullException("name");
 
             ComponentHandle<IReportFormatter, ReportFormatterTraits> handle
-                = GenericUtils.Find(formatterHandles, h => string.Compare(h.GetTraits().Name, formatterName, true) == 0);
+                = GenericCollectionUtils.Find(formatterHandles, h => string.Compare(h.GetTraits().Name, formatterName, true) == 0);
             return handle != null ? handle.GetComponent() : null;
         }
 

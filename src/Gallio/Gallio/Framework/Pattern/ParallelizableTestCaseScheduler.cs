@@ -17,8 +17,9 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading;
+using Gallio.Common;
+using Gallio.Common.Policies;
 using Gallio.Model;
-using Gallio.Runtime;
 
 namespace Gallio.Framework.Pattern
 {

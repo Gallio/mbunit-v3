@@ -17,7 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Xml.Serialization;
-using Gallio.Collections;
+using Gallio.Common.Collections;
 
 namespace Gallio.Schema.Plugins
 {

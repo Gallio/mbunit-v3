@@ -19,14 +19,15 @@ using System.Linq;
 using System.Text;
 using Gallio.Framework;
 using Gallio.Framework.Assertions;
-using Gallio.Model.Diagnostics;
+using Gallio.Runtime.Diagnostics;
+using Action=Gallio.Common.Action;
 
 namespace MbUnit.Tests.Framework
 {
     public abstract class BaseAssertTest
     {
-        [TestFrameworkInternal]
-        public static AssertionFailure[] Capture(Gallio.Action action)
+        [SystemInternal]
+        public static AssertionFailure[] Capture(Action action)
         {
             AssertionFailure[] failures = AssertionHelper.Eval(action);
 

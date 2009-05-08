@@ -16,9 +16,9 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Gallio.Collections;
+using Gallio.Common.Collections;
 using Gallio.Model;
-using Gallio.Model.Diagnostics;
+using Gallio.Runtime.Diagnostics;
 using Gallio.Model.Execution;
 using Gallio.Model.Filters;
 using Gallio.Model.Logging;
@@ -30,7 +30,7 @@ using Gallio.Runner.Events;
 using Gallio.Runner.Reports;
 using Gallio.Runtime.Logging;
 using Gallio.Runtime.ProgressMonitoring;
-using HashSetOfString = Gallio.Collections.HashSet<string>;
+using HashSetOfString = Gallio.Common.Collections.HashSet<string>;
 
 namespace Gallio.ReSharperRunner.Provider.Tasks
 {
@@ -123,7 +123,7 @@ namespace Gallio.ReSharperRunner.Provider.Tasks
             TestExplorationOptions testExplorationOptions = new TestExplorationOptions();
 
             TestExecutionOptions testExecutionOptions = new TestExecutionOptions();
-            testExecutionOptions.FilterSet = new FilterSet<ITest>(new IdFilter<ITest>(new OrFilter<string>(GenericUtils.ConvertAllToArray<string, Filter<string>>(
+            testExecutionOptions.FilterSet = new FilterSet<ITest>(new IdFilter<ITest>(new OrFilter<string>(GenericCollectionUtils.ConvertAllToArray<string, Filter<string>>(
                 explicitTestIds, delegate(string testId)
                 {
                     return new EqualityFilter<string>(testId);

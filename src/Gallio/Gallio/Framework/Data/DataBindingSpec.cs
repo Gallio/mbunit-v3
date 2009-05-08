@@ -17,9 +17,9 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
-using Gallio.Framework.Conversions;
-using Gallio.Framework.Formatting;
-using Gallio.Reflection;
+using Gallio.Runtime.Conversions;
+using Gallio.Runtime.Formatting;
+using Gallio.Common.Reflection;
 
 namespace Gallio.Framework.Data
 {

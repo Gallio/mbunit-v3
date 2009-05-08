@@ -18,8 +18,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using Gallio.Collections;
-using Gallio.Reflection;
+using Gallio.Common.Collections;
+using Gallio.Common.Reflection;
 using Gallio.Runtime;
 using Gallio.Runtime.Extensibility;
 using Gallio.Schema.Plugins;
@@ -604,7 +604,7 @@ namespace Gallio.Tests.Runtime.Extensibility
             }
         }
 
-        private static Func<T, bool> Enlist<T>(ICollection<T> list)
+        private static Gallio.Common.Func<T, bool> Enlist<T>(ICollection<T> list)
         {
             return value =>
             {

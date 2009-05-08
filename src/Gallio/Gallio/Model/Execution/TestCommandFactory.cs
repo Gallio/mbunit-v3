@@ -15,7 +15,7 @@
 
 using System;
 using System.Collections.Generic;
-using Gallio.Collections;
+using Gallio.Common.Collections;
 using Gallio.Model.Filters;
 
 namespace Gallio.Model.Execution
@@ -217,7 +217,7 @@ namespace Gallio.Model.Execution
                             visitedSet[current] = true;
 
                             // We need to sort all visited children so that dependencies run in relative order.
-                            ManagedTestCommand[] dependencies = GenericUtils.ToArray(unorderedDependencies);
+                            ManagedTestCommand[] dependencies = GenericCollectionUtils.ToArray(unorderedDependencies);
                             SortCommandsByOrder(dependencies);
 
                             stack.Push(new DepthFirstEntry(current, dependencies));

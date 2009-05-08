@@ -114,7 +114,7 @@ namespace Gallio.AutoCAD.Tests
             using (Mocks.Record())
             {
                 Expect.Call(() => stub.Initialize(runtimeSetup, testRunnerOptions, logger))
-                      .Do(new Action<RuntimeSetup, TestRunnerOptions, ILogger>((x, y, z) => Assert.AreEqual(Thread.CurrentThread, runThread)));
+                      .Do(new Common.Action<RuntimeSetup, TestRunnerOptions, ILogger>((x, y, z) => Assert.AreEqual(Thread.CurrentThread, runThread)));
             }
 
             using (Mocks.Playback())

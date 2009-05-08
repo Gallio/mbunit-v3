@@ -17,7 +17,9 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Threading;
-using Gallio.Concurrency;
+using Gallio.Common;
+using Gallio.Common.IO;
+using Gallio.Common.Concurrency;
 using Gallio.Model.Messages;
 using Gallio.Model.Serialization;
 using Gallio.Runtime.Loader;
@@ -25,8 +27,7 @@ using Gallio.Runtime.ProgressMonitoring;
 using Gallio.Runtime;
 using Gallio.Model;
 using Gallio.Model.Execution;
-using Gallio.Reflection;
-using Gallio.Utilities;
+using Gallio.Common.Reflection;
 
 namespace Gallio.Runner.Harness
 {

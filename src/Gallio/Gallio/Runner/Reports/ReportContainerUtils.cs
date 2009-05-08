@@ -14,8 +14,8 @@
 // limitations under the License.
 
 using System;
+using Gallio.Common.IO;
 using Gallio.Model.Logging;
-using Gallio.Utilities;
 using System.IO;
 
 namespace Gallio.Runner.Reports

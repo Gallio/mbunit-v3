@@ -16,11 +16,11 @@
 using System;
 using System.Collections.Generic;
 using System.Xml.Serialization;
-using Gallio.Collections;
+using Gallio.Common.Collections;
+using Gallio.Common.Xml;
 using Gallio.Model;
 using Gallio.Model.Logging;
 using Gallio.Model.Serialization;
-using Gallio.Utilities;
 
 namespace Gallio.Runner.Reports
 {

@@ -18,7 +18,8 @@ using System.Reflection;
 using System.Security;
 using System.Security.Permissions;
 using System.Security.Policy;
-using Gallio.Reflection;
+using Gallio.Common.Platform;
+using Gallio.Common.Reflection;
 
 namespace Gallio.Runtime.Hosting
 {
@@ -59,7 +60,7 @@ namespace Gallio.Runtime.Hosting
 
             // TODO: Might need to be more careful about how the Evidence is derived.
             Evidence evidence = AppDomain.CurrentDomain.Evidence;
-            if (RuntimeDetection.IsUsingMono)
+            if (DotNetRuntimeSupport.IsUsingMono)
             {
                 return AppDomain.CreateDomain(appDomainSetup.ApplicationName, evidence, appDomainSetup);
             }

@@ -17,10 +17,10 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Gallio.Model;
-using Gallio.Reflection;
+using Gallio.Common.Reflection;
 using Gallio.XunitAdapter.Properties;
 using Xunit.Sdk;
-using ITypeInfo = Gallio.Reflection.ITypeInfo;
+using ITypeInfo = Gallio.Common.Reflection.ITypeInfo;
 using XunitMethodUtility = Xunit.Sdk.MethodUtility;
 using XunitTypeUtility = Xunit.Sdk.TypeUtility;
 

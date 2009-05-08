@@ -15,7 +15,7 @@
 
 using System;
 using System.IO;
-using Gallio.Collections;
+using Gallio.Common.Collections;
 using Gallio.Runtime.ConsoleSupport;
 using Gallio.Runtime.Logging;
 

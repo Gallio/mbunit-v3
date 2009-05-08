@@ -16,9 +16,10 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Gallio.Collections;
-using Gallio.Reflection;
-using Gallio.Reflection.Impl;
+using Gallio.Common.Collections;
+using Gallio.Common;
+using Gallio.Common.Reflection;
+using Gallio.Common.Reflection.Impl;
 using Gallio.ReSharperRunner.Provider;
 using JetBrains.Metadata.Access;
 using JetBrains.Metadata.Reader.API;
@@ -26,8 +27,6 @@ using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.Caches;
 using System.IO;
-using Gallio.Utilities;
-
 #if RESHARPER_31
 using JetBrains.Shell;
 using JetBrains.Util;
@@ -200,7 +199,7 @@ namespace Gallio.ReSharperRunner.Reflection
 
                 if (assembly == null && contextProject != null)
                 {
-                    IAssemblyReference reference = GenericUtils.Find(contextProject.GetAssemblyReferences(),
+                    IAssemblyReference reference = GenericCollectionUtils.Find(contextProject.GetAssemblyReferences(),
                         delegate(IAssemblyReference candidate)
                         {
                             return candidate.AssemblyIdentity != null
@@ -682,7 +681,7 @@ namespace Gallio.ReSharperRunner.Reflection
         {
             return typeWithoutSubstitutionMemoizer.Memoize(typeHandle, () =>
             {
-                return MakeDeclaredType(typeHandle, Collections.EmptyArray<IMetadataType>.Instance);
+                return MakeDeclaredType(typeHandle, Common.Collections.EmptyArray<IMetadataType>.Instance);
             });
         }
 
@@ -702,7 +701,7 @@ namespace Gallio.ReSharperRunner.Reflection
             StaticDeclaredTypeWrapper type;
             if (declaringTypeInfoHandle != null)
             {
-                StaticDeclaredTypeWrapper declaringType = MakeDeclaredType(declaringTypeInfoHandle, Collections.EmptyArray<IMetadataType>.Instance);
+                StaticDeclaredTypeWrapper declaringType = MakeDeclaredType(declaringTypeInfoHandle, Common.Collections.EmptyArray<IMetadataType>.Instance);
                 type = new StaticDeclaredTypeWrapper(this, typeInfoHandle, declaringType, declaringType.Substitution);
             }
             else
@@ -792,9 +791,9 @@ namespace Gallio.ReSharperRunner.Reflection
         private sealed class DeclaredElementResolver : IDeclaredElementResolver
         {
             private readonly IProject project;
-            private readonly Func<IProject, IDeclaredElement> provider;
+            private readonly Common.Func<IProject, IDeclaredElement> provider;
 
-            private DeclaredElementResolver(IProject project, Func<IProject, IDeclaredElement> provider)
+            private DeclaredElementResolver(IProject project, Common.Func<IProject, IDeclaredElement> provider)
             {
                 this.project = project;
                 this.provider = provider;
@@ -816,13 +815,13 @@ namespace Gallio.ReSharperRunner.Reflection
                 return new DeclaredElementResolver(project, project != null ? GetProvider(element) : null);
             }
 
-            private static Func<IProject, IDeclaredElement> ToDeclaredElementProvider<T>(Func<IProject, T> provider)
+            private static Common.Func<IProject, IDeclaredElement> ToDeclaredElementProvider<T>(Common.Func<IProject, T> provider)
                 where T : IDeclaredElement
             {
                 return project => provider(project);
             }
 
-            private static Func<IProject, IDeclaredElement> GetProvider(StaticWrapper element)
+            private static Common.Func<IProject, IDeclaredElement> GetProvider(StaticWrapper element)
             {
                 IMetadataTypeInfo type = element.Handle as IMetadataTypeInfo;
                 if (type != null)
@@ -855,7 +854,7 @@ namespace Gallio.ReSharperRunner.Reflection
                 return project => null;
             }
 
-            private static Func<IProject, ITypeElement> GetProvider(IMetadataTypeInfo type)
+            private static Common.Func<IProject, ITypeElement> GetProvider(IMetadataTypeInfo type)
             {
                 string clrName = type.FullyQualifiedName;
 
@@ -869,9 +868,9 @@ namespace Gallio.ReSharperRunner.Reflection
                 };
             }
 
-            private static Func<IProject, IFunction> GetProvider(IMetadataMethod metadataMethod)
+            private static Common.Func<IProject, IFunction> GetProvider(IMetadataMethod metadataMethod)
             {
-                Func<IProject, ITypeElement> typeProvider = GetProvider(metadataMethod.DeclaringType);
+                Common.Func<IProject, ITypeElement> typeProvider = GetProvider(metadataMethod.DeclaringType);
                 bool isStatic = metadataMethod.IsStatic;
                 MethodParameterInfo[] parameters = MethodParameterInfo.CreateParameterListFromMetadata(metadataMethod.Parameters);
 
@@ -921,9 +920,9 @@ namespace Gallio.ReSharperRunner.Reflection
                 };
             }
 
-            private static Func<IProject, IProperty> GetProvider(IMetadataProperty metadataProperty)
+            private static Common.Func<IProject, IProperty> GetProvider(IMetadataProperty metadataProperty)
             {
-                Func<IProject, ITypeElement> typeProvider = GetProvider(metadataProperty.DeclaringType);
+                Common.Func<IProject, ITypeElement> typeProvider = GetProvider(metadataProperty.DeclaringType);
                 string name = metadataProperty.Name;
 
                 return project =>
@@ -941,9 +940,9 @@ namespace Gallio.ReSharperRunner.Reflection
                 };
             }
 
-            private static Func<IProject, IField> GetProvider(IMetadataField metadataField)
+            private static Common.Func<IProject, IField> GetProvider(IMetadataField metadataField)
             {
-                Func<IProject, ITypeElement> typeProvider = GetProvider(metadataField.DeclaringType);
+                Common.Func<IProject, ITypeElement> typeProvider = GetProvider(metadataField.DeclaringType);
                 string name = metadataField.Name;
 
                 return project =>
@@ -976,9 +975,9 @@ namespace Gallio.ReSharperRunner.Reflection
                 };
             }
 
-            private static Func<IProject, IEvent> GetProvider(IMetadataEvent metadataEvent)
+            private static Common.Func<IProject, IEvent> GetProvider(IMetadataEvent metadataEvent)
             {
-                Func<IProject, ITypeElement> typeProvider = GetProvider(metadataEvent.DeclaringType);
+                Common.Func<IProject, ITypeElement> typeProvider = GetProvider(metadataEvent.DeclaringType);
                 string name = metadataEvent.Name;
 
                 return project =>
@@ -995,9 +994,9 @@ namespace Gallio.ReSharperRunner.Reflection
                 };
             }
 
-            private static Func<IProject, IParameter> GetProvider(IMetadataParameter metadataParameter)
+            private static Common.Func<IProject, IParameter> GetProvider(IMetadataParameter metadataParameter)
             {
-                Func<IProject, IFunction> functionProvider = GetProvider(metadataParameter.DeclaringMethod);
+                Common.Func<IProject, IFunction> functionProvider = GetProvider(metadataParameter.DeclaringMethod);
                 string name = metadataParameter.Name;
 
                 return project =>
@@ -1014,7 +1013,7 @@ namespace Gallio.ReSharperRunner.Reflection
                 };
             }
 
-            private static Func<IProject, IParameter> GetProvider(IMetadataReturnValue metadataParameter)
+            private static Common.Func<IProject, IParameter> GetProvider(IMetadataReturnValue metadataParameter)
             {
                 // FIXME: Not sure which ReSharper code model element represents a return value.
                 return project => null;
@@ -1043,7 +1042,7 @@ namespace Gallio.ReSharperRunner.Reflection
 
             public static MethodParameterInfo[] CreateParameterListFromMetadata(IMetadataParameter[] parameters)
             {
-                return GenericUtils.ConvertAllToArray<IMetadataParameter, MethodParameterInfo>(parameters, CreateFromMetadata);
+                return GenericCollectionUtils.ConvertAllToArray<IMetadataParameter, MethodParameterInfo>(parameters, CreateFromMetadata);
             }
 
             public static bool IsMatchingParameterList(MethodParameterInfo[] a, IList<IParameter> b)
@@ -1173,7 +1172,7 @@ namespace Gallio.ReSharperRunner.Reflection
                     continue;
 
                 ITypeInfo[] resolvedMethodParameterTypes = MakeParameterTypes(resolvedMethodParameters);
-                if (GenericUtils.ElementsEqual(methodParameterTypes, resolvedMethodParameterTypes))
+                if (GenericCollectionUtils.ElementsEqual(methodParameterTypes, resolvedMethodParameterTypes))
                     return resolvedMethod;
             }
 
@@ -1182,7 +1181,7 @@ namespace Gallio.ReSharperRunner.Reflection
 
         private ITypeInfo[] MakeParameterTypes(IMetadataParameter[] parameters)
         {
-            return GenericUtils.ConvertAllToArray<IMetadataParameter, ITypeInfo>(parameters, delegate(IMetadataParameter parameter)
+            return GenericCollectionUtils.ConvertAllToArray<IMetadataParameter, ITypeInfo>(parameters, delegate(IMetadataParameter parameter)
             {
                 return MakeType(parameter.Type);
             });

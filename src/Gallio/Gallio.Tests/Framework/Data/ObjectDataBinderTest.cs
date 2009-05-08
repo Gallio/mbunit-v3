@@ -17,8 +17,8 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Gallio.Framework.Data;
-using Gallio.Framework.Conversions;
-using Gallio.Reflection;
+using Gallio.Runtime.Conversions;
+using Gallio.Common.Reflection;
 using MbUnit.Framework;
 using Rhino.Mocks;
 

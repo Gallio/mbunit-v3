@@ -14,7 +14,7 @@
 // limitations under the License.
 
 using System;
-using Gallio.Collections;
+using Gallio.Common.Collections;
 
 namespace Gallio.Model.Logging
 {
@@ -62,7 +62,7 @@ namespace Gallio.Model.Logging
             return other != null
                 && Name == other.Name
                 && ContentType == other.ContentType
-                && GenericUtils.ElementsEqual(bytes, other.bytes);
+                && GenericCollectionUtils.ElementsEqual(bytes, other.bytes);
         }
 
         /// <inheritdoc />

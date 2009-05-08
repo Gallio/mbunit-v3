@@ -15,7 +15,7 @@
 
 using System;
 using System.Collections.Specialized;
-using Gallio.Collections;
+using Gallio.Common.Collections;
 using Gallio.Runtime.Hosting;
 
 namespace Gallio.Runner

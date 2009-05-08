@@ -14,9 +14,9 @@
 // limitations under the License.
 
 using System;
+using Gallio.Common;
 using Gallio.Runtime.ConsoleSupport;
 using Gallio.Runtime.ProgressMonitoring;
-using Gallio.Utilities;
 using Gallio.Properties;
 
 namespace Gallio.Runtime.ProgressMonitoring

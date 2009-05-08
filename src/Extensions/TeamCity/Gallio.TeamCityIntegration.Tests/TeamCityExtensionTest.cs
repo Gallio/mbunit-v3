@@ -15,10 +15,10 @@
 
 using System;
 using System.Text;
-using Gallio.Concurrency;
+using Gallio.Common.Concurrency;
 using Gallio.Framework;
 using Gallio.Model;
-using Gallio.Model.Diagnostics;
+using Gallio.Runtime.Diagnostics;
 using Gallio.Model.Execution;
 using Gallio.Model.Logging;
 using Gallio.Model.Serialization;

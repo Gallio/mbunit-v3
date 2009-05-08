@@ -15,10 +15,10 @@
 
 using System;
 using System.Collections.Generic;
-using Gallio.Collections;
+using Gallio.Common.Collections;
 using Gallio.Framework;
 using Gallio.Framework.Assertions;
-using Gallio.Model.Diagnostics;
+using Gallio.Runtime.Diagnostics;
 using Gallio.Model.Logging;
 using MbUnit.Framework;
 

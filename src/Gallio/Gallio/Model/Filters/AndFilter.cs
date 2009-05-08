@@ -17,7 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text;
-using Gallio.Collections;
+using Gallio.Common.Collections;
 
 namespace Gallio.Model.Filters
 {
@@ -41,7 +41,7 @@ namespace Gallio.Model.Filters
             if (filters == null || filters.Contains(null))
                 throw new ArgumentNullException("filters");
 
-            this.filters = GenericUtils.ToArray(filters);
+            this.filters = GenericCollectionUtils.ToArray(filters);
         }
 
         /// <summary>

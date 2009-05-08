@@ -26,7 +26,7 @@ namespace Gallio.Runtime.FileTypes
             if (id == null)
                 throw new ArgumentNullException("id");
             if (id.Length == 0)
-                throw new ArgumentException("The file type name must not be empty.", "id");
+                throw new ArgumentException("The file type id must not be empty.", "id");
             if (description == null)
                 throw new ArgumentNullException("description");
 

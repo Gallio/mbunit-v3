@@ -16,7 +16,7 @@
 using System;
 using System.Reflection;
 using Gallio.Model;
-using Gallio.Reflection;
+using Gallio.Common.Reflection;
 using Gallio.Framework.Pattern;
 
 // This feature has been removed because it does not work in current

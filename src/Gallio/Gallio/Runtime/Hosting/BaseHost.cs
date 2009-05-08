@@ -15,9 +15,9 @@
 
 using System;
 using System.Diagnostics;
+using Gallio.Common.Policies;
 using Gallio.Runtime.Debugging;
 using Gallio.Runtime.Logging;
-using Gallio.Utilities;
 
 namespace Gallio.Runtime.Hosting
 {
@@ -80,7 +80,7 @@ namespace Gallio.Runtime.Hosting
                     }
                 }
 
-                EventHandlerUtils.SafeInvoke(value, this, EventArgs.Empty);
+                EventHandlerPolicy.SafeInvoke(value, this, EventArgs.Empty);
             }
             remove
             {
@@ -269,7 +269,7 @@ namespace Gallio.Runtime.Hosting
                 hostService = null;
             }
 
-            EventHandlerUtils.SafeInvoke(cachedDisconnectedHandlers, this, EventArgs.Empty);
+            EventHandlerPolicy.SafeInvoke(cachedDisconnectedHandlers, this, EventArgs.Empty);
         }
 
         /// <summary>

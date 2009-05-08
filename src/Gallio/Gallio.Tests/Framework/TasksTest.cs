@@ -20,7 +20,7 @@ using System.Text;
 using System.Threading;
 using Gallio.Framework;
 using Gallio.Model;
-using Gallio.Reflection;
+using Gallio.Common.Reflection;
 using Gallio.Runner.Reports;
 using MbUnit.Framework;
 

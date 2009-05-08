@@ -16,7 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using Gallio.Collections;
+using Gallio.Common.Collections;
 using Gallio.Runtime.Extensibility;
 
 namespace Gallio.Runner
@@ -54,7 +54,7 @@ namespace Gallio.Runner
                 throw new ArgumentNullException(@"factoryName");
 
             ComponentHandle<ITestRunnerFactory, TestRunnerFactoryTraits> handle
-                = GenericUtils.Find(factoryHandles, h => string.Compare(h.GetTraits().Name, factoryName, true) == 0);
+                = GenericCollectionUtils.Find(factoryHandles, h => string.Compare(h.GetTraits().Name, factoryName, true) == 0);
             return handle != null ? handle.GetComponent() : null;
         }
 

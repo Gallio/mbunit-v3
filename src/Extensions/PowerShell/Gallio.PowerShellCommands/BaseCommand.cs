@@ -17,9 +17,10 @@ using System;
 using System.Collections.Generic;
 using System.Management.Automation;
 using System.Threading;
+using Gallio.Common;
+using Gallio.Common.Policies;
 using Gallio.Runtime.Logging;
 using Gallio.Runtime.ProgressMonitoring;
-using Gallio.Utilities;
 
 namespace Gallio.PowerShellCommands
 {
@@ -215,7 +216,7 @@ namespace Gallio.PowerShellCommands
             lock (this)
                 handler = stopRequested;
 
-            EventHandlerUtils.SafeInvoke(handler, this, EventArgs.Empty);
+            EventHandlerPolicy.SafeInvoke(handler, this, EventArgs.Empty);
         }
     }
 }

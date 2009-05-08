@@ -15,12 +15,12 @@
 
 using System;
 using System.IO;
-using Gallio.Collections;
+using Gallio.Common.Collections;
 using Gallio.Runtime.Logging;
 using Gallio.Runtime.ProgressMonitoring;
 using Gallio.Model;
 using Gallio.Model.Filters;
-using Gallio.Reflection;
+using Gallio.Common.Reflection;
 using Gallio.Runner;
 using Gallio.Runner.Reports;
 using MbUnit.Framework;

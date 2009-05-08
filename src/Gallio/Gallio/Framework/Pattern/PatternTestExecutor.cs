@@ -16,17 +16,18 @@
 using System;
 using System.Collections.Generic;
 using System.Threading;
-using Gallio.Collections;
-using Gallio.Concurrency;
+using Gallio.Common;
+using Gallio.Common.Collections;
+using Gallio.Common.Concurrency;
 using Gallio.Framework.Data;
-using Gallio.Framework.Conversions;
-using Gallio.Framework.Formatting;
+using Gallio.Runtime.Conversions;
+using Gallio.Runtime.Formatting;
 using Gallio.Framework;
 using Gallio.Model;
-using Gallio.Model.Diagnostics;
+using Gallio.Runtime.Diagnostics;
 using Gallio.Model.Execution;
 using Gallio.Model.Logging;
-using Gallio.Reflection;
+using Gallio.Common.Reflection;
 using Gallio.Runtime.ProgressMonitoring;
 
 namespace Gallio.Framework.Pattern
@@ -34,7 +35,7 @@ namespace Gallio.Framework.Pattern
     /// <summary>
     /// Encapsulates the algorithm for recursively running a <see cref="PatternTest" />.
     /// </summary>
-    [TestFrameworkInternal]
+    [SystemInternal]
     internal class PatternTestExecutor
     {
         public delegate TestOutcome PatternTestHandlerDecorator(Sandbox sandbox, ref IPatternTestHandler handler);
@@ -397,7 +398,7 @@ namespace Gallio.Framework.Pattern
         }
 
         #region Actions
-        [TestEntryPoint]
+        [UserCodeEntryPoint]
         private static TestOutcome DoBeforeTest(Sandbox sandbox, PatternTestState testState)
         {
             return sandbox.Run(TestLog.Writer, delegate
@@ -412,7 +413,7 @@ namespace Gallio.Framework.Pattern
             }, "Before Test");
         }
 
-        [TestEntryPoint]
+        [UserCodeEntryPoint]
         private static TestOutcome DoInitializeTest(TestContext context, PatternTestState testState)
         {
             using (context.Enter())
@@ -426,7 +427,7 @@ namespace Gallio.Framework.Pattern
             }
         }
 
-        [TestEntryPoint]
+        [UserCodeEntryPoint]
         private static TestOutcome DoDisposeTest(TestContext context, PatternTestState testState)
         {
             using (context.Enter())
@@ -440,7 +441,7 @@ namespace Gallio.Framework.Pattern
             }
         }
 
-        [TestEntryPoint]
+        [UserCodeEntryPoint]
         private static TestOutcome DoAfterTest(Sandbox sandbox, PatternTestState testState)
         {
             return sandbox.Run(TestLog.Writer, delegate
@@ -451,7 +452,7 @@ namespace Gallio.Framework.Pattern
             }, "After Test");
         }
 
-        [TestEntryPoint]
+        [UserCodeEntryPoint]
         private static TestOutcome DoDecorateTestInstance(Sandbox sandbox, PatternTestState testState, PatternTestInstanceActions decoratedTestInstanceActions)
         {
             return sandbox.Run(TestLog.Writer, delegate
@@ -460,7 +461,7 @@ namespace Gallio.Framework.Pattern
             }, "Decorate Child Test");
         }
 
-        [TestEntryPoint]
+        [UserCodeEntryPoint]
         private static TestOutcome DoBeforeTestInstance(Sandbox sandbox, PatternTestInstanceState testInstanceState)
         {
             return sandbox.Run(TestLog.Writer, delegate
@@ -480,7 +481,7 @@ namespace Gallio.Framework.Pattern
             }, "Before Test Instance");
         }
 
-        [TestEntryPoint]
+        [UserCodeEntryPoint]
         private static TestOutcome DoInitializeTestInstance(TestContext context, PatternTestInstanceState testInstanceState)
         {
             using (context.Enter())
@@ -494,7 +495,7 @@ namespace Gallio.Framework.Pattern
             }
         }
 
-        [TestEntryPoint]
+        [UserCodeEntryPoint]
         private static TestOutcome DoSetUpTestInstance(TestContext context, PatternTestInstanceState testInstanceState)
         {
             using (context.Enter())
@@ -508,7 +509,7 @@ namespace Gallio.Framework.Pattern
             }
         }
 
-        [TestEntryPoint]
+        [UserCodeEntryPoint]
         private static TestOutcome DoExecuteTestInstance(TestContext context, PatternTestInstanceState testInstanceState)
         {
             using (context.Enter())
@@ -522,7 +523,7 @@ namespace Gallio.Framework.Pattern
             }
         }
 
-        [TestEntryPoint]
+        [UserCodeEntryPoint]
         private static TestOutcome DoTearDownTestInstance(TestContext context, PatternTestInstanceState testInstanceState)
         {
             using (context.Enter())
@@ -536,7 +537,7 @@ namespace Gallio.Framework.Pattern
             }
         }
 
-        [TestEntryPoint]
+        [UserCodeEntryPoint]
         private static TestOutcome DoDisposeTestInstance(TestContext context, PatternTestInstanceState testInstanceState)
         {
             using (context.Enter())
@@ -550,7 +551,7 @@ namespace Gallio.Framework.Pattern
             }
         }
 
-        [TestEntryPoint]
+        [UserCodeEntryPoint]
         private static TestOutcome DoAfterTestInstance(Sandbox sandbox, PatternTestInstanceState testInstanceState)
         {
             return sandbox.Run(TestLog.Writer, delegate
@@ -566,7 +567,7 @@ namespace Gallio.Framework.Pattern
             }, "After Test Instance");
         }
 
-        [TestEntryPoint]
+        [UserCodeEntryPoint]
         private static TestOutcome DoDecorateChildTest(Sandbox sandbox, PatternTestInstanceState testInstanceState, PatternTestActions decoratedChildTestActions)
         {
             return sandbox.Run(TestLog.Writer, delegate
@@ -575,7 +576,7 @@ namespace Gallio.Framework.Pattern
             }, "Decorate Child Test");
         }
 
-        [TestEntryPoint]
+        [UserCodeEntryPoint]
         private static TestOutcome DoRunTestInstanceBody(TestContext context, PatternTestInstanceState testInstanceState)
         {
             using (context.Enter())
@@ -723,7 +724,7 @@ namespace Gallio.Framework.Pattern
 
             public IList<Action> ToActions(Converter<ITestCommand, Action> converter)
             {
-                return GenericUtils.ConvertAllToArray(Commands, converter);
+                return GenericCollectionUtils.ConvertAllToArray(Commands, converter);
             }
         }
 

@@ -17,7 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading;
-using Gallio.Collections;
+using Gallio.Common.Collections;
 
 namespace Gallio.Model.Execution
 {

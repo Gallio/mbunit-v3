@@ -15,9 +15,9 @@
 
 using System;
 using System.Diagnostics;
+using Gallio.Common.IO;
 using Gallio.Runtime.Debugging;
 using Gallio.Runtime.Logging;
-using Gallio.Utilities;
 
 namespace Gallio.Runtime.Hosting
 {

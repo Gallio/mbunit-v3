@@ -14,8 +14,8 @@
 // limitations under the License.
 
 using System;
-using Gallio.Model.Diagnostics;
-using Gallio.Reflection;
+using Gallio.Runtime.Diagnostics;
+using Gallio.Common.Reflection;
 using Gallio.Framework.Pattern;
 
 namespace Gallio.Framework.Pattern
@@ -24,7 +24,7 @@ namespace Gallio.Framework.Pattern
     /// Abstract base implementation of <see cref="IPattern" /> with do-nothing
     /// implementations.
     /// </summary>
-    [TestFrameworkInternal]
+    [SystemInternal]
     public abstract class BasePattern : IPattern
     {
         /// <inheritdoc />

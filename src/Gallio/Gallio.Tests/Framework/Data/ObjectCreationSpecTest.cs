@@ -16,12 +16,12 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Gallio.Collections;
+using Gallio.Common.Collections;
 using Gallio.Runtime;
 using Gallio.Framework.Data;
-using Gallio.Framework.Conversions;
-using Gallio.Framework.Formatting;
-using Gallio.Reflection;
+using Gallio.Runtime.Conversions;
+using Gallio.Runtime.Formatting;
+using Gallio.Common.Reflection;
 using MbUnit.Framework;
 
 namespace Gallio.Tests.Framework.Data

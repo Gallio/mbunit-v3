@@ -16,11 +16,11 @@
 using System;
 using System.Collections.Generic;
 using System.Threading;
-using Gallio.Collections;
+using Gallio.Common.Collections;
 using Gallio.Framework;
 using Gallio.Model;
 using Gallio.Model.Logging;
-using Gallio.Reflection;
+using Gallio.Common.Reflection;
 using Gallio.Runner.Reports;
 using Gallio.Tests;
 using MbUnit.Framework;
@@ -47,7 +47,7 @@ namespace MbUnit.Tests.Framework
             for (int i = 0; i < 10; i++)
             {
                 string name = "Threaded Repetition #" + (i + 1);
-                TestStepRun testStep = GenericUtils.Find(testSteps, candidate => candidate.Step.Name == name);
+                TestStepRun testStep = GenericCollectionUtils.Find(testSteps, candidate => candidate.Step.Name == name);
                 AssertLogContains(testStep, "Run: " + name);
 
                 if (i == 1)
@@ -76,7 +76,7 @@ namespace MbUnit.Tests.Framework
             for (int i = 0; i < 10; i++)
             {
                 string name = "Threaded Repetition #" + (i + 1);
-                TestStepRun fixtureStep = GenericUtils.Find(fixtureSteps, candidate => candidate.Step.Name == name);
+                TestStepRun fixtureStep = GenericCollectionUtils.Find(fixtureSteps, candidate => candidate.Step.Name == name);
                 Assert.AreEqual(1, fixtureStep.Children.Count);
 
                 TestStepRun testRun = fixtureStep.Children[0];

@@ -18,10 +18,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
 using System.Text;
-using Gallio.Framework.Conversions;
-using Gallio.Framework.Formatting;
-using Gallio.Reflection;
-using Gallio.Utilities;
+using Gallio.Common;
+using Gallio.Runtime.Conversions;
+using Gallio.Runtime.Formatting;
+using Gallio.Common.Reflection;
 
 namespace Gallio.Framework.Data
 {

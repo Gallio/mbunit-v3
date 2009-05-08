@@ -18,8 +18,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Text;
-using Gallio.Collections;
-using Gallio.Reflection;
+using Gallio.Common.Collections;
+using Gallio.Common.Reflection;
 using Gallio.Schema.Plugins;
 
 namespace Gallio.Runtime.Extensibility
@@ -58,6 +58,14 @@ namespace Gallio.Runtime.Extensibility
 
             var topologicallySortedPlugins = TopologicalSortByDependencies(plugins);
 
+            IList<IPluginDescriptor> pluginDescriptors = RegisterPlugins(registry,
+                topologicallySortedPlugins);
+            RegisterServices(registry, topologicallySortedPlugins, pluginDescriptors);
+            RegisterComponents(registry, topologicallySortedPlugins, pluginDescriptors);
+        }
+
+        private static IList<IPluginDescriptor> RegisterPlugins(IRegistry registry, IList<PluginData> topologicallySortedPlugins)
+        {
             IPluginDescriptor[] pluginDescriptors = new IPluginDescriptor[topologicallySortedPlugins.Count];
             for (int i = 0; i < topologicallySortedPlugins.Count; i++)
             {
@@ -152,7 +160,11 @@ namespace Gallio.Runtime.Extensibility
                         plugin.PluginId), ex);
                 }
             }
+            return pluginDescriptors;
+        }
 
+        private static void RegisterServices(IRegistry registry, IList<PluginData> topologicallySortedPlugins, IList<IPluginDescriptor> pluginDescriptors)
+        {
             for (int i = 0; i < topologicallySortedPlugins.Count; i++)
             {
                 Plugin plugin = topologicallySortedPlugins[i].Plugin;
@@ -174,7 +186,10 @@ namespace Gallio.Runtime.Extensibility
                     }
                 }
             }
+        }
 
+        private static void RegisterComponents(IRegistry registry, IList<PluginData> topologicallySortedPlugins, IList<IPluginDescriptor> pluginDescriptors)
+        {
             for (int i = 0; i < topologicallySortedPlugins.Count; i++)
             {
                 Plugin plugin = topologicallySortedPlugins[i].Plugin;

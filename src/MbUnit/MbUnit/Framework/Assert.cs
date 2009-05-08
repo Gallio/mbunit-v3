@@ -16,11 +16,11 @@
 using System;
 using System.Collections;
 using System.ComponentModel;
-using Gallio;
+using Gallio.Common;
 using Gallio.Framework;
 using Gallio.Framework.Assertions;
 using Gallio.Model;
-using Gallio.Model.Diagnostics;
+using Gallio.Runtime.Diagnostics;
 
 namespace MbUnit.Framework
 {
@@ -70,7 +70,7 @@ namespace MbUnit.Framework
     /// its siblings automatically format values in this manner.
     /// </para>
     /// </remarks>
-    [TestFrameworkInternal]
+    [SystemInternal]
     public abstract partial class Assert
     {
         /// <summary>

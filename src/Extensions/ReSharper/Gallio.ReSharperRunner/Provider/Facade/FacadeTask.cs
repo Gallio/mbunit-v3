@@ -17,7 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Xml;
-using Gallio.Collections;
+using Gallio.Common.Collections;
 
 namespace Gallio.ReSharperRunner.Provider.Facade
 {

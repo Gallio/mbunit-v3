@@ -21,10 +21,11 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
+using Gallio.Common;
+using Gallio.Common.IO;
 using Gallio.Runtime.Logging;
-using Gallio.Concurrency;
+using Gallio.Common.Concurrency;
 using Gallio.Runtime.Remoting;
-using Gallio.Utilities;
 
 namespace Gallio.Runtime.Hosting
 {

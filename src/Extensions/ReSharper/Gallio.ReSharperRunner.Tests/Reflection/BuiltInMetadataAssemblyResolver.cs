@@ -15,7 +15,7 @@
 
 using System.IO;
 using System.Reflection;
-using Gallio.Reflection;
+using Gallio.Common.Reflection;
 using JetBrains.Metadata.Access;
 using IAssemblyResolver=JetBrains.Metadata.Reader.API.IAssemblyResolver;
 

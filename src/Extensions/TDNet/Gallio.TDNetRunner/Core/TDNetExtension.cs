@@ -17,7 +17,7 @@ using System;
 using System.Text;
 using Gallio.Model.Logging;
 using Gallio.Model.Serialization;
-using Gallio.Reflection;
+using Gallio.Common.Reflection;
 using Gallio.Runner;
 using Gallio.Runner.Events;
 using Gallio.Runner.Extensions;

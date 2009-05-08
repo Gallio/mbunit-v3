@@ -15,9 +15,9 @@
 
 using System;
 using System.Collections.Generic;
-using Gallio;
+using Gallio.Common;
 using Gallio.Model;
-using Gallio.Model.Diagnostics;
+using Gallio.Runtime.Diagnostics;
 
 namespace MbUnit.Framework
 {
@@ -101,7 +101,7 @@ namespace MbUnit.Framework
         }
 
         /// <inheritdoc />
-        [TestEntryPoint]
+        [UserCodeEntryPoint]
         protected override void OnSetupSelf()
         {
             if (SuiteSetUp != null)
@@ -109,7 +109,7 @@ namespace MbUnit.Framework
         }
 
         /// <inheritdoc />
-        [TestEntryPoint]
+        [UserCodeEntryPoint]
         protected override void OnTearDownSelf()
         {
             if (SuiteTearDown != null)
@@ -117,7 +117,7 @@ namespace MbUnit.Framework
         }
 
         /// <inheritdoc />
-        [TestEntryPoint]
+        [UserCodeEntryPoint]
         protected override void OnSetupChild()
         {
             if (SetUp != null)
@@ -125,7 +125,7 @@ namespace MbUnit.Framework
         }
 
         /// <inheritdoc />
-        [TestEntryPoint]
+        [UserCodeEntryPoint]
         protected override void OnTearDownChild()
         {
             if (TearDown != null)

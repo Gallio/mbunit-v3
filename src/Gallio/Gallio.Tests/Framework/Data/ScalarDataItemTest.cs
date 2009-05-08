@@ -15,7 +15,7 @@
 
 
 using System.Collections.Generic;
-using Gallio.Collections;
+using Gallio.Common.Collections;
 using Gallio.Framework.Data;
 using MbUnit.Framework;
 

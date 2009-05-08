@@ -16,10 +16,10 @@
 using System;
 using System.IO;
 using System.Reflection;
-using Gallio.Collections;
+using Gallio.Common.Collections;
 using Gallio.Model;
 using Gallio.Model.Filters;
-using Gallio.Reflection;
+using Gallio.Common.Reflection;
 using Gallio.Runner;
 using Gallio.Runner.Reports;
 using MbUnit.Framework;

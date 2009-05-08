@@ -15,7 +15,7 @@
 
 using System;
 using System.Collections.Generic;
-using Gallio.Concurrency;
+using Gallio.Common.Concurrency;
 
 namespace Gallio.Runtime.Extensibility
 {

@@ -15,7 +15,7 @@
 
 using System;
 using Gallio.Model.Logging;
-using Gallio.Reflection;
+using Gallio.Common.Reflection;
 using Gallio.Runner.Reports;
 using Gallio.Model;
 using Gallio.Tests;

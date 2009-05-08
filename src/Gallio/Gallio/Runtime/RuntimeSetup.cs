@@ -17,9 +17,10 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Xml.Serialization;
-using Gallio.Reflection;
+using Gallio.Common.IO;
+using Gallio.Common.Xml;
+using Gallio.Common.Reflection;
 using Gallio.Runtime;
-using Gallio.Utilities;
 
 namespace Gallio.Runtime
 {

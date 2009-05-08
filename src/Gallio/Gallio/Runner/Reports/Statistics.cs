@@ -17,9 +17,9 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Xml.Serialization;
-using Gallio.Collections;
+using Gallio.Common.Collections;
+using Gallio.Common.Xml;
 using Gallio.Model;
-using Gallio.Utilities;
 
 namespace Gallio.Runner.Reports
 {
@@ -153,7 +153,7 @@ namespace Gallio.Runner.Reports
         {
             get
             {
-                return GenericUtils.ConvertAllToArray<KeyValuePair<TestOutcome, int>, TestOutcomeSummary>(outcomeCounts,
+                return GenericCollectionUtils.ConvertAllToArray<KeyValuePair<TestOutcome, int>, TestOutcomeSummary>(outcomeCounts,
                     delegate(KeyValuePair<TestOutcome, int> entry)
                     {
                         TestOutcomeSummary summary = new TestOutcomeSummary();

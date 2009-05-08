@@ -18,11 +18,11 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 using Gallio;
-using Gallio.Collections;
-using Gallio.Concurrency;
+using Gallio.Common;
+using Gallio.Common.Collections;
+using Gallio.Common.Concurrency;
 using Gallio.Framework;
 using Gallio.Model.Logging;
-using Gallio.Utilities;
 
 namespace Gallio.Framework
 {

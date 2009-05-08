@@ -17,7 +17,7 @@ using System;
 using System.Linq;
 using MbUnit.Framework;
 using MbUnit.Framework.ContractVerifiers;
-using Gallio.Collections;
+using Gallio.Common.Collections;
 
 namespace MbUnit.Tests.Framework.ContractVerifiers
 {

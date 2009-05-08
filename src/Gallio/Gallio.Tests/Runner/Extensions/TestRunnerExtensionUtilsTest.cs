@@ -14,10 +14,10 @@
 // limitations under the License.
 
 using System;
+using Gallio.Common.IO;
 using Gallio.Runner;
 using Gallio.Runner.Extensions;
 using Gallio.Runtime;
-using Gallio.Utilities;
 using MbUnit.Framework;
 
 namespace Gallio.Tests.Runner.Extensions

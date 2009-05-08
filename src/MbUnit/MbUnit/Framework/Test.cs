@@ -15,12 +15,12 @@
 
 using System;
 using System.Collections.Generic;
-using Gallio;
-using Gallio.Collections;
+using Gallio.Common;
+using Gallio.Common.Collections;
 using Gallio.Framework.Pattern;
 using Gallio.Model;
-using Gallio.Model.Diagnostics;
-using Gallio.Reflection;
+using Gallio.Runtime.Diagnostics;
+using Gallio.Common.Reflection;
 
 namespace MbUnit.Framework
 {
@@ -94,7 +94,7 @@ namespace MbUnit.Framework
                 throw new ArgumentNullException("declaringCodeElement");
             if (tests == null)
                 throw new ArgumentNullException("tests");
-            if (GenericUtils.Find(tests, test => test == null) != null)
+            if (GenericCollectionUtils.Find(tests, test => test == null) != null)
                 throw new ArgumentNullException("tests", "Test enumeration should not contain null.");
 
             // HACK: Preserve exact test ordering.  No easy way to decorate all newly created tests at this time
@@ -120,14 +120,14 @@ namespace MbUnit.Framework
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="declaringCodeElement"/> or
         /// <paramref name="tests"/> is null or contains a null</exception>
         /// <seealso cref="DynamicTestFactoryAttribute" />
-        [TestFrameworkInternal]
+        [SystemInternal]
         public static TestOutcome RunDynamicTests(IEnumerable<Test> tests, ICodeElementInfo declaringCodeElement, Action setUp, Action tearDown)
         {
             if (declaringCodeElement == null)
                 throw new ArgumentNullException("declaringCodeElement");
             if (tests == null)
                 throw new ArgumentNullException("tests");
-            if (GenericUtils.Find(tests, test => test == null) != null)
+            if (GenericCollectionUtils.Find(tests, test => test == null) != null)
                 throw new ArgumentNullException("tests", "Test enumeration should not contain null.");
 
             TestOutcome combinedOutcome = TestOutcome.Passed;
@@ -164,7 +164,7 @@ namespace MbUnit.Framework
         /// <param name="setUp">Optional set-up code to run before the test, or null if none</param>
         /// <param name="tearDown">Optional tear-down code to run after the test, or null if none</param>
         /// <seealso cref="DynamicTestFactoryAttribute" />
-        [TestFrameworkInternal]
+        [SystemInternal]
         protected abstract TestOutcome RunDynamicTest(ICodeElementInfo declaringCodeElement, Action setUp, Action tearDown);
     }
 }

@@ -18,8 +18,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using EnvDTE;
-using Gallio.Reflection;
-using Gallio.Tests.Reflection;
+using Gallio.Common.Reflection;
+using Gallio.Tests.Common.Reflection;
 using Gallio.VisualStudio.Shell.Reflection;
 using MbUnit.Framework;
 

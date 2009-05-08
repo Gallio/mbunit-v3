@@ -14,7 +14,7 @@
 // limitations under the License.
 
 using System;
-using Gallio.Utilities;
+using Gallio.Common.Policies;
 
 namespace Gallio.Runtime.ProgressMonitoring
 {
@@ -286,7 +286,7 @@ namespace Gallio.Runtime.ProgressMonitoring
         /// <param name="totalWorkUnits">The total number of work units</param>
         protected virtual void OnBeginTask(string taskName, double totalWorkUnits)
         {
-            EventHandlerUtils.SafeInvoke(TaskStarting, this, EventArgs.Empty);
+            EventHandlerPolicy.SafeInvoke(TaskStarting, this, EventArgs.Empty);
 
             OnChange();
         }
@@ -306,7 +306,7 @@ namespace Gallio.Runtime.ProgressMonitoring
         {
             OnChange();
 
-            EventHandlerUtils.SafeInvoke(TaskFinished, this, EventArgs.Empty);
+            EventHandlerPolicy.SafeInvoke(TaskFinished, this, EventArgs.Empty);
         }
 
         /// <summary>
@@ -350,7 +350,7 @@ namespace Gallio.Runtime.ProgressMonitoring
         /// </summary>
         protected virtual void OnChange()
         {
-            EventHandlerUtils.SafeInvoke(Changed, this, EventArgs.Empty);
+            EventHandlerPolicy.SafeInvoke(Changed, this, EventArgs.Empty);
         }
 
         /// <summary>
@@ -358,7 +358,7 @@ namespace Gallio.Runtime.ProgressMonitoring
         /// </summary>
         protected virtual void OnSubProgressMonitorCreated(ObservableProgressMonitor subProgressMonitor)
         {
-            EventHandlerUtils.SafeInvoke(SubProgressMonitorCreated, this, new SubProgressMonitorCreatedEventArgs(subProgressMonitor));
+            EventHandlerPolicy.SafeInvoke(SubProgressMonitorCreated, this, new SubProgressMonitorCreatedEventArgs(subProgressMonitor));
         }
 
         /// <inheritdoc />

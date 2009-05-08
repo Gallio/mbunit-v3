@@ -14,11 +14,11 @@
 // limitations under the License.
 
 using System;
+using Gallio.Common.Policies;
 using Gallio.Icarus.Controllers.EventArgs;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Runtime.ProgressMonitoring;
-using Gallio.Utilities;
-using Gallio.Reflection;
+using Gallio.Common.Reflection;
 using Gallio.Model.Serialization;
 
 namespace Gallio.Icarus.Controllers
@@ -54,7 +54,7 @@ namespace Gallio.Icarus.Controllers
                     return;
 
                 // fire event for view
-                EventHandlerUtils.SafeInvoke(ShowSourceCode, this, 
+                EventHandlerPolicy.SafeInvoke(ShowSourceCode, this, 
                     new ShowSourceCodeEventArgs(codeLocation));
             }
         }

@@ -20,7 +20,7 @@ using Gallio.Framework;
 using Gallio.Model;
 using Gallio.Model.Filters;
 using Gallio.Model.Logging;
-using Gallio.Reflection;
+using Gallio.Common.Reflection;
 using Gallio.Runner;
 using Gallio.Runtime.Logging;
 using MbUnit.Framework;

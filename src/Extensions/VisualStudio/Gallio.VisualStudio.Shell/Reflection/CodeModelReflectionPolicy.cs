@@ -20,9 +20,9 @@ using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using EnvDTE80;
-using Gallio.Collections;
-using Gallio.Reflection;
-using Gallio.Reflection.Impl;
+using Gallio.Common.Collections;
+using Gallio.Common.Reflection;
+using Gallio.Common.Reflection.Impl;
 using EnvDTE;
 
 namespace Gallio.VisualStudio.Shell.Reflection

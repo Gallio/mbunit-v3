@@ -22,7 +22,7 @@ using Aga.Controls.Tree;
 using Gallio.Model;
 using Gallio.Model.Filters;
 using Gallio.Model.Serialization;
-using Gallio.Reflection;
+using Gallio.Common.Reflection;
 using Gallio.Runner.Reports;
 using Gallio.Runtime.ProgressMonitoring;
 

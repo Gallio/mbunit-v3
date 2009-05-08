@@ -51,15 +51,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Common\Linq\ActionExtensions.cs" />
+    <Compile Include="Common\Linq\ExpressionExtensions.cs" />
+    <Compile Include="Common\Linq\ExpressionInstrumentor.cs" />
+    <Compile Include="Common\Linq\ExpressionVisitor.cs" />
+    <Compile Include="Common\Linq\Unit.cs" />
     <Compile Include="Framework\Assertions\AssertionConditionEvaluator.cs" />
-    <Compile Include="Framework\Formatting\ExpressionFormattingRule.cs" />
-    <Compile Include="Framework\Formatting\FormatterExtensions.cs" />
-    <Compile Include="Linq\ActionExtensions.cs" />
-    <Compile Include="Linq\ExpressionExtensions.cs" />
-    <Compile Include="Linq\ExpressionInstrumentor.cs" />
-    <Compile Include="Linq\ExpressionVisitor.cs" />
-    <Compile Include="Linq\Unit.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Runtime\Formatting\ExpressionFormattingRule.cs" />
+    <Compile Include="Runtime\Formatting\FormatterExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Gallio\Gallio.csproj">

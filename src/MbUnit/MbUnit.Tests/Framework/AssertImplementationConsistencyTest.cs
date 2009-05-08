@@ -20,7 +20,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using Gallio.Framework;
-using Gallio.Framework.Formatting;
+using Gallio.Runtime.Formatting;
 using MbUnit.Framework;
 
 namespace MbUnit.Tests.Framework

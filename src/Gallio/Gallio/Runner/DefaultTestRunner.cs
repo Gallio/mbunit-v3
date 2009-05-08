@@ -16,14 +16,14 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using Gallio.Concurrency;
+using Gallio.Common.Concurrency;
 using Gallio.Model;
-using Gallio.Model.Diagnostics;
+using Gallio.Runtime.Diagnostics;
 using Gallio.Model.Execution;
 using Gallio.Model.Logging;
 using Gallio.Model.Messages;
 using Gallio.Model.Serialization;
-using Gallio.Reflection;
+using Gallio.Common.Reflection;
 using Gallio.Runner.Drivers;
 using Gallio.Runner.Events;
 using Gallio.Runner.Extensions;
@@ -31,7 +31,6 @@ using Gallio.Runner.Reports;
 using Gallio.Runtime;
 using Gallio.Runtime.Logging;
 using Gallio.Runtime.ProgressMonitoring;
-using Gallio.Utilities;
 
 namespace Gallio.Runner
 {

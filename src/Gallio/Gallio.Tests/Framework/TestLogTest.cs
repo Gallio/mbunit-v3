@@ -15,7 +15,7 @@
 
 using System;
 using System.Reflection;
-using Gallio.Collections;
+using Gallio.Common.Collections;
 using Gallio.Framework;
 using Gallio.Model.Logging;
 using MbUnit.Framework;
@@ -47,7 +47,7 @@ namespace Gallio.Tests.Framework
                 if (Array.IndexOf(excludedMethodNames, sourceMethod.Name) >= 0)
                     continue;
 
-                Type[] parameterTypes = GenericUtils.ConvertAllToArray<ParameterInfo, Type>(sourceMethod.GetParameters(), delegate(ParameterInfo parameter)
+                Type[] parameterTypes = GenericCollectionUtils.ConvertAllToArray<ParameterInfo, Type>(sourceMethod.GetParameters(), delegate(ParameterInfo parameter)
                 {
                     return parameter.ParameterType;
                 });

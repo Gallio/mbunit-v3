@@ -18,11 +18,12 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Reflection;
+using Gallio.Common.IO;
+using Gallio.Common.Xml;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Model;
 using Gallio.Icarus.Utilities;
 using Gallio.Runtime.Logging;
-using Gallio.Utilities;
 
 namespace Gallio.Icarus.Controllers
 {

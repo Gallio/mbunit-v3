@@ -22,7 +22,7 @@ using Gallio.Model.Logging;
 using Gallio.Runtime.ProgressMonitoring;
 using Gallio.Runtime;
 using Gallio.Framework;
-using Gallio.Reflection;
+using Gallio.Common.Reflection;
 using Gallio.Runner.Reports;
 using Gallio.Tests;
 using MbUnit.Framework;

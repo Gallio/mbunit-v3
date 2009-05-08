@@ -18,8 +18,8 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Reflection;
-using Gallio.Reflection;
-using Gallio.Runtime;
+using Gallio.Common.Policies;
+using Gallio.Common.Reflection;
 using Gallio.Runtime.Extensibility;
 
 namespace Gallio.Model

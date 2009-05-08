@@ -16,7 +16,7 @@
 using System;
 using System.IO;
 using System.Text;
-using Gallio.Runtime;
+using Gallio.Common.Policies;
 using Gallio.Model.Execution;
 
 namespace Gallio.Runner.Harness

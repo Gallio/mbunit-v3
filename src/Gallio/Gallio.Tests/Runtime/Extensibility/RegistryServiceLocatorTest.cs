@@ -18,7 +18,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using Gallio.Reflection;
+using Gallio.Common.Reflection;
 using Gallio.Runtime;
 using Gallio.Runtime.Extensibility;
 using MbUnit.Framework;

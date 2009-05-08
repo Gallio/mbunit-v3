@@ -16,7 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using Gallio.Collections;
+using Gallio.Common.Collections;
 using Gallio.Model.Logging.Tags;
 
 namespace Gallio.Model.Logging
@@ -165,7 +165,7 @@ namespace Gallio.Model.Logging
         public bool Equals(StructuredText other)
         {
             return other != null
-                && GenericUtils.ElementsEqual(attachments, other.attachments)
+                && GenericCollectionUtils.ElementsEqual(attachments, other.attachments)
                 && bodyTag.Equals(other.bodyTag);
         }
 

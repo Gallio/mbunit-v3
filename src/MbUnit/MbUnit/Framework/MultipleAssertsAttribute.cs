@@ -14,11 +14,11 @@
 // limitations under the License.
 
 using System;
+using Gallio.Common;
 using Gallio.Framework.Pattern;
 using Gallio.Model;
-using Gallio.Model.Diagnostics;
-using Gallio.Reflection;
-using Gallio;
+using Gallio.Runtime.Diagnostics;
+using Gallio.Common.Reflection;
 
 namespace MbUnit.Framework
 {
@@ -34,7 +34,7 @@ namespace MbUnit.Framework
     /// </para>
     /// </remarks>
     [AttributeUsage(PatternAttributeTargets.Test, AllowMultiple = false, Inherited = true)]
-    [TestFrameworkInternal]
+    [SystemInternal]
     public class MultipleAssertsAttribute : TestMethodDecoratorPatternAttribute
     {
         /// <inheritdoc />
@@ -43,7 +43,7 @@ namespace MbUnit.Framework
             methodScope.TestBuilder.TestInstanceActions.ExecuteTestInstanceChain.Around(WithMultiple);
         }
 
-        [TestEntryPoint]
+        [UserCodeEntryPoint]
         private void WithMultiple(PatternTestInstanceState state, Action<PatternTestInstanceState> action)
         {
             Assert.Multiple(() => action(state));

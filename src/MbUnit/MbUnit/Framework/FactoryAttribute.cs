@@ -16,11 +16,11 @@
 using System;
 using System.Collections;
 using System.Reflection;
-using Gallio;
+using Gallio.Common;
 using Gallio.Framework;
 using Gallio.Framework.Data;
 using Gallio.Framework.Pattern;
-using Gallio.Reflection;
+using Gallio.Common.Reflection;
 
 namespace MbUnit.Framework
 {

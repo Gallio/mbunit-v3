@@ -18,7 +18,7 @@ using System.Collections.Generic;
 using Gallio.Framework;
 using Gallio.Framework.Assertions;
 using Gallio.Model;
-using Gallio.Model.Diagnostics;
+using Gallio.Runtime.Diagnostics;
 using MbUnit.Framework;
 
 namespace MbUnit.Tests.Framework

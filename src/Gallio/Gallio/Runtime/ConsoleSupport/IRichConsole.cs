@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using Gallio;
+using Gallio.Common;
 
 namespace Gallio.Runtime.ConsoleSupport
 {

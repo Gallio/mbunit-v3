@@ -18,8 +18,8 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Runtime.Serialization;
 using System.Text;
-using Gallio.Collections;
-using Gallio.Reflection;
+using Gallio.Common.Collections;
+using Gallio.Common.Reflection;
 
 namespace Gallio.Model.Logging
 {
@@ -372,7 +372,7 @@ namespace Gallio.Model.Logging
         public bool Equals(Marker other)
         {
             return @class == other.@class
-                && GenericUtils.KeyValuePairsEqual(attributes, other.attributes);
+                && GenericCollectionUtils.KeyValuePairsEqual(attributes, other.attributes);
         }
 
         /// <inheritdoc />
@@ -427,7 +427,7 @@ namespace Gallio.Model.Logging
 
             public void GetObjectData(SerializationInfo info, StreamingContext context)
             {
-                info.AddValue(ContentsKey, GenericUtils.ToArray(this));
+                info.AddValue(ContentsKey, GenericCollectionUtils.ToArray(this));
             }
         }
     }

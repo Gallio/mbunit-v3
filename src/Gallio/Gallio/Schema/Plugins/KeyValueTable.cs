@@ -19,7 +19,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
-using Gallio.Collections;
+using Gallio.Common.Collections;
 
 namespace Gallio.Schema.Plugins
 {
@@ -51,7 +51,7 @@ namespace Gallio.Schema.Plugins
             get
             {
                 XmlDocument doc = new XmlDocument();
-                return GenericUtils.ConvertAllToArray(PropertySet, entry =>
+                return GenericCollectionUtils.ConvertAllToArray(PropertySet, entry =>
                 {
                     XmlElement element = doc.CreateElement(entry.Key, SchemaConstants.XmlNamespace);
                     element.InnerText = entry.Value;

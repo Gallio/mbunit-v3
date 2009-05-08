@@ -17,17 +17,17 @@ using System;
 using System.Globalization;
 using System.IO;
 using System.Reflection;
+using Gallio.Common;
 using Gallio.Runtime;
 using Gallio.NAntTasks.Properties;
-using Gallio.Collections;
+using Gallio.Common.Collections;
 using Gallio.Runtime.Logging;
 using Gallio.Runtime.ProgressMonitoring;
 using Gallio.Model;
 using Gallio.Model.Filters;
-using Gallio.Reflection;
+using Gallio.Common.Reflection;
 using Gallio.Runner;
 using Gallio.Runner.Reports;
-using Gallio.Utilities;
 using NAnt.Core;
 using NAnt.Core.Attributes;
 using NAnt.Core.Types;
@@ -599,7 +599,7 @@ namespace Gallio.NAntTasks
             if (!String.IsNullOrEmpty(reportNameFormat))
                 launcher.ReportNameFormat = reportNameFormat;
             if (reportTypes != null)
-                GenericUtils.AddAll(reportTypes.Split(new[] {';'}, StringSplitOptions.RemoveEmptyEntries),
+                GenericCollectionUtils.AddAll(reportTypes.Split(new[] {';'}, StringSplitOptions.RemoveEmptyEntries),
                                     launcher.ReportFormats);
 
             TestLauncherResult result = RunLauncher(launcher);

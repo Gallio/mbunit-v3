@@ -17,7 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Threading;
-using Gallio.Utilities;
+using Gallio.Common;
 
 namespace Gallio.AutoCAD
 {

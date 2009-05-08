@@ -15,7 +15,9 @@
 
 using System;
 using System.Threading;
+using Gallio.Common;
 using JetBrains.Util;
+using Action = Gallio.Common.Action;
 
 namespace Gallio.ReSharperRunner.Provider
 {

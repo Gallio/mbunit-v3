@@ -17,7 +17,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using Gallio.Concurrency;
+using Gallio.Common.Concurrency;
+using Gallio.Common.Platform;
 using Gallio.Runtime;
 using Gallio.Runtime.Hosting;
 using Gallio.Runtime.Logging;
@@ -50,7 +51,7 @@ namespace Gallio.NCoverIntegration
             ILogger logger, string ncoverArguments, string ncoverCoverageFile)
         {
             // Can host directly inside 32bit process.
-            if (IntPtr.Size == 4)
+            if (ProcessSupport.Is32BitProcess)
                 return new EmbeddedNCoverProcessTask(executablePath, arguments, workingDirectory, logger, ncoverArguments, ncoverCoverageFile);
 
             // When running as 64bit process we need to use another process as a shim.

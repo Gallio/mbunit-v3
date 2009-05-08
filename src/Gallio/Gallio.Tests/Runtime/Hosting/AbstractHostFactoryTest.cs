@@ -19,7 +19,7 @@ using System.IO;
 using System.Runtime.Remoting;
 using Gallio.Framework;
 using Gallio.Model.Logging;
-using Gallio.Reflection;
+using Gallio.Common.Reflection;
 using Gallio.Runtime.Hosting;
 using MbUnit.Framework;
 

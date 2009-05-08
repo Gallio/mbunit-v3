@@ -15,8 +15,7 @@
 
 using System;
 using System.IO;
-using Gallio.Model.Diagnostics;
-using Gallio.Utilities;
+using Gallio.Runtime.Diagnostics;
 
 namespace Gallio.Runtime.Logging
 {

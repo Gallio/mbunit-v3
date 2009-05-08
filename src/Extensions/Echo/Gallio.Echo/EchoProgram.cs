@@ -16,18 +16,20 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using Gallio.Common;
+using Gallio.Common.IO;
+using Gallio.Common.Xml;
 using Gallio.Runner.Projects;
 using Gallio.Runtime.Logging;
 using Gallio.Runtime;
 using Gallio.Echo.Properties;
-using Gallio.Collections;
+using Gallio.Common.Collections;
 using Gallio.Runtime.ConsoleSupport;
 using Gallio.Runtime.ProgressMonitoring;
 using Gallio.Model.Filters;
-using Gallio.Reflection;
+using Gallio.Common.Reflection;
 using Gallio.Runner.Reports;
 using Gallio.Runner;
-using Gallio.Utilities;
 
 namespace Gallio.Echo
 {
@@ -122,10 +124,10 @@ namespace Gallio.Echo
             launcher.ReportDirectory = arguments.ReportDirectory;
             launcher.ReportNameFormat = arguments.ReportNameFormat;
 
-            GenericUtils.AddAll(arguments.ReportTypes, launcher.ReportFormats);
+            GenericCollectionUtils.AddAll(arguments.ReportTypes, launcher.ReportFormats);
 
             launcher.TestRunnerFactoryName = arguments.RunnerType;
-            GenericUtils.AddAll(arguments.RunnerExtensions, launcher.TestRunnerExtensionSpecifications);
+            GenericCollectionUtils.AddAll(arguments.RunnerExtensions, launcher.TestRunnerExtensionSpecifications);
 
             foreach (string option in arguments.ReportFormatterProperties)
                 launcher.ReportFormatterOptions.Properties.Add(StringUtils.ParseKeyValuePair(option));
@@ -261,7 +263,7 @@ namespace Gallio.Echo
             Console.WriteLine(heading);
             Console.WriteLine();
 
-            T[] sortedHandles = GenericUtils.ToArray(handles);
+            T[] sortedHandles = GenericCollectionUtils.ToArray(handles);
             Array.Sort(sortedHandles, (x, y) => getName(x).CompareTo(getName(y)));
             if (sortedHandles.Length == 0)
             {

@@ -16,7 +16,8 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using Gallio.Utilities;
+using Gallio.Common.IO;
+using Gallio.Common.Xml;
 using NDepend.Helpers.FileDirectoryPath;
 
 namespace Gallio.Runner.Projects

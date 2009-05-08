@@ -14,8 +14,8 @@
 // limitations under the License.
 
 using System;
-using Gallio.Model.Diagnostics;
-using Gallio.Reflection;
+using Gallio.Runtime.Diagnostics;
+using Gallio.Common.Reflection;
 using Gallio.Framework.Pattern;
 
 namespace Gallio.Framework.Pattern
@@ -34,7 +34,7 @@ namespace Gallio.Framework.Pattern
     /// </summary>
     /// <seealso cref="IPattern"/>
     /// <seealso cref="PatternTestFramework"/>
-    [TestFrameworkInternal]
+    [SystemInternal]
     public abstract class PatternAttribute : Attribute, IPattern
     {
         /// <inheritdoc />

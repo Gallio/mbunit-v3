@@ -16,7 +16,7 @@
 using System;
 using System.Diagnostics;
 using System.IO;
-using Gallio.Concurrency;
+using Gallio.Common.Concurrency;
 
 namespace Gallio.MSTestAdapter.Wrapper
 {

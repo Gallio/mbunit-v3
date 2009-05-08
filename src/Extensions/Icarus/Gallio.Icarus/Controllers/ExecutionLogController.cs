@@ -16,13 +16,13 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using Gallio.Collections;
+using Gallio.Common.Collections;
+using Gallio.Common.Policies;
 using Gallio.Icarus.Controllers.EventArgs;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Model.Serialization;
 using Gallio.Runner.Events;
 using Gallio.Runner.Reports;
-using Gallio.Utilities;
 
 namespace Gallio.Icarus.Controllers
 {
@@ -44,7 +44,7 @@ namespace Gallio.Icarus.Controllers
             {
                 TestModelData = null;
 
-                EventHandlerUtils.SafeInvoke(ExecutionLogReset, true, System.EventArgs.Empty);
+                EventHandlerPolicy.SafeInvoke(ExecutionLogReset, true, System.EventArgs.Empty);
             };
             
             selectedTestIds = new HashSet<string>();
@@ -91,7 +91,7 @@ namespace Gallio.Icarus.Controllers
                             testStepRuns.Add(run);
                 }
 
-                EventHandlerUtils.SafeInvoke(ExecutionLogUpdated, this, 
+                EventHandlerPolicy.SafeInvoke(ExecutionLogUpdated, this, 
                     new ExecutionLogUpdatedEventArgs(testStepRuns));
             }));
         }

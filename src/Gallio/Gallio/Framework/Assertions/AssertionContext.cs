@@ -17,9 +17,10 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using Gallio;
-using Gallio.Collections;
+using Gallio.Common;
+using Gallio.Common.Collections;
 using Gallio.Framework;
-using Gallio.Model.Diagnostics;
+using Gallio.Runtime.Diagnostics;
 
 namespace Gallio.Framework.Assertions
 {
@@ -130,7 +131,7 @@ namespace Gallio.Framework.Assertions
         /// as an assertion failure, otherwise it is rethrown</param>
         /// <returns>The array of failures, may be empty if none</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="action"/> is null</exception>
-        [TestFrameworkInternal]
+        [SystemInternal]
         public AssertionFailure[] CaptureFailures(Action action, AssertionFailureBehavior assertionFailureBehavior,
             bool captureExceptionAsAssertionFailure)
         {
@@ -183,7 +184,7 @@ namespace Gallio.Framework.Assertions
                 SubmitFailure(failure, false);
             }
 
-            [TestFrameworkInternal]
+            [SystemInternal]
             public AssertionFailure[] CaptureFailures(Action action, bool captureExceptionAsAssertionFailure)
             {
                 try

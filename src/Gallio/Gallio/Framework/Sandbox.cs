@@ -17,12 +17,13 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
-using Gallio.Collections;
-using Gallio.Concurrency;
+using Gallio.Common;
+using Gallio.Common.Collections;
+using Gallio.Common.Policies;
+using Gallio.Common.Concurrency;
 using Gallio.Model;
-using Gallio.Model.Diagnostics;
+using Gallio.Runtime.Diagnostics;
 using Gallio.Model.Logging;
-using Gallio.Utilities;
 
 namespace Gallio.Framework
 {
@@ -42,7 +43,7 @@ namespace Gallio.Framework
     /// <remarks>
     /// This class is safe for use from multiple concurrent threads.
     /// </remarks>
-    [TestFrameworkInternal]
+    [SystemInternal]
     public sealed class Sandbox : IDisposable
     {
         private Sandbox parent;
@@ -86,7 +87,7 @@ namespace Gallio.Framework
                     }
                 }
 
-                EventHandlerUtils.SafeInvoke(value, this, EventArgs.Empty);
+                EventHandlerPolicy.SafeInvoke(value, this, EventArgs.Empty);
             }
             remove
             {
@@ -231,7 +232,7 @@ namespace Gallio.Framework
                 abortMessage = message;
 
                 cachedScopes = scopesAndThreads != null
-                    ? GenericUtils.ConvertAllToArray(scopesAndThreads, pair => pair.First)
+                    ? GenericCollectionUtils.ConvertAllToArray(scopesAndThreads, pair => pair.First)
                     : null;
                 scopesAndThreads = null;
 
@@ -245,7 +246,7 @@ namespace Gallio.Framework
                     scope.Abort();
             }
 
-            EventHandlerUtils.SafeInvoke(cachedHandler, this, EventArgs.Empty);
+            EventHandlerPolicy.SafeInvoke(cachedHandler, this, EventArgs.Empty);
         }
 
         /// <summary>

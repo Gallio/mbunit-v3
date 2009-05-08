@@ -15,7 +15,7 @@
 
 using System;
 using Gallio.Framework.Pattern;
-using Gallio.Reflection;
+using Gallio.Common.Reflection;
 
 #if false // not implemented yet
 

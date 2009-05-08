@@ -19,7 +19,8 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Reflection;
-using Gallio.Model.Diagnostics;
+using Gallio.Common;
+using Gallio.Runtime.Diagnostics;
 
 namespace Gallio.Framework
 {
@@ -40,7 +41,7 @@ namespace Gallio.Framework
     /// http://code.google.com/p/mb-unit/issues/detail?id=304
     /// </para>
     /// </remarks>
-    [TestFrameworkInternal]
+    [SystemInternal]
     public static class ComparisonSemantics
     {
         private static readonly Type[] EqualsParams = new[] { typeof(object) };

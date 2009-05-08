@@ -23,7 +23,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
-using Gallio;
+using Gallio.Common;
 using Gallio.Framework.Assertions;
 
 namespace MbUnit.Framework

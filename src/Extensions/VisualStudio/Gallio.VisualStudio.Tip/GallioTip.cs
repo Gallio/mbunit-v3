@@ -16,11 +16,11 @@
 using System;
 using System.Collections;
 using System.IO;
-using Gallio.Collections;
+using Gallio.Common.Collections;
 using Gallio.Model;
 using Gallio.Model.Serialization;
 using Gallio.Runtime;
-using Gallio.Reflection;
+using Gallio.Common.Reflection;
 using Gallio.Runtime.Loader;
 using Microsoft.VisualStudio.TestTools.Common;
 using TestResult=Microsoft.VisualStudio.TestTools.Common.TestResult;

@@ -16,14 +16,14 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using Gallio.Common;
 using Gallio.Host.Properties;
-using Gallio.Reflection;
+using Gallio.Common.Platform;
+using Gallio.Common.Reflection;
 using Gallio.Runtime.ConsoleSupport;
 using Gallio.Runtime.Debugging;
 using Gallio.Runtime.Hosting;
-using Gallio.Runtime;
 using Gallio.Runtime.Logging;
-using Gallio.Utilities;
 
 namespace Gallio.Host
 {
@@ -100,7 +100,7 @@ namespace Gallio.Host
             // Force the host to terminate in case there are some recalcitrant foreground
             // threads still kicking around.
 
-            if (RuntimeDetection.IsUsingMono && fatal)
+            if (DotNetRuntimeSupport.IsUsingMono && fatal)
             {
                 // On Mono, we can encounter (unexplained) CannotUnloadAppDomainExceptions
                 // which prevent the process from terminating even when we call Exit.

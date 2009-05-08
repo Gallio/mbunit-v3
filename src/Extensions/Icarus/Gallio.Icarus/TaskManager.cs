@@ -16,7 +16,8 @@
 using System;
 using System.Collections.Generic;
 using System.Threading;
-using Gallio.Concurrency;
+using Gallio.Common;
+using Gallio.Common.Concurrency;
 using Gallio.Icarus.Utilities;
 
 namespace Gallio.Icarus

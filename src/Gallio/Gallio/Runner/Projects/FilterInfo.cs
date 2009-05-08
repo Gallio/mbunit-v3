@@ -16,7 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Xml.Serialization;
-using Gallio.Utilities;
+using Gallio.Common.Xml;
 
 namespace Gallio.Runner.Projects
 {

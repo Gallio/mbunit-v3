@@ -21,7 +21,7 @@ namespace Gallio.Icarus.Utilities
     {
         public void Report(string message, Exception unhandledException)
         {
-            Runtime.UnhandledExceptionPolicy.Report(message, unhandledException);
+            Common.Policies.UnhandledExceptionPolicy.Report(message, unhandledException);
         }
     }
 }

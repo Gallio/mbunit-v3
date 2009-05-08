@@ -16,7 +16,7 @@
 using System;
 using Gallio.Runtime.Loader;
 using Gallio.Framework.Pattern;
-using Gallio.Reflection;
+using Gallio.Common.Reflection;
 
 namespace MbUnit.Framework
 {

@@ -15,7 +15,7 @@
 
 using System;
 using System.Management.Automation;
-using Gallio.Model.Diagnostics;
+using Gallio.Runtime.Diagnostics;
 using Gallio.Runtime.Logging;
 
 namespace Gallio.PowerShellCommands

@@ -1,4 +1,4 @@
-﻿// Copyright 2005-2009 Gallio Project - http://www.gallio.org/
+// Copyright 2005-2009 Gallio Project - http://www.gallio.org/
 // Portions Copyright 2000-2004 Jonathan de Halleux
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,7 +17,7 @@ using System.Reflection;
 using Gallio.Model;
 using Gallio.Model.Execution;
 using Gallio.Model.Messages;
-using Gallio.Reflection;
+using Gallio.Common.Reflection;
 using Gallio.Runner.Harness;
 using Gallio.Runtime;
 using Gallio.Runtime.Extensibility;

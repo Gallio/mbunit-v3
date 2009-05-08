@@ -16,8 +16,9 @@
 using System;
 using System.Collections.Generic;
 using System.Xml.Serialization;
-using Gallio.Collections;
-using Gallio.Utilities;
+using Gallio.Common;
+using Gallio.Common.Collections;
+using Gallio.Common.Xml;
 
 namespace Gallio.Model.Logging.Tags
 {
@@ -112,7 +113,7 @@ namespace Gallio.Model.Logging.Tags
         {
             return other != null
                 && Marker == other.Marker
-                && GenericUtils.ElementsEqual(Contents, other.Contents);
+                && GenericCollectionUtils.ElementsEqual(Contents, other.Contents);
         }
 
         /// <inheritdoc />

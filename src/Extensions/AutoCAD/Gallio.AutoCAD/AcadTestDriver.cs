@@ -17,6 +17,7 @@ using System;
 using System.Globalization;
 using System.Runtime.Remoting;
 using System.Threading;
+using Gallio.Common.Policies;
 using Gallio.Model;
 using Gallio.Model.Execution;
 using Gallio.Model.Messages;

@@ -15,7 +15,7 @@
 
 using System;
 using System.Collections.Generic;
-using Gallio.Collections;
+using Gallio.Common.Collections;
 
 namespace Gallio.Framework.Data
 {
@@ -96,7 +96,7 @@ namespace Gallio.Framework.Data
         private IEnumerable<IDataItem> GetItemsImplTranslated(ICollection<DataBinding> bindings,
             bool includeDynamicItems)
         {
-            DataBinding[] translatedBindings = GenericUtils.ConvertAllToArray<DataBinding, DataBinding>(bindings, TranslateBinding);
+            DataBinding[] translatedBindings = GenericCollectionUtils.ConvertAllToArray<DataBinding, DataBinding>(bindings, TranslateBinding);
 
             foreach (IDataItem item in GetItemsImplBase(translatedBindings, includeDynamicItems))
                 yield return new TranslatedDataItem(this, item);

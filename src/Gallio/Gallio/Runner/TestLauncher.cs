@@ -19,7 +19,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Text;
-using Gallio.Collections;
+using Gallio.Common.Collections;
 using Gallio.Model.Execution;
 using Gallio.Runner.Extensions;
 using Gallio.Runtime.Logging;
@@ -654,7 +654,7 @@ namespace Gallio.Runner
 
             // de-dupe extension specs
             List<string> uniqueExtensionSpecifications = new List<string>();
-            GenericUtils.AddAllIfNotAlreadyPresent(extensionSpecifications, 
+            GenericCollectionUtils.AddAllIfNotAlreadyPresent(extensionSpecifications, 
                 uniqueExtensionSpecifications);
 
             foreach (string extensionSpecification in uniqueExtensionSpecifications)

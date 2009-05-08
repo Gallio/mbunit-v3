@@ -19,7 +19,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Gallio.Model;
-using Gallio.Reflection;
+using Gallio.Common.Reflection;
 using Gallio.MbUnit2Adapter.Properties;
 using TestFixturePatternAttribute2 = MbUnit2::MbUnit.Core.Framework.TestFixturePatternAttribute;
 using TestPatternAttribute2 = MbUnit2::MbUnit.Core.Framework.TestPatternAttribute;

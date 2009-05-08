@@ -15,10 +15,10 @@
 
 using System;
 using System.Collections.Generic;
-using Gallio.Collections;
+using Gallio.Common.Collections;
 using Gallio.Framework.Text;
-using Gallio.Framework.Formatting;
-using Gallio.Model.Diagnostics;
+using Gallio.Runtime.Formatting;
+using Gallio.Runtime.Diagnostics;
 using Gallio.Model.Logging;
 
 namespace Gallio.Framework.Assertions
@@ -51,7 +51,7 @@ namespace Gallio.Framework.Assertions
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="description"/>
         /// is null</exception>
         public AssertionFailureBuilder(string description)
-            : this(description, Formatting.Formatter.Instance)
+            : this(description, Runtime.Formatting.Formatter.Instance)
         {
         }
 
@@ -387,7 +387,7 @@ namespace Gallio.Framework.Assertions
         /// Generates an immutable object that describes the failure.
         /// </summary>
         /// <returns>The assertion failure</returns>
-        [TestFrameworkInternal]
+        [SystemInternal]
         public AssertionFailure ToAssertionFailure()
         {
             return CreateAssertionFailure(description, message, GetStackTraceOrDefault(),
@@ -432,7 +432,7 @@ namespace Gallio.Framework.Assertions
             return innerFailures != null ? innerFailures.ToArray() : EmptyArray<AssertionFailure>.Instance;
         }
 
-        [TestFrameworkInternal]
+        [SystemInternal]
         private StackTraceData GetStackTraceOrDefault()
         {
             if (isStackTraceSet)

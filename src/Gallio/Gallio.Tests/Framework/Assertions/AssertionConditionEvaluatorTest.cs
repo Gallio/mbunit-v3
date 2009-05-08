@@ -19,7 +19,7 @@ using System.Linq;
 using System.Text;
 using Gallio.Framework;
 using Gallio.Framework.Assertions;
-using Gallio.Framework.Formatting;
+using Gallio.Runtime.Formatting;
 using MbUnit.Framework;
 
 namespace Gallio.Tests.Framework.Assertions

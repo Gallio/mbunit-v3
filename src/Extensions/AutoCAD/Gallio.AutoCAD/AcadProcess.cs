@@ -22,10 +22,10 @@ using System.Text;
 using System.Threading;
 using Gallio.AutoCAD.Commands;
 using Gallio.AutoCAD.Native;
-using Gallio.Concurrency;
+using Gallio.Common;
+using Gallio.Common.Concurrency;
 using Gallio.Runner;
 using Gallio.Runtime.Remoting;
-using Gallio.Utilities;
 
 namespace Gallio.AutoCAD
 {

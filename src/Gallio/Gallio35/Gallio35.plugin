@@ -26,7 +26,7 @@
   <components>
     <component componentId="Gallio35.ExpressionFormattingRule"
                serviceId="Gallio.FormattingRule"
-               componentType="Gallio.Framework.Formatting.ExpressionFormattingRule, Gallio35" />
+               componentType="Gallio.Runtime.Formatting.ExpressionFormattingRule, Gallio35" />
   </components>
   <?endif?>
 </plugin>

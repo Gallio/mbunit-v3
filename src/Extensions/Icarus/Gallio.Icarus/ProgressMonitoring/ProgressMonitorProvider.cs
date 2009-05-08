@@ -14,9 +14,9 @@
 // limitations under the License.
 
 using System;
+using Gallio.Common.Policies;
 using Gallio.Icarus.ProgressMonitoring.EventArgs;
 using Gallio.Runtime.ProgressMonitoring;
-using Gallio.Utilities;
 
 namespace Gallio.Icarus.ProgressMonitoring
 {
@@ -52,7 +52,7 @@ namespace Gallio.Icarus.ProgressMonitoring
         protected override IProgressMonitorPresenter GetPresenter()
         {
             ProgressMonitorPresenter presenter = new ProgressMonitorPresenter();
-            presenter.ProgressUpdate += ((sender, e) => EventHandlerUtils.SafeInvoke(ProgressUpdate, this, e));
+            presenter.ProgressUpdate += ((sender, e) => EventHandlerPolicy.SafeInvoke(ProgressUpdate, this, e));
             return presenter;
         }
     }

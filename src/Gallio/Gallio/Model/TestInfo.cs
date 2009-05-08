@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading;
+using Gallio.Common;
 using Gallio.Model.Execution;
 
 namespace Gallio.Model

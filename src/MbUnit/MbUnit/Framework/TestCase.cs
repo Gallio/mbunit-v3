@@ -14,10 +14,10 @@
 // limitations under the License.
 
 using System;
-using Gallio;
+using Gallio.Common;
 using Gallio.Framework.Pattern;
 using Gallio.Model;
-using Gallio.Model.Diagnostics;
+using Gallio.Runtime.Diagnostics;
 
 namespace MbUnit.Framework
 {
@@ -72,7 +72,7 @@ namespace MbUnit.Framework
         }
 
         /// <inheritdoc />
-        [TestEntryPoint]
+        [UserCodeEntryPoint]
         protected override void OnExecuteSelf()
         {
             Execute();

@@ -15,14 +15,15 @@
 
 using System;
 using System.Threading;
-using Gallio.Model.Diagnostics;
+using Gallio.Common;
+using Gallio.Runtime.Diagnostics;
 
 namespace Gallio.Framework.Assertions
 {
     /// <summary>
     /// Provides utilities to assist with the implementation of new asserts.
     /// </summary>
-    [TestFrameworkInternal]
+    [SystemInternal]
     public abstract class AssertionHelper
     {
         /// <summary>

@@ -15,13 +15,13 @@
 
 using System;
 using System.Text;
-using Gallio.Collections;
+using Gallio.Common.Collections;
 using Gallio.Model.Logging;
 using Gallio.Runner.Events;
 using Gallio.Runtime.Logging;
 using Gallio.Model;
 using Gallio.Model.Serialization;
-using Gallio.Reflection;
+using Gallio.Common.Reflection;
 using Gallio.Runner.Reports;
 
 namespace Gallio.Runner.Extensions

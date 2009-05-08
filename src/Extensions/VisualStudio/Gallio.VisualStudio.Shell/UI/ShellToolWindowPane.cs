@@ -16,7 +16,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
-using Gallio.Utilities;
+using Gallio.Common.Policies;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 
@@ -73,7 +73,7 @@ namespace Gallio.VisualStudio.Shell.UI
         protected override void Dispose(bool disposing)
         {
             if (disposing)
-                EventHandlerUtils.SafeInvoke(Disposed, this, EventArgs.Empty);
+                EventHandlerPolicy.SafeInvoke(Disposed, this, EventArgs.Empty);
 
             base.Dispose(disposing);
         }

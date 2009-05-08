@@ -14,8 +14,8 @@
 // limitations under the License.
 
 using System;
-using Gallio.Framework.Conversions;
-using Gallio.Framework.Formatting;
+using Gallio.Runtime.Conversions;
+using Gallio.Runtime.Formatting;
 using Gallio.Model.Execution;
 using Gallio.Runtime.ProgressMonitoring;
 using Gallio.Model;

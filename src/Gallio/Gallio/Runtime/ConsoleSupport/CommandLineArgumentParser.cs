@@ -21,7 +21,7 @@ using System.Text;
 using System.Windows.Forms;
 using Gallio.Runtime.ConsoleSupport;
 using Gallio.Properties;
-using Gallio.Collections;
+using Gallio.Common.Collections;
 
 namespace Gallio.Runtime.ConsoleSupport
 {

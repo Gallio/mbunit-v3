@@ -14,7 +14,8 @@
 // limitations under the License.
 
 using System;
-using Gallio.Model.Diagnostics;
+using Gallio.Common;
+using Gallio.Runtime.Diagnostics;
 
 namespace Gallio.Framework.Pattern
 {
@@ -59,14 +60,14 @@ namespace Gallio.Framework.Pattern
         }
 
         /// <inheritdoc />
-        [TestEntryPoint]
+        [UserCodeEntryPoint]
         public void BindTestParameter(PatternTestInstanceState testInstanceState, object value)
         {
             bindTestParameterChain.Action(testInstanceState, value);
         }
 
         /// <inheritdoc />
-        [TestEntryPoint]
+        [UserCodeEntryPoint]
         public void UnbindTestParameter(PatternTestInstanceState testInstanceState, object value)
         {
             unbindTestParameterChain.Action(testInstanceState, value);

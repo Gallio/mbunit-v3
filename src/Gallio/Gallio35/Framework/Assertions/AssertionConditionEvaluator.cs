@@ -17,10 +17,11 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq.Expressions;
-using Gallio.Collections;
-using Gallio.Framework.Formatting;
-using Gallio.Linq;
-using Gallio.Model.Diagnostics;
+using Gallio.Common;
+using Gallio.Common.Collections;
+using Gallio.Runtime.Formatting;
+using Gallio.Common.Linq;
+using Gallio.Runtime.Diagnostics;
 
 namespace Gallio.Framework.Assertions
 {
@@ -29,7 +30,7 @@ namespace Gallio.Framework.Assertions
     /// than expected, returns a detailed <see cref="AssertionFailure"/> that
     /// describes the formatted values of relevant sub-expressions within the condtion.
     /// </summary>
-    [TestFrameworkInternal]
+    [SystemInternal]
     public static class AssertionConditionEvaluator
     {
         /// <summary>

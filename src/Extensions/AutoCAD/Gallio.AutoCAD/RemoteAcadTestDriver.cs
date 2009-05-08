@@ -16,6 +16,7 @@
 using System;
 using System.ComponentModel;
 using System.Threading;
+using Gallio.Common.Concurrency;
 using Gallio.Model;
 using Gallio.Model.Execution;
 using Gallio.Model.Messages;
@@ -25,7 +26,6 @@ using Gallio.Runner.Drivers;
 using Gallio.Runtime;
 using Gallio.Runtime.Logging;
 using Gallio.Runtime.ProgressMonitoring;
-using Gallio.Utilities;
 
 namespace Gallio.AutoCAD
 {

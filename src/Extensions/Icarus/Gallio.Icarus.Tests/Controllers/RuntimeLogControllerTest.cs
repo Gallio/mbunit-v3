@@ -15,14 +15,14 @@
 
 using System;
 using System.Drawing;
+using Gallio.Common;
 using Gallio.Icarus.Controllers.Interfaces;
-using Gallio.Model.Diagnostics;
+using Gallio.Runtime.Diagnostics;
 using MbUnit.Framework;
 using Gallio.Icarus.Controllers;
 using Gallio.Runtime.Logging;
 using Gallio.Icarus.Controllers.EventArgs;
 using System.Collections.Generic;
-using Gallio.Utilities;
 using Rhino.Mocks;
 
 namespace Gallio.Icarus.Tests.Controllers

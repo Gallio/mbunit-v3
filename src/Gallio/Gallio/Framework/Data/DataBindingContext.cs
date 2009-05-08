@@ -15,7 +15,7 @@
 
 using System;
 using System.Collections.Generic;
-using Gallio.Framework.Conversions;
+using Gallio.Runtime.Conversions;
 
 namespace Gallio.Framework.Data
 {

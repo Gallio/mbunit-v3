@@ -16,10 +16,10 @@
 using System;
 using System.Collections;
 using System.IO;
-using Gallio.Concurrency;
+using Gallio.Common.Concurrency;
 using Gallio.Runtime;
 using Gallio.Framework;
-using Gallio.Reflection;
+using Gallio.Common.Reflection;
 using MbUnit.Framework;
 
 namespace Gallio.PowerShellCommands.Tests

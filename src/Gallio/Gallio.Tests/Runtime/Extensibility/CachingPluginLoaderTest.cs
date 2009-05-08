@@ -18,10 +18,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using Gallio.Collections;
+using Gallio.Common.Collections;
+using Gallio.Common;
 using Gallio.Runtime.Extensibility;
 using Gallio.Schema.Plugins;
-using Gallio.Utilities;
 using MbUnit.Framework;
 using Rhino.Mocks;
 
@@ -69,7 +69,7 @@ namespace Gallio.Tests.Runtime.Extensibility
                     Plugin plugin = null;
                     var catalog = MockRepository.GenerateMock<IPluginCatalog>();
                     catalog.Expect(x => x.AddPlugin(null, null)).IgnoreArguments()
-                        .Do((Action<Plugin, DirectoryInfo>)delegate(Plugin pluginArg, DirectoryInfo baseDirectoryArg)
+                        .Do((Gallio.Common.Action<Plugin, DirectoryInfo>)delegate(Plugin pluginArg, DirectoryInfo baseDirectoryArg)
                         {
                             plugin = pluginArg;
                         });
@@ -99,7 +99,7 @@ namespace Gallio.Tests.Runtime.Extensibility
                     Plugin plugin = null;
                     var catalog = MockRepository.GenerateMock<IPluginCatalog>();
                     catalog.Expect(x => x.AddPlugin(null, null)).IgnoreArguments()
-                        .Do((Action<Plugin, DirectoryInfo>)delegate(Plugin pluginArg, DirectoryInfo baseDirectoryArg)
+                        .Do((Gallio.Common.Action<Plugin, DirectoryInfo>)delegate(Plugin pluginArg, DirectoryInfo baseDirectoryArg)
                         {
                             plugin = pluginArg;
                         });

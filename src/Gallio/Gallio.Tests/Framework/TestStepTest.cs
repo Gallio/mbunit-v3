@@ -15,11 +15,11 @@
 
 using System;
 using System.Threading;
-using Gallio.Collections;
+using Gallio.Common.Collections;
 using Gallio.Framework;
 using Gallio.Framework.Assertions;
 using Gallio.Model;
-using Gallio.Reflection;
+using Gallio.Common.Reflection;
 using MbUnit.Framework;
 
 namespace Gallio.Tests.Framework

@@ -16,7 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Gallio.Reflection;
+using Gallio.Common.Reflection;
 
 using XunitTypeInfo = Xunit.Sdk.ITypeInfo;
 using XunitMethodInfo = Xunit.Sdk.IMethodInfo;

@@ -17,7 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
-using Gallio.Collections;
+using Gallio.Common.Collections;
 using Gallio.Model;
 using Gallio.Model.Filters;
 using Gallio.Runner;
@@ -138,7 +138,7 @@ namespace Gallio.TDNetRunner.Core
 
         private static Filter<ITest> ToCategoryFilter(IList<string> categoryNames)
         {
-            return new MetadataFilter<ITest>(MetadataKeys.Category, new OrFilter<string>(GenericUtils.ConvertAllToArray(categoryNames,
+            return new MetadataFilter<ITest>(MetadataKeys.Category, new OrFilter<string>(GenericCollectionUtils.ConvertAllToArray(categoryNames,
                 categoryName => new EqualityFilter<string>(categoryName))));
         }
 

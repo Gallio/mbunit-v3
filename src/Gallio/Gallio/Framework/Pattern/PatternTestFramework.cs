@@ -15,9 +15,9 @@
 
 using System;
 using System.Collections.Generic;
-using Gallio.Collections;
+using Gallio.Common.Collections;
 using Gallio.Model;
-using Gallio.Reflection;
+using Gallio.Common.Reflection;
 
 namespace Gallio.Framework.Pattern
 {
@@ -66,7 +66,7 @@ namespace Gallio.Framework.Pattern
         /// <inheritdoc />
         public override void RegisterTestExplorers(IList<ITestExplorer> explorers)
         {
-            var explorer = (PatternTestExplorer)GenericUtils.Find(explorers, x => x is PatternTestExplorer);
+            var explorer = (PatternTestExplorer)GenericCollectionUtils.Find(explorers, x => x is PatternTestExplorer);
             if (explorer == null)
             {
                 explorer = new PatternTestExplorer();

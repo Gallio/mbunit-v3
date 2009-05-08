@@ -17,7 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
-using Gallio.Collections;
+using Gallio.Common.Collections;
 using Gallio.Model;
 using Gallio.Runtime;
 using Gallio.Runtime.Debugging;
@@ -116,7 +116,7 @@ namespace Gallio.Runner.Drivers
             {
                 Remote remote = HostUtils.CreateInstance<Remote>(remoteHost);
 
-                var partitions = GenericUtils.ConvertAllToArray(testDomains,
+                var partitions = GenericCollectionUtils.ConvertAllToArray(testDomains,
                     testDomain => new Partition(new Factory(testDomain, remote, shareAppDomain, Logger), testDomain.TestPackageConfig));
 
                 setStatus("");

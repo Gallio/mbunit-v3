@@ -16,7 +16,7 @@
 
 using System.Reflection;
 using Gallio.ReSharperRunner.Reflection;
-using Gallio.Tests.Reflection;
+using Gallio.Tests.Common.Reflection;
 using JetBrains.Metadata.Reader.API;
 using MbUnit.Framework;
 
@@ -60,7 +60,7 @@ namespace Gallio.ReSharperRunner.Tests.Reflection
             base.TearDown();
         }
 
-        protected override Gallio.Reflection.IReflectionPolicy ReflectionPolicy
+        protected override Common.Reflection.IReflectionPolicy ReflectionPolicy
         {
             get { return reflectionPolicy; }
         }

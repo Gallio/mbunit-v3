@@ -16,7 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Gallio.Collections;
+using Gallio.Common.Collections;
 
 namespace Gallio.Runtime.Extensibility
 {

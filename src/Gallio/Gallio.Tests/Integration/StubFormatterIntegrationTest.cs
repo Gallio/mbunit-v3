@@ -19,8 +19,8 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using Gallio.Framework;
-using Gallio.Framework.Formatting;
-using Gallio.Reflection;
+using Gallio.Runtime.Formatting;
+using Gallio.Common.Reflection;
 using Gallio.Runtime;
 using MbUnit.Framework;
 
