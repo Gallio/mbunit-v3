@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Gallio.Reflection;
 using Gallio.Runtime.Extensibility;
 using MbUnit.Framework;
 using Rhino.Mocks;
@@ -36,7 +37,7 @@ namespace Gallio.Tests.Runtime.Extensibility
         [Test]
         public void CreateInstanceGeneric_WhenDescriptorIsNull_Throws()
         {
-            Assert.Throws<ArgumentNullException>(() => ComponentHandle<DummyService, DummyTraits>.CreateInstance(null));
+            Assert.Throws<ArgumentNullException>(() => ComponentHandle.CreateInstance<DummyService, DummyTraits>(null));
         }
 
         [Test]
@@ -89,25 +90,87 @@ namespace Gallio.Tests.Runtime.Extensibility
         }
 
         [Test]
-        public void IsCompomentHandleType_WhenTypeIsNull_Throws()
+        public void CreateStub_WhenComponentIdIsNull_Throws()
+        {
+            var component = MockRepository.GenerateStub<DummyService>();
+            var traits = new DummyTraits();
+
+            Assert.Throws<ArgumentNullException>(() => ComponentHandle.CreateStub<DummyService, DummyTraits>(null, component, traits));
+        }
+
+        [Test]
+        public void CreateStub_WhenComponentIsNull_Throws()
+        {
+            var componentId = "componentId";
+            var traits = new DummyTraits();
+
+            Assert.Throws<ArgumentNullException>(() => ComponentHandle.CreateStub<DummyService, DummyTraits>(componentId, null, traits));
+        }
+
+        [Test]
+        public void CreateStub_WhenTraitsIsNull_Throws()
+        {
+            var component = MockRepository.GenerateStub<DummyService>();
+            var traits = new DummyTraits();
+
+            Assert.Throws<ArgumentNullException>(() => ComponentHandle.CreateStub<DummyService, DummyTraits>(null, component, traits));
+        }
+
+        [Test]
+        public void CreateStub_WhenArgumentsValid_ReturnsHandleWithStubbedDescriptor()
+        {
+            var componentId = "componentId";
+            var component = MockRepository.GenerateStub<DummyService>();
+            var traits = new DummyTraits();
+
+            var handle = ComponentHandle.CreateStub<DummyService, DummyTraits>(componentId, component, traits);
+
+            Assert.Multiple(() =>
+            {
+                Assert.AreEqual(componentId, handle.Id);
+                Assert.AreEqual(typeof(DummyService), handle.ServiceType);
+                Assert.AreEqual(typeof(DummyTraits), handle.TraitsType);
+                Assert.AreSame(component, handle.GetComponent());
+                Assert.AreSame(traits, handle.GetTraits());
+
+                object x = null;
+                Assert.Throws<NotSupportedException>(() => x = handle.Descriptor.Plugin);
+                Assert.Throws<NotSupportedException>(() => x = handle.Descriptor.Service);
+                Assert.AreEqual(componentId, handle.Descriptor.ComponentId);
+                Assert.AreEqual(new TypeName(component.GetType()), handle.Descriptor.ComponentTypeName);
+                Assert.Throws<NotSupportedException>(() => x = handle.Descriptor.ComponentHandlerFactory);
+                Assert.Throws<NotSupportedException>(() => x = handle.Descriptor.ComponentProperties);
+                Assert.Throws<NotSupportedException>(() => x = handle.Descriptor.TraitsProperties);
+                Assert.IsFalse(handle.Descriptor.IsDisabled);
+                Assert.Throws<InvalidOperationException>(() => x = handle.Descriptor.DisabledReason);
+                Assert.AreEqual(component.GetType(), handle.Descriptor.ResolveComponentType());
+                Assert.Throws<NotSupportedException>(() => handle.Descriptor.ResolveComponentHandler());
+                Assert.AreSame(component, handle.Descriptor.ResolveComponent());
+                Assert.Throws<NotSupportedException>(() => handle.Descriptor.ResolveTraitsHandler());
+                Assert.AreSame(traits, handle.Descriptor.ResolveTraits());
+            });
+        }
+
+        [Test]
+        public void IsComponentHandleType_WhenTypeIsNull_Throws()
         {
             Assert.Throws<ArgumentNullException>(() => ComponentHandle.IsComponentHandleType(null));
         }
 
         [Test]
-        public void IsCompomentHandleType_WhenTypeIsNonGenericComponentHandle_ReturnsTrue()
+        public void IsComponentHandleType_WhenTypeIsNonGenericComponentHandle_ReturnsTrue()
         {
             Assert.IsTrue(ComponentHandle.IsComponentHandleType(typeof(ComponentHandle)));
         }
 
         [Test]
-        public void IsCompomentHandleType_WhenTypeIsGenericComponentHandle_ReturnsTrue()
+        public void IsComponentHandleType_WhenTypeIsGenericComponentHandle_ReturnsTrue()
         {
             Assert.IsTrue(ComponentHandle.IsComponentHandleType(typeof(ComponentHandle<DummyService, DummyTraits>)));
         }
 
         [Test]
-        public void IsCompomentHandleType_WhenTypeIsNotAComponentHandleComponentHandle_ReturnsFalse()
+        public void IsComponentHandleType_WhenTypeIsNotAComponentHandleComponentHandle_ReturnsFalse()
         {
             Assert.IsFalse(ComponentHandle.IsComponentHandleType(typeof(object)));
         }
@@ -186,6 +249,26 @@ namespace Gallio.Tests.Runtime.Extensibility
             Assert.AreSame(traits, result);
 
             componentDescriptor.VerifyAllExpectations();
+        }
+
+        [Test]
+        public void Id_ReturnsComponentId()
+        {
+            var componentDescriptor = CreateStubComponentDescriptor<DummyService, DummyTraits>();
+            componentDescriptor.Stub(x => x.ComponentId).Return("componentId");
+            var componentHandle = ComponentHandle.CreateInstance<DummyService, DummyTraits>(componentDescriptor);
+
+            Assert.AreEqual("componentId", componentHandle.Id);
+        }
+
+        [Test]
+        public void ToString_ReturnsComponentId()
+        {
+            var componentDescriptor = CreateStubComponentDescriptor<DummyService, DummyTraits>();
+            componentDescriptor.Stub(x => x.ComponentId).Return("componentId");
+            var componentHandle = ComponentHandle.CreateInstance<DummyService, DummyTraits>(componentDescriptor);
+
+            Assert.AreEqual("componentId", componentHandle.ToString());
         }
 
         private IComponentDescriptor CreateStubComponentDescriptor<TService, TTraits>()

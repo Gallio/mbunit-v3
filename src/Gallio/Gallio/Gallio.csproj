@@ -322,6 +322,15 @@
     <Compile Include="Runtime\Extensibility\Traits.cs" />
     <Compile Include="Runtime\Extensibility\TraitsAttribute.cs" />
     <Compile Include="Reflection\TypeName.cs" />
+    <Compile Include="Runtime\FileTypes\AssemblyFileTypeRecognizer.cs" />
+    <Compile Include="Runtime\FileTypes\FileType.cs" />
+    <Compile Include="Runtime\FileTypes\FileTypeManager.cs" />
+    <Compile Include="Runtime\FileTypes\IFileInspector.cs" />
+    <Compile Include="Runtime\FileTypes\IFileTypeManager.cs" />
+    <Compile Include="Runtime\FileTypes\IFileTypeRecognizer.cs" />
+    <Compile Include="Runtime\FileTypes\FileTypeRecognizerTraits.cs" />
+    <Compile Include="Runtime\FileTypes\LazyFileInspector.cs" />
+    <Compile Include="Runtime\FileTypes\SimpleFileTypeRecognizer.cs" />
     <Compile Include="Runtime\Hosting\ConfigurationFileLocation.cs" />
     <Compile Include="Runtime\Extensibility\IServiceLocator.cs" />
     <Compile Include="Runtime\Logging\EventLogger.cs" />

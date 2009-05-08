@@ -15,6 +15,7 @@
 
 
 using System;
+using System.IO;
 using System.Reflection;
 
 namespace Gallio.Reflection
@@ -138,6 +139,57 @@ namespace Gallio.Reflection
                 return assembly.GetName().Version;
 
             return new Version(attribs[0].Version);
+        }
+
+        /// <summary>
+        /// Returns true if the stream represents a CLI Assembly in Microsoft PE format.
+        /// </summary>
+        /// <remarks>
+        /// This function does not close the stream.
+        /// </remarks>
+        /// <param name="stream">The stream</param>
+        /// <returns>True if the stream represents an assembly</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="stream"/> is null</exception>
+        public static bool IsAssembly(Stream stream)
+        {
+            if (stream == null)
+                throw new ArgumentNullException("stream");
+
+            long length = stream.Length;
+            if (length < 0x40)
+                return false;
+
+            BinaryReader reader = new BinaryReader(stream);
+
+            // Read the pointer to the PE header.
+            stream.Position = 0x3c;
+            uint peHeaderRva = reader.ReadUInt32();
+            if (peHeaderRva == 0)
+                peHeaderRva = 0x80;
+
+            // Ensure there is at least enough room for the following structures:
+            //     4 byte PE Signature
+            //    20 byte PE Header
+            //    28 byte Standard Fields
+            //    68 byte NT Fields
+            //   128 byte Data Dictionary Table
+            if (peHeaderRva > length - 248)
+                return false;
+
+            // Check the PE signature.  Should equal 'PE\0\0'.
+            stream.Position = peHeaderRva;
+            uint peSignature = reader.ReadUInt32();
+            if (peSignature != 0x00004550)
+                return false;
+
+            // Read the 15th Data Dictionary RVA field which contains the CLI header RVA.
+            // When this is non-zero then the file contains CLI data otherwise not.
+            stream.Position = peHeaderRva + 232;
+            uint cliHeaderRva = reader.ReadUInt32();
+            if (cliHeaderRva == 0)
+                return false;
+
+            return true;
         }
     }
 }

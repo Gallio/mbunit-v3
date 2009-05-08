@@ -69,6 +69,12 @@
     <service serviceId="Gallio.DebuggerManager"
              serviceType="Gallio.Runtime.Debugging.IDebuggerManager, Gallio" />
 
+    <service serviceId="Gallio.FileTypeRecognizer"
+             serviceType="Gallio.Runtime.FileTypes.IFileTypeRecognizer, Gallio" />
+
+    <service serviceId="Gallio.FileTypeManager"
+             serviceType="Gallio.Runtime.FileTypes.IFileTypeManager, Gallio" />
+
     <service serviceId="Gallio.Converter"
              serviceType="Gallio.Framework.Conversions.IConverter, Gallio" />
 
@@ -310,5 +316,41 @@
     <component componentId="Gallio.StructuralFormattingRule"
                serviceId="Gallio.FormattingRule"
                componentType="Gallio.Framework.Formatting.StructuralFormattingRule, Gallio" />
+    
+    <!-- File types -->
+
+    <component componentId="Gallio.FileTypeManager"
+               serviceId="Gallio.FileTypeManager"
+               componentType="Gallio.Runtime.FileTypes.FileTypeManager, Gallio" />
+
+    <component componentId="Gallio.FileTypeRecognizers.Project"
+               serviceId="Gallio.FileTypeRecognizer"
+               componentType="Gallio.Runtime.FileTypes.SimpleFileTypeRecognizer, Gallio">
+      <traits>
+        <id>Project</id>
+        <description>A Gallio project file.</description>
+        <fileNameRegex>.*.gallio</fileNameRegex>
+      </traits>
+    </component>
+
+    <component componentId="Gallio.FileTypeRecognizers.Executable"
+               serviceId="Gallio.FileTypeRecognizer"
+               componentType="Gallio.Runtime.FileTypes.SimpleFileTypeRecognizer, Gallio">
+      <traits>
+        <id>Executable</id>
+        <description>A library or program file.</description>
+        <fileNameRegex>.*.(dll|exe)</fileNameRegex>
+      </traits>
+    </component>
+
+    <component componentId="Gallio.FileTypeRecognizers.Assembly"
+               serviceId="Gallio.FileTypeRecognizer"
+               componentType="Gallio.Runtime.FileTypes.AssemblyFileTypeRecognizer, Gallio">
+      <traits>
+        <id>Assembly</id>
+        <description>A .Net assembly.</description>
+        <superTypeId>Executable</superTypeId>
+      </traits>
+    </component>
   </components>
 </plugin>

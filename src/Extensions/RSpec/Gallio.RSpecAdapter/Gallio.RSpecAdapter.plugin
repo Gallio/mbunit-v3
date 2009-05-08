@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<plugin pluginId="Gallio.RSpecAdapter"
+        xmlns="http://www.gallio.org/">
+  <traits>
+    <name>RSpec Adapter Plugin</name>
+  </traits>
+
+  <dependencies>
+    <dependency pluginId="Gallio" />
+    <dependency pluginId="Gallio.DLRIntegration" />
+  </dependencies>
+
+  <assemblies>
+    <assembly fullName="Gallio.RSpecAdapter, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null"
+              codeBase="Gallio.RSpecAdapter.dll" />
+  </assemblies>
+
+  <components>
+  </components>
+</plugin>

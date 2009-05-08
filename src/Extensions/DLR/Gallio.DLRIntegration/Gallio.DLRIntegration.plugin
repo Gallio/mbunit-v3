@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<plugin pluginId="Gallio.DLRIntegration"
+        xmlns="http://www.gallio.org/">
+  <traits>
+    <name>Dynamic Language Runtime Integration Plugin</name>
+  </traits>
+
+  <dependencies>
+    <dependency pluginId="Gallio" />
+  </dependencies>
+
+  <assemblies>
+    <assembly fullName="Gallio.DLRIntegration, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null"
+              codeBase="Gallio.DLRIntegration.dll" />
+  </assemblies>
+
+  <components>
+  </components>
+</plugin>

@@ -17,6 +17,8 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
+using Gallio.Collections;
+using Gallio.Reflection;
 using Gallio.Utilities;
 
 namespace Gallio.Runtime.Extensibility
@@ -59,6 +61,8 @@ namespace Gallio.Runtime.Extensibility
         /// </summary>
         /// <param name="componentDescriptor">The component descriptor</param>
         /// <returns>The appropriately typed component handle</returns>
+        /// <typeparam name="TService">The service type</typeparam>
+        /// <typeparam name="TTraits">The traits type</typeparam>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="componentDescriptor"/> is null</exception>
         /// <exception cref="ArgumentException">Thrown if the described component's service or traits are not compatible with a handle of this type</exception>
         /// <exception cref="RuntimeException">Thrown if the described component's service type or traits type cannot be resolved</exception>
@@ -77,6 +81,34 @@ namespace Gallio.Runtime.Extensibility
                     "componentDescriptor");
             }
 
+            return new ComponentHandle<TService, TTraits>(componentDescriptor);
+        }
+
+        /// <summary>
+        /// Creates an instance of a typed component handle for the specified component and traits instance.
+        /// The component handle will have a stub component descriptor for testing purposes.
+        /// </summary>
+        /// <param name="componentId">The component id</param>
+        /// <param name="component">The component instance</param>
+        /// <param name="traits">The component traits</param>
+        /// <typeparam name="TService">The service type</typeparam>
+        /// <typeparam name="TTraits">The traits type</typeparam>
+        /// <returns>The appropriately typed component handle</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="componentId"/>, <paramref name="component"/>
+        /// or <paramref name="traits"/> is null</exception>
+        /// <exception cref="ArgumentException">Thrown if the described component's service or traits are not compatible with a handle of this type</exception>
+        /// <exception cref="RuntimeException">Thrown if the described component's service type or traits type cannot be resolved</exception>
+        public static ComponentHandle<TService, TTraits> CreateStub<TService, TTraits>(string componentId, TService component, TTraits traits)
+            where TTraits : Traits
+        {
+            if (componentId == null)
+                throw new ArgumentNullException("componentId");
+            if (component == null)
+                throw new ArgumentNullException("component");
+            if (traits == null)
+                throw new ArgumentNullException("traits");
+
+            IComponentDescriptor componentDescriptor = new ComponentDescriptorStub(componentId, component, traits);
             return new ComponentHandle<TService, TTraits>(componentDescriptor);
         }
 
@@ -101,6 +133,14 @@ namespace Gallio.Runtime.Extensibility
         public IComponentDescriptor Descriptor
         {
             get { return componentDescriptor; }
+        }
+
+        /// <summary>
+        /// Gets the component id.
+        /// </summary>
+        public string Id
+        {
+            get { return componentDescriptor.ComponentId; }
         }
 
         /// <summary>
@@ -135,8 +175,101 @@ namespace Gallio.Runtime.Extensibility
             return GetTraitsImpl();
         }
 
+        /// <summary>
+        /// Returns the component's id.
+        /// </summary>
+        /// <returns>The component id</returns>
+        public override string ToString()
+        {
+            return Id;
+        }
+
         internal abstract object GetComponentImpl();
         internal abstract Traits GetTraitsImpl();
+
+        private sealed class ComponentDescriptorStub : IComponentDescriptor
+        {
+            private readonly string componentId;
+            private readonly object component;
+            private readonly Traits traits;
+
+            public ComponentDescriptorStub(string componentId, object component, Traits traits)
+            {
+                this.componentId = componentId;
+                this.component = component;
+                this.traits = traits;
+            }
+
+            public IPluginDescriptor Plugin
+            {
+                get { throw new NotSupportedException(); }
+            }
+
+            public IServiceDescriptor Service
+            {
+                get { throw new NotSupportedException(); }
+            }
+
+            public string ComponentId
+            {
+                get { return componentId; }
+            }
+
+            public TypeName ComponentTypeName
+            {
+                get { return new TypeName(component.GetType()); }
+            }
+
+            public IHandlerFactory ComponentHandlerFactory
+            {
+                get { throw new NotSupportedException(); }
+            }
+
+            public PropertySet ComponentProperties
+            {
+                get { throw new NotSupportedException(); }
+            }
+
+            public PropertySet TraitsProperties
+            {
+                get { throw new NotSupportedException(); }
+            }
+
+            public bool IsDisabled
+            {
+                get { return false; }
+            }
+
+            public string DisabledReason
+            {
+                get { throw new InvalidOperationException("The component has not been disabled."); }
+            }
+
+            public Type ResolveComponentType()
+            {
+                return component.GetType();
+            }
+
+            public IHandler ResolveComponentHandler()
+            {
+                throw new NotSupportedException();
+            }
+
+            public object ResolveComponent()
+            {
+                return component;
+            }
+
+            public IHandler ResolveTraitsHandler()
+            {
+                throw new NotSupportedException();
+            }
+
+            public Traits ResolveTraits()
+            {
+                return traits;
+            }
+        }
     }
 
     /// <summary>
