@@ -49,7 +49,7 @@ namespace Gallio.Tests.Runtime.Formatting
                 AssertFormat(() => x ^ y, "() => x ^ y");
                 AssertFormat(() => x > y, "() => x > y");
                 AssertFormat(() => x >= y, "() => x >= y");
-                AssertFormat(() => ((Gallio.Common.Func<int>) (() => 5))(), "() => (({Gallio.Func`1[System.Int32]}) (() => {5}))()");
+                AssertFormat(() => ((Func<int>) (() => 5))(), "() => (({System.Func`1[System.Int32]}) (() => {5}))()");
                 AssertFormat(() => x << y, "() => x << y");
                 AssertFormat(() => x < y, "() => x < y");
                 AssertFormat(() => x <= y, "() => x <= y");
@@ -59,7 +59,7 @@ namespace Gallio.Tests.Runtime.Formatting
                 AssertFormat(() => x != y, "() => x != y");
                 AssertFormat(() => x | y, "() => x | y");
                 AssertFormat(() => false || x == 5, "() => {False} || x == {5}");
-                AssertFormat(Expression.Lambda<System.Func<double>>(Expression.Power(Expression.Constant(3.0),
+                AssertFormat(Expression.Lambda<Func<double>>(Expression.Power(Expression.Constant(3.0),
                         Expression.Constant(4.0))), "() => {3} ** {4}");
                 AssertFormat(() => x >> y, "() => x >> y");
                 AssertFormat(() => x - y, "() => x - y");
@@ -135,26 +135,26 @@ namespace Gallio.Tests.Runtime.Formatting
         }
 
         [SystemInternal]
-        private void AssertFormat(Expression<System.Action> expr, string expectedFormat)
+        private void AssertFormat(Expression<Action> expr, string expectedFormat)
         {
             Assert.AreEqual(expectedFormat, Formatter.Format(expr));
         }
 
         [SystemInternal]
-        private void AssertFormat<T>(Expression<System.Func<T>> expr, string expectedFormat)
+        private void AssertFormat<T>(Expression<Func<T>> expr, string expectedFormat)
         {
             Assert.AreEqual(expectedFormat, Formatter.Format(expr));
         }
 
         [SystemInternal]
-        private void AssertFormat<TArg, TResult>(Expression<System.Func<TArg, TResult>> expr, string expectedFormat)
+        private void AssertFormat<TArg, TResult>(Expression<Func<TArg, TResult>> expr, string expectedFormat)
         {
             Assert.AreEqual(expectedFormat, Formatter.Format(expr));
         }
 
         [Test]
         [Row(typeof(Expression), FormattingRulePriority.Best)]
-        [Row(typeof(Expression<Gallio.Common.Func<int>>), FormattingRulePriority.Best)]
+        [Row(typeof(Expression<Func<int>>), FormattingRulePriority.Best)]
         [Row(typeof(string), null)]
         public void GetPriority(Type type, int? expectedPriority)
         {
