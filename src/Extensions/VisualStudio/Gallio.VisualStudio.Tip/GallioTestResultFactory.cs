@@ -19,7 +19,7 @@ using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
 using Gallio.Model;
-using Gallio.Model.Logging;
+using Gallio.Common.Markup;
 using Gallio.Runner.Reports;
 using Microsoft.VisualStudio.TestTools.Common;
 using GallioTestOutcome = Gallio.Model.TestOutcome;
@@ -35,17 +35,17 @@ namespace Gallio.VisualStudio.Tip
             result.TestName = run.Step.FullName;
             result.Outcome = GetOutcome(run.Result.Outcome);
 
-            foreach (StructuredTestLogStream stream in run.TestLog.Streams)
+            foreach (StructuredStream stream in run.TestLog.Streams)
             {
                 string contents = stream.ToString();
 
-                if (stream.Name == TestLogStreamNames.DebugTrace)
+                if (stream.Name == MarkupStreamNames.DebugTrace)
                     result.DebugTrace += contents;
-                else if (stream.Name == TestLogStreamNames.ConsoleOutput)
+                else if (stream.Name == MarkupStreamNames.ConsoleOutput)
                     result.StdOut += contents;
-                else if (stream.Name == TestLogStreamNames.ConsoleError)
+                else if (stream.Name == MarkupStreamNames.ConsoleError)
                     result.StdErr += contents;
-                else if (stream.Name == TestLogStreamNames.Failures || stream.Name == TestLogStreamNames.Warnings)
+                else if (stream.Name == MarkupStreamNames.Failures || stream.Name == MarkupStreamNames.Warnings)
                     result.ErrorMessage += contents;
                 else
                     result.DebugTrace += contents;

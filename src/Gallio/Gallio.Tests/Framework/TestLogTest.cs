@@ -17,7 +17,7 @@ using System;
 using System.Reflection;
 using Gallio.Common.Collections;
 using Gallio.Framework;
-using Gallio.Model.Logging;
+using Gallio.Common.Markup;
 using MbUnit.Framework;
 
 namespace Gallio.Tests.Framework
@@ -29,14 +29,14 @@ namespace Gallio.Tests.Framework
         [Test]
         public void LogContainsStaticVersionsOfLogWriterDeclaredMethods()
         {
-            AssertContainsStaticVersionsOfDeclaredMethods(typeof(TestLogWriter),
+            AssertContainsStaticVersionsOfDeclaredMethods(typeof(MarkupDocumentWriter),
                 "get_Item", "Close", "get_IsClosed");
         }
 
         [Test]
         public void LogContainsStaticVersionsOfLogStreamWriterDeclaredMethods()
         {
-            AssertContainsStaticVersionsOfDeclaredMethods(typeof(TestLogStreamWriter),
+            AssertContainsStaticVersionsOfDeclaredMethods(typeof(MarkupStreamWriter),
                 "get_StreamName", "get_Encoding", "get_NewLine", "set_NewLine", "Flush", "Close", "get_Container");
         }
 

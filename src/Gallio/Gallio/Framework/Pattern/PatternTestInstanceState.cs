@@ -22,7 +22,7 @@ using Gallio.Framework.Data;
 using Gallio.Runtime.Conversions;
 using Gallio.Runtime.Formatting;
 using Gallio.Model;
-using Gallio.Runtime.Diagnostics;
+using Gallio.Common.Diagnostics;
 using Gallio.Common.Reflection;
 
 namespace Gallio.Framework.Pattern

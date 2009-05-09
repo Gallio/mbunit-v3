@@ -19,7 +19,6 @@ using System.IO;
 using Gallio.Framework;
 using Gallio.Model;
 using Gallio.Model.Filters;
-using Gallio.Model.Logging;
 using Gallio.Common.Reflection;
 using Gallio.Runner;
 using Gallio.Runtime.Logging;
@@ -63,7 +62,7 @@ namespace Gallio.NCoverIntegration.Tests
             Type simpleTestType = typeof(SimpleTest);
 
             TestLauncher launcher = new TestLauncher();
-            launcher.Logger = new TestLogStreamLogger(TestLog.Default);
+            launcher.Logger = new MarkupStreamLogger(TestLog.Default);
             launcher.TestPackageConfig.AssemblyFiles.Add(AssemblyUtils.GetAssemblyLocalPath(simpleTestType.Assembly));
             launcher.TestPackageConfig.HostSetup.WorkingDirectory = tempPath;
             launcher.TestRunnerFactoryName = factoryName;

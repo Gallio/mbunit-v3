@@ -18,7 +18,7 @@ using System.Diagnostics;
 using System.Threading;
 using Gallio.Common.Collections;
 using Gallio.Common.Policies;
-using Gallio.Model.Logging;
+using Gallio.Common.Markup;
 using Gallio.Model.Messages;
 using Gallio.Model.Serialization;
 
@@ -40,7 +40,7 @@ namespace Gallio.Model.Execution
         private readonly ITestContext parent;
         private readonly ITestStep testStep;
         private readonly ObservableTestLogWriter logWriter;
-        private readonly FallbackTestLogWriter externallyVisibleLogWriter;
+        private readonly FallbackMarkupDocumentWriter externallyVisibleLogWriter;
         private UserDataCollection data;
 
         private string lifecyclePhase = @"";
@@ -71,8 +71,8 @@ namespace Gallio.Model.Execution
             this.parent = parent;
 
             logWriter = new ObservableTestLogWriter(TestExecutionListener, testStep.Id);
-            externallyVisibleLogWriter = new FallbackTestLogWriter(logWriter, 
-                parent != null ? parent.LogWriter : new NullTestLogWriter());
+            externallyVisibleLogWriter = new FallbackMarkupDocumentWriter(logWriter, 
+                parent != null ? parent.LogWriter : new NullMarkupDocumentWriter());
 
             data = new UserDataCollection();
         }
@@ -90,7 +90,7 @@ namespace Gallio.Model.Execution
         }
 
         /// <inheritdoc />
-        public TestLogWriter LogWriter
+        public MarkupDocumentWriter LogWriter
         {
             get { return externallyVisibleLogWriter; }
         }

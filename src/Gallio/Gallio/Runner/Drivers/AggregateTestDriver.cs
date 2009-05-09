@@ -18,7 +18,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using Gallio.Model;
 using Gallio.Model.Execution;
-using Gallio.Model.Logging;
+using Gallio.Common.Markup;
 using Gallio.Model.Messages;
 using Gallio.Model.Serialization;
 using Gallio.Runtime.Logging;

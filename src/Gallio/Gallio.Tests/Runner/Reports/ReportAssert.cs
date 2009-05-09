@@ -15,7 +15,7 @@
 
 using System;
 using Gallio.Model;
-using Gallio.Model.Logging;
+using Gallio.Common.Markup;
 using Gallio.Runner.Reports;
 using Gallio.Tests.Model;
 using MbUnit.Framework;
@@ -104,7 +104,7 @@ namespace Gallio.Tests.Runner.Reports
             Assert.Over.Pairs(expected.Children, actual.Children, AreEqual);
         }
 
-        public static void AreEqual(StructuredTestLog expected, StructuredTestLog actual)
+        public static void AreEqual(StructuredDocument expected, StructuredDocument actual)
         {
             if (expected == null)
             {
@@ -116,7 +116,7 @@ namespace Gallio.Tests.Runner.Reports
             Assert.Over.Pairs(expected.Streams, actual.Streams, AreEqual);
         }
 
-        public static void AreEqual(StructuredTestLogStream expected, StructuredTestLogStream actual)
+        public static void AreEqual(StructuredStream expected, StructuredStream actual)
         {
             if (expected == null)
             {

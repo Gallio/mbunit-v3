@@ -15,9 +15,9 @@
 
 using System.Diagnostics;
 using Gallio.Framework;
-using Gallio.Model.Logging;
 using Gallio.Runtime;
 using Gallio.Runtime.Hosting;
+using Gallio.Runtime.Logging;
 using MbUnit.Framework;
 using TypeMock.Integration;
 
@@ -41,7 +41,7 @@ namespace Gallio.TypeMockIntegration.Tests
         {
             TypeMockHostFactory factory = new TypeMockHostFactory(RuntimeAccessor.Instance);
 
-            using (IHost host = factory.CreateHost(new HostSetup(), new TestLogStreamLogger(TestLog.Default)))
+            using (IHost host = factory.CreateHost(new HostSetup(), new MarkupStreamLogger(TestLog.Default)))
             {
                 HostAssemblyResolverHook.InstallCallback(host);
 

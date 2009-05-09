@@ -17,7 +17,7 @@ using System;
 using System.Diagnostics;
 using Gallio.Framework;
 using Gallio.Framework.Assertions;
-using Gallio.Model.Logging;
+using Gallio.Common.Markup;
 using MbUnit.Framework;
 using Gallio.Model;
 using MbUnit.Samples.Properties;
@@ -31,7 +31,7 @@ namespace MbUnit.Samples
     [Description("Demonstrate the rich test logging features.")]
     public class RichTestLogDemo
     {
-        private static TestLogStreamWriter MbUnitRocks
+        private static MarkupStreamWriter MbUnitRocks
         {
             get { return TestLog.Writer["MbUnit Rocks"]; }
         }

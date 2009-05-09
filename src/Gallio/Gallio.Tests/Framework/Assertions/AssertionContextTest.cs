@@ -18,8 +18,8 @@ using System.Collections.Generic;
 using Gallio.Common.Collections;
 using Gallio.Framework;
 using Gallio.Framework.Assertions;
-using Gallio.Runtime.Diagnostics;
-using Gallio.Model.Logging;
+using Gallio.Common.Diagnostics;
+using Gallio.Common.Markup;
 using MbUnit.Framework;
 
 namespace Gallio.Tests.Framework.Assertions
@@ -214,7 +214,7 @@ namespace Gallio.Tests.Framework.Assertions
                 get { return wasWriteToCalled; }
             }
 
-            public override void WriteTo(TestLogStreamWriter writer)
+            public override void WriteTo(MarkupStreamWriter writer)
             {
                 wasWriteToCalled = true;
                 base.WriteTo(writer);

@@ -93,7 +93,44 @@
     <Compile Include="Common\Concurrency\ThreadTask.cs" />
     <Compile Include="Common\Concurrency\WriteAction.cs" />
     <Compile Include="Common\Concurrency\WriteFunc.cs" />
+    <Compile Include="Common\Diagnostics\ExceptionData.cs" />
+    <Compile Include="Common\Diagnostics\StackTraceData.cs" />
+    <Compile Include="Common\Diagnostics\StackTraceFilter.cs" />
+    <Compile Include="Common\Diagnostics\SystemInternalAttribute.cs" />
+    <Compile Include="Common\Diagnostics\UserCodeEntryPointAttribute.cs" />
     <Compile Include="Common\EqualityComparison.cs" />
+    <Compile Include="Common\Markup\Attachment.cs" />
+    <Compile Include="Common\Markup\AttachmentContentDisposition.cs" />
+    <Compile Include="Common\Markup\AttachmentData.cs" />
+    <Compile Include="Common\Markup\AttachmentEncoding.cs" />
+    <Compile Include="Common\Markup\BinaryAttachment.cs" />
+    <Compile Include="Common\Markup\FallbackMarkupDocumentWriter.cs" />
+    <Compile Include="Common\Markup\IMarkupStreamWritable.cs" />
+    <Compile Include="Common\Markup\Marker.cs" />
+    <Compile Include="Common\Markup\MimeTypes.cs" />
+    <Compile Include="Common\Markup\NullMarkupDocumentWriter.cs" />
+    <Compile Include="Common\Markup\StringMarkupDocumentWriter.cs" />
+    <Compile Include="Common\Markup\StructuredDocument.cs" />
+    <Compile Include="Common\Markup\StructuredStream.cs" />
+    <Compile Include="Common\Markup\StructuredDocumentWriter.cs" />
+    <Compile Include="Common\Markup\StructuredText.cs" />
+    <Compile Include="Common\Markup\StructuredTextWriter.cs" />
+    <Compile Include="Common\Markup\Tags\BaseTagVisitor.cs" />
+    <Compile Include="Common\Markup\Tags\BodyTag.cs" />
+    <Compile Include="Common\Markup\Tags\ContainerTag.cs" />
+    <Compile Include="Common\Markup\Tags\EmbedTag.cs" />
+    <Compile Include="Common\Markup\Tags\ITagVisitor.cs" />
+    <Compile Include="Common\Markup\Tags\MarkerTag.cs" />
+    <Compile Include="Common\Markup\Tags\SectionTag.cs" />
+    <Compile Include="Common\Markup\Tags\Tag.cs" />
+    <Compile Include="Common\Markup\Tags\TagFormatter.cs" />
+    <Compile Include="Common\Markup\Tags\TextTag.cs" />
+    <Compile Include="Runtime\Logging\MarkupStreamLogger.cs" />
+    <Compile Include="Common\Markup\MarkupStreamNames.cs" />
+    <Compile Include="Common\Markup\MarkupStreamWriter.cs" />
+    <Compile Include="Common\Markup\MarkupDocumentWriter.cs" />
+    <Compile Include="Common\Markup\TextAttachment.cs" />
+    <Compile Include="Common\Markup\TextualMarkupDocumentWriter.cs" />
     <Compile Include="Common\Reflection\AssemblyUtils.cs" />
     <Compile Include="Common\Reflection\AttributeUtils.cs" />
     <Compile Include="Common\Reflection\CodeElementKind.cs" />
@@ -187,6 +224,12 @@
     <Compile Include="Common\Reflection\ReflectionUtils.cs" />
     <Compile Include="Common\Reflection\Reflector.cs" />
     <Compile Include="Common\Reflection\TypeName.cs" />
+    <Compile Include="Common\Text\Diff.cs" />
+    <Compile Include="Common\Text\DiffKind.cs" />
+    <Compile Include="Common\Text\DiffSet.cs" />
+    <Compile Include="Common\Text\DiffStyle.cs" />
+    <Compile Include="Common\Text\Range.cs" />
+    <Compile Include="Common\Text\Substring.cs" />
     <Compile Include="Framework\DiagnosticLog.cs" />
     <Compile Include="Framework\Pattern\ReflectionOnlyTestModelBuilder.cs" />
     <Compile Include="Framework\Pattern\PatternTestFrameworkExtensionInfo.cs" />
@@ -239,7 +282,6 @@
     <Compile Include="Framework\SubtractionFunc.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Framework\Text\DiffStyle.cs" />
     <Compile Include="Common\ICloneable.cs" />
     <Compile Include="Model\DefaultTestFrameworkManager.cs" />
     <Compile Include="Model\Filters\FilterRule.cs" />
@@ -248,44 +290,12 @@
     <Compile Include="Model\Filters\FilterSetResult.cs" />
     <Compile Include="Model\ITestFrameworkManager.cs" />
     <Compile Include="Model\ITestExplorer.cs" />
-    <Compile Include="Model\Logging\FallbackTestLogWriter.cs" />
     <Compile Include="Model\Messages\RemoteTestExplorationListener.cs" />
     <Compile Include="Model\Messages\ITestExecutionListener.cs" />
-    <Compile Include="Framework\Text\DiffSet.cs" />
-    <Compile Include="Framework\Text\Diff.cs" />
-    <Compile Include="Framework\Text\DiffKind.cs" />
     <Compile Include="Model\Execution\DefaultTestOrderStrategy.cs" />
-    <Compile Include="Model\Logging\ITestLogStreamWritable.cs" />
-    <Compile Include="Model\Logging\Marker.cs" />
-    <Compile Include="Model\Logging\NullTestLogWriter.cs" />
-    <Compile Include="Model\Logging\StructuredTestLogWriter.cs" />
-    <Compile Include="Model\Logging\StructuredTestLog.cs" />
-    <Compile Include="Model\Logging\AttachmentData.cs" />
-    <Compile Include="Model\Logging\AttachmentContentDisposition.cs" />
-    <Compile Include="Model\Logging\AttachmentEncoding.cs" />
-    <Compile Include="Model\Logging\StructuredTestLogStream.cs" />
-    <Compile Include="Model\Logging\StructuredText.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Model\Logging\StructuredTextWriter.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Model\Logging\Tags\BaseTagVisitor.cs" />
-    <Compile Include="Model\Logging\Tags\BodyTag.cs" />
-    <Compile Include="Model\Logging\Tags\ContainerTag.cs" />
-    <Compile Include="Model\Logging\Tags\EmbedTag.cs" />
-    <Compile Include="Model\Logging\Tags\ITagVisitor.cs" />
-    <Compile Include="Model\Logging\Tags\MarkerTag.cs" />
-    <Compile Include="Model\Logging\Tags\SectionTag.cs" />
-    <Compile Include="Model\Logging\Tags\Tag.cs" />
-    <Compile Include="Model\Logging\Tags\TagFormatter.cs" />
-    <Compile Include="Model\Logging\Tags\TextTag.cs" />
-    <Compile Include="Model\Logging\TestLogStreamWriter.cs" />
-    <Compile Include="Framework\Text\Range.cs" />
     <Compile Include="Model\Messages\ITestExplorationListener.cs" />
     <Compile Include="Model\Messages\RemoteTestExecutionListener.cs" />
     <Compile Include="Model\Filters\FilterParseException.cs" />
-    <Compile Include="Model\Logging\StringTestLogWriter.cs" />
     <Compile Include="Model\TestDomainSetup.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -353,11 +363,6 @@
     <Compile Include="Runtime\Debugging\IDebugger.cs" />
     <Compile Include="Runtime\Debugging\IDebuggerManager.cs" />
     <Compile Include="Runtime\Debugging\NullDebugger.cs" />
-    <Compile Include="Runtime\Diagnostics\ExceptionData.cs" />
-    <Compile Include="Runtime\Diagnostics\StackTraceData.cs" />
-    <Compile Include="Runtime\Diagnostics\StackTraceFilter.cs" />
-    <Compile Include="Runtime\Diagnostics\UserCodeEntryPointAttribute.cs" />
-    <Compile Include="Runtime\Diagnostics\SystemInternalAttribute.cs" />
     <Compile Include="Runtime\Extensibility\AssemblyProbingRules.cs" />
     <Compile Include="Runtime\Extensibility\AssemblyReference.cs" />
     <Compile Include="Runtime\Extensibility\CachingPluginLoader.cs" />
@@ -590,7 +595,6 @@
     <Compile Include="Framework\SilentTestException.cs" />
     <Compile Include="Framework\TestStep.cs" />
     <Compile Include="Framework\Tasks.cs" />
-    <Compile Include="Model\Logging\TestLogStreamLogger.cs" />
     <Compile Include="Framework\Utilities\SampleRunner.cs" />
     <Compile Include="Model\Annotation.cs" />
     <Compile Include="Model\AnnotationType.cs" />
@@ -632,7 +636,6 @@
     <Compile Include="Runtime\Hosting\RemoteHostService.cs" />
     <Compile Include="Runtime\Hosting\BaseHostFactory.cs" />
     <Compile Include="Runtime\Logging\RemoteLogger.cs" />
-    <Compile Include="Model\Logging\TextualTestLogWriter.cs" />
     <Compile Include="Model\Execution\TestContextTrackerAccessor.cs" />
     <Compile Include="Model\Execution\TestCommandFactory.cs" />
     <Compile Include="Model\Filters\NameFilter.cs" />
@@ -648,8 +651,7 @@
     <Compile Include="Common\Platform\ProcessSupport.cs" />
     <Compile Include="Common\Platform\DotNetFrameworkVersion.cs" />
     <Compile Include="Runtime\DefaultRuntime.cs" />
-    <Compile Include="Model\Logging\TestLogWriter.cs" />
-    <Compile Include="Schema\IValidatable.cs" />
+    <Compile Include="Common\Validation\IValidatable.cs" />
     <Compile Include="Schema\Plugins\Assembly.cs" />
     <Compile Include="Schema\Plugins\Cache.cs" />
     <Compile Include="Schema\Plugins\Component.cs">
@@ -664,9 +666,9 @@
     <Compile Include="Schema\Plugins\Service.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Schema\ValidationException.cs" />
+    <Compile Include="Common\Validation\ValidationException.cs" />
     <Compile Include="Schema\SchemaConstants.cs" />
-    <Compile Include="Schema\ValidationUtils.cs" />
+    <Compile Include="Common\Validation\ValidationUtils.cs" />
     <Compile Include="Common\Triple.cs" />
     <Compile Include="Common\IO\FileSystem.cs" />
     <Compile Include="Common\IO\IFileSystem.cs" />
@@ -796,9 +798,6 @@
     <Compile Include="Model\TestStatus.cs" />
     <Compile Include="Model\Execution\ITestContextTracker.cs" />
     <Compile Include="Runtime\IRuntime.cs" />
-    <Compile Include="Framework\Text\Substring.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Common\Concurrency\Sync.cs" />
     <Compile Include="Common\Xml\DefaultXmlSerializer.cs" />
     <Compile Include="Common\Xml\XmlUtils.cs" />
@@ -806,11 +805,6 @@
     <Compile Include="Common\Policies\CorrelatedExceptionEventArgs.cs" />
     <Compile Include="Common\StringUtils.cs" />
     <Compile Include="Framework\TestLog.cs" />
-    <Compile Include="Model\Logging\Attachment.cs" />
-    <Compile Include="Model\Logging\BinaryAttachment.cs" />
-    <Compile Include="Model\Logging\TestLogStreamNames.cs" />
-    <Compile Include="Model\Logging\MimeTypes.cs" />
-    <Compile Include="Model\Logging\TextAttachment.cs" />
     <Compile Include="Runtime\RuntimeAccessor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">

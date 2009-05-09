@@ -23,8 +23,8 @@ using Gallio.Common;
 using Gallio.Common.Collections;
 using Gallio.Common.IO;
 using Gallio.Model;
-using Gallio.Model.Logging;
-using Gallio.Model.Logging.Tags;
+using Gallio.Common.Markup;
+using Gallio.Common.Markup.Tags;
 using Gallio.Common.Reflection;
 using Gallio.Runner.Reports;
 using Gallio.Runtime;
@@ -447,7 +447,7 @@ namespace Gallio.UI
                 WriteHtmlEncoded(writer, testStepRun.Step.Id);
                 writer.Write("\" class=\"log\">");
 
-                foreach (StructuredTestLogStream executionLogStream in testStepRun.TestLog.Streams)
+                foreach (StructuredStream executionLogStream in testStepRun.TestLog.Streams)
                 {
                     writer.Write("<div class=\"logStream logStream-");
                     WriteHtmlEncoded(writer, executionLogStream.Name);

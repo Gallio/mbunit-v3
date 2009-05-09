@@ -16,7 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Gallio.Runtime.Diagnostics;
+using Gallio.Common.Diagnostics;
 
 namespace Gallio.Runtime.Logging
 {

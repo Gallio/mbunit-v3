@@ -20,7 +20,7 @@ using System.Linq;
 using System.Text;
 using Gallio.Ambience.Impl;
 using Gallio.Framework;
-using Gallio.Model.Logging;
+using Gallio.Common.Markup;
 using Gallio.Runtime;
 using Gallio.Runtime.Hosting;
 using Gallio.Runtime.Logging;

@@ -18,9 +18,9 @@ using System.Diagnostics;
 using System.Reflection;
 using System.Threading;
 using Gallio.Framework;
-using Gallio.Model.Logging;
 using Gallio.Runtime;
 using Gallio.Runtime.Hosting;
+using Gallio.Runtime.Logging;
 using Gallio.Tests.Runtime.Remoting;
 using MbUnit.Framework;
 
@@ -44,7 +44,7 @@ namespace Gallio.Tests.Runtime.Hosting
             HostSetup hostSetup = new HostSetup();
             hostSetup.Configuration.LegacyUnhandledExceptionPolicyEnabled = true;
 
-            using (IHost host = Factory.CreateHost(hostSetup, new TestLogStreamLogger(TestLog.Default)))
+            using (IHost host = Factory.CreateHost(hostSetup, new MarkupStreamLogger(TestLog.Default)))
             {
                 HostAssemblyResolverHook.InstallCallback(host);
                 host.GetHostService().Do<object, object>(ThrowUnhandledExceptionCallback, null);
@@ -76,7 +76,7 @@ namespace Gallio.Tests.Runtime.Hosting
             HostSetup hostSetup = new HostSetup();
             hostSetup.ProcessorArchitecture = ProcessorArchitecture.X86;
 
-            using (IHost host = Factory.CreateHost(hostSetup, new TestLogStreamLogger(TestLog.Default)))
+            using (IHost host = Factory.CreateHost(hostSetup, new MarkupStreamLogger(TestLog.Default)))
             {
                 HostAssemblyResolverHook.InstallCallback(host);
                 string processName = host.GetHostService().Do<object, string>(GetHostProcessName, null);
@@ -90,7 +90,7 @@ namespace Gallio.Tests.Runtime.Hosting
         {
             HostSetup hostSetup = new HostSetup();
 
-            using (IHost host = Factory.CreateHost(hostSetup, new TestLogStreamLogger(TestLog.Default)))
+            using (IHost host = Factory.CreateHost(hostSetup, new MarkupStreamLogger(TestLog.Default)))
             {
                 HostAssemblyResolverHook.InstallCallback(host);
                 string processName = host.GetHostService().Do<object, string>(GetHostProcessName, null);

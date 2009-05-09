@@ -16,7 +16,7 @@
 using System;
 using System.IO;
 using System.Text;
-using Gallio.Model.Logging;
+using Gallio.Common.Markup;
 using Gallio.Runner.Reports;
 
 namespace Gallio.Reports

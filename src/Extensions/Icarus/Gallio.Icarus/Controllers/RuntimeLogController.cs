@@ -17,7 +17,7 @@ using System;
 using System.Drawing;
 using Gallio.Icarus.Controllers.EventArgs;
 using Gallio.Icarus.Controllers.Interfaces;
-using Gallio.Runtime.Diagnostics;
+using Gallio.Common.Diagnostics;
 using Gallio.Runtime.Logging;
 
 namespace Gallio.Icarus.Controllers

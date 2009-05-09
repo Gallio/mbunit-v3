@@ -24,9 +24,9 @@ using Gallio.Runtime.Conversions;
 using Gallio.Runtime.Formatting;
 using Gallio.Framework;
 using Gallio.Model;
-using Gallio.Runtime.Diagnostics;
+using Gallio.Common.Diagnostics;
 using Gallio.Model.Execution;
-using Gallio.Model.Logging;
+using Gallio.Common.Markup;
 using Gallio.Common.Reflection;
 using Gallio.Runtime.ProgressMonitoring;
 

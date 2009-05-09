@@ -16,8 +16,8 @@
 using System;
 using Gallio.Framework;
 using Gallio.Framework.Assertions;
-using Gallio.Runtime.Diagnostics;
-using Gallio.Model.Logging;
+using Gallio.Common.Diagnostics;
+using Gallio.Common.Markup;
 using MbUnit.Framework;
 
 namespace Gallio.Tests.Framework.Assertions
@@ -69,7 +69,7 @@ namespace Gallio.Tests.Framework.Assertions
                 .ToAssertionFailure();
             TestLog.Write(failure);
 
-            StringTestLogWriter writer = new StringTestLogWriter(true);
+            StringMarkupDocumentWriter writer = new StringMarkupDocumentWriter(true);
             failure.WriteTo(writer.Failures);
 
             Assert.AreEqual("[Marker \'AssertionFailure\'][Section \'Description\']\n[End]\n[End]", writer.ToString());
@@ -91,7 +91,7 @@ namespace Gallio.Tests.Framework.Assertions
                 .ToAssertionFailure();
             TestLog.Write(failure);
 
-            StringTestLogWriter writer = new StringTestLogWriter(true);
+            StringMarkupDocumentWriter writer = new StringMarkupDocumentWriter(true);
             failure.WriteTo(writer.Failures);
 
             Assert.AreEqual("[Marker \'AssertionFailure\'][Section \'Description\']\nMessage goes here\n\n[Marker \'Monospace\'][Marker \'Label\']Expected Value : [End]\"Expected value\"\n[Marker \'Label\']Actual Value   : [End]\"Actual value\"\n[Marker \'Label\']Very Long Label That Will Not Be Padded : [End]\"\"\n[Marker \'Label\']x              : [End]42\n[End]\n[Marker \'Exception\'][Marker \'ExceptionType\']System.Exception[End]: [Marker \'ExceptionMessage\']Boom[End][End]\n\n[Marker \'Exception\'][Marker \'ExceptionType\']System.Exception[End]: [Marker \'ExceptionMessage\']Kaput[End][End]\n\n[Marker \'StackTrace\']Stack goes here[End]\n[Marker \'AssertionFailure\'][Section \'Inner\']\n[End]\n[End][End]\n[End]", writer.ToString());

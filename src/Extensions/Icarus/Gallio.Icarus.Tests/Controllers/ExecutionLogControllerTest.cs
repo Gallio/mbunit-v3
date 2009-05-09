@@ -20,7 +20,7 @@ using Gallio.Common.Concurrency;
 using Gallio.Icarus.Controllers;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Models;
-using Gallio.Model.Logging;
+using Gallio.Common.Markup;
 using Gallio.Model.Serialization;
 using Gallio.Runner.Events;
 using Gallio.Runner.Reports;
@@ -37,7 +37,7 @@ namespace Gallio.Icarus.Tests.Controllers
         public void TestStepFinished_Test()
         {
             var testStepRun = new TestStepRun(new TestStepData("root", "name", "fullName", "root"))
-                                  {TestLog = new StructuredTestLog()};
+                                  {TestLog = new StructuredDocument()};
             testStepRun.TestLog.Attachments.Add(new TextAttachment("name", "contentType", "text").ToAttachmentData());
             var testStepFinishedEventArgs = new TestStepFinishedEventArgs(new Report(), 
                 new TestData("root", "name", "fullName"), testStepRun);

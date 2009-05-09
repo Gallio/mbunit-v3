@@ -22,7 +22,7 @@ using Gallio.Common;
 using Gallio.Common.Collections;
 using Gallio.Common.Concurrency;
 using Gallio.Framework;
-using Gallio.Model.Logging;
+using Gallio.Common.Markup;
 
 namespace Gallio.Framework
 {
@@ -148,7 +148,7 @@ namespace Gallio.Framework
             return task;
         }
 
-        private static void ConfigureProcessTaskForLogging(ProcessTask task, TestLogStreamWriter writer)
+        private static void ConfigureProcessTaskForLogging(ProcessTask task, MarkupStreamWriter writer)
         {
             task.Started += delegate
             {

@@ -16,7 +16,6 @@
 using System;
 using System.Threading;
 using Gallio.Framework;
-using Gallio.Model.Logging;
 using Gallio.Runner;
 using Gallio.Runner.Drivers;
 using Gallio.Runtime;
@@ -106,7 +105,7 @@ namespace Gallio.AutoCAD.Tests
         {
             var runtimeSetup = RuntimeAccessor.Instance.GetRuntimeSetup();
             var testRunnerOptions = new TestRunnerOptions();
-            var logger = new TestLogStreamLogger(TestLog.Default);
+            var logger = new MarkupStreamLogger(TestLog.Default);
             var stub = Mocks.Stub<ITestDriver>();
             var driver = new RemoteAcadTestDriver(null, stub);
             var runThread = new Thread(driver.WaitForShutdown);

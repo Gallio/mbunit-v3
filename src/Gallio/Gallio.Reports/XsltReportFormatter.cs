@@ -20,7 +20,7 @@ using System.Xml;
 using System.Xml.XPath;
 using System.Xml.Xsl;
 using Gallio.Common.Xml;
-using Gallio.Model.Logging;
+using Gallio.Common.Markup;
 using Gallio.Runtime.ProgressMonitoring;
 using Gallio.Runtime;
 using Gallio.Runner.Reports;

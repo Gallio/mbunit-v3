@@ -46,5 +46,11 @@ namespace Gallio.Common.Collections
         {
             get { return name; }
         }
+
+        /// <inheritdoc />
+        public override string ToString()
+        {
+            return name;
+        }
     }
 }

@@ -16,10 +16,10 @@
 using System;
 using System.Collections.Generic;
 using Gallio.Common.Collections;
-using Gallio.Framework.Text;
+using Gallio.Common.Text;
 using Gallio.Runtime.Formatting;
-using Gallio.Runtime.Diagnostics;
-using Gallio.Model.Logging;
+using Gallio.Common.Diagnostics;
+using Gallio.Common.Markup;
 
 namespace Gallio.Framework.Assertions
 {

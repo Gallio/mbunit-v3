@@ -16,12 +16,12 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Gallio.Runtime.Diagnostics;
+using Gallio.Common.Diagnostics;
 using Gallio.Common.Reflection;
 using Gallio.Runtime.ProgressMonitoring;
 using Gallio.Model;
 using Gallio.Model.Execution;
-using Gallio.Model.Logging;
+using Gallio.Common.Markup;
 using Gallio.XunitAdapter.Properties;
 using XunitMethodInfo = Xunit.Sdk.IMethodInfo;
 using XunitMethodResult = Xunit.Sdk.MethodResult;

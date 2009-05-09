@@ -15,7 +15,7 @@
 
 using System;
 using Gallio.Framework.Utilities;
-using Gallio.Model.Logging;
+using Gallio.Common.Markup;
 using Gallio.Runner.Reports;
 using MbUnit.Framework;
 
@@ -86,7 +86,7 @@ namespace Gallio.Tests
 
         protected static void AssertLogContains(TestStepRun run, string expectedOutput)
         {
-            AssertLogContains(run, expectedOutput, TestLogStreamNames.Default);
+            AssertLogContains(run, expectedOutput, MarkupStreamNames.Default);
         }
 
         protected static void AssertLogContains(TestStepRun run, string expectedOutput, string streamName)
@@ -96,7 +96,7 @@ namespace Gallio.Tests
 
         protected static void AssertLogDoesNotContain(TestStepRun run, string expectedOutput)
         {
-            AssertLogDoesNotContain(run, expectedOutput, TestLogStreamNames.Default);
+            AssertLogDoesNotContain(run, expectedOutput, MarkupStreamNames.Default);
         }
 
         protected static void AssertLogDoesNotContain(TestStepRun run, string expectedOutput, string streamName)

@@ -15,7 +15,7 @@
 
 using System;
 using Gallio.Common;
-using Gallio.Model.Logging;
+using Gallio.Common.Markup;
 using Gallio.Runtime.ProgressMonitoring;
 using Gallio.Model;
 

@@ -13,7 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Gallio.Model.Logging;
+using Gallio.Common.Markup;
 using Gallio.Model.Serialization;
 
 namespace Gallio.Model.Messages

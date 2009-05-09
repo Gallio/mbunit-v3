@@ -17,7 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Gallio.Framework.Assertions;
-using Gallio.Runtime.Diagnostics;
+using Gallio.Common.Diagnostics;
 using MbUnit.Framework.ContractVerifiers.Core;
 
 namespace MbUnit.Framework.ContractVerifiers

@@ -18,11 +18,11 @@ using System.Collections.Generic;
 using System.Text;
 using Gallio.Common.Collections;
 using Gallio.Model;
-using Gallio.Runtime.Diagnostics;
+using Gallio.Common.Diagnostics;
 using Gallio.Model.Execution;
 using Gallio.Model.Filters;
-using Gallio.Model.Logging;
-using Gallio.Model.Logging.Tags;
+using Gallio.Common.Markup;
+using Gallio.Common.Markup.Tags;
 using Gallio.ReSharperRunner.Provider.Facade;
 using Gallio.ReSharperRunner.Runtime;
 using Gallio.Runner;
@@ -300,7 +300,7 @@ namespace Gallio.ReSharperRunner.Provider.Tasks
                     else
                         pendingBanner = banner;
 
-                    foreach (StructuredTestLogStream stream in run.TestLog.Streams)
+                    foreach (StructuredStream stream in run.TestLog.Streams)
                     {
                         OutputLogStreamContents(stream);
                         CaptureExceptions(stream);
@@ -324,7 +324,7 @@ namespace Gallio.ReSharperRunner.Provider.Tasks
                 }
             }
 
-            private void OutputLogStreamContents(StructuredTestLogStream stream)
+            private void OutputLogStreamContents(StructuredStream stream)
             {
                 string contents = string.Concat("*** ", stream.Name, " ***\n", stream.ToString(), "\n");
 
@@ -333,30 +333,30 @@ namespace Gallio.ReSharperRunner.Provider.Tasks
                 // Unfortunately it can't really capture the richness of Gallio outcomes right now.
                 switch (stream.Name)
                 {
-                    case TestLogStreamNames.ConsoleOutput:
+                    case MarkupStreamNames.ConsoleOutput:
                     default:
                         Output(FacadeTaskOutputType.StandardOutput, contents);
                         break;
 
-                    case TestLogStreamNames.ConsoleError:
+                    case MarkupStreamNames.ConsoleError:
                         Output(FacadeTaskOutputType.StandardError, contents);
                         break;
 
-                    case TestLogStreamNames.DebugTrace:
+                    case MarkupStreamNames.DebugTrace:
                         Output(FacadeTaskOutputType.DebugTrace, contents);
                         break;
 
-                    case TestLogStreamNames.Warnings:
+                    case MarkupStreamNames.Warnings:
                         pendingWarnings = contents;
                         break;
 
-                    case TestLogStreamNames.Failures:
+                    case MarkupStreamNames.Failures:
                         pendingFailures = contents;
                         break;
                 }
             }
 
-            private void CaptureExceptions(StructuredTestLogStream stream)
+            private void CaptureExceptions(StructuredStream stream)
             {
                 stream.Body.Accept(exceptionVisitor);
             }

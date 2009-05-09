@@ -19,12 +19,13 @@ using System.IO;
 using System.Reflection;
 using Gallio.Common.Collections;
 using Gallio.Model;
-using Gallio.Model.Logging;
+using Gallio.Common.Markup;
 using Gallio.Model.Serialization;
 using Gallio.Common.Reflection;
 using Gallio.Runner.Reports;
 using Gallio.Runner;
 using Gallio.Model.Filters;
+using Gallio.Runtime.Logging;
 
 namespace Gallio.Framework.Utilities
 {
@@ -254,11 +255,11 @@ namespace Gallio.Framework.Utilities
 
         private void Launch(bool doNoRun)
         {
-            TestLogStreamWriter logStreamWriter = TestLog.Default;
+            MarkupStreamWriter logStreamWriter = TestLog.Default;
 
             TestLauncher launcher = new TestLauncher();
             launcher.TestPackageConfig = packageConfig;
-            launcher.Logger = new TestLogStreamLogger(logStreamWriter);
+            launcher.Logger = new MarkupStreamLogger(logStreamWriter);
             launcher.TestExecutionOptions.FilterSet = new FilterSet<ITest>(new OrFilter<ITest>(filters));
             launcher.TestRunnerFactoryName = TestRunnerFactoryName;
 

@@ -15,7 +15,7 @@
 
 using System.Collections.Generic;
 using Gallio.Model;
-using Gallio.Model.Logging;
+using Gallio.Common.Markup;
 using Gallio.NUnitAdapter.TestResources;
 using Gallio.Common.Reflection;
 using Gallio.Runner.Reports;

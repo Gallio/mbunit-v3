@@ -17,7 +17,7 @@ using System;
 using System.Collections.Generic;
 using Gallio.Framework;
 using Gallio.Model;
-using Gallio.Model.Logging;
+using Gallio.Common.Markup;
 using Gallio.Common.Reflection;
 using Gallio.Runner.Reports;
 using Gallio.Tests;
@@ -48,7 +48,7 @@ namespace MbUnit.Tests.Framework
 
             Assert.AreEqual("Repetition #2", testSteps[1].Step.Name);
             AssertLogContains(testSteps[1], "Run: Repetition #2");
-            AssertLogContains(testSteps[1], "Boom", TestLogStreamNames.Failures);
+            AssertLogContains(testSteps[1], "Boom", MarkupStreamNames.Failures);
             Assert.AreEqual(TestOutcome.Failed, testSteps[1].Result.Outcome);
 
             Assert.AreEqual("Repetition #3", testSteps[2].Step.Name);
@@ -84,7 +84,7 @@ namespace MbUnit.Tests.Framework
             Assert.AreEqual(1, fixtureSteps[1].Children.Count);
             Assert.AreEqual("Test", fixtureSteps[1].Children[0].Step.Name);
             AssertLogContains(fixtureSteps[1].Children[0], "Run: Repetition #2");
-            AssertLogContains(fixtureSteps[1].Children[0], "Boom", TestLogStreamNames.Failures);
+            AssertLogContains(fixtureSteps[1].Children[0], "Boom", MarkupStreamNames.Failures);
             Assert.AreEqual(TestOutcome.Failed, fixtureSteps[1].Children[0].Result.Outcome);
 
             Assert.AreEqual("Repetition #3", fixtureSteps[2].Step.Name);

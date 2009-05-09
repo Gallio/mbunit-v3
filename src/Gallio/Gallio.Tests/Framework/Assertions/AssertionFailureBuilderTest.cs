@@ -16,9 +16,9 @@
 using System;
 using Gallio.Framework;
 using Gallio.Framework.Assertions;
-using Gallio.Framework.Text;
-using Gallio.Runtime.Diagnostics;
-using Gallio.Model.Logging;
+using Gallio.Common.Text;
+using Gallio.Common.Diagnostics;
+using Gallio.Common.Markup;
 using MbUnit.Framework;
 
 namespace Gallio.Tests.Framework.Assertions

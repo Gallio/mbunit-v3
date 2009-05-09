@@ -21,7 +21,6 @@ using System.Text;
 using Gallio.Common.Collections;
 using Gallio.Framework;
 using Gallio.Model;
-using Gallio.Model.Logging;
 using Gallio.Model.Messages;
 using Gallio.Runner;
 using Gallio.Runner.Drivers;
@@ -48,7 +47,7 @@ namespace Gallio.Tests.Runner.Drivers
         {
             StubbedHostedTestDriver driver = new StubbedHostedTestDriver();
             driver.Initialize(RuntimeAccessor.Instance.GetRuntimeSetup(),
-                new TestRunnerOptions(), new TestLogStreamLogger(TestLog.Default));
+                new TestRunnerOptions(), new MarkupStreamLogger(TestLog.Default));
 
             TestPackageConfig testPackageConfig = new TestPackageConfig();
             testPackageConfig.AssemblyFiles.AddRange(testAssemblies);
@@ -65,7 +64,7 @@ namespace Gallio.Tests.Runner.Drivers
         {
             StubbedHostedTestDriver driver = new StubbedHostedTestDriver();
             driver.Initialize(RuntimeAccessor.Instance.GetRuntimeSetup(),
-                new TestRunnerOptions(), new TestLogStreamLogger(TestLog.Default));
+                new TestRunnerOptions(), new MarkupStreamLogger(TestLog.Default));
 
             TestPackageConfig testPackageConfig = new TestPackageConfig();
             testPackageConfig.AssemblyFiles.Add("MbUnit.TestResources.x86.dll");

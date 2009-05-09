@@ -21,7 +21,7 @@ using System.Text;
 using Gallio.Framework;
 using Gallio.Runtime.Formatting;
 using Gallio.Common.Linq;
-using Gallio.Runtime.Diagnostics;
+using Gallio.Common.Diagnostics;
 using MbUnit.Framework;
 
 namespace Gallio.Tests.Common.Linq

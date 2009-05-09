@@ -16,7 +16,7 @@
 
 using System;
 using System.Text;
-using Gallio.Runtime.Diagnostics;
+using Gallio.Common.Diagnostics;
 using Gallio.Runtime.Logging;
 using JetBrains.Util;
 

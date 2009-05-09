@@ -14,7 +14,7 @@
 // limitations under the License.
 
 using Gallio.Framework;
-using Gallio.Model.Logging;
+using Gallio.Common.Markup;
 using Gallio.Reports.Tests.Properties;
 using MbUnit.Framework;
 

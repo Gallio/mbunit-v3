@@ -15,9 +15,9 @@
 
 using System;
 using Gallio.Framework;
-using Gallio.Model.Logging;
 using Gallio.Runtime.Debugging;
 using Gallio.Runtime.Hosting;
+using Gallio.Runtime.Logging;
 using MbUnit.Framework;
 using Rhino.Mocks;
 
@@ -36,7 +36,7 @@ namespace Gallio.Tests.Runtime.Hosting
         [Test]
         public void IsLocalFlagShouldBeTrue()
         {
-            using (IHost host = Factory.CreateHost(new HostSetup(), new TestLogStreamLogger(TestLog.Default)))
+            using (IHost host = Factory.CreateHost(new HostSetup(), new MarkupStreamLogger(TestLog.Default)))
                 Assert.IsTrue(host.IsLocal);
         }
     }

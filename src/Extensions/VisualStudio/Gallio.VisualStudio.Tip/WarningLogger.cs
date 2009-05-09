@@ -14,7 +14,7 @@
 // limitations under the License.
 
 using System;
-using Gallio.Runtime.Diagnostics;
+using Gallio.Common.Diagnostics;
 using Gallio.Runtime.Logging;
 using Microsoft.VisualStudio.TestTools.Common;
 

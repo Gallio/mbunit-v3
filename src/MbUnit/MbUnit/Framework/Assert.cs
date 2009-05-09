@@ -20,7 +20,7 @@ using Gallio.Common;
 using Gallio.Framework;
 using Gallio.Framework.Assertions;
 using Gallio.Model;
-using Gallio.Runtime.Diagnostics;
+using Gallio.Common.Diagnostics;
 
 namespace MbUnit.Framework
 {

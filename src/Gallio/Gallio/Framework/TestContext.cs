@@ -23,9 +23,9 @@ using Gallio.Common.Policies;
 using Gallio.Framework;
 using Gallio.Framework.Assertions;
 using Gallio.Model;
-using Gallio.Runtime.Diagnostics;
+using Gallio.Common.Diagnostics;
 using Gallio.Model.Execution;
-using Gallio.Model.Logging;
+using Gallio.Common.Markup;
 using Gallio.Common.Reflection;
 
 namespace Gallio.Framework
@@ -196,7 +196,7 @@ namespace Gallio.Framework
         /// particular to the step represented by this test context.
         /// </para>
         /// </summary>
-        public TestLogWriter LogWriter
+        public MarkupDocumentWriter LogWriter
         {
             get { return inner.LogWriter; }
         }

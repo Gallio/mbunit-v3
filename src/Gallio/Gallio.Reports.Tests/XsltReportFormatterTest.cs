@@ -18,7 +18,7 @@ using System.Collections.Specialized;
 using System.IO;
 using System.Text;
 using System.Xml;
-using Gallio.Model.Logging;
+using Gallio.Common.Markup;
 using Gallio.Runtime.ProgressMonitoring;
 using Gallio.Runtime;
 using Gallio.Framework;

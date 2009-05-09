@@ -21,7 +21,7 @@ using Gallio.Runner.Reports;
 using Gallio.Tests;
 using MbUnit.Framework;
 using System.Linq;
-using Gallio.Model.Logging;
+using Gallio.Common.Markup;
 using System.Text.RegularExpressions;
 
 namespace MbUnit.Tests.Framework
@@ -35,7 +35,7 @@ namespace MbUnit.Tests.Framework
         public void EnumData(string testMethod, int expectedRepeat, double expectedMinimum, double expectedMaximum)
         {
             var run = Runner.GetPrimaryTestStepRun(CodeReference.CreateFromMember(typeof(RandomDataSample).GetMethod(testMethod)));
-            string[] lines = run.Children.Select(x => x.TestLog.GetStream(TestLogStreamNames.Default).ToString()).ToArray();
+            string[] lines = run.Children.Select(x => x.TestLog.GetStream(MarkupStreamNames.Default).ToString()).ToArray();
             Assert.AreEqual(expectedRepeat, lines.Length);
 
             foreach(string line in lines)

@@ -15,7 +15,7 @@
 
 using System;
 using Gallio.Common;
-using Gallio.Runtime.Diagnostics;
+using Gallio.Common.Diagnostics;
 
 namespace Gallio.Framework.Pattern
 {

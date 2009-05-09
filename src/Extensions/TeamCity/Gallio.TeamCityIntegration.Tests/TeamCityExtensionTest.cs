@@ -18,9 +18,9 @@ using System.Text;
 using Gallio.Common.Concurrency;
 using Gallio.Framework;
 using Gallio.Model;
-using Gallio.Runtime.Diagnostics;
+using Gallio.Common.Diagnostics;
 using Gallio.Model.Execution;
-using Gallio.Model.Logging;
+using Gallio.Common.Markup;
 using Gallio.Model.Serialization;
 using Gallio.Runner;
 using Gallio.Runner.Events;
@@ -36,11 +36,11 @@ namespace Gallio.TeamCityIntegration.Tests
         private TestRunnerEventDispatcher dispatcher;
         private Log log;
 
-        private static readonly StructuredTestLog ComprehensiveTestLog;
+        private static readonly StructuredDocument ComprehensiveDocument;
 
         static TeamCityExtensionTest()
         {
-            StructuredTestLogWriter logWriter = new StructuredTestLogWriter();
+            StructuredDocumentWriter logWriter = new StructuredDocumentWriter();
             logWriter.ConsoleOutput.WriteLine("output");
             logWriter.ConsoleInput.WriteLine("input");
             logWriter.DebugTrace.WriteLine("trace");
@@ -50,7 +50,7 @@ namespace Gallio.TeamCityIntegration.Tests
             logWriter.Warnings.WriteLine("warning");
             logWriter.Close();
 
-            ComprehensiveTestLog = logWriter.TestLog;
+            ComprehensiveDocument = logWriter.Document;
         }
 
         [SetUp]
@@ -209,7 +209,7 @@ namespace Gallio.TeamCityIntegration.Tests
                 new TestData("id", "testName", "testFullName"),
                 new TestStepRun(new TestStepData("id", "stepName", "stepFullName", "id") { IsPrimary = primary, IsTestCase = true }) {
                     Result = new TestResult() { Outcome = TestOutcome.Passed, Duration = 0.3 },
-                    TestLog = ComprehensiveTestLog
+                    TestLog = ComprehensiveDocument
                 }));
 
             Assert.AreEqual("##teamcity[testStdOut name='stepFullName' out='output|n|ninput|n|ntrace|n|nlog']\n"
@@ -226,7 +226,7 @@ namespace Gallio.TeamCityIntegration.Tests
                 new TestStepRun(new TestStepData("id", "stepName", "stepFullName", "id") { IsPrimary = primary, IsTestCase = true })
                 {
                     Result = new TestResult() { Outcome = new TestOutcome(TestStatus.Failed, "myError"), Duration = 0.3 },
-                    TestLog = ComprehensiveTestLog
+                    TestLog = ComprehensiveDocument
                 }));
 
             Assert.AreEqual("##teamcity[testStdOut name='stepFullName' out='output|n|ninput|n|ntrace|n|nlog']\n"
@@ -244,7 +244,7 @@ namespace Gallio.TeamCityIntegration.Tests
                 new TestStepRun(new TestStepData("id", "stepName", "stepFullName", "id") { IsPrimary = primary, IsTestCase = true })
                 {
                     Result = new TestResult() { Outcome = TestOutcome.Ignored, Duration = 0.3 },
-                    TestLog = ComprehensiveTestLog
+                    TestLog = ComprehensiveDocument
                 }));
 
             Assert.AreEqual("##teamcity[testStdOut name='stepFullName' out='output|n|ninput|n|ntrace|n|nlog']\n"

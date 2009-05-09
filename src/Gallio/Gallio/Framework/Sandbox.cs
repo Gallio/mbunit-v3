@@ -22,8 +22,8 @@ using Gallio.Common.Collections;
 using Gallio.Common.Policies;
 using Gallio.Common.Concurrency;
 using Gallio.Model;
-using Gallio.Runtime.Diagnostics;
-using Gallio.Model.Logging;
+using Gallio.Common.Diagnostics;
+using Gallio.Common.Markup;
 
 namespace Gallio.Framework
 {
@@ -283,7 +283,7 @@ namespace Gallio.Framework
         /// <remarks>
         /// <para>
         /// If the action throws an exception or if the test action is aborted, then logs a
-        /// message to the <paramref name="testLogWriter"/>.  Exceptions of type <see cref="TestException" />
+        /// message to the <paramref name="markupDocumentWriter"/>.  Exceptions of type <see cref="TestException" />
         /// are handled specially since they may modify the effective outcome of the run.
         /// If <see cref="TestException.ExcludeStackTrace" /> is <c>true</c> and <see cref="TestException.HasNonDefaultMessage" />
         /// is <c>false</c> then the exception is effectively silent.  Therefore the action can modify
@@ -309,16 +309,16 @@ namespace Gallio.Framework
         /// </list>
         /// </para>
         /// </remarks>
-        /// <param name="testLogWriter">The log writer for reporting failures</param>
+        /// <param name="markupDocumentWriter">The log writer for reporting failures</param>
         /// <param name="action">The action to run</param>
         /// <param name="description">A description of the action being performed,
         /// to be used as a log section name when reporting failures, or null if none</param>
         /// <returns>The outcome of the action</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="testLogWriter"/> or <paramref name="action"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="markupDocumentWriter"/> or <paramref name="action"/> is null</exception>
         /// <exception cref="ObjectDisposedException">Thrown if the sandbox was disposed</exception>
-        public TestOutcome Run(TestLogWriter testLogWriter, Action action, string description)
+        public TestOutcome Run(MarkupDocumentWriter markupDocumentWriter, Action action, string description)
         {
-            if (testLogWriter == null)
+            if (markupDocumentWriter == null)
                 throw new ArgumentNullException("testLogWriter");
             if (action == null)
                 throw new ArgumentNullException("action");
@@ -341,9 +341,9 @@ namespace Gallio.Framework
                 }
 
                 if (scope == null)
-                    return HandleAbort(testLogWriter, description, null);
+                    return HandleAbort(markupDocumentWriter, description, null);
 
-                return RunWithScope(testLogWriter, scope, action, description);
+                return RunWithScope(markupDocumentWriter, scope, action, description);
             }
             finally
             {
@@ -362,13 +362,13 @@ namespace Gallio.Framework
             }
         }
 
-        private TestOutcome RunWithScope(TestLogWriter testLogWriter, ThreadAbortScope scope, Action action, string description)
+        private TestOutcome RunWithScope(MarkupDocumentWriter markupDocumentWriter, ThreadAbortScope scope, Action action, string description)
         {
             try
             {
                 ThreadAbortException ex = scope.Run(action);
                 if (ex != null)
-                    return HandleAbort(testLogWriter, description, ex);
+                    return HandleAbort(markupDocumentWriter, description, ex);
 
                 return TestOutcome.Passed;
             }
@@ -388,14 +388,14 @@ namespace Gallio.Framework
                     outcome = testException.Outcome;
 
                     if (testException.ExcludeStackTrace)
-                        LogMessage(testLogWriter, description, outcome, testException.HasNonDefaultMessage ? testException.Message : null, null);
+                        LogMessage(markupDocumentWriter, description, outcome, testException.HasNonDefaultMessage ? testException.Message : null, null);
                     else
-                        LogMessage(testLogWriter, description, outcome, null, testException);
+                        LogMessage(markupDocumentWriter, description, outcome, null, testException);
                 }
                 else
                 {
                     outcome = TestOutcome.Failed;
-                    LogMessage(testLogWriter, description, outcome, null, ex);
+                    LogMessage(markupDocumentWriter, description, outcome, null, ex);
                 }
 
                 return outcome;
@@ -451,23 +451,23 @@ namespace Gallio.Framework
             Abort(parent.AbortOutcome.Value, parent.AbortMessage);
         }
 
-        private TestOutcome HandleAbort(TestLogWriter testLogWriter, string actionDescription, ThreadAbortException ex)
+        private TestOutcome HandleAbort(MarkupDocumentWriter markupDocumentWriter, string actionDescription, ThreadAbortException ex)
         {
             TestOutcome outcome = abortOutcome.Value;
             if (ex == null && alreadyLoggedAbortOnce)
                 return outcome;
 
             alreadyLoggedAbortOnce = true;
-            LogMessage(testLogWriter, actionDescription, outcome, abortMessage, ex);
+            LogMessage(markupDocumentWriter, actionDescription, outcome, abortMessage, ex);
             return outcome;
         }
 
-        private static void LogMessage(TestLogWriter testLogWriter, string actionDescription, TestOutcome outcome, string message, Exception ex)
+        private static void LogMessage(MarkupDocumentWriter markupDocumentWriter, string actionDescription, TestOutcome outcome, string message, Exception ex)
         {
             if (string.IsNullOrEmpty(message) && ex == null)
                 return;
 
-            TestLogStreamWriter stream = GetLogStreamWriterForOutcome(testLogWriter, outcome);
+            MarkupStreamWriter stream = GetLogStreamWriterForOutcome(markupDocumentWriter, outcome);
             using (actionDescription != null ? stream.BeginSection(actionDescription) : null)
             {
                 if (! string.IsNullOrEmpty(message))
@@ -478,16 +478,16 @@ namespace Gallio.Framework
             }
         }
 
-        private static TestLogStreamWriter GetLogStreamWriterForOutcome(TestLogWriter testLogWriter, TestOutcome outcome)
+        private static MarkupStreamWriter GetLogStreamWriterForOutcome(MarkupDocumentWriter markupDocumentWriter, TestOutcome outcome)
         {
             switch (outcome.Status)
             {
                 case TestStatus.Passed:
-                    return testLogWriter.Default;
+                    return markupDocumentWriter.Default;
                 case TestStatus.Failed:
-                    return testLogWriter.Failures;
+                    return markupDocumentWriter.Failures;
                 default:
-                    return testLogWriter.Warnings;
+                    return markupDocumentWriter.Warnings;
             }
         }
 

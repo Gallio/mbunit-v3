@@ -15,7 +15,7 @@
 
 using System;
 using System.IO;
-using Gallio.Model.Logging;
+using Gallio.Common.Markup;
 using Gallio.Common.Platform;
 
 namespace Gallio.Runner.Harness
@@ -48,8 +48,8 @@ namespace Gallio.Runner.Harness
                 if (! DotNetRuntimeSupport.IsUsingMono)
                     Console.SetIn(TextReader.Null);
 
-                Console.SetOut(new ContextualLogTextWriter(TestLogStreamNames.ConsoleOutput));
-                Console.SetError(new ContextualLogTextWriter(TestLogStreamNames.ConsoleError));
+                Console.SetOut(new ContextualLogTextWriter(MarkupStreamNames.ConsoleOutput));
+                Console.SetError(new ContextualLogTextWriter(MarkupStreamNames.ConsoleError));
             }
 
             public void Dispose()

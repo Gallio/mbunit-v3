@@ -14,7 +14,7 @@
 // limitations under the License.
 
 using System;
-using Gallio.Model.Logging;
+using Gallio.Common.Markup;
 using Gallio.Common.Reflection;
 using Gallio.Runner.Reports;
 using Gallio.Model;
@@ -75,7 +75,7 @@ namespace MbUnit.Tests.Integration
             TestStepRun testStepRun = Runner.GetPrimaryTestStepRun(codeReference);
             Assert.AreEqual(TestStatus.Passed, testStepRun.Result.Outcome.Status);
 
-            string actualOutput = testStepRun.TestLog.GetStream(TestLogStreamNames.ConsoleOutput).ToString();
+            string actualOutput = testStepRun.TestLog.GetStream(MarkupStreamNames.ConsoleOutput).ToString();
             Assert.AreEqual(expectedOutput, actualOutput);
         }
     }

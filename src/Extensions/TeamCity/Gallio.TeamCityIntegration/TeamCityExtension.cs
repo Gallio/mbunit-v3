@@ -16,7 +16,7 @@
 using System;
 using System.Text;
 using Gallio.Model;
-using Gallio.Model.Logging;
+using Gallio.Common.Markup;
 using Gallio.Runner.Events;
 using Gallio.Runner.Extensions;
 using Gallio.Runtime.Logging;
@@ -97,27 +97,27 @@ namespace Gallio.TeamCityIntegration
                         var warningText = new StringBuilder();
                         var failureText = new StringBuilder();
 
-                        foreach (StructuredTestLogStream stream in e.TestStepRun.TestLog.Streams)
+                        foreach (StructuredStream stream in e.TestStepRun.TestLog.Streams)
                         {
                             switch (stream.Name)
                             {
                                 default:
-                                case TestLogStreamNames.ConsoleInput:
-                                case TestLogStreamNames.ConsoleOutput:
-                                case TestLogStreamNames.DebugTrace:
-                                case TestLogStreamNames.Default:
+                                case MarkupStreamNames.ConsoleInput:
+                                case MarkupStreamNames.ConsoleOutput:
+                                case MarkupStreamNames.DebugTrace:
+                                case MarkupStreamNames.Default:
                                     AppendWithSeparator(outputText, stream.ToString());
                                     break;
 
-                                case TestLogStreamNames.ConsoleError:
+                                case MarkupStreamNames.ConsoleError:
                                     AppendWithSeparator(errorText, stream.ToString());
                                     break;
 
-                                case TestLogStreamNames.Failures:
+                                case MarkupStreamNames.Failures:
                                     AppendWithSeparator(failureText, stream.ToString());
                                     break;
 
-                                case TestLogStreamNames.Warnings:
+                                case MarkupStreamNames.Warnings:
                                     AppendWithSeparator(warningText, stream.ToString());
                                     break;
                             }

@@ -21,7 +21,7 @@ using System.Xml;
 using Gallio.Framework;
 using Gallio.Model;
 using Gallio.Model.Execution;
-using Gallio.Model.Logging;
+using Gallio.Common.Markup;
 using Gallio.MSTestAdapter.Properties;
 using Gallio.MSTestAdapter.Wrapper;
 using Gallio.Runner.Caching;

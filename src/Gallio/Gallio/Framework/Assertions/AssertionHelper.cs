@@ -16,7 +16,7 @@
 using System;
 using System.Threading;
 using Gallio.Common;
-using Gallio.Runtime.Diagnostics;
+using Gallio.Common.Diagnostics;
 
 namespace Gallio.Framework.Assertions
 {

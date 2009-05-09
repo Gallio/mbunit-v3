@@ -20,7 +20,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Reflection;
 using Gallio.Common;
-using Gallio.Runtime.Diagnostics;
+using Gallio.Common.Diagnostics;
 
 namespace Gallio.Framework
 {

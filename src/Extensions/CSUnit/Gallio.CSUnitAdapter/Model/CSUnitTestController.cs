@@ -24,7 +24,7 @@ using Gallio.Common.Collections;
 using Gallio.CSUnitAdapter.Properties;
 using Gallio.Model;
 using Gallio.Model.Execution;
-using Gallio.Model.Logging;
+using Gallio.Common.Markup;
 using Gallio.Common.Reflection;
 using Gallio.Runner.Harness;
 using Gallio.Runtime;
@@ -221,7 +221,7 @@ namespace Gallio.CSUnitAdapter.Model
                         loader.LoadAssembly(assemblyPath);
 
                         // Run the tests of that assembly
-                        TextWriter consoleOutputWriter = new ContextualLogTextWriter(TestLogStreamNames.ConsoleOutput);
+                        TextWriter consoleOutputWriter = new ContextualLogTextWriter(MarkupStreamNames.ConsoleOutput);
                         loader.RunTests(this, consoleOutputWriter);
                     }
                 }
@@ -308,7 +308,7 @@ namespace Gallio.CSUnitAdapter.Model
                     {
                         if (args.Failure != null)
                         {
-                            TestLogStreamWriter log = context.LogWriter.Failures;
+                            MarkupStreamWriter log = context.LogWriter.Failures;
 
                             using (log.BeginSection(Resources.CSUnitTestController_ResultMessageSectionName))
                             {
@@ -339,7 +339,7 @@ namespace Gallio.CSUnitAdapter.Model
                     {
                         if (!String.IsNullOrEmpty(args.Reason))
                         {
-                            TestLogStreamWriter log = context.LogWriter.Failures;
+                            MarkupStreamWriter log = context.LogWriter.Failures;
 
                             using (log.BeginSection(Resources.CSUnitTestController_ResultMessageSectionName))
                             {
@@ -454,7 +454,7 @@ namespace Gallio.CSUnitAdapter.Model
                 }
                 else if (!String.IsNullOrEmpty(reason))
                 {
-                    TestLogStreamWriter log = fixtureContext.LogWriter.Failures;
+                    MarkupStreamWriter log = fixtureContext.LogWriter.Failures;
 
                     using (log.BeginSection(Resources.CSUnitTestController_ResultMessageSectionName))
                     {

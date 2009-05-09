@@ -19,7 +19,7 @@ using Gallio;
 using Gallio.Common;
 using Gallio.Framework.Assertions;
 using Gallio.Model;
-using Gallio.Runtime.Diagnostics;
+using Gallio.Common.Diagnostics;
 using Gallio.Common.Reflection;
 
 namespace Gallio.Framework

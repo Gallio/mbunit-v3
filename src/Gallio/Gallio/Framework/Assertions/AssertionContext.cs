@@ -20,7 +20,7 @@ using Gallio;
 using Gallio.Common;
 using Gallio.Common.Collections;
 using Gallio.Framework;
-using Gallio.Runtime.Diagnostics;
+using Gallio.Common.Diagnostics;
 
 namespace Gallio.Framework.Assertions
 {

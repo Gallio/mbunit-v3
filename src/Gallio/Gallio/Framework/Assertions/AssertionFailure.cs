@@ -17,8 +17,8 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
-using Gallio.Runtime.Diagnostics;
-using Gallio.Model.Logging;
+using Gallio.Common.Diagnostics;
+using Gallio.Common.Markup;
 
 namespace Gallio.Framework.Assertions
 {
@@ -33,7 +33,7 @@ namespace Gallio.Framework.Assertions
     /// </para>
     /// </summary>
     [Serializable]
-    public class AssertionFailure : ITestLogStreamWritable
+    public class AssertionFailure : IMarkupStreamWritable
     {
         private const int MaxPaddedLabelLength = 16;
 
@@ -125,7 +125,7 @@ namespace Gallio.Framework.Assertions
         /// </summary>
         /// <param name="writer">The test log stream</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="writer"/> is null</exception>
-        public virtual void WriteTo(TestLogStreamWriter writer)
+        public virtual void WriteTo(MarkupStreamWriter writer)
         {
             if (writer == null)
                 throw new ArgumentNullException("writer");
@@ -148,7 +148,7 @@ namespace Gallio.Framework.Assertions
         /// <returns>The formatted string</returns>
         public override string ToString()
         {
-            StringTestLogWriter writer = new StringTestLogWriter(false);
+            StringMarkupDocumentWriter writer = new StringMarkupDocumentWriter(false);
             WriteTo(writer.Default);
             return writer.ToString();
         }
@@ -157,7 +157,7 @@ namespace Gallio.Framework.Assertions
         /// Writes the details about the assertion failure to the structured text writer.
         /// </summary>
         /// <param name="writer">The structured text writer, not null</param>
-        protected virtual void WriteDetails(TestLogStreamWriter writer)
+        protected virtual void WriteDetails(MarkupStreamWriter writer)
         {
             if (!string.IsNullOrEmpty(message))
                 writer.WriteLine(message);
@@ -211,7 +211,7 @@ namespace Gallio.Framework.Assertions
                 writer.Write(' ');
         }
 
-        private static void WriteLabel(TestLogStreamWriter writer, string label, int paddedLength)
+        private static void WriteLabel(MarkupStreamWriter writer, string label, int paddedLength)
         {
             using (writer.BeginMarker(Marker.Label))
             {
@@ -221,12 +221,12 @@ namespace Gallio.Framework.Assertions
             }
         }
 
-        private static void WriteFormattedValue(TestLogStreamWriter writer, StructuredText formattedValue)
+        private static void WriteFormattedValue(MarkupStreamWriter writer, StructuredText formattedValue)
         {
             WriteTruncated(writer, formattedValue, MaxFormattedValueLength);
         }
 
-        private static void WriteTruncated(TestLogStreamWriter writer, StructuredText text, int maxLength)
+        private static void WriteTruncated(MarkupStreamWriter writer, StructuredText text, int maxLength)
         {
             if (text.TruncatedWriteTo(writer, maxLength))
                 writer.WriteEllipsis();

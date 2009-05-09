@@ -17,7 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using Gallio.Runtime.Formatting;
-using Gallio.Runtime.Diagnostics;
+using Gallio.Common.Diagnostics;
 using MbUnit.Framework;
 
 namespace Gallio.Tests.Runtime.Formatting

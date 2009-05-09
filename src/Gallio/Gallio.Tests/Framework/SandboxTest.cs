@@ -21,7 +21,7 @@ using System.Threading;
 using Gallio.Framework;
 using Gallio.Framework.Assertions;
 using Gallio.Model;
-using Gallio.Model.Logging;
+using Gallio.Common.Markup;
 using MbUnit.Framework;
 using Rhino.Mocks;
 
@@ -43,13 +43,13 @@ namespace Gallio.Tests.Framework
         {
             Sandbox sandbox = new Sandbox();
             Assert.Throws<ArgumentNullException>(() =>
-                sandbox.Run(MockRepository.GenerateStub<TestLogWriter>(), null, "description"));
+                sandbox.Run(MockRepository.GenerateStub<MarkupDocumentWriter>(), null, "description"));
         }
 
         [Test]
         public void WhenActionCompletesNormally_RunReturnsPassedAndLogsNothing()
         {
-            StructuredTestLogWriter writer = new StructuredTestLogWriter();
+            StructuredDocumentWriter writer = new StructuredDocumentWriter();
             Sandbox sandbox = new Sandbox();
             Assert.AreEqual(TestOutcome.Passed, sandbox.Run(writer, delegate { }, null));
 
@@ -59,7 +59,7 @@ namespace Gallio.Tests.Framework
         [Test]
         public void WhenActionThrowsANonTestException_RunReturnsFailedAndLogsTheException()
         {
-            StructuredTestLogWriter writer = new StructuredTestLogWriter();
+            StructuredDocumentWriter writer = new StructuredDocumentWriter();
 
             Sandbox sandbox = new Sandbox();
             Assert.AreEqual(TestOutcome.Failed, sandbox.Run(writer, delegate { throw new InvalidOperationException("Foo"); }, null));
@@ -70,7 +70,7 @@ namespace Gallio.Tests.Framework
         [Test]
         public void WhenActionThrowsTestExceptionWithExcludedStackTraceAndDefaultMessage_RunReturnsOutputAndLogsNothing()
         {
-            StructuredTestLogWriter writer = new StructuredTestLogWriter();
+            StructuredDocumentWriter writer = new StructuredDocumentWriter();
 
             Sandbox sandbox = new Sandbox();
             Assert.AreEqual(TestOutcome.Canceled, sandbox.Run(writer, delegate { throw new SilentTestException(TestOutcome.Canceled); }, null));
@@ -81,7 +81,7 @@ namespace Gallio.Tests.Framework
         [Test]
         public void WhenActionThrowsTestExceptionWithExcludedStackTraceAndNonDefaultMessage_RunReturnsOutputAndLogsTheMessageButNotTheException()
         {
-            StructuredTestLogWriter writer = new StructuredTestLogWriter();
+            StructuredDocumentWriter writer = new StructuredDocumentWriter();
 
             Sandbox sandbox = new Sandbox();
             Assert.AreEqual(TestOutcome.Error, sandbox.Run(writer, delegate { throw new SilentTestException(TestOutcome.Error, "Message."); }, null));
@@ -93,7 +93,7 @@ namespace Gallio.Tests.Framework
         [Test]
         public void WhenActionThrowsTestExceptionWithIncludedStackTraceAndNonDefaultMessage_RunReturnsOutputAndLogsTheException()
         {
-            StructuredTestLogWriter writer = new StructuredTestLogWriter();
+            StructuredDocumentWriter writer = new StructuredDocumentWriter();
 
             Sandbox sandbox = new Sandbox();
             Assert.AreEqual(TestOutcome.Failed, sandbox.Run(writer, delegate { throw new AssertionException("Reason."); }, null));
@@ -105,7 +105,7 @@ namespace Gallio.Tests.Framework
         [Test]
         public void WhenActionFailsAndADescriptionWasProvided_TheDescriptionAppearsInTheLog()
         {
-            StructuredTestLogWriter writer = new StructuredTestLogWriter();
+            StructuredDocumentWriter writer = new StructuredDocumentWriter();
 
             Sandbox sandbox = new Sandbox();
             Assert.AreEqual(TestOutcome.Failed, sandbox.Run(writer, delegate { throw new InvalidOperationException("Foo"); }, "SetUp"));
@@ -117,7 +117,7 @@ namespace Gallio.Tests.Framework
         [Test]
         public void CanCatchThreadAbortException()
         {
-            StructuredTestLogWriter writer = new StructuredTestLogWriter()
+            StructuredDocumentWriter writer = new StructuredDocumentWriter()
                 ;
             Sandbox sandbox = new Sandbox();
             Assert.AreEqual(TestOutcome.Failed, sandbox.Run(writer, delegate { Thread.CurrentThread.Abort(this); }, "Execute"));
@@ -129,7 +129,7 @@ namespace Gallio.Tests.Framework
         [Test]
         public void RunCanBeAbortedInProgress()
         {
-            StructuredTestLogWriter writer = new StructuredTestLogWriter();
+            StructuredDocumentWriter writer = new StructuredDocumentWriter();
             ManualResetEvent ready = new ManualResetEvent(false);
             bool completed = false;
 
@@ -179,7 +179,7 @@ namespace Gallio.Tests.Framework
 
         private static void RunWithTimeout(TimeSpan waitTime, TimeSpan? timeout)
         {
-            StructuredTestLogWriter writer = new StructuredTestLogWriter();
+            StructuredDocumentWriter writer = new StructuredDocumentWriter();
             bool completed = false;
 
             Sandbox sandbox = new Sandbox();
@@ -220,7 +220,7 @@ namespace Gallio.Tests.Framework
         [Test]
         public void WhenSandboxEntersProtectedContext_AbortsAreDeferred()
         {
-            StructuredTestLogWriter writer = new StructuredTestLogWriter();
+            StructuredDocumentWriter writer = new StructuredDocumentWriter();
             bool completed = false;
 
             Sandbox sandbox = new Sandbox();
@@ -284,7 +284,7 @@ namespace Gallio.Tests.Framework
             [Test]
             public void RunExitsImmediatelyAndLogsMessage()
             {
-                StructuredTestLogWriter writer = new StructuredTestLogWriter();
+                StructuredDocumentWriter writer = new StructuredDocumentWriter();
                 bool actionWasRun = false;
                 abortedSandbox.Run(writer, () => actionWasRun = true, "Description");
 

@@ -16,7 +16,7 @@
 using System;
 using System.Text;
 using Gallio.Common.Collections;
-using Gallio.Model.Logging;
+using Gallio.Common.Markup;
 using Gallio.Runner.Events;
 using Gallio.Runtime.Logging;
 using Gallio.Model;
@@ -76,8 +76,8 @@ namespace Gallio.Runner.Extensions
                     if (!testCaseSteps.Contains(e.TestStepRun.Step.Id))
                     {
                         if (e.TestStepRun.Result.Outcome.Status != TestStatus.Passed
-                            && (e.TestStepRun.TestLog.GetStream(TestLogStreamNames.Warnings) != null
-                                || e.TestStepRun.TestLog.GetStream(TestLogStreamNames.Failures) != null))
+                            && (e.TestStepRun.TestLog.GetStream(MarkupStreamNames.Warnings) != null
+                                || e.TestStepRun.TestLog.GetStream(MarkupStreamNames.Failures) != null))
                         {
                             LogNonTestCaseProblem(e);
                         }
@@ -142,8 +142,8 @@ namespace Gallio.Runner.Extensions
         {
             TestOutcome outcome = e.TestStepRun.Result.Outcome;
             LogSeverity severity = GetLogSeverityForOutcome(outcome);
-            string warnings = FormatStream(e.TestStepRun, TestLogStreamNames.Warnings);
-            string failures = FormatStream(e.TestStepRun, TestLogStreamNames.Failures);
+            string warnings = FormatStream(e.TestStepRun, MarkupStreamNames.Warnings);
+            string failures = FormatStream(e.TestStepRun, MarkupStreamNames.Failures);
 
             StringBuilder messageBuilder = new StringBuilder();
             messageBuilder.AppendFormat("[{0}] {1} {2}", outcome.DisplayName, e.GetStepKind(), e.TestStepRun.Step.FullName);
@@ -173,7 +173,7 @@ namespace Gallio.Runner.Extensions
 
         private static string FormatStream(TestStepRun testStepRun, string streamName)
         {
-            StructuredTestLogStream stream = testStepRun.TestLog.GetStream(streamName);
+            StructuredStream stream = testStepRun.TestLog.GetStream(streamName);
             return stream != null ? stream.ToString() : @"";
         }
 

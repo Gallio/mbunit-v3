@@ -19,7 +19,7 @@ using System.Threading;
 using Gallio.Common.Collections;
 using Gallio.Framework;
 using Gallio.Model;
-using Gallio.Model.Logging;
+using Gallio.Common.Markup;
 using Gallio.Common.Reflection;
 using Gallio.Runner.Reports;
 using Gallio.Tests;
@@ -53,7 +53,7 @@ namespace MbUnit.Tests.Framework
                 if (i == 1)
                 {
                     Assert.AreEqual(TestOutcome.Failed, testStep.Result.Outcome);
-                    AssertLogContains(testStep, "Boom", TestLogStreamNames.Failures);
+                    AssertLogContains(testStep, "Boom", MarkupStreamNames.Failures);
                 }
                 else
                 {
@@ -86,7 +86,7 @@ namespace MbUnit.Tests.Framework
                 {
                     Assert.AreEqual(TestOutcome.Failed, fixtureStep.Result.Outcome);
                     Assert.AreEqual(TestOutcome.Failed, testRun.Result.Outcome);
-                    AssertLogContains(testRun, "Boom", TestLogStreamNames.Failures);
+                    AssertLogContains(testRun, "Boom", MarkupStreamNames.Failures);
                 }
                 else
                 {

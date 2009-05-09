@@ -14,7 +14,7 @@
 // limitations under the License.
 
 using System;
-using Gallio.Model.Logging;
+using Gallio.Common.Markup;
 using Gallio.Model.Messages;
 
 namespace Gallio.Model.Execution
@@ -22,7 +22,7 @@ namespace Gallio.Model.Execution
     /// <summary>
     /// A log writer that sends messages to a <see cref="ITestExecutionListener" />.
     /// </summary>
-    public class ObservableTestLogWriter : TestLogWriter
+    public class ObservableTestLogWriter : MarkupDocumentWriter
     {
         private ITestExecutionListener testExecutionListener;
         private readonly string stepId;

@@ -18,9 +18,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using Gallio.Common.Concurrency;
 using Gallio.Model;
-using Gallio.Runtime.Diagnostics;
+using Gallio.Common.Diagnostics;
 using Gallio.Model.Execution;
-using Gallio.Model.Logging;
+using Gallio.Common.Markup;
 using Gallio.Model.Messages;
 using Gallio.Model.Serialization;
 using Gallio.Common.Reflection;
@@ -602,15 +602,15 @@ namespace Gallio.Runner
             {
                 public readonly TestData TestData;
                 public readonly TestStepRun TestStepRun;
-                public readonly StructuredTestLogWriter logWriter;
+                public readonly StructuredDocumentWriter logWriter;
 
                 public TestStepState(TestData testData, TestStepRun testStepRun)
                 {
                     TestData = testData;
                     TestStepRun = testStepRun;
 
-                    logWriter = new StructuredTestLogWriter();
-                    testStepRun.TestLog = logWriter.TestLog;
+                    logWriter = new StructuredDocumentWriter();
+                    testStepRun.TestLog = logWriter.Document;
                 }
             }
         }

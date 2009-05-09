@@ -14,7 +14,7 @@
 // limitations under the License.
 
 using System;
-using Gallio.Model.Logging;
+using Gallio.Common.Markup;
 using Gallio.Common.Reflection;
 using Gallio.Runner.Reports;
 using Gallio.Tests;
@@ -46,7 +46,7 @@ namespace Gallio.XunitAdapter.Tests.Integration
             Assert.IsTrue(run.Step.IsPrimary);
             Assert.IsFalse(run.Step.IsDynamic);
             Assert.AreEqual(TestStatus.Failed, run.Result.Outcome.Status);
-            Assert.Contains(run.TestLog.GetStream(TestLogStreamNames.Failures).ToString(), "Boom");
+            Assert.Contains(run.TestLog.GetStream(MarkupStreamNames.Failures).ToString(), "Boom");
         }
     }
 }

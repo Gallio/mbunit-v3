@@ -17,7 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using Gallio.Model.Execution;
-using Gallio.Model.Logging;
+using Gallio.Common.Markup;
 using Gallio.Runtime.ProgressMonitoring;
 using Gallio.Model;
 using Gallio.NUnitAdapter.Properties;
@@ -182,13 +182,13 @@ namespace Gallio.NUnitAdapter.Model
                 {
                     default:
                     case TestOutputType.Out:
-                        streamName = TestLogStreamNames.ConsoleOutput;
+                        streamName = MarkupStreamNames.ConsoleOutput;
                         break;
                     case TestOutputType.Error:
-                        streamName = TestLogStreamNames.ConsoleError;
+                        streamName = MarkupStreamNames.ConsoleError;
                         break;
                     case TestOutputType.Trace:
-                        streamName = TestLogStreamNames.DebugTrace;
+                        streamName = MarkupStreamNames.DebugTrace;
                         break;
                 }
 
@@ -249,9 +249,9 @@ namespace Gallio.NUnitAdapter.Model
 
                 progressMonitor.Worked(1);
 
-                string logStreamName = nunitResult.ResultState == ResultState.Success ? TestLogStreamNames.Warnings : TestLogStreamNames.Failures;
+                string logStreamName = nunitResult.ResultState == ResultState.Success ? MarkupStreamNames.Warnings : MarkupStreamNames.Failures;
 
-                TestLogWriter logWriter = testContext.LogWriter;
+                MarkupDocumentWriter logWriter = testContext.LogWriter;
                 if (nunitResult.Message != null)
                 {
                     using (logWriter[logStreamName].BeginSection(Resources.NUnitTestController_ResultMessageSectionName))

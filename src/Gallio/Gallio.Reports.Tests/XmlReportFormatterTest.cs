@@ -14,7 +14,7 @@
 // limitations under the License.
 
 using System.Collections.Specialized;
-using Gallio.Model.Logging;
+using Gallio.Common.Markup;
 using Gallio.Runtime.ProgressMonitoring;
 using Gallio.Runner.Reports;
 using Gallio.Tests;

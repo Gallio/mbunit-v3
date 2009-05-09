@@ -21,7 +21,7 @@ using Gallio.Runner.Reports;
 using Gallio.Tests;
 using MbUnit.Framework;
 using System.Linq;
-using Gallio.Model.Logging;
+using Gallio.Common.Markup;
 
 namespace MbUnit.Tests.Framework
 {
@@ -59,7 +59,7 @@ namespace MbUnit.Tests.Framework
         {
             var run = Runner.GetPrimaryTestStepRun(CodeReference.CreateFromMember(typeof(EnumDataSample).GetMethod(testMethod)));
             Assert.AreElementsEqualIgnoringOrder(expectedTestLogOutput, 
-                run.Children.Select(x => x.TestLog.GetStream(TestLogStreamNames.Default).ToString()),
+                run.Children.Select(x => x.TestLog.GetStream(MarkupStreamNames.Default).ToString()),
                 (x, y) => y.Contains(x));
         }
 

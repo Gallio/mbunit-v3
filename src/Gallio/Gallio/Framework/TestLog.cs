@@ -17,8 +17,8 @@ using System;
 using System.Diagnostics;
 using System.Drawing;
 using System.Xml.Serialization;
-using Gallio.Runtime.Diagnostics;
-using Gallio.Model.Logging;
+using Gallio.Common.Diagnostics;
+using Gallio.Common.Markup;
 
 namespace Gallio.Framework
 {
@@ -58,7 +58,7 @@ namespace Gallio.Framework
         /// </summary>
         /// <returns>The execution log, never null</returns>
         /// <exception cref="InvalidOperationException">Thrown if there is no current log writer</exception>
-        public static TestLogWriter Writer
+        public static MarkupDocumentWriter Writer
         {
             get
             {
@@ -70,65 +70,60 @@ namespace Gallio.Framework
         }
         #endregion
 
-        #region Current log writer stream accessors
+        #region Current log stream writer accessors
         /// <summary>
-        /// Gets the current stream writer for the built-in log stream where the <see cref="Console.In" />
-        /// stream for the test is recorded.
+        /// Gets the current stream writer for captured <see cref="Console.In" /> messages.
         /// </summary>
-        public static TestLogStreamWriter ConsoleInput
+        public static MarkupStreamWriter ConsoleInput
         {
             get { return Writer.ConsoleInput; }
         }
 
         /// <summary>
-        /// Gets the current stream writer for the built-in log stream where the <see cref="Console.Out" />
-        /// stream for the test is recorded.
+        /// Gets the current stream writer for captured <see cref="Console.Out" /> messages.
         /// </summary>
-        public static TestLogStreamWriter ConsoleOutput
+        public static MarkupStreamWriter ConsoleOutput
         {
             get { return Writer.ConsoleOutput; }
         }
 
         /// <summary>
-        /// Gets the current stream writer for the built-in log stream where the <see cref="Console.Error" />
-        /// stream for the test is recorded.
+        /// Gets the current stream writer for captured <see cref="Console.Error" /> messages.
         /// </summary>
-        public static TestLogStreamWriter ConsoleError
+        public static MarkupStreamWriter ConsoleError
         {
             get { return Writer.ConsoleError; }
         }
 
         /// <summary>
-        /// Gets the current stream writer for the built-in log stream where diagnostic <see cref="Debug" />
-        /// and <see cref="Trace" /> information is recorded.
+        /// Gets the current stream writer for diagnostic <see cref="Debug" /> and <see cref="Trace" /> messages.
         /// </summary>
-        public static TestLogStreamWriter DebugTrace
+        public static MarkupStreamWriter DebugTrace
         {
             get { return Writer.DebugTrace; }
         }
 
         /// <summary>
-        /// Gets the current stream writer for the built-in log stream where assertion failures,
-        /// exceptions and other failure data are recorded.
+        /// Gets the current stream writer for reporting failure messages and exceptions.
         /// </summary>
-        public static TestLogStreamWriter Failures
+        public static MarkupStreamWriter Failures
         {
             get { return Writer.Failures; }
         }
 
         /// <summary>
-        /// Gets the current stream writer for the built-in log stream where warnings are recorded.
+        /// Gets the current stream writer for reporting warning messages.
         /// </summary>
-        public static TestLogStreamWriter Warnings
+        public static MarkupStreamWriter Warnings
         {
             get { return Writer.Warnings; }
         }
 
         /// <summary>
-        /// Gets the current stream writer for the built-in log stream where the output from the convenience methods
-        /// of the <see cref="TestLog" /> class is recorded.
+        /// Gets the current stream writer for generic log messages such as those written
+        /// using the static methods of this class.
         /// </summary>
-        public static TestLogStreamWriter Default
+        public static MarkupStreamWriter Default
         {
             get { return Writer.Default; }
         }
@@ -158,7 +153,7 @@ namespace Gallio.Framework
         /// </summary>
         /// <param name="attachment">The attachment to include</param>
         /// <returns>The attachment</returns>
-        /// <seealso cref="TestLogStreamWriter.Embed"/>
+        /// <seealso cref="MarkupStreamWriter.Embed"/>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="attachment"/> is null</exception>
         /// <exception cref="InvalidOperationException">Thrown if there is already an attachment
         /// with the same name</exception>
@@ -179,7 +174,7 @@ namespace Gallio.Framework
         /// currently executing test step.</param>
         /// <param name="text">The text to attach</param>
         /// <returns>The attachment</returns>
-        /// <seealso cref="TestLogStreamWriter.EmbedPlainText"/>
+        /// <seealso cref="MarkupStreamWriter.EmbedPlainText"/>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="text"/> is null</exception>
         /// <exception cref="InvalidOperationException">Thrown if there is already an attachment
         /// with the same name</exception>
@@ -200,7 +195,7 @@ namespace Gallio.Framework
         /// currently executing test step.</param>
         /// <param name="html">The HTML to attach</param>
         /// <returns>The attachment</returns>
-        /// <seealso cref="TestLogStreamWriter.EmbedHtml"/>
+        /// <seealso cref="MarkupStreamWriter.EmbedHtml"/>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="html"/> is null</exception>
         /// <exception cref="InvalidOperationException">Thrown if there is already an attachment
         /// with the same name</exception>
@@ -221,7 +216,7 @@ namespace Gallio.Framework
         /// currently executing test step.</param>
         /// <param name="xhtml">The XHTML to attach</param>
         /// <returns>The attachment</returns>
-        /// <seealso cref="TestLogStreamWriter.EmbedXHtml"/>
+        /// <seealso cref="MarkupStreamWriter.EmbedXHtml"/>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="xhtml"/> is null</exception>
         /// <exception cref="InvalidOperationException">Thrown if there is already an attachment
         /// with the same name</exception>
@@ -242,7 +237,7 @@ namespace Gallio.Framework
         /// currently executing test step.</param>
         /// <param name="xml">The XML to attach</param>
         /// <returns>The attachment</returns>
-        /// <seealso cref="TestLogStreamWriter.EmbedXml"/>
+        /// <seealso cref="MarkupStreamWriter.EmbedXml"/>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="xml"/> is null</exception>
         /// <exception cref="InvalidOperationException">Thrown if there is already an attachment
         /// with the same name</exception>
@@ -263,7 +258,7 @@ namespace Gallio.Framework
         /// currently executing test step.</param>
         /// <param name="image">The image to attach</param>
         /// <returns>The attachment</returns>
-        /// <seealso cref="TestLogStreamWriter.EmbedImage"/>
+        /// <seealso cref="MarkupStreamWriter.EmbedImage"/>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="image"/> is null</exception>
         /// <exception cref="InvalidOperationException">Thrown if there is already an attachment
         /// with the same name</exception>
@@ -285,7 +280,7 @@ namespace Gallio.Framework
         /// currently executing test step.</param>
         /// <param name="obj">The object to serialize and embed, must not be null</param>
         /// <returns>The attachment</returns>
-        /// <seealso cref="TestLogStreamWriter.EmbedObjectAsXml(string, object)"/>
+        /// <seealso cref="MarkupStreamWriter.EmbedObjectAsXml(string, object)"/>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="obj"/> is null</exception>
         /// <exception cref="InvalidOperationException">Thrown if there is already an attachment
         /// with the same name</exception>
@@ -309,7 +304,7 @@ namespace Gallio.Framework
         /// <param name="xmlSerializer">The <see cref="XmlSerializer" /> to use, or null to use the default <see cref="XmlSerializer" />
         /// for the object's type</param>
         /// <returns>The attachment</returns>
-        /// <seealso cref="TestLogStreamWriter.EmbedObjectAsXml(string, object, XmlSerializer)"/>
+        /// <seealso cref="MarkupStreamWriter.EmbedObjectAsXml(string, object, XmlSerializer)"/>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="obj"/> is null</exception>
         /// <exception cref="InvalidOperationException">Thrown if there is already an attachment
         /// with the same name</exception>
@@ -495,7 +490,7 @@ namespace Gallio.Framework
         /// </para>
         /// </summary>
         /// <param name="obj">The object to write, or null if none</param>
-        public static void Write(ITestLogStreamWritable obj)
+        public static void Write(IMarkupStreamWritable obj)
         {
             Default.Write(obj);
         }
@@ -710,7 +705,7 @@ namespace Gallio.Framework
         /// </remarks>
         /// <param name="attachment">The attachment to embed</param>
         /// <returns>The attachment</returns>
-        /// <seealso cref="TestLogWriter.Attach"/>
+        /// <seealso cref="MarkupDocumentWriter.Attach"/>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="attachment"/> is null</exception>
         /// <exception cref="InvalidOperationException">Thrown if there is already an attachment
         /// with the same name</exception>
@@ -720,24 +715,29 @@ namespace Gallio.Framework
         }
 
         /// <summary>
-        /// Embeds another copy of an existing attachment.  This method can be used to
-        /// repeatedly embed an existing attachment at multiple points in multiple
-        /// streams without needing to keep the <see cref="Attachment" /> instance
-        /// itself around.  This can help to reduce memory footprint since the
-        /// original <see cref="Attachment" /> instance can be garbage collected shortly
-        /// after it is first attached.
+        /// Embeds another copy of an existing attachment.
         /// <para>
         /// This is a convenience method that forwards the request to the current default
         /// log stream writer as returned by the <see cref="Default" /> property.
         /// </para>
         /// </summary>
         /// <remarks>
+        /// <para>
+        /// This method can be used to
+        /// repeatedly embed an existing attachment at multiple points in multiple
+        /// streams without needing to keep the <see cref="Attachment" /> instance
+        /// itself around.  This can help to reduce memory footprint since the
+        /// original <see cref="Attachment" /> instance can be garbage collected shortly
+        /// after it is first attached.
+        /// </para>
+        /// <para>
         /// An attachment instance can be embedded multiple times efficiently since each
         /// embedded copy is typically represented as a link to the same common attachment instance.
+        /// </para>
         /// </remarks>
         /// <param name="attachmentName">The name of the existing attachment to embed</param>
-        /// <seealso cref="TestLogWriter.Attach"/>
-        /// <seealso cref="TestLogStreamWriter.Embed"/>
+        /// <seealso cref="MarkupDocumentWriter.Attach"/>
+        /// <seealso cref="MarkupStreamWriter.Embed"/>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="attachmentName"/> is null</exception>
         /// <exception cref="InvalidOperationException">Thrown if no attachment with the specified
         /// name has been previously attached</exception>
@@ -758,7 +758,7 @@ namespace Gallio.Framework
         /// currently executing test step.</param>
         /// <param name="text">The text to attach</param>
         /// <returns>The attachment</returns>
-        /// <seealso cref="TestLogWriter.AttachPlainText"/>
+        /// <seealso cref="MarkupDocumentWriter.AttachPlainText"/>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="text"/> is null</exception>
         /// <exception cref="InvalidOperationException">Thrown if there is already an attachment
         /// with the same name</exception>
@@ -779,7 +779,7 @@ namespace Gallio.Framework
         /// currently executing test step.</param>
         /// <param name="html">The HTML to attach</param>
         /// <returns>The attachment</returns>
-        /// <seealso cref="TestLogWriter.AttachHtml"/>
+        /// <seealso cref="MarkupDocumentWriter.AttachHtml"/>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="html"/> is null</exception>
         /// <exception cref="InvalidOperationException">Thrown if there is already an attachment
         /// with the same name</exception>
@@ -800,7 +800,7 @@ namespace Gallio.Framework
         /// currently executing test step.</param>
         /// <param name="xhtml">The XHTML to attach</param>
         /// <returns>The attachment</returns>
-        /// <seealso cref="TestLogWriter.AttachXHtml"/>
+        /// <seealso cref="MarkupDocumentWriter.AttachXHtml"/>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="xhtml"/> is null</exception>
         /// <exception cref="InvalidOperationException">Thrown if there is already an attachment
         /// with the same name</exception>
@@ -821,7 +821,7 @@ namespace Gallio.Framework
         /// currently executing test step.</param>
         /// <param name="xml">The XML to attach</param>
         /// <returns>The attachment</returns>
-        /// <seealso cref="TestLogWriter.AttachXml"/>
+        /// <seealso cref="MarkupDocumentWriter.AttachXml"/>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="xml"/> is null</exception>
         /// <exception cref="InvalidOperationException">Thrown if there is already an attachment
         /// with the same name</exception>
@@ -842,7 +842,7 @@ namespace Gallio.Framework
         /// currently executing test step.</param>
         /// <param name="image">The image to attach</param>
         /// <returns>The attachment</returns>
-        /// <seealso cref="TestLogWriter.AttachImage"/>
+        /// <seealso cref="MarkupDocumentWriter.AttachImage"/>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="image"/> is null</exception>
         /// <exception cref="InvalidOperationException">Thrown if there is already an attachment
         /// with the same name</exception>
@@ -864,7 +864,7 @@ namespace Gallio.Framework
         /// currently executing test step.</param>
         /// <param name="obj">The object to serialize and embed, must not be null</param>
         /// <returns>The attachment</returns>
-        /// <seealso cref="TestLogWriter.AttachObjectAsXml(string, object)"/>
+        /// <seealso cref="MarkupDocumentWriter.AttachObjectAsXml(string, object)"/>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="obj"/> is null</exception>
         /// <exception cref="InvalidOperationException">Thrown if there is already an attachment
         /// with the same name</exception>
@@ -888,7 +888,7 @@ namespace Gallio.Framework
         /// <param name="xmlSerializer">The <see cref="XmlSerializer" /> to use, or null to use the default <see cref="XmlSerializer" />
         /// for the object's type</param>
         /// <returns>The attachment</returns>
-        /// <seealso cref="TestLogWriter.AttachObjectAsXml(string, object, XmlSerializer)"/>
+        /// <seealso cref="MarkupDocumentWriter.AttachObjectAsXml(string, object, XmlSerializer)"/>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="obj"/> is null</exception>
         /// <exception cref="InvalidOperationException">Thrown if there is already an attachment
         /// with the same name</exception>
