@@ -17,7 +17,6 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Gallio.Common.Collections;
-using Gallio.Common;
 using Gallio.Framework.Data;
 using Gallio.Runtime.Conversions;
 using Gallio.Runtime.Formatting;

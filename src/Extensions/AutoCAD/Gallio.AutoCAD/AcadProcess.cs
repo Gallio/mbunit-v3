@@ -24,6 +24,7 @@ using Gallio.AutoCAD.Commands;
 using Gallio.AutoCAD.Native;
 using Gallio.Common;
 using Gallio.Common.Concurrency;
+using Gallio.Common.Text;
 using Gallio.Runner;
 using Gallio.Runtime.Remoting;
 

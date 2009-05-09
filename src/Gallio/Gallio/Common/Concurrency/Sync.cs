@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using Gallio.Common.Diagnostics;
 
 namespace Gallio.Common.Concurrency
 {

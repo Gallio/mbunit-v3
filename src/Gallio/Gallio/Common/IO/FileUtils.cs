@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using Gallio.Common.Text;
 
 namespace Gallio.Common.IO
 {

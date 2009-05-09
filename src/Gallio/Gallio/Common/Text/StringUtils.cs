@@ -17,7 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Gallio.Common
+namespace Gallio.Common.Text
 {
     /// <summary>
     /// Provides utility functions for working with strings.

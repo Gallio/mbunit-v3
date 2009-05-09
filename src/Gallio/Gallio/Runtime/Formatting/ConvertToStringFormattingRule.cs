@@ -16,7 +16,7 @@
 using System;
 using System.Reflection;
 using Gallio.Common.Collections;
-using Gallio.Common;
+using Gallio.Common.Text;
 using Gallio.Runtime.Conversions;
 
 namespace Gallio.Runtime.Formatting

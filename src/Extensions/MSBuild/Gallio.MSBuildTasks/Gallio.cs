@@ -17,7 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
-using Gallio.Common;
+using Gallio.Common.Text;
 using Gallio.Runtime;
 using Gallio.MSBuildTasks.Properties;
 using Gallio.Common.Collections;

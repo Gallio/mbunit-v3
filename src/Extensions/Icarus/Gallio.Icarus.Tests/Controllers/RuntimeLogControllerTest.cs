@@ -15,7 +15,6 @@
 
 using System;
 using System.Drawing;
-using Gallio.Common;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Common.Diagnostics;
 using MbUnit.Framework;

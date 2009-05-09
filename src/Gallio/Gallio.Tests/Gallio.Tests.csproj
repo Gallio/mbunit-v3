@@ -295,11 +295,11 @@
     <Compile Include="Runner\Reports\TestStepRunTests.cs" />
     <Compile Include="Runner\TestLauncherTest.cs" />
     <Compile Include="Common\IO\CurrentDirectorySwitcherTest.cs" />
-    <Compile Include="Common\ExceptionUtilsTest.cs" />
+    <Compile Include="Common\Diagnostics\ExceptionUtilsTest.cs" />
     <Compile Include="Common\Policies\CorrelatedExceptionEventArgsTest.cs" />
     <Compile Include="Common\KeyedMemoizerTest.cs" />
     <Compile Include="Common\MemoizerTest.cs" />
-    <Compile Include="Common\StringUtilsTest.cs" />
+    <Compile Include="Common\Text\StringUtilsTest.cs" />
     <Compile Include="Common\Policies\UnhandledExceptionPolicyTest.cs" />
     <Compile Include="Common\Xml\XmlUtilsTest.cs" />
   </ItemGroup>

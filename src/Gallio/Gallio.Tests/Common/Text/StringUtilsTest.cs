@@ -15,10 +15,10 @@
 
 using System;
 using System.Collections.Generic;
-using Gallio.Common;
+using Gallio.Common.Text;
 using MbUnit.Framework;
 
-namespace Gallio.Tests.Common
+namespace Gallio.Tests.Common.Text
 {
     [TestFixture]
     [TestsOn(typeof(StringUtils))]

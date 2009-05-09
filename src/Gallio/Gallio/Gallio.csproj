@@ -754,7 +754,7 @@
     <Compile Include="Runtime\Loader\IAssemblyResolverManager.cs" />
     <Compile Include="Runtime\RuntimeSetup.cs" />
     <Compile Include="Runner\TestRunnerUtils.cs" />
-    <Compile Include="Common\ExceptionUtils.cs" />
+    <Compile Include="Common\Diagnostics\ExceptionUtils.cs" />
     <Compile Include="Common\IO\FileUtils.cs" />
     <Compile Include="Common\Hash64.cs" />
     <Compile Include="Runtime\Remoting\LongLivedMarshalByRefObject.cs" />
@@ -803,7 +803,7 @@
     <Compile Include="Common\Xml\XmlUtils.cs" />
     <Compile Include="Common\Xml\XmlSerializationUtils.cs" />
     <Compile Include="Common\Policies\CorrelatedExceptionEventArgs.cs" />
-    <Compile Include="Common\StringUtils.cs" />
+    <Compile Include="Common\Text\StringUtils.cs" />
     <Compile Include="Framework\TestLog.cs" />
     <Compile Include="Runtime\RuntimeAccessor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

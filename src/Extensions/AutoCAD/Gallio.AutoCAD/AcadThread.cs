@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Threading;
 using Gallio.Common;
+using Gallio.Common.Diagnostics;
 
 namespace Gallio.AutoCAD
 {

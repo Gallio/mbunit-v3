@@ -15,6 +15,7 @@
 
 using System;
 using System.Text;
+using Gallio.Common.Diagnostics;
 
 namespace Gallio.Common.Policies
 {

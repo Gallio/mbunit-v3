@@ -19,7 +19,7 @@ using System.Reflection;
 using System.Security.Permissions;
 using Gallio.Common.Platform;
 
-namespace Gallio.Common
+namespace Gallio.Common.Diagnostics
 {
     /// <summary>
     /// Provides helper functions for manipulating <see cref="Exception" />s.

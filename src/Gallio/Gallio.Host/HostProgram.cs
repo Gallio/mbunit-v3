@@ -16,7 +16,7 @@
 using System;
 using System.Diagnostics;
 using System.IO;
-using Gallio.Common;
+using Gallio.Common.Diagnostics;
 using Gallio.Host.Properties;
 using Gallio.Common.Platform;
 using Gallio.Common.Reflection;

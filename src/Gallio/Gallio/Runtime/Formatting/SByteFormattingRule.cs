@@ -15,7 +15,7 @@
 
 using System;
 using System.Text;
-using Gallio.Common;
+using Gallio.Common.Text;
 
 namespace Gallio.Runtime.Formatting
 {

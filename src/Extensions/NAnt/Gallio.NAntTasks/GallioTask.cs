@@ -17,7 +17,7 @@ using System;
 using System.Globalization;
 using System.IO;
 using System.Reflection;
-using Gallio.Common;
+using Gallio.Common.Text;
 using Gallio.Runtime;
 using Gallio.NAntTasks.Properties;
 using Gallio.Common.Collections;

@@ -16,11 +16,11 @@
 using System;
 using System.Reflection;
 using Gallio.Common.Collections;
-using Gallio.Common;
+using Gallio.Common.Diagnostics;
 using Gallio.Framework;
 using MbUnit.Framework;
 
-namespace Gallio.Tests.Common
+namespace Gallio.Tests.Common.Diagnostics
 {
     [TestFixture]
     [TestsOn(typeof(ExceptionUtils))]

@@ -19,6 +19,7 @@ using System.IO;
 using Gallio.Common;
 using Gallio.Common.Policies;
 using Gallio.Common.Reflection;
+using Gallio.Common.Text;
 using Gallio.Runtime.Logging;
 using Gallio.Common.Concurrency;
 using Gallio.Runtime.Hosting;

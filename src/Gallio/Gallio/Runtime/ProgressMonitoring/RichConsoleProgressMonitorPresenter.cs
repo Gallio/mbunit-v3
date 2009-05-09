@@ -14,7 +14,7 @@
 // limitations under the License.
 
 using System;
-using Gallio.Common;
+using Gallio.Common.Text;
 using Gallio.Runtime.ConsoleSupport;
 using Gallio.Runtime.ProgressMonitoring;
 using Gallio.Properties;

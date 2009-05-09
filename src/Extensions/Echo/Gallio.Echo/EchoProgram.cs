@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.IO;
 using Gallio.Common;
 using Gallio.Common.IO;
+using Gallio.Common.Text;
 using Gallio.Common.Xml;
 using Gallio.Runner.Projects;
 using Gallio.Runtime.Logging;

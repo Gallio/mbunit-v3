@@ -14,7 +14,7 @@
 // limitations under the License.
 
 using System;
-using Gallio.Common;
+using Gallio.Common.Text;
 
 namespace Gallio.Runtime.Formatting
 {
