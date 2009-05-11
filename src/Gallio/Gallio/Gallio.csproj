@@ -125,6 +125,13 @@
     <Compile Include="Common\Markup\Tags\Tag.cs" />
     <Compile Include="Common\Markup\Tags\TagFormatter.cs" />
     <Compile Include="Common\Markup\Tags\TextTag.cs" />
+    <Compile Include="Framework\Data\Generation\RandomInt32Generator.cs" />
+    <Compile Include="Framework\Data\Generation\SequenceInt32Generator.cs" />
+    <Compile Include="Framework\Data\Generation\Generator.cs" />
+    <Compile Include="Framework\Data\Generation\RandomDoubleGenerator.cs" />
+    <Compile Include="Framework\Data\Generation\RandomGenerator.cs" />
+    <Compile Include="Framework\Data\Generation\SequenceDoubleGenerator.cs" />
+    <Compile Include="Framework\Data\Generation\SequenceGenerator.cs" />
     <Compile Include="Runtime\Logging\MarkupStreamLogger.cs" />
     <Compile Include="Common\Markup\MarkupStreamNames.cs" />
     <Compile Include="Common\Markup\MarkupStreamWriter.cs" />
@@ -528,7 +535,6 @@
     <Compile Include="Framework\Data\DataBindingException.cs" />
     <Compile Include="Framework\Data\DataSource.cs" />
     <Compile Include="Framework\Data\DataSourceTable.cs" />
-    <Compile Include="Framework\Data\Generators.cs" />
     <Compile Include="Framework\Data\DataBindingSpec.cs" />
     <Compile Include="Framework\Data\IDataProvider.cs" />
     <Compile Include="Framework\Data\IDataItem.cs" />
@@ -812,6 +818,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Framework\Data\Generation\IGenerator.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">

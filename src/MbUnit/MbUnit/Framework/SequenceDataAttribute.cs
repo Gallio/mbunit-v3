@@ -18,6 +18,7 @@ using Gallio.Framework.Data;
 using Gallio.Framework.Pattern;
 using Gallio.Common.Reflection;
 using System.Collections;
+using Gallio.Framework.Data.Generation;
 
 namespace MbUnit.Framework
 {
@@ -25,25 +26,19 @@ namespace MbUnit.Framework
     /// <para>
     /// Provides a column of sequential values as a data source.
     /// </para>
-    /// <para>
-    /// The range of values is determined by the 'from' and 'to' arguments specified in the constructor.
-    /// The increment between each value of the sequence is optionnally set 
-    /// by the <see cref="Step"/> named parameter. The default step is 1 or -1, depending on the
-    /// direction of the sequence.
-    /// </para>
     /// <example>
     /// <code><![CDATA[
     /// [TestFixture]
     /// public class MyTestFixture
     /// {
     ///     [Test]
-    ///     public void MyTestMethod1([SequenceData(1, 4)] int value)
+    ///     public void MyTestMethod1([SequenceData(1, 1, 4)] int value)
     ///     {
     ///         // This test will run 4 times with the values 1, 2, 3 and 4.
     ///     }
     ///     
     ///     [Test]
-    ///     public void MyTestMethod2([SequenceData(0, 9, Step = 2.5)] double value)
+    ///     public void MyTestMethod2([SequenceData(0, 2.5, 5)] double value)
     ///     {
     ///         // This test will run 5 times with the values 0, 2.5, 5, 7.5, and 10.
     ///     }
@@ -55,66 +50,57 @@ namespace MbUnit.Framework
     [AttributeUsage(PatternAttributeTargets.DataContext, AllowMultiple = true, Inherited = true)]
     public class SequenceDataAttribute : DataAttribute
     {
-        private readonly double from;
-        private readonly double to;
+        private readonly IGenerator generator;
 
         /// <summary>
         /// <para>
-        /// Gets or sets the increment between each value of the sequence.
+        /// Adds a column of sequential <see cref="Int32"/> values.
         /// </para>
-        /// <remark>
-        /// This parameter is optional. If the the 'from' and 'to' values specified
-        /// in the <see cref="SequenceDataAttribute(double, double)"/> constructor define
-        /// an ascending sequence, the default value is 1; otherwise it is -1.
-        /// </remark>
         /// </summary>
-        public double Step
+        /// <param name="from">The starting value of the sequence.</param>
+        /// <param name="step">The increment between each value of the sequence.</param>
+        /// <param name="count">The length of the sequence.</param>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="count"/> is negative, 
+        /// or if <paramref name="from"/> or <paramref name="step"/> are one of the following:        
+        /// <list type="bullet">
+        /// <item><see cref="Int32.MinValue"/></item>
+        /// <item><see cref="Int32.MaxValue"/></item>
+        /// </list>
+        /// </exception>
+        [CLSCompliant(false)]
+        public SequenceDataAttribute(int from, int step, int count)
         {
-            get;
-            set;
+            this.generator = new SequenceInt32Generator(from, step, count);
         }
 
         /// <summary>
         /// <para>
-        /// Adds a column of sequential values.
+        /// Adds a column of sequential <see cref="Double"/> values.
         /// </para>
         /// </summary>
         /// <param name="from">The starting value of the sequence.</param>
-        /// <param name="to">The ending value of the sequence.</param>
-        /// <exception cref="ArgumentException">One of the specified arguments is NaN of Infinity.</exception>
+        /// <param name="step">The increment between each value of the sequence.</param>
+        /// <param name="count">The length of the sequence.</param>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="count"/> is negative, 
+        /// or if <paramref name="from"/> or <paramref name="step"/> are one of the following:        
+        /// <list type="bullet">
+        /// <item><see cref="Double.NaN"/></item>
+        /// <item><see cref="Double.PositiveInfinity"/></item>
+        /// <item><see cref="Double.NegativeInfinity"/></item>
+        /// <item><see cref="Double.MinValue"/></item>
+        /// <item><see cref="Double.MaxValue"/></item>
+        /// </list>
+        /// </exception>
         [CLSCompliant(false)]
-        public SequenceDataAttribute(double from, double to)
+        public SequenceDataAttribute(double from, double step, int count)
         {
-            if (Double.IsNaN(from) || Double.IsInfinity(from))
-                throw new ArgumentException("Cannot be NaN of Infinity.", "from");
-
-            if (Double.IsNaN(to) || Double.IsInfinity(to))
-                throw new ArgumentException("Cannot be NaN of Infinity.", "to");
-
-            this.from = from;
-            this.to = to;
-            Step = (Math.Sign(to - from) >= 0 ? 1 : -1);
+            this.generator = new SequenceDoubleGenerator(from, step, count);
         }
 
         /// <inheritdoc />
         protected override void PopulateDataSource(IPatternScope scope, DataSource dataSource, ICodeElementInfo codeElement)
         {
-            if (Step == 0)
-                ThrowUsageErrorException("Expected the 'SequenceData' step to be different from zero.");
-
-            if ((from != to) && (Math.Sign(to - from) != Math.Sign(Step)))
-                ThrowUsageErrorException("Expected the sign of the 'SequenceData' step to be consistent " +
-                    "with the 'From' and 'To' values.");
-
-            dataSource.AddDataSet(new ValueSequenceDataSet(GetSequence(), GetMetadata(), false));
-        }
-
-        private IEnumerable GetSequence()
-        {
-            for (double n = from; n <= to; n += Step)
-            {
-                yield return n;
-            }
+            dataSource.AddDataSet(new ValueSequenceDataSet(generator.Run(), GetMetadata(), false));
         }
     }
 }

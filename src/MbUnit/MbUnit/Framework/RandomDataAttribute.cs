@@ -15,6 +15,7 @@
 
 using System;
 using Gallio.Framework.Data;
+using Gallio.Framework.Data.Generation;
 using Gallio.Framework.Pattern;
 using Gallio.Common.Reflection;
 using System.Collections;
@@ -33,7 +34,7 @@ namespace MbUnit.Framework
     /// public class MyTestFixture
     /// {
     ///     [Test]
-    ///     public void MyTestMethod([RandomData(3, 0, 10)] int value)
+    ///     public void MyTestMethod([RandomData(0, 10, 3)] int value)
     ///     {
     ///         // This test will run 3 times. It generates at each iteration
     ///         // a integer between 0 and 10.
@@ -46,83 +47,53 @@ namespace MbUnit.Framework
     [AttributeUsage(PatternAttributeTargets.DataContext, AllowMultiple = true, Inherited = true)]
     public class RandomDataAttribute : DataAttribute
     {
-        private static readonly Random generator = new Random();
-        private readonly int repeat;
-        private readonly double minimum;
-        private readonly double maximum;
+        private readonly IGenerator generator;
 
         /// <summary>
-        /// Gets the lower bound of the range of possible values.
+        /// <para>
+        /// Adds a column of random <see cref="Int32"/> values.
+        /// </para>
         /// </summary>
-        public double Minimum
+        /// <param name="minimum">The lower bound of the range.</param>
+        /// <param name="maximum">TThe lower bound of the range.</param>
+        /// <param name="count">The number of random values to generate.</param>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="count"/> is negative, 
+        /// or if <paramref name="minimum"/> is greater than the <paramref name="maximum"/>, 
+        /// or if <paramref name="minimum"/> or <paramref name="maximum"/> are one of the following:        
+        /// <list type="bullet">
+        /// <item><see cref="Int32.MinValue"/></item>
+        /// <item><see cref="Int32.MaxValue"/></item>
+        /// </list>
+        /// </exception>
+        [CLSCompliant(false)]
+        public RandomDataAttribute(int minimum, int maximum, int count)
         {
-            get
-            {
-                return minimum;
-            }
-        }
-
-        /// <summary>
-        /// Gets the upper bound of the range of possible values.
-        /// </summary>
-        public double Maximum
-        {
-            get
-            {
-                return maximum;
-            }
-        }
-
-        /// <summary>
-        /// Gets the number of times the generator will run.
-        /// </summary>
-        public double Repeat
-        {
-            get
-            {
-                return repeat;
-            }
+            this.generator = new RandomInt32Generator(minimum, maximum, count);
         }
 
         /// <summary>
         /// <para>
-        /// Adds a column of random values.
+        /// Adds a column of random <see cref="Double"/> values.
         /// </para>
         /// </summary>
-        /// <param name="repeat">The number of random values to generate.</param>
         /// <param name="minimum">The lower bound of the range.</param>
         /// <param name="maximum">TThe lower bound of the range.</param>
-        /// <exception cref="ArgumentOutOfRangeException">The repeat argument is negative or zero, or the 
-        /// minimum or maximum values are <see cref="Double.NaN"/>, <see cref="Double.MinValue"/>, 
-        /// <see cref="Double.MaxValue"/>, <see cref="Double.PositiveInfinity"/>, 
-        /// or <see cref="Double.NegativeInfinity"/>.</exception>
-        /// <exception cref="ArgumentException">The maximum value is less than the minimum value.</exception>
+        /// <param name="count">The number of random values to generate.</param>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="count"/> is negative, 
+        /// or if <paramref name="minimum"/> is greater than the <paramref name="maximum"/>, 
+        /// or if <paramref name="minimum"/> or <paramref name="maximum"/> are one of the following:        
+        /// <list type="bullet">
+        /// <item><see cref="Double.NaN"/></item>
+        /// <item><see cref="Double.PositiveInfinity"/></item>
+        /// <item><see cref="Double.NegativeInfinity"/></item>
+        /// <item><see cref="Double.MinValue"/></item>
+        /// <item><see cref="Double.MaxValue"/></item>
+        /// </list>
+        /// </exception>
         [CLSCompliant(false)]
-        public RandomDataAttribute(int repeat, double minimum, double maximum)
+        public RandomDataAttribute(double minimum, double maximum, int count)
         {
-            if (repeat <= 0)
-                throw new ArgumentOutOfRangeException("repeat", "The specified value must be greater than or equal to one.");
-
-            if (Double.IsNaN(minimum) ||
-                Double.IsInfinity(minimum) ||
-                minimum == Double.MinValue ||
-                minimum == Double.MaxValue)
-                throw new ArgumentOutOfRangeException("The minimum value cannot be Double.NaN, Double.MinValue, " +
-                    "Double.MaxValue, Double.NegativeInfinity, or Double.PositiveInfinity.", "minimum");
-
-            if (Double.IsNaN(maximum) ||
-                Double.IsInfinity(maximum) ||
-                maximum == Double.MinValue ||
-                maximum == Double.MaxValue)
-                throw new ArgumentOutOfRangeException("The maximum value cannot be Double.NaN, Double.MinValue, " +
-                    "Double.MaxValue, Double.NegativeInfinity, or Double.PositiveInfinity.", "maximum");
-
-            if (minimum > maximum)
-                throw new ArgumentException("The maximum value must be greater than the minimum value.", "maximum");
-
-            this.repeat = repeat;
-            this.minimum = minimum;
-            this.maximum = maximum;
+            this.generator = new RandomDoubleGenerator(minimum, maximum, count);
         }
 
         /// <inheritdoc />
@@ -133,12 +104,7 @@ namespace MbUnit.Framework
 
         private IEnumerable GetSequence()
         {
-            double range = maximum - minimum;
-
-            for (int i = 0; i < repeat; i++)
-            {
-                yield return minimum + generator.NextDouble() * range;
-            }
+            return generator.Run();
         }
     }
 }

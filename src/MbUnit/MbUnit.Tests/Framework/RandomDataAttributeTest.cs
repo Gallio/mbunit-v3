@@ -31,12 +31,12 @@ namespace MbUnit.Tests.Framework
     public class RandomDataAttributeTest : BaseTestWithSampleRunner
     {
         [Test]
-        [Row("Single", 100, -10, 10)]
-        public void EnumData(string testMethod, int expectedRepeat, double expectedMinimum, double expectedMaximum)
+        [Row("Single", -10, 10, 100)]
+        public void EnumData(string testMethod, double expectedMinimum, double expectedMaximum, int expectedCount)
         {
             var run = Runner.GetPrimaryTestStepRun(CodeReference.CreateFromMember(typeof(RandomDataSample).GetMethod(testMethod)));
             string[] lines = run.Children.Select(x => x.TestLog.GetStream(MarkupStreamNames.Default).ToString()).ToArray();
-            Assert.AreEqual(expectedRepeat, lines.Length);
+            Assert.AreEqual(expectedCount, lines.Length);
 
             foreach(string line in lines)
             {
@@ -51,7 +51,7 @@ namespace MbUnit.Tests.Framework
         public class RandomDataSample
         {
             [Test]
-            public void Single([RandomData(100, -10, 10)] double value)
+            public void Single([RandomData(-10, 10, 100)] double value)
             {
                 TestLog.WriteLine("[{0}]", value);
             }

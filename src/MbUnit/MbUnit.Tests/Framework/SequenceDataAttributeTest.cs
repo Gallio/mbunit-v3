@@ -30,9 +30,7 @@ namespace MbUnit.Tests.Framework
     public class SequenceDataAttributeTest : BaseTestWithSampleRunner
     {
         [Test]
-        [Row("SingleDoubleSequenceWithDefaultStep", new[] { "[1]", "[2]", "[3]", "[4]" })]
         [Row("SingleDoubleSequence", new[] { "[1]", "[1.25]", "[1.5]", "[1.75]", "[2]" })]
-        [Row("SingleDoubleSequenceWithUnreachableToValue", new[] { "[1]", "[1.3]", "[1.6]", "[1.9]" })]
         [Row("SingleInt32Sequence", new[] { "[10]", "[20]", "[30]" })]
         [Row("SingleDecimalSequence", new[] { "[1]", "[2]", "[3]", "[4]" })]
         [Row("TwoCombinatorialSequences", new[] 
@@ -56,39 +54,27 @@ namespace MbUnit.Tests.Framework
         public class SequenceDataSample
         {
             [Test]
-            public void SingleDoubleSequenceWithDefaultStep([SequenceData(1, 4)] double value)
-            {
-                TestLog.WriteLine("[{0}]", value);
-            }
-            
-            [Test]
-            public void SingleDoubleSequence([SequenceData(1, 2, Step = 0.25)] double value)
+            public void SingleDoubleSequence([SequenceData(1, 0.25, 5)] double value)
             {
                 TestLog.WriteLine("[{0}]", value);
             }
 
             [Test]
-            public void SingleDoubleSequenceWithUnreachableToValue([SequenceData(1, 2, Step = 0.3)] double value)
+            public void SingleInt32Sequence([SequenceData(10, 10, 3)] int value)
             {
                 TestLog.WriteLine("[{0}]", value);
             }
 
             [Test]
-            public void SingleInt32Sequence([SequenceData(10, 30, Step = 10)] int value)
-            {
-                TestLog.WriteLine("[{0}]", value);
-            }
-
-            [Test]
-            public void SingleDecimalSequence([SequenceData(1, 4)] Decimal value)
+            public void SingleDecimalSequence([SequenceData(1, 1, 4)] Decimal value)
             {
                 TestLog.WriteLine("[{0}]", value);
             }
 
             [Test]
             public void TwoCombinatorialSequences(
-                [SequenceData(1, 4)] double value1,
-                [SequenceData(8, 9)] double value2)
+                [SequenceData(1, 1, 4)] double value1,
+                [SequenceData(8, 1, 2)] double value2)
             {
                 TestLog.WriteLine("[{0},{1}]", value1, value2);
             }
