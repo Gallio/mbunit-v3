@@ -334,34 +334,39 @@ namespace Gallio.Framework.Pattern
             PatternTestInstanceState testInstanceState)
         {
             var outcomeAccumulator = new ThreadSafeTestOutcomeAccumulator();
+            ITestContextTracker contextTracker = TestContextTrackerAccessor.Instance;
+            ITestContext context = contextTracker.CurrentContext;
 
             foreach (TestBatch batch in GenerateTestBatches(testCommand.Children))
             {
                 scheduler.Run(batch.ToActions(childTestCommand => () =>
                 {
-                    TestOutcome outcome;
-                    if (progressMonitor.IsCanceled)
+                    using (contextTracker.EnterContext(context))
                     {
-                        outcome = TestOutcome.Canceled;
+                        TestOutcome outcome;
+                        if (progressMonitor.IsCanceled)
+                        {
+                            outcome = TestOutcome.Canceled;
+                        }
+                        else
+                        {
+                            PatternTestHandlerDecorator testHandlerDecorator =
+                                delegate(Sandbox childSandbox, ref IPatternTestHandler childHandler)
+                                {
+                                    PatternTestActions decoratedChildTestActions =
+                                        PatternTestActions.CreateDecorator(childHandler);
+                                    childHandler = decoratedChildTestActions;
+
+                                    return DoDecorateChildTest(childSandbox, testInstanceState,
+                                        decoratedChildTestActions);
+                                };
+
+                            ITestStep parentTestStep = context != null ? context.TestStep : testInstanceState.TestStep;
+                            outcome = RunTest(childTestCommand, parentTestStep, sandbox, testHandlerDecorator);
+                        }
+
+                        outcomeAccumulator.Combine(outcome);
                     }
-                    else
-                    {
-                        PatternTestHandlerDecorator testHandlerDecorator =
-                            delegate(Sandbox childSandbox, ref IPatternTestHandler childHandler)
-                            {
-                                PatternTestActions decoratedChildTestActions =
-                                    PatternTestActions.CreateDecorator(childHandler);
-                                childHandler = decoratedChildTestActions;
-
-                                return DoDecorateChildTest(childSandbox, testInstanceState, decoratedChildTestActions);
-                            };
-
-                        ITestContext context = TestContextTrackerAccessor.Instance.CurrentContext;
-                        ITestStep parentTestStep = context != null ? context.TestStep : testInstanceState.TestStep;
-                        outcome = RunTest(childTestCommand, parentTestStep, sandbox, testHandlerDecorator);
-                    }
-
-                    outcomeAccumulator.Combine(outcome);
                 }));
             }
 
