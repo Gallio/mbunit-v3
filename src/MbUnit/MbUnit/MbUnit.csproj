@@ -152,6 +152,7 @@
     <Compile Include="Framework\Assert.Serialization.cs" />
     <Compile Include="Framework\Assert.Sorting.cs" />
     <Compile Include="Framework\Assert.Distinct.cs" />
+    <Compile Include="Framework\TestScope.cs" />
     <Compile Include="Framework\RandomDataAttribute.cs" />
     <Compile Include="Framework\SequenceDataAttribute.cs" />
     <Compile Include="Framework\EnumDataAttribute.cs" />

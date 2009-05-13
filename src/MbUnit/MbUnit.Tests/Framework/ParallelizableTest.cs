@@ -201,40 +201,40 @@ namespace MbUnit.Tests.Framework
             {
             }
 
-            [Parallelizable]
+            [Parallelizable(TestScope.All)]
             public class Fixture1
             {
-                [Parallelizable, Test]
+                [Test]
                 public void Test1()
                 {
                 }
 
-                [Parallelizable, Test]
+                [Test]
                 public void Test2()
                 {
                 }
 
-                [Parallelizable, Test]
+                [Test]
                 [Column(1, 2, 3, 4, 5)]
                 public void DataDrivenTest(int x)
                 {
                 }
             }
 
-            [Parallelizable]
+            [Parallelizable(TestScope.All)]
             public class Fixture2
             {
-                [Parallelizable, Test]
+                [Test]
                 public void Test1()
                 {
                 }
 
-                [Parallelizable, Test]
+                [Test]
                 public void Test2()
                 {
                 }
 
-                [Parallelizable, Test]
+                [Test]
                 [Column(1, 2, 3, 4, 5)]
                 public void DataDrivenTest(int x)
                 {
