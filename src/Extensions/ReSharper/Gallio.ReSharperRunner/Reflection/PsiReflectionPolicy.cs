@@ -236,7 +236,7 @@ namespace Gallio.ReSharperRunner.Reflection
             if (target == null)
                 return null;
 
-            StaticMemberWrapper member = Wrap((IFunction)target.ContainingParametersOwner);
+            StaticMemberWrapper member = (StaticMemberWrapper) Wrap(target.ContainingParametersOwner);
             return new StaticParameterWrapper(this, target, member);
         }
         #endregion
