@@ -49,7 +49,7 @@ namespace MbUnit.Framework
         /// <inheritdoc />
         protected override IEnumerable<KeyValuePair<string, string>> GetMetadata()
         {
-            yield return new KeyValuePair<string, string>(MetadataKeys.Description, importance.ToString());
+            yield return new KeyValuePair<string, string>(MetadataKeys.Importance, importance.ToString());
         }
     }
 }
