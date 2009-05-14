@@ -199,7 +199,6 @@
   <ItemGroup>
     <Content Include="Readme - Debugging.txt" />
     <None Include="Resources\GallioIcon.png" />
-    <None Include="Resources\Test.ico" />
     <EmbeddedResource Include="Resources\Report.png" />
     <EmbeddedResource Include="Resources\Actions.xml" />
     <None Include="Reflection\Known Limitations and Workarounds.txt" />

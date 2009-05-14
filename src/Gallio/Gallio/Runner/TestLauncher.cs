@@ -471,8 +471,14 @@ namespace Gallio.Runner
                 runTimeTimer = new Timer(delegate
                 {
                     Cancel();
-                    logger.Log(LogSeverity.Warning, "Run time limit reached! Canceled test run.");
+                    logger.Log(LogSeverity.Warning, "Run time limit reached!  Canceled test run.");
                 }, null, (int)runTimeLimit.Value.TotalMilliseconds, Timeout.Infinite);
+            }
+
+            if (testPackageConfig.AssemblyFiles.Count == 0)
+            {
+                logger.Log(LogSeverity.Warning, "No test assemblies to execute!");
+                return CreateResult(ResultCode.NoTests);
             }
 
             Stopwatch stopWatch = Stopwatch.StartNew();
@@ -484,14 +490,13 @@ namespace Gallio.Runner
                 if (wasCanceled)
                     return CreateResult(ResultCode.Canceled);
 
-                if (testPackageConfig.AssemblyFiles.Count == 0)
+                using (InitializeRuntimeIfNeeded(ref wasCanceled))
                 {
-                    logger.Log(LogSeverity.Warning, "No test assemblies to execute!");
-                    return CreateResult(ResultCode.NoTests);
-                }
+                    if (wasCanceled)
+                        return CreateResult(ResultCode.Canceled);
 
-                using (InitializeRuntimeIfNeeded())
                     return RunWithRuntime();
+                }
             }
             finally
             {
@@ -505,15 +510,20 @@ namespace Gallio.Runner
             }
         }
 
-        private IDisposable InitializeRuntimeIfNeeded()
+        private IDisposable InitializeRuntimeIfNeeded(ref bool canceled)
         {
-            if (runtimeSetup != null && ! RuntimeAccessor.IsInitialized)
+            IDisposable result = null;
+
+            if (runtimeSetup != null && !RuntimeAccessor.IsInitialized)
             {
-                logger.Log(LogSeverity.Important, "Initializing the runtime and loading plugins.");
-                return RuntimeBootstrap.Initialize(runtimeSetup, logger);
+                RunWithProgress(progressMonitor =>
+                {
+                    progressMonitor.BeginTask("Initializing the runtime and loading plugins.", 1);
+                    result = RuntimeBootstrap.Initialize(runtimeSetup, logger);
+                }, ref canceled);
             }
 
-            return null;
+            return result;
         }
 
         private TestLauncherResult RunWithRuntime()

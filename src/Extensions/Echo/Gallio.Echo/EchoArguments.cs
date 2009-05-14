@@ -221,6 +221,14 @@ namespace Gallio.Echo
 
         [CommandLineArgument(
              CommandLineArgumentFlags.AtMostOnce,
+             ShortName = "np",
+             LongName = "no-progress",
+             Description = "Do not display progress messages during execution."
+             )]
+        public bool NoProgress;
+
+        [CommandLineArgument(
+             CommandLineArgumentFlags.AtMostOnce,
              ShortName = "dnr",
              LongName = "do-not-run",
              Description = "Load the tests but does not run them.  This option may be used to produce a report that contains test metadata for consumption by other tools."

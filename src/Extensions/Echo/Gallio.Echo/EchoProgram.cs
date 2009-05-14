@@ -86,10 +86,10 @@ namespace Gallio.Echo
             logger.Log(LogSeverity.Debug, Arguments.ToString());
 
             TestLauncher launcher = new TestLauncher
-                                        {
-                                            Logger = logger,
-                                            ProgressMonitorProvider = new RichConsoleProgressMonitorProvider(Console)
-                                        };
+            {
+                Logger = logger,
+                ProgressMonitorProvider = CreateProgressMonitorProvider()
+            };
 
             ConfigureLauncherFromArguments(launcher, Arguments);
 
@@ -212,6 +212,14 @@ namespace Gallio.Echo
         {
             RichConsoleLogger logger = new RichConsoleLogger(Console);
             return new FilteredLogger(logger, Arguments.Verbosity);
+        }
+
+        private IProgressMonitorProvider CreateProgressMonitorProvider()
+        {
+            if (Arguments.NoProgress)
+                return NullProgressMonitorProvider.Instance;
+
+            return new RichConsoleProgressMonitorProvider(Console);
         }
 
         private void InstallCancelHandler()
