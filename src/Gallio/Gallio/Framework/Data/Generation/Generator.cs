@@ -83,7 +83,7 @@ namespace Gallio.Framework.Data.Generation
         /// <param name="value">The <see cref="Double"/> value to be checked.</param>
         /// <param name="valueName">A friendly name for the value.</param>
         /// <exception cref="ArgumentOutOfRangeException">The specified value is invalid.</exception>
-        protected static void CheckValidDouble(double value, string valueName)
+        protected static void CheckValidValue(double value, string valueName)
         {
             if (Double.IsNaN(value) ||
                 Double.IsInfinity(value) ||
@@ -104,11 +104,28 @@ namespace Gallio.Framework.Data.Generation
         /// <param name="value">The <see cref="Double"/> value to be checked.</param>
         /// <param name="valueName">A friendly name for the value.</param>
         /// <exception cref="ArgumentOutOfRangeException">The specified value is invalid.</exception>
-        protected static void CheckValidInt32(double value, string valueName)
+        protected static void CheckValidValue(int value, string valueName)
         {
             if (value == Int32.MinValue || value == Int32.MaxValue)
                 throw new ArgumentOutOfRangeException(String.Format("The {0} value cannot be one of the following: " +
                     "Int32.MinValue or Int32.MaxValue.", valueName), valueName);
+        }
+
+        /// <summary>
+        /// Checks for the specified value to be not one of the following:
+        /// <list type="bullet">
+        /// <item><see cref="Decimal.MinValue"/></item>
+        /// <item><see cref="Decimal.MaxValue"/></item>
+        /// </list>
+        /// </summary>
+        /// <param name="value">The <see cref="Decimal"/> value to be checked.</param>
+        /// <param name="valueName">A friendly name for the value.</param>
+        /// <exception cref="ArgumentOutOfRangeException">The specified value is invalid.</exception>
+        protected static void CheckValidValue(decimal value, string valueName)
+        {
+            if (value == Decimal.MinValue || value == Decimal.MaxValue)
+                throw new ArgumentOutOfRangeException(String.Format("The {0} value cannot be one of the following: " +
+                    "Decimal.MinValue or Decimal.MaxValue.", valueName), valueName);
         }
     }
 }

@@ -23,20 +23,20 @@ namespace Gallio.Framework.Data.Generation
     /// Generic abstract generator of sequential values.
     /// </summary>
     /// <typeparam name="T">The type of the value to generate.</typeparam>
-    public abstract class SequenceGenerator<T> : Generator<T>
+    public abstract class SequentialGenerator<T> : Generator<T>
         where T : IComparable<T>
     {
-        private readonly T from;
+        private readonly T start;
         private readonly T step;
 
         /// <summary>
         /// Gets the starting point of the sequence.
         /// </summary>
-        public T From
+        public T Start
         {
             get
             {
-                return from;
+                return start;
             }
         }
 
@@ -54,14 +54,14 @@ namespace Gallio.Framework.Data.Generation
         /// <summary>
         /// Constructor.
         /// </summary>
-        /// <param name="from">The starting point of the sequence.</param>
+        /// <param name="start">The starting point of the sequence.</param>
         /// <param name="step">The increment between each value of the sequence.</param>
         /// <param name="count">The length of the sequence of values that the generator must create.</param>
         /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="count"/> is negative.</exception>
-        protected SequenceGenerator(T from, T step, int count)
+        protected SequentialGenerator(T start, T step, int count)
             : base(count)
         {
-            this.from = from;
+            this.start = start;
             this.step = step;
         }
     }

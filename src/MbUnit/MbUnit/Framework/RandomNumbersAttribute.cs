@@ -35,7 +35,7 @@ namespace MbUnit.Framework
     /// public class MyTestFixture
     /// {
     ///     [Test]
-    ///     public void MyTestMethod([RandomDoubleData(Minimum = 0, Maximum = 10, Count = 3)] int value)
+    ///     public void MyTestMethod([RandomNumbers(Minimum = 0, Maximum = 10, Count = 3)] int value)
     ///     {
     ///         // This test will run 3 times. It generates at each iteration
     ///         // a integer between 0 and 10.
@@ -46,7 +46,7 @@ namespace MbUnit.Framework
     /// <seealso cref="ColumnAttribute"/>
     [CLSCompliant(false)]
     [AttributeUsage(PatternAttributeTargets.DataContext, AllowMultiple = true, Inherited = true)]
-    public class RandomDoubleDataAttribute : GenerationDataAttribute
+    public class RandomNumbersAttribute : GenerationDataAttribute
     {
         /// <summary>
         /// Gets or sets the lower bound of the numeric range where random values are going to be generated.
@@ -82,7 +82,7 @@ namespace MbUnit.Framework
         /// Adds a column of random <see cref="Double"/> values.
         /// </summary>
         [CLSCompliant(false)]
-        public RandomDoubleDataAttribute()
+        public RandomNumbersAttribute()
         {
             Minimum = 0d;
             Maximum = 1d;
@@ -97,7 +97,7 @@ namespace MbUnit.Framework
         {
             try
             {
-                return new RandomDoubleGenerator(Minimum, Maximum, Count);
+                return new RandomNumbersGenerator(Minimum, Maximum, Count);
             }
             catch(ArgumentException exception)
             {

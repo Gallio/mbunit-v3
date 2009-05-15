@@ -152,12 +152,10 @@
     <Compile Include="Framework\Assert.Serialization.cs" />
     <Compile Include="Framework\Assert.Sorting.cs" />
     <Compile Include="Framework\Assert.Distinct.cs" />
-    <Compile Include="Framework\SequentialDoubleAttribute.cs" />
-    <Compile Include="Framework\RandomDoubleDataAttribute.cs" />
+    <Compile Include="Framework\SequentiaNumbersAttribute.cs" />
+    <Compile Include="Framework\RandomNumbersAttribute.cs" />
     <Compile Include="Framework\GenerationDataAttribute.cs" />
     <Compile Include="Framework\TestScope.cs" />
-    <Compile Include="Framework\RandomInt32DataAttribute.cs" />
-    <Compile Include="Framework\SequentialInt32Attribute.cs" />
     <Compile Include="Framework\EnumDataAttribute.cs" />
     <Compile Include="Framework\DefaultTestCaseTimeoutAttribute.cs" />
     <Compile Include="Framework\DegreeOfParallelismAttribute.cs" />

@@ -23,8 +23,8 @@ using MbUnit.Framework;
 namespace Gallio.Tests.Framework.Data.Generation
 {
     [TestFixture]
-    [TestsOn(typeof(RandomDoubleGenerator))]
-    public class RandomDoubleGeneratorTest
+    [TestsOn(typeof(RandomNumbersGenerator))]
+    public class RandomNumbersGeneratorTest
     {
         [Test]
         [Row(0, 1, 0)]
@@ -33,7 +33,7 @@ namespace Gallio.Tests.Framework.Data.Generation
         [Row(0, 100000, 3)]
         public void Generate_sequence_ok(double minimum, double maximum, int count)
         {
-            var generator = new RandomDoubleGenerator(minimum, maximum, count);
+            var generator = new RandomNumbersGenerator(minimum, maximum, count);
             var values = generator.Run().Cast<double>().ToArray();
             Assert.AreEqual(count, values.Length);
             Assert.Multiple(() =>
@@ -49,7 +49,7 @@ namespace Gallio.Tests.Framework.Data.Generation
         [ExpectedArgumentOutOfRangeException]
         public void Constructs_with_negative_count_argument_should_throw_exception()
         {
-            new RandomDoubleGenerator(0, 10, -1);
+            new RandomNumbersGenerator(0, 10, -1);
         }
 
         [Test]
@@ -67,7 +67,7 @@ namespace Gallio.Tests.Framework.Data.Generation
         [Row(10, 5)]
         public void Constructs_with_invalid_range_should_throw_exception(double minimum, double maximum)
         {
-            new RandomDoubleGenerator(minimum, maximum, 10);
+            new RandomNumbersGenerator(minimum, maximum, 10);
         }
     }
 }

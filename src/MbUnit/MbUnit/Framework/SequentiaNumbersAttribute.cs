@@ -24,7 +24,7 @@ namespace MbUnit.Framework
 {
     /// <summary>
     /// <para>
-    /// Provides a column of sequential <see cref="Double"/> values as a data source.
+    /// Provides a column of sequential <see cref="Decimal"/> values as a data source.
     /// </para>
     /// <example>
     /// <code><![CDATA[
@@ -32,13 +32,13 @@ namespace MbUnit.Framework
     /// public class MyTestFixture
     /// {
     ///     [Test]
-    ///     public void MyTestMethod1([SequentialDouble(Start = 1, Step = 1, Count = 4)] double value)
+    ///     public void MyTestMethod1([SequentialNumbers(Start = 1, Step = 1, Count = 4)] int value)
     ///     {
     ///         // This test will run 4 times with the values 1, 2, 3 and 4.
     ///     }
     ///     
     ///     [Test]
-    ///     public void MyTestMethod2([SequentialDouble(Start = 0, Step = 2.5, Count = 5)] double value)
+    ///     public void MyTestMethod2([SequentialNumbers(Start = 0, Step = 2.5, Count = 5)] double value)
     ///     {
     ///         // This test will run 5 times with the values 0, 2.5, 5, 7.5, and 10.
     ///     }
@@ -48,7 +48,7 @@ namespace MbUnit.Framework
     /// <seealso cref="ColumnAttribute"/>
     [CLSCompliant(false)]
     [AttributeUsage(PatternAttributeTargets.DataContext, AllowMultiple = true, Inherited = true)]
-    public class SequentialDoubleAttribute : GenerationDataAttribute
+    public class SequentiaNumbersAttribute : GenerationDataAttribute
     {
         /// <summary>
         /// Gets or sets the starting value of the sequence.
@@ -87,10 +87,10 @@ namespace MbUnit.Framework
         }
 
         /// <summary>
-        /// Adds a column of sequential <see cref="Double"/> values.
+        /// Adds a column of sequential <see cref="Decimal"/> values.
         /// </summary>
         [CLSCompliant(false)]
-        public SequentialDoubleAttribute()
+        public SequentiaNumbersAttribute()
         {
             Start = 0d;
             Step = 10d;
@@ -103,7 +103,7 @@ namespace MbUnit.Framework
         /// <returns>A generator.</returns>
         protected override IGenerator GetGenerator()
         {
-            return new SequenceDoubleGenerator(Start, Step, Count);
+            return new SequentialNumbersGenerator((decimal)Start, (decimal)Step, Count);
         }
     }
 }

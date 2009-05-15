@@ -20,36 +20,34 @@ using System.Text;
 namespace Gallio.Framework.Data.Generation
 {
     /// <summary>
-    /// Generator of random <see cref="Int32"/> values within a given range.
+    /// Generator of sequential <see cref="Decimal"/> values.
     /// </summary>
-    public class RandomInt32Generator : RandomGenerator<Int32>
+    public class SequentialNumbersGenerator : SequentialGenerator<decimal>
     {
         /// <summary>
-        /// Constructs a generator of random <see cref="Double"/> numbers.
+        /// Constructs a generator of sequential <see cref="Double"/> numbers.
         /// </summary>
-        /// <param name="count">The length of the sequence of values that
-        /// the generator must create.</param>
-        /// <param name="minimum">The lower bound of the range.</param>
-        /// <param name="maximum">The upper bound of the range.</param>
-        /// <exception cref="ArgumentException">Thrown if <paramref name="minimum"/> is greater than <paramref name="maximum"/>.</exception>
+        /// <param name="start">The starting point of the sequence.</param>
+        /// <param name="step">The increment between each value of the sequence.</param>
+        /// <param name="count">The length of the sequence of values that the generator must create.</param>
         /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="count"/> is negative, 
-        /// or if <paramref name="minimum"/> or <paramref name="maximum"/> are one of the following:        
+        /// or if <paramref name="from"/> or <paramref name="step"/> are one of the following:        
         /// <list type="bullet">
-        /// <item><see cref="Int32.MinValue"/></item>
-        /// <item><see cref="Int32.MaxValue"/></item>
+        /// <item><see cref="Decimal.MinValue"/></item>
+        /// <item><see cref="Decimal.MaxValue"/></item>
         /// </list>
         /// </exception>
-        public RandomInt32Generator(int minimum, int maximum, int count)
-            :base(minimum, maximum, count)
+        public SequentialNumbersGenerator(decimal start, decimal step, int count)
+            : base(start, step, count)
         {
-            CheckValidInt32(minimum, "minimum");
-            CheckValidInt32(maximum, "maximum");
+            CheckValidValue(start, "start");
+            CheckValidValue(step, "step");
         }
 
         /// <inheritdoc/>
-        protected override int GetNextRandomValue()
+        protected sealed override decimal GetValue(int index)
         {
-            return InnerGenerator.Next(Minimum, Maximum);
+            return Start + index * Step;
         }
     }
 }

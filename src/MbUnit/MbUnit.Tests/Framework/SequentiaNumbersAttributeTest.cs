@@ -25,9 +25,9 @@ using Gallio.Common.Markup;
 
 namespace MbUnit.Tests.Framework
 {
-    [TestsOn(typeof(SequentialDoubleAttribute))]
-    [RunSample(typeof(SequenceDataSample))]
-    public class SequentialDoubleAttributeTest : BaseTestWithSampleRunner
+    [TestsOn(typeof(SequentiaNumbersAttribute))]
+    [RunSample(typeof(SequentiaNumbersSample))]
+    public class SequentiaNumbersAttributeTest : BaseTestWithSampleRunner
     {
         [Test]
         [Row("SingleSequence", new[] { "[1]", "[1.25]", "[1.5]", "[1.75]", "[2]" })]
@@ -42,25 +42,25 @@ namespace MbUnit.Tests.Framework
             "[4,9]" })]
         public void EnumData(string testMethod, string[] expectedTestLogOutput)
         {
-            var run = Runner.GetPrimaryTestStepRun(CodeReference.CreateFromMember(typeof(SequenceDataSample).GetMethod(testMethod)));
+            var run = Runner.GetPrimaryTestStepRun(CodeReference.CreateFromMember(typeof(SequentiaNumbersSample).GetMethod(testMethod)));
             Assert.AreElementsEqualIgnoringOrder(expectedTestLogOutput, 
                 run.Children.Select(x => x.TestLog.GetStream(MarkupStreamNames.Default).ToString()),
                 (x, y) => y.Contains(x));
         }
 
         [TestFixture, Explicit("Sample")]
-        public class SequenceDataSample
+        public class SequentiaNumbersSample
         {
             [Test]
-            public void SingleSequence([SequentialDouble(Start = 1, Step = 0.25, Count = 5)] double value)
+            public void SingleSequence([SequentiaNumbers(Start = 1, Step = 0.25, Count = 5)] double value)
             {
                 TestLog.WriteLine("[{0}]", value);
             }
 
             [Test]
             public void TwoCombinatorialSequences(
-                [SequentialDouble(Start = 1, Step = 1, Count = 4)] double value1,
-                [SequentialDouble(Start = 8, Step = 1, Count = 2)] double value2)
+                [SequentiaNumbers(Start = 1, Step = 1, Count = 4)] int value1,
+                [SequentiaNumbers(Start = 8, Step = 1, Count = 2)] short value2)
             {
                 TestLog.WriteLine("[{0},{1}]", value1, value2);
             }

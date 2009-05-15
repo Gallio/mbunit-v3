@@ -22,7 +22,7 @@ namespace Gallio.Framework.Data.Generation
     /// <summary>
     /// Generator of random <see cref="Double"/> values within a given range.
     /// </summary>
-    public class RandomDoubleGenerator : RandomGenerator<double>
+    public class RandomNumbersGenerator : RandomGenerator<double>
     {
         /// <summary>
         /// Constructs a generator of random <see cref="Double"/> numbers.
@@ -42,11 +42,11 @@ namespace Gallio.Framework.Data.Generation
         /// <item><see cref="Double.MaxValue"/></item>
         /// </list>
         /// </exception>
-        public RandomDoubleGenerator(double minimum, double maximum, int count)
+        public RandomNumbersGenerator(double minimum, double maximum, int count)
             :base(minimum, maximum, count)
         {
-            CheckValidDouble(minimum, "minimum");
-            CheckValidDouble(maximum, "maximum");
+            CheckValidValue(minimum, "minimum");
+            CheckValidValue(maximum, "maximum");
         }
 
         /// <inheritdoc/>

@@ -108,10 +108,8 @@
     <Compile Include="Common\Text\RangeTest.cs" />
     <Compile Include="Common\Text\SubstringTest.cs" />
     <Compile Include="Framework\Assertions\AssertionHelperTest.cs" />
-    <Compile Include="Framework\Data\Generation\RandomInt32GeneratorTest.cs" />
-    <Compile Include="Framework\Data\Generation\SequenceInt32GeneratorTest.cs" />
-    <Compile Include="Framework\Data\Generation\SequenceDoubleGeneratorTest.cs" />
-    <Compile Include="Framework\Data\Generation\RandomDoubleGeneratorTest.cs" />
+    <Compile Include="Framework\Data\Generation\SequentialNumbersGeneratorTest.cs" />
+    <Compile Include="Framework\Data\Generation\RandomNumbersGeneratorTest.cs" />
     <Compile Include="Framework\Pattern\PatternTestFrameworkExtensionInfoTest.cs" />
     <Compile Include="Framework\TestTerminatedExceptionTest.cs" />
     <Compile Include="Framework\Pattern\ParallelizableTestCaseSchedulerTest.cs" />
