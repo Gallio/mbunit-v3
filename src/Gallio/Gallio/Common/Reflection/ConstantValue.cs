@@ -20,7 +20,7 @@ namespace Gallio.Common.Reflection
 {
     /// <summary>
     /// Specifies a typed constant value.
-    /// </summary>`
+    /// </summary>
     public struct ConstantValue
     {
         private readonly ITypeInfo type;
