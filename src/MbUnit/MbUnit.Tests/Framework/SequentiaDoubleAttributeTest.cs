@@ -25,14 +25,12 @@ using Gallio.Common.Markup;
 
 namespace MbUnit.Tests.Framework
 {
-    [TestsOn(typeof(SequenceDataAttribute))]
+    [TestsOn(typeof(SequentialDoubleAttribute))]
     [RunSample(typeof(SequenceDataSample))]
-    public class SequenceDataAttributeTest : BaseTestWithSampleRunner
+    public class SequentialDoubleAttributeTest : BaseTestWithSampleRunner
     {
         [Test]
-        [Row("SingleDoubleSequence", new[] { "[1]", "[1.25]", "[1.5]", "[1.75]", "[2]" })]
-        [Row("SingleInt32Sequence", new[] { "[10]", "[20]", "[30]" })]
-        [Row("SingleDecimalSequence", new[] { "[1]", "[2]", "[3]", "[4]" })]
+        [Row("SingleSequence", new[] { "[1]", "[1.25]", "[1.5]", "[1.75]", "[2]" })]
         [Row("TwoCombinatorialSequences", new[] 
         {   "[1,8]", 
             "[2,8]", 
@@ -54,27 +52,15 @@ namespace MbUnit.Tests.Framework
         public class SequenceDataSample
         {
             [Test]
-            public void SingleDoubleSequence([SequenceData(1, 0.25, 5)] double value)
-            {
-                TestLog.WriteLine("[{0}]", value);
-            }
-
-            [Test]
-            public void SingleInt32Sequence([SequenceData(10, 10, 3)] int value)
-            {
-                TestLog.WriteLine("[{0}]", value);
-            }
-
-            [Test]
-            public void SingleDecimalSequence([SequenceData(1, 1, 4)] Decimal value)
+            public void SingleSequence([SequentialDouble(Start = 1, Step = 0.25, Count = 5)] double value)
             {
                 TestLog.WriteLine("[{0}]", value);
             }
 
             [Test]
             public void TwoCombinatorialSequences(
-                [SequenceData(1, 1, 4)] double value1,
-                [SequenceData(8, 1, 2)] double value2)
+                [SequentialDouble(Start = 1, Step = 1, Count = 4)] double value1,
+                [SequentialDouble(Start = 8, Step = 1, Count = 2)] double value2)
             {
                 TestLog.WriteLine("[{0},{1}]", value1, value2);
             }

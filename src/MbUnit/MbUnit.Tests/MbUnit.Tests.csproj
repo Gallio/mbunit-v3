@@ -174,9 +174,11 @@
     <Compile Include="Framework\AssertTest_Sorting.cs" />
     <Compile Include="Framework\AssertTest_Distinct.cs" />
     <Compile Include="Framework\ColumnAttributeTest.cs" />
+    <Compile Include="Framework\SequentiaDoubleAttributeTest.cs" />
+    <Compile Include="Framework\RandomDoubleDataAttributeTest.cs" />
     <Compile Include="Framework\ImportanceAttributeTest.cs" />
-    <Compile Include="Framework\RandomDataAttributeTest.cs" />
-    <Compile Include="Framework\SequenceDataAttributeTest.cs" />
+    <Compile Include="Framework\RandomInt32DataAttributeTest.cs" />
+    <Compile Include="Framework\SequentialInt32AttributeTest.cs" />
     <Compile Include="Framework\EnumDataAttributeTest.cs" />
     <Compile Include="Framework\DependsOnTest.cs" />
     <Compile Include="Framework\StructuralEqualityComparerTest.cs" />

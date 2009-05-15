@@ -26,32 +26,32 @@ using System.Text.RegularExpressions;
 
 namespace MbUnit.Tests.Framework
 {
-    [TestsOn(typeof(RandomDataAttribute))]
-    [RunSample(typeof(RandomDataSample))]
-    public class RandomDataAttributeTest : BaseTestWithSampleRunner
+    [TestsOn(typeof(RandomInt32DataAttribute))]
+    [RunSample(typeof(RandomInt32DataSample))]
+    public class RandomInt32DataAttributeTest : BaseTestWithSampleRunner
     {
         [Test]
         [Row("Single", -10, 10, 100)]
         public void EnumData(string testMethod, double expectedMinimum, double expectedMaximum, int expectedCount)
         {
-            var run = Runner.GetPrimaryTestStepRun(CodeReference.CreateFromMember(typeof(RandomDataSample).GetMethod(testMethod)));
+            var run = Runner.GetPrimaryTestStepRun(CodeReference.CreateFromMember(typeof(RandomInt32DataSample).GetMethod(testMethod)));
             string[] lines = run.Children.Select(x => x.TestLog.GetStream(MarkupStreamNames.Default).ToString()).ToArray();
             Assert.AreEqual(expectedCount, lines.Length);
 
             foreach(string line in lines)
             {
-                var match = Regex.Match(line, @"\[(?<value>-?(\d*\.)?\d+)\]");
+                var match = Regex.Match(line, @"\[(?<value>-?\d+)\]");
                 Assert.IsTrue(match.Success);
-                double value = Double.Parse(match.Groups["value"].Value);
+                int value = Int32.Parse(match.Groups["value"].Value);
                 Assert.Between(value, expectedMinimum, expectedMaximum);
             }
         }
 
         [TestFixture, Explicit("Sample")]
-        public class RandomDataSample
+        public class RandomInt32DataSample
         {
             [Test]
-            public void Single([RandomData(-10, 10, 100)] double value)
+            public void Single([RandomInt32Data(Minimum = -10, Maximum = 10, Count = 100)] double value)
             {
                 TestLog.WriteLine("[{0}]", value);
             }
