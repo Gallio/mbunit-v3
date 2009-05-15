@@ -65,10 +65,8 @@
     <Compile Include="Controllers\AnnotationsControllerTest.cs" />
     <Compile Include="Controllers\ExecutionLogControllerTest.cs" />
     <Compile Include="Controllers\NotifyControllerTest.cs" />
-    <Compile Include="Controllers\OptionsControllerTest.cs" />
     <Compile Include="Controllers\ProjectControllerTest.cs" />
     <Compile Include="Controllers\ReportControllerTest.cs" />
-    <Compile Include="Controllers\RuntimeLogControllerTest.cs" />
     <Compile Include="Controllers\SourceCodeControllerTest.cs" />
     <Compile Include="Controllers\TestControllerTest.cs" />
     <Compile Include="Controllers\TestResultsControllerTest.cs" />

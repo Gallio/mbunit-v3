@@ -39,6 +39,7 @@ namespace Gallio.Icarus.Controllers
         private readonly IFileSystem fileSystem;
         private readonly IXmlSerializer xmlSerializer;
         private readonly IAssemblyWatcher assemblyWatcher;
+        private readonly IUnhandledExceptionPolicy unhandledExceptionPolicy;
 
         private readonly List<FilterInfo> testFilters = new List<FilterInfo>();
         private readonly List<string> hintDirectories = new List<string>();
@@ -91,13 +92,15 @@ namespace Gallio.Icarus.Controllers
         }
 
         public ProjectController(IProjectTreeModel projectTreeModel, IOptionsController optionsController, 
-            IFileSystem fileSystem, IXmlSerializer xmlSerializer, IAssemblyWatcher assemblyWatcher)
+            IFileSystem fileSystem, IXmlSerializer xmlSerializer, IAssemblyWatcher assemblyWatcher, 
+            IUnhandledExceptionPolicy unhandledExceptionPolicy)
         {
             this.projectTreeModel = projectTreeModel;
             this.optionsController = optionsController;
             this.fileSystem = fileSystem;
             this.xmlSerializer = xmlSerializer;
             this.assemblyWatcher = assemblyWatcher;
+            this.unhandledExceptionPolicy = unhandledExceptionPolicy;
 
             TestFilters = new BindingList<FilterInfo>(testFilters);
             TestFilters.ListChanged += delegate
@@ -226,7 +229,7 @@ namespace Gallio.Icarus.Controllers
                     TreeViewCategory = userOptions.TreeViewCategory;
                     CollapsedNodes = userOptions.CollapsedNodes;
                 }
-                catch 
+                catch
                 {
                     // eat any errors
                 }
@@ -238,7 +241,17 @@ namespace Gallio.Icarus.Controllers
             using (progressMonitor.BeginTask("Loading project file", 100))
             {
                 var projectUtils = new ProjectUtils(fileSystem, xmlSerializer);
-                var project = projectUtils.LoadProject(projectName);
+                Project project;
+
+                try
+                {
+                    project = projectUtils.LoadProject(projectName);
+                }
+                catch (Exception ex)
+                {
+                    unhandledExceptionPolicy.Report("Error loading project file", ex);
+                    project = new Project();
+                }
 
                 progressMonitor.Worked(50);
 

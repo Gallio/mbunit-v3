@@ -20,23 +20,15 @@ namespace Gallio.Icarus.Runtime
 
         public void RegisterComponent(string serviceId, Type serviceType, object component)
         {
-            var pluginId = "Gallio.Icarus";
-            var pluginDescriptor = Registry.Plugins[pluginId];
-            if (pluginDescriptor == null)
+            const string pluginId = "Gallio.Icarus";
+            var pluginDescriptor = Registry.Plugins[pluginId] ?? Registry.RegisterPlugin(new PluginRegistration(pluginId, 
+                new TypeName(typeof(DefaultPlugin)), new DirectoryInfo(runtimeSetup.RuntimePath))
             {
-                pluginDescriptor = Registry.RegisterPlugin(new PluginRegistration(pluginId,
-                    new TypeName(typeof(DefaultPlugin)), new DirectoryInfo(runtimeSetup.RuntimePath))
-                {
-                    TraitsProperties = { { "Name", "Gallio Icarus Test Runner" } }
-                });
-            }
+                TraitsProperties = { { "Name", "Gallio Icarus Test Runner" } }
+            });
 
-            var serviceDescriptor = Registry.Services[serviceId];
-            if (serviceDescriptor == null)
-            {
-                serviceDescriptor = Registry.RegisterService(new ServiceRegistration(pluginDescriptor,
-                    serviceId, new TypeName(serviceType)));
-            }
+            var serviceDescriptor = Registry.Services[serviceId] ?? Registry.RegisterService(new ServiceRegistration(pluginDescriptor, 
+                serviceId, new TypeName(serviceType)));
 
             Registry.RegisterComponent(new ComponentRegistration(pluginDescriptor, serviceDescriptor, 
                 serviceId, new TypeName(component.GetType()))

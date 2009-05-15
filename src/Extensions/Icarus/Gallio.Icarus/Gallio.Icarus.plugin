@@ -112,9 +112,17 @@
                serviceId="Gallio.Icarus.ExecutionLogController"
                componentType="Gallio.Icarus.Controllers.ExecutionLogController, Gallio.Icarus" />
 
-    <component componentId="Gallio.Icarus.AnnotationsController"
-           serviceId="Gallio.Icarus.AnnotationsController"
-           componentType="Gallio.Icarus.Controllers.AnnotationsController, Gallio.Icarus" />
+    <component componentId="Gallio.Icarus.AnnotationsController" 
+               serviceId="Gallio.Icarus.AnnotationsController"
+               componentType="Gallio.Icarus.Controllers.AnnotationsController, Gallio.Icarus" />
+
+    <component componentId="Gallio.Icarus.OptionsController" 
+               serviceId="Gallio.Icarus.OptionsController" 
+               componentType="Gallio.Icarus.Controllers.OptionsController, Gallio.Icarus" />
+
+    <component componentId="Gallio.Icarus.RuntimeLogController"
+               serviceId="Gallio.Icarus.RuntimeLogController"
+               componentType="Gallio.Icarus.Controllers.RuntimeLogController, Gallio.Icarus" />
 
     <!-- Models -->
 
@@ -125,7 +133,7 @@
     <component componentId="Gallio.Icarus.ProjectTreeModel"
            serviceId="Gallio.Icarus.ProjectTreeModel"
            componentType="Gallio.Icarus.Models.ProjectTreeModel, Gallio.Icarus" />
-
+    
     <!-- Packages -->
 
     <component componentId="Gallio.Icarus.PluginBrowserPackage"

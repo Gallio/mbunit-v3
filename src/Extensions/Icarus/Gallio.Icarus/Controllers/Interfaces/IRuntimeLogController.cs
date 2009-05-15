@@ -15,6 +15,7 @@
 
 using System;
 using Gallio.Icarus.Controllers.EventArgs;
+using Gallio.Icarus.Logging;
 using Gallio.Runtime.Logging;
 
 namespace Gallio.Icarus.Controllers.Interfaces
@@ -23,5 +24,6 @@ namespace Gallio.Icarus.Controllers.Interfaces
     {
         LogSeverity MinLogSeverity { get; set; }
         event EventHandler<RuntimeLogEventArgs> LogMessage;
+        void SetLogger(RuntimeLogger runtimeLogger);
     }
 }

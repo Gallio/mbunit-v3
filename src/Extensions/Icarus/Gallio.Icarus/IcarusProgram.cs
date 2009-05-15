@@ -14,25 +14,17 @@
 // limitations under the License.
 
 using System;
-using System.ComponentModel;
 using System.IO;
 using System.Windows.Forms;
-using Gallio.Common.IO;
 using Gallio.Common.Reflection;
-using Gallio.Common.Xml;
 using Gallio.Icarus.Controllers;
 using Gallio.Icarus.Controllers.Interfaces;
-using Gallio.Icarus.Models;
+using Gallio.Icarus.Logging;
+using Gallio.Icarus.Options;
 using Gallio.Icarus.Properties;
-using Gallio.Icarus.Remoting;
-using Gallio.Icarus.Services;
 using Gallio.Runner;
-using Gallio.Runner.Projects;
-using Gallio.Runner.Reports;
 using Gallio.Runtime;
 using Gallio.Runtime.ConsoleSupport;
-using Gallio.Icarus.Utilities;
-using Gallio.Icarus.Runtime;
 
 namespace Gallio.Icarus
 {
@@ -67,36 +59,29 @@ namespace Gallio.Icarus
                     typeof(IcarusProgram).Assembly))
             };
 
-            var optionsController = new OptionsController(new FileSystem(), new DefaultXmlSerializer(),
-                new Utilities.UnhandledExceptionPolicy());
+            OptionsManager.Load();
 
-            // create & initialize a test runner whenever the test runner factory is changed
-            optionsController.PropertyChanged += (sender, e) => 
-            {
-                if (e.PropertyName == "TestRunnerFactory")
-                    ConfigureTestRunnerFactory(optionsController.TestRunnerFactory);
-            };
-            optionsController.Load();
-
-            var runtimeLogController = new RuntimeLogController(optionsController);
+            var runtimeLogger = new RuntimeLogger();
 
             // Set the installation path explicitly to ensure that we do not encounter problems
             // when the test assembly contains a local copy of the primary runtime assemblies
             // which will confuse the runtime into searching in the wrong place for plugins.
-            runtimeSetup.PluginDirectories.AddRange(optionsController.PluginDirectories);
+            runtimeSetup.PluginDirectories.AddRange(OptionsManager.Settings.PluginDirectories);
 
-            using (Icarus.Runtime.RuntimeBootstrap.Initialize(runtimeSetup, runtimeLogController))
+            using (Runtime.RuntimeBootstrap.Initialize(runtimeSetup, runtimeLogger))
             {
-                // register the components we've already created
-                var runtime = (IcarusRuntime)RuntimeAccessor.Instance;
-                runtime.RegisterComponent("Gallio.Icarus.OptionsController", typeof(IOptionsController), 
-                    optionsController);
-                runtime.RegisterComponent("Gallio.Icarus.RuntimeLogController", typeof(IRuntimeLogController),
-                    runtimeLogController);
+                var optionsController = RuntimeAccessor.ServiceLocator.Resolve<IOptionsController>();
+                // create & initialize a test runner whenever the test runner factory is changed
+                optionsController.PropertyChanged += (sender, e) =>
+                {
+                    if (e.PropertyName == "TestRunnerFactory")
+                        ConfigureTestRunnerFactory(optionsController.TestRunnerFactory);
+                };
 
-                var taskManager = RuntimeAccessor.ServiceLocator.Resolve<ITaskManager>();
+                ConfigureTestRunnerFactory(OptionsManager.Settings.TestRunnerFactory);
 
-                ConfigureTestRunnerFactory(optionsController.TestRunnerFactory);
+                var runtimeLogController = RuntimeAccessor.ServiceLocator.Resolve<IRuntimeLogController>();
+                runtimeLogController.SetLogger(runtimeLogger);
 
                 var applicationController = new ApplicationController(Arguments, RuntimeAccessor.ServiceLocator);
                 var main = new Main(applicationController);
@@ -107,7 +92,7 @@ namespace Gallio.Icarus
             return ResultCode.Success;
         }
 
-        private void ConfigureTestRunnerFactory(string factoryName)
+        private static void ConfigureTestRunnerFactory(string factoryName)
         {
             var testController = RuntimeAccessor.ServiceLocator.Resolve<ITestController>();
             var testRunnerManager = RuntimeAccessor.ServiceLocator.Resolve<ITestRunnerManager>();

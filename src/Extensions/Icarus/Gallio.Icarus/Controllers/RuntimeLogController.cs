@@ -14,70 +14,43 @@
 // limitations under the License.
 
 using System;
-using System.Drawing;
 using Gallio.Icarus.Controllers.EventArgs;
 using Gallio.Icarus.Controllers.Interfaces;
-using Gallio.Common.Diagnostics;
+using Gallio.Icarus.Logging;
 using Gallio.Runtime.Logging;
 
 namespace Gallio.Icarus.Controllers
 {
-    public class RuntimeLogController : BaseLogger, IRuntimeLogController
+    public class RuntimeLogController : IRuntimeLogController
     {
         private readonly IOptionsController optionsController;
-        private LogSeverity minLogSeverity;
+        private RuntimeLogger runtimeLogger;
 
         public LogSeverity MinLogSeverity
         {
-            get { return minLogSeverity; }
+            get
+            {
+                return runtimeLogger.MinLogSeverity;
+            }
             set
             {
-                minLogSeverity = value;
+                runtimeLogger.MinLogSeverity = value;
                 optionsController.MinLogSeverity = value;
             }
         }
 
         public event EventHandler<RuntimeLogEventArgs> LogMessage;
+        
+        public void SetLogger(RuntimeLogger runtimeLogger)
+        {
+            this.runtimeLogger = runtimeLogger;
+            runtimeLogger.LogMessage += (sender, e) => LogMessage(this, e);
+            runtimeLogger.MinLogSeverity = optionsController.MinLogSeverity;
+        }
 
         public RuntimeLogController(IOptionsController optionsController)
         {
             this.optionsController = optionsController;
-            MinLogSeverity = optionsController.MinLogSeverity;
-        }
-
-        protected override void LogImpl(LogSeverity severity, string message, ExceptionData exceptionData)
-        {
-            if (severity < MinLogSeverity || LogMessage == null)
-                return;
-
-            Color color = Color.Black;
-            switch (severity)
-            {
-                case LogSeverity.Error:
-                    color = Color.Red;
-                    break;
-
-                case LogSeverity.Warning:
-                    color = Color.Gold;
-                    break;
-
-                case LogSeverity.Important:
-                    color = Color.Black;
-                    break;
-
-                case LogSeverity.Info:
-                    color = Color.Gray;
-                    break;
-
-                case LogSeverity.Debug:
-                    color = Color.DarkGray;
-                    break;
-            }
-
-            LogMessage(this, new RuntimeLogEventArgs(message, color));
-
-            if (exceptionData != null)
-                LogMessage(this, new RuntimeLogEventArgs(exceptionData.ToString(), color));
         }
     }
 }

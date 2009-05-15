@@ -34,13 +34,9 @@ namespace Gallio.Icarus.Tests.Controllers
         private static OptionsController SetUpOptionsController(Settings settings)
         {
             var fileSystem = MockRepository.GenerateStub<IFileSystem>();
-            var xmlSerialization = MockRepository.GenerateStub<IXmlSerializer>();
-            var unhandledExceptionPolicy = MockRepository.GenerateStub<IUnhandledExceptionPolicy>();
-
             fileSystem.Stub(x => x.FileExists(Paths.SettingsFile)).Return(true);
-            xmlSerialization.Stub(x => x.LoadFromXml<Settings>(Paths.SettingsFile)).Return(settings);
 
-            var optionsController = new OptionsController(fileSystem, xmlSerialization, unhandledExceptionPolicy);
+            var optionsController = new OptionsController(fileSystem);
             optionsController.Load();
 
             return optionsController;

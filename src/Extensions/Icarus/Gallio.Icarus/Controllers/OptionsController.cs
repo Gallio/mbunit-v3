@@ -13,14 +13,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Reflection;
 using Gallio.Common.IO;
-using Gallio.Common.Xml;
 using Gallio.Icarus.Controllers.Interfaces;
+using Gallio.Icarus.Options;
 using Gallio.Model;
 using Gallio.Icarus.Utilities;
 using Gallio.Runtime.Logging;
@@ -29,50 +28,47 @@ namespace Gallio.Icarus.Controllers
 {
     public sealed class OptionsController : NotifyController, IOptionsController
     {
-        private Settings settings;
         private readonly IFileSystem fileSystem;
-        private readonly IXmlSerializer xmlSerializer;
-        private readonly IUnhandledExceptionPolicy unhandledExceptionPolicy;
         private MRUList recentProjects;
 
         private readonly List<string> unselectedTreeViewCategoriesList = new List<string>();
 
         public bool AlwaysReloadAssemblies
         {
-            get { return settings.AlwaysReloadAssemblies; }
-            set { settings.AlwaysReloadAssemblies = value; }
+            get { return Settings.AlwaysReloadAssemblies; }
+            set { Settings.AlwaysReloadAssemblies = value; }
         }
 
         public bool RunTestsAfterReload
         {
-            get { return settings.RunTestsAfterReload; }
-            set { settings.RunTestsAfterReload = value; }
+            get { return Settings.RunTestsAfterReload; }
+            set { Settings.RunTestsAfterReload = value; }
         }
 
         public string TestStatusBarStyle
         {
-            get { return settings.TestStatusBarStyle; }
-            set { settings.TestStatusBarStyle = value; }
+            get { return Settings.TestStatusBarStyle; }
+            set { Settings.TestStatusBarStyle = value; }
         }
 
         public bool ShowProgressDialogs
         {
-            get { return settings.ShowProgressDialogs; }
-            set { settings.ShowProgressDialogs = value; }
+            get { return Settings.ShowProgressDialogs; }
+            set { Settings.ShowProgressDialogs = value; }
         }
 
         public bool RestorePreviousSettings
         {
-            get { return settings.RestorePreviousSettings; }
-            set { settings.RestorePreviousSettings = value; }
+            get { return Settings.RestorePreviousSettings; }
+            set { Settings.RestorePreviousSettings = value; }
         }
 
         public string TestRunnerFactory
         {
-            get { return settings.TestRunnerFactory; }
+            get { return Settings.TestRunnerFactory; }
             set
             {
-                settings.TestRunnerFactory = value;
+                Settings.TestRunnerFactory = value;
                 OnPropertyChanged(new PropertyChangedEventArgs("TestRunnerFactory"));
             }
         }
@@ -85,26 +81,26 @@ namespace Gallio.Icarus.Controllers
 
         public Color PassedColor
         {
-            get { return Color.FromArgb(settings.PassedColor); }
-            set { settings.PassedColor = value.ToArgb(); }
+            get { return Color.FromArgb(Settings.PassedColor); }
+            set { Settings.PassedColor = value.ToArgb(); }
         }
 
         public Color FailedColor
         {
-            get { return Color.FromArgb(settings.FailedColor); }
-            set { settings.FailedColor = value.ToArgb(); }
+            get { return Color.FromArgb(Settings.FailedColor); }
+            set { Settings.FailedColor = value.ToArgb(); }
         }
 
         public Color InconclusiveColor
         {
-            get { return Color.FromArgb(settings.InconclusiveColor); }
-            set { settings.InconclusiveColor = value.ToArgb(); }
+            get { return Color.FromArgb(Settings.InconclusiveColor); }
+            set { Settings.InconclusiveColor = value.ToArgb(); }
         }
 
         public Color SkippedColor
         {
-            get { return Color.FromArgb(settings.SkippedColor); }
-            set { settings.SkippedColor = value.ToArgb(); }
+            get { return Color.FromArgb(Settings.SkippedColor); }
+            set { Settings.SkippedColor = value.ToArgb(); }
         }
 
         public double UpdateDelay
@@ -114,14 +110,14 @@ namespace Gallio.Icarus.Controllers
 
         public Size Size
         {
-            get { return settings.Size; }
-            set { settings.Size = value; }
+            get { return Settings.Size; }
+            set { Settings.Size = value; }
         }
 
         public Point Location
         {
-            get { return settings.Location; }
-            set { settings.Location = value; }
+            get { return Settings.Location; }
+            set { Settings.Location = value; }
         }
 
         public MRUList RecentProjects
@@ -132,15 +128,15 @@ namespace Gallio.Icarus.Controllers
                 {
                     // remove any dead projects
                     var list = new List<string>();
-                    foreach(var proj in settings.RecentProjects)
+                    foreach(var proj in Settings.RecentProjects)
                     {
                         if (fileSystem.FileExists(proj))
                             list.Add(proj);
                     }
-                    settings.RecentProjects.Clear();
-                    settings.RecentProjects.AddRange(list);
+                    Settings.RecentProjects.Clear();
+                    Settings.RecentProjects.AddRange(list);
 
-                    recentProjects = new MRUList(settings.RecentProjects, 10);
+                    recentProjects = new MRUList(Settings.RecentProjects, 10);
 
                     recentProjects.PropertyChanged += (sender, e) =>
                         {
@@ -154,52 +150,52 @@ namespace Gallio.Icarus.Controllers
 
         public LogSeverity MinLogSeverity
         {
-            get { return settings.MinLogSeverity; }
-            set { settings.MinLogSeverity = value; }
+            get { return Settings.MinLogSeverity; }
+            set { Settings.MinLogSeverity = value; }
         }
 
         public bool AnnotationsShowErrors
         {
-            get { return settings.AnnotationsShowErrors; }
-            set { settings.AnnotationsShowErrors = value; }
+            get { return Settings.AnnotationsShowErrors; }
+            set { Settings.AnnotationsShowErrors = value; }
         }
 
         public bool AnnotationsShowWarnings
         {
-            get { return settings.AnnotationsShowWarnings; }
-            set { settings.AnnotationsShowWarnings = value; }
+            get { return Settings.AnnotationsShowWarnings; }
+            set { Settings.AnnotationsShowWarnings = value; }
         }
 
         public bool AnnotationsShowInfos
         {
-            get { return settings.AnnotationsShowInfos; }
-            set { settings.AnnotationsShowInfos = value; }
+            get { return Settings.AnnotationsShowInfos; }
+            set { Settings.AnnotationsShowInfos = value; }
         }
 
         public BindingList<string> TestRunnerExtensions { get; private set; }
 
         public bool TestTreeSplitNamespaces
         {
-            get { return settings.TestTreeSplitNamespaces; }
-            set { settings.TestTreeSplitNamespaces = value; }
+            get { return Settings.TestTreeSplitNamespaces; }
+            set { Settings.TestTreeSplitNamespaces = value; }
         }
 
-        public OptionsController(IFileSystem fileSystem, IXmlSerializer xmlSerializer,
-            IUnhandledExceptionPolicy unhandledExceptionPolicy)
+        public Settings Settings
+        {
+            get { return OptionsManager.Settings; }
+        }
+
+        public OptionsController(IFileSystem fileSystem)
         {
             this.fileSystem = fileSystem;
-            this.xmlSerializer = xmlSerializer;
-            this.unhandledExceptionPolicy = unhandledExceptionPolicy;
         }
 
         public void Load()
         {
-            settings = LoadSettings(Paths.SettingsFile) ?? new Settings();
-
-            if (settings.TreeViewCategories.Count == 0)
+            if (Settings.TreeViewCategories.Count == 0)
             {
                 // add default categories
-                settings.TreeViewCategories.AddRange(new[] { "Namespace", MetadataKeys.AuthorName, 
+                Settings.TreeViewCategories.AddRange(new[] { "Namespace", MetadataKeys.AuthorName, 
                     MetadataKeys.Category, MetadataKeys.Importance, MetadataKeys.TestsOn });
             }
 
@@ -207,56 +203,31 @@ namespace Gallio.Icarus.Controllers
             unselectedTreeViewCategoriesList.Clear();
             foreach (FieldInfo fi in typeof(MetadataKeys).GetFields())
             {
-                if (!settings.TreeViewCategories.Contains(fi.Name))
+                if (!Settings.TreeViewCategories.Contains(fi.Name))
                     unselectedTreeViewCategoriesList.Add(fi.Name);
             }
 
             // set up bindable lists (for options dialogs)
-            PluginDirectories = new BindingList<string>(settings.PluginDirectories);
-            SelectedTreeViewCategories = new BindingList<string>(settings.TreeViewCategories);
+            PluginDirectories = new BindingList<string>(Settings.PluginDirectories);
+            SelectedTreeViewCategories = new BindingList<string>(Settings.TreeViewCategories);
             UnselectedTreeViewCategories = new BindingList<string>(unselectedTreeViewCategoriesList);
-            TestRunnerExtensions = new BindingList<string>(settings.TestRunnerExtensions);
-        }
-
-        private Settings LoadSettings(string fileName)
-        {
-            try
-            {
-                if (fileSystem.FileExists(fileName))
-                    return xmlSerializer.LoadFromXml<Settings>(fileName);
-            }
-            catch (Exception ex)
-            {
-                unhandledExceptionPolicy.Report("An exception occurred while loading Icarus settings file.", ex);
-            }
-            return null;    
+            TestRunnerExtensions = new BindingList<string>(Settings.TestRunnerExtensions);
         }
 
         public void Save()
         {
-            try
-            {
-                // create folder, if necessary
-                if (!fileSystem.DirectoryExists(Paths.IcarusAppDataFolder))
-                    fileSystem.CreateDirectory(Paths.IcarusAppDataFolder);
-
-                xmlSerializer.SaveToXml(settings, Paths.SettingsFile);
-            }
-            catch (Exception ex)
-            {
-                unhandledExceptionPolicy.Report("An exception occurred while saving Icarus settings file.", ex);
-            }
+            OptionsManager.Save();
         }
 
         public bool GenerateReportAfterTestRun
         {
-            get { return settings.GenerateReportAfterTestRun; }
-            set { settings.GenerateReportAfterTestRun = value; }
+            get { return Settings.GenerateReportAfterTestRun; }
+            set { Settings.GenerateReportAfterTestRun = value; }
         }
 
         public void Cancel()
         {
-            Load();
+            OptionsManager.Load();
         }
     }
 }

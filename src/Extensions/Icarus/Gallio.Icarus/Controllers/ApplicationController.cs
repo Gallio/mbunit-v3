@@ -92,26 +92,26 @@ namespace Gallio.Icarus.Controllers
             if (arguments == null) 
                 throw new ArgumentNullException("arguments");
 
-            if (serviceLocator == null) 
-                throw new ArgumentNullException("mediator");
+            if (serviceLocator == null)
+                throw new ArgumentNullException("serviceLocator");
 
             this.arguments = arguments;
 
-            this.optionsController = serviceLocator.Resolve<IOptionsController>();
+            optionsController = serviceLocator.Resolve<IOptionsController>();
             optionsController.PropertyChanged += (sender, e) =>
             {
                 if (e.PropertyName == "RecentProjects")
                     OnPropertyChanged(new PropertyChangedEventArgs("RecentProjects"));
             };
 
-            this.fileSystem = serviceLocator.Resolve<IFileSystem>();
-            this.taskManager = serviceLocator.Resolve<ITaskManager>();
-            this.testController = serviceLocator.Resolve<ITestController>();
+            fileSystem = serviceLocator.Resolve<IFileSystem>();
+            taskManager = serviceLocator.Resolve<ITaskManager>();
+            testController = serviceLocator.Resolve<ITestController>();
             
-            this.projectController = serviceLocator.Resolve<IProjectController>();
+            projectController = serviceLocator.Resolve<IProjectController>();
             projectController.AssemblyChanged += (sender, e) => EventHandlerPolicy.SafeInvoke(AssemblyChanged, this, e);
             
-            this.unhandledExceptionPolicy = serviceLocator.Resolve<IUnhandledExceptionPolicy>();
+            unhandledExceptionPolicy = serviceLocator.Resolve<IUnhandledExceptionPolicy>();
         }
 
         public void Load()

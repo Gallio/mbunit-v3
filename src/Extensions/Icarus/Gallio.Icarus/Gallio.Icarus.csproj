@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{6C4AEA1A-CF85-4574-B24A-2C264ED0FEC3}</ProjectGuid>
     <OutputType>WinExe</OutputType>
@@ -181,6 +181,7 @@
     <Compile Include="Helpers\TestTreeBuilder.cs" />
     <Compile Include="Helpers\TestTreeBuilderOptions.cs" />
     <Compile Include="ITaskManager.cs" />
+    <Compile Include="Logging\RuntimeLogger.cs" />
     <Compile Include="Models\ComponentDetailsTreeModel.cs" />
     <Compile Include="Models\ServiceDetailsTreeModel.cs" />
     <Compile Include="Models\PluginDetailsTreeModel.cs" />
@@ -197,6 +198,7 @@
     <Compile Include="Models\ProjectTreeNodes\PropertiesNode.cs" />
     <Compile Include="Models\ProjectTreeNodes\ReportNode.cs" />
     <Compile Include="Models\ProjectTreeNodes\ReportsNode.cs" />
+    <Compile Include="Options\OptionsManager.cs" />
     <Compile Include="Options\TreeViewCategoryOptions.cs">
       <SubType>UserControl</SubType>
     </Compile>
