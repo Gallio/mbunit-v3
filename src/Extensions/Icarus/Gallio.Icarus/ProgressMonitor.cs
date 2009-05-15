@@ -16,26 +16,31 @@
 using System;
 using System.Windows.Forms;
 using Gallio.Common.Concurrency;
-using Gallio.Icarus.Mediator.Interfaces;
+using Gallio.Icarus.ProgressMonitoring;
+using Gallio.Icarus.ProgressMonitoring.EventArgs;
 
 namespace Gallio.Icarus
 {
     public partial class ProgressMonitor : Form
     {
-        private readonly IMediator mediator;
+        private readonly ProgressMonitorPresenter progressMonitor;
 
-        public ProgressMonitor(IMediator mediator)
+        public ProgressMonitor(ProgressMonitorPresenter progressMonitor, 
+            ProgressUpdateEventArgs progressUpdateEventArgs)
         {
-            this.mediator = mediator;
-            mediator.ProgressMonitorProvider.ProgressUpdate += testController_ProgressUpdate;
+            this.progressMonitor = progressMonitor;
+            progressMonitor.ProgressUpdate += (sender,e) => ProgressUpdate(e);
 
             InitializeComponent();
+
+            ProgressUpdate(progressUpdateEventArgs);
         }
 
-        private void testController_ProgressUpdate(object sender, ProgressMonitoring.EventArgs.ProgressUpdateEventArgs e)
+        private void ProgressUpdate(ProgressUpdateEventArgs e)
         {
             Sync.Invoke(this, () =>
             {
+                // update task details
                 progressBar.Maximum = Convert.ToInt32(e.TotalWorkUnits);
                 progressBar.Value = Convert.ToInt32(e.CompletedWorkUnits);
                 Text = e.TaskName;
@@ -43,19 +48,21 @@ namespace Gallio.Icarus
                 percentLabel.Text = (e.TotalWorkUnits > 0)
                     ? String.Format("({0:P0})", e.CompletedWorkUnits/e.TotalWorkUnits)
                     : String.Empty;
+
+                // if we're finished, then close the window
+                if (e.CompletedWorkUnits == e.TotalWorkUnits)
+                    Close();
             });
         }
 
         private void cancelButton_Click(object sender, EventArgs e)
         {
-            mediator.Cancel();
+            progressMonitor.Cancel();
         }
 
         private void runInBackgroundButton_Click(object sender, EventArgs e)
         {
-            if (ParentForm != null)
-                ((Main) ParentForm).ShowProgressMonitor = false;
-            Hide();
+            Close();
         }
     }
 }

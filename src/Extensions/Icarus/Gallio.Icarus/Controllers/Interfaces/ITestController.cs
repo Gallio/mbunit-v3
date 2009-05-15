@@ -27,12 +27,12 @@ using Gallio.Runtime.ProgressMonitoring;
 
 namespace Gallio.Icarus.Controllers.Interfaces
 {
-    public interface ITestController : INotifyController
+    public interface ITestController : INotifyPropertyChanged
     {
         /// <summary>
         /// Gets the list of currently selected tests.
         /// </summary>
-        BindingList<TestTreeNode> SelectedTests { get; }
+        IList<TestTreeNode> SelectedTests { get; }
 
         /// <summary>
         /// Indicator if any tests failed during the last run.
@@ -48,11 +48,6 @@ namespace Gallio.Icarus.Controllers.Interfaces
         /// Gets or sets the current tree category.
         /// </summary>
         string TreeViewCategory { get; set; }
-
-        /// <summary>
-        /// Gets the list of all test framework names.
-        /// </summary>
-        IList<TestFrameworkTraits> TestFrameworks { get; }
 
         /// <summary>
         /// Gets the total number of tests.
@@ -146,8 +141,8 @@ namespace Gallio.Icarus.Controllers.Interfaces
         /// <summary>
         /// Applies a filter to the tests, potentially altering selections.
         /// </summary>
-        /// <param name="filter">The filter to apply</param>
-        void ApplyFilterSet(FilterSet<ITest> filter);
+        /// <param name="filterSet">The filter to apply</param>
+        void ApplyFilterSet(FilterSet<ITest> filterSet);
 
         /// <summary>
         /// Generates a filter from selected tests.
@@ -180,5 +175,12 @@ namespace Gallio.Icarus.Controllers.Interfaces
         /// Resets the status of all tests.
         /// </summary>
         void ResetTestStatus(IProgressMonitor progressMonitor);
+
+        /// <summary>
+        /// Set the nodes currently selected in the Test Explorer.
+        /// </summary>
+        /// <param name="nodes">The list of test tree nodes (one normally, but 
+        /// could be more if a namespace node is selected (don't ask!)).</param>
+        void SetSelection(IList<TestTreeNode> nodes);
     }
 }

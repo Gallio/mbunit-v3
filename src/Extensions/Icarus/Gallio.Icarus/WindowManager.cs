@@ -13,25 +13,101 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Windows.Forms;
+using WeifenLuo.WinFormsUI.Docking;
+using Gallio.Common;
+
 namespace Gallio.Icarus
 {
     public class WindowManager : IWindowManager
     {
-        public WindowManager(IStatusStrip statusStrip, IWindowCollection windowCollection, 
-            IToolStripManager toolStripManager, IMenuManager menuManager)
+        private readonly DockPanel dockPanel;
+        private readonly Dictionary<string, Window> windows = new Dictionary<string, Window>();
+        private readonly Dictionary<string, Action> hooks = new Dictionary<string, Action>();
+
+        public ToolStripItemCollection StatusStrip { get; private set; }
+        public ToolStripContainer ToolStrip { get; private set; }
+        public ToolStripItemCollection Menu { get; private set; }
+
+        public WindowManager(DockPanel dockPanel, ToolStripItemCollection statusStrip,
+            ToolStripContainer toolStrip, ToolStripItemCollection menu)
         {
+            this.dockPanel = dockPanel;
             StatusStrip = statusStrip;
-            Windows = windowCollection;
-            ToolStripManager = toolStripManager;
-            MenuManager = menuManager;
+            ToolStrip = toolStrip;
+            Menu = menu;
         }
 
-        public IStatusStrip StatusStrip { get; private set; }
+        public void Add(string identifier, Control content, string caption)
+        {
+            Add(identifier, content, caption, null);
+        }
 
-        public IWindowCollection Windows { get; private set; }
+        public void Add(string identifier, Control content, string caption, Icon icon)
+        {
+            if (windows.ContainsKey(identifier))
+                throw new Exception("Identifier is not unique");
 
-        public IToolStripManager ToolStripManager { get; private set; }
+            var window = new Window(identifier, content, caption);
+            if (icon != null)
+                window.Icon = icon;
 
-        public IMenuManager MenuManager { get; private set; }
+            window.FormClosed += (sender, e) => Remove(window.Id);
+
+            windows.Add(identifier, window);
+        }
+
+        public void Remove(string identifier)
+        {
+            if (windows.ContainsKey(identifier))
+                windows.Remove(identifier);
+        }
+
+        internal Window Get(string identifier)
+        {
+            // if we have the window stored, then return it
+            if (windows.ContainsKey(identifier))
+                return windows[identifier] as Window;
+
+            // if we have an action registered, run it
+            if (hooks.ContainsKey(identifier))
+                hooks[identifier]();
+
+            // check if we have the window now
+            if (windows.ContainsKey(identifier))
+                return windows[identifier] as Window;
+
+            // otherwise give up!
+            return null;
+        }
+
+        public void Show(string identifier)
+        {
+            var window = Get(identifier);
+            if (window == null)
+                throw new Exception("No window with that identifier exists");
+               
+            window.Show(dockPanel);
+        }
+
+        public void Show(string identifier, DockState dockState)
+        {
+            var window = Get(identifier);
+            if (window == null)
+                throw new Exception("No window with that identifier exists");
+
+            window.Show(dockPanel, dockState);
+        }
+
+        public void Register(string identifier, Action action)
+        {
+            if (hooks.ContainsKey(identifier))
+                throw new Exception("Identifier is not unique");
+
+            hooks.Add(identifier, action);
+        }
     }
 }

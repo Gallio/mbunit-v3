@@ -20,6 +20,7 @@ using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Models;
 using Gallio.Model;
 using System.Windows.Forms;
+using System.Drawing;
 
 namespace Gallio.Icarus.Controls
 {
@@ -46,6 +47,14 @@ namespace Gallio.Icarus.Controls
                 return collapsedNodes;
             }
         }
+
+        public Color PassedColor { get; set; }
+        
+        public Color FailedColor { get; set; }
+        
+        public Color SkippedColor { get; set; }
+
+        public Color InconclusiveColor { get; set; }
 
         public TestTreeView()
         {
@@ -86,27 +95,22 @@ namespace Gallio.Icarus.Controls
             NodeControls.Add(nodeTextBox);
         }
 
-        public IOptionsController OptionsController { get; set; }
-
         private void nodeTextBox_DrawText(object sender, DrawEventArgs e)
         {
-            if (OptionsController == null)
-                return;
-
-            TestTreeNode node = (TestTreeNode)e.Node.Tag;
+            var node = (TestTreeNode)e.Node.Tag;
             switch (node.TestStatus)
             {
                 case TestStatus.Passed:
-                    e.TextColor = OptionsController.PassedColor;
+                    e.TextColor = PassedColor;
                     break;
                 case TestStatus.Failed:
-                    e.TextColor = OptionsController.FailedColor;
+                    e.TextColor = FailedColor;
                     break;
                 case TestStatus.Skipped:
-                    e.TextColor = OptionsController.SkippedColor;
+                    e.TextColor = SkippedColor;
                     break;
                 case TestStatus.Inconclusive:
-                    e.TextColor = OptionsController.InconclusiveColor;
+                    e.TextColor = InconclusiveColor;
                     break;
             }
         }

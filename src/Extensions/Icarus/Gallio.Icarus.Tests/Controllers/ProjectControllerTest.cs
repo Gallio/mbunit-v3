@@ -207,7 +207,7 @@ namespace Gallio.Icarus.Tests.Controllers
             Assert.AreEqual(fileName, projectController.ProjectFileName);
         }
 
-        [Test]
+        [SyncTest]
         public void NewProject_Test()
         {
             var projectTreeModel = MockRepository.GenerateStub<IProjectTreeModel>();
@@ -218,11 +218,8 @@ namespace Gallio.Icarus.Tests.Controllers
             var optionsController = MockRepository.GenerateStub<IOptionsController>();
             var assemblyWatcher = MockRepository.GenerateStub<IAssemblyWatcher>();
 
-            var projectController = new ProjectController(projectTreeModel, optionsController, 
-                fileSystem, xmlSerializer, assemblyWatcher)
-            {
-                SynchronizationContext = new TestSynchronizationContext()
-            };
+            var projectController = new ProjectController(projectTreeModel, optionsController,
+                fileSystem, xmlSerializer, assemblyWatcher);
 
             projectController.PropertyChanged += ((sender, e) => Assert.AreEqual("TestPackageConfig", e.PropertyName));
             projectController.NewProject(progressMonitor);
@@ -290,6 +287,8 @@ namespace Gallio.Icarus.Tests.Controllers
             Assert.AreEqual(1, projectController.TestFilters.Count);
             projectController.SaveFilterSet("filterName", new FilterSet<ITest>(new NoneFilter<ITest>()), progressMonitor);
             Assert.AreEqual(1, projectController.TestFilters.Count);
+            projectController.SaveFilterSet("aDifferentFilterName", new FilterSet<ITest>(new NoneFilter<ITest>()), progressMonitor);
+            Assert.AreEqual(2, projectController.TestFilters.Count);
         }
 
         [Test]
@@ -406,7 +405,7 @@ namespace Gallio.Icarus.Tests.Controllers
             Assert.AreEqual(true, assemblyChangedFlag);
         }
 
-        [Test]
+        [SyncTest]
         public void OpenProject_Test()
         {
             const string projectName = "projectName";
@@ -426,10 +425,7 @@ namespace Gallio.Icarus.Tests.Controllers
             var assemblyWatcher = MockRepository.GenerateStub<IAssemblyWatcher>();
             var progressMonitor = MockProgressMonitor.GetMockProgressMonitor();
             var projectController = new ProjectController(projectTreeModel, optionsController,
-                fileSystem, xmlSerializer, assemblyWatcher)
-            {
-                SynchronizationContext = new TestSynchronizationContext()
-            };
+                fileSystem, xmlSerializer, assemblyWatcher);
             var propertyChangedFlag = false;
             projectController.PropertyChanged += delegate(object sender, PropertyChangedEventArgs e)
             {
@@ -476,20 +472,30 @@ namespace Gallio.Icarus.Tests.Controllers
             var projectTreeModel = MockRepository.GenerateStub<IProjectTreeModel>();
             var fileSystem = MockRepository.GenerateStub<IFileSystem>();
             fileSystem.Stub(fs => fs.FileExists(projectName)).Return(true);
+
             var xmlSerializer = MockRepository.GenerateStub<IXmlSerializer>();
             xmlSerializer.Stub(xs => xs.LoadFromXml<Project>(projectName)).Return(new Project());
             string projectUserOptionsFile = projectName + UserOptions.Extension;
+            fileSystem.Stub(fs => fs.FileExists(projectUserOptionsFile)).Return(true);
             xmlSerializer.Stub(xs => xs.LoadFromXml<UserOptions>(projectUserOptionsFile)).Throw(new Exception());
             var optionsController = MockRepository.GenerateStub<IOptionsController>();
             var assemblyWatcher = MockRepository.GenerateStub<IAssemblyWatcher>();
             var progressMonitor = MockProgressMonitor.GetMockProgressMonitor();
             var projectController = new ProjectController(projectTreeModel, optionsController, 
                 fileSystem, xmlSerializer, assemblyWatcher);
+            projectController.PropertyChanged += (sender, e) =>
+            {
+                if (e.PropertyName == "TreeViewCategory")
+                    Assert.Fail();
+            };
 
             projectController.OpenProject(projectName, progressMonitor);
+
+            Assert.AreEqual("Namespace", projectController.TreeViewCategory);
+            Assert.AreEqual(0, projectController.CollapsedNodes.Count);
         }
 
-        [Test]
+        [SyncTest]
         public void User_options_should_be_applied_when_available_after_loading_a_project()
         {
             const string projectName = "projectName";
@@ -500,7 +506,7 @@ namespace Gallio.Icarus.Tests.Controllers
             xmlSerializer.Stub(xs => xs.LoadFromXml<Project>(projectName)).Return(new Project());
             string projectUserOptionsFile = projectName + UserOptions.Extension;
             fileSystem.Stub(fs => fs.FileExists(projectUserOptionsFile)).Return(true);
-            var treeViewCategory = "treeViewCategory";
+            const string treeViewCategory = "treeViewCategory";
             var collapsedNodes = new List<string>(new[] { "one", "two", "three" });
             var userOptions = new UserOptions()
             {
@@ -512,10 +518,7 @@ namespace Gallio.Icarus.Tests.Controllers
             var assemblyWatcher = MockRepository.GenerateStub<IAssemblyWatcher>();
             var progressMonitor = MockProgressMonitor.GetMockProgressMonitor();
             var projectController = new ProjectController(projectTreeModel, optionsController,
-                fileSystem, xmlSerializer, assemblyWatcher)
-                {
-                    SynchronizationContext = new TestSynchronizationContext()
-                };
+                fileSystem, xmlSerializer, assemblyWatcher);
 
             var treeViewCategoryChanged = false;
             projectController.PropertyChanged += (sender, e) =>
@@ -531,6 +534,23 @@ namespace Gallio.Icarus.Tests.Controllers
 
             Assert.AreEqual(true, treeViewCategoryChanged);
             Assert.AreEqual(collapsedNodes, projectController.CollapsedNodes);
+        }
+
+        [Test]
+        public void RefreshTree_calls_Refresh_on_ProjectTreeModel()
+        {
+            var projectTreeModel = MockRepository.GenerateStub<IProjectTreeModel>();
+            var fileSystem = MockRepository.GenerateStub<IFileSystem>();
+            var xmlSerializer = MockRepository.GenerateStub<IXmlSerializer>();
+            var optionsController = MockRepository.GenerateStub<IOptionsController>();
+            var assemblyWatcher = MockRepository.GenerateStub<IAssemblyWatcher>();
+            var progressMonitor = MockProgressMonitor.GetMockProgressMonitor();
+            var projectController = new ProjectController(projectTreeModel, optionsController,
+                fileSystem, xmlSerializer, assemblyWatcher);
+
+            projectController.RefreshTree(progressMonitor);
+
+            projectTreeModel.AssertWasCalled(ptm => ptm.Refresh());
         }
     }
 }

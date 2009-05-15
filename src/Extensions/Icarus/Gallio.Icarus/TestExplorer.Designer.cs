@@ -100,7 +100,6 @@ namespace Gallio.Icarus
             this.testTree.Location = new System.Drawing.Point(0, 0);
             this.testTree.Model = null;
             this.testTree.Name = "testTree";
-            this.testTree.OptionsController = null;
             this.testTree.SelectedNode = null;
             this.testTree.Size = new System.Drawing.Size(281, 248);
             this.testTree.TabIndex = 5;

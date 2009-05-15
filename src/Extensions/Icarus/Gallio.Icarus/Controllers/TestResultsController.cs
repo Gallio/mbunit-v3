@@ -18,7 +18,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
-using System.Threading;
 using System.Windows.Forms;
 using Aga.Controls.Tree;
 using Gallio.Icarus.Controllers.Interfaces;
@@ -32,6 +31,7 @@ namespace Gallio.Icarus.Controllers
     {
         private readonly ITestController testController;
         private readonly IOptionsController optionsController;
+        private readonly ITaskManager taskManager;
 
         private int resultsCount;
         private readonly Stopwatch stopwatch = new Stopwatch();
@@ -110,12 +110,28 @@ namespace Gallio.Icarus.Controllers
             get { return testController.TestCount; }
         }
 
-        internal TestResultsController(ITestController testController, IOptionsController optionsController)
+        public TestResultsController(ITestController testController, IOptionsController optionsController, 
+            ITaskManager taskManager)
         {
+            if (testController == null) 
+                throw new ArgumentNullException("testController");
+            
+            if (optionsController == null) 
+                throw new ArgumentNullException("optionsController");
+            
+            if (taskManager == null) 
+                throw new ArgumentNullException("taskManager");
+
             this.testController = testController;
 
-            testController.TestStepFinished += (sender, e) => CountResults(e.TestStepRun);
-            testController.SelectedTests.ListChanged += (sender, e) => CountResults(null);
+            testController.TestStepFinished += (sender, e) => CountResults();
+            testController.PropertyChanged += (sender, e) =>
+            {
+                if (e.PropertyName != "SelectedTests")
+                    return;
+
+                CountResults();
+            };
             testController.ExploreStarted += (sender, e) => Reset();
             testController.ExploreFinished += (sender, e) => 
             {
@@ -131,47 +147,45 @@ namespace Gallio.Icarus.Controllers
 
             this.optionsController = optionsController;
             optionsController.PropertyChanged += ((sender, e) => OnPropertyChanged(e));
+
+            this.taskManager = taskManager;
         }
 
-        private void CountResults(TestStepRun testStepRun)
+        private void CountResults()
         {
-            ThreadPool.QueueUserWorkItem(cb =>
+            taskManager.BackgroundTask(() =>
             {
-                if (testController.Model.Root == null)
-                    return;
-
                 int count = 0;
 
-                if (testController.SelectedTests.Count == 0)
-                    CountResults(testController.Model.Root, testStepRun, ref count);
-                else
+                if (testController.Model.Root != null)
                 {
-                    // need to do this because poxy namespace nodes don't really exist!
-                    foreach (TestTreeNode node in testController.SelectedTests)
-                        CountResults(node, testStepRun, ref count);
+                    if (testController.SelectedTests.Count == 0)
+                    {
+                        CountResults(testController.Model.Root, ref count);
+                    }
+                    else
+                    {
+                        // need to do this because poxy namespace nodes don't really exist!
+                        foreach (TestTreeNode node in testController.SelectedTests)
+                            CountResults(node, ref count);
+                    }
                 }
 
-                // invalidate cache
-                firstItem = 0;
+                // update cache
+                UpdateTestResults();
 
+                // notify that list has changed
                 ResultsCount = count;
-
                 OnPropertyChanged(new PropertyChangedEventArgs("ElapsedTime"));
             });
         }
 
-        private void CountResults(TestTreeNode node, TestStepRun testStepRun, ref int count)
+        private static void CountResults(TestTreeNode node, ref int count)
         {
-            foreach (var tsr in node.TestStepRuns)
-            {
-                count++;
-
-                if (tsr == testStepRun && count <= lastItem)
-                    firstItem = lastItem = 0; // invalidate cache
-            }
+            count += node.TestStepRuns.Count;
 
             foreach (Node n in node.Nodes)
-                CountResults((TestTreeNode) n, testStepRun, ref count);
+                CountResults((TestTreeNode) n, ref count);
         }
 
         private void Reset()
@@ -199,27 +213,24 @@ namespace Gallio.Icarus.Controllers
 
         public ListViewItem RetrieveVirtualItem(int itemIndex)
         {
-            try
+            // update cache, if necessary
+            if (itemIndex < firstItem)
             {
-                // If we don't have the item cached, then update the list
-                if (itemIndex <= firstItem)
-                {
-                    firstItem = itemIndex;
-                    UpdateTestResults();
-                }
-                else if (itemIndex > firstItem + (listViewItems.Count - 1))
-                {
-                    lastItem = itemIndex;
-                    UpdateTestResults();
-                }
+                firstItem = itemIndex;
+                UpdateTestResults();
+            }
+            else if (itemIndex > (firstItem + (listViewItems.Count - 1)))
+            {
+                lastItem = itemIndex;
+                UpdateTestResults();
+            }
 
-                return listViewItems[itemIndex - firstItem];
-            }
-            catch (Exception)
+            if ((itemIndex - firstItem) > (listViewItems.Count - 1))
             {
-                return CreateListViewItem(string.Empty, -1, string.Empty, string.Empty, string.Empty, 
-                    string.Empty, string.Empty, 0);
+                UpdateTestResults();
             }
+
+            return listViewItems[itemIndex - firstItem];
         }
 
         private void UpdateTestResults()
@@ -228,7 +239,9 @@ namespace Gallio.Icarus.Controllers
             index = 0;
 
             if (testController.SelectedTests.Count == 0)
+            {
                 UpdateTestResults(testController.Model.Root, 0);
+            }
             else
             {
                 // need to do this because poxy namespace nodes don't really exist!
@@ -355,6 +368,8 @@ namespace Gallio.Icarus.Controllers
                 sortColumn = column;
                 sortOrder = SortOrder.Ascending;
             }
+
+            UpdateTestResults();
         }
     }
 }

@@ -18,7 +18,7 @@ using System.Windows.Forms;
 
 namespace Gallio.Icarus.Controllers.Interfaces
 {
-    public interface ITestResultsController : INotifyController
+    public interface ITestResultsController
     {
         int ResultsCount { get; }
         string TestStatusBarStyle { get; }

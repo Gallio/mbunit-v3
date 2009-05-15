@@ -23,7 +23,7 @@ using Gallio.Runtime.ProgressMonitoring;
 
 namespace Gallio.Icarus.Services
 {
-    class ReportService : IReportService
+    internal class ReportService : IReportService
     {
         private readonly IReportManager reportManager;
 

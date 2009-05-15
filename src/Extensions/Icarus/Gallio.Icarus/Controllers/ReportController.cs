@@ -21,6 +21,7 @@ using Gallio.Common.IO;
 using Gallio.Common.Policies;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Services.Interfaces;
+using Gallio.Icarus.Utilities;
 using Gallio.Runner.Reports;
 using Gallio.Runtime.ProgressMonitoring;
 
@@ -29,8 +30,9 @@ namespace Gallio.Icarus.Controllers
     class ReportController : IReportController
     {
         private readonly IReportService reportService;
-        private const string reportNameFormat = "test-report-{0}-{1}";
         private readonly IFileSystem fileSystem;
+
+        private const string reportNameFormat = "test-report-{0}-{1}";
 
         public ReportController(IReportService reportService, IFileSystem fileSystem)
         {
@@ -46,16 +48,7 @@ namespace Gallio.Icarus.Controllers
         public void DeleteReport(string fileName, IProgressMonitor progressMonitor)
         {
             using (progressMonitor.BeginTask("Deleting report", 100))
-            {
-                try
-                {
-                    fileSystem.DeleteFile(fileName);
-                }
-                catch (Exception ex)
-                {
-                    UnhandledExceptionPolicy.Report("Error deleting report", ex);
-                }
-            }
+                fileSystem.DeleteFile(fileName);
         }
 
         public void GenerateReport(Report report, string reportDirectory, IProgressMonitor progressMonitor)

@@ -33,23 +33,29 @@ using WeifenLuo.WinFormsUI.Docking;
 
 namespace Gallio.Icarus
 {
-    public partial class Window : DockContent, IWindow
+    public partial class Window : DockContent
     {
-        internal Window(Control content, string caption)
+        public string Id
+        {
+            get;
+            private set;
+        }
+
+        internal Window(string id, Control content, string caption)
         {
             InitializeComponent();
 
-            Content = content;
+            Id = id;
+            
             Controls.Add(content);
+            content.Dock = DockStyle.Fill;
 
             TabText = caption;
         }
 
-        public string Caption
+        protected override string GetPersistString()
         {
-            get { return TabText; }
+            return Id;
         }
-
-        public Control Content { get; private set; }
     }
 }

@@ -162,5 +162,8 @@ namespace Gallio.Icarus
         {
             get { return extensionSpecifications; }
         }
+
+        [XmlElement("testTreeSplitNamespaces")]
+        public bool TestTreeSplitNamespaces { get; set; }
     }
 }

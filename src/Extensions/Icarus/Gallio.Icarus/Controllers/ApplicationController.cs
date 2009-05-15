@@ -16,22 +16,37 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing;
 using System.IO;
 using Gallio.Common.IO;
-using Gallio.Icarus.Mediator.Interfaces;
+using Gallio.Icarus.Commands;
+using Gallio.Icarus.Controllers.EventArgs;
+using Gallio.Icarus.Controllers.Interfaces;
+using Gallio.Icarus.Controls;
+using Gallio.Icarus.Helpers;
+using Gallio.Icarus.Utilities;
 using Gallio.Runner.Projects;
+using Gallio.Runtime;
+using Gallio.Runtime.Extensibility;
+using Gallio.Common.Policies;
 
 namespace Gallio.Icarus.Controllers
 {
-    public class ApplicationController : NotifyController, IApplicationController
+    internal class ApplicationController : NotifyController, IApplicationController
     {
         private readonly IcarusArguments arguments;
         private string projectFileName = string.Empty;
+
         private readonly IFileSystem fileSystem;
+        private readonly IOptionsController optionsController;
+        private readonly ITaskManager taskManager;
+        private readonly ITestController testController;
+        private readonly IProjectController projectController;
+        private readonly IUnhandledExceptionPolicy unhandledExceptionPolicy;
+
+        public event EventHandler<AssemblyChangedEventArgs> AssemblyChanged;
         
-        public IMediator Mediator { get; private set; }
-        
-        public string ProjectFileName
+        public string Title
         {
             get
             {
@@ -46,24 +61,63 @@ namespace Gallio.Icarus.Controllers
             }
         }
 
-        public ApplicationController(IcarusArguments arguments, IMediator mediator, IFileSystem fileSystem)
+        public ToolStripMenuItem[] RecentProjects
+        {
+            get 
+            {
+                return MenuListHelper.GetRecentProjectsMenuList(optionsController.RecentProjects,
+                    OpenProject, fileSystem).ToArray();
+            }
+        }
+
+        public Size Size
+        {
+            get { return optionsController.Size; }
+            set { optionsController.Size = value; }
+        }
+
+        public Point Location
+        {
+            get { return optionsController.Location; }
+            set { optionsController.Location = value; }
+        }
+
+        public bool FailedTests
+        {
+            get { return testController.FailedTests; }
+        }
+
+        public ApplicationController(IcarusArguments arguments, IServiceLocator serviceLocator)
         {
             if (arguments == null) 
                 throw new ArgumentNullException("arguments");
 
-            if (mediator == null) 
+            if (serviceLocator == null) 
                 throw new ArgumentNullException("mediator");
 
-            if (fileSystem == null) 
-                throw new ArgumentNullException("fileSystem");
-
             this.arguments = arguments;
-            Mediator = mediator;
-            this.fileSystem = fileSystem;
+
+            this.optionsController = serviceLocator.Resolve<IOptionsController>();
+            optionsController.PropertyChanged += (sender, e) =>
+            {
+                if (e.PropertyName == "RecentProjects")
+                    OnPropertyChanged(new PropertyChangedEventArgs("RecentProjects"));
+            };
+
+            this.fileSystem = serviceLocator.Resolve<IFileSystem>();
+            this.taskManager = serviceLocator.Resolve<ITaskManager>();
+            this.testController = serviceLocator.Resolve<ITestController>();
+            
+            this.projectController = serviceLocator.Resolve<IProjectController>();
+            projectController.AssemblyChanged += (sender, e) => EventHandlerPolicy.SafeInvoke(AssemblyChanged, this, e);
+            
+            this.unhandledExceptionPolicy = serviceLocator.Resolve<IUnhandledExceptionPolicy>();
         }
 
         public void Load()
         {
+            LoadPackages();
+
             var assemblyFiles = new List<string>();
             if (arguments.Assemblies.Length > 0)
             {
@@ -74,49 +128,80 @@ namespace Gallio.Icarus.Controllers
 
                     if (Path.GetExtension(assembly) == Project.Extension)
                     {
-                        Mediator.OpenProject(assembly);
-                        break;
+                        OpenProject(assembly);
+                        return;
                     }
                     assemblyFiles.Add(assembly);
                 }
-                Mediator.AddAssemblies(assemblyFiles);
+                AddAssemblies(assemblyFiles);
             }
-            else if (Mediator.OptionsController.RestorePreviousSettings && Mediator.OptionsController.RecentProjects.Count > 0)
+            else if (optionsController.RestorePreviousSettings && optionsController.RecentProjects.Count > 0)
             {
-                string projectName = Mediator.OptionsController.RecentProjects.Items[0];
-                ProjectFileName = projectName;
-                Mediator.OpenProject(projectName);
+                string projectName = optionsController.RecentProjects.Items[0];
+                OpenProject(projectName);
+            }
+        }
+
+        private void LoadPackages()
+        {
+            var serviceLocator = RuntimeAccessor.ServiceLocator;
+            foreach (var package in serviceLocator.ResolveAll<IPackage>())
+            {
+                try
+                {
+                    package.Load(serviceLocator);
+                }
+                catch (Exception ex)
+                {
+                    unhandledExceptionPolicy.Report("Error loading package", ex);
+                }
+            }
+        }
+
+        private void UnloadPackages()
+        {
+            var serviceLocator = RuntimeAccessor.ServiceLocator;
+            foreach (var package in serviceLocator.ResolveAll<IPackage>())
+            {
+                try
+                {
+                    package.Unload();
+                }
+                catch (Exception ex)
+                {
+                    unhandledExceptionPolicy.Report("Error unloading package", ex);
+                }
             }
         }
 
         public void OpenProject(string projectName)
         {
-            ProjectFileName = projectName;
-            Mediator.OpenProject(projectName);
+            Title = projectName;
+
+            var openProjectCommand = new OpenProjectCommand(testController, projectController, projectName);
+            taskManager.QueueTask(openProjectCommand);
         }
 
         public void SaveProject()
         {
-            Mediator.SaveProject(projectFileName);
+            var cmd = new SaveProjectCommand(projectController);
+            cmd.FileName = projectFileName;
+            taskManager.QueueTask(cmd);
         }
 
         public void NewProject()
         {
-            ProjectFileName = string.Empty;
-            Mediator.NewProject();
+            Title = string.Empty;
+
+            var cmd = new NewProjectCommand(projectController, testController);
+            taskManager.QueueTask(cmd);
         }
 
-        public override Utilities.ISynchronizationContext SynchronizationContext
+        private void AddAssemblies(IList<string> assemblyFiles)
         {
-            get
-            {
-                return base.SynchronizationContext;
-            }
-            set
-            {
-                base.SynchronizationContext = value;
-                Mediator.SynchronizationContext = value;
-            }
+            var cmd = new AddAssembliesCommand(projectController, testController);
+            cmd.AssemblyFiles = assemblyFiles;
+            taskManager.QueueTask(cmd);
         }
     }
 }

@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using Gallio.Common.Reflection;
 using Gallio.Icarus.Controllers.EventArgs;
 using Gallio.Runtime.ProgressMonitoring;
 
@@ -29,8 +30,14 @@ namespace Gallio.Icarus.Controllers.Interfaces
         /// <summary>
         /// Views the source code associated with a particular test.
         /// </summary>
-        /// <param name="testId">The test id</param>
-        /// <param name="progressMonitor">The progress monitor</param>
+        /// <param name="testId">The test id.</param>
+        /// <param name="progressMonitor">The progress monitor.</param>
         void ViewSourceCode(string testId, IProgressMonitor progressMonitor);
+
+        /// <summary>
+        /// Views the source code associated with a particular test.
+        /// </summary>
+        /// <param name="codeLocation">The location of the code.</param>
+        void ViewSourceCode(CodeLocation codeLocation);
     }
 }

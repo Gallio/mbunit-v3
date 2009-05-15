@@ -16,6 +16,7 @@
 using System.ComponentModel;
 using System.Windows.Forms;
 using Aga.Controls.Tree;
+using Gallio.Icarus.Helpers;
 using Gallio.Model;
 using Gallio.Model.Filters;
 using Gallio.Model.Serialization;
@@ -40,7 +41,7 @@ namespace Gallio.Icarus.Models
 
         void ApplyFilterSet(FilterSet<ITest> filterSet);
         void BuildTestTree(IProgressMonitor progressMonitor, TestModelData testModelData, 
-                           string treeViewCategory);
+            TestTreeBuilderOptions options);
         Node FindNode(TreePath path);
         FilterSet<ITest> GenerateFilterSetFromSelectedTests();
         TreePath GetPath(Node node);

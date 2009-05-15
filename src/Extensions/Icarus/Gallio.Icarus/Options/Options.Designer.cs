@@ -48,12 +48,18 @@ namespace Gallio.Icarus.Options
             treeNode1});
             System.Windows.Forms.TreeNode treeNode3 = new System.Windows.Forms.TreeNode("Reports");
             System.Windows.Forms.TreeNode treeNode4 = new System.Windows.Forms.TreeNode("Plugin Directories");
-            System.Windows.Forms.TreeNode treeNode5 = new System.Windows.Forms.TreeNode("Test Runner Extensions");
-            System.Windows.Forms.TreeNode treeNode6 = new System.Windows.Forms.TreeNode("Runtime", new System.Windows.Forms.TreeNode[] {
+            System.Windows.Forms.TreeNode treeNode5 = new System.Windows.Forms.TreeNode("Test Runner Factory");
+            System.Windows.Forms.TreeNode treeNode6 = new System.Windows.Forms.TreeNode("Test Runner Extensions");
+            System.Windows.Forms.TreeNode treeNode7 = new System.Windows.Forms.TreeNode("Runtime", new System.Windows.Forms.TreeNode[] {
             treeNode4,
-            treeNode5});
-            System.Windows.Forms.TreeNode treeNode7 = new System.Windows.Forms.TreeNode("Startup");
-            System.Windows.Forms.TreeNode treeNode8 = new System.Windows.Forms.TreeNode("Test Explorer");
+            treeNode5,
+            treeNode6});
+            System.Windows.Forms.TreeNode treeNode8 = new System.Windows.Forms.TreeNode("Startup");
+            System.Windows.Forms.TreeNode treeNode9 = new System.Windows.Forms.TreeNode("General");
+            System.Windows.Forms.TreeNode treeNode10 = new System.Windows.Forms.TreeNode("Tree View Categories");
+            System.Windows.Forms.TreeNode treeNode11 = new System.Windows.Forms.TreeNode("Test Explorer", new System.Windows.Forms.TreeNode[] {
+            treeNode9,
+            treeNode10});
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Options));
             this.optionCategoryTree = new System.Windows.Forms.TreeView();
             this.cancelButton = new System.Windows.Forms.Button();
@@ -69,28 +75,34 @@ namespace Gallio.Icarus.Options
             this.optionCategoryTree.HideSelection = false;
             this.optionCategoryTree.Location = new System.Drawing.Point(13, 12);
             this.optionCategoryTree.Name = "optionCategoryTree";
-            treeNode1.Name = "testStatusColors";
+            treeNode1.Name = "testStatusColorsNode";
             treeNode1.Text = "Test Status Colors";
-            treeNode2.Name = "appearance";
+            treeNode2.Name = "appearanceNode";
             treeNode2.Text = "Appearance";
-            treeNode3.Name = "Reports";
+            treeNode3.Name = "reportsNode";
             treeNode3.Text = "Reports";
-            treeNode4.Name = "pluginDirectories";
+            treeNode4.Name = "pluginDirectoriesNode";
             treeNode4.Text = "Plugin Directories";
-            treeNode5.Name = "testRunnerExtensions";
-            treeNode5.Text = "Test Runner Extensions";
-            treeNode6.Name = "runtime";
-            treeNode6.Text = "Runtime";
-            treeNode7.Name = "startup";
-            treeNode7.Text = "Startup";
-            treeNode8.Name = "testExplorer";
-            treeNode8.Text = "Test Explorer";
+            treeNode5.Name = "testRunnerFactoryNode";
+            treeNode5.Text = "Test Runner Factory";
+            treeNode6.Name = "testRunnerExtensionsNode";
+            treeNode6.Text = "Test Runner Extensions";
+            treeNode7.Name = "runtimeNode";
+            treeNode7.Text = "Runtime";
+            treeNode8.Name = "startupNode";
+            treeNode8.Text = "Startup";
+            treeNode9.Name = "testExplorerGeneralNode";
+            treeNode9.Text = "General";
+            treeNode10.Name = "treeViewCategoriesNode";
+            treeNode10.Text = "Tree View Categories";
+            treeNode11.Name = "testExplorerNode";
+            treeNode11.Text = "Test Explorer";
             this.optionCategoryTree.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
             treeNode2,
             treeNode3,
-            treeNode6,
             treeNode7,
-            treeNode8});
+            treeNode8,
+            treeNode11});
             this.optionCategoryTree.Size = new System.Drawing.Size(175, 257);
             this.optionCategoryTree.TabIndex = 0;
             this.optionCategoryTree.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.optionCategoryTree_AfterSelect);

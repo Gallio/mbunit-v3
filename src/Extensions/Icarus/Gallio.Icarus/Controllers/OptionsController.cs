@@ -27,7 +27,7 @@ using Gallio.Runtime.Logging;
 
 namespace Gallio.Icarus.Controllers
 {
-    public sealed class OptionsController : IOptionsController
+    public sealed class OptionsController : NotifyController, IOptionsController
     {
         private Settings settings;
         private readonly IFileSystem fileSystem;
@@ -73,7 +73,7 @@ namespace Gallio.Icarus.Controllers
             set
             {
                 settings.TestRunnerFactory = value;
-                OnPropertyChanged("TestRunnerFactory");
+                OnPropertyChanged(new PropertyChangedEventArgs("TestRunnerFactory"));
             }
         }
 
@@ -141,6 +141,12 @@ namespace Gallio.Icarus.Controllers
                     settings.RecentProjects.AddRange(list);
 
                     recentProjects = new MRUList(settings.RecentProjects, 10);
+
+                    recentProjects.PropertyChanged += (sender, e) =>
+                        {
+                            if (e.PropertyName == "Items")
+                                OnPropertyChanged(new PropertyChangedEventArgs("RecentProjects"));
+                        };
                 }
                 return recentProjects;
             }
@@ -171,6 +177,12 @@ namespace Gallio.Icarus.Controllers
         }
 
         public BindingList<string> TestRunnerExtensions { get; private set; }
+
+        public bool TestTreeSplitNamespaces
+        {
+            get { return settings.TestTreeSplitNamespaces; }
+            set { settings.TestTreeSplitNamespaces = value; }
+        }
 
         public OptionsController(IFileSystem fileSystem, IXmlSerializer xmlSerializer,
             IUnhandledExceptionPolicy unhandledExceptionPolicy)
@@ -245,14 +257,6 @@ namespace Gallio.Icarus.Controllers
         public void Cancel()
         {
             Load();
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        private void OnPropertyChanged(string propertyName)
-        {
-            if (PropertyChanged != null)
-                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

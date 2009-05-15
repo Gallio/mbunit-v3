@@ -34,10 +34,22 @@ namespace Gallio.Icarus.Controllers
 
         public ExecutionLogController(ITestController testController, ITaskManager taskManager)
         {
+            if (testController == null) 
+                throw new ArgumentNullException("testController");
+            
+            if (taskManager == null) 
+                throw new ArgumentNullException("taskManager");
+
             this.testController = testController;
             this.taskManager = taskManager;
 
-            testController.SelectedTests.ListChanged += ListChanged;
+            testController.PropertyChanged += (sender, e) =>
+            {
+                if (e.PropertyName != "SelectedTests")
+                    return;
+
+                SelectedTestsChanged();
+            };
             testController.TestStepFinished += TestStepFinished;
             
             testController.RunStarted += (sender, e) =>
@@ -55,7 +67,7 @@ namespace Gallio.Icarus.Controllers
 
         public TestModelData TestModelData { get; private set; }
 
-        private void ListChanged(object sender, ListChangedEventArgs e)
+        private void SelectedTestsChanged()
         {
             selectedTestIds.Clear();
 

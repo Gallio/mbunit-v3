@@ -53,13 +53,17 @@ namespace Gallio.Icarus.Tests.Controllers
         public void LogImpl_Test(LogSeverity logSeverity)
         {
             const string message = "message";
+            var flag = false;
             EventHandler<RuntimeLogEventArgs> eh = delegate(object sender, RuntimeLogEventArgs e)
             {
                 Assert.AreEqual(message, e.Message);
                 Assert.AreEqual(colors[logSeverity], e.Color);
+                flag = true;
             };
             LogMessage += eh;
+            MinLogSeverity = LogSeverity.Debug;
             LogImpl(logSeverity, message, null);
+            Assert.AreEqual(true, flag);
             LogMessage -= eh;
         }
 
@@ -86,6 +90,18 @@ namespace Gallio.Icarus.Tests.Controllers
             };
             LogMessage += eh;
             LogImpl(logSeverity, message, new ExceptionData(ex));
+            LogMessage -= eh;
+        }
+
+        [Test]
+        public void LogImpl_should_filter_()
+        {
+            EventHandler<RuntimeLogEventArgs> eh = (sender, e) => Assert.Fail();
+            LogMessage += eh;
+
+            MinLogSeverity = LogSeverity.Error;
+            LogImpl(LogSeverity.Warning, "message", null);
+            
             LogMessage -= eh;
         }
     }

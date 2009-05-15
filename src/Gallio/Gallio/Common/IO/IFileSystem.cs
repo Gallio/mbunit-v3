@@ -13,6 +13,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.IO;
+
 namespace Gallio.Common.IO
 {
     /// <summary>
@@ -53,5 +55,21 @@ namespace Gallio.Common.IO
         ///</summary>
         ///<param name="path">The location of the file.</param>
         void DeleteFile(string path);
+
+        ///<summary>
+        /// Attempts to open a file using the default program.
+        ///</summary>
+        ///<param name="path">The location of the file.</param>
+        void OpenFile(string path);
+
+        /// <summary>
+        /// Returns a list of matching files in the specified directory.
+        /// </summary>
+        /// <param name="path">The directory to inspect.</param>
+        /// <param name="searchPattern">The pattern to match files with.</param>
+        /// <param name="searchOption">Whether to search all directories or just the top-level one.</param>
+        /// <returns>A string array of filenames.</returns>
+        string[] GetFilesInDirectory(string path, string searchPattern, 
+            SearchOption searchOption);
     }
 }

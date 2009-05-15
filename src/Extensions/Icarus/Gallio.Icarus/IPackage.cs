@@ -13,7 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
+using Gallio.Runtime.Extensibility;
 
 namespace Gallio.Icarus
 {
@@ -22,7 +22,7 @@ namespace Gallio.Icarus
     /// </summary>
     public interface IPackage
     {
-        void Load(IServiceProvider serviceProvider);
+        void Load(IServiceLocator serviceLocator);
         void Unload();
     }
 }

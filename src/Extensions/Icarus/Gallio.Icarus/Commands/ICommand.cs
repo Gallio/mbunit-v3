@@ -17,7 +17,7 @@ using Gallio.Runtime.ProgressMonitoring;
 
 namespace Gallio.Icarus.Commands
 {
-    interface ICommand
+    public interface ICommand
     {
         void Execute(IProgressMonitor progressMonitor);
     }

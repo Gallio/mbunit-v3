@@ -35,5 +35,11 @@ namespace Gallio.Icarus.Utilities
         {
             synchronizationContext.Send(sendOrPostCallback, state);
         }
+
+        public static ISynchronizationContext Instance
+        {
+            get;
+            internal set;
+        }
     }
 }

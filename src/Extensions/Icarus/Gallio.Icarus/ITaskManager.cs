@@ -13,15 +13,26 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using Gallio.Common;
+using Gallio.Icarus.Commands;
+using Gallio.Icarus.ProgressMonitoring;
+using Gallio.Icarus.ProgressMonitoring.EventArgs;
 
 namespace Gallio.Icarus
 {
     public interface ITaskManager
     {
-        void BackgroundTask(Action action);
-        void QueueTask(Action action);
-        void Stop();
+        ProgressMonitorPresenter ProgressMonitor { get; }
         bool TaskRunning { get; }
+
+        event EventHandler<ProgressUpdateEventArgs> ProgressUpdate;
+        event EventHandler TaskStarted;
+        event EventHandler TaskCompleted;
+        event EventHandler TaskCanceled;
+
+        void BackgroundTask(Action action);
+        void QueueTask(ICommand command);
+        void Stop();
     }
 }

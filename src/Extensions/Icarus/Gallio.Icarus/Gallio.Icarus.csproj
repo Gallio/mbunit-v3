@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{6C4AEA1A-CF85-4574-B24A-2C264ED0FEC3}</ProjectGuid>
     <OutputType>WinExe</OutputType>
@@ -92,27 +92,59 @@
       <DependentUpon>CodeWindow.cs</DependentUpon>
     </Compile>
     <Compile Include="Commands\AddAssembliesCommand.cs" />
+    <Compile Include="Commands\ApplyFilterCommand.cs" />
+    <Compile Include="Commands\ConvertSavedReportCommand.cs" />
+    <Compile Include="Commands\DeleteFilterCommand.cs" />
+    <Compile Include="Commands\DeleteReportCommand.cs" />
+    <Compile Include="Commands\GenerateReportCommand.cs" />
     <Compile Include="Commands\ICommand.cs" />
+    <Compile Include="Commands\NewProjectCommand.cs" />
+    <Compile Include="Commands\OpenProjectCommand.cs" />
+    <Compile Include="Commands\OpenReportCommand.cs" />
+    <Compile Include="Commands\RefreshTestTreeCommand.cs" />
+    <Compile Include="Commands\ReloadCommand.cs" />
+    <Compile Include="Commands\RemoveAllAssembliesCommand.cs" />
+    <Compile Include="Commands\RemoveAssemblyCommand.cs" />
+    <Compile Include="Commands\ResetTestsCommand.cs" />
+    <Compile Include="Commands\RestoreFilterCommand.cs" />
+    <Compile Include="Commands\RunTestsCommand.cs" />
+    <Compile Include="Commands\SaveFilterCommand.cs" />
+    <Compile Include="Commands\SaveProjectCommand.cs" />
+    <Compile Include="Commands\ShowReportCommand.cs" />
+    <Compile Include="Commands\ViewSourceCodeCommand.cs" />
+    <Compile Include="Controllers\AboutController.cs" />
     <Compile Include="Controllers\AnnotationsController.cs" />
     <Compile Include="Controllers\ApplicationController.cs" />
     <Compile Include="Controllers\EventArgs\AssemblyChangedEventArgs.cs" />
+    <Compile Include="Controllers\EventArgs\DisplayProgressDialogEventArgs.cs" />
     <Compile Include="Controllers\EventArgs\ExecutionLogUpdatedEventArgs.cs" />
     <Compile Include="Controllers\EventArgs\ShowSourceCodeEventArgs.cs" />
     <Compile Include="Controllers\ExecutionLogController.cs" />
+    <Compile Include="Controllers\FilterController.cs" />
+    <Compile Include="Controllers\IAboutController.cs" />
     <Compile Include="Controllers\IApplicationController.cs" />
+    <Compile Include="Controllers\IFilterController.cs" />
     <Compile Include="Controllers\Interfaces\IAnnotationsController.cs" />
     <Compile Include="Controllers\Interfaces\IErrorController.cs" />
-    <Compile Include="Controllers\Interfaces\INotifyController.cs" />
     <Compile Include="Controllers\Interfaces\IReportController.cs" />
     <Compile Include="Controllers\Interfaces\ISourceCodeController.cs" />
     <Compile Include="Controllers\Interfaces\ITestResultsController.cs" />
+    <Compile Include="Controllers\IProgressController.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Controllers\NotifyController.cs" />
+    <Compile Include="Controllers\ProgressController.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Controllers\ProjectController.cs" />
     <Compile Include="Controllers\ReportController.cs" />
     <Compile Include="Controllers\RuntimeLogController.cs" />
     <Compile Include="Controllers\SourceCodeController.cs" />
     <Compile Include="Controllers\TestController.cs" />
     <Compile Include="Controllers\TestResultsController.cs" />
+    <Compile Include="Controls\PluginTreeView.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controls\TestStatusBarStyles.cs" />
     <Compile Include="Controls\ToolStripButton.cs">
       <SubType>Component</SubType>
@@ -145,15 +177,38 @@
     <Compile Include="Controls\ToolStripMenuItem.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Helpers\MenuListHelper.cs" />
+    <Compile Include="Helpers\TestTreeBuilder.cs" />
+    <Compile Include="Helpers\TestTreeBuilderOptions.cs" />
     <Compile Include="ITaskManager.cs" />
+    <Compile Include="Models\ComponentDetailsTreeModel.cs" />
+    <Compile Include="Models\ServiceDetailsTreeModel.cs" />
+    <Compile Include="Models\PluginDetailsTreeModel.cs" />
+    <Compile Include="Models\PluginNodes\PluginDetailsNode.cs" />
+    <Compile Include="Models\PluginTreeModel.cs" />
     <Compile Include="Models\IProjectTreeModel.cs" />
     <Compile Include="Models\ITestTreeModel.cs" />
+    <Compile Include="Models\PluginNodes\ComponentNode.cs" />
+    <Compile Include="Models\PluginNodes\PluginNode.cs" />
+    <Compile Include="Models\PluginNodes\ServiceNode.cs" />
     <Compile Include="Models\ProjectTreeNodes\AssembliesNode.cs" />
     <Compile Include="Models\ProjectTreeNodes\AssemblyNode.cs" />
     <Compile Include="Models\ProjectTreeNodes\ProjectTreeNode.cs" />
     <Compile Include="Models\ProjectTreeNodes\PropertiesNode.cs" />
     <Compile Include="Models\ProjectTreeNodes\ReportNode.cs" />
     <Compile Include="Models\ProjectTreeNodes\ReportsNode.cs" />
+    <Compile Include="Options\TreeViewCategoryOptions.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Options\TreeViewCategoryOptions.Designer.cs">
+      <DependentUpon>TreeViewCategoryOptions.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Options\TestRunnerFactoryOptions.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Options\TestRunnerFactoryOptions.Designer.cs">
+      <DependentUpon>TestRunnerFactoryOptions.cs</DependentUpon>
+    </Compile>
     <Compile Include="Options\ReportOptions.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -166,12 +221,26 @@
     <Compile Include="Options\TestRunnerExtensionOptions.Designer.cs">
       <DependentUpon>TestRunnerExtensionOptions.cs</DependentUpon>
     </Compile>
+    <Compile Include="Packages\PluginBrowserPackage.cs" />
     <Compile Include="Remoting\IAssemblyWatcher.cs" />
-    <Compile Include="ServiceProvider.cs" />
+    <Compile Include="Runtime\IcarusRuntime.cs" />
+    <Compile Include="Runtime\RuntimeBootstrap.cs" />
     <Compile Include="Utilities\ISynchronizationContext.cs" />
     <Compile Include="Utilities\MRUList.cs" />
     <Compile Include="Utilities\NativeMethods.cs" />
     <Compile Include="Utilities\SynchronizationContext.cs" />
+    <Compile Include="Views\PluginBrowser\PluginBrowser.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\PluginBrowser\PluginBrowser.Designer.cs">
+      <DependentUpon>PluginBrowser.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\PluginBrowser\PluginDetails.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\PluginBrowser\PluginDetails.Designer.cs">
+      <DependentUpon>PluginDetails.cs</DependentUpon>
+    </Compile>
     <Compile Include="Window.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -180,13 +249,7 @@
     </Compile>
     <Compile Include="IMenuManager.cs" />
     <Compile Include="IPackage.cs" />
-    <Compile Include="IStatusStrip.cs" />
-    <Compile Include="IToolStripManager.cs" />
-    <Compile Include="IWindow.cs" />
-    <Compile Include="IWindowCollection.cs" />
     <Compile Include="IWindowManager.cs" />
-    <Compile Include="Mediator\Interfaces\IMediator.cs" />
-    <Compile Include="Mediator\Mediator.cs" />
     <Compile Include="Controllers\Interfaces\IRuntimeLogController.cs" />
     <Compile Include="Controllers\Interfaces\ITestController.cs" />
     <Compile Include="ProgressMonitor.cs">
@@ -358,7 +421,6 @@
     <Compile Include="UserOptions.cs" />
     <Compile Include="Utilities\IUnhandledExceptionPolicy.cs" />
     <Compile Include="Utilities\UnhandledExceptionPolicy.cs" />
-    <Compile Include="WindowCollection.cs" />
     <Compile Include="WindowManager.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -407,12 +469,28 @@
       <DependentUpon>AnnotationsWindow.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="Options\TreeViewCategoryOptions.resx">
+      <DependentUpon>TreeViewCategoryOptions.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Options\TestRunnerFactoryOptions.resx">
+      <DependentUpon>TestRunnerFactoryOptions.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="Options\ReportOptions.resx">
       <DependentUpon>ReportOptions.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Options\TestRunnerExtensionOptions.resx">
       <DependentUpon>TestRunnerExtensionOptions.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\PluginBrowser\PluginBrowser.resx">
+      <DependentUpon>PluginBrowser.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\PluginBrowser\PluginDetails.resx">
+      <DependentUpon>PluginDetails.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Window.resx">

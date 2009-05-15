@@ -13,6 +13,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Windows.Forms;
+using System.Drawing;
+using WeifenLuo.WinFormsUI.Docking;
+using Gallio.Common;
+
 namespace Gallio.Icarus
 {
     /// <summary>
@@ -20,9 +25,15 @@ namespace Gallio.Icarus
     /// </summary>
     public interface IWindowManager
     {
-        IStatusStrip StatusStrip { get; }
-        IWindowCollection Windows { get; }
-        IToolStripManager ToolStripManager { get; }
-        IMenuManager MenuManager { get; }
+        ToolStripItemCollection StatusStrip { get; }
+        ToolStripContainer ToolStrip { get; }
+        ToolStripItemCollection Menu { get; }
+
+        void Add(string identifier, Control content, string caption);
+        void Add(string identifier, Control content, string caption, Icon icon);
+        void Show(string identifier);
+        void Show(string identifier, DockState dockState);
+        void Register(string identifer, Action action);
+        void Remove(string identifier);
     }
 }

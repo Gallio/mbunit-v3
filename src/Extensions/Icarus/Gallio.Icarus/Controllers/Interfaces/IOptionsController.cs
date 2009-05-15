@@ -45,6 +45,7 @@ namespace Gallio.Icarus.Controllers.Interfaces
         bool AnnotationsShowWarnings { get; set; }
         bool AnnotationsShowInfos { get; set; }
         BindingList<string> TestRunnerExtensions { get; }
+        bool TestTreeSplitNamespaces { get; set; }
 
         void Cancel();
         void Load();

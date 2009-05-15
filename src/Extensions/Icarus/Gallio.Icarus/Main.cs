@@ -15,46 +15,47 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Configuration;
 using System.Diagnostics;
 using System.Drawing;
-using System.IO;
-using System.Reflection;
 using System.Text;
-using System.Threading;
 using System.Windows.Forms;
 using Gallio.Common.Concurrency;
+using Gallio.Common.IO;
 using Gallio.Common.Policies;
+using Gallio.Common.Reflection;
 using Gallio.Icarus.Controllers;
 using Gallio.Icarus.Controllers.EventArgs;
-using Gallio.Icarus.Mediator.Interfaces;
 using Gallio.Icarus.ProgressMonitoring.EventArgs;
-using Gallio.Common.Reflection;
+using Gallio.Model;
 using Gallio.Runner.Projects;
+using Gallio.Runtime;
 using WeifenLuo.WinFormsUI.Docking;
-using Timer = System.Timers.Timer;
-using Gallio.Icarus.Utilities;
-using SynchronizationContext=System.Threading.SynchronizationContext;
-using UnhandledExceptionPolicy=Gallio.Common.Policies.UnhandledExceptionPolicy;
+using SynchronizationContext = System.Threading.SynchronizationContext;
+using UnhandledExceptionPolicy = Gallio.Common.Policies.UnhandledExceptionPolicy;
+using Gallio.Icarus.Runtime;
+using Gallio.Icarus.Controllers.Interfaces;
+using Gallio.Icarus.Commands;
 
 namespace Gallio.Icarus
 {
     public partial class Main : Form
     {
         private readonly IApplicationController applicationController;
-        private readonly IMediator mediator;
+        private readonly IProgressController progressController;
+        private readonly IReportController reportController;
+        private readonly ITestController testController;
+        private readonly ITaskManager taskManager;
+        private readonly IProjectController projectController;
+        private readonly IOptionsController optionsController;
 
-        private readonly Timer timer = new Timer();
-        private bool showProgressMonitor = true;
+        private WindowManager windowManager;
 
         // dock panel windows
-        private readonly DeserializeDockContent deserializeDockContent;
         private readonly TestExplorer testExplorer;
         private readonly ProjectExplorer projectExplorer;
         private readonly TestResults testResults;
         private readonly RuntimeLogWindow runtimeLogWindow;
-        private readonly AboutDialog aboutDialog;
         private readonly PropertiesWindow propertiesWindow;
         private readonly FiltersWindow filtersWindow;
         private readonly ExecutionLogWindow executionLogWindow;
@@ -63,112 +64,99 @@ namespace Gallio.Icarus
         private readonly string projectFileFilter = string.Format("Gallio Projects (*{0})|*{0}", 
             Project.Extension);
 
-        private readonly ProgressMonitor progressMonitor;
-
-        public bool ShowProgressMonitor
-        {
-            set { showProgressMonitor = value; }
-        }
-
-        public Main(IApplicationController applicationController)
+        internal Main(IApplicationController applicationController)
         {
             this.applicationController = applicationController;
-            mediator = applicationController.Mediator;
 
-            mediator.ProjectController.AssemblyChanged += AssemblyChanged;
+            applicationController.AssemblyChanged += AssemblyChanged;
 
-            mediator.TestController.RunFinished += TestControllerRunFinished;
-            mediator.TestController.ExploreFinished += TestControllerLoadFinished;
-            mediator.SourceCodeController.ShowSourceCode += ((sender, e) => ShowSourceCode(e.CodeLocation));
-            
+            testController = RuntimeAccessor.ServiceLocator.Resolve<ITestController>();
+            testController.RunFinished += TestControllerRunFinished;
+            testController.ExploreFinished += TestControllerLoadFinished;
+
+            projectController = RuntimeAccessor.ServiceLocator.Resolve<IProjectController>();
+
+            var sourceCodeController = RuntimeAccessor.ServiceLocator.Resolve<ISourceCodeController>();
+            sourceCodeController.ShowSourceCode += ((sender, e) => ShowSourceCode(e.CodeLocation));
+
+            taskManager = RuntimeAccessor.ServiceLocator.Resolve<ITaskManager>();
+            optionsController = RuntimeAccessor.ServiceLocator.Resolve<IOptionsController>();
+            reportController = RuntimeAccessor.ServiceLocator.Resolve<IReportController>();
+            var testResultsController = RuntimeAccessor.ServiceLocator.Resolve<ITestResultsController>();
+            var runtimeLogController = RuntimeAccessor.ServiceLocator.Resolve<IRuntimeLogController>();
+            var executionLogController = RuntimeAccessor.ServiceLocator.Resolve<IExecutionLogController>();
+            var annotationsController = RuntimeAccessor.ServiceLocator.Resolve<IAnnotationsController>();
+
             InitializeComponent();
 
             UnhandledExceptionPolicy.ReportUnhandledException += ReportUnhandledException;
 
-            testExplorer = new TestExplorer(mediator);
-            projectExplorer = new ProjectExplorer(mediator);
-            testResults = new TestResults(mediator.TestResultsController);
-            runtimeLogWindow = new RuntimeLogWindow(mediator.RuntimeLogController);
-            aboutDialog = new AboutDialog(mediator.TestController);
-            propertiesWindow = new PropertiesWindow(mediator.ProjectController);
-            filtersWindow = new FiltersWindow(mediator);
-            executionLogWindow = new ExecutionLogWindow(mediator.ExecutionLogController);
-            annotationsWindow = new AnnotationsWindow(mediator.AnnotationsController);
-
-            // used by dock window framework to re-assemble layout
-            deserializeDockContent = GetContentFromPersistString;
-
-            progressMonitor = new ProgressMonitor(mediator);
-            SetupProgressMonitor();
+            testExplorer = new TestExplorer(optionsController, projectController, testController, 
+                sourceCodeController, taskManager);
+            projectExplorer = new ProjectExplorer(projectController, testController, reportController, taskManager);
+            testResults = new TestResults(testResultsController);
+            runtimeLogWindow = new RuntimeLogWindow(runtimeLogController);
+            propertiesWindow = new PropertiesWindow(projectController);
+            filtersWindow = new FiltersWindow(new FilterController(taskManager, testController, 
+                projectController));
+            executionLogWindow = new ExecutionLogWindow(executionLogController);
+            annotationsWindow = new AnnotationsWindow(annotationsController, sourceCodeController);
 
             SetupReportMenus();
 
             SetupRecentProjects();
-            mediator.OptionsController.RecentProjects.PropertyChanged += delegate { SetupRecentProjects(); };
 
-            applicationController.PropertyChanged += delegate(object sender, PropertyChangedEventArgs e)
+            applicationController.PropertyChanged += (sender, e) => 
             {
-                if (e.PropertyName == "ProjectFileName")
-                    Text = applicationController.ProjectFileName;
+                switch (e.PropertyName)
+                {
+                    case "ProjectFileName":
+                        Text = applicationController.Title;
+                        break;
+
+                    case "RecentProjects":
+                        SetupRecentProjects();
+                        break;
+                }
             };
-        }
 
-        private void SetupProgressMonitor()
-        {
-            mediator.ProgressMonitorProvider.ProgressUpdate += ProgressUpdate;
-
-            // set up delay timer for progress monitor
-            timer.Interval = 1000;
-            timer.AutoReset = false;
-            timer.Elapsed += delegate { Sync.Invoke(this, () => progressMonitor.Show(this)); };
+            progressController = RuntimeAccessor.Instance.ServiceLocator.Resolve<IProgressController>();
+            progressController.ProgressUpdate += ProgressUpdate;
+            progressController.DisplayProgressDialog += (sender, e) => Sync.Invoke(this, () =>
+            {
+                using (var dialog = new ProgressMonitor(e.ProgressMonitor, e.ProgressUpdateEventArgs))
+                    dialog.Show(this);
+            });
         }
 
         private void SetupReportMenus()
         {
             // add a menu item for each report type (Report -> View As)
             var reportTypes = new List<string>();
-            reportTypes.AddRange(mediator.ReportController.ReportTypes);
+            reportTypes.AddRange(reportController.ReportTypes);
             reportTypes.Sort();
             foreach (string reportType in reportTypes)
             {
                 var menuItem = new ToolStripMenuItem { Text = reportType };
-                menuItem.Click += delegate { mediator.ShowReport(menuItem.Text); };
+                menuItem.Click += delegate 
+                {
+                    var command = new ShowReportCommand(testController, reportController, new FileSystem())
+                    {
+                        ReportFormat = menuItem.Text
+                    };
+                    taskManager.QueueTask(command);
+                };
                 viewAsToolStripMenuItem.DropDownItems.Add(menuItem);
             }
         }
 
         private void SetupRecentProjects()
-        {
-            foreach (var proj in mediator.OptionsController.RecentProjects.Items)
-            {
-                // copy string for click delegate
-                string name = proj;
-
-                // don't add any projects that don't exist on disk
-                if (!File.Exists(proj))
-                    continue;
-
-                var menuItem = new ToolStripMenuItem();
-                
-                // shorten path for text by inserting ellipsis (...)
-                string text = proj;
-                if (text.Length > 60)
-                    text = TruncatePath(proj, 60);
-                menuItem.Text = text;
-
-                menuItem.Click += delegate { applicationController.OpenProject(name); };
-                recentProjectsToolStripMenuItem.DropDownItems.Add(menuItem);
-            }
+        {            
+            recentProjectsToolStripMenuItem.DropDownItems.Clear();
+            recentProjectsToolStripMenuItem.DropDownItems.AddRange(applicationController.RecentProjects);
         }
 
-        private static string TruncatePath(string path, int length)
-        {
-            StringBuilder sb = new StringBuilder();
-            NativeMethods.PathCompactPathEx(sb, path, length, 0);
-            return sb.ToString();
-        }
-
-        public void ShowSourceCode(CodeLocation codeLocation)
+        private void ShowSourceCode(CodeLocation codeLocation)
         {
             foreach (var dockPane in dockPanel.Panes)
             {
@@ -190,12 +178,13 @@ namespace Gallio.Icarus
         {
             Sync.Invoke(this, delegate
             {
+                // enable/disable buttons & menu items appropriately
                 stopButton.Enabled = stopTestsToolStripMenuItem.Enabled = false;
                 startButton.Enabled = startTestsToolStripMenuItem.Enabled = true;
                 runTestsWithDebuggerButton.Enabled = startWithDebuggerToolStripMenuItem.Enabled = true;
 
                 // notify the user if tests have failed!
-                if (mediator.TestController.FailedTests)
+                if (applicationController.FailedTests)
                     Activate();
             });
         }
@@ -216,23 +205,29 @@ namespace Gallio.Icarus
                 return executionLogWindow;
             if (persistString == typeof(RuntimeLogWindow).ToString())
                 return runtimeLogWindow;
-            return persistString == typeof(AnnotationsWindow).ToString() ? annotationsWindow : null;
+            if (persistString == typeof(AnnotationsWindow).ToString())
+                return annotationsWindow;
+            return windowManager.Get(persistString);
         }
 
         private void Form_Load(object sender, EventArgs e)
         {
+            Text = applicationController.Title;
+
+            // prepare window manager
+            windowManager = new WindowManager(dockPanel, statusStrip.Items, toolStripContainer, menuStrip.Items);
+            var runtime = (IcarusRuntime)RuntimeAccessor.Instance;
+            runtime.RegisterComponent("Gallio.Icarus.WindowManager", typeof(IWindowManager),
+                windowManager);
+
             // deal with arguments
             applicationController.Load();
-
-            // Set the application version in the window title
-            Version appVersion = AssemblyUtils.GetApplicationVersion(Assembly.GetExecutingAssembly());
-            Text = String.Format(Text, appVersion.Major, appVersion.Minor, appVersion.Build, appVersion.Revision);
 
             // try to load the dock state, if the file does not exist
             // or loading fails then use defaults.
             try
             {
-                dockPanel.LoadFromXml(Paths.DockConfigFile, deserializeDockContent);
+                dockPanel.LoadFromXml(Paths.DockConfigFile, GetContentFromPersistString);
             }
             catch
             {
@@ -240,14 +235,14 @@ namespace Gallio.Icarus
             }
 
             // provide WindowsFormsSynchronizationContext for cross-thread databinding
-            applicationController.SynchronizationContext = new Utilities.SynchronizationContext(SynchronizationContext.Current);
+            Utilities.SynchronizationContext.Instance = new Utilities.SynchronizationContext(SynchronizationContext.Current);
 
             // restore window size & location
-            if (!mediator.OptionsController.Size.Equals(Size.Empty))
-                Size = mediator.OptionsController.Size;
+            if (!applicationController.Size.Equals(Size.Empty))
+                Size = applicationController.Size;
 
-            if (!mediator.OptionsController.Location.Equals(Point.Empty))
-                Location = mediator.OptionsController.Location;
+            if (!applicationController.Location.Equals(Point.Empty))
+                Location = applicationController.Location;
         }
 
         private void DefaultDockState()
@@ -269,7 +264,9 @@ namespace Gallio.Icarus
 
         private void aboutMenuItem_Click(object sender, EventArgs e)
         {
-            aboutDialog.ShowDialog(this);
+            var testFrameworkManager = RuntimeAccessor.ServiceLocator.Resolve<ITestFrameworkManager>();
+            using (var aboutDialog = new AboutDialog(new AboutController(testFrameworkManager)))
+                aboutDialog.ShowDialog(this);
         }
 
         private void startButton_Click(object sender, EventArgs e)
@@ -284,10 +281,9 @@ namespace Gallio.Icarus
             runTestsWithDebuggerButton.Enabled = startWithDebuggerToolStripMenuItem.Enabled = false;
             stopButton.Enabled = stopTestsToolStripMenuItem.Enabled = true;
 
-            // no need for progress dialog
-            showProgressMonitor = false;
-
-            mediator.RunTests(attachDebugger);
+            var command = new RunTestsCommand(testController, projectController, optionsController, reportController);
+            command.AttachDebugger = attachDebugger;
+            taskManager.QueueTask(command);
         }
 
         private void reloadToolbarButton_Click(object sender, EventArgs e)
@@ -298,7 +294,9 @@ namespace Gallio.Icarus
         private void Reload()
         {
             testExplorer.SaveState();
-            mediator.Reload();
+
+            var command = new ReloadCommand(testController, projectController);
+            taskManager.QueueTask(command);
         }
 
         private void openProject_Click(object sender, EventArgs e)
@@ -326,7 +324,7 @@ namespace Gallio.Icarus
             if (saveFile.ShowDialog() != DialogResult.OK) 
                 return;
 
-            applicationController.ProjectFileName = saveFile.FileName;
+            applicationController.Title = saveFile.FileName;
             SaveProject();
         }
 
@@ -337,29 +335,13 @@ namespace Gallio.Icarus
 
         private void addAssemblyToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            AddAssembliesToTree();
-        }
-
-        public void AddAssembliesToTree()
-        {
-            OpenFileDialog openFileDialog = new OpenFileDialog
-                                                {
-                                                    Filter =
-                                                        "Assemblies or Executables (*.dll, *.exe)|*.dll;*.exe|All Files (*.*)|*.*",
-                                                    Multiselect = true
-                                                };
-            using (openFileDialog)
-            {
-                if (openFileDialog.ShowDialog() != DialogResult.OK)
-                    return;
-
-                mediator.AddAssemblies(openFileDialog.FileNames);
-            }
+            var addAssembliesCommand = new AddAssembliesCommand(projectController, testController);
+            taskManager.QueueTask(addAssembliesCommand);
         }
 
         private void optionsMenuItem_Click(object sender, EventArgs e)
         {
-            using (Options.Options options = new Options.Options(mediator.OptionsController))
+            using (var options = new Options.Options(optionsController))
                 options.ShowDialog(this);
         }
 
@@ -370,12 +352,13 @@ namespace Gallio.Icarus
 
         private void RemoveAllAssemblies()
         {
-            mediator.RemoveAllAssemblies();
+            var cmd = new RemoveAllAssembliesCommand(testController, projectController);
+            taskManager.QueueTask(cmd);
         }
 
         private void stopButton_Click(object sender, EventArgs e)
         {
-            mediator.Cancel();
+            progressController.Cancel();
         }
 
         private void saveProjectToolStripMenuItem_Click(object sender, EventArgs e)
@@ -400,7 +383,7 @@ namespace Gallio.Icarus
 
         private void stopToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            mediator.Cancel();
+            progressController.Cancel();
         }
 
         private void startTestsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -425,7 +408,8 @@ namespace Gallio.Icarus
 
         private void resetToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            mediator.ResetTests();
+            var cmd = new ResetTestsCommand(testController);
+            taskManager.QueueTask(cmd);
         }
 
         private void Main_FormClosing(object sender, FormClosingEventArgs e)
@@ -433,13 +417,12 @@ namespace Gallio.Icarus
             if (e.CloseReason == CloseReason.ApplicationExitCall)
                 return;
 
-            // no point showing any more progress dialogs!
-            timer.Enabled = false;
-
             // we'll close once we've tidied up
             e.Cancel = true;
+            
             // shut down any running operations
-            mediator.Cancel();
+            progressController.Cancel();
+
             // save the current state of the test tree
             testExplorer.SaveState();
 
@@ -448,10 +431,10 @@ namespace Gallio.Icarus
             // save window size & location for when we restore
             if (WindowState != FormWindowState.Minimized)
             {
-                mediator.OptionsController.Size = Size;
-                mediator.OptionsController.Location = Location;
+                applicationController.Size = Size;
+                applicationController.Location = Location;
             }
-            mediator.OptionsController.Save();
+            optionsController.Save();
 
             // save dock panel config
             dockPanel.SaveAsXml(Paths.DockConfigFile);
@@ -511,27 +494,20 @@ namespace Gallio.Icarus
 
         private void HandleAssemblyChanged(string assemblyName)
         {
-            bool reload = false;
-            if (mediator.OptionsController.AlwaysReloadAssemblies)
-                reload = true;
-            else
+            if (!optionsController.AlwaysReloadAssemblies)
             {
-                using (ReloadDialog reloadDialog = new ReloadDialog(assemblyName))
+                using (var reloadDialog = new ReloadDialog(assemblyName))
                 {
-                    if (reloadDialog.ShowDialog(this) == DialogResult.OK)
-                    {
-                        reload = true;
-                        mediator.OptionsController.AlwaysReloadAssemblies = reloadDialog.AlwaysReloadTests;
-                    }
+                    if (reloadDialog.ShowDialog(this) != DialogResult.OK)
+                        return;
+
+                    optionsController.AlwaysReloadAssemblies = reloadDialog.AlwaysReloadTests;
                 }
             }
 
-            if (!reload)
-                return;
-
             Reload();
 
-            if (mediator.OptionsController.RunTestsAfterReload)
+            if (optionsController.RunTestsAfterReload)
                 StartTests(false);
         }
 
@@ -546,37 +522,14 @@ namespace Gallio.Icarus
 
         private void ReportUnhandledException(object sender, CorrelatedExceptionEventArgs e)
         {
-            if (e.Exception is ThreadAbortException || e.IsRecursive)
-                return;
-
-            // We already print the errors to the log and most of them are harmless.
-            // Ideally we should display errors more unobtrusively.  Say by flashing
-            // a little icon in the status area to indicate that some new error has been
-            // logged.  I really don't like the fact that Icarus is using Thread Aborts all
-            // over the place.  That's the cause of most of these errors anyways.
-            // Better if we introduced a real abstraction for background task management
-            // and displayed progress monitor dialogs for long-running operations. -- Jeff.
-            Sync.Invoke(this,
-                () => MessageBox.Show(this, e.GetDescription(), e.Message, MessageBoxButtons.OK, MessageBoxIcon.Error));
+            Sync.Invoke(this, () => MessageBox.Show(this, e.GetDescription(), e.Message, 
+                MessageBoxButtons.OK, MessageBoxIcon.Error));
         }
 
         private void ProgressUpdate(object sender, ProgressUpdateEventArgs e)
         {
-            Sync.Invoke(this, delegate
+            Sync.Invoke(this, () => 
             {
-                if (e.TotalWorkUnits > 0 && !progressMonitor.Visible && showProgressMonitor && mediator.OptionsController.ShowProgressDialogs)
-                {
-                    timer.Enabled = true;
-                    progressMonitor.Cursor = Cursors.WaitCursor;
-                }
-                else if (e.TotalWorkUnits == 0)
-                {
-                    timer.Enabled = false;
-                    progressMonitor.Hide();
-                    progressMonitor.Cursor = Cursors.Default;
-                    showProgressMonitor = true;
-                }
-
                 toolStripProgressBar.Maximum = Convert.ToInt32(e.TotalWorkUnits);
                 toolStripProgressBar.Value = Convert.ToInt32(e.CompletedWorkUnits);
 

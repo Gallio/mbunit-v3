@@ -13,15 +13,25 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Drawing;
+using Gallio.Icarus.Controllers.EventArgs;
 using Gallio.Icarus.Controllers.Interfaces;
-using Gallio.Icarus.Mediator.Interfaces;
+using Gallio.Icarus.Controls;
 
 namespace Gallio.Icarus.Controllers
 {
-    public interface IApplicationController : INotifyController
+    internal interface IApplicationController : INotifyPropertyChanged
     {
-        IMediator Mediator { get; }
-        string ProjectFileName { get; set; }
+        string Title { get; set; }
+        ToolStripMenuItem[] RecentProjects { get; }
+        Size Size { get; set; }
+        Point Location { get; set; }
+        bool FailedTests { get; }
+
+        event EventHandler<AssemblyChangedEventArgs> AssemblyChanged;
 
         void Load();
         void NewProject();

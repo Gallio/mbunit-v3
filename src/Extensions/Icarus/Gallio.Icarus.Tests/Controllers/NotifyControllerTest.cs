@@ -14,7 +14,6 @@
 // limitations under the License.
 
 using System.ComponentModel;
-using System.Threading;
 using Gallio.Icarus.Controllers;
 using Gallio.Icarus.Utilities;
 using MbUnit.Framework;
@@ -44,18 +43,17 @@ namespace Gallio.Icarus.Tests.Controllers
             Assert.AreEqual(false, propertyChangedFlag);
         }
 
-        [Test]
+        [SyncTest]
         public void OnPropertyChanged_with_synchronization_context()
         {
             var testController = new TestController();
             bool propertyChangedFlag = false;
-            string propertyName = "test";
+            const string propertyName = "test";
             testController.PropertyChanged += delegate(object sender, PropertyChangedEventArgs e)
             {
                 if (e.PropertyName == propertyName)
                     propertyChangedFlag = true;
             };
-            testController.SynchronizationContext = new TestSynchronizationContext();
 
             testController.Notify(propertyName);
 

@@ -14,7 +14,10 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
+using Gallio.Common.Concurrency;
 using Gallio.Common.Policies;
+using Gallio.Icarus.Commands;
 using Gallio.Icarus.ProgressMonitoring.EventArgs;
 using Gallio.Runtime.ProgressMonitoring;
 
@@ -25,9 +28,9 @@ namespace Gallio.Icarus.ProgressMonitoring
     /// </summary>
     public class ProgressMonitorProvider : BaseProgressMonitorProvider
     {
-        private ObservableProgressMonitor progressMonitor;
+        private ProgressMonitorPresenter progressMonitor;
 
-        public IProgressMonitor ProgressMonitor
+        public ProgressMonitorPresenter ProgressMonitor
         {
             get { return progressMonitor; }
         }
@@ -35,24 +38,27 @@ namespace Gallio.Icarus.ProgressMonitoring
         public event EventHandler<ProgressUpdateEventArgs> ProgressUpdate;
 
         /// <inheritdoc />
-        public override void Run(TaskWithProgress task)
+        public void Run(ICommand command)
         {
-            IProgressMonitorPresenter presenter = GetPresenter();
-            using (progressMonitor = new ObservableProgressMonitor())
+            var presenter = GetPresenter();
+            using (var observableProgressMonitor = new ObservableProgressMonitor())
             {
-                presenter.Present(progressMonitor);
+                presenter.Present(observableProgressMonitor);
 
-                progressMonitor.ThrowIfCanceled();
-                task(progressMonitor);
-                progressMonitor.ThrowIfCanceled();
+                observableProgressMonitor.ThrowIfCanceled();
+
+                command.Execute(observableProgressMonitor);
+
+                observableProgressMonitor.ThrowIfCanceled();
             }
         }
 
         /// <inheritdoc />
         protected override IProgressMonitorPresenter GetPresenter()
         {
-            ProgressMonitorPresenter presenter = new ProgressMonitorPresenter();
-            presenter.ProgressUpdate += ((sender, e) => EventHandlerPolicy.SafeInvoke(ProgressUpdate, this, e));
+            var presenter = new ProgressMonitorPresenter();
+            presenter.ProgressUpdate += (sender, e) => EventHandlerPolicy.SafeInvoke(ProgressUpdate, this, e);
+            progressMonitor = presenter;
             return presenter;
         }
     }

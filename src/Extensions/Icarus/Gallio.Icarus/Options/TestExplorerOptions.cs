@@ -29,9 +29,6 @@ namespace Gallio.Icarus.Options
 
             InitializeComponent();
 
-            selectedTreeViewCategories.DataSource = optionsController.SelectedTreeViewCategories;
-            unselectedTreeViewCategories.DataSource = optionsController.UnselectedTreeViewCategories;
-
             alwaysReloadAssemblies.DataBindings.Add("Checked", optionsController, "AlwaysReloadAssemblies", false, 
                 DataSourceUpdateMode.OnPropertyChanged);
             
@@ -39,20 +36,9 @@ namespace Gallio.Icarus.Options
                 DataSourceUpdateMode.OnPropertyChanged);
             runTestsAfterReload.DataBindings.Add("Checked", optionsController, "RunTestsAfterReload", false, 
                 DataSourceUpdateMode.OnPropertyChanged);
-        }
 
-        private void addButton_Click(object sender, EventArgs e)
-        {
-            object category = unselectedTreeViewCategories.SelectedItem;
-            optionsController.SelectedTreeViewCategories.Add((string) category);
-            optionsController.UnselectedTreeViewCategories.Remove((string) category);
-        }
-
-        private void removeButton_Click(object sender, EventArgs e)
-        {
-            object category = selectedTreeViewCategories.SelectedItem;
-            optionsController.UnselectedTreeViewCategories.Add((string) category);
-            optionsController.SelectedTreeViewCategories.Remove((string) category);
+            splitNamespacesCheckBox.DataBindings.Add("Checked", optionsController, "TestTreeSplitNamespaces", false,
+                DataSourceUpdateMode.OnPropertyChanged);
         }
     }
 }

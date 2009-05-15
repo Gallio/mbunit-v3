@@ -15,7 +15,6 @@
 
 using System.Collections.Generic;
 using System.IO;
-using System.Threading;
 using Gallio.Common.IO;
 using Gallio.Icarus.Controllers;
 using Gallio.Icarus.Services.Interfaces;
@@ -26,22 +25,23 @@ using Rhino.Mocks;
 
 namespace Gallio.Icarus.Tests.Controllers
 {
-    [Category("Controllers")]
-    class ReportControllerTest
+    [Category("Controllers"), TestsOn(typeof(ReportController))]
+    internal class ReportControllerTest
     {
         [Test]
         public void GenerateReport_Test()
         {
             Report report = new Report();
             var reportService = MockRepository.GenerateMock<IReportService>();
-            reportService.Stub(rs => rs.SaveReportAs(Arg.Is(report), Arg<string>.Is.Anything, Arg.Is("xml"), 
-                Arg<IProgressMonitor>.Is.Anything)).Return(string.Empty);
             var progressMonitor = MockProgressMonitor.GetMockProgressMonitor();
             var fileSystem = MockRepository.GenerateStub<IFileSystem>();
             ReportController reportController = new ReportController(reportService, fileSystem);
             string reportDirectory = Path.Combine(Path.GetTempPath(), "GallioReport");
+            
             reportController.GenerateReport(report, reportDirectory, progressMonitor);
-            Thread.Sleep(100);
+
+            reportService.AssertWasCalled(rs => rs.SaveReportAs(Arg.Is(report), Arg<string>.Is.Anything, Arg.Is("xml"),
+                Arg.Is(progressMonitor)));
         }
 
         [Test]
@@ -60,14 +60,44 @@ namespace Gallio.Icarus.Tests.Controllers
         {
             var report = new Report();
             const string reportType = "test";
+            const string reportName = "reportName";
+            var progressMonitor = MockProgressMonitor.GetMockProgressMonitor();
             var reportService = MockRepository.GenerateMock<IReportService>();
-            reportService.Stub(rs => rs.SaveReportAs(Arg.Is(report), Arg<string>.Is.Anything, Arg.Is("xml"),
-                Arg<IProgressMonitor>.Is.Anything)).Return(string.Empty);
+            reportService.Stub(rs => rs.SaveReportAs(Arg.Is(report), Arg<string>.Is.Anything, Arg.Is(reportType),
+                Arg.Is(progressMonitor))).Return(reportName);
+            var fileSystem = MockRepository.GenerateStub<IFileSystem>();
+            var reportController = new ReportController(reportService, fileSystem);
+            
+            Assert.AreEqual(reportName, reportController.ShowReport(report, reportType, progressMonitor));
+        }
+
+        [Test]
+        public void ConvertSavedReport_should_call_same_on_ReportService()
+        {
+            const string fileName = "fileName";
+            const string format = "format";
+            var reportService = MockRepository.GenerateMock<IReportService>();
             var progressMonitor = MockProgressMonitor.GetMockProgressMonitor();
             var fileSystem = MockRepository.GenerateStub<IFileSystem>();
             var reportController = new ReportController(reportService, fileSystem);
-            reportController.ShowReport(report, reportType, progressMonitor);
-            Thread.Sleep(500);
+
+            reportController.ConvertSavedReport(fileName, format, progressMonitor);
+
+            reportService.AssertWasCalled(rs => rs.ConvertSavedReport(fileName, format, progressMonitor));
+        }
+
+        [Test]
+        public void DeleteFile_should_pass_through_to_FileSystem()
+        {
+            const string fileName = "fileName";
+            var reportService = MockRepository.GenerateMock<IReportService>();
+            var progressMonitor = MockProgressMonitor.GetMockProgressMonitor();
+            var fileSystem = MockRepository.GenerateStub<IFileSystem>();
+            var reportController = new ReportController(reportService, fileSystem);
+
+            reportController.DeleteReport(fileName, progressMonitor);
+
+            fileSystem.AssertWasCalled(fs => fs.DeleteFile(fileName));
         }
     }
 }

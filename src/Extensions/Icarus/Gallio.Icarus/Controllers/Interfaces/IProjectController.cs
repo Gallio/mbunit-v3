@@ -25,7 +25,7 @@ using Gallio.Runtime.ProgressMonitoring;
 
 namespace Gallio.Icarus.Controllers.Interfaces
 {
-    public interface IProjectController : INotifyController
+    public interface IProjectController
     {
         IProjectTreeModel Model { get; }
         TestPackageConfig TestPackageConfig { get; }

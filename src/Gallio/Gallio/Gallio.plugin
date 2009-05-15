@@ -86,6 +86,12 @@
 
     <service serviceId="Gallio.FormattingRule"
              serviceType="Gallio.Runtime.Formatting.IFormattingRule, Gallio" />
+
+    <service serviceId="Gallio.FileSystem" 
+             serviceType="Gallio.Common.IO.IFileSystem, Gallio" />
+
+    <service serviceId="Gallio.XmlSerializer"
+         serviceType="Gallio.Common.Xml.IXmlSerializer, Gallio" />
   </services>
   
   <components>
@@ -352,5 +358,13 @@
         <superTypeId>Executable</superTypeId>
       </traits>
     </component>
+
+    <component componentId="Gallio.FileSystem" 
+               serviceId="Gallio.FileSystem" 
+               componentType="Gallio.Common.IO.FileSystem, Gallio" />
+
+    <component componentId="Gallio.XmlSerializer" 
+               serviceId="Gallio.XmlSerializer" 
+               componentType="Gallio.Common.Xml.DefaultXmlSerializer, Gallio" />
   </components>
 </plugin>

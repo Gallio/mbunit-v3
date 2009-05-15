@@ -28,135 +28,76 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.selectedTreeViewCategories = new System.Windows.Forms.ListBox();
-            this.unselectedTreeViewCategories = new System.Windows.Forms.ListBox();
-            this.addButton = new System.Windows.Forms.Button();
-            this.removeButton = new System.Windows.Forms.Button();
             this.alwaysReloadAssemblies = new System.Windows.Forms.CheckBox();
-            this.groupBoxTreeViewCategories = new System.Windows.Forms.GroupBox();
-            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-            this.panel1 = new System.Windows.Forms.Panel();
             this.runTestsAfterReload = new System.Windows.Forms.CheckBox();
+            this.generalGroupBox = new System.Windows.Forms.GroupBox();
+            this.checkBox1 = new System.Windows.Forms.CheckBox();
+            this.splitNamespacesCheckBox = new System.Windows.Forms.CheckBox();
             this.panel.SuspendLayout();
-            this.groupBoxTreeViewCategories.SuspendLayout();
-            this.tableLayoutPanel1.SuspendLayout();
-            this.panel1.SuspendLayout();
+            this.generalGroupBox.SuspendLayout();
             this.SuspendLayout();
             // 
             // panel
             // 
             this.panel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)));
-            this.panel.Controls.Add(this.runTestsAfterReload);
-            this.panel.Controls.Add(this.groupBoxTreeViewCategories);
-            this.panel.Controls.Add(this.alwaysReloadAssemblies);
+            this.panel.Controls.Add(this.generalGroupBox);
             this.panel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel.Size = new System.Drawing.Size(450, 252);
-            // 
-            // selectedTreeViewCategories
-            // 
-            this.selectedTreeViewCategories.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.selectedTreeViewCategories.FormattingEnabled = true;
-            this.selectedTreeViewCategories.Location = new System.Drawing.Point(3, 3);
-            this.selectedTreeViewCategories.Name = "selectedTreeViewCategories";
-            this.selectedTreeViewCategories.Size = new System.Drawing.Size(190, 160);
-            this.selectedTreeViewCategories.TabIndex = 0;
-            // 
-            // unselectedTreeViewCategories
-            // 
-            this.unselectedTreeViewCategories.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.unselectedTreeViewCategories.FormattingEnabled = true;
-            this.unselectedTreeViewCategories.Location = new System.Drawing.Point(244, 3);
-            this.unselectedTreeViewCategories.Name = "unselectedTreeViewCategories";
-            this.unselectedTreeViewCategories.Size = new System.Drawing.Size(191, 160);
-            this.unselectedTreeViewCategories.TabIndex = 2;
-            // 
-            // addButton
-            // 
-            this.addButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.addButton.Font = new System.Drawing.Font("Wingdings", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(2)));
-            this.addButton.Location = new System.Drawing.Point(1, 57);
-            this.addButton.Name = "addButton";
-            this.addButton.Size = new System.Drawing.Size(37, 26);
-            this.addButton.TabIndex = 3;
-            this.addButton.Text = "ç";
-            this.addButton.UseVisualStyleBackColor = true;
-            this.addButton.Click += new System.EventHandler(this.addButton_Click);
-            // 
-            // removeButton
-            // 
-            this.removeButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.removeButton.Font = new System.Drawing.Font("Wingdings", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(2)));
-            this.removeButton.Location = new System.Drawing.Point(1, 86);
-            this.removeButton.Name = "removeButton";
-            this.removeButton.Size = new System.Drawing.Size(37, 26);
-            this.removeButton.TabIndex = 4;
-            this.removeButton.Text = "è";
-            this.removeButton.UseVisualStyleBackColor = true;
-            this.removeButton.Click += new System.EventHandler(this.removeButton_Click);
             // 
             // alwaysReloadAssemblies
             // 
             this.alwaysReloadAssemblies.AutoSize = true;
-            this.alwaysReloadAssemblies.Location = new System.Drawing.Point(6, 202);
+            this.alwaysReloadAssemblies.Location = new System.Drawing.Point(17, 30);
             this.alwaysReloadAssemblies.Name = "alwaysReloadAssemblies";
             this.alwaysReloadAssemblies.Size = new System.Drawing.Size(145, 17);
             this.alwaysReloadAssemblies.TabIndex = 5;
             this.alwaysReloadAssemblies.Text = "Always reload assemblies";
             this.alwaysReloadAssemblies.UseVisualStyleBackColor = true;
             // 
-            // groupBoxTreeViewCategories
-            // 
-            this.groupBoxTreeViewCategories.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBoxTreeViewCategories.Controls.Add(this.tableLayoutPanel1);
-            this.groupBoxTreeViewCategories.Location = new System.Drawing.Point(3, 3);
-            this.groupBoxTreeViewCategories.Name = "groupBoxTreeViewCategories";
-            this.groupBoxTreeViewCategories.Size = new System.Drawing.Size(444, 193);
-            this.groupBoxTreeViewCategories.TabIndex = 6;
-            this.groupBoxTreeViewCategories.TabStop = false;
-            this.groupBoxTreeViewCategories.Text = "Tree View Categories";
-            // 
-            // tableLayoutPanel1
-            // 
-            this.tableLayoutPanel1.ColumnCount = 3;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 45F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel1.Controls.Add(this.selectedTreeViewCategories, 0, 0);
-            this.tableLayoutPanel1.Controls.Add(this.unselectedTreeViewCategories, 2, 0);
-            this.tableLayoutPanel1.Controls.Add(this.panel1, 1, 0);
-            this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(3, 16);
-            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 1;
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(438, 174);
-            this.tableLayoutPanel1.TabIndex = 5;
-            // 
-            // panel1
-            // 
-            this.panel1.Controls.Add(this.addButton);
-            this.panel1.Controls.Add(this.removeButton);
-            this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel1.Location = new System.Drawing.Point(199, 3);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(39, 168);
-            this.panel1.TabIndex = 3;
-            // 
             // runTestsAfterReload
             // 
             this.runTestsAfterReload.AutoSize = true;
             this.runTestsAfterReload.Enabled = false;
-            this.runTestsAfterReload.Location = new System.Drawing.Point(24, 225);
+            this.runTestsAfterReload.Location = new System.Drawing.Point(35, 53);
             this.runTestsAfterReload.Name = "runTestsAfterReload";
             this.runTestsAfterReload.Size = new System.Drawing.Size(127, 17);
             this.runTestsAfterReload.TabIndex = 7;
             this.runTestsAfterReload.Text = "Run tests after reload";
             this.runTestsAfterReload.UseVisualStyleBackColor = true;
+            // 
+            // generalGroupBox
+            // 
+            this.generalGroupBox.Controls.Add(this.splitNamespacesCheckBox);
+            this.generalGroupBox.Controls.Add(this.checkBox1);
+            this.generalGroupBox.Controls.Add(this.runTestsAfterReload);
+            this.generalGroupBox.Controls.Add(this.alwaysReloadAssemblies);
+            this.generalGroupBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.generalGroupBox.Location = new System.Drawing.Point(0, 0);
+            this.generalGroupBox.Name = "generalGroupBox";
+            this.generalGroupBox.Size = new System.Drawing.Size(450, 252);
+            this.generalGroupBox.TabIndex = 8;
+            this.generalGroupBox.TabStop = false;
+            this.generalGroupBox.Text = "General";
+            // 
+            // checkBox1
+            // 
+            this.checkBox1.AutoSize = true;
+            this.checkBox1.Location = new System.Drawing.Point(-15, -15);
+            this.checkBox1.Name = "checkBox1";
+            this.checkBox1.Size = new System.Drawing.Size(80, 17);
+            this.checkBox1.TabIndex = 8;
+            this.checkBox1.Text = "checkBox1";
+            this.checkBox1.UseVisualStyleBackColor = true;
+            // 
+            // splitNamespacesCheckBox
+            // 
+            this.splitNamespacesCheckBox.AutoSize = true;
+            this.splitNamespacesCheckBox.Location = new System.Drawing.Point(17, 94);
+            this.splitNamespacesCheckBox.Name = "splitNamespacesCheckBox";
+            this.splitNamespacesCheckBox.Size = new System.Drawing.Size(109, 17);
+            this.splitNamespacesCheckBox.TabIndex = 9;
+            this.splitNamespacesCheckBox.Text = "Split namespaces";
+            this.splitNamespacesCheckBox.UseVisualStyleBackColor = true;
             // 
             // TestExplorerOptions
             // 
@@ -164,24 +105,18 @@
             this.Name = "TestExplorerOptions";
             this.Size = new System.Drawing.Size(450, 252);
             this.panel.ResumeLayout(false);
-            this.panel.PerformLayout();
-            this.groupBoxTreeViewCategories.ResumeLayout(false);
-            this.tableLayoutPanel1.ResumeLayout(false);
-            this.panel1.ResumeLayout(false);
+            this.generalGroupBox.ResumeLayout(false);
+            this.generalGroupBox.PerformLayout();
             this.ResumeLayout(false);
 
         }
 
         #endregion
 
-        private System.Windows.Forms.Button removeButton;
-        private System.Windows.Forms.Button addButton;
-        private System.Windows.Forms.ListBox unselectedTreeViewCategories;
-        private System.Windows.Forms.ListBox selectedTreeViewCategories;
         private System.Windows.Forms.CheckBox alwaysReloadAssemblies;
-        private System.Windows.Forms.GroupBox groupBoxTreeViewCategories;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
-        private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.CheckBox runTestsAfterReload;
+        private System.Windows.Forms.GroupBox generalGroupBox;
+        private System.Windows.Forms.CheckBox splitNamespacesCheckBox;
+        private System.Windows.Forms.CheckBox checkBox1;
     }
 }

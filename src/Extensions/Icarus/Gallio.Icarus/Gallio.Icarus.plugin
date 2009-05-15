@@ -1,24 +1,149 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <plugin pluginId="Gallio.Icarus" xmlns="http://www.gallio.org/">
+  
   <traits>
     <name>Gallio Icarus Test Runner</name>
   </traits>
 
   <services>
-    <service serviceId="Gallio.Icarus.UnhandledExceptionPolicy" 
+
+    <service serviceId="Gallio.Icarus.TaskManager"
+             serviceType="Gallio.Icarus.ITaskManager, Gallio.Icarus" />
+
+    <service serviceId="Gallio.Icarus.WindowManager"
+             serviceType="Gallio.Icarus.IWindowManager, Gallio.Icarus" />
+
+    <service serviceId="Gallio.Icarus.AssemblyWatcher"
+             serviceType="Gallio.Icarus.Remoting.IAssemblyWatcher, Gallio.Icarus" />
+
+    <!-- Controllers -->
+
+    <service serviceId="Gallio.Icarus.ProgressController"
+         serviceType="Gallio.Icarus.Controllers.IProgressController, Gallio.Icarus" />
+
+    <service serviceId="Gallio.Icarus.TestController"
+             serviceType="Gallio.Icarus.Controllers.Interfaces.ITestController, Gallio.Icarus" />
+
+    <service serviceId="Gallio.Icarus.OptionsController"
+         serviceType="Gallio.Icarus.Controllers.Interfaces.IOptionsController, Gallio.Icarus" />
+
+    <service serviceId="Gallio.Icarus.ProjectController"
+         serviceType="Gallio.Icarus.Controllers.Interfaces.IProjectController, Gallio.Icarus" />
+
+    <service serviceId="Gallio.Icarus.SourceCodeController"
+             serviceType="Gallio.Icarus.Controllers.Interfaces.ISourceCodeController, Gallio.Icarus" />
+
+    <service serviceId="Gallio.Icarus.ReportController" 
+             serviceType="Gallio.Icarus.Controllers.Interfaces.IReportController, Gallio.Icarus" />
+    
+    <service serviceId="Gallio.Icarus.TestResultsController"
+             serviceType="Gallio.Icarus.Controllers.Interfaces.ITestResultsController, Gallio.Icarus" />
+
+    <service serviceId="Gallio.Icarus.RuntimeLogController" 
+             serviceType="Gallio.Icarus.Controllers.Interfaces.IRuntimeLogController, Gallio.Icarus" />
+    
+    <service serviceId="Gallio.Icarus.ExecutionLogController"
+         serviceType="Gallio.Icarus.Controllers.Interfaces.IExecutionLogController, Gallio.Icarus" />
+
+    <service serviceId="Gallio.Icarus.AnnotationsController" 
+             serviceType="Gallio.Icarus.Controllers.Interfaces.IAnnotationsController, Gallio.Icarus" />
+    
+    <!-- Models -->
+
+    <service serviceId="Gallio.Icarus.TestTreeModel"
+         serviceType="Gallio.Icarus.Models.ITestTreeModel, Gallio.Icarus" />
+
+    <service serviceId="Gallio.Icarus.ProjectTreeModel"
+         serviceType="Gallio.Icarus.Models.IProjectTreeModel, Gallio.Icarus" />
+
+    <!-- Packages -->
+
+    <service serviceId="Gallio.Icarus.Package"
+         serviceType="Gallio.Icarus.IPackage, Gallio.Icarus" />
+
+    <!-- Services -->
+    
+    <service serviceId="Gallio.Icarus.ReportService"
+         serviceType="Gallio.Icarus.Services.Interfaces.IReportService, Gallio.Icarus" />
+    
+    <!-- Utilities -->
+    
+    <service serviceId="Gallio.Icarus.UnhandledExceptionPolicy"
              serviceType="Gallio.Icarus.Utilities.IUnhandledExceptionPolicy, Gallio.Icarus" />
-
-    <service serviceId="Gallio.Icarus.TestTreeModel" 
-             serviceType="Gallio.Icarus.Models.ITestTreeModel, Gallio.Icarus" />
+    
   </services>
-
   <components>
-    <component componentId="Gallio.Icarus.UnhandledExceptionPolicy" 
-               serviceId="Gallio.Icarus.UnhandledExceptionPolicy" 
-               componentType="Gallio.Icarus.Utilities.UnhandledExceptionPolicy, Gallio.Icarus" />
+    
+    <component componentId="Gallio.Icarus.TaskManager"
+           serviceId="Gallio.Icarus.TaskManager"
+           componentType="Gallio.Icarus.TaskManager, Gallio.Icarus" />
 
-    <component componentId="Gallio.Icarus.TestTreeModel" 
-               serviceId="Gallio.Icarus.TestTreeModel" 
-               componentType="Gallio.Icarus.Models.TestTreeModel, Gallio.Icarus" />
+    <component componentId="Gallio.Icarus.AssemblyWatcher"
+               serviceId="Gallio.Icarus.AssemblyWatcher"
+               componentType="Gallio.Icarus.Remoting.AssemblyWatcher, Gallio.Icarus" />
+    
+    <!-- Controllers -->
+
+    <component componentId="Gallio.Icarus.ProgressController"
+           serviceId="Gallio.Icarus.ProgressController"
+           componentType="Gallio.Icarus.Controllers.ProgressController, Gallio.Icarus" />
+
+    <component componentId="Gallio.Icarus.TestController"
+               serviceId="Gallio.Icarus.TestController"
+               componentType="Gallio.Icarus.Controllers.TestController, Gallio.Icarus" />
+
+    <component componentId="Gallio.Icarus.ProjectController"
+           serviceId="Gallio.Icarus.ProjectController"
+           componentType="Gallio.Icarus.Controllers.ProjectController, Gallio.Icarus" />
+
+    <component componentId="Gallio.Icarus.SourceCodeController"
+               serviceId="Gallio.Icarus.SourceCodeController"
+               componentType="Gallio.Icarus.Controllers.SourceCodeController, Gallio.Icarus" />
+
+    <component componentId="Gallio.Icarus.ReportController"
+       serviceId="Gallio.Icarus.ReportController"
+       componentType="Gallio.Icarus.Controllers.ReportController, Gallio.Icarus" />
+
+    <component componentId="Gallio.Icarus.TestResultsController" 
+               serviceId="Gallio.Icarus.TestResultsController" 
+               componentType="Gallio.Icarus.Controllers.TestResultsController, Gallio.Icarus" />
+
+    <component componentId="Gallio.Icarus.ExecutionLogController"
+               serviceId="Gallio.Icarus.ExecutionLogController"
+               componentType="Gallio.Icarus.Controllers.ExecutionLogController, Gallio.Icarus" />
+
+    <component componentId="Gallio.Icarus.AnnotationsController"
+           serviceId="Gallio.Icarus.AnnotationsController"
+           componentType="Gallio.Icarus.Controllers.AnnotationsController, Gallio.Icarus" />
+
+    <!-- Models -->
+
+    <component componentId="Gallio.Icarus.TestTreeModel"
+           serviceId="Gallio.Icarus.TestTreeModel"
+           componentType="Gallio.Icarus.Models.TestTreeModel, Gallio.Icarus" />
+
+    <component componentId="Gallio.Icarus.ProjectTreeModel"
+           serviceId="Gallio.Icarus.ProjectTreeModel"
+           componentType="Gallio.Icarus.Models.ProjectTreeModel, Gallio.Icarus" />
+
+    <!-- Packages -->
+
+    <component componentId="Gallio.Icarus.PluginBrowserPackage"
+           serviceId="Gallio.Icarus.Package"
+           componentType="Gallio.Icarus.Packages.PluginBrowserPackage, Gallio.Icarus" />
+
+    <!-- Services -->
+
+    <component componentId="Gallio.Icarus.ReportService"
+           serviceId="Gallio.Icarus.ReportService"
+           componentType="Gallio.Icarus.Services.ReportService, Gallio.Icarus" />
+    
+    <!-- Utilities -->
+    
+    <component componentId="Gallio.Icarus.UnhandledExceptionPolicy"
+               serviceId="Gallio.Icarus.UnhandledExceptionPolicy"
+               componentType="Gallio.Icarus.Utilities.UnhandledExceptionPolicy, Gallio.Icarus" />
+    
   </components>
+  
 </plugin>

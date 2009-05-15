@@ -35,6 +35,7 @@ using Gallio.Runner.Extensions;
 using Gallio.Runner.Reports;
 using Gallio.Runtime;
 using Gallio.Runtime.ProgressMonitoring;
+using Gallio.Icarus.Helpers;
 
 namespace Gallio.Icarus.Controllers
 {
@@ -50,11 +51,12 @@ namespace Gallio.Icarus.Controllers
         private FilterSet<ITest> filterSet;
 
         public event EventHandler<TestStepFinishedEventArgs> TestStepFinished;
-        public event EventHandler<ShowSourceCodeEventArgs> ShowSourceCode;
         public event EventHandler RunStarted;
         public event EventHandler RunFinished;
         public event EventHandler ExploreStarted;
         public event EventHandler ExploreFinished;
+
+        private readonly List<TestTreeNode> selectedTests = new List<TestTreeNode>();
 
         public string TreeViewCategory
         {
@@ -62,27 +64,14 @@ namespace Gallio.Icarus.Controllers
             set;
         }
 
-        public BindingList<TestTreeNode> SelectedTests
+        public IList<TestTreeNode> SelectedTests
         {
-            get; private set;
+            get { return selectedTests; }
         }
 
         public ITestTreeModel Model
         {
             get { return testTreeModel; }
-        }
-
-        public IList<TestFrameworkTraits> TestFrameworks
-        {
-            get
-            {
-                var frameworks = new List<TestFrameworkTraits>();
-                var frameworkManager = RuntimeAccessor.ServiceLocator.Resolve<ITestFrameworkManager>();
-
-                foreach (var frameworkHandle in frameworkManager.FrameworkHandles)
-                    frameworks.Add(frameworkHandle.GetTraits());
-                return frameworks;
-            }
         }
 
         public int TestCount
@@ -186,7 +175,8 @@ namespace Gallio.Icarus.Controllers
 
         public bool FailedTests { get; private set; }
 
-        public TestController(ITestTreeModel testTreeModel, IOptionsController optionsController, ITaskManager taskManager)
+        public TestController(ITestTreeModel testTreeModel, IOptionsController optionsController, 
+            ITaskManager taskManager)
         {
             this.testTreeModel = testTreeModel;
             this.optionsController = optionsController;
@@ -196,11 +186,10 @@ namespace Gallio.Icarus.Controllers
             reportLockBox = new LockBox<Report>(new Report());
 
             testTreeModel.PropertyChanged += (sender, e) => OnPropertyChanged(e);
-
-            SelectedTests = new BindingList<TestTreeNode>(new List<TestTreeNode>());
         }
 
-        public void Explore(IProgressMonitor progressMonitor, IEnumerable<string> testRunnerExtensions)
+        public void Explore(IProgressMonitor progressMonitor, 
+            IEnumerable<string> testRunnerExtensions)
         {
             using (progressMonitor.BeginTask("Exploring the tests.", 100))
             {
@@ -220,7 +209,8 @@ namespace Gallio.Icarus.Controllers
             }
         }
 
-        public void Run(bool debug, IProgressMonitor progressMonitor, IEnumerable<string> testRunnerExtensions)
+        public void Run(bool debug, IProgressMonitor progressMonitor, 
+            IEnumerable<string> testRunnerExtensions)
         {
             FailedTests = false;
 
@@ -277,13 +267,25 @@ namespace Gallio.Icarus.Controllers
 
         public void RefreshTestTree(IProgressMonitor progressMonitor)
         {
-            ReadReport(report => testTreeModel.BuildTestTree(progressMonitor, report.TestModel, 
-                TreeViewCategory));
+            var options = new TestTreeBuilderOptions 
+            { 
+                TreeViewCategory = TreeViewCategory,
+                SplitNamespaces = optionsController.TestTreeSplitNamespaces
+            };
+            ReadReport(report => testTreeModel.BuildTestTree(progressMonitor, 
+                report.TestModel, options));
         }
 
         public void ResetTestStatus(IProgressMonitor progressMonitor)
         {
             testTreeModel.ResetTestStatus(progressMonitor);
+        }
+
+        public void SetSelection(IList<TestTreeNode> nodes)
+        {
+            selectedTests.Clear();
+            selectedTests.AddRange(nodes);
+            OnPropertyChanged(new PropertyChangedEventArgs("SelectedTests"));
         }
 
         public void SetTestRunnerFactory(ITestRunnerFactory factory)
@@ -292,31 +294,6 @@ namespace Gallio.Icarus.Controllers
                 throw new ArgumentNullException("factory");
 
             testRunnerFactory = factory;
-        }
-
-        public void ViewSourceCode(string testId, IProgressMonitor progressMonitor)
-        {
-            using (progressMonitor.BeginTask("View source code", 100))
-            {
-                CodeLocation codeLocation = CodeLocation.Unknown;
-                ReadReport(report =>
-                {
-                    if (report.TestModel != null)
-                    {
-                        TestData testData = report.TestModel.GetTestById(testId);
-                        if (testData != null)
-                            codeLocation = testData.CodeLocation;
-                    }
-                });
-
-                if (codeLocation == CodeLocation.Unknown
-                    || codeLocation.Path.EndsWith(".dll")
-                    || codeLocation.Path.EndsWith(".exe"))
-                    return;
-
-                // fire event for view
-                EventHandlerPolicy.SafeInvoke(ShowSourceCode, this, new ShowSourceCodeEventArgs(codeLocation));
-            }
         }
 
         private void DoWithTestRunner(Action<ITestRunner> action, IProgressMonitor progressMonitor,

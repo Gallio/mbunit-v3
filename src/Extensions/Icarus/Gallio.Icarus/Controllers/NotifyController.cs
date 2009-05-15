@@ -19,18 +19,16 @@ using Gallio.Icarus.Utilities;
 
 namespace Gallio.Icarus.Controllers
 {
-    public class NotifyController : INotifyController
+    public class NotifyController : INotifyPropertyChanged
     {
-        public virtual ISynchronizationContext SynchronizationContext { get; set; }
-
         public event PropertyChangedEventHandler PropertyChanged;
 
         protected void OnPropertyChanged(PropertyChangedEventArgs e)
         {
-            if (SynchronizationContext == null || PropertyChanged == null)
+            if (SynchronizationContext.Instance == null || PropertyChanged == null)
                 return;
 
-            SynchronizationContext.Send(delegate
+            SynchronizationContext.Instance.Send(delegate
             {
                 PropertyChanged(this, e);
             }, this);

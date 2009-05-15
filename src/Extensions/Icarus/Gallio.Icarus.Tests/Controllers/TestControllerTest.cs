@@ -16,7 +16,6 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Threading;
 using Gallio.Common.Concurrency;
 using Gallio.Icarus.Controllers;
 using Gallio.Icarus.Controllers.Interfaces;
@@ -34,6 +33,7 @@ using Gallio.Runner.Reports;
 using Gallio.Runtime.Logging;
 using MbUnit.Framework;
 using Rhino.Mocks;
+using Gallio.Icarus.Helpers;
 
 namespace Gallio.Icarus.Tests.Controllers
 {
@@ -82,8 +82,8 @@ namespace Gallio.Icarus.Tests.Controllers
                 Arg<ILogger>.Is.Anything, Arg.Is(progressMonitor)));
             testRunner.AssertWasCalled(tr => tr.Explore(Arg<TestPackageConfig>.Is.Anything, 
                 Arg<TestExplorationOptions>.Is.Anything, Arg.Is(progressMonitor)));
-            testTreeModel.AssertWasCalled(ttm => ttm.BuildTestTree(Arg.Is(progressMonitor), Arg<TestModelData>.Is.Anything, 
-                Arg.Is(treeViewCategory)));
+            testTreeModel.AssertWasCalled(ttm => ttm.BuildTestTree(Arg.Is(progressMonitor), Arg<TestModelData>.Is.Anything,
+                Arg<TestTreeBuilderOptions>.Matches(ttbo => (!ttbo.SplitNamespaces && ttbo.TreeViewCategory == treeViewCategory))));
             Assert.IsTrue(exploreFinishedFlag);
         }
 
@@ -484,14 +484,25 @@ namespace Gallio.Icarus.Tests.Controllers
         }
 
         [Test]
-        public void SortOrder_get()
+        public void SortAsc_get()
         {
             var testTreeModel = MockRepository.GenerateStub<ITestTreeModel>();
             var optionsController = MockRepository.GenerateStub<IOptionsController>();
             var testController = new TestController(testTreeModel, optionsController, new TestTaskManager());
             testTreeModel.Stub(ttm => ttm.SortAsc).Return(true);
 
-            Assert.IsTrue(testController.SortAsc);
+            Assert.AreEqual(true, testController.SortAsc);
+        }
+
+        [Test]
+        public void SortDesc_get()
+        {
+            var testTreeModel = MockRepository.GenerateStub<ITestTreeModel>();
+            var optionsController = MockRepository.GenerateStub<IOptionsController>();
+            var testController = new TestController(testTreeModel, optionsController, new TestTaskManager());
+            testTreeModel.Stub(ttm => ttm.SortDesc).Return(true);
+
+            Assert.AreEqual(true, testController.SortDesc);
         }
 
         [Test]
@@ -499,9 +510,11 @@ namespace Gallio.Icarus.Tests.Controllers
         {
             var testTreeModel = MockRepository.GenerateStub<ITestTreeModel>();
             var optionsController = MockRepository.GenerateStub<IOptionsController>();
-            var testController = new TestController(testTreeModel, optionsController, new TestTaskManager());
-
-            testController.SortAsc = true;
+            
+            new TestController(testTreeModel, optionsController, new TestTaskManager())
+                {
+                    SortAsc = true
+                };
 
             testTreeModel.AssertWasCalled(ttm => ttm.SetSortOrder(System.Windows.Forms.SortOrder.Ascending));
         }
@@ -518,13 +531,12 @@ namespace Gallio.Icarus.Tests.Controllers
             testTreeModel.AssertWasCalled(ttm => ttm.SetSortOrder(System.Windows.Forms.SortOrder.None));
         }
 
-        [Test]
+        [SyncTest]
         public void SortAsc_set_should_fire_prop_changed_for_opposite()
         {
             var testTreeModel = MockRepository.GenerateStub<ITestTreeModel>();
             var optionsController = MockRepository.GenerateStub<IOptionsController>();
             var testController = new TestController(testTreeModel, optionsController, new TestTaskManager());
-            var synchronizationContext = MockRepository.GenerateStub<ISynchronizationContext>();
             bool sortDescFlag = false;
             testController.PropertyChanged += delegate(object e, PropertyChangedEventArgs sender) 
             {
@@ -532,13 +544,8 @@ namespace Gallio.Icarus.Tests.Controllers
                     sortDescFlag = true; 
             };
 
-            testController.SynchronizationContext = synchronizationContext;
             testController.SortAsc = true;
 
-            var args = synchronizationContext.GetArgumentsForCallsMadeOn(sc => sc.Send(Arg<SendOrPostCallback>.Is.Anything, 
-                Arg.Is(testController)))[0];
-            SendOrPostCallback cb = (SendOrPostCallback)args[0];
-            cb(args[1]);
             Assert.IsTrue(sortDescFlag);
         }
 
@@ -564,27 +571,21 @@ namespace Gallio.Icarus.Tests.Controllers
             testTreeModel.AssertWasCalled(ttm => ttm.SetSortOrder(System.Windows.Forms.SortOrder.None));
         }
 
-        [Test]
+        [SyncTest]
         public void SortDesc_set_should_fire_prop_changed_for_opposite()
         {
             var testTreeModel = MockRepository.GenerateStub<ITestTreeModel>();
             var optionsController = MockRepository.GenerateStub<IOptionsController>();
             var testController = new TestController(testTreeModel, optionsController, new TestTaskManager());
-            var synchronizationContext = MockRepository.GenerateStub<ISynchronizationContext>();
             bool sortAscFlag = false;
             testController.PropertyChanged += delegate(object e, PropertyChangedEventArgs sender)
             {
                 if (sender.PropertyName == "SortAsc")
                     sortAscFlag = true;
             };
-
-            testController.SynchronizationContext = synchronizationContext;
+            
             testController.SortDesc = true;
 
-            var args = synchronizationContext.GetArgumentsForCallsMadeOn(sc => sc.Send(Arg<SendOrPostCallback>.Is.Anything,
-                Arg.Is(testController)))[0];
-            SendOrPostCallback cb = (SendOrPostCallback)args[0];
-            cb(args[1]);
             Assert.IsTrue(sortAscFlag);
         }
 
@@ -598,6 +599,73 @@ namespace Gallio.Icarus.Tests.Controllers
             testTreeModel.Stub(ttm => ttm.TestCount).Return(testCount);
 
             Assert.AreEqual(testCount, testController.TestCount);
+        }
+
+        [Test]
+        public void Failed_should_return_value_from_model()
+        {
+            var testTreeModel = MockRepository.GenerateStub<ITestTreeModel>();
+            var optionsController = MockRepository.GenerateStub<IOptionsController>();
+            var testController = new TestController(testTreeModel, optionsController, new TestTaskManager());
+            const int failedCount = 5;
+            testTreeModel.Stub(ttm => ttm.Failed).Return(failedCount);
+
+            Assert.AreEqual(failedCount, testController.Failed);
+        }
+
+        [Test]
+        public void Passed_should_return_value_from_model()
+        {
+            var testTreeModel = MockRepository.GenerateStub<ITestTreeModel>();
+            var optionsController = MockRepository.GenerateStub<IOptionsController>();
+            var testController = new TestController(testTreeModel, optionsController, new TestTaskManager());
+            const int passedCount = 5;
+            testTreeModel.Stub(ttm => ttm.Passed).Return(passedCount);
+
+            Assert.AreEqual(passedCount, testController.Passed);
+        }
+
+        [Test]
+        public void Skipped_should_return_value_from_model()
+        {
+            var testTreeModel = MockRepository.GenerateStub<ITestTreeModel>();
+            var optionsController = MockRepository.GenerateStub<IOptionsController>();
+            var testController = new TestController(testTreeModel, optionsController, new TestTaskManager());
+            const int skippedCount = 5;
+            testTreeModel.Stub(ttm => ttm.Skipped).Return(skippedCount);
+
+            Assert.AreEqual(skippedCount, testController.Skipped);
+        }
+
+        [Test]
+        public void Inconclusive_should_return_value_from_model()
+        {
+            var testTreeModel = MockRepository.GenerateStub<ITestTreeModel>();
+            var optionsController = MockRepository.GenerateStub<IOptionsController>();
+            var testController = new TestController(testTreeModel, optionsController, new TestTaskManager());
+            const int inconclusiveCount = 5;
+            testTreeModel.Stub(ttm => ttm.Inconclusive).Return(inconclusiveCount);
+
+            Assert.AreEqual(inconclusiveCount, testController.Inconclusive);
+        }
+
+        [SyncTest]
+        public void PropertyChanged_is_bubbled_up_from_model()
+        {
+            var testTreeModel = MockRepository.GenerateStub<ITestTreeModel>();
+            var optionsController = MockRepository.GenerateStub<IOptionsController>();
+            var testController = new TestController(testTreeModel, optionsController, new TestTaskManager());
+            var eventArgs = new PropertyChangedEventArgs("test");
+            var flag = false;
+            testController.PropertyChanged += (sender, e) =>
+                                                  {
+                                                      Assert.AreEqual(eventArgs, e);
+                                                      flag = true;
+                                                  };
+
+            testTreeModel.Raise(ttm => ttm.PropertyChanged += null, testTreeModel, eventArgs);
+
+            Assert.AreEqual(true, flag);
         }
     }
 }

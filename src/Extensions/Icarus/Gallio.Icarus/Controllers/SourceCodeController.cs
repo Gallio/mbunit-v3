@@ -53,10 +53,15 @@ namespace Gallio.Icarus.Controllers
                     || codeLocation.Path.EndsWith(".exe"))
                     return;
 
-                // fire event for view
-                EventHandlerPolicy.SafeInvoke(ShowSourceCode, this, 
-                    new ShowSourceCodeEventArgs(codeLocation));
+                ViewSourceCode(codeLocation);
             }
+        }
+
+        public void ViewSourceCode(CodeLocation codeLocation)
+        {
+            // fire event for view
+            EventHandlerPolicy.SafeInvoke(ShowSourceCode, this,
+                new ShowSourceCodeEventArgs(codeLocation));
         }
     }
 }

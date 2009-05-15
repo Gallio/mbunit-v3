@@ -28,6 +28,7 @@ using Gallio.Model;
 using Gallio.Model.Filters;
 using Gallio.Runner.Projects;
 using Gallio.Runtime.ProgressMonitoring;
+using Gallio.Icarus.Utilities;
 
 namespace Gallio.Icarus.Controllers
 {
@@ -236,8 +237,8 @@ namespace Gallio.Icarus.Controllers
         {
             using (progressMonitor.BeginTask("Loading project file", 100))
             {
-                ProjectUtils projectUtils = new ProjectUtils(fileSystem, xmlSerializer);
-                Project project = projectUtils.LoadProject(projectName);
+                var projectUtils = new ProjectUtils(fileSystem, xmlSerializer);
+                var project = projectUtils.LoadProject(projectName);
 
                 progressMonitor.Worked(50);
 
@@ -314,11 +315,11 @@ namespace Gallio.Icarus.Controllers
 
         private void PublishUpdates()
         {
-            if (SynchronizationContext == null)
+            if (SynchronizationContext.Instance == null)
                 return;
 
             // need to deal with x-thread databinding
-            SynchronizationContext.Send(delegate
+            SynchronizationContext.Instance.Send(delegate
             {
                 updating = true;
 

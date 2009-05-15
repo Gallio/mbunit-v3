@@ -15,30 +15,23 @@
 
 using System;
 using System.Diagnostics;
-using System.Globalization;
-using System.Reflection;
 using System.Windows.Forms;
-using Gallio.Icarus.Controllers.Interfaces;
-using Gallio.Common.Reflection;
+using Gallio.Icarus.Controllers;
 
 namespace Gallio.Icarus
 {
-    public partial class AboutDialog : Form
+    internal partial class AboutDialog : Form
     {
-        public AboutDialog(ITestController testController)
+        public AboutDialog(IAboutController aboutController)
         {
             InitializeComponent();
 
             // Set the application version.
-            Version appVersion = AssemblyUtils.GetApplicationVersion(Assembly.GetExecutingAssembly());
-            versionLabel.Text = String.Format(CultureInfo.CurrentCulture, versionLabel.Text, 
-                appVersion.Major, appVersion.Minor, appVersion.Build, appVersion.Revision);
+            versionLabel.Text = aboutController.Version;
 
             // add the list of available test frameworks
             // TODO: display other trait information
-            componentList.Items.Clear();
-
-            foreach (var testFramework in testController.TestFrameworks)
+            foreach (var testFramework in aboutController.TestFrameworks)
                 componentList.Items.Add(testFramework.Name);
         }
 

@@ -27,14 +27,6 @@ namespace Gallio.Icarus.Options
             InitializeComponent();
 
             restorePreviousSession.DataBindings.Add("Checked", optionsController, "RestorePreviousSettings");
-
-            // retrieve list of possible factories
-            ITestRunnerManager testRunnerManager = RuntimeAccessor.ServiceLocator.Resolve<ITestRunnerManager>();
-            string[] factories = GenericCollectionUtils.ConvertAllToArray(testRunnerManager.TestRunnerFactoryHandles,
-                h => h.GetTraits().Name);
-
-            testRunnerFactories.Items.AddRange(factories);
-            testRunnerFactories.DataBindings.Add("Text", optionsController, "TestRunnerFactory");
         }
     }
 }

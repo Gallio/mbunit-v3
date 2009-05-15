@@ -15,6 +15,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Windows.Forms;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Runtime.ProgressMonitoring;
 
@@ -24,29 +25,46 @@ namespace Gallio.Icarus.Commands
     {
         private readonly IProjectController projectController;
         private readonly ITestController testController;
-        private readonly IList<string> assemblyFiles;
 
-        public AddAssembliesCommand(IProjectController projectController, ITestController testController, 
-            IList<string> assemblyFiles)
+        private readonly string fileFilter = "Assemblies or Executables (*.dll, *.exe)|*.dll;*.exe|All Files (*.*)|*.*";
+
+        public IList<string> AssemblyFiles
+        {
+            get;
+            set;
+        }
+
+        public AddAssembliesCommand(IProjectController projectController, ITestController testController)
         {
             this.projectController = projectController;
             this.testController = testController;
-            this.assemblyFiles = assemblyFiles;
         }
 
         public void Execute(IProgressMonitor progressMonitor)
         {
+            if (AssemblyFiles == null)
+            {
+                using (var openFileDialog = new OpenFileDialog
+                {
+                    Filter = fileFilter,
+                    Multiselect = true
+                })
+                {
+                    if (openFileDialog.ShowDialog() == DialogResult.OK)
+                        AssemblyFiles = openFileDialog.FileNames;
+                }
+            }
             using (progressMonitor.BeginTask("Adding assemblies", 100))
             {
                 // add assemblies to test package
-                using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(10))
-                    projectController.AddAssemblies(assemblyFiles, subProgressMonitor);
+                using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(10))
+                    projectController.AddAssemblies(AssemblyFiles, subProgressMonitor);
 
                 if (progressMonitor.IsCanceled)
                     throw new OperationCanceledException();
 
                 // reload tests
-                using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(90))
+                using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(90))
                 {
                     testController.SetTestPackageConfig(projectController.TestPackageConfig);
                     testController.Explore(subProgressMonitor, projectController.TestRunnerExtensions);

@@ -19,11 +19,17 @@ namespace Gallio.Icarus.Models.ProjectTreeNodes
 {
     internal sealed class AssemblyNode : ProjectTreeNode
     {
+        public string FileName
+        {
+            get;
+            private set;
+        }
+
         public AssemblyNode(string assemblyFile)
         {
             Text = Path.GetFileNameWithoutExtension(assemblyFile);
             Image = Properties.Resources.Assembly;
-            Tag = assemblyFile;
+            FileName = assemblyFile;
         }
     }
 }

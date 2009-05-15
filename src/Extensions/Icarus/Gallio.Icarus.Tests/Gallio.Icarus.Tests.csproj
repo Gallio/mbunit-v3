@@ -23,7 +23,7 @@
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\Gallio.Icarus.Tests.xml</DocumentationFile>
     <NoWarn>1591</NoWarn>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -60,8 +60,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CodeWindowTest.cs" />
+    <Compile Include="Commands\AddAssembliesCommandTest.cs" />
+    <Compile Include="Controllers\AboutControllerTest.cs" />
     <Compile Include="Controllers\AnnotationsControllerTest.cs" />
-    <Compile Include="Controllers\ApplicationControllerTest.cs" />
     <Compile Include="Controllers\ExecutionLogControllerTest.cs" />
     <Compile Include="Controllers\NotifyControllerTest.cs" />
     <Compile Include="Controllers\OptionsControllerTest.cs" />
@@ -81,12 +82,11 @@
     <Compile Include="Controls\TestTreeViewTest.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="FiltersWindowTest.cs" />
     <Compile Include="MockProgressMonitor.cs" />
     <Compile Include="MockTest.cs" />
+    <Compile Include="Models\ProjectTreeNodes\AssembliesNodeTest.cs" />
     <Compile Include="Models\ProjectTreeModelTest.cs" />
     <Compile Include="Models\TestTreeModelTest.cs" />
-    <Compile Include="ProjectExplorerTest.cs" />
     <Compile Include="PropertiesWindowTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
@@ -97,9 +97,7 @@
     <Compile Include="ReloadDialogTest.cs" />
     <Compile Include="RuntimeLogWindowTest.cs" />
     <Compile Include="TaskManagerTest.cs" />
-    <Compile Include="TestExplorerTest.cs" />
-    <Compile Include="TestResultsTest.cs">
-    </Compile>
+    <Compile Include="Utilities\SyncTestAttribute.cs" />
     <Compile Include="Utilities\TestSynchronizationContext.cs" />
     <Compile Include="Utilities\TestTaskManager.cs" />
   </ItemGroup>

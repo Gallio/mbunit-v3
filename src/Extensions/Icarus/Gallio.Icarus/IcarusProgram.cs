@@ -18,20 +18,21 @@ using System.ComponentModel;
 using System.IO;
 using System.Windows.Forms;
 using Gallio.Common.IO;
+using Gallio.Common.Reflection;
 using Gallio.Common.Xml;
 using Gallio.Icarus.Controllers;
 using Gallio.Icarus.Controllers.Interfaces;
-using Gallio.Icarus.Mediator.Interfaces;
 using Gallio.Icarus.Models;
 using Gallio.Icarus.Properties;
 using Gallio.Icarus.Remoting;
-using Gallio.Common.Reflection;
+using Gallio.Icarus.Services;
 using Gallio.Runner;
 using Gallio.Runner.Projects;
 using Gallio.Runner.Reports;
 using Gallio.Runtime;
 using Gallio.Runtime.ConsoleSupport;
-using Gallio.Icarus.Services;
+using Gallio.Icarus.Utilities;
+using Gallio.Icarus.Runtime;
 
 namespace Gallio.Icarus
 {
@@ -40,8 +41,6 @@ namespace Gallio.Icarus
     /// </summary>
     public class IcarusProgram : ConsoleProgram<IcarusArguments>
     {
-        private ITestController testController;
-
         /// <summary>
         /// Creates an instance of the program.
         /// </summary>
@@ -64,21 +63,18 @@ namespace Gallio.Icarus
 
             var runtimeSetup = new RuntimeSetup
             {
-                RuntimePath =
-                    Path.GetDirectoryName(
-                    AssemblyUtils.GetFriendlyAssemblyLocation(typeof (IcarusProgram).Assembly))
+                RuntimePath = Path.GetDirectoryName(AssemblyUtils.GetFriendlyAssemblyLocation(
+                    typeof(IcarusProgram).Assembly))
             };
 
             var optionsController = new OptionsController(new FileSystem(), new DefaultXmlSerializer(),
                 new Utilities.UnhandledExceptionPolicy());
 
             // create & initialize a test runner whenever the test runner factory is changed
-            optionsController.PropertyChanged += delegate(object sender, PropertyChangedEventArgs e)
+            optionsController.PropertyChanged += (sender, e) => 
             {
-                if (e.PropertyName != "TestRunnerFactory")
-                    return;
-
-                ConfigureTestRunnerFactory(optionsController.TestRunnerFactory);
+                if (e.PropertyName == "TestRunnerFactory")
+                    ConfigureTestRunnerFactory(optionsController.TestRunnerFactory);
             };
             optionsController.Load();
 
@@ -89,32 +85,20 @@ namespace Gallio.Icarus
             // which will confuse the runtime into searching in the wrong place for plugins.
             runtimeSetup.PluginDirectories.AddRange(optionsController.PluginDirectories);
 
-            using (RuntimeBootstrap.Initialize(runtimeSetup, runtimeLogController))
+            using (Icarus.Runtime.RuntimeBootstrap.Initialize(runtimeSetup, runtimeLogController))
             {
-                var testTreeModel = RuntimeAccessor.ServiceLocator.Resolve<ITestTreeModel>();
-                var taskManager = new TaskManager();
-                testController = new TestController(testTreeModel, optionsController, taskManager);
+                // register the components we've already created
+                var runtime = (IcarusRuntime)RuntimeAccessor.Instance;
+                runtime.RegisterComponent("Gallio.Icarus.OptionsController", typeof(IOptionsController), 
+                    optionsController);
+                runtime.RegisterComponent("Gallio.Icarus.RuntimeLogController", typeof(IRuntimeLogController),
+                    runtimeLogController);
+
+                var taskManager = RuntimeAccessor.ServiceLocator.Resolve<ITaskManager>();
 
                 ConfigureTestRunnerFactory(optionsController.TestRunnerFactory);
 
-                var reportManager = RuntimeAccessor.ServiceLocator.Resolve<IReportManager>();
-
-                IMediator mediator = new Mediator.Mediator
-                {
-                    ProjectController = new ProjectController(new ProjectTreeModel(Paths.DefaultProject, new Project()),
-                        optionsController, new FileSystem(), new DefaultXmlSerializer(), new AssemblyWatcher()),
-                    TestController = testController,
-                    ReportController = new ReportController(new ReportService(reportManager), new FileSystem()),
-                    RuntimeLogController = runtimeLogController, 
-                    OptionsController = optionsController,
-                    TaskManager = taskManager,
-                    ExecutionLogController = new ExecutionLogController(testController, taskManager),
-                    AnnotationsController = new AnnotationsController(testController, optionsController),
-                    TestResultsController = new TestResultsController(testController, optionsController),
-                    SourceCodeController = new SourceCodeController(testController)
-                };
-
-                var applicationController = new ApplicationController(Arguments, mediator, new FileSystem());
+                var applicationController = new ApplicationController(Arguments, RuntimeAccessor.ServiceLocator);
                 var main = new Main(applicationController);
 
                 Application.Run(main);
@@ -125,8 +109,10 @@ namespace Gallio.Icarus
 
         private void ConfigureTestRunnerFactory(string factoryName)
         {
+            var testController = RuntimeAccessor.ServiceLocator.Resolve<ITestController>();
             var testRunnerManager = RuntimeAccessor.ServiceLocator.Resolve<ITestRunnerManager>();
             var testRunnerFactory = testRunnerManager.GetFactory(factoryName);
+
             testController.SetTestRunnerFactory(testRunnerFactory);
         }
 

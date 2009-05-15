@@ -13,23 +13,56 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using Gallio.Common;
+using Gallio.Icarus.Commands;
+using Gallio.Icarus.ProgressMonitoring;
+using Gallio.Icarus.ProgressMonitoring.EventArgs;
+using System.Collections.Generic;
 
 namespace Gallio.Icarus.Tests.Utilities
 {
     internal class TestTaskManager : ITaskManager
     {
-        public void BackgroundTask(Action action)
+        public bool TaskRunning
+        {
+            get;
+            private set;
+        }
+
+        public ProgressMonitorPresenter ProgressMonitor
+        {
+            get { throw new System.NotImplementedException(); }
+        }
+
+        public event EventHandler<ProgressUpdateEventArgs> ProgressUpdate;
+        public event EventHandler TaskStarted;
+        public event EventHandler TaskCompleted;
+        public event EventHandler TaskCanceled;
+
+        public void BackgroundTask(Gallio.Common.Action action)
         {
             RunTask(action);
         }
 
-        public void QueueTask(Action action)
+        public void QueueTask(Gallio.Common.Action action)
         {
             RunTask(action);
         }
 
-        private void RunTask(Action action)
+        private List<ICommand> queue = new List<ICommand>();
+
+        public List<ICommand> Queue
+        {
+            get { return queue; }
+        }
+
+        public void QueueTask(ICommand command)
+        {
+            queue.Add(command);
+        }
+
+        private void RunTask(Gallio.Common.Action action)
         {
             TaskRunning = true;
             action();
@@ -38,11 +71,5 @@ namespace Gallio.Icarus.Tests.Utilities
 
         public void Stop()
         { }
-
-        public bool TaskRunning
-        {
-            get;
-            private set;
-        }
     }
 }

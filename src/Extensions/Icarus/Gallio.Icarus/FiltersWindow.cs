@@ -30,22 +30,22 @@
 
 using System;
 using System.Windows.Forms;
-using Gallio.Icarus.Mediator.Interfaces;
+using Gallio.Icarus.Controllers;
 using Gallio.Runner.Projects;
 
 namespace Gallio.Icarus
 {
-    public partial class FiltersWindow : DockWindow
+    internal partial class FiltersWindow : DockWindow
     {
-        private readonly IMediator mediator;
+        private readonly IFilterController filterController;
 
-        public FiltersWindow(IMediator mediator)
+        public FiltersWindow(IFilterController filterController)
         {
-            this.mediator = mediator;
+            this.filterController = filterController;
 
             InitializeComponent();
 
-            filtersListBox.DataSource = mediator.ProjectController.TestFilters;
+            filtersListBox.DataSource = filterController.TestFilters;
             filtersListBox.DisplayMember = "FilterName";
         }
 
@@ -56,12 +56,13 @@ namespace Gallio.Icarus
 
         private void removeFilterButton_Click(object sender, EventArgs e)
         {
-            mediator.DeleteFilter((FilterInfo)filtersListBox.SelectedItem);
+            var filterInfo = (FilterInfo)filtersListBox.SelectedItem;
+            filterController.DeleteFilter(filterInfo);
         }
 
         private void filterNameTextBox_TextChanged(object sender, EventArgs e)
         {
-            saveFilterButton.Enabled = filterNameTextBox.Text.Length > 0;
+            saveFilterButton.Enabled = (filterNameTextBox.Text.Length > 0);
         }
 
         private void saveFilterButton_Click(object sender, EventArgs e)
@@ -75,14 +76,15 @@ namespace Gallio.Icarus
             }
             else
             {
-                mediator.SaveFilter(filterNameTextBox.Text);
+                filterController.SaveFilter(filterNameTextBox.Text);
                 filterNameTextBox.Clear();
             }
         }
 
         private void applyFilterButton_Click(object sender, EventArgs e)
         {
-            mediator.ApplyFilter(((FilterInfo)filtersListBox.SelectedItem).Filter);
+            var filterInfo = (FilterInfo)filtersListBox.SelectedItem;
+            filterController.ApplyFilter(filterInfo.Filter);
         }
     }
 }

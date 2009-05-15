@@ -54,7 +54,8 @@ namespace Gallio.Icarus.ProgressMonitoring.EventArgs
             get { return totalWorkUnits; }
         }
 
-        public ProgressUpdateEventArgs(string taskName, string subTaskName, double completedWorkUnits, double totalWorkUnits)
+        public ProgressUpdateEventArgs(string taskName, string subTaskName, 
+            double completedWorkUnits, double totalWorkUnits)
         {
             this.taskName = taskName;
             this.subTaskName = subTaskName;

@@ -13,18 +13,24 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Aga.Controls.Tree;
 using System.IO;
+using Aga.Controls.Tree;
 
-namespace Gallio.Icarus.Models
+namespace Gallio.Icarus.Models.ProjectTreeNodes
 {
     internal sealed class ReportNode : Node
     {
+        public string FileName
+        {
+            get;
+            private set;
+        }
+
         public ReportNode(string file)
         {
             Text = Path.GetFileNameWithoutExtension(file);
             Image = Properties.Resources.XmlFile.ToBitmap();
-            Tag = file;
+            FileName = file;
         }
     }
 }

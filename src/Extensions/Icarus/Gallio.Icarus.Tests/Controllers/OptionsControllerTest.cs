@@ -19,6 +19,7 @@ using Gallio.Common.IO;
 using Gallio.Common.Xml;
 using Gallio.Icarus.Controllers;
 using Gallio.Icarus.Controls;
+using Gallio.Icarus.Tests.Utilities;
 using Gallio.Runner;
 using Gallio.Runtime.Logging;
 using MbUnit.Framework;
@@ -66,7 +67,7 @@ namespace Gallio.Icarus.Tests.Controllers
             Assert.AreEqual("test", optionsController.PluginDirectories[0]);
         }
 
-        [Test]
+        [SyncTest]
         public void TestRunnerFactory_Test()
         {
             var optionsController = SetUpOptionsController(new Settings());
@@ -77,6 +78,7 @@ namespace Gallio.Icarus.Tests.Controllers
                                                          propChangedFlag = true;
                                                          Assert.AreEqual("TestRunnerFactory", e.PropertyName);
                                                      };
+
             Assert.AreEqual(StandardTestRunnerFactoryNames.IsolatedProcess, optionsController.TestRunnerFactory);
             optionsController.TestRunnerFactory = StandardTestRunnerFactoryNames.Local;
             Assert.IsTrue(propChangedFlag);

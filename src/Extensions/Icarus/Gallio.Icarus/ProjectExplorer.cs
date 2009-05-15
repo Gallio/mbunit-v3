@@ -18,24 +18,33 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Windows.Forms;
 using Aga.Controls.Tree;
-using Gallio.Icarus.Mediator.Interfaces;
 using Gallio.Icarus.Models.ProjectTreeNodes;
-using Gallio.Icarus.Models;
+using Gallio.Icarus.Commands;
+using Gallio.Common.IO;
+using Gallio.Icarus.Controllers.Interfaces;
 
 namespace Gallio.Icarus
 {
     public partial class ProjectExplorer : DockWindow
     {
-        private readonly IMediator mediator;
+        private readonly IProjectController projectController;
+        private readonly ITestController testController;
+        private readonly IReportController reportController;
+        private readonly ITaskManager taskManager;
 
-        public ProjectExplorer(IMediator mediator)
+        public ProjectExplorer(IProjectController projectController, ITestController testController, 
+            IReportController reportController, ITaskManager taskManager)
         {
-            this.mediator = mediator;
+            this.projectController = projectController;
+            this.testController = testController;
+            this.taskManager = taskManager;
 
             InitializeComponent();
 
-            projectTree.Model = mediator.ProjectController.Model;
+            projectTree.Model = projectController.Model;
             projectTree.ExpandAll();
+
+            this.reportController = reportController;
 
             SetupReportMenus();
         }
@@ -44,14 +53,17 @@ namespace Gallio.Icarus
         {
             // add a menu item for each report type (View report as)
             var reportTypes = new List<string>();
-            reportTypes.AddRange(mediator.ReportController.ReportTypes);
+            reportTypes.AddRange(reportController.ReportTypes);
             reportTypes.Sort();
             foreach (string reportType in reportTypes)
             {
                 var menuItem = new ToolStripMenuItem { Text = reportType };
                 menuItem.Click += delegate
                 {
-                    mediator.ConvertSavedReport((string)((Node)projectTree.SelectedNode.Tag).Tag, menuItem.Text);
+                    var reportNode = (ReportNode)projectTree.SelectedNode.Tag;
+                    var command = new ConvertSavedReportCommand(reportController, 
+                        reportNode.FileName, menuItem.Text, new FileSystem());
+                    taskManager.QueueTask(command);
                 };
                 viewReportAsMenuItem.DropDownItems.Add(menuItem);
             }
@@ -75,23 +87,26 @@ namespace Gallio.Icarus
 
         private void removeAssemblyToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (projectTree.SelectedNode == null)
+            if (projectTree.SelectedNode == null || !(projectTree.SelectedNode.Tag is AssemblyNode))
                 return;
 
-            Node node = (Node)projectTree.SelectedNode.Tag;
-            string fileName = (string)node.Tag;
-            mediator.RemoveAssembly(fileName);
+            AssemblyNode node = (AssemblyNode)projectTree.SelectedNode.Tag;
+
+            var cmd = new RemoveAssemblyCommand(projectController);
+            cmd.FileName = node.FileName;
+            taskManager.QueueTask(cmd);
         }
 
         private void removeAssembliesToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            mediator.RemoveAllAssemblies();
+            var cmd = new RemoveAllAssembliesCommand(testController, projectController);
+            taskManager.QueueTask(cmd);
         }
 
         private void addAssembliesToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (ParentForm != null)
-                ((Main)ParentForm).AddAssembliesToTree();
+            var addAssembliesCommand = new AddAssembliesCommand(projectController, testController);
+            taskManager.QueueTask(addAssembliesCommand);
         }
 
         private void projectTree_DoubleClick(object sender, EventArgs e)
@@ -108,13 +123,22 @@ namespace Gallio.Icarus
 
         private void OpenReport()
         {
-            string filename = (string) ((Node) projectTree.SelectedNode.Tag).Tag;
-            Process.Start(filename);
+            if (projectTree.SelectedNode == null || !(projectTree.SelectedNode.Tag is ReportNode))
+                return;
+
+            var reportNode = (ReportNode)projectTree.SelectedNode.Tag;
+            Process.Start(reportNode.FileName);
         }
 
         private void deleteReportToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            mediator.DeleteReport((string)((Node)projectTree.SelectedNode.Tag).Tag);
+            if (projectTree.SelectedNode == null || !(projectTree.SelectedNode.Tag is ReportNode))
+                return;
+
+            var reportNode = (ReportNode)projectTree.SelectedNode.Tag;
+            var cmd = new DeleteReportCommand(reportController);
+            cmd.FileName = reportNode.FileName;
+            taskManager.QueueTask(cmd);
         }
 
         private void propertiesToolStripButton_Click(object sender, EventArgs e)

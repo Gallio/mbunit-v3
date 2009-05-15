@@ -18,16 +18,23 @@ using Gallio.Icarus.Models;
 using Gallio.Runner.Projects;
 using System.Collections;
 using Aga.Controls.Tree;
+using Rhino.Mocks;
+using Gallio.Common.IO;
 
 namespace Gallio.Icarus.Tests.Models
 {
-    class ProjectTreeModelTest
+    [Category("Models"), Author("Graham Hay"), TestsOn(typeof(ProjectTreeModel))]
+    internal class ProjectTreeModelTest
     {
         [Test]
         public void FileName_Test()
         {
             const string fileName = "fileName";
-            ProjectTreeModel projectTreeModel = new ProjectTreeModel(fileName, new Project());
+            var fileSystem = MockRepository.GenerateStub<IFileSystem>();
+            var projectTreeModel = new ProjectTreeModel(fileSystem);
+            
+            projectTreeModel.FileName = fileName;
+            
             Assert.AreEqual(fileName, projectTreeModel.FileName);
             const string fileName2 = "fileName2";
             projectTreeModel.FileName = fileName2;
@@ -37,24 +44,25 @@ namespace Gallio.Icarus.Tests.Models
         [Test]
         public void Project_Test()
         {
-            Project project1 = new Project();
-            ProjectTreeModel projectTreeModel = new ProjectTreeModel("fileName", project1);
-            Assert.AreEqual(project1, projectTreeModel.Project);
-            Project project2 = new Project();
-            projectTreeModel.Project = project2;
-            Assert.AreEqual(project2, projectTreeModel.Project);
+            var fileSystem = MockRepository.GenerateStub<IFileSystem>();
+            var projectTreeModel = new ProjectTreeModel(fileSystem);
+
+            var project = new Project();
+            projectTreeModel.Project = project;
+            Assert.AreEqual(project, projectTreeModel.Project);
         }
 
         [Test]
         public void GetChildren_Test_Empty_Path()
         {
-            const string fileName = "fileName";
-            ProjectTreeModel projectTreeModel = new ProjectTreeModel(fileName, new Project());
-            IEnumerable children = projectTreeModel.GetChildren(TreePath.Empty);
+            var fileSystem = MockRepository.GenerateStub<IFileSystem>();
+            var projectTreeModel = new ProjectTreeModel(fileSystem);
+
+            var children = projectTreeModel.GetChildren(TreePath.Empty);
             bool first = true;
             foreach (Node node in children)
             {
-                Assert.AreEqual(fileName, node.Text);
+                Assert.AreEqual(string.Empty, node.Text);
                 // should only be one node (the root)
                 Assert.IsTrue(first);
                 first = false;

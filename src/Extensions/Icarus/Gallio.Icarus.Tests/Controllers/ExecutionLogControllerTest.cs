@@ -91,11 +91,15 @@ namespace Gallio.Icarus.Tests.Controllers
         }
 
         [Test]
-        public void ListChanged_Test()
+        public void ExecutionLog_should_be_updated_when_test_selection_changes()
         {
-            var testStepRun = new TestStepRun(new TestStepData("rootStep", "name", "fullName", "root"));
+            var testStepRun = new TestStepRun(new TestStepData("rootStep", "name", 
+                "fullName", "root"));
             var testController = MockRepository.GenerateStub<ITestController>();
-            var selectedTests = new BindingList<TestTreeNode>(new List<TestTreeNode>());
+            var selectedTests = new List<TestTreeNode>(new[]
+            {
+                new TestTreeNode("text", "rootStep", "nodeType")
+            });
             testController.Stub(x => x.SelectedTests).Return(selectedTests);
             var report = new Report
             {
@@ -104,7 +108,8 @@ namespace Gallio.Icarus.Tests.Controllers
             };
             report.TestPackageRun.RootTestStepRun = testStepRun;
 
-            testController.Stub(x => x.ReadReport(null)).IgnoreArguments().Do((Action<ReadAction<Report>>)(action => action(report)));
+            testController.Stub(x => x.ReadReport(null)).IgnoreArguments()
+                .Do((Action<ReadAction<Report>>)(action => action(report)));
             var testTreeModel = MockRepository.GenerateStub<ITestTreeModel>();
             testTreeModel.Stub(x => x.Root).Return(new TestTreeNode("root", "name", "nodeType"));
             testController.Stub(x => x.Model).Return(testTreeModel);
@@ -114,9 +119,23 @@ namespace Gallio.Icarus.Tests.Controllers
 
             var flag = false;
             executionLogController.ExecutionLogUpdated += delegate { flag = true; };
-            selectedTests.Add(new TestTreeNode("text", "rootStep", "nodeType"));
+            testController.Raise(tc => tc.PropertyChanged += null, testController, 
+                new PropertyChangedEventArgs("SelectedTests"));
 
             Assert.IsTrue(flag);
+        }
+
+        [Test]
+        public void Ctor_should_throw_if_TestController_is_null()
+        {
+            Assert.Throws<ArgumentNullException>(() => new ExecutionLogController(null, null));
+        }
+
+        [Test]
+        public void Ctor_should_throw_if_TaskManager_is_null()
+        {
+            var testController = MockRepository.GenerateStub<ITestController>();
+            Assert.Throws<ArgumentNullException>(() => new ExecutionLogController(testController, null));
         }
     }
 }

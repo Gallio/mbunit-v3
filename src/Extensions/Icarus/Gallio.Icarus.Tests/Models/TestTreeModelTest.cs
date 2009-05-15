@@ -21,6 +21,7 @@ using Gallio.Model.Serialization;
 using Gallio.Common.Reflection;
 using Gallio.Runtime.ProgressMonitoring;
 using MbUnit.Framework;
+using Gallio.Icarus.Helpers;
 
 namespace Gallio.Icarus.Tests.Models
 {
@@ -111,8 +112,9 @@ namespace Gallio.Icarus.Tests.Models
             fixture.Children.Add(test);
             
             TestModelData testModelData = new TestModelData(root);
-            
-            testTreeModel.BuildTestTree(progressMonitor, testModelData, "Namespace");
+
+            var options = new TestTreeBuilderOptions { TreeViewCategory = "Namespace", SplitNamespaces = false };
+            testTreeModel.BuildTestTree(progressMonitor, testModelData, options);
             
             Assert.IsNotNull(testTreeModel.Root);
             Assert.AreEqual(1, testTreeModel.Root.Nodes.Count);
@@ -163,7 +165,13 @@ namespace Gallio.Icarus.Tests.Models
             fixture2.Children.Add(test2);
 
             TestModelData testModelData = new TestModelData(root);
-            testTreeModel.BuildTestTree(progressMonitor, testModelData, MetadataKeys.Category);
+            
+            var options = new TestTreeBuilderOptions 
+            {
+                TreeViewCategory = MetadataKeys.Category,
+                SplitNamespaces = false
+            };
+            testTreeModel.BuildTestTree(progressMonitor, testModelData, options);
 
             Assert.IsNotNull(testTreeModel.Root);
             Assert.AreEqual(2, testTreeModel.Root.Nodes.Count);

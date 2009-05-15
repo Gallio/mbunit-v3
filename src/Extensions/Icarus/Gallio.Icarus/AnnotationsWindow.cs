@@ -25,17 +25,16 @@ namespace Gallio.Icarus
     internal partial class AnnotationsWindow : DockWindow
     {
         private readonly IAnnotationsController annotationsController;
+        private readonly ISourceCodeController sourceCodeController;
 
-        public AnnotationsWindow(IAnnotationsController annotationsController)
+        public AnnotationsWindow(IAnnotationsController annotationsController, ISourceCodeController sourceCodeController)
         {
             this.annotationsController = annotationsController;
+            this.sourceCodeController = sourceCodeController;
             
             InitializeComponent();
 
-            annotationsController.Annotations.ListChanged += delegate
-            {
-                Sync.Invoke(this, PopulateListView);
-            };
+            annotationsController.Annotations.ListChanged += (sender, e) => { Sync.Invoke(this, PopulateListView); };
 
             showErrorsToolStripButton.DataBindings.Add("Checked", annotationsController, "ShowErrors", false, 
                 DataSourceUpdateMode.OnPropertyChanged);
@@ -92,8 +91,10 @@ namespace Gallio.Icarus
         private void annotationsListView_DoubleClick(object sender, EventArgs e)
         {
             foreach (ListViewItem lvi in annotationsListView.SelectedItems)
-                if (ParentForm != null)
-                    ((Main)ParentForm).ShowSourceCode(((AnnotationData)lvi.Tag).CodeLocation);
+            {
+                var codeLocation = ((AnnotationData)lvi.Tag).CodeLocation;
+                sourceCodeController.ViewSourceCode(codeLocation);
+            }
         }
 
         private static string FilterText(string text)

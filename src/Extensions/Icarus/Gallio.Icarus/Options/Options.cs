@@ -20,7 +20,7 @@ using Gallio.Icarus.Controllers.Interfaces;
 
 namespace Gallio.Icarus.Options
 {
-    public partial class Options : Form
+    internal partial class Options : Form
     {
         private readonly IOptionsController controller;
 
@@ -52,13 +52,16 @@ namespace Gallio.Icarus.Options
         {
             var panels = new Dictionary<string, Type>
             {
-                { "appearance", typeof(AppearanceOptions) },
-                { "testStatusColors", typeof(ColorsOptions) },
-                { "pluginDirectories", typeof(PluginDirectoriesOptions) },
-                { "startup", typeof(StartupOptions) },
-                { "testExplorer", typeof(TestExplorerOptions) },
-                { "Reports", typeof(ReportOptions) },
-                { "testRunnerExtensions", typeof(TestRunnerExtensionOptions) }
+                { "appearanceNode", typeof(AppearanceOptions) },
+                { "testStatusColorsNode", typeof(ColorsOptions) },
+                { "runtimeNode", typeof(PluginDirectoriesOptions) },
+                { "pluginDirectoriesNode", typeof(PluginDirectoriesOptions) },
+                { "startupNode", typeof(StartupOptions) },
+                { "testExplorerNode", typeof(TestExplorerOptions) },
+                { "testExplorerGeneralNode", typeof(TestExplorerOptions) },
+                { "treeViewCategoriesNode", typeof(TreeViewCategoryOptions) },
+                { "reportsNode", typeof(ReportOptions) },
+                { "testRunnerExtensionsNode", typeof(TestRunnerExtensionOptions) }
             };
 
             Type panelType;

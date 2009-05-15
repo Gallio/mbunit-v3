@@ -13,71 +13,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
 using MbUnit.Framework;
-using System.Threading;
-using Gallio.Icarus.Utilities;
-using Rhino.Mocks;
 
 namespace Gallio.Icarus.Tests
 {
-    class TaskManagerTest
+    [TestsOn(typeof(TaskManager))]
+    internal class TaskManagerTest
     {
-        private TaskManager taskManager;
-        private IUnhandledExceptionPolicy unhandledExceptionPolicy;
-
-        [SetUp]
-        public void SetUp()
-        {
-            unhandledExceptionPolicy = MockRepository.GenerateStub<IUnhandledExceptionPolicy>();
-            taskManager = new TaskManager(unhandledExceptionPolicy);
-        }
-
-        [Test]
-        public void QueueTask_Test()
-        {
-            bool[] flag = {true};
-            taskManager.QueueTask(delegate
-            {
-                do
-                { }
-                while (flag[0]);
-            });
-            Assert.IsTrue(taskManager.TaskRunning);
-            flag[0] = false;
-            Thread.Sleep(100);
-            Assert.IsFalse(taskManager.TaskRunning);
-        }
-
-        [Test]
-        public void ExceptionHandling_Test()
-        {
-            Exception ex = new Exception();
-            taskManager.QueueTask(delegate { throw ex; });
-            Thread.Sleep(200);
-            unhandledExceptionPolicy.AssertWasCalled(x => 
-                x.Report("An exception occurred in a background task.", ex));
-        }
-
-        [Test]
-        public void OperationCanceled_Test()
-        {
-            taskManager.QueueTask(delegate { throw new OperationCanceledException(); });
-            Thread.Sleep(200);
-            unhandledExceptionPolicy.AssertWasNotCalled(x => 
-                x.Report(Arg<string>.Is.Anything, Arg<Exception>.Is.Anything));
-        }
-
-        [Test]
-        public void Queue_Test()
-        {
-            bool flag1 = false;
-            bool flag2 = false;
-            taskManager.QueueTask(delegate { Thread.Sleep(100); flag1 = true; });
-            taskManager.QueueTask(delegate { flag2 = true; });
-            Thread.Sleep(200);
-            Assert.IsTrue(flag1);
-            Assert.IsTrue(flag2);
-        }
     }
 }

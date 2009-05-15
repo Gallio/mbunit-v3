@@ -15,14 +15,14 @@
 
 using System;
 using Gallio.Common.Concurrency;
+using Gallio.Common.Reflection;
 using Gallio.Icarus.Controllers;
+using Gallio.Icarus.Controllers.EventArgs;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Model.Serialization;
-using Gallio.Common.Reflection;
 using Gallio.Runner.Reports;
 using MbUnit.Framework;
 using Rhino.Mocks;
-using Gallio.Icarus.Controllers.EventArgs;
 
 namespace Gallio.Icarus.Tests.Controllers
 {
@@ -114,6 +114,19 @@ namespace Gallio.Icarus.Tests.Controllers
             var testController = MockRepository.GenerateStub<ITestController>();
             var testModelData = new TestModelData();
             Report report = new Report { TestModel = testModelData };
+            testController.Stub(x => x.ReadReport(null)).IgnoreArguments().Do((Action<ReadAction<Report>>)(action => action(report)));
+            var sourceCodeController = new SourceCodeController(testController);
+            sourceCodeController.ShowSourceCode += (sender, e) => Assert.Fail();
+
+            sourceCodeController.ViewSourceCode("testId", progressMonitor);
+        }
+
+        [Test]
+        public void ShowSourceCode_does_not_fire_if_TestModel_is_null()
+        {
+            var progressMonitor = MockProgressMonitor.GetMockProgressMonitor();
+            var testController = MockRepository.GenerateStub<ITestController>();
+            Report report = new Report();
             testController.Stub(x => x.ReadReport(null)).IgnoreArguments().Do((Action<ReadAction<Report>>)(action => action(report)));
             var sourceCodeController = new SourceCodeController(testController);
             sourceCodeController.ShowSourceCode += (sender, e) => Assert.Fail();

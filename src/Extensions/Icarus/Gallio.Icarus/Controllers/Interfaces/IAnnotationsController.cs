@@ -18,7 +18,7 @@ using Gallio.Model.Serialization;
 
 namespace Gallio.Icarus.Controllers.Interfaces
 {
-    public interface IAnnotationsController : INotifyController
+    public interface IAnnotationsController
     {
         BindingList<AnnotationData> Annotations { get; }
         bool ShowErrors { get; set; }

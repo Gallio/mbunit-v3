@@ -25,10 +25,11 @@ using Gallio.Model.Serialization;
 using Gallio.Common.Reflection;
 using Gallio.Runner.Reports;
 using Gallio.Runtime.ProgressMonitoring;
+using Gallio.Icarus.Helpers;
 
 namespace Gallio.Icarus.Models
 {
-    public class TestTreeModel : TreeModelBase, ITestTreeModel
+    internal class TestTreeModel : TreeModelBase, ITestTreeModel
     {
         private readonly TreeModel inner;
         private readonly List<TestStatus> filterStatuses = new List<TestStatus>();
@@ -317,7 +318,7 @@ namespace Gallio.Icarus.Models
         }
 
         public void BuildTestTree(IProgressMonitor progressMonitor, TestModelData testModelData, 
-            string treeViewCategory)
+            TestTreeBuilderOptions options)
         {
             int count = CountTestData(testModelData.RootTest);
 
@@ -326,19 +327,8 @@ namespace Gallio.Icarus.Models
                 ResetCounters();
 
                 inner.Root.Nodes.Clear();
-
-                TestTreeNode root = new TestTreeNode(testModelData.RootTest.Name, 
-                    testModelData.RootTest.Id, TestKinds.Root);
-
+                var root = TestTreeBuilder.BuildTestTree(progressMonitor, testModelData, options);
                 inner.Root.Nodes.Add(root);
-
-                progressMonitor.Worked(1);
-
-                if (treeViewCategory == "Namespace")
-                    PopulateNamespaceTree(progressMonitor, testModelData.RootTest.Children, root);
-                else
-                    PopulateMetadataTree(progressMonitor, treeViewCategory,
-                                         testModelData.RootTest.Children, root);
 
                 OnStructureChanged(new TreePathEventArgs(TreePath.Empty));
             }
@@ -355,113 +345,6 @@ namespace Gallio.Icarus.Models
         public Node FindNode(TreePath path)
         {
             return inner.FindNode(path);
-        }
-
-        private static void PopulateNamespaceTree(IProgressMonitor progressMonitor, 
-            IList<TestData> list, TestTreeNode parent)
-        {
-            for (int i = 0; i < list.Count; i++)
-            {
-                TestData td = list[i];
-                string componentKind = td.Metadata.GetValue(MetadataKeys.TestKind);
-                if (componentKind == null)
-                    continue;
-                TestTreeNode ttnode;
-                if (componentKind != TestKinds.Fixture)
-                {
-                    // create an appropriate node
-                    ttnode = new TestTreeNode(td.Name, td.Id, componentKind);
-                    parent.Nodes.Add(ttnode);
-                }
-                else
-                {
-                    // fixtures need special treatment to insert the namespace layer!
-                    string @namespace = td.CodeReference.NamespaceName ?? "";
-
-                    // find the namespace node (or add if it doesn't exist)
-                    TestTreeNode nsNode;
-                    List<TestTreeNode> nodes = parent.Find(@namespace, true);
-                    if (nodes.Count > 0)
-                        nsNode = nodes[0];
-                    else
-                    {
-                        nsNode = new TestTreeNode(@namespace, @namespace, "Namespace");
-                        parent.Nodes.Add(nsNode);
-                    }
-
-                    // add the fixture to the namespace
-                    ttnode = new TestTreeNode(td.Name, td.Id, componentKind);
-                    nsNode.Nodes.Add(ttnode);
-                }
-                ttnode.SourceCodeAvailable = (td.CodeLocation != CodeLocation.Unknown);
-                ttnode.IsTest = td.IsTestCase;
-
-                // process child nodes
-                PopulateNamespaceTree(progressMonitor, td.Children, ttnode);
-
-                progressMonitor.Worked(1);
-            }
-        }
-
-        private void PopulateMetadataTree(IProgressMonitor progressMonitor, string key, 
-            IList<TestData> list, Node parent)
-        {
-            for (int i = 0; i < list.Count; i++)
-            {
-                TestData td = list[i];
-                string componentKind = td.Metadata.GetValue(MetadataKeys.TestKind);
-                if (componentKind == null)
-                    continue;
-                switch (componentKind)
-                {
-                    case TestKinds.Fixture:
-                    case TestKinds.Test:
-                        IList<string> metadata = td.Metadata[key];
-                        if (metadata.Count == 0)
-                            metadata = new List<string> { "None" };
-
-                        foreach (string m in metadata)
-                        {
-                            // find metadata node (or add if it doesn't exist)
-                            TestTreeNode metadataNode;
-                            List<TestTreeNode> nodes = Root.Find(m, false);
-                            if (nodes.Count > 0)
-                                metadataNode = nodes[0];
-                            else
-                            {
-                                metadataNode = new TestTreeNode(m, m, key);
-                                Root.Nodes.Add(metadataNode);
-                            }
-
-                            // add node in the appropriate place
-                            if (componentKind == TestKinds.Fixture)
-                            {
-                                TestTreeNode ttnode = new TestTreeNode(td.Name, td.Id, componentKind);
-                                metadataNode.Nodes.Add(ttnode);
-                                PopulateMetadataTree(progressMonitor, key, td.Children, ttnode);
-                            }
-                            else
-                            {
-                                // test
-                                TestTreeNode ttnode = new TestTreeNode(td.Name, td.Id, componentKind)
-                                                          {
-                                                              SourceCodeAvailable =
-                                                                  (td.CodeLocation != CodeLocation.Unknown),
-                                                              IsTest = td.IsTestCase
-                                                          };
-                                if (m != "None")
-                                    metadataNode.Nodes.Add(ttnode);
-                                else
-                                    parent.Nodes.Add(ttnode);
-                            }
-                        }
-                        break;
-                }
-                if (componentKind != TestKinds.Fixture)
-                    PopulateMetadataTree(progressMonitor, key, td.Children, parent);
-
-                progressMonitor.Worked(1);
-            }
         }
 
         public void ApplyFilterSet(FilterSet<ITest> filterSet)
