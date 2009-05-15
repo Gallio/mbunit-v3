@@ -465,36 +465,53 @@ namespace Gallio.Common.Reflection.Impl
         {
             return attributeUsageMemoizer.Memoize(attributeType, () =>
             {
-                AttributeUsageAttribute attributeUsage;
-
                 if (attributeType.FullName == @"System.AttributeUsageAttribute")
                 {
                     // Note: Avoid indefinite recursion when determining whether AttributeUsageAttribute itself is inheritable.
-                    attributeUsage = new AttributeUsageAttribute(AttributeTargets.Class);
-                    attributeUsage.Inherited = true;
+                    return new AttributeUsageAttribute(AttributeTargets.Class)
+                    {
+                        Inherited = true
+                    };
+                }
+
+                Type resolvedAttributeType = attributeType.Resolve(false);
+                if (! Reflector.IsUnresolved(resolvedAttributeType))
+                {
+                    // We use the resolved type when possible primarily because ReSharper's Metadata reflection
+                    // policy cannot resolve types in System and mscorlib which causes problems ironically when
+                    // trying to resolve AttributeUsageAttribute itself.  However this is also a useful optimization
+                    // in the case where the type can be resolved. -- Jeff.
+                    var attributeUsages = (AttributeUsageAttribute[]) resolvedAttributeType.GetCustomAttributes(
+                        typeof(AttributeUsageAttribute), true);
+
+                    if (attributeUsages.Length != 0)
+                        return attributeUsages[0];
                 }
                 else
                 {
                     try
                     {
-                        attributeUsage = AttributeUtils.GetAttribute<AttributeUsageAttribute>(attributeType, true);
+                        var attributeUsage = AttributeUtils.GetAttribute<AttributeUsageAttribute>(attributeType, true);
+                        if (attributeUsage != null)
+                            return attributeUsage;
                     }
                     catch (TargetParameterCountException)
                     {
                         // This is a hack to work around the fact that ReSharper does not correctly handle
                         // attribute parameters with enum values.  In particular, this affects the first
                         // parameter of AttributeUsageAttribute. -- Jeff.
-                        attributeUsage = null;
-                    }
-
-                    if (attributeUsage == null)
-                    {
-                        attributeUsage = new AttributeUsageAttribute(AttributeTargets.All);
-                        attributeUsage.Inherited = true;
+                        return new AttributeUsageAttribute(AttributeTargets.All)
+                        {
+                            Inherited = true,
+                            AllowMultiple = true
+                        };
                     }
                 }
 
-                return attributeUsage;
+                return new AttributeUsageAttribute(AttributeTargets.All)
+                {
+                    Inherited = true
+                };
             });
         }
         #endregion
