@@ -14,11 +14,11 @@
 // limitations under the License.
 
 using System;
-using Gallio.Common;
 using Gallio.Icarus.Commands;
 using Gallio.Icarus.ProgressMonitoring;
 using Gallio.Icarus.ProgressMonitoring.EventArgs;
 using System.Collections.Generic;
+using Action=Gallio.Common.Action;
 
 namespace Gallio.Icarus.Tests.Utilities
 {
@@ -32,7 +32,7 @@ namespace Gallio.Icarus.Tests.Utilities
 
         public ProgressMonitorPresenter ProgressMonitor
         {
-            get { throw new System.NotImplementedException(); }
+            get { throw new NotImplementedException(); }
         }
 
         public event EventHandler<ProgressUpdateEventArgs> ProgressUpdate;
@@ -40,21 +40,16 @@ namespace Gallio.Icarus.Tests.Utilities
         public event EventHandler TaskCompleted;
         public event EventHandler TaskCanceled;
 
-        public void BackgroundTask(Gallio.Common.Action action)
-        {
-            RunTask(action);
-        }
-
-        public void QueueTask(Gallio.Common.Action action)
-        {
-            RunTask(action);
-        }
-
-        private List<ICommand> queue = new List<ICommand>();
+        private readonly List<ICommand> queue = new List<ICommand>();
 
         public List<ICommand> Queue
         {
             get { return queue; }
+        }
+
+        public void BackgroundTask(Action action)
+        {
+            action();
         }
 
         public void QueueTask(ICommand command)
@@ -62,14 +57,31 @@ namespace Gallio.Icarus.Tests.Utilities
             queue.Add(command);
         }
 
-        private void RunTask(Gallio.Common.Action action)
-        {
-            TaskRunning = true;
-            action();
-            TaskRunning = true;
-        }
-
         public void Stop()
         { }
+
+        protected void OnTaskStarted()
+        {
+            if (TaskStarted != null)
+                TaskStarted(this, EventArgs.Empty);
+        }
+
+        protected void OnTaskCompleted()
+        {
+            if (TaskCompleted != null)
+                TaskCompleted(this, EventArgs.Empty);
+        }
+
+        protected void OnTaskCanceled()
+        {
+            if (TaskCanceled != null)
+                TaskCanceled(this, EventArgs.Empty);
+        }
+
+        protected void OnProgressUpdate(ProgressUpdateEventArgs e)
+        {
+            if (ProgressUpdate != null)
+                ProgressUpdate(this, e);
+        }
     }
 }
