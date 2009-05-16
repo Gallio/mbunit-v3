@@ -75,6 +75,9 @@
     <Compile Include="..\Extensions\AutoCAD\AutoCAD.wxs">
       <Link>AutoCAD.wxs</Link>
     </Compile>
+    <Compile Include="..\Extensions\DLR\DLR.wxs">
+      <Link>DLR.wxs</Link>
+    </Compile>
     <Compile Include="..\Extensions\Echo\Echo.wxs">
       <Link>Echo.wxs</Link>
     </Compile>
@@ -95,6 +98,9 @@
     </Compile>
     <Compile Include="..\Extensions\ReSharper\ReSharper45.wxs">
       <Link>ReSharper45.wxs</Link>
+    </Compile>
+    <Compile Include="..\Extensions\RSpec\RSpec.wxs">
+      <Link>RSpec.wxs</Link>
     </Compile>
     <Compile Include="..\Extensions\TDNet\TDNet.wxs">
       <Link>TDNet.wxs</Link>

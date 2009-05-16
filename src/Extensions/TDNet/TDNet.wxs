@@ -10,12 +10,12 @@
                 <Component Id="Gallio.TDNetRunner" Guid="9fc40e70-ddcd-4d3a-b823-d81a5731b8a8" Win64="no">
                     <File Name="Gallio.TDNetRunner.dll" KeyPath="yes"
                           Assembly=".net" AssemblyApplication="Gallio.TDNetRunner.dll" />
-                    <File Name="Gallio.TDNetRunner.plugin" KeyPath="yes" />
+                    <File Name="Gallio.TDNetRunner.plugin"/>
                 </Component>
                 <Component Id="Gallio.TDNetRunner.UI" Guid="{858EBABB-D4A7-4fb9-869A-9C9676CB324E}" Win64="no">
                     <File Name="Gallio.TDNetRunner.UI.dll" KeyPath="yes"
                           Assembly=".net" AssemblyApplication="Gallio.TDNetRunner.UI.dll" />
-                    <File Name="Gallio.TDNetRunner.UI.plugin" KeyPath="yes" />
+                    <File Name="Gallio.TDNetRunner.UI.plugin" />
                 </Component>
 
                 <Component Id="TDNetApp.Icarus" Guid="0ebd2ab6-3341-4d25-a249-0af80fa32913" Win64="no">

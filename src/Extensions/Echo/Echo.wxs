@@ -5,6 +5,7 @@
             <Component Id="Gallio.Echo" Guid="8f28f164-fa85-4a2f-bfa3-b75c8bea2031" Win64="no">
                 <File Name="Gallio.Echo.exe" KeyPath="yes" />
                 <File Name="Gallio.Echo.exe.config" />
+                <File Name="Gallio.Echo.plugin" />
             </Component>
         </DirectoryRef>
         <Feature Id="feat_Gallio.Echo" Title="Echo (CLI Test Runner)" Level="1" AllowAdvertise="no"

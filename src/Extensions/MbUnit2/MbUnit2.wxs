@@ -2,38 +2,22 @@
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
     <Fragment>
         <DirectoryRef Id="binFolder" FileSource="$(var.GallioTargetDir)\bin\">
-            <Directory Id="MbUnit2Adapter" Name="MbUnit2">
-                <Component Id="Gallio.MbUnit2Adapter.dll" Guid="489abfa0-93a1-4f46-8685-e428d4d75120" Win64="no">
+            <Directory Id="MbUnit2" Name="MbUnit2">
+                <Component Id="Gallio.MbUnit2Adapter" Guid="489abfa0-93a1-4f46-8685-e428d4d75120" Win64="no">
                     <File Name="Gallio.MbUnit2Adapter.dll" KeyPath="yes" />
-                </Component>
-                <Component Id="Gallio.MbUnit2Adapter.plugin" Guid="07ac6b21-9a1b-4ec3-a615-3346265fa107" Win64="no">
-                    <File Name="Gallio.MbUnit2Adapter.plugin" KeyPath="yes" />
-                </Component>
-                <Component Id="MbUnit.Framework.dll" Guid="7332a684-a601-4527-9157-911bdbc63a69" Win64="no">
-                    <File Name="MbUnit.Framework.dll" KeyPath="yes" />
+                    <File Name="Gallio.MbUnit2Adapter.plugin" />
+                    <File Name="MbUnit.Framework.dll" />
                     <File Name="MbUnit.Framework.xml" />
-                </Component>
-                <Component Id="MbUnit.Framework.2.0.dll" Guid="333b6252-08ef-42bb-95b6-4be01366964d" Win64="no">
-                    <File Name="MbUnit.Framework.2.0.dll" KeyPath="yes" />
+                    <File Name="MbUnit.Framework.2.0.dll" />
                     <File Name="MbUnit.Framework.2.0.xml" />
-                </Component>
-                <Component Id="QuickGraph.dll" Guid="63fa6278-201a-4832-924f-8b83eedb72f0" Win64="no">
-                    <File Name="QuickGraph.dll" KeyPath="yes" />
+                    <File Name="QuickGraph.dll" />
                     <File Name="QuickGraph.xml" />
-                </Component>
-                <Component Id="QuickGraph.Algorithms.dll" Guid="920afdc0-9a2c-434a-af57-3659dd87f473" Win64="no">
-                    <File Name="QuickGraph.Algorithms.dll" KeyPath="yes" />
+                    <File Name="QuickGraph.Algorithms.dll" />
                     <File Name="QuickGraph.Algorithms.xml" />
-                </Component>
-                <Component Id="MbUnit2.Readme.txt" Guid="12b0ecb5-7fe5-4c47-b052-134ceca048a0" Win64="no">
-                    <File Id="MbUnit2.Readme.txt" Name="Readme.txt" KeyPath="yes" />
-                </Component>
-                <Component Id="Refly.dll" Guid="4c95e88c-cae6-47c9-afa0-bb975e27ec4d" Win64="no">
-                    <File Name="Refly.dll" KeyPath="yes" />
+                    <File Id="MbUnit2.Readme.txt" Name="Readme.txt" />
+                    <File Name="Refly.dll" />
                     <File Name="Refly.xml" />
-                </Component>
-                <Component Id="TestFu.dll" Guid="15946aa3-8221-4815-ad57-0796e8d3f5c4" Win64="no">
-                    <File Name="TestFu.dll" KeyPath="yes" />
+                    <File Name="TestFu.dll" />
                     <File Name="TestFu.xml" />
                 </Component>
             </Directory>
@@ -41,15 +25,7 @@
 
         <Feature Id='feat_MbUnit2Adapter' Title='MbUnit v2 Adapter' Level='1' AllowAdvertise="no"
             Description='Installs the MbUnit v2 adapter.  Enables Gallio to run MbUnit v2 tests.'>
-            <ComponentRef Id="Gallio.MbUnit2Adapter.dll"/>
-            <ComponentRef Id="Gallio.MbUnit2Adapter.plugin"/>
-            <ComponentRef Id="MbUnit2.Readme.txt"/>
-            <ComponentRef Id="MbUnit.Framework.dll"/>
-            <ComponentRef Id="MbUnit.Framework.2.0.dll"/>
-            <ComponentRef Id="QuickGraph.dll"/>
-            <ComponentRef Id="QuickGraph.Algorithms.dll"/>
-            <ComponentRef Id="Refly.dll"/>
-            <ComponentRef Id="TestFu.dll"/>
+            <ComponentRef Id="Gallio.MbUnit2Adapter"/>
         </Feature>
     </Fragment>
 </Wix>

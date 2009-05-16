@@ -1,0 +1,62 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+  <Import Project="$(MetaBuildBinDir)\MetaBuild.Module.targets" />
+  
+  <ItemGroup>
+    <CSharpProject Include="Gallio.DLRIntegration\Gallio.DLRIntegration$(ProjectVariant).csproj" />
+    
+    <CSharpProject Include="Gallio.DLRIntegration.Tests\Gallio.DLRIntegration.Tests$(ProjectVariant).csproj" />    
+  </ItemGroup>
+
+  <ItemGroup>
+    <Binary Include="Gallio.DLRIntegration\bin\Gallio.DLRIntegration.dll">
+      <Folder>DLR</Folder>
+    </Binary>
+    <PluginFile Include="Gallio.DLRIntegration\Gallio.DLRIntegration.plugin">
+      <Folder>DLR</Folder>
+    </PluginFile>
+
+    <Binary Include="libs\ipy.exe">
+      <Folder>DLR</Folder>
+    </Binary>
+    <Binary Include="libs\ipyw.exe">
+      <Folder>DLR</Folder>
+    </Binary>
+    <Binary Include="libs\IronPython.dll">
+      <Folder>DLR</Folder>
+    </Binary>
+    <Binary Include="libs\IronPython.Modules.dll">
+      <Folder>DLR</Folder>
+    </Binary>
+    <Binary Include="libs\IronPythonTest.dll">
+      <Folder>DLR</Folder>
+    </Binary>
+    <Binary Include="libs\IronRuby.dll">
+      <Folder>DLR</Folder>
+    </Binary>
+    <Binary Include="libs\IronRuby.Libraries.dll">
+      <Folder>DLR</Folder>
+    </Binary>
+    <Binary Include="libs\Microsoft.Scripting.Core.dll">
+      <Folder>DLR</Folder>
+    </Binary>
+    <Binary Include="libs\Microsoft.Scripting.dll">
+      <Folder>DLR</Folder>
+    </Binary>
+    <Binary Include="libs\Microsoft.Scripting.ExtensionAttribute.dll">
+      <Folder>DLR</Folder>
+    </Binary>
+    <Binary Include="libs\ToyScript.dll">
+      <Folder>DLR</Folder>
+    </Binary>
+    <Binary Include="libs\ts.exe">
+      <Folder>DLR</Folder>
+    </Binary>
+    <Binary Include="libs\Ms-PL.txt">
+      <Folder>DLR</Folder>
+    </Binary>
+  </ItemGroup>
+
+  <ItemGroup>
+    <TestAssembly Include="Gallio.DLRIntegration.Tests\bin\Gallio.DLRIntegration.Tests.dll" />
+  </ItemGroup>
+</Project>

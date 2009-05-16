@@ -252,6 +252,7 @@
             <ComponentRef Id="Gallio.Credits" />
             <ComponentRef Id="Gallio.UI"/>
             <ComponentRef Id="Gallio.Utility"/>
+            <ComponentRef Id="Gallio.ControlPanel"/>
             <ComponentRef Id="Gallio.Reports"/>
 
             <ComponentRef Id="Gallio.Report.css"/>

@@ -1,0 +1,22 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+  <Import Project="$(MetaBuildBinDir)\MetaBuild.Module.targets" />
+  
+  <ItemGroup>
+    <CSharpProject Include="Gallio.RSpecAdapter\Gallio.RSpecAdapter$(ProjectVariant).csproj" />
+    
+    <CSharpProject Include="Gallio.RSpecAdapter.Tests\Gallio.RSpecAdapter.Tests$(ProjectVariant).csproj" />    
+  </ItemGroup>
+
+  <ItemGroup>
+    <Binary Include="Gallio.RSpecAdapter\bin\Gallio.RSpecAdapter.dll">
+      <Folder>RSpec</Folder>
+    </Binary>
+    <PluginFile Include="Gallio.RSpecAdapter\Gallio.RSpecAdapter.plugin">
+      <Folder>RSpec</Folder>
+    </PluginFile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <TestAssembly Include="Gallio.RSpecAdapter.Tests\bin\Gallio.RSpecAdapter.Tests.dll" />
+  </ItemGroup>
+</Project>

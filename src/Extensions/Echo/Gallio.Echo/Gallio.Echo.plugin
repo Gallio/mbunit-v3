@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<plugin pluginId="Gallio.Echo" xmlns="http://www.gallio.org/">
+  <traits>
+    <name>Gallio Echo</name>
+    <version>0.0.0.0</version>
+    <description>A command-line test runner.</description>
+  </traits>
+
+  <services>
+  </services>
+
+  <components>
+  </components>
+</plugin>
