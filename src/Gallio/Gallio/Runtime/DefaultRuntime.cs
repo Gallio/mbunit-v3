@@ -157,7 +157,8 @@ namespace Gallio.Runtime
                     TraitsProperties =
                     {
                         { "Name", "Gallio Built-In Components" },
-                        { "AboutDescription", "Provides built-in runtime service." }
+                        { "Description", "Provides built-in runtime service." },
+                        { "Version", typeof(DefaultRuntime).Assembly.GetName().Version.ToString() }
                     }
                 });
 

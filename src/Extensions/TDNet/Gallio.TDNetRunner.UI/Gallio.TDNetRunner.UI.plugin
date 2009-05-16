@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<plugin pluginId="Gallio.TDNetRunner.UI"
+        xmlns="http://www.gallio.org/">
+  <traits>
+    <name>TestDriven.Net Runner UI</name>
+    <version>0.0.0.0</version>
+    <description>TestDriven.Net runner UI components.</description>
+  </traits>
+
+  <dependencies>
+    <dependency pluginId="Gallio" />
+    <dependency pluginId="Gallio.UI" />
+    <dependency pluginId="Gallio.TDNetRunner" />
+  </dependencies>
+
+  <assemblies>
+    <assembly fullName="Gallio.TDNetRunner.UI, Version=0.0.0.0, Culture=neutral, PublicKeyToken=eb9cfa67ee6ab36e"
+              codeBase="Gallio.TDNetRunner.UI.dll" />
+  </assemblies>
+
+  <components>
+    <component componentId="Gallio.TDNetRunner.UI.PreferencePaneProvider"
+                serviceId="Gallio.UI.PreferencePaneProvider"
+                componentType="Gallio.TDNetRunner.UI.Preferences.TDNetPreferencePaneProvider, Gallio.TDNetRunner.UI">
+      <traits>
+        <path>TestDriven.Net</path>
+      </traits>
+    </component>
+  </components>
+</plugin>

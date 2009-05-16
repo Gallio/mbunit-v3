@@ -7,12 +7,12 @@
   <ItemGroup>
     <CSharpProject Include="Gallio\Gallio$(ProjectVariant).csproj" />
     <CSharpProject Include="Gallio35\Gallio35$(ProjectVariant).csproj" />
+    <CSharpProject Include="Gallio.ControlPanel\Gallio.ControlPanel$(ProjectVariant).csproj" />
     <CSharpProject Include="Gallio.Host\Gallio.Host$(ProjectVariant).csproj" />
     <CSharpProject Include="Gallio.Host\Gallio.Host.x86$(ProjectVariant).csproj" />
     <CSharpProject Include="Gallio.Tests\Gallio.Tests$(ProjectVariant).csproj" />
     <CSharpProject Include="Gallio.Loader\Gallio.Loader$(ProjectVariant).csproj" />
     <CSharpProject Include="Gallio.Reports\Gallio.Reports$(ProjectVariant).csproj" />
-    <CSharpProject Include="Gallio.Reports.Tests\Gallio.Reports.Tests$(ProjectVariant).csproj" />
     <CSharpProject Include="Gallio.UI\Gallio.UI$(ProjectVariant).csproj" />
     
     <CSharpProject Include="Gallio.Utility\Gallio.Utility$(ProjectVariant).csproj" />
@@ -49,8 +49,13 @@
     <Binary Include="Gallio.UI\bin\Gallio.UI.pdb" />
     <PluginFile Include="Gallio.UI\Gallio.UI.plugin" />
 
+    <Binary Include="Gallio.ControlPanel\bin\Gallio.ControlPanel.exe" />
+    <PluginFile Include="Gallio.ControlPanel\Gallio.ControlPanel.exe.config" />
+    <PluginFile Include="Gallio.ControlPanel\Gallio.ControlPanel.plugin" />
+
     <Binary Include="Gallio.Utility\bin\Gallio.Utility.exe" />
     <PluginFile Include="Gallio.Utility\Gallio.Utility.exe.config" />
+    <PluginFile Include="Gallio.Utility\Gallio.Utility.plugin" />
 
     <Binary Include="Gallio.Reports\bin\Gallio.Reports.dll" />
     <Binary Include="Gallio.Reports\bin\Gallio.Reports.pdb" />
@@ -78,7 +83,6 @@
 
   <ItemGroup>
     <TestAssembly Include="Gallio.Tests\bin\Gallio.Tests.dll" />
-    <TestAssembly Include="Gallio.Reports.Tests\bin\Gallio.Reports.Tests.dll" />
   </ItemGroup>
 
   <ItemGroup>

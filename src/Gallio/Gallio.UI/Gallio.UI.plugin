@@ -2,7 +2,9 @@
 <plugin pluginId="Gallio.UI"
         xmlns="http://www.gallio.org/">
   <traits>
-    <name>Gallio UI Helper Library</name>
+    <name>Gallio UI Library</name>
+    <version>0.0.0.0</version>
+    <description>Gallio UI components.</description>
   </traits>
 
   <dependencies>
@@ -13,4 +15,75 @@
     <assembly fullName="Gallio.UI, Version=0.0.0.0, Culture=neutral, PublicKeyToken=eb9cfa67ee6ab36e"
               codeBase="Gallio.UI.dll" />
   </assemblies>
+
+  <services>
+    <service serviceId="Gallio.UI.ControlPanelPresenter"
+             serviceType="Gallio.UI.ControlPanel.IControlPanelPresenter, Gallio.UI" />
+
+    <service serviceId="Gallio.UI.ControlPanelTabProvider"
+             serviceType="Gallio.UI.ControlPanel.IControlPanelTabProvider, Gallio.UI" />
+
+    <service serviceId="Gallio.UI.PreferencePaneProvider"
+             serviceType="Gallio.UI.ControlPanel.Preferences.IPreferencePaneProvider, Gallio.UI" />
+  </services>
+
+  <components>
+    <component componentId="Gallio.UI.ControlPanelPresenter"
+               serviceId="Gallio.UI.ControlPanelPresenter"
+               componentType="Gallio.UI.ControlPanel.ControlPanelPresenter, Gallio.UI" />
+
+    <component componentId="Gallio.UI.PreferenceControlPanelTabProvider"
+               serviceId="Gallio.UI.ControlPanelTabProvider"
+               componentType="Gallio.UI.ControlPanel.Preferences.PreferenceControlPanelTabProvider, Gallio.UI">
+      <traits>
+        <name>Preferences</name>
+        <order>0</order>
+      </traits>
+    </component>
+
+    <component componentId="Gallio.UI.PluginControlPanelTabProvider"
+               serviceId="Gallio.UI.ControlPanelTabProvider"
+               componentType="Gallio.UI.ControlPanel.Plugins.PluginControlPanelTabProvider, Gallio.UI">
+      <traits>
+        <name>Plugins</name>
+        <order>100</order>
+      </traits>
+    </component>
+
+    <component componentId="Gallio.UI.GallioPreferencePaneProvider"
+               serviceId="Gallio.UI.PreferencePaneProvider"
+               componentType="Gallio.UI.ControlPanel.Preferences.GallioPreferencePaneProvider, Gallio.UI">
+      <traits>
+        <path>Gallio</path>
+        <order>-100</order>
+      </traits>
+    </component>
+
+    <component componentId="Gallio.UI.Test1PreferencePaneProvider"
+               serviceId="Gallio.UI.PreferencePaneProvider"
+               componentType="Gallio.UI.ControlPanel.Preferences.PlaceholderPreferencePaneProvider, Gallio.UI">
+      <traits>
+        <path>Test</path>
+        <order>1000</order>
+      </traits>
+    </component>
+
+    <component componentId="Gallio.UI.Test2PreferencePaneProvider"
+               serviceId="Gallio.UI.PreferencePaneProvider"
+               componentType="Gallio.UI.ControlPanel.Preferences.PlaceholderPreferencePaneProvider, Gallio.UI">
+      <traits>
+        <path>Test/Second Test Pane</path>
+        <order>100</order>
+      </traits>
+    </component>
+
+    <component componentId="Gallio.UI.Test3PreferencePaneProvider"
+               serviceId="Gallio.UI.PreferencePaneProvider"
+               componentType="Gallio.UI.ControlPanel.Preferences.PlaceholderPreferencePaneProvider, Gallio.UI">
+      <traits>
+        <path>Test/First Test Pane</path>
+        <order>0</order>
+      </traits>
+    </component>
+  </components>
 </plugin>

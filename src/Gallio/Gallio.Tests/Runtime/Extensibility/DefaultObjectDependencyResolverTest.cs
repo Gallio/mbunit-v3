@@ -332,6 +332,26 @@ namespace Gallio.Tests.Runtime.Extensibility
             }
 
             [Test]
+            public void ResolveDependency_WhenDependencyIsOfTypeVersion_ConvertsPropertyStringToVersion()
+            {
+                var serviceLocator = MockRepository.GenerateMock<IServiceLocator>();
+                var resourceLocator = MockRepository.GenerateMock<IResourceLocator>();
+                var dependencyResolver = new DefaultObjectDependencyResolver(serviceLocator, resourceLocator);
+
+                var result = dependencyResolver.ResolveDependency("version", typeof(Version), "1.2.3.4");
+
+                Assert.Multiple(() =>
+                {
+                    Assert.IsTrue(result.IsSatisfied);
+                    Assert.IsInstanceOfType<Version>(result.Value);
+                    Assert.AreEqual(new Version(1, 2, 3, 4), result.Value);
+                });
+
+                serviceLocator.VerifyAllExpectations();
+                resourceLocator.VerifyAllExpectations();
+            }
+
+            [Test]
             public void ResolveDependency_WhenDependencyIsOfTypeGuid_ConvertsPropertyStringToGuid()
             {
                 var serviceLocator = MockRepository.GenerateMock<IServiceLocator>();

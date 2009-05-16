@@ -3,6 +3,8 @@
         xmlns="http://www.gallio.org/">
   <traits>
     <name>MbUnit v3 Extensions for .Net 3.5</name>
+    <version>0.0.0.0</version>
+    <description>Provides additional MbUnit v3 features for use with .Net 3.5.</description>
   </traits>
 
   <dependencies>

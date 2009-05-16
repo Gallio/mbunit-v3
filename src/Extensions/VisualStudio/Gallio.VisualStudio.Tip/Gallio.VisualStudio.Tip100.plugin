@@ -3,6 +3,8 @@
         xmlns="http://www.gallio.org/">
   <traits>
     <name>Visual Studio 2010 Test Runner</name>
+    <version>0.0.0.0</version>
+    <description>Enables Visual Studio 2010 to run Gallio tests via the Test View.</description>
   </traits>
 
   <dependencies>

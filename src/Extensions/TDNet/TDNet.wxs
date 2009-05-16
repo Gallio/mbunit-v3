@@ -7,12 +7,15 @@
 
         <DirectoryRef Id="binFolder" FileSource="$(var.GallioTargetDir)\bin\">
             <Directory Id="TDNet" Name="TDNet">
-                <Component Id="Gallio.TDNetRunner.dll" Guid="9fc40e70-ddcd-4d3a-b823-d81a5731b8a8" Win64="no">
+                <Component Id="Gallio.TDNetRunner" Guid="9fc40e70-ddcd-4d3a-b823-d81a5731b8a8" Win64="no">
                     <File Name="Gallio.TDNetRunner.dll" KeyPath="yes"
                           Assembly=".net" AssemblyApplication="Gallio.TDNetRunner.dll" />
-                </Component>
-                <Component Id="Gallio.TDNetRunner.plugin" Guid="{0ED4AF20-4647-4c53-9960-AB905E9DAA36}" Win64="no">
                     <File Name="Gallio.TDNetRunner.plugin" KeyPath="yes" />
+                </Component>
+                <Component Id="Gallio.TDNetRunner.UI" Guid="{858EBABB-D4A7-4fb9-869A-9C9676CB324E}" Win64="no">
+                    <File Name="Gallio.TDNetRunner.UI.dll" KeyPath="yes"
+                          Assembly=".net" AssemblyApplication="Gallio.TDNetRunner.UI.dll" />
+                    <File Name="Gallio.TDNetRunner.UI.plugin" KeyPath="yes" />
                 </Component>
 
                 <Component Id="TDNetApp.Icarus" Guid="0ebd2ab6-3341-4d25-a249-0af80fa32913" Win64="no">
@@ -171,8 +174,8 @@
 
         <Feature Id='feat_Gallio.TDNet' Title='TestDriven.Net Runner' Level='1' AllowAdvertise='no'
                  Description='Installs the TestDriven.Net add-in.  TestDriven.Net itself must be downloaded and installed separately.'>
-            <ComponentRef Id='Gallio.TDNetRunner.dll'/>
-            <ComponentRef Id='Gallio.TDNetRunner.plugin'/>
+            <ComponentRef Id='Gallio.TDNetRunner'/>
+            <ComponentRef Id='Gallio.TDNetRunner.UI'/>
             <ComponentRef Id="TDNetApp.Icarus" />
 <?if $(sys.BUILDARCH) = "x64" ?>
             <ComponentRef Id="TDNetApp.Icarus.x64" />

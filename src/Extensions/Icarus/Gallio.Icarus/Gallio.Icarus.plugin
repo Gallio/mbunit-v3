@@ -3,6 +3,8 @@
   
   <traits>
     <name>Gallio Icarus Test Runner</name>
+    <version>0.0.0.0</version>
+    <description>A GUI based test runner.</description>
   </traits>
 
   <services>

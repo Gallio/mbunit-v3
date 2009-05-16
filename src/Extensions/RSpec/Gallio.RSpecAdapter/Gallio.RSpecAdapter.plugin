@@ -3,6 +3,8 @@
         xmlns="http://www.gallio.org/">
   <traits>
     <name>RSpec Adapter Plugin</name>
+    <version>0.0.0.0</version>
+    <description>Provides support for running RSpec tests.</description>
   </traits>
 
   <dependencies>

@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<plugin pluginId="Gallio.ControlPanel" xmlns="http://www.gallio.org/">
+  <traits>
+    <name>Gallio Control Panel</name>
+    <version>0.0.0.0</version>
+    <description>An application for configuring preferences and managing the Gallio installation.</description>
+  </traits>
+
+  <services>
+  </services>
+
+  <components>
+  </components>
+</plugin>

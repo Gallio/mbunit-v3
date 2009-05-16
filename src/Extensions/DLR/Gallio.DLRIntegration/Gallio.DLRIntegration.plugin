@@ -3,6 +3,8 @@
         xmlns="http://www.gallio.org/">
   <traits>
     <name>Dynamic Language Runtime Integration Plugin</name>
+    <version>0.0.0.0</version>
+    <description>Integrates the Dynamic Language Runtime with Gallio.</description>
   </traits>
 
   <dependencies>

@@ -48,16 +48,16 @@ namespace Gallio.Runtime.Extensibility
         public Version Version { get; set; }
 
         /// <summary>
-        /// Gets or sets the icon to display when querying information about the plugin, or null if none.
+        /// Gets or sets the plugin icon, or null if none.
         /// </summary>
         /// <remarks>
         /// The image should be 32x32 pixels in size.
         /// </remarks>
-        public Image AboutIcon { get; set; }
+        public Icon Icon { get; set; }
 
         /// <summary>
-        /// Gets or sets the localized description to display when querying information about the plugin, or null if none.
+        /// Gets or sets the localized plugin description, or null if none.
         /// </summary>
-        public string AboutDescription { get; set; }
+        public string Description { get; set; }
     }
 }

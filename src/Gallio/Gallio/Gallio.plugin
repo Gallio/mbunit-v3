@@ -3,6 +3,8 @@
         xmlns="http://www.gallio.org/">
   <traits>
     <name>Gallio</name>
+    <version>0.0.0.0</version>
+    <description>The heart of Gallio.</description>
   </traits>
 
   <dependencies>

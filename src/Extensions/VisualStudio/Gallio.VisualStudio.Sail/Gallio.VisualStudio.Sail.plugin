@@ -3,6 +3,8 @@
         xmlns="http://www.gallio.org/">
   <traits>
     <name>Gallio Sail Test Runner</name>
+    <version>0.0.0.0</version>
+    <description>A native test runner for Visual Studio.</description>
   </traits>
 
   <dependencies>

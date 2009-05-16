@@ -3,6 +3,8 @@
         xmlns="http://www.gallio.org/">
   <traits>
     <name>TestDriven.Net Runner</name>
+    <version>0.0.0.0</version>
+    <description>Enables TestDriven.Net to run tests using Gallio.</description>
   </traits>
 
   <dependencies>

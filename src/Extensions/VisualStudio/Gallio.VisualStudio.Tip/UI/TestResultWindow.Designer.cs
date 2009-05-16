@@ -1,4 +1,4 @@
-﻿using Gallio.UI;
+using Gallio.UI.Reports;
 
 namespace Gallio.VisualStudio.Tip.UI
 {
@@ -35,7 +35,7 @@ namespace Gallio.VisualStudio.Tip.UI
             this.labelStatus = new System.Windows.Forms.Label();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
-            this.runViewer = new Gallio.UI.TestStepRunViewer();
+            this.runViewer = new TestStepRunViewer();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxGallioLogo)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxStatus)).BeginInit();
             this.tableLayoutPanel1.SuspendLayout();

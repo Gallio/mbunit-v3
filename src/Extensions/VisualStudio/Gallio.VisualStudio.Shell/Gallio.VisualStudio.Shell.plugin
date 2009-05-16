@@ -3,6 +3,8 @@
         xmlns="http://www.gallio.org/">
   <traits>
     <name>Visual Studio Integration Shell</name>
+    <version>0.0.0.0</version>
+    <description>Provides a framework for hosting Gallio plugins within Visual Studio.</description>
   </traits>
 
   <dependencies>

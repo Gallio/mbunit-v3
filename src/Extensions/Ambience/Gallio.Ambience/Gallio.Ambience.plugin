@@ -3,6 +3,8 @@
         xmlns="http://www.gallio.org/">
   <traits>
     <name>Gallio Ambience Library</name>
+    <version>0.0.0.0</version>
+    <description>Provides a lightweight object database based on db4o for storing test data across test runs.</description>
   </traits>
 
   <dependencies>

@@ -3,6 +3,8 @@
         xmlns="http://www.gallio.org/">
   <traits>
     <name>TeamCity Integration Plugin</name>
+    <version>0.0.0.0</version>
+    <description>Provides a test runner extension capable of formatting test results to be presented within TeamCity.</description>
   </traits>
 
   <dependencies>

@@ -13,7 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Gallio.UI;
+using Gallio.UI.Reports;
 
 namespace Gallio.Icarus
 {
@@ -46,7 +46,7 @@ namespace Gallio.Icarus
         private void InitializeComponent()
         {
             this.toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
-            this.reportViewer = new Gallio.UI.TestStepRunViewer();
+            this.reportViewer = new TestStepRunViewer();
             this.toolStripContainer1.ContentPanel.SuspendLayout();
             this.toolStripContainer1.SuspendLayout();
             this.SuspendLayout();

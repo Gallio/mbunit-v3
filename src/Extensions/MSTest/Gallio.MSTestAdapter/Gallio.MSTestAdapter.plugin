@@ -3,6 +3,8 @@
         xmlns="http://www.gallio.org/">
   <traits>
     <name>MSTest Adapter Plugin</name>
+    <version>0.0.0.0</version>
+    <description>Provides support for running MSTest tests.  Requires MSTest to be installed separately.</description>
   </traits>
 
   <dependencies>

@@ -170,6 +170,15 @@
     <Compile Include="Model\Filters\FilterSetTest.cs" />
     <Compile Include="Model\Filters\FilterParseExceptionTest.cs" />
     <Compile Include="Model\ModelExceptionTest.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Reports\ManualTestLogFeatureTest.cs" />
+    <Compile Include="Reports\MHtmlReportFormatterTest.cs" />
+    <Compile Include="Reports\XmlReportFormatterTest.cs" />
+    <Compile Include="Reports\XsltReportFormatterTest.cs" />
     <Compile Include="Runner\Caching\DiskCacheExceptionTest.cs" />
     <Compile Include="Runner\Caching\SimpleDiskCacheTest.cs" />
     <Compile Include="Runner\Caching\TemporaryDiskCacheTest.cs" />
@@ -330,6 +339,10 @@
       <Project>{35FFAF24-1019-4BE2-901D-02E627C757DC}</Project>
       <Name>Gallio.Host</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Gallio.Reports\Gallio.Reports.csproj">
+      <Project>{399C33BF-A9F7-4390-8F9C-8EECF7814123}</Project>
+      <Name>Gallio.Reports</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Gallio35\Gallio35.csproj">
       <Project>{BC28AB7E-5B71-4AEE-BF2D-54ACF7299889}</Project>
       <Name>Gallio35</Name>
@@ -344,6 +357,16 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\SampleImage.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Reports\Diagnostic.xslt" />
+    <None Include="Reports\MbUnitLogo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Common\Platform\" />

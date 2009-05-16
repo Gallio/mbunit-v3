@@ -3,6 +3,8 @@
         xmlns="http://www.gallio.org/">
   <traits>
     <name>Gallio Reports Library</name>
+    <version>0.0.0.0</version>
+    <description>Provides several common report formats including Xml, Html, XHtml, MHtml and Text.</description>
   </traits>
 
   <dependencies>

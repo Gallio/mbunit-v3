@@ -3,6 +3,8 @@
         xmlns="http://www.gallio.org/">
   <traits>
     <name>AutoCAD Integration Plugin</name>
+    <version>0.0.0.0</version>
+    <description>Provides support for testing ObjectARX extensions within AutoCAD.</description>
   </traits>
 
   <dependencies>
