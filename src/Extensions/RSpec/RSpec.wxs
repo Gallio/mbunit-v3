@@ -6,6 +6,7 @@
             <Component Id="Gallio.RSpecAdapter" Guid="{67720016-826B-4028-BC2A-89B97F3885BC}" Win64="no">
                 <File Name="Gallio.RSpecAdapter.dll" KeyPath="yes" />
                 <File Name="Gallio.RSpecAdapter.plugin" />
+		<File Id="RSpec.MITLicense.txt" Name="MIT License.txt" />
             </Component>
           </Directory>
         </DirectoryRef>

@@ -54,6 +54,7 @@
     <Compile Include="TeamCityExtension.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ServiceMessageWriter.cs" />
+    <Compile Include="TeamCityExtensionFactory.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\Gallio\Gallio\Gallio.csproj">

@@ -130,6 +130,13 @@
     <Compile Include="Framework\Data\Generation\RandomNumbersGenerator.cs" />
     <Compile Include="Framework\Data\Generation\RandomGenerator.cs" />
     <Compile Include="Framework\Data\Generation\SequentialGenerator.cs" />
+    <Compile Include="Common\Condition.cs" />
+    <Compile Include="Common\ConditionContext.cs" />
+    <Compile Include="Runner\Extensions\ActivationConditionContext.cs" />
+    <Compile Include="Runner\Extensions\ITestRunnerExtensionFactory.cs" />
+    <Compile Include="Runner\Extensions\ITestRunnerExtensionManager.cs" />
+    <Compile Include="Runner\Extensions\TestRunnerExtensionFactoryTraits.cs" />
+    <Compile Include="Runner\Extensions\DefaultTestRunnerExtensionManager.cs" />
     <Compile Include="Runtime\Logging\MarkupStreamLogger.cs" />
     <Compile Include="Common\Markup\MarkupStreamNames.cs" />
     <Compile Include="Common\Markup\MarkupStreamWriter.cs" />
@@ -385,7 +392,7 @@
     <Compile Include="Runtime\Extensibility\ObjectFactory.cs" />
     <Compile Include="Runtime\Extensibility\PluginCatalog.cs" />
     <Compile Include="Runtime\Extensibility\PluginLoader.cs" />
-    <Compile Include="Runtime\Extensibility\XmlPreprocessor.cs" />
+    <Compile Include="Common\Xml\XmlPreprocessor.cs" />
     <Compile Include="Runtime\Extensibility\ServiceRegistration.cs" />
     <Compile Include="Runtime\Extensibility\IHandlerFactory.cs" />
     <Compile Include="Runtime\Extensibility\IComponentDescriptor.cs" />

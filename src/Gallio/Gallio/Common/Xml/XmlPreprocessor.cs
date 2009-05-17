@@ -20,7 +20,7 @@ using System.Text;
 using System.Xml;
 using Gallio.Common.Collections;
 
-namespace Gallio.Runtime.Extensibility
+namespace Gallio.Common.Xml
 {
     /// <summary>
     /// Preprocesses XML based on the presence of processing instructions.
@@ -34,6 +34,7 @@ namespace Gallio.Runtime.Extensibility
     /// <item>&lt;?ifndef CONSTANT?&gt;: Begins conditional block whose contents are output only if CONSTANT is not defined.</item>
     /// <item>&lt;?else?&gt;: Begins alternative conditional block whose contents are output only if the previous ifdef/ifndef condition was not met.</item>
     /// <item>&lt;?endif?&gt;: Ends conditional block.</item>
+    /// <item>&lt;?define CONSTANT?&gt;: Defines a new constant.</item>
     /// </list>
     /// </remarks>
     public class XmlPreprocessor

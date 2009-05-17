@@ -63,6 +63,8 @@
     <Compile Include="Common\Concurrency\LockBoxTest.cs" />
     <Compile Include="Common\Concurrency\ProcessTaskTest.cs" />
     <Compile Include="Common\Concurrency\ThreadAbortScopeTest.cs" />
+    <Compile Include="Common\ConditionContextTest.cs" />
+    <Compile Include="Common\ConditionTest.cs" />
     <Compile Include="Common\Diagnostics\ExceptionDataTest.cs" />
     <Compile Include="Common\Diagnostics\StackTraceDataTest.cs" />
     <Compile Include="Common\Diagnostics\StackTraceFilterTest.cs" />
@@ -85,6 +87,7 @@
     <Compile Include="Common\Markup\Tags\TextAttachmentTest.cs" />
     <Compile Include="Common\Markup\Tags\TextTagTest.cs" />
     <Compile Include="Common\Markup\TextualMarkupDocumentWriterTest.cs" />
+    <Compile Include="Common\MockableConditionContext.cs" />
     <Compile Include="Common\Reflection\BaseReflectionPolicyTest.cs" />
     <Compile Include="Common\Reflection\CodeElementSorterTest.cs" />
     <Compile Include="Common\Reflection\CodeLocationTest.cs" />
@@ -215,7 +218,7 @@
     <Compile Include="Runtime\Extensibility\ServiceRegistrationTest.cs" />
     <Compile Include="Runtime\Extensibility\PluginRegistrationTest.cs" />
     <Compile Include="Runtime\Extensibility\RegistryTest.cs" />
-    <Compile Include="Runtime\Extensibility\XmlPreprocessorTest.cs" />
+    <Compile Include="Common\Xml\XmlPreprocessorTest.cs" />
     <Compile Include="Runtime\FileTypes\AssemblyFileTypeRecognizerTest.cs" />
     <Compile Include="Runtime\FileTypes\FileTypeManagerTest.cs" />
     <Compile Include="Runtime\FileTypes\FileTypeRecognizerTraitsTest.cs" />

@@ -21,6 +21,7 @@ using System.Xml;
 using System.Xml.Serialization;
 using Gallio.Common.Collections;
 using Gallio.Common;
+using Gallio.Common.Xml;
 using Gallio.Schema.Plugins;
 
 namespace Gallio.Runtime.Extensibility

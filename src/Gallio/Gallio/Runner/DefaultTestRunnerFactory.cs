@@ -15,6 +15,7 @@
 
 using System;
 using Gallio.Runner.Drivers;
+using Gallio.Runner.Extensions;
 
 namespace Gallio.Runner
 {
@@ -25,25 +26,32 @@ namespace Gallio.Runner
     public class DefaultTestRunnerFactory : ITestRunnerFactory
     {
         private readonly ITestDriverFactory testDriverFactory;
+        private readonly ITestRunnerExtensionManager extensionManager;
 
         /// <summary>
         /// Creates a test runner factory.
         /// </summary>
         /// <param name="testDriverFactory">The test driver factory</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="testDriverFactory"/>,
-        /// <paramref name="name"/> or <paramref name="description"/> is null</exception>
-        public DefaultTestRunnerFactory(ITestDriverFactory testDriverFactory)
+        /// <param name="extensionManager">The extension manager</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="testDriverFactory"/>
+        /// or <paramref name="extensionManager" /> is null</exception>
+        public DefaultTestRunnerFactory(ITestDriverFactory testDriverFactory, ITestRunnerExtensionManager extensionManager)
         {
             if (testDriverFactory == null)
                 throw new ArgumentNullException("testDriverFactory");
+            if (extensionManager == null)
+                throw new ArgumentNullException("extensionManager");
 
             this.testDriverFactory = testDriverFactory;
+            this.extensionManager = extensionManager;
         }
 
         /// <inheritdoc />
         public ITestRunner CreateTestRunner()
         {
-            return new DefaultTestRunner(testDriverFactory);
+            var runner = new DefaultTestRunner(testDriverFactory);
+            extensionManager.RegisterAutoActivatedExtensions(runner);
+            return runner;
         }
     }
 }

@@ -26,47 +26,20 @@
   </assemblies>
 
   <services>
-    <service serviceId="Gallio.TestRunnerFactory"
-             serviceType="Gallio.Runner.ITestRunnerFactory, Gallio" />
+    <service serviceId="Gallio.FileSystem"
+             serviceType="Gallio.Common.IO.IFileSystem, Gallio" />
 
-    <service serviceId="Gallio.TestDriverFactory"
-             serviceType="Gallio.Runner.Drivers.ITestDriverFactory, Gallio" />
-
-    <service serviceId="Gallio.TestFramework"
-             serviceType="Gallio.Model.ITestFramework, Gallio" />
+    <service serviceId="Gallio.XmlSerializer"
+             serviceType="Gallio.Common.Xml.IXmlSerializer, Gallio" />
     
+    <service serviceId="Gallio.Loader"
+             serviceType="Gallio.Runtime.Loader.ILoader, Gallio" />
+
     <service serviceId="Gallio.HostFactory"
              serviceType="Gallio.Runtime.Hosting.IHostFactory, Gallio" />
 
     <service serviceId="Gallio.Debugger"
              serviceType="Gallio.Runtime.Debugging.IDebugger, Gallio" />
-
-    <service serviceId="Gallio.ReportFormatter"
-             serviceType="Gallio.Runner.Reports.IReportFormatter, Gallio" />
-
-    <service serviceId="Gallio.Loader"
-             serviceType="Gallio.Runtime.Loader.ILoader, Gallio" />
-
-    <service serviceId="Gallio.TestFrameworkManager"
-             serviceType="Gallio.Model.ITestFrameworkManager, Gallio" />
-
-    <service serviceId="Gallio.TestRunnerManager"
-             serviceType="Gallio.Runner.ITestRunnerManager, Gallio" />
-
-    <service serviceId="Gallio.TestHarnessFactory"
-             serviceType="Gallio.Runner.Harness.ITestHarnessFactory, Gallio" />
-
-    <service serviceId="Gallio.TestEnvironment"
-             serviceType="Gallio.Runner.Harness.ITestEnvironment, Gallio" />
-
-    <service serviceId="Gallio.ReportManager"
-             serviceType="Gallio.Runner.Reports.IReportManager, Gallio" />
-
-    <service serviceId="Gallio.TestContextTracker"
-             serviceType="Gallio.Model.Execution.ITestContextTracker, Gallio" />
-
-    <service serviceId="Gallio.PatternTestController"
-             serviceType="Gallio.Framework.Pattern.PatternTestController, Gallio" />
 
     <service serviceId="Gallio.DebuggerManager"
              serviceType="Gallio.Runtime.Debugging.IDebuggerManager, Gallio" />
@@ -89,11 +62,44 @@
     <service serviceId="Gallio.FormattingRule"
              serviceType="Gallio.Runtime.Formatting.IFormattingRule, Gallio" />
 
-    <service serviceId="Gallio.FileSystem" 
-             serviceType="Gallio.Common.IO.IFileSystem, Gallio" />
+    <service serviceId="Gallio.TestFramework"
+             serviceType="Gallio.Model.ITestFramework, Gallio" />
 
-    <service serviceId="Gallio.XmlSerializer"
-         serviceType="Gallio.Common.Xml.IXmlSerializer, Gallio" />
+    <service serviceId="Gallio.TestFrameworkManager"
+             serviceType="Gallio.Model.ITestFrameworkManager, Gallio" />
+
+    <service serviceId="Gallio.TestContextTracker"
+             serviceType="Gallio.Model.Execution.ITestContextTracker, Gallio" />
+
+    <service serviceId="Gallio.TestRunnerFactory"
+             serviceType="Gallio.Runner.ITestRunnerFactory, Gallio" />
+
+    <service serviceId="Gallio.TestDriverFactory"
+             serviceType="Gallio.Runner.Drivers.ITestDriverFactory, Gallio" />
+
+    <service serviceId="Gallio.ReportFormatter"
+             serviceType="Gallio.Runner.Reports.IReportFormatter, Gallio" />
+
+    <service serviceId="Gallio.TestRunnerManager"
+             serviceType="Gallio.Runner.ITestRunnerManager, Gallio" />
+
+    <service serviceId="Gallio.TestHarnessFactory"
+             serviceType="Gallio.Runner.Harness.ITestHarnessFactory, Gallio" />
+
+    <service serviceId="Gallio.TestEnvironment"
+             serviceType="Gallio.Runner.Harness.ITestEnvironment, Gallio" />
+
+    <service serviceId="Gallio.ReportManager"
+             serviceType="Gallio.Runner.Reports.IReportManager, Gallio" />
+
+    <service serviceId="Gallio.TestRunnerExtensionFactory"
+             serviceType="Gallio.Runner.Extensions.ITestRunnerExtensionFactory, Gallio" />
+
+    <service serviceId="Gallio.TestRunnerExtensionManager"
+             serviceType="Gallio.Runner.Extensions.ITestRunnerExtensionManager, Gallio" />
+
+    <service serviceId="Gallio.PatternTestController"
+             serviceType="Gallio.Framework.Pattern.PatternTestController, Gallio" />
   </services>
   
   <components>
@@ -214,6 +220,10 @@
         <hostFactory>${Gallio.IsolatedProcessHostFactory}</hostFactory>
       </parameters>
     </component>
+
+    <component componentId="Gallio.TestRunnerExtensionManager"
+               serviceId="Gallio.TestRunnerExtensionManager"
+               componentType="Gallio.Runner.Extensions.DefaultTestRunnerExtensionManager, Gallio" />
 
     <!-- Converters -->
     <component componentId="Gallio.Converter"

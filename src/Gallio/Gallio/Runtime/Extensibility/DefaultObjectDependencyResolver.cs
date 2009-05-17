@@ -19,6 +19,7 @@ using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Text;
+using Gallio.Common;
 using Gallio.Common.Collections;
 
 namespace Gallio.Runtime.Extensibility
@@ -56,6 +57,7 @@ namespace Gallio.Runtime.Extensibility
     /// value of that enum type, case-insensitively.</item>
     /// <item>If the parameter type is <see cref="Version" /> then the value is parsed into a version.</item>
     /// <item>If the parameter type is <see cref="Guid" /> then the value is parsed into a guid.</item>
+    /// <item>If the parameter type is <see cref="Condition" /> then the value is parsed into a condition.</item>
     /// <item>If the parameter type is <see cref="Image" /> then the value is treated as a relative file
     /// path to a resource and the image is loaded from the resource locator.</item>
     /// <item>If the parameter type is <see cref="Icon" /> then the value is treated as a relative file
@@ -184,6 +186,30 @@ namespace Gallio.Runtime.Extensibility
             if (type == typeof(string))
                 return value;
 
+            if (type.IsEnum)
+                return Enum.Parse(type, value, true);
+
+            if (type == typeof(Version))
+                return new Version(value);
+
+            if (type == typeof(Guid))
+                return new Guid(value);
+
+            if (type == typeof(Condition))
+                return Condition.Parse(value);
+
+            if (type == typeof(Image))
+                return Image.FromFile(resourceLocator.GetFullPath(value));
+
+            if (type == typeof(Icon))
+                return new Icon(resourceLocator.GetFullPath(value));
+
+            if (type == typeof(FileInfo))
+                return new FileInfo(resourceLocator.GetFullPath(value));
+
+            if (type == typeof(DirectoryInfo))
+                return new DirectoryInfo(resourceLocator.GetFullPath(value));
+
             if (value.StartsWith("${") && value.EndsWith("}"))
             {
                 string componentId = value.Substring(2, value.Length - 3);
@@ -200,27 +226,6 @@ namespace Gallio.Runtime.Extensibility
 
                 return componentOrHandle;
             }
-
-            if (type.IsEnum)
-                return Enum.Parse(type, value, true);
-
-            if (type == typeof(Version))
-                return new Version(value);
-
-            if (type == typeof(Guid))
-                return new Guid(value);
-
-            if (type == typeof(Image))
-                return Image.FromFile(resourceLocator.GetFullPath(value));
-
-            if (type == typeof(Icon))
-                return new Icon(resourceLocator.GetFullPath(value));
-
-            if (type == typeof(FileInfo))
-                return new FileInfo(resourceLocator.GetFullPath(value));
-
-            if (type == typeof(DirectoryInfo))
-                return new DirectoryInfo(resourceLocator.GetFullPath(value));
 
             return Convert.ChangeType(value, type, CultureInfo.InvariantCulture);
         }

@@ -19,10 +19,10 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Xml;
-using Gallio.Runtime.Extensibility;
+using Gallio.Common.Xml;
 using MbUnit.Framework;
 
-namespace Gallio.Tests.Runtime.Extensibility
+namespace Gallio.Tests.Common.Xml
 {
     [TestsOn(typeof(XmlPreprocessor))]
     public class XmlPreprocessorTest
@@ -202,47 +202,47 @@ namespace Gallio.Tests.Runtime.Extensibility
 
         [Test]
         [Row("<root><?define A?><?ifdef A?><?define B?><?endif?><?ifdef B?>If<?endif?></root>",
-             "<root>If</root>",
-             Description = "<?define?> inside <?ifdef?> should only be defined when condition satisfied.")]
+            "<root>If</root>",
+            Description = "<?define?> inside <?ifdef?> should only be defined when condition satisfied.")]
         [Row("<root><?ifdef A?><?define B?><?endif?><?ifdef B?>If<?endif?></root>",
-             "<root></root>",
-             Description = "<?define?> inside <?ifdef?> should not be defined when condition not satisfied.")]
+            "<root></root>",
+            Description = "<?define?> inside <?ifdef?> should not be defined when condition not satisfied.")]
         [Row("<root><?define B?><?ifdef A?><?ifdef B?>If<?endif?><?endif?></root>",
-             "<root></root>",
-             Description = "<?ifdef?> inside <?ifdef?> should not be satisfied if outer condition not satisfied.")]
+            "<root></root>",
+            Description = "<?ifdef?> inside <?ifdef?> should not be satisfied if outer condition not satisfied.")]
         [Row("<root><?define A?><?define B?><?ifdef A?><?ifdef B?>If<?endif?><?endif?></root>",
-             "<root>If</root>",
-             Description = "<?ifdef?> inside <?ifdef?> should be satisfied if it is satisfied and outer condition satisfied.")]
+            "<root>If</root>",
+            Description = "<?ifdef?> inside <?ifdef?> should be satisfied if it is satisfied and outer condition satisfied.")]
         [Row("<root><?define A?><?ifdef A?><?ifdef B?>If<?endif?><?endif?></root>",
-             "<root></root>",
-             Description = "<?ifdef?> inside <?ifdef?> should not be satisfied if it is not satisfied and outer condition satisfied.")]
+            "<root></root>",
+            Description = "<?ifdef?> inside <?ifdef?> should not be satisfied if it is not satisfied and outer condition satisfied.")]
         [Row("<root><?ifdef A?><?ifndef B?>If<?endif?><?endif?></root>",
-             "<root></root>",
-             Description = "<?ifndef?> inside <?ifdef?> should not be satisfied if outer condition not satisfied.")]
+            "<root></root>",
+            Description = "<?ifndef?> inside <?ifdef?> should not be satisfied if outer condition not satisfied.")]
         [Row("<root><?define A?><?ifdef A?><?ifndef B?>If<?endif?><?endif?></root>",
-             "<root>If</root>",
-             Description = "<?ifndef?> inside <?ifdef?> should be satisfied if it is satisfied and outer condition satisfied.")]
+            "<root>If</root>",
+            Description = "<?ifndef?> inside <?ifdef?> should be satisfied if it is satisfied and outer condition satisfied.")]
         [Row("<root><?define A?><?define B?><?ifdef A?><?ifndef B?>If<?endif?><?endif?></root>",
-             "<root></root>",
-             Description = "<?ifndef?> inside <?ifdef?> should not be satisfied if it is not satisfied and outer condition satisfied.")]
+            "<root></root>",
+            Description = "<?ifndef?> inside <?ifdef?> should not be satisfied if it is not satisfied and outer condition satisfied.")]
         [Row("<root><?define B?><?ifdef A?><?ifdef B?>If<?else?>Else<?endif?><?endif?></root>",
-             "<root></root>",
-             Description = "<?else?> inside <?ifdef?> inside <?ifdef?> should not be satisfied if outer condition not satisfied.")]
+            "<root></root>",
+            Description = "<?else?> inside <?ifdef?> inside <?ifdef?> should not be satisfied if outer condition not satisfied.")]
         [Row("<root><?define A?><?define B?><?ifdef A?><?ifdef B?>If<?else?>Else<?endif?><?endif?></root>",
-             "<root>If</root>",
-             Description = "<?else?> inside <?ifdef?> inside <?ifdef?> should not be satisfied if inner condition satisfied and outer condition satisfied.")]
+            "<root>If</root>",
+            Description = "<?else?> inside <?ifdef?> inside <?ifdef?> should not be satisfied if inner condition satisfied and outer condition satisfied.")]
         [Row("<root><?define A?><?ifdef A?><?ifdef B?>If<?else?>Else<?endif?><?endif?></root>",
-             "<root>Else</root>",
-             Description = "<?else?> inside <?ifdef?> inside <?ifdef?> should be satisfied if inner condition not satisfied and outer condition satisfied.")]
+            "<root>Else</root>",
+            Description = "<?else?> inside <?ifdef?> inside <?ifdef?> should be satisfied if inner condition not satisfied and outer condition satisfied.")]
         [Row("<root><?define A?>Abc<?ifdef A?>Def<?ifdef B?>Ghi<?else?>Jkl<?endif?>Mno<?endif?>Pqr</root>",
-             "<root>AbcDefJklMnoPqr</root>",
-             Description = "After exiting block, restores previous condition.")]
+            "<root>AbcDefJklMnoPqr</root>",
+            Description = "After exiting block, restores previous condition.")]
         [Row("<root><?define A?><?define B?>Abc<?ifdef A?>Def<?ifdef B?>Ghi<?else?>Jkl<?endif?>Mno<?endif?>Pqr</root>",
-             "<root>AbcDefGhiMnoPqr</root>",
-             Description = "After exiting block, restores previous condition.")]
+            "<root>AbcDefGhiMnoPqr</root>",
+            Description = "After exiting block, restores previous condition.")]
         [Row("<root>Abc<?ifdef A?>Def<?ifdef B?>Ghi<?else?>Jkl<?endif?>Mno<?endif?>Pqr</root>",
-             "<root>AbcPqr</root>",
-             Description = "After exiting block, restores previous condition.")]
+            "<root>AbcPqr</root>",
+            Description = "After exiting block, restores previous condition.")]
         public void Preprocess_WhenBlocksAreNested_RespectsStackOrder(string input, string expectedOutput)
         {
             var preprocessor = new XmlPreprocessor();
@@ -288,9 +288,9 @@ namespace Gallio.Tests.Runtime.Extensibility
             {
                 var xmlOutput = new StringBuilder();
                 using (var writer = XmlWriter.Create(xmlOutput, new XmlWriterSettings()
-                    {
-                        OmitXmlDeclaration = true
-                    }))
+                {
+                    OmitXmlDeclaration = true
+                }))
                 {
                     preprocessor.Preprocess(reader, writer);
                 }

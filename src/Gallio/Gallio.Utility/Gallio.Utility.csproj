@@ -69,6 +69,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Gallio.Utility.plugin" />
     <None Include="Resources\GallioUtility.ico" />
   </ItemGroup>
   <ItemGroup>

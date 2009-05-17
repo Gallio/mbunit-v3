@@ -19,6 +19,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
+using Gallio.Common;
 using Gallio.Common.Collections;
 using Gallio.Runtime;
 using Gallio.Runtime.Extensibility;
@@ -365,6 +366,26 @@ namespace Gallio.Tests.Runtime.Extensibility
                     Assert.IsTrue(result.IsSatisfied);
                     Assert.IsInstanceOfType<Guid>(result.Value);
                     Assert.AreEqual(new Guid("{6DAA03EC-D603-43d4-A3E1-1607375A50A1}"), result.Value);
+                });
+
+                serviceLocator.VerifyAllExpectations();
+                resourceLocator.VerifyAllExpectations();
+            }
+
+            [Test]
+            public void ResolveDependency_WhenDependencyIsOfTypeCondition_ConvertsPropertyStringToCondition()
+            {
+                var serviceLocator = MockRepository.GenerateMock<IServiceLocator>();
+                var resourceLocator = MockRepository.GenerateMock<IResourceLocator>();
+                var dependencyResolver = new DefaultObjectDependencyResolver(serviceLocator, resourceLocator);
+
+                var result = dependencyResolver.ResolveDependency("condition", typeof(Condition), "${env:VariableName}");
+
+                Assert.Multiple(() =>
+                {
+                    Assert.IsTrue(result.IsSatisfied);
+                    Assert.IsInstanceOfType<Condition>(result.Value);
+                    Assert.AreEqual("${env:VariableName}", result.Value.ToString());
                 });
 
                 serviceLocator.VerifyAllExpectations();

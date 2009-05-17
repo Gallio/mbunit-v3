@@ -110,6 +110,14 @@ namespace Gallio.Runner
             if (state != State.Created)
                 throw new InvalidOperationException("Extensions cannot be registered after the test runner has been initialized.");
 
+            foreach (ITestRunnerExtension currentExtension in extensions)
+            {
+                if (currentExtension.GetType() == extension.GetType()
+                    && currentExtension.Parameters == extension.Parameters)
+                    throw new InvalidOperationException(string.Format("There is already an extension of type '{0}' registered with parameters '{1}'.",
+                        extension.GetType(), extension.Parameters));
+            }
+
             extensions.Add(extension);
         }
 
