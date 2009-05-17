@@ -36,12 +36,12 @@ namespace Gallio.TeamCityIntegration
             this.writer = writer;
         }
 
-        public void WriteProgressMessage(string message)
+        public void WriteProgressMessage(string flowId, string message)
         {
             if (message == null)
                 throw new ArgumentNullException("message");
 
-            WriteMessage(builder =>
+            WriteMessage(flowId, builder =>
             {
                 builder.Append("progressMessage '");
                 AppendEscapedString(builder, message);
@@ -49,12 +49,12 @@ namespace Gallio.TeamCityIntegration
             });
         }
 
-        public void WriteProgressStart(string message)
+        public void WriteProgressStart(string flowId, string message)
         {
             if (message == null)
                 throw new ArgumentNullException("message");
 
-            WriteMessage(builder =>
+            WriteMessage(flowId, builder =>
             {
                 builder.Append("progressStart '");
                 AppendEscapedString(builder, message);
@@ -62,12 +62,12 @@ namespace Gallio.TeamCityIntegration
             });
         }
 
-        public void WriteProgressFinish(string message)
+        public void WriteProgressFinish(string flowId, string message)
         {
             if (message == null)
                 throw new ArgumentNullException("message");
 
-            WriteMessage(builder =>
+            WriteMessage(flowId, builder =>
             {
                 builder.Append("progressFinish '");
                 AppendEscapedString(builder, message);
@@ -75,12 +75,12 @@ namespace Gallio.TeamCityIntegration
             });
         }
 
-        public void WriteTestSuiteStarted(string name)
+        public void WriteTestSuiteStarted(string flowId, string name)
         {
             if (name == null)
                 throw new ArgumentNullException("name");
 
-            WriteMessage(builder =>
+            WriteMessage(flowId, builder =>
             {
                 builder.Append("testSuiteStarted name='");
                 AppendEscapedString(builder, name);
@@ -88,12 +88,12 @@ namespace Gallio.TeamCityIntegration
             });
         }
 
-        public void WriteTestSuiteFinished(string name)
+        public void WriteTestSuiteFinished(string flowId, string name)
         {
             if (name == null)
                 throw new ArgumentNullException("name");
 
-            WriteMessage(builder =>
+            WriteMessage(flowId, builder =>
             {
                 builder.Append("testSuiteFinished name='");
                 AppendEscapedString(builder, name);
@@ -101,12 +101,12 @@ namespace Gallio.TeamCityIntegration
             });
         }
 
-        public void WriteTestStarted(string name, bool captureStandardOutput)
+        public void WriteTestStarted(string flowId, string name, bool captureStandardOutput)
         {
             if (name == null)
                 throw new ArgumentNullException("name");
 
-            WriteMessage(builder =>
+            WriteMessage(flowId, builder =>
             {
                 builder.Append("testStarted name='");
                 AppendEscapedString(builder, name);
@@ -116,12 +116,12 @@ namespace Gallio.TeamCityIntegration
             });
         }
 
-        public void WriteTestFinished(string name, TimeSpan duration)
+        public void WriteTestFinished(string flowId, string name, TimeSpan duration)
         {
             if (name == null)
                 throw new ArgumentNullException("name");
 
-            WriteMessage(builder =>
+            WriteMessage(flowId, builder =>
             {
                 builder.Append("testFinished name='");
                 AppendEscapedString(builder, name);
@@ -131,14 +131,14 @@ namespace Gallio.TeamCityIntegration
             });
         }
 
-        public void WriteTestIgnored(string name, string message)
+        public void WriteTestIgnored(string flowId, string name, string message)
         {
             if (name == null)
                 throw new ArgumentNullException("name");
             if (message == null)
                 throw new ArgumentNullException("message");
 
-            WriteMessage(builder =>
+            WriteMessage(flowId, builder =>
             {
                 builder.Append("testIgnored name='");
                 AppendEscapedString(builder, name);
@@ -148,14 +148,14 @@ namespace Gallio.TeamCityIntegration
             });
         }
 
-        public void WriteTestStdOut(string name, string text)
+        public void WriteTestStdOut(string flowId, string name, string text)
         {
             if (name == null)
                 throw new ArgumentNullException("name");
             if (text == null)
                 throw new ArgumentNullException("text");
 
-            WriteMessage(builder =>
+            WriteMessage(flowId, builder =>
             {
                 builder.Append("testStdOut name='");
                 AppendEscapedString(builder, name);
@@ -165,14 +165,14 @@ namespace Gallio.TeamCityIntegration
             });
         }
 
-        public void WriteTestStdErr(string name, string text)
+        public void WriteTestStdErr(string flowId, string name, string text)
         {
             if (name == null)
                 throw new ArgumentNullException("name");
             if (text == null)
                 throw new ArgumentNullException("text");
 
-            WriteMessage(builder =>
+            WriteMessage(flowId, builder =>
             {
                 builder.Append("testStdErr name='");
                 AppendEscapedString(builder, name);
@@ -182,7 +182,7 @@ namespace Gallio.TeamCityIntegration
             });
         }
 
-        public void WriteTestFailed(string name, string message, string details)
+        public void WriteTestFailed(string flowId, string name, string message, string details)
         {
             if (name == null)
                 throw new ArgumentNullException("name");
@@ -191,7 +191,7 @@ namespace Gallio.TeamCityIntegration
             if (details == null)
                 throw new ArgumentNullException("details");
 
-            WriteMessage(builder =>
+            WriteMessage(flowId, builder =>
             {
                 builder.Append("testFailed name='");
                 AppendEscapedString(builder, name);
@@ -203,7 +203,7 @@ namespace Gallio.TeamCityIntegration
             });
         }
 
-        public void WriteTestFailedWithComparisonFailure(string name, string message, string details, string expected, string actual)
+        public void WriteTestFailedWithComparisonFailure(string flowId, string name, string message, string details, string expected, string actual)
         {
             if (name == null)
                 throw new ArgumentNullException("name");
@@ -216,7 +216,7 @@ namespace Gallio.TeamCityIntegration
             if (actual == null)
                 throw new ArgumentNullException("actual");
 
-            WriteMessage(builder =>
+            WriteMessage(flowId, builder =>
             {
                 builder.Append("testFailed name='");
                 AppendEscapedString(builder, name);
@@ -232,11 +232,20 @@ namespace Gallio.TeamCityIntegration
             });
         }
 
-        private void WriteMessage(Action<StringBuilder> formatter)
+        private void WriteMessage(string flowId, Action<StringBuilder> formatter)
         {
             StringBuilder builder = new StringBuilder();
             builder.Append("##teamcity[");
+
             formatter(builder);
+
+            if (flowId != null)
+            {
+                builder.Append(" flowId='");
+                AppendEscapedString(builder, flowId);
+                builder.Append('\'');
+            }
+
             builder.Append(']');
             writer(builder.ToString());
         }

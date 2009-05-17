@@ -39,52 +39,54 @@ namespace Gallio.TeamCityIntegration
 
             Events.InitializeStarted += delegate(object sender, InitializeStartedEventArgs e)
             {
-                writer.WriteProgressMessage("Initializing test runner.");
+                writer.WriteProgressMessage(null, "Initializing test runner.");
             };
 
             Events.ExploreStarted += delegate(object sender, ExploreStartedEventArgs e)
             {
-                writer.WriteProgressStart("Exploring tests.");
+                writer.WriteProgressStart(null, "Exploring tests.");
             };
 
             Events.ExploreFinished += delegate(object sender, ExploreFinishedEventArgs e)
             {
-                writer.WriteProgressFinish("Exploring tests."); // nb: message must be same as specified in progress start
+                writer.WriteProgressFinish(null, "Exploring tests."); // nb: message must be same as specified in progress start
             };
 
             Events.RunStarted += delegate(object sender, RunStartedEventArgs e)
             {
-                writer.WriteProgressStart("Running tests.");
+                writer.WriteProgressStart(null, "Running tests.");
             };
 
             Events.RunFinished += delegate(object sender, RunFinishedEventArgs e)
             {
-                writer.WriteProgressFinish("Running tests."); // nb: message must be same as specified in progress start
+                writer.WriteProgressFinish(null, "Running tests."); // nb: message must be same as specified in progress start
             };
 
             Events.DisposeFinished += delegate(object sender, DisposeFinishedEventArgs e)
             {
-                writer.WriteProgressMessage("Disposed test runner.");
+                writer.WriteProgressMessage(null, "Disposed test runner.");
             };
 
             Events.TestStepStarted += delegate(object sender, TestStepStartedEventArgs e)
             {
+                string flowId = e.TestStepRun.Step.Id;
                 string name = e.TestStepRun.Step.FullName;
                 if (name.Length != 0)
                 {
                     if (e.TestStepRun.Step.IsTestCase)
                     {
-                        writer.WriteTestStarted(name, false);
+                        writer.WriteTestStarted(flowId, name, false);
                     }
                     else if (e.TestStepRun.Step.IsPrimary)
                     {
-                        writer.WriteTestSuiteStarted(name);
+                        writer.WriteTestSuiteStarted(flowId, name);
                     }
                 }
             };
 
             Events.TestStepFinished += delegate(object sender, TestStepFinishedEventArgs e)
             {
+                string flowId = e.TestStepRun.Step.Id;
                 string name = e.TestStepRun.Step.FullName;
                 if (name.Length != 0)
                 {
@@ -129,25 +131,25 @@ namespace Gallio.TeamCityIntegration
                             AppendWithSeparator(errorText, failureText.ToString());
 
                         if (outputText.Length != 0)
-                            writer.WriteTestStdOut(name, outputText.ToString());
+                            writer.WriteTestStdOut(flowId, name, outputText.ToString());
                         if (errorText.Length != 0)
-                            writer.WriteTestStdErr(name, errorText.ToString());
+                            writer.WriteTestStdErr(flowId, name, errorText.ToString());
 
                         // TODO: Handle inconclusive.
                         if (outcome.Status == TestStatus.Failed)
                         {
-                            writer.WriteTestFailed(name, outcome.ToString(), failureText.ToString());
+                            writer.WriteTestFailed(flowId, name, outcome.ToString(), failureText.ToString());
                         }
                         else if (outcome.Status == TestStatus.Skipped)
                         {
-                            writer.WriteTestIgnored(name, warningText.ToString());
+                            writer.WriteTestIgnored(flowId, name, warningText.ToString());
                         }
 
-                        writer.WriteTestFinished(name, TimeSpan.FromSeconds(e.TestStepRun.Result.Duration));
+                        writer.WriteTestFinished(flowId, name, TimeSpan.FromSeconds(e.TestStepRun.Result.Duration));
                     }
                     else if (e.TestStepRun.Step.IsPrimary)
                     {
-                        writer.WriteTestSuiteFinished(name);
+                        writer.WriteTestSuiteFinished(flowId, name);
                     }
                 }
             };

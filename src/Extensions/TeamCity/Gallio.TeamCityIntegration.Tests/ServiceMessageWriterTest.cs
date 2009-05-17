@@ -38,133 +38,157 @@ namespace Gallio.TeamCityIntegration.Tests
         }
 
         [Test]
-        [Row(null, null, ExpectedException = typeof(ArgumentNullException))]
-        [Row("abc\n\r|']def",
+        [Row("flow", null, null, ExpectedException = typeof(ArgumentNullException))]
+        [Row(null, "abc\n\r|']def",
             "##teamcity[progressMessage 'abc|n|r|||'|]def']")]
-        public void TestProgressMessage(string message, string expectedOutput)
+        [Row("flow", "abc\n\r|']def",
+            "##teamcity[progressMessage 'abc|n|r|||'|]def' flowId='flow']")]
+        public void TestProgressMessage(string flowId, string message, string expectedOutput)
         {
-            writer.WriteProgressMessage(message);
+            writer.WriteProgressMessage(flowId, message);
             Assert.AreEqual(expectedOutput, actualOutput);
         }
 
         [Test]
-        [Row(null, null, ExpectedException=typeof(ArgumentNullException))]
-        [Row("abc\n\r|']def",
+        [Row("flow", null, null, ExpectedException = typeof(ArgumentNullException))]
+        [Row(null, "abc\n\r|']def",
             "##teamcity[progressStart 'abc|n|r|||'|]def']")]
-        public void TestProgressStart(string message, string expectedOutput)
+        [Row("flow", "abc\n\r|']def",
+            "##teamcity[progressStart 'abc|n|r|||'|]def' flowId='flow']")]
+        public void TestProgressStart(string flowId, string message, string expectedOutput)
         {
-            writer.WriteProgressStart(message);
+            writer.WriteProgressStart(flowId, message);
             Assert.AreEqual(expectedOutput, actualOutput);
         }
 
         [Test]
-        [Row(null, null, ExpectedException = typeof(ArgumentNullException))]
-        [Row("abc\n\r|']def",
+        [Row("flow", null, null, ExpectedException = typeof(ArgumentNullException))]
+        [Row(null, "abc\n\r|']def",
             "##teamcity[progressFinish 'abc|n|r|||'|]def']")]
-        public void TestProgressFinish(string message, string expectedOutput)
+        [Row("flow", "abc\n\r|']def",
+            "##teamcity[progressFinish 'abc|n|r|||'|]def' flowId='flow']")]
+        public void TestProgressFinish(string flowId, string message, string expectedOutput)
         {
-            writer.WriteProgressFinish(message);
+            writer.WriteProgressFinish(flowId, message);
             Assert.AreEqual(expectedOutput, actualOutput);
         }
 
         [Test]
-        [Row(null, null, ExpectedException = typeof(ArgumentNullException))]
-        [Row("abc\n\r|']def",
+        [Row("flow", null, null, ExpectedException = typeof(ArgumentNullException))]
+        [Row(null, "abc\n\r|']def",
             "##teamcity[testSuiteStarted name='abc|n|r|||'|]def']")]
-        public void TestSuiteStarted(string name, string expectedOutput)
+        [Row("flow", "abc\n\r|']def",
+            "##teamcity[testSuiteStarted name='abc|n|r|||'|]def' flowId='flow']")]
+        public void TestSuiteStarted(string flowId, string name, string expectedOutput)
         {
-            writer.WriteTestSuiteStarted(name);
+            writer.WriteTestSuiteStarted(flowId, name);
             Assert.AreEqual(expectedOutput, actualOutput);
         }
 
         [Test]
-        [Row(null, null, ExpectedException = typeof(ArgumentNullException))]
-        [Row("abc\n\r|']def",
+        [Row("flow", null, null, ExpectedException = typeof(ArgumentNullException))]
+        [Row(null, "abc\n\r|']def",
             "##teamcity[testSuiteFinished name='abc|n|r|||'|]def']")]
-        public void TestSuiteFinished(string name, string expectedOutput)
+        [Row("flow", "abc\n\r|']def",
+            "##teamcity[testSuiteFinished name='abc|n|r|||'|]def' flowId='flow']")]
+        public void TestSuiteFinished(string flowId, string name, string expectedOutput)
         {
-            writer.WriteTestSuiteFinished(name);
+            writer.WriteTestSuiteFinished(flowId, name);
             Assert.AreEqual(expectedOutput, actualOutput);
         }
 
         [Test]
-        [Row(null, true, null, ExpectedException = typeof(ArgumentNullException))]
-        [Row("abc\n\r|']def", true,
+        [Row("flow", null, true, null, ExpectedException = typeof(ArgumentNullException))]
+        [Row(null, "abc\n\r|']def", true,
             "##teamcity[testStarted name='abc|n|r|||'|]def' captureStandardOutput='true']")]
-        [Row("abc\n\r|']def", false,
+        [Row(null, "abc\n\r|']def", false,
             "##teamcity[testStarted name='abc|n|r|||'|]def' captureStandardOutput='false']")]
-        public void TestStarted(string name, bool captureStandardOutput, string expectedOutput)
+        [Row("flow", "abc\n\r|']def", false,
+            "##teamcity[testStarted name='abc|n|r|||'|]def' captureStandardOutput='false' flowId='flow']")]
+        public void TestStarted(string flowId, string name, bool captureStandardOutput, string expectedOutput)
         {
-            writer.WriteTestStarted(name, captureStandardOutput);
+            writer.WriteTestStarted(flowId, name, captureStandardOutput);
             Assert.AreEqual(expectedOutput, actualOutput);
         }
 
         [Test]
-        [Row(null, 0, null, ExpectedException = typeof(ArgumentNullException))]
-        [Row("abc\n\r|']def", 333,
+        [Row("flow", null, 0, null, ExpectedException = typeof(ArgumentNullException))]
+        [Row(null, "abc\n\r|']def", 333,
             "##teamcity[testFinished name='abc|n|r|||'|]def' duration='333']")]
-        public void TestFinished(string name, int durationMillis, string expectedOutput)
+        [Row("flow", "abc\n\r|']def", 333,
+            "##teamcity[testFinished name='abc|n|r|||'|]def' duration='333' flowId='flow']")]
+        public void TestFinished(string flowId, string name, int durationMillis, string expectedOutput)
         {
-            writer.WriteTestFinished(name, TimeSpan.FromMilliseconds(durationMillis));
+            writer.WriteTestFinished(flowId, name, TimeSpan.FromMilliseconds(durationMillis));
             Assert.AreEqual(expectedOutput, actualOutput);
         }
 
         [Test]
-        [Row(null, "abc", null, ExpectedException = typeof(ArgumentNullException))]
-        [Row("abc", null, null, ExpectedException = typeof(ArgumentNullException))]
-        [Row("abc\n\r|']def", "def\n\r|']ghi",
+        [Row("flow", null, "abc", null, ExpectedException = typeof(ArgumentNullException))]
+        [Row("flow", "abc", null, null, ExpectedException = typeof(ArgumentNullException))]
+        [Row(null, "abc\n\r|']def", "def\n\r|']ghi",
             "##teamcity[testIgnored name='abc|n|r|||'|]def' message='def|n|r|||'|]ghi']")]
-        public void TestIgnored(string name, string message, string expectedOutput)
+        [Row("flow", "abc\n\r|']def", "def\n\r|']ghi",
+            "##teamcity[testIgnored name='abc|n|r|||'|]def' message='def|n|r|||'|]ghi' flowId='flow']")]
+        public void TestIgnored(string flowId, string name, string message, string expectedOutput)
         {
-            writer.WriteTestIgnored(name, message);
+            writer.WriteTestIgnored(flowId, name, message);
             Assert.AreEqual(expectedOutput, actualOutput);
         }
 
         [Test]
-        [Row(null, "abc", null, ExpectedException = typeof(ArgumentNullException))]
-        [Row("abc", null, null, ExpectedException = typeof(ArgumentNullException))]
-        [Row("abc\n\r|']def", "def\n\r|']ghi",
+        [Row("flow", null, "abc", null, ExpectedException = typeof(ArgumentNullException))]
+        [Row("flow", "abc", null, null, ExpectedException = typeof(ArgumentNullException))]
+        [Row(null, "abc\n\r|']def", "def\n\r|']ghi",
             "##teamcity[testStdOut name='abc|n|r|||'|]def' out='def|n|r|||'|]ghi']")]
-        public void TestStdOut(string name, string text, string expectedOutput)
+        [Row("flow", "abc\n\r|']def", "def\n\r|']ghi",
+            "##teamcity[testStdOut name='abc|n|r|||'|]def' out='def|n|r|||'|]ghi' flowId='flow']")]
+        public void TestStdOut(string flowId, string name, string text, string expectedOutput)
         {
-            writer.WriteTestStdOut(name, text);
+            writer.WriteTestStdOut(flowId, name, text);
             Assert.AreEqual(expectedOutput, actualOutput);
         }
 
         [Test]
-        [Row(null, "abc", null, ExpectedException = typeof(ArgumentNullException))]
-        [Row("abc", null, null, ExpectedException = typeof(ArgumentNullException))]
-        [Row("abc\n\r|']def", "def\n\r|']ghi",
+        [Row("flow", null, "abc", null, ExpectedException = typeof(ArgumentNullException))]
+        [Row("flow", "abc", null, null, ExpectedException = typeof(ArgumentNullException))]
+        [Row(null, "abc\n\r|']def", "def\n\r|']ghi",
             "##teamcity[testStdErr name='abc|n|r|||'|]def' out='def|n|r|||'|]ghi']")]
-        public void TestStdErr(string name, string text, string expectedOutput)
+        [Row("flow", "abc\n\r|']def", "def\n\r|']ghi",
+            "##teamcity[testStdErr name='abc|n|r|||'|]def' out='def|n|r|||'|]ghi' flowId='flow']")]
+        public void TestStdErr(string flowId, string name, string text, string expectedOutput)
         {
-            writer.WriteTestStdErr(name, text);
+            writer.WriteTestStdErr(flowId, name, text);
             Assert.AreEqual(expectedOutput, actualOutput);
         }
 
         [Test]
-        [Row(null, "abc", "def", null, ExpectedException = typeof(ArgumentNullException))]
-        [Row("abc", null, "def", null, ExpectedException = typeof(ArgumentNullException))]
-        [Row("abc", "def", null, null, ExpectedException = typeof(ArgumentNullException))]
-        [Row("abc\n\r|']def", "def\n\r|']ghi", "ghi\n\r|']jkl",
+        [Row("flow", null, "abc", "def", null, ExpectedException = typeof(ArgumentNullException))]
+        [Row("flow", "abc", null, "def", null, ExpectedException = typeof(ArgumentNullException))]
+        [Row("flow", "abc", "def", null, null, ExpectedException = typeof(ArgumentNullException))]
+        [Row(null, "abc\n\r|']def", "def\n\r|']ghi", "ghi\n\r|']jkl",
             "##teamcity[testFailed name='abc|n|r|||'|]def' message='def|n|r|||'|]ghi' details='ghi|n|r|||'|]jkl']")]
-        public void TestFailed(string name, string message, string detail, string expectedOutput)
+        [Row("flow", "abc\n\r|']def", "def\n\r|']ghi", "ghi\n\r|']jkl",
+            "##teamcity[testFailed name='abc|n|r|||'|]def' message='def|n|r|||'|]ghi' details='ghi|n|r|||'|]jkl' flowId='flow']")]
+        public void TestFailed(string flowId, string name, string message, string detail, string expectedOutput)
         {
-            writer.WriteTestFailed(name, message, detail);
+            writer.WriteTestFailed(flowId, name, message, detail);
             Assert.AreEqual(expectedOutput, actualOutput);
         }
 
         [Test]
-        [Row(null, "abc", "def", "ghi", "jkl", null, ExpectedException = typeof(ArgumentNullException))]
-        [Row("abc", null, "def", "ghi", "jkl", null, ExpectedException = typeof(ArgumentNullException))]
-        [Row("abc", "def", null, "ghi", "jkl", null, ExpectedException = typeof(ArgumentNullException))]
-        [Row("abc", "def", "ghi", null, "jkl", null, ExpectedException = typeof(ArgumentNullException))]
-        [Row("abc", "def", "ghi", "jkl", null, null, ExpectedException = typeof(ArgumentNullException))]
-        [Row("abc\n\r|']def", "def\n\r|']ghi", "ghi\n\r|']jkl", "jkl\n\r|']mno", "mno\n\r|']pqr",
+        [Row("flow", null, "abc", "def", "ghi", "jkl", null, ExpectedException = typeof(ArgumentNullException))]
+        [Row("flow", "abc", null, "def", "ghi", "jkl", null, ExpectedException = typeof(ArgumentNullException))]
+        [Row("flow", "abc", "def", null, "ghi", "jkl", null, ExpectedException = typeof(ArgumentNullException))]
+        [Row("flow", "abc", "def", "ghi", null, "jkl", null, ExpectedException = typeof(ArgumentNullException))]
+        [Row("flow", "abc", "def", "ghi", "jkl", null, null, ExpectedException = typeof(ArgumentNullException))]
+        [Row(null, "abc\n\r|']def", "def\n\r|']ghi", "ghi\n\r|']jkl", "jkl\n\r|']mno", "mno\n\r|']pqr",
             "##teamcity[testFailed name='abc|n|r|||'|]def' type='comparisonFailure' message='def|n|r|||'|]ghi' details='ghi|n|r|||'|]jkl' expected='jkl|n|r|||'|]mno' actual='mno|n|r|||'|]pqr']")]
-        public void TestFailedWithComparisonFailure(string name, string message, string detail, string expected, string actual, string expectedOutput)
+        [Row("flow", "abc\n\r|']def", "def\n\r|']ghi", "ghi\n\r|']jkl", "jkl\n\r|']mno", "mno\n\r|']pqr",
+            "##teamcity[testFailed name='abc|n|r|||'|]def' type='comparisonFailure' message='def|n|r|||'|]ghi' details='ghi|n|r|||'|]jkl' expected='jkl|n|r|||'|]mno' actual='mno|n|r|||'|]pqr' flowId='flow']")]
+        public void TestFailedWithComparisonFailure(string flowId, string name, string message, string detail, string expected, string actual, string expectedOutput)
         {
-            writer.WriteTestFailedWithComparisonFailure(name, message, detail, expected, actual);
+            writer.WriteTestFailedWithComparisonFailure(flowId, name, message, detail, expected, actual);
             Assert.AreEqual(expectedOutput, actualOutput);
         }
     }
