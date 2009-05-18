@@ -50,6 +50,12 @@
     <service serviceId="Gallio.FileTypeManager"
              serviceType="Gallio.Runtime.FileTypes.IFileTypeManager, Gallio" />
 
+    <service serviceId="Gallio.UtilityCommandManager"
+             serviceType="Gallio.Runtime.UtilityCommands.IUtilityCommandManager, Gallio" />
+
+    <service serviceId="Gallio.UtilityCommand"
+             serviceType="Gallio.Runtime.UtilityCommands.IUtilityCommand, Gallio" />
+
     <service serviceId="Gallio.Converter"
              serviceType="Gallio.Runtime.Conversions.IConverter, Gallio" />
 
@@ -378,5 +384,32 @@
     <component componentId="Gallio.XmlSerializer" 
                serviceId="Gallio.XmlSerializer" 
                componentType="Gallio.Common.Xml.DefaultXmlSerializer, Gallio" />
+    
+    <!-- Utility commands -->
+
+    <component componentId="Gallio.UtilityCommandManager"
+               serviceId="Gallio.UtilityCommandManager"
+               componentType="Gallio.Runtime.UtilityCommands.DefaultUtilityCommandManager, Gallio" />
+
+    <component componentId="Gallio.ClearCurrentUserPluginCacheCommand"
+               serviceId="Gallio.UtilityCommand"
+               componentType="Gallio.Runtime.UtilityCommands.ClearCurrentUserPluginCacheCommand, Gallio">
+      <traits>
+        <!-- Note: This particular command name is special and is also hardcoded in the Gallio.Utility.exe program itself
+                   because we want to be able to run the command without initializing the runtime itself.
+        -->
+        <name>ClearCurrentUserPluginCache</name>
+        <description>Clears the plugin cache of the current user.</description>
+      </traits>
+    </component>
+
+    <component componentId="Gallio.VerifyInstallationCommand"
+               serviceId="Gallio.UtilityCommand"
+               componentType="Gallio.Runtime.UtilityCommands.VerifyInstallationCommand, Gallio">
+      <traits>
+        <name>VerifyInstallation</name>
+        <description>Checks for runtime installation errors.</description>
+      </traits>
+    </component>
   </components>
 </plugin>

@@ -67,6 +67,7 @@ namespace Gallio.Runtime.ConsoleSupport
         private List<Argument> arguments;
         private Dictionary<string, Argument> argumentMap;
         private Argument defaultArgument;
+        private bool defaultArgumentConsumesUnrecognizedSwitches;
        
         /// <summary>
 		/// Creates a new command line argument parser.
@@ -84,15 +85,13 @@ namespace Gallio.Runtime.ConsoleSupport
         /// </summary>
         /// <param name="argumentSpecification">The argument type containing fields decorated
         /// with <see cref="CommandLineArgumentAttribute" /></param>
-        /// <param name="responseFileReader">The delegate to use for reading response files instead of the default.</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="argumentSpecification"/>
-        /// or <paramref name="responseFileReader"/> is null</exception>
+        /// <param name="responseFileReader">The delegate to use for reading response files instead of the default,
+        /// or null to disable reading from response files</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="argumentSpecification"/> is null</exception>
         public CommandLineArgumentParser(Type argumentSpecification, ResponseFileReader responseFileReader)
         {
             if (argumentSpecification == null)
                 throw new ArgumentNullException(@"argumentSpecification");
-            if (responseFileReader == null)
-                throw new ArgumentNullException(@"responseFileReader");
 
             this.argumentSpecification = argumentSpecification;
             this.responseFileReader = responseFileReader;
@@ -155,9 +154,12 @@ namespace Gallio.Runtime.ConsoleSupport
                 output.NewLine();
             }
 
-            output.PrintArgumentHelp(@"@", null, null, Resources.CommandLineArgumentParser_ResponseFileDescription,
-                Resources.CommandLineArgumentParser_ResponseFileValueLabel, typeof(string));
-            output.NewLine();
+            if (SupportsResponseFiles)
+            {
+                output.PrintArgumentHelp(@"@", null, null, Resources.CommandLineArgumentParser_ResponseFileDescription,
+                    Resources.CommandLineArgumentParser_ResponseFileValueLabel, typeof (string));
+                output.NewLine();
+            }
 
             if (defaultArgument != null)
             {
@@ -184,6 +186,11 @@ namespace Gallio.Runtime.ConsoleSupport
             MessageBox.Show(writer.ToString(), caption);
         }
 
+        private bool SupportsResponseFiles
+        {
+            get { return responseFileReader != null; }
+        }
+
         private void PopulateArgumentMap()
         {
             arguments = new List<Argument>();
@@ -194,12 +201,14 @@ namespace Gallio.Runtime.ConsoleSupport
                 if (!field.IsStatic && !field.IsInitOnly && !field.IsLiteral)
                 {
                     CommandLineArgumentAttribute attribute = GetAttribute(field);
-                    if (attribute is DefaultCommandLineArgumentAttribute)
+                    var defaultAttribute = attribute as DefaultCommandLineArgumentAttribute;
+                    if (defaultAttribute != null)
                     {
                         if (defaultArgument != null)
                             ThrowError(Resources.CommandLineArgumentParser_MoreThanOneDefaultCommandLineArgumentDefined);
 
                         defaultArgument = new Argument(attribute, field);
+                        defaultArgumentConsumesUnrecognizedSwitches = defaultAttribute.ConsumeUnrecognizedSwitches;
                     }
                     else
                     {
@@ -258,6 +267,10 @@ namespace Gallio.Runtime.ConsoleSupport
                         {
                             hadError |= !arg.AddValue(optionArgument, argumentValues, reporter);
                         }
+                        else if (defaultArgumentConsumesUnrecognizedSwitches)
+                        {
+                            hadError |= !defaultArgument.AddValue(argument, argumentValues, reporter);
+                        }
                         else
                         {
                             ReportUnrecognizedArgument(reporter, argument);
@@ -267,11 +280,23 @@ namespace Gallio.Runtime.ConsoleSupport
                         break;
 
                     case '@':
-                        string[] nestedArguments;
-                        hadError |= LexFileArguments(argument.Substring(1), reporter, out nestedArguments);
+                        if (SupportsResponseFiles)
+                        {
+                            string[] nestedArguments;
+                            hadError |= LexFileArguments(argument.Substring(1), reporter, out nestedArguments);
 
-                        if (nestedArguments != null)
-                            hadError |= ParseArgumentList(nestedArguments, argumentValues, reporter);
+                            if (nestedArguments != null)
+                                hadError |= ParseArgumentList(nestedArguments, argumentValues, reporter);
+                        }
+                        else if (defaultArgument != null)
+                        {
+                            hadError |= !defaultArgument.AddValue(argument, argumentValues, reporter);
+                        }
+                        else
+                        {
+                            ReportUnrecognizedArgument(reporter, argument);
+                            hadError = true;
+                        }
                         break;
 
                     default:
@@ -299,7 +324,7 @@ namespace Gallio.Runtime.ConsoleSupport
 		private bool LexFileArguments(string fileName, CommandLineErrorReporter reporter, out string[] nestedArguments)
 		{
             nestedArguments = null;
-            string args = GetResponseFileContext(fileName, reporter);
+            string args = GetResponseFileContents(fileName, reporter);
             if (args == null)
                 return true;
 
@@ -395,7 +420,7 @@ namespace Gallio.Runtime.ConsoleSupport
 		    return hadError;
 		}
 
-	    private string GetResponseFileContext(string fileName, CommandLineErrorReporter reporter)
+	    private string GetResponseFileContents(string fileName, CommandLineErrorReporter reporter)
 	    {
 	        string args = null;
 	        try

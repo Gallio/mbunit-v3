@@ -37,5 +37,11 @@ namespace Gallio.Runtime.ConsoleSupport
 			: base (flags)
 		{
 		}
+
+        /// <summary>
+        /// When set to true, the default argument will consume any unrecognized command switches.
+        /// Otherwise an error will be thrown if an unrecognized switch is used.
+        /// </summary>
+        public bool ConsumeUnrecognizedSwitches { get; set; }
 	}
 }

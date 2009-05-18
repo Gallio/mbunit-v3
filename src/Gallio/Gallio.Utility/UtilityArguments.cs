@@ -42,21 +42,24 @@ namespace Gallio.Utility
              ValueLabel = "level"
              )]
         public Verbosity Verbosity = Verbosity.Normal;
+
+        [CommandLineArgument(
+             CommandLineArgumentFlags.AtMostOnce,
+             ShortName = "np",
+             LongName = "no-progress",
+             Description = "Do not display progress messages during execution."
+             )]
+        public bool NoProgress;
         #endregion
 
         #region Commands
-        [CommandLineArgument(
-            CommandLineArgumentFlags.Required,
-            ShortName = "c",
-            LongName = "command",
-            Description = "Specifies the command to perform.\n\n"
-                + "May be one of the following:\n"
-                + "- VerifyInstallation: Checks for runtime installation errors.\n"
-                + "- ClearCurrentUserPluginCache: Clears the plugin cache of the current user.",
-            ValueLabel = "name"
+        [DefaultCommandLineArgument(
+            CommandLineArgumentFlags.Multiple,
+            Description = "Specifies the utility command to perform and its arguments.  The list of available utility commands follows.",
+            ValueLabel = "command and args...",
+            ConsumeUnrecognizedSwitches = true
             )]
-        public string Command;
-
+        public string[] CommandAndArguments;
         #endregion
     }
 }

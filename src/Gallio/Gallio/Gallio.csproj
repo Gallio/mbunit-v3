@@ -663,6 +663,13 @@
     <Compile Include="Common\Platform\DotNetFrameworkVersion.cs" />
     <Compile Include="Runtime\DefaultRuntime.cs" />
     <Compile Include="Common\Validation\IValidatable.cs" />
+    <Compile Include="Runtime\UtilityCommands\ClearCurrentUserPluginCacheCommand.cs" />
+    <Compile Include="Runtime\UtilityCommands\DefaultUtilityCommandManager.cs" />
+    <Compile Include="Runtime\UtilityCommands\IUtilityCommand.cs" />
+    <Compile Include="Runtime\UtilityCommands\UtilityCommandContext.cs" />
+    <Compile Include="Runtime\UtilityCommands\IUtilityCommandManager.cs" />
+    <Compile Include="Runtime\UtilityCommands\UtilityCommandTraits.cs" />
+    <Compile Include="Runtime\UtilityCommands\VerifyInstallationCommand.cs" />
     <Compile Include="Schema\Plugins\Assembly.cs" />
     <Compile Include="Schema\Plugins\Cache.cs" />
     <Compile Include="Schema\Plugins\Component.cs">
@@ -834,6 +841,10 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Gallio.plugin" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Runtime\Installer\" />
+    <Folder Include="Runtime\Preferences\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="..\..\SGen.targets" />

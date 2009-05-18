@@ -59,6 +59,8 @@
       </traits>
     </component>
 
+    <!--
+    For manual inspection to confirm the preference pane nesting works.
     <component componentId="Gallio.UI.Test1PreferencePaneProvider"
                serviceId="Gallio.UI.PreferencePaneProvider"
                componentType="Gallio.UI.ControlPanel.Preferences.PlaceholderPreferencePaneProvider, Gallio.UI">
@@ -85,5 +87,6 @@
         <order>0</order>
       </traits>
     </component>
+  -->
   </components>
 </plugin>
