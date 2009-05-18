@@ -306,8 +306,8 @@
         <CustomAction Id="H2Reg.Install" FileKey="H2Reg.exe" ExeCommand='-r -q CmdFile="[#Gallio.H2Reg.ini]"' Execute="deferred" Return="check" Impersonate="no"/>
         <CustomAction Id="H2Reg.Uninstall" FileKey="H2Reg.exe" ExeCommand='-u -q CmdFile="[#Gallio.H2Reg.ini]"' Execute="deferred" Return="ignore" Impersonate="no"/>
 	
-        <Custom Action="Setup.Install" FileKey="Gallio.Utility.exe" ExeCommand="Setup /install" Execute="deferred" Return="check" Impersonate="no" />
-        <Custom Action="Setup.Uninstall" FileKey="Gallio.Utility.exe" ExeCommand="Setup /uninstall" Execute="deferred" Return="ignore" Impersonate="no" />
+        <CustomAction Id="Setup.Install" FileKey="Gallio.Utility.exe" ExeCommand="Setup /install" Execute="deferred" Return="check" Impersonate="no" />
+        <CustomAction Id="Setup.Uninstall" FileKey="Gallio.Utility.exe" ExeCommand="Setup /uninstall" Execute="deferred" Return="ignore" Impersonate="no" />
 
         <InstallExecuteSequence>
             <Custom Action="H2Reg.Install" After="InstallFiles"><![CDATA[(&feat_Gallio.VSHelp = 3) AND NOT(!feat_Gallio.VSHelp = 3)]]></Custom>
