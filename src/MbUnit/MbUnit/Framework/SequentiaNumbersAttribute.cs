@@ -25,40 +25,69 @@ namespace MbUnit.Framework
 {
     /// <summary>
     /// <para>
-    /// Provides a column of sequential <see cref="Double"/> values as a data source.
+    /// Provides a column of sequential <see cref="Decimal"/> values as a data source.
     /// </para>
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// The sequence is initialized by setting 3 of the 4 available named properties. 
+    /// The following combinations are possible:
+    /// <list type="bullet">
+    /// <item><see cref="Start"/>, <see cref="End"/>, and <see cref="Count"/></item>
+    /// <item><see cref="Start"/>, <see cref="Step"/>, and <see cref="Count"/></item>
+    /// <item><see cref="Start"/>, <see cref="End"/>, and <see cref="Step"/></item>
+    /// </list>
+    /// </para>
+    /// </remarks>
     /// <example>
     /// <code><![CDATA[
     /// [TestFixture]
     /// public class MyTestFixture
     /// {
     ///     [Test]
-    ///     public void MyTestMethod1([SequentialNumbers(Start = 1, Step = 1, Count = 4)] int value)
+    ///     public void MyTestMethod2([SequentialNumbers(Start = 0, End = 10, Count = 5)] decimal value)
+    ///     {
+    ///         // This test will run 5 times with the values 0, 2.5, 5, 7.5, and 10.
+    ///     }
+    ///     
+    ///     [Test]
+    ///     public void MyTestMethod1([SequentialNumbers(Start = 1, Step = 1, Count = 4)] decimal value)
     ///     {
     ///         // This test will run 4 times with the values 1, 2, 3 and 4.
     ///     }
     ///     
     ///     [Test]
-    ///     public void MyTestMethod2([SequentialNumbers(Start = 0, Stop = 10, Count = 5)] double value)
+    ///     public void MyTestMethod3([SequentialNumbers(Start = 0, End = 15, Step = 3)] decimal value)
     ///     {
-    ///         // This test will run 5 times with the values 0, 2.5, 5, 7.5, and 10.
+    ///         // This test will run 6 times with the values 0, 3, 6, 9, 12, 15.
     ///     }
     /// }]]></code>
     /// </example>
-    /// </summary>
     /// <seealso cref="ColumnAttribute"/>
     [CLSCompliant(false)]
     [AttributeUsage(PatternAttributeTargets.DataContext, AllowMultiple = true, Inherited = true)]
     public class SequentiaNumbersAttribute : GenerationDataAttribute
     {
         private double? start = null;
-        private double? stop = null;
+        private double? end = null;
         private double? step = null;
         private int? count = null;
 
         /// <summary>
+        /// <para>
         /// Gets or sets the starting value of the sequence.
+        /// </para>
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// That property is used to define the sequence, when used with 2 other properties:
+        /// <list type="bullet">
+        /// <item><see cref="End"/> and <see cref="Count"/></item>
+        /// <item><see cref="Step"/> and <see cref="Count"/></item>
+        /// <item><see cref="End"/> and <see cref="Step"/></item>
+        /// </list>
+        /// </para>
+        /// </remarks>
         public double Start
         {
             get
@@ -73,24 +102,46 @@ namespace MbUnit.Framework
         }
 
         /// <summary>
+        /// <para>
         /// Gets or sets the ending value of the sequence.
+        /// </para>
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// That property is used to define the sequence, when used with 2 other properties:
+        /// <list type="bullet">
+        /// <item><see cref="Start"/> and <see cref="Count"/></item>
+        /// <item><see cref="Start"/> and <see cref="Step"/></item>
+        /// </list>
+        /// </para>
+        /// </remarks>
         public double End
         {
             get
             {
-                return stop ?? 0;
+                return end ?? 0;
             }
 
             set
             {
-                stop = value;
+                end = value;
             }
         }
 
         /// <summary>
+        /// <para>
         /// Gets or sets the increment between each value of the sequence.
+        /// </para>
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// That property is used to define the sequence, when used with 2 other properties:
+        /// <list type="bullet">
+        /// <item><see cref="Start"/> and <see cref="Count"/></item>
+        /// <item><see cref="Start"/> and <see cref="End"/></item>
+        /// </list>
+        /// </para>
+        /// </remarks>
         public double Step
         {
             get
@@ -105,8 +156,19 @@ namespace MbUnit.Framework
         }
 
         /// <summary>
+        /// <para>
         /// Gets or sets the length of the sequence.
+        /// </para>
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// That property is used to define the sequence, when used with 2 other properties:
+        /// <list type="bullet">
+        /// <item><see cref="Start"/> and <see cref="End"/></item>
+        /// <item><see cref="Start"/> and <see cref="Step"/></item>
+        /// </list>
+        /// </para>
+        /// </remarks>
         public int Count
         {
             get
@@ -121,7 +183,7 @@ namespace MbUnit.Framework
         }
 
         /// <summary>
-        /// Adds a column of sequential <see cref="Double"/> values.
+        /// Adds a column of sequential <see cref="Decimal"/> values.
         /// </summary>
         public SequentiaNumbersAttribute()
         {
@@ -135,7 +197,7 @@ namespace MbUnit.Framework
                 return new SequentialNumbersGenerator
                 {
                     Start = (decimal?)start,
-                    Stop = (decimal?)stop,
+                    End = (decimal?)end,
                     Step = (decimal?)step,
                     Count = count
                 };

@@ -52,17 +52,17 @@ namespace Gallio.Framework.Data.Generation
         }
 
         /// <inheritdoc />
-        protected override IEnumerable<decimal> GetStartStopCountSequence()
+        protected override IEnumerable<decimal> GetStartEndCountSequence()
         {
             CheckProperty(Start.Value, "Start");
-            CheckProperty(Stop.Value, "Stop");
+            CheckProperty(End.Value, "End");
             CheckProperty(Count.Value, "Count");
 
             if (Count.Value < 0)
                 throw new GenerationException("The 'Count' property must be greater than or equal to zero.");
 
             decimal d = Start.Value;
-            decimal step = Count.Value <= 1 ? 1 : (Stop.Value - Start.Value) / (Count.Value - 1);
+            decimal step = Count.Value <= 1 ? 1 : (End.Value - Start.Value) / (Count.Value - 1);
 
             for (int i = 0; i < Count; i++, d += step)
             {
@@ -71,25 +71,25 @@ namespace Gallio.Framework.Data.Generation
         }
 
         /// <inheritdoc />
-        protected override IEnumerable<decimal> GetStartStopStepSequence()
+        protected override IEnumerable<decimal> GetStartEndStepSequence()
         {
             CheckProperty(Start.Value, "Start");
-            CheckProperty(Stop.Value, "Stop");
+            CheckProperty(End.Value, "End");
             CheckProperty(Step.Value, "Step");
 
             if (Step.Value == 0)
                 throw new GenerationException("The 'Step' property can not be equal to zero.");
 
-            if (Stop.Value != Start.Value && Math.Sign(Stop.Value - Start.Value) != Math.Sign(Step.Value))
-                throw new GenerationException("The sequence direction specified by the 'Start' and 'Stop' properties " +
+            if (End.Value != Start.Value && Math.Sign(End.Value - Start.Value) != Math.Sign(Step.Value))
+                throw new GenerationException("The sequence direction specified by the 'Start' and 'End' properties " +
                     "must be consistent with the sign of the 'Step' property.");
 
             Func<decimal, bool> stopCriterion;
 
             if (Math.Sign(Step.Value) >= 0)
-                stopCriterion = d => (d <= Stop.Value);
+                stopCriterion = d => (d <= End.Value);
             else
-                stopCriterion = d => (d >= Stop.Value);
+                stopCriterion = d => (d >= End.Value);
 
             for (decimal d = Start.Value; stopCriterion(d); d += Step.Value)
             {

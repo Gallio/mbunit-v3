@@ -60,7 +60,7 @@ namespace Gallio.Tests.Framework.Data.Generation
             var generator = new SequentialNumbersGenerator
             {
                 Start = start,
-                Stop = stop,
+                End = stop,
                 Count = count
             };
 
@@ -79,7 +79,7 @@ namespace Gallio.Tests.Framework.Data.Generation
             var generator = new SequentialNumbersGenerator
             {
                 Start = start,
-                Stop = stop,
+                End = stop,
                 Step = step
             };
 
@@ -110,7 +110,7 @@ namespace Gallio.Tests.Framework.Data.Generation
             var generator = new SequentialNumbersGenerator
             {
                 Start = start,
-                Stop = stop,
+                End = stop,
                 Step = step,
                 Count = count
             };

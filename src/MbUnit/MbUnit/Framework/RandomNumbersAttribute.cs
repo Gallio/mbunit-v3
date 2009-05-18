@@ -26,24 +26,29 @@ namespace MbUnit.Framework
 {
     /// <summary>
     /// <para>
-    /// Provides a column of random <see cref="Double"/> values as a data source.
+    /// Provides a column of random <see cref="Decimal"/> values as a data source.
     /// </para>
+    /// </summary>
+    /// <remarks>
     /// <para>
+    /// Initialize the random number generator by setting the 3 named parameters <see cref="Minimum"/>, 
+    /// <see cref="Maximum"/>, and <see cref="Count"/> according to the desired number of values, and to
+    /// the expected range of numbers.
     /// </para>
+    /// </remarks>
     /// <example>
     /// <code><![CDATA[
     /// [TestFixture]
     /// public class MyTestFixture
     /// {
     ///     [Test]
-    ///     public void MyTestMethod([RandomNumbers(Minimum = 0, Maximum = 10, Count = 3)] int value)
+    ///     public void MyTestMethod([RandomNumbers(Minimum = 0, Maximum = 10, Count = 3)] decimal value)
     ///     {
     ///         // This test will run 3 times. It generates at each iteration
-    ///         // a integer between 0 and 10.
+    ///         // a decimal number between 0 and 10.
     ///     }
     /// }]]></code>
     /// </example>
-    /// </summary>
     /// <seealso cref="ColumnAttribute"/>
     [CLSCompliant(false)]
     [AttributeUsage(PatternAttributeTargets.DataContext, AllowMultiple = true, Inherited = true)]
@@ -102,16 +107,13 @@ namespace MbUnit.Framework
         }
 
         /// <summary>
-        /// Adds a column of random <see cref="Double"/> values.
+        /// Adds a column of random <see cref="Decimal"/> values.
         /// </summary>
         public RandomNumbersAttribute()
         {
         }
 
-        /// <summary>
-        /// Returns a generator of random values.
-        /// </summary>
-        /// <returns>A generator.</returns>
+        /// <inheritdoc />
         protected override IGenerator GetGenerator()
         {
             try

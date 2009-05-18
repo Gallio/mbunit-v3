@@ -21,7 +21,7 @@ using System.Collections;
 namespace Gallio.Framework.Data.Generation
 {
     /// <summary>
-    /// Generic abstract generator of sequential values.
+    /// Generic abstract generator of sequential numeric values.
     /// </summary>
     /// <typeparam name="T">The type of the value to generate.</typeparam>
     public abstract class SequentialGenerator<T> : Generator<T>
@@ -39,7 +39,7 @@ namespace Gallio.Framework.Data.Generation
         /// <summary>
         /// Gets or sets the ending point of the sequence.
         /// </summary>
-        public T? Stop
+        public T? End
         {
             get;
             set;
@@ -74,22 +74,22 @@ namespace Gallio.Framework.Data.Generation
         /// <inheritdoc/>
         public override IEnumerable Run()
         {
-            if (Start.HasValue && !Stop.HasValue && Step.HasValue && Count.HasValue)
+            if (Start.HasValue && !End.HasValue && Step.HasValue && Count.HasValue)
             {
                 return GetStartStepCountSequence();
             }
-            else if (Start.HasValue && Stop.HasValue && !Step.HasValue && Count.HasValue)
+            else if (Start.HasValue && End.HasValue && !Step.HasValue && Count.HasValue)
             {
-                return GetStartStopCountSequence();
+                return GetStartEndCountSequence();
             }
-            else if (Start.HasValue && Stop.HasValue && Step.HasValue && !Count.HasValue)
+            else if (Start.HasValue && End.HasValue && Step.HasValue && !Count.HasValue)
             {
-                return GetStartStopStepSequence();
+                return GetStartEndStepSequence();
             }
             else
             {
                 throw new GenerationException("Invalid data generator property settings. Only the following combinations " +
-                    "are possible: {Start, Step, Count}, {Start, Stop, Count}, or {Start, Stop, Step}.");
+                    "are possible: {Start, Step, Count}, {Start, End, Count}, or {Start, End, Step}.");
             }
         }
 
@@ -100,15 +100,15 @@ namespace Gallio.Framework.Data.Generation
         protected abstract IEnumerable<T> GetStartStepCountSequence();
         
         /// <summary>
-        /// Returns the linear sequence constructed by using the <see cref="Start"/>, <see cref="Stop"/>, and <see cref="Count"/> properties.
+        /// Returns the linear sequence constructed by using the <see cref="Start"/>, <see cref="End"/>, and <see cref="Count"/> properties.
         /// </summary>
         /// <returns>The sequence of values.</returns>
-        protected abstract IEnumerable<T> GetStartStopCountSequence();
+        protected abstract IEnumerable<T> GetStartEndCountSequence();
         
         /// <summary>
-        /// Returns the linear sequence constructed by using the <see cref="Start"/>, <see cref="Stop"/>, and <see cref="Step"/> properties.
+        /// Returns the linear sequence constructed by using the <see cref="Start"/>, <see cref="End"/>, and <see cref="Step"/> properties.
         /// </summary>
         /// <returns>The sequence of values.</returns>
-        protected abstract IEnumerable<T> GetStartStopStepSequence();
+        protected abstract IEnumerable<T> GetStartEndStepSequence();
     }
 }

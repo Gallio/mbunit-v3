@@ -32,8 +32,8 @@ namespace MbUnit.Tests.Framework
     {
         [Test]
         [Row("SingleStartStepCountSequence", new[] { 1, 1.25, 1.5, 1.75, 2 })]
-        [Row("SingleStartStopCountSequence", new[] { 1, 1.25, 1.5, 1.75, 2 })]
-        [Row("SingleStartStopStepSequence", new[] { 1, 1.25, 1.5, 1.75, 2 })]
+        [Row("SingleStartEndCountSequence", new[] { 1, 1.25, 1.5, 1.75, 2 })]
+        [Row("SingleStartEndStepSequence", new[] { 1, 1.25, 1.5, 1.75, 2 })]
         public void GenerateSequence(string testMethod, decimal[] expectedOutput)
         {
             var run = Runner.GetPrimaryTestStepRun(CodeReference.CreateFromMember(typeof(SequentiaNumbersSample).GetMethod(testMethod)));
@@ -51,13 +51,13 @@ namespace MbUnit.Tests.Framework
             }
 
             [Test]
-            public void SingleStartStopCountSequence([SequentiaNumbers(Start = 1, End = 2, Count = 5)] decimal value)
+            public void SingleStartEndCountSequence([SequentiaNumbers(Start = 1, End = 2, Count = 5)] decimal value)
             {
                 TestLog.WriteLine("[{0}]", value);
             }
 
             [Test]
-            public void SingleStartStopStepSequence([SequentiaNumbers(Start = 1, End = 2, Step = 0.25)] decimal value)
+            public void SingleStartEndStepSequence([SequentiaNumbers(Start = 1, End = 2, Step = 0.25)] decimal value)
             {
                 TestLog.WriteLine("[{0}]", value);
             }
