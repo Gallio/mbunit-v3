@@ -272,8 +272,15 @@ namespace Gallio.Loader
         /// <inheritdoc />
         public void SetupRuntime()
         {
-            MethodInfo method = GetBootstrapMethod(BootstrapSetupRuntimeMethodName);
-            method.Invoke(null, new object[] { runtimePath });
+            try
+            {
+                MethodInfo method = GetBootstrapMethod(BootstrapSetupRuntimeMethodName);
+                method.Invoke(null, new object[] { runtimePath });
+            }
+            catch (Exception ex)
+            {
+                throw SafeException.Wrap(ex);
+            }
         }
 
         /// <inheritdoc />

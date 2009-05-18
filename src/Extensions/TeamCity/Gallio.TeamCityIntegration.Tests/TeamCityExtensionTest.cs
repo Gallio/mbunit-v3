@@ -59,7 +59,7 @@ namespace Gallio.TeamCityIntegration.Tests
             dispatcher = new TestRunnerEventDispatcher();
             log = new Log();
 
-            var ext = new TeamCityExtension();
+            var ext = new TeamCityExtension("flow");
             ext.Install(dispatcher, log);
         }
 
@@ -68,7 +68,7 @@ namespace Gallio.TeamCityIntegration.Tests
         {
             dispatcher.NotifyInitializeStarted(new InitializeStartedEventArgs(new TestRunnerOptions()));
 
-            Assert.AreEqual("##teamcity[progressMessage 'Initializing test runner.']\n", log.ToString());
+            Assert.AreEqual("##teamcity[progressMessage 'Initializing test runner.' flowId='flow']\n", log.ToString());
         }
 
         [Test]
@@ -77,7 +77,7 @@ namespace Gallio.TeamCityIntegration.Tests
             dispatcher.NotifyExploreStarted(new ExploreStartedEventArgs(new TestPackageConfig(), new TestExplorationOptions(),
                 new LockBox<Report>(new Report())));
 
-            Assert.AreEqual("##teamcity[progressStart 'Exploring tests.']\n", log.ToString());
+            Assert.AreEqual("##teamcity[progressStart 'Exploring tests.' flowId='flow']\n", log.ToString());
         }
 
         [Test]
@@ -85,7 +85,7 @@ namespace Gallio.TeamCityIntegration.Tests
         {
             dispatcher.NotifyExploreFinished(new ExploreFinishedEventArgs(true, new Report()));
 
-            Assert.AreEqual("##teamcity[progressFinish 'Exploring tests.']\n", log.ToString());
+            Assert.AreEqual("##teamcity[progressFinish 'Exploring tests.' flowId='flow']\n", log.ToString());
         }
 
         [Test]
@@ -94,7 +94,7 @@ namespace Gallio.TeamCityIntegration.Tests
             dispatcher.NotifyRunStarted(new RunStartedEventArgs(new TestPackageConfig(), new TestExplorationOptions(), new TestExecutionOptions(),
                 new LockBox<Report>(new Report())));
 
-            Assert.AreEqual("##teamcity[progressStart 'Running tests.']\n", log.ToString());
+            Assert.AreEqual("##teamcity[progressStart 'Running tests.' flowId='flow']\n", log.ToString());
         }
 
         [Test]
@@ -102,7 +102,7 @@ namespace Gallio.TeamCityIntegration.Tests
         {
             dispatcher.NotifyRunFinished(new RunFinishedEventArgs(true, new Report()));
 
-            Assert.AreEqual("##teamcity[progressFinish 'Running tests.']\n", log.ToString());
+            Assert.AreEqual("##teamcity[progressFinish 'Running tests.' flowId='flow']\n", log.ToString());
         }
 
         [Test]
@@ -110,7 +110,7 @@ namespace Gallio.TeamCityIntegration.Tests
         {
             dispatcher.NotifyDisposeFinished(new DisposeFinishedEventArgs(true));
 
-            Assert.AreEqual("##teamcity[progressMessage 'Disposed test runner.']\n", log.ToString());
+            Assert.AreEqual("##teamcity[progressMessage 'Disposed test runner.' flowId='flow']\n", log.ToString());
         }
 
         [Test]
@@ -143,7 +143,7 @@ namespace Gallio.TeamCityIntegration.Tests
                 new TestData("id", "testName", "testFullName"),
                 new TestStepRun(new TestStepData("stepId", "stepName", "stepFullName", "id") { IsPrimary = false, IsTestCase = true })));
 
-            Assert.AreEqual("##teamcity[testStarted name='stepFullName' captureStandardOutput=\'false\' flowId='stepId']\n", log.ToString());
+            Assert.AreEqual("##teamcity[testStarted name='stepFullName' captureStandardOutput=\'false\' flowId='flow']\n", log.ToString());
         }
 
         [Test]
@@ -154,7 +154,7 @@ namespace Gallio.TeamCityIntegration.Tests
                 new TestData("id", "testName", "testFullName"),
                 new TestStepRun(new TestStepData("stepId", "stepName", "stepFullName", "id") { IsPrimary = true, IsTestCase = false })));
 
-            Assert.AreEqual("##teamcity[testSuiteStarted name='stepFullName' flowId='stepId']\n", log.ToString());
+            Assert.AreEqual("##teamcity[testSuiteStarted name='stepFullName' flowId='flow']\n", log.ToString());
         }
 
         [Test]
@@ -165,16 +165,19 @@ namespace Gallio.TeamCityIntegration.Tests
                 new TestData("id", "testName", "testFullName"),
                 new TestStepRun(new TestStepData("stepId", "stepName", "stepFullName", "id") { IsPrimary = true, IsTestCase = true })));
 
-            Assert.AreEqual("##teamcity[testStarted name='stepFullName' captureStandardOutput=\'false\' flowId='stepId']\n", log.ToString());
+            Assert.AreEqual("##teamcity[testStarted name='stepFullName' captureStandardOutput=\'false\' flowId='flow']\n", log.ToString());
         }
 
         [Test]
         public void TestStepFinished_Root()
         {
-            dispatcher.NotifyTestStepFinished(new TestStepFinishedEventArgs(
-                new Report(),
-                new TestData("id", "root", "testFullName"),
-                new TestStepRun(new TestStepData("stepId", "root", "", "id") { IsPrimary = true })));
+            var report = new Report();
+            var testData = new TestData("id", "root", "testFullName");
+            var testStepRun = new TestStepRun(new TestStepData("stepId", "root", "", "id") { IsPrimary = true });
+            dispatcher.NotifyTestStepStarted(new TestStepStartedEventArgs(report, testData, testStepRun));
+            log.Clear();
+
+            dispatcher.NotifyTestStepFinished(new TestStepFinishedEventArgs(report, testData, testStepRun));
 
             Assert.AreEqual("", log.ToString());
         }
@@ -182,10 +185,13 @@ namespace Gallio.TeamCityIntegration.Tests
         [Test]
         public void TestStepFinished_NonPrimaryNonTestCase()
         {
-            dispatcher.NotifyTestStepFinished(new TestStepFinishedEventArgs(
-                new Report(),
-                new TestData("id", "testName", "testFullName"),
-                new TestStepRun(new TestStepData("stepId", "stepName", "stepFullName", "id") { IsPrimary = false, IsTestCase = false })));
+            var report = new Report();
+            var testData = new TestData("id", "testName", "testFullName");
+            var testStepRun = new TestStepRun(new TestStepData("stepId", "stepName", "stepFullName", "id") { IsPrimary = false, IsTestCase = false });
+            dispatcher.NotifyTestStepStarted(new TestStepStartedEventArgs(report, testData, testStepRun));
+            log.Clear();
+
+            dispatcher.NotifyTestStepFinished(new TestStepFinishedEventArgs(report, testData, testStepRun));
 
             Assert.AreEqual("", log.ToString());
         }
@@ -193,69 +199,138 @@ namespace Gallio.TeamCityIntegration.Tests
         [Test]
         public void TestStepFinished_PrimaryNonTestCase()
         {
-            dispatcher.NotifyTestStepFinished(new TestStepFinishedEventArgs(
-                new Report(),
-                new TestData("id", "testName", "testFullName"),
-                new TestStepRun(new TestStepData("stepId", "stepName", "stepFullName", "id") { IsPrimary = true, IsTestCase = false })));
+            var report = new Report();
+            var testData = new TestData("id", "testName", "testFullName");
+            var testStepRun = new TestStepRun(new TestStepData("stepId", "stepName", "stepFullName", "id") { IsPrimary = true, IsTestCase = false });
+            dispatcher.NotifyTestStepStarted(new TestStepStartedEventArgs(report, testData, testStepRun));
+            log.Clear();
 
-            Assert.AreEqual("##teamcity[testSuiteFinished name='stepFullName' flowId='stepId']\n", log.ToString());
+            dispatcher.NotifyTestStepFinished(new TestStepFinishedEventArgs(report, testData, testStepRun));
+
+            Assert.AreEqual("##teamcity[testSuiteFinished name='stepFullName' flowId='flow']\n", log.ToString());
         }
 
         [Test]
         public void TestStepFinished_TestCase_Passed([Column(true, false)] bool primary)
         {
-            dispatcher.NotifyTestStepFinished(new TestStepFinishedEventArgs(
-                new Report(),
-                new TestData("id", "testName", "testFullName"),
-                new TestStepRun(new TestStepData("stepId", "stepName", "stepFullName", "id") { IsPrimary = primary, IsTestCase = true }) {
-                    Result = new TestResult() { Outcome = TestOutcome.Passed, Duration = 0.3 },
-                    TestLog = ComprehensiveDocument
-                }));
+            var report = new Report();
+            var testData = new TestData("id", "testName", "testFullName");
+            var testStepRun = new TestStepRun(new TestStepData("stepId", "stepName", "stepFullName", "id") { IsPrimary = primary, IsTestCase = true })
+            {
+                Result = new TestResult() { Outcome = TestOutcome.Passed, Duration = 0.3 },
+                TestLog = ComprehensiveDocument
+            };
+            dispatcher.NotifyTestStepStarted(new TestStepStartedEventArgs(report, testData, testStepRun));
+            log.Clear();
 
-            Assert.AreEqual("##teamcity[testStdOut name='stepFullName' out='output|n|ninput|n|ntrace|n|nlog' flowId='stepId']\n"
-                + "##teamcity[testStdErr name='stepFullName' out='error|n|nwarning|n|nfailure' flowId='stepId']\n"
-                + "##teamcity[testFinished name='stepFullName' duration='300' flowId='stepId']\n", log.ToString());
+            dispatcher.NotifyTestStepFinished(new TestStepFinishedEventArgs(report, testData, testStepRun));
+
+            Assert.AreEqual("##teamcity[testStdOut name='stepFullName' out='output|n|ninput|n|ntrace|n|nlog' flowId='flow']\n"
+                + "##teamcity[testStdErr name='stepFullName' out='error|n|nwarning|n|nfailure' flowId='flow']\n"
+                + "##teamcity[testFinished name='stepFullName' duration='300' flowId='flow']\n", log.ToString());
         }
 
         [Test]
         public void TestStepFinished_TestCase_Failed([Column(true, false)] bool primary)
         {
-            dispatcher.NotifyTestStepFinished(new TestStepFinishedEventArgs(
-                new Report(),
-                new TestData("id", "testName", "testFullName"),
-                new TestStepRun(new TestStepData("stepId", "stepName", "stepFullName", "id") { IsPrimary = primary, IsTestCase = true })
-                {
-                    Result = new TestResult() { Outcome = new TestOutcome(TestStatus.Failed, "myError"), Duration = 0.3 },
-                    TestLog = ComprehensiveDocument
-                }));
+            var report = new Report();
+            var testData = new TestData("id", "testName", "testFullName");
+            var testStepRun = new TestStepRun(new TestStepData("stepId", "stepName", "stepFullName", "id") { IsPrimary = primary, IsTestCase = true })
+            {
+                Result = new TestResult() { Outcome = new TestOutcome(TestStatus.Failed, "myError"), Duration = 0.3 },
+                TestLog = ComprehensiveDocument
+            };
+            dispatcher.NotifyTestStepStarted(new TestStepStartedEventArgs(report, testData, testStepRun));
+            log.Clear();
 
-            Assert.AreEqual("##teamcity[testStdOut name='stepFullName' out='output|n|ninput|n|ntrace|n|nlog' flowId='stepId']\n"
-                + "##teamcity[testStdErr name='stepFullName' out='error|n|nwarning' flowId='stepId']\n"
-                + "##teamcity[testFailed name='stepFullName' message='myError' details='failure' flowId='stepId']\n"
-                + "##teamcity[testFinished name='stepFullName' duration='300' flowId='stepId']\n", log.ToString());
+            dispatcher.NotifyTestStepFinished(new TestStepFinishedEventArgs(report, testData, testStepRun));
+
+            Assert.AreEqual("##teamcity[testStdOut name='stepFullName' out='output|n|ninput|n|ntrace|n|nlog' flowId='flow']\n"
+                + "##teamcity[testStdErr name='stepFullName' out='error|n|nwarning' flowId='flow']\n"
+                + "##teamcity[testFailed name='stepFullName' message='myError' details='failure' flowId='flow']\n"
+                + "##teamcity[testFinished name='stepFullName' duration='300' flowId='flow']\n", log.ToString());
         }
 
         [Test]
         public void TestStepFinished_TestCase_Ignored([Column(true, false)] bool primary)
         {
-            dispatcher.NotifyTestStepFinished(new TestStepFinishedEventArgs(
-                new Report(),
-                new TestData("id", "testName", "testFullName"),
-                new TestStepRun(new TestStepData("stepId", "stepName", "stepFullName", "id") { IsPrimary = primary, IsTestCase = true })
-                {
-                    Result = new TestResult() { Outcome = TestOutcome.Ignored, Duration = 0.3 },
-                    TestLog = ComprehensiveDocument
-                }));
+            var report = new Report();
+            var testData = new TestData("id", "testName", "testFullName");
+            var testStepRun = new TestStepRun(new TestStepData("stepId", "stepName", "stepFullName", "id") { IsPrimary = primary, IsTestCase = true })
+            {
+                Result = new TestResult() { Outcome = TestOutcome.Ignored, Duration = 0.3 },
+                TestLog = ComprehensiveDocument
+            };
+            dispatcher.NotifyTestStepStarted(new TestStepStartedEventArgs(report, testData, testStepRun));
+            log.Clear();
 
-            Assert.AreEqual("##teamcity[testStdOut name='stepFullName' out='output|n|ninput|n|ntrace|n|nlog' flowId='stepId']\n"
-                + "##teamcity[testStdErr name='stepFullName' out='error|n|nfailure' flowId='stepId']\n"
-                + "##teamcity[testIgnored name='stepFullName' message='warning' flowId='stepId']\n"
-                + "##teamcity[testFinished name='stepFullName' duration='300' flowId='stepId']\n", log.ToString());
+            dispatcher.NotifyTestStepFinished(new TestStepFinishedEventArgs(report, testData, testStepRun));
+
+            Assert.AreEqual("##teamcity[testStdOut name='stepFullName' out='output|n|ninput|n|ntrace|n|nlog' flowId='flow']\n"
+                + "##teamcity[testStdErr name='stepFullName' out='error|n|nfailure' flowId='flow']\n"
+                + "##teamcity[testIgnored name='stepFullName' message='warning' flowId='flow']\n"
+                + "##teamcity[testFinished name='stepFullName' duration='300' flowId='flow']\n", log.ToString());
+        }
+
+        [Test]
+        public void TestStepStartedAndFinished_ParallelExecution()
+        {
+            var report = new Report();
+            var testData = new TestData("id", "testName", "testFullName");
+            var testStepRunRoot = new TestStepRun(new TestStepData("root", "root", "root", "id") { IsPrimary = true });
+            var testStepRunChildA = new TestStepRun(new TestStepData("childA", "childA", "childA", "id") { IsPrimary = true, ParentId = "root" });
+            var testStepRunChildB = new TestStepRun(new TestStepData("childB", "childB", "childB", "id") { IsPrimary = true, ParentId = "root" });
+            var testStepRunGrandChildA1 = new TestStepRun(new TestStepData("grandChildA1", "grandChildA1", "childA/grandChildA1", "id") { IsPrimary = true, ParentId = "childA" });
+            var testStepRunGrandChildA2 = new TestStepRun(new TestStepData("grandChildA2", "grandChildA2", "childA/grandChildA2", "id") { IsPrimary = true, ParentId = "childA" });
+            var testStepRunGrandChildB1 = new TestStepRun(new TestStepData("grandChildB1", "grandChildB1", "childB/grandChildB1", "id") { IsPrimary = true, ParentId = "childB" });
+            var testStepRunGrandChildB2 = new TestStepRun(new TestStepData("grandChildB2", "grandChildB2", "childB/grandChildB2", "id") { IsPrimary = true, ParentId = "childB" });
+            var testStepRunGrandChildB3 = new TestStepRun(new TestStepData("grandChildB3", "grandChildB3", "childB/grandChildB3", "id") { IsPrimary = true, ParentId = "childB" });
+
+            dispatcher.NotifyTestStepStarted(new TestStepStartedEventArgs(report, testData, testStepRunRoot));
+            dispatcher.NotifyTestStepStarted(new TestStepStartedEventArgs(report, testData, testStepRunChildA));
+            dispatcher.NotifyTestStepStarted(new TestStepStartedEventArgs(report, testData, testStepRunGrandChildA1));
+            dispatcher.NotifyTestStepStarted(new TestStepStartedEventArgs(report, testData, testStepRunChildB));
+            dispatcher.NotifyTestStepFinished(new TestStepFinishedEventArgs(report, testData, testStepRunGrandChildA1));
+            dispatcher.NotifyTestStepStarted(new TestStepStartedEventArgs(report, testData, testStepRunGrandChildA2));
+            dispatcher.NotifyTestStepStarted(new TestStepStartedEventArgs(report, testData, testStepRunGrandChildB1));
+            dispatcher.NotifyTestStepStarted(new TestStepStartedEventArgs(report, testData, testStepRunGrandChildB2));
+            dispatcher.NotifyTestStepFinished(new TestStepFinishedEventArgs(report, testData, testStepRunGrandChildB2));
+            dispatcher.NotifyTestStepFinished(new TestStepFinishedEventArgs(report, testData, testStepRunGrandChildB1));
+            dispatcher.NotifyTestStepStarted(new TestStepStartedEventArgs(report, testData, testStepRunGrandChildB3));
+            dispatcher.NotifyTestStepFinished(new TestStepFinishedEventArgs(report, testData, testStepRunGrandChildB3));
+            dispatcher.NotifyTestStepFinished(new TestStepFinishedEventArgs(report, testData, testStepRunChildB));
+            dispatcher.NotifyTestStepFinished(new TestStepFinishedEventArgs(report, testData, testStepRunGrandChildA2));
+            dispatcher.NotifyTestStepFinished(new TestStepFinishedEventArgs(report, testData, testStepRunChildA));
+            dispatcher.NotifyTestStepFinished(new TestStepFinishedEventArgs(report, testData, testStepRunRoot));
+
+            Assert.AreEqual(
+                "##teamcity[testSuiteStarted name='root' flowId='flow']\n" +
+                "##teamcity[testSuiteStarted name='childA' flowId='flow']\n" +
+                "##teamcity[testSuiteStarted name='childA/grandChildA1' flowId='flow']\n" +
+                "##teamcity[testSuiteFinished name='childA/grandChildA1' flowId='flow']\n" +
+                "##teamcity[testSuiteStarted name='childA/grandChildA2' flowId='flow']\n" +
+                "##teamcity[testSuiteFinished name='childA/grandChildA2' flowId='flow']\n" +
+                "##teamcity[testSuiteFinished name='childA' flowId='flow']\n" +
+                "##teamcity[testSuiteStarted name='childB' flowId='flow']\n" +
+                "##teamcity[testSuiteStarted name='childB/grandChildB1' flowId='flow']\n" +
+                "##teamcity[testSuiteFinished name='childB/grandChildB1' flowId='flow']\n" +
+                "##teamcity[testSuiteStarted name='childB/grandChildB2' flowId='flow']\n" +
+                "##teamcity[testSuiteFinished name='childB/grandChildB2' flowId='flow']\n" +
+                "##teamcity[testSuiteStarted name='childB/grandChildB3' flowId='flow']\n" +
+                "##teamcity[testSuiteFinished name='childB/grandChildB3' flowId='flow']\n" +
+                "##teamcity[testSuiteFinished name='childB' flowId='flow']\n" +
+                "##teamcity[testSuiteFinished name='root' flowId='flow']\n",
+                log.ToString());
         }
 
         private sealed class Log : BaseLogger
         {
             private readonly StringBuilder output = new StringBuilder();
+
+            public void Clear()
+            {
+                output.Length = 0;
+            }
 
             public override string ToString()
             {
