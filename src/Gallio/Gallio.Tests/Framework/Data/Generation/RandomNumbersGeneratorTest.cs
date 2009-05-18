@@ -32,7 +32,7 @@ namespace Gallio.Tests.Framework.Data.Generation
         [Row(-1, 1, 1)]
         [Row(-10, 10, 123)]
         [Row(0, 100000, 3)]
-        public void Generate_sequence_ok(double minimum, double maximum, int count)
+        public void Generate_sequence_ok(decimal minimum, decimal maximum, int count)
         {
             var generator = new RandomNumbersGenerator
             {
@@ -41,31 +41,29 @@ namespace Gallio.Tests.Framework.Data.Generation
                 Count = count
             };
 
-            var values = generator.Run().Cast<double>().ToArray();
+            var values = generator.Run().Cast<decimal>().ToArray();
             Assert.AreEqual(count, values.Length);
             Assert.Multiple(() =>
             {
-                foreach (double value in values)
+                foreach (decimal value in values)
                 {
                     Assert.Between(value, minimum, maximum);
                 }
             });
         }
 
-        [Test]
-        [Row(Double.MinValue, 10, 1)]
-        [Row(Double.MaxValue, 10, 1)]
-        [Row(Double.PositiveInfinity, 10, 1)]
-        [Row(Double.NegativeInfinity, 10, 1)]
-        [Row(Double.NaN, 10, 1)]
-        [Row(10, Double.MinValue, 1)]
-        [Row(10, Double.MaxValue, 1)]
-        [Row(10, Double.PositiveInfinity, 1)]
-        [Row(10, Double.NegativeInfinity, 1)]
-        [Row(10, Double.NaN, 1)]
-        [Row(10, 5, 1, Description = "Minimum greater than maximum")]
-        [Row(10, 20, -1, Description = "Negative count")]
-        public void Constructs_with_invalid_property_should_throw_exception(double minimum, double maximum, int count)
+        private IEnumerable<object[]> GetInvalidProperyValues()
+        {
+            yield return new object[] { Decimal.MinValue, 10, 1 };
+            yield return new object[] { Decimal.MaxValue, 10, 1 };
+            yield return new object[] { 10, Decimal.MinValue, 1 };
+            yield return new object[] { 10, Decimal.MaxValue, 1 };
+            yield return new object[] { 10, 5, 1, }; // Minimum greater than maximum!
+            yield return new object[] { 10, 20, -1 }; // Negative count!
+        }
+
+        [Test, Factory("GetInvalidProperyValues")]
+        public void Constructs_with_invalid_property_should_throw_exception(decimal minimum, decimal maximum, int count)
         {
             var generator = new RandomNumbersGenerator
             {
@@ -74,7 +72,7 @@ namespace Gallio.Tests.Framework.Data.Generation
                 Count = count
             };
 
-            Assert.Throws<GenerationException>(() => generator.Run().Cast<double>().ToArray());
+            Assert.Throws<GenerationException>(() => generator.Run().Cast<decimal>().ToArray());
         }
     }
 }

@@ -75,7 +75,7 @@ namespace MbUnit.Framework
         /// <summary>
         /// Gets or sets the ending value of the sequence.
         /// </summary>
-        public double Stop
+        public double End
         {
             get
             {
@@ -123,7 +123,6 @@ namespace MbUnit.Framework
         /// <summary>
         /// Adds a column of sequential <see cref="Double"/> values.
         /// </summary>
-        [CLSCompliant(false)]
         public SequentiaNumbersAttribute()
         {
         }
@@ -135,9 +134,9 @@ namespace MbUnit.Framework
             {
                 return new SequentialNumbersGenerator
                 {
-                    Start = start,
-                    Stop = stop,
-                    Step = step,
+                    Start = (decimal?)start,
+                    Stop = (decimal?)stop,
+                    Step = (decimal?)step,
                     Count = count
                 };
             }

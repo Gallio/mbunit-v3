@@ -20,19 +20,19 @@ using System.Text;
 namespace Gallio.Framework.Data.Generation
 {
     /// <summary>
-    /// Generator of random <see cref="Double"/> values within a given range.
+    /// Generator of random <see cref="Decimal"/> values within a given range.
     /// </summary>
-    public class RandomNumbersGenerator : RandomGenerator<double>
+    public class RandomNumbersGenerator : RandomGenerator<decimal>
     {
         /// <summary>
-        /// Constructs a generator of random <see cref="Double"/> numbers.
+        /// Constructs a generator of random <see cref="Decimal"/> numbers.
         /// </summary>
         public RandomNumbersGenerator()
         {
         }
 
         /// <inheritdoc/>
-        protected override IEnumerable<double> GetSequence()
+        protected override IEnumerable<decimal> GetSequence()
         {
             CheckProperty(Minimum.Value, "Minimum");
             CheckProperty(Maximum.Value, "Maximum");
@@ -43,9 +43,10 @@ namespace Gallio.Framework.Data.Generation
             }
         }
 
-        private double GetNextRandomValue()
+        private decimal GetNextRandomValue()
         {
-            return Minimum.Value + InnerGenerator.NextDouble() * (Maximum.Value - Minimum.Value);
+            // TODO: find a better way to generate a random Decimal value with a range.
+            return Minimum.Value + Convert.ToDecimal(InnerGenerator.NextDouble()) * (Maximum.Value - Minimum.Value);
         }
     }
 }

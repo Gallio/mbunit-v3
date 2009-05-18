@@ -28,11 +28,11 @@ namespace MbUnit.Tests.Framework
 {
     [TestsOn(typeof(RandomNumbersAttribute))]
     [RunSample(typeof(RandomNumbersSample))]
-    public class RandomDoubleDataAttributeTest : BaseTestWithSampleRunner
+    public class RandomNumbersAttributeTest : BaseTestWithSampleRunner
     {
         [Test]
-        [Row("Single", -10, 10, 1000)]
-        public void EnumData(string testMethod, double expectedMinimum, double expectedMaximum, int expectedCount)
+        [Row("Single", -10, 10, 100)]
+        public void GenerateRandomValues(string testMethod, decimal expectedMinimum, decimal expectedMaximum, int expectedCount)
         {
             var run = Runner.GetPrimaryTestStepRun(CodeReference.CreateFromMember(typeof(RandomNumbersSample).GetMethod(testMethod)));
             string[] lines = run.Children.Select(x => x.TestLog.GetStream(MarkupStreamNames.Default).ToString()).ToArray();
@@ -42,7 +42,7 @@ namespace MbUnit.Tests.Framework
             {
                 var match = Regex.Match(line, @"\[(?<value>-?(\d*\.)?\d+)\]");
                 Assert.IsTrue(match.Success);
-                double value = Double.Parse(match.Groups["value"].Value);
+                decimal value = Decimal.Parse(match.Groups["value"].Value);
                 Assert.Between(value, expectedMinimum, expectedMaximum);
             }
         }
@@ -51,7 +51,7 @@ namespace MbUnit.Tests.Framework
         public class RandomNumbersSample
         {
             [Test]
-            public void Single([RandomNumbers(Minimum = -10, Maximum = 10, Count = 1000)] double value)
+            public void Single([RandomNumbers(Minimum = -10, Maximum = 10, Count = 100)] decimal value)
             {
                 TestLog.WriteLine("[{0}]", value);
             }

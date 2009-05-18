@@ -104,7 +104,6 @@ namespace MbUnit.Framework
         /// <summary>
         /// Adds a column of random <see cref="Double"/> values.
         /// </summary>
-        [CLSCompliant(false)]
         public RandomNumbersAttribute()
         {
         }
@@ -119,12 +118,12 @@ namespace MbUnit.Framework
             {
                 return new RandomNumbersGenerator
                 {
-                    Minimum = minimum, 
-                    Maximum = maximum, 
+                    Minimum = (decimal?)minimum,
+                    Maximum = (decimal?)maximum, 
                     Count = count
                 };
             }
-            catch(GenerationException exception)
+            catch (GenerationException exception)
             {
                 ThrowUsageErrorException("The random numbers generator was incorrectly initialized.", exception);
                 return null; // Make the compiler happy.

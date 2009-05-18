@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Collections;
+using Gallio.Common;
 
 namespace Gallio.Framework.Data.Generation
 {
@@ -27,6 +28,26 @@ namespace Gallio.Framework.Data.Generation
     public abstract class Generator<T> : IGenerator
         where T : struct, IComparable<T>, IEquatable<T>
     {
+        /// <summary>
+        /// Gets or sets the filter function that can be used
+        /// to reject or accept generated values.
+        /// </summary>
+        public Func<T, bool> Filter
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// Filters the specified value.
+        /// </summary>
+        /// <param name="value">The value to be filtered.</param>
+        /// <returns>True if the value is accepted; false otherwise.</returns>
+        protected bool DoFilter(T value)
+        {
+            return (Filter == null) || Filter(value);
+        }
+
         /// <summary>
         /// Default constructor.
         /// </summary>
@@ -40,41 +61,34 @@ namespace Gallio.Framework.Data.Generation
         /// <summary>
         /// Checks for the specified value to be not one of the following:
         /// <list type="bullet">
-        /// <item><see cref="Double.NaN"/></item>
-        /// <item><see cref="Double.PositiveInfinity"/></item>
-        /// <item><see cref="Double.NegativeInfinity"/></item>
-        /// <item><see cref="Double.MinValue"/></item>
-        /// <item><see cref="Double.MaxValue"/></item>
+        /// <item><see cref="Decimal.MinValue"/></item>
+        /// <item><see cref="Decimal.MaxValue"/></item>
         /// </list>
         /// </summary>
-        /// <param name="propertyValue">The <see cref="Double"/> property value to be checked.</param>
+        /// <param name="propertyValue">The <see cref="Decimal"/> property value to be checked.</param>
         /// <param name="propertyName">A friendly name for the property.</param>
         /// <exception cref="GenerationException">The specified property value is invalid.</exception>
-        protected static void CheckProperty(double propertyValue, string propertyName)
+        protected static void CheckProperty(decimal propertyValue, string propertyName)
         {
-            if (Double.IsNaN(propertyValue) ||
-                Double.IsInfinity(propertyValue) ||
-                propertyValue == Double.MinValue ||
-                propertyValue == Double.MaxValue)
+            if (propertyValue == Decimal.MinValue || propertyValue == Decimal.MaxValue)
                 throw new GenerationException(String.Format("The '{0}' property cannot be one of the following: " +
-                    "Double.NaN, Double.PositiveInfinity, Double.NegativeInfinity, Double.MinValue, Double.MaxValue.", propertyName));
+                    "Decimal.MinValue, Decimal.MaxValue.", propertyName));
         }
 
         /// <summary>
         /// Checks for the specified value to be not one of the following:
         /// <list type="bullet">
-        /// <item><see cref="Int32.MinValue"/></item>
-        /// <item><see cref="Int32.MaxValue"/></item>
+        /// <item><see cref="UInt32.MaxValue"/></item>
         /// </list>
         /// </summary>
-        /// <param name="propertyValue">The <see cref="Double"/> property value to be checked.</param>
+        /// <param name="propertyValue">The <see cref="UInt32"/> property value to be checked.</param>
         /// <param name="propertyName">A friendly name for the property.</param>
         /// <exception cref="GenerationException">The specified property value is invalid.</exception>
         protected static void CheckProperty(int propertyValue, string propertyName)
         {
             if (propertyValue == Int32.MinValue || propertyValue == Int32.MaxValue)
                 throw new GenerationException(String.Format("The '{0}' property cannot be one of the following: " +
-                    "Int32.MinValue or Int32.MaxValue.", propertyName));
+                    "UInt32.MaxValue.", propertyName));
         }
     }
 }
