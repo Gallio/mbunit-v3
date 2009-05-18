@@ -14,11 +14,17 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
+using Gallio.Common;
+using Gallio.Common.Collections;
 using Gallio.Model;
 using Gallio.Model.Logging;
+using Gallio.Model.Serialization;
 using Gallio.Runner.Events;
 using Gallio.Runner.Extensions;
+using Gallio.Runner.Reports;
 using Gallio.Runtime.Logging;
 using Gallio.Runner;
 
@@ -30,7 +36,28 @@ namespace Gallio.TeamCityIntegration
     /// </summary>
     public class TeamCityExtension : TestRunnerExtension
     {
+        private delegate string Continuation();
+
         private ServiceMessageWriter writer;
+        private readonly string flowId;
+        private readonly Stack<string> currentStepStack;
+        private readonly MultiMap<string, Continuation> continuationMap;
+
+        /// <summary>
+        /// Creates a TeamCity logging extension.
+        /// </summary>
+        public TeamCityExtension()
+            : this(null)
+        {
+        }
+
+        internal TeamCityExtension(string flowId)
+        {
+            this.flowId = flowId ?? Hash64.CreateUniqueHash().ToString();
+
+            currentStepStack = new Stack<string>();
+            continuationMap = new MultiMap<string, Continuation>();
+        }
 
         /// <inheritdoc />
         protected override void Initialize()
@@ -39,120 +66,212 @@ namespace Gallio.TeamCityIntegration
 
             Events.InitializeStarted += delegate(object sender, InitializeStartedEventArgs e)
             {
-                writer.WriteProgressMessage(null, "Initializing test runner.");
+                writer.WriteProgressMessage(flowId, "Initializing test runner.");
             };
 
             Events.ExploreStarted += delegate(object sender, ExploreStartedEventArgs e)
             {
-                writer.WriteProgressStart(null, "Exploring tests.");
+                writer.WriteProgressStart(flowId, "Exploring tests.");
             };
 
             Events.ExploreFinished += delegate(object sender, ExploreFinishedEventArgs e)
             {
-                writer.WriteProgressFinish(null, "Exploring tests."); // nb: message must be same as specified in progress start
+                writer.WriteProgressFinish(flowId, "Exploring tests."); // nb: message must be same as specified in progress start
             };
 
             Events.RunStarted += delegate(object sender, RunStartedEventArgs e)
             {
-                writer.WriteProgressStart(null, "Running tests.");
+                writer.WriteProgressStart(flowId, "Running tests.");
             };
 
             Events.RunFinished += delegate(object sender, RunFinishedEventArgs e)
             {
-                writer.WriteProgressFinish(null, "Running tests."); // nb: message must be same as specified in progress start
+                ClearStep();
+
+                writer.WriteProgressFinish(flowId, "Running tests."); // nb: message must be same as specified in progress start
             };
 
             Events.DisposeFinished += delegate(object sender, DisposeFinishedEventArgs e)
             {
-                writer.WriteProgressMessage(null, "Disposed test runner.");
+                writer.WriteProgressMessage(flowId, "Disposed test runner.");
             };
 
             Events.TestStepStarted += delegate(object sender, TestStepStartedEventArgs e)
             {
-                string flowId = e.TestStepRun.Step.Id;
-                string name = e.TestStepRun.Step.FullName;
-                if (name.Length != 0)
+                TestStepData step = e.TestStepRun.Step;
+
+                BeginStep(step, () =>
                 {
-                    if (e.TestStepRun.Step.IsTestCase)
+                    string name = step.FullName;
+                    if (name.Length != 0)
                     {
-                        writer.WriteTestStarted(flowId, name, false);
+                        if (step.IsTestCase)
+                        {
+                            writer.WriteTestStarted(flowId, name, false);
+                        }
+                        else if (step.IsPrimary)
+                        {
+                            writer.WriteTestSuiteStarted(flowId, name);
+                        }
                     }
-                    else if (e.TestStepRun.Step.IsPrimary)
-                    {
-                        writer.WriteTestSuiteStarted(flowId, name);
-                    }
-                }
+                });
             };
 
             Events.TestStepFinished += delegate(object sender, TestStepFinishedEventArgs e)
             {
-                string flowId = e.TestStepRun.Step.Id;
-                string name = e.TestStepRun.Step.FullName;
-                if (name.Length != 0)
+                TestStepRun stepRun = e.TestStepRun;
+                TestStepData step = e.TestStepRun.Step;
+
+                EndStep(step, () =>
                 {
-                    if (e.TestStepRun.Step.IsTestCase)
+                    string name = step.FullName;
+                    if (name.Length != 0)
                     {
-                        TestOutcome outcome = e.TestStepRun.Result.Outcome;
-
-                        var outputText = new StringBuilder();
-                        var errorText = new StringBuilder();
-                        var warningText = new StringBuilder();
-                        var failureText = new StringBuilder();
-
-                        foreach (StructuredTestLogStream stream in e.TestStepRun.TestLog.Streams)
+                        if (step.IsTestCase)
                         {
-                            switch (stream.Name)
+                            TestOutcome outcome = stepRun.Result.Outcome;
+
+                            var outputText = new StringBuilder();
+                            var errorText = new StringBuilder();
+                            var warningText = new StringBuilder();
+                            var failureText = new StringBuilder();
+
+                            foreach (StructuredTestLogStream stream in stepRun.TestLog.Streams)
                             {
-                                default:
-                                case TestLogStreamNames.ConsoleInput:
-                                case TestLogStreamNames.ConsoleOutput:
-                                case TestLogStreamNames.DebugTrace:
-                                case TestLogStreamNames.Default:
-                                    AppendWithSeparator(outputText, stream.ToString());
-                                    break;
+                                switch (stream.Name)
+                                {
+                                    default:
+                                    case TestLogStreamNames.ConsoleInput:
+                                    case TestLogStreamNames.ConsoleOutput:
+                                    case TestLogStreamNames.DebugTrace:
+                                    case TestLogStreamNames.Default:
+                                        AppendWithSeparator(outputText, stream.ToString());
+                                        break;
 
-                                case TestLogStreamNames.ConsoleError:
-                                    AppendWithSeparator(errorText, stream.ToString());
-                                    break;
+                                    case TestLogStreamNames.ConsoleError:
+                                        AppendWithSeparator(errorText, stream.ToString());
+                                        break;
 
-                                case TestLogStreamNames.Failures:
-                                    AppendWithSeparator(failureText, stream.ToString());
-                                    break;
+                                    case TestLogStreamNames.Failures:
+                                        AppendWithSeparator(failureText, stream.ToString());
+                                        break;
 
-                                case TestLogStreamNames.Warnings:
-                                    AppendWithSeparator(warningText, stream.ToString());
-                                    break;
+                                    case TestLogStreamNames.Warnings:
+                                        AppendWithSeparator(warningText, stream.ToString());
+                                        break;
+                                }
                             }
+
+                            if (outcome.Status != TestStatus.Skipped && warningText.Length != 0)
+                                AppendWithSeparator(errorText, warningText.ToString());
+                            if (outcome.Status != TestStatus.Failed && failureText.Length != 0)
+                                AppendWithSeparator(errorText, failureText.ToString());
+
+                            if (outputText.Length != 0)
+                                writer.WriteTestStdOut(flowId, name, outputText.ToString());
+                            if (errorText.Length != 0)
+                                writer.WriteTestStdErr(flowId, name, errorText.ToString());
+
+                            // TODO: Handle inconclusive.
+                            if (outcome.Status == TestStatus.Failed)
+                            {
+                                writer.WriteTestFailed(flowId, name, outcome.ToString(), failureText.ToString());
+                            }
+                            else if (outcome.Status == TestStatus.Skipped)
+                            {
+                                writer.WriteTestIgnored(flowId, name, warningText.ToString());
+                            }
+
+                            writer.WriteTestFinished(flowId, name, TimeSpan.FromSeconds(stepRun.Result.Duration));
                         }
-
-                        if (outcome.Status != TestStatus.Skipped && warningText.Length != 0)
-                            AppendWithSeparator(errorText, warningText.ToString());
-                        if (outcome.Status != TestStatus.Failed && failureText.Length != 0)
-                            AppendWithSeparator(errorText, failureText.ToString());
-
-                        if (outputText.Length != 0)
-                            writer.WriteTestStdOut(flowId, name, outputText.ToString());
-                        if (errorText.Length != 0)
-                            writer.WriteTestStdErr(flowId, name, errorText.ToString());
-
-                        // TODO: Handle inconclusive.
-                        if (outcome.Status == TestStatus.Failed)
+                        else if (step.IsPrimary)
                         {
-                            writer.WriteTestFailed(flowId, name, outcome.ToString(), failureText.ToString());
+                            writer.WriteTestSuiteFinished(flowId, name);
                         }
-                        else if (outcome.Status == TestStatus.Skipped)
-                        {
-                            writer.WriteTestIgnored(flowId, name, warningText.ToString());
-                        }
-
-                        writer.WriteTestFinished(flowId, name, TimeSpan.FromSeconds(e.TestStepRun.Result.Duration));
                     }
-                    else if (e.TestStepRun.Step.IsPrimary)
+                });
+            };
+        }
+
+        private void ClearStep()
+        {
+            currentStepStack.Clear();
+            continuationMap.Clear();
+        }
+
+        private void BeginStep(TestStepData step, Action action)
+        {
+            string nextContinuationId = BeginStepContinuation(step, action);
+            ResumeContinuation(nextContinuationId);
+        }
+
+        private void EndStep(TestStepData step, Action action)
+        {
+            string nextContinuationId = EndStepContinuation(step, action);
+            ResumeContinuation(nextContinuationId);
+        }
+
+        private string BeginStepContinuation(TestStepData step, Action action)
+        {
+            if (currentStepStack.Count == 0 || step.ParentId == currentStepStack.Peek())
+            {
+                currentStepStack.Push(step.Id);
+                action();
+                return step.Id;
+            }
+
+            SaveContinuation(SanitizeContinuationId(step.ParentId), () => BeginStepContinuation(step, action));
+            return null;
+        }
+
+        private string EndStepContinuation(TestStepData step, Action action)
+        {
+            if (step.Id == currentStepStack.Peek())
+            {
+                currentStepStack.Pop();
+                action();
+                return SanitizeContinuationId(step.ParentId);
+            }
+
+            SaveContinuation(step.Id, () => EndStepContinuation(step, action));
+            return null;
+        }
+
+        private static string SanitizeContinuationId(string id)
+        {
+            return id ?? "<null>";
+        }
+
+        private void SaveContinuation(string continuationId, Continuation action)
+        {
+            continuationMap.Add(continuationId, action);
+        }
+
+        private void ResumeContinuation(string continuationId)
+        {
+            while (continuationId != null)
+            {
+                IList<Continuation> continuations = continuationMap[continuationId];
+                if (continuations.Count == 0)
+                    break;
+
+                continuationMap.Remove(continuationId);
+
+                string nextContinuationId = null;
+                foreach (Continuation continuation in continuations)
+                {
+                    if (nextContinuationId == null)
                     {
-                        writer.WriteTestSuiteFinished(flowId, name);
+                        nextContinuationId = continuation();
+                    }
+                    else
+                    {
+                        continuationMap.Add(continuationId, continuation);
                     }
                 }
-            };
+
+                continuationId = nextContinuationId;
+            }
         }
 
         private static void AppendWithSeparator(StringBuilder builder, string text)
