@@ -138,6 +138,11 @@
     <Compile Include="Runner\Extensions\ITestRunnerExtensionManager.cs" />
     <Compile Include="Runner\Extensions\TestRunnerExtensionFactoryTraits.cs" />
     <Compile Include="Runner\Extensions\DefaultTestRunnerExtensionManager.cs" />
+    <Compile Include="Runtime\Installer\DefaultInstallerManager.cs" />
+    <Compile Include="Runtime\Installer\IInstaller.cs" />
+    <Compile Include="Runtime\Installer\IInstallerManager.cs" />
+    <Compile Include="Runtime\Installer\InstallerTraits.cs" />
+    <Compile Include="Runtime\Installer\SetupCommand.cs" />
     <Compile Include="Runtime\Logging\MarkupStreamLogger.cs" />
     <Compile Include="Common\Markup\MarkupStreamNames.cs" />
     <Compile Include="Common\Markup\MarkupStreamWriter.cs" />
@@ -664,6 +669,7 @@
     <Compile Include="Common\Platform\DotNetFrameworkVersion.cs" />
     <Compile Include="Runtime\DefaultRuntime.cs" />
     <Compile Include="Common\Validation\IValidatable.cs" />
+    <Compile Include="Runtime\UtilityCommands\BaseUtilityCommand.cs" />
     <Compile Include="Runtime\UtilityCommands\ClearCurrentUserPluginCacheCommand.cs" />
     <Compile Include="Runtime\UtilityCommands\DefaultUtilityCommandManager.cs" />
     <Compile Include="Runtime\UtilityCommands\IUtilityCommand.cs" />
@@ -844,7 +850,6 @@
     <Content Include="Gallio.plugin" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Runtime\Installer\" />
     <Folder Include="Runtime\Preferences\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

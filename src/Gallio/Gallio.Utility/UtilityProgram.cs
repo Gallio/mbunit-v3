@@ -90,7 +90,8 @@ namespace Gallio.Utility
 
                 object commandArguments = Activator.CreateInstance(commandArgumentsClass);
 
-                if (! commandArgumentParser.Parse(commandRawArguments, commandArguments, ShowErrorMessage))
+                if (! commandArgumentParser.Parse(commandRawArguments, commandArguments, ShowErrorMessage)
+                    ||  ! command.ValidateArguments(commandArguments, ShowErrorMessage))
                 {
                     ShowHelpForParticularCommand(commandName, commandArgumentParser);
                     return 1;

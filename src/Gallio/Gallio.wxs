@@ -303,17 +303,26 @@
             <ComponentRef Id="H2Reg.exe" />
         </Feature>
 
-        <CustomAction Id="H2Reg.Install"   FileKey="H2Reg.exe" ExeCommand='-r -q CmdFile="[#Gallio.H2Reg.ini]"' Execute="deferred" Return="check" Impersonate="no"/>
+        <CustomAction Id="H2Reg.Install" FileKey="H2Reg.exe" ExeCommand='-r -q CmdFile="[#Gallio.H2Reg.ini]"' Execute="deferred" Return="check" Impersonate="no"/>
         <CustomAction Id="H2Reg.Uninstall" FileKey="H2Reg.exe" ExeCommand='-u -q CmdFile="[#Gallio.H2Reg.ini]"' Execute="deferred" Return="ignore" Impersonate="no"/>
+	
+        <Custom Action="Setup.Install" FileKey="Gallio.Utility.exe" ExeCommand="Setup /install" Execute="deferred" Return="check" Impersonate="no" />
+        <Custom Action="Setup.Uninstall" FileKey="Gallio.Utility.exe" ExeCommand="Setup /uninstall" Execute="deferred" Return="ignore" Impersonate="no" />
 
         <InstallExecuteSequence>
             <Custom Action="H2Reg.Install" After="InstallFiles"><![CDATA[(&feat_Gallio.VSHelp = 3) AND NOT(!feat_Gallio.VSHelp = 3)]]></Custom>
             <Custom Action="H2Reg.Uninstall" Before="RemoveFiles"><![CDATA[(&feat_Gallio.VSHelp = 2) AND (!feat_Gallio.VSHelp = 3)]]></Custom>
+	    
+            <Custom Action="Setup.Install" After="InstallFiles" />
+            <Custom Action="Setup.Uninstall" Before="RemoveFiles" />
         </InstallExecuteSequence>
 
         <UI>
             <ProgressText Action="H2Reg.Install" Template="[1]">Installing help files into Visual Studio ...</ProgressText>
             <ProgressText Action="H2Reg.Uninstall" Template="[1]">Uninstalling help files from Visual Studio ...</ProgressText>
+	    
+            <ProgressText Action="Setup.Install" Template="[1]">Installing components ...</ProgressText>
+            <ProgressText Action="Setup.Uninstall" Template="[1]">Uninstalling components ...</ProgressText>
         </UI>
 <?endif ?>
     </Fragment>

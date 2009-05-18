@@ -56,6 +56,12 @@
     <service serviceId="Gallio.UtilityCommand"
              serviceType="Gallio.Runtime.UtilityCommands.IUtilityCommand, Gallio" />
 
+    <service serviceId="Gallio.InstallerManager"
+             serviceType="Gallio.Runtime.Installer.IInstallerManager, Gallio" />
+
+    <service serviceId="Gallio.Installer"
+             serviceType="Gallio.Runtime.Installer.IInstaller, Gallio" />
+
     <service serviceId="Gallio.Converter"
              serviceType="Gallio.Runtime.Conversions.IConverter, Gallio" />
 
@@ -411,5 +417,20 @@
         <description>Checks for runtime installation errors.</description>
       </traits>
     </component>
+
+    <component componentId="Gallio.SetupCommand"
+               serviceId="Gallio.UtilityCommand"
+               componentType="Gallio.Runtime.Installer.SetupCommand, Gallio">
+      <traits>
+        <name>Setup</name>
+        <description>Installs or uninstalls components.</description>
+      </traits>
+    </component>
+
+    <!-- Installers -->
+
+    <component componentId="Gallio.InstallerManager"
+               serviceId="Gallio.InstallerManager"
+               componentType="Gallio.Runtime.Installer.DefaultInstallerManager, Gallio" />
   </components>
 </plugin>

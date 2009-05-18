@@ -55,7 +55,7 @@ namespace Gallio.Utility
         #region Commands
         [DefaultCommandLineArgument(
             CommandLineArgumentFlags.Multiple,
-            Description = "Specifies the utility command to perform and its arguments.  The list of available utility commands follows.",
+            Description = "Specifies the utility command to perform and its arguments.  The list of available utility commands follows.  Specify a command name and /? for help about its options.",
             ValueLabel = "command and args...",
             ConsumeUnrecognizedSwitches = true
             )]

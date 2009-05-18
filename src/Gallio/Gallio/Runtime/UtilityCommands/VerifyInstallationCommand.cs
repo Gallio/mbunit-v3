@@ -8,7 +8,7 @@ namespace Gallio.Runtime.UtilityCommands
     /// <summary>
     /// A utility command to verify that the plugin metadata and installation parameters are correct.
     /// </summary>
-    public class VerifyInstallationCommand : IUtilityCommand
+    public class VerifyInstallationCommand : BaseUtilityCommand<object>
     {
         private readonly IRuntime runtime;
 
@@ -22,22 +22,9 @@ namespace Gallio.Runtime.UtilityCommands
         }
 
         /// <inheritdoc />
-        public int Execute(UtilityCommandContext context)
+        public override int Execute(UtilityCommandContext context, object arguments)
         {
             return runtime.VerifyInstallation() ? 0 : 1;
-        }
-
-        /// <inheritdoc />
-        public Type GetArgumentClass()
-        {
-            return typeof(Arguments);
-        }
-
-        /// <summary>
-        /// The arguments for the command.
-        /// </summary>
-        public class Arguments
-        {
         }
     }
 }
