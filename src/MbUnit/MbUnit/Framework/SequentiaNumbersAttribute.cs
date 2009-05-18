@@ -19,12 +19,13 @@ using Gallio.Framework.Pattern;
 using Gallio.Common.Reflection;
 using System.Collections;
 using Gallio.Framework.Data.Generation;
+using Gallio.Framework;
 
 namespace MbUnit.Framework
 {
     /// <summary>
     /// <para>
-    /// Provides a column of sequential <see cref="Decimal"/> values as a data source.
+    /// Provides a column of sequential <see cref="Double"/> values as a data source.
     /// </para>
     /// <example>
     /// <code><![CDATA[
@@ -38,7 +39,7 @@ namespace MbUnit.Framework
     ///     }
     ///     
     ///     [Test]
-    ///     public void MyTestMethod2([SequentialNumbers(Start = 0, Step = 2.5, Count = 5)] double value)
+    ///     public void MyTestMethod2([SequentialNumbers(Start = 0, Stop = 10, Count = 5)] double value)
     ///     {
     ///         // This test will run 5 times with the values 0, 2.5, 5, 7.5, and 10.
     ///     }
@@ -50,60 +51,101 @@ namespace MbUnit.Framework
     [AttributeUsage(PatternAttributeTargets.DataContext, AllowMultiple = true, Inherited = true)]
     public class SequentiaNumbersAttribute : GenerationDataAttribute
     {
+        private double? start = null;
+        private double? stop = null;
+        private double? step = null;
+        private int? count = null;
+
         /// <summary>
         /// Gets or sets the starting value of the sequence.
         /// </summary>
-        /// <remarks>
-        /// The default value is 0.
-        /// </remarks>
         public double Start
         {
-            get;
-            set;
+            get
+            {
+                return start ?? 0;
+            }
+
+            set
+            {
+                start = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the ending value of the sequence.
+        /// </summary>
+        public double Stop
+        {
+            get
+            {
+                return stop ?? 0;
+            }
+
+            set
+            {
+                stop = value;
+            }
         }
 
         /// <summary>
         /// Gets or sets the increment between each value of the sequence.
         /// </summary>
-        /// <remarks>
-        /// The default value is 1.
-        /// </remarks>
         public double Step
         {
-            get;
-            set;
+            get
+            {
+                return step ?? 0;
+            }
+
+            set
+            {
+                step = value;
+            }
         }
 
         /// <summary>
         /// Gets or sets the length of the sequence.
         /// </summary>
-        /// <remarks>
-        /// The default value is 10.
-        /// </remarks>
         public int Count
         {
-            get;
-            set;
+            get
+            {
+                return count ?? 0;
+            }
+
+            set
+            {
+                count = value;
+            }
         }
 
         /// <summary>
-        /// Adds a column of sequential <see cref="Decimal"/> values.
+        /// Adds a column of sequential <see cref="Double"/> values.
         /// </summary>
         [CLSCompliant(false)]
         public SequentiaNumbersAttribute()
         {
-            Start = 0d;
-            Step = 10d;
-            Count = 1;
         }
 
-        /// <summary>
-        /// Returns a generator of random values.
-        /// </summary>
-        /// <returns>A generator.</returns>
+        /// <inheritdoc />
         protected override IGenerator GetGenerator()
         {
-            return new SequentialNumbersGenerator((decimal)Start, (decimal)Step, Count);
+            try
+            {
+                return new SequentialNumbersGenerator
+                {
+                    Start = start,
+                    Stop = stop,
+                    Step = step,
+                    Count = count
+                };
+            }
+            catch (GenerationException exception)
+            {
+                ThrowUsageErrorException("The sequential numbers generator was incorrectly initialized.", exception);
+                return null; // Make the compiler happy.
+            }
         }
     }
 }

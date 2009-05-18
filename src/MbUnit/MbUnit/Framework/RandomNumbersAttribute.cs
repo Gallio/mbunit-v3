@@ -20,6 +20,7 @@ using Gallio.Framework.Pattern;
 using Gallio.Common.Reflection;
 using System.Collections;
 using System.Text;
+using Gallio.Framework;
 
 namespace MbUnit.Framework
 {
@@ -48,34 +49,56 @@ namespace MbUnit.Framework
     [AttributeUsage(PatternAttributeTargets.DataContext, AllowMultiple = true, Inherited = true)]
     public class RandomNumbersAttribute : GenerationDataAttribute
     {
+        private double? minimum = null;
+        private double? maximum = null;
+        private int? count = null;
+
         /// <summary>
         /// Gets or sets the lower bound of the numeric range where random values are going to be generated.
-        /// The default value is 0.
         /// </summary>
         public double Minimum
         {
-            get;
-            set;
+            get
+            {
+                return minimum ?? 0;
+            }
+
+            set
+            {
+                minimum = value;
+            }
         }
 
         /// <summary>
         /// Gets or sets the upper bound of the numeric range where random values are going to be generated.
-        /// The default value is 1.
         /// </summary>
         public double Maximum
         {
-            get;
-            set;
+            get
+            {
+                return maximum ?? 0;
+            }
+
+            set
+            {
+                maximum = value;
+            }
         }
 
         /// <summary>
         /// Gets or sets the number of random values that are going to be generated.
-        /// The default value is 3.
         /// </summary>
         public int Count
         {
-            get;
-            set;
+            get
+            {
+                return count ?? 0;
+            }
+
+            set
+            {
+                count = value;
+            }
         }
 
         /// <summary>
@@ -84,9 +107,6 @@ namespace MbUnit.Framework
         [CLSCompliant(false)]
         public RandomNumbersAttribute()
         {
-            Minimum = 0d;
-            Maximum = 1d;
-            Count = 3;
         }
 
         /// <summary>
@@ -97,11 +117,16 @@ namespace MbUnit.Framework
         {
             try
             {
-                return new RandomNumbersGenerator(Minimum, Maximum, Count);
+                return new RandomNumbersGenerator
+                {
+                    Minimum = minimum, 
+                    Maximum = maximum, 
+                    Count = count
+                };
             }
-            catch(ArgumentException exception)
+            catch(GenerationException exception)
             {
-                ThrowUsageErrorException("The MbUnit random 'Double' data generator was incorrectly initialized.", exception);
+                ThrowUsageErrorException("The random numbers generator was incorrectly initialized.", exception);
                 return null; // Make the compiler happy.
             }
         }

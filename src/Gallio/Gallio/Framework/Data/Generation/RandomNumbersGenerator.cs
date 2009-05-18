@@ -27,32 +27,25 @@ namespace Gallio.Framework.Data.Generation
         /// <summary>
         /// Constructs a generator of random <see cref="Double"/> numbers.
         /// </summary>
-        /// <param name="count">The length of the sequence of values that
-        /// the generator must create.</param>
-        /// <param name="minimum">The lower bound of the range.</param>
-        /// <param name="maximum">The upper bound of the range.</param>
-        /// <exception cref="ArgumentException">Thrown if <paramref name="minimum"/> is greater than <paramref name="maximum"/>.</exception>
-        /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="count"/> is negative, 
-        /// or if <paramref name="minimum"/> or <paramref name="maximum"/> are one of the following:        
-        /// <list type="bullet">
-        /// <item><see cref="Double.NaN"/></item>
-        /// <item><see cref="Double.PositiveInfinity"/></item>
-        /// <item><see cref="Double.NegativeInfinity"/></item>
-        /// <item><see cref="Double.MinValue"/></item>
-        /// <item><see cref="Double.MaxValue"/></item>
-        /// </list>
-        /// </exception>
-        public RandomNumbersGenerator(double minimum, double maximum, int count)
-            :base(minimum, maximum, count)
+        public RandomNumbersGenerator()
         {
-            CheckValidValue(minimum, "minimum");
-            CheckValidValue(maximum, "maximum");
         }
 
         /// <inheritdoc/>
-        protected override double GetNextRandomValue()
+        protected override IEnumerable<double> GetSequence()
         {
-            return Minimum + InnerGenerator.NextDouble() * (Maximum - Minimum);
+            CheckProperty(Minimum.Value, "Minimum");
+            CheckProperty(Maximum.Value, "Maximum");
+
+            for (int i = 0; i < Count.Value; i++)
+            {
+                yield return GetNextRandomValue();
+            }
+        }
+
+        private double GetNextRandomValue()
+        {
+            return Minimum.Value + InnerGenerator.NextDouble() * (Maximum.Value - Minimum.Value);
         }
     }
 }

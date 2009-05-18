@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Collections;
 
 namespace Gallio.Framework.Data.Generation
 {
@@ -24,11 +25,8 @@ namespace Gallio.Framework.Data.Generation
     /// </summary>
     /// <typeparam name="T">The type of the value to generate.</typeparam>
     public abstract class RandomGenerator<T> : Generator<T>
-        where T : IComparable<T>
+        where T : struct, IComparable<T>, IEquatable<T>
     {
-        private readonly T minimum;
-        private readonly T maximum;
-
         /// <summary>
         /// A pseudo-random number generator.
         /// </summary>
@@ -37,54 +35,64 @@ namespace Gallio.Framework.Data.Generation
         /// <summary>
         /// Gets the lower bound of the range.
         /// </summary>
-        public T Minimum
+        public T? Minimum
         {
-            get
-            {
-                return minimum;
-            }
+            get;
+            set;
         }
 
         /// <summary>
         /// Gets the upper bound of the range.
         /// </summary>
-        public T Maximum
+        public T? Maximum
         {
-            get
-            {
-                return maximum;
-            }
+            get;
+            set;
         }
 
         /// <summary>
-        /// Constructor.
+        /// Gets the length of the sequence of values
+        /// created by the generator.
         /// </summary>
-        /// <param name="count">The length of the sequence of values that
-        /// the generator must create.</param>
-        /// <param name="minimum">The lower bound of the range.</param>
-        /// <param name="maximum">The upper bound of the range.</param>
-        /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="count"/> is negative.</exception>
-        /// <exception cref="ArgumentException">Thrown if <paramref name="minimum"/> is greater than <paramref name="maximum"/>.</exception>
-        protected RandomGenerator(T minimum, T maximum, int count)
-            : base(count)
+        public int? Count
         {
-            if (minimum.CompareTo(maximum) > 0)
-                throw new ArgumentException("The minimum value must be less than or equal to the maximum value.", "minimum");
+            get;
+            set;
+        }
 
-            this.minimum = minimum;
-            this.maximum = maximum;
+        /// <summary>
+        /// Default constructor.
+        /// </summary>
+        protected RandomGenerator()
+        {
         }
 
         /// <inheritdoc/>
-        protected sealed override T GetValue(int index)
+        public override IEnumerable Run()
         {
-            return GetNextRandomValue();
+            if (!Minimum.HasValue)
+                throw new GenerationException("The 'Minimum' property must be initialized.");
+
+            if (!Maximum.HasValue)
+                throw new GenerationException("The 'Maximum' property must be initialized.");
+
+            if (!Count.HasValue)
+                throw new GenerationException("The 'Count' property must be initialized.");
+
+            if (Minimum.Value.CompareTo(Maximum.Value) > 0)
+                throw new GenerationException("The 'Minimum' property must be less than or equal to the 'Maximum' property.");
+
+            if (Count.Value < 0)
+                throw new GenerationException("The 'Count' property wich specifies the length of the sequence must be strictly positive.");
+
+            CheckProperty(Count.Value, "Count");
+            return GetSequence();
         }
 
         /// <summary>
-        /// Returns the next random value.
+        /// Returns the sequence of random numbers.
         /// </summary>
-        /// <returns>The next random value.</returns>
-        protected abstract T GetNextRandomValue();
+        /// <returns>The sequence of values.</returns>
+        protected abstract IEnumerable<T> GetSequence();
     }
 }

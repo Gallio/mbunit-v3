@@ -16,38 +16,85 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Collections;
+using Gallio.Common;
 
 namespace Gallio.Framework.Data.Generation
 {
     /// <summary>
-    /// Generator of sequential <see cref="Decimal"/> values.
+    /// Generator of sequential <see cref="Double"/> values.
     /// </summary>
-    public class SequentialNumbersGenerator : SequentialGenerator<decimal>
+    public class SequentialNumbersGenerator : SequentialGenerator<double>
     {
         /// <summary>
-        /// Constructs a generator of sequential <see cref="Double"/> numbers.
+        /// Default constructor.
         /// </summary>
-        /// <param name="start">The starting point of the sequence.</param>
-        /// <param name="step">The increment between each value of the sequence.</param>
-        /// <param name="count">The length of the sequence of values that the generator must create.</param>
-        /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="count"/> is negative, 
-        /// or if <paramref name="from"/> or <paramref name="step"/> are one of the following:        
-        /// <list type="bullet">
-        /// <item><see cref="Decimal.MinValue"/></item>
-        /// <item><see cref="Decimal.MaxValue"/></item>
-        /// </list>
-        /// </exception>
-        public SequentialNumbersGenerator(decimal start, decimal step, int count)
-            : base(start, step, count)
+        public SequentialNumbersGenerator()
         {
-            CheckValidValue(start, "start");
-            CheckValidValue(step, "step");
         }
 
-        /// <inheritdoc/>
-        protected sealed override decimal GetValue(int index)
+        /// <inheritdoc />
+        protected override IEnumerable<double> GetStartStepCountSequence()
         {
-            return Start + index * Step;
+            CheckProperty(Start.Value, "Start");
+            CheckProperty(Step.Value, "Step");
+            CheckProperty(Count.Value, "Count");
+
+            if (Count.Value < 0)
+                throw new GenerationException("The 'Count' property must be greater than or equal to zero.");
+
+            double d = Start.Value;
+
+            for (int i = 0; i < Count; i++, d += Step.Value)
+            {
+                yield return d;
+            }
+        }
+
+        /// <inheritdoc />
+        protected override IEnumerable<double> GetStartStopCountSequence()
+        {
+            CheckProperty(Start.Value, "Start");
+            CheckProperty(Stop.Value, "Stop");
+            CheckProperty(Count.Value, "Count");
+
+            if (Count.Value < 0)
+                throw new GenerationException("The 'Count' property must be greater than or equal to zero.");
+
+            double d = Start.Value;
+            double step = Count.Value <= 1 ? 1 : (Stop.Value - Start.Value) / (Count.Value - 1);
+
+            for (int i = 0; i < Count; i++, d += step)
+            {
+                yield return d;
+            }
+        }
+
+        /// <inheritdoc />
+        protected override IEnumerable<double> GetStartStopStepSequence()
+        {
+            CheckProperty(Start.Value, "Start");
+            CheckProperty(Stop.Value, "Stop");
+            CheckProperty(Step.Value, "Step");
+
+            if (Step.Value == 0)
+                throw new GenerationException("The 'Step' property can not be equal to zero.");
+
+            if (Stop.Value != Start.Value && Math.Sign(Stop.Value - Start.Value) != Math.Sign(Step.Value))
+                throw new GenerationException("The sequence direction specified by the 'Start' and 'Stop' properties " +
+                    "must be consistent with the sign of the 'Step' property.");
+
+            Func<double, bool> stopCriterion;
+
+            if (Math.Sign(Step.Value) >= 0)
+                stopCriterion = d => (d <= Stop.Value);
+            else
+                stopCriterion = d => (d >= Stop.Value);
+
+            for (double d = Start.Value; stopCriterion(d); d += Step.Value)
+            {
+                yield return d;
+            }
         }
     }
 }

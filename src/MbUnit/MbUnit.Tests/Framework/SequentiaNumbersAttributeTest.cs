@@ -30,37 +30,49 @@ namespace MbUnit.Tests.Framework
     public class SequentiaNumbersAttributeTest : BaseTestWithSampleRunner
     {
         [Test]
-        [Row("SingleSequence", new[] { "[1]", "[1.25]", "[1.5]", "[1.75]", "[2]" })]
+        [Row("SingleStartStepCountSequence", new[] { "[1]", "[1.25]", "[1.5]", "[1.75]", "[2]" })]
+        [Row("SingleStartStopCountSequence", new[] { "[1]", "[1.25]", "[1.5]", "[1.75]", "[2]" })]
+        [Row("SingleStartStopStepSequence", new[] { "[1]", "[1.25]", "[1.5]", "[1.75]", "[2]" })]
         [Row("TwoCombinatorialSequences", new[] 
         {   "[1,8]", 
-            "[2,8]", 
-            "[3,8]", 
-            "[4,8]",
             "[1,9]", 
+            "[2,8]", 
             "[2,9]", 
+            "[3,8]", 
             "[3,9]", 
+            "[4,8]",
             "[4,9]" })]
         public void EnumData(string testMethod, string[] expectedTestLogOutput)
         {
             var run = Runner.GetPrimaryTestStepRun(CodeReference.CreateFromMember(typeof(SequentiaNumbersSample).GetMethod(testMethod)));
-            Assert.AreElementsEqualIgnoringOrder(expectedTestLogOutput, 
-                run.Children.Select(x => x.TestLog.GetStream(MarkupStreamNames.Default).ToString()),
-                (x, y) => y.Contains(x));
+            Assert.AreElementsEqual(expectedTestLogOutput, run.Children.Select(x => x.TestLog.GetStream(MarkupStreamNames.Default).ToString()), (x, y) => y.Contains(x));
         }
 
         [TestFixture, Explicit("Sample")]
         public class SequentiaNumbersSample
         {
             [Test]
-            public void SingleSequence([SequentiaNumbers(Start = 1, Step = 0.25, Count = 5)] double value)
+            public void SingleStartStepCountSequence([SequentiaNumbers(Start = 1, Step = 0.25, Count = 5)] double value)
+            {
+                TestLog.WriteLine("[{0}]", value);
+            }
+
+            [Test]
+            public void SingleStartStopCountSequence([SequentiaNumbers(Start = 1, Stop = 2, Count = 5)] double value)
+            {
+                TestLog.WriteLine("[{0}]", value);
+            }
+
+            [Test]
+            public void SingleStartStopStepSequence([SequentiaNumbers(Start = 1, Stop = 2, Step = 0.25)] double value)
             {
                 TestLog.WriteLine("[{0}]", value);
             }
 
             [Test]
             public void TwoCombinatorialSequences(
-                [SequentiaNumbers(Start = 1, Step = 1, Count = 4)] int value1,
-                [SequentiaNumbers(Start = 8, Step = 1, Count = 2)] short value2)
+                [SequentiaNumbers(Start = 1, Step = 1, Count = 4)] Decimal value1,
+                [SequentiaNumbers(Start = 8, Stop = 9, Count = 2)] short value2)
             {
                 TestLog.WriteLine("[{0},{1}]", value1, value2);
             }

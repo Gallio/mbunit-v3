@@ -25,50 +25,17 @@ namespace Gallio.Framework.Data.Generation
     /// </summary>
     /// <typeparam name="T">The type of the values returned by the generator.</typeparam>
     public abstract class Generator<T> : IGenerator
+        where T : struct, IComparable<T>, IEquatable<T>
     {
-        private readonly int count;
-
         /// <summary>
-        /// Gets the length of the sequence of values
-        /// created by the generator.
+        /// Default constructor.
         /// </summary>
-        public int Count
+        protected Generator()
         {
-            get
-            {
-                return count;
-            }
         }
 
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        /// <param name="count">The length of the sequence of values that
-        /// the generator must create.</param>
-        /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="count"/> is negative.</exception>
-        protected Generator(int count)
-        {
-            if (count < 0)
-                throw new ArgumentOutOfRangeException("count", "The length of the sequence cannot be negative.");
-
-            this.count = count;
-        }
-
-        /// <inheritdoc/>
-        public IEnumerable Run()
-        {
-            for (int i = 0; i < count; i++)
-            {
-                yield return GetValue(i);
-            }
-        }
-
-        /// <summary>
-        /// Returns a value of the sequence.
-        /// </summary>
-        /// <param name="index">The index in the sequence.</param>
-        /// <returns>The generated value.</returns>
-        protected abstract T GetValue(int index);
+        /// <inheritdoc />
+        public abstract IEnumerable Run();
 
         /// <summary>
         /// Checks for the specified value to be not one of the following:
@@ -80,18 +47,17 @@ namespace Gallio.Framework.Data.Generation
         /// <item><see cref="Double.MaxValue"/></item>
         /// </list>
         /// </summary>
-        /// <param name="value">The <see cref="Double"/> value to be checked.</param>
-        /// <param name="valueName">A friendly name for the value.</param>
-        /// <exception cref="ArgumentOutOfRangeException">The specified value is invalid.</exception>
-        protected static void CheckValidValue(double value, string valueName)
+        /// <param name="propertyValue">The <see cref="Double"/> property value to be checked.</param>
+        /// <param name="propertyName">A friendly name for the property.</param>
+        /// <exception cref="GenerationException">The specified property value is invalid.</exception>
+        protected static void CheckProperty(double propertyValue, string propertyName)
         {
-            if (Double.IsNaN(value) ||
-                Double.IsInfinity(value) ||
-                value == Double.MinValue ||
-                value == Double.MaxValue)
-                throw new ArgumentOutOfRangeException(String.Format("The {0} value cannot be one of the following: " +
-                    "Double.NaN, Double.PositiveInfinity, Double.NegativeInfinity, Double.MinValue, " +
-                    "Double.MaxValue.", valueName), valueName);
+            if (Double.IsNaN(propertyValue) ||
+                Double.IsInfinity(propertyValue) ||
+                propertyValue == Double.MinValue ||
+                propertyValue == Double.MaxValue)
+                throw new GenerationException(String.Format("The '{0}' property cannot be one of the following: " +
+                    "Double.NaN, Double.PositiveInfinity, Double.NegativeInfinity, Double.MinValue, Double.MaxValue.", propertyName));
         }
 
         /// <summary>
@@ -101,31 +67,14 @@ namespace Gallio.Framework.Data.Generation
         /// <item><see cref="Int32.MaxValue"/></item>
         /// </list>
         /// </summary>
-        /// <param name="value">The <see cref="Double"/> value to be checked.</param>
-        /// <param name="valueName">A friendly name for the value.</param>
-        /// <exception cref="ArgumentOutOfRangeException">The specified value is invalid.</exception>
-        protected static void CheckValidValue(int value, string valueName)
+        /// <param name="propertyValue">The <see cref="Double"/> property value to be checked.</param>
+        /// <param name="propertyName">A friendly name for the property.</param>
+        /// <exception cref="GenerationException">The specified property value is invalid.</exception>
+        protected static void CheckProperty(int propertyValue, string propertyName)
         {
-            if (value == Int32.MinValue || value == Int32.MaxValue)
-                throw new ArgumentOutOfRangeException(String.Format("The {0} value cannot be one of the following: " +
-                    "Int32.MinValue or Int32.MaxValue.", valueName), valueName);
-        }
-
-        /// <summary>
-        /// Checks for the specified value to be not one of the following:
-        /// <list type="bullet">
-        /// <item><see cref="Decimal.MinValue"/></item>
-        /// <item><see cref="Decimal.MaxValue"/></item>
-        /// </list>
-        /// </summary>
-        /// <param name="value">The <see cref="Decimal"/> value to be checked.</param>
-        /// <param name="valueName">A friendly name for the value.</param>
-        /// <exception cref="ArgumentOutOfRangeException">The specified value is invalid.</exception>
-        protected static void CheckValidValue(decimal value, string valueName)
-        {
-            if (value == Decimal.MinValue || value == Decimal.MaxValue)
-                throw new ArgumentOutOfRangeException(String.Format("The {0} value cannot be one of the following: " +
-                    "Decimal.MinValue or Decimal.MaxValue.", valueName), valueName);
+            if (propertyValue == Int32.MinValue || propertyValue == Int32.MaxValue)
+                throw new GenerationException(String.Format("The '{0}' property cannot be one of the following: " +
+                    "Int32.MinValue or Int32.MaxValue.", propertyName));
         }
     }
 }

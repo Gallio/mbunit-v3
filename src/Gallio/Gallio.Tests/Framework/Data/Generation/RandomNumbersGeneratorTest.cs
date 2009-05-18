@@ -19,6 +19,7 @@ using System.Linq;
 using System.Text;
 using Gallio.Framework.Data.Generation;
 using MbUnit.Framework;
+using Gallio.Framework;
 
 namespace Gallio.Tests.Framework.Data.Generation
 {
@@ -33,7 +34,13 @@ namespace Gallio.Tests.Framework.Data.Generation
         [Row(0, 100000, 3)]
         public void Generate_sequence_ok(double minimum, double maximum, int count)
         {
-            var generator = new RandomNumbersGenerator(minimum, maximum, count);
+            var generator = new RandomNumbersGenerator
+            {
+                Minimum = minimum,
+                Maximum = maximum,
+                Count = count
+            };
+
             var values = generator.Run().Cast<double>().ToArray();
             Assert.AreEqual(count, values.Length);
             Assert.Multiple(() =>
@@ -46,28 +53,28 @@ namespace Gallio.Tests.Framework.Data.Generation
         }
 
         [Test]
-        [ExpectedArgumentOutOfRangeException]
-        public void Constructs_with_negative_count_argument_should_throw_exception()
+        [Row(Double.MinValue, 10, 1)]
+        [Row(Double.MaxValue, 10, 1)]
+        [Row(Double.PositiveInfinity, 10, 1)]
+        [Row(Double.NegativeInfinity, 10, 1)]
+        [Row(Double.NaN, 10, 1)]
+        [Row(10, Double.MinValue, 1)]
+        [Row(10, Double.MaxValue, 1)]
+        [Row(10, Double.PositiveInfinity, 1)]
+        [Row(10, Double.NegativeInfinity, 1)]
+        [Row(10, Double.NaN, 1)]
+        [Row(10, 5, 1, Description = "Minimum greater than maximum")]
+        [Row(10, 20, -1, Description = "Negative count")]
+        public void Constructs_with_invalid_property_should_throw_exception(double minimum, double maximum, int count)
         {
-            new RandomNumbersGenerator(0, 10, -1);
-        }
+            var generator = new RandomNumbersGenerator
+            {
+                Minimum = minimum,
+                Maximum = maximum,
+                Count = count
+            };
 
-        [Test]
-        [ExpectedArgumentException]
-        [Row(Double.MinValue, 10)]
-        [Row(Double.MaxValue, 10)]
-        [Row(Double.PositiveInfinity, 10)]
-        [Row(Double.NegativeInfinity, 10)]
-        [Row(Double.NaN, 10)]
-        [Row(10, Double.MinValue)]
-        [Row(10, Double.MaxValue)]
-        [Row(10, Double.PositiveInfinity)]
-        [Row(10, Double.NegativeInfinity)]
-        [Row(10, Double.NaN)]
-        [Row(10, 5)]
-        public void Constructs_with_invalid_range_should_throw_exception(double minimum, double maximum)
-        {
-            new RandomNumbersGenerator(minimum, maximum, 10);
+            Assert.Throws<GenerationException>(() => generator.Run().Cast<double>().ToArray());
         }
     }
 }

@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Collections;
 
 namespace Gallio.Framework.Data.Generation
 {
@@ -24,45 +25,90 @@ namespace Gallio.Framework.Data.Generation
     /// </summary>
     /// <typeparam name="T">The type of the value to generate.</typeparam>
     public abstract class SequentialGenerator<T> : Generator<T>
-        where T : IComparable<T>
+        where T : struct, IComparable<T>, IEquatable<T>
     {
-        private readonly T start;
-        private readonly T step;
+        /// <summary>
+        /// Gets or sets the starting point of the sequence.
+        /// </summary>
+        public T? Start
+        {
+            get;
+            set;
+        }
 
         /// <summary>
-        /// Gets the starting point of the sequence.
+        /// Gets or sets the ending point of the sequence.
         /// </summary>
-        public T Start
+        public T? Stop
         {
-            get
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// Gets or sets the increment between each value of the sequence.
+        /// </summary>
+        public T? Step
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// Gets or sets the length of the sequence of values
+        /// created by the generator.
+        /// </summary>
+        public int? Count
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// Default constructor.
+        /// </summary>
+        protected SequentialGenerator()
+        {
+        }
+
+        /// <inheritdoc/>
+        public override IEnumerable Run()
+        {
+            if (Start.HasValue && !Stop.HasValue && Step.HasValue && Count.HasValue)
             {
-                return start;
+                return GetStartStepCountSequence();
+            }
+            else if (Start.HasValue && Stop.HasValue && !Step.HasValue && Count.HasValue)
+            {
+                return GetStartStopCountSequence();
+            }
+            else if (Start.HasValue && Stop.HasValue && Step.HasValue && !Count.HasValue)
+            {
+                return GetStartStopStepSequence();
+            }
+            else
+            {
+                throw new GenerationException("Invalid data generator property settings. Only the following combinations " +
+                    "are possible: {Start, Step, Count}, {Start, Stop, Count}, or {Start, Stop, Step}.");
             }
         }
 
         /// <summary>
-        /// Gets the increment between each value of the sequence.
+        /// Returns the linear sequence constructed by using the <see cref="Start"/>, <see cref="Step"/>, and <see cref="Count"/> properties.
         /// </summary>
-        public T Step
-        {
-            get
-            {
-                return step;
-            }
-        }
-
+        /// <returns>The sequence of values.</returns>
+        protected abstract IEnumerable<T> GetStartStepCountSequence();
+        
         /// <summary>
-        /// Constructor.
+        /// Returns the linear sequence constructed by using the <see cref="Start"/>, <see cref="Stop"/>, and <see cref="Count"/> properties.
         /// </summary>
-        /// <param name="start">The starting point of the sequence.</param>
-        /// <param name="step">The increment between each value of the sequence.</param>
-        /// <param name="count">The length of the sequence of values that the generator must create.</param>
-        /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="count"/> is negative.</exception>
-        protected SequentialGenerator(T start, T step, int count)
-            : base(count)
-        {
-            this.start = start;
-            this.step = step;
-        }
+        /// <returns>The sequence of values.</returns>
+        protected abstract IEnumerable<T> GetStartStopCountSequence();
+        
+        /// <summary>
+        /// Returns the linear sequence constructed by using the <see cref="Start"/>, <see cref="Stop"/>, and <see cref="Step"/> properties.
+        /// </summary>
+        /// <returns>The sequence of values.</returns>
+        protected abstract IEnumerable<T> GetStartStopStepSequence();
     }
 }

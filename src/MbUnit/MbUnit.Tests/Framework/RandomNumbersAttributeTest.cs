@@ -31,7 +31,7 @@ namespace MbUnit.Tests.Framework
     public class RandomDoubleDataAttributeTest : BaseTestWithSampleRunner
     {
         [Test]
-        [Row("Single", -10, 10, 100)]
+        [Row("Single", -10, 10, 1000)]
         public void EnumData(string testMethod, double expectedMinimum, double expectedMaximum, int expectedCount)
         {
             var run = Runner.GetPrimaryTestStepRun(CodeReference.CreateFromMember(typeof(RandomNumbersSample).GetMethod(testMethod)));
@@ -51,7 +51,7 @@ namespace MbUnit.Tests.Framework
         public class RandomNumbersSample
         {
             [Test]
-            public void Single([RandomNumbers(Minimum = -10, Maximum = 10, Count = 100)] double value)
+            public void Single([RandomNumbers(Minimum = -10, Maximum = 10, Count = 1000)] double value)
             {
                 TestLog.WriteLine("[{0}]", value);
             }
