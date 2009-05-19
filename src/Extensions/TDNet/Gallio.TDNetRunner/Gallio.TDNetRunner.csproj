@@ -73,6 +73,8 @@
     <Compile Include="BaseTestRunner.cs" />
     <Compile Include="Core\BaseProxyTestRunner.cs" />
     <Compile Include="Core\LocalProxyTestRunner.cs" />
+    <Compile Include="Core\TDNetRunnerInstaller.cs" />
+    <Compile Include="Core\TDNetRunnerInstallationMode.cs" />
     <Compile Include="Facade\FacadeFilterCategoryMode.cs" />
     <Compile Include="Facade\FacadeOptions.cs" />
     <Compile Include="Facade\AdapterFacadeTestListener.cs" />

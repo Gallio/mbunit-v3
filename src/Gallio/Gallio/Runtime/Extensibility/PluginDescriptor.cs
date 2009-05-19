@@ -154,6 +154,16 @@ namespace Gallio.Runtime.Extensibility
             get { return probingPaths; }
         }
 
+        public IEnumerable<string> GetSearchPaths(string resourcePath)
+        {
+            if (resourcePath != null && resourcePath.Length == 0)
+                throw new ArgumentException(
+                    "Resource path must not be empty.  Use null to get search paths without a particular resource specified.",
+                    "resourcePath");
+
+            return ResourceSearchRules.GetSearchPaths(baseDirectory, probingPaths, resourcePath);
+        }
+
         public Type ResolvePluginType()
         {
             if (pluginType == null)

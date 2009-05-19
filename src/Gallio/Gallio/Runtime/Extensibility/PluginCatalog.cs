@@ -110,7 +110,7 @@ namespace Gallio.Runtime.Extensibility
                         if (assembly.CodeBase != null)
                         {
                             List<string> attemptedPaths = new List<string>();
-                            string foundCodeBasePath = ProbeForCodeBase(assembly.CodeBase, baseDirectory, plugin.ProbingPaths, attemptedPaths);
+                            string foundCodeBasePath = ProbeForCodeBase(baseDirectory, plugin.ProbingPaths, assembly.CodeBase, attemptedPaths);
                             if (foundCodeBasePath == null)
                             {
                                 StringBuilder formattedPaths = new StringBuilder();
@@ -222,26 +222,14 @@ namespace Gallio.Runtime.Extensibility
             }
         }
 
-        private static string ProbeForCodeBase(string absoluteOrRelativeCodeBase, DirectoryInfo baseDirectory,
-            IList<string> probingPaths, IList<string> attemptedPaths)
+        private static string ProbeForCodeBase(DirectoryInfo baseDirectory, IList<string> probingPaths, string codeBase, ICollection<string> attemptedPaths)
         {
-            if (Path.IsPathRooted(absoluteOrRelativeCodeBase))
+            foreach (string searchPath in ResourceSearchRules.GetSearchPaths(baseDirectory, probingPaths, codeBase))
             {
-                attemptedPaths.Add(absoluteOrRelativeCodeBase);
+                attemptedPaths.Add(searchPath);
 
-                if (File.Exists(absoluteOrRelativeCodeBase))
-                    return absoluteOrRelativeCodeBase;
-            }
-            else
-            {
-                foreach (string probingPath in AssemblyProbingRules.GetProbingPathCombinations(baseDirectory.FullName, probingPaths))
-                {
-                    string candidatePath = Path.Combine(probingPath, absoluteOrRelativeCodeBase);
-                    attemptedPaths.Add(candidatePath);
-
-                    if (File.Exists(candidatePath))
-                        return candidatePath;
-                }
+                if (File.Exists(searchPath))
+                    return searchPath;
             }
 
             return null;

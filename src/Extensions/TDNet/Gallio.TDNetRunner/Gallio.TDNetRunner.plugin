@@ -17,4 +17,14 @@
 
     <assembly fullName="Gallio.Loader, Version=0.0.0.0, Culture=neutral, PublicKeyToken=eb9cfa67ee6ab36e"/>
   </assemblies>
+
+  <components>
+    <component componentId="TDNetRunner.Installer"
+               serviceId="Gallio.Installer"
+               componentType="Gallio.TDNetRunner.Core.TDNetRunnerInstaller, Gallio.TDNetRunner">
+      <traits>
+        <requiresElevation>true</requiresElevation>
+      </traits>
+    </component>
+  </components>
 </plugin>

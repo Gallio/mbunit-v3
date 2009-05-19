@@ -44,11 +44,11 @@ namespace Gallio.Runtime.Installer
             {
                 if (arguments.Install)
                 {
-                    installerManager.Install(context.Logger, progressMonitor);
+                    installerManager.Install(progressMonitor);
                 }
                 else
                 {
-                    installerManager.Uninstall(context.Logger, progressMonitor);
+                    installerManager.Uninstall(progressMonitor);
                 }
             });
 

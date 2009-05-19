@@ -133,11 +133,8 @@ namespace Gallio.Runtime
                 {
                     if (! pluginDescriptor.IsDisabled)
                     {
-                        foreach (string probingPath in AssemblyProbingRules.GetProbingPathCombinations(
-                            pluginDescriptor.BaseDirectory.FullName, pluginDescriptor.ProbingPaths))
-                        {
-                            assemblyResolverManager.AddHintDirectory(probingPath);
-                        }
+                        foreach (string searchPath in pluginDescriptor.GetSearchPaths(null))
+                            assemblyResolverManager.AddHintDirectory(searchPath);
                     }
                 }
 
@@ -157,7 +154,7 @@ namespace Gallio.Runtime
                     TraitsProperties =
                     {
                         { "Name", "Gallio Built-In Components" },
-                        { "Description", "Provides built-in runtime service." },
+                        { "Description", "Provides built-in runtime services." },
                         { "Version", typeof(DefaultRuntime).Assembly.GetName().Version.ToString() }
                     }
                 });

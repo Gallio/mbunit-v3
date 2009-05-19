@@ -138,6 +138,8 @@
     <Compile Include="Runner\Extensions\ITestRunnerExtensionManager.cs" />
     <Compile Include="Runner\Extensions\TestRunnerExtensionFactoryTraits.cs" />
     <Compile Include="Runner\Extensions\DefaultTestRunnerExtensionManager.cs" />
+    <Compile Include="Runtime\Extensibility\ResourceSearchRules.cs" />
+    <Compile Include="Runtime\Installer\BaseInstaller.cs" />
     <Compile Include="Runtime\Installer\DefaultInstallerManager.cs" />
     <Compile Include="Runtime\Installer\IInstaller.cs" />
     <Compile Include="Runtime\Installer\IInstallerManager.cs" />
@@ -381,7 +383,6 @@
     <Compile Include="Runtime\Debugging\IDebugger.cs" />
     <Compile Include="Runtime\Debugging\IDebuggerManager.cs" />
     <Compile Include="Runtime\Debugging\NullDebugger.cs" />
-    <Compile Include="Runtime\Extensibility\AssemblyProbingRules.cs" />
     <Compile Include="Runtime\Extensibility\AssemblyReference.cs" />
     <Compile Include="Runtime\Extensibility\CachingPluginLoader.cs" />
     <Compile Include="Runtime\Extensibility\ComponentRegistration.cs" />

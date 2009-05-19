@@ -39,25 +39,31 @@ namespace Gallio.Runtime.Installer
         }
 
         /// <inheritdoc />
-        public void Install(ILogger logger, IProgressMonitor progressMonitor)
+        public void Install(IProgressMonitor progressMonitor)
         {
+            if (progressMonitor == null)
+                throw new ArgumentNullException("progressMonitor");
+
             using (progressMonitor.BeginTask("Installing components.", installerHandles.Length + 1))
             {
                 foreach (var installerHandle in installerHandles)
                 {
-                    installerHandle.GetComponent().Install(logger, progressMonitor.CreateSubProgressMonitor(1));
+                    installerHandle.GetComponent().Install(progressMonitor.CreateSubProgressMonitor(1));
                 }
             }
         }
 
         /// <inheritdoc />
-        public void Uninstall(ILogger logger, IProgressMonitor progressMonitor)
+        public void Uninstall(IProgressMonitor progressMonitor)
         {
+            if (progressMonitor == null)
+                throw new ArgumentNullException("progressMonitor");
+
             using (progressMonitor.BeginTask("Uninstalling components.", installerHandles.Length + 1))
             {
                 foreach (var installerHandle in installerHandles)
                 {
-                    installerHandle.GetComponent().Uninstall(logger, progressMonitor.CreateSubProgressMonitor(1));
+                    installerHandle.GetComponent().Uninstall(progressMonitor.CreateSubProgressMonitor(1));
                 }
             }
         }

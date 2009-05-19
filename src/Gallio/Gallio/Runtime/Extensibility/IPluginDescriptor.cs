@@ -94,10 +94,30 @@ namespace Gallio.Runtime.Extensibility
         IList<IPluginDescriptor> PluginDependencies { get; }
 
         /// <summary>
-        /// Gets the list of additional probing paths in which to attempt to locate
+        /// Gets the list of additional relative or absolute probing paths in which to attempt to locate
         /// referenced assemblies.
         /// </summary>
         IList<string> ProbingPaths { get; }
+
+        /// <summary>
+        /// Gets an enumeration of all absolute paths to be searched in order to find a given resource.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// The enumeration consists of all combinations of the base directory and probing paths, including
+        /// the use of an optional "bin" directory.  For example, if the base directory is "C:\Base", and the
+        /// probing paths list contains "Probing", and we are looking for "resource.dll" then this method will
+        /// return the following paths: "C:\Base\resource.dll", "C:\Base\bin\resource.dll", "C:\Base\Probing\resource.dll"
+        /// and "C:\Base\Probing\bin\resource.dll".
+        /// </para>
+        /// <para>
+        /// If the resource path is absolute then the returned search paths will consist of just that absolute path.
+        /// </para>
+        /// </remarks>
+        /// <param name="resourcePath">The relative or absolute path of the resource to find or null to return
+        /// the paths of the search directories themselves</param>
+        /// <returns>An enumeration of search paths</returns>
+        IEnumerable<string> GetSearchPaths(string resourcePath);
 
         /*
         /// <summary>

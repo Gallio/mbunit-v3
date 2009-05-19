@@ -29,19 +29,15 @@ namespace Gallio.Runtime.Installer
         /// <summary>
         /// Installs components.
         /// </summary>
-        /// <param name="logger">The logger</param>
         /// <param name="progressMonitor">The progress monitor</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="logger"/>
-        /// or <paramref name="progressMonitor"/> is null</exception>
-        void Install(ILogger logger, IProgressMonitor progressMonitor);
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="progressMonitor"/> is null</exception>
+        void Install(IProgressMonitor progressMonitor);
 
         /// <summary>
         /// Uninstalls components.
         /// </summary>
-        /// <param name="logger">The logger</param>
         /// <param name="progressMonitor">The progress monitor</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="logger"/>
-        /// or <paramref name="progressMonitor"/> is null</exception>
-        void Uninstall(ILogger logger, IProgressMonitor progressMonitor);
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="progressMonitor"/> is null</exception>
+        void Uninstall(IProgressMonitor progressMonitor);
     }
 }

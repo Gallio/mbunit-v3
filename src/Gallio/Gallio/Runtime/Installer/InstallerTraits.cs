@@ -25,5 +25,16 @@ namespace Gallio.Runtime.Installer
     /// </summary>
     public class InstallerTraits : Traits
     {
+        /// <summary>
+        /// Gets or sets whether an installer requires privilege elevation (admin access)
+        /// to run.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// On Windows Vista and more recent operating systems, this will result in the
+        /// appearance of a UAC Shield icon.
+        /// </para>
+        /// </remarks>
+        public bool RequiresElevation { get; set; }
     }
 }

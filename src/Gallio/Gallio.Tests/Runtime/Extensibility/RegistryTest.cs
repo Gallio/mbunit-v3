@@ -636,6 +636,76 @@ namespace Gallio.Tests.Runtime.Extensibility
             }
         }
 
+        public class PluginDescriptorSearchPaths
+        {
+            [Test]
+            public void GetSearchPaths_WhenResourcePathIsEmpty_Throws()
+            {
+                var registry = new Registry();
+                var plugin = registry.RegisterPlugin(new PluginRegistration("pluginId", new TypeName("InvalidPlugin, Assembly"), new DirectoryInfo(@"C:\")));
+
+                Assert.Throws<ArgumentException>(() => plugin.GetSearchPaths(""));
+            }
+
+            [Test]
+            public void GetSearchPaths_WhenResourcePathIsNull_ReturnsBinAndProbingPaths()
+            {
+                var registry = new Registry();
+                var plugin = registry.RegisterPlugin(new PluginRegistration("pluginId", new TypeName("InvalidPlugin, Assembly"), new DirectoryInfo(@"C:\"))
+                    {
+                        ProbingPaths = { "ProbeA", "ProbeB" }
+                    });
+
+                IList<string> result = plugin.GetSearchPaths(null).ToList();
+
+                Assert.AreElementsEqual(new[]
+                {
+                    @"C:\",
+                    @"C:\bin",
+                    @"C:\ProbeA",
+                    @"C:\bin\ProbeA",
+                    @"C:\ProbeB",
+                    @"C:\bin\ProbeB"
+                }, result);
+            }
+
+            [Test]
+            public void GetSearchPaths_WhenResourcePathIsRelative_ReturnsBinAndProbingPathsWithResourcePathAppended()
+            {
+                var registry = new Registry();
+                var plugin = registry.RegisterPlugin(new PluginRegistration("pluginId", new TypeName("InvalidPlugin, Assembly"), new DirectoryInfo(@"C:\"))
+                {
+                    ProbingPaths = { "ProbeA", "ProbeB" }
+                });
+
+                IList<string> result = plugin.GetSearchPaths("resource.txt").ToList();
+
+                Assert.AreElementsEqual(new[]
+                {
+                    @"C:\resource.txt",
+                    @"C:\bin\resource.txt",
+                    @"C:\ProbeA\resource.txt",
+                    @"C:\bin\ProbeA\resource.txt",
+                    @"C:\ProbeB\resource.txt",
+                    @"C:\bin\ProbeB\resource.txt"
+                }, result);
+            }
+
+            [Test]
+            public void GetSearchPaths_WhenResourcePathIsAbsolute_ReturnsResourcePathItself()
+            {
+                var registry = new Registry();
+                var plugin = registry.RegisterPlugin(new PluginRegistration("pluginId", new TypeName("InvalidPlugin, Assembly"), new DirectoryInfo(@"C:\")));
+
+                IList<string> result = plugin.GetSearchPaths(@"C:\SomePath\resource.txt").ToList();
+
+                Assert.AreElementsEqual(new[]
+                {
+                    @"C:\SomePath\resource.txt"
+                }, result);
+            }
+        }
+
         public class PluginDescriptorResolution
         {
             [Test]

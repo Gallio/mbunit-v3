@@ -19,7 +19,7 @@
   </assemblies>
 
   <components>
-    <component componentId="Gallio.TDNetRunner.UI.PreferencePaneProvider"
+    <component componentId="TDNetRunner.UI.PreferencePaneProvider"
                 serviceId="Gallio.UI.PreferencePaneProvider"
                 componentType="Gallio.TDNetRunner.UI.Preferences.TDNetPreferencePaneProvider, Gallio.TDNetRunner.UI">
       <traits>
