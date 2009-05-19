@@ -121,6 +121,9 @@
     <EmbeddedResource Include="ControlPanel\ControlPanelDialog.resx">
       <DependentUpon>ControlPanelDialog.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="ControlPanel\ControlPanelTab.resx">
+      <DependentUpon>ControlPanelTab.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="ControlPanel\Plugins\PluginControlPanelTab.resx">
       <DependentUpon>PluginControlPanelTab.cs</DependentUpon>
     </EmbeddedResource>
@@ -132,6 +135,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ControlPanel\Preferences\PreferenceControlPanelTab.resx">
       <DependentUpon>PreferenceControlPanelTab.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ControlPanel\Preferences\PreferencePane.resx">
+      <DependentUpon>PreferencePane.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -150,6 +156,7 @@
   <ItemGroup>
     <None Include="Resources\GallioControlPanel.ico" />
     <Content Include="Gallio.UI.plugin" />
+    <None Include="Resources\DefaultPreferencePaneIcon.ico" />
     <None Include="Resources\DefaultPluginAboutIcon.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

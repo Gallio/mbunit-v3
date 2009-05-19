@@ -64,8 +64,11 @@ namespace Gallio.UI.ControlPanel.Preferences
 
             if (icon != null)
             {
-                treeNode.ImageIndex = preferencePaneTree.ImageList.Images.Count;
-                preferencePaneTree.ImageList.Images.Add(icon);
+                int imageIndex = preferencePaneIconImageList.Images.Count;
+                preferencePaneIconImageList.Images.Add(icon);
+
+                treeNode.ImageIndex = imageIndex;
+                treeNode.SelectedImageIndex = imageIndex;
             }
         }
 

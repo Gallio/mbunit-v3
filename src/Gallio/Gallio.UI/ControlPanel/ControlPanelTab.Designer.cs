@@ -28,8 +28,17 @@
         /// </summary>
         private void InitializeComponent()
         {
-            components = new System.ComponentModel.Container();
+            this.SuspendLayout();
+            // 
+            // ControlPanelTab
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.MinimumSize = new System.Drawing.Size(460, 360);
+            this.Name = "ControlPanelTab";
+            this.Size = new System.Drawing.Size(460, 360);
+            this.ResumeLayout(false);
+
         }
 
         #endregion

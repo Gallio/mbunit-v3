@@ -28,7 +28,9 @@ namespace MbUnit.Framework
     /// <remarks>
     /// <para>
     /// An XML data set selects nodes from an XML document using XPath
-    /// expressions.  The selected nodes are returned as <see cref="XPathNavigator" /> objects.
+    /// expressions.  The selected nodes are returned as <see cref="XPathNavigator" /> objects
+    /// but MbUnit will automatically convert the values to the types requested by the test
+    /// such as strings or ints.
     /// </para>
     /// <para>
     /// Two XPath expressions are used.

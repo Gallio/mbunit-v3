@@ -16,6 +16,12 @@
                           Assembly=".net" AssemblyApplication="Gallio.TDNetRunner.UI.dll" />
                     <File Name="Gallio.TDNetRunner.UI.plugin" />
                 </Component>
+
+		<Directory Id="TDNet.Resources" Name="Resources">
+		    <Component Id="TDNet.Resources" Guid="{8DDAEC10-F8F6-45c4-B27B-DB00DAB254C4}" Win64="no">
+		        <File Name="TestDriven.ico" KeyPath="yes" />
+		    </Component>
+		</Directory>
             </Directory>
         </DirectoryRef>
 
@@ -23,6 +29,7 @@
                  Description='Installs the TestDriven.Net add-in.  TestDriven.Net itself must be downloaded and installed separately.'>
             <ComponentRef Id='Gallio.TDNetRunner'/>
             <ComponentRef Id='Gallio.TDNetRunner.UI'/>
+            <ComponentRef Id='TDNet.Resources'/>
         </Feature>
     </Fragment>
 </Wix>

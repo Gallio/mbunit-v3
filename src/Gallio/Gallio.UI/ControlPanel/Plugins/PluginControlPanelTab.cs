@@ -83,5 +83,10 @@ namespace Gallio.UI.ControlPanel.Plugins
             public string Description { get; set; }
             public string DisabledReason { get; set; }
         }
+
+        private void PluginControlPanelTab_Load(object sender, EventArgs e)
+        {
+            pluginGrid.Sort(pluginNameColumn, ListSortDirection.Ascending);
+        }
     }
 }

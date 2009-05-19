@@ -63,7 +63,7 @@
             this.pluginGrid.ShowCellErrors = false;
             this.pluginGrid.ShowEditingIcon = false;
             this.pluginGrid.ShowRowErrors = false;
-            this.pluginGrid.Size = new System.Drawing.Size(394, 354);
+            this.pluginGrid.Size = new System.Drawing.Size(454, 354);
             this.pluginGrid.StandardTab = true;
             this.pluginGrid.TabIndex = 0;
             this.pluginGrid.SelectionChanged += new System.EventHandler(this.pluginGrid_SelectionChanged);
@@ -114,7 +114,7 @@
             this.outerTableLayoutPanel.RowCount = 2;
             this.outerTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.outerTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
-            this.outerTableLayoutPanel.Size = new System.Drawing.Size(400, 400);
+            this.outerTableLayoutPanel.Size = new System.Drawing.Size(460, 400);
             this.outerTableLayoutPanel.TabIndex = 1;
             // 
             // pluginIconPictureBox
@@ -134,7 +134,7 @@
             this.pluginDescriptionLabel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pluginDescriptionLabel.Location = new System.Drawing.Point(43, 360);
             this.pluginDescriptionLabel.Name = "pluginDescriptionLabel";
-            this.pluginDescriptionLabel.Size = new System.Drawing.Size(354, 40);
+            this.pluginDescriptionLabel.Size = new System.Drawing.Size(414, 40);
             this.pluginDescriptionLabel.TabIndex = 2;
             this.pluginDescriptionLabel.Text = "about description";
             this.pluginDescriptionLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -145,7 +145,8 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.outerTableLayoutPanel);
             this.Name = "PluginControlPanelTab";
-            this.Size = new System.Drawing.Size(400, 400);
+            this.Size = new System.Drawing.Size(460, 400);
+            this.Load += new System.EventHandler(this.PluginControlPanelTab_Load);
             ((System.ComponentModel.ISupportInitialize)(this.pluginGrid)).EndInit();
             this.outerTableLayoutPanel.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pluginIconPictureBox)).EndInit();
