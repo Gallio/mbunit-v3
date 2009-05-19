@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using Gallio.Common.Collections;
+using Gallio.Common.Policies;
 using Gallio.Model;
 using Gallio.Common.Markup;
 using Gallio.Model.Serialization;
@@ -263,7 +264,7 @@ namespace Gallio.Framework.Utilities
             launcher.TestExecutionOptions.FilterSet = new FilterSet<ITest>(new OrFilter<ITest>(filters));
             launcher.TestRunnerFactoryName = TestRunnerFactoryName;
 
-            string reportDirectory = Path.GetTempPath();
+            string reportDirectory = SpecialPathPolicy.For<SampleRunner>().GetTempDirectory().FullName;
             launcher.ReportDirectory = reportDirectory;
             launcher.ReportNameFormat = "SampleRunnerReport";
             launcher.ReportFormatterOptions.Properties.Add(@"SaveAttachmentContents", @"false");

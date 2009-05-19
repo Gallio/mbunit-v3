@@ -17,8 +17,9 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using Gallio.Common.Policies;
 
-namespace Gallio.Runner.Caching
+namespace Gallio.Runtime.Caching
 {
     /// <summary>
     /// A disk cache that stores its contents in the user's temporary directory.
@@ -29,7 +30,7 @@ namespace Gallio.Runner.Caching
         /// <summary>
         /// The default cache directory name.
         /// </summary>
-        public static readonly string DefaultCacheDirectoryName = "Gallio.Cache";
+        public static readonly string DefaultCacheDirectoryName = "Temporary Disk Cache";
 
         /// <summary>
         /// Creates a temporary disk cache within the specified subdirectory of the user's temporary directory.
@@ -37,7 +38,7 @@ namespace Gallio.Runner.Caching
         /// <param name="cacheDirectoryName">The name of the cache subdirectory</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="cacheDirectoryName"/> is null</exception>
         public TemporaryDiskCache(string cacheDirectoryName)
-            : base(Path.Combine(Path.GetTempPath(), cacheDirectoryName))
+            : base(SpecialPathPolicy.For(cacheDirectoryName).GetTempDirectory().FullName)
         {
         }
 

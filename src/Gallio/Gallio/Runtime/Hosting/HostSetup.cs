@@ -21,6 +21,7 @@ using System.Xml.Serialization;
 using Gallio.Common.Collections;
 using Gallio.Common;
 using Gallio.Common.IO;
+using Gallio.Common.Policies;
 using Gallio.Common.Xml;
 
 namespace Gallio.Runtime.Hosting
@@ -234,7 +235,7 @@ namespace Gallio.Runtime.Hosting
                     return null;
 
                 case ConfigurationFileLocation.Temp:
-                    return Path.GetTempFileName();
+                    return SpecialPathPolicy.For("Hosting").CreateTempFileWithUniqueName().FullName;
 
                 case ConfigurationFileLocation.AppBase:
                     if (applicationBaseDirectory == null)

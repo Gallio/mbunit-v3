@@ -15,6 +15,7 @@
 
 using System;
 using System.IO;
+using Gallio.Common.Policies;
 using Gallio.Runner.Projects;
 
 namespace Gallio.Icarus
@@ -27,8 +28,7 @@ namespace Gallio.Icarus
         /// <summary>
         /// The location of the Icarus app data folder.
         /// </summary>
-        public static string IcarusAppDataFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), 
-            Path.Combine("Gallio", "Icarus"));
+        public static string IcarusAppDataFolder = SpecialPathPolicy.For("Icarus").GetRoamingUserApplicationDataDirectory().FullName;
         
         /// <summary>
         /// The location of the default project used by Icarus.

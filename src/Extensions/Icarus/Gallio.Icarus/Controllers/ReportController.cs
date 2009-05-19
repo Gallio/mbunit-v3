@@ -68,7 +68,9 @@ namespace Gallio.Icarus.Controllers
 
         public string ShowReport(Report report, string reportType, IProgressMonitor progressMonitor)
         {
-            return reportService.SaveReportAs(report, Path.GetTempFileName(), reportType, progressMonitor);
+            return reportService.SaveReportAs(report,
+                SpecialPathPolicy.For<ReportController>().CreateTempDirectoryWithUniqueName().FullName,
+                reportType, progressMonitor);
         }
 
         public string ConvertSavedReport(string fileName, string format, IProgressMonitor progressMonitor)

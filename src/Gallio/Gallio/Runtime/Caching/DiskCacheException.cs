@@ -16,7 +16,7 @@
 using System;
 using System.Runtime.Serialization;
 
-namespace Gallio.Runner.Caching
+namespace Gallio.Runtime.Caching
 {
     /// <summary>
     /// The type of exception thrown when an error occurs while manipulating the disk cache.

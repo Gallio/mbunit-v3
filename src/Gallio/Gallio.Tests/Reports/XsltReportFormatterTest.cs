@@ -19,6 +19,7 @@ using System.IO;
 using System.Text;
 using System.Xml;
 using Gallio.Common.Markup;
+using Gallio.Common.Policies;
 using Gallio.Reports;
 using Gallio.Runtime.ProgressMonitoring;
 using Gallio.Runtime;
@@ -106,7 +107,7 @@ namespace Gallio.Tests.Reports
             IReportContainer reportContainer = Mocks.StrictMock<IReportContainer>();
             IProgressMonitor progressMonitor = NullProgressMonitor.CreateInstance();
 
-            string reportPath = Path.GetTempFileName();
+            string reportPath = SpecialPathPolicy.For<XsltReportFormatter>().CreateTempFileWithUniqueName().FullName;
             using (Stream tempFileStream = File.OpenWrite(reportPath))
             {
                 using (Mocks.Record())

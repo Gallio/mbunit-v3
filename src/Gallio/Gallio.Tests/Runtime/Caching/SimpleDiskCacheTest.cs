@@ -17,10 +17,11 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using Gallio.Runner.Caching;
+using Gallio.Common.Policies;
+using Gallio.Runtime.Caching;
 using MbUnit.Framework;
 
-namespace Gallio.Tests.Runner.Caching
+namespace Gallio.Tests.Runtime.Caching
 {
     [TestsOn(typeof(SimpleDiskCache))]
     public class SimpleDiskCacheTest
@@ -52,7 +53,7 @@ namespace Gallio.Tests.Runner.Caching
             [SetUp]
             public void SetUp()
             {
-                cache = new SimpleDiskCache(Path.Combine(Path.GetTempPath(), "SimpleDiskCacheTest"));
+                cache = new SimpleDiskCache(SpecialPathPolicy.For<SimpleDiskCacheTest>().GetTempDirectory().FullName);
                 cache.Purge();
             }
 

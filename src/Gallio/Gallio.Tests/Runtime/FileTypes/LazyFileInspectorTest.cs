@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using Gallio.Common.Policies;
 using Gallio.Runtime.FileTypes;
 using MbUnit.Framework;
 
@@ -47,7 +48,7 @@ namespace Gallio.Tests.Runtime.FileTypes
         [Test]
         public void TryGetContents_WhenFileExists_ReturnsContentsAndTrue()
         {
-            string path = Path.GetTempFileName();
+            string path = SpecialPathPolicy.For<LazyFileInspectorTest>().CreateTempFileWithUniqueName().FullName;
             File.WriteAllText(path, "Contents");
 
             var fileInfo = new FileInfo(path);
@@ -74,7 +75,7 @@ namespace Gallio.Tests.Runtime.FileTypes
         [Test]
         public void TryGetStream_WhenFileExists_ReturnsStreamAndTrue()
         {
-            string path = Path.GetTempFileName();
+            string path = SpecialPathPolicy.For<LazyFileInspectorTest>().CreateTempFileWithUniqueName().FullName;
             File.WriteAllText(path, "Contents");
 
             var fileInfo = new FileInfo(path);
@@ -102,7 +103,7 @@ namespace Gallio.Tests.Runtime.FileTypes
         [Test]
         public void TryGetStream_WhenPreviouslyReturnedStreamStillOpen_ReturnsSameStreamAtPositionZero()
         {
-            string path = Path.GetTempFileName();
+            string path = SpecialPathPolicy.For<LazyFileInspectorTest>().CreateTempFileWithUniqueName().FullName;
             File.WriteAllText(path, "Contents");
 
             var fileInfo = new FileInfo(path);
@@ -122,7 +123,7 @@ namespace Gallio.Tests.Runtime.FileTypes
         [Test]
         public void TryGetStream_WhenPreviouslyReturnedStreamWasClosed_ReturnsNewStream()
         {
-            string path = Path.GetTempFileName();
+            string path = SpecialPathPolicy.For<LazyFileInspectorTest>().CreateTempFileWithUniqueName().FullName;
             File.WriteAllText(path, "Contents");
 
             var fileInfo = new FileInfo(path);
@@ -141,7 +142,7 @@ namespace Gallio.Tests.Runtime.FileTypes
         [Test]
         public void Dispose_WhenStreamWasOpen_ShouldCloseTheStream()
         {
-            string path = Path.GetTempFileName();
+            string path = SpecialPathPolicy.For<LazyFileInspectorTest>().CreateTempFileWithUniqueName().FullName;
             File.WriteAllText(path, "Contents");
 
             var fileInfo = new FileInfo(path);

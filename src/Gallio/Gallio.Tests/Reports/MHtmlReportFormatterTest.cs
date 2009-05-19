@@ -17,6 +17,7 @@ using System;
 using System.Collections.Specialized;
 using System.IO;
 using System.Text;
+using Gallio.Common.Policies;
 using Gallio.Framework;
 using Gallio.Common.Markup;
 using Gallio.Reports;
@@ -50,7 +51,7 @@ namespace Gallio.Tests.Reports
             IProgressMonitor progressMonitor = NullProgressMonitor.CreateInstance();
             var reportFormatterOptions = new ReportFormatterOptions();
 
-            string reportPath = Path.GetTempFileName();
+            string reportPath = SpecialPathPolicy.For<MHtmlReportFormatterTest>().CreateTempFileWithUniqueName().FullName;
             using (Stream tempFileStream = File.OpenWrite(reportPath))
             {
                 using (Mocks.Record())

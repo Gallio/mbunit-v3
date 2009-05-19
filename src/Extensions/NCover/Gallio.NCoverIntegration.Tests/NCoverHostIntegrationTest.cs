@@ -16,6 +16,7 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using Gallio.Common.Policies;
 using Gallio.Framework;
 using Gallio.Model;
 using Gallio.Model.Filters;
@@ -45,7 +46,7 @@ namespace Gallio.NCoverIntegration.Tests
             if (Process.GetProcessesByName("NCover.Console").Length != 0)
                 Assert.Inconclusive("Cannot run this test while another instance of NCover is running.");
 
-            string tempPath = Path.GetTempPath();
+            string tempPath = SpecialPathPolicy.For<NCoverHostIntegrationTest>().GetTempDirectory().FullName;
             string coverageFilePath = Path.Combine(tempPath, ncoverCoverageFile ?? "Coverage.xml");
             string coverageLogFilePath = Path.Combine(tempPath, "CoverageLog.txt");
 

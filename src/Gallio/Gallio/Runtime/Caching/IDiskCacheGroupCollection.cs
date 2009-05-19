@@ -15,7 +15,7 @@
 
 using System;
 
-namespace Gallio.Runner.Caching
+namespace Gallio.Runtime.Caching
 {
     /// <summary>
     /// Represents a collection of groups in a disk cache indexed by an aritrary key string.

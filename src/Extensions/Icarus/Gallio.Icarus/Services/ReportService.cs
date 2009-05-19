@@ -17,6 +17,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
 using Gallio.Common.Collections;
+using Gallio.Common.Policies;
 using Gallio.Icarus.Services.Interfaces;
 using Gallio.Runner.Reports;
 using Gallio.Runtime.ProgressMonitoring;
@@ -76,7 +77,7 @@ namespace Gallio.Icarus.Services
                 Report report;
                 using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(20))
                     report = reportReader.LoadReport(true, subProgressMonitor);
-                string tempFilePath = Path.GetTempFileName();
+                string tempFilePath = SpecialPathPolicy.For<ReportService>().CreateTempDirectoryWithUniqueName().FullName;
                 using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(80))
                     return SaveReportAs(report, tempFilePath, format, subProgressMonitor);
             }

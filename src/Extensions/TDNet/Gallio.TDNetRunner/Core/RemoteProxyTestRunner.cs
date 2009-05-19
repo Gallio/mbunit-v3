@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
 using Gallio.Common.Collections;
+using Gallio.Common.Policies;
 using Gallio.Model;
 using Gallio.Model.Filters;
 using Gallio.Runner;
@@ -235,7 +236,7 @@ namespace Gallio.TDNetRunner.Core
         {
             try
             {
-                DirectoryInfo reportDirectory = new DirectoryInfo(Path.Combine(Path.GetTempPath(), @"Gallio.TDNetRunner"));
+                DirectoryInfo reportDirectory = SpecialPathPolicy.For("TDNetRunner").GetTempDirectory();
                 if (reportDirectory.Exists)
                 {
                     // Make sure the folder is empty

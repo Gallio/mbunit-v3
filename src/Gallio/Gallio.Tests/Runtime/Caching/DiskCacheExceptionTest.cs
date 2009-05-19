@@ -14,11 +14,11 @@
 // limitations under the License.
 
 using System;
-using Gallio.Runner.Caching;
+using Gallio.Runtime.Caching;
 using MbUnit.Framework;
 using MbUnit.Framework.ContractVerifiers;
 
-namespace Gallio.Tests.Runner.Caching
+namespace Gallio.Tests.Runtime.Caching
 {
     [TestsOn(typeof(DiskCacheException))]
     public class DiskCacheExceptionTest

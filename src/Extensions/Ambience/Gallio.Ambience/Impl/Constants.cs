@@ -19,6 +19,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
+using Gallio.Common.Policies;
 
 namespace Gallio.Ambience.Impl
 {
@@ -46,8 +47,7 @@ namespace Gallio.Ambience.Impl
         {
             get
             {
-                return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
-                    @"Gallio\Gallio.Ambience");
+                return SpecialPathPolicy.For("Ambience").GetCommonApplicationDataDirectory().FullName;
             }
         }
 

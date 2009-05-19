@@ -15,7 +15,7 @@
 
 using System;
 
-namespace Gallio.Runner.Caching
+namespace Gallio.Runtime.Caching
 {
     /// <summary>
     /// <para>

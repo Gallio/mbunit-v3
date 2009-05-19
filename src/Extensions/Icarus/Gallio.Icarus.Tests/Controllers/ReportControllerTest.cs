@@ -16,6 +16,7 @@
 using System.Collections.Generic;
 using System.IO;
 using Gallio.Common.IO;
+using Gallio.Common.Policies;
 using Gallio.Icarus.Controllers;
 using Gallio.Icarus.Services.Interfaces;
 using Gallio.Runner.Reports;
@@ -36,7 +37,7 @@ namespace Gallio.Icarus.Tests.Controllers
             var progressMonitor = MockProgressMonitor.GetMockProgressMonitor();
             var fileSystem = MockRepository.GenerateStub<IFileSystem>();
             ReportController reportController = new ReportController(reportService, fileSystem);
-            string reportDirectory = Path.Combine(Path.GetTempPath(), "GallioReport");
+            string reportDirectory = SpecialPathPolicy.For<ReportControllerTest>().GetTempDirectory().FullName;
             
             reportController.GenerateReport(report, reportDirectory, progressMonitor);
 

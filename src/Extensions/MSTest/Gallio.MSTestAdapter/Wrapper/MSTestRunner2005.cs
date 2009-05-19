@@ -18,7 +18,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Xml;
 using Gallio.MSTestAdapter.Model;
-using Gallio.Runner.Caching;
+using Gallio.Runtime.Caching;
 using System.Xml.XPath;
 using Gallio.Model;
 

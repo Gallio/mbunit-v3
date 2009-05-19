@@ -15,10 +15,11 @@
 
 using System;
 using System.IO;
-using Gallio.Runner.Caching;
+using Gallio.Common.Policies;
+using Gallio.Runtime.Caching;
 using MbUnit.Framework;
 
-namespace Gallio.Tests.Runner.Caching
+namespace Gallio.Tests.Runtime.Caching
 {
     [TestsOn(typeof(TemporaryDiskCache))]
     public class TemporaryDiskCacheTest
@@ -33,7 +34,7 @@ namespace Gallio.Tests.Runner.Caching
         public void ShouldUseTheTempPathWithDefaultDirectoryNameIfNoneSpecified()
         {
             TemporaryDiskCache cache = new TemporaryDiskCache();
-            Assert.AreEqual(Path.Combine(Path.GetTempPath(), TemporaryDiskCache.DefaultCacheDirectoryName),
+            Assert.AreEqual(SpecialPathPolicy.For(TemporaryDiskCache.DefaultCacheDirectoryName).GetTempDirectory().FullName,
                 cache.CacheDirectoryPath);
         }
 
@@ -41,7 +42,7 @@ namespace Gallio.Tests.Runner.Caching
         public void ShouldUseTheTempPathWithSpecifiedDirectoryName()
         {
             TemporaryDiskCache cache = new TemporaryDiskCache("Abc");
-            Assert.AreEqual(Path.Combine(Path.GetTempPath(), "Abc"),
+            Assert.AreEqual(SpecialPathPolicy.For("Abc").GetTempDirectory().FullName,
                 cache.CacheDirectoryPath);
         }
     }

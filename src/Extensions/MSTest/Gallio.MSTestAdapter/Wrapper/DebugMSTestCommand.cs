@@ -18,6 +18,7 @@ using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using Gallio.Common.IO;
+using Gallio.Common.Policies;
 using Gallio.Common.Reflection;
 using Gallio.Runtime.Hosting;
 
@@ -82,7 +83,7 @@ namespace Gallio.MSTestAdapter.Wrapper
                 FileStream outputStream = null;
                 try
                 {
-                    outputTempFile = Path.GetTempFileName();
+                    outputTempFile = SpecialPathPolicy.For<DebugMSTestCommand>().CreateTempFileWithUniqueName().FullName;
                     outputStream = new FileStream(outputTempFile, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.Delete);
 
                     bool wasRedirected = false;

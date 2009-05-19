@@ -20,6 +20,7 @@ using System.Linq;
 using System.Text;
 using Gallio.Common.Collections;
 using Gallio.Common;
+using Gallio.Common.Policies;
 using Gallio.Runtime.Extensibility;
 using Gallio.Schema.Plugins;
 using MbUnit.Framework;
@@ -34,7 +35,7 @@ namespace Gallio.Tests.Runtime.Extensibility
         public void GetCurrentUserPluginCacheDir_Always_IsInLocalApplicationData()
         {
             Assert.StartsWith(CachingPluginLoader.GetCurrentUserPluginCacheDir(),
-                Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData));
+                SpecialPathPolicy.For("Plugin Metadata Cache").GetLocalUserApplicationDataDirectory().FullName);
         }
 
         [Test]

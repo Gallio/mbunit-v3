@@ -20,6 +20,7 @@ using System.Linq;
 using System.Text;
 using System.Xml;
 using Gallio.Common.Collections;
+using Gallio.Common.Policies;
 using Gallio.Common.Reflection;
 using Gallio.Common.Validation;
 using Gallio.Runtime;
@@ -315,7 +316,7 @@ namespace Gallio.Tests.Runtime.Extensibility
 
         internal static void RunWithTemporaryPluginFile(Gallio.Common.Action<string, string> action, string pluginFileContents)
         {
-            var pluginDir = Path.Combine(Path.GetTempPath(), "FileSystemPluginLoaderTest");
+            var pluginDir = SpecialPathPolicy.For<PluginLoaderTest>().GetTempDirectory().FullName;
             if (Directory.Exists(pluginDir))
                 Directory.Delete(pluginDir, true);
             var pluginFile = Path.Combine(pluginDir, "Sample.plugin");

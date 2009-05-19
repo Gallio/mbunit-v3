@@ -21,6 +21,7 @@ using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
 using Gallio.Common;
+using Gallio.Common.Policies;
 using Gallio.Schema;
 using Gallio.Schema.Plugins;
 
@@ -164,8 +165,7 @@ namespace Gallio.Runtime.Extensibility
 
         internal static string GetCurrentUserPluginCacheDir()
         {
-            string appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-            return Path.Combine(appDataPath, @"Gallio\Plugin Metadata Cache");
+            return SpecialPathPolicy.For("Plugin Metadata Cache").GetLocalUserApplicationDataDirectory().FullName;
         }
     }
 }

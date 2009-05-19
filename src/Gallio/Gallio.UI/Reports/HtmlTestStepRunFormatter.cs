@@ -28,7 +28,7 @@ using Gallio.Common.Markup.Tags;
 using Gallio.Common.Reflection;
 using Gallio.Runner.Reports;
 using Gallio.Runtime;
-using Gallio.Runner.Caching;
+using Gallio.Runtime.Caching;
 using Gallio.Model.Serialization;
 
 namespace Gallio.UI.Reports

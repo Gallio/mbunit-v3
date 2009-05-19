@@ -23,7 +23,7 @@ using Gallio.Model;
 using Gallio.Model.Execution;
 using Gallio.MSTestAdapter.Model;
 using Gallio.MSTestAdapter.Properties;
-using Gallio.Runner.Caching;
+using Gallio.Runtime.Caching;
 using Gallio.Runtime.ProgressMonitoring;
 
 namespace Gallio.MSTestAdapter.Wrapper

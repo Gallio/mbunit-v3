@@ -88,6 +88,7 @@
     <Compile Include="Common\Markup\Tags\TextTagTest.cs" />
     <Compile Include="Common\Markup\TextualMarkupDocumentWriterTest.cs" />
     <Compile Include="Common\MockableConditionContext.cs" />
+    <Compile Include="Common\Policies\SpecialPathPolicyTest.cs" />
     <Compile Include="Common\Reflection\BaseReflectionPolicyTest.cs" />
     <Compile Include="Common\Reflection\CodeElementSorterTest.cs" />
     <Compile Include="Common\Reflection\CodeLocationTest.cs" />
@@ -182,13 +183,13 @@
     <Compile Include="Reports\MHtmlReportFormatterTest.cs" />
     <Compile Include="Reports\XmlReportFormatterTest.cs" />
     <Compile Include="Reports\XsltReportFormatterTest.cs" />
-    <Compile Include="Runner\Caching\DiskCacheExceptionTest.cs" />
-    <Compile Include="Runner\Caching\SimpleDiskCacheTest.cs" />
-    <Compile Include="Runner\Caching\TemporaryDiskCacheTest.cs" />
     <Compile Include="Runner\Drivers\HostedTestDriverTest.cs" />
     <Compile Include="Runner\Extensions\TestRunnerExtensionUtilsTest.cs" />
     <Compile Include="Runner\RunnerExceptionTest.cs" />
     <Compile Include="RunSampleAttribute.cs" />
+    <Compile Include="Runtime\Caching\DiskCacheExceptionTest.cs" />
+    <Compile Include="Runtime\Caching\SimpleDiskCacheTest.cs" />
+    <Compile Include="Runtime\Caching\TemporaryDiskCacheTest.cs" />
     <Compile Include="Runtime\Conversions\ArrayToArrayConversionRuleTest.cs" />
     <Compile Include="Runtime\Conversions\BaseConversionRuleTest.cs" />
     <Compile Include="Runtime\Conversions\BaseConverterTest.cs" />

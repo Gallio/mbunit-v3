@@ -18,7 +18,7 @@ using System.IO;
 using Gallio.Common;
 using Gallio.Common.IO;
 
-namespace Gallio.Runner.Caching
+namespace Gallio.Runtime.Caching
 {
     /// <summary>
     /// A simple disk cache that stores its contents in a particular directory using hashes

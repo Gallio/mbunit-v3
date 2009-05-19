@@ -16,6 +16,7 @@
 using System;
 using System.IO;
 using System.Reflection;
+using Gallio.Common.Policies;
 using Gallio.Runtime.Hosting;
 using MbUnit.Framework;
 using MbUnit.Framework.ContractVerifiers;
@@ -97,7 +98,7 @@ namespace Gallio.Tests.Runtime.Hosting
             string path = setup.WriteTemporaryConfigurationFile();
             try
             {
-                Assert.AreEqual(Path.GetTempPath(), Path.GetDirectoryName(path) + @"\");
+                Assert.AreEqual(SpecialPathPolicy.For("Hosting").GetTempDirectory().FullName, Path.GetDirectoryName(path));
                 Assert.Contains(File.ReadAllText(path), "<configuration>");
             }
             finally

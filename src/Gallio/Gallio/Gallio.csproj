@@ -99,6 +99,7 @@
     <Compile Include="Common\Diagnostics\SystemInternalAttribute.cs" />
     <Compile Include="Common\Diagnostics\UserCodeEntryPointAttribute.cs" />
     <Compile Include="Common\EqualityComparison.cs" />
+    <Compile Include="Common\Policies\SpecialPathPolicy.cs" />
     <Compile Include="Common\Markup\Attachment.cs" />
     <Compile Include="Common\Markup\AttachmentContentDisposition.cs" />
     <Compile Include="Common\Markup\AttachmentData.cs" />
@@ -138,6 +139,12 @@
     <Compile Include="Runner\Extensions\ITestRunnerExtensionManager.cs" />
     <Compile Include="Runner\Extensions\TestRunnerExtensionFactoryTraits.cs" />
     <Compile Include="Runner\Extensions\DefaultTestRunnerExtensionManager.cs" />
+    <Compile Include="Runtime\Caching\DiskCacheException.cs" />
+    <Compile Include="Runtime\Caching\IDiskCache.cs" />
+    <Compile Include="Runtime\Caching\IDiskCacheGroup.cs" />
+    <Compile Include="Runtime\Caching\IDiskCacheGroupCollection.cs" />
+    <Compile Include="Runtime\Caching\SimpleDiskCache.cs" />
+    <Compile Include="Runtime\Caching\TemporaryDiskCache.cs" />
     <Compile Include="Runtime\Extensibility\ResourceSearchRules.cs" />
     <Compile Include="Runtime\Installer\BaseInstaller.cs" />
     <Compile Include="Runtime\Installer\DefaultInstallerManager.cs" />
@@ -324,12 +331,6 @@
     <Compile Include="Common\Pair.cs" />
     <Compile Include="Common\Platform\DotNetFrameworkSupport.cs" />
     <Compile Include="Common\Platform\DotNetRuntimeType.cs" />
-    <Compile Include="Runner\Caching\IDiskCacheGroup.cs" />
-    <Compile Include="Runner\Caching\IDiskCacheGroupCollection.cs" />
-    <Compile Include="Runner\Caching\IDiskCache.cs" />
-    <Compile Include="Runner\Caching\DiskCacheException.cs" />
-    <Compile Include="Runner\Caching\SimpleDiskCache.cs" />
-    <Compile Include="Runner\Caching\TemporaryDiskCache.cs" />
     <Compile Include="Runner\Drivers\AggregateTestDriver.cs" />
     <Compile Include="Runner\Drivers\BaseTestDriver.cs" />
     <Compile Include="Runner\Drivers\HostedTestDriverFactory.cs" />
@@ -507,6 +508,7 @@
     <Compile Include="Runtime\Logging\TextLogger.cs" />
     <Compile Include="Runtime\Logging\Verbosity.cs" />
     <Compile Include="Common\Platform\ProcessType.cs" />
+    <Compile Include="Runtime\Preferences\IPreferenceManager.cs" />
     <Compile Include="Runtime\ProgressMonitoring\BaseProgressMonitorPresenter.cs" />
     <Compile Include="Runtime\ProgressMonitoring\BaseProgressMonitorProvider.cs" />
     <Compile Include="Runtime\ProgressMonitoring\CancelableProgressMonitor.cs" />
@@ -849,9 +851,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Gallio.plugin" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Runtime\Preferences\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="..\..\SGen.targets" />

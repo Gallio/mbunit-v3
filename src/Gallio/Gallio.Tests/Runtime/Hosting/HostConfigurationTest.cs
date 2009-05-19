@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using Gallio.Common.Policies;
 using Gallio.Runtime.Hosting;
 using MbUnit.Framework;
 
@@ -69,7 +70,7 @@ namespace Gallio.Tests.Runtime.Hosting
         public void WriteToFile()
         {
             HostConfiguration config = new HostConfiguration();
-            string path = Path.GetTempFileName();
+            string path = SpecialPathPolicy.For<HostConfigurationTest>().CreateTempFileWithUniqueName().FullName;
             try
             {
                 config.WriteToFile(path);
