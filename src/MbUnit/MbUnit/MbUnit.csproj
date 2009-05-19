@@ -152,6 +152,8 @@
     <Compile Include="Framework\Assert.Serialization.cs" />
     <Compile Include="Framework\Assert.Sorting.cs" />
     <Compile Include="Framework\Assert.Distinct.cs" />
+    <Compile Include="Framework\IRetryOptions.cs" />
+    <Compile Include="Framework\Retry.cs" />
     <Compile Include="Framework\SequentiaNumbersAttribute.cs" />
     <Compile Include="Framework\RandomNumbersAttribute.cs" />
     <Compile Include="Framework\GenerationDataAttribute.cs" />
