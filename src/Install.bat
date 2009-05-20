@@ -99,28 +99,28 @@ REM Register Shell
 "%REG%" ADD "%VS_PRODUCT_KEY%" /V Package /D "{9e600ffc-344d-4e6f-89c0-ded6afb42459}" /F >nul
 "%REG%" ADD "%VS_PRODUCT_KEY%" /V UseInterface /T REG_DWORD /D "1" /F >nul
 
-"%REG%" ADD %VS_PACKAGE_KEY% /VE /D "Gallio Shell Package" /F >nul
-"%REG%" ADD %VS_PACKAGE_KEY% /V InprocServer32 /D "%SystemRoot%\system32\mscoree.dll" /F >nul
-"%REG%" ADD %VS_PACKAGE_KEY% /V Class /D "Gallio.VisualStudio.Shell.ShellPackage" /F >nul
-"%REG%" ADD %VS_PACKAGE_KEY% /V CodeBase /D "%SHELL_BIN_DIR%\Gallio.VisualStudio.Shell.dll" /F >nul
-"%REG%" ADD %VS_PACKAGE_KEY% /V ID /T REG_DWORD /D 1 /F >nul
-"%REG%" ADD %VS_PACKAGE_KEY% /V MinEdition /D "Standard" /F >nul
-"%REG%" ADD %VS_PACKAGE_KEY% /V ProductVersion /D "3.0" /F >nul
-"%REG%" ADD %VS_PACKAGE_KEY% /V ProductName /D "Gallio" /F >nul
-"%REG%" ADD %VS_PACKAGE_KEY% /V CompanyName /D "Gallio Project" /F >nul
+"%REG%" ADD "%VS_PACKAGE_KEY%" /VE /D "Gallio Shell Package" /F >nul
+"%REG%" ADD "%VS_PACKAGE_KEY%" /V InprocServer32 /D "%SystemRoot%\system32\mscoree.dll" /F >nul
+"%REG%" ADD "%VS_PACKAGE_KEY%" /V Class /D "Gallio.VisualStudio.Shell.ShellPackage" /F >nul
+"%REG%" ADD "%VS_PACKAGE_KEY%" /V CodeBase /D "%SHELL_BIN_DIR%\Gallio.VisualStudio.Shell.dll" /F >nul
+"%REG%" ADD "%VS_PACKAGE_KEY%" /V ID /T REG_DWORD /D 1 /F >nul
+"%REG%" ADD "%VS_PACKAGE_KEY%" /V MinEdition /D "Standard" /F >nul
+"%REG%" ADD "%VS_PACKAGE_KEY%" /V ProductVersion /D "3.0" /F >nul
+"%REG%" ADD "%VS_PACKAGE_KEY%" /V ProductName /D "Gallio" /F >nul
+"%REG%" ADD "%VS_PACKAGE_KEY%" /V CompanyName /D "Gallio Project" /F >nul
 
 "%REG%" ADD "%VS_ROOT_KEY%\AutoLoadPackages\{f1536ef8-92ec-443c-9ed7-fdadf150da82}" /V "{9e600ffc-344d-4e6f-89c0-ded6afb42459}" /T REG_DWORD /D "0" /F >nul
 
 REM Register AddIn
-"%REG%" ADD %VS_ROOT_KEY%\AutomationOptions\LookInFolders /V "%SHELL_BIN_DIR%" /D "Gallio" /F >nul
+"%REG%" ADD "%VS_ROOT_KEY%\AutomationOptions\LookInFolders" /V "%SHELL_BIN_DIR%" /D "Gallio" /F >nul
 
 REM Register TIP
-"%REG%" ADD %VS_TEST_TYPE_KEY% /V NameId /D "#100" /F >nul
-"%REG%" ADD %VS_TEST_TYPE_KEY% /V TipProvider /D "Gallio.VisualStudio.Tip.GallioTipProxy, Gallio.VisualStudio.Tip%VS_VERSION%0.Proxy, Version=0.0.0.0, Culture=neutral, PublicKeyToken=eb9cfa67ee6ab36e" /F >nul
-"%REG%" ADD %VS_TEST_TYPE_KEY% /V ServiceType /D "Gallio.VisualStudio.Tip.SGallioTestService, Gallio.VisualStudio.Tip%VS_VERSION%0.Proxy, Version=0.0.0.0, Culture=neutral, PublicKeyToken=eb9cfa67ee6ab36e" /F >nul
+"%REG%" ADD "%VS_TEST_TYPE_KEY%" /V NameId /D "#100" /F >nul
+"%REG%" ADD "%VS_TEST_TYPE_KEY%" /V TipProvider /D "Gallio.VisualStudio.Tip.GallioTipProxy, Gallio.VisualStudio.Tip%VS_VERSION%0.Proxy, Version=0.0.0.0, Culture=neutral, PublicKeyToken=eb9cfa67ee6ab36e" /F >nul
+"%REG%" ADD "%VS_TEST_TYPE_KEY%" /V ServiceType /D "Gallio.VisualStudio.Tip.SGallioTestService, Gallio.VisualStudio.Tip%VS_VERSION%0.Proxy, Version=0.0.0.0, Culture=neutral, PublicKeyToken=eb9cfa67ee6ab36e" /F >nul
 
-"%REG%" ADD %VS_TEST_TYPE_KEY%\Extensions /V .dll /T REG_DWORD /D "101" /F >nul
-"%REG%" ADD %VS_TEST_TYPE_KEY%\Extensions /V .exe /T REG_DWORD /D "101" /F >nul
+"%REG%" ADD "%VS_TEST_TYPE_KEY%\Extensions" /V .dll /T REG_DWORD /D "101" /F >nul
+"%REG%" ADD "%VS_TEST_TYPE_KEY%\Extensions" /V .exe /T REG_DWORD /D "101" /F >nul
 
 echo Installing Gallio.VisualStudio.Tip.Proxy proxy assembly into GAC.
 if %VS_VERSION%==9 ("%GACUTIL%" /i "%PROXY_DLL%" /f) else ("%GACUTIL40%" /i "%PROXY_DLL%" /f)

@@ -40,7 +40,10 @@ function Recurse([string] $path)
 			}
 			else
 			{
-				Recurse $file.FullName
+				if ($file.Name -ne "Templates")
+				{
+					Recurse $file.FullName
+				}
 			}
 		}
 	}	

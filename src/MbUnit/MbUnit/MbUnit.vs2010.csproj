@@ -72,6 +72,7 @@
     <Compile Include="Framework\FactoryAttribute.cs" />
     <Compile Include="Framework\HeaderAttribute.cs" />
     <Compile Include="Framework\FixtureInitializerAttribute.cs" />
+    <Compile Include="Framework\IRetryOptions.cs" />
     <Compile Include="Framework\JoinAttribute.cs" />
     <Compile Include="Framework\MultipleAssertsAttribute.cs" />
     <Compile Include="Framework\NameAttribute.cs" />
@@ -81,6 +82,7 @@
     <Compile Include="Framework\PendingAttribute.cs" />
     <Compile Include="Framework\Reflection\ReflectionException.cs" />
     <Compile Include="Framework\RepeatAttribute.cs" />
+    <Compile Include="Framework\Retry.cs" />
     <Compile Include="Framework\RowAttribute.cs" />
     <Compile Include="Framework\MixinAttribute.cs" />
     <Compile Include="Framework\AssemblyResolverAttribute.cs" />

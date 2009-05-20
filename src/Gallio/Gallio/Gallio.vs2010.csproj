@@ -131,6 +131,7 @@
     <Compile Include="Common\Markup\Tags\Tag.cs" />
     <Compile Include="Common\Markup\Tags\TagFormatter.cs" />
     <Compile Include="Common\Markup\Tags\TextTag.cs" />
+    <Compile Include="Common\Reflection\AssemblyMetadata.cs" />
     <Compile Include="Framework\Data\Generation\SequentialNumbersGenerator.cs" />
     <Compile Include="Framework\Data\Generation\Generator.cs" />
     <Compile Include="Framework\Data\Generation\RandomNumbersGenerator.cs" />
@@ -139,6 +140,7 @@
     <Compile Include="Common\Condition.cs" />
     <Compile Include="Common\ConditionContext.cs" />
     <Compile Include="Framework\Data\Generation\GenerationException.cs" />
+    <Compile Include="Runner\Drivers\IsolationMode.cs" />
     <Compile Include="Runner\Extensions\ActivationConditionContext.cs" />
     <Compile Include="Runner\Extensions\ITestRunnerExtensionFactory.cs" />
     <Compile Include="Runner\Extensions\ITestRunnerExtensionManager.cs" />
