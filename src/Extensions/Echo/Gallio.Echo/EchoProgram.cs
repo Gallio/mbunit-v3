@@ -102,12 +102,8 @@ namespace Gallio.Echo
         internal static void ConfigureLauncherFromArguments(TestLauncher launcher, EchoArguments arguments)
         {
             launcher.RuntimeSetup = new RuntimeSetup();
-            launcher.RuntimeSetup.PluginDirectories.AddRange(arguments.PluginDirectories);
-
-            // Set the installation path explicitly to ensure that we do not encounter problems
-            // when the test assembly contains a local copy of the primary runtime assemblies
-            // which will confuse the runtime into searching in the wrong place for plugins.
             launcher.RuntimeSetup.RuntimePath = Path.GetDirectoryName(AssemblyUtils.GetFriendlyAssemblyLocation(typeof(EchoProgram).Assembly));
+            launcher.RuntimeSetup.PluginDirectories.AddRange(arguments.PluginDirectories);
 
             launcher.TestPackageConfig.HostSetup.ShadowCopy = arguments.ShadowCopy;
             launcher.TestPackageConfig.HostSetup.Debug = arguments.Debug;

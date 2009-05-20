@@ -15,8 +15,10 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using Gallio.Common;
 using Gallio.Common.Collections;
+using Gallio.Common.Reflection;
 using Gallio.Runtime;
 using Gallio.Runtime.Extensibility;
 using Gallio.Runtime.Logging;
@@ -65,6 +67,9 @@ namespace Gallio.Utility
             bool isSpecialCommand = command != null;
 
             var runtimeSetup = new RuntimeSetup();
+            runtimeSetup.RuntimePath = Path.GetDirectoryName(AssemblyUtils.GetFriendlyAssemblyLocation(typeof(UtilityProgram).Assembly));
+            runtimeSetup.PluginDirectories.AddRange(Arguments.PluginDirectories);
+
             using (isSpecialCommand ? null : RuntimeBootstrap.Initialize(runtimeSetup, logger))
             {
                 if (command == null)

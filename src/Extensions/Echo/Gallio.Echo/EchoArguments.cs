@@ -46,7 +46,7 @@ namespace Gallio.Echo
             CommandLineArgumentFlags.MultipleUnique,
             ShortName = "pd",
             LongName = "plugin-directory",
-            Description = "Additional MbUnit plugin directories to search recursively",
+            Description = "Additional plugin directories to search recursively",
             ValueLabel = "dir"
             )]
         public string[] PluginDirectories = EmptyArray<string>.Instance;

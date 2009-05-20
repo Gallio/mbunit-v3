@@ -13,11 +13,29 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Gallio.Common.Collections;
 using Gallio.Runtime.ConsoleSupport;
 
 namespace Gallio.ControlPanel
 {
     public class ControlPanelArguments
     {
+        [CommandLineArgument(
+            CommandLineArgumentFlags.MultipleUnique,
+            ShortName = "pd",
+            LongName = "plugin-directory",
+            Description = "Additional plugin directories to search recursively",
+            ValueLabel = "dir"
+            )]
+        public string[] PluginDirectories = EmptyArray<string>.Instance;
+
+        [CommandLineArgument(
+             CommandLineArgumentFlags.AtMostOnce,
+             ShortName = "h",
+             LongName = "help",
+             Description = "Display this help text.",
+             Synonyms = new[] { "?" }
+             )]
+        public bool Help;
     }
 }

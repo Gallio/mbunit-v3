@@ -23,6 +23,15 @@ namespace Gallio.Utility
 {
     public class UtilityArguments
     {
+        [CommandLineArgument(
+            CommandLineArgumentFlags.MultipleUnique,
+            ShortName = "pd",
+            LongName = "plugin-directory",
+            Description = "Additional plugin directories to search recursively",
+            ValueLabel = "dir"
+            )]
+        public string[] PluginDirectories = EmptyArray<string>.Instance;
+
         #region Misc arguments
 
         [CommandLineArgument(

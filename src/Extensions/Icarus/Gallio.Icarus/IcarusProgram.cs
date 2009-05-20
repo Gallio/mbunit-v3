@@ -16,6 +16,7 @@
 using System;
 using System.IO;
 using System.Windows.Forms;
+using Gallio.Common.Collections;
 using Gallio.Common.Reflection;
 using Gallio.Icarus.Controllers;
 using Gallio.Icarus.Controllers.Interfaces;
@@ -53,14 +54,14 @@ namespace Gallio.Icarus
                 return 1;
             }
 
+            if (Arguments.Help)
+            {
+                ShowHelp();
+                return 0;
+            }
+
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-
-            var runtimeSetup = new RuntimeSetup
-            {
-                RuntimePath = Path.GetDirectoryName(AssemblyUtils.GetFriendlyAssemblyLocation(
-                    typeof(IcarusProgram).Assembly))
-            };
 
             var optionsManager = new OptionsManager(new FileSystem(), new DefaultXmlSerializer(), 
                 new Utilities.UnhandledExceptionPolicy());
@@ -68,10 +69,10 @@ namespace Gallio.Icarus
 
             var runtimeLogger = new RuntimeLogger();
 
-            // Set the installation path explicitly to ensure that we do not encounter problems
-            // when the test assembly contains a local copy of the primary runtime assemblies
-            // which will confuse the runtime into searching in the wrong place for plugins.
+            var runtimeSetup = new RuntimeSetup();
+            runtimeSetup.RuntimePath = Path.GetDirectoryName(AssemblyUtils.GetFriendlyAssemblyLocation(typeof(IcarusProgram).Assembly));
             runtimeSetup.PluginDirectories.AddRange(optionsManager.Settings.PluginDirectories);
+            GenericCollectionUtils.AddAllIfNotAlreadyPresent(Arguments.PluginDirectories, runtimeSetup.PluginDirectories);
 
             using (RuntimeBootstrap.Initialize(runtimeSetup, runtimeLogger))
             {

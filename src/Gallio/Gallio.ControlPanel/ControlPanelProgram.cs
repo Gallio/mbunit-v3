@@ -16,6 +16,7 @@
 using System;
 using System.IO;
 using System.Windows.Forms;
+using Gallio.Common.Collections;
 using Gallio.Common.Reflection;
 using Gallio.ControlPanel.Properties;
 using Gallio.Runtime;
@@ -47,15 +48,18 @@ namespace Gallio.ControlPanel
                 return 1;
             }
 
+            if (Arguments.Help)
+            {
+                ShowHelp();
+                return 0;
+            }
+
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            var runtimeSetup = new RuntimeSetup
-            {
-                RuntimePath =
-                    Path.GetDirectoryName(
-                    AssemblyUtils.GetFriendlyAssemblyLocation(typeof(ControlPanelProgram).Assembly))
-            };
+            var runtimeSetup = new RuntimeSetup();
+            runtimeSetup.RuntimePath = Path.GetDirectoryName(AssemblyUtils.GetFriendlyAssemblyLocation(typeof(ControlPanelProgram).Assembly));
+            runtimeSetup.PluginDirectories.AddRange(Arguments.PluginDirectories);
 
             ILogger logger = new FilteredLogger(new RichConsoleLogger(Console), Verbosity.Normal);
             using (RuntimeBootstrap.Initialize(runtimeSetup, logger))
