@@ -3,42 +3,41 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>10.0.11001</ProductVersion>
+    <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{47D0414C-AE6E-4885-9D03-45B12E5A9BCC}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Gallio.NCoverIntegration</RootNamespace>
     <AssemblyName>Gallio.NCoverIntegration</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
     <OldToolsVersion>3.5</OldToolsVersion>
-    <UpgradeBackupLocation>
-    </UpgradeBackupLocation>
+    <UpgradeBackupLocation />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin</OutputPath>
+    <OutputPath>bin\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <NoWarn>1734;1591</NoWarn>
+    <NoWarn>1591</NoWarn>
     <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin</OutputPath>
+    <OutputPath>bin\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <NoWarn>1734;1591</NoWarn>
+    <NoWarn>1591</NoWarn>
     <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
   </PropertyGroup>
   <ItemGroup>
@@ -60,12 +59,16 @@
     <Compile Include="EmbeddedNCoverProcessTask.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Gallio\Gallio\Gallio.vs2010.csproj">
+    <ProjectReference Include="..\..\..\Gallio\Gallio\Gallio.csproj">
       <Project>{6CAB7735-05DA-480D-9A04-50615B00F886}</Project>
-      <Name>Gallio.vs2010</Name>
+      <Name>Gallio %28Gallio\Gallio%29</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="..\libs\v1.5.8\NCover.Console.exe">
+      <Link>v1.5.8\NCover.Console.exe</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Gallio.NCoverIntegration.plugin" />
     <Content Include="..\libs\v1.5.8\NCover.Framework.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -86,6 +89,12 @@
     <Content Include="..\libs\v1.5.8\Microsoft.VC80.CRT.manifest">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <Link>v1.5.8\Microsoft.VC80.CRT.manifest</Link>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="..\libs\v1.5.8\NCover.Console.exe.config">
+      <Link>v1.5.8\NCover.Console.exe.config</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

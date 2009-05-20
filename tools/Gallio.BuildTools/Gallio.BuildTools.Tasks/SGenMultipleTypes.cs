@@ -103,7 +103,7 @@ namespace Gallio.BuildTools.Tasks
                 foreach (var reference in references)
                 {
                     // FIXME: Imprecise
-                    if (!reference.Contains("System"))
+                    if (! IsSystemAssembly(reference))
                         compilerParameters.ReferencedAssemblies.Add(reference);
                 }
 
@@ -115,6 +115,11 @@ namespace Gallio.BuildTools.Tasks
 
                 return serializersAssemblyPath;
             }
+        }
+
+        private static bool IsSystemAssembly(string assemblyName)
+        {
+            return assemblyName.Contains("System") || assemblyName.Contains("mscorlib");
         }
     }
 }

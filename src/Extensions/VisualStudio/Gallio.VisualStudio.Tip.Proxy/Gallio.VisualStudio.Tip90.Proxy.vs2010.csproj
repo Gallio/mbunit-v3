@@ -3,14 +3,14 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>10.0.11001</ProductVersion>
+    <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{3A5CA3C2-628D-4EAA-884B-95BB8C90C01C}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Gallio.VisualStudio.Tip</RootNamespace>
     <AssemblyName>Gallio.VisualStudio.Tip90.Proxy</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkSubset>
     </TargetFrameworkSubset>
@@ -20,8 +20,7 @@
     <FileUpgradeFlags>
     </FileUpgradeFlags>
     <OldToolsVersion>3.5</OldToolsVersion>
-    <UpgradeBackupLocation>
-    </UpgradeBackupLocation>
+    <UpgradeBackupLocation />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -33,7 +32,7 @@
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <DocumentationFile>bin\v9.0\Gallio.VisualStudio.Tip90.Proxy.XML</DocumentationFile>
-    <NoWarn>1734;1591</NoWarn>
+    <NoWarn>1591</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -44,7 +43,7 @@
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <DocumentationFile>bin\v9.0\Gallio.VisualStudio.Tip90.Proxy.XML</DocumentationFile>
-    <NoWarn>1734;1591</NoWarn>
+    <NoWarn>1591</NoWarn>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="EnvDTE, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
@@ -84,9 +83,9 @@
     <Compile Include="XmlPersistenceUtils.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Gallio\Gallio.Loader\Gallio.Loader.vs2010.csproj">
+    <ProjectReference Include="..\..\..\Gallio\Gallio.Loader\Gallio.Loader.csproj">
       <Project>{67FB2969-E6BF-4754-91AA-B6075F8E67EE}</Project>
-      <Name>Gallio.Loader.vs2010</Name>
+      <Name>Gallio.Loader</Name>
       <Private>True</Private>
     </ProjectReference>
   </ItemGroup>

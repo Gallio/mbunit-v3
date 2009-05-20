@@ -3,22 +3,21 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>10.0.11001</ProductVersion>
+    <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{540D39B1-FF3C-48E9-B3EF-EFADF556E80A}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Gallio.Ambience</RootNamespace>
     <AssemblyName>Gallio.Ambience</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\..\Key.snk</AssemblyOriginatorKeyFile>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
     <OldToolsVersion>3.5</OldToolsVersion>
-    <UpgradeBackupLocation>
-    </UpgradeBackupLocation>
+    <UpgradeBackupLocation />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -31,7 +30,6 @@
     <DocumentationFile>bin\Gallio.Ambience.XML</DocumentationFile>
     <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <NoWarn>1734</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -43,7 +41,6 @@
     <DocumentationFile>bin\Gallio.Ambience.XML</DocumentationFile>
     <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <NoWarn>1734</NoWarn>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Db4objects.Db4o, Version=7.4.60.11658, Culture=neutral, PublicKeyToken=6199cd4f203aa8eb, processorArchitecture=MSIL">
@@ -92,9 +89,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Gallio\Gallio\Gallio.vs2010.csproj">
+    <ProjectReference Include="..\..\..\Gallio\Gallio\Gallio.csproj">
       <Project>{6CAB7735-05DA-480D-9A04-50615B00F886}</Project>
-      <Name>Gallio.vs2010</Name>
+      <Name>Gallio %28Gallio\Gallio%29</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

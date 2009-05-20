@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>10.0.11001</ProductVersion>
+    <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{6C4AEA1A-CF85-4574-B24A-2C264ED0FEC3}</ProjectGuid>
     <OutputType>WinExe</OutputType>
@@ -27,14 +27,13 @@
     <IsWebBootstrapper>true</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
+    <SGenUseProxyTypes>false</SGenUseProxyTypes>
+    <SGenShouldGenerateSerializer>true</SGenShouldGenerateSerializer>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
     <OldToolsVersion>3.5</OldToolsVersion>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <UpgradeBackupLocation>
-    </UpgradeBackupLocation>
-    <SGenUseProxyTypes>false</SGenUseProxyTypes>
-    <SGenShouldGenerateSerializer>true</SGenShouldGenerateSerializer>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <UpgradeBackupLocation />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -46,7 +45,7 @@
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <DocumentationFile>bin\Gallio.Icarus.XML</DocumentationFile>
-    <NoWarn>1734;1591</NoWarn>
+    <NoWarn>1591</NoWarn>
     <GenerateSerializationAssemblies>On</GenerateSerializationAssemblies>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -58,7 +57,7 @@
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <DocumentationFile>bin\Gallio.Icarus.XML</DocumentationFile>
-    <NoWarn>1734;1591</NoWarn>
+    <NoWarn>1591</NoWarn>
     <GenerateSerializationAssemblies>On</GenerateSerializationAssemblies>
   </PropertyGroup>
   <ItemGroup>
@@ -66,13 +65,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\libs\Aga.Controls.dll</HintPath>
     </Reference>
+    <Reference Include="EnvDTE, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
     <Reference Include="ICSharpCode.TextEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=4d61825e8dd49f1a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\libs\ICSharpCode.TextEditor.dll</HintPath>
-    </Reference>
-    <Reference Include="NDepend.Helpers.FileDirectoryPath, Version=1.0.0.0, Culture=neutral, PublicKeyToken=eb9cfa67ee6ab36e, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\libs\NDepend.Helpers.FileDirectoryPath.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
@@ -100,18 +96,60 @@
     <Compile Include="CodeWindow.Designer.cs">
       <DependentUpon>CodeWindow.cs</DependentUpon>
     </Compile>
+    <Compile Include="Commands\AddAssembliesCommand.cs" />
+    <Compile Include="Commands\ApplyFilterCommand.cs" />
+    <Compile Include="Commands\ConvertSavedReportCommand.cs" />
+    <Compile Include="Commands\DeleteFilterCommand.cs" />
+    <Compile Include="Commands\DeleteReportCommand.cs" />
+    <Compile Include="Commands\GenerateReportCommand.cs" />
+    <Compile Include="Commands\ICommand.cs" />
+    <Compile Include="Commands\NewProjectCommand.cs" />
+    <Compile Include="Commands\OpenProjectCommand.cs" />
+    <Compile Include="Commands\OpenReportCommand.cs" />
+    <Compile Include="Commands\RefreshTestTreeCommand.cs" />
+    <Compile Include="Commands\ReloadCommand.cs" />
+    <Compile Include="Commands\RemoveAllAssembliesCommand.cs" />
+    <Compile Include="Commands\RemoveAssemblyCommand.cs" />
+    <Compile Include="Commands\ResetTestsCommand.cs" />
+    <Compile Include="Commands\RestoreFilterCommand.cs" />
+    <Compile Include="Commands\RunTestsCommand.cs" />
+    <Compile Include="Commands\SaveFilterCommand.cs" />
+    <Compile Include="Commands\SaveProjectCommand.cs" />
+    <Compile Include="Commands\ShowReportCommand.cs" />
+    <Compile Include="Commands\ViewSourceCodeCommand.cs" />
+    <Compile Include="Controllers\AboutController.cs" />
     <Compile Include="Controllers\AnnotationsController.cs" />
-    <Compile Include="Controllers\ErrorController.cs" />
+    <Compile Include="Controllers\ApplicationController.cs" />
     <Compile Include="Controllers\EventArgs\AssemblyChangedEventArgs.cs" />
+    <Compile Include="Controllers\EventArgs\DisplayProgressDialogEventArgs.cs" />
+    <Compile Include="Controllers\EventArgs\ExecutionLogUpdatedEventArgs.cs" />
     <Compile Include="Controllers\EventArgs\ShowSourceCodeEventArgs.cs" />
     <Compile Include="Controllers\ExecutionLogController.cs" />
+    <Compile Include="Controllers\FilterController.cs" />
+    <Compile Include="Controllers\IAboutController.cs" />
+    <Compile Include="Controllers\IApplicationController.cs" />
+    <Compile Include="Controllers\IFilterController.cs" />
     <Compile Include="Controllers\Interfaces\IAnnotationsController.cs" />
     <Compile Include="Controllers\Interfaces\IErrorController.cs" />
     <Compile Include="Controllers\Interfaces\IReportController.cs" />
+    <Compile Include="Controllers\Interfaces\ISourceCodeController.cs" />
+    <Compile Include="Controllers\Interfaces\ITestResultsController.cs" />
+    <Compile Include="Controllers\IProgressController.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Controllers\NotifyController.cs" />
+    <Compile Include="Controllers\ProgressController.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Controllers\ProjectController.cs" />
     <Compile Include="Controllers\ReportController.cs" />
     <Compile Include="Controllers\RuntimeLogController.cs" />
+    <Compile Include="Controllers\SourceCodeController.cs" />
     <Compile Include="Controllers\TestController.cs" />
+    <Compile Include="Controllers\TestResultsController.cs" />
+    <Compile Include="Controls\PluginTreeView.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controls\TestStatusBarStyles.cs" />
     <Compile Include="Controls\ToolStripButton.cs">
       <SubType>Component</SubType>
@@ -144,16 +182,92 @@
     <Compile Include="Controls\ToolStripMenuItem.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Mediator\Interfaces\IMediator.cs" />
-    <Compile Include="Mediator\Mediator.cs" />
-    <Compile Include="Models\Interfaces\IProjectTreeModel.cs" />
+    <Compile Include="Helpers\MenuListHelper.cs" />
+    <Compile Include="Helpers\TestTreeBuilder.cs" />
+    <Compile Include="Helpers\TestTreeBuilderOptions.cs" />
+    <Compile Include="ITaskManager.cs" />
+    <Compile Include="Logging\RuntimeLogger.cs" />
+    <Compile Include="Models\ComponentDetailsTreeModel.cs" />
+    <Compile Include="Models\ServiceDetailsTreeModel.cs" />
+    <Compile Include="Models\PluginDetailsTreeModel.cs" />
+    <Compile Include="Models\PluginNodes\PluginDetailsNode.cs" />
+    <Compile Include="Models\PluginTreeModel.cs" />
+    <Compile Include="Models\IProjectTreeModel.cs" />
+    <Compile Include="Models\ITestTreeModel.cs" />
+    <Compile Include="Models\PluginNodes\ComponentNode.cs" />
+    <Compile Include="Models\PluginNodes\PluginNode.cs" />
+    <Compile Include="Models\PluginNodes\ServiceNode.cs" />
+    <Compile Include="Models\ProjectTreeNodes\AssembliesNode.cs" />
+    <Compile Include="Models\ProjectTreeNodes\AssemblyNode.cs" />
+    <Compile Include="Models\ProjectTreeNodes\ProjectTreeNode.cs" />
+    <Compile Include="Models\ProjectTreeNodes\PropertiesNode.cs" />
+    <Compile Include="Models\ProjectTreeNodes\ReportNode.cs" />
+    <Compile Include="Models\ProjectTreeNodes\ReportsNode.cs" />
+    <Compile Include="Options\OptionsManager.cs" />
+    <Compile Include="Options\TreeViewCategoryOptions.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Options\TreeViewCategoryOptions.Designer.cs">
+      <DependentUpon>TreeViewCategoryOptions.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Options\TestRunnerFactoryOptions.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Options\TestRunnerFactoryOptions.Designer.cs">
+      <DependentUpon>TestRunnerFactoryOptions.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Options\ReportOptions.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Options\ReportOptions.Designer.cs">
+      <DependentUpon>ReportOptions.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Options\TestRunnerExtensionOptions.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Options\TestRunnerExtensionOptions.Designer.cs">
+      <DependentUpon>TestRunnerExtensionOptions.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Packages\PluginBrowserPackage.cs" />
+    <Compile Include="Remoting\IAssemblyWatcher.cs" />
+    <Compile Include="Runtime\IcarusRuntime.cs" />
+    <Compile Include="Runtime\RuntimeBootstrap.cs" />
+    <Compile Include="Utilities\ISynchronizationContext.cs" />
+    <Compile Include="Utilities\MRUList.cs" />
+    <Compile Include="Utilities\NativeMethods.cs" />
+    <Compile Include="Utilities\SynchronizationContext.cs" />
+    <Compile Include="Views\PluginBrowser\PluginBrowser.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\PluginBrowser\PluginBrowser.Designer.cs">
+      <DependentUpon>PluginBrowser.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\PluginBrowser\PluginDetails.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\PluginBrowser\PluginDetails.Designer.cs">
+      <DependentUpon>PluginDetails.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Window.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Window.Designer.cs">
+      <DependentUpon>Window.cs</DependentUpon>
+    </Compile>
+    <Compile Include="IMenuManager.cs" />
+    <Compile Include="IPackage.cs" />
+    <Compile Include="IWindowManager.cs" />
     <Compile Include="Controllers\Interfaces\IRuntimeLogController.cs" />
     <Compile Include="Controllers\Interfaces\ITestController.cs" />
+    <Compile Include="ProgressMonitor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ProgressMonitor.Designer.cs">
+      <DependentUpon>ProgressMonitor.cs</DependentUpon>
+    </Compile>
     <Compile Include="ProgressMonitoring\EventArgs\ProgressUpdateEventArgs.cs" />
     <Compile Include="Remoting\AssemblyWatcher.cs" />
     <Compile Include="Services\Interfaces\IReportService.cs" />
-    <Compile Include="Services\Interfaces\ITestRunnerService.cs" />
-    <Compile Include="Models\Interfaces\ITestTreeModel.cs" />
     <Compile Include="Models\ProjectTreeModel.cs" />
     <Compile Include="Models\TestTreeModel.cs" />
     <Compile Include="Models\TestTreeNode.cs" />
@@ -207,12 +321,6 @@
     </Compile>
     <Compile Include="ProjectExplorer.Designer.cs">
       <DependentUpon>ProjectExplorer.cs</DependentUpon>
-    </Compile>
-    <Compile Include="ProgressMonitor.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ProgressMonitor.Designer.cs">
-      <DependentUpon>ProgressMonitor.cs</DependentUpon>
     </Compile>
     <Compile Include="ReloadDialog.cs">
       <SubType>Form</SubType>
@@ -302,11 +410,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
-    <None Include="Gallio.Icarus.exe.config">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <Compile Include="Services\ReportService.cs" />
-    <Compile Include="Services\TestRunnerService.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="TestExplorer.cs">
       <SubType>Form</SubType>
@@ -322,22 +426,22 @@
     </Compile>
     <Compile Include="TaskManager.cs" />
     <Compile Include="UserOptions.cs" />
-    <Compile Include="Utilities\EncryptionUtil.cs" />
-    <Compile Include="Utilities\FileSystem.cs" />
-    <Compile Include="Utilities\IFileSystem.cs" />
     <Compile Include="Utilities\IUnhandledExceptionPolicy.cs" />
-    <Compile Include="Utilities\IXmlSerialization.cs" />
     <Compile Include="Utilities\UnhandledExceptionPolicy.cs" />
-    <Compile Include="Utilities\XmlSerialization.cs" />
+    <Compile Include="WindowManager.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Gallio\Gallio.UI\Gallio.UI.vs2010.csproj">
+    <ProjectReference Include="..\..\..\Gallio\Gallio.UI\Gallio.UI.csproj">
       <Project>{36B1F505-995B-41E7-AAC9-1E845B08F2D7}</Project>
-      <Name>Gallio.UI.vs2010</Name>
+      <Name>Gallio.UI</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\Gallio\Gallio\Gallio.vs2010.csproj">
+    <ProjectReference Include="..\..\..\Gallio\Gallio\Gallio.csproj">
       <Project>{6CAB7735-05DA-480D-9A04-50615B00F886}</Project>
-      <Name>Gallio.vs2010</Name>
+      <Name>Gallio %28Gallio\Gallio%29</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\VisualStudio\Gallio.VisualStudio.Interop\Gallio.VisualStudio.Interop.csproj">
+      <Project>{B6912CC5-1E73-46E0-8F09-7F135924E3E2}</Project>
+      <Name>Gallio.VisualStudio.Interop</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -372,6 +476,34 @@
       <DependentUpon>AnnotationsWindow.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="Options\TreeViewCategoryOptions.resx">
+      <DependentUpon>TreeViewCategoryOptions.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Options\TestRunnerFactoryOptions.resx">
+      <DependentUpon>TestRunnerFactoryOptions.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Options\ReportOptions.resx">
+      <DependentUpon>ReportOptions.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Options\TestRunnerExtensionOptions.resx">
+      <DependentUpon>TestRunnerExtensionOptions.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\PluginBrowser\PluginBrowser.resx">
+      <DependentUpon>PluginBrowser.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\PluginBrowser\PluginDetails.resx">
+      <DependentUpon>PluginDetails.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Window.resx">
+      <DependentUpon>Window.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="Options\AppearanceOptions.resx">
       <DependentUpon>AppearanceOptions.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -400,12 +532,12 @@
       <DependentUpon>StartupOptions.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="ProjectExplorer.resx">
-      <DependentUpon>ProjectExplorer.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
     <EmbeddedResource Include="ProgressMonitor.resx">
       <DependentUpon>ProgressMonitor.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ProjectExplorer.resx">
+      <DependentUpon>ProjectExplorer.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="ReloadDialog.resx">
@@ -431,6 +563,10 @@
     <Content Include="Resources\Fixture.png" />
     <Content Include="Resources\folder_open.png" />
     <Content Include="Resources\Graph.png" />
+    <None Include="Gallio.Icarus.exe.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Gallio.Icarus.plugin" />
     <None Include="Resources\Group.png" />
     <Content Include="Resources\help-browser.png" />
     <Content Include="Resources\LinkToMBU.png" />
@@ -445,6 +581,10 @@
     <Content Include="Resources\Options.ico" />
     <Content Include="Resources\PassMb.ico" />
     <None Include="Resources\pillar.png" />
+    <None Include="Resources\PropertiesHS.png" />
+    <None Include="Resources\Properties.bmp" />
+    <None Include="Resources\props.ico" />
+    <None Include="Resources\Properties.ico" />
     <Content Include="Resources\Reload.ico" />
     <Content Include="Resources\Report.ico" />
     <Content Include="Resources\Sort.png" />

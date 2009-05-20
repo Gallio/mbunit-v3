@@ -3,22 +3,21 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>10.0.11001</ProductVersion>
+    <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{36B1F505-995B-41E7-AAC9-1E845B08F2D7}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Gallio.UI</RootNamespace>
     <AssemblyName>Gallio.UI</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\Key.snk</AssemblyOriginatorKeyFile>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
     <OldToolsVersion>3.5</OldToolsVersion>
-    <UpgradeBackupLocation>
-    </UpgradeBackupLocation>
+    <UpgradeBackupLocation />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -51,7 +50,62 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="HtmlTestStepRunFormatter.cs">
+    <Compile Include="ControlPanel\ControlPanelPresenter.cs" />
+    <Compile Include="ControlPanel\ControlPanelTab.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ControlPanel\ControlPanelTab.Designer.cs">
+      <DependentUpon>ControlPanelTab.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ControlPanel\ControlPanelTabProviderTraits.cs" />
+    <Compile Include="ControlPanel\IControlPanelPresenter.cs" />
+    <Compile Include="ControlPanel\IControlPanelTabProvider.cs" />
+    <Compile Include="ControlPanel\ControlPanelDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ControlPanel\ControlPanelDialog.Designer.cs">
+      <DependentUpon>ControlPanelDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ControlPanel\Plugins\PluginControlPanelTab.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ControlPanel\Plugins\PluginControlPanelTab.Designer.cs">
+      <DependentUpon>PluginControlPanelTab.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ControlPanel\Plugins\PluginControlPanelTabProvider.cs" />
+    <Compile Include="ControlPanel\SettingsEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ControlPanel\Preferences\PlaceholderPreferencePane.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ControlPanel\Preferences\PlaceholderPreferencePane.Designer.cs">
+      <DependentUpon>PlaceholderPreferencePane.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ControlPanel\Preferences\PlaceholderPreferencePaneProvider.cs" />
+    <Compile Include="ControlPanel\Preferences\GallioPreferencePane.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ControlPanel\Preferences\GallioPreferencePane.Designer.cs">
+      <DependentUpon>GallioPreferencePane.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ControlPanel\Preferences\GallioPreferencePaneProvider.cs" />
+    <Compile Include="ControlPanel\Preferences\IPreferencePaneProvider.cs" />
+    <Compile Include="ControlPanel\Preferences\PreferenceControlPanelTab.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ControlPanel\Preferences\PreferenceControlPanelTab.Designer.cs">
+      <DependentUpon>PreferenceControlPanelTab.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ControlPanel\Preferences\PreferenceControlPanelTabProvider.cs" />
+    <Compile Include="ControlPanel\Preferences\PreferencePane.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ControlPanel\Preferences\PreferencePane.Designer.cs">
+      <DependentUpon>PreferencePane.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ControlPanel\Preferences\PreferencePaneProviderTraits.cs" />
+    <Compile Include="Reports\HtmlTestStepRunFormatter.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -60,30 +114,54 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="TestStepRunViewer.cs">
+    <Compile Include="Reports\TestStepRunViewer.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="TestStepRunViewer.Designer.cs">
+    <Compile Include="Reports\TestStepRunViewer.Designer.cs">
       <DependentUpon>TestStepRunViewer.cs</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="ControlPanel\ControlPanelDialog.resx">
+      <DependentUpon>ControlPanelDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ControlPanel\ControlPanelTab.resx">
+      <DependentUpon>ControlPanelTab.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ControlPanel\Plugins\PluginControlPanelTab.resx">
+      <DependentUpon>PluginControlPanelTab.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ControlPanel\Preferences\GallioPreferencePane.resx">
+      <DependentUpon>GallioPreferencePane.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ControlPanel\Preferences\PlaceholderPreferencePane.resx">
+      <DependentUpon>PlaceholderPreferencePane.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ControlPanel\Preferences\PreferenceControlPanelTab.resx">
+      <DependentUpon>PreferenceControlPanelTab.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ControlPanel\Preferences\PreferencePane.resx">
+      <DependentUpon>PreferencePane.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="TestStepRunViewer.resx">
+    <EmbeddedResource Include="Reports\TestStepRunViewer.resx">
       <DependentUpon>TestStepRunViewer.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Gallio\Gallio.vs2010.csproj">
+    <ProjectReference Include="..\Gallio\Gallio.csproj">
       <Project>{6CAB7735-05DA-480D-9A04-50615B00F886}</Project>
-      <Name>Gallio.vs2010</Name>
+      <Name>Gallio %28Gallio\Gallio%29</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\GallioControlPanel.ico" />
     <Content Include="Gallio.UI.plugin" />
+    <None Include="Resources\DefaultPreferencePaneIcon.ico" />
+    <None Include="Resources\DefaultPluginAboutIcon.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

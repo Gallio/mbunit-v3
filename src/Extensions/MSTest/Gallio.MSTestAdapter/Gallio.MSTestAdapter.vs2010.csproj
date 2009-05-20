@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>10.0.11001</ProductVersion>
+    <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{8FC20489-148C-4220-AA3B-0BA8B6BC2AC7}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -12,9 +12,8 @@
     <FileUpgradeFlags>
     </FileUpgradeFlags>
     <OldToolsVersion>3.5</OldToolsVersion>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <UpgradeBackupLocation>
-    </UpgradeBackupLocation>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <UpgradeBackupLocation />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -26,7 +25,7 @@
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <DocumentationFile>bin\Gallio.MSTestAdapter.XML</DocumentationFile>
-    <NoWarn>1734;1591</NoWarn>
+    <NoWarn>1591</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -35,7 +34,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <NoWarn>1734;1591</NoWarn>
+    <NoWarn>1591</NoWarn>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <DocumentationFile>bin\Gallio.MSTestAdapter.XML</DocumentationFile>
   </PropertyGroup>
@@ -46,7 +45,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Wrapper\DebugMSTestCommand.cs" />
-    <Compile Include="Wrapper\IMSTestCommand.cs" />
+    <Compile Include="Wrapper\MSTestCommand.cs" />
     <Compile Include="Wrapper\MSTestCommandArguments.cs" />
     <Compile Include="Model\MSTestMetadataKeys.cs" />
     <Compile Include="Model\MSTest.cs" />
@@ -55,7 +54,12 @@
     <Compile Include="Model\MSTestController.cs" />
     <Compile Include="Model\MSTestExplorer.cs" />
     <Compile Include="Model\MSTestFramework.cs" />
+    <Compile Include="Wrapper\MSTestResult.cs" />
     <Compile Include="Wrapper\MSTestResolver.cs" />
+    <Compile Include="Wrapper\MSTestRunner.cs" />
+    <Compile Include="Wrapper\MSTestRunner2005.cs" />
+    <Compile Include="Wrapper\MSTestRunner2008.cs" />
+    <Compile Include="Wrapper\MSTestRunner2010.cs" />
     <Compile Include="Wrapper\StandaloneMSTestCommand.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
@@ -71,9 +75,9 @@
     <Content Include="Readme.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Gallio\Gallio\Gallio.vs2010.csproj">
+    <ProjectReference Include="..\..\..\Gallio\Gallio\Gallio.csproj">
       <Project>{6CAB7735-05DA-480D-9A04-50615B00F886}</Project>
-      <Name>Gallio.vs2010</Name>
+      <Name>Gallio %28Gallio\Gallio%29</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

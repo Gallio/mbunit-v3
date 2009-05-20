@@ -3,22 +3,21 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{B6912CC5-1E73-46E0-8F09-7F135924E3E2}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Gallio.VisualStudio.Interop</RootNamespace>
     <AssemblyName>Gallio.VisualStudio.Interop</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\..\Key.snk</AssemblyOriginatorKeyFile>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
     <OldToolsVersion>3.5</OldToolsVersion>
-    <UpgradeBackupLocation>
-    </UpgradeBackupLocation>
+    <UpgradeBackupLocation />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -28,7 +27,8 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <NoWarn>1734</NoWarn>
+    <NoWarn>
+    </NoWarn>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <DocumentationFile>bin\Gallio.VisualStudio.Interop.XML</DocumentationFile>
     <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
@@ -40,7 +40,8 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <NoWarn>1734</NoWarn>
+    <NoWarn>
+    </NoWarn>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <DocumentationFile>bin\Gallio.VisualStudio.Interop.XML</DocumentationFile>
     <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
@@ -58,17 +59,32 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ComRetryMessageFilter.cs" />
+    <Compile Include="IVisualStudio.cs" />
+    <Compile Include="IVisualStudioManager.cs" />
     <Compile Include="Native\IOleMessageFilter.cs" />
     <Compile Include="Native\NativeConstants.cs" />
     <Compile Include="Native\NativeMethods.cs" />
     <Compile Include="Native\SERVERCALL.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="VisualStudioSupport.cs" />
+    <Compile Include="VisualStudioException.cs" />
+    <Compile Include="VisualStudio.cs" />
+    <Compile Include="VisualStudioDebugger.cs" />
+    <Compile Include="VisualStudioManager.cs" />
+    <Compile Include="VisualStudioVersion.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Gallio.VisualStudio.Interop.plugin" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Gallio\Gallio\Gallio.csproj">
+      <Project>{6CAB7735-05DA-480D-9A04-50615B00F886}</Project>
+      <Name>Gallio %28Gallio\Gallio%29</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <GallioProjectOutputPath>..\..\..\Gallio\Gallio\bin</GallioProjectOutputPath>
-  </PropertyGroup>  
+  </PropertyGroup>
   <Target Name="BeforeBuild">
     <Delete Files="$(GallioProjectOutputPath)\$(TargetFileName)" Condition="Exists('$(GallioProjectOutputPath)\$(TargetFileName)')" />
   </Target>

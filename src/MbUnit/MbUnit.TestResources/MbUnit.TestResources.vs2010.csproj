@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>10.0.11001</ProductVersion>
+    <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{9FFB657C-7099-4594-A1DD-6E9AC5D7171E}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -14,9 +14,8 @@
     <FileUpgradeFlags>
     </FileUpgradeFlags>
     <OldToolsVersion>3.5</OldToolsVersion>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <UpgradeBackupLocation>
-    </UpgradeBackupLocation>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <UpgradeBackupLocation />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -27,7 +26,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\MbUnit.TestResources.xml</DocumentationFile>
-    <NoWarn>1734;1591</NoWarn>
+    <NoWarn>1591</NoWarn>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -38,7 +37,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\MbUnit.TestResources.xml</DocumentationFile>
-    <NoWarn>1734;1591</NoWarn>
+    <NoWarn>1591</NoWarn>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   <ItemGroup>
@@ -48,6 +47,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AnnotatedTests.cs" />
+    <Compile Include="AssemblyApartmentStateSample.cs" />
     <Compile Include="MultipleStatuses.cs" />
     <Compile Include="ProcessorArchitecture\MSILSample.cs" />
     <Compile Include="Reflection\ReflectionPolicySample.cs" />
@@ -85,13 +85,13 @@
     <None Include="Resources\MbUnitLogo.png" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Gallio\Gallio\Gallio.vs2010.csproj">
+    <ProjectReference Include="..\..\Gallio\Gallio\Gallio.csproj">
       <Project>{6CAB7735-05DA-480D-9A04-50615B00F886}</Project>
-      <Name>Gallio.vs2010</Name>
+      <Name>Gallio %28Gallio\Gallio%29</Name>
     </ProjectReference>
-    <ProjectReference Include="..\MbUnit\MbUnit.vs2010.csproj">
+    <ProjectReference Include="..\..\MbUnit\MbUnit\MbUnit.csproj">
       <Project>{A9B54755-56B7-48C1-8941-BB69FCEFFF32}</Project>
-      <Name>MbUnit.vs2010</Name>
+      <Name>MbUnit %28MbUnit\MbUnit%29</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

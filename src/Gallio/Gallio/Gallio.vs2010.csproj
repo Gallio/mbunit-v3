@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>10.0.11001</ProductVersion>
+    <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{6CAB7735-05DA-480D-9A04-50615B00F886}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -16,9 +16,8 @@
     <FileUpgradeFlags>
     </FileUpgradeFlags>
     <OldToolsVersion>3.5</OldToolsVersion>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <UpgradeBackupLocation>
-    </UpgradeBackupLocation>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <UpgradeBackupLocation />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -28,10 +27,9 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <NoWarn>1734</NoWarn>
+    <NoWarn>
+    </NoWarn>
     <DocumentationFile>bin\Gallio.xml</DocumentationFile>
-    <WarningsAsErrors>
-    </WarningsAsErrors>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <GenerateSerializationAssemblies>On</GenerateSerializationAssemblies>
   </PropertyGroup>
@@ -42,34 +40,20 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <NoWarn>1734</NoWarn>
+    <NoWarn>
+    </NoWarn>
     <DocumentationFile>bin\Gallio.xml</DocumentationFile>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <GenerateSerializationAssemblies>On</GenerateSerializationAssemblies>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Castle.Core, Version=1.0.3.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\libs\Castle.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="Castle.DynamicProxy2, Version=2.0.3.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\libs\Castle.DynamicProxy2.dll</HintPath>
-    </Reference>
-    <Reference Include="Castle.MicroKernel, Version=1.0.3.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\libs\Castle.MicroKernel.dll</HintPath>
-    </Reference>
-    <Reference Include="Castle.Windsor, Version=1.0.3.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\libs\Castle.Windsor.dll</HintPath>
-    </Reference>
-    <Reference Include="ISymWrapper">
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </Reference>
     <Reference Include="Mono.Cecil, Version=0.6.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\libs\Mono.Cecil.dll</HintPath>
+    </Reference>
+    <Reference Include="NDepend.Helpers.FileDirectoryPath, Version=1.0.0.0, Culture=neutral, PublicKeyToken=eb9cfa67ee6ab36e, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\libs\NDepend.Helpers.FileDirectoryPath.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
@@ -82,22 +66,227 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Action.cs" />
-    <Compile Include="Collections\ArrayEqualityComparer.cs" />
-    <Compile Include="Collections\HashSet.cs" />
-    <Compile Include="Collections\Key.cs" />
-    <Compile Include="Collections\ReadOnlyDictionary.cs" />
-    <Compile Include="Concurrency\WriteAction.cs" />
-    <Compile Include="Concurrency\ProcessTask.cs" />
-    <Compile Include="Concurrency\ReadAction.cs" />
-    <Compile Include="Concurrency\Task.cs" />
-    <Compile Include="Concurrency\TaskContainer.cs" />
-    <Compile Include="Concurrency\TaskEventArgs.cs" />
-    <Compile Include="Concurrency\TaskResult.cs" />
-    <Compile Include="Concurrency\ThreadAbortScope.cs" />
-    <Compile Include="Concurrency\ThreadTask.cs" />
-    <Compile Include="FuncChain.cs" />
-    <Compile Include="FuncDecorator.cs" />
+    <Compile Include="Common\Accessor.cs" />
+    <Compile Include="Common\Action.cs" />
+    <Compile Include="Common\Collections\ArrayEqualityComparer.cs" />
+    <Compile Include="Common\Collections\CollectionUtils.cs" />
+    <Compile Include="Common\Collections\CovariantList.cs" />
+    <Compile Include="Common\Collections\EmptyArray.cs" />
+    <Compile Include="Common\Collections\EmptyDictionary.cs" />
+    <Compile Include="Common\Collections\GenericCollectionUtils.cs" />
+    <Compile Include="Common\Collections\HashSet.cs" />
+    <Compile Include="Common\Collections\IMultiMap.cs" />
+    <Compile Include="Common\Collections\Key.cs" />
+    <Compile Include="Common\Collections\LazyCache.cs" />
+    <Compile Include="Common\Collections\MultiMap.cs" />
+    <Compile Include="Common\Collections\PropertyBag.cs" />
+    <Compile Include="Common\Collections\PropertySet.cs" />
+    <Compile Include="Common\Collections\ReadOnlyDictionary.cs" />
+    <Compile Include="Common\Collections\ReadOnlyMultiMap.cs" />
+    <Compile Include="Common\Collections\ReferentialEqualityComparer.cs" />
+    <Compile Include="Common\Collections\TreeUtils.cs" />
+    <Compile Include="Common\Collections\UserDataCollection.cs" />
+    <Compile Include="Common\Concurrency\LockBox.cs" />
+    <Compile Include="Common\Concurrency\ProcessTask.cs" />
+    <Compile Include="Common\Concurrency\ReadAction.cs" />
+    <Compile Include="Common\Concurrency\ReadFunc.cs" />
+    <Compile Include="Common\Concurrency\Task.cs" />
+    <Compile Include="Common\Concurrency\TaskContainer.cs" />
+    <Compile Include="Common\Concurrency\TaskEventArgs.cs" />
+    <Compile Include="Common\Concurrency\TaskResult.cs" />
+    <Compile Include="Common\Concurrency\ThreadAbortScope.cs" />
+    <Compile Include="Common\Concurrency\ThreadTask.cs" />
+    <Compile Include="Common\Concurrency\WriteAction.cs" />
+    <Compile Include="Common\Concurrency\WriteFunc.cs" />
+    <Compile Include="Common\Diagnostics\ExceptionData.cs" />
+    <Compile Include="Common\Diagnostics\StackTraceData.cs" />
+    <Compile Include="Common\Diagnostics\StackTraceFilter.cs" />
+    <Compile Include="Common\Diagnostics\SystemInternalAttribute.cs" />
+    <Compile Include="Common\Diagnostics\UserCodeEntryPointAttribute.cs" />
+    <Compile Include="Common\EqualityComparison.cs" />
+    <Compile Include="Common\Policies\SpecialPathPolicy.cs" />
+    <Compile Include="Common\Markup\Attachment.cs" />
+    <Compile Include="Common\Markup\AttachmentContentDisposition.cs" />
+    <Compile Include="Common\Markup\AttachmentData.cs" />
+    <Compile Include="Common\Markup\AttachmentEncoding.cs" />
+    <Compile Include="Common\Markup\BinaryAttachment.cs" />
+    <Compile Include="Common\Markup\FallbackMarkupDocumentWriter.cs" />
+    <Compile Include="Common\Markup\IMarkupStreamWritable.cs" />
+    <Compile Include="Common\Markup\Marker.cs" />
+    <Compile Include="Common\Markup\MimeTypes.cs" />
+    <Compile Include="Common\Markup\NullMarkupDocumentWriter.cs" />
+    <Compile Include="Common\Markup\StringMarkupDocumentWriter.cs" />
+    <Compile Include="Common\Markup\StructuredDocument.cs" />
+    <Compile Include="Common\Markup\StructuredStream.cs" />
+    <Compile Include="Common\Markup\StructuredDocumentWriter.cs" />
+    <Compile Include="Common\Markup\StructuredText.cs" />
+    <Compile Include="Common\Markup\StructuredTextWriter.cs" />
+    <Compile Include="Common\Markup\Tags\BaseTagVisitor.cs" />
+    <Compile Include="Common\Markup\Tags\BodyTag.cs" />
+    <Compile Include="Common\Markup\Tags\ContainerTag.cs" />
+    <Compile Include="Common\Markup\Tags\EmbedTag.cs" />
+    <Compile Include="Common\Markup\Tags\ITagVisitor.cs" />
+    <Compile Include="Common\Markup\Tags\MarkerTag.cs" />
+    <Compile Include="Common\Markup\Tags\SectionTag.cs" />
+    <Compile Include="Common\Markup\Tags\Tag.cs" />
+    <Compile Include="Common\Markup\Tags\TagFormatter.cs" />
+    <Compile Include="Common\Markup\Tags\TextTag.cs" />
+    <Compile Include="Framework\Data\Generation\SequentialNumbersGenerator.cs" />
+    <Compile Include="Framework\Data\Generation\Generator.cs" />
+    <Compile Include="Framework\Data\Generation\RandomNumbersGenerator.cs" />
+    <Compile Include="Framework\Data\Generation\RandomGenerator.cs" />
+    <Compile Include="Framework\Data\Generation\SequentialGenerator.cs" />
+    <Compile Include="Common\Condition.cs" />
+    <Compile Include="Common\ConditionContext.cs" />
+    <Compile Include="Framework\Data\Generation\GenerationException.cs" />
+    <Compile Include="Runner\Extensions\ActivationConditionContext.cs" />
+    <Compile Include="Runner\Extensions\ITestRunnerExtensionFactory.cs" />
+    <Compile Include="Runner\Extensions\ITestRunnerExtensionManager.cs" />
+    <Compile Include="Runner\Extensions\TestRunnerExtensionFactoryTraits.cs" />
+    <Compile Include="Runner\Extensions\DefaultTestRunnerExtensionManager.cs" />
+    <Compile Include="Runtime\Caching\DiskCacheException.cs" />
+    <Compile Include="Runtime\Caching\IDiskCache.cs" />
+    <Compile Include="Runtime\Caching\IDiskCacheGroup.cs" />
+    <Compile Include="Runtime\Caching\IDiskCacheGroupCollection.cs" />
+    <Compile Include="Runtime\Caching\SimpleDiskCache.cs" />
+    <Compile Include="Runtime\Caching\TemporaryDiskCache.cs" />
+    <Compile Include="Runtime\Extensibility\ResourceSearchRules.cs" />
+    <Compile Include="Runtime\Installer\BaseInstaller.cs" />
+    <Compile Include="Runtime\Installer\DefaultInstallerManager.cs" />
+    <Compile Include="Runtime\Installer\IInstaller.cs" />
+    <Compile Include="Runtime\Installer\IInstallerManager.cs" />
+    <Compile Include="Runtime\Installer\InstallerTraits.cs" />
+    <Compile Include="Runtime\Installer\SetupCommand.cs" />
+    <Compile Include="Runtime\Logging\MarkupStreamLogger.cs" />
+    <Compile Include="Common\Markup\MarkupStreamNames.cs" />
+    <Compile Include="Common\Markup\MarkupStreamWriter.cs" />
+    <Compile Include="Common\Markup\MarkupDocumentWriter.cs" />
+    <Compile Include="Common\Markup\TextAttachment.cs" />
+    <Compile Include="Common\Markup\TextualMarkupDocumentWriter.cs" />
+    <Compile Include="Common\Reflection\AssemblyUtils.cs" />
+    <Compile Include="Common\Reflection\AttributeUtils.cs" />
+    <Compile Include="Common\Reflection\CodeElementKind.cs" />
+    <Compile Include="Common\Reflection\CodeElementSorter.cs" />
+    <Compile Include="Common\Reflection\CodeLocation.cs" />
+    <Compile Include="Common\Reflection\CodeReference.cs" />
+    <Compile Include="Common\Reflection\CodeReferenceKind.cs" />
+    <Compile Include="Common\Reflection\ConstantValue.cs" />
+    <Compile Include="Common\Reflection\DeclaringTypeComparer.cs" />
+    <Compile Include="Common\Reflection\IAssemblyInfo.cs" />
+    <Compile Include="Common\Reflection\IAttributeInfo.cs" />
+    <Compile Include="Common\Reflection\ICodeElementInfo.cs" />
+    <Compile Include="Common\Reflection\IConstructorInfo.cs" />
+    <Compile Include="Common\Reflection\IEventInfo.cs" />
+    <Compile Include="Common\Reflection\IFieldInfo.cs" />
+    <Compile Include="Common\Reflection\IFunctionInfo.cs" />
+    <Compile Include="Common\Reflection\IGenericParameterInfo.cs" />
+    <Compile Include="Common\Reflection\IMemberInfo.cs" />
+    <Compile Include="Common\Reflection\IMethodInfo.cs" />
+    <Compile Include="Common\Reflection\Impl\BaseReflectionPolicy.cs" />
+    <Compile Include="Common\Reflection\Impl\CecilReflectionPolicy.cs" />
+    <Compile Include="Common\Reflection\Impl\ComDebugSymbolResolver.cs" />
+    <Compile Include="Common\Reflection\Impl\DebugSymbolUtils.cs" />
+    <Compile Include="Common\Reflection\Impl\DefaultXmlDocumentationResolver.cs" />
+    <Compile Include="Common\Reflection\Impl\IDebugSymbolResolver.cs" />
+    <Compile Include="Common\Reflection\Impl\IResolvableTypeInfo.cs" />
+    <Compile Include="Common\Reflection\Impl\IUnresolvedCodeElement.cs" />
+    <Compile Include="Common\Reflection\Impl\IXmlDocumentationResolver.cs" />
+    <Compile Include="Common\Reflection\Impl\MonoDebugSymbolResolver.cs" />
+    <Compile Include="Common\Reflection\Impl\NativeAssemblyWrapper.cs" />
+    <Compile Include="Common\Reflection\Impl\NativeAttributeWrapper.cs" />
+    <Compile Include="Common\Reflection\Impl\NativeCodeElementWrapper.cs" />
+    <Compile Include="Common\Reflection\Impl\NativeConstructorWrapper.cs" />
+    <Compile Include="Common\Reflection\Impl\NativeEventWrapper.cs" />
+    <Compile Include="Common\Reflection\Impl\NativeFieldWrapper.cs" />
+    <Compile Include="Common\Reflection\Impl\NativeFunctionWrapper.cs" />
+    <Compile Include="Common\Reflection\Impl\NativeGenericParameterWrapper.cs" />
+    <Compile Include="Common\Reflection\Impl\NativeMemberWrapper.cs" />
+    <Compile Include="Common\Reflection\Impl\NativeMethodWrapper.cs" />
+    <Compile Include="Common\Reflection\Impl\NativeNamespaceWrapper.cs" />
+    <Compile Include="Common\Reflection\Impl\NativeParameterWrapper.cs" />
+    <Compile Include="Common\Reflection\Impl\NativePropertyWrapper.cs" />
+    <Compile Include="Common\Reflection\Impl\NativeReflectionPolicy.cs" />
+    <Compile Include="Common\Reflection\Impl\NativeTypeWrapper.cs" />
+    <Compile Include="Common\Reflection\Impl\ReflectorAttributeUtils.cs" />
+    <Compile Include="Common\Reflection\Impl\ReflectorFlagsUtils.cs" />
+    <Compile Include="Common\Reflection\Impl\ReflectorResolveUtils.cs" />
+    <Compile Include="Common\Reflection\Impl\ReflectorTypeUtils.cs" />
+    <Compile Include="Common\Reflection\Impl\StaticArrayTypeWrapper.cs" />
+    <Compile Include="Common\Reflection\Impl\StaticAssemblyWrapper.cs" />
+    <Compile Include="Common\Reflection\Impl\StaticAttributeWrapper.cs" />
+    <Compile Include="Common\Reflection\Impl\StaticByRefTypeWrapper.cs" />
+    <Compile Include="Common\Reflection\Impl\StaticCodeElementWrapper.cs" />
+    <Compile Include="Common\Reflection\Impl\StaticConstructedTypeWrapper.cs" />
+    <Compile Include="Common\Reflection\Impl\StaticConstructorWrapper.cs" />
+    <Compile Include="Common\Reflection\Impl\StaticDeclaredTypeWrapper.cs" />
+    <Compile Include="Common\Reflection\Impl\StaticEventWrapper.cs" />
+    <Compile Include="Common\Reflection\Impl\StaticFieldWrapper.cs" />
+    <Compile Include="Common\Reflection\Impl\StaticFunctionWrapper.cs" />
+    <Compile Include="Common\Reflection\Impl\StaticGenericParameterWrapper.cs" />
+    <Compile Include="Common\Reflection\Impl\StaticMemberWrapper.cs" />
+    <Compile Include="Common\Reflection\Impl\StaticMethodWrapper.cs" />
+    <Compile Include="Common\Reflection\Impl\StaticParameterWrapper.cs" />
+    <Compile Include="Common\Reflection\Impl\StaticPointerTypeWrapper.cs" />
+    <Compile Include="Common\Reflection\Impl\StaticPropertyWrapper.cs" />
+    <Compile Include="Common\Reflection\Impl\StaticReflectedMemberWrapper.cs" />
+    <Compile Include="Common\Reflection\Impl\StaticReflectionPolicy.cs" />
+    <Compile Include="Common\Reflection\Impl\StaticSpecialTypeWrapper.cs" />
+    <Compile Include="Common\Reflection\Impl\StaticTypeSubstitution.cs" />
+    <Compile Include="Common\Reflection\Impl\StaticTypeWrapper.cs" />
+    <Compile Include="Common\Reflection\Impl\StaticWrapper.cs" />
+    <Compile Include="Common\Reflection\Impl\UnresolvedConstructorInfo.cs" />
+    <Compile Include="Common\Reflection\Impl\UnresolvedCustomAttributeProvider.cs" />
+    <Compile Include="Common\Reflection\Impl\UnresolvedEventInfo.cs" />
+    <Compile Include="Common\Reflection\Impl\UnresolvedFieldInfo.cs" />
+    <Compile Include="Common\Reflection\Impl\UnresolvedMemberInfo.cs" />
+    <Compile Include="Common\Reflection\Impl\UnresolvedMethodBase.cs" />
+    <Compile Include="Common\Reflection\Impl\UnresolvedMethodInfo.cs" />
+    <Compile Include="Common\Reflection\Impl\UnresolvedParameterInfo.cs" />
+    <Compile Include="Common\Reflection\Impl\UnresolvedPropertyInfo.cs" />
+    <Compile Include="Common\Reflection\Impl\UnresolvedType.cs" />
+    <Compile Include="Common\Reflection\Impl\XmlDocumentationUtils.cs" />
+    <Compile Include="Common\Reflection\INamespaceInfo.cs" />
+    <Compile Include="Common\Reflection\IParameterInfo.cs" />
+    <Compile Include="Common\Reflection\IPropertyInfo.cs" />
+    <Compile Include="Common\Reflection\IReflectionPolicy.cs" />
+    <Compile Include="Common\Reflection\ISlotInfo.cs" />
+    <Compile Include="Common\Reflection\ITypeInfo.cs" />
+    <Compile Include="Common\Reflection\ReflectionOnlyAssemblyLoader.cs" />
+    <Compile Include="Common\Reflection\ReflectionResolveException.cs" />
+    <Compile Include="Common\Reflection\ReflectionUtils.cs" />
+    <Compile Include="Common\Reflection\Reflector.cs" />
+    <Compile Include="Common\Reflection\TypeName.cs" />
+    <Compile Include="Common\Text\Diff.cs" />
+    <Compile Include="Common\Text\DiffKind.cs" />
+    <Compile Include="Common\Text\DiffSet.cs" />
+    <Compile Include="Common\Text\DiffStyle.cs" />
+    <Compile Include="Common\Text\Range.cs" />
+    <Compile Include="Common\Text\Substring.cs" />
+    <Compile Include="Framework\DiagnosticLog.cs" />
+    <Compile Include="Framework\Pattern\ReflectionOnlyTestModelBuilder.cs" />
+    <Compile Include="Framework\Pattern\PatternTestFrameworkExtensionInfo.cs" />
+    <Compile Include="Framework\TestTerminatedException.cs" />
+    <Compile Include="Framework\Pattern\BaseBuilder.cs" />
+    <Compile Include="Framework\Pattern\DefaultTestBuilder.cs" />
+    <Compile Include="Framework\Pattern\BaseTestComponentBuilder.cs" />
+    <Compile Include="Framework\Pattern\DefaultTestDataContextBuilder.cs" />
+    <Compile Include="Framework\Pattern\DefaultTestModelBuilder.cs" />
+    <Compile Include="Framework\Pattern\DefaultTestParameterBuilder.cs" />
+    <Compile Include="Framework\Pattern\DeferredComponentPopulator.cs" />
+    <Compile Include="Framework\Pattern\IPatternTestParameterHandler.cs" />
+    <Compile Include="Framework\Pattern\ISupportDeferredActions.cs" />
+    <Compile Include="Framework\Pattern\IPatternEvaluator.cs" />
+    <Compile Include="Framework\Pattern\IPatternScope.cs" />
+    <Compile Include="Framework\Pattern\ITestBuilder.cs" />
+    <Compile Include="Framework\Pattern\ITestComponentBuilder.cs" />
+    <Compile Include="Framework\Pattern\ITestDataContextBuilder.cs" />
+    <Compile Include="Framework\Pattern\ITestModelBuilder.cs" />
+    <Compile Include="Framework\Pattern\ITestParameterBuilder.cs" />
+    <Compile Include="Framework\Pattern\ParallelizableTestCaseScheduler.cs" />
+    <Compile Include="Framework\Pattern\TestAssemblyExecutionParameters.cs" />
+    <Compile Include="Framework\Pattern\PatternTestParameterActions.cs" />
+    <Compile Include="Common\FuncChain.cs" />
+    <Compile Include="Common\FuncDecorator.cs" />
     <Compile Include="Framework\Assertions\AssertionContext.cs" />
     <Compile Include="Framework\Assertions\AssertionException.cs" />
     <Compile Include="Framework\Assertions\AssertionFailure.cs" />
@@ -105,20 +294,6 @@
     <Compile Include="Framework\Assertions\AssertionFailureBuilder.cs" />
     <Compile Include="Framework\Assertions\AssertionFailureException.cs" />
     <Compile Include="Framework\Assertions\AssertionHelper.cs" />
-    <Compile Include="Framework\Conversions\ArrayToArrayConversionRule.cs" />
-    <Compile Include="Framework\Conversions\BaseConverter.cs" />
-    <Compile Include="Framework\Conversions\ConversionCost.cs" />
-    <Compile Include="Framework\Conversions\ConvertibleToConvertibleConversionRule.cs" />
-    <Compile Include="Framework\Conversions\Formatter.cs" />
-    <Compile Include="Framework\Conversions\IConversionRule.cs" />
-    <Compile Include="Framework\Conversions\IConverter.cs" />
-    <Compile Include="Framework\Conversions\NullConverter.cs" />
-    <Compile Include="Framework\Conversions\ObjectToStringConversionRule.cs" />
-    <Compile Include="Framework\Conversions\RuleBasedConverter.cs" />
-    <Compile Include="Framework\Conversions\StringToXmlDocumentConversionRule.cs" />
-    <Compile Include="Framework\Conversions\XPathNavigableToXPathNavigatorConversionRule.cs" />
-    <Compile Include="Framework\Conversions\XPathNavigatorToStringConversionRule.cs" />
-    <Compile Include="Framework\Conversions\XPathNavigatorToXmlSerializableTypeConversionRule.cs" />
     <Compile Include="Framework\Data\BaseDataBinder.cs" />
     <Compile Include="Framework\Data\BaseDataAccessor.cs" />
     <Compile Include="Framework\Data\ConstantDataAccessor.cs" />
@@ -133,96 +308,34 @@
     <Compile Include="Framework\Data\BoundDataAccessor.cs" />
     <Compile Include="Framework\Data\ScalarDataBinder.cs" />
     <Compile Include="Framework\Data\SimpleDataItem.cs" />
-    <Compile Include="Framework\Formatting\BooleanFormattingRule.cs" />
-    <Compile Include="Framework\Formatting\ByteFormattingRule.cs" />
-    <Compile Include="Framework\Formatting\CharFormattingRule.cs" />
-    <Compile Include="Framework\Formatting\ConvertToStringFormattingRule.cs" />
-    <Compile Include="Framework\Formatting\DateTimeFormattingRule.cs" />
-    <Compile Include="Framework\Formatting\DBNullFormattingRule.cs" />
-    <Compile Include="Framework\Formatting\DecimalFormattingRule.cs" />
-    <Compile Include="Framework\Formatting\DictionaryEntryFormattingRule.cs" />
-    <Compile Include="Framework\Formatting\DoubleFormattingRule.cs" />
-    <Compile Include="Framework\Formatting\EnumerableFormattingRule.cs" />
-    <Compile Include="Framework\Formatting\Formatter.cs" />
-    <Compile Include="Framework\Formatting\FormattingRulePriority.cs" />
-    <Compile Include="Framework\Formatting\IFormatter.cs" />
-    <Compile Include="Framework\Formatting\IFormattingRule.cs" />
-    <Compile Include="Framework\Formatting\IntegerFormattingRule.cs" />
-    <Compile Include="Framework\Formatting\KeyValuePairFormattingRule.cs" />
-    <Compile Include="Framework\Formatting\RuleBasedFormatter.cs" />
-    <Compile Include="Framework\Formatting\SByteFormattingRule.cs" />
-    <Compile Include="Framework\Formatting\SingleFormattingRule.cs" />
-    <Compile Include="Framework\Formatting\StringFormattingRule.cs" />
-    <Compile Include="Framework\Formatting\StructuralFormattingRule.cs" />
-    <Compile Include="Framework\Formatting\StubFormatter.cs" />
-    <Compile Include="Framework\Formatting\TypeFormattingRule.cs" />
-    <Compile Include="Framework\Formatting\XPathNavigableFormattingRule.cs" />
     <Compile Include="Framework\ComparisonSemantics.cs" />
     <Compile Include="Framework\Pattern\ProcessIsolation.cs" />
     <Compile Include="Framework\Pattern\TestAction.cs" />
     <Compile Include="Framework\SubtractionFunc.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Framework\Text\DiffStyle.cs" />
-    <Compile Include="ICloneable.cs" />
-    <Compile Include="Model\Diagnostics\StackTraceData.cs" />
-    <Compile Include="Model\Diagnostics\TestFrameworkInternalAttribute.cs" />
-    <Compile Include="Model\Diagnostics\StackTraceFilter.cs" />
-    <Compile Include="Model\Diagnostics\TestEntryPointAttribute.cs" />
-    <Compile Include="Model\DefaultTestPackageExplorerFactory.cs" />
-    <Compile Include="Model\Logging\FallbackTestLogWriter.cs" />
-    <Compile Include="Model\Execution\ITestListener.cs" />
-    <Compile Include="Framework\Text\DiffSet.cs" />
-    <Compile Include="Framework\Text\Diff.cs" />
-    <Compile Include="Framework\Text\DiffKind.cs" />
+    <Compile Include="Common\ICloneable.cs" />
+    <Compile Include="Model\DefaultTestFrameworkManager.cs" />
+    <Compile Include="Model\Filters\FilterRule.cs" />
+    <Compile Include="Model\Filters\FilterRuleType.cs" />
+    <Compile Include="Model\Filters\FilterSet.cs" />
+    <Compile Include="Model\Filters\FilterSetResult.cs" />
+    <Compile Include="Model\ITestFrameworkManager.cs" />
+    <Compile Include="Model\ITestExplorer.cs" />
+    <Compile Include="Model\Messages\RemoteTestExplorationListener.cs" />
+    <Compile Include="Model\Messages\ITestExecutionListener.cs" />
     <Compile Include="Model\Execution\DefaultTestOrderStrategy.cs" />
-    <Compile Include="Model\Logging\ITestLogStreamWritable.cs" />
-    <Compile Include="Model\Logging\Marker.cs" />
-    <Compile Include="Model\Logging\NullTestLogWriter.cs" />
-    <Compile Include="Model\Logging\StructuredTestLogWriter.cs" />
-    <Compile Include="Model\Logging\StructuredTestLog.cs" />
-    <Compile Include="Model\Logging\AttachmentData.cs" />
-    <Compile Include="Model\Logging\AttachmentContentDisposition.cs" />
-    <Compile Include="Model\Logging\AttachmentEncoding.cs" />
-    <Compile Include="Model\Logging\StructuredTestLogStream.cs" />
-    <Compile Include="Model\Logging\StructuredText.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Model\Logging\StructuredTextWriter.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Model\Logging\Tags\BaseTagVisitor.cs" />
-    <Compile Include="Model\Logging\Tags\BodyTag.cs" />
-    <Compile Include="Model\Logging\Tags\ContainerTag.cs" />
-    <Compile Include="Model\Logging\Tags\EmbedTag.cs" />
-    <Compile Include="Model\Logging\Tags\ITagVisitor.cs" />
-    <Compile Include="Model\Logging\Tags\MarkerTag.cs" />
-    <Compile Include="Model\Logging\Tags\SectionTag.cs" />
-    <Compile Include="Model\Logging\Tags\Tag.cs" />
-    <Compile Include="Model\Logging\Tags\TagFormatter.cs" />
-    <Compile Include="Model\Logging\Tags\TextTag.cs" />
-    <Compile Include="Model\Logging\TestLogStreamWriter.cs" />
-    <Compile Include="Framework\Text\Range.cs" />
-    <Compile Include="Model\Execution\RemoteTestListener.cs" />
+    <Compile Include="Model\Messages\ITestExplorationListener.cs" />
+    <Compile Include="Model\Messages\RemoteTestExecutionListener.cs" />
     <Compile Include="Model\Filters\FilterParseException.cs" />
-    <Compile Include="Model\ITestPackageExplorerFactory.cs" />
-    <Compile Include="Model\Logging\StringTestLogWriter.cs" />
     <Compile Include="Model\TestDomainSetup.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Pair.cs" />
-    <Compile Include="Reflection\ConstantValue.cs" />
-    <Compile Include="Reflection\Impl\BaseReflectionPolicy.cs" />
-    <Compile Include="Reflection\Impl\CecilReflectionPolicy.cs" />
-    <Compile Include="Reflection\Impl\IUnresolvedCodeElement.cs" />
-    <Compile Include="Reflection\Impl\MonoDebugSymbolResolver.cs" />
-    <Compile Include="Reflection\ReflectionOnlyAssemblyLoader.cs" />
-    <Compile Include="Runner\Caching\IDiskCacheGroup.cs" />
-    <Compile Include="Runner\Caching\IDiskCacheGroupCollection.cs" />
-    <Compile Include="Runner\Caching\IDiskCache.cs" />
-    <Compile Include="Runner\Caching\DiskCacheException.cs" />
-    <Compile Include="Runner\Caching\SimpleDiskCache.cs" />
-    <Compile Include="Runner\Caching\TemporaryDiskCache.cs" />
+    <Compile Include="Model\TestFrameworkTraits.cs" />
+    <Compile Include="Model\TestSource.cs" />
+    <Compile Include="Common\Pair.cs" />
+    <Compile Include="Common\Platform\DotNetFrameworkSupport.cs" />
+    <Compile Include="Common\Platform\DotNetRuntimeType.cs" />
     <Compile Include="Runner\Drivers\AggregateTestDriver.cs" />
     <Compile Include="Runner\Drivers\BaseTestDriver.cs" />
     <Compile Include="Runner\Drivers\HostedTestDriverFactory.cs" />
@@ -232,7 +345,9 @@
     <Compile Include="Runner\Drivers\LocalTestDriver.cs" />
     <Compile Include="Runner\Drivers\ITestDriver.cs" />
     <Compile Include="Runner\Drivers\HostedTestDriver.cs" />
-    <Compile Include="Runner\Drivers\ProxyTestDriver.cs" />
+    <Compile Include="Runner\Drivers\RemoteTestDriver.cs" />
+    <Compile Include="Runner\Events\TestModelSubtreeMergedEventArgs.cs" />
+    <Compile Include="Runner\Events\TestModelAnnotationAddedEventArgs.cs" />
     <Compile Include="Runner\Events\DisposeFinishedEventArgs.cs" />
     <Compile Include="Runner\Events\DisposeStartedEventArgs.cs" />
     <Compile Include="Runner\Events\ExploreFinishedEventArgs.cs" />
@@ -241,32 +356,119 @@
     <Compile Include="Runner\Extensions\ITestRunnerExtension.cs" />
     <Compile Include="Runner\Extensions\TestRunnerExtension.cs" />
     <Compile Include="Runner\Extensions\TestRunnerExtensionUtils.cs" />
-    <Compile Include="Runner\ReportTestListener.cs" />
+    <Compile Include="Runner\Projects\ProjectUtils.cs" />
     <Compile Include="Runner\DefaultTestRunner.cs" />
     <Compile Include="Runner\Events\InitializeFinishedEventArgs.cs" />
     <Compile Include="Runner\Events\InitializeStartedEventArgs.cs" />
     <Compile Include="Runner\Events\ITestRunnerEvents.cs" />
-    <Compile Include="Runner\Events\LoadFinishedEventArgs.cs" />
-    <Compile Include="Runner\Events\LoadStartedEventArgs.cs" />
     <Compile Include="Runner\Events\OperationStartedEventArgs.cs" />
     <Compile Include="Runner\Events\RunFinishedEventArgs.cs" />
     <Compile Include="Runner\Events\RunStartedEventArgs.cs" />
     <Compile Include="Runner\Events\OperationFinishedEventArgs.cs" />
-    <Compile Include="Runner\Sessions\LocalTestSession.cs" />
-    <Compile Include="Runner\Sessions\LocalTestSessionManager.cs" />
-    <Compile Include="Runner\Sessions\ITestRun.cs" />
-    <Compile Include="Runner\Sessions\ITestRunHistory.cs" />
-    <Compile Include="Runner\Sessions\ITestSession.cs" />
-    <Compile Include="Runner\Sessions\ITestSessionManager.cs" />
-    <Compile Include="Runner\Sessions\LocalTestRun.cs" />
+    <Compile Include="Runner\Reports\LogEntry.cs" />
+    <Compile Include="Runner\Reports\ReportFormatterOptions.cs" />
+    <Compile Include="Runner\Reports\ReportFormatterTraits.cs" />
+    <Compile Include="Runner\TestRunnerFactoryTraits.cs" />
+    <Compile Include="Runtime\Conversions\ArrayToArrayConversionRule.cs" />
+    <Compile Include="Runtime\Conversions\BaseConverter.cs" />
+    <Compile Include="Runtime\Conversions\ConversionCost.cs" />
+    <Compile Include="Runtime\Conversions\ConvertibleToConvertibleConversionRule.cs" />
+    <Compile Include="Runtime\Conversions\Converter.cs" />
+    <Compile Include="Runtime\Conversions\IConversionRule.cs" />
+    <Compile Include="Runtime\Conversions\IConverter.cs" />
+    <Compile Include="Runtime\Conversions\NullConverter.cs" />
+    <Compile Include="Runtime\Conversions\ObjectToStringConversionRule.cs" />
+    <Compile Include="Runtime\Conversions\RuleBasedConverter.cs" />
+    <Compile Include="Runtime\Conversions\StringToXmlDocumentConversionRule.cs" />
+    <Compile Include="Runtime\Conversions\XPathNavigableToXPathNavigatorConversionRule.cs" />
+    <Compile Include="Runtime\Conversions\XPathNavigatorToStringConversionRule.cs" />
+    <Compile Include="Runtime\Conversions\XPathNavigatorToXmlSerializableTypeConversionRule.cs" />
+    <Compile Include="Runtime\Debugging\AttachDebuggerResult.cs" />
+    <Compile Include="Runtime\Debugging\DefaultDebuggerManager.cs" />
+    <Compile Include="Runtime\Debugging\DetachDebuggerResult.cs" />
+    <Compile Include="Runtime\Debugging\IDebugger.cs" />
+    <Compile Include="Runtime\Debugging\IDebuggerManager.cs" />
+    <Compile Include="Runtime\Debugging\NullDebugger.cs" />
+    <Compile Include="Runtime\Extensibility\AssemblyReference.cs" />
+    <Compile Include="Runtime\Extensibility\CachingPluginLoader.cs" />
+    <Compile Include="Runtime\Extensibility\ComponentRegistration.cs" />
+    <Compile Include="Runtime\Extensibility\DefaultObjectDependencyResolver.cs" />
+    <Compile Include="Runtime\Extensibility\DefaultPlugin.cs" />
+    <Compile Include="Runtime\Extensibility\DependencyResolution.cs" />
+    <Compile Include="Runtime\Extensibility\ComponentHandle.cs" />
+    <Compile Include="Runtime\Extensibility\FileSystemResourceLocator.cs" />
+    <Compile Include="Runtime\Extensibility\InstanceHandlerFactory.cs" />
+    <Compile Include="Runtime\Extensibility\IObjectDependencyResolver.cs" />
+    <Compile Include="Runtime\Extensibility\IPluginCatalog.cs" />
+    <Compile Include="Runtime\Extensibility\IPluginLoader.cs" />
+    <Compile Include="Runtime\Extensibility\IResourceLocator.cs" />
+    <Compile Include="Runtime\Extensibility\ObjectFactory.cs" />
+    <Compile Include="Runtime\Extensibility\PluginCatalog.cs" />
+    <Compile Include="Runtime\Extensibility\PluginLoader.cs" />
+    <Compile Include="Common\Xml\XmlPreprocessor.cs" />
+    <Compile Include="Runtime\Extensibility\ServiceRegistration.cs" />
+    <Compile Include="Runtime\Extensibility\IHandlerFactory.cs" />
+    <Compile Include="Runtime\Extensibility\IComponentDescriptor.cs" />
+    <Compile Include="Runtime\Extensibility\IComponents.cs" />
+    <Compile Include="Runtime\Extensibility\ComponentDescriptor.cs" />
+    <Compile Include="Runtime\Extensibility\Components.cs" />
+    <Compile Include="Runtime\Extensibility\IHandler.cs" />
+    <Compile Include="Runtime\Extensibility\PluginRegistration.cs" />
+    <Compile Include="Runtime\Extensibility\Registry.cs" />
+    <Compile Include="Runtime\Extensibility\Plugins.cs" />
+    <Compile Include="Runtime\Extensibility\RegistryData.cs" />
+    <Compile Include="Runtime\Extensibility\Services.cs" />
+    <Compile Include="Runtime\Extensibility\ServiceDescriptor.cs" />
+    <Compile Include="Runtime\Extensibility\PluginDescriptor.cs" />
+    <Compile Include="Runtime\Extensibility\IPlugin.cs" />
+    <Compile Include="Runtime\Extensibility\IPluginDescriptor.cs" />
+    <Compile Include="Runtime\Extensibility\IPlugins.cs" />
+    <Compile Include="Runtime\Extensibility\PluginTraits.cs" />
+    <Compile Include="Runtime\Extensibility\IRegistry.cs" />
+    <Compile Include="Runtime\Extensibility\IServiceDescriptor.cs" />
+    <Compile Include="Runtime\Extensibility\IServices.cs" />
+    <Compile Include="Runtime\Extensibility\SingletonHandlerFactory.cs" />
+    <Compile Include="Runtime\Extensibility\Traits.cs" />
+    <Compile Include="Runtime\Extensibility\TraitsAttribute.cs" />
+    <Compile Include="Runtime\FileTypes\AssemblyFileTypeRecognizer.cs" />
+    <Compile Include="Runtime\FileTypes\FileType.cs" />
+    <Compile Include="Runtime\FileTypes\FileTypeManager.cs" />
+    <Compile Include="Runtime\FileTypes\IFileInspector.cs" />
+    <Compile Include="Runtime\FileTypes\IFileTypeManager.cs" />
+    <Compile Include="Runtime\FileTypes\IFileTypeRecognizer.cs" />
+    <Compile Include="Runtime\FileTypes\FileTypeRecognizerTraits.cs" />
+    <Compile Include="Runtime\FileTypes\LazyFileInspector.cs" />
+    <Compile Include="Runtime\FileTypes\SimpleFileTypeRecognizer.cs" />
+    <Compile Include="Runtime\Formatting\BooleanFormattingRule.cs" />
+    <Compile Include="Runtime\Formatting\ByteFormattingRule.cs" />
+    <Compile Include="Runtime\Formatting\CharFormattingRule.cs" />
+    <Compile Include="Runtime\Formatting\ConvertToStringFormattingRule.cs" />
+    <Compile Include="Runtime\Formatting\DateTimeFormattingRule.cs" />
+    <Compile Include="Runtime\Formatting\DBNullFormattingRule.cs" />
+    <Compile Include="Runtime\Formatting\DecimalFormattingRule.cs" />
+    <Compile Include="Runtime\Formatting\DictionaryEntryFormattingRule.cs" />
+    <Compile Include="Runtime\Formatting\DoubleFormattingRule.cs" />
+    <Compile Include="Runtime\Formatting\EnumerableFormattingRule.cs" />
+    <Compile Include="Runtime\Formatting\Formatter.cs" />
+    <Compile Include="Runtime\Formatting\FormattingRulePriority.cs" />
+    <Compile Include="Runtime\Formatting\IFormatter.cs" />
+    <Compile Include="Runtime\Formatting\IFormattingRule.cs" />
+    <Compile Include="Runtime\Formatting\IntegerFormattingRule.cs" />
+    <Compile Include="Runtime\Formatting\KeyValuePairFormattingRule.cs" />
+    <Compile Include="Runtime\Formatting\RuleBasedFormatter.cs" />
+    <Compile Include="Runtime\Formatting\SByteFormattingRule.cs" />
+    <Compile Include="Runtime\Formatting\SingleFormattingRule.cs" />
+    <Compile Include="Runtime\Formatting\StringFormattingRule.cs" />
+    <Compile Include="Runtime\Formatting\StructuralFormattingRule.cs" />
+    <Compile Include="Runtime\Formatting\StubFormatter.cs" />
+    <Compile Include="Runtime\Formatting\TypeFormattingRule.cs" />
+    <Compile Include="Runtime\Formatting\XPathNavigableFormattingRule.cs" />
     <Compile Include="Runtime\Hosting\ConfigurationFileLocation.cs" />
+    <Compile Include="Runtime\Extensibility\IServiceLocator.cs" />
     <Compile Include="Runtime\Logging\EventLogger.cs" />
     <Compile Include="Runtime\Logging\LogMessageEventArgs.cs" />
-    <Compile Include="Runner\Sessions\TestRunEventArgs.cs" />
-    <Compile Include="Runner\Sessions\TestRunStatus.cs" />
-    <Compile Include="Runner\Sessions\TestSessionEventArgs.cs" />
     <Compile Include="Runner\TestRunnerOptions.cs" />
-    <Compile Include="Runner\TestRunnerEventDispatcher.cs" />
+    <Compile Include="Runner\Events\TestRunnerEventDispatcher.cs" />
     <Compile Include="Runner\Events\TestStepEventArgs.cs" />
     <Compile Include="Runner\Events\TestStepFinishedEventArgs.cs" />
     <Compile Include="Runner\Events\TestStepLifecyclePhaseChangedEventArgs.cs" />
@@ -278,11 +480,6 @@
     <Compile Include="Runner\Events\TestStepLogAttachEventArgs.cs" />
     <Compile Include="Runner\Events\TestStepMetadataAddedEventArgs.cs" />
     <Compile Include="Runner\Events\TestStepStartedEventArgs.cs" />
-    <Compile Include="Runner\Events\UnloadFinishedEventArgs.cs" />
-    <Compile Include="Runner\Events\UnloadStartedEventArgs.cs" />
-    <Compile Include="Runner\Workspaces\ResourcePath.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Runtime\ConsoleSupport\CommandLineArgumentAttribute.cs" />
     <Compile Include="Runtime\ConsoleSupport\CommandLineArgumentFlags.cs" />
     <Compile Include="Runtime\ConsoleSupport\CommandLineArgumentParser.cs" />
@@ -311,8 +508,12 @@
     <Compile Include="Runtime\Logging\ILogger.cs" />
     <Compile Include="Runtime\Logging\LogSeverity.cs" />
     <Compile Include="Runtime\Logging\NullLogger.cs" />
+    <Compile Include="Runtime\Logging\SeverityPrefixLogger.cs" />
+    <Compile Include="Runtime\Logging\SeverityPrefixParser.cs" />
     <Compile Include="Runtime\Logging\TextLogger.cs" />
-    <Compile Include="Runtime\ProcessType.cs" />
+    <Compile Include="Runtime\Logging\Verbosity.cs" />
+    <Compile Include="Common\Platform\ProcessType.cs" />
+    <Compile Include="Runtime\Preferences\IPreferenceManager.cs" />
     <Compile Include="Runtime\ProgressMonitoring\BaseProgressMonitorPresenter.cs" />
     <Compile Include="Runtime\ProgressMonitoring\BaseProgressMonitorProvider.cs" />
     <Compile Include="Runtime\ProgressMonitoring\CancelableProgressMonitor.cs" />
@@ -331,6 +532,7 @@
     <Compile Include="Runtime\ProgressMonitoring\SubProgressMonitorCreatedEventArgs.cs" />
     <Compile Include="Runtime\ProgressMonitoring\TaskWithProgress.cs" />
     <Compile Include="Runtime\ProgressMonitoring\ProgressMonitorTaskCookie.cs" />
+    <Compile Include="Runtime\Extensibility\RegistryServiceLocator.cs" />
     <Compile Include="Runtime\Remoting\BaseChannel.cs" />
     <Compile Include="Runtime\Remoting\BaseClientChannel.cs" />
     <Compile Include="Runtime\Remoting\BaseServerChannel.cs" />
@@ -352,7 +554,6 @@
     <Compile Include="Framework\Data\DataBindingException.cs" />
     <Compile Include="Framework\Data\DataSource.cs" />
     <Compile Include="Framework\Data\DataSourceTable.cs" />
-    <Compile Include="Framework\Data\Generators.cs" />
     <Compile Include="Framework\Data\DataBindingSpec.cs" />
     <Compile Include="Framework\Data\IDataProvider.cs" />
     <Compile Include="Framework\Data\IDataItem.cs" />
@@ -379,23 +580,20 @@
     <Compile Include="Framework\Pattern\TestAssemblyInitializationAttribute.cs" />
     <Compile Include="Framework\Pattern\TestAssemblyPatternAttribute.cs" />
     <Compile Include="Framework\Pattern\BasePattern.cs" />
-    <Compile Include="Framework\Pattern\BasePatternTestFrameworkExtension.cs" />
-    <Compile Include="Framework\Pattern\BootstrapTestAssemblyPattern.cs" />
     <Compile Include="Framework\Pattern\DataPatternAttribute.cs" />
     <Compile Include="Framework\Pattern\DeclarativePatternResolver.cs" />
     <Compile Include="Framework\Pattern\DecoratorPatternAttribute.cs" />
     <Compile Include="Framework\Pattern\PatternAttributeTargets.cs" />
-    <Compile Include="Framework\Pattern\PatternEvaluationScope.cs" />
+    <Compile Include="Framework\Pattern\DefaultPatternScope.cs" />
     <Compile Include="Framework\Pattern\IPatternTestComponent.cs" />
     <Compile Include="Framework\Pattern\PatternTestDataContext.cs" />
     <Compile Include="Framework\Pattern\PatternUsageErrorException.cs" />
     <Compile Include="Framework\Pattern\TestDependencyPatternAttribute.cs" />
     <Compile Include="Framework\Pattern\IPattern.cs" />
     <Compile Include="Framework\Pattern\IPatternResolver.cs" />
-    <Compile Include="Framework\Pattern\IPatternTestFrameworkExtension.cs" />
     <Compile Include="Framework\Pattern\IPatternTestHandler.cs" />
     <Compile Include="Framework\Pattern\IPatternTestInstanceHandler.cs" />
-    <Compile Include="Framework\Pattern\PatternEvaluator.cs" />
+    <Compile Include="Framework\Pattern\DefaultPatternEvaluator.cs" />
     <Compile Include="Framework\Pattern\MetadataPatternAttribute.cs" />
     <Compile Include="Framework\Pattern\PatternAttribute.cs" />
     <Compile Include="Framework\Pattern\PatternTest.cs" />
@@ -418,12 +616,10 @@
     <Compile Include="Framework\Pattern\TestParameterPatternAttribute.cs" />
     <Compile Include="Framework\Pattern\TestTypeDecoratorPatternAttribute.cs" />
     <Compile Include="Framework\Pattern\TestTypePatternAttribute.cs" />
-    <Compile Include="Framework\Pattern\ToolInfo.cs" />
     <Compile Include="Framework\Sandbox.cs" />
     <Compile Include="Framework\SilentTestException.cs" />
     <Compile Include="Framework\TestStep.cs" />
     <Compile Include="Framework\Tasks.cs" />
-    <Compile Include="Model\Logging\TestLogStreamLogger.cs" />
     <Compile Include="Framework\Utilities\SampleRunner.cs" />
     <Compile Include="Model\Annotation.cs" />
     <Compile Include="Model\AnnotationType.cs" />
@@ -441,22 +637,21 @@
     <Compile Include="Model\Execution\ObservableTestLogWriter.cs" />
     <Compile Include="Model\Execution\StubTestContext.cs" />
     <Compile Include="Model\Execution\StubTestContextTracker.cs" />
-    <Compile Include="Func.cs" />
+    <Compile Include="Common\Func.cs" />
     <Compile Include="Framework\TestException.cs" />
     <Compile Include="Framework\TestFailedException.cs" />
     <Compile Include="Framework\TestInconclusiveException.cs" />
     <Compile Include="Runtime\Hosting\HostAssemblyResolverHook.cs" />
     <Compile Include="Runtime\Hosting\IsolatedAppDomainHost.cs" />
     <Compile Include="Runtime\Hosting\IsolatedProcessHost.cs" />
-    <Compile Include="Runtime\RuntimeDetection.cs" />
-    <Compile Include="Runtime\RuntimeException.cs" />
-    <Compile Include="Runtime\RuntimeRegisteredComponentResolver.cs" />
+    <Compile Include="Common\Platform\DotNetRuntimeSupport.cs" />
+    <Compile Include="Runtime\RuntimeException.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Runtime\Hosting\HostConfiguration.cs" />
     <Compile Include="Runtime\Hosting\HostException.cs" />
     <Compile Include="Runtime\Hosting\HostServiceChannelInterop.cs" />
     <Compile Include="Runtime\Hosting\HostSetup.cs" />
-    <Compile Include="Runtime\IRegisteredComponent.cs" />
-    <Compile Include="Runtime\IRegisteredComponentResolver.cs" />
     <Compile Include="Runtime\Hosting\IHostService.cs" />
     <Compile Include="Runtime\Hosting\RemoteHost.cs" />
     <Compile Include="Runtime\Hosting\IHost.cs" />
@@ -466,55 +661,10 @@
     <Compile Include="Runtime\Hosting\RemoteHostService.cs" />
     <Compile Include="Runtime\Hosting\BaseHostFactory.cs" />
     <Compile Include="Runtime\Logging\RemoteLogger.cs" />
-    <Compile Include="Collections\UserDataCollection.cs" />
-    <Compile Include="Model\Logging\TextualTestLogWriter.cs" />
     <Compile Include="Model\Execution\TestContextTrackerAccessor.cs" />
     <Compile Include="Model\Execution\TestCommandFactory.cs" />
     <Compile Include="Model\Filters\NameFilter.cs" />
     <Compile Include="Model\Serialization\AnnotationData.cs" />
-    <Compile Include="Reflection\CodeElementSorter.cs" />
-    <Compile Include="Reflection\Impl\IResolvableTypeInfo.cs" />
-    <Compile Include="Reflection\Impl\StaticArrayTypeWrapper.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Reflection\Impl\StaticAssemblyWrapper.cs" />
-    <Compile Include="Reflection\Impl\StaticConstructedTypeWrapper.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Reflection\Impl\StaticAttributeWrapper.cs" />
-    <Compile Include="Reflection\Impl\StaticCodeElementWrapper.cs" />
-    <Compile Include="Reflection\Impl\StaticConstructorWrapper.cs" />
-    <Compile Include="Reflection\Impl\StaticDeclaredTypeWrapper.cs" />
-    <Compile Include="Reflection\Impl\StaticReflectedMemberWrapper.cs" />
-    <Compile Include="Reflection\Impl\StaticSpecialTypeWrapper.cs" />
-    <Compile Include="Reflection\Impl\StaticEventWrapper.cs" />
-    <Compile Include="Reflection\Impl\StaticFieldWrapper.cs" />
-    <Compile Include="Reflection\Impl\StaticFunctionWrapper.cs" />
-    <Compile Include="Reflection\Impl\StaticGenericParameterWrapper.cs" />
-    <Compile Include="Reflection\Impl\StaticMemberWrapper.cs" />
-    <Compile Include="Reflection\Impl\StaticMethodWrapper.cs" />
-    <Compile Include="Reflection\Impl\StaticParameterWrapper.cs" />
-    <Compile Include="Reflection\Impl\StaticPointerTypeWrapper.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Reflection\Impl\StaticPropertyWrapper.cs" />
-    <Compile Include="Reflection\Impl\StaticByRefTypeWrapper.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Reflection\Impl\StaticReflectionPolicy.cs" />
-    <Compile Include="Reflection\Impl\StaticTypeSubstitution.cs" />
-    <Compile Include="Reflection\Impl\StaticTypeWrapper.cs" />
-    <Compile Include="Reflection\Impl\StaticWrapper.cs" />
-    <Compile Include="Reflection\Impl\UnresolvedCustomAttributeProvider.cs" />
-    <Compile Include="Reflection\Impl\UnresolvedMethodInfo.cs" />
-    <Compile Include="Reflection\Impl\UnresolvedConstructorInfo.cs" />
-    <Compile Include="Reflection\Impl\UnresolvedEventInfo.cs" />
-    <Compile Include="Reflection\Impl\UnresolvedFieldInfo.cs" />
-    <Compile Include="Reflection\Impl\UnresolvedMemberInfo.cs" />
-    <Compile Include="Reflection\Impl\UnresolvedMethodBase.cs" />
-    <Compile Include="Reflection\Impl\UnresolvedParameterInfo.cs" />
-    <Compile Include="Reflection\Impl\UnresolvedPropertyInfo.cs" />
-    <Compile Include="Reflection\Impl\UnresolvedType.cs" />
     <Compile Include="Runner\DefaultTestRunnerFactory.cs" />
     <Compile Include="Runner\DefaultTestRunnerManager.cs" />
     <Compile Include="Runner\ITestRunnerFactory.cs" />
@@ -523,23 +673,44 @@
     <Compile Include="Runner\Reports\TestOutcomeSummary.cs" />
     <Compile Include="Runner\StandardTestRunnerFactoryNames.cs" />
     <Compile Include="Runtime\RuntimeBootstrap.cs" />
-    <Compile Include="Runtime\ProcessTypeDetection.cs" />
-    <Compile Include="Runtime\RuntimeVersion.cs" />
-    <Compile Include="Runtime\Windsor\ArraySubDependencyResolver.cs" />
-    <Compile Include="Runtime\Windsor\WindsorRuntime.cs" />
-    <Compile Include="Model\Logging\TestLogWriter.cs" />
-    <Compile Include="Triple.cs" />
-    <Compile Include="Utilities\CurrentDirectorySwitcher.cs" />
-    <Compile Include="Utilities\EventHandlerUtils.cs" />
-    <Compile Include="Collections\LazyCache.cs" />
-    <Compile Include="Model\Diagnostics\ExceptionData.cs" />
-    <Compile Include="Utilities\Memoizer.cs" />
-    <Compile Include="Runtime\UnhandledExceptionPolicy.cs" />
-    <Compile Include="Reflection\Impl\DebugSymbolUtils.cs" />
-    <Compile Include="Reflection\Impl\ComDebugSymbolResolver.cs" />
-    <Compile Include="Reflection\Impl\IDebugSymbolResolver.cs" />
-    <Compile Include="Reflection\Impl\XmlDocumentationUtils.cs" />
-    <Compile Include="Reflection\CodeLocation.cs" />
+    <Compile Include="Common\Platform\ProcessSupport.cs" />
+    <Compile Include="Common\Platform\DotNetFrameworkVersion.cs" />
+    <Compile Include="Runtime\DefaultRuntime.cs" />
+    <Compile Include="Common\Validation\IValidatable.cs" />
+    <Compile Include="Runtime\UtilityCommands\BaseUtilityCommand.cs" />
+    <Compile Include="Runtime\UtilityCommands\ClearCurrentUserPluginCacheCommand.cs" />
+    <Compile Include="Runtime\UtilityCommands\DefaultUtilityCommandManager.cs" />
+    <Compile Include="Runtime\UtilityCommands\IUtilityCommand.cs" />
+    <Compile Include="Runtime\UtilityCommands\UtilityCommandContext.cs" />
+    <Compile Include="Runtime\UtilityCommands\IUtilityCommandManager.cs" />
+    <Compile Include="Runtime\UtilityCommands\UtilityCommandTraits.cs" />
+    <Compile Include="Runtime\UtilityCommands\VerifyInstallationCommand.cs" />
+    <Compile Include="Schema\Plugins\Assembly.cs" />
+    <Compile Include="Schema\Plugins\Cache.cs" />
+    <Compile Include="Schema\Plugins\Component.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Schema\Plugins\CachePluginInfo.cs" />
+    <Compile Include="Schema\Plugins\Dependency.cs" />
+    <Compile Include="Schema\Plugins\Plugin.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Schema\Plugins\KeyValueTable.cs" />
+    <Compile Include="Schema\Plugins\Service.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Common\Validation\ValidationException.cs" />
+    <Compile Include="Schema\SchemaConstants.cs" />
+    <Compile Include="Common\Validation\ValidationUtils.cs" />
+    <Compile Include="Common\Triple.cs" />
+    <Compile Include="Common\IO\FileSystem.cs" />
+    <Compile Include="Common\IO\IFileSystem.cs" />
+    <Compile Include="Common\Xml\IXmlSerializer.cs" />
+    <Compile Include="Common\Memoizer.cs" />
+    <Compile Include="Common\IO\CurrentDirectorySwitcher.cs" />
+    <Compile Include="Common\Policies\EventHandlerPolicy.cs" />
+    <Compile Include="Common\KeyedMemoizer.cs" />
+    <Compile Include="Common\Policies\UnhandledExceptionPolicy.cs" />
     <Compile Include="Model\BaseTestFramework.cs" />
     <Compile Include="Runner\Harness\ContextualLogTextWriter.cs" />
     <Compile Include="Runner\Harness\ContextualLogTraceListener.cs" />
@@ -548,14 +719,6 @@
     <Compile Include="Model\Execution\BaseTestController.cs" />
     <Compile Include="Model\Filters\FilterFormatter.cs" />
     <Compile Include="Model\Filters\IFilterVisitor.cs" />
-    <Compile Include="Reflection\CodeElementKind.cs" />
-    <Compile Include="Reflection\Impl\ReflectorAttributeUtils.cs" />
-    <Compile Include="Reflection\Impl\ReflectorFlagsUtils.cs" />
-    <Compile Include="Reflection\Impl\ReflectorResolveUtils.cs" />
-    <Compile Include="Reflection\Impl\ReflectorTypeUtils.cs" />
-    <Compile Include="Reflection\IReflectionPolicy.cs" />
-    <Compile Include="Reflection\IGenericParameterInfo.cs" />
-    <Compile Include="Reflection\ReflectionWrapperResolveException.cs" />
     <Compile Include="Model\Serialization\TestPackageData.cs" />
     <Compile Include="Model\Filters\EqualityFilter.cs" />
     <Compile Include="Model\Filters\FilterLexer.cs" />
@@ -569,41 +732,6 @@
     <Compile Include="Model\ITestParameter.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Model\NullTestExplorer.cs" />
-    <Compile Include="Reflection\AttributeUtils.cs" />
-    <Compile Include="Reflection\DeclaringTypeComparer.cs" />
-    <Compile Include="Reflection\IAssemblyInfo.cs" />
-    <Compile Include="Reflection\IAttributeInfo.cs" />
-    <Compile Include="Reflection\ICodeElementInfo.cs" />
-    <Compile Include="Reflection\IConstructorInfo.cs" />
-    <Compile Include="Reflection\IEventInfo.cs" />
-    <Compile Include="Reflection\IFieldInfo.cs" />
-    <Compile Include="Reflection\IMemberInfo.cs" />
-    <Compile Include="Reflection\IFunctionInfo.cs" />
-    <Compile Include="Reflection\IMethodInfo.cs" />
-    <Compile Include="Reflection\INamespaceInfo.cs" />
-    <Compile Include="Reflection\IParameterInfo.cs" />
-    <Compile Include="Reflection\IPropertyInfo.cs" />
-    <Compile Include="Reflection\ISlotInfo.cs" />
-    <Compile Include="Reflection\ITypeInfo.cs" />
-    <Compile Include="Reflection\Impl\NativeAssemblyWrapper.cs" />
-    <Compile Include="Reflection\Impl\NativeAttributeWrapper.cs" />
-    <Compile Include="Reflection\Impl\NativeCodeElementWrapper.cs" />
-    <Compile Include="Reflection\Impl\NativeConstructorWrapper.cs" />
-    <Compile Include="Reflection\Impl\NativeEventWrapper.cs" />
-    <Compile Include="Reflection\Impl\NativeFieldWrapper.cs" />
-    <Compile Include="Reflection\Impl\NativeFunctionWrapper.cs" />
-    <Compile Include="Reflection\Impl\NativeGenericParameterWrapper.cs" />
-    <Compile Include="Reflection\Impl\NativeMemberWrapper.cs" />
-    <Compile Include="Reflection\Impl\NativeMethodWrapper.cs" />
-    <Compile Include="Reflection\Impl\NativeNamespaceWrapper.cs" />
-    <Compile Include="Reflection\Impl\NativeParameterWrapper.cs" />
-    <Compile Include="Reflection\Impl\NativePropertyWrapper.cs" />
-    <Compile Include="Reflection\Impl\NativeReflectionPolicy.cs" />
-    <Compile Include="Reflection\Impl\NativeTypeWrapper.cs" />
-    <Compile Include="Reflection\Reflector.cs" />
-    <Compile Include="Reflection\ReflectionUtils.cs" />
-    <Compile Include="Model\AggregateTestExplorer.cs" />
     <Compile Include="Model\TestModel.cs" />
     <Compile Include="Model\TestPackage.cs" />
     <Compile Include="Model\TestParameterInfo.cs">
@@ -619,7 +747,6 @@
     <Compile Include="Runner\Harness\ITestHarness.cs" />
     <Compile Include="Runner\Harness\ITestHarnessFactory.cs" />
     <Compile Include="Runner\Harness\TraceTestEnvironment.cs" />
-    <Compile Include="Model\ITestExplorer.cs" />
     <Compile Include="Runner\Harness\UnhandledExceptionTestEnvironment.cs" />
     <Compile Include="Runner\Projects\FilterInfo.cs" />
     <Compile Include="Runner\Projects\Project.cs" />
@@ -631,8 +758,6 @@
     <Compile Include="Runner\Reports\IReportReader.cs" />
     <Compile Include="Runner\TestLauncherResult.cs" />
     <Compile Include="Model\TestPackageConfig.cs" />
-    <Compile Include="Reflection\AssemblyUtils.cs" />
-    <Compile Include="Model\Execution\StepEventArgs.cs" />
     <Compile Include="Model\Execution\ITestController.cs" />
     <Compile Include="Model\ITestFramework.cs" />
     <Compile Include="Model\Serialization\TestComponentData.cs" />
@@ -659,26 +784,18 @@
     <Compile Include="Runner\TestLauncher.cs" />
     <Compile Include="Runtime\Loader\DefaultAssemblyResolverManager.cs" />
     <Compile Include="Model\Execution\DefaultTestContextTracker.cs" />
-    <Compile Include="Reflection\Impl\DefaultXmlDocumentationResolver.cs" />
     <Compile Include="Runtime\Loader\IAssemblyResolverManager.cs" />
     <Compile Include="Runtime\RuntimeSetup.cs" />
     <Compile Include="Runner\TestRunnerUtils.cs" />
-    <Compile Include="Utilities\ExceptionUtils.cs" />
-    <Compile Include="Utilities\FileUtils.cs" />
-    <Compile Include="Collections\TreeUtils.cs" />
-    <Compile Include="Utilities\Hash64.cs" />
+    <Compile Include="Common\Diagnostics\ExceptionUtils.cs" />
+    <Compile Include="Common\IO\FileUtils.cs" />
+    <Compile Include="Common\Hash64.cs" />
     <Compile Include="Runtime\Remoting\LongLivedMarshalByRefObject.cs" />
     <Compile Include="Framework\TestContext.cs" />
     <Compile Include="Framework\TestContextCookie.cs" />
     <Compile Include="Runtime\Loader\IAssemblyResolver.cs" />
-    <Compile Include="ActionChain.cs" />
-    <Compile Include="ActionDecorator.cs" />
-    <Compile Include="Collections\CovariantList.cs" />
-    <Compile Include="Collections\EmptyArray.cs" />
-    <Compile Include="Collections\EmptyDictionary.cs" />
-    <Compile Include="Collections\IMultiMap.cs" />
-    <Compile Include="Collections\MultiMap.cs" />
-    <Compile Include="Collections\ReadOnlyMultiMap.cs" />
+    <Compile Include="Common\ActionChain.cs" />
+    <Compile Include="Common\ActionDecorator.cs" />
     <Compile Include="Model\Filters\AndFilter.cs" />
     <Compile Include="Model\Filters\AnyFilter.cs" />
     <Compile Include="Model\Filters\AssemblyFilter.cs" />
@@ -696,15 +813,12 @@
     <Compile Include="Model\BaseTestComponent.cs" />
     <Compile Include="Model\BaseTestStep.cs" />
     <Compile Include="Model\BaseTest.cs" />
-    <Compile Include="Reflection\CodeReference.cs" />
-    <Compile Include="Reflection\CodeReferenceKind.cs" />
     <Compile Include="Model\TestKinds.cs" />
     <Compile Include="Model\ITestComponent.cs" />
     <Compile Include="Model\ITestStep.cs" />
     <Compile Include="Model\ITest.cs" />
     <Compile Include="Model\LifecyclePhases.cs" />
     <Compile Include="Model\MetadataKeys.cs" />
-    <Compile Include="Model\MetadataMap.cs" />
     <Compile Include="Model\TestComponentInfo.cs" />
     <Compile Include="Model\ModelException.cs" />
     <Compile Include="Model\ModelUtils.cs" />
@@ -717,26 +831,13 @@
     <Compile Include="Model\TestStatus.cs" />
     <Compile Include="Model\Execution\ITestContextTracker.cs" />
     <Compile Include="Runtime\IRuntime.cs" />
-    <Compile Include="Reflection\Impl\IXmlDocumentationResolver.cs" />
-    <Compile Include="Collections\CollectionUtils.cs" />
-    <Compile Include="Collections\GenericUtils.cs" />
-    <Compile Include="Framework\Text\Substring.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Concurrency\LockBox.cs" />
-    <Compile Include="Utilities\Sync.cs" />
-    <Compile Include="XmlSerializableTypeIncludes.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Utilities\XmlSerializationUtils.cs" />
-    <Compile Include="Runtime\CorrelatedExceptionEventArgs.cs" />
-    <Compile Include="Utilities\StringUtils.cs" />
+    <Compile Include="Common\Concurrency\Sync.cs" />
+    <Compile Include="Common\Xml\DefaultXmlSerializer.cs" />
+    <Compile Include="Common\Xml\XmlUtils.cs" />
+    <Compile Include="Common\Xml\XmlSerializationUtils.cs" />
+    <Compile Include="Common\Policies\CorrelatedExceptionEventArgs.cs" />
+    <Compile Include="Common\Text\StringUtils.cs" />
     <Compile Include="Framework\TestLog.cs" />
-    <Compile Include="Model\Logging\Attachment.cs" />
-    <Compile Include="Model\Logging\BinaryAttachment.cs" />
-    <Compile Include="Model\Logging\TestLogStreamNames.cs" />
-    <Compile Include="Model\Logging\MimeTypes.cs" />
-    <Compile Include="Model\Logging\TextAttachment.cs" />
     <Compile Include="Runtime\RuntimeAccessor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
@@ -744,6 +845,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Framework\Data\Generation\IGenerator.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -756,11 +858,12 @@
     <Content Include="Gallio.plugin" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <Import Project="..\..\..\SGen.targets" />
+  <Import Project="..\..\SGen.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
   </Target>
   <Target Name="AfterBuild">
   </Target>
+  -->
 </Project>

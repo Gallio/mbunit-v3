@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>10.0.11001</ProductVersion>
+    <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{111FD89D-58A1-4445-B4A4-8A50D65DB714}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -11,12 +11,11 @@
     <AssemblyName>Gallio.Tests</AssemblyName>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>../../Key.snk</AssemblyOriginatorKeyFile>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
     <OldToolsVersion>3.5</OldToolsVersion>
-    <UpgradeBackupLocation>
-    </UpgradeBackupLocation>
+    <UpgradeBackupLocation />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -26,7 +25,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <NoWarn>1734;1591</NoWarn>
+    <NoWarn>1591</NoWarn>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <DocumentationFile>bin\Gallio.Tests.xml</DocumentationFile>
   </PropertyGroup>
@@ -37,7 +36,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <NoWarn>1734;1591</NoWarn>
+    <NoWarn>1591</NoWarn>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <DocumentationFile>bin\Gallio.Tests.xml</DocumentationFile>
   </PropertyGroup>
@@ -52,43 +51,87 @@
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Data" />
+    <Reference Include="System.Design" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Runtime.Remoting" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ActionChainTestForTwoParameters.cs" />
+    <Compile Include="Common\ActionChainTestForTwoParameters.cs" />
     <Compile Include="BaseTestWithMocks.cs" />
-    <Compile Include="Collections\UserDataCollectionTest.cs" />
-    <Compile Include="Concurrency\LockBoxTest.cs" />
-    <Compile Include="Concurrency\ProcessTaskTest.cs" />
-    <Compile Include="Concurrency\ThreadAbortScopeTest.cs" />
-    <Compile Include="FuncChainTest.cs" />
+    <Compile Include="Common\Collections\GenericUtilsTest.cs" />
+    <Compile Include="Common\Collections\PropertyBagTest.cs" />
+    <Compile Include="Common\Collections\PropertySetTest.cs" />
+    <Compile Include="Common\Collections\TreeUtilsTest.cs" />
+    <Compile Include="Common\Collections\UserDataCollectionTest.cs" />
+    <Compile Include="Common\Concurrency\LockBoxTest.cs" />
+    <Compile Include="Common\Concurrency\ProcessTaskTest.cs" />
+    <Compile Include="Common\Concurrency\ThreadAbortScopeTest.cs" />
+    <Compile Include="Common\ConditionContextTest.cs" />
+    <Compile Include="Common\ConditionTest.cs" />
+    <Compile Include="Common\Diagnostics\ExceptionDataTest.cs" />
+    <Compile Include="Common\Diagnostics\StackTraceDataTest.cs" />
+    <Compile Include="Common\Diagnostics\StackTraceFilterTest.cs" />
+    <Compile Include="Common\Linq\ExpressionInstrumentorTest.cs" />
+    <Compile Include="Common\Markup\AttachmentTest.cs" />
+    <Compile Include="Common\Markup\MarkerTest.cs" />
+    <Compile Include="Common\Markup\MimeTypesTest.cs" />
+    <Compile Include="Common\Markup\StructuredStreamTest.cs" />
+    <Compile Include="Common\Markup\StructuredDocumentTest.cs" />
+    <Compile Include="Common\Markup\StructuredDocumentWriterTest.cs" />
+    <Compile Include="Common\Markup\StructuredTextTest.cs" />
+    <Compile Include="Common\Markup\Tags\BaseTagTest.cs" />
+    <Compile Include="Common\Markup\Tags\BinaryAttachmentTest.cs" />
+    <Compile Include="Common\Markup\Tags\BodyTagTest.cs" />
+    <Compile Include="Common\Markup\Tags\ContainerTagTest.cs" />
+    <Compile Include="Common\Markup\Tags\EmbedTagTest.cs" />
+    <Compile Include="Common\Markup\Tags\MarkerTagTest.cs" />
+    <Compile Include="Common\Markup\Tags\SectionTagTest.cs" />
+    <Compile Include="Common\Markup\Tags\TagTest.cs" />
+    <Compile Include="Common\Markup\Tags\TextAttachmentTest.cs" />
+    <Compile Include="Common\Markup\Tags\TextTagTest.cs" />
+    <Compile Include="Common\Markup\TextualMarkupDocumentWriterTest.cs" />
+    <Compile Include="Common\MockableConditionContext.cs" />
+    <Compile Include="Common\Policies\SpecialPathPolicyTest.cs" />
+    <Compile Include="Common\Reflection\BaseReflectionPolicyTest.cs" />
+    <Compile Include="Common\Reflection\CodeElementSorterTest.cs" />
+    <Compile Include="Common\Reflection\CodeLocationTest.cs" />
+    <Compile Include="Common\Reflection\CodeReferenceTest.cs" />
+    <Compile Include="Common\Reflection\DeclaringTypeComparerTest.cs" />
+    <Compile Include="Common\Reflection\AssemblyUtilsTest.cs" />
+    <Compile Include="Common\Reflection\Impl\CecilReflectionPolicyTest.cs" />
+    <Compile Include="Common\Reflection\Impl\ComDebugSymbolResolverTest.cs" />
+    <Compile Include="Common\Reflection\Impl\DebugSymbolUtilsTest.cs" />
+    <Compile Include="Common\Reflection\Impl\DefaultXmlDocumentationResolverTest.cs" />
+    <Compile Include="Common\Reflection\Impl\NativeReflectionPolicyTest.cs" />
+    <Compile Include="Common\Reflection\Impl\ReflectorTypeUtilsTest.cs" />
+    <Compile Include="Common\Reflection\Impl\XmlDocumentationUtilsTest.cs" />
+    <Compile Include="Common\Reflection\ReflectionOnlyAssemblyLoaderTest.cs" />
+    <Compile Include="Common\Reflection\ReflectionResolveExceptionTest.cs" />
+    <Compile Include="Common\Reflection\ReflectorTest.cs" />
+    <Compile Include="Common\Reflection\TypeNameTest.cs" />
+    <Compile Include="Common\Reflection\WrapperAssert.cs" />
+    <Compile Include="Common\Text\DiffSetTest.cs" />
+    <Compile Include="Common\Text\DiffTest.cs" />
+    <Compile Include="Common\Text\RangeTest.cs" />
+    <Compile Include="Common\Text\SubstringTest.cs" />
+    <Compile Include="Framework\Assertions\AssertionHelperTest.cs" />
+    <Compile Include="Framework\Data\Generation\SequentialNumbersGeneratorTest.cs" />
+    <Compile Include="Framework\Data\Generation\RandomNumbersGeneratorTest.cs" />
+    <Compile Include="Framework\Pattern\PatternTestFrameworkExtensionInfoTest.cs" />
+    <Compile Include="Framework\TestTerminatedExceptionTest.cs" />
+    <Compile Include="Framework\Pattern\ParallelizableTestCaseSchedulerTest.cs" />
+    <Compile Include="Framework\Pattern\TestAssemblyExecutionParametersTest.cs" />
+    <Compile Include="Common\FuncChainTest.cs" />
     <Compile Include="Framework\Assertions\AssertionConditionEvaluatorTest.cs" />
     <Compile Include="Framework\Assertions\AssertionContextTest.cs" />
     <Compile Include="Framework\Assertions\AssertionFailureBuilderTest.cs" />
     <Compile Include="Framework\Assertions\AssertionFailureTest.cs" />
     <Compile Include="Framework\ComparisonSemanticsTest.cs" />
-    <Compile Include="Framework\Formatting\StructuralFormattingRuleTest.cs" />
-    <Compile Include="Framework\Formatting\StubFormatterTest.cs" />
     <Compile Include="Framework\SandboxTest.cs" />
     <Compile Include="Framework\TasksTest.cs" />
     <Compile Include="Integration\StubFormatterIntegrationTest.cs" />
     <Compile Include="Framework\Pattern\ProcessIsolationTest.cs" />
-    <Compile Include="Framework\Text\SubstringTest.cs" />
-    <Compile Include="Framework\Text\DiffSetTest.cs" />
-    <Compile Include="Framework\Text\DiffTest.cs" />
-    <Compile Include="Framework\Conversions\ArrayToArrayConversionRuleTest.cs" />
-    <Compile Include="Framework\Conversions\BaseConversionRuleTest.cs" />
-    <Compile Include="Framework\Conversions\BaseConverterTest.cs" />
-    <Compile Include="Framework\Conversions\ConversionCostTest.cs" />
-    <Compile Include="Framework\Conversions\ConvertibleToConvertibleConversionRuleTest.cs" />
-    <Compile Include="Framework\Conversions\NullConverterTest.cs" />
-    <Compile Include="Framework\Conversions\ObjectToStringConversionRuleTest.cs" />
-    <Compile Include="Framework\Conversions\RuleBasedConverterTest.cs" />
-    <Compile Include="Framework\Conversions\StringToXmlDocumentConversionRuleTest.cs" />
-    <Compile Include="Framework\Conversions\XPathNavigableToXPathNavigatorConversionRuleTest.cs" />
-    <Compile Include="Framework\Conversions\XPathNavigatorToStringConversionRuleTest.cs" />
-    <Compile Include="Framework\Conversions\XPathNavigatorToXmlSerializableTypeConversionRuleTest.cs" />
     <Compile Include="Framework\Data\BaseDataBinderTest.cs" />
     <Compile Include="Framework\Data\BaseDataItemTest.cs" />
     <Compile Include="Framework\Data\BaseDataSetTest.cs" />
@@ -103,7 +146,6 @@
     <Compile Include="Framework\Data\DataSourceTableTest.cs" />
     <Compile Include="Framework\Data\DataSourceTest.cs" />
     <Compile Include="Framework\Data\FactoryDataSetTest.cs" />
-    <Compile Include="Framework\Data\GeneratorsTest.cs" />
     <Compile Include="Framework\Data\IntersectionMergeStrategyTest.cs" />
     <Compile Include="Framework\Data\JoinedDataSetTest.cs" />
     <Compile Include="Framework\Data\ListDataItemTest.cs" />
@@ -125,73 +167,98 @@
     <Compile Include="Framework\Data\SimpleDataItemTest.cs" />
     <Compile Include="Framework\Data\UnionMergeStrategyTest.cs" />
     <Compile Include="Framework\Data\XmlDataSetTest.cs" />
-    <Compile Include="Framework\Formatting\BaseFormattingRuleTest.cs" />
-    <Compile Include="Framework\Formatting\BooleanFormattingRuleTest.cs" />
-    <Compile Include="Framework\Formatting\ByteFormattingRuleTest.cs" />
-    <Compile Include="Framework\Formatting\CharFormattingRuleTest.cs" />
-    <Compile Include="Framework\Formatting\ConvertToStringFormattingRuleTest.cs" />
-    <Compile Include="Framework\Formatting\ExpressionFormattingRuleTest.cs" />
-    <Compile Include="Framework\Formatting\DateTimeFormattingRuleTest.cs" />
-    <Compile Include="Framework\Formatting\DBNullFormattingRuleTest.cs" />
-    <Compile Include="Framework\Formatting\DecimalFormattingRuleTest.cs" />
-    <Compile Include="Framework\Formatting\DictionaryEntryFormattingRuleTest.cs" />
-    <Compile Include="Framework\Formatting\DoubleFormattingRuleTest.cs" />
-    <Compile Include="Framework\Formatting\EnumerableFormattingRuleTest.cs" />
-    <Compile Include="Framework\Formatting\IntegerFormattingRuleTest.cs" />
-    <Compile Include="Framework\Formatting\KeyValuePairFormattingRuleTest.cs" />
-    <Compile Include="Framework\Formatting\RuleBasedFormatterTest.cs" />
-    <Compile Include="Framework\Formatting\SByteFormattingRuleTest.cs" />
-    <Compile Include="Framework\Formatting\SingleFormattingRuleTest.cs" />
-    <Compile Include="Framework\Formatting\StringFormattingRuleTest.cs" />
-    <Compile Include="Framework\Formatting\TypeFormattingRuleTest.cs" />
-    <Compile Include="Framework\Formatting\XPathNavigableFormattingRuleTest.cs" />
     <Compile Include="Framework\Pattern\PatternUsageErrorExceptionTest.cs" />
-    <Compile Include="Framework\Pattern\PatternTestFrameworkTest.cs" />
-    <Compile Include="Framework\Pattern\ToolInfoTest.cs" />
     <Compile Include="Framework\SilentTestExceptionTest.cs" />
     <Compile Include="Framework\TestFailedExceptionTest.cs" />
     <Compile Include="Framework\TestInconclusiveExceptionTest.cs" />
-    <Compile Include="Linq\ExpressionInstrumentorTest.cs" />
-    <Compile Include="Model\Diagnostics\StackTraceDataTest.cs" />
-    <Compile Include="Model\Diagnostics\ExceptionDataTest.cs" />
-    <Compile Include="Model\Diagnostics\StackTraceFilterTest.cs" />
+    <Compile Include="Model\BaseTestTest.cs" />
     <Compile Include="Host\HostExceptionTest.cs" />
     <Compile Include="Model\BaseTestExplorerTest.cs" />
+    <Compile Include="Model\Filters\FilterRuleTest.cs" />
+    <Compile Include="Model\Filters\FilterSetTest.cs" />
     <Compile Include="Model\Filters\FilterParseExceptionTest.cs" />
-    <Compile Include="Model\Logging\AttachmentTest.cs" />
-    <Compile Include="Model\Logging\MarkerTest.cs" />
-    <Compile Include="Model\Logging\StructuredTestLogStreamTest.cs" />
-    <Compile Include="Model\Logging\StructuredTestLogTest.cs" />
-    <Compile Include="Model\Logging\StructuredTestLogWriterTest.cs" />
-    <Compile Include="Model\Logging\StructuredTextTest.cs" />
-    <Compile Include="Model\Logging\Tags\BaseTagTest.cs" />
-    <Compile Include="Model\Logging\Tags\BinaryAttachmentTest.cs" />
-    <Compile Include="Model\Logging\Tags\BodyTagTest.cs" />
-    <Compile Include="Model\Logging\Tags\ContainerTagTest.cs" />
-    <Compile Include="Model\Logging\Tags\EmbedTagTest.cs" />
-    <Compile Include="Model\Logging\Tags\MarkerTagTest.cs" />
-    <Compile Include="Model\Logging\Tags\SectionTagTest.cs" />
-    <Compile Include="Model\Logging\Tags\TagTest.cs" />
-    <Compile Include="Model\Logging\Tags\TextAttachmentTest.cs" />
-    <Compile Include="Model\Logging\Tags\TextTagTest.cs" />
     <Compile Include="Model\ModelExceptionTest.cs" />
-    <Compile Include="Reflection\Impl\CecilReflectionPolicyTest.cs" />
-    <Compile Include="Reflection\ReflectionOnlyAssemblyLoaderTest.cs" />
-    <Compile Include="Reflection\ReflectionWrapperResolveExceptionTest.cs" />
-    <Compile Include="Runner\Caching\DiskCacheExceptionTest.cs" />
-    <Compile Include="Runner\Caching\SimpleDiskCacheTest.cs" />
-    <Compile Include="Runner\Caching\TemporaryDiskCacheTest.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Reports\ManualTestLogFeatureTest.cs" />
+    <Compile Include="Reports\MHtmlReportFormatterTest.cs" />
+    <Compile Include="Reports\XmlReportFormatterTest.cs" />
+    <Compile Include="Reports\XsltReportFormatterTest.cs" />
     <Compile Include="Runner\Drivers\HostedTestDriverTest.cs" />
     <Compile Include="Runner\Extensions\TestRunnerExtensionUtilsTest.cs" />
     <Compile Include="Runner\RunnerExceptionTest.cs" />
-    <Compile Include="Runner\Sessions\LocalTestSessionManagerTest.cs" />
-    <Compile Include="Runner\Workspaces\ResourcePathTests.cs" />
     <Compile Include="RunSampleAttribute.cs" />
+    <Compile Include="Runtime\Caching\DiskCacheExceptionTest.cs" />
+    <Compile Include="Runtime\Caching\SimpleDiskCacheTest.cs" />
+    <Compile Include="Runtime\Caching\TemporaryDiskCacheTest.cs" />
+    <Compile Include="Runtime\Conversions\ArrayToArrayConversionRuleTest.cs" />
+    <Compile Include="Runtime\Conversions\BaseConversionRuleTest.cs" />
+    <Compile Include="Runtime\Conversions\BaseConverterTest.cs" />
+    <Compile Include="Runtime\Conversions\ConversionCostTest.cs" />
+    <Compile Include="Runtime\Conversions\ConvertibleToConvertibleConversionRuleTest.cs" />
+    <Compile Include="Runtime\Conversions\NullConverterTest.cs" />
+    <Compile Include="Runtime\Conversions\ObjectToStringConversionRuleTest.cs" />
+    <Compile Include="Runtime\Conversions\RuleBasedConverterTest.cs" />
+    <Compile Include="Runtime\Conversions\StringToXmlDocumentConversionRuleTest.cs" />
+    <Compile Include="Runtime\Conversions\XPathNavigableToXPathNavigatorConversionRuleTest.cs" />
+    <Compile Include="Runtime\Conversions\XPathNavigatorToStringConversionRuleTest.cs" />
+    <Compile Include="Runtime\Conversions\XPathNavigatorToXmlSerializableTypeConversionRuleTest.cs" />
+    <Compile Include="Runtime\Extensibility\AssemblyReferenceTest.cs" />
+    <Compile Include="Runtime\Extensibility\CachingPluginLoaderTest.cs" />
+    <Compile Include="Runtime\Extensibility\ComponentHandleTest.cs" />
+    <Compile Include="Runtime\Extensibility\ComponentRegistrationTest.cs" />
+    <Compile Include="Runtime\Extensibility\DefaultObjectDependencyResolverTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Runtime\Extensibility\PluginLoaderTest.cs" />
+    <Compile Include="Runtime\Extensibility\FileSystemResourceLocatorTest.cs" />
+    <Compile Include="Runtime\Extensibility\ObjectFactoryTest.cs" />
+    <Compile Include="Runtime\Extensibility\PluginCatalogTest.cs" />
+    <Compile Include="Runtime\Extensibility\RegistryServiceLocatorTest.cs" />
+    <Compile Include="Runtime\Extensibility\SingletonHandlerFactoryTest.cs" />
+    <Compile Include="Runtime\Extensibility\InstanceHandlerFactoryTest.cs" />
+    <Compile Include="Runtime\Extensibility\ServiceRegistrationTest.cs" />
+    <Compile Include="Runtime\Extensibility\PluginRegistrationTest.cs" />
+    <Compile Include="Runtime\Extensibility\RegistryTest.cs" />
+    <Compile Include="Common\Xml\XmlPreprocessorTest.cs" />
+    <Compile Include="Runtime\FileTypes\AssemblyFileTypeRecognizerTest.cs" />
+    <Compile Include="Runtime\FileTypes\FileTypeManagerTest.cs" />
+    <Compile Include="Runtime\FileTypes\FileTypeRecognizerTraitsTest.cs" />
+    <Compile Include="Runtime\FileTypes\FileTypeTest.cs" />
+    <Compile Include="Runtime\FileTypes\LazyFileInspectorTest.cs" />
+    <Compile Include="Runtime\FileTypes\SimpleFileTypeRecognizerTest.cs" />
+    <Compile Include="Runtime\Formatting\BaseFormattingRuleTest.cs" />
+    <Compile Include="Runtime\Formatting\BooleanFormattingRuleTest.cs" />
+    <Compile Include="Runtime\Formatting\ByteFormattingRuleTest.cs" />
+    <Compile Include="Runtime\Formatting\CharFormattingRuleTest.cs" />
+    <Compile Include="Runtime\Formatting\ConvertToStringFormattingRuleTest.cs" />
+    <Compile Include="Runtime\Formatting\DateTimeFormattingRuleTest.cs" />
+    <Compile Include="Runtime\Formatting\DBNullFormattingRuleTest.cs" />
+    <Compile Include="Runtime\Formatting\DecimalFormattingRuleTest.cs" />
+    <Compile Include="Runtime\Formatting\DictionaryEntryFormattingRuleTest.cs" />
+    <Compile Include="Runtime\Formatting\DoubleFormattingRuleTest.cs" />
+    <Compile Include="Runtime\Formatting\EnumerableFormattingRuleTest.cs" />
+    <Compile Include="Runtime\Formatting\ExpressionFormattingRuleTest.cs" />
+    <Compile Include="Runtime\Formatting\IntegerFormattingRuleTest.cs" />
+    <Compile Include="Runtime\Formatting\KeyValuePairFormattingRuleTest.cs" />
+    <Compile Include="Runtime\Formatting\RuleBasedFormatterTest.cs" />
+    <Compile Include="Runtime\Formatting\SByteFormattingRuleTest.cs" />
+    <Compile Include="Runtime\Formatting\SingleFormattingRuleTest.cs" />
+    <Compile Include="Runtime\Formatting\StringFormattingRuleTest.cs" />
+    <Compile Include="Runtime\Formatting\StructuralFormattingRuleTest.cs" />
+    <Compile Include="Runtime\Formatting\StubFormatterTest.cs" />
+    <Compile Include="Runtime\Formatting\TypeFormattingRuleTest.cs" />
+    <Compile Include="Runtime\Formatting\XPathNavigableFormattingRuleTest.cs" />
     <Compile Include="Runtime\Hosting\AbstractHostFactoryTest.cs" />
     <Compile Include="Runtime\Hosting\HostConfigurationTest.cs" />
     <Compile Include="Runtime\Hosting\HostSetupTest.cs" />
     <Compile Include="Runtime\Hosting\LocalHostFactoryTest.cs" />
+    <Compile Include="Runtime\Logging\SeverityPrefixParserTest.cs" />
     <Compile Include="Runtime\Logging\EventLoggerTest.cs" />
+    <Compile Include="Runtime\Logging\SeverityPrefixLoggerTest.cs" />
     <Compile Include="Runtime\Logging\TextLoggerTest.cs" />
     <Compile Include="Runtime\Remoting\BinaryTcpChannelTest.cs" />
     <Compile Include="Host\HostProgramIntegrationTest.cs" />
@@ -212,10 +279,8 @@
     </Compile>
     <Compile Include="Runtime\RuntimeExceptionTest.cs" />
     <Compile Include="Runtime\RuntimeAccessorTest.cs" />
-    <Compile Include="Runtime\RuntimeRegisteredComponentResolverTest.cs" />
     <Compile Include="Integration\StubContextIntegrationTest.cs" />
     <Compile Include="Framework\TestLogTest.cs" />
-    <Compile Include="Model\Logging\TextualTestLogWriterTest.cs" />
     <Compile Include="Model\Execution\TestCommandFactoryTest.cs" />
     <Compile Include="Model\Filters\NameFilterTest.cs" />
     <Compile Include="Model\Filters\EqualityFilterTest.cs" />
@@ -225,23 +290,11 @@
     <Compile Include="Model\Filters\ModelComponentFilterFactoryTest.cs" />
     <Compile Include="Model\Filters\RegexFilterTest.cs" />
     <Compile Include="Model\TestOutcomeTest.cs" />
-    <Compile Include="Reflection\CodeElementSorterTest.cs" />
-    <Compile Include="Reflection\CodeReferenceTest.cs" />
-    <Compile Include="Reflection\DeclaringTypeComparerTest.cs" />
-    <Compile Include="Reflection\Impl\ComDebugSymbolResolverTest.cs" />
-    <Compile Include="Reflection\Impl\DebugSymbolUtilsTest.cs" />
-    <Compile Include="Reflection\Impl\ReflectorTypeUtilsTest.cs" />
-    <Compile Include="Reflection\Impl\XmlDocumentationUtilsTest.cs" />
-    <Compile Include="Reflection\Impl\NativeReflectionPolicyTest.cs" />
-    <Compile Include="Reflection\BaseReflectionPolicyTest.cs" />
-    <Compile Include="Reflection\WrapperAssert.cs" />
-    <Compile Include="Reflection\ReflectorTest.cs" />
-    <Compile Include="Reflection\CodeLocationTest.cs" />
     <Compile Include="Runner\Reports\FileSystemReportContainerTest.cs" />
     <Compile Include="Runner\Reports\ReportAssert.cs" />
     <Compile Include="Model\ModelAssert.cs" />
     <Compile Include="BaseTestWithSampleRunner.cs" />
-    <Compile Include="ActionChainTest.cs" />
+    <Compile Include="Common\ActionChainTest.cs" />
     <Compile Include="Model\Filters\AndFilterTest.cs" />
     <Compile Include="Model\Filters\AnyFilterTest.cs" />
     <Compile Include="Model\Filters\AssemblyFilterTest.cs" />
@@ -253,9 +306,6 @@
     <Compile Include="Model\Filters\NotFilterTest.cs" />
     <Compile Include="Model\Filters\OrFilterTest.cs" />
     <Compile Include="Model\Filters\TypeFilterTest.cs" />
-    <Compile Include="Model\MetadataMapTest.cs" />
-    <Compile Include="Collections\GenericUtilsTest.cs" />
-    <Compile Include="Runner\Reports\MockTestDataFactory.cs" />
     <Compile Include="Model\BaseTestFrameworkTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Runner\Reports\PackageRunStatisticsTests.cs" />
@@ -263,51 +313,71 @@
     <Compile Include="Runner\Reports\ReportTest.cs" />
     <Compile Include="Runner\Reports\TestStepRunTests.cs" />
     <Compile Include="Runner\TestLauncherTest.cs" />
-    <Compile Include="Reflection\Impl\DefaultXmlDocumentationResolverTest.cs" />
-    <Compile Include="Collections\TreeUtilsTest.cs" />
-    <Compile Include="Utilities\CurrentDirectorySwitcherTest.cs" />
-    <Compile Include="Utilities\ExceptionUtilsTest.cs" />
-    <Compile Include="Runtime\CorrelatedExceptionEventArgsTest.cs" />
-    <Compile Include="Utilities\MimeTypesTest.cs" />
-    <Compile Include="Framework\Text\RangeTest.cs" />
-    <Compile Include="Utilities\StringUtilsTest.cs" />
-    <Compile Include="Runtime\UnhandledExceptionPolicyTest.cs" />
+    <Compile Include="Common\IO\CurrentDirectorySwitcherTest.cs" />
+    <Compile Include="Common\Diagnostics\ExceptionUtilsTest.cs" />
+    <Compile Include="Common\Policies\CorrelatedExceptionEventArgsTest.cs" />
+    <Compile Include="Common\KeyedMemoizerTest.cs" />
+    <Compile Include="Common\MemoizerTest.cs" />
+    <Compile Include="Common\Text\StringUtilsTest.cs" />
+    <Compile Include="Common\Policies\UnhandledExceptionPolicyTest.cs" />
+    <Compile Include="Common\Xml\XmlUtilsTest.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\MbUnit\MbUnit.TestResources.x64\MbUnit.TestResources.x64.vs2010.csproj">
+    <ProjectReference Include="..\..\MbUnit\MbUnit.TestResources.x64\MbUnit.TestResources.x64.csproj">
       <Project>{192D2C12-9D5C-4D68-96BA-4CD28054E3BC}</Project>
-      <Name>MbUnit.TestResources.x64.vs2010</Name>
+      <Name>MbUnit.TestResources.x64</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\MbUnit\MbUnit.TestResources.x86\MbUnit.TestResources.x86.vs2010.csproj">
+    <ProjectReference Include="..\..\MbUnit\MbUnit.TestResources.x86\MbUnit.TestResources.x86.csproj">
       <Project>{45224C3F-B0F1-4D70-8516-B50100DEF79B}</Project>
-      <Name>MbUnit.TestResources.x86.vs2010</Name>
+      <Name>MbUnit.TestResources.x86</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\MbUnit\MbUnit.TestResources\MbUnit.TestResources.vs2010.csproj">
+    <ProjectReference Include="..\..\MbUnit\MbUnit.TestResources\MbUnit.TestResources.csproj">
       <Project>{9FFB657C-7099-4594-A1DD-6E9AC5D7171E}</Project>
-      <Name>MbUnit.TestResources.vs2010</Name>
+      <Name>MbUnit.TestResources</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\MbUnit\MbUnit35\MbUnit35.vs2010.csproj">
+    <ProjectReference Include="..\..\MbUnit\MbUnit35\MbUnit35.csproj">
       <Project>{D147F5CC-0166-4B9C-B095-F905220090FA}</Project>
-      <Name>MbUnit35.vs2010</Name>
+      <Name>MbUnit35</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\MbUnit\MbUnit\MbUnit.vs2010.csproj">
+    <ProjectReference Include="..\..\MbUnit\MbUnit\MbUnit.csproj">
       <Project>{A9B54755-56B7-48C1-8941-BB69FCEFFF32}</Project>
-      <Name>MbUnit.vs2010</Name>
+      <Name>MbUnit %28MbUnit\MbUnit%29</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Gallio.Host\Gallio.Host.vs2010.csproj">
+    <ProjectReference Include="..\Gallio.Host\Gallio.Host.csproj">
       <Project>{35FFAF24-1019-4BE2-901D-02E627C757DC}</Project>
-      <Name>Gallio.Host.vs2010</Name>
+      <Name>Gallio.Host</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Gallio35\Gallio35.vs2010.csproj">
+    <ProjectReference Include="..\Gallio.Reports\Gallio.Reports.csproj">
+      <Project>{399C33BF-A9F7-4390-8F9C-8EECF7814123}</Project>
+      <Name>Gallio.Reports</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Gallio35\Gallio35.csproj">
       <Project>{BC28AB7E-5B71-4AEE-BF2D-54ACF7299889}</Project>
-      <Name>Gallio35.vs2010</Name>
+      <Name>Gallio35</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Gallio\Gallio.vs2010.csproj">
+    <ProjectReference Include="..\Gallio\Gallio.csproj">
       <Project>{6CAB7735-05DA-480D-9A04-50615B00F886}</Project>
-      <Name>Gallio.vs2010</Name>
+      <Name>Gallio %28Gallio\Gallio%29</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\SampleIcon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SampleImage.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Reports\Diagnostic.xslt" />
+    <None Include="Reports\MbUnitLogo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Common\Platform\" />
     <Folder Include="Framework\Utilities\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

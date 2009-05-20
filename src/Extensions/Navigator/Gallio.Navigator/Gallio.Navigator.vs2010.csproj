@@ -3,14 +3,14 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>10.0.11001</ProductVersion>
+    <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{9863B9FA-1DE6-48D5-A84D-FB8FE2025303}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Gallio.Navigator</RootNamespace>
     <AssemblyName>Gallio.Navigator</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\..\Key.snk</AssemblyOriginatorKeyFile>
@@ -19,8 +19,7 @@
     <FileUpgradeFlags>
     </FileUpgradeFlags>
     <OldToolsVersion>3.5</OldToolsVersion>
-    <UpgradeBackupLocation>
-    </UpgradeBackupLocation>
+    <UpgradeBackupLocation />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -30,7 +29,8 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <NoWarn>1734</NoWarn>
+    <NoWarn>
+    </NoWarn>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <DocumentationFile>bin\Gallio.Navigator.xml</DocumentationFile>
     <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
@@ -43,7 +43,8 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <NoWarn>1734</NoWarn>
+    <NoWarn>
+    </NoWarn>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <DocumentationFile>bin\Gallio.Navigator.xml</DocumentationFile>
     <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
@@ -88,15 +89,19 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Gallio.Navigator.exe.config">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Resources\UrlHandlerIcon.ico" />
-    <Content Include="Readme.txt" />
+    <Content Include="Gallio.Navigator.Readme.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\VisualStudio\Gallio.VisualStudio.Interop\Gallio.VisualStudio.Interop.vs2010.csproj">
+    <ProjectReference Include="..\..\..\Gallio\Gallio\Gallio.csproj">
+      <Project>{6CAB7735-05DA-480D-9A04-50615B00F886}</Project>
+      <Name>Gallio %28Gallio\Gallio%29</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\VisualStudio\Gallio.VisualStudio.Interop\Gallio.VisualStudio.Interop.csproj">
       <Project>{B6912CC5-1E73-46E0-8F09-7F135924E3E2}</Project>
-      <Name>Gallio.VisualStudio.Interop.vs2010</Name>
+      <Name>Gallio.VisualStudio.Interop</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

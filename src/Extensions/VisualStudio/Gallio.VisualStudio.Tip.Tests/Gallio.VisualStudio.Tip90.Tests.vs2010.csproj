@@ -3,14 +3,14 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>10.0.11001</ProductVersion>
+    <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{66E6622C-CA7F-4234-A227-B262033B3976}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Gallio.VisualStudio.Tip.Tests</RootNamespace>
     <AssemblyName>Gallio.VisualStudio.Tip90.Tests</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\..\Key.snk</AssemblyOriginatorKeyFile>
@@ -18,8 +18,7 @@
     <FileUpgradeFlags>
     </FileUpgradeFlags>
     <OldToolsVersion>3.5</OldToolsVersion>
-    <UpgradeBackupLocation>
-    </UpgradeBackupLocation>
+    <UpgradeBackupLocation />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -29,7 +28,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <NoWarn>1734;1591</NoWarn>
+    <NoWarn>1591</NoWarn>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <DocumentationFile>bin\v9.0\Gallio.VisualStudio.Tip90.Tests.XML</DocumentationFile>
   </PropertyGroup>
@@ -40,7 +39,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <NoWarn>1734;1591</NoWarn>
+    <NoWarn>1591</NoWarn>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <DocumentationFile>bin\v9.0\Gallio.VisualStudio.Tip90.Tests.XML</DocumentationFile>
   </PropertyGroup>
@@ -64,42 +63,42 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Gallio\Gallio.UI\Gallio.UI.vs2010.csproj">
+    <ProjectReference Include="..\..\..\Gallio\Gallio.UI\Gallio.UI.csproj">
       <Project>{36B1F505-995B-41E7-AAC9-1E845B08F2D7}</Project>
-      <Name>Gallio.UI.vs2010</Name>
+      <Name>Gallio.UI</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\Gallio\Gallio35\Gallio35.vs2010.csproj">
+    <ProjectReference Include="..\..\..\Gallio\Gallio35\Gallio35.csproj">
       <Project>{BC28AB7E-5B71-4AEE-BF2D-54ACF7299889}</Project>
-      <Name>Gallio35.vs2010</Name>
+      <Name>Gallio35</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\Gallio\Gallio\Gallio.vs2010.csproj">
+    <ProjectReference Include="..\..\..\Gallio\Gallio\Gallio.csproj">
       <Project>{6CAB7735-05DA-480D-9A04-50615B00F886}</Project>
-      <Name>Gallio.vs2010</Name>
+      <Name>Gallio %28Gallio\Gallio%29</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\MbUnit\MbUnit.TestResources\MbUnit.TestResources.vs2010.csproj">
+    <ProjectReference Include="..\..\..\MbUnit\MbUnit.TestResources\MbUnit.TestResources.csproj">
       <Project>{9FFB657C-7099-4594-A1DD-6E9AC5D7171E}</Project>
-      <Name>MbUnit.TestResources.vs2010</Name>
+      <Name>MbUnit.TestResources</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\MbUnit\MbUnit35\MbUnit35.vs2010.csproj">
+    <ProjectReference Include="..\..\..\MbUnit\MbUnit35\MbUnit35.csproj">
       <Project>{D147F5CC-0166-4B9C-B095-F905220090FA}</Project>
-      <Name>MbUnit35.vs2010</Name>
+      <Name>MbUnit35</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\MbUnit\MbUnit\MbUnit.vs2010.csproj">
+    <ProjectReference Include="..\..\..\MbUnit\MbUnit\MbUnit.csproj">
       <Project>{A9B54755-56B7-48C1-8941-BB69FCEFFF32}</Project>
-      <Name>MbUnit.vs2010</Name>
+      <Name>MbUnit %28MbUnit\MbUnit%29</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Gallio.VisualStudio.Shell\Gallio.VisualStudio.Shell.vs2010.csproj">
+    <ProjectReference Include="..\Gallio.VisualStudio.Shell\Gallio.VisualStudio.Shell.csproj">
       <Project>{80983DC5-71B6-49CD-BA5F-305D29A65D05}</Project>
-      <Name>Gallio.VisualStudio.Shell.vs2010</Name>
+      <Name>Gallio.VisualStudio.Shell</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Gallio.VisualStudio.Tip.Proxy\Gallio.VisualStudio.Tip90.Proxy.vs2010.csproj">
+    <ProjectReference Include="..\Gallio.VisualStudio.Tip.Proxy\Gallio.VisualStudio.Tip90.Proxy.csproj">
       <Project>{3A5CA3C2-628D-4EAA-884B-95BB8C90C01C}</Project>
-      <Name>Gallio.VisualStudio.Tip90.Proxy.vs2010</Name>
+      <Name>Gallio.VisualStudio.Tip90.Proxy</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\Gallio.VisualStudio.Tip\Gallio.VisualStudio.Tip90.vs2010.csproj">
+    <ProjectReference Include="..\Gallio.VisualStudio.Tip\Gallio.VisualStudio.Tip90.csproj">
       <Project>{F3678999-969B-4CA5-B326-6732C26D97B3}</Project>
-      <Name>Gallio.VisualStudio.Tip90.vs2010</Name>
+      <Name>Gallio.VisualStudio.Tip90</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

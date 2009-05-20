@@ -3,14 +3,14 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>10.0.11001</ProductVersion>
+    <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{7BE8C909-6E33-42C6-AC7F-CC523CB438D0}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Gallio.VisualStudio.Sail</RootNamespace>
     <AssemblyName>Gallio.VisualStudio.Sail</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkSubset>
     </TargetFrameworkSubset>
@@ -19,8 +19,7 @@
     <FileUpgradeFlags>
     </FileUpgradeFlags>
     <OldToolsVersion>3.5</OldToolsVersion>
-    <UpgradeBackupLocation>
-    </UpgradeBackupLocation>
+    <UpgradeBackupLocation />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -32,7 +31,7 @@
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <DocumentationFile>bin\Gallio.VisualStudio.Sail.XML</DocumentationFile>
-    <NoWarn>1734;1591</NoWarn>
+    <NoWarn>1591</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -43,7 +42,7 @@
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <DocumentationFile>bin\Gallio.VisualStudio.Sail.XML</DocumentationFile>
-    <NoWarn>1734;1591</NoWarn>
+    <NoWarn>1591</NoWarn>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="EnvDTE, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
@@ -78,21 +77,21 @@
     <Compile Include="SailShellExtension.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Gallio\Gallio.Loader\Gallio.Loader.vs2010.csproj">
+    <ProjectReference Include="..\..\..\Gallio\Gallio.Loader\Gallio.Loader.csproj">
       <Project>{67FB2969-E6BF-4754-91AA-B6075F8E67EE}</Project>
-      <Name>Gallio.Loader.vs2010</Name>
+      <Name>Gallio.Loader</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\Gallio\Gallio.UI\Gallio.UI.vs2010.csproj">
+    <ProjectReference Include="..\..\..\Gallio\Gallio.UI\Gallio.UI.csproj">
       <Project>{36B1F505-995B-41E7-AAC9-1E845B08F2D7}</Project>
-      <Name>Gallio.UI.vs2010</Name>
+      <Name>Gallio.UI</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\Gallio\Gallio\Gallio.vs2010.csproj">
+    <ProjectReference Include="..\..\..\Gallio\Gallio\Gallio.csproj">
       <Project>{6CAB7735-05DA-480D-9A04-50615B00F886}</Project>
-      <Name>Gallio.vs2010</Name>
+      <Name>Gallio %28Gallio\Gallio%29</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Gallio.VisualStudio.Shell\Gallio.VisualStudio.Shell.vs2010.csproj">
+    <ProjectReference Include="..\Gallio.VisualStudio.Shell\Gallio.VisualStudio.Shell.csproj">
       <Project>{80983DC5-71B6-49CD-BA5F-305D29A65D05}</Project>
-      <Name>Gallio.VisualStudio.Shell.vs2010</Name>
+      <Name>Gallio.VisualStudio.Shell</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
