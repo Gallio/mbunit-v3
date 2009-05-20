@@ -18,6 +18,7 @@ using System.IO;
 using System.Reflection;
 using Gallio.Common.Reflection;
 using MbUnit.Framework;
+using MbUnit.TestResources.ProcessorArchitecture;
 
 namespace Gallio.Tests.Common.Reflection
 {
@@ -27,7 +28,13 @@ namespace Gallio.Tests.Common.Reflection
         [Test]
         public void IsAssembly_WhenStreamIsNull_Throws()
         {
-            Assert.Throws<ArgumentNullException>(() => AssemblyUtils.IsAssembly((string) null));
+            Assert.Throws<ArgumentNullException>(() => AssemblyUtils.IsAssembly((Stream) null));
+        }
+
+        [Test]
+        public void IsAssembly_WhenFilePathIsNull_Throws()
+        {
+            Assert.Throws<ArgumentNullException>(() => AssemblyUtils.IsAssembly((string)null));
         }
 
         [Test]
@@ -51,20 +58,101 @@ namespace Gallio.Tests.Common.Reflection
         public void IsAssembly_WhenStreamIsACLRAssembly_ReturnsTrue()
         {
             var path = Assembly.GetExecutingAssembly().Location;
-            using (var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read))
-            {
-                Assert.IsTrue(AssemblyUtils.IsAssembly(stream));
-            }
+
+            Assert.IsTrue(AssemblyUtils.IsAssembly(path));
         }
 
         [Test]
         public void IsAssembly_WhenStreamIsAPEFileButNotAnAssembly_ReturnsFalse()
         {
             var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), @"kernel32.dll");
-            using (var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read))
+
+            Assert.IsFalse(AssemblyUtils.IsAssembly(path));
+        }
+
+        [Test]
+        public void GetAssemblyMetadata_WhenStreamIsNull_Throws()
+        {
+            Assert.Throws<ArgumentNullException>(() => AssemblyUtils.GetAssemblyMetadata((Stream)null));
+        }
+
+        [Test]
+        public void GetAssemblyMetadata_WhenFilePathIsNull_Throws()
+        {
+            Assert.Throws<ArgumentNullException>(() => AssemblyUtils.GetAssemblyMetadata((string)null));
+        }
+
+        [Test]
+        public void GetAssemblyMetadata_WhenStreamIsEmpty_ReturnsNull()
+        {
+            var stream = new MemoryStream();
+
+            Assert.IsNull(AssemblyUtils.GetAssemblyMetadata(stream));
+        }
+
+        [Test]
+        public void GetAssemblyMetadata_WhenStreamDoesNotContainPEHeaderSignature_ReturnsNull()
+        {
+            var stream = new MemoryStream();
+            stream.SetLength(1024); // only contains nulls
+
+            Assert.IsNull(AssemblyUtils.GetAssemblyMetadata(stream));
+        }
+
+        [Test]
+        public void GetAssemblyMetadata_WhenStreamIsAnMSILAssembly_ReturnsMetadata()
+        {
+            var path = "MbUnit.TestResources.dll";
+
+            AssemblyMetadata metadata = AssemblyUtils.GetAssemblyMetadata(path);
+
+            Assert.Multiple(() =>
             {
-                Assert.IsFalse(AssemblyUtils.IsAssembly(stream));
-            }
+                Assert.IsNotNull(metadata);
+                Assert.AreEqual(2, metadata.MajorRuntimeVersion);
+                Assert.AreEqual(5, metadata.MinorRuntimeVersion);
+                Assert.AreEqual(ProcessorArchitecture.MSIL, metadata.ProcessorArchitecture);
+            });
+        }
+
+        [Test]
+        public void GetAssemblyMetadata_WhenStreamIsAnx86Assembly_ReturnsMetadata()
+        {
+            var path = "MbUnit.TestResources.x86.dll";
+
+            AssemblyMetadata metadata = AssemblyUtils.GetAssemblyMetadata(path);
+
+            Assert.Multiple(() =>
+            {
+                Assert.IsNotNull(metadata);
+                Assert.AreEqual(2, metadata.MajorRuntimeVersion);
+                Assert.AreEqual(5, metadata.MinorRuntimeVersion);
+                Assert.AreEqual(ProcessorArchitecture.X86, metadata.ProcessorArchitecture);
+            });
+        }
+
+        [Test]
+        public void GetAssemblyMetadata_WhenStreamIsAnx64Assembly_ReturnsMetadata()
+        {
+            var path = "MbUnit.TestResources.x64.dll";
+
+            AssemblyMetadata metadata = AssemblyUtils.GetAssemblyMetadata(path);
+
+            Assert.Multiple(() =>
+            {
+                Assert.IsNotNull(metadata);
+                Assert.AreEqual(2, metadata.MajorRuntimeVersion);
+                Assert.AreEqual(5, metadata.MinorRuntimeVersion);
+                Assert.AreEqual(ProcessorArchitecture.Amd64, metadata.ProcessorArchitecture);
+            });
+        }
+
+        [Test]
+        public void GetAssemblyMetadata_WhenStreamIsAPEFileButNotAnAssembly_ReturnsNull()
+        {
+            var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), @"kernel32.dll");
+
+            Assert.IsNull(AssemblyUtils.GetAssemblyMetadata(path));
         }
     }
 }

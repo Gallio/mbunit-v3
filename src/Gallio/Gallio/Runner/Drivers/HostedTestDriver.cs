@@ -25,6 +25,7 @@ using Gallio.Runtime.Extensibility;
 using Gallio.Runtime.Hosting;
 using Gallio.Runtime.Logging;
 using Gallio.Runtime.Remoting;
+using Gallio.Common.Reflection;
 
 namespace Gallio.Runner.Drivers
 {
@@ -119,7 +120,6 @@ namespace Gallio.Runner.Drivers
         private void CreateRemoteHostAndPerformAction(Action<string> setStatus, TestPackageConfig testPackageConfig, ICollection<TestDomainSetup> testDomains, bool separateAppDomain, Action<IList<Partition>> action)
         {
             HostSetup hostSetup = testPackageConfig.HostSetup.Copy();
-            hostSetup.ProcessorArchitecture = ResolveProcessArchitecture(hostSetup.ProcessorArchitecture, testDomains);
             hostSetup.Properties.AddAll(TestRunnerOptions.Properties);
 
             if (separateAppDomain)
@@ -127,6 +127,9 @@ namespace Gallio.Runner.Drivers
                 hostSetup.ApplicationBaseDirectory = RuntimeSetup.RuntimePath;
                 hostSetup.ConfigurationFileLocation = ConfigurationFileLocation.Temp;
             }
+
+            var assemblyMetadataList = GetAssemblyMetadataList(testDomains);
+            hostSetup.ProcessorArchitecture = ResolveProcessArchitecture(hostSetup.ProcessorArchitecture, assemblyMetadataList);
 
             setStatus("Initializing the test host.");
 
@@ -208,7 +211,6 @@ namespace Gallio.Runner.Drivers
                 testDomain.TestPackageConfig.HostSetup.ApplicationBaseDirectory = assemblyDir;
             if (testDomain.TestPackageConfig.HostSetup.WorkingDirectory == null)
                 testDomain.TestPackageConfig.HostSetup.WorkingDirectory = assemblyDir;
-            testDomain.TestPackageConfig.HostSetup.ProcessorArchitecture = GetProcessorArchitecture(assemblyFile);
 
             string assemblyConfigFile = assemblyFile + @".config";
             if (File.Exists(assemblyConfigFile))
@@ -230,49 +232,53 @@ namespace Gallio.Runner.Drivers
             return testDomain;
         }
 
-        private static ProcessorArchitecture ResolveProcessArchitecture(ProcessorArchitecture requestedArch, IEnumerable<TestDomainSetup> testDomains)
+        private static List<AssemblyMetadata> GetAssemblyMetadataList(ICollection<TestDomainSetup> testDomains)
+        {
+            var metadataList = new List<AssemblyMetadata>();
+            foreach (var testDomain in testDomains)
+            {
+                foreach (var assemblyFile in testDomain.TestPackageConfig.AssemblyFiles)
+                {
+                    AssemblyMetadata metadata = AssemblyUtils.GetAssemblyMetadata(assemblyFile);
+                    if (metadata != null)
+                        metadataList.Add(metadata);
+                }
+            }
+
+            return metadataList;
+        }
+
+        private static ProcessorArchitecture ResolveProcessArchitecture(ProcessorArchitecture requestedArch, IEnumerable<AssemblyMetadata> assemblyMetadataList)
         {
             if (requestedArch == ProcessorArchitecture.None)
-                return GetCommonProcessorArchitecture(testDomains);
+                return GetCommonProcessorArchitecture(assemblyMetadataList);
             return requestedArch;
         }
 
-        private static ProcessorArchitecture GetCommonProcessorArchitecture(IEnumerable<TestDomainSetup> testDomains)
+        private static ProcessorArchitecture GetCommonProcessorArchitecture(IEnumerable<AssemblyMetadata> assemblyMetadataList)
         {
             ProcessorArchitecture commonArch = ProcessorArchitecture.MSIL;
-            foreach (TestDomainSetup testDomain in testDomains)
+            foreach (AssemblyMetadata assemblyMetadata in assemblyMetadataList)
             {
-                ProcessorArchitecture testDomainArch = testDomain.TestPackageConfig.HostSetup.ProcessorArchitecture;
-                switch (testDomainArch)
+                ProcessorArchitecture assemblyArch = assemblyMetadata.ProcessorArchitecture;
+                switch (assemblyArch)
                 {
                     case ProcessorArchitecture.Amd64:
                     case ProcessorArchitecture.IA64:
                     case ProcessorArchitecture.X86:
-                        if (commonArch != testDomainArch && commonArch != ProcessorArchitecture.MSIL)
+                        if (commonArch != assemblyArch && commonArch != ProcessorArchitecture.MSIL)
                         {
                             throw new RunnerException(String.Format(
                                 "Cannot run all test assemblies together because some require the {0} architecture while others require the {1} architecture.",
-                                commonArch, testDomainArch));
+                                commonArch, assemblyArch));
                         }
 
-                        commonArch = testDomainArch;
+                        commonArch = assemblyArch;
                         break;
                 }
             }
 
             return commonArch;
-        }
-
-        private static ProcessorArchitecture GetProcessorArchitecture(string assemblyFile)
-        {
-            try
-            {
-                return AssemblyName.GetAssemblyName(assemblyFile).ProcessorArchitecture;
-            }
-            catch (Exception)
-            {
-                return ProcessorArchitecture.None;
-            }
         }
 
         private sealed class Remote : LongLivedMarshalByRefObject

@@ -126,6 +126,7 @@
     <Compile Include="Common\Markup\Tags\Tag.cs" />
     <Compile Include="Common\Markup\Tags\TagFormatter.cs" />
     <Compile Include="Common\Markup\Tags\TextTag.cs" />
+    <Compile Include="Common\Reflection\AssemblyMetadata.cs" />
     <Compile Include="Framework\Data\Generation\SequentialNumbersGenerator.cs" />
     <Compile Include="Framework\Data\Generation\Generator.cs" />
     <Compile Include="Framework\Data\Generation\RandomNumbersGenerator.cs" />

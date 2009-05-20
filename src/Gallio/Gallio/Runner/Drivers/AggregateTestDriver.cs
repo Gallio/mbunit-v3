@@ -71,9 +71,9 @@ namespace Gallio.Runner.Drivers
         {
             bool shutdownExceptionEncountered = false;
 
-            using ( Listener listener = new Listener( testExplorationListener, testExecutionListener ) )
+            using (Listener listener = new Listener(testExplorationListener, testExecutionListener))
             {
-                DoWithPartitions( testPackageConfig, partitions =>
+                DoWithPartitions(testPackageConfig, partitions =>
                 {
                     if (partitions.Count != 0)
                     {
@@ -106,7 +106,8 @@ namespace Gallio.Runner.Drivers
                                         if (!shutdownExceptionEncountered)
                                         {
                                             shutdownExceptionEncountered = true;
-                                            Logger.Log(LogSeverity.Warning, "A fatal exception occurred while disposing a test driver.", ex);
+                                            Logger.Log(LogSeverity.Warning,
+                                                "A fatal exception occurred while disposing a test driver.", ex);
                                         }
                                     }
 
@@ -115,7 +116,7 @@ namespace Gallio.Runner.Drivers
                             }
                         }
                     }
-                }, progressMonitor.SetStatus );
+                }, progressMonitor.SetStatus);
             }
         }
 

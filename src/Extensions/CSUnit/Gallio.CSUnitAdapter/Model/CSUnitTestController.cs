@@ -170,11 +170,12 @@ namespace Gallio.CSUnitAdapter.Model
 
             private void RunTests(string assemblyPath)
             {
-                if (!File.Exists(assemblyPath))
+                AssemblyMetadata assemblyMetadata = AssemblyUtils.GetAssemblyMetadata(assemblyPath);
+                if (assemblyMetadata == null)
                 {
                     ITestContext testContext = listOfTestCommands[0].StartPrimaryChildStep(topTestStep);
                     testContext.LifecyclePhase = LifecyclePhases.Execute;
-                    testContext.LogWriter.Failures.WriteLine("Unable to find the test assembly to run. [{0}]", assemblyPath ?? String.Empty);
+                    testContext.LogWriter.Failures.WriteLine("Test assembly does not exist or is not a valid .Net assembly. [{0}]", assemblyPath ?? String.Empty);
                     testContext.FinishStep(TestOutcome.Error, null);
                     return;
                 }
@@ -193,7 +194,7 @@ namespace Gallio.CSUnitAdapter.Model
                 hostSetup.WorkingDirectory = hostSetup.ApplicationBaseDirectory;
                 hostSetup.ShadowCopy = true;
                 hostSetup.ConfigurationFileLocation = ConfigurationFileLocation.AppBase;
-                hostSetup.ProcessorArchitecture = AssemblyName.GetAssemblyName(assemblyPath).ProcessorArchitecture;
+                hostSetup.ProcessorArchitecture = assemblyMetadata.ProcessorArchitecture;
 
                 string configFile = assemblyPath + ".config";
                 if (File.Exists(configFile))

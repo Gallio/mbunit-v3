@@ -135,6 +135,11 @@ namespace Gallio.Runtime.Hosting
         /// When the list is empty, the runtime version used to build the application is used.
         /// Otherwise one of the supported runtimes in the list is used.
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// The default value is an empty list.
+        /// </para>
+        /// </remarks>
         [XmlArray("supportedRuntimeVersions", IsNullable=false)]
         [XmlArrayItem("supportedRuntimeVersion", typeof(string), IsNullable = false)]
         public List<string> SupportedRuntimeVersions
@@ -145,14 +150,15 @@ namespace Gallio.Runtime.Hosting
         /// <summary>
         /// Adds a supported runtime version number.
         /// </summary>
-        /// <param name="version">The version number</param>
+        /// <param name="version">The version number in Major.Minor.Build format, eg. 2.0.50727</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="version"/> is null</exception>
         public void AddSupportedRuntimeVersion(string version)
         {
             if (version == null)
                 throw new ArgumentNullException("version");
 
-            supportedRuntimeVersions.Add(version);
+            if (! supportedRuntimeVersions.Contains(version))
+                supportedRuntimeVersions.Add(version);
         }
 
         /// <summary>

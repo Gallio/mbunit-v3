@@ -152,44 +152,7 @@ namespace Gallio.Common.Reflection
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="stream"/> is null</exception>
         public static bool IsAssembly(Stream stream)
         {
-            if (stream == null)
-                throw new ArgumentNullException("stream");
-
-            long length = stream.Length;
-            if (length < 0x40)
-                return false;
-
-            BinaryReader reader = new BinaryReader(stream);
-
-            // Read the pointer to the PE header.
-            stream.Position = 0x3c;
-            uint peHeaderRva = reader.ReadUInt32();
-            if (peHeaderRva == 0)
-                peHeaderRva = 0x80;
-
-            // Ensure there is at least enough room for the following structures:
-            //     4 byte PE Signature
-            //    20 byte PE Header
-            //    28 byte Standard Fields
-            //    68 byte NT Fields
-            //   128 byte Data Dictionary Table
-            if (peHeaderRva > length - 248)
-                return false;
-
-            // Check the PE signature.  Should equal 'PE\0\0'.
-            stream.Position = peHeaderRva;
-            uint peSignature = reader.ReadUInt32();
-            if (peSignature != 0x00004550)
-                return false;
-
-            // Read the 15th Data Dictionary RVA field which contains the CLI header RVA.
-            // When this is non-zero then the file contains CLI data otherwise not.
-            stream.Position = peHeaderRva + 232;
-            uint cliHeaderRva = reader.ReadUInt32();
-            if (cliHeaderRva == 0)
-                return false;
-
-            return true;
+            return GetAssemblyMetadata(stream) != null;
         }
 
         /// <summary>
@@ -200,15 +163,41 @@ namespace Gallio.Common.Reflection
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="filePath"/> is null</exception>
         public static bool IsAssembly(string filePath)
         {
+            return GetAssemblyMetadata(filePath) != null;
+        }
+
+        /// <summary>
+        /// Gets metadata about CLI Assembly in Microsoft PE format.
+        /// </summary>
+        /// <param name="stream">The stream</param>
+        /// <returns>The metadata or null if the stream does not represent a CLI assembly</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="stream"/> is null</exception>
+        public static AssemblyMetadata GetAssemblyMetadata(Stream stream)
+        {
+            if (stream == null)
+                throw new ArgumentNullException("stream");
+
+            return AssemblyMetadata.ReadAssemblyMetadata(stream);
+        }
+
+        /// <summary>
+        /// Gets the Major and Minor components of the CLI runtime version of a CLI Assembly in Microsoft PE format.
+        /// </summary>
+        /// <param name="filePath">The file path</param>
+        /// <returns>The version, of which only the major and minor components are populated,
+        /// or null if the stream does not represent a CLI assembly</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="filePath"/> is null</exception>
+        public static AssemblyMetadata GetAssemblyMetadata(string filePath)
+        {
             if (filePath == null)
                 throw new ArgumentNullException("filePath");
 
             if (!File.Exists(filePath))
-                return false;
+                return null;
 
             using (FileStream stream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read))
             {
-                return IsAssembly(stream);
+                return AssemblyMetadata.ReadAssemblyMetadata(stream);
             }
         }
     }
