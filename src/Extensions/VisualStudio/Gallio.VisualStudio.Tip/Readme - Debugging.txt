@@ -1,7 +1,7 @@
 ﻿How to Debug
 ============
 
-1. Configure the Gallio.MSTestRunner project debugging options as follows:
+1. Configure the Gallio.VisualStudio project debugging options as follows:
    * Start External Program: devenv.exe
 
 2. Compile the solution in Debug mode.
@@ -16,7 +16,7 @@
 3. Run the "Install.bat" batch file from the command-line to
    set registry keys and install assemblies in the GAC.
 
-4. Launch the Gallio.MSTestRunner project in debug mode.
+4. Launch the Gallio.VisualStudio project in debug mode.
 
 5. Load a suitable solution for testing such as the MbUnit.Samples.sln.
 

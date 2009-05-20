@@ -145,11 +145,11 @@
                 </Directory>
             </Directory>
             
-            <Component Id="MbUnit3.Samples.sln" Guid="{846FC9A2-7740-4525-98EF-F52DB44B9A6A}" Win64="no">
-                <File Id="MbUnit3.Samples.sln" Name="MbUnit.Samples.sln" KeyPath="yes" >
-                    <Shortcut Id="MbUnit3.Samples.sln.lnk" Name="MbUnit Samples (Visual Studio 2005)" Directory="SamplesMenuFolder.MbUnit" Icon="Gallio.icon.exe" IconIndex="0" Advertise="yes" />
+            <Component Id="MbUnit3.Samples.vs2005.sln" Guid="{846FC9A2-7740-4525-98EF-F52DB44B9A6A}" Win64="no">
+                <File Id="MbUnit3.Samples.vs2005.sln" Name="MbUnit.Samples.vs2005.sln" KeyPath="yes" >
+                    <Shortcut Id="MbUnit3.Samples.vs2005.sln.lnk" Name="MbUnit Samples (Visual Studio 2005)" Directory="SamplesMenuFolder.MbUnit" Icon="Gallio.icon.exe" IconIndex="0" Advertise="yes" />
                 </File>
-            </Component>            
+            </Component>
             <Component Id="MbUnit3.Samples.vs2008.sln" Guid="{4276EF47-AF73-4ebe-BB80-E2F9358750AC}" Win64="no">
                 <File Id="MbUnit3.Samples.vs2008.sln" Name="MbUnit.Samples.vs2008.sln" KeyPath="yes">
                     <Shortcut Id="MbUnit3.Samples.vs2008.sln" Name="MbUnit Samples (Visual Studio 2008)" Directory="SamplesMenuFolder.MbUnit" Icon="Gallio.icon.exe" IconIndex="0" Advertise="yes" />
@@ -158,8 +158,19 @@
             <Component Id="MbUnit3.Samples.vs2008.vsmdi" Guid="{1C8B521A-9B43-4f13-97F1-05FE9FC113A9}" Win64="no">
                 <File Id="MbUnit3.Samples.vs2008.vsmdi" Name="MbUnit.Samples.vs2008.vsmdi" KeyPath="yes" />
             </Component>
-            <Component Id="MbUnit3.Samples.LocalTestRun.testrunconfig" Guid="{19B437EF-6148-4d7a-BA5D-BCF73FD248ED}" Win64="no">
-                <File Id="MbUnit3.Samples.LocalTestRun.testrunconfig" Name="LocalTestRun.testrunconfig" KeyPath="yes" />
+            <Component Id="MbUnit3.Samples.vs2010.sln" Guid="{C6291C1F-D1E0-43A2-8B11-26B55DDB956D}" Win64="no">
+                <File Id="MbUnit3.Samples.vs2010.sln" Name="MbUnit.Samples.vs2010.sln" KeyPath="yes">
+                    <Shortcut Id="MbUnit3.Samples.vs2010.sln" Name="MbUnit Samples (Visual Studio 2010)" Directory="SamplesMenuFolder.MbUnit" Icon="Gallio.icon.exe" IconIndex="0" Advertise="yes" />
+                </File>
+            </Component>            
+            <Component Id="MbUnit3.Samples.vs2010.vsmdi" Guid="{D2FD0B73-2F96-4A20-91A8-CD2819360895}" Win64="no">
+                <File Id="MbUnit3.Samples.vs2010.vsmdi" Name="MbUnit.Samples.vs2010.vsmdi" KeyPath="yes" />
+            </Component>
+            <Component Id="MbUnit3.Samples.LocalTestRun.vs2008.testrunconfig" Guid="{19B437EF-6148-4d7a-BA5D-BCF73FD248ED}" Win64="no">
+                <File Id="MbUnit3.Samples.LocalTestRun.vs2008.testrunconfig" Name="LocalTestRun.vs2008.testrunconfig" KeyPath="yes" />
+            </Component>
+            <Component Id="MbUnit3.Samples.LocalTestRun.vs2010.testrunconfig" Guid="{7D787F58-0219-418B-AE96-FA5810454861}" Win64="no">
+                <File Id="MbUnit3.Samples.LocalTestRun.vs2010.testrunconfig" Name="LocalTestRun.vs2010.testrunconfig" KeyPath="yes" />
             </Component>
         </DirectoryRef>
 
@@ -206,10 +217,13 @@
             <ComponentRef Id="MbUnit3.Samples.VSTSIntegration.csproj" />
             <ComponentRef Id="MbUnit3.Samples.MbUnitTestFixture.cs" />
             <ComponentRef Id="MbUnit3.Samples.MSTestTestFixture.cs" />
-            <ComponentRef Id="MbUnit3.Samples.sln" />
+            <ComponentRef Id="MbUnit3.Samples.vs2005.sln" />
             <ComponentRef Id="MbUnit3.Samples.vs2008.sln" />
             <ComponentRef Id="MbUnit3.Samples.vs2008.vsmdi" />
-            <ComponentRef Id="MbUnit3.Samples.LocalTestRun.testrunconfig" />
+            <ComponentRef Id="MbUnit3.Samples.vs2010.sln" />
+            <ComponentRef Id="MbUnit3.Samples.vs2010.vsmdi" />
+            <ComponentRef Id="MbUnit3.Samples.LocalTestRun.vs2008.testrunconfig" />
+            <ComponentRef Id="MbUnit3.Samples.LocalTestRun.vs2010.testrunconfig" />
             <ComponentRef Id="MbUnit3.Samples.WatiN.ReleaseHistory.txt" />
             <ComponentRef Id="MbUnit3.Samples.WatiN.Readme.txt" />
             <ComponentRef Id="MbUnit3.Samples.WatiN.License.txt" />
