@@ -24,16 +24,21 @@ namespace Gallio.Common.Platform
         /// <summary>
         /// .Net Framework 2.0.
         /// </summary>
-        DotNet20,
+        DotNet20 = 0,
+
+        /// <summary>
+        /// .Net Framework 3.0.
+        /// </summary>
+        DotNet30 = 1,
 
         /// <summary>
         /// .Net Framework 3.5.
         /// </summary>
-        DotNet35,
+        DotNet35 = 2,
 
         /// <summary>
         /// .Net Framework 4.0.
         /// </summary>
-        DotNet40
+        DotNet40 = 3
     }
 }

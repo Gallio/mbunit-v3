@@ -143,6 +143,19 @@ namespace Gallio.Runtime.Hosting
         }
 
         /// <summary>
+        /// Adds a supported runtime version number.
+        /// </summary>
+        /// <param name="version">The version number</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="version"/> is null</exception>
+        public void AddSupportedRuntimeVersion(string version)
+        {
+            if (version == null)
+                throw new ArgumentNullException("version");
+
+            supportedRuntimeVersions.Add(version);
+        }
+
+        /// <summary>
         /// Adds a binding to the configuration for the specified assembly.
         /// </summary>
         /// <param name="assembly">The assembly</param>

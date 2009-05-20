@@ -35,7 +35,7 @@
     -->
   </ItemGroup>
 
-  <ItemGroup Condition="'$(DotNet40)'!='true' and $(VSIP90Installed)">
+  <ItemGroup Condition="$(VSIP90Installed)">
     <CSharpProject Include="Gallio.VisualStudio.Tip\Gallio.VisualStudio.Tip90$(ProjectVariant).csproj" />
     <CSharpProject Include="Gallio.VisualStudio.Tip.Proxy\Gallio.VisualStudio.Tip90.Proxy$(ProjectVariant).csproj" />
     <CSharpProject Include="Gallio.VisualStudio.Tip.Tests\Gallio.VisualStudio.Tip90.Tests$(ProjectVariant).csproj" />

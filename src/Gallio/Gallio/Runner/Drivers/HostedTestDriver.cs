@@ -42,7 +42,7 @@ namespace Gallio.Runner.Drivers
         private readonly IHostFactory hostFactory;
         private readonly ITestFrameworkManager frameworkManager;
         private readonly IRuntime runtime;
-        private readonly bool shareAppDomain;
+        private readonly IsolationMode isolationMode;
 
         /// <summary>
         /// Creates a hosted test driver.
@@ -50,22 +50,22 @@ namespace Gallio.Runner.Drivers
         /// <param name="hostFactory">The host factory</param>
         /// <param name="frameworkManager">The test framework manager</param>
         /// <param name="runtime">The Gallio runtime</param>
-        /// <param name="shareAppDomain">If true, uses a shared app-domain for all test domains</param>
+        /// <param name="isolationMode">Specifies the isolation mode to use</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="hostFactory"/>,
         /// <paramref name="frameworkManager"/>, or <paramref name="runtime"/> is null</exception>
-        public HostedTestDriver(IHostFactory hostFactory, ITestFrameworkManager frameworkManager, IRuntime runtime, bool shareAppDomain)
+        public HostedTestDriver(IHostFactory hostFactory, ITestFrameworkManager frameworkManager, IRuntime runtime, IsolationMode isolationMode)
         {
             if (hostFactory == null)
                 throw new ArgumentNullException("hostFactory");
             if (frameworkManager == null)
-                throw new ArgumentNullException("frameworks");
+                throw new ArgumentNullException( "frameworkManager" );
             if (runtime == null)
                 throw new ArgumentNullException("runtime");
 
             this.hostFactory = hostFactory;
             this.frameworkManager = frameworkManager;
             this.runtime = runtime;
-            this.shareAppDomain = shareAppDomain;
+            this.isolationMode = isolationMode;
         }
 
         /// <summary>
@@ -94,30 +94,49 @@ namespace Gallio.Runner.Drivers
         }
 
         /// <inheritdoc />
-        protected override void DoWithPartitions(TestPackageConfig testPackageConfig, Action<IList<AggregateTestDriver.Partition>> action,
-            Action<string> setStatus)
+        protected override void DoWithPartitions(TestPackageConfig testPackageConfig, Action<IList<Partition>> action, Action<string> setStatus)
         {
             setStatus("Partitioning tests.");
 
-            string workingDirectory = testPackageConfig.HostSetup.WorkingDirectory;
-            bool shadowCopy = testPackageConfig.HostSetup.ShadowCopy;
-            bool debug = testPackageConfig.HostSetup.Debug;
+            if (isolationMode == IsolationMode.HostPerAssembly)
+            {
+                ICollection<TestDomainSetup> testDomains = CreateTestDomainPerAssembly(testPackageConfig);
+                foreach (TestDomainSetup testDomain in testDomains)
+                {
+                    // CreateRemoteHostAndPerformAction expects a collection of test domains, so fake it
+                    TestDomainSetup[] domains = new[] { testDomain };
+                    CreateRemoteHostAndPerformAction(setStatus, testDomain.TestPackageConfig, domains, false, action);
+                }
+            }
+            else
+            {
+                ICollection<TestDomainSetup> testDomains = CreateTestDomainPerGroupOfIdenticallyConfiguredAssemblies(testPackageConfig);
+                bool separateAppDomain = isolationMode == IsolationMode.AppDomainPerAssembly;
+                CreateRemoteHostAndPerformAction(setStatus, testPackageConfig, testDomains, separateAppDomain, action);
+            }
+        }
 
-            ICollection<TestDomainSetup> testDomains = SplitPackageIntoTestDomains(testPackageConfig);
+        private void CreateRemoteHostAndPerformAction(Action<string> setStatus, TestPackageConfig testPackageConfig, ICollection<TestDomainSetup> testDomains, bool separateAppDomain, Action<IList<Partition>> action)
+        {
+            HostSetup hostSetup = testPackageConfig.HostSetup.Copy();
+            hostSetup.ProcessorArchitecture = ResolveProcessArchitecture(hostSetup.ProcessorArchitecture, testDomains);
+            hostSetup.Properties.AddAll(TestRunnerOptions.Properties);
 
-            ProcessorArchitecture arch = testPackageConfig.HostSetup.ProcessorArchitecture;
-            if (arch == ProcessorArchitecture.None)
-                arch = GetCommonProcessorArchitecture(testDomains);
+            if (separateAppDomain)
+            {
+                hostSetup.ApplicationBaseDirectory = RuntimeSetup.RuntimePath;
+                hostSetup.ConfigurationFileLocation = ConfigurationFileLocation.Temp;
+            }
 
             setStatus("Initializing the test host.");
 
-            IHost remoteHost = CreateRemoteHost(workingDirectory, shadowCopy, debug, arch);
+            IHost remoteHost = CreateRemoteHost(hostSetup);
             try
             {
                 Remote remote = HostUtils.CreateInstance<Remote>(remoteHost);
 
                 var partitions = GenericCollectionUtils.ConvertAllToArray(testDomains,
-                    testDomain => new Partition(new Factory(testDomain, remote, shareAppDomain, Logger), testDomain.TestPackageConfig));
+                    testDomain => new Partition(new Factory(testDomain, remote, separateAppDomain, Logger), testDomain.TestPackageConfig));
 
                 setStatus("");
 
@@ -133,17 +152,8 @@ namespace Gallio.Runner.Drivers
             }
         }
 
-        private IHost CreateRemoteHost(string workingDirectory, bool shadowCopy, bool debug, ProcessorArchitecture arch)
+        private IHost CreateRemoteHost(HostSetup hostSetup)
         {
-            HostSetup hostSetup = new HostSetup();
-            hostSetup.ApplicationBaseDirectory = RuntimeSetup.RuntimePath;
-            hostSetup.WorkingDirectory = workingDirectory;
-            hostSetup.ShadowCopy = shadowCopy;
-            hostSetup.Debug = debug;
-            hostSetup.ProcessorArchitecture = arch;
-            hostSetup.ConfigurationFileLocation = ConfigurationFileLocation.Temp;
-            hostSetup.Properties.AddAll(TestRunnerOptions.Properties);
-
             ConfigureHost(hostSetup);
 
             IHost remoteHost = hostFactory.CreateHost(hostSetup, Logger);
@@ -152,42 +162,31 @@ namespace Gallio.Runner.Drivers
             return remoteHost;
         }
 
-        private ICollection<TestDomainSetup> SplitPackageIntoTestDomains(TestPackageConfig testPackageConfig)
+        private ICollection<TestDomainSetup> CreateTestDomainPerAssembly(TestPackageConfig testPackageConfig)
         {
-            Dictionary<HostSetup, TestDomainSetup> testDomains = new Dictionary<HostSetup, TestDomainSetup>();
+            var testDomains = new List<TestDomainSetup>();
+
             foreach (string assemblyFile in testPackageConfig.AssemblyFiles)
             {
-                TestDomainSetup testDomain = new TestDomainSetup(testPackageConfig.Copy());
-                testDomain.TestPackageConfig.AssemblyFiles.Clear();
-                testDomain.TestPackageConfig.AssemblyFiles.Add(assemblyFile);
+                TestDomainSetup testDomain = CreateTestDomain(testPackageConfig.Copy(), assemblyFile);
+                testDomains.Add(testDomain);
+            }
 
-                string assemblyDir = Path.GetDirectoryName(assemblyFile);
-                if (testDomain.TestPackageConfig.HostSetup.ApplicationBaseDirectory == null)
-                    testDomain.TestPackageConfig.HostSetup.ApplicationBaseDirectory = assemblyDir;
-                if (testDomain.TestPackageConfig.HostSetup.WorkingDirectory == null)
-                    testDomain.TestPackageConfig.HostSetup.WorkingDirectory = assemblyDir;
-                testDomain.TestPackageConfig.HostSetup.ProcessorArchitecture = GetProcessorArchitecture(assemblyFile);
+            return testDomains;
+        }
 
-                string assemblyConfigFile = assemblyFile + @".config";
-                if (File.Exists(assemblyConfigFile))
-                    testDomain.TestPackageConfig.HostSetup.Configuration.ConfigurationXml = File.ReadAllText(assemblyConfigFile);
+        private ICollection<TestDomainSetup> CreateTestDomainPerGroupOfIdenticallyConfiguredAssemblies(TestPackageConfig testPackageConfig)
+        {
+            var testDomains = new Dictionary<HostSetup, TestDomainSetup>();
 
-                foreach (AssemblyReference reference in runtime.GetAllPluginAssemblyReferences())
+            foreach (string assemblyFile in testPackageConfig.AssemblyFiles)
+            {
+                TestDomainSetup testDomain = CreateTestDomain(testPackageConfig.Copy(), assemblyFile);
+
+                TestDomainSetup existingIdenticallyConfiguredTestDomain;
+                if (testDomains.TryGetValue(testDomain.TestPackageConfig.HostSetup, out existingIdenticallyConfiguredTestDomain))
                 {
-                    if (reference.CodeBase != null)
-                    {
-                        testDomain.TestPackageConfig.HostSetup.Configuration.AddAssemblyBinding(reference.AssemblyName,
-                            reference.CodeBase, true);
-                    }
-                }
-
-                ITestExplorer explorer = frameworkManager.GetTestExplorer(traits => testDomain.TestPackageConfig.IsFrameworkRequested(traits.Id));
-                explorer.ConfigureTestDomain(testDomain);
-
-                TestDomainSetup existingTestDomain;
-                if (testDomains.TryGetValue(testDomain.TestPackageConfig.HostSetup, out existingTestDomain))
-                {
-                    existingTestDomain.MergeFrom(testDomain);
+                    existingIdenticallyConfiguredTestDomain.MergeFrom(testDomain);
                 }
                 else
                 {
@@ -196,6 +195,46 @@ namespace Gallio.Runner.Drivers
             }
 
             return testDomains.Values;
+        }
+
+        private TestDomainSetup CreateTestDomain(TestPackageConfig testPackageConfig, string assemblyFile)
+        {
+            TestDomainSetup testDomain = new TestDomainSetup(testPackageConfig.Copy());
+            testDomain.TestPackageConfig.AssemblyFiles.Clear();
+            testDomain.TestPackageConfig.AssemblyFiles.Add(assemblyFile);
+
+            string assemblyDir = Path.GetDirectoryName(assemblyFile);
+            if (testDomain.TestPackageConfig.HostSetup.ApplicationBaseDirectory == null)
+                testDomain.TestPackageConfig.HostSetup.ApplicationBaseDirectory = assemblyDir;
+            if (testDomain.TestPackageConfig.HostSetup.WorkingDirectory == null)
+                testDomain.TestPackageConfig.HostSetup.WorkingDirectory = assemblyDir;
+            testDomain.TestPackageConfig.HostSetup.ProcessorArchitecture = GetProcessorArchitecture(assemblyFile);
+
+            string assemblyConfigFile = assemblyFile + @".config";
+            if (File.Exists(assemblyConfigFile))
+                testDomain.TestPackageConfig.HostSetup.Configuration.ConfigurationXml =
+                    File.ReadAllText(assemblyConfigFile);
+
+            foreach (AssemblyReference reference in runtime.GetAllPluginAssemblyReferences())
+            {
+                if (reference.CodeBase != null)
+                {
+                    testDomain.TestPackageConfig.HostSetup.Configuration.AddAssemblyBinding(reference.AssemblyName,
+                        reference.CodeBase, true);
+                }
+            }
+
+            ITestExplorer explorer = frameworkManager.GetTestExplorer(traits => testDomain.TestPackageConfig.IsFrameworkRequested(traits.Id));
+            explorer.ConfigureTestDomain(testDomain);
+
+            return testDomain;
+        }
+
+        private static ProcessorArchitecture ResolveProcessArchitecture(ProcessorArchitecture requestedArch, IEnumerable<TestDomainSetup> testDomains)
+        {
+            if (requestedArch == ProcessorArchitecture.None)
+                return GetCommonProcessorArchitecture(testDomains);
+            return requestedArch;
         }
 
         private static ProcessorArchitecture GetCommonProcessorArchitecture(IEnumerable<TestDomainSetup> testDomains)
@@ -210,7 +249,12 @@ namespace Gallio.Runner.Drivers
                     case ProcessorArchitecture.IA64:
                     case ProcessorArchitecture.X86:
                         if (commonArch != testDomainArch && commonArch != ProcessorArchitecture.MSIL)
-                            throw new RunnerException(String.Format("Cannot run all test assemblies together because some require the {0} architecture while others require the {1} architecture.", commonArch, testDomainArch));
+                        {
+                            throw new RunnerException(String.Format(
+                                "Cannot run all test assemblies together because some require the {0} architecture while others require the {1} architecture.",
+                                commonArch, testDomainArch));
+                        }
+
                         commonArch = testDomainArch;
                         break;
                 }
@@ -244,28 +288,33 @@ namespace Gallio.Runner.Drivers
 
                 return remoteTestDriver;
             }
+
+            public ITestDriver CreateTestDriver()
+            {
+                return new LocalTestDriver();
+            }
         }
 
         private sealed class Factory : ITestDriverFactory
         {
             private readonly TestDomainSetup testDomainSetup;
             private readonly Remote remote;
-            private readonly bool shareAppDomain;
+            private readonly bool separateAppDomain;
             private readonly ILogger logger;
 
-            public Factory(TestDomainSetup testDomainSetup, Remote remote, bool shareAppDomain, ILogger logger)
+            public Factory(TestDomainSetup testDomainSetup, Remote remote, bool separateAppDomain, ILogger logger)
             {
                 this.testDomainSetup = testDomainSetup;
                 this.remote = remote;
-                this.shareAppDomain = shareAppDomain;
+                this.separateAppDomain = separateAppDomain;
                 this.logger = logger;
             }
 
             public ITestDriver CreateTestDriver()
             {
-                if (shareAppDomain)
-                    return new LocalTestDriver();
-                return new RemoteTestDriver(remote.CreateTestDriverInIsolatedAppDomain(testDomainSetup, new RemoteLogger(logger)));
+                return new RemoteTestDriver(separateAppDomain
+                    ? remote.CreateTestDriverInIsolatedAppDomain(testDomainSetup, new RemoteLogger(logger))
+                    : remote.CreateTestDriver());
             }
         }
     }

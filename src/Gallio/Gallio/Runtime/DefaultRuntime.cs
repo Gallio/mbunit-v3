@@ -463,18 +463,17 @@ namespace Gallio.Runtime
 
         private void ConfigurePluginLoaderForEnvironment()
         {
-            switch (DotNetFrameworkSupport.FrameworkVersion)
-            {
-                case DotNetFrameworkVersion.DotNet40:
-                    pluginLoader.DefinePreprocessorConstant("NET40");
-                    break;
-                case DotNetFrameworkVersion.DotNet35:
-                    pluginLoader.DefinePreprocessorConstant("NET35");
-                    break;
-                default:
-                    pluginLoader.DefinePreprocessorConstant("NET20");
-                    break;
-            }
+            if (DotNetFrameworkSupport.FrameworkVersion >= DotNetFrameworkVersion.DotNet40)
+                pluginLoader.DefinePreprocessorConstant("NET40");
+
+            if (DotNetFrameworkSupport.FrameworkVersion >= DotNetFrameworkVersion.DotNet35)
+                pluginLoader.DefinePreprocessorConstant("NET35");
+
+            if (DotNetFrameworkSupport.FrameworkVersion >= DotNetFrameworkVersion.DotNet30)
+                pluginLoader.DefinePreprocessorConstant("NET30");
+
+            if (DotNetFrameworkSupport.FrameworkVersion >= DotNetFrameworkVersion.DotNet20)
+                pluginLoader.DefinePreprocessorConstant("NET20");
         }
 
         /// <summary>

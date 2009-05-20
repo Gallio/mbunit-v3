@@ -17,8 +17,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using Gallio.Common.Collections;
 using Gallio.Framework;
 using Gallio.Model;
 using Gallio.Model.Messages;
@@ -40,12 +38,12 @@ namespace Gallio.Tests.Runner.Drivers
         [Row(ProcessorArchitecture.MSIL, new[] { "MbUnit.TestResources.dll" })]
         [Row(ProcessorArchitecture.X86, new[] { "MbUnit.TestResources.x86.dll" })]
         [Row(ProcessorArchitecture.Amd64, new[] { "MbUnit.TestResources.x64.dll" })]
-        [Row(ProcessorArchitecture.X86, new[] { "MbUnit.TestResources.x86.dll", "MbUnit.TestResources.dll"})]
+        [Row(ProcessorArchitecture.X86, new[] { "MbUnit.TestResources.x86.dll", "MbUnit.TestResources.dll" })]
         [Row(ProcessorArchitecture.Amd64, new[] { "MbUnit.TestResources.x64.dll", "MbUnit.TestResources.dll" })]
         public void AutomaticallyChoosesAppropriateProcessorArchitecture(
             ProcessorArchitecture expectedProcessorArchitecture, string[] testAssemblies)
         {
-            StubbedHostedTestDriver driver = new StubbedHostedTestDriver();
+            StubbedHostedTestDriver driver = new StubbedHostedTestDriver(IsolationMode.AppDomainPerAssembly);
             driver.Initialize(RuntimeAccessor.Instance.GetRuntimeSetup(),
                 new TestRunnerOptions(), new MarkupStreamLogger(TestLog.Default));
 
@@ -62,7 +60,7 @@ namespace Gallio.Tests.Runner.Drivers
         [Test]
         public void ThrowsRunnerExceptionIfAssembliesHaveIncompatibleProcessorArchitectures()
         {
-            StubbedHostedTestDriver driver = new StubbedHostedTestDriver();
+            StubbedHostedTestDriver driver = new StubbedHostedTestDriver(IsolationMode.AppDomainPerAssembly);
             driver.Initialize(RuntimeAccessor.Instance.GetRuntimeSetup(),
                 new TestRunnerOptions(), new MarkupStreamLogger(TestLog.Default));
 
@@ -77,14 +75,35 @@ namespace Gallio.Tests.Runner.Drivers
             Assert.Contains(ex.Message, "Cannot run all test assemblies together");
         }
 
+        [Test]
+        public void DoesntThrowRunnerExceptionIfAssembliesHaveIncompatibleProcessorArchitectures()
+        {
+            StubbedHostedTestDriver driver = new StubbedHostedTestDriver(IsolationMode.HostPerAssembly);
+            driver.Initialize(RuntimeAccessor.Instance.GetRuntimeSetup(),
+                new TestRunnerOptions(), new MarkupStreamLogger(TestLog.Default));
+
+            TestPackageConfig testPackageConfig = new TestPackageConfig();
+            testPackageConfig.AssemblyFiles.Add("MbUnit.TestResources.x86.dll");
+            testPackageConfig.AssemblyFiles.Add("MbUnit.TestResources.x64.dll");
+
+            // HostedTestDriver should not throw a RunnerException when attempting to run multiple assemblies 
+            // with different architectures when running in HostPerAssembly mode. We should just see the normal
+            // HostException with the Abort string.
+            HostException he = Assert.Throws<HostException>(() => driver.Explore(testPackageConfig,
+                new TestExplorationOptions(), MockRepository.GenerateStub<ITestExplorationListener>(),
+                NullProgressMonitor.CreateInstance()));
+
+            Assert.Contains(he.Message, "Abort");
+        }
+
         private sealed class StubbedHostedTestDriver : HostedTestDriver
         {
             public ProcessorArchitecture ProcessorArchitecture = ProcessorArchitecture.None;
 
-            public StubbedHostedTestDriver()
+            public StubbedHostedTestDriver(IsolationMode isolationMode)
                 : base(MockRepository.GenerateStub<IHostFactory>(),
                 RuntimeAccessor.ServiceLocator.Resolve<ITestFrameworkManager>(),
-                RuntimeAccessor.Instance, false)
+                RuntimeAccessor.Instance, isolationMode)
             {
             }
 

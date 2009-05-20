@@ -134,6 +134,7 @@
     <Compile Include="Common\Condition.cs" />
     <Compile Include="Common\ConditionContext.cs" />
     <Compile Include="Framework\Data\Generation\GenerationException.cs" />
+    <Compile Include="Runner\Drivers\IsolationMode.cs" />
     <Compile Include="Runner\Extensions\ActivationConditionContext.cs" />
     <Compile Include="Runner\Extensions\ITestRunnerExtensionFactory.cs" />
     <Compile Include="Runner\Extensions\ITestRunnerExtensionManager.cs" />

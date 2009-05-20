@@ -58,6 +58,7 @@
                componentType="Gallio.Runner.Drivers.HostedTestDriverFactory, Gallio">
       <parameters>
         <hostFactory>${NCoverIntegration.NCoverHostFactory.v1.5.8}</hostFactory>
+        <isolationMode>AppDomainPerAssembly</isolationMode>
       </parameters>
     </component>
 
@@ -94,6 +95,7 @@
                componentType="Gallio.Runner.Drivers.HostedTestDriverFactory, Gallio">
       <parameters>
         <hostFactory>${NCoverIntegration.NCoverHostFactory.v2}</hostFactory>
+        <isolationMode>AppDomainPerAssembly</isolationMode>
       </parameters>
     </component>
 
@@ -130,6 +132,7 @@
                componentType="Gallio.Runner.Drivers.HostedTestDriverFactory, Gallio">
       <parameters>
         <hostFactory>${NCoverIntegration.NCoverHostFactory.v3}</hostFactory>
+        <isolationMode>AppDomainPerAssembly</isolationMode>
       </parameters>
     </component>
   </components>

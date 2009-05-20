@@ -6,7 +6,7 @@
     <MonoCompatible>false</MonoCompatible>
   </PropertyGroup>
 
-  <ItemGroup Condition="'$(DotNet40)'!='true' and $(ReSharper45Installed)">
+  <ItemGroup Condition="$(ReSharper45Installed)">
     <CSharpProject Include="Gallio.ReSharperRunner\Gallio.ReSharperRunner45$(ProjectVariant).csproj" />
     <CSharpProject Include="Gallio.ReSharperRunner.Tests\Gallio.ReSharperRunner45.Tests$(ProjectVariant).csproj" />
 

@@ -15,14 +15,11 @@
     <assembly fullName="Gallio, Version=0.0.0.0, Culture=neutral, PublicKeyToken=eb9cfa67ee6ab36e"
               codeBase="Gallio.dll" />
 
-    <?ifdef NET40?>
-    <!-- ILMerge not supported for .Net 4.0 yet. -->
     <assembly fullName="Mono.Cecil, Version=0.6.8.8607, Culture=neutral, PublicKeyToken=0738eb9f132ed756"
               codeBase="Mono.Cecil.dll" />
 
     <assembly fullName="NDepend.Helpers.FileDirectoryPath, Version=1.0.0.0, Culture=neutral, PublicKeyToken=eb9cfa67ee6ab36e"
               codeBase="NDepend.Helpers.FileDirectoryPath.dll" />
-    <?endif?>
   </assemblies>
 
   <services>
@@ -207,12 +204,24 @@
       </traits>
     </component>
 
+    <component componentId="Gallio.IsolatedProcessPerAssemblyTestRunnerFactory"
+               serviceId="Gallio.TestRunnerFactory"
+               componentType="Gallio.Runner.DefaultTestRunnerFactory, Gallio">
+      <parameters>
+        <testDriverFactory>${Gallio.IsolatedProcessPerAssemblyTestDriverFactory}</testDriverFactory>
+      </parameters>
+      <traits>
+        <name>IsolatedProcessPerAssembly</name>
+        <description>Runs each assembly's tests within an isolated process external to the test runner.  This mode protects the test runner application from faults that may occur during test execution, runs each assembly with the correct processor architecture and provides additional isolation for each test assembly.</description>
+      </traits>
+    </component>
+    
     <component componentId="Gallio.LocalTestDriverFactory"
                serviceId="Gallio.TestDriverFactory"
                componentType="Gallio.Runner.Drivers.HostedTestDriverFactory, Gallio">
       <parameters>
         <hostFactory>${Gallio.LocalHostFactory}</hostFactory>
-        <ShareAppDomain>true</ShareAppDomain>
+        <isolationMode>None</isolationMode>
       </parameters>
     </component>
 
@@ -221,7 +230,7 @@
                componentType="Gallio.Runner.Drivers.HostedTestDriverFactory, Gallio">
       <parameters>
         <hostFactory>${Gallio.LocalHostFactory}</hostFactory>
-        <ShareAppDomain>false</ShareAppDomain>
+        <isolationMode>AppDomainPerAssembly</isolationMode>
       </parameters>
     </component>
 
@@ -230,6 +239,16 @@
                componentType="Gallio.Runner.Drivers.HostedTestDriverFactory, Gallio">
       <parameters>
         <hostFactory>${Gallio.IsolatedProcessHostFactory}</hostFactory>
+        <isolationMode>AppDomainPerAssembly</isolationMode>
+      </parameters>
+    </component>
+
+    <component componentId="Gallio.IsolatedProcessPerAssemblyTestDriverFactory"
+               serviceId="Gallio.TestDriverFactory"
+               componentType="Gallio.Runner.Drivers.HostedTestDriverFactory, Gallio">
+      <parameters>
+        <hostFactory>${Gallio.IsolatedProcessHostFactory}</hostFactory>
+        <isolationMode>HostPerAssembly</isolationMode>
       </parameters>
     </component>
 

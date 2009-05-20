@@ -44,34 +44,51 @@ namespace Gallio.Runner.Drivers
             if (hostFactory == null)
                 throw new ArgumentNullException("hostFactory");
             if (frameworkManager == null)
-                throw new ArgumentNullException("frameworks");
+                throw new ArgumentNullException( "frameworkManager" );
             if (runtime == null)
                 throw new ArgumentNullException("runtime");
 
             this.hostFactory = hostFactory;
             this.frameworkManager = frameworkManager;
             this.runtime = runtime;
+
+            IsolationMode = IsolationMode.AppDomainPerAssembly;
         }
 
         /// <summary>
-        /// Specifies whether to share the app-domain among all test domains.
+        /// Specifies the isolation mode to use.
         /// </summary>
-        /// <remarks>
-        /// <para>
-        /// If false, creates a separate app-domain for each test domain.  Otherwise
-        /// shares the host's own app-domain across all test domains.
-        /// </para>
-        /// <para>
-        /// When this mode is enabled, any features that depend on test assembly
-        /// configuration will not work.
-        /// </para>
-        /// </remarks>
-        public bool ShareAppDomain { get; set; }
+        /// <value>The isolation mode.  Defaults to <see cref="Drivers.IsolationMode.AppDomainPerAssembly" />.</value>
+        public IsolationMode IsolationMode { get; set; }
+
+        /// <summary>
+        /// The host factory
+        /// </summary>
+        protected IHostFactory HostFactory
+        {
+            get { return hostFactory; }
+        }
+
+        /// <summary>
+        /// The test framework manager
+        /// </summary>
+        protected ITestFrameworkManager FrameworkManager
+        {
+            get { return frameworkManager; }
+        }
+
+        /// <summary>
+        /// The Gallio runtime
+        /// </summary>
+        protected IRuntime Runtime
+        {
+            get { return runtime; }
+        }
 
         /// <inheritdoc />
         public ITestDriver CreateTestDriver()
         {
-            return new HostedTestDriver(hostFactory, frameworkManager, runtime, ShareAppDomain);
+            return new HostedTestDriver(hostFactory, frameworkManager, runtime, IsolationMode);
         }
     }
 }

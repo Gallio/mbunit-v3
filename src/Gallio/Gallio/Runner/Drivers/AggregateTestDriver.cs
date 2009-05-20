@@ -71,9 +71,9 @@ namespace Gallio.Runner.Drivers
         {
             bool shutdownExceptionEncountered = false;
 
-            DoWithPartitions(testPackageConfig, partitions =>
+            using ( Listener listener = new Listener( testExplorationListener, testExecutionListener ) )
             {
-                using (Listener listener = new Listener(testExplorationListener, testExecutionListener))
+                DoWithPartitions( testPackageConfig, partitions =>
                 {
                     if (partitions.Count != 0)
                     {
@@ -115,8 +115,8 @@ namespace Gallio.Runner.Drivers
                             }
                         }
                     }
-                }
-            }, progressMonitor.SetStatus);
+                }, progressMonitor.SetStatus );
+            }
         }
 
         /// <summary>

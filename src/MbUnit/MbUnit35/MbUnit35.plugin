@@ -12,14 +12,6 @@
   </dependencies>
 
   <?ifdef NET35?>
-  <?define USE_GALLIO35?>
-  <?else?>
-  <?ifdef NET40?>
-  <?define USE_GALLIO35?>
-  <?endif?>
-  <?endif?>
-
-  <?ifdef USE_MBUNIT35?>
   <assemblies>
     <assembly fullName="MbUnit35, Version=0.0.0.0, Culture=neutral, PublicKeyToken=eb9cfa67ee6ab36e"
               codeBase="MbUnit35.dll" />
