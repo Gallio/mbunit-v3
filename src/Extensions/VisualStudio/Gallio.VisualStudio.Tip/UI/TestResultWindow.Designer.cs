@@ -35,7 +35,7 @@ namespace Gallio.VisualStudio.Tip.UI
             this.labelStatus = new System.Windows.Forms.Label();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
-            this.runViewer = new TestStepRunViewer();
+            this.runViewer = new Gallio.UI.Reports.TestStepRunViewer();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxGallioLogo)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxStatus)).BeginInit();
             this.tableLayoutPanel1.SuspendLayout();
@@ -98,7 +98,7 @@ namespace Gallio.VisualStudio.Tip.UI
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(406, 275);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(494, 344);
             this.tableLayoutPanel1.TabIndex = 5;
             // 
             // flowLayoutPanel1
@@ -111,7 +111,7 @@ namespace Gallio.VisualStudio.Tip.UI
             this.flowLayoutPanel1.Location = new System.Drawing.Point(0, 47);
             this.flowLayoutPanel1.Margin = new System.Windows.Forms.Padding(0);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(406, 22);
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(494, 22);
             this.flowLayoutPanel1.TabIndex = 2;
             // 
             // runViewer
@@ -124,20 +124,19 @@ namespace Gallio.VisualStudio.Tip.UI
             this.runViewer.Location = new System.Drawing.Point(3, 72);
             this.runViewer.MinimumSize = new System.Drawing.Size(400, 200);
             this.runViewer.Name = "runViewer";
-            this.runViewer.Size = new System.Drawing.Size(400, 200);
+            this.runViewer.Size = new System.Drawing.Size(488, 269);
             this.runViewer.TabIndex = 3;
             // 
             // TestResultWindow
             // 
             this.AutoSize = true;
-            this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.BackColor = System.Drawing.SystemColors.Control;
             this.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.Controls.Add(this.tableLayoutPanel1);
             this.Margin = new System.Windows.Forms.Padding(0);
             this.Name = "TestResultWindow";
             this.Padding = new System.Windows.Forms.Padding(3);
-            this.Size = new System.Drawing.Size(412, 281);
+            this.Size = new System.Drawing.Size(500, 350);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxGallioLogo)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxStatus)).EndInit();
             this.tableLayoutPanel1.ResumeLayout(false);
