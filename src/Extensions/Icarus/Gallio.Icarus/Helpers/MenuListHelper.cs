@@ -15,20 +15,30 @@
 
 using System;
 using System.Collections.Generic;
+using System.Text;
 using Gallio.Common.IO;
+using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Controls;
 using Gallio.Icarus.Utilities;
-using System.Text;
 
 namespace Gallio.Icarus.Helpers
 {
-    internal class MenuListHelper
+    internal class MenuListHelper : IMenuListHelper
     {
-        public static List<ToolStripMenuItem> GetRecentProjectsMenuList(MRUList list, Action<string> action, IFileSystem fileSystem)
+        private readonly IOptionsController optionsController;
+        private readonly IFileSystem fileSystem;
+
+        public MenuListHelper(IOptionsController optionsController, IFileSystem fileSystem)
+        {
+            this.optionsController = optionsController;
+            this.fileSystem = fileSystem;
+        }
+
+        public ToolStripMenuItem[] GetRecentProjectsMenuList(Action<string> action)
         {
             var menuItems = new List<ToolStripMenuItem>();
             
-            foreach (var item in list.Items)
+            foreach (var item in optionsController.RecentProjects.Items)
             {
                 // copy string for click delegate
                 string name = item;
@@ -49,10 +59,10 @@ namespace Gallio.Icarus.Helpers
                 menuItems.Add(menuItem);
             }
 
-            return menuItems;
+            return menuItems.ToArray();
         }
 
-        private static string TruncatePath(string path, int length)
+        private string TruncatePath(string path, int length)
         {
             StringBuilder sb = new StringBuilder();
             NativeMethods.PathCompactPathEx(sb, path, length, 0);

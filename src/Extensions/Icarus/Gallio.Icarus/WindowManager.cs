@@ -24,29 +24,39 @@ namespace Gallio.Icarus
 {
     public class WindowManager : IWindowManager
     {
-        private readonly DockPanel dockPanel;
         private readonly Dictionary<string, Window> windows = new Dictionary<string, Window>();
         private readonly Dictionary<string, Action> hooks = new Dictionary<string, Action>();
 
-        public ToolStripItemCollection StatusStrip { get; private set; }
-        public ToolStripContainer ToolStrip { get; private set; }
-        public ToolStripItemCollection Menu { get; private set; }
-
-        public WindowManager(DockPanel dockPanel, ToolStripItemCollection statusStrip,
-            ToolStripContainer toolStrip, ToolStripItemCollection menu)
+        public DockPanel DockPanel 
         {
-            this.dockPanel = dockPanel;
-            StatusStrip = statusStrip;
-            ToolStrip = toolStrip;
-            Menu = menu;
+            get;
+            internal set;
         }
 
-        public void Add(string identifier, Control content, string caption)
+        public ToolStripItemCollection StatusStrip
         {
-            Add(identifier, content, caption, null);
+            get;
+            internal set;
         }
 
-        public void Add(string identifier, Control content, string caption, Icon icon)
+        public ToolStripContainer ToolStrip
+        {
+            get;
+            internal set;
+        }
+
+        public ToolStripItemCollection Menu
+        {
+            get;
+            internal set;
+        }
+
+        public Window Add(string identifier, Control content, string caption)
+        {
+            return Add(identifier, content, caption, null);
+        }
+
+        public Window Add(string identifier, Control content, string caption, Icon icon)
         {
             if (windows.ContainsKey(identifier))
                 throw new Exception("Identifier is not unique");
@@ -58,6 +68,8 @@ namespace Gallio.Icarus
             window.FormClosed += (sender, e) => Remove(window.Id);
 
             windows.Add(identifier, window);
+
+            return window;
         }
 
         public void Remove(string identifier)
@@ -90,7 +102,7 @@ namespace Gallio.Icarus
             if (window == null)
                 throw new Exception("No window with that identifier exists");
                
-            window.Show(dockPanel);
+            window.Show(DockPanel);
         }
 
         public void Show(string identifier, DockState dockState)
@@ -99,7 +111,7 @@ namespace Gallio.Icarus
             if (window == null)
                 throw new Exception("No window with that identifier exists");
 
-            window.Show(dockPanel, dockState);
+            window.Show(DockPanel, dockState);
         }
 
         public void Register(string identifier, Action action)

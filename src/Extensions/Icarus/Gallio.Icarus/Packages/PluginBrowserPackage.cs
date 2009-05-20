@@ -53,8 +53,6 @@ namespace Gallio.Icarus.Packages
         }
 
         public void Unload()
-        {
-            windowManager.Remove(windowId);
-        }
+        { }
     }
 }

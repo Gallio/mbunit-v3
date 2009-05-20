@@ -35,6 +35,8 @@ namespace Gallio.Icarus.Controllers.Interfaces
         string ProjectFileName { get; }
         List<string> CollapsedNodes { get; set; }
         string TreeViewCategory { get; set; }
+        string ReportDirectory { get; }
+        string ReportNameFormat { get; }
 
         event EventHandler<AssemblyChangedEventArgs> AssemblyChanged;
 
@@ -47,6 +49,6 @@ namespace Gallio.Icarus.Controllers.Interfaces
         void RemoveAllAssemblies(IProgressMonitor progressMonitor);
         void RemoveAssembly(string fileName, IProgressMonitor progressMonitor);
         void SaveFilterSet(string filterName, FilterSet<ITest> filterSet, IProgressMonitor progressMonitor);
-        void SaveProject(string projectName, IProgressMonitor progressMonitor);        
+        void SaveProject(string projectName, IProgressMonitor progressMonitor);
     }
 }

@@ -20,10 +20,10 @@ using Gallio.Runtime.Logging;
 
 namespace Gallio.Icarus.Controllers.Interfaces
 {
-    public interface IRuntimeLogController
+    internal interface IRuntimeLogController
     {
         LogSeverity MinLogSeverity { get; set; }
         event EventHandler<RuntimeLogEventArgs> LogMessage;
-        void SetLogger(RuntimeLogger runtimeLogger);
+        void SetLogger(IRuntimeLogger runtimeLogger);
     }
 }

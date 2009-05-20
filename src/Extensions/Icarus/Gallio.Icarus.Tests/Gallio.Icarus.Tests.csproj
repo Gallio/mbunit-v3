@@ -59,13 +59,18 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CodeWindowTest.cs" />
     <Compile Include="Commands\AddAssembliesCommandTest.cs" />
+    <Compile Include="Commands\ApplyFilterCommandTest.cs" />
+    <Compile Include="Commands\ConvertSavedReportCommandTest.cs" />
+    <Compile Include="Commands\DeleteFilterCommandTest.cs" />
     <Compile Include="Controllers\AboutControllerTest.cs" />
     <Compile Include="Controllers\AnnotationsControllerTest.cs" />
     <Compile Include="Controllers\ExecutionLogControllerTest.cs" />
     <Compile Include="Controllers\NotifyControllerTest.cs" />
+    <Compile Include="Controllers\OptionsControllerTest.cs" />
+    <Compile Include="Controllers\ProjectControllerTest.cs" />
     <Compile Include="Controllers\ReportControllerTest.cs" />
+    <Compile Include="Controllers\RuntimeLogControllerTest.cs" />
     <Compile Include="Controllers\SourceCodeControllerTest.cs" />
     <Compile Include="Controllers\TestControllerTest.cs" />
     <Compile Include="Controllers\TestResultsControllerTest.cs" />
@@ -91,8 +96,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="ReloadDialogTest.cs" />
-    <Compile Include="RuntimeLogWindowTest.cs" />
     <Compile Include="TaskManagerTest.cs" />
     <Compile Include="Utilities\SyncTestAttribute.cs" />
     <Compile Include="Utilities\TestSynchronizationContext.cs" />

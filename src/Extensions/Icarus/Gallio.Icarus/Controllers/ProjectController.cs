@@ -32,7 +32,7 @@ using Gallio.Icarus.Utilities;
 
 namespace Gallio.Icarus.Controllers
 {
-    public class ProjectController : NotifyController, IProjectController
+    internal class ProjectController : NotifyController, IProjectController
     {
         private readonly IProjectTreeModel projectTreeModel;
         private readonly IOptionsController optionsController;
@@ -89,6 +89,16 @@ namespace Gallio.Icarus.Controllers
                 treeViewCategory = value;
                 OnPropertyChanged(new PropertyChangedEventArgs("TreeViewCategory"));
             }
+        }
+
+        public string ReportDirectory
+        {
+            get { return projectTreeModel.Project.ReportDirectory; }
+        }
+
+        public string ReportNameFormat
+        {
+            get { return projectTreeModel.Project.ReportNameFormat; }
         }
 
         public ProjectController(IProjectTreeModel projectTreeModel, IOptionsController optionsController, 

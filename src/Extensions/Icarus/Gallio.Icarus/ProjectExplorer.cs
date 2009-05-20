@@ -18,14 +18,15 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Windows.Forms;
 using Aga.Controls.Tree;
-using Gallio.Icarus.Models.ProjectTreeNodes;
-using Gallio.Icarus.Commands;
 using Gallio.Common.IO;
+using Gallio.Icarus.Commands;
 using Gallio.Icarus.Controllers.Interfaces;
+using Gallio.Icarus.Models.ProjectTreeNodes;
+using Gallio.Icarus.Utilities;
 
 namespace Gallio.Icarus
 {
-    public partial class ProjectExplorer : DockWindow
+    internal partial class ProjectExplorer : DockWindow
     {
         private readonly IProjectController projectController;
         private readonly ITestController testController;
@@ -105,8 +106,15 @@ namespace Gallio.Icarus
 
         private void addAssembliesToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var addAssembliesCommand = new AddAssembliesCommand(projectController, testController);
-            taskManager.QueueTask(addAssembliesCommand);
+            using (var openFileDialog = Dialogs.OpenDialog)
+            {
+                if (openFileDialog.ShowDialog(this) != DialogResult.OK)
+                    return;
+
+                var addAssembliesCommand = new AddAssembliesCommand(projectController, testController);
+                addAssembliesCommand.AssemblyFiles = openFileDialog.FileNames;
+                taskManager.QueueTask(addAssembliesCommand);
+            }
         }
 
         private void projectTree_DoubleClick(object sender, EventArgs e)

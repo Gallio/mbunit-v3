@@ -19,6 +19,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 using Gallio.Common.IO;
+using Gallio.Common.Policies;
 using Gallio.Icarus.Commands;
 using Gallio.Icarus.Controllers.EventArgs;
 using Gallio.Icarus.Controllers.Interfaces;
@@ -28,7 +29,6 @@ using Gallio.Icarus.Utilities;
 using Gallio.Runner.Projects;
 using Gallio.Runtime;
 using Gallio.Runtime.Extensibility;
-using Gallio.Common.Policies;
 
 namespace Gallio.Icarus.Controllers
 {
@@ -65,8 +65,8 @@ namespace Gallio.Icarus.Controllers
         {
             get 
             {
-                return MenuListHelper.GetRecentProjectsMenuList(optionsController.RecentProjects,
-                    OpenProject, fileSystem).ToArray();
+                var menuListHelper = new MenuListHelper(optionsController, fileSystem);
+                return menuListHelper.GetRecentProjectsMenuList(OpenProject);
             }
         }
 
@@ -118,6 +118,11 @@ namespace Gallio.Icarus.Controllers
         {
             LoadPackages();
 
+            HandleArguments();
+        }
+
+        private void HandleArguments()
+        {
             var assemblyFiles = new List<string>();
             if (arguments.Assemblies.Length > 0)
             {
@@ -133,7 +138,9 @@ namespace Gallio.Icarus.Controllers
                     }
                     assemblyFiles.Add(assembly);
                 }
-                AddAssemblies(assemblyFiles);
+                var cmd = new AddAssembliesCommand(projectController, testController);
+                cmd.AssemblyFiles = assemblyFiles;
+                taskManager.QueueTask(cmd);
             }
             else if (optionsController.RestorePreviousSettings && optionsController.RecentProjects.Count > 0)
             {
@@ -194,13 +201,6 @@ namespace Gallio.Icarus.Controllers
             Title = string.Empty;
 
             var cmd = new NewProjectCommand(projectController, testController);
-            taskManager.QueueTask(cmd);
-        }
-
-        private void AddAssemblies(IList<string> assemblyFiles)
-        {
-            var cmd = new AddAssembliesCommand(projectController, testController);
-            cmd.AssemblyFiles = assemblyFiles;
             taskManager.QueueTask(cmd);
         }
     }

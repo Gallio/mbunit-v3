@@ -29,6 +29,9 @@ namespace Gallio.Runner.Projects
     [XmlType(Namespace = XmlSerializationUtils.GallioNamespace)]
     public sealed class Project
     {
+        private string reportNameFormat = @"test-report-{0}-{1}";
+        private string reportDirectory = @".\Reports";
+
         /// <summary>
         /// The file extension for Gallio project files.
         /// </summary>
@@ -63,5 +66,26 @@ namespace Gallio.Runner.Projects
         [XmlArray("extensionSpecifications", IsNullable = false)]
         [XmlArrayItem("extensionSpecification", typeof(string), IsNullable = false)]
         public List<string> TestRunnerExtensions { get; set; }
+
+        /// <summary>
+        /// The folder to save generated reports to. 
+        /// Relative to project location, if not absolute.
+        /// </summary>
+        [XmlElement("reportDirectory")]
+        public string ReportDirectory
+        {
+            get { return reportDirectory; }
+            set { reportDirectory = value; }
+        }
+
+        /// <summary>
+        /// The format for the filename of generated reports.
+        /// </summary>
+        [XmlElement("reportNameFormat")]
+        public string ReportNameFormat
+        {
+            get { return reportNameFormat; }
+            set { reportNameFormat = value; }
+        }
     }
 }

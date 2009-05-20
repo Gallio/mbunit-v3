@@ -468,7 +468,9 @@ namespace Gallio.Icarus.Tests.Controllers
             var projectController = new ProjectController(projectTreeModel, optionsController,
                 fileSystem, xmlSerializer, assemblyWatcher, unhandledExceptionPolicy);
 
-            Assert.AreEqual(exception, Assert.Throws<Exception>(() => projectController.OpenProject(projectName, progressMonitor)));
+            projectController.OpenProject(projectName, progressMonitor);
+
+            unhandledExceptionPolicy.AssertWasCalled(uep => uep.Report(Arg<string>.Is.Anything, Arg.Is(exception)));
         }
 
         [Test]

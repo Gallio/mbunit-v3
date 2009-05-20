@@ -21,7 +21,7 @@ using Gallio.Runtime.Logging;
 
 namespace Gallio.Icarus.Logging
 {
-    public class RuntimeLogger : BaseLogger
+    internal class RuntimeLogger : BaseLogger, Gallio.Icarus.Logging.IRuntimeLogger
     {
         public LogSeverity MinLogSeverity
         {

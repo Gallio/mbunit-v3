@@ -13,48 +13,59 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
-using System.IO;
-using Gallio.Common.Policies;
+using Gallio.Common.IO;
 using Gallio.Common.Xml;
+using Gallio.Icarus.Utilities;
+using System;
 
 namespace Gallio.Icarus.Options
 {
-    internal class OptionsManager
+    internal class OptionsManager : IOptionsManager
     {
-        private static Settings settings = new Settings();
+        private readonly IFileSystem fileSystem;
+        private readonly IXmlSerializer xmlSerializer;
+        private readonly IUnhandledExceptionPolicy unhandledExceptionPolicy;
+        private Settings settings = new Settings();
 
-        public static Settings Settings
+        public Settings Settings
         {
             get { return settings; }
         }
 
-        public static void Load()
+        public OptionsManager(IFileSystem fileSystem, IXmlSerializer xmlSerializer, 
+            IUnhandledExceptionPolicy unhandledExceptionPolicy)
+        {
+            this.fileSystem = fileSystem;
+            this.xmlSerializer = xmlSerializer;
+            this.unhandledExceptionPolicy = unhandledExceptionPolicy;
+        }
+
+        public void Load()
         {
             try
             {
-                if (File.Exists(Paths.SettingsFile))
-                    settings = XmlSerializationUtils.LoadFromXml<Settings>(Paths.SettingsFile);
+                if (fileSystem.FileExists(Paths.SettingsFile))
+                    settings = xmlSerializer.LoadFromXml<Settings>(Paths.SettingsFile);
             }
             catch (Exception ex)
             {
-                UnhandledExceptionPolicy.Report("An exception occurred while loading Icarus settings file.", ex);
+                unhandledExceptionPolicy.Report("An exception occurred while loading Icarus settings file.", ex);
             }
         }
 
-        public static void Save()
+        public void Save()
         {
             try
             {
                 // create folder, if necessary
-                if (!Directory.Exists(Paths.IcarusAppDataFolder))
-                    Directory.CreateDirectory(Paths.IcarusAppDataFolder);
+                if (!fileSystem.DirectoryExists(Paths.IcarusAppDataFolder))
+                    fileSystem.CreateDirectory(Paths.IcarusAppDataFolder);
 
-                XmlSerializationUtils.SaveToXml(Settings, Paths.SettingsFile);
+                xmlSerializer.SaveToXml(Settings, Paths.SettingsFile);
             }
             catch (Exception ex)
             {
-                UnhandledExceptionPolicy.Report("An exception occurred while saving Icarus settings file.", ex);
+                unhandledExceptionPolicy.Report("An exception occurred while saving Icarus settings file.", ex);
             }
         }
     }

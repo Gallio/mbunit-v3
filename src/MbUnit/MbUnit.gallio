@@ -14,5 +14,8 @@
       </configuration>
     </hostSetup>
   </testPackageConfig>
-  <testFilters />
+  <testFilters>
+    <testFilter filterName="AutoSave" filter="" />
+  </testFilters>
+  <extensionSpecifications />
 </project>

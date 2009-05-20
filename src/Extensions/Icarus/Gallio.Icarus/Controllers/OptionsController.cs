@@ -26,49 +26,50 @@ using Gallio.Runtime.Logging;
 
 namespace Gallio.Icarus.Controllers
 {
-    public sealed class OptionsController : NotifyController, IOptionsController
+    public class OptionsController : NotifyController, IOptionsController
     {
-        private readonly IFileSystem fileSystem;
+        private Settings settings;
         private MRUList recentProjects;
+        private IOptionsManager optionsManager;
 
         private readonly List<string> unselectedTreeViewCategoriesList = new List<string>();
 
         public bool AlwaysReloadAssemblies
         {
-            get { return Settings.AlwaysReloadAssemblies; }
-            set { Settings.AlwaysReloadAssemblies = value; }
+            get { return settings.AlwaysReloadAssemblies; }
+            set { settings.AlwaysReloadAssemblies = value; }
         }
 
         public bool RunTestsAfterReload
         {
-            get { return Settings.RunTestsAfterReload; }
-            set { Settings.RunTestsAfterReload = value; }
+            get { return settings.RunTestsAfterReload; }
+            set { settings.RunTestsAfterReload = value; }
         }
 
         public string TestStatusBarStyle
         {
-            get { return Settings.TestStatusBarStyle; }
-            set { Settings.TestStatusBarStyle = value; }
+            get { return settings.TestStatusBarStyle; }
+            set { settings.TestStatusBarStyle = value; }
         }
 
         public bool ShowProgressDialogs
         {
-            get { return Settings.ShowProgressDialogs; }
-            set { Settings.ShowProgressDialogs = value; }
+            get { return settings.ShowProgressDialogs; }
+            set { settings.ShowProgressDialogs = value; }
         }
 
         public bool RestorePreviousSettings
         {
-            get { return Settings.RestorePreviousSettings; }
-            set { Settings.RestorePreviousSettings = value; }
+            get { return settings.RestorePreviousSettings; }
+            set { settings.RestorePreviousSettings = value; }
         }
 
         public string TestRunnerFactory
         {
-            get { return Settings.TestRunnerFactory; }
+            get { return settings.TestRunnerFactory; }
             set
             {
-                Settings.TestRunnerFactory = value;
+                settings.TestRunnerFactory = value;
                 OnPropertyChanged(new PropertyChangedEventArgs("TestRunnerFactory"));
             }
         }
@@ -81,26 +82,26 @@ namespace Gallio.Icarus.Controllers
 
         public Color PassedColor
         {
-            get { return Color.FromArgb(Settings.PassedColor); }
-            set { Settings.PassedColor = value.ToArgb(); }
+            get { return Color.FromArgb(settings.PassedColor); }
+            set { settings.PassedColor = value.ToArgb(); }
         }
 
         public Color FailedColor
         {
-            get { return Color.FromArgb(Settings.FailedColor); }
-            set { Settings.FailedColor = value.ToArgb(); }
+            get { return Color.FromArgb(settings.FailedColor); }
+            set { settings.FailedColor = value.ToArgb(); }
         }
 
         public Color InconclusiveColor
         {
-            get { return Color.FromArgb(Settings.InconclusiveColor); }
-            set { Settings.InconclusiveColor = value.ToArgb(); }
+            get { return Color.FromArgb(settings.InconclusiveColor); }
+            set { settings.InconclusiveColor = value.ToArgb(); }
         }
 
         public Color SkippedColor
         {
-            get { return Color.FromArgb(Settings.SkippedColor); }
-            set { Settings.SkippedColor = value.ToArgb(); }
+            get { return Color.FromArgb(settings.SkippedColor); }
+            set { settings.SkippedColor = value.ToArgb(); }
         }
 
         public double UpdateDelay
@@ -110,14 +111,14 @@ namespace Gallio.Icarus.Controllers
 
         public Size Size
         {
-            get { return Settings.Size; }
-            set { Settings.Size = value; }
+            get { return settings.Size; }
+            set { settings.Size = value; }
         }
 
         public Point Location
         {
-            get { return Settings.Location; }
-            set { Settings.Location = value; }
+            get { return settings.Location; }
+            set { settings.Location = value; }
         }
 
         public MRUList RecentProjects
@@ -126,18 +127,7 @@ namespace Gallio.Icarus.Controllers
             {
                 if (recentProjects == null)
                 {
-                    // remove any dead projects
-                    var list = new List<string>();
-                    foreach(var proj in Settings.RecentProjects)
-                    {
-                        if (fileSystem.FileExists(proj))
-                            list.Add(proj);
-                    }
-                    Settings.RecentProjects.Clear();
-                    Settings.RecentProjects.AddRange(list);
-
-                    recentProjects = new MRUList(Settings.RecentProjects, 10);
-
+                    recentProjects = new MRUList(settings.RecentProjects, 10);
                     recentProjects.PropertyChanged += (sender, e) =>
                         {
                             if (e.PropertyName == "Items")
@@ -150,52 +140,51 @@ namespace Gallio.Icarus.Controllers
 
         public LogSeverity MinLogSeverity
         {
-            get { return Settings.MinLogSeverity; }
-            set { Settings.MinLogSeverity = value; }
+            get { return settings.MinLogSeverity; }
+            set { settings.MinLogSeverity = value; }
         }
 
         public bool AnnotationsShowErrors
         {
-            get { return Settings.AnnotationsShowErrors; }
-            set { Settings.AnnotationsShowErrors = value; }
+            get { return settings.AnnotationsShowErrors; }
+            set { settings.AnnotationsShowErrors = value; }
         }
 
         public bool AnnotationsShowWarnings
         {
-            get { return Settings.AnnotationsShowWarnings; }
-            set { Settings.AnnotationsShowWarnings = value; }
+            get { return settings.AnnotationsShowWarnings; }
+            set { settings.AnnotationsShowWarnings = value; }
         }
 
         public bool AnnotationsShowInfos
         {
-            get { return Settings.AnnotationsShowInfos; }
-            set { Settings.AnnotationsShowInfos = value; }
+            get { return settings.AnnotationsShowInfos; }
+            set { settings.AnnotationsShowInfos = value; }
         }
 
         public BindingList<string> TestRunnerExtensions { get; private set; }
 
         public bool TestTreeSplitNamespaces
         {
-            get { return Settings.TestTreeSplitNamespaces; }
-            set { Settings.TestTreeSplitNamespaces = value; }
+            get { return settings.TestTreeSplitNamespaces; }
+            set { settings.TestTreeSplitNamespaces = value; }
         }
 
-        public Settings Settings
+        public void SetOptionsManager(IOptionsManager optionsManager)
         {
-            get { return OptionsManager.Settings; }
+            this.optionsManager = optionsManager;
+            
+            Load();
         }
 
-        public OptionsController(IFileSystem fileSystem)
+        private void Load()
         {
-            this.fileSystem = fileSystem;
-        }
+            settings = optionsManager.Settings;
 
-        public void Load()
-        {
-            if (Settings.TreeViewCategories.Count == 0)
+            if (settings.TreeViewCategories.Count == 0)
             {
                 // add default categories
-                Settings.TreeViewCategories.AddRange(new[] { "Namespace", MetadataKeys.AuthorName, 
+                settings.TreeViewCategories.AddRange(new[] { "Namespace", MetadataKeys.AuthorName, 
                     MetadataKeys.Category, MetadataKeys.Importance, MetadataKeys.TestsOn });
             }
 
@@ -203,31 +192,33 @@ namespace Gallio.Icarus.Controllers
             unselectedTreeViewCategoriesList.Clear();
             foreach (FieldInfo fi in typeof(MetadataKeys).GetFields())
             {
-                if (!Settings.TreeViewCategories.Contains(fi.Name))
+                if (!settings.TreeViewCategories.Contains(fi.Name))
                     unselectedTreeViewCategoriesList.Add(fi.Name);
             }
 
             // set up bindable lists (for options dialogs)
-            PluginDirectories = new BindingList<string>(Settings.PluginDirectories);
-            SelectedTreeViewCategories = new BindingList<string>(Settings.TreeViewCategories);
+            PluginDirectories = new BindingList<string>(settings.PluginDirectories);
+            SelectedTreeViewCategories = new BindingList<string>(settings.TreeViewCategories);
             UnselectedTreeViewCategories = new BindingList<string>(unselectedTreeViewCategoriesList);
-            TestRunnerExtensions = new BindingList<string>(Settings.TestRunnerExtensions);
+            TestRunnerExtensions = new BindingList<string>(settings.TestRunnerExtensions);
         }
 
         public void Save()
         {
-            OptionsManager.Save();
+            optionsManager.Save();
         }
 
         public bool GenerateReportAfterTestRun
         {
-            get { return Settings.GenerateReportAfterTestRun; }
-            set { Settings.GenerateReportAfterTestRun = value; }
+            get { return settings.GenerateReportAfterTestRun; }
+            set { settings.GenerateReportAfterTestRun = value; }
         }
 
         public void Cancel()
         {
-            OptionsManager.Load();
+            optionsManager.Load();
+
+            Load();
         }
     }
 }

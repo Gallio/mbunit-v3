@@ -13,15 +13,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.Windows.Forms;
 using System.Drawing;
-using WeifenLuo.WinFormsUI.Docking;
+using System.Windows.Forms;
 using Gallio.Common;
+using WeifenLuo.WinFormsUI.Docking;
 
 namespace Gallio.Icarus
 {
     /// <summary>
-    /// Shameless rip-off of Reflector add-in API.
+    /// Window manager for application shell.
     /// </summary>
     public interface IWindowManager
     {
@@ -29,8 +29,8 @@ namespace Gallio.Icarus
         ToolStripContainer ToolStrip { get; }
         ToolStripItemCollection Menu { get; }
 
-        void Add(string identifier, Control content, string caption);
-        void Add(string identifier, Control content, string caption, Icon icon);
+        Window Add(string identifier, Control content, string caption);
+        Window Add(string identifier, Control content, string caption, Icon icon);
         void Show(string identifier);
         void Show(string identifier, DockState dockState);
         void Register(string identifer, Action action);

@@ -26,8 +26,6 @@ namespace Gallio.Icarus.Commands
         private readonly IProjectController projectController;
         private readonly ITestController testController;
 
-        private readonly string fileFilter = "Assemblies or Executables (*.dll, *.exe)|*.dll;*.exe|All Files (*.*)|*.*";
-
         public IList<string> AssemblyFiles
         {
             get;
@@ -42,20 +40,11 @@ namespace Gallio.Icarus.Commands
 
         public void Execute(IProgressMonitor progressMonitor)
         {
-            if (AssemblyFiles == null)
-            {
-                using (var openFileDialog = new OpenFileDialog
-                {
-                    Filter = fileFilter,
-                    Multiselect = true
-                })
-                {
-                    if (openFileDialog.ShowDialog() == DialogResult.OK)
-                        AssemblyFiles = openFileDialog.FileNames;
-                }
-            }
             using (progressMonitor.BeginTask("Adding assemblies", 100))
             {
+                if (AssemblyFiles == null)
+                    return;
+
                 // add assemblies to test package
                 using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(10))
                     projectController.AddAssemblies(AssemblyFiles, subProgressMonitor);

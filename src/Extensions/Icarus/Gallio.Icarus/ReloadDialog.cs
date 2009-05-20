@@ -14,21 +14,20 @@
 // limitations under the License.
 
 using System.Windows.Forms;
+using Gallio.Icarus.Controllers.Interfaces;
 
 namespace Gallio.Icarus
 {
     public partial class ReloadDialog : Form
     {
-        public bool AlwaysReloadTests
-        {
-            get { return alwaysReload.Checked; }
-        }
-
-        public ReloadDialog(string assembly)
+        public ReloadDialog(string assembly, IOptionsController optionsController)
         {
             InitializeComponent();
-                                                 
+
             assemblyLabel.Text = string.Format("The assembly {0} has been modified.", assembly);
+
+            alwaysReload.DataBindings.Add("Checked", optionsController, "AlwaysReloadAssemblies", 
+                false, DataSourceUpdateMode.OnPropertyChanged);
         }
     }
 }

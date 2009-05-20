@@ -15,7 +15,7 @@
 
 namespace Gallio.Icarus
 {
-    partial class CodeWindow
+    partial class CodeViewer
     {
         /// <summary>
         /// Required designer variable.

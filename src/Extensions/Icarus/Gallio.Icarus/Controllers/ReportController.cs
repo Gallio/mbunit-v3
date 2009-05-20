@@ -20,6 +20,8 @@ using System.IO;
 using Gallio.Common.IO;
 using Gallio.Common.Policies;
 using Gallio.Icarus.Controllers.Interfaces;
+using Gallio.Icarus.Reports;
+using Gallio.Icarus.Services;
 using Gallio.Icarus.Services.Interfaces;
 using Gallio.Icarus.Utilities;
 using Gallio.Runner.Reports;
@@ -27,7 +29,7 @@ using Gallio.Runtime.ProgressMonitoring;
 
 namespace Gallio.Icarus.Controllers
 {
-    class ReportController : IReportController
+    internal class ReportController : IReportController
     {
         private readonly IReportService reportService;
         private readonly IFileSystem fileSystem;
@@ -51,13 +53,14 @@ namespace Gallio.Icarus.Controllers
                 fileSystem.DeleteFile(fileName);
         }
 
-        public void GenerateReport(Report report, string reportDirectory, IProgressMonitor progressMonitor)
+        public void GenerateReport(Report report, ReportOptions reportOptions, IProgressMonitor progressMonitor)
         {
-            string fileName = Path.Combine(reportDirectory, GenerateReportName(report));
+            string fileName = Path.Combine(reportOptions.ReportDirectory, 
+                GenerateReportName(report, reportOptions.ReportNameFormat));
             reportService.SaveReportAs(report, fileName, "xml", progressMonitor);
         }
 
-        private static string GenerateReportName(Report report)
+        private static string GenerateReportName(Report report, string reportNameFormat)
         {
             DateTime reportTime = report.TestPackageRun != null ? report.TestPackageRun.StartTime : DateTime.Now;
 

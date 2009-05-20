@@ -22,7 +22,7 @@ using Gallio.Runtime.Logging;
 
 namespace Gallio.Icarus
 {
-    public partial class RuntimeLogWindow : DockWindow
+    internal partial class RuntimeLogWindow : DockWindow
     {
         public RuntimeLogWindow(IRuntimeLogController runtimeLogController)
         {

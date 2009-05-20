@@ -25,6 +25,9 @@ using Gallio.Icarus.Properties;
 using Gallio.Runner;
 using Gallio.Runtime;
 using Gallio.Runtime.ConsoleSupport;
+using Gallio.Common.IO;
+using Gallio.Common.Xml;
+using Gallio.Common.Policies;
 
 namespace Gallio.Icarus
 {
@@ -59,16 +62,18 @@ namespace Gallio.Icarus
                     typeof(IcarusProgram).Assembly))
             };
 
-            OptionsManager.Load();
+            var optionsManager = new OptionsManager(new FileSystem(), new DefaultXmlSerializer(), 
+                new Utilities.UnhandledExceptionPolicy());
+            optionsManager.Load();
 
             var runtimeLogger = new RuntimeLogger();
 
             // Set the installation path explicitly to ensure that we do not encounter problems
             // when the test assembly contains a local copy of the primary runtime assemblies
             // which will confuse the runtime into searching in the wrong place for plugins.
-            runtimeSetup.PluginDirectories.AddRange(OptionsManager.Settings.PluginDirectories);
+            runtimeSetup.PluginDirectories.AddRange(optionsManager.Settings.PluginDirectories);
 
-            using (Runtime.RuntimeBootstrap.Initialize(runtimeSetup, runtimeLogger))
+            using (RuntimeBootstrap.Initialize(runtimeSetup, runtimeLogger))
             {
                 var optionsController = RuntimeAccessor.ServiceLocator.Resolve<IOptionsController>();
                 // create & initialize a test runner whenever the test runner factory is changed
@@ -77,8 +82,9 @@ namespace Gallio.Icarus
                     if (e.PropertyName == "TestRunnerFactory")
                         ConfigureTestRunnerFactory(optionsController.TestRunnerFactory);
                 };
+                optionsController.SetOptionsManager(optionsManager);
 
-                ConfigureTestRunnerFactory(OptionsManager.Settings.TestRunnerFactory);
+                ConfigureTestRunnerFactory(optionsController.TestRunnerFactory);
 
                 var runtimeLogController = RuntimeAccessor.ServiceLocator.Resolve<IRuntimeLogController>();
                 runtimeLogController.SetLogger(runtimeLogger);

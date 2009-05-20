@@ -61,28 +61,33 @@ namespace Gallio.Runner.Projects
 
         private void ConvertFromRelativePaths(Project project, string directory)
         {
-            IList<string> assemblyList = new List<string>();
+            var assemblyList = new List<string>();
             foreach (string assembly in project.TestPackageConfig.AssemblyFiles)
             {
-                string assemblyPath = assembly;
-                if (!fileSystem.IsPathRooted(assembly))
-                {
-                    try
-                    {
-                        FilePathRelative filePath = new FilePathRelative(assembly);
-                        DirectoryPathAbsolute directoryPath = new DirectoryPathAbsolute(directory);
-                        assemblyPath = filePath.GetAbsolutePathFrom(directoryPath).Path;
-                    }
-                    catch
-                    {
-                        assemblyPath = assembly;
-                    }
-                }
+                string assemblyPath = ConvertFromRelativePath(directory, assembly);
                 if (fileSystem.FileExists(assemblyPath))
                     assemblyList.Add(assemblyPath);
             }
             project.TestPackageConfig.AssemblyFiles.Clear();
             project.TestPackageConfig.AssemblyFiles.AddRange(assemblyList);
+
+            project.ReportDirectory = ConvertFromRelativePath(directory, project.ReportDirectory);
+        }
+
+        private string ConvertFromRelativePath(string directory, string file)
+        {
+            if (!fileSystem.IsPathRooted(file))
+            {
+                try
+                {
+                    var filePath = new FilePathRelative(file);
+                    var directoryPath = new DirectoryPathAbsolute(directory);
+                    return filePath.GetAbsolutePathFrom(directoryPath).Path;
+                }
+                catch
+                { }
+            }
+            return file;
         }
 
         /// <summary>
@@ -99,27 +104,30 @@ namespace Gallio.Runner.Projects
 
         private void ConvertToRelativePaths(Project project, string directory)
         {
-            IList<string> assemblyList = new List<string>();
+            var assemblyList = new List<string>();
             foreach (string assembly in project.TestPackageConfig.AssemblyFiles)
-            {
-                if (fileSystem.IsPathRooted(assembly))
-                {
-                    try
-                    {
-                        FilePathAbsolute filePath = new FilePathAbsolute(assembly);
-                        DirectoryPathAbsolute directoryPath = new DirectoryPathAbsolute(directory);
-                        assemblyList.Add(filePath.GetPathRelativeFrom(directoryPath).Path);
-                    }
-                    catch
-                    {
-                        assemblyList.Add(assembly);
-                    }
-                }
-                else
-                    assemblyList.Add(assembly);
-            }
+                assemblyList.Add(ConvertToRelativePath(directory, assembly));
+
             project.TestPackageConfig.AssemblyFiles.Clear();
             project.TestPackageConfig.AssemblyFiles.AddRange(assemblyList);
+
+            project.ReportDirectory = ConvertToRelativePath(directory, project.ReportDirectory);
+        }
+
+        private string ConvertToRelativePath(string directory, string file)
+        {
+            if (fileSystem.IsPathRooted(file))
+            {
+                try
+                {
+                    var filePath = new FilePathAbsolute(file);
+                    var directoryPath = new DirectoryPathAbsolute(directory);
+                    return filePath.GetPathRelativeFrom(directoryPath).Path;
+                }
+                catch
+                { }
+            }
+            return file;
         }
     }
 }

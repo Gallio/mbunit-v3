@@ -13,8 +13,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.IO;
 using Gallio.Common.Collections;
 using Gallio.Common.Policies;
@@ -28,39 +28,49 @@ namespace Gallio.Icarus.Services
     {
         private readonly IReportManager reportManager;
 
-        public IList<string> ReportTypes
-        {
-            get
-            {
-                return GenericCollectionUtils.ConvertAllToArray(reportManager.FormatterHandles,
-                    h => h.GetTraits().Name);
-            }
-        }
-
         public ReportService(IReportManager reportManager)
         {
             this.reportManager = reportManager;
         }
 
-        public string SaveReportAs(Report report, string fileName, string format, IProgressMonitor progressMonitor)
+        public IList<string> ReportTypes
+        {
+            get
+            {
+                return GenericCollectionUtils.ConvertAllToArray(reportManager.FormatterHandles,
+                                                                h => h.GetTraits().Name);
+            }
+        }
+
+        public string SaveReportAs(Report report, string fileName, string format, 
+            IProgressMonitor progressMonitor)
         {
             string file = string.Empty;
             using (progressMonitor.BeginTask("Generating report", 100))
             {
                 string folderName = Path.GetDirectoryName(fileName);
-                IReportContainer reportContainer = new FileSystemReportContainer(folderName,
-                    Path.GetFileNameWithoutExtension(fileName));
-                IReportWriter reportWriter = reportManager.CreateReportWriter(report, reportContainer);
+                var reportContainer = new FileSystemReportContainer(folderName,
+                                                                    Path.GetFileNameWithoutExtension(fileName));
+                var reportWriter = reportManager.CreateReportWriter(report, reportContainer);
+
+                if (progressMonitor.IsCanceled)
+                    throw new OperationCanceledException();
 
                 // Delete the report if it already exists
                 reportContainer.DeleteReport();
+
+                if (progressMonitor.IsCanceled)
+                    throw new OperationCanceledException();
 
                 progressMonitor.Worked(10);
 
                 // Format the report
                 var reportFormatterOptions = new ReportFormatterOptions();
-                using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(90))
+                using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(90))
                     reportManager.Format(reportWriter, format, reportFormatterOptions, subProgressMonitor);
+
+                if (progressMonitor.IsCanceled)
+                    throw new OperationCanceledException();
 
                 if (reportWriter.ReportDocumentPaths.Count > 0)
                     file = Path.Combine(folderName, reportWriter.ReportDocumentPaths[0]);
@@ -68,16 +78,20 @@ namespace Gallio.Icarus.Services
             return file;
         }
 
-        public string ConvertSavedReport(string fileName, string format, IProgressMonitor progressMonitor)
+        public string ConvertSavedReport(string fileName, string format, 
+            IProgressMonitor progressMonitor)
         {
             using (progressMonitor.BeginTask("Converting saved report", 100))
             {
                 IReportReader reportReader = reportManager.CreateReportReader(new FileSystemReportContainer(
-                    Path.GetDirectoryName(fileName), Path.GetFileNameWithoutExtension(fileName)));
+                                                                                  Path.GetDirectoryName(fileName),
+                                                                                  Path.GetFileNameWithoutExtension(
+                                                                                      fileName)));
                 Report report;
                 using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(20))
                     report = reportReader.LoadReport(true, subProgressMonitor);
-                string tempFilePath = SpecialPathPolicy.For<ReportService>().CreateTempDirectoryWithUniqueName().FullName;
+                string tempFilePath =
+                    SpecialPathPolicy.For<ReportService>().CreateTempDirectoryWithUniqueName().FullName;
                 using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(80))
                     return SaveReportAs(report, tempFilePath, format, subProgressMonitor);
             }

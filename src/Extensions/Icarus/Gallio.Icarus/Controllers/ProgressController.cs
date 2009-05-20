@@ -36,8 +36,11 @@ namespace Gallio.Icarus.Controllers
 
             bool displayProgressDialog = false;
             timer.AutoReset = false;
-            timer.Interval = 3000;
-            timer.Elapsed += (sender, e) => { displayProgressDialog = true; };
+            timer.Interval = 1000;
+            timer.Elapsed += (sender, e) => 
+            { 
+                displayProgressDialog = true; 
+            };
 
             taskManager.ProgressUpdate += (sender, e) =>
             {
@@ -49,9 +52,21 @@ namespace Gallio.Icarus.Controllers
                 }
                 EventHandlerPolicy.SafeInvoke(ProgressUpdate, this, e);
             };
-            
+
             if (optionsController.ShowProgressDialogs)
+            {
                 taskManager.TaskStarted += (sender, e) => timer.Start();
+                taskManager.TaskCanceled += (sender, e) =>
+                {
+                    displayProgressDialog = false;
+                    timer.Stop();
+                };
+                taskManager.TaskCompleted += (sender, e) =>
+                {
+                    displayProgressDialog = false;
+                    timer.Stop();
+                };
+            }
         }
 
         public void Cancel()

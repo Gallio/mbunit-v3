@@ -18,6 +18,7 @@ using System.IO;
 using Gallio.Common.IO;
 using Gallio.Common.Policies;
 using Gallio.Icarus.Controllers;
+using Gallio.Icarus.Reports;
 using Gallio.Icarus.Services.Interfaces;
 using Gallio.Runner.Reports;
 using Gallio.Runtime.ProgressMonitoring;
@@ -32,14 +33,14 @@ namespace Gallio.Icarus.Tests.Controllers
         [Test]
         public void GenerateReport_Test()
         {
-            Report report = new Report();
+            var report = new Report();
             var reportService = MockRepository.GenerateMock<IReportService>();
             var progressMonitor = MockProgressMonitor.GetMockProgressMonitor();
             var fileSystem = MockRepository.GenerateStub<IFileSystem>();
-            ReportController reportController = new ReportController(reportService, fileSystem);
-            string reportDirectory = SpecialPathPolicy.For<ReportControllerTest>().GetTempDirectory().FullName;
-            
-            reportController.GenerateReport(report, reportDirectory, progressMonitor);
+            var reportController = new ReportController(reportService, fileSystem);
+            var reportOptions = new ReportOptions("reportDirectory", "reportNameFormat");
+
+            reportController.GenerateReport(report, reportOptions, progressMonitor);
 
             reportService.AssertWasCalled(rs => rs.SaveReportAs(Arg.Is(report), Arg<string>.Is.Anything, Arg.Is("xml"),
                 Arg.Is(progressMonitor)));

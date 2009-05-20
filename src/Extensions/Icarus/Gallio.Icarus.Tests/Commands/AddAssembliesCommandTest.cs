@@ -26,7 +26,7 @@ namespace Gallio.Icarus.Tests.Commands
     internal class AddAssembliesCommandTest
     {
         [Test]
-        public void Execute_Test()
+        public void Execute_with_assembly_files_set()
         {
             var projectController = MockRepository.GenerateStub<IProjectController>();
             var testPackageConfig = new TestPackageConfig();

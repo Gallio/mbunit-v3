@@ -22,5 +22,8 @@ namespace Gallio.Icarus.Utilities
     {
         [DllImport("shlwapi.dll")]
         public static extern bool PathCompactPathEx([Out] StringBuilder pszOut, string szPath, int cchMax, int dwFlags);
+
+        [DllImport("User32.dll")]
+        public extern static int ShowWindow(System.IntPtr hWnd, short cmdShow);
     }
 }

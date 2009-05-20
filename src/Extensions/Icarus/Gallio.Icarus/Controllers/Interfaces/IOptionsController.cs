@@ -15,6 +15,7 @@
 
 using System.ComponentModel;
 using System.Drawing;
+using Gallio.Icarus.Options;
 using Gallio.Icarus.Utilities;
 using Gallio.Runtime.Logging;
 
@@ -48,7 +49,7 @@ namespace Gallio.Icarus.Controllers.Interfaces
         bool TestTreeSplitNamespaces { get; set; }
 
         void Cancel();
-        void Load();
         void Save();
+        void SetOptionsManager(IOptionsManager optionsManager); 
     }
 }

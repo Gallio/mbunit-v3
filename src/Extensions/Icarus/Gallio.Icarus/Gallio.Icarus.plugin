@@ -18,19 +18,24 @@
     <service serviceId="Gallio.Icarus.AssemblyWatcher"
              serviceType="Gallio.Icarus.Remoting.IAssemblyWatcher, Gallio.Icarus" />
 
+    <!-- Commands -->
+
+    <service serviceId="Gallio.Icarus.Command" 
+             serviceType="Gallio.Icarus.Commands.ICommand, Gallio.Icarus" />
+    
     <!-- Controllers -->
 
-    <service serviceId="Gallio.Icarus.ProgressController"
-         serviceType="Gallio.Icarus.Controllers.IProgressController, Gallio.Icarus" />
+    <service serviceId="Gallio.Icarus.ProgressController" 
+             serviceType="Gallio.Icarus.Controllers.IProgressController, Gallio.Icarus" />
 
     <service serviceId="Gallio.Icarus.TestController"
              serviceType="Gallio.Icarus.Controllers.Interfaces.ITestController, Gallio.Icarus" />
 
-    <service serviceId="Gallio.Icarus.OptionsController"
-         serviceType="Gallio.Icarus.Controllers.Interfaces.IOptionsController, Gallio.Icarus" />
+    <service serviceId="Gallio.Icarus.OptionsController" 
+             serviceType="Gallio.Icarus.Controllers.Interfaces.IOptionsController, Gallio.Icarus" />
 
-    <service serviceId="Gallio.Icarus.ProjectController"
-         serviceType="Gallio.Icarus.Controllers.Interfaces.IProjectController, Gallio.Icarus" />
+    <service serviceId="Gallio.Icarus.ProjectController" 
+             serviceType="Gallio.Icarus.Controllers.Interfaces.IProjectController, Gallio.Icarus" />
 
     <service serviceId="Gallio.Icarus.SourceCodeController"
              serviceType="Gallio.Icarus.Controllers.Interfaces.ISourceCodeController, Gallio.Icarus" />
@@ -44,8 +49,8 @@
     <service serviceId="Gallio.Icarus.RuntimeLogController" 
              serviceType="Gallio.Icarus.Controllers.Interfaces.IRuntimeLogController, Gallio.Icarus" />
     
-    <service serviceId="Gallio.Icarus.ExecutionLogController"
-         serviceType="Gallio.Icarus.Controllers.Interfaces.IExecutionLogController, Gallio.Icarus" />
+    <service serviceId="Gallio.Icarus.ExecutionLogController" 
+             serviceType="Gallio.Icarus.Controllers.Interfaces.IExecutionLogController, Gallio.Icarus" />
 
     <service serviceId="Gallio.Icarus.AnnotationsController" 
              serviceType="Gallio.Icarus.Controllers.Interfaces.IAnnotationsController, Gallio.Icarus" />
@@ -76,27 +81,37 @@
   </services>
   <components>
     
-    <component componentId="Gallio.Icarus.TaskManager"
-           serviceId="Gallio.Icarus.TaskManager"
-           componentType="Gallio.Icarus.TaskManager, Gallio.Icarus" />
+    <component componentId="Gallio.Icarus.TaskManager" 
+               serviceId="Gallio.Icarus.TaskManager" 
+               componentType="Gallio.Icarus.TaskManager, Gallio.Icarus" />
 
     <component componentId="Gallio.Icarus.AssemblyWatcher"
                serviceId="Gallio.Icarus.AssemblyWatcher"
                componentType="Gallio.Icarus.Remoting.AssemblyWatcher, Gallio.Icarus" />
+
+    <component componentId="Gallio.Icarus.WindowManager" 
+               serviceId="Gallio.Icarus.WindowManager" 
+               componentType="Gallio.Icarus.WindowManager, Gallio.Icarus" />
+
+    <!-- Commands -->
+
+    <component componentId="Gallio.Icarus.AddAssembliesCommand" 
+               serviceId="Gallio.Icarus.Command" 
+               componentType="Gallio.Icarus.Commands.AddAssembliesCommand, Gallio.Icarus" />
     
     <!-- Controllers -->
 
-    <component componentId="Gallio.Icarus.ProgressController"
-           serviceId="Gallio.Icarus.ProgressController"
-           componentType="Gallio.Icarus.Controllers.ProgressController, Gallio.Icarus" />
+    <component componentId="Gallio.Icarus.ProgressController" 
+               serviceId="Gallio.Icarus.ProgressController" 
+               componentType="Gallio.Icarus.Controllers.ProgressController, Gallio.Icarus" />
 
     <component componentId="Gallio.Icarus.TestController"
                serviceId="Gallio.Icarus.TestController"
                componentType="Gallio.Icarus.Controllers.TestController, Gallio.Icarus" />
 
-    <component componentId="Gallio.Icarus.ProjectController"
-           serviceId="Gallio.Icarus.ProjectController"
-           componentType="Gallio.Icarus.Controllers.ProjectController, Gallio.Icarus" />
+    <component componentId="Gallio.Icarus.ProjectController" 
+               serviceId="Gallio.Icarus.ProjectController" 
+               componentType="Gallio.Icarus.Controllers.ProjectController, Gallio.Icarus" />
 
     <component componentId="Gallio.Icarus.SourceCodeController"
                serviceId="Gallio.Icarus.SourceCodeController"
@@ -138,10 +153,14 @@
     
     <!-- Packages -->
 
-    <component componentId="Gallio.Icarus.PluginBrowserPackage"
-           serviceId="Gallio.Icarus.Package"
-           componentType="Gallio.Icarus.Packages.PluginBrowserPackage, Gallio.Icarus" />
+    <component componentId="Gallio.Icarus.PluginBrowserPackage" 
+               serviceId="Gallio.Icarus.Package" 
+               componentType="Gallio.Icarus.Packages.PluginBrowserPackage, Gallio.Icarus" />
 
+    <component componentId="Gallio.Icarus.CodeViewerPackage" 
+               serviceId="Gallio.Icarus.Package" 
+               componentType="Gallio.Icarus.Packages.CodeViewerPackage, Gallio.Icarus" />
+    
     <!-- Services -->
 
     <component componentId="Gallio.Icarus.ReportService"

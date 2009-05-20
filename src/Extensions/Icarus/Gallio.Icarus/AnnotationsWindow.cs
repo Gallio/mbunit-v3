@@ -27,7 +27,8 @@ namespace Gallio.Icarus
         private readonly IAnnotationsController annotationsController;
         private readonly ISourceCodeController sourceCodeController;
 
-        public AnnotationsWindow(IAnnotationsController annotationsController, ISourceCodeController sourceCodeController)
+        public AnnotationsWindow(IAnnotationsController annotationsController, 
+            ISourceCodeController sourceCodeController)
         {
             this.annotationsController = annotationsController;
             this.sourceCodeController = sourceCodeController;

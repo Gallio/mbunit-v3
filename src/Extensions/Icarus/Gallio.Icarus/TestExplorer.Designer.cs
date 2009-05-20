@@ -13,8 +13,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Gallio.Icarus.Controls;
-
 namespace Gallio.Icarus
 {
     partial class TestExplorer
@@ -105,7 +103,6 @@ namespace Gallio.Icarus
             this.testTree.TabIndex = 5;
             this.testTree.SelectionChanged += new System.EventHandler(this.testTree_SelectionChanged);
             this.testTree.DoubleClick += new System.EventHandler(this.testTree_DoubleClick);
-            this.testTree.DragDrop += new System.Windows.Forms.DragEventHandler(this.testTree_DragDrop);
             // 
             // testTreeMenuStrip
             // 
@@ -420,12 +417,12 @@ namespace Gallio.Icarus
         #endregion
 
         private System.Windows.Forms.ToolStripContainer toolStripContainer1;
-        private TestTreeView testTree;
+        private Gallio.Icarus.Controls.TestTreeView testTree;
         private System.Windows.Forms.ToolStrip toolStrip1;
         private System.Windows.Forms.ToolStripComboBox treeViewComboBox;
-        private ToolStripButton filterPassedTestsToolStripButton;
-        private ToolStripButton filterInconclusiveTestsToolStripButton;
-        private ToolStripButton filterFailedTestsToolStripButton;
+        private Gallio.Icarus.Controls.ToolStripButton filterPassedTestsToolStripButton;
+        private Gallio.Icarus.Controls.ToolStripButton filterInconclusiveTestsToolStripButton;
+        private Gallio.Icarus.Controls.ToolStripButton filterFailedTestsToolStripButton;
         private System.Windows.Forms.ContextMenuStrip testTreeMenuStrip;
         private System.Windows.Forms.ToolStripMenuItem expandAllMenuItem;
         private System.Windows.Forms.ToolStripMenuItem collapseAllMenuItem;
@@ -434,20 +431,20 @@ namespace Gallio.Icarus
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator9;
         private System.Windows.Forms.ToolStripMenuItem resetTestsMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator10;
-        private ToolStripButton sortDescToolStripButton;
+        private Gallio.Icarus.Controls.ToolStripButton sortDescToolStripButton;
         private System.Windows.Forms.ToolStripMenuItem expandPassedTestsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem expandFailedTestsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem expandSkippedTestsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem filterToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem viewSourceCodeToolStripMenuItem;
-        private ToolStripMenuItem filterPassedTestsToolStripMenuItem;
-        private ToolStripMenuItem filterFailedTestsToolStripMenuItem;
-        private ToolStripMenuItem filterInconclusiveTestsToolStripMenuItem;
+        private Gallio.Icarus.Controls.ToolStripMenuItem filterPassedTestsToolStripMenuItem;
+        private Gallio.Icarus.Controls.ToolStripMenuItem filterFailedTestsToolStripMenuItem;
+        private Gallio.Icarus.Controls.ToolStripMenuItem filterInconclusiveTestsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem assembliesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem addAssembliesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem removeAssemblyToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem removeAssembliesToolStripMenuItem;
-        private ToolStripButton sortAscToolStripButton;
+        private Gallio.Icarus.Controls.ToolStripButton sortAscToolStripButton;
         private System.Windows.Forms.ToolStripMenuItem selectAlToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem selectPassedToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem selectFailedToolStripMenuItem;

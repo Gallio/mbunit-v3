@@ -23,86 +23,69 @@ using Gallio.Runtime.Logging;
 using Gallio.Icarus.Controllers.EventArgs;
 using System.Collections.Generic;
 using Rhino.Mocks;
+using Gallio.Icarus.Logging;
 
 namespace Gallio.Icarus.Tests.Controllers
 {
-    public class RuntimeLogControllerTest : RuntimeLogController
+    [Category("Controllers"), TestsOn(typeof(RuntimeLogController))]
+    internal class RuntimeLogControllerTest
     {
-        public RuntimeLogControllerTest() : base(MockRepository.GenerateMock<IOptionsController>())
-        { }
-
-        // can't use Color.SomeColor in a RowTest :(
-        private readonly Dictionary<LogSeverity, Color> colors = new Dictionary<LogSeverity, Color>();
-
-        [FixtureSetUp]
-        public void FixtureSetUp()
+        [Test]
+        public void MinLogSeverity_should_come_from_logger()
         {
-            colors.Add(LogSeverity.Error, Color.Red);
-            colors.Add(LogSeverity.Warning, Color.Gold);
-            colors.Add(LogSeverity.Important, Color.Black);
-            colors.Add(LogSeverity.Info, Color.Gray);
-            colors.Add(LogSeverity.Debug, Color.DarkGray);
+            var optionsController = MockRepository.GenerateStub<IOptionsController>();
+            var runtimeLogController = new RuntimeLogController(optionsController);
+            var runtimeLogger = MockRepository.GenerateStub<IRuntimeLogger>();
+            runtimeLogController.SetLogger(runtimeLogger);
+            runtimeLogger.MinLogSeverity = LogSeverity.Error;
+
+            Assert.AreEqual(LogSeverity.Error, runtimeLogController.MinLogSeverity);
+            runtimeLogController.MinLogSeverity = LogSeverity.Important;
+            Assert.AreEqual(LogSeverity.Important, runtimeLogger.MinLogSeverity);
         }
 
         [Test]
-        [Row(LogSeverity.Error)]
-        [Row(LogSeverity.Warning)]
-        [Row(LogSeverity.Important)]
-        [Row(LogSeverity.Info)]
-        [Row(LogSeverity.Debug)]
-        public void LogImpl_Test(LogSeverity logSeverity)
+        public void Setting_MinLogSeverity_should_save_options()
         {
-            const string message = "message";
-            var flag = false;
-            EventHandler<RuntimeLogEventArgs> eh = delegate(object sender, RuntimeLogEventArgs e)
+            var optionsController = MockRepository.GenerateStub<IOptionsController>();
+            var runtimeLogController = new RuntimeLogController(optionsController);
+            var runtimeLogger = MockRepository.GenerateStub<IRuntimeLogger>();
+            runtimeLogController.SetLogger(runtimeLogger);
+
+            runtimeLogController.MinLogSeverity = LogSeverity.Important;
+            Assert.AreEqual(LogSeverity.Important, optionsController.MinLogSeverity);
+            optionsController.AssertWasCalled(oc => oc.Save());
+        }
+
+        [Test]
+        public void MinLogSeverity_should_be_restored_from_options()
+        {
+            var optionsController = MockRepository.GenerateStub<IOptionsController>();
+            optionsController.MinLogSeverity = LogSeverity.Info;
+            var runtimeLogController = new RuntimeLogController(optionsController);
+            var runtimeLogger = MockRepository.GenerateStub<IRuntimeLogger>();
+            runtimeLogController.SetLogger(runtimeLogger);
+
+            Assert.AreEqual(LogSeverity.Info, runtimeLogController.MinLogSeverity);
+        }
+
+        [Test]
+        public void LogMessage_should_bubble_up_from_logger()
+        {
+            var optionsController = MockRepository.GenerateStub<IOptionsController>();
+            var runtimeLogController = new RuntimeLogController(optionsController);
+            var runtimeLogger = MockRepository.GenerateStub<IRuntimeLogger>();
+            runtimeLogController.SetLogger(runtimeLogger);
+            bool logMessageFlag = false;
+            var eventArgs = new RuntimeLogEventArgs("message", Color.Red);
+            runtimeLogController.LogMessage += (sender, e) =>
             {
-                Assert.AreEqual(message, e.Message);
-                Assert.AreEqual(colors[logSeverity], e.Color);
-                flag = true;
+                Assert.AreEqual(eventArgs, e);
+                logMessageFlag = true;
             };
-            LogMessage += eh;
-            MinLogSeverity = LogSeverity.Debug;
-            LogImpl(logSeverity, message, null);
-            Assert.AreEqual(true, flag);
-            LogMessage -= eh;
-        }
 
-        [Test]
-        public void LogImpl_Exception_Test()
-        {
-            LogSeverity logSeverity = LogSeverity.Error;
-            Exception ex = new Exception();
-            string message = "message";
-            string exceptionMessage = ExceptionUtils.SafeToString(ex);
-            bool firstPass = true;
-            EventHandler<RuntimeLogEventArgs> eh = delegate(object sender, RuntimeLogEventArgs e)
-            {
-                if (firstPass)
-                {
-                    Assert.AreEqual(message, e.Message);
-                    firstPass = false;
-                }
-                else
-                {
-                    Assert.AreEqual(exceptionMessage, e.Message);
-                }
-                Assert.AreEqual(colors[logSeverity], e.Color);
-            };
-            LogMessage += eh;
-            LogImpl(logSeverity, message, new ExceptionData(ex));
-            LogMessage -= eh;
-        }
-
-        [Test]
-        public void LogImpl_should_filter_()
-        {
-            EventHandler<RuntimeLogEventArgs> eh = (sender, e) => Assert.Fail();
-            LogMessage += eh;
-
-            MinLogSeverity = LogSeverity.Error;
-            LogImpl(LogSeverity.Warning, "message", null);
-            
-            LogMessage -= eh;
+            runtimeLogger.Raise(rl => rl.LogMessage += null, runtimeLogger, eventArgs);
+            Assert.AreEqual(true, logMessageFlag);
         }
     }
 }

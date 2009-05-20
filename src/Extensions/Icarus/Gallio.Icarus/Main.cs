@@ -24,8 +24,10 @@ using Gallio.Common.Concurrency;
 using Gallio.Common.IO;
 using Gallio.Common.Policies;
 using Gallio.Common.Reflection;
+using Gallio.Icarus.Commands;
 using Gallio.Icarus.Controllers;
 using Gallio.Icarus.Controllers.EventArgs;
+using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.ProgressMonitoring.EventArgs;
 using Gallio.Model;
 using Gallio.Runner.Projects;
@@ -33,9 +35,7 @@ using Gallio.Runtime;
 using WeifenLuo.WinFormsUI.Docking;
 using SynchronizationContext = System.Threading.SynchronizationContext;
 using UnhandledExceptionPolicy = Gallio.Common.Policies.UnhandledExceptionPolicy;
-using Gallio.Icarus.Runtime;
-using Gallio.Icarus.Controllers.Interfaces;
-using Gallio.Icarus.Commands;
+using Gallio.Icarus.Utilities;
 
 namespace Gallio.Icarus
 {
@@ -71,13 +71,40 @@ namespace Gallio.Icarus
             applicationController.AssemblyChanged += AssemblyChanged;
 
             testController = RuntimeAccessor.ServiceLocator.Resolve<ITestController>();
-            testController.RunFinished += TestControllerRunFinished;
-            testController.ExploreFinished += TestControllerLoadFinished;
+            testController.RunStarted += (sender, e) =>
+            {
+                Sync.Invoke(this, delegate
+                {
+                    // enable/disable buttons
+                    startButton.Enabled = startTestsToolStripMenuItem.Enabled = false;
+                    runTestsWithDebuggerButton.Enabled = startWithDebuggerToolStripMenuItem.Enabled = false;
+                    stopButton.Enabled = stopTestsToolStripMenuItem.Enabled = true;
+                });
+            };
+            testController.RunFinished += (sender, e) =>
+            {
+                Sync.Invoke(this, delegate
+                {
+                    // enable/disable buttons & menu items appropriately
+                    stopButton.Enabled = stopTestsToolStripMenuItem.Enabled = false;
+                    startButton.Enabled = startTestsToolStripMenuItem.Enabled = true;
+                    runTestsWithDebuggerButton.Enabled = startWithDebuggerToolStripMenuItem.Enabled = true;
+
+                    // notify the user if tests have failed!
+                    if (applicationController.FailedTests)
+                        Activate();
+                });
+            };
+            testController.ExploreFinished += (sender, e) =>
+            {
+                Sync.Invoke(this, delegate
+                {
+                    startButton.Enabled = startTestsToolStripMenuItem.Enabled = true;
+                    runTestsWithDebuggerButton.Enabled = startWithDebuggerToolStripMenuItem.Enabled = true;
+                });
+            };
 
             projectController = RuntimeAccessor.ServiceLocator.Resolve<IProjectController>();
-
-            var sourceCodeController = RuntimeAccessor.ServiceLocator.Resolve<ISourceCodeController>();
-            sourceCodeController.ShowSourceCode += ((sender, e) => ShowSourceCode(e.CodeLocation));
 
             taskManager = RuntimeAccessor.ServiceLocator.Resolve<ITaskManager>();
             optionsController = RuntimeAccessor.ServiceLocator.Resolve<IOptionsController>();
@@ -90,6 +117,8 @@ namespace Gallio.Icarus
             InitializeComponent();
 
             UnhandledExceptionPolicy.ReportUnhandledException += ReportUnhandledException;
+
+            var sourceCodeController = RuntimeAccessor.ServiceLocator.Resolve<ISourceCodeController>();
 
             testExplorer = new TestExplorer(optionsController, projectController, testController, 
                 sourceCodeController, taskManager);
@@ -124,8 +153,8 @@ namespace Gallio.Icarus
             progressController.ProgressUpdate += ProgressUpdate;
             progressController.DisplayProgressDialog += (sender, e) => Sync.Invoke(this, () =>
             {
-                using (var dialog = new ProgressMonitor(e.ProgressMonitor, e.ProgressUpdateEventArgs))
-                    dialog.Show(this);
+                var dialog = new ProgressMonitor(e.ProgressMonitor, e.ProgressUpdateEventArgs);
+                dialog.Show(this);
             });
         }
 
@@ -137,7 +166,7 @@ namespace Gallio.Icarus
             reportTypes.Sort();
             foreach (string reportType in reportTypes)
             {
-                var menuItem = new ToolStripMenuItem { Text = reportType };
+                var menuItem = new Gallio.Icarus.Controls.ToolStripMenuItem { Text = reportType };
                 menuItem.Click += delegate 
                 {
                     var command = new ShowReportCommand(testController, reportController, new FileSystem())
@@ -154,39 +183,6 @@ namespace Gallio.Icarus
         {            
             recentProjectsToolStripMenuItem.DropDownItems.Clear();
             recentProjectsToolStripMenuItem.DropDownItems.AddRange(applicationController.RecentProjects);
-        }
-
-        private void ShowSourceCode(CodeLocation codeLocation)
-        {
-            foreach (var dockPane in dockPanel.Panes)
-            {
-                foreach (var dockContent in dockPane.Contents)
-                {
-                    if (!(dockContent is CodeWindow) || dockContent.ToString() != codeLocation.Path)
-                        continue;
-
-                    ((CodeWindow)dockContent).JumpTo(codeLocation.Line, codeLocation.Column);
-                    dockContent.DockHandler.Show();
-                    return;
-                }
-            }
-            var codeWindow = new CodeWindow(codeLocation);
-            codeWindow.Show(dockPanel, DockState.Document);
-        }
-
-        private void TestControllerRunFinished(object sender, EventArgs e)
-        {
-            Sync.Invoke(this, delegate
-            {
-                // enable/disable buttons & menu items appropriately
-                stopButton.Enabled = stopTestsToolStripMenuItem.Enabled = false;
-                startButton.Enabled = startTestsToolStripMenuItem.Enabled = true;
-                runTestsWithDebuggerButton.Enabled = startWithDebuggerToolStripMenuItem.Enabled = true;
-
-                // notify the user if tests have failed!
-                if (applicationController.FailedTests)
-                    Activate();
-            });
         }
 
         private IDockContent GetContentFromPersistString(string persistString)
@@ -214,11 +210,12 @@ namespace Gallio.Icarus
         {
             Text = applicationController.Title;
 
-            // prepare window manager
-            windowManager = new WindowManager(dockPanel, statusStrip.Items, toolStripContainer, menuStrip.Items);
-            var runtime = (IcarusRuntime)RuntimeAccessor.Instance;
-            runtime.RegisterComponent("Gallio.Icarus.WindowManager", typeof(IWindowManager),
-                windowManager);
+            // setup window manager
+            windowManager = (WindowManager)RuntimeAccessor.ServiceLocator.ResolveByComponentId("Gallio.Icarus.WindowManager");
+            windowManager.DockPanel = dockPanel;
+            windowManager.StatusStrip = statusStrip.Items;
+            windowManager.ToolStrip = toolStripContainer;
+            windowManager.Menu = menuStrip.Items;
 
             // deal with arguments
             applicationController.Load();
@@ -276,11 +273,6 @@ namespace Gallio.Icarus
 
         private void StartTests(bool attachDebugger)
         {
-            // enable/disable buttons
-            startButton.Enabled = startTestsToolStripMenuItem.Enabled = false;
-            runTestsWithDebuggerButton.Enabled = startWithDebuggerToolStripMenuItem.Enabled = false;
-            stopButton.Enabled = stopTestsToolStripMenuItem.Enabled = true;
-
             var command = new RunTestsCommand(testController, projectController, optionsController, reportController);
             command.AttachDebugger = attachDebugger;
             taskManager.QueueTask(command);
@@ -288,15 +280,18 @@ namespace Gallio.Icarus
 
         private void reloadToolbarButton_Click(object sender, EventArgs e)
         {
-            Reload();
+            Reload(false);
         }
 
-        private void Reload()
+        private void Reload(bool runTests)
         {
             testExplorer.SaveState();
 
             var command = new ReloadCommand(testController, projectController);
             taskManager.QueueTask(command);
+
+            if (runTests)
+                StartTests(false);
         }
 
         private void openProject_Click(object sender, EventArgs e)
@@ -335,8 +330,15 @@ namespace Gallio.Icarus
 
         private void addAssemblyToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var addAssembliesCommand = new AddAssembliesCommand(projectController, testController);
-            taskManager.QueueTask(addAssembliesCommand);
+            using (var openFileDialog = Dialogs.OpenDialog)
+            {
+                if (openFileDialog.ShowDialog(this) != DialogResult.OK)
+                    return;
+
+                var addAssembliesCommand = new AddAssembliesCommand(projectController, testController);
+                addAssembliesCommand.AssemblyFiles = openFileDialog.FileNames;
+                taskManager.QueueTask(addAssembliesCommand);
+            }
         }
 
         private void optionsMenuItem_Click(object sender, EventArgs e)
@@ -439,7 +441,6 @@ namespace Gallio.Icarus
             // save dock panel config
             dockPanel.SaveAsXml(Paths.DockConfigFile);
 
-            // dispose of the test runner service
             UnhandledExceptionPolicy.ReportUnhandledException -= ReportUnhandledException;
 
             Application.Exit();
@@ -496,28 +497,12 @@ namespace Gallio.Icarus
         {
             if (!optionsController.AlwaysReloadAssemblies)
             {
-                using (var reloadDialog = new ReloadDialog(assemblyName))
-                {
-                    if (reloadDialog.ShowDialog(this) != DialogResult.OK)
-                        return;
+                var reloadDialog = new ReloadDialog(assemblyName, optionsController);
 
-                    optionsController.AlwaysReloadAssemblies = reloadDialog.AlwaysReloadTests;
-                }
+                if (reloadDialog.ShowDialog(this) != DialogResult.OK)
+                    return;
             }
-
-            Reload();
-
-            if (optionsController.RunTestsAfterReload)
-                StartTests(false);
-        }
-
-        private void TestControllerLoadFinished(object sender, EventArgs e)
-        {
-            Sync.Invoke(this, delegate
-            {
-                startButton.Enabled = startTestsToolStripMenuItem.Enabled = true;
-                runTestsWithDebuggerButton.Enabled = startWithDebuggerToolStripMenuItem.Enabled = true;
-            });
+            Reload(optionsController.RunTestsAfterReload);
         }
 
         private void ReportUnhandledException(object sender, CorrelatedExceptionEventArgs e)

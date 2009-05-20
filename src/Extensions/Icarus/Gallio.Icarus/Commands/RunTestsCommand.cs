@@ -14,7 +14,9 @@
 // limitations under the License.
 
 using System;
+using System.IO;
 using Gallio.Icarus.Controllers.Interfaces;
+using Gallio.Icarus.Reports;
 using Gallio.Runtime.ProgressMonitoring;
 
 namespace Gallio.Icarus.Commands
@@ -48,6 +50,9 @@ namespace Gallio.Icarus.Commands
                 using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(5))
                     testController.ResetTestStatus(subProgressMonitor);
 
+                if (progressMonitor.IsCanceled)
+                    throw new OperationCanceledException();
+
                 // save current filter as last run
                 using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(5))
                 {
@@ -55,21 +60,27 @@ namespace Gallio.Icarus.Commands
                     projectController.SaveFilterSet("LastRun", filterSet, subProgressMonitor);
                 }
 
-                // stop if user has canceled
                 if (progressMonitor.IsCanceled)
                     throw new OperationCanceledException();
 
                 // run the tests
                 using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(85))
-                    testController.Run(AttachDebugger, subProgressMonitor, projectController.TestRunnerExtensions);
+                    testController.Run(AttachDebugger, subProgressMonitor, 
+                        projectController.TestRunnerExtensions);
+
+                if (progressMonitor.IsCanceled)
+                    throw new OperationCanceledException();
 
                 using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(5))
                 {
-                    if (optionsController.GenerateReportAfterTestRun)
-                    {
-                        var cmd = new GenerateReportCommand(projectController, testController, reportController);
-                        cmd.Execute(subProgressMonitor);
-                    }
+                    if (!optionsController.GenerateReportAfterTestRun)
+                        return;
+
+                    var reportOptions = new ReportOptions(projectController.ReportDirectory, 
+                        projectController.ReportNameFormat);
+                    var cmd = new GenerateReportCommand(testController, reportController);
+                    cmd.ReportOptions = reportOptions;
+                    cmd.Execute(subProgressMonitor);
                 }
             }
         }

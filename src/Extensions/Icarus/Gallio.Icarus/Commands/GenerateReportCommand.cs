@@ -15,38 +15,33 @@
 
 using System;
 using System.IO;
-using Gallio.Runtime.ProgressMonitoring;
 using Gallio.Icarus.Controllers.Interfaces;
+using Gallio.Runtime.ProgressMonitoring;
+using Gallio.Icarus.Reports;
 
 namespace Gallio.Icarus.Commands
 {
     internal class GenerateReportCommand : ICommand
     {
-        private readonly IProjectController projectController;
         private readonly ITestController testController;
         private readonly IReportController reportController;
 
-        public GenerateReportCommand(IProjectController projectController, ITestController testController,
-            IReportController reportController)
+        public ReportOptions ReportOptions
         {
-            this.projectController = projectController;
+            get;
+            set;
+        }
+
+        public GenerateReportCommand(ITestController testController, IReportController reportController)
+        {
             this.testController = testController;
             this.reportController = reportController;
         }
 
         public void Execute(IProgressMonitor progressMonitor)
         {
-            using (progressMonitor.BeginTask("Generating report", 100))
-            {
-                var reportFolder = Path.Combine(Path.GetDirectoryName(projectController.ProjectFileName),
-                    "Reports");
-
-                if (progressMonitor.IsCanceled)
-                    throw new OperationCanceledException();
-
-                testController.ReadReport(report => reportController.GenerateReport(report, 
-                    reportFolder, progressMonitor));
-            }
+            testController.ReadReport(report => reportController.GenerateReport(report,
+                ReportOptions, progressMonitor));
         }
     }
 }

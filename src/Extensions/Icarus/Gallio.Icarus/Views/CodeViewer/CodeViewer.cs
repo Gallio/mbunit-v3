@@ -14,25 +14,23 @@
 // limitations under the License.
 
 using System.IO;
+using System.Windows.Forms;
 using Gallio.Common.Reflection;
 
 namespace Gallio.Icarus
 {
-    public partial class CodeWindow : DockWindow
+    public partial class CodeViewer : UserControl
     {
         private readonly CodeLocation codeLocation;
 
-        public CodeWindow(CodeLocation codeLocation)
+        public CodeViewer(CodeLocation codeLocation)
         {
             this.codeLocation = codeLocation;
 
             InitializeComponent();
 
-            if (codeLocation == CodeLocation.Unknown)
-                Text = "(unknown)";
-            else
+            if (codeLocation != CodeLocation.Unknown)
             {
-                Text = Path.GetFileName(codeLocation.Path) ?? "(unknown)";
                 textEditorControl.LoadFile(codeLocation.Path);
                 if (codeLocation.Line != 0)
                     textEditorControl.ActiveTextAreaControl.JumpTo(codeLocation.Line, codeLocation.Column);
@@ -54,11 +52,6 @@ namespace Gallio.Icarus
         public void JumpTo(int line, int column)
         {
             textEditorControl.ActiveTextAreaControl.JumpTo(line, column);
-        }
-
-        public override string ToString()
-        {
-            return codeLocation.Path ?? "(unknown)";
         }
     }
 }

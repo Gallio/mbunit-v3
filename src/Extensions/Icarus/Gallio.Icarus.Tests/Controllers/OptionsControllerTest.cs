@@ -26,18 +26,20 @@ using MbUnit.Framework;
 using System;
 using Gallio.Icarus.Utilities;
 using Rhino.Mocks;
+using Gallio.Icarus.Options;
 
 namespace Gallio.Icarus.Tests.Controllers
 {
+    [MbUnit.Framework.Category("Controllers"), TestsOn(typeof(OptionsController))]
     internal class OptionsControllerTest
     {
         private static OptionsController SetUpOptionsController(Settings settings)
         {
-            var fileSystem = MockRepository.GenerateStub<IFileSystem>();
-            fileSystem.Stub(x => x.FileExists(Paths.SettingsFile)).Return(true);
+            var optionsManager = MockRepository.GenerateStub<IOptionsManager>();
+            optionsManager.Stub(om => om.Settings).Return(settings);
 
-            var optionsController = new OptionsController(fileSystem);
-            optionsController.Load();
+            var optionsController = new OptionsController();
+            optionsController.SetOptionsManager(optionsManager);
 
             return optionsController;
         }
@@ -168,73 +170,29 @@ namespace Gallio.Icarus.Tests.Controllers
         }
 
         [Test]
-        public void Cancel_Test()
+        public void Cancel_should_reload_options()
         {
-            var fileSystem = MockRepository.GenerateStub<IFileSystem>();
-            var xmlSerialization = MockRepository.GenerateStub<IXmlSerializer>();
-            var unhandledExceptionPolicy = MockRepository.GenerateStub<IUnhandledExceptionPolicy>();
-            fileSystem.Expect(fs => fs.FileExists(Paths.SettingsFile)).Return(true).Repeat.Twice();
-            xmlSerialization.Expect(xs => xs.LoadFromXml<Settings>(Paths.SettingsFile)).Return(new Settings()).Repeat.Twice();
-            var optionsController = new OptionsController(fileSystem, xmlSerialization, unhandledExceptionPolicy);
-            optionsController.Load();
-        
+            var optionsManager = MockRepository.GenerateStub<IOptionsManager>();
+            optionsManager.Stub(om => om.Settings).Return(new Settings());
+            var optionsController = new OptionsController();
+            optionsController.SetOptionsManager(optionsManager);
+
             optionsController.Cancel();
 
-            fileSystem.VerifyAllExpectations();
-            xmlSerialization.VerifyAllExpectations();
+            optionsManager.AssertWasCalled(om => om.Load());
         }
 
         [Test]
-        public void Save_Test()
+        public void Save_should_call_save_on_OptionsManager()
         {
-            var fileSystem = MockRepository.GenerateStub<IFileSystem>();
-            var xmlSerialization = MockRepository.GenerateStub<IXmlSerializer>();
-            var unhandledExceptionPolicy = MockRepository.GenerateStub<IUnhandledExceptionPolicy>();
-            fileSystem.Expect(fs => fs.FileExists(Paths.SettingsFile)).Return(true).Repeat.Twice();
-            xmlSerialization.Expect(xs => xs.LoadFromXml<Settings>(Paths.SettingsFile)).Return(new Settings()).Repeat.Twice();
-            var optionsController = new OptionsController(fileSystem, xmlSerialization, unhandledExceptionPolicy);
-            optionsController.Load();
+            var optionsManager = MockRepository.GenerateStub<IOptionsManager>();
+            optionsManager.Stub(om => om.Settings).Return(new Settings());
+            var optionsController = new OptionsController();
+            optionsController.SetOptionsManager(optionsManager);
 
             optionsController.Save();
 
-            xmlSerialization.AssertWasCalled(x => x.SaveToXml(Arg<Settings>.Is.Anything, Arg.Is(Paths.SettingsFile)));
-        }
-
-        [Test]
-        public void Save_Exception_Test()
-        {
-            var fileSystem = MockRepository.GenerateStub<IFileSystem>();
-            var xmlSerialization = MockRepository.GenerateStub<IXmlSerializer>();
-            var unhandledExceptionPolicy = MockRepository.GenerateStub<IUnhandledExceptionPolicy>();
-            fileSystem.Expect(fs => fs.FileExists(Paths.SettingsFile)).Return(true).Repeat.Twice();
-            xmlSerialization.Expect(xs => xs.LoadFromXml<Settings>(Paths.SettingsFile)).Return(new Settings()).Repeat.Twice();
-            var optionsController = new OptionsController(fileSystem, xmlSerialization, unhandledExceptionPolicy);
-            optionsController.Load();
-            Exception ex = new Exception();
-            xmlSerialization.Stub(x => x.SaveToXml(Arg<Settings>.Is.Anything, 
-                Arg.Is(Paths.SettingsFile))).Throw(ex);
-            
-            optionsController.Save();
-            
-            unhandledExceptionPolicy.AssertWasCalled(x => 
-                x.Report("An exception occurred while saving Icarus settings file.", ex));
-        }
-
-        [Test]
-        public void Load_Exception_Test()
-        {
-            var fileSystem = MockRepository.GenerateStub<IFileSystem>();
-            var xmlSerialization = MockRepository.GenerateStub<IXmlSerializer>();
-            var unhandledExceptionPolicy = MockRepository.GenerateStub<IUnhandledExceptionPolicy>();
-            fileSystem.Stub(fs => fs.FileExists(Paths.SettingsFile)).Return(true);
-            Exception ex = new Exception();
-            xmlSerialization.Stub(xs => xs.LoadFromXml<Settings>(Paths.SettingsFile)).Throw(ex);
-            var optionsController = new OptionsController(fileSystem, xmlSerialization, unhandledExceptionPolicy);
-            
-            optionsController.Load();
-            
-            unhandledExceptionPolicy.AssertWasCalled(uep =>
-                uep.Report("An exception occurred while loading Icarus settings file.", ex));
+            optionsManager.AssertWasCalled(om => om.Save());
         }
 
         [Test]
@@ -262,20 +220,11 @@ namespace Gallio.Icarus.Tests.Controllers
         {
             var settings = new Settings();
             settings.RecentProjects.AddRange(new[] { "one", "two" });
-            
-            var fileSystem = MockRepository.GenerateStub<IFileSystem>();
-            var xmlSerialization = MockRepository.GenerateStub<IXmlSerializer>();
-            var unhandledExceptionPolicy = MockRepository.GenerateStub<IUnhandledExceptionPolicy>();
 
-            fileSystem.Stub(fs => fs.FileExists(Paths.SettingsFile)).Return(true);
-            fileSystem.Stub(fs => fs.FileExists("one")).Return(true);
-            xmlSerialization.Stub(xs => xs.LoadFromXml<Settings>(Paths.SettingsFile)).Return(settings);
-
-            var optionsController = new OptionsController(fileSystem, xmlSerialization, unhandledExceptionPolicy);
-            optionsController.Load();
+            var optionsController = SetUpOptionsController(settings);
  
-            Assert.AreEqual(1, optionsController.RecentProjects.Count);
-            Assert.AreEqual("one", optionsController.RecentProjects.Items[0]);
+            Assert.AreEqual(settings.RecentProjects.Count, optionsController.RecentProjects.Count);
+            Assert.AreElementsEqual(settings.RecentProjects, optionsController.RecentProjects.Items);
         }
 
         [Test]
@@ -333,21 +282,6 @@ namespace Gallio.Icarus.Tests.Controllers
             Assert.AreEqual(false, optionsController.AnnotationsShowWarnings);
             optionsController.AnnotationsShowWarnings = true;
             Assert.AreEqual(true, optionsController.AnnotationsShowWarnings);
-        }
-
-        [Test]
-        public void Load_should_use_new_settings_if_file_cannot_be_found()
-        {
-            var fileSystem = MockRepository.GenerateStub<IFileSystem>();
-            var xmlSerialization = MockRepository.GenerateStub<IXmlSerializer>();
-            var unhandledExceptionPolicy = MockRepository.GenerateStub<IUnhandledExceptionPolicy>();
-
-            var optionsController = new OptionsController(fileSystem, xmlSerialization, unhandledExceptionPolicy);
-            optionsController.Load();
-
-            Assert.AreEqual(5, optionsController.SelectedTreeViewCategories.Count);
-            Assert.AreEqual(0, optionsController.PluginDirectories.Count);
-            Assert.AreEqual(0, optionsController.TestRunnerExtensions.Count);
         }
 
         [Test]

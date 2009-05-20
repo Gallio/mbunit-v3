@@ -41,12 +41,19 @@ namespace Gallio.Icarus
             private set;
         }
 
+        public Control Content
+        {
+            get;
+            private set;
+        }
+
         internal Window(string id, Control content, string caption)
         {
             InitializeComponent();
 
             Id = id;
-            
+
+            Content = content;
             Controls.Add(content);
             content.Dock = DockStyle.Fill;
 

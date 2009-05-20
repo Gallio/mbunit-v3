@@ -21,10 +21,10 @@ using Gallio.Runtime.Logging;
 
 namespace Gallio.Icarus.Controllers
 {
-    public class RuntimeLogController : IRuntimeLogController
+    internal class RuntimeLogController : IRuntimeLogController
     {
         private readonly IOptionsController optionsController;
-        private RuntimeLogger runtimeLogger;
+        private IRuntimeLogger runtimeLogger;
 
         public LogSeverity MinLogSeverity
         {
@@ -36,12 +36,13 @@ namespace Gallio.Icarus.Controllers
             {
                 runtimeLogger.MinLogSeverity = value;
                 optionsController.MinLogSeverity = value;
+                optionsController.Save();
             }
         }
 
         public event EventHandler<RuntimeLogEventArgs> LogMessage;
         
-        public void SetLogger(RuntimeLogger runtimeLogger)
+        public void SetLogger(IRuntimeLogger runtimeLogger)
         {
             this.runtimeLogger = runtimeLogger;
             runtimeLogger.LogMessage += (sender, e) => LogMessage(this, e);

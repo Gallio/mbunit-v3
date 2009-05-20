@@ -16,26 +16,22 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Threading;
 using System.Windows.Forms;
 using Gallio.Common.Collections;
-using Gallio.Common.Policies;
 using Gallio.Common.Concurrency;
-using Gallio.Icarus.Controllers.EventArgs;
+using Gallio.Common.Policies;
 using Gallio.Icarus.Controllers.Interfaces;
+using Gallio.Icarus.Helpers;
 using Gallio.Icarus.Models;
 using Gallio.Model;
 using Gallio.Model.Execution;
 using Gallio.Model.Filters;
-using Gallio.Model.Serialization;
-using Gallio.Common.Reflection;
 using Gallio.Runner;
 using Gallio.Runner.Events;
 using Gallio.Runner.Extensions;
 using Gallio.Runner.Reports;
 using Gallio.Runtime;
 using Gallio.Runtime.ProgressMonitoring;
-using Gallio.Icarus.Helpers;
 
 namespace Gallio.Icarus.Controllers
 {

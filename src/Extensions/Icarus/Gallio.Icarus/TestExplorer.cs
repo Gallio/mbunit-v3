@@ -18,10 +18,11 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Windows.Forms;
 using Aga.Controls.Tree;
-using Gallio.Icarus.Models;
-using Gallio.Model;
 using Gallio.Icarus.Commands;
 using Gallio.Icarus.Controllers.Interfaces;
+using Gallio.Icarus.Models;
+using Gallio.Icarus.Utilities;
+using Gallio.Model;
 
 namespace Gallio.Icarus
 {
@@ -175,8 +176,15 @@ namespace Gallio.Icarus
 
         private void addAssembliesToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var addAssembliesCommand = new AddAssembliesCommand(projectController, testController);
-            taskManager.QueueTask(addAssembliesCommand);
+            using (var openFileDialog = Dialogs.OpenDialog)
+            {
+                if (openFileDialog.ShowDialog(this) != DialogResult.OK)
+                    return;
+
+                var addAssembliesCommand = new AddAssembliesCommand(projectController, testController);
+                addAssembliesCommand.AssemblyFiles = openFileDialog.FileNames;
+                taskManager.QueueTask(addAssembliesCommand);
+            }
         }
 
         private void removeAssembliesToolStripMenuItem_Click(object sender, EventArgs e)
@@ -237,21 +245,6 @@ namespace Gallio.Icarus
         private void RestoreState()
         {
             testTree.CollapseNodes(projectController.CollapsedNodes);
-        }
-
-        private void testTree_DragDrop(object sender, DragEventArgs e)
-        {
-            // only handle FileDrop data
-            if (!e.Data.GetDataPresent(DataFormats.FileDrop))
-                return;
-             
-            // Assign the file names to a string array, in 
-            // case the user has selected multiple files.
-            string[] files = (string[]) e.Data.GetData(DataFormats.FileDrop);
-
-            var addAssembliesCommand = new AddAssembliesCommand(projectController, testController);
-            addAssembliesCommand.AssemblyFiles = files;
-            taskManager.QueueTask(addAssembliesCommand);
         }
 
         private void testTree_DoubleClick(object sender, EventArgs e)

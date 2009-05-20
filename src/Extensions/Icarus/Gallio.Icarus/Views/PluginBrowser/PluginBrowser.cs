@@ -14,17 +14,16 @@
 // limitations under the License.
 
 using System.Windows.Forms;
-using Gallio.Icarus.Models;
-using Gallio.Runtime;
-using Gallio.Icarus.Models.PluginNodes;
 using Aga.Controls.Tree;
+using Gallio.Icarus.Models;
+using Gallio.Icarus.Models.PluginNodes;
+using Gallio.Runtime;
 
 namespace Gallio.Icarus.Views.PluginBrowser
 {
     public partial class PluginBrowser : UserControl
     {
         private readonly PluginTreeModel model;
-        private readonly PluginDetails pluginDetails = new PluginDetails();
 
         public PluginBrowser()
         {
@@ -32,9 +31,6 @@ namespace Gallio.Icarus.Views.PluginBrowser
 
             model = new PluginTreeModel(RuntimeAccessor.Registry);
             pluginBrowserTreeView.Model = model;
-
-            splitContainer1.Panel2.Controls.Add(pluginDetails);
-            pluginDetails.Dock = DockStyle.Fill;
         }
 
         private void pluginBrowserTreeView_SelectionChanged(object sender, System.EventArgs e)
@@ -61,7 +57,7 @@ namespace Gallio.Icarus.Views.PluginBrowser
                 var details = model.GetComponentDetails(node.Text);
                 detailsModel = new ComponentDetailsTreeModel(details);
             }
-            pluginDetails.Model = detailsModel;
+            pluginDetailsTreeView.Model = detailsModel;
         }
     }
 }

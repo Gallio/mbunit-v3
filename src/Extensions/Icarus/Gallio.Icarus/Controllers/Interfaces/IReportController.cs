@@ -16,6 +16,7 @@
 using System.Collections.Generic;
 using Gallio.Runner.Reports;
 using Gallio.Runtime.ProgressMonitoring;
+using Gallio.Icarus.Reports;
 
 namespace Gallio.Icarus.Controllers.Interfaces
 {
@@ -25,7 +26,7 @@ namespace Gallio.Icarus.Controllers.Interfaces
 
         string ConvertSavedReport(string fileName, string format, IProgressMonitor progressMonitor);
         void DeleteReport(string fileName, IProgressMonitor progressMonitor);
-        void GenerateReport(Report report, string reportDirectory, IProgressMonitor progressMonitor);
+        void GenerateReport(Report report, ReportOptions reportOptions, IProgressMonitor progressMonitor);
         string ShowReport(Report report, string reportType, IProgressMonitor progressMonitor);
     }
 }
