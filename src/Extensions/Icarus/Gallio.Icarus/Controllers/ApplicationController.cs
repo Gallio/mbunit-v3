@@ -145,7 +145,8 @@ namespace Gallio.Icarus.Controllers
             else if (optionsController.RestorePreviousSettings && optionsController.RecentProjects.Count > 0)
             {
                 string projectName = optionsController.RecentProjects.Items[0];
-                OpenProject(projectName);
+                if (File.Exists(projectName))
+                    OpenProject(projectName);
             }
         }
 
