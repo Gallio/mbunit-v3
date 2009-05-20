@@ -17,8 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
-using Gallio.Common;
-using Gallio.Common.Collections;
+using Gallio.Collections;
 using Gallio.Model;
 using Gallio.Model.Logging;
 using Gallio.Model.Serialization;
@@ -27,6 +26,7 @@ using Gallio.Runner.Extensions;
 using Gallio.Runner.Reports;
 using Gallio.Runtime.Logging;
 using Gallio.Runner;
+using Gallio.Utilities;
 
 namespace Gallio.TeamCityIntegration
 {
