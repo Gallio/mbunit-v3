@@ -5,16 +5,14 @@
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{6D335678-FFFE-4C62-9BD0-D19D835263FC}</ProjectGuid>
+    <ProjectGuid>{A9FE8B03-D3F9-4348-A29B-E62285EA1C50}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>MbUnit40</RootNamespace>
-    <AssemblyName>MbUnit40</AssemblyName>
+    <RootNamespace>Gallio40.Tests</RootNamespace>
+    <AssemblyName>Gallio40.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>..\..\Key.snk</AssemblyOriginatorKeyFile>
+    <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
@@ -26,8 +24,9 @@
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisIgnoreBuiltInRuleSets>true</CodeAnalysisIgnoreBuiltInRuleSets>
     <CodeAnalysisIgnoreBuiltInRules>true</CodeAnalysisIgnoreBuiltInRules>
+    <NoWarn>1591</NoWarn>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <DocumentationFile>bin\MbUnit40.XML</DocumentationFile>
+    <DocumentationFile>bin\Gallio40.Tests.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <OutputPath>bin\</OutputPath>
@@ -37,10 +36,18 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <LangVersion>default</LangVersion>
     <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
+    <CodeAnalysisFailOnMissingRules>false</CodeAnalysisFailOnMissingRules>
+    <NoWarn>1591</NoWarn>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <DocumentationFile>bin\MbUnit40.XML</DocumentationFile>
+    <DocumentationFile>bin\Gallio40.Tests.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Rhino.Mocks, Version=3.5.0.1337, Culture=neutral, PublicKeyToken=0b3305902db7183f, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\libs\Rhino.Mocks\bin\Rhino.Mocks.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -61,32 +68,34 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Gallio\Gallio35\Gallio35.vs2010.csproj">
-      <Project>{BC28AB7E-5B71-4AEE-BF2D-54ACF7299889}</Project>
-      <Name>Gallio35.vs2010</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Gallio\Gallio40\Gallio40.vs2010.csproj">
-      <Project>{925E8A25-001F-471E-82D0-141ACD7CB9A8}</Project>
-      <Name>Gallio40.vs2010</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Gallio\Gallio\Gallio.vs2010.csproj">
-      <Project>{6CAB7735-05DA-480D-9A04-50615B00F886}</Project>
-      <Name>Gallio.vs2010</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\MbUnit35\MbUnit35.vs2010.csproj">
+    <ProjectReference Include="..\..\MbUnit\MbUnit35\MbUnit35.vs2010.csproj">
       <Project>{D147F5CC-0166-4B9C-B095-F905220090FA}</Project>
       <Name>MbUnit35.vs2010</Name>
     </ProjectReference>
-    <ProjectReference Include="..\MbUnit\MbUnit.vs2010.csproj">
+    <ProjectReference Include="..\..\MbUnit\MbUnit40\MbUnit40.vs2010.csproj">
+      <Project>{6D335678-FFFE-4C62-9BD0-D19D835263FC}</Project>
+      <Name>MbUnit40.vs2010</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\MbUnit\MbUnit\MbUnit.vs2010.csproj">
       <Project>{A9B54755-56B7-48C1-8941-BB69FCEFFF32}</Project>
       <Name>MbUnit.vs2010</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="MbUnit40.plugin" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Framework\" />
+    <ProjectReference Include="..\Gallio.Tests\Gallio.Tests.vs2010.csproj">
+      <Project>{111FD89D-58A1-4445-B4A4-8A50D65DB714}</Project>
+      <Name>Gallio.Tests.vs2010</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Gallio35\Gallio35.vs2010.csproj">
+      <Project>{BC28AB7E-5B71-4AEE-BF2D-54ACF7299889}</Project>
+      <Name>Gallio35.vs2010</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Gallio40\Gallio40.vs2010.csproj">
+      <Project>{925E8A25-001F-471E-82D0-141ACD7CB9A8}</Project>
+      <Name>Gallio40.vs2010</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Gallio\Gallio.vs2010.csproj">
+      <Project>{6CAB7735-05DA-480D-9A04-50615B00F886}</Project>
+      <Name>Gallio.vs2010</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

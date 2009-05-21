@@ -84,14 +84,20 @@
 
   <ItemGroup Condition="'$(DotNet40)'=='true'">
     <CSharpProject Include="Gallio40\Gallio40$(ProjectVariant).csproj" />
+    <CSharpProject Include="Gallio40.Tests\Gallio40.Tests$(ProjectVariant).csproj" />
     
+    <!-- Need updated documentation tool for .Net 4.0.
     <DocumentedAssembly Include="Gallio40\bin\Gallio40.dll" />
+    -->
     
     <Binary Include="Gallio40\bin\Gallio40.dll" />
     <Binary Include="Gallio40\bin\Gallio40.pdb" />
+    <Binary Include="Gallio40\bin\Gallio40.xml" />
     <PluginFile Include="Gallio40\Gallio40.plugin" />
     
     <Feature Include="FEATURE_GALLIO40" />
+    
+    <TestAssembly Include="Gallio40.Tests\bin\Gallio40.Tests.dll" />
   </ItemGroup>
   
   <ItemGroup>

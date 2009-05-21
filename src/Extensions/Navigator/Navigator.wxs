@@ -20,13 +20,9 @@
 	     The recommended workaround is Tallow but it does not support
 	     ComRegister and ComUnregister operations.  Sure we can duplicate
 	     those registry keys here, but that's error-prone. -->
-<?ifdef DOTNET40 ?>
-        <CustomAction Id="Navigator.Install" Directory='INSTALLDIR' ExeCommand='"[WindowsFolder]Microsoft.NET\Framework\v4.0.11001\regasm.exe" "[#Gallio.Navigator.exe]" /codebase' Execute="deferred" Return="check" Impersonate="no"/>
-        <CustomAction Id="Navigator.Uninstall" Directory='INSTALLDIR' ExeCommand='"[WindowsFolder]Microsoft.NET\Framework\v4.0.11001\regasm.exe" /unregister "[#Gallio.Navigator.exe]"' Execute="deferred" Return="ignore" Impersonate="no"/>
-<?else?>
         <CustomAction Id="Navigator.Install" Directory='INSTALLDIR' ExeCommand='"[WindowsFolder]Microsoft.NET\Framework\v2.0.50727\regasm.exe" "[#Gallio.Navigator.exe]" /codebase' Execute="deferred" Return="check" Impersonate="no"/>
         <CustomAction Id="Navigator.Uninstall" Directory='INSTALLDIR' ExeCommand='"[WindowsFolder]Microsoft.NET\Framework\v2.0.50727\regasm.exe" /unregister "[#Gallio.Navigator.exe]"' Execute="deferred" Return="ignore" Impersonate="no"/>
-<?endif?>
+      
         <InstallExecuteSequence>
             <Custom Action="Navigator.Install" After="InstallFiles"><![CDATA[(&feat_Navigator = 3) AND NOT(!feat_Navigator = 3)]]></Custom>
             <Custom Action="Navigator.Uninstall" Before="RemoveFiles"><![CDATA[(&feat_Navigator = 2) AND (!feat_Navigator = 3)]]></Custom>

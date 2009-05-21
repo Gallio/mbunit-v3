@@ -1,8 +1,6 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup>
     <ProjectVariant>.vs2010</ProjectVariant>
-    <NoILMerge>true</NoILMerge>
-    <NoNDoc>true</NoNDoc>
     <DotNet40>true</DotNet40>
   </PropertyGroup>
 </Project>
