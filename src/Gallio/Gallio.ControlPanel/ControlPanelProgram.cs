@@ -58,7 +58,6 @@ namespace Gallio.ControlPanel
             Application.SetCompatibleTextRenderingDefault(false);
 
             var runtimeSetup = new RuntimeSetup();
-            runtimeSetup.RuntimePath = Path.GetDirectoryName(AssemblyUtils.GetFriendlyAssemblyLocation(typeof(ControlPanelProgram).Assembly));
             runtimeSetup.PluginDirectories.AddRange(Arguments.PluginDirectories);
 
             ILogger logger = new FilteredLogger(new RichConsoleLogger(Console), Verbosity.Normal);

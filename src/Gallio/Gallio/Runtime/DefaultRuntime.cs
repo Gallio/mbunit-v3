@@ -430,7 +430,10 @@ namespace Gallio.Runtime
         private void SetRuntimePath()
         {
             if (runtimeSetup.RuntimePath == null)
-                runtimeSetup.RuntimePath = Path.GetDirectoryName(AssemblyUtils.GetFriendlyAssemblyLocation(typeof(IRuntime).Assembly));
+            {
+                Assembly entryAssembly = Assembly.GetEntryAssembly() ?? Assembly.GetExecutingAssembly();
+                runtimeSetup.RuntimePath = Path.GetDirectoryName(AssemblyUtils.GetFriendlyAssemblyLocation(entryAssembly));
+            }
 
             runtimeSetup.RuntimePath = Path.GetFullPath(runtimeSetup.RuntimePath);
         }

@@ -14,12 +14,6 @@
   <assemblies>
     <assembly fullName="Gallio, Version=0.0.0.0, Culture=neutral, PublicKeyToken=eb9cfa67ee6ab36e"
               codeBase="Gallio.dll" />
-
-    <assembly fullName="Mono.Cecil, Version=0.6.8.8607, Culture=neutral, PublicKeyToken=0738eb9f132ed756"
-              codeBase="Mono.Cecil.dll" />
-
-    <assembly fullName="NDepend.Helpers.FileDirectoryPath, Version=1.0.0.0, Culture=neutral, PublicKeyToken=eb9cfa67ee6ab36e"
-              codeBase="NDepend.Helpers.FileDirectoryPath.dll" />
   </assemblies>
 
   <services>

@@ -75,52 +75,11 @@ namespace Gallio.Runtime
         }
 
         /// <summary>
-        /// <para>
-        /// Gets or sets the runtime path of the development copy of Gallio to use
-        /// for running tests, or null if not applicable.
-        /// </para>
-        /// <para>
-        /// To facilitate development of Gallio, it is possible to redirect an out-of-process
-        /// or isolated app-domain test runner to a different version of Gallio.  That way a
-        /// standard installation of Gallio can be running in the IDE and then delegating to
-        /// the development version when it actually needs to run tests.
-        /// </para>
-        /// <para>
-        /// Of course, this mechanism can only hook into certain APIs like the test runner
-        /// API.  Consequently it may still be necessary to reinstall Gallio and/or restart
-        /// the IDE if the objective is to test changes made to the IDE add-ins themselves.
-        /// </para>
-        /// </summary>
-        public string DevelopmentRuntimePath
-        {
-            get { return developmentRuntimePath; }
-            set { developmentRuntimePath = value; }
-        }
-
-        /// <summary>
         /// Gets the list of additional plugin directories.
         /// </summary>
         public IList<string> AdditionalPluginDirectories
         {
             get { return additionalPluginDirectories; }
-        }
-
-
-        /// <summary>
-        /// Returns true if <see cref="DevelopmentRuntimePath" /> is set and refers to a directory
-        /// that exists.
-        /// </summary>
-        /// <returns>True if the development runtime path is valid</returns>
-        public bool IsDevelopmentRuntimePathValid()
-        {
-            try
-            {
-                return !string.IsNullOrEmpty(developmentRuntimePath) && Directory.Exists(developmentRuntimePath);
-            }
-            catch (IOException)
-            {
-                return false;
-            }
         }
 
         private void LoadFromRegistry(RegistryKey hive, string rootKeyName)

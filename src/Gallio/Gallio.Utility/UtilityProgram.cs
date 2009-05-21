@@ -67,7 +67,6 @@ namespace Gallio.Utility
             bool isSpecialCommand = command != null;
 
             var runtimeSetup = new RuntimeSetup();
-            runtimeSetup.RuntimePath = Path.GetDirectoryName(AssemblyUtils.GetFriendlyAssemblyLocation(typeof(UtilityProgram).Assembly));
             runtimeSetup.PluginDirectories.AddRange(Arguments.PluginDirectories);
 
             using (isSpecialCommand ? null : RuntimeBootstrap.Initialize(runtimeSetup, logger))

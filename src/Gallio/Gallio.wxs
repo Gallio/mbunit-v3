@@ -49,9 +49,6 @@
 
                 <!-- Add the Gallio bin folder to the path -->
                 <Environment Id="Gallio.Path" Name="Path" Value="[INSTALLDIR]bin" Action="set" Part="last" Separator=";" />
-		
-                <!-- Unregister development keys -->
-                <RemoveRegistryValue Root="HKLM" Key="SOFTWARE\Gallio.org\Gallio\3.0" Name="DevelopmentRuntimePath"/>
             </Component>
         </DirectoryRef>
 

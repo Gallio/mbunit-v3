@@ -70,7 +70,6 @@ namespace Gallio.Icarus
             var runtimeLogger = new RuntimeLogger();
 
             var runtimeSetup = new RuntimeSetup();
-            runtimeSetup.RuntimePath = Path.GetDirectoryName(AssemblyUtils.GetFriendlyAssemblyLocation(typeof(IcarusProgram).Assembly));
             runtimeSetup.PluginDirectories.AddRange(optionsManager.Settings.PluginDirectories);
             GenericCollectionUtils.AddAllIfNotAlreadyPresent(Arguments.PluginDirectories, runtimeSetup.PluginDirectories);
 

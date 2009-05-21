@@ -170,12 +170,8 @@ namespace Gallio.Runner
 
                     progressMonitor.SetStatus("Initializing the test driver.");
 
-                    // Override the runtime path for development.
-                    RuntimeSetup runtimeSetup = RuntimeAccessor.Instance.GetRuntimeSetup();
-                    if (runtimeSetup.InstallationConfiguration.IsDevelopmentRuntimePathValid())
-                        runtimeSetup.RuntimePath = runtimeSetup.InstallationConfiguration.DevelopmentRuntimePath;
-
                     // Create test driver.
+                    RuntimeSetup runtimeSetup = RuntimeAccessor.Instance.GetRuntimeSetup();
                     testDriver = testDriverFactory.CreateTestDriver();
                     testDriver.Initialize(runtimeSetup, testRunnerOptions, tappedLogger);
 

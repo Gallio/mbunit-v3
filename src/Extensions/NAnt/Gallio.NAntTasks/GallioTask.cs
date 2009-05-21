@@ -573,11 +573,10 @@ namespace Gallio.NAntTasks
 
             launcher.RuntimeSetup = new RuntimeSetup();
 
-            // Set the installation path explicitly to ensure that we do not encounter problems
-            // when the test assembly contains a local copy of the primary runtime assemblies
-            // which will confuse the runtime into searching in the wrong place for plugins.
+            // Set the installation path explicitly to the path of the NAnt task assembly
+            // since otherwise we will look at the path of NAnt.exe.
             launcher.RuntimeSetup.RuntimePath =
-                Path.GetDirectoryName(AssemblyUtils.GetFriendlyAssemblyLocation(typeof (GallioTask).Assembly));
+                Path.GetDirectoryName(AssemblyUtils.GetFriendlyAssemblyLocation(typeof(GallioTask).Assembly));
 
             launcher.TestPackageConfig.HostSetup.ApplicationBaseDirectory = applicationBaseDirectory;
             launcher.TestPackageConfig.HostSetup.WorkingDirectory = workingDirectory;

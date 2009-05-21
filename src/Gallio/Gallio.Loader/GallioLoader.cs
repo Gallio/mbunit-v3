@@ -357,23 +357,20 @@ namespace Gallio.Loader
 
         private static string FindRuntimePath()
         {
-            string runtimePath;
-
             string installationFolder = GetInstallationFolderFromRegistry();
             if (installationFolder != null)
             {
-                runtimePath = Path.Combine(installationFolder, "bin");
+                string runtimePath = Path.Combine(installationFolder, "bin");
                 if (IsRuntimePathValid(runtimePath))
                     return runtimePath;
             }
 
-            runtimePath = GetDevelopmentRuntimePathFromRegistry();
-            if (runtimePath != null && IsRuntimePathValid(runtimePath))
-                return runtimePath;
-
             try
             {
-                return Path.GetDirectoryName(Assembly.Load("Gallio").Location);
+                Assembly gallioAssembly = Assembly.Load("Gallio");
+                Uri codeBaseUri = new Uri(gallioAssembly.CodeBase);
+                string location = codeBaseUri.IsFile ? codeBaseUri.LocalPath : gallioAssembly.Location;
+                return Path.GetDirectoryName(location);
             }
             catch
             {
@@ -387,18 +384,6 @@ namespace Gallio.Loader
             foreach (string rootKey in RootKeys)
             {
                 string value = Registry.GetValue(rootKey, @"InstallationFolder", null) as string;
-                if (value != null)
-                    return value;
-            }
-
-            return null;
-        }
-
-        private static string GetDevelopmentRuntimePathFromRegistry()
-        {
-            foreach (string rootKey in RootKeys)
-            {
-                string value = Registry.GetValue(rootKey, @"DevelopmentRuntimePath", null) as string;
                 if (value != null)
                     return value;
             }

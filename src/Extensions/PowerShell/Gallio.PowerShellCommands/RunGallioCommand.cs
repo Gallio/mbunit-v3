@@ -515,9 +515,8 @@ namespace Gallio.PowerShellCommands
 
             launcher.RuntimeSetup = new RuntimeSetup();
 
-            // Set the installation path explicitly to ensure that we do not encounter problems
-            // when the test assembly contains a local copy of the primary runtime assemblies
-            // which will confuse the runtime into searching in the wrong place for plugins.
+            // Set the installation path explicitly to the path of the Gallio cmdlet task assembly
+            // since otherwise we will look at the path of PowerShell.exe.
             launcher.RuntimeSetup.RuntimePath = Path.GetDirectoryName(AssemblyUtils.GetFriendlyAssemblyLocation(typeof(RunGallioCommand).Assembly));
 
             launcher.TestPackageConfig.HostSetup.ApplicationBaseDirectory = applicationBaseDirectory;

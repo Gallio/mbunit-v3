@@ -102,7 +102,6 @@ namespace Gallio.Echo
         internal static void ConfigureLauncherFromArguments(TestLauncher launcher, EchoArguments arguments)
         {
             launcher.RuntimeSetup = new RuntimeSetup();
-            launcher.RuntimeSetup.RuntimePath = Path.GetDirectoryName(AssemblyUtils.GetFriendlyAssemblyLocation(typeof(EchoProgram).Assembly));
             launcher.RuntimeSetup.PluginDirectories.AddRange(arguments.PluginDirectories);
 
             launcher.TestPackageConfig.HostSetup.ShadowCopy = arguments.ShadowCopy;

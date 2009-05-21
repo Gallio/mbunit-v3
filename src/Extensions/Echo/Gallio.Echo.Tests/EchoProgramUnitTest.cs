@@ -53,7 +53,7 @@ namespace Gallio.Echo.Tests
             Assert.AreElementsEqual(new string[] { }, launcher.TestRunnerExtensionSpecifications);
 
             Assert.IsNull(launcher.RuntimeSetup.ConfigurationFilePath);
-            Assert.AreEqual(Path.GetDirectoryName(AssemblyUtils.GetAssemblyLocalPath(typeof(EchoProgram).Assembly)), launcher.RuntimeSetup.RuntimePath);
+            Assert.IsNull(launcher.RuntimeSetup.RuntimePath);
             Assert.AreElementsEqual(new string[] { }, launcher.RuntimeSetup.PluginDirectories);
 
             Assert.AreElementsEqual(new string[] { }, launcher.TestPackageConfig.AssemblyFiles);
@@ -114,8 +114,7 @@ namespace Gallio.Echo.Tests
             Assert.AreElementsEqual(new[] { "DebugExtension,Gallio" }, launcher.TestRunnerExtensionSpecifications);
 
             Assert.IsNull(launcher.RuntimeSetup.ConfigurationFilePath);
-            Assert.AreEqual(Path.GetDirectoryName(AssemblyUtils.GetAssemblyLocalPath(typeof(EchoProgram).Assembly)), 
-                launcher.RuntimeSetup.RuntimePath);
+            Assert.IsNull(launcher.RuntimeSetup.RuntimePath);
             Assert.AreElementsEqual(new[] { "plugin" }, launcher.RuntimeSetup.PluginDirectories);
 
             Assert.AreEqual(1, launcher.TestPackageConfig.AssemblyFiles.Count);

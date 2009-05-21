@@ -59,8 +59,8 @@ namespace Gallio.Runtime
 
         /// <summary>
         /// Gets or sets the runtime path, or null to determine it automatically
-        /// based on the location of the primary runtime assemblies.  The runtime
-        /// path specifies where the standard runtime plugins are located.
+        /// based on the location of the application itself.  The runtime path specifies
+        /// where the standard runtime plugins are located.
         /// </summary>
         /// <value>
         /// The installation path.  Default is <c>null</c>.
