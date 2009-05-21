@@ -1212,6 +1212,8 @@ namespace Gallio.Tests.Common.Reflection
         /// </summary>
         private static string NormalizeSystemAssemblyVersions(string assemblyOrTypeName)
         {
+            if (assemblyOrTypeName == null)
+                return null;
             return assemblyOrTypeName.Replace("Version=2.0.0.0", "Version=4.0.0.0")
                 .Replace("Version=3.0.0.0", "Version=4.0.0.0")
                 .Replace("Version=3.5.0.0", "Version=4.0.0.0");
