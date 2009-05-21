@@ -241,9 +241,12 @@ namespace Gallio.Tests.Common.Reflection
 
                 if (info.Name != info.FullName)
                 {
-                    Assert.AreEqual(target.FullName, info.ToString());
-                    Assert.AreEqual(target.FullName, info.FullName);
-                    Assert.AreEqual(target.GetName().FullName, info.GetName().FullName);
+                    Assert.AreEqual(NormalizeSystemAssemblyVersions(target.FullName),
+                        NormalizeSystemAssemblyVersions(info.ToString()));
+                    Assert.AreEqual(NormalizeSystemAssemblyVersions(target.FullName),
+                        NormalizeSystemAssemblyVersions(info.FullName));
+                    Assert.AreEqual(NormalizeSystemAssemblyVersions(target.GetName().FullName),
+                        NormalizeSystemAssemblyVersions(info.GetName().FullName));
                 }
                 else
                 {
@@ -268,7 +271,9 @@ namespace Gallio.Tests.Common.Reflection
                 Assert.AreElementsEqualIgnoringOrder(
                     target.GetReferencedAssemblies(),
                     info.GetReferencedAssemblies(),
-                    delegate(AssemblyName expected, AssemblyName actual) { return expected.FullName == actual.FullName; });
+                    delegate(AssemblyName expected, AssemblyName actual) {
+                        return NormalizeSystemAssemblyVersions(expected.FullName) == NormalizeSystemAssemblyVersions(actual.FullName);
+                    });
 
                 IList<ITypeInfo> privateTypes = info.GetTypes();
                 IList<ITypeInfo> publicTypes = info.GetExportedTypes();
@@ -566,11 +571,14 @@ namespace Gallio.Tests.Common.Reflection
                 AreEqualWhenResolved(target.BaseType, info.BaseType);
 
                 if (supportsFullAssemblyName)
-                    Assert.AreEqual(target.AssemblyQualifiedName, info.AssemblyQualifiedName, target.ToString());
+                    Assert.AreEqual(NormalizeSystemAssemblyVersions(target.AssemblyQualifiedName),
+                        NormalizeSystemAssemblyVersions(info.AssemblyQualifiedName), target.ToString());
                 else
-                    Assert.StartsWith(target.AssemblyQualifiedName, info.AssemblyQualifiedName, target.ToString());
+                    Assert.StartsWith(NormalizeSystemAssemblyVersions(target.AssemblyQualifiedName),
+                        NormalizeSystemAssemblyVersions(info.AssemblyQualifiedName), target.ToString());
 
-                Assert.AreEqual(target.FullName, info.FullName, target.ToString());
+                Assert.AreEqual(NormalizeSystemAssemblyVersions(target.FullName),
+                    NormalizeSystemAssemblyVersions(info.FullName), target.ToString());
                 AreEqualWhenResolved(target.HasElementType ? target.GetElementType() : null, info.ElementType);
 
                 Assert.AreEqual(target.IsAbstract, info.IsAbstract);
@@ -869,7 +877,9 @@ namespace Gallio.Tests.Common.Reflection
         private void AreEqual(Type expected, Type actual)
         {
             if (workaroundStrongTypeEquivalenceProblems)
-                Assert.AreEqual(expected != null ? expected.ToString() : null, actual != null ? actual.ToString() : null);
+                Assert.AreEqual(
+                    expected != null ? NormalizeSystemAssemblyVersions(expected.ToString()) : null,
+                    actual != null ? NormalizeSystemAssemblyVersions(actual.ToString()) : null);
             else
                 Assert.AreEqual(expected, actual);
         }
@@ -917,11 +927,11 @@ namespace Gallio.Tests.Common.Reflection
         {
             Dictionary<string, Type> keyedExpectedTypes = new Dictionary<string, Type>();
             foreach (Type expectedType in expectedTypes)
-                keyedExpectedTypes.Add(expectedType.FullName ?? expectedType.Name, expectedType);
+                keyedExpectedTypes.Add(NormalizeSystemAssemblyVersions(expectedType.FullName ?? expectedType.Name), expectedType);
 
             Dictionary<string, ITypeInfo> keyedActualTypes = new Dictionary<string, ITypeInfo>();
             foreach (ITypeInfo actualType in actualTypes)
-                keyedActualTypes.Add(actualType.FullName ?? actualType.Name, actualType);
+                keyedActualTypes.Add(NormalizeSystemAssemblyVersions(actualType.FullName ?? actualType.Name), actualType);
 
             Assert.Over.KeyedPairs(keyedExpectedTypes, keyedActualTypes, AreEqualWhenResolved);
         }
@@ -1189,9 +1199,22 @@ namespace Gallio.Tests.Common.Reflection
         {
             Assert.AreEqual(
                 new CodeReference(new AssemblyName(expected.AssemblyName).Name,
-                    expected.NamespaceName, expected.TypeName, expected.MemberName, expected.ParameterName),
+                    expected.NamespaceName, NormalizeSystemAssemblyVersions(expected.TypeName), expected.MemberName, expected.ParameterName),
                 new CodeReference(new AssemblyName(actual.AssemblyName).Name,
-                    actual.NamespaceName, actual.TypeName, actual.MemberName, actual.ParameterName));
+                    actual.NamespaceName, NormalizeSystemAssemblyVersions(actual.TypeName), actual.MemberName, actual.ParameterName));
+        }
+
+        /// <summary>
+        /// We normalize .Net framework versions like 2.0.0.0 and 4.0.0.0 to work around
+        /// problems that happen when running the tests under .Net 4.0 because system assemblies
+        /// are automatically promoted from 2.0 to 4.0 so their on-disk representation differs
+        /// from their in-memory representation.
+        /// </summary>
+        private static string NormalizeSystemAssemblyVersions(string assemblyOrTypeName)
+        {
+            return assemblyOrTypeName.Replace("Version=2.0.0.0", "Version=4.0.0.0")
+                .Replace("Version=3.0.0.0", "Version=4.0.0.0")
+                .Replace("Version=3.5.0.0", "Version=4.0.0.0");
         }
 
         /// <summary>

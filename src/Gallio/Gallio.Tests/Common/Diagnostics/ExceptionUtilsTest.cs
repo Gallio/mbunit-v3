@@ -15,6 +15,7 @@
 
 using System;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using Gallio.Common.Collections;
 using Gallio.Common.Diagnostics;
 using Gallio.Framework;
@@ -68,6 +69,7 @@ namespace Gallio.Tests.Common.Diagnostics
             }
         }
 
+        [MethodImpl(MethodImplOptions.NoInlining)]
         public static void ThrowBoom()
         {
             throw new InvalidOperationException("Boom!");
