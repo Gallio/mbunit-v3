@@ -54,6 +54,9 @@ namespace Gallio.UI.ControlPanel.Plugins
             int rowIndex = pluginGrid.Rows.Add(pluginInfo.SmallIcon, pluginInfo.Name, pluginInfo.Version);
             DataGridViewRow row = pluginGrid.Rows[rowIndex];
             row.Tag = pluginInfo;
+
+            if (disabledReason != null)
+                row.DefaultCellStyle.ForeColor = Color.LightGray;
         }
 
         private void pluginGrid_SelectionChanged(object sender, EventArgs e)
@@ -64,13 +67,31 @@ namespace Gallio.UI.ControlPanel.Plugins
                 var pluginInfo = (PluginInfo)row.Tag;
 
                 pluginIconPictureBox.Image = pluginInfo.BigIcon;
-                pluginDescriptionLabel.Text = pluginInfo.Description;
+
+                StringBuilder rtf = new StringBuilder();
+                rtf.Append(@"{\rtf1 ");
+                rtf.Append(RtfEscape(pluginInfo.Description));
+
+                if (pluginInfo.DisabledReason != null)
+                {
+                    rtf.Append(@"\par\b Disabled:\b0  ");
+                    rtf.Append(RtfEscape(pluginInfo.DisabledReason));
+                }
+
+                rtf.Append(@"}");
+
+                pluginDescriptionRichTextBox.Rtf = rtf.ToString();
             }
             else
             {
                 pluginIconPictureBox.Image = null;
-                pluginDescriptionLabel.Text = "";
+                pluginDescriptionRichTextBox.Clear();
             }
+        }
+
+        private static string RtfEscape(string text)
+        {
+            return text.Replace(@"\", @"\\").Replace("{", @"\{").Replace("}", @"\}");
         }
 
         private sealed class PluginInfo

@@ -34,7 +34,7 @@
             this.pluginVersionColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.outerTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             this.pluginIconPictureBox = new System.Windows.Forms.PictureBox();
-            this.pluginDescriptionLabel = new System.Windows.Forms.Label();
+            this.pluginDescriptionRichTextBox = new System.Windows.Forms.RichTextBox();
             ((System.ComponentModel.ISupportInitialize)(this.pluginGrid)).BeginInit();
             this.outerTableLayoutPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pluginIconPictureBox)).BeginInit();
@@ -63,7 +63,7 @@
             this.pluginGrid.ShowCellErrors = false;
             this.pluginGrid.ShowEditingIcon = false;
             this.pluginGrid.ShowRowErrors = false;
-            this.pluginGrid.Size = new System.Drawing.Size(454, 354);
+            this.pluginGrid.Size = new System.Drawing.Size(454, 294);
             this.pluginGrid.StandardTab = true;
             this.pluginGrid.TabIndex = 0;
             this.pluginGrid.SelectionChanged += new System.EventHandler(this.pluginGrid_SelectionChanged);
@@ -107,37 +107,41 @@
             this.outerTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.outerTableLayoutPanel.Controls.Add(this.pluginGrid, 0, 0);
             this.outerTableLayoutPanel.Controls.Add(this.pluginIconPictureBox, 0, 1);
-            this.outerTableLayoutPanel.Controls.Add(this.pluginDescriptionLabel, 1, 1);
+            this.outerTableLayoutPanel.Controls.Add(this.pluginDescriptionRichTextBox, 1, 1);
             this.outerTableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.outerTableLayoutPanel.Location = new System.Drawing.Point(0, 0);
             this.outerTableLayoutPanel.Name = "outerTableLayoutPanel";
             this.outerTableLayoutPanel.RowCount = 2;
             this.outerTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.outerTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
-            this.outerTableLayoutPanel.Size = new System.Drawing.Size(460, 400);
+            this.outerTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 60F));
+            this.outerTableLayoutPanel.Size = new System.Drawing.Size(460, 360);
             this.outerTableLayoutPanel.TabIndex = 1;
             // 
             // pluginIconPictureBox
             // 
+            this.pluginIconPictureBox.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.pluginIconPictureBox.ErrorImage = null;
             this.pluginIconPictureBox.InitialImage = null;
-            this.pluginIconPictureBox.Location = new System.Drawing.Point(4, 364);
+            this.pluginIconPictureBox.Location = new System.Drawing.Point(4, 314);
             this.pluginIconPictureBox.Margin = new System.Windows.Forms.Padding(4);
             this.pluginIconPictureBox.Name = "pluginIconPictureBox";
             this.pluginIconPictureBox.Size = new System.Drawing.Size(32, 32);
             this.pluginIconPictureBox.TabIndex = 1;
             this.pluginIconPictureBox.TabStop = false;
             // 
-            // pluginDescriptionLabel
+            // pluginDescriptionRichTextBox
             // 
-            this.pluginDescriptionLabel.AutoEllipsis = true;
-            this.pluginDescriptionLabel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pluginDescriptionLabel.Location = new System.Drawing.Point(43, 360);
-            this.pluginDescriptionLabel.Name = "pluginDescriptionLabel";
-            this.pluginDescriptionLabel.Size = new System.Drawing.Size(414, 40);
-            this.pluginDescriptionLabel.TabIndex = 2;
-            this.pluginDescriptionLabel.Text = "about description";
-            this.pluginDescriptionLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.pluginDescriptionRichTextBox.BackColor = System.Drawing.SystemColors.Window;
+            this.pluginDescriptionRichTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.pluginDescriptionRichTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pluginDescriptionRichTextBox.Location = new System.Drawing.Point(43, 303);
+            this.pluginDescriptionRichTextBox.Name = "pluginDescriptionRichTextBox";
+            this.pluginDescriptionRichTextBox.ReadOnly = true;
+            this.pluginDescriptionRichTextBox.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.ForcedVertical;
+            this.pluginDescriptionRichTextBox.ShortcutsEnabled = false;
+            this.pluginDescriptionRichTextBox.Size = new System.Drawing.Size(414, 54);
+            this.pluginDescriptionRichTextBox.TabIndex = 2;
+            this.pluginDescriptionRichTextBox.Text = "";
             // 
             // PluginControlPanelTab
             // 
@@ -145,7 +149,6 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.outerTableLayoutPanel);
             this.Name = "PluginControlPanelTab";
-            this.Size = new System.Drawing.Size(460, 400);
             this.Load += new System.EventHandler(this.PluginControlPanelTab_Load);
             ((System.ComponentModel.ISupportInitialize)(this.pluginGrid)).EndInit();
             this.outerTableLayoutPanel.ResumeLayout(false);
@@ -159,11 +162,11 @@
 
         private System.Windows.Forms.DataGridView pluginGrid;
         private System.Windows.Forms.TableLayoutPanel outerTableLayoutPanel;
-        private System.Windows.Forms.Label pluginDescriptionLabel;
         private System.Windows.Forms.PictureBox pluginIconPictureBox;
         private System.Windows.Forms.DataGridViewImageColumn pluginIconColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn pluginNameColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn pluginVersionColumn;
+        private System.Windows.Forms.RichTextBox pluginDescriptionRichTextBox;
 
     }
 }
