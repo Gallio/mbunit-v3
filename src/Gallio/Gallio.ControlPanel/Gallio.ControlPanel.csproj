@@ -17,7 +17,7 @@
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\Key.snk</AssemblyOriginatorKeyFile>
     <StartupObject>Gallio.ControlPanel.ControlPanelProgram</StartupObject>
-    <ApplicationIcon>Resources\GallioControlPanel.ico</ApplicationIcon>
+    <ApplicationIcon>Resources\Gallio.ControlPanel.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -80,7 +80,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\GallioControlPanel.ico" />
+    <None Include="Resources\Gallio.ControlPanel.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

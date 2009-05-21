@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<plugin pluginId="Gallio40"
+        xmlns="http://www.gallio.org/">
+  <traits>
+    <name>Gallio Extensions for .Net 4.0</name>
+    <version>0.0.0.0</version>
+    <description>Provides additional Gallio features for use with .Net 4.0.</description>
+    <icon>plugin://Gallio/Resources/Gallio.ico</icon>
+  </traits>
+
+  <dependencies>
+    <dependency pluginId="Gallio35" />
+  </dependencies>
+
+  <?ifdef NET40?>
+  <assemblies>
+    <assembly fullName="Gallio40, Version=0.0.0.0, Culture=neutral, PublicKeyToken=eb9cfa67ee6ab36e"
+              codeBase="Gallio40.dll" />
+  </assemblies>
+  <?endif?>
+</plugin>

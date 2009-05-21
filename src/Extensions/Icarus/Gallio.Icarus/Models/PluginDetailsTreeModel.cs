@@ -43,7 +43,6 @@ namespace Gallio.Icarus.Models
                 yield return new PluginDetailsNode("Plugin Properties", string.Empty);
                 yield return new PluginDetailsNode("Plugin Type Name", pluginDescriptor.PluginTypeName.FullName);
                 yield return new PluginDetailsNode("Probing Paths", string.Empty);
-                yield return new PluginDetailsNode("Resource Locator", pluginDescriptor.ResourceLocator.ToString());
                 yield return new PluginDetailsNode("Traits Properties", string.Empty);
             }
             else

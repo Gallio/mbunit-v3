@@ -5,6 +5,7 @@
     <name>Gallio Extensions for .Net 3.5</name>
     <version>0.0.0.0</version>
     <description>Provides additional Gallio features for use with .Net 3.5.</description>
+    <icon>plugin://Gallio/Resources/Gallio.ico</icon>
   </traits>
 
   <dependencies>

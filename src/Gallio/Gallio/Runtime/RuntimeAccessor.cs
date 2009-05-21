@@ -82,6 +82,18 @@ namespace Gallio.Runtime
         }
 
         /// <summary>
+        /// Gets the runtime's resource locator.
+        /// </summary>
+        /// <exception cref="InvalidOperationException">Thrown if the runtime has not been initialized</exception>
+        public static IResourceLocator ResourceLocator
+        {
+            get
+            {
+                return Instance.ResourceLocator;
+            }
+        }
+
+        /// <summary>
         /// Returns true if the runtime has been initialized.
         /// </summary>
         public static bool IsInitialized

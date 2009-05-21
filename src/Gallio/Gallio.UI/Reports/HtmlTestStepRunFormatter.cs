@@ -51,7 +51,7 @@ namespace Gallio.UI.Reports
         public HtmlTestStepRunFormatter()
         {
             IRuntime runtime = RuntimeAccessor.Instance;
-            string resourcesPath = runtime.MapUriToLocalPath(new Uri("plugin://Gallio.Reports/Resources/"));
+            string resourcesPath = runtime.ResourceLocator.ResolveResourcePath(new Uri("plugin://Gallio.Reports/Resources/"));
             resourcesUrl = new Uri(resourcesPath);
             cssUrl = new Uri(resourcesUrl, "css");
             imgUrl = new Uri(resourcesUrl, "img");

@@ -5,6 +5,7 @@
     <name>Gallio</name>
     <version>0.0.0.0</version>
     <description>The heart of Gallio.</description>
+    <icon>plugin://Gallio/Resources/Gallio.ico</icon>
   </traits>
 
   <dependencies>

@@ -398,7 +398,7 @@
     <Compile Include="Runtime\Extensibility\DefaultPlugin.cs" />
     <Compile Include="Runtime\Extensibility\DependencyResolution.cs" />
     <Compile Include="Runtime\Extensibility\ComponentHandle.cs" />
-    <Compile Include="Runtime\Extensibility\FileSystemResourceLocator.cs" />
+    <Compile Include="Runtime\Extensibility\RegistryResourceLocator.cs" />
     <Compile Include="Runtime\Extensibility\InstanceHandlerFactory.cs" />
     <Compile Include="Runtime\Extensibility\IObjectDependencyResolver.cs" />
     <Compile Include="Runtime\Extensibility\IPluginCatalog.cs" />
@@ -858,6 +858,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Gallio.plugin" />
+    <Content Include="Resources\Gallio.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="..\..\SGen.targets" />

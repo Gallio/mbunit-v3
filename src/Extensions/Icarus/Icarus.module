@@ -11,6 +11,9 @@
     <PluginFile Include="Gallio.Icarus\bin\Gallio.Icarus.exe.config" />
     <PluginFile Include="Gallio.Icarus\Gallio.Icarus.plugin" />    
     <Binary Include="Gallio.Icarus\bin\Gallio.Icarus.XmlSerializers.dll" />
+    <Binary Include="Gallio.Icarus\Resources\Gallio.Icarus.ico">
+        <Folder>Resources</Folder>
+    </Binary>
 
     <Binary Include="libs\Aga.Controls.dll" />
     <Binary Include="libs\ICSharpCode.TextEditor.dll" />

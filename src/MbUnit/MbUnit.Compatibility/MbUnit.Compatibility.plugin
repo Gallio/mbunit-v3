@@ -5,6 +5,7 @@
     <name>MbUnit v3 Extensions for Backwards Compatibility</name>
     <version>0.0.0.0</version>
     <description>Provides extensions for MbUnit v3 to assist with test migration from MbUnit v2.</description>
+    <icon>plugin://MbUnit/Resources/MbUnit.ico</icon>
   </traits>
 
   <dependencies>

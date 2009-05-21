@@ -35,7 +35,7 @@ namespace Gallio.UI.ControlPanel.Plugins
             Icon icon, string description, string disabledReason)
         {
             if (icon == null)
-                icon = Resources.DefaultPluginAboutIcon;
+                icon = Resources.DefaultPluginIcon;
 
             Image smallIcon = new Icon(icon, new Size(16, 16)).ToBitmap();
             Image bigIcon = new Icon(icon, new Size(32, 32)).ToBitmap();

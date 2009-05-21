@@ -22,6 +22,12 @@
             </Component>
         </DirectoryRef>
 
+        <DirectoryRef Id="ResourcesFolder" FileSource="$(var.GallioTargetDir)\bin\Resources\">
+            <Component Id="Gallio.Icarus.Resources" Guid="{F8A60B6D-04DC-4835-959A-500E2365741A}" Win64="no">
+                <File Id="Gallio.Icarus.ico" Name="Gallio.Icarus.ico" KeyPath="yes" />
+            </Component>
+        </DirectoryRef>
+	
         <Icon Id="Gallio.icon.exe" SourceFile="$(var.GallioTargetDir)\bin\Gallio.Icarus.exe" />
 
         <DirectoryRef Id="GallioMenuFolder">
@@ -51,6 +57,7 @@
         <Feature Id="feat_Gallio.Icarus" Title="Icarus (GUI Test Runner)" Level="1" AllowAdvertise="no"
             Description="Installs the Gallio GUI-based test runner.">
             <ComponentRef Id="Gallio.Icarus.exe" />
+            <ComponentRef Id="Gallio.Icarus.Resources" />
 
             <ComponentRef Id="Aga.Controls.dll" />
             <ComponentRef Id="ICSharpCode.TextEditor.dll" />

@@ -73,11 +73,6 @@ namespace Gallio.Runtime.Extensibility
         PropertySet TraitsProperties { get; }
 
         /// <summary>
-        /// Gets the plugin's resource locator.
-        /// </summary>
-        IResourceLocator ResourceLocator { get; }
-
-        /// <summary>
         /// Returns true if the plugin is disabled.
         /// </summary>
         bool IsDisabled { get; }

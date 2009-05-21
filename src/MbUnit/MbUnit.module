@@ -16,20 +16,19 @@
     <CSharpProject Include="MbUnit.TestResources.x86\MbUnit.TestResources.x86$(ProjectVariant).csproj" />
     <CSharpProject Include="MbUnit.TestResources.x64\MbUnit.TestResources.x64$(ProjectVariant).csproj" />
     <CSharpProject Include="MbUnit.Tests\MbUnit.Tests$(ProjectVariant).csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
+    
     <DocumentedAssembly Include="MbUnit\bin\MbUnit.dll" />
     <DocumentedAssembly Include="MbUnit35\bin\MbUnit35.dll" />
     <DocumentedAssembly Include="MbUnit.Compatibility\bin\MbUnit.Compatibility.dll" />
-  </ItemGroup>
-
-  <ItemGroup>
+    
     <Content Include="MbUnit Website.url" />
     
     <Binary Include="MbUnit\bin\MbUnit.dll" />
     <Binary Include="MbUnit\bin\MbUnit.pdb" />
     <PluginFile Include="MbUnit\MbUnit.plugin" />
+    <Binary Include="MbUnit\Resources\MbUnit.ico">
+        <Folder>Resources</Folder>
+    </Binary>
     
     <Binary Include="MbUnit35\bin\MbUnit35.dll" />
     <Binary Include="MbUnit35\bin\MbUnit35.pdb" />
@@ -38,9 +37,19 @@
     <Binary Include="MbUnit.Compatibility\bin\MbUnit.Compatibility.dll" />
     <Binary Include="MbUnit.Compatibility\bin\MbUnit.Compatibility.pdb" />
     <PluginFile Include="MbUnit.Compatibility\MbUnit.Compatibility.plugin" />
+    
+    <TestAssembly Include="MbUnit.Tests\bin\MbUnit.Tests.dll" />
   </ItemGroup>
 
-  <ItemGroup>
-    <TestAssembly Include="MbUnit.Tests\bin\MbUnit.Tests.dll" />
+  <ItemGroup Condition="'$(DotNet40)'=='true'">
+    <CSharpProject Include="MbUnit40\MbUnit40$(ProjectVariant).csproj" />
+    
+    <DocumentedAssembly Include="MbUnit40\bin\MbUnit40.dll" />
+    
+    <Binary Include="MbUnit40\bin\MbUnit40.dll" />
+    <Binary Include="MbUnit40\bin\MbUnit40.pdb" />
+    <PluginFile Include="MbUnit40\MbUnit40.plugin" />
+    
+    <Feature Include="FEATURE_MBUNIT40" />
   </ItemGroup>
 </Project>

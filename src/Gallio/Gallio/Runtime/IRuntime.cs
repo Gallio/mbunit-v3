@@ -45,25 +45,17 @@ namespace Gallio.Runtime
         IServiceLocator ServiceLocator { get; }
 
         /// <summary>
+        /// Gets the resource locator.
+        /// </summary>
+        IResourceLocator ResourceLocator { get; }
+
+        /// <summary>
         /// Initializes the runtime.
         /// </summary>
         /// <param name="logger">The runtime logging service</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="logger"/> is null</exception>
         /// <exception cref="RuntimeException">Thrown if the runtime could not be initialized</exception>
         void Initialize(ILogger logger);
-
-        /// <summary>
-        /// Maps a Uri to a local path.
-        /// </summary>
-        /// <remarks>
-        /// Recognizes plugin-relative paths of the form "plugin://Some.Plugin.Id/foo.txt"
-        /// and Uri's in the "file" scheme.
-        /// </remarks>
-        /// <param name="uri">The uri to map</param>
-        /// <returns>The local path</returns>
-        /// <exception cref="InvalidOperationException">Thrown if <paramref name="uri"/>
-        /// cannot be mapped to a local path</exception>
-        string MapUriToLocalPath(Uri uri);
 
         /// <summary>
         /// Gets a deep copy of the runtime setup used to configure this runtime.

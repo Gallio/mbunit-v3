@@ -12,7 +12,7 @@
     <StartupObject>Gallio.Echo.EchoProgram</StartupObject>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\..\Key.snk</AssemblyOriginatorKeyFile>
-    <ApplicationIcon>Resources\GallioEcho.ico</ApplicationIcon>
+    <ApplicationIcon>Resources\Gallio.Echo.ico</ApplicationIcon>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
     <OldToolsVersion>3.5</OldToolsVersion>
@@ -62,7 +62,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Gallio.Echo.plugin" />
-    <None Include="Resources\GallioEcho.ico" />
+    <None Include="Resources\Gallio.Echo.ico" />
     <None Include="Gallio.Echo.exe.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -75,9 +75,9 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Gallio\Gallio\Gallio.csproj">
+    <ProjectReference Include="..\..\..\Gallio\Gallio\Gallio.vs2010.csproj">
       <Project>{6CAB7735-05DA-480D-9A04-50615B00F886}</Project>
-      <Name>Gallio %28Gallio\Gallio%29</Name>
+      <Name>Gallio.vs2010</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

@@ -8,9 +8,17 @@
                 <File Name="Gallio.Echo.plugin" />
             </Component>
         </DirectoryRef>
+
+        <DirectoryRef Id="ResourcesFolder" FileSource="$(var.GallioTargetDir)\bin\Resources\">
+            <Component Id="Gallio.Echo.Resources" Guid="{12D947CF-B41D-414f-8434-DEB0EF0F5786}" Win64="no">
+                <File Id="Gallio.Echo.ico" Name="Gallio.Echo.ico" KeyPath="yes" />
+            </Component>
+        </DirectoryRef>
+	
         <Feature Id="feat_Gallio.Echo" Title="Echo (CLI Test Runner)" Level="1" AllowAdvertise="no"
             Description="Installs the Gallio command-line test runner.">
             <ComponentRef Id="Gallio.Echo" />
+	    <ComponentRef Id="Gallio.Echo.Resources" />
         </Feature>
     </Fragment>
 </Wix>

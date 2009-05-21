@@ -28,6 +28,7 @@ namespace Gallio.Runtime.Extensibility
         private readonly Components components;
         private readonly Services services;
         private readonly IServiceLocator serviceLocator;
+        private readonly IResourceLocator resourceLocator;
 
         private readonly LockBox<RegistryData> dataBox;
 
@@ -40,6 +41,7 @@ namespace Gallio.Runtime.Extensibility
             components = new Components(this);
             services = new Services(this);
             serviceLocator = new RegistryServiceLocator(this);
+            resourceLocator = new RegistryResourceLocator(this);
 
             dataBox = new LockBox<RegistryData>(new RegistryData());
         }
@@ -73,6 +75,12 @@ namespace Gallio.Runtime.Extensibility
         public IServiceLocator ServiceLocator
         {
             get { return serviceLocator; }
+        }
+
+        /// <inheritdoc />
+        public IResourceLocator ResourceLocator
+        {
+            get { return resourceLocator; }
         }
 
         /// <inheritdoc />

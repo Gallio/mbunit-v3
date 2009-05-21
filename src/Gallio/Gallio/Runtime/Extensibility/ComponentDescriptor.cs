@@ -130,8 +130,8 @@ namespace Gallio.Runtime.Extensibility
                     registry.DataBox.Write(data =>
                     {
                         if (componentHandler == null)
-                            componentHandler = componentHandlerFactory.CreateHandler(registry.ServiceLocator,
-                                pluginDescriptor.ResourceLocator,
+                            componentHandler = componentHandlerFactory.CreateHandler(
+                                registry.ServiceLocator, registry.ResourceLocator,
                                 contractType, objectType, componentProperties);
                     });
                 }
@@ -167,8 +167,8 @@ namespace Gallio.Runtime.Extensibility
                     registry.DataBox.Write(data =>
                     {
                         if (traitsHandler == null)
-                            traitsHandler = serviceDescriptor.TraitsHandlerFactory.CreateHandler(registry.ServiceLocator,
-                                pluginDescriptor.ResourceLocator,
+                            traitsHandler = serviceDescriptor.TraitsHandlerFactory.CreateHandler(
+                                registry.ServiceLocator, registry.ResourceLocator,
                                 contractType, objectType, traitsProperties);
                     });
                 }

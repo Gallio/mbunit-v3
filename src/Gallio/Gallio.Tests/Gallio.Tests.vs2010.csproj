@@ -214,7 +214,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Runtime\Extensibility\PluginLoaderTest.cs" />
-    <Compile Include="Runtime\Extensibility\FileSystemResourceLocatorTest.cs" />
+    <Compile Include="Runtime\Extensibility\RegistryResourceLocatorTest.cs" />
     <Compile Include="Runtime\Extensibility\ObjectFactoryTest.cs" />
     <Compile Include="Runtime\Extensibility\PluginCatalogTest.cs" />
     <Compile Include="Runtime\Extensibility\RegistryServiceLocatorTest.cs" />
@@ -323,41 +323,41 @@
     <Compile Include="Common\Xml\XmlUtilsTest.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\MbUnit\MbUnit.TestResources.x64\MbUnit.TestResources.x64.csproj">
+    <ProjectReference Include="..\..\MbUnit\MbUnit.TestResources.x64\MbUnit.TestResources.x64.vs2010.csproj">
       <Project>{192D2C12-9D5C-4D68-96BA-4CD28054E3BC}</Project>
-      <Name>MbUnit.TestResources.x64</Name>
+      <Name>MbUnit.TestResources.x64.vs2010</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\MbUnit\MbUnit.TestResources.x86\MbUnit.TestResources.x86.csproj">
+    <ProjectReference Include="..\..\MbUnit\MbUnit.TestResources.x86\MbUnit.TestResources.x86.vs2010.csproj">
       <Project>{45224C3F-B0F1-4D70-8516-B50100DEF79B}</Project>
-      <Name>MbUnit.TestResources.x86</Name>
+      <Name>MbUnit.TestResources.x86.vs2010</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\MbUnit\MbUnit.TestResources\MbUnit.TestResources.csproj">
+    <ProjectReference Include="..\..\MbUnit\MbUnit.TestResources\MbUnit.TestResources.vs2010.csproj">
       <Project>{9FFB657C-7099-4594-A1DD-6E9AC5D7171E}</Project>
-      <Name>MbUnit.TestResources</Name>
+      <Name>MbUnit.TestResources.vs2010</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\MbUnit\MbUnit35\MbUnit35.csproj">
+    <ProjectReference Include="..\..\MbUnit\MbUnit35\MbUnit35.vs2010.csproj">
       <Project>{D147F5CC-0166-4B9C-B095-F905220090FA}</Project>
-      <Name>MbUnit35</Name>
+      <Name>MbUnit35.vs2010</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\MbUnit\MbUnit\MbUnit.csproj">
+    <ProjectReference Include="..\..\MbUnit\MbUnit\MbUnit.vs2010.csproj">
       <Project>{A9B54755-56B7-48C1-8941-BB69FCEFFF32}</Project>
-      <Name>MbUnit %28MbUnit\MbUnit%29</Name>
+      <Name>MbUnit.vs2010</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Gallio.Host\Gallio.Host.csproj">
+    <ProjectReference Include="..\Gallio.Host\Gallio.Host.vs2010.csproj">
       <Project>{35FFAF24-1019-4BE2-901D-02E627C757DC}</Project>
-      <Name>Gallio.Host</Name>
+      <Name>Gallio.Host.vs2010</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Gallio.Reports\Gallio.Reports.csproj">
+    <ProjectReference Include="..\Gallio.Reports\Gallio.Reports.vs2010.csproj">
       <Project>{399C33BF-A9F7-4390-8F9C-8EECF7814123}</Project>
-      <Name>Gallio.Reports</Name>
+      <Name>Gallio.Reports.vs2010</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Gallio35\Gallio35.csproj">
+    <ProjectReference Include="..\Gallio35\Gallio35.vs2010.csproj">
       <Project>{BC28AB7E-5B71-4AEE-BF2D-54ACF7299889}</Project>
-      <Name>Gallio35</Name>
+      <Name>Gallio35.vs2010</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Gallio\Gallio.csproj">
+    <ProjectReference Include="..\Gallio\Gallio.vs2010.csproj">
       <Project>{6CAB7735-05DA-480D-9A04-50615B00F886}</Project>
-      <Name>Gallio %28Gallio\Gallio%29</Name>
+      <Name>Gallio.vs2010</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

@@ -4,11 +4,6 @@
     <name>Gallio Control Panel</name>
     <version>0.0.0.0</version>
     <description>An application for configuring preferences and managing the Gallio installation.</description>
+    <icon>plugin://Gallio.ControlPanel/Resources/Gallio.ControlPanel.ico</icon>
   </traits>
-
-  <services>
-  </services>
-
-  <components>
-  </components>
 </plugin>

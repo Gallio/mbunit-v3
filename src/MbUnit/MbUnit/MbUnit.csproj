@@ -67,6 +67,7 @@
     <Compile Include="Framework\FactoryAttribute.cs" />
     <Compile Include="Framework\HeaderAttribute.cs" />
     <Compile Include="Framework\FixtureInitializerAttribute.cs" />
+    <Compile Include="Framework\IRetryOptions.cs" />
     <Compile Include="Framework\JoinAttribute.cs" />
     <Compile Include="Framework\MultipleAssertsAttribute.cs" />
     <Compile Include="Framework\NameAttribute.cs" />
@@ -76,6 +77,7 @@
     <Compile Include="Framework\PendingAttribute.cs" />
     <Compile Include="Framework\Reflection\ReflectionException.cs" />
     <Compile Include="Framework\RepeatAttribute.cs" />
+    <Compile Include="Framework\Retry.cs" />
     <Compile Include="Framework\RowAttribute.cs" />
     <Compile Include="Framework\MixinAttribute.cs" />
     <Compile Include="Framework\AssemblyResolverAttribute.cs" />
@@ -122,6 +124,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="MbUnit.plugin" />
+    <Content Include="Resources\MbUnit.ico" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Gallio\Gallio\Gallio.csproj">
@@ -152,8 +155,6 @@
     <Compile Include="Framework\Assert.Serialization.cs" />
     <Compile Include="Framework\Assert.Sorting.cs" />
     <Compile Include="Framework\Assert.Distinct.cs" />
-    <Compile Include="Framework\IRetryOptions.cs" />
-    <Compile Include="Framework\Retry.cs" />
     <Compile Include="Framework\SequentiaNumbersAttribute.cs" />
     <Compile Include="Framework\RandomNumbersAttribute.cs" />
     <Compile Include="Framework\GenerationDataAttribute.cs" />

@@ -12,7 +12,7 @@
     <StartupObject>Gallio.Echo.EchoProgram</StartupObject>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\..\Key.snk</AssemblyOriginatorKeyFile>
-    <ApplicationIcon>Resources\GallioEcho.ico</ApplicationIcon>
+    <ApplicationIcon>Resources\Gallio.Echo.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -57,7 +57,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Gallio.Echo.plugin" />
-    <None Include="Resources\GallioEcho.ico" />
+    <None Include="Resources\Gallio.Echo.ico" />
     <None Include="Gallio.Echo.exe.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

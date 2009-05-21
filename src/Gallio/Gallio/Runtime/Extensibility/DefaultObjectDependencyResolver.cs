@@ -58,15 +58,18 @@ namespace Gallio.Runtime.Extensibility
     /// <item>If the parameter type is <see cref="Version" /> then the value is parsed into a version.</item>
     /// <item>If the parameter type is <see cref="Guid" /> then the value is parsed into a guid.</item>
     /// <item>If the parameter type is <see cref="Condition" /> then the value is parsed into a condition.</item>
-    /// <item>If the parameter type is <see cref="Image" /> then the value is treated as a relative file
-    /// path to a resource and the image is loaded from the resource locator.</item>
-    /// <item>If the parameter type is <see cref="Icon" /> then the value is treated as a relative file
-    /// path to a resource and the icon is loaded from the resource locator.</item>
+    /// <item>If the parameter type is <see cref="Image" /> then the value is treated as a Uri
+    /// to a resource and the image is loaded from the resource locator.</item>
+    /// <item>If the parameter type is <see cref="Icon" /> then the value is treated as a Uri
+    /// to a resource and the icon is loaded from the resource locator.</item>
     /// <item>If the parameter type is <see cref="FileInfo" /> or <see cref="DirectoryInfo"/> then the
-    /// value is treated as a relative file or directory path to a resource and an instance of the
+    /// value is treated as a Uri to a file or directory resource and an instance of the
     /// appropriate file/directory info type is injected using the full path obtained from the resource locator.</item>
     /// <item>Otherwise, the value is converted using <see cref="Convert.ChangeType(object, Type)" /> if possible.</item>
     /// </list>
+    /// </para>
+    /// <para>
+    /// For information about how the Uri is resolved to a path, see <see cref="IResourceLocator.ResolveResourcePath"/>.
     /// </para>
     /// </remarks>
     public class DefaultObjectDependencyResolver : IObjectDependencyResolver
@@ -199,16 +202,16 @@ namespace Gallio.Runtime.Extensibility
                 return Condition.Parse(value);
 
             if (type == typeof(Image))
-                return Image.FromFile(resourceLocator.GetFullPath(value));
+                return Image.FromFile(ResolveResourcePath(value));
 
             if (type == typeof(Icon))
-                return new Icon(resourceLocator.GetFullPath(value));
+                return new Icon(ResolveResourcePath(value));
 
             if (type == typeof(FileInfo))
-                return new FileInfo(resourceLocator.GetFullPath(value));
+                return new FileInfo(ResolveResourcePath(value));
 
             if (type == typeof(DirectoryInfo))
-                return new DirectoryInfo(resourceLocator.GetFullPath(value));
+                return new DirectoryInfo(ResolveResourcePath(value));
 
             if (value.StartsWith("${") && value.EndsWith("}"))
             {
@@ -228,6 +231,11 @@ namespace Gallio.Runtime.Extensibility
             }
 
             return Convert.ChangeType(value, type, CultureInfo.InvariantCulture);
+        }
+
+        private string ResolveResourcePath(string uri)
+        {
+            return resourceLocator.ResolveResourcePath(new Uri(uri));
         }
 
         private static Array CreateArray<T>(Type elementType, IList<T> values)

@@ -2,9 +2,6 @@
   <Import Project="$(MetaBuildBinDir)\MetaBuild.Module.targets" />
 
   <ItemGroup>
-  </ItemGroup>
-
-  <ItemGroup>
     <CSharpProject Include="Gallio\Gallio$(ProjectVariant).csproj" />
     <CSharpProject Include="Gallio35\Gallio35$(ProjectVariant).csproj" />
     <CSharpProject Include="Gallio.ControlPanel\Gallio.ControlPanel$(ProjectVariant).csproj" />
@@ -16,21 +13,20 @@
     <CSharpProject Include="Gallio.UI\Gallio.UI$(ProjectVariant).csproj" />
     
     <CSharpProject Include="Gallio.Utility\Gallio.Utility$(ProjectVariant).csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
+    
     <DocumentedAssembly Include="Gallio\bin\Gallio.dll" />
     <DocumentedAssembly Include="Gallio35\bin\Gallio35.dll" />
     <DocumentedAssembly Include="Gallio.Loader\bin\Gallio.Loader.dll" />
     <DocumentedAssembly Include="Gallio.Reports\bin\Gallio.Reports.dll" />
     <DocumentedAssembly Include="Gallio.UI\bin\Gallio.UI.dll" />
-  </ItemGroup>
-
-  <ItemGroup>
+    
     <Content Include="Gallio Website.url" />
   
     <Binary Include="Gallio\bin\Gallio.XmlSerializers.dll" />
     <PluginFile Include="Gallio\Gallio.plugin" />
+    <Binary Include="Gallio\Resources\Gallio.ico">
+      <Folder>Resources</Folder>
+    </Binary>
 
     <Binary Include="Gallio.Host\bin\msil\Gallio.Host.exe" />
     <PluginFile Include="Gallio.Host\Gallio.Host.exe.config" />
@@ -52,15 +48,20 @@
     <Binary Include="Gallio.ControlPanel\bin\Gallio.ControlPanel.exe" />
     <PluginFile Include="Gallio.ControlPanel\Gallio.ControlPanel.exe.config" />
     <PluginFile Include="Gallio.ControlPanel\Gallio.ControlPanel.plugin" />
+    <Binary Include="Gallio.ControlPanel\Resources\Gallio.ControlPanel.ico">
+      <Folder>Resources</Folder>
+    </Binary>
 
     <Binary Include="Gallio.Utility\bin\Gallio.Utility.exe" />
     <PluginFile Include="Gallio.Utility\Gallio.Utility.exe.config" />
     <PluginFile Include="Gallio.Utility\Gallio.Utility.plugin" />
+    <Binary Include="Gallio.Utility\Resources\Gallio.Utility.ico">
+      <Folder>Resources</Folder>
+    </Binary>
 
     <Binary Include="Gallio.Reports\bin\Gallio.Reports.dll" />
     <Binary Include="Gallio.Reports\bin\Gallio.Reports.pdb" />
     <PluginFile Include="Gallio.Reports\Gallio.Reports.plugin" />
-
     <Binary Include="Gallio.Reports\Resources\css\*">
         <Folder>Resources\css</Folder>
     </Binary>
@@ -75,16 +76,24 @@
     </Binary>
     
     <Content Include="libs\Mono.Cecil.license.html" />
-  </ItemGroup>
-
-  <ItemGroup>
+    
     <Document Include="Docs\*.txt" />
-  </ItemGroup>
-
-  <ItemGroup>
+    
     <TestAssembly Include="Gallio.Tests\bin\Gallio.Tests.dll" />
   </ItemGroup>
 
+  <ItemGroup Condition="'$(DotNet40)'=='true'">
+    <CSharpProject Include="Gallio40\Gallio40$(ProjectVariant).csproj" />
+    
+    <DocumentedAssembly Include="Gallio40\bin\Gallio40.dll" />
+    
+    <Binary Include="Gallio40\bin\Gallio40.dll" />
+    <Binary Include="Gallio40\bin\Gallio40.pdb" />
+    <PluginFile Include="Gallio40\Gallio40.plugin" />
+    
+    <Feature Include="FEATURE_GALLIO40" />
+  </ItemGroup>
+  
   <ItemGroup>
     <GallioMergeDependency Include="Gallio\bin\Mono.Cecil.dll" />
     <GallioMergeDependency Include="Gallio\bin\NDepend.Helpers.FileDirectoryPath.dll" />

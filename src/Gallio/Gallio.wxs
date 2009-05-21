@@ -57,12 +57,12 @@
                 <File Name="Gallio.dll" KeyPath="yes" />
                 <File Name="Gallio.plugin" />
                 <File Name="Gallio.pdb" />
-				<File Name="Gallio.xml" />
-				<File Id="Gallio.Report.xsd" Name="Gallio-Report.xsd" />
-				<?ifdef NO_ILMERGE ?>
-					<File Name="Mono.Cecil.dll" />
-					<File Name="NDepend.Helpers.FileDirectoryPath.dll" />
-				<?endif ?>
+                <File Name="Gallio.xml" />
+                <File Id="Gallio.Report.xsd" Name="Gallio-Report.xsd" />
+                <?ifdef NO_ILMERGE ?>
+                <File Name="Mono.Cecil.dll" />
+                <File Name="NDepend.Helpers.FileDirectoryPath.dll" />
+                <?endif ?>
             </Component>
             <Component Id="Gallio35" Guid="{015c2236-433f-45f4-86d8-88b87f7fad26}" Win64="no">
                 <File Name="Gallio35.dll" KeyPath="yes" />
@@ -70,6 +70,14 @@
                 <File Name="Gallio35.pdb" />
                 <File Name="Gallio35.xml" />
             </Component>
+	    <?ifdef FEATURE_GALLIO40?>
+            <Component Id="Gallio40" Guid="{830C1A43-888C-4E3B-BFC0-D59D086A4B2B}" Win64="no">
+                <File Name="Gallio40.dll" KeyPath="yes" />
+                <File Name="Gallio40.plugin" />
+                <File Name="Gallio40.pdb" />
+                <File Name="Gallio40.xml" />
+            </Component>
+	    <?endif?>
             <Component Id="Gallio.XmlSerializers" Guid="{1F8F8C04-E8CF-478c-AD16-9D90921C71A5}" Win64="no">
                 <File Name="Gallio.XmlSerializers.dll" KeyPath="yes" />
             </Component>
@@ -118,81 +126,51 @@
         </DirectoryRef>
 
         <DirectoryRef Id="ResourcesFolder" FileSource="$(var.GallioTargetDir)\bin\Resources\">
+            <Component Id="Gallio.Resources" Guid="{E99D0D72-95F9-4d17-8BAA-7FFC83402E52}" Win64="no">
+                <File Id="Gallio.ico" Name="Gallio.ico" KeyPath="yes" />
+                <File Id="Gallio.ControlPanel.ico" Name="Gallio.ControlPanel.ico" />
+                <File Id="Gallio.Utility.ico" Name="Gallio.Utility.ico" />
+            </Component>
+
             <Directory Id="Reports.css" Name="css">
-                <Component Id="Gallio.Report.css" Guid="65dc0971-e579-4226-b78a-1588d9f6977d" Win64="no">
+                <Component Id="Gallio.Resources.css" Guid="65dc0971-e579-4226-b78a-1588d9f6977d" Win64="no">
                     <File Id="Gallio.Report.css" Name="Gallio-Report.css" KeyPath="yes" />
                 </Component>
             </Directory>
 
             <Directory Id="Reports.js" Name="js">
-                <Component Id="Gallio.Report.js" Guid="09db9a62-2734-4624-9d6c-8ce1688d21ce" Win64="no">
+                <Component Id="Gallio.Resources.js" Guid="09db9a62-2734-4624-9d6c-8ce1688d21ce" Win64="no">
                     <File Id="Gallio.Report.js" Name="Gallio-Report.js" KeyPath="yes" />
                 </Component>
             </Directory>
 
             <Directory Id="Reports.xsl" Name="xsl">
-                <Component Id="Gallio.Report.common.xsl" Guid="1AE4D4DD-DE35-4887-8953-9079E1BE2447" Win64="no">
-                    <File Id="Gallio.Report.common.xsl" Name="Gallio-Report.common.xsl" KeyPath="yes" />
-                </Component>
-                <Component Id="Gallio.Report.txt.xsl" Guid="8b1860f4-71d9-43f7-8ee9-2657ed2977b2" Win64="no">
-                    <File Id="Gallio.Report.txt.xsl" Name="Gallio-Report.txt.xsl" KeyPath="yes" />
-                </Component>
-                <Component Id="Gallio.Report.html.xsl" Guid="971c081f-fd9f-4682-bf10-59b655de647e" Win64="no">
-                    <File Id="Gallio.Report.html.xsl" Name="Gallio-Report.html.xsl" KeyPath="yes" />
-                </Component>
-                <Component Id="Gallio.Report.html.condensed.xsl" Guid="271c082f-fd9f-4522-bf10-59b355de64e5" Win64="no">
-                    <File Id="Gallio.Report.html.condensed.xsl" Name="Gallio-Report.html-condensed.xsl" KeyPath="yes" />
-                </Component>
-                <Component Id="Gallio.Report.xhtml.xsl" Guid="5EF5556F-7443-4112-A2DD-F0E85A14CFD5" Win64="no">
-                    <File Id="Gallio.Report.xhtml.xsl" Name="Gallio-Report.xhtml.xsl" KeyPath="yes" />
-                </Component>
-                <Component Id="Gallio.Report.xhtml.condensed.xsl" Guid="4C558DAE-9159-4b20-82F9-B14B487319E4" Win64="no">
-                    <File Id="Gallio.Report.xhtml.condensed.xsl" Name="Gallio-Report.xhtml-condensed.xsl" KeyPath="yes" />
-                </Component>
-                <Component Id="Gallio.Report.htmlxhtml.xsl" Guid="983bbd35-c150-47f6-91c0-74a288a28e5e" Win64="no">
-                    <File Id="Gallio.Report.htmlxhtml.xsl" Name="Gallio-Report.html+xhtml.xsl" KeyPath="yes" />
-                </Component>
-                <Component Id="Gallio.Report.ccnet.details.xsl" Guid="51e847dd-2e18-410f-b2af-1659e1e222ad" Win64="no">
-                    <File Id="Gallio.Report.ccnet.details.xsl" Name="Gallio-Report.ccnet-details.xsl" KeyPath="yes" />
-                </Component>
-                <Component Id="Gallio.Report.ccnet.details.condensed.xsl" Guid="46DCDA98-A69E-4037-9577-3285C751D68B" Win64="no">
-                    <File Id="Gallio.Report.ccnet.details.condensed.xsl" Name="Gallio-Report.ccnet-details-condensed.xsl" KeyPath="yes" />
+                <Component Id="Gallio.Resources.xsl" Guid="1AE4D4DD-DE35-4887-8953-9079E1BE2447" Win64="no">
+                    <File Id="Gallio.Report.common.xsl" Name="Gallio-Report.common.xsl" />
+                    <File Id="Gallio.Report.txt.xsl" Name="Gallio-Report.txt.xsl" />
+                    <File Id="Gallio.Report.html.xsl" Name="Gallio-Report.html.xsl" />
+                    <File Id="Gallio.Report.html.condensed.xsl" Name="Gallio-Report.html-condensed.xsl"  />
+                    <File Id="Gallio.Report.xhtml.xsl" Name="Gallio-Report.xhtml.xsl" />
+                    <File Id="Gallio.Report.xhtml.condensed.xsl" Name="Gallio-Report.xhtml-condensed.xsl" />
+                    <File Id="Gallio.Report.htmlxhtml.xsl" Name="Gallio-Report.html+xhtml.xsl" />
+                    <File Id="Gallio.Report.ccnet.details.xsl" Name="Gallio-Report.ccnet-details.xsl" />
+                    <File Id="Gallio.Report.ccnet.details.condensed.xsl" Name="Gallio-Report.ccnet-details-condensed.xsl" />
                 </Component>
             </Directory>
 
             <Directory Id="Reports.img" Name="img">
-                <Component Id="Reports.Container.png" Guid="76196919-6e89-486f-b095-5bc28787d954" Win64="no">
+                <Component Id="Gallio.Resources.img" Guid="76196919-6e89-486f-b095-5bc28787d954" Win64="no">
                     <File Id="Reports.Container.png" Name="Container.png" KeyPath="yes" />
-                </Component>
-                <Component Id="Reports.Failed.gif" Guid="63cb7f6f-8515-4db4-aecd-4a2b757c0171" Win64="no">
-                    <File Id="Reports.Failed.gif" Name="Failed.gif" KeyPath="yes" />
-                </Component>
-                <Component Id="Reports.Fixture.png" Guid="708907f8-f2b6-4f7b-ae3b-00f2d031e54b" Win64="no">
-                    <File Id="Reports.Fixture.png" Name="Fixture.png" KeyPath="yes" />
-                </Component>
-                <Component Id="Reports.FullStop.gif" Guid="89FD2012-5B71-4412-8AE9-65476C5E60EF" Win64="no">
-                    <File Id="Reports.FullStop.gif" Name="FullStop.gif" KeyPath="yes" />
-                </Component>
-                <Component Id="Reports.GallioTestReportHeader.png" Guid="0dc8470b-2b37-46ed-a57d-c6d924aa4c26" Win64="no">
-                    <File Id="Reports.GallioTestReportHeader.png" Name="GallioTestReportHeader.png" KeyPath="yes" />
-                </Component>
-                <Component Id="Reports.header.background.gif" Guid="3cab49d6-ea40-43af-b5e1-17f7d7914fce" Win64="no">
-                    <File Id="Reports.header.background.gif" Name="header-background.gif" KeyPath="yes" />
-                </Component>
-                <Component Id="Reports.Ignored.gif" Guid="39DDC89E-0C54-4164-B13F-BB86E9ADD864" Win64="no">
-                    <File Id="Reports.Ignored.gif" Name="Ignored.gif" KeyPath="yes" />
-                </Component>
-                <Component Id="Reports.Minus.gif" Guid="8F75BF51-8884-41b2-AFD8-1AD48D7ECE38" Win64="no">
-                    <File Id="Reports.Minus.gif" Name="Minus.gif" KeyPath="yes" />
-                </Component>
-                <Component Id="Reports.Passed.gif" Guid="70FB3482-9197-469d-AFDA-A5B07E085693" Win64="no">
-                    <File Id="Reports.Passed.gif" Name="Passed.gif" KeyPath="yes" />
-                </Component>
-                <Component Id="Reports.Plus.gif" Guid="16298049-ead7-49c7-bd22-aa3730468ff6" Win64="no">
-                    <File Id="Reports.Plus.gif" Name="Plus.gif" KeyPath="yes" />
-                </Component>
-                <Component Id="Reports.Test.png" Guid="34568772-2867-44c9-81BE-F90F818686B1" Win64="no">
-                    <File Id="Reports.Test.png" Name="Test.png" KeyPath="yes" />
+                    <File Id="Reports.Failed.gif" Name="Failed.gif" />
+                    <File Id="Reports.Fixture.png" Name="Fixture.png" />
+                    <File Id="Reports.FullStop.gif" Name="FullStop.gif" />
+                    <File Id="Reports.GallioTestReportHeader.png" Name="GallioTestReportHeader.png" />
+                    <File Id="Reports.header.background.gif" Name="header-background.gif" />
+                    <File Id="Reports.Ignored.gif" Name="Ignored.gif" />
+                    <File Id="Reports.Minus.gif" Name="Minus.gif" />
+                    <File Id="Reports.Passed.gif" Name="Passed.gif" />
+                    <File Id="Reports.Plus.gif" Name="Plus.gif" />
+                    <File Id="Reports.Test.png" Name="Test.png" />
                 </Component>
             </Directory>
 
@@ -239,6 +217,9 @@
                  Description="Installs the Gallio test automation platform." ConfigurableDirectory="INSTALLDIR" Display="2">
             <ComponentRef Id="Gallio" />
             <ComponentRef Id="Gallio35" />
+	    <?ifdef FEATURE_GALLIO40?>
+            <ComponentRef Id="Gallio40" />
+	    <?endif?>
             <ComponentRef Id="Gallio.XmlSerializers" />
             <ComponentRef Id="Gallio.Host" />
             <ComponentRef Id="Gallio.Host.x86" />
@@ -254,30 +235,11 @@
             <ComponentRef Id="Gallio.ControlPanel"/>
             <ComponentRef Id="Gallio.Reports"/>
 
-            <ComponentRef Id="Gallio.Report.css"/>
-            <ComponentRef Id="Gallio.Report.js"/>
-
-            <ComponentRef Id="Gallio.Report.common.xsl"/>
-            <ComponentRef Id="Gallio.Report.txt.xsl"/>
-            <ComponentRef Id="Gallio.Report.html.xsl"/>
-            <ComponentRef Id="Gallio.Report.html.condensed.xsl"/>
-            <ComponentRef Id="Gallio.Report.xhtml.xsl"/>
-            <ComponentRef Id="Gallio.Report.xhtml.condensed.xsl"/>
-            <ComponentRef Id="Gallio.Report.htmlxhtml.xsl"/>
-            <ComponentRef Id="Gallio.Report.ccnet.details.xsl"/>
-            <ComponentRef Id="Gallio.Report.ccnet.details.condensed.xsl"/>
-
-            <ComponentRef Id="Reports.Container.png"/>
-            <ComponentRef Id="Reports.Failed.gif"/>
-            <ComponentRef Id="Reports.Fixture.png"/>
-            <ComponentRef Id="Reports.FullStop.gif"/>
-            <ComponentRef Id="Reports.GallioTestReportHeader.png"/>
-            <ComponentRef Id="Reports.header.background.gif"/>
-            <ComponentRef Id="Reports.Ignored.gif"/>
-            <ComponentRef Id="Reports.Minus.gif"/>
-            <ComponentRef Id="Reports.Passed.gif"/>
-            <ComponentRef Id="Reports.Plus.gif"/>
-            <ComponentRef Id="Reports.Test.png"/>
+            <ComponentRef Id="Gallio.Resources"/>
+            <ComponentRef Id="Gallio.Resources.css"/>
+            <ComponentRef Id="Gallio.Resources.js"/>
+            <ComponentRef Id="Gallio.Resources.xsl"/>
+            <ComponentRef Id="Gallio.Resources.img"/>
 
             <ComponentRef Id="GallioMenuFolder.RemoveFolder"/>
         </Feature>

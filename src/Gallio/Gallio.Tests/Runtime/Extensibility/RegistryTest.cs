@@ -31,6 +31,25 @@ namespace Gallio.Tests.Runtime.Extensibility
     [TestsOn(typeof(Registry))]
     public class RegistryTest
     {
+        public class Invariants
+        {
+            [Test]
+            public void ResourceLocator_ReturnsRegistryResourceLocator()
+            {
+                var registry = new Registry();
+
+                Assert.IsInstanceOfType<RegistryResourceLocator>(registry.ResourceLocator);
+            }
+
+            [Test]
+            public void ServiceLocator_ReturnsServiceResourceLocator()
+            {
+                var registry = new Registry();
+
+                Assert.IsInstanceOfType<RegistryServiceLocator>(registry.ServiceLocator);
+            }
+        }
+
         public class Registration
         {
             [Test]
@@ -118,7 +137,6 @@ namespace Gallio.Tests.Runtime.Extensibility
                     Assert.AreEqual(new PropertySet() { { "ConfigName", "Value" } }, plugin.PluginProperties);
                     Assert.AreEqual(new PropertySet() { { "TraitName", "Value" } }, plugin.TraitsProperties);
                     Assert.AreSame(handlerFactory, plugin.PluginHandlerFactory);
-                    Assert.IsInstanceOfType<FileSystemResourceLocator>(plugin.ResourceLocator);
                     Assert.AreElementsEqual(assemblyReferences, plugin.AssemblyReferences);
                     Assert.AreElementsEqual(pluginDependencies, plugin.PluginDependencies);
                     Assert.AreElementsEqual(probingPaths, plugin.ProbingPaths);
@@ -740,7 +758,7 @@ namespace Gallio.Tests.Runtime.Extensibility
                     PluginProperties = { { "Name", "Value" } }
                 });
 
-                handlerFactory.Expect(x => x.CreateHandler(registry.ServiceLocator, plugin.ResourceLocator,
+                handlerFactory.Expect(x => x.CreateHandler(registry.ServiceLocator, registry.ResourceLocator,
                     typeof(IPlugin), typeof(DummyPlugin), new PropertySet() { { "Name", "Value" } }))
                     .Throw(new Exception("Boom"));
 
@@ -761,7 +779,7 @@ namespace Gallio.Tests.Runtime.Extensibility
                 });
                 var handler = MockRepository.GenerateStub<IHandler>();
 
-                handlerFactory.Expect(x => x.CreateHandler(registry.ServiceLocator, plugin.ResourceLocator,
+                handlerFactory.Expect(x => x.CreateHandler(registry.ServiceLocator, registry.ResourceLocator,
                     typeof(IPlugin), typeof(DummyPlugin), new PropertySet() { { "Name", "Value" } }))
                     .Return(handler);
 
@@ -781,7 +799,7 @@ namespace Gallio.Tests.Runtime.Extensibility
                     TraitsProperties = { { "Name", "Value" } }
                 });
 
-                handlerFactory.Expect(x => x.CreateHandler(registry.ServiceLocator, plugin.ResourceLocator,
+                handlerFactory.Expect(x => x.CreateHandler(registry.ServiceLocator, registry.ResourceLocator,
                     typeof(PluginTraits), typeof(PluginTraits), new PropertySet() { { "Name", "Value" } }))
                     .Throw(new Exception("Boom"));
 
@@ -805,7 +823,7 @@ namespace Gallio.Tests.Runtime.Extensibility
                 });
                 var handler = MockRepository.GenerateStub<IHandler>();
 
-                handlerFactory.Expect(x => x.CreateHandler(registry.ServiceLocator, plugin.ResourceLocator,
+                handlerFactory.Expect(x => x.CreateHandler(registry.ServiceLocator, registry.ResourceLocator,
                     typeof(PluginTraits), typeof(PluginTraits), new PropertySet() { { "Name", "Value" } }))
                     .Return(handler);
 
@@ -832,7 +850,7 @@ namespace Gallio.Tests.Runtime.Extensibility
                 var handler = MockRepository.GenerateMock<IHandler>();
                 var pluginInstance = new DummyPlugin();
 
-                handlerFactory.Expect(x => x.CreateHandler(registry.ServiceLocator, plugin.ResourceLocator,
+                handlerFactory.Expect(x => x.CreateHandler(registry.ServiceLocator, registry.ResourceLocator,
                     typeof(IPlugin), typeof(DummyPlugin), new PropertySet() { { "Name", "Value" } }))
                     .Return(handler);
                 handler.Expect(x => x.Activate()).Return(pluginInstance);
@@ -856,7 +874,7 @@ namespace Gallio.Tests.Runtime.Extensibility
                 });
                 var handler = MockRepository.GenerateMock<IHandler>();
 
-                handlerFactory.Expect(x => x.CreateHandler(registry.ServiceLocator, plugin.ResourceLocator,
+                handlerFactory.Expect(x => x.CreateHandler(registry.ServiceLocator, registry.ResourceLocator,
                     typeof(IPlugin), typeof(DummyPlugin), new PropertySet() { { "Name", "Value" } }))
                     .Return(handler);
                 handler.Expect(x => x.Activate()).Throw(new InvalidOperationException("Boom"));
@@ -879,7 +897,7 @@ namespace Gallio.Tests.Runtime.Extensibility
                 var handler = MockRepository.GenerateMock<IHandler>();
                 var traitsInstance = new PluginTraits("name");
 
-                handlerFactory.Expect(x => x.CreateHandler(registry.ServiceLocator, plugin.ResourceLocator,
+                handlerFactory.Expect(x => x.CreateHandler(registry.ServiceLocator, registry.ResourceLocator,
                     typeof(PluginTraits), typeof(PluginTraits), new PropertySet() { { "Name", "Value" } }))
                     .Return(handler);
                 handler.Expect(x => x.Activate()).Return(traitsInstance);
@@ -906,7 +924,7 @@ namespace Gallio.Tests.Runtime.Extensibility
                 });
                 var handler = MockRepository.GenerateMock<IHandler>();
 
-                handlerFactory.Expect(x => x.CreateHandler(registry.ServiceLocator, plugin.ResourceLocator,
+                handlerFactory.Expect(x => x.CreateHandler(registry.ServiceLocator, registry.ResourceLocator,
                     typeof(PluginTraits), typeof(PluginTraits), new PropertySet() { { "Name", "Value" } }))
                     .Return(handler);
                 handler.Expect(x => x.Activate()).Throw(new InvalidOperationException("Boom"));
@@ -1034,7 +1052,7 @@ namespace Gallio.Tests.Runtime.Extensibility
                     ComponentProperties = { { "Name", "Value" } }
                 });
 
-                handlerFactory.Expect(x => x.CreateHandler(registry.ServiceLocator, plugin.ResourceLocator,
+                handlerFactory.Expect(x => x.CreateHandler(registry.ServiceLocator, registry.ResourceLocator,
                     typeof(DummyService), typeof(DummyComponent), new PropertySet() { { "Name", "Value" } }))
                     .Throw(new Exception("Boom"));
 
@@ -1057,7 +1075,7 @@ namespace Gallio.Tests.Runtime.Extensibility
                 });
                 var handler = MockRepository.GenerateStub<IHandler>();
 
-                handlerFactory.Expect(x => x.CreateHandler(registry.ServiceLocator, plugin.ResourceLocator,
+                handlerFactory.Expect(x => x.CreateHandler(registry.ServiceLocator, registry.ResourceLocator,
                     typeof(DummyService), typeof(DummyComponent), new PropertySet() { { "Name", "Value" } }))
                     .Return(handler);
 
@@ -1082,7 +1100,7 @@ namespace Gallio.Tests.Runtime.Extensibility
                     TraitsProperties = { { "Name", "Value" } }
                 });
 
-                handlerFactory.Expect(x => x.CreateHandler(registry.ServiceLocator, plugin.ResourceLocator,
+                handlerFactory.Expect(x => x.CreateHandler(registry.ServiceLocator, registry.ResourceLocator,
                     typeof(Traits), typeof(DummyTraits), new PropertySet() { { "Name", "Value" } }))
                     .Throw(new Exception("Boom"));
 
@@ -1107,7 +1125,7 @@ namespace Gallio.Tests.Runtime.Extensibility
                 });
                 var handler = MockRepository.GenerateStub<IHandler>();
 
-                handlerFactory.Expect(x => x.CreateHandler(registry.ServiceLocator, plugin.ResourceLocator,
+                handlerFactory.Expect(x => x.CreateHandler(registry.ServiceLocator, registry.ResourceLocator,
                     typeof(Traits), typeof(DummyTraits), new PropertySet() { { "Name", "Value" } }))
                     .Return(handler);
 
@@ -1132,7 +1150,7 @@ namespace Gallio.Tests.Runtime.Extensibility
                 var handler = MockRepository.GenerateMock<IHandler>();
                 var componentInstance = new DummyComponent();
 
-                handlerFactory.Expect(x => x.CreateHandler(registry.ServiceLocator, plugin.ResourceLocator,
+                handlerFactory.Expect(x => x.CreateHandler(registry.ServiceLocator, registry.ResourceLocator,
                     typeof(DummyService), typeof(DummyComponent), new PropertySet() { { "Name", "Value" } }))
                     .Return(handler);
                 handler.Expect(x => x.Activate()).Return(componentInstance);
@@ -1158,7 +1176,7 @@ namespace Gallio.Tests.Runtime.Extensibility
                 });
                 var handler = MockRepository.GenerateMock<IHandler>();
 
-                handlerFactory.Expect(x => x.CreateHandler(registry.ServiceLocator, plugin.ResourceLocator,
+                handlerFactory.Expect(x => x.CreateHandler(registry.ServiceLocator, registry.ResourceLocator,
                     typeof(DummyService), typeof(DummyComponent), new PropertySet() { { "Name", "Value" } }))
                     .Return(handler);
                 handler.Expect(x => x.Activate()).Throw(new InvalidOperationException("Boom"));
@@ -1186,7 +1204,7 @@ namespace Gallio.Tests.Runtime.Extensibility
                 var handler = MockRepository.GenerateMock<IHandler>();
                 var traitsInstance = new DummyTraits();
 
-                handlerFactory.Expect(x => x.CreateHandler(registry.ServiceLocator, plugin.ResourceLocator,
+                handlerFactory.Expect(x => x.CreateHandler(registry.ServiceLocator, registry.ResourceLocator,
                     typeof(Traits), typeof(DummyTraits), new PropertySet() { { "Name", "Value" } }))
                     .Return(handler);
                 handler.Expect(x => x.Activate()).Return(traitsInstance);
@@ -1214,7 +1232,7 @@ namespace Gallio.Tests.Runtime.Extensibility
                 });
                 var handler = MockRepository.GenerateMock<IHandler>();
 
-                handlerFactory.Expect(x => x.CreateHandler(registry.ServiceLocator, plugin.ResourceLocator,
+                handlerFactory.Expect(x => x.CreateHandler(registry.ServiceLocator, registry.ResourceLocator,
                     typeof(Traits), typeof(DummyTraits), new PropertySet() { { "Name", "Value" } }))
                     .Return(handler);
                 handler.Expect(x => x.Activate()).Throw(new InvalidOperationException("Boom"));

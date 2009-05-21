@@ -114,33 +114,33 @@
     <Compile Include="RunWithGuardedReadLockAttribute.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Gallio\Gallio35\Gallio35.csproj">
+    <ProjectReference Include="..\..\..\Gallio\Gallio35\Gallio35.vs2010.csproj">
       <Project>{BC28AB7E-5B71-4AEE-BF2D-54ACF7299889}</Project>
-      <Name>Gallio35</Name>
+      <Name>Gallio35.vs2010</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\MbUnit\MbUnit.TestResources\MbUnit.TestResources.csproj">
+    <ProjectReference Include="..\..\..\MbUnit\MbUnit.TestResources\MbUnit.TestResources.vs2010.csproj">
       <Project>{9FFB657C-7099-4594-A1DD-6E9AC5D7171E}</Project>
-      <Name>MbUnit.TestResources</Name>
+      <Name>MbUnit.TestResources.vs2010</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\Gallio\Gallio.Tests\Gallio.Tests.csproj">
+    <ProjectReference Include="..\..\..\Gallio\Gallio.Tests\Gallio.Tests.vs2010.csproj">
       <Project>{111FD89D-58A1-4445-B4A4-8A50D65DB714}</Project>
-      <Name>Gallio.Tests</Name>
+      <Name>Gallio.Tests.vs2010</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\Gallio\Gallio\Gallio.csproj">
+    <ProjectReference Include="..\..\..\Gallio\Gallio\Gallio.vs2010.csproj">
       <Project>{6CAB7735-05DA-480D-9A04-50615B00F886}</Project>
-      <Name>Gallio %28Gallio\Gallio%29</Name>
+      <Name>Gallio.vs2010</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\MbUnit\MbUnit35\MbUnit35.csproj">
+    <ProjectReference Include="..\..\..\MbUnit\MbUnit35\MbUnit35.vs2010.csproj">
       <Project>{D147F5CC-0166-4B9C-B095-F905220090FA}</Project>
-      <Name>MbUnit35</Name>
+      <Name>MbUnit35.vs2010</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\MbUnit\MbUnit\MbUnit.csproj">
+    <ProjectReference Include="..\..\..\MbUnit\MbUnit\MbUnit.vs2010.csproj">
       <Project>{A9B54755-56B7-48C1-8941-BB69FCEFFF32}</Project>
-      <Name>MbUnit %28MbUnit\MbUnit%29</Name>
+      <Name>MbUnit.vs2010</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Gallio.ReSharperRunner\Gallio.ReSharperRunner31.csproj">
+    <ProjectReference Include="..\Gallio.ReSharperRunner\Gallio.ReSharperRunner31.vs2010.csproj">
       <Project>{E20A7E4C-B05B-41B0-AAD5-DF7BB9AD64C4}</Project>
-      <Name>Gallio.ReSharperRunner31</Name>
+      <Name>Gallio.ReSharperRunner31.vs2010</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

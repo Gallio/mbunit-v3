@@ -25,11 +25,18 @@ namespace Gallio.Runtime.Extensibility
     public interface IResourceLocator
     {
         /// <summary>
-        /// Resolves a relative path within the resource locator to a full path.
+        /// Resolves a resource Uri to a full path.
         /// </summary>
-        /// <param name="relativePath">The relative path</param>
-        /// <returns>The full path</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="relativePath"/> is null</exception>
-        string GetFullPath(string relativePath);
+        /// <remarks>
+        /// <list type="bullet">
+        /// <item>file: Maps to the file's local path.</item>
+        /// <item>plugin: Maps to a resource within the plugin's base directory, specified in the form: "plugin://Plugin.Id/RelativePath/To/Resource.txt".</item>
+        /// </list>
+        /// </remarks>
+        /// <param name="resourceUri">The resource Uri</param>
+        /// <returns>The resolved full path of the resource</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="resourceUri"/> is null</exception>
+        /// <exception cref="RuntimeException">Thrown if the uri cannot be resolved</exception>
+        string ResolveResourcePath(Uri resourceUri);
     }
 }

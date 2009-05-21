@@ -36,7 +36,6 @@ namespace Gallio.Runtime.Extensibility
         private readonly PropertySet pluginProperties;
         private readonly PropertySet traitsProperties;
         private readonly IHandlerFactory pluginHandlerFactory;
-        private readonly IResourceLocator resourceLocator;
         private readonly ReadOnlyCollection<AssemblyReference> assemblyReferences;
         private readonly ReadOnlyCollection<IPluginDescriptor> pluginDependencies;
         private readonly ReadOnlyCollection<string> probingPaths;
@@ -55,7 +54,6 @@ namespace Gallio.Runtime.Extensibility
             pluginProperties = pluginRegistration.PluginProperties.Copy().AsReadOnly();
             traitsProperties = pluginRegistration.TraitsProperties.Copy().AsReadOnly();
             pluginHandlerFactory = pluginRegistration.PluginHandlerFactory;
-            resourceLocator = new FileSystemResourceLocator(baseDirectory);
             assemblyReferences = new ReadOnlyCollection<AssemblyReference>(GenericCollectionUtils.ToArray(pluginRegistration.AssemblyReferences));
             pluginDependencies = new ReadOnlyCollection<IPluginDescriptor>(completePluginDependenciesCopy);
             probingPaths = new ReadOnlyCollection<string>(GenericCollectionUtils.ToArray(pluginRegistration.ProbingPaths));
@@ -109,11 +107,6 @@ namespace Gallio.Runtime.Extensibility
         public PropertySet TraitsProperties
         {
             get { return traitsProperties; }
-        }
-
-        public IResourceLocator ResourceLocator
-        {
-            get { return resourceLocator; }
         }
 
         public bool IsDisabled
@@ -192,7 +185,7 @@ namespace Gallio.Runtime.Extensibility
                     registry.DataBox.Write(data =>
                     {
                         if (pluginHandler == null)
-                            pluginHandler = pluginHandlerFactory.CreateHandler(registry.ServiceLocator, resourceLocator,
+                            pluginHandler = pluginHandlerFactory.CreateHandler(registry.ServiceLocator, registry.ResourceLocator,
                                 contractType, objectType, pluginProperties);
                     });
                 }
@@ -228,7 +221,7 @@ namespace Gallio.Runtime.Extensibility
                     registry.DataBox.Write(data =>
                     {
                         if (traitsHandler == null)
-                            traitsHandler = traitsHandlerFactory.CreateHandler(registry.ServiceLocator, resourceLocator,
+                            traitsHandler = traitsHandlerFactory.CreateHandler(registry.ServiceLocator, registry.ResourceLocator,
                                 contractType, objectType, traitsProperties);
                     });
                 }

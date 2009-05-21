@@ -55,6 +55,11 @@ namespace Gallio.Runtime.Extensibility
         IServiceLocator ServiceLocator { get; }
 
         /// <summary>
+        /// Gets a resource locator based on the contents of the registry.
+        /// </summary>
+        IResourceLocator ResourceLocator { get; }
+
+        /// <summary>
         /// Registers a plugin and returns its descriptor.
         /// </summary>
         /// <param name="pluginRegistration">The plugin registration</param>

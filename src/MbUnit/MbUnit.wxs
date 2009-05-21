@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+    <?include ..\Installer.Wix\Features.wxi ?>
+
     <Fragment>
         <DirectoryRef Id="INSTALLDIR">
             <Component Id="MbUnit.Website" Guid="{6F174992-5128-4c86-BEB3-7CD07C684DC1}" Win64="no">
@@ -22,6 +24,14 @@
                 <File Name="MbUnit35.pdb" />
                 <File Name="MbUnit35.xml" />
             </Component>
+	    <?ifdef FEATURE_MBUNIT40?>
+            <Component Id="MbUnit40.v3" Guid="{63BE14A1-5846-478C-85B3-4C3E02DB5445}" Win64="no">
+                <File Name="MbUnit40.dll" KeyPath="yes" />
+                <File Name="MbUnit40.plugin" />
+                <File Name="MbUnit40.pdb" />
+                <File Name="MbUnit40.xml" />
+            </Component>
+	    <?endif?>
             <Component Id="MbUnit.Compatibility.v3" Guid="{107b6248-21bd-4d8f-b20b-3101b938429f}" Win64="no">
                 <File Name="MbUnit.Compatibility.dll" KeyPath="yes"/>
                 <File Name="MbUnit.Compatibility.plugin" />
@@ -30,12 +40,22 @@
             </Component>
         </DirectoryRef>
 
+        <DirectoryRef Id="ResourcesFolder" FileSource="$(var.GallioTargetDir)\bin\Resources\">
+            <Component Id="MbUnit.Resources" Guid="{A4BE5B2B-71C2-4de2-A720-8127395DB45A}" Win64="no">
+                <File Id="MbUnit.ico" Name="MbUnit.ico" KeyPath="yes" />
+            </Component>
+        </DirectoryRef>
+
         <Feature Id="feat_MbUnit3" Title="MbUnit v3" Level="1" Display="4" AllowAdvertise="no"
                  Description="Installs the MbUnit v3 test framework components.">
             <ComponentRef Id='MbUnit.v3'/>
             <ComponentRef Id='MbUnit35.v3'/>
+	    <?ifdef FEATURE_MBUNIT40?>
+            <ComponentRef Id='MbUnit40.v3'/>
+	    <?endif?>
             <ComponentRef Id='MbUnit.Compatibility.v3'/>
             <ComponentRef Id='MbUnit.Website'/>
+            <ComponentRef Id='MbUnit.Resources'/>
             <ComponentRef Id='GallioMenuFolder.RemoveFolder'/>
         </Feature>
     </Fragment>

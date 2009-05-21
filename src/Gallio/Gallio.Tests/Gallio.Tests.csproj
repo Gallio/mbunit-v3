@@ -210,7 +210,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Runtime\Extensibility\PluginLoaderTest.cs" />
-    <Compile Include="Runtime\Extensibility\FileSystemResourceLocatorTest.cs" />
+    <Compile Include="Runtime\Extensibility\RegistryResourceLocatorTest.cs" />
     <Compile Include="Runtime\Extensibility\ObjectFactoryTest.cs" />
     <Compile Include="Runtime\Extensibility\PluginCatalogTest.cs" />
     <Compile Include="Runtime\Extensibility\RegistryServiceLocatorTest.cs" />

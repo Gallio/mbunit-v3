@@ -76,22 +76,21 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Gallio\Gallio.UI\Gallio.UI.csproj">
+    <ProjectReference Include="..\..\..\Gallio\Gallio.UI\Gallio.UI.vs2010.csproj">
       <Project>{36B1F505-995B-41E7-AAC9-1E845B08F2D7}</Project>
-      <Name>Gallio.UI</Name>
+      <Name>Gallio.UI.vs2010</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\Gallio\Gallio\Gallio.csproj">
+    <ProjectReference Include="..\..\..\Gallio\Gallio\Gallio.vs2010.csproj">
       <Project>{6CAB7735-05DA-480D-9A04-50615B00F886}</Project>
-      <Name>Gallio %28Gallio\Gallio%29</Name>
+      <Name>Gallio.vs2010</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Gallio.TDNetRunner\Gallio.TDNetRunner.csproj">
+    <ProjectReference Include="..\Gallio.TDNetRunner\Gallio.TDNetRunner.vs2010.csproj">
       <Project>{00C93D01-6A43-4AAA-9E6E-5936B985B497}</Project>
-      <Name>Gallio.TDNetRunner</Name>
+      <Name>Gallio.TDNetRunner.vs2010</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Gallio.TDNetRunner.UI.plugin" />
-    <Content Include="Resources\TestDriven.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

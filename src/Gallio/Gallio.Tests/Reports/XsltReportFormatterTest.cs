@@ -40,58 +40,52 @@ namespace Gallio.Tests.Reports
         private delegate void SerializeReportDelegate(XmlWriter writer, AttachmentContentDisposition contentDisposition);
 
         [Test, ExpectedArgumentNullException]
-        public void RuntimeCannotBeNull()
-        {
-            new XsltReportFormatter(null, "ext", MimeTypes.PlainText, "file://content", "xslt", new string[0]);
-        }
-
-        [Test, ExpectedArgumentNullException]
         public void ContentTypeCannotBeNull()
         {
-            new XsltReportFormatter(Mocks.Stub<IRuntime>(), "ext", null, "file://content", "xslt", new string[0]);
+            new XsltReportFormatter("ext", null, new DirectoryInfo("content"), "xslt", new string[0]);
         }
 
         [Test, ExpectedArgumentNullException]
         public void ExtensionCannotBeNull()
         {
-            new XsltReportFormatter(Mocks.Stub<IRuntime>(), null, MimeTypes.PlainText, "file://content", "xslt", new string[0]);
+            new XsltReportFormatter(null, MimeTypes.PlainText, new DirectoryInfo("content"), "xslt", new string[0]);
         }
 
         [Test, ExpectedArgumentNullException]
         public void ContentPathCannotBeNull()
         {
-            new XsltReportFormatter(Mocks.Stub<IRuntime>(), "ext", MimeTypes.PlainText, null, "xslt", new string[0]);
+            new XsltReportFormatter("ext", MimeTypes.PlainText, null, "xslt", new string[0]);
         }
 
         [Test, ExpectedArgumentNullException]
         public void XsltPathCannotBeNull()
         {
-            new XsltReportFormatter(Mocks.Stub<IRuntime>(), "ext", MimeTypes.PlainText, "file://content", null, new string[0]);
+            new XsltReportFormatter("ext", MimeTypes.PlainText, new DirectoryInfo("content"), null, new string[0]);
         }
 
         [Test, ExpectedArgumentNullException]
         public void ResourcePathsCannotBeNull()
         {
-            new XsltReportFormatter(Mocks.Stub<IRuntime>(), "ext", MimeTypes.PlainText, "file://content", "xslt", null);
+            new XsltReportFormatter("ext", MimeTypes.PlainText, new DirectoryInfo("content"), "xslt", null);
         }
 
         [Test, ExpectedArgumentNullException]
         public void ResourcePathsCannotContainNulls()
         {
-            new XsltReportFormatter(Mocks.Stub<IRuntime>(), "ext", MimeTypes.PlainText, "file://content", "xslt", new string[] { null });
+            new XsltReportFormatter("ext", MimeTypes.PlainText, new DirectoryInfo("content"), "xslt", new string[] { null });
         }
 
         [Test]
         public void TheDefaultAttachmentContentDispositionIsAbsent()
         {
-            XsltReportFormatter formatter = new XsltReportFormatter(Mocks.Stub<IRuntime>(), "ext", MimeTypes.PlainText, "file://content", "xslt", new string[] { "res1", "res2" });
+            XsltReportFormatter formatter = new XsltReportFormatter("ext", MimeTypes.PlainText, new DirectoryInfo("content"), "xslt", new string[] { "res1", "res2" });
             Assert.AreEqual(AttachmentContentDisposition.Absent, formatter.DefaultAttachmentContentDisposition);
         }
 
         [Test]
         public void TheDefaultAttachmentContentDispositionCanBeChanged()
         {
-            XsltReportFormatter formatter = new XsltReportFormatter(Mocks.Stub<IRuntime>(), "ext", MimeTypes.PlainText, "file://content", "xslt", new string[] { "res1", "res2" });
+            XsltReportFormatter formatter = new XsltReportFormatter("ext", MimeTypes.PlainText, new DirectoryInfo("content"), "xslt", new string[] { "res1", "res2" });
 
             formatter.DefaultAttachmentContentDisposition = AttachmentContentDisposition.Inline;
             Assert.AreEqual(AttachmentContentDisposition.Inline, formatter.DefaultAttachmentContentDisposition);
@@ -102,7 +96,6 @@ namespace Gallio.Tests.Reports
         {
             string resourcePath = Path.Combine(Path.GetDirectoryName(AssemblyUtils.GetAssemblyLocalPath(GetType().Assembly)), @"..\Reports");
 
-            IRuntime runtime = Mocks.StrictMock<IRuntime>();
             IReportWriter reportWriter = Mocks.StrictMock<IReportWriter>();
             IReportContainer reportContainer = Mocks.StrictMock<IReportContainer>();
             IProgressMonitor progressMonitor = NullProgressMonitor.CreateInstance();
@@ -113,10 +106,6 @@ namespace Gallio.Tests.Reports
                 using (Mocks.Record())
                 {
                     SetupResult.For(reportWriter.ReportContainer).Return(reportContainer);
-
-                    Expect.Call(runtime.MapUriToLocalPath(null))
-                        .Constraints(Is.Equal(new Uri("file://content")))
-                        .Return(resourcePath);
 
                     reportWriter.SerializeReport(null, AttachmentContentDisposition.Link);
                     LastCall.Constraints(Is.NotNull(), Is.Equal(AttachmentContentDisposition.Link))
@@ -140,7 +129,7 @@ namespace Gallio.Tests.Reports
 
                 using (Mocks.Playback())
                 {
-                    XsltReportFormatter formatter = new XsltReportFormatter(runtime, "ext", MimeTypes.PlainText, "file://content", "Diagnostic.xslt", new string[] { "MbUnitLogo.png" });
+                    XsltReportFormatter formatter = new XsltReportFormatter("ext", MimeTypes.PlainText, new DirectoryInfo(resourcePath), "Diagnostic.xslt", new string[] { "MbUnitLogo.png" });
                     var reportFormatterOptions = new ReportFormatterOptions();
                     reportFormatterOptions.Properties.Add(XsltReportFormatter.AttachmentContentDispositionOption, AttachmentContentDisposition.Link.ToString());
 

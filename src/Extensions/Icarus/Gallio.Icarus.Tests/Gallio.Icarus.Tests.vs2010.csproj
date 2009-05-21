@@ -63,13 +63,18 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CodeWindowTest.cs" />
     <Compile Include="Commands\AddAssembliesCommandTest.cs" />
+    <Compile Include="Commands\ApplyFilterCommandTest.cs" />
+    <Compile Include="Commands\ConvertSavedReportCommandTest.cs" />
+    <Compile Include="Commands\DeleteFilterCommandTest.cs" />
     <Compile Include="Controllers\AboutControllerTest.cs" />
     <Compile Include="Controllers\AnnotationsControllerTest.cs" />
     <Compile Include="Controllers\ExecutionLogControllerTest.cs" />
     <Compile Include="Controllers\NotifyControllerTest.cs" />
+    <Compile Include="Controllers\OptionsControllerTest.cs" />
+    <Compile Include="Controllers\ProjectControllerTest.cs" />
     <Compile Include="Controllers\ReportControllerTest.cs" />
+    <Compile Include="Controllers\RuntimeLogControllerTest.cs" />
     <Compile Include="Controllers\SourceCodeControllerTest.cs" />
     <Compile Include="Controllers\TestControllerTest.cs" />
     <Compile Include="Controllers\TestResultsControllerTest.cs" />
@@ -95,37 +100,35 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="ReloadDialogTest.cs" />
-    <Compile Include="RuntimeLogWindowTest.cs" />
     <Compile Include="TaskManagerTest.cs" />
     <Compile Include="Utilities\SyncTestAttribute.cs" />
     <Compile Include="Utilities\TestSynchronizationContext.cs" />
     <Compile Include="Utilities\TestTaskManager.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Gallio\Gallio.UI\Gallio.UI.csproj">
+    <ProjectReference Include="..\..\..\Gallio\Gallio.UI\Gallio.UI.vs2010.csproj">
       <Project>{36B1F505-995B-41E7-AAC9-1E845B08F2D7}</Project>
-      <Name>Gallio.UI</Name>
+      <Name>Gallio.UI.vs2010</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\Gallio\Gallio35\Gallio35.csproj">
+    <ProjectReference Include="..\..\..\Gallio\Gallio35\Gallio35.vs2010.csproj">
       <Project>{BC28AB7E-5B71-4AEE-BF2D-54ACF7299889}</Project>
-      <Name>Gallio35</Name>
+      <Name>Gallio35.vs2010</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\Gallio\Gallio\Gallio.csproj">
+    <ProjectReference Include="..\..\..\Gallio\Gallio\Gallio.vs2010.csproj">
       <Project>{6CAB7735-05DA-480D-9A04-50615B00F886}</Project>
-      <Name>Gallio %28Gallio\Gallio%29</Name>
+      <Name>Gallio.vs2010</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\MbUnit\MbUnit35\MbUnit35.csproj">
+    <ProjectReference Include="..\..\..\MbUnit\MbUnit35\MbUnit35.vs2010.csproj">
       <Project>{D147F5CC-0166-4B9C-B095-F905220090FA}</Project>
-      <Name>MbUnit35</Name>
+      <Name>MbUnit35.vs2010</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\MbUnit\MbUnit\MbUnit.csproj">
+    <ProjectReference Include="..\..\..\MbUnit\MbUnit\MbUnit.vs2010.csproj">
       <Project>{A9B54755-56B7-48C1-8941-BB69FCEFFF32}</Project>
-      <Name>MbUnit %28MbUnit\MbUnit%29</Name>
+      <Name>MbUnit.vs2010</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Gallio.Icarus\Gallio.Icarus.csproj">
+    <ProjectReference Include="..\Gallio.Icarus\Gallio.Icarus.vs2010.csproj">
       <Project>{6C4AEA1A-CF85-4574-B24A-2C264ED0FEC3}</Project>
-      <Name>Gallio.Icarus</Name>
+      <Name>Gallio.Icarus.vs2010</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

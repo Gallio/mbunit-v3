@@ -14,7 +14,7 @@
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkSubset>
     </TargetFrameworkSubset>
-    <ApplicationIcon>Resources\GallioUtility.ico</ApplicationIcon>
+    <ApplicationIcon>Resources\Gallio.Utility.ico</ApplicationIcon>
     <StartupObject>Gallio.Utility.UtilityProgram</StartupObject>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\Key.snk</AssemblyOriginatorKeyFile>
@@ -70,7 +70,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Gallio.Utility.plugin" />
-    <None Include="Resources\GallioUtility.ico" />
+    <None Include="Resources\Gallio.Utility.ico" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Gallio\Gallio.csproj">

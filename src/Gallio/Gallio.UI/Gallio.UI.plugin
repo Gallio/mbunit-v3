@@ -5,6 +5,7 @@
     <name>Gallio UI Library</name>
     <version>0.0.0.0</version>
     <description>Gallio UI components.</description>
+    <icon>plugin://Gallio/Resources/Gallio.ico</icon>
   </traits>
 
   <dependencies>
@@ -56,6 +57,7 @@
       <traits>
         <path>Gallio</path>
         <order>-100</order>
+        <icon>plugin://Gallio/Resources/Gallio.ico</icon>
       </traits>
     </component>
 

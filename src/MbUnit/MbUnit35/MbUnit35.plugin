@@ -5,10 +5,12 @@
     <name>MbUnit v3 Extensions for .Net 3.5</name>
     <version>0.0.0.0</version>
     <description>Provides additional MbUnit v3 features for use with .Net 3.5.</description>
+    <icon>plugin://MbUnit/Resources/MbUnit.ico</icon>
   </traits>
 
   <dependencies>
     <dependency pluginId="Gallio35" />
+    <dependency pluginId="MbUnit" />
   </dependencies>
 
   <?ifdef NET35?>

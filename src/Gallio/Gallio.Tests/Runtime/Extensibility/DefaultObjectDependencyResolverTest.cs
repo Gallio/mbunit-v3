@@ -418,9 +418,10 @@ namespace Gallio.Tests.Runtime.Extensibility
                 var serviceLocator = MockRepository.GenerateMock<IServiceLocator>();
                 var resourceLocator = MockRepository.GenerateMock<IResourceLocator>();
                 var dependencyResolver = new DefaultObjectDependencyResolver(serviceLocator, resourceLocator);
-                resourceLocator.Expect(x => x.GetFullPath("SampleImage.png")).Return(@"..\Resources\SampleImage.png");
+                var uri = new Uri("file://SampleImage.png");
+                resourceLocator.Expect(x => x.ResolveResourcePath(uri)).Return(@"..\Resources\SampleImage.png");
 
-                var result = dependencyResolver.ResolveDependency("image", typeof(Image), "SampleImage.png");
+                var result = dependencyResolver.ResolveDependency("image", typeof(Image), uri.ToString());
 
                 Assert.Multiple(() =>
                 {
@@ -438,9 +439,10 @@ namespace Gallio.Tests.Runtime.Extensibility
                 var serviceLocator = MockRepository.GenerateMock<IServiceLocator>();
                 var resourceLocator = MockRepository.GenerateMock<IResourceLocator>();
                 var dependencyResolver = new DefaultObjectDependencyResolver(serviceLocator, resourceLocator);
-                resourceLocator.Expect(x => x.GetFullPath("SampleIcon.ico")).Return(@"..\Resources\SampleIcon.ico");
+                var uri = new Uri("file://SampleIcon.ico");
+                resourceLocator.Expect(x => x.ResolveResourcePath(uri)).Return(@"..\Resources\SampleIcon.ico");
 
-                var result = dependencyResolver.ResolveDependency("icon", typeof(Icon), "SampleIcon.ico");
+                var result = dependencyResolver.ResolveDependency("icon", typeof(Icon), uri.ToString());
 
                 Assert.Multiple(() =>
                 {
@@ -458,9 +460,10 @@ namespace Gallio.Tests.Runtime.Extensibility
                 var serviceLocator = MockRepository.GenerateMock<IServiceLocator>();
                 var resourceLocator = MockRepository.GenerateMock<IResourceLocator>();
                 var dependencyResolver = new DefaultObjectDependencyResolver(serviceLocator, resourceLocator);
-                resourceLocator.Expect(x => x.GetFullPath("file.txt")).Return(@"C:\file.txt");
+                var uri = new Uri("file://SampleFile.png");
+                resourceLocator.Expect(x => x.ResolveResourcePath(uri)).Return(@"C:\file.txt");
 
-                var result = dependencyResolver.ResolveDependency("fileInfo", typeof(FileInfo), "file.txt");
+                var result = dependencyResolver.ResolveDependency("fileInfo", typeof(FileInfo), uri.ToString());
 
                 Assert.Multiple(() =>
                 {
@@ -479,9 +482,10 @@ namespace Gallio.Tests.Runtime.Extensibility
                 var serviceLocator = MockRepository.GenerateMock<IServiceLocator>();
                 var resourceLocator = MockRepository.GenerateMock<IResourceLocator>();
                 var dependencyResolver = new DefaultObjectDependencyResolver(serviceLocator, resourceLocator);
-                resourceLocator.Expect(x => x.GetFullPath("dir")).Return(@"C:\dir");
+                var uri = new Uri("file://Directory");
+                resourceLocator.Expect(x => x.ResolveResourcePath(uri)).Return(@"C:\dir");
 
-                var result = dependencyResolver.ResolveDependency("directoryInfo", typeof(DirectoryInfo), "dir");
+                var result = dependencyResolver.ResolveDependency("directoryInfo", typeof(DirectoryInfo), uri.ToString());
 
                 Assert.Multiple(() =>
                 {

@@ -5,6 +5,7 @@
     <name>MbUnit v3</name>
     <version>0.0.0.0</version>
     <description>Provides support for running MbUnit v3 tests.</description>
+    <icon>plugin://MbUnit/Resources/MbUnit.ico</icon>
   </traits>
 
   <dependencies>
@@ -24,6 +25,7 @@
         <id>{4E3D9921-A01A-4e6c-9C3D-B8848AD9327B}</id>
         <name>MbUnit v3</name>
         <frameworkAssemblyNames>MbUnit</frameworkAssemblyNames>
+        <icon>plugin://MbUnit/Resources/MbUnit.ico</icon>
       </traits>
     </component>
   </components>

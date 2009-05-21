@@ -105,6 +105,16 @@ namespace Gallio.Runtime
         }
 
         /// <inheritdoc />
+        public IResourceLocator ResourceLocator
+        {
+            get
+            {
+                ThrowIfDisposed();
+                return registry.ResourceLocator;
+            }
+        }
+
+        /// <inheritdoc />
         public void Initialize(ILogger logger)
         {
             if (logger == null)
@@ -252,36 +262,6 @@ namespace Gallio.Runtime
                 result.AddRange(plugin.AssemblyReferences);
 
             return result;
-        }
-
-        /// <inheritdoc />
-        public string MapUriToLocalPath(Uri uri)
-        {
-            if (uri.IsFile)
-            {
-                return uri.LocalPath;
-            }
-
-            if (uri.Scheme == @"plugin")
-            {
-                string pluginId = uri.Host;
-                string relativePath = uri.PathAndQuery;
-                if (pluginId.Length == 0)
-                    throw new InvalidOperationException(String.Format("Malformed plugin relative Uri: '{0}'.", uri));
-
-                IPluginDescriptor plugin = GenericCollectionUtils.Find(registry.Plugins,
-                    p => string.Compare(pluginId, p.PluginId, true) == 0);
-                if (plugin == null)
-                    throw new InvalidOperationException(String.Format("Unrecognized plugin id in Uri: '{0}'.", uri));
-
-                string pluginPath = plugin.BaseDirectory.FullName;
-                if (relativePath.Length == 0 || relativePath == @"/")
-                    return pluginPath;
-
-                return Path.Combine(pluginPath, relativePath.Substring(1));
-            }
-
-            throw new InvalidOperationException(String.Format("Unsupported Uri scheme in Uri: '{0}'.", uri));
         }
 
         /// <inheritdoc />

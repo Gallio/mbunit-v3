@@ -4,11 +4,6 @@
     <name>Gallio Echo</name>
     <version>0.0.0.0</version>
     <description>A command-line test runner.</description>
+    <icon>plugin://Gallio.Echo/Resources/Gallio.Echo.ico</icon>
   </traits>
-
-  <services>
-  </services>
-
-  <components>
-  </components>
 </plugin>

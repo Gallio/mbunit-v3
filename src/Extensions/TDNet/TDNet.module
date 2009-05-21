@@ -24,9 +24,8 @@
     <PluginFile Include="Gallio.TDNetRunner.UI\Gallio.TDNetRunner.UI.plugin">
       <Folder>TDNet</Folder>
     </PluginFile>
-
-    <Binary Include="Gallio.TDNetRunner.UI\Resources\TestDriven.ico">
-      <Folder>TDNet\Resources</Folder>
+    <Binary Include="Gallio.TDNetRunner\Resources\TestDriven.ico">
+        <Folder>TDNet\Resources</Folder>
     </Binary>
   </ItemGroup>
 
