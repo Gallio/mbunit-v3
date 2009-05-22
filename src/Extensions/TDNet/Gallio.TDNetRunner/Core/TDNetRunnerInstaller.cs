@@ -36,7 +36,7 @@ namespace Gallio.TDNetRunner.Core
         private readonly IRegistry registry;
         private readonly ILogger logger;
 
-        private const string RunnerRegKeyPrefix = "Gallio_";
+        private const string RunnerRegKeyPrefix = "Gallio";
         private const string LocalMachineRegKey = @"Software\MutantDesign\TestDriven.NET\TestRunners";
         private const string LocalMachineRegKey32Bit = @"Software\Wow6432Node\MutantDesign\TestDriven.NET\TestRunners";
 
@@ -148,7 +148,7 @@ namespace Gallio.TDNetRunner.Core
 
         private void InstallRegistryKeysForIcarus(string icarusPath, IProgressMonitor progressMonitor, RegistryKey hiveKey, string rootKeyPath)
         {
-            string subKeyName = string.Concat(rootKeyPath, @"\", RunnerRegKeyPrefix, "Icarus");
+            string subKeyName = string.Concat(rootKeyPath, @"\", RunnerRegKeyPrefix, " - Icarus");
             string message = "Adding TestDriven.Net runner registry key for Icarus.";
 
             logger.Log(LogSeverity.Info, message);
@@ -171,7 +171,7 @@ namespace Gallio.TDNetRunner.Core
 
         private void InstallRegistryKeysForFramework(string frameworkName, string frameworkAssemblyName, int priority, IProgressMonitor progressMonitor, RegistryKey hiveKey, string rootKeyPath)
         {
-            string subKeyName = string.Concat(rootKeyPath, @"\", RunnerRegKeyPrefix, frameworkName, "_", frameworkAssemblyName);
+            string subKeyName = string.Concat(rootKeyPath, @"\", RunnerRegKeyPrefix, " - ", frameworkName, " (", frameworkAssemblyName, ")");
             string message = string.Format("Adding TestDriven.Net runner registry key for framework '{0}'.", frameworkName);
 
             logger.Log(LogSeverity.Info, message);

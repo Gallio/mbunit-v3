@@ -65,6 +65,7 @@ echo.
 
 echo Deleting registry keys.
 "%REG%" DELETE "HKEY_LOCAL_MACHINE\Software\Gallio.org\Gallio\3.0" /V InstallationFolder /F 2>nul >nul
+echo.
 exit /b 0
 
 
