@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Works around a bug in the .Net 4.0 ResolveAssemblyReference task
+     that causes the following exception to be thrown when building
+     64bit projects.
+
+c:\Windows\Microsoft.NET\Framework\v4.0.20506\Microsoft.Common.targets(1337,9):
+ error MSB4018: The "ResolveAssemblyReference" task failed unexpectedly.\r
+c:\Windows\Microsoft.NET\Framework\v4.0.20506\Microsoft.Common.targets(1337,9):
+ error MSB4018: Microsoft.Build.Shared.InternalErrorException: MSB0001: Interna
+l MSBuild Error: QueryAssemblyInfo failed, hr 2147942487\r
+c:\Windows\Microsoft.NET\Framework\v4.0.20506\Microsoft.Common.targets(1337,9):
+ error MSB4018:    at Microsoft.Build.Shared.ErrorUtilities.VerifyThrow(Boolean
+ condition, String unformattedMessage, Object arg0)\r
+c:\Windows\Microsoft.NET\Framework\v4.0.20506\Microsoft.Common.targets(1337,9):
+ error MSB4018:    at Microsoft.Build.Tasks.GlobalAssemblyCache.RetreivePathFro
+mFusionName(String strongName)\r
+c:\Windows\Microsoft.NET\Framework\v4.0.20506\Microsoft.Common.targets(1337,9):
+ error MSB4018:    at Microsoft.Build.Tasks.GlobalAssemblyCache.CheckForFullFus
+ionNameInGac(AssemblyNameExtension assemblyName, String targetProcessorArchitec
+ture, GetPathFromFusionName getPathFromFusionName)\r
+c:\Windows\Microsoft.NET\Framework\v4.0.20506\Microsoft.Common.targets(1337,9):
+ error MSB4018:    at Microsoft.Build.Tasks.GlobalAssemblyCache.GetLocation(Ass
+emblyNameExtension strongName, String targetProcessorArchitecture, GetAssemblyR
+untimeVersion getRuntimeVersion, Version targetedRuntimeVersion, Boolean fullFu
+sionName, FileExists fileExists, GetPathFromFusionName getPathFromFusionName, G
+etGacEnumerator getGacEnumerator)\r
+c:\Windows\Microsoft.NET\Framework\v4.0.20506\Microsoft.Common.targets(1337,9):
+ error MSB4018:    at Microsoft.Build.Tasks.Reference.SetFinalCopyLocalState(As
+semblyNameExtension assemblyName, String[] frameworkPaths, String targetProcess
+orArchitecture, GetAssemblyRuntimeVersion getRuntimeVersion, Version targetedRu
+ntimeVersion, FileExists fileExists)\r
+c:\Windows\Microsoft.NET\Framework\v4.0.20506\Microsoft.Common.targets(1337,9):
+ error MSB4018:    at Microsoft.Build.Tasks.ReferenceTable.GetReferenceItems(IT
+askItem[]& primaryFiles, ITaskItem[]& dependencyFiles, ITaskItem[]& relatedFile
+s, ITaskItem[]& satelliteFiles, ITaskItem[]& serializationAssemblyFiles, ITaskI
+tem[]& scatterFiles, ITaskItem[]& copyLocalFiles)\r
+c:\Windows\Microsoft.NET\Framework\v4.0.20506\Microsoft.Common.targets(1337,9):
+ error MSB4018:    at Microsoft.Build.Tasks.ResolveAssemblyReference.Execute(Fi
+leExists fileExists, DirectoryExists directoryExists, GetDirectories getDirecto
+ries, GetAssemblyName getAssemblyName, GetAssemblyMetadata getAssemblyMetadata,
+ GetRegistrySubKeyNames getRegistrySubKeyNames, GetRegistrySubKeyDefaultValue g
+etRegistrySubKeyDefaultValue, GetLastWriteTime getLastWriteTime, GetAssemblyRun
+timeVersion getRuntimeVersion)\r
+c:\Windows\Microsoft.NET\Framework\v4.0.20506\Microsoft.Common.targets(1337,9):
+ error MSB4018:    at Microsoft.Build.Tasks.ResolveAssemblyReference.Execute()\
+r
+c:\Windows\Microsoft.NET\Framework\v4.0.20506\Microsoft.Common.targets(1337,9):
+ error MSB4018:    at Microsoft.Build.BackEnd.TaskExecutionHost.Microsoft.Build
+.BackEnd.ITaskExecutionHost.Execute()\r
+c:\Windows\Microsoft.NET\Framework\v4.0.20506\Microsoft.Common.targets(1337,9):
+ error MSB4018:    at Microsoft.Build.BackEnd.TaskBuilder.ExecuteInstantiatedTa
+sk(ITaskExecutionHost taskExecutionHost, TaskLoggingContext taskLoggingContext,
+ TaskHost taskHost, ItemBucket bucket, TaskExecutionMode howToExecuteTask, Bool
+ean& taskResult)
+-->
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <!--
+         This hack works by reverting to the MSBuild v3.5 version of the
+	 ResolveAssemblyReference task.  The ResolveAssemblyReferences target
+	 has been copy from Microsoft.Common.targets and modified below to
+	 refer to the older version of the task.  Several new parameters to the
+	 task in v4.0 have been omitted.
+
+         To use the workaround, modify your *.csproj file as follows:
+	   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+           <Import Project="..\..\DotNet40WorkaroundFor64bitPlatform.targets" />
+    -->
+
+    <UsingTask AssemblyName="Microsoft.Build.Tasks.v3.5, Version=3.5.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" TaskName="Microsoft.Build.Tasks.ResolveAssemblyReference" />
+
+    <!--
+    ============================================================
+
+                                        ResolveAssemblyReferences
+
+    Given the list of assemblies, find the closure of all assemblies that they depend on. These are
+    what we need to copy to the output directory.
+
+        [IN]
+        @(Reference) - List of assembly references as fusion names.
+        @(_ResolvedProjectReferencePaths) - List of project references produced by projects that this project depends on.
+
+            The 'Private' attribute on the reference corresponds to the Copy Local flag in IDE.
+            The 'Private' flag can have three possible values:
+                - 'True' means the reference should be Copied Local
+                - 'False' means the reference should not be Copied Local
+                - [Missing] means this task will decide whether to treat this reference as CopyLocal or not.
+
+        [OUT]
+        @(ReferencePath) - Paths to resolved primary files.
+        @(ReferenceDependencyPaths) - Paths to resolved dependency files.
+        @(_ReferenceRelatedPaths) - Paths to .xmls and .pdbs.
+        @(ReferenceSatellitePaths) - Paths to satellites.
+        @(_ReferenceSerializationAssemblyPaths) - Paths to XML serialization assemblies created by sgen.
+        @(_ReferenceScatterPaths) - Paths to scatter files.
+        @(ReferenceCopyLocalPaths) - Paths to files that should be copied to the local directory.
+    ============================================================
+    -->
+    <PropertyGroup>
+        <ResolveAssemblyReferencesDependsOn>
+            GetFrameworkPaths;
+            GetReferenceAssemblyPaths;
+            PrepareForBuild
+        </ResolveAssemblyReferencesDependsOn>
+    </PropertyGroup>
+    <Target
+        Name="ResolveAssemblyReferences"
+        Condition="'@(Reference)'!='' or '@(_ResolvedProjectReferencePaths)'!='' or '@(_ExplicitReference)' != ''"
+        DependsOnTargets="$(ResolveAssemblyReferencesDependsOn)">
+
+        <ItemGroup>
+            <_ReferenceInstalledAssemblyDirectory Include="$(TargetFrameworkDirectory)" />
+            <_ReferenceInstalledAssemblySubsets Include="$(TargetFrameworkSubset)" />
+        </ItemGroup>
+
+        <!--
+        Only read and write cache file at build time, skip it for load time because its more
+        expensive to write the newly created cache file.
+        -->
+        <PropertyGroup>
+            <ResolveAssemblyReferencesStateFile Condition="'$(BuildingProject)'=='true'">$(IntermediateOutputPath)ResolveAssemblyReference.cache</ResolveAssemblyReferencesStateFile>
+        </PropertyGroup>
+
+        <!-- Make an App.Config item that exists when AutoUnify is false. -->
+        <ItemGroup>
+            <_ResolveAssemblyReferencesApplicationConfigFileForExes Include="@(AppConfigWithTargetPath)" Condition="'$(AutoUnifyAssemblyReferences)'=='false'"/>
+        </ItemGroup>
+
+        <PropertyGroup>
+            <!-- Default in task is true -->
+            <_FindDependencies Condition="'$(BuildingProject)' != 'true' and '$(_ResolveReferenceDependencies)' != 'true'">false</_FindDependencies>
+        </PropertyGroup>
+
+        <ItemGroup>
+            <!-- Remove any references which we have added as explicit reference so that we do not get duplicates. We need to make sure we do not have duplicates
+             because this confuses the IDE  when it tries to compare the list of references passed in to the list of resolved references. If it does not match then the
+             ide will show one of the references as not resolved, this will not break the build but is a display issue -->
+            <Reference Remove="$(AdditionalExplicitAssemblyReferences)"/>
+            <Reference Include="$(AdditionalExplicitAssemblyReferences)"/>
+       </ItemGroup>
+
+        <Microsoft.Build.Tasks.ResolveAssemblyReference
+            Assemblies="@(Reference)"
+            AssemblyFiles="@(_ResolvedProjectReferencePaths);@(_ExplicitReference)"
+            TargetFrameworkDirectories="@(_ReferenceInstalledAssemblyDirectory)"
+            InstalledAssemblyTables="@(InstalledAssemblyTables);@(RedistList)"
+            IgnoreDefaultInstalledAssemblyTables="$(IgnoreDefaultInstalledAssemblyTables)"
+            IgnoreDefaultInstalledAssemblySubsetTables="$(IgnoreInstalledAssemblySubsetTables)"
+            CandidateAssemblyFiles="@(Content);@(None)"
+            SearchPaths="$(AssemblySearchPaths)"
+            AllowedAssemblyExtensions="$(AllowedReferenceAssemblyFileExtensions)"
+            AllowedRelatedFileExtensions="$(AllowedReferenceRelatedFileExtensions)"
+            TargetProcessorArchitecture="$(ProcessorArchitecture)"
+            AppConfigFile="@(_ResolveAssemblyReferencesApplicationConfigFileForExes)"
+            AutoUnify="$(AutoUnifyAssemblyReferences)"
+            FindDependencies="$(_FindDependencies)"
+            FindSatellites="$(BuildingProject)"
+            FindSerializationAssemblies="$(BuildingProject)"
+            FindRelatedFiles="$(BuildingProject)"
+            Silent="!$(BuildingProject)"
+            TargetFrameworkVersion="$(TargetFrameworkVersion)"
+            StateFile="$(ResolveAssemblyReferencesStateFile)"
+            InstalledAssemblySubsetTables="@(InstalledAssemblySubsetTables)"
+            TargetFrameworkSubsets="@(_ReferenceInstalledAssemblySubsets)"
+            FullTargetFrameworkSubsetNames="$(FullReferenceAssemblyNames)"
+            >
+
+            <Output TaskParameter="ResolvedFiles" ItemName="ReferencePath"/>
+            <Output TaskParameter="ResolvedFiles" ItemName="_ResolveAssemblyReferenceResolvedFiles"/>
+            <Output TaskParameter="ResolvedDependencyFiles" ItemName="ReferenceDependencyPaths"/>
+            <Output TaskParameter="RelatedFiles" ItemName="_ReferenceRelatedPaths"/>
+            <Output TaskParameter="SatelliteFiles" ItemName="ReferenceSatellitePaths"/>
+            <Output TaskParameter="SerializationAssemblyFiles" ItemName="_ReferenceSerializationAssemblyPaths"/>
+            <Output TaskParameter="ScatterFiles" ItemName="_ReferenceScatterPaths"/>
+            <Output TaskParameter="CopyLocalFiles" ItemName="ReferenceCopyLocalPaths"/>
+            <Output TaskParameter="SuggestedRedirects" ItemName="SuggestedBindingRedirects"/>
+            <Output TaskParameter="FilesWritten" ItemName="FileWrites"/>
+
+        </Microsoft.Build.Tasks.ResolveAssemblyReference>
+    </Target>  
+</Project>
