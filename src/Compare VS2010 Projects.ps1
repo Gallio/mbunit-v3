@@ -1,5 +1,6 @@
 Param
 (
+	[Switch] $sync # Open up a diff/merge tool to synchronize changes.
 )
 
 function GetXml([string] $path)
@@ -60,6 +61,18 @@ function Check([string] $vs2008proj, [string] $vs2010proj)
 		if ($diffs)
 		{
 			PrintResult $vs2010proj $diffs
+
+			if ($sync)
+			{
+				Echo "Opening WinMerge."
+				Echo "Be sure to only synchronize changes to project contents not references."
+				Echo ""
+
+				$vs2008name = [System.IO.Path]::GetFileName($vs2008proj)
+				$vs2010name = [System.IO.Path]::GetFileName($vs2010proj)
+
+				..\bin\WinMergeU.exe /e /s /dl "VS 2008: $vs2008name" /dr "VS 2010: $vs2010name" /u /s $vs2008proj $vs2010proj
+			}
 		}
 	}
 	else

@@ -23,6 +23,7 @@ using System.Text;
 using System.Threading;
 using Gallio.Common;
 using Gallio.Common.IO;
+using Gallio.Common.Platform;
 using Gallio.Runtime.Logging;
 using Gallio.Common.Concurrency;
 using Gallio.Runtime.Remoting;
@@ -195,6 +196,18 @@ namespace Gallio.Runtime.Hosting
             processTask.ConsoleOutputDataReceived += LogConsoleOutput;
             processTask.ConsoleErrorDataReceived += LogConsoleError;
             processTask.Terminated += LogExitCode;
+
+            // Force CLR runtime version.
+            string runtimeVersion;
+            if (HostSetup.Configuration.SupportedRuntimeVersions.Count != 0)
+                runtimeVersion = HostSetup.Configuration.SupportedRuntimeVersions[0];
+            else
+                runtimeVersion = DotNetRuntimeSupport.MostRecentInstalledDotNetRuntimeVersion;
+
+            if (!runtimeVersion.StartsWith("v"))
+                runtimeVersion = "v" + runtimeVersion; // just in case, this is a common user error
+
+            processTask.SetEnvironmentVariable("COMPLUS_Version", runtimeVersion);
 
             processTask.Start();
         }

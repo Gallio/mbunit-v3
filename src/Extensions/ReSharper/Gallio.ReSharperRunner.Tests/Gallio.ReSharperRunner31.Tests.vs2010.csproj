@@ -144,6 +144,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Gallio.ReSharperRunner31.Tests.dll.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="TestSolution31.sln" />
   </ItemGroup>
   <ItemGroup>

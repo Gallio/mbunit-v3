@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using System.Xml;
 using Gallio.Common.Collections;
 using Gallio.Model;
 using Gallio.Runtime;
@@ -131,6 +132,13 @@ namespace Gallio.Runner.Drivers
             var assemblyMetadataList = GetAssemblyMetadataList(testDomains);
             hostSetup.ProcessorArchitecture = ResolveProcessArchitecture(hostSetup.ProcessorArchitecture, assemblyMetadataList);
 
+            if (hostSetup.Configuration.SupportedRuntimeVersions.Count == 0)
+            {
+                string runtimeVersion = ResolveRuntimeVersion(testDomains);
+                if (runtimeVersion != null)
+                    hostSetup.Configuration.SupportedRuntimeVersions.Add(runtimeVersion);
+            }
+
             setStatus("Initializing the test host.");
 
             IHost remoteHost = CreateRemoteHost(hostSetup);
@@ -214,8 +222,10 @@ namespace Gallio.Runner.Drivers
 
             string assemblyConfigFile = assemblyFile + @".config";
             if (File.Exists(assemblyConfigFile))
-                testDomain.TestPackageConfig.HostSetup.Configuration.ConfigurationXml =
-                    File.ReadAllText(assemblyConfigFile);
+            {
+                string configurationXml = File.ReadAllText(assemblyConfigFile);
+                testDomain.TestPackageConfig.HostSetup.Configuration.ConfigurationXml = configurationXml;
+            }
 
             foreach (AssemblyReference reference in runtime.GetAllPluginAssemblyReferences())
             {
@@ -246,6 +256,58 @@ namespace Gallio.Runner.Drivers
             }
 
             return metadataList;
+        }
+
+        private static string ResolveRuntimeVersion(IEnumerable<TestDomainSetup> testDomains)
+        {
+            List<string> commonRuntimeVersions = new List<string>();
+
+            foreach (TestDomainSetup testDomain in testDomains)
+            {
+                string configurationXml = testDomain.TestPackageConfig.HostSetup.Configuration.ConfigurationXml;
+                if (configurationXml == null)
+                    continue;
+
+                XmlDocument doc = new XmlDocument();
+                doc.LoadXml(configurationXml);
+
+                List<string> runtimeVersions = new List<string>();
+                foreach (XmlElement supportedRuntimeNode in doc.SelectNodes("/configuration/startup/supportedRuntime"))
+                {
+                    string runtimeVersion = supportedRuntimeNode.GetAttribute("version");
+                    if (runtimeVersion != null)
+                        runtimeVersions.Add(runtimeVersion);
+                }
+
+                if (runtimeVersions.Count != 0)
+                {
+                    if (commonRuntimeVersions.Count == 0)
+                    {
+                        commonRuntimeVersions.AddRange(runtimeVersions);
+                    }
+                    else
+                    {
+                        for (int i = 0; i < commonRuntimeVersions.Count; i++)
+                        {
+                            string commonRuntimeVersion = commonRuntimeVersions[0];
+                            if (runtimeVersions.Contains(commonRuntimeVersion))
+                                continue;
+
+                            if (commonRuntimeVersions.Count == 1)
+                            {
+                                throw new RunnerException(String.Format(
+                                    "Cannot run all test assemblies together because some require the '{0}' runtime while others require the '{1}' runtime.",
+                                    runtimeVersions[0], commonRuntimeVersion));
+                            }
+
+                            commonRuntimeVersions.RemoveAt(i);
+                            i -= 1;
+                        }
+                    }
+                }
+            }
+
+            return commonRuntimeVersions.Count == 0 ? null : commonRuntimeVersions[0];
         }
 
         private static ProcessorArchitecture ResolveProcessArchitecture(ProcessorArchitecture requestedArch, IEnumerable<AssemblyMetadata> assemblyMetadataList)

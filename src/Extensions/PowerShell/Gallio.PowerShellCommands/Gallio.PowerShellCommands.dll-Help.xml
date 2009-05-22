@@ -203,7 +203,13 @@
           </maml:description>
           <dev:defaultValue>String.Empty</dev:defaultValue>
         </command:parameter>
-        
+
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="false" position="named">
+          <maml:name>RuntimeVersion</maml:name>
+          <maml:description>
+            <maml:para>The version of the .Net runtime to use for running tests.  For the CLR, this must be the name of one of the framework directories in %SystemRoot%\Microsoft.Net\Framework.  eg. 'v2.0.50727'.  The default is null which uses the most recent installed and supported framework.</maml:para>
+          </maml:description>
+        </command:parameter>
       </command:syntaxItem>
     </command:syntax>
 
@@ -359,7 +365,13 @@
         </maml:description>
         <dev:defaultValue>String.Empty</dev:defaultValue>
       </command:parameter>
-      
+
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="false" position="named">
+        <maml:name>RuntimeVersion</maml:name>
+        <maml:description>
+          <maml:para>The version of the .Net runtime to use for running tests.  For the CLR, this must be the name of one of the framework directories in %SystemRoot%\Microsoft.Net\Framework.  eg. 'v2.0.50727'.  The default is null which uses the most recent installed and supported framework.</maml:para>
+        </maml:description>
+      </command:parameter>
     </command:parameters>
 
     <command:examples>

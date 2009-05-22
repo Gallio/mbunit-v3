@@ -17,6 +17,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using Gallio.Common.Reflection;
 using Microsoft.Win32;
 
@@ -28,7 +29,6 @@ namespace Gallio.Common.Platform
     public static class DotNetRuntimeSupport
     {
         private static Memoizer<DotNetRuntimeType> runtimeTypeMemoizer = new Memoizer<DotNetRuntimeType>();
-        private static Memoizer<string> runtimeVersionMemoizer = new Memoizer<string>();
 
         /// <summary>
         /// Returns true if the application is running within the Mono runtime.
@@ -96,51 +96,73 @@ namespace Gallio.Common.Platform
         }
 
         /// <summary>
-        /// Gets the Major.Minor.Build components of the .Net runtime version in use.
+        /// Gets the .Net runtime version in use.
         /// </summary>
         /// <remarks>
         /// <para>
         /// The runtime version indicates the version of the virtual machine that is running.
         /// It cannot be used to distinguish among the .Net 2.0, 3.0 and 3.5 frameworks because
-        /// those frameworks are just libraries that usually run on the 2.0.50727 runtime.
+        /// those frameworks are just libraries that usually run on the 2.0.50727 runtime on the CLR.
         /// </para>
         /// </remarks>
-        /// <returns>The Major.Minor.Build components of the current runtime, eg. "2.0.50727" or "4.0.20506"</returns>
+        /// <returns>The runtime version, eg. "v2.0.50727" or "v4.0.20506"</returns>
         public static string RuntimeVersion
         {
             get
             {
-                return runtimeVersionMemoizer.Memoize(() =>
-                {
-                    Version version = Assembly.GetAssembly(typeof (Int32)).GetName().Version;
-                    return string.Format("{0}.{1}.{2}", version.Major, version.Minor, version.Build);
-                });
+                return RuntimeEnvironment.GetSystemVersion(); // starts with 'v'
             }
         }
         
         /// <summary>
-        /// Gets the Major.Minor.Build components of the installed .Net 2.0 runtime version,
-        /// or null if not installed.
+        /// Gets the version of the installed .Net 2.0 runtime, or null if not installed.
         /// </summary>
+        /// <returns>The runtime version, eg. "v2.0.50727"</returns>
         public static string InstalledDotNet20RuntimeVersion
         {
             get
             {
+                // FIXME: faking it might not be a good idea...
+                if (IsUsingMono)
+                    return "v2.0.50727";
+
+                // fixme: more than a little naive...
                 return Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\NDP\v2.0.50727", "Version", null) != null
-                    ? "2.0.50727"
+                    ? "v2.0.50727"
                     : null;
             }
         }
 
         /// <summary>
-        /// Gets the Major.Minor.Build components of the installed .Net 4.0 runtime version,
-        /// or null if not installed.
+        /// Gets the version of the installed .Net 4.0 runtime version, or null if not installed.
         /// </summary>
+        /// <returns>The runtime version, eg. "v4.0.20506"</returns>
         public static string InstalledDotNet40RuntimeVersion
         {
             get
             {
-                return (string)Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\NDP\v4.0", "Version", null);
+                // FIXME: faking it might not be a good idea...
+                if (IsUsingMono)
+                    return "v4.0.20506";
+
+                string runtimeVersion = (string)Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\NDP\v4.0", "Version", null);
+                return runtimeVersion != null ? "v" + runtimeVersion : null;
+            }
+        }
+
+        /// <summary>
+        /// Gets the version of the most recent installed .Net runtime version.
+        /// </summary>
+        /// <returns>The runtime version, eg. "v4.0.20506"</returns>
+        public static string MostRecentInstalledDotNetRuntimeVersion
+        {
+            get
+            {
+                string mostRecentInstalledRuntimeVersion = InstalledDotNet40RuntimeVersion ?? InstalledDotNet20RuntimeVersion;
+                if (mostRecentInstalledRuntimeVersion == null || string.Compare(mostRecentInstalledRuntimeVersion, RuntimeVersion) < 0)
+                    return RuntimeVersion;
+
+                return mostRecentInstalledRuntimeVersion;
             }
         }
     }

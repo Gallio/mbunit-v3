@@ -14,6 +14,8 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
@@ -39,6 +41,7 @@ namespace Gallio.Common.Concurrency
         private readonly string executablePath;
         private readonly string arguments;
         private readonly string workingDirectory;
+        private Dictionary<string, string> environmentVariables;
 
         private bool captureConsoleOutput;
         private bool captureConsoleError;
@@ -263,6 +266,27 @@ namespace Gallio.Common.Concurrency
         /// </remarks>
         public event EventHandler<DataReceivedEventArgs> ConsoleErrorDataReceived;
 
+        /// <summary>
+        /// Sets an environment variable to be passed to the process when started.
+        /// </summary>
+        /// <param name="name">The variable name</param>
+        /// <param name="value">The variable value, or null to remove the environment variable
+        /// so it will not be inherited by the child process</param>
+        /// <exception cref="InvalidOperationException">Thrown if the process has already been started</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> is null</exception>
+        public void SetEnvironmentVariable(string name, string value)
+        {
+            if (name == null)
+                throw new ArgumentNullException("name");
+            if (process != null)
+                throw new InvalidOperationException("The process has already been started.");
+
+            if (environmentVariables == null)
+                environmentVariables = new Dictionary<string, string>();
+
+            environmentVariables[name] = value;
+        }
+
         /// <inheritdoc />
         protected override void StartImpl()
         {
@@ -287,6 +311,17 @@ namespace Gallio.Common.Concurrency
             startInfo.RedirectStandardError = captureConsoleError || ConsoleErrorDataReceived != null;
             if (startInfo.RedirectStandardError)
                 consoleErrorFinished = new ManualResetEvent(false);
+
+            if (environmentVariables != null)
+            {
+                foreach (var pair in environmentVariables)
+                {
+                    if (pair.Value == null)
+                        startInfo.EnvironmentVariables.Remove(pair.Key);
+                    else
+                        startInfo.EnvironmentVariables[pair.Key] = pair.Value;
+                }
+            }
 
             process = StartProcess(startInfo);
             process.EnableRaisingEvents = true;

@@ -85,6 +85,14 @@ namespace Gallio.Echo
              )]
         public bool Debug;
 
+        [CommandLineArgument(
+            CommandLineArgumentFlags.AtMostOnce,
+            ShortName = "rv",
+            LongName = "runtime-version",
+            ValueLabel = "version",
+            Description = "Specifies the version of the .Net runtime to use for running tests.  For the CLR, this must be the name of one of the framework directories in %SystemRoot%\\Microsoft.Net\\Framework.  eg. 'v2.0.50727'.")]
+        public string RuntimeVersion;
+
         #endregion
 
         #region Report Arguments

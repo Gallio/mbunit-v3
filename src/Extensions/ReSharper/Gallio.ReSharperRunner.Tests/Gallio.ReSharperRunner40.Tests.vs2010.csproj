@@ -165,6 +165,11 @@
   <ItemGroup>
     <Content Include="TestSolution40.sln" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Gallio.ReSharperRunner40.Tests.dll.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="..\ReSharper40.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

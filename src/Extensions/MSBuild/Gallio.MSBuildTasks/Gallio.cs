@@ -88,6 +88,7 @@ namespace Gallio.MSBuildTasks
         private ITaskItem workingDirectory;
         private bool shadowCopy;
         private bool debug;
+        private string runtimeVersion;
 
         private string filter = string.Empty;
         private string[] reportTypes = EmptyArray<string>.Instance;
@@ -251,6 +252,22 @@ namespace Gallio.MSBuildTasks
         public bool Debug
         {
             set { debug = value; }
+        }
+
+        /// <summary>
+        /// <para>
+        /// Gets or sets the version of the .Net runtime to use for running tests.
+        /// </para>
+        /// <para>
+        /// For the CLR, this must be the name of one of the framework directories in %SystemRoot%\Microsoft.Net\Framework.  eg. 'v2.0.50727'.
+        /// </para>
+        /// <para>
+        /// The default is null which uses the most recent installed and supported framework.
+        /// </para>
+        /// </summary>
+        public string RuntimeVersion
+        {
+            set { runtimeVersion = value; }
         }
 
         /// <summary>

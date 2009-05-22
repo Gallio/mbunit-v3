@@ -364,6 +364,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Reports\Diagnostic.xslt" />
+    <None Include="Gallio.Tests.dll.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="Reports\MbUnitLogo.png" />
   </ItemGroup>
   <ItemGroup>

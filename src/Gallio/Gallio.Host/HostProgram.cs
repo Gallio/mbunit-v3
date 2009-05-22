@@ -75,6 +75,9 @@ namespace Gallio.Host
 
             logger.Log(LogSeverity.Info, String.Format("Host started at {0}.", DateTime.Now));
 
+            logger.Log(LogSeverity.Info, String.Format("Running under {0} {1} runtime.",
+                DotNetRuntimeSupport.RuntimeType, DotNetRuntimeSupport.RuntimeVersion));
+
             bool fatal = false;
             try
             {
