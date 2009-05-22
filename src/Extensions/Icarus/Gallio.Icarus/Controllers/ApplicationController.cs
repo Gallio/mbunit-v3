@@ -29,6 +29,7 @@ using Gallio.Icarus.Utilities;
 using Gallio.Runner.Projects;
 using Gallio.Runtime;
 using Gallio.Runtime.Extensibility;
+using Gallio.Runtime.ProgressMonitoring;
 
 namespace Gallio.Icarus.Controllers
 {
@@ -106,6 +107,7 @@ namespace Gallio.Icarus.Controllers
 
             fileSystem = serviceLocator.Resolve<IFileSystem>();
             taskManager = serviceLocator.Resolve<ITaskManager>();
+            taskManager.Start();
             testController = serviceLocator.Resolve<ITestController>();
             
             projectController = serviceLocator.Resolve<IProjectController>();
@@ -190,11 +192,13 @@ namespace Gallio.Icarus.Controllers
             taskManager.QueueTask(openProjectCommand);
         }
 
-        public void SaveProject()
+        public void SaveProject(bool queueTask)
         {
-            var cmd = new SaveProjectCommand(projectController);
-            cmd.FileName = projectFileName;
-            taskManager.QueueTask(cmd);
+            var cmd = new SaveProjectCommand(projectController) { FileName = projectFileName };
+            if (queueTask)
+                taskManager.QueueTask(cmd);
+            else
+                cmd.Execute(NullProgressMonitor.CreateInstance());
         }
 
         public void NewProject()

@@ -33,6 +33,7 @@ namespace Gallio.Icarus
 
         void BackgroundTask(Action action);
         void QueueTask(ICommand command);
+        void Start();
         void Stop();
     }
 }

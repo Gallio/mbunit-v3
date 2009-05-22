@@ -63,13 +63,20 @@ namespace Gallio.Icarus
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
+            UnhandledErrorPolicy();
+
+            var runtimeSetup = new RuntimeSetup
+            {
+                RuntimePath = Path.GetDirectoryName(AssemblyUtils.GetFriendlyAssemblyLocation(
+                    typeof(IcarusProgram).Assembly))
+            };
+
             var optionsManager = new OptionsManager(new FileSystem(), new DefaultXmlSerializer(), 
                 new Utilities.UnhandledExceptionPolicy());
             optionsManager.Load();
 
             var runtimeLogger = new RuntimeLogger();
 
-            var runtimeSetup = new RuntimeSetup();
             runtimeSetup.PluginDirectories.AddRange(optionsManager.Settings.PluginDirectories);
             GenericCollectionUtils.AddAllIfNotAlreadyPresent(Arguments.PluginDirectories, runtimeSetup.PluginDirectories);
 
@@ -92,10 +99,30 @@ namespace Gallio.Icarus
                 var applicationController = new ApplicationController(Arguments, RuntimeAccessor.ServiceLocator);
                 var main = new Main(applicationController);
 
-                Application.Run(main);
+                try
+                {
+                    Application.Run(main);
+                }
+                catch (Exception ex)
+                {
+                    UnhandledExceptionPolicy.Report("Error in Application.Run", ex);
+                }
             }
 
             return ResultCode.Success;
+        }
+
+        private static void UnhandledErrorPolicy()
+        {
+            BlackBoxLogger.Initialize();
+            UnhandledExceptionPolicy.ReportUnhandledException += (sender, e) =>
+            {
+                BlackBoxLogger.Log(e);
+            };
+
+            Application.ThreadException += (sender, e) => UnhandledExceptionPolicy.Report("Error from Application.ThreadException", e.Exception);
+            AppDomain.CurrentDomain.UnhandledException += (sender, e) => UnhandledExceptionPolicy.Report("Error from Application.ThreadException",
+                (Exception)e.ExceptionObject);
         }
 
         private static void ConfigureTestRunnerFactory(string factoryName)

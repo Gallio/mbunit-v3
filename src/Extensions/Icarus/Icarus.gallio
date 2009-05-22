@@ -19,4 +19,6 @@
     <testFilter filterName="AutoSave" filter="" />
   </testFilters>
   <extensionSpecifications />
+  <reportDirectory>.\Reports</reportDirectory>
+  <reportNameFormat>test-report-{0}-{1}</reportNameFormat>
 </project>

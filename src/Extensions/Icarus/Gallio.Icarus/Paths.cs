@@ -44,5 +44,10 @@ namespace Gallio.Icarus
         /// The location of the file used to store the configuration of the tabs/windows in Icarus.
         /// </summary>
         public static string DockConfigFile = Path.Combine(IcarusAppDataFolder, @"DockPanel.config");
+
+        /// <summary>
+        /// The location of the black box log file.
+        /// </summary>
+        public static string BlackBoxLogFile = Path.Combine(IcarusAppDataFolder, @"BlackBox.log");
     }
 }

@@ -32,6 +32,7 @@ namespace Gallio.Icarus
         private readonly Queue<ICommand> queue = new Queue<ICommand>();
         private readonly IUnhandledExceptionPolicy unhandledExceptionPolicy;
         private readonly ProgressMonitorProvider progressMonitorProvider = new ProgressMonitorProvider();
+        private bool canExecute;
 
         public ProgressMonitorPresenter ProgressMonitor
         {
@@ -57,6 +58,9 @@ namespace Gallio.Icarus
 
         public void QueueTask(ICommand command)
         {
+            if (!canExecute)
+                throw new Exception("TaskManager is stopped.");
+
             queue.Enqueue(command);
 
             if (currentWorkerTask == null)
@@ -115,8 +119,14 @@ namespace Gallio.Icarus
                 EventHandlerPolicy.SafeInvoke(TaskStarted, this, EventArgs.Empty);
         }
 
+        public void Start()
+        {
+            canExecute = true;
+        }
+
         public void Stop()
         {
+            canExecute = false;
             queue.Clear();
         }
     }

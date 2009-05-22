@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel;
 
-namespace Gallio.Icarus.Options
+namespace Gallio.Icarus.ControlPanel
 {
-    internal partial class StartupOptions
+    internal partial class StartupPane
     {
         /// <summary> 
         /// Required designer variable.
@@ -32,13 +32,9 @@ namespace Gallio.Icarus.Options
         {
             this.restorePreviousSession = new System.Windows.Forms.CheckBox();
             this.groupBoxGeneral = new System.Windows.Forms.GroupBox();
-            this.panel.SuspendLayout();
             this.groupBoxGeneral.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // panel
-            // 
-            this.panel.Controls.Add(this.groupBoxGeneral);
+            this.Controls.Add(this.groupBoxGeneral);
             // 
             // restorePreviousSession
             // 
@@ -65,17 +61,15 @@ namespace Gallio.Icarus.Options
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.Name = "StartupOptions";
-            this.panel.ResumeLayout(false);
             this.groupBoxGeneral.ResumeLayout(false);
             this.groupBoxGeneral.PerformLayout();
             this.ResumeLayout(false);
 
         }
 
-        private System.Windows.Forms.CheckBox restorePreviousSession;
-
         #endregion
 
+        private System.Windows.Forms.CheckBox restorePreviousSession;
         private System.Windows.Forms.GroupBox groupBoxGeneral;
     }
 }

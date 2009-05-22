@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel;
 
-namespace Gallio.Icarus.Options
+namespace Gallio.Icarus.ControlPanel
 {
-    internal partial class ColorsOptions
+    internal partial class TestStatusPane
     {
         /// <summary> 
         /// Required designer variable.
@@ -38,14 +38,13 @@ namespace Gallio.Icarus.Options
             this.skippedColorLabel = new System.Windows.Forms.Label();
             this.inconclusiveColor = new System.Windows.Forms.Label();
             this.inconclusiveColorLabel = new System.Windows.Forms.Label();
-            this.groupBoxStatusColors = new System.Windows.Forms.GroupBox();
-            this.panel.SuspendLayout();
-            this.groupBoxStatusColors.SuspendLayout();
+            this.testStatusColorsGroupBox = new System.Windows.Forms.GroupBox();
+            this.testProgressBarStyle = new System.Windows.Forms.ComboBox();
+            this.testProgressBarStyleLabel = new System.Windows.Forms.Label();
+            this.testProgressGroupBox = new System.Windows.Forms.GroupBox();
+            this.testStatusColorsGroupBox.SuspendLayout();
+            this.testProgressGroupBox.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // panel
-            // 
-            this.panel.Controls.Add(this.groupBoxStatusColors);
             // 
             // passedColorLabel
             // 
@@ -123,31 +122,71 @@ namespace Gallio.Icarus.Options
             this.inconclusiveColorLabel.TabIndex = 7;
             this.inconclusiveColorLabel.Text = "Inconclusive";
             // 
-            // groupBoxStatusColors
+            // testStatusColorsGroupBox
             // 
-            this.groupBoxStatusColors.Controls.Add(this.passedColor);
-            this.groupBoxStatusColors.Controls.Add(this.skippedColorLabel);
-            this.groupBoxStatusColors.Controls.Add(this.inconclusiveColorLabel);
-            this.groupBoxStatusColors.Controls.Add(this.inconclusiveColor);
-            this.groupBoxStatusColors.Controls.Add(this.passedColorLabel);
-            this.groupBoxStatusColors.Controls.Add(this.failedColorLabel);
-            this.groupBoxStatusColors.Controls.Add(this.skippedColor);
-            this.groupBoxStatusColors.Controls.Add(this.failedColor);
-            this.groupBoxStatusColors.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.groupBoxStatusColors.Location = new System.Drawing.Point(0, 0);
-            this.groupBoxStatusColors.Name = "groupBoxStatusColors";
-            this.groupBoxStatusColors.Size = new System.Drawing.Size(450, 350);
-            this.groupBoxStatusColors.TabIndex = 9;
-            this.groupBoxStatusColors.TabStop = false;
-            this.groupBoxStatusColors.Text = "Test Status Colors";
+            this.testStatusColorsGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.testStatusColorsGroupBox.Controls.Add(this.passedColor);
+            this.testStatusColorsGroupBox.Controls.Add(this.skippedColorLabel);
+            this.testStatusColorsGroupBox.Controls.Add(this.inconclusiveColorLabel);
+            this.testStatusColorsGroupBox.Controls.Add(this.inconclusiveColor);
+            this.testStatusColorsGroupBox.Controls.Add(this.passedColorLabel);
+            this.testStatusColorsGroupBox.Controls.Add(this.failedColorLabel);
+            this.testStatusColorsGroupBox.Controls.Add(this.skippedColor);
+            this.testStatusColorsGroupBox.Controls.Add(this.failedColor);
+            this.testStatusColorsGroupBox.Location = new System.Drawing.Point(0, 0);
+            this.testStatusColorsGroupBox.Name = "testStatusColorsGroupBox";
+            this.testStatusColorsGroupBox.Size = new System.Drawing.Size(497, 144);
+            this.testStatusColorsGroupBox.TabIndex = 9;
+            this.testStatusColorsGroupBox.TabStop = false;
+            this.testStatusColorsGroupBox.Text = "Test Status Colors";
             // 
-            // ColorsOptions
+            // testProgressBarStyle
+            // 
+            this.testProgressBarStyle.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.testProgressBarStyle.DropDownWidth = 200;
+            this.testProgressBarStyle.FormattingEnabled = true;
+            this.testProgressBarStyle.Items.AddRange(new object[] {
+            "Integration",
+            "Unit"});
+            this.testProgressBarStyle.Location = new System.Drawing.Point(139, 28);
+            this.testProgressBarStyle.Name = "testProgressBarStyle";
+            this.testProgressBarStyle.Size = new System.Drawing.Size(242, 21);
+            this.testProgressBarStyle.TabIndex = 10;
+            this.testProgressBarStyle.SelectedIndexChanged += new System.EventHandler(this.testProgressBarStyle_SelectedIndexChanged);
+            // 
+            // testProgressBarStyleLabel
+            // 
+            this.testProgressBarStyleLabel.AutoSize = true;
+            this.testProgressBarStyleLabel.Location = new System.Drawing.Point(16, 28);
+            this.testProgressBarStyleLabel.Name = "testProgressBarStyleLabel";
+            this.testProgressBarStyleLabel.Size = new System.Drawing.Size(117, 13);
+            this.testProgressBarStyleLabel.TabIndex = 9;
+            this.testProgressBarStyleLabel.Text = "Test Progress Bar Style";
+            // 
+            // testProgressGroupBox
+            // 
+            this.testProgressGroupBox.Controls.Add(this.testProgressBarStyleLabel);
+            this.testProgressGroupBox.Controls.Add(this.testProgressBarStyle);
+            this.testProgressGroupBox.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.testProgressGroupBox.Location = new System.Drawing.Point(0, 150);
+            this.testProgressGroupBox.Name = "testProgressGroupBox";
+            this.testProgressGroupBox.Size = new System.Drawing.Size(497, 200);
+            this.testProgressGroupBox.TabIndex = 11;
+            this.testProgressGroupBox.TabStop = false;
+            this.testProgressGroupBox.Text = "Test Progress";
+            // 
+            // TestStatusPane
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.Name = "ColorsOptions";
-            this.panel.ResumeLayout(false);
-            this.groupBoxStatusColors.ResumeLayout(false);
-            this.groupBoxStatusColors.PerformLayout();
+            this.Controls.Add(this.testProgressGroupBox);
+            this.Controls.Add(this.testStatusColorsGroupBox);
+            this.Name = "TestStatusPane";
+            this.Size = new System.Drawing.Size(497, 350);
+            this.testStatusColorsGroupBox.ResumeLayout(false);
+            this.testStatusColorsGroupBox.PerformLayout();
+            this.testProgressGroupBox.ResumeLayout(false);
+            this.testProgressGroupBox.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -162,7 +201,10 @@ namespace Gallio.Icarus.Options
         private System.Windows.Forms.Label skippedColorLabel;
         private System.Windows.Forms.Label failedColor;
         private System.Windows.Forms.Label failedColorLabel;
-        private System.Windows.Forms.GroupBox groupBoxStatusColors;
+        private System.Windows.Forms.GroupBox testStatusColorsGroupBox;
+        private System.Windows.Forms.ComboBox testProgressBarStyle;
+        private System.Windows.Forms.Label testProgressBarStyleLabel;
+        private System.Windows.Forms.GroupBox testProgressGroupBox;
 
     }
 }

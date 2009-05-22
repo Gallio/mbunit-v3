@@ -13,27 +13,22 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
-using System.ComponentModel;
-using System.Drawing;
-using Gallio.Icarus.Controllers.EventArgs;
-using Gallio.Icarus.Controls;
+using Gallio.Icarus.Controllers.Interfaces;
+using Gallio.UI.ControlPanel.Preferences;
 
-namespace Gallio.Icarus.Controllers
+namespace Gallio.Icarus.ControlPanel
 {
-    internal interface IApplicationController : INotifyPropertyChanged
+    internal partial class StartupPane : PreferencePane
     {
-        string Title { get; set; }
-        ToolStripMenuItem[] RecentProjects { get; }
-        Size Size { get; set; }
-        Point Location { get; set; }
-        bool FailedTests { get; }
+        public StartupPane(IOptionsController optionsController)
+        {
+            InitializeComponent();
 
-        event EventHandler<AssemblyChangedEventArgs> AssemblyChanged;
+            restorePreviousSession.DataBindings.Add("Checked", optionsController, "RestorePreviousSettings");
+        }
 
-        void Load();
-        void NewProject();
-        void OpenProject(string projectName);
-        void SaveProject(bool queueTask);
+        public override void ApplySettingsChanges()
+        {
+        }
     }
 }

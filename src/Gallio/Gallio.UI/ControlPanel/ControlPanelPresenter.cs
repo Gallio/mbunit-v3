@@ -45,7 +45,8 @@ namespace Gallio.UI.ControlPanel
 
             if (Application.MessageLoop)
             {
-                return dialog.ShowDialog(owner);
+                var dr = dialog.ShowDialog(owner);
+                return dr;
             }
             else
             {

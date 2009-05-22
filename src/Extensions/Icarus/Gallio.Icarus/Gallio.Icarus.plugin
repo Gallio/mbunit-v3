@@ -8,6 +8,10 @@
     <icon>plugin://Gallio.Icarus/Resources/Gallio.Icarus.ico</icon>
   </traits>
 
+  <dependencies>
+    <dependency pluginId="Gallio.UI" />
+  </dependencies>
+
   <services>
 
     <service serviceId="Gallio.Icarus.TaskManager"
@@ -99,6 +103,44 @@
     <component componentId="Gallio.Icarus.AddAssembliesCommand" 
                serviceId="Gallio.Icarus.Command" 
                componentType="Gallio.Icarus.Commands.AddAssembliesCommand, Gallio.Icarus" />
+
+    <!-- Control panel -->
+
+    <component componentId="Gallio.Icarus.ControlPanel.TestStatusPaneProvider"
+           serviceId="Gallio.UI.PreferencePaneProvider"
+           componentType="Gallio.Icarus.ControlPanel.TestStatusPaneProvider, Gallio.Icarus">
+      <traits>
+        <path>Gallio/Icarus/Appearance/Test Status</path>
+        <order>-100</order>
+      </traits>
+    </component>
+    
+    <component componentId="Gallio.Icarus.ControlPanel.StartupPaneProvider"
+           serviceId="Gallio.UI.PreferencePaneProvider"
+           componentType="Gallio.Icarus.ControlPanel.StartupPaneProvider, Gallio.Icarus">
+      <traits>
+        <path>Gallio/Icarus/Startup</path>
+        <order>-100</order>
+      </traits>
+    </component>
+
+    <component componentId="Gallio.Icarus.ControlPanel.TestExplorerPaneProvider" 
+               serviceId="Gallio.UI.PreferencePaneProvider" 
+               componentType="Gallio.Icarus.ControlPanel.TestExplorerPaneProvider, Gallio.Icarus">
+      <traits>
+        <path>Gallio/Icarus/Test Explorer</path>
+        <order>-100</order>
+      </traits>
+    </component>
+
+    <component componentId="Gallio.Icarus.ControlPanel.TreeViewCategoryPaneProvider"
+           serviceId="Gallio.UI.PreferencePaneProvider"
+           componentType="Gallio.Icarus.ControlPanel.TreeViewCategoryPaneProvider, Gallio.Icarus">
+      <traits>
+        <path>Gallio/Icarus/Test Explorer/Tree View Categories</path>
+        <order>-100</order>
+      </traits>
+    </component>
     
     <!-- Controllers -->
 

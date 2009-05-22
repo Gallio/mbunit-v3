@@ -60,6 +60,9 @@ namespace Gallio.Icarus.Tests.Utilities
         public void Stop()
         { }
 
+        public void Start()
+        { }
+
         protected void OnTaskStarted()
         {
             if (TaskStarted != null)

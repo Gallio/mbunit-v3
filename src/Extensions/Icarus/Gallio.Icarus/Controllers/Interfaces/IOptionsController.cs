@@ -13,6 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using Gallio.Icarus.Options;
@@ -30,8 +31,8 @@ namespace Gallio.Icarus.Controllers.Interfaces
         bool RestorePreviousSettings { get; set; }
         string TestRunnerFactory { get; set; }
         BindingList<string> PluginDirectories { get; }
-        BindingList<string> SelectedTreeViewCategories { get; }
-        BindingList<string> UnselectedTreeViewCategories { get; }
+        IList<string> SelectedTreeViewCategories { get; set; }
+        IList<string> UnselectedTreeViewCategories { get; }
         Color PassedColor { get; set; }
         Color FailedColor { get; set; }
         Color InconclusiveColor { get; set; }

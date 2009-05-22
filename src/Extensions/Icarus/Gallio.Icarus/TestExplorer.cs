@@ -23,6 +23,7 @@ using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Models;
 using Gallio.Icarus.Utilities;
 using Gallio.Model;
+using Gallio.Runtime.ProgressMonitoring;
 
 namespace Gallio.Icarus
 {
@@ -233,7 +234,7 @@ namespace Gallio.Icarus
         {
             // save current test selection
             var command = new SaveFilterCommand(testController, projectController, "AutoSave");
-            taskManager.QueueTask(command);
+            command.Execute(NullProgressMonitor.CreateInstance());
             
             // save current category for tree
             projectController.TreeViewCategory = (string)treeViewComboBox.SelectedItem;

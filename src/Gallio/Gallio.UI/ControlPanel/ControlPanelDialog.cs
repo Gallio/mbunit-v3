@@ -73,7 +73,10 @@ namespace Gallio.UI.ControlPanel
         {
             foreach (TabPage tabPage in controlPanelTabControl.TabPages)
             {
-                ControlPanelTab tab = (ControlPanelTab)tabPage.Controls[0];
+                if (tabPage.Controls.Count == 0)
+                    continue;
+
+                var tab = (ControlPanelTab)tabPage.Controls[0];
                 tab.ApplySettingsChanges();
             }
         }
@@ -102,19 +105,12 @@ namespace Gallio.UI.ControlPanel
         {
             ApplySettingsChanges();
 
-            DialogResult = DialogResult.OK;
             Close();
         }
 
         private void cancelButton_Click(object sender, EventArgs e)
         {
-            DialogResult = DialogResult.Cancel;
             Close();
-        }
-
-        private void ControlPanelDialog_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            DialogResult = DialogResult.Cancel;
         }
     }
 }

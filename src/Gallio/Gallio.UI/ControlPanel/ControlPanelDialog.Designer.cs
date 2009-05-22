@@ -46,7 +46,7 @@
             this.controlPanelTabControl.Margin = new System.Windows.Forms.Padding(0);
             this.controlPanelTabControl.Name = "controlPanelTabControl";
             this.controlPanelTabControl.SelectedIndex = 0;
-            this.controlPanelTabControl.Size = new System.Drawing.Size(474, 379);
+            this.controlPanelTabControl.Size = new System.Drawing.Size(482, 388);
             this.controlPanelTabControl.TabIndex = 0;
             this.controlPanelTabControl.SelectedIndexChanged += new System.EventHandler(this.controlPanelTabControl_SelectedIndexChanged);
             // 
@@ -63,7 +63,7 @@
             this.outerTableLayoutPanel.RowCount = 2;
             this.outerTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.outerTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.outerTableLayoutPanel.Size = new System.Drawing.Size(474, 414);
+            this.outerTableLayoutPanel.Size = new System.Drawing.Size(482, 423);
             this.outerTableLayoutPanel.TabIndex = 0;
             // 
             // okCancelApplyFlowLayoutPanel
@@ -75,16 +75,16 @@
             this.okCancelApplyFlowLayoutPanel.Controls.Add(this.okButton);
             this.okCancelApplyFlowLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.okCancelApplyFlowLayoutPanel.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
-            this.okCancelApplyFlowLayoutPanel.Location = new System.Drawing.Point(0, 382);
+            this.okCancelApplyFlowLayoutPanel.Location = new System.Drawing.Point(0, 391);
             this.okCancelApplyFlowLayoutPanel.Margin = new System.Windows.Forms.Padding(0, 3, 0, 3);
             this.okCancelApplyFlowLayoutPanel.Name = "okCancelApplyFlowLayoutPanel";
-            this.okCancelApplyFlowLayoutPanel.Size = new System.Drawing.Size(474, 29);
+            this.okCancelApplyFlowLayoutPanel.Size = new System.Drawing.Size(482, 29);
             this.okCancelApplyFlowLayoutPanel.TabIndex = 1;
             // 
             // applyButton
             // 
             this.applyButton.Enabled = false;
-            this.applyButton.Location = new System.Drawing.Point(396, 3);
+            this.applyButton.Location = new System.Drawing.Point(404, 3);
             this.applyButton.Name = "applyButton";
             this.applyButton.Size = new System.Drawing.Size(75, 23);
             this.applyButton.TabIndex = 2;
@@ -95,7 +95,7 @@
             // cancelButton
             // 
             this.cancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.cancelButton.Location = new System.Drawing.Point(315, 3);
+            this.cancelButton.Location = new System.Drawing.Point(323, 3);
             this.cancelButton.Name = "cancelButton";
             this.cancelButton.Size = new System.Drawing.Size(75, 23);
             this.cancelButton.TabIndex = 1;
@@ -105,7 +105,8 @@
             // 
             // okButton
             // 
-            this.okButton.Location = new System.Drawing.Point(234, 3);
+            this.okButton.DialogResult = System.Windows.Forms.DialogResult.OK;
+            this.okButton.Location = new System.Drawing.Point(242, 3);
             this.okButton.Name = "okButton";
             this.okButton.Size = new System.Drawing.Size(75, 23);
             this.okButton.TabIndex = 0;
@@ -115,11 +116,12 @@
             // 
             // ControlPanelDialog
             // 
+            this.AcceptButton = this.applyButton;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
             this.CancelButton = this.cancelButton;
-            this.ClientSize = new System.Drawing.Size(484, 424);
+            this.ClientSize = new System.Drawing.Size(492, 433);
             this.Controls.Add(this.outerTableLayoutPanel);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
@@ -130,7 +132,6 @@
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Show;
             this.Text = "Gallio Control Panel";
             this.Load += new System.EventHandler(this.ControlPanelDialog_Load);
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ControlPanelDialog_FormClosing);
             this.outerTableLayoutPanel.ResumeLayout(false);
             this.outerTableLayoutPanel.PerformLayout();
             this.okCancelApplyFlowLayoutPanel.ResumeLayout(false);

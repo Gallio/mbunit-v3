@@ -32,7 +32,7 @@ namespace Gallio.Icarus.Controllers
         private MRUList recentProjects;
         private IOptionsManager optionsManager;
 
-        private readonly List<string> unselectedTreeViewCategoriesList = new List<string>();
+        private List<string> unselectedTreeViewCategoriesList;
 
         public bool AlwaysReloadAssemblies
         {
@@ -76,9 +76,36 @@ namespace Gallio.Icarus.Controllers
 
         public BindingList<string> PluginDirectories { get; private set; }
 
-        public BindingList<string> SelectedTreeViewCategories { get; private set; }
+        public IList<string> SelectedTreeViewCategories
+        {
+            get 
+            { 
+                return settings.TreeViewCategories; 
+            }
+            set 
+            {
+                settings.TreeViewCategories.Clear();
+                settings.TreeViewCategories.AddRange(value);
+                unselectedTreeViewCategoriesList = null;
+            }
+        }
 
-        public BindingList<string> UnselectedTreeViewCategories { get; private set; }
+        public IList<string> UnselectedTreeViewCategories 
+        {
+            get 
+            {
+                if (unselectedTreeViewCategoriesList == null)
+                {
+                    unselectedTreeViewCategoriesList = new List<string>();
+                    foreach (var fieldInfo in typeof(MetadataKeys).GetFields())
+                    {
+                        if (!settings.TreeViewCategories.Contains(fieldInfo.Name))
+                            unselectedTreeViewCategoriesList.Add(fieldInfo.Name);
+                    }
+                }
+                return unselectedTreeViewCategoriesList;
+            }
+        }
 
         public Color PassedColor
         {
@@ -188,18 +215,8 @@ namespace Gallio.Icarus.Controllers
                     MetadataKeys.Category, MetadataKeys.Importance, MetadataKeys.TestsOn });
             }
 
-            // add unselected categories for treeview (test explorer)
-            unselectedTreeViewCategoriesList.Clear();
-            foreach (FieldInfo fi in typeof(MetadataKeys).GetFields())
-            {
-                if (!settings.TreeViewCategories.Contains(fi.Name))
-                    unselectedTreeViewCategoriesList.Add(fi.Name);
-            }
-
             // set up bindable lists (for options dialogs)
             PluginDirectories = new BindingList<string>(settings.PluginDirectories);
-            SelectedTreeViewCategories = new BindingList<string>(settings.TreeViewCategories);
-            UnselectedTreeViewCategories = new BindingList<string>(unselectedTreeViewCategoriesList);
             TestRunnerExtensions = new BindingList<string>(settings.TestRunnerExtensions);
         }
 

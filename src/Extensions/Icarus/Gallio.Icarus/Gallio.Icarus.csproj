@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{6C4AEA1A-CF85-4574-B24A-2C264ED0FEC3}</ProjectGuid>
     <OutputType>WinExe</OutputType>
@@ -135,6 +135,35 @@
     <Compile Include="Controllers\SourceCodeController.cs" />
     <Compile Include="Controllers\TestController.cs" />
     <Compile Include="Controllers\TestResultsController.cs" />
+    <Compile Include="ControlPanel\TestStatusPaneProvider.cs" />
+    <Compile Include="ControlPanel\TestStatusPane.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ControlPanel\TestStatusPane.Designer.cs">
+      <DependentUpon>TestStatusPane.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ControlPanel\StartupPaneProvider.cs" />
+    <Compile Include="ControlPanel\StartupPane.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ControlPanel\StartupPane.Designer.cs">
+      <DependentUpon>StartupPane.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ControlPanel\TestExplorerPaneProvider.cs" />
+    <Compile Include="ControlPanel\TestExplorerPane.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ControlPanel\TestExplorerPane.Designer.cs">
+      <DependentUpon>TestExplorerPane.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ControlPanel\TreeViewCategoryPane.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ControlPanel\TreeViewCategoryPane.Designer.cs">
+      <DependentUpon>TreeViewCategoryPane.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ControlPanel\TreeViewCategoryPaneProvider.cs" />
+    <Compile Include="Logging\BlackBoxLogger.cs" />
     <Compile Include="Options\IOptionsManager.cs" />
     <Compile Include="Reports\ReportOptions.cs" />
     <Compile Include="Utilities\Dialogs.cs" />
@@ -457,6 +486,22 @@
     </EmbeddedResource>
     <EmbeddedResource Include="AnnotationsWindow.resx">
       <DependentUpon>AnnotationsWindow.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ControlPanel\TestStatusPane.resx">
+      <DependentUpon>TestStatusPane.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ControlPanel\StartupPane.resx">
+      <DependentUpon>StartupPane.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ControlPanel\TestExplorerPane.resx">
+      <DependentUpon>TestExplorerPane.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ControlPanel\TreeViewCategoryPane.resx">
+      <DependentUpon>TreeViewCategoryPane.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Options\TreeViewCategoryOptions.resx">

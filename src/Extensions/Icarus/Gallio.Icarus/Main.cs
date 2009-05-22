@@ -36,6 +36,7 @@ using WeifenLuo.WinFormsUI.Docking;
 using SynchronizationContext = System.Threading.SynchronizationContext;
 using UnhandledExceptionPolicy = Gallio.Common.Policies.UnhandledExceptionPolicy;
 using Gallio.Icarus.Utilities;
+using Gallio.UI.ControlPanel;
 
 namespace Gallio.Icarus
 {
@@ -325,7 +326,7 @@ namespace Gallio.Icarus
 
         private void SaveProject()
         {
-            applicationController.SaveProject();
+            applicationController.SaveProject(true);
         }
 
         private void addAssemblyToolStripMenuItem_Click(object sender, EventArgs e)
@@ -343,8 +344,12 @@ namespace Gallio.Icarus
 
         private void optionsMenuItem_Click(object sender, EventArgs e)
         {
-            using (var options = new Options.Options(optionsController))
-                options.ShowDialog(this);
+            //using (var options = new Options.Options(optionsController))
+            //    options.ShowDialog(this);
+
+            var presenter = RuntimeAccessor.ServiceLocator.Resolve<IControlPanelPresenter>();
+            if (presenter.Show(this) == DialogResult.OK)
+                optionsController.Save();
         }
 
         private void removeAssembliesToolStripMenuItem_Click(object sender, EventArgs e)
@@ -428,7 +433,7 @@ namespace Gallio.Icarus
             // save the current state of the test tree
             testExplorer.SaveState();
 
-            applicationController.SaveProject();
+            applicationController.SaveProject(false);
 
             // save window size & location for when we restore
             if (WindowState != FormWindowState.Minimized)

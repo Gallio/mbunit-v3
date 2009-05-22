@@ -45,7 +45,7 @@ namespace Gallio.Icarus.Options
             // showProgressDialogs
             // 
             this.showProgressDialogs.AutoSize = true;
-            this.showProgressDialogs.Location = new System.Drawing.Point(6, 19);
+            this.showProgressDialogs.Location = new System.Drawing.Point(19, 29);
             this.showProgressDialogs.Name = "showProgressDialogs";
             this.showProgressDialogs.Size = new System.Drawing.Size(135, 17);
             this.showProgressDialogs.TabIndex = 0;
@@ -55,7 +55,7 @@ namespace Gallio.Icarus.Options
             // testProgressBarStyleLabel
             // 
             this.testProgressBarStyleLabel.AutoSize = true;
-            this.testProgressBarStyleLabel.Location = new System.Drawing.Point(6, 47);
+            this.testProgressBarStyleLabel.Location = new System.Drawing.Point(16, 62);
             this.testProgressBarStyleLabel.Name = "testProgressBarStyleLabel";
             this.testProgressBarStyleLabel.Size = new System.Drawing.Size(117, 13);
             this.testProgressBarStyleLabel.TabIndex = 1;
@@ -69,21 +69,20 @@ namespace Gallio.Icarus.Options
             this.testProgressBarStyle.Items.AddRange(new object[] {
             "Integration",
             "Unit"});
-            this.testProgressBarStyle.Location = new System.Drawing.Point(9, 65);
+            this.testProgressBarStyle.Location = new System.Drawing.Point(139, 62);
             this.testProgressBarStyle.Name = "testProgressBarStyle";
-            this.testProgressBarStyle.Size = new System.Drawing.Size(178, 21);
+            this.testProgressBarStyle.Size = new System.Drawing.Size(242, 21);
             this.testProgressBarStyle.TabIndex = 2;
             // 
             // groupBoxProgressFeedback
             // 
-            this.groupBoxProgressFeedback.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBoxProgressFeedback.Controls.Add(this.showProgressDialogs);
             this.groupBoxProgressFeedback.Controls.Add(this.testProgressBarStyle);
             this.groupBoxProgressFeedback.Controls.Add(this.testProgressBarStyleLabel);
-            this.groupBoxProgressFeedback.Location = new System.Drawing.Point(3, 3);
+            this.groupBoxProgressFeedback.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.groupBoxProgressFeedback.Location = new System.Drawing.Point(0, 0);
             this.groupBoxProgressFeedback.Name = "groupBoxProgressFeedback";
-            this.groupBoxProgressFeedback.Size = new System.Drawing.Size(444, 96);
+            this.groupBoxProgressFeedback.Size = new System.Drawing.Size(450, 350);
             this.groupBoxProgressFeedback.TabIndex = 3;
             this.groupBoxProgressFeedback.TabStop = false;
             this.groupBoxProgressFeedback.Text = "Progress Feedback";
