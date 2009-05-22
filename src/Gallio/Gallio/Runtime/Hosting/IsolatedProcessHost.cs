@@ -198,10 +198,8 @@ namespace Gallio.Runtime.Hosting
             processTask.Terminated += LogExitCode;
 
             // Force CLR runtime version.
-            string runtimeVersion;
-            if (HostSetup.Configuration.SupportedRuntimeVersions.Count != 0)
-                runtimeVersion = HostSetup.Configuration.SupportedRuntimeVersions[0];
-            else
+            string runtimeVersion = HostSetup.RuntimeVersion;
+            if (runtimeVersion == null)
                 runtimeVersion = DotNetRuntimeSupport.MostRecentInstalledDotNetRuntimeVersion;
 
             if (!runtimeVersion.StartsWith("v"))

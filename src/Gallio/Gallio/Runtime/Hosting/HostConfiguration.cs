@@ -137,7 +137,7 @@ namespace Gallio.Runtime.Hosting
         /// </summary>
         /// <remarks>
         /// <para>
-        /// The default value is an empty list.
+        /// The default value is an empty list.  Each entry should start with a "v".  eg. "v2.0.50727".
         /// </para>
         /// </remarks>
         [XmlArray("supportedRuntimeVersions", IsNullable=false)]
@@ -150,7 +150,7 @@ namespace Gallio.Runtime.Hosting
         /// <summary>
         /// Adds a supported runtime version number.
         /// </summary>
-        /// <param name="version">The version number in Major.Minor.Build format, eg. 2.0.50727</param>
+        /// <param name="version">The version number, eg. "v2.0.50727"</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="version"/> is null</exception>
         public void AddSupportedRuntimeVersion(string version)
         {

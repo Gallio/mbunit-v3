@@ -600,6 +600,7 @@ namespace Gallio.NAntTasks
             launcher.TestPackageConfig.HostSetup.WorkingDirectory = workingDirectory;
             launcher.TestPackageConfig.HostSetup.ShadowCopy = shadowCopy;
             launcher.TestPackageConfig.HostSetup.Debug = debug;
+            launcher.TestPackageConfig.HostSetup.RuntimeVersion = runtimeVersion;
 
             foreach (Argument option in reportFormatterProperties)
                 launcher.ReportFormatterOptions.Properties.Add(StringUtils.ParseKeyValuePair(option.Value));

@@ -542,6 +542,7 @@ namespace Gallio.PowerShellCommands
             launcher.TestPackageConfig.HostSetup.WorkingDirectory = workingDirectory;
             launcher.TestPackageConfig.HostSetup.ShadowCopy = shadowCopy.IsPresent;
             launcher.TestPackageConfig.HostSetup.Debug = debug.IsPresent;
+            launcher.TestPackageConfig.HostSetup.RuntimeVersion = runtimeVersion;
 
             foreach (string option in reportFormatterProperties)
                 launcher.ReportFormatterOptions.Properties.Add(StringUtils.ParseKeyValuePair(option));

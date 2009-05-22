@@ -788,6 +788,7 @@ namespace Gallio.MSBuildTasks
                 launcher.TestPackageConfig.HostSetup.WorkingDirectory = workingDirectory.ItemSpec;
             launcher.TestPackageConfig.HostSetup.ShadowCopy = shadowCopy;
             launcher.TestPackageConfig.HostSetup.Debug = debug;
+            launcher.TestPackageConfig.HostSetup.RuntimeVersion = runtimeVersion;
 
             foreach (string option in reportFormatterProperties)
                 launcher.ReportFormatterOptions.Properties.Add(StringUtils.ParseKeyValuePair(option));

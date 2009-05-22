@@ -76,7 +76,7 @@ namespace Gallio.NAntTasks.Tests
                 Assert.IsNull(launcher.TestPackageConfig.HostSetup.WorkingDirectory);
                 Assert.IsFalse(launcher.TestPackageConfig.HostSetup.ShadowCopy);
                 Assert.IsFalse(launcher.TestPackageConfig.HostSetup.Debug);
-                Assert.IsEmpty(launcher.TestPackageConfig.HostSetup.Configuration.SupportedRuntimeVersions);
+                Assert.IsNull(launcher.TestPackageConfig.HostSetup.RuntimeVersion);
 
                 Assert.AreEqual(new PropertySet(), launcher.TestRunnerOptions.Properties);
                 Assert.AreEqual(new PropertySet(), launcher.ReportFormatterOptions.Properties);
@@ -113,7 +113,7 @@ namespace Gallio.NAntTasks.Tests
             task.ShadowCopy = true;
             task.Debug = true;
             task.WorkingDirectory = "workingDir";
-            task.RuntimeVersion = "4.0.20506";
+            task.RuntimeVersion = "v4.0.20506";
 
             task.RunnerProperties.AddRange(new[] { new Argument("RunnerOption1=RunnerValue1"), new Argument("  RunnerOption2  "), new Argument("RunnerOption3 = 'RunnerValue3'"), new Argument("RunnerOption4=\"'RunnerValue4'\"") });
             task.ReportFormatterProperties.AddRange(new[] { new Argument("FormatterOption1=FormatterValue1"), new Argument("  FormatterOption2  "), new Argument("FormatterOption3 = 'FormatterValue3'"), new Argument("FormatterOption4=\"'FormatterValue4'\"") });
@@ -146,7 +146,7 @@ namespace Gallio.NAntTasks.Tests
                 Assert.AreEqual("workingDir", launcher.TestPackageConfig.HostSetup.WorkingDirectory);
                 Assert.IsTrue(launcher.TestPackageConfig.HostSetup.ShadowCopy);
                 Assert.IsTrue(launcher.TestPackageConfig.HostSetup.Debug);
-                Assert.AreElementsEqual(new[] { "4.0.20506" }, launcher.TestPackageConfig.HostSetup.Configuration.SupportedRuntimeVersions);
+                Assert.AreEqual("v4.0.20506", launcher.TestPackageConfig.HostSetup.RuntimeVersion);
 
                 Assert.AreEqual(new PropertySet()
                 {

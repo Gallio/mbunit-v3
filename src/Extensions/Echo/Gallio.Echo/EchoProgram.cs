@@ -110,7 +110,7 @@ namespace Gallio.Echo
             launcher.TestPackageConfig.HostSetup.WorkingDirectory = arguments.WorkingDirectory;
 
             if (arguments.RuntimeVersion != null)
-                launcher.TestPackageConfig.HostSetup.Configuration.SupportedRuntimeVersions.Add(arguments.RuntimeVersion);
+                launcher.TestPackageConfig.HostSetup.RuntimeVersion = arguments.RuntimeVersion;
 
             // add assemblies to testpackageconfig
             foreach (string assembly in arguments.Assemblies)

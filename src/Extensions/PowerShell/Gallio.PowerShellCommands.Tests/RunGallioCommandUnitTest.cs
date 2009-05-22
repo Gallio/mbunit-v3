@@ -64,7 +64,7 @@ namespace Gallio.PowerShellCommands.Tests
                 Assert.IsNull(launcher.TestPackageConfig.HostSetup.WorkingDirectory);
                 Assert.IsFalse(launcher.TestPackageConfig.HostSetup.ShadowCopy);
                 Assert.IsFalse(launcher.TestPackageConfig.HostSetup.Debug);
-                Assert.IsEmpty(launcher.TestPackageConfig.HostSetup.Configuration.SupportedRuntimeVersions);
+                Assert.IsNull(launcher.TestPackageConfig.HostSetup.RuntimeVersion);
 
                 Assert.AreEqual(new PropertySet(), launcher.TestRunnerOptions.Properties);
                 Assert.AreEqual(new PropertySet(), launcher.ReportFormatterOptions.Properties);
@@ -99,7 +99,7 @@ namespace Gallio.PowerShellCommands.Tests
             task.WorkingDirectory = "workingDir";
             task.ShadowCopy = true;
             task.DebugTests = true;
-            task.RuntimeVersion = "4.0.20506";
+            task.RuntimeVersion = "v4.0.20506";
 
             task.RunnerProperties = new[] { "RunnerOption1=RunnerValue1", "  RunnerOption2  ", "RunnerOption3 = 'RunnerValue3'", "RunnerOption4=\"'RunnerValue4'\"" };
             task.ReportFormatterProperties = new[] { "FormatterOption1=FormatterValue1", "  FormatterOption2  ", "FormatterOption3 = 'FormatterValue3'", "FormatterOption4=\"'FormatterValue4'\"" };
@@ -132,7 +132,7 @@ namespace Gallio.PowerShellCommands.Tests
                 Assert.AreEqual("workingDir", launcher.TestPackageConfig.HostSetup.WorkingDirectory);
                 Assert.IsTrue(launcher.TestPackageConfig.HostSetup.ShadowCopy);
                 Assert.IsTrue(launcher.TestPackageConfig.HostSetup.Debug);
-                Assert.AreElementsEqual(new[] { "4.0.20506" }, launcher.TestPackageConfig.HostSetup.Configuration.SupportedRuntimeVersions);
+                Assert.AreEqual("v4.0.20506", launcher.TestPackageConfig.HostSetup.RuntimeVersion);
 
                 Assert.AreEqual(new PropertySet()
                 {

@@ -38,6 +38,7 @@ namespace Gallio.Runtime.Hosting
         private string workingDirectory;
         private bool shadowCopy;
         private bool debug;
+        private string runtimeVersion;
         private ConfigurationFileLocation configurationFileLocation = ConfigurationFileLocation.Temp;
         private HostConfiguration configuration;
         private ProcessorArchitecture processorArchitecture = ProcessorArchitecture.MSIL;
@@ -128,6 +129,17 @@ namespace Gallio.Runtime.Hosting
         {
             get { return debug; }
             set { debug = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets the .Net runtime version of the host, or null to auto-detect.
+        /// </summary>
+        /// <value>The runtime version, eg. "v2.0.50727".  Default is <c>null</c>.</value>
+        [XmlAttribute("runtimeVersion")]
+        public string RuntimeVersion
+        {
+            get { return runtimeVersion; }
+            set { runtimeVersion = value; }
         }
 
         /// <summary>

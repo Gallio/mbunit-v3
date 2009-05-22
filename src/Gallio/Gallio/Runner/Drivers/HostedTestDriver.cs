@@ -132,12 +132,7 @@ namespace Gallio.Runner.Drivers
             var assemblyMetadataList = GetAssemblyMetadataList(testDomains);
             hostSetup.ProcessorArchitecture = ResolveProcessArchitecture(hostSetup.ProcessorArchitecture, assemblyMetadataList);
 
-            if (hostSetup.Configuration.SupportedRuntimeVersions.Count == 0)
-            {
-                string runtimeVersion = ResolveRuntimeVersion(testDomains);
-                if (runtimeVersion != null)
-                    hostSetup.Configuration.SupportedRuntimeVersions.Add(runtimeVersion);
-            }
+            hostSetup.RuntimeVersion = ResolveRuntimeVersion(hostSetup.RuntimeVersion, testDomains);
 
             setStatus("Initializing the test host.");
 
@@ -258,8 +253,11 @@ namespace Gallio.Runner.Drivers
             return metadataList;
         }
 
-        private static string ResolveRuntimeVersion(IEnumerable<TestDomainSetup> testDomains)
+        private static string ResolveRuntimeVersion(string requestedRuntimeVersion, IEnumerable<TestDomainSetup> testDomains)
         {
+            if (requestedRuntimeVersion != null)
+                return requestedRuntimeVersion;
+
             List<string> commonRuntimeVersions = new List<string>();
 
             foreach (TestDomainSetup testDomain in testDomains)
