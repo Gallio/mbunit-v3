@@ -45,6 +45,9 @@
 
   <!-- BUILD TARGETS -->
 
+  <Target Name="BeforeBuild"
+          DependsOnTargets="VerifyProjectsSynchronized" />
+
   <Target Name="AfterBuild"
           DependsOnTargets="" />
 
@@ -478,4 +481,18 @@
     <Error Text="Verification of plugin installation failed!"
              Condition="'$(ExitCode)'!='0' and ! $(IgnoreFailures)" />
   </Target>
+
+  <Target Name="VerifyProjectsSynchronized">
+    <Message Text="Verifying that all VS 2008 and VS 2010 projects are synchronized..."
+             Importance="High" />
+
+    <Exec Command="&quot;$(SourceDir)\Compare VS2010 Projects.bat&quot;"
+          IgnoreExitCode="true"
+	  WorkingDirectory="$(SourceDir)">
+      <Output TaskParameter="ExitCode" PropertyName="ExitCode" />
+    </Exec>
+    
+    <Error Text="There appear to be some differences between the project items of the VS 2008 projects and those of the VS 2010 projects.  Please run 'Sync VS2010 Projects.bat' to synchronize project items."
+             Condition="'$(ExitCode)'!='0' and ! $(IgnoreFailures)" />
+  </Target>  
 </Project>

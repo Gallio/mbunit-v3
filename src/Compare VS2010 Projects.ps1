@@ -17,7 +17,8 @@ function GetProjectItems([string] $path)
 	$nsmgr.AddNamespace("m", "http://schemas.microsoft.com/developer/msbuild/2003")
 
 	$items = $xml.psbase.SelectNodes("//m:Compile|//m:EmbeddedResource|//m:Content|//m:None|//m:Folder", $nsmgr) | sort @{expression={$_.psbase.Name}},@{expression={$_.Include}} | % {$_.psbase.Name + ": " + $_.Include}
-	$items}
+	$items
+}
 
 function Recurse([string] $path)
 {
@@ -47,7 +48,7 @@ function Recurse([string] $path)
 				}
 			}
 		}
-	}	
+	}
 }
 
 function Check([string] $vs2008proj, [string] $vs2010proj)
@@ -73,11 +74,15 @@ function Check([string] $vs2008proj, [string] $vs2010proj)
 
 				..\bin\WinMergeU.exe /e /s /dl "VS 2008: $vs2008name" /dr "VS 2010: $vs2010name" /u /s $vs2008proj $vs2010proj
 			}
+
+			set-variable -Name outcome -Value 1 -Scope global
 		}
 	}
 	else
 	{
 		PrintResult $vs2010proj "*** Missing VS 2010 project $vs2010proj"
+		
+		set-variable -Name outcome -Value 1 -Scope global
 	}
 }
 
@@ -91,6 +96,9 @@ function PrintResult([string] $vs2010proj, [object] $result)
 	Echo ""
 }
 
+set-variable -Name outcome -Value 0 -Scope global
 gl | Recurse
 
 ""
+
+exit $outcome
