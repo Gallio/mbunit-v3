@@ -75,7 +75,7 @@ namespace Gallio.UI.ControlPanel.Preferences
         /// <inheritdoc />
         public override void ApplySettingsChanges()
         {
-            foreach (PreferencePane preferencePane in splitContainer1.Panel2.Controls)
+            foreach (PreferencePane preferencePane in preferencePaneSplitContainer.Panel2.Controls)
                 preferencePane.ApplySettingsChanges();
         }
 
@@ -98,7 +98,7 @@ namespace Gallio.UI.ControlPanel.Preferences
             if (treeNode != null)
             {
                 bool found = false;
-                foreach (PreferencePane candidate in splitContainer1.Panel2.Controls)
+                foreach (PreferencePane candidate in preferencePaneSplitContainer.Panel2.Controls)
                 {
                     if (candidate.Tag == treeNode)
                     {
@@ -121,7 +121,7 @@ namespace Gallio.UI.ControlPanel.Preferences
                     preferencePane.AutoSizeMode = AutoSizeMode.GrowAndShrink;
                     preferencePane.Tag = treeNode;
                     preferencePane.SettingsChanged += preferencePane_SettingsChanged;
-                    splitContainer1.Panel2.Controls.Add(preferencePane);
+                    preferencePaneSplitContainer.Panel2.Controls.Add(preferencePane);
                 }
             }
         }
@@ -138,6 +138,8 @@ namespace Gallio.UI.ControlPanel.Preferences
             {
                 preferencePaneTree.SelectedNode = preferencePaneTree.Nodes[0];
             }
+
+            preferencePaneTree.ExpandAll();
         }
 
         private void preferencePane_SettingsChanged(object sender, EventArgs e)
