@@ -534,7 +534,7 @@ namespace Gallio.NAntTasks
         }
 
         /// <summary>
-        /// Controls the level of information logged.
+        /// Controls the level of information logged.  The default is "Normal".
         /// </summary>
         /// <example>
         /// <code>

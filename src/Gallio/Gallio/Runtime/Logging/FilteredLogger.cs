@@ -70,6 +70,14 @@ namespace Gallio.Runtime.Logging
             }
         }
 
+        /// <summary>
+        /// Gets the minimum severity of the messages that are included in the filtered log.
+        /// </summary>
+        public LogSeverity MinSeverity
+        {
+            get { return minSeverity; }
+        }
+
         /// <inheritdoc />
         protected override void LogImpl(LogSeverity severity, string message, ExceptionData exceptionData)
         {

@@ -53,7 +53,7 @@ namespace Gallio.NAntTasks.Tests
                 Assert.IsFalse(launcher.DoNotRun);
                 Assert.IsTrue(launcher.EchoResults);
                 Assert.IsTrue(launcher.TestExecutionOptions.FilterSet.IsEmpty);
-                Assert.IsInstanceOfType(typeof(FilteredLogger), launcher.Logger);
+                Assert.AreEqual(LogSeverity.Important, ((FilteredLogger)launcher.Logger).MinSeverity);
                 Assert.IsInstanceOfType(typeof(LogProgressMonitorProvider), launcher.ProgressMonitorProvider);
                 Assert.AreEqual("", launcher.ReportDirectory);
                 Assert.AreElementsEqual(new string[] { }, launcher.ReportFormats);
@@ -101,6 +101,7 @@ namespace Gallio.NAntTasks.Tests
             task.ReportNameFormat = "report";
             task.ShowReports = true;
             task.RunTimeLimit = 7200; // seconds
+            task.Verbosity = Verbosity.Debug;
 
             task.RunnerType = StandardTestRunnerFactoryNames.Local;
             task.RunnerExtensions.Add(new Argument("DebugExtension,Gallio"));
@@ -123,7 +124,7 @@ namespace Gallio.NAntTasks.Tests
                 Assert.IsTrue(launcher.DoNotRun);
                 Assert.IsFalse(launcher.EchoResults);
                 Assert.AreEqual("Type: SimpleTest", launcher.TestExecutionOptions.FilterSet.ToFilterSetExpr());
-                Assert.IsInstanceOfType(typeof(FilteredLogger), launcher.Logger);
+                Assert.AreEqual(LogSeverity.Debug, ((FilteredLogger)launcher.Logger).MinSeverity);
                 Assert.IsInstanceOfType(typeof(LogProgressMonitorProvider), launcher.ProgressMonitorProvider);
                 Assert.AreEqual("dir", launcher.ReportDirectory);
                 Assert.AreElementsEqual(new string[] { "XML", "Html" }, launcher.ReportFormats);

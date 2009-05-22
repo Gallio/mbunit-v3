@@ -102,7 +102,7 @@ namespace Gallio.MSBuildTasks
         private bool ignoreAnnotations;
         private bool echoResults = true;
         private TimeSpan? runTimeLimit;
-        private Verbosity verbosity;
+        private Verbosity verbosity = Runtime.Logging.Verbosity.Normal;
 
         private string[] runnerProperties = EmptyArray<string>.Instance;
         private string[] reportFormatterProperties = EmptyArray<string>.Instance;
@@ -475,11 +475,11 @@ namespace Gallio.MSBuildTasks
         }
 
         /// <summary>
-        /// The verbosity to use when logging.
+        /// The verbosity to use when logging.  The default is "Normal".
         /// </summary>
-        public string Verbosity
+        public Verbosity Verbosity
         {
-            set { verbosity = (Verbosity)Enum.Parse(typeof(Verbosity), value); }
+            set { verbosity = value; }
         }
 
         /// <summary>
