@@ -47,6 +47,10 @@ call :SET_LOADER_VARS
 echo Installing Gallio.Loader assembly into GAC.
 "%GACUTIL%" /i "%LOADER_DLL%" /f
 echo.
+
+echo Adding registry keys.
+"%REG%" ADD "HKEY_LOCAL_MACHINE\Software\Gallio.org\Gallio\3.0" /V InstallationFolder /D "%SRC_DIR%Gallio\Gallio" /F >nul
+echo.
 exit /b 0
 
 
@@ -58,6 +62,9 @@ call :SET_LOADER_VARS
 echo Uninstalling Gallio.Loader assembly from GAC.
 "%GACUTIL%" /u "%LOADER_DLL%" 2>nul >nul
 echo.
+
+echo Deleting registry keys.
+"%REG%" DELETE "HKEY_LOCAL_MACHINE\Software\Gallio.org\Gallio\3.0" /V InstallationFolder /F 2>nul >nul
 exit /b 0
 
 

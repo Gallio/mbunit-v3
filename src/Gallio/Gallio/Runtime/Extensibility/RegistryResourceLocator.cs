@@ -73,7 +73,8 @@ namespace Gallio.Runtime.Extensibility
                 if (relativePath.Length == 0 || relativePath == @"/")
                     return pluginPath;
 
-                return Path.Combine(pluginPath, relativePath.Substring(1));
+                string relativeLocalPath = relativePath.Substring(1).Replace('/', Path.DirectorySeparatorChar);
+                return Path.Combine(pluginPath, relativeLocalPath);
             }
 
             throw new RuntimeException(String.Format("Could not resolve resource uri '{0}' because the scheme was not recognized.  The uri scheme must be 'file' or 'plugin'.", resourceUri));

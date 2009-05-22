@@ -73,12 +73,13 @@ namespace Gallio.Tests.Runtime.Extensibility
             var pluginList = new List<IPluginDescriptor>(new[] { pluginDescriptor });
             registry.Stub(x => x.Plugins).Return(plugins);
             plugins.Stub(x => x.GetEnumerator()).Return(pluginList.GetEnumerator());
+            pluginDescriptor.Stub(x => x.PluginId).Return("pluginId");
             pluginDescriptor.Stub(x => x.BaseDirectory).Return(new DirectoryInfo(@"C:\PluginBase"));
             var locator = new RegistryResourceLocator(registry);
 
-            var path = locator.ResolveResourcePath(new Uri("plugin://pluginId/PluginBase/somefile.txt"));
+            var path = locator.ResolveResourcePath(new Uri("plugin://pluginId/Path/somefile.txt"));
 
-            Assert.AreEqual(@"C:\PluginBase\somefile.txt", path);
+            Assert.AreEqual(@"C:\PluginBase\Path\somefile.txt", path);
         }
 
         [Test]
@@ -92,7 +93,7 @@ namespace Gallio.Tests.Runtime.Extensibility
             var locator = new RegistryResourceLocator(registry);
 
             var ex = Assert.Throws<RuntimeException>(() => locator.ResolveResourcePath(new Uri("plugin://pluginId/PluginBase/somefile.txt")));
-            Assert.AreEqual("Could not resolve resource uri 'plugin://pluginId/PluginBase/somefile.txt' because no plugin appears to be registered with the requested id.", ex.Message);
+            Assert.AreEqual("Could not resolve resource uri 'plugin://pluginid/PluginBase/somefile.txt' because no plugin appears to be registered with the requested id.", ex.Message);
         }
 
         [Test]
@@ -101,8 +102,8 @@ namespace Gallio.Tests.Runtime.Extensibility
             var registry = MockRepository.GenerateStub<IRegistry>();
             var locator = new RegistryResourceLocator(registry);
 
-            var ex = Assert.Throws<RuntimeException>(() => locator.ResolveResourcePath(new Uri("bad-scheme://somefile.txt")));
-            Assert.AreEqual("Could not resolve resource uri 'bad-scheme://somefile.txt' because the scheme was not recognized.  The uri scheme must be 'file' or 'plugin'.", ex.Message);
+            var ex = Assert.Throws<RuntimeException>(() => locator.ResolveResourcePath(new Uri("bad-scheme:///somefile.txt")));
+            Assert.AreEqual("Could not resolve resource uri 'bad-scheme:///somefile.txt' because the scheme was not recognized.  The uri scheme must be 'file' or 'plugin'.", ex.Message);
         }
     }
 }

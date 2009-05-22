@@ -16,6 +16,7 @@
 using System;
 using System.IO;
 using System.Reflection;
+using Gallio.Common.Platform;
 using Gallio.Runtime.Logging;
 using Gallio.Common.Concurrency;
 using Gallio.Runtime.Hosting;
@@ -40,7 +41,7 @@ namespace Gallio.NCoverIntegration
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="hostSetup"/> 
         /// <paramref name="logger"/>, or <paramref name="installationPath"/> is null</exception>
         public NCoverHost(HostSetup hostSetup, ILogger logger, string installationPath, NCoverVersion version)
-            : base(ForceProcessorArchitectureIfRequired(hostSetup, version), logger, installationPath)
+            : base(ForceProcessorArchitectureAndRuntimeVersionIfRequired(hostSetup, version), logger, installationPath)
         {
             this.version = version;
         }
@@ -60,8 +61,9 @@ namespace Gallio.NCoverIntegration
             return NCoverTool.CreateProcessTask(executablePath, arguments, workingDirectory, version, Logger, ncoverArguments, ncoverCoverageFile);
         }
 
-        private static HostSetup ForceProcessorArchitectureIfRequired(HostSetup hostSetup, NCoverVersion version)
+        private static HostSetup ForceProcessorArchitectureAndRuntimeVersionIfRequired(HostSetup hostSetup, NCoverVersion version)
         {
+            // NCover v1 only supports x86
             if (version == NCoverVersion.V1)
             {
                 ProcessorArchitecture currentArch = hostSetup.ProcessorArchitecture;
@@ -70,6 +72,17 @@ namespace Gallio.NCoverIntegration
 
                 hostSetup = hostSetup.Copy();
                 hostSetup.ProcessorArchitecture = ProcessorArchitecture.X86;
+            }
+
+            // All NCover versions currently support .Net 2.0 only.
+            if (hostSetup.RuntimeVersion == null)
+            {
+                hostSetup.RuntimeVersion = DotNetRuntimeSupport.InstalledDotNet20RuntimeVersion;
+            }
+            else
+            {
+                if (!hostSetup.RuntimeVersion.Contains("2.0"))
+                    throw new HostException(string.Format("NCover does not support .Net runtime {0} at this time.", hostSetup.RuntimeVersion));
             }
 
             return hostSetup;
