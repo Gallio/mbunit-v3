@@ -15,12 +15,12 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
-using Gallio.Common;
-using Gallio.Framework.Pattern;
-using Gallio.Framework.Assertions;
-using System.Threading;
 using System.Diagnostics;
+using System.Text;
+using System.Threading;
+using Gallio.Common;
+using Gallio.Framework.Assertions;
+using Gallio.Framework.Pattern;
 
 namespace MbUnit.Framework
 {
@@ -335,7 +335,7 @@ namespace MbUnit.Framework
                 try
                 {
                     return ((condition != null) && condition())
-                        || (waitHandle != null) && (waitHandle.WaitOne(0));
+                        || (waitHandle != null) && (waitHandle.WaitOne(0, false));
                 }
                 catch (Exception exception)
                 {
