@@ -15,8 +15,10 @@
 
 using System;
 using System.Diagnostics;
+using System.IO;
 using System.Reflection;
 using System.Threading;
+using Gallio.Common.Platform;
 using Gallio.Framework;
 using Gallio.Runtime;
 using Gallio.Runtime.Hosting;
@@ -97,6 +99,44 @@ namespace Gallio.Tests.Runtime.Hosting
 
                 Assert.Contains(processName, "Gallio.Host.exe");
             }
+        }
+
+        [Test]
+        public void WhenRuntimeVersionIsDotNet20_RunsInDotNet20()
+        {
+            if (DotNetRuntimeSupport.IsUsingMono)
+                Assert.Inconclusive("This test makes no sense on Mono.");
+
+            HostSetup hostSetup = new HostSetup();
+            hostSetup.RuntimeVersion = DotNetRuntimeSupport.InstalledDotNet20RuntimeVersion;
+
+            StringWriter writer = new StringWriter();
+            TextLogger logger = new TextLogger(writer);
+            using (IHost host = Factory.CreateHost(hostSetup, logger))
+            {
+            }
+
+            Assert.Contains(writer.ToString(), "CLR " + DotNetRuntimeSupport.InstalledDotNet20RuntimeVersion);
+        }
+
+        [Test]
+        public void WhenRuntimeVersionIsDotNet40_RunsInDotNet40()
+        {
+            if (DotNetRuntimeSupport.IsUsingMono)
+                Assert.Inconclusive("This test makes no sense on Mono.");
+            if (DotNetRuntimeSupport.InstalledDotNet40RuntimeVersion == null)
+                Assert.Inconclusive("This test requires .Net 4.0 to be installed.");
+
+            HostSetup hostSetup = new HostSetup();
+            hostSetup.RuntimeVersion = DotNetRuntimeSupport.InstalledDotNet40RuntimeVersion;
+
+            StringWriter writer = new StringWriter();
+            TextLogger logger = new TextLogger(writer);
+            using (IHost host = Factory.CreateHost(hostSetup, logger))
+            {
+            }
+
+            Assert.Contains(writer.ToString(), "CLR " + DotNetRuntimeSupport.InstalledDotNet40RuntimeVersion);
         }
 
         private static string GetHostProcessName(object dummy)

@@ -139,6 +139,12 @@ namespace Gallio.Runtime.Hosting
         /// <para>
         /// The default value is an empty list.  Each entry should start with a "v".  eg. "v2.0.50727".
         /// </para>
+        /// <para>
+        /// Note that the host factory will use the <see cref="HostSetup.RuntimeVersion" /> property
+        /// to determine the actual runtime used for hosting.  The purpose of this property is to
+        /// facilitate writing configuration files with supported runtime version information keeping
+        /// in mind that it can be ignored.
+        /// </para>
         /// </remarks>
         [XmlArray("supportedRuntimeVersions", IsNullable=false)]
         [XmlArrayItem("supportedRuntimeVersion", typeof(string), IsNullable = false)]

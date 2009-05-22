@@ -197,6 +197,7 @@ namespace Gallio.Runtime.Hosting
             copy.shadowCopy = shadowCopy;
             copy.debug = debug;
             copy.processorArchitecture = processorArchitecture;
+            copy.runtimeVersion = runtimeVersion;
             copy.configurationFileLocation = configurationFileLocation;
             copy.properties.AddAll(properties);
 
@@ -279,10 +280,11 @@ namespace Gallio.Runtime.Hosting
                 && workingDirectory == other.workingDirectory
                 && shadowCopy == other.shadowCopy
                 && debug == other.debug
-                && Configuration.Equals(other.Configuration)
+                && runtimeVersion == other.runtimeVersion
                 && processorArchitecture == other.processorArchitecture
                 && configurationFileLocation == other.configurationFileLocation
-                && properties.Equals(other.properties);
+                && properties.Equals(other.properties)
+                && Configuration.Equals(other.Configuration);
         }
 
         /// <inheritdoc />
@@ -290,12 +292,13 @@ namespace Gallio.Runtime.Hosting
         {
             return (applicationBaseDirectory != null ? applicationBaseDirectory.GetHashCode() : 0)
                 ^ (workingDirectory != null ? workingDirectory.GetHashCode() : 0)
-                ^ Configuration.GetHashCode()
                 ^ (shadowCopy.GetHashCode() << 16)
                 ^ (debug.GetHashCode() << 21)
+                ^ (runtimeVersion != null ? runtimeVersion.GetHashCode() : 0)
                 ^ (processorArchitecture.GetHashCode() << 5)
                 ^ (configurationFileLocation.GetHashCode() << 2)
-                ^ properties.GetHashCode();
+                ^ properties.GetHashCode()
+                ^ Configuration.GetHashCode();
         }
 
         private string GetCanonicalApplicationBaseDirectory(string baseDirectory)
