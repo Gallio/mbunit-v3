@@ -42,6 +42,7 @@ function Recurse([string] $path)
 			}
 			else
 			{
+				# Ignore MbUnit Template projects.
 				if ($file.Name -ne "Templates")
 				{
 					Recurse $file.FullName

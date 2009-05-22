@@ -477,9 +477,9 @@ namespace Gallio.MSBuildTasks
         /// <summary>
         /// The verbosity to use when logging.  The default is "Normal".
         /// </summary>
-        public Verbosity Verbosity
+        public string Verbosity
         {
-            set { verbosity = value; }
+            set { verbosity = (Verbosity) Enum.Parse(typeof(Verbosity), value); }
         }
 
         /// <summary>

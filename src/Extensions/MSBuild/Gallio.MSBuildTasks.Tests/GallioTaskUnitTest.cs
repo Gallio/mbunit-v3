@@ -101,7 +101,7 @@ namespace Gallio.MSBuildTasks.Tests
             task.ReportNameFormat = "report";
             task.ShowReports = true;
             task.RunTimeLimit = 7200; // seconds
-            task.Verbosity = Verbosity.Debug;
+            task.Verbosity = Verbosity.Debug.ToString();
 
             task.RunnerType = StandardTestRunnerFactoryNames.Local;
             task.RunnerExtensions = new[] { "DebugExtension,Gallio" };
