@@ -59,7 +59,7 @@ namespace MbUnit.Tests.Framework
             Pair<DateTime, DateTime> batch2 = GetEarliestAndLatestStartAndEndTimes("Five");
             Pair<DateTime, DateTime> batch3 = GetEarliestAndLatestStartAndEndTimes("Six");
             Pair<DateTime, DateTime> batch4 = GetEarliestAndLatestStartAndEndTimes("Seven", "Eight", "Nine", "Ten");
-            Pair<DateTime, DateTime> batch5 = GetEarliestAndLatestStartAndEndTimes("Elevent");
+            Pair<DateTime, DateTime> batch5 = GetEarliestAndLatestStartAndEndTimes("Eleven");
             Pair<DateTime, DateTime> batch6 = GetEarliestAndLatestStartAndEndTimes("Twelve");
 
             Assert.LessThanOrEqualTo(batch1.Second, batch2.First);
