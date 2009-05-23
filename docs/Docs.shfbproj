@@ -95,11 +95,14 @@
     <CopyrightText>Copyright 2005-2009 Gallio Project - http://www.gallio.org/</CopyrightText>
     <CopyrightHref>http://www.gallio.org/</CopyrightHref>
     <HelpTitle>Gallio API Documentation</HelpTitle>
-    <NamingMethod>HashedMemberName</NamingMethod>
+    <NamingMethod>MemberName</NamingMethod>
     <SyntaxFilters>CSharp, VisualBasic</SyntaxFilters>
     <HelpFileVersion>$(Version)</HelpFileVersion>
     <VisibleItems>InheritedMembers, InheritedFrameworkMembers, Protected, ProtectedInternalAsProtected, SealedProtected</VisibleItems>
     <MissingTags>AutoDocumentCtors</MissingTags>
+    <RootNamespaceContainer>True</RootNamespaceContainer>
+    <RootNamespaceTitle>Reference</RootNamespaceTitle>
+    <ProjectSummary>This section documents the Gallio and MbUnit v3 API.</ProjectSummary>
   </PropertyGroup>
   <!-- There are no properties for these two groups but they need to appear in
        order for Visual Studio to perform the build. -->
@@ -107,6 +110,12 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
   </PropertyGroup>
+  <ItemGroup>
+    <Content Include="Introduction.aml" />
+  </ItemGroup>
+  <ItemGroup>
+    <ContentLayout Include="Content Layout.content" />
+  </ItemGroup>
   <!-- Import the SHFB build targets -->
   <Import Project="$(SHFBROOT)\SandcastleHelpFileBuilder.targets" />
 </Project>
