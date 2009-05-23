@@ -124,7 +124,7 @@ namespace Gallio.MSBuildTasks.Tests
                 Assert.IsTrue(launcher.DoNotRun);
                 Assert.IsFalse(launcher.EchoResults);
                 Assert.AreEqual("Type: SimpleTest", launcher.TestExecutionOptions.FilterSet.ToFilterSetExpr());
-                Assert.AreEqual(LogSeverity.Important, ((FilteredLogger)launcher.Logger).MinSeverity);
+                Assert.AreEqual(LogSeverity.Debug, ((FilteredLogger)launcher.Logger).MinSeverity);
                 Assert.IsInstanceOfType(typeof(LogProgressMonitorProvider), launcher.ProgressMonitorProvider);
                 Assert.AreEqual("dir", launcher.ReportDirectory);
                 Assert.AreElementsEqual(new[] { "XML", "Html" }, launcher.ReportFormats);

@@ -51,10 +51,10 @@ namespace Gallio.NCoverIntegration
             ILogger logger, string ncoverArguments, string ncoverCoverageFile)
         {
             // Can host directly inside 32bit process.
-            if (ProcessSupport.Is32BitProcess)
+            if (ProcessSupport.Is32BitProcess && DotNetRuntimeSupport.RuntimeVersion.StartsWith("v2.0."))
                 return new EmbeddedNCoverProcessTask(executablePath, arguments, workingDirectory, logger, ncoverArguments, ncoverCoverageFile);
 
-            // When running as 64bit process we need to use another process as a shim.
+            // When running as 64bit process or on .Net 4.0 we need to use another process as a shim.
             // We have less control over what's going on but at least it might work.
             return CreateNCoverConsoleProcessTask(executablePath, arguments, workingDirectory, 1, logger, ncoverArguments, ncoverCoverageFile);
         }

@@ -63,6 +63,8 @@ namespace Gallio.NCoverIntegration
 
         private static HostSetup ForceProcessorArchitectureAndRuntimeVersionIfRequired(HostSetup hostSetup, NCoverVersion version)
         {
+            hostSetup = hostSetup.Copy();
+
             // NCover v1 only supports x86
             if (version == NCoverVersion.V1)
             {
@@ -70,7 +72,6 @@ namespace Gallio.NCoverIntegration
                 if (currentArch == ProcessorArchitecture.Amd64 || currentArch == ProcessorArchitecture.IA64)
                     throw new HostException("NCover v1.5.8 must run code as a 32bit process but the requested architecture was 64bit.");
 
-                hostSetup = hostSetup.Copy();
                 hostSetup.ProcessorArchitecture = ProcessorArchitecture.X86;
             }
 
@@ -81,7 +82,7 @@ namespace Gallio.NCoverIntegration
             }
             else
             {
-                if (!hostSetup.RuntimeVersion.Contains("2.0"))
+                if (!hostSetup.RuntimeVersion.Contains("2.0."))
                     throw new HostException(string.Format("NCover does not support .Net runtime {0} at this time.", hostSetup.RuntimeVersion));
             }
 
