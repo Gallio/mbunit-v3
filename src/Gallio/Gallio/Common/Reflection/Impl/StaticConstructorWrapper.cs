@@ -56,7 +56,7 @@ namespace Gallio.Common.Reflection.Impl
             return ReflectorResolveUtils.ResolveConstructor(this, throwOnError);
         }
 
-        /// <inheritdoc />
+        /// <excludedoc />
         protected override MethodBase ResolveMethodBase(bool throwOnError)
         {
             return Resolve(throwOnError);
@@ -68,7 +68,7 @@ namespace Gallio.Common.Reflection.Impl
             return ToString(Reflector.Wrap(typeof(void)), EmptyArray<ITypeInfo>.Instance);
         }
 
-        /// <inheritdoc />
+        /// <excludedoc />
         protected override IEnumerable<Attribute> GetPseudoCustomAttributes()
         {
             // TODO: Handle code access security.

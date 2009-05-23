@@ -88,7 +88,7 @@ namespace Gallio.Common.Markup
             get { return Encoding.Unicode; }
         }
 
-        /// <inheritdoc />
+        /// <inheritdoc cref="TextWriter.NewLine" />
         new public string NewLine
         {
             get { return base.NewLine; }

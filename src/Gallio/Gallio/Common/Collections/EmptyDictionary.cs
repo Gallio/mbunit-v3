@@ -119,14 +119,13 @@ namespace Gallio.Common.Collections
             get { return true; }
         }
 
-        /// <inheritdoc />
-        IEnumerator<KeyValuePair<TKey, TValue>> IEnumerable<KeyValuePair<TKey, TValue>>.GetEnumerator()
+        /// <inheritdoc cref="IEnumerable{T}.GetEnumerator" />
+        public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
         {
             yield break;
         }
 
-        /// <inheritdoc />
-        public IEnumerator GetEnumerator()
+        IEnumerator IEnumerable.GetEnumerator()
         {
             yield break;
         }

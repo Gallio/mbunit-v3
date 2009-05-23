@@ -25,9 +25,9 @@ using MbUnit.Framework.ContractVerifiers.Core;
 namespace MbUnit.Framework.ContractVerifiers
 {
     /// <summary>
-    /// <para>
     /// Contract for verifying the implementation of the generic <see cref="ICollection{T}"/>.
-    /// </para>
+    /// </summary>
+    /// <remarks>
     /// <para>
     /// Built-in verifications:
     /// <list type="bullet">
@@ -41,35 +41,35 @@ namespace MbUnit.Framework.ContractVerifiers
     /// <item>
     /// <term>AddShouldThrowException</term>
     /// <description>The read-only collection throws an exception when the method <see cref="ICollection{T}.Add"/> is called.
-    /// <remarks>
+    /// <para>
     /// The test is not run when the contract property <see cref="CollectionContract{TCollection,TItem}.IsReadOnly"/> is set to 'false'.
-    /// </remarks>
+    /// </para>
     /// </description>
     /// </item>
     /// <item>
     /// <term>RemoveShouldThrowException</term>
     /// <description>The read-only collection throws an exception when the method <see cref="ICollection{T}.Remove"/>
     /// is called.
-    /// <remarks>
+    /// <para>
     /// The test is not run when the contract property <see cref="CollectionContract{TCollection,TItem}.IsReadOnly"/> is set to 'false'.
-    /// </remarks>
+    /// </para>
     /// </description>
     /// </item>
     /// <item>
     /// <term>ClearShouldThrowException</term>
     /// <description>The read-only collection throws an exception when the method <see cref="ICollection{T}.Clear"/> is called. 
-    /// <remarks>
+    /// <para>
     /// The test is not run when the contract property <see cref="CollectionContract{TCollection,TItem}.IsReadOnly"/> is set to 'false'.
-    /// </remarks>
+    /// </para>
     /// </description>
     /// </item>
     /// <item>
     /// <term>AddNullArgument</term>
     /// <description>The collection throwns a <see cref="ArgumentNullException"/> when the method <see cref="ICollection{T}.Add"/>
     /// is called with a null reference item. 
-    /// <remarks>
+    /// <para>
     /// The test is not run when the contract property <see cref="CollectionContract{TCollection,TItem}.AcceptNullReference"/> is set to 'true'.
-    /// </remarks>
+    /// </para>
     /// </description>
     /// </item>
     /// <item>
@@ -77,20 +77,20 @@ namespace MbUnit.Framework.ContractVerifiers
     /// <description>
     /// The collection throwns a <see cref="ArgumentNullException"/> when the method <see cref="ICollection{T}.Remove"/>
     /// is called with a null reference item.
-    /// <remarks>
+    /// <para>
     /// The test is not run when the contract property <see cref="CollectionContract{TCollection,TItem}.AcceptNullReference"/> is set to 'true'.
-    /// </remarks>
+    /// </para>
     /// </description>
     /// </item>
     /// <item>
     /// <term>ContainsNullArgument</term>
     /// <description>
-    /// The collection throwns a <see cref="ArgumentNullException"/> when the method <see cref="ICollection{T}.Contains"/> 
+    /// The collection throws a <see cref="ArgumentNullException"/> when the method <see cref="ICollection{T}.Contains"/> 
     /// is called with a null reference item. 
-    /// <remarks>
+    /// <para>
     /// The test is not run when the contract property 
     /// <see cref="CollectionContract{TCollection,TItem}.AcceptNullReference"/> is set to 'true'.
-    /// </remarks>
+    /// </para>
     /// </description>
     /// </item>
     /// <item>
@@ -100,9 +100,9 @@ namespace MbUnit.Framework.ContractVerifiers
     /// <see cref="ICollection{T}.Contains"/> and the property <see cref="ICollection{T}.Count"/> are expected
     /// to return suited results as well. The case of duplicate items (object equality) is tested too; according
     /// to the value of contract property <see cref="CollectionContract{TCollection,TItem}.AcceptEqualItems"/>.
-    /// <remarks>
+    /// <para>
     /// The test is not run when the contract property <see cref="CollectionContract{TCollection,TItem}.IsReadOnly"/> is set to 'true'.
-    /// </remarks>
+    /// </para>
     /// </description>
     /// </item>
     /// <item>
@@ -110,17 +110,17 @@ namespace MbUnit.Framework.ContractVerifiers
     /// The collection handles correctly with the removal of items. The method 
     /// <see cref="ICollection{T}.Contains"/> and the property <see cref="ICollection{T}.Count"/> are expected
     /// to return suited results as well.
-    /// <remarks>
+    /// <para>
     /// The test is not run when the contract property <see cref="CollectionContract{TCollection,TItem}.IsReadOnly"/> is set to 'true'.
-    /// </remarks>
+    /// </para>
     /// </item>
     /// <item>
     /// <term>ClearItems</term>
     /// <description>
     /// The collection is cleared as expected when the method <see cref="ICollection{T}.Clear"/> is called.
-    /// <remarks>
+    /// <para>
     /// The test is not run when the contract property <see cref="CollectionContract{TCollection,TItem}.IsReadOnly"/> is set to 'true'.
-    /// </remarks>
+    /// </para>
     /// </description>
     /// </item>
     /// <item>
@@ -132,7 +132,7 @@ namespace MbUnit.Framework.ContractVerifiers
     /// </item>
     /// </list>
     /// </para>
-    /// </summary>
+    /// </remarks>
     /// <typeparam name="TCollection">The type of the collection implementing <see cref="ICollection{T}"/>.</typeparam>
     /// <typeparam name="TItem">The type of items contained in the collection.</typeparam>
     public class CollectionContract<TCollection, TItem> : AbstractContract

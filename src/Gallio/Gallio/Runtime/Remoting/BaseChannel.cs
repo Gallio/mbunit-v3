@@ -77,7 +77,10 @@ namespace Gallio.Runtime.Remoting
             get { return channelUri; }
         }
 
-        /// <inheritdoc />
+        /// <summary>
+        /// Disposes the channel.
+        /// </summary>
+        /// <param name="disposing">True if <see cref="Dispose()" /> was called directly</param>
         protected virtual void Dispose(bool disposing)
         {
             if (channel != null)

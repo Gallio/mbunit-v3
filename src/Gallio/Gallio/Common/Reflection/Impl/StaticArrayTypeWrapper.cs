@@ -54,7 +54,7 @@ namespace Gallio.Common.Reflection.Impl
             get { return arrayRank; }
         }
 
-        /// <inheritdoc />
+        /// <excludedoc />
         protected override ITypeInfo BaseTypeInternal
         {
             get { return Reflector.Wrap(typeof(Array)); }
@@ -66,7 +66,7 @@ namespace Gallio.Common.Reflection.Impl
             get { return TypeAttributes.Public | TypeAttributes.Sealed; }
         }
 
-        /// <inheritdoc />
+        /// <excludedoc />
         protected internal override ITypeInfo ApplySubstitution(StaticTypeSubstitution substitution)
         {
             return ElementType.ApplySubstitution(substitution).MakeArrayType(arrayRank);
@@ -85,7 +85,7 @@ namespace Gallio.Common.Reflection.Impl
             return ElementType.GetHashCode() ^ GetType().GetHashCode() ^ arrayRank;
         }
 
-        /// <inheritdoc />
+        /// <excludedoc />
         protected override string NameSuffix
         {
             get { return arrayRank == 1 ? @"[]" : (@"[" + new String(',', arrayRank - 1) + @"]"); }

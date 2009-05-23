@@ -8,6 +8,8 @@
     <ReportTypes Condition="'$(ReportTypes)'==''">Html-Condensed</ReportTypes>
     <IgnoreFailures Condition="'$(IgnoreFailures)'==''">false</IgnoreFailures>
     
+    <SandcastlePath>$(ProgramFiles)\Sandcastle</SandcastlePath>
+    <SandcastleHelpFileBuilderPath>$(SHFBROOT)</SandcastleHelpFileBuilderPath>
     <HTMLHelpCompilerPath>$(ProgramFiles)\HTML Help Workshop\hhc.exe</HTMLHelpCompilerPath>
     <VSIPSDKHelpPath>$(Registry:HKEY_LOCAL_MACHINE\Software\Microsoft\VisualStudio\VSIP\9.0\@InstallDir)\HelpIntegrationWizard\MSHelp2</VSIPSDKHelpPath>
     <VSIPSDKHelpPath Condition="'$(VSIPSDKHelpPath)'==''">$(Registry:HKEY_LOCAL_MACHINE\Software\Microsoft\VisualStudio\VSIP\8.0\@InstallDir)\HelpIntegrationWizard\MSHelp2</VSIPSDKHelpPath>
@@ -33,7 +35,7 @@
     <Extra Include="$(ToolsDir)\H2Reg\H2Reg.*" />
 
     <Feature Include="NO_ILMERGE" Condition="'$(NoILMerge)'=='true'" />
-    <Feature Include="NO_NDOC" Condition="'$(NoNDoc)'=='true'" />
+    <Feature Include="NO_SANDCASTLE" Condition="'$(NoSandcastle)'=='true'" />
     <Feature Include="DOTNET40" Condition="'$(DotNet40)'=='true'" />
   </ItemGroup>
 
@@ -55,110 +57,115 @@
   <!-- IMAGE TARGETS -->
 
   <Target Name="AfterImage"
-          DependsOnTargets="BuildXMLDocs;BuildSourceServerIndex" />
+          DependsOnTargets="BuildSourceServerIndex" />
 
 
   <!-- TEST TARGETS -->
 
   <Target Name="AfterTest"
-          DependsOnTargets="RunTestAssemblies;VerifyInstallation" />
+          DependsOnTargets="VerifyInstallation;RunTestAssemblies" />
 
 
   <!-- DIST TARGETS -->
 
   <Target Name="AfterDist"
-          DependsOnTargets="BuildCHMDocs;BuildHxSDocs;BuildInstaller;BuildZip;BuildHTMLDocs" />
+          DependsOnTargets="BuildDocs;BuildInstaller;BuildZip" />
 
 
   <!-- SUPPORT CODE: API DOCS -->
 
   <PropertyGroup>
-    <CopyrightText>Copyright 2005-2009 Gallio Project - http://www.gallio.org/</CopyrightText>
-    <CopyrightHref>http://www.gallio.org/</CopyrightHref>
+    <WebDocsDir>$(DistDir)\APIDocs\$(Version)</WebDocsDir>
+    <CHMDocsDir>$(ImageDir)\docs</CHMDocsDir>
+    <VSDocsDir>$(ImageDir)\docs\vs</VSDocsDir>
+    <SandcastleTempDir>$(TempDir)\docs</SandcastleTempDir>
 
-    <APIDocsDir>$(DistDir)\APIDocs\$(Version)</APIDocsDir>
+    <SandcastleProjectPath>docs\Docs.shfbproj</SandcastleProjectPath>
+    <SandcastlePatchedProjectPath>docs\Docs.patched.shfbproj</SandcastlePatchedProjectPath>
 
-    <NDocCommonOptions>@(DocumentedAssembly->'"%(FullPath)"', ' ')</NDocCommonOptions>
-
-    <NDocXMLOptions>$(NDocCommonOptions) -documenter=Intellisense "-OutputDirectory=$(ImageDir)\bin" -UseAssemblyShadowCache=False</NDocXMLOptions>
-
-    <NDocCHMOptions>$(NDocCommonOptions) -documenter=MSDN-CHM "-OutputDirectory=$(ImageDir)\docs" -HtmlHelpName=Gallio "-Title=Gallio API Documentation" -UseAssemblyShadowCache=False -AssemblyVersionInfo=AssemblyVersion "-CopyrightText=$(CopyrightText)" "-CopyrightHref=$(CopyrightHref)" -IncludeDefaultThreadSafety=False -CleanIntermediates=True</NDocCHMOptions>
-
-    <NDocHxSOptions>$(NDocCommonOptions) -documenter=MSDN-Help2 "-OutputDirectory=$(ImageDir)\docs\vs" -GenerateCollectionFiles=True -PlugInNamespace=ms.vsipcc -AllLinksWithinVSHelpCollection=True -HtmlHelpName=Gallio "-Title=Gallio API Documentation" -UseAssemblyShadowCache=False -AssemblyVersionInfo=AssemblyVersion "-CopyrightText=$(CopyrightText)" "-CopyrightHref=$(CopyrightHref)" -IncludeDefaultThreadSafety=False -CleanIntermediates=True</NDocHxSOptions>
-    
-    <NDocHTMLOptions>$(NDocCommonOptions) -documenter=MSDN-Web "-OutputDirectory=$(APIDocsDir)\html" "-Title=Gallio API Documentation" -UseAssemblyShadowCache=False -AssemblyVersionInfo=AssemblyVersion "-CopyrightText=$(CopyrightText)" "-CopyrightHref=$(CopyrightHref)" -IncludeDefaultThreadSafety=False -CleanIntermediates=True</NDocHTMLOptions>
+    <SandcastleOutputPath>$(SandcastleTempDir)\output</SandcastleOutputPath>
+    <SandcastleIntellisensePath>$(SandcastleTempDir)\intellisense</SandcastleIntellisensePath>
   </PropertyGroup>
 
-  <!-- Produce clean Intellisense docs with "inheritdoc" accounted for. -->
-  <Target Name="BuildXMLDocs"
-          DependsOnTargets="BuildXMLDocs_NDoc;BuildXMLDocs_NoNDoc" />
+  <Target Name="BuildDocs"
+          DependsOnTargets="BuildDocs_Sandcastle;BuildDocs_NoSandcastle" />
 
-  <Target Name="BuildXMLDocs_NDoc"
-          Condition="'$(NoNDoc)'!='true'">
-    <Message Text="Building XML Docs..."
+  <Target Name="BuildDocs_Sandcastle"
+          Condition="'$(NoSandcastle)'!='true'">
+    <Message Text="Building Docs..."
              Importance="High" />
 
-    <Exec Command="&quot;$(ToolsDir)\NDoc2\NDocConsole.exe&quot; $(NDocXMLOptions)" />
-    <Delete Files="$(ImageDir)\bin\ndoc_qa.log;$(ImageDir)\bin\ndoc_build.log" />
+    <Error Text="Sandcastle and Sandcastle Help File Builder must be installed to generate documentation.  To only generate Xml Intellisense docs without Sandcastle, build with '// /p:NoSandcastle=true'.  Be sure to also install the Sandcastle Styles patches.  Look in tools\Setup Files for the Sandcastle installers and patches."
+           Condition="! Exists('$(SandcastlePath)') or ! Exists('$(SandcastleHelpFileBuilderPath)')" />
+
+    <Error Text="Visual Studio 2005 or 2008 SDK must be installed so that HTML Help 2 (HxS) documentation can be generated for integration with the Visual Studio help system.  Check Microsoft's site for the Visual Studio SDK installer."
+           Condition="! Exists('$(VSIPSDKHelpPath)')" />
+
+    <Error Text="Microsoft HTML Help Workshop must be installed so that Compiled HTML help (CHM) documentation can be generated.  Look in tools\Setup Files for the Microsoft HTML Help Workshop installer."
+           Condition="! Exists('$(HTMLHelpCompilerPath)')" />
+
+    <PropertyGroup>
+      <SandcastleDocumentationSources>@(DocumentedAssembly->'&lt;DocumentationSource sourceFile=&quot;%(FullPath)&quot; /&gt;&lt;DocumentationSource sourceFile=&quot;%(RootDir)%(Directory)%(Filename).xml&quot; /&gt;', '')</SandcastleDocumentationSources>
+    </PropertyGroup>
+
+    <Delete Files="$(CHMDocsDir)\Gallio.chm"
+            Condition="Exists('$(CHMDocsDir)\Gallio.chm')" />
+    <RemoveDir Directories="$(WebDocsDir);$(VSDocsDir);$(SandcastleTempDir)" />
+    
+    <MakeDir Directories="$(WebDocsDir);$(CHMDocsDir);$(VSDocsDir);$(SandcastleTempDir)" />
+
+    <!-- Should be able to just override DocumentationSources but
+         we get an error.
+
+         SHFB : warning BHT0001: Unable to get executing project: Unable to obtain internal reference.  The specified project will be loaded but command line property overrides will be ignored. [C:\Source\MbUnit\v3\docs\Docs.shfbproj]
+
+         So instead we generate a patched project file with the changes inline. -->
+
+    <Copy SourceFiles="$(SandcastleProjectPath)"
+          DestinationFiles="$(SandcastlePatchedProjectPath)" />
+
+    <FileUpdate Files="$(SandcastlePatchedProjectPath)"
+                SingleLine="true"
+		Regex="&lt;DocumentationSources&gt;.*&lt;/DocumentationSources&gt;"
+		ReplacementText="&lt;DocumentationSources&gt;$(SandcastleDocumentationSources)&lt;/DocumentationSources&gt;" />
+
+    <MSBuild Projects="$(SandcastlePatchedProjectPath)"
+             Properties="Version=$(Version);BuildDir=$(BuildDir);TempDir=$(TempDir);ReportDir=$(ReportDir);CustomBeforeSHFBTargets=$(SandcastleProjectOverridesPath)" />
+
+    <Copy SourceFiles="$(SandcastleOutputPath)\Gallio.chm"
+          DestinationFolder="$(WebDocsDir)" />
+
+    <Move SourceFiles="$(SandcastleOutputPath)\Gallio.chm"
+          DestinationFolder="$(CHMDocsDir)" />
+
+    <ItemGroup>
+      <VSDocsFile Include="$(SandcastleOutputPath)\Gallio.HxC" />
+      <VSDocsFile Include="$(SandcastleOutputPath)\Gallio.HxS" />
+      <VSDocsFile Include="$(SandcastleOutputPath)\Gallio.HxT" />
+      <VSDocsFile Include="$(SandcastleOutputPath)\Gallio_*.HxK" />
+      <VSDocsFile Include="$(SandcastleOutputPath)\Gallio_H2Reg.ini" />
+    </ItemGroup>
+
+    <Move SourceFiles="@(VSDocsFile)"
+          DestinationFolder="$(VSDocsDir)" />
+
+    <Exec Command="move /y &quot;$(SandcastleOutputPath)&quot; &quot;$(WebDocsDir)\html&quot;" />
+
+    <Delete Files="@(DocumentedAssembly->'$(ImageDir)\bin\%(Folder)\%(Filename).xml')" />
+    <Move SourceFiles="@(DocumentedAssembly->'$(SandcastleIntellisensePath)\%(Filename).xml')"
+          DestinationFiles="@(DocumentedAssembly->'$(ImageDir)\bin\%(Folder)\%(Filename).xml')" />
+
+    <ItemGroup>
+      <Feature Include="FEATURE_CHM_HELP" />
+      <Feature Include="FEATURE_VS_HELP" />
+    </ItemGroup>
   </Target>
 
-  <Target Name="BuildXMLDocs_NoNDoc"
-          Condition="'$(NoNDoc)'=='true'">
+  <Target Name="BuildDocs_NoSandcastle"
+          Condition="'$(NoSandcastle)'=='true'">
     <Copy SourceFiles="@(DocumentedAssembly->'%(RootDir)%(Directory)%(Filename).xml')"
           DestinationFolder="$(ImageDir)\bin" />
   </Target>
-
-  <Target Name="BuildCHMDocs"
-          Condition="'$(NoNDoc)'!='true'">
-    <Message Text="Building CHM Docs..."
-             Importance="High" />
-
-    <Warning Text="Microsoft HTML Help Workshop must be installed so that Compiled HTML help (CHM) documentation can be generated.  Look in tools\Setup Files for the Microsoft HTML Help Workshop installer."
-             Condition="! Exists('$(HTMLHelpCompilerPath)')" />
-
-    <Exec Command="&quot;$(ToolsDir)\NDoc2\NDocConsole.exe&quot; $(NDocCHMOptions)"
-          Condition="Exists('$(HTMLHelpCompilerPath)')" />
-    <RemoveDir Directories="$(ImageDir)\docs\ndoc_msdn_temp" />
-    
-    <Copy SourceFiles="$(ImageDir)\docs\Gallio.chm"
-          DestinationFolder="$(APIDocsDir)"
-          Condition="Exists('$(HTMLHelpCompilerPath)')" />
-  </Target>
-  <ItemGroup Condition="'$(NoNDoc)'!='true' and Exists('$(HTMLHelpCompilerPath)')">
-    <Feature Include="FEATURE_CHM_HELP" />
-  </ItemGroup>
-
-  <Target Name="BuildHTMLDocs"
-          Condition="'$(NoNDoc)'!='true'">
-    <Message Text="Building HTML Docs..."
-             Importance="High" />
-
-    <Exec Command="&quot;$(ToolsDir)\NDoc2\NDocConsole.exe&quot; $(NDocHTMLOptions)" />
-    <RemoveDir Directories="$(ApiDocsDir)\html\ndoc_msdn_temp" />
-
-    <!-- Replace the ndoc.js one with a new copy that contains a bugfix
-         for FireFox. -->
-    <Copy SourceFiles="$(ToolsDir)\NDoc2\ndoc.js"
-          DestinationFolder="$(ApiDocsDir)\html"/>
-  </Target>
-
-  <Target Name="BuildHxSDocs"
-          Condition="'$(NoNDoc)'!='true'">
-    <Message Text="Building HxS Docs..."
-             Importance="High" />
-
-    <Message Text="$(VSIPSDKHelpPath)" Importance="High" />
-
-    <Warning Text="Visual Studio 2005 or 2008 SDK must be installed so that HTML Help 2 (HxS) documentation can be generated for integration with the Visual Studio help system.  Check Microsoft's site for the Visual Studio SDK installer."
-           Condition="! Exists('$(VSIPSDKHelpPath)')" />
-
-    <Exec Command="&quot;$(ToolsDir)\NDoc2\NDocConsole.exe&quot; $(NDocHxSOptions)"
-          Condition="Exists('$(VSIPSDKHelpPath)')" />
-    <RemoveDir Directories="$(ImageDir)\docs\vs\ndoc_htmlhelp2_temp" />
-  </Target>
-  <ItemGroup Condition="'$(NoNDoc)'!='true' and Exists('$(VSIPSDKHelpPath)')">
-    <Feature Include="FEATURE_VS_HELP" />
-  </ItemGroup>
 
   <!-- SUPPORT CODE: INSTALLERS -->
 

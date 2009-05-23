@@ -22,10 +22,10 @@ using System.Text;
 namespace MbUnit.Framework.ContractVerifiers
 {
     /// <summary>
-    /// <para>
     /// A collection of distinct object instances. Every element represents a valid instance
     /// which is different from all the other elements in the collection (object equality).
-    /// </para>
+    /// </summary>
+    /// <remarks>
     /// <para>
     /// Distinct instances are used by some contract verifiers such as 
     /// <see cref="CollectionContract{TCollection, TItem}"/> to check for the correct 
@@ -52,7 +52,7 @@ namespace MbUnit.Framework.ContractVerifiers
     /// ]]></code>
     /// </example>
     /// </para>
-    /// </summary>
+    /// </remarks>
     /// <typeparam name="T">The type of the object instances in the collection.</typeparam>
     public class DistinctInstanceCollection<T> : IEnumerable<T>
     {

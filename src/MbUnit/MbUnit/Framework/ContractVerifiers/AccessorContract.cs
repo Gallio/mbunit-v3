@@ -24,9 +24,9 @@ using MbUnit.Framework.ContractVerifiers.Core;
 namespace MbUnit.Framework.ContractVerifiers
 {
     /// <summary>
-    /// <para>
     /// Contract for verifying the implementation of public type accessors, usually the getter and the setter of a particular property.
-    /// </para>
+    /// </summary>
+    /// <remarks>
     /// <para>
     /// Built-in verifications:
     /// <list type="bullet">
@@ -101,7 +101,7 @@ namespace MbUnit.Framework.ContractVerifiers
     /// ]]></code>
     /// </example>
     /// </para>
-    /// </summary>
+    /// </remarks>
     /// <typeparam name="TTarget">The type of the tested object which contain the accessors.</typeparam>
     /// <typeparam name="TValue">The type of the value handled by the accessors.</typeparam>
     /// <seealso cref="VerifyContractAttribute"/>

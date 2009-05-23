@@ -39,7 +39,7 @@ namespace Gallio.Icarus.Tests.Controllers
             optionsManager.Stub(om => om.Settings).Return(settings);
 
             var optionsController = new OptionsController();
-            optionsController.SetOptionsManager(optionsManager);
+            optionsController.OptionsManager = optionsManager;
 
             return optionsController;
         }
@@ -175,7 +175,7 @@ namespace Gallio.Icarus.Tests.Controllers
             var optionsManager = MockRepository.GenerateStub<IOptionsManager>();
             optionsManager.Stub(om => om.Settings).Return(new Settings());
             var optionsController = new OptionsController();
-            optionsController.SetOptionsManager(optionsManager);
+            optionsController.OptionsManager = optionsManager;
 
             optionsController.Cancel();
 
@@ -188,7 +188,7 @@ namespace Gallio.Icarus.Tests.Controllers
             var optionsManager = MockRepository.GenerateStub<IOptionsManager>();
             optionsManager.Stub(om => om.Settings).Return(new Settings());
             var optionsController = new OptionsController();
-            optionsController.SetOptionsManager(optionsManager);
+            optionsController.OptionsManager = optionsManager;
 
             optionsController.Save();
 

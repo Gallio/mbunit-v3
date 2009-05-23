@@ -35,7 +35,7 @@ namespace Gallio.Runtime.ProgressMonitoring
         {
         }
 
-        /// <inheritdoc />
+        /// <excludedoc />
         protected override IProgressMonitorPresenter GetPresenter()
         {
             return NullProgressMonitorPresenter.Instance;

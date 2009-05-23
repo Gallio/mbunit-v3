@@ -86,13 +86,13 @@
     <CSharpProject Include="Gallio40\Gallio40$(ProjectVariant).csproj" />
     <CSharpProject Include="Gallio40.Tests\Gallio40.Tests$(ProjectVariant).csproj" />
     
-    <!-- Need updated documentation tool for .Net 4.0.
+    <!-- Reenable when we have some content.
     <DocumentedAssembly Include="Gallio40\bin\Gallio40.dll" />
     -->
+    <Binary Include="Gallio40\bin\Gallio40.xml" />
     
     <Binary Include="Gallio40\bin\Gallio40.dll" />
     <Binary Include="Gallio40\bin\Gallio40.pdb" />
-    <Binary Include="Gallio40\bin\Gallio40.xml" />
     <PluginFile Include="Gallio40\Gallio40.plugin" />
     
     <Feature Include="FEATURE_GALLIO40" />

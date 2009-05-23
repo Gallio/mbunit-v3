@@ -23,10 +23,10 @@ using System.Collections;
 namespace MbUnit.Framework
 {
     /// <summary>
-    /// <para>
     /// A general-purpose structural equality comparer that defines a fully customizable equality operation without the 
     /// need to implement <see cref="IEquatable{T}"/>.
-    /// </para>
+    /// </summary>
+    /// <remarks>
     /// <para>
     /// That equality comparer can be used in any MbUnit assertion that takes an <see cref="IEqualityComparer{T}"/> 
     /// object as argument, such as <see cref="Assert.AreEqual{T}(T, T, IEqualityComparer{T})"/>.
@@ -67,7 +67,7 @@ namespace MbUnit.Framework
     /// ]]></code>
     /// </example>
     /// </para>
-    /// </summary>
+    /// </remarks>
     /// <typeparam name="T">The type of the objects. to compare.</typeparam>
     public class StructuralEqualityComparer<T> : IEqualityComparer<T>, IEnumerable<EqualityComparison<T>>
     {

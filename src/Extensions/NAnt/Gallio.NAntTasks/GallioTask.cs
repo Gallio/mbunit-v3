@@ -557,7 +557,9 @@ namespace Gallio.NAntTasks
 
         #region Public Methods
 
-        /// <inheritdoc />
+        /// <summary>
+        /// Executes the task.
+        /// </summary>
         protected override void ExecuteTask()
         {
             InternalExecute();

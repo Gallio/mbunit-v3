@@ -41,7 +41,7 @@ namespace Gallio.Runtime.Hosting
             PingImpl();
         }
 
-        /// <inheritdoc />
+        /// <inheritdoc cref="IHostService.Do" />
         public TResult Do<TArg, TResult>(Func<TArg, TResult> func, TArg arg)
         {
             if (func == null)

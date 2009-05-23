@@ -25,9 +25,9 @@ using Gallio.Framework.Assertions;
 namespace MbUnit.Framework.ContractVerifiers
 {
     /// <summary>
-    /// <para>
     /// Contract for verifying the implementation of a custom exception type.
-    /// </para>
+    /// </summary>
+    /// <remarks>
     /// <para>
     /// Built-in verifications:
     /// <list type="bullet">
@@ -117,7 +117,7 @@ namespace MbUnit.Framework.ContractVerifiers
     /// }
     /// ]]></code>
     /// </example>
-    /// </summary>
+    /// </remarks>
     /// <typeparam name="TException">The target custom exception type.</typeparam>
     /// <seealso cref="VerifyContractAttribute"/>
     public class ExceptionContract<TException> : AbstractContract

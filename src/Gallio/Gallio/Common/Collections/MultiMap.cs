@@ -51,13 +51,17 @@ namespace Gallio.Common.Collections
             get { return false; }
         }
 
-        /// <inheritdoc />
+        /// <summary>
+        /// Gets the collection of keys in the multi-map.
+        /// </summary>
         public ICollection<TKey> Keys
         {
             get { return entries.Keys; }
         }
 
-        /// <inheritdoc />
+        /// <summary>
+        /// Gets the collection of lists of values in the multi-map.
+        /// </summary>
         public ICollection<IList<TValue>> Values
         {
             get { return entries.Values; }
@@ -265,7 +269,7 @@ namespace Gallio.Common.Collections
             return entries.TryGetValue(key, out value);
         }
 
-        /// <inheritdoc />
+        /// <inheritdoc cref="IEnumerable{T}.GetEnumerator" />
         public IEnumerator<KeyValuePair<TKey, IList<TValue>>> GetEnumerator()
         {
             return entries.GetEnumerator();

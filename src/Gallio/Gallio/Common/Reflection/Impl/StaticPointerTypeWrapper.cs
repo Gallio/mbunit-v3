@@ -46,7 +46,7 @@ namespace Gallio.Common.Reflection.Impl
             get { return TypeAttributes.Class; }
         }
 
-        /// <inheritdoc />
+        /// <excludedoc />
         protected internal override ITypeInfo ApplySubstitution(StaticTypeSubstitution substitution)
         {
             return ElementType.ApplySubstitution(substitution).MakePointerType();
@@ -65,7 +65,7 @@ namespace Gallio.Common.Reflection.Impl
             return ElementType.GetHashCode() ^ GetType().GetHashCode();
         }
 
-        /// <inheritdoc />
+        /// <excludedoc />
         protected override string NameSuffix
         {
             get { return @"*"; }

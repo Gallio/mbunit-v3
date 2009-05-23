@@ -77,25 +77,21 @@ namespace Gallio.Model.Execution
             data = new UserDataCollection();
         }
 
-        /// <inheritdoc />
         public ITestContext Parent
         {
             get { return parent; }
         }
 
-        /// <inheritdoc />
         public ITestStep TestStep
         {
             get { return testStep; }
         }
 
-        /// <inheritdoc />
         public MarkupDocumentWriter LogWriter
         {
             get { return externallyVisibleLogWriter; }
         }
 
-        /// <inheritdoc />
         public string LifecyclePhase
         {
             get { return lifecyclePhase; }
@@ -118,31 +114,26 @@ namespace Gallio.Model.Execution
             }
         }
 
-        /// <inheritdoc />
         public TestOutcome Outcome
         {
             get { return outcome; }
         }
 
-        /// <inheritdoc />
         public UserDataCollection Data
         {
             get { return data; }
         }
 
-        /// <inheritdoc />
         public int AssertCount
         {
             get { return assertCount; }
         }
 
-        /// <inheritdoc />
         public bool IsFinished
         {
             get { return executionStatus == StatusFinished; }
         }
 
-        /// <inheritdoc />
         public event EventHandler Finishing
         {
             add
@@ -165,7 +156,6 @@ namespace Gallio.Model.Execution
             }
         }
 
-        /// <inheritdoc />
         public void AddAssertCount(int value)
         {
             Interlocked.Add(ref assertCount, value);
@@ -174,7 +164,6 @@ namespace Gallio.Model.Execution
                 parent.AddAssertCount(value);
         }
 
-        /// <inheritdoc />
         public void AddMetadata(string metadataKey, string metadataValue)
         {
             if (metadataKey == null)
@@ -192,7 +181,6 @@ namespace Gallio.Model.Execution
             }
         }
 
-        /// <inheritdoc />
         public void SetInterimOutcome(TestOutcome outcome)
         {
             lock (syncRoot)
@@ -204,7 +192,6 @@ namespace Gallio.Model.Execution
             }
         }
 
-        /// <inheritdoc />
         public ITestContext StartChildStep(ITestStep childStep)
         {
             if (childStep == null)
@@ -221,21 +208,16 @@ namespace Gallio.Model.Execution
             return manager.StartStep(childStep);
         }
 
-        /// <inheritdoc />
         public void FinishStep(TestOutcome outcome, TimeSpan? actualDuration)
         {
             FinishStep(outcome, actualDuration, false);
         }
 
-        /// <inheritdoc />
         public void Dispose()
         {
             FinishStep(TestOutcome.Error, null, true);
         }
 
-        /// <summary>
-        /// Initializes and starts the step.
-        /// </summary>
         internal void InitializeAndStartStep()
         {
             lock (syncRoot)

@@ -25,9 +25,9 @@ using MbUnit.Framework.ContractVerifiers.Core;
 namespace MbUnit.Framework.ContractVerifiers
 {
     /// <summary>
-    /// <para>
     /// Contract for verifying the implementation of the generic <see cref="IList{T}"/> interface.
-    /// </para>
+    /// </summary>
+    /// <remarks>
     /// <para>
     /// Since the generic <see cref="IList{T}"/> interface is a descendant of the generic <see cref="ICollection{T}"/> interface,
     /// the contract verifier has the same tests as the <see cref="CollectionContract{TCollection,TItem}"/> contract verifier, 
@@ -36,60 +36,60 @@ namespace MbUnit.Framework.ContractVerifiers
     /// <item>
     /// <term>InsertShouldThrowException</term>
     /// <description>The read-only collection throws an exception when the method <see cref="IList{T}.Insert"/> is called.
-    /// <remarks>
+    /// <para>
     /// The test is not run when the contract property <see cref="CollectionContract{TCollection,TItem}.IsReadOnly"/>
     /// inherited from <see cref="CollectionContract{TCollection,TItem}"/>, is set to 'false'.
-    /// </remarks>
+    /// </para>
     /// </description>
     /// </item>
     /// <item>
     /// <term>RemoveAtShouldThrowException</term>
     /// <description>The read-only collection throws an exception when the method <see cref="IList{T}.RemoveAt"/>
     /// is called.
-    /// <remarks>
+    /// <para>
     /// The test is not run when the contract property <see cref="CollectionContract{TCollection,TItem}.IsReadOnly"/> 
     /// inherited from <see cref="CollectionContract{TCollection,TItem}"/>, is set to 'false'.
-    /// </remarks>
+    /// </para>
     /// </description>
     /// </item>
     /// <item>
     /// <term>IndexerSetShouldThrowException</term>
     /// <description>The read-only collection throws an exception when the setter of the indexer <see cref="IList{T}.this"/>
     /// is called.
-    /// <remarks>
+    /// <para>
     /// The test is not run when the contract property <see cref="CollectionContract{TCollection,TItem}.IsReadOnly"/> 
     /// inherited from <see cref="CollectionContract{TCollection,TItem}"/>, is set to 'false'.
-    /// </remarks>
+    /// </para>
     /// </description>
     /// </item>
     /// <item>
     /// <term>InsertNullArgument</term>
     /// <description>The collection throwns a <see cref="ArgumentNullException"/> when the method <see cref="IList{T}.Insert"/>
     /// is called with a null reference item. 
-    /// <remarks>
+    /// <para>
     /// The test is not run when the contract property <see cref="CollectionContract{TCollection,TItem}.AcceptNullReference"/> 
     /// inherited from <see cref="CollectionContract{TCollection,TItem}"/>, is set to 'true'.
-    /// </remarks>
+    /// </para>
     /// </description>
     /// </item>
     /// <item>
     /// <term>IndexOfNullArgument</term>
     /// <description>The collection throwns a <see cref="ArgumentNullException"/> when the method <see cref="IList{T}.IndexOf"/>
     /// is called with a null reference item. 
-    /// <remarks>
+    /// <para>
     /// The test is not run when the contract property <see cref="CollectionContract{TCollection,TItem}.AcceptNullReference"/> 
     /// inherited from <see cref="CollectionContract{TCollection,TItem}"/>, is set to 'true'.
-    /// </remarks>
+    /// </para>
     /// </description>
     /// </item>
     /// <item>
     /// <term>IndexerSetNullArgument</term>
     /// <description>The collection throwns a <see cref="ArgumentNullException"/> when the setter of the indexer <see cref="IList{T}.this"/>
     /// is called with a null reference item. 
-    /// <remarks>
+    /// <para>
     /// The test is not run when the contract property <see cref="CollectionContract{TCollection,TItem}.AcceptNullReference"/> 
     /// inherited from <see cref="CollectionContract{TCollection,TItem}"/>, is set to 'true'.
-    /// </remarks>
+    /// </para>
     /// </description>
     /// </item>
     /// <item>
@@ -100,10 +100,10 @@ namespace MbUnit.Framework.ContractVerifiers
     /// to return suitable results as well. The case of duplicate items (object equality) is tested too; according
     /// to the value of contract property <see cref="CollectionContract{TCollection,TItem}.AcceptEqualItems"/>,
     /// inherited from <see cref="CollectionContract{TCollection,TItem}"/>.
-    /// <remarks>
+    /// <para>
     /// The test is not run when the contract property <see cref="CollectionContract{TCollection,TItem}.IsReadOnly"/> 
     /// inherited from <see cref="CollectionContract{TCollection,TItem}"/>, is set to 'true'.
-    /// </remarks>
+    /// </para>
     /// </description>
     /// </item>
     /// <item>
@@ -112,10 +112,10 @@ namespace MbUnit.Framework.ContractVerifiers
     /// The collection handles correctly with the insertion of new items at an invalid index. The method
     /// should throw an <see cref="ArgumentOutOfRangeException"/> when called with a negative index or with
     /// an index greater than the number of items in the list.
-    /// <remarks>
+    /// <para>
     /// The test is not run when the contract property <see cref="CollectionContract{TCollection,TItem}.IsReadOnly"/> 
     /// inherited from <see cref="CollectionContract{TCollection,TItem}"/>, is set to 'true'.
-    /// </remarks>
+    /// </para>
     /// </description>
     /// </item>
     /// <item>
@@ -123,10 +123,10 @@ namespace MbUnit.Framework.ContractVerifiers
     /// The collection handles correctly with the removal of items at specific indexes. The method 
     /// <see cref="ICollection{T}.Contains"/> and the property <see cref="ICollection{T}.Count"/> are expected
     /// to return suitable results as well.
-    /// <remarks>
+    /// <para>
     /// The test is not run when the contract property <see cref="CollectionContract{TCollection,TItem}.IsReadOnly"/> 
     /// inherited from <see cref="CollectionContract{TCollection,TItem}"/>, is set to 'true'.
-    /// </remarks>
+    /// </para>
     /// </item>
     /// <item>
     /// <term>RemoveItemsAtInvalidIndex</term>
@@ -134,10 +134,10 @@ namespace MbUnit.Framework.ContractVerifiers
     /// The collection handles correctly with the removal of items at an invalid index. The method
     /// should throw an <see cref="ArgumentOutOfRangeException"/> when called with a negative index or with
     /// an index greater than the number of items in the list.
-    /// <remarks>
+    /// <para>
     /// The test is not run when the contract property <see cref="CollectionContract{TCollection,TItem}.IsReadOnly"/> 
     /// inherited from <see cref="CollectionContract{TCollection,TItem}"/>, is set to 'true'.
-    /// </remarks>
+    /// </para>
     /// </description>
     /// </item>
     /// <item>
@@ -152,10 +152,10 @@ namespace MbUnit.Framework.ContractVerifiers
     /// <term>GetSetItemsWithIndexer</term>
     /// <description>
     /// Setting and getting items by using the indexer property works as expected.
-    /// <remarks>
+    /// <para>
     /// The test is not run when the contract property <see cref="CollectionContract{TCollection,TItem}.IsReadOnly"/> 
     /// inherited from <see cref="CollectionContract{TCollection,TItem}"/>, is set to 'true'.
-    /// </remarks>
+    /// </para>
     /// </description>
     /// </item>
     /// <item>
@@ -167,7 +167,7 @@ namespace MbUnit.Framework.ContractVerifiers
     /// </item>
     /// </list>
     /// </para>
-    /// </summary>
+    /// </remarks>
     /// <typeparam name="TList">The type of the collection implementing <see cref="IList{T}"/>.</typeparam>
     /// <typeparam name="TItem">The type of items contained by the list.</typeparam>
     public class ListContract<TList, TItem> : CollectionContract<TList, TItem>

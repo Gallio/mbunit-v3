@@ -59,7 +59,7 @@ namespace Gallio.Model
             get { return Source.IsTestCase; }
         }
 
-        /// <inheritdoc />
+        /// <inheritdoc cref="ITest.Parameters" />
         public TestParameterInfoList Parameters
         {
             get
@@ -74,7 +74,7 @@ namespace Gallio.Model
             get { return Parameters.AsModelList(); }
         }
 
-        /// <inheritdoc />
+        /// <inheritdoc cref="ITest.Dependencies" />
         public TestInfoList Dependencies
         {
             get
@@ -89,7 +89,7 @@ namespace Gallio.Model
             get { return Dependencies.AsModelList(); }
         }
 
-        /// <inheritdoc />
+        /// <inheritdoc cref="ITest.Order" />
         public int Order
         {
             get { return Source.Order; }
@@ -100,7 +100,7 @@ namespace Gallio.Model
             set { throw new NotSupportedException(); }
         }
 
-        /// <inheritdoc />
+        /// <inheritdoc cref="ITest.Parent" />
         public ITest Parent
         {
             get
@@ -116,7 +116,7 @@ namespace Gallio.Model
             set { throw new NotSupportedException(); }
         }
 
-        /// <inheritdoc />
+        /// <inheritdoc cref="ITest.Children" />
         public TestInfoList Children
         {
             get
@@ -156,7 +156,6 @@ namespace Gallio.Model
             throw new NotSupportedException();
         }
 
-        /// <inheritdoc />
         new internal ITest Source
         {
             get { return (ITest)base.Source; }

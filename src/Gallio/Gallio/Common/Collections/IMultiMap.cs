@@ -30,7 +30,7 @@ namespace Gallio.Common.Collections
     public interface IMultiMap<TKey, TValue> : IDictionary<TKey, IList<TValue>>
     {
         /// <summary>
-        /// Gets the contents of the multi-map as an enumeration of pairs.
+        /// Gets the contents of the multi-map as an enumeration of pairs of keys and lists of values.
         /// </summary>
         IEnumerable<KeyValuePair<TKey, TValue>> Pairs { get; }
 

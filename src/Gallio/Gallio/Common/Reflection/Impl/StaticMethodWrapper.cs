@@ -104,7 +104,7 @@ namespace Gallio.Common.Reflection.Impl
             }
         }
 
-        /// <inheritdoc />
+        /// <inheritdoc cref="IMethodInfo.GenericMethodDefinition" />
         public StaticMethodWrapper GenericMethodDefinition
         {
             get
@@ -241,7 +241,7 @@ namespace Gallio.Common.Reflection.Impl
             return true;
         }
 
-        /// <inheritdoc />
+        /// <inheritdoc cref="IMethodInfo.MakeGenericMethod" />
         public StaticMethodWrapper MakeGenericMethod(IList<ITypeInfo> genericArguments)
         {
             if (!IsGenericMethodDefinition)
@@ -272,14 +272,14 @@ namespace Gallio.Common.Reflection.Impl
             return ToString(ReturnType, GenericArguments);
         }
 
-        /// <inheritdoc />
+        /// <excludedoc />
         protected override IEnumerable<ICodeElementInfo> GetInheritedElements()
         {
             foreach (StaticMethodWrapper element in GetOverridenOrHiddenMethods(true))
                 yield return element;
         }
 
-        /// <inheritdoc />
+        /// <excludedoc />
         protected override IEnumerable<Attribute> GetPseudoCustomAttributes()
         {
             // TODO: Handle DllImport, PreserveSig and code access security.

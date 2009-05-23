@@ -42,14 +42,12 @@ namespace Gallio.Runtime.FileTypes
             this.fileInfo = fileInfo;
         }
 
-        /// <inheritdoc />
         public void Dispose()
         {
             Dispose(true);
             GC.SuppressFinalize(this);
         }
 
-        /// <inheritdoc />
         public bool TryGetFileInfo(out FileInfo fileInfo)
         {
             ThrowIfDisposed();
@@ -58,7 +56,6 @@ namespace Gallio.Runtime.FileTypes
             return true;
         }
 
-        /// <inheritdoc />
         public bool TryGetContents(out string contents)
         {
             ThrowIfDisposed();
@@ -80,7 +77,6 @@ namespace Gallio.Runtime.FileTypes
             return true;
         }
 
-        /// <inheritdoc />
         public bool TryGetStream(out Stream stream)
         {
             ThrowIfDisposed();

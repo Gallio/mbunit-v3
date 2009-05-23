@@ -45,13 +45,13 @@
     <CSharpProject Include="MbUnit40\MbUnit40$(ProjectVariant).csproj" />
     <CSharpProject Include="MbUnit40.Tests\MbUnit40.Tests$(ProjectVariant).csproj" />
 
-    <!-- Need updated documentation tool for .Net 4.0.
+    <!-- Reenable when we have some content.
     <DocumentedAssembly Include="MbUnit40\bin\MbUnit40.dll" />
     -->
+    <Binary Include="MbUnit40\bin\MbUnit40.xml" />
     
     <Binary Include="MbUnit40\bin\MbUnit40.dll" />
     <Binary Include="MbUnit40\bin\MbUnit40.pdb" />
-    <Binary Include="MbUnit40\bin\MbUnit40.xml" />
     <PluginFile Include="MbUnit40\MbUnit40.plugin" />
 
     <Feature Include="FEATURE_MBUNIT40" />

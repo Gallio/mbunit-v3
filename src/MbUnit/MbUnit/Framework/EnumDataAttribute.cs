@@ -22,9 +22,9 @@ using System.Collections;
 namespace MbUnit.Framework
 {
     /// <summary>
-    /// <para>
     /// Provides a column of enumeration values as a data source.
-    /// </para>
+    /// </summary>
+    /// <remarks>
     /// <para>
     /// Each value from the specified enumeration type is used as input for the
     /// data-driven test method.
@@ -59,7 +59,7 @@ namespace MbUnit.Framework
     /// Use <see cref="EnumDataAttribute.Exclude"/> or <see cref="EnumDataAttribute.ExcludeArray"/> 
     /// for that purpose.
     /// </para>
-    /// </summary>
+    /// </remarks>
     /// <seealso cref="ColumnAttribute"/>
     [CLSCompliant(false)]
     [AttributeUsage(PatternAttributeTargets.DataContext, AllowMultiple = true, Inherited = true)]

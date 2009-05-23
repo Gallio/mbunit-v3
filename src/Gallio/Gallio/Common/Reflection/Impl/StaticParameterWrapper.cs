@@ -158,13 +158,13 @@ namespace Gallio.Common.Reflection.Impl
             return base.GetHashCode() ^ member.GetHashCode();
         }
 
-        /// <inheritdoc />
+        /// <excludedoc />
         protected override IEnumerable<StaticAttributeWrapper> GetCustomAttributes()
         {
             return Policy.GetParameterCustomAttributes(this);
         }
 
-        /// <inheritdoc />
+        /// <excludedoc />
         protected override IEnumerable<Attribute> GetPseudoCustomAttributes()
         {
             if (IsIn)

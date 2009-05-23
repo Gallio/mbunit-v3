@@ -94,19 +94,16 @@ namespace Gallio.Reports
             archiveWriter = null;
         }
 
-        /// <inheritdoc />
         public void DeleteReport()
         {
             inner.DeleteReport();
         }
 
-        /// <inheritdoc />
         public Stream OpenRead(string path)
         {
             throw new NotSupportedException("Cannot read reports from multipart mime archives.");
         }
 
-        /// <inheritdoc />
         public Stream OpenWrite(string path, string contentType, Encoding encoding)
         {
             if (path == null)
@@ -132,7 +129,6 @@ namespace Gallio.Reports
             return stream;
         }
 
-        /// <inheritdoc />
         public string EncodeFileName(string fileName)
         {
             // Note: IE 7 does not seem to correctly resolve references to files with spaces

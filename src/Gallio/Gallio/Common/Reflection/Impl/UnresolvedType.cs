@@ -189,7 +189,7 @@ namespace Gallio.Common.Reflection.Impl
             return adapter.TypeAttributes;
         }
 
-        /// <inheritdoc />
+        /// <excludedoc />
         protected override ConstructorInfo GetConstructorImpl(BindingFlags bindingAttr, Binder binder,
             CallingConventions callConvention, Type[] types, ParameterModifier[] modifiers)
         {
@@ -295,7 +295,7 @@ namespace Gallio.Common.Reflection.Impl
             throw new NotImplementedException();
         }
 
-        /// <inheritdoc />
+        /// <excludedoc />
         protected override MethodInfo GetMethodImpl(string name, BindingFlags bindingAttr, Binder binder,
             CallingConventions callConvention, Type[] types, ParameterModifier[] modifiers)
         {
@@ -328,14 +328,14 @@ namespace Gallio.Common.Reflection.Impl
                 delegate(IPropertyInfo property) { return property.Resolve(false); });
         }
 
-        /// <inheritdoc />
+        /// <excludedoc />
         protected override PropertyInfo GetPropertyImpl(string name, BindingFlags bindingAttr, Binder binder,
             Type returnType, Type[] types, ParameterModifier[] modifiers)
         {
             throw new NotImplementedException();
         }
 
-        /// <inheritdoc />
+        /// <excludedoc />
         protected override bool HasElementTypeImpl()
         {
             return adapter.ElementType != null;
@@ -348,7 +348,7 @@ namespace Gallio.Common.Reflection.Impl
             throw new NotSupportedException();
         }
 
-        /// <inheritdoc />
+        /// <excludedoc />
         protected override bool IsArrayImpl()
         {
             return adapter.IsArray;
@@ -360,13 +360,13 @@ namespace Gallio.Common.Reflection.Impl
             throw new NotImplementedException();
         }
 
-        /// <inheritdoc />
+        /// <excludedoc />
         protected override bool IsByRefImpl()
         {
             return adapter.IsByRef;
         }
 
-        /// <inheritdoc />
+        /// <excludedoc />
         protected override bool IsCOMObjectImpl()
         {
             return false;
@@ -378,13 +378,13 @@ namespace Gallio.Common.Reflection.Impl
             throw new NotImplementedException();
         }
 
-        /// <inheritdoc />
+        /// <excludedoc />
         protected override bool IsPointerImpl()
         {
             return adapter.IsPointer;
         }
 
-        /// <inheritdoc />
+        /// <excludedoc />
         protected override bool IsPrimitiveImpl()
         {
             return adapter.TypeCode != TypeCode.Object;

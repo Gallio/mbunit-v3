@@ -78,7 +78,7 @@ namespace Gallio.Common.Reflection.Impl
             get { return SetMethod != null; }
         }
 
-        /// <inheritdoc />
+        /// <inheritdoc cref="IPropertyInfo.GetMethod" />
         public StaticMethodWrapper GetMethod
         {
             get { return getMethodMemoizer.Memoize(() => Policy.GetPropertyGetMethod(this)); }
@@ -88,7 +88,7 @@ namespace Gallio.Common.Reflection.Impl
             get { return GetMethod; }
         }
 
-        /// <inheritdoc />
+        /// <inheritdoc cref="IPropertyInfo.SetMethod" />
         public StaticMethodWrapper SetMethod
         {
             get { return setMethodMemoizer.Memoize(() => Policy.GetPropertySetMethod(this)); }
@@ -98,7 +98,7 @@ namespace Gallio.Common.Reflection.Impl
             get { return SetMethod; }
         }
 
-        /// <inheritdoc />
+        /// <inheritdoc cref="IPropertyInfo.IndexParameters" />
         public IList<StaticParameterWrapper> IndexParameters
         {
             get
@@ -229,7 +229,7 @@ namespace Gallio.Common.Reflection.Impl
             return ReflectorResolveUtils.ResolveProperty(this, throwOnError);
         }
 
-        /// <inheritdoc />
+        /// <excludedoc />
         protected override MemberInfo ResolveMemberInfo(bool throwOnError)
         {
             return Resolve(throwOnError);
@@ -256,7 +256,7 @@ namespace Gallio.Common.Reflection.Impl
             return sig.ToString();
         }
 
-        /// <inheritdoc />
+        /// <excludedoc />
         protected override IEnumerable<Attribute> GetPseudoCustomAttributes()
         {
             return EmptyArray<Attribute>.Instance;

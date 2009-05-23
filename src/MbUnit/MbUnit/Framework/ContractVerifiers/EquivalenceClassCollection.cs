@@ -22,9 +22,9 @@ using System.Text;
 namespace MbUnit.Framework.ContractVerifiers
 {
     /// <summary>
-    /// <para>
     /// A collection of equivalence classes. 
-    /// </para>
+    /// </summary>
+    /// <remarks>
     /// <para>
     /// Equivalent classes are used by some contract verifiers such as 
     /// <see cref="EqualityContract{TTarget}"/> and <see cref="ComparisonContract{TTarget}"/> 
@@ -53,7 +53,7 @@ namespace MbUnit.Framework.ContractVerifiers
     /// ]]></code>
     /// </example>
     /// </para>
-    /// </summary>
+    /// </remarks>
     /// <typeparam name="T">The type of equivalent object instances.</typeparam>
     public class EquivalenceClassCollection<T> : IEnumerable<EquivalenceClass<T>>
     {

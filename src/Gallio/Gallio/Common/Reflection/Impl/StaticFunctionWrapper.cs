@@ -131,7 +131,7 @@ namespace Gallio.Common.Reflection.Impl
             get { return (MethodAttributes & MethodAttributes.HideBySig) != 0; }
         }
 
-        /// <inheritdoc />
+        /// <inheritdoc cref="IFunctionInfo.Parameters" />
         public IList<StaticParameterWrapper> Parameters
         {
             get

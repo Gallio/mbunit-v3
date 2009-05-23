@@ -106,7 +106,7 @@ namespace Gallio.Common.Reflection.Impl
             get { return CodeElementKind.GenericParameter; }
         }
 
-        /// <inheritdoc />
+        /// <excludedoc />
         protected override ITypeInfo BaseTypeInternal
         {
             get { return Reflector.Wrap(typeof(Object)); }
@@ -196,7 +196,7 @@ namespace Gallio.Common.Reflection.Impl
             return EmptyArray<IConstructorInfo>.Instance;
         }
 
-        /// <inheritdoc />
+        /// <excludedoc />
         protected internal override ITypeInfo ApplySubstitution(StaticTypeSubstitution substitution)
         {
             return substitution.Apply(this);

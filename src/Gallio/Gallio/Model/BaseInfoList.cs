@@ -56,7 +56,12 @@ namespace Gallio.Model
             get { return true; }
         }
 
-        /// <inheritdoc />
+        /// <summary>
+        /// Gets an item from the list with the specified index.
+        /// </summary>
+        /// <param name="index">The index</param>
+        /// <returns>The item</returns>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="index"/> is out of range.</exception>
         public TInfo this[int index]
         {
             get { return Wrap(inputList[index]); }

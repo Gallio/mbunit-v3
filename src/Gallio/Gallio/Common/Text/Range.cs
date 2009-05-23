@@ -130,13 +130,23 @@ namespace Gallio.Common.Text
             return (startIndex << 16) ^ length;
         }
 
-        /// <inheritdoc />
+        /// <summary>
+        /// Returns true if two ranges are equal.
+        /// </summary>
+        /// <param name="a">The first range to compare</param>
+        /// <param name="b">The second range to compare</param>
+        /// <returns>True if the ranges are equal</returns>
         public static bool operator ==(Range a, Range b)
         {
             return a.Equals(b);
         }
 
-        /// <inheritdoc />
+        /// <summary>
+        /// Returns true if two ranges are not equal.
+        /// </summary>
+        /// <param name="a">The first range to compare</param>
+        /// <param name="b">The second range to compare</param>
+        /// <returns>True if the ranges are not equal</returns>
         public static bool operator !=(Range a, Range b)
         {
             return !(a == b);

@@ -28,7 +28,7 @@ namespace Gallio.Runtime.Logging
         /// </summary>
         public static readonly NullLogger Instance = new NullLogger();
 
-        /// <inheritdoc />
+        /// <excludedoc />
         protected override void LogImpl(LogSeverity severity, string message, ExceptionData exceptionData)
         {
         }

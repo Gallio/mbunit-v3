@@ -22,19 +22,19 @@ using System.Text;
 namespace MbUnit.Framework.ContractVerifiers
 {
     /// <summary>
-    /// <para>
     /// Contains a collection of equivalent object instances. 
     /// All the elements of the collection should be equal together, in
     /// the sense of the local implementation of an equality contract
     /// (<see cref="IEquatable{T}"/>) or a comparison contract 
     /// (<see cref="IComparable{T}"/>).
-    /// </para>
+    /// </summary>
+    /// <remarks>
     /// <para>
-    /// Equivalent classes are used by some contract verifiers such as 
+    /// Equivalence classes are used by some contract verifiers such as 
     /// <see cref="EqualityContract{TTarget}"/> to check for 
     /// the correct implementation of object equality or comparison.
     /// </para>
-    /// </summary>
+    /// </remarks>
     /// <typeparam name="T">The type of equivalent object instances.</typeparam>
     public class EquivalenceClass<T> : IEnumerable<T>
     {

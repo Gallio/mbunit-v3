@@ -22,11 +22,11 @@ using System.Text;
 namespace MbUnit.Framework.ContractVerifiers
 {
     /// <summary>
-    /// <para>
     /// A collection of classes of distinct object instances gathered by the type
     /// of the exception which is expected to be raised when the subject instances are passed
     /// to a tested method or property.
-    /// </para>
+    /// </summary>
+    /// <remarks>
     /// <para>
     /// Distinct invalid instances are used by some contract verifiers such as 
     /// <see cref="AccessorContract{TTarget, TValue}"/> to check for the correct 
@@ -53,7 +53,7 @@ namespace MbUnit.Framework.ContractVerifiers
     /// ]]></code>
     /// </example>
     /// </para>
-    /// </summary>
+    /// </remarks>
     /// <typeparam name="T">The type of the object instances in the inner class collections.</typeparam>
     public class IncompetenceClassCollection<T> : IEnumerable<IncompetenceClass<T>>
     {

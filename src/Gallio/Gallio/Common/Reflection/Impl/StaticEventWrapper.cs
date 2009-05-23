@@ -67,7 +67,7 @@ namespace Gallio.Common.Reflection.Impl
             }
         }
 
-        /// <inheritdoc />
+        /// <inheritdoc cref="IEventInfo.AddMethod" />
         public StaticMethodWrapper AddMethod
         {
             get { return addMethodMemoizer.Memoize(() => Policy.GetEventAddMethod(this)); }
@@ -77,7 +77,7 @@ namespace Gallio.Common.Reflection.Impl
             get { return AddMethod; }
         }
 
-        /// <inheritdoc />
+        /// <inheritdoc cref="IEventInfo.RaiseMethod" />
         public StaticMethodWrapper RaiseMethod
         {
             get { return raiseMethodMemoizer.Memoize(() => Policy.GetEventRaiseMethod(this)); }
@@ -87,7 +87,7 @@ namespace Gallio.Common.Reflection.Impl
             get { return RaiseMethod; }
         }
 
-        /// <inheritdoc />
+        /// <inheritdoc cref="IEventInfo.RemoveMethod" />
         public StaticMethodWrapper RemoveMethod
         {
             get { return removeMethodMemoizer.Memoize(() => Policy.GetEventRemoveMethod(this)); }
@@ -170,7 +170,7 @@ namespace Gallio.Common.Reflection.Impl
             return Equals((object)other);
         }
 
-        /// <inheritdoc />
+        /// <excludedoc />
         protected override MemberInfo ResolveMemberInfo(bool throwOnError)
         {
             return Resolve(throwOnError);
@@ -188,7 +188,7 @@ namespace Gallio.Common.Reflection.Impl
             return sig.ToString();
         }
 
-        /// <inheritdoc />
+        /// <excludedoc />
         protected override IEnumerable<Attribute> GetPseudoCustomAttributes()
         {
             return EmptyArray<Attribute>.Instance;

@@ -22,9 +22,9 @@ using System.Text;
 namespace MbUnit.Framework.ContractVerifiers
 {
     /// <summary>
-    /// <para>
     /// A collection of distinct object instances associated with a particular exception type. 
-    /// </para>
+    /// </summary>
+    /// <remarks>
     /// <para>
     /// Every element represents an instance which is different from all the other 
     /// elements in the collection (object equality), and which is expected to be
@@ -67,7 +67,7 @@ namespace MbUnit.Framework.ContractVerifiers
     /// ]]></code>
     /// </example>
     /// </para>
-    /// </summary>
+    /// </remarks>
     /// <typeparam name="T">The type of the object instances in the collection.</typeparam>
     public class IncompetenceClass<T> : DistinctInstanceCollection<T>
     {

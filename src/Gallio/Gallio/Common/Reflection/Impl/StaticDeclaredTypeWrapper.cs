@@ -107,7 +107,7 @@ namespace Gallio.Common.Reflection.Impl
             }
         }
 
-        /// <inheritdoc />
+        /// <excludedoc />
         protected override ITypeInfo BaseTypeInternal
         {
             get { return BaseType; }
@@ -666,13 +666,13 @@ namespace Gallio.Common.Reflection.Impl
             return new StaticDeclaredTypeWrapper(Policy, Handle, DeclaringType, Substitution.Compose(substitution));
         }
 
-        /// <inheritdoc />
+        /// <excludedoc />
         protected internal override ITypeInfo ApplySubstitution(StaticTypeSubstitution substitution)
         {
             return ComposeSubstitution(substitution);
         }
 
-        /// <inheritdoc />
+        /// <excludedoc />
         protected override IEnumerable<Attribute> GetPseudoCustomAttributes()
         {
             if ((TypeAttributes & TypeAttributes.Serializable) != 0)

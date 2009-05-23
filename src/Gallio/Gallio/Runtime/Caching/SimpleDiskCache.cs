@@ -81,7 +81,6 @@ namespace Gallio.Runtime.Caching
             return new Group(this, key, new DirectoryInfo(path));
         }
 
-        /// <inheritdoc />
         IDiskCacheGroup IDiskCacheGroupCollection.this[string key]
         {
             get

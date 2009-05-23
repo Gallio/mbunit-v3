@@ -149,13 +149,13 @@ namespace Gallio.Common.Reflection.Impl
             return Equals(other);
         }
 
-        /// <inheritdoc />
+        /// <excludedoc />
         protected override IEnumerable<StaticAttributeWrapper> GetCustomAttributes()
         {
             return Policy.GetAssemblyCustomAttributes(this);
         }
 
-        /// <inheritdoc />
+        /// <excludedoc />
         protected override IEnumerable<Attribute> GetPseudoCustomAttributes()
         {
             // TODO: Handle code access security.

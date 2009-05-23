@@ -84,12 +84,13 @@ namespace Gallio.Icarus
             {
                 var optionsController = RuntimeAccessor.ServiceLocator.Resolve<IOptionsController>();
                 // create & initialize a test runner whenever the test runner factory is changed
+
                 optionsController.PropertyChanged += (sender, e) =>
                 {
                     if (e.PropertyName == "TestRunnerFactory")
                         ConfigureTestRunnerFactory(optionsController.TestRunnerFactory);
                 };
-                optionsController.SetOptionsManager(optionsManager);
+                optionsController.OptionsManager = optionsManager;
 
                 ConfigureTestRunnerFactory(optionsController.TestRunnerFactory);
 

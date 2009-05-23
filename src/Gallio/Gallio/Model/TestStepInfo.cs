@@ -42,7 +42,7 @@ namespace Gallio.Model
             get { return Source.FullName; }
         }
 
-        /// <inheritdoc />
+        /// <inheritdoc cref="ITestStep.Parent" />
         public TestStepInfo Parent
         {
             get
@@ -57,7 +57,7 @@ namespace Gallio.Model
             get { return Parent; }
         }
 
-        /// <inheritdoc />
+        /// <inheritdoc cref="ITestStep.Test" />
         public TestInfo Test
         {
             get
@@ -90,7 +90,6 @@ namespace Gallio.Model
             get { return Source.IsTestCase; }
         }
 
-        /// <inheritdoc />
         new internal ITestStep Source
         {
             get { return (ITestStep)base.Source; }

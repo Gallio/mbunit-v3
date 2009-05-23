@@ -188,14 +188,17 @@
             <Directory Id="docsVsFolder" Name="vs">
                 <Component Id="Gallio.Help.vs" Guid="37360bcd-0c85-4132-822e-5810371b59fa" Win64="no">
                     <File Name="Gallio.HxS" />
-                    <File Name="GallioCollection.HxC" />
-                    <File Name="GallioCollection.HxT" />
-                    <File Name="GallioCollection_A.HxK" />
-                    <File Name="GallioCollection_F.HxK" />
-                    <File Name="GallioCollection_K.HxK" />
+                    <File Name="Gallio.HxC" />
+                    <File Name="Gallio.HxT" />
+                    <File Name="Gallio_A.HxK" />
+                    <File Name="Gallio_B.HxK" />
+                    <File Name="Gallio_F.HxK" />
+                    <File Name="Gallio_K.HxK" />
+                    <File Name="Gallio_S.HxK" />
+                    <File Name="Gallio_NamedUrlIndex.HxK" />
                 </Component>
                 <Component Id="Gallio.H2Reg.ini" Guid="7bb0227e-0dc9-4385-b97c-1b9aff6504fd" Win64="no">
-                    <File Id="Gallio.H2Reg.ini" Name="GallioCollection.h2reg.ini" />
+                    <File Id="Gallio.H2Reg.ini" Name="Gallio_H2Reg.ini" />
                 </Component>
             </Directory>
 <?endif ?>

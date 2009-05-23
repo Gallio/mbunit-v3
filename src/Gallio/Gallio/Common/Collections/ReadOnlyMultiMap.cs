@@ -40,37 +40,31 @@ namespace Gallio.Common.Collections
             this.map = map;
         }
 
-        /// <inheritdoc />
         public int Count
         {
             get { return map.Count; }
         }
 
-        /// <inheritdoc />
         public bool IsReadOnly
         {
             get { return true; }
         }
 
-        /// <inheritdoc />
         public ICollection<TKey> Keys
         {
             get { return map.Keys; }
         }
 
-        /// <inheritdoc />
         public ICollection<IList<TValue>> Values
         {
             get { return map.Values; }
         }
 
-        /// <inheritdoc />
         public IEnumerable<KeyValuePair<TKey, TValue>> Pairs
         {
             get { return map.Pairs; }
         }
 
-        /// <inheritdoc />
         public IList<TValue> this[TKey key]
         {
             get { return map[key]; }
@@ -81,38 +75,32 @@ namespace Gallio.Common.Collections
             set { ThrowReadOnlyException(); }
         }
 
-        /// <inheritdoc />
         public bool Contains(TKey key, TValue value)
         {
             return map.Contains(key, value);
         }
 
-        /// <inheritdoc />
         public bool Contains(KeyValuePair<TKey, IList<TValue>> item)
         {
             return map.Contains(item);
         }
 
-        /// <inheritdoc />
         public bool ContainsKey(TKey key)
         {
             return map.ContainsKey(key);
         }
 
-        /// <inheritdoc />
         public void CopyTo(KeyValuePair<TKey, IList<TValue>>[] array, int arrayIndex)
         {
             foreach (KeyValuePair<TKey, IList<TValue>> entry in this)
                 array[arrayIndex++] = entry;
         }
 
-        /// <inheritdoc />
         public bool TryGetValue(TKey key, out IList<TValue> value)
         {
             return map.TryGetValue(key, out value);
         }
 
-        /// <inheritdoc />
         public IEnumerator<KeyValuePair<TKey, IList<TValue>>> GetEnumerator()
         {
             return map.GetEnumerator();

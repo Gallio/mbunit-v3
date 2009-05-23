@@ -263,7 +263,7 @@ namespace Gallio.Common.Reflection.Impl
             get { return EmptyArray<ITypeInfo>.Instance; }
         }
 
-        /// <inheritdoc />
+        /// <inheritdoc cref="ITypeInfo.GenericTypeDefinition" />
         public virtual StaticDeclaredTypeWrapper GenericTypeDefinition
         {
             get { return null; }
@@ -339,7 +339,7 @@ namespace Gallio.Common.Reflection.Impl
             return false;
         }
 
-        /// <inheritdoc />
+        /// <inheritdoc cref="ITypeInfo.MakeArrayType" />
         public StaticArrayTypeWrapper MakeArrayType(int arrayRank)
         {
             return new StaticArrayTypeWrapper(Policy, this, arrayRank);
@@ -349,7 +349,7 @@ namespace Gallio.Common.Reflection.Impl
             return MakeArrayType(arrayRank);
         }
 
-        /// <inheritdoc />
+        /// <inheritdoc cref="ITypeInfo.MakePointerType" />
         public StaticPointerTypeWrapper MakePointerType()
         {
             return new StaticPointerTypeWrapper(Policy, this);
@@ -359,7 +359,7 @@ namespace Gallio.Common.Reflection.Impl
             return MakePointerType();
         }
 
-        /// <inheritdoc />
+        /// <inheritdoc cref="ITypeInfo.MakeByRefType" />
         public StaticByRefTypeWrapper MakeByRefType()
         {
             return new StaticByRefTypeWrapper(Policy, this);
@@ -369,7 +369,7 @@ namespace Gallio.Common.Reflection.Impl
             return MakeByRefType();
         }
 
-        /// <inheritdoc />
+        /// <inheritdoc cref="ITypeInfo.MakeGenericType" />
         public virtual StaticDeclaredTypeWrapper MakeGenericType(IList<ITypeInfo> genericArguments)
         {
             throw new InvalidOperationException("The type is not a generic type definition.");

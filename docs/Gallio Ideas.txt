@@ -1,12 +1,3 @@
-* Use a publisher policy file in the GAC to silently redirect clients to
-  newer versions of MbUnit.
-
-* Import XML documentation from test assemblies into the test tree as
-  metadata.  The docs can then be presented in the test runner.  Writing
-  XML docs is much more natural than using the [Description] attribute.
-  However, since most tests are not documented, the user will have to tell
-  the C# compiler to ignore warning 1591 about missing documentation on
-  visible members.
 
 * Allow the TestGraph to be updated at runtime.  It should be possible to
   cancel tests previously added and to add new tests and ensure they are
@@ -70,12 +61,9 @@
       private Browser browser;
 
 * Add a command-line option to Echo and switches to the build tasks for
-  NAnt report compatibility mode.  (Run our XML reports through XSLT to generate
+  NUnit report compatibility mode.  (Run our XML reports through XSLT to generate
   a compatible report.)  I'm not sure how useful this is in the long run though.
   
-* Add switches to the build tasks for NCover integration and perhaps other
-  profilers.
-
 * Add Mixins.  A parameterized template could serve as the basis for inclusion
   in another template.
   
@@ -225,25 +213,6 @@
     [Test]
     [StartAgent("Producer"), StartAgent("Consumer")]
     public void Test() { }
-
-* Support easy comparison of structures.  Most often we just want Assert.AreEqual
-  to be applied to most members.  We should be able to silently capture these cases
-  in a fluent abstraction.  eg.
-  
-  T a, b;
-  Assert.AreMembersEqual(a, b)
-      .For(T.Bar).CompareWith(CollectionAssert.AreEqual)
-      .For(T.Foo).Ignore();
-
-* Support easy testing of setters/getters.  Lots of implementations of this functionality
-  have been independently developed.  We should integrate something right into
-  Gallio, perhaps in the form of a custom attribute.
-  
-  [TestFixture]
-  [AutoTestProperties(typeof(Bar))]
-  public class F
-  {
-  }
   
 * Common instrumentation framework:
 

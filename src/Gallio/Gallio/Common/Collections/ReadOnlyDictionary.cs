@@ -127,7 +127,7 @@ namespace Gallio.Common.Collections
             get { return inner.Values; }
         }
 
-        /// <inheritdoc />
+        /// <inheritdoc cref="IEnumerable{T}.GetEnumerator" />
         public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
         {
             return inner.GetEnumerator();

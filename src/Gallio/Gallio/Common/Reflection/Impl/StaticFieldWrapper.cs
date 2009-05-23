@@ -147,7 +147,7 @@ namespace Gallio.Common.Reflection.Impl
                 () => ReflectorResolveUtils.ResolveField(this, throwOnError));
         }
 
-        /// <inheritdoc />
+        /// <excludedoc />
         protected override MemberInfo ResolveMemberInfo(bool throwOnError)
         {
             return Resolve(throwOnError);
@@ -165,7 +165,7 @@ namespace Gallio.Common.Reflection.Impl
             return sig.ToString();
         }
 
-        /// <inheritdoc />
+        /// <excludedoc />
         protected override IEnumerable<Attribute> GetPseudoCustomAttributes()
         {
             if ((FieldAttributes & FieldAttributes.NotSerialized) != 0)

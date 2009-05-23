@@ -23,9 +23,9 @@ using MbUnit.Framework.ContractVerifiers.Core;
 namespace MbUnit.Framework.ContractVerifiers
 {
     /// <summary>
-    /// <para>
     /// Contract for verifying the implementation of the generic <see cref="IEquatable{T}"/> interface. 
-    /// </para>
+    /// </summary>
+    /// <remarks>
     /// <para>
     /// Built-in verifications:
     /// <list type="bullet">
@@ -123,7 +123,7 @@ namespace MbUnit.Framework.ContractVerifiers
     /// }
     /// ]]></code>
     /// </example>
-    /// </summary>
+    /// </remarks>
     /// <typeparam name="TTarget">The target tested type which implements the 
     /// generic <see cref="IEquatable{T}"/> interface. </typeparam>
     /// <seealso cref="VerifyContractAttribute"/>

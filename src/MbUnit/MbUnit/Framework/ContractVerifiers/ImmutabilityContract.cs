@@ -23,9 +23,9 @@ using MbUnit.Framework.ContractVerifiers.Core;
 namespace MbUnit.Framework.ContractVerifiers
 {
     /// <summary>
-    /// <para>
     /// Contract for verifying the implementation of an immutable type.
-    /// </para>
+    /// </summary>
+    /// <remarks>
     /// <para>
     /// Built-in verifications:
     /// <list type="bullet">
@@ -65,7 +65,7 @@ namespace MbUnit.Framework.ContractVerifiers
     /// }
     /// ]]></code>
     /// </example>
-    /// </summary>
+    /// </remarks>
     /// <typeparam name="TTarget">The target immutable type.</typeparam>
     /// <seealso cref="VerifyContractAttribute"/>
     public class ImmutabilityContract<TTarget> : AbstractContract

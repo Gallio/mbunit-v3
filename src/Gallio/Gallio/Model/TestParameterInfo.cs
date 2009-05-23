@@ -32,7 +32,7 @@ namespace Gallio.Model
         {
         }
 
-        /// <inheritdoc />
+        /// <inheritdoc cref="ITestParameter.Owner" />
         public TestInfo Owner
         {
             get { return Source.Owner != null ? new TestInfo(Source.Owner) : null; }
@@ -44,7 +44,6 @@ namespace Gallio.Model
             set { throw new NotSupportedException(); }
         }
 
-        /// <inheritdoc />
         new internal ITestParameter Source
         {
             get { return (ITestParameter)base.Source; }

@@ -48,13 +48,11 @@ namespace Gallio.Ambience.Impl
             get { return inner; }
         }
 
-        /// <inheritdoc />
         public IEnumerator<T> GetEnumerator()
         {
             return new Db4oEnumeratorWrapper<T>(inner.GetEnumerator());
         }
 
-        /// <inheritdoc />
         IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();

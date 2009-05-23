@@ -50,7 +50,12 @@ namespace Gallio.Common.Collections
             get { return inputList.Count; }
         }
 
-        /// <inheritdoc />
+        /// <summary>
+        /// Gets an item from the list with the specified index.
+        /// </summary>
+        /// <param name="index">The index</param>
+        /// <returns>The item</returns>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="index"/> is out of range.</exception>
         public TOutput this[int index]
         {
             get { return inputList[index]; }

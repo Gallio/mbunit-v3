@@ -392,13 +392,23 @@ namespace Gallio.Common.Markup
             return @class.GetHashCode();
         }
 
-        /// <inheritdoc />
+        /// <summary>
+        /// Returns true if two markers are equal.
+        /// </summary>
+        /// <param name="a">The first marker to compare</param>
+        /// <param name="b">The second marker to compare</param>
+        /// <returns>True if the markers are equal</returns>
         public static bool operator ==(Marker a, Marker b)
         {
             return a.Equals(b);
         }
 
-        /// <inheritdoc />
+        /// <summary>
+        /// Returns true if two markers are not equal.
+        /// </summary>
+        /// <param name="a">The first marker to compare</param>
+        /// <param name="b">The second marker to compare</param>
+        /// <returns>True if the markers are not equal</returns>
         public static bool operator !=(Marker a, Marker b)
         {
             return !(a == b);

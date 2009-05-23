@@ -67,7 +67,6 @@ namespace Gallio.Model
             get{ return Source.CodeElement; }
         }
 
-        /// <inheritdoc />
         new internal ITestComponent Source
         {
             get { return (ITestComponent)base.Source; }

@@ -198,13 +198,23 @@ namespace Gallio.Common.Text
             return ToString().GetHashCode();
         }
 
-        /// <inheritdoc />
+        /// <summary>
+        /// Returns true if two substrings are equal.
+        /// </summary>
+        /// <param name="a">The first substring to compare</param>
+        /// <param name="b">The second substring to compare</param>
+        /// <returns>True if the substrings are equal</returns>
         public static bool operator ==(Substring a, Substring b)
         {
             return a.Equals(b);
         }
 
-        /// <inheritdoc />
+        /// <summary>
+        /// Returns true if two substrings are not equal.
+        /// </summary>
+        /// <param name="a">The first substring to compare</param>
+        /// <param name="b">The second substring to compare</param>
+        /// <returns>True if the substrings are not equal</returns>
         public static bool operator !=(Substring a, Substring b)
         {
             return !(a == b);

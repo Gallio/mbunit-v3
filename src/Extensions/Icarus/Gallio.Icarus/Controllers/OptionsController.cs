@@ -13,11 +13,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Reflection;
 using Gallio.Common.IO;
+using Gallio.Common.Xml;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Options;
 using Gallio.Model;
@@ -197,16 +199,9 @@ namespace Gallio.Icarus.Controllers
             set { settings.TestTreeSplitNamespaces = value; }
         }
 
-        public void SetOptionsManager(IOptionsManager optionsManager)
-        {
-            this.optionsManager = optionsManager;
-            
-            Load();
-        }
-
         private void Load()
         {
-            settings = optionsManager.Settings;
+            settings = OptionsManager.Settings;
 
             if (settings.TreeViewCategories.Count == 0)
             {
@@ -222,7 +217,7 @@ namespace Gallio.Icarus.Controllers
 
         public void Save()
         {
-            optionsManager.Save();
+            OptionsManager.Save();
         }
 
         public bool GenerateReportAfterTestRun
@@ -231,9 +226,36 @@ namespace Gallio.Icarus.Controllers
             set { settings.GenerateReportAfterTestRun = value; }
         }
 
+        public IOptionsManager OptionsManager
+        {
+            get
+            {
+                if (optionsManager == null)
+                {
+                    SetOptionsManager(new OptionsManager(new FileSystem(), new DefaultXmlSerializer(),
+                        new UnhandledExceptionPolicy()));
+                }
+
+                return optionsManager;
+            }
+            set
+            {
+                SetOptionsManager(value);
+            }
+        }
+
+        private void SetOptionsManager(IOptionsManager optionsManager)
+        {
+            if (optionsManager == null)
+                throw new ArgumentNullException("optionsManager");
+
+            this.optionsManager = optionsManager;
+            Load();
+        }
+
         public void Cancel()
         {
-            optionsManager.Load();
+            OptionsManager.Load();
 
             Load();
         }

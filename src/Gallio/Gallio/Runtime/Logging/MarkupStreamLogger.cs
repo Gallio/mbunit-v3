@@ -40,7 +40,7 @@ namespace Gallio.Runtime.Logging
             this.writer = writer;
         }
 
-        /// <inheritdoc />
+        /// <excludedoc />
         protected override void LogImpl(LogSeverity severity, string message, ExceptionData exceptionData)
         {
             message = String.Format("[{0}] {1}", severity.ToString().ToLowerInvariant(), message);

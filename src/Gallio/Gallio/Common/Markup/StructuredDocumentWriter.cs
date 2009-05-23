@@ -121,7 +121,6 @@ namespace Gallio.Common.Markup
             GetLogStreamWriter(streamName).Flush();
         }
 
-        /// <inheritdoc />
         private StreamState GetLogStreamWriter(string streamName)
         {
             StreamState streamState;

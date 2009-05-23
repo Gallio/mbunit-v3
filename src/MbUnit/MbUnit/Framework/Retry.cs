@@ -210,7 +210,6 @@ namespace MbUnit.Framework
             private Func<bool> condition;
             private WaitHandle waitHandle;
 
-            /// <inheritdoc />
             public IRetryOptions Repeat(int repeat)
             {
                 if (this.repeat.HasValue)
@@ -220,7 +219,6 @@ namespace MbUnit.Framework
                 return this;
             }
 
-            /// <inheritdoc />
             public IRetryOptions WithPolling(int milliseconds)
             {
                 if (pollingMilliseconds.HasValue)
@@ -233,13 +231,11 @@ namespace MbUnit.Framework
                 return this;
             }
 
-            /// <inheritdoc />
             public IRetryOptions WithPolling(TimeSpan polling)
             {
                 return WithPolling((int)polling.TotalMilliseconds);
             }
 
-            /// <inheritdoc />
             public IRetryOptions WithTimeout(int milliseconds)
             {
                 if (timeoutMilliseconds.HasValue)
@@ -249,13 +245,11 @@ namespace MbUnit.Framework
                 return this;
             }
 
-            /// <inheritdoc />
             public IRetryOptions WithTimeout(TimeSpan timeout)
             {
                 return WithTimeout((int)timeout.TotalMilliseconds);
             }
 
-            /// <inheritdoc />
             public IRetryOptions DoBetween(Action action)
             {
                 if (this.action != null)
@@ -268,26 +262,22 @@ namespace MbUnit.Framework
                 return this;
             }
 
-            /// <inheritdoc />
             public void Until(Func<bool> condition)
             {
                 Until(condition, null, null);
             }
 
-            /// <inheritdoc />
             public void Until(WaitHandle waitHandle)
             {
                 Until(waitHandle, null, null);
             }
 
-            /// <inheritdoc />
             public void Until(Func<bool> condition, string messageFormat, object[] messageArgs)
             {
                 this.condition = condition;
                 Run(messageFormat, messageArgs);
             }
 
-            /// <inheritdoc />
             public void Until(WaitHandle waitHandle, string messageFormat, object[] messageArgs)
             {
                 this.waitHandle = waitHandle;

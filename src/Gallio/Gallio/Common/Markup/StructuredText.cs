@@ -181,13 +181,23 @@ namespace Gallio.Common.Markup
             return attachments.Count ^ bodyTag.GetHashCode();
         }
 
-        /// <inheritdoc />
+        /// <summary>
+        /// Returns true if two structured text objects are equal.
+        /// </summary>
+        /// <param name="a">The first structured text object to compare</param>
+        /// <param name="b">The second structured text object to compare</param>
+        /// <returns>True if the structured text objects are equal</returns>
         public static bool operator ==(StructuredText a, StructuredText b)
         {
             return ReferenceEquals(a, b) || ! ReferenceEquals(a, null) && a.Equals(b);
         }
 
-        /// <inheritdoc />
+        /// <summary>
+        /// Returns true if two structured text objects are not equal.
+        /// </summary>
+        /// <param name="a">The first structured text object to compare</param>
+        /// <param name="b">The second structured text object to compare</param>
+        /// <returns>True if the structured text objects are not equal</returns>
         public static bool operator !=(StructuredText a, StructuredText b)
         {
             return !(a == b);

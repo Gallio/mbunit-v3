@@ -90,13 +90,13 @@ namespace Gallio.Runtime.ProgressMonitoring
             return forwarder.CreateSubProgressMonitor(parentWorkUnits);
         }
 
-        /// <inheritdoc />
+        /// <excludedoc />
         protected override void OnCancel()
         {
             forwarder.Cancel();
         }
 
-        /// <inheritdoc />
+        /// <excludedoc />
         protected override void Dispose(bool disposing)
         {
             if (disposing)

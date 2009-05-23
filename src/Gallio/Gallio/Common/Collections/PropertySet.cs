@@ -213,7 +213,7 @@ namespace Gallio.Common.Collections
             get { return contents.Values; }
         }
 
-        /// <inheritdoc />
+        /// <inheritdoc cref="IEnumerable{T}.GetEnumerator" />
         public IEnumerator<KeyValuePair<string, string>> GetEnumerator()
         {
             return contents.GetEnumerator();

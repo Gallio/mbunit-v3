@@ -50,7 +50,6 @@ namespace Gallio.Ambience.Impl
             get { return inner; }
         }
 
-        /// <inheritdoc />
         public IAmbientDataSet<T> Query<T>()
         {
             try
@@ -63,7 +62,6 @@ namespace Gallio.Ambience.Impl
             }
         }
 
-        /// <inheritdoc />
         public IAmbientDataSet<T> Query<T>(Predicate<T> predicate)
         {
             try
@@ -76,7 +74,6 @@ namespace Gallio.Ambience.Impl
             }
         }
 
-        /// <inheritdoc />
         public void Delete(object obj)
         {
             try
@@ -90,7 +87,6 @@ namespace Gallio.Ambience.Impl
             }
         }
 
-        /// <inheritdoc />
         public void Store(object obj)
         {
             try
@@ -104,7 +100,6 @@ namespace Gallio.Ambience.Impl
             }
         }
 
-        /// <inheritdoc />
         public void DeleteAll()
         {
             try

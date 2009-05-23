@@ -23,9 +23,9 @@ using MbUnit.Framework.ContractVerifiers.Core;
 namespace MbUnit.Framework.ContractVerifiers
 {
     /// <summary>
-    /// <para>
     /// Contract for verifying the implementation of the generic <see cref="IComparable{T}"/> interface. 
-    /// </para>
+    /// </summary>
+    /// <remarks>
     /// <para>
     /// Built-in verifications:
     /// <list type="bullet">
@@ -131,7 +131,7 @@ namespace MbUnit.Framework.ContractVerifiers
     /// }
     /// ]]></code>
     /// </example>
-    /// </summary>
+    /// </remarks>
     /// <typeparam name="TTarget"></typeparam>
     /// <seealso cref="VerifyContractAttribute"/>
     public class ComparisonContract<TTarget> : AbstractContract
