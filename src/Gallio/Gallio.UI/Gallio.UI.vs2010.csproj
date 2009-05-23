@@ -14,10 +14,6 @@
     <FileAlignment>512</FileAlignment>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\Key.snk</AssemblyOriginatorKeyFile>
-    <FileUpgradeFlags>
-    </FileUpgradeFlags>
-    <OldToolsVersion>3.5</OldToolsVersion>
-    <UpgradeBackupLocation />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -66,6 +62,7 @@
     <Compile Include="ControlPanel\ControlPanelDialog.Designer.cs">
       <DependentUpon>ControlPanelDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="ControlPanel\Plugins\NamespaceDoc.cs" />
     <Compile Include="ControlPanel\Plugins\PluginControlPanelTab.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -73,6 +70,7 @@
       <DependentUpon>PluginControlPanelTab.cs</DependentUpon>
     </Compile>
     <Compile Include="ControlPanel\Plugins\PluginControlPanelTabProvider.cs" />
+    <Compile Include="ControlPanel\Preferences\NamespaceDoc.cs" />
     <Compile Include="ControlPanel\SettingsEditor.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -105,6 +103,7 @@
       <DependentUpon>PreferencePane.cs</DependentUpon>
     </Compile>
     <Compile Include="ControlPanel\Preferences\PreferencePaneProviderTraits.cs" />
+    <Compile Include="ControlPanel\NamespaceDoc.cs" />
     <Compile Include="Reports\HtmlTestStepRunFormatter.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -114,6 +113,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Reports\NamespaceDoc.cs" />
     <Compile Include="Reports\TestStepRunViewer.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -124,31 +124,40 @@
   <ItemGroup>
     <EmbeddedResource Include="ControlPanel\ControlPanelDialog.resx">
       <DependentUpon>ControlPanelDialog.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="ControlPanel\ControlPanelTab.resx">
       <DependentUpon>ControlPanelTab.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="ControlPanel\Plugins\PluginControlPanelTab.resx">
       <DependentUpon>PluginControlPanelTab.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="ControlPanel\Preferences\GallioPreferencePane.resx">
       <DependentUpon>GallioPreferencePane.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="ControlPanel\Preferences\PlaceholderPreferencePane.resx">
       <DependentUpon>PlaceholderPreferencePane.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="ControlPanel\Preferences\PreferenceControlPanelTab.resx">
       <DependentUpon>PreferenceControlPanelTab.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="ControlPanel\Preferences\PreferencePane.resx">
       <DependentUpon>PreferencePane.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Reports\TestStepRunViewer.resx">
       <DependentUpon>TestStepRunViewer.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

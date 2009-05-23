@@ -54,6 +54,7 @@
     <Compile Include="BaseCommand.cs" />
     <Compile Include="CommandProgressMonitorPresenter.cs" />
     <Compile Include="CommandProgressMonitorProvider.cs" />
+    <Compile Include="NamespaceDoc.cs" />
     <Compile Include="RunGallioCommand.cs" />
     <Compile Include="GallioSnapIn.cs">
       <SubType>Component</SubType>

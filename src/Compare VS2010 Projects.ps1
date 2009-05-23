@@ -67,7 +67,7 @@ function Check([string] $vs2008proj, [string] $vs2010proj)
 			if ($sync)
 			{
 				Echo "Opening WinMerge."
-				Echo "Be sure to only synchronize changes to project contents not references."
+				Echo "Be sure to only synchronize changes to project items not project references."
 				Echo ""
 
 				$vs2008name = [System.IO.Path]::GetFileName($vs2008proj)

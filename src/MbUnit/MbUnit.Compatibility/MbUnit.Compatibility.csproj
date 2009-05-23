@@ -61,6 +61,7 @@
     <Compile Include="Framework\Xml\Differences.cs" />
     <Compile Include="Framework\Xml\DifferenceType.cs" />
     <Compile Include="Framework\Xml\DiffResult.cs" />
+    <Compile Include="Framework\Xml\NamespaceDoc.cs" />
     <Compile Include="Framework\Xml\Validator.cs" />
     <Compile Include="Framework\Xml\XmlDiff.cs" />
     <Compile Include="Framework\Xml\XmlInput.cs" />

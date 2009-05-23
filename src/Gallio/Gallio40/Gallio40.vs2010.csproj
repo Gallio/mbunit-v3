@@ -8,7 +8,7 @@
     <ProjectGuid>{925E8A25-001F-471E-82D0-141ACD7CB9A8}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Gallio40</RootNamespace>
+    <RootNamespace>Gallio</RootNamespace>
     <AssemblyName>Gallio40</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

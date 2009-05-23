@@ -76,6 +76,7 @@
     <Compile Include="Impl\Db4oEnumeratorWrapper.cs" />
     <Compile Include="Impl\Db4oListWrapper.cs" />
     <Compile Include="Impl\Validator.cs" />
+    <Compile Include="NamespaceDoc.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="AmbienceServer.cs" />
     <Compile Include="Properties\Resources.Designer.cs">

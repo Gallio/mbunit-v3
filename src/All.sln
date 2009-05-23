@@ -84,6 +84,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.MSBuildTasks.Tests", "Extensions\MSBuild\Gallio.MSBuildTasks.Tests\Gallio.MSBuildTasks.Tests.csproj", "{9803265F-B0AF-4171-A770-0871CD2A593E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NAnt", "NAnt", "{B6FD8CA3-96CF-48B1-9B5A-6F59A01BA6A7}"
+	ProjectSection(SolutionItems) = preProject
+		Extensions\MSBuild\Gallio.MSBuildTasks\NamespaceDoc.cs = Extensions\MSBuild\Gallio.MSBuildTasks\NamespaceDoc.cs
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.NAntTasks", "Extensions\NAnt\Gallio.NAntTasks\Gallio.NAntTasks.csproj", "{9D1FCE3D-7597-46DC-B661-83112269CD1F}"
 EndProject

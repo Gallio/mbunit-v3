@@ -139,6 +139,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Core\MbUnitTestFramework.cs" />
+    <Compile Include="Core\NamespaceDoc.cs" />
     <Compile Include="Framework\Assert.Collections.cs" />
     <Compile Include="Framework\Assert.Comparisons.cs" />
     <Compile Include="Framework\Assert.Exceptions.cs" />
@@ -146,6 +147,7 @@
     <Compile Include="Framework\Assert.Relations.cs" />
     <Compile Include="Framework\ContractVerifiers\AbstractContract.cs" />
     <Compile Include="Framework\ContractVerifiers\AccessorContract.cs" />
+    <Compile Include="Framework\ContractVerifiers\Core\NamespaceDoc.cs" />
     <Compile Include="Framework\ContractVerifiers\IncompetenceClass.cs" />
     <Compile Include="Framework\ContractVerifiers\IncompetenceClassCollection.cs" />
     <Compile Include="Framework\ContractVerifiers\Core\CollectionHandler.cs" />
@@ -154,12 +156,15 @@
     <Compile Include="Framework\ContractVerifiers\DistinctInstanceCollection.cs" />
     <Compile Include="Framework\ContractVerifiers\CollectionContract.cs" />
     <Compile Include="Framework\ContractVerifiers\ListContract.cs" />
+    <Compile Include="Framework\ContractVerifiers\NamespaceDoc.cs" />
     <Compile Include="Framework\ContractVerifiers\VerifyContractAttribute.cs" />
     <Compile Include="Framework\ContractVerifiers\IContract.cs" />
     <Compile Include="Framework\Assert.Xml.cs" />
     <Compile Include="Framework\Assert.Serialization.cs" />
     <Compile Include="Framework\Assert.Sorting.cs" />
     <Compile Include="Framework\Assert.Distinct.cs" />
+    <Compile Include="Framework\NamespaceDoc.cs" />
+    <Compile Include="Framework\Reflection\NamespaceDoc.cs" />
     <Compile Include="Framework\SequentiaNumbersAttribute.cs" />
     <Compile Include="Framework\RandomNumbersAttribute.cs" />
     <Compile Include="Framework\GenerationDataAttribute.cs" />

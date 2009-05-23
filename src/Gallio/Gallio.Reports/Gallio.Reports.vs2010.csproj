@@ -48,6 +48,7 @@
     <Compile Include="BaseReportFormatter.cs" />
     <Compile Include="MHtmlReportFormatter.cs" />
     <Compile Include="MultipartMimeReportContainer.cs" />
+    <Compile Include="NamespaceDoc.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>

@@ -74,6 +74,7 @@
     <Compile Include="Common\Collections\Key.cs" />
     <Compile Include="Common\Collections\LazyCache.cs" />
     <Compile Include="Common\Collections\MultiMap.cs" />
+    <Compile Include="Common\Collections\NamespaceDoc.cs" />
     <Compile Include="Common\Collections\PropertyBag.cs" />
     <Compile Include="Common\Collections\PropertySet.cs" />
     <Compile Include="Common\Collections\ReadOnlyDictionary.cs" />
@@ -82,6 +83,7 @@
     <Compile Include="Common\Collections\TreeUtils.cs" />
     <Compile Include="Common\Collections\UserDataCollection.cs" />
     <Compile Include="Common\Concurrency\LockBox.cs" />
+    <Compile Include="Common\Concurrency\NamespaceDoc.cs" />
     <Compile Include="Common\Concurrency\ProcessTask.cs" />
     <Compile Include="Common\Concurrency\ReadAction.cs" />
     <Compile Include="Common\Concurrency\ReadFunc.cs" />
@@ -94,11 +96,18 @@
     <Compile Include="Common\Concurrency\WriteAction.cs" />
     <Compile Include="Common\Concurrency\WriteFunc.cs" />
     <Compile Include="Common\Diagnostics\ExceptionData.cs" />
+    <Compile Include="Common\Diagnostics\NamespaceDoc.cs" />
     <Compile Include="Common\Diagnostics\StackTraceData.cs" />
     <Compile Include="Common\Diagnostics\StackTraceFilter.cs" />
     <Compile Include="Common\Diagnostics\SystemInternalAttribute.cs" />
     <Compile Include="Common\Diagnostics\UserCodeEntryPointAttribute.cs" />
     <Compile Include="Common\EqualityComparison.cs" />
+    <Compile Include="Common\IO\NamespaceDoc.cs" />
+    <Compile Include="Common\Markup\NamespaceDoc.cs" />
+    <Compile Include="Common\Markup\Tags\NamespaceDoc.cs" />
+    <Compile Include="Common\NamespaceDoc.cs" />
+    <Compile Include="Common\Platform\NamespaceDoc.cs" />
+    <Compile Include="Common\Policies\NamespaceDoc.cs" />
     <Compile Include="Common\Policies\SpecialPathPolicy.cs" />
     <Compile Include="Common\Markup\Attachment.cs" />
     <Compile Include="Common\Markup\AttachmentContentDisposition.cs" />
@@ -127,6 +136,13 @@
     <Compile Include="Common\Markup\Tags\TagFormatter.cs" />
     <Compile Include="Common\Markup\Tags\TextTag.cs" />
     <Compile Include="Common\Reflection\AssemblyMetadata.cs" />
+    <Compile Include="Common\Reflection\Impl\NamespaceDoc.cs" />
+    <Compile Include="Common\Reflection\NamespaceDoc.cs" />
+    <Compile Include="Common\Text\NamespaceDoc.cs" />
+    <Compile Include="Common\Validation\NamespaceDoc.cs" />
+    <Compile Include="Common\Xml\NamespaceDoc.cs" />
+    <Compile Include="Framework\Assertions\NamespaceDoc.cs" />
+    <Compile Include="Framework\Data\Generation\NamespaceDoc.cs" />
     <Compile Include="Framework\Data\Generation\SequentialNumbersGenerator.cs" />
     <Compile Include="Framework\Data\Generation\Generator.cs" />
     <Compile Include="Framework\Data\Generation\RandomNumbersGenerator.cs" />
@@ -135,25 +151,51 @@
     <Compile Include="Common\Condition.cs" />
     <Compile Include="Common\ConditionContext.cs" />
     <Compile Include="Framework\Data\Generation\GenerationException.cs" />
+    <Compile Include="Framework\Data\NamespaceDoc.cs" />
+    <Compile Include="Framework\NamespaceDoc.cs" />
+    <Compile Include="Framework\Pattern\NamespaceDoc.cs" />
+    <Compile Include="Framework\Utilities\NamespaceDoc.cs" />
+    <Compile Include="Model\Execution\NamespaceDoc.cs" />
+    <Compile Include="Model\Filters\NamespaceDoc.cs" />
+    <Compile Include="Model\Messages\NamespaceDoc.cs" />
+    <Compile Include="Model\NamespaceDoc.cs" />
+    <Compile Include="Model\Serialization\NamespaceDoc.cs" />
     <Compile Include="Runner\Drivers\IsolationMode.cs" />
+    <Compile Include="Runner\Drivers\NamespaceDoc.cs" />
+    <Compile Include="Runner\Events\NamespaceDoc.cs" />
     <Compile Include="Runner\Extensions\ActivationConditionContext.cs" />
     <Compile Include="Runner\Extensions\ITestRunnerExtensionFactory.cs" />
     <Compile Include="Runner\Extensions\ITestRunnerExtensionManager.cs" />
+    <Compile Include="Runner\Extensions\NamespaceDoc.cs" />
     <Compile Include="Runner\Extensions\TestRunnerExtensionFactoryTraits.cs" />
     <Compile Include="Runner\Extensions\DefaultTestRunnerExtensionManager.cs" />
+    <Compile Include="Runner\Harness\NamespaceDoc.cs" />
+    <Compile Include="Runner\NamespaceDoc.cs" />
+    <Compile Include="Runner\Projects\NamespaceDoc.cs" />
+    <Compile Include="Runner\Reports\NamespaceDoc.cs" />
     <Compile Include="Runtime\Caching\DiskCacheException.cs" />
     <Compile Include="Runtime\Caching\IDiskCache.cs" />
     <Compile Include="Runtime\Caching\IDiskCacheGroup.cs" />
     <Compile Include="Runtime\Caching\IDiskCacheGroupCollection.cs" />
+    <Compile Include="Runtime\Caching\NamespaceDoc.cs" />
     <Compile Include="Runtime\Caching\SimpleDiskCache.cs" />
     <Compile Include="Runtime\Caching\TemporaryDiskCache.cs" />
+    <Compile Include="Runtime\ConsoleSupport\NamespaceDoc.cs" />
+    <Compile Include="Runtime\Conversions\NamespaceDoc.cs" />
+    <Compile Include="Runtime\Debugging\NamespaceDoc.cs" />
+    <Compile Include="Runtime\Extensibility\NamespaceDoc.cs" />
     <Compile Include="Runtime\Extensibility\ResourceSearchRules.cs" />
+    <Compile Include="Runtime\FileTypes\NamespaceDoc.cs" />
+    <Compile Include="Runtime\Formatting\NamespaceDoc.cs" />
+    <Compile Include="Runtime\Hosting\NamespaceDoc.cs" />
     <Compile Include="Runtime\Installer\BaseInstaller.cs" />
     <Compile Include="Runtime\Installer\DefaultInstallerManager.cs" />
     <Compile Include="Runtime\Installer\IInstaller.cs" />
     <Compile Include="Runtime\Installer\IInstallerManager.cs" />
     <Compile Include="Runtime\Installer\InstallerTraits.cs" />
+    <Compile Include="Runtime\Installer\NamespaceDoc.cs" />
     <Compile Include="Runtime\Installer\SetupCommand.cs" />
+    <Compile Include="Runtime\Loader\NamespaceDoc.cs" />
     <Compile Include="Runtime\Logging\MarkupStreamLogger.cs" />
     <Compile Include="Common\Markup\MarkupStreamNames.cs" />
     <Compile Include="Common\Markup\MarkupStreamWriter.cs" />
@@ -504,13 +546,16 @@
     <Compile Include="Runtime\Logging\FilteredLogger.cs" />
     <Compile Include="Runtime\Logging\ILogger.cs" />
     <Compile Include="Runtime\Logging\LogSeverity.cs" />
+    <Compile Include="Runtime\Logging\NamespaceDoc.cs" />
     <Compile Include="Runtime\Logging\NullLogger.cs" />
     <Compile Include="Runtime\Logging\SeverityPrefixLogger.cs" />
     <Compile Include="Runtime\Logging\SeverityPrefixParser.cs" />
     <Compile Include="Runtime\Logging\TextLogger.cs" />
     <Compile Include="Runtime\Logging\Verbosity.cs" />
     <Compile Include="Common\Platform\ProcessType.cs" />
+    <Compile Include="Runtime\NamespaceDoc.cs" />
     <Compile Include="Runtime\Preferences\IPreferenceManager.cs" />
+    <Compile Include="Runtime\Preferences\NamespaceDoc.cs" />
     <Compile Include="Runtime\ProgressMonitoring\BaseProgressMonitorPresenter.cs" />
     <Compile Include="Runtime\ProgressMonitoring\BaseProgressMonitorProvider.cs" />
     <Compile Include="Runtime\ProgressMonitoring\CancelableProgressMonitor.cs" />
@@ -519,6 +564,7 @@
     <Compile Include="Runtime\ProgressMonitoring\IProgressMonitorProvider.cs" />
     <Compile Include="Runtime\ProgressMonitoring\LogProgressMonitorPresenter.cs" />
     <Compile Include="Runtime\ProgressMonitoring\LogProgressMonitorProvider.cs" />
+    <Compile Include="Runtime\ProgressMonitoring\NamespaceDoc.cs" />
     <Compile Include="Runtime\ProgressMonitoring\NullProgressMonitor.cs" />
     <Compile Include="Runtime\ProgressMonitoring\NullProgressMonitorPresenter.cs" />
     <Compile Include="Runtime\ProgressMonitoring\NullProgressMonitorProvider.cs" />
@@ -642,6 +688,7 @@
     <Compile Include="Runtime\Hosting\IsolatedAppDomainHost.cs" />
     <Compile Include="Runtime\Hosting\IsolatedProcessHost.cs" />
     <Compile Include="Common\Platform\DotNetRuntimeSupport.cs" />
+    <Compile Include="Runtime\Remoting\NamespaceDoc.cs" />
     <Compile Include="Runtime\RuntimeException.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -678,10 +725,12 @@
     <Compile Include="Runtime\UtilityCommands\ClearCurrentUserPluginCacheCommand.cs" />
     <Compile Include="Runtime\UtilityCommands\DefaultUtilityCommandManager.cs" />
     <Compile Include="Runtime\UtilityCommands\IUtilityCommand.cs" />
+    <Compile Include="Runtime\UtilityCommands\NamespaceDoc.cs" />
     <Compile Include="Runtime\UtilityCommands\UtilityCommandContext.cs" />
     <Compile Include="Runtime\UtilityCommands\IUtilityCommandManager.cs" />
     <Compile Include="Runtime\UtilityCommands\UtilityCommandTraits.cs" />
     <Compile Include="Runtime\UtilityCommands\VerifyInstallationCommand.cs" />
+    <Compile Include="Schema\NamespaceDoc.cs" />
     <Compile Include="Schema\Plugins\Assembly.cs" />
     <Compile Include="Schema\Plugins\Cache.cs" />
     <Compile Include="Schema\Plugins\Component.cs">
@@ -689,6 +738,7 @@
     </Compile>
     <Compile Include="Schema\Plugins\CachePluginInfo.cs" />
     <Compile Include="Schema\Plugins\Dependency.cs" />
+    <Compile Include="Schema\Plugins\NamespaceDoc.cs" />
     <Compile Include="Schema\Plugins\Plugin.cs">
       <SubType>Code</SubType>
     </Compile>
