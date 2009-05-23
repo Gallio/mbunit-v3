@@ -29,7 +29,6 @@ namespace Gallio.Icarus
 {
     public partial class TestExplorer : DockWindow
     {
-        private readonly IOptionsController optionsController;
         private readonly IProjectController projectController;
         private readonly ITestController testController;
         private readonly ISourceCodeController sourceCodeController;
@@ -40,7 +39,6 @@ namespace Gallio.Icarus
             ITestController testController, ISourceCodeController sourceCodeController, 
             ITaskManager taskManager)
         {
-            this.optionsController = optionsController;
             this.projectController = projectController;
             this.testController = testController;
             this.sourceCodeController = sourceCodeController;
@@ -106,8 +104,7 @@ namespace Gallio.Icarus
 
             var node = (TestTreeNode)testTree.SelectedNode.Tag;
 
-            var cmd = new RemoveAssemblyCommand(projectController);
-            cmd.FileName = node.Name;
+            var cmd = new RemoveAssemblyCommand(projectController) {FileName = node.Name};
             taskManager.QueueTask(cmd);
         }
 
@@ -155,8 +152,7 @@ namespace Gallio.Icarus
                 return;
 
             var node = (TestTreeNode)testTree.SelectedNode.Tag;
-            var cmd = new ViewSourceCodeCommand(sourceCodeController);
-            cmd.TestId = node.Name;
+            var cmd = new ViewSourceCodeCommand(sourceCodeController) {TestId = node.Name};
             taskManager.QueueTask(cmd);
         }
 
@@ -182,8 +178,8 @@ namespace Gallio.Icarus
                 if (openFileDialog.ShowDialog(this) != DialogResult.OK)
                     return;
 
-                var addAssembliesCommand = new AddAssembliesCommand(projectController, testController);
-                addAssembliesCommand.AssemblyFiles = openFileDialog.FileNames;
+                var addAssembliesCommand = new AddAssembliesCommand(projectController, testController)
+                                               {AssemblyFiles = openFileDialog.FileNames};
                 taskManager.QueueTask(addAssembliesCommand);
             }
         }

@@ -29,10 +29,20 @@ namespace Gallio.Icarus
             // Set the application version.
             versionLabel.Text = aboutController.Version;
 
+            int imgIndex = 0;
+
             // add the list of available test frameworks
-            // TODO: display other trait information
             foreach (var testFramework in aboutController.TestFrameworks)
-                componentList.Items.Add(testFramework.Name);
+            {
+                var item = new ListViewItem(testFramework.Name);
+                if (testFramework.Icon != null)
+                {
+                    testFrameworkIcons.Images.Add(testFramework.Icon);
+                    item.ImageIndex = imgIndex;
+                    imgIndex++;
+                }
+                testFrameworksList.Items.Add(item);
+            }
         }
 
         private void buttonClose_Click(object sender, EventArgs e)

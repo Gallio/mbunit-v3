@@ -19,7 +19,6 @@ using System.Globalization;
 using System.Reflection;
 using Gallio.Common.Reflection;
 using Gallio.Model;
-using System.Windows.Forms;
 
 namespace Gallio.Icarus.Controllers
 {

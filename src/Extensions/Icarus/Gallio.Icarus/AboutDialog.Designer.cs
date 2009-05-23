@@ -43,12 +43,15 @@ namespace Gallio.Icarus
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AboutDialog));
             this.buttonClose = new System.Windows.Forms.Button();
             this.versionLabel = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
-            this.componentList = new System.Windows.Forms.ListBox();
+            this.testFrameworksList = new System.Windows.Forms.ListView();
             this.websiteLink = new System.Windows.Forms.LinkLabel();
+            this.testFrameworkIcons = new System.Windows.Forms.ImageList(this.components);
+            this.frameworkName = new System.Windows.Forms.ColumnHeader();
             this.SuspendLayout();
             // 
             // buttonClose
@@ -68,7 +71,7 @@ namespace Gallio.Icarus
             this.versionLabel.BackColor = System.Drawing.Color.Transparent;
             this.versionLabel.Location = new System.Drawing.Point(12, 130);
             this.versionLabel.Name = "versionLabel";
-            this.versionLabel.Size = new System.Drawing.Size(160, 13);
+            this.versionLabel.Size = new System.Drawing.Size(202, 13);
             this.versionLabel.TabIndex = 3;
             this.versionLabel.Text = "Gallio Icarus - Version {0}.{1}.{2} build {3}";
             // 
@@ -82,13 +85,18 @@ namespace Gallio.Icarus
             this.label2.TabIndex = 4;
             this.label2.Text = "Available test frameworks:";
             // 
-            // componentList
+            // testFrameworksList
             // 
-            this.componentList.FormattingEnabled = true;
-            this.componentList.Location = new System.Drawing.Point(12, 168);
-            this.componentList.Name = "componentList";
-            this.componentList.Size = new System.Drawing.Size(409, 134);
-            this.componentList.TabIndex = 5;
+            this.testFrameworksList.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.frameworkName});
+            this.testFrameworksList.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
+            this.testFrameworksList.Location = new System.Drawing.Point(12, 168);
+            this.testFrameworksList.Name = "testFrameworksList";
+            this.testFrameworksList.Size = new System.Drawing.Size(409, 134);
+            this.testFrameworksList.SmallImageList = this.testFrameworkIcons;
+            this.testFrameworksList.TabIndex = 5;
+            this.testFrameworksList.UseCompatibleStateImageBehavior = false;
+            this.testFrameworksList.View = System.Windows.Forms.View.Details;
             // 
             // websiteLink
             // 
@@ -97,28 +105,39 @@ namespace Gallio.Icarus
             this.websiteLink.LinkArea = new System.Windows.Forms.LinkArea(9, 38);
             this.websiteLink.Location = new System.Drawing.Point(15, 308);
             this.websiteLink.Name = "websiteLink";
-            this.websiteLink.Size = new System.Drawing.Size(169, 17);
+            this.websiteLink.Size = new System.Drawing.Size(157, 17);
             this.websiteLink.TabIndex = 6;
             this.websiteLink.TabStop = true;
             this.websiteLink.Text = "Website: http://www.gallio.org/";
             this.websiteLink.UseCompatibleTextRendering = true;
-            this.websiteLink.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(websiteLink_LinkClicked);
+            this.websiteLink.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.websiteLink_LinkClicked);
             // 
-            // About
+            // testFrameworkIcons
+            // 
+            this.testFrameworkIcons.ColorDepth = System.Windows.Forms.ColorDepth.Depth8Bit;
+            this.testFrameworkIcons.ImageSize = new System.Drawing.Size(16, 16);
+            this.testFrameworkIcons.TransparentColor = System.Drawing.Color.Transparent;
+            // 
+            // frameworkName
+            // 
+            this.frameworkName.Text = "Framework Name";
+            this.frameworkName.Width = 250;
+            // 
+            // AboutDialog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("$this.BackgroundImage")));
             this.ClientSize = new System.Drawing.Size(433, 343);
             this.Controls.Add(this.websiteLink);
-            this.Controls.Add(this.componentList);
+            this.Controls.Add(this.testFrameworksList);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.versionLabel);
             this.Controls.Add(this.buttonClose);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "About";
+            this.Name = "AboutDialog";
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "About Gallio Icarus";
@@ -132,7 +151,9 @@ namespace Gallio.Icarus
         private System.Windows.Forms.Button buttonClose;
         private System.Windows.Forms.Label versionLabel;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.ListBox componentList;
+        private System.Windows.Forms.ListView testFrameworksList;
         private System.Windows.Forms.LinkLabel websiteLink;
+        private System.Windows.Forms.ImageList testFrameworkIcons;
+        private System.Windows.Forms.ColumnHeader frameworkName;
     }
 }
