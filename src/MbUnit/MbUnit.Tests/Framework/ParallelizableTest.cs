@@ -40,15 +40,15 @@ namespace MbUnit.Tests.Framework
                 "Expected at least one of the set of parallelizable tests to run in parallel with another one.");
 
             Assert.IsTrue(
-                WasParallel("Seven") || WasParallel("Eight"),
+                WasParallel("Seven") || WasParallel("Eight") || WasParallel("Nine") || WasParallel("Ten"),
                 "Expected at least one of the set of parallelizable tests to run in parallel with another one.");
 
             Assert.IsFalse(
-                WasParallel("Five") || WasParallel("Six") || WasParallel("Nine"),
+                WasParallel("Five") || WasParallel("Six") || WasParallel("Eleven"),
                 "Expected none of the non-parallelizable tests to run in parallel with any other ones.");
 
             Assert.IsFalse(
-                WasParallel("Ten"),
+                WasParallel("Twelve"),
                 "Expected the parallelizable but standalone to run on its own since there are no other tests of the same order.");
         }
 
@@ -58,9 +58,9 @@ namespace MbUnit.Tests.Framework
             Pair<DateTime, DateTime> batch1 = GetEarliestAndLatestStartAndEndTimes("One", "Two", "Three", "Four");
             Pair<DateTime, DateTime> batch2 = GetEarliestAndLatestStartAndEndTimes("Five");
             Pair<DateTime, DateTime> batch3 = GetEarliestAndLatestStartAndEndTimes("Six");
-            Pair<DateTime, DateTime> batch4 = GetEarliestAndLatestStartAndEndTimes("Seven", "Eight");
-            Pair<DateTime, DateTime> batch5 = GetEarliestAndLatestStartAndEndTimes("Nine");
-            Pair<DateTime, DateTime> batch6 = GetEarliestAndLatestStartAndEndTimes("Ten");
+            Pair<DateTime, DateTime> batch4 = GetEarliestAndLatestStartAndEndTimes("Seven", "Eight", "Nine", "Ten");
+            Pair<DateTime, DateTime> batch5 = GetEarliestAndLatestStartAndEndTimes("Elevent");
+            Pair<DateTime, DateTime> batch6 = GetEarliestAndLatestStartAndEndTimes("Twelve");
 
             Assert.LessThanOrEqualTo(batch1.Second, batch2.First);
             Assert.LessThanOrEqualTo(batch2.Second, batch3.First);
@@ -178,17 +178,31 @@ namespace MbUnit.Tests.Framework
                 Thread.Sleep(500);
             }
 
-            [Test(Order = 1)]
+            [Test(Order = 1), Parallelizable]
             public void Nine()
             {
                 TestLog.WriteLine("Nine");
                 Thread.Sleep(500);
             }
 
-            [Test(Order = 2), Parallelizable]
+            [Test(Order = 1), Parallelizable]
             public void Ten()
             {
                 TestLog.WriteLine("Ten");
+                Thread.Sleep(500);
+            }
+
+            [Test(Order = 1)]
+            public void Eleven()
+            {
+                TestLog.WriteLine("Eleven");
+                Thread.Sleep(500);
+            }
+
+            [Test(Order = 2), Parallelizable]
+            public void Twelve()
+            {
+                TestLog.WriteLine("Twelve");
                 Thread.Sleep(500);
             }
         }
