@@ -31,6 +31,8 @@ namespace MbUnit.Framework
     /// evaluation was done unsuccessfully too many times.
     /// </para>
     /// </summary>
+    /// <remarks>
+    /// Here is an example that illustrates the usage of <see cref="Retry"/>.
     /// <example>
     /// <code><![CDATA[
     /// [TestFixture]
@@ -48,6 +50,7 @@ namespace MbUnit.Framework
     /// }
     /// ]]></code>
     /// </example>
+    /// </remarks>
     public sealed class Retry
     {
         internal static readonly int DefaultRepeat = -1;
@@ -147,6 +150,18 @@ namespace MbUnit.Framework
         }
 
         /// <summary>
+        /// Specifies a custom formatted message to be added to the text of the assertion raised when
+        /// the retry operation has failed.
+        /// </summary>
+        /// <param name="messageFormat">A user-supplied assertion failure message string, or null if none</param>
+        /// <param name="messageArgs">The format arguments, or null or empty if none</param>
+        /// <returns></returns>
+        public static IRetryOptions WithFailureMessage(string messageFormat, object[] messageArgs)
+        {
+            return GetDefaultOptions().WithFailureMessage(messageFormat, messageArgs);
+        }
+
+        /// <summary>
         /// Specifies the condition to evaluate repeatedly, and starts the entire operation.
         /// The condition is considered fulfilled when it returns true.
         /// </summary>
@@ -156,20 +171,6 @@ namespace MbUnit.Framework
         public static void Until(Func<bool> condition)
         {
             GetDefaultOptions().Until(condition);
-        }
-
-        /// <summary>
-        /// Specifies the condition to evaluate repeatedly, and starts the entire operation.
-        /// The condition is considered fulfilled when it returns true.
-        /// </summary>
-        /// <param name="condition">The condition to evaluate</param>
-        /// <param name="messageFormat">A user-supplied assertion failure message string, or null if none</param>
-        /// <param name="messageArgs">The format arguments, or null or empty if none</param>
-        /// <exception cref="AssertionFailureException">Thrown when the condition is still false, and a timeout occured, or the maximum
-        /// number of evaluation attempts was reached.</exception>
-        public static void Until(Func<bool> condition, string messageFormat, object[] messageArgs)
-        {
-            GetDefaultOptions().Until(condition, messageFormat, messageArgs);
         }
 
         /// <summary>
@@ -184,16 +185,14 @@ namespace MbUnit.Framework
         }
 
         /// <summary>
-        /// Specifies a <see cref="WaitHandle"/> instance to wait for being signaled, and starts the entire operation.
+        /// Specifies a <see cref="Thread"/> instance to wait for being terminated, and starts the entire operation.
         /// </summary>
-        /// <param name="waitHandle">The wait handle to evaluate</param>
-        /// <param name="messageFormat">A user-supplied assertion failure message string, or null if none</param>
-        /// <param name="messageArgs">The format arguments, or null or empty if none</param>
-        /// <exception cref="AssertionFailureException">Thrown when the wait handle is still unsignaled, and a timeout occured, or the maximum
+        /// <param name="tread">The thread to evaluate</param>
+        /// <exception cref="AssertionFailureException">Thrown when the thread is still alive, and a timeout occured, or the maximum
         /// number of evaluation attempts was reached.</exception>
-        public static void Until(WaitHandle waitHandle, string messageFormat, object[] messageArgs)
+        public static void Until(Thread tread)
         {
-            GetDefaultOptions().Until(waitHandle, messageFormat, messageArgs);
+            GetDefaultOptions().Until(tread);
         }
 
         private static IRetryOptions GetDefaultOptions()
@@ -207,8 +206,8 @@ namespace MbUnit.Framework
             private int? pollingMilliseconds = null;
             private int? timeoutMilliseconds = null;
             private Action action;
-            private Func<bool> condition;
-            private WaitHandle waitHandle;
+            private string messageFormat;
+            private object[] messageArgs;
 
             public IRetryOptions Repeat(int repeat)
             {
@@ -262,34 +261,43 @@ namespace MbUnit.Framework
                 return this;
             }
 
+            public IRetryOptions WithFailureMessage(string messageFormat, object[] messageArgs)
+            {
+                this.messageFormat = messageFormat;
+                this.messageArgs = messageArgs;
+                return this;
+            }
+
             public void Until(Func<bool> condition)
             {
-                Until(condition, null, null);
+                if (condition == null)
+                    throw new ArgumentNullException("condition");
+
+                Run(condition);
             }
 
             public void Until(WaitHandle waitHandle)
             {
-                Until(waitHandle, null, null);
+                if (waitHandle == null)
+                    throw new ArgumentNullException("waitHandle");
+
+                Run(() => waitHandle.WaitOne(0, false));
             }
 
-            public void Until(Func<bool> condition, string messageFormat, object[] messageArgs)
+            public void Until(Thread thread)
             {
-                this.condition = condition;
-                Run(messageFormat, messageArgs);
+                if (thread == null)
+                    throw new ArgumentNullException("thread");
+
+                Run(() => thread.Join(0));
             }
 
-            public void Until(WaitHandle waitHandle, string messageFormat, object[] messageArgs)
-            {
-                this.waitHandle = waitHandle;
-                Run(messageFormat, messageArgs);
-            }
-
-            private void Run(string messageFormat, object[] messageArgs)
+            private void Run(Func<bool> condition)
             {
                 var runner = new RetryRunner(repeat ?? Retry.DefaultRepeat, 
                     pollingMilliseconds ?? Retry.DefaultPollingMilliseconds, 
-                    timeoutMilliseconds ?? Retry.DefaultTimeoutMilliseconds, 
-                    action, condition, waitHandle, messageFormat, messageArgs);
+                    timeoutMilliseconds ?? Retry.DefaultTimeoutMilliseconds,
+                    action, condition, messageFormat, messageArgs);
                 runner.Run();
             }
         }
@@ -301,21 +309,19 @@ namespace MbUnit.Framework
             private readonly int timeoutMilliseconds;
             private readonly Action action;
             private readonly Func<bool> condition;
-            private readonly WaitHandle waitHandle;
             private readonly string messageFormat;
             private readonly object[] messageArgs;
             private Stopwatch stopwatch;
             private int count;
 
             public RetryRunner(int repeat, int pollingMilliseconds, int timeoutMilliseconds, Action action, 
-                Func<bool> condition, WaitHandle waitHandle, string messageFormat, object[] messageArgs)
+                Func<bool> condition, string messageFormat, object[] messageArgs)
             {
                 this.repeat = repeat;
                 this.pollingMilliseconds = pollingMilliseconds;
                 this.timeoutMilliseconds = timeoutMilliseconds;
                 this.condition = condition;
                 this.action = action;
-                this.waitHandle = waitHandle;
                 this.messageFormat = messageFormat;
                 this.messageArgs = messageArgs;
             }
@@ -324,8 +330,7 @@ namespace MbUnit.Framework
             {
                 try
                 {
-                    return ((condition != null) && condition())
-                        || (waitHandle != null) && (waitHandle.WaitOne(0, false));
+                    return condition();
                 }
                 catch (Exception exception)
                 {

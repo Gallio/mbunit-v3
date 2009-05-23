@@ -103,6 +103,15 @@ namespace MbUnit.Framework
         IRetryOptions DoBetween(Action action);
 
         /// <summary>
+        /// Specifies a custom formatted message to be added to the text of the assertion raised when
+        /// the retry operation has failed.
+        /// </summary>
+        /// <param name="messageFormat">A user-supplied assertion failure message string, or null if none</param>
+        /// <param name="messageArgs">The format arguments, or null or empty if none</param>
+        /// <returns></returns>
+        IRetryOptions WithFailureMessage(string messageFormat, object[] messageArgs);
+
+        /// <summary>
         /// Specifies the condition to evaluate repeatedly, and starts the entire operation.
         /// The condition is considered fulfilled when it returns true.
         /// </summary>
@@ -110,17 +119,6 @@ namespace MbUnit.Framework
         /// <exception cref="AssertionFailureException">Thrown when the condition is false, and a timeout occured, or the maximum
         /// number of evaluation attempts was reached.</exception>
         void Until(Func<bool> condition);
-
-        /// <summary>
-        /// Specifies the condition to evaluate repeatedly, and starts the entire operation.
-        /// The condition is considered fulfilled when it returns true.
-        /// </summary>
-        /// <param name="condition">The condition to evaluate</param>
-        /// <param name="messageFormat">A user-supplied assertion failure message string, or null if none</param>
-        /// <param name="messageArgs">The format arguments, or null or empty if none</param>
-        /// <exception cref="AssertionFailureException">Thrown when the condition is false, and a timeout occured, or the maximum
-        /// number of evaluation attempts was reached.</exception>
-        void Until(Func<bool> condition, string messageFormat, object[] messageArgs);
 
         /// <summary>
         /// Specifies a <see cref="WaitHandle"/> instance to wait for being signaled, and starts the entire operation.
@@ -131,13 +129,11 @@ namespace MbUnit.Framework
         void Until(WaitHandle waitHandle);
 
         /// <summary>
-        /// Specifies a <see cref="WaitHandle"/> instance to wait for being signaled, and starts the entire operation.
+        /// Specifies a <see cref="Thread"/> instance to wait for being terminated, and starts the entire operation.
         /// </summary>
-        /// <param name="waitHandle">The wait handle to evaluate</param>
-        /// <param name="messageFormat">A user-supplied assertion failure message string, or null if none</param>
-        /// <param name="messageArgs">The format arguments, or null or empty if none</param>
-        /// <exception cref="AssertionFailureException">Thrown when the wait handle is unsignaled, and a timeout occured, or the maximum
+        /// <param name="tread">The thread to evaluate</param>
+        /// <exception cref="AssertionFailureException">Thrown when the thread is still alive, and a timeout occured, or the maximum
         /// number of evaluation attempts was reached.</exception>
-        void Until(WaitHandle waitHandle, string messageFormat, object[] messageArgs);
+        void Until(Thread tread);
     }
 }

@@ -70,6 +70,14 @@ namespace MbUnit.Tests.Framework
         }
 
         [Test]
+        public void Retry_until_thread_terminates()
+        {
+            var thread = new Thread(() => { });
+            thread.Start();
+            DoRetry(true, () => Retry.Repeat(5).Until(thread));
+        }
+
+        [Test]
         [Row(true, 1000, Description = "Succeeds before timeout occured")]
         [Row(false, 250, Description = "Fails because due to timeout error.")]
         [Row(false, 0, Description = "Fails because due to timeout error.")]
