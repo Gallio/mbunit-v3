@@ -112,7 +112,7 @@
             Condition="Exists('$(CHMDocsDir)\Gallio.chm')" />
     <RemoveDir Directories="$(WebDocsDir);$(VSDocsDir);$(SandcastleTempDir)" />
     
-    <MakeDir Directories="$(WebDocsDir);$(CHMDocsDir);$(VSDocsDir);$(SandcastleTempDir)" />
+    <MakeDir Directories="$(CHMDocsDir);$(VSDocsDir);$(SandcastleTempDir)" />
 
     <!-- Should be able to just override DocumentationSources but
          we get an error.
@@ -132,12 +132,6 @@
     <MSBuild Projects="$(SandcastlePatchedProjectPath)"
              Properties="Version=$(Version);BuildDir=$(BuildDir);TempDir=$(TempDir);ReportDir=$(ReportDir);CustomBeforeSHFBTargets=$(SandcastleProjectOverridesPath)" />
 
-    <Copy SourceFiles="$(SandcastleOutputPath)\Gallio.chm"
-          DestinationFolder="$(WebDocsDir)" />
-
-    <Move SourceFiles="$(SandcastleOutputPath)\Gallio.chm"
-          DestinationFolder="$(CHMDocsDir)" />
-
     <ItemGroup>
       <VSDocsFile Include="$(SandcastleOutputPath)\Gallio.HxC" />
       <VSDocsFile Include="$(SandcastleOutputPath)\Gallio.HxS" />
@@ -149,7 +143,11 @@
     <Move SourceFiles="@(VSDocsFile)"
           DestinationFolder="$(VSDocsDir)" />
 
-    <Exec Command="move /y &quot;$(SandcastleOutputPath)&quot; &quot;$(WebDocsDir)\html&quot;" />
+    <Copy SourceFiles="$(SandcastleOutputPath)\Gallio.chm"
+          DestinationFolder="$(CHMDocsDir)" />
+
+    <!-- Note: We leave the CHM file in the docs folder for downloads from web. -->
+    <Exec Command="move /y &quot;$(SandcastleOutputPath)&quot; &quot;$(WebDocsDir)&quot;" />
 
     <Delete Files="@(DocumentedAssembly->'$(ImageDir)\bin\%(Folder)\%(Filename).xml')" />
     <Move SourceFiles="@(DocumentedAssembly->'$(SandcastleIntellisensePath)\%(Filename).xml')"
