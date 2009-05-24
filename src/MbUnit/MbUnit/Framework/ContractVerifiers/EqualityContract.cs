@@ -61,6 +61,7 @@ namespace MbUnit.Framework.ContractVerifiers
     /// </item>
     /// </list>
     /// </para>
+    /// <para>
     /// <example>
     /// The following example shows a simple class implementing the 
     /// <see cref="IEquatable{T}"/> interface, and a test fixture which uses the
@@ -123,9 +124,9 @@ namespace MbUnit.Framework.ContractVerifiers
     /// }
     /// ]]></code>
     /// </example>
+    /// </para>
     /// </remarks>
-    /// <typeparam name="TTarget">The target tested type which implements the 
-    /// generic <see cref="IEquatable{T}"/> interface. </typeparam>
+    /// <typeparam name="TTarget">The target tested type which implements the generic <see cref="IEquatable{T}"/> interface. </typeparam>
     /// <seealso cref="VerifyContractAttribute"/>
     public class EqualityContract<TTarget> : AbstractContract
         where TTarget : IEquatable<TTarget>
@@ -140,9 +141,11 @@ namespace MbUnit.Framework.ContractVerifiers
         }
 
         /// <summary>
-        /// <para>
         /// Determines whether the verifier will evaluate the presence and the 
         /// behavior of the equality and the inequality operator overloads.
+        /// </summary>
+        /// <remarks>
+        /// <para>
         /// The default value is <code>true</code>.
         /// </para>
         /// <para>
@@ -155,7 +158,7 @@ namespace MbUnit.Framework.ContractVerifiers
         /// <item></item>
         /// </list>
         /// </para>
-        /// </summary>
+        /// </remarks>
         public bool ImplementsOperatorOverloads
         {
             get;

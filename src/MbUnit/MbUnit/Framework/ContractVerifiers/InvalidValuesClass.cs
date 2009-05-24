@@ -69,7 +69,7 @@ namespace MbUnit.Framework.ContractVerifiers
     /// </para>
     /// </remarks>
     /// <typeparam name="T">The type of the object instances in the collection.</typeparam>
-    public class IncompetenceClass<T> : DistinctInstanceCollection<T>
+    public class InvalidValuesClass<T> : DistinctInstanceCollection<T>
     {
         private readonly Type expectedExceptionType;
 
@@ -85,9 +85,9 @@ namespace MbUnit.Framework.ContractVerifiers
         }
 
         /// <summary>
-        /// <para>
         /// Constructs an empty collection of distinct object instances associated with an exception type.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// Use this constructor in conjunction with the <see cref="DistinctInstanceCollection{T}.Add(T)"/>
         /// method inherited from <see cref="DistinctInstanceCollection{T}"/> to initialize the collection; 
@@ -111,27 +111,27 @@ namespace MbUnit.Framework.ContractVerifiers
         /// ]]></code>
         /// </example>
         /// </para>
-        /// </summary>
+        /// </remarks>
         /// <param name="expectedExceptionType"></param>
-        public IncompetenceClass(Type expectedExceptionType)
+        public InvalidValuesClass(Type expectedExceptionType)
         {
             this.expectedExceptionType = CheckValidExceptionType(expectedExceptionType);
         }
 
         /// <summary>
-        /// <para>
         /// Constructs a collection of distinct object instances associated with an exception type.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// Every element represents an instance which is different from all the other 
         /// elements in the collection (object equality), and which is expected to be
         /// the primary cause of an exception thrown when it is set or passed to 
         /// the tested method or property.
         /// </para>
-        /// </summary>
+        /// </remarks>
         /// <param name="expectedExceptionType">The type of the exception associated with the object instances in the collection.</param>
         /// <param name="distinctInvalidInstances">An array of distinct object instances.</param>
-        public IncompetenceClass(Type expectedExceptionType, IEnumerable<T> distinctInvalidInstances)
+        public InvalidValuesClass(Type expectedExceptionType, IEnumerable<T> distinctInvalidInstances)
             : base(distinctInvalidInstances)
         {
             this.expectedExceptionType = CheckValidExceptionType(expectedExceptionType);

@@ -107,7 +107,7 @@ namespace MbUnit.Framework
         /// aliases for indexed columns.
         /// </summary>
         /// <value>
-        /// The default value is 'false' which indicates that the file does not have a header.
+        /// The default value is <code>false</code> which indicates that the file does not have a header.
         /// </value>
         public bool HasHeader
         {

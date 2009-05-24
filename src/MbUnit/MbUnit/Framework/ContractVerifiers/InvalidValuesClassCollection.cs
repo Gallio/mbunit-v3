@@ -38,14 +38,14 @@ namespace MbUnit.Framework.ContractVerifiers
     /// syntax, to feed the collection with classes of objects:
     /// <example>
     /// <code><![CDATA[
-    /// var collection = new IncompetenceClassCollection<Foo>();
+    /// var collection = new InvalidValuesClassCollection<Foo>();
     /// collection.Add(typeof(ArgumentException), new Foo(1), new Foo(2));
     /// collection.Add(typeof(ArgumentOutOfRangeException), new Foo(3));
     /// ]]></code>
     /// </example>
     /// <example>
     /// <code><![CDATA[
-    /// var collection = new IncompetenceClassCollection<Foo>
+    /// var collection = new InvalidValuesClassCollection<Foo>
     /// {
     ///     { typeof(ArgumentException), new Foo(1), new Foo(2) },
     ///     { typeof(ArgumentOutOfRangeException), new Foo(3) }
@@ -55,9 +55,9 @@ namespace MbUnit.Framework.ContractVerifiers
     /// </para>
     /// </remarks>
     /// <typeparam name="T">The type of the object instances in the inner class collections.</typeparam>
-    public class IncompetenceClassCollection<T> : IEnumerable<IncompetenceClass<T>>
+    public class InvalidValuesClassCollection<T> : IEnumerable<InvalidValuesClass<T>>
     {
-        private readonly List<IncompetenceClass<T>> invalidClasses;
+        private readonly List<InvalidValuesClass<T>> invalidClasses;
 
         /// <summary>
         /// Gets the number of invalid classes in the collection.
@@ -71,25 +71,25 @@ namespace MbUnit.Framework.ContractVerifiers
         }
 
         /// <summary>
-        /// <para>
         /// Constructs an empty collection of classes of distinct object instances. Each class
         /// identifies a collection of distinct object instances and the type
         /// of the exception which is expected to be raised when the subject instances are passed
         /// to the tested method or property.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// Once the collection is created, populate it by using the <see cref="Add(Type, T[])"/>
         /// method; Either explicitely, or by using the list initializer syntax:
         /// <example>
         /// <code><![CDATA[
-        /// var collection = new IncompetenceClassCollection<Foo>();
+        /// var collection = new InvalidValuesClassCollection<Foo>();
         /// collection.Add(typeof(ArgumentException), new Foo(1), new Foo(2));
         /// collection.Add(typeof(ArgumentOutOfRangeException), new Foo(3));
         /// ]]></code>
         /// </example>
         /// <example>
         /// <code><![CDATA[
-        /// var collection = new IncompetenceClassCollection<Foo>
+        /// var collection = new InvalidValuesClassCollection<Foo>
         /// {
         ///     { typeof(ArgumentException), new Foo(1), new Foo(2) },
         ///     { typeof(ArgumentOutOfRangeException), new Foo(3) }
@@ -97,17 +97,17 @@ namespace MbUnit.Framework.ContractVerifiers
         /// ]]></code>
         /// </example>
         /// </para>
-        /// </summary>
-        public IncompetenceClassCollection()
+        /// </remarks>
+        public InvalidValuesClassCollection()
         {
-            invalidClasses = new List<IncompetenceClass<T>>();
+            invalidClasses = new List<InvalidValuesClass<T>>();
         }
 
         /// <summary>
         /// Adds the specified class of distinct object instance to the collection.
         /// </summary>
         /// <param name="invalidClass">The class to add to the collection.</param>
-        public void Add(IncompetenceClass<T> invalidClass)
+        public void Add(InvalidValuesClass<T> invalidClass)
         {
             if (invalidClass == null)
                 throw new ArgumentNullException("invalidClass");
@@ -128,7 +128,7 @@ namespace MbUnit.Framework.ContractVerifiers
                 throw new ArgumentNullException("expectedException");
 
             CheckExceptionTypeAlreadyIn(expectedException);
-            invalidClasses.Add(new IncompetenceClass<T>(expectedException, invalidValues));
+            invalidClasses.Add(new InvalidValuesClass<T>(expectedException, invalidValues));
         }
 
         private void CheckExceptionTypeAlreadyIn(Type expectedException)
@@ -142,7 +142,7 @@ namespace MbUnit.Framework.ContractVerifiers
         /// Returns a strongly-typed enumerator that iterates through the collection.
         /// </summary>
         /// <returns>A strongly-typed enumerator.</returns>
-        public IEnumerator<IncompetenceClass<T>> GetEnumerator()
+        public IEnumerator<InvalidValuesClass<T>> GetEnumerator()
         {
             return invalidClasses.GetEnumerator();
         }

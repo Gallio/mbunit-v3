@@ -112,6 +112,7 @@
     <Compile Include="Common\Text\RangeTest.cs" />
     <Compile Include="Common\Text\SubstringTest.cs" />
     <Compile Include="Framework\Assertions\AssertionHelperTest.cs" />
+    <Compile Include="Framework\Data\Generation\GenerationExceptionTest.cs" />
     <Compile Include="Framework\Data\Generation\SequentialNumbersGeneratorTest.cs" />
     <Compile Include="Framework\Data\Generation\RandomNumbersGeneratorTest.cs" />
     <Compile Include="Framework\Pattern\PatternTestFrameworkExtensionInfoTest.cs" />

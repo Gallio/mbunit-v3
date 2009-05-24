@@ -73,6 +73,7 @@ namespace MbUnit.Framework.ContractVerifiers
     /// </item>
     /// </list>
     /// </para>
+    /// <para>
     /// <example>
     /// The following example shows a simple custom exception class with some 
     /// basic serialization support, and a test fixture which uses the
@@ -117,6 +118,7 @@ namespace MbUnit.Framework.ContractVerifiers
     /// }
     /// ]]></code>
     /// </example>
+    /// </para>
     /// </remarks>
     /// <typeparam name="TException">The target custom exception type.</typeparam>
     /// <seealso cref="VerifyContractAttribute"/>
@@ -133,10 +135,10 @@ namespace MbUnit.Framework.ContractVerifiers
         }
 
         /// <summary>
-        /// <para>
         /// Determines whether the verifier will check for the serialization support. 
-        /// The default value is 'true'.
-        /// </para>
+        /// The default value is <code>true</code>.
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// Built-in verifications:
         /// <list type="bullet">
@@ -146,7 +148,7 @@ namespace MbUnit.Framework.ContractVerifiers
         /// <see cref="Exception(SerializationInfo, StreamingContext)" />.</item>
         /// </list>
         /// </para>
-        /// </summary>
+        /// </remarks>
         public bool ImplementsSerialization
         {
             get;
@@ -154,10 +156,10 @@ namespace MbUnit.Framework.ContractVerifiers
         }
 
         /// <summary>
-        /// <para>
         /// Determines whether the verifier will check for the presence of
-        /// the recommended standard constructors. The default value is 'true'.
-        /// </para>
+        /// the recommended standard constructors. The default value is <code>true</code>.
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// Built-in verifications:
         /// <list type="bullet">
@@ -166,7 +168,7 @@ namespace MbUnit.Framework.ContractVerifiers
         /// <item>The exception two parameters constructor for the message and an inner exception.</item>
         /// </list>
         /// </para>
-        /// </summary>
+        /// </remarks>
         public bool ImplementsStandardConstructors
         {
             get;
@@ -331,8 +333,7 @@ namespace MbUnit.Framework.ContractVerifiers
 
         /// <summary>
         /// Verifies that the <see cref="Exception.Message" /> and 
-        /// <see cref="Exception.InnerException" />
-        /// properties are preserved by round-trip serialization.
+        /// <see cref="Exception.InnerException" /> properties are preserved by round-trip serialization.
         /// </summary>
         /// <param name="instance">The exception instance.</param>
         private void AssertMessageAndInnerExceptionPreservedByRoundTripSerialization(Exception instance)

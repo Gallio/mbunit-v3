@@ -23,12 +23,14 @@ namespace MbUnit.Framework.ContractVerifiers
 {
     /// <summary>
     /// Contains a collection of equivalent object instances. 
+    /// </summary>
+    /// <remarks>
+    /// <para>
     /// All the elements of the collection should be equal together, in
     /// the sense of the local implementation of an equality contract
     /// (<see cref="IEquatable{T}"/>) or a comparison contract 
     /// (<see cref="IComparable{T}"/>).
-    /// </summary>
-    /// <remarks>
+    /// </para>
     /// <para>
     /// Equivalence classes are used by some contract verifiers such as 
     /// <see cref="EqualityContract{TTarget}"/> to check for 
@@ -41,16 +43,16 @@ namespace MbUnit.Framework.ContractVerifiers
         private readonly List<T> equivalentInstances;
 
         /// <summary>
-        /// <para>
         /// Constructs a class of equivalent instances.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// All the elements of the collection should be equal together, in
         /// the sense of the local implementation of an equality contract
         /// (<see cref="IEquatable{T}"/>) or a comparison contract 
         /// (<see cref="IComparable{T}"/>).
         /// </para>
-        /// </summary>
+        /// </remarks>
         /// <param name="equivalentInstances">The type of equivalent object instances</param>
         public EquivalenceClass(params T[] equivalentInstances)
         {

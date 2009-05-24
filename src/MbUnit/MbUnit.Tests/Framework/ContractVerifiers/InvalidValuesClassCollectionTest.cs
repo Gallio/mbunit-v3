@@ -22,12 +22,12 @@ using Gallio.Common.Collections;
 namespace MbUnit.Tests.Framework.ContractVerifiers
 {
     [TestFixture]
-    public class IncompetenceClassCollectionTest
+    public class InvalidValuesClassCollectionTest
     {
         [Test]
         public void Constructs_empty()
         {
-            var collection = new IncompetenceClassCollection<int>();
+            var collection = new InvalidValuesClassCollection<int>();
             Assert.IsEmpty(collection);
             Assert.AreEqual(0, collection.Count);
         }
@@ -36,24 +36,24 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
         [ExpectedArgumentNullException]
         public void Adds_null_invalid_class_should_throw_exception()
         {
-            var collection = new IncompetenceClassCollection<int>();
-            collection.Add((IncompetenceClass<int>)null);
+            var collection = new InvalidValuesClassCollection<int>();
+            collection.Add((InvalidValuesClass<int>)null);
         }
 
         [Test]
         [ExpectedArgumentException]
         public void Adds_several_times_classes_associated_with_same_exception_type_should_throw_exception()
         {
-            var collection = new IncompetenceClassCollection<int>();
-            collection.Add(new IncompetenceClass<int>(typeof(ArgumentOutOfRangeException)));
-            collection.Add(new IncompetenceClass<int>(typeof(ArgumentOutOfRangeException)));
+            var collection = new InvalidValuesClassCollection<int>();
+            collection.Add(new InvalidValuesClass<int>(typeof(ArgumentOutOfRangeException)));
+            collection.Add(new InvalidValuesClass<int>(typeof(ArgumentOutOfRangeException)));
         }
 
         [Test]
         [ExpectedArgumentNullException]
         public void Adds_null_exception_type_should_throw_exception()
         {
-            var collection = new IncompetenceClassCollection<int>();
+            var collection = new InvalidValuesClassCollection<int>();
             collection.Add(null, 1, 2, 3);
         }
 
@@ -61,7 +61,7 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
         [ExpectedArgumentException]
         public void Adds_several_times_classes_arguments_associated_with_same_exception_type_should_throw_exception()
         {
-            var collection = new IncompetenceClassCollection<int>();
+            var collection = new InvalidValuesClassCollection<int>();
             collection.Add(typeof(ArgumentOutOfRangeException), 1, 2, 3);
             collection.Add(typeof(ArgumentOutOfRangeException), 4, 5, 6);
         }
@@ -69,9 +69,9 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
         [Test]
         public void Adds_classes_Ok()
         {
-            var collection = new IncompetenceClassCollection<int>();
+            var collection = new InvalidValuesClassCollection<int>();
             collection.Add(typeof(ArgumentOutOfRangeException), 1, 2, 3);
-            collection.Add(new IncompetenceClass<int>(typeof(ArgumentException)) { 4, 5, 6 });
+            collection.Add(new InvalidValuesClass<int>(typeof(ArgumentException)) { 4, 5, 6 });
             collection.Add(typeof(InvalidOperationException), 7, 8, 9);
             Assert.AreEqual(3, collection.Count);
             Assert.AreElementsEqualIgnoringOrder(new[] { typeof(ArgumentOutOfRangeException), typeof(ArgumentException), typeof(InvalidOperationException) }, collection.Select(x => x.ExpectedExceptionType));        

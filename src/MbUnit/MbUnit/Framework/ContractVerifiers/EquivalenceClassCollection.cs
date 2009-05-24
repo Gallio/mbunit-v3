@@ -68,9 +68,9 @@ namespace MbUnit.Framework.ContractVerifiers
         }
 
         /// <summary>
-        /// <para>
         /// Constructs a collection of equivalence classes from the specified distinct object instances.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// The resulting collection contains as many equivalence class as provided instances. Each equivalence
         /// class contains one single object. To construct a collection with equivalence classes containing
@@ -86,7 +86,7 @@ namespace MbUnit.Framework.ContractVerifiers
         /// ]]></code>
         /// </example>
         /// </para>
-        /// </summary>
+        /// </remarks>
         /// <param name="distinctInstances">An enumeration of distinct instances.</param>
         public EquivalenceClassCollection(IEnumerable<T> distinctInstances)
             : this()

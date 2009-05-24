@@ -64,6 +64,7 @@ namespace MbUnit.Framework.ContractVerifiers
     /// </item>
     /// </list>
     /// </para>
+    /// <para>
     /// <example>
     /// The following example shows a simple class implementing the 
     /// <see cref="IComparable{T}"/> interface, and a test fixture which uses the
@@ -131,6 +132,7 @@ namespace MbUnit.Framework.ContractVerifiers
     /// }
     /// ]]></code>
     /// </example>
+    /// </para>
     /// </remarks>
     /// <typeparam name="TTarget"></typeparam>
     /// <seealso cref="VerifyContractAttribute"/>
@@ -147,13 +149,15 @@ namespace MbUnit.Framework.ContractVerifiers
         }
 
         /// <summary>
-        /// <para>
         /// Determines whether the verifier will evaluate the presence and the 
-        /// behavior of the four operator overloads "Greater Than", "Greater Than
+        /// behavior of the 4 operator overloads "Greater Than", "Greater Than
         /// Or Equal", "Less Than", and "Less Than Or Equal".
-        /// The default value is 'true'.
-        /// </para>
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// The default value is <code>true</code>.
+        /// </para>
+        /// </remarks>
         public bool ImplementsOperatorOverloads
         {
             get;

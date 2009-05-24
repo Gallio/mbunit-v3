@@ -59,11 +59,13 @@ namespace MbUnit.Framework.ContractVerifiers
         private readonly List<T> distinctInstances;
 
         /// <summary>
-        /// <para>
         /// Constructs an empty collection of distinct object instances.
+        /// </summary>
+        /// <remarks>
+        /// <para>
         /// All the elements of the collection should be different (object equality).
         /// </para>
-        /// </summary>
+        /// </remarks>
         public DistinctInstanceCollection()
         {
             distinctInstances = new List<T>();

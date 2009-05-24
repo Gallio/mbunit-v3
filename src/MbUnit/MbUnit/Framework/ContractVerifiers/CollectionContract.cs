@@ -42,7 +42,7 @@ namespace MbUnit.Framework.ContractVerifiers
     /// <term>AddShouldThrowException</term>
     /// <description>The read-only collection throws an exception when the method <see cref="ICollection{T}.Add"/> is called.
     /// <para>
-    /// The test is not run when the contract property <see cref="CollectionContract{TCollection,TItem}.IsReadOnly"/> is set to 'false'.
+    /// The test is not run when the contract property <see cref="CollectionContract{TCollection,TItem}.IsReadOnly"/> is set to <code>false</code>.
     /// </para>
     /// </description>
     /// </item>
@@ -51,7 +51,7 @@ namespace MbUnit.Framework.ContractVerifiers
     /// <description>The read-only collection throws an exception when the method <see cref="ICollection{T}.Remove"/>
     /// is called.
     /// <para>
-    /// The test is not run when the contract property <see cref="CollectionContract{TCollection,TItem}.IsReadOnly"/> is set to 'false'.
+    /// The test is not run when the contract property <see cref="CollectionContract{TCollection,TItem}.IsReadOnly"/> is set to <code>false</code>.
     /// </para>
     /// </description>
     /// </item>
@@ -59,7 +59,7 @@ namespace MbUnit.Framework.ContractVerifiers
     /// <term>ClearShouldThrowException</term>
     /// <description>The read-only collection throws an exception when the method <see cref="ICollection{T}.Clear"/> is called. 
     /// <para>
-    /// The test is not run when the contract property <see cref="CollectionContract{TCollection,TItem}.IsReadOnly"/> is set to 'false'.
+    /// The test is not run when the contract property <see cref="CollectionContract{TCollection,TItem}.IsReadOnly"/> is set to <code>false</code>.
     /// </para>
     /// </description>
     /// </item>
@@ -68,7 +68,7 @@ namespace MbUnit.Framework.ContractVerifiers
     /// <description>The collection throwns a <see cref="ArgumentNullException"/> when the method <see cref="ICollection{T}.Add"/>
     /// is called with a null reference item. 
     /// <para>
-    /// The test is not run when the contract property <see cref="CollectionContract{TCollection,TItem}.AcceptNullReference"/> is set to 'true'.
+    /// The test is not run when the contract property <see cref="CollectionContract{TCollection,TItem}.AcceptNullReference"/> is set to <code>true</code>.
     /// </para>
     /// </description>
     /// </item>
@@ -78,7 +78,7 @@ namespace MbUnit.Framework.ContractVerifiers
     /// The collection throwns a <see cref="ArgumentNullException"/> when the method <see cref="ICollection{T}.Remove"/>
     /// is called with a null reference item.
     /// <para>
-    /// The test is not run when the contract property <see cref="CollectionContract{TCollection,TItem}.AcceptNullReference"/> is set to 'true'.
+    /// The test is not run when the contract property <see cref="CollectionContract{TCollection,TItem}.AcceptNullReference"/> is set to <code>true</code>.
     /// </para>
     /// </description>
     /// </item>
@@ -89,7 +89,7 @@ namespace MbUnit.Framework.ContractVerifiers
     /// is called with a null reference item. 
     /// <para>
     /// The test is not run when the contract property 
-    /// <see cref="CollectionContract{TCollection,TItem}.AcceptNullReference"/> is set to 'true'.
+    /// <see cref="CollectionContract{TCollection,TItem}.AcceptNullReference"/> is set to <code>true</code>.
     /// </para>
     /// </description>
     /// </item>
@@ -101,7 +101,7 @@ namespace MbUnit.Framework.ContractVerifiers
     /// to return suited results as well. The case of duplicate items (object equality) is tested too; according
     /// to the value of contract property <see cref="CollectionContract{TCollection,TItem}.AcceptEqualItems"/>.
     /// <para>
-    /// The test is not run when the contract property <see cref="CollectionContract{TCollection,TItem}.IsReadOnly"/> is set to 'true'.
+    /// The test is not run when the contract property <see cref="CollectionContract{TCollection,TItem}.IsReadOnly"/> is set to <code>true</code>.
     /// </para>
     /// </description>
     /// </item>
@@ -111,7 +111,7 @@ namespace MbUnit.Framework.ContractVerifiers
     /// <see cref="ICollection{T}.Contains"/> and the property <see cref="ICollection{T}.Count"/> are expected
     /// to return suited results as well.
     /// <para>
-    /// The test is not run when the contract property <see cref="CollectionContract{TCollection,TItem}.IsReadOnly"/> is set to 'true'.
+    /// The test is not run when the contract property <see cref="CollectionContract{TCollection,TItem}.IsReadOnly"/> is set to <code>true</code>.
     /// </para>
     /// </item>
     /// <item>
@@ -119,7 +119,7 @@ namespace MbUnit.Framework.ContractVerifiers
     /// <description>
     /// The collection is cleared as expected when the method <see cref="ICollection{T}.Clear"/> is called.
     /// <para>
-    /// The test is not run when the contract property <see cref="CollectionContract{TCollection,TItem}.IsReadOnly"/> is set to 'true'.
+    /// The test is not run when the contract property <see cref="CollectionContract{TCollection,TItem}.IsReadOnly"/> is set to <code>true</code>.
     /// </para>
     /// </description>
     /// </item>
@@ -139,13 +139,15 @@ namespace MbUnit.Framework.ContractVerifiers
         where TCollection : ICollection<TItem>
     {
         /// <summary>
-        /// <para>
         /// Provides a default instance of the collection to test.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// By default, the contract verifier attempts to invoke the default constructor to get an valid instance. 
         /// Overwrite the default provider if the collection has no default constructor, or if you want 
         /// the contract verifier to use a particular instance.
+        /// </para>
+        /// <para>
         /// <example>
         /// <code><![CDATA[
         /// [VerifyContract]
@@ -156,7 +158,7 @@ namespace MbUnit.Framework.ContractVerifiers
         /// ]]></code>
         /// </example>
         /// </para>
-        /// </summary>
+        /// </remarks>
         public Func<TCollection> DefaultInstance
         {
             get;
@@ -164,13 +166,11 @@ namespace MbUnit.Framework.ContractVerifiers
         }
 
         /// <summary>
-        /// <para>
         /// Determines whether the tested collection is expected to be read-only.
-        /// </para>
-        /// <remarks>
-        /// The default value is 'false'.
-        /// </remarks>
         /// </summary>
+        /// <remarks>
+        /// The default value is <code>false</code>.
+        /// </remarks>
         public bool IsReadOnly
         {
             get;
@@ -178,13 +178,11 @@ namespace MbUnit.Framework.ContractVerifiers
         }
 
         /// <summary>
-        /// <para>
         /// Determines whether the collection is expected to accept null references as valid items.
-        /// </para>
-        /// <remarks>
-        /// The default value is 'false'.
-        /// </remarks>
         /// </summary>
+        /// <remarks>
+        /// The default value is <code>false</code>.
+        /// </remarks>
         public bool AcceptNullReference
         {
             get;
@@ -192,14 +190,12 @@ namespace MbUnit.Framework.ContractVerifiers
         }
 
         /// <summary>
-        /// <para>
         /// Determines whether the collection is expected to accept several identical items (object equality).
         /// The default value is true.
-        /// </para>
-        /// <remarks>
-        /// The default value is 'true'.
-        /// </remarks>
         /// </summary>
+        /// <remarks>
+        /// The default value is <code>true</code>.
+        /// </remarks>
         public bool AcceptEqualItems
         {
             get;
@@ -207,9 +203,9 @@ namespace MbUnit.Framework.ContractVerifiers
         }
 
         /// <summary>
-        /// <para>
         /// Gets a collection of distinct object instances that feeds the different tests.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// In order to optimize the tests, consider to provide:
         /// <list type="bullet">
@@ -221,7 +217,7 @@ namespace MbUnit.Framework.ContractVerifiers
         /// </item>
         /// </list>
         /// </para>
-        /// </summary>
+        /// </remarks>
         public DistinctInstanceCollection<TItem> DistinctInstances
         {
             get;
@@ -303,8 +299,8 @@ namespace MbUnit.Framework.ContractVerifiers
         /// Creates a test that invokes an action over the collection, which
         /// is supposed to not be supported. The test expects that an exception be thrown.
         /// </summary>
-        /// <param name="methodName"></param>
-        /// <param name="invoke"></param>
+        /// <param name="methodName">The name of the tested method</param>
+        /// <param name="invoke">The action to evaluate</param>
         /// <returns></returns>
         protected Test CreateNotSupportedWriteTest(string methodName, Action<TCollection, TItem> invoke)
         {
@@ -332,8 +328,8 @@ namespace MbUnit.Framework.ContractVerifiers
         /// Creates a test which runs an action over the collection with
         /// a null argument. The test expects that an exception be thrown.
         /// </summary>
-        /// <param name="methodName"></param>
-        /// <param name="invoke"></param>
+        /// <param name="methodName">The name of the tested method</param>
+        /// <param name="invoke">The action to evaluate</param>
         /// <returns></returns>
         protected Test CreateNullArgumentTest(string methodName, Action<TCollection> invoke)
         {

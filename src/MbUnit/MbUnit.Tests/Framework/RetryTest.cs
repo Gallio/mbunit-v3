@@ -21,6 +21,8 @@ using Gallio.Framework;
 using MbUnit.Framework;
 using Gallio.Framework.Assertions;
 using System.Threading;
+using Rhino.Mocks;
+using Gallio.Common.Time;
 
 namespace MbUnit.Tests.Framework
 {
@@ -50,14 +52,23 @@ namespace MbUnit.Tests.Framework
         public void Retry_Repeat_Until_Condition(bool expectedSucceeded, int repeat, int afterCount)
         {
             int count = 0;
-            DoRetry(expectedSucceeded, () => Retry.Repeat(repeat).Until(() => afterCount >= 0 && count++ >= afterCount));
+            var mockClock = MockRepository.GenerateStub<IClock>();
+            DoRetry(expectedSucceeded, () => 
+                Retry.WithClock(mockClock)
+                     .Repeat(repeat)
+                     .Until(() => afterCount >= 0 && count++ >= afterCount));
         }
 
         [Test]
         public void Retry_Repeat_Until_Condition_with_Action()
         {
             int count = 0;
-            DoRetry(true, () => Retry.Repeat(10).DoBetween(() => count++).Until(() => count >= 8));
+            var mockClock = MockRepository.GenerateStub<IClock>();
+            DoRetry(true, () =>
+                Retry.WithClock(mockClock)
+                     .Repeat(10)
+                     .DoBetween(() => count++)
+                     .Until(() => count >= 8));
         }
 
         [Test]
@@ -65,16 +76,24 @@ namespace MbUnit.Tests.Framework
         [Row(false, Description = "Fails because wait handler is never signaled.")]
         public void Retry_Times_Until_WaitHandle(bool signaled)
         {
+            var mockClock = MockRepository.GenerateStub<IClock>();
             var handle = new ManualResetEvent(signaled);
-            DoRetry(signaled, () => Retry.Repeat(5).Until(handle));
+            DoRetry(signaled, () => 
+                Retry.WithClock(mockClock)
+                     .Repeat(5)
+                     .Until(handle));
         }
 
         [Test]
         public void Retry_until_thread_terminates()
         {
+            var mockClock = MockRepository.GenerateStub<IClock>();
             var thread = new Thread(() => { });
             thread.Start();
-            DoRetry(true, () => Retry.Repeat(5).Until(thread));
+            DoRetry(true, () =>
+                Retry.WithClock(mockClock)
+                     .Repeat(5)
+                     .Until(thread));
         }
 
         [Test]
@@ -83,50 +102,64 @@ namespace MbUnit.Tests.Framework
         [Row(false, 0, Description = "Fails because due to timeout error.")]
         public void Retry_WithTimeout_Until_Condition(bool expectedSucceeded, int timeout)
         {
-            var t = DateTime.UtcNow.AddMilliseconds(500);
-            DoRetry(expectedSucceeded, () => Retry.WithTimeout(timeout).Until(() => DateTime.UtcNow >= t));
+            int count = 0;
+            var mockClock = MockRepository.GenerateMock<IClock>();
+            mockClock.Expect(x => x.Elapsed).Repeat.Times(0, 1).Return(TimeSpan.FromMilliseconds(200));
+            mockClock.Expect(x => x.Elapsed).Repeat.Times(0, 1).Return(TimeSpan.FromMilliseconds(400));
+            mockClock.Expect(x => x.Elapsed).Repeat.Times(0, 1).Return(TimeSpan.FromMilliseconds(600));
+            DoRetry(expectedSucceeded, () =>
+                Retry.WithClock(mockClock)
+                     .WithTimeout(timeout)
+                     .Until(() => count++ >= 2));
+            mockClock.VerifyAllExpectations();
         }
 
         [Test]
         [ExpectedArgumentNullException]
         public void Retry_with_null_DoBetween_action_should_throw_exception()
         {
-            Retry.DoBetween(null);
+            var mockClock = MockRepository.GenerateStub<IClock>();
+            Retry.WithClock(mockClock).DoBetween(null);
         }
 
         [Test]
         [ExpectedArgumentOutOfRangeException]
         public void Retry_with_negative_polling_time_should_throw_exception()
         {
-            Retry.WithPolling(-100);
+            var mockClock = MockRepository.GenerateStub<IClock>();
+            Retry.WithClock(mockClock).WithPolling(-100);
         }
 
         [Test]
         [ExpectedException(typeof(InvalidOperationException))]
         public void Retry_Repeat_twice_should_throw_exception()
         {
-            Retry.Repeat(10).Repeat(10);
+            var mockClock = MockRepository.GenerateStub<IClock>();
+            Retry.WithClock(mockClock).Repeat(10).Repeat(10);
         }
 
         [Test]
         [ExpectedException(typeof(InvalidOperationException))]
         public void Retry_WithPolling_twice_should_throw_exception()
         {
-            Retry.WithPolling(10).WithPolling(10);
+            var mockClock = MockRepository.GenerateStub<IClock>();
+            Retry.WithClock(mockClock).WithPolling(10).WithPolling(10);
         }
 
         [Test]
         [ExpectedException(typeof(InvalidOperationException))]
         public void Retry_WithTimeout_twice_should_throw_exception()
         {
-            Retry.WithTimeout(10).WithTimeout(10);
+            var mockClock = MockRepository.GenerateStub<IClock>();
+            Retry.WithClock(mockClock).WithTimeout(10).WithTimeout(10);
         }
 
         [Test]
         [ExpectedException(typeof(InvalidOperationException))]
         public void Retry_DoBetween_twice_should_throw_exception()
         {
-            Retry.DoBetween(() => { }).DoBetween(() => { });
+            var mockClock = MockRepository.GenerateStub<IClock>();
+            Retry.WithClock(mockClock).DoBetween(() => { }).DoBetween(() => { });
         }
     }
 }

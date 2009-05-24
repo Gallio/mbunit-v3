@@ -21,19 +21,20 @@ using System.Threading;
 using Gallio.Common;
 using Gallio.Framework.Assertions;
 using Gallio.Framework.Pattern;
+using Gallio.Common.Time;
+using Gallio.Runtime;
 
 namespace MbUnit.Framework
 {
     /// <summary>
-    /// <para>
     /// Evaluates repeatedly the specified condition until it becomes fulfilled, or throws
     /// a <see cref="AssertionFailureException"/> if a timeout occured, or if the
     /// evaluation was done unsuccessfully too many times.
-    /// </para>
     /// </summary>
     /// <remarks>
-    /// Here is an example that illustrates the usage of <see cref="Retry"/>.
+    /// <para>
     /// <example>
+    /// Here is an example that illustrates the usage of <see cref="Retry"/>.
     /// <code><![CDATA[
     /// [TestFixture]
     /// public class FooTest
@@ -50,20 +51,23 @@ namespace MbUnit.Framework
     /// }
     /// ]]></code>
     /// </example>
+    /// </para>
     /// </remarks>
     public sealed class Retry
     {
         internal static readonly int DefaultRepeat = -1;
-        internal static readonly int DefaultPollingMilliseconds = 0;
-        internal static readonly int DefaultTimeoutMilliseconds = 30000;
+        internal static readonly TimeSpan DefaultPolling = TimeSpan.Zero;
+        internal static readonly TimeSpan DefaultTimeout = TimeSpan.FromSeconds(30);
 
         /// <summary>
         /// Specifies the maximum number of evaluation attempts, before the <see cref="Retry.Until(Func{bool})"/>, or 
         /// <see cref="Retry.Until(WaitHandle)"/> operation fails.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// If not specified, the condition will be evaluated an infinite number of times, or until some
         /// other stop criterion is reached.
+        /// </para>
         /// </remarks>
         /// <param name="repeat">The maximum number of evaluation cycles, or zero or a negative value to specify an unlimited number of attempts.</param>
         /// <returns>An instance to specify other options for the retry operation.</returns>
@@ -77,8 +81,10 @@ namespace MbUnit.Framework
         /// Specifies a polling time expressed in milliseconds between each consecutive evaluation of the condition.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// If not specified, the default polling time is zero; which causes the condition to be evaluated as fast as possible, with
         /// only a brief suspension of the current thread (<see cref="Thread.Sleep(int)"/>).
+        /// </para>
         /// </remarks>
         /// <param name="milliseconds">The polling time expressed in milliseconds.</param>
         /// <returns>An instance to specify other options for the retry operation.</returns>
@@ -93,8 +99,10 @@ namespace MbUnit.Framework
         /// Specifies a polling time between each consecutive evaluation of the condition.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// If not specified, the default polling time is zero; which causes the condition to be evaluated as fast as possible, with
         /// only a brief suspension of the current thread (<see cref="Thread.Sleep(TimeSpan)"/>).
+        /// </para>
         /// </remarks>
         /// <param name="polling">The polling time.</param>
         /// <returns>An instance to specify other options for the retry operation.</returns>
@@ -110,7 +118,9 @@ namespace MbUnit.Framework
         /// overall duration exceeds the specified timeout value.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// If not specified, the default timeout value is set to 10 seconds.
+        /// </para>
         /// </remarks>
         /// <param name="milliseconds">The timeout value expressed in milliseconds, or a negative value to specify no timeout value.
         /// A value of zero, will let the condition to be evaluated only once.</param>
@@ -126,7 +136,9 @@ namespace MbUnit.Framework
         /// overall duration exceeds the specified timeout value.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// If not specified, the default timeout value is set to 10 seconds.
+        /// </para>
         /// </remarks>
         /// <param name="timeout">The timeout value, or a negative value to specify no timeout value.
         /// A value of zero, will let the condition to be evaluated only once.</param>
@@ -161,6 +173,11 @@ namespace MbUnit.Framework
             return GetDefaultOptions().WithFailureMessage(messageFormat, messageArgs);
         }
 
+        internal static IRetryOptions WithClock(IClock clock)
+        {
+            return new RetryOptions(clock);
+        }
+
         /// <summary>
         /// Specifies the condition to evaluate repeatedly, and starts the entire operation.
         /// The condition is considered fulfilled when it returns true.
@@ -179,6 +196,7 @@ namespace MbUnit.Framework
         /// <param name="waitHandle">The wait handle to evaluate</param>
         /// <exception cref="AssertionFailureException">Thrown when the wait handle is still unsignaled, and a timeout occured, or the maximum
         /// number of evaluation attempts was reached.</exception>
+        /// <seealso cref="WaitHandle.WaitOne(int,bool)"/>
         public static void Until(WaitHandle waitHandle)
         {
             GetDefaultOptions().Until(waitHandle);
@@ -190,6 +208,7 @@ namespace MbUnit.Framework
         /// <param name="tread">The thread to evaluate</param>
         /// <exception cref="AssertionFailureException">Thrown when the thread is still alive, and a timeout occured, or the maximum
         /// number of evaluation attempts was reached.</exception>
+        /// <seealso cref="Thread.Join(int)"/>
         public static void Until(Thread tread)
         {
             GetDefaultOptions().Until(tread);
@@ -197,17 +216,23 @@ namespace MbUnit.Framework
 
         private static IRetryOptions GetDefaultOptions()
         {
-            return new RetryOptions();
+            return new RetryOptions(new Clock());
         }
 
         private class RetryOptions : IRetryOptions
         {
             private int? repeat = null;
-            private int? pollingMilliseconds = null;
-            private int? timeoutMilliseconds = null;
+            private TimeSpan? polling = null;
+            private TimeSpan? timeout = null;
             private Action action;
             private string messageFormat;
             private object[] messageArgs;
+            private IClock clock;
+
+            public RetryOptions(IClock clock)
+            {
+                this.clock = clock;
+            }
 
             public IRetryOptions Repeat(int repeat)
             {
@@ -220,33 +245,33 @@ namespace MbUnit.Framework
 
             public IRetryOptions WithPolling(int milliseconds)
             {
-                if (pollingMilliseconds.HasValue)
-                    throw new InvalidOperationException("Expected the polling time to be specified only once.");
-
-                if (milliseconds < 0)
-                    throw new ArgumentOutOfRangeException("milliseconds", "The polling time must be greater than or equal to zero.");
-
-                pollingMilliseconds = milliseconds;
-                return this;
+                return WithPolling(TimeSpan.FromMilliseconds(milliseconds));
             }
 
             public IRetryOptions WithPolling(TimeSpan polling)
             {
-                return WithPolling((int)polling.TotalMilliseconds);
+                if (this.polling.HasValue)
+                    throw new InvalidOperationException("Expected the polling time to be specified only once.");
+
+                if (polling < TimeSpan.Zero)
+                    throw new ArgumentOutOfRangeException("polling", "The polling time must be greater than or equal to zero.");
+
+                this.polling = polling;
+                return this;
             }
 
             public IRetryOptions WithTimeout(int milliseconds)
             {
-                if (timeoutMilliseconds.HasValue)
-                    throw new InvalidOperationException("Expected the timeout value to be specified only once.");
-
-                timeoutMilliseconds = milliseconds;
-                return this;
+                return WithTimeout(TimeSpan.FromMilliseconds(milliseconds));
             }
 
             public IRetryOptions WithTimeout(TimeSpan timeout)
             {
-                return WithTimeout((int)timeout.TotalMilliseconds);
+                if (this.timeout.HasValue)
+                    throw new InvalidOperationException("Expected the timeout value to be specified only once.");
+
+                this.timeout = timeout;
+                return this;
             }
 
             public IRetryOptions DoBetween(Action action)
@@ -294,10 +319,11 @@ namespace MbUnit.Framework
 
             private void Run(Func<bool> condition)
             {
-                var runner = new RetryRunner(repeat ?? Retry.DefaultRepeat, 
-                    pollingMilliseconds ?? Retry.DefaultPollingMilliseconds, 
-                    timeoutMilliseconds ?? Retry.DefaultTimeoutMilliseconds,
-                    action, condition, messageFormat, messageArgs);
+                var runner = new RetryRunner(
+                    repeat ?? Retry.DefaultRepeat, 
+                    polling ?? Retry.DefaultPolling, 
+                    timeout ?? Retry.DefaultTimeout,
+                    action, condition, messageFormat, messageArgs, clock);
                 runner.Run();
             }
         }
@@ -305,25 +331,26 @@ namespace MbUnit.Framework
         private class RetryRunner
         {
             private readonly int repeat;
-            private readonly int pollingMilliseconds;
-            private readonly int timeoutMilliseconds;
+            private readonly TimeSpan polling;
+            private readonly TimeSpan timeout;
             private readonly Action action;
             private readonly Func<bool> condition;
             private readonly string messageFormat;
             private readonly object[] messageArgs;
-            private Stopwatch stopwatch;
+            private IClock clock;
             private int count;
 
-            public RetryRunner(int repeat, int pollingMilliseconds, int timeoutMilliseconds, Action action, 
-                Func<bool> condition, string messageFormat, object[] messageArgs)
+            public RetryRunner(int repeat, TimeSpan polling, TimeSpan timeout, Action action, 
+                Func<bool> condition, string messageFormat, object[] messageArgs, IClock clock)
             {
                 this.repeat = repeat;
-                this.pollingMilliseconds = pollingMilliseconds;
-                this.timeoutMilliseconds = timeoutMilliseconds;
+                this.polling = polling;
+                this.timeout = timeout;
                 this.condition = condition;
                 this.action = action;
                 this.messageFormat = messageFormat;
                 this.messageArgs = messageArgs;
+                this.clock = clock;
             }
 
             private bool EvaluateCondition()
@@ -353,11 +380,11 @@ namespace MbUnit.Framework
                         .ToAssertionFailure());
                 }
 
-                if ((timeoutMilliseconds >= 0) && (stopwatch.ElapsedMilliseconds >= timeoutMilliseconds))
+                if ((timeout >= TimeSpan.Zero) && (clock.Elapsed >= timeout))
                 {
                     AssertionHelper.Fail(new AssertionFailureBuilder("The 'Retry.Until' operation has failed due to a timeout error.")
                         .SetMessage(messageFormat, messageArgs)
-                        .AddLabeledValue("Timeout Value", String.Format("{0} ms", timeoutMilliseconds))
+                        .AddLabeledValue("Timeout Value", String.Format("{0} ms", timeout.TotalMilliseconds))
                         .ToAssertionFailure());
                 }
 
@@ -367,7 +394,7 @@ namespace MbUnit.Framework
             public void Run()
             {
                 count = 0;
-                stopwatch = Stopwatch.StartNew();
+                clock.Start();
 
                 do
                 {
@@ -381,7 +408,7 @@ namespace MbUnit.Framework
                         action();
                     }
 
-                    Thread.Sleep(pollingMilliseconds);
+                    clock.ThreadSleep(polling);
                 } while (Continue());
             }
         }

@@ -17,7 +17,7 @@ using System;
 using System.Runtime.Serialization;
 using Gallio.Model;
 
-namespace Gallio.Framework
+namespace Gallio.Framework.Data.Generation
 {
     /// <summary>
     /// This exception type is used to signal an error while using a data generator.

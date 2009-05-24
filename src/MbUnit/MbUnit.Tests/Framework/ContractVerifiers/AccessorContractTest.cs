@@ -228,7 +228,7 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
                 ValidValues = { new Foo(123), new Foo(456), new Foo(789) },
                 AcceptNullValue = false,
                 DefaultInstance = () => new SampleWithNoDefaultConstructor("Hello"),
-                IncompetentValues =
+                InvalidValues =
                 {
                     { typeof(ArgumentOutOfRangeException), new Foo(-123), new Foo(-456) },
                     { typeof(ArgumentException), new Foo(666) }
@@ -246,7 +246,7 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
                 ValidValues = { new Foo(123), new Foo(456), new Foo(789) },
                 AcceptNullValue = false,
                 DefaultInstance = () => new SampleWithNoDefaultConstructor("Hello"),
-                IncompetentValues =
+                InvalidValues =
                 {
                     { typeof(ArgumentOutOfRangeException), new Foo(-123), new Foo(-456) },
                     { typeof(ArgumentException), new Foo(666) }

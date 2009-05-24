@@ -29,19 +29,21 @@ namespace MbUnit.Framework.ContractVerifiers
     /// assigned to a field of the test fixture.
     /// </summary>
     /// <example>
-    /// <code>
+    /// <code><![CDATA[
     /// [TestFixture]
     /// public class MyExceptionTests
     /// {
     ///     [VerifyContract]
-    ///     public readonly IContract Contract = new ExceptionContract&lt;MyException&gt;();
+    ///     public readonly IContract Contract = new ExceptionContract<MyException>();
     /// }
-    /// </code>
+    /// ]]></code>
     /// </example>
     /// <seealso cref="ComparisonContract{TTarget}"/>
     /// <seealso cref="EqualityContract{TTarget}"/>
     /// <seealso cref="ExceptionContract{TException}"/>
     /// <seealso cref="ImmutabilityContract{TTarget}"/>
+    /// <seealso cref="CollectionContract{TList, TItem}"/>
+    /// <seealso cref="ListContract{TList, TItem}"/>
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
     public class VerifyContractAttribute : PatternAttribute
     {

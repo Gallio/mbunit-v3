@@ -22,20 +22,20 @@ using Gallio.Common.Collections;
 namespace MbUnit.Tests.Framework.ContractVerifiers
 {
     [TestFixture]
-    public class IncompetenceClassTest
+    public class InvalidValuesClassTest
     {
         [Test]
         [ExpectedArgumentNullException]
         public void Constructs_without_initializer_and_null_exception_type_should_throw_exception()
         {
-            new IncompetenceClass<int>(null);
+            new InvalidValuesClass<int>(null);
         }
 
         [Test]
         [ExpectedArgumentNullException]
         public void Constructs_with_initializer_and_null_exception_type_should_throw_exception()
         {
-            new IncompetenceClass<int>(null, new[] { 123, 456 });
+            new InvalidValuesClass<int>(null, new[] { 123, 456 });
         }
 
         internal class MyErroneousException // Does not derive from System.Exception!
@@ -46,20 +46,20 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
         [ExpectedArgumentException]
         public void Constructs_without_initializer_and_invalid_exception_type_should_throw_exception()
         {
-            new IncompetenceClass<int>(typeof(MyErroneousException));
+            new InvalidValuesClass<int>(typeof(MyErroneousException));
         }
 
         [Test]
         [ExpectedArgumentException]
         public void Constructs_with_initializer_and_invalid_exception_type_should_throw_exception()
         {
-            new IncompetenceClass<int>(typeof(MyErroneousException), new[] { 123, 456 });
+            new InvalidValuesClass<int>(typeof(MyErroneousException), new[] { 123, 456 });
         }
 
         [Test]
         public void Constructs_empty_ok()
         {
-            var collection = new IncompetenceClass<int>(typeof(ArgumentOutOfRangeException));
+            var collection = new InvalidValuesClass<int>(typeof(ArgumentOutOfRangeException));
             Assert.AreEqual(typeof(ArgumentOutOfRangeException), collection.ExpectedExceptionType);
             Assert.IsEmpty(collection);
         }
@@ -68,7 +68,7 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
         [ExpectedArgumentNullException]
         public void Adds_null_reference_should_throw_exception()
         {
-            var collection = new IncompetenceClass<object>(typeof(ArgumentException));
+            var collection = new InvalidValuesClass<object>(typeof(ArgumentException));
             collection.Add(null);
         }
 
@@ -76,7 +76,7 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
         [ExpectedArgumentException]
         public void Adds_doublet_reference_type_object_should_throw_exception()
         {
-            var collection = new IncompetenceClass<object>(typeof(ArgumentException));
+            var collection = new InvalidValuesClass<object>(typeof(ArgumentException));
             var item = new object();
             collection.Add(item);
             collection.Add(item);
@@ -86,7 +86,7 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
         [ExpectedArgumentException]
         public void Adds_doublet_value_type_should_throw_exception()
         {
-            var collection = new IncompetenceClass<int>(typeof(ArgumentException));
+            var collection = new InvalidValuesClass<int>(typeof(ArgumentException));
             collection.Add(123);
             collection.Add(123);
         }
@@ -94,7 +94,7 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
         [Test]
         public void Populates_explicitely_the_collection_ok()
         {
-            var collection = new IncompetenceClass<int>(typeof(ArgumentException));
+            var collection = new InvalidValuesClass<int>(typeof(ArgumentException));
             collection.Add(123);
             collection.Add(456);
             collection.Add(789);
@@ -105,7 +105,7 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
         [Test]
         public void Populates_within_constructor_ok()
         {
-            var collection = new IncompetenceClass<int>(typeof(ArgumentException), new[] { 123, 456, 789 });
+            var collection = new InvalidValuesClass<int>(typeof(ArgumentException), new[] { 123, 456, 789 });
             Assert.AreEqual(typeof(ArgumentException), collection.ExpectedExceptionType);
             Assert.AreElementsEqualIgnoringOrder(new[] { 123, 456, 789 }, collection);
         }

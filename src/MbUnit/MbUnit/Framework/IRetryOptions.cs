@@ -33,8 +33,10 @@ namespace MbUnit.Framework
         /// <see cref="Retry.Until(WaitHandle)"/> operation fails.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// If not specified, the condition will be evaluated an infinite number of times, or until some
         /// other stop criterion is reached.
+        /// </para>
         /// </remarks>
         /// <param name="repeat">The maximum number of evaluation cycles, or zero or a negative value to specify an unlimited number of attempts.</param>
         /// <returns>An instance to specify other options for the retry operation.</returns>
@@ -45,8 +47,10 @@ namespace MbUnit.Framework
         /// Specifies a polling time expressed in milliseconds between each consecutive evaluation of the condition.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// If not specified, the default polling time is zero; which causes the condition to be evaluated as fast as possible, with
         /// only a brief suspension of the current thread (<see cref="Thread.Sleep(int)"/>).
+        /// </para>
         /// </remarks>
         /// <param name="milliseconds">The polling time expressed in milliseconds.</param>
         /// <returns>An instance to specify other options for the retry operation.</returns>
@@ -58,8 +62,10 @@ namespace MbUnit.Framework
         /// Specifies a polling time between each consecutive evaluation of the condition.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// If not specified, the default polling time is zero; which causes the condition to be evaluated as fast as possible, with
         /// only a brief suspension of the current thread (<see cref="Thread.Sleep(TimeSpan)"/>).
+        /// </para>
         /// </remarks>
         /// <param name="polling">The polling time.</param>
         /// <returns>An instance to specify other options for the retry operation.</returns>
@@ -72,7 +78,9 @@ namespace MbUnit.Framework
         /// overall duration exceeds the specified timeout value.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// If not specified, the default timeout value is set to 10 seconds.
+        /// </para>
         /// </remarks>
         /// <param name="milliseconds">The timeout value expressed in milliseconds, or a negative value to specify no timeout value.
         /// A value of zero, will let the condition to be evaluated only once.</param>
@@ -85,7 +93,9 @@ namespace MbUnit.Framework
         /// overall duration exceeds the specified timeout value.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// If not specified, the default timeout value is set to 10 seconds.
+        /// </para>
         /// </remarks>
         /// <param name="timeout">The timeout value, or a negative value to specify no timeout value.
         /// A value of zero, will let the condition to be evaluated only once.</param>
@@ -126,6 +136,7 @@ namespace MbUnit.Framework
         /// <param name="waitHandle">The wait handle to evaluate</param>
         /// <exception cref="AssertionFailureException">Thrown when the wait handle is unsignaled, and a timeout occured, or the maximum
         /// number of evaluation attempts was reached.</exception>
+        /// <seealso cref="WaitHandle.WaitOne(int,bool)"/>
         void Until(WaitHandle waitHandle);
 
         /// <summary>
@@ -134,6 +145,7 @@ namespace MbUnit.Framework
         /// <param name="tread">The thread to evaluate</param>
         /// <exception cref="AssertionFailureException">Thrown when the thread is still alive, and a timeout occured, or the maximum
         /// number of evaluation attempts was reached.</exception>
+        /// <seealso cref="Thread.Join(int)"/>
         void Until(Thread tread);
     }
 }

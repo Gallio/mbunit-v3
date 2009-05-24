@@ -143,8 +143,8 @@
     <Compile Include="Framework\ContractVerifiers\AbstractContract.cs" />
     <Compile Include="Framework\ContractVerifiers\AccessorContract.cs" />
     <Compile Include="Framework\ContractVerifiers\Core\NamespaceDoc.cs" />
-    <Compile Include="Framework\ContractVerifiers\IncompetenceClass.cs" />
-    <Compile Include="Framework\ContractVerifiers\IncompetenceClassCollection.cs" />
+    <Compile Include="Framework\ContractVerifiers\InvalidValuesClass.cs" />
+    <Compile Include="Framework\ContractVerifiers\InvalidValuesClassCollection.cs" />
     <Compile Include="Framework\ContractVerifiers\Core\CollectionHandler.cs" />
     <Compile Include="Framework\ContractVerifiers\Core\ContractVerificationContext.cs" />
     <Compile Include="Framework\ContractVerifiers\Core\ListHandler.cs" />
