@@ -36,6 +36,7 @@
         <id>{B55A8096-EFB9-4570-B977-75695D614E3B}</id>
         <name>csUnit</name>
         <frameworkAssemblyNames>csUnit</frameworkAssemblyNames>
+        <version>2.5.3081.40666</version>
       </traits>
     </component>
   </components>

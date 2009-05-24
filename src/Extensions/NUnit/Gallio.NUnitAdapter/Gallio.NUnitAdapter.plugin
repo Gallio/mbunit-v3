@@ -36,6 +36,7 @@
         <id>{E0273D0F-BEAE-47ff-9391-D6782417F000}</id>
         <name>NUnit</name>
         <frameworkAssemblyNames>nunit.framework</frameworkAssemblyNames>
+        <version>2.4.8.0</version>
       </traits>
     </component>
   </components>

@@ -35,12 +35,17 @@ namespace Gallio.Icarus
             foreach (var testFramework in aboutController.TestFrameworks)
             {
                 var item = new ListViewItem(testFramework.Name);
+                
                 if (testFramework.Icon != null)
                 {
                     testFrameworkIcons.Images.Add(testFramework.Icon);
                     item.ImageIndex = imgIndex;
                     imgIndex++;
                 }
+
+                if (!string.IsNullOrEmpty(testFramework.Version))
+                    item.SubItems.Add(testFramework.Version);
+
                 testFrameworksList.Items.Add(item);
             }
         }

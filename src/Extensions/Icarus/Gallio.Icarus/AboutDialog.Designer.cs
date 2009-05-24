@@ -49,9 +49,10 @@ namespace Gallio.Icarus
             this.versionLabel = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.testFrameworksList = new System.Windows.Forms.ListView();
-            this.websiteLink = new System.Windows.Forms.LinkLabel();
-            this.testFrameworkIcons = new System.Windows.Forms.ImageList(this.components);
             this.frameworkName = new System.Windows.Forms.ColumnHeader();
+            this.testFrameworkIcons = new System.Windows.Forms.ImageList(this.components);
+            this.websiteLink = new System.Windows.Forms.LinkLabel();
+            this.frameworkVersion = new System.Windows.Forms.ColumnHeader();
             this.SuspendLayout();
             // 
             // buttonClose
@@ -88,7 +89,8 @@ namespace Gallio.Icarus
             // testFrameworksList
             // 
             this.testFrameworksList.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.frameworkName});
+            this.frameworkName,
+            this.frameworkVersion});
             this.testFrameworksList.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
             this.testFrameworksList.Location = new System.Drawing.Point(12, 168);
             this.testFrameworksList.Name = "testFrameworksList";
@@ -97,6 +99,17 @@ namespace Gallio.Icarus
             this.testFrameworksList.TabIndex = 5;
             this.testFrameworksList.UseCompatibleStateImageBehavior = false;
             this.testFrameworksList.View = System.Windows.Forms.View.Details;
+            // 
+            // frameworkName
+            // 
+            this.frameworkName.Text = "Name";
+            this.frameworkName.Width = 200;
+            // 
+            // testFrameworkIcons
+            // 
+            this.testFrameworkIcons.ColorDepth = System.Windows.Forms.ColorDepth.Depth8Bit;
+            this.testFrameworkIcons.ImageSize = new System.Drawing.Size(16, 16);
+            this.testFrameworkIcons.TransparentColor = System.Drawing.Color.Transparent;
             // 
             // websiteLink
             // 
@@ -112,16 +125,10 @@ namespace Gallio.Icarus
             this.websiteLink.UseCompatibleTextRendering = true;
             this.websiteLink.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.websiteLink_LinkClicked);
             // 
-            // testFrameworkIcons
+            // frameworkVersion
             // 
-            this.testFrameworkIcons.ColorDepth = System.Windows.Forms.ColorDepth.Depth8Bit;
-            this.testFrameworkIcons.ImageSize = new System.Drawing.Size(16, 16);
-            this.testFrameworkIcons.TransparentColor = System.Drawing.Color.Transparent;
-            // 
-            // frameworkName
-            // 
-            this.frameworkName.Text = "Framework Name";
-            this.frameworkName.Width = 250;
+            this.frameworkVersion.Text = "Version";
+            this.frameworkVersion.Width = 150;
             // 
             // AboutDialog
             // 
@@ -155,5 +162,6 @@ namespace Gallio.Icarus
         private System.Windows.Forms.LinkLabel websiteLink;
         private System.Windows.Forms.ImageList testFrameworkIcons;
         private System.Windows.Forms.ColumnHeader frameworkName;
+        private System.Windows.Forms.ColumnHeader frameworkVersion;
     }
 }

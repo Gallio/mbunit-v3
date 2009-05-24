@@ -14,9 +14,7 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Text;
 using Gallio.Common.Collections;
 using Gallio.Runtime.Extensibility;
 
@@ -29,7 +27,6 @@ namespace Gallio.Model
     {
         private readonly Guid id;
         private readonly string name;
-        private Icon icon;
         private string[] frameworkAssemblyNames;
         private string[] testFileExtensions;
 
@@ -67,11 +64,12 @@ namespace Gallio.Model
         /// <summary>
         /// Gets or sets the framework's icon, or null if none.
         /// </summary>
-        public Icon Icon
-        {
-            get { return icon; }
-            set { icon = value; }
-        }
+        public Icon Icon { get; set; }
+
+        /// <summary>
+        /// The version of the test framework.
+        /// </summary>
+        public string Version { get; set; }
 
         /// <summary>
         /// Gets or sets a flag that configures whether the <see cref="ITestExplorer.ConfigureTestDomain" />
