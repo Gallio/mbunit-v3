@@ -53,11 +53,11 @@ namespace MbUnit.Samples.ContractVerifiers.Accessor
             // By default, that contract property is 'true'; but it is always ignored for non-nullable types.
             AcceptNullValue = false,
 
-            // Incompetent values are expected to be rejected by the tested property setter.
-            // You can provided lists of incompetent values with the type of the exception
+            // Invalid values are expected to be rejected by the tested property setter.
+            // You can provided lists of invalid values with the type of the exception
             // which is expected to be thrown. In the example below, sending an empty string should
             // cause an ArgumentException.
-            IncompetentValues =
+            InvalidValues =
             {
                 { typeof(ArgumentException), String.Empty },
             }
@@ -89,8 +89,8 @@ namespace MbUnit.Samples.ContractVerifiers.Accessor
                 return o;
             },
 
-            // You can define several sets of incompetent values for each type of exception. 
-            IncompetentValues =
+            // You can define several sets of invalid values for each type of exception. 
+            InvalidValues =
             {
                 { typeof(ArgumentException), DateTime.MinValue, DateTime.MaxValue },
                 { typeof(ArgumentOutOfRangeException), DateTime.Now.AddDays(1), new DateTime(9000, 1, 1) }
