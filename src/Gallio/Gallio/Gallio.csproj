@@ -141,6 +141,7 @@
     <Compile Include="Common\Text\NamespaceDoc.cs" />
     <Compile Include="Common\Time\Clock.cs" />
     <Compile Include="Common\Time\IClock.cs" />
+    <Compile Include="Common\Time\NamespaceDoc.cs" />
     <Compile Include="Common\Validation\NamespaceDoc.cs" />
     <Compile Include="Common\Xml\NamespaceDoc.cs" />
     <Compile Include="Framework\Assertions\NamespaceDoc.cs" />
