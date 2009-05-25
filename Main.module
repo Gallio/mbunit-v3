@@ -75,7 +75,8 @@
   <!-- SUPPORT CODE: API DOCS -->
 
   <PropertyGroup>
-    <WebDocsDir>$(DistDir)\APIDocs\$(Version)</WebDocsDir>
+    <WebDocsParentDir>$(DistDir)\APIDocs</WebDocsParentDir>
+    <WebDocsDir>$(WebDocsParentDir)\$(Version)</WebDocsDir>
     <CHMDocsDir>$(ImageDir)\docs</CHMDocsDir>
     <VSDocsDir>$(ImageDir)\docs\vs</VSDocsDir>
     <SandcastleTempDir>$(TempDir)\docs</SandcastleTempDir>
@@ -112,7 +113,7 @@
             Condition="Exists('$(CHMDocsDir)\Gallio.chm')" />
     <RemoveDir Directories="$(WebDocsDir);$(VSDocsDir);$(SandcastleTempDir)" />
     
-    <MakeDir Directories="$(CHMDocsDir);$(VSDocsDir);$(SandcastleTempDir)" />
+    <MakeDir Directories="$(WebDocsParentDir);$(CHMDocsDir);$(VSDocsDir);$(SandcastleTempDir)" />
 
     <!-- Should be able to just override DocumentationSources but
          we get an error.
