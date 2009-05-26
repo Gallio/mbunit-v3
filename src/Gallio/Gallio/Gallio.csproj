@@ -152,6 +152,7 @@
     <Compile Include="Common\Remoting\LongLivedMarshalByRefObject.cs" />
     <Compile Include="Common\Remoting\NamespaceDoc.cs" />
     <Compile Include="Common\Text\NamespaceDoc.cs" />
+    <Compile Include="Common\Text\RegularExpression\NamespaceDoc.cs" />
     <Compile Include="Common\Time\Clock.cs" />
     <Compile Include="Common\Time\IClock.cs" />
     <Compile Include="Common\Time\NamespaceDoc.cs" />
@@ -159,6 +160,17 @@
     <Compile Include="Common\Xml\NamespaceDoc.cs" />
     <Compile Include="Framework\Assertions\NamespaceDoc.cs" />
     <Compile Include="Framework\Data\Generation\NamespaceDoc.cs" />
+    <Compile Include="Common\Text\RegularExpression\ElementSet.cs" />
+    <Compile Include="Common\Text\RegularExpression\IElement.cs" />
+    <Compile Include="Common\Text\RegularExpression\Element.cs" />
+    <Compile Include="Common\Text\RegularExpression\ElementEmpty.cs" />
+    <Compile Include="Common\Text\RegularExpression\ElementGroup.cs" />
+    <Compile Include="Common\Text\RegularExpression\ElementLiteral.cs" />
+    <Compile Include="Common\Text\RegularExpression\RegexLiteException.cs" />
+    <Compile Include="Common\Text\RegularExpression\Parser.cs" />
+    <Compile Include="Common\Text\RegularExpression\ParsingInfo.cs" />
+    <Compile Include="Common\Text\RegularExpression\RegexLite.cs" />
+    <Compile Include="Common\Text\RegularExpression\Quantifier.cs" />
     <Compile Include="Framework\Data\Generation\SequentialNumbersGenerator.cs" />
     <Compile Include="Framework\Data\Generation\Generator.cs" />
     <Compile Include="Framework\Data\Generation\RandomNumbersGenerator.cs" />
