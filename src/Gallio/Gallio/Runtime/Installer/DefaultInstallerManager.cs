@@ -70,20 +70,16 @@ namespace Gallio.Runtime.Installer
                 if (progressMonitor.IsCanceled)
                     return false;
 
-                if (elevationContext != null)
+                if (elevationContext != null
+                    || elevationManager.HasElevatedPrivileges
+                    || ! IsElevationRequired(filteredInstallerHandles))
                 {
-                    return InstallOrUninstallWithElevationContext(installerHandles, elevationContext, progressMonitor, operation);
+                    return InstallOrUninstallWithElevationContext(filteredInstallerHandles, elevationContext, progressMonitor, operation);
                 }
-                else
-                {
-                    if (!TryGetElevationContextIfRequired(filteredInstallerHandles, out elevationContext))
-                        return false;
 
-                    using (elevationContext)
-                    {
-                        return InstallOrUninstallWithElevationContext(installerHandles, elevationContext, progressMonitor, operation);
-                    }
-                }
+                return elevationManager.TryElevate(
+                    newElevationContext => InstallOrUninstallWithElevationContext(filteredInstallerHandles, newElevationContext, progressMonitor, operation),
+                    "Administrative access required to install or uninstall certain components.");
             }
         }
 
@@ -114,24 +110,6 @@ namespace Gallio.Runtime.Installer
                 }
             }
 
-            return true;
-        }
-
-        private bool TryGetElevationContextIfRequired(IEnumerable<ComponentHandle<IInstaller, InstallerTraits>> installerHandles,
-            out IElevationContext elevationContext)
-        {
-            if (!elevationManager.HasElevatedPrivileges)
-            {
-                bool elevationRequired = IsElevationRequired(installerHandles);
-                if (elevationRequired)
-                {
-                    return elevationManager.TryAcquireElevationContext(
-                        "Administrative access required to install or uninstall certain components.",
-                        out elevationContext);
-                }
-            }
-
-            elevationContext = null;
             return true;
         }
 

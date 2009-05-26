@@ -49,14 +49,23 @@ namespace Gallio.Runtime.Security
         bool HasElevatedPrivileges { get; }
 
         /// <summary>
-        /// Tries to acquire a context for performing elevated commands.
+        /// Acquires a context for performing elevated commands.
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// Provides the action with an elevation context for executing elevated commands.
+        /// Note that the action itself does not run with elevated privileges.
+        /// </para>
+        /// </remarks>
+        /// <param name="elevationAction">An action to be provided with an elevation context
+        /// within which elevated commands may be invoked</param>
         /// <param name="reason">Specifies the reason an elevation is required.  The
-        /// reason will be displayed to the user to explain the purpose of the request.</param>
-        /// <param name="context">Returns the context on success, null otherwise</param>
-        /// <returns>True if the context was acquired, false if forbidden by
-        /// the user or by the operating system</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="reason"/> is null</exception>
-        bool TryAcquireElevationContext(string reason, out IElevationContext context);
+        /// reason may be displayed to the user to explain the purpose of the request.</param>
+        /// <returns>True if the elevation context was acquired and the action completed
+        /// successfully, false if the action failed or elevation was forbidden by the user or by the
+        /// operating system</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="reason"/>
+        /// or <paramref name="elevationAction"/> is null</exception>
+        bool TryElevate(ElevationAction elevationAction, string reason);
     }
 }

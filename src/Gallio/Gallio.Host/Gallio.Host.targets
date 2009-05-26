@@ -5,10 +5,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <HostVariant Include="$(GallioProjectOutputPath)\Gallio.Host.exe" />
+    <HostVariant Include="$(GallioProjectOutputPath)\Gallio.Host.exe">
+      <Manifest>Standard.manifest</Manifest>
+    </HostVariant>
     
     <HostVariant Include="$(GallioProjectOutputPath)\Gallio.Host.x86.exe">
       <CorFlags>/32BIT+</CorFlags>
+      <Manifest>Standard.manifest</Manifest>
     </HostVariant>
     
     <HostVariant Include="$(GallioProjectOutputPath)\Gallio.Host.Elevated.exe">
@@ -39,11 +42,11 @@
       <Output TaskParameter="DestinationFiles" ItemName="FilesWrites" />
     </Copy>
 
-    <Exec Command="&quot;..\..\..\bin\mt.exe&quot; -nologo -manifest &quot;%(HostVariant.Manifest)&quot; -outputresource:&quot;%(HostVariant.FullPath);#1&quot;"
-          Condition="'%(HostVariant.Manifest)'!=''" />
-
     <Exec Command="&quot;$(TargetFrameworkSDKDirectory)bin\corflags.exe&quot; /force &quot;%(HostVariant.FullPath)&quot; /nologo %(HostVariant.CorFlags) >nul"
           Condition="'%(HostVariant.CorFlags)'!=''" />
+
+    <Exec Command="&quot;..\..\..\bin\mt.exe&quot; -nologo -manifest &quot;%(HostVariant.Manifest)&quot; -managedassemblyname:&quot;%(HostVariant.FullPath)&quot; -nodependency -outputresource:&quot;%(HostVariant.FullPath);#1&quot;"
+          Condition="'%(HostVariant.Manifest)'!=''" />
 
     <Exec Command="&quot;$(TargetFrameworkSDKDirectory)bin\sn.exe&quot; -q -R &quot;%(HostVariant.FullPath)&quot; &quot;$(AssemblyOriginatorKeyFile)&quot;" />
   </Target>

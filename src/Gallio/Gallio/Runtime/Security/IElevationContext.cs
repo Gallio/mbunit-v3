@@ -23,7 +23,7 @@ namespace Gallio.Runtime.Security
     /// <summary>
     /// Provides a context within which commands may be executed with elevated privileges.
     /// </summary>
-    public interface IElevationContext : IDisposable
+    public interface IElevationContext
     {
         /// <summary>
         /// Executes an elevated command.

@@ -56,35 +56,35 @@ namespace Gallio.Runtime.Security
         }
 
         /// <inheritdoc />
-        public bool TryAcquireElevationContext(string reason, out IElevationContext context)
+        public bool TryElevate(ElevationAction elevationAction, string reason)
         {
             if (reason == null)
                 throw new ArgumentNullException("reason");
+            if (elevationAction == null)
+                throw new ArgumentNullException("elevationAction");
 
             if (HasElevatedPrivileges)
             {
-                context = new LocalElevationContext(runtime);
-                return true;
+                var elevationContext = new LocalElevationContext(runtime);
+                return elevationAction(elevationContext);
             }
 
-            IHost host = null;
             try
             {
-                host = CreateHost();
+                using (IHost host = CreateHost())
+                {
+                    var elevationContext = new HostedElevationContext(host);
+                    if (!elevationContext.Initialize(runtime.GetRuntimeSetup(), runtime.Logger))
+                        return false;
 
-                if (TryInitializeHostedElevationContext(host, out context))
-                    return true;
+                    return elevationAction(elevationContext);
+                }
             }
             catch (Exception ex)
             {
-                runtime.Logger.Log(LogSeverity.Error, "Failed to create elevation context out of process.", ex);
+                runtime.Logger.Log(LogSeverity.Error, "Failed to create an elevation context out of process.", ex);
+                return false;
             }
-
-            if (host != null)
-                host.Dispose();
-
-            context = null;
-            return false;
         }
 
         private IHost CreateHost()
@@ -95,19 +95,6 @@ namespace Gallio.Runtime.Security
             var hostFactory = new IsolatedProcessHostFactory(runtime);
             var host = hostFactory.CreateHost(hostSetup, runtime.Logger);
             return host;
-        }
-
-        private bool TryInitializeHostedElevationContext(IHost host, out IElevationContext elevationContext)
-        {
-            var hostedElevationContext = new HostedElevationContext(host);
-            if (! hostedElevationContext.Initialize(runtime.GetRuntimeSetup(), runtime.Logger))
-            {
-                elevationContext = null;
-                return false;
-            }
-
-            elevationContext = hostedElevationContext;
-            return true;
         }
 
         private static bool CurrentUserHasElevatedPrivileges()
@@ -135,10 +122,6 @@ namespace Gallio.Runtime.Security
             public LocalElevationContext(IRuntime runtime)
             {
                 this.runtime = runtime;
-            }
-
-            public void Dispose()
-            {
             }
 
             public object Execute(string elevatedCommandId, object arguments, IProgressMonitor progressMonitor)
@@ -175,18 +158,13 @@ namespace Gallio.Runtime.Security
                 this.host = host;
             }
 
-            public void Dispose()
-            {
-                host.Dispose();
-            }
-
             public bool Initialize(RuntimeSetup runtimeSetup, ILogger logger)
             {
                 hook = HostUtils.CreateInstance<ElevationHook>(host);
 
                 if (!hook.HasElevatedPrivileges())
                 {
-                    logger.Log(LogSeverity.Warning, "Failed to create elevation context out of process.  The process was created successfully but it did not acquire elevated privileges for an unknown reason.");
+                    logger.Log(LogSeverity.Warning, "Failed to create an elevation context out of process.  The process was created successfully but it did not acquire elevated privileges for an unknown reason.");
                     return false;
                 }
 

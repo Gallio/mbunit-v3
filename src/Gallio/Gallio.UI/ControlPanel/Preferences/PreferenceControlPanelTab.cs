@@ -87,6 +87,9 @@ namespace Gallio.UI.ControlPanel.Preferences
 
                 foreach (PreferencePane preferencePane in preferencePanes)
                 {
+                    if (progressMonitor.IsCanceled)
+                        return;
+
                     if (preferencePane.PendingSettingsChanges)
                     {
                         preferencePane.ApplyPendingSettingsChanges(

@@ -92,14 +92,8 @@ namespace Gallio.UI.ControlPanel
             {
                 if (requiresElevation)
                 {
-                    IElevationContext elevationContext;
-                    if (
-                        ElevationManager.TryAcquireElevationContext(
-                            "Administrative access required to apply certain settings changes.", out elevationContext))
-                    {
-                        using (elevationContext)
-                            ApplySettingsChanges(elevationContext, progressMonitor);
-                    }
+                    ElevationManager.TryElevate(elevationContext => ApplySettingsChanges(elevationContext, progressMonitor),
+                        "Administrative access required to apply certain settings changes.");
                 }
                 else
                 {
@@ -108,18 +102,21 @@ namespace Gallio.UI.ControlPanel
             });
         }
 
-        private void ApplySettingsChanges(IElevationContext elevationContext, IProgressMonitor progressMonitor)
+        private bool ApplySettingsChanges(IElevationContext elevationContext, IProgressMonitor progressMonitor)
         {
             using (progressMonitor.BeginTask("Applying changes.", 1))
             {
                 var tabs = new List<ControlPanelTab>(GetControlPanelTabs());
                 if (tabs.Count == 0)
-                    return;
+                    return true;
 
                 double workPerTab = 1.0 / tabs.Count;
 
                 foreach (ControlPanelTab tab in tabs)
                 {
+                    if (progressMonitor.IsCanceled)
+                        return false;
+
                     if (tab.PendingSettingsChanges)
                     {
                         tab.ApplyPendingSettingsChanges(tab.RequiresElevation ? elevationContext : null, progressMonitor.CreateSubProgressMonitor(workPerTab));
@@ -130,6 +127,8 @@ namespace Gallio.UI.ControlPanel
                     }
                 }
             }
+
+            return true;
         }
 
         private IEnumerable<ControlPanelTab> GetControlPanelTabs()
