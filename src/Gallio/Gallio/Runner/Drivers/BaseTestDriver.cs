@@ -20,7 +20,7 @@ using Gallio.Model.Messages;
 using Gallio.Runtime;
 using Gallio.Runtime.Logging;
 using Gallio.Runtime.ProgressMonitoring;
-using Gallio.Runtime.Remoting;
+using Gallio.Common.Remoting;
 
 namespace Gallio.Runner.Drivers
 {

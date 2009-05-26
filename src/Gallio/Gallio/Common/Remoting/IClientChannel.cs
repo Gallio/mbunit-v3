@@ -15,21 +15,22 @@
 
 using System;
 
-namespace Gallio.Runtime.Remoting
+namespace Gallio.Common.Remoting
 {
     /// <summary>
-    /// A server channel manages the server side of a remoting channel.
+    /// A client channel manages the client side of a remoting channel.
     /// </summary>
-    /// <seealso cref="IClientChannel"/>
-    public interface IServerChannel : IDisposable
+    /// <seealso cref="IServerChannel"/>
+    public interface IClientChannel : IDisposable
     {
         /// <summary>
-        /// Registers a well-known service with the specified name.
+        /// Gets a well-known remote service with the specified name.
         /// </summary>
+        /// <param name="serviceType">The type of the service</param>
         /// <param name="serviceName">The name of the service</param>
-        /// <param name="component">The component that provides the service</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="serviceName"/> or
-        /// <paramref name="component"/> is null</exception>
-        void RegisterService(string serviceName, MarshalByRefObject component);
+        /// <returns>The component or a proxy that provides the service</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="serviceType"/>
+        /// or <paramref name="serviceName"/> is null</exception>
+        object GetService(Type serviceType, string serviceName);
     }
 }

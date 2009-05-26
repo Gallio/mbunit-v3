@@ -89,6 +89,14 @@
                 <File Name="Gallio.Host.x86.exe" KeyPath="yes" />
                 <File Name="Gallio.Host.x86.exe.config" />
             </Component>
+            <Component Id="Gallio.Host.Elevated" Guid="{1E93B413-D626-4b3d-BCC1-BEB41897A492}" Win64="no">
+                <File Name="Gallio.Host.Elevated.exe" KeyPath="yes" />
+                <File Name="Gallio.Host.Elevated.exe.config" />
+            </Component>
+            <Component Id="Gallio.Host.Elevated.x86" Guid="{DF5897EC-016B-40c6-8B27-1A2E04D1A969}" Win64="no">
+                <File Name="Gallio.Host.Elevated.x86.exe" KeyPath="yes" />
+                <File Name="Gallio.Host.Elevated.x86.exe.config" />
+            </Component>
             <Component Id="Gallio.Reports" Guid="9e17b959-1768-4a2b-b750-99821b01dd53" Win64="no">
                 <File Name="Gallio.Reports.dll" KeyPath="yes" />
                 <File Name="Gallio.Reports.pdb" />
@@ -226,6 +234,8 @@
             <ComponentRef Id="Gallio.XmlSerializers" />
             <ComponentRef Id="Gallio.Host" />
             <ComponentRef Id="Gallio.Host.x86" />
+            <ComponentRef Id="Gallio.Host.Elevated" />
+            <ComponentRef Id="Gallio.Host.Elevated.x86" />
             <ComponentRef Id="Gallio.Loader" />
             <ComponentRef Id="Gallio.License" />
             <ComponentRef Id="Mono.Cecil.License" />

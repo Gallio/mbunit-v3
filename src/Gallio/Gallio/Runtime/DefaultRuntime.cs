@@ -115,6 +115,16 @@ namespace Gallio.Runtime
         }
 
         /// <inheritdoc />
+        public ILogger Logger
+        {
+            get
+            {
+                ThrowIfDisposed();
+                return logger;
+            }
+        }
+
+        /// <inheritdoc />
         public void Initialize(ILogger logger)
         {
             if (logger == null)

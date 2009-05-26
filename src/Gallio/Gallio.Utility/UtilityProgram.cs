@@ -162,7 +162,7 @@ namespace Gallio.Utility
             switch (commandName.ToLowerInvariant())
             {
                 case "clearcurrentuserplugincache":
-                    return new ClearCurrentUserPluginCacheCommand();
+                    return new ClearCurrentUserPluginCacheUtilityCommand();
 
                 default:
                     return null;

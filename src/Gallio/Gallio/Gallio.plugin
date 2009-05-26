@@ -66,6 +66,15 @@
     <service serviceId="Gallio.FormattingRule"
              serviceType="Gallio.Runtime.Formatting.IFormattingRule, Gallio" />
 
+    <service serviceId="Gallio.ElevatedCommand"
+             serviceType="Gallio.Runtime.Security.IElevatedCommand, Gallio" />
+
+    <service serviceId="Gallio.ElevationManager"
+             serviceType="Gallio.Runtime.Security.IElevationManager, Gallio" />
+
+    <service serviceId="Gallio.PreferenceManager"
+             serviceType="Gallio.Runtime.Preferences.IPreferenceManager, Gallio" />
+
     <service serviceId="Gallio.TestFramework"
              serviceType="Gallio.Model.ITestFramework, Gallio" />
 
@@ -150,6 +159,16 @@
     <component componentId="Gallio.DebuggerManager"
                serviceId="Gallio.DebuggerManager"
                componentType="Gallio.Runtime.Debugging.DefaultDebuggerManager, Gallio" />
+
+    <component componentId="Gallio.ElevationManager"
+               serviceId="Gallio.ElevationManager"
+               componentType="Gallio.Runtime.Security.DefaultElevationManager, Gallio" />
+
+    <component componentId="Gallio.PreferenceManager"
+               serviceId="Gallio.PreferenceManager"
+               componentType="Gallio.Runtime.Preferences.DefaultPreferenceManager, Gallio" />
+    
+    <!-- Host, RUnner and Driver Factories -->
     
     <component componentId="Gallio.LocalHostFactory"
                serviceId="Gallio.HostFactory"
@@ -413,7 +432,7 @@
 
     <component componentId="Gallio.ClearCurrentUserPluginCacheCommand"
                serviceId="Gallio.UtilityCommand"
-               componentType="Gallio.Runtime.UtilityCommands.ClearCurrentUserPluginCacheCommand, Gallio">
+               componentType="Gallio.Runtime.UtilityCommands.ClearCurrentUserPluginCacheUtilityCommand, Gallio">
       <traits>
         <!-- Note: This particular command name is special and is also hardcoded in the Gallio.Utility.exe program itself
                    because we want to be able to run the command without initializing the runtime itself.
@@ -425,7 +444,7 @@
 
     <component componentId="Gallio.VerifyInstallationCommand"
                serviceId="Gallio.UtilityCommand"
-               componentType="Gallio.Runtime.UtilityCommands.VerifyInstallationCommand, Gallio">
+               componentType="Gallio.Runtime.UtilityCommands.VerifyInstallationUtilityCommand, Gallio">
       <traits>
         <name>VerifyInstallation</name>
         <description>Checks for runtime installation errors.</description>
@@ -434,7 +453,7 @@
 
     <component componentId="Gallio.SetupCommand"
                serviceId="Gallio.UtilityCommand"
-               componentType="Gallio.Runtime.Installer.SetupCommand, Gallio">
+               componentType="Gallio.Runtime.Installer.SetupUtilityCommand, Gallio">
       <traits>
         <name>Setup</name>
         <description>Installs or uninstalls components.</description>
@@ -442,6 +461,10 @@
     </component>
 
     <!-- Installers -->
+
+    <component componentId="Gallio.InstallerElevatedCommand"
+               serviceId="Gallio.ElevatedCommand"
+               componentType="Gallio.Runtime.Installer.InstallerElevatedCommand, Gallio" />
 
     <component componentId="Gallio.InstallerManager"
                serviceId="Gallio.InstallerManager"

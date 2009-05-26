@@ -14,7 +14,7 @@
 // limitations under the License.
 
 using System;
-using Gallio.Runtime.Remoting;
+using Gallio.Common.Remoting;
 
 namespace Gallio.Runtime.Hosting
 {

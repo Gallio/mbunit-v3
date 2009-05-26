@@ -16,15 +16,34 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Gallio.Model;
+using Gallio.Runtime.Installer;
+using Gallio.Runtime.Preferences;
 using Gallio.UI.ControlPanel.Preferences;
 
 namespace Gallio.TDNetRunner.UI.Preferences
 {
     public class TDNetPreferencePaneProvider : IPreferencePaneProvider
     {
+        private readonly ITestFrameworkManager frameworkManager;
+        private readonly IPreferenceManager preferenceManager;
+        private readonly IInstallerManager installerManager;
+
+        public TDNetPreferencePaneProvider(ITestFrameworkManager frameworkManager,
+            IPreferenceManager preferenceManager, IInstallerManager installerManager)
+        {
+            this.frameworkManager = frameworkManager;
+            this.preferenceManager = preferenceManager;
+            this.installerManager = installerManager;
+        }
+
         public PreferencePane CreatePreferencePane()
         {
-            return new TDNetPreferencePane();
+            var preferencePane = new TDNetPreferencePane();
+            preferencePane.PreferenceManager = preferenceManager;
+            preferencePane.FrameworkManager = frameworkManager;
+            preferencePane.InstallerManager = installerManager;
+            return preferencePane;
         }
     }
 }

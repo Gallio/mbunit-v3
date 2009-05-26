@@ -23,7 +23,7 @@ using Gallio.Framework;
 using Gallio.Runtime;
 using Gallio.Runtime.Hosting;
 using Gallio.Runtime.Logging;
-using Gallio.Tests.Runtime.Remoting;
+using Gallio.Tests.Common.Remoting;
 using MbUnit.Framework;
 
 namespace Gallio.Tests.Runtime.Hosting

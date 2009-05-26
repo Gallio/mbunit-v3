@@ -19,7 +19,7 @@ using System.Runtime.Remoting.Channels;
 using System.Threading;
 using Gallio.Common.Platform;
 
-namespace Gallio.Runtime.Remoting
+namespace Gallio.Common.Remoting
 {
     /// <summary>
     /// Abstract base class for channels implemented using the .Net remoting infrastructure.

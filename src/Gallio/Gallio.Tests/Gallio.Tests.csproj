@@ -107,6 +107,11 @@
     <Compile Include="Common\Reflection\ReflectorTest.cs" />
     <Compile Include="Common\Reflection\TypeNameTest.cs" />
     <Compile Include="Common\Reflection\WrapperAssert.cs" />
+    <Compile Include="Common\Remoting\BaseChannelTest.cs" />
+    <Compile Include="Common\Remoting\BaseClientChannelTest.cs" />
+    <Compile Include="Common\Remoting\BaseServerChannelTest.cs" />
+    <Compile Include="Common\Remoting\BinaryIpcChannelTest.cs" />
+    <Compile Include="Common\Remoting\BinaryTcpChannelTest.cs" />
     <Compile Include="Common\Text\DiffSetTest.cs" />
     <Compile Include="Common\Text\DiffTest.cs" />
     <Compile Include="Common\Text\RangeTest.cs" />
@@ -257,14 +262,9 @@
     <Compile Include="Runtime\Logging\EventLoggerTest.cs" />
     <Compile Include="Runtime\Logging\SeverityPrefixLoggerTest.cs" />
     <Compile Include="Runtime\Logging\TextLoggerTest.cs" />
-    <Compile Include="Runtime\Remoting\BinaryTcpChannelTest.cs" />
     <Compile Include="Host\HostProgramIntegrationTest.cs" />
     <Compile Include="Model\Execution\DefaultTestContextTrackerTest.cs" />
     <Compile Include="Framework\TestStepTest.cs" />
-    <Compile Include="Runtime\Remoting\BaseChannelTest.cs" />
-    <Compile Include="Runtime\Remoting\BaseClientChannelTest.cs" />
-    <Compile Include="Runtime\Remoting\BaseServerChannelTest.cs" />
-    <Compile Include="Runtime\Remoting\BinaryIpcChannelTest.cs" />
     <Compile Include="Runtime\Hosting\RemoteHostFactoryTest.cs" />
     <Compile Include="Runtime\ConsoleSupport\CommandLineArgumentParserTests.cs" />
     <Compile Include="Runtime\ConsoleSupport\CommandLineOutputTests.cs" />

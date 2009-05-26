@@ -19,6 +19,8 @@ using System.Text;
 using System.Windows.Forms;
 using Gallio.Common;
 using Gallio.Runtime.Extensibility;
+using Gallio.Runtime.ProgressMonitoring;
+using Gallio.Runtime.Security;
 
 namespace Gallio.UI.ControlPanel
 {
@@ -28,14 +30,18 @@ namespace Gallio.UI.ControlPanel
     public class ControlPanelPresenter : IControlPanelPresenter
     {
         private readonly ComponentHandle<IControlPanelTabProvider, ControlPanelTabProviderTraits>[] controlPanelTabProviderHandles;
+        private readonly IElevationManager elevationManager;
 
         /// <summary>
         /// Creates a control panel presenter.
         /// </summary>
         /// <param name="controlPanelTabProviderHandles">The preference page provider handles, not null</param>
-        public ControlPanelPresenter(ComponentHandle<IControlPanelTabProvider, ControlPanelTabProviderTraits>[] controlPanelTabProviderHandles)
+        /// <param name="elevationManager">The elevation manager, not null</param>
+        public ControlPanelPresenter(ComponentHandle<IControlPanelTabProvider, ControlPanelTabProviderTraits>[] controlPanelTabProviderHandles,
+            IElevationManager elevationManager)
         {
             this.controlPanelTabProviderHandles = controlPanelTabProviderHandles;
+            this.elevationManager = elevationManager;
         }
 
         /// <inheritdoc />
@@ -69,8 +75,9 @@ namespace Gallio.UI.ControlPanel
                     GetControlPanelTabFactory(controlPanelTabProviderHandle));
             }
 
+            controlPanelDialog.ElevationManager = elevationManager;
+            controlPanelDialog.ProgressMonitorProvider = NullProgressMonitorProvider.Instance; // FIXME: Use a proper dialog.
             return controlPanelDialog;
-
         }
 
         private static Func<ControlPanelTab> GetControlPanelTabFactory(ComponentHandle<IControlPanelTabProvider, ControlPanelTabProviderTraits> controlPanelTabProviderHandle)

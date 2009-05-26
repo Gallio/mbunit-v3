@@ -30,7 +30,7 @@ namespace Gallio.Runtime.Installer
     /// An installer enables plugins to register and unregister their components with
     /// the operating system as needed.  Typically the installers are invoked
     /// by the Gallio installation package (ie. the originally downloaded MSI file)
-    /// but they can also be invoked by the user via the <see cref="SetupCommand" />
+    /// but they can also be invoked by the user via the <see cref="SetupUtilityCommand" />
     /// utility command.
     /// </para>
     /// </remarks>

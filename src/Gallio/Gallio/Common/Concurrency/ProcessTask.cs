@@ -237,6 +237,11 @@ namespace Gallio.Common.Concurrency
         }
 
         /// <summary>
+        /// The event fired to configure <see cref="ProcessStartInfo" /> just before the process is started.
+        /// </summary>
+        public event EventHandler<ConfigureProcessStartInfoEventArgs> ConfigureProcessStartInfo;
+
+        /// <summary>
         /// The event fired when each line of new output is received on the console output stream.
         /// </summary>
         /// <remarks>
@@ -322,6 +327,9 @@ namespace Gallio.Common.Concurrency
                         startInfo.EnvironmentVariables[pair.Key] = pair.Value;
                 }
             }
+
+            if (ConfigureProcessStartInfo != null)
+                ConfigureProcessStartInfo(this, new ConfigureProcessStartInfoEventArgs(startInfo));
 
             process = StartProcess(startInfo);
             process.EnableRaisingEvents = true;

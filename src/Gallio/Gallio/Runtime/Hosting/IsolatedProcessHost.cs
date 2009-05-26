@@ -21,12 +21,14 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
+using System.Windows.Forms;
 using Gallio.Common;
 using Gallio.Common.IO;
 using Gallio.Common.Platform;
 using Gallio.Runtime.Logging;
 using Gallio.Common.Concurrency;
-using Gallio.Runtime.Remoting;
+using Gallio.Common.Remoting;
+using Timer=System.Threading.Timer;
 
 namespace Gallio.Runtime.Hosting
 {
@@ -172,6 +174,8 @@ namespace Gallio.Runtime.Hosting
 
         private void StartProcess(string hostConnectionArguments)
         {
+            bool useElevation = HostSetup.Elevated && !DotNetRuntimeSupport.IsUsingMono;
+
             CreateTemporaryConfigurationFile();
 
             StringBuilder hostArguments = new StringBuilder();
@@ -188,26 +192,60 @@ namespace Gallio.Runtime.Hosting
                 hostArguments.Append(@" /debug");
             hostArguments.Append(" /severity-prefix");
 
+            if (useElevation)
+                hostArguments.Append(" /quiet");
+
             severityPrefixParser = new SeverityPrefixParser();
 
             processTask = CreateProcessTask(GetInstalledHostProcessPath(), hostArguments.ToString(), HostSetup.WorkingDirectory ?? Environment.CurrentDirectory);
-            processTask.CaptureConsoleOutput = true;
-            processTask.CaptureConsoleError = true;
-            processTask.ConsoleOutputDataReceived += LogConsoleOutput;
-            processTask.ConsoleErrorDataReceived += LogConsoleError;
             processTask.Terminated += LogExitCode;
 
-            // Force CLR runtime version.
-            string runtimeVersion = HostSetup.RuntimeVersion;
-            if (runtimeVersion == null)
-                runtimeVersion = DotNetRuntimeSupport.MostRecentInstalledDotNetRuntimeVersion;
+            if (useElevation)
+            {
+                if (HostSetup.RuntimeVersion != null)
+                    throw new HostException("The host does not support a non-default RuntimeVersion with Elevation.");
 
-            if (!runtimeVersion.StartsWith("v"))
-                runtimeVersion = "v" + runtimeVersion; // just in case, this is a common user error
+                processTask.UseShellExecute = true;
+                processTask.ConfigureProcessStartInfo += (sender, e) =>
+                {
+                    e.ProcessStartInfo.Verb = "runas";
+                    e.ProcessStartInfo.ErrorDialog = true;
+                    e.ProcessStartInfo.ErrorDialogParentHandle = GetOwnerWindowHandle();
+                };
+            }
+            else
+            {
+                processTask.CaptureConsoleOutput = true;
+                processTask.CaptureConsoleError = true;
+                processTask.ConsoleOutputDataReceived += LogConsoleOutput;
+                processTask.ConsoleErrorDataReceived += LogConsoleError;
 
-            processTask.SetEnvironmentVariable("COMPLUS_Version", runtimeVersion);
+                // Force CLR runtime version.
+                string runtimeVersion = HostSetup.RuntimeVersion;
+                if (runtimeVersion == null)
+                    runtimeVersion = DotNetRuntimeSupport.MostRecentInstalledDotNetRuntimeVersion;
+
+                if (!runtimeVersion.StartsWith("v"))
+                    runtimeVersion = "v" + runtimeVersion; // just in case, this is a common user error
+
+                processTask.SetEnvironmentVariable("COMPLUS_Version", runtimeVersion);
+            }
 
             processTask.Start();
+        }
+
+        private static IntPtr GetOwnerWindowHandle()
+        {
+            if (Application.MessageLoop)
+            {
+                foreach (Form form in Application.OpenForms)
+                {
+                    if (form.TopLevel)
+                        return form.Handle;
+                }
+            }
+
+            return IntPtr.Zero;
         }
 
         private void CreateTemporaryConfigurationFile()
@@ -381,14 +419,16 @@ namespace Gallio.Runtime.Hosting
 
         private string GetInstalledHostProcessPath()
         {
-            string hostProcessPath = Path.Combine(runtimePath, GetHostFileName(HostSetup.ProcessorArchitecture));
+            string hostProcessPath = Path.Combine(runtimePath,
+                GetHostFileName(HostSetup.ProcessorArchitecture, HostSetup.Elevated));
+
             if (!File.Exists(hostProcessPath))
                 throw new HostException(String.Format("Could not find the installed host application in '{0}'.", hostProcessPath));
 
             return hostProcessPath;
         }
 
-        private static string GetHostFileName(ProcessorArchitecture processorArchitecture)
+        private static string GetHostFileName(ProcessorArchitecture processorArchitecture, bool elevated)
         {
             // TODO: Should find a way to verify that Amd64 / IA64 are supported.
             switch (processorArchitecture)
@@ -397,10 +437,10 @@ namespace Gallio.Runtime.Hosting
                 case ProcessorArchitecture.MSIL:
                 case ProcessorArchitecture.Amd64:
                 case ProcessorArchitecture.IA64:
-                    return "Gallio.Host.exe";
+                    return elevated ? "Gallio.Host.Elevated.exe" : "Gallio.Host.exe";
 
                 case ProcessorArchitecture.X86:
-                    return "Gallio.Host.x86.exe";
+                    return elevated ? "Gallio.Host.Elevated.x86.exe" : "Gallio.Host.x86.exe";
 
                 default:
                     throw new ArgumentOutOfRangeException("processorArchitecture");

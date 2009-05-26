@@ -14,28 +14,30 @@
 // limitations under the License.
 
 using System;
-using Gallio.Runtime.Remoting;
+using System.Collections.Generic;
+using System.Text;
+using Gallio.Common.Remoting;
 using MbUnit.Framework;
 
-namespace Gallio.Tests.Runtime.Remoting
+namespace Gallio.Tests.Common.Remoting
 {
     [TestFixture]
-    [TestsOn(typeof(BaseClientChannel))]
+    [TestsOn(typeof(BaseServerChannel))]
     [DependsOn(typeof(BaseChannelTest))]
-    public class BaseClientChannelTest
+    public class BaseServerChannelTest : BaseTestWithMocks
     {
         [Test, ExpectedArgumentNullException]
-        public void GetServiceThrowsIfServiceTypeIsNull()
+        public void RegisterServiceThrowsIfServiceNameIsNull()
         {
-            using (BinaryIpcClientChannel channel = new BinaryIpcClientChannel("port"))
-                channel.GetService(null, "service");
+            using (BinaryIpcServerChannel channel = new BinaryIpcServerChannel("port"))
+                channel.RegisterService(null, Mocks.Stub<MarshalByRefObject>());
         }
 
         [Test, ExpectedArgumentNullException]
-        public void GetServiceThrowsIfServiceNameIsNull()
+        public void RegisterServiceThrowsIfComponentIsNull()
         {
-            using (BinaryIpcClientChannel channel = new BinaryIpcClientChannel("port"))
-                channel.GetService(typeof(int), null);
+            using (BinaryIpcServerChannel channel = new BinaryIpcServerChannel("port"))
+                channel.RegisterService("service", null);
         }
     }
 }

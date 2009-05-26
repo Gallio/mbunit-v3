@@ -16,23 +16,30 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Gallio.Runtime.Extensibility;
-using Gallio.Runtime.Logging;
+using Gallio.Runtime.ConsoleSupport;
 
 namespace Gallio.Runtime.UtilityCommands
 {
     /// <summary>
-    /// A utility command to clear the current user's plugin metadata cache.
+    /// A utility command to verify that the plugin metadata and installation parameters are correct.
     /// </summary>
-    public class ClearCurrentUserPluginCacheCommand : BaseUtilityCommand<object>
+    public class VerifyInstallationUtilityCommand : BaseUtilityCommand<object>
     {
+        private readonly IRuntime runtime;
+
+        /// <summary>
+        /// Creates the command.
+        /// </summary>
+        /// <param name="runtime">The runtime, not null</param>
+        public VerifyInstallationUtilityCommand(IRuntime runtime)
+        {
+            this.runtime = runtime;
+        }
+
         /// <inheritdoc />
         public override int Execute(UtilityCommandContext context, object arguments)
         {
-            context.Logger.Log(LogSeverity.Important, "Clearing the current user's plugin cache.");
-
-            CachingPluginLoader.ClearCurrentUserPluginCache();
-            return 0;
+            return runtime.VerifyInstallation() ? 0 : 1;
         }
     }
 }

@@ -18,31 +18,31 @@ using Gallio.Framework;
 using Gallio.Runtime;
 using Gallio.Runtime.Hosting;
 using Gallio.Runtime.Logging;
-using Gallio.Runtime.Remoting;
+using Gallio.Common.Remoting;
 using MbUnit.Framework;
 
-namespace Gallio.Tests.Runtime.Remoting
+namespace Gallio.Tests.Common.Remoting
 {
     [TestFixture]
-    [TestsOn(typeof(BinaryIpcClientChannel))]
-    [TestsOn(typeof(BinaryIpcServerChannel))]
+    [TestsOn(typeof(BinaryTcpClientChannel))]
+    [TestsOn(typeof(BinaryTcpServerChannel))]
     [DependsOn(typeof(BaseClientChannelTest))]
     [DependsOn(typeof(BaseServerChannelTest))]
-    public class BinaryIpcChannelTest
+    public class BinaryTcpChannelTest
     {
-        private static readonly string PortName = typeof(BinaryIpcChannelTest).Name;
+        private const int PortNumber = 33333;
         private const string ServiceName = "Test";
 
         [Test, ExpectedArgumentNullException]
-        public void BinaryIpcClientChannelConstructorThrowsIfPortNameIsNull()
+        public void BinaryTcpClientChannelConstructorThrowsIfHostNameIsNull()
         {
-            new BinaryIpcClientChannel(null);
+            new BinaryTcpClientChannel(null, 1, TimeSpan.FromSeconds(30));
         }
 
         [Test, ExpectedArgumentNullException]
-        public void BinaryIpcServerChannelConstructorThrowsIfPortNameIsNull()
+        public void BinaryTcpServerChannelConstructorThrowsIfHostNameIsNull()
         {
-            new BinaryIpcServerChannel(null);
+            new BinaryTcpServerChannel(null, 1);
         }
 
         [Test]
@@ -55,7 +55,7 @@ namespace Gallio.Tests.Runtime.Remoting
 
                 host.GetHostService().Do<object, object>(RemoteCallback, null);
 
-                using (BinaryIpcClientChannel clientChannel = new BinaryIpcClientChannel(PortName))
+                using (BinaryTcpClientChannel clientChannel = new BinaryTcpClientChannel("localhost", PortNumber, TimeSpan.FromSeconds(30)))
                 {
                     TestService serviceProxy =
                         (TestService)clientChannel.GetService(typeof(TestService), ServiceName);
@@ -66,7 +66,7 @@ namespace Gallio.Tests.Runtime.Remoting
 
         public static object RemoteCallback(object dummy)
         {
-            BinaryIpcServerChannel serverChannel = new BinaryIpcServerChannel(PortName);
+            BinaryTcpServerChannel serverChannel = new BinaryTcpServerChannel("localhost", PortNumber);
             TestService serviceProvider = new TestService();
             serverChannel.RegisterService(ServiceName, serviceProvider);
             return null;

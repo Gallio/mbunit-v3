@@ -53,7 +53,7 @@ namespace Gallio.Runtime
             get
             {
                 IRuntime cachedInstance = instance;
-                return cachedInstance != null ? cachedInstance.ServiceLocator.Resolve<ILogger>() : NullLogger.Instance;
+                return cachedInstance != null ? cachedInstance.Logger : NullLogger.Instance;
             }
         }
 

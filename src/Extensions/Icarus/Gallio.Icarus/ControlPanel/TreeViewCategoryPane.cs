@@ -18,6 +18,8 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows.Forms;
 using Gallio.Icarus.Controllers.Interfaces;
+using Gallio.Runtime.ProgressMonitoring;
+using Gallio.Runtime.Security;
 using Gallio.UI.ControlPanel.Preferences;
 
 namespace Gallio.Icarus.ControlPanel
@@ -47,7 +49,7 @@ namespace Gallio.Icarus.ControlPanel
             selectedCategories.Add((string)category);
             unselectedCategories.Remove((string)category);
 
-            OnSettingsChanged(EventArgs.Empty);
+            PendingSettingsChanges = true;
         }
 
         private void removeButton_Click(object sender, EventArgs e)
@@ -56,12 +58,12 @@ namespace Gallio.Icarus.ControlPanel
             unselectedCategories.Add((string) category);
             selectedCategories.Remove((string) category);
 
-            OnSettingsChanged(EventArgs.Empty);
+            PendingSettingsChanges = true;
         }
 
-        public override void ApplySettingsChanges()
+        public override void ApplyPendingSettingsChanges(IElevationContext elevationContext, IProgressMonitor progressMonitor)
         {
-            base.ApplySettingsChanges();
+            base.ApplyPendingSettingsChanges(elevationContext, progressMonitor);
 
             optionsController.SelectedTreeViewCategories = selectedCategories;
         }

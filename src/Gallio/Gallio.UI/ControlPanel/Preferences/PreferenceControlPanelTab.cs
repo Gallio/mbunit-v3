@@ -19,6 +19,8 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 using Gallio.Common;
+using Gallio.Runtime.ProgressMonitoring;
+using Gallio.Runtime.Security;
 
 namespace Gallio.UI.ControlPanel.Preferences
 {
@@ -73,10 +75,36 @@ namespace Gallio.UI.ControlPanel.Preferences
         }
 
         /// <inheritdoc />
-        public override void ApplySettingsChanges()
+        public override void ApplyPendingSettingsChanges(IElevationContext elevationContext, IProgressMonitor progressMonitor)
+        {
+            using (progressMonitor.BeginTask("Saving preferences.", 1))
+            {
+                var preferencePanes = new List<PreferencePane>(GetPreferencePanes());
+                if (preferencePanes.Count == 0)
+                    return;
+
+                double workPerPreferencePane = 1.0 / preferencePanes.Count;
+
+                foreach (PreferencePane preferencePane in preferencePanes)
+                {
+                    if (preferencePane.PendingSettingsChanges)
+                    {
+                        preferencePane.ApplyPendingSettingsChanges(
+                            preferencePane.RequiresElevation ? elevationContext : null,
+                            progressMonitor.CreateSubProgressMonitor(workPerPreferencePane));
+                    }
+                    else
+                    {
+                        progressMonitor.Worked(workPerPreferencePane);
+                    }
+                }
+            }
+        }
+
+        private IEnumerable<PreferencePane> GetPreferencePanes()
         {
             foreach (PreferencePane preferencePane in preferencePaneSplitContainer.Panel2.Controls)
-                preferencePane.ApplySettingsChanges();
+                yield return preferencePane;
         }
 
         private static PreferencePane CreatePlaceholderPreferencePane()
@@ -120,8 +148,12 @@ namespace Gallio.UI.ControlPanel.Preferences
                     preferencePane.AutoSize = true;
                     preferencePane.AutoSizeMode = AutoSizeMode.GrowAndShrink;
                     preferencePane.Tag = treeNode;
-                    preferencePane.SettingsChanged += preferencePane_SettingsChanged;
+                    preferencePane.PendingSettingsChangesChanged += preferencePane_PendingSettingsChangesChanged;
+                    preferencePane.RequiresElevationChanged += preferencePane_ElevationRequiredChanged;
                     preferencePaneSplitContainer.Panel2.Controls.Add(preferencePane);
+
+                    RefreshPendingSettingsChangesState();
+                    RefreshElevationRequiredState();
                 }
             }
         }
@@ -142,9 +174,42 @@ namespace Gallio.UI.ControlPanel.Preferences
             preferencePaneTree.ExpandAll();
         }
 
-        private void preferencePane_SettingsChanged(object sender, EventArgs e)
+        private void preferencePane_PendingSettingsChangesChanged(object sender, EventArgs e)
         {
-            OnSettingsChanged(e);
+            RefreshPendingSettingsChangesState();
+        }
+
+        private void preferencePane_ElevationRequiredChanged(object sender, EventArgs e)
+        {
+            RefreshElevationRequiredState();
+        }
+
+        private void RefreshPendingSettingsChangesState()
+        {
+            foreach (PreferencePane preferencePane in GetPreferencePanes())
+            {
+                if (preferencePane.PendingSettingsChanges)
+                {
+                    PendingSettingsChanges = true;
+                    return;
+                }
+            }
+
+            PendingSettingsChanges = false;
+        }
+
+        private void RefreshElevationRequiredState()
+        {
+            foreach (PreferencePane preferencePane in GetPreferencePanes())
+            {
+                if (preferencePane.RequiresElevation)
+                {
+                    RequiresElevation = true;
+                    return;
+                }
+            }
+
+            RequiresElevation = false;
         }
     }
 }

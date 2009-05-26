@@ -17,6 +17,8 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Windows.Forms;
+using Gallio.Runtime.ProgressMonitoring;
+using Gallio.Runtime.Security;
 
 namespace Gallio.UI.ControlPanel
 {
@@ -25,41 +27,83 @@ namespace Gallio.UI.ControlPanel
     /// </summary>
     public class SettingsEditor : UserControl
     {
-        /// <summary>
-        /// Event raised when the settings have changed.
-        /// </summary>
-        public event EventHandler SettingsChanged;
+        private bool pendingSettingsChanges;
+        private bool requiresElevation;
 
         /// <summary>
-        /// Gets or sets whether the settings have changed.
+        /// Event raised when the value of <see cref="PendingSettingsChanges" /> changes.
         /// </summary>
-        public bool HasSettingsChanges { get; protected set; }
+        public event EventHandler PendingSettingsChangesChanged;
 
         /// <summary>
-        /// Applies settings changes.
+        /// Event raised when the value of <see cref="RequiresElevation" /> changes.
         /// </summary>
-        /// <remarks>
-        /// The default implementation simply sets <see cref="HasSettingsChanges" /> to false.
-        /// </remarks>
-        public virtual void ApplySettingsChanges()
+        public event EventHandler RequiresElevationChanged;
+
+        /// <summary>
+        /// Gets or sets whether there are pending settings changes yet to be applied.
+        /// </summary>
+        public bool PendingSettingsChanges
         {
-            HasSettingsChanges = false;
+            get { return pendingSettingsChanges; }
+            set
+            {
+                if (pendingSettingsChanges != value)
+                {
+                    pendingSettingsChanges = value;
+                    OnPendingSettingsChangesChanged(EventArgs.Empty);
+                }
+            }
         }
 
         /// <summary>
-        /// Sets <see cref="HasSettingsChanges" /> to true and raises the <see cref="SettingsChanged" /> event
-        /// on the first change.
+        /// Gets or sets whether elevation will be required to apply pending modifications.
+        /// </summary>
+        public bool RequiresElevation
+        {
+            get { return requiresElevation; }
+            set
+            {
+                if (requiresElevation != value)
+                {
+                    requiresElevation = value;
+                    OnRequiresElevationChanged(EventArgs.Empty);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Applies pending settings changes.
+        /// </summary>
+        /// <param name="elevationContext">An elevation context when <see cref="RequiresElevation" />
+        /// is true, otherwise null</param>
+        /// <param name="progressMonitor">The progress monitor, not null</param>
+        /// <remarks>
+        /// The default implementation simply sets <see cref="PendingSettingsChanges" /> to false.
+        /// </remarks>
+        public virtual void ApplyPendingSettingsChanges(IElevationContext elevationContext, IProgressMonitor progressMonitor)
+        {
+            PendingSettingsChanges = false;
+        }
+
+        /// <summary>
+        /// Raises the <see cref="PendingSettingsChanges" /> event.
         /// </summary>
         /// <param name="e">The event arguments</param>
-        protected virtual void OnSettingsChanged(EventArgs e)
+        protected virtual void OnPendingSettingsChangesChanged(EventArgs e)
         {
-            if (!HasSettingsChanges)
-            {
-                HasSettingsChanges = true;
+            if (PendingSettingsChangesChanged != null)
+                PendingSettingsChangesChanged(this, e);
+        }
 
-                if (SettingsChanged != null)
-                    SettingsChanged(this, e);
-            }
+        /// <summary>
+        /// Raises the <see cref="RequiresElevationChanged" /> event.
+        /// </summary>
+        /// <param name="e">The event arguments</param>
+        protected virtual void OnRequiresElevationChanged(EventArgs e)
+        {
+            if (RequiresElevationChanged != null)
+                RequiresElevationChanged(this, e);
         }
     }
 }

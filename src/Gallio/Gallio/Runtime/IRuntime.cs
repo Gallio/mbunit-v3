@@ -50,6 +50,11 @@ namespace Gallio.Runtime
         IResourceLocator ResourceLocator { get; }
 
         /// <summary>
+        /// Gets the runtime logger.
+        /// </summary>
+        ILogger Logger { get; }
+
+        /// <summary>
         /// Initializes the runtime.
         /// </summary>
         /// <param name="logger">The runtime logging service</param>

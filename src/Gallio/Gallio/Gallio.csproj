@@ -13,6 +13,7 @@
     <AssemblyOriginatorKeyFile>..\..\Key.snk</AssemblyOriginatorKeyFile>
     <SGenUseProxyTypes>false</SGenUseProxyTypes>
     <SGenShouldGenerateSerializer>true</SGenShouldGenerateSerializer>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -82,6 +83,7 @@
     <Compile Include="Common\Collections\ReferentialEqualityComparer.cs" />
     <Compile Include="Common\Collections\TreeUtils.cs" />
     <Compile Include="Common\Collections\UserDataCollection.cs" />
+    <Compile Include="Common\Concurrency\ConfigureProcessStartInfoEventArgs.cs" />
     <Compile Include="Common\Concurrency\LockBox.cs" />
     <Compile Include="Common\Concurrency\NamespaceDoc.cs" />
     <Compile Include="Common\Concurrency\ProcessTask.cs" />
@@ -138,6 +140,17 @@
     <Compile Include="Common\Reflection\AssemblyMetadata.cs" />
     <Compile Include="Common\Reflection\Impl\NamespaceDoc.cs" />
     <Compile Include="Common\Reflection\NamespaceDoc.cs" />
+    <Compile Include="Common\Remoting\BaseChannel.cs" />
+    <Compile Include="Common\Remoting\BaseClientChannel.cs" />
+    <Compile Include="Common\Remoting\BaseServerChannel.cs" />
+    <Compile Include="Common\Remoting\BinaryIpcClientChannel.cs" />
+    <Compile Include="Common\Remoting\BinaryIpcServerChannel.cs" />
+    <Compile Include="Common\Remoting\BinaryTcpClientChannel.cs" />
+    <Compile Include="Common\Remoting\BinaryTcpServerChannel.cs" />
+    <Compile Include="Common\Remoting\IClientChannel.cs" />
+    <Compile Include="Common\Remoting\IServerChannel.cs" />
+    <Compile Include="Common\Remoting\LongLivedMarshalByRefObject.cs" />
+    <Compile Include="Common\Remoting\NamespaceDoc.cs" />
     <Compile Include="Common\Text\NamespaceDoc.cs" />
     <Compile Include="Common\Time\Clock.cs" />
     <Compile Include="Common\Time\IClock.cs" />
@@ -195,9 +208,11 @@
     <Compile Include="Runtime\Installer\DefaultInstallerManager.cs" />
     <Compile Include="Runtime\Installer\IInstaller.cs" />
     <Compile Include="Runtime\Installer\IInstallerManager.cs" />
+    <Compile Include="Runtime\Installer\InstallerElevatedCommand.cs" />
+    <Compile Include="Runtime\Installer\InstallerOperation.cs" />
     <Compile Include="Runtime\Installer\InstallerTraits.cs" />
     <Compile Include="Runtime\Installer\NamespaceDoc.cs" />
-    <Compile Include="Runtime\Installer\SetupCommand.cs" />
+    <Compile Include="Runtime\Installer\SetupUtilityCommand.cs" />
     <Compile Include="Runtime\Loader\NamespaceDoc.cs" />
     <Compile Include="Runtime\Logging\MarkupStreamLogger.cs" />
     <Compile Include="Common\Markup\MarkupStreamNames.cs" />
@@ -557,6 +572,7 @@
     <Compile Include="Runtime\Logging\Verbosity.cs" />
     <Compile Include="Common\Platform\ProcessType.cs" />
     <Compile Include="Runtime\NamespaceDoc.cs" />
+    <Compile Include="Runtime\Preferences\DefaultPreferenceManager.cs" />
     <Compile Include="Runtime\Preferences\IPreferenceManager.cs" />
     <Compile Include="Runtime\Preferences\NamespaceDoc.cs" />
     <Compile Include="Runtime\ProgressMonitoring\BaseProgressMonitorPresenter.cs" />
@@ -579,15 +595,6 @@
     <Compile Include="Runtime\ProgressMonitoring\TaskWithProgress.cs" />
     <Compile Include="Runtime\ProgressMonitoring\ProgressMonitorTaskCookie.cs" />
     <Compile Include="Runtime\Extensibility\RegistryServiceLocator.cs" />
-    <Compile Include="Runtime\Remoting\BaseChannel.cs" />
-    <Compile Include="Runtime\Remoting\BaseClientChannel.cs" />
-    <Compile Include="Runtime\Remoting\BaseServerChannel.cs" />
-    <Compile Include="Runtime\Remoting\BinaryIpcClientChannel.cs" />
-    <Compile Include="Runtime\Remoting\BinaryIpcServerChannel.cs" />
-    <Compile Include="Runtime\Remoting\BinaryTcpClientChannel.cs" />
-    <Compile Include="Runtime\Remoting\BinaryTcpServerChannel.cs" />
-    <Compile Include="Runtime\Remoting\IClientChannel.cs" />
-    <Compile Include="Runtime\Remoting\IServerChannel.cs" />
     <Compile Include="Framework\Data\AggregateDataSet.cs" />
     <Compile Include="Framework\Data\BaseDataItem.cs" />
     <Compile Include="Framework\Data\BaseDataSet.cs" />
@@ -691,7 +698,6 @@
     <Compile Include="Runtime\Hosting\IsolatedAppDomainHost.cs" />
     <Compile Include="Runtime\Hosting\IsolatedProcessHost.cs" />
     <Compile Include="Common\Platform\DotNetRuntimeSupport.cs" />
-    <Compile Include="Runtime\Remoting\NamespaceDoc.cs" />
     <Compile Include="Runtime\RuntimeException.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -724,15 +730,21 @@
     <Compile Include="Common\Platform\DotNetFrameworkVersion.cs" />
     <Compile Include="Runtime\DefaultRuntime.cs" />
     <Compile Include="Common\Validation\IValidatable.cs" />
+    <Compile Include="Runtime\Security\BaseElevatedCommand.cs" />
+    <Compile Include="Runtime\Security\DefaultElevationManager.cs" />
+    <Compile Include="Runtime\Security\IElevatedCommand.cs" />
+    <Compile Include="Runtime\Security\IElevationContext.cs" />
+    <Compile Include="Runtime\Security\IElevationManager.cs" />
+    <Compile Include="Runtime\Security\NamespaceDoc.cs" />
     <Compile Include="Runtime\UtilityCommands\BaseUtilityCommand.cs" />
-    <Compile Include="Runtime\UtilityCommands\ClearCurrentUserPluginCacheCommand.cs" />
+    <Compile Include="Runtime\UtilityCommands\ClearCurrentUserPluginCacheUtilityCommand.cs" />
     <Compile Include="Runtime\UtilityCommands\DefaultUtilityCommandManager.cs" />
     <Compile Include="Runtime\UtilityCommands\IUtilityCommand.cs" />
     <Compile Include="Runtime\UtilityCommands\NamespaceDoc.cs" />
     <Compile Include="Runtime\UtilityCommands\UtilityCommandContext.cs" />
     <Compile Include="Runtime\UtilityCommands\IUtilityCommandManager.cs" />
     <Compile Include="Runtime\UtilityCommands\UtilityCommandTraits.cs" />
-    <Compile Include="Runtime\UtilityCommands\VerifyInstallationCommand.cs" />
+    <Compile Include="Runtime\UtilityCommands\VerifyInstallationUtilityCommand.cs" />
     <Compile Include="Schema\NamespaceDoc.cs" />
     <Compile Include="Schema\Plugins\Assembly.cs" />
     <Compile Include="Schema\Plugins\Cache.cs" />
@@ -840,7 +852,6 @@
     <Compile Include="Common\Diagnostics\ExceptionUtils.cs" />
     <Compile Include="Common\IO\FileUtils.cs" />
     <Compile Include="Common\Hash64.cs" />
-    <Compile Include="Runtime\Remoting\LongLivedMarshalByRefObject.cs" />
     <Compile Include="Framework\TestContext.cs" />
     <Compile Include="Framework\TestContextCookie.cs" />
     <Compile Include="Runtime\Loader\IAssemblyResolver.cs" />

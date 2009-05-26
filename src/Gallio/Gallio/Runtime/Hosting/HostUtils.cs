@@ -37,7 +37,7 @@ namespace Gallio.Runtime.Hosting
         }
 
         /// <summary>
-        /// Creates an instance of an object within 
+        /// Creates an instance of an object within a host.
         /// </summary>
         /// <param name="host">The host in which to create the object</param>
         /// <param name="type">The type of object to create</param>

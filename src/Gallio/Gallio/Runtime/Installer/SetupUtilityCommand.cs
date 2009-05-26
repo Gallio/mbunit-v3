@@ -24,7 +24,7 @@ namespace Gallio.Runtime.Installer
     /// <summary>
     /// Installs or uninstalls components using the <see cref="IInstallerManager"/>.
     /// </summary>
-    public class SetupCommand : BaseUtilityCommand<SetupCommand.Arguments>
+    public class SetupUtilityCommand : BaseUtilityCommand<SetupUtilityCommand.Arguments>
     {
         private readonly IInstallerManager installerManager;
 
@@ -32,7 +32,7 @@ namespace Gallio.Runtime.Installer
         /// Creates the command.
         /// </summary>
         /// <param name="installerManager">The installer manager, not null</param>
-        public SetupCommand(IInstallerManager installerManager)
+        public SetupUtilityCommand(IInstallerManager installerManager)
         {
             this.installerManager = installerManager;
         }
@@ -42,13 +42,17 @@ namespace Gallio.Runtime.Installer
         {
             context.ProgressMonitorProvider.Run(progressMonitor =>
             {
+                List<string> installerIds = arguments.InstallerIds.Length != 0
+                    ? new List<string>(arguments.InstallerIds)
+                    : null;
+
                 if (arguments.Install)
                 {
-                    installerManager.Install(progressMonitor);
+                    installerManager.Install(installerIds, null, progressMonitor);
                 }
                 else
                 {
-                    installerManager.Uninstall(progressMonitor);
+                    installerManager.Uninstall(installerIds, null, progressMonitor);
                 }
             });
 
@@ -90,6 +94,14 @@ namespace Gallio.Runtime.Installer
                 LongName = "uninstall",
                 ShortName = "u")]
             public bool Uninstall;
+
+            /// <summary>
+            /// The ids of installers to include.
+            /// </summary>
+            [DefaultCommandLineArgument(CommandLineArgumentFlags.MultipleUnique,
+                Description = "The installer ids to include, or an empty list to include all installers.",
+                ValueLabel = "installer id")]
+            public string[] InstallerIds;
         }
     }
 }

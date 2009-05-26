@@ -16,7 +16,7 @@
 using System;
 using System.Diagnostics;
 using Gallio.Runner.Drivers;
-using Gallio.Runtime.Remoting;
+using Gallio.Common.Remoting;
 
 namespace Gallio.AutoCAD
 {

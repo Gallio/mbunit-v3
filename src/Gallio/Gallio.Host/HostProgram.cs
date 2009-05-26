@@ -61,7 +61,7 @@ namespace Gallio.Host
                 return 1;
             }
 
-            ILogger logger = new RichConsoleLogger(Console);
+            ILogger logger = Arguments.Quiet ? NullLogger.Instance : (ILogger) new RichConsoleLogger(Console);
             if (Arguments.SeverityPrefix)
                 logger = new SeverityPrefixLogger(logger);
 

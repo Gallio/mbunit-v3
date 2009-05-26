@@ -14,6 +14,8 @@
 // limitations under the License.
 
 using Gallio.Icarus.Controllers.Interfaces;
+using Gallio.Runtime.ProgressMonitoring;
+using Gallio.Runtime.Security;
 using Gallio.UI.ControlPanel.Preferences;
 
 namespace Gallio.Icarus.ControlPanel
@@ -27,7 +29,7 @@ namespace Gallio.Icarus.ControlPanel
             restorePreviousSession.DataBindings.Add("Checked", optionsController, "RestorePreviousSettings");
         }
 
-        public override void ApplySettingsChanges()
+        public override void ApplyPendingSettingsChanges(IElevationContext elevationContext, IProgressMonitor progressMonitor)
         {
         }
     }

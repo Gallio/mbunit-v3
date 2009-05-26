@@ -16,7 +16,7 @@
 using System;
 using System.Diagnostics;
 using Gallio.Runtime.Hosting;
-using Gallio.Runtime.Remoting;
+using Gallio.Common.Remoting;
 
 namespace Gallio.Host
 {

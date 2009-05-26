@@ -14,60 +14,37 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
 using System.Runtime.Remoting;
 using System.Runtime.Remoting.Channels;
 
-namespace Gallio.Runtime.Remoting
+namespace Gallio.Common.Remoting
 {
     /// <summary>
     /// Abstract base class for client channels implemented using the .Net
     /// remoting infrastructure.
     /// </summary>
-    public abstract class BaseServerChannel : BaseChannel, IServerChannel
+    public abstract class BaseClientChannel : BaseChannel, IClientChannel
     {
-        private readonly List<MarshalByRefObject> remoteComponents;
-
         /// <summary>
         /// Creates a channel.
         /// </summary>
         /// <param name="channel">The .Net remoting channel</param>
         /// <param name="channelUri">The root Uri associated with the channel</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="channel"/> or <paramref name="channelUri"/> is null</exception>
-        protected BaseServerChannel(IChannel channel, Uri channelUri)
+        protected BaseClientChannel(IChannel channel, Uri channelUri)
             : base(channel, channelUri)
         {
-            remoteComponents = new List<MarshalByRefObject>();
         }
 
         /// <inheritdoc />
-        public void RegisterService(string serviceName, MarshalByRefObject component)
+        public object GetService(Type serviceType, string serviceName)
         {
+            if (serviceType == null)
+                throw new ArgumentNullException("serviceType");
             if (serviceName == null)
                 throw new ArgumentNullException("serviceName");
-            if (component == null)
-                throw new ArgumentNullException("component");
 
-            RemotingServices.Marshal(component, serviceName);
-
-            lock (remoteComponents)
-                remoteComponents.Add(component);
-        }
-
-        /// <inheritdoc />
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                lock (remoteComponents)
-                {
-                    foreach (MarshalByRefObject component in remoteComponents)
-                        RemotingServices.Disconnect(component);
-                    remoteComponents.Clear();
-                }
-            }
-
-            base.Dispose(disposing);
+            return RemotingServices.Connect(serviceType, GetServiceUri(serviceName));
         }
     }
 }

@@ -17,7 +17,7 @@ using System;
 using System.Reflection;
 using System.Threading;
 using Gallio.Runtime.Loader;
-using Gallio.Runtime.Remoting;
+using Gallio.Common.Remoting;
 using Gallio.Common.Reflection;
 
 namespace Gallio.Runtime.Hosting

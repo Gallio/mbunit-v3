@@ -16,39 +16,39 @@
 using System;
 using System.Collections;
 using System.Runtime.Remoting.Channels;
-using System.Runtime.Remoting.Channels.Ipc;
+using System.Runtime.Remoting.Channels.Tcp;
 
-namespace Gallio.Runtime.Remoting
+namespace Gallio.Common.Remoting
 {
     /// <summary>
-    /// A client channel based on an <see cref="IpcClientChannel" /> that uses a
+    /// A client channel based on an <see cref="TcpClientChannel" /> that uses a
     /// <see cref="BinaryClientFormatterSinkProvider" />.
     /// </summary>
-    public class BinaryIpcClientChannel : BaseClientChannel
+    public class BinaryTcpClientChannel : BaseClientChannel
     {
-        private const int ConnectionTimeoutMillis = 1000;
-
         /// <summary>
         /// Creates a channel.
         /// </summary>
-        /// <param name="portName">The ipc port name to connect to</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="portName"/> is null</exception>
-        public BinaryIpcClientChannel(string portName)
-            : base(CreateChannel(portName), new Uri(@"ipc://" + portName))
+        /// <param name="hostName">The host name to connect to</param>
+        /// <param name="portNumber">The port number to connect to</param>
+        /// <param name="requestTimeout">The request timeout or null if none</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="hostName"/> is null</exception>
+        public BinaryTcpClientChannel(string hostName, int portNumber, TimeSpan? requestTimeout)
+            : base(CreateChannel(hostName, portNumber, requestTimeout), new Uri(@"tcp://" + hostName + ":" + portNumber))
         {
         }
 
-        private static IChannel CreateChannel(string portName)
+        private static IChannel CreateChannel(string hostName, int portNumber, TimeSpan? requestTimeout)
         {
-            if (portName == null)
-                throw new ArgumentNullException("portName");
+            if (hostName == null)
+                throw new ArgumentNullException("hostName");
 
             IDictionary channelProperties = new Hashtable();
-            channelProperties[@"connectionTimeout"] = ConnectionTimeoutMillis;
-            channelProperties[@"name"] = @"ipc-client:" + portName;
+            channelProperties[@"name"] = @"tcp-client:" + hostName + ":" + portNumber;
             channelProperties[@"secure"] = false;
+            channelProperties[@"timeout"] = requestTimeout.HasValue ? (int)requestTimeout.Value.TotalMilliseconds : -1;
 
-            return new IpcClientChannel(channelProperties, CreateClientChannelSinkProvider());
+            return new TcpClientChannel(channelProperties, CreateClientChannelSinkProvider());
         }
 
         private static IClientChannelSinkProvider CreateClientChannelSinkProvider()

@@ -16,7 +16,7 @@
 using System;
 using Gallio.Common.Diagnostics;
 using Gallio.Runtime.Logging;
-using Gallio.Runtime.Remoting;
+using Gallio.Common.Remoting;
 
 namespace Gallio.Runtime.Logging
 {

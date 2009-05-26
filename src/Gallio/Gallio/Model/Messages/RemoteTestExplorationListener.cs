@@ -16,7 +16,7 @@
 using System;
 using Gallio.Common.Markup;
 using Gallio.Model.Serialization;
-using Gallio.Runtime.Remoting;
+using Gallio.Common.Remoting;
 
 namespace Gallio.Model.Messages
 {

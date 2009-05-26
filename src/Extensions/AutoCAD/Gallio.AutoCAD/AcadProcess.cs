@@ -26,7 +26,7 @@ using Gallio.Common;
 using Gallio.Common.Concurrency;
 using Gallio.Common.Text;
 using Gallio.Runner;
-using Gallio.Runtime.Remoting;
+using Gallio.Common.Remoting;
 
 namespace Gallio.AutoCAD
 {

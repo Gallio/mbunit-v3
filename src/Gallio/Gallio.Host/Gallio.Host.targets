@@ -1,0 +1,50 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <GallioProjectOutputPath>..\Gallio\bin</GallioProjectOutputPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <HostVariant Include="$(GallioProjectOutputPath)\Gallio.Host.exe" />
+    
+    <HostVariant Include="$(GallioProjectOutputPath)\Gallio.Host.x86.exe">
+      <CorFlags>/32BIT+</CorFlags>
+    </HostVariant>
+    
+    <HostVariant Include="$(GallioProjectOutputPath)\Gallio.Host.Elevated.exe">
+      <Manifest>Elevated.manifest</Manifest>
+    </HostVariant>
+    
+    <HostVariant Include="$(GallioProjectOutputPath)\Gallio.Host.Elevated.x86.exe">
+      <Manifest>Elevated.manifest</Manifest>
+      <CorFlags>/32BIT+</CorFlags>
+    </HostVariant>
+
+    <HostTargetFile Include="@(HostVariant)">
+      <SourceFile>$(TargetPath)</SourceFile>
+    </HostTargetFile>
+    
+    <HostTargetFile Include="@(HostVariant->'%(Identity).config')">
+      <SourceFile>$(TargetPath).config</SourceFile>
+    </HostTargetFile>
+  </ItemGroup>
+
+  <Target Name="BeforeBuild">
+    <Delete Files="@(HostTargetFile)" Condition="Exists('%(Identity)')" />
+  </Target>
+
+  <Target Name="AfterBuild">
+    <Copy SourceFiles="@(HostTargetFile->'%(SourceFile)')"
+          DestinationFiles="@(HostTargetFile)">
+      <Output TaskParameter="DestinationFiles" ItemName="FilesWrites" />
+    </Copy>
+
+    <Exec Command="&quot;..\..\..\bin\mt.exe&quot; -nologo -manifest &quot;%(HostVariant.Manifest)&quot; -outputresource:&quot;%(HostVariant.FullPath);#1&quot;"
+          Condition="'%(HostVariant.Manifest)'!=''" />
+
+    <Exec Command="&quot;$(TargetFrameworkSDKDirectory)bin\corflags.exe&quot; /force &quot;%(HostVariant.FullPath)&quot; /nologo %(HostVariant.CorFlags) >nul"
+          Condition="'%(HostVariant.CorFlags)'!=''" />
+
+    <Exec Command="&quot;$(TargetFrameworkSDKDirectory)bin\sn.exe&quot; -q -R &quot;%(HostVariant.FullPath)&quot; &quot;$(AssemblyOriginatorKeyFile)&quot;" />
+  </Target>
+</Project>

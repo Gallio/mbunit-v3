@@ -66,5 +66,12 @@ namespace Gallio.UI.Properties {
                 return ((System.Drawing.Icon)(obj));
             }
         }
+        
+        internal static System.Drawing.Bitmap Pillar {
+            get {
+                object obj = ResourceManager.GetObject("Pillar", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
     }
 }

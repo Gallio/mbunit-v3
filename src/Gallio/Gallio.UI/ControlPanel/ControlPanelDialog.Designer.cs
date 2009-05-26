@@ -32,9 +32,9 @@
             this.controlPanelTabControl = new System.Windows.Forms.TabControl();
             this.outerTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             this.okCancelApplyFlowLayoutPanel = new System.Windows.Forms.FlowLayoutPanel();
-            this.applyButton = new System.Windows.Forms.Button();
+            this.applyButton = new Gallio.UI.Controls.ShieldButton();
             this.cancelButton = new System.Windows.Forms.Button();
-            this.okButton = new System.Windows.Forms.Button();
+            this.okButton = new Gallio.UI.Controls.ShieldButton();
             this.outerTableLayoutPanel.SuspendLayout();
             this.okCancelApplyFlowLayoutPanel.SuspendLayout();
             this.SuspendLayout();
@@ -144,8 +144,8 @@
         private System.Windows.Forms.TabControl controlPanelTabControl;
         private System.Windows.Forms.TableLayoutPanel outerTableLayoutPanel;
         private System.Windows.Forms.FlowLayoutPanel okCancelApplyFlowLayoutPanel;
-        private System.Windows.Forms.Button okButton;
+        private Gallio.UI.Controls.ShieldButton okButton;
         private System.Windows.Forms.Button cancelButton;
-        private System.Windows.Forms.Button applyButton;
+        private Gallio.UI.Controls.ShieldButton applyButton;
     }
 }

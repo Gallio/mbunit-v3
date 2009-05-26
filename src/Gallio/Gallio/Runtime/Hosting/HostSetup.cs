@@ -39,6 +39,7 @@ namespace Gallio.Runtime.Hosting
         private bool shadowCopy;
         private bool debug;
         private string runtimeVersion;
+        private bool elevated;
         private ConfigurationFileLocation configurationFileLocation = ConfigurationFileLocation.Temp;
         private HostConfiguration configuration;
         private ProcessorArchitecture processorArchitecture = ProcessorArchitecture.MSIL;
@@ -143,6 +144,17 @@ namespace Gallio.Runtime.Hosting
         }
 
         /// <summary>
+        /// Gets or sets whether the host should run with elevated privileges.
+        /// </summary>
+        /// <value>True if the host should have elevated privileges.  Default is <c>false</c>.</value>
+        [XmlAttribute("elevated")]
+        public bool Elevated
+        {
+            get { return elevated; }
+            set { elevated = value; }
+        }
+
+        /// <summary>
         /// Gets or sets where the host should write out the configuration file for the hosted components.
         /// </summary>
         /// <value>The configuration file location.  Default is <see cref="Hosting.ConfigurationFileLocation.Temp" />.</value>
@@ -198,6 +210,7 @@ namespace Gallio.Runtime.Hosting
             copy.debug = debug;
             copy.processorArchitecture = processorArchitecture;
             copy.runtimeVersion = runtimeVersion;
+            copy.elevated = elevated;
             copy.configurationFileLocation = configurationFileLocation;
             copy.properties.AddAll(properties);
 
@@ -281,6 +294,7 @@ namespace Gallio.Runtime.Hosting
                 && shadowCopy == other.shadowCopy
                 && debug == other.debug
                 && runtimeVersion == other.runtimeVersion
+                && elevated == other.elevated
                 && processorArchitecture == other.processorArchitecture
                 && configurationFileLocation == other.configurationFileLocation
                 && properties.Equals(other.properties)
@@ -295,6 +309,7 @@ namespace Gallio.Runtime.Hosting
                 ^ (shadowCopy.GetHashCode() << 16)
                 ^ (debug.GetHashCode() << 21)
                 ^ (runtimeVersion != null ? runtimeVersion.GetHashCode() : 0)
+                ^ (elevated.GetHashCode() << 25)
                 ^ (processorArchitecture.GetHashCode() << 5)
                 ^ (configurationFileLocation.GetHashCode() << 2)
                 ^ properties.GetHashCode()

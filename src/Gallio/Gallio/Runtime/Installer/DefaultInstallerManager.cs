@@ -16,9 +16,11 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Gallio.Common.Collections;
 using Gallio.Runtime.Extensibility;
 using Gallio.Runtime.Logging;
 using Gallio.Runtime.ProgressMonitoring;
+using Gallio.Runtime.Security;
 
 namespace Gallio.Runtime.Installer
 {
@@ -28,44 +30,136 @@ namespace Gallio.Runtime.Installer
     public class DefaultInstallerManager : IInstallerManager
     {
         private readonly ComponentHandle<IInstaller, InstallerTraits>[] installerHandles;
+        private readonly IElevationManager elevationManager;
 
         /// <summary>
         /// Creates the installer manager.
         /// </summary>
         /// <param name="installerHandles">The installer handles, not null</param>
-        public DefaultInstallerManager(ComponentHandle<IInstaller, InstallerTraits>[] installerHandles)
+        /// <param name="elevationManager">The elevation manager, not null</param>
+        public DefaultInstallerManager(ComponentHandle<IInstaller, InstallerTraits>[] installerHandles,
+            IElevationManager elevationManager)
         {
             this.installerHandles = installerHandles;
+            this.elevationManager = elevationManager;
         }
 
         /// <inheritdoc />
-        public void Install(IProgressMonitor progressMonitor)
+        public bool Install(IList<string> installerIds, IElevationContext elevationContext, IProgressMonitor progressMonitor)
+        {
+            return InstallOrUninstall(installerIds, elevationContext, progressMonitor, InstallerOperation.Install);
+        }
+
+        /// <inheritdoc />
+        public bool Uninstall(IList<string> installerIds, IElevationContext elevationContext, IProgressMonitor progressMonitor)
+        {
+            return InstallOrUninstall(installerIds, elevationContext, progressMonitor, InstallerOperation.Uninstall);
+        }
+
+        private bool InstallOrUninstall(IList<string> installerIds, IElevationContext elevationContext, IProgressMonitor progressMonitor,
+            InstallerOperation operation)
         {
             if (progressMonitor == null)
                 throw new ArgumentNullException("progressMonitor");
 
-            using (progressMonitor.BeginTask("Installing components.", installerHandles.Length + 1))
+            var filteredInstallerHandles = FilterInstallers(installerIds);
+
+            using (progressMonitor.BeginTask(operation == InstallerOperation.Install ? "Installing components." : "Uninstalling components.",
+                filteredInstallerHandles.Count + 1))
             {
-                foreach (var installerHandle in installerHandles)
+                if (progressMonitor.IsCanceled)
+                    return false;
+
+                if (elevationContext != null)
                 {
-                    installerHandle.GetComponent().Install(progressMonitor.CreateSubProgressMonitor(1));
+                    return InstallOrUninstallWithElevationContext(installerHandles, elevationContext, progressMonitor, operation);
+                }
+                else
+                {
+                    if (!TryGetElevationContextIfRequired(filteredInstallerHandles, out elevationContext))
+                        return false;
+
+                    using (elevationContext)
+                    {
+                        return InstallOrUninstallWithElevationContext(installerHandles, elevationContext, progressMonitor, operation);
+                    }
                 }
             }
         }
 
-        /// <inheritdoc />
-        public void Uninstall(IProgressMonitor progressMonitor)
+        private static bool InstallOrUninstallWithElevationContext(IEnumerable<ComponentHandle<IInstaller, InstallerTraits>> installerHandles,
+            IElevationContext elevationContext, IProgressMonitor progressMonitor,
+            InstallerOperation operation)
         {
-            if (progressMonitor == null)
-                throw new ArgumentNullException("progressMonitor");
-
-            using (progressMonitor.BeginTask("Uninstalling components.", installerHandles.Length + 1))
+            foreach (var installerHandle in installerHandles)
             {
-                foreach (var installerHandle in installerHandles)
+                if (progressMonitor.IsCanceled)
+                    return false;
+
+                IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(1);
+                if (elevationContext != null && installerHandle.GetTraits().RequiresElevation)
                 {
-                    installerHandle.GetComponent().Uninstall(progressMonitor.CreateSubProgressMonitor(1));
+                    elevationContext.Execute(InstallerElevatedCommand.ElevatedCommandId,
+                        new InstallerElevatedCommand.Arguments(installerHandle.Id, operation),
+                        subProgressMonitor);
+                }
+                else
+                {
+                    IInstaller installer = installerHandle.GetComponent();
+
+                    if (operation == InstallerOperation.Install)
+                        installer.Install(progressMonitor.CreateSubProgressMonitor(1));
+                    else
+                        installer.Uninstall(progressMonitor.CreateSubProgressMonitor(1));
                 }
             }
+
+            return true;
+        }
+
+        private bool TryGetElevationContextIfRequired(IEnumerable<ComponentHandle<IInstaller, InstallerTraits>> installerHandles,
+            out IElevationContext elevationContext)
+        {
+            if (!elevationManager.HasElevatedPrivileges)
+            {
+                bool elevationRequired = IsElevationRequired(installerHandles);
+                if (elevationRequired)
+                {
+                    return elevationManager.TryAcquireElevationContext(
+                        "Administrative access required to install or uninstall certain components.",
+                        out elevationContext);
+                }
+            }
+
+            elevationContext = null;
+            return true;
+        }
+
+        private static bool IsElevationRequired(IEnumerable<ComponentHandle<IInstaller, InstallerTraits>> installerHandles)
+        {
+            foreach (var installerHandle in installerHandles)
+                if (installerHandle.GetTraits().RequiresElevation)
+                    return true;
+
+            return false;
+        }
+
+        private IList<ComponentHandle<IInstaller, InstallerTraits>> FilterInstallers(IList<string> installerIds)
+        {
+            if (installerIds == null)
+                return installerHandles;
+
+            var filteredInstallerHandles = new List<ComponentHandle<IInstaller, InstallerTraits>>();
+            foreach (string installerId in installerIds)
+            {
+                var installerHandle = GenericCollectionUtils.Find(installerHandles, x => x.Id == installerId);
+                if (installerHandle == null)
+                    throw new InvalidOperationException(string.Format("Could not find installer with id '{0}'.", installerId));
+
+                filteredInstallerHandles.Add(installerHandle);
+            }
+
+            return filteredInstallerHandles;
         }
     }
 }

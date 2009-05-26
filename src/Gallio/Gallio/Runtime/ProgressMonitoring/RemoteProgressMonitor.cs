@@ -17,7 +17,7 @@ using System;
 using System.Runtime.Remoting.Messaging;
 using System.Runtime.Serialization;
 using Gallio.Common.Policies;
-using Gallio.Runtime.Remoting;
+using Gallio.Common.Remoting;
 using Gallio.Runtime;
 
 namespace Gallio.Runtime.ProgressMonitoring

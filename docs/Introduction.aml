@@ -14,7 +14,7 @@
       </para>
       <para>
       Gallio ships with MbUnit v3, an extensible attribute-based unit testing
-      framework, as well as adapters for several other populate testing frameworks
+      framework, as well as adapters for several other popular testing frameworks
       and tools.
       </para>
       <para>

@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Text;
 using Gallio.Runtime.Logging;
 using Gallio.Runtime.ProgressMonitoring;
+using Gallio.Runtime.Security;
 
 namespace Gallio.Runtime.Installer
 {
@@ -29,15 +30,21 @@ namespace Gallio.Runtime.Installer
         /// <summary>
         /// Installs components.
         /// </summary>
+        /// <param name="installerIds">The ids of the specific installers to include, or null to include all</param>
+        /// <param name="elevationContext">A privilege elevation context, or null if the installer manager should obtain its own when needed</param>
         /// <param name="progressMonitor">The progress monitor</param>
+        /// <returns>True on success, false if the user canceled the operation</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="progressMonitor"/> is null</exception>
-        void Install(IProgressMonitor progressMonitor);
+        bool Install(IList<string> installerIds, IElevationContext elevationContext, IProgressMonitor progressMonitor);
 
         /// <summary>
         /// Uninstalls components.
         /// </summary>
+        /// <param name="installerIds">The ids of the specific installers to include, or null to include all</param>
+        /// <param name="elevationContext">A privilege elevation context, or null if the installer manager should obtain its own when needed</param>
         /// <param name="progressMonitor">The progress monitor</param>
+        /// <returns>True on success, false if the user canceled the operation</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="progressMonitor"/> is null</exception>
-        void Uninstall(IProgressMonitor progressMonitor);
+        bool Uninstall(IList<string> installerIds, IElevationContext elevationContext, IProgressMonitor progressMonitor);
     }
 }

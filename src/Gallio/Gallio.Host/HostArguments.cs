@@ -102,6 +102,14 @@ namespace Gallio.Host
 
         [CommandLineArgument(
              CommandLineArgumentFlags.AtMostOnce,
+             ShortName = "q",
+             LongName = "quiet",
+             Description = "Do not show log messages from the host."
+             )]
+        public bool Quiet;
+
+        [CommandLineArgument(
+             CommandLineArgumentFlags.AtMostOnce,
              ShortName = "h",
              LongName = "help",
              Description = "Display this help text.",

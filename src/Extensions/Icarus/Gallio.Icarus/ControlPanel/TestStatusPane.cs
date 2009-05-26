@@ -16,6 +16,8 @@
 using System;
 using System.Windows.Forms;
 using Gallio.Icarus.Controllers.Interfaces;
+using Gallio.Runtime.ProgressMonitoring;
+using Gallio.Runtime.Security;
 using Gallio.UI.ControlPanel.Preferences;
 
 namespace Gallio.Icarus.ControlPanel
@@ -49,11 +51,11 @@ namespace Gallio.Icarus.ControlPanel
                     return;
 
                 label.BackColor = colorDialog.Color;
-                OnSettingsChanged(EventArgs.Empty);
+                PendingSettingsChanges = true;
             }
         }
 
-        public override void ApplySettingsChanges()
+        public override void ApplyPendingSettingsChanges(IElevationContext elevationContext, IProgressMonitor progressMonitor)
         {
             optionsController.PassedColor = passedColor.BackColor;
             optionsController.FailedColor = failedColor.BackColor;
@@ -65,7 +67,7 @@ namespace Gallio.Icarus.ControlPanel
 
         private void testProgressBarStyle_SelectedIndexChanged(object sender, EventArgs e)
         {
-            OnSettingsChanged(EventArgs.Empty);
+            PendingSettingsChanges = true;
         }
     }
 }

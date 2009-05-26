@@ -43,6 +43,7 @@ namespace Gallio.Tests.Runtime.Hosting
                 { new HostSetup { ProcessorArchitecture = ProcessorArchitecture.IA64 }},
                 { new HostSetup { ShadowCopy = true }},
                 { new HostSetup { Debug = true }},
+                { new HostSetup { Elevated = true }},
                 { new HostSetup { WorkingDirectory = @"C:\WorkingDir" }},
                 { new HostSetup { WorkingDirectory = @"C:\WorkingDir-2" }},
                 { new HostSetup { Properties = { { "prop", "value" } }}},
@@ -126,7 +127,11 @@ namespace Gallio.Tests.Runtime.Hosting
                 ConfigurationFileLocation = ConfigurationFileLocation.AppBase,
                 ProcessorArchitecture = ProcessorArchitecture.Amd64,
                 ShadowCopy = true,
-                WorkingDirectory = @"C:\WorkingDir"
+                Debug = true,
+                RuntimeVersion = "2.0.50727",
+                Elevated = true,
+                WorkingDirectory = @"C:\WorkingDir",
+                Properties = { { "abc", "def" } }
             };
 
             HostSetup copy = setup.Copy();
@@ -136,7 +141,11 @@ namespace Gallio.Tests.Runtime.Hosting
             Assert.AreEqual(setup.ConfigurationFileLocation, copy.ConfigurationFileLocation);
             Assert.AreEqual(setup.ProcessorArchitecture, copy.ProcessorArchitecture);
             Assert.AreEqual(setup.ShadowCopy, copy.ShadowCopy);
+            Assert.AreEqual(setup.Elevated, copy.Elevated);
+            Assert.AreEqual(setup.Debug, copy.Debug);
+            Assert.AreEqual(setup.RuntimeVersion, copy.RuntimeVersion);
             Assert.AreEqual(setup.WorkingDirectory, copy.WorkingDirectory);
+            Assert.AreEqual(setup.Properties, copy.Properties);
         }
     }
 }

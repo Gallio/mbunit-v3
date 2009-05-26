@@ -40,6 +40,8 @@ namespace Gallio.TDNetRunner.Core
         private const string LocalMachineRegKey = @"Software\MutantDesign\TestDriven.NET\TestRunners";
         private const string LocalMachineRegKey32Bit = @"Software\Wow6432Node\MutantDesign\TestDriven.NET\TestRunners";
 
+        public static readonly string InstallerId = "TDNetRunner.Installer";
+
         public TDNetRunnerInstaller(ITestFrameworkManager frameworkManager, IRegistry registry, ILogger logger)
         {
             this.frameworkManager = frameworkManager;

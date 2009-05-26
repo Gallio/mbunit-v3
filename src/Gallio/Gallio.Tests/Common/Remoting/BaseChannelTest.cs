@@ -18,10 +18,10 @@ using System.Collections.Generic;
 using System.Runtime.Remoting.Channels;
 using System.Runtime.Remoting.Channels.Ipc;
 using System.Text;
-using Gallio.Runtime.Remoting;
+using Gallio.Common.Remoting;
 using MbUnit.Framework;
 
-namespace Gallio.Tests.Runtime.Remoting
+namespace Gallio.Tests.Common.Remoting
 {
     [TestFixture]
     [TestsOn(typeof(BaseChannel))]

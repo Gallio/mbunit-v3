@@ -21,14 +21,18 @@ using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 using Gallio.Common;
+using Gallio.Runtime.ProgressMonitoring;
+using Gallio.Runtime.Security;
 
 namespace Gallio.UI.ControlPanel
 {
     /// <summary>
     /// Presents a dialog with control panel options.
     /// </summary>
-    public partial class ControlPanelDialog : Form
+    internal partial class ControlPanelDialog : Form
     {
+        private bool requiresElevation;
+
         /// <summary>
         /// Creates a control panel dialog.
         /// </summary>
@@ -50,6 +54,16 @@ namespace Gallio.UI.ControlPanel
             controlPanelTabControl.TabPages.Add(tabPage);
         }
 
+        /// <summary>
+        /// Gets or sets the elevation manager used to obtain an elevation context.
+        /// </summary>
+        public IElevationManager ElevationManager { get; set; }
+
+        /// <summary>
+        /// Gets or sets the progress monitor provider to use.
+        /// </summary>
+        public IProgressMonitorProvider ProgressMonitorProvider { get; set; }
+
         private void EnsureTabCreated()
         {
             TabPage tabPage = controlPanelTabControl.SelectedTab;
@@ -63,27 +77,90 @@ namespace Gallio.UI.ControlPanel
                     tab.Margin = new Padding(0, 0, 0, 0);
                     tab.AutoSize = true;
                     tab.AutoSizeMode = AutoSizeMode.GrowAndShrink;
-                    tab.SettingsChanged += tab_SettingsChanged;
+                    tab.PendingSettingsChangesChanged += tab_PropertiesChanged;
+                    tab.RequiresElevationChanged += tab_PropertiesChanged;
                     tabPage.Controls.Add(tab);
+
+                    RefreshActionState();
                 }
             }
         }
 
         private void ApplySettingsChanges()
         {
-            foreach (TabPage tabPage in controlPanelTabControl.TabPages)
+            ProgressMonitorProvider.Run(progressMonitor =>
             {
-                if (tabPage.Controls.Count == 0)
-                    continue;
+                if (requiresElevation)
+                {
+                    IElevationContext elevationContext;
+                    if (
+                        ElevationManager.TryAcquireElevationContext(
+                            "Administrative access required to apply certain settings changes.", out elevationContext))
+                    {
+                        using (elevationContext)
+                            ApplySettingsChanges(elevationContext, progressMonitor);
+                    }
+                }
+                else
+                {
+                    ApplySettingsChanges(null, progressMonitor);
+                }
+            });
+        }
 
-                var tab = (ControlPanelTab)tabPage.Controls[0];
-                tab.ApplySettingsChanges();
+        private void ApplySettingsChanges(IElevationContext elevationContext, IProgressMonitor progressMonitor)
+        {
+            using (progressMonitor.BeginTask("Applying changes.", 1))
+            {
+                var tabs = new List<ControlPanelTab>(GetControlPanelTabs());
+                if (tabs.Count == 0)
+                    return;
+
+                double workPerTab = 1.0 / tabs.Count;
+
+                foreach (ControlPanelTab tab in tabs)
+                {
+                    if (tab.PendingSettingsChanges)
+                    {
+                        tab.ApplyPendingSettingsChanges(tab.RequiresElevation ? elevationContext : null, progressMonitor.CreateSubProgressMonitor(workPerTab));
+                    }
+                    else
+                    {
+                        progressMonitor.Worked(workPerTab);
+                    }
+                }
             }
         }
 
-        private void tab_SettingsChanged(object sender, EventArgs e)
+        private IEnumerable<ControlPanelTab> GetControlPanelTabs()
         {
-            applyButton.Enabled = true;
+            foreach (TabPage tabPage in controlPanelTabControl.TabPages)
+            {
+                if (tabPage.Controls.Count != 0)
+                    yield return (ControlPanelTab)tabPage.Controls[0];
+            }
+        }
+
+        private void RefreshActionState()
+        {
+            bool combinedPendingSettingsChanges = false;
+            bool combinedRequiresElevation = false;
+            foreach (ControlPanelTab tab in GetControlPanelTabs())
+            {
+                combinedPendingSettingsChanges = combinedPendingSettingsChanges || tab.PendingSettingsChanges;
+                combinedRequiresElevation = combinedRequiresElevation || (tab.RequiresElevation && tab.PendingSettingsChanges);
+            }
+
+            applyButton.Enabled = combinedPendingSettingsChanges;
+            applyButton.Shield = combinedRequiresElevation;
+            okButton.Shield = combinedRequiresElevation;
+
+            requiresElevation = combinedRequiresElevation;
+        }
+
+        private void tab_PropertiesChanged(object sender, EventArgs e)
+        {
+            RefreshActionState();
         }
 
         private void controlPanelTabControl_SelectedIndexChanged(object sender, EventArgs e)

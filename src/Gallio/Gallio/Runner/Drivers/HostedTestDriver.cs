@@ -25,7 +25,7 @@ using Gallio.Runtime.Debugging;
 using Gallio.Runtime.Extensibility;
 using Gallio.Runtime.Hosting;
 using Gallio.Runtime.Logging;
-using Gallio.Runtime.Remoting;
+using Gallio.Common.Remoting;
 using Gallio.Common.Reflection;
 
 namespace Gallio.Runner.Drivers

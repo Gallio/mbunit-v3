@@ -31,7 +31,7 @@ using Gallio.Runtime;
 using Gallio.Runtime.Debugging;
 using Gallio.Runtime.Hosting;
 using Gallio.Runtime.ProgressMonitoring;
-using Gallio.Runtime.Remoting;
+using Gallio.Common.Remoting;
 using ITestListener=csUnit.Interfaces.ITestListener;
 
 namespace Gallio.CSUnitAdapter.Model

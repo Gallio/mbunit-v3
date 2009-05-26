@@ -16,7 +16,7 @@
 using System;
 using System.Runtime.Remoting;
 
-namespace Gallio.Runtime.Remoting
+namespace Gallio.Common.Remoting
 {
     /// <summary>
     /// Base class for long-lived marshal by ref objects.
