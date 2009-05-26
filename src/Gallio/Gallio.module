@@ -6,7 +6,6 @@
     <CSharpProject Include="Gallio35\Gallio35$(ProjectVariant).csproj" />
     <CSharpProject Include="Gallio.ControlPanel\Gallio.ControlPanel$(ProjectVariant).csproj" />
     <CSharpProject Include="Gallio.Host\Gallio.Host$(ProjectVariant).csproj" />
-    <CSharpProject Include="Gallio.Host\Gallio.Host.x86$(ProjectVariant).csproj" />
     <CSharpProject Include="Gallio.Tests\Gallio.Tests$(ProjectVariant).csproj" />
     <CSharpProject Include="Gallio.Loader\Gallio.Loader$(ProjectVariant).csproj" />
     <CSharpProject Include="Gallio.Reports\Gallio.Reports$(ProjectVariant).csproj" />
@@ -28,11 +27,14 @@
       <Folder>Resources</Folder>
     </Binary>
 
-    <Binary Include="Gallio.Host\bin\msil\Gallio.Host.exe" />
-    <PluginFile Include="Gallio.Host\Gallio.Host.exe.config" />
-
-    <Binary Include="Gallio.Host\bin\x86\Gallio.Host.x86.exe" />
-    <PluginFile Include="Gallio.Host\Gallio.Host.x86.exe.config" />
+    <Binary Include="Gallio\bin\Gallio.Host.exe" />
+    <PluginFile Include="Gallio\bin\Gallio.Host.exe.config" />
+    <Binary Include="Gallio\bin\Gallio.Host.x86.exe" />
+    <PluginFile Include="Gallio\bin\Gallio.Host.x86.exe.config" />
+    <Binary Include="Gallio\bin\Gallio.Host.Elevated.exe" />
+    <PluginFile Include="Gallio\bin\Gallio.Host.Elevated.exe.config" />
+    <Binary Include="Gallio\bin\Gallio.Host.Elevated.x86.exe" />
+    <PluginFile Include="Gallio\bin\Gallio.Host.Elevated.x86.exe.config" />
 
     <Binary Include="Gallio.Loader\bin\Gallio.Loader.dll" />
     <Binary Include="Gallio.Loader\bin\Gallio.Loader.pdb" />
