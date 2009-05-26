@@ -171,6 +171,7 @@
     <Compile Include="Common\Text\RegularExpression\ParsingInfo.cs" />
     <Compile Include="Common\Text\RegularExpression\RegexLite.cs" />
     <Compile Include="Common\Text\RegularExpression\Quantifier.cs" />
+    <Compile Include="Framework\Data\Generation\RandomStringsGenerator.cs" />
     <Compile Include="Framework\Data\Generation\SequentialNumbersGenerator.cs" />
     <Compile Include="Framework\Data\Generation\Generator.cs" />
     <Compile Include="Framework\Data\Generation\RandomNumbersGenerator.cs" />

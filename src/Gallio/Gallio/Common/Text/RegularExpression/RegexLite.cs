@@ -24,7 +24,7 @@ namespace Gallio.Common.Text.RegularExpression
     /// </summary>
     /// <remarks>
     /// <para>
-    /// The following syntax features are supported:
+    /// The following syntactic features are supported:
     /// <list type="bullet">
     /// <item><term>Logical Grouping</term><description>Group a part of the expression (<code>(...)</code>).</description></item>
     /// <item><term>Explicit Set</term><description>Define a set of possible characters (<code>[...]</code>). 
@@ -56,7 +56,8 @@ namespace Gallio.Common.Text.RegularExpression
         /// Constructs a simplified regular expression pattern.
         /// </summary>
         /// <param name="pattern">The input pattern</param>
-        /// <exception cref="ArgumentNullException"><paramref name="pattern"/> is null.</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="pattern"/> is null.</exception>
+        /// <exception cref="RegexLiteException">Thrown if <paramref name="pattern"/> is invalid.</exception>
         public RegexLite(string pattern)
         {
             if (pattern == null)

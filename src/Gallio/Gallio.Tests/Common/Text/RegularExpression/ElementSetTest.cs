@@ -68,5 +68,13 @@ namespace Gallio.Tests.Common.Text.RegularExpression
                 Assert.FullMatch(actual, expected);
             }
         }
+
+        [Test]
+        [ExpectedException(typeof(RegexLiteException))]
+        public void Initialize_with_invalid_content_should_throw_exception()
+        {
+            new ElementSet(Quantifier.One, "Z-A");
+        }
+
     }
 }
