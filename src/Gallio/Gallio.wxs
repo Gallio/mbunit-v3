@@ -137,7 +137,7 @@
             <Component Id="Gallio.Resources" Guid="{E99D0D72-95F9-4d17-8BAA-7FFC83402E52}" Win64="no">
                 <File Id="Gallio.ico" Name="Gallio.ico" KeyPath="yes" />
 		
-                <File Id="Container.ico" Name="Assembly.ico" />
+                <File Id="Assembly.ico" Name="Assembly.ico" />
                 <File Id="Container.ico" Name="Container.ico" />
                 <File Id="Fixture.ico" Name="Fixture.ico" />
                 <File Id="Test.ico" Name="Test.ico" />
