@@ -36,6 +36,11 @@ namespace Gallio.MbUnit2Adapter.Tests.Model
                 RuntimeAccessor.ServiceLocator.ResolveHandleByComponentId("MbUnit2Adapter.TestFramework");
         }
 
+        protected override string FrameworkKind
+        {
+            get { return "MbUnit v2 Framework"; }
+        }
+
         protected override string PassTestName
         {
             get { return "SetUp.Pass.TearDown"; }

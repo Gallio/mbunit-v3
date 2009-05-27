@@ -25,7 +25,8 @@
              serviceType="Gallio.UI.ControlPanel.IControlPanelTabProvider, Gallio.UI" />
 
     <service serviceId="Gallio.UI.PreferencePaneProvider"
-             serviceType="Gallio.UI.ControlPanel.Preferences.IPreferencePaneProvider, Gallio.UI" />
+             serviceType="Gallio.UI.ControlPanel.Preferences.IPreferencePaneProvider, Gallio.UI"
+             defaultComponentType="Gallio.UI.ControlPanel.Preferences.PlaceholderPreferencePaneProvider, Gallio.UI"/>
   </services>
 
   <components>

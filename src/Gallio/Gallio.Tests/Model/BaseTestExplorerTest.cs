@@ -44,6 +44,11 @@ namespace Gallio.Tests.Model
 
         protected abstract ComponentHandle<ITestFramework, TestFrameworkTraits> GetFrameworkHandle();
 
+        protected virtual string FrameworkKind
+        {
+            get { return TestKinds.Framework; }
+        }
+
         protected virtual string PassTestName
         {
             get { return "Pass"; }
@@ -105,7 +110,8 @@ namespace Gallio.Tests.Model
 
             BaseTest frameworkTest = (BaseTest)rootTest.Children[0];
             Assert.AreSame(testModel.RootTest, frameworkTest.Parent);
-            Assert.AreEqual(TestKinds.Framework, frameworkTest.Kind);
+            Assert.AreEqual(FrameworkKind, frameworkTest.Kind);
+            Assert.AreEqual(frameworkHandle.GetTraits().Name, frameworkTest.Metadata.GetValue(MetadataKeys.Framework));
             Assert.IsNull(frameworkTest.CodeElement);
             //Assert.AreEqual("MSTest v9.0.0.0", frameworkTest.Name);
             //Assert.AreEqual("MbUnit v" + expectedVersion, frameworkTest.Name);

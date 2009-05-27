@@ -81,6 +81,13 @@
     <service serviceId="Gallio.TestFrameworkManager"
              serviceType="Gallio.Model.ITestFrameworkManager, Gallio" />
 
+    <service serviceId="Gallio.TestKind"
+             serviceType="Gallio.Model.ITestKind, Gallio"
+             defaultComponentType="Gallio.Model.DefaultTestKind, Gallio"/>
+
+    <service serviceId="Gallio.TestKindManager"
+             serviceType="Gallio.Model.ITestKindManager, Gallio" />
+
     <service serviceId="Gallio.TestContextTracker"
              serviceType="Gallio.Model.Execution.ITestContextTracker, Gallio" />
 
@@ -469,5 +476,83 @@
     <component componentId="Gallio.InstallerManager"
                serviceId="Gallio.InstallerManager"
                componentType="Gallio.Runtime.Installer.DefaultInstallerManager, Gallio" />
+    
+    <!-- Test Kinds -->
+
+    <component componentId="Gallio.TestKindManager"
+               serviceId="Gallio.TestKindManager"
+               componentType="Gallio.Model.DefaultTestKindManager, Gallio" />
+    
+    <component componentId="Gallio.TestKinds.Root"
+               serviceId="Gallio.TestKind">
+      <traits>
+        <name>Root</name>
+        <description>The root node of the test tree.</description>
+        <icon>plugin://Gallio/Resources/Assembly.ico</icon>
+      </traits>
+    </component>
+
+    <component componentId="Gallio.TestKinds.Framework"
+               serviceId="Gallio.TestKind">
+      <traits>
+        <name>Framework</name>
+        <description>A test framework.</description>
+        <icon>plugin://Gallio/Resources/Assembly.ico</icon>
+      </traits>
+    </component>
+
+    <component componentId="Gallio.TestKinds.Assembly"
+               serviceId="Gallio.TestKind">
+      <traits>
+        <name>Assembly</name>
+        <description>A test assembly.</description>
+        <icon>plugin://Gallio/Resources/Assembly.ico</icon>
+      </traits>
+    </component>
+
+    <component componentId="Gallio.TestKinds.Namespace"
+               serviceId="Gallio.TestKind">
+      <traits>
+        <name>Namespace</name>
+        <description>A test namespace.</description>
+        <icon>plugin://Gallio/Resources/Container.ico</icon>
+      </traits>
+    </component>
+
+    <component componentId="Gallio.TestKinds.Group"
+               serviceId="Gallio.TestKind">
+      <traits>
+        <name>Group</name>
+        <description>A test group.</description>
+        <icon>plugin://Gallio/Resources/Container.ico</icon>
+      </traits>
+    </component>
+
+    <component componentId="Gallio.TestKinds.Suite"
+               serviceId="Gallio.TestKind">
+      <traits>
+        <name>Suite</name>
+        <description>A test suite.</description>
+        <icon>plugin://Gallio/Resources/Container.ico</icon>
+      </traits>
+    </component>
+
+    <component componentId="Gallio.TestKinds.Fixture"
+               serviceId="Gallio.TestKind">
+      <traits>
+        <name>Fixture</name>
+        <description>A test fixture.</description>
+        <icon>plugin://Gallio/Resources/Fixture.ico</icon>
+      </traits>
+    </component>
+
+    <component componentId="Gallio.TestKinds.Test"
+               serviceId="Gallio.TestKind">
+      <traits>
+        <name>Test</name>
+        <description>A test case.</description>
+        <icon>plugin://Gallio/Resources/Test.ico</icon>
+      </traits>
+    </component>
   </components>
 </plugin>

@@ -28,6 +28,7 @@ namespace Gallio.CSUnitAdapter.Model
 {
     internal class CSUnitTestExplorer : BaseTestExplorer
     {
+        private const string FrameworkName = "csUnit";
         private const string CSUnitAssemblyDisplayName = @"csUnit";
 
         public override void Explore(TestModel testModel, TestSource testSource, Action<ITest> consumer)
@@ -253,8 +254,9 @@ namespace Gallio.CSUnitAdapter.Model
                 string name = String.Format(Resources.CSUnitTestExplorer_FrameworkNameWithVersionFormat, frameworkVersion);
 
                 BaseTest frameworkTest = new BaseTest(name, null);
-                frameworkTest.LocalIdHint = "csUnit";
+                frameworkTest.LocalIdHint = FrameworkName;
                 frameworkTest.Kind = TestKinds.Framework;
+                frameworkTest.Metadata.Add(MetadataKeys.Framework, FrameworkName);
 
                 return frameworkTest;
             }

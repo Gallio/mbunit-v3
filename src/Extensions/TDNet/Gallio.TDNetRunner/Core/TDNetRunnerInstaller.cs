@@ -64,10 +64,10 @@ namespace Gallio.TDNetRunner.Core
                 progressMonitor.Worked(1);
 
                 // Register frameworks
-                foreach (ComponentHandle<ITestFramework, TestFrameworkTraits> frameworkHandles in frameworkManager.FrameworkHandles)
+                foreach (ComponentHandle<ITestFramework, TestFrameworkTraits> frameworkHandle in frameworkManager.FrameworkHandles)
                 {
-                    TestFrameworkTraits frameworkTraits = frameworkHandles.GetTraits();
-                    TDNetRunnerInstallationMode installationMode = GetInstallationModeForFramework(frameworkTraits.Id);
+                    TestFrameworkTraits frameworkTraits = frameworkHandle.GetTraits();
+                    TDNetRunnerInstallationMode installationMode = GetInstallationModeForFramework(frameworkHandle.Id);
 
                     if (installationMode != TDNetRunnerInstallationMode.Disabled)
                     {
@@ -92,7 +92,7 @@ namespace Gallio.TDNetRunner.Core
             }
         }
 
-        private TDNetRunnerInstallationMode GetInstallationModeForFramework(Guid frameworkId)
+        private TDNetRunnerInstallationMode GetInstallationModeForFramework(string frameworkId)
         {
             return TDNetRunnerInstallationMode.Default;
         }

@@ -37,6 +37,8 @@ namespace Gallio.MbUnit2Adapter.Model
     /// </summary>
     internal class MbUnit2TestExplorer : BaseTestExplorer
     {
+        private const string FrameworkKind = "MbUnit v2 Framework";
+        private const string FrameworkName = "MbUnit v2";
         private const string MbUnitFrameworkAssemblyDisplayName = @"MbUnit.Framework";
 
         public override void Explore(TestModel testModel, TestSource testSource, Action<ITest> consumer)
@@ -116,8 +118,9 @@ namespace Gallio.MbUnit2Adapter.Model
             {
                 BaseTest frameworkTest = new BaseTest(
                     String.Format(Resources.MbUnit2TestExplorer_FrameworkNameWithVersionFormat, frameworkVersion), null);
-                frameworkTest.LocalIdHint = "MbUnit v2";
-                frameworkTest.Kind = TestKinds.Framework;
+                frameworkTest.LocalIdHint = FrameworkName;
+                frameworkTest.Kind = FrameworkKind;
+                frameworkTest.Metadata.Add(MetadataKeys.Framework, FrameworkName);
 
                 return frameworkTest;
             }

@@ -5,6 +5,7 @@
     <name>MbUnit v2 Adapter Plugin</name>
     <version>0.0.0.0</version>
     <description>Provides support for running MbUnit v2 tests.</description>
+    <icon>plugin://Gallio.MbUnit2Adapter/Resources/MbUnit.ico</icon>
   </traits>
 
   <dependencies>
@@ -39,10 +40,19 @@
                serviceId="Gallio.TestFramework"
                componentType="Gallio.MbUnit2Adapter.Model.MbUnit2TestFramework, Gallio.MbUnit2Adapter">
       <traits>
-        <id>{81CE2FDD-D9E8-46a6-8D2E-AF5E474BA537}</id>
         <name>MbUnit v2</name>
         <frameworkAssemblyNames>MbUnit.Framework</frameworkAssemblyNames>
         <version>2.4.2.175</version>
+        <icon>plugin://Gallio.MbUnit2Adapter/Resources/MbUnit.ico</icon>
+      </traits>
+    </component>
+
+    <component componentId="MbUnit2Adapter.TestKinds.MbUnitFramework"
+               serviceId="Gallio.TestKind">
+      <traits>
+        <name>MbUnit v2 Framework</name>
+        <description>MbUnit v2 Test Framework</description>
+        <icon>plugin://Gallio.MbUnit2Adapter/Resources/MbUnit.ico</icon>
       </traits>
     </component>
   </components>

@@ -231,7 +231,7 @@ namespace Gallio.Runner.Drivers
                 }
             }
 
-            ITestExplorer explorer = frameworkManager.GetTestExplorer(traits => testDomain.TestPackageConfig.IsFrameworkRequested(traits.Id));
+            ITestExplorer explorer = frameworkManager.GetTestExplorer(frameworkId => testDomain.TestPackageConfig.IsFrameworkRequested(frameworkId));
             explorer.ConfigureTestDomain(testDomain);
 
             return testDomain;

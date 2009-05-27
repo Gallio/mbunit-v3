@@ -95,19 +95,14 @@ namespace Gallio.Schema.Plugins
         }
 
         /// <summary>
-        /// Gets or sets the assembly-qualified component type name.
+        /// Gets or sets the assembly-qualified component type name, or null to use the 
+        /// default for the service.
         /// </summary>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
         [XmlAttribute("componentType")]
         public string ComponentType
         {
             get { return componentType; }
-            set
-            {
-                if (value == null)
-                    throw new ArgumentNullException("value");
-                componentType = value;
-            }
+            set { componentType = value; }
         }
 
         /// <summary>
@@ -127,7 +122,6 @@ namespace Gallio.Schema.Plugins
         {
             ValidationUtils.ValidateNotNull("componentId", componentId);
             ValidationUtils.ValidateNotNull("serviceId", serviceId);
-            ValidationUtils.ValidateNotNull("componentType", componentType);
         }
     }
 }

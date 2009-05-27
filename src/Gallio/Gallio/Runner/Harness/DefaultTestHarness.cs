@@ -212,7 +212,7 @@ namespace Gallio.Runner.Harness
                 {
                     model = new TestModel(package);
 
-                    ITestExplorer explorer = frameworkManager.GetTestExplorer(traits => package.Config.IsFrameworkRequested(traits.Id));
+                    ITestExplorer explorer = frameworkManager.GetTestExplorer(frameworkId => package.Config.IsFrameworkRequested(frameworkId));
 
                     TestSource source = new TestSource();
                     foreach (IAssemblyInfo assembly in package.Assemblies)

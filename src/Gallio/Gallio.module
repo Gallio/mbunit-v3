@@ -23,7 +23,7 @@
   
     <Binary Include="Gallio\bin\Gallio.XmlSerializers.dll" />
     <PluginFile Include="Gallio\Gallio.plugin" />
-    <Binary Include="Gallio\Resources\Gallio.ico">
+    <Binary Include="Gallio\Resources\*.ico">
       <Folder>Resources</Folder>
     </Binary>
 

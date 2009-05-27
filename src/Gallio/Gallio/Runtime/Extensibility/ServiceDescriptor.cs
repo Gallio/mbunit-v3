@@ -27,6 +27,7 @@ namespace Gallio.Runtime.Extensibility
         private readonly PluginDescriptor pluginDescriptor;
         private readonly string serviceId;
         private readonly TypeName serviceTypeName;
+        private readonly TypeName defaultComponentTypeName;
         private readonly IHandlerFactory traitsHandlerFactory;
 
         private Type serviceType;
@@ -38,6 +39,7 @@ namespace Gallio.Runtime.Extensibility
             pluginDescriptor = (PluginDescriptor) serviceRegistration.Plugin;
             serviceId = serviceRegistration.ServiceId;
             serviceTypeName = serviceRegistration.ServiceTypeName;
+            defaultComponentTypeName = serviceRegistration.DefaultComponentTypeName;
             traitsHandlerFactory = serviceRegistration.TraitsHandlerFactory;
         }
 
@@ -54,6 +56,11 @@ namespace Gallio.Runtime.Extensibility
         public TypeName ServiceTypeName
         {
             get { return serviceTypeName; }
+        }
+
+        public TypeName DefaultComponentTypeName
+        {
+            get { return defaultComponentTypeName; }
         }
 
         public IHandlerFactory TraitsHandlerFactory

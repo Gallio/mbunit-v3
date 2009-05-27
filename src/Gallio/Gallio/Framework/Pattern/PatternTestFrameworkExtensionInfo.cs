@@ -58,5 +58,12 @@ namespace Gallio.Framework.Pattern
         {
             get { return name; }
         }
+
+        /// <summary>
+        /// Gets or sets the extension's test kind which is used to decorate the test
+        /// framework test when a test assembly only contains tests that belong to one
+        /// particular framework.  May be null if none.
+        /// </summary>
+        public string FrameworkKind { get; set; }
     }
 }

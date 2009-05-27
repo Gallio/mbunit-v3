@@ -135,6 +135,14 @@ namespace Gallio.Model
         public const string FileVersion = "FileVersion";
 
         /// <summary>
+        /// The metadata key for the test framework name associated with a test framework node in the test tree.
+        /// </summary>
+        /// <remarks>
+        /// The value should be the name trait of the component that implements the "Gallio.TestFramework" service.
+        /// </remarks>
+        public const string Framework = "Framework";
+
+        /// <summary>
         /// The metadata key that describes the reason that a test is being ignored.
         /// (Tests may of course be ignored without a declared reason.)
         /// </summary>

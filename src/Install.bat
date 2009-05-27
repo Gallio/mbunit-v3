@@ -8,6 +8,7 @@ set SRC_DIR=%~dp0
 set BIN_DIR=%~dp0..\bin
 set GACUTIL=%BIN_DIR%\gacutil.exe
 set GACUTIL40=%BIN_DIR%\gacutil40.exe
+set ELEVATE=%BIN_DIR%\elevate.cmd
 set REG=%BIN_DIR%\reg.exe
 
 echo.
@@ -15,10 +16,11 @@ echo This script installs or uninstalls components built in the source tree
 echo for local debugging purposes.
 echo.
 echo Choose the component to install or uninstall:
-echo   1^) Install Gallio.Loader into GAC.
-echo   2^) Install TestDriven.Net runner registry keys.  ^(implies 1^)
-echo   3^) Install Visual Studio 2008 addin.  ^(implies 1^)
-echo   4^) Install Visual Studio 2010 addin.  ^(implies 1^)
+echo   1^) Install Gallio.Loader and installable components, including:
+echo         - Reports
+echo         - TestDriven.Net runner
+echo   2^) Install Visual Studio 2008 addin.  ^(implies 1^)
+echo   3^) Install Visual Studio 2010 addin.  ^(implies 1^)
 echo.
 echo   0^) Uninstall all components.
 echo.
@@ -29,9 +31,8 @@ if not defined ANSWER set /P ANSWER=Choice?
 echo.
 
 if "%ANSWER%"=="1" call :INSTALL_LOADER & goto :OK
-if "%ANSWER%"=="2" call :INSTALL_TDNETRUNNER & goto :OK
-if "%ANSWER%"=="3" call :INSTALL_VISUALSTUDIO_ADDIN 9 & goto :OK
-if "%ANSWER%"=="4" call :INSTALL_VISUALSTUDIO_ADDIN 10 & goto :OK
+if "%ANSWER%"=="2" call :INSTALL_VISUALSTUDIO_ADDIN 9 & goto :OK
+if "%ANSWER%"=="3" call :INSTALL_VISUALSTUDIO_ADDIN 10 & goto :OK
 
 if "%ANSWER%"=="0" call :UNINSTALL_ALL & goto :OK
 goto :PROMPT
@@ -45,11 +46,15 @@ echo ** Install Gallio.Loader **
 call :SET_LOADER_VARS
 
 echo Installing Gallio.Loader assembly into GAC.
-"%GACUTIL%" /i "%LOADER_DLL%" /f
+call "%ELEVATE%" "%GACUTIL%" /i "%LOADER_DLL%" /f
 echo.
 
 echo Adding registry keys.
 "%REG%" ADD "HKEY_LOCAL_MACHINE\Software\Gallio.org\Gallio\3.0" /V InstallationFolder /D "%SRC_DIR%Gallio\Gallio" /F >nul
+echo.
+
+echo Installing installable components.
+call "%SRC_DIR%Gallio.Utility.bat" Setup /install /v:verbose 
 echo.
 exit /b 0
 
@@ -60,11 +65,15 @@ echo ** Uninstall Gallio.Loader **
 call :SET_LOADER_VARS
 
 echo Uninstalling Gallio.Loader assembly from GAC.
-"%GACUTIL%" /u "%LOADER_DLL%" 2>nul >nul
+call "%ELEVATE%" "%GACUTIL%" /u "%LOADER_DLL%" 2>nul >nul
 echo.
 
 echo Deleting registry keys.
 "%REG%" DELETE "HKEY_LOCAL_MACHINE\Software\Gallio.org\Gallio\3.0" /V InstallationFolder /F 2>nul >nul
+echo.
+
+echo Uninstalling installable components.
+call "%SRC_DIR%Gallio.Utility.bat" Setup /uninstall /v:verbose 
 echo.
 exit /b 0
 
@@ -72,24 +81,6 @@ exit /b 0
 REM Helper: Set Loader vars
 :SET_LOADER_VARS
 set LOADER_DLL=%SRC_DIR%\Gallio\Gallio.Loader\bin\Gallio.Loader.dll
-exit /b 0
-
-
-REM Install TestDriven.Net runner.
-:INSTALL_TDNETRUNNER
-call :INSTALL_LOADER
-
-echo ** Install TDNet Runner **
-call "%SRC_DIR%Gallio.Utility.bat" Setup /install /v:verbose
-echo.
-exit /b 0
-
-
-REM Uninstall TestDriven.Net runner.
-:UNINSTALL_TDNETRUNNER
-echo ** Uninstall TDNet Runner **
-call "%SRC_DIR%Gallio.Utility.bat" Setup /uninstall /v:verbose
-echo.
 exit /b 0
 
 

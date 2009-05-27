@@ -62,7 +62,8 @@ namespace MbUnit.Tests.Model
 
             PatternTest frameworkTest = (PatternTest)rootTest.Children[0];
             Assert.AreSame(rootTest, frameworkTest.Parent);
-            Assert.AreEqual(TestKinds.Framework, frameworkTest.Kind);
+            Assert.AreEqual("MbUnit v3 Framework", frameworkTest.Kind);
+            Assert.AreEqual(frameworkHandle.GetTraits().Name, frameworkTest.Metadata.GetValue(MetadataKeys.Framework));
             Assert.IsNull(frameworkTest.CodeElement);
             Assert.AreEqual("MbUnit v" + expectedVersion, frameworkTest.Name);
             Assert.AreEqual(1, frameworkTest.Children.Count);

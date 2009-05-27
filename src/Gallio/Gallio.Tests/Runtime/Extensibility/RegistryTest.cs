@@ -193,6 +193,28 @@ namespace Gallio.Tests.Runtime.Extensibility
             }
 
             [Test]
+            public void RegisterComponent_WhenArgumentsValidButNoComponentTypeNameProvided_UsesTheDefaultComponentTypeSepcifiedByTheService()
+            {
+                var registry = new Registry();
+                var plugin = registry.RegisterPlugin(new PluginRegistration("pluginId", new TypeName("Plugin, Assembly"), new DirectoryInfo(@"C:\")));
+                var service = registry.RegisterService(new ServiceRegistration(plugin, "serviceId", new TypeName("Service, Assembly"))
+                    {
+                        DefaultComponentTypeName = new TypeName("Component, Assembly")
+                    });
+                var handlerFactory = MockRepository.GenerateStub<IHandlerFactory>();
+
+                var component = registry.RegisterComponent(new ComponentRegistration(plugin, service, "componentId", null));
+
+                Assert.Multiple(() =>
+                {
+                    Assert.AreSame(plugin, component.Plugin);
+                    Assert.AreSame(service, component.Service);
+                    Assert.AreEqual("componentId", component.ComponentId);
+                    Assert.AreEqual(new TypeName("Component, Assembly"), component.ComponentTypeName);
+                });
+            }
+
+            [Test]
             public void RegisterPlugin_WhenPluginIdNotUnique_Throws()
             {
                 var registry = new Registry();
@@ -343,6 +365,20 @@ namespace Gallio.Tests.Runtime.Extensibility
                     registry.RegisterComponent(new ComponentRegistration(plugin, service, "componentId", new TypeName("Component, Assembly")));
                 });
                 Assert.Contains(ex.Message, "There is already a component registered with id 'componentId'.");
+            }
+
+            [Test]
+            public void RegisterComponent_WhenComponentMissingComponentTypeAndTheServiceDoesNotHaveADefaultComponentType_Throws()
+            {
+                var registry = new Registry();
+                var plugin = registry.RegisterPlugin(new PluginRegistration("pluginId", new TypeName("Plugin, Assembly"), new DirectoryInfo(@"C:\")));
+                var service = registry.RegisterService(new ServiceRegistration(plugin, "serviceId", new TypeName("Service, Assembly")));
+
+                var ex = Assert.Throws<ArgumentException>(() =>
+                {
+                    registry.RegisterComponent(new ComponentRegistration(plugin, service, "componentId", null));
+                });
+                Assert.Contains(ex.Message, "The specified service descriptor does not have a default component type name so the component registration must specify a component type name but it does not.");
             }
         }
 

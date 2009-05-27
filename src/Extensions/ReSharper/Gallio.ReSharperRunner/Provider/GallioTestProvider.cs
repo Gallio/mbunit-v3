@@ -158,10 +158,10 @@ namespace Gallio.ReSharperRunner.Provider
 
         internal sealed class Shim
         {
-            private static readonly Dictionary<string, Guid> IncompatibleProviders = new Dictionary<string, Guid>()
+            private static readonly Dictionary<string, string> IncompatibleProviders = new Dictionary<string, string>()
             {
-                { "nUnit", new Guid("{E0273D0F-BEAE-47ff-9391-D6782417F000}") },
-                { "MSTest", new Guid("{559AA77B-E0E5-43bb-AF48-EF50D0025D3C}") }
+                { "nUnit", "NUnitAdapter.TestFramework" },
+                { "MSTest", "MSTestAdapter.TestFramework" }
             };
 
             private readonly IUnitTestProvider provider;
@@ -245,9 +245,9 @@ namespace Gallio.ReSharperRunner.Provider
                 // Exclude the NUnit framework if the built-in NUnit provider is enabled.
                 foreach (IUnitTestProvider provider in UnitTestManager.GetInstance(SolutionManager.Instance.CurrentSolution).GetEnabledProviders())
                 {
-                    Guid frameworkId;
+                    string frameworkId;
                     if (IncompatibleProviders.TryGetValue(provider.ID, out frameworkId))
-                        config.ExcludedFrameworkIds.Add(frameworkId.ToString());
+                        config.ExcludedFrameworkIds.Add(frameworkId);
                 }
 
                 return config;
@@ -255,7 +255,7 @@ namespace Gallio.ReSharperRunner.Provider
 
             private ITestExplorer CreateTestExplorer(TestPackageConfig config)
             {
-                return frameworkManager.GetTestExplorer(traits => config.IsFrameworkRequested(traits.Id));
+                return frameworkManager.GetTestExplorer(frameworkId => config.IsFrameworkRequested(frameworkId));
             }
 
             private TestModel CreateTestModel(TestPackageConfig config, IReflectionPolicy reflectionPolicy)

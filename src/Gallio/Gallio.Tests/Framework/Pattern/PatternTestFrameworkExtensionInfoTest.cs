@@ -44,5 +44,17 @@ namespace Gallio.Tests.Framework.Pattern
             Assert.AreEqual("id", info.Id);
             Assert.AreEqual("name", info.Name);
         }
+
+        [Test]
+        public void FrameworkKind_CanGetAndSet()
+        {
+            PatternTestFrameworkExtensionInfo info = new PatternTestFrameworkExtensionInfo("id", "name");
+
+            Assert.IsNull(info.FrameworkKind);
+
+            info.FrameworkKind = "Foo";
+
+            Assert.AreEqual("Foo", info.FrameworkKind);
+        }
     }
 }

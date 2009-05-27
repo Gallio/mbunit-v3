@@ -106,7 +106,7 @@ namespace Gallio.Icarus.Helpers
                 }
                 else
                 {
-                    nsNode = new TestTreeNode(ns, ns, "Namespace");
+                    nsNode = new TestTreeNode(ns, ns, TestKinds.Namespace);
                     parent.Nodes.Add(nsNode);
                 }
                 parent = nsNode;

@@ -22,7 +22,5 @@ namespace Gallio.VisualStudio.Tip
     {
         public const string GallioTestTypeGuidString = "F3589083-259C-4054-87F7-75CDAD4B08E5";
         public static readonly TestType GallioTestType = new TestType(new Guid(GallioTestTypeGuidString));
-
-        public static readonly Guid MSTestFrameworkId = new Guid("{559AA77B-E0E5-43bb-AF48-EF50D0025D3C}");
     };
 }

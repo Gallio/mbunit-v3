@@ -103,6 +103,21 @@ namespace Gallio.Tests.Runtime.Extensibility
         }
 
         [Test]
+        public void DefaultComponentTypeName_Accessor_IsNullByDefaultButCanBeSet()
+        {
+            var plugin = MockRepository.GenerateStub<IPluginDescriptor>();
+            var registration = new ServiceRegistration(plugin, "serviceId", new TypeName("Service, Assembly"));
+
+            Assert.IsNull(registration.DefaultComponentTypeName);
+
+            registration.DefaultComponentTypeName = new TypeName("Component, Assembly");
+            Assert.AreEqual(new TypeName("Component, Assembly"), registration.DefaultComponentTypeName);
+
+            registration.DefaultComponentTypeName = null;
+            Assert.IsNull(registration.DefaultComponentTypeName);
+        }
+
+        [Test]
         public void TraitsHandlerFactory_Accessor_EnforcesConstraints()
         {
             var plugin = MockRepository.GenerateStub<IPluginDescriptor>();

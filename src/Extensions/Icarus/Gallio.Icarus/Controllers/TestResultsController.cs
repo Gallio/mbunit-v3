@@ -302,7 +302,7 @@ namespace Gallio.Icarus.Controllers
             foreach (TestStepRun tsr in node.TestStepRuns)
                 AddTestStepRun(node.NodeType, tsr, indentCount);
 
-            if (node.NodeType != "Namespace" && sortColumn == -1)
+            if (node.NodeType != TestKinds.Namespace && sortColumn == -1)
                 indentCount++;
 
             foreach (Node n in node.Nodes)

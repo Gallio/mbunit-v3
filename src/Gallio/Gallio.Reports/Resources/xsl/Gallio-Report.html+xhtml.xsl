@@ -27,6 +27,7 @@
       <head>
         <title>Gallio Test Report</title>
         <link rel="stylesheet" type="text/css" href="{$cssDir}Gallio-Report.css" />
+        <link rel="stylesheet" type="text/css" href="{$cssDir}Gallio-Report.generated.css" />
         <script type="text/javascript" src="{$jsDir}Gallio-Report.js">
           <xsl:comment> comment inserted for Internet Explorer </xsl:comment>
         </script>
@@ -57,6 +58,7 @@ html
            be made to the stylesheets of the containing application.
       -->
       <link rel="stylesheet" type="text/css" href="{$cssDir}Gallio-Report.css" />
+      <link rel="stylesheet" type="text/css" href="{$cssDir}Gallio-Report.generated.css" />
       <style type="text/css">
 html
 {
@@ -268,6 +270,9 @@ html
       </xsl:variable>
       <xsl:variable name="statistics" select="msxsl:node-set($statisticsRaw)/g:statistics" />
 
+      <xsl:variable name="metadataEntries" select="g:testStep/g:metadata/g:entry" />
+      <xsl:variable name="kind" select="$metadataEntries[@key='TestKind']/g:value" />
+
       <li>
         <span>
           <xsl:choose>
@@ -280,6 +285,10 @@ html
               <xsl:call-template name="toggle-stop" />
             </xsl:otherwise>
           </xsl:choose>
+
+          <xsl:call-template name="icon">
+            <xsl:with-param name="kind" select="$kind" />
+          </xsl:call-template>
 
           <a class="crossref" href="#testStepRun-{$id}">
             <xsl:attribute name="onclick">
@@ -359,11 +368,10 @@ html
           <xsl:call-template name="toggle">
             <xsl:with-param name="href">detailPanel-<xsl:value-of select="$id"/></xsl:with-param>
           </xsl:call-template>
-          <!--
+          
           <xsl:call-template name="icon">
             <xsl:with-param name="kind" select="$kind" />
           </xsl:call-template>
-          -->
 
           <xsl:call-template name="code-location-link">
             <xsl:with-param name="path" select="g:testStep/g:codeLocation/@path" />
@@ -385,7 +393,7 @@ html
 
         <div id="detailPanel-{$id}" class="panel">
           <xsl:choose>
-            <xsl:when test="$kind = 'Assembly' or $kind = 'Framework'">
+            <xsl:when test="$nestingLevel = 1 or $nestingLevel = 2">
               <table class="statistics-table">
                 <tr class="alternate-row">
                   <td class="statistics-label-cell">Results:</td>
@@ -636,28 +644,11 @@ html
     </xsl:choose>
   </xsl:template>
 
-  <!--
   <xsl:template name="icon">
     <xsl:param name="kind" />
 
-    <img>
-      <xsl:choose>
-        <xsl:when test="$kind = 'Fixture'">
-          <xsl:attribute name="src">{$imgDir}Fixture.png</xsl:attribute>
-          <xsl:attribute name="alt">Fixture Icon</xsl:attribute>
-        </xsl:when>
-        <xsl:when test="$kind = 'Test'">
-          <xsl:attribute name="src">{$imgDir}Test.png</xsl:attribute>
-          <xsl:attribute name="alt">Test Icon</xsl:attribute>
-        </xsl:when>
-        <xsl:otherwise>
-          <xsl:attribute name="src">{$imgDir}Container.png</xsl:attribute>
-          <xsl:attribute name="alt">Container Icon</xsl:attribute>
-        </xsl:otherwise>
-      </xsl:choose>
-    </img>
+    <span class="testKind testKind-{translate($kind, ' .', '')}" />
   </xsl:template>
-  -->
 
   <!-- Toggle buttons -->
   <xsl:template name="toggle">

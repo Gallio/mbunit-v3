@@ -157,7 +157,10 @@ namespace Gallio.Tests.Runtime.Extensibility
                 var catalog = new PluginCatalog();
                 var plugin = new Plugin("pluginId")
                 {
-                    Services = { new Service("serviceId", "Service, Assembly") }
+                    Services = { new Service("serviceId", "Service, Assembly")
+                    {
+                        DefaultComponentType = "DefaultComponent, Assembly"
+                    }}
                 };
                 var baseDirectory = new DirectoryInfo(@"C:\");
 
@@ -177,6 +180,7 @@ namespace Gallio.Tests.Runtime.Extensibility
                     Assert.AreSame(pluginDescriptor, serviceRegistrations[0].Plugin);
                     Assert.AreEqual("serviceId", serviceRegistrations[0].ServiceId);
                     Assert.AreEqual(new TypeName("Service, Assembly"), serviceRegistrations[0].ServiceTypeName);
+                    Assert.AreEqual(new TypeName("DefaultComponent, Assembly"), serviceRegistrations[0].DefaultComponentTypeName);
                 });
             }
 

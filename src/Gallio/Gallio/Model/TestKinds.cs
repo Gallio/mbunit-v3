@@ -16,19 +16,21 @@
 namespace Gallio.Model
 {
     /// <summary>
-    /// Specifies the kind of a test component.
+    /// A list of standard test kind names provided by Gallio.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// The test kind is ignored by the test runner but it allows tests to be classified
-    /// so that a user interface can provide appropriate decorations and other affordances
-    /// for any test kinds that it recognizes.
+    /// The test kind has no effect on the semantics of the test runner but it allows tests to
+    /// be classified so that a user interface can provide appropriate icons, descriptions,
+    /// decorations and affordances for registered test kinds.
     /// </para>
     /// <para>
-    /// If none of the built-in kinds are appropriate, you may use the
-    /// <see cref="Custom" /> kind or invent your own kind as you wish.
+    /// To create your own custom test kinds for your test framework, register a
+    /// <see cref="ITestKind" /> component in your plugin metadata with a unique name.
     /// </para>
     /// </remarks>
+    /// <seealso cref="ITestKind"/>
+    /// <seealso cref="TestKindTraits"/>
     /// <seealso cref="MetadataKeys.TestKind"/>
     public static class TestKinds
     {
@@ -40,6 +42,9 @@ namespace Gallio.Model
         /// <summary>
         /// The test represents a grouping of all contributions offered by a given test framework.
         /// </summary>
+        /// <remarks>
+        /// A framework test should also have associated <see cref="MetadataKeys.Framework" /> metadata.
+        /// </remarks>
         public const string Framework = "Framework";
 
         /// <summary>
@@ -71,21 +76,5 @@ namespace Gallio.Model
         /// The test represents a test case.
         /// </summary>
         public const string Test = "Test";
-
-        /// <summary>
-        /// The test is an error placeholder used in place of a test
-        /// when an error occurs during test enumeration.
-        /// </summary>
-        public const string Error = "Error";
-
-        /// <summary>
-        /// The test is of some other unspecified kind.
-        /// </summary>
-        /// <remarks>
-        /// If none of the built-in kinds are appropriate, you may use the
-        /// <see cref="Custom" /> kind or invent one of your own to present
-        /// in the user interface (albeit perhaps without special affordances.)
-        /// </remarks>
-        public const string Custom = "Custom";
     }
 }

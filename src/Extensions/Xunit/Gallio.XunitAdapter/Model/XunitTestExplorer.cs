@@ -31,6 +31,7 @@ namespace Gallio.XunitAdapter.Model
     /// </summary>
     internal class XunitTestExplorer : BaseTestExplorer
     {
+        private const string FrameworkName = "xUnit.net";
         private const string XunitAssemblyDisplayName = @"xunit";
 
         public override void Explore(TestModel testModel, TestSource testSource, Action<ITest> consumer)
@@ -112,8 +113,9 @@ namespace Gallio.XunitAdapter.Model
             private static ITest CreateFrameworkTest(Version frameworkVersion)
             {
                 BaseTest frameworkTest = new BaseTest(String.Format(Resources.XunitTestExplorer_FrameworkNameWithVersionFormat, frameworkVersion), null);
-                frameworkTest.LocalIdHint = "xUnit.net";
+                frameworkTest.LocalIdHint = FrameworkName;
                 frameworkTest.Kind = TestKinds.Framework;
+                frameworkTest.Metadata.Add(MetadataKeys.Framework, FrameworkName);
 
                 return frameworkTest;
             }

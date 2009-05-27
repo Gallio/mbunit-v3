@@ -51,14 +51,14 @@ namespace Gallio.Model
         }
 
         /// <inheritdoc />
-        public ITestExplorer GetTestExplorer(Predicate<TestFrameworkTraits> frameworkFilter)
+        public ITestExplorer GetTestExplorer(Predicate<string> frameworkIdFilter)
         {
-            if (frameworkFilter == null)
+            if (frameworkIdFilter == null)
                 return new FilteredTestExplorer(frameworkHandles);
 
             var filteredFrameworkHandles = new List<ComponentHandle<ITestFramework, TestFrameworkTraits>>();
             foreach (var frameworkHandle in frameworkHandles)
-                if (frameworkFilter(frameworkHandle.GetTraits()))
+                if (frameworkIdFilter(frameworkHandle.Id))
                     filteredFrameworkHandles.Add(frameworkHandle);
 
             return new FilteredTestExplorer(filteredFrameworkHandles);

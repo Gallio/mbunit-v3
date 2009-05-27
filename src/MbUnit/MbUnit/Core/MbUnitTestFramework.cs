@@ -35,7 +35,10 @@ namespace MbUnit.Core
                 yield break;
 
             yield return new PatternTestFrameworkExtensionInfo("MbUnit v3",
-                String.Format("MbUnit v{0}", AssemblyUtils.GetApplicationVersion(Assembly.GetExecutingAssembly())));
+                String.Format("MbUnit v{0}", AssemblyUtils.GetApplicationVersion(Assembly.GetExecutingAssembly())))
+                {
+                    FrameworkKind = "MbUnit v3 Framework"
+                };
         }
     }
 }

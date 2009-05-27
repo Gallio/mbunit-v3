@@ -22,11 +22,19 @@
                serviceId="Gallio.TestFramework"
                componentType="MbUnit.Core.MbUnitTestFramework, MbUnit">
       <traits>
-        <id>{4E3D9921-A01A-4e6c-9C3D-B8848AD9327B}</id>
         <name>MbUnit v3</name>
         <frameworkAssemblyNames>MbUnit</frameworkAssemblyNames>
         <icon>plugin://MbUnit/Resources/MbUnit.ico</icon>
         <version>0.0.0.0</version>
+      </traits>
+    </component>
+
+    <component componentId="MbUnit.TestKinds.MbUnitFramework"
+               serviceId="Gallio.TestKind">
+      <traits>
+        <name>MbUnit v3 Framework</name>
+        <description>MbUnit v3 Test Framework</description>
+        <icon>plugin://MbUnit/Resources/MbUnit.ico</icon>
       </traits>
     </component>
   </components>

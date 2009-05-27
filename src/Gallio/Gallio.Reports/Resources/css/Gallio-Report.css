@@ -132,6 +132,7 @@ div.gallio-report div.navigator
 	text-indent: 8px;
 }
 
+
 /* Toggle regions */
 .gallio-report ul
 {
@@ -150,6 +151,7 @@ div.gallio-report div.navigator
 	cursor: pointer;
 	margin-right: 6px;
 }
+
 
 /* Status colors */
 .gallio-report .status-passed
@@ -171,6 +173,7 @@ div.gallio-report div.navigator
 {
 	background-color: #999999;
 }
+
 
 /* Outcome bar */
 .gallio-report table.outcome-bar
@@ -206,6 +209,20 @@ div.gallio-report div.navigator
 }
 
 
+/* Test Kind Icons (Note: Additional kinds in separate automatically generated css file.)  */
+
+.gallio-report .testKind
+{
+	display: inline-block;
+	margin: 0px 6px 0px 0px;
+	padding: 0px 0px 0px 0px;
+	width: 16px;
+	height: 16px;
+	background-repeat: no-repeat;
+	background-position: center center;
+	background-image: url(../img/UnknownTestKind.png);
+}
+
 /* Test runs */
 .gallio-report .testStepRun
 {
@@ -230,11 +247,6 @@ div.gallio-report div.navigator
 }
 
 .gallio-report .testStepRunHeading-Level3
-{
-	font-size: 10pt;
-}
-
-.gallio-report .testStepRunHeading-Level4
 {
 	font-size: 10pt;
 }

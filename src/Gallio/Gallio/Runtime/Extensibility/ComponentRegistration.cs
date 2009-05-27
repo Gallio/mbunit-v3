@@ -40,9 +40,9 @@ namespace Gallio.Runtime.Extensibility
         /// <param name="plugin">The plugin to which the component will belong</param>
         /// <param name="service">The service implemented by the component</param>
         /// <param name="componentId">The component id</param>
-        /// <param name="componentTypeName">The component type name</param>
+        /// <param name="componentTypeName">The component type name, or null to use the default component type specified by the service</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="plugin"/>, <paramref name="service"/>,
-        /// <paramref name="componentId"/> or <paramref name="componentTypeName"/> is null</exception>
+        /// <paramref name="componentId"/> is null</exception>
         public ComponentRegistration(IPluginDescriptor plugin, IServiceDescriptor service, string componentId, TypeName componentTypeName)
         {
             Plugin = plugin;
@@ -97,18 +97,12 @@ namespace Gallio.Runtime.Extensibility
         }
 
         /// <summary>
-        /// Gets or sets the component type name.
+        /// Gets or sets the component type name, or null to use the default component type specified by the service.
         /// </summary>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
         public TypeName ComponentTypeName
         {
             get { return componentTypeName; }
-            set
-            {
-                if (value == null)
-                    throw new ArgumentNullException("value");
-                componentTypeName = value;
-            }
+            set { componentTypeName = value; }
         }
 
         /// <summary>

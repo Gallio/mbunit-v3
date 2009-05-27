@@ -136,8 +136,17 @@
         <DirectoryRef Id="ResourcesFolder" FileSource="$(var.GallioTargetDir)\bin\Resources\">
             <Component Id="Gallio.Resources" Guid="{E99D0D72-95F9-4d17-8BAA-7FFC83402E52}" Win64="no">
                 <File Id="Gallio.ico" Name="Gallio.ico" KeyPath="yes" />
+		
+                <File Id="Container.ico" Name="Assembly.ico" />
+                <File Id="Container.ico" Name="Container.ico" />
+                <File Id="Fixture.ico" Name="Fixture.ico" />
+                <File Id="Test.ico" Name="Test.ico" />
+		
                 <File Id="Gallio.ControlPanel.ico" Name="Gallio.ControlPanel.ico" />
                 <File Id="Gallio.Utility.ico" Name="Gallio.Utility.ico" />
+		
+		<!-- We may create additional resources at runtime so we need to be sure to delete this folder during uninstallation. -->
+                <RemoveFolder Id="Gallio.Resources.RemoveFolder" On="uninstall" />
             </Component>
 
             <Directory Id="Reports.css" Name="css">
@@ -168,17 +177,15 @@
 
             <Directory Id="Reports.img" Name="img">
                 <Component Id="Gallio.Resources.img" Guid="76196919-6e89-486f-b095-5bc28787d954" Win64="no">
-                    <File Id="Reports.Container.png" Name="Container.png" KeyPath="yes" />
+                    <File Id="Reports.GallioTestReportHeader.png" Name="GallioTestReportHeader.png" KeyPath="yes" />
                     <File Id="Reports.Failed.gif" Name="Failed.gif" />
-                    <File Id="Reports.Fixture.png" Name="Fixture.png" />
                     <File Id="Reports.FullStop.gif" Name="FullStop.gif" />
-                    <File Id="Reports.GallioTestReportHeader.png" Name="GallioTestReportHeader.png" />
                     <File Id="Reports.header.background.gif" Name="header-background.gif" />
                     <File Id="Reports.Ignored.gif" Name="Ignored.gif" />
                     <File Id="Reports.Minus.gif" Name="Minus.gif" />
                     <File Id="Reports.Passed.gif" Name="Passed.gif" />
                     <File Id="Reports.Plus.gif" Name="Plus.gif" />
-                    <File Id="Reports.Test.png" Name="Test.png" />
+                    <File Id="Reports.UnknownTestKind.png" Name="UnknownTestKind.png" />
                 </Component>
             </Directory>
 

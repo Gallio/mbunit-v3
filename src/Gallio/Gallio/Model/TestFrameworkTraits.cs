@@ -25,7 +25,6 @@ namespace Gallio.Model
     /// </summary>
     public class TestFrameworkTraits : Traits
     {
-        private readonly Guid id;
         private readonly string name;
         private string[] frameworkAssemblyNames;
         private string[] testFileExtensions;
@@ -33,24 +32,14 @@ namespace Gallio.Model
         /// <summary>
         /// Creates test framework traits.
         /// </summary>
-        /// <param name="id">The framework's unique id</param>
         /// <param name="name">The framework's display name</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> is null</exception>
-        public TestFrameworkTraits(Guid id, string name)
+        public TestFrameworkTraits(string name)
         {
             if (name == null)
                 throw new ArgumentNullException("name");
 
-            this.id = id;
             this.name = name;
-        }
-
-        /// <summary>
-        /// Gets the framework's unique id.
-        /// </summary>
-        public Guid Id
-        {
-            get { return id; }
         }
 
         /// <summary>

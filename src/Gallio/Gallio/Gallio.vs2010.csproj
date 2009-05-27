@@ -171,7 +171,6 @@
     <Compile Include="Common\Text\RegularExpression\ParsingInfo.cs" />
     <Compile Include="Common\Text\RegularExpression\RegexLite.cs" />
     <Compile Include="Common\Text\RegularExpression\Quantifier.cs" />
-    <Compile Include="Framework\Data\Generation\RandomStringsGenerator.cs" />
     <Compile Include="Framework\Data\Generation\SequentialNumbersGenerator.cs" />
     <Compile Include="Framework\Data\Generation\Generator.cs" />
     <Compile Include="Framework\Data\Generation\RandomNumbersGenerator.cs" />
@@ -184,11 +183,16 @@
     <Compile Include="Framework\NamespaceDoc.cs" />
     <Compile Include="Framework\Pattern\NamespaceDoc.cs" />
     <Compile Include="Framework\Utilities\NamespaceDoc.cs" />
+    <Compile Include="Model\DefaultTestKind.cs" />
+    <Compile Include="Model\DefaultTestKindManager.cs" />
     <Compile Include="Model\Execution\NamespaceDoc.cs" />
     <Compile Include="Model\Filters\NamespaceDoc.cs" />
+    <Compile Include="Model\ITestKind.cs" />
+    <Compile Include="Model\ITestKindManager.cs" />
     <Compile Include="Model\Messages\NamespaceDoc.cs" />
     <Compile Include="Model\NamespaceDoc.cs" />
     <Compile Include="Model\Serialization\NamespaceDoc.cs" />
+    <Compile Include="Model\TestKindTraits.cs" />
     <Compile Include="Runner\Drivers\IsolationMode.cs" />
     <Compile Include="Runner\Drivers\NamespaceDoc.cs" />
     <Compile Include="Runner\Events\NamespaceDoc.cs" />
@@ -931,7 +935,11 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Gallio.plugin" />
+    <Content Include="Resources\Assembly.ico" />
+    <Content Include="Resources\Container.ico" />
+    <Content Include="Resources\Fixture.ico" />
     <Content Include="Resources\Gallio.ico" />
+    <Content Include="Resources\Test.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="..\..\SGen.targets" />

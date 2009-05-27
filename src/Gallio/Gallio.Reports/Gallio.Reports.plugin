@@ -175,5 +175,17 @@
         <description>Generates MHTML reports that omit passing tests.</description>
       </traits>
     </component>
+
+    <component componentId="Gallio.Reports.Installer"
+               serviceId="Gallio.Installer"
+               componentType="Gallio.Reports.ReportResourcesInstaller, Gallio.Reports">
+      <parameters>
+        <testKindImageDir>plugin://Gallio.Reports/Resources/img/testkinds/</testKindImageDir>
+        <generatedCssFile>plugin://Gallio.Reports/Resources/css/Gallio-Report.Generated.css</generatedCssFile>
+      </parameters>
+      <traits>
+        <requiresElevation>true</requiresElevation>
+      </traits>
+    </component>
   </components>
 </plugin>

@@ -467,7 +467,7 @@ namespace Gallio.Icarus.Models
             // i.e. they don't have an id we can use, so we must add all 
             // their children instead.
             if (node.CheckState == CheckState.Indeterminate || 
-                (node.CheckState == CheckState.Checked && node.NodeType == "Namespace"))
+                (node.CheckState == CheckState.Checked && node.NodeType == TestKinds.Namespace))
             {
                 foreach (var n in node.Nodes)
                     selected.AddRange(GetSelectedTests((TestTreeNode)n));

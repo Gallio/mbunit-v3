@@ -32,7 +32,7 @@ namespace Gallio.TDNetRunner.UI.Preferences
 {
     public partial class TDNetPreferencePane : PreferencePane
     {
-        private Guid[] frameworkIds;
+        private string[] frameworkIds;
 
         public TDNetPreferencePane()
         {
@@ -67,12 +67,12 @@ namespace Gallio.TDNetRunner.UI.Preferences
         private void TDNetPreferencePane_Load(object sender, EventArgs e)
         {
             var frameworkHandles = FrameworkManager.FrameworkHandles;
-            frameworkIds = new Guid[frameworkHandles.Count];
+            frameworkIds = new string[frameworkHandles.Count];
 
             for (int i = 0; i < frameworkHandles.Count; i++)
             {
                 TestFrameworkTraits traits = frameworkHandles[i].GetTraits();
-                Guid frameworkId = traits.Id;
+                string frameworkId = frameworkHandles[i].Id;
                 TDNetRunnerInstallationMode installationMode = GetInstallationModeForFramework(frameworkId);
                 frameworkGridView.Rows.Add(traits.Name, InstallationModeToString(installationMode));
                 frameworkIds[i] = frameworkId;
@@ -132,12 +132,12 @@ namespace Gallio.TDNetRunner.UI.Preferences
             }
         }
 
-        private TDNetRunnerInstallationMode GetInstallationModeForFramework(Guid frameworkId)
+        private TDNetRunnerInstallationMode GetInstallationModeForFramework(string frameworkId)
         {
             return TDNetRunnerInstallationMode.Default;
         }
 
-        private void SetInstallationModeForFramework(Guid frameworkId, TDNetRunnerInstallationMode mode)
+        private void SetInstallationModeForFramework(string frameworkId, TDNetRunnerInstallationMode mode)
         {
         }
     }

@@ -11,6 +11,7 @@
     <AssemblyName>Gallio.Reports</AssemblyName>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\Key.snk</AssemblyOriginatorKeyFile>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -50,6 +51,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="ReportResourcesInstaller.cs" />
     <Compile Include="XmlReportFormatter.cs" />
     <Compile Include="XsltReportFormatter.cs" />
   </ItemGroup>
@@ -71,9 +73,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\css\Gallio-Report.css" />
-    <Content Include="Resources\img\Container.png" />
+    <Content Include="Resources\img\UnknownTestKind.png" />
     <Content Include="Resources\img\Failed.gif" />
-    <Content Include="Resources\img\Fixture.png" />
     <Content Include="Resources\img\FullStop.gif" />
     <Content Include="Resources\img\GallioTestReportHeader.png" />
     <Content Include="Resources\img\header-background.gif" />
@@ -81,7 +82,6 @@
     <Content Include="Resources\img\Minus.gif" />
     <Content Include="Resources\img\Passed.gif" />
     <Content Include="Resources\img\Plus.gif" />
-    <Content Include="Resources\img\Test.png" />
     <Content Include="Resources\js\Gallio-Report.js" />
     <Content Include="Resources\xsl\Gallio-Report.ccnet-details-condensed.xsl" />
     <Content Include="Resources\xsl\Gallio-Report.ccnet-details.xsl" />

@@ -27,6 +27,7 @@ namespace Gallio.MSTestAdapter.Model
     /// </summary>
     internal class MSTestExplorer : BaseTestExplorer
     {
+        private const string FrameworkName = "MSTest";
         private const string MSTestAssemblyDisplayName = @"Microsoft.VisualStudio.QualityTools.UnitTestFramework";
 
         public override void Explore(TestModel testModel, TestSource testSource, Action<ITest> consumer)
@@ -107,8 +108,9 @@ namespace Gallio.MSTestAdapter.Model
             {
                 //TODO: Use resource strings
                 BaseTest frameworkTest = new BaseTest(String.Format("MSTest v{0}", frameworkVersion), null);
-                frameworkTest.LocalIdHint = "MSTest";
+                frameworkTest.LocalIdHint = FrameworkName;
                 frameworkTest.Kind = TestKinds.Framework;
+                frameworkTest.Metadata.Add(MetadataKeys.Framework, FrameworkName);
 
                 return frameworkTest;
             }

@@ -54,14 +54,14 @@ namespace Gallio.VisualStudio.Tip
             WarningLogger logger = new WarningLogger(warningHandler);
 
             TestPackageConfig testPackageConfig = new TestPackageConfig();
-            testPackageConfig.ExcludedFrameworkIds.Add(Guids.MSTestFrameworkId.ToString());
+            testPackageConfig.ExcludedFrameworkIds.Add("MSTestAdapter.TestFramework");
 
             testPackageConfig.AssemblyFiles.Add(location);
 
             ReflectionOnlyAssemblyLoader loader = new ReflectionOnlyAssemblyLoader();
             loader.AddHintDirectory(Path.GetDirectoryName(location));
 
-            ITestExplorer explorer = frameworkManager.GetTestExplorer(traits => testPackageConfig.IsFrameworkRequested(traits.Id));
+            ITestExplorer explorer = frameworkManager.GetTestExplorer(frameworkId => testPackageConfig.IsFrameworkRequested(frameworkId));
             TestPackage testPackage = new TestPackage(testPackageConfig, loader.ReflectionPolicy,
                 RuntimeAccessor.ServiceLocator.Resolve<ILoader>());
             TestModel testModel = new TestModel(testPackage);

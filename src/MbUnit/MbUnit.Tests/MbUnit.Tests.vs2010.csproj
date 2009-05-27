@@ -12,10 +12,6 @@
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\Key.snk</AssemblyOriginatorKeyFile>
-    <FileUpgradeFlags>
-    </FileUpgradeFlags>
-    <OldToolsVersion>3.5</OldToolsVersion>
-    <UpgradeBackupLocation />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -179,7 +175,6 @@
     <Compile Include="Framework\AssertTest_Sorting.cs" />
     <Compile Include="Framework\AssertTest_Distinct.cs" />
     <Compile Include="Framework\ColumnAttributeTest.cs" />
-    <Compile Include="Framework\RandomStringsAttributeTest.cs" />
     <Compile Include="Framework\SequentiaNumbersAttributeTest.cs" />
     <Compile Include="Framework\RandomNumbersAttributeTest.cs" />
     <Compile Include="Framework\ImportanceAttributeTest.cs" />

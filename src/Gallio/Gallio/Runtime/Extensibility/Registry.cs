@@ -156,6 +156,9 @@ namespace Gallio.Runtime.Extensibility
                     throw new ArgumentException("The specified plugin descriptor does not belong to this registry.", "componentRegistration");
                 if (data.GetServiceById(componentRegistration.Service.ServiceId) != componentRegistration.Service)
                     throw new ArgumentException("The specified service descriptor does not belong to this registry.", "componentRegistration");
+                if (componentRegistration.ComponentTypeName == null
+                    && componentRegistration.Service.DefaultComponentTypeName == null)
+                    throw new ArgumentException("The specified service descriptor does not have a default component type name so the component registration must specify a component type name but it does not.", "componentRegistration");
                 var servicePluginDependency = componentRegistration.Service.Plugin;
                 var componentPlugin = componentRegistration.Plugin;
                 if (componentPlugin != servicePluginDependency &&

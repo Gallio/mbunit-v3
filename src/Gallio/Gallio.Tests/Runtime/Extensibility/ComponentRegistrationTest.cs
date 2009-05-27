@@ -64,18 +64,6 @@ namespace Gallio.Tests.Runtime.Extensibility
         }
 
         [Test]
-        public void Constructor_WhenComponentTypeNameIsNull_Throws()
-        {
-            var plugin = MockRepository.GenerateStub<IPluginDescriptor>();
-            var service = MockRepository.GenerateStub<IServiceDescriptor>();
-
-            Assert.Throws<ArgumentNullException>(() =>
-            {
-                new ComponentRegistration(plugin, service, "componentId", null);
-            });
-        }
-
-        [Test]
         public void Plugin_Accessor_EnforcesConstraints()
         {
             var plugin = MockRepository.GenerateStub<IPluginDescriptor>();
@@ -123,14 +111,27 @@ namespace Gallio.Tests.Runtime.Extensibility
         }
 
         [Test]
-        public void ComponentTypeName_Accessor_EnforcesConstraints()
+        public void ComponentTypeName_Accessor_CanBeSetInConstructorAndChanged()
         {
             var plugin = MockRepository.GenerateStub<IPluginDescriptor>();
             var service = MockRepository.GenerateStub<IServiceDescriptor>();
             var registration = new ComponentRegistration(plugin, service, "componentId", new TypeName("Component, Assembly"));
 
             Assert.AreEqual(new TypeName("Component, Assembly"), registration.ComponentTypeName);
-            Assert.Throws<ArgumentNullException>(() => { registration.ComponentTypeName = null; });
+
+            registration.ComponentTypeName = null;
+
+            Assert.IsNull(registration.ComponentTypeName);
+        }
+
+        [Test]
+        public void ComponentTypeName_Accessor_CanBeNullAndChanged()
+        {
+            var plugin = MockRepository.GenerateStub<IPluginDescriptor>();
+            var service = MockRepository.GenerateStub<IServiceDescriptor>();
+            var registration = new ComponentRegistration(plugin, service, "componentId", null);
+
+            Assert.IsNull(registration.ComponentTypeName);
 
             registration.ComponentTypeName = new TypeName("DifferentComponent, Assembly");
 

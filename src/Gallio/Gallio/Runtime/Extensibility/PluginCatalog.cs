@@ -176,6 +176,8 @@ namespace Gallio.Runtime.Extensibility
                     {
                         var serviceRegistration = new ServiceRegistration(pluginDescriptor,
                             service.ServiceId, new TypeName(service.ServiceType));
+                        if (service.DefaultComponentType != null)
+                            serviceRegistration.DefaultComponentTypeName = new TypeName(service.DefaultComponentType);
 
                         registry.RegisterService(serviceRegistration);
                     }
@@ -205,7 +207,8 @@ namespace Gallio.Runtime.Extensibility
                     try
                     {
                         var componentRegistration = new ComponentRegistration(pluginDescriptor,
-                            serviceDescriptor, component.ComponentId, new TypeName(component.ComponentType));
+                            serviceDescriptor, component.ComponentId,
+                            component.ComponentType != null ? new TypeName(component.ComponentType) : null);
                         if (component.Parameters != null)
                             componentRegistration.ComponentProperties = component.Parameters.PropertySet;
                         if (component.Traits != null)

@@ -29,6 +29,7 @@ namespace Gallio.Schema.Plugins
     {
         private string serviceId;
         private string serviceType;
+        private string defaultComponentType;
 
         /// <summary>
         /// Creates an uninitialized service descriptor for XML deserialization.
@@ -86,6 +87,16 @@ namespace Gallio.Schema.Plugins
                     throw new ArgumentNullException("value");
                 serviceType = value;
             }
+        }
+
+        /// <summary>
+        /// Gets or sets the assembly-qualified default component type name, or null if none.
+        /// </summary>
+        [XmlAttribute("defaultComponentType")]
+        public string DefaultComponentType
+        {
+            get { return defaultComponentType; }
+            set { defaultComponentType = value; }
         }
 
         /// <inheritdoc />

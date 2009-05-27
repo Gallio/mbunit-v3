@@ -36,6 +36,7 @@ namespace Gallio.NUnitAdapter.Model
     {
         private static bool nunitInitialized;
 
+        private const string FrameworkName = "NUnit";
         private const string NUnitFrameworkAssemblyDisplayName = @"nunit.framework";
 
         public override void Explore(TestModel testModel, TestSource testSource, Action<ITest> consumer)
@@ -112,8 +113,9 @@ namespace Gallio.NUnitAdapter.Model
             private static ITest CreateFrameworkTest(Version frameworkVersion)
             {
                 BaseTest frameworkTest = new BaseTest(String.Format(Resources.NUnitTestExplorer_FrameworkNameWithVersionFormat, frameworkVersion), null);
-                frameworkTest.LocalIdHint = "NUnit";
+                frameworkTest.LocalIdHint = FrameworkName;
                 frameworkTest.Kind = TestKinds.Framework;
+                frameworkTest.Metadata.Add(MetadataKeys.Framework, FrameworkName);
 
                 return frameworkTest;
             }

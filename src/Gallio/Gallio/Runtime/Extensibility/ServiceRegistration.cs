@@ -28,6 +28,7 @@ namespace Gallio.Runtime.Extensibility
         private IPluginDescriptor plugin;
         private string serviceId;
         private TypeName serviceTypeName;
+        private TypeName defaultComponentTypeName;
         private IHandlerFactory traitsHandlerFactory;
 
         /// <summary>
@@ -88,6 +89,15 @@ namespace Gallio.Runtime.Extensibility
                     throw new ArgumentNullException("value");
                 serviceTypeName = value;
             }
+        }
+
+        /// <summary>
+        /// Gets or sets the default component type name, or null if none.
+        /// </summary>
+        public TypeName DefaultComponentTypeName
+        {
+            get { return defaultComponentTypeName; }
+            set { defaultComponentTypeName = value; }
         }
 
         /// <summary>

@@ -34,9 +34,9 @@ namespace Gallio.Model
         /// <summary>
         /// Gets an aggregate test explorer for selected frameworks.
         /// </summary>
-        /// <param name="frameworkFilter">A predicate to select which frameworks should
-        /// be consulted, or null to include all frameworks</param>
+        /// <param name="frameworkIdFilter">A predicate to select which frameworks should
+        /// be consulted based on the framework id, or null to include all frameworks</param>
         /// <returns>The test explorer</returns>
-        ITestExplorer GetTestExplorer(Predicate<TestFrameworkTraits> frameworkFilter);
+        ITestExplorer GetTestExplorer(Predicate<string> frameworkIdFilter);
     }
 }

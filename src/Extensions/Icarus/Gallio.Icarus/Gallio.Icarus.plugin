@@ -107,8 +107,7 @@
     <!-- Control panel -->
 
     <component componentId="Gallio.Icarus.ControlPanel.RootPaneProvider"
-               serviceId="Gallio.UI.PreferencePaneProvider"
-               componentType="Gallio.UI.ControlPanel.Preferences.GallioPreferencePaneProvider, Gallio.UI">
+               serviceId="Gallio.UI.PreferencePaneProvider">
       <traits>
         <path>Icarus</path>
         <order>-75</order>

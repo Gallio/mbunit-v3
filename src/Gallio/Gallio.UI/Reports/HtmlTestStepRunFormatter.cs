@@ -226,6 +226,9 @@ namespace Gallio.UI.Reports
                 writer.Write("<link rel=\"stylesheet\" type=\"text/css\" href=\"");
                 WriteHtmlEncoded(writer, formatter.cssUrl.ToString());
                 writer.Write("/Gallio-Report.css\" />");
+                writer.Write("<link rel=\"stylesheet\" type=\"text/css\" href=\"");
+                WriteHtmlEncoded(writer, formatter.cssUrl.ToString());
+                writer.Write("/Gallio-Report.Generated.css\" />");
                 writer.Write("</head><body class=\"gallio-report\" style=\"overflow: auto;\">");
 
                 writer.Write("<div id=\"Header\" class=\"header\"><div class=\"header-image\"></div></div>");
@@ -321,6 +324,11 @@ namespace Gallio.UI.Reports
                 writer.Write(nestingLevel.ToString(CultureInfo.InvariantCulture));
                 writer.Write("\">");
 
+                string testKind = testStepRun.Step.Metadata.GetValue(MetadataKeys.TestKind);
+                writer.Write("<span class=\"testKind testKind-");
+                writer.Write(NormalizeTestKindName(testKind));
+                writer.Write("\"></span>");
+
                 WriteCodeLocationLink(writer, testStepRun.Step.CodeLocation, () => WriteHtmlEncoded(writer, testStepRun.Step.Name));
 
                 RenderOutcomeBar(testStepRun.Result.Outcome, statistics, (testStepRun.Children.Count == 0));
@@ -331,8 +339,7 @@ namespace Gallio.UI.Reports
                 WriteHtmlEncoded(writer, testStepRun.Step.Id);
                 writer.Write("\" class=\"panel\">");
 
-                string testKind = testStepRun.Step.Metadata.GetValue(MetadataKeys.TestKind);
-                if (testKind == TestKinds.Assembly || testKind == TestKinds.Framework)
+                if (nestingLevel == 1 || nestingLevel == 2)
                 {
                     writer.Write("<table class=\"statistics-table\"><tr class=\"alternate-row\">");
                     writer.Write("<td class=\"statistics-label-cell\">Results:</td><td>");
@@ -369,10 +376,14 @@ namespace Gallio.UI.Reports
                 writer.Write("</div></li>");
             }
 
+            private static string NormalizeTestKindName(string kind)
+            {
+                return kind.Replace(" ", "").Replace(".", "");
+            }
+
             private static string FormatStatistics(Statistics statistics)
             {
-                return string.Format("{0} run, {1} passed, {2} failed, {3} inconclusive, {4} skipped", statistics.RunCount,
-                    statistics.PassedCount, statistics.FailedCount, statistics.InconclusiveCount, statistics.SkippedCount);
+                return statistics.FormatTestCaseResultSummary();
             }
 
             private void RenderOutcomeBar(TestOutcome testOutcome, Statistics statistics, bool small)

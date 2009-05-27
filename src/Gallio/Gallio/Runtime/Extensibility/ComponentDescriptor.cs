@@ -43,7 +43,7 @@ namespace Gallio.Runtime.Extensibility
             pluginDescriptor = (PluginDescriptor) componentRegistration.Plugin;
             serviceDescriptor = (ServiceDescriptor) componentRegistration.Service;
             componentId = componentRegistration.ComponentId;
-            componentTypeName = componentRegistration.ComponentTypeName;
+            componentTypeName = componentRegistration.ComponentTypeName ?? serviceDescriptor.DefaultComponentTypeName;
             componentProperties = componentRegistration.ComponentProperties.Copy().AsReadOnly();
             traitsProperties = componentRegistration.TraitsProperties.Copy().AsReadOnly();
             componentHandlerFactory = componentRegistration.ComponentHandlerFactory;

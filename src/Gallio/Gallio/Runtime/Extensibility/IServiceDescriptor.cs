@@ -52,6 +52,16 @@ namespace Gallio.Runtime.Extensibility
         TypeName ServiceTypeName { get; }
 
         /// <summary>
+        /// Gets the default component type name for this service, or null if there is no default component type.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// The default type must be a concrete class.
+        /// </para>
+        /// </remarks>
+        TypeName DefaultComponentTypeName { get; }
+
+        /// <summary>
         /// Gets the traits handler factory.
         /// </summary>
         IHandlerFactory TraitsHandlerFactory { get; }

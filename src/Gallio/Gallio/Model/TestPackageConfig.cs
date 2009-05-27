@@ -168,9 +168,9 @@ namespace Gallio.Model
         /// </summary>
         /// <param name="frameworkId">The framework id</param>
         /// <returns>True if the framework is requested</returns>
-        public bool IsFrameworkRequested(Guid frameworkId)
+        public bool IsFrameworkRequested(string frameworkId)
         {
-            return ! excludedFrameworkIds.Contains(frameworkId.ToString());
+            return ! excludedFrameworkIds.Contains(frameworkId);
         }
     }
 }

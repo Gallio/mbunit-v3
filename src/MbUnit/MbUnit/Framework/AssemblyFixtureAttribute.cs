@@ -78,7 +78,7 @@ namespace MbUnit.Framework
         {
             base.Validate(containingScope, type);
 
-            if (containingScope.TestBuilder.Kind != TestKinds.Assembly)
+            if (type.IsNested)
                 ThrowUsageErrorException("This attribute can only be used on a non-nested class.");
         }
 

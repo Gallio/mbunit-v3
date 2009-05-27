@@ -33,5 +33,10 @@ namespace MbUnit.Tests.Model
             return (ComponentHandle<ITestFramework, TestFrameworkTraits>)
                 RuntimeAccessor.ServiceLocator.ResolveHandleByComponentId("MbUnit.TestFramework");
         }
+
+        protected override string FrameworkKind
+        {
+            get { return "MbUnit v3 Framework"; }
+        }
     }
 }

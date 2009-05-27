@@ -179,12 +179,15 @@ namespace Gallio.Framework.Pattern
             private IPatternScope BuildFrameworkTest(IList<PatternTestFrameworkExtensionInfo> tools)
             {
                 string id = BuildFrameworkTestId(tools);
+                string frameworkKind = tools.Count == 1 ? tools[0].FrameworkKind : null;
+                if (frameworkKind == null)
+                    frameworkKind = TestKinds.Framework;
 
                 IPatternScope frameworkScope;
                 if (!frameworkScopes.TryGetValue(id, out frameworkScope))
                 {
                     frameworkScope = evaluator.CreateTopLevelTestScope(BuildFrameworkTestName(tools), null);
-                    frameworkScope.TestBuilder.Kind = TestKinds.Framework;
+                    frameworkScope.TestBuilder.Kind = frameworkKind;
                     frameworkScope.TestBuilder.LocalIdHint = id;
 
                     // Define the anonymous data source on the top-level test as a backstop

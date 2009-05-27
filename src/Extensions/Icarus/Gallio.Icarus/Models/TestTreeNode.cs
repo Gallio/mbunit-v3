@@ -17,13 +17,19 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using Aga.Controls.Tree;
+using Gallio.Icarus.Properties;
 using Gallio.Model;
 using Gallio.Runner.Reports;
+using Gallio.Runtime;
 
 namespace Gallio.Icarus.Models
 {
     public sealed class TestTreeNode : Node
     {
+        // TODO: Refactor me.
+        private static readonly object imageCacheLock = new object();
+        private static Dictionary<string, Image> imageCache;
+
         private TestStatus testStatus = TestStatus.Skipped;
         private readonly List<TestStepRun> testStepRuns;
 
@@ -115,33 +121,40 @@ namespace Gallio.Icarus.Models
             CheckState = CheckState.Checked;
             testStepRuns = new List<TestStepRun>();
 
-            switch (nodeType)
+            NodeTypeIcon = GetNodeTypeImage(nodeType);
+        }
+
+        private static Image GetNodeTypeImage(string nodeType)
+        {
+            if (nodeType == null)
+                return null;
+
+            lock (imageCacheLock)
             {
-                case TestKinds.Assembly:
-                    NodeTypeIcon = Properties.Resources.Assembly;
-                    break;
-                case "Namespace":
-                    NodeTypeIcon = Properties.Resources.Namespace;
-                    break;
-                case TestKinds.Fixture:
-                    NodeTypeIcon = Properties.Resources.Fixture;
-                    break;
-                case TestKinds.Test:
-                    NodeTypeIcon = Properties.Resources.Test;
-                    break;
-                case TestKinds.Group:
-                    NodeTypeIcon = Properties.Resources.Group;
-                    break;
-                case "FilterPassed":
-                    NodeTypeIcon = Properties.Resources.FilterPassed;
-                    break;
-                case "FilterFailed":
-                    NodeTypeIcon = Properties.Resources.FilterFailed;
-                    break;
-                case "FilterInconclusive":
-                    NodeTypeIcon = Properties.Resources.FilterSkipped;
-                    break;
-                // TODO: Icons for metadata etc...
+                if (imageCache == null)
+                {
+                    imageCache = new Dictionary<string, Image>();
+
+                    // TODO: Icons for metadata etc...
+                    imageCache.Add("FilterPassed", Resources.FilterPassed);
+                    imageCache.Add("FilterFailed", Resources.FilterFailed);
+                    imageCache.Add("FilterInconclusive", Resources.FilterSkipped);
+
+                    ITestKindManager testKindManager = RuntimeAccessor.ServiceLocator.Resolve<ITestKindManager>();
+                    foreach (var handle in testKindManager.TestKindHandles)
+                    {
+                        TestKindTraits traits = handle.GetTraits();
+                        Image image = traits.Icon != null
+                            ? new Icon(traits.Icon, 16, 16).ToBitmap()
+                            : Resources.Group;
+
+                        imageCache.Add(traits.Name, image);
+                    }
+                }
+
+                Image nodeTypeImage;
+                imageCache.TryGetValue(nodeType, out nodeTypeImage);
+                return nodeTypeImage;
             }
         }
 
