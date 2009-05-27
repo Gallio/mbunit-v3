@@ -88,6 +88,11 @@
     <SandcastleIntellisensePath>$(SandcastleTempDir)\intellisense</SandcastleIntellisensePath>
   </PropertyGroup>
 
+  <ItemGroup Condition="'$(NoSandcastle)'!='true'">
+    <Feature Include="FEATURE_CHM_HELP" />
+    <Feature Include="FEATURE_VS_HELP" />
+  </ItemGroup>
+
   <Target Name="BuildDocs"
           DependsOnTargets="BuildDocs_Sandcastle;BuildDocs_NoSandcastle" />
 
@@ -153,11 +158,6 @@
     <Delete Files="@(DocumentedAssembly->'$(ImageDir)\bin\%(Folder)\%(Filename).xml')" />
     <Move SourceFiles="@(DocumentedAssembly->'$(SandcastleIntellisensePath)\%(Filename).xml')"
           DestinationFiles="@(DocumentedAssembly->'$(ImageDir)\bin\%(Folder)\%(Filename).xml')" />
-
-    <ItemGroup>
-      <Feature Include="FEATURE_CHM_HELP" />
-      <Feature Include="FEATURE_VS_HELP" />
-    </ItemGroup>
   </Target>
 
   <Target Name="BuildDocs_NoSandcastle"
@@ -173,10 +173,10 @@
       Configuration=Release;
       Version=$(Version);
       TargetDir=$(ImageDir);
-      WixTargetsPath=$(ToolsDir)\Wix\Microsoft\WiX\v3.0\Wix.targets;
-      WixTasksPath=$(ToolsDir)\Wix\Microsoft\WiX\v3.0\WixTasks.dll;
-      WixToolPath=$(ToolsDir)\Wix\bin;
-      WixExtDir=$(ToolsDir)\Wix\bin;
+      WixTargetsPath=$(ToolsDir)\Wix\Wix.targets;
+      WixTasksPath=$(ToolsDir)\Wix\WixTasks.dll;
+      WixToolPath=$(ToolsDir)\Wix;
+      WixExtDir=$(ToolsDir)\Wix;
       DefineSolutionProperties=false;
     </InstallerWixProperties>
     <InstallerFeatureFile>$(SourceDir)\Installer.Wix\Features.wxi</InstallerFeatureFile>

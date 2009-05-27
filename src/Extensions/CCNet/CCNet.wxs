@@ -38,14 +38,8 @@
                             </Component>
                         </Directory>
                         <Directory Id="webdashboard.gallio.img" Name="img">
-                            <Component Id="CCNet.Container.png" Guid="{857E70FA-084C-42b9-BAB0-5079C984C089}" Win64="no">
-                                <File Id="CCNet.Container.png" Name="Container.png" KeyPath="yes" />
-                            </Component>
                             <Component Id="CCNet.Failed.gif" Guid="{7FF8901F-5F93-4131-9E03-768ED987DD4D}" Win64="no">
                                 <File Id="CCNet.Failed.gif" Name="Failed.gif" KeyPath="yes" />
-                            </Component>
-                            <Component Id="CCNet.Fixture.png" Guid="{6CC1C686-4584-4ac1-A647-D9465182BF96}" Win64="no">
-                                <File Id="CCNet.Fixture.png" Name="Fixture.png" KeyPath="yes" />
                             </Component>
                             <Component Id="CCNet.FullStop.gif" Guid="{6B9FCD61-D4B8-4ab6-ADAB-8BB2526BEC38}" Win64="no">
                                 <File Id="CCNet.FullStop.gif" Name="FullStop.gif" KeyPath="yes" />
@@ -68,9 +62,6 @@
                             <Component Id="CCNet.Plus.gif" Guid="{13D35790-04AC-472e-A67E-9A945E8876AF}" Win64="no">
                                 <File Id="CCNet.Plus.gif" Name="Plus.gif" KeyPath="yes" />
                             </Component>
-                            <Component Id="CCNet.Test.png" Guid="{097D2E03-9BF7-4b7a-BDEA-9541323CC7A8}" Win64="no">
-                                <File Id="CCNet.Test.png" Name="Test.png" KeyPath="yes" />
-                            </Component>
                         </Directory>
                     </Directory>
                 </Directory>
@@ -87,9 +78,7 @@
             <ComponentRef Id="CCNet.Gallio.Report.ccnet.details.condensed.xsl"/>
             <ComponentRef Id="CCNet.Gallio.Report.html.xhtml.xsl"/>
             <ComponentRef Id="CCNet.Gallio.Report.common.xsl"/>
-            <ComponentRef Id="CCNet.Container.png"/>
             <ComponentRef Id="CCNet.Failed.gif"/>
-            <ComponentRef Id="CCNet.Fixture.png"/>
             <ComponentRef Id="CCNet.FullStop.gif"/>
             <ComponentRef Id="CCNet.GallioTestReportHeader.png"/>
             <ComponentRef Id="CCNet.header.background.gif"/>
@@ -97,7 +86,6 @@
             <ComponentRef Id="CCNet.Minus.gif"/>
             <ComponentRef Id="CCNet.Passed.gif"/>
             <ComponentRef Id="CCNet.Plus.gif"/>
-            <ComponentRef Id="CCNet.Test.png"/>
         </Feature>
     </Fragment>
 </Wix>

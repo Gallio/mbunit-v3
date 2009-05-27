@@ -5,7 +5,6 @@
     <?include ..\Installer.Wix\Features.wxi ?>
 
     <Fragment>
-
         <!-- TODO: Replace H2Reg.exe with the recommended way of registering help. -->
 
         <Property Id="GALLIO_HOMEPAGE" Value="http://www.gallio.org/" />
@@ -198,7 +197,8 @@
                     <Shortcut Id="Gallio.Offline.Documentation.lnk" Name="Offline Documentation" Directory="GallioMenuFolder" WorkingDirectory="docsFolder" Icon="Gallio.icon.exe" IconIndex="0" Advertise="yes" Show="normal" />
                 </File>
             </Component>
-<?endif ?>
+<?endif?>
+
 <?ifdef FEATURE_VS_HELP ?>
             <Directory Id="docsVsFolder" Name="vs">
                 <Component Id="Gallio.Help.vs" Guid="37360bcd-0c85-4132-822e-5810371b59fa" Win64="no">
@@ -216,7 +216,7 @@
                     <File Id="Gallio.H2Reg.ini" Name="Gallio_H2Reg.ini" />
                 </Component>
             </Directory>
-<?endif ?>
+<?endif?>
         </DirectoryRef>
 
         <DirectoryRef Id="extraFolder">
@@ -228,7 +228,7 @@
                     <RemoveFile Id="H2Reg_Log.txt" Name="H2Reg_Log.txt" On="uninstall" />
                 </Component>
             </Directory>
-<?endif ?>
+<?endif?>
         </DirectoryRef>
 
         <Feature Id="feat_Gallio" Title="Gallio" Level="1" InstallDefault="local" TypicalDefault="install" Absent="disallow" AllowAdvertise="no"
@@ -264,6 +264,19 @@
             <ComponentRef Id="GallioMenuFolder.RemoveFolder"/>
         </Feature>
 
+        <CustomAction Id="Setup.Install" FileKey="Gallio.Utility.exe" ExeCommand="Setup /install" Execute="deferred" Return="check" Impersonate="no" />
+        <CustomAction Id="Setup.Uninstall" FileKey="Gallio.Utility.exe" ExeCommand="Setup /uninstall" Execute="deferred" Return="ignore" Impersonate="no" />
+
+        <InstallExecuteSequence>
+            <Custom Action="Setup.Install" After="InstallFiles" />
+            <Custom Action="Setup.Uninstall" Before="RemoveFiles" />
+        </InstallExecuteSequence>
+
+        <UI>
+            <ProgressText Action="Setup.Install" Template="[1]">Installing components ...</ProgressText>
+            <ProgressText Action="Setup.Uninstall" Template="[1]">Uninstalling components ...</ProgressText>
+        </UI>
+
 <?ifdef FEATURE_CHM_HELP ?>
         <Feature Id="feat_Gallio.Help" Title="Standalone Help Docs" Level="1" Description="Installs the standalone help documentation CHM file." AllowAdvertise="no">
             <ComponentRef Id="Gallio.chm" />
@@ -284,25 +297,16 @@
 
         <CustomAction Id="H2Reg.Install" FileKey="H2Reg.exe" ExeCommand='-r -q CmdFile="[#Gallio.H2Reg.ini]"' Execute="deferred" Return="check" Impersonate="no"/>
         <CustomAction Id="H2Reg.Uninstall" FileKey="H2Reg.exe" ExeCommand='-u -q CmdFile="[#Gallio.H2Reg.ini]"' Execute="deferred" Return="ignore" Impersonate="no"/>
-	
-        <CustomAction Id="Setup.Install" FileKey="Gallio.Utility.exe" ExeCommand="Setup /install" Execute="deferred" Return="check" Impersonate="no" />
-        <CustomAction Id="Setup.Uninstall" FileKey="Gallio.Utility.exe" ExeCommand="Setup /uninstall" Execute="deferred" Return="ignore" Impersonate="no" />
 
         <InstallExecuteSequence>
             <Custom Action="H2Reg.Install" After="InstallFiles"><![CDATA[(&feat_Gallio.VSHelp = 3) AND NOT(!feat_Gallio.VSHelp = 3)]]></Custom>
             <Custom Action="H2Reg.Uninstall" Before="RemoveFiles"><![CDATA[(&feat_Gallio.VSHelp = 2) AND (!feat_Gallio.VSHelp = 3)]]></Custom>
-	    
-            <Custom Action="Setup.Install" After="InstallFiles" />
-            <Custom Action="Setup.Uninstall" Before="RemoveFiles" />
         </InstallExecuteSequence>
 
         <UI>
             <ProgressText Action="H2Reg.Install" Template="[1]">Installing help files into Visual Studio ...</ProgressText>
             <ProgressText Action="H2Reg.Uninstall" Template="[1]">Uninstalling help files from Visual Studio ...</ProgressText>
-	    
-            <ProgressText Action="Setup.Install" Template="[1]">Installing components ...</ProgressText>
-            <ProgressText Action="Setup.Uninstall" Template="[1]">Uninstalling components ...</ProgressText>
         </UI>
-<?endif ?>
+<?endif?>
     </Fragment>
 </Wix>
