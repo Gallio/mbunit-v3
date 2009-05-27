@@ -173,7 +173,7 @@
 
     <component componentId="Gallio.PreferenceManager"
                serviceId="Gallio.PreferenceManager"
-               componentType="Gallio.Runtime.Preferences.DefaultPreferenceManager, Gallio" />
+               componentType="Gallio.Runtime.Preferences.FilePreferenceManager, Gallio" />
     
     <!-- Host, RUnner and Driver Factories -->
     

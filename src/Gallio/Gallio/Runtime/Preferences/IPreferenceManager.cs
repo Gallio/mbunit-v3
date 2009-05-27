@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Gallio.Runtime.Security;
 
 namespace Gallio.Runtime.Preferences
 {
@@ -28,8 +29,44 @@ namespace Gallio.Runtime.Preferences
     /// refer to the types in the Gallio.UI assembly.
     /// </para>
     /// </remarks>
+    /// <seealso cref="IPreferenceSet"/>
+    /// <seealso cref="IPreferenceStore"/>
     public interface IPreferenceManager
     {
+        /// <summary>
+        /// Gets a preference store for the current local user.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// These preferences are stored in the user's local application data directory.
+        /// </para>
+        /// </remarks>
+        IPreferenceStore LocalUserPreferences { get; }
 
+        /// <summary>
+        /// Gets a preference store for the current roaming user.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// These preferences are stored in the user's roaming application data directory.
+        /// </para>
+        /// </remarks>
+        IPreferenceStore RoamingUserPreferences { get; }
+
+        /// <summary>
+        /// Gets a preference store common to all users of this system.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// These preferences are stored in the system's common application data directory.
+        /// </para>
+        /// <para>
+        /// All users can read common preferences but only administratators may
+        /// edit them.  Moreover privilege elevation may be required on Vista and
+        /// more recent Windows OS's.
+        /// <seealso cref="IElevationManager"/>
+        /// </para>
+        /// </remarks>
+        IPreferenceStore CommonPreferences { get; }
     }
 }

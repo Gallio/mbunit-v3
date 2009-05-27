@@ -30,7 +30,7 @@ namespace Gallio.Common.Concurrency
     /// </para>
     /// </summary>
     /// <typeparam name="T">The type of object inside the lock box</typeparam>
-    public struct LockBox<T>
+    public class LockBox<T>
     {
         private readonly T obj;
         private readonly ReaderWriterLock @lock;

@@ -280,6 +280,9 @@
     <Compile Include="Runtime\Hosting\IsolatedProcessHostTest.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Runtime\Preferences\FilePreferenceSetTest.cs" />
+    <Compile Include="Runtime\Preferences\FilePreferenceManagerTest.cs" />
+    <Compile Include="Runtime\Preferences\FilePreferenceStoreTest.cs" />
     <Compile Include="Runtime\RuntimeExceptionTest.cs" />
     <Compile Include="Runtime\RuntimeAccessorTest.cs" />
     <Compile Include="Integration\StubContextIntegrationTest.cs" />

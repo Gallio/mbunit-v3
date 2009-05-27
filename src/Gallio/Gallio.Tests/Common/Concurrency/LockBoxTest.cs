@@ -28,6 +28,38 @@ namespace Gallio.Tests.Common.Concurrency
     public class LockBoxTest
     {
         [Test]
+        public void Read_WhenActionIsNull_Throws()
+        {
+            LockBox<int> box = new LockBox<int>(11);
+
+            Assert.Throws<ArgumentNullException>(() => box.Read(null));
+        }
+
+        [Test]
+        public void Read_WhenFuncIsNull_Throws()
+        {
+            LockBox<int> box = new LockBox<int>(11);
+
+            Assert.Throws<ArgumentNullException>(() => box.Read<object>(null));
+        }
+
+        [Test]
+        public void Write_WhenActionIsNull_Throws()
+        {
+            LockBox<int> box = new LockBox<int>(11);
+
+            Assert.Throws<ArgumentNullException>(() => box.Write(null));
+        }
+
+        [Test]
+        public void Write_WhenFuncIsNull_Throws()
+        {
+            LockBox<int> box = new LockBox<int>(11);
+
+            Assert.Throws<ArgumentNullException>(() => box.Write<object>(null));
+        }
+
+        [Test]
         public void Read_WithAction_ProvidesContents()
         {
             LockBox<int> box = new LockBox<int>(11);
