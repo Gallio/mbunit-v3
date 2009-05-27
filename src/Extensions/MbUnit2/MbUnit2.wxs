@@ -20,12 +20,19 @@
                     <File Name="TestFu.dll" />
                     <File Name="TestFu.xml" />
                 </Component>
+
+		<Directory Id="MbUnit2.Resources" Name="Resources">
+                    <Component Id="Gallio.MbUnit2Adapter.Resources" Guid="{FB03826A-BEC8-470d-8F27-7F3CE846F879}" Win64="no">
+                        <File Name="MbUnit.ico" KeyPath="yes" />
+                    </Component>
+		</Directory>
             </Directory>
         </DirectoryRef>
 
         <Feature Id='feat_MbUnit2Adapter' Title='MbUnit v2 Adapter' Level='1' AllowAdvertise="no"
             Description='Installs the MbUnit v2 adapter.  Enables Gallio to run MbUnit v2 tests.'>
             <ComponentRef Id="Gallio.MbUnit2Adapter"/>
+            <ComponentRef Id="Gallio.MbUnit2Adapter.Resources"/>
         </Feature>
     </Fragment>
 </Wix>

@@ -54,6 +54,10 @@
     <Binary Include="libs\Refly.xml">
         <Folder>MbUnit2</Folder>
     </Binary>
+    
+    <Binary Include="Gallio.MbUnit2Adapter\Resources\*.ico">
+        <Folder>MbUnit2\Resources</Folder>
+    </Binary>    
   </ItemGroup>
 
   <ItemGroup>
