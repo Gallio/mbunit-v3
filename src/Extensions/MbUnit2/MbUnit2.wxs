@@ -23,7 +23,7 @@
 
 		<Directory Id="MbUnit2.Resources" Name="Resources">
                     <Component Id="Gallio.MbUnit2Adapter.Resources" Guid="{FB03826A-BEC8-470d-8F27-7F3CE846F879}" Win64="no">
-                        <File Name="MbUnit.ico" KeyPath="yes" />
+                        <File Id="Gallio.MbUnit2Adapter.Resources.MbUnit.ico" Name="MbUnit.ico" KeyPath="yes" />
                     </Component>
 		</Directory>
             </Directory>
