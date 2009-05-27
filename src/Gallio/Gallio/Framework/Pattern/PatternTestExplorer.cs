@@ -190,6 +190,9 @@ namespace Gallio.Framework.Pattern
                     frameworkScope.TestBuilder.Kind = frameworkKind;
                     frameworkScope.TestBuilder.LocalIdHint = id;
 
+                    foreach (var tool in tools)
+                        frameworkScope.TestBuilder.AddMetadata(TestKinds.Framework, tool.Id);
+
                     // Define the anonymous data source on the top-level test as a backstop
                     // for data bindings without associated data sources.
                     frameworkScope.TestDataContextBuilder.DefineDataSource("");

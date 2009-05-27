@@ -2,23 +2,31 @@
 <Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <GallioProjectOutputPath>..\Gallio\bin</GallioProjectOutputPath>
+
+    <TargetConfig>$(TargetPath).config</TargetConfig>
+    <TargetPdb>$(OutputPath)$(TargetName).pdb</TargetPdb>
+
+    <OriginalConfig>$(TargetFileName).config</OriginalConfig>
+    <IntermediateTargetPath>$(IntermediateOutputPath)$(TargetFileName)</IntermediateTargetPath>
+    <IntermediateTargetPdb>$(IntermediateOutputPath)$(TargetName).pdb</IntermediateTargetPdb>
   </PropertyGroup>
 
   <ItemGroup>
-    <HostVariant Include="$(GallioProjectOutputPath)\Gallio.Host.exe">
+    <HostVariant Include="bin\Gallio.Host.exe">
       <Manifest>Standard.manifest</Manifest>
+      <Self>true</Self>
     </HostVariant>
     
-    <HostVariant Include="$(GallioProjectOutputPath)\Gallio.Host.x86.exe">
+    <HostVariant Include="bin\Gallio.Host.x86.exe">
       <CorFlags>/32BIT+</CorFlags>
       <Manifest>Standard.manifest</Manifest>
     </HostVariant>
     
-    <HostVariant Include="$(GallioProjectOutputPath)\Gallio.Host.Elevated.exe">
+    <HostVariant Include="bin\Gallio.Host.Elevated.exe">
       <Manifest>Elevated.manifest</Manifest>
     </HostVariant>
     
-    <HostVariant Include="$(GallioProjectOutputPath)\Gallio.Host.Elevated.x86.exe">
+    <HostVariant Include="bin\Gallio.Host.Elevated.x86.exe">
       <Manifest>Elevated.manifest</Manifest>
       <CorFlags>/32BIT+</CorFlags>
     </HostVariant>
@@ -28,26 +36,56 @@
     </HostTargetFile>
     
     <HostTargetFile Include="@(HostVariant->'%(Identity).config')">
-      <SourceFile>$(TargetPath).config</SourceFile>
+      <SourceFile>$(TargetConfig)</SourceFile>
+    </HostTargetFile>
+
+    <HostTargetFile Include="@(HostVariant->'%(RootDir)%(Directory)%(Filename).pdb')">
+      <SourceFile>$(TargetPdb)</SourceFile>
     </HostTargetFile>
   </ItemGroup>
 
-  <Target Name="BeforeBuild">
-    <Delete Files="@(HostTargetFile)" Condition="Exists('%(Identity)')" />
+  <Target Name="_PopulateHostTargetFileExceptSelf">
+    <CreateItem Include="@(HostTargetFile)"
+                Condition="'%(HostTargetFile.Self)'!='true'">
+      <Output TaskParameter="Include" ItemName="HostTargetFileExceptSelf" />
+    </CreateItem>
   </Target>
 
-  <Target Name="AfterBuild">
-    <Copy SourceFiles="@(HostTargetFile->'%(SourceFile)')"
-          DestinationFiles="@(HostTargetFile)">
+  <Target Name="AfterClean"
+          DependsOnTargets="_PopulateHostTargetFileExceptSelf">
+    <Delete Files="@(HostTargetFileExceptSelf)"
+            Condition="Exists('%(Identity)')" />
+  </Target>
+
+  <Target Name="AfterBuild"
+          DependsOnTargets="_PopulateHostTargetFileExceptSelf"
+          Inputs="$(IntermediateTargetPath);$(OriginalConfig)"
+	  Outputs="@(HostVariant)">
+    <!-- Make extra copies for each variant -->
+    <Copy SourceFiles="@(HostTargetFileExceptSelf->'%(SourceFile)')"
+          DestinationFiles="@(HostTargetFileExceptSelf)">
       <Output TaskParameter="DestinationFiles" ItemName="FilesWrites" />
     </Copy>
 
+    <!-- Patch all variants in place -->
     <Exec Command="&quot;$(TargetFrameworkSDKDirectory)bin\corflags.exe&quot; /force &quot;%(HostVariant.FullPath)&quot; /nologo %(HostVariant.CorFlags) >nul"
           Condition="'%(HostVariant.CorFlags)'!=''" />
 
-    <Exec Command="&quot;..\..\..\bin\mt.exe&quot; -nologo -manifest &quot;%(HostVariant.Manifest)&quot; -managedassemblyname:&quot;%(HostVariant.FullPath)&quot; -nodependency -outputresource:&quot;%(HostVariant.FullPath);#1&quot;"
+    <Exec Command="&quot;..\..\..\bin\mt.exe&quot; -nologo -manifest &quot;%(HostVariant.Manifest)&quot; -managedassemblyname:&quot;%(HostVariant.FullPath)&quot; -nodependency -outputresource:&quot;%(HostVariant.FullPath);#1&quot; >nul"
           Condition="'%(HostVariant.Manifest)'!=''" />
 
     <Exec Command="&quot;$(TargetFrameworkSDKDirectory)bin\sn.exe&quot; -q -R &quot;%(HostVariant.FullPath)&quot; &quot;$(AssemblyOriginatorKeyFile)&quot;" />
+
+    <!-- Copy the variants into the Gallio project bin folder for local debugging -->
+    <Copy SourceFiles="@(HostTargetFile)"
+          DestinationFolder="$(GallioProjectOutputPath)">
+      <Output TaskParameter="DestinationFiles" ItemName="FilesWrites" />
+    </Copy>
+
+    <!-- Touch the output and replace the original Gallio.Host.exe in the intermediate path to avoid redundant builds or potential overwriting by the old pre-patched version -->
+    <Touch Files="@(HostTargetFile)" />
+    
+    <Copy SourceFiles="$(TargetPath)"
+          DestinationFiles="$(IntermediateTargetPath)" />
   </Target>
 </Project>

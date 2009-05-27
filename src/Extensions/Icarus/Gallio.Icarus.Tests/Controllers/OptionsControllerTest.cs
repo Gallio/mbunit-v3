@@ -20,6 +20,7 @@ using Gallio.Common.Xml;
 using Gallio.Icarus.Controllers;
 using Gallio.Icarus.Controls;
 using Gallio.Icarus.Tests.Utilities;
+using Gallio.Model;
 using Gallio.Runner;
 using Gallio.Runtime.Logging;
 using MbUnit.Framework;
@@ -166,7 +167,7 @@ namespace Gallio.Icarus.Tests.Controllers
         {
             var optionsController = SetUpOptionsController(new Settings());
 
-            Assert.AreEqual(20, optionsController.UnselectedTreeViewCategories.Count);
+            Assert.AreEqual(typeof(MetadataKeys).GetFields().Length - 4, optionsController.UnselectedTreeViewCategories.Count);
         }
 
         [Test]
