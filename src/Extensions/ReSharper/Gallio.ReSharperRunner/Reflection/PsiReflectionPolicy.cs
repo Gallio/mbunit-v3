@@ -104,7 +104,8 @@ namespace Gallio.ReSharperRunner.Reflection
             if (@namespace != null)
                 return Reflector.WrapNamespace(@namespace.QualifiedName);
 
-            throw new NotSupportedException("Unsupported declared element type: " + target);
+            //throw new NotSupportedException("Unsupported declared element type: " + target);
+            return null;
         }
 
         /// <summary>
