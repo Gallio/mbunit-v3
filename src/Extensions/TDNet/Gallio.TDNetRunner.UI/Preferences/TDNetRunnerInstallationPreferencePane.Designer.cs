@@ -1,6 +1,6 @@
 ﻿namespace Gallio.TDNetRunner.UI.Preferences
 {
-    partial class TDNetPreferencePane
+    partial class TDNetRunnerInstallationPreferencePane
     {
         /// <summary> 
         /// Required designer variable.
@@ -44,7 +44,7 @@
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(258, 26);
             this.label1.TabIndex = 0;
-            this.label1.Text = "Specify the installation mode for Gallio-supported test frameworks in TestDriven." +
+            this.label1.Text = "Specify the installation mode for Gallio supported test frameworks in TestDriven." +
                 "Net:";
             // 
             // frameworkGridView

@@ -20,12 +20,21 @@
   </assemblies>
 
   <components>
-    <component componentId="TDNetRunner.UI.PreferencePaneProvider"
-                serviceId="Gallio.UI.PreferencePaneProvider"
-                componentType="Gallio.TDNetRunner.UI.Preferences.TDNetPreferencePaneProvider, Gallio.TDNetRunner.UI">
+    <component componentId="TDNetRunner.UI.PlaceholderPreferencePaneProvider"
+                serviceId="Gallio.UI.PreferencePaneProvider">
       <traits>
         <path>TestDriven.Net</path>
         <icon>plugin://Gallio.TDNetRunner/Resources/TestDriven.ico</icon>
+      </traits>
+    </component>
+
+    <component componentId="TDNetRunner.UI.RunnerInstallationPreferencePaneProvider"
+                serviceId="Gallio.UI.PreferencePaneProvider"
+                componentType="Gallio.TDNetRunner.UI.Preferences.TDNetRunnerInstallationPreferencePaneProvider, Gallio.TDNetRunner.UI">
+      <traits>
+        <path>TestDriven.Net/Frameworks</path>
+        <icon>plugin://Gallio.TDNetRunner/Resources/TestDriven.ico</icon>
+        <scope>Machine</scope>
       </traits>
     </component>
   </components>

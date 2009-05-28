@@ -52,9 +52,8 @@
       </traits>
     </component>
 
-    <component componentId="Gallio.UI.GallioPreferencePaneProvider"
-               serviceId="Gallio.UI.PreferencePaneProvider"
-               componentType="Gallio.UI.ControlPanel.Preferences.GallioPreferencePaneProvider, Gallio.UI">
+    <component componentId="Gallio.UI.PlaceholderPreferencePaneProvider"
+               serviceId="Gallio.UI.PreferencePaneProvider">
       <traits>
         <path>Gallio</path>
         <order>-100</order>
@@ -62,34 +61,18 @@
       </traits>
     </component>
 
-    <!--
-    For manual inspection to confirm the preference pane nesting works.
-    <component componentId="Gallio.UI.Test1PreferencePaneProvider"
+    <component componentId="Gallio.UI.RuntimePreferencePaneProvider"
                serviceId="Gallio.UI.PreferencePaneProvider"
-               componentType="Gallio.UI.ControlPanel.Preferences.PlaceholderPreferencePaneProvider, Gallio.UI">
+               componentType="Gallio.UI.ControlPanel.Preferences.RuntimePreferencePaneProvider, Gallio.UI">
       <traits>
-        <path>Test</path>
-        <order>1000</order>
+        <path>Gallio/Runtime</path>
+        <icon>plugin://Gallio/Resources/Gallio.ico</icon>
+        <scope>Machine</scope>
       </traits>
     </component>
 
-    <component componentId="Gallio.UI.Test2PreferencePaneProvider"
-               serviceId="Gallio.UI.PreferencePaneProvider"
-               componentType="Gallio.UI.ControlPanel.Preferences.PlaceholderPreferencePaneProvider, Gallio.UI">
-      <traits>
-        <path>Test/Second Test Pane</path>
-        <order>100</order>
-      </traits>
-    </component>
-
-    <component componentId="Gallio.UI.Test3PreferencePaneProvider"
-               serviceId="Gallio.UI.PreferencePaneProvider"
-               componentType="Gallio.UI.ControlPanel.Preferences.PlaceholderPreferencePaneProvider, Gallio.UI">
-      <traits>
-        <path>Test/First Test Pane</path>
-        <order>0</order>
-      </traits>
-    </component>
-  -->
+    <component componentId="Gallio.UI.RuntimePreferencePaneCommitterElevatedCommand"
+               serviceId="Gallio.ElevatedCommand"
+               componentType="Gallio.UI.ControlPanel.Preferences.RuntimePreferencePaneCommitterElevatedCommand, Gallio.UI" />
   </components>
 </plugin>

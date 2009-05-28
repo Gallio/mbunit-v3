@@ -37,8 +37,9 @@ namespace Gallio.UI.ControlPanel.Preferences
         /// <param name="path">The preference pane path consisting of slash-delimited name segments
         /// specifying tree nodes</param>
         /// <param name="icon">The preference pane icon, or null if none</param>
+        /// <param name="scope">The preference pane scope, or null if none</param>
         /// <param name="paneFactory">The preference pane factory</param>
-        public void AddPane(string path, Icon icon, Func<PreferencePane> paneFactory)
+        public void AddPane(string path, Icon icon, PreferencePaneScope scope, Func<PreferencePane> paneFactory)
         {
             string[] pathSegments = path.Split('/');
             if (pathSegments.Length == 0)
@@ -55,14 +56,18 @@ namespace Gallio.UI.ControlPanel.Preferences
                 if (childTreeNode == null)
                 {
                     childTreeNode = new TreeNode(pathSegment);
-                    childTreeNode.Tag = new Func<PreferencePane>(CreatePlaceholderPreferencePane);
+                    childTreeNode.Tag = new PaneInfo(CreatePlaceholderPreferencePane, pathSegment);
                     treeNodeCollection.Add(childTreeNode);
                 }
 
                 treeNode = childTreeNode;
             }
 
-            treeNode.Tag = paneFactory;
+            string title = pathSegments[pathSegments.Length - 1];
+            if (scope == PreferencePaneScope.Machine)
+                title += " (machine setting)";
+
+            treeNode.Tag = new PaneInfo(paneFactory, title);
 
             if (icon != null)
             {
@@ -106,8 +111,8 @@ namespace Gallio.UI.ControlPanel.Preferences
 
         private IEnumerable<PreferencePane> GetPreferencePanes()
         {
-            foreach (PreferencePane preferencePane in preferencePaneSplitContainer.Panel2.Controls)
-                yield return preferencePane;
+            foreach (PreferencePaneContainer preferencePaneContainer in preferencePaneSplitContainer.Panel2.Controls)
+                yield return preferencePaneContainer.PreferencePane;
         }
 
         private static PreferencePane CreatePlaceholderPreferencePane()
@@ -129,31 +134,41 @@ namespace Gallio.UI.ControlPanel.Preferences
             if (treeNode != null)
             {
                 bool found = false;
-                foreach (PreferencePane candidate in preferencePaneSplitContainer.Panel2.Controls)
+                foreach (PreferencePaneContainer preferencePaneContainer in preferencePaneSplitContainer.Panel2.Controls)
                 {
-                    if (candidate.Tag == treeNode)
+                    if (preferencePaneContainer.Tag == treeNode)
                     {
-                        candidate.Visible = true;
+                        preferencePaneContainer.Visible = true;
                         found = true;
                     }
                     else
                     {
-                        candidate.Visible = false;
+                        preferencePaneContainer.Visible = false;
                     }
                 }
 
                 if (!found)
                 {
-                    Func<PreferencePane> paneFactory = (Func<PreferencePane>) treeNode.Tag;
-                    PreferencePane preferencePane = paneFactory();
+                    PaneInfo paneInfo = (PaneInfo) treeNode.Tag;
+
+                    PreferencePane preferencePane = paneInfo.Factory();
                     preferencePane.Dock = DockStyle.Fill;
                     preferencePane.Margin = new Padding(0, 0, 0, 0);
                     preferencePane.AutoSize = true;
                     preferencePane.AutoSizeMode = AutoSizeMode.GrowAndShrink;
-                    preferencePane.Tag = treeNode;
                     preferencePane.PendingSettingsChangesChanged += preferencePane_PendingSettingsChangesChanged;
                     preferencePane.RequiresElevationChanged += preferencePane_ElevationRequiredChanged;
-                    preferencePaneSplitContainer.Panel2.Controls.Add(preferencePane);
+
+                    PreferencePaneContainer preferencePaneContainer = new PreferencePaneContainer();
+                    preferencePaneContainer.Dock = DockStyle.Fill;
+                    preferencePaneContainer.Margin = new Padding(0, 0, 0, 0);
+                    preferencePaneContainer.AutoSize = true;
+                    preferencePaneContainer.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+                    preferencePaneContainer.Tag = treeNode;
+                    preferencePaneContainer.PreferencePane = preferencePane;
+                    preferencePaneContainer.Title = paneInfo.Title;
+
+                    preferencePaneSplitContainer.Panel2.Controls.Add(preferencePaneContainer);
 
                     RefreshPendingSettingsChangesState();
                     RefreshElevationRequiredState();
@@ -213,6 +228,18 @@ namespace Gallio.UI.ControlPanel.Preferences
             }
 
             RequiresElevation = false;
+        }
+
+        private sealed class PaneInfo
+        {
+            public readonly Func<PreferencePane> Factory;
+            public readonly string Title;
+
+            public PaneInfo(Func<PreferencePane> factory, string title)
+            {
+                Factory = factory;
+                Title = title;
+            }
         }
     }
 }

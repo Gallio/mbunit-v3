@@ -43,6 +43,7 @@ namespace Gallio.UI.ControlPanel.Preferences
                 throw new ArgumentException("The preference pane path must not be empty.", "path");
 
             this.path = path;
+            Scope = PreferencePaneScope.User;
         }
 
         /// <summary>
@@ -63,5 +64,11 @@ namespace Gallio.UI.ControlPanel.Preferences
         /// Gets or sets an integer index used to sort control panel tabs in ascending order.
         /// </summary>
         public int Order { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value that describes the scope of the changes effected by a preference pane.
+        /// </summary>
+        /// <value>The scope.  <see cref="PreferencePaneScope.User" /> by default.</value>
+        public PreferencePaneScope Scope { get; set; }
     }
 }

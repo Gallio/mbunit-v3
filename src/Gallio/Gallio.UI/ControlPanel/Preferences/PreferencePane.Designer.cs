@@ -34,9 +34,9 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.MinimumSize = new System.Drawing.Size(300, 350);
+            this.MinimumSize = new System.Drawing.Size(300, 320);
             this.Name = "PreferencePane";
-            this.Size = new System.Drawing.Size(300, 350);
+            this.Size = new System.Drawing.Size(300, 320);
             this.ResumeLayout(false);
 
         }

@@ -30,11 +30,11 @@ using Gallio.UI.ControlPanel.Preferences;
 
 namespace Gallio.TDNetRunner.UI.Preferences
 {
-    public partial class TDNetPreferencePane : PreferencePane
+    public partial class TDNetRunnerInstallationPreferencePane : PreferencePane
     {
         private string[] frameworkIds;
 
-        public TDNetPreferencePane()
+        public TDNetRunnerInstallationPreferencePane()
         {
             InitializeComponent();
 

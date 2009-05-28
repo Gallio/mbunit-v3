@@ -49,7 +49,7 @@ namespace Gallio.UI.ControlPanel.Preferences
             {
                 PreferencePaneProviderTraits traits = preferencePaneProviderHandle.GetTraits();
 
-                controlPanelTab.AddPane(traits.Path, traits.Icon,
+                controlPanelTab.AddPane(traits.Path, traits.Icon, traits.Scope,
                     GetPreferencePaneFactory(preferencePaneProviderHandle));
             }
 

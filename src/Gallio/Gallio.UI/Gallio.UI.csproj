@@ -71,6 +71,14 @@
     </Compile>
     <Compile Include="ControlPanel\Plugins\PluginControlPanelTabProvider.cs" />
     <Compile Include="ControlPanel\Preferences\NamespaceDoc.cs" />
+    <Compile Include="ControlPanel\Preferences\PreferencePaneContainer.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ControlPanel\Preferences\PreferencePaneContainer.Designer.cs">
+      <DependentUpon>PreferencePaneContainer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ControlPanel\Preferences\PreferencePaneScope.cs" />
+    <Compile Include="ControlPanel\Preferences\RuntimePreferencePaneCommitterElevatedCommand.cs" />
     <Compile Include="ControlPanel\SettingsEditor.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -81,13 +89,13 @@
       <DependentUpon>PlaceholderPreferencePane.cs</DependentUpon>
     </Compile>
     <Compile Include="ControlPanel\Preferences\PlaceholderPreferencePaneProvider.cs" />
-    <Compile Include="ControlPanel\Preferences\GallioPreferencePane.cs">
+    <Compile Include="ControlPanel\Preferences\RuntimePreferencePane.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="ControlPanel\Preferences\GallioPreferencePane.Designer.cs">
-      <DependentUpon>GallioPreferencePane.cs</DependentUpon>
+    <Compile Include="ControlPanel\Preferences\RuntimePreferencePane.Designer.cs">
+      <DependentUpon>RuntimePreferencePane.cs</DependentUpon>
     </Compile>
-    <Compile Include="ControlPanel\Preferences\GallioPreferencePaneProvider.cs" />
+    <Compile Include="ControlPanel\Preferences\RuntimePreferencePaneProvider.cs" />
     <Compile Include="ControlPanel\Preferences\IPreferencePaneProvider.cs" />
     <Compile Include="ControlPanel\Preferences\PreferenceControlPanelTab.cs">
       <SubType>UserControl</SubType>
@@ -139,8 +147,11 @@
       <DependentUpon>PluginControlPanelTab.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="ControlPanel\Preferences\GallioPreferencePane.resx">
-      <DependentUpon>GallioPreferencePane.cs</DependentUpon>
+    <EmbeddedResource Include="ControlPanel\Preferences\PreferencePaneContainer.resx">
+      <DependentUpon>PreferencePaneContainer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ControlPanel\Preferences\RuntimePreferencePane.resx">
+      <DependentUpon>RuntimePreferencePane.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="ControlPanel\Preferences\PlaceholderPreferencePane.resx">

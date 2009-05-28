@@ -39,7 +39,6 @@ namespace Gallio.Runtime
 
         private string installedVersion;
         private string installationFolder;
-        private string developmentRuntimePath;
         private readonly List<string> additionalPluginDirectories = new List<string>();
 
         /// <summary>
@@ -54,6 +53,15 @@ namespace Gallio.Runtime
                 configuration.LoadFromRegistry(pair.First, pair.Second);
 
             return configuration;
+        }
+
+        /// <summary>
+        /// Saves the additional plugin directories into the registry.
+        /// </summary>
+        public void SaveAdditionalPluginDirectoriesToRegistry()
+        {
+            foreach (Pair<RegistryKey, string> pair in RootKeys)
+                SaveAdditionalPluginDirectoriesToRegistry(pair.First, pair.Second);
         }
 
         /// <summary>
@@ -75,7 +83,7 @@ namespace Gallio.Runtime
         }
 
         /// <summary>
-        /// Gets the list of additional plugin directories.
+        /// Gets the mutable list of additional plugin directories.
         /// </summary>
         public IList<string> AdditionalPluginDirectories
         {
@@ -97,14 +105,42 @@ namespace Gallio.Runtime
                     if (installationFolder == null)
                         installationFolder = rootKey.GetValue(@"InstallationFolder", installationFolder) as string;
 
-                    if (developmentRuntimePath == null)
-                        developmentRuntimePath = rootKey.GetValue(@"DevelopmentRuntimePath", developmentRuntimePath) as string;
-
                     LoadAdditionalPluginDirectoriesFromRegistry(rootKey);
                 }
             }
             catch
             {
+            }
+        }
+
+        private void SaveAdditionalPluginDirectoriesToRegistry(RegistryKey hive, string rootKeyName)
+        {
+            using (RegistryKey rootKey = hive.OpenSubKey(rootKeyName, true))
+            {
+                if (rootKey == null)
+                    return;
+
+                using (RegistryKey subKey = rootKey.CreateSubKey(AdditionalPluginDirectoriesSubKey))
+                {
+                    List<string> newDirectories = new List<string>(additionalPluginDirectories);
+
+                    foreach (string name in subKey.GetValueNames())
+                    {
+                        string value = subKey.GetValue(name) as string;
+                        if (value != null)
+                        {
+                            if (newDirectories.Contains(value))
+                                newDirectories.Remove(value);
+                            else
+                                subKey.DeleteValue(name);
+                        }
+                    }
+
+                    foreach (string newDirectory in newDirectories)
+                    {
+                        subKey.SetValue(Guid.NewGuid().ToString(), newDirectory);
+                    }
+                }
             }
         }
 
