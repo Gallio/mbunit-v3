@@ -64,7 +64,7 @@ namespace Gallio.Tests.Runtime.Preferences
             var directory = new DirectoryInfo(@"C:\Foo");
             var preferenceStore = new FilePreferenceStore(directory);
 
-            Assert.AreSame(preferenceStore["name"], preferenceStore["different"]);
+            Assert.AreNotSame(preferenceStore["name"], preferenceStore["different"]);
         }
     }
 }
