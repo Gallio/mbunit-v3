@@ -110,6 +110,19 @@ namespace Gallio.Runtime.Preferences
             });
         }
 
+        private static string ConvertToRawValue<T>(T value)
+        {
+            return value != null ? Convert.ToString(value) : null;
+        }
+
+        private static T ConvertFromRawValue<T>(string rawValue)
+        {
+            if (typeof(T).IsEnum)
+                return (T) Enum.Parse(typeof(T), rawValue);
+
+            return (T)Convert.ChangeType(rawValue, typeof(T));
+        }
+
         private sealed class PreferenceSetData
         {
             private Memoizer<XmlSerializer> xmlSerializerMemoizer = new Memoizer<XmlSerializer>();
@@ -268,7 +281,7 @@ namespace Gallio.Runtime.Preferences
                 string rawValue = data.GetSetting(preferenceSettingKey);
                 if (rawValue == null)
                     return defaultValue;
-                return (T) Convert.ChangeType(rawValue, typeof(T));
+                return ConvertFromRawValue<T>(rawValue);
             }
 
             public bool HasSetting<T>(Key<T> preferenceSettingKey)
@@ -286,7 +299,7 @@ namespace Gallio.Runtime.Preferences
 
             public void SetSetting<T>(Key<T> preferenceSettingKey, T value)
             {
-                string rawValue = value != null ? Convert.ToString(value) : null;
+                string rawValue = ConvertToRawValue(value);
                 data.SetSetting(preferenceSettingKey, rawValue);
             }
 

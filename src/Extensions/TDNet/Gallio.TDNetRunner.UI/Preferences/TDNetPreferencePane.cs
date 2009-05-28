@@ -43,7 +43,7 @@ namespace Gallio.TDNetRunner.UI.Preferences
 
         public ITestFrameworkManager FrameworkManager { get; set; }
 
-        public IPreferenceManager PreferenceManager { get; set; }
+        public TDNetPreferenceManager PreferenceManager { get; set; }
 
         public IInstallerManager InstallerManager { get; set; }
 
@@ -56,7 +56,7 @@ namespace Gallio.TDNetRunner.UI.Preferences
                 for (int i = 0; i < frameworkIds.Length; i++)
                 {
                     var installationMode = InstallationModeFromString((string) frameworkGridView.Rows[i].Cells[1].Value);
-                    SetInstallationModeForFramework(frameworkIds[i], installationMode);
+                    PreferenceManager.SetInstallationModeForFramework(frameworkIds[i], installationMode);
                 }
                 progressMonitor.Worked(1);
 
@@ -73,7 +73,7 @@ namespace Gallio.TDNetRunner.UI.Preferences
             {
                 TestFrameworkTraits traits = frameworkHandles[i].GetTraits();
                 string frameworkId = frameworkHandles[i].Id;
-                TDNetRunnerInstallationMode installationMode = GetInstallationModeForFramework(frameworkId);
+                TDNetRunnerInstallationMode installationMode = PreferenceManager.GetInstallationModeForFramework(frameworkId);
                 frameworkGridView.Rows.Add(traits.Name, InstallationModeToString(installationMode));
                 frameworkIds[i] = frameworkId;
             }
@@ -92,7 +92,7 @@ namespace Gallio.TDNetRunner.UI.Preferences
             for (int i = 0; i < frameworkIds.Length; i++)
             {
                 var installationMode = InstallationModeFromString((string) frameworkGridView.Rows[i].Cells[1].Value);
-                if (installationMode != GetInstallationModeForFramework(frameworkIds[i]))
+                if (installationMode != PreferenceManager.GetInstallationModeForFramework(frameworkIds[i]))
                 {
                     PendingSettingsChanges = true;
                     return;
@@ -130,15 +130,6 @@ namespace Gallio.TDNetRunner.UI.Preferences
                 case "Disabled":
                     return TDNetRunnerInstallationMode.Disabled;
             }
-        }
-
-        private TDNetRunnerInstallationMode GetInstallationModeForFramework(string frameworkId)
-        {
-            return TDNetRunnerInstallationMode.Default;
-        }
-
-        private void SetInstallationModeForFramework(string frameworkId, TDNetRunnerInstallationMode mode)
-        {
         }
     }
 }

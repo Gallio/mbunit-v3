@@ -24,6 +24,7 @@ using Gallio.Model;
 using Gallio.Runtime.Extensibility;
 using Gallio.Runtime.Installer;
 using Gallio.Runtime.Logging;
+using Gallio.Runtime.Preferences;
 using Gallio.Runtime.ProgressMonitoring;
 using Microsoft.Win32;
 using Registry=Microsoft.Win32.Registry;
@@ -35,6 +36,7 @@ namespace Gallio.TDNetRunner.Core
         private readonly ITestFrameworkManager frameworkManager;
         private readonly IRegistry registry;
         private readonly ILogger logger;
+        private readonly TDNetPreferenceManager preferenceManager;
 
         private const string RunnerRegKeyPrefix = "Gallio";
         private const string LocalMachineRegKey = @"Software\MutantDesign\TestDriven.NET\TestRunners";
@@ -42,11 +44,13 @@ namespace Gallio.TDNetRunner.Core
 
         public static readonly string InstallerId = "TDNetRunner.Installer";
 
-        public TDNetRunnerInstaller(ITestFrameworkManager frameworkManager, IRegistry registry, ILogger logger)
+        public TDNetRunnerInstaller(ITestFrameworkManager frameworkManager, IRegistry registry, ILogger logger,
+            TDNetPreferenceManager preferenceManager)
         {
             this.frameworkManager = frameworkManager;
             this.registry = registry;
             this.logger = logger;
+            this.preferenceManager = preferenceManager;
         }
 
         public override void Install(IProgressMonitor progressMonitor)
@@ -67,7 +71,7 @@ namespace Gallio.TDNetRunner.Core
                 foreach (ComponentHandle<ITestFramework, TestFrameworkTraits> frameworkHandle in frameworkManager.FrameworkHandles)
                 {
                     TestFrameworkTraits frameworkTraits = frameworkHandle.GetTraits();
-                    TDNetRunnerInstallationMode installationMode = GetInstallationModeForFramework(frameworkHandle.Id);
+                    TDNetRunnerInstallationMode installationMode = preferenceManager.GetInstallationModeForFramework(frameworkHandle.Id);
 
                     if (installationMode != TDNetRunnerInstallationMode.Disabled)
                     {
@@ -90,11 +94,6 @@ namespace Gallio.TDNetRunner.Core
             {
                 RemoveExistingRegistryKeys(progressMonitor);
             }
-        }
-
-        private TDNetRunnerInstallationMode GetInstallationModeForFramework(string frameworkId)
-        {
-            return TDNetRunnerInstallationMode.Default;
         }
 
         private string FindIcarusPath()

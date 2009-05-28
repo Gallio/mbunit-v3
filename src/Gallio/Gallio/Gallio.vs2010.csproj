@@ -590,8 +590,14 @@
     <Compile Include="Runtime\Logging\Verbosity.cs" />
     <Compile Include="Common\Platform\ProcessType.cs" />
     <Compile Include="Runtime\NamespaceDoc.cs" />
-    <Compile Include="Runtime\Preferences\DefaultPreferenceManager.cs" />
+    <Compile Include="Runtime\Preferences\FilePreferenceManager.cs" />
+    <Compile Include="Runtime\Preferences\FilePreferenceSet.cs" />
+    <Compile Include="Runtime\Preferences\FilePreferenceStore.cs" />
     <Compile Include="Runtime\Preferences\IPreferenceManager.cs" />
+    <Compile Include="Runtime\Preferences\IPreferenceSet.cs" />
+    <Compile Include="Runtime\Preferences\IPreferenceSetReader.cs" />
+    <Compile Include="Runtime\Preferences\IPreferenceSetWriter.cs" />
+    <Compile Include="Runtime\Preferences\IPreferenceStore.cs" />
     <Compile Include="Runtime\Preferences\NamespaceDoc.cs" />
     <Compile Include="Runtime\ProgressMonitoring\BaseProgressMonitorPresenter.cs" />
     <Compile Include="Runtime\ProgressMonitoring\BaseProgressMonitorProvider.cs" />
@@ -781,6 +787,8 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Common\Validation\ValidationException.cs" />
+    <Compile Include="Schema\Preferences\PreferenceContainer.cs" />
+    <Compile Include="Schema\Preferences\PreferenceSetting.cs" />
     <Compile Include="Schema\SchemaConstants.cs" />
     <Compile Include="Common\Validation\ValidationUtils.cs" />
     <Compile Include="Common\Triple.cs" />

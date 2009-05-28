@@ -233,14 +233,30 @@ namespace Gallio.Tests.Runtime.Preferences
             }
 
             [Test]
-            public void SetSetting_WhenDataTypeIsNotString_ConvertsItForRoundTrip()
+            public void SetSetting_WhenDataTypeIsInt_ConvertsItForRoundTrip()
             {
                 var preferenceSet = CreateFilePreferenceSetWithNonExistantTempFile();
                 preferenceSet.Write(writer => writer.SetSetting(new Key<int>("name"), 42));
 
-                int result = preferenceSet.Read(reader => reader.GetSetting<int>(new Key<int>("name")));
+                int result = preferenceSet.Read(reader => reader.GetSetting(new Key<int>("name")));
 
                 Assert.AreEqual(42, result);
+            }
+
+            [Test]
+            public void SetSetting_WhenDataTypeIsEnum_ConvertsItForRoundTrip()
+            {
+                var preferenceSet = CreateFilePreferenceSetWithNonExistantTempFile();
+                preferenceSet.Write(writer => writer.SetSetting(new Key<EnumType>("name"), EnumType.No));
+
+                EnumType result = preferenceSet.Read(reader => reader.GetSetting(new Key<EnumType>("name")));
+
+                Assert.AreEqual(EnumType.No, result);
+            }
+
+            private enum EnumType
+            {
+                Yes, No
             }
         }
 

@@ -13,6 +13,7 @@
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\..\Key.snk</AssemblyOriginatorKeyFile>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <OutputPath>bin\</OutputPath>
@@ -73,6 +74,7 @@
     <Compile Include="BaseTestRunner.cs" />
     <Compile Include="Core\BaseProxyTestRunner.cs" />
     <Compile Include="Core\LocalProxyTestRunner.cs" />
+    <Compile Include="Core\TDNetPreferenceManager.cs" />
     <Compile Include="Core\TDNetRunnerInstaller.cs" />
     <Compile Include="Core\TDNetRunnerInstallationMode.cs" />
     <Compile Include="Facade\FacadeFilterCategoryMode.cs" />

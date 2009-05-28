@@ -19,6 +19,11 @@
     <assembly fullName="Gallio.Loader, Version=0.0.0.0, Culture=neutral, PublicKeyToken=eb9cfa67ee6ab36e"/>
   </assemblies>
 
+  <services>
+    <service serviceId="TDNetRunner.PreferenceManager"
+             serviceType="Gallio.TDNetRunner.Core.TDNetPreferenceManager, Gallio.TDNetRunner" />
+  </services>
+  
   <components>
     <component componentId="TDNetRunner.Installer"
                serviceId="Gallio.Installer"
@@ -27,5 +32,9 @@
         <requiresElevation>true</requiresElevation>
       </traits>
     </component>
+    
+    <component componentId="TDNetRunner.PreferenceManager"
+               serviceId="TDNetRunner.PreferenceManager"
+               componentType="Gallio.TDNetRunner.Core.TDNetPreferenceManager, Gallio.TDNetRunner" />      
   </components>
 </plugin>
