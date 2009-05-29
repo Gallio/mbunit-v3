@@ -24,7 +24,6 @@ using Gallio.Model.Filters;
 using Gallio.Common.Markup;
 using Gallio.Common.Markup.Tags;
 using Gallio.ReSharperRunner.Provider.Facade;
-using Gallio.ReSharperRunner.Runtime;
 using Gallio.Runner;
 using Gallio.Runner.Events;
 using Gallio.Runner.Reports;
@@ -48,6 +47,7 @@ namespace Gallio.ReSharperRunner.Provider.Tasks
     internal sealed class GallioTestRunner
     {
         private readonly IFacadeTaskServer server;
+        private readonly IFacadeLogger logger;
         private readonly FacadeTaskExecutorConfiguration config;
         private readonly string sessionId;
 
@@ -56,9 +56,10 @@ namespace Gallio.ReSharperRunner.Provider.Tasks
         private readonly Dictionary<string, TestMonitor> testMonitors;
         private readonly HashSetOfString explicitTestIds;
 
-        public GallioTestRunner(IFacadeTaskServer server, FacadeTaskExecutorConfiguration config)
+        public GallioTestRunner(IFacadeTaskServer server, IFacadeLogger logger, FacadeTaskExecutorConfiguration config)
         {
             this.server = server;
+            this.logger = logger;
             this.config = config;
             sessionId = server.SessionId;
 
@@ -108,8 +109,8 @@ namespace Gallio.ReSharperRunner.Provider.Tasks
 
         private FacadeTaskResult RunTests()
         {
-            ILogger logger = new ReSharperLogger();
             ITestRunner runner = TestRunnerUtils.CreateTestRunnerByName(StandardTestRunnerFactoryNames.IsolatedAppDomain);
+            ILogger logger = new FacadeLoggerWrapper(this.logger);
 
             // Set parameters.
             TestPackageConfig packageConfig = new TestPackageConfig();

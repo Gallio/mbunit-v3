@@ -18,12 +18,18 @@ using System;
 using System.Text;
 using Gallio.Common.Diagnostics;
 using Gallio.Runtime.Logging;
-using JetBrains.Util;
 
-namespace Gallio.ReSharperRunner.Runtime
+namespace Gallio.ReSharperRunner.Provider.Facade
 {
-    internal class ReSharperLogger : BaseLogger
+    internal class FacadeLoggerWrapper : BaseLogger
     {
+        private readonly IFacadeLogger facadeLogger;
+
+        public FacadeLoggerWrapper(IFacadeLogger facadeLogger)
+        {
+            this.facadeLogger = facadeLogger;
+        }
+
         protected override void LogImpl(LogSeverity severity, string message, ExceptionData exceptionData)
         {
             StringBuilder fullMessage = new StringBuilder();
@@ -37,15 +43,15 @@ namespace Gallio.ReSharperRunner.Runtime
             switch (severity)
             {
                 case LogSeverity.Debug:
-                    Logger.LogMessage(LoggingLevel.VERBOSE, fullMessage.ToString());
+                    facadeLogger.LogMessage(fullMessage.ToString());
                     break;
                 case LogSeverity.Info:
                 case LogSeverity.Important:
                 case LogSeverity.Warning:
-                    Logger.LogMessage(LoggingLevel.NORMAL, fullMessage.ToString());
+                    facadeLogger.LogMessage(fullMessage.ToString());
                     break;
                 case LogSeverity.Error:
-                    Logger.LogError(fullMessage.ToString());
+                    facadeLogger.LogError(fullMessage.ToString());
                     break;
             }
         }

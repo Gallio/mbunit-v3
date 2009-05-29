@@ -17,6 +17,6 @@ namespace Gallio.ReSharperRunner.Provider.Facade
 {
     internal interface IRemoteFacadeTaskRunner
     {
-        FacadeTaskResult Execute(IFacadeTaskServer server, FacadeTask facadeTask, FacadeTaskExecutorConfiguration config);
+        FacadeTaskResult Execute(IFacadeTaskServer server, IFacadeLogger logger, FacadeTask facadeTask, FacadeTaskExecutorConfiguration config);
     }
 }

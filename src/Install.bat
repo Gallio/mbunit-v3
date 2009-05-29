@@ -11,6 +11,14 @@ set GACUTIL40=%BIN_DIR%\gacutil40.exe
 set ELEVATE=%BIN_DIR%\elevate.cmd
 set REG=%BIN_DIR%\reg.exe
 
+if "%~1"=="/x" (
+    shift
+) else (
+    call "%ELEVATE%" "%~dpnx0" /x %*
+    pause
+    exit /b %ERRORLEVEL%
+)
+
 echo.
 echo This script installs or uninstalls components built in the source tree
 echo for local debugging purposes.
@@ -46,7 +54,7 @@ echo ** Install Gallio.Loader **
 call :SET_LOADER_VARS
 
 echo Installing Gallio.Loader assembly into GAC.
-call "%ELEVATE%" "%GACUTIL%" /i "%LOADER_DLL%" /f
+"%GACUTIL%" /i "%LOADER_DLL%" /f
 echo.
 
 echo Adding registry keys.
@@ -65,7 +73,7 @@ echo ** Uninstall Gallio.Loader **
 call :SET_LOADER_VARS
 
 echo Uninstalling Gallio.Loader assembly from GAC.
-call "%ELEVATE%" "%GACUTIL%" /u "%LOADER_DLL%" 2>nul >nul
+"%GACUTIL%" /u "%LOADER_DLL%" 2>nul >nul
 echo.
 
 echo Deleting registry keys.
@@ -183,7 +191,6 @@ exit /b 0
 REM Uninstall all.
 :UNINSTALL_ALL
 call :UNINSTALL_LOADER
-call :UNINSTALL_TDNETRUNNER
 call :UNINSTALL_VISUALSTUDIO_ADDIN 9
 call :UNINSTALL_VISUALSTUDIO_ADDIN 10
 exit /b 0

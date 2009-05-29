@@ -32,7 +32,15 @@ namespace Gallio.ReSharperRunner.Provider.Facade
     /// </para>
     /// </summary>
     /// <remarks>
+    /// <para>
     /// This type is part of a facade that decouples the Gallio test runner from the ReSharper interfaces.
+    /// </para>
+    /// <para>
+    /// Keep in mind that while this code is running none of the Gallio types outside of this
+    /// assembly (and not in GAC, like Gallio.Loader) are accessible.  After bootstrapping
+    /// a new AppDomain with the Gallio runtime, this class delegates to <see cref="RemoteFacadeTaskRunner"/>
+    /// which will not have access to the ReSharper assemblies (hence this facade)!
+    /// </para>
     /// </remarks>
     public class FacadeTaskRunner : RecursiveRemoteTaskRunner
     {
@@ -67,6 +75,7 @@ namespace Gallio.ReSharperRunner.Provider.Facade
         sealed public override void ExecuteRecursive(TaskExecutionNode node)
         {
             AdapterFacadeTaskServer facadeTaskServer = new AdapterFacadeTaskServer(Server);
+            AdapterFacadeLogger facadeLogger = new AdapterFacadeLogger();
 
             FacadeTaskExecutorConfiguration config = new FacadeTaskExecutorConfiguration()
             {
@@ -75,10 +84,10 @@ namespace Gallio.ReSharperRunner.Provider.Facade
             };
 
             FacadeTask facadeTask = facadeTaskServer.MapTasks(node);
-            executeResult = FacadeUtils.ToTaskResult(Execute(facadeTaskServer, facadeTask, config));
+            executeResult = FacadeUtils.ToTaskResult(Execute(facadeTaskServer, facadeLogger, facadeTask, config));
         }
 
-        protected virtual FacadeTaskResult Execute(IFacadeTaskServer server, FacadeTask task, FacadeTaskExecutorConfiguration config)
+        protected virtual FacadeTaskResult Execute(IFacadeTaskServer server, IFacadeLogger logger, FacadeTask task, FacadeTaskExecutorConfiguration config)
         {
             IGallioRemoteEnvironment environment = EnvironmentManager.GetSharedEnvironment();
 
@@ -86,7 +95,7 @@ namespace Gallio.ReSharperRunner.Provider.Facade
             IRemoteFacadeTaskRunner taskRunner = (IRemoteFacadeTaskRunner)environment.AppDomain.CreateInstanceAndUnwrap(
                 taskRunnerType.Assembly.FullName, taskRunnerType.FullName);
 
-            return taskRunner.Execute(server, task, config);
+            return taskRunner.Execute(server, logger, task, config);
         }
     }
 }

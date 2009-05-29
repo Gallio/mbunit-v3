@@ -19,9 +19,9 @@ namespace Gallio.ReSharperRunner.Provider.Facade
 {
     internal sealed class RemoteFacadeTaskRunner : MarshalByRefObject, IRemoteFacadeTaskRunner
     {
-        public FacadeTaskResult Execute(IFacadeTaskServer server, FacadeTask facadeTask, FacadeTaskExecutorConfiguration config)
+        public FacadeTaskResult Execute(IFacadeTaskServer server, IFacadeLogger logger, FacadeTask facadeTask, FacadeTaskExecutorConfiguration config)
         {
-            return facadeTask.Execute(server, config);
+            return facadeTask.Execute(server, logger, config);
         }
 
         public override object InitializeLifetimeService()
