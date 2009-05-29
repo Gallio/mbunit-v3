@@ -23,7 +23,6 @@ using Gallio.ReSharperRunner.Properties;
 using Gallio.ReSharperRunner.Provider;
 using Gallio.ReSharperRunner.Provider.Facade;
 using Gallio.ReSharperRunner.Reflection;
-using Gallio.ReSharperRunner.Runtime;
 using Gallio.ReSharperRunner.Provider.Tasks;
 using Gallio.Runtime;
 using JetBrains.CommonControls;

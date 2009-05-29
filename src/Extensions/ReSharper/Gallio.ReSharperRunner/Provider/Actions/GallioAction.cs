@@ -15,7 +15,6 @@
 
 using System;
 using Gallio.Loader;
-using Gallio.ReSharperRunner.Runtime;
 using JetBrains.ReSharper.UnitTestExplorer;
 using JetBrains.ActionManagement;
 

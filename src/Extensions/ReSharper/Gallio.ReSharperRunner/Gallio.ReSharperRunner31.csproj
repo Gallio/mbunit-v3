@@ -120,7 +120,9 @@
     <Compile Include="Provider\Daemons\AnnotationDaemonStage.cs" />
     <Compile Include="Provider\Daemons\AnnotationDaemonStageProcess.cs" />
     <Compile Include="Provider\EnvironmentManager.cs" />
+    <Compile Include="Provider\Facade\AdapterFacadeLogger.cs" />
     <Compile Include="Provider\Facade\AdapterFacadeTaskServer.cs" />
+    <Compile Include="Provider\Facade\FacadeLoggerWrapper.cs" />
     <Compile Include="Provider\Facade\FacadeTask.cs" />
     <Compile Include="Provider\Facade\FacadeTaskException.cs" />
     <Compile Include="Provider\Facade\FacadeTaskExecutorConfiguration.cs" />
@@ -129,6 +131,7 @@
     <Compile Include="Provider\Facade\FacadeTaskRunner.cs" />
     <Compile Include="Provider\Facade\FacadeTaskWrapper.cs" />
     <Compile Include="Provider\Facade\FacadeUtils.cs" />
+    <Compile Include="Provider\Facade\IFacadeLogger.cs" />
     <Compile Include="Provider\Facade\IFacadeTaskServer.cs" />
     <Compile Include="Provider\Facade\IRemoteFacadeTaskRunner.cs" />
     <Compile Include="Provider\Facade\RemoteFacadeTaskRunner.cs" />
@@ -140,7 +143,6 @@
     <Compile Include="Provider\SessionCache.cs" />
     <Compile Include="Provider\Tasks\GallioTestRunner.cs" />
     <Compile Include="Reflection\IDeclaredElementResolver.cs" />
-    <Compile Include="Runtime\ReSharperLogger.cs" />
     <Compile Include="Reflection\MetadataReflectionPolicy.cs" />
     <Compile Include="Reflection\PsiReflectionPolicy.cs" />
     <Compile Include="Reflection\ReSharperReflectionPolicy.cs" />

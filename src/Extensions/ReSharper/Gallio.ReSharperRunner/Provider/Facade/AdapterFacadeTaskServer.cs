@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using JetBrains.ReSharper.TaskRunnerFramework;
+using Gallio.Loader;
 
 namespace Gallio.ReSharperRunner.Provider.Facade
 {
@@ -84,58 +85,114 @@ namespace Gallio.ReSharperRunner.Provider.Facade
         {
             get
             {
-                // TODO: Should ask for a better way of doing this.
-                object taskRunnerProxy = server.WithoutProxy;
+                try
+                {
+                    // TODO: Should ask for a better way of doing this.
+                    object taskRunnerProxy = server.WithoutProxy;
 #if RESHARPER_31
-                PropertyInfo property = taskRunnerProxy.GetType().GetProperty("SessionId");
-                return (string)property.GetValue(taskRunnerProxy, null);
+                    PropertyInfo property = taskRunnerProxy.GetType().GetProperty("SessionId");
+                    return (string)property.GetValue(taskRunnerProxy, null);
 #else
-                return ((TaskRunnerProxy) taskRunnerProxy).SessionId;
+                    return ((TaskRunnerProxy) taskRunnerProxy).SessionId;
 #endif
+                }
+                catch (Exception ex)
+                {
+                    throw SafeException.Wrap(ex);
+                }
             }
         }
 
         /// <inheritdoc />
         public void TaskError(FacadeTask task, string message)
         {
-            server.TaskError(GetRemoteTask(task), message);
+            try
+            {
+                server.TaskError(GetRemoteTask(task), message);
+            }
+            catch (Exception ex)
+            {
+                throw SafeException.Wrap(ex);
+            }
         }
 
         /// <inheritdoc />
         public void TaskException(FacadeTask task, FacadeTaskException[] exceptions)
         {
-            TaskException[] nativeExceptions = Array.ConvertAll<FacadeTaskException, TaskException>(exceptions, FacadeUtils.ToTaskException);
-            server.TaskException(GetRemoteTask(task), nativeExceptions);
+            try
+            {
+                TaskException[] nativeExceptions = Array.ConvertAll<FacadeTaskException, TaskException>(exceptions, FacadeUtils.ToTaskException);
+                server.TaskException(GetRemoteTask(task), nativeExceptions);
+            }
+            catch (Exception ex)
+            {
+                throw SafeException.Wrap(ex);
+            }
         }
 
         /// <inheritdoc />
         public void TaskExplain(FacadeTask task, string explanation)
         {
-            server.TaskExplain(GetRemoteTask(task), explanation);
+            try
+            {
+                server.TaskExplain(GetRemoteTask(task), explanation);
+            }
+            catch (Exception ex)
+            {
+                throw SafeException.Wrap(ex);
+            }
         }
 
         /// <inheritdoc />
         public void TaskFinished(FacadeTask task, string message, FacadeTaskResult result)
         {
-            server.TaskFinished(GetRemoteTask(task), message, FacadeUtils.ToTaskResult(result));
+            try
+            {
+                server.TaskFinished(GetRemoteTask(task), message, FacadeUtils.ToTaskResult(result));
+            }
+            catch (Exception ex)
+            {
+                throw SafeException.Wrap(ex);
+            }
         }
 
         /// <inheritdoc />
         public void TaskOutput(FacadeTask task, string text, FacadeTaskOutputType outputType)
         {
-            server.TaskOutput(GetRemoteTask(task), text, FacadeUtils.ToTaskOutputType(outputType));
+            try
+            {
+                server.TaskOutput(GetRemoteTask(task), text, FacadeUtils.ToTaskOutputType(outputType));
+            }
+            catch (Exception ex)
+            {
+                throw SafeException.Wrap(ex);
+            }
         }
 
         /// <inheritdoc />
         public void TaskProgress(FacadeTask task, string message)
         {
-            server.TaskProgress(GetRemoteTask(task), message);
+            try
+            {
+                server.TaskProgress(GetRemoteTask(task), message);
+            }
+            catch (Exception ex)
+            {
+                throw SafeException.Wrap(ex);
+            }
         }
 
         /// <inheritdoc />
         public void TaskStarting(FacadeTask task)
         {
-            server.TaskStarting(GetRemoteTask(task));
+            try
+            {
+                server.TaskStarting(GetRemoteTask(task));
+            }
+            catch (Exception ex)
+            {
+                throw SafeException.Wrap(ex);
+            }
         }
 
         /// <inheritdoc />

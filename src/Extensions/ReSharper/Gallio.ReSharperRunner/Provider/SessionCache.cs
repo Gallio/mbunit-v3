@@ -20,7 +20,6 @@ using System.IO;
 using System.Runtime.Serialization.Formatters;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
-using Gallio.ReSharperRunner.Runtime;
 using Gallio.Runner.Caching;
 using Gallio.Runner.Reports;
 using Gallio.Runtime;

@@ -15,6 +15,7 @@
 
 using System;
 using TestDriven.Framework;
+using Gallio.Loader;
 
 namespace Gallio.TDNetRunner.Facade
 {
@@ -41,7 +42,14 @@ namespace Gallio.TDNetRunner.Facade
             if (result == null)
                 throw new ArgumentNullException("result");
 
-            testListener.TestFinished(FacadeUtils.ToTestResult(result));
+            try
+            {
+                testListener.TestFinished(FacadeUtils.ToTestResult(result));
+            }
+            catch (Exception ex)
+            {
+                throw SafeException.Wrap(ex);
+            }
         }
 
         public void TestResultsUrl(string url)
@@ -49,7 +57,14 @@ namespace Gallio.TDNetRunner.Facade
             if (url == null)
                 throw new ArgumentNullException("url");
 
-            testListener.TestResultsUrl(url);
+            try
+            {
+                testListener.TestResultsUrl(url);
+            }
+            catch (Exception ex)
+            {
+                throw SafeException.Wrap(ex);
+            }
         }
 
         public void WriteLine(string text, FacadeCategory category)
@@ -57,7 +72,14 @@ namespace Gallio.TDNetRunner.Facade
             if (text == null)
                 throw new ArgumentNullException("text");
 
-            testListener.WriteLine(text, FacadeUtils.ToCategory(category));
+            try
+            {
+                testListener.WriteLine(text, FacadeUtils.ToCategory(category));
+            }
+            catch (Exception ex)
+            {
+                throw SafeException.Wrap(ex);
+            }
         }
 
         public override object InitializeLifetimeService()
