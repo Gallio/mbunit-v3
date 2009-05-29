@@ -16,7 +16,7 @@
 
 using System;
 using System.Text;
-using Gallio.Common.Diagnostics;
+using Gallio.Model.Diagnostics;
 using Gallio.Runtime.Logging;
 
 namespace Gallio.ReSharperRunner.Provider.Facade
