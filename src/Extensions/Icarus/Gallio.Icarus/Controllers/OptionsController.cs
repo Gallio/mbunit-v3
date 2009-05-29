@@ -75,8 +75,6 @@ namespace Gallio.Icarus.Controllers
             }
         }
 
-        public BindingList<string> PluginDirectories { get; private set; }
-
         public IList<string> SelectedTreeViewCategories
         {
             get 
@@ -190,7 +188,18 @@ namespace Gallio.Icarus.Controllers
             set { Settings.AnnotationsShowInfos = value; }
         }
 
-        public BindingList<string> TestRunnerExtensions { get; private set; }
+        public IList<string> TestRunnerExtensions 
+        {
+            get 
+            { 
+                return settings.TestRunnerExtensions; 
+            }
+            set
+            {
+                settings.TestRunnerExtensions.Clear();
+                settings.TestRunnerExtensions.AddRange(value);
+            }
+        }
 
         public bool TestTreeSplitNamespaces
         {
@@ -208,10 +217,6 @@ namespace Gallio.Icarus.Controllers
                 Settings.TreeViewCategories.AddRange(new[] { "Namespace", MetadataKeys.AuthorName, 
                     MetadataKeys.Category, MetadataKeys.Importance, MetadataKeys.TestsOn });
             }
-
-            // set up bindable lists (for options dialogs)
-            PluginDirectories = new BindingList<string>(Settings.PluginDirectories);
-            TestRunnerExtensions = new BindingList<string>(Settings.TestRunnerExtensions);
         }
 
         public void Save()

@@ -545,23 +545,5 @@ namespace Gallio.Icarus.Tests.Controllers
             Assert.AreEqual(true, treeViewCategoryChanged);
             Assert.AreEqual(collapsedNodes, projectController.CollapsedNodes);
         }
-
-        [Test]
-        public void RefreshTree_calls_Refresh_on_ProjectTreeModel()
-        {
-            var projectTreeModel = MockRepository.GenerateStub<IProjectTreeModel>();
-            var fileSystem = MockRepository.GenerateStub<IFileSystem>();
-            var xmlSerializer = MockRepository.GenerateStub<IXmlSerializer>();
-            var optionsController = MockRepository.GenerateStub<IOptionsController>();
-            var assemblyWatcher = MockRepository.GenerateStub<IAssemblyWatcher>();
-            var progressMonitor = MockProgressMonitor.GetMockProgressMonitor();
-            var unhandledExceptionPolicy = MockRepository.GenerateStub<IUnhandledExceptionPolicy>();
-            var projectController = new ProjectController(projectTreeModel, optionsController,
-                fileSystem, xmlSerializer, assemblyWatcher, unhandledExceptionPolicy);
-
-            projectController.RefreshTree(progressMonitor);
-
-            projectTreeModel.AssertWasCalled(ptm => ptm.Refresh());
-        }
     }
 }

@@ -15,6 +15,7 @@
 
 using Gallio.Icarus.Commands;
 using Gallio.Icarus.Controllers.Interfaces;
+using Gallio.Icarus.Tests.Utilities;
 using Gallio.Model;
 using Gallio.Model.Filters;
 using Gallio.Runner.Projects;

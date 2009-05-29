@@ -145,11 +145,31 @@
       </traits>
     </component>
 
-    <component componentId="Gallio.Icarus.ControlPanel.TreeViewCategoryPaneProvider"
-           serviceId="Gallio.UI.PreferencePaneProvider"
-           componentType="Gallio.Icarus.ControlPanel.TreeViewCategoryPaneProvider, Gallio.Icarus">
+    <component componentId="Gallio.Icarus.ControlPanel.TreeViewCategoryPaneProvider" 
+               serviceId="Gallio.UI.PreferencePaneProvider" 
+               componentType="Gallio.Icarus.ControlPanel.TreeViewCategoryPaneProvider, Gallio.Icarus">
       <traits>
         <path>Icarus/Test Explorer/Tree View Categories</path>
+        <order>1</order>
+        <icon>plugin://Gallio.Icarus/Resources/Gallio.Icarus.ico</icon>
+      </traits>
+    </component>
+
+    <component componentId="Gallio.Icarus.ControlPanel.ReportsPaneProvider" 
+               serviceId="Gallio.UI.PreferencePaneProvider" 
+               componentType="Gallio.Icarus.ControlPanel.ReportsPaneProvider, Gallio.Icarus">
+      <traits>
+        <path>Icarus/Reports</path>
+        <order>1</order>
+        <icon>plugin://Gallio.Icarus/Resources/Gallio.Icarus.ico</icon>
+      </traits>
+    </component>
+
+    <component componentId="Gallio.Icarus.ControlPanel.ProgressMonitoringPaneProvider" 
+               serviceId="Gallio.UI.PreferencePaneProvider" 
+               componentType="Gallio.Icarus.ControlPanel.ReportsPaneProvider, Gallio.Icarus">
+      <traits>
+        <path>Icarus/Appearance/Progress Monitoring</path>
         <order>1</order>
         <icon>plugin://Gallio.Icarus/Resources/Gallio.Icarus.ico</icon>
       </traits>
@@ -216,12 +236,16 @@
     <component componentId="Gallio.Icarus.CodeViewerPackage" 
                serviceId="Gallio.Icarus.Package" 
                componentType="Gallio.Icarus.Packages.CodeViewerPackage, Gallio.Icarus" />
+
+    <component componentId="Gallio.Icarus.ProjectsPackage" 
+               serviceId="Gallio.Icarus.Package" 
+               componentType="Gallio.Icarus.Packages.ProjectsPackage, Gallio.Icarus" />
     
     <!-- Services -->
 
-    <component componentId="Gallio.Icarus.ReportService"
-           serviceId="Gallio.Icarus.ReportService"
-           componentType="Gallio.Icarus.Services.ReportService, Gallio.Icarus" />
+    <component componentId="Gallio.Icarus.ReportService" 
+               serviceId="Gallio.Icarus.ReportService" 
+               componentType="Gallio.Icarus.Services.ReportService, Gallio.Icarus" />
     
     <!-- Utilities -->
     

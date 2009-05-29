@@ -13,12 +13,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Collections.Generic;
+using System.Windows.Forms;
+using Aga.Controls.Tree;
+using Gallio.Icarus.Models;
+using Gallio.Icarus.Models.TestTreeNodes;
 using Gallio.Model.Serialization;
 using Gallio.Runtime.ProgressMonitoring;
-using Gallio.Model;
-using Gallio.Icarus.Models;
-using System.Collections.Generic;
-using Gallio.Common.Reflection;
 
 namespace Gallio.Icarus.Helpers
 {
@@ -27,8 +28,7 @@ namespace Gallio.Icarus.Helpers
         public static TestTreeNode BuildTestTree(IProgressMonitor progressMonitor, TestModelData testModelData, 
             TestTreeBuilderOptions options)
         {
-            var root = new TestTreeNode(testModelData.RootTest.Name, testModelData.RootTest.Id, 
-                TestKinds.Root);
+            var root = TestTreeNodeFactory.CreateNode(testModelData.RootTest);
 
             progressMonitor.Worked(1);
 
@@ -43,6 +43,8 @@ namespace Gallio.Icarus.Helpers
                     testModelData.RootTest.Children, root, root);
             }
 
+            root.CheckState = CheckState.Checked;
+            root.UpdateStateOfRelatedNodes();
             return root;
         }
 
@@ -51,49 +53,33 @@ namespace Gallio.Icarus.Helpers
         {
             for (int i = 0; i < list.Count; i++)
             {
-                TestData td = list[i];
-                string componentKind = td.Metadata.GetValue(MetadataKeys.TestKind);
-                if (componentKind == null)
-                    continue;
-                TestTreeNode ttnode;
-                if (componentKind != TestKinds.Fixture)
+                TestData testData = list[i];
+
+                TestTreeNode testTreeNode = TestTreeNodeFactory.CreateNode(testData);
+                if (testTreeNode is FixtureNode)
                 {
-                    // create an appropriate node
-                    ttnode = new TestTreeNode(td.Name, td.Id, componentKind);
-                    parent.Nodes.Add(ttnode);
+                    // fixtures need special treatment to insert the namespace layer!
+                    testTreeNode = BuildNamespaceNode(parent, testData, testTreeNode, splitNamespaces);
                 }
                 else
                 {
-                    // fixtures need special treatment to insert the namespace layer!
-                    ttnode = BuildNamespaceNode(parent, td, componentKind, splitNamespaces);
+                    parent.Nodes.Add(testTreeNode);
                 }
-                ttnode.SourceCodeAvailable = (td.CodeLocation != CodeLocation.Unknown);
-                ttnode.IsTest = td.IsTestCase;
 
                 // process child nodes
-                PopulateNamespaceTree(progressMonitor, td.Children, ttnode, splitNamespaces);
+                PopulateNamespaceTree(progressMonitor, testData.Children, testTreeNode, splitNamespaces);
 
                 progressMonitor.Worked(1);
             }
         }
 
-        private static TestTreeNode BuildNamespaceNode(TestTreeNode parent, TestData td, string componentKind, 
-            bool splitNamespaces)
+        private static TestTreeNode BuildNamespaceNode(TestTreeNode parent, TestComponentData testComponentData,
+            TestTreeNode fixtureNode, bool splitNamespaces)
         {
-            TestTreeNode ttnode;
-            string @namespace = td.CodeReference.NamespaceName ?? "";
+            string @namespace = testComponentData.CodeReference.NamespaceName ?? "";
 
-            string[] namespaceArray;
-            if (splitNamespaces)
-            {
-                // we want a namespace node for each segment
-                // of the namespace
-                namespaceArray = @namespace.Split('.');
-            }
-            else
-            {
-                namespaceArray = new[] { @namespace };
-            }
+            string[] namespaceArray = splitNamespaces ? @namespace.Split('.') 
+                : new[] { @namespace };
 
             TestTreeNode nsNode = null;
             foreach (string ns in namespaceArray)
@@ -106,74 +92,73 @@ namespace Gallio.Icarus.Helpers
                 }
                 else
                 {
-                    nsNode = new TestTreeNode(ns, ns, TestKinds.Namespace);
+                    nsNode = new NamespaceNode(ns, ns);
                     parent.Nodes.Add(nsNode);
                 }
                 parent = nsNode;
             }
+            
+            if (nsNode != null) 
+                nsNode.Nodes.Add(fixtureNode);
 
-            // add the fixture to the namespace
-            ttnode = new TestTreeNode(td.Name, td.Id, componentKind);
-            nsNode.Nodes.Add(ttnode);
-            return ttnode;
+            return fixtureNode;
         }
 
-        private static void PopulateMetadataTree(IProgressMonitor progressMonitor, string key,
-            IList<TestData> list, TestTreeNode parent, TestTreeNode root)
+        private static void PopulateMetadataTree(IProgressMonitor progressMonitor, string metadataType, 
+            IEnumerable<TestData> list, Node parent, TestTreeNode root)
         {
-            for (int i = 0; i < list.Count; i++)
+            foreach (var testData in list)
             {
-                TestData td = list[i];
-                string componentKind = td.Metadata.GetValue(MetadataKeys.TestKind);
-                if (componentKind == null)
-                    continue;
-                switch (componentKind)
+                var testTreeNode = TestTreeNodeFactory.CreateNode(testData);
+
+                if (testTreeNode is FixtureNode || testTreeNode is TestNode)
                 {
-                    case TestKinds.Fixture:
-                    case TestKinds.Test:
-                        IList<string> metadata = td.Metadata[key];
-                        if (metadata.Count == 0)
-                            metadata = new List<string> { "None" };
+                    var metadataList = testData.Metadata[metadataType];
+                    if (metadataList.Count == 0)
+                        metadataList = new List<string> { "None" };
 
-                        foreach (string m in metadata)
+                    foreach (string metadata in metadataList)
+                    {
+                        // find metadata node (or add if it doesn't exist)
+                        TestTreeNode metadataNode;
+                        List<TestTreeNode> nodes = root.Find(metadata, false);
+                        if (nodes.Count > 0)
                         {
-                            // find metadata node (or add if it doesn't exist)
-                            TestTreeNode metadataNode;
-                            List<TestTreeNode> nodes = root.Find(m, false);
-                            if (nodes.Count > 0)
-                                metadataNode = nodes[0];
-                            else
-                            {
-                                metadataNode = new TestTreeNode(m, m, key);
-                                root.Nodes.Add(metadataNode);
-                            }
-
-                            // add node in the appropriate place
-                            if (componentKind == TestKinds.Fixture)
-                            {
-                                TestTreeNode ttnode = new TestTreeNode(td.Name, td.Id, componentKind);
-                                metadataNode.Nodes.Add(ttnode);
-                                PopulateMetadataTree(progressMonitor, key, td.Children, ttnode, root);
-                            }
-                            else
-                            {
-                                // test
-                                TestTreeNode ttnode = new TestTreeNode(td.Name, td.Id, componentKind)
-                                {
-                                    SourceCodeAvailable =
-                                        (td.CodeLocation != CodeLocation.Unknown),
-                                    IsTest = td.IsTestCase
-                                };
-                                if (m != "None")
-                                    metadataNode.Nodes.Add(ttnode);
-                                else
-                                    parent.Nodes.Add(ttnode);
-                            }
+                            metadataNode = nodes[0];
                         }
-                        break;
+                        else
+                        {
+                            metadataNode = new MetadataNode(metadata, metadataType);
+                            root.Nodes.Add(metadataNode);
+                        }
+
+                        // add node in the appropriate place
+                        if (testTreeNode is FixtureNode)
+                        {
+                            metadataNode.Nodes.Add(testTreeNode);
+                            PopulateMetadataTree(progressMonitor, metadataType, testData.Children, 
+                                testTreeNode, root);
+                        }
+                        else
+                        {
+                            if (metadata != "None")
+                                metadataNode.Nodes.Add(testTreeNode);
+                            else
+                                parent.Nodes.Add(testTreeNode);
+                        }
+
+                        // add children, if there are any (fixtures)
+                        foreach (var child in testData.Children)
+                        {
+                            var childNode = TestTreeNodeFactory.CreateNode(child);
+                            testTreeNode.Nodes.Add(childNode);
+                        }
+                    }
                 }
-                if (componentKind != TestKinds.Fixture)
-                    PopulateMetadataTree(progressMonitor, key, td.Children, parent, root);
+                else
+                {
+                    PopulateMetadataTree(progressMonitor, metadataType, testData.Children, parent, root);
+                }
 
                 progressMonitor.Worked(1);
             }

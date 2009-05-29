@@ -340,7 +340,6 @@ namespace Gallio.Icarus
             this.propertiesToolStripMenuItem.Name = "propertiesToolStripMenuItem";
             this.propertiesToolStripMenuItem.Size = new System.Drawing.Size(218, 22);
             this.propertiesToolStripMenuItem.Text = "Properties";
-            this.propertiesToolStripMenuItem.Click += new System.EventHandler(this.showWindowToolStripMenuItem_Click);
             // 
             // testsToolStripMenuItem
             // 

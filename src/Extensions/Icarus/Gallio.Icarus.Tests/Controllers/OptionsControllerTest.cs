@@ -55,17 +55,6 @@ namespace Gallio.Icarus.Tests.Controllers
             Assert.IsFalse(optionsController.RestorePreviousSettings);
         }
 
-        [Test]
-        public void PluginDirectories_Test()
-        {
-            var optionsController = SetUpOptionsController(new Settings());
-
-            Assert.AreEqual(0, optionsController.PluginDirectories.Count);
-            optionsController.PluginDirectories.Add("test");
-            Assert.AreEqual(1, optionsController.PluginDirectories.Count);
-            Assert.AreEqual("test", optionsController.PluginDirectories[0]);
-        }
-
         [SyncTest]
         public void TestRunnerFactory_Test()
         {

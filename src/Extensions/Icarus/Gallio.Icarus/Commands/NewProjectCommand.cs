@@ -13,9 +13,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Gallio.Runtime.ProgressMonitoring;
 using System;
 using Gallio.Icarus.Controllers.Interfaces;
+using Gallio.Runtime.ProgressMonitoring;
 
 namespace Gallio.Icarus.Commands
 {

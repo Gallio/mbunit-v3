@@ -19,6 +19,7 @@ using Gallio.Common.Reflection;
 using Gallio.Icarus.Controllers;
 using Gallio.Icarus.Controllers.EventArgs;
 using Gallio.Icarus.Controllers.Interfaces;
+using Gallio.Icarus.Tests.Utilities;
 using Gallio.Model.Serialization;
 using Gallio.Runner.Reports;
 using MbUnit.Framework;

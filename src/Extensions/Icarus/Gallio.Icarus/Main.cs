@@ -23,7 +23,6 @@ using System.Windows.Forms;
 using Gallio.Common.Concurrency;
 using Gallio.Common.IO;
 using Gallio.Common.Policies;
-using Gallio.Common.Reflection;
 using Gallio.Icarus.Commands;
 using Gallio.Icarus.Controllers;
 using Gallio.Icarus.Controllers.EventArgs;
@@ -57,7 +56,6 @@ namespace Gallio.Icarus
         private readonly ProjectExplorer projectExplorer;
         private readonly TestResults testResults;
         private readonly RuntimeLogWindow runtimeLogWindow;
-        private readonly PropertiesWindow propertiesWindow;
         private readonly FiltersWindow filtersWindow;
         private readonly ExecutionLogWindow executionLogWindow;
         private readonly AnnotationsWindow annotationsWindow;
@@ -72,38 +70,29 @@ namespace Gallio.Icarus
             applicationController.AssemblyChanged += AssemblyChanged;
 
             testController = RuntimeAccessor.ServiceLocator.Resolve<ITestController>();
-            testController.RunStarted += (sender, e) =>
+            testController.RunStarted += (sender, e) => Sync.Invoke(this, delegate
             {
-                Sync.Invoke(this, delegate
-                {
-                    // enable/disable buttons
-                    startButton.Enabled = startTestsToolStripMenuItem.Enabled = false;
-                    runTestsWithDebuggerButton.Enabled = startWithDebuggerToolStripMenuItem.Enabled = false;
-                    stopButton.Enabled = stopTestsToolStripMenuItem.Enabled = true;
-                });
-            };
-            testController.RunFinished += (sender, e) =>
+                // enable/disable buttons
+                startButton.Enabled = startTestsToolStripMenuItem.Enabled = false;
+                runTestsWithDebuggerButton.Enabled = startWithDebuggerToolStripMenuItem.Enabled = false;
+                stopButton.Enabled = stopTestsToolStripMenuItem.Enabled = true;
+            });
+            testController.RunFinished += (sender, e) => Sync.Invoke(this, delegate
             {
-                Sync.Invoke(this, delegate
-                {
-                    // enable/disable buttons & menu items appropriately
-                    stopButton.Enabled = stopTestsToolStripMenuItem.Enabled = false;
-                    startButton.Enabled = startTestsToolStripMenuItem.Enabled = true;
-                    runTestsWithDebuggerButton.Enabled = startWithDebuggerToolStripMenuItem.Enabled = true;
+                // enable/disable buttons & menu items appropriately
+                stopButton.Enabled = stopTestsToolStripMenuItem.Enabled = false;
+                startButton.Enabled = startTestsToolStripMenuItem.Enabled = true;
+                runTestsWithDebuggerButton.Enabled = startWithDebuggerToolStripMenuItem.Enabled = true;
 
-                    // notify the user if tests have failed!
-                    if (applicationController.FailedTests)
-                        Activate();
-                });
-            };
-            testController.ExploreFinished += (sender, e) =>
+                // notify the user if tests have failed!
+                if (applicationController.FailedTests)
+                    Activate();
+            });
+            testController.ExploreFinished += (sender, e) => Sync.Invoke(this, delegate
             {
-                Sync.Invoke(this, delegate
-                {
-                    startButton.Enabled = startTestsToolStripMenuItem.Enabled = true;
-                    runTestsWithDebuggerButton.Enabled = startWithDebuggerToolStripMenuItem.Enabled = true;
-                });
-            };
+                startButton.Enabled = startTestsToolStripMenuItem.Enabled = true;
+                runTestsWithDebuggerButton.Enabled = startWithDebuggerToolStripMenuItem.Enabled = true;
+            });
 
             projectController = RuntimeAccessor.ServiceLocator.Resolve<IProjectController>();
 
@@ -126,7 +115,6 @@ namespace Gallio.Icarus
             projectExplorer = new ProjectExplorer(projectController, testController, reportController, taskManager);
             testResults = new TestResults(testResultsController);
             runtimeLogWindow = new RuntimeLogWindow(runtimeLogController);
-            propertiesWindow = new PropertiesWindow(projectController);
             filtersWindow = new FiltersWindow(new FilterController(taskManager, testController, 
                 projectController));
             executionLogWindow = new ExecutionLogWindow(executionLogController);
@@ -167,7 +155,7 @@ namespace Gallio.Icarus
             reportTypes.Sort();
             foreach (string reportType in reportTypes)
             {
-                var menuItem = new Gallio.Icarus.Controls.ToolStripMenuItem { Text = reportType };
+                var menuItem = new Controls.ToolStripMenuItem { Text = reportType };
                 menuItem.Click += delegate 
                 {
                     var command = new ShowReportCommand(testController, reportController, new FileSystem())
@@ -194,8 +182,6 @@ namespace Gallio.Icarus
                 return projectExplorer;
             if (persistString == typeof(TestResults).ToString())
                 return testResults;
-            if (persistString == typeof(PropertiesWindow).ToString())
-                return propertiesWindow;
             if (persistString == typeof(FiltersWindow).ToString())
                 return filtersWindow;
             if (persistString == typeof(ExecutionLogWindow).ToString())
@@ -251,7 +237,6 @@ namespace Gallio.Icarus
             annotationsWindow.Show(dockPanel, DockState.DockBottomAutoHide);
             testExplorer.Show(dockPanel, DockState.DockLeft);
             projectExplorer.Show(dockPanel, DockState.DockLeftAutoHide);
-            propertiesWindow.DockPanel = dockPanel;
             filtersWindow.DockPanel = dockPanel;
         }
 
@@ -274,8 +259,8 @@ namespace Gallio.Icarus
 
         private void StartTests(bool attachDebugger)
         {
-            var command = new RunTestsCommand(testController, projectController, optionsController, reportController);
-            command.AttachDebugger = attachDebugger;
+            var command = new RunTestsCommand(testController, projectController, optionsController, reportController) 
+                { AttachDebugger = attachDebugger };
             taskManager.QueueTask(command);
         }
 
@@ -336,8 +321,8 @@ namespace Gallio.Icarus
                 if (openFileDialog.ShowDialog(this) != DialogResult.OK)
                     return;
 
-                var addAssembliesCommand = new AddAssembliesCommand(projectController, testController);
-                addAssembliesCommand.AssemblyFiles = openFileDialog.FileNames;
+                var addAssembliesCommand = new AddAssembliesCommand(projectController, testController) 
+                    { AssemblyFiles = openFileDialog.FileNames };
                 taskManager.QueueTask(addAssembliesCommand);
             }
         }
@@ -426,27 +411,32 @@ namespace Gallio.Icarus
 
             // we'll close once we've tidied up
             e.Cancel = true;
-            
-            // shut down any running operations
-            progressController.Cancel();
 
-            // save the current state of the test tree
-            testExplorer.SaveState();
-
-            applicationController.SaveProject(false);
-
-            // save window size & location for when we restore
-            if (WindowState != FormWindowState.Minimized)
+            try
             {
-                applicationController.Size = Size;
-                applicationController.Location = Location;
+                // shut down any running operations
+                progressController.Cancel();
+
+                // save the current state of the test tree
+                testExplorer.SaveState();
+
+                applicationController.SaveProject(false);
+
+                // save window size & location for when we restore
+                if (WindowState != FormWindowState.Minimized)
+                {
+                    applicationController.Size = Size;
+                    applicationController.Location = Location;
+                }
+                optionsController.Save();
+
+                // save dock panel config
+                dockPanel.SaveAsXml(Paths.DockConfigFile);
+
+                UnhandledExceptionPolicy.ReportUnhandledException -= ReportUnhandledException;
             }
-            optionsController.Save();
-
-            // save dock panel config
-            dockPanel.SaveAsXml(Paths.DockConfigFile);
-
-            UnhandledExceptionPolicy.ReportUnhandledException -= ReportUnhandledException;
+            catch
+            { }
 
             Application.Exit();
         }
@@ -457,39 +447,36 @@ namespace Gallio.Icarus
             ShowWindow(item.Name);
         }
 
-        public void ShowWindow(string window)
+        private void ShowWindow(string window)
         {
             Sync.Invoke(this, delegate
-                                  {
-                                      // TODO: is there a better way to do this, rather than relying on the menu item?
-                                      switch (window)
-                                      {
-                                          case "testResultsToolStripMenuItem":
-                                              testResults.Show(dockPanel);
-                                              break;
-                                          case "projectExplorerToolStripMenuItem":
-                                              projectExplorer.Show(dockPanel);
-                                              break;
-                                          case "testExplorerToolStripMenuItem":
-                                              testExplorer.Show(dockPanel);
-                                              break;
-                                          case "runtimeLogToolStripMenuItem":
-                                              runtimeLogWindow.Show(dockPanel);
-                                              break;
-                                          case "propertiesToolStripMenuItem":
-                                              propertiesWindow.Show(dockPanel);
-                                              break;
-                                          case "testFiltersToolStripMenuItem":
-                                              filtersWindow.Show(dockPanel);
-                                              break;
-                                          case "executionLogToolStripMenuItem":
-                                              executionLogWindow.Show(dockPanel);
-                                              break;
-                                          case "annotationsToolStripMenuItem":
-                                              annotationsWindow.Show(dockPanel);
-                                              break;
-                                      }
-                                  });
+            {
+                // TODO: is there a better way to do this, rather than relying on the menu item?
+                switch (window)
+                {
+                    case "testResultsToolStripMenuItem":
+                        testResults.Show(dockPanel);
+                        break;
+                    case "projectExplorerToolStripMenuItem":
+                        projectExplorer.Show(dockPanel);
+                        break;
+                    case "testExplorerToolStripMenuItem":
+                        testExplorer.Show(dockPanel);
+                        break;
+                    case "runtimeLogToolStripMenuItem":
+                        runtimeLogWindow.Show(dockPanel);
+                        break;
+                    case "testFiltersToolStripMenuItem":
+                        filtersWindow.Show(dockPanel);
+                        break;
+                    case "executionLogToolStripMenuItem":
+                        executionLogWindow.Show(dockPanel);
+                        break;
+                    case "annotationsToolStripMenuItem":
+                        annotationsWindow.Show(dockPanel);
+                        break;
+                }
+            });
         }
 
         private void AssemblyChanged(object sender, AssemblyChangedEventArgs e)

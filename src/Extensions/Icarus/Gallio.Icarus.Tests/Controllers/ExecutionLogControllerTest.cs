@@ -53,7 +53,7 @@ namespace Gallio.Icarus.Tests.Controllers
 
             testController.Stub(x => x.ReadReport(null)).IgnoreArguments().Do((Action<ReadAction<Report>>)(action => action(report)));
             var testTreeModel = MockRepository.GenerateStub<ITestTreeModel>();
-            testTreeModel.Stub(x => x.Root).Return(new TestTreeNode("root", "root", "nodeType"));
+            testTreeModel.Stub(x => x.Root).Return(new TestTreeNode("root", "root"));
             testController.Stub(x => x.Model).Return(testTreeModel);
             var taskManager = new TestTaskManager();
 
@@ -98,7 +98,7 @@ namespace Gallio.Icarus.Tests.Controllers
             var testController = MockRepository.GenerateStub<ITestController>();
             var selectedTests = new List<TestTreeNode>(new[]
             {
-                new TestTreeNode("text", "rootStep", "nodeType")
+                new TestTreeNode("text", "rootStep")
             });
             testController.Stub(x => x.SelectedTests).Return(selectedTests);
             var report = new Report
@@ -111,7 +111,7 @@ namespace Gallio.Icarus.Tests.Controllers
             testController.Stub(x => x.ReadReport(null)).IgnoreArguments()
                 .Do((Action<ReadAction<Report>>)(action => action(report)));
             var testTreeModel = MockRepository.GenerateStub<ITestTreeModel>();
-            testTreeModel.Stub(x => x.Root).Return(new TestTreeNode("root", "name", "nodeType"));
+            testTreeModel.Stub(x => x.Root).Return(new TestTreeNode("root", "name"));
             testController.Stub(x => x.Model).Return(testTreeModel);
             var taskManager = new TestTaskManager();
 

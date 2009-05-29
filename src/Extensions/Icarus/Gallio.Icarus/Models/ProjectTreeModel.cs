@@ -19,6 +19,7 @@ using Aga.Controls.Tree;
 using Gallio.Common.IO;
 using Gallio.Icarus.Models.ProjectTreeNodes;
 using Gallio.Runner.Projects;
+using Gallio.Icarus.Reports;
 
 namespace Gallio.Icarus.Models
 {
@@ -28,6 +29,7 @@ namespace Gallio.Icarus.Models
         private readonly Node projectRoot;
         private Project project = new Project();
         private string fileName = string.Empty;
+        private ReportMonitor reportMonitor;
 
         public string FileName
         {
@@ -36,7 +38,6 @@ namespace Gallio.Icarus.Models
             {
                 fileName = value;
                 projectRoot.Text = Path.GetFileNameWithoutExtension(fileName);
-                OnNodesChanged(new TreeModelEventArgs(TreePath.Empty, new[] { projectRoot } ));
             }
         }
 
@@ -47,6 +48,8 @@ namespace Gallio.Icarus.Models
             {
                 project = value;
                 OnStructureChanged(new TreePathEventArgs(new TreePath(projectRoot)));
+                reportMonitor = new ReportMonitor(project);
+                reportMonitor.ReportDirectoryChanged += (sender, e) => OnStructureChanged(new TreePathEventArgs());
             }
         }
 
@@ -90,12 +93,6 @@ namespace Gallio.Icarus.Models
         {
             Node n = treePath.LastNode as Node;
             return n != projectRoot && !(n is AssembliesNode) && !(n is ReportsNode);
-        }
-
-        // TODO: Get rid of this and use a filewatcher
-        public void Refresh()
-        {
-            OnStructureChanged(new TreePathEventArgs());
         }
     }
 }

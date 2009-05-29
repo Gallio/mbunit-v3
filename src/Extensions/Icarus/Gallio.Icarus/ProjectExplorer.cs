@@ -23,6 +23,8 @@ using Gallio.Icarus.Commands;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Models.ProjectTreeNodes;
 using Gallio.Icarus.Utilities;
+using Gallio.Runtime;
+using Gallio.Icarus.Packages;
 
 namespace Gallio.Icarus
 {
@@ -122,11 +124,16 @@ namespace Gallio.Icarus
             if (projectTree.SelectedNode == null)
                 return;
 
-            var selectedNode = (Node) projectTree.SelectedNode.Tag;
-            if (selectedNode is PropertiesNode && ParentForm != null)
-                ((Main) ParentForm).ShowWindow("propertiesToolStripMenuItem");
+            var selectedNode = (Node)projectTree.SelectedNode.Tag;
+
+            if (selectedNode is PropertiesNode)
+            {
+                ShowPropertiesWindow();
+            }
             else if (selectedNode is ReportNode)
+            {
                 OpenReport();
+            }
         }
 
         private void OpenReport()
@@ -151,8 +158,13 @@ namespace Gallio.Icarus
 
         private void propertiesToolStripButton_Click(object sender, EventArgs e)
         {
-            if (ParentForm != null) 
-                ((Main)ParentForm).ShowWindow("propertiesToolStripMenuItem");
+            ShowPropertiesWindow();
+        }
+
+        private static void ShowPropertiesWindow()
+        {
+            var windowManager = RuntimeAccessor.ServiceLocator.Resolve<IWindowManager>();
+            windowManager.Show(ProjectsPackage.ProjectPropertiesWindowId);
         }
     }
 }

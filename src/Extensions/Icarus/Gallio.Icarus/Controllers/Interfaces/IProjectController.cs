@@ -45,7 +45,6 @@ namespace Gallio.Icarus.Controllers.Interfaces
         FilterSet<ITest> GetFilterSet(string filterName, IProgressMonitor progressMonitor);
         void NewProject(IProgressMonitor progressMonitor);
         void OpenProject(string projectName, IProgressMonitor progressMonitor);
-        void RefreshTree(IProgressMonitor progressMonitor);
         void RemoveAllAssemblies(IProgressMonitor progressMonitor);
         void RemoveAssembly(string fileName, IProgressMonitor progressMonitor);
         void SaveFilterSet(string filterName, FilterSet<ITest> filterSet, IProgressMonitor progressMonitor);

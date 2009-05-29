@@ -330,12 +330,6 @@ namespace Gallio.Icarus.Controllers
             optionsController.RecentProjects.Add(projectName);
         }
 
-        public void RefreshTree(IProgressMonitor progressMonitor)
-        {
-            using (progressMonitor.BeginTask("Refreshing reports list", 100))
-                projectTreeModel.Refresh();
-        }
-
         private void PublishUpdates()
         {
             if (SynchronizationContext.Instance == null)

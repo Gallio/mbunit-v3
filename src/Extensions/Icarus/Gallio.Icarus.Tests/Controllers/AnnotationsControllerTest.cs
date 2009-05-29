@@ -97,7 +97,8 @@ namespace Gallio.Icarus.Tests.Controllers
                                 };
 
             var testController = MockRepository.GenerateStub<ITestController>();
-            testController.Stub(x => x.ReadReport(null)).IgnoreArguments().Do((Action<ReadAction<Report>>) (action => action(report)));
+            testController.Stub(x => x.ReadReport(null)).IgnoreArguments().Do((Action<ReadAction<Report>>) 
+                (action => action(report)));
             return testController;
         }
     }

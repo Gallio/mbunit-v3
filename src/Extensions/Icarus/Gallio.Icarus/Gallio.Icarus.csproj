@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{6C4AEA1A-CF85-4574-B24A-2C264ED0FEC3}</ProjectGuid>
     <OutputType>WinExe</OutputType>
@@ -135,6 +135,26 @@
     <Compile Include="Controllers\SourceCodeController.cs" />
     <Compile Include="Controllers\TestController.cs" />
     <Compile Include="Controllers\TestResultsController.cs" />
+    <Compile Include="ControlPanel\ProgressMonitoringPaneProvider.cs" />
+    <Compile Include="ControlPanel\ProgressMonitoringPane.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ControlPanel\ProgressMonitoringPane.Designer.cs">
+      <DependentUpon>ProgressMonitoringPane.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ControlPanel\ReportsPaneProvider.cs" />
+    <Compile Include="ControlPanel\ReportsPane.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ControlPanel\ReportsPane.Designer.cs">
+      <DependentUpon>ReportsPane.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ControlPanel\TestRunnerExtensionsPane.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ControlPanel\TestRunnerExtensionsPane.Designer.cs">
+      <DependentUpon>TestRunnerExtensionsPane.cs</DependentUpon>
+    </Compile>
     <Compile Include="ControlPanel\TestStatusPaneProvider.cs" />
     <Compile Include="ControlPanel\TestStatusPane.cs">
       <SubType>UserControl</SubType>
@@ -163,8 +183,32 @@
       <DependentUpon>TreeViewCategoryPane.cs</DependentUpon>
     </Compile>
     <Compile Include="ControlPanel\TreeViewCategoryPaneProvider.cs" />
+    <Compile Include="Controls\PropertiesTabControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Helpers\TestTreeNodeFactory.cs" />
     <Compile Include="Logging\BlackBoxLogger.cs" />
+    <Compile Include="Models\TestTreeNodes\AssemblyNode.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Models\TestTreeNodes\FilterNode.cs" />
+    <Compile Include="Models\TestTreeNodes\FixtureNode.cs" />
+    <Compile Include="Models\TestTreeNodes\FrameworkNode.cs" />
+    <Compile Include="Models\TestTreeNodes\GroupNode.cs" />
+    <Compile Include="Models\TestTreeNodes\MetadataNode.cs" />
+    <Compile Include="Models\TestTreeNodes\NamespaceNode.cs" />
+    <Compile Include="Models\TestTreeNodes\RootNode.cs" />
+    <Compile Include="Models\TestTreeNodes\TestDataNode.cs" />
+    <Compile Include="Models\TestTreeNodes\TestNode.cs" />
     <Compile Include="Options\IOptionsManager.cs" />
+    <Compile Include="Options\OptionsPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Options\OptionsPanel.Designer.cs">
+      <DependentUpon>OptionsPanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Packages\ProjectsPackage.cs" />
+    <Compile Include="Reports\ReportMonitor.cs" />
     <Compile Include="Reports\ReportOptions.cs" />
     <Compile Include="Utilities\Dialogs.cs" />
     <Compile Include="Controls\PluginTreeView.cs">
@@ -226,24 +270,6 @@
     <Compile Include="Models\ProjectTreeNodes\ReportNode.cs" />
     <Compile Include="Models\ProjectTreeNodes\ReportsNode.cs" />
     <Compile Include="Options\OptionsManager.cs" />
-    <Compile Include="Options\TreeViewCategoryOptions.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Options\TreeViewCategoryOptions.Designer.cs">
-      <DependentUpon>TreeViewCategoryOptions.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Options\TestRunnerFactoryOptions.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Options\TestRunnerFactoryOptions.Designer.cs">
-      <DependentUpon>TestRunnerFactoryOptions.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Options\ReportOptions.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Options\ReportOptions.Designer.cs">
-      <DependentUpon>ReportOptions.cs</DependentUpon>
-    </Compile>
     <Compile Include="Options\TestRunnerExtensionOptions.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -269,6 +295,12 @@
     <Compile Include="Views\PluginBrowser\PluginBrowser.Designer.cs">
       <DependentUpon>PluginBrowser.cs</DependentUpon>
     </Compile>
+    <Compile Include="Views\Projects\ProjectProperties.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\Projects\ProjectProperties.Designer.cs">
+      <DependentUpon>ProjectProperties.cs</DependentUpon>
+    </Compile>
     <Compile Include="Window.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -291,49 +323,7 @@
     <Compile Include="Models\ProjectTreeModel.cs" />
     <Compile Include="Models\TestTreeModel.cs" />
     <Compile Include="Models\TestTreeNode.cs" />
-    <Compile Include="Options\AppearanceOptions.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Options\AppearanceOptions.Designer.cs">
-      <DependentUpon>AppearanceOptions.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Options\ColorsOptions.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Options\ColorsOptions.Designer.cs">
-      <DependentUpon>ColorsOptions.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Options\TestExplorerOptions.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Options\TestExplorerOptions.Designer.cs">
-      <DependentUpon>TestExplorerOptions.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Options\Options.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Options\Options.Designer.cs">
-      <DependentUpon>Options.cs</DependentUpon>
-    </Compile>
     <Compile Include="Controllers\OptionsController.cs" />
-    <Compile Include="Options\OptionsPanel.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Options\OptionsPanel.Designer.cs">
-      <DependentUpon>OptionsPanel.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Options\PluginDirectoriesOptions.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Options\PluginDirectoriesOptions.Designer.cs">
-      <DependentUpon>PluginDirectoriesOptions.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Options\StartupOptions.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Options\StartupOptions.Designer.cs">
-      <DependentUpon>StartupOptions.cs</DependentUpon>
-    </Compile>
     <Compile Include="ProgressMonitoring\ProgressMonitorPresenter.cs" />
     <Compile Include="ProgressMonitoring\ProgressMonitorProvider.cs" />
     <Compile Include="ProjectExplorer.cs">
@@ -381,12 +371,6 @@
     <Compile Include="IcarusArguments.cs" />
     <Compile Include="Paths.cs" />
     <Compile Include="IcarusProgram.cs" />
-    <Compile Include="PropertiesWindow.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="PropertiesWindow.Designer.cs">
-      <DependentUpon>PropertiesWindow.cs</DependentUpon>
-    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="ExecutionLogWindow.resx">
       <DependentUpon>ExecutionLogWindow.cs</DependentUpon>
@@ -403,10 +387,6 @@
     <EmbeddedResource Include="Main.resx">
       <SubType>Designer</SubType>
       <DependentUpon>Main.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="PropertiesWindow.resx">
-      <DependentUpon>PropertiesWindow.cs</DependentUpon>
-      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -455,6 +435,10 @@
       <Project>{6CAB7735-05DA-480D-9A04-50615B00F886}</Project>
       <Name>Gallio %28Gallio\Gallio%29</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\VisualStudio\Gallio.VisualStudio.Interop\Gallio.VisualStudio.Interop.csproj">
+      <Project>{B6912CC5-1E73-46E0-8F09-7F135924E3E2}</Project>
+      <Name>Gallio.VisualStudio.Interop</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">
@@ -488,6 +472,18 @@
       <DependentUpon>AnnotationsWindow.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="ControlPanel\ProgressMonitoringPane.resx">
+      <DependentUpon>ProgressMonitoringPane.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ControlPanel\ReportsPane.resx">
+      <DependentUpon>ReportsPane.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ControlPanel\TestRunnerExtensionsPane.resx">
+      <DependentUpon>TestRunnerExtensionsPane.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="ControlPanel\TestStatusPane.resx">
       <DependentUpon>TestStatusPane.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -504,16 +500,8 @@
       <DependentUpon>TreeViewCategoryPane.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Options\TreeViewCategoryOptions.resx">
-      <DependentUpon>TreeViewCategoryOptions.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Options\TestRunnerFactoryOptions.resx">
-      <DependentUpon>TestRunnerFactoryOptions.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Options\ReportOptions.resx">
-      <DependentUpon>ReportOptions.cs</DependentUpon>
+    <EmbeddedResource Include="Options\OptionsPanel.resx">
+      <DependentUpon>OptionsPanel.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Options\TestRunnerExtensionOptions.resx">
@@ -528,36 +516,12 @@
       <DependentUpon>PluginBrowser.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="Views\Projects\ProjectProperties.resx">
+      <DependentUpon>ProjectProperties.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="Window.resx">
       <DependentUpon>Window.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Options\AppearanceOptions.resx">
-      <DependentUpon>AppearanceOptions.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Options\ColorsOptions.resx">
-      <DependentUpon>ColorsOptions.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Options\TestExplorerOptions.resx">
-      <DependentUpon>TestExplorerOptions.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Options\Options.resx">
-      <DependentUpon>Options.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Options\OptionsPanel.resx">
-      <DependentUpon>OptionsPanel.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Options\PluginDirectoriesOptions.resx">
-      <DependentUpon>PluginDirectoriesOptions.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Options\StartupOptions.resx">
-      <DependentUpon>StartupOptions.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="ProgressMonitor.resx">

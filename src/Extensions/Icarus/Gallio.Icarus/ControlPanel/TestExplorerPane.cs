@@ -19,6 +19,9 @@ using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Runtime.ProgressMonitoring;
 using Gallio.Runtime.Security;
 using Gallio.UI.ControlPanel.Preferences;
+using Gallio.Runtime;
+using Gallio.Common.Collections;
+using Gallio.Runner;
 
 namespace Gallio.Icarus.ControlPanel
 {
@@ -36,6 +39,14 @@ namespace Gallio.Icarus.ControlPanel
             runTestsAfterReloadCheckBox.Enabled = optionsController.AlwaysReloadAssemblies;
             runTestsAfterReloadCheckBox.Checked = optionsController.RunTestsAfterReload;
             splitNamespacesCheckBox.Checked = optionsController.TestTreeSplitNamespaces;
+
+            // retrieve list of possible factories
+            var testRunnerManager = RuntimeAccessor.ServiceLocator.Resolve<ITestRunnerManager>();
+            string[] factories = GenericCollectionUtils.ConvertAllToArray(testRunnerManager.TestRunnerFactoryHandles,
+                h => h.GetTraits().Name);
+
+            testRunnerFactories.Items.AddRange(factories);
+            testRunnerFactories.Text = optionsController.TestRunnerFactory;
         }
 
         public override void ApplyPendingSettingsChanges(IElevationContext elevationContext, IProgressMonitor progressMonitor)
@@ -43,6 +54,8 @@ namespace Gallio.Icarus.ControlPanel
             optionsController.AlwaysReloadAssemblies = alwaysReloadAssembliesCheckBox.Checked;
             optionsController.RunTestsAfterReload = runTestsAfterReloadCheckBox.Checked;
             optionsController.TestTreeSplitNamespaces = splitNamespacesCheckBox.Checked;
+            
+            optionsController.TestRunnerFactory = testRunnerFactories.Text;
         }
 
         private void alwaysReloadAssembliesCheckBox_CheckedChanged(object sender, EventArgs e)
@@ -58,6 +71,11 @@ namespace Gallio.Icarus.ControlPanel
         }
 
         private void splitNamespacesCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            PendingSettingsChanges = true;
+        }
+
+        private void testRunnerFactories_SelectedIndexChanged(object sender, EventArgs e)
         {
             PendingSettingsChanges = true;
         }

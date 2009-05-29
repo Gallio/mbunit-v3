@@ -20,6 +20,7 @@ using Gallio.Common.Policies;
 using Gallio.Icarus.Controllers;
 using Gallio.Icarus.Reports;
 using Gallio.Icarus.Services.Interfaces;
+using Gallio.Icarus.Tests.Utilities;
 using Gallio.Runner.Reports;
 using Gallio.Runtime.ProgressMonitoring;
 using MbUnit.Framework;

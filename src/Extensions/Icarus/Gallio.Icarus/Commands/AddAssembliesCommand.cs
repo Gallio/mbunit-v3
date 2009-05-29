@@ -36,15 +36,13 @@ namespace Gallio.Icarus.Commands
         {
             this.projectController = projectController;
             this.testController = testController;
+            AssemblyFiles = new List<string>();
         }
 
         public void Execute(IProgressMonitor progressMonitor)
         {
             using (progressMonitor.BeginTask("Adding assemblies", 100))
             {
-                if (AssemblyFiles == null)
-                    return;
-
                 // add assemblies to test package
                 using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(10))
                     projectController.AddAssemblies(AssemblyFiles, subProgressMonitor);

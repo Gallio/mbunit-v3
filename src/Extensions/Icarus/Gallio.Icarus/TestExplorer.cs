@@ -21,6 +21,7 @@ using Aga.Controls.Tree;
 using Gallio.Icarus.Commands;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Models;
+using Gallio.Icarus.Models.TestTreeNodes;
 using Gallio.Icarus.Utilities;
 using Gallio.Model;
 using Gallio.Runtime.ProgressMonitoring;
@@ -197,10 +198,10 @@ namespace Gallio.Icarus
             if (testTree.SelectedNode != null)
             {
                 TestTreeNode testTreeNode = (TestTreeNode)testTree.SelectedNode.Tag;
-                removeAssemblyToolStripMenuItem.Enabled = (testTreeNode.NodeType == TestKinds.Assembly);
+                removeAssemblyToolStripMenuItem.Enabled = (testTreeNode is AssemblyNode);
                 viewSourceCodeToolStripMenuItem.Enabled = testTreeNode.SourceCodeAvailable;
 
-                if (testTreeNode.NodeType == TestKinds.Namespace)
+                if (testTreeNode is NamespaceNode)
                 {
                     foreach (Node n in testTreeNode.Nodes)
                         if (n != null) // don't know how this happens yet -- JB

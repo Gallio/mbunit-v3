@@ -6,7 +6,7 @@
     </assemblyFiles>
     <hintDirectories />
     <excludedFrameworkIds />
-    <hostSetup enableShadowCopy="false" debug="false" configurationFileLocation="appBase" processorArchitecture="None">
+    <hostSetup enableShadowCopy="false" debug="false" elevated="false" configurationFileLocation="appBase" processorArchitecture="None">
       <configuration legacyUnhandledExceptionPolicyEnabled="true" assertUiEnabled="false" remotingCustomErrorsEnabled="false">
         <assemblyQualifications />
         <assemblyDependencies />

@@ -30,7 +30,6 @@ namespace Gallio.Icarus.Controllers.Interfaces
         bool ShowProgressDialogs { get; set; }
         bool RestorePreviousSettings { get; set; }
         string TestRunnerFactory { get; set; }
-        BindingList<string> PluginDirectories { get; }
         IList<string> SelectedTreeViewCategories { get; set; }
         IList<string> UnselectedTreeViewCategories { get; }
         Color PassedColor { get; set; }
@@ -46,7 +45,7 @@ namespace Gallio.Icarus.Controllers.Interfaces
         bool AnnotationsShowErrors { get; set; }
         bool AnnotationsShowWarnings { get; set; }
         bool AnnotationsShowInfos { get; set; }
-        BindingList<string> TestRunnerExtensions { get; }
+        IList<string> TestRunnerExtensions { get; }
         bool TestTreeSplitNamespaces { get; set; }
         IOptionsManager OptionsManager { get; set; }
 

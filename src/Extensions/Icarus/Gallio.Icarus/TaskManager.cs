@@ -69,11 +69,17 @@ namespace Gallio.Icarus
 
         public void BackgroundTask(Action action)
         {
+            if (!canExecute)
+                throw new Exception("TaskManager is stopped.");
+
             ThreadPool.QueueUserWorkItem(cb => action());
         }
 
         private void RunTask()
         {
+            if (queue.Count == 0)
+                return;
+
             var command = queue.Dequeue();
 
             var workerTask = new ThreadTask("Icarus Worker", 
@@ -122,6 +128,7 @@ namespace Gallio.Icarus
         public void Start()
         {
             canExecute = true;
+            RunTask();
         }
 
         public void Stop()

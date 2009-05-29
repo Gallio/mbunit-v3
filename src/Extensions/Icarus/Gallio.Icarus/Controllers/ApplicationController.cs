@@ -196,9 +196,19 @@ namespace Gallio.Icarus.Controllers
         {
             var cmd = new SaveProjectCommand(projectController) { FileName = projectFileName };
             if (queueTask)
+            {
                 taskManager.QueueTask(cmd);
+            }
             else
-                cmd.Execute(NullProgressMonitor.CreateInstance());
+            {
+                // we're shutting down, so eat any errors
+                try
+                {
+                    cmd.Execute(NullProgressMonitor.CreateInstance());
+                }
+                catch
+                { }
+            }
         }
 
         public void NewProject()

@@ -24,18 +24,17 @@ using Gallio.Runtime;
 
 namespace Gallio.Icarus.Models
 {
-    public sealed class TestTreeNode : Node
+    public class TestTreeNode : Node
     {
         // TODO: Refactor me.
         private static readonly object imageCacheLock = new object();
         private static Dictionary<string, Image> imageCache;
 
         private TestStatus testStatus = TestStatus.Skipped;
-        private readonly List<TestStepRun> testStepRuns;
+        private readonly List<TestStepRun> testStepRuns = new List<TestStepRun>();
+        private string testKind;
 
         public string Name { get; private set; }
-
-        public string NodeType { get; private set; }
 
         public TestStatus TestStatus
         {
@@ -52,6 +51,19 @@ namespace Gallio.Icarus.Models
         public bool SourceCodeAvailable { get; set; }
 
         public bool IsTest { get; set; }
+
+        public string TestKind 
+        {
+            get
+            {
+                return testKind;
+            }
+            set
+            {
+                testKind = value;
+                NodeTypeIcon = GetNodeTypeImage(testKind);
+            }
+        }
 
         /// <summary>
         /// Returns the 'combined' state for all siblings of a node.
@@ -104,7 +116,7 @@ namespace Gallio.Icarus.Models
             }
         }
 
-        public Image NodeTypeIcon { get; private set; }
+        public Image NodeTypeIcon { get; protected set; }
 
         public Image TestStatusIcon { get; private set; }
 
@@ -113,15 +125,10 @@ namespace Gallio.Icarus.Models
             get { return testStepRuns; }
         }
 
-        public TestTreeNode(string text, string name, string nodeType)
-            : base(text)
+        public TestTreeNode(string id, string name)
+            : base(name)
         {
-            this.Name = name;
-            this.NodeType = nodeType;
-            CheckState = CheckState.Checked;
-            testStepRuns = new List<TestStepRun>();
-
-            NodeTypeIcon = GetNodeTypeImage(nodeType);
+            this.Name = id;
         }
 
         private static Image GetNodeTypeImage(string nodeType)
@@ -135,12 +142,7 @@ namespace Gallio.Icarus.Models
                 {
                     imageCache = new Dictionary<string, Image>();
 
-                    // TODO: Icons for metadata etc...
-                    imageCache.Add("FilterPassed", Resources.FilterPassed);
-                    imageCache.Add("FilterFailed", Resources.FilterFailed);
-                    imageCache.Add("FilterInconclusive", Resources.FilterSkipped);
-
-                    ITestKindManager testKindManager = RuntimeAccessor.ServiceLocator.Resolve<ITestKindManager>();
+                    var testKindManager = RuntimeAccessor.ServiceLocator.Resolve<ITestKindManager>();
                     foreach (var handle in testKindManager.TestKindHandles)
                     {
                         TestKindTraits traits = handle.GetTraits();

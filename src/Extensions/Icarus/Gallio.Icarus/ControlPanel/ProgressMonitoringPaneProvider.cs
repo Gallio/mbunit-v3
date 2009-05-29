@@ -13,21 +13,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Gallio.Runtime.ProgressMonitoring;
-using Rhino.Mocks;
+using Gallio.Icarus.Controllers.Interfaces;
+using Gallio.UI.ControlPanel.Preferences;
 
-namespace Gallio.Icarus.Tests
+namespace Gallio.Icarus.ControlPanel
 {
-    class MockProgressMonitor
+    public class ProgressMonitoringPaneProvider : IPreferencePaneProvider
     {
-        public static IProgressMonitor GetMockProgressMonitor()
+        private readonly IOptionsController optionsController;
+
+        public ProgressMonitoringPaneProvider(IOptionsController optionsController)
         {
-            var progressMonitor = MockRepository.GenerateStub<IProgressMonitor>();
-            progressMonitor.Stub(x => x.BeginTask(Arg<string>.Is.Anything,
-                Arg<double>.Is.Anything)).Return(new ProgressMonitorTaskCookie(progressMonitor));
-            progressMonitor.Stub(x => x.CreateSubProgressMonitor(
-                Arg<double>.Is.Anything)).Return(progressMonitor).Repeat.Any();
-            return progressMonitor;
+            this.optionsController = optionsController;
+        }
+
+        public PreferencePane CreatePreferencePane()
+        {
+            return new ProgressMonitoringPane(optionsController);
         }
     }
 }

@@ -49,8 +49,8 @@ namespace Gallio.Icarus.Services
             using (progressMonitor.BeginTask("Generating report", 100))
             {
                 string folderName = Path.GetDirectoryName(fileName);
-                var reportContainer = new FileSystemReportContainer(folderName,
-                                                                    Path.GetFileNameWithoutExtension(fileName));
+                var reportContainer = new FileSystemReportContainer(folderName, 
+                    Path.GetFileNameWithoutExtension(fileName));
                 var reportWriter = reportManager.CreateReportWriter(report, reportContainer);
 
                 if (progressMonitor.IsCanceled)

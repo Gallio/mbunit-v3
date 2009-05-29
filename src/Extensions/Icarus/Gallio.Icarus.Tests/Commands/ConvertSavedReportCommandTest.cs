@@ -16,6 +16,7 @@
 using Gallio.Common.IO;
 using Gallio.Icarus.Commands;
 using Gallio.Icarus.Controllers.Interfaces;
+using Gallio.Icarus.Tests.Utilities;
 using MbUnit.Framework;
 using Rhino.Mocks;
 
@@ -40,6 +41,32 @@ namespace Gallio.Icarus.Tests.Commands
             command.Execute(progressMonitor);
 
             fileSystem.AssertWasCalled(fs => fs.OpenFile(generatedFile));
+        }
+
+        [Test]
+        public void FileName_should_return_value_from_ctor()
+        {
+            var reportController = MockRepository.GenerateStub<IReportController>();
+            const string fileName = "fileName";
+            const string format = "format";
+            var fileSystem = MockRepository.GenerateStub<IFileSystem>();
+
+            var command = new ConvertSavedReportCommand(reportController, fileName, format, fileSystem);
+
+            Assert.AreEqual(fileName, command.FileName);
+        }
+
+        [Test]
+        public void Format_should_return_value_from_ctor()
+        {
+            var reportController = MockRepository.GenerateStub<IReportController>();
+            const string fileName = "fileName";
+            const string format = "format";
+            var fileSystem = MockRepository.GenerateStub<IFileSystem>();
+
+            var command = new ConvertSavedReportCommand(reportController, fileName, format, fileSystem);
+
+            Assert.AreEqual(format, command.Format);
         }
     }
 }

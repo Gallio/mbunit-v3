@@ -22,6 +22,7 @@ using System.Windows.Forms;
 using Aga.Controls.Tree;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Models;
+using Gallio.Icarus.Models.TestTreeNodes;
 using Gallio.Model;
 using Gallio.Runner.Reports;
 
@@ -180,7 +181,7 @@ namespace Gallio.Icarus.Controllers
             });
         }
 
-        private static void CountResults(TestTreeNode node, ref int count)
+        private void CountResults(TestTreeNode node, ref int count)
         {
             count += node.TestStepRuns.Count;
 
@@ -294,15 +295,18 @@ namespace Gallio.Icarus.Controllers
 
         private void UpdateTestResults(TestTreeNode node, int indentCount)
         {
+            if (node == null)
+                return;
+
             // performance optimization, no need to worry about items outside the viewport
             // (only works when unsorted)
             if (index > lastItem && sortColumn == -1)
                 return;
 
             foreach (TestStepRun tsr in node.TestStepRuns)
-                AddTestStepRun(node.NodeType, tsr, indentCount);
+                AddTestStepRun(node.TestKind, tsr, indentCount);
 
-            if (node.NodeType != TestKinds.Namespace && sortColumn == -1)
+            if (!(node is NamespaceNode) && sortColumn == -1)
                 indentCount++;
 
             foreach (Node n in node.Nodes)

@@ -13,9 +13,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using System.Collections.Generic;
 using Gallio.Icarus.Commands;
 using Gallio.Icarus.Controllers.Interfaces;
+using Gallio.Icarus.Tests.Utilities;
 using Gallio.Model;
 using MbUnit.Framework;
 using Rhino.Mocks;
@@ -25,7 +27,7 @@ namespace Gallio.Icarus.Tests.Commands
     [Category("Commands"), TestsOn(typeof(AddAssembliesCommand))]
     internal class AddAssembliesCommandTest
     {
-        [Test]
+        [Test, Author("Graham Hay")]
         public void Execute_with_assembly_files_set()
         {
             var projectController = MockRepository.GenerateStub<IProjectController>();
@@ -44,6 +46,18 @@ namespace Gallio.Icarus.Tests.Commands
             projectController.AssertWasCalled(pc => pc.AddAssemblies(assemblyFiles, progressMonitor));
             testController.AssertWasCalled(tc => tc.SetTestPackageConfig(testPackageConfig));
             testController.AssertWasCalled(tc => tc.Explore(progressMonitor, testRunnerExtensions));
+        }
+
+        [Test, Author("Graham Hay")]
+        public void Execute_should_throw_if_canceled()
+        {
+            var projectController = MockRepository.GenerateStub<IProjectController>();
+            var testController = MockRepository.GenerateStub<ITestController>();
+            var command = new AddAssembliesCommand(projectController, testController);
+            var progressMonitor = MockProgressMonitor.GetMockProgressMonitor();
+            progressMonitor.Stub(pm => pm.IsCanceled).Return(true);
+
+            Assert.Throws<OperationCanceledException>(() => command.Execute(progressMonitor));
         }
     }
 }

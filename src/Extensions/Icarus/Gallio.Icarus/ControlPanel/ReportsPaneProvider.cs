@@ -13,25 +13,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using MbUnit.Framework;
-using Rhino.Mocks;
+using Gallio.Icarus.Controllers.Interfaces;
+using Gallio.UI.ControlPanel.Preferences;
 
-namespace Gallio.Icarus.Tests
+namespace Gallio.Icarus.ControlPanel
 {
-    public class MockTest
+    public class ReportsPaneProvider : IPreferencePaneProvider
     {
-        protected MockRepository mocks;
+        private readonly IOptionsController optionsController;
 
-        [FixtureSetUp]
-        public void TestFixtureSetUp()
+        public ReportsPaneProvider(IOptionsController optionsController)
         {
-            mocks = new MockRepository();
+            this.optionsController = optionsController;
         }
 
-        [TearDown]
-        public void TearDown()
+        public PreferencePane CreatePreferencePane()
         {
-            mocks.VerifyAll();
+            return new ReportsPane(optionsController);
         }
     }
 }

@@ -71,26 +71,20 @@ namespace Gallio.Icarus
                     typeof(IcarusProgram).Assembly))
             };
 
-            var optionsManager = new OptionsManager(new FileSystem(), new DefaultXmlSerializer(), 
-                new Utilities.UnhandledExceptionPolicy());
-            optionsManager.Load();
-
             var runtimeLogger = new RuntimeLogger();
 
-            runtimeSetup.PluginDirectories.AddRange(optionsManager.Settings.PluginDirectories);
             GenericCollectionUtils.AddAllIfNotAlreadyPresent(Arguments.PluginDirectories, runtimeSetup.PluginDirectories);
 
             using (RuntimeBootstrap.Initialize(runtimeSetup, runtimeLogger))
             {
                 var optionsController = RuntimeAccessor.ServiceLocator.Resolve<IOptionsController>();
+                
                 // create & initialize a test runner whenever the test runner factory is changed
-
                 optionsController.PropertyChanged += (sender, e) =>
                 {
                     if (e.PropertyName == "TestRunnerFactory")
                         ConfigureTestRunnerFactory(optionsController.TestRunnerFactory);
                 };
-                optionsController.OptionsManager = optionsManager;
 
                 ConfigureTestRunnerFactory(optionsController.TestRunnerFactory);
 

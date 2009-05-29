@@ -15,6 +15,7 @@
 
 using System.Windows.Forms;
 using Gallio.Icarus.Models;
+using Gallio.Icarus.Tests.Utilities;
 using Gallio.Model;
 using Gallio.Model.Filters;
 using Gallio.Model.Serialization;
@@ -86,9 +87,9 @@ namespace Gallio.Icarus.Tests.Models
         [Test]
         public void BuildTestTree_Namespace_Test()
         {
-            IProgressMonitor progressMonitor = MockProgressMonitor.GetMockProgressMonitor();
+            var progressMonitor = MockProgressMonitor.GetMockProgressMonitor();
             
-            TestTreeModel testTreeModel = new TestTreeModel();
+            var testTreeModel = new TestTreeModel();
             bool structureChangedFlag = false;
             testTreeModel.StructureChanged += delegate { structureChangedFlag = true; };
             
@@ -103,10 +104,7 @@ namespace Gallio.Icarus.Tests.Models
             fixture2.Metadata.Add(MetadataKeys.TestKind, TestKinds.Fixture);
             fixture2.CodeReference = new CodeReference(null, "namespaceName", null, null, null);
             root.Children.Add(fixture2);
-            
-            TestData ignore = new TestData("ignore", "ignore", "ignore");
-            fixture.Children.Add(ignore);
-            
+                       
             TestData test = new TestData("test", "test", "test");
             test.Metadata.Add(MetadataKeys.TestKind, TestKinds.Test);
             fixture.Children.Add(test);
@@ -176,16 +174,16 @@ namespace Gallio.Icarus.Tests.Models
             Assert.IsNotNull(testTreeModel.Root);
             Assert.AreEqual(2, testTreeModel.Root.Nodes.Count);
 
-            TestTreeNode metadataNode = (TestTreeNode)testTreeModel.Root.Nodes[0];
+            var metadataNode = (TestTreeNode)testTreeModel.Root.Nodes[0];
             Assert.AreEqual("Test", metadataNode.Name);
             Assert.AreEqual("Test", metadataNode.Text);
-            Assert.AreEqual(MetadataKeys.Category, metadataNode.NodeType);
+            Assert.AreEqual(MetadataKeys.Category, metadataNode.TestKind);
             Assert.AreEqual(1, metadataNode.Nodes.Count);
 
             TestTreeNode none = (TestTreeNode)testTreeModel.Root.Nodes[1];
             Assert.AreEqual("None", none.Name);
             Assert.AreEqual("None", none.Text);
-            Assert.AreEqual(MetadataKeys.Category, none.NodeType);
+            Assert.AreEqual(MetadataKeys.Category, none.TestKind);
             Assert.AreEqual(1, none.Nodes.Count);
 
             Assert.IsTrue(structureChangedFlag);

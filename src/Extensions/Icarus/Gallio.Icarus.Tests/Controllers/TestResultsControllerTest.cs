@@ -20,8 +20,8 @@ using System.Drawing;
 using Gallio.Icarus.Controllers;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Models;
+using Gallio.Icarus.Models.TestTreeNodes;
 using Gallio.Icarus.Tests.Utilities;
-using Gallio.Icarus.Utilities;
 using Gallio.Model;
 using Gallio.Model.Serialization;
 using Gallio.Runner.Events;
@@ -61,7 +61,7 @@ namespace Gallio.Icarus.Tests.Controllers
             var testController = MockRepository.GenerateStub<ITestController>();
             testController.Stub(tc => tc.SelectedTests).Return(new BindingList<TestTreeNode>());
             var optionsController = MockRepository.GenerateStub<IOptionsController>();
-            string testStatusBarStyle = "testStatusBarStyle";
+            const string testStatusBarStyle = "testStatusBarStyle";
             optionsController.TestStatusBarStyle = testStatusBarStyle;
             var taskManager = MockRepository.GenerateStub<ITaskManager>();
             var testResultsController = new TestResultsController(testController, optionsController, taskManager);
@@ -364,7 +364,7 @@ namespace Gallio.Icarus.Tests.Controllers
             testController.Stub(tc => tc.SelectedTests).Return(new BindingList<TestTreeNode>());
             var testTreeModel = MockRepository.GenerateStub<ITestTreeModel>();
             testController.Stub(tc => tc.Model).Return(testTreeModel);
-            var root = new TestTreeNode("root", "root", "root");
+            var root = new TestTreeNode("root", "root");
             testTreeModel.Stub(ttm => ttm.Root).Return(root);
             var optionsController = MockRepository.GenerateStub<IOptionsController>();
             var taskManager = new TestTaskManager();
@@ -433,7 +433,7 @@ namespace Gallio.Icarus.Tests.Controllers
 
             Assert.AreEqual("test1", listViewItem.Text);
             Assert.AreEqual(0, listViewItem.ImageIndex); // passed
-            Assert.AreEqual("test", listViewItem.SubItems[1].Text); // testkind
+            Assert.AreEqual(TestKinds.Test, listViewItem.SubItems[1].Text); // testkind
             Assert.AreEqual("0.500", listViewItem.SubItems[2].Text); // duration
             Assert.AreEqual("5", listViewItem.SubItems[3].Text); // assert count
             Assert.AreEqual("", listViewItem.SubItems[4].Text); // code ref
@@ -492,7 +492,7 @@ namespace Gallio.Icarus.Tests.Controllers
 
             Assert.AreEqual("test3", listViewItem.Text);
             Assert.AreEqual(2, listViewItem.ImageIndex); // passed
-            Assert.AreEqual("test", listViewItem.SubItems[1].Text); // testkind
+            Assert.AreEqual(TestKinds.Test, listViewItem.SubItems[1].Text); // testkind
             Assert.AreEqual("0.200", listViewItem.SubItems[2].Text); // duration
             Assert.AreEqual("2", listViewItem.SubItems[3].Text); // assert count
             Assert.AreEqual("", listViewItem.SubItems[4].Text); // code ref
@@ -533,12 +533,12 @@ namespace Gallio.Icarus.Tests.Controllers
         {
             get
             {
-                var root = new TestTreeNode("root", "root", "root");
+                var root = new RootNode(new TestData("root", "root", "root"));
 
-                var fixture = new TestTreeNode("fixture", "fixture", "fixture");
+                var fixture = new FixtureNode(new TestData("fixture", "fixture", "fixture"));
                 root.Nodes.Add(fixture);
 
-                var test1 = new TestTreeNode("test1", "test1", "test");
+                var test1 = new TestNode(new TestData("test1", "test1", "test1"));
                 fixture.Nodes.Add(test1);
                 var testStepRun1 = new TestStepRun(new TestStepData("test1", "test1", "test1", "test1"))
                 {
@@ -551,7 +551,7 @@ namespace Gallio.Icarus.Tests.Controllers
                 };
                 test1.AddTestStepRun(testStepRun1);
 
-                var test2 = new TestTreeNode("test2", "test2", "test");
+                var test2 = new TestNode(new TestData("test2", "test2", "test2"));
                 fixture.Nodes.Add(test2);
                 var testStepRun2 = new TestStepRun(new TestStepData("test2", "test2", "test2", "test2"))
                 {
@@ -564,7 +564,7 @@ namespace Gallio.Icarus.Tests.Controllers
                 };
                 test2.AddTestStepRun(testStepRun2);
 
-                var test3 = new TestTreeNode("test3", "test3", "test");
+                var test3 = new TestNode(new TestData("test3", "test3", "test3"));
                 fixture.Nodes.Add(test3);
                 var testStepRun3 = new TestStepRun(new TestStepData("test3", "test3", "test3", "test3"))
                 {

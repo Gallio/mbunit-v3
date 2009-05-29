@@ -19,10 +19,10 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows.Forms;
 using Aga.Controls.Tree;
+using Gallio.Icarus.Models.TestTreeNodes;
 using Gallio.Model;
 using Gallio.Model.Filters;
 using Gallio.Model.Serialization;
-using Gallio.Common.Reflection;
 using Gallio.Runner.Reports;
 using Gallio.Runtime.ProgressMonitoring;
 using Gallio.Icarus.Helpers;
@@ -259,7 +259,7 @@ namespace Gallio.Icarus.Models
                 filterNode = nodes[0];
             else
             {
-                filterNode = new TestTreeNode(key, key, key) { TestStatus = testStatus };
+                filterNode = new FilterNode(testStatus);
                 node.Parent.Nodes.Add(filterNode);
             }
             node.Parent.Nodes.Remove(node);
@@ -404,36 +404,33 @@ namespace Gallio.Icarus.Models
             {
                 if (!(n is TestTreeNode))
                     continue;
+
                 TestTreeNode node = (TestTreeNode)n;
                 switch (node.CheckState)
                 {
                     case CheckState.Checked:
                         {
                             EqualityFilter<string> equalityFilter = new EqualityFilter<string>(node.Name);
-                            switch (node.NodeType)
+                            if (node is NamespaceNode)
                             {
-                                case TestKinds.Namespace:
-                                    filters.Add(new NamespaceFilter<ITest>(equalityFilter));
-                                    break;
-
-                                case TestKinds.Fixture:
-                                case TestKinds.Test:
-                                    filters.Add(new IdFilter<ITest>(equalityFilter));
-                                    break;
-
-                                default:
-                                    if (typeof(MetadataKeys).GetField(node.NodeType) != null && node.Name != "None")
-                                        filters.Add(new MetadataFilter<ITest>(node.NodeType, equalityFilter));
-                                    else
-                                    {
-                                        Filter<ITest> childFilters = CreateFilter(node.Nodes);
-                                        if (childFilters != null)
-                                            filters.Add(childFilters);
-                                    }
-                                    break;
+                                filters.Add(new NamespaceFilter<ITest>(equalityFilter));
                             }
-                            break;
+                            else if (node is FixtureNode || node is TestNode)
+                            {
+                                filters.Add(new IdFilter<ITest>(equalityFilter));
+                            }
+                            else if (node is MetadataNode && node.Name != "None")
+                            {
+                                filters.Add(new MetadataFilter<ITest>(node.Name, equalityFilter));
+                            }
+                            else
+                            {
+                                Filter<ITest> childFilters = CreateFilter(node.Nodes);
+                                if (childFilters != null)
+                                    filters.Add(childFilters);
+                            }
                         }
+                        break;
                     case CheckState.Indeterminate:
                         {
                             Filter<ITest> childFilters = CreateFilter(node.Nodes);
@@ -467,7 +464,7 @@ namespace Gallio.Icarus.Models
             // i.e. they don't have an id we can use, so we must add all 
             // their children instead.
             if (node.CheckState == CheckState.Indeterminate || 
-                (node.CheckState == CheckState.Checked && node.NodeType == TestKinds.Namespace))
+                (node.CheckState == CheckState.Checked && node is NamespaceNode))
             {
                 foreach (var n in node.Nodes)
                     selected.AddRange(GetSelectedTests((TestTreeNode)n));
