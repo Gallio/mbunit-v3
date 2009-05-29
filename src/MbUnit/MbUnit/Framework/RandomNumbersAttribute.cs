@@ -21,6 +21,7 @@ using Gallio.Common.Reflection;
 using System.Collections;
 using System.Text;
 using Gallio.Framework;
+using Gallio.Common;
 
 namespace MbUnit.Framework
 {
@@ -107,6 +108,44 @@ namespace MbUnit.Framework
         }
 
         /// <summary>
+        /// Gets or sets the name of a method present in the test fixture
+        /// whose purpose is to prevent some specific values to be generated.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// The method must accepts one argument of the type <see cref="Decimal"/>, and
+        /// returns a <see cref="Boolean"/> value indicating whether the specified value
+        /// must be accepted or rejected.
+        /// </para>
+        /// <para>
+        /// <example>
+        /// <code><![CDATA[
+        /// [TestFixture]
+        /// public class MyTestFixture
+        /// {
+        ///     [Test]
+        ///     public void Generate_filtered_sequence([RandomNumbers(Minimum = 1, Maximum = 100, Count = 50, Filter = "MyFilter")] int value)
+        ///     {
+        ///         // Code logic here...
+        ///     }
+        /// 
+        ///     public static bool MyFilter(decimal number)
+        ///     {
+        ///         // Rejects all the numbers that are not divisible by 3 or by 10.
+        ///         int n = (int)number;
+        ///         return (n % 3 == 0) || (n % 10 == 0);
+        ///     }
+        /// ]]></code>
+        /// </example>
+        /// </para>
+        /// </remarks>
+        public string Filter
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
         /// Adds a column of random <see cref="Decimal"/> values.
         /// </summary>
         public RandomNumbersAttribute()
@@ -114,22 +153,34 @@ namespace MbUnit.Framework
         }
 
         /// <inheritdoc />
-        protected override IGenerator GetGenerator()
+        protected override IGenerator GetGenerator(IPatternScope scope)
         {
+            var invoker = MakeFilterInvoker(scope);
+            
             try
             {
                 return new RandomNumbersGenerator
                 {
                     Minimum = (decimal?)minimum,
                     Maximum = (decimal?)maximum, 
-                    Count = count
+                    Count = count,
+                    Filter = invoker
                 };
             }
             catch (GenerationException exception)
             {
-                ThrowUsageErrorException("The random numbers generator was incorrectly initialized.", exception);
-                return null; // Make the compiler happy.
+                throw new PatternUsageErrorException(String.Format(
+                    "The random numbers generator was incorrectly initialized ({0}).", exception.Message), exception);
             }
+        }
+
+        private Func<decimal, bool> MakeFilterInvoker(IPatternScope scope)
+        {
+            if (Filter == null)
+                return null;
+
+            var invoker = new FixtureMemberInvoker<bool>(null, scope, Filter, new[] { typeof(decimal) });
+            return d => invoker.Invoke(d);
         }
     }
 }

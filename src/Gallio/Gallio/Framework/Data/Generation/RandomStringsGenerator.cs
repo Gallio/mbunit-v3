@@ -81,9 +81,17 @@ namespace Gallio.Framework.Data.Generation
 
         private IEnumerable GetSequence()
         {
-            for (int i = 0; i < Count.Value; i++)
+            int i = 0;
+
+            while (i < Count.Value)
             {
-                yield return regex.GetRandomString();
+                var value = regex.GetRandomString();
+
+                if (DoFilter(value))
+                {
+                    yield return value;
+                    i++;
+                }
             }
         }
     }

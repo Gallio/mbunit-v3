@@ -47,7 +47,10 @@ namespace Gallio.Framework.Data.Generation
 
             for (int i = 0; i < Count; i++, d += Step.Value)
             {
-                yield return d;
+                if (DoFilter(d))
+                {
+                    yield return d;
+                }
             }
         }
 
@@ -66,7 +69,10 @@ namespace Gallio.Framework.Data.Generation
 
             for (int i = 0; i < Count; i++, d += step)
             {
-                yield return d;
+                if (DoFilter(d))
+                {
+                    yield return d;
+                }
             }
         }
 
@@ -93,7 +99,10 @@ namespace Gallio.Framework.Data.Generation
 
             for (decimal d = Start.Value; stopCriterion(d); d += Step.Value)
             {
-                yield return d;
+                if (DoFilter(d))
+                {
+                    yield return d;
+                }
             }
         }
     }

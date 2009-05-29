@@ -23,6 +23,7 @@ using MbUnit.Framework;
 using System.Linq;
 using Gallio.Common.Markup;
 using System.Text.RegularExpressions;
+using System.Collections.Generic;
 
 namespace MbUnit.Tests.Framework
 {
@@ -30,18 +31,48 @@ namespace MbUnit.Tests.Framework
     [RunSample(typeof(RandomStringsSample))]
     public class RandomStringsAttributeTest : BaseTestWithSampleRunner
     {
-        [Test]
-        [Row("Single", "[A-D]{3}[0-9]{3}", 100)]
-        public void GenerateRandomValues(string testMethod, string expectedMatch, int expectedCount)
+        private IEnumerable<string> GetActualValues(string testMethod)
         {
             var run = Runner.GetPrimaryTestStepRun(CodeReference.CreateFromMember(typeof(RandomStringsSample).GetMethod(testMethod)));
             string[] lines = run.Children.Select(x => x.TestLog.GetStream(MarkupStreamNames.Default).ToString()).ToArray();
-            Assert.AreEqual(expectedCount, lines.Length);
 
-            foreach(string line in lines)
+            foreach (string line in lines)
             {
-                Assert.IsTrue(Regex.Match(line, String.Format(@"\[{0}\]", expectedMatch)).Success);
+                var match = Regex.Match(line, @"\[(?<value>.*)\]");
+                Assert.IsTrue(match.Success);
+                yield return match.Groups["value"].Value;
             }
+        }
+
+        [Test]
+        [Row("Single", @"^[A-D]{3}[0-9]{3}$", 100)]
+        public void GenerateRandomValues(string testMethod, string expectedMatch, int expectedCount)
+        {
+            var values = GetActualValues(testMethod);
+            Assert.AreEqual(100, values.Count());
+            Assert.Multiple(() =>
+            {
+                foreach (string value in values)
+                {
+                    Assert.FullMatch(value, expectedMatch);
+                }
+            });
+        }
+
+        [Test]
+        public void GenerateFilteredRandomValues()
+        {
+            var values = GetActualValues("FilteredSequence");
+            Assert.AreEqual(100, values.Count());
+            Assert.Multiple(() =>
+            {
+                foreach (string value in values)
+                {
+                    Assert.FullMatch(value, @"^[A-D]{3}[0-9]{3}$");
+                    Assert.IsFalse(value.StartsWith("AAA"));
+                    Assert.IsFalse(value.EndsWith("999"));
+                }
+            });
         }
 
         [TestFixture, Explicit("Sample")]
@@ -51,6 +82,17 @@ namespace MbUnit.Tests.Framework
             public void Single([RandomStrings(Pattern = @"[A-D]{3}[0-9]{3}", Count = 100)] string text)
             {
                 TestLog.WriteLine("[{0}]", text);
+            }
+
+            [Test]
+            public void FilteredSequence([RandomStrings(Pattern = @"[A-D]{3}[0-9]{3}", Count = 100, Filter = "MyFilter")] string text)
+            {
+                TestLog.WriteLine("[{0}]", text);
+            }
+
+            public static bool MyFilter(string text)
+            {
+                return !text.StartsWith("AAA") && !text.EndsWith("999");
             }
         }
     }

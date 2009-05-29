@@ -162,7 +162,7 @@
     <Compile Include="Framework\NamespaceDoc.cs" />
     <Compile Include="Framework\RandomStringsAttribute.cs" />
     <Compile Include="Framework\Reflection\NamespaceDoc.cs" />
-    <Compile Include="Framework\SequentiaNumbersAttribute.cs" />
+    <Compile Include="Framework\SequentialNumbersAttribute.cs" />
     <Compile Include="Framework\RandomNumbersAttribute.cs" />
     <Compile Include="Framework\GenerationDataAttribute.cs" />
     <Compile Include="Framework\TestScope.cs" />

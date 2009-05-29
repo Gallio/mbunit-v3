@@ -21,6 +21,7 @@ using Gallio.Common.Reflection;
 using System.Collections;
 using System.Text;
 using Gallio.Framework;
+using Gallio.Common;
 
 namespace MbUnit.Framework
 {
@@ -97,6 +98,42 @@ namespace MbUnit.Framework
         }
 
         /// <summary>
+        /// Gets or sets the name of a method present in the test fixture
+        /// whose purpose is to prevent some specific values to be generated.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// The method must accepts one argument of the type <see cref="string"/>, and
+        /// returns a <see cref="Boolean"/> value indicating whether the specified value
+        /// must be accepted or rejected.
+        /// </para>
+        /// <para>
+        /// <example>
+        /// <code><![CDATA[
+        /// [TestFixture]
+        /// public class MyTestFixture
+        /// {
+        ///     [Test]
+        ///     public void Generate_filtered_sequence([RandomStrings(Count = 3, Pattern = @"[A-Z]{5,8}", Filter = "MyFilter")]] string text)
+        ///     {
+        ///         // Code logic here...
+        ///     }
+        /// 
+        ///     public static bool MyFilter(string text)
+        ///     {
+        ///         return text != "AAAAA";
+        ///     }
+        /// ]]></code>
+        /// </example>
+        /// </para>
+        /// </remarks>
+        public string Filter
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
         /// Adds a column of random <see cref="string"/> values.
         /// </summary>
         public RandomStringsAttribute()
@@ -104,21 +141,33 @@ namespace MbUnit.Framework
         }
 
         /// <inheritdoc />
-        protected override IGenerator GetGenerator()
+        protected override IGenerator GetGenerator(IPatternScope scope)
         {
+            var invoker = MakeFilterInvoker(scope);
+
             try
             {
                 return new RandomStringsGenerator
                 {
                     RegularExpressionPattern = Pattern,
-                    Count = count
+                    Count = count,
+                    Filter = invoker
                 };
             }
             catch (GenerationException exception)
             {
-                ThrowUsageErrorException("The random strings generator was incorrectly initialized.", exception);
-                return null; // Make the compiler happy.
+                throw new PatternUsageErrorException(String.Format(
+                    "The random strings generator was incorrectly initialized ({0}).", exception.Message), exception);
             }
+        }
+
+        private Func<string, bool> MakeFilterInvoker(IPatternScope scope)
+        {
+            if (Filter == null)
+                return null;
+
+            var invoker = new FixtureMemberInvoker<bool>(null, scope, Filter, new[] { typeof(string) });
+            return t => invoker.Invoke(t);
         }
     }
 }

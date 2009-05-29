@@ -74,5 +74,27 @@ namespace Gallio.Tests.Framework.Data.Generation
 
             Assert.Throws<GenerationException>(() => generator.Run().Cast<decimal>().ToArray());
         }
+
+        [Test]
+        public void Generate_filtered_sequence()
+        {
+            var generator = new RandomNumbersGenerator
+            {
+                Minimum = 0,
+                Maximum = 100,
+                Count = 50,
+                Filter = d => ((int)d % 2) == 0
+            };
+
+            var values = generator.Run().Cast<decimal>().ToArray();
+            Assert.AreEqual(50, values.Length);
+            Assert.Multiple(() =>
+            {
+                foreach (decimal value in values)
+                {
+                    Assert.AreEqual(0, (int)value % 2);
+                }
+            });
+        }
     }
 }

@@ -182,6 +182,7 @@
     <Compile Include="Framework\Data\Generation\GenerationException.cs" />
     <Compile Include="Framework\Data\NamespaceDoc.cs" />
     <Compile Include="Framework\NamespaceDoc.cs" />
+    <Compile Include="Framework\Pattern\FixtureMemberInvoker.cs" />
     <Compile Include="Framework\Pattern\NamespaceDoc.cs" />
     <Compile Include="Framework\Utilities\NamespaceDoc.cs" />
     <Compile Include="Model\DefaultTestKind.cs" />

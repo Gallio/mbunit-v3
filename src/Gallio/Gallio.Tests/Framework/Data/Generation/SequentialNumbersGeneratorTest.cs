@@ -45,7 +45,7 @@ namespace Gallio.Tests.Framework.Data.Generation
             };
 
             var actualOutput = generator.Run().Cast<decimal>();
-            Assert.AreElementsEqual(expectedOutput, actualOutput/*, (x, y) => Math.Abs(x - y) < 0.0001*/);
+            Assert.AreElementsEqual(expectedOutput, actualOutput);
         }
 
         [Test]
@@ -65,7 +65,7 @@ namespace Gallio.Tests.Framework.Data.Generation
             };
 
             var actualOutput = generator.Run().Cast<decimal>();
-            Assert.AreElementsEqual(expectedOutput, actualOutput/*, (x, y) => Math.Abs(x - y) < 0.0001*/);
+            Assert.AreElementsEqual(expectedOutput, actualOutput);
         }
 
         [Test]
@@ -84,7 +84,7 @@ namespace Gallio.Tests.Framework.Data.Generation
             };
 
             var actualOutput = generator.Run().Cast<decimal>();
-            Assert.AreElementsEqual(expectedOutput, actualOutput/*, (x, y) => Math.Abs(x - y) < 0.0001*/);
+            Assert.AreElementsEqual(expectedOutput, actualOutput);
         }
 
         private IEnumerable<object[]> GetInvalidProperyValues()
@@ -116,6 +116,48 @@ namespace Gallio.Tests.Framework.Data.Generation
             };
 
             Assert.Throws<GenerationException>(() => generator.Run().Cast<decimal>().ToArray());
+        }
+
+        [Test]
+        public void Generate_filtered_sequence()
+        {
+            var generator = new SequentialNumbersGenerator
+            {
+                Start = 0,
+                End = 100,
+                Step = 1,
+                Filter = d => IsPrime(d)
+            };
+
+            var actualOutput = generator.Run().Cast<decimal>();
+            Assert.AreElementsEqual(new decimal[] { 2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97 }, actualOutput);
+        }
+
+        public static bool IsPrime(decimal number)
+        {
+            // Simple implementation of the "Sieve of Eratosthenes" algorithm, 
+            // that checks for the primality of a number 
+            // (http://en.wikipedia.org/wiki/Sieve_of_Eratosthenes)
+            int n = (int)Convert.ChangeType(number, typeof(int));
+            var array = new BitArray(n + 1, true);
+
+            for (int i = 2; i < n + 1; i++)
+            {
+                if (array[i])
+                {
+                    for (int j = i * 2; j < n + 1; j += i)
+                    {
+                        array[j] = false;
+                    }
+
+                    if (array[i] && (n == i))
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
         }
     }
 }

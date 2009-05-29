@@ -20,13 +20,12 @@ using Gallio.Common.Reflection;
 using System.Collections;
 using Gallio.Framework.Data.Generation;
 using Gallio.Framework;
+using Gallio.Common;
 
 namespace MbUnit.Framework
 {
     /// <summary>
-    /// <para>
     /// Provides a column of sequential <see cref="Decimal"/> values as a data source.
-    /// </para>
     /// </summary>
     /// <remarks>
     /// <para>
@@ -66,7 +65,7 @@ namespace MbUnit.Framework
     /// <seealso cref="ColumnAttribute"/>
     [CLSCompliant(false)]
     [AttributeUsage(PatternAttributeTargets.DataContext, AllowMultiple = true, Inherited = true)]
-    public class SequentiaNumbersAttribute : GenerationDataAttribute
+    public class SequentialNumbersAttribute : GenerationDataAttribute
     {
         private double? start = null;
         private double? end = null;
@@ -74,9 +73,7 @@ namespace MbUnit.Framework
         private int? count = null;
 
         /// <summary>
-        /// <para>
         /// Gets or sets the starting value of the sequence.
-        /// </para>
         /// </summary>
         /// <remarks>
         /// <para>
@@ -102,9 +99,7 @@ namespace MbUnit.Framework
         }
 
         /// <summary>
-        /// <para>
         /// Gets or sets the ending value of the sequence.
-        /// </para>
         /// </summary>
         /// <remarks>
         /// <para>
@@ -129,9 +124,7 @@ namespace MbUnit.Framework
         }
 
         /// <summary>
-        /// <para>
         /// Gets or sets the increment between each value of the sequence.
-        /// </para>
         /// </summary>
         /// <remarks>
         /// <para>
@@ -156,9 +149,7 @@ namespace MbUnit.Framework
         }
 
         /// <summary>
-        /// <para>
         /// Gets or sets the length of the sequence.
-        /// </para>
         /// </summary>
         /// <remarks>
         /// <para>
@@ -183,15 +174,55 @@ namespace MbUnit.Framework
         }
 
         /// <summary>
+        /// Gets or sets the name of a method present in the test fixture
+        /// whose purpose is to prevent some specific values to be generated.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// The method must accepts one argument of the type <see cref="Decimal"/>, and
+        /// returns a <see cref="Boolean"/> value indicating whether the specified value
+        /// must be accepted or rejected.
+        /// </para>
+        /// <para>
+        /// <example>
+        /// <code><![CDATA[
+        /// [TestFixture]
+        /// public class MyTestFixture
+        /// {
+        ///     [Test]
+        ///     public void Generate_filtered_sequence([SequentialNumbers(Start = 1, End = 100, Step = 1, Filter = "MyFilter")] int value)
+        ///     {
+        ///         // Code logic here...
+        ///     }
+        /// 
+        ///     public static bool MyFilter(decimal number)
+        ///     {
+        ///         // Rejects all the numbers that are not divisible by 3 or by 10.
+        ///         int n = (int)number;
+        ///         return (n % 3 == 0) || (n % 10 == 0);
+        ///     }
+        /// ]]></code>
+        /// </example>
+        /// </para>
+        /// </remarks>
+        public string Filter
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
         /// Adds a column of sequential <see cref="Decimal"/> values.
         /// </summary>
-        public SequentiaNumbersAttribute()
+        public SequentialNumbersAttribute()
         {
         }
 
         /// <inheritdoc />
-        protected override IGenerator GetGenerator()
+        protected override IGenerator GetGenerator(IPatternScope scope)
         {
+            var invoker = MakeFilterInvoker(scope);
+
             try
             {
                 return new SequentialNumbersGenerator
@@ -199,7 +230,8 @@ namespace MbUnit.Framework
                     Start = (decimal?)start,
                     End = (decimal?)end,
                     Step = (decimal?)step,
-                    Count = count
+                    Count = count,
+                    Filter = invoker
                 };
             }
             catch (GenerationException exception)
@@ -207,6 +239,15 @@ namespace MbUnit.Framework
                 ThrowUsageErrorException("The sequential numbers generator was incorrectly initialized.", exception);
                 return null; // Make the compiler happy.
             }
+        }
+
+        private Func<decimal, bool> MakeFilterInvoker(IPatternScope scope)
+        {
+            if (Filter == null)
+                return null;
+
+            var invoker = new FixtureMemberInvoker<bool>(null, scope, Filter, new[] { typeof(decimal) });
+            return d => invoker.Invoke(d);
         }
     }
 }

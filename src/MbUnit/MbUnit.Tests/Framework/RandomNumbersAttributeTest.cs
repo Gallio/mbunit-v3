@@ -23,6 +23,7 @@ using MbUnit.Framework;
 using System.Linq;
 using Gallio.Common.Markup;
 using System.Text.RegularExpressions;
+using System.Collections.Generic;
 
 namespace MbUnit.Tests.Framework
 {
@@ -30,21 +31,46 @@ namespace MbUnit.Tests.Framework
     [RunSample(typeof(RandomNumbersSample))]
     public class RandomNumbersAttributeTest : BaseTestWithSampleRunner
     {
+        private IEnumerable<decimal> GetActualValues(string testMethod)
+        {
+            var run = Runner.GetPrimaryTestStepRun(CodeReference.CreateFromMember(typeof(RandomNumbersSample).GetMethod(testMethod)));
+            string[] lines = run.Children.Select(x => x.TestLog.GetStream(MarkupStreamNames.Default).ToString()).ToArray();
+
+            foreach (string line in lines)
+            {
+                var match = Regex.Match(line, @"\[(?<value>-?(\d*\.)?\d+)\]");
+                Assert.IsTrue(match.Success);
+                yield return Decimal.Parse(match.Groups["value"].Value);
+            }
+        }
+
         [Test]
         [Row("Single", -10, 10, 100)]
         public void GenerateRandomValues(string testMethod, decimal expectedMinimum, decimal expectedMaximum, int expectedCount)
         {
-            var run = Runner.GetPrimaryTestStepRun(CodeReference.CreateFromMember(typeof(RandomNumbersSample).GetMethod(testMethod)));
-            string[] lines = run.Children.Select(x => x.TestLog.GetStream(MarkupStreamNames.Default).ToString()).ToArray();
-            Assert.AreEqual(expectedCount, lines.Length);
-
-            foreach(string line in lines)
+            var values = GetActualValues(testMethod);
+            Assert.AreEqual(expectedCount, values.Count());
+            Assert.Multiple(() =>
             {
-                var match = Regex.Match(line, @"\[(?<value>-?(\d*\.)?\d+)\]");
-                Assert.IsTrue(match.Success);
-                decimal value = Decimal.Parse(match.Groups["value"].Value);
-                Assert.Between(value, expectedMinimum, expectedMaximum);
-            }
+                foreach (decimal value in values)
+                {
+                    Assert.Between(value, expectedMinimum, expectedMaximum);
+                }
+            });
+        }
+
+        [Test]
+        public void GenerateRandomFilteredValues()
+        {
+            var values = GetActualValues("RandomOddNumbers");
+            Assert.AreEqual(500, values.Count());
+            Assert.Multiple(() =>
+            {
+                foreach (decimal value in values)
+                {
+                    Assert.AreEqual(0, ((int)value) % 2);
+                }
+            });
         }
 
         [TestFixture, Explicit("Sample")]
@@ -54,6 +80,18 @@ namespace MbUnit.Tests.Framework
             public void Single([RandomNumbers(Minimum = -10, Maximum = 10, Count = 100)] decimal value)
             {
                 TestLog.WriteLine("[{0}]", value);
+            }
+
+            [Test]
+            public void RandomOddNumbers([RandomNumbers(Minimum = 0, Maximum = 100, Count = 500, Filter = "IsOdd")] int value)
+            {
+                TestLog.WriteLine("[{0}]", value);
+            }
+
+            public static bool IsOdd(decimal value)
+            {
+                int n = (int)Convert.ChangeType(value, typeof(int));
+                return 0 == n % 2;
             }
         }
     }

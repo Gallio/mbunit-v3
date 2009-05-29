@@ -36,10 +36,17 @@ namespace Gallio.Framework.Data.Generation
         {
             CheckProperty(Minimum.Value, "Minimum");
             CheckProperty(Maximum.Value, "Maximum");
+            int i = 0;
 
-            for (int i = 0; i < Count.Value; i++)
+            while (i < Count.Value)
             {
-                yield return GetNextRandomValue();
+                var value = GetNextRandomValue();
+
+                if (DoFilter(value))
+                {
+                    yield return value;
+                    i++;
+                }
             }
         }
 

@@ -40,32 +40,33 @@ namespace MbUnit.Framework
         /// <inheritdoc />
         protected override void PopulateDataSource(IPatternScope scope, DataSource dataSource, ICodeElementInfo codeElement)
         {
-            dataSource.AddDataSet(new ValueSequenceDataSet(GetSequence(), GetMetadata(), false));
+            dataSource.AddDataSet(new ValueSequenceDataSet(GetSequence(scope), GetMetadata(), false));
         }
 
-        private IEnumerable GetSequence()
+        private IEnumerable GetSequence(IPatternScope scope)
         {
-            IGenerator generator = SafeGetGenerator();
+            IGenerator generator = SafeGetGenerator(scope);
             return generator.Run();
         }
 
-        private IGenerator SafeGetGenerator()
+        private IGenerator SafeGetGenerator(IPatternScope scope)
         {
             try
             {
-                return GetGenerator();
+                return GetGenerator(scope);
             }
             catch (ArgumentException exception)
             {
-                ThrowUsageErrorException("The MbUnit data generator was incorrectly initialized.", exception);
-                return null; // Make the compiler happy!
+                throw new PatternUsageErrorException(String.Format(
+                    "The MbUnit data generator was incorrectly initialized ({0}).", exception.Message), exception);
             }
         }
 
         /// <summary>
         /// Returns a generator of random values.
         /// </summary>
+        /// <param name="scope">The containing scope.</param>
         /// <returns>A generator.</returns>
-        protected abstract IGenerator GetGenerator();
+        protected abstract IGenerator GetGenerator(IPatternScope scope);
     }
 }

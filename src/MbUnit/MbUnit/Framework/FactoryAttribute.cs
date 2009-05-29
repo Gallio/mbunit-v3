@@ -140,96 +140,9 @@ namespace MbUnit.Framework
         /// <inheritdoc />
         protected override void PopulateDataSource(IPatternScope scope, DataSource dataSource, ICodeElementInfo codeElement)
         {
-            Func<IEnumerable> factory = CreateFactory(scope);
-            FactoryDataSet dataSet = new FactoryDataSet(factory, kind, columnCount);
+            var invoker = new FixtureMemberInvoker<IEnumerable>(type, scope, memberName);
+            var dataSet = new FactoryDataSet(() => invoker.Invoke(), kind, columnCount);
             dataSource.AddDataSet(dataSet);
-        }
-
-        private Func<IEnumerable> CreateFactory(IPatternScope scope)
-        {
-            BindingFlags bindingFlags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static |
-                BindingFlags.FlattenHierarchy;
-            ITypeInfo factoryOwner;
-            if (type != null)
-            {
-                factoryOwner = Reflector.Wrap(type);
-            }
-            else
-            {
-                factoryOwner = ReflectionUtils.GetType(scope.TestBuilder.CodeElement);
-                if (factoryOwner == null)
-                    throw new PatternUsageErrorException(
-                        "Cannot infer the declaring type of the factory member.  Provide the declaring type to the [Factory] attribute constructor instead.");
-                bindingFlags |= BindingFlags.Instance;
-            }
-
-            IMethodInfo factoryMethod = factoryOwner.GetMethod(memberName, bindingFlags);
-            if (factoryMethod != null)
-            {
-                return delegate
-                {
-                    object fixtureInstance = GetFixtureInstance(factoryMethod.IsStatic);
-                    MethodInfo method = type != null ? factoryMethod.Resolve(true) : GetFixtureType().GetMethod(memberName, bindingFlags);
-                    if (method == null)
-                        throw new TestFailedException(String.Format("Could not find factory method '{0}' on fixture.", memberName));
-                    return (IEnumerable) method.Invoke(fixtureInstance, null);
-                };
-            }
-
-            IPropertyInfo factoryProperty = factoryOwner.GetProperty(memberName, bindingFlags);
-            if (factoryProperty != null && factoryProperty.GetMethod != null)
-            {
-                return delegate
-                {
-                    object fixtureInstance = GetFixtureInstance(factoryProperty.GetMethod.IsStatic);
-                    PropertyInfo property = type != null ? factoryProperty.Resolve(true) : GetFixtureType().GetProperty(memberName, bindingFlags);
-                    if (property == null)
-                        throw new TestFailedException(String.Format("Could not find factory property '{0}' on fixture.", memberName));
-                    return (IEnumerable)property.GetValue(fixtureInstance, null);
-                };
-            }
-
-            IFieldInfo factoryField = factoryOwner.GetField(memberName, bindingFlags);
-            if (factoryField != null)
-            {
-                return delegate
-                {
-                    object fixtureInstance = GetFixtureInstance(factoryField.IsStatic);
-                    FieldInfo field = type != null ? factoryField.Resolve(true) : GetFixtureType().GetField(memberName, bindingFlags);
-                    if (field == null)
-                        throw new TestFailedException(String.Format("Could not find factory field '{0}' on fixture.", memberName));
-                    return (IEnumerable)field.GetValue(fixtureInstance);
-                };
-            }
-
-            throw new PatternUsageErrorException(String.Format("Could not find factory method, property or field named '{0}' on type '{1}'.",
-                memberName, factoryOwner));
-        }
-
-        private Type GetFixtureType()
-        {
-            return GetCurrentTestInstanceState().FixtureType;
-        }
-
-        private object GetFixtureInstance(bool isStatic)
-        {
-            if (isStatic)
-                return null;
-
-            object instance = GetCurrentTestInstanceState().FixtureInstance;
-            if (instance == null)
-                throw new InvalidOperationException(String.Format("Cannot invoke factory '{0}' because it is non-static and there is no fixture instance available for this test.", memberName));
-
-            return instance;
-        }
-
-        private PatternTestInstanceState GetCurrentTestInstanceState()
-        {
-            PatternTestInstanceState state = PatternTestInstanceState.FromContext(TestContext.CurrentContext);
-            if (state == null)
-                throw new NotSupportedException("Could not find the current pattern test instance state.  The [Factory] attribute probably cannot be used in this context.");
-
-            return state;
         }
     }
 }
