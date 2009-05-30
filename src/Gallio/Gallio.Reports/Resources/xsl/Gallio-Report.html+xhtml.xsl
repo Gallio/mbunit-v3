@@ -647,7 +647,14 @@ html
   <xsl:template name="icon">
     <xsl:param name="kind" />
 
-    <span class="testKind testKind-{translate($kind, ' .', '')}" />
+    <xsl:choose>
+      <xsl:when test="$kind">
+        <span class="testKind testKind-{translate($kind, ' .', '')}" />
+      </xsl:when>
+      <xsl:otherwise>
+        <span class="testKind" />
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
 
   <!-- Toggle buttons -->

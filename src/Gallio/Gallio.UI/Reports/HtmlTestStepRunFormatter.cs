@@ -325,8 +325,12 @@ namespace Gallio.UI.Reports
                 writer.Write("\">");
 
                 string testKind = testStepRun.Step.Metadata.GetValue(MetadataKeys.TestKind);
-                writer.Write("<span class=\"testKind testKind-");
-                writer.Write(NormalizeTestKindName(testKind));
+                writer.Write("<span class=\"testKind");
+                if (testKind != null)
+                {
+                    writer.Write(" testKind-");
+                    writer.Write(NormalizeTestKindName(testKind));
+                }
                 writer.Write("\"></span>");
 
                 WriteCodeLocationLink(writer, testStepRun.Step.CodeLocation, () => WriteHtmlEncoded(writer, testStepRun.Step.Name));
