@@ -108,6 +108,30 @@ namespace Gallio.Tests.Framework.Pattern
             Assert.AreEqual(expectedResult, actualResult);
         }
 
+        [Test]
+        public void Invoke_member_not_found_should_throw_exception()
+        {
+            var mockScope = ArrangeMockScope();
+            var invoker = new FixtureMemberInvoker<bool>(null, mockScope, "DoesNotExist");
+            Assert.Throws<PatternUsageErrorException>(() => invoker.Invoke());
+        }
+
+        [Test]
+        public void Invoke_member_with_invalid_number_of_arguments_should_throw_exception()
+        {
+            var mockScope = ArrangeMockScope();
+            var invoker = new FixtureMemberInvoker<bool>(null, mockScope, "Add");
+            Assert.Throws<PatternUsageErrorException>(() => invoker.Invoke(1, 2));
+        }
+
+        [Test]
+        public void Invoke_member_with_incompatible_argument_should_throw_exception()
+        {
+            var mockScope = ArrangeMockScope();
+            var invoker = new FixtureMemberInvoker<bool>(null, mockScope, "Add");
+            Assert.Throws<PatternUsageErrorException>(() => invoker.Invoke(1, new object(), 3));
+        }
+
         #region Invocation samples
 
         public int PublicInstanceFieldInt32 = 123;
@@ -227,6 +251,11 @@ namespace Gallio.Tests.Framework.Pattern
         public bool IsOdd(int value)
         {
             return value % 2 == 0;
+        }
+
+        public int Add(int value1, int value2, int value3)
+        {
+            return value1 + value2 + value3;
         }
 
         private class Sample

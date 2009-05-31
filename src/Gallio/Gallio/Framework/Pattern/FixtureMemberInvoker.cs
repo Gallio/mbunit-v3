@@ -132,7 +132,8 @@ namespace Gallio.Framework.Pattern
                     if (method == null)
                         throw new TestFailedException(String.Format("Could not find method '{0}'.", memberName));
 
-                    return (TOutput)method.Invoke(fixtureInstance, ConvertArguments(method.GetParameters(), args));
+                    object[] convertedArgs = ConvertArguments(method.GetParameters(), args);
+                    return (TOutput)method.Invoke(fixtureInstance, convertedArgs);
                 };
             }
 
@@ -142,7 +143,9 @@ namespace Gallio.Framework.Pattern
         private object[] ConvertArguments(ParameterInfo[] parameters, object[] args)
         {
             if ((args == null ? 0 : args.Length) != parameters.Length)
-                throw new PatternUsageErrorException(String.Format("Unexpected number of arguments specified to invoke '{0}'.", memberName));
+                throw new PatternUsageErrorException(String.Format("Unexpected number of " +
+                    "arguments specified to invoke the method '{0}'. Found {1} while {2} expected.", 
+                    memberName, (args == null ? 0 : args.Length), parameters.Length));
 
             if (args == null)
                 return null;
@@ -152,7 +155,23 @@ namespace Gallio.Framework.Pattern
 
             for (int i = 0; i < args.Length; i++)
             {
-                result[i] = converter.Convert(args[i], parameters[i].ParameterType);
+                try
+                {
+                    result[i] = Object.ReferenceEquals(args[i], null) 
+                        ? args[i] : converter.Convert(args[i], parameters[i].ParameterType);
+                }
+                catch (InvalidCastException exception)
+                {
+                    throw new PatternUsageErrorException(String.Format(
+                        "Expected the argument #{0} of type '{1}' passed to the method '{2}' to be convertible to '{3}'.", 
+                        i, args[i].GetType(), memberName, parameters[i].ParameterType), exception);
+                }
+                catch (FormatException exception)
+                {
+                    throw new PatternUsageErrorException(String.Format(
+                        "Expected the argument #{0} of type '{1}' passed to the method '{2}' to be convertible to '{3}'.",
+                        i, args[i].GetType(), memberName, parameters[i].ParameterType), exception);
+                }
             }
 
             return result;
@@ -227,54 +246,5 @@ namespace Gallio.Framework.Pattern
 
             return state;
         }
-    }
-
-    /// <summary>
-    /// Represents a family of types for an argument.
-    /// </summary>
-    public sealed class ArgumentTypeFamily
-    {
-        private readonly Type[] types;
-
-        /// <summary>
-        /// Gets the ordered types for the family.
-        /// </summary>
-        public Type[] Types
-        {
-            get
-            {
-                return types;
-            }
-        }
-
-        private ArgumentTypeFamily(Type[] types)
-        {
-            this.types = types;
-        }
-
-        /// <summary>
-        /// Number argument.
-        /// </summary>
-        public static readonly ArgumentTypeFamily Number = new ArgumentTypeFamily(new[] 
-        {   typeof(decimal), 
-            typeof(double),
-            typeof(float),
-            typeof(long),
-            typeof(ulong),
-            typeof(int),
-            typeof(uint),
-            typeof(short),
-            typeof(ushort),
-            typeof(sbyte),
-            typeof(byte) 
-        });
-        
-        /// <summary>
-        /// Text argument.
-        /// </summary>
-        public static readonly ArgumentTypeFamily Text = new ArgumentTypeFamily(new[] 
-        { 
-            typeof(string) 
-        });
     }
 }
