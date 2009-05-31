@@ -1,4 +1,4 @@
-﻿namespace Gallio.Icarus
+﻿namespace Gallio.UI.Progress
 {
     partial class ProgressMonitor
     {
@@ -42,7 +42,7 @@
             // progressBar
             // 
             this.progressBar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+                                                                            | System.Windows.Forms.AnchorStyles.Right)));
             this.progressBar.Location = new System.Drawing.Point(82, 28);
             this.progressBar.Name = "progressBar";
             this.progressBar.Size = new System.Drawing.Size(315, 23);
@@ -83,7 +83,7 @@
             // 
             // pictureBox1
             // 
-            this.pictureBox1.Image = global::Gallio.Icarus.Properties.Resources.pillar;
+            this.pictureBox1.Image = Properties.Resources.Pillar;
             this.pictureBox1.Location = new System.Drawing.Point(12, 12);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(64, 65);
@@ -94,7 +94,7 @@
             // flowLayoutPanel1
             // 
             this.flowLayoutPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+                                                                                 | System.Windows.Forms.AnchorStyles.Right)));
             this.flowLayoutPanel1.Controls.Add(this.subTaskNameLabel);
             this.flowLayoutPanel1.Controls.Add(this.percentLabel);
             this.flowLayoutPanel1.Location = new System.Drawing.Point(82, 9);

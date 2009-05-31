@@ -15,6 +15,7 @@
 
 using Gallio.Common.IO;
 using Gallio.Runtime.ProgressMonitoring;
+using Gallio.UI.Progress;
 
 namespace Gallio.Icarus.Commands
 {

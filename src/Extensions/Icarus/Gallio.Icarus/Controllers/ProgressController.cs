@@ -14,11 +14,11 @@
 // limitations under the License.
 
 using System;
-using Gallio.Common.Policies;
-using Gallio.Icarus.ProgressMonitoring.EventArgs;
 using System.Timers;
-using Gallio.Icarus.Controllers.Interfaces;
+using Gallio.Common.Policies;
 using Gallio.Icarus.Controllers.EventArgs;
+using Gallio.Icarus.Controllers.Interfaces;
+using Gallio.UI.Progress;
 
 namespace Gallio.Icarus.Controllers
 {
@@ -27,7 +27,6 @@ namespace Gallio.Icarus.Controllers
         private readonly ITaskManager taskManager;
         private readonly Timer timer = new Timer();
 
-        public event EventHandler<ProgressUpdateEventArgs> ProgressUpdate;
         public event EventHandler<DisplayProgressDialogEventArgs> DisplayProgressDialog;
 
         public ProgressController(ITaskManager taskManager, IOptionsController optionsController)
@@ -44,29 +43,28 @@ namespace Gallio.Icarus.Controllers
 
             taskManager.ProgressUpdate += (sender, e) =>
             {
-                if (displayProgressDialog)
-                {
-                    EventHandlerPolicy.SafeInvoke(DisplayProgressDialog, this, 
-                        new DisplayProgressDialogEventArgs(taskManager.ProgressMonitor, e));
-                    displayProgressDialog = false;
-                }
-                EventHandlerPolicy.SafeInvoke(ProgressUpdate, this, e);
+                if (!displayProgressDialog) 
+                    return;
+
+                EventHandlerPolicy.SafeInvoke(DisplayProgressDialog, this, 
+                    new DisplayProgressDialogEventArgs(taskManager.ProgressMonitor));
+                displayProgressDialog = false;
             };
 
-            if (optionsController.ShowProgressDialogs)
+            if (!optionsController.ShowProgressDialogs) 
+                return;
+
+            taskManager.TaskStarted += (sender, e) => timer.Start();
+            taskManager.TaskCanceled += (sender, e) =>
             {
-                taskManager.TaskStarted += (sender, e) => timer.Start();
-                taskManager.TaskCanceled += (sender, e) =>
-                {
-                    displayProgressDialog = false;
-                    timer.Stop();
-                };
-                taskManager.TaskCompleted += (sender, e) =>
-                {
-                    displayProgressDialog = false;
-                    timer.Stop();
-                };
-            }
+                displayProgressDialog = false;
+                timer.Stop();
+            };
+            taskManager.TaskCompleted += (sender, e) =>
+            {
+                displayProgressDialog = false;
+                timer.Stop();
+            };
         }
 
         public void Cancel()
@@ -76,7 +74,7 @@ namespace Gallio.Icarus.Controllers
                 taskManager.ProgressMonitor.Cancel();
 
             // remove anything else in the queue
-            taskManager.Stop();
+            taskManager.ClearQueue();
         }
     }
 }

@@ -15,10 +15,15 @@
 
 using System;
 
-namespace Gallio.Icarus.Utilities
+namespace Gallio.UI.Common.Policies
 {
-    public interface IUnhandledExceptionPolicy
+    /// <inheritdoc />
+    public class UnhandledExceptionPolicy : IUnhandledExceptionPolicy
     {
-        void Report(string message, Exception unhandledException);
+        /// <inheritdoc />
+        public void Report(string message, Exception unhandledException)
+        {
+            Gallio.Common.Policies.UnhandledExceptionPolicy.Report(message, unhandledException);
+        }
     }
 }

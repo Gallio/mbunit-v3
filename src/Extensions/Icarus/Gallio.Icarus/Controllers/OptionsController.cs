@@ -24,6 +24,7 @@ using Gallio.Icarus.Options;
 using Gallio.Model;
 using Gallio.Icarus.Utilities;
 using Gallio.Runtime.Logging;
+using Gallio.UI.Common.Policies;
 
 namespace Gallio.Icarus.Controllers
 {

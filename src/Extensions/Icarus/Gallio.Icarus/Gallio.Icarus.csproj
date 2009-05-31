@@ -90,7 +90,6 @@
     <Compile Include="Commands\DeleteFilterCommand.cs" />
     <Compile Include="Commands\DeleteReportCommand.cs" />
     <Compile Include="Commands\GenerateReportCommand.cs" />
-    <Compile Include="Commands\ICommand.cs" />
     <Compile Include="Commands\NewProjectCommand.cs" />
     <Compile Include="Commands\OpenProjectCommand.cs" />
     <Compile Include="Commands\OpenReportCommand.cs" />
@@ -109,7 +108,9 @@
     <Compile Include="Controllers\AnnotationsController.cs" />
     <Compile Include="Controllers\ApplicationController.cs" />
     <Compile Include="Controllers\EventArgs\AssemblyChangedEventArgs.cs" />
-    <Compile Include="Controllers\EventArgs\DisplayProgressDialogEventArgs.cs" />
+    <Compile Include="Controllers\EventArgs\DisplayProgressDialogEventArgs.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Controllers\EventArgs\ExecutionLogUpdatedEventArgs.cs" />
     <Compile Include="Controllers\EventArgs\ShowSourceCodeEventArgs.cs" />
     <Compile Include="Controllers\ExecutionLogController.cs" />
@@ -250,7 +251,6 @@
     <Compile Include="Helpers\MenuListHelper.cs" />
     <Compile Include="Helpers\TestTreeBuilder.cs" />
     <Compile Include="Helpers\TestTreeBuilderOptions.cs" />
-    <Compile Include="ITaskManager.cs" />
     <Compile Include="Logging\IRuntimeLogger.cs" />
     <Compile Include="Logging\RuntimeLogger.cs" />
     <Compile Include="Models\ComponentDetailsTreeModel.cs" />
@@ -311,21 +311,12 @@
     <Compile Include="IWindowManager.cs" />
     <Compile Include="Controllers\Interfaces\IRuntimeLogController.cs" />
     <Compile Include="Controllers\Interfaces\ITestController.cs" />
-    <Compile Include="ProgressMonitor.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ProgressMonitor.Designer.cs">
-      <DependentUpon>ProgressMonitor.cs</DependentUpon>
-    </Compile>
-    <Compile Include="ProgressMonitoring\EventArgs\ProgressUpdateEventArgs.cs" />
     <Compile Include="Remoting\AssemblyWatcher.cs" />
     <Compile Include="Services\Interfaces\IReportService.cs" />
     <Compile Include="Models\ProjectTreeModel.cs" />
     <Compile Include="Models\TestTreeModel.cs" />
     <Compile Include="Models\TestTreeNode.cs" />
     <Compile Include="Controllers\OptionsController.cs" />
-    <Compile Include="ProgressMonitoring\ProgressMonitorPresenter.cs" />
-    <Compile Include="ProgressMonitoring\ProgressMonitorProvider.cs" />
     <Compile Include="ProjectExplorer.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -420,10 +411,7 @@
     <Compile Include="TestResults.Designer.cs">
       <DependentUpon>TestResults.cs</DependentUpon>
     </Compile>
-    <Compile Include="TaskManager.cs" />
     <Compile Include="UserOptions.cs" />
-    <Compile Include="Utilities\IUnhandledExceptionPolicy.cs" />
-    <Compile Include="Utilities\UnhandledExceptionPolicy.cs" />
     <Compile Include="WindowManager.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -522,10 +510,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Window.resx">
       <DependentUpon>Window.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ProgressMonitor.resx">
-      <DependentUpon>ProgressMonitor.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="ProjectExplorer.resx">

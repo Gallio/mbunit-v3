@@ -25,11 +25,12 @@ using Gallio.Icarus.Controllers.EventArgs;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Controls;
 using Gallio.Icarus.Helpers;
-using Gallio.Icarus.Utilities;
 using Gallio.Runner.Projects;
 using Gallio.Runtime;
 using Gallio.Runtime.Extensibility;
 using Gallio.Runtime.ProgressMonitoring;
+using Gallio.UI.Common.Policies;
+using Gallio.UI.Progress;
 
 namespace Gallio.Icarus.Controllers
 {
@@ -107,7 +108,6 @@ namespace Gallio.Icarus.Controllers
 
             fileSystem = serviceLocator.Resolve<IFileSystem>();
             taskManager = serviceLocator.Resolve<ITaskManager>();
-            taskManager.Start();
             testController = serviceLocator.Resolve<ITestController>();
             
             projectController = serviceLocator.Resolve<IProjectController>();
@@ -140,8 +140,8 @@ namespace Gallio.Icarus.Controllers
                     }
                     assemblyFiles.Add(assembly);
                 }
-                var cmd = new AddAssembliesCommand(projectController, testController);
-                cmd.AssemblyFiles = assemblyFiles;
+                var cmd = new AddAssembliesCommand(projectController, testController) 
+                    { AssemblyFiles = assemblyFiles };
                 taskManager.QueueTask(cmd);
             }
             else if (optionsController.RestorePreviousSettings && optionsController.RecentProjects.Count > 0)
@@ -206,8 +206,10 @@ namespace Gallio.Icarus.Controllers
                 {
                     cmd.Execute(NullProgressMonitor.CreateInstance());
                 }
-                catch
-                { }
+                catch (Exception ex)
+                {
+                    unhandledExceptionPolicy.Report("Error saving project", ex);
+                }
             }
         }
 

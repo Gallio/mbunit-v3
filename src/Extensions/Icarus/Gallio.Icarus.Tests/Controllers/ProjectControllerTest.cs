@@ -29,6 +29,7 @@ using Gallio.Model;
 using Gallio.Model.Filters;
 using Gallio.Runner.Projects;
 using Gallio.Runtime.ProgressMonitoring;
+using Gallio.UI.Common.Policies;
 using MbUnit.Framework;
 using Rhino.Mocks;
 using System;

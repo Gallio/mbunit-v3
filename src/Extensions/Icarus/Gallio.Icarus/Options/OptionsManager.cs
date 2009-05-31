@@ -15,8 +15,8 @@
 
 using Gallio.Common.IO;
 using Gallio.Common.Xml;
-using Gallio.Icarus.Utilities;
 using System;
+using Gallio.UI.Common.Policies;
 
 namespace Gallio.Icarus.Options
 {

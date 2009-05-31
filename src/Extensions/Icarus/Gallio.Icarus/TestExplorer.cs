@@ -25,6 +25,7 @@ using Gallio.Icarus.Models.TestTreeNodes;
 using Gallio.Icarus.Utilities;
 using Gallio.Model;
 using Gallio.Runtime.ProgressMonitoring;
+using Gallio.UI.Progress;
 
 namespace Gallio.Icarus
 {

@@ -18,60 +18,69 @@ using System.Collections.Generic;
 using System.Threading;
 using Gallio.Common;
 using Gallio.Common.Concurrency;
-using Gallio.Icarus.Utilities;
-using Gallio.Icarus.ProgressMonitoring;
-using Gallio.Icarus.Commands;
-using Gallio.Icarus.ProgressMonitoring.EventArgs;
 using Gallio.Common.Policies;
+using Gallio.Runtime.ProgressMonitoring;
+using Gallio.UI.Common.Policies;
 
-namespace Gallio.Icarus
+namespace Gallio.UI.Progress
 {
-    public sealed class TaskManager : ITaskManager
+    /// <inheritdoc />
+    public class TaskManager : ITaskManager
     {
         private Task currentWorkerTask;
         private readonly Queue<ICommand> queue = new Queue<ICommand>();
         private readonly IUnhandledExceptionPolicy unhandledExceptionPolicy;
-        private readonly ProgressMonitorProvider progressMonitorProvider = new ProgressMonitorProvider();
-        private bool canExecute;
+        private ObservableProgressMonitor progressMonitor;
 
-        public ProgressMonitorPresenter ProgressMonitor
+        /// <inheritdoc />
+        public event EventHandler ProgressUpdate;
+
+        /// <inheritdoc />
+        public ObservableProgressMonitor ProgressMonitor
         {
-            get { return progressMonitorProvider.ProgressMonitor; }
+            get { return progressMonitor; }
+            private set
+            {
+                progressMonitor = value;
+                progressMonitor.Changed += (sender, e) => 
+                    EventHandlerPolicy.SafeInvoke(ProgressUpdate, this, EventArgs.Empty);
+            }
         }
-
+        /// <inheritdoc />
         public bool TaskRunning
         {
             get { return (currentWorkerTask != null); }
         }
 
-        public event EventHandler<ProgressUpdateEventArgs> ProgressUpdate;
+        /// <inheritdoc />
         public event EventHandler TaskStarted;
+        /// <inheritdoc />
         public event EventHandler TaskCompleted;
+        /// <inheritdoc />
         public event EventHandler TaskCanceled;
 
+        ///<summary>
+        /// Default constructor.
+        ///</summary>
+        ///<param name="unhandledExceptionPolicy">An unhandled exception policy.</param>
         public TaskManager(IUnhandledExceptionPolicy unhandledExceptionPolicy)
         {
             this.unhandledExceptionPolicy = unhandledExceptionPolicy;
-
-            progressMonitorProvider.ProgressUpdate += (sender, e) => EventHandlerPolicy.SafeInvoke(ProgressUpdate, this, e);
+            ProgressMonitor = new ObservableProgressMonitor();
         }
 
+        /// <inheritdoc />
         public void QueueTask(ICommand command)
         {
-            if (!canExecute)
-                throw new Exception("TaskManager is stopped.");
-
             queue.Enqueue(command);
 
             if (currentWorkerTask == null)
                 RunTask();
         }
 
+        /// <inheritdoc />
         public void BackgroundTask(Action action)
         {
-            if (!canExecute)
-                throw new Exception("TaskManager is stopped.");
-
             ThreadPool.QueueUserWorkItem(cb => action());
         }
 
@@ -82,8 +91,11 @@ namespace Gallio.Icarus
 
             var command = queue.Dequeue();
 
-            var workerTask = new ThreadTask("Icarus Worker", 
-                () => progressMonitorProvider.Run(command.Execute));
+            var workerTask = new ThreadTask("Icarus Worker", () =>
+            {
+                ProgressMonitor = new ObservableProgressMonitor();
+                command.Execute(ProgressMonitor);
+            });
 
             currentWorkerTask = workerTask;
 
@@ -99,7 +111,7 @@ namespace Gallio.Icarus
                         }
                         else
                         {
-                            unhandledExceptionPolicy.Report("An exception occurred while running a task.",
+                            unhandledExceptionPolicy.Report("An exception occurred while running a task.", 
                                 currentWorkerTask.Result.Exception);
                         }
                     }
@@ -120,20 +132,12 @@ namespace Gallio.Icarus
 
             workerTask.Start();
 
-            // don't display progress dialog when running tests
-            if (!(command is RunTestsCommand))
-                EventHandlerPolicy.SafeInvoke(TaskStarted, this, EventArgs.Empty);
+            EventHandlerPolicy.SafeInvoke(TaskStarted, this, EventArgs.Empty);
         }
 
-        public void Start()
+        /// <inheritdoc />
+        public void ClearQueue()
         {
-            canExecute = true;
-            RunTask();
-        }
-
-        public void Stop()
-        {
-            canExecute = false;
             queue.Clear();
         }
     }

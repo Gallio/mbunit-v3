@@ -27,10 +27,10 @@ using Gallio.Icarus.Commands;
 using Gallio.Icarus.Controllers;
 using Gallio.Icarus.Controllers.EventArgs;
 using Gallio.Icarus.Controllers.Interfaces;
-using Gallio.Icarus.ProgressMonitoring.EventArgs;
 using Gallio.Model;
 using Gallio.Runner.Projects;
 using Gallio.Runtime;
+using Gallio.UI.Progress;
 using WeifenLuo.WinFormsUI.Docking;
 using SynchronizationContext = System.Threading.SynchronizationContext;
 using UnhandledExceptionPolicy = Gallio.Common.Policies.UnhandledExceptionPolicy;
@@ -139,10 +139,12 @@ namespace Gallio.Icarus
             };
 
             progressController = RuntimeAccessor.Instance.ServiceLocator.Resolve<IProgressController>();
-            progressController.ProgressUpdate += ProgressUpdate;
+            taskManager.ProgressUpdate += (sender, e) => Sync.Invoke(this, ProgressUpdate);
+            taskManager.TaskCanceled += (sender, e) => Sync.Invoke(this, TaskCanceled);
+            taskManager.TaskCompleted += (sender, e) => Sync.Invoke(this, TaskCompleted);
             progressController.DisplayProgressDialog += (sender, e) => Sync.Invoke(this, () =>
             {
-                var dialog = new ProgressMonitor(e.ProgressMonitor, e.ProgressUpdateEventArgs);
+                var dialog = new ProgressMonitor(e.ProgressMonitor);
                 dialog.Show(this);
             });
         }
@@ -503,24 +505,35 @@ namespace Gallio.Icarus
                 MessageBoxButtons.OK, MessageBoxIcon.Error));
         }
 
-        private void ProgressUpdate(object sender, ProgressUpdateEventArgs e)
+        private void ProgressUpdate()
         {
-            Sync.Invoke(this, () => 
-            {
-                toolStripProgressBar.Maximum = Convert.ToInt32(e.TotalWorkUnits);
-                toolStripProgressBar.Value = Convert.ToInt32(e.CompletedWorkUnits);
+            var progressMonitor = taskManager.ProgressMonitor;
 
-                var sb = new StringBuilder();
-                sb.Append(e.TaskName);
-                if (!string.IsNullOrEmpty(e.SubTaskName))
-                {
-                    sb.Append(" - ");
-                    sb.Append(e.SubTaskName);
-                }
-                if (e.TotalWorkUnits > 0)
-                    sb.Append(String.Format(" ({0:P0})", (e.CompletedWorkUnits/e.TotalWorkUnits)));
-                toolStripStatusLabel.Text = sb.ToString();
-            });
+            toolStripProgressBar.Maximum = Convert.ToInt32(progressMonitor.TotalWorkUnits);
+            toolStripProgressBar.Value = Convert.ToInt32(progressMonitor.CompletedWorkUnits);
+
+            var sb = new StringBuilder();
+            sb.Append(progressMonitor.TaskName);
+            if (!string.IsNullOrEmpty(progressMonitor.LeafSubTaskName))
+            {
+                sb.Append(" - ");
+                sb.Append(progressMonitor.LeafSubTaskName);
+            }
+            if (progressMonitor.TotalWorkUnits > 0)
+                sb.Append(String.Format(" ({0:P0})", (progressMonitor.CompletedWorkUnits / progressMonitor.TotalWorkUnits)));
+            toolStripStatusLabel.Text = sb.ToString();
+        }
+
+        private void TaskCanceled()
+        {
+            toolStripProgressBar.Value = 0;
+            toolStripStatusLabel.Text = "Canceled";
+        }
+
+        private void TaskCompleted()
+        {
+            toolStripProgressBar.Value = 0;
+            toolStripStatusLabel.Text = string.Empty;
         }
 
         private void startWithDebuggerToolStripMenuItem_Click(object sender, EventArgs e)

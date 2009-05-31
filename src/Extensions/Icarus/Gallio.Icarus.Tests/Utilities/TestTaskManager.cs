@@ -14,10 +14,10 @@
 // limitations under the License.
 
 using System;
-using Gallio.Icarus.Commands;
-using Gallio.Icarus.ProgressMonitoring;
-using Gallio.Icarus.ProgressMonitoring.EventArgs;
+using Gallio.Common.Policies;
 using System.Collections.Generic;
+using Gallio.Runtime.ProgressMonitoring;
+using Gallio.UI.Progress;
 using Action=Gallio.Common.Action;
 
 namespace Gallio.Icarus.Tests.Utilities
@@ -30,12 +30,12 @@ namespace Gallio.Icarus.Tests.Utilities
             private set;
         }
 
-        public ProgressMonitorPresenter ProgressMonitor
+        public ObservableProgressMonitor ProgressMonitor
         {
             get { throw new NotImplementedException(); }
         }
 
-        public event EventHandler<ProgressUpdateEventArgs> ProgressUpdate;
+        public event EventHandler ProgressUpdate;
         public event EventHandler TaskStarted;
         public event EventHandler TaskCompleted;
         public event EventHandler TaskCanceled;
@@ -57,34 +57,27 @@ namespace Gallio.Icarus.Tests.Utilities
             queue.Add(command);
         }
 
-        public void Stop()
+        public void ClearQueue()
         { }
 
-        public void Start()
-        { }
-
-        protected void OnTaskStarted()
+        protected void OnTaskStarted(EventArgs e)
         {
-            if (TaskStarted != null)
-                TaskStarted(this, EventArgs.Empty);
+            EventHandlerPolicy.SafeInvoke(TaskStarted, this, e);
         }
 
-        protected void OnTaskCompleted()
+        protected void OnTaskCompleted(EventArgs e)
         {
-            if (TaskCompleted != null)
-                TaskCompleted(this, EventArgs.Empty);
+            EventHandlerPolicy.SafeInvoke(TaskCompleted, this, e);
         }
 
-        protected void OnTaskCanceled()
+        protected void OnTaskCanceled(EventArgs e)
         {
-            if (TaskCanceled != null)
-                TaskCanceled(this, EventArgs.Empty);
+            EventHandlerPolicy.SafeInvoke(TaskCanceled, this, e);
         }
 
-        protected void OnProgressUpdate(ProgressUpdateEventArgs e)
+        protected void OnProgressUpdate(EventArgs e)
         {
-            if (ProgressUpdate != null)
-                ProgressUpdate(this, e);
+            EventHandlerPolicy.SafeInvoke(ProgressUpdate, this, e);
         }
     }
 }

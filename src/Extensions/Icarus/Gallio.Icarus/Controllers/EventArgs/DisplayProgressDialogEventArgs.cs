@@ -13,28 +13,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Gallio.Icarus.ProgressMonitoring;
-using Gallio.Icarus.ProgressMonitoring.EventArgs;
+using Gallio.Runtime.ProgressMonitoring;
 
 namespace Gallio.Icarus.Controllers.EventArgs
 {
     internal class DisplayProgressDialogEventArgs : System.EventArgs
     {
-        public ProgressMonitorPresenter ProgressMonitor
+        public ObservableProgressMonitor ProgressMonitor
         {
             get; private set;
         }
 
-        public ProgressUpdateEventArgs ProgressUpdateEventArgs
-        {
-            get; private set;
-        }
-
-        public DisplayProgressDialogEventArgs(ProgressMonitorPresenter progressMonitor, 
-            ProgressUpdateEventArgs progressUpdateEventArgs)
+        public DisplayProgressDialogEventArgs(ObservableProgressMonitor progressMonitor)
         {
             ProgressMonitor = progressMonitor;
-            ProgressUpdateEventArgs = progressUpdateEventArgs;
         }
     }
 }

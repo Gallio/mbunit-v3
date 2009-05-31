@@ -15,10 +15,17 @@
 
 using Gallio.Runtime.ProgressMonitoring;
 
-namespace Gallio.Icarus.Commands
+namespace Gallio.UI.Progress
 {
+    /// <summary>
+    /// Command pattern.
+    /// </summary>
     public interface ICommand
     {
+        /// <summary>
+        /// Run a task (with progress information).
+        /// </summary>
+        /// <param name="progressMonitor"></param>
         void Execute(IProgressMonitor progressMonitor);
     }
 }

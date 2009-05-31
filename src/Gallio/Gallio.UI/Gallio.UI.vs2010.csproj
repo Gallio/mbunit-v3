@@ -46,6 +46,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Common\Policies\IUnhandledExceptionPolicy.cs" />
+    <Compile Include="Common\Policies\UnhandledExceptionPolicy.cs" />
     <Compile Include="ControlPanel\ControlPanelPresenter.cs" />
     <Compile Include="ControlPanel\ControlPanelTab.cs">
       <SubType>UserControl</SubType>
@@ -117,6 +119,15 @@
     <Compile Include="Controls\ShieldButton.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Progress\ICommand.cs" />
+    <Compile Include="Progress\ITaskManager.cs" />
+    <Compile Include="Progress\ProgressMonitor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Progress\ProgressMonitor.Designer.cs">
+      <DependentUpon>ProgressMonitor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Progress\TaskManager.cs" />
     <Compile Include="Reports\HtmlTestStepRunFormatter.cs">
       <SubType>Code</SubType>
     </Compile>

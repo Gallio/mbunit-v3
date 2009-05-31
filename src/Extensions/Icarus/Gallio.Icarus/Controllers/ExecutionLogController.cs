@@ -23,6 +23,7 @@ using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Model.Serialization;
 using Gallio.Runner.Events;
 using Gallio.Runner.Reports;
+using Gallio.UI.Progress;
 
 namespace Gallio.Icarus.Controllers
 {

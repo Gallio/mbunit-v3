@@ -27,6 +27,12 @@
     <service serviceId="Gallio.UI.PreferencePaneProvider"
              serviceType="Gallio.UI.ControlPanel.Preferences.IPreferencePaneProvider, Gallio.UI"
              defaultComponentType="Gallio.UI.ControlPanel.Preferences.PlaceholderPreferencePaneProvider, Gallio.UI"/>
+
+    <service serviceId="Gallio.UI.TaskManager" 
+             serviceType="Gallio.UI.Progress.ITaskManager, Gallio.UI" />
+
+    <service serviceId="Gallio.UI.UnhandledExceptionPolicy"
+         serviceType="Gallio.UI.Common.Policies.IUnhandledExceptionPolicy, Gallio.UI" />
   </services>
 
   <components>
@@ -74,5 +80,13 @@
     <component componentId="Gallio.UI.RuntimePreferencePaneCommitterElevatedCommand"
                serviceId="Gallio.ElevatedCommand"
                componentType="Gallio.UI.ControlPanel.Preferences.RuntimePreferencePaneCommitterElevatedCommand, Gallio.UI" />
+
+    <component componentId="Gallio.UI.TaskManager" 
+               serviceId="Gallio.UI.TaskManager" 
+               componentType="Gallio.UI.Progress.TaskManager, Gallio.UI" />
+
+    <component componentId="Gallio.UI.UnhandledExceptionPolicy" 
+               serviceId="Gallio.UI.UnhandledExceptionPolicy" 
+               componentType="Gallio.UI.Common.Policies.UnhandledExceptionPolicy, Gallio.UI" />
   </components>
 </plugin>

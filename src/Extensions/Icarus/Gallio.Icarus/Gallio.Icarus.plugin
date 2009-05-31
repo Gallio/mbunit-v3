@@ -14,20 +14,12 @@
 
   <services>
 
-    <service serviceId="Gallio.Icarus.TaskManager"
-             serviceType="Gallio.Icarus.ITaskManager, Gallio.Icarus" />
-
     <service serviceId="Gallio.Icarus.WindowManager"
              serviceType="Gallio.Icarus.IWindowManager, Gallio.Icarus" />
 
     <service serviceId="Gallio.Icarus.AssemblyWatcher"
              serviceType="Gallio.Icarus.Remoting.IAssemblyWatcher, Gallio.Icarus" />
-
-    <!-- Commands -->
-
-    <service serviceId="Gallio.Icarus.Command" 
-             serviceType="Gallio.Icarus.Commands.ICommand, Gallio.Icarus" />
-    
+  
     <!-- Controllers -->
 
     <service serviceId="Gallio.Icarus.ProgressController" 
@@ -77,19 +69,9 @@
     
     <service serviceId="Gallio.Icarus.ReportService"
          serviceType="Gallio.Icarus.Services.Interfaces.IReportService, Gallio.Icarus" />
-    
-    <!-- Utilities -->
-    
-    <service serviceId="Gallio.Icarus.UnhandledExceptionPolicy"
-             serviceType="Gallio.Icarus.Utilities.IUnhandledExceptionPolicy, Gallio.Icarus" />
-    
   </services>
   <components>
     
-    <component componentId="Gallio.Icarus.TaskManager" 
-               serviceId="Gallio.Icarus.TaskManager" 
-               componentType="Gallio.Icarus.TaskManager, Gallio.Icarus" />
-
     <component componentId="Gallio.Icarus.AssemblyWatcher"
                serviceId="Gallio.Icarus.AssemblyWatcher"
                componentType="Gallio.Icarus.Remoting.AssemblyWatcher, Gallio.Icarus" />
@@ -97,12 +79,6 @@
     <component componentId="Gallio.Icarus.WindowManager" 
                serviceId="Gallio.Icarus.WindowManager" 
                componentType="Gallio.Icarus.WindowManager, Gallio.Icarus" />
-
-    <!-- Commands -->
-
-    <component componentId="Gallio.Icarus.AddAssembliesCommand" 
-               serviceId="Gallio.Icarus.Command" 
-               componentType="Gallio.Icarus.Commands.AddAssembliesCommand, Gallio.Icarus" />
 
     <!-- Control panel -->
 
@@ -249,9 +225,6 @@
     
     <!-- Utilities -->
     
-    <component componentId="Gallio.Icarus.UnhandledExceptionPolicy"
-               serviceId="Gallio.Icarus.UnhandledExceptionPolicy"
-               componentType="Gallio.Icarus.Utilities.UnhandledExceptionPolicy, Gallio.Icarus" />
     
   </components>
   
