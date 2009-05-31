@@ -70,12 +70,12 @@ namespace MbUnit.Tests.Framework
                 TestLog.WriteLine("[{0}]", value);
             }
 
-            public static bool IsPrime(decimal number)
+            public static bool IsPrime(int n)
             {
                 // Simple implementation of the "Sieve of Eratosthenes" algorithm, 
                 // that checks for the primality of a number 
                 // (http://en.wikipedia.org/wiki/Sieve_of_Eratosthenes)
-                int n = (int)Convert.ChangeType(number, typeof(int));
+                //int n = (int)Convert.ChangeType(number, typeof(int));
                 var array = new BitArray(n + 1, true);
 
                 for (int i = 2; i < n + 1; i++)

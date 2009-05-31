@@ -126,6 +126,7 @@
     <Compile Include="Common\Text\RegularExpression\QuantifierTest.cs" />
     <Compile Include="Framework\Data\Generation\SequentialNumbersGeneratorTest.cs" />
     <Compile Include="Framework\Data\Generation\RandomNumbersGeneratorTest.cs" />
+    <Compile Include="Framework\Pattern\FixtureMemberInvokerTest.cs" />
     <Compile Include="Framework\Pattern\PatternTestFrameworkExtensionInfoTest.cs" />
     <Compile Include="Framework\TestTerminatedExceptionTest.cs" />
     <Compile Include="Framework\Pattern\ParallelizableTestCaseSchedulerTest.cs" />

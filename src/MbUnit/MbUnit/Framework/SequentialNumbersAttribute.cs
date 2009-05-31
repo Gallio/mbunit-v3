@@ -179,9 +179,9 @@ namespace MbUnit.Framework
         /// </summary>
         /// <remarks>
         /// <para>
-        /// The method must accepts one argument of the type <see cref="Decimal"/>, and
-        /// returns a <see cref="Boolean"/> value indicating whether the specified value
-        /// must be accepted or rejected.
+        /// The method must accepts one argument of a type that represents a number, such as <see cref="Decimal"/>, 
+        /// <see cref="Double"/>, or <see cref="Int32"/>, and returns a <see cref="Boolean"/> value indicating 
+        /// whether the specified value must be accepted or rejected.
         /// </para>
         /// <para>
         /// <example>
@@ -195,12 +195,11 @@ namespace MbUnit.Framework
         ///         // Code logic here...
         ///     }
         /// 
-        ///     public static bool MyFilter(decimal number)
+        ///     public static bool MyFilter(int number)
         ///     {
-        ///         // Rejects all the numbers that are not divisible by 3 or by 10.
-        ///         int n = (int)number;
         ///         return (n % 3 == 0) || (n % 10 == 0);
         ///     }
+        /// }
         /// ]]></code>
         /// </example>
         /// </para>
@@ -246,7 +245,7 @@ namespace MbUnit.Framework
             if (Filter == null)
                 return null;
 
-            var invoker = new FixtureMemberInvoker<bool>(null, scope, Filter, new[] { typeof(decimal) });
+            var invoker = new FixtureMemberInvoker<bool>(null, scope, Filter);
             return d => invoker.Invoke(d);
         }
     }

@@ -19,42 +19,44 @@ using System.Text;
 using Gallio.Common;
 using System.Reflection;
 using Gallio.Common.Reflection;
+using Gallio.Runtime.Conversions;
 
 namespace Gallio.Framework.Pattern
 {
     /// <summary>
-    /// 
+    /// Finds and invokes a member of a test fixture, a nested type of the test fixture,
+    /// or an external type.
     /// </summary>
-    /// <typeparam name="TOutput"></typeparam>
+    /// <remarks>
+    /// <para>
+    /// The member is searched among the fields, the properties, and the methods. It might be
+    /// a public or a non-public member. If the member belongs directly to the test fixture, it
+    /// might be an instance member. Otherwise, it must be a static member.
+    /// </para>
+    /// </remarks>
+    /// <typeparam name="TOutput">The type of the result returned by the member invoked.</typeparam>
     public class FixtureMemberInvoker<TOutput>
     {
         private readonly Type type;
         private readonly IPatternScope scope;
         private readonly string memberName;
         private readonly BindingFlags bindingFlags;
-        private readonly Type[] argsTypes;
 
         /// <summary>
-        /// 
+        /// Constructs a invoker for a member of a test fixture, a nested type of the test fixture,
+        /// or an external type.
         /// </summary>
-        /// <param name="type"></param>
-        /// <param name="scope"></param>
-        /// <param name="memberName"></param>
-        /// <returns></returns>
+        /// <remarks>
+        /// <para>
+        /// The member is searched among the fields, the properties, and the methods of the test fixture
+        /// or the specified <paramref name="type"/>.
+        /// </para>
+        /// </remarks>
+        /// <param name="type">The owning type of the searched member, or null if it is assumed to be the fixture class.</param>
+        /// <param name="scope">The scope of the test.</param>
+        /// <param name="memberName">The name of the searched member.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="scope"/> or <paramref name="memberName"/> are null.</exception>
         public FixtureMemberInvoker(Type type, IPatternScope scope, string memberName)
-            : this(type, scope, memberName, null)
-        {
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="type"></param>
-        /// <param name="scope"></param>
-        /// <param name="memberName"></param>
-        /// <param name="argsTypes"></param>
-        /// <returns></returns>
-        public FixtureMemberInvoker(Type type, IPatternScope scope, string memberName, Type[] argsTypes)
         {
             if (scope == null)
                 throw new ArgumentNullException("scope");
@@ -65,36 +67,27 @@ namespace Gallio.Framework.Pattern
             this.type = type;
             this.scope = scope;
             this.memberName = memberName;
-            this.argsTypes = argsTypes;
             this.bindingFlags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static |
                 BindingFlags.FlattenHierarchy | ((type != null) ? 0 : BindingFlags.Instance);
         }
 
         /// <summary>
-        /// 
+        /// Invokes the argument-less member and returns the resulting value.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>The resulting value.</returns>
         public TOutput Invoke()
         {
             return InvokeImpl(null);
         }
 
         /// <summary>
-        /// 
+        /// Invokes the member with the specified arguments and returns the resulting value.
         /// </summary>
-        /// <param name="args"></param>
-        /// <returns></returns>
+        /// <param name="args">The arguments to pass to the member.</param>
+        /// <returns>The resulting value.</returns>
         public TOutput Invoke(params object[] args)
         {
             return InvokeImpl(args);
-        }
-
-        private bool ParameterLess
-        {
-            get
-            {
-                return argsTypes == null || argsTypes.Length == 0;
-            }
         }
 
         private TOutput InvokeImpl(object[] args)
@@ -139,32 +132,48 @@ namespace Gallio.Framework.Pattern
                     if (method == null)
                         throw new TestFailedException(String.Format("Could not find method '{0}'.", memberName));
 
-                    return (TOutput)method.Invoke(fixtureInstance, ParameterLess ? null : args);
+                    return (TOutput)method.Invoke(fixtureInstance, ConvertArguments(method.GetParameters(), args));
                 };
             }
 
             return null;
         }
 
+        private object[] ConvertArguments(ParameterInfo[] parameters, object[] args)
+        {
+            if ((args == null ? 0 : args.Length) != parameters.Length)
+                throw new PatternUsageErrorException(String.Format("Unexpected number of arguments specified to invoke '{0}'.", memberName));
+
+            if (args == null)
+                return null;
+
+            var converter = Converter.Instance;
+            var result = new object[args.Length];
+
+            for (int i = 0; i < args.Length; i++)
+            {
+                result[i] = converter.Convert(args[i], parameters[i].ParameterType);
+            }
+
+            return result;
+        }
+
         private Func<object[], TOutput> TryGetMemberAsProperty(ITypeInfo ownerInfo)
         {
-            if (ParameterLess)
+            IPropertyInfo info = ownerInfo.GetProperty(memberName, bindingFlags);
+
+            if (info != null && info.GetMethod != null)
             {
-                IPropertyInfo info = ownerInfo.GetProperty(memberName, bindingFlags);
-
-                if (info != null && info.GetMethod != null)
+                return args =>
                 {
-                    return args =>
-                    {
-                        object fixtureInstance = GetFixtureInstance(info.GetMethod.IsStatic);
-                        PropertyInfo property = (type == null) ? GetFixtureType().GetProperty(memberName, bindingFlags) : info.Resolve(true);
+                    object fixtureInstance = GetFixtureInstance(info.GetMethod.IsStatic);
+                    PropertyInfo property = (type == null) ? GetFixtureType().GetProperty(memberName, bindingFlags) : info.Resolve(true);
 
-                        if (property == null)
-                            throw new TestFailedException(String.Format("Could not find property '{0}'.", memberName));
+                    if (property == null)
+                        throw new TestFailedException(String.Format("Could not find property '{0}'.", memberName));
 
-                        return (TOutput)property.GetValue(fixtureInstance, null);
-                    };
-                }
+                    return (TOutput)property.GetValue(fixtureInstance, null);
+                };
             }
 
             return null;
@@ -172,23 +181,20 @@ namespace Gallio.Framework.Pattern
 
         private Func<object[], TOutput> TryGetMemberAsField(ITypeInfo ownerInfo)
         {
-            if (ParameterLess)
+            IFieldInfo info = ownerInfo.GetField(memberName, bindingFlags);
+
+            if (info != null)
             {
-                IFieldInfo info = ownerInfo.GetField(memberName, bindingFlags);
-
-                if (info != null)
+                return args =>
                 {
-                    return args =>
-                    {
-                        object fixtureInstance = GetFixtureInstance(info.IsStatic);
-                        FieldInfo field = (type == null) ? GetFixtureType().GetField(memberName, bindingFlags) : info.Resolve(true);
+                    object fixtureInstance = GetFixtureInstance(info.IsStatic);
+                    FieldInfo field = (type == null) ? GetFixtureType().GetField(memberName, bindingFlags) : info.Resolve(true);
 
-                        if (field == null)
-                            throw new TestFailedException(String.Format("Could not find field '{0}''.", memberName));
+                    if (field == null)
+                        throw new TestFailedException(String.Format("Could not find field '{0}''.", memberName));
 
-                        return (TOutput)field.GetValue(fixtureInstance);
-                    };
-                }
+                    return (TOutput)field.GetValue(fixtureInstance);
+                };
             }
 
             return null;
@@ -221,5 +227,54 @@ namespace Gallio.Framework.Pattern
 
             return state;
         }
+    }
+
+    /// <summary>
+    /// Represents a family of types for an argument.
+    /// </summary>
+    public sealed class ArgumentTypeFamily
+    {
+        private readonly Type[] types;
+
+        /// <summary>
+        /// Gets the ordered types for the family.
+        /// </summary>
+        public Type[] Types
+        {
+            get
+            {
+                return types;
+            }
+        }
+
+        private ArgumentTypeFamily(Type[] types)
+        {
+            this.types = types;
+        }
+
+        /// <summary>
+        /// Number argument.
+        /// </summary>
+        public static readonly ArgumentTypeFamily Number = new ArgumentTypeFamily(new[] 
+        {   typeof(decimal), 
+            typeof(double),
+            typeof(float),
+            typeof(long),
+            typeof(ulong),
+            typeof(int),
+            typeof(uint),
+            typeof(short),
+            typeof(ushort),
+            typeof(sbyte),
+            typeof(byte) 
+        });
+        
+        /// <summary>
+        /// Text argument.
+        /// </summary>
+        public static readonly ArgumentTypeFamily Text = new ArgumentTypeFamily(new[] 
+        { 
+            typeof(string) 
+        });
     }
 }

@@ -166,7 +166,7 @@ namespace MbUnit.Framework
             if (Filter == null)
                 return null;
 
-            var invoker = new FixtureMemberInvoker<bool>(null, scope, Filter, new[] { typeof(string) });
+            var invoker = new FixtureMemberInvoker<bool>(null, scope, Filter);
             return t => invoker.Invoke(t);
         }
     }
