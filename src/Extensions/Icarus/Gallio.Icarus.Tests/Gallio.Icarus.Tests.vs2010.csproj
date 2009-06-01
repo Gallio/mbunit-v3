@@ -103,7 +103,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="TaskManagerTest.cs" />
     <Compile Include="Utilities\MockProgressMonitor.cs" />
     <Compile Include="Utilities\SyncTestAttribute.cs" />
     <Compile Include="Utilities\TestSynchronizationContext.cs" />
