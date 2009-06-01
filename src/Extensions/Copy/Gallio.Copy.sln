@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.Copy", "Gallio.Copy\Gallio.Copy.csproj", "{5DA3843B-9639-4E11-8673-44E30624926F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio", "..\Gallio\Gallio.csproj", "{6CAB7735-05DA-480D-9A04-50615B00F886}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio", "..\..\Gallio\Gallio\Gallio.csproj", "{6CAB7735-05DA-480D-9A04-50615B00F886}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.UI", "..\Gallio.UI\Gallio.UI.csproj", "{36B1F505-995B-41E7-AAC9-1E845B08F2D7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.UI", "..\..\Gallio\Gallio.UI\Gallio.UI.csproj", "{36B1F505-995B-41E7-AAC9-1E845B08F2D7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.Copy.Tests", "Gallio.Copy.Tests\Gallio.Copy.Tests.csproj", "{27D9A0F2-8E7E-45D4-8664-00D23ECBBB90}"
 EndProject

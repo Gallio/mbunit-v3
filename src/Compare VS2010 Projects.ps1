@@ -81,9 +81,7 @@ function Check([string] $vs2008proj, [string] $vs2010proj)
 	}
 	else
 	{
-		PrintResult $vs2010proj "*** Missing VS 2010 project $vs2010proj"
-		
-		set-variable -Name outcome -Value 1 -Scope global
+		PrintResult $vs2010proj "*** Warning: Missing VS 2010 project $vs2010proj"
 	}
 }
 
