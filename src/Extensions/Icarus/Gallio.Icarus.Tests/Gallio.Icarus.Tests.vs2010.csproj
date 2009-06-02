@@ -141,6 +141,9 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
+    <ItemGroup>
+    <None Include="Gallio.Icarus.Tests.dll.config" />
+  </ItemGroup>
   <ItemGroup>
     <Folder Include="Options\" />
     <Folder Include="Services\" />
