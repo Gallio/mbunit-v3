@@ -24,16 +24,15 @@ using Gallio.Framework;
 namespace Gallio.Tests.Framework.Data.Generation
 {
     [TestFixture]
-    [TestsOn(typeof(RandomStringsGenerator))]
-    public class RandomStringsGeneratorTest
+    [TestsOn(typeof(RandomStockStringsGenerator))]
+    public class RandomStockStringsGeneratorTest
     {
         [Test]
-        [Row(@"[0-9]{4,10}", @"^[0-9]{4,10}$", 100)]
-        public void Generate_sequence_ok(string pattern, string expected, int count)
+        public void Generate_sequence_ok(RandomStringStock stock, int count)
         {
-            var generator = new RandomStringsGenerator
+            var generator = new RandomStockStringsGenerator
             {
-                RegularExpressionPattern = pattern,
+                Values = new[] { "A", "B", "C", "D" },
                 Count = count
             };
 
@@ -43,25 +42,18 @@ namespace Gallio.Tests.Framework.Data.Generation
             {
                 foreach (string value in values)
                 {
-                    Assert.FullMatch(value, expected);
+                    Assert.Contains<string>(new[] { "A", "B", "C", "D" }, value);
                 }
             });
         }
 
-        private IEnumerable<object[]> GetInvalidProperyValues()
+        [Test]
+        public void Constructs_with_negative_count_should_throw_exception(string pattern, int count)
         {
-            yield return new object[] { null, 1 };
-            yield return new object[] { "[A-Z", 1, }; // Invalid regular expression!
-            yield return new object[] { "ABC", -1 }; // Negative count!
-        }
-
-        [Test, Factory("GetInvalidProperyValues")]
-        public void Constructs_with_invalid_property_should_throw_exception(string pattern, int count)
-        {
-            var generator = new RandomStringsGenerator
+            var generator = new RandomStockStringsGenerator
             {
-                RegularExpressionPattern = pattern,
-                Count = count
+                Values = new[] { "A", "B", "C", "D" },
+                Count = -1
             };
 
             Assert.Throws<GenerationException>(() => generator.Run().Cast<string>().ToArray());

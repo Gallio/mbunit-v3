@@ -22,15 +22,16 @@ using Gallio.Common.Text.RegularExpression;
 namespace Gallio.Framework.Data.Generation
 {
     /// <summary>
-    /// Generator of random <see cref="String"/> objects based on a regular expression filter mask.
+    /// Generator of random <see cref="String"/> objects from a predefined list of string values.
     /// </summary>
-    public abstract class RandomStringsGenerator : Generator<string>
+    public class RandomStockStringsGenerator : RandomStringsGenerator
     {
+        private readonly static Random InnerGenerator = new Random();
+
         /// <summary>
-        /// Gets or sets the length of the sequence of strings
-        /// created by the generator.
+        /// Gets or sets the predefined string values.
         /// </summary>
-        public int? Count
+        public string[] Values
         {
             get;
             set;
@@ -39,42 +40,26 @@ namespace Gallio.Framework.Data.Generation
         /// <summary>
         /// Constructs a generator of random <see cref="String"/> objects.
         /// </summary>
-        protected RandomStringsGenerator()
+        public RandomStockStringsGenerator()
         {
         }
 
         /// <inheritdoc/>
         public override IEnumerable Run()
         {
-            if (!Count.HasValue)
-                throw new GenerationException("The 'Count' property must be initialized.");
+            if (Values == null)
+                throw new GenerationException("The 'Values' property must be initialized.");
 
-            if (Count.Value < 0)
-                throw new GenerationException("The 'Count' property wich specifies the length of the sequence must be strictly positive.");
+            if (Values.Length == 0)
+                throw new GenerationException("The 'Values' property must contain at least one element.");
 
-            return GetSequence();
+            return base.Run();
         }
 
-        private IEnumerable GetSequence()
+        /// <inheritdoc/>
+        protected override string GetNextString()
         {
-            int i = 0;
-
-            while (i < Count.Value)
-            {
-                var value = GetNextString();
-
-                if (DoFilter(value))
-                {
-                    yield return value;
-                    i++;
-                }
-            }
+            return Values[InnerGenerator.Next(Values.Length)];
         }
-
-        /// <summary>
-        /// Generates the next random string.
-        /// </summary>
-        /// <returns>A random string.</returns>
-        protected abstract string GetNextString();
     }
 }

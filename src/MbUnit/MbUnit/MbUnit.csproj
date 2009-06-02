@@ -125,6 +125,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="MbUnit.plugin" />
+    <None Include="Resources\Database_EnCountries.xml" />
+    <None Include="Resources\Database_EnUSMaleNames.xml" />
     <Content Include="Resources\MbUnit.ico" />
   </ItemGroup>
   <ItemGroup>
@@ -160,6 +162,7 @@
     <Compile Include="Framework\Assert.Sorting.cs" />
     <Compile Include="Framework\Assert.Distinct.cs" />
     <Compile Include="Framework\NamespaceDoc.cs" />
+    <Compile Include="Framework\RandomStringStock.cs" />
     <Compile Include="Framework\RandomStringsAttribute.cs" />
     <Compile Include="Framework\Reflection\NamespaceDoc.cs" />
     <Compile Include="Framework\SequentialNumbersAttribute.cs" />
@@ -190,6 +193,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Framework\TestSuite.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Database_Schema.xsd" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

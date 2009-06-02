@@ -117,6 +117,7 @@
     <Compile Include="Common\Text\RangeTest.cs" />
     <Compile Include="Common\Text\SubstringTest.cs" />
     <Compile Include="Framework\Assertions\AssertionHelperTest.cs" />
+    <Compile Include="Framework\Data\Generation\RandomStockStringsGeneratorTest.cs" />
     <Compile Include="Framework\Data\Generation\GenerationExceptionTest.cs" />
     <Compile Include="Common\Text\RegularExpression\ElementSetTest.cs" />
     <Compile Include="Common\Text\RegularExpression\ElementGroupTest.cs" />
@@ -124,6 +125,7 @@
     <Compile Include="Common\Text\RegularExpression\RegexLiteExceptionTest.cs" />
     <Compile Include="Common\Text\RegularExpression\RegexLiteTest.cs" />
     <Compile Include="Common\Text\RegularExpression\QuantifierTest.cs" />
+    <Compile Include="Framework\Data\Generation\RandomRegexLiteStringsGeneratorTest.cs" />
     <Compile Include="Framework\Data\Generation\SequentialNumbersGeneratorTest.cs" />
     <Compile Include="Framework\Data\Generation\RandomNumbersGeneratorTest.cs" />
     <Compile Include="Framework\Pattern\FixtureMemberInvokerTest.cs" />

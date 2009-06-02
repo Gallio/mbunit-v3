@@ -32,8 +32,8 @@ namespace MbUnit.Framework
     /// </summary>
     /// <remarks>
     /// <para>
-    /// Initialize the random string generator by setting the 2 named parameters 
-    /// <see cref="Pattern"/> and <see cref="Count"/>.
+    /// Initialize the random string generator by setting the named parameter <see cref="Count"/>, which specifies
+    /// how many random values to generate; and one of the two named parameters <see cref="Pattern"/> or <see cref="Stock"/>.
     /// </para>
     /// <para>
     /// The <see cref="Pattern"/> property accepts a simplified regular expression syntax. 
@@ -64,6 +64,9 @@ namespace MbUnit.Framework
     /// }]]></code>
     /// </example>
     /// </para>
+    /// <para>
+    /// The <see cref="Stock"/> property selects a stock of predefined strings from which to draw random values.
+    /// </para>
     /// </remarks>
     /// <seealso cref="ColumnAttribute"/>
     [CLSCompliant(false)]
@@ -71,6 +74,7 @@ namespace MbUnit.Framework
     public class RandomStringsAttribute : GenerationDataAttribute
     {
         private int? count = null;
+        private RandomStringStock? stock = null;
 
         /// <summary>
         /// Gets or sets a regular expression pattern to generate random string from.
@@ -79,6 +83,22 @@ namespace MbUnit.Framework
         {
             get;
             set;
+        }
+
+        /// <summary>
+        /// Gets or sets the stock of predefined strings from which to draw random values.
+        /// </summary>
+        public RandomStringStock Stock
+        {
+            get
+            {
+                return stock ?? RandomStringStock.EnUSMaleNames;
+            }
+
+            set
+            {
+                stock = value;
+            }
         }
 
         /// <summary>
@@ -145,14 +165,32 @@ namespace MbUnit.Framework
         {
             var invoker = MakeFilterInvoker(scope);
 
+            if (Pattern == null && stock == null)
+                throw new PatternUsageErrorException("You must specify how to generate random strings by setting either 'Pattern' or 'Stock' appropriately.");
+
+            if (!String.IsNullOrEmpty(Pattern) && stock.HasValue)
+                throw new PatternUsageErrorException("You must specify how to generate random strings by setting either 'Pattern' or 'Stock' exclusively.");
+
             try
             {
-                return new RandomStringsGenerator
+                if (stock.HasValue)
                 {
-                    RegularExpressionPattern = Pattern,
-                    Count = count,
-                    Filter = invoker
-                };
+                    return new RandomStockStringsGenerator
+                    {
+                        Values = RandomStringStockInfo.FromStock(stock.Value).GetItems(),
+                        Count = count,
+                        Filter = invoker
+                    };
+                }
+                else
+                {
+                    return new RandomRegexLiteStringsGenerator
+                    {
+                        RegularExpressionPattern = Pattern,
+                        Count = count,
+                        Filter = invoker
+                    };
+                }
             }
             catch (GenerationException exception)
             {

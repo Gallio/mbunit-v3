@@ -159,6 +159,8 @@
     <Compile Include="Common\Validation\NamespaceDoc.cs" />
     <Compile Include="Common\Xml\NamespaceDoc.cs" />
     <Compile Include="Framework\Assertions\NamespaceDoc.cs" />
+    <Compile Include="Framework\Data\Generation\RandomStockStringsGenerator.cs" />
+    <Compile Include="Framework\Data\Generation\RandomRegexLiteStringsGenerator.cs" />
     <Compile Include="Framework\Data\Generation\NamespaceDoc.cs" />
     <Compile Include="Common\Text\RegularExpression\ElementSet.cs" />
     <Compile Include="Common\Text\RegularExpression\IElement.cs" />

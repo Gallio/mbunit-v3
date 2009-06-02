@@ -24,13 +24,14 @@ namespace Gallio.Framework.Data.Generation
     /// <summary>
     /// Generator of random <see cref="String"/> objects based on a regular expression filter mask.
     /// </summary>
-    public abstract class RandomStringsGenerator : Generator<string>
+    public class RandomRegexLiteStringsGenerator : RandomStringsGenerator
     {
+        private RegexLite regex;
+
         /// <summary>
-        /// Gets or sets the length of the sequence of strings
-        /// created by the generator.
+        /// Gets or sets regular expression pattern that serves as a filter mask.
         /// </summary>
-        public int? Count
+        public string RegularExpressionPattern
         {
             get;
             set;
@@ -39,42 +40,33 @@ namespace Gallio.Framework.Data.Generation
         /// <summary>
         /// Constructs a generator of random <see cref="String"/> objects.
         /// </summary>
-        protected RandomStringsGenerator()
+        public RandomRegexLiteStringsGenerator()
         {
         }
 
         /// <inheritdoc/>
         public override IEnumerable Run()
         {
-            if (!Count.HasValue)
-                throw new GenerationException("The 'Count' property must be initialized.");
+            if (RegularExpressionPattern == null)
+                throw new GenerationException("The 'RegularExpressionPattern' property must be initialized.");
 
-            if (Count.Value < 0)
-                throw new GenerationException("The 'Count' property wich specifies the length of the sequence must be strictly positive.");
-
-            return GetSequence();
-        }
-
-        private IEnumerable GetSequence()
-        {
-            int i = 0;
-
-            while (i < Count.Value)
+            try
             {
-                var value = GetNextString();
-
-                if (DoFilter(value))
-                {
-                    yield return value;
-                    i++;
-                }
+                regex = new RegexLite(RegularExpressionPattern);
             }
+            catch (RegexLiteException exception)
+            {
+                throw new GenerationException(String.Format(
+                    "The specified regular expression cannot be parsed ({0}).", exception.Message), exception);
+            }
+
+            return base.Run();
         }
 
-        /// <summary>
-        /// Generates the next random string.
-        /// </summary>
-        /// <returns>A random string.</returns>
-        protected abstract string GetNextString();
+        /// <inheritdoc/>
+        protected override string GetNextString()
+        {
+            return regex.GetRandomString();
+        }
     }
 }

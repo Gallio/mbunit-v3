@@ -45,8 +45,8 @@ namespace MbUnit.Tests.Framework
         }
 
         [Test]
-        [Row("Single", @"^[A-D]{3}[0-9]{3}$", 100)]
-        public void GenerateRandomValues(string testMethod, string expectedMatch, int expectedCount)
+        [Row("SingleRegex", @"^[A-D]{3}[0-9]{3}$", 100)]
+        public void GenerateRandomValuesFromRegularExpression(string testMethod, string expectedMatch, int expectedCount)
         {
             var values = GetActualValues(testMethod);
             Assert.AreEqual(100, values.Count());
@@ -60,9 +60,9 @@ namespace MbUnit.Tests.Framework
         }
 
         [Test]
-        public void GenerateFilteredRandomValues()
+        public void GenerateFilteredRandomValuesFromRegularExpression()
         {
-            var values = GetActualValues("FilteredSequence");
+            var values = GetActualValues("FilteredRegexSequence");
             Assert.AreEqual(100, values.Count());
             Assert.Multiple(() =>
             {
@@ -79,15 +79,21 @@ namespace MbUnit.Tests.Framework
         public class RandomStringsSample
         {
             [Test]
-            public void Single([RandomStrings(Pattern = @"[A-D]{3}[0-9]{3}", Count = 100)] string text)
+            public void SingleRegex([RandomStrings(Pattern = @"[A-D]{3}[0-9]{3}", Count = 100)] string text)
             {
                 TestLog.WriteLine("[{0}]", text);
             }
 
             [Test]
-            public void FilteredSequence([RandomStrings(Pattern = @"[A-D]{3}[0-9]{3}", Count = 100, Filter = "MyFilter")] string text)
+            public void FilteredRegexSequence([RandomStrings(Pattern = @"[A-D]{3}[0-9]{3}", Count = 100, Filter = "MyFilter")] string text)
             {
                 TestLog.WriteLine("[{0}]", text);
+            }
+
+            [Test]
+            public void SinglePreset([RandomStrings(Stock = RandomStringStock.EnCountries, Count = 50)] string country)
+            {
+                TestLog.WriteLine("[{0}]", country);
             }
 
             public static bool MyFilter(string text)
