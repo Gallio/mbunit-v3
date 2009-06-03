@@ -20,10 +20,10 @@ using Gallio.Common.Collections;
 namespace Gallio.Framework.Data
 {
     /// <summary>
-    /// <para>
     /// A joined data set is an aggregate data set that joins items from each of zero or more
     /// other data sets according to a <see cref="IJoinStrategy"/>.
-    /// </para>
+    /// </summary>
+    /// <remarks>
     /// <para>
     /// A joined data set supports queries with two kinds of <see cref="DataBinding"/>:
     /// <list type="bullet">
@@ -42,7 +42,7 @@ namespace Gallio.Framework.Data
     /// </item>
     /// </list>
     /// </para>
-    /// </summary>
+    /// </remarks>
     public class JoinedDataSet : AggregateDataSet
     {
         private readonly Dictionary<IDataSet, DataSetInfo> lookupTable = new Dictionary<IDataSet, DataSetInfo>();
@@ -52,8 +52,12 @@ namespace Gallio.Framework.Data
 
         /// <summary>
         /// Gets or sets the <see cref="IJoinStrategy"/>.
-        /// By default the strategy is <see cref="CombinatorialJoinStrategy"/>.
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// By default the strategy is <see cref="CombinatorialJoinStrategy"/>.
+        /// </para>
+        /// </remarks>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
         public IJoinStrategy Strategy
         {
@@ -82,17 +86,15 @@ namespace Gallio.Framework.Data
         }
 
         /// <summary>
-        /// <para>
         /// Translates a binding into one that expresses a query that is scoped over
         /// a particular data set that is associated with this interface.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// If the binding contains an index parameter, the translated binding will contain
         /// an index that is offset based on the position of the contents of the data set
         /// within the items of the joined aggregate.
         /// </para>
-        /// </summary>
-        /// <remarks>
         /// </remarks>
         /// <param name="dataSet">The data set.</param>
         /// <param name="binding">The binding.</param>
@@ -132,7 +134,7 @@ namespace Gallio.Framework.Data
             IDataProvider[] providers = GenericCollectionUtils.ToArray(DataSets);
             int providerCount = providers.Length;
 
-            List<DataBinding>[] bindingsPerProvider = new List<DataBinding>[providerCount];
+            var bindingsPerProvider = new List<DataBinding>[providerCount];
             for (int i = 0; i < providerCount; i++)
                 bindingsPerProvider[i] = new List<DataBinding>();
 
@@ -149,7 +151,7 @@ namespace Gallio.Framework.Data
 
         private ResolvedBinding ResolveBinding(DataBinding binding)
         {
-            ResolvedBinding resolvedBinding = binding as ResolvedBinding;
+            var resolvedBinding = binding as ResolvedBinding;
 
             if (resolvedBinding != null && resolvedBinding.DataSetInfo.IsOwnedBy(this))
                 return resolvedBinding;

@@ -20,9 +20,13 @@ namespace Gallio.Common.Text
 {
     /// <summary>
     /// Describes the difference between a range of the left document and a range of the right document.
+    /// </summary>
+    /// <remarks>
+    /// <para>
     /// Each diff is accompanied by a <see cref="DiffKind" /> that indicates whether it represents
     /// an identical region or one with changes.
-    /// </summary>
+    /// </para>
+    /// </remarks>
     [Serializable]
     public struct Diff : IEquatable<Diff>
     {
@@ -31,7 +35,7 @@ namespace Gallio.Common.Text
         private readonly DiffKind kind;
 
         /// <summary>
-        /// Create a diff.
+        /// Creates a diff.
         /// </summary>
         /// <param name="kind">The diff kind which indicates whether there is a change over the range covered by the diff.</param>
         /// <param name="leftRange">The range of the left document that is affected.</param>

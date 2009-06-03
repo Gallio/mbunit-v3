@@ -20,10 +20,8 @@ using Gallio.Runtime.Conversions;
 namespace Gallio.Framework.Data
 {
     /// <summary>
-    /// <para>
     /// A <see cref="DataBindingContext" /> tracks a list of <see cref="IDataSet"/>s and
     /// <see cref="DataBinding"/>s that are used to produce <see cref="IDataItem"/>s.
-    /// </para>
     /// </summary>
     /// <remarks>
     /// <para>
@@ -64,8 +62,10 @@ namespace Gallio.Framework.Data
         /// Gets the converter service.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// The data binding context does not use the converter itself, but it may be
         /// used by data binders to perform any required internal conversions.
+        /// </para>
         /// </remarks>
         public IConverter Converter
         {
@@ -73,9 +73,7 @@ namespace Gallio.Framework.Data
         }
 
         /// <summary>
-        /// <para>
         /// Returns true if the data binding context contains registered data bindings.
-        /// </para>
         /// </summary>
         /// <remarks>
         /// <para>
@@ -93,13 +91,13 @@ namespace Gallio.Framework.Data
         }
 
         /// <summary>
-        /// <para>
         /// Gets the immutable list of data sets to be enumerated during data binding.
-        /// </para>
         /// </summary>
         /// <remarks>
+        /// <para>
         /// These are the <see cref="IDataSet"/>s from which the raw data for binding will
         /// be retrieved.
+        /// </para>
         /// </remarks>
         public IList<IDataSet> DataSets
         {
@@ -125,10 +123,12 @@ namespace Gallio.Framework.Data
         /// retrieve the values associated with the binding.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// A <see cref="IDataBinder" /> uses this method to register interest
         /// in querying a particular <see cref="IDataSet" />.  It must do so
         /// before <see cref="GetItems" /> is called to ensure that the <see cref="IDataSet"/>
         /// is included in the enumeration.
+        /// </para>
         /// </remarks>
         /// <param name="dataSet">The data set.</param>
         /// <param name="binding">The data binding.</param>
@@ -150,17 +150,15 @@ namespace Gallio.Framework.Data
         }
 
         /// <summary>
-        /// <para>
         /// Gets an enumeration of <see cref="IDataItem"/>s.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// The contents of each item may be inspected using a <see cref="IDataAccessor" />
         /// as returned by <see cref="RegisterBinding" />.  When the client is finished with
         /// an item, it should dispose it by calling the <see cref="IDisposable.Dispose" />
         /// method of the <see cref="IDataItem" />.
         /// </para>
-        /// </summary>
-        /// <remarks>
         /// <para>
         /// A client typically registers its <see cref="IDataBinder"/>s with the
         /// <see cref="DataBindingContext"/> then enters a loop to enumerate the items.
@@ -181,7 +179,7 @@ namespace Gallio.Framework.Data
         /// <returns>The enumeration of data items.</returns>
         public IEnumerable<IDataItem> GetItems(bool includeDynamicItems)
         {
-            if (! HasBindings)
+            if (!HasBindings)
             {
                 yield return NullDataItem.Instance;
             }

@@ -78,17 +78,18 @@ namespace Gallio.Framework.Data.Generation
         /// <summary>
         /// Checks for the specified value to be not one of the following:
         /// <list type="bullet">
-        /// <item><see cref="UInt32.MaxValue"/></item>
+        /// <item><see cref="Int32.MinValue"/></item>
+        /// <item><see cref="Int32.MaxValue"/></item>
         /// </list>
         /// </summary>
-        /// <param name="propertyValue">The <see cref="UInt32"/> property value to be checked.</param>
+        /// <param name="propertyValue">The <see cref="Int32"/> property value to be checked.</param>
         /// <param name="propertyName">A friendly name for the property.</param>
         /// <exception cref="GenerationException">The specified property value is invalid.</exception>
         protected static void CheckProperty(int propertyValue, string propertyName)
         {
             if (propertyValue == Int32.MinValue || propertyValue == Int32.MaxValue)
                 throw new GenerationException(String.Format("The '{0}' property cannot be one of the following: " +
-                    "UInt32.MaxValue.", propertyName));
+                    "Int32.MinValue, Int32.MaxValue.", propertyName));
         }
     }
 }

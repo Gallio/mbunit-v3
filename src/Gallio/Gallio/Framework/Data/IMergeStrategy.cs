@@ -18,10 +18,8 @@ using System.Collections.Generic;
 namespace Gallio.Framework.Data
 {
     /// <summary>
-    /// <para>
     /// A merge strategy combines items from multiple providers into a sequence
     /// according to some algorithm.
-    /// </para>
     /// </summary>
     /// <remarks>
     /// <para>

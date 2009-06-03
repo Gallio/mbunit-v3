@@ -18,10 +18,10 @@ using System;
 namespace Gallio.Framework.Data
 {
     /// <summary>
-    /// <para>
     /// A data binder specifies how to produce values that are suitable for data binding
     /// in some context.
-    /// </para>
+    /// </summary>
+    /// <remarks>
     /// <para>
     /// The typical <see cref="IDataBinder"/> lifecycle is as follows:
     /// <list type="bullet">
@@ -58,8 +58,6 @@ namespace Gallio.Framework.Data
     /// </item>
     /// </list>
     /// </para>
-    /// </summary>
-    /// <remarks>
     /// <para>
     /// Several data binders may be composed to generate complex values that
     /// are produced using contributions from other data binders.  For example,

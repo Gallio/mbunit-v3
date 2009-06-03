@@ -25,10 +25,8 @@ using Gallio.Common.Reflection;
 namespace Gallio.Framework.Data
 {
     /// <summary>
-    /// <para>
     /// Encapsulates a specification for creating objects given values for
     /// a type's generic parameters, constructor parameters, fields and properties.
-    /// </para>
     /// </summary>
     public sealed class ObjectCreationSpec : DataBindingSpec
     {
@@ -98,15 +96,15 @@ namespace Gallio.Framework.Data
         }
 
         /// <summary>
-        /// <para>
         /// Gets the resolved constructor arguments.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// The values have already been converted to appropriate types for invoking the constructor.
         /// </para> 
-        /// </summary>
-        /// <remarks>
+        /// <para>
         /// If <see cref="ResolvedConstructor"/> is null, then this value will be an empty array.
+        /// </para> 
         /// </remarks>
         public object[] ResolvedConstructorArguments
         {
@@ -114,26 +112,26 @@ namespace Gallio.Framework.Data
         }
 
         /// <summary>
-        /// <para>
         /// Gets the resolved fields and their values.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// The values have already been converted to appropriate types for setting the fields.
         /// </para> 
-        /// </summary>
+        /// </remarks>
         public IEnumerable<KeyValuePair<FieldInfo, object>> ResolvedFieldValues
         {
             get { return resolvedFieldValues; }
         }
 
         /// <summary>
-        /// <para>
         /// Gets the resolved properties and their values.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// The values have already been converted to appropriate types for setting the properties.
         /// </para> 
-        /// </summary>
+        /// </remarks>
         public IEnumerable<KeyValuePair<PropertyInfo, object>> ResolvedPropertyValues
         {
             get { return resolvedPropertyValues; }
@@ -167,7 +165,7 @@ namespace Gallio.Framework.Data
         /// <inheritdoc />
         protected override string FormatImpl(string entity, IFormatter formatter)
         {
-            StringBuilder str = new StringBuilder(entity);
+            var str = new StringBuilder(entity);
             AppendFormattedGenericArguments(str, resolvedGenericArguments, formatter);
             AppendFormattedMethodArguments(str, resolvedConstructorArguments, formatter);
             AppendFormattedNamedValues(str, GetNamedValues(), formatter);

@@ -20,11 +20,11 @@ using Gallio.Common.Collections;
 namespace Gallio.Framework.Data
 {
     /// <summary>
-    /// <para>
     /// A data item is an opaque representation of a collection of values
     /// and metadata that may be retrieved using data bindings that encode
     /// the appropriate lookup rules into the item.
-    /// </para>
+    /// </summary>
+    /// <remarks>
     /// <para>
     /// Data items may have very different forms:
     /// <list type="bullet">
@@ -35,28 +35,28 @@ namespace Gallio.Framework.Data
     /// or by resolving custom data binding expressions</item>
     /// </list>
     /// </para>
-    /// </summary>
+    /// </remarks>
     /// <seealso cref="IDataAccessor"/>
     public interface IDataItem
     {
         /// <summary>
-        /// <para>
         /// Returns true if the item contains data that is obtained dynamically from sources
         /// whose content may change over time or may be expensive to query ahead of time.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// For example, data obtained from a database should be considered dynamic.
         /// On the other hand, data obtained from declarative metadata defined as part
         /// of the test should be considered static.
         /// </para>
-        /// </summary>
+        /// </remarks>
         bool IsDynamic { get; }
 
         /// <summary>
-        /// <para>
         /// Populates the specified metadata map with key/value pairs associated with
         /// the data item, if any.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// For example, the metadata may contain a description that serves
         /// as documentation of the contents of the data item or of the test
@@ -64,7 +64,7 @@ namespace Gallio.Framework.Data
         /// This metadata may be injected into test instances created with
         /// the contents of this data item.
         /// </para>
-        /// </summary>
+        /// </remarks>
         /// <param name="map">The metadata map.</param>
         void PopulateMetadata(PropertyBag map);
 

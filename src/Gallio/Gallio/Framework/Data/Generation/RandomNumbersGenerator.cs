@@ -55,16 +55,12 @@ namespace Gallio.Framework.Data.Generation
             return Minimum.Value + RandomDecimal() * (Maximum.Value - Minimum.Value);
         }
 
-        /// <summary>
-        /// Provides a pseudo-random decimal number uniformely spread 
-        /// between 0 (included) and 1 (excluded).
-        /// </summary>
-        /// <remarks>
-        /// 0x204fce5dffffffffffffffff is the highest 96-bit integer number with the first 32-bits 
-        /// set to 1, and less than 10E28. Thus, the highest decimal value which can be obtained
-        /// with is method is 0x204fce5dffffffffffffffff / 10E28 = 0.9999999995522011979606654975.
-        /// </remarks>
-        /// <returns></returns>
+        // Provides a pseudo-random decimal number uniformely spread 
+        // between 0 (included) and 1 (excluded).
+        //
+        // 0x204fce5dffffffffffffffff is the highest 96-bit integer number with the first 32-bits 
+        // set to 1, and less than 10E28. Thus, the highest decimal value which can be obtained
+        // with is method is 0x204fce5dffffffffffffffff / 10E28 = 0.9999999995522011979606654975.
         private static decimal RandomDecimal()
         {
             var data = new byte[8];

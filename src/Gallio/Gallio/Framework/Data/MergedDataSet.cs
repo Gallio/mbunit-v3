@@ -20,10 +20,8 @@ using Gallio.Common.Collections;
 namespace Gallio.Framework.Data
 {
     /// <summary>
-    /// <para>
     /// A merged data set is an aggregate data set that selects items from each of zero or more
     /// other data sets according to a <see cref="IMergeStrategy"/>.
-    /// </para>
     /// </summary>
     public class MergedDataSet : AggregateDataSet
     {
@@ -32,8 +30,12 @@ namespace Gallio.Framework.Data
 
         /// <summary>
         /// Gets or sets the <see cref="IMergeStrategy"/>.
-        /// By default the strategy is <see cref="ConcatenationMergeStrategy"/>.
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// By default the strategy is <see cref="ConcatenationMergeStrategy"/>.
+        /// </para>
+        /// </remarks>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
         public IMergeStrategy Strategy
         {

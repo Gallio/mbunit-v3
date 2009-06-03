@@ -21,8 +21,8 @@ using System.Text;
 namespace Gallio.Common.Text
 {
     /// <summary>
-    /// The Gallio.Common.Text namespace contains types for managing text ranges and
-    /// computing differences between strings.
+    /// The Gallio.Common.Text namespace contains types for managing text ranges, 
+    /// computing differences between strings, and regular expressions.
     /// </summary>
     [CompilerGenerated]
     class NamespaceDoc

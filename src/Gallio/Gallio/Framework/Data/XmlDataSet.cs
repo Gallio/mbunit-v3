@@ -96,14 +96,14 @@ namespace Gallio.Framework.Data
         }
 
         /// <summary>
-        /// <para>
         /// Gets the name of the location that is providing the data, or null if none.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// The data location name and line number are exposed as
         /// <see cref="MetadataKeys.DataLocation" /> metadata when provided.
         /// </para>
-        /// </summary>
+        /// </remarks>
         /// <value>
         /// The default value is null.
         /// </value>

@@ -32,6 +32,7 @@ namespace Gallio.Framework.Assertions
     /// Use an <see cref="AssertionFailureBuilder" /> to generate an instance of this type.
     /// </para>
     /// </remarks>
+    /// <seealso cref="AssertionFailureBuilder"/>
     [Serializable]
     public class AssertionFailure : IMarkupStreamWritable
     {
@@ -148,7 +149,7 @@ namespace Gallio.Framework.Assertions
         /// <returns>The formatted string.</returns>
         public override string ToString()
         {
-            StringMarkupDocumentWriter writer = new StringMarkupDocumentWriter(false);
+            var writer = new StringMarkupDocumentWriter(false);
             WriteTo(writer.Default);
             return writer.ToString();
         }

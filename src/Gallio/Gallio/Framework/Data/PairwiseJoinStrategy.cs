@@ -20,18 +20,16 @@ using Gallio.Common.Collections;
 namespace Gallio.Framework.Data
 {
     /// <summary>
-    /// <para>
     /// The pairwise strategy constructs a limited number of combinations of the
     /// items within the data providers such that they cover all possible pairs
     /// of values from each data source.
-    /// </para>
+    /// </summary>
+    /// <remarks>
     /// <para>
     /// This strategy can be more efficient than one based on exhaustively testing all
     /// combinations since many test failures result from the interaction of a relatively
     /// small number of factors: often just two of them.
     /// </para>
-    /// </summary>
-    /// <remarks>
     /// <para>
     /// Computing orthogonal arrays for pairwise joins for large domains can be very expensive
     /// computationally.  Therefore most practical algorithms use approximations.
@@ -55,7 +53,7 @@ namespace Gallio.Framework.Data
     /// it back to the Gallio project for others to use.  Thanks!
     /// </para>
     /// <para>
-    /// See also: http://www.pairwise.org/.
+    /// See also: <a href="http://www.pairwise.org/"/>.
     /// </para>
     /// </remarks>
     /// <seealso cref="CombinatorialJoinStrategy"/>
@@ -80,11 +78,11 @@ namespace Gallio.Framework.Data
                 return SequentialJoinStrategy.Instance.Join(providers, bindingsPerProvider, includeDynamicItems);
 
             // Get all items from all providers.
-            List<IDataItem>[] itemLists = new List<IDataItem>[providerCount];
+            var itemLists = new List<IDataItem>[providerCount];
             int[] counts = new int[providerCount];
             for (int i = 0; i < providerCount; i++)
             {
-                List<IDataItem> items = new List<IDataItem>(providers[i].GetItems(bindingsPerProvider[i], includeDynamicItems));
+                var items = new List<IDataItem>(providers[i].GetItems(bindingsPerProvider[i], includeDynamicItems));
                 int count = items.Count;
                 if (count == 0)
                     return EmptyArray<IList<IDataItem>>.Instance; // there must be at least one value from each provider
@@ -93,7 +91,7 @@ namespace Gallio.Framework.Data
                 counts[i] = count;
             }
 
-            PairwiseGenerator generator = new PairwiseGenerator(counts);
+            var generator = new PairwiseGenerator(counts);
             return GenerateCombinations(generator, itemLists);
         }
 

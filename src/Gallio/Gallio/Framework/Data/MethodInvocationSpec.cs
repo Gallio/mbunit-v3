@@ -26,10 +26,8 @@ using Gallio.Common.Reflection;
 namespace Gallio.Framework.Data
 {
     /// <summary>
-    /// <para>
     /// Encapsulates a specification for invoking a method given values for
     /// its generic parameters and formal parameters.
-    /// </para>
     /// </summary>
     public sealed class MethodInvocationSpec : DataBindingSpec
     {
@@ -97,13 +95,13 @@ namespace Gallio.Framework.Data
         }
 
         /// <summary>
-        /// <para>
         /// Gets the resolved method arguments.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// The values have already been converted to appropriate types for invoking the method.
         /// </para> 
-        /// </summary>
+        /// </remarks>
         public object[] ResolvedArguments
         {
             get { return resolvedArguments; }

@@ -19,11 +19,9 @@ using System.Collections.Generic;
 namespace Gallio.Framework.Data
 {
     /// <summary>
-    /// <para>
     /// A scalar data item represents a single static data value combined with
     /// optional metadata for the item.  Data binding occurs whenever the binding
     /// index is 0.
-    /// </para>
     /// </summary>
     /// <typeparam name="T">The value type.</typeparam>
     public sealed class ScalarDataItem<T> : SimpleDataItem

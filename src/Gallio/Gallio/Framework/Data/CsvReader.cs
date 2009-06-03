@@ -21,9 +21,9 @@ using System.Text;
 namespace Gallio.Framework.Data
 {
     /// <summary>
-    /// <para>
     /// Reads data from a Comma Separated Values document.
-    /// </para>
+    /// </summary>
+    /// <remarks>
     /// <para>
     /// The document format simply consists of sequential lines of delimited field values.
     /// <list type="bullet">
@@ -38,7 +38,7 @@ namespace Gallio.Framework.Data
     /// special way.  It will simply be returned to the client as an ordinary record.</item>
     /// </list>
     /// </para>
-    /// </summary>
+    /// </remarks>
     public class CsvReader : IDisposable
     {
         private readonly TextReader documentReader;
@@ -71,9 +71,7 @@ namespace Gallio.Framework.Data
         }
 
         /// <summary>
-        /// <para>
         /// Gets or sets the field delimiter character.
-        /// </para>
         /// </summary>
         /// <value>
         /// The default value is ',' (comma).
@@ -85,14 +83,14 @@ namespace Gallio.Framework.Data
         }
 
         /// <summary>
-        /// <para>
         /// Gets or sets a character that indicates that a line in the source represents a comment.
         /// May be set to '\0' (null) to disable comment handling.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// Comment lines are excluded from the record set.
         /// </para>
-        /// </summary>
+        /// </remarks>
         /// <value>
         /// The default value is '#' (pound).
         /// </value>
@@ -103,10 +101,8 @@ namespace Gallio.Framework.Data
         }
 
         /// <summary>
-        /// <para>
         /// Reads the list of fields that belong to the next record in the document.
         /// Returns null at the end of the document.
-        /// </para>
         /// </summary>
         /// <returns>The record contents as an array of field values, or null if at the end of the document.</returns>
         /// <exception cref="IOException">Thrown if an I/O error occurs.</exception>
@@ -145,7 +141,7 @@ namespace Gallio.Framework.Data
 
         private void ParseLineIntoFieldBuffer(string line)
         {
-            StringBuilder fieldValue = new StringBuilder();
+            var fieldValue = new StringBuilder();
             int length = line.Length;
 
             bool inQuotes = false;

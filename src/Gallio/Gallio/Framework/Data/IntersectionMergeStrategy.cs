@@ -19,17 +19,20 @@ using Gallio.Common.Collections;
 namespace Gallio.Framework.Data
 {
     /// <summary>
-    /// <para>
     /// The intersection merge strategy combines the items from multiple providers
     /// by discarding items whose values do not appear in the items of all other
-    /// providers.  If the same item appears more than once within any given provider,
+    /// providers.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// If the same item appears more than once within any given provider,
     /// when it will be enumerated only as often as the least number of repetitions
     /// of that item that appear in other providers.
     /// </para>
     /// <para>
     /// Uniqueness is determined by the natural equality of each bound value in the item.
     /// </para>
-    /// </summary>
+    /// </remarks>
     public sealed class IntersectionMergeStrategy : IMergeStrategy
     {
         /// <summary>

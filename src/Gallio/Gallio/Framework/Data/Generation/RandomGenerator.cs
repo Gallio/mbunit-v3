@@ -28,7 +28,7 @@ namespace Gallio.Framework.Data.Generation
         where T : struct, IComparable<T>, IEquatable<T>
     {
         /// <summary>
-        /// A pseudo-random number generator.
+        /// A general purpose pseudo-random number generator.
         /// </summary>
         protected readonly static Random InnerGenerator = new Random();
 

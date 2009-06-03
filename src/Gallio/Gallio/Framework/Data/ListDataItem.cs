@@ -19,11 +19,9 @@ using System.Collections.Generic;
 namespace Gallio.Framework.Data
 {
     /// <summary>
-    /// <para>
     /// A list data item contains a list of static data values combined with
     /// optional metadata for the item.  Data binding occurs based on the binding
     /// index alone.
-    /// </para>
     /// </summary>
     /// <typeparam name="T">The value type.</typeparam>
     public sealed class ListDataItem<T> : SimpleDataItem

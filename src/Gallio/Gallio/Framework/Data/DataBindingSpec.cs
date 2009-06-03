@@ -24,17 +24,17 @@ using Gallio.Common.Reflection;
 namespace Gallio.Framework.Data
 {
     /// <summary>
-    /// <para>
     /// A data binding specification describes how values are bound to slots (<see cref="ISlotInfo"/>)
     /// of a type or method.  The specification can then be used to create new objects or invoke
     /// methods.
-    /// </para>
+    /// </summary>
+    /// <remarks>
     /// <para>
     /// A specification automatically converts values to the correct types
     /// for data binding using a <see cref="IConverter" />.  It can also format
     /// the specification to a string using a <see cref="IFormatter" />.
     /// </para>
-    /// </summary>
+    /// </remarks>
     /// <seealso cref="ObjectCreationSpec"/>
     public abstract class DataBindingSpec
     {
@@ -82,9 +82,9 @@ namespace Gallio.Framework.Data
         }
 
         /// <summary>
-        /// <para>
         /// Formats the specification to a string for presentation.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// The values are listed sequentially as follows:
         /// <list type="bullet">
@@ -103,10 +103,10 @@ namespace Gallio.Framework.Data
         /// parentheses are ignored.  Therefore if <see cref="SlotValues"/> is empty
         /// then <paramref name="entity"/> will be returned unmodified.
         /// </para>
-        /// </summary>
-        /// <remarks>
+        /// <para>
         /// This method assumes that the slots all belong to the same declaring type or method
         /// which is always the case for <see cref="ObjectCreationSpec" /> and <see cref="MethodInvocationSpec" />.
+        /// </para>
         /// </remarks>
         /// <param name="entity">The entity that is qualified by the specification such as the name of a type or method.</param>
         /// <param name="formatter">The formatter.</param>
@@ -211,16 +211,16 @@ namespace Gallio.Framework.Data
         }
 
         /// <summary>
-        /// <para>
         /// Resolves a member that may be declared by a generic type using the
         /// resolved type or one of its subtypes.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// For example, if <paramref name="member"/> was declared by type Foo&lt;T&gt;
         /// and <paramref name="resolvedType"/> is a subtype of Foo&lt;int&gt;, returns
         /// a reflection object for the member as declared by Foo&lt;int&gt;.
         /// </para>
-        /// </summary>
+        /// </remarks>
         /// <typeparam name="T">The type of member.</typeparam>
         /// <param name="resolvedType">The resolved type, not null.</param>
         /// <param name="member">The member, not null.</param>

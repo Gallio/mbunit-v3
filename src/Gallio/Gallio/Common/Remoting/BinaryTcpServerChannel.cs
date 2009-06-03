@@ -58,7 +58,7 @@ namespace Gallio.Common.Remoting
             IDictionary formatterProperties = new Hashtable();
             formatterProperties[@"includeVersions"] = false;
 
-            BinaryServerFormatterSinkProvider serverFormatterSinkProvider = new BinaryServerFormatterSinkProvider(formatterProperties, null);
+            var serverFormatterSinkProvider = new BinaryServerFormatterSinkProvider(formatterProperties, null);
             serverFormatterSinkProvider.TypeFilterLevel = TypeFilterLevel.Full;
             return serverFormatterSinkProvider;
         }

@@ -93,14 +93,16 @@ namespace Gallio.Common.Text
         /// as a valid literal value.  Encloses the char in single quotes (').
         /// </summary>
         /// <remarks>
+        /// <para>
         /// Replaces common escaped characters with C# style escape codes.  Unprintable characters
         /// are represented by a Unicode character escape.
+        /// </para>
         /// </remarks>
         /// <param name="value">The character value to format.</param>
         /// <returns>The formatted character.</returns>
         public static string ToCharLiteral(char value)
         {
-            StringBuilder str = new StringBuilder(8);
+            var str = new StringBuilder(8);
             str.Append('\'');
             AppendUnquotedCharLiteral(str, value);
             str.Append('\'');
@@ -112,14 +114,16 @@ namespace Gallio.Common.Text
         /// does not enclose the literal in single quotes (').
         /// </summary>
         /// <remarks>
+        /// <para>
         /// Replaces common escaped characters with C# style escape codes.  Unprintable characters
         /// are represented by a Unicode character escape.
+        /// </para>
         /// </remarks>
         /// <param name="value">The character value to format.</param>
         /// <returns>The unquoted char literal.</returns>
         public static string ToUnquotedCharLiteral(char value)
         {
-            StringBuilder str = new StringBuilder(6);
+            var str = new StringBuilder(6);
             AppendUnquotedCharLiteral(str, value);
             return str.ToString();
         }
@@ -135,8 +139,10 @@ namespace Gallio.Common.Text
         /// as a valid literal value.  Encloses the string in quotes (").
         /// </summary>
         /// <remarks>
+        /// <para>
         /// Replaces common escaped characters with C# style escape codes.  Unprintable characters
         /// are represented by a Unicode character escape.
+        /// </para>
         /// </remarks>
         /// <param name="value">The string value to format.</param>
         /// <returns>The formatted string.</returns>
@@ -154,8 +160,10 @@ namespace Gallio.Common.Text
         /// does not enclose the literal in quotes (").
         /// </summary>
         /// <remarks>
+        /// <para>
         /// Replaces common escaped characters with C# style escape codes.  Unprintable characters
         /// are represented by a Unicode character escape.
+        /// </para>
         /// </remarks>
         /// <param name="value">The string value to format.</param>
         /// <returns>The unquoted string literal.</returns>

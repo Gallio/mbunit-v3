@@ -65,7 +65,7 @@ namespace Gallio.Framework.Data
         /// <inheritdoc />
         protected override IDataAccessor RegisterImpl(DataBindingContext context, IDataSourceResolver resolver)
         {
-            List<KeyValuePair<ISlotInfo, IDataAccessor>> slotAccessors = new List<KeyValuePair<ISlotInfo,IDataAccessor>>(slotBinders.Count);
+            var slotAccessors = new List<KeyValuePair<ISlotInfo,IDataAccessor>>(slotBinders.Count);
 
             foreach (KeyValuePair<ISlotInfo, IDataBinder> slotBinder in slotBinders)
             {

@@ -18,10 +18,8 @@ using System.Collections.Generic;
 namespace Gallio.Framework.Data
 {
     /// <summary>
-    /// <para>
     /// A join strategy combines items from multiple providers into products
     /// according to some algorithm.
-    /// </para>
     /// </summary>
     /// <remarks>
     /// <para>
@@ -37,10 +35,12 @@ namespace Gallio.Framework.Data
         /// Joins the items from each provider into a sequence of aggregate items.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// The number of elements in each item-list must equal the number
         /// of providers in the <paramref name="providers"/> list because
         /// each item-list should contain exactly one item taken from each
         /// provider.
+        /// </para>
         /// </remarks>
         /// <param name="providers">The list of providers.</param>
         /// <param name="bindingsPerProvider">The list of bindings per provider.</param>

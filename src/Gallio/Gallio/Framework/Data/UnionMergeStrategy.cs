@@ -19,15 +19,15 @@ using Gallio.Common.Collections;
 namespace Gallio.Framework.Data
 {
     /// <summary>
-    /// <para>
     /// The union merge strategy combines the items from multiple providers by
     /// discarding all items whose values duplicate those of other items that
     /// have already been enumerated.
-    /// </para>
+    /// </summary>
+    /// <remarks>
     /// <para>
     /// Uniqueness is determined by the natural equality of each bound value in the item.
     /// </para>
-    /// </summary>
+    /// </remarks>
     public sealed class UnionMergeStrategy : IMergeStrategy
     {
         /// <summary>
@@ -43,7 +43,7 @@ namespace Gallio.Framework.Data
         public IEnumerable<IDataItem> Merge(IList<IDataProvider> providers, ICollection<DataBinding> bindings,
             bool includeDynamicItems)
         {
-            HashSet<object[]> previousValues = new HashSet<object[]>(new ArrayEqualityComparer<object>());
+            var previousValues = new HashSet<object[]>(new ArrayEqualityComparer<object>());
 
             foreach (IDataProvider provider in providers)
             {

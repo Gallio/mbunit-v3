@@ -28,25 +28,19 @@ namespace Gallio.Common.Time
     {
         private readonly Stopwatch stopwatch = new Stopwatch();
 
-        /// <summary>
-        /// Resets the time and starts the clock.
-        /// </summary>
+        /// <inheritdoc />
         public void Start()
         {
             stopwatch.Start();
         }
 
-        /// <summary>
-        /// Stops the clock.
-        /// </summary>
+        /// <inheritdoc />
         public void Stop()
         {
             stopwatch.Stop();
         }
 
-        /// <summary>
-        /// Gets the time elapsed.
-        /// </summary>
+        /// <inheritdoc />
         public TimeSpan Elapsed
         {
             get
@@ -55,9 +49,7 @@ namespace Gallio.Common.Time
             }
         }
 
-        /// <summary>
-        /// Returns the local date and time.
-        /// </summary>
+        /// <inheritdoc />
         public DateTime Now
         {
             get
@@ -66,9 +58,7 @@ namespace Gallio.Common.Time
             }
         }
 
-        /// <summary>
-        /// Returns the current date and time, expressed as the Coordinated Universal Time (UTC).
-        /// </summary>
+        /// <inheritdoc />
         public DateTime UtcNow
         {
             get
@@ -77,21 +67,13 @@ namespace Gallio.Common.Time
             }
         }
 
-        /// <summary>
-        /// Blocks the current thread for a specified time.
-        /// </summary>
-        /// <param name="millisecondsTimeout">The amount of time for which the thread is blocked.</param>
-        /// <seealso cref="Thread.Sleep(int)"/>
+        /// <inheritdoc />
         public void ThreadSleep(int millisecondsTimeout)
         {
             Thread.Sleep(millisecondsTimeout);
         }
 
-        /// <summary>
-        /// Blocks the current thread for a specified time.
-        /// </summary>
-        /// <param name="timeout">The amount of time for which the thread is blocked.</param>
-        /// <seealso cref="Thread.Sleep(TimeSpan)"/>
+        /// <inheritdoc />
         public void ThreadSleep(TimeSpan timeout)
         {
             Thread.Sleep(timeout);

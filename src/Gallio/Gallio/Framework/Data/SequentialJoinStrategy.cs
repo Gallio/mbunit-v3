@@ -38,14 +38,14 @@ namespace Gallio.Framework.Data
         public IEnumerable<IList<IDataItem>> Join(IList<IDataProvider> providers, IList<ICollection<DataBinding>> bindingsPerProvider,
             bool includeDynamicItems)
         {
-            IEnumerator<IDataItem>[] enumerators = new IEnumerator<IDataItem>[providers.Count];
+            var enumerators = new IEnumerator<IDataItem>[providers.Count];
             for (int i = 0; i < providers.Count; i++)
                 enumerators[i] = providers[i].GetItems(bindingsPerProvider[i], includeDynamicItems).GetEnumerator();
 
             int providerCount = providers.Count;
             for (;;)
             {
-                IDataItem[] itemList = new IDataItem[providerCount];
+                var itemList = new IDataItem[providerCount];
                 bool gotOne = false;
 
                 for (int i = 0; i < providerCount; i++)

@@ -18,9 +18,9 @@ using System;
 namespace Gallio.Framework.Data
 {
     /// <summary>
-    /// <para>
     /// Specifies the kind of factory member referenced by <see cref="FactoryDataSet"/>.
-    /// </para>
+    /// </summary>
+    /// <remarks>
     /// <para>
     /// Each kind of factory expresses its contents by returning enumerations of data sets,
     /// data items, object arrays and single objects.
@@ -29,14 +29,14 @@ namespace Gallio.Framework.Data
     /// The kind of a factory may be automatically determined or it may be explicitly
     /// specified in cases where it may be ambiguous.
     /// </para>
-    /// </summary>
+    /// </remarks>
     public enum FactoryKind
     {
         /// <summary>
-        /// <para>
         /// Automatically determines the type of factory based on the type of element
         /// returned by the enumeration.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// <list type="bullet">
         /// <item>If the element is a <see cref="IDataSet" /> then it is processed in the
@@ -52,14 +52,12 @@ namespace Gallio.Framework.Data
         /// <para>
         /// Refer to the other factory kinds for usage examples.
         /// </para>
-        /// </summary>
+        /// </remarks>
         Auto,
 
         /// <summary>
-        /// <para>
         /// Specifies that the factory returns an enumeration <see cref="IDataSet" />s
         /// whose items are to be consumed.
-        /// </para>
         /// </summary>
         /// <example>
         /// <code><![CDATA[
@@ -82,10 +80,8 @@ namespace Gallio.Framework.Data
         DataSet,
 
         /// <summary>
-        /// <para>
         /// Specifies that the factory returns an enumeration of <see cref="IDataItem" />s
         /// (such as <see cref="DataRow" />, <see cref="ScalarDataItem{T}" />, or <see cref="ListDataItem{T}" />).
-        /// </para>
         /// </summary>
         /// <example>
         /// <code><![CDATA[
@@ -109,10 +105,8 @@ namespace Gallio.Framework.Data
         DataItem,
 
         /// <summary>
-        /// <para>
         /// Specifies that the factory returns an enumeration of object arrays
         /// that describe successive items.
-        /// </para>
         /// </summary>
         /// <example>
         /// <code><![CDATA[
@@ -135,9 +129,7 @@ namespace Gallio.Framework.Data
         ObjectArray,
 
         /// <summary>
-        /// <para>
         /// Specifies that the factory returns an enumeration of single object values.
-        /// </para>
         /// </summary>
         /// <example>
         /// <code><![CDATA[

@@ -23,17 +23,13 @@ namespace Gallio.Common.Text
     public enum DiffKind
     {
         /// <summary>
-        /// <para>
         /// Indicates there is no change between the left and right documents over the ranges described by the diff.
-        /// </para>
         /// </summary>
         NoChange,
 
         /// <summary>
-        /// <para>
         /// Indicates there is a change between the left and right documents over the ranges described by the diff.
         /// Text may have been added, removed, or edited.
-        /// </para>
         /// </summary>
         Change
     }

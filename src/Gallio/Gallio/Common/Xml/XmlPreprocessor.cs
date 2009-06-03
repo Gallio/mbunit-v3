@@ -30,11 +30,11 @@ namespace Gallio.Common.Xml
     /// Recognizes the following directives:
     /// </para>
     /// <list type="bullet">
-    /// <item>&lt;?ifdef CONSTANT?&gt;: Begins conditional block whose contents are output only if CONSTANT is defined.</item>
-    /// <item>&lt;?ifndef CONSTANT?&gt;: Begins conditional block whose contents are output only if CONSTANT is not defined.</item>
-    /// <item>&lt;?else?&gt;: Begins alternative conditional block whose contents are output only if the previous ifdef/ifndef condition was not met.</item>
-    /// <item>&lt;?endif?&gt;: Ends conditional block.</item>
-    /// <item>&lt;?define CONSTANT?&gt;: Defines a new constant.</item>
+    /// <item><code>&lt;?ifdef CONSTANT?&gt;</code>: Begins conditional block whose contents are output only if CONSTANT is defined.</item>
+    /// <item><code>&lt;?ifndef CONSTANT?&gt;</code>: Begins conditional block whose contents are output only if CONSTANT is not defined.</item>
+    /// <item><code>&lt;?else?&gt;</code>: Begins alternative conditional block whose contents are output only if the previous ifdef/ifndef condition was not met.</item>
+    /// <item><code>&lt;?endif?&gt;</code>: Ends conditional block.</item>
+    /// <item><code>&lt;?define CONSTANT?&gt;</code>: Defines a new constant.</item>
     /// </list>
     /// </remarks>
     public class XmlPreprocessor

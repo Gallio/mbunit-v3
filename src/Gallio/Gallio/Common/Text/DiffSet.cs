@@ -21,17 +21,15 @@ using Gallio.Common.Markup;
 namespace Gallio.Common.Text
 {
     /// <summary>
-    /// <para>
     /// A diff set consists of a sequence of differences between a left document and a right document
     /// that indicate changed and unchanged regions.
-    /// </para>
+    /// </summary>
+    /// <remarks>
     /// <para>
     /// If the changes are applied in order to the left document, the right document will be
     /// reproduced.  If the inverse changes are applied in order to the right document, the
     /// left document will be reproduced.
     /// </para>
-    /// </summary>
-    /// <remarks>
     /// <para>
     /// This implementation is based on Myers' O((M + N) * D) time and O(M + N) space algorithm
     /// for computing the longest common subsequence from his paper
@@ -123,9 +121,13 @@ namespace Gallio.Common.Text
 
         /// <summary>
         /// Gets the list of differences that indicate the changed and
-        /// unchanged regions between the left and right documents.  The diffs span
-        /// the entire range of the left and right documents and are listed in document order.
+        /// unchanged regions between the left and right documents. 
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// The diffs span the entire range of the left and right documents and are listed in document order.
+        /// </para>
+        /// </remarks>
         public IList<Diff> Diffs
         {
             get { return new ReadOnlyCollection<Diff>(diffs); }
@@ -171,10 +173,10 @@ namespace Gallio.Common.Text
         }
 
         /// <summary>
-        /// <para>
         /// Writes the diffs using the <see cref="DiffStyle.Interleaved" />
         /// presentation style and no limits on the context length.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// For the purposes of determining additions and deletions, the left document
         /// is considered the original and the right document is the considered to be the
@@ -182,7 +184,7 @@ namespace Gallio.Common.Text
         /// by <see cref="Marker.DiffAddition" />, <see cref="Marker.DiffDeletion" />
         /// and <see cref="Marker.DiffChange" />.
         /// </para>
-        /// </summary>
+        /// </remarks>
         /// <param name="writer">The test log stream writer to receive the highlighted document.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref nameref="writer" /> if null.</exception>
         public void WriteTo(MarkupStreamWriter writer)
@@ -191,10 +193,10 @@ namespace Gallio.Common.Text
         }
 
         /// <summary>
-        /// <para>
         /// Writes the diffs using the specified
         /// presentation style and no limits on the context length.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// Changes are annotated by markers: <see cref="Marker.DiffAddition" />, <see cref="Marker.DiffDeletion" />
         /// and <see cref="Marker.DiffChange" />.
@@ -208,7 +210,7 @@ namespace Gallio.Common.Text
         /// If the style is <see cref="DiffStyle.LeftOnly" /> or <see cref="DiffStyle.RightOnly" />
         /// then only the deletion and changed markers are used.
         /// </para>
-        /// </summary>
+        /// </remarks>
         /// <param name="writer">The test log stream writer to receive the highlighted document.</param>
         /// <param name="style">The presentation style.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref nameref="writer" /> if null.</exception>
@@ -218,10 +220,9 @@ namespace Gallio.Common.Text
         }
 
         /// <summary>
-        /// <para>
-        /// Writes the diffs using the specified
-        /// presentation style and max context length.
-        /// </para>
+        /// Writes the diffs using the specified presentation style and max context length.
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// Changes are annotated by markers: <see cref="Marker.DiffAddition" />, <see cref="Marker.DiffDeletion" />
         /// and <see cref="Marker.DiffChange" />.
@@ -235,7 +236,7 @@ namespace Gallio.Common.Text
         /// If the style is <see cref="DiffStyle.LeftOnly" /> or <see cref="DiffStyle.RightOnly" />
         /// then only the deletion and changed markers are used.
         /// </para>
-        /// </summary>
+        /// </remarks>
         /// <param name="writer">The test log stream writer to receive the highlighted document.</param>
         /// <param name="style">The presentation style.</param>
         /// <param name="maxContextLength">The maximum number of characters of unchanged regions
@@ -295,9 +296,9 @@ namespace Gallio.Common.Text
         }
 
         /// <summary>
-        /// <para>
         /// Simplifies the diff for presentation.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// This method applies a series of heuristics to make the diff easier to read
         /// but perhaps less optimal, including the following:
@@ -308,14 +309,14 @@ namespace Gallio.Common.Text
         /// a few scattered characters coincidentally match between the two documents.</item>
         /// </list>
         /// </para>
-        /// </summary>
+        /// </remarks>
         /// <returns>Returns a simplified diff.</returns>
         public DiffSet Simplify()
         {
             if (diffs.Count <= 1)
                 return this;
 
-            List<Diff> simplifiedDiffs = new List<Diff>(diffs);
+            var simplifiedDiffs = new List<Diff>(diffs);
             CanonicalizeDiffs(simplifiedDiffs);
 
             for (int i = 1; i < simplifiedDiffs.Count - 1; i++)
@@ -577,15 +578,9 @@ namespace Gallio.Common.Text
                         new Range(commonSeqRightEndIndex, rightEndIndex - commonSeqRightEndIndex)));
             }
 
-            /// <summary>
-            /// <para>
-            /// Determines the longest common subsequence between two sequences and populates the
-            /// list of diffs derived from the result as we go.  Each recursive step identifies
-            /// a middle "snake" (a common sequence) then splits the problem until nothing remains.
-            /// </para>
-            /// </summary>
-            /// <param name="left">The sequence "A"</param>
-            /// <param name="right">The sequence "B"</param>
+            // Determines the longest common subsequence between two sequences and populates the
+            // list of diffs derived from the result as we go.  Each recursive step identifies
+            // a middle "snake" (a common sequence) then splits the problem until nothing remains.
             private void ComputeLCS(Substring left, Substring right)
             {
                 int n = left.Length;
@@ -634,24 +629,13 @@ namespace Gallio.Common.Text
                 }
             }
 
-            /// <summary>
-            /// <para>
-            /// Finds a middle "snake", which is a (possibly empty) sequence of diagonal edges in the edit
-            /// graph.  Thus it directly represents a common sequence.
-            /// </para>
-            /// <para>
-            /// In essence, this function searches D-paths forward and backward in the sequence until it
-            /// finds the middle snake.  The middle snake informs us about a common sequence sandwiched
-            /// between two other sequences that may contain changes.  By definition, the left and right
-            /// middle snakes must be of equal length.
-            /// </para>
-            /// </summary>
-            /// <param name="left">The sequence "A"</param>
-            /// <param name="right">The sequence "B"</param>
-            /// <param name="middleSnakeLeftStartIndex">The starting index of the middle snake in "A"</param>
-            /// <param name="middleSnakeRightStartIndex">The starting index of the middle snake in "B"</param>
-            /// <param name="middleSnakeLength">The middle snake length.</param>
-            /// <returns>The length of the shorted edit script between "A" and "B"</returns>
+            // Finds a middle "snake", which is a (possibly empty) sequence of diagonal edges in the edit
+            // graph.  Thus it directly represents a common sequence.
+            //
+            // In essence, this function searches D-paths forward and backward in the sequence until it
+            // finds the middle snake.  The middle snake informs us about a common sequence sandwiched
+            // between two other sequences that may contain changes.  By definition, the left and right
+            // middle snakes must be of equal length.
             private int FindMiddleSnake(Substring left, Substring right, out int middleSnakeLeftStartIndex, out int middleSnakeRightStartIndex, out int middleSnakeLength)
             {
                 int n = left.Length;

@@ -24,11 +24,9 @@ using Gallio.Common.Markup;
 namespace Gallio.Framework.Assertions
 {
     /// <summary>
-    /// <para>
     /// An assertion failure builder is used to construct a complete description
     /// of an assertion failure that has occurred.  It takes into account information about
     /// the expected and actual value, as well as additional labeled values and exceptions.
-    /// </para>
     /// </summary>
     public class AssertionFailureBuilder
     {
@@ -120,16 +118,16 @@ namespace Gallio.Framework.Assertions
         }
 
         /// <summary>
-        /// <para>
         /// Adds the raw expected value to be formatted using <see cref="Formatter" />.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// The order in which this method is called determines the order in which this
         /// value will appear relative to other labeled values.
         /// </para>
-        /// </summary>
-        /// <remarks>
+        /// <para>
         /// This is a convenience method for setting a labeled value called "Expected Value".
+        /// </para>
         /// </remarks>
         /// <param name="expectedValue">The expected value.</param>
         /// <returns>The builder, to allow for fluent method chaining.</returns>
@@ -139,16 +137,16 @@ namespace Gallio.Framework.Assertions
         }
 
         /// <summary>
-        /// <para>
         /// Adds the raw actual value to be formatted using <see cref="Formatter" />.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// The order in which this method is called determines the order in which this
         /// value will appear relative to other labeled values.
         /// </para>
-        /// </summary>
-        /// <remarks>
+        /// <para>
         /// This is a convenience method for setting a labeled value called "Actual Value".
+        /// </para>
         /// </remarks>
         /// <param name="actualValue">The actual value.</param>
         /// <returns>The builder, to allow for fluent method chaining.</returns>
@@ -158,18 +156,18 @@ namespace Gallio.Framework.Assertions
         }
 
         /// <summary>
-        /// <para>
         /// Adds the raw expected and actual values to be formatted using <see cref="Formatter" />
         /// and includes formatting of their differences.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// The order in which this method is called determines the order in which the
         /// values will appear relative to other labeled values.
         /// </para>
-        /// </summary>
-        /// <remarks>
+        /// <para>
         /// This is a convenience method for setting a pair of labeled values called "Expected Value"
         /// and "Actual Value" with diffs.
+        /// </para>
         /// </remarks>
         /// <param name="expectedValue">The expected value.</param>
         /// <param name="actualValue">The actual value.</param>
@@ -180,15 +178,15 @@ namespace Gallio.Framework.Assertions
         }
 
         /// <summary>
-        /// <para>
         /// Adds two raw labeled values formatted using <see cref="Formatter" /> and includes
         /// formatting of their differences.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// The order in which this method is called determines the order in which the
         /// values will appear relative to other labeled values.
         /// </para>
-        /// </summary>
+        /// </remarks>
         /// <param name="leftLabel">The left label.</param>
         /// <param name="leftValue">The left value.</param>
         /// <param name="rightLabel">The right label.</param>
@@ -224,8 +222,8 @@ namespace Gallio.Framework.Assertions
                     DiffSet diffSet = DiffSet.GetDiffSet(formattedLeftValue, formattedRightValue);
                     diffSet = diffSet.Simplify();
 
-                    StructuredTextWriter highlightedLeftValueWriter = new StructuredTextWriter();
-                    StructuredTextWriter highlightedRightValueWriter = new StructuredTextWriter();
+                    var highlightedLeftValueWriter = new StructuredTextWriter();
+                    var highlightedRightValueWriter = new StructuredTextWriter();
 
                     diffSet.WriteTo(highlightedLeftValueWriter, DiffStyle.LeftOnly,
                         formattedLeftValue.Length <= AssertionFailure.MaxFormattedValueLength ? int.MaxValue : CompressedDiffContextLength);
@@ -241,14 +239,14 @@ namespace Gallio.Framework.Assertions
         }
 
         /// <summary>
-        /// <para>
         /// Adds a raw labeled value to be formatted using <see cref="Formatter" />.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// The order in which this method is called determines the order in which this
         /// labeled value will appear relative to other labeled values.
         /// </para>
-        /// </summary>
+        /// </remarks>
         /// <param name="label">The label.</param>
         /// <param name="value">The raw unformatted value.</param>
         /// <returns>The builder, to allow for fluent method chaining.</returns>
@@ -260,14 +258,14 @@ namespace Gallio.Framework.Assertions
         }
 
         /// <summary>
-        /// <para>
         /// Adds a labeled value as plain text.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// The order in which this method is called determines the order in which this
         /// labeled value will appear relative to other labeled values.
         /// </para>
-        /// </summary>
+        /// </remarks>
         /// <param name="label">The label.</param>
         /// <param name="formattedValue">The formatted value.</param>
         /// <returns>The builder, to allow for fluent method chaining.</returns>
@@ -280,14 +278,14 @@ namespace Gallio.Framework.Assertions
         }
 
         /// <summary>
-        /// <para>
         /// Adds a labeled value as structured text.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// The order in which this method is called determines the order in which this
         /// labeled value will appear relative to other labeled values.
         /// </para>
-        /// </summary>
+        /// </remarks>
         /// <param name="label">The label.</param>
         /// <param name="formattedValue">The formatted value as structured text.</param>
         /// <returns>The builder, to allow for fluent method chaining.</returns>
@@ -300,14 +298,14 @@ namespace Gallio.Framework.Assertions
         }
 
         /// <summary>
-        /// <para>
         /// Adds a labeled value.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// The order in which this method is called determines the order in which this
         /// value will appear relative to other labeled values.
         /// </para>
-        /// </summary>
+        /// </remarks>
         /// <param name="labeledValue">The labeled value.</param>
         /// <returns>The builder, to allow for fluent method chaining.</returns>
         public AssertionFailureBuilder AddLabeledValue(AssertionFailure.LabeledValue labeledValue)
@@ -398,8 +396,10 @@ namespace Gallio.Framework.Assertions
         /// Creates an assertion failure object.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// Subclasses may override this method to define custom extended assertion
         /// failure objects.
+        /// </para>
         /// </remarks>
         protected virtual AssertionFailure CreateAssertionFailure(string description,
             string message, StackTraceData stackTrace, IList<AssertionFailure.LabeledValue> labeledValues,

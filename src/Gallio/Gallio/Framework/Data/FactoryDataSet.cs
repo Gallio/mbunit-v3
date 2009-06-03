@@ -22,15 +22,15 @@ using Gallio.Common;
 namespace Gallio.Framework.Data
 {
     /// <summary>
-    /// <para>
     /// A factory data set generates data items by invoking a factory delegate
     /// and interpreting its output in accordance with the factory kind.
-    /// </para>
+    /// </summary>
+    /// <remarks>
     /// <para>
     /// Multiple different interpretations are supported.  Refer to the documentation
     /// of the <see cref="FactoryKind" /> enumeration for more details about each kind.
     /// </para>
-    /// </summary>
+    /// </remarks>
     public class FactoryDataSet : BaseDataSet
     {
         private readonly Func<IEnumerable> factory;

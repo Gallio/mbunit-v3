@@ -18,15 +18,15 @@ using System;
 namespace Gallio.Framework.Data
 {
     /// <summary>
-    /// <para>
     /// A data binding object describes how a data binding is to take place.
-    /// </para>
+    /// </summary>
+    /// <remarks>
     /// <para>
     /// This class provides support for optional path-based and index-based lookup.  Subclasses
     /// may provide additional properties that are recognized by special kinds of data sets
     /// to modify how a bound value is resolved.
     /// </para>
-    /// </summary>
+    /// </remarks>
     public class DataBinding : IEquatable<DataBinding>
     {
         private readonly int? index;
@@ -49,9 +49,11 @@ namespace Gallio.Framework.Data
         /// of a cell in an array.  Null if none.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// The default binding index for a test parameter may be its ordinal index
         /// in the parameter array.  A data set can take advantage of this convention by
-        /// treating the binding index 
+        /// treating the binding index.
+        /// </para>
         /// </remarks>
         public virtual int? Index
         {
@@ -63,9 +65,11 @@ namespace Gallio.Framework.Data
         /// in the data set, such as a column name or an XPath expression.  Null if none.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// The default binding path for a test parameter may be the name of the test parameter.
         /// A data set can take advantage of this convention by treating the binding path as a
         /// case-insensitive name where appropriate.
+        /// </para>
         /// </remarks>
         public virtual string Path
         {

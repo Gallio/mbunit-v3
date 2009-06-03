@@ -24,15 +24,15 @@ using Gallio.Common.Reflection;
 namespace Gallio.Framework.Data
 {
     /// <summary>
-    /// <para>
     /// A CSV data set retrieves fields from a CSV document as strings.
-    /// </para>
+    /// </summary>
+    /// <remarks>
     /// <para>
     /// If the CSV document has a header, then it is interpreted as the names of the
     /// columns.  Columns with names in brackets, such as "[ExpectedException]",
     /// are interpreted as containing metadata values associated with the named key.
     /// </para>
-    /// </summary>
+    /// </remarks>
     public class CsvDataSet : BaseDataSet
     {
         private readonly Func<TextReader> documentReaderProvider;
@@ -59,14 +59,14 @@ namespace Gallio.Framework.Data
         }
 
         /// <summary>
-        /// <para>
         /// Gets the name of the location that is providing the data, or null if none.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// The data location name and line number are exposed as
         /// <see cref="MetadataKeys.DataLocation" /> metadata when provided.
         /// </para>
-        /// </summary>
+        /// </remarks>
         /// <value>
         /// The default value is null.
         /// </value>
@@ -77,9 +77,7 @@ namespace Gallio.Framework.Data
         }
 
         /// <summary>
-        /// <para>
         /// Gets or sets the field delimiter character.
-        /// </para>
         /// </summary>
         /// <value>
         /// The default value is ',' (comma).
@@ -91,14 +89,14 @@ namespace Gallio.Framework.Data
         }
 
         /// <summary>
-        /// <para>
         /// Gets or sets a character that indicates that a line in the source represents a comment.
         /// May be set to '\0' (null) to disable comment handling.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// Comment lines are excluded from the record set.
         /// </para>
-        /// </summary>
+        /// </remarks>
         /// <value>
         /// The default value is '#' (pound).
         /// </value>
@@ -140,7 +138,7 @@ namespace Gallio.Framework.Data
         {
             if (!isDynamic || includeDynamicItems)
             {
-                using (CsvReader reader = new CsvReader(documentReaderProvider()))
+                using (var reader = new CsvReader(documentReaderProvider()))
                 {
                     reader.FieldDelimiter = fieldDelimiter;
                     reader.CommentPrefix = commentPrefix;

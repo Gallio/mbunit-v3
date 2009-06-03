@@ -76,7 +76,7 @@ namespace Gallio.Framework.Assertions
         }
 
         /// <summary>
-        /// Returns true if the assertion failure exception should not be logged because
+        /// Returns <code>true</code> if the assertion failure exception should not be logged because
         /// the information it contains has already been conveyed to the user.
         /// </summary>
         public bool IsSilent

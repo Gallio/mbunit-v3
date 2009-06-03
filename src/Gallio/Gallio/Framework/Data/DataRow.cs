@@ -20,16 +20,16 @@ using Gallio.Common.Collections;
 namespace Gallio.Framework.Data
 {
     /// <summary>
-    /// <para>
     /// A data row is a simple immutable value type that encpasulates an
     /// array of values along with associated metadata for use in data binding expressions.
     /// It presents a fluent interface that users may find more convenient than
     /// other <see cref="IDataItem" /> implementations.
-    /// </para>
+    /// </summary>
+    /// <remarks>
     /// <para>
     /// The data in a <see cref="DataRow" /> is always considered dynamic.
     /// </para>
-    /// </summary>
+    /// </remarks>
     public class DataRow : BaseDataItem
     {
         private readonly object[] values;
@@ -54,7 +54,9 @@ namespace Gallio.Framework.Data
         /// Returns an augmented data row with added metadata.
         /// </summary>
         /// <remarks>
-        /// The original data row is not modified!
+        /// <para>
+        /// The original data row is not modified.
+        /// </para>
         /// </remarks>
         /// <param name="key">The metadata key.</param>
         /// <param name="value">The metadata value.</param>
@@ -76,7 +78,9 @@ namespace Gallio.Framework.Data
         /// specified metadata map.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// The original data row is not modified!
+        /// </para>
         /// </remarks>
         /// <param name="map">The metadata map.</param>
         /// <returns>The augmented data row.</returns>

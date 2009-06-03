@@ -36,13 +36,13 @@ namespace Gallio.Common.Xml
         /// <typeparam name="T">The root object type.</typeparam>
         public static void SaveToXml<T>(T root, string filename)
         {
-            XmlSerializer serializer = new XmlSerializer(typeof(T));
+            var serializer = new XmlSerializer(typeof(T));
 
-            XmlWriterSettings settings = new XmlWriterSettings();
+            var settings = new XmlWriterSettings();
             settings.Indent = true;
             settings.CloseOutput = true;
 
-            using (XmlWriter writer = XmlWriter.Create(filename, settings))
+            using (var writer = XmlWriter.Create(filename, settings))
                 serializer.Serialize(writer, root);
         }
 
@@ -54,7 +54,7 @@ namespace Gallio.Common.Xml
         /// <typeparam name="T">The root object type.</typeparam>
         public static T LoadFromXml<T>(string filename)
         {
-            XmlSerializer serializer = new XmlSerializer(typeof(T));
+            var serializer = new XmlSerializer(typeof(T));
 
             using (XmlReader reader = XmlReader.Create(filename))
                 return (T) serializer.Deserialize(reader);
