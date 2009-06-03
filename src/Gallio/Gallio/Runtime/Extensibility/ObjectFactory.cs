@@ -76,7 +76,7 @@ namespace Gallio.Runtime.Extensibility
         /// <summary>
         /// Creates an instance of the object described by this factory.
         /// </summary>
-        /// <returns>The instance, not null</returns>
+        /// <returns>The instance, not null.</returns>
         public object CreateInstance()
         {
             if (objectType.IsAbstract)

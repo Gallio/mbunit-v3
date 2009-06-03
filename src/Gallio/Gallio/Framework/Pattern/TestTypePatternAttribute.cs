@@ -24,7 +24,7 @@ using Gallio.Common.Reflection;
 namespace Gallio.Framework.Pattern
 {
     /// <summary>
-    /// Declares that a type represents an test.
+    /// Declares that a type represents a test.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -56,15 +56,15 @@ namespace Gallio.Framework.Pattern
         public static readonly TestTypePatternAttribute AutomaticInstance = new AutomaticImpl();
 
         /// <summary>
-        /// <para>
         /// Gets or sets a number that defines an ordering for the test with respect to its siblings.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// Unless compelled otherwise by test dependencies, tests with a lower order number than
         /// their siblings will run before those siblings and tests with the same order number
         /// as their siblings with run in an arbitrary sequence with respect to those siblings.
         /// </para>
-        /// </summary>
+        /// </remarks>
         /// <value>The test execution order with respect to siblings, initially zero.</value>
         public int Order { get; set; }
 
@@ -111,17 +111,17 @@ namespace Gallio.Framework.Pattern
         }
 
         /// <summary>
-        /// <para>
         /// Initializes a test for a type after it has been added to the test model.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// The members of base types are processed before those of subtypes.
         /// </para>
-        /// </summary>
-        /// <remarks>
+        /// <para>
         /// The default implementation processes all public members of the type including
         /// the first constructor found, then recurses to process all public and non-public
         /// nested types.  Non-public members other than nested types are ignored.
+        /// </para>
         /// </remarks>
         /// <param name="typeScope">The type scope.</param>
         /// <param name="type">The type.</param>
@@ -219,14 +219,12 @@ namespace Gallio.Framework.Pattern
         }
 
         /// <summary>
-        /// <para>
         /// Applies semantic actions to a test to estalish its runtime behavior.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// This method is called after <see cref="InitializeTest" />.
         /// </para>
-        /// </summary>
-        /// <remarks>
         /// <para>
         /// The default behavior for a <see cref="TestTypePatternAttribute" />
         /// is to configure the test actions as follows:
@@ -392,7 +390,7 @@ namespace Gallio.Framework.Pattern
         /// only included if the type is not abstract.
         /// </summary>
         /// <param name="type">The type.</param>
-        /// <returns>The binding flags for enumerating members</returns>
+        /// <returns>The binding flags for enumerating members.</returns>
         protected virtual BindingFlags GetMemberBindingFlags(ITypeInfo type)
         {
             BindingFlags bindingFlags = BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy;
@@ -410,7 +408,7 @@ namespace Gallio.Framework.Pattern
         /// </summary>
         /// <param name="evaluator">The pattern evaluator.</param>
         /// <param name="type">The type.</param>
-        /// <returns>True if the type is likely a test type</returns>
+        /// <returns>True if the type is likely a test type.</returns>
         protected virtual bool InferTestType(IPatternEvaluator evaluator, ITypeInfo type)
         {
             if (evaluator.HasPatterns(type))

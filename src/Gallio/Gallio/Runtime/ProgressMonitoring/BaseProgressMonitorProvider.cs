@@ -39,7 +39,7 @@ namespace Gallio.Runtime.ProgressMonitoring
         /// <summary>
         /// Gets a presenter for the progress monitor.
         /// </summary>
-        /// <returns>The presenter</returns>
+        /// <returns>The presenter.</returns>
         protected abstract IProgressMonitorPresenter GetPresenter();
     }
 }

@@ -26,7 +26,7 @@ namespace Gallio.Framework.Data
         /// Resolves the data source with the specified name.
         /// </summary>
         /// <param name="name">The data source name.</param>
-        /// <returns>The resolved data source, or null if none found</returns>
+        /// <returns>The resolved data source, or null if none found.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> is null.</exception>
         DataSource ResolveDataSource(string name);
     }

@@ -30,7 +30,7 @@ namespace Gallio.Runtime.Preferences
         /// Gets the preference set with the specified name.
         /// </summary>
         /// <param name="preferenceSetName">The name of the preference set.</param>
-        /// <returns>The preference set</returns>
+        /// <returns>The preference set.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="preferenceSetName"/> is null.</exception>
         /// <exception cref="ArgumentException">Thrown if <paramref name="preferenceSetName"/> is empty.</exception>
         IPreferenceSet this[string preferenceSetName] { get; }

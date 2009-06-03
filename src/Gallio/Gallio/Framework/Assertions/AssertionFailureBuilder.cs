@@ -85,7 +85,7 @@ namespace Gallio.Framework.Assertions
         /// Sets the user-supplied assertion failure message.
         /// </summary>
         /// <param name="message">The user-supplied assertion failure message, or null if none.</param>
-        /// <returns>The builder, to allow for fluent method chaining</returns>
+        /// <returns>The builder, to allow for fluent method chaining.</returns>
         public AssertionFailureBuilder SetMessage(string message)
         {
             this.message = message;
@@ -98,7 +98,7 @@ namespace Gallio.Framework.Assertions
         /// <param name="messageFormat">The user-supplied assertion failure message format
         /// string, or null if none.</param>
         /// <param name="messageArgs">The format arguments, or null or empty if none.</param>
-        /// <returns>The builder, to allow for fluent method chaining</returns>
+        /// <returns>The builder, to allow for fluent method chaining.</returns>
         public AssertionFailureBuilder SetMessage(string messageFormat, params object[] messageArgs)
         {
             message = messageFormat != null && messageArgs != null
@@ -111,7 +111,7 @@ namespace Gallio.Framework.Assertions
         /// Sets the stack trace.
         /// </summary>
         /// <param name="stackTrace">The stack trace, or null if none.</param>
-        /// <returns>The builder, to allow for fluent method chaining</returns>
+        /// <returns>The builder, to allow for fluent method chaining.</returns>
         public AssertionFailureBuilder SetStackTrace(StackTraceData stackTrace)
         {
             this.stackTrace = stackTrace;
@@ -132,7 +132,7 @@ namespace Gallio.Framework.Assertions
         /// This is a convenience method for setting a labeled value called "Expected Value".
         /// </remarks>
         /// <param name="expectedValue">The expected value.</param>
-        /// <returns>The builder, to allow for fluent method chaining</returns>
+        /// <returns>The builder, to allow for fluent method chaining.</returns>
         public AssertionFailureBuilder AddRawExpectedValue(object expectedValue)
         {
             return AddRawLabeledValue("Expected Value", expectedValue);
@@ -151,7 +151,7 @@ namespace Gallio.Framework.Assertions
         /// This is a convenience method for setting a labeled value called "Actual Value".
         /// </remarks>
         /// <param name="actualValue">The actual value.</param>
-        /// <returns>The builder, to allow for fluent method chaining</returns>
+        /// <returns>The builder, to allow for fluent method chaining.</returns>
         public AssertionFailureBuilder AddRawActualValue(object actualValue)
         {
             return AddRawLabeledValue("Actual Value", actualValue);
@@ -173,7 +173,7 @@ namespace Gallio.Framework.Assertions
         /// </remarks>
         /// <param name="expectedValue">The expected value.</param>
         /// <param name="actualValue">The actual value.</param>
-        /// <returns>The builder, to allow for fluent method chaining</returns>
+        /// <returns>The builder, to allow for fluent method chaining.</returns>
         public AssertionFailureBuilder AddRawExpectedAndActualValuesWithDiffs(object expectedValue, object actualValue)
         {
             return AddRawLabeledValuesWithDiffs("Expected Value", expectedValue, "Actual Value", actualValue);
@@ -193,7 +193,7 @@ namespace Gallio.Framework.Assertions
         /// <param name="leftValue">The left value.</param>
         /// <param name="rightLabel">The right label.</param>
         /// <param name="rightValue">The right value.</param>
-        /// <returns>The builder, to allow for fluent method chaining</returns>
+        /// <returns>The builder, to allow for fluent method chaining.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="leftLabel"/> or
         /// <paramref name="rightLabel"/> is null.</exception>
         public AssertionFailureBuilder AddRawLabeledValuesWithDiffs(
@@ -251,7 +251,7 @@ namespace Gallio.Framework.Assertions
         /// </summary>
         /// <param name="label">The label.</param>
         /// <param name="value">The raw unformatted value.</param>
-        /// <returns>The builder, to allow for fluent method chaining</returns>
+        /// <returns>The builder, to allow for fluent method chaining.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="label"/> is null.</exception>
         /// <exception cref="ArgumentException">Thrown if <paramref name="label"/> is empty.</exception>
         public AssertionFailureBuilder AddRawLabeledValue(string label, object value)
@@ -270,7 +270,7 @@ namespace Gallio.Framework.Assertions
         /// </summary>
         /// <param name="label">The label.</param>
         /// <param name="formattedValue">The formatted value.</param>
-        /// <returns>The builder, to allow for fluent method chaining</returns>
+        /// <returns>The builder, to allow for fluent method chaining.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="label"/> or <paramref name="formattedValue"/> is null.</exception>
         /// <exception cref="ArgumentException">Thrown if <paramref name="label"/> is empty.</exception>
         public AssertionFailureBuilder AddLabeledValue(string label, string formattedValue)
@@ -290,7 +290,7 @@ namespace Gallio.Framework.Assertions
         /// </summary>
         /// <param name="label">The label.</param>
         /// <param name="formattedValue">The formatted value as structured text.</param>
-        /// <returns>The builder, to allow for fluent method chaining</returns>
+        /// <returns>The builder, to allow for fluent method chaining.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="label"/> or <paramref name="formattedValue"/> is null.</exception>
         /// <exception cref="ArgumentException">Thrown if <paramref name="label"/> is empty.</exception>
         public AssertionFailureBuilder AddLabeledValue(string label, StructuredText formattedValue)
@@ -309,7 +309,7 @@ namespace Gallio.Framework.Assertions
         /// </para>
         /// </summary>
         /// <param name="labeledValue">The labeled value.</param>
-        /// <returns>The builder, to allow for fluent method chaining</returns>
+        /// <returns>The builder, to allow for fluent method chaining.</returns>
         public AssertionFailureBuilder AddLabeledValue(AssertionFailure.LabeledValue labeledValue)
         {
             AddLabeledValueImpl(labeledValue);
@@ -320,7 +320,7 @@ namespace Gallio.Framework.Assertions
         /// Adds an exception to the assertion failure.
         /// </summary>
         /// <param name="ex">The exception to add.</param>
-        /// <returns>The builder, to allow for fluent method chaining</returns>
+        /// <returns>The builder, to allow for fluent method chaining.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="ex"/> is null.</exception>
         public AssertionFailureBuilder AddException(Exception ex)
         {
@@ -334,7 +334,7 @@ namespace Gallio.Framework.Assertions
         /// Adds an exception to the assertion failure.
         /// </summary>
         /// <param name="ex">The exception data to add.</param>
-        /// <returns>The builder, to allow for fluent method chaining</returns>
+        /// <returns>The builder, to allow for fluent method chaining.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="ex"/> is null.</exception>
         public AssertionFailureBuilder AddException(ExceptionData ex)
         {
@@ -352,7 +352,7 @@ namespace Gallio.Framework.Assertions
         /// described by this instance.
         /// </summary>
         /// <param name="innerFailure">The inner assertion failure to add.</param>
-        /// <returns>The builder, to allow for fluent method chaining</returns>
+        /// <returns>The builder, to allow for fluent method chaining.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="innerFailure"/> is null.</exception>
         public AssertionFailureBuilder AddInnerFailure(AssertionFailure innerFailure)
         {
@@ -370,7 +370,7 @@ namespace Gallio.Framework.Assertions
         /// assertion failure described by this instance.
         /// </summary>
         /// <param name="innerFailures">The enumeration of inner assertion failures to add.</param>
-        /// <returns>The builder, to allow for fluent method chaining</returns>
+        /// <returns>The builder, to allow for fluent method chaining.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="innerFailures"/> is null or
         /// contains a null.</exception>
         public AssertionFailureBuilder AddInnerFailures(IEnumerable<AssertionFailure> innerFailures)
@@ -386,7 +386,7 @@ namespace Gallio.Framework.Assertions
         /// <summary>
         /// Generates an immutable object that describes the failure.
         /// </summary>
-        /// <returns>The assertion failure</returns>
+        /// <returns>The assertion failure.</returns>
         [SystemInternal]
         public AssertionFailure ToAssertionFailure()
         {

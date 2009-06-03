@@ -52,7 +52,7 @@ namespace Gallio.Common.Concurrency
         /// </summary>
         /// <param name="invoker">The invoker, such as a WinForms control.</param>
         /// <param name="func">The function.</param>
-        /// <returns>The value returned by the function</returns>
+        /// <returns>The value returned by the function.</returns>
         /// <typeparam name="T">The function return type.</typeparam>
         /// <exception cref="Exception">The exception thrown by the function.</exception>
         public static T Invoke<T>(ISynchronizeInvoke invoker, Func<T> func)

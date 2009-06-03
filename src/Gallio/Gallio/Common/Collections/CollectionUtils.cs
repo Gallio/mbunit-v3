@@ -33,7 +33,7 @@ namespace Gallio.Common.Collections
         /// <typeparam name="TOutput">The output type.</typeparam>
         /// <param name="input">The input collection.</param>
         /// <param name="converter">The conversion function to apply to each element.</param>
-        /// <returns>The output array</returns>
+        /// <returns>The output array.</returns>
         public static TOutput[] ConvertAllToArray<TInput, TOutput>(ICollection input,
             Converter<TInput, TOutput> converter)
         {
@@ -51,7 +51,7 @@ namespace Gallio.Common.Collections
         /// </summary>
         /// <typeparam name="T">The element type.</typeparam>
         /// <param name="collection">The input collection.</param>
-        /// <returns>The output array</returns>
+        /// <returns>The output array.</returns>
         public static T[] ToArray<T>(ICollection collection)
         {
             T[] array = new T[collection.Count];
@@ -66,7 +66,7 @@ namespace Gallio.Common.Collections
         /// <typeparam name="T">The element type.</typeparam>
         /// <param name="enumeration">The input enumeration.</param>
         /// <param name="predicate">The predicate.</param>
-        /// <returns>The first matching value or the default for the type if not found</returns>
+        /// <returns>The first matching value or the default for the type if not found.</returns>
         public static T Find<T>(IEnumerable enumeration, Predicate<T> predicate)
         {
             foreach (T value in enumeration)

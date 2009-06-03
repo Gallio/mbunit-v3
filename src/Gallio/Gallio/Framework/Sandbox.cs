@@ -186,7 +186,7 @@ namespace Gallio.Framework
         /// offers a mechanism to scope actions recursively.
         /// </para>
         /// </summary>
-        /// <returns>The child sandbox</returns>
+        /// <returns>The child sandbox.</returns>
         /// <exception cref="ObjectDisposedException">Thrown if the sandbox was disposed.</exception>
         public Sandbox CreateChild()
         {
@@ -313,7 +313,7 @@ namespace Gallio.Framework
         /// <param name="action">The action to run.</param>
         /// <param name="description">A description of the action being performed,
         /// to be used as a log section name when reporting failures, or null if none.</param>
-        /// <returns>The outcome of the action</returns>
+        /// <returns>The outcome of the action.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="markupDocumentWriter"/> or <paramref name="action"/> is null.</exception>
         /// <exception cref="ObjectDisposedException">Thrown if the sandbox was disposed.</exception>
         public TestOutcome Run(MarkupDocumentWriter markupDocumentWriter, Action action, string description)

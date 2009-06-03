@@ -383,7 +383,7 @@ namespace Gallio.Common.Reflection.Impl
         /// Applies a type substitution and returns the resulting type.
         /// </summary>
         /// <param name="substitution">The substitution.</param>
-        /// <returns>The type after substitution has been performed</returns>
+        /// <returns>The type after substitution has been performed.</returns>
         protected internal virtual ITypeInfo ApplySubstitution(StaticTypeSubstitution substitution)
         {
             return this;

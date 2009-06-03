@@ -19,16 +19,16 @@ using System.Threading;
 namespace Gallio.Common.Concurrency
 {
     /// <summary>
-    /// <para>
     /// A lock box object provides protected read / write access to a shared object
     /// that may be accessed concurrently by multiple threads.
-    /// </para>
+    /// </summary>
+    /// <remarks>
     /// <para>
     /// Clients are expected to use the <see cref="Read" /> and <see cref="Write" /> methods
     /// to acquire and release a lock of the appropriate type prior to manipulating
     /// the contents.
     /// </para>
-    /// </summary>
+    /// </remarks>
     /// <typeparam name="T">The type of object inside the lock box.</typeparam>
     public class LockBox<T>
     {
@@ -91,7 +91,7 @@ namespace Gallio.Common.Concurrency
         /// Acquires a read lock and invokes the function with the object inside the lock box.
         /// </summary>
         /// <param name="func">The action to invoke.</param>
-        /// <returns>The value returned by the function</returns>
+        /// <returns>The value returned by the function.</returns>
         /// <typeparam name="TResult">The function result type.</typeparam>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="func"/> is null.</exception>
         public TResult Read<TResult>(ReadFunc<T, TResult> func)
@@ -114,7 +114,7 @@ namespace Gallio.Common.Concurrency
         /// Acquires a write lock and invokes the function with the object inside the lock box.
         /// </summary>
         /// <param name="func">The action to invoke.</param>
-        /// <returns>The value returned by the function</returns>
+        /// <returns>The value returned by the function.</returns>
         /// <typeparam name="TResult">The function result type.</typeparam>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="func"/> is null.</exception>
         public TResult Write<TResult>(WriteFunc<T, TResult> func)

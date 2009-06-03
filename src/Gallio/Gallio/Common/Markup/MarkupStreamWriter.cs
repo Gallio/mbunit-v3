@@ -333,7 +333,7 @@ namespace Gallio.Common.Markup
         /// embedded copy is typically represented as a link to the same common attachment instance.
         /// </remarks>
         /// <param name="attachment">The attachment to embed.</param>
-        /// <returns>The attachment</returns>
+        /// <returns>The attachment.</returns>
         /// <seealso cref="MarkupDocumentWriter.Attach"/>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="attachment"/> is null.</exception>
         /// <exception cref="InvalidOperationException">Thrown if there is already an attachment
@@ -384,7 +384,7 @@ namespace Gallio.Common.Markup
         /// <param name="attachmentName">The name of the attachment to create or null to
         /// automatically assign one.  The attachment name must be unique within the document.</param>
         /// <param name="text">The text to attach.</param>
-        /// <returns>The attachment</returns>
+        /// <returns>The attachment.</returns>
         /// <seealso cref="MarkupDocumentWriter.AttachPlainText"/>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="text"/> is null.</exception>
         /// <exception cref="InvalidOperationException">Thrown if there is already an attachment
@@ -400,7 +400,7 @@ namespace Gallio.Common.Markup
         /// <param name="attachmentName">The name of the attachment to create or null to
         /// automatically assign one.  The attachment name must be unique within the document.</param>
         /// <param name="html">The HTML to attach.</param>
-        /// <returns>The attachment</returns>
+        /// <returns>The attachment.</returns>
         /// <seealso cref="MarkupDocumentWriter.AttachHtml"/>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="html"/> is null.</exception>
         /// <exception cref="InvalidOperationException">Thrown if there is already an attachment
@@ -416,7 +416,7 @@ namespace Gallio.Common.Markup
         /// <param name="attachmentName">The name of the attachment to create or null to
         /// automatically assign one.  The attachment name must be unique within the document.</param>
         /// <param name="xhtml">The XHTML to attach.</param>
-        /// <returns>The attachment</returns>
+        /// <returns>The attachment.</returns>
         /// <seealso cref="MarkupDocumentWriter.AttachXHtml"/>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="xhtml"/> is null.</exception>
         /// <exception cref="InvalidOperationException">Thrown if there is already an attachment
@@ -432,7 +432,7 @@ namespace Gallio.Common.Markup
         /// <param name="attachmentName">The name of the attachment to create or null to
         /// automatically assign one.  The attachment name must be unique within the document.</param>
         /// <param name="xml">The XML to attach.</param>
-        /// <returns>The attachment</returns>
+        /// <returns>The attachment.</returns>
         /// <seealso cref="MarkupDocumentWriter.AttachXml"/>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="xml"/> is null.</exception>
         /// <exception cref="InvalidOperationException">Thrown if there is already an attachment
@@ -448,7 +448,7 @@ namespace Gallio.Common.Markup
         /// <param name="attachmentName">The name of the attachment to create or null to
         /// automatically assign one.  The attachment name must be unique within the document.</param>
         /// <param name="image">The image to attach.</param>
-        /// <returns>The attachment</returns>
+        /// <returns>The attachment.</returns>
         /// <seealso cref="MarkupDocumentWriter.AttachImage"/>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="image"/> is null.</exception>
         /// <exception cref="InvalidOperationException">Thrown if there is already an attachment
@@ -465,7 +465,7 @@ namespace Gallio.Common.Markup
         /// <param name="attachmentName">The name of the attachment to create or null to
         /// automatically assign one.  The attachment name must be unique within the document.</param>
         /// <param name="obj">The object to serialize and embed, must not be null.</param>
-        /// <returns>The attachment</returns>
+        /// <returns>The attachment.</returns>
         /// <seealso cref="MarkupDocumentWriter.AttachObjectAsXml(string, object)"/>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="obj"/> is null.</exception>
         /// <exception cref="InvalidOperationException">Thrown if there is already an attachment
@@ -484,7 +484,7 @@ namespace Gallio.Common.Markup
         /// <param name="obj">The object to serialize and embed, must not be null.</param>
         /// <param name="xmlSerializer">The <see cref="XmlSerializer" /> to use, or null to use the default <see cref="XmlSerializer" />
         /// for the object's type.</param>
-        /// <returns>The attachment</returns>
+        /// <returns>The attachment.</returns>
         /// <seealso cref="MarkupDocumentWriter.AttachObjectAsXml(string, object, XmlSerializer)"/>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="obj"/> is null.</exception>
         /// <exception cref="InvalidOperationException">Thrown if there is already an attachment

@@ -64,7 +64,7 @@ namespace Gallio.Common
         /// Returns true if the condition is satisfied in the given context.
         /// </summary>
         /// <param name="context">The condition evaluation context.</param>
-        /// <returns>True if the condition is satisfied</returns>
+        /// <returns>True if the condition is satisfied.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="context"/> is null.</exception>
         public bool Evaluate(ConditionContext context)
         {
@@ -78,7 +78,7 @@ namespace Gallio.Common
         /// Parses a condition from an expression.
         /// </summary>
         /// <param name="expression">The expression to parse.</param>
-        /// <returns>The expression</returns>
+        /// <returns>The expression.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="expression"/> is null.</exception>
         /// <exception cref="FormatException">Thrown if <paramref name="expression"/> cannot be parsed.</exception>
         public static Condition Parse(string expression)
@@ -137,7 +137,7 @@ namespace Gallio.Common
         /// <summary>
         /// Returns the conditional expression as a string.
         /// </summary>
-        /// <returns>The expression string</returns>
+        /// <returns>The expression string.</returns>
         public override string ToString()
         {
             return expression;

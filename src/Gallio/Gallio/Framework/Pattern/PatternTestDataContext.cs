@@ -92,7 +92,7 @@ namespace Gallio.Framework.Pattern
         /// Otherwise returns the existing one.
         /// </summary>
         /// <param name="name">The data source name.</param>
-        /// <returns>The defined data source</returns>
+        /// <returns>The defined data source.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> is null.</exception>
         public DataSource DefineDataSource(string name)
         {
@@ -124,7 +124,7 @@ namespace Gallio.Framework.Pattern
         /// context traversed to find the data source excluding the data context
         /// that actually has the data source.
         /// </summary>
-        /// <returns>The implicit data binding index, or null if no anonymous data sources were found</returns>
+        /// <returns>The implicit data binding index, or null if no anonymous data sources were found.</returns>
         /// <seealso cref="ImplicitDataBindingIndexOffset"/>
         public int? ResolveImplicitDataBindingIndex()
         {
@@ -145,7 +145,7 @@ namespace Gallio.Framework.Pattern
         /// <summary>
         /// Creates a child data context.
         /// </summary>
-        /// <returns>A handle for the child context</returns>
+        /// <returns>A handle for the child context.</returns>
         public virtual PatternTestDataContext CreateChild()
         {
             return new PatternTestDataContext(this);

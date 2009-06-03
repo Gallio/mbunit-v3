@@ -36,7 +36,7 @@ namespace Gallio.Runner
         /// Gets the factory by name, or null if none.
         /// </summary>
         /// <param name="factoryName">The name of the test runner factory, matched case-insensitively.</param>
-        /// <returns>The test runner</returns>
+        /// <returns>The test runner.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="factoryName"/> is null.</exception>
         ITestRunnerFactory GetFactory(string factoryName);
 
@@ -44,7 +44,7 @@ namespace Gallio.Runner
         /// Creates a test runner.
         /// </summary>
         /// <param name="factoryName">The name of the test runner factory, matched case-insensitively.</param>
-        /// <returns>The test runner</returns>
+        /// <returns>The test runner.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="factoryName"/> is null.</exception>
         ITestRunner CreateTestRunner(string factoryName);
     }

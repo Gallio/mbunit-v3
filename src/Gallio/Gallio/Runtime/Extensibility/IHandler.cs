@@ -27,7 +27,7 @@ namespace Gallio.Runtime.Extensibility
         /// <summary>
         /// Activates the instance.
         /// </summary>
-        /// <returns>The activated instance</returns>
+        /// <returns>The activated instance.</returns>
         object Activate();
 
         // void Release(object instance);

@@ -108,7 +108,7 @@ namespace Gallio.Framework.Pattern
         /// Gets the pattern test instance state from the specified context.
         /// </summary>
         /// <param name="context">The context.</param>
-        /// <returns>The pattern test instance state, or null if none</returns>
+        /// <returns>The pattern test instance state, or null if none.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="context"/> is null.</exception>
         public static PatternTestInstanceState FromContext(TestContext context)
         {
@@ -305,7 +305,7 @@ namespace Gallio.Framework.Pattern
         /// Gets a fixture object creation specification using the state's bound <see cref="SlotValues"/>.
         /// </summary>
         /// <param name="type">The fixture type or generic type definition.</param>
-        /// <returns>The fixture instance</returns>
+        /// <returns>The fixture instance.</returns>
         /// <remarks>
         /// The values of <see cref="FixtureType" /> and <see cref="FixtureInstance" /> are not used.
         /// </remarks>
@@ -326,7 +326,7 @@ namespace Gallio.Framework.Pattern
         /// </summary>
         /// <param name="method">The test method or generic method definition,
         /// possibly declared by a generic type or generic type defintion.</param>
-        /// <returns>The method return value</returns>
+        /// <returns>The method return value.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="method"/> is null.</exception>
         /// <exception cref="ArgumentException">Thrown if the slots or values in <see cref="SlotValues" />
         /// or <see cref="FixtureType" /> are not appropriate for invoking <paramref name="method"/></exception>
@@ -350,7 +350,7 @@ namespace Gallio.Framework.Pattern
         /// <param name="method">The fixture method or generic method definition,
         /// possibly declared by a generic type or generic type defintion.</param>
         /// <param name="slotValues">The slot values to use for invoking the method.</param>
-        /// <returns>The method return value</returns>
+        /// <returns>The method return value.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="method"/> or <paramref name="slotValues"/> is null.</exception>
         /// <exception cref="ArgumentException">Thrown if the slots or values in <see cref="SlotValues" />
         /// or <see cref="FixtureType" /> or <see cref="FixtureInstance" /> are not appropriate for
@@ -378,7 +378,7 @@ namespace Gallio.Framework.Pattern
         /// and <see cref="TestArguments" />.  If there is no test method or no arguments, does nothing.
         /// </para>
         /// </summary>
-        /// <returns>The method return value, or null if there was none</returns>
+        /// <returns>The method return value, or null if there was none.</returns>
         /// <exception cref="Exception">Any exception thrown by the invoked method.</exception>
         [UserCodeEntryPoint]
         public object InvokeTestMethod()
@@ -392,7 +392,7 @@ namespace Gallio.Framework.Pattern
         /// <summary>
         /// Runs the body of the test.
         /// </summary>
-        /// <returns>The test outcome</returns>
+        /// <returns>The test outcome.</returns>
         [UserCodeEntryPoint]
         public TestOutcome RunBody()
         {

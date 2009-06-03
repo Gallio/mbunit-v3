@@ -111,7 +111,7 @@ namespace Gallio.Runtime.ProgressMonitoring
         /// progress monitoring dialog.
         /// </remarks>
         /// <returns>True if cancelation has just occurred, false if no
-        /// state change was performed</returns>
+        /// state change was performed.</returns>
         protected bool NotifyCanceled()
         {
             EventHandler currentCanceledHandler;

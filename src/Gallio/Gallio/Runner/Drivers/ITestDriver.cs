@@ -45,7 +45,7 @@ namespace Gallio.Runner.Drivers
         /// <param name="testExplorationOptions">The test exploration options.</param>
         /// <param name="testExplorationListener">The test exploration listener.</param>
         /// <param name="progressMonitor">The progress monitor.</param>
-        /// <returns>The test report</returns>
+        /// <returns>The test report.</returns>
         void Explore(TestPackageConfig testPackageConfig,
             TestExplorationOptions testExplorationOptions, ITestExplorationListener testExplorationListener,
             IProgressMonitor progressMonitor);
@@ -59,7 +59,7 @@ namespace Gallio.Runner.Drivers
         /// <param name="testExecutionOptions">The test execution options.</param>
         /// <param name="testExecutionListener">The test execution listener.</param>
         /// <param name="progressMonitor">The progress monitor.</param>
-        /// <returns>The test report</returns>
+        /// <returns>The test report.</returns>
         void Run(TestPackageConfig testPackageConfig,
             TestExplorationOptions testExplorationOptions, ITestExplorationListener testExplorationListener,
             TestExecutionOptions testExecutionOptions, ITestExecutionListener testExecutionListener,

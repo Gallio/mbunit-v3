@@ -27,7 +27,7 @@ namespace Gallio.Common
         /// <summary>
         /// Clones the object.
         /// </summary>
-        /// <returns>The cloned object</returns>
+        /// <returns>The cloned object.</returns>
         new T Clone();
     }
 }

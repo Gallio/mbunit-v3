@@ -35,7 +35,7 @@ namespace Gallio.Runtime.Extensibility
         /// Creates a result object that represents a satisfied dependency.
         /// </summary>
         /// <param name="value">The value provided for the dependency.</param>
-        /// <returns>The result object</returns>
+        /// <returns>The result object.</returns>
         public static DependencyResolution Satisfied(object value)
         {
             return new DependencyResolution(true, value);
@@ -44,7 +44,7 @@ namespace Gallio.Runtime.Extensibility
         /// <summary>
         /// Creates a result object that represents an unsatisfied dependency.
         /// </summary>
-        /// <returns>The result object</returns>
+        /// <returns>The result object.</returns>
         public static DependencyResolution Unsatisfied()
         {
             return new DependencyResolution(false, null);

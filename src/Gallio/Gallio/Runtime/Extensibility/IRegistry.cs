@@ -63,7 +63,7 @@ namespace Gallio.Runtime.Extensibility
         /// Registers a plugin and returns its descriptor.
         /// </summary>
         /// <param name="pluginRegistration">The plugin registration.</param>
-        /// <returns>The new plugin descriptor</returns>
+        /// <returns>The new plugin descriptor.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="pluginRegistration"/> is null.</exception>
         /// <exception cref="ArgumentException">Thrown if there is already a plugin registered with the same id
         /// or if the registration contains errors.</exception>
@@ -73,7 +73,7 @@ namespace Gallio.Runtime.Extensibility
         /// Registers a service and returns its descriptor.
         /// </summary>
         /// <param name="serviceRegistration">The service registration.</param>
-        /// <returns>The new service descriptor</returns>
+        /// <returns>The new service descriptor.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="serviceRegistration"/> is null.</exception>
         /// <exception cref="ArgumentException">Thrown if there is already a service registered with the same id or type name
         /// or if the plugin does not belong to this registry.</exception>
@@ -83,7 +83,7 @@ namespace Gallio.Runtime.Extensibility
         /// Registers a component and returns its descriptor.
         /// </summary>
         /// <param name="componentRegistration">The component registration.</param>
-        /// <returns>The new component descriptor</returns>
+        /// <returns>The new component descriptor.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="componentRegistration"/> is null.</exception>
         /// <exception cref="ArgumentException">Thrown if there is already a component registered with the same id
         /// or if the plugin or service does not belong to this registry or if the component implements a service

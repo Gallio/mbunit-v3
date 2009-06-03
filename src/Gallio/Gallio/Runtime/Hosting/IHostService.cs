@@ -51,7 +51,7 @@ namespace Gallio.Runtime.Hosting
         /// </summary>
         /// <param name="func">The action to perform.</param>
         /// <param name="arg">The argument value, if any.</param>
-        /// <returns>The result value, if any</returns>
+        /// <returns>The result value, if any.</returns>
         /// <typeparam name="TArg">The argument type.</typeparam>
         /// <typeparam name="TResult">The result type.</typeparam>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="func"/> is null.</exception>
@@ -62,7 +62,7 @@ namespace Gallio.Runtime.Hosting
         /// </summary>
         /// <param name="assemblyName">The name of assembly that contains the type.</param>
         /// <param name="typeName">The full name of the type.</param>
-        /// <returns>The object handle of the instance</returns>
+        /// <returns>The object handle of the instance.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="assemblyName"/> or
         /// <paramref name="typeName"/> is null.</exception>
         ObjectHandle CreateInstance(string assemblyName, string typeName);
@@ -72,7 +72,7 @@ namespace Gallio.Runtime.Hosting
         /// </summary>
         /// <param name="assemblyPath">The path of assembly that contains the type.</param>
         /// <param name="typeName">The full name of the type.</param>
-        /// <returns>The object handle of the instance</returns>
+        /// <returns>The object handle of the instance.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="assemblyPath"/> or
         /// <paramref name="typeName"/> is null.</exception>
         ObjectHandle CreateInstanceFrom(string assemblyPath, string typeName);

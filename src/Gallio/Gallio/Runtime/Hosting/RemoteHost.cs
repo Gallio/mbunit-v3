@@ -90,7 +90,7 @@ namespace Gallio.Runtime.Hosting
         /// <summary>
         /// Connects to the remote host service.
         /// </summary>
-        /// <returns>The remote host service</returns>
+        /// <returns>The remote host service.</returns>
         protected abstract IRemoteHostService AcquireRemoteHostService();
 
         private void StartPingTimer()

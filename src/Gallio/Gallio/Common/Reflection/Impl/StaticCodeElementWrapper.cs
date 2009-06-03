@@ -141,7 +141,7 @@ namespace Gallio.Common.Reflection.Impl
         /// <summary>
         /// Gets all attributes that appear on this code element, excluding inherited attributes.
         /// </summary>
-        /// <returns>The attribute wrappers</returns>
+        /// <returns>The attribute wrappers.</returns>
         protected abstract IEnumerable<StaticAttributeWrapper> GetCustomAttributes();
 
         /// <summary>
@@ -155,13 +155,13 @@ namespace Gallio.Common.Reflection.Impl
         /// flag.  Pseudo custom attributes preserve the illusion of these attributes.
         /// </para>
         /// </summary>
-        /// <returns>The pseudo custom attributes</returns>
+        /// <returns>The pseudo custom attributes.</returns>
         protected abstract IEnumerable<Attribute> GetPseudoCustomAttributes();
 
         /// <summary>
         /// Gets an enumeration of elements from which this code element inherits.
         /// </summary>
-        /// <returns>The inherited code elements</returns>
+        /// <returns>The inherited code elements.</returns>
         protected virtual IEnumerable<ICodeElementInfo> GetInheritedElements()
         {
             return EmptyArray<ICodeElementInfo>.Instance;
@@ -218,7 +218,7 @@ namespace Gallio.Common.Reflection.Impl
         /// for the purposes of creating a signature.
         /// </summary>
         /// <param name="type">The reflected type.</param>
-        /// <returns>True if the type is primitive</returns>
+        /// <returns>True if the type is primitive.</returns>
         private static bool ShouldUseShortNameForSignature(ITypeInfo type)
         {
             while (type.ElementType != null)

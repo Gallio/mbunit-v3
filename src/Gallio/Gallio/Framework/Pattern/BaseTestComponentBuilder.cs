@@ -80,7 +80,7 @@ namespace Gallio.Framework.Pattern
         /// <summary>
         /// Gets the underlying test component.
         /// </summary>
-        /// <returns>The test component</returns>
+        /// <returns>The test component.</returns>
         protected abstract IPatternTestComponent GetTestComponent();
 
         /// <inheritdoc />

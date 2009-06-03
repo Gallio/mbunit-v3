@@ -35,7 +35,7 @@ namespace Gallio.Model
         /// </summary>
         /// <param name="reflectionPolicy">The reflection policy.</param>
         /// <param name="codeElement">The code element.</param>
-        /// <returns>True if the code element represents a test</returns>
+        /// <returns>True if the code element represents a test.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="reflectionPolicy"/>
         /// or <paramref name="codeElement"/> is null.</exception>
         bool IsTest(IReflectionPolicy reflectionPolicy, ICodeElementInfo codeElement);
@@ -45,7 +45,7 @@ namespace Gallio.Model
         /// </summary>
         /// <param name="reflectionPolicy">The reflection policy.</param>
         /// <param name="codeElement">The code element.</param>
-        /// <returns>True if the code element represents a part of a test</returns>
+        /// <returns>True if the code element represents a part of a test.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="reflectionPolicy"/>
         /// or <paramref name="codeElement"/> is null.</exception>
         bool IsTestPart(IReflectionPolicy reflectionPolicy, ICodeElementInfo codeElement);

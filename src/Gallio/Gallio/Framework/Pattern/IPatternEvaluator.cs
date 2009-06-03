@@ -39,7 +39,7 @@ namespace Gallio.Framework.Pattern
         /// </summary>
         /// <param name="name">The test name.</param>
         /// <param name="codeElement">The associated code element, or null if none.</param>
-        /// <returns>The builder for the top-level test</returns>
+        /// <returns>The builder for the top-level test.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> is null.</exception>
         IPatternScope CreateTopLevelTestScope(string name, ICodeElementInfo codeElement);
 
@@ -55,7 +55,7 @@ namespace Gallio.Framework.Pattern
         /// and returns an enumeration of their <see cref="IPatternScope"/> objects.
         /// </summary>
         /// <param name="codeElement">The code element.</param>
-        /// <returns>The enumeration of scopes</returns>
+        /// <returns>The enumeration of scopes.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="codeElement"/> is null.</exception>
         IEnumerable<IPatternScope> GetScopes(ICodeElementInfo codeElement);
 
@@ -63,7 +63,7 @@ namespace Gallio.Framework.Pattern
         /// Finds tests that are declared by the specified <see cref="ICodeElementInfo" />.
         /// </summary>
         /// <param name="codeElement">The code element.</param>
-        /// <returns>The enumeration of tests</returns>
+        /// <returns>The enumeration of tests.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="codeElement"/> is null.</exception>
         IEnumerable<PatternTest> GetDeclaredTests(ICodeElementInfo codeElement);
 
@@ -76,7 +76,7 @@ namespace Gallio.Framework.Pattern
         /// <param name="codeElement">The code element.</param>
         /// <param name="defaultPrimaryPattern">The default primary pattern to use, if none can be resolved
         /// for the code element.  May be null if none.</param>
-        /// <returns>True if the code element represents a test</returns>
+        /// <returns>True if the code element represents a test.</returns>
         /// <seealso cref="IPattern.IsTest"/>
         bool IsTest(ICodeElementInfo codeElement, IPattern defaultPrimaryPattern);
 
@@ -89,7 +89,7 @@ namespace Gallio.Framework.Pattern
         /// <param name="codeElement">The code element.</param>
         /// <param name="defaultPrimaryPattern">The default primary pattern to use, if none can be resolved
         /// for the code element.  May be null if none.</param>
-        /// <returns>True if the code element represents a test</returns>
+        /// <returns>True if the code element represents a test.</returns>
         /// <seealso cref="IPattern.IsTest"/>
         bool IsTestPart(ICodeElementInfo codeElement, IPattern defaultPrimaryPattern);
 
@@ -127,7 +127,7 @@ namespace Gallio.Framework.Pattern
         /// Returns true if a code element has one or more associated patterns.
         /// </summary>
         /// <param name="codeElement">The code element.</param>
-        /// <returns>True if the code element has an associated pattern</returns>
+        /// <returns>True if the code element has an associated pattern.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="codeElement"/> is null.</exception>
         bool HasPatterns(ICodeElementInfo codeElement);
 
@@ -135,7 +135,7 @@ namespace Gallio.Framework.Pattern
         /// Gets all patterns associated with a code element.
         /// </summary>
         /// <param name="codeElement">The code element.</param>
-        /// <returns>The enumeration of patterns, or null if none</returns>
+        /// <returns>The enumeration of patterns, or null if none.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="codeElement"/> is null.</exception>
         IEnumerable<IPattern> GetPatterns(ICodeElementInfo codeElement);
 
@@ -143,7 +143,7 @@ namespace Gallio.Framework.Pattern
         /// Gets the primary pattern associated with a code element, or null if none.
         /// </summary>
         /// <param name="codeElement">The code element.</param>
-        /// <returns>The primary pattern, or null if none</returns>
+        /// <returns>The primary pattern, or null if none.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="codeElement"/> is null.</exception>
         /// <exception cref="PatternUsageErrorException">Thrown if there are multiple primary patterns associated with the code element.</exception>
         IPattern GetPrimaryPattern(ICodeElementInfo codeElement);

@@ -39,7 +39,7 @@ namespace Gallio.Common.Reflection
         /// </summary>
         /// <param name="name">The field name.</param>
         /// <returns>The value, or a default value of the field's type if the field with the specified name
-        /// was not initialized by the attribute declaration</returns>
+        /// was not initialized by the attribute declaration.</returns>
         /// <exception cref="ArgumentException">Thrown if there is no writable instance field with the specified name.</exception>
         ConstantValue GetFieldValue(string name);
 
@@ -48,7 +48,7 @@ namespace Gallio.Common.Reflection
         /// </summary>
         /// <param name="name">The property name.</param>
         /// <returns>The value, or a default value of the propery's type if the property with the specified name was not
-        /// initialized by the attribute declaration</returns>
+        /// initialized by the attribute declaration.</returns>
         /// <exception cref="ArgumentException">Thrown if there is no writable instance property with the specified name.</exception>
         ConstantValue GetPropertyValue(string name);
 
@@ -74,7 +74,7 @@ namespace Gallio.Common.Reflection
         /// <param name="throwOnError">If true, throws an exception if the target could
         /// not be resolved, otherwise the result may include unresolved types, enums or arrays
         /// though it still may throw an exception if the attribute class cannot be instantiated.</param>
-        /// <returns>The attribute</returns>
+        /// <returns>The attribute.</returns>
         /// <exception cref="ReflectionResolveException">Thrown if the attribute could not be resolved.</exception>
         object Resolve(bool throwOnError);
     }

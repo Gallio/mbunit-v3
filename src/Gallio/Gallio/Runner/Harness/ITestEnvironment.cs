@@ -28,7 +28,7 @@ namespace Gallio.Runner.Harness
         /// <summary>
         /// Sets up the test environment.
         /// </summary>
-        /// <returns>Returns an object that when disposed causes the test environment to be torn down</returns>
+        /// <returns>Returns an object that when disposed causes the test environment to be torn down.</returns>
         IDisposable SetUp();
     }
 }

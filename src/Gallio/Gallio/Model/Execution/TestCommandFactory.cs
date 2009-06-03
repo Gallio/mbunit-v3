@@ -36,7 +36,7 @@ namespace Gallio.Model.Execution
         /// of the selected tests are automatically included.</param>
         /// <param name="contextManager">The test context manager.</param>
         /// <returns>The root test command or null if none of the tests in
-        /// the subtree including <paramref name="testModel"/> matched the filter</returns>
+        /// the subtree including <paramref name="testModel"/> matched the filter.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="testModel"/>,
         /// <paramref name="filterSet"/> or <paramref name="contextManager"/> is null.</exception>
         /// <exception cref="ModelException">Thrown if an invalid test dependency is found.</exception>

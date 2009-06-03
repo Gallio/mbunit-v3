@@ -40,7 +40,7 @@ namespace Gallio.Runtime.Extensibility
         /// Creates an instance of a typed component handle for the specified descriptor.
         /// </summary>
         /// <param name="componentDescriptor">The component descriptor.</param>
-        /// <returns>The appropriately typed component handle</returns>
+        /// <returns>The appropriately typed component handle.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="componentDescriptor"/> is null.</exception>
         /// <exception cref="RuntimeException">Thrown if the described component's service type or traits type cannot be resolved.</exception>
         public static ComponentHandle CreateInstance(IComponentDescriptor componentDescriptor)
@@ -60,7 +60,7 @@ namespace Gallio.Runtime.Extensibility
         /// Creates an instance of a typed component handle for the specified descriptor.
         /// </summary>
         /// <param name="componentDescriptor">The component descriptor.</param>
-        /// <returns>The appropriately typed component handle</returns>
+        /// <returns>The appropriately typed component handle.</returns>
         /// <typeparam name="TService">The service type.</typeparam>
         /// <typeparam name="TTraits">The traits type.</typeparam>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="componentDescriptor"/> is null.</exception>
@@ -93,7 +93,7 @@ namespace Gallio.Runtime.Extensibility
         /// <param name="traits">The component traits.</param>
         /// <typeparam name="TService">The service type.</typeparam>
         /// <typeparam name="TTraits">The traits type.</typeparam>
-        /// <returns>The appropriately typed component handle</returns>
+        /// <returns>The appropriately typed component handle.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="componentId"/>, <paramref name="component"/>
         /// or <paramref name="traits"/> is null.</exception>
         /// <exception cref="ArgumentException">Thrown if the described component's service or traits are not compatible with a handle of this type.</exception>
@@ -116,7 +116,7 @@ namespace Gallio.Runtime.Extensibility
         /// Returns true if the specified type is a component handle type.
         /// </summary>
         /// <param name="type">The type to examine.</param>
-        /// <returns>True if the type is a component handle type</returns>
+        /// <returns>True if the type is a component handle type.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="type"/> is null.</exception>
         public static bool IsComponentHandleType(Type type)
         {
@@ -146,19 +146,19 @@ namespace Gallio.Runtime.Extensibility
         /// <summary>
         /// Gets the service type.
         /// </summary>
-        /// <returns>The service type</returns>
+        /// <returns>The service type.</returns>
         public abstract Type ServiceType { get; }
 
         /// <summary>
         /// Gets the traits type.
         /// </summary>
-        /// <returns>The traits type</returns>
+        /// <returns>The traits type.</returns>
         public abstract Type TraitsType { get; }
 
         /// <summary>
         /// Gets the component instance.
         /// </summary>
-        /// <returns>The component instance</returns>
+        /// <returns>The component instance.</returns>
         /// <exception cref="RuntimeException">Thrown if the component cannot be resolved.</exception>
         public object GetComponent()
         {
@@ -168,7 +168,7 @@ namespace Gallio.Runtime.Extensibility
         /// <summary>
         /// Gets the component traits.
         /// </summary>
-        /// <returns>The component traits</returns>
+        /// <returns>The component traits.</returns>
         /// <exception cref="RuntimeException">Thrown if the traits cannot be resolved.</exception>
         public Traits GetTraits()
         {
@@ -178,7 +178,7 @@ namespace Gallio.Runtime.Extensibility
         /// <summary>
         /// Returns the component's id.
         /// </summary>
-        /// <returns>The component id</returns>
+        /// <returns>The component id.</returns>
         public override string ToString()
         {
             return Id;
@@ -303,7 +303,7 @@ namespace Gallio.Runtime.Extensibility
         /// <summary>
         /// Gets the component instance.
         /// </summary>
-        /// <returns>The component instance</returns>
+        /// <returns>The component instance.</returns>
         /// <exception cref="RuntimeException">Thrown if the component cannot be resolved.</exception>
         new public TService GetComponent()
         {
@@ -313,7 +313,7 @@ namespace Gallio.Runtime.Extensibility
         /// <summary>
         /// Gets the component traits.
         /// </summary>
-        /// <returns>The component traits</returns>
+        /// <returns>The component traits.</returns>
         /// <exception cref="RuntimeException">Thrown if the traits cannot be resolved.</exception>
         new public TTraits GetTraits()
         {

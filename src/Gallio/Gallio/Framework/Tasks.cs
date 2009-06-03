@@ -80,7 +80,7 @@ namespace Gallio.Framework
         /// <param name="name">The name of the task, or null to create a new name based
         /// on the method associated with the action.</param>
         /// <param name="action">The action to perform.</param>
-        /// <returns>The new thread task</returns>
+        /// <returns>The new thread task.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="action"/> is null.</exception>
         public static ThreadTask CreateThreadTask(string name, Action action)
         {
@@ -101,7 +101,7 @@ namespace Gallio.Framework
         /// <param name="name">The name of the task, or null to create a new name based
         /// on the method associated with the action.</param>
         /// <param name="action">The action to perform.</param>
-        /// <returns>The new thread task</returns>
+        /// <returns>The new thread task.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="action"/> is null.</exception>
         public static ThreadTask StartThreadTask(string name, Action action)
         {
@@ -127,7 +127,7 @@ namespace Gallio.Framework
         /// <param name="executablePath">The path of the executable executable.</param>
         /// <param name="arguments">The arguments for the executable.</param>
         /// <param name="workingDirectory">The working directory.</param>
-        /// <returns>The new thread task</returns>
+        /// <returns>The new thread task.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="executablePath"/>,
         /// <paramref name="arguments"/> or <paramref name="workingDirectory"/> is null.</exception>
         public static ProcessTask CreateProcessTask(string executablePath, string arguments, string workingDirectory)
@@ -200,7 +200,7 @@ namespace Gallio.Framework
         /// <param name="executablePath">The path of the executable executable.</param>
         /// <param name="arguments">The arguments for the executable.</param>
         /// <param name="workingDirectory">The working directory.</param>
-        /// <returns>The new thread task</returns>
+        /// <returns>The new thread task.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="executablePath"/>,
         /// <paramref name="arguments"/> or <paramref name="workingDirectory"/> is null.</exception>
         public static ProcessTask StartProcessTask(string executablePath, string arguments, string workingDirectory)

@@ -35,7 +35,7 @@ namespace Gallio.Runner.Reports
         /// Gets the report formatter with the specified name, or null if none.
         /// </summary>
         /// <param name="formatterName">The formatter name.</param>
-        /// <returns>The formatter, or null on failure</returns>
+        /// <returns>The formatter, or null on failure.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="formatterName"/> is null.</exception>
         IReportFormatter GetReportFormatter(string formatterName);
 
@@ -55,7 +55,7 @@ namespace Gallio.Runner.Reports
         /// Gets a report reader to load a report from the specified container.
         /// </summary>
         /// <param name="reportContainer">The report container.</param>
-        /// <returns>The report reader</returns>
+        /// <returns>The report reader.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="reportContainer"/> is null.</exception>
         IReportReader CreateReportReader(IReportContainer reportContainer);
 
@@ -64,7 +64,7 @@ namespace Gallio.Runner.Reports
         /// </summary>
         /// <param name="report">The report.</param>
         /// <param name="reportContainer">The report container.</param>
-        /// <returns>The report writer</returns>
+        /// <returns>The report writer.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="report"/> or <paramref name="reportContainer"/> is null.</exception>
         IReportWriter CreateReportWriter(Report report, IReportContainer reportContainer);
     }

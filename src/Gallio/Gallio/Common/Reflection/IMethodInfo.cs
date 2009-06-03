@@ -56,7 +56,7 @@ namespace Gallio.Common.Reflection
         /// The list may contain <see cref="IGenericParameterInfo"/> objects when
         /// no type has yet been bound to a certain generic parameter slots.
         /// </summary>
-        /// <returns>The generic arguments</returns>
+        /// <returns>The generic arguments.</returns>
         IList<ITypeInfo> GenericArguments { get; }
 
         /// <summary>
@@ -79,7 +79,7 @@ namespace Gallio.Common.Reflection
         /// Makes a generic method instantiation.
         /// </summary>
         /// <param name="genericArguments">The generic arguments.</param>
-        /// <returns>The generic method instantiation</returns>
+        /// <returns>The generic method instantiation.</returns>
         IMethodInfo MakeGenericMethod(IList<ITypeInfo> genericArguments);
         
         /// <summary>
@@ -88,7 +88,7 @@ namespace Gallio.Common.Reflection
         /// <param name="throwOnError">If true, throws an exception if the target could
         /// not be resolved, otherwise returns a reflection object that represents an
         /// unresolved member which may only support a subset of the usual operations.</param>
-        /// <returns>The native reflection target</returns>
+        /// <returns>The native reflection target.</returns>
         /// <exception cref="NotSupportedException">Thrown if the target cannot be resolved.</exception>
         new MethodInfo Resolve(bool throwOnError);
     }

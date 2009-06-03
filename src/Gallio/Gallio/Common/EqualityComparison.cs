@@ -20,14 +20,14 @@ using System.Text;
 namespace Gallio.Common
 {
     /// <summary>
-    /// <para>
     /// Represents the method that determines whether two objects of the same type are equal.
-    /// </para>
+    /// </summary>
+    /// <remarks>
     /// <para>
     /// This delegate is to <see cref="IEquatable{T}"/>, what <see cref="Comparison{T}"/> is
     /// to <see cref="IComparable{T}"/>.
     /// </para>
-    /// </summary>
+    /// </remarks>
     /// <typeparam name="T">The type of the objects to compare.</typeparam>
     /// <param name="x">The first object to compare.</param>
     /// <param name="y">The second object to compare.</param>

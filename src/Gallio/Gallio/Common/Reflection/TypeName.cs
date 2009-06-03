@@ -160,7 +160,7 @@ namespace Gallio.Common.Reflection
         /// <summary>
         /// Resolves the type named by this instance.
         /// </summary>
-        /// <returns>The type</returns>
+        /// <returns>The type.</returns>
         /// <exception cref="ReflectionResolveException">Thrown if the type could not be resolved.</exception>
         public Type Resolve()
         {
@@ -190,7 +190,7 @@ namespace Gallio.Common.Reflection
         /// <summary>
         /// Returns a type name that has a partial assembly name instead of the full assembly name.
         /// </summary>
-        /// <returns>The type name</returns>
+        /// <returns>The type name.</returns>
         public TypeName ConvertToPartialAssemblyName()
         {
             return HasPartialAssemblyName ? this : new TypeName(fullName, new AssemblyName(assemblyName.Name));

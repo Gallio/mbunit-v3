@@ -53,7 +53,7 @@ namespace Gallio.Common.Diagnostics
         /// Filters a stack trace.
         /// </summary>
         /// <param name="stackTrace">The stack trace.</param>
-        /// <returns>The filtered stack trace</returns>
+        /// <returns>The filtered stack trace.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="stackTrace"/>
         /// is null.</exception>
         public static string FilterStackTrace(string stackTrace)
@@ -68,7 +68,7 @@ namespace Gallio.Common.Diagnostics
         /// Filters a stack trace.
         /// </summary>
         /// <param name="stackTrace">The stack trace.</param>
-        /// <returns>The filtered stack trace string</returns>
+        /// <returns>The filtered stack trace string.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="stackTrace"/>
         /// is null.</exception>
         public static string FilterStackTraceToString(StackTrace stackTrace)
@@ -83,7 +83,7 @@ namespace Gallio.Common.Diagnostics
         /// Filters the stack trace information in an exception.
         /// </summary>
         /// <param name="exception">The exception.</param>
-        /// <returns>The filtered exception data</returns>
+        /// <returns>The filtered exception data.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="exception"/>
         /// is null.</exception>
         public static ExceptionData FilterException(Exception exception)
@@ -98,7 +98,7 @@ namespace Gallio.Common.Diagnostics
         /// Filters the stack trace information about an exception.
         /// </summary>
         /// <param name="exception">The exception data.</param>
-        /// <returns>The filtered exception data</returns>
+        /// <returns>The filtered exception data.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="exception"/>
         /// is null.</exception>
         public static ExceptionData FilterException(ExceptionData exception)
@@ -114,7 +114,7 @@ namespace Gallio.Common.Diagnostics
         /// <summary>
         /// Captures a filtered stack trace from the currently executing thread.
         /// </summary>
-        /// <returns>The filtered stack trace</returns>
+        /// <returns>The filtered stack trace.</returns>
         [DebuggerHidden]
         public static string CaptureFilteredStackTrace()
         {

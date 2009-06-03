@@ -65,7 +65,7 @@ namespace Gallio.Common.Collections
         /// <typeparam name="TOutput">The output type.</typeparam>
         /// <param name="input">The input collection.</param>
         /// <param name="converter">The conversion function to apply to each element.</param>
-        /// <returns>The output array</returns>
+        /// <returns>The output array.</returns>
         public static TOutput[] ConvertAllToArray<TInput, TOutput>(ICollection<TInput> input,
             Converter<TInput, TOutput> converter)
         {
@@ -79,7 +79,7 @@ namespace Gallio.Common.Collections
         /// </summary>
         /// <typeparam name="T">The element type.</typeparam>
         /// <param name="enumerable">The input enumerable.</param>
-        /// <returns>The output array</returns>
+        /// <returns>The output array.</returns>
         public static T[] ToArray<T>(IEnumerable<T> enumerable)
         {
             return new List<T>(enumerable).ToArray();
@@ -90,7 +90,7 @@ namespace Gallio.Common.Collections
         /// </summary>
         /// <typeparam name="T">The element type.</typeparam>
         /// <param name="collection">The input collection.</param>
-        /// <returns>The output array</returns>
+        /// <returns>The output array.</returns>
         public static T[] ToArray<T>(ICollection<T> collection)
         {
             T[] output = new T[collection.Count];
@@ -109,7 +109,7 @@ namespace Gallio.Common.Collections
         /// <typeparam name="T">The element type.</typeparam>
         /// <param name="enumeration">The input enumeration.</param>
         /// <param name="predicate">The predicate.</param>
-        /// <returns>The first matching value or the default for the type if not found</returns>
+        /// <returns>The first matching value or the default for the type if not found.</returns>
         public static T Find<T>(IEnumerable<T> enumeration, Predicate<T> predicate)
         {
             foreach (T value in enumeration)
@@ -150,7 +150,7 @@ namespace Gallio.Common.Collections
         /// </summary>
         /// <param name="a">The first collection.</param>
         /// <param name="b">The second collection.</param>
-        /// <returns>True if the elements are equal</returns>
+        /// <returns>True if the elements are equal.</returns>
         public static bool ElementsEqual<T>(IList<T> a, IList<T> b)
         {
             return ElementsEqual(a, b, (x, y) => Equals(x, y));
@@ -162,7 +162,7 @@ namespace Gallio.Common.Collections
         /// <param name="a">The first collection.</param>
         /// <param name="b">The second collection.</param>
         /// <param name="comparer">The comparison strategy to use.</param>
-        /// <returns>True if the elements are equal</returns>
+        /// <returns>True if the elements are equal.</returns>
         public static bool ElementsEqual<T>(IList<T> a, IList<T> b, EqualityComparison<T> comparer)
         {
             int count = a.Count;
@@ -183,7 +183,7 @@ namespace Gallio.Common.Collections
         /// </summary>
         /// <param name="a">The first collection.</param>
         /// <param name="b">The second collection.</param>
-        /// <returns>True if the elements are equal</returns>
+        /// <returns>True if the elements are equal.</returns>
         public static bool KeyValuePairsEqual<TKey, TValue>(IDictionary<TKey, TValue> a, IDictionary<TKey, TValue> b)
         {
             if (a.Count != b.Count)
@@ -206,7 +206,7 @@ namespace Gallio.Common.Collections
         /// </summary>
         /// <param name="a">The first collection.</param>
         /// <param name="b">The second collection.</param>
-        /// <returns>True if the elements are equal</returns>
+        /// <returns>True if the elements are equal.</returns>
         public static bool ElementsEqualOrderIndependent<T>(IList<T> a, IList<T> b)
         {
             int count = a.Count;

@@ -28,6 +28,6 @@ namespace Gallio.Framework
     /// may differ for other types.</typeparam>
     /// <param name="left">The left value.</param>
     /// <param name="right">The right value.</param>
-    /// <returns>The difference when the right value is subtracted from the left</returns>
+    /// <returns>The difference when the right value is subtracted from the left.</returns>
     internal delegate TDifference SubtractionFunc<TValue, TDifference>(TValue left, TValue right);
 }

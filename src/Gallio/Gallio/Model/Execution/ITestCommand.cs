@@ -125,14 +125,14 @@ namespace Gallio.Model.Execution
         /// Gets a list consisting of this command and all of its descendants as
         /// enumerated by pre-order tree traversal.
         /// </summary>
-        /// <returns>The list of all command</returns>
+        /// <returns>The list of all command.</returns>
         IList<ITestCommand> GetAllCommands();
 
         /// <summary>
         /// Returns true if all of the dependencies of this test command have
         /// been satisfied.
         /// </summary>
-        /// <returns>True if the dependencies of this test command have been satisfied</returns>
+        /// <returns>True if the dependencies of this test command have been satisfied.</returns>
         bool AreDependenciesSatisfied();
 
         /// <summary>
@@ -144,7 +144,7 @@ namespace Gallio.Model.Execution
         /// current thread's context.
         /// </remarks>
         /// <param name="testStep">The test step to start.</param>
-        /// <returns>The test context for the test step</returns>
+        /// <returns>The test context for the test step.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="testStep"/> is null.</exception>
         /// <exception cref="ArgumentException">Thrown if <paramref name="testStep"/> does not
         /// belong to the test associated with this test command.</exception>
@@ -163,7 +163,7 @@ namespace Gallio.Model.Execution
         /// </para>
         /// </summary>
         /// <param name="parentTestStep">The parent test step, or null if none.</param>
-        /// <returns>The test context for the new primary test step</returns>
+        /// <returns>The test context for the new primary test step.</returns>
         /// <seealso cref="StartStep"/>
         ITestContext StartPrimaryChildStep(ITestStep parentTestStep);
     }

@@ -26,16 +26,16 @@ using Gallio.Common.Platform;
 namespace Gallio.Common.Concurrency
 {
     /// <summary>
-    /// <para>
     /// A process task provides support for launching external processes
     /// and collecting their output.
-    /// </para>
+    /// </summary>
+    /// <remarks>
     /// <para>
     /// The process task provides a guarnatee that when you call <see cref="Task.Join" />
     /// all redirected output from the console output and error streams will already
     /// have been captured and delivered to the event handlers, as appropriate.
     /// </para>
-    /// </summary>
+    /// </remarks>
     public class ProcessTask : Task
     {
         private readonly string executablePath;
@@ -114,14 +114,14 @@ namespace Gallio.Common.Concurrency
         }
 
         /// <summary>
-        /// <para>
         /// Gets or sets whether console output stream of the process should be captured
         /// and made available via the <see cref="ConsoleOutput" /> property.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// The default value is <c>false</c>.
         /// </para>
-        /// </summary>
+        /// </remarks>
         public bool CaptureConsoleOutput
         {
             get { return captureConsoleOutput; }
@@ -129,14 +129,14 @@ namespace Gallio.Common.Concurrency
         }
 
         /// <summary>
-        /// <para>
         /// Gets or sets whether console error stream of the process should be captured
         /// and made available via the <see cref="ConsoleError" /> property.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// The default value is <c>false</c>.
         /// </para>
-        /// </summary>
+        /// </remarks>
         public bool CaptureConsoleError
         {
             get { return captureConsoleError; }
@@ -144,13 +144,13 @@ namespace Gallio.Common.Concurrency
         }
 
         /// <summary>
-        /// <para>
         /// Gets or sets whether to execute the command with the Windows shell.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// The default value is <c>false</c>.
         /// </para>
-        /// </summary>
+        /// </remarks>
         public bool UseShellExecute
         {
             get { return useShellExecute; }
@@ -158,13 +158,13 @@ namespace Gallio.Common.Concurrency
         }
 
         /// <summary>
-        /// <para>
         /// Gets or sets whether to create a window for the command prompt.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// The default value is <c>false</c>.
         /// </para>
-        /// </summary>
+        /// </remarks>
         public bool CreateWindow
         {
             get { return createWindow; }
@@ -342,11 +342,13 @@ namespace Gallio.Common.Concurrency
         /// Starts a <see cref="Process" />.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// This method may be override to change how the process is created and
         /// started.
+        /// </para>
         /// </remarks>
         /// <param name="startInfo">The <see cref="ProcessStartInfo" /> that has been started.</param>
-        /// <returns>The process</returns>
+        /// <returns>The process.</returns>
         protected virtual Process StartProcess(ProcessStartInfo startInfo)
         {
             return Process.Start(startInfo);

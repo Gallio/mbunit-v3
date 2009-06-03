@@ -27,7 +27,7 @@ namespace Gallio.Runtime.Debugging
         /// <summary>
         /// Gets the default debugger.
         /// </summary>
-        /// <returns>The default debugger</returns>
+        /// <returns>The default debugger.</returns>
         IDebugger GetDefaultDebugger();
     }
 }

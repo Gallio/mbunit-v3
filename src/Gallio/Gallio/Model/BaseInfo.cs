@@ -47,7 +47,7 @@ namespace Gallio.Model
         /// Compares this object's source for equality with the other's source.
         /// </summary>
         /// <param name="other">The other object.</param>
-        /// <returns>True if the objects are equal</returns>
+        /// <returns>True if the objects are equal.</returns>
         public bool Equals(BaseInfo other)
         {
             return ReferenceEquals(this, other) || ! ReferenceEquals(other, null) && source.Equals(other.source);
@@ -68,7 +68,7 @@ namespace Gallio.Model
         /// <summary>
         /// Compares two objects for equality.
         /// </summary>
-        /// <returns>True if they are equal</returns>
+        /// <returns>True if they are equal.</returns>
         public static bool operator ==(BaseInfo a, BaseInfo b)
         {
             return ReferenceEquals(a, b) ||
@@ -78,7 +78,7 @@ namespace Gallio.Model
         /// <summary>
         /// Compares two objects for inequality.
         /// </summary>
-        /// <returns>True if they are not equal</returns>
+        /// <returns>True if they are not equal.</returns>
         public static bool operator !=(BaseInfo a, BaseInfo b)
         {
             return !(a == b);

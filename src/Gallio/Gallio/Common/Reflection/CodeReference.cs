@@ -129,7 +129,7 @@ namespace Gallio.Common.Reflection
         /// <summary>
         /// Produces a human-readable description of the code reference.
         /// </summary>
-        /// <returns>A description of the code reference</returns>
+        /// <returns>A description of the code reference.</returns>
         public override string ToString()
         {
             StringBuilder description = new StringBuilder();
@@ -164,7 +164,7 @@ namespace Gallio.Common.Reflection
         /// Creates a code reference from a method parameter.
         /// </summary>
         /// <param name="parameter">The parameter.</param>
-        /// <returns>The code reference</returns>
+        /// <returns>The code reference.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="parameter"/> is null.</exception>
         public static CodeReference CreateFromParameter(ParameterInfo parameter)
         {
@@ -180,7 +180,7 @@ namespace Gallio.Common.Reflection
         /// Creates a code reference from a member.
         /// </summary>
         /// <param name="member">The member.</param>
-        /// <returns>The code reference</returns>
+        /// <returns>The code reference.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="member"/> is null.</exception>
         public static CodeReference CreateFromMember(MemberInfo member)
         {
@@ -199,7 +199,7 @@ namespace Gallio.Common.Reflection
         /// Creates a code reference from a type.
         /// </summary>
         /// <param name="type">The type.</param>
-        /// <returns>The code reference</returns>
+        /// <returns>The code reference.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="type"/> is null.</exception>
         public static CodeReference CreateFromType(Type type)
         {
@@ -214,7 +214,7 @@ namespace Gallio.Common.Reflection
         /// Creates a code reference from an namespace name.
         /// </summary>
         /// <param name="namespaceName">The namespace name.</param>
-        /// <returns>The code reference</returns>
+        /// <returns>The code reference.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="namespaceName"/> is null.</exception>
         public static CodeReference CreateFromNamespace(string namespaceName)
         {
@@ -228,7 +228,7 @@ namespace Gallio.Common.Reflection
         /// Creates a code reference from an assembly.
         /// </summary>
         /// <param name="assembly">The assembly.</param>
-        /// <returns>The code reference</returns>
+        /// <returns>The code reference.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="assembly"/> is null.</exception>
         public static CodeReference CreateFromAssembly(Assembly assembly)
         {
@@ -244,7 +244,7 @@ namespace Gallio.Common.Reflection
         /// </summary>
         /// <param name="a">The first code reference.</param>
         /// <param name="b">The second code reference.</param>
-        /// <returns>True if the code references are equal</returns>
+        /// <returns>True if the code references are equal.</returns>
         public static bool operator ==(CodeReference a, CodeReference b)
         {
             return a.Equals(b);
@@ -255,7 +255,7 @@ namespace Gallio.Common.Reflection
         /// </summary>
         /// <param name="a">The first code reference.</param>
         /// <param name="b">The second code reference.</param>
-        /// <returns>True if the code references are not equal</returns>
+        /// <returns>True if the code references are not equal.</returns>
         public static bool operator !=(CodeReference a, CodeReference b)
         {
             return !a.Equals(b);
@@ -296,7 +296,7 @@ namespace Gallio.Common.Reflection
         /// Provides the Xml schema for this element.
         /// </summary>
         /// <param name="schemas">The schema set.</param>
-        /// <returns>The schema type of the element</returns>
+        /// <returns>The schema type of the element.</returns>
         public static XmlQualifiedName ProvideXmlSchema(XmlSchemaSet schemas)
         {
             schemas.Add(new XmlSchema()

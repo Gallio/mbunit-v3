@@ -37,7 +37,7 @@ namespace Gallio.Model.Execution
         /// current thread's context.
         /// </remarks>
         /// <param name="testStep">The test step.</param>
-        /// <returns>The test context associated with the test step</returns>
+        /// <returns>The test context associated with the test step.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="testStep"/> is null.</exception>
         ITestContext StartStep(ITestStep testStep);
     }

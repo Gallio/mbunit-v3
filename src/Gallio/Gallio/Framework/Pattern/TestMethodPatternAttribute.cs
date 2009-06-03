@@ -165,7 +165,7 @@ namespace Gallio.Framework.Pattern
         /// Executes the test method.
         /// </summary>
         /// <param name="state">The test instance state, not null.</param>
-        /// <returns>The test method result</returns>
+        /// <returns>The test method result.</returns>
         protected virtual object Execute(PatternTestInstanceState state)
         {
             return state.InvokeTestMethod();

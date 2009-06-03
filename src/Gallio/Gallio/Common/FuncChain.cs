@@ -41,15 +41,15 @@ namespace Gallio.Common
         }
 
         /// <summary>
-        /// <para>
         /// Gets or sets a representation of the chain as a single function.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// The function is progressively augmented as new contributions are
         /// registered <see cref="Around" />.  By default the action is whatever was
         /// passed into the constructor.
         /// </para>
-        /// </summary>
+        /// </remarks>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
         public Func<T, TResult> Func
         {
@@ -70,9 +70,11 @@ namespace Gallio.Common
         /// can choose to run (or not) as needed.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// The value of <see cref="Func" /> will be set to a new instance
         /// that performs the specified <paramref name="decorator"/> around
         /// the current <see cref="Func" />.
+        /// </para>
         /// </remarks>
         /// <param name="decorator">The decorator to register.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="decorator"/> is null.</exception>

@@ -27,7 +27,7 @@ namespace Gallio.Common.Reflection.Impl
         /// </summary>
         /// <param name="assemblyPath">The assembly path.</param>
         /// <param name="memberId">The XML documentation id of the member.</param>
-        /// <returns>The XML documentation for the member, or null if none available</returns>
+        /// <returns>The XML documentation for the member, or null if none available.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="assemblyPath"/> or <paramref name="memberId"/> is null.</exception>
         string GetXmlDocumentation(string assemblyPath, string memberId);
     }

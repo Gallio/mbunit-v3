@@ -24,7 +24,7 @@ namespace Gallio.Runner.Harness
         /// Creates a test harness and associates it with its test harness
         /// contributors, if any.
         /// </summary>
-        /// <returns>The test harness</returns>
+        /// <returns>The test harness.</returns>
         ITestHarness CreateHarness();
     }
 }

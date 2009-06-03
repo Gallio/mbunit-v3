@@ -50,7 +50,7 @@ namespace Gallio.Common.Reflection.Impl
         /// Applies a type substitution to the specified type.
         /// </summary>
         /// <param name="type">The type to substitute.</param>
-        /// <returns>The substituted type</returns>
+        /// <returns>The substituted type.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="type"/> is null.</exception>
         public ITypeInfo Apply(StaticTypeWrapper type)
         {
@@ -67,7 +67,7 @@ namespace Gallio.Common.Reflection.Impl
         /// Applies a type substitution to the specified generic parameter.
         /// </summary>
         /// <param name="type">The generic parameter to substitute.</param>
-        /// <returns>The substituted type</returns>
+        /// <returns>The substituted type.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="type"/> is null.</exception>
         public ITypeInfo Apply(StaticGenericParameterWrapper type)
         {
@@ -85,7 +85,7 @@ namespace Gallio.Common.Reflection.Impl
         /// Applies a type substitution to the specified list of types.
         /// </summary>
         /// <param name="types">The types to substitute.</param>
-        /// <returns>The substituted types</returns>
+        /// <returns>The substituted types.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="types"/> is null.</exception>
         public IList<ITypeInfo> ApplyAll<T>(IList<T> types)
             where T : StaticTypeWrapper
@@ -156,7 +156,7 @@ namespace Gallio.Common.Reflection.Impl
         /// in the specified substitution.
         /// </summary>
         /// <param name="substitution">The substitution to compose.</param>
-        /// <returns>The new substitution</returns>
+        /// <returns>The new substitution.</returns>
         public StaticTypeSubstitution Compose(StaticTypeSubstitution substitution)
         {
             if (substitution.IsEmpty)
@@ -179,7 +179,7 @@ namespace Gallio.Common.Reflection.Impl
         /// Returns true if this substitution does not contain any of the specified generic parameters.
         /// </summary>
         /// <param name="genericParameters">The generic parameters.</param>
-        /// <returns>True if none of the generic parameters are in the substitution</returns>
+        /// <returns>True if none of the generic parameters are in the substitution.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="genericParameters"/> is null.</exception>
         public bool DoesNotContainAny(IList<StaticGenericParameterWrapper> genericParameters)
         {
@@ -198,7 +198,7 @@ namespace Gallio.Common.Reflection.Impl
         /// </summary>
         /// <param name="a">The first substitution.</param>
         /// <param name="b">The second substitution.</param>
-        /// <returns>True if the substitutions are equal</returns>
+        /// <returns>True if the substitutions are equal.</returns>
         public static bool operator==(StaticTypeSubstitution a, StaticTypeSubstitution b)
         {
             return a.Equals(b);
@@ -209,7 +209,7 @@ namespace Gallio.Common.Reflection.Impl
         /// </summary>
         /// <param name="a">The first substitution.</param>
         /// <param name="b">The second substitution.</param>
-        /// <returns>True if the substitutions are equal</returns>
+        /// <returns>True if the substitutions are equal.</returns>
         public static bool operator !=(StaticTypeSubstitution a, StaticTypeSubstitution b)
         {
             return ! a.Equals(b);

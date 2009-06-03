@@ -28,7 +28,7 @@ namespace Gallio.Runtime.Hosting
         /// </summary>
         /// <param name="hostSetup">The host setup.</param>
         /// <param name="logger">The logger for host message output.</param>
-        /// <returns>The newly created host</returns>
+        /// <returns>The newly created host.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="hostSetup"/> 
         /// or <paramref name="logger"/> is null.</exception>
         IHost CreateHost(HostSetup hostSetup, ILogger logger);

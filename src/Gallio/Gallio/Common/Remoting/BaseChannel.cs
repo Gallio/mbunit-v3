@@ -99,7 +99,7 @@ namespace Gallio.Common.Remoting
         /// Gets the Uri of a service with the given name that can be accessed using this channel.
         /// </summary>
         /// <param name="serviceName">The service name.</param>
-        /// <returns>The service uri</returns>
+        /// <returns>The service uri.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="serviceName"/> is null.</exception>
         public string GetServiceUri(string serviceName)
         {

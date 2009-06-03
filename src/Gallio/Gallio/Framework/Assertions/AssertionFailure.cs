@@ -23,15 +23,15 @@ using Gallio.Common.Markup;
 namespace Gallio.Framework.Assertions
 {
     /// <summary>
-    /// <para>
     /// An assertion failure is an immutable description of a failed assertion and its
     /// cause.  It takes into account information about labeled values such as the expected
     /// and actual value.
-    /// </para>
+    /// </summary>
+    /// <remarks>
     /// <para>
     /// Use an <see cref="AssertionFailureBuilder" /> to generate an instance of this type.
     /// </para>
-    /// </summary>
+    /// </remarks>
     [Serializable]
     public class AssertionFailure : IMarkupStreamWritable
     {
@@ -145,7 +145,7 @@ namespace Gallio.Framework.Assertions
         /// <summary>
         /// Formats the failure as a string.
         /// </summary>
-        /// <returns>The formatted string</returns>
+        /// <returns>The formatted string.</returns>
         public override string ToString()
         {
             StringMarkupDocumentWriter writer = new StringMarkupDocumentWriter(false);
@@ -233,9 +233,9 @@ namespace Gallio.Framework.Assertions
         }
 
         /// <summary>
-        /// <para>
         /// A labeled value describes a named assertion parameter.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// The label indicates the purpose of the value, such as "Expected Value".
         /// The value itself should be formatted to emphasize structural characteristics.
@@ -244,7 +244,7 @@ namespace Gallio.Framework.Assertions
         /// For additional emphasis, such as for comparison purposes (ie. diffs), the value may
         /// be formatted as structured text to include highlights and other markup.
         /// </para>
-        /// </summary>
+        /// </remarks>
         [Serializable]
         public struct LabeledValue
         {

@@ -72,7 +72,7 @@ namespace Gallio.Runtime.Caching
         /// Gets the group with the given key.
         /// </summary>
         /// <param name="key">The key, nor null.</param>
-        /// <returns>The cache group</returns>
+        /// <returns>The cache group.</returns>
         protected virtual IDiskCacheGroup GetGroup(string key)
         {
             Hash64 hash = new Hash64();

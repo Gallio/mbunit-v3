@@ -35,7 +35,7 @@ namespace Gallio.Runtime.Hosting
         /// <param name="applicationBaseDirectory">The application base directory for the new AppDomain, or null to use the current one.</param>
         /// <param name="configurationFile">The configuration file for the new AppDomain, or null to use the current one.</param>
         /// <param name="enableShadowCopy">If true, enables shadow copying within the AppDomain.</param>
-        /// <returns>The new AppDomain</returns>
+        /// <returns>The new AppDomain.</returns>
         public static AppDomain CreateAppDomain(string applicationName, string applicationBaseDirectory, string configurationFile, bool enableShadowCopy)
         {
             AppDomainSetup appDomainSetup = new AppDomainSetup();
@@ -83,7 +83,7 @@ namespace Gallio.Runtime.Hosting
         /// <param name="appDomain">The AppDomain in which to create the instance.</param>
         /// <param name="type">The type to instantiate.</param>
         /// <param name="args">The constructor arguments for the type.</param>
-        /// <returns>The remote instance</returns>
+        /// <returns>The remote instance.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="appDomain"/> or <paramref name="type"/>
         /// is null.</exception>
         public static object CreateRemoteInstance(AppDomain appDomain, Type type, params object[] args)

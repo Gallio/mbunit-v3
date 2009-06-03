@@ -45,7 +45,7 @@ namespace Gallio.Common.Markup.Tags
         /// <summary>
         /// Formats the tag using a <see cref="TagFormatter" />.
         /// </summary>
-        /// <returns>The formatted text</returns>
+        /// <returns>The formatted text.</returns>
         public override string ToString()
         {
             TagFormatter formatter = new TagFormatter();

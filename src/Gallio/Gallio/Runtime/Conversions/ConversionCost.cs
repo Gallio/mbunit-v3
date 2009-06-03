@@ -107,7 +107,7 @@ namespace Gallio.Runtime.Conversions
         /// Adds this conversion cost with the other and returns the sum.
         /// </summary>
         /// <param name="other">The other conversion cost.</param>
-        /// <returns>The summed conversion cost</returns>
+        /// <returns>The summed conversion cost.</returns>
         public ConversionCost Add(ConversionCost other)
         {
             return IsInvalid || other.IsInvalid ? Invalid : new ConversionCost(Math.Min(value + other.value, MaximumValue));

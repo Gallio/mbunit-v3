@@ -119,7 +119,7 @@ namespace Gallio.Runtime.ProgressMonitoring
         /// <param name="totalWorkUnits">The total number of work units to perform.  Must
         /// be greater than 0, or <see cref="double.NaN" /> if an indeterminate amount
         /// of work is to be performed.</param>
-        /// <returns>An object that calls <see cref="Done"/> when disposed</returns>
+        /// <returns>An object that calls <see cref="Done"/> when disposed.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="taskName" /> is null.</exception>
         /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="totalWorkUnits" /> is not valid.</exception>
         /// <exception cref="InvalidOperationException">Thrown if <see cref="BeginTask" /> or <see cref="Done" /> have already been called.</exception>

@@ -270,7 +270,7 @@ namespace Gallio.Runtime.Hosting
         /// </summary>
         /// <param name="partialName">The partial name to quality.</param>
         /// <param name="fullName">The full name.</param>
-        /// <returns>The assembly qualification element</returns>
+        /// <returns>The assembly qualification element.</returns>
         /// <exception cref="InvalidOperationException">Thrown if an assembly qualification already
         /// exists for the same partial name but with a different full name.</exception>
         public AssemblyQualification AddAssemblyQualification(string partialName, string fullName)
@@ -297,7 +297,7 @@ namespace Gallio.Runtime.Hosting
         /// <param name="publicKeyToken">The assembly public key token, or null if none.</param>
         /// <param name="culture">The assembly culture.</param>
         /// <param name="architecture">The assembly processor architecture, or null if none.</param>
-        /// <returns>The assembly dependency element</returns>
+        /// <returns>The assembly dependency element.</returns>
         public AssemblyDependency AddAssemblyDependency(string name, string publicKeyToken, string culture, string architecture)
         {
             if (publicKeyToken != null && publicKeyToken.Length == 0)
@@ -326,7 +326,7 @@ namespace Gallio.Runtime.Hosting
         /// entries necessary to enable the features described by this instance and returns
         /// the combined Xml configuration.
         /// </summary>
-        /// <returns>The combined Xml configuration</returns>
+        /// <returns>The combined Xml configuration.</returns>
         public override string ToString()
         {
             XmlDocument document = GenerateXmlDocument();
@@ -382,7 +382,7 @@ namespace Gallio.Runtime.Hosting
         /// <summary>
         /// Creates a copy of the host configuration information.
         /// </summary>
-        /// <returns>The copy</returns>
+        /// <returns>The copy.</returns>
         public HostConfiguration Copy()
         {
             HostConfiguration copy = new HostConfiguration();
@@ -592,7 +592,7 @@ namespace Gallio.Runtime.Hosting
             /// <summary>
             /// Creates a copy of the assembly qualification information.
             /// </summary>
-            /// <returns>The copy</returns>
+            /// <returns>The copy.</returns>
             public AssemblyQualification Copy()
             {
                 return new AssemblyQualification(partialName, fullName);
@@ -748,7 +748,7 @@ namespace Gallio.Runtime.Hosting
             /// <summary>
             /// Creates a copy of the assembly dependency information.
             /// </summary>
-            /// <returns>The copy</returns>
+            /// <returns>The copy.</returns>
             public AssemblyDependency Copy()
             {
                 AssemblyDependency copy = new AssemblyDependency();
@@ -827,7 +827,7 @@ namespace Gallio.Runtime.Hosting
             /// </summary>
             /// <param name="oldVersionRange">Th old version range.</param>
             /// <param name="newVersion">The new version for redirection.</param>
-            /// <returns>The binding redirect element</returns>
+            /// <returns>The binding redirect element.</returns>
             public AssemblyBindingRedirect AddAssemblyBindingRedirect(string oldVersionRange, string newVersion)
             {
                 AssemblyBindingRedirect assemblyBindingRedirect = BindingRedirects.Find(x =>
@@ -851,7 +851,7 @@ namespace Gallio.Runtime.Hosting
             /// </remarks>
             /// <param name="version">The assembly version.</param>
             /// <param name="uri">The code base uri.</param>
-            /// <returns>The code base element</returns>
+            /// <returns>The code base element.</returns>
             public AssemblyCodeBase AddAssemblyCodeBase(string version, string uri)
             {
                 AssemblyCodeBase assemblyCodeBase = CodeBases.Find(x => x.Version == version);
@@ -940,7 +940,7 @@ namespace Gallio.Runtime.Hosting
             /// <summary>
             /// Creates a copy of the assembly binding redirect information.
             /// </summary>
-            /// <returns>The copy</returns>
+            /// <returns>The copy.</returns>
             public AssemblyBindingRedirect Copy()
             {
                 return new AssemblyBindingRedirect(oldVersionRange, newVersion);
@@ -1055,7 +1055,7 @@ namespace Gallio.Runtime.Hosting
             /// <summary>
             /// Creates a copy of the assembly binding redirect information.
             /// </summary>
-            /// <returns>The copy</returns>
+            /// <returns>The copy.</returns>
             public AssemblyCodeBase Copy()
             {
                 return new AssemblyCodeBase(version, uri);

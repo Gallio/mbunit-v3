@@ -78,7 +78,7 @@ namespace Gallio.Runner.Events
         /// <summary>
         /// Gets the kind of step described using the <see cref="MetadataKeys.TestKind" /> metadata key.
         /// </summary>
-        /// <returns>The step kind</returns>
+        /// <returns>The step kind.</returns>
         public string GetStepKind()
         {
             return TestStepRun.Step.Metadata.GetValue(MetadataKeys.TestKind)

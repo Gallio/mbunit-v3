@@ -36,7 +36,7 @@ namespace Gallio.Runtime.Security
         /// </summary>
         /// <param name="arguments">The command arguments.</param>
         /// <param name="progressMonitor">The progress monitor, non-null.</param>
-        /// <returns>The command result, must be null or serializable</returns>
+        /// <returns>The command result, must be null or serializable.</returns>
         object Execute(object arguments, IProgressMonitor progressMonitor);
     }
 }

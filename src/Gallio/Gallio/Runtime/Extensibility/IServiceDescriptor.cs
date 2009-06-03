@@ -90,7 +90,7 @@ namespace Gallio.Runtime.Extensibility
         /// and may fail.
         /// </para>
         /// </remarks>
-        /// <returns>The service type</returns>
+        /// <returns>The service type.</returns>
         /// <exception cref="RuntimeException">Thrown if an error occurs during resolution.</exception>
         Type ResolveServiceType();
 
@@ -113,7 +113,7 @@ namespace Gallio.Runtime.Extensibility
         /// name without loading the assembly in which the service and traits have been defined.
         /// </para>
         /// </remarks>
-        /// <returns>The traits type</returns>
+        /// <returns>The traits type.</returns>
         /// <exception cref="RuntimeException">Thrown if an error occurs during resolution.</exception>
         Type ResolveTraitsType();
     }

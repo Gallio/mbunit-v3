@@ -66,7 +66,7 @@ namespace Gallio.Common.Platform
         /// </summary>
         /// <param name="executablePath">The executable path.</param>
         /// <param name="arguments">The arguments.</param>
-        /// <returns>The process start info</returns>
+        /// <returns>The process start info.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="executablePath"/>
         /// or <paramref name="arguments"/> is null.</exception>
         public static ProcessStartInfo CreateReentrantProcessStartInfo(string executablePath, string arguments)

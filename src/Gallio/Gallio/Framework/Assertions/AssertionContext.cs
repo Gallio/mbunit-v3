@@ -129,7 +129,7 @@ namespace Gallio.Framework.Assertions
         /// executing the block.</param>
         /// <param name="captureExceptionAsAssertionFailure">Specifies whether to represent an exception
         /// as an assertion failure, otherwise it is rethrown.</param>
-        /// <returns>The array of failures, may be empty if none</returns>
+        /// <returns>The array of failures, may be empty if none.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="action"/> is null.</exception>
         [SystemInternal]
         public AssertionFailure[] CaptureFailures(Action action, AssertionFailureBehavior assertionFailureBehavior,
@@ -156,7 +156,7 @@ namespace Gallio.Framework.Assertions
         /// <summary>
         /// Gets the pending failures within the current assertion scope.
         /// </summary>
-        /// <returns>The pending failures, or an empty array if none</returns>
+        /// <returns>The pending failures, or an empty array if none.</returns>
         public AssertionFailure[] GetPendingFailures()
         {
             return scope.GetPendingFailures();

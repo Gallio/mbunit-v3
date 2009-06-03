@@ -23,6 +23,6 @@ namespace Gallio.Framework.Pattern
     /// <summary>
     /// Performs one primitive action of a test and returns its outcome.
     /// </summary>
-    /// <returns>The outcome of the action</returns>
+    /// <returns>The outcome of the action.</returns>
     public delegate TestOutcome TestAction();
 }

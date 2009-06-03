@@ -142,7 +142,7 @@ namespace Gallio.Common.Reflection.Impl
         /// Returns true if the internal members of this assembly are visible to the specified assembly.
         /// </summary>
         /// <param name="other">The other assembly.</param>
-        /// <returns>True if the other assembly can see internal members of this assembly</returns>
+        /// <returns>True if the other assembly can see internal members of this assembly.</returns>
         public bool IsAssemblyVisibleTo(StaticAssemblyWrapper other)
         {
             // FIXME: Should check InternalsVisibleTo.

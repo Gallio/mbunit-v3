@@ -60,7 +60,7 @@ namespace Gallio.Model
         /// Gets an item from the list with the specified index.
         /// </summary>
         /// <param name="index">The index.</param>
-        /// <returns>The item</returns>
+        /// <returns>The item.</returns>
         /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="index"/> is out of range.</exception>
         public TInfo this[int index]
         {
@@ -104,7 +104,7 @@ namespace Gallio.Model
         /// Returns a wrapper for the list of elements using the model object's type
         /// instead of the reflection object's type.
         /// </summary>
-        /// <returns>The model list</returns>
+        /// <returns>The model list.</returns>
         public IList<TModel> AsModelList()
         {
             return new CovariantList<TInfo, TModel>(this);
@@ -114,14 +114,14 @@ namespace Gallio.Model
         /// Wraps the specified input item.
         /// </summary>
         /// <param name="inputItem">The input item.</param>
-        /// <returns>The output item</returns>
+        /// <returns>The output item.</returns>
         protected abstract TInfo Wrap(TModel inputItem);
 
         /// <summary>
         /// Unwraps the specified output item.
         /// </summary>
         /// <param name="infoItem">The output item.</param>
-        /// <returns>The corresponding input item or null if the output item is a valid wrapper</returns>
+        /// <returns>The corresponding input item or null if the output item is a valid wrapper.</returns>
         protected static TModel Unwrap(TInfo infoItem)
         {
             if (infoItem == null)

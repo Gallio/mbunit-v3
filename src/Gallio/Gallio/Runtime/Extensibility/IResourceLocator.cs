@@ -34,7 +34,7 @@ namespace Gallio.Runtime.Extensibility
         /// </list>
         /// </remarks>
         /// <param name="resourceUri">The resource Uri.</param>
-        /// <returns>The resolved full path of the resource</returns>
+        /// <returns>The resolved full path of the resource.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="resourceUri"/> is null.</exception>
         /// <exception cref="RuntimeException">Thrown if the uri cannot be resolved.</exception>
         string ResolveResourcePath(Uri resourceUri);

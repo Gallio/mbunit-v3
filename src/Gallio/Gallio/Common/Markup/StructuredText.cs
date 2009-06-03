@@ -103,7 +103,7 @@ namespace Gallio.Common.Markup
         /// Returns the total length of all <see cref="TextTag" />s that appear within
         /// the structured text body.
         /// </summary>
-        /// <returns>The total text length</returns>
+        /// <returns>The total text length.</returns>
         public int GetTextLength()
         {
             TextLengthVisitor visitor = new TextLengthVisitor();
@@ -129,7 +129,7 @@ namespace Gallio.Common.Markup
         /// </summary>
         /// <param name="writer">The writer.</param>
         /// <param name="maxLength">The maximum length of text to write.</param>
-        /// <returns>True if truncation occurred</returns>
+        /// <returns>True if truncation occurred.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="writer"/> is null.</exception>
         /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="maxLength"/> is negative.</exception>
         public bool TruncatedWriteTo(MarkupStreamWriter writer, int maxLength)
@@ -155,7 +155,7 @@ namespace Gallio.Common.Markup
         /// <summary>
         /// Formats the structured text to a string, discarding unrepresentable formatting details.
         /// </summary>
-        /// <returns>The structured text as a string</returns>
+        /// <returns>The structured text as a string.</returns>
         public override string ToString()
         {
             return bodyTag.ToString();
@@ -186,7 +186,7 @@ namespace Gallio.Common.Markup
         /// </summary>
         /// <param name="a">The first structured text object to compare.</param>
         /// <param name="b">The second structured text object to compare.</param>
-        /// <returns>True if the structured text objects are equal</returns>
+        /// <returns>True if the structured text objects are equal.</returns>
         public static bool operator ==(StructuredText a, StructuredText b)
         {
             return ReferenceEquals(a, b) || ! ReferenceEquals(a, null) && a.Equals(b);
@@ -197,7 +197,7 @@ namespace Gallio.Common.Markup
         /// </summary>
         /// <param name="a">The first structured text object to compare.</param>
         /// <param name="b">The second structured text object to compare.</param>
-        /// <returns>True if the structured text objects are not equal</returns>
+        /// <returns>True if the structured text objects are not equal.</returns>
         public static bool operator !=(StructuredText a, StructuredText b)
         {
             return !(a == b);

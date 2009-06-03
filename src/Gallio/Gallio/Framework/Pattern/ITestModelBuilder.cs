@@ -59,14 +59,14 @@ namespace Gallio.Framework.Pattern
         /// <param name="name">The test name.</param>
         /// <param name="codeElement">The associated code element, or null if none.</param>
         /// <param name="dataContextBuilder">The data context builder for the new test.</param>
-        /// <returns>The builder for the top-level test</returns>
+        /// <returns>The builder for the top-level test.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> or <paramref name="dataContextBuilder"/> is null.</exception>
         ITestBuilder CreateTopLevelTest(string name, ICodeElementInfo codeElement, ITestDataContextBuilder dataContextBuilder);
 
         /// <summary>
         /// Gets the underlying test model.
         /// </summary>
-        /// <returns>The underlying test model</returns>
+        /// <returns>The underlying test model.</returns>
         TestModel ToTestModel();
     }
 }

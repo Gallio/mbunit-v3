@@ -51,7 +51,7 @@ namespace Gallio.Runtime.Formatting
         /// </para>
         /// </remarks>
         /// <param name="obj">The object to format, may be null.</param>
-        /// <returns>The formatted string, never null and never an empty string</returns>
+        /// <returns>The formatted string, never null and never an empty string.</returns>
         string Format(object obj);
     }
 }

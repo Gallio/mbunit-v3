@@ -178,7 +178,7 @@ namespace Gallio.Runner.Reports
         /// Gets the number of tests with the specified outcome.
         /// </summary>
         /// <param name="outcome">The outcome.</param>
-        /// <returns>The number of tests with the specified outcome</returns>
+        /// <returns>The number of tests with the specified outcome.</returns>
         public int GetOutcomeCount(TestOutcome outcome)
         {
             int count;

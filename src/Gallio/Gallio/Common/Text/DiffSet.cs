@@ -95,7 +95,7 @@ namespace Gallio.Common.Text
         /// </summary>
         /// <param name="leftDocument">The left document.</param>
         /// <param name="rightDocument">The right document.</param>
-        /// <returns>The set of differences</returns>
+        /// <returns>The set of differences.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="leftDocument"/> or
         /// <paramref name="rightDocument"/> is null.</exception>
         public static DiffSet GetDiffSet(string leftDocument, string rightDocument)
@@ -309,7 +309,7 @@ namespace Gallio.Common.Text
         /// </list>
         /// </para>
         /// </summary>
-        /// <returns>Returns a simplified diff</returns>
+        /// <returns>Returns a simplified diff.</returns>
         public DiffSet Simplify()
         {
             if (diffs.Count <= 1)

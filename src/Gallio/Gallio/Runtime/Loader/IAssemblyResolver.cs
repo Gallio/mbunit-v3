@@ -33,7 +33,7 @@ namespace Gallio.Runtime.Loader
         /// to <see cref="Assembly.Load(string)" /></param>
         /// <param name="reflectionOnly">True if the assembly is to be resolved in the
         /// reflection-only context.</param>
-        /// <returns>The assembly, or null if it could not be resolved</returns>
+        /// <returns>The assembly, or null if it could not be resolved.</returns>
         Assembly Resolve(string assemblyName, bool reflectionOnly);
     }
 }

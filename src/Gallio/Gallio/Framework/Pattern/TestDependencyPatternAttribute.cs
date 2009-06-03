@@ -67,7 +67,7 @@ namespace Gallio.Framework.Pattern
         /// </summary>
         /// <param name="scope">The scope.</param>
         /// <param name="codeElement">The code element.</param>
-        /// <returns>The code element representing the dependency</returns>
+        /// <returns>The code element representing the dependency.</returns>
         protected abstract ICodeElementInfo GetDependency(IPatternScope scope, ICodeElementInfo codeElement);
     }
 }

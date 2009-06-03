@@ -29,14 +29,14 @@ namespace Gallio.Runtime.FileTypes
         /// Tries to get the file info associated with the original path of the file.
         /// </summary>
         /// <param name="fileInfo">Returns the file info when available, or null otherwise.</param>
-        /// <returns>True if the file info was available</returns>
+        /// <returns>True if the file info was available.</returns>
         bool TryGetFileInfo(out FileInfo fileInfo);
 
         /// <summary>
         /// Tries to get the contents of the file as a string. 
         /// </summary>
         /// <param name="contents">Returns the file contents when available, or null otherwise.</param>
-        /// <returns>True if the file contents were available</returns>
+        /// <returns>True if the file contents were available.</returns>
         bool TryGetContents(out string contents);
 
         /// <summary>
@@ -49,7 +49,7 @@ namespace Gallio.Runtime.FileTypes
         /// </para>
         /// </remarks>
         /// <param name="stream">Returns the file stream when available, or null otherwise.</param>
-        /// <returns>True if the file stream was available</returns>
+        /// <returns>True if the file stream was available.</returns>
         bool TryGetStream(out Stream stream);
     }
 }

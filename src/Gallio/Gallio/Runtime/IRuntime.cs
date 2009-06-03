@@ -65,19 +65,19 @@ namespace Gallio.Runtime
         /// <summary>
         /// Gets a deep copy of the runtime setup used to configure this runtime.
         /// </summary>
-        /// <returns>The runtime setup</returns>
+        /// <returns>The runtime setup.</returns>
         RuntimeSetup GetRuntimeSetup();
 
         /// <summary>
         /// Gets the list of all plugin assembly references.
         /// </summary>
-        /// <returns>The assembly references</returns>
+        /// <returns>The assembly references.</returns>
         IList<AssemblyReference> GetAllPluginAssemblyReferences();
 
         /// <summary>
         /// Verifies that the runtime is correctly installed.  Writes details to the log.
         /// </summary>
-        /// <returns>True if the installation appears ok</returns>
+        /// <returns>True if the installation appears ok.</returns>
         bool VerifyInstallation();
     }
 }

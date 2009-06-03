@@ -163,7 +163,7 @@ namespace Gallio.Common.Markup
         /// <summary>
         /// Gets the text contents of a text attachment.
         /// </summary>
-        /// <returns>The text, or null if not available</returns>
+        /// <returns>The text, or null if not available.</returns>
         /// <exception cref="InvalidOperationException">Thrown if the attachment is not textual.</exception>
         public string GetText()
         {
@@ -176,7 +176,7 @@ namespace Gallio.Common.Markup
         /// <summary>
         /// Gets the binary contents of a binary attachment.
         /// </summary>
-        /// <returns>The bytes, or null if not available</returns>
+        /// <returns>The bytes, or null if not available.</returns>
         /// <exception cref="InvalidOperationException">Thrown if the attachment is not binary.</exception>
         public byte[] GetBytes()
         {

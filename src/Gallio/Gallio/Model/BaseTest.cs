@@ -89,7 +89,7 @@ namespace Gallio.Model
         /// The default value of this property is <c>null</c> which causes the <see cref="ITestComponent.Name" />
         /// property to be used as the local id hint.
         /// </value>
-        /// <returns>The local id hint</returns>
+        /// <returns>The local id hint.</returns>
         public string LocalIdHint
         {
             get { return localIdHint; }

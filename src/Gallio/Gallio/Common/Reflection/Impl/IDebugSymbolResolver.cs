@@ -28,7 +28,7 @@ namespace Gallio.Common.Reflection.Impl
         /// </summary>
         /// <param name="assemblyPath">The path of the assembly that contains the method.</param>
         /// <param name="methodToken">The method token.</param>
-        /// <returns>The source code location, or null if unknown</returns>
+        /// <returns>The source code location, or null if unknown.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="assemblyPath"/> is null.</exception>
         CodeLocation GetSourceLocationForMethod(string assemblyPath, int methodToken);
     }

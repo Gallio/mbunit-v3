@@ -99,7 +99,7 @@ namespace Gallio.Common.Reflection
         /// Converts the location to a string of the form "path(line,column)",
         /// "path(line)" or "path" depending on which components are available.
         /// </summary>
-        /// <returns>The code location as a string or "(unknown)" if unknown</returns>
+        /// <returns>The code location as a string or "(unknown)" if unknown.</returns>
         public override string ToString()
         {
             if (line != 0)
@@ -118,7 +118,7 @@ namespace Gallio.Common.Reflection
         /// </summary>
         /// <param name="a">The first code location.</param>
         /// <param name="b">The second code location.</param>
-        /// <returns>True if the code locations are equal</returns>
+        /// <returns>True if the code locations are equal.</returns>
         public static bool operator ==(CodeLocation a, CodeLocation b)
         {
             return a.Equals(b);
@@ -129,7 +129,7 @@ namespace Gallio.Common.Reflection
         /// </summary>
         /// <param name="a">The first code location.</param>
         /// <param name="b">The second code location.</param>
-        /// <returns>True if the code references are not equal</returns>
+        /// <returns>True if the code references are not equal.</returns>
         public static bool operator !=(CodeLocation a, CodeLocation b)
         {
             return !a.Equals(b);
@@ -165,7 +165,7 @@ namespace Gallio.Common.Reflection
         /// Provides the Xml schema for this element.
         /// </summary>
         /// <param name="schemas">The schema set.</param>
-        /// <returns>The schema type of the element</returns>
+        /// <returns>The schema type of the element.</returns>
         public static XmlQualifiedName ProvideXmlSchema(XmlSchemaSet schemas)
         {
             schemas.Add(new XmlSchema()

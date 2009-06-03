@@ -334,7 +334,7 @@ namespace Gallio.Framework.Pattern
         /// </para>
         /// </remarks>
         /// <param name="testInstanceState">The test instance state, never null.</param>
-        /// <returns>The test outcome</returns>
+        /// <returns>The test outcome.</returns>
         TestOutcome RunTestInstanceBody(PatternTestInstanceState testInstanceState);
     }
 }

@@ -18,9 +18,13 @@ using System;
 namespace Gallio.Common
 {
     /// <summary>
-    /// A 64bit hash code value type.
-    /// Provides somewhat more protection against collisions than 32 bit hashes.
+    /// A 64 bit hash code value type.
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// Provides somewhat more protection against collisions than 32 bit hashes.
+    /// </para>
+    /// </remarks>
     public struct Hash64 : IEquatable<Hash64>
     {
         private readonly long value;
@@ -47,7 +51,7 @@ namespace Gallio.Common
         /// with this hash code.
         /// </summary>
         /// <param name="str">The string, may be null if none.</param>
-        /// <returns>The augmented hash code</returns>
+        /// <returns>The augmented hash code.</returns>
         public Hash64 Add(string str)
         {
             long newValue = value;

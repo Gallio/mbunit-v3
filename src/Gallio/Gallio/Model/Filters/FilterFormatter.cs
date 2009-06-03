@@ -110,7 +110,7 @@ namespace Gallio.Model.Filters
         /// <summary>
         /// Gets the formatted filter contents.
         /// </summary>
-        /// <returns>The formatted filter</returns>
+        /// <returns>The formatted filter.</returns>
         public override string ToString()
         {
  	        return result.ToString();

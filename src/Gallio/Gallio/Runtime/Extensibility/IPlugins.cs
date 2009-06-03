@@ -31,7 +31,7 @@ namespace Gallio.Runtime.Extensibility
         /// Gets a plugin descriptor by its id, or null if not found.
         /// </summary>
         /// <param name="pluginId">The plugin id.</param>
-        /// <returns>The plugin descriptor, or null if not found</returns>
+        /// <returns>The plugin descriptor, or null if not found.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="pluginId"/> is null.</exception>
         IPluginDescriptor this[string pluginId] { get; }
     }

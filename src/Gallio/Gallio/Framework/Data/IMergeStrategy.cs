@@ -41,7 +41,7 @@ namespace Gallio.Framework.Data
         /// <param name="includeDynamicItems">If true, includes items that may be dynamically
         /// generated in the result set.  Otherwise excludes such items and only returns
         /// those that are statically known a priori.</param>
-        /// <returns>The merged sequence of items</returns>
+        /// <returns>The merged sequence of items.</returns>
         IEnumerable<IDataItem> Merge(IList<IDataProvider> providers, ICollection<DataBinding> bindings,
             bool includeDynamicItems);
     }

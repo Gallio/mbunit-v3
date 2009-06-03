@@ -56,7 +56,7 @@ namespace Gallio.Framework.Pattern
         /// <summary>
         /// Gets the test model builder.
         /// </summary>
-        /// <returns>The test model builder</returns>
+        /// <returns>The test model builder.</returns>
         protected abstract ITestModelBuilder GetTestModelBuilder();
 
         private void RunDeferredAction(ICodeElementInfo codeElement, Action deferredAction)

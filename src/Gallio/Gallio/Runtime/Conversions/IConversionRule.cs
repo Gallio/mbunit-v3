@@ -37,7 +37,7 @@ namespace Gallio.Runtime.Conversions
         /// <param name="targetType">The target type, never null.</param>
         /// <param name="elementConverter">A converter that may be used to recursively
         /// convert the contents of a composite object from one type to another, never null.</param>
-        /// <returns>The conversion cost</returns>
+        /// <returns>The conversion cost.</returns>
         ConversionCost GetConversionCost(Type sourceType, Type targetType, IConverter elementConverter);
 
         /// <summary>
@@ -53,7 +53,7 @@ namespace Gallio.Runtime.Conversions
         /// <param name="targetType">The target type, never null.</param>
         /// <param name="elementConverter">A converter that may be used to recursively
         /// convert the contents of a composite object from one type to another, never null.</param>
-        /// <returns>The converted value</returns>
+        /// <returns>The converted value.</returns>
         object Convert(object sourceValue, Type targetType, IConverter elementConverter);
     }
 }

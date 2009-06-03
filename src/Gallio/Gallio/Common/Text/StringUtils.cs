@@ -31,7 +31,7 @@ namespace Gallio.Common.Text
         /// </summary>
         /// <param name="str">The string to truncate.</param>
         /// <param name="maxLength">The maximum length of the string to retain.</param>
-        /// <returns>The truncated string</returns>
+        /// <returns>The truncated string.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="str"/> is null.</exception>
         /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="maxLength"/> is negative.</exception>
         public static string Truncate(string str, int maxLength)
@@ -55,7 +55,7 @@ namespace Gallio.Common.Text
         /// <param name="str">The string to truncate.</param>
         /// <param name="maxLength">The maximum length of the string to retain
         /// including the ellipsis mark when used.</param>
-        /// <returns>The truncated string</returns>
+        /// <returns>The truncated string.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="str"/> is null.</exception>
         /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="maxLength"/> is negative.</exception>
         public static string TruncateWithEllipsis(string str, int maxLength)
@@ -81,7 +81,7 @@ namespace Gallio.Common.Text
         /// the specified value.
         /// </summary>
         /// <param name="value">The value, only the last 4 bits of which are used.</param>
-        /// <returns>The hexadecimal digit</returns>
+        /// <returns>The hexadecimal digit.</returns>
         public static char ToHexDigit(int value)
         {
             value = value & 0xf;
@@ -97,7 +97,7 @@ namespace Gallio.Common.Text
         /// are represented by a Unicode character escape.
         /// </remarks>
         /// <param name="value">The character value to format.</param>
-        /// <returns>The formatted character</returns>
+        /// <returns>The formatted character.</returns>
         public static string ToCharLiteral(char value)
         {
             StringBuilder str = new StringBuilder(8);
@@ -116,7 +116,7 @@ namespace Gallio.Common.Text
         /// are represented by a Unicode character escape.
         /// </remarks>
         /// <param name="value">The character value to format.</param>
-        /// <returns>The unquoted char literal</returns>
+        /// <returns>The unquoted char literal.</returns>
         public static string ToUnquotedCharLiteral(char value)
         {
             StringBuilder str = new StringBuilder(6);
@@ -139,7 +139,7 @@ namespace Gallio.Common.Text
         /// are represented by a Unicode character escape.
         /// </remarks>
         /// <param name="value">The string value to format.</param>
-        /// <returns>The formatted string</returns>
+        /// <returns>The formatted string.</returns>
         public static string ToStringLiteral(string value)
         {
             StringBuilder str = new StringBuilder(value.Length + 2);
@@ -158,7 +158,7 @@ namespace Gallio.Common.Text
         /// are represented by a Unicode character escape.
         /// </remarks>
         /// <param name="value">The string value to format.</param>
-        /// <returns>The unquoted string literal</returns>
+        /// <returns>The unquoted string literal.</returns>
         public static string ToUnquotedStringLiteral(string value)
         {
             StringBuilder str = new StringBuilder(value.Length);
@@ -271,7 +271,7 @@ namespace Gallio.Common.Text
         /// </para>
         /// </remarks>
         /// <param name="input">The input string.</param>
-        /// <returns>The key value pair</returns>
+        /// <returns>The key value pair.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="input"/> is null.</exception>
         public static KeyValuePair<string, string> ParseKeyValuePair(string input)
         {
@@ -310,7 +310,7 @@ namespace Gallio.Common.Text
         /// returns an array of each one unquoted.
         /// </summary>
         /// <param name="arguments">The arguments string, eg. "/foo 'quoted arg' /bar.</param>
-        /// <returns>The parsed and unquoted arguments</returns>
+        /// <returns>The parsed and unquoted arguments.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="arguments"/> is null.</exception>
         public static string[] ParseArguments(string arguments)
         {

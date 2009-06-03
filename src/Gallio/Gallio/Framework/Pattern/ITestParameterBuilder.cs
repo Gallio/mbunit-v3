@@ -44,7 +44,7 @@ namespace Gallio.Framework.Pattern
         /// <summary>
         /// Gets the underlying test parameter.
         /// </summary>
-        /// <returns>The underlying test parameter</returns>
+        /// <returns>The underlying test parameter.</returns>
         PatternTestParameter ToTestParameter();
     }
 }

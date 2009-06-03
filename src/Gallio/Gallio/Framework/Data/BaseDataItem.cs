@@ -52,7 +52,7 @@ namespace Gallio.Framework.Data
         /// Implements <see cref="GetValue" />.
         /// </summary>
         /// <param name="binding">The binding, never null.</param>
-        /// <returns>The associated value</returns>
+        /// <returns>The associated value.</returns>
         protected abstract object GetValueImpl(DataBinding binding);
 
         /// <summary>

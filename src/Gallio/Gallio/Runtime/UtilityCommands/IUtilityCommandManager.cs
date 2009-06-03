@@ -34,7 +34,7 @@ namespace Gallio.Runtime.UtilityCommands
         /// Gets the utility command with the specified name ignoring case, or null if not registered.
         /// </summary>
         /// <param name="name">The command name.</param>
-        /// <returns>The command</returns>
+        /// <returns>The command.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> is null.</exception>
         IUtilityCommand GetCommand(string name);
     }

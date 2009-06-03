@@ -200,7 +200,7 @@ namespace Gallio.Runtime.Hosting
         /// <summary>
         /// Creates a copy of the host setup information.
         /// </summary>
-        /// <returns>The copy</returns>
+        /// <returns>The copy.</returns>
         public HostSetup Copy()
         {
             HostSetup copy = new HostSetup();
@@ -241,7 +241,7 @@ namespace Gallio.Runtime.Hosting
         /// The file should be deleted by the caller when no longer required.
         /// </para>
         /// </summary>
-        /// <returns>The full path of the configuration file that was written, or null if no file was written</returns>
+        /// <returns>The full path of the configuration file that was written, or null if no file was written.</returns>
         /// <exception cref="InvalidOperationException">Thrown if <see cref="ApplicationBaseDirectory"/>
         /// is <c>null</c> but <see cref="ConfigurationFileLocation" /> is <see cref="Hosting.ConfigurationFileLocation.AppBase" />.</exception>
         /// <exception cref="IOException">Thrown if the configuration file could not be written.</exception>

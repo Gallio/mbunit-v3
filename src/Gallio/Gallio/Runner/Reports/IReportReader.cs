@@ -47,7 +47,7 @@ namespace Gallio.Runner.Reports
         /// contents in referenced content files if they were not embedded otherwise
         /// the attachment contents are not loaded (but may be loaded later using <see cref="LoadReportAttachments" />).</param>
         /// <param name="progressMonitor">The progress monitor.</param>
-        /// <returns>The loaded report</returns>
+        /// <returns>The loaded report.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="progressMonitor "/> is null.</exception>
         Report LoadReport(bool loadAttachmentContents, IProgressMonitor progressMonitor);
 

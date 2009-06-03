@@ -459,7 +459,7 @@ namespace Gallio.Runner
         /// it has already been initialized, then it will not be initialized again.
         /// </para>
         /// </remarks>
-        /// <returns>A result object</returns>
+        /// <returns>A result object.</returns>
         public TestLauncherResult Run()
         {
             Canonicalize(null);

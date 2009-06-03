@@ -77,7 +77,7 @@ namespace Gallio.Common.Diagnostics
         /// <remarks>
         /// The exception will not be terminated by a new line.
         /// </remarks>
-        /// <returns>The formatted stack trace</returns>
+        /// <returns>The formatted stack trace.</returns>
         public override string ToString()
         {
             return stackTrace;

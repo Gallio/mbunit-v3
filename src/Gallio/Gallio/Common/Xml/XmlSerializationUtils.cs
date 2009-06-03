@@ -50,7 +50,7 @@ namespace Gallio.Common.Xml
         /// Loads an object graph from an Xml file using <see cref="XmlSerializer" />.
         /// </summary>
         /// <param name="filename">The filename.</param>
-        /// <returns>The root object</returns>
+        /// <returns>The root object.</returns>
         /// <typeparam name="T">The root object type.</typeparam>
         public static T LoadFromXml<T>(string filename)
         {

@@ -30,7 +30,7 @@ namespace Gallio.Common.IO
         /// and trims it if it is too long.
         /// </summary>
         /// <param name="fileName">The file or directory name.</param>
-        /// <returns>The encoded file or directory name</returns>
+        /// <returns>The encoded file or directory name.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="fileName"/> is null.</exception>
         public static string EncodeFileName(string fileName)
         {
@@ -50,7 +50,7 @@ namespace Gallio.Common.IO
         /// Gets the full path of the containing directory.
         /// </summary>
         /// <param name="path">The path.</param>
-        /// <returns>The full path of the parent directory or null if it is at the root</returns>
+        /// <returns>The full path of the parent directory or null if it is at the root.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="path"/> is null.</exception>
         public static string GetFullPathOfParentDirectory(string path)
         {
@@ -141,7 +141,7 @@ namespace Gallio.Common.IO
         /// <param name="baseDirectory">The base directory for resolving relative paths,
         /// or null to use the current directory.</param>
         /// <param name="path">The path to canonicalize, or null if none.</param>
-        /// <returns>The absolute path, or null if none</returns>
+        /// <returns>The absolute path, or null if none.</returns>
         public static string CanonicalizePath(string baseDirectory, string path)
         {
             if (path == null)
@@ -157,7 +157,7 @@ namespace Gallio.Common.IO
         /// Strips the trailing backslash off of a directory path, if present.
         /// </summary>
         /// <param name="path">The path to strip, or null if none.</param>
-        /// <returns>The stripped path, or null if none</returns>
+        /// <returns>The stripped path, or null if none.</returns>
         public static string StripTrailingBackslash(string path)
         {
             if (path == null)

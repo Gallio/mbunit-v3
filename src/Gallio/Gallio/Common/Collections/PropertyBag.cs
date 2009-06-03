@@ -55,7 +55,7 @@ namespace Gallio.Common.Collections
         /// <summary>
         /// Creates a copy of this property bag.
         /// </summary>
-        /// <returns>The copy</returns>
+        /// <returns>The copy.</returns>
         public PropertyBag Copy()
         {
             PropertyBag copy = new PropertyBag();
@@ -66,7 +66,7 @@ namespace Gallio.Common.Collections
         /// <summary>
         /// Gets a read-only view of this property set.
         /// </summary>
-        /// <returns>A read-only view</returns>
+        /// <returns>A read-only view.</returns>
         public PropertyBag AsReadOnly()
         {
             return contents.IsReadOnly ? this : new PropertyBag(MultiMap<string, string>.ReadOnly(contents));
@@ -81,7 +81,7 @@ namespace Gallio.Common.Collections
         /// </para>
         /// </remarks>
         /// <param name="key">The key.</param>
-        /// <returns>The first associated value, or null if none</returns>
+        /// <returns>The first associated value, or null if none.</returns>
         public string GetValue(string key)
         {
             IList<string> values = this[key];
@@ -310,7 +310,7 @@ namespace Gallio.Common.Collections
         /// Provides the Xml schema for this element.
         /// </summary>
         /// <param name="schemas">The schema set.</param>
-        /// <returns>The schema type of the element</returns>
+        /// <returns>The schema type of the element.</returns>
         public static XmlQualifiedName ProvideXmlSchema(XmlSchemaSet schemas)
         {
             schemas.Add(new XmlSchema()

@@ -32,7 +32,7 @@ namespace Gallio.Runtime.UtilityCommands
         /// </summary>
         /// <param name="context">The command execution context, not null.</param>
         /// <param name="arguments">The typed command arguments, not null.</param>
-        /// <returns>The command exit code, zero for success, non-zero for errors</returns>
+        /// <returns>The command exit code, zero for success, non-zero for errors.</returns>
         public abstract int Execute(UtilityCommandContext context, TArguments arguments);
 
         /// <summary>
@@ -40,7 +40,7 @@ namespace Gallio.Runtime.UtilityCommands
         /// </summary>
         /// <param name="arguments">The arguments object, not null.</param>
         /// <param name="errorReporter">The error reporter, not null.</param>
-        /// <returns>True if the arguments are valid</returns>
+        /// <returns>True if the arguments are valid.</returns>
         public virtual bool ValidateArguments(TArguments arguments, CommandLineErrorReporter errorReporter)
         {
             return true;

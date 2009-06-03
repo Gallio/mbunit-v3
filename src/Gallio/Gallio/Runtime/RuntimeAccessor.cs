@@ -110,7 +110,7 @@ namespace Gallio.Runtime
         /// <summary>
         /// Gets the path of the Gallio runtime components.
         /// </summary>
-        /// <returns>The runtime path</returns>
+        /// <returns>The runtime path.</returns>
         public static string RuntimePath
         {
             get

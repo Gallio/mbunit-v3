@@ -143,7 +143,7 @@ namespace Gallio.Framework.Data
         /// Creates an instance of the resolved type and initializes it using
         /// constructor parameter, field and property slot values.
         /// </summary>
-        /// <returns>The new instance, never null</returns>
+        /// <returns>The new instance, never null.</returns>
         /// <exception cref="InvalidOperationException">Thrown if the type is not instantiable.</exception>
         public object CreateInstance()
         {

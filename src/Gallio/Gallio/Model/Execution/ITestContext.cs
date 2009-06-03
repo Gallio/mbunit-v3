@@ -170,7 +170,7 @@ namespace Gallio.Model.Execution
         /// test step that is starting.
         /// </remarks>
         /// <param name="childStep">The step to start.</param>
-        /// <returns>The context of the child step</returns>
+        /// <returns>The context of the child step.</returns>
         /// <exception cref="InvalidOperationException">Thrown if the step has finished.</exception>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="childStep"/> is null.</exception>
         /// <exception cref="ArgumentException">Thrown if <paramref name="childStep"/> is not a child

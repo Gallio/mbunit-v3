@@ -99,7 +99,7 @@ namespace Gallio.Model.Filters
         /// or not matched by the list of rules.
         /// </summary>
         /// <param name="item">The item.</param>
-        /// <returns>The result</returns>
+        /// <returns>The result.</returns>
         public FilterSetResult Evaluate(T item)
         {
             foreach (var rule in rules)
@@ -117,7 +117,7 @@ namespace Gallio.Model.Filters
         /// <remarks>
         /// The empty filter is represented by an empty string.
         /// </remarks>
-        /// <returns>The formatted filter set expression</returns>
+        /// <returns>The formatted filter set expression.</returns>
         public string ToFilterSetExpr()
         {
             if (rules.Length == 0)

@@ -112,7 +112,7 @@ namespace Gallio.Common.Markup
         /// <summary>
         /// Formats the stream using a <see cref="TagFormatter" />.
         /// </summary>
-        /// <returns>The formatted text</returns>
+        /// <returns>The formatted text.</returns>
         public override string ToString()
         {
             return body != null ? body.ToString() : string.Empty;

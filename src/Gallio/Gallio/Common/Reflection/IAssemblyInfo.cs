@@ -46,32 +46,32 @@ namespace Gallio.Common.Reflection
         /// <summary>
         /// Gets the <see cref="AssemblyName" /> of the assembly.
         /// </summary>
-        /// <returns>The assembly name</returns>
+        /// <returns>The assembly name.</returns>
         AssemblyName GetName();
 
         /// <summary>
         /// Gets the names of the assemblies referenced by this assembly.
         /// </summary>
-        /// <returns>The names of the references assemblies</returns>
+        /// <returns>The names of the references assemblies.</returns>
         IList<AssemblyName> GetReferencedAssemblies();
 
         /// <summary>
         /// Gets the public types exported by the assembly.
         /// </summary>
-        /// <returns>The exported types</returns>
+        /// <returns>The exported types.</returns>
         IList<ITypeInfo> GetExportedTypes();
 
         /// <summary>
         /// Gets all of the types in an assembly.
         /// </summary>
-        /// <returns>The types</returns>
+        /// <returns>The types.</returns>
         IList<ITypeInfo> GetTypes();
 
         /// <summary>
         /// Gets a public type by name, or null if not found.
         /// </summary>
         /// <param name="typeName">The type name.</param>
-        /// <returns>The type</returns>
+        /// <returns>The type.</returns>
         ITypeInfo GetType(string typeName);
 
         /// <summary>
@@ -79,7 +79,7 @@ namespace Gallio.Common.Reflection
         /// </summary>
         /// <param name="throwOnError">If true, throws an exception if the target could
         /// not be resolved, otherwise returns null.</param>
-        /// <returns>The native reflection target</returns>
+        /// <returns>The native reflection target.</returns>
         /// <exception cref="ReflectionResolveException">Thrown if the target cannot be resolved.</exception>
         Assembly Resolve(bool throwOnError);
     }

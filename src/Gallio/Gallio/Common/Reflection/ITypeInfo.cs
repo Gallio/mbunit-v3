@@ -194,7 +194,7 @@ namespace Gallio.Common.Reflection
         /// The list may contain <see cref="IGenericParameterInfo"/> objects when
         /// no type has yet been bound to a certain generic parameter slots.
         /// </summary>
-        /// <returns>The generic arguments, or an empty list if there are none</returns>
+        /// <returns>The generic arguments, or an empty list if there are none.</returns>
         IList<ITypeInfo> GenericArguments { get; }
 
         /// <summary>
@@ -216,7 +216,7 @@ namespace Gallio.Common.Reflection
         /// <summary>
         /// Gets all of the type's interfaces.
         /// </summary>
-        /// <returns>The type's interfaces</returns>
+        /// <returns>The type's interfaces.</returns>
         IList<ITypeInfo> Interfaces { get; }
 
         /// <summary>
@@ -228,7 +228,7 @@ namespace Gallio.Common.Reflection
         /// Gets all constructors of the type that satisfy the binding flags.
         /// </summary>
         /// <param name="bindingFlags">The binding flags.</param>
-        /// <returns>The constructors</returns>
+        /// <returns>The constructors.</returns>
         IList<IConstructorInfo> GetConstructors(BindingFlags bindingFlags);
 
         /// <summary>
@@ -236,14 +236,14 @@ namespace Gallio.Common.Reflection
         /// </summary>
         /// <param name="methodName">The method name.</param>
         /// <param name="bindingFlags">The binding flags.</param>
-        /// <returns>The method</returns>
+        /// <returns>The method.</returns>
         IMethodInfo GetMethod(string methodName, BindingFlags bindingFlags);
 
         /// <summary>
         /// Gets all methods of the type that satisfy the binding flags.
         /// </summary>
         /// <param name="bindingFlags">The binding flags.</param>
-        /// <returns>The methods</returns>
+        /// <returns>The methods.</returns>
         IList<IMethodInfo> GetMethods(BindingFlags bindingFlags);
 
         /// <summary>
@@ -251,14 +251,14 @@ namespace Gallio.Common.Reflection
         /// </summary>
         /// <param name="propertyName">The property name.</param>
         /// <param name="bindingFlags">The binding flags.</param>
-        /// <returns>The property</returns>
+        /// <returns>The property.</returns>
         IPropertyInfo GetProperty(string propertyName, BindingFlags bindingFlags);
 
         /// <summary>
         /// Gets all properties of the type that satisfy the binding flags.
         /// </summary>
         /// <param name="bindingFlags">The binding flags.</param>
-        /// <returns>The properties</returns>
+        /// <returns>The properties.</returns>
         IList<IPropertyInfo> GetProperties(BindingFlags bindingFlags);
 
         /// <summary>
@@ -266,14 +266,14 @@ namespace Gallio.Common.Reflection
         /// </summary>
         /// <param name="fieldName">The field name.</param>
         /// <param name="bindingFlags">The binding flags.</param>
-        /// <returns>The property</returns>
+        /// <returns>The property.</returns>
         IFieldInfo GetField(string fieldName, BindingFlags bindingFlags);
 
         /// <summary>
         /// Gets all fields of the type that satisfy the binding flags.
         /// </summary>
         /// <param name="bindingFlags">The binding flags.</param>
-        /// <returns>The fields</returns>
+        /// <returns>The fields.</returns>
         IList<IFieldInfo> GetFields(BindingFlags bindingFlags);
 
         /// <summary>
@@ -281,14 +281,14 @@ namespace Gallio.Common.Reflection
         /// </summary>
         /// <param name="eventName">The event name.</param>
         /// <param name="bindingFlags">The binding flags.</param>
-        /// <returns>The event</returns>
+        /// <returns>The event.</returns>
         IEventInfo GetEvent(string eventName, BindingFlags bindingFlags);
 
         /// <summary>
         /// Gets all events of the type that satisfy the binding flags.
         /// </summary>
         /// <param name="bindingFlags">The binding flags.</param>
-        /// <returns>The events</returns>
+        /// <returns>The events.</returns>
         IList<IEventInfo> GetEvents(BindingFlags bindingFlags);
 
         /// <summary>
@@ -296,21 +296,21 @@ namespace Gallio.Common.Reflection
         /// </summary>
         /// <param name="nestedTypeName">The nested type name.</param>
         /// <param name="bindingFlags">The binding flags.</param>
-        /// <returns>The nested type</returns>
+        /// <returns>The nested type.</returns>
         ITypeInfo GetNestedType(string nestedTypeName, BindingFlags bindingFlags);
 
         /// <summary>
         /// Gets all nested types of the type that satisfy the binding flags.
         /// </summary>
         /// <param name="bindingFlags">The binding flags.</param>
-        /// <returns>The nested types</returns>
+        /// <returns>The nested types.</returns>
         IList<ITypeInfo> GetNestedTypes(BindingFlags bindingFlags);
 
         /// <summary>
         /// Returns true if variables of this type can be assigned with values of the specified type.
         /// </summary>
         /// <param name="type">The other type, or null if none.</param>
-        /// <returns>True if the other type is not null and this type is assignable from the other type</returns>
+        /// <returns>True if the other type is not null and this type is assignable from the other type.</returns>
         bool IsAssignableFrom(ITypeInfo type);
 
         /// <summary>
@@ -318,33 +318,33 @@ namespace Gallio.Common.Reflection
         /// </summary>
         /// <param name="type">The other type, or null if none.</param>
         /// <returns>True if the other type is not null, this type is a subclass of the other type,
-        /// and this type not the same as the other type</returns>
+        /// and this type not the same as the other type.</returns>
         bool IsSubclassOf(ITypeInfo type);
 
         /// <summary>
         /// Makes an array type of the specified rank.
         /// </summary>
         /// <param name="arrayRank">The array rank.</param>
-        /// <returns>The array type</returns>
+        /// <returns>The array type.</returns>
         ITypeInfo MakeArrayType(int arrayRank);
 
         /// <summary>
         /// Makes a pointer type.
         /// </summary>
-        /// <returns>The pointer type</returns>
+        /// <returns>The pointer type.</returns>
         ITypeInfo MakePointerType();
 
         /// <summary>
         /// Makes a reference type.
         /// </summary>
-        /// <returns>The reference type</returns>
+        /// <returns>The reference type.</returns>
         ITypeInfo MakeByRefType();
 
         /// <summary>
         /// Makes a generic type instantiation.
         /// </summary>
         /// <param name="genericArguments">The generic arguments.</param>
-        /// <returns>The generic type instantiation</returns>
+        /// <returns>The generic type instantiation.</returns>
         ITypeInfo MakeGenericType(IList<ITypeInfo> genericArguments);
 
         /// <summary>
@@ -353,7 +353,7 @@ namespace Gallio.Common.Reflection
         /// <param name="throwOnError">If true, throws an exception if the target could
         /// not be resolved, otherwise returns a reflection object that represents an
         /// unresolved member which may only support a subset of the usual operations.</param>
-        /// <returns>The native reflection target</returns>
+        /// <returns>The native reflection target.</returns>
         /// <exception cref="ReflectionResolveException">Thrown if the target cannot be resolved.</exception>
         new Type Resolve(bool throwOnError);
     }

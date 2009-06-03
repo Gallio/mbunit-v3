@@ -59,7 +59,7 @@ namespace Gallio.Model.Filters
         /// resulting filter set will be empty.
         /// </remarks>
         /// <param name="filterSetExpr">The filter set expression.</param>
-        /// <returns>The parsed filter set</returns>
+        /// <returns>The parsed filter set.</returns>
         public FilterSet<T> ParseFilterSet(string filterSetExpr)
         {
             return MatchFilterSet(new FilterLexer(filterSetExpr));
@@ -69,7 +69,7 @@ namespace Gallio.Model.Filters
         /// Creates a filter from its textual representation as a filter expression.
         /// </summary>
         /// <param name="filterExpr">The filter expression.</param>
-        /// <returns>The parsed filter</returns>
+        /// <returns>The parsed filter.</returns>
         public Filter<T> ParseFilter(string filterExpr)
         {
             return MatchFilter(new FilterLexer(filterExpr));

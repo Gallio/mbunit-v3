@@ -22,11 +22,13 @@ namespace Gallio.Common.Collections
     /// Lazily populates and caches values associated with a particular key.
     /// </summary>
     /// <remarks>
+    /// <para>
     /// Instances of this type are safe for use by multiple concurrent threads.
     /// In the case of a race occurs between two threads that result in the population of the
     /// same key, the populator function may be called concurrently with two requests for the same
     /// key.  The winner of the race gets to store its value in the cache for later use.
     /// However, the loser of the race will discard its value and use the newly cached instead.
+    /// </para>
     /// </remarks>
     public class LazyCache<TKey, TValue>
     {
@@ -53,7 +55,7 @@ namespace Gallio.Common.Collections
         /// Populates it on demand if not already cached.
         /// </summary>
         /// <param name="key">The key.</param>
-        /// <returns>The associated value</returns>
+        /// <returns>The associated value.</returns>
         public TValue this[TKey key]
         {
             get

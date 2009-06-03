@@ -29,7 +29,7 @@ namespace Gallio.Runtime.Extensibility
         /// Gets a service descriptor by its id, or null if not found.
         /// </summary>
         /// <param name="serviceId">The service id.</param>
-        /// <returns>The service descriptor, or null if not found</returns>
+        /// <returns>The service descriptor, or null if not found.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="serviceId"/> is null.</exception>
         IServiceDescriptor this[string serviceId] { get; }
 
@@ -37,7 +37,7 @@ namespace Gallio.Runtime.Extensibility
         /// Gets a service descriptor by its type, or null if not found.
         /// </summary>
         /// <param name="serviceType">The service type.</param>
-        /// <returns>The service descriptor, or null if not found</returns>
+        /// <returns>The service descriptor, or null if not found.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="serviceType"/> is null.</exception>
         IServiceDescriptor GetByServiceType(Type serviceType);
 
@@ -45,7 +45,7 @@ namespace Gallio.Runtime.Extensibility
         /// Gets a service descriptor by its type name, or null if not found.
         /// </summary>
         /// <param name="serviceTypeName">The service type name.</param>
-        /// <returns>The service descriptor, or null if not found</returns>
+        /// <returns>The service descriptor, or null if not found.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="serviceTypeName"/> is null.</exception>
         IServiceDescriptor GetByServiceTypeName(TypeName serviceTypeName);
     }

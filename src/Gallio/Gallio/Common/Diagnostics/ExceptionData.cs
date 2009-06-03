@@ -124,7 +124,7 @@ namespace Gallio.Common.Diagnostics
         /// <remarks>
         /// The exception will not be terminated by a new line.
         /// </remarks>
-        /// <returns>The formatted exception</returns>
+        /// <returns>The formatted exception.</returns>
         public override string ToString()
         {
             StringMarkupDocumentWriter writer = new StringMarkupDocumentWriter(false);

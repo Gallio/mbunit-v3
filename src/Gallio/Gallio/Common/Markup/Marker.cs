@@ -318,7 +318,7 @@ namespace Gallio.Common.Markup
         /// </summary>
         /// <param name="name">The attribute name.</param>
         /// <param name="value">The attribute value.</param>
-        /// <returns>The marker copy with the attribute</returns>
+        /// <returns>The marker copy with the attribute.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/>
         /// or <paramref name="value"/> is null.</exception>
         /// <exception cref="ArgumentException">Thrown if the <paramref name="name"/> is not a valid identifier.  <seealso cref="ValidateIdentifier"/></exception>
@@ -397,7 +397,7 @@ namespace Gallio.Common.Markup
         /// </summary>
         /// <param name="a">The first marker to compare.</param>
         /// <param name="b">The second marker to compare.</param>
-        /// <returns>True if the markers are equal</returns>
+        /// <returns>True if the markers are equal.</returns>
         public static bool operator ==(Marker a, Marker b)
         {
             return a.Equals(b);
@@ -408,7 +408,7 @@ namespace Gallio.Common.Markup
         /// </summary>
         /// <param name="a">The first marker to compare.</param>
         /// <param name="b">The second marker to compare.</param>
-        /// <returns>True if the markers are not equal</returns>
+        /// <returns>True if the markers are not equal.</returns>
         public static bool operator !=(Marker a, Marker b)
         {
             return !(a == b);

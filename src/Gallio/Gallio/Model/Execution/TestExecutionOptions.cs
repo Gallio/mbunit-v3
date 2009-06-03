@@ -114,7 +114,7 @@ namespace Gallio.Model.Execution
         /// <summary>
         /// Creates a copy of the options.
         /// </summary>
-        /// <returns>The copy</returns>
+        /// <returns>The copy.</returns>
         public TestExecutionOptions Copy()
         {
             TestExecutionOptions copy = new TestExecutionOptions();

@@ -31,7 +31,7 @@ namespace Gallio.Model.Filters
         /// </summary>
         /// <param name="key">The filter key that identifies the kind of filter to create.</param>
         /// <param name="valueFilter">The filter to use as a rule for matching values.</param>
-        /// <returns>The filter</returns>
+        /// <returns>The filter.</returns>
         Filter<T> CreateFilter(string key, Filter<string> valueFilter);
     }
 }

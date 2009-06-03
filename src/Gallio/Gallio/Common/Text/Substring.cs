@@ -85,7 +85,7 @@ namespace Gallio.Common.Text
         /// Gets the character with a particular index.
         /// </summary>
         /// <param name="index">The index.</param>
-        /// <returns>The character</returns>
+        /// <returns>The character.</returns>
         /// <exception cref="IndexOutOfRangeException">Thrown if the index is out of range.</exception>
         public char this[int index]
         {
@@ -101,7 +101,7 @@ namespace Gallio.Common.Text
         /// Returns a substring of the substring.
         /// </summary>
         /// <param name="index">The index at which to start.</param>
-        /// <returns>The substring</returns>
+        /// <returns>The substring.</returns>
         /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="index"/> is negative or
         /// if is greater than <see cref="Length"/></exception>
         public Substring Extract(int index)
@@ -117,7 +117,7 @@ namespace Gallio.Common.Text
         /// </summary>
         /// <param name="index">The index at which to start.</param>
         /// <param name="length">The length of the substring to produce.</param>
-        /// <returns>The substring</returns>
+        /// <returns>The substring.</returns>
         /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="index"/> or
         /// <paramref name="length"/> are negative or if their sum is greater than <see cref="Length"/></exception>
         public Substring Extract(int index, int length)
@@ -132,7 +132,7 @@ namespace Gallio.Common.Text
         /// Finds the length of the common prefix of this substring and another one.
         /// </summary>
         /// <param name="other">The other substring.</param>
-        /// <returns>The common prefix length, or 0 if the substrings have no prefix in common</returns>
+        /// <returns>The common prefix length, or 0 if the substrings have no prefix in common.</returns>
         public int FindCommonPrefixLength(Substring other)
         {
             int i = range.StartIndex;
@@ -150,7 +150,7 @@ namespace Gallio.Common.Text
         /// Finds the length of the common suffix of this substring and another one.
         /// </summary>
         /// <param name="other">The other substring.</param>
-        /// <returns>The common suffix length, or 0 if the substrings have no suffix in common</returns>
+        /// <returns>The common suffix length, or 0 if the substrings have no suffix in common.</returns>
         public int FindCommonSuffixLength(Substring other)
         {
             int start = range.EndIndex - 1;
@@ -203,7 +203,7 @@ namespace Gallio.Common.Text
         /// </summary>
         /// <param name="a">The first substring to compare.</param>
         /// <param name="b">The second substring to compare.</param>
-        /// <returns>True if the substrings are equal</returns>
+        /// <returns>True if the substrings are equal.</returns>
         public static bool operator ==(Substring a, Substring b)
         {
             return a.Equals(b);
@@ -214,7 +214,7 @@ namespace Gallio.Common.Text
         /// </summary>
         /// <param name="a">The first substring to compare.</param>
         /// <param name="b">The second substring to compare.</param>
-        /// <returns>True if the substrings are not equal</returns>
+        /// <returns>True if the substrings are not equal.</returns>
         public static bool operator !=(Substring a, Substring b)
         {
             return !(a == b);

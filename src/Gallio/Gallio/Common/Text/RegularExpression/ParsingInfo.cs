@@ -155,7 +155,7 @@ namespace Gallio.Common.Text.RegularExpression
         /// or the 'Root' parsing mode, if not found.
         /// </summary>
         /// <param name="initiator">The character to evaluate.</param>
-        /// <returns>The resulting information container</returns>
+        /// <returns>The resulting information container.</returns>
         public static ParsingInfo FromInitiator(char initiator)
         {
             if (ParsingInfo.Group.IsInitiator(initiator))

@@ -33,7 +33,7 @@ namespace Gallio.Common.Platform
         /// <summary>
         /// Gets the .Net framework version installed and currently running.
         /// </summary>
-        /// <returns>The framework version</returns>
+        /// <returns>The framework version.</returns>
         public static DotNetFrameworkVersion FrameworkVersion
         {
             get

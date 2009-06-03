@@ -33,7 +33,7 @@ namespace Gallio.Runtime.Hosting
         /// Gets a remote host service using the specified channel.
         /// </summary>
         /// <param name="channel">The channel.</param>
-        /// <returns>The remote host service</returns>
+        /// <returns>The remote host service.</returns>
         public static IRemoteHostService GetRemoteHostService(IClientChannel channel)
         {
             if (channel == null)

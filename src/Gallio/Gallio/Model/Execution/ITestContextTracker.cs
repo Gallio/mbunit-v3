@@ -63,7 +63,7 @@ namespace Gallio.Model.Execution
         /// </para>
         /// </summary>
         /// <param name="context">The context to enter, or null to enter a scope without a context.</param>
-        /// <returns>A cookie that can be used to restore the current thread's context to its previous value when disposed</returns>
+        /// <returns>A cookie that can be used to restore the current thread's context to its previous value when disposed.</returns>
         IDisposable EnterContext(ITestContext context);
 
         /// <summary>
@@ -107,7 +107,7 @@ namespace Gallio.Model.Execution
         /// </para>
         /// </remarks>
         /// <param name="thread">The thread.</param>
-        /// <returns>The default context of the thread</returns>
+        /// <returns>The default context of the thread.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="thread"/> is null.</exception>
         ITestContext GetThreadDefaultContext(Thread thread);
     }

@@ -67,7 +67,7 @@ namespace Gallio.Common.Reflection
         /// <param name="throwOnError">If true, throws an exception if the target could
         /// not be resolved, otherwise returns a reflection object that represents an
         /// unresolved member which may only support a subset of the usual operations.</param>
-        /// <returns>The underlying native reflection type</returns>
+        /// <returns>The underlying native reflection type.</returns>
         /// <exception cref="ReflectionResolveException">Thrown if the target cannot be resolved.</exception>
         MemberInfo Resolve(bool throwOnError);
     }

@@ -21,9 +21,7 @@ using Gallio.Common.Reflection;
 namespace MbUnit.Framework
 {
     /// <summary>
-    /// <para>
     /// Registers a custom assembly resolver.
-    /// </para>
     /// </summary>
     /// <remarks>
     /// <para>

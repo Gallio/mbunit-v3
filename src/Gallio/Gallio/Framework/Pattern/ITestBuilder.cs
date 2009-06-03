@@ -135,7 +135,7 @@ namespace Gallio.Framework.Pattern
         /// it with the locally unique identifiers of its parents.
         /// </para>
         /// </remarks>
-        /// <returns>The locally unique identifier</returns>
+        /// <returns>The locally unique identifier.</returns>
         string LocalId { get; }
 
         /// <summary>
@@ -147,7 +147,7 @@ namespace Gallio.Framework.Pattern
         /// The default value of this property is <c>null</c> which causes the <see cref="ITestComponentBuilder.Name" />
         /// property to be used as the local id hint.
         /// </value>
-        /// <returns>The local id hint</returns>
+        /// <returns>The local id hint.</returns>
         string LocalIdHint { get; set; }
 
         /// <summary>
@@ -166,7 +166,7 @@ namespace Gallio.Framework.Pattern
         /// <param name="name">The test name.</param>
         /// <param name="codeElement">The associated code element, or null if none.</param>
         /// <param name="dataContextBuilder">The data context builder for the new test.</param>
-        /// <returns>The builder for the child test</returns>
+        /// <returns>The builder for the child test.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> or <paramref name="dataContextBuilder"/> is null.</exception>
         ITestBuilder CreateChild(string name, ICodeElementInfo codeElement, ITestDataContextBuilder dataContextBuilder);
 
@@ -176,7 +176,7 @@ namespace Gallio.Framework.Pattern
         /// <param name="name">The test parameter name.</param>
         /// <param name="codeElement">The associated code element, or null if none.</param>
         /// <param name="dataContextBuilder">The data context builder for the new test parameter.</param>
-        /// <returns>The builder for the test parameter</returns>
+        /// <returns>The builder for the test parameter.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> or <paramref name="dataContextBuilder"/> is null.</exception>
         ITestParameterBuilder CreateParameter(string name, ICodeElementInfo codeElement, ITestDataContextBuilder dataContextBuilder);
 
@@ -201,7 +201,7 @@ namespace Gallio.Framework.Pattern
         /// <summary>
         /// Gets the underlying test.
         /// </summary>
-        /// <returns>The underlying test</returns>
+        /// <returns>The underlying test.</returns>
         PatternTest ToTest();
     }
 }

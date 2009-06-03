@@ -30,7 +30,7 @@ namespace Gallio.Runner
         /// <summary>
         /// Creates a test runner.
         /// </summary>
-        /// <returns>The test runner</returns>
+        /// <returns>The test runner.</returns>
         ITestRunner CreateTestRunner();
     }
 }

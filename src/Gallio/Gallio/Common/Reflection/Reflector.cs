@@ -104,7 +104,7 @@ namespace Gallio.Common.Reflection
         /// Obtains a reflection wrapper for an assembly.
         /// </summary>
         /// <param name="target">The assembly, or null if none.</param>
-        /// <returns>The reflection wrapper, or null if none</returns>
+        /// <returns>The reflection wrapper, or null if none.</returns>
         public static IAssemblyInfo Wrap(Assembly target)
         {
             return target != null ? new NativeAssemblyWrapper(target) : null;
@@ -114,7 +114,7 @@ namespace Gallio.Common.Reflection
         /// Obtains a reflection wrapper for a namespace.
         /// </summary>
         /// <param name="name">The namespace name, or null if none.</param>
-        /// <returns>The reflection wrapper, or null if none</returns>
+        /// <returns>The reflection wrapper, or null if none.</returns>
         public static INamespaceInfo WrapNamespace(string name)
         {
             return name != null ? new NativeNamespaceWrapper(name) : null;
@@ -124,7 +124,7 @@ namespace Gallio.Common.Reflection
         /// Obtains a reflection wrapper for a type.
         /// </summary>
         /// <param name="target">The type, or null if none.</param>
-        /// <returns>The reflection wrapper, or null if none</returns>
+        /// <returns>The reflection wrapper, or null if none.</returns>
         public static ITypeInfo Wrap(Type target)
         {
             if (target == null)
@@ -141,7 +141,7 @@ namespace Gallio.Common.Reflection
         /// Obtains a reflection wrapper for a member.
         /// </summary>
         /// <param name="target">The member, or null if none.</param>
-        /// <returns>The reflection wrapper, or null if none</returns>
+        /// <returns>The reflection wrapper, or null if none.</returns>
         public static IMemberInfo Wrap(MemberInfo target)
         {
             if (target == null)
@@ -177,7 +177,7 @@ namespace Gallio.Common.Reflection
         /// Obtains a reflection wrapper for a function.
         /// </summary>
         /// <param name="target">The function, or null if none.</param>
-        /// <returns>The reflection wrapper, or null if none</returns>
+        /// <returns>The reflection wrapper, or null if none.</returns>
         public static IFunctionInfo Wrap(MethodBase target)
         {
             MethodInfo method = target as MethodInfo;
@@ -191,7 +191,7 @@ namespace Gallio.Common.Reflection
         /// Obtains a reflection wrapper for a constructor.
         /// </summary>
         /// <param name="target">The constructor, or null if none.</param>
-        /// <returns>The reflection wrapper, or null if none</returns>
+        /// <returns>The reflection wrapper, or null if none.</returns>
         public static IConstructorInfo Wrap(ConstructorInfo target)
         {
             if (target == null)
@@ -208,7 +208,7 @@ namespace Gallio.Common.Reflection
         /// Obtains a reflection wrapper for a method.
         /// </summary>
         /// <param name="target">The method, or null if none.</param>
-        /// <returns>The reflection wrapper, or null if none</returns>
+        /// <returns>The reflection wrapper, or null if none.</returns>
         public static IMethodInfo Wrap(MethodInfo target)
         {
             if (target == null)
@@ -225,7 +225,7 @@ namespace Gallio.Common.Reflection
         /// Obtains a reflection wrapper for a property.
         /// </summary>
         /// <param name="target">The property, or null if none.</param>
-        /// <returns>The reflection wrapper, or null if none</returns>
+        /// <returns>The reflection wrapper, or null if none.</returns>
         public static IPropertyInfo Wrap(PropertyInfo target)
         {
             if (target == null)
@@ -242,7 +242,7 @@ namespace Gallio.Common.Reflection
         /// Obtains a reflection wrapper for a field.
         /// </summary>
         /// <param name="target">The field, or null if none.</param>
-        /// <returns>The reflection wrapper, or null if none</returns>
+        /// <returns>The reflection wrapper, or null if none.</returns>
         public static IFieldInfo Wrap(FieldInfo target)
         {
             if (target == null)
@@ -259,7 +259,7 @@ namespace Gallio.Common.Reflection
         /// Obtains a reflection wrapper for an event.
         /// </summary>
         /// <param name="target">The event, or null if none.</param>
-        /// <returns>The reflection wrapper, or null if none</returns>
+        /// <returns>The reflection wrapper, or null if none.</returns>
         public static IEventInfo Wrap(EventInfo target)
         {
             if (target == null)
@@ -276,7 +276,7 @@ namespace Gallio.Common.Reflection
         /// Obtains a reflection wrapper for a parameter.
         /// </summary>
         /// <param name="target">The parameter, or null if none.</param>
-        /// <returns>The reflection wrapper, or null if none</returns>
+        /// <returns>The reflection wrapper, or null if none.</returns>
         public static IParameterInfo Wrap(ParameterInfo target)
         {
             if (target == null)
@@ -293,7 +293,7 @@ namespace Gallio.Common.Reflection
         /// Obtains a reflection wrapper for an attribute instance.
         /// </summary>
         /// <param name="target">The attribute, or null if none.</param>
-        /// <returns>The reflection wrapper, or null if none</returns>
+        /// <returns>The reflection wrapper, or null if none.</returns>
         public static IAttributeInfo Wrap(Attribute target)
         {
             return target != null ? new NativeAttributeWrapper(target) : null;
@@ -321,7 +321,7 @@ namespace Gallio.Common.Reflection
         /// </code>
         /// </para>
         /// </remarks>
-        /// <returns>The code reference</returns>
+        /// <returns>The code reference.</returns>
         [MethodImpl(MethodImplOptions.NoInlining)]
         public static IFunctionInfo GetExecutingFunction()
         {
@@ -350,7 +350,7 @@ namespace Gallio.Common.Reflection
         /// </code>
         /// </para>
         /// </remarks>
-        /// <returns>The code reference</returns>
+        /// <returns>The code reference.</returns>
         [MethodImpl(MethodImplOptions.NoInlining)]
         public static IFunctionInfo GetCallingFunction()
         {
@@ -363,7 +363,7 @@ namespace Gallio.Common.Reflection
         /// <param name="framesToSkip">The number of frames to skip.  If this number is 0,
         /// the code reference will refer to the direct caller of this method;
         /// if it is 1, it will refer to the caller's caller, and so on.</param>
-        /// <returns>The code reference</returns>
+        /// <returns>The code reference.</returns>
         /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="framesToSkip"/> is less than zero.</exception>
         [MethodImpl(MethodImplOptions.NoInlining)]
         public static IFunctionInfo GetFunctionFromStackFrame(int framesToSkip)
@@ -382,7 +382,7 @@ namespace Gallio.Common.Reflection
         /// </summary>
         /// <seealso cref="IUnresolvedCodeElement"/>
         /// <param name="target">The member, or null if none.</param>
-        /// <returns>True if the target is unresolved</returns>
+        /// <returns>True if the target is unresolved.</returns>
         public static bool IsUnresolved(MemberInfo target)
         {
             return target is IUnresolvedCodeElement;
@@ -394,7 +394,7 @@ namespace Gallio.Common.Reflection
         /// </summary>
         /// <seealso cref="IUnresolvedCodeElement"/>
         /// <param name="target">The parameter, or null if none.</param>
-        /// <returns>True if the target is unresolved</returns>
+        /// <returns>True if the target is unresolved.</returns>
         public static bool IsUnresolved(ParameterInfo target)
         {
             return target is UnresolvedParameterInfo;

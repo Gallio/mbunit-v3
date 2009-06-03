@@ -69,7 +69,7 @@ namespace Gallio.Common.Xml
         /// <param name="constant">The constant.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="constant"/>
         /// is null.</exception>
-        /// <returns>True if the constant is defined</returns>
+        /// <returns>True if the constant is defined.</returns>
         public bool IsDefined(string constant)
         {
             if (constant == null)

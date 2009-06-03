@@ -50,13 +50,13 @@ namespace Gallio.Common.Reflection
         /// <summary>
         /// Gets the get method of the property, or null if none.
         /// </summary>
-        /// <returns>The get method, or null if none</returns>
+        /// <returns>The get method, or null if none.</returns>
         IMethodInfo GetMethod { get; }
 
         /// <summary>
         /// Gets the set method of the property, or null if none.
         /// </summary>
-        /// <returns>The set method, or null if none</returns>
+        /// <returns>The set method, or null if none.</returns>
         IMethodInfo SetMethod { get; }
 
         /// <summary>
@@ -71,7 +71,7 @@ namespace Gallio.Common.Reflection
         /// <param name="throwOnError">If true, throws an exception if the target could
         /// not be resolved, otherwise returns a reflection object that represents an
         /// unresolved member which may only support a subset of the usual operations.</param>
-        /// <returns>The native reflection target</returns>
+        /// <returns>The native reflection target.</returns>
         /// <exception cref="ReflectionResolveException">Thrown if the target cannot be resolved.</exception>
         new PropertyInfo Resolve(bool throwOnError);
     }

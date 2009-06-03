@@ -29,7 +29,7 @@ namespace Gallio.Runtime.Extensibility
         /// Gets a component descriptor by its id, or null if not found.
         /// </summary>
         /// <param name="componentId">The component id.</param>
-        /// <returns>The component descriptor, or null if not found</returns>
+        /// <returns>The component descriptor, or null if not found.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="componentId"/> is null.</exception>
         IComponentDescriptor this[string componentId] { get; }
 
@@ -37,7 +37,7 @@ namespace Gallio.Runtime.Extensibility
         /// Gets descriptors for all components that implement a service with a given id.
         /// </summary>
         /// <param name="serviceId">The service id.</param>
-        /// <returns>The list of component descriptors</returns>
+        /// <returns>The list of component descriptors.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="serviceId"/> is null.</exception>
         IList<IComponentDescriptor> FindByServiceId(string serviceId);
 
@@ -45,7 +45,7 @@ namespace Gallio.Runtime.Extensibility
         /// Gets descriptors for all components that implement a service of a given type.
         /// </summary>
         /// <param name="serviceType">The service type.</param>
-        /// <returns>The list of component descriptors</returns>
+        /// <returns>The list of component descriptors.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="serviceType"/> is null.</exception>
         IList<IComponentDescriptor> FindByServiceType(Type serviceType);
 
@@ -53,7 +53,7 @@ namespace Gallio.Runtime.Extensibility
         /// Gets descriptors for all components that implement a service of a given type by name.
         /// </summary>
         /// <param name="serviceTypeName">The service type name.</param>
-        /// <returns>The list of component descriptors</returns>
+        /// <returns>The list of component descriptors.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="serviceTypeName"/> is null.</exception>
         IList<IComponentDescriptor> FindByServiceTypeName(TypeName serviceTypeName);
     }

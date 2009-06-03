@@ -23,6 +23,6 @@ namespace Gallio.Runtime.Security
     /// Performs an action using an elevation context.
     /// </summary>
     /// <param name="context">The elevation context, not null.</param>
-    /// <returns>True if the action completed successfully</returns>
+    /// <returns>True if the action completed successfully.</returns>
     public delegate bool ElevationAction(IElevationContext context);
 }

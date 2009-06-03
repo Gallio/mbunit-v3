@@ -20,9 +20,9 @@ using Gallio.Common.Policies;
 namespace Gallio.Common.Concurrency
 {
     /// <summary>
-    /// <para>
     /// A task represents a concurrently executing operation.
-    /// </para>
+    /// </summary>
+    /// <remarks>
     /// <para>
     /// A <see cref="Task" /> might not necessarily represent an operation that is
     /// executing in a local <see cref="Thread" />.  It can represent other processes
@@ -34,7 +34,7 @@ namespace Gallio.Common.Concurrency
     /// The events are dispatched synchronously such that the next event in the sequence
     /// will not be fired until the previous event is completely processed.
     /// </para>
-    /// </summary>
+    /// </remarks>
     /// <seealso cref="TaskContainer"/>
     public abstract class Task
     {
@@ -147,13 +147,13 @@ namespace Gallio.Common.Concurrency
         }
         
         /// <summary>
-        /// <para>
         /// Starts running the task.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// Does nothing if the task has already been started or has been aborted.
         /// </para>
-        /// </summary>
+        /// </remarks>
         /// <seealso cref="IsPending"/>
         public void Start()
         {
@@ -182,16 +182,14 @@ namespace Gallio.Common.Concurrency
         }
 
         /// <summary>
-        /// <para>
         /// Asynchronously aborts the task.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// If the task has not been started, then the task will be forbidden from starting later
         /// and its <see cref="IsAborted" /> property will be set.  If the task has already
         /// terminated, then does nothing.
         /// </para>
-        /// </summary>
-        /// <remarks>
         /// <para>
         /// A typical implementation of this method may cause a <see cref="ThreadAbortException" />
         /// to be thrown non-deterministically within the task's thread.  Normally such an exception should
@@ -224,16 +222,16 @@ namespace Gallio.Common.Concurrency
         }
 
         /// <summary>
-        /// <para>
         /// Waits for the task to terminate.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// Does nothing if the task has not been started or is not running.
         /// </para>
-        /// </summary>
+        /// </remarks>
         /// <param name="timeout">The maximum amount of time to wait for completion, or null to wait indefinitely.</param>
         /// <returns>True if the task is not running as of the time this method exits,
-        /// false if a timeout occurred while waiting</returns>
+        /// false if a timeout occurred while waiting.</returns>
         /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="timeout"/>
         /// represents a negative time span.</exception>
         /// <seealso cref="System.Threading.Thread.Join(TimeSpan)"/>
@@ -254,7 +252,7 @@ namespace Gallio.Common.Concurrency
         /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="timeout"/>
         /// represents a negative time span.</exception>
         /// <returns>True if the task ran to completion within the specified time span,
-        /// false if the task was aborted</returns>
+        /// false if the task was aborted.</returns>
         public bool Run(TimeSpan? timeout)
         {
             Start();
@@ -283,7 +281,7 @@ namespace Gallio.Common.Concurrency
         /// </summary>
         /// <param name="timeout">The timeout, or null to wait indefinitely.</param>
         /// <returns>True if the task is not running as of the time this method exits,
-        /// false if a timeout occurred while waiting</returns>
+        /// false if a timeout occurred while waiting.</returns>
         protected abstract bool JoinImpl(TimeSpan? timeout);
 
         /// <summary>

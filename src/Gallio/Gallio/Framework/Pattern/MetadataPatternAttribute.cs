@@ -56,7 +56,7 @@ namespace Gallio.Framework.Pattern
         /// <summary>
         /// Gets the metadata key / value pairs to be added to the test component.
         /// </summary>
-        /// <returns>The metadata entries</returns>
+        /// <returns>The metadata entries.</returns>
         protected abstract IEnumerable<KeyValuePair<string, string>> GetMetadata();
     }
 }

@@ -89,7 +89,7 @@ namespace Gallio.Runtime.Extensibility
         /// and may fail.
         /// </para>
         /// </remarks>
-        /// <returns>The component type</returns>
+        /// <returns>The component type.</returns>
         /// <exception cref="RuntimeException">Thrown if an error occurs during resolution.</exception>
         Type ResolveComponentType();
 
@@ -103,7 +103,7 @@ namespace Gallio.Runtime.Extensibility
         /// and may fail.
         /// </para>
         /// </remarks>
-        /// <returns>The component handler</returns>
+        /// <returns>The component handler.</returns>
         /// <exception cref="RuntimeException">Thrown if an error occurs during resolution.</exception>
         IHandler ResolveComponentHandler();
 
@@ -117,7 +117,7 @@ namespace Gallio.Runtime.Extensibility
         /// and may fail.
         /// </para>
         /// </remarks>
-        /// <returns>The component instance</returns>
+        /// <returns>The component instance.</returns>
         /// <exception cref="RuntimeException">Thrown if an error occurs during resolution.</exception>
         object ResolveComponent();
 
@@ -131,7 +131,7 @@ namespace Gallio.Runtime.Extensibility
         /// and may fail.
         /// </para>
         /// </remarks>
-        /// <returns>The traits handler</returns>
+        /// <returns>The traits handler.</returns>
         /// <exception cref="RuntimeException">Thrown if an error occurs during resolution.</exception>
         IHandler ResolveTraitsHandler();
 
@@ -149,7 +149,7 @@ namespace Gallio.Runtime.Extensibility
         /// detemined by the service's traits type as obtained by <see cref="IServiceDescriptor.ResolveTraitsType" />.
         /// </para>
         /// </remarks>
-        /// <returns>The component traits</returns>
+        /// <returns>The component traits.</returns>
         /// <exception cref="RuntimeException">Thrown if an error occurs during resolution.</exception>
         Traits ResolveTraits();
     }

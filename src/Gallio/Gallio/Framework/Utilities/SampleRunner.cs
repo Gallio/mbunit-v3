@@ -166,7 +166,7 @@ namespace Gallio.Framework.Utilities
         /// Can only be called after the tests have run.
         /// </remarks>
         /// <param name="codeReference">The code reference of the test.</param>
-        /// <returns>The test data, or null if not found</returns>
+        /// <returns>The test data, or null if not found.</returns>
         public TestData GetTestData(CodeReference codeReference)
         {
             foreach (TestData data in Report.TestModel.AllTests)
@@ -185,7 +185,7 @@ namespace Gallio.Framework.Utilities
         /// Can only be called after the tests have run.
         /// </remarks>
         /// <param name="codeReference">The code reference of the test.</param>
-        /// <returns>The enumeration of test step runs, or null if not found</returns>
+        /// <returns>The enumeration of test step runs, or null if not found.</returns>
         public IEnumerable<TestStepRun> GetTestStepRuns(CodeReference codeReference)
         {
             foreach (TestStepRun run in Report.TestPackageRun.AllTestStepRuns)
@@ -201,7 +201,7 @@ namespace Gallio.Framework.Utilities
         /// Can only be called after the tests have run.
         /// </remarks>
         /// <param name="codeReference">The code reference of the test.</param>
-        /// <returns>The first test step run, or null if not found</returns>
+        /// <returns>The first test step run, or null if not found.</returns>
         public TestStepRun GetPrimaryTestStepRun(CodeReference codeReference)
         {
             foreach (TestStepRun run in GetTestStepRuns(codeReference))
@@ -219,7 +219,7 @@ namespace Gallio.Framework.Utilities
         /// Can only be called after the tests have run.
         /// </remarks>
         /// <param name="codeReference">The code reference of the test.</param>
-        /// <returns>The first test step run, or null if not found</returns>
+        /// <returns>The first test step run, or null if not found.</returns>
         public IList<TestStepRun> GetTestCaseRunsWithin(CodeReference codeReference)
         {
             List<TestStepRun> runs = new List<TestStepRun>();

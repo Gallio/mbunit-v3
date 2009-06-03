@@ -39,7 +39,7 @@ namespace Gallio.Common.Markup
         /// <summary>
         /// Gets the formatted log contents as a string.
         /// </summary>
-        /// <returns>The contents as a string</returns>
+        /// <returns>The contents as a string.</returns>
         public override string ToString()
         {
             return Writer.ToString();

@@ -24,7 +24,9 @@ namespace Gallio.Common
     /// Maintains an internal dictionary to memoize results by key.
     /// </summary>
     /// <remarks>
+    /// <para>
     /// Not thread safe.
+    /// </para>
     /// </remarks>
     /// <typeparam name="TKey">The key type.</typeparam>
     /// <typeparam name="TValue">The value type.</typeparam>
@@ -60,7 +62,7 @@ namespace Gallio.Common
         /// </summary>
         /// <param name="key">The key by which to look up a memoized result.</param>
         /// <param name="populator">The populator for the value associated with the key.</param>
-        /// <returns>The value returned by the populator, possibly memoized</returns>
+        /// <returns>The value returned by the populator, possibly memoized.</returns>
         public TValue Memoize(TKey key, Func<TValue> populator)
         {
             TValue value;

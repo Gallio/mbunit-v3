@@ -68,7 +68,7 @@ namespace Gallio.Common.Markup
         /// Gets an attachment by name.
         /// </summary>
         /// <param name="name">The attachment name.</param>
-        /// <returns>The attachment or null if not found</returns>
+        /// <returns>The attachment or null if not found.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> is null.</exception>
         public AttachmentData GetAttachment(string name)
         {
@@ -82,7 +82,7 @@ namespace Gallio.Common.Markup
         /// Gets a stream by name.
         /// </summary>
         /// <param name="name">The stream name.</param>
-        /// <returns>The stream or null if not found</returns>
+        /// <returns>The stream or null if not found.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> is null.</exception>
         public StructuredStream GetStream(string name)
         {
@@ -113,7 +113,7 @@ namespace Gallio.Common.Markup
         /// Formats the document to a string by concatenating all formatted streams and
         /// displaying a "*** Stream Name ***" header for each stream name.
         /// </summary>
-        /// <returns>The formatted text</returns>
+        /// <returns>The formatted text.</returns>
         public override string ToString()
         {
             StringBuilder builder = new StringBuilder();

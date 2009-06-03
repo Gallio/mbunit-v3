@@ -19,7 +19,7 @@ namespace Gallio.Common
     /// A function with zero arguments.
     /// </summary>
     /// <typeparam name="TResult">The result type.</typeparam>
-    /// <returns>The function result</returns>
+    /// <returns>The function result.</returns>
     public delegate TResult Func<TResult>();
 
     /// <summary>
@@ -28,7 +28,7 @@ namespace Gallio.Common
     /// <typeparam name="T1">The first argument type.</typeparam>
     /// <typeparam name="TResult">The result type.</typeparam>
     /// <param name="arg1">The first argument.</param>
-    /// <returns>The function result</returns>
+    /// <returns>The function result.</returns>
     public delegate TResult Func<T1, TResult>(T1 arg1);
 
     /// <summary>
@@ -39,7 +39,7 @@ namespace Gallio.Common
     /// <typeparam name="TResult">The result type.</typeparam>
     /// <param name="arg1">The first argument.</param>
     /// <param name="arg2">The second argument.</param>
-    /// <returns>The function result</returns>
+    /// <returns>The function result.</returns>
     public delegate TResult Func<T1, T2, TResult>(T1 arg1, T2 arg2);
 
     /// <summary>
@@ -52,7 +52,7 @@ namespace Gallio.Common
     /// <param name="arg1">The first argument.</param>
     /// <param name="arg2">The second argument.</param>
     /// <param name="arg3">The third argument.</param>
-    /// <returns>The function result</returns>
+    /// <returns>The function result.</returns>
     public delegate TResult Func<T1, T2, T3, TResult>(T1 arg1, T2 arg2, T3 arg3);
 
     /// <summary>
@@ -67,6 +67,6 @@ namespace Gallio.Common
     /// <param name="arg2">The second argument.</param>
     /// <param name="arg3">The third argument.</param>
     /// <param name="arg4">The fourth argument.</param>
-    /// <returns>The function result</returns>
+    /// <returns>The function result.</returns>
     public delegate TResult Func<T1, T2, T3, T4, TResult>(T1 arg1, T2 arg2, T3 arg3, T4 arg4);
 }

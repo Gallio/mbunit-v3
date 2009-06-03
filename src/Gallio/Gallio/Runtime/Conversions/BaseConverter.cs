@@ -64,7 +64,7 @@ namespace Gallio.Runtime.Conversions
         /// </remarks>
         /// <param name="sourceType">The source type, never null.</param>
         /// <param name="targetType">The target type, never null.</param>
-        /// <returns>True if the conversion is supported</returns>
+        /// <returns>True if the conversion is supported.</returns>
         protected virtual bool CanConvertImpl(Type sourceType, Type targetType)
         {
             return ! GetConversionCostImpl(sourceType, targetType).IsInvalid;
@@ -75,7 +75,7 @@ namespace Gallio.Runtime.Conversions
         /// </summary>
         /// <param name="sourceType">The source type, never null.</param>
         /// <param name="targetType">The target type, never null.</param>
-        /// <returns>The conversion cost</returns>
+        /// <returns>The conversion cost.</returns>
         protected abstract ConversionCost GetConversionCostImpl(Type sourceType, Type targetType);
 
         /// <summary>
@@ -83,7 +83,7 @@ namespace Gallio.Runtime.Conversions
         /// </summary>
         /// <param name="sourceValue">The source value.</param>
         /// <param name="targetType">The target type, never null.</param>
-        /// <returns>The converted value</returns>
+        /// <returns>The converted value.</returns>
         protected abstract object ConvertImpl(object sourceValue, Type targetType);
     }
 }

@@ -46,7 +46,7 @@ namespace Gallio.Common.Reflection.Impl
         /// Creates a new debug symbol resolver appropriate for this platform.
         /// </summary>
         /// <param name="avoidLocks">If true, avoids taking a lock on the PDB files but may use more memory or storage.</param>
-        /// <returns>The debug symbol resolver</returns>
+        /// <returns>The debug symbol resolver.</returns>
         public static IDebugSymbolResolver CreateResolver(bool avoidLocks)
         {
             if (DotNetRuntimeSupport.IsUsingMono)
@@ -60,7 +60,7 @@ namespace Gallio.Common.Reflection.Impl
         /// unknown if not available.
         /// </summary>
         /// <param name="type">The type.</param>
-        /// <returns>The code location, or <see cref="CodeLocation.Unknown" /> if unknown</returns>
+        /// <returns>The code location, or <see cref="CodeLocation.Unknown" /> if unknown.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="type"/> is null.</exception>
         public static CodeLocation GetSourceLocation(Type type)
         {
@@ -98,7 +98,7 @@ namespace Gallio.Common.Reflection.Impl
         /// unknown if not available.
         /// </summary>
         /// <param name="method">The method.</param>
-        /// <returns>The source location, or <see cref="CodeLocation.Unknown" /> if unknown</returns>
+        /// <returns>The source location, or <see cref="CodeLocation.Unknown" /> if unknown.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="method"/> is null.</exception>
         public static CodeLocation GetSourceLocation(MethodBase method)
         {

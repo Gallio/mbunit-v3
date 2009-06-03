@@ -21,9 +21,7 @@ using Gallio.Common.Reflection;
 namespace MbUnit.Framework
 {
     /// <summary>
-    /// <para>
     /// Declares that a class contains assembly-level setup and teardown methods.
-    /// </para>
     /// </summary>
     /// <remarks>
     /// <para>
@@ -41,7 +39,7 @@ namespace MbUnit.Framework
     /// test fixtures within the assembly are executed.</item>
     /// <item><see cref="SetUpAttribute" />: Performs setup activities before each
     /// test fixture within the assembly is executed.</item>
-    /// <item><see cref="TearDownAttribute" />: Performs teardown activities after eacj
+    /// <item><see cref="TearDownAttribute" />: Performs teardown activities after each
     /// test fixture within the assembly is executed.</item>
     /// </list>
     /// </para>
@@ -52,7 +50,7 @@ namespace MbUnit.Framework
     /// of data values used.
     /// </para>
     /// <para>
-    /// The class must have a public default constructor.  The class may not be static.
+    /// The class must have a public default constructor. The class may not be static.
     /// </para>
     /// <para>
     /// There must only be at most one class with an <see cref="AssemblyFixtureAttribute" />

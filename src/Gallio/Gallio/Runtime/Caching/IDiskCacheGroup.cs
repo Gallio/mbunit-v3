@@ -70,7 +70,7 @@ namespace Gallio.Runtime.Caching
         /// This method will succeed even if the file or the group does not exist.
         /// </remarks>
         /// <param name="relativeFilePath">The relative path of the file within the group.</param>
-        /// <returns>The file info</returns>
+        /// <returns>The file info.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="relativeFilePath"/> is null.</exception>
         /// <exception cref="DiskCacheException">Thrown if an error occurs.</exception>
         FileInfo GetFileInfo(string relativeFilePath);
@@ -84,7 +84,7 @@ namespace Gallio.Runtime.Caching
         /// This method will succeed even if the directory or the group does not exist.
         /// </remarks>
         /// <param name="relativeDirectoryPath">The relative path of the directory within the group.</param>
-        /// <returns>The directory info</returns>
+        /// <returns>The directory info.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="relativeDirectoryPath"/> is null.</exception>
         /// <exception cref="DiskCacheException">Thrown if an error occurs.</exception>
         DirectoryInfo GetSubdirectoryInfo(string relativeDirectoryPath);
@@ -102,7 +102,7 @@ namespace Gallio.Runtime.Caching
         /// <param name="mode">The file open mode.</param>
         /// <param name="access">The file access mode.</param>
         /// <param name="share">The file sharing mode.</param>
-        /// <returns>The file stream</returns>
+        /// <returns>The file stream.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="relativeFilePath"/> is null.</exception>
         /// <exception cref="DiskCacheException">Thrown if an error occurs.</exception>
         Stream OpenFile(string relativeFilePath, FileMode mode, FileAccess access, FileShare share);
@@ -113,7 +113,7 @@ namespace Gallio.Runtime.Caching
         /// </para>
         /// </summary>
         /// <param name="relativeDirectoryPath">The relative path of the directory to create within the group.</param>
-        /// <returns>Directory information for the directory that was created</returns>
+        /// <returns>Directory information for the directory that was created.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="relativeDirectoryPath"/> is null.</exception>
         /// <exception cref="DiskCacheException">Thrown if an error occurs.</exception>
         DirectoryInfo CreateSubdirectory(string relativeDirectoryPath);

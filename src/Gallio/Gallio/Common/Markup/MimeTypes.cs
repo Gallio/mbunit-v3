@@ -76,7 +76,7 @@ namespace Gallio.Common.Markup
         /// Guesses the mime type given a well-known extension.
         /// </summary>
         /// <param name="extension">The extension.</param>
-        /// <returns>The mime type, or null if not known</returns>
+        /// <returns>The mime type, or null if not known.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="extension"/> is null.</exception>
         public static string GetMimeTypeByExtension(string extension)
         {

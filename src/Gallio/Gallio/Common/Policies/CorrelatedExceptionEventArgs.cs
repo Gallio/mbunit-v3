@@ -107,7 +107,7 @@ namespace Gallio.Common.Policies
         /// <summary>
         /// Formats a description of the exception to a string like: "Message\nException\nReported by: ReporterStackTrace".
         /// </summary>
-        /// <returns>The formatted string</returns>
+        /// <returns>The formatted string.</returns>
         public string GetDescription()
         {
             StringBuilder description = new StringBuilder(message);

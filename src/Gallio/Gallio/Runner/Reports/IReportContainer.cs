@@ -82,7 +82,7 @@ namespace Gallio.Runner.Reports
         /// Opens a report file for reading.
         /// </summary>
         /// <param name="path">The relative path of the report file within the container.</param>
-        /// <returns>The stream</returns>
+        /// <returns>The stream.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="path"/> is null.</exception>
         /// <exception cref="IOException">Thrown if an I/O error occurs.</exception>
         Stream OpenRead(string path);
@@ -99,7 +99,7 @@ namespace Gallio.Runner.Reports
         /// <param name="path">The path of the report file.</param>
         /// <param name="contentType">The content type of the file, or null if not specified.</param>
         /// <param name="encoding">The text encoding of the file, or null if not specified or if the file is binary.</param>
-        /// <returns>The stream</returns>
+        /// <returns>The stream.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="path"/> is null.</exception>
         /// <exception cref="IOException">Thrown if an I/O error occurs.</exception>
         Stream OpenWrite(string path, string contentType, Encoding encoding);
@@ -109,7 +109,7 @@ namespace Gallio.Runner.Reports
         /// and trims it if it is too long.
         /// </summary>
         /// <param name="fileName">The file or directory name.</param>
-        /// <returns>The encoded file or directory name</returns>
+        /// <returns>The encoded file or directory name.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="fileName"/> is null.</exception>
         string EncodeFileName(string fileName);
     }

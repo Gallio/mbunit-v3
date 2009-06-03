@@ -113,7 +113,7 @@ namespace Gallio.Model.Serialization
         /// <summary>
         /// Gets the number of error annotations on the model.
         /// </summary>
-        /// <returns>The numer of error annotations present</returns>
+        /// <returns>The numer of error annotations present.</returns>
         public int GetErrorAnnotationCount()
         {
             int count = 0;
@@ -143,7 +143,7 @@ namespace Gallio.Model.Serialization
         /// Gets a test by its id.
         /// </summary>
         /// <param name="testId">The test id.</param>
-        /// <returns>The test, or null if not found</returns>
+        /// <returns>The test, or null if not found.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="testId"/> is null.</exception>
         public TestData GetTestById(string testId)
         {
@@ -184,7 +184,7 @@ namespace Gallio.Model.Serialization
         /// </remarks>
         /// <param name="parentTestId">The id of the parent test, or null if adding the root.</param>
         /// <param name="test">The top test of the subtree to add.</param>
-        /// <returns>The merged test, if the test was already present in the tree</returns>
+        /// <returns>The merged test, if the test was already present in the tree.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="test"/> is null.</exception>
         public TestData MergeSubtree(string parentTestId, TestData test)
         {

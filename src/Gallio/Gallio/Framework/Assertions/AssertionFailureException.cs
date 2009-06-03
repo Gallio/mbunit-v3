@@ -20,9 +20,9 @@ using Gallio.Framework.Assertions;
 namespace Gallio.Framework.Assertions
 {
     /// <summary>
-    /// <para>
     /// An exception type that wraps a <see cref="AssertionFailure" />.
-    /// </para>
+    /// </summary>
+    /// <remarks>
     /// <para>
     /// This exception is used in two ways:
     /// <list type="bullet">
@@ -31,7 +31,7 @@ namespace Gallio.Framework.Assertions
     /// <item>Otherwise the exception will be reported the user in the typical manner.</item>
     /// </list>
     /// </para>
-    /// </summary>
+    /// </remarks>
     [Serializable]
     public class AssertionFailureException : AssertionException
     {

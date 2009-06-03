@@ -30,7 +30,7 @@ namespace Gallio.Common.Reflection
         /// <typeparam name="T">The attribute type.</typeparam>
         /// <param name="element">The code element.</param>
         /// <param name="inherit">If true, includes inherited attributes.</param>
-        /// <returns>The attribute, or null if none</returns>
+        /// <returns>The attribute, or null if none.</returns>
         /// <exception cref="InvalidOperationException">Thrown if the code element
         /// has multiple attributes of the specified type.</exception>
         public static T GetAttribute<T>(ICodeElementInfo element, bool inherit) where T : class
@@ -44,7 +44,7 @@ namespace Gallio.Common.Reflection
         /// <param name="element">The code element.</param>
         /// <param name="inherit">If true, includes inherited attributes.</param>
         /// <typeparam name="T">The attribute type.</typeparam>
-        /// <returns>The attributes</returns>
+        /// <returns>The attributes.</returns>
         public static IEnumerable<T> GetAttributes<T>(ICodeElementInfo element, bool inherit) where T : class
         {
             foreach (T attrib in element.GetAttributes(Reflector.Wrap(typeof(T)), inherit))
@@ -57,7 +57,7 @@ namespace Gallio.Common.Reflection
         /// <param name="element">The code element.</param>
         /// <param name="inherit">If true, includes inherited attributes.</param>
         /// <typeparam name="T">The attribute type.</typeparam>
-        /// <returns>True if the code element has at least one attribute of the specified type</returns>
+        /// <returns>True if the code element has at least one attribute of the specified type.</returns>
         public static bool HasAttribute<T>(ICodeElementInfo element, bool inherit)
         {
             return HasAttribute(element, typeof(T), inherit);
@@ -69,7 +69,7 @@ namespace Gallio.Common.Reflection
         /// <param name="element">The code element.</param>
         /// <param name="attributeType">The attribute type.</param>
         /// <param name="inherit">If true, includes inherited attributes.</param>
-        /// <returns>The attribute, or null if none</returns>
+        /// <returns>The attribute, or null if none.</returns>
         /// <exception cref="InvalidOperationException">Thrown if the code element
         /// has multiple attributes of the specified type.</exception>
         public static object GetAttribute(ICodeElementInfo element, Type attributeType, bool inherit)
@@ -93,7 +93,7 @@ namespace Gallio.Common.Reflection
         /// <param name="element">The code element.</param>
         /// <param name="attributeType">The attribute type.</param>
         /// <param name="inherit">If true, includes inherited attributes.</param>
-        /// <returns>The attributes</returns>
+        /// <returns>The attributes.</returns>
         public static IEnumerable<object> GetAttributes(ICodeElementInfo element, Type attributeType, bool inherit)
         {
             foreach (object attrib in element.GetAttributes(Reflector.Wrap(attributeType), inherit))
@@ -106,7 +106,7 @@ namespace Gallio.Common.Reflection
         /// <param name="element">The code element.</param>
         /// <param name="attributeType">The attribute type.</param>
         /// <param name="inherit">If true, includes inherited attributes.</param>
-        /// <returns>True if the code element has at least one attribute of the specified type</returns>
+        /// <returns>True if the code element has at least one attribute of the specified type.</returns>
         public static bool HasAttribute(ICodeElementInfo element, Type attributeType, bool inherit)
         {
             return element.HasAttribute(Reflector.Wrap(attributeType), inherit);
@@ -119,7 +119,7 @@ namespace Gallio.Common.Reflection
         /// Omits attributes that cannot be resolved.
         /// </remarks>
         /// <param name="attributes">The attribute descriptions.</param>
-        /// <returns>The resolved attribute instances</returns>
+        /// <returns>The resolved attribute instances.</returns>
         public static IEnumerable<object> ResolveAttributes(IEnumerable<IAttributeInfo> attributes)
         {
             foreach (IAttributeInfo attribute in attributes)

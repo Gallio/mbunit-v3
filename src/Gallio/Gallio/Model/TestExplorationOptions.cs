@@ -26,7 +26,7 @@ namespace Gallio.Model
         /// <summary>
         /// Creates a copy of the options.
         /// </summary>
-        /// <returns>The copy</returns>
+        /// <returns>The copy.</returns>
         public TestExplorationOptions Copy()
         {
             TestExplorationOptions copy = new TestExplorationOptions();

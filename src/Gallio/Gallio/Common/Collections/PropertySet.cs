@@ -71,7 +71,7 @@ namespace Gallio.Common.Collections
         /// <summary>
         /// Creates a full copy of this property set.
         /// </summary>
-        /// <returns>The copy</returns>
+        /// <returns>The copy.</returns>
         public PropertySet Copy()
         {
             var copy = new PropertySet();
@@ -82,7 +82,7 @@ namespace Gallio.Common.Collections
         /// <summary>
         /// Gets a read-only view of this property set.
         /// </summary>
-        /// <returns>A read-only view</returns>
+        /// <returns>A read-only view.</returns>
         public PropertySet AsReadOnly()
         {
             return contents.IsReadOnly ? this : new PropertySet(new ReadOnlyDictionary<string, string>(contents));
@@ -92,7 +92,7 @@ namespace Gallio.Common.Collections
         /// Gets the value associated with a key, or null if absent.
         /// </summary>
         /// <param name="key">The key.</param>
-        /// <returns>The associated value, or null if none</returns>
+        /// <returns>The associated value, or null if none.</returns>
         public string GetValue(string key)
         {
             string value;
@@ -265,7 +265,7 @@ namespace Gallio.Common.Collections
         /// Provides the Xml schema for this element.
         /// </summary>
         /// <param name="schemas">The schema set.</param>
-        /// <returns>The schema type of the element</returns>
+        /// <returns>The schema type of the element.</returns>
         public static XmlQualifiedName ProvideXmlSchema(XmlSchemaSet schemas)
         {
             schemas.Add(new XmlSchema()

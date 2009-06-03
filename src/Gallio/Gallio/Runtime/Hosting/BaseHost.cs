@@ -220,7 +220,7 @@ namespace Gallio.Runtime.Hosting
         /// <summary>
         /// Gets the host service.
         /// </summary>
-        /// <returns>The host service, or null if the host service was not available</returns>
+        /// <returns>The host service, or null if the host service was not available.</returns>
         protected abstract IHostService AcquireHostService();
 
         /// <summary>

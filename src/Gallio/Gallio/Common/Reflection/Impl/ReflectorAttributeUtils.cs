@@ -45,7 +45,7 @@ namespace Gallio.Common.Reflection.Impl
         /// <param name="attribute">The attribute description.</param>
         /// <param name="throwOnError">If true, throws an exception if the target could
         /// not be resolved, otherwise the result may include unresolved types, enums or arrays.</param>
-        /// <returns>The attribute instance</returns>
+        /// <returns>The attribute instance.</returns>
         /// <exception cref="ReflectionResolveException">Thrown if the attribute could not be resolved.</exception>
         public static object CreateAttribute(IAttributeInfo attribute, bool throwOnError)
         {
@@ -89,7 +89,7 @@ namespace Gallio.Common.Reflection.Impl
         /// Returns true if the field is assignable as a named attribute parameter.
         /// </summary>
         /// <param name="field">The field.</param>
-        /// <returns>True if the field is assignable</returns>
+        /// <returns>True if the field is assignable.</returns>
         public static bool IsAttributeField(IFieldInfo field)
         {
             return !field.IsLiteral && !field.IsInitOnly && !field.IsStatic;
@@ -99,7 +99,7 @@ namespace Gallio.Common.Reflection.Impl
         /// Returns true if the property is assignable as a named attribute parameter.
         /// </summary>
         /// <param name="property">The property.</param>
-        /// <returns>True if the property is assignable</returns>
+        /// <returns>True if the property is assignable.</returns>
         public static bool IsAttributeProperty(IPropertyInfo property)
         {
             IMethodInfo setMethod = property.SetMethod;

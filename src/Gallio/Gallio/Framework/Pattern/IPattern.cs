@@ -18,10 +18,10 @@ using Gallio.Common.Reflection;
 namespace Gallio.Framework.Pattern
 {
     /// <summary>
-    /// <para>
     /// A <see cref="IPattern" /> defines a composable rule for building up a test model
     /// using reflection.
-    /// </para>
+    /// </summary>
+    /// <remarks>
     /// <para>
     /// The general idea is that a pattern applies contributions to a <see cref="IPatternScope" />
     /// that represents the state of the pattern interpretation process.  A primary pattern
@@ -50,15 +50,15 @@ namespace Gallio.Framework.Pattern
     /// means other than standard reflection to discover the patterns to be applied.  The process is
     /// intended to be open and extensible.
     /// </para>
-    /// </summary>
+    /// </remarks>
     /// <seealso cref="PatternAttribute"/>
     /// <seealso cref="PatternTestFramework"/>
     public interface IPattern
     {
         /// <summary>
-        /// <para>
         /// Returns true if this is a primary pattern.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// A primary pattern is a pattern that defines the ultimate purpose of a code
         /// element and the nature of the tests or test parameters that are produced from it.
@@ -81,13 +81,11 @@ namespace Gallio.Framework.Pattern
         /// of the test model.  Non-primary patterns may implement the <see cref="Process" />
         /// method to decorate tests and test parameters declared by the primary pattern.
         /// </para>
-        /// </summary>
+        /// </remarks>
         bool IsPrimary { get; }
 
         /// <summary>
-        /// <para>
         /// Returns true if the code element represents a test.
-        /// </para>
         /// </summary>
         /// <remarks>
         /// <para>
@@ -96,17 +94,15 @@ namespace Gallio.Framework.Pattern
         /// </remarks>
         /// <param name="evaluator">The evaluator.</param>
         /// <param name="codeElement">The code element.</param>
-        /// <returns>True if the code element represents a test</returns>
+        /// <returns>True if the code element represents a test.</returns>
         /// <exception cref="PatternUsageErrorException">May be thrown to halt processing of the pattern
         /// and report an error message to the user as an annotation that describes how the
         /// pattern was misapplied.</exception>
         bool IsTest(IPatternEvaluator evaluator, ICodeElementInfo codeElement);
 
         /// <summary>
-        /// <para>
         /// Returns true if the code element represents a part of a test such as a test method
         /// or a test contribution like a setup or teardown method.
-        /// </para>
         /// </summary>
         /// <remarks>
         /// <para>
@@ -115,17 +111,17 @@ namespace Gallio.Framework.Pattern
         /// </remarks>
         /// <param name="evaluator">The evaluator.</param>
         /// <param name="codeElement">The code element.</param>
-        /// <returns>True if the code element represents a test</returns>
+        /// <returns>True if the code element represents a test.</returns>
         /// <exception cref="PatternUsageErrorException">May be thrown to halt processing of the pattern
         /// and report an error message to the user as an annotation that describes how the
         /// pattern was misapplied.</exception>
         bool IsTestPart(IPatternEvaluator evaluator, ICodeElementInfo codeElement);
 
         /// <summary>
-        /// <para>
         /// Consumes a code element and applies its contributions to the scope
         /// provided by a containing pattern.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// This method is used to declare new tests, test parameters and other components
         /// and add them to a containing test that was defined in some other scope.
@@ -140,8 +136,6 @@ namespace Gallio.Framework.Pattern
         /// recurse into the fixture to apply contributions defined by patterns associated
         /// with methods, fields, properties, events, constructors and generic type parameters.
         /// </para>
-        /// </summary>
-        /// <remarks>
         /// <para>
         /// This method is only called for primary patterns.
         /// </para>
@@ -160,11 +154,11 @@ namespace Gallio.Framework.Pattern
         void Consume(IPatternScope containingScope, ICodeElementInfo codeElement, bool skipChildren);
 
         /// <summary>
-        /// <para>
         /// Processes a code element and applies its contributions to the scope of this pattern.
         /// The scope will typically have been introduced by the <see cref="Consume" /> method
         /// of a primary pattern applied to this code element.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// This method is used by patterns to decorate tests and test parameters that
         /// have been declared by primary patterns.
@@ -175,7 +169,7 @@ namespace Gallio.Framework.Pattern
         /// such as a test method.  The method then has the opportunity to modify the test
         /// to add metadata, change its name, add new behaviors, and so on.
         /// </para>
-        /// </summary>
+        /// </remarks>
         /// <param name="scope">The scope.</param>
         /// <param name="codeElement">The code element to process.</param>
         /// <exception cref="PatternUsageErrorException">May be thrown to halt processing of the pattern

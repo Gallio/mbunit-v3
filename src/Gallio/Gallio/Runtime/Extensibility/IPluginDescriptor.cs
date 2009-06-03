@@ -111,7 +111,7 @@ namespace Gallio.Runtime.Extensibility
         /// </remarks>
         /// <param name="resourcePath">The relative or absolute path of the resource to find or null to return
         /// the paths of the search directories themselves.</param>
-        /// <returns>An enumeration of search paths</returns>
+        /// <returns>An enumeration of search paths.</returns>
         IEnumerable<string> GetSearchPaths(string resourcePath);
 
         /*
@@ -139,7 +139,7 @@ namespace Gallio.Runtime.Extensibility
         /// and may fail.
         /// </para>
         /// </remarks>
-        /// <returns>The plugin type</returns>
+        /// <returns>The plugin type.</returns>
         /// <exception cref="RuntimeException">Thrown if an error occurs during resolution.</exception>
         Type ResolvePluginType();
 
@@ -153,7 +153,7 @@ namespace Gallio.Runtime.Extensibility
         /// and may fail.
         /// </para>
         /// </remarks>
-        /// <returns>The plugin handler</returns>
+        /// <returns>The plugin handler.</returns>
         /// <exception cref="RuntimeException">Thrown if an error occurs during resolution.</exception>
         IHandler ResolvePluginHandler();
 
@@ -167,7 +167,7 @@ namespace Gallio.Runtime.Extensibility
         /// and may fail.
         /// </para>
         /// </remarks>
-        /// <returns>The plugin instance</returns>
+        /// <returns>The plugin instance.</returns>
         /// <exception cref="RuntimeException">Thrown if an error occurs during resolution.</exception>
         IPlugin ResolvePlugin();
 
@@ -181,7 +181,7 @@ namespace Gallio.Runtime.Extensibility
         /// and may fail.
         /// </para>
         /// </remarks>
-        /// <returns>The traits handler</returns>
+        /// <returns>The traits handler.</returns>
         /// <exception cref="RuntimeException">Thrown if an error occurs during resolution.</exception>
         IHandler ResolveTraitsHandler();
 
@@ -195,7 +195,7 @@ namespace Gallio.Runtime.Extensibility
         /// and may fail.
         /// </para>
         /// </remarks>
-        /// <returns>The plugin traits</returns>
+        /// <returns>The plugin traits.</returns>
         /// <exception cref="RuntimeException">Thrown if an error occurs during resolution.</exception>
         PluginTraits ResolveTraits();
 

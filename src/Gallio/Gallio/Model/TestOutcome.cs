@@ -127,7 +127,7 @@ namespace Gallio.Model
         /// failure encountered even if subsequent failures occur and are combined.
         /// </remarks>
         /// <param name="other">The other outcome.</param>
-        /// <returns>The combined outcome</returns>
+        /// <returns>The combined outcome.</returns>
         /// <seealso cref="TestStatus"/> for test status severity ranking information.
         public TestOutcome CombineWith(TestOutcome other)
         {
@@ -139,7 +139,7 @@ namespace Gallio.Model
         /// <summary>
         /// Produces an outcome with the same status but omitting the category information.
         /// </summary>
-        /// <returns>The generalized outcome</returns>
+        /// <returns>The generalized outcome.</returns>
         public TestOutcome Generalize()
         {
             return new TestOutcome(status);
@@ -148,7 +148,7 @@ namespace Gallio.Model
         /// <summary>
         /// Returns the <see cref="DisplayName" /> of the outcome.
         /// </summary>
-        /// <returns>The display name</returns>
+        /// <returns>The display name.</returns>
         public override string ToString()
         {
             return DisplayName;
@@ -162,7 +162,7 @@ namespace Gallio.Model
         /// Status: <see cref="TestStatus.Passed"/>.
         /// Category: null.
         /// </remarks>
-        /// <returns>The outcome</returns>
+        /// <returns>The outcome.</returns>
         public static TestOutcome Passed
         {
             get { return new TestOutcome(TestStatus.Passed); }
@@ -175,7 +175,7 @@ namespace Gallio.Model
         /// Status: <see cref="TestStatus.Failed"/>.
         /// Category: null.
         /// </remarks>
-        /// <returns>The outcome</returns>
+        /// <returns>The outcome.</returns>
         public static TestOutcome Failed
         {
             get { return new TestOutcome(TestStatus.Failed); }
@@ -188,7 +188,7 @@ namespace Gallio.Model
         /// Status: <see cref="TestStatus.Failed"/>.
         /// Category: "error".
         /// </remarks>
-        /// <returns>The outcome</returns>
+        /// <returns>The outcome.</returns>
         public static TestOutcome Error
         {
             get { return new TestOutcome(TestStatus.Failed, "error"); }
@@ -201,7 +201,7 @@ namespace Gallio.Model
         /// Status: <see cref="TestStatus.Failed"/>.
         /// Category: "timeout".
         /// </remarks>
-        /// <returns>The outcome</returns>
+        /// <returns>The outcome.</returns>
         public static TestOutcome Timeout
         {
             get { return new TestOutcome(TestStatus.Failed, "timeout"); }
@@ -214,7 +214,7 @@ namespace Gallio.Model
         /// Status: <see cref="TestStatus.Inconclusive"/>.
         /// Category: null.
         /// </remarks>
-        /// <returns>The outcome</returns>
+        /// <returns>The outcome.</returns>
         public static TestOutcome Inconclusive
         {
             get { return new TestOutcome(TestStatus.Inconclusive); }
@@ -227,7 +227,7 @@ namespace Gallio.Model
         /// Status: <see cref="TestStatus.Inconclusive"/>.
         /// Category: "canceled".
         /// </remarks>
-        /// <returns>The outcome</returns>
+        /// <returns>The outcome.</returns>
         public static TestOutcome Canceled
         {
             get { return new TestOutcome(TestStatus.Inconclusive, "canceled"); }
@@ -240,7 +240,7 @@ namespace Gallio.Model
         /// Status: <see cref="TestStatus.Skipped"/>.
         /// Category: null.
         /// </remarks>
-        /// <returns>The outcome</returns>
+        /// <returns>The outcome.</returns>
         public static TestOutcome Skipped
         {
             get { return new TestOutcome(TestStatus.Skipped); }
@@ -254,7 +254,7 @@ namespace Gallio.Model
         /// Status: <see cref="TestStatus.Skipped"/>.
         /// Category: "ignored".
         /// </remarks>
-        /// <returns>The outcome</returns>
+        /// <returns>The outcome.</returns>
         public static TestOutcome Ignored
         {
             get { return new TestOutcome(TestStatus.Skipped, "ignored"); }
@@ -269,7 +269,7 @@ namespace Gallio.Model
         /// Status: <see cref="TestStatus.Skipped"/>.
         /// Category: "pending".
         /// </remarks>
-        /// <returns>The outcome</returns>
+        /// <returns>The outcome.</returns>
         public static TestOutcome Pending
         {
             get { return new TestOutcome(TestStatus.Skipped, "pending"); }
@@ -283,7 +283,7 @@ namespace Gallio.Model
         /// Status: <see cref="TestStatus.Skipped"/>.
         /// Category: "explicit".
         /// </remarks>
-        /// <returns>The outcome</returns>
+        /// <returns>The outcome.</returns>
         public static TestOutcome Explicit
         {
             get { return new TestOutcome(TestStatus.Skipped, "explicit"); }
@@ -298,7 +298,7 @@ namespace Gallio.Model
         /// Provides the Xml schema for this element.
         /// </summary>
         /// <param name="schemas">The schema set.</param>
-        /// <returns>The schema type of the element</returns>
+        /// <returns>The schema type of the element.</returns>
         public static XmlQualifiedName ProvideXmlSchema(XmlSchemaSet schemas)
         {
             schemas.Add(new XmlSchema()
@@ -394,7 +394,7 @@ namespace Gallio.Model
         /// </summary>
         /// <param name="a">The first outcome.</param>
         /// <param name="b">The second outcome.</param>
-        /// <returns>True if the outcomes are equal</returns>
+        /// <returns>True if the outcomes are equal.</returns>
         public static bool operator ==(TestOutcome a, TestOutcome b)
         {
             return a.Equals(b);
@@ -405,7 +405,7 @@ namespace Gallio.Model
         /// </summary>
         /// <param name="a">The first outcome.</param>
         /// <param name="b">The second outcome.</param>
-        /// <returns>True if the outcomes are not equal</returns>
+        /// <returns>True if the outcomes are not equal.</returns>
         public static bool operator !=(TestOutcome a, TestOutcome b)
         {
             return ! a.Equals(b);

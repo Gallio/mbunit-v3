@@ -32,7 +32,7 @@ namespace Gallio.Framework.Data
         /// <param name="includeDynamicItems">If true, includes items that may be dynamically
         /// generated in the result set.  Otherwise excludes such items and only returns
         /// those that are statically known a priori.</param>
-        /// <returns>The enumeration of data items</returns>
+        /// <returns>The enumeration of data items.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="bindings"/> is null.</exception>
         IEnumerable<IDataItem> GetItems(ICollection<DataBinding> bindings, bool includeDynamicItems);
     }

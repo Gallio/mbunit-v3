@@ -29,7 +29,7 @@ namespace Gallio.Runner.Extensions
         /// <summary>
         /// Creates the extension.
         /// </summary>
-        /// <returns>The extension to create</returns>
+        /// <returns>The extension to create.</returns>
         ITestRunnerExtension CreateExtension();
     }
 }

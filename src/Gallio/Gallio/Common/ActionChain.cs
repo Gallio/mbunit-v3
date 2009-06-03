@@ -38,15 +38,15 @@ namespace Gallio.Common
         public static readonly Action<T> NoOp = delegate { };
 
         /// <summary>
-        /// <para>
         /// Gets or sets a representation of the chain as a single action.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// The action is progressively augmented as new contributions are
         /// registered using <see cref="Before" />, <see cref="After" /> and
         /// <see cref="Around" />.  By default the action is <see cref="NoOp" />.
         /// </para>
-        /// </summary>
+        /// </remarks>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
         public Action<T> Action
         {
@@ -68,9 +68,11 @@ namespace Gallio.Common
         /// currently in the chain.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// The value of <see cref="Action" /> will be set to a new instance
         /// that performs the specified <paramref name="action"/> before
         /// the current <see cref="Action" />.
+        /// </para>
         /// </remarks>
         /// <param name="action">The action to register.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="action"/> is null.</exception>
@@ -90,9 +92,11 @@ namespace Gallio.Common
         /// currently in the chain.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// The value of <see cref="Action" /> will be set to a new instance
         /// that performs the specified <paramref name="action"/> after
         /// the current <see cref="Action" />.
+        /// </para>
         /// </remarks>
         /// <param name="action">The action to register.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="action"/> is null.</exception>
@@ -114,9 +118,11 @@ namespace Gallio.Common
         /// can choose to run (or not) as needed.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// The value of <see cref="Action" /> will be set to a new instance
         /// that performs the specified <paramref name="decorator"/> around
         /// the current <see cref="Action" />.
+        /// </para>
         /// </remarks>
         /// <param name="decorator">The decorator to register.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="decorator"/> is null.</exception>
@@ -146,10 +152,12 @@ namespace Gallio.Common
     /// part of a complex multi-part process.
     /// </summary>
     /// <remarks>
+    /// <para>
     /// Later actions in a chain will not run if prior ones throw an exception.
     /// To catch and handle exceptions, use <see cref="Around" /> to register a
     /// decorator that runs around the current action whose execution is then
     /// under your control.
+    /// </para>
     /// </remarks>
     /// <typeparam name="T1">The first argument type.</typeparam>
     /// <typeparam name="T2">The second argument type.</typeparam>
@@ -163,15 +171,15 @@ namespace Gallio.Common
         public static readonly Action<T1, T2> NoOp = delegate { };
 
         /// <summary>
-        /// <para>
         /// Gets or sets a representation of the chain as a single action.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// The action is progressively augmented as new contributions are
         /// registered using <see cref="Before" />, <see cref="After" /> and
         /// <see cref="Around" />.  By default the action is <see cref="NoOp" />.
         /// </para>
-        /// </summary>
+        /// </remarks>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
         public Action<T1, T2> Action
         {
@@ -193,9 +201,11 @@ namespace Gallio.Common
         /// currently in the chain.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// The value of <see cref="Action" /> will be set to a new instance
         /// that performs the specified <paramref name="action"/> before
         /// the current <see cref="Action" />.
+        /// </para>
         /// </remarks>
         /// <param name="action">The action to register.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="action"/> is null.</exception>
@@ -215,9 +225,11 @@ namespace Gallio.Common
         /// currently in the chain.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// The value of <see cref="Action" /> will be set to a new instance
         /// that performs the specified <paramref name="action"/> after
         /// the current <see cref="Action" />.
+        /// </para>
         /// </remarks>
         /// <param name="action">The action to register.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="action"/> is null.</exception>
@@ -239,9 +251,11 @@ namespace Gallio.Common
         /// can choose to run (or not) as needed.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// The value of <see cref="Action" /> will be set to a new instance
         /// that performs the specified <paramref name="decorator"/> around
         /// the current <see cref="Action" />.
+        /// </para>
         /// </remarks>
         /// <param name="decorator">The decorator to register.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="decorator"/> is null.</exception>

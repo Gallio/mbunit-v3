@@ -43,7 +43,7 @@ namespace Gallio.Runner.Extensions
         /// </para>
         /// </summary>
         /// <param name="extensionSpecification">The extension specification.</param>
-        /// <returns>The extension</returns>
+        /// <returns>The extension.</returns>
         /// <exception cref="RunnerException">Thrown if the extension cannot be instantiated and configured.</exception>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="extensionSpecification"/> is null.</exception>
         public static ITestRunnerExtension CreateExtensionFromSpecification(string extensionSpecification)

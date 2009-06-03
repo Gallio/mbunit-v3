@@ -101,7 +101,7 @@ namespace Gallio.Framework
         /// </remarks>
         /// <param name="left">The left object, may be null.</param>
         /// <param name="right">The right object, may be null.</param>
-        /// <returns>True if both objects are the same</returns>
+        /// <returns>True if both objects are the same.</returns>
         /// <typeparam name="T">The object type, which must be a reference type (class) since a value type
         /// (struct) has no concept of referential identity.</typeparam>
         public static bool Same<T>(T left, T right)
@@ -117,7 +117,7 @@ namespace Gallio.Framework
         /// </summary>
         /// <param name="left">The left object, may be null.</param>
         /// <param name="right">The right object, may be null.</param>
-        /// <returns>True if the objects are equal</returns>
+        /// <returns>True if the objects are equal.</returns>
         /// <seealso cref="Equals{T}"/> for details.
         public new static bool Equals(object left, object right)
         {
@@ -152,7 +152,7 @@ namespace Gallio.Framework
         /// </remarks>
         /// <param name="left">The left object, may be null.</param>
         /// <param name="right">The right object, may be null.</param>
-        /// <returns>True if the objects are equal</returns>
+        /// <returns>True if the objects are equal.</returns>
         /// <typeparam name="T">The object type.</typeparam>
         public static bool Equals<T>(T left, T right)
         {
@@ -223,7 +223,7 @@ namespace Gallio.Framework
         /// <param name="right">The right object, may be null.</param>
         /// <returns>A value less than zero if the left object if less than
         /// the right object, zero if the left and right objects are equal, or greater than zero if
-        /// the left object is greater than the right object</returns>
+        /// the left object is greater than the right object.</returns>
         /// <exception cref="InvalidOperationException">Thrown if the values cannot be ordered.</exception>
         /// <typeparam name="T">The object type.</typeparam>
         public static int Compare<T>(T left, T right)
@@ -386,7 +386,7 @@ namespace Gallio.Framework
         /// <param name="left">The expected value.</param>
         /// <param name="right">The actual value.</param>
         /// <param name="delta">The inclusive delta between the values.</param>
-        /// <returns>True if the values are approximately equal</returns>
+        /// <returns>True if the values are approximately equal.</returns>
         public static bool ApproximatelyEqual<TValue, TDifference>(TValue left, TValue right, TDifference delta)
         {
             SubtractionFunc<TValue, TDifference> subtractionFunc = GetSubtractionFunc<TValue, TDifference>();
@@ -403,7 +403,7 @@ namespace Gallio.Framework
         /// <typeparam name="TDifference">The type of the difference produced when the values are
         /// subtracted, for numeric types this is the same as <typeparamref name="TValue"/> but it
         /// may differ for other types.</typeparam>
-        /// <returns>The subtraction function</returns>
+        /// <returns>The subtraction function.</returns>
         /// <exception cref="InvalidOperationException">Thrown if no subtraction function exists
         /// or if the difference type is incorrect.</exception>
         internal static SubtractionFunc<TValue, TDifference> GetSubtractionFunc<TValue, TDifference>()

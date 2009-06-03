@@ -110,7 +110,7 @@ namespace Gallio.Framework.Data
         /// </remarks>
         /// <param name="entity">The entity that is qualified by the specification such as the name of a type or method.</param>
         /// <param name="formatter">The formatter.</param>
-        /// <returns>The formatted specification</returns>
+        /// <returns>The formatted specification.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="entity"/>
         /// or <paramref name="formatter"/> is null.</exception>
         public string Format(string entity, IFormatter formatter)
@@ -128,7 +128,7 @@ namespace Gallio.Framework.Data
         /// </summary>
         /// <param name="entity">The entity that is qualified by the specification such as the name of a type or method.</param>
         /// <param name="formatter">The formatter, not null.</param>
-        /// <returns>The formatted specification</returns>
+        /// <returns>The formatted specification.</returns>
         protected abstract string FormatImpl(string entity, IFormatter formatter);
 
         /// <summary>
@@ -224,7 +224,7 @@ namespace Gallio.Framework.Data
         /// <typeparam name="T">The type of member.</typeparam>
         /// <param name="resolvedType">The resolved type, not null.</param>
         /// <param name="member">The member, not null.</param>
-        /// <returns>The resolved member</returns>
+        /// <returns>The resolved member.</returns>
         protected static T ResolveMember<T>(Type resolvedType, T member)
             where T : MemberInfo
         {

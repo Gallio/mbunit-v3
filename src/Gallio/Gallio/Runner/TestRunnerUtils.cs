@@ -31,7 +31,7 @@ namespace Gallio.Runner
         /// application for the report's document type.
         /// </summary>
         /// <param name="reportDocumentPath">The path of the report.</param>
-        /// <returns>True if the report document was successfully opened</returns>
+        /// <returns>True if the report document was successfully opened.</returns>
         public static bool ShowReportDocument(string reportDocumentPath)
         {
             if (reportDocumentPath == null)
@@ -52,7 +52,7 @@ namespace Gallio.Runner
         /// Creates a test runner given its factory name.
         /// </summary>
         /// <param name="factoryName">The test runner factory name.</param>
-        /// <returns>The test runner</returns>
+        /// <returns>The test runner.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="factoryName"/> is null.</exception>
         public static ITestRunner CreateTestRunnerByName(string factoryName)
         {

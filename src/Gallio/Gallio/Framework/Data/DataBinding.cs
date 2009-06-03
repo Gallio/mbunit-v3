@@ -76,7 +76,7 @@ namespace Gallio.Framework.Data
         /// Creates a clone of the data binding with a different index.
         /// </summary>
         /// <param name="index">The new index.</param>
-        /// <returns>The cloned binding</returns>
+        /// <returns>The cloned binding.</returns>
         public virtual DataBinding ReplaceIndex(int? index)
         {
             return new DataBinding(index, path);
@@ -106,7 +106,7 @@ namespace Gallio.Framework.Data
         /// <summary>
         /// Returns a debug representation of the binding as a string.
         /// </summary>
-        /// <returns>The string representation</returns>
+        /// <returns>The string representation.</returns>
         public override string ToString()
         {
             return String.Format("Binding Index: {0}, Path: {1}",

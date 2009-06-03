@@ -49,7 +49,7 @@ namespace Gallio.Framework.Data
         /// those that are statically known a priori.</param>
         /// <returns>An enumeration of item-lists consisting of exactly one item from
         /// each provider and indexed in the same order as the <paramref name="providers"/>
-        /// collection</returns>
+        /// collection.</returns>
         IEnumerable<IList<IDataItem>> Join(IList<IDataProvider> providers, IList<ICollection<DataBinding>> bindingsPerProvider,
             bool includeDynamicItems);
     }

@@ -49,7 +49,7 @@ namespace Gallio.Model.Execution
         /// <param name="parentTestStep">The parent test step, or null if none.</param>
         /// <param name="options">The test execution options, not null.</param>
         /// <param name="progressMonitor">The progress monitor, not null.</param>
-        /// <returns>The combined outcome of the root test command</returns>
+        /// <returns>The combined outcome of the root test command.</returns>
         protected abstract TestOutcome RunTestsImpl(ITestCommand rootTestCommand, ITestStep parentTestStep, TestExecutionOptions options, IProgressMonitor progressMonitor);
 
         /// <summary>

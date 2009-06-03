@@ -98,7 +98,7 @@ namespace Gallio.Model
         /// it with the locally unique identifiers of its parents.
         /// </para>
         /// </remarks>
-        /// <returns>The locally unique identifier</returns>
+        /// <returns>The locally unique identifier.</returns>
         string LocalId { get; }
 
         /// <summary>
@@ -221,7 +221,7 @@ namespace Gallio.Model
         /// Obtains a unique local id for a child of this test.
         /// </summary>
         /// <param name="localIdHint">A suggested id which will be used if no conflicts occur.</param>
-        /// <returns>The unique local id to use</returns>
+        /// <returns>The unique local id to use.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="localIdHint"/> is null.</exception>
         string GetUniqueLocalIdForChild(string localIdHint);
     }

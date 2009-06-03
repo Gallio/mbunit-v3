@@ -49,7 +49,7 @@ namespace Gallio.Common.Text
         /// </summary>
         /// <param name="startIndex">The start index.</param>
         /// <param name="endIndex">The end index.</param>
-        /// <returns>The new range</returns>
+        /// <returns>The new range.</returns>
         /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="startIndex"/>
         /// is negative or greater than <paramref name="endIndex"/></exception>
         public static Range Between(int startIndex, int endIndex)
@@ -86,7 +86,7 @@ namespace Gallio.Common.Text
         /// Gets a substring of the specified text using this range.
         /// </summary>
         /// <param name="text">The source text.</param>
-        /// <returns>The substring of the source text that represents this range</returns>
+        /// <returns>The substring of the source text that represents this range.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="text"/> is null.</exception>
         public string SubstringOf(string text)
         {
@@ -99,7 +99,7 @@ namespace Gallio.Common.Text
         /// Extends a range into an adjacent range and returns the combined range.
         /// </summary>
         /// <param name="range">The adjacent range.</param>
-        /// <returns>The extended range</returns>
+        /// <returns>The extended range.</returns>
         /// <exception cref="ArgumentException">Thrown if <paramref name="range"/> is not an adjacent range.</exception>
         public Range ExtendWith(Range range)
         {
@@ -135,7 +135,7 @@ namespace Gallio.Common.Text
         /// </summary>
         /// <param name="a">The first range to compare.</param>
         /// <param name="b">The second range to compare.</param>
-        /// <returns>True if the ranges are equal</returns>
+        /// <returns>True if the ranges are equal.</returns>
         public static bool operator ==(Range a, Range b)
         {
             return a.Equals(b);
@@ -146,7 +146,7 @@ namespace Gallio.Common.Text
         /// </summary>
         /// <param name="a">The first range to compare.</param>
         /// <param name="b">The second range to compare.</param>
-        /// <returns>True if the ranges are not equal</returns>
+        /// <returns>True if the ranges are not equal.</returns>
         public static bool operator !=(Range a, Range b)
         {
             return !(a == b);

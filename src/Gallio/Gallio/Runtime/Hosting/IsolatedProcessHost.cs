@@ -138,7 +138,7 @@ namespace Gallio.Runtime.Hosting
         /// <param name="executablePath">The executable path.</param>
         /// <param name="arguments">The command-line arguments.</param>
         /// <param name="workingDirectory">The working directory.</param>
-        /// <returns>The process task</returns>
+        /// <returns>The process task.</returns>
         protected virtual ProcessTask CreateProcessTask(string executablePath, string arguments, string workingDirectory)
         {
             return new ProcessTask(executablePath, arguments, workingDirectory);

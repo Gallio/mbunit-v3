@@ -27,7 +27,7 @@ namespace Gallio.Framework.Data
         /// Gets the metadata associated with a data item.
         /// </summary>
         /// <param name="dataItem">The data item.</param>
-        /// <returns>The associated metadata</returns>
+        /// <returns>The associated metadata.</returns>
         public static PropertyBag GetMetadata(IDataItem dataItem)
         {
             PropertyBag map = new PropertyBag();

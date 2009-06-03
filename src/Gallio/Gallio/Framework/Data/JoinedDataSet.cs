@@ -96,7 +96,7 @@ namespace Gallio.Framework.Data
         /// </remarks>
         /// <param name="dataSet">The data set.</param>
         /// <param name="binding">The binding.</param>
-        /// <returns>The translated binding</returns>
+        /// <returns>The translated binding.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="dataSet"/>
         /// or <paramref name="binding"/> is null.</exception>
         /// <exception cref="ArgumentException">Thrown if <paramref name="dataSet"/>

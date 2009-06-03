@@ -30,14 +30,14 @@ namespace Gallio.Framework.Pattern
         /// Otherwise returns the existing one.
         /// </summary>
         /// <param name="name">The data source name.</param>
-        /// <returns>The defined data source</returns>
+        /// <returns>The defined data source.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> is null.</exception>
         DataSource DefineDataSource(string name);
 
         /// <summary>
         /// Creates a child data context.
         /// </summary>
-        /// <returns>The builder for the child context</returns>
+        /// <returns>The builder for the child context.</returns>
         ITestDataContextBuilder CreateChild();
 
         /// <summary>
@@ -68,7 +68,7 @@ namespace Gallio.Framework.Pattern
         /// <summary>
         /// Gets the underlying pattern test data context.
         /// </summary>
-        /// <returns>The underlying pattern test data context</returns>
+        /// <returns>The underlying pattern test data context.</returns>
         PatternTestDataContext ToPatternTestDataContext();
     }
 }

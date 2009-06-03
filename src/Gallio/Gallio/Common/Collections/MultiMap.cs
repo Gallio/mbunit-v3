@@ -83,7 +83,7 @@ namespace Gallio.Common.Collections
         /// Returns an empty list if there are none.
         /// </summary>
         /// <param name="key">The key.</param>
-        /// <returns>The list of values</returns>
+        /// <returns>The list of values.</returns>
         public IList<TValue> this[TKey key]
         {
             get
@@ -179,7 +179,7 @@ namespace Gallio.Common.Collections
         /// </summary>
         /// <param name="key">The key.</param>
         /// <param name="value">The value to find.</param>
-        /// <returns>True if the map contains an entry with the specified key and value</returns>
+        /// <returns>True if the map contains an entry with the specified key and value.</returns>
         public bool Contains(TKey key, TValue value)
         {
             return this[key].Contains(value);
@@ -204,7 +204,7 @@ namespace Gallio.Common.Collections
         /// the specified key.
         /// </summary>
         /// <param name="key">The key.</param>
-        /// <returns>True if there is at least one value associated with the key</returns>
+        /// <returns>True if there is at least one value associated with the key.</returns>
         public bool ContainsKey(TKey key)
         {
             return this[key].Count != 0;
@@ -220,7 +220,7 @@ namespace Gallio.Common.Collections
         /// Removes all values associated with the specified key.
         /// </summary>
         /// <param name="key">The key.</param>
-        /// <returns>True if the key existed and was removed</returns>
+        /// <returns>True if the key existed and was removed.</returns>
         public bool Remove(TKey key)
         {
             return entries.Remove(key);
@@ -231,7 +231,7 @@ namespace Gallio.Common.Collections
         /// </summary>
         /// <param name="key">The key.</param>
         /// <param name="value">The value to remove from the key.</param>
-        /// <returns>True if the value was removed</returns>
+        /// <returns>True if the value was removed.</returns>
         public bool Remove(TKey key, TValue value)
         {
             IList<TValue> list;
@@ -252,7 +252,7 @@ namespace Gallio.Common.Collections
         /// Removes all values in the pair from the specified key.
         /// </summary>
         /// <param name="item">The key and values pair.</param>
-        /// <returns>True if at least one value was removed</returns>
+        /// <returns>True if at least one value was removed.</returns>
         public bool Remove(KeyValuePair<TKey, IList<TValue>> item)
         {
             bool removedOne = false;

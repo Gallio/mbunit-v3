@@ -201,14 +201,14 @@ namespace Gallio.Runtime.ConsoleSupport
         /// Runs the program.
         /// </summary>
         /// <param name="args">The command-line arguments.</param>
-        /// <returns>The program exit code</returns>
+        /// <returns>The program exit code.</returns>
         protected abstract int RunImpl(string[] args);
 
         /// <summary>
         /// Handles a fatal exception that escaped the <see cref="RunImpl" /> method.
         /// </summary>
         /// <param name="ex">The exception.</param>
-        /// <returns>The exit code to return</returns>
+        /// <returns>The exit code to return.</returns>
         protected virtual int HandleFatalException(Exception ex)
         {
             ShowErrorMessage(String.Format("A fatal exception occurred.\n{0}", ex));
@@ -219,7 +219,7 @@ namespace Gallio.Runtime.ConsoleSupport
         /// Parses the arguments.
         /// </summary>
         /// <param name="args">The command-line arguments.</param>
-        /// <returns>True if the arguments were parsed successfully</returns>
+        /// <returns>True if the arguments were parsed successfully.</returns>
         protected virtual bool ParseArguments(string[] args)
         {
             return ArgumentParser.Parse(args, Arguments, ShowErrorMessage);

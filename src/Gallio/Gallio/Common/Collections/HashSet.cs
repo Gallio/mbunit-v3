@@ -22,9 +22,11 @@ namespace Gallio.Common.Collections
     /// <summary>
     /// A hashtable-based set implementation.
     /// </summary>
-    /// <remarks author="jeff">
+    /// <remarks>
+    /// <para>
     /// This will probably be replaced by the new HashSet{T} class in
     /// the new System.Core of .Net 3.5.
+    /// </para>
     /// </remarks>
     public class HashSet<T> : ICollection<T>
     {

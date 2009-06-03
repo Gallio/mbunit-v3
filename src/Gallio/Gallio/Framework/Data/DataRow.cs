@@ -58,7 +58,7 @@ namespace Gallio.Framework.Data
         /// </remarks>
         /// <param name="key">The metadata key.</param>
         /// <param name="value">The metadata value.</param>
-        /// <returns>The augmented data row</returns>
+        /// <returns>The augmented data row.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="key"/>
         /// or <paramref name="value"/> is null.</exception>
         public DataRow WithMetadata(string key, string value)
@@ -79,7 +79,7 @@ namespace Gallio.Framework.Data
         /// The original data row is not modified!
         /// </remarks>
         /// <param name="map">The metadata map.</param>
-        /// <returns>The augmented data row</returns>
+        /// <returns>The augmented data row.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="map"/>
         /// is null.</exception>
         public DataRow WithMetadata(PropertyBag map)

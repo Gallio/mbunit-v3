@@ -196,7 +196,7 @@ namespace Gallio.Model.Execution
         /// <summary>
         /// Gets the list of children as an array.
         /// </summary>
-        /// <returns>The array of children</returns>
+        /// <returns>The array of children.</returns>
         public ManagedTestCommand[] ChildrenToArray()
         {
             if (children == null)
@@ -210,7 +210,7 @@ namespace Gallio.Model.Execution
         /// <summary>
         /// Returns a description of the test command for debugging purposes.
         /// </summary>
-        /// <returns>A description of the test command</returns>
+        /// <returns>A description of the test command.</returns>
         public override string ToString()
         {
             StringBuilder description = new StringBuilder(test.Name);

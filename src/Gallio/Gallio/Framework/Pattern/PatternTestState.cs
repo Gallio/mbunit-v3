@@ -97,7 +97,7 @@ namespace Gallio.Framework.Pattern
         /// Gets the pattern test state from the specified context.
         /// </summary>
         /// <param name="context">The context.</param>
-        /// <returns>The pattern test state, or null if none</returns>
+        /// <returns>The pattern test state, or null if none.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="context"/> is null.</exception>
         public static PatternTestState FromContext(TestContext context)
         {

@@ -39,7 +39,7 @@ namespace Gallio.Runtime.FileTypes
         /// </para>
         /// </remarks>
         /// <param name="fileInspector">The file inspector, never null.</param>
-        /// <returns>True if the file type was recognized</returns>
+        /// <returns>True if the file type was recognized.</returns>
         bool IsRecognizedFile(IFileInspector fileInspector);
     }
 }

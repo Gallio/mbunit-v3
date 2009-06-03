@@ -114,7 +114,7 @@ namespace Gallio.Framework.Data
         /// </summary>
         /// <param name="obj">The object on which to invoke the method.  This value is ignored
         /// if the method is static.</param>
-        /// <returns>The method result value</returns>
+        /// <returns>The method result value.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="obj"/> is
         /// null but the method is non-static.</exception>
         /// <exception cref="Exception">Any exception thrown by the invoked method.</exception>

@@ -45,7 +45,7 @@ namespace Gallio.Common.Reflection
         /// <summary>
         /// Gets a <see cref="CodeReference" /> for this code element.
         /// </summary>
-        /// <returns>The code reference</returns>
+        /// <returns>The code reference.</returns>
         CodeReference CodeReference { get; }
 
         /// <summary>
@@ -54,7 +54,7 @@ namespace Gallio.Common.Reflection
         /// <param name="attributeType">The attribute type, or null to return attributes of all types.</param>
         /// <param name="inherit">If true, includes inherited attributes
         /// from base types (but not from interfaces, just like <see cref="ICustomAttributeProvider" /> does)</param>
-        /// <returns>The code element's attributes</returns>
+        /// <returns>The code element's attributes.</returns>
         IEnumerable<IAttributeInfo> GetAttributeInfos(ITypeInfo attributeType, bool inherit);
 
         /// <summary>
@@ -63,7 +63,7 @@ namespace Gallio.Common.Reflection
         /// <param name="attributeType">The attribute type, or null to search for attributes of all types.</param>
         /// <param name="inherit">If true, includes inherited attributes
         /// from base types (but not from interfaces, just like <see cref="ICustomAttributeProvider" /> does)</param>
-        /// <returns>True if the code element has at least one attribute of the specified type</returns>
+        /// <returns>True if the code element has at least one attribute of the specified type.</returns>
         bool HasAttribute(ITypeInfo attributeType, bool inherit);
 
         /// <summary>
@@ -72,13 +72,13 @@ namespace Gallio.Common.Reflection
         /// <param name="attributeType">The attribute type.</param>
         /// <param name="inherit">If true, includes inherited attributes
         /// from base types (but not from interfaces, just like <see cref="ICustomAttributeProvider" /> does)</param>
-        /// <returns>The attributes</returns>
+        /// <returns>The attributes.</returns>
         IEnumerable<object> GetAttributes(ITypeInfo attributeType, bool inherit);
 
         /// <summary>
         /// Gets the XML documentation associated with the code element.
         /// </summary>
-        /// <returns>The XML documentation or null if none available</returns>
+        /// <returns>The XML documentation or null if none available.</returns>
         string GetXmlDocumentation();
 
         /// <summary>
@@ -86,7 +86,7 @@ namespace Gallio.Common.Reflection
         /// <see cref="CodeLocation.Unknown" /> if not available.  The location may refer to the code
         /// element's source code or to the location of its compiled assembly.
         /// </summary>
-        /// <returns>The code location</returns>
+        /// <returns>The code location.</returns>
         CodeLocation GetCodeLocation();
     }
 }

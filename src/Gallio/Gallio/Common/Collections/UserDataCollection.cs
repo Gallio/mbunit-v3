@@ -19,16 +19,16 @@ using System.Collections.Generic;
 namespace Gallio.Common.Collections
 {
     /// <summary>
-    /// <para>
     /// A user data collection stores arbitrary key/value pairs that may be associated
     /// with other objects in the system.
-    /// </para>
+    /// </summary>
+    /// <remarks>
     /// <para>
     /// Accesses to the collection are synchronized during access.  To safely manupulate
     /// multiple keys at one time, simply lock the <see cref="UserDataCollection" />
     /// for the duration of the operation.
     /// </para>
-    /// </summary>
+    /// </remarks>
     public class UserDataCollection
     {
         private Dictionary<string, object> items;
@@ -43,7 +43,7 @@ namespace Gallio.Common.Collections
         /// <summary>
         /// Creates a copy of the collection.
         /// </summary>
-        /// <returns>The copy</returns>
+        /// <returns>The copy.</returns>
         public UserDataCollection Copy()
         {
             UserDataCollection copy = new UserDataCollection();
@@ -62,7 +62,7 @@ namespace Gallio.Common.Collections
         /// </summary>
         /// <param name="key">The key.</param>
         /// <param name="value">Set to the value, or <c>default(T)</c> if none present.</param>
-        /// <returns>True if a value was obtained</returns>
+        /// <returns>True if a value was obtained.</returns>
         /// <typeparam name="T">The value type.</typeparam>
         public bool TryGetValue<T>(Key<T> key, out T value)
         {
@@ -87,7 +87,7 @@ namespace Gallio.Common.Collections
         /// Gets a value from the collection.
         /// </summary>
         /// <param name="key">The key.</param>
-        /// <returns>The associated value</returns>
+        /// <returns>The associated value.</returns>
         /// <exception cref="KeyNotFoundException">Thrown if <paramref name="key"/> was not found.</exception>
         /// <typeparam name="T">The value type.</typeparam>
         public T GetValue<T>(Key<T> key)
@@ -103,7 +103,7 @@ namespace Gallio.Common.Collections
         /// </summary>
         /// <param name="key">The key.</param>
         /// <param name="defaultValue">The default value.</param>
-        /// <returns>The associated value, or the default value</returns>
+        /// <returns>The associated value, or the default value.</returns>
         /// <typeparam name="T">The value type.</typeparam>
         public T GetValueOrDefault<T>(Key<T> key, T defaultValue)
         {
@@ -115,7 +115,7 @@ namespace Gallio.Common.Collections
         /// Determines whether a key has an associated value in the collection.
         /// </summary>
         /// <param name="key">The key.</param>
-        /// <returns>True if the key has an associated value</returns>
+        /// <returns>True if the key has an associated value.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="key"/> is null.</exception>
         /// <typeparam name="T">The value type.</typeparam>
         public bool HasValue<T>(Key<T> key)

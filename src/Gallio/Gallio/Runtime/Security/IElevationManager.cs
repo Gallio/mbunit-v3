@@ -63,7 +63,7 @@ namespace Gallio.Runtime.Security
         /// reason may be displayed to the user to explain the purpose of the request.</param>
         /// <returns>True if the elevation context was acquired and the action completed
         /// successfully, false if the action failed or elevation was forbidden by the user or by the
-        /// operating system</returns>
+        /// operating system.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="reason"/>
         /// or <paramref name="elevationAction"/> is null.</exception>
         bool TryElevate(ElevationAction elevationAction, string reason);

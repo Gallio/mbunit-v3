@@ -189,7 +189,7 @@ namespace Gallio.Common.Reflection.Impl
         /// (when IsHideBySig is true).
         /// </remarks>
         /// <param name="other">The other method.</param>
-        /// <returns>True if this method hides the other method</returns>
+        /// <returns>True if this method hides the other method.</returns>
         public bool HidesMethod(StaticMethodWrapper other)
         {
             if (Name != other.Name)

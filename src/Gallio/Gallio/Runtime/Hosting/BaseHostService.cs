@@ -80,7 +80,7 @@ namespace Gallio.Runtime.Hosting
         /// </summary>
         /// <param name="func">The action to perform, not null.</param>
         /// <param name="arg">The argument value, if any.</param>
-        /// <returns>The result value, if any</returns>
+        /// <returns>The result value, if any.</returns>
         /// <typeparam name="TArg">The argument type.</typeparam>
         /// <typeparam name="TResult">The result type.</typeparam>
         protected virtual TResult DoImpl<TArg, TResult>(Func<TArg, TResult> func, TArg arg)
@@ -100,7 +100,7 @@ namespace Gallio.Runtime.Hosting
         /// </summary>
         /// <param name="assemblyName">The assembly name, not null.</param>
         /// <param name="typeName">The type name, not null.</param>
-        /// <returns>The created object handle</returns>
+        /// <returns>The created object handle.</returns>
         protected virtual ObjectHandle CreateInstanceImpl(string assemblyName, string typeName)
         {
             return Activator.CreateInstance(assemblyName, typeName);
@@ -111,7 +111,7 @@ namespace Gallio.Runtime.Hosting
         /// </summary>
         /// <param name="assemblyPath">The assembly path, not null.</param>
         /// <param name="typeName">The type name, not null.</param>
-        /// <returns>The created object handle</returns>
+        /// <returns>The created object handle.</returns>
         protected virtual ObjectHandle CreateInstanceFromImpl(string assemblyPath, string typeName)
         {
             return Activator.CreateInstanceFrom(assemblyPath, typeName);

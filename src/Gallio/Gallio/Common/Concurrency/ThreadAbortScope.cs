@@ -23,17 +23,15 @@ using ThreadState=System.Threading.ThreadState;
 namespace Gallio.Common.Concurrency
 {
     /// <summary>
-    /// <para>
     /// A <see cref="ThreadAbortScope" /> executes a block of code inside a special
     /// scope that is designed to issue and safely handle <see cref="Thread.Abort(object)" />
     /// on demand.
-    /// </para>
+    /// </summary>
+    /// <remarks>
     /// <para>
     /// This class may be used as a primitive for implementing higher-level protected
     /// scopes for the purpose of asynchronous cancelation and time-limited execution.
     /// </para>
-    /// </summary>
-    /// <remarks>
     /// <para>
     /// The implementation distinguishes between <see cref="Thread.Abort(object)" />s that
     /// are initated using the <see cref="ThreadAbortScope.Abort" /> method and those
@@ -80,12 +78,14 @@ namespace Gallio.Common.Concurrency
         /// Runs an action inside of the scope.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// At most one action may be in progress at any time.  This method is not
         /// reentrant and cannot be called concurrently from multiple threads.
+        /// </para>
         /// </remarks>
         /// <param name="action">The action to run.</param>
         /// <returns>The <see cref="ThreadAbortException" /> that was caught if the action
-        /// was aborted, or null if the action completed normally</returns>
+        /// was aborted, or null if the action completed normally.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="action"/> is null.</exception>
         /// <exception cref="InvalidOperationException">Thrown if an action is already running in this scope.</exception>
         /// <exception cref="Exception">Any other exception thrown by <paramref name="action"/> itself.</exception>
@@ -164,10 +164,8 @@ namespace Gallio.Common.Concurrency
         }
 
         /// <summary>
-        /// <para>
         /// Aborts the currently running action and prevents any further actions from running
         /// inside of this scope.
-        /// </para>
         /// </summary>
         public void Abort()
         {

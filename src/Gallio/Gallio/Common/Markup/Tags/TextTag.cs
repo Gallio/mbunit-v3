@@ -113,7 +113,7 @@ namespace Gallio.Common.Markup.Tags
         /// Provides the Xml schema for this element.
         /// </summary>
         /// <param name="schemas">The schema set.</param>
-        /// <returns>The schema type of the element</returns>
+        /// <returns>The schema type of the element.</returns>
         public static XmlQualifiedName ProvideXmlSchema(XmlSchemaSet schemas)
         {
             return new XmlQualifiedName("string", "http://www.w3.org/2001/XMLSchema");

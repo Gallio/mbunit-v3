@@ -23,16 +23,16 @@ using System.Threading;
 namespace Gallio.Common.Concurrency
 {
     /// <summary>
-    /// <para>
     /// A <see cref="TaskContainer" /> manages the lifecycle of any number of <see cref="Task" />s
     /// and monitors their run-time behavior.
-    /// </para>
+    /// </summary>
+    /// <remarks>
     /// <para>
     /// For example, when a <see cref="Task" /> terminates abruptly due to an exception, its container
     /// will send out a notification that may cause all of the other tasks to be aborted and
     /// for the currently executing test case to fail.
     /// </para>
-    /// </summary>
+    /// </remarks>
     public class TaskContainer
     {
         private readonly HashSet<Task> activeTasks;
@@ -108,7 +108,7 @@ namespace Gallio.Common.Concurrency
         /// </summary>
         /// <param name="timeout">The maximum amount of time to wait for completion, or null to wait indefinitely.</param>
         /// <returns>True if no tasks are running as of the time this method exits,
-        /// false if a timeout occurred while waiting</returns>
+        /// false if a timeout occurred while waiting.</returns>
         /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="timeout"/>
         /// represents a negative time span.</exception>
         /// <seealso cref="Task.Join"/>
@@ -170,7 +170,7 @@ namespace Gallio.Common.Concurrency
         /// <summary>
         /// Gets the list of all tasks that are currently running.
         /// </summary>
-        /// <returns>The list of running tasks</returns>
+        /// <returns>The list of running tasks.</returns>
         public IList<Task> GetActiveTasks()
         {
             lock (this)

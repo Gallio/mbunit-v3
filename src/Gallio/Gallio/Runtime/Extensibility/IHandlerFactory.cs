@@ -33,7 +33,7 @@ namespace Gallio.Runtime.Extensibility
         /// <param name="contractType">The contract type: the handler will ensure that the objects it produces are subclasses or implementations of the contract type.</param>
         /// <param name="objectType">The object type: the handler will produce objects that are (possibly decorated) instances of the object type.</param>
         /// <param name="properties">The configuration properties for the objects produced by the handler.</param>
-        /// <returns>The handler</returns>
+        /// <returns>The handler.</returns>
         IHandler CreateHandler(IServiceLocator serviceLocator, IResourceLocator resourceLocator, Type contractType, Type objectType, PropertySet properties);
     }
 }

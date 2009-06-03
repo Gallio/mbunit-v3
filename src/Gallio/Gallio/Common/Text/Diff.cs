@@ -90,7 +90,7 @@ namespace Gallio.Common.Text
         /// </summary>
         /// <param name="a">The first diff to compare.</param>
         /// <param name="b">The second diff to compare.</param>
-        /// <returns>True if the diffs are equal</returns>
+        /// <returns>True if the diffs are equal.</returns>
         public static bool operator ==(Diff a, Diff b)
         {
             return a.Equals(b);
@@ -101,7 +101,7 @@ namespace Gallio.Common.Text
         /// </summary>
         /// <param name="a">The first diff to compare.</param>
         /// <param name="b">The second diff to compare.</param>
-        /// <returns>True if the diffs are not equal</returns>
+        /// <returns>True if the diffs are not equal.</returns>
         public static bool operator !=(Diff a, Diff b)
         {
             return !(a == b);

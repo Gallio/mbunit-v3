@@ -28,7 +28,7 @@ namespace Gallio.Common.Reflection
         /// </summary>
         /// <typeparam name="T">The type of member.</typeparam>
         /// <param name="members">The members to sort.</param>
-        /// <returns>The sorted members</returns>
+        /// <returns>The sorted members.</returns>
         /// <seealso cref="DeclaringTypeComparer{T}"/>
         public static IList<T> SortMembersByDeclaringType<T>(IEnumerable<T> members)
             where T : IMemberInfo

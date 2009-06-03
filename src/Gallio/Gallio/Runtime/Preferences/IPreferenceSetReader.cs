@@ -31,7 +31,7 @@ namespace Gallio.Runtime.Preferences
         /// Gets a preference setting.
         /// </summary>
         /// <param name="preferenceSettingKey">The preference setting key.</param>
-        /// <returns>The setting value or <c>default(T)</c> if none</returns>
+        /// <returns>The setting value or <c>default(T)</c> if none.</returns>
         /// <typeparam name="T">The setting value type.</typeparam>
         T GetSetting<T>(Key<T> preferenceSettingKey);
 
@@ -40,7 +40,7 @@ namespace Gallio.Runtime.Preferences
         /// </summary>
         /// <param name="preferenceSettingKey">The preference setting key.</param>
         /// <param name="defaultValue">The default value to return in case the setting does not exist.</param>
-        /// <returns>The setting value or <paramref name="defaultValue"/> if none</returns>
+        /// <returns>The setting value or <paramref name="defaultValue"/> if none.</returns>
         /// <typeparam name="T">The setting value type.</typeparam>
         T GetSetting<T>(Key<T> preferenceSettingKey, T defaultValue);
 
@@ -48,7 +48,7 @@ namespace Gallio.Runtime.Preferences
         /// Returns true if the preference set contains a preference setting.
         /// </summary>
         /// <param name="preferenceSettingKey">The preference setting key.</param>
-        /// <returns>True setting exists</returns>
+        /// <returns>True setting exists.</returns>
         bool HasSetting<T>(Key<T> preferenceSettingKey);
     }
 }

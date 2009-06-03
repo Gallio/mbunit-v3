@@ -26,7 +26,7 @@ namespace Gallio.Common.Collections
         /// Enumerates child nodes in a tree.
         /// </summary>
         /// <param name="node">The node.</param>
-        /// <returns>The node's children</returns>
+        /// <returns>The node's children.</returns>
         public delegate IEnumerable<T> ChildEnumerator<T>(T node);
 
         /// <summary>
@@ -36,7 +36,7 @@ namespace Gallio.Common.Collections
         /// <param name="rootNode">The root node of the tree.</param>
         /// <param name="enumerator">A function that yields an enumeration of the children
         /// of a node in the tree.</param>
-        /// <returns>The pre-order traversal enumeration</returns>
+        /// <returns>The pre-order traversal enumeration.</returns>
         public static IEnumerable<T> GetPreOrderTraversal<T>(T rootNode, ChildEnumerator<T> enumerator)
         {
             yield return rootNode;

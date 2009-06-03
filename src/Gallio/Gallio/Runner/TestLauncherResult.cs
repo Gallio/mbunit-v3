@@ -88,7 +88,7 @@ namespace Gallio.Runner
         /// <summary>
         /// Gets the full paths of the formatted report documents.
         /// </summary>
-        /// <returns>The full paths of the formatted report documents</returns>
+        /// <returns>The full paths of the formatted report documents.</returns>
         public IList<string> ReportDocumentPaths
         {
             get { return reportDocumentPaths.ToArray(); }
@@ -173,7 +173,7 @@ namespace Gallio.Runner
         /// <summary>
         /// Shows the report documents enumerated in the launcher result.
         /// </summary>
-        /// <returns>True if the report documents were successfully opened</returns>
+        /// <returns>True if the report documents were successfully opened.</returns>
         public bool ShowReportDocuments()
         {
             bool success = true;

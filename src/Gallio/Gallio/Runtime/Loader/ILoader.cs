@@ -32,7 +32,7 @@ namespace Gallio.Runtime.Loader
         /// Loads an assembly from the specified file.
         /// </summary>
         /// <param name="assemblyFile">The assembly file.</param>
-        /// <returns>The loaded assembly</returns>
+        /// <returns>The loaded assembly.</returns>
         /// <exception cref="Exception">Thrown if the assembly could not be loaded.</exception>
         Assembly LoadAssemblyFrom(string assemblyFile);
     }

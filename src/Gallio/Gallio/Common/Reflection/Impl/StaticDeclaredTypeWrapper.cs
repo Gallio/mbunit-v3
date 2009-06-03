@@ -649,7 +649,7 @@ namespace Gallio.Common.Reflection.Impl
         /// <summary>
         /// Gets an enumeration of all base types.
         /// </summary>
-        /// <returns>The enumeration of base types</returns>
+        /// <returns>The enumeration of base types.</returns>
         public IEnumerable<StaticDeclaredTypeWrapper> GetAllBaseTypes()
         {
             for (StaticDeclaredTypeWrapper baseType = BaseType; baseType != null; baseType = baseType.BaseType)
@@ -660,7 +660,7 @@ namespace Gallio.Common.Reflection.Impl
         /// Composes the substitution of the type with the specified substitution and returns a new wrapper.
         /// </summary>
         /// <param name="substitution">The substitution.</param>
-        /// <returns>The new wrapper with the composed substitution</returns>
+        /// <returns>The new wrapper with the composed substitution.</returns>
         public StaticDeclaredTypeWrapper ComposeSubstitution(StaticTypeSubstitution substitution)
         {
             return new StaticDeclaredTypeWrapper(Policy, Handle, DeclaringType, Substitution.Compose(substitution));

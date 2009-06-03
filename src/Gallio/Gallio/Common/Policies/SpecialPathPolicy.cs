@@ -58,7 +58,7 @@ namespace Gallio.Common.Policies
         /// Gets the special path policy for a partition whose name is derived from the type's full name.
         /// </summary>
         /// <typeparam name="TPartition">The type used to define the name of the partition.</typeparam>
-        /// <returns>The special path policy</returns>
+        /// <returns>The special path policy.</returns>
         public static SpecialPathPolicy For<TPartition>()
         {
             return new SpecialPathPolicy(typeof(TPartition).FullName);
@@ -68,7 +68,7 @@ namespace Gallio.Common.Policies
         /// Gets the special path policy for a specified partition.
         /// </summary>
         /// <param name="partition">The partition name.</param>
-        /// <returns>The special path policy</returns>
+        /// <returns>The special path policy.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="partition"/> is null.</exception>
         public static SpecialPathPolicy For(string partition)
         {
@@ -81,7 +81,7 @@ namespace Gallio.Common.Policies
         /// <summary>
         /// Gets the temporary directory.
         /// </summary>
-        /// <returns>The temporary directory</returns>
+        /// <returns>The temporary directory.</returns>
         public DirectoryInfo GetTempDirectory()
         {
             return CreateDirectoryIfAbsent(Path.Combine(Path.GetTempPath(), partitionPath));
@@ -90,7 +90,7 @@ namespace Gallio.Common.Policies
         /// <summary>
         /// Creates a temporary directory with a unique name.
         /// </summary>
-        /// <returns>The temporary directory</returns>
+        /// <returns>The temporary directory.</returns>
         public DirectoryInfo CreateTempDirectoryWithUniqueName()
         {
             foreach (string path in GetTempPathsWithRandomNames(MaxTries))
@@ -116,7 +116,7 @@ namespace Gallio.Common.Policies
         /// <summary>
         /// Creates a zero-byte temporary file with a unique name.
         /// </summary>
-        /// <returns>The temporary file</returns>
+        /// <returns>The temporary file.</returns>
         public FileInfo CreateTempFileWithUniqueName()
         {
             foreach (string path in GetTempPathsWithRandomNames(MaxTries))
@@ -142,7 +142,7 @@ namespace Gallio.Common.Policies
         /// <summary>
         /// Gets the application data directory for the roaming user.
         /// </summary>
-        /// <returns>The roaming user application data directory</returns>
+        /// <returns>The roaming user application data directory.</returns>
         public DirectoryInfo GetRoamingUserApplicationDataDirectory()
         {
             return CreateDirectoryIfAbsent(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), partitionPath));
@@ -151,7 +151,7 @@ namespace Gallio.Common.Policies
         /// <summary>
         /// Gets the application data directory for the local non-roaming user.
         /// </summary>
-        /// <returns>The local non-roaming user application data directory</returns>
+        /// <returns>The local non-roaming user application data directory.</returns>
         public DirectoryInfo GetLocalUserApplicationDataDirectory()
         {
             return CreateDirectoryIfAbsent(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), partitionPath));
@@ -160,7 +160,7 @@ namespace Gallio.Common.Policies
         /// <summary>
         /// Gets the application data directory shared by all users.
         /// </summary>
-        /// <returns>The common application data directory</returns>
+        /// <returns>The common application data directory.</returns>
         public DirectoryInfo GetCommonApplicationDataDirectory()
         {
             return CreateDirectoryIfAbsent(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), partitionPath));

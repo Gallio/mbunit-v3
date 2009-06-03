@@ -22,10 +22,12 @@ namespace Gallio.Common.Collections
     /// A multi-map allows a list of values to be associated with a single key.
     /// </summary>
     /// <remarks>
+    /// <para>
     /// The value collections provided by the multi-map are always read-only.
     /// They can only be modified by calling the appropriate methods of the multi-map
     /// to add or remove items.  This behavior helps multi-map implementations
     /// better maintain their invariants.
+    /// </para>
     /// </remarks>
     public interface IMultiMap<TKey, TValue> : IDictionary<TKey, IList<TValue>>
     {
@@ -60,7 +62,7 @@ namespace Gallio.Common.Collections
         /// </summary>
         /// <param name="key">The key.</param>
         /// <param name="value">The value to find.</param>
-        /// <returns>True if the map contains an entry with the specified key and value</returns>
+        /// <returns>True if the map contains an entry with the specified key and value.</returns>
         bool Contains(TKey key, TValue value);
 
         /// <summary>
@@ -68,7 +70,7 @@ namespace Gallio.Common.Collections
         /// </summary>
         /// <param name="key">The key.</param>
         /// <param name="value">The value to remove from the key.</param>
-        /// <returns>True if the value was removed</returns>
+        /// <returns>True if the value was removed.</returns>
         bool Remove(TKey key, TValue value);
     }
 }

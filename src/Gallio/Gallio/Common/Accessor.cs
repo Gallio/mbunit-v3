@@ -20,13 +20,13 @@ using System.Text;
 namespace Gallio.Common
 {
     /// <summary>
-    /// <para>
     /// Represents a method that returns a value of a specified type from the instance of an object.
-    /// </para>
+    /// </summary>
+    /// <remarks>
     /// <para>
     /// It is usually used to represent the invocation of a type property.
     /// </para>
-    /// </summary>
+    /// </remarks>
     /// <typeparam name="T">The type of the object to get the value from.</typeparam>
     /// <typeparam name="TValue">The type of the returned value.</typeparam>
     /// <param name="obj">The object to get the value from.</param>

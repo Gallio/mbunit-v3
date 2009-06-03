@@ -32,7 +32,7 @@ namespace Gallio.Framework.Data
         /// Returns true if the data set can provide a value for the specified binding.
         /// </summary>
         /// <param name="binding">The binding.</param>
-        /// <returns>True if the data set can provide a value for the binding</returns>
+        /// <returns>True if the data set can provide a value for the binding.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="binding"/> is null.</exception>
         bool CanBind(DataBinding binding);
     }

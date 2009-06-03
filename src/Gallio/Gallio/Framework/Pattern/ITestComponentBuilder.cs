@@ -72,7 +72,7 @@ namespace Gallio.Framework.Pattern
         /// <summary>
         /// Gets the underlying test component.
         /// </summary>
-        /// <returns>The underlying test component</returns>
+        /// <returns>The underlying test component.</returns>
         IPatternTestComponent ToTestComponent();
     }
 }

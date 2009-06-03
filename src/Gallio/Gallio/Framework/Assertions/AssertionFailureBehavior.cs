@@ -18,10 +18,10 @@ using System;
 namespace Gallio.Framework.Assertions
 {
     /// <summary>
-    /// <para>
     /// Specifies the behavior that should take place when a <see cref="AssertionFailure" />
     /// is submitted to the <see cref="AssertionContext"/>.
-    /// </para>
+    /// </summary>
+    /// <remarks>
     /// <para>
     /// There are three orthogonal dimensions to the assertion failure behavior:
     /// <list type="bullet">
@@ -30,59 +30,53 @@ namespace Gallio.Framework.Assertions
     /// <item><see cref="Discard"/> / No-<see cref="Discard"/> (aka. <see cref="CaptureAndContinue" />): Discard the failure when finished reporting it, or capture it in a list for further processing</item>
     /// </list>
     /// </para>
-    /// </summary>
+    /// </remarks>
     [Flags]
     public enum AssertionFailureBehavior
     {
         /// <summary>
-        /// <para>
         /// When an assertion failure is reported, capture it in a list, log it, and allow
         /// the computation to continue.
-        /// </para>
         /// </summary>
         /// <value>1</value>
         Log = 1,
 
         /// <summary>
-        /// <para>
         /// When an assertion failure is reported, capture it in a list, then throw an
         /// <see cref="AssertionFailureException" /> to immediately abort the current computation.
-        /// </para>
         /// </summary>
         /// <value>2</value>
         Throw = 2,
 
         /// <summary>
-        /// <para>
         /// When an assertion failure is reported, capture it in a list, log it, then throw an
         /// <see cref="AssertionFailureException" /> to immediately abort the current computation.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// This is the default behavior for assertion contexts.
         /// </para>
-        /// </summary>
+        /// </remarks>
         /// <value>3</value>
         LogAndThrow = Log | Throw,
 
         /// <summary>
-        /// <para>
         /// When an assertion failure is reported, discard it (instead of capturing it in a list)
         /// and allow the current computation to continue.
-        /// </para>
         /// </summary>
         /// <value>4</value>
         Discard = 4,
 
         /// <summary>
-        /// <para>
         /// When an assertion failure is reported, capture it in a list and allow the current
         /// computation to continue.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// This is the opposite of <see cref="Discard"/>, and is an alias for the case where none
         /// of the other flags are specified.
         /// </para>
-        /// </summary>
+        /// </remarks>
         /// <value>0</value>
         CaptureAndContinue = 0
     }

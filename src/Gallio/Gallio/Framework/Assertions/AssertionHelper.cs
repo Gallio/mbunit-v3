@@ -27,9 +27,9 @@ namespace Gallio.Framework.Assertions
     public abstract class AssertionHelper
     {
         /// <summary>
-        /// <para>
         /// Verifies that an assertion succeeded.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// If the assertion function returns null then the assertion is deemed to have passed.
         /// If it returns an <see cref="AssertionFailure" /> or throws an exception,
@@ -39,8 +39,6 @@ namespace Gallio.Framework.Assertions
         /// When an assertion failure is detected, it is submitted to <see cref="AssertionContext.SubmitFailure"/>
         /// which may choose to throw a <see cref="AssertionFailureException" /> or do something else.
         /// </para>
-        /// </summary>
-        /// <remarks>
         /// <para>
         /// Using this method enables the system to track statistics about assertions
         /// and to ensure that assertion failures are reported uniformly.
@@ -89,11 +87,11 @@ namespace Gallio.Framework.Assertions
         }
 
         /// <summary>
-        /// <para>
         /// Performs an action and returns an array containing the assertion failures
         /// that were observed within the block.  If the block throws an exception, it
         /// is reified as an assertion failure.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// The assertion failure behavior while the action runs is <see cref="AssertionFailureBehavior.Throw" />
         /// so the action terminates on the first failure.  The assertion failure itself is returned
@@ -105,9 +103,9 @@ namespace Gallio.Framework.Assertions
         /// of some larger composite assertion.  For example, this makes it possible to create an assertion
         /// over a collection of items by composing an assertion over a single item.
         /// </para>
-        /// </summary>
+        /// </remarks>
         /// <param name="action">The action to invoke.</param>
-        /// <returns>The array of failures, may be empty if none</returns>
+        /// <returns>The array of failures, may be empty if none.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="action"/> is null.</exception>
         public static AssertionFailure[] Eval(Action action)
         {
@@ -115,15 +113,13 @@ namespace Gallio.Framework.Assertions
         }
 
         /// <summary>
-        /// <para>
         /// Performs an action and returns an array containing the assertion failures
         /// that were observed within the block.  If the block throws an exception, it
         /// is reified as an assertion failure.
-        /// </para>
         /// </summary>
         /// <param name="action">The action to invoke.</param>
         /// <param name="assertionFailureBehavior">The assertion failure behavior to use while the action runs.</param>
-        /// <returns>The array of failures, may be empty if none</returns>
+        /// <returns>The array of failures, may be empty if none.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="action"/> is null.</exception>
         public static AssertionFailure[] Eval(Action action, AssertionFailureBehavior assertionFailureBehavior)
         {

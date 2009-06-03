@@ -55,7 +55,7 @@ namespace Gallio.Common.Markup
         /// <summary>
         /// Flushes the writer and formats it as a string.
         /// </summary>
-        /// <returns>The formatted document as a string</returns>
+        /// <returns>The formatted document as a string.</returns>
         public override string ToString()
         {
             Flush();

@@ -23,7 +23,7 @@ namespace Gallio.Runtime.ProgressMonitoring
         /// <summary>
         /// Creates a null progress monitor.
         /// </summary>
-        /// <returns>The null progress monitor</returns>
+        /// <returns>The null progress monitor.</returns>
         public static IProgressMonitor CreateInstance()
         {
             return new ObservableProgressMonitor();

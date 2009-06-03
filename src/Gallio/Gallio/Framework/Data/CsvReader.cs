@@ -108,7 +108,7 @@ namespace Gallio.Framework.Data
         /// Returns null at the end of the document.
         /// </para>
         /// </summary>
-        /// <returns>The record contents as an array of field values, or null if at the end of the document</returns>
+        /// <returns>The record contents as an array of field values, or null if at the end of the document.</returns>
         /// <exception cref="IOException">Thrown if an I/O error occurs.</exception>
         public string[] ReadRecord()
         {

@@ -28,7 +28,7 @@ namespace Gallio.Runtime.Extensibility
         /// Resolves a single component instance that implements a given service type.
         /// </summary>
         /// <typeparam name="TService">The service type.</typeparam>
-        /// <returns>The component instance that implements the service</returns>
+        /// <returns>The component instance that implements the service.</returns>
         /// <exception cref="RuntimeException">Thrown if no component was found
         /// or if a component could not be resolved.</exception>
         TService Resolve<TService>();
@@ -37,7 +37,7 @@ namespace Gallio.Runtime.Extensibility
         /// Resolves a single component instance that implements a given service type.
         /// </summary>
         /// <param name="serviceType">The service type.</param>
-        /// <returns>The component instance that implements the service</returns>
+        /// <returns>The component instance that implements the service.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="serviceType"/> is null.</exception>
         /// <exception cref="RuntimeException">Thrown if no component was found
         /// or if a component could not be resolved.</exception>
@@ -47,7 +47,7 @@ namespace Gallio.Runtime.Extensibility
         /// Resolves all component instances that implement a given service type.
         /// </summary>
         /// <typeparam name="TService">The service type.</typeparam>
-        /// <returns>The list of component instances that implement the service</returns>
+        /// <returns>The list of component instances that implement the service.</returns>
         /// <exception cref="RuntimeException">Thrown if a component could not be resolved.</exception>
         IList<TService> ResolveAll<TService>();
 
@@ -55,7 +55,7 @@ namespace Gallio.Runtime.Extensibility
         /// Resolves all component instances that implement a given service type.
         /// </summary>
         /// <param name="serviceType">The service type.</param>
-        /// <returns>The list of component instances that implement the service</returns>
+        /// <returns>The list of component instances that implement the service.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="serviceType"/> is null.</exception>
         /// <exception cref="RuntimeException">Thrown if a component could not be resolved.</exception>
         IList<object> ResolveAll(Type serviceType);
@@ -64,7 +64,7 @@ namespace Gallio.Runtime.Extensibility
         /// Resolves a single component instance with a given component id.
         /// </summary>
         /// <param name="componentId">The component id.</param>
-        /// <returns>The component instance</returns>
+        /// <returns>The component instance.</returns>
         /// <exception cref="RuntimeException">Thrown if no component was found
         /// or if a component could not be resolved.</exception>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="componentId"/> is null.</exception>
@@ -75,7 +75,7 @@ namespace Gallio.Runtime.Extensibility
         /// </summary>
         /// <typeparam name="TService">The service type.</typeparam>
         /// <typeparam name="TTraits">The traits type.</typeparam>
-        /// <returns>The handle for the component that implements the service</returns>
+        /// <returns>The handle for the component that implements the service.</returns>
         /// <exception cref="RuntimeException">Thrown if no component was found
         /// or if a component could not be resolved.</exception>
         ComponentHandle<TService, TTraits> ResolveHandle<TService, TTraits>()
@@ -85,7 +85,7 @@ namespace Gallio.Runtime.Extensibility
         /// Resolves a handle for a single component that implements a given service type.
         /// </summary>
         /// <param name="serviceType">The service type.</param>
-        /// <returns>The handle for the component implements the service</returns>
+        /// <returns>The handle for the component implements the service.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="serviceType"/> is null.</exception>
         /// <exception cref="RuntimeException">Thrown if no component was found
         /// or if a component could not be resolved.</exception>
@@ -96,7 +96,7 @@ namespace Gallio.Runtime.Extensibility
         /// </summary>
         /// <typeparam name="TService">The service type.</typeparam>
         /// <typeparam name="TTraits">The traits type.</typeparam>
-        /// <returns>The list of handles of components that implement the service</returns>
+        /// <returns>The list of handles of components that implement the service.</returns>
         /// <exception cref="RuntimeException">Thrown if a component could not be resolved.</exception>
         IList<ComponentHandle<TService, TTraits>> ResolveAllHandles<TService, TTraits>()
             where TTraits : Traits;
@@ -105,7 +105,7 @@ namespace Gallio.Runtime.Extensibility
         /// Resolves handles for all components that implement a given service type.
         /// </summary>
         /// <param name="serviceType">The service type.</param>
-        /// <returns>The list of handles of components that implement the service</returns>
+        /// <returns>The list of handles of components that implement the service.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="serviceType"/> is null.</exception>
         /// <exception cref="RuntimeException">Thrown if a component could not be resolved.</exception>
         IList<ComponentHandle> ResolveAllHandles(Type serviceType);
@@ -114,7 +114,7 @@ namespace Gallio.Runtime.Extensibility
         /// Resolves a handle for a single component with a given component id.
         /// </summary>
         /// <param name="componentId">The component id.</param>
-        /// <returns>The component handle</returns>
+        /// <returns>The component handle.</returns>
         /// <exception cref="RuntimeException">Thrown if no component was found
         /// or if a component could not be resolved.</exception>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="componentId"/> is null.</exception>
@@ -131,7 +131,7 @@ namespace Gallio.Runtime.Extensibility
         /// </para>
         /// </remarks>
         /// <param name="serviceType">The service type.</param>
-        /// <returns>True if there is at least one component registered for the given service type</returns>
+        /// <returns>True if there is at least one component registered for the given service type.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="serviceType"/> is null.</exception>
         bool HasService(Type serviceType);
 
@@ -145,7 +145,7 @@ namespace Gallio.Runtime.Extensibility
         /// </para>
         /// </remarks>
         /// <param name="componentId">The component id.</param>
-        /// <returns>True if there is a component registered with the given component id</returns>
+        /// <returns>True if there is a component registered with the given component id.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="componentId"/> is null.</exception>
         bool HasComponent(string componentId);
     }

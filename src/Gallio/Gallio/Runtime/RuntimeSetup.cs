@@ -106,7 +106,7 @@ namespace Gallio.Runtime
         /// <summary>
         /// Creates a deep copy of the runtime setup parameters.
         /// </summary>
-        /// <returns>The copy</returns>
+        /// <returns>The copy.</returns>
         public RuntimeSetup Copy()
         {
             RuntimeSetup copy = new RuntimeSetup();

@@ -35,7 +35,7 @@ namespace Gallio.Common.Markup
         /// <summary>
         /// Gets the structured text produced so far.
         /// </summary>
-        /// <returns>The structured text</returns>
+        /// <returns>The structured text.</returns>
         public StructuredText ToStructuredText()
         {
             Flush();
@@ -48,7 +48,7 @@ namespace Gallio.Common.Markup
         /// <summary>
         /// Returns the structured text formatted as a string.
         /// </summary>
-        /// <returns>The structured text as a string</returns>
+        /// <returns>The structured text as a string.</returns>
         public override string ToString()
         {
             return ToStructuredText().ToString();

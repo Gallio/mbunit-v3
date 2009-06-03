@@ -134,7 +134,7 @@ namespace Gallio.Framework
         /// <param name="action">The action to perform.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> or
         /// <paramref name="action"/> is null.</exception>
-        /// <returns>The context of the step that ran</returns>
+        /// <returns>The context of the step that ran.</returns>
         /// <exception cref="ArgumentException">Thrown if <paramref name="name"/> is the empty string.</exception>
         [MethodImpl(MethodImplOptions.NoInlining)]
         public static TestContext RunStep(string name, Action action)
@@ -166,7 +166,7 @@ namespace Gallio.Framework
         /// <param name="timeout">The step execution timeout, or null if none.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> or
         /// <paramref name="action"/> is null.</exception>
-        /// <returns>The context of the step that ran</returns>
+        /// <returns>The context of the step that ran.</returns>
         /// <exception cref="ArgumentException">Thrown if <paramref name="name"/> is the empty string.</exception>
         /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="timeout"/> is negative.</exception>
         [MethodImpl(MethodImplOptions.NoInlining)]
@@ -201,7 +201,7 @@ namespace Gallio.Framework
         /// <param name="codeElement">The associated code element, or null if none.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> or
         /// <paramref name="action"/> is null.</exception>
-        /// <returns>The context of the step that ran</returns>
+        /// <returns>The context of the step that ran.</returns>
         /// <exception cref="ArgumentException">Thrown if <paramref name="name"/> is the empty string.</exception>
         /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="timeout"/> is negative.</exception>
         public static TestContext RunStep(string name, Action action, TimeSpan? timeout, bool isTestCase, ICodeElementInfo codeElement)
@@ -232,7 +232,7 @@ namespace Gallio.Framework
         /// <param name="expectedOutcome">The expected outcome of the step.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> or
         /// <paramref name="action"/> is null.</exception>
-        /// <returns>The context of the step that ran</returns>
+        /// <returns>The context of the step that ran.</returns>
         /// <exception cref="ArgumentException">Thrown if <paramref name="name"/> is the empty string.</exception>
         /// <exception cref="AssertionFailureException">Thrown if the expected outcome was not obtained.</exception>
         [MethodImpl(MethodImplOptions.NoInlining)]
@@ -265,7 +265,7 @@ namespace Gallio.Framework
         /// <param name="expectedOutcome">The expected outcome of the step.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> or
         /// <paramref name="action"/> is null.</exception>
-        /// <returns>The context of the step that ran</returns>
+        /// <returns>The context of the step that ran.</returns>
         /// <exception cref="ArgumentException">Thrown if <paramref name="name"/> is the empty string.</exception>
         /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="timeout"/> is negative.</exception>
         /// <exception cref="AssertionFailureException">Thrown if the expected outcome was not obtained.</exception>
@@ -301,7 +301,7 @@ namespace Gallio.Framework
         /// <param name="expectedOutcome">The expected outcome of the step.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> or
         /// <paramref name="action"/> is null.</exception>
-        /// <returns>The context of the step that ran</returns>
+        /// <returns>The context of the step that ran.</returns>
         /// <exception cref="ArgumentException">Thrown if <paramref name="name"/> is the empty string.</exception>
         /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="timeout"/> is negative.</exception>
         /// <exception cref="AssertionFailureException">Thrown if the expected outcome was not obtained.</exception>

@@ -37,7 +37,7 @@ namespace Gallio.Model.Filters
         /// Determines whether the filter matches the value.
         /// </summary>
         /// <param name="value">The value to consider, never null.</param>
-        /// <returns>True if the filter matches the value</returns>
+        /// <returns>True if the filter matches the value.</returns>
         public abstract bool IsMatch(T value);
 
         /// <summary>
@@ -49,7 +49,7 @@ namespace Gallio.Model.Filters
         /// <summary>
         /// Formats the filter to a string suitable for parsing by <see cref="FilterParser{T}" />.
         /// </summary>
-        /// <returns>The formatted filter expression</returns>
+        /// <returns>The formatted filter expression.</returns>
         public string ToFilterExpr()
         {
             FilterFormatter formatter = new FilterFormatter();

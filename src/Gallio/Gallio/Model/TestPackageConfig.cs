@@ -135,7 +135,7 @@ namespace Gallio.Model
         /// <summary>
         /// Creates a copy of the test package.
         /// </summary>
-        /// <returns>The copy</returns>
+        /// <returns>The copy.</returns>
         public TestPackageConfig Copy()
         {
             TestPackageConfig copy = new TestPackageConfig();
@@ -167,7 +167,7 @@ namespace Gallio.Model
         /// the contents of the test package.
         /// </summary>
         /// <param name="frameworkId">The framework id.</param>
-        /// <returns>True if the framework is requested</returns>
+        /// <returns>True if the framework is requested.</returns>
         public bool IsFrameworkRequested(string frameworkId)
         {
             return ! excludedFrameworkIds.Contains(frameworkId);

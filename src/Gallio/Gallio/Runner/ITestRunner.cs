@@ -92,7 +92,7 @@ namespace Gallio.Runner
         /// <param name="testPackageConfig">The test package configuration.</param>
         /// <param name="testExplorationOptions">The test exploration options.</param>
         /// <param name="progressMonitor">The progress monitor.</param>
-        /// <returns>The test report</returns>
+        /// <returns>The test report.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="testPackageConfig"/>,
         /// <paramref name="testExplorationOptions"/>, or <paramref name="progressMonitor"/> is null.</exception>
         /// <exception cref="RunnerException">Thrown if the operation failed.</exception>
@@ -112,7 +112,7 @@ namespace Gallio.Runner
         /// <param name="testExplorationOptions">The test exploration options.</param>
         /// <param name="testExecutionOptions">The test execution options.</param>
         /// <param name="progressMonitor">The progress monitor.</param>
-        /// <returns>The test report</returns>
+        /// <returns>The test report.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="testPackageConfig"/>,
         /// <paramref name="testExplorationOptions"/>, <paramref name="testExecutionOptions"/>, or <paramref name="progressMonitor"/> is null.</exception>
         /// <exception cref="RunnerException">Thrown if the operation failed.</exception>

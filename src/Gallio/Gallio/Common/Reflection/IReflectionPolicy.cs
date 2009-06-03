@@ -28,7 +28,7 @@ namespace Gallio.Common.Reflection
         /// Loads an assembly by name.
         /// </summary>
         /// <param name="assemblyName">The full or partial assembly name of the assembly to load.</param>
-        /// <returns>The loaded assembly</returns>
+        /// <returns>The loaded assembly.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="assemblyName"/> is null.</exception>
         /// <exception cref="Exception">Thrown if the assembly could not be loaded for any reason.</exception>
         IAssemblyInfo LoadAssembly(AssemblyName assemblyName);
@@ -37,7 +37,7 @@ namespace Gallio.Common.Reflection
         /// Loads an assembly from a file.
         /// </summary>
         /// <param name="assemblyFile">The assembly file path.</param>
-        /// <returns>The loaded assembly</returns>
+        /// <returns>The loaded assembly.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="assemblyFile"/> is null.</exception>
         /// <exception cref="Exception">Thrown if the assembly could not be loaded for any reason.</exception>
         IAssemblyInfo LoadAssemblyFrom(string assemblyFile);

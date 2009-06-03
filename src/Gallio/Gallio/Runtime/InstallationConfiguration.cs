@@ -44,7 +44,7 @@ namespace Gallio.Runtime
         /// <summary>
         /// Loads the configuration from the registry.
         /// </summary>
-        /// <returns>The installed configuration</returns>
+        /// <returns>The installed configuration.</returns>
         public static InstallationConfiguration LoadFromRegistry()
         {
             InstallationConfiguration configuration = new InstallationConfiguration();

@@ -29,7 +29,7 @@ namespace Gallio.Runner.Drivers
         /// <summary>
         /// Creates a test driver.
         /// </summary>
-        /// <returns>The new test driver</returns>
+        /// <returns>The new test driver.</returns>
         ITestDriver CreateTestDriver();
     }
 }

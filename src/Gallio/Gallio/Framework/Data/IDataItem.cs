@@ -72,7 +72,7 @@ namespace Gallio.Framework.Data
         /// Gets the value of the specified binding.
         /// </summary>
         /// <param name="binding">The data binding, never null.</param>
-        /// <returns>The value</returns>
+        /// <returns>The value.</returns>
         /// <exception cref="DataBindingException">Thrown if the <paramref name="binding"/>
         /// cannot be resolved or if its value cannot be obtained.</exception>
         object GetValue(DataBinding binding);
@@ -81,7 +81,7 @@ namespace Gallio.Framework.Data
         /// Gets an enumeration of the data bindings that may be queried to informally describe
         /// its contents.  The enumeration of bindings may not be complete.
         /// </summary>
-        /// <returns>The enumeration of bindings</returns>
+        /// <returns>The enumeration of bindings.</returns>
         IEnumerable<DataBinding> GetBindingsForInformalDescription();
     }
 }

@@ -130,7 +130,7 @@ namespace Gallio.Framework.Pattern
         /// <param name="testDataContextBuilder">The test data context builder.</param>
         /// <param name="isDeclaration">If true, the scope represents the point of declaration
         /// of the test component with which it is associated.</param>
-        /// <returns>The new scope</returns>
+        /// <returns>The new scope.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="codeElement"/>,
         /// <paramref name="testBuilder"/>, <paramref name="testParameterBuilder"/>
         /// or <paramref name="testDataContextBuilder"/> is null.</exception>
@@ -144,7 +144,7 @@ namespace Gallio.Framework.Pattern
         /// </summary>
         /// <param name="name">The test name.</param>
         /// <param name="codeElement">The associated code element, or null if none.</param>
-        /// <returns>The scope of the newly created child test</returns>
+        /// <returns>The scope of the newly created child test.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> is null.</exception>
         /// <exception cref="PatternUsageErrorException">Thrown if <see cref="CanAddChildTest"/> is null.</exception>
         IPatternScope CreateChildTestScope(string name, ICodeElementInfo codeElement);
@@ -156,7 +156,7 @@ namespace Gallio.Framework.Pattern
         /// </summary>
         /// <param name="name">The test parameter name.</param>
         /// <param name="codeElement">The associated code element, or null if none.</param>
-        /// <returns>The scope of the newly created test parameter</returns>
+        /// <returns>The scope of the newly created test parameter.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> is null.</exception>
         /// <exception cref="PatternUsageErrorException">Thrown if <see cref="CanAddTestParameter"/> is null.</exception>
         IPatternScope CreateTestParameterScope(string name, ICodeElementInfo codeElement);
@@ -166,7 +166,7 @@ namespace Gallio.Framework.Pattern
         /// Returns the scope of the newly created child test data context.
         /// </summary>
         /// <param name="codeElement">The associated code element, or null if none.</param>
-        /// <returns>The scope of the newly created child test data context</returns>
+        /// <returns>The scope of the newly created child test data context.</returns>
         IPatternScope CreateChildTestDataContextScope(ICodeElementInfo codeElement);
 
         /// <summary>
