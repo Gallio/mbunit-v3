@@ -21,26 +21,28 @@ using Gallio.Common.Reflection;
 namespace Gallio.Common.Reflection.Impl
 {
     /// <summary>
-    /// <para>
     /// Provides helpers for enumerating attributes taking into account
     /// the attribute inheritance structure.
-    /// </para>
+    /// </summary>
+    /// <remarks>
     /// <para>
     /// This class is intended to assist with the implementation of new
     /// reflection policies.  It should not be used directly by clients of the
     /// reflection API.
     /// </para>
-    /// </summary>
+    /// </remarks>
     public static class ReflectorAttributeUtils
     {
         /// <summary>
         /// Creates an attribute instance from an <see cref="IAttributeInfo" />.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// This method may be used by <see cref="IAttributeInfo.Resolve"/> to construct
         /// an attribute instance from its raw description.  Client code should
         /// call <see cref="IAttributeInfo.Resolve" /> instead of using this method
         /// directly.
+        /// </para>
         /// </remarks>
         /// <param name="attribute">The attribute description.</param>
         /// <param name="throwOnError">If true, throws an exception if the target could

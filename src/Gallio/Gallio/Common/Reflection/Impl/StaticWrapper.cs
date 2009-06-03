@@ -19,15 +19,15 @@ using Gallio.Common;
 namespace Gallio.Common.Reflection.Impl
 {
     /// <summary>
-    /// <para>
     /// A <see cref="StaticReflectionPolicy"/> wrapper.
-    /// </para>
+    /// </summary>
+    /// <remarks>
     /// <para>
     /// A wrapper holds an underlying reflection object.  Its behavior is
     /// derived from by primitive operations on the <see cref="Handle" /> defined by the
     /// particular <see cref="Policy"/> implementation that is in use.
     /// </para>
-    /// </summary>
+    /// </remarks>
     public abstract class StaticWrapper : IEquatable<StaticWrapper>
     {
         private Memoizer<int> hashCodeMemoizer = new Memoizer<int>();

@@ -19,45 +19,45 @@ using System.Reflection;
 namespace Gallio.Common.Reflection
 {
     /// <summary>
-    /// <para>
     /// A <see cref="MemberInfo" /> reflection wrapper.
-    /// </para>
+    /// </summary>
+    /// <remarks>
     /// <para>
     /// This wrapper enables reflection-based algorithms to be used against
     /// code that may or may not be loaded into the current AppDomain.
     /// For example, the target of the wrapper could be an in-memory
     /// code model representation.
     /// </para>
-    /// </summary>
+    /// </remarks>
     public interface IMemberInfo : ICodeElementInfo, IEquatable<IMemberInfo>
     {
         /// <summary>
-        /// <para>
         /// Gets the declaring type of the member.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// If the member not a type or is a nested type,
-        /// returns its containing type.  If it is a generic parameter, returns the type
+        /// returns its containing type. If it is a generic parameter, returns the type
         /// to which it (or its declaring method) belongs.  Otherwise returns null.
         /// </para>
-        /// </summary>
+        /// </remarks>
         /// <seealso cref="IGenericParameterInfo.DeclaringMethod"/>
         /// <seealso cref="IMemberInfo.ReflectedType"/>
         ITypeInfo DeclaringType { get; }
 
         /// <summary>
-        /// <para>
-        /// Gets the reflected type of the member.  The reflected type is the type that was
-        /// used to locate the member.  If the member was inherited from a base class, its
+        /// Gets the reflected type of the member. The reflected type is the type that was
+        /// used to locate the member. If the member was inherited from a base class, its
         /// declaring type will be the base class but its reflected type will be the inherited
         /// class from which the member was accessed.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// If the member not a type or is a nested type, returns its reflected containing type.
         /// If it is a generic parameter, returns the declaring type to which it (or its
-        /// declaring method) belongs.  Otherwise returns null.
+        /// declaring method) belongs. Otherwise returns null.
         /// </para>
-        /// </summary>
+        /// </remarks>
         /// <seealso cref="IMemberInfo.DeclaringType"/>
         ITypeInfo ReflectedType { get; }
 

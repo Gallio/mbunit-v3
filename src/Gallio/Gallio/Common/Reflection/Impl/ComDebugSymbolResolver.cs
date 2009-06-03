@@ -32,13 +32,12 @@ namespace Gallio.Common.Reflection.Impl
     /// <summary>
     /// Resolves debug symbols via the CorMetaDataDispenser COM class.
     /// </summary>
-    /// <remarks author="jeff">
+    /// <remarks>
     /// <para>
-    /// This code has been adapted from the CLR Managed Debugger sample from
-    /// http://www.microsoft.com/downloads/details.aspx?FamilyID=38449a42-6b7a-4e28-80ce-c55645ab1310
-    /// and from Mike Stall's PDB2Xml program sample available on
-    /// his blog at: http://blogs.msdn.com/jmstall/archive/2005/08/25/pdb2xml.aspx.
-    /// Many thanks to you!
+    /// This code has been adapted from the 
+    /// <a href="http://www.microsoft.com/downloads/details.aspx?FamilyID=38449a42-6b7a-4e28-80ce-c55645ab1310">
+    /// CLR Managed Debugger sample</a> and from <a href="http://blogs.msdn.com/jmstall/archive/2005/08/25/pdb2xml.aspx">
+    /// Mike Stall's PDB2Xml program sample</a>. Many thanks to you!
     /// </para>
     /// <para>
     /// We do not use the ISymWrapper implementation of the symbol store interfaces because

@@ -20,16 +20,16 @@ using System.Reflection;
 namespace Gallio.Common.Reflection
 {
     /// <summary>
-    /// <para>
     /// A <see cref="Type" /> reflection wrapper.
-    /// </para>
+    /// </summary>
+    /// <remarks>
     /// <para>
     /// This wrapper enables reflection-based algorithms to be used against
     /// code that may or may not be loaded into the current AppDomain.
     /// For example, the target of the wrapper could be an in-memory
     /// code model representation.
     /// </para>
-    /// </summary>
+    /// </remarks>
     public interface ITypeInfo : IMemberInfo, IEquatable<ITypeInfo>
     {
         /// <summary>
@@ -41,8 +41,10 @@ namespace Gallio.Common.Reflection
         /// Gets the namespace in which the type is declared.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// If the type does not have a namespace, returns an object whose name is an empty string.
         /// This is different from the behavior of <see cref="Type.Namespace" /> which would ordinarily return null.
+        /// </para>
         /// </remarks>
         INamespaceInfo Namespace { get; }
 
@@ -50,8 +52,10 @@ namespace Gallio.Common.Reflection
         /// Gets the name of the namespace in which the type is declared.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// If the type does not have a namespace, returns an empty string.
         /// This is different from the behavior of <see cref="Type.Namespace" /> which would ordinarily return null.
+        /// </para>
         /// </remarks>
         string NamespaceName { get; }
 

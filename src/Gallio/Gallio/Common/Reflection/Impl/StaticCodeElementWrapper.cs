@@ -145,16 +145,16 @@ namespace Gallio.Common.Reflection.Impl
         protected abstract IEnumerable<StaticAttributeWrapper> GetCustomAttributes();
 
         /// <summary>
-        /// <para>
         /// Gets all pseudo custom attributes associated with a member.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// These attributes do not really exist as custom attributes in the metadata.  Rather, they are
         /// realizations of other metadata features in attribute form.  For example,
         /// <see cref="SerializableAttribute" /> is represented in the metadata as a <see cref="TypeAttributes" />
         /// flag.  Pseudo custom attributes preserve the illusion of these attributes.
         /// </para>
-        /// </summary>
+        /// </remarks>
         /// <returns>The pseudo custom attributes.</returns>
         protected abstract IEnumerable<Attribute> GetPseudoCustomAttributes();
 
@@ -254,7 +254,7 @@ namespace Gallio.Common.Reflection.Impl
         {
             return allCustomAttributesMemoizer.Memoize(() =>
             {
-                List<IAttributeInfo> attributes = new List<IAttributeInfo>();
+                var attributes = new List<IAttributeInfo>();
 
                 foreach (StaticAttributeWrapper attributeWrapper in GetCustomAttributes())
                     attributes.Add(attributeWrapper);

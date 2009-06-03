@@ -183,10 +183,12 @@ namespace Gallio.Common.Reflection.Impl
         /// Returns true if this method hides the specified method.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// This method assumes that <paramref name="other"/> is defined by
         /// a base type of this method's declaring type.  It determines whether
         /// method hiding has taken place based on the method's name and its signature
         /// (when IsHideBySig is true).
+        /// </para>
         /// </remarks>
         /// <param name="other">The other method.</param>
         /// <returns>True if this method hides the other method.</returns>

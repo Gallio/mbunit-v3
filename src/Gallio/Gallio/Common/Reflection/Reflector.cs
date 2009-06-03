@@ -311,14 +311,14 @@ namespace Gallio.Common.Reflection
         /// </para>
         /// <para>
         /// The inlining problem can be circumvented like this:
-        /// <code>
+        /// <code><![CDATA[
         /// [NonInlined(SecurityAction.Demand)]
         /// public void Foo()
         /// {
         ///     IMethodInfo r = NativeReflector.GetExecutingFunction();
         ///     // ...
         /// }
-        /// </code>
+        /// ]]></code>
         /// </para>
         /// </remarks>
         /// <returns>The code reference.</returns>
@@ -340,14 +340,14 @@ namespace Gallio.Common.Reflection
         /// </para>
         /// <para>
         /// The inlining problem can be circumvented like this:
-        /// <code>
+        /// <code><![CDATA[
         /// [NonInlined(SecurityAction.Demand)]
         /// public void Foo()
         /// {
         ///     IMethodInfo r = NativeReflector.GetCallingFunction();
         ///     // ...
         /// }
-        /// </code>
+        /// ]]></code>
         /// </para>
         /// </remarks>
         /// <returns>The code reference.</returns>

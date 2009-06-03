@@ -34,14 +34,11 @@ using TypeAttributes=System.Reflection.TypeAttributes;
 
 namespace Gallio.Common.Reflection.Impl
 {
-    /// <summary>
-    /// Uses Cecil to open up assembly files.
-    /// </summary>
-    /// <todo>
-    /// There are bugs due to incomplete support for attributes in Cecil and to a few other miscellaneous
-    /// unimplemented features here.  Looks for "fixme" comments.
-    /// Also see: https://bugzilla.novell.com/show_bug.cgi?id=325481
-    /// </todo>
+    // Uses Cecil to open up assembly files.
+    //
+    // TODO: There are bugs due to incomplete support for attributes in Cecil and to a few other miscellaneous
+    //       unimplemented features here.  Looks for "fixme" comments.
+    //       Also see: https://bugzilla.novell.com/show_bug.cgi?id=325481
     internal sealed class CecilReflectionPolicy : StaticReflectionPolicy
     {
         private static readonly Key<string> PathAnnotationKey = new Key<string>("Path");

@@ -28,7 +28,9 @@ namespace Gallio.Common.Reflection.Impl
     /// when asked to resolve the documentation for a member.
     /// </summary>
     /// <remarks>
+    /// <para>
     /// All operations are thread-safe.
+    /// </para>
     /// </remarks>
     public class DefaultXmlDocumentationResolver : IXmlDocumentationResolver
     {

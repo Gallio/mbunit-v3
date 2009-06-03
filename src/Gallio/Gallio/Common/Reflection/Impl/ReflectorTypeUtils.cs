@@ -19,15 +19,15 @@ using Gallio.Common.Reflection;
 namespace Gallio.Common.Reflection.Impl
 {
     /// <summary>
-    /// <para>
     /// Provides helpers for working with types and type codes.
-    /// </para>
+    /// </summary>
+    /// <remarks>
     /// <para>
     /// This class is intended to assist with the implementation of new
-    /// reflection policies.  It should not be used directly by clients of the
+    /// reflection policies. It should not be used directly by clients of the
     /// reflection API.
     /// </para>
-    /// </summary>
+    /// </remarks>
     public class ReflectorTypeUtils
     {
         /// <summary>

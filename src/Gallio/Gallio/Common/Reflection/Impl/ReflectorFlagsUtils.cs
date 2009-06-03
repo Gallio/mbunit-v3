@@ -18,15 +18,15 @@ using System.Reflection;
 namespace Gallio.Common.Reflection.Impl
 {
     /// <summary>
-    /// <para>
     /// Provides helpers for manipulating reflection flags enumerations.
-    /// </para>
+    /// </summary>
+    /// <remarks>
     /// <para>
     /// This class is intended to assist with the implementation of new
     /// reflection policies.  It should not be used directly by clients of the
     /// reflection API.
     /// </para>
-    /// </summary>
+    /// </remarks>
     public class ReflectorFlagsUtils
     {
         /// <summary>

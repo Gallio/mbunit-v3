@@ -21,9 +21,9 @@ using Mono.Cecil;
 namespace Gallio.Common.Reflection
 {
     /// <summary>
-    /// <para>
     /// This assembly loader loads assemblies externally for reflection only.
-    /// </para>
+    /// </summary>
+    /// <remarks>
     /// <para>
     /// This implementation ensures that the assembly files do not remain locked on disk and are not
     /// cached in memory outside of the scope of the loader.  Consequently the Garbage Collector will
@@ -38,7 +38,7 @@ namespace Gallio.Common.Reflection
     /// The loader considers all assemblies in the specified search path as well as any that
     /// can be located using the current AppDomain's assembly resolvers.
     /// </para>
-    /// </summary>
+    /// </remarks>
     public class ReflectionOnlyAssemblyLoader
     {
         private readonly CecilReflectionPolicy policy;

@@ -20,15 +20,15 @@ using System.Reflection;
 namespace Gallio.Common.Reflection
 {
     /// <summary>
-    /// <para>
     /// Represents a structural element of some code base. 
-    /// </para>
+    /// </summary>
+    /// <remarks>
     /// <para>
     /// This interface is the base of a hierarchy of abstract reflection objects.
     /// Different implementations of these objects may be used to perform
     /// reflection over different sources.
     /// </para>
-    /// </summary>
+    /// </remarks>
     /// <seealso cref="Reflector"/>
     public interface ICodeElementInfo : IEquatable<ICodeElementInfo>
     {

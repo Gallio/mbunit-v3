@@ -20,18 +20,18 @@ using System.Reflection;
 namespace Gallio.Common.Reflection
 {
     /// <summary>
-    /// <para>
     /// A <see cref="Type" /> reflection wrapper for generic parameters.
     /// The parameter is presented as if it were a slot the accepted
     /// a value of type <see cref="Type" />.
-    /// </para>
+    /// </summary>
+    /// <remarks>
     /// <para>
     /// This wrapper enables reflection-based algorithms to be used against
     /// code that may or may not be loaded into the current AppDomain.
     /// For example, the target of the wrapper could be an in-memory
     /// code model representation.
     /// </para>
-    /// </summary>
+    /// </remarks>
     public interface IGenericParameterInfo : ITypeInfo, ISlotInfo, IEquatable<IGenericParameterInfo>
     {
         /// <summary>

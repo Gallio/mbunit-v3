@@ -19,16 +19,16 @@ using System.Reflection;
 namespace Gallio.Common.Reflection
 {
     /// <summary>
-    /// <para>
     /// A <see cref="EventInfo" /> reflection wrapper.
-    /// </para>
+    /// </summary>
+    /// <remarks>
     /// <para>
     /// This wrapper enables reflection-based algorithms to be used against
     /// code that may or may not be loaded into the current AppDomain.
     /// For example, the target of the wrapper could be an in-memory
     /// code model representation.
     /// </para>
-    /// </summary>
+    /// </remarks>
     public interface IEventInfo : IMemberInfo, IEquatable<IEventInfo>
     {
         /// <summary>

@@ -34,9 +34,11 @@ namespace Gallio.Common.Platform
         /// Returns true if the application is running within the Mono runtime.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// It is occasionally necessary to tailor the execution of the test runner
-        /// depending on whether Mono is running.  However, the number of such
+        /// depending on whether Mono is running. However, the number of such
         /// customizations should be very limited.
+        /// </para>
         /// </remarks>
         public static bool IsUsingMono
         {

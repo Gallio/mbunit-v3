@@ -64,8 +64,10 @@ namespace Gallio.Common.Policies
         /// Gets the exception that occurred.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// The event handler should use care when processing the exception object as it
         /// may have been obtained from an untrusted source.
+        /// </para>
         /// </remarks>
         public Exception Exception
         {

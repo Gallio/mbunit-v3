@@ -21,17 +21,15 @@ using Gallio.Common;
 namespace Gallio.Common.Reflection.Impl
 {
     /// <summary>
-    /// <para>
     /// The static reflection policy base class is intended to assist with the implementation
     /// of custom reflection policies defined over static metadata.
-    /// </para>
+    /// </summary>
+    /// <remarks>
     /// <para>
     /// It flattens out the code element hierarchy to ease implementation of new policies.
     /// It provides a mechanism for handling generic type substitutions to ensure a consistent and
     /// correct implementation of generic type and generic method instantiations.
     /// </para>
-    /// </summary>
-    /// <remarks>
     /// <para>
     /// Reflection policy subclasses should not perform generic type substitutions themselves.
     /// The rest of the infrastructure will take care of these details automatically.  However

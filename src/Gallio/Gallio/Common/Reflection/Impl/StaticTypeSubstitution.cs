@@ -108,8 +108,10 @@ namespace Gallio.Common.Reflection.Impl
         /// Returns a new substitution with the specified generic parameters replaced by their respective generic arguments.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// The extended type substitution is normalized so that generic parameters that
         /// are idempotently replaced with themselves are excluded from the substitution altogether.
+        /// </para>
         /// </remarks>
         /// <param name="genericParameters">The generic parameters.</param>
         /// <param name="genericArguments">The generic arguments.</param>
@@ -132,7 +134,7 @@ namespace Gallio.Common.Reflection.Impl
             if (count == 0)
                 return this;
 
-            Dictionary<StaticGenericParameterWrapper, ITypeInfo> newReplacements = new Dictionary<StaticGenericParameterWrapper, ITypeInfo>(replacements);
+            var newReplacements = new Dictionary<StaticGenericParameterWrapper, ITypeInfo>(replacements);
             for (int i = 0; i < count; i++)
             {
                 StaticGenericParameterWrapper genericParameter = genericParameters[i];

@@ -116,7 +116,9 @@ namespace Gallio.Common.Reflection
         /// Resolves all the attributes.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// Omits attributes that cannot be resolved.
+        /// </para>
         /// </remarks>
         /// <param name="attributes">The attribute descriptions.</param>
         /// <returns>The resolved attribute instances.</returns>

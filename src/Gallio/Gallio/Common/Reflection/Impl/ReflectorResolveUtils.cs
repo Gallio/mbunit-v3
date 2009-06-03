@@ -23,17 +23,17 @@ using Gallio.Common.Reflection;
 namespace Gallio.Common.Reflection.Impl
 {
     /// <summary>
-    /// <para>
     /// Provides helpers for resolving abstract reflection objects to obtain
     /// native ones based on the structural properties of the reflected
     /// code elements.
-    /// </para>
+    /// </summary>
+    /// <remarks>
     /// <para>
     /// This class is intended to assist with the implementation of new
     /// reflection policies.  It should not be used directly by clients of the
     /// reflection API.
     /// </para>
-    /// </summary>
+    /// </remarks>
     public class ReflectorResolveUtils
     {
         private static readonly LazyCache<string, Assembly> resolvedAssemblyCache

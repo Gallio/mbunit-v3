@@ -21,15 +21,15 @@ using System.Threading;
 namespace Gallio.Common.Policies
 {
     /// <summary>
-    /// <para>
     /// This class provides a mechanism for reporting unhandled exceptions when the infrastructure
     /// is otherwise unable to deal with them locally.
-    /// </para>
+    /// </summary>
+    /// <remarks>
     /// <para>
     /// The methods of this class should be considered as the last resort for reporting failures
     /// that might otherwise cause the system to crash.
     /// </para>
-    /// </summary>
+    /// </remarks>
     public static class UnhandledExceptionPolicy
     {
         [ThreadStatic]
@@ -82,15 +82,15 @@ namespace Gallio.Common.Policies
         }
 
         /// <summary>
-        /// <para>
         /// Returns true if there is at least one handler registered for
         /// <see cref="ReportUnhandledException"/>.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// This property can be used to avoid duplicate exception reporting
         /// if some other system component has already registered a handler.
         /// </para>
-        /// </summary>
+        /// </remarks>
         public static bool HasReportUnhandledExceptionHandler
         {
             get

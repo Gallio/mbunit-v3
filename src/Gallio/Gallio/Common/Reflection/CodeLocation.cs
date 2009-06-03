@@ -27,7 +27,9 @@ namespace Gallio.Common.Reflection
     /// Specifies the location of a code element as a position within a file.
     /// </summary>
     /// <remarks>
+    /// <para>
     /// Lines and columns are numbered starting from 1.
+    /// </para>
     /// </remarks>
     [Serializable]
     [XmlRoot("codeLocation", Namespace = XmlSerializationUtils.GallioNamespace)]

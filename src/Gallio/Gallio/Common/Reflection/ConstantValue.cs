@@ -53,22 +53,22 @@ namespace Gallio.Common.Reflection
         }
 
         /// <summary>
-        /// <para>
         /// Gets the type of the constant.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// The type may be an array type, an enum type, a primitive type, or the <see cref="System.Type" /> type.
         /// </para>
-        /// </summary>
+        /// </remarks>
         public ITypeInfo Type
         {
             get { return type; }
         }
 
         /// <summary>
-        /// <para>
         /// Gets the value of the constant.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// If <see cref="IsNative" /> is true, then this property contains the native value.
         /// Otherwise it is represented differently depending upon its type.
@@ -81,7 +81,7 @@ namespace Gallio.Common.Reflection
         /// <item>If the constant is a type, then the value will be a <see cref="ITypeInfo" />.</item>
         /// </list>
         /// </para>
-        /// </summary>
+        /// </remarks>
         public object Value
         {
             get { return value; }
