@@ -29,11 +29,11 @@ namespace Gallio.Common.Text
         /// Discards characters at the end of the string with indices greater than
         /// or equal to <paramref name="maxLength"/>.
         /// </summary>
-        /// <param name="str">The string to truncate</param>
-        /// <param name="maxLength">The maximum length of the string to retain</param>
+        /// <param name="str">The string to truncate.</param>
+        /// <param name="maxLength">The maximum length of the string to retain.</param>
         /// <returns>The truncated string</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="str"/> is null</exception>
-        /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="maxLength"/> is negative</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="str"/> is null.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="maxLength"/> is negative.</exception>
         public static string Truncate(string str, int maxLength)
         {
             if (str == null)
@@ -52,12 +52,12 @@ namespace Gallio.Common.Text
         /// it and appends an ellipsis mark ("...").  If the maximum length is
         /// less than or equal to 3, omits the ellipsis mark on truncation.
         /// </summary>
-        /// <param name="str">The string to truncate</param>
+        /// <param name="str">The string to truncate.</param>
         /// <param name="maxLength">The maximum length of the string to retain
-        /// including the ellipsis mark when used</param>
+        /// including the ellipsis mark when used.</param>
         /// <returns>The truncated string</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="str"/> is null</exception>
-        /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="maxLength"/> is negative</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="str"/> is null.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="maxLength"/> is negative.</exception>
         public static string TruncateWithEllipsis(string str, int maxLength)
         {
             if (str == null)
@@ -80,7 +80,7 @@ namespace Gallio.Common.Text
         /// Gets a lowercase hexadecimal digit corresponding to the least significant nybble of
         /// the specified value.
         /// </summary>
-        /// <param name="value">The value, only the last 4 bits of which are used</param>
+        /// <param name="value">The value, only the last 4 bits of which are used.</param>
         /// <returns>The hexadecimal digit</returns>
         public static char ToHexDigit(int value)
         {
@@ -96,7 +96,7 @@ namespace Gallio.Common.Text
         /// Replaces common escaped characters with C# style escape codes.  Unprintable characters
         /// are represented by a Unicode character escape.
         /// </remarks>
-        /// <param name="value">The character value to format</param>
+        /// <param name="value">The character value to format.</param>
         /// <returns>The formatted character</returns>
         public static string ToCharLiteral(char value)
         {
@@ -115,7 +115,7 @@ namespace Gallio.Common.Text
         /// Replaces common escaped characters with C# style escape codes.  Unprintable characters
         /// are represented by a Unicode character escape.
         /// </remarks>
-        /// <param name="value">The character value to format</param>
+        /// <param name="value">The character value to format.</param>
         /// <returns>The unquoted char literal</returns>
         public static string ToUnquotedCharLiteral(char value)
         {
@@ -138,7 +138,7 @@ namespace Gallio.Common.Text
         /// Replaces common escaped characters with C# style escape codes.  Unprintable characters
         /// are represented by a Unicode character escape.
         /// </remarks>
-        /// <param name="value">The string value to format</param>
+        /// <param name="value">The string value to format.</param>
         /// <returns>The formatted string</returns>
         public static string ToStringLiteral(string value)
         {
@@ -157,7 +157,7 @@ namespace Gallio.Common.Text
         /// Replaces common escaped characters with C# style escape codes.  Unprintable characters
         /// are represented by a Unicode character escape.
         /// </remarks>
-        /// <param name="value">The string value to format</param>
+        /// <param name="value">The string value to format.</param>
         /// <returns>The unquoted string literal</returns>
         public static string ToUnquotedStringLiteral(string value)
         {
@@ -270,9 +270,9 @@ namespace Gallio.Common.Text
         /// Also trims whitespace around the key and value.
         /// </para>
         /// </remarks>
-        /// <param name="input">The input string</param>
+        /// <param name="input">The input string.</param>
         /// <returns>The key value pair</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="input"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="input"/> is null.</exception>
         public static KeyValuePair<string, string> ParseKeyValuePair(string input)
         {
             if (input == null)
@@ -309,9 +309,9 @@ namespace Gallio.Common.Text
         /// Parses a string of whitespace delimited and possibly quoted arguments and
         /// returns an array of each one unquoted.
         /// </summary>
-        /// <param name="arguments">The arguments string, eg. "/foo 'quoted arg' /bar</param>
+        /// <param name="arguments">The arguments string, eg. "/foo 'quoted arg' /bar.</param>
         /// <returns>The parsed and unquoted arguments</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="arguments"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="arguments"/> is null.</exception>
         public static string[] ParseArguments(string arguments)
         {
             if (arguments == null)

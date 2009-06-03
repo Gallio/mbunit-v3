@@ -35,7 +35,7 @@ namespace Gallio.Model.Filters
         /// </summary>
         /// <param name="filters">The filters that must all jointly be matched.
         /// If the list is empty, the filter matches everything.</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="filters"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="filters"/> is null.</exception>
         public AndFilter(ICollection<Filter<T>> filters)
         {
             if (filters == null || filters.Contains(null))

@@ -31,7 +31,7 @@ namespace Gallio.Framework
         /// <summary>
         /// Creates a context cookie with a given dispose action.
         /// </summary>
-        /// <param name="inner">The inner disposable object</param>
+        /// <param name="inner">The inner disposable object.</param>
         internal TestContextCookie(IDisposable inner)
         {
             this.inner = inner;
@@ -52,8 +52,8 @@ namespace Gallio.Framework
         /// yet been exited.
         /// </remarks>
         /// <exception cref="InvalidOperationException">Thrown if the cookie belongs to a different
-        /// <see cref="Thread" /> or if the context was already exited</exception>
-        /// <exception cref="ObjectDisposedException">Thrown if the context manager has been disposed</exception>
+        /// <see cref="Thread" /> or if the context was already exited.</exception>
+        /// <exception cref="ObjectDisposedException">Thrown if the context manager has been disposed.</exception>
         public void Dispose()
         {
             ExitContext();
@@ -68,8 +68,8 @@ namespace Gallio.Framework
         /// yet been exited.
         /// </remarks>
         /// <exception cref="InvalidOperationException">Thrown if the cookie belongs to a different
-        /// <see cref="Thread" /> or if the context was already exited</exception>
-        /// <exception cref="ObjectDisposedException">Thrown if the context manager has been disposed</exception>
+        /// <see cref="Thread" /> or if the context was already exited.</exception>
+        /// <exception cref="ObjectDisposedException">Thrown if the context manager has been disposed.</exception>
         public void ExitContext()
         {
             if (inner != null)

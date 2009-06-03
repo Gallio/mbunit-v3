@@ -61,8 +61,8 @@ namespace Gallio.Framework
         /// by the task as a warning in the log, and include the task in the list of those
         /// to join and/or verify.
         /// </para>
-        /// <param name="task">The task to watch</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="task"/> is null</exception>
+        /// <param name="task">The task to watch.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="task"/> is null.</exception>
         public static void WatchTask(Task task)
         {
             if (task == null)
@@ -78,10 +78,10 @@ namespace Gallio.Framework
         /// There is no need to call <see cref="WatchTask" /> on the returned task.
         /// </remarks>
         /// <param name="name">The name of the task, or null to create a new name based
-        /// on the method associated with the action</param>
-        /// <param name="action">The action to perform</param>
+        /// on the method associated with the action.</param>
+        /// <param name="action">The action to perform.</param>
         /// <returns>The new thread task</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="action"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="action"/> is null.</exception>
         public static ThreadTask CreateThreadTask(string name, Action action)
         {
             if (action == null)
@@ -99,10 +99,10 @@ namespace Gallio.Framework
         /// There is no need to call <see cref="WatchTask" /> on the returned task.
         /// </remarks>
         /// <param name="name">The name of the task, or null to create a new name based
-        /// on the method associated with the action</param>
-        /// <param name="action">The action to perform</param>
+        /// on the method associated with the action.</param>
+        /// <param name="action">The action to perform.</param>
         /// <returns>The new thread task</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="action"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="action"/> is null.</exception>
         public static ThreadTask StartThreadTask(string name, Action action)
         {
             ThreadTask task = CreateThreadTask(name, action);
@@ -124,12 +124,12 @@ namespace Gallio.Framework
         /// <remarks>
         /// There is no need to call <see cref="WatchTask" /> on the returned task.
         /// </remarks>
-        /// <param name="executablePath">The path of the executable executable</param>
-        /// <param name="arguments">The arguments for the executable</param>
-        /// <param name="workingDirectory">The working directory</param>
+        /// <param name="executablePath">The path of the executable executable.</param>
+        /// <param name="arguments">The arguments for the executable.</param>
+        /// <param name="workingDirectory">The working directory.</param>
         /// <returns>The new thread task</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="executablePath"/>,
-        /// <paramref name="arguments"/> or <paramref name="workingDirectory"/> is null</exception>
+        /// <paramref name="arguments"/> or <paramref name="workingDirectory"/> is null.</exception>
         public static ProcessTask CreateProcessTask(string executablePath, string arguments, string workingDirectory)
         {
             if (executablePath == null)
@@ -197,12 +197,12 @@ namespace Gallio.Framework
         /// <remarks>
         /// There is no need to call <see cref="WatchTask" /> on the returned task.
         /// </remarks>
-        /// <param name="executablePath">The path of the executable executable</param>
-        /// <param name="arguments">The arguments for the executable</param>
-        /// <param name="workingDirectory">The working directory</param>
+        /// <param name="executablePath">The path of the executable executable.</param>
+        /// <param name="arguments">The arguments for the executable.</param>
+        /// <param name="workingDirectory">The working directory.</param>
         /// <returns>The new thread task</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="executablePath"/>,
-        /// <paramref name="arguments"/> or <paramref name="workingDirectory"/> is null</exception>
+        /// <paramref name="arguments"/> or <paramref name="workingDirectory"/> is null.</exception>
         public static ProcessTask StartProcessTask(string executablePath, string arguments, string workingDirectory)
         {
             ProcessTask task = CreateProcessTask(executablePath, arguments, workingDirectory);
@@ -214,9 +214,9 @@ namespace Gallio.Framework
         /// Waits for all tasks to complete or for timeout to occur.
         /// Then verifies that no failures have occurred in any of the tasks.
         /// </summary>
-        /// <param name="timeout">The timeout</param>
+        /// <param name="timeout">The timeout.</param>
         /// <exception cref="TestException">Thrown if some of the tasks did not complete
-        /// or if any of the tasks failed</exception>
+        /// or if any of the tasks failed.</exception>
         public static void JoinAndVerify(TimeSpan timeout)
         {
             if (!GetTaskContainer().JoinAll(timeout))
@@ -228,7 +228,7 @@ namespace Gallio.Framework
         /// <summary>
         /// Verifies that no failures have occurred in any of the tasks.
         /// </summary>
-        /// <exception cref="TestException">Thrown if any of the tasks failed</exception>
+        /// <exception cref="TestException">Thrown if any of the tasks failed.</exception>
         public static void Verify()
         {
             if (FailureFlag)

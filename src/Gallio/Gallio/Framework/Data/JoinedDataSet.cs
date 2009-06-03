@@ -54,7 +54,7 @@ namespace Gallio.Framework.Data
         /// Gets or sets the <see cref="IJoinStrategy"/>.
         /// By default the strategy is <see cref="CombinatorialJoinStrategy"/>.
         /// </summary>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
         public IJoinStrategy Strategy
         {
             get { return strategy; }
@@ -94,13 +94,13 @@ namespace Gallio.Framework.Data
         /// </summary>
         /// <remarks>
         /// </remarks>
-        /// <param name="dataSet">The data set</param>
-        /// <param name="binding">The binding</param>
+        /// <param name="dataSet">The data set.</param>
+        /// <param name="binding">The binding.</param>
         /// <returns>The translated binding</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="dataSet"/>
-        /// or <paramref name="binding"/> is null</exception>
+        /// or <paramref name="binding"/> is null.</exception>
         /// <exception cref="ArgumentException">Thrown if <paramref name="dataSet"/>
-        /// is not a member of this instance</exception>
+        /// is not a member of this instance.</exception>
         public DataBinding TranslateBinding(IDataSet dataSet, DataBinding binding)
         {
             if (dataSet == null)

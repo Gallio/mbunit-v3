@@ -34,8 +34,8 @@ namespace Gallio.Runner.Drivers
         /// <summary>
         /// Creates a proxy for a test driver.
         /// </summary>
-        /// <param name="testDriver">The test driver to which messages should be forwarded</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="testDriver"/> is null</exception>
+        /// <param name="testDriver">The test driver to which messages should be forwarded.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="testDriver"/> is null.</exception>
         public RemoteTestDriver(ITestDriver testDriver)
         {
             if (testDriver == null)

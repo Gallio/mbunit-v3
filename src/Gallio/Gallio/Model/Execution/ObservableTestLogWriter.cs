@@ -30,10 +30,10 @@ namespace Gallio.Model.Execution
         /// <summary>
         /// Creates a log writer.
         /// </summary>
-        /// <param name="testExecutionListener">The test listener to which notifications are dispatched</param>
-        /// <param name="stepId">The step id</param>
+        /// <param name="testExecutionListener">The test listener to which notifications are dispatched.</param>
+        /// <param name="stepId">The step id.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="testExecutionListener"/> or
-        /// <paramref name="stepId"/> is null</exception>
+        /// <paramref name="stepId"/> is null.</exception>
         public ObservableTestLogWriter(ITestExecutionListener testExecutionListener, string stepId)
         {
             if (testExecutionListener == null)

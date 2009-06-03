@@ -103,8 +103,8 @@ namespace Gallio.Framework.Utilities
         /// <summary>
         /// Adds a test assembly to the package configuration, if not already added.
         /// </summary>
-        /// <param name="assembly">The assembly to add</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="assembly"/> is null</exception>
+        /// <param name="assembly">The assembly to add.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="assembly"/> is null.</exception>
         public void AddAssembly(Assembly assembly)
         {
             if (assembly == null)
@@ -119,8 +119,8 @@ namespace Gallio.Framework.Utilities
         /// Adds a test fixture type to the list of filters, and automatically adds its containing
         /// test assembly to the package configuration, if not already added.
         /// </summary>
-        /// <param name="fixtureType">The test fixture type to add</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="fixtureType"/> is null</exception>
+        /// <param name="fixtureType">The test fixture type to add.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="fixtureType"/> is null.</exception>
         public void AddFixture(Type fixtureType)
         {
             AddAssembly(fixtureType.Assembly);
@@ -131,9 +131,9 @@ namespace Gallio.Framework.Utilities
         /// Adds a test method to the list of filters, and automatically adds its containing
         /// test assembly to the package configuration, if not already added.
         /// </summary>
-        /// <param name="fixtureType">The test fixture type</param>
-        /// <param name="methodName">The test method name</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="fixtureType"/> or <paramref name="methodName"/> is null</exception>
+        /// <param name="fixtureType">The test fixture type.</param>
+        /// <param name="methodName">The test method name.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="fixtureType"/> or <paramref name="methodName"/> is null.</exception>
         public void AddMethod(Type fixtureType, string methodName)
         {
             AddAssembly(fixtureType.Assembly);
@@ -148,8 +148,8 @@ namespace Gallio.Framework.Utilities
         /// Adds a test filter to the combined list of filters that select which tests to include in the run,
         /// if not already added.
         /// </summary>
-        /// <param name="filter">The filter to add</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="filter"/> is null</exception>
+        /// <param name="filter">The filter to add.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="filter"/> is null.</exception>
         public void AddFilter(Filter<ITest> filter)
         {
             if (filter == null)
@@ -165,7 +165,7 @@ namespace Gallio.Framework.Utilities
         /// <remarks>
         /// Can only be called after the tests have run.
         /// </remarks>
-        /// <param name="codeReference">The code reference of the test</param>
+        /// <param name="codeReference">The code reference of the test.</param>
         /// <returns>The test data, or null if not found</returns>
         public TestData GetTestData(CodeReference codeReference)
         {
@@ -184,7 +184,7 @@ namespace Gallio.Framework.Utilities
         /// <remarks>
         /// Can only be called after the tests have run.
         /// </remarks>
-        /// <param name="codeReference">The code reference of the test</param>
+        /// <param name="codeReference">The code reference of the test.</param>
         /// <returns>The enumeration of test step runs, or null if not found</returns>
         public IEnumerable<TestStepRun> GetTestStepRuns(CodeReference codeReference)
         {
@@ -200,7 +200,7 @@ namespace Gallio.Framework.Utilities
         /// <remarks>
         /// Can only be called after the tests have run.
         /// </remarks>
-        /// <param name="codeReference">The code reference of the test</param>
+        /// <param name="codeReference">The code reference of the test.</param>
         /// <returns>The first test step run, or null if not found</returns>
         public TestStepRun GetPrimaryTestStepRun(CodeReference codeReference)
         {
@@ -218,7 +218,7 @@ namespace Gallio.Framework.Utilities
         /// <remarks>
         /// Can only be called after the tests have run.
         /// </remarks>
-        /// <param name="codeReference">The code reference of the test</param>
+        /// <param name="codeReference">The code reference of the test.</param>
         /// <returns>The first test step run, or null if not found</returns>
         public IList<TestStepRun> GetTestCaseRunsWithin(CodeReference codeReference)
         {

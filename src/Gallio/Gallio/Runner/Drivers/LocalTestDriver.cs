@@ -47,8 +47,8 @@ namespace Gallio.Runner.Drivers
         /// <summary>
         /// Creates a test driver.
         /// </summary>
-        /// <param name="debuggerManager">A reference to the debugger manager</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="debuggerManager"/> is null</exception>
+        /// <param name="debuggerManager">A reference to the debugger manager.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="debuggerManager"/> is null.</exception>
         public LocalTestDriver(IDebuggerManager debuggerManager)
         {
             if (debuggerManager == null)

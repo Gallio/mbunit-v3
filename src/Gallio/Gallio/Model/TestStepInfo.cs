@@ -29,8 +29,8 @@ namespace Gallio.Model
         /// <summary>
         /// Creates a read-only wrapper of the specified test step.
         /// </summary>
-        /// <param name="source">The source test step</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="source"/> is null</exception>
+        /// <param name="source">The source test step.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="source"/> is null.</exception>
         public TestStepInfo(ITestStep source)
             : base(source)
         {

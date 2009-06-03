@@ -61,8 +61,8 @@ namespace Gallio.Framework.Pattern
         /// </list>
         /// </para>
         /// </summary>
-        /// <param name="testInstanceState">The test instance state, never null</param>
-        /// <param name="value">The value to bind to the parameter</param>
+        /// <param name="testInstanceState">The test instance state, never null.</param>
+        /// <param name="value">The value to bind to the parameter.</param>
         void BindTestParameter(PatternTestInstanceState testInstanceState, object value);
 
         /// <summary>
@@ -84,8 +84,8 @@ namespace Gallio.Framework.Pattern
         /// </list>
         /// </para>
         /// </summary>
-        /// <param name="testInstanceState">The test instance state, never null</param>
-        /// <param name="value">The value that was bound to the test parameter</param>
+        /// <param name="testInstanceState">The test instance state, never null.</param>
+        /// <param name="value">The value that was bound to the test parameter.</param>
         void UnbindTestParameter(PatternTestInstanceState testInstanceState, object value);
     }
 }

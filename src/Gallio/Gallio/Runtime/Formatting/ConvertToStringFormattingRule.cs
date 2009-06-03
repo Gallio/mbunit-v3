@@ -33,8 +33,8 @@ namespace Gallio.Runtime.Formatting
         /// <summary>
         /// Creates a conversion to string formatting rule.
         /// </summary>
-        /// <param name="converter">The converter to use</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="converter"/> is null</exception>
+        /// <param name="converter">The converter to use.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="converter"/> is null.</exception>
         public ConvertToStringFormattingRule(IConverter converter)
         {
             if (converter == null)

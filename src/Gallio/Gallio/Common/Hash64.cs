@@ -28,7 +28,7 @@ namespace Gallio.Common
         /// <summary>
         /// Gets a hash code containing the specified 64bit value.
         /// </summary>
-        /// <param name="value">The 64bit value</param>
+        /// <param name="value">The 64bit value.</param>
         public Hash64(long value)
         {
             this.value = value;
@@ -46,7 +46,7 @@ namespace Gallio.Common
         /// Produces a new hash code by combining information from the specified string
         /// with this hash code.
         /// </summary>
-        /// <param name="str">The string, may be null if none</param>
+        /// <param name="str">The string, may be null if none.</param>
         /// <returns>The augmented hash code</returns>
         public Hash64 Add(string str)
         {

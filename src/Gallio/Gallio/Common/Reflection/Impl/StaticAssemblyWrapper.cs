@@ -38,9 +38,9 @@ namespace Gallio.Common.Reflection.Impl
         /// <summary>
         /// Creates a wrapper.
         /// </summary>
-        /// <param name="policy">The reflection policy</param>
-        /// <param name="handle">The underlying reflection object</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="policy"/> or <paramref name="handle"/> is null</exception>
+        /// <param name="policy">The reflection policy.</param>
+        /// <param name="handle">The underlying reflection object.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="policy"/> or <paramref name="handle"/> is null.</exception>
         public StaticAssemblyWrapper(StaticReflectionPolicy policy, object handle)
             : base(policy, handle)
         {
@@ -141,7 +141,7 @@ namespace Gallio.Common.Reflection.Impl
         /// <summary>
         /// Returns true if the internal members of this assembly are visible to the specified assembly.
         /// </summary>
-        /// <param name="other">The other assembly</param>
+        /// <param name="other">The other assembly.</param>
         /// <returns>True if the other assembly can see internal members of this assembly</returns>
         public bool IsAssemblyVisibleTo(StaticAssemblyWrapper other)
         {

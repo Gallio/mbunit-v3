@@ -32,10 +32,10 @@ namespace Gallio.Model
         /// <summary>
         /// Creates test kind traits.
         /// </summary>
-        /// <param name="name">The test kind name</param>
-        /// <param name="description">The test kind description</param>
+        /// <param name="name">The test kind name.</param>
+        /// <param name="description">The test kind description.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/>
-        /// or <paramref name="description" /> is null</exception>
+        /// or <paramref name="description" /> is null.</exception>
         public TestKindTraits(string name, string description)
         {
             if (name == null)

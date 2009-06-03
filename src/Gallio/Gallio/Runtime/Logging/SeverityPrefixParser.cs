@@ -30,11 +30,11 @@ namespace Gallio.Runtime.Logging
         /// <summary>
         /// Parses a line of log data.
         /// </summary>
-        /// <param name="line">The line of log data to parse</param>
-        /// <param name="severity">Set to the severity of the message extracted from the line</param>
-        /// <param name="message">The message extracted from the line</param>
+        /// <param name="line">The line of log data to parse.</param>
+        /// <param name="severity">Set to the severity of the message extracted from the line.</param>
+        /// <param name="message">The message extracted from the line.</param>
         /// <returns>True if the message included a severity, false otherwise</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="line"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="line"/> is null.</exception>
         public bool ParseLine(string line, out LogSeverity severity, out string message)
         {
             if (line == null)

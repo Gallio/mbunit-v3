@@ -77,11 +77,11 @@ namespace Gallio.Framework.Data
         /// Registers the <see cref="IDataBinder"/>'s requests to query particular
         /// <see cref="IDataSet"/>s with the <see cref="DataBindingContext"/>.
         /// </summary>
-        /// <param name="context">The data binding context</param>
-        /// <param name="resolver">The data source resolver</param>
+        /// <param name="context">The data binding context.</param>
+        /// <param name="resolver">The data source resolver.</param>
         /// <returns>The data binding accessor to use for obtaining bound values
         /// from <see cref="IDataItem"/>s produced by the <see cref="DataBindingContext" />.</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="context"/> or <paramref name="resolver"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="context"/> or <paramref name="resolver"/> is null.</exception>
         IDataAccessor Register(DataBindingContext context, IDataSourceResolver resolver);
     }
 }

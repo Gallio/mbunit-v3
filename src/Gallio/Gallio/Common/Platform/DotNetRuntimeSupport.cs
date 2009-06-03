@@ -64,11 +64,11 @@ namespace Gallio.Common.Platform
         /// When using Mono, creates <see cref="ProcessStartInfo" /> that re-enters the Mono runtime
         /// if the executable is .Net otherwise creates a standard process start info.
         /// </summary>
-        /// <param name="executablePath">The executable path</param>
-        /// <param name="arguments">The arguments</param>
+        /// <param name="executablePath">The executable path.</param>
+        /// <param name="arguments">The arguments.</param>
         /// <returns>The process start info</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="executablePath"/>
-        /// or <paramref name="arguments"/> is null</exception>
+        /// or <paramref name="arguments"/> is null.</exception>
         public static ProcessStartInfo CreateReentrantProcessStartInfo(string executablePath, string arguments)
         {
             if (executablePath == null)

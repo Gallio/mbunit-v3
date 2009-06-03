@@ -31,8 +31,8 @@ namespace Gallio.Runtime.Preferences
         /// <summary>
         /// Creates a file preference store.
         /// </summary>
-        /// <param name="preferenceStoreDir">The preference store directory</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="preferenceStoreDir"/> is null</exception>
+        /// <param name="preferenceStoreDir">The preference store directory.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="preferenceStoreDir"/> is null.</exception>
         public FilePreferenceStore(DirectoryInfo preferenceStoreDir)
         {
             if (preferenceStoreDir == null)

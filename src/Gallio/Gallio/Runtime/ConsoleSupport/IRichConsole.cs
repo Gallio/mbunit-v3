@@ -121,7 +121,7 @@ namespace Gallio.Runtime.ConsoleSupport
         /// <summary>
         /// Gets the zero-based column index the cursor is located at.
         /// </summary>
-        /// <exception cref="IOException">Thrown if <see cref="NativeConsole.IsRedirected" /> is true</exception>
+        /// <exception cref="IOException">Thrown if <see cref="NativeConsole.IsRedirected" /> is true.</exception>
         int CursorLeft
         {
             get;
@@ -131,7 +131,7 @@ namespace Gallio.Runtime.ConsoleSupport
         /// <summary>
         /// Gets the zero-based row index the cursor is located at.
         /// </summary>
-        /// <exception cref="IOException">Thrown if <see cref="NativeConsole.IsRedirected" /> is true</exception>
+        /// <exception cref="IOException">Thrown if <see cref="NativeConsole.IsRedirected" /> is true.</exception>
         int CursorTop
         {
             get;
@@ -141,7 +141,7 @@ namespace Gallio.Runtime.ConsoleSupport
         /// <summary>
         /// Gets or sets the console's title.
         /// </summary>
-        /// <exception cref="IOException">Thrown if <see cref="NativeConsole.IsRedirected" /> is true</exception>
+        /// <exception cref="IOException">Thrown if <see cref="NativeConsole.IsRedirected" /> is true.</exception>
         string Title
         {
             get;
@@ -189,21 +189,21 @@ namespace Gallio.Runtime.ConsoleSupport
         /// from that point.  Removes the previous footer and displays the new
         /// one automatically if the footer is visible.
         /// </summary>
-        /// <param name="showFooter">A delegate to display the footer</param>
+        /// <param name="showFooter">A delegate to display the footer.</param>
         /// <param name="hideFooter">A delegate to hide the footer, leaving the custor at
-        /// the beginning of the line where the footer used to begin</param>
+        /// the beginning of the line where the footer used to begin.</param>
         void SetFooter(Action showFooter, Action hideFooter);
 
         /// <summary>
         /// Writes a character.
         /// </summary>
-        /// <param name="c">The character to write</param>
+        /// <param name="c">The character to write.</param>
         void Write(char c);
 
         /// <summary>
         /// Writes a string.
         /// </summary>
-        /// <param name="str">The string to write</param>
+        /// <param name="str">The string to write.</param>
         void Write(string str);
 
         /// <summary>
@@ -214,7 +214,7 @@ namespace Gallio.Runtime.ConsoleSupport
         /// <summary>
         /// Writes a string followed by a new line.
         /// </summary>
-        /// <param name="str">The string to write</param>
+        /// <param name="str">The string to write.</param>
         void WriteLine(string str);
     }
 }

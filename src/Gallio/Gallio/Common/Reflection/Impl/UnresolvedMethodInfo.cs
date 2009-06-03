@@ -29,8 +29,8 @@ namespace Gallio.Common.Reflection.Impl
         /// <summary>
         /// Creates a reflection object backed by the specified adapter.
         /// </summary>
-        /// <param name="adapter">The adapter</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="adapter"/> is null</exception>
+        /// <param name="adapter">The adapter.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="adapter"/> is null.</exception>
         public UnresolvedMethodInfo(IMethodInfo adapter)
         {
             if (adapter == null)

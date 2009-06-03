@@ -26,32 +26,32 @@ namespace Gallio.Runtime.Conversions
         /// Determines whether the converter can convert a value of type <paramref name="sourceType"/>
         /// to type <paramref name="targetType"/>.
         /// </summary>
-        /// <param name="sourceType">The source type</param>
-        /// <param name="targetType">The target type</param>
+        /// <param name="sourceType">The source type.</param>
+        /// <param name="targetType">The target type.</param>
         /// <returns>True if the converter supports this conversion</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="sourceType" /> or
-        /// <paramref name="targetType"/> is null</exception>
+        /// <paramref name="targetType"/> is null.</exception>
         bool CanConvert(Type sourceType, Type targetType);
 
         /// <summary>
         /// Gets the cost of converting a value of type <paramref name="sourceType"/>
         /// to type <paramref name="targetType"/>.
         /// </summary>
-        /// <param name="sourceType">The source type</param>
-        /// <param name="targetType">The target type</param>
+        /// <param name="sourceType">The source type.</param>
+        /// <param name="targetType">The target type.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="sourceType" /> or
-        /// <paramref name="targetType"/> is null</exception>
+        /// <paramref name="targetType"/> is null.</exception>
         /// <returns>The conversion cost</returns>
         ConversionCost GetConversionCost(Type sourceType, Type targetType);
 
         /// <summary>
         /// Converts the value <paramref name="sourceValue"/> to type <paramref name="targetType"/>.
         /// </summary>
-        /// <param name="sourceValue">The value to convert</param>
-        /// <param name="targetType">The target type</param>
+        /// <param name="sourceValue">The value to convert.</param>
+        /// <param name="targetType">The target type.</param>
         /// <returns>The converted value</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="targetType"/> is null</exception>
-        /// <exception cref="InvalidOperationException">Thrown the requested conversion was not supported</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="targetType"/> is null.</exception>
+        /// <exception cref="InvalidOperationException">Thrown the requested conversion was not supported.</exception>
         object Convert(object sourceValue, Type targetType);
     }
 }

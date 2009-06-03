@@ -52,8 +52,8 @@ namespace Gallio.Common.Markup.Tags
         /// <summary>
         /// Invokes the appropriate visitor method each element contained within this tag.
         /// </summary>
-        /// <param name="visitor">The visitor</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="visitor"/> is null</exception>
+        /// <param name="visitor">The visitor.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="visitor"/> is null.</exception>
         public void AcceptContents(ITagVisitor visitor)
         {
             if (visitor == null)

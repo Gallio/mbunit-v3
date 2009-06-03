@@ -32,7 +32,7 @@ namespace Gallio.Runtime.Hosting
         /// <summary>
         /// Gets a remote host service using the specified channel.
         /// </summary>
-        /// <param name="channel">The channel</param>
+        /// <param name="channel">The channel.</param>
         /// <returns>The remote host service</returns>
         public static IRemoteHostService GetRemoteHostService(IClientChannel channel)
         {
@@ -45,10 +45,10 @@ namespace Gallio.Runtime.Hosting
         /// <summary>
         /// Registers the host service with a channel.
         /// </summary>
-        /// <param name="hostService">The remote host service</param>
-        /// <param name="channel">The channel</param>
+        /// <param name="hostService">The remote host service.</param>
+        /// <param name="channel">The channel.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="hostService"/> or 
-        /// <paramref name="channel"/> is null</exception>
+        /// <paramref name="channel"/> is null.</exception>
         public static void RegisterWithChannel(RemoteHostService hostService, IServerChannel channel)
         {
             if (hostService == null)

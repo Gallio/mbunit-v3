@@ -47,13 +47,13 @@ namespace Gallio.Runtime
         /// <summary>
         /// Initializes the runtime.
         /// </summary>
-        /// <param name="registry">The registry</param>
-        /// <param name="pluginLoader">The plugin loader</param>
-        /// <param name="assemblyResolverManager">The assembly resolver to use</param>
-        /// <param name="runtimeSetup">The runtime setup options</param>
+        /// <param name="registry">The registry.</param>
+        /// <param name="pluginLoader">The plugin loader.</param>
+        /// <param name="assemblyResolverManager">The assembly resolver to use.</param>
+        /// <param name="runtimeSetup">The runtime setup options.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="registry"/>,
         /// <paramref name="pluginLoader"/>, <paramref name="assemblyResolverManager"/> or
-        /// <paramref name="runtimeSetup" /> is null</exception>
+        /// <paramref name="runtimeSetup" /> is null.</exception>
         public DefaultRuntime(IRegistry registry, IPluginLoader pluginLoader,
             IAssemblyResolverManager assemblyResolverManager, RuntimeSetup runtimeSetup)
         {

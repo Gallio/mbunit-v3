@@ -39,10 +39,10 @@ namespace Gallio.Runtime.Extensibility
         /// <summary>
         /// Creates an instance of a typed component handle for the specified descriptor.
         /// </summary>
-        /// <param name="componentDescriptor">The component descriptor</param>
+        /// <param name="componentDescriptor">The component descriptor.</param>
         /// <returns>The appropriately typed component handle</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="componentDescriptor"/> is null</exception>
-        /// <exception cref="RuntimeException">Thrown if the described component's service type or traits type cannot be resolved</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="componentDescriptor"/> is null.</exception>
+        /// <exception cref="RuntimeException">Thrown if the described component's service type or traits type cannot be resolved.</exception>
         public static ComponentHandle CreateInstance(IComponentDescriptor componentDescriptor)
         {
             if (componentDescriptor == null)
@@ -59,13 +59,13 @@ namespace Gallio.Runtime.Extensibility
         /// <summary>
         /// Creates an instance of a typed component handle for the specified descriptor.
         /// </summary>
-        /// <param name="componentDescriptor">The component descriptor</param>
+        /// <param name="componentDescriptor">The component descriptor.</param>
         /// <returns>The appropriately typed component handle</returns>
-        /// <typeparam name="TService">The service type</typeparam>
-        /// <typeparam name="TTraits">The traits type</typeparam>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="componentDescriptor"/> is null</exception>
-        /// <exception cref="ArgumentException">Thrown if the described component's service or traits are not compatible with a handle of this type</exception>
-        /// <exception cref="RuntimeException">Thrown if the described component's service type or traits type cannot be resolved</exception>
+        /// <typeparam name="TService">The service type.</typeparam>
+        /// <typeparam name="TTraits">The traits type.</typeparam>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="componentDescriptor"/> is null.</exception>
+        /// <exception cref="ArgumentException">Thrown if the described component's service or traits are not compatible with a handle of this type.</exception>
+        /// <exception cref="RuntimeException">Thrown if the described component's service type or traits type cannot be resolved.</exception>
         public static ComponentHandle<TService, TTraits> CreateInstance<TService, TTraits>(IComponentDescriptor componentDescriptor)
             where TTraits : Traits
         {
@@ -88,16 +88,16 @@ namespace Gallio.Runtime.Extensibility
         /// Creates an instance of a typed component handle for the specified component and traits instance.
         /// The component handle will have a stub component descriptor for testing purposes.
         /// </summary>
-        /// <param name="componentId">The component id</param>
-        /// <param name="component">The component instance</param>
-        /// <param name="traits">The component traits</param>
-        /// <typeparam name="TService">The service type</typeparam>
-        /// <typeparam name="TTraits">The traits type</typeparam>
+        /// <param name="componentId">The component id.</param>
+        /// <param name="component">The component instance.</param>
+        /// <param name="traits">The component traits.</param>
+        /// <typeparam name="TService">The service type.</typeparam>
+        /// <typeparam name="TTraits">The traits type.</typeparam>
         /// <returns>The appropriately typed component handle</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="componentId"/>, <paramref name="component"/>
-        /// or <paramref name="traits"/> is null</exception>
-        /// <exception cref="ArgumentException">Thrown if the described component's service or traits are not compatible with a handle of this type</exception>
-        /// <exception cref="RuntimeException">Thrown if the described component's service type or traits type cannot be resolved</exception>
+        /// or <paramref name="traits"/> is null.</exception>
+        /// <exception cref="ArgumentException">Thrown if the described component's service or traits are not compatible with a handle of this type.</exception>
+        /// <exception cref="RuntimeException">Thrown if the described component's service type or traits type cannot be resolved.</exception>
         public static ComponentHandle<TService, TTraits> CreateStub<TService, TTraits>(string componentId, TService component, TTraits traits)
             where TTraits : Traits
         {
@@ -115,9 +115,9 @@ namespace Gallio.Runtime.Extensibility
         /// <summary>
         /// Returns true if the specified type is a component handle type.
         /// </summary>
-        /// <param name="type">The type to examine</param>
+        /// <param name="type">The type to examine.</param>
         /// <returns>True if the type is a component handle type</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="type"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="type"/> is null.</exception>
         public static bool IsComponentHandleType(Type type)
         {
             if (type == null)
@@ -159,7 +159,7 @@ namespace Gallio.Runtime.Extensibility
         /// Gets the component instance.
         /// </summary>
         /// <returns>The component instance</returns>
-        /// <exception cref="RuntimeException">Thrown if the component cannot be resolved</exception>
+        /// <exception cref="RuntimeException">Thrown if the component cannot be resolved.</exception>
         public object GetComponent()
         {
             return GetComponentImpl();
@@ -169,7 +169,7 @@ namespace Gallio.Runtime.Extensibility
         /// Gets the component traits.
         /// </summary>
         /// <returns>The component traits</returns>
-        /// <exception cref="RuntimeException">Thrown if the traits cannot be resolved</exception>
+        /// <exception cref="RuntimeException">Thrown if the traits cannot be resolved.</exception>
         public Traits GetTraits()
         {
             return GetTraitsImpl();
@@ -275,8 +275,8 @@ namespace Gallio.Runtime.Extensibility
     /// <summary>
     /// A typed handle for a lazily instantiated component and its traits.
     /// </summary>
-    /// <typeparam name="TService">The type of service implemented by the component</typeparam>
-    /// <typeparam name="TTraits">The type of traits provided by the component</typeparam>
+    /// <typeparam name="TService">The type of service implemented by the component.</typeparam>
+    /// <typeparam name="TTraits">The type of traits provided by the component.</typeparam>
     public sealed class ComponentHandle<TService, TTraits> : ComponentHandle
         where TTraits : Traits
     {
@@ -304,7 +304,7 @@ namespace Gallio.Runtime.Extensibility
         /// Gets the component instance.
         /// </summary>
         /// <returns>The component instance</returns>
-        /// <exception cref="RuntimeException">Thrown if the component cannot be resolved</exception>
+        /// <exception cref="RuntimeException">Thrown if the component cannot be resolved.</exception>
         new public TService GetComponent()
         {
             return instanceMemoizer.Memoize(() => (TService)Descriptor.ResolveComponent());
@@ -314,7 +314,7 @@ namespace Gallio.Runtime.Extensibility
         /// Gets the component traits.
         /// </summary>
         /// <returns>The component traits</returns>
-        /// <exception cref="RuntimeException">Thrown if the traits cannot be resolved</exception>
+        /// <exception cref="RuntimeException">Thrown if the traits cannot be resolved.</exception>
         new public TTraits GetTraits()
         {
             return traitsMemoizer.Memoize(() => (TTraits)Descriptor.ResolveTraits());

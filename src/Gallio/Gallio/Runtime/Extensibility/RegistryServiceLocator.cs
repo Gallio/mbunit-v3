@@ -28,8 +28,8 @@ namespace Gallio.Runtime.Extensibility
         /// <summary>
         /// Creates a service locator based on a registry.
         /// </summary>
-        /// <param name="registry">The registry</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="registry"/> is null</exception>
+        /// <param name="registry">The registry.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="registry"/> is null.</exception>
         public RegistryServiceLocator(IRegistry registry)
         {
             if (registry == null)

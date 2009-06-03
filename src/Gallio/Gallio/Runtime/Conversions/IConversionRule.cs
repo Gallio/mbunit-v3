@@ -33,10 +33,10 @@ namespace Gallio.Runtime.Conversions
         /// Gets the cost of converting a value of type <paramref name="sourceType"/>
         /// to type <paramref name="targetType"/>.
         /// </summary>
-        /// <param name="sourceType">The source type, never null</param>
-        /// <param name="targetType">The target type, never null</param>
+        /// <param name="sourceType">The source type, never null.</param>
+        /// <param name="targetType">The target type, never null.</param>
         /// <param name="elementConverter">A converter that may be used to recursively
-        /// convert the contents of a composite object from one type to another, never null</param>
+        /// convert the contents of a composite object from one type to another, never null.</param>
         /// <returns>The conversion cost</returns>
         ConversionCost GetConversionCost(Type sourceType, Type targetType, IConverter elementConverter);
 
@@ -49,10 +49,10 @@ namespace Gallio.Runtime.Conversions
         /// It must also not be called if <paramref name="sourceValue"/> is <c>null</c> or
         /// if it is already an instance of <paramref name="targetType"/>.
         /// </remarks>
-        /// <param name="sourceValue">The value to convert, never null</param>
-        /// <param name="targetType">The target type, never null</param>
+        /// <param name="sourceValue">The value to convert, never null.</param>
+        /// <param name="targetType">The target type, never null.</param>
         /// <param name="elementConverter">A converter that may be used to recursively
-        /// convert the contents of a composite object from one type to another, never null</param>
+        /// convert the contents of a composite object from one type to another, never null.</param>
         /// <returns>The converted value</returns>
         object Convert(object sourceValue, Type targetType, IConverter elementConverter);
     }

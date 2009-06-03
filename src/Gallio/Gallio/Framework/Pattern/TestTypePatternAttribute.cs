@@ -99,9 +99,9 @@ namespace Gallio.Framework.Pattern
         /// <summary>
         /// Verifies that the attribute is being used correctly.
         /// </summary>
-        /// <param name="containingScope">The containing scope</param>
-        /// <param name="type">The type</param>
-        /// <exception cref="PatternUsageErrorException">Thrown if the attribute is being used incorrectly</exception>
+        /// <param name="containingScope">The containing scope.</param>
+        /// <param name="type">The type.</param>
+        /// <exception cref="PatternUsageErrorException">Thrown if the attribute is being used incorrectly.</exception>
         protected virtual void Validate(IPatternScope containingScope, ITypeInfo type)
         {
             if (!containingScope.CanAddChildTest || type == null)
@@ -123,8 +123,8 @@ namespace Gallio.Framework.Pattern
         /// the first constructor found, then recurses to process all public and non-public
         /// nested types.  Non-public members other than nested types are ignored.
         /// </remarks>
-        /// <param name="typeScope">The type scope</param>
-        /// <param name="type">The type</param>
+        /// <param name="typeScope">The type scope.</param>
+        /// <param name="type">The type.</param>
         protected virtual void InitializeTest(IPatternScope typeScope, ITypeInfo type)
         {
             string xmlDocumentation = type.GetXmlDocumentation();
@@ -147,8 +147,8 @@ namespace Gallio.Framework.Pattern
         /// <summary>
         /// Consumes type members including fields, properties, methods and events.
         /// </summary>
-        /// <param name="typeScope">The scope to be used as the containing scope</param>
-        /// <param name="type">The type whose members are to be consumed</param>
+        /// <param name="typeScope">The scope to be used as the containing scope.</param>
+        /// <param name="type">The type whose members are to be consumed.</param>
         protected void ConsumeMembers(IPatternScope typeScope, ITypeInfo type)
         {
             BindingFlags bindingFlags = GetMemberBindingFlags(type);
@@ -171,8 +171,8 @@ namespace Gallio.Framework.Pattern
         /// <summary>
         /// Consumes type constructors.
         /// </summary>
-        /// <param name="typeScope">The scope to be used as the containing scope</param>
-        /// <param name="type">The type whose constructors are to be consumed</param>
+        /// <param name="typeScope">The scope to be used as the containing scope.</param>
+        /// <param name="type">The type whose constructors are to be consumed.</param>
         protected void ConsumeConstructors(IPatternScope typeScope, ITypeInfo type)
         {
             if (ShouldConsumeConstructors(type))
@@ -210,8 +210,8 @@ namespace Gallio.Framework.Pattern
         /// <summary>
         /// Consumes nested types.
         /// </summary>
-        /// <param name="typeScope">The scope to be used as the containing scope</param>
-        /// <param name="type">The type whose nested types are to be consumed</param>
+        /// <param name="typeScope">The scope to be used as the containing scope.</param>
+        /// <param name="type">The type whose nested types are to be consumed.</param>
         protected void ConsumeNestedTypes(IPatternScope typeScope, ITypeInfo type)
         {
             foreach (ITypeInfo nestedType in type.GetNestedTypes(NestedTypeBindingFlags))
@@ -249,8 +249,8 @@ namespace Gallio.Framework.Pattern
         /// You can override this method to change the semantics as required.
         /// </para>
         /// </remarks>
-        /// <param name="testBuilder">The test builder</param>
-        /// <param name="type">The test type</param>
+        /// <param name="testBuilder">The test builder.</param>
+        /// <param name="type">The test type.</param>
         protected virtual void SetTestSemantics(ITestBuilder testBuilder, ITypeInfo type)
         {
             testBuilder.TestInstanceActions.BeforeTestInstanceChain.After(
@@ -391,7 +391,7 @@ namespace Gallio.Framework.Pattern
         /// of the type for determining their contribution to the test fixture.  Instance members are
         /// only included if the type is not abstract.
         /// </summary>
-        /// <param name="type">The type</param>
+        /// <param name="type">The type.</param>
         /// <returns>The binding flags for enumerating members</returns>
         protected virtual BindingFlags GetMemberBindingFlags(ITypeInfo type)
         {
@@ -408,8 +408,8 @@ namespace Gallio.Framework.Pattern
         /// with patterns, if it has generic parameters with patterns, or if any
         /// of its nested types satisfy the preceding rules.
         /// </summary>
-        /// <param name="evaluator">The pattern evaluator</param>
-        /// <param name="type">The type</param>
+        /// <param name="evaluator">The pattern evaluator.</param>
+        /// <param name="type">The type.</param>
         /// <returns>True if the type is likely a test type</returns>
         protected virtual bool InferTestType(IPatternEvaluator evaluator, ITypeInfo type)
         {

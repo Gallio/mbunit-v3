@@ -43,9 +43,9 @@ namespace Gallio.Framework.Pattern
         /// <summary>
         /// Verifies that the attribute is being used correctly.
         /// </summary>
-        /// <param name="scope">The scope</param>
-        /// <param name="method">The method</param>
-        /// <exception cref="PatternUsageErrorException">Thrown if the attribute is being used incorrectly</exception>
+        /// <param name="scope">The scope.</param>
+        /// <param name="method">The method.</param>
+        /// <exception cref="PatternUsageErrorException">Thrown if the attribute is being used incorrectly.</exception>
         protected virtual void Validate(IPatternScope scope, IMethodInfo method)
         {
             if (!scope.IsTestDeclaration || method == null)
@@ -61,8 +61,8 @@ namespace Gallio.Framework.Pattern
         /// or to add additional behaviors to the test.
         /// </para>
         /// </summary>
-        /// <param name="methodScope">The method scope</param>
-        /// <param name="method">The method</param>
+        /// <param name="methodScope">The method scope.</param>
+        /// <param name="method">The method.</param>
         protected virtual void DecorateMethodTest(IPatternScope methodScope, IMethodInfo method)
         {
         }

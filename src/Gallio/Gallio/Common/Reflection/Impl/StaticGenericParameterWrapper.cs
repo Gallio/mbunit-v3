@@ -42,11 +42,11 @@ namespace Gallio.Common.Reflection.Impl
         /// <summary>
         /// Creates a wrapper for a generic type parameter.
         /// </summary>
-        /// <param name="policy">The reflection policy</param>
-        /// <param name="handle">The underlying reflection object</param>
-        /// <param name="declaringType">The declaring type, which must be a generic type definition</param>
+        /// <param name="policy">The reflection policy.</param>
+        /// <param name="handle">The underlying reflection object.</param>
+        /// <param name="declaringType">The declaring type, which must be a generic type definition.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="policy"/>, <paramref name="handle"/>
-        /// or <paramref name="declaringType"/> is null</exception>
+        /// or <paramref name="declaringType"/> is null.</exception>
         public static StaticGenericParameterWrapper CreateGenericTypeParameter(StaticReflectionPolicy policy, object handle,
             StaticDeclaredTypeWrapper declaringType)
         {
@@ -59,11 +59,11 @@ namespace Gallio.Common.Reflection.Impl
         /// <summary>
         /// Creates a wrapper for a generic method parameter.
         /// </summary>
-        /// <param name="policy">The reflection policy</param>
-        /// <param name="handle">The underlying reflection object</param>
-        /// <param name="declaringMethod">The declaring method, which must be a generic method definition</param>
+        /// <param name="policy">The reflection policy.</param>
+        /// <param name="handle">The underlying reflection object.</param>
+        /// <param name="declaringMethod">The declaring method, which must be a generic method definition.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="policy"/>, <paramref name="handle"/>
-        /// or <paramref name="declaringMethod"/> is null</exception>
+        /// or <paramref name="declaringMethod"/> is null.</exception>
         public static StaticGenericParameterWrapper CreateGenericMethodParameter(StaticReflectionPolicy policy, object handle,
             StaticMethodWrapper declaringMethod)
         {

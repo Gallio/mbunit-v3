@@ -37,8 +37,8 @@ namespace Gallio.Runtime.Preferences
         /// <summary>
         /// Creates a file preference set.
         /// </summary>
-        /// <param name="preferenceSetFile">The preference set file</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="preferenceSetFile"/> is null</exception>
+        /// <param name="preferenceSetFile">The preference set file.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="preferenceSetFile"/> is null.</exception>
         public FilePreferenceSet(FileInfo preferenceSetFile)
         {
             if (preferenceSetFile == null)

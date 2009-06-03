@@ -46,9 +46,9 @@ namespace Gallio.Runner.Reports
         /// <param name="loadAttachmentContents">If true, loads attachment
         /// contents in referenced content files if they were not embedded otherwise
         /// the attachment contents are not loaded (but may be loaded later using <see cref="LoadReportAttachments" />).</param>
-        /// <param name="progressMonitor">The progress monitor</param>
+        /// <param name="progressMonitor">The progress monitor.</param>
         /// <returns>The loaded report</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="progressMonitor "/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="progressMonitor "/> is null.</exception>
         Report LoadReport(bool loadAttachmentContents, IProgressMonitor progressMonitor);
 
         /// <summary>
@@ -60,9 +60,9 @@ namespace Gallio.Runner.Reports
         /// nodes in the report that have non-null <see cref="AttachmentData.ContentPath" />.
         /// </para>
         /// </summary>
-        /// <param name="report">The report whose attachments are to be loaded</param>
-        /// <param name="progressMonitor">The progress monitor</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="report" /> or <paramref name="progressMonitor "/> is null</exception>
+        /// <param name="report">The report whose attachments are to be loaded.</param>
+        /// <param name="progressMonitor">The progress monitor.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="report" /> or <paramref name="progressMonitor "/> is null.</exception>
         void LoadReportAttachments(Report report, IProgressMonitor progressMonitor);
     }
 }

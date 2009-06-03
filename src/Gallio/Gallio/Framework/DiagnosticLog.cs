@@ -43,7 +43,7 @@ namespace Gallio.Framework
         /// <summary>
         /// Writes a message to the diagnostic log.
         /// </summary>
-        /// <param name="message">The message to write, may be null</param>
+        /// <param name="message">The message to write, may be null.</param>
         public static void WriteLine(string message)
         {
             if (message != null)
@@ -59,8 +59,8 @@ namespace Gallio.Framework
         /// Writes a formatted message to the diagnostic log.
         /// </summary>
         /// <seealso cref="String.Format(string, object[])"/>
-        /// <param name="messageFormat">The message format string, may be null</param>
-        /// <param name="messageArgs">The message arguments</param>
+        /// <param name="messageFormat">The message format string, may be null.</param>
+        /// <param name="messageArgs">The message arguments.</param>
         public static void WriteLine(string messageFormat, params object[] messageArgs)
         {
             if (messageFormat != null)

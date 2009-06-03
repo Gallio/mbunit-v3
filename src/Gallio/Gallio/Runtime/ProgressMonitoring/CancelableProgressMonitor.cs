@@ -147,7 +147,7 @@ namespace Gallio.Runtime.ProgressMonitoring
         /// Disposes the progress monitor, including cleaning up an marking as <see cref="Done"/>
         /// the current task, if any.
         /// </summary>
-        /// <param name="disposing">True if <see cref="Dispose()" /> was called</param>
+        /// <param name="disposing">True if <see cref="Dispose()" /> was called.</param>
         protected virtual void Dispose(bool disposing)
         {
             if (disposing)

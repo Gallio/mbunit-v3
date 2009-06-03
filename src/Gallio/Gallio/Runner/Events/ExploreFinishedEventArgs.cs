@@ -28,9 +28,9 @@ namespace Gallio.Runner.Events
         /// <summary>
         /// Initializes the event arguments.
         /// </summary>
-        /// <param name="success">True if test exploration was successful</param>
-        /// <param name="report">The report, including test model data on success</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="report"/> is null</exception>
+        /// <param name="success">True if test exploration was successful.</param>
+        /// <param name="report">The report, including test model data on success.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="report"/> is null.</exception>
         public ExploreFinishedEventArgs(bool success, Report report)
             : base(success)
         {

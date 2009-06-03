@@ -35,9 +35,9 @@ namespace Gallio.Common.Reflection.Impl
         /// <summary>
         /// Creates a wrapper.
         /// </summary>
-        /// <param name="policy">The reflection policy</param>
-        /// <param name="handle">The underlying reflection object</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="policy"/> or <paramref name="handle"/> is null</exception>
+        /// <param name="policy">The reflection policy.</param>
+        /// <param name="handle">The underlying reflection object.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="policy"/> or <paramref name="handle"/> is null.</exception>
         public StaticAttributeWrapper(StaticReflectionPolicy policy, object handle)
             : base(policy, handle)
         {

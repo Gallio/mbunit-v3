@@ -25,7 +25,7 @@ namespace Gallio.Framework.Data
     /// index is 0.
     /// </para>
     /// </summary>
-    /// <typeparam name="T">The value type</typeparam>
+    /// <typeparam name="T">The value type.</typeparam>
     public sealed class ScalarDataItem<T> : SimpleDataItem
     {
         private readonly T value;
@@ -33,9 +33,9 @@ namespace Gallio.Framework.Data
         /// <summary>
         /// Creates a scalar data item with optional metadata.
         /// </summary>
-        /// <param name="value">The value to hold</param>
-        /// <param name="metadataPairs">The metadata key/value pairs, or null if none</param>
-        /// <param name="isDynamic">True if the item contains dynamic data</param>
+        /// <param name="value">The value to hold.</param>
+        /// <param name="metadataPairs">The metadata key/value pairs, or null if none.</param>
+        /// <param name="isDynamic">True if the item contains dynamic data.</param>
         public ScalarDataItem(T value, IEnumerable<KeyValuePair<string, string>> metadataPairs, bool isDynamic)
             : base(metadataPairs, isDynamic)
         {

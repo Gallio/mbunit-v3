@@ -20,8 +20,8 @@ namespace Gallio.Common
     /// <summary>
     /// An immutable record that holds two values.
     /// </summary>
-    /// <typeparam name="TFirst">The type of the first value</typeparam>
-    /// <typeparam name="TSecond">The type of the second value</typeparam>
+    /// <typeparam name="TFirst">The type of the first value.</typeparam>
+    /// <typeparam name="TSecond">The type of the second value.</typeparam>
     public struct Pair<TFirst, TSecond>
     {
         private readonly TFirst first;
@@ -30,8 +30,8 @@ namespace Gallio.Common
         /// <summary>
         /// Creates a pair.
         /// </summary>
-        /// <param name="first">The first value</param>
-        /// <param name="second">The second value</param>
+        /// <param name="first">The first value.</param>
+        /// <param name="second">The second value.</param>
         public Pair(TFirst first, TSecond second)
         {
             this.first = first;

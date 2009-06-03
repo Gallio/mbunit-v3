@@ -34,8 +34,8 @@ namespace Gallio.Framework.Pattern
         /// <summary>
         /// Creates a test model builder.
         /// </summary>
-        /// <param name="reflectionPolicy">The reflection policy</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="reflectionPolicy"/> is null</exception>
+        /// <param name="reflectionPolicy">The reflection policy.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="reflectionPolicy"/> is null.</exception>
         public ReflectionOnlyTestModelBuilder(IReflectionPolicy reflectionPolicy)
         {
             if (reflectionPolicy == null)

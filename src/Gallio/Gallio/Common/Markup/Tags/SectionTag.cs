@@ -41,8 +41,8 @@ namespace Gallio.Common.Markup.Tags
         /// <summary>
         /// Creates an initialized tag.
         /// </summary>
-        /// <param name="name">The section name</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> is null</exception>
+        /// <param name="name">The section name.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> is null.</exception>
         public SectionTag(string name)
         {
             if (name == null)
@@ -53,7 +53,7 @@ namespace Gallio.Common.Markup.Tags
         /// <summary>
         /// Gets or sets the section name, not null.
         /// </summary>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
         [XmlAttribute("name")]
         public string Name
         {

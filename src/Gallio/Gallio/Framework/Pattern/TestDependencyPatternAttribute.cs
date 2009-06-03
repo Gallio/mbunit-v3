@@ -53,9 +53,9 @@ namespace Gallio.Framework.Pattern
         /// <summary>
         /// Verifies that the attribute is being used correctly.
         /// </summary>
-        /// <param name="scope">The scope</param>
-        /// <param name="codeElement">The code element</param>
-        /// <exception cref="PatternUsageErrorException">Thrown if the attribute is being used incorrectly</exception>
+        /// <param name="scope">The scope.</param>
+        /// <param name="codeElement">The code element.</param>
+        /// <exception cref="PatternUsageErrorException">Thrown if the attribute is being used incorrectly.</exception>
         protected virtual void Validate(IPatternScope scope, ICodeElementInfo codeElement)
         {
             if (!scope.IsTestDeclaration)
@@ -65,8 +65,8 @@ namespace Gallio.Framework.Pattern
         /// <summary>
         /// Gets the code element that declares the tests on which this test should depend.
         /// </summary>
-        /// <param name="scope">The scope</param>
-        /// <param name="codeElement">The code element</param>
+        /// <param name="scope">The scope.</param>
+        /// <param name="codeElement">The code element.</param>
         /// <returns>The code element representing the dependency</returns>
         protected abstract ICodeElementInfo GetDependency(IPatternScope scope, ICodeElementInfo codeElement);
     }

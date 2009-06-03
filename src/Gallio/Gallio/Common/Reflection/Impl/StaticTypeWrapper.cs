@@ -31,10 +31,10 @@ namespace Gallio.Common.Reflection.Impl
         /// <summary>
         /// Creates a wrapper.
         /// </summary>
-        /// <param name="policy">The reflection policy</param>
-        /// <param name="handle">The underlying reflection object</param>
-        /// <param name="declaringType">The declaring type, or null if none</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="policy"/> or <paramref name="handle"/> is null</exception>
+        /// <param name="policy">The reflection policy.</param>
+        /// <param name="handle">The underlying reflection object.</param>
+        /// <param name="declaringType">The declaring type, or null if none.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="policy"/> or <paramref name="handle"/> is null.</exception>
         protected StaticTypeWrapper(StaticReflectionPolicy policy, object handle, StaticDeclaredTypeWrapper declaringType)
             : base(policy, handle, declaringType)
         {
@@ -382,7 +382,7 @@ namespace Gallio.Common.Reflection.Impl
         /// <summary>
         /// Applies a type substitution and returns the resulting type.
         /// </summary>
-        /// <param name="substitution">The substitution</param>
+        /// <param name="substitution">The substitution.</param>
         /// <returns>The type after substitution has been performed</returns>
         protected internal virtual ITypeInfo ApplySubstitution(StaticTypeSubstitution substitution)
         {

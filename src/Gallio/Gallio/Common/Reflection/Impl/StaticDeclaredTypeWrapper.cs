@@ -46,11 +46,11 @@ namespace Gallio.Common.Reflection.Impl
         /// <summary>
         /// Creates a wrapper.
         /// </summary>
-        /// <param name="policy">The reflection policy</param>
-        /// <param name="handle">The underlying reflection object</param>
-        /// <param name="declaringType">The declaring type, or null if none</param>
-        /// <param name="substitution">The type substitution for generic parameters</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="policy"/> or <paramref name="handle"/> is null</exception>
+        /// <param name="policy">The reflection policy.</param>
+        /// <param name="handle">The underlying reflection object.</param>
+        /// <param name="declaringType">The declaring type, or null if none.</param>
+        /// <param name="substitution">The type substitution for generic parameters.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="policy"/> or <paramref name="handle"/> is null.</exception>
         public StaticDeclaredTypeWrapper(StaticReflectionPolicy policy, object handle,
             StaticDeclaredTypeWrapper declaringType, StaticTypeSubstitution substitution)
             : base(policy, handle, declaringType)
@@ -659,7 +659,7 @@ namespace Gallio.Common.Reflection.Impl
         /// <summary>
         /// Composes the substitution of the type with the specified substitution and returns a new wrapper.
         /// </summary>
-        /// <param name="substitution">The substitution</param>
+        /// <param name="substitution">The substitution.</param>
         /// <returns>The new wrapper with the composed substitution</returns>
         public StaticDeclaredTypeWrapper ComposeSubstitution(StaticTypeSubstitution substitution)
         {

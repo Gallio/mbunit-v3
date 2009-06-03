@@ -44,7 +44,7 @@ namespace Gallio.Common.Markup.Tags
         /// <summary>
         /// Creates an initialized tag.
         /// </summary>
-        /// <param name="marker">The marker</param>
+        /// <param name="marker">The marker.</param>
         public MarkerTag(Marker marker)
             : this()
         {
@@ -57,7 +57,7 @@ namespace Gallio.Common.Markup.Tags
         /// <summary>
         /// Gets or sets the marker class, not null.
         /// </summary>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
         /// <exception cref="ArgumentException">Thrown if the <paramref name="value"/> is not a valid identifier.
         /// <seealso cref="Markup.Marker.ValidateIdentifier"/></exception>
         [XmlAttribute("class")]
@@ -164,12 +164,12 @@ namespace Gallio.Common.Markup.Tags
             /// <summary>
             /// Creates an initialized attribute.
             /// </summary>
-            /// <param name="name">The attribute name</param>
-            /// <param name="value">The attribute value</param>
+            /// <param name="name">The attribute name.</param>
+            /// <param name="value">The attribute value.</param>
             /// <exception cref="ArgumentException">Thrown if <paramref name="name"/>
-            /// is invalid</exception>
+            /// is invalid.</exception>
             /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/>
-            /// or <paramref name="value"/> is null</exception>
+            /// or <paramref name="value"/> is null.</exception>
             public Attribute(string name, string value)
             {
                 Marker.ValidateAttribute(name, value);
@@ -181,7 +181,7 @@ namespace Gallio.Common.Markup.Tags
             /// <summary>
             /// Gets or sets the attribute name, not null.
             /// </summary>
-            /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+            /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
             /// <exception cref="ArgumentException">Thrown if the <paramref name="value"/> is not a valid identifier.</exception>
             [XmlAttribute("name")]
             public string Name
@@ -197,7 +197,7 @@ namespace Gallio.Common.Markup.Tags
             /// <summary>
             /// Gets or sets the attribute value, not null.
             /// </summary>
-            /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+            /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
             [XmlAttribute("value")]
             public string Value
             {

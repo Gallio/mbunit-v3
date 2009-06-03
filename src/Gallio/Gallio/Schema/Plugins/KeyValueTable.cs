@@ -44,7 +44,7 @@ namespace Gallio.Schema.Plugins
         /// Gets or sets the Xml elements that describe the property entries
         /// during serialization.
         /// </summary>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
         [XmlAnyElement]
         public XmlElement[] Entries
         {
@@ -74,7 +74,7 @@ namespace Gallio.Schema.Plugins
         /// <summary>
         /// Gets or sets a mutable view of the properties as a property set.
         /// </summary>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
         [XmlIgnore]
         public PropertySet PropertySet
         {

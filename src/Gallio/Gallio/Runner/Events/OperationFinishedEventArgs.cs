@@ -27,7 +27,7 @@ namespace Gallio.Runner
         /// <summary>
         /// Initializes the event arguments.
         /// </summary>
-        /// <param name="success">True if the operation completed successfully</param>
+        /// <param name="success">True if the operation completed successfully.</param>
         protected OperationFinishedEventArgs(bool success)
         {
             this.success = success;

@@ -62,9 +62,9 @@ namespace Gallio.Framework.Pattern
         /// <summary>
         /// Verifies that the attribute is being used correctly.
         /// </summary>
-        /// <param name="containingScope">The containing scope</param>
-        /// <param name="constructor">The constructor</param>
-        /// <exception cref="PatternUsageErrorException">Thrown if the attribute is being used incorrectly</exception>
+        /// <param name="containingScope">The containing scope.</param>
+        /// <param name="constructor">The constructor.</param>
+        /// <exception cref="PatternUsageErrorException">Thrown if the attribute is being used incorrectly.</exception>
         protected virtual void Validate(IPatternScope containingScope, IConstructorInfo constructor)
         {
             if (!containingScope.CanAddTestParameter || constructor == null)
@@ -78,8 +78,8 @@ namespace Gallio.Framework.Pattern
         /// Initializes the <see cref="PatternTestDataContext" />.
         /// </para>
         /// </summary>
-        /// <param name="dataContextScope">The data context scope</param>
-        /// <param name="constructor">The constructor</param>
+        /// <param name="dataContextScope">The data context scope.</param>
+        /// <param name="constructor">The constructor.</param>
         protected virtual void InitializeDataContext(IPatternScope dataContextScope, IConstructorInfo constructor)
         {
             ITypeInfo declaringType = constructor.DeclaringType;

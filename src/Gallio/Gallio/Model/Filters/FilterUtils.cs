@@ -23,7 +23,7 @@ namespace Gallio.Model.Filters
         /// <summary>
         /// Parses a test filter set.
         /// </summary>
-        /// <param name="filterExpr">The filter expression</param>
+        /// <param name="filterExpr">The filter expression.</param>
         /// <returns>The parsed filter set</returns>
         public static FilterSet<ITest> ParseTestFilterSet(string filterExpr)
         {
@@ -34,7 +34,7 @@ namespace Gallio.Model.Filters
         /// <summary>
         /// Parses a test filter.
         /// </summary>
-        /// <param name="filterExpr">The filter expression</param>
+        /// <param name="filterExpr">The filter expression.</param>
         /// <returns>The parsed filter</returns>
         public static Filter<ITest> ParseTestFilter(string filterExpr)
         {

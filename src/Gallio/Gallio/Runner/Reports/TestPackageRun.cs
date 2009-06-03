@@ -73,7 +73,7 @@ namespace Gallio.Runner.Reports
         /// <summary>
         /// Gets or sets the statistics for the package run.
         /// </summary>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
         [XmlElement("statistics", Namespace = XmlSerializationUtils.GallioNamespace, IsNullable = false)]
         public Statistics Statistics
         {

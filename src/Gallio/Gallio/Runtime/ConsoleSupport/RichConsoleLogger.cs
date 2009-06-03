@@ -30,8 +30,8 @@ namespace Gallio.Runtime.ConsoleSupport
         /// <summary>
         /// Creates a logger.
         /// </summary>
-        /// <param name="console">The console</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="console"/> is null</exception>
+        /// <param name="console">The console.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="console"/> is null.</exception>
         public RichConsoleLogger(IRichConsole console)
         {
             if (console == null)

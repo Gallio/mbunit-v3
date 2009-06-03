@@ -76,11 +76,11 @@ namespace Gallio.Runtime.Hosting
         /// <summary>
         /// Creates an uninitialized host.
         /// </summary>
-        /// <param name="hostSetup">The host setup</param>
-        /// <param name="logger">The logger for host message output</param>
-        /// <param name="runtimePath">The runtime path where the hosting executable will be found</param>
+        /// <param name="hostSetup">The host setup.</param>
+        /// <param name="logger">The logger for host message output.</param>
+        /// <param name="runtimePath">The runtime path where the hosting executable will be found.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="hostSetup"/> 
-        /// <paramref name="logger"/>, or <paramref name="runtimePath"/> is null</exception>
+        /// <paramref name="logger"/>, or <paramref name="runtimePath"/> is null.</exception>
         public IsolatedProcessHost(HostSetup hostSetup, ILogger logger, string runtimePath)
             : base(hostSetup, logger, PingInterval)
         {
@@ -135,9 +135,9 @@ namespace Gallio.Runtime.Hosting
         /// <remarks>
         /// This method can be overridden to change how the process is started.
         /// </remarks>
-        /// <param name="executablePath">The executable path</param>
-        /// <param name="arguments">The command-line arguments</param>
-        /// <param name="workingDirectory">The working directory</param>
+        /// <param name="executablePath">The executable path.</param>
+        /// <param name="arguments">The command-line arguments.</param>
+        /// <param name="workingDirectory">The working directory.</param>
         /// <returns>The process task</returns>
         protected virtual ProcessTask CreateProcessTask(string executablePath, string arguments, string workingDirectory)
         {
@@ -147,10 +147,10 @@ namespace Gallio.Runtime.Hosting
         /// <summary>
         /// Prepares the parameters for the remote connection.
         /// </summary>
-        /// <param name="uniqueId">The unique id of the host</param>
-        /// <param name="hostConnectionArguments">Set to the host application arguments used to configure its server channel</param>
-        /// <param name="clientChannelFactory">Set to a factory used to create the local client channel</param>
-        /// <param name="callbackChannelFactory">Set to a factory used to create the local server channel to allow the remote host to call back to this one</param>
+        /// <param name="uniqueId">The unique id of the host.</param>
+        /// <param name="hostConnectionArguments">Set to the host application arguments used to configure its server channel.</param>
+        /// <param name="clientChannelFactory">Set to a factory used to create the local client channel.</param>
+        /// <param name="callbackChannelFactory">Set to a factory used to create the local server channel to allow the remote host to call back to this one.</param>
         protected virtual void PrepareConnection(string uniqueId, out string hostConnectionArguments,
             out Func<IClientChannel> clientChannelFactory, out Func<IServerChannel> callbackChannelFactory)
         {

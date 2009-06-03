@@ -37,13 +37,13 @@ namespace Gallio.Runtime
         /// *.plugin files to register new components and facilities as required.
         /// </para>
         /// </summary>
-        /// <param name="setup">The runtime setup parameters</param>
-        /// <param name="logger">The runtime logging service</param>
+        /// <param name="setup">The runtime setup parameters.</param>
+        /// <param name="logger">The runtime logging service.</param>
         /// <returns>An object that when disposed automatically calls <see cref="Shutdown" />.
         /// This is particularly useful in combination with the C# "using" statement
         /// or its equivalent.</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="setup"/> or <paramref name="logger"/> is null</exception>
-        /// <exception cref="InvalidOperationException">Thrown if the runtime has already been initialized</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="setup"/> or <paramref name="logger"/> is null.</exception>
+        /// <exception cref="InvalidOperationException">Thrown if the runtime has already been initialized.</exception>
         public static IDisposable Initialize(RuntimeSetup setup, ILogger logger)
         {
             if (setup == null)

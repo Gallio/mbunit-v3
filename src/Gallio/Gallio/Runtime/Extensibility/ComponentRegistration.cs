@@ -37,12 +37,12 @@ namespace Gallio.Runtime.Extensibility
         /// <summary>
         /// Creates a component registration.
         /// </summary>
-        /// <param name="plugin">The plugin to which the component will belong</param>
-        /// <param name="service">The service implemented by the component</param>
-        /// <param name="componentId">The component id</param>
-        /// <param name="componentTypeName">The component type name, or null to use the default component type specified by the service</param>
+        /// <param name="plugin">The plugin to which the component will belong.</param>
+        /// <param name="service">The service implemented by the component.</param>
+        /// <param name="componentId">The component id.</param>
+        /// <param name="componentTypeName">The component type name, or null to use the default component type specified by the service.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="plugin"/>, <paramref name="service"/>,
-        /// <paramref name="componentId"/> is null</exception>
+        /// <paramref name="componentId"/> is null.</exception>
         public ComponentRegistration(IPluginDescriptor plugin, IServiceDescriptor service, string componentId, TypeName componentTypeName)
         {
             Plugin = plugin;
@@ -54,7 +54,7 @@ namespace Gallio.Runtime.Extensibility
         /// <summary>
         /// Gets or sets the plugin to which the component will belong.
         /// </summary>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
         public IPluginDescriptor Plugin
         {
             get { return plugin; }
@@ -69,7 +69,7 @@ namespace Gallio.Runtime.Extensibility
         /// <summary>
         /// Gets or sets the service implemented by the component.
         /// </summary>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
         public IServiceDescriptor Service
         {
             get { return service; }
@@ -84,7 +84,7 @@ namespace Gallio.Runtime.Extensibility
         /// <summary>
         /// Gets or sets the component id.
         /// </summary>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
         public string ComponentId
         {
             get { return componentId; }
@@ -108,7 +108,7 @@ namespace Gallio.Runtime.Extensibility
         /// <summary>
         /// Gets or sets the component properties.
         /// </summary>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
         public PropertySet ComponentProperties
         {
             get
@@ -128,7 +128,7 @@ namespace Gallio.Runtime.Extensibility
         /// <summary>
         /// Gets or sets the component handler factory.
         /// </summary>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
         public IHandlerFactory ComponentHandlerFactory
         {
             get
@@ -148,7 +148,7 @@ namespace Gallio.Runtime.Extensibility
         /// <summary>
         /// Gets or sets the traits properties.
         /// </summary>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
         public PropertySet TraitsProperties
         {
             get

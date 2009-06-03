@@ -29,10 +29,10 @@ namespace Gallio.Common.Markup
         /// <summary>
         /// Creates an attachment.
         /// </summary>
-        /// <param name="name">The attachment name, not null</param>
-        /// <param name="contentType">The content type, not null</param>
-        /// <param name="bytes">The binary data, not null</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="contentType"/> or <paramref name="bytes"/> is null</exception>
+        /// <param name="name">The attachment name, not null.</param>
+        /// <param name="contentType">The content type, not null.</param>
+        /// <param name="bytes">The binary data, not null.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="contentType"/> or <paramref name="bytes"/> is null.</exception>
         public BinaryAttachment(string name, string contentType, byte[] bytes)
             : base(name, contentType)
         {

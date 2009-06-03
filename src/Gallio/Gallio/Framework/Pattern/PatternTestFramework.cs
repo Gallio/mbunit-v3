@@ -87,7 +87,7 @@ namespace Gallio.Framework.Pattern
         /// the assembly will not be explored for tests.
         /// </para>
         /// </remarks>
-        /// <param name="assembly">The test assembly</param>
+        /// <param name="assembly">The test assembly.</param>
         /// <returns>The pattern test framework extension information</returns>
         protected abstract IEnumerable<PatternTestFrameworkExtensionInfo> GetExtensions(IAssemblyInfo assembly);
     }

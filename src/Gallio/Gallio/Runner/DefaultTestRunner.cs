@@ -64,8 +64,8 @@ namespace Gallio.Runner
         /// <summary>
         /// Creates a test runner.
         /// </summary>
-        /// <param name="testDriverFactory">The test driver factory</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="testDriverFactory"/> is null</exception>
+        /// <param name="testDriverFactory">The test driver factory.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="testDriverFactory"/> is null.</exception>
         public DefaultTestRunner(ITestDriverFactory testDriverFactory)
         {
             if (testDriverFactory == null)

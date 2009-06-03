@@ -43,8 +43,8 @@ namespace Gallio.Runtime.ProgressMonitoring
         /// <summary>
         /// Creates a wrapper for the specified progress monitor.
         /// </summary>
-        /// <param name="progressMonitor">The progress monitor</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="progressMonitor"/> is null</exception>
+        /// <param name="progressMonitor">The progress monitor.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="progressMonitor"/> is null.</exception>
         public RemoteProgressMonitor(IProgressMonitor progressMonitor)
         {
             if (progressMonitor == null)

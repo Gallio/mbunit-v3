@@ -31,31 +31,31 @@ namespace Gallio.Common.Reflection
         /// <summary>
         /// Gets the constructor used to create the attribute.
         /// </summary>
-        /// <exception cref="NotSupportedException">Thrown if not supported</exception>
+        /// <exception cref="NotSupportedException">Thrown if not supported.</exception>
         IConstructorInfo Constructor { get; }
 
         /// <summary>
         /// Gets an attribute field value.
         /// </summary>
-        /// <param name="name">The field name</param>
+        /// <param name="name">The field name.</param>
         /// <returns>The value, or a default value of the field's type if the field with the specified name
         /// was not initialized by the attribute declaration</returns>
-        /// <exception cref="ArgumentException">Thrown if there is no writable instance field with the specified name</exception>
+        /// <exception cref="ArgumentException">Thrown if there is no writable instance field with the specified name.</exception>
         ConstantValue GetFieldValue(string name);
 
         /// <summary>
         /// Gets an attribute property value.
         /// </summary>
-        /// <param name="name">The property name</param>
+        /// <param name="name">The property name.</param>
         /// <returns>The value, or a default value of the propery's type if the property with the specified name was not
         /// initialized by the attribute declaration</returns>
-        /// <exception cref="ArgumentException">Thrown if there is no writable instance property with the specified name</exception>
+        /// <exception cref="ArgumentException">Thrown if there is no writable instance property with the specified name.</exception>
         ConstantValue GetPropertyValue(string name);
 
         /// <summary>
         /// Gets the initialized attribute constructor argument values.
         /// </summary>
-        /// <exception cref="NotSupportedException">Thrown if not supported</exception>
+        /// <exception cref="NotSupportedException">Thrown if not supported.</exception>
         ConstantValue[] InitializedArgumentValues { get; }
 
         /// <summary>
@@ -73,9 +73,9 @@ namespace Gallio.Common.Reflection
         /// </summary>
         /// <param name="throwOnError">If true, throws an exception if the target could
         /// not be resolved, otherwise the result may include unresolved types, enums or arrays
-        /// though it still may throw an exception if the attribute class cannot be instantiated</param>
+        /// though it still may throw an exception if the attribute class cannot be instantiated.</param>
         /// <returns>The attribute</returns>
-        /// <exception cref="ReflectionResolveException">Thrown if the attribute could not be resolved</exception>
+        /// <exception cref="ReflectionResolveException">Thrown if the attribute could not be resolved.</exception>
         object Resolve(bool throwOnError);
     }
 }

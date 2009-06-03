@@ -38,7 +38,7 @@ namespace Gallio.Runtime.FileTypes
         /// called if the file in question actually has a matching name.
         /// </para>
         /// </remarks>
-        /// <param name="fileInspector">The file inspector, never null</param>
+        /// <param name="fileInspector">The file inspector, never null.</param>
         /// <returns>True if the file type was recognized</returns>
         bool IsRecognizedFile(IFileInspector fileInspector);
     }

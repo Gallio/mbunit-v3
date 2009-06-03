@@ -47,8 +47,8 @@ namespace Gallio.Framework.Data
         /// <summary>
         /// Creates a data binding context.
         /// </summary>
-        /// <param name="converter">The converter</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="converter"/> is null</exception>
+        /// <param name="converter">The converter.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="converter"/> is null.</exception>
         public DataBindingContext(IConverter converter)
         {
             if (converter == null)
@@ -111,7 +111,7 @@ namespace Gallio.Framework.Data
         /// <see cref="DataSets" /> together.
         /// By default the strategy is <see cref="CombinatorialJoinStrategy"/>.
         /// </summary>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
         public IJoinStrategy Strategy
         {
             get { return joinedDataSet.Strategy; }
@@ -130,9 +130,9 @@ namespace Gallio.Framework.Data
         /// before <see cref="GetItems" /> is called to ensure that the <see cref="IDataSet"/>
         /// is included in the enumeration.
         /// </remarks>
-        /// <param name="dataSet">The data set</param>
-        /// <param name="binding">The data binding</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="dataSet"/> or <paramref name="binding"/> is null</exception>
+        /// <param name="dataSet">The data set.</param>
+        /// <param name="binding">The data binding.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="dataSet"/> or <paramref name="binding"/> is null.</exception>
         public IDataAccessor RegisterBinding(IDataSet dataSet, DataBinding binding)
         {
             if (dataSet == null)

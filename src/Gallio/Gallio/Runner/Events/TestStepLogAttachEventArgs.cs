@@ -30,12 +30,12 @@ namespace Gallio.Runner.Events
         /// <summary>
         /// Initializes the event arguments.
         /// </summary>
-        /// <param name="report">The report</param>
-        /// <param name="test">The test data</param>
-        /// <param name="testStepRun">The test step run</param>
-        /// <param name="attachment">The attachment</param>
+        /// <param name="report">The report.</param>
+        /// <param name="test">The test data.</param>
+        /// <param name="testStepRun">The test step run.</param>
+        /// <param name="attachment">The attachment.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="report"/>, <paramref name="test"/>
-        /// <paramref name="testStepRun"/> or <paramref name="attachment"/> is null</exception>
+        /// <paramref name="testStepRun"/> or <paramref name="attachment"/> is null.</exception>
         public TestStepLogAttachEventArgs(Report report, TestData test, TestStepRun testStepRun, Attachment attachment)
             : base(report, test, testStepRun)
         {

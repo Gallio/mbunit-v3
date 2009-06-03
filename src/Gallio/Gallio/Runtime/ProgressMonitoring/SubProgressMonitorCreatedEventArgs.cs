@@ -27,8 +27,8 @@ namespace Gallio.Runtime.ProgressMonitoring
         /// <summary>
         /// Creates an event object.
         /// </summary>
-        /// <param name="subProgressMonitor">The new sub-progress monitor</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="subProgressMonitor"/> is null</exception>
+        /// <param name="subProgressMonitor">The new sub-progress monitor.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="subProgressMonitor"/> is null.</exception>
         public SubProgressMonitorCreatedEventArgs(ObservableProgressMonitor subProgressMonitor)
         {
             if (subProgressMonitor == null)

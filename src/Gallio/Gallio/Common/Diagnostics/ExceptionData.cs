@@ -33,8 +33,8 @@ namespace Gallio.Common.Diagnostics
         /// <summary>
         /// Creates an exception data object from an exception.
         /// </summary>
-        /// <param name="exception">The exception</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="exception"/> is null</exception>
+        /// <param name="exception">The exception.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="exception"/> is null.</exception>
         public ExceptionData(Exception exception)
         {
             if (exception == null)
@@ -50,12 +50,12 @@ namespace Gallio.Common.Diagnostics
         /// <summary>
         /// Creates an exception data object.
         /// </summary>
-        /// <param name="type">The exception type full name</param>
-        /// <param name="message">The exception message text</param>
-        /// <param name="stackTrace">The exception stack trace</param>
-        /// <param name="innerException">The inner exception data, or null if none</param>
+        /// <param name="type">The exception type full name.</param>
+        /// <param name="message">The exception message text.</param>
+        /// <param name="stackTrace">The exception stack trace.</param>
+        /// <param name="innerException">The inner exception data, or null if none.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="type"/>,
-        /// <paramref name="message"/> or <paramref name="stackTrace"/> is null</exception>
+        /// <paramref name="message"/> or <paramref name="stackTrace"/> is null.</exception>
         public ExceptionData(string type, string message, string stackTrace, ExceptionData innerException)
             : this(type, message, new StackTraceData(stackTrace), innerException)
         {
@@ -64,12 +64,12 @@ namespace Gallio.Common.Diagnostics
         /// <summary>
         /// Creates an exception data object.
         /// </summary>
-        /// <param name="type">The exception type full name</param>
-        /// <param name="message">The exception message text</param>
-        /// <param name="stackTrace">The exception stack trace</param>
-        /// <param name="innerException">The inner exception data, or null if none</param>
+        /// <param name="type">The exception type full name.</param>
+        /// <param name="message">The exception message text.</param>
+        /// <param name="stackTrace">The exception stack trace.</param>
+        /// <param name="innerException">The inner exception data, or null if none.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="type"/>,
-        /// <paramref name="message"/> or <paramref name="stackTrace"/> is null</exception>
+        /// <paramref name="message"/> or <paramref name="stackTrace"/> is null.</exception>
         public ExceptionData(string type, string message, StackTraceData stackTrace, ExceptionData innerException)
         {
             if (type == null)
@@ -138,8 +138,8 @@ namespace Gallio.Common.Diagnostics
         /// <remarks>
         /// The exception will not be terminated by a new line.
         /// </remarks>
-        /// <param name="writer">The log stream writer</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="writer"/> is null</exception>
+        /// <param name="writer">The log stream writer.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="writer"/> is null.</exception>
         public void WriteTo(MarkupStreamWriter writer)
         {
             if (writer == null)

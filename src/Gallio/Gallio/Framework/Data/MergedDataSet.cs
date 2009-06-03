@@ -34,7 +34,7 @@ namespace Gallio.Framework.Data
         /// Gets or sets the <see cref="IMergeStrategy"/>.
         /// By default the strategy is <see cref="ConcatenationMergeStrategy"/>.
         /// </summary>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
         public IMergeStrategy Strategy
         {
             get { return strategy; }

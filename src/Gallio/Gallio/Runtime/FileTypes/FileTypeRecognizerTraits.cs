@@ -31,11 +31,11 @@ namespace Gallio.Runtime.FileTypes
         /// <summary>
         /// Creates traits for a file type recognizer.
         /// </summary>
-        /// <param name="id">The file type id</param>
-        /// <param name="description">The file type description</param>
+        /// <param name="id">The file type id.</param>
+        /// <param name="description">The file type description.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="id"/> or
-        /// <paramref name="description"/> is null</exception>
-        /// <exception cref="ArgumentException">Thrown if <paramref name="id"/> is empty</exception>
+        /// <paramref name="description"/> is null.</exception>
+        /// <exception cref="ArgumentException">Thrown if <paramref name="id"/> is empty.</exception>
         public FileTypeRecognizerTraits(string id, string description)
         {
             if (id == null)

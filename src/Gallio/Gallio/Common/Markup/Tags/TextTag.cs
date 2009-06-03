@@ -42,8 +42,8 @@ namespace Gallio.Common.Markup.Tags
         /// <summary>
         /// Creates an initialized text tag.
         /// </summary>
-        /// <param name="text">The text within the tag</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="text"/> is null</exception>
+        /// <param name="text">The text within the tag.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="text"/> is null.</exception>
         public TextTag(string text)
         {
             if (text == null)
@@ -54,7 +54,7 @@ namespace Gallio.Common.Markup.Tags
         /// <summary>
         /// Gets or sets the text within the tag, not null.
         /// </summary>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
         public string Text
         {
             get { return text; }
@@ -112,7 +112,7 @@ namespace Gallio.Common.Markup.Tags
         /// <summary>
         /// Provides the Xml schema for this element.
         /// </summary>
-        /// <param name="schemas">The schema set</param>
+        /// <param name="schemas">The schema set.</param>
         /// <returns>The schema type of the element</returns>
         public static XmlQualifiedName ProvideXmlSchema(XmlSchemaSet schemas)
         {

@@ -34,11 +34,11 @@ namespace Gallio.Runner.Reports
         /// <summary>
         /// Creates a file-system based representation of a report container.
         /// </summary>
-        /// <param name="reportDirectory">The report directory path</param>
-        /// <param name="reportName">The report name</param>
+        /// <param name="reportDirectory">The report directory path.</param>
+        /// <param name="reportName">The report name.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="reportDirectory"/> or
-        /// <paramref name="reportName"/> is null</exception>
-        /// <exception cref="ArgumentException">Thrown if <paramref name="reportName"/> is an empty string</exception>
+        /// <paramref name="reportName"/> is null.</exception>
+        /// <exception cref="ArgumentException">Thrown if <paramref name="reportName"/> is an empty string.</exception>
         public FileSystemReportContainer(string reportDirectory, string reportName)
         {
             if (reportDirectory == null)

@@ -27,8 +27,8 @@ namespace Gallio.Runner.Events
         /// <summary>
         /// Initializes the event arguments.
         /// </summary>
-        /// <param name="options">The test runner options</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="options"/> is null</exception>
+        /// <param name="options">The test runner options.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="options"/> is null.</exception>
         public InitializeStartedEventArgs(TestRunnerOptions options)
         {
             if (options == null)

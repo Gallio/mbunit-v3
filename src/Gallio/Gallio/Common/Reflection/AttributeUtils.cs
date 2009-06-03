@@ -27,12 +27,12 @@ namespace Gallio.Common.Reflection
         /// <summary>
         /// Gets the attribute of the specified type, or null if none.
         /// </summary>
-        /// <typeparam name="T">The attribute type</typeparam>
-        /// <param name="element">The code element</param>
-        /// <param name="inherit">If true, includes inherited attributes</param>
+        /// <typeparam name="T">The attribute type.</typeparam>
+        /// <param name="element">The code element.</param>
+        /// <param name="inherit">If true, includes inherited attributes.</param>
         /// <returns>The attribute, or null if none</returns>
         /// <exception cref="InvalidOperationException">Thrown if the code element
-        /// has multiple attributes of the specified type</exception>
+        /// has multiple attributes of the specified type.</exception>
         public static T GetAttribute<T>(ICodeElementInfo element, bool inherit) where T : class
         {
             return (T)GetAttribute(element, typeof(T), inherit);
@@ -41,9 +41,9 @@ namespace Gallio.Common.Reflection
         /// <summary>
         /// Gets the attributes of the specified type.
         /// </summary>
-        /// <param name="element">The code element</param>
-        /// <param name="inherit">If true, includes inherited attributes</param>
-        /// <typeparam name="T">The attribute type</typeparam>
+        /// <param name="element">The code element.</param>
+        /// <param name="inherit">If true, includes inherited attributes.</param>
+        /// <typeparam name="T">The attribute type.</typeparam>
         /// <returns>The attributes</returns>
         public static IEnumerable<T> GetAttributes<T>(ICodeElementInfo element, bool inherit) where T : class
         {
@@ -54,9 +54,9 @@ namespace Gallio.Common.Reflection
         /// <summary>
         /// Returns true if the code element has an attribute of the specified type.
         /// </summary>
-        /// <param name="element">The code element</param>
-        /// <param name="inherit">If true, includes inherited attributes</param>
-        /// <typeparam name="T">The attribute type</typeparam>
+        /// <param name="element">The code element.</param>
+        /// <param name="inherit">If true, includes inherited attributes.</param>
+        /// <typeparam name="T">The attribute type.</typeparam>
         /// <returns>True if the code element has at least one attribute of the specified type</returns>
         public static bool HasAttribute<T>(ICodeElementInfo element, bool inherit)
         {
@@ -66,12 +66,12 @@ namespace Gallio.Common.Reflection
         /// <summary>
         /// Gets the attribute of the specified type, or null if none.
         /// </summary>
-        /// <param name="element">The code element</param>
-        /// <param name="attributeType">The attribute type</param>
-        /// <param name="inherit">If true, includes inherited attributes</param>
+        /// <param name="element">The code element.</param>
+        /// <param name="attributeType">The attribute type.</param>
+        /// <param name="inherit">If true, includes inherited attributes.</param>
         /// <returns>The attribute, or null if none</returns>
         /// <exception cref="InvalidOperationException">Thrown if the code element
-        /// has multiple attributes of the specified type</exception>
+        /// has multiple attributes of the specified type.</exception>
         public static object GetAttribute(ICodeElementInfo element, Type attributeType, bool inherit)
         {
             IEnumerator<object> en = element.GetAttributes(Reflector.Wrap(attributeType), inherit).GetEnumerator();
@@ -90,9 +90,9 @@ namespace Gallio.Common.Reflection
         /// <summary>
         /// Gets the attributes of the specified type.
         /// </summary>
-        /// <param name="element">The code element</param>
-        /// <param name="attributeType">The attribute type</param>
-        /// <param name="inherit">If true, includes inherited attributes</param>
+        /// <param name="element">The code element.</param>
+        /// <param name="attributeType">The attribute type.</param>
+        /// <param name="inherit">If true, includes inherited attributes.</param>
         /// <returns>The attributes</returns>
         public static IEnumerable<object> GetAttributes(ICodeElementInfo element, Type attributeType, bool inherit)
         {
@@ -103,9 +103,9 @@ namespace Gallio.Common.Reflection
         /// <summary>
         /// Returns true if the code element has an attribute of the specified type.
         /// </summary>
-        /// <param name="element">The code element</param>
-        /// <param name="attributeType">The attribute type</param>
-        /// <param name="inherit">If true, includes inherited attributes</param>
+        /// <param name="element">The code element.</param>
+        /// <param name="attributeType">The attribute type.</param>
+        /// <param name="inherit">If true, includes inherited attributes.</param>
         /// <returns>True if the code element has at least one attribute of the specified type</returns>
         public static bool HasAttribute(ICodeElementInfo element, Type attributeType, bool inherit)
         {
@@ -118,7 +118,7 @@ namespace Gallio.Common.Reflection
         /// <remarks>
         /// Omits attributes that cannot be resolved.
         /// </remarks>
-        /// <param name="attributes">The attribute descriptions</param>
+        /// <param name="attributes">The attribute descriptions.</param>
         /// <returns>The resolved attribute instances</returns>
         public static IEnumerable<object> ResolveAttributes(IEnumerable<IAttributeInfo> attributes)
         {

@@ -64,21 +64,21 @@ namespace Gallio.Runner
         /// called to register the extension with the test runner as part of the initialization
         /// of the test runner.
         /// </remarks>
-        /// <param name="extension">The test runner extension to register</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="extension"/> is null</exception>
-        /// <exception cref="InvalidOperationException">Thrown if the test runner has already been initialized</exception>
+        /// <param name="extension">The test runner extension to register.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="extension"/> is null.</exception>
+        /// <exception cref="InvalidOperationException">Thrown if the test runner has already been initialized.</exception>
         void RegisterExtension(ITestRunnerExtension extension);
 
         /// <summary>
         /// Initializes the test runner.
         /// </summary>
-        /// <param name="testRunnerOptions">The test runner options</param>
-        /// <param name="logger">The logger</param>
-        /// <param name="progressMonitor">The progress monitor</param>
+        /// <param name="testRunnerOptions">The test runner options.</param>
+        /// <param name="logger">The logger.</param>
+        /// <param name="progressMonitor">The progress monitor.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="testRunnerOptions" />,
-        /// <paramref name="logger" /> or <paramref name="progressMonitor"/> is null</exception>
-        /// <exception cref="InvalidOperationException">Thrown if the runner is already initialized</exception>
-        /// <exception cref="ObjectDisposedException">Thrown if the runner has been disposed</exception>
+        /// <paramref name="logger" /> or <paramref name="progressMonitor"/> is null.</exception>
+        /// <exception cref="InvalidOperationException">Thrown if the runner is already initialized.</exception>
+        /// <exception cref="ObjectDisposedException">Thrown if the runner has been disposed.</exception>
         void Initialize(TestRunnerOptions testRunnerOptions, ILogger logger, IProgressMonitor progressMonitor);
 
         /// <summary>
@@ -89,14 +89,14 @@ namespace Gallio.Runner
         /// Returns a report that contains test package and test model information only.
         /// </para>
         /// </remarks>
-        /// <param name="testPackageConfig">The test package configuration</param>
-        /// <param name="testExplorationOptions">The test exploration options</param>
-        /// <param name="progressMonitor">The progress monitor</param>
+        /// <param name="testPackageConfig">The test package configuration.</param>
+        /// <param name="testExplorationOptions">The test exploration options.</param>
+        /// <param name="progressMonitor">The progress monitor.</param>
         /// <returns>The test report</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="testPackageConfig"/>,
-        /// <paramref name="testExplorationOptions"/>, or <paramref name="progressMonitor"/> is null</exception>
-        /// <exception cref="RunnerException">Thrown if the operation failed</exception>
-        /// <exception cref="ObjectDisposedException">Thrown if the runner has been disposed</exception>
+        /// <paramref name="testExplorationOptions"/>, or <paramref name="progressMonitor"/> is null.</exception>
+        /// <exception cref="RunnerException">Thrown if the operation failed.</exception>
+        /// <exception cref="ObjectDisposedException">Thrown if the runner has been disposed.</exception>
         Report Explore(TestPackageConfig testPackageConfig, TestExplorationOptions testExplorationOptions,
             IProgressMonitor progressMonitor);
 
@@ -108,23 +108,23 @@ namespace Gallio.Runner
         /// Returns a report that contains test package, test model and test run data.
         /// </para>
         /// </remarks>
-        /// <param name="testPackageConfig">The test package configuration</param>
-        /// <param name="testExplorationOptions">The test exploration options</param>
-        /// <param name="testExecutionOptions">The test execution options</param>
-        /// <param name="progressMonitor">The progress monitor</param>
+        /// <param name="testPackageConfig">The test package configuration.</param>
+        /// <param name="testExplorationOptions">The test exploration options.</param>
+        /// <param name="testExecutionOptions">The test execution options.</param>
+        /// <param name="progressMonitor">The progress monitor.</param>
         /// <returns>The test report</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="testPackageConfig"/>,
-        /// <paramref name="testExplorationOptions"/>, <paramref name="testExecutionOptions"/>, or <paramref name="progressMonitor"/> is null</exception>
-        /// <exception cref="RunnerException">Thrown if the operation failed</exception>
-        /// <exception cref="ObjectDisposedException">Thrown if the runner has been disposed</exception>
+        /// <paramref name="testExplorationOptions"/>, <paramref name="testExecutionOptions"/>, or <paramref name="progressMonitor"/> is null.</exception>
+        /// <exception cref="RunnerException">Thrown if the operation failed.</exception>
+        /// <exception cref="ObjectDisposedException">Thrown if the runner has been disposed.</exception>
         Report Run(TestPackageConfig testPackageConfig, TestExplorationOptions testExplorationOptions,
             TestExecutionOptions testExecutionOptions, IProgressMonitor progressMonitor);
 
         /// <summary>
         /// Disposes the test runner.  Does nothing if already disposed or if not initialized.
         /// </summary>
-        /// <param name="progressMonitor">The progress monitor</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="progressMonitor"/> is null</exception>
+        /// <param name="progressMonitor">The progress monitor.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="progressMonitor"/> is null.</exception>
         void Dispose(IProgressMonitor progressMonitor);
     }
 }

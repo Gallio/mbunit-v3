@@ -36,14 +36,14 @@ namespace Gallio.Model.Filters
         /// <summary>
         /// Determines whether the filter matches the value.
         /// </summary>
-        /// <param name="value">The value to consider, never null</param>
+        /// <param name="value">The value to consider, never null.</param>
         /// <returns>True if the filter matches the value</returns>
         public abstract bool IsMatch(T value);
 
         /// <summary>
         /// Accepts a visitor and performs double-dispatch.
         /// </summary>
-        /// <param name="visitor">The visitor, never null</param>
+        /// <param name="visitor">The visitor, never null.</param>
         public abstract void Accept(IFilterVisitor visitor);
 
         /// <summary>

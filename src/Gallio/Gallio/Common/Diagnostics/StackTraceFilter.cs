@@ -52,10 +52,10 @@ namespace Gallio.Common.Diagnostics
         /// <summary>
         /// Filters a stack trace.
         /// </summary>
-        /// <param name="stackTrace">The stack trace</param>
+        /// <param name="stackTrace">The stack trace.</param>
         /// <returns>The filtered stack trace</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="stackTrace"/>
-        /// is null</exception>
+        /// is null.</exception>
         public static string FilterStackTrace(string stackTrace)
         {
             if (stackTrace == null)
@@ -67,10 +67,10 @@ namespace Gallio.Common.Diagnostics
         /// <summary>
         /// Filters a stack trace.
         /// </summary>
-        /// <param name="stackTrace">The stack trace</param>
+        /// <param name="stackTrace">The stack trace.</param>
         /// <returns>The filtered stack trace string</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="stackTrace"/>
-        /// is null</exception>
+        /// is null.</exception>
         public static string FilterStackTraceToString(StackTrace stackTrace)
         {
             if (stackTrace == null)
@@ -82,10 +82,10 @@ namespace Gallio.Common.Diagnostics
         /// <summary>
         /// Filters the stack trace information in an exception.
         /// </summary>
-        /// <param name="exception">The exception</param>
+        /// <param name="exception">The exception.</param>
         /// <returns>The filtered exception data</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="exception"/>
-        /// is null</exception>
+        /// is null.</exception>
         public static ExceptionData FilterException(Exception exception)
         {
             if (exception == null)
@@ -97,10 +97,10 @@ namespace Gallio.Common.Diagnostics
         /// <summary>
         /// Filters the stack trace information about an exception.
         /// </summary>
-        /// <param name="exception">The exception data</param>
+        /// <param name="exception">The exception data.</param>
         /// <returns>The filtered exception data</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="exception"/>
-        /// is null</exception>
+        /// is null.</exception>
         public static ExceptionData FilterException(ExceptionData exception)
         {
             if (exception == null)

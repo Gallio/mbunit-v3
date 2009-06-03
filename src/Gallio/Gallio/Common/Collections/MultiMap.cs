@@ -82,7 +82,7 @@ namespace Gallio.Common.Collections
         /// Gets or sets the list of values associated with the specified key.
         /// Returns an empty list if there are none.
         /// </summary>
-        /// <param name="key">The key</param>
+        /// <param name="key">The key.</param>
         /// <returns>The list of values</returns>
         public IList<TValue> this[TKey key]
         {
@@ -109,8 +109,8 @@ namespace Gallio.Common.Collections
         /// <summary>
         /// Adds a value to the list of those associated with a key.
         /// </summary>
-        /// <param name="key">The key</param>
-        /// <param name="value">The value to associate</param>
+        /// <param name="key">The key.</param>
+        /// <param name="value">The value to associate.</param>
         public void Add(TKey key, TValue value)
         {
             IList<TValue> list;
@@ -131,7 +131,7 @@ namespace Gallio.Common.Collections
         /// <summary>
         /// Adds all values in the pair to the specified key.
         /// </summary>
-        /// <param name="item">The key and values pair</param>
+        /// <param name="item">The key and values pair.</param>
         public void Add(KeyValuePair<TKey, IList<TValue>> item)
         {
             Add(item.Key, item.Value);
@@ -140,8 +140,8 @@ namespace Gallio.Common.Collections
         /// <summary>
         /// Adds all values in the pair to the specified key.
         /// </summary>
-        /// <param name="key">The key</param>
-        /// <param name="values">The values</param>
+        /// <param name="key">The key.</param>
+        /// <param name="values">The values.</param>
         public void Add(TKey key, IList<TValue> values)
         {
             foreach (TValue value in values)
@@ -177,8 +177,8 @@ namespace Gallio.Common.Collections
         /// <summary>
         /// Returns true if the map contains an entry with the specified key and value.
         /// </summary>
-        /// <param name="key">The key</param>
-        /// <param name="value">The value to find</param>
+        /// <param name="key">The key.</param>
+        /// <param name="value">The value to find.</param>
         /// <returns>True if the map contains an entry with the specified key and value</returns>
         public bool Contains(TKey key, TValue value)
         {
@@ -203,7 +203,7 @@ namespace Gallio.Common.Collections
         /// Returns true if the map contains at least one value associated with
         /// the specified key.
         /// </summary>
-        /// <param name="key">The key</param>
+        /// <param name="key">The key.</param>
         /// <returns>True if there is at least one value associated with the key</returns>
         public bool ContainsKey(TKey key)
         {
@@ -219,7 +219,7 @@ namespace Gallio.Common.Collections
         /// <summary>
         /// Removes all values associated with the specified key.
         /// </summary>
-        /// <param name="key">The key</param>
+        /// <param name="key">The key.</param>
         /// <returns>True if the key existed and was removed</returns>
         public bool Remove(TKey key)
         {
@@ -229,8 +229,8 @@ namespace Gallio.Common.Collections
         /// <summary>
         /// Removes a value from the list of those associated with a key.
         /// </summary>
-        /// <param name="key">The key</param>
-        /// <param name="value">The value to remove from the key</param>
+        /// <param name="key">The key.</param>
+        /// <param name="value">The value to remove from the key.</param>
         /// <returns>True if the value was removed</returns>
         public bool Remove(TKey key, TValue value)
         {
@@ -251,7 +251,7 @@ namespace Gallio.Common.Collections
         /// <summary>
         /// Removes all values in the pair from the specified key.
         /// </summary>
-        /// <param name="item">The key and values pair</param>
+        /// <param name="item">The key and values pair.</param>
         /// <returns>True if at least one value was removed</returns>
         public bool Remove(KeyValuePair<TKey, IList<TValue>> item)
         {
@@ -283,8 +283,8 @@ namespace Gallio.Common.Collections
         /// <summary>
         /// Obtains a read-only view of another multi-map.
         /// </summary>
-        /// <param name="map">The multi-map</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="map"/> is null</exception>
+        /// <param name="map">The multi-map.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="map"/> is null.</exception>
         public static IMultiMap<TKey, TValue> ReadOnly(IMultiMap<TKey, TValue> map)
         {
             return new ReadOnlyMultiMap<TKey, TValue>(map);

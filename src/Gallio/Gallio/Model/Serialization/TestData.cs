@@ -48,11 +48,11 @@ namespace Gallio.Model.Serialization
         /// <summary>
         /// Creates a test info.
         /// </summary>
-        /// <param name="id">The component id</param>
-        /// <param name="name">The component name</param>
-        /// <param name="fullName">The full name of the test</param>
+        /// <param name="id">The component id.</param>
+        /// <param name="name">The component name.</param>
+        /// <param name="fullName">The full name of the test.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="id"/>, <paramref name="name"/>,
-        /// or <paramref name="fullName"/> is null</exception>
+        /// or <paramref name="fullName"/> is null.</exception>
         public TestData(string id, string name, string fullName)
             : base(id, name)
         {
@@ -68,8 +68,8 @@ namespace Gallio.Model.Serialization
         /// <summary>
         /// Copies the contents of a test.
         /// </summary>
-        /// <param name="source">The source test</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="source"/> is null</exception>
+        /// <param name="source">The source test.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="source"/> is null.</exception>
         public TestData(ITest source)
             : base(source)
         {
@@ -93,7 +93,7 @@ namespace Gallio.Model.Serialization
         /// <summary>
         /// Gets or sets the full name of the test.
         /// </summary>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
         [XmlAttribute("fullName")]
         public string FullName
         {

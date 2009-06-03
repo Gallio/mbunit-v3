@@ -55,7 +55,7 @@ namespace Gallio.Common.Text.RegularExpression
         /// <summary>
         /// Constructs a simplified regular expression pattern.
         /// </summary>
-        /// <param name="pattern">The input pattern</param>
+        /// <param name="pattern">The input pattern.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="pattern"/> is null.</exception>
         /// <exception cref="RegexLiteException">Thrown if <paramref name="pattern"/> is invalid.</exception>
         public RegexLite(string pattern)

@@ -37,10 +37,10 @@ namespace Gallio.Common.Markup
         /// <summary>
         /// Creates a fallback markup document writer with the specified provider.
         /// </summary>
-        /// <param name="primary">The markup document writer to call by default</param>
-        /// <param name="fallback">The markup document to call as a fallback</param>
+        /// <param name="primary">The markup document writer to call by default.</param>
+        /// <param name="fallback">The markup document to call as a fallback.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="primary"/>
-        /// or <paramref name="fallback"/> is null</exception>
+        /// or <paramref name="fallback"/> is null.</exception>
         public FallbackMarkupDocumentWriter(MarkupDocumentWriter primary, MarkupDocumentWriter fallback)
         {
             if (primary == null)

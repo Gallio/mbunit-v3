@@ -87,8 +87,8 @@ namespace Gallio.Runner.Reports
         /// <summary>
         /// Adds a log entry to the report.
         /// </summary>
-        /// <param name="logEntry">The log entry to add</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="logEntry"/> is null</exception>
+        /// <param name="logEntry">The log entry to add.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="logEntry"/> is null.</exception>
         public void AddLogEntry(LogEntry logEntry)
         {
             if (logEntry == null)

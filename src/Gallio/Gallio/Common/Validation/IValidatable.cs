@@ -28,7 +28,7 @@ namespace Gallio.Common.Validation
         /// <summary>
         /// Validates the object.
         /// </summary>
-        /// <exception cref="ValidationException">Thrown if the data is not well-formed</exception>
+        /// <exception cref="ValidationException">Thrown if the data is not well-formed.</exception>
         void Validate();
     }
 }

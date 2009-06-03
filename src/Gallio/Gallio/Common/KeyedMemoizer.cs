@@ -26,8 +26,8 @@ namespace Gallio.Common
     /// <remarks>
     /// Not thread safe.
     /// </remarks>
-    /// <typeparam name="TKey">The key type</typeparam>
-    /// <typeparam name="TValue">The value type</typeparam>
+    /// <typeparam name="TKey">The key type.</typeparam>
+    /// <typeparam name="TValue">The value type.</typeparam>
     /// <example>
     /// <code><![CDATA[
     /// public class MyClass
@@ -58,8 +58,8 @@ namespace Gallio.Common
         /// using the specified populator function and stores it in association with its keys
         /// for later reuse.
         /// </summary>
-        /// <param name="key">The key by which to look up a memoized result</param>
-        /// <param name="populator">The populator for the value associated with the key</param>
+        /// <param name="key">The key by which to look up a memoized result.</param>
+        /// <param name="populator">The populator for the value associated with the key.</param>
         /// <returns>The value returned by the populator, possibly memoized</returns>
         public TValue Memoize(TKey key, Func<TValue> populator)
         {

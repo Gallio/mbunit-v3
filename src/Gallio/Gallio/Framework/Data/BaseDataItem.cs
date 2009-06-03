@@ -51,14 +51,14 @@ namespace Gallio.Framework.Data
         /// <summary>
         /// Implements <see cref="GetValue" />.
         /// </summary>
-        /// <param name="binding">The binding, never null</param>
+        /// <param name="binding">The binding, never null.</param>
         /// <returns>The associated value</returns>
         protected abstract object GetValueImpl(DataBinding binding);
 
         /// <summary>
         /// Implements <see cref="PopulateMetadata" />.
         /// </summary>
-        /// <param name="map">The metadata map to populate, never null</param>
+        /// <param name="map">The metadata map to populate, never null.</param>
         protected abstract void PopulateMetadataImpl(PropertyBag map);
     }
 }

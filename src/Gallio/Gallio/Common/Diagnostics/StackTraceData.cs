@@ -35,8 +35,8 @@ namespace Gallio.Common.Diagnostics
         /// <summary>
         /// Creates a stack trace data object from a string.
         /// </summary>
-        /// <param name="stackTrace">The stack trace</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="stackTrace"/> is null</exception>
+        /// <param name="stackTrace">The stack trace.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="stackTrace"/> is null.</exception>
         public StackTraceData(string stackTrace)
         {
             if (stackTrace == null)
@@ -48,8 +48,8 @@ namespace Gallio.Common.Diagnostics
         /// <summary>
         /// Creates a stack trace data object that points to the specified code element.
         /// </summary>
-        /// <param name="codeElement">The code element</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="codeElement"/> is null</exception>
+        /// <param name="codeElement">The code element.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="codeElement"/> is null.</exception>
         public StackTraceData(ICodeElementInfo codeElement)
         {
             if (codeElement == null)
@@ -89,8 +89,8 @@ namespace Gallio.Common.Diagnostics
         /// <remarks>
         /// The stack trace will not be terminated by a new line.
         /// </remarks>
-        /// <param name="writer">The log stream writer</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="writer"/> is null</exception>
+        /// <param name="writer">The log stream writer.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="writer"/> is null.</exception>
         public void WriteTo(MarkupStreamWriter writer)
         {
             if (writer == null)

@@ -31,8 +31,8 @@ namespace Gallio.Framework.Data
         /// <summary>
         /// Creates a data item.
         /// </summary>
-        /// <param name="metadataPairs">The metadata key/value pairs for the item, or null if none</param>
-        /// <param name="isDynamic">True if the item is dynamic</param>
+        /// <param name="metadataPairs">The metadata key/value pairs for the item, or null if none.</param>
+        /// <param name="isDynamic">True if the item is dynamic.</param>
         public SimpleDataItem(IEnumerable<KeyValuePair<string, string>> metadataPairs, bool isDynamic)
         {
             this.metadataPairs = metadataPairs;

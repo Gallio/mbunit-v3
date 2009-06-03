@@ -34,7 +34,7 @@ namespace Gallio.Model.Filters
     /// <item>*: All other names are assumed to correspond to metadata keys</item>
     /// </list>
     /// </remarks>
-    /// <typeparam name="T">The <see cref="ITestComponent"/> subtype</typeparam>
+    /// <typeparam name="T">The <see cref="ITestComponent"/> subtype.</typeparam>
     public class ModelComponentFilterFactory<T> : IFilterFactory<T>
         where T : ITestComponent
     {

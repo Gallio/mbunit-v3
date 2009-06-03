@@ -108,9 +108,9 @@ namespace Gallio.Common.Reflection
         /// </summary>
         /// <param name="throwOnError">If true, throws an exception if the target could
         /// not be resolved, otherwise returns a reflection object that represents an
-        /// unresolved member which may only support a subset of the usual operations</param>
+        /// unresolved member which may only support a subset of the usual operations.</param>
         /// <returns>The native reflection target</returns>
-        /// <exception cref="ReflectionResolveException">Thrown if the target cannot be resolved</exception>
+        /// <exception cref="ReflectionResolveException">Thrown if the target cannot be resolved.</exception>
         new MethodBase Resolve(bool throwOnError);
     }
 }

@@ -28,10 +28,10 @@ namespace Gallio.Common.Reflection
         /// <summary>
         /// Gets the location of the assembly, or null if it is dynamic.
         /// </summary>
-        /// <param name="assembly">The assembly</param>
+        /// <param name="assembly">The assembly.</param>
         /// <returns>The assembly location as returned by <see cref="Assembly.Location" /> or
         /// null if the assembly is dynamic and does not have a location</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="assembly"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="assembly"/> is null.</exception>
         public static string GetAssemblyLocation(Assembly assembly)
         {
             if (assembly == null)
@@ -51,9 +51,9 @@ namespace Gallio.Common.Reflection
         /// Gets the local path of the assembly prior to shadow copying.
         /// Returns null if the original location of the assembly is not local.
         /// </summary>
-        /// <param name="assembly">The assembly</param>
+        /// <param name="assembly">The assembly.</param>
         /// <returns>The original non-shadow copied local path of the assembly, or null if none</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="assembly"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="assembly"/> is null.</exception>
         public static string GetAssemblyLocalPath(Assembly assembly)
         {
             if (assembly == null)
@@ -78,11 +78,11 @@ namespace Gallio.Common.Reflection
         /// copying, if it is local.  Otherwise, returns the shadow-copied
         /// assembly location.
         /// </summary>
-        /// <param name="assembly">The assembly</param>
+        /// <param name="assembly">The assembly.</param>
         /// <returns>The local path of the assembly, preferably its original
         /// non-shadow copied location, or null if the assembly is dynamic and does not
         /// have a location</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="assembly"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="assembly"/> is null.</exception>
         public static string GetFriendlyAssemblyLocation(Assembly assembly)
         {
             string localPath = GetAssemblyLocalPath(assembly);
@@ -96,9 +96,9 @@ namespace Gallio.Common.Reflection
         /// If the assembly codebase is a local file, returns it as a local
         /// path.  Otherwise, returns the assembly codebase Uri.
         /// </summary>
-        /// <param name="assembly">The assembly</param>
+        /// <param name="assembly">The assembly.</param>
         /// <returns>The assembly's path</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="assembly"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="assembly"/> is null.</exception>
         public static string GetFriendlyAssemblyCodeBase(Assembly assembly)
         {
             string localPath = GetAssemblyLocalPath(assembly);
@@ -111,9 +111,9 @@ namespace Gallio.Common.Reflection
         /// <summary>
         /// Gets the culture component of an assembly name.
         /// </summary>
-        /// <param name="assemblyName">The assembly name</param>
+        /// <param name="assemblyName">The assembly name.</param>
         /// <returns>The culture name</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="assemblyName"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="assemblyName"/> is null.</exception>
         public static string GetAssemblyNameCulture(AssemblyName assemblyName)
         {
             if (assemblyName == null)
@@ -126,9 +126,9 @@ namespace Gallio.Common.Reflection
         /// <summary>
         /// Gets the application version given its primary assembly.  Uses the assembly file version if available.
         /// </summary>
-        /// <param name="assembly">The assembly</param>
+        /// <param name="assembly">The assembly.</param>
         /// <returns>The assembly's file version</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="assembly"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="assembly"/> is null.</exception>
         public static Version GetApplicationVersion(Assembly assembly)
         {
             if (assembly == null)
@@ -147,9 +147,9 @@ namespace Gallio.Common.Reflection
         /// <remarks>
         /// This function does not close the stream.
         /// </remarks>
-        /// <param name="stream">The stream</param>
+        /// <param name="stream">The stream.</param>
         /// <returns>True if the stream represents an assembly</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="stream"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="stream"/> is null.</exception>
         public static bool IsAssembly(Stream stream)
         {
             return GetAssemblyMetadata(stream) != null;
@@ -158,9 +158,9 @@ namespace Gallio.Common.Reflection
         /// <summary>
         /// Returns true if the file represents a CLI Assembly in Microsoft PE format.
         /// </summary>
-        /// <param name="filePath">The file path</param>
+        /// <param name="filePath">The file path.</param>
         /// <returns>True if the file represents an assembly</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="filePath"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="filePath"/> is null.</exception>
         public static bool IsAssembly(string filePath)
         {
             return GetAssemblyMetadata(filePath) != null;
@@ -169,9 +169,9 @@ namespace Gallio.Common.Reflection
         /// <summary>
         /// Gets metadata about CLI Assembly in Microsoft PE format.
         /// </summary>
-        /// <param name="stream">The stream</param>
+        /// <param name="stream">The stream.</param>
         /// <returns>The metadata or null if the stream does not represent a CLI assembly</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="stream"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="stream"/> is null.</exception>
         public static AssemblyMetadata GetAssemblyMetadata(Stream stream)
         {
             if (stream == null)
@@ -183,10 +183,10 @@ namespace Gallio.Common.Reflection
         /// <summary>
         /// Gets the Major and Minor components of the CLI runtime version of a CLI Assembly in Microsoft PE format.
         /// </summary>
-        /// <param name="filePath">The file path</param>
+        /// <param name="filePath">The file path.</param>
         /// <returns>The version, of which only the major and minor components are populated,
         /// or null if the stream does not represent a CLI assembly</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="filePath"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="filePath"/> is null.</exception>
         public static AssemblyMetadata GetAssemblyMetadata(string filePath)
         {
             if (filePath == null)

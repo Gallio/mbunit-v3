@@ -25,9 +25,9 @@ namespace Gallio.Runtime.Caching
         /// <summary>
         /// Gets the group with the specified key.
         /// </summary>
-        /// <param name="key">The key</param>
+        /// <param name="key">The key.</param>
         /// <returns>The group</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="key"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="key"/> is null.</exception>
         IDiskCacheGroup this[string key] { get; }
     }
 }

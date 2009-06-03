@@ -30,8 +30,8 @@ namespace Gallio.Model.Filters
         /// <summary>
         /// Creates a filter for some property by string value.
         /// </summary>
-        /// <param name="valueFilter">The string value filter</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="valueFilter"/> is null</exception>
+        /// <param name="valueFilter">The string value filter.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="valueFilter"/> is null.</exception>
         public PropertyFilter(Filter<string> valueFilter)
         {
             if (valueFilter == null)

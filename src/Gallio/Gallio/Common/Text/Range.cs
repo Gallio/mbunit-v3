@@ -29,10 +29,10 @@ namespace Gallio.Common.Text
         /// <summary>
         /// Creates a range of indices.
         /// </summary>
-        /// <param name="startIndex">The starting index of the range</param>
-        /// <param name="length">The number of characters within the range, may be 0</param>
+        /// <param name="startIndex">The starting index of the range.</param>
+        /// <param name="length">The number of characters within the range, may be 0.</param>
         /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="startIndex"/>
-        /// or <paramref name="length"/> is negative</exception>
+        /// or <paramref name="length"/> is negative.</exception>
         public Range(int startIndex, int length)
         {
             if (startIndex < 0)
@@ -47,8 +47,8 @@ namespace Gallio.Common.Text
         /// <summary>
         /// Creates a new range between the start index (inclusively) and end index (exclusively).
         /// </summary>
-        /// <param name="startIndex">The start index</param>
-        /// <param name="endIndex">The end index</param>
+        /// <param name="startIndex">The start index.</param>
+        /// <param name="endIndex">The end index.</param>
         /// <returns>The new range</returns>
         /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="startIndex"/>
         /// is negative or greater than <paramref name="endIndex"/></exception>
@@ -85,9 +85,9 @@ namespace Gallio.Common.Text
         /// <summary>
         /// Gets a substring of the specified text using this range.
         /// </summary>
-        /// <param name="text">The source text</param>
+        /// <param name="text">The source text.</param>
         /// <returns>The substring of the source text that represents this range</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="text"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="text"/> is null.</exception>
         public string SubstringOf(string text)
         {
             if (text == null)
@@ -98,9 +98,9 @@ namespace Gallio.Common.Text
         /// <summary>
         /// Extends a range into an adjacent range and returns the combined range.
         /// </summary>
-        /// <param name="range">The adjacent range</param>
+        /// <param name="range">The adjacent range.</param>
         /// <returns>The extended range</returns>
-        /// <exception cref="ArgumentException">Thrown if <paramref name="range"/> is not an adjacent range</exception>
+        /// <exception cref="ArgumentException">Thrown if <paramref name="range"/> is not an adjacent range.</exception>
         public Range ExtendWith(Range range)
         {
             if (EndIndex == range.startIndex)
@@ -133,8 +133,8 @@ namespace Gallio.Common.Text
         /// <summary>
         /// Returns true if two ranges are equal.
         /// </summary>
-        /// <param name="a">The first range to compare</param>
-        /// <param name="b">The second range to compare</param>
+        /// <param name="a">The first range to compare.</param>
+        /// <param name="b">The second range to compare.</param>
         /// <returns>True if the ranges are equal</returns>
         public static bool operator ==(Range a, Range b)
         {
@@ -144,8 +144,8 @@ namespace Gallio.Common.Text
         /// <summary>
         /// Returns true if two ranges are not equal.
         /// </summary>
-        /// <param name="a">The first range to compare</param>
-        /// <param name="b">The second range to compare</param>
+        /// <param name="a">The first range to compare.</param>
+        /// <param name="b">The second range to compare.</param>
         /// <returns>True if the ranges are not equal</returns>
         public static bool operator !=(Range a, Range b)
         {

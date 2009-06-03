@@ -49,12 +49,12 @@ namespace Gallio.Runner.Drivers
         /// <summary>
         /// Creates a hosted test driver.
         /// </summary>
-        /// <param name="hostFactory">The host factory</param>
-        /// <param name="frameworkManager">The test framework manager</param>
-        /// <param name="runtime">The Gallio runtime</param>
-        /// <param name="isolationMode">Specifies the isolation mode to use</param>
+        /// <param name="hostFactory">The host factory.</param>
+        /// <param name="frameworkManager">The test framework manager.</param>
+        /// <param name="runtime">The Gallio runtime.</param>
+        /// <param name="isolationMode">Specifies the isolation mode to use.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="hostFactory"/>,
-        /// <paramref name="frameworkManager"/>, or <paramref name="runtime"/> is null</exception>
+        /// <paramref name="frameworkManager"/>, or <paramref name="runtime"/> is null.</exception>
         public HostedTestDriver(IHostFactory hostFactory, ITestFrameworkManager frameworkManager, IRuntime runtime, IsolationMode isolationMode)
         {
             if (hostFactory == null)
@@ -73,7 +73,7 @@ namespace Gallio.Runner.Drivers
         /// <summary>
         /// Provides an opportunity for subclasses to configure the host.
         /// </summary>
-        /// <param name="hostSetup">The host setup, not null</param>
+        /// <param name="hostSetup">The host setup, not null.</param>
         protected virtual void ConfigureHost(HostSetup hostSetup)
         {
         }
@@ -81,7 +81,7 @@ namespace Gallio.Runner.Drivers
         /// <summary>
         /// Provides an opportunity for subclasses to initialize the host once created.
         /// </summary>
-        /// <param name="host">The host, not null</param>
+        /// <param name="host">The host, not null.</param>
         protected virtual void InitializeHost(IHost host)
         {
         }
@@ -89,7 +89,7 @@ namespace Gallio.Runner.Drivers
         /// <summary>
         /// Provides an opportunity for subclasses to clean up the host as part of its disposal.
         /// </summary>
-        /// <param name="host">The host, not null</param>
+        /// <param name="host">The host, not null.</param>
         protected virtual void DisposeHost(IHost host)
         {
             host.Dispose();

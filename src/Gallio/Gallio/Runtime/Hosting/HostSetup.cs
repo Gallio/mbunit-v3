@@ -168,7 +168,7 @@ namespace Gallio.Runtime.Hosting
         /// <summary>
         /// Gets or sets the host configuration information.
         /// </summary>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
         [XmlElement("configuration", IsNullable=false)]
         public HostConfiguration Configuration
         {
@@ -224,7 +224,7 @@ namespace Gallio.Runtime.Hosting
         /// Makes all paths in this instance absolute.
         /// </summary>
         /// <param name="baseDirectory">The base directory for resolving relative paths,
-        /// or null to use the current directory</param>
+        /// or null to use the current directory.</param>
         public void Canonicalize(string baseDirectory)
         {
             applicationBaseDirectory = GetCanonicalApplicationBaseDirectory(baseDirectory);
@@ -244,7 +244,7 @@ namespace Gallio.Runtime.Hosting
         /// <returns>The full path of the configuration file that was written, or null if no file was written</returns>
         /// <exception cref="InvalidOperationException">Thrown if <see cref="ApplicationBaseDirectory"/>
         /// is <c>null</c> but <see cref="ConfigurationFileLocation" /> is <see cref="Hosting.ConfigurationFileLocation.AppBase" />.</exception>
-        /// <exception cref="IOException">Thrown if the configuration file could not be written</exception>
+        /// <exception cref="IOException">Thrown if the configuration file could not be written.</exception>
         public string WriteTemporaryConfigurationFile()
         {
             string path = GetTemporaryConfigurationFilePath();

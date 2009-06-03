@@ -50,7 +50,7 @@ namespace Gallio.Framework.Pattern
         /// Gets or sets the name of the component.
         /// </summary>
         /// <seealso cref="ITestComponent.Name"/>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
         string Name { get; set; }
 
         /// <summary>
@@ -62,9 +62,9 @@ namespace Gallio.Framework.Pattern
         /// <summary>
         /// Adds a metadata key value pair.
         /// </summary>
-        /// <param name="key">The metadata key</param>
-        /// <param name="value">The value to add</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="key"/> or <paramref name="value"/> is null</exception>
+        /// <param name="key">The metadata key.</param>
+        /// <param name="value">The value to add.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="key"/> or <paramref name="value"/> is null.</exception>
         /// <seealso cref="ITestComponent.Metadata"/>
         /// <seealso cref="MetadataKeys"/>
         void AddMetadata(string key, string value);

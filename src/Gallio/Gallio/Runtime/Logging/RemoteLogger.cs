@@ -31,8 +31,8 @@ namespace Gallio.Runtime.Logging
         /// <summary>
         /// Creates a wrapper for the specified logger.
         /// </summary>
-        /// <param name="logger">The logger</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="logger"/> is null</exception>
+        /// <param name="logger">The logger.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="logger"/> is null.</exception>
         public RemoteLogger(ILogger logger)
         {
             if (logger == null)

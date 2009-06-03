@@ -28,15 +28,15 @@ namespace Gallio.Runtime.Preferences
         /// <summary>
         /// Sets a preference setting.
         /// </summary>
-        /// <param name="preferenceSettingKey">The preference setting key</param>
-        /// <param name="value">The value to set, or null to remove the value</param>
-        /// <typeparam name="T">The setting value type</typeparam>
+        /// <param name="preferenceSettingKey">The preference setting key.</param>
+        /// <param name="value">The value to set, or null to remove the value.</param>
+        /// <typeparam name="T">The setting value type.</typeparam>
         void SetSetting<T>(Key<T> preferenceSettingKey, T value);
 
         /// <summary>
         /// Removes a preference setting.
         /// </summary>
-        /// <param name="preferenceSettingKey">The preference setting key</param>
+        /// <param name="preferenceSettingKey">The preference setting key.</param>
         void RemoveSetting<T>(Key<T> preferenceSettingKey);
     }
 }

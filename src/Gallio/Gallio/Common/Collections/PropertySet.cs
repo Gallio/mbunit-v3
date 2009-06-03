@@ -55,8 +55,8 @@ namespace Gallio.Common.Collections
         /// <summary>
         /// Adds all elements of another collection to this dictionary.
         /// </summary>
-        /// <param name="collection">The collection to add</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="collection"/> is null</exception>
+        /// <param name="collection">The collection to add.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="collection"/> is null.</exception>
         public void AddAll(IEnumerable<KeyValuePair<string, string>> collection)
         {
             if (collection == null)
@@ -91,7 +91,7 @@ namespace Gallio.Common.Collections
         /// <summary>
         /// Gets the value associated with a key, or null if absent.
         /// </summary>
-        /// <param name="key">The key</param>
+        /// <param name="key">The key.</param>
         /// <returns>The associated value, or null if none</returns>
         public string GetValue(string key)
         {
@@ -103,8 +103,8 @@ namespace Gallio.Common.Collections
         /// <summary>
         /// Sets the value associated with a key, removes an existing value if null.
         /// </summary>
-        /// <param name="key">The key</param>
-        /// <param name="value">The new value, or null to remove the existing value</param>
+        /// <param name="key">The key.</param>
+        /// <param name="value">The new value, or null to remove the existing value.</param>
         public void SetValue(string key, string value)
         {
             Remove(key);
@@ -264,7 +264,7 @@ namespace Gallio.Common.Collections
         /// <summary>
         /// Provides the Xml schema for this element.
         /// </summary>
-        /// <param name="schemas">The schema set</param>
+        /// <param name="schemas">The schema set.</param>
         /// <returns>The schema type of the element</returns>
         public static XmlQualifiedName ProvideXmlSchema(XmlSchemaSet schemas)
         {

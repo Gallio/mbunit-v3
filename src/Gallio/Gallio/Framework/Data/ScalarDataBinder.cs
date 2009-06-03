@@ -30,8 +30,8 @@ namespace Gallio.Framework.Data
         /// <summary>
         /// Creates a scalar data binder.
         /// </summary>
-        /// <param name="binding">The data binding</param>
-        /// <param name="sourceName">The data source name to query, or an empty string if it is anonymous</param>
+        /// <param name="binding">The data binding.</param>
+        /// <param name="sourceName">The data source name to query, or an empty string if it is anonymous.</param>
         public ScalarDataBinder(DataBinding binding, string sourceName)
         {
             if (binding == null)

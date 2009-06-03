@@ -105,7 +105,7 @@ namespace Gallio.Model
         /// </list>
         /// </para>
         /// </remarks>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
         [XmlElement("hostSetup", IsNullable = false)]
         public HostSetup HostSetup
         {
@@ -153,7 +153,7 @@ namespace Gallio.Model
         /// Makes all paths in this instance absolute.
         /// </summary>
         /// <param name="baseDirectory">The base directory for resolving relative paths,
-        /// or null to use the current directory</param>
+        /// or null to use the current directory.</param>
         public void Canonicalize(string baseDirectory)
         {
             FileUtils.CanonicalizePaths(baseDirectory, assemblyFiles);
@@ -166,7 +166,7 @@ namespace Gallio.Model
         /// Returns true if the framework with the specified id should be used to explore
         /// the contents of the test package.
         /// </summary>
-        /// <param name="frameworkId">The framework id</param>
+        /// <param name="frameworkId">The framework id.</param>
         /// <returns>True if the framework is requested</returns>
         public bool IsFrameworkRequested(string frameworkId)
         {

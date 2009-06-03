@@ -46,9 +46,9 @@ namespace Gallio.Model.Serialization
         /// <summary>
         /// Creates a test component.
         /// </summary>
-        /// <param name="id">The component id</param>
-        /// <param name="name">The component name</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="id"/> or <paramref name="name"/> is null</exception>
+        /// <param name="id">The component id.</param>
+        /// <param name="name">The component name.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="id"/> or <paramref name="name"/> is null.</exception>
         public TestComponentData(string id, string name)
         {
             if (id == null)
@@ -63,7 +63,7 @@ namespace Gallio.Model.Serialization
         /// <summary>
         /// Copies the contents of a test component.
         /// </summary>
-        /// <param name="source">The source object</param>
+        /// <param name="source">The source object.</param>
         public TestComponentData(ITestComponent source)
         {
             if (source == null)
@@ -85,7 +85,7 @@ namespace Gallio.Model.Serialization
         /// <summary>
         /// Gets or sets the test component id.  (non-null)
         /// </summary>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
         /// <seealso cref="ITestComponent.Id"/>
         [XmlAttribute("id")]
         public string Id
@@ -102,7 +102,7 @@ namespace Gallio.Model.Serialization
         /// <summary>
         /// Gets or sets the test component name.  (non-null)
         /// </summary>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
         /// <seealso cref="ITestComponent.Name"/>
         [XmlAttribute("name")]
         public string Name
@@ -141,7 +141,7 @@ namespace Gallio.Model.Serialization
         /// <summary>
         /// Gets or sets the metadata map.  (non-null)
         /// </summary>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
         /// <seealso cref="ITestComponent.Metadata"/>
         [XmlElement("metadata", IsNullable=false)]
         public PropertyBag Metadata

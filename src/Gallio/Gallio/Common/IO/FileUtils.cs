@@ -29,9 +29,9 @@ namespace Gallio.Common.IO
         /// Replaces invalid characters in a file or directory name with underscores
         /// and trims it if it is too long.
         /// </summary>
-        /// <param name="fileName">The file or directory name</param>
+        /// <param name="fileName">The file or directory name.</param>
         /// <returns>The encoded file or directory name</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="fileName"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="fileName"/> is null.</exception>
         public static string EncodeFileName(string fileName)
         {
             if (fileName == null)
@@ -49,9 +49,9 @@ namespace Gallio.Common.IO
         /// <summary>
         /// Gets the full path of the containing directory.
         /// </summary>
-        /// <param name="path">The path</param>
+        /// <param name="path">The path.</param>
         /// <returns>The full path of the parent directory or null if it is at the root</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="path"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="path"/> is null.</exception>
         public static string GetFullPathOfParentDirectory(string path)
         {
             return Path.GetDirectoryName(Path.GetFullPath(path));
@@ -60,10 +60,10 @@ namespace Gallio.Common.IO
         /// <summary>
         /// Recursively copies files and folders from the source path to the destination.
         /// </summary>
-        /// <param name="sourcePath">The source file or directory path</param>
-        /// <param name="destPath">The destination file or directory path</param>
-        /// <param name="overwrite">If true, overwrites existing files in the destination</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="sourcePath"/> or <paramref name="destPath"/> is null</exception>
+        /// <param name="sourcePath">The source file or directory path.</param>
+        /// <param name="destPath">The destination file or directory path.</param>
+        /// <param name="overwrite">If true, overwrites existing files in the destination.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="sourcePath"/> or <paramref name="destPath"/> is null.</exception>
         public static void CopyAll(string sourcePath, string destPath, bool overwrite)
         {
             CopyAllIndirect(sourcePath, destPath,
@@ -75,11 +75,11 @@ namespace Gallio.Common.IO
         /// Recursively copies files and folders from the source path to the destination
         /// using an indirect mechanism to actually create a file or folder.
         /// </summary>
-        /// <param name="sourcePath">The source file or directory path</param>
-        /// <param name="destPath">The destination file or directory path</param>
-        /// <param name="createDirectoryAction">A delegate used to create a directory with a given destination directory path, or null to do nothing</param>
-        /// <param name="copyFileAction">A delegate used to copy a source file to a given destination file path, or null to do nothing</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="sourcePath"/> or <paramref name="destPath"/> is null</exception>
+        /// <param name="sourcePath">The source file or directory path.</param>
+        /// <param name="destPath">The destination file or directory path.</param>
+        /// <param name="createDirectoryAction">A delegate used to create a directory with a given destination directory path, or null to do nothing.</param>
+        /// <param name="copyFileAction">A delegate used to copy a source file to a given destination file path, or null to do nothing.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="sourcePath"/> or <paramref name="destPath"/> is null.</exception>
         public static void CopyAllIndirect(string sourcePath, string destPath,
             Action<string> createDirectoryAction, Action<string, string> copyFileAction)
         {
@@ -114,7 +114,7 @@ namespace Gallio.Common.IO
         /// Recursively deletes a file or directory.
         /// Does nothing if the file or directory does not exist.
         /// </summary>
-        /// <param name="path">The path</param>
+        /// <param name="path">The path.</param>
         public static void DeleteAll(string path)
         {
             if (Directory.Exists(path))
@@ -127,8 +127,8 @@ namespace Gallio.Common.IO
         /// Makes all paths in the list absolute.
         /// </summary>
         /// <param name="baseDirectory">The base directory for resolving relative paths,
-        /// or null to use the current directory</param>
-        /// <param name="paths">The list of paths to canonicalize in place</param>
+        /// or null to use the current directory.</param>
+        /// <param name="paths">The list of paths to canonicalize in place.</param>
         public static void CanonicalizePaths(string baseDirectory, IList<string> paths)
         {
             for (int i = 0; i < paths.Count; i++)
@@ -139,8 +139,8 @@ namespace Gallio.Common.IO
         /// Makes an absolute path.
         /// </summary>
         /// <param name="baseDirectory">The base directory for resolving relative paths,
-        /// or null to use the current directory</param>
-        /// <param name="path">The path to canonicalize, or null if none</param>
+        /// or null to use the current directory.</param>
+        /// <param name="path">The path to canonicalize, or null if none.</param>
         /// <returns>The absolute path, or null if none</returns>
         public static string CanonicalizePath(string baseDirectory, string path)
         {
@@ -156,7 +156,7 @@ namespace Gallio.Common.IO
         /// <summary>
         /// Strips the trailing backslash off of a directory path, if present.
         /// </summary>
-        /// <param name="path">The path to strip, or null if none</param>
+        /// <param name="path">The path to strip, or null if none.</param>
         /// <returns>The stripped path, or null if none</returns>
         public static string StripTrailingBackslash(string path)
         {
@@ -175,10 +175,10 @@ namespace Gallio.Common.IO
         /// <remarks>
         /// Does not close either stream.
         /// </remarks>
-        /// <param name="sourceStream">The source stream</param>
-        /// <param name="destStream">The destination stream</param>
+        /// <param name="sourceStream">The source stream.</param>
+        /// <param name="destStream">The destination stream.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="sourceStream"/>
-        /// or <paramref name="destStream"/> is null</exception>
+        /// or <paramref name="destStream"/> is null.</exception>
         public static void CopyStreamContents(Stream sourceStream, Stream destStream)
         {
             if (sourceStream == null)

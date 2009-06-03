@@ -47,12 +47,12 @@ namespace Gallio.Model.Serialization
         /// <summary>
         /// Creates a step.
         /// </summary>
-        /// <param name="id">The step id</param>
-        /// <param name="name">The step name</param>
-        /// <param name="fullName">The full name of the step</param>
-        /// <param name="testId">The test id</param>
+        /// <param name="id">The step id.</param>
+        /// <param name="name">The step name.</param>
+        /// <param name="fullName">The full name of the step.</param>
+        /// <param name="testId">The test id.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="id"/>, <paramref name="name"/>,
-        /// <paramref name="fullName"/> or <paramref name="testId"/> is null</exception>
+        /// <paramref name="fullName"/> or <paramref name="testId"/> is null.</exception>
         public TestStepData(string id, string name, string fullName, string testId)
             : base(id, name)
         {
@@ -68,8 +68,8 @@ namespace Gallio.Model.Serialization
         /// <summary>
         /// Copies the contents of a test step.
         /// </summary>
-        /// <param name="source">The source test step</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="source"/> is null</exception>
+        /// <param name="source">The source test step.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="source"/> is null.</exception>
         public TestStepData(ITestStep source)
             : base(source)
         {
@@ -86,7 +86,7 @@ namespace Gallio.Model.Serialization
         /// <summary>
         /// Gets or sets the full name of the step.
         /// </summary>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
         [XmlAttribute("fullName")]
         public string FullName
         {
@@ -112,7 +112,7 @@ namespace Gallio.Model.Serialization
         /// <summary>
         /// Gets or sets the id of the test to which the step belongs.
         /// </summary>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
         [XmlAttribute("testId")]
         public string TestId
         {

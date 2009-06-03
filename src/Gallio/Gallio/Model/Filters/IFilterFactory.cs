@@ -23,14 +23,14 @@ namespace Gallio.Model.Filters
     /// Creates filters of a given type based on a specification that
     /// consists of a filter key and a rule for matching values.
     /// </summary>
-    /// <typeparam name="T">The filter type</typeparam>
+    /// <typeparam name="T">The filter type.</typeparam>
     public interface IFilterFactory<T>
     {
         /// <summary>
         /// Creates a filter from a specification 
         /// </summary>
-        /// <param name="key">The filter key that identifies the kind of filter to create</param>
-        /// <param name="valueFilter">The filter to use as a rule for matching values</param>
+        /// <param name="key">The filter key that identifies the kind of filter to create.</param>
+        /// <param name="valueFilter">The filter to use as a rule for matching values.</param>
         /// <returns>The filter</returns>
         Filter<T> CreateFilter(string key, Filter<string> valueFilter);
     }

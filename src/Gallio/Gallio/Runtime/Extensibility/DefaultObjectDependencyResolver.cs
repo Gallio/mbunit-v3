@@ -80,10 +80,10 @@ namespace Gallio.Runtime.Extensibility
         /// <summary>
         /// Creates an object dependency resolver.
         /// </summary>
-        /// <param name="serviceLocator">The service locator</param>
-        /// <param name="resourceLocator">The resource locator</param>
+        /// <param name="serviceLocator">The service locator.</param>
+        /// <param name="resourceLocator">The resource locator.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="serviceLocator"/>,
-        /// <paramref name="resourceLocator"/> is null</exception>
+        /// <paramref name="resourceLocator"/> is null.</exception>
         public DefaultObjectDependencyResolver(IServiceLocator serviceLocator, IResourceLocator resourceLocator)
         {
             if (serviceLocator == null)

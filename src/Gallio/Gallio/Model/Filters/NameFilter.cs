@@ -27,8 +27,8 @@ namespace Gallio.Model.Filters
         /// <summary>
         /// Creates a name filter.
         /// </summary>
-        /// <param name="nameFilter">A filter for the name</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="nameFilter"/> is null</exception>
+        /// <param name="nameFilter">A filter for the name.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="nameFilter"/> is null.</exception>
         public NameFilter(Filter<string> nameFilter)
             : base(nameFilter)
         {

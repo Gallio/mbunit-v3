@@ -30,12 +30,12 @@ namespace Gallio.Runner.Events
         /// <summary>
         /// Initializes the event arguments.
         /// </summary>
-        /// <param name="report">The report</param>
-        /// <param name="test">The test data</param>
-        /// <param name="testStepRun">The test step run</param>
-        /// <param name="lifecyclePhase">The lifecycle phase name</param>
+        /// <param name="report">The report.</param>
+        /// <param name="test">The test data.</param>
+        /// <param name="testStepRun">The test step run.</param>
+        /// <param name="lifecyclePhase">The lifecycle phase name.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="report"/>, <paramref name="test"/>
-        /// <paramref name="testStepRun"/>, or <paramref name="lifecyclePhase"/> is null</exception>
+        /// <paramref name="testStepRun"/>, or <paramref name="lifecyclePhase"/> is null.</exception>
         public TestStepLifecyclePhaseChangedEventArgs(Report report, TestData test, TestStepRun testStepRun, string lifecyclePhase)
             : base(report, test, testStepRun)
         {

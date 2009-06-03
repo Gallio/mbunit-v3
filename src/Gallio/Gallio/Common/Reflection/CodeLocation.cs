@@ -47,13 +47,13 @@ namespace Gallio.Common.Reflection
         /// Creates a code location.
         /// </summary>
         /// <param name="path">The path or Uri of a resource that contains the code element,
-        /// such as a source file or assembly, or null if unknown</param>
-        /// <param name="line">The line number, or 0 if unknown</param>
-        /// <param name="column">The column number, or 0 if unknown</param>
+        /// such as a source file or assembly, or null if unknown.</param>
+        /// <param name="line">The line number, or 0 if unknown.</param>
+        /// <param name="column">The column number, or 0 if unknown.</param>
         /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="line"/> or <paramref name="column"/>
-        /// is less than 0</exception>
+        /// is less than 0.</exception>
         /// <exception cref="ArgumentException">Thrown if <paramref name="path"/> is null and <paramref name="line"/>
-        /// is non-zero, or if <paramref name="line"/> is 0 and <paramref name="column"/> is non-zero</exception>
+        /// is non-zero, or if <paramref name="line"/> is 0 and <paramref name="column"/> is non-zero.</exception>
         public CodeLocation(string path, int line, int column)
         {
             if (line < 0)
@@ -116,8 +116,8 @@ namespace Gallio.Common.Reflection
         /// <summary>
         /// Compares two code locations for equality.
         /// </summary>
-        /// <param name="a">The first code location</param>
-        /// <param name="b">The second code location</param>
+        /// <param name="a">The first code location.</param>
+        /// <param name="b">The second code location.</param>
         /// <returns>True if the code locations are equal</returns>
         public static bool operator ==(CodeLocation a, CodeLocation b)
         {
@@ -127,8 +127,8 @@ namespace Gallio.Common.Reflection
         /// <summary>
         /// Compares two code locations for inequality.
         /// </summary>
-        /// <param name="a">The first code location</param>
-        /// <param name="b">The second code location</param>
+        /// <param name="a">The first code location.</param>
+        /// <param name="b">The second code location.</param>
         /// <returns>True if the code references are not equal</returns>
         public static bool operator !=(CodeLocation a, CodeLocation b)
         {
@@ -164,7 +164,7 @@ namespace Gallio.Common.Reflection
         /// <summary>
         /// Provides the Xml schema for this element.
         /// </summary>
-        /// <param name="schemas">The schema set</param>
+        /// <param name="schemas">The schema set.</param>
         /// <returns>The schema type of the element</returns>
         public static XmlQualifiedName ProvideXmlSchema(XmlSchemaSet schemas)
         {

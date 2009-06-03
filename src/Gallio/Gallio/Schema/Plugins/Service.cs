@@ -41,10 +41,10 @@ namespace Gallio.Schema.Plugins
         /// <summary>
         /// Creates a service descriptor.
         /// </summary>
-        /// <param name="serviceId">The service id</param>
-        /// <param name="serviceType">The service type</param>
+        /// <param name="serviceId">The service id.</param>
+        /// <param name="serviceType">The service type.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="serviceId"/> or
-        /// <paramref name="serviceType"/> is null</exception>
+        /// <paramref name="serviceType"/> is null.</exception>
         public Service(string serviceId, string serviceType)
             : this()
         {
@@ -60,7 +60,7 @@ namespace Gallio.Schema.Plugins
         /// <summary>
         /// Gets or sets the service id.
         /// </summary>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
         [XmlAttribute("serviceId")]
         public string ServiceId
         {
@@ -76,7 +76,7 @@ namespace Gallio.Schema.Plugins
         /// <summary>
         /// Gets or sets the assembly-qualified service type name.
         /// </summary>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
         [XmlAttribute("serviceType")]
         public string ServiceType
         {

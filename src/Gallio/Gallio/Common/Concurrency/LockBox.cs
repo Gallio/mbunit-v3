@@ -29,7 +29,7 @@ namespace Gallio.Common.Concurrency
     /// the contents.
     /// </para>
     /// </summary>
-    /// <typeparam name="T">The type of object inside the lock box</typeparam>
+    /// <typeparam name="T">The type of object inside the lock box.</typeparam>
     public class LockBox<T>
     {
         private readonly T obj;
@@ -38,7 +38,7 @@ namespace Gallio.Common.Concurrency
         /// <summary>
         /// Creates a lock box for the specified object.
         /// </summary>
-        /// <param name="obj">The object to protect</param>
+        /// <param name="obj">The object to protect.</param>
         public LockBox(T obj)
         {
             this.obj = obj;
@@ -48,8 +48,8 @@ namespace Gallio.Common.Concurrency
         /// <summary>
         /// Acquires a read lock and invokes the action with the object inside the lock box.
         /// </summary>
-        /// <param name="action">The action to invoke</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="action"/> is null</exception>
+        /// <param name="action">The action to invoke.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="action"/> is null.</exception>
         public void Read(ReadAction<T> action)
         {
             if (action == null)
@@ -69,8 +69,8 @@ namespace Gallio.Common.Concurrency
         /// <summary>
         /// Acquires a write lock and invokes the action with the object inside the lock box.
         /// </summary>
-        /// <param name="action">The action to invoke</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="action"/> is null</exception>
+        /// <param name="action">The action to invoke.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="action"/> is null.</exception>
         public void Write(WriteAction<T> action)
         {
             if (action == null)
@@ -90,10 +90,10 @@ namespace Gallio.Common.Concurrency
         /// <summary>
         /// Acquires a read lock and invokes the function with the object inside the lock box.
         /// </summary>
-        /// <param name="func">The action to invoke</param>
+        /// <param name="func">The action to invoke.</param>
         /// <returns>The value returned by the function</returns>
-        /// <typeparam name="TResult">The function result type</typeparam>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="func"/> is null</exception>
+        /// <typeparam name="TResult">The function result type.</typeparam>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="func"/> is null.</exception>
         public TResult Read<TResult>(ReadFunc<T, TResult> func)
         {
             if (func == null)
@@ -113,10 +113,10 @@ namespace Gallio.Common.Concurrency
         /// <summary>
         /// Acquires a write lock and invokes the function with the object inside the lock box.
         /// </summary>
-        /// <param name="func">The action to invoke</param>
+        /// <param name="func">The action to invoke.</param>
         /// <returns>The value returned by the function</returns>
-        /// <typeparam name="TResult">The function result type</typeparam>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="func"/> is null</exception>
+        /// <typeparam name="TResult">The function result type.</typeparam>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="func"/> is null.</exception>
         public TResult Write<TResult>(WriteFunc<T, TResult> func)
         {
             if (func == null)

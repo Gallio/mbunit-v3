@@ -54,9 +54,9 @@ namespace Gallio.Framework.Pattern
         /// <summary>
         /// Verifies that the attribute is being used correctly.
         /// </summary>
-        /// <param name="containingScope">The containing scope</param>
-        /// <param name="method">The method</param>
-        /// <exception cref="PatternUsageErrorException">Thrown if the attribute is being used incorrectly</exception>
+        /// <param name="containingScope">The containing scope.</param>
+        /// <param name="method">The method.</param>
+        /// <exception cref="PatternUsageErrorException">Thrown if the attribute is being used incorrectly.</exception>
         protected virtual void Validate(IPatternScope containingScope, IMethodInfo method)
         {
             if (! containingScope.IsTestDeclaration || method == null)
@@ -68,8 +68,8 @@ namespace Gallio.Framework.Pattern
         /// Applies decorations to the containing test.
         /// </para>
         /// </summary>
-        /// <param name="containingScope">The containing scope</param>
-        /// <param name="method">The method to process</param>
+        /// <param name="containingScope">The containing scope.</param>
+        /// <param name="method">The method to process.</param>
         protected virtual void DecorateContainingScope(IPatternScope containingScope, IMethodInfo method)
         {
         }

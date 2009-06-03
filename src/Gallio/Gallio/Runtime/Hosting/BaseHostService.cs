@@ -78,11 +78,11 @@ namespace Gallio.Runtime.Hosting
         /// <summary>
         /// Internal implementation of <see cref="Do{TArg, TResult}"/>.
         /// </summary>
-        /// <param name="func">The action to perform, not null</param>
-        /// <param name="arg">The argument value, if any</param>
+        /// <param name="func">The action to perform, not null.</param>
+        /// <param name="arg">The argument value, if any.</param>
         /// <returns>The result value, if any</returns>
-        /// <typeparam name="TArg">The argument type</typeparam>
-        /// <typeparam name="TResult">The result type</typeparam>
+        /// <typeparam name="TArg">The argument type.</typeparam>
+        /// <typeparam name="TResult">The result type.</typeparam>
         protected virtual TResult DoImpl<TArg, TResult>(Func<TArg, TResult> func, TArg arg)
         {
             return func(arg);
@@ -98,8 +98,8 @@ namespace Gallio.Runtime.Hosting
         /// <summary>
         /// Internal implementation of <see cref="CreateInstance"/>.
         /// </summary>
-        /// <param name="assemblyName">The assembly name, not null</param>
-        /// <param name="typeName">The type name, not null</param>
+        /// <param name="assemblyName">The assembly name, not null.</param>
+        /// <param name="typeName">The type name, not null.</param>
         /// <returns>The created object handle</returns>
         protected virtual ObjectHandle CreateInstanceImpl(string assemblyName, string typeName)
         {
@@ -109,8 +109,8 @@ namespace Gallio.Runtime.Hosting
         /// <summary>
         /// Internal implementation of <see cref="CreateInstanceFrom" />.
         /// </summary>
-        /// <param name="assemblyPath">The assembly path, not null</param>
-        /// <param name="typeName">The type name, not null</param>
+        /// <param name="assemblyPath">The assembly path, not null.</param>
+        /// <param name="typeName">The type name, not null.</param>
         /// <returns>The created object handle</returns>
         protected virtual ObjectHandle CreateInstanceFromImpl(string assemblyPath, string typeName)
         {
@@ -120,7 +120,7 @@ namespace Gallio.Runtime.Hosting
         /// <summary>
         /// Disposes the host service.
         /// </summary>
-        /// <param name="disposing">True if disposing</param>
+        /// <param name="disposing">True if disposing.</param>
         protected virtual void Dispose(bool disposing)
         {
             isDisposed = true;

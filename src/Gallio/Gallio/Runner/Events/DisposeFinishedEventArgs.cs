@@ -25,7 +25,7 @@ namespace Gallio.Runner.Events
         /// <summary>
         /// Initializes the event arguments.
         /// </summary>
-        /// <param name="success">True if the disposal was completed successfully</param>
+        /// <param name="success">True if the disposal was completed successfully.</param>
         public DisposeFinishedEventArgs(bool success)
             : base(success)
         {

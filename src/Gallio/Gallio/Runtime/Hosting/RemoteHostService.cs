@@ -37,7 +37,7 @@ namespace Gallio.Runtime.Hosting
         /// Creates a host service.
         /// </summary>
         /// <param name="watchdogTimeout">The maximum amount of time to wait for a ping
-        /// before automatically disposing the host service, or null if there should be no timeout</param>
+        /// before automatically disposing the host service, or null if there should be no timeout.</param>
         public RemoteHostService(TimeSpan? watchdogTimeout)
         {
             if (watchdogTimeout.HasValue)

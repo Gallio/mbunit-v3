@@ -44,16 +44,16 @@ namespace Gallio.Common.Reflection.Impl
         /// <summary>
         /// Resolves a reflected assembly to its native <see cref="Assembly" /> object.
         /// </summary>
-        /// <param name="assembly">The reflected assembly</param>
+        /// <param name="assembly">The reflected assembly.</param>
         /// <param name="fallbackOnPartialName">If true, allows the assembly to be resolved
-        /// by partial name if no match could be found by fullname</param>
+        /// by partial name if no match could be found by fullname.</param>
         /// <param name="throwOnError">If true, throws an exception if resolution fails,
-        /// otherwise returns null</param>
+        /// otherwise returns null.</param>
         /// <returns>The resolved <see cref="Assembly" />.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="assembly"/>
-        /// is null</exception>
+        /// is null.</exception>
         /// <exception cref="ReflectionResolveException">Thrown if <paramref name="assembly"/>
-        /// could not be resolved</exception>
+        /// could not be resolved.</exception>
         public static Assembly ResolveAssembly(IAssemblyInfo assembly, bool fallbackOnPartialName, bool throwOnError)
         {
             if (assembly == null)
@@ -113,7 +113,7 @@ namespace Gallio.Common.Reflection.Impl
         /// <summary>
         /// Resolves a reflected type to its native <see cref="Type" /> object.
         /// </summary>
-        /// <param name="type">The reflected type</param>
+        /// <param name="type">The reflected type.</param>
         /// <param name="methodContext">The method that is currently in scope, or null if none.
         /// This parameter is used when resolving types that are part of the signature
         /// of a generic method so that generic method arguments can be handled correctly.</param>
@@ -121,9 +121,9 @@ namespace Gallio.Common.Reflection.Impl
         /// otherwise returns an <see cref="UnresolvedType" /></param>
         /// <returns>The resolved <see cref="Type" />.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="type"/>
-        /// is null</exception>
+        /// is null.</exception>
         /// <exception cref="ReflectionResolveException">Thrown if <paramref name="type"/>
-        /// could not be resolved</exception>
+        /// could not be resolved.</exception>
         public static Type ResolveType(IResolvableTypeInfo type, MethodInfo methodContext, bool throwOnError)
         {
             if (type == null)
@@ -210,14 +210,14 @@ namespace Gallio.Common.Reflection.Impl
         /// <summary>
         /// Resolves a reflected field to its native <see cref="FieldInfo" /> object.
         /// </summary>
-        /// <param name="field">The reflected type</param>
+        /// <param name="field">The reflected type.</param>
         /// <param name="throwOnError">If true, throws an exception if resolution fails,
         /// otherwise returns an <see cref="UnresolvedFieldInfo" /></param>
         /// <returns>The resolved <see cref="FieldInfo" />.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="field"/>
-        /// is null</exception>
+        /// is null.</exception>
         /// <exception cref="ReflectionResolveException">Thrown if <paramref name="field"/>
-        /// could not be resolved</exception>
+        /// could not be resolved.</exception>
         public static FieldInfo ResolveField(IFieldInfo field, bool throwOnError)
         {
             if (field == null)
@@ -250,14 +250,14 @@ namespace Gallio.Common.Reflection.Impl
         /// <summary>
         /// Resolves a reflected property to its native <see cref="PropertyInfo" /> object.
         /// </summary>
-        /// <param name="property">The reflected property</param>
+        /// <param name="property">The reflected property.</param>
         /// <param name="throwOnError">If true, throws an exception if resolution fails,
         /// otherwise returns an <see cref="UnresolvedPropertyInfo" /></param>
         /// <returns>The resolved <see cref="PropertyInfo" />.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="property"/>
-        /// is null</exception>
+        /// is null.</exception>
         /// <exception cref="ReflectionResolveException">Thrown if <paramref name="property"/>
-        /// could not be resolved</exception>
+        /// could not be resolved.</exception>
         public static PropertyInfo ResolveProperty(IPropertyInfo property, bool throwOnError)
         {
             if (property == null)
@@ -294,14 +294,14 @@ namespace Gallio.Common.Reflection.Impl
         /// <summary>
         /// Resolves a reflected event to its native <see cref="EventInfo" /> object.
         /// </summary>
-        /// <param name="event">The reflected event</param>
+        /// <param name="event">The reflected event.</param>
         /// <param name="throwOnError">If true, throws an exception if resolution fails,
         /// otherwise returns an <see cref="UnresolvedEventInfo" /></param>
         /// <returns>The resolved <see cref="EventInfo" />.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="event"/>
-        /// is null</exception>
+        /// is null.</exception>
         /// <exception cref="ReflectionResolveException">Thrown if <paramref name="event"/>
-        /// could not be resolved</exception>
+        /// could not be resolved.</exception>
         public static EventInfo ResolveEvent(IEventInfo @event, bool throwOnError)
         {
             if (@event == null)
@@ -335,14 +335,14 @@ namespace Gallio.Common.Reflection.Impl
         /// <summary>
         /// Resolves a reflected constructor to its native <see cref="ConstructorInfo" /> object.
         /// </summary>
-        /// <param name="constructor">The reflected constructor</param>
+        /// <param name="constructor">The reflected constructor.</param>
         /// <param name="throwOnError">If true, throws an exception if resolution fails,
         /// otherwise returns an <see cref="UnresolvedConstructorInfo" /></param>
         /// <returns>The resolved <see cref="ConstructorInfo" />.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="constructor"/>
-        /// is null</exception>
+        /// is null.</exception>
         /// <exception cref="ReflectionResolveException">Thrown if <paramref name="constructor"/>
-        /// could not be resolved</exception>
+        /// could not be resolved.</exception>
         public static ConstructorInfo ResolveConstructor(IConstructorInfo constructor, bool throwOnError)
         {
             if (constructor == null)
@@ -380,14 +380,14 @@ namespace Gallio.Common.Reflection.Impl
         /// <summary>
         /// Resolves a reflected method to its native <see cref="MethodInfo" /> object.
         /// </summary>
-        /// <param name="method">The reflected method</param>
+        /// <param name="method">The reflected method.</param>
         /// <param name="throwOnError">If true, throws an exception if resolution fails,
         /// otherwise returns an <see cref="UnresolvedMethodInfo" /></param>
         /// <returns>The resolved <see cref="MethodInfo" />.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="method"/>
-        /// is null</exception>
+        /// is null.</exception>
         /// <exception cref="ReflectionResolveException">Thrown if <paramref name="method"/>
-        /// could not be resolved</exception>
+        /// could not be resolved.</exception>
         public static MethodInfo ResolveMethod(IMethodInfo method, bool throwOnError)
         {
             if (method == null)
@@ -478,14 +478,14 @@ namespace Gallio.Common.Reflection.Impl
         /// <summary>
         /// Resolves a reflected parameter to its native <see cref="ParameterInfo" /> object.
         /// </summary>
-        /// <param name="parameter">The reflected parameter</param>
+        /// <param name="parameter">The reflected parameter.</param>
         /// <param name="throwOnError">If true, throws an exception if resolution fails,
         /// otherwise returns an <see cref="UnresolvedParameterInfo" /></param>
         /// <returns>The resolved <see cref="ParameterInfo" />.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="parameter"/>
-        /// is null</exception>
+        /// is null.</exception>
         /// <exception cref="ReflectionResolveException">Thrown if <paramref name="parameter"/>
-        /// could not be resolved</exception>
+        /// could not be resolved.</exception>
         public static ParameterInfo ResolveParameter(IParameterInfo parameter, bool throwOnError)
         {
             if (parameter == null)

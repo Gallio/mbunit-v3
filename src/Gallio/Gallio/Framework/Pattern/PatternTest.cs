@@ -39,10 +39,10 @@ namespace Gallio.Framework.Pattern
         /// <summary>
         /// Initializes a test initially without a parent.
         /// </summary>
-        /// <param name="name">The name of the test</param>
-        /// <param name="codeElement">The point of definition of the test, or null if unknown</param>
-        /// <param name="dataContext">The data context</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> or <paramref name="dataContext"/> is null</exception>
+        /// <param name="name">The name of the test.</param>
+        /// <param name="codeElement">The point of definition of the test, or null if unknown.</param>
+        /// <param name="dataContext">The data context.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> or <paramref name="dataContext"/> is null.</exception>
         public PatternTest(string name, ICodeElementInfo codeElement, PatternTestDataContext dataContext)
             : base(name, codeElement)
         {
@@ -60,7 +60,7 @@ namespace Gallio.Framework.Pattern
         /// The timeout may be null to indicate the absence of a timeout.
         /// </summary>
         /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="value"/>
-        /// represents a negative time span</exception>
+        /// represents a negative time span.</exception>
         /// <value>The timeout.  Default value is null.</value>
         public TimeSpan? Timeout
         {

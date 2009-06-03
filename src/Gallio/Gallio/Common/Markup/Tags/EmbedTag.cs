@@ -40,8 +40,8 @@ namespace Gallio.Common.Markup.Tags
         /// <summary>
         /// Creates an initialized tag.
         /// </summary>
-        /// <param name="attachmentName">The name of the attachment to embed</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="attachmentName"/> is null</exception>
+        /// <param name="attachmentName">The name of the attachment to embed.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="attachmentName"/> is null.</exception>
         public EmbedTag(string attachmentName)
         {
             if (attachmentName == null)
@@ -53,7 +53,7 @@ namespace Gallio.Common.Markup.Tags
         /// <summary>
         /// Gets or sets the name of the referenced attachment to embed, not null.
         /// </summary>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
         [XmlAttribute("attachmentName")]
         public string AttachmentName
         {

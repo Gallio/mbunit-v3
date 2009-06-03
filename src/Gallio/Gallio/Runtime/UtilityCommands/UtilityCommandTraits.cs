@@ -31,8 +31,8 @@ namespace Gallio.Runtime.UtilityCommands
         /// <summary>
         /// Creates utility command traits.
         /// </summary>
-        /// <param name="name">The unique name of the utility command</param>
-        /// <param name="description">The description of the utility command</param>
+        /// <param name="name">The unique name of the utility command.</param>
+        /// <param name="description">The description of the utility command.</param>
         public UtilityCommandTraits(string name, string description)
         {
             if (name == null)

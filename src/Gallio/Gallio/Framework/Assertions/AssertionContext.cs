@@ -94,9 +94,9 @@ namespace Gallio.Framework.Assertions
         /// other things.  Do not assume that it will throw an exception!
         /// </para>
         /// </remarks>
-        /// <param name="failure">The assertion failure</param>
+        /// <param name="failure">The assertion failure.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="failure"/>
-        /// is null</exception>
+        /// is null.</exception>
         public void SubmitFailure(AssertionFailure failure)
         {
             if (failure == null)
@@ -124,13 +124,13 @@ namespace Gallio.Framework.Assertions
         /// </list>
         /// </para>
         /// </remarks>
-        /// <param name="action">The action to invoke</param>
+        /// <param name="action">The action to invoke.</param>
         /// <param name="assertionFailureBehavior">The assertion failure behavior to use while
-        /// executing the block</param>
+        /// executing the block.</param>
         /// <param name="captureExceptionAsAssertionFailure">Specifies whether to represent an exception
-        /// as an assertion failure, otherwise it is rethrown</param>
+        /// as an assertion failure, otherwise it is rethrown.</param>
         /// <returns>The array of failures, may be empty if none</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="action"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="action"/> is null.</exception>
         [SystemInternal]
         public AssertionFailure[] CaptureFailures(Action action, AssertionFailureBehavior assertionFailureBehavior,
             bool captureExceptionAsAssertionFailure)

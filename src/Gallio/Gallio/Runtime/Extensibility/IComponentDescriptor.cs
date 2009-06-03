@@ -76,7 +76,7 @@ namespace Gallio.Runtime.Extensibility
         /// <summary>
         /// Gets the reason the component was disabled.
         /// </summary>
-        /// <exception cref="InvalidOperationException">Thrown if <see cref="IsDisabled" /> is false</exception>
+        /// <exception cref="InvalidOperationException">Thrown if <see cref="IsDisabled" /> is false.</exception>
         string DisabledReason { get; }
 
         /// <summary>
@@ -90,7 +90,7 @@ namespace Gallio.Runtime.Extensibility
         /// </para>
         /// </remarks>
         /// <returns>The component type</returns>
-        /// <exception cref="RuntimeException">Thrown if an error occurs during resolution</exception>
+        /// <exception cref="RuntimeException">Thrown if an error occurs during resolution.</exception>
         Type ResolveComponentType();
 
         /// <summary>
@@ -104,7 +104,7 @@ namespace Gallio.Runtime.Extensibility
         /// </para>
         /// </remarks>
         /// <returns>The component handler</returns>
-        /// <exception cref="RuntimeException">Thrown if an error occurs during resolution</exception>
+        /// <exception cref="RuntimeException">Thrown if an error occurs during resolution.</exception>
         IHandler ResolveComponentHandler();
 
         /// <summary>
@@ -118,7 +118,7 @@ namespace Gallio.Runtime.Extensibility
         /// </para>
         /// </remarks>
         /// <returns>The component instance</returns>
-        /// <exception cref="RuntimeException">Thrown if an error occurs during resolution</exception>
+        /// <exception cref="RuntimeException">Thrown if an error occurs during resolution.</exception>
         object ResolveComponent();
 
         /// <summary>
@@ -132,7 +132,7 @@ namespace Gallio.Runtime.Extensibility
         /// </para>
         /// </remarks>
         /// <returns>The traits handler</returns>
-        /// <exception cref="RuntimeException">Thrown if an error occurs during resolution</exception>
+        /// <exception cref="RuntimeException">Thrown if an error occurs during resolution.</exception>
         IHandler ResolveTraitsHandler();
 
         /// <summary>
@@ -150,7 +150,7 @@ namespace Gallio.Runtime.Extensibility
         /// </para>
         /// </remarks>
         /// <returns>The component traits</returns>
-        /// <exception cref="RuntimeException">Thrown if an error occurs during resolution</exception>
+        /// <exception cref="RuntimeException">Thrown if an error occurs during resolution.</exception>
         Traits ResolveTraits();
     }
 }

@@ -36,7 +36,7 @@ namespace Gallio.Common.Concurrency
         /// Creates a task result that contains the specified value yielded by the task
         /// when it terminated.
         /// </summary>
-        /// <param name="value">The value</param>
+        /// <param name="value">The value.</param>
         public static TaskResult CreateFromValue(object value)
         {
             return new TaskResult(value, null);
@@ -46,8 +46,8 @@ namespace Gallio.Common.Concurrency
         /// Creates a task result that contains the specified exception that was encountered
         /// by the task and caused it to terminate.
         /// </summary>
-        /// <param name="exception">The exception</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="exception"/> is null</exception>
+        /// <param name="exception">The exception.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="exception"/> is null.</exception>
         public static TaskResult CreateFromException(Exception exception)
         {
             if (exception == null)

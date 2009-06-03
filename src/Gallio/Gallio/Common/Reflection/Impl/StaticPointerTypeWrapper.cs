@@ -26,9 +26,9 @@ namespace Gallio.Common.Reflection.Impl
         /// <summary>
         /// Creates a wrapper.
         /// </summary>
-        /// <param name="policy">The reflection policy</param>
-        /// <param name="elementType">The element type</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="policy"/> or <paramref name="elementType" /> is null</exception>
+        /// <param name="policy">The reflection policy.</param>
+        /// <param name="elementType">The element type.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="policy"/> or <paramref name="elementType" /> is null.</exception>
         public StaticPointerTypeWrapper(StaticReflectionPolicy policy, StaticTypeWrapper elementType)
             : base(policy, elementType)
         {

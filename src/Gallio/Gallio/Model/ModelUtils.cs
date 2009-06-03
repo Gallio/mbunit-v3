@@ -48,8 +48,8 @@ namespace Gallio.Model
         /// </list>
         /// </para>
         /// </summary>
-        /// <param name="assembly">The assembly</param>
-        /// <param name="metadataMap">The metadata map</param>
+        /// <param name="assembly">The assembly.</param>
+        /// <param name="metadataMap">The metadata map.</param>
         public static void PopulateMetadataFromAssembly(IAssemblyInfo assembly, PropertyBag metadataMap)
         {
             metadataMap.Add(MetadataKeys.CodeBase, assembly.Path);

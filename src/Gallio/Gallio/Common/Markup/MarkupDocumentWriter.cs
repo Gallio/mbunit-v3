@@ -146,9 +146,9 @@ namespace Gallio.Common.Markup
         /// This property may return different instances of <see cref="MarkupStreamWriter" />
         /// each time it is called but they always represent the same stream just the same.
         /// </remarks>
-        /// <param name="streamName">The name of the markup stream</param>
+        /// <param name="streamName">The name of the markup stream.</param>
         /// <returns>The log stream</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="streamName"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="streamName"/> is null.</exception>
         public MarkupStreamWriter this[string streamName]
         {
             get
@@ -196,12 +196,12 @@ namespace Gallio.Common.Markup
         /// An attachment instance can be embedded multiple times efficiently since each
         /// embedded copy is typically represented as a link to the same common attachment instance.
         /// </remarks>
-        /// <param name="attachment">The attachment to include</param>
+        /// <param name="attachment">The attachment to include.</param>
         /// <returns>The attachment</returns>
         /// <seealso cref="MarkupStreamWriter.Embed"/>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="attachment"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="attachment"/> is null.</exception>
         /// <exception cref="InvalidOperationException">Thrown if there is already an attachment
-        /// with the same name</exception>
+        /// with the same name.</exception>
         public Attachment Attach(Attachment attachment)
         {
             lock (this)
@@ -220,12 +220,12 @@ namespace Gallio.Common.Markup
         /// </summary>
         /// <param name="attachmentName">The name of the attachment to create or null to
         /// automatically assign one.  The attachment name must be unique within the document.</param>
-        /// <param name="html">The HTML to attach</param>
+        /// <param name="html">The HTML to attach.</param>
         /// <returns>The attachment</returns>
         /// <seealso cref="MarkupStreamWriter.EmbedHtml"/>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="html"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="html"/> is null.</exception>
         /// <exception cref="InvalidOperationException">Thrown if there is already an attachment
-        /// with the same name</exception>
+        /// with the same name.</exception>
         public TextAttachment AttachHtml(string attachmentName, string html)
         {
             return (TextAttachment) Attach(Attachment.CreateHtmlAttachment(attachmentName, html));
@@ -236,12 +236,12 @@ namespace Gallio.Common.Markup
         /// </summary>
         /// <param name="attachmentName">The name of the attachment to create or null to
         /// automatically assign one.  The attachment name must be unique within the document.</param>
-        /// <param name="image">The image to attach</param>
+        /// <param name="image">The image to attach.</param>
         /// <returns>The attachment</returns>
         /// <seealso cref="MarkupStreamWriter.EmbedImage"/>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="image"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="image"/> is null.</exception>
         /// <exception cref="InvalidOperationException">Thrown if there is already an attachment
-        /// with the same name</exception>
+        /// with the same name.</exception>
         public BinaryAttachment AttachImage(string attachmentName, Image image)
         {
             return (BinaryAttachment) Attach(Attachment.CreateImageAttachment(attachmentName, image));
@@ -253,12 +253,12 @@ namespace Gallio.Common.Markup
         /// </summary>
         /// <param name="attachmentName">The name of the attachment to create or null to
         /// automatically assign one.  The attachment name must be unique within the document.</param>
-        /// <param name="obj">The object to serialize and embed, must not be null</param>
+        /// <param name="obj">The object to serialize and embed, must not be null.</param>
         /// <returns>The attachment</returns>
         /// <seealso cref="MarkupStreamWriter.EmbedObjectAsXml(string, object)"/>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="obj"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="obj"/> is null.</exception>
         /// <exception cref="InvalidOperationException">Thrown if there is already an attachment
-        /// with the same name</exception>
+        /// with the same name.</exception>
         public TextAttachment AttachObjectAsXml(string attachmentName, object obj)
         {
             return AttachObjectAsXml(attachmentName, obj, null);
@@ -270,14 +270,14 @@ namespace Gallio.Common.Markup
         /// </summary>
         /// <param name="attachmentName">The name of the attachment to create or null to
         /// automatically assign one.  The attachment name must be unique within the document.</param>
-        /// <param name="obj">The object to serialize and embed, must not be null</param>
+        /// <param name="obj">The object to serialize and embed, must not be null.</param>
         /// <param name="xmlSerializer">The <see cref="XmlSerializer" /> to use, or null to use the default <see cref="XmlSerializer" />
-        /// for the object's type</param>
+        /// for the object's type.</param>
         /// <returns>The attachment</returns>
         /// <seealso cref="MarkupStreamWriter.EmbedObjectAsXml(string, object, XmlSerializer)"/>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="obj"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="obj"/> is null.</exception>
         /// <exception cref="InvalidOperationException">Thrown if there is already an attachment
-        /// with the same name</exception>
+        /// with the same name.</exception>
         public TextAttachment AttachObjectAsXml(string attachmentName, object obj, XmlSerializer xmlSerializer)
         {
             return (TextAttachment) Attach(Attachment.CreateObjectAsXmlAttachment(attachmentName, obj, xmlSerializer));
@@ -288,12 +288,12 @@ namespace Gallio.Common.Markup
         /// </summary>
         /// <param name="attachmentName">The name of the attachment to create or null to
         /// automatically assign one.  The attachment name must be unique within the document.</param>
-        /// <param name="text">The text to attach</param>
+        /// <param name="text">The text to attach.</param>
         /// <returns>The attachment</returns>
         /// <seealso cref="MarkupStreamWriter.EmbedPlainText"/>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="text"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="text"/> is null.</exception>
         /// <exception cref="InvalidOperationException">Thrown if there is already an attachment
-        /// with the same name</exception>
+        /// with the same name.</exception>
         public TextAttachment AttachPlainText(string attachmentName, string text)
         {
             return (TextAttachment) Attach(Attachment.CreatePlainTextAttachment(attachmentName, text));
@@ -304,12 +304,12 @@ namespace Gallio.Common.Markup
         /// </summary>
         /// <param name="attachmentName">The name of the attachment to create or null to
         /// automatically assign one.  The attachment name must be unique within the document.</param>
-        /// <param name="xhtml">The XHTML to attach</param>
+        /// <param name="xhtml">The XHTML to attach.</param>
         /// <returns>The attachment</returns>
         /// <seealso cref="MarkupStreamWriter.EmbedXHtml"/>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="xhtml"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="xhtml"/> is null.</exception>
         /// <exception cref="InvalidOperationException">Thrown if there is already an attachment
-        /// with the same name</exception>
+        /// with the same name.</exception>
         public TextAttachment AttachXHtml(string attachmentName, string xhtml)
         {
             return (TextAttachment) Attach(Attachment.CreateXHtmlAttachment(attachmentName, xhtml));
@@ -320,12 +320,12 @@ namespace Gallio.Common.Markup
         /// </summary>
         /// <param name="attachmentName">The name of the attachment to create or null to
         /// automatically assign one.  The attachment name must be unique within the document.</param>
-        /// <param name="xml">The XML to attach</param>
+        /// <param name="xml">The XML to attach.</param>
         /// <returns>The attachment</returns>
         /// <seealso cref="MarkupStreamWriter.EmbedXml"/>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="xml"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="xml"/> is null.</exception>
         /// <exception cref="InvalidOperationException">Thrown if there is already an attachment
-        /// with the same name</exception>
+        /// with the same name.</exception>
         public TextAttachment AttachXml(string attachmentName, string xml)
         {
             return (TextAttachment) Attach(Attachment.CreateXmlAttachment(attachmentName, xml));
@@ -336,7 +336,7 @@ namespace Gallio.Common.Markup
         /// <summary>
         /// Gets a writer for the stream with the specified name.
         /// </summary>
-        /// <param name="streamName">The stream name, never null</param>
+        /// <param name="streamName">The stream name, never null.</param>
         /// <returns>The markup stream writer</returns>
         protected virtual MarkupStreamWriter GetStreamImpl(string streamName)
         {
@@ -373,9 +373,9 @@ namespace Gallio.Common.Markup
         /// multiple times and optimize this case by representing embedded attachments
         /// as links.
         /// </remarks>
-        /// <param name="attachment">The attachment to write, never null</param>
+        /// <param name="attachment">The attachment to write, never null.</param>
         /// <exception cref="InvalidOperationException">Thrown if there is already an attachment
-        /// with the same name</exception>
+        /// with the same name.</exception>
         protected abstract void AttachImpl(Attachment attachment);
 
         /// <summary>
@@ -385,8 +385,8 @@ namespace Gallio.Common.Markup
         /// The implementation can assume that newlines are normalized to LFs ('\n') only
         /// and that CRs ('\r') have been stripped.
         /// </remarks>
-        /// <param name="streamName">The markup stream name</param>
-        /// <param name="text">The text to write, never null</param>
+        /// <param name="streamName">The markup stream name.</param>
+        /// <param name="text">The text to write, never null.</param>
         protected abstract void StreamWriteImpl(string streamName, string text);
 
         /// <summary>
@@ -397,37 +397,37 @@ namespace Gallio.Common.Markup
         /// multiple times and optimize this case by representing embedded attachments
         /// as links.
         /// </remarks>
-        /// <param name="streamName">The markup stream name</param>
-        /// <param name="attachmentName">The name of the attachment to write, never null</param>
+        /// <param name="streamName">The markup stream name.</param>
+        /// <param name="attachmentName">The name of the attachment to write, never null.</param>
         /// <exception cref="InvalidOperationException">Thrown if no attachment with the specified
-        /// name has been previously attached</exception>
+        /// name has been previously attached.</exception>
         protected abstract void StreamEmbedImpl(string streamName, string attachmentName);
 
         /// <summary>
         /// Begins a section in a markup stream.
         /// </summary>
-        /// <param name="streamName">The markup stream name</param>
-        /// <param name="sectionName">The name of the section to begin, never null</param>
+        /// <param name="streamName">The markup stream name.</param>
+        /// <param name="sectionName">The name of the section to begin, never null.</param>
         protected abstract void StreamBeginSectionImpl(string streamName, string sectionName);
 
         /// <summary>
         /// Begins a marked region in a markup stream.
         /// </summary>
-        /// <param name="streamName">The markup stream name</param>
-        /// <param name="marker">The marker</param>
+        /// <param name="streamName">The markup stream name.</param>
+        /// <param name="marker">The marker.</param>
         protected abstract void StreamBeginMarkerImpl(string streamName, Marker marker);
 
         /// <summary>
         /// Ends the current region started with one of the Begin* methods in a markup stream.
         /// </summary>
-        /// <param name="streamName">The markup stream name</param>
-        /// <exception cref="InvalidOperationException">Thrown if there is no current nested region</exception>
+        /// <param name="streamName">The markup stream name.</param>
+        /// <exception cref="InvalidOperationException">Thrown if there is no current nested region.</exception>
         protected abstract void StreamEndImpl(string streamName);
 
         /// <summary>
         /// Flushes a markup stream.
         /// </summary>
-        /// <param name="streamName">The markup stream name</param>
+        /// <param name="streamName">The markup stream name.</param>
         protected virtual void StreamFlushImpl(string streamName)
         {
         }

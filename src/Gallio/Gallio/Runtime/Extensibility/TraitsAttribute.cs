@@ -35,7 +35,7 @@ namespace Gallio.Runtime.Extensibility
         /// </summary>
         /// <param name="traitsType">The traits type, a subclass of <see cref="Traits" /></param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="traitsType"/>
-        /// is null</exception>
+        /// is null.</exception>
         /// <exception cref="ArgumentException">Thrown if <paramref name="traitsType"/>
         /// is not a class or if it is not derived from <see cref="Traits" /></exception>
         public TraitsAttribute(Type traitsType)

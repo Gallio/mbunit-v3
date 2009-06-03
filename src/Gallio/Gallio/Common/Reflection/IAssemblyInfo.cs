@@ -70,7 +70,7 @@ namespace Gallio.Common.Reflection
         /// <summary>
         /// Gets a public type by name, or null if not found.
         /// </summary>
-        /// <param name="typeName">The type name</param>
+        /// <param name="typeName">The type name.</param>
         /// <returns>The type</returns>
         ITypeInfo GetType(string typeName);
 
@@ -78,9 +78,9 @@ namespace Gallio.Common.Reflection
         /// Resolves the wrapper to its native reflection target.
         /// </summary>
         /// <param name="throwOnError">If true, throws an exception if the target could
-        /// not be resolved, otherwise returns null</param>
+        /// not be resolved, otherwise returns null.</param>
         /// <returns>The native reflection target</returns>
-        /// <exception cref="ReflectionResolveException">Thrown if the target cannot be resolved</exception>
+        /// <exception cref="ReflectionResolveException">Thrown if the target cannot be resolved.</exception>
         Assembly Resolve(bool throwOnError);
     }
 }

@@ -56,11 +56,11 @@ namespace Gallio.Runner.Harness
         /// <summary>
         /// Creates a test harness.
         /// </summary>
-        /// <param name="contextTracker">The test context tracker</param>
-        /// <param name="loader">The loader</param>
-        /// <param name="frameworkManager">The test framework manager</param>
+        /// <param name="contextTracker">The test context tracker.</param>
+        /// <param name="loader">The loader.</param>
+        /// <param name="frameworkManager">The test framework manager.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="contextTracker"/>,
-        /// <paramref name="loader "/> or <paramref name="frameworkManager"/> is null</exception>
+        /// <paramref name="loader "/> or <paramref name="frameworkManager"/> is null.</exception>
         public DefaultTestHarness(ITestContextTracker contextTracker, ILoader loader,
             ITestFrameworkManager frameworkManager)
         {

@@ -40,13 +40,13 @@ namespace Gallio.Framework.Data
         /// <summary>
         /// Creates a factory data set.
         /// </summary>
-        /// <param name="factory">The factory delegate</param>
-        /// <param name="factoryKind">The kind of factory</param>
+        /// <param name="factory">The factory delegate.</param>
+        /// <param name="factoryKind">The kind of factory.</param>
         /// <param name="columnCount">The number of columns in the data items produced
-        /// by the factory or 0 if unknown</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="factory"/> is null</exception>
+        /// by the factory or 0 if unknown.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="factory"/> is null.</exception>
         /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="factoryKind"/>
-        /// is invalid or if <paramref name="columnCount"/> is less than 0</exception>
+        /// is invalid or if <paramref name="columnCount"/> is less than 0.</exception>
         public FactoryDataSet(Func<IEnumerable> factory, FactoryKind factoryKind, int columnCount)
         {
             if (factory == null)

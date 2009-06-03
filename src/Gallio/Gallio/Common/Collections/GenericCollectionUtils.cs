@@ -28,11 +28,11 @@ namespace Gallio.Common.Collections
         /// output list using the same index.  The output list must be at least as
         /// large as the input list.
         /// </summary>
-        /// <typeparam name="TInput">The input type</typeparam>
-        /// <typeparam name="TOutput">The output type</typeparam>
-        /// <param name="input">The input list</param>
-        /// <param name="output">The output list</param>
-        /// <param name="converter">The conversion function to apply to each element</param>
+        /// <typeparam name="TInput">The input type.</typeparam>
+        /// <typeparam name="TOutput">The output type.</typeparam>
+        /// <param name="input">The input list.</param>
+        /// <param name="output">The output list.</param>
+        /// <param name="converter">The conversion function to apply to each element.</param>
         public static void ConvertAndCopyAll<TInput, TOutput>(ICollection<TInput> input, IList<TOutput> output,
             Converter<TInput, TOutput> converter)
         {
@@ -45,11 +45,11 @@ namespace Gallio.Common.Collections
         /// Converts each element of the input collection and adds the result to the
         /// output collection succession in the same order.
         /// </summary>
-        /// <typeparam name="TInput">The input type</typeparam>
-        /// <typeparam name="TOutput">The output type</typeparam>
-        /// <param name="input">The input list</param>
-        /// <param name="output">The output list</param>
-        /// <param name="converter">The conversion function to apply to each element</param>
+        /// <typeparam name="TInput">The input type.</typeparam>
+        /// <typeparam name="TOutput">The output type.</typeparam>
+        /// <param name="input">The input list.</param>
+        /// <param name="output">The output list.</param>
+        /// <param name="converter">The conversion function to apply to each element.</param>
         public static void ConvertAndAddAll<TInput, TOutput>(ICollection<TInput> input, ICollection<TOutput> output,
             Converter<TInput, TOutput> converter)
         {
@@ -61,10 +61,10 @@ namespace Gallio.Common.Collections
         /// Converts each element of the input collection and returns the collected results as an array
         /// of the same size.
         /// </summary>
-        /// <typeparam name="TInput">The input type</typeparam>
-        /// <typeparam name="TOutput">The output type</typeparam>
-        /// <param name="input">The input collection</param>
-        /// <param name="converter">The conversion function to apply to each element</param>
+        /// <typeparam name="TInput">The input type.</typeparam>
+        /// <typeparam name="TOutput">The output type.</typeparam>
+        /// <param name="input">The input collection.</param>
+        /// <param name="converter">The conversion function to apply to each element.</param>
         /// <returns>The output array</returns>
         public static TOutput[] ConvertAllToArray<TInput, TOutput>(ICollection<TInput> input,
             Converter<TInput, TOutput> converter)
@@ -77,8 +77,8 @@ namespace Gallio.Common.Collections
         /// <summary>
         /// Copies all of the elements of the input enumerable to an array.
         /// </summary>
-        /// <typeparam name="T">The element type</typeparam>
-        /// <param name="enumerable">The input enumerable</param>
+        /// <typeparam name="T">The element type.</typeparam>
+        /// <param name="enumerable">The input enumerable.</param>
         /// <returns>The output array</returns>
         public static T[] ToArray<T>(IEnumerable<T> enumerable)
         {
@@ -88,8 +88,8 @@ namespace Gallio.Common.Collections
         /// <summary>
         /// Copies all of the elements of the input collection to an array.
         /// </summary>
-        /// <typeparam name="T">The element type</typeparam>
-        /// <param name="collection">The input collection</param>
+        /// <typeparam name="T">The element type.</typeparam>
+        /// <param name="collection">The input collection.</param>
         /// <returns>The output array</returns>
         public static T[] ToArray<T>(ICollection<T> collection)
         {
@@ -106,9 +106,9 @@ namespace Gallio.Common.Collections
         /// Returns the first element of the input enumeration for which the specified
         /// predicate returns true.
         /// </summary>
-        /// <typeparam name="T">The element type</typeparam>
-        /// <param name="enumeration">The input enumeration</param>
-        /// <param name="predicate">The predicate</param>
+        /// <typeparam name="T">The element type.</typeparam>
+        /// <param name="enumeration">The input enumeration.</param>
+        /// <param name="predicate">The predicate.</param>
         /// <returns>The first matching value or the default for the type if not found</returns>
         public static T Find<T>(IEnumerable<T> enumeration, Predicate<T> predicate)
         {
@@ -122,9 +122,9 @@ namespace Gallio.Common.Collections
         /// <summary>
         /// Adds all elements of the input enumeration to the output collection.
         /// </summary>
-        /// <typeparam name="T">The element type</typeparam>
-        /// <param name="input">The input enumeration</param>
-        /// <param name="output">The output collection</param>
+        /// <typeparam name="T">The element type.</typeparam>
+        /// <param name="input">The input enumeration.</param>
+        /// <param name="output">The output collection.</param>
         public static void AddAll<T>(IEnumerable<T> input, ICollection<T> output)
         {
             foreach (T value in input)
@@ -135,9 +135,9 @@ namespace Gallio.Common.Collections
         /// Adds elements of the input enumeration to the output collection, 
         /// if not already present.
         /// </summary>
-        /// <typeparam name="T">The element type</typeparam>
-        /// <param name="input">The input enumeration</param>
-        /// <param name="output">The output collection</param>
+        /// <typeparam name="T">The element type.</typeparam>
+        /// <param name="input">The input enumeration.</param>
+        /// <param name="output">The output collection.</param>
         public static void AddAllIfNotAlreadyPresent<T>(IEnumerable<T> input, ICollection<T> output)
         {
             foreach (T value in input)
@@ -148,8 +148,8 @@ namespace Gallio.Common.Collections
         /// <summary>
         /// Returns true if the elements of both lists are equal.
         /// </summary>
-        /// <param name="a">The first collection</param>
-        /// <param name="b">The second collection</param>
+        /// <param name="a">The first collection.</param>
+        /// <param name="b">The second collection.</param>
         /// <returns>True if the elements are equal</returns>
         public static bool ElementsEqual<T>(IList<T> a, IList<T> b)
         {
@@ -159,9 +159,9 @@ namespace Gallio.Common.Collections
         /// <summary>
         /// Returns true if the elements of both lists are equal.
         /// </summary>
-        /// <param name="a">The first collection</param>
-        /// <param name="b">The second collection</param>
-        /// <param name="comparer">The comparison strategy to use</param>
+        /// <param name="a">The first collection.</param>
+        /// <param name="b">The second collection.</param>
+        /// <param name="comparer">The comparison strategy to use.</param>
         /// <returns>True if the elements are equal</returns>
         public static bool ElementsEqual<T>(IList<T> a, IList<T> b, EqualityComparison<T> comparer)
         {
@@ -181,8 +181,8 @@ namespace Gallio.Common.Collections
         /// <summary>
         /// Returns true if both dictionaries have equal key/value pairs.
         /// </summary>
-        /// <param name="a">The first collection</param>
-        /// <param name="b">The second collection</param>
+        /// <param name="a">The first collection.</param>
+        /// <param name="b">The second collection.</param>
         /// <returns>True if the elements are equal</returns>
         public static bool KeyValuePairsEqual<TKey, TValue>(IDictionary<TKey, TValue> a, IDictionary<TKey, TValue> b)
         {
@@ -204,8 +204,8 @@ namespace Gallio.Common.Collections
         /// Handles elements that appear multiple times and ensures that they appear the same
         /// number of times in each list.
         /// </summary>
-        /// <param name="a">The first collection</param>
-        /// <param name="b">The second collection</param>
+        /// <param name="a">The first collection.</param>
+        /// <param name="b">The second collection.</param>
         /// <returns>True if the elements are equal</returns>
         public static bool ElementsEqualOrderIndependent<T>(IList<T> a, IList<T> b)
         {

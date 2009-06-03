@@ -31,9 +31,9 @@ namespace Gallio.Runner.Events
         /// <summary>
         /// Initializes the event arguments.
         /// </summary>
-        /// <param name="report">The report</param>
-        /// <param name="annotation">The annotation that was added</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="report"/> is null</exception>
+        /// <param name="report">The report.</param>
+        /// <param name="annotation">The annotation that was added.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="report"/> is null.</exception>
         public TestModelAnnotationAddedEventArgs(Report report, AnnotationData annotation)
         {
             if (report == null)

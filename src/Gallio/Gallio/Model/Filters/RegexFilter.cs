@@ -30,8 +30,8 @@ namespace Gallio.Model.Filters
         /// <summary>
         /// Creates an regex filter.
         /// </summary>
-        /// <param name="regex">The regular expression for matching strings</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="regex"/> is null</exception>
+        /// <param name="regex">The regular expression for matching strings.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="regex"/> is null.</exception>
         public RegexFilter(Regex regex)
         {
             if (regex == null)

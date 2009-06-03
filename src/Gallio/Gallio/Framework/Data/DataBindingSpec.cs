@@ -44,12 +44,12 @@ namespace Gallio.Framework.Data
         /// <summary>
         /// Creates a data binding spec.
         /// </summary>
-        /// <param name="slotValues">The slot values</param>
+        /// <param name="slotValues">The slot values.</param>
         /// <param name="converter">The converter to use for converting slot values
-        /// to the required types</param>
+        /// to the required types.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="slotValues"/>
         /// or <paramref name="converter"/> is null or if <paramref name="slotValues"/>
-        /// contains a null slot</exception>
+        /// contains a null slot.</exception>
         protected DataBindingSpec(IEnumerable<KeyValuePair<ISlotInfo, object>> slotValues, IConverter converter)
         {
             if (slotValues == null)
@@ -108,11 +108,11 @@ namespace Gallio.Framework.Data
         /// This method assumes that the slots all belong to the same declaring type or method
         /// which is always the case for <see cref="ObjectCreationSpec" /> and <see cref="MethodInvocationSpec" />.
         /// </remarks>
-        /// <param name="entity">The entity that is qualified by the specification such as the name of a type or method</param>
-        /// <param name="formatter">The formatter</param>
+        /// <param name="entity">The entity that is qualified by the specification such as the name of a type or method.</param>
+        /// <param name="formatter">The formatter.</param>
         /// <returns>The formatted specification</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="entity"/>
-        /// or <paramref name="formatter"/> is null</exception>
+        /// or <paramref name="formatter"/> is null.</exception>
         public string Format(string entity, IFormatter formatter)
         {
             if (entity == null)
@@ -126,17 +126,17 @@ namespace Gallio.Framework.Data
         /// <summary>
         /// Internal implementation of <see cref="Format" /> after argument validation.
         /// </summary>
-        /// <param name="entity">The entity that is qualified by the specification such as the name of a type or method</param>
-        /// <param name="formatter">The formatter, not null</param>
+        /// <param name="entity">The entity that is qualified by the specification such as the name of a type or method.</param>
+        /// <param name="formatter">The formatter, not null.</param>
         /// <returns>The formatted specification</returns>
         protected abstract string FormatImpl(string entity, IFormatter formatter);
 
         /// <summary>
         /// Appends formatted generic arguments within angle brackets, if any.
         /// </summary>
-        /// <param name="str">The string builder, not null</param>
-        /// <param name="arguments">The arguments, not null</param>
-        /// <param name="formatter">The formatter, not null</param>
+        /// <param name="str">The string builder, not null.</param>
+        /// <param name="arguments">The arguments, not null.</param>
+        /// <param name="formatter">The formatter, not null.</param>
         protected static void AppendFormattedGenericArguments(StringBuilder str, Type[] arguments, IFormatter formatter)
         {
             if (arguments.Length != 0)
@@ -150,9 +150,9 @@ namespace Gallio.Framework.Data
         /// <summary>
         /// Appends formatted generic arguments within parentheses, if any.
         /// </summary>
-        /// <param name="str">The string builder, not null</param>
-        /// <param name="arguments">The arguments, not null</param>
-        /// <param name="formatter">The formatter, not null</param>
+        /// <param name="str">The string builder, not null.</param>
+        /// <param name="arguments">The arguments, not null.</param>
+        /// <param name="formatter">The formatter, not null.</param>
         protected static void AppendFormattedMethodArguments(StringBuilder str, object[] arguments, IFormatter formatter)
         {
             if (arguments.Length != 0)
@@ -167,9 +167,9 @@ namespace Gallio.Framework.Data
         /// Appends formatted values keyed and sorted by name, if any.
         /// This method is used with fields and properties.
         /// </summary>
-        /// <param name="str">The string builder, not null</param>
-        /// <param name="namedValues">The named values, not null</param>
-        /// <param name="formatter">The formatter, not null</param>
+        /// <param name="str">The string builder, not null.</param>
+        /// <param name="namedValues">The named values, not null.</param>
+        /// <param name="formatter">The formatter, not null.</param>
         protected static void AppendFormattedNamedValues(StringBuilder str,
             IEnumerable<KeyValuePair<string, object>> namedValues, IFormatter formatter)
         {
@@ -221,9 +221,9 @@ namespace Gallio.Framework.Data
         /// a reflection object for the member as declared by Foo&lt;int&gt;.
         /// </para>
         /// </summary>
-        /// <typeparam name="T">The type of member</typeparam>
-        /// <param name="resolvedType">The resolved type, not null</param>
-        /// <param name="member">The member, not null</param>
+        /// <typeparam name="T">The type of member.</typeparam>
+        /// <param name="resolvedType">The resolved type, not null.</param>
+        /// <param name="member">The member, not null.</param>
         /// <returns>The resolved member</returns>
         protected static T ResolveMember<T>(Type resolvedType, T member)
             where T : MemberInfo

@@ -72,8 +72,8 @@ namespace Gallio.Model.Execution
         /// Gets or sets the lifecycle phase the context is in.
         /// </summary>
         /// <seealso cref="LifecyclePhases"/>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
-        /// <exception cref="InvalidOperationException">Thrown if attempting to set the phase while the test is not running</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
+        /// <exception cref="InvalidOperationException">Thrown if attempting to set the phase while the test is not running.</exception>
         string LifecyclePhase { get; set; }
 
         /// <summary>
@@ -131,18 +131,18 @@ namespace Gallio.Model.Execution
         /// <summary>
         /// Adds the specified amount to the assert count atomically.
         /// </summary>
-        /// <param name="value">The amount to add to the assert count</param>
-        /// <exception cref="InvalidOperationException">Thrown if the test is not running</exception>
+        /// <param name="value">The amount to add to the assert count.</param>
+        /// <exception cref="InvalidOperationException">Thrown if the test is not running.</exception>
         void AddAssertCount(int value);
 
         /// <summary>
         /// Adds metadata to the step that is running in the context.
         /// </summary>
-        /// <param name="metadataKey">The metadata key</param>
-        /// <param name="metadataValue">The metadata value</param>
+        /// <param name="metadataKey">The metadata key.</param>
+        /// <param name="metadataValue">The metadata value.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="metadataKey"/>
-        /// or <paramref name="metadataValue"/> is null</exception>
-        /// <exception cref="InvalidOperationException">Thrown if the test is not running</exception>
+        /// or <paramref name="metadataValue"/> is null.</exception>
+        /// <exception cref="InvalidOperationException">Thrown if the test is not running.</exception>
         void AddMetadata(string metadataKey, string metadataValue);
 
         /// <summary>
@@ -158,7 +158,7 @@ namespace Gallio.Model.Execution
         /// that was set using this method.
         /// </para>
         /// </remarks>
-        /// <exception cref="InvalidOperationException">Thrown if attempting to set the outcome while the test is not running</exception>
+        /// <exception cref="InvalidOperationException">Thrown if attempting to set the outcome while the test is not running.</exception>
         /// <seealso cref="Outcome"/>
         void SetInterimOutcome(TestOutcome outcome);
 
@@ -169,12 +169,12 @@ namespace Gallio.Model.Execution
         /// The current thread's test context is set to the context of the
         /// test step that is starting.
         /// </remarks>
-        /// <param name="childStep">The step to start</param>
+        /// <param name="childStep">The step to start.</param>
         /// <returns>The context of the child step</returns>
-        /// <exception cref="InvalidOperationException">Thrown if the step has finished</exception>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="childStep"/> is null</exception>
+        /// <exception cref="InvalidOperationException">Thrown if the step has finished.</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="childStep"/> is null.</exception>
         /// <exception cref="ArgumentException">Thrown if <paramref name="childStep"/> is not a child
-        /// of the this step</exception>
+        /// of the this step.</exception>
         ITestContext StartChildStep(ITestStep childStep);
 
         /// <summary>
@@ -185,9 +185,9 @@ namespace Gallio.Model.Execution
         /// disposed.  Then <see cref="Finishing"/> actions are executed.  Finally, the current
         /// thread's test context is exited.
         /// </remarks>
-        /// <param name="outcome">The final test outcome</param>
+        /// <param name="outcome">The final test outcome.</param>
         /// <param name="actualDuration">The actual duration of the step, if null the step monitor
-        /// will record the duration as the total amount of time since the step monitor was started</param>
+        /// will record the duration as the total amount of time since the step monitor was started.</param>
         /// <seealso cref="Finishing"/>
         void FinishStep(TestOutcome outcome, TimeSpan? actualDuration);
     }

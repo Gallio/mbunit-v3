@@ -34,8 +34,8 @@ namespace Gallio.Model
         /// <summary>
         /// Creates a test framework manager.
         /// </summary>
-        /// <param name="frameworkHandles">The test framework handles</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="frameworkHandles"/> is null</exception>
+        /// <param name="frameworkHandles">The test framework handles.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="frameworkHandles"/> is null.</exception>
         public DefaultTestFrameworkManager(ComponentHandle<ITestFramework, TestFrameworkTraits>[] frameworkHandles)
         {
             if (frameworkHandles == null || Array.IndexOf(frameworkHandles, null) >= 0)

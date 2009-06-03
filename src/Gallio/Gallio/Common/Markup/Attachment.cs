@@ -37,8 +37,8 @@ namespace Gallio.Common.Markup
         /// </summary>
         /// <param name="name">The name of attachment, or null to automatically assign one.  The attachment
         /// name must be unique within the scope of the currently executing test step.</param>
-        /// <param name="contentType">The content type, not null</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="contentType"/> is null</exception>
+        /// <param name="contentType">The content type, not null.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="contentType"/> is null.</exception>
         internal /*to prevent subclassing outside of the framework*/ Attachment(string name, string contentType)
         {
             if (contentType == null)
@@ -68,10 +68,10 @@ namespace Gallio.Common.Markup
         /// <summary>
         /// Creates a plain text attachment.
         /// </summary>
-        /// <param name="name">The attachment name, or null to automatically assign one</param>
-        /// <param name="text">The text string, not null</param>
+        /// <param name="name">The attachment name, or null to automatically assign one.</param>
+        /// <param name="text">The text string, not null.</param>
         /// <returns>The attachment</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="text"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="text"/> is null.</exception>
         public static TextAttachment CreatePlainTextAttachment(string name, string text)
         {
             return new TextAttachment(name, MimeTypes.PlainText, text);
@@ -80,10 +80,10 @@ namespace Gallio.Common.Markup
         /// <summary>
         /// Creates an HTML attachment.
         /// </summary>
-        /// <param name="name">The attachment name, or null to automatically assign one</param>
-        /// <param name="html">The html string, not null</param>
+        /// <param name="name">The attachment name, or null to automatically assign one.</param>
+        /// <param name="html">The html string, not null.</param>
         /// <returns>The attachment</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="html"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="html"/> is null.</exception>
         public static TextAttachment CreateHtmlAttachment(string name, string html)
         {
             return new TextAttachment(name, MimeTypes.Html, html);
@@ -92,10 +92,10 @@ namespace Gallio.Common.Markup
         /// <summary>
         /// Creates an XHTML attachment.
         /// </summary>
-        /// <param name="name">The attachment name, or null to automatically assign one</param>
-        /// <param name="xhtml">The xhtml string, not null</param>
+        /// <param name="name">The attachment name, or null to automatically assign one.</param>
+        /// <param name="xhtml">The xhtml string, not null.</param>
         /// <returns>The attachment</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="xhtml"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="xhtml"/> is null.</exception>
         public static TextAttachment CreateXHtmlAttachment(string name, string xhtml)
         {
             return new TextAttachment(name, MimeTypes.XHtml, xhtml);
@@ -104,10 +104,10 @@ namespace Gallio.Common.Markup
         /// <summary>
         /// Creates an XML attachment.
         /// </summary>
-        /// <param name="name">The attachment name, or null to automatically assign one</param>
-        /// <param name="xml">The XML string, not null</param>
+        /// <param name="name">The attachment name, or null to automatically assign one.</param>
+        /// <param name="xml">The XML string, not null.</param>
         /// <returns>The attachment</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="xml"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="xml"/> is null.</exception>
         public static TextAttachment CreateXmlAttachment(string name, string xml)
         {
             return new TextAttachment(name, MimeTypes.Xml, xml);
@@ -116,9 +116,9 @@ namespace Gallio.Common.Markup
         /// <summary>
         /// Embeds an image attachment with a mime-type compatible with its internal representation.
         /// </summary>
-        /// <param name="name">The attachment name, or null to automatically assign one</param>
-        /// <param name="image">The image to attach</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="image"/> is null</exception>
+        /// <param name="name">The attachment name, or null to automatically assign one.</param>
+        /// <param name="image">The image to attach.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="image"/> is null.</exception>
         public static BinaryAttachment CreateImageAttachment(string name, Image image)
         {
             if (image == null)
@@ -137,10 +137,10 @@ namespace Gallio.Common.Markup
         /// using the specified serializer.
         /// <seealso cref="XmlSerializer"/>
         /// </summary>
-        /// <param name="name">The attachment name, or null to automatically assign one</param>
-        /// <param name="obj">The object to serialize and embed, must not be null</param>
-        /// <param name="xmlSerializer">The xml serializer to use, or null to use the default based on the object's type</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="obj"/> is null</exception>
+        /// <param name="name">The attachment name, or null to automatically assign one.</param>
+        /// <param name="obj">The object to serialize and embed, must not be null.</param>
+        /// <param name="xmlSerializer">The xml serializer to use, or null to use the default based on the object's type.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="obj"/> is null.</exception>
         public static TextAttachment CreateObjectAsXmlAttachment(string name, object obj, XmlSerializer xmlSerializer)
         {
             if (obj == null)
@@ -165,9 +165,9 @@ namespace Gallio.Common.Markup
         /// <summary>
         /// Recovers the attachment information from serializable attachment data.
         /// </summary>
-        /// <param name="data">The attachment data</param>
+        /// <param name="data">The attachment data.</param>
         /// <returns>The attachment</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="data"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="data"/> is null.</exception>
         public static Attachment FromAttachmentData(AttachmentData data)
         {
             if (data == null)

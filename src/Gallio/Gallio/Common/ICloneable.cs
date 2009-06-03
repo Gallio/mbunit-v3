@@ -20,7 +20,7 @@ namespace Gallio.Common
     /// <summary>
     /// Provides a typed clone operation.
     /// </summary>
-    /// <typeparam name="T">The type produced when the object is cloned</typeparam>
+    /// <typeparam name="T">The type produced when the object is cloned.</typeparam>
     public interface ICloneable<T> : ICloneable
         where T : ICloneable<T>
     {

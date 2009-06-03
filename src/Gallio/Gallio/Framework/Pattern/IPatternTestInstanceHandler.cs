@@ -82,7 +82,7 @@ namespace Gallio.Framework.Pattern
         /// </list>
         /// </para>
         /// </summary>
-        /// <param name="testInstanceState">The test instance state, never null</param>
+        /// <param name="testInstanceState">The test instance state, never null.</param>
         void BeforeTestInstance(PatternTestInstanceState testInstanceState);
 
         /// <summary>
@@ -112,7 +112,7 @@ namespace Gallio.Framework.Pattern
         /// </list>
         /// </para>
         /// </summary>
-        /// <param name="testInstanceState">The test instance state, never null</param>
+        /// <param name="testInstanceState">The test instance state, never null.</param>
         void InitializeTestInstance(PatternTestInstanceState testInstanceState);
 
         /// <summary>
@@ -140,7 +140,7 @@ namespace Gallio.Framework.Pattern
         /// </list>
         /// </para>
         /// </summary>
-        /// <param name="testInstanceState">The test instance state, never null</param>
+        /// <param name="testInstanceState">The test instance state, never null.</param>
         void SetUpTestInstance(PatternTestInstanceState testInstanceState);
 
         /// <summary>
@@ -168,7 +168,7 @@ namespace Gallio.Framework.Pattern
         /// </list>
         /// </para>
         /// </summary>
-        /// <param name="testInstanceState">The test instance state, never null</param>
+        /// <param name="testInstanceState">The test instance state, never null.</param>
         void ExecuteTestInstance(PatternTestInstanceState testInstanceState);
 
         /// <summary>
@@ -196,7 +196,7 @@ namespace Gallio.Framework.Pattern
         /// </list>
         /// </para>
         /// </summary>
-        /// <param name="testInstanceState">The test instance state, never null</param>
+        /// <param name="testInstanceState">The test instance state, never null.</param>
         void TearDownTestInstance(PatternTestInstanceState testInstanceState);
 
         /// <summary>
@@ -226,7 +226,7 @@ namespace Gallio.Framework.Pattern
         /// </list>
         /// </para>
         /// </summary>
-        /// <param name="testInstanceState">The test instance state, never null</param>
+        /// <param name="testInstanceState">The test instance state, never null.</param>
         void DisposeTestInstance(PatternTestInstanceState testInstanceState);
 
         /// <summary>
@@ -254,7 +254,7 @@ namespace Gallio.Framework.Pattern
         /// </list>
         /// </para>
         /// </summary>
-        /// <param name="testInstanceState">The test instance state, never null</param>
+        /// <param name="testInstanceState">The test instance state, never null.</param>
         void AfterTestInstance(PatternTestInstanceState testInstanceState);
 
         /// <summary>
@@ -317,8 +317,8 @@ namespace Gallio.Framework.Pattern
         /// with other means as required.
         /// </para>
         /// </remarks>
-        /// <param name="testInstanceState">The test instance state, never null</param>
-        /// <param name="decoratedChildTestActions">The child test's actions to decorate, never null</param>
+        /// <param name="testInstanceState">The test instance state, never null.</param>
+        /// <param name="decoratedChildTestActions">The child test's actions to decorate, never null.</param>
         void DecorateChildTest(PatternTestInstanceState testInstanceState, PatternTestActions decoratedChildTestActions);
 
         /// <summary>
@@ -333,7 +333,7 @@ namespace Gallio.Framework.Pattern
         /// in a timely manner to abort events from the current test context's <see cref="Sandbox" />.
         /// </para>
         /// </remarks>
-        /// <param name="testInstanceState">The test instance state, never null</param>
+        /// <param name="testInstanceState">The test instance state, never null.</param>
         /// <returns>The test outcome</returns>
         TestOutcome RunTestInstanceBody(PatternTestInstanceState testInstanceState);
     }

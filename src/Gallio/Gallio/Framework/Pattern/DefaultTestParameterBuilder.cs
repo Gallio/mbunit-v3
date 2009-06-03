@@ -31,10 +31,10 @@ namespace Gallio.Framework.Pattern
         /// <summary>
         /// Creates a test parameter builder.
         /// </summary>
-        /// <param name="testModelBuilder">The test model builder</param>
-        /// <param name="testParameter">The underlying test parameter</param>
+        /// <param name="testModelBuilder">The test model builder.</param>
+        /// <param name="testParameter">The underlying test parameter.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="testModelBuilder"/>
-        /// or <paramref name="testParameter"/> is null</exception>
+        /// or <paramref name="testParameter"/> is null.</exception>
         public DefaultTestParameterBuilder(ITestModelBuilder testModelBuilder, PatternTestParameter testParameter)
             : base(testModelBuilder)
         {

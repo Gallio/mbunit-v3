@@ -42,10 +42,10 @@ namespace Gallio.Runtime.Hosting
         /// <summary>
         /// Creates a host.
         /// </summary>
-        /// <param name="hostSetup">The host setup</param>
-        /// <param name="logger">The logger for host message output</param>
+        /// <param name="hostSetup">The host setup.</param>
+        /// <param name="logger">The logger for host message output.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="hostSetup"/>
-        /// or <paramref name="logger"/> is null</exception>
+        /// or <paramref name="logger"/> is null.</exception>
         protected BaseHost(HostSetup hostSetup, ILogger logger)
         {
             if (hostSetup == null)
@@ -123,9 +123,9 @@ namespace Gallio.Runtime.Hosting
         /// <summary>
         /// Initializes the host and connects to the host service.
         /// </summary>
-        /// <exception cref="InvalidOperationException">Thrown if the host has already been initialized</exception>
-        /// <exception cref="ObjectDisposedException">Thrown if the host has been disposed</exception>
-        /// <exception cref="HostException">Thrown if an exception occurred while connecting to the host</exception>
+        /// <exception cref="InvalidOperationException">Thrown if the host has already been initialized.</exception>
+        /// <exception cref="ObjectDisposedException">Thrown if the host has been disposed.</exception>
+        /// <exception cref="HostException">Thrown if an exception occurred while connecting to the host.</exception>
         public void Connect()
         {
             lock (syncRoot)
@@ -226,7 +226,7 @@ namespace Gallio.Runtime.Hosting
         /// <summary>
         /// Releases the host service.
         /// </summary>
-        /// <param name="hostService">The host service that is being released, not null</param>
+        /// <param name="hostService">The host service that is being released, not null.</param>
         protected virtual void ReleaseHostService(IHostService hostService)
         {
         }
@@ -234,7 +234,7 @@ namespace Gallio.Runtime.Hosting
         /// <summary>
         /// Disposes the host.
         /// </summary>
-        /// <param name="disposing">True if disposing</param>
+        /// <param name="disposing">True if disposing.</param>
         protected virtual void Dispose(bool disposing)
         {
             if (!isDisposed)

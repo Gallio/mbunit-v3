@@ -25,10 +25,10 @@ namespace Gallio.Runtime.ProgressMonitoring
         /// <summary>
         /// Presents an observable progress monitor.
         /// </summary>
-        /// <param name="progressMonitor">The progress monitor to present</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="progressMonitor"/> is null</exception>
+        /// <param name="progressMonitor">The progress monitor to present.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="progressMonitor"/> is null.</exception>
         /// <exception cref="InvalidOperationException">Thrown if the presenter does not support being
-        /// reused to present multiple progress monitors</exception>
+        /// reused to present multiple progress monitors.</exception>
         void Present(ObservableProgressMonitor progressMonitor);
     }
 }

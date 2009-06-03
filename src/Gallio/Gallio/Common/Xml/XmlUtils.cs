@@ -30,9 +30,9 @@ namespace Gallio.Common.Xml
         /// <summary>
         /// Produces an XPathDocument given an action applied to an XmlWriter.
         /// </summary>
-        /// <param name="writeAction">The action to perform</param>
+        /// <param name="writeAction">The action to perform.</param>
         /// <returns>The XPathDocument</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="writeAction"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="writeAction"/> is null.</exception>
         public static XPathDocument WriteToXPathDocument(Action<XmlWriter> writeAction)
         {
             if (writeAction == null)

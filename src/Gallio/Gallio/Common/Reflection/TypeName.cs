@@ -33,8 +33,8 @@ namespace Gallio.Common.Reflection
         /// <summary>
         /// Creates a type name from a type.
         /// </summary>
-        /// <param name="type">The type</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="type"/> is null</exception>
+        /// <param name="type">The type.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="type"/> is null.</exception>
         /// <exception cref="ArgumentException">Thrown if <paramref name="type"/> does not have a valid FullName property
         /// (for example, it represents a generic type parameter).</exception>
         public TypeName(Type type)
@@ -52,8 +52,8 @@ namespace Gallio.Common.Reflection
         /// <summary>
         /// Creates a type name from type info.
         /// </summary>
-        /// <param name="typeInfo">The type info</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="typeInfo"/> is null</exception>
+        /// <param name="typeInfo">The type info.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="typeInfo"/> is null.</exception>
         /// <exception cref="ArgumentException">Thrown if <paramref name="typeInfo"/> does not have a valid FullName property
         /// (for example, it represents a generic type parameter).</exception>
         public TypeName(ITypeInfo typeInfo)
@@ -72,10 +72,10 @@ namespace Gallio.Common.Reflection
         /// Creates a type name from its assembly-qualified name.
         /// </summary>
         /// <param name="assemblyQualifiedName">The assembly-qualified name of the type, including
-        /// its namespace and assembly</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="assemblyQualifiedName"/> is null</exception>
+        /// its namespace and assembly.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="assemblyQualifiedName"/> is null.</exception>
         /// <exception cref="ArgumentException">Thrown if <paramref name="assemblyQualifiedName"/> is malformed or
-        /// does not contain a valid assembly name</exception>
+        /// does not contain a valid assembly name.</exception>
         public TypeName(string assemblyQualifiedName)
         {
             if (assemblyQualifiedName == null)
@@ -93,9 +93,9 @@ namespace Gallio.Common.Reflection
         /// <summary>
         /// Creates a type name from its full name and assembly name.
         /// </summary>
-        /// <param name="fullName">The full name of the type, including its namespace</param>
-        /// <param name="assemblyName">The full or partial name of the assembly that contains the type</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="fullName"/> or <paramref name="assemblyName"/> is null</exception>
+        /// <param name="fullName">The full name of the type, including its namespace.</param>
+        /// <param name="assemblyName">The full or partial name of the assembly that contains the type.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="fullName"/> or <paramref name="assemblyName"/> is null.</exception>
         public TypeName(string fullName, AssemblyName assemblyName)
         {
             if (fullName == null)
@@ -161,7 +161,7 @@ namespace Gallio.Common.Reflection
         /// Resolves the type named by this instance.
         /// </summary>
         /// <returns>The type</returns>
-        /// <exception cref="ReflectionResolveException">Thrown if the type could not be resolved</exception>
+        /// <exception cref="ReflectionResolveException">Thrown if the type could not be resolved.</exception>
         public Type Resolve()
         {
             string assemblyQualifiedName = AssemblyQualifiedName;

@@ -31,8 +31,8 @@ namespace Gallio.Model
         /// <summary>
         /// Creates a read-only wrapper of the specified model object.
         /// </summary>
-        /// <param name="source">The source test component</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="source"/> is null</exception>
+        /// <param name="source">The source test component.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="source"/> is null.</exception>
         internal TestComponentInfo(ITestComponent source)
             : base(source)
         {

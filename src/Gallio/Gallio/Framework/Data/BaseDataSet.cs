@@ -48,15 +48,15 @@ namespace Gallio.Framework.Data
         /// <summary>
         /// Determines whether a binding can be satisfied by the data set.
         /// </summary>
-        /// <param name="binding">The data binding, not null</param>
+        /// <param name="binding">The data binding, not null.</param>
         /// <returns>True if the binding can be satisfied</returns>
         protected abstract bool CanBindImpl(DataBinding binding);
 
         /// <summary>
         /// Enumerates the data items in the data set.
         /// </summary>
-        /// <param name="bindings">The data bindings, not null</param>
-        /// <param name="includeDynamicItems">If true, includes dynamic items</param>
+        /// <param name="bindings">The data bindings, not null.</param>
+        /// <param name="includeDynamicItems">If true, includes dynamic items.</param>
         /// <returns>The enumeration of data items in the combined data set</returns>
         protected abstract IEnumerable<IDataItem> GetItemsImpl(ICollection<DataBinding> bindings, bool includeDynamicItems);
     }

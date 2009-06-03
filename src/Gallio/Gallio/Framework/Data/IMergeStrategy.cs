@@ -36,8 +36,8 @@ namespace Gallio.Framework.Data
         /// <summary>
         /// Merges the items from each provider into a new sequence.
         /// </summary>
-        /// <param name="providers">The list of providers</param>
-        /// <param name="bindings">The bindings</param>
+        /// <param name="providers">The list of providers.</param>
+        /// <param name="bindings">The bindings.</param>
         /// <param name="includeDynamicItems">If true, includes items that may be dynamically
         /// generated in the result set.  Otherwise excludes such items and only returns
         /// those that are statically known a priori.</param>

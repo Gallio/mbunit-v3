@@ -42,9 +42,9 @@ namespace Gallio.Framework.Pattern
         /// <summary>
         /// Verifies that the attribute is being used correctly.
         /// </summary>
-        /// <param name="scope">The scope</param>
-        /// <param name="assembly">The assembly</param>
-        /// <exception cref="PatternUsageErrorException">Thrown if the attribute is being used incorrectly</exception>
+        /// <param name="scope">The scope.</param>
+        /// <param name="assembly">The assembly.</param>
+        /// <exception cref="PatternUsageErrorException">Thrown if the attribute is being used incorrectly.</exception>
         protected virtual void Validate(IPatternScope scope, IAssemblyInfo assembly)
         {
             if (!scope.IsTestDeclaration || assembly == null)
@@ -60,8 +60,8 @@ namespace Gallio.Framework.Pattern
         /// or to add additional behaviors to the test.
         /// </para>
         /// </summary>
-        /// <param name="assemblyScope">The assembly scope</param>
-        /// <param name="assembly">The assembly</param>
+        /// <param name="assemblyScope">The assembly scope.</param>
+        /// <param name="assembly">The assembly.</param>
         protected virtual void DecorateAssemblyTest(IPatternScope assemblyScope, IAssemblyInfo assembly)
         {
         }

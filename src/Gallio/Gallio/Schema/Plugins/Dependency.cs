@@ -40,8 +40,8 @@ namespace Gallio.Schema.Plugins
         /// <summary>
         /// Creates an plugin dependency reference.
         /// </summary>
-        /// <param name="pluginId">The referenced plugin id</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="pluginId"/> is null</exception>
+        /// <param name="pluginId">The referenced plugin id.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="pluginId"/> is null.</exception>
         public Dependency(string pluginId)
         {
             if (pluginId == null)
@@ -53,7 +53,7 @@ namespace Gallio.Schema.Plugins
         /// <summary>
         /// Gets or sets the referenced plugin id.
         /// </summary>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
         [XmlAttribute("pluginId")]
         public string PluginId
         {

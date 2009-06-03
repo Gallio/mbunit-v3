@@ -29,7 +29,7 @@ namespace Gallio.Model.Filters
         /// <summary>
         /// Creates an equality filter.
         /// </summary>
-        /// <param name="comparand">The value to compare for equality</param>
+        /// <param name="comparand">The value to compare for equality.</param>
         public EqualityFilter(T comparand)
         {
             if (comparand == null)

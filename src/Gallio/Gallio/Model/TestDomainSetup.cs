@@ -33,8 +33,8 @@ namespace Gallio.Model
         /// <summary>
         /// Creates setup options a test domain.
         /// </summary>
-        /// <param name="testPackageConfig">The test package configuration to load in the test domain</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="testPackageConfig"/> is null</exception>
+        /// <param name="testPackageConfig">The test package configuration to load in the test domain.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="testPackageConfig"/> is null.</exception>
         public TestDomainSetup(TestPackageConfig testPackageConfig)
         {
             if (testPackageConfig == null)
@@ -46,7 +46,7 @@ namespace Gallio.Model
         /// <summary>
         /// Gets or sets the test package configuration to load in the test domain.
         /// </summary>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
         public TestPackageConfig TestPackageConfig
         {
             get { return testPackageConfig; }
@@ -61,8 +61,8 @@ namespace Gallio.Model
         /// <summary>
         /// Merges the contents of another test domain setup into this one.
         /// </summary>
-        /// <param name="source">The source setup</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="source"/> is null</exception>
+        /// <param name="source">The source setup.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="source"/> is null.</exception>
         public void MergeFrom(TestDomainSetup source)
         {
             if (source == null)

@@ -68,7 +68,7 @@ namespace Gallio.Common.Markup
         /// <summary>
         /// Gets or sets the name of the attachment, not null.
         /// </summary>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
         [XmlAttribute("name")]
         public string Name
         {
@@ -84,7 +84,7 @@ namespace Gallio.Common.Markup
         /// <summary>
         /// Gets or sets the content type of the attachment as a MIME type, not null.
         /// </summary>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
         [XmlAttribute("contentType")]
         public string ContentType
         {
@@ -164,7 +164,7 @@ namespace Gallio.Common.Markup
         /// Gets the text contents of a text attachment.
         /// </summary>
         /// <returns>The text, or null if not available</returns>
-        /// <exception cref="InvalidOperationException">Thrown if the attachment is not textual</exception>
+        /// <exception cref="InvalidOperationException">Thrown if the attachment is not textual.</exception>
         public string GetText()
         {
             if (! IsText)
@@ -177,7 +177,7 @@ namespace Gallio.Common.Markup
         /// Gets the binary contents of a binary attachment.
         /// </summary>
         /// <returns>The bytes, or null if not available</returns>
-        /// <exception cref="InvalidOperationException">Thrown if the attachment is not binary</exception>
+        /// <exception cref="InvalidOperationException">Thrown if the attachment is not binary.</exception>
         public byte[] GetBytes()
         {
             if (IsText)
@@ -191,9 +191,9 @@ namespace Gallio.Common.Markup
         /// <summary>
         /// Loads the attachment contents from a stream.
         /// </summary>
-        /// <param name="stream">The stream</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="stream"/> is null</exception>
-        /// <exception cref="IOException">If the attachment could not be loaded</exception>
+        /// <param name="stream">The stream.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="stream"/> is null.</exception>
+        /// <exception cref="IOException">If the attachment could not be loaded.</exception>
         public void LoadContents(Stream stream)
         {
             if (stream == null)
@@ -216,11 +216,11 @@ namespace Gallio.Common.Markup
         /// <summary>
         /// Saves the attachment contents to a stream.
         /// </summary>
-        /// <param name="stream">The stream</param>
-        /// <param name="encoding">The preferred encoding to use if writing text, or null if none</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="stream"/> is null</exception>
-        /// <exception cref="IOException">If the attachment could not be saved</exception>
-        /// <exception cref="InvalidOperationException">Thrown if the attachment contents are not available</exception>
+        /// <param name="stream">The stream.</param>
+        /// <param name="encoding">The preferred encoding to use if writing text, or null if none.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="stream"/> is null.</exception>
+        /// <exception cref="IOException">If the attachment could not be saved.</exception>
+        /// <exception cref="InvalidOperationException">Thrown if the attachment contents are not available.</exception>
         public void SaveContents(Stream stream, Encoding encoding)
         {
             if (stream == null)

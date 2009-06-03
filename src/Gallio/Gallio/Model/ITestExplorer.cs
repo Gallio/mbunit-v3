@@ -26,28 +26,28 @@ namespace Gallio.Model
         /// <summary>
         /// Applies test framework configuration options to a test domain before it is loaded.
         /// </summary>
-        /// <param name="testDomainSetup">The test domain setup to modify</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="testDomainSetup"/> is null</exception>
+        /// <param name="testDomainSetup">The test domain setup to modify.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="testDomainSetup"/> is null.</exception>
         void ConfigureTestDomain(TestDomainSetup testDomainSetup);
 
         /// <summary>
         /// Returns true if the code element represents a test.
         /// </summary>
-        /// <param name="reflectionPolicy">The reflection policy</param>
-        /// <param name="codeElement">The code element</param>
+        /// <param name="reflectionPolicy">The reflection policy.</param>
+        /// <param name="codeElement">The code element.</param>
         /// <returns>True if the code element represents a test</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="reflectionPolicy"/>
-        /// or <paramref name="codeElement"/> is null</exception>
+        /// or <paramref name="codeElement"/> is null.</exception>
         bool IsTest(IReflectionPolicy reflectionPolicy, ICodeElementInfo codeElement);
 
         /// <summary>
         /// Returns true if the code element represents a part of a test such as a setup or teardown method.
         /// </summary>
-        /// <param name="reflectionPolicy">The reflection policy</param>
-        /// <param name="codeElement">The code element</param>
+        /// <param name="reflectionPolicy">The reflection policy.</param>
+        /// <param name="codeElement">The code element.</param>
         /// <returns>True if the code element represents a part of a test</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="reflectionPolicy"/>
-        /// or <paramref name="codeElement"/> is null</exception>
+        /// or <paramref name="codeElement"/> is null.</exception>
         bool IsTestPart(IReflectionPolicy reflectionPolicy, ICodeElementInfo codeElement);
 
         /// <summary>
@@ -69,12 +69,12 @@ namespace Gallio.Model
         /// that were discovered within other related resources due to implementation details.
         /// </para>
         /// </remarks>
-        /// <param name="testModel">The test model to populate</param>
-        /// <param name="testSource">The test source to explore</param>
+        /// <param name="testModel">The test model to populate.</param>
+        /// <param name="testSource">The test source to explore.</param>
         /// <param name="consumer">An action to perform on each top-level test discovered from each
-        /// source, or null if no action is required</param>
+        /// source, or null if no action is required.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="testModel"/>,
-        /// <paramref name="testSource"/> or <paramref name="consumer"/> is null</exception>
+        /// <paramref name="testSource"/> or <paramref name="consumer"/> is null.</exception>
         void Explore(TestModel testModel, TestSource testSource, Action<ITest> consumer);
     }
 }

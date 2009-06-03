@@ -37,12 +37,12 @@ namespace Gallio.Common.Reflection.Impl
         /// <summary>
         /// Creates a wrapper.
         /// </summary>
-        /// <param name="policy">The reflection policy</param>
-        /// <param name="handle">The underlying reflection object</param>
-        /// <param name="declaringType">The declaring type</param>
-        /// <param name="reflectedType">The reflected type</param>
+        /// <param name="policy">The reflection policy.</param>
+        /// <param name="handle">The underlying reflection object.</param>
+        /// <param name="declaringType">The declaring type.</param>
+        /// <param name="reflectedType">The reflected type.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="policy"/>, <paramref name="handle"/>,
-        /// <paramref name="declaringType"/>, or <paramref name="reflectedType"/> is null</exception>
+        /// <paramref name="declaringType"/>, or <paramref name="reflectedType"/> is null.</exception>
         public StaticEventWrapper(StaticReflectionPolicy policy, object handle, StaticDeclaredTypeWrapper declaringType,
             StaticDeclaredTypeWrapper reflectedType)
             : base(policy, handle, declaringType, reflectedType)
@@ -108,7 +108,7 @@ namespace Gallio.Common.Reflection.Impl
         /// Gets the events that this one overrides or hides.
         /// Only includes overrides that appear on class types, not interfaces.
         /// </summary>
-        /// <param name="overridesOnly">If true, only returns overrides</param>
+        /// <param name="overridesOnly">If true, only returns overrides.</param>
         public IEnumerable<StaticEventWrapper> GetOverridenOrHiddenEvents(bool overridesOnly)
         {
             StaticMethodWrapper discriminator = GetDiscriminatorMethod(this);

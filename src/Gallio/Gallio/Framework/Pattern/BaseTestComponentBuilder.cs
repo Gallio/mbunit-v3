@@ -31,8 +31,8 @@ namespace Gallio.Framework.Pattern
         /// <summary>
         /// Creates a test component builder.
         /// </summary>
-        /// <param name="testModelBuilder">The associated test model builder</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="testModelBuilder"/> is null</exception>
+        /// <param name="testModelBuilder">The associated test model builder.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="testModelBuilder"/> is null.</exception>
         protected BaseTestComponentBuilder(ITestModelBuilder testModelBuilder)
         {
             if (testModelBuilder == null)

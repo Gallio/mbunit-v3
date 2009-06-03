@@ -65,16 +65,16 @@ namespace Gallio.Framework.Data
         /// the contents of this data item.
         /// </para>
         /// </summary>
-        /// <param name="map">The metadata map</param>
+        /// <param name="map">The metadata map.</param>
         void PopulateMetadata(PropertyBag map);
 
         /// <summary>
         /// Gets the value of the specified binding.
         /// </summary>
-        /// <param name="binding">The data binding, never null</param>
+        /// <param name="binding">The data binding, never null.</param>
         /// <returns>The value</returns>
         /// <exception cref="DataBindingException">Thrown if the <paramref name="binding"/>
-        /// cannot be resolved or if its value cannot be obtained</exception>
+        /// cannot be resolved or if its value cannot be obtained.</exception>
         object GetValue(DataBinding binding);
 
         /// <summary>

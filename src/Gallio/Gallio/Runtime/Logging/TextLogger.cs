@@ -34,7 +34,7 @@ namespace Gallio.Runtime.Logging
         /// <summary>
         /// Creates a text logger.
         /// </summary>
-        /// <param name="textWriter">The text writer to which the log output should be written</param>
+        /// <param name="textWriter">The text writer to which the log output should be written.</param>
         public TextLogger(TextWriter textWriter)
         {
             if (textWriter == null)

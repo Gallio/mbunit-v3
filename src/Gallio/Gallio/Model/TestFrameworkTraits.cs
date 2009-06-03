@@ -32,8 +32,8 @@ namespace Gallio.Model
         /// <summary>
         /// Creates test framework traits.
         /// </summary>
-        /// <param name="name">The framework's display name</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> is null</exception>
+        /// <param name="name">The framework's display name.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> is null.</exception>
         public TestFrameworkTraits(string name)
         {
             if (name == null)
@@ -86,7 +86,7 @@ namespace Gallio.Model
         /// during test exploration in order to improve performance.
         /// </para>
         /// </remarks>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
         public string[] FrameworkAssemblyNames
         {
             get { return frameworkAssemblyNames ?? EmptyArray<string>.Instance; }
@@ -110,7 +110,7 @@ namespace Gallio.Model
         /// during test exploration in order to improve performance.
         /// </para>
         /// </remarks>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
         public string[] TestFileExtensions
         {
             get { return testFileExtensions ?? EmptyArray<string>.Instance; }

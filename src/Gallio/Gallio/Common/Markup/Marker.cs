@@ -260,8 +260,8 @@ namespace Gallio.Common.Markup
         /// <summary>
         /// Creates a marker.
         /// </summary>
-        /// <param name="class">The marker class</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="class"/> is null</exception>
+        /// <param name="class">The marker class.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="class"/> is null.</exception>
         /// <exception cref="ArgumentException">Thrown if the <paramref name="class"/> is not a valid identifier.  <seealso cref="ValidateIdentifier"/></exception>
         public Marker(string @class)
             : this(@class, EmptyDictionary<string, string>.Instance)
@@ -271,10 +271,10 @@ namespace Gallio.Common.Markup
         /// <summary>
         /// Creates a marker with attributes.
         /// </summary>
-        /// <param name="class">The marker class</param>
-        /// <param name="attributes">The attributes</param>
+        /// <param name="class">The marker class.</param>
+        /// <param name="attributes">The attributes.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="class"/> or
-        /// <paramref name="attributes"/> is null</exception>
+        /// <paramref name="attributes"/> is null.</exception>
         /// <exception cref="ArgumentException">Thrown if the <paramref name="class"/> is not a valid identifier.  <seealso cref="ValidateIdentifier"/></exception>
         public Marker(string @class, IDictionary<string, string> attributes)
         {
@@ -316,11 +316,11 @@ namespace Gallio.Common.Markup
         /// <summary>
         /// Creates a copy of the marker with the specified attribute added.
         /// </summary>
-        /// <param name="name">The attribute name</param>
-        /// <param name="value">The attribute value</param>
+        /// <param name="name">The attribute name.</param>
+        /// <param name="value">The attribute value.</param>
         /// <returns>The marker copy with the attribute</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/>
-        /// or <paramref name="value"/> is null</exception>
+        /// or <paramref name="value"/> is null.</exception>
         /// <exception cref="ArgumentException">Thrown if the <paramref name="name"/> is not a valid identifier.  <seealso cref="ValidateIdentifier"/></exception>
         public Marker WithAttribute(string name, string value)
         {
@@ -333,10 +333,10 @@ namespace Gallio.Common.Markup
         /// <summary>
         /// Verifies that the parameter is a valid marker class or attribute identifier.
         /// </summary>
-        /// <param name="identifier">The identifier</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="identifier"/> is null</exception>
+        /// <param name="identifier">The identifier.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="identifier"/> is null.</exception>
         /// <exception cref="ArgumentException">Thrown if <paramref name="identifier"/> is empty or contains characters
-        /// other than letters, digits and underscores</exception>
+        /// other than letters, digits and underscores.</exception>
         public static void ValidateIdentifier(string identifier)
         {
             if (identifier == null)
@@ -395,8 +395,8 @@ namespace Gallio.Common.Markup
         /// <summary>
         /// Returns true if two markers are equal.
         /// </summary>
-        /// <param name="a">The first marker to compare</param>
-        /// <param name="b">The second marker to compare</param>
+        /// <param name="a">The first marker to compare.</param>
+        /// <param name="b">The second marker to compare.</param>
         /// <returns>True if the markers are equal</returns>
         public static bool operator ==(Marker a, Marker b)
         {
@@ -406,8 +406,8 @@ namespace Gallio.Common.Markup
         /// <summary>
         /// Returns true if two markers are not equal.
         /// </summary>
-        /// <param name="a">The first marker to compare</param>
-        /// <param name="b">The second marker to compare</param>
+        /// <param name="a">The first marker to compare.</param>
+        /// <param name="b">The second marker to compare.</param>
         /// <returns>True if the markers are not equal</returns>
         public static bool operator !=(Marker a, Marker b)
         {

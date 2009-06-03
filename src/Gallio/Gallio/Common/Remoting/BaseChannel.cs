@@ -38,9 +38,9 @@ namespace Gallio.Common.Remoting
         /// <summary>
         /// Creates a channel.
         /// </summary>
-        /// <param name="channel">The .Net remoting channel</param>
-        /// <param name="channelUri">The root Uri associated with the channel</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="channel"/> or <paramref name="channelUri"/> is null</exception>
+        /// <param name="channel">The .Net remoting channel.</param>
+        /// <param name="channelUri">The root Uri associated with the channel.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="channel"/> or <paramref name="channelUri"/> is null.</exception>
         protected BaseChannel(IChannel channel, Uri channelUri)
         {
             if (channel == null)
@@ -80,7 +80,7 @@ namespace Gallio.Common.Remoting
         /// <summary>
         /// Disposes the channel.
         /// </summary>
-        /// <param name="disposing">True if <see cref="Dispose()" /> was called directly</param>
+        /// <param name="disposing">True if <see cref="Dispose()" /> was called directly.</param>
         protected virtual void Dispose(bool disposing)
         {
             if (channel != null)
@@ -98,9 +98,9 @@ namespace Gallio.Common.Remoting
         /// <summary>
         /// Gets the Uri of a service with the given name that can be accessed using this channel.
         /// </summary>
-        /// <param name="serviceName">The service name</param>
+        /// <param name="serviceName">The service name.</param>
         /// <returns>The service uri</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="serviceName"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="serviceName"/> is null.</exception>
         public string GetServiceUri(string serviceName)
         {
             if (serviceName == null)

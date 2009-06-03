@@ -48,8 +48,8 @@ namespace Gallio.Runtime.Logging
         /// <summary>
         /// Creates a prefix logger.
         /// </summary>
-        /// <param name="inner">The inner logger</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="inner"/> is null</exception>
+        /// <param name="inner">The inner logger.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="inner"/> is null.</exception>
         public SeverityPrefixLogger(ILogger inner)
         {
             if (inner == null)

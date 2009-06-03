@@ -32,8 +32,8 @@ namespace Gallio.Runtime.Caching
         /// <summary>
         /// Creates a simple disk cache.
         /// </summary>
-        /// <param name="cacheDirectoryPath">The path of the cache directory</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="cacheDirectoryPath"/> is null</exception>
+        /// <param name="cacheDirectoryPath">The path of the cache directory.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="cacheDirectoryPath"/> is null.</exception>
         public SimpleDiskCache(string cacheDirectoryPath)
         {
             if (cacheDirectoryPath == null)
@@ -71,7 +71,7 @@ namespace Gallio.Runtime.Caching
         /// <summary>
         /// Gets the group with the given key.
         /// </summary>
-        /// <param name="key">The key, nor null</param>
+        /// <param name="key">The key, nor null.</param>
         /// <returns>The cache group</returns>
         protected virtual IDiskCacheGroup GetGroup(string key)
         {
@@ -103,11 +103,11 @@ namespace Gallio.Runtime.Caching
             /// <summary>
             /// Creates a group.
             /// </summary>
-            /// <param name="cache">The cache</param>
-            /// <param name="key">The cache group key</param>
-            /// <param name="location">The location of the cache group</param>
+            /// <param name="cache">The cache.</param>
+            /// <param name="key">The cache group key.</param>
+            /// <param name="location">The location of the cache group.</param>
             /// <exception cref="ArgumentNullException">Thrown if <paramref name="cache"/>,
-            /// <paramref name="key"/> or <paramref name="location" /> is null</exception>
+            /// <paramref name="key"/> or <paramref name="location" /> is null.</exception>
             public Group(IDiskCache cache, string key, DirectoryInfo location)
             {
                 if (cache == null)

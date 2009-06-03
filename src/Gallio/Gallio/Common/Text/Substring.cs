@@ -28,8 +28,8 @@ namespace Gallio.Common.Text
         /// <summary>
         /// Creates a substring object defined over the entire range of a string.
         /// </summary>
-        /// <param name="content">The string</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="content"/> is null</exception>
+        /// <param name="content">The string.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="content"/> is null.</exception>
         public Substring(string content)
         {
             if (content == null)
@@ -42,10 +42,10 @@ namespace Gallio.Common.Text
         /// <summary>
         /// Creates a substring object.
         /// </summary>
-        /// <param name="content">The string</param>
-        /// <param name="range">The range within the string</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="content"/> is null</exception>
-        /// <exception cref="ArgumentException">Thrown if <paramref name="range"/> is outside the bounds of the <paramref name="content"/> string</exception>
+        /// <param name="content">The string.</param>
+        /// <param name="range">The range within the string.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="content"/> is null.</exception>
+        /// <exception cref="ArgumentException">Thrown if <paramref name="range"/> is outside the bounds of the <paramref name="content"/> string.</exception>
         public Substring(string content, Range range)
         {
             if (content == null)
@@ -84,9 +84,9 @@ namespace Gallio.Common.Text
         /// <summary>
         /// Gets the character with a particular index.
         /// </summary>
-        /// <param name="index">The index</param>
+        /// <param name="index">The index.</param>
         /// <returns>The character</returns>
-        /// <exception cref="IndexOutOfRangeException">Thrown if the index is out of range</exception>
+        /// <exception cref="IndexOutOfRangeException">Thrown if the index is out of range.</exception>
         public char this[int index]
         {
             get
@@ -100,7 +100,7 @@ namespace Gallio.Common.Text
         /// <summary>
         /// Returns a substring of the substring.
         /// </summary>
-        /// <param name="index">The index at which to start</param>
+        /// <param name="index">The index at which to start.</param>
         /// <returns>The substring</returns>
         /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="index"/> is negative or
         /// if is greater than <see cref="Length"/></exception>
@@ -115,8 +115,8 @@ namespace Gallio.Common.Text
         /// <summary>
         /// Returns a substring of the substring.
         /// </summary>
-        /// <param name="index">The index at which to start</param>
-        /// <param name="length">The length of the substring to produce</param>
+        /// <param name="index">The index at which to start.</param>
+        /// <param name="length">The length of the substring to produce.</param>
         /// <returns>The substring</returns>
         /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="index"/> or
         /// <paramref name="length"/> are negative or if their sum is greater than <see cref="Length"/></exception>
@@ -131,7 +131,7 @@ namespace Gallio.Common.Text
         /// <summary>
         /// Finds the length of the common prefix of this substring and another one.
         /// </summary>
-        /// <param name="other">The other substring</param>
+        /// <param name="other">The other substring.</param>
         /// <returns>The common prefix length, or 0 if the substrings have no prefix in common</returns>
         public int FindCommonPrefixLength(Substring other)
         {
@@ -149,7 +149,7 @@ namespace Gallio.Common.Text
         /// <summary>
         /// Finds the length of the common suffix of this substring and another one.
         /// </summary>
-        /// <param name="other">The other substring</param>
+        /// <param name="other">The other substring.</param>
         /// <returns>The common suffix length, or 0 if the substrings have no suffix in common</returns>
         public int FindCommonSuffixLength(Substring other)
         {
@@ -201,8 +201,8 @@ namespace Gallio.Common.Text
         /// <summary>
         /// Returns true if two substrings are equal.
         /// </summary>
-        /// <param name="a">The first substring to compare</param>
-        /// <param name="b">The second substring to compare</param>
+        /// <param name="a">The first substring to compare.</param>
+        /// <param name="b">The second substring to compare.</param>
         /// <returns>True if the substrings are equal</returns>
         public static bool operator ==(Substring a, Substring b)
         {
@@ -212,8 +212,8 @@ namespace Gallio.Common.Text
         /// <summary>
         /// Returns true if two substrings are not equal.
         /// </summary>
-        /// <param name="a">The first substring to compare</param>
-        /// <param name="b">The second substring to compare</param>
+        /// <param name="a">The first substring to compare.</param>
+        /// <param name="b">The second substring to compare.</param>
         /// <returns>True if the substrings are not equal</returns>
         public static bool operator !=(Substring a, Substring b)
         {

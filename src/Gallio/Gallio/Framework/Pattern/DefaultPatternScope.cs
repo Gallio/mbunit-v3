@@ -37,15 +37,15 @@ namespace Gallio.Framework.Pattern
         /// <summary>
         /// Creates a new scope.
         /// </summary>
-        /// <param name="evaluator">The pattern evaluator</param>
-        /// <param name="codeElement">The code element associated with the scope, or null if none</param>
-        /// <param name="testBuilder">The test builder in scope</param>
-        /// <param name="testParameterBuilder">The test parameter builder in scope, or null if none</param>
-        /// <param name="testDataContextBuilder">The test data context builder</param>
+        /// <param name="evaluator">The pattern evaluator.</param>
+        /// <param name="codeElement">The code element associated with the scope, or null if none.</param>
+        /// <param name="testBuilder">The test builder in scope.</param>
+        /// <param name="testParameterBuilder">The test parameter builder in scope, or null if none.</param>
+        /// <param name="testDataContextBuilder">The test data context builder.</param>
         /// <param name="isDeclaration">True if the scope represents the initial point of declaration
-        /// of a given test component</param>
+        /// of a given test component.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="evaluator"/>,
-        /// <paramref name="testBuilder"/> or <paramref name="testDataContextBuilder"/> is null</exception>
+        /// <paramref name="testBuilder"/> or <paramref name="testDataContextBuilder"/> is null.</exception>
         public DefaultPatternScope(IPatternEvaluator evaluator, ICodeElementInfo codeElement,
             ITestBuilder testBuilder, ITestParameterBuilder testParameterBuilder,
             ITestDataContextBuilder testDataContextBuilder, bool isDeclaration)

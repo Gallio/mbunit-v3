@@ -42,8 +42,8 @@ namespace Gallio.Framework.Data
         /// each item-list should contain exactly one item taken from each
         /// provider.
         /// </remarks>
-        /// <param name="providers">The list of providers</param>
-        /// <param name="bindingsPerProvider">The list of bindings per provider</param>
+        /// <param name="providers">The list of providers.</param>
+        /// <param name="bindingsPerProvider">The list of bindings per provider.</param>
         /// <param name="includeDynamicItems">If true, includes items that may be dynamically
         /// generated in the result set.  Otherwise excludes such items and only returns
         /// those that are statically known a priori.</param>

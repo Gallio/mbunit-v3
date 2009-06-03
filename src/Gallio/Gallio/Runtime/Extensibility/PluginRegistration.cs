@@ -40,11 +40,11 @@ namespace Gallio.Runtime.Extensibility
         /// <summary>
         /// Creates a plugin registration.
         /// </summary>
-        /// <param name="pluginId">The plugin id</param>
-        /// <param name="pluginTypeName">The plugin type name</param>
-        /// <param name="baseDirectory">The plugin base directory</param>
+        /// <param name="pluginId">The plugin id.</param>
+        /// <param name="pluginTypeName">The plugin type name.</param>
+        /// <param name="baseDirectory">The plugin base directory.</param>
         /// <exception cref="ArgumentNullException">Thrown if <aramref name="pluginId"/>,
-        /// <paramref name="pluginTypeName"/> or <paramref name="baseDirectory"/> is null</exception>
+        /// <paramref name="pluginTypeName"/> or <paramref name="baseDirectory"/> is null.</exception>
         public PluginRegistration(string pluginId, TypeName pluginTypeName, DirectoryInfo baseDirectory)
         {
             PluginId = pluginId;
@@ -55,7 +55,7 @@ namespace Gallio.Runtime.Extensibility
         /// <summary>
         /// Gets or sets the plugin id.
         /// </summary>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
         public string PluginId
         {
             get { return pluginId; }
@@ -70,7 +70,7 @@ namespace Gallio.Runtime.Extensibility
         /// <summary>
         /// Gets or sets the plugin type name.
         /// </summary>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
         public TypeName PluginTypeName
         {
             get { return pluginTypeName; }
@@ -85,7 +85,7 @@ namespace Gallio.Runtime.Extensibility
         /// <summary>
         /// Gets or sets the base directory.
         /// </summary>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
         public DirectoryInfo BaseDirectory
         {
             get { return baseDirectory; }
@@ -100,7 +100,7 @@ namespace Gallio.Runtime.Extensibility
         /// <summary>
         /// Gets or sets the list of plugin assembly references.
         /// </summary>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
         public IList<AssemblyReference> AssemblyReferences
         {
             get
@@ -121,7 +121,7 @@ namespace Gallio.Runtime.Extensibility
         /// Gets or sets the list of probing paths in which to
         /// attempt to locate referenced assemblies.
         /// </summary>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
         public IList<string> ProbingPaths
         {
             get
@@ -141,7 +141,7 @@ namespace Gallio.Runtime.Extensibility
         /// <summary>
         /// Gets or sets the list of plugin dependencies.
         /// </summary>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
         public IList<IPluginDescriptor> PluginDependencies
         {
             get
@@ -161,7 +161,7 @@ namespace Gallio.Runtime.Extensibility
         /// <summary>
         /// Gets or sets the plugin properties.
         /// </summary>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
         public PropertySet PluginProperties
         {
             get
@@ -181,7 +181,7 @@ namespace Gallio.Runtime.Extensibility
         /// <summary>
         /// Gets or sets the traits properties.
         /// </summary>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
         public PropertySet TraitsProperties
         {
             get
@@ -201,7 +201,7 @@ namespace Gallio.Runtime.Extensibility
         /// <summary>
         /// Gets or sets the plugin handler factory.
         /// </summary>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
         public IHandlerFactory PluginHandlerFactory
         {
             get

@@ -31,8 +31,8 @@ namespace Gallio.Common.Remoting
         /// <summary>
         /// Creates a channel.
         /// </summary>
-        /// <param name="portName">The ipc port name to connect to</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="portName"/> is null</exception>
+        /// <param name="portName">The ipc port name to connect to.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="portName"/> is null.</exception>
         public BinaryIpcClientChannel(string portName)
             : base(CreateChannel(portName), new Uri(@"ipc://" + portName))
         {

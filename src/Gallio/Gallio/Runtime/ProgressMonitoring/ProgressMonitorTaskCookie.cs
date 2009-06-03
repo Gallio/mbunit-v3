@@ -31,8 +31,8 @@ namespace Gallio.Runtime.ProgressMonitoring
         /// <summary>
         /// Creates an object representing a task in progress.
         /// </summary>
-        /// <param name="progressMonitor">The progress monitor</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="progressMonitor"/> is null</exception>
+        /// <param name="progressMonitor">The progress monitor.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="progressMonitor"/> is null.</exception>
         public ProgressMonitorTaskCookie(IProgressMonitor progressMonitor)
         {
             if (progressMonitor == null)

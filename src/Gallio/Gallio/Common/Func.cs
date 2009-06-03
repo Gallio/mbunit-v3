@@ -18,55 +18,55 @@ namespace Gallio.Common
     /// <summary>
     /// A function with zero arguments.
     /// </summary>
-    /// <typeparam name="TResult">The result type</typeparam>
+    /// <typeparam name="TResult">The result type.</typeparam>
     /// <returns>The function result</returns>
     public delegate TResult Func<TResult>();
 
     /// <summary>
     /// A function with one argument.
     /// </summary>
-    /// <typeparam name="T1">The first argument type</typeparam>
-    /// <typeparam name="TResult">The result type</typeparam>
-    /// <param name="arg1">The first argument</param>
+    /// <typeparam name="T1">The first argument type.</typeparam>
+    /// <typeparam name="TResult">The result type.</typeparam>
+    /// <param name="arg1">The first argument.</param>
     /// <returns>The function result</returns>
     public delegate TResult Func<T1, TResult>(T1 arg1);
 
     /// <summary>
     /// A function with two arguments.
     /// </summary>
-    /// <typeparam name="T1">The first argument type</typeparam>
-    /// <typeparam name="T2">The second argument type</typeparam>
-    /// <typeparam name="TResult">The result type</typeparam>
-    /// <param name="arg1">The first argument</param>
-    /// <param name="arg2">The second argument</param>
+    /// <typeparam name="T1">The first argument type.</typeparam>
+    /// <typeparam name="T2">The second argument type.</typeparam>
+    /// <typeparam name="TResult">The result type.</typeparam>
+    /// <param name="arg1">The first argument.</param>
+    /// <param name="arg2">The second argument.</param>
     /// <returns>The function result</returns>
     public delegate TResult Func<T1, T2, TResult>(T1 arg1, T2 arg2);
 
     /// <summary>
     /// A function with three arguments.
     /// </summary>
-    /// <typeparam name="T1">The first argument type</typeparam>
-    /// <typeparam name="T2">The second argument type</typeparam>
-    /// <typeparam name="T3">The third argument type</typeparam>
-    /// <typeparam name="TResult">The result type</typeparam>
-    /// <param name="arg1">The first argument</param>
-    /// <param name="arg2">The second argument</param>
-    /// <param name="arg3">The third argument</param>
+    /// <typeparam name="T1">The first argument type.</typeparam>
+    /// <typeparam name="T2">The second argument type.</typeparam>
+    /// <typeparam name="T3">The third argument type.</typeparam>
+    /// <typeparam name="TResult">The result type.</typeparam>
+    /// <param name="arg1">The first argument.</param>
+    /// <param name="arg2">The second argument.</param>
+    /// <param name="arg3">The third argument.</param>
     /// <returns>The function result</returns>
     public delegate TResult Func<T1, T2, T3, TResult>(T1 arg1, T2 arg2, T3 arg3);
 
     /// <summary>
     /// A function with four arguments.
     /// </summary>
-    /// <typeparam name="T1">The first argument type</typeparam>
-    /// <typeparam name="T2">The second argument type</typeparam>
-    /// <typeparam name="T3">The third argument type</typeparam>
-    /// <typeparam name="T4">The fourth argument type</typeparam>
-    /// <typeparam name="TResult">The result type</typeparam>
-    /// <param name="arg1">The first argument</param>
-    /// <param name="arg2">The second argument</param>
-    /// <param name="arg3">The third argument</param>
-    /// <param name="arg4">The fourth argument</param>
+    /// <typeparam name="T1">The first argument type.</typeparam>
+    /// <typeparam name="T2">The second argument type.</typeparam>
+    /// <typeparam name="T3">The third argument type.</typeparam>
+    /// <typeparam name="T4">The fourth argument type.</typeparam>
+    /// <typeparam name="TResult">The result type.</typeparam>
+    /// <param name="arg1">The first argument.</param>
+    /// <param name="arg2">The second argument.</param>
+    /// <param name="arg3">The third argument.</param>
+    /// <param name="arg4">The fourth argument.</param>
     /// <returns>The function result</returns>
     public delegate TResult Func<T1, T2, T3, T4, TResult>(T1 arg1, T2 arg2, T3 arg3, T4 arg4);
 }

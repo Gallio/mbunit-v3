@@ -35,7 +35,7 @@ namespace Gallio.Model.Execution
         /// Gets or sets the filter set.
         /// </summary>
         /// <value>Defaults to an empty filter set.</value>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
         public FilterSet<ITest> FilterSet
         {
             get { return filterSet; }

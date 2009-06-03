@@ -36,7 +36,7 @@ namespace Gallio.Framework.Data.Generation
         /// <summary>
         /// Creates a exception with the specified message..
         /// </summary>
-        /// <param name="message">The message, or null if none</param>
+        /// <param name="message">The message, or null if none.</param>
         public GenerationException(string message)
             : base(message)
         {
@@ -45,8 +45,8 @@ namespace Gallio.Framework.Data.Generation
         /// <summary>
         /// Creates a exception with the specified message and the inner exception.
         /// </summary>
-        /// <param name="message">The message, or null if none</param>
-        /// <param name="innerException">The inner exception, or null if none</param>
+        /// <param name="message">The message, or null if none.</param>
+        /// <param name="innerException">The inner exception, or null if none.</param>
         public GenerationException(string message, Exception innerException)
             : base(message, innerException)
         {
@@ -55,8 +55,8 @@ namespace Gallio.Framework.Data.Generation
         /// <summary>
         /// Creates a exception from serialization info.
         /// </summary>
-        /// <param name="info">The serialization info</param>
-        /// <param name="context">The streaming context</param>
+        /// <param name="info">The serialization info.</param>
+        /// <param name="context">The streaming context.</param>
         protected GenerationException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {

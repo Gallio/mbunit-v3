@@ -46,14 +46,14 @@ namespace Gallio.Framework.Data
         /// <param name="resolvedType">The non-generic type or generic type instantiation
         /// that declares the method to be invoked or is a subtype of the declaring type.
         /// This parameter is used to resolve the method to its declaring type.</param>
-        /// <param name="method">The method or generic method definition to be instantiated</param>
-        /// <param name="slotValues">The slot values</param>
+        /// <param name="method">The method or generic method definition to be instantiated.</param>
+        /// <param name="slotValues">The slot values.</param>
         /// <param name="converter">The converter to use for converting slot values
-        /// to the required types</param>
+        /// to the required types.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="resolvedType"/>,
-        /// <paramref name="method"/>, <paramref name="slotValues"/> or <paramref name="converter"/> is null</exception>
+        /// <paramref name="method"/>, <paramref name="slotValues"/> or <paramref name="converter"/> is null.</exception>
         /// <exception cref="ArgumentException">Thrown if <paramref name="slotValues" /> contains
-        /// slots that are declared by different methods or have incompatible values</exception>
+        /// slots that are declared by different methods or have incompatible values.</exception>
         public MethodInvocationSpec(Type resolvedType, IMethodInfo method,
             IEnumerable<KeyValuePair<ISlotInfo, object>> slotValues, IConverter converter)
             : base(slotValues, converter)
@@ -116,8 +116,8 @@ namespace Gallio.Framework.Data
         /// if the method is static.</param>
         /// <returns>The method result value</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="obj"/> is
-        /// null but the method is non-static</exception>
-        /// <exception cref="Exception">Any exception thrown by the invoked method</exception>
+        /// null but the method is non-static.</exception>
+        /// <exception cref="Exception">Any exception thrown by the invoked method.</exception>
         [DebuggerStepThrough, DebuggerHidden]
         public object Invoke(object obj)
         {

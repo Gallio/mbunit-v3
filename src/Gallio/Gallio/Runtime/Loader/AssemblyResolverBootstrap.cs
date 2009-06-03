@@ -31,8 +31,8 @@ namespace Gallio.Runtime.Loader
         /// <summary>
         /// Installs a global assembly resolver given the specified runtime path.
         /// </summary>
-        /// <param name="runtimePath">The Gallio runtime path</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="runtimePath"/> is null</exception>
+        /// <param name="runtimePath">The Gallio runtime path.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="runtimePath"/> is null.</exception>
         public static void Install(string runtimePath)
         {
             if (runtimePath == null)
@@ -51,7 +51,7 @@ namespace Gallio.Runtime.Loader
         /// <summary>
         /// Gets the bootstrapped assembly resolver manager.
         /// </summary>
-        /// <exception cref="InvalidOperationException">Thrown if the bootstrap resolver has not been initialized</exception>
+        /// <exception cref="InvalidOperationException">Thrown if the bootstrap resolver has not been initialized.</exception>
         public static IAssemblyResolverManager AssemblyResolverManager
         {
             get

@@ -63,9 +63,9 @@ namespace Gallio.Common
         /// <summary>
         /// Returns true if the condition is satisfied in the given context.
         /// </summary>
-        /// <param name="context">The condition evaluation context</param>
+        /// <param name="context">The condition evaluation context.</param>
         /// <returns>True if the condition is satisfied</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="context"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="context"/> is null.</exception>
         public bool Evaluate(ConditionContext context)
         {
             if (context == null)
@@ -77,10 +77,10 @@ namespace Gallio.Common
         /// <summary>
         /// Parses a condition from an expression.
         /// </summary>
-        /// <param name="expression">The expression to parse</param>
+        /// <param name="expression">The expression to parse.</param>
         /// <returns>The expression</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="expression"/> is null</exception>
-        /// <exception cref="FormatException">Thrown if <paramref name="expression"/> cannot be parsed</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="expression"/> is null.</exception>
+        /// <exception cref="FormatException">Thrown if <paramref name="expression"/> cannot be parsed.</exception>
         public static Condition Parse(string expression)
         {
             if (expression == null)

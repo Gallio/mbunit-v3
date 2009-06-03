@@ -84,9 +84,9 @@ namespace Gallio.Framework.Pattern
         /// <summary>
         /// Verifies that the attribute is being used correctly.
         /// </summary>
-        /// <param name="containingScope">The containing scope</param>
-        /// <param name="method">The method</param>
-        /// <exception cref="PatternUsageErrorException">Thrown if the attribute is being used incorrectly</exception>
+        /// <param name="containingScope">The containing scope.</param>
+        /// <param name="method">The method.</param>
+        /// <exception cref="PatternUsageErrorException">Thrown if the attribute is being used incorrectly.</exception>
         protected virtual void Validate(IPatternScope containingScope, IMethodInfo method)
         {
             if (!containingScope.CanAddChildTest || method == null)
@@ -98,8 +98,8 @@ namespace Gallio.Framework.Pattern
         /// <summary>
         /// Initializes a test for a method after it has been added to the test model.
         /// </summary>
-        /// <param name="methodScope">The method scope</param>
-        /// <param name="method">The method</param>
+        /// <param name="methodScope">The method scope.</param>
+        /// <param name="method">The method.</param>
         protected virtual void InitializeTest(IPatternScope methodScope, IMethodInfo method)
         {
             string xmlDocumentation = method.GetXmlDocumentation();
@@ -142,8 +142,8 @@ namespace Gallio.Framework.Pattern
         /// You can override this method to change the semantics as required.
         /// </para>
         /// </remarks>
-        /// <param name="testBuilder">The test builder</param>
-        /// <param name="method">The test method</param>
+        /// <param name="testBuilder">The test builder.</param>
+        /// <param name="method">The test method.</param>
         protected virtual void SetTestSemantics(ITestBuilder testBuilder, IMethodInfo method)
         {
             testBuilder.TestInstanceActions.BeforeTestInstanceChain.After(
@@ -164,7 +164,7 @@ namespace Gallio.Framework.Pattern
         /// <summary>
         /// Executes the test method.
         /// </summary>
-        /// <param name="state">The test instance state, not null</param>
+        /// <param name="state">The test instance state, not null.</param>
         /// <returns>The test method result</returns>
         protected virtual object Execute(PatternTestInstanceState state)
         {

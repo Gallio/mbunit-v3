@@ -37,8 +37,8 @@ namespace Gallio.Framework.Data
         /// <summary>
         /// Implementation of <see cref="Register" />.
         /// </summary>
-        /// <param name="context">The data binding context, not null</param>
-        /// <param name="resolver">The data source resolver, not null</param>
+        /// <param name="context">The data binding context, not null.</param>
+        /// <param name="resolver">The data source resolver, not null.</param>
         /// <returns>The data binding accessor</returns>
         protected abstract IDataAccessor RegisterImpl(DataBindingContext context, IDataSourceResolver resolver);
     }

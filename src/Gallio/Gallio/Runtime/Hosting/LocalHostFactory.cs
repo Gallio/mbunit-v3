@@ -36,8 +36,8 @@ namespace Gallio.Runtime.Hosting
         /// <summary>
         /// Creates a host factory.
         /// </summary>
-        /// <param name="debuggerManager">A reference to the debugger manager</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="debuggerManager"/> is null</exception>
+        /// <param name="debuggerManager">A reference to the debugger manager.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="debuggerManager"/> is null.</exception>
         public LocalHostFactory(IDebuggerManager debuggerManager)
         {
             if (debuggerManager == null)

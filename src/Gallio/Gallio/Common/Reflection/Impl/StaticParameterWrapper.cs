@@ -37,11 +37,11 @@ namespace Gallio.Common.Reflection.Impl
         /// <summary>
         /// Creates a wrapper.
         /// </summary>
-        /// <param name="policy">The reflection policy</param>
-        /// <param name="handle">The underlying reflection object</param>
-        /// <param name="member">The member to which the parameter belongs</param>
+        /// <param name="policy">The reflection policy.</param>
+        /// <param name="handle">The underlying reflection object.</param>
+        /// <param name="member">The member to which the parameter belongs.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="policy"/>, <paramref name="handle"/>
-        /// or <paramref name="member"/> is null</exception>
+        /// or <paramref name="member"/> is null.</exception>
         public StaticParameterWrapper(StaticReflectionPolicy policy, object handle, StaticMemberWrapper member)
             : base(policy, handle)
         {

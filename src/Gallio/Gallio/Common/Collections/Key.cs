@@ -21,7 +21,7 @@ namespace Gallio.Common.Collections
     /// A strongly-typed key to be used together with an associative array to help the
     /// compiler perform better type checking of the value associated with the key.
     /// </summary>
-    /// <typeparam name="TValue">The type of value associated with the key</typeparam>
+    /// <typeparam name="TValue">The type of value associated with the key.</typeparam>
     public struct Key<TValue>
     {
         private readonly string name;
@@ -29,8 +29,8 @@ namespace Gallio.Common.Collections
         /// <summary>
         /// Creates a new key.
         /// </summary>
-        /// <param name="name">The unique name of the key</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> is null</exception>
+        /// <param name="name">The unique name of the key.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> is null.</exception>
         public Key(string name)
         {
             if (name == null)

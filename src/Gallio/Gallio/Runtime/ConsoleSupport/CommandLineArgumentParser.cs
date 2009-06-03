@@ -74,7 +74,7 @@ namespace Gallio.Runtime.ConsoleSupport
 		/// </summary>
 		/// <param name="argumentSpecification">The argument type containing fields decorated
         /// with <see cref="CommandLineArgumentAttribute" /></param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="argumentSpecification"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="argumentSpecification"/> is null.</exception>
         public CommandLineArgumentParser(Type argumentSpecification)
             : this(argumentSpecification, File.ReadAllText)
 		{
@@ -86,8 +86,8 @@ namespace Gallio.Runtime.ConsoleSupport
         /// <param name="argumentSpecification">The argument type containing fields decorated
         /// with <see cref="CommandLineArgumentAttribute" /></param>
         /// <param name="responseFileReader">The delegate to use for reading response files instead of the default,
-        /// or null to disable reading from response files</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="argumentSpecification"/> is null</exception>
+        /// or null to disable reading from response files.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="argumentSpecification"/> is null.</exception>
         public CommandLineArgumentParser(Type argumentSpecification, ResponseFileReader responseFileReader)
         {
             if (argumentSpecification == null)
@@ -104,7 +104,7 @@ namespace Gallio.Runtime.ConsoleSupport
 		/// </summary>
 		/// <param name="args">The arguments to parse.</param>
 		/// <param name="destination">The destination of the parsed arguments.</param>
-        /// <param name="reporter">The error reporter</param>
+        /// <param name="reporter">The error reporter.</param>
 		/// <returns>True if no parse errors were encountered.</returns>
 		public bool Parse(string[] args, object destination, CommandLineErrorReporter reporter)
 		{
@@ -141,7 +141,7 @@ namespace Gallio.Runtime.ConsoleSupport
         /// <summary>
         /// Prints a user friendly usage string describing the command line argument syntax.
         /// </summary>
-        /// <param name="output">The command line output</param>
+        /// <param name="output">The command line output.</param>
         public void ShowUsage(CommandLineOutput output)
         {
             if (output == null)
@@ -171,8 +171,8 @@ namespace Gallio.Runtime.ConsoleSupport
         /// <summary>
         /// Prints a user friendly usage string describing the command line argument syntax in a message box.
         /// </summary>
-        /// <param name="caption">The message box caption</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="caption"/> is null</exception>
+        /// <param name="caption">The message box caption.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="caption"/> is null.</exception>
         public void ShowUsageInMessageBox(string caption)
         {
             if (caption == null)

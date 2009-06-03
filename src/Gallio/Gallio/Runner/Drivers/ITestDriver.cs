@@ -31,20 +31,20 @@ namespace Gallio.Runner.Drivers
         /// <summary>
         /// Initializes the test driver.
         /// </summary>
-        /// <param name="runtimeSetup">The runtime setup</param>
-        /// <param name="testRunnerOptions">The test runner options</param>
-        /// <param name="logger">The logger</param>
+        /// <param name="runtimeSetup">The runtime setup.</param>
+        /// <param name="testRunnerOptions">The test runner options.</param>
+        /// <param name="logger">The logger.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="runtimeSetup"/>,
-        /// <paramref name="testRunnerOptions"/>, or <paramref name="logger"/> is null</exception>
+        /// <paramref name="testRunnerOptions"/>, or <paramref name="logger"/> is null.</exception>
         void Initialize(RuntimeSetup runtimeSetup, TestRunnerOptions testRunnerOptions, ILogger logger);
 
         /// <summary>
         /// Explores tests in a test package.
         /// </summary>
-        /// <param name="testPackageConfig">The test package configuration</param>
-        /// <param name="testExplorationOptions">The test exploration options</param>
-        /// <param name="testExplorationListener">The test exploration listener</param>
-        /// <param name="progressMonitor">The progress monitor</param>
+        /// <param name="testPackageConfig">The test package configuration.</param>
+        /// <param name="testExplorationOptions">The test exploration options.</param>
+        /// <param name="testExplorationListener">The test exploration listener.</param>
+        /// <param name="progressMonitor">The progress monitor.</param>
         /// <returns>The test report</returns>
         void Explore(TestPackageConfig testPackageConfig,
             TestExplorationOptions testExplorationOptions, ITestExplorationListener testExplorationListener,
@@ -53,12 +53,12 @@ namespace Gallio.Runner.Drivers
         /// <summary>
         /// Explores and runs tests in a test package.
         /// </summary>
-        /// <param name="testPackageConfig">The test package configuration</param>
-        /// <param name="testExplorationOptions">The test exploration options</param>
-        /// <param name="testExplorationListener">The test exploration listener</param>
-        /// <param name="testExecutionOptions">The test execution options</param>
-        /// <param name="testExecutionListener">The test execution listener</param>
-        /// <param name="progressMonitor">The progress monitor</param>
+        /// <param name="testPackageConfig">The test package configuration.</param>
+        /// <param name="testExplorationOptions">The test exploration options.</param>
+        /// <param name="testExplorationListener">The test exploration listener.</param>
+        /// <param name="testExecutionOptions">The test execution options.</param>
+        /// <param name="testExecutionListener">The test execution listener.</param>
+        /// <param name="progressMonitor">The progress monitor.</param>
         /// <returns>The test report</returns>
         void Run(TestPackageConfig testPackageConfig,
             TestExplorationOptions testExplorationOptions, ITestExplorationListener testExplorationListener,

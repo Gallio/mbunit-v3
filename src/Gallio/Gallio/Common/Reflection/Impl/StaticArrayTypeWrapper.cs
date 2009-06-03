@@ -28,11 +28,11 @@ namespace Gallio.Common.Reflection.Impl
         /// <summary>
         /// Creates a wrapper.
         /// </summary>
-        /// <param name="policy">The reflection policy</param>
-        /// <param name="elementType">The element type</param>
-        /// <param name="arrayRank">The array rank</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="policy"/> or <paramref name="elementType" /> is null</exception>
-        /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="arrayRank"/> is less than 1</exception>
+        /// <param name="policy">The reflection policy.</param>
+        /// <param name="elementType">The element type.</param>
+        /// <param name="arrayRank">The array rank.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="policy"/> or <paramref name="elementType" /> is null.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="arrayRank"/> is less than 1.</exception>
         public StaticArrayTypeWrapper(StaticReflectionPolicy policy, StaticTypeWrapper elementType, int arrayRank)
             : base(policy, elementType)
         {

@@ -35,8 +35,8 @@ namespace Gallio.Runtime.Caching
         /// <summary>
         /// Creates a temporary disk cache within the specified subdirectory of the user's temporary directory.
         /// </summary>
-        /// <param name="cacheDirectoryName">The name of the cache subdirectory</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="cacheDirectoryName"/> is null</exception>
+        /// <param name="cacheDirectoryName">The name of the cache subdirectory.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="cacheDirectoryName"/> is null.</exception>
         public TemporaryDiskCache(string cacheDirectoryName)
             : base(SpecialPathPolicy.For(cacheDirectoryName).GetTempDirectory().FullName)
         {

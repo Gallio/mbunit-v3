@@ -60,11 +60,11 @@ namespace Gallio.Common.Concurrency
         /// <summary>
         /// Creates a process task.
         /// </summary>
-        /// <param name="executablePath">The path of the executable executable</param>
-        /// <param name="arguments">The arguments for the executable</param>
-        /// <param name="workingDirectory">The working directory</param>
+        /// <param name="executablePath">The path of the executable executable.</param>
+        /// <param name="arguments">The arguments for the executable.</param>
+        /// <param name="workingDirectory">The working directory.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="executablePath"/>,
-        /// <paramref name="arguments"/> or <paramref name="workingDirectory"/> is null</exception>
+        /// <paramref name="arguments"/> or <paramref name="workingDirectory"/> is null.</exception>
         public ProcessTask(string executablePath, string arguments, string workingDirectory)
             : base(executablePath + @" " + arguments)
         {
@@ -274,11 +274,11 @@ namespace Gallio.Common.Concurrency
         /// <summary>
         /// Sets an environment variable to be passed to the process when started.
         /// </summary>
-        /// <param name="name">The variable name</param>
+        /// <param name="name">The variable name.</param>
         /// <param name="value">The variable value, or null to remove the environment variable
-        /// so it will not be inherited by the child process</param>
-        /// <exception cref="InvalidOperationException">Thrown if the process has already been started</exception>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> is null</exception>
+        /// so it will not be inherited by the child process.</param>
+        /// <exception cref="InvalidOperationException">Thrown if the process has already been started.</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> is null.</exception>
         public void SetEnvironmentVariable(string name, string value)
         {
             if (name == null)
@@ -345,7 +345,7 @@ namespace Gallio.Common.Concurrency
         /// This method may be override to change how the process is created and
         /// started.
         /// </remarks>
-        /// <param name="startInfo">The <see cref="ProcessStartInfo" /> that has been started</param>
+        /// <param name="startInfo">The <see cref="ProcessStartInfo" /> that has been started.</param>
         /// <returns>The process</returns>
         protected virtual Process StartProcess(ProcessStartInfo startInfo)
         {

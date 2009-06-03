@@ -29,9 +29,9 @@ namespace Gallio.Runtime.Logging
         /// <summary>
         /// Creates a filtered logger.
         /// </summary>
-        /// <param name="logger">The logger to which filtered log messages are sent</param>
-        /// <param name="minSeverity">The lowest severity message type to retain</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="logger"/> is null</exception>
+        /// <param name="logger">The logger to which filtered log messages are sent.</param>
+        /// <param name="minSeverity">The lowest severity message type to retain.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="logger"/> is null.</exception>
         public FilteredLogger(ILogger logger, LogSeverity minSeverity)
         {
             if (logger == null)
@@ -44,9 +44,9 @@ namespace Gallio.Runtime.Logging
         /// <summary>
         /// Creates a filtered logger.
         /// </summary>
-        /// <param name="logger">The logger to which filtered log messages are sent</param>
+        /// <param name="logger">The logger to which filtered log messages are sent.</param>
         /// <param name="verbosity">The verbosity to use.</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="logger"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="logger"/> is null.</exception>
         public FilteredLogger(ILogger logger, Verbosity verbosity)
         {
             if (logger == null)

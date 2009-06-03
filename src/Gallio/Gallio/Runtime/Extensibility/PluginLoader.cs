@@ -122,7 +122,7 @@ namespace Gallio.Runtime.Extensibility
         /// Loads plugins by recursively searching the plugin paths for *.plugin files.
         /// </summary>
         /// <param name="pluginCallback">A function that receives plugin metadata as it
-        /// becomes available, not null</param>
+        /// becomes available, not null.</param>
         protected virtual void LoadPlugins(PluginCallback pluginCallback)
         {
             HashSet<string> uniquePluginFilePaths = new HashSet<string>();

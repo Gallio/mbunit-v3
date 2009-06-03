@@ -41,9 +41,9 @@ namespace Gallio.Framework.Pattern
         /// <summary>
         /// Verifies that the attribute is being used correctly.
         /// </summary>
-        /// <param name="scope">The scope</param>
-        /// <param name="slot">The slot</param>
-        /// <exception cref="PatternUsageErrorException">Thrown if the attribute is being used incorrectly</exception>
+        /// <param name="scope">The scope.</param>
+        /// <param name="slot">The slot.</param>
+        /// <exception cref="PatternUsageErrorException">Thrown if the attribute is being used incorrectly.</exception>
         protected virtual void Validate(IPatternScope scope, ISlotInfo slot)
         {
             if (!scope.IsTestParameterDeclaration || slot == null)
@@ -59,8 +59,8 @@ namespace Gallio.Framework.Pattern
         /// or to add additional behaviors to the test parameter.
         /// </para>
         /// </summary>
-        /// <param name="slotScope">The slot scope</param>
-        /// <param name="slot">The slot</param>
+        /// <param name="slotScope">The slot scope.</param>
+        /// <param name="slot">The slot.</param>
         protected virtual void DecorateTestParameter(IPatternScope slotScope, ISlotInfo slot)
         {
         }

@@ -30,9 +30,9 @@ namespace Gallio.Model.Filters
         /// <summary>
         /// Creates a metadata filter.
         /// </summary>
-        /// <param name="key">The metadata key to look for</param>
-        /// <param name="valueFilter">A filter for the metadata value to match</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="key"/> or <paramref name="valueFilter"/> is null</exception>
+        /// <param name="key">The metadata key to look for.</param>
+        /// <param name="valueFilter">A filter for the metadata value to match.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="key"/> or <paramref name="valueFilter"/> is null.</exception>
         public MetadataFilter(string key, Filter<string> valueFilter)
             : base(valueFilter)
         {

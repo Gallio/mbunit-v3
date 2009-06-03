@@ -35,8 +35,8 @@ namespace Gallio.Runtime.Installer
         /// <summary>
         /// Creates the installer manager.
         /// </summary>
-        /// <param name="installerHandles">The installer handles, not null</param>
-        /// <param name="elevationManager">The elevation manager, not null</param>
+        /// <param name="installerHandles">The installer handles, not null.</param>
+        /// <param name="elevationManager">The elevation manager, not null.</param>
         public DefaultInstallerManager(ComponentHandle<IInstaller, InstallerTraits>[] installerHandles,
             IElevationManager elevationManager)
         {

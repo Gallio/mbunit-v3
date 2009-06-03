@@ -36,10 +36,10 @@ namespace Gallio.Common.Concurrency
         /// When the task terminates successfully, its result will contain the value
         /// returned by <paramref name="action"/>.
         /// </summary>
-        /// <param name="name">The name of the task</param>
-        /// <param name="action">The action to perform within the thread</param>
+        /// <param name="name">The name of the task.</param>
+        /// <param name="action">The action to perform within the thread.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> 
-        /// or <paramref name="action"/> is null</exception>
+        /// or <paramref name="action"/> is null.</exception>
         public ThreadTask(string name, Func<object> action)
             : base(name)
         {
@@ -53,10 +53,10 @@ namespace Gallio.Common.Concurrency
         /// Creates a task that will execute code within a new locally running thread.
         /// When the task terminates successfully, its result will contain the value <c>null</c>.
         /// </summary>
-        /// <param name="name">The name of the task</param>
-        /// <param name="action">The action to perform within the thread</param>
+        /// <param name="name">The name of the task.</param>
+        /// <param name="action">The action to perform within the thread.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> 
-        /// or <paramref name="action"/> is null</exception>
+        /// or <paramref name="action"/> is null.</exception>
         public ThreadTask(string name, Action action)
             : base(name)
         {
@@ -75,7 +75,7 @@ namespace Gallio.Common.Concurrency
         /// causes the new thread to use the runtime's default apartment state.
         /// </value>
         /// <exception cref="InvalidOperationException">Thrown if this method is called
-        /// after the thread has started</exception>
+        /// after the thread has started.</exception>
         public ApartmentState ApartmentState
         {
             get { return apartmentState; }

@@ -20,10 +20,10 @@ namespace Gallio.Common
     /// <summary>
     /// Represents a delegate that decorates a function.
     /// </summary>
-    /// <typeparam name="T">The type of object the function is performed upon</typeparam>
-    /// <typeparam name="TResult">The type of the function result</typeparam>
-    /// <param name="obj">The object to act upon</param>
+    /// <typeparam name="T">The type of object the function is performed upon.</typeparam>
+    /// <typeparam name="TResult">The type of the function result.</typeparam>
+    /// <param name="obj">The object to act upon.</param>
     /// <param name="func">The function to decorate which should be called in
-    /// the middle of applying the decoration</param>
+    /// the middle of applying the decoration.</param>
     public delegate TResult FuncDecorator<T, TResult>(T obj, Func<T, TResult> func);
 }

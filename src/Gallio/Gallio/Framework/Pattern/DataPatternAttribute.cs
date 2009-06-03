@@ -66,7 +66,7 @@ namespace Gallio.Framework.Pattern
         /// the anonymous data source of their enclosing scope.
         /// </para>
         /// </summary>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
         public string SourceName
         {
             get { return sourceName; }
@@ -92,9 +92,9 @@ namespace Gallio.Framework.Pattern
         /// <summary>
         /// Verifies that the attribute is being used correctly.
         /// </summary>
-        /// <param name="scope">The scope</param>
-        /// <param name="codeElement">The code element</param>
-        /// <exception cref="PatternUsageErrorException">Thrown if the attribute is being used incorrectly</exception>
+        /// <param name="scope">The scope.</param>
+        /// <param name="codeElement">The code element.</param>
+        /// <exception cref="PatternUsageErrorException">Thrown if the attribute is being used incorrectly.</exception>
         protected virtual void Validate(IPatternScope scope, ICodeElementInfo codeElement)
         {
         }
@@ -102,9 +102,9 @@ namespace Gallio.Framework.Pattern
         /// <summary>
         /// Populates the data source with the contributions of this attribute.
         /// </summary>
-        /// <param name="scope">The scope</param>
-        /// <param name="dataSource">The data source</param>
-        /// <param name="codeElement">The code element</param>
+        /// <param name="scope">The scope.</param>
+        /// <param name="dataSource">The data source.</param>
+        /// <param name="codeElement">The code element.</param>
         protected virtual void PopulateDataSource(IPatternScope scope, DataSource dataSource, ICodeElementInfo codeElement)
         {
         }

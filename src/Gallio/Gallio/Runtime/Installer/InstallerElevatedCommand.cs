@@ -36,7 +36,7 @@ namespace Gallio.Runtime.Installer
         /// <summary>
         /// Initializes the command.
         /// </summary>
-        /// <param name="installerManager">The installer manager, not null</param>
+        /// <param name="installerManager">The installer manager, not null.</param>
         public InstallerElevatedCommand(IInstallerManager installerManager)
         {
             this.installerManager = installerManager;
@@ -69,9 +69,9 @@ namespace Gallio.Runtime.Installer
             /// <summary>
             /// Creates the arguments.
             /// </summary>
-            /// <param name="installerId">The installer id</param>
-            /// <param name="installerOperation">The requested installer operation</param>
-            /// <exception cref="ArgumentNullException">Thrown if <paramref name="installerId"/> is null</exception>
+            /// <param name="installerId">The installer id.</param>
+            /// <param name="installerOperation">The requested installer operation.</param>
+            /// <exception cref="ArgumentNullException">Thrown if <paramref name="installerId"/> is null.</exception>
             public Arguments(string installerId, InstallerOperation installerOperation)
             {
                 if (installerId == null)

@@ -34,10 +34,10 @@ namespace Gallio.Framework.Pattern
         /// <summary>
         /// Creates a pattern evaluator.
         /// </summary>
-        /// <param name="testModelBuilder">The test model builder</param>
-        /// <param name="patternResolver">The pattern resolver</param>
+        /// <param name="testModelBuilder">The test model builder.</param>
+        /// <param name="patternResolver">The pattern resolver.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="testModelBuilder"/> or
-        /// <paramref name="patternResolver"/> is null</exception>
+        /// <paramref name="patternResolver"/> is null.</exception>
         public DefaultPatternEvaluator(ITestModelBuilder testModelBuilder, IPatternResolver patternResolver)
         {
             if (testModelBuilder == null)

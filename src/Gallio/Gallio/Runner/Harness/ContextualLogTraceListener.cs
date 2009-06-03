@@ -29,7 +29,7 @@ namespace Gallio.Runner.Harness
         /// <summary>
         /// Creates a trace listener that writes to the specified execution log stream.
         /// </summary>
-        /// <param name="streamName">The execution log stream name</param>
+        /// <param name="streamName">The execution log stream name.</param>
         public ContextualLogTraceListener(string streamName)
         {
             writer = new ContextualLogTextWriter(streamName);

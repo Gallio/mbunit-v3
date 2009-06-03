@@ -78,8 +78,8 @@ namespace Gallio.Common.Concurrency
         /// <summary>
         /// Adds a new task for this container to watch.
         /// </summary>
-        /// <param name="task">The task to monitor</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="task"/> is null</exception>
+        /// <param name="task">The task to monitor.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="task"/> is null.</exception>
         public void Watch(Task task)
         {
             if (task == null)
@@ -106,11 +106,11 @@ namespace Gallio.Common.Concurrency
         /// <summary>
         /// Waits for all of currently running tasks to terminate.
         /// </summary>
-        /// <param name="timeout">The maximum amount of time to wait for completion, or null to wait indefinitely</param>
+        /// <param name="timeout">The maximum amount of time to wait for completion, or null to wait indefinitely.</param>
         /// <returns>True if no tasks are running as of the time this method exits,
         /// false if a timeout occurred while waiting</returns>
         /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="timeout"/>
-        /// represents a negative time span</exception>
+        /// represents a negative time span.</exception>
         /// <seealso cref="Task.Join"/>
         public bool JoinAll(TimeSpan? timeout)
         {

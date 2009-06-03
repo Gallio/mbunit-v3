@@ -23,31 +23,31 @@ namespace Gallio.Common.Markup.Tags
         /// <summary>
         /// Visits a body tag.
         /// </summary>
-        /// <param name="tag">The tag to visit</param>
+        /// <param name="tag">The tag to visit.</param>
         void VisitBodyTag(BodyTag tag);
 
         /// <summary>
         /// Visits a section tag.
         /// </summary>
-        /// <param name="tag">The tag to visit</param>
+        /// <param name="tag">The tag to visit.</param>
         void VisitSectionTag(SectionTag tag);
 
         /// <summary>
         /// Visits a marker tag.
         /// </summary>
-        /// <param name="tag">The tag to visit</param>
+        /// <param name="tag">The tag to visit.</param>
         void VisitMarkerTag(MarkerTag tag);
 
         /// <summary>
         /// Visits an embedded attachment tag.
         /// </summary>
-        /// <param name="tag">The tag to visit</param>
+        /// <param name="tag">The tag to visit.</param>
         void VisitEmbedTag(EmbedTag tag);
 
         /// <summary>
         /// Visits a text tag.
         /// </summary>
-        /// <param name="tag">The tag to visit</param>
+        /// <param name="tag">The tag to visit.</param>
         void VisitTextTag(TextTag tag);
     }
 }

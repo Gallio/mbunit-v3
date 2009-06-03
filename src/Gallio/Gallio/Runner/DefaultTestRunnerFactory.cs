@@ -31,10 +31,10 @@ namespace Gallio.Runner
         /// <summary>
         /// Creates a test runner factory.
         /// </summary>
-        /// <param name="testDriverFactory">The test driver factory</param>
-        /// <param name="extensionManager">The extension manager</param>
+        /// <param name="testDriverFactory">The test driver factory.</param>
+        /// <param name="extensionManager">The extension manager.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="testDriverFactory"/>
-        /// or <paramref name="extensionManager" /> is null</exception>
+        /// or <paramref name="extensionManager" /> is null.</exception>
         public DefaultTestRunnerFactory(ITestDriverFactory testDriverFactory, ITestRunnerExtensionManager extensionManager)
         {
             if (testDriverFactory == null)

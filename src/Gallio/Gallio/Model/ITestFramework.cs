@@ -32,7 +32,7 @@ namespace Gallio.Model
         /// Registers the test explorers of this framework into an aggregate list of explorers
         /// from all frameworks.
         /// </summary>
-        /// <param name="explorers">The explorer list, not null</param>
+        /// <param name="explorers">The explorer list, not null.</param>
         void RegisterTestExplorers(IList<ITestExplorer> explorers);
     }
 }

@@ -30,8 +30,8 @@ namespace Gallio.Common.Collections
         /// <summary>
         /// Creates a read-only dictionary wrapper for another dictionary.
         /// </summary>
-        /// <param name="inner">The dictionary to wrap</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="inner"/> is null</exception>
+        /// <param name="inner">The dictionary to wrap.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="inner"/> is null.</exception>
         public ReadOnlyDictionary(IDictionary<TKey, TValue> inner)
         {
             if (inner == null)

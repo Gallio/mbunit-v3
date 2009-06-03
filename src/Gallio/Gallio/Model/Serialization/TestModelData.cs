@@ -49,8 +49,8 @@ namespace Gallio.Model.Serialization
         /// <summary>
         /// Copies the contents of a test model.
         /// </summary>
-        /// <param name="source">The source test model</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="source"/> is null</exception>
+        /// <param name="source">The source test model.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="source"/> is null.</exception>
         public TestModelData(TestModel source)
         {
             if (source == null)
@@ -66,8 +66,8 @@ namespace Gallio.Model.Serialization
         /// <summary>
         /// Creates a test model.
         /// </summary>
-        /// <param name="rootTest">The root test</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="rootTest"/> is null</exception>
+        /// <param name="rootTest">The root test.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="rootTest"/> is null.</exception>
         public TestModelData(TestData rootTest)
         {
             if (rootTest == null)
@@ -81,7 +81,7 @@ namespace Gallio.Model.Serialization
         /// <summary>
         /// Gets or sets the root test in the model.
         /// </summary>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
         [XmlElement("test", IsNullable = false)]
         public TestData RootTest
         {
@@ -142,9 +142,9 @@ namespace Gallio.Model.Serialization
         /// <summary>
         /// Gets a test by its id.
         /// </summary>
-        /// <param name="testId">The test id</param>
+        /// <param name="testId">The test id.</param>
         /// <returns>The test, or null if not found</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="testId"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="testId"/> is null.</exception>
         public TestData GetTestById(string testId)
         {
             if (testId == null)
@@ -182,10 +182,10 @@ namespace Gallio.Model.Serialization
         /// Merges tests with duplicate ids.  Adds new tests in place.
         /// </para>
         /// </remarks>
-        /// <param name="parentTestId">The id of the parent test, or null if adding the root</param>
-        /// <param name="test">The top test of the subtree to add</param>
+        /// <param name="parentTestId">The id of the parent test, or null if adding the root.</param>
+        /// <param name="test">The top test of the subtree to add.</param>
         /// <returns>The merged test, if the test was already present in the tree</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="test"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="test"/> is null.</exception>
         public TestData MergeSubtree(string parentTestId, TestData test)
         {
             if (test == null)

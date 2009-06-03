@@ -62,14 +62,14 @@ namespace Gallio.Framework.Pattern
         /// <summary>
         /// Creates an initial test state object.
         /// </summary>
-        /// <param name="primaryTestStep">The primary test step</param>
-        /// <param name="testHandler">The handler for the test</param>
-        /// <param name="converter">The converter for data binding</param>
-        /// <param name="formatter">The formatter for data binding</param>
-        /// <param name="isExplicit">True if the test was selected explicitly</param>
+        /// <param name="primaryTestStep">The primary test step.</param>
+        /// <param name="testHandler">The handler for the test.</param>
+        /// <param name="converter">The converter for data binding.</param>
+        /// <param name="formatter">The formatter for data binding.</param>
+        /// <param name="isExplicit">True if the test was selected explicitly.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="primaryTestStep"/>,
         /// <paramref name="testHandler"/>, <paramref name="converter"/>
-        /// or <paramref name="formatter"/> is null</exception>
+        /// or <paramref name="formatter"/> is null.</exception>
         internal PatternTestState(PatternTestStep primaryTestStep,
             IPatternTestHandler testHandler, IConverter converter, IFormatter formatter, bool isExplicit)
         {
@@ -96,9 +96,9 @@ namespace Gallio.Framework.Pattern
         /// <summary>
         /// Gets the pattern test state from the specified context.
         /// </summary>
-        /// <param name="context">The context</param>
+        /// <param name="context">The context.</param>
         /// <returns>The pattern test state, or null if none</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="context"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="context"/> is null.</exception>
         public static PatternTestState FromContext(TestContext context)
         {
             if (context == null)

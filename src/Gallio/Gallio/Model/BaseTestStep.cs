@@ -35,9 +35,9 @@ namespace Gallio.Model
         /// Creates a primary step using the same name, code element and metadata
         /// as the test to which it belongs.
         /// </summary>
-        /// <param name="test">The test to which the step belongs</param>
-        /// <param name="parent">The parent test step, or null if creating the root step</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="test"/> is null</exception>
+        /// <param name="test">The test to which the step belongs.</param>
+        /// <param name="parent">The parent test step, or null if creating the root step.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="test"/> is null.</exception>
         public BaseTestStep(ITest test, ITestStep parent)
             : this(test, parent, test.Name, test.CodeElement, true)
         {
@@ -52,13 +52,13 @@ namespace Gallio.Model
         /// is copied to the step.  Otherwise the new step will have no metadata initially.
         /// </para>
         /// </remarks>
-        /// <param name="test">The test to which the step belongs</param>
-        /// <param name="parent">The parent step, or null if creating a root step</param>
-        /// <param name="name">The step name</param>
-        /// <param name="codeElement">The point of definition of the step, or null if unknown</param>
-        /// <param name="isPrimary">True if the test step is primary</param>
+        /// <param name="test">The test to which the step belongs.</param>
+        /// <param name="parent">The parent step, or null if creating a root step.</param>
+        /// <param name="name">The step name.</param>
+        /// <param name="codeElement">The point of definition of the step, or null if unknown.</param>
+        /// <param name="isPrimary">True if the test step is primary.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/>
-        /// or <paramref name="test"/> is null</exception>
+        /// or <paramref name="test"/> is null.</exception>
         public BaseTestStep(ITest test, ITestStep parent, string name, ICodeElementInfo codeElement, bool isPrimary)
             : base(name, codeElement)
         {

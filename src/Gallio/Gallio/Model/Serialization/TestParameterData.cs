@@ -39,10 +39,10 @@ namespace Gallio.Model.Serialization
         /// <summary>
         /// Creates a parameter data object.
         /// </summary>
-        /// <param name="id">The component id</param>
-        /// <param name="name">The component name</param>
+        /// <param name="id">The component id.</param>
+        /// <param name="name">The component name.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="id"/> or
-        /// <paramref name="name"/> is null</exception>
+        /// <paramref name="name"/> is null.</exception>
         public TestParameterData(string id, string name)
             : base(id, name)
         {
@@ -51,8 +51,8 @@ namespace Gallio.Model.Serialization
         /// <summary>
         /// Copies the contents of a test parameter.
         /// </summary>
-        /// <param name="source">The source test parameter</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="source"/> is null</exception>
+        /// <param name="source">The source test parameter.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="source"/> is null.</exception>
         public TestParameterData(ITestParameter source)
             : base(source)
         {

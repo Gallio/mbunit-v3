@@ -178,7 +178,7 @@ namespace Gallio.Runtime.Extensibility
         /// <summary>
         /// Disposes the registry.
         /// </summary>
-        /// <param name="disposing">True if disposing</param>
+        /// <param name="disposing">True if disposing.</param>
         protected virtual void Dispose(bool disposing)
         {
         }

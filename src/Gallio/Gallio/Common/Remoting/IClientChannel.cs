@@ -26,11 +26,11 @@ namespace Gallio.Common.Remoting
         /// <summary>
         /// Gets a well-known remote service with the specified name.
         /// </summary>
-        /// <param name="serviceType">The type of the service</param>
-        /// <param name="serviceName">The name of the service</param>
+        /// <param name="serviceType">The type of the service.</param>
+        /// <param name="serviceName">The name of the service.</param>
         /// <returns>The component or a proxy that provides the service</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="serviceType"/>
-        /// or <paramref name="serviceName"/> is null</exception>
+        /// or <paramref name="serviceName"/> is null.</exception>
         object GetService(Type serviceType, string serviceName);
     }
 }

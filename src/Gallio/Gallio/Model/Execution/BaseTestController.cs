@@ -45,10 +45,10 @@ namespace Gallio.Model.Execution
         /// <summary>
         /// Implementation of <see cref="RunTests" /> called after argument validation has taken place.
         /// </summary>
-        /// <param name="rootTestCommand">The root test command, not null</param>
-        /// <param name="parentTestStep">The parent test step, or null if none</param>
-        /// <param name="options">The test execution options, not null</param>
-        /// <param name="progressMonitor">The progress monitor, not null</param>
+        /// <param name="rootTestCommand">The root test command, not null.</param>
+        /// <param name="parentTestStep">The parent test step, or null if none.</param>
+        /// <param name="options">The test execution options, not null.</param>
+        /// <param name="progressMonitor">The progress monitor, not null.</param>
         /// <returns>The combined outcome of the root test command</returns>
         protected abstract TestOutcome RunTestsImpl(ITestCommand rootTestCommand, ITestStep parentTestStep, TestExecutionOptions options, IProgressMonitor progressMonitor);
 
@@ -60,8 +60,8 @@ namespace Gallio.Model.Execution
         /// This is useful for implementing fallback behavior when
         /// <see cref="TestExecutionOptions.SkipTestExecution" /> is true.
         /// </remarks>
-        /// <param name="rootTestCommand">The root test command</param>
-        /// <param name="parentTestStep">The parent test step</param>
+        /// <param name="rootTestCommand">The root test command.</param>
+        /// <param name="parentTestStep">The parent test step.</param>
         protected static void SkipAll(ITestCommand rootTestCommand, ITestStep parentTestStep)
         {
             ITestContext context = rootTestCommand.StartPrimaryChildStep(parentTestStep);

@@ -33,8 +33,8 @@ namespace Gallio.Framework.Data
         /// <summary>
         /// Creates an object data binder initially without slot binders.
         /// </summary>
-        /// <param name="type">The type</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="type"/> is null</exception>
+        /// <param name="type">The type.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="type"/> is null.</exception>
         public ObjectDataBinder(ITypeInfo type)
         {
             if (type == null)
@@ -48,10 +48,10 @@ namespace Gallio.Framework.Data
         /// <summary>
         /// Sets the binder for a slot.
         /// </summary>
-        /// <param name="slot">The slot</param>
-        /// <param name="binder">The binder</param>
+        /// <param name="slot">The slot.</param>
+        /// <param name="binder">The binder.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="slot"/>
-        /// or <paramref name="binder"/> is null</exception>
+        /// or <paramref name="binder"/> is null.</exception>
         public void SetSlotBinder(ISlotInfo slot, IDataBinder binder)
         {
             if (slot == null)

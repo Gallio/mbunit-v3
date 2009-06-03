@@ -52,9 +52,9 @@ namespace Gallio.Common.Xml
         /// <summary>
         /// Defines a preprocessor constant.
         /// </summary>
-        /// <param name="constant">The constant</param>
+        /// <param name="constant">The constant.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="constant"/>
-        /// is null</exception>
+        /// is null.</exception>
         public void Define(string constant)
         {
             if (constant == null)
@@ -66,9 +66,9 @@ namespace Gallio.Common.Xml
         /// <summary>
         /// Returns true if the specified preprocessor constant is defined.
         /// </summary>
-        /// <param name="constant">The constant</param>
+        /// <param name="constant">The constant.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="constant"/>
-        /// is null</exception>
+        /// is null.</exception>
         /// <returns>True if the constant is defined</returns>
         public bool IsDefined(string constant)
         {
@@ -81,10 +81,10 @@ namespace Gallio.Common.Xml
         /// <summary>
         /// Preprocesses and copies an Xml document from a reader into a writer.
         /// </summary>
-        /// <param name="xmlReader">The Xml reader</param>
-        /// <param name="xmlWriter">The Xml writer</param>
+        /// <param name="xmlReader">The Xml reader.</param>
+        /// <param name="xmlWriter">The Xml writer.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="xmlReader"/>
-        /// or <paramref name="xmlWriter"/> is null</exception>
+        /// or <paramref name="xmlWriter"/> is null.</exception>
         /// <exception cref="InvalidOperationException">Thrown if the input Xml is malformed
         /// such as if it contains unbalanced ifdef/endif pairs.</exception>
         public void Preprocess(XmlReader xmlReader, XmlWriter xmlWriter)

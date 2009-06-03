@@ -30,8 +30,8 @@ namespace Gallio.Model.Filters
         /// Creates a namespace filter.
         /// </summary>
         /// <param name="namespaceNameFilter">A filter for the namespace name
-        /// obtained via reflection on types</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="namespaceNameFilter"/> is null</exception>
+        /// obtained via reflection on types.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="namespaceNameFilter"/> is null.</exception>
         public NamespaceFilter(Filter<string> namespaceNameFilter)
             : base(namespaceNameFilter)
         {

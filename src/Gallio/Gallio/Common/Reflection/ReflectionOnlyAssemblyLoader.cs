@@ -54,8 +54,8 @@ namespace Gallio.Common.Reflection
         /// <summary>
         /// Adds a hint directory to search for loading assemblies.
         /// </summary>
-        /// <param name="path">The search directory to add</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="path"/> is null</exception>
+        /// <param name="path">The search directory to add.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="path"/> is null.</exception>
         public void AddHintDirectory(string path)
         {
             if (path == null)

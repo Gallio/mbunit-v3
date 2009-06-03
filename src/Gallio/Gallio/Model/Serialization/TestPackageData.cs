@@ -40,8 +40,8 @@ namespace Gallio.Model.Serialization
         /// <summary>
         /// Copies the contents of a test package.
         /// </summary>
-        /// <param name="source">The source test package</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="source"/> is null</exception>
+        /// <param name="source">The source test package.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="source"/> is null.</exception>
         public TestPackageData(TestPackage source)
         {
             if (source == null)

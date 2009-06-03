@@ -44,15 +44,15 @@ namespace Gallio.Framework.Data
         /// <summary>
         /// Creates a new object specification.
         /// </summary>
-        /// <param name="type">The type or generic type definition to be instantiated</param>
-        /// <param name="slotValues">The slot values</param>
+        /// <param name="type">The type or generic type definition to be instantiated.</param>
+        /// <param name="slotValues">The slot values.</param>
         /// <param name="converter">The converter to use for converting slot values
-        /// to the required types</param>
+        /// to the required types.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="type"/>,
-        /// <paramref name="slotValues"/> or <paramref name="converter"/> is null</exception>
+        /// <paramref name="slotValues"/> or <paramref name="converter"/> is null.</exception>
         /// <exception cref="ArgumentException">Thrown if <paramref name="type"/>
         /// has an element type or if <paramref name="slotValues" /> contains
-        /// slots that are declared by different types or have incompatible values</exception>
+        /// slots that are declared by different types or have incompatible values.</exception>
         public ObjectCreationSpec(ITypeInfo type,
             IEnumerable<KeyValuePair<ISlotInfo, object>> slotValues, IConverter converter)
             : base(slotValues, converter)
@@ -144,7 +144,7 @@ namespace Gallio.Framework.Data
         /// constructor parameter, field and property slot values.
         /// </summary>
         /// <returns>The new instance, never null</returns>
-        /// <exception cref="InvalidOperationException">Thrown if the type is not instantiable</exception>
+        /// <exception cref="InvalidOperationException">Thrown if the type is not instantiable.</exception>
         public object CreateInstance()
         {
             object instance;

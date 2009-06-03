@@ -38,8 +38,8 @@ namespace Gallio.Runtime.FileTypes
         /// <summary>
         /// Creates a file type manager.
         /// </summary>
-        /// <param name="fileTypeRecognizerHandles">The file type recognizer component handles</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="fileTypeRecognizerHandles"/> is null</exception>
+        /// <param name="fileTypeRecognizerHandles">The file type recognizer component handles.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="fileTypeRecognizerHandles"/> is null.</exception>
         public FileTypeManager(ComponentHandle<IFileTypeRecognizer, FileTypeRecognizerTraits>[] fileTypeRecognizerHandles)
         {
             if (fileTypeRecognizerHandles == null || Array.IndexOf(fileTypeRecognizerHandles, null) >= 0)

@@ -34,11 +34,11 @@ namespace Gallio.Model
         /// <summary>
         /// Creates a test package with the specified configuration.
         /// </summary>
-        /// <param name="config">The package configuration</param>
-        /// <param name="reflectionPolicy">The reflection policy for the package</param>
-        /// <param name="loader">The loader for the package</param>
+        /// <param name="config">The package configuration.</param>
+        /// <param name="reflectionPolicy">The reflection policy for the package.</param>
+        /// <param name="loader">The loader for the package.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="config"/>,
-        /// <paramref name="reflectionPolicy"/> or <paramref name="loader"/> is null</exception>
+        /// <paramref name="reflectionPolicy"/> or <paramref name="loader"/> is null.</exception>
         public TestPackage(TestPackageConfig config, IReflectionPolicy reflectionPolicy,
             ILoader loader)
         {
@@ -91,8 +91,8 @@ namespace Gallio.Model
         /// <summary>
         /// Adds an assembly to the test package.
         /// </summary>
-        /// <param name="assembly">The assembly to add</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="assembly"/> is null</exception>
+        /// <param name="assembly">The assembly to add.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="assembly"/> is null.</exception>
         public void AddAssembly(IAssemblyInfo assembly)
         {
             if (assembly == null)

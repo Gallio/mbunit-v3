@@ -26,75 +26,75 @@ namespace Gallio.Model.Messages
         /// <summary>
         /// Notifies the listener that a test step has started execution.
         /// </summary>
-        /// <param name="step">Information about the test step that is about to start, not null</param>
+        /// <param name="step">Information about the test step that is about to start, not null.</param>
         void NotifyTestStepStarted(TestStepData step);
 
         /// <summary>
         /// Notifies the listener that a test step has changed lifecycle phase.
         /// </summary>
-        /// <param name="stepId">The id of the test step, not null</param>
-        /// <param name="lifecyclePhase">The lifecycle phase name, not null</param>
+        /// <param name="stepId">The id of the test step, not null.</param>
+        /// <param name="lifecyclePhase">The lifecycle phase name, not null.</param>
         void NotifyTestStepLifecyclePhaseChanged(string stepId, string lifecyclePhase);
 
         /// <summary>
         /// Notifies the listener that a test step has dynamically added metadata to itself.
         /// </summary>
-        /// <param name="stepId">The id of the test step, not null</param>
-        /// <param name="metadataKey">The metadata key, not null</param>
-        /// <param name="metadataValue">The metadata value, not null</param>
+        /// <param name="stepId">The id of the test step, not null.</param>
+        /// <param name="metadataKey">The metadata key, not null.</param>
+        /// <param name="metadataValue">The metadata value, not null.</param>
         void NotifyTestStepMetadataAdded(string stepId, string metadataKey, string metadataValue);
 
         /// <summary>
         /// Notifies the listener that a test step has finished execution.
         /// </summary>
-        /// <param name="stepId">The id of the test step, not null</param>
-        /// <param name="result">The test result, not null</param>
+        /// <param name="stepId">The id of the test step, not null.</param>
+        /// <param name="result">The test result, not null.</param>
         void NotifyTestStepFinished(string stepId, TestResult result);
 
         /// <summary>
         /// Notifies the listener that an attachment has been added to a test step log.
         /// </summary>
-        /// <param name="stepId">The id of the test step, not null</param>
-        /// <param name="attachment">The attachment, not null</param>
+        /// <param name="stepId">The id of the test step, not null.</param>
+        /// <param name="attachment">The attachment, not null.</param>
         void NotifyTestStepLogAttach(string stepId, Attachment attachment);
 
         /// <summary>
         /// Notifies the listener that text has been written to a test step log stream.
         /// </summary>
-        /// <param name="stepId">The id of the test step, not null</param>
-        /// <param name="streamName">The stream name, not null</param>
-        /// <param name="text">The text, not null</param>
+        /// <param name="stepId">The id of the test step, not null.</param>
+        /// <param name="streamName">The stream name, not null.</param>
+        /// <param name="text">The text, not null.</param>
         void NotifyTestStepLogStreamWrite(string stepId, string streamName, string text);
 
         /// <summary>
         /// Notifies the listener that an attachment has been embedded into a test step log stream.
         /// </summary>
-        /// <param name="stepId">The id of the test step, not null</param>
-        /// <param name="streamName">The stream name, not null</param>
-        /// <param name="attachmentName">The attachment name, not null</param>
+        /// <param name="stepId">The id of the test step, not null.</param>
+        /// <param name="streamName">The stream name, not null.</param>
+        /// <param name="attachmentName">The attachment name, not null.</param>
         void NotifyTestStepLogStreamEmbed(string stepId, string streamName, string attachmentName);
 
         /// <summary>
         /// Notifies the listener that a section region has been started within a test step log stream.
         /// </summary>
-        /// <param name="stepId">The id of the test step, not null</param>
-        /// <param name="streamName">The stream name, not null</param>
-        /// <param name="sectionName">The section name, not null</param>
+        /// <param name="stepId">The id of the test step, not null.</param>
+        /// <param name="streamName">The stream name, not null.</param>
+        /// <param name="sectionName">The section name, not null.</param>
         void NotifyTestStepLogStreamBeginSection(string stepId, string streamName, string sectionName);
 
         /// <summary>
         /// Notifies the listener that a marker region has been started within a test step log stream.
         /// </summary>
-        /// <param name="stepId">The id of the test step, not null</param>
-        /// <param name="streamName">The stream name, not null</param>
-        /// <param name="marker">The marker</param>
+        /// <param name="stepId">The id of the test step, not null.</param>
+        /// <param name="streamName">The stream name, not null.</param>
+        /// <param name="marker">The marker.</param>
         void NotifyTestStepLogStreamBeginMarker(string stepId, string streamName, Marker marker);
 
         /// <summary>
         /// Notifies the listener that a region started with Begin* has finished within a test step log stream.
         /// </summary>
-        /// <param name="stepId">The id of the test step, not null</param>
-        /// <param name="streamName">The stream name, not null</param>
+        /// <param name="stepId">The id of the test step, not null.</param>
+        /// <param name="streamName">The stream name, not null.</param>
         void NotifyTestStepLogStreamEnd(string stepId, string streamName);
     }
 }

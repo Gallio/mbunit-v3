@@ -43,9 +43,9 @@ namespace Gallio.Framework.Data
         /// <summary>
         /// Adds a data set to the aggregate.
         /// </summary>
-        /// <param name="dataSet">The data set to add</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="dataSet"/> is null</exception>
-        /// <exception cref="ArgumentException">Thrown if <paramref name="dataSet"/> is already a member of this aggregate</exception>
+        /// <param name="dataSet">The data set to add.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="dataSet"/> is null.</exception>
+        /// <exception cref="ArgumentException">Thrown if <paramref name="dataSet"/> is already a member of this aggregate.</exception>
         public virtual void AddDataSet(IDataSet dataSet)
         {
             if (dataSet == null)

@@ -30,11 +30,11 @@ namespace Gallio.Framework.Pattern
         /// <remarks>
         /// Typically used to enable decorations to be applied in a particular order.
         /// </remarks>
-        /// <param name="codeElement">The associated code element, used to report errors if the deferred action throws an exception</param>
-        /// <param name="order">The order in which the action should be applied, from least order to greatest</param>
-        /// <param name="deferredAction">The action to perform</param>
+        /// <param name="codeElement">The associated code element, used to report errors if the deferred action throws an exception.</param>
+        /// <param name="order">The order in which the action should be applied, from least order to greatest.</param>
+        /// <param name="deferredAction">The action to perform.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="codeElement"/>
-        /// or <paramref name="deferredAction"/> is null</exception>
+        /// or <paramref name="deferredAction"/> is null.</exception>
         /// <seealso cref="ApplyDeferredActions"/>
         void AddDeferredAction(ICodeElementInfo codeElement, int order, Action deferredAction);
 

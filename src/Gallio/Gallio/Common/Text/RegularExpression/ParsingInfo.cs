@@ -121,7 +121,7 @@ namespace Gallio.Common.Text.RegularExpression
         /// Determines whether the specified character is 
         /// the initiator character for the current parsing mode.
         /// </summary>
-        /// <param name="character">The character to evaluate</param>
+        /// <param name="character">The character to evaluate.</param>
         /// <returns>True if <paramref name="character"/> is an initiator; false otherwise.</returns>
         public bool IsInitiator(char character)
         {
@@ -132,7 +132,7 @@ namespace Gallio.Common.Text.RegularExpression
         /// Determines whether the specified character is 
         /// the terminator character for the current parsing mode.
         /// </summary>
-        /// <param name="character">The character to evaluate</param>
+        /// <param name="character">The character to evaluate.</param>
         /// <returns>True if <paramref name="character"/> is a terminator; false otherwise.</returns>
         public bool IsTerminator(char character)
         {

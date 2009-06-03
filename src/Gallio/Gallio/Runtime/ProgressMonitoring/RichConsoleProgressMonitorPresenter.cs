@@ -38,8 +38,8 @@ namespace Gallio.Runtime.ProgressMonitoring
         /// <summary>
         /// Creates a console presenter for a progress monitor.
         /// </summary>
-        /// <param name="console">The console</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="console"/> is null</exception>
+        /// <param name="console">The console.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="console"/> is null.</exception>
         public RichConsoleProgressMonitorPresenter(IRichConsole console)
         {
             if (console == null)

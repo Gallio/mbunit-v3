@@ -34,12 +34,12 @@ namespace Gallio.Common.Reflection.Impl
         /// <summary>
         /// Creates a wrapper.
         /// </summary>
-        /// <param name="policy">The reflection policy</param>
-        /// <param name="handle">The underlying reflection object</param>
-        /// <param name="declaringType">The declaring type</param>
-        /// <param name="reflectedType">The reflected type, or null if none</param>
+        /// <param name="policy">The reflection policy.</param>
+        /// <param name="handle">The underlying reflection object.</param>
+        /// <param name="declaringType">The declaring type.</param>
+        /// <param name="reflectedType">The reflected type, or null if none.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="policy"/>, <paramref name="handle"/>,
-        /// <paramref name="declaringType"/>, or <paramref name="reflectedType"/> is null</exception>
+        /// <paramref name="declaringType"/>, or <paramref name="reflectedType"/> is null.</exception>
         protected StaticFunctionWrapper(StaticReflectionPolicy policy, object handle, StaticDeclaredTypeWrapper declaringType,
             StaticDeclaredTypeWrapper reflectedType)
             : base(policy, handle, declaringType, reflectedType)

@@ -51,8 +51,8 @@ namespace Gallio.Framework.Data
         /// <summary>
         /// Creates a CSV reader. 
         /// </summary>
-        /// <param name="documentReader">The text reader from which to read the contents of the document</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="documentReader"/> is null</exception>
+        /// <param name="documentReader">The text reader from which to read the contents of the document.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="documentReader"/> is null.</exception>
         public CsvReader(TextReader documentReader)
         {
             if (documentReader == null)
@@ -109,7 +109,7 @@ namespace Gallio.Framework.Data
         /// </para>
         /// </summary>
         /// <returns>The record contents as an array of field values, or null if at the end of the document</returns>
-        /// <exception cref="IOException">Thrown if an I/O error occurs</exception>
+        /// <exception cref="IOException">Thrown if an I/O error occurs.</exception>
         public string[] ReadRecord()
         {
             for (; ; )

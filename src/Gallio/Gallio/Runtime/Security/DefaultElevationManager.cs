@@ -40,7 +40,7 @@ namespace Gallio.Runtime.Security
         /// <summary>
         /// Creates an elevation manager.
         /// </summary>
-        /// <param name="runtime">The runtime, not null</param>
+        /// <param name="runtime">The runtime, not null.</param>
         public DefaultElevationManager(IRuntime runtime)
         {
             this.runtime = runtime;

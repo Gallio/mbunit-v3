@@ -67,12 +67,12 @@ namespace Gallio.Common.Text
         /// <param name="diffs">The list of differences that indicate the changed and
         /// unchanged regions between the left and right documents.  The diffs span
         /// the entire range of the left and right documents and are listed in document order.</param>
-        /// <param name="leftDocument">The left document</param>
-        /// <param name="rightDocument">The right document</param>
+        /// <param name="leftDocument">The left document.</param>
+        /// <param name="rightDocument">The right document.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="leftDocument"/>,
-        /// <paramref name="rightDocument"/> or <paramref name="diffs"/> is null</exception>
+        /// <paramref name="rightDocument"/> or <paramref name="diffs"/> is null.</exception>
         /// <exception cref="ArgumentException">Thrown if <paramref name="diffs"/> does not
-        /// completely cover the left and right documents or are not listed in the correct order</exception>
+        /// completely cover the left and right documents or are not listed in the correct order.</exception>
         public DiffSet(IList<Diff> diffs, string leftDocument, string rightDocument)
         {
             if (diffs == null)
@@ -93,11 +93,11 @@ namespace Gallio.Common.Text
         /// <summary>
         /// Gets the set of differences between a left document and a right document.
         /// </summary>
-        /// <param name="leftDocument">The left document</param>
-        /// <param name="rightDocument">The right document</param>
+        /// <param name="leftDocument">The left document.</param>
+        /// <param name="rightDocument">The right document.</param>
         /// <returns>The set of differences</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="leftDocument"/> or
-        /// <paramref name="rightDocument"/> is null</exception>
+        /// <paramref name="rightDocument"/> is null.</exception>
         public static DiffSet GetDiffSet(string leftDocument, string rightDocument)
         {
             return GetDiffSet(leftDocument, rightDocument, true, true);
@@ -183,8 +183,8 @@ namespace Gallio.Common.Text
         /// and <see cref="Marker.DiffChange" />.
         /// </para>
         /// </summary>
-        /// <param name="writer">The test log stream writer to receive the highlighted document</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref nameref="writer" /> if null</exception>
+        /// <param name="writer">The test log stream writer to receive the highlighted document.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref nameref="writer" /> if null.</exception>
         public void WriteTo(MarkupStreamWriter writer)
         {
             WriteTo(writer, DiffStyle.Interleaved, int.MaxValue);
@@ -209,9 +209,9 @@ namespace Gallio.Common.Text
         /// then only the deletion and changed markers are used.
         /// </para>
         /// </summary>
-        /// <param name="writer">The test log stream writer to receive the highlighted document</param>
-        /// <param name="style">The presentation style</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref nameref="writer" /> if null</exception>
+        /// <param name="writer">The test log stream writer to receive the highlighted document.</param>
+        /// <param name="style">The presentation style.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref nameref="writer" /> if null.</exception>
         public void WriteTo(MarkupStreamWriter writer, DiffStyle style)
         {
             WriteTo(writer, style, int.MaxValue);
@@ -236,14 +236,14 @@ namespace Gallio.Common.Text
         /// then only the deletion and changed markers are used.
         /// </para>
         /// </summary>
-        /// <param name="writer">The test log stream writer to receive the highlighted document</param>
-        /// <param name="style">The presentation style</param>
+        /// <param name="writer">The test log stream writer to receive the highlighted document.</param>
+        /// <param name="style">The presentation style.</param>
         /// <param name="maxContextLength">The maximum number of characters of unchanged regions
         /// to display for context, or <see cref="int.MaxValue" /> for no limit.  Extraneous context
-        /// is split in two with an ellipsis inserted in between both halves</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref nameref="writer" /> if null</exception>
+        /// is split in two with an ellipsis inserted in between both halves.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref nameref="writer" /> if null.</exception>
         /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="maxContextLength"/>
-        /// is negative</exception>
+        /// is negative.</exception>
         public void WriteTo(MarkupStreamWriter writer, DiffStyle style, int maxContextLength)
         {
             if (writer == null)
@@ -650,7 +650,7 @@ namespace Gallio.Common.Text
             /// <param name="right">The sequence "B"</param>
             /// <param name="middleSnakeLeftStartIndex">The starting index of the middle snake in "A"</param>
             /// <param name="middleSnakeRightStartIndex">The starting index of the middle snake in "B"</param>
-            /// <param name="middleSnakeLength">The middle snake length</param>
+            /// <param name="middleSnakeLength">The middle snake length.</param>
             /// <returns>The length of the shorted edit script between "A" and "B"</returns>
             private int FindMiddleSnake(Substring left, Substring right, out int middleSnakeLeftStartIndex, out int middleSnakeRightStartIndex, out int middleSnakeLength)
             {

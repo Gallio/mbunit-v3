@@ -32,8 +32,8 @@ namespace Gallio.Runtime.FileTypes
         /// <summary>
         /// Creates a file inspector for the file describe the specified file info object.
         /// </summary>
-        /// <param name="fileInfo">The file to inspect</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="fileInfo"/> is null</exception>
+        /// <param name="fileInfo">The file to inspect.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="fileInfo"/> is null.</exception>
         public LazyFileInspector(FileInfo fileInfo)
         {
             if (fileInfo == null)
@@ -88,7 +88,7 @@ namespace Gallio.Runtime.FileTypes
         /// <summary>
         /// Disposes the inspector.
         /// </summary>
-        /// <param name="disposing">True if <see cref="Dispose()" /> was called directly</param>
+        /// <param name="disposing">True if <see cref="Dispose()" /> was called directly.</param>
         protected virtual void Dispose(bool disposing)
         {
             if (stream != null)

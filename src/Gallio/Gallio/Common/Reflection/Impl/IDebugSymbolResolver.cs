@@ -26,10 +26,10 @@ namespace Gallio.Common.Reflection.Impl
         /// Gets the location of a source file that contains the declaration of a method, or
         /// null if not available.
         /// </summary>
-        /// <param name="assemblyPath">The path of the assembly that contains the method</param>
-        /// <param name="methodToken">The method token</param>
+        /// <param name="assemblyPath">The path of the assembly that contains the method.</param>
+        /// <param name="methodToken">The method token.</param>
         /// <returns>The source code location, or null if unknown</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="assemblyPath"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="assemblyPath"/> is null.</exception>
         CodeLocation GetSourceLocationForMethod(string assemblyPath, int methodToken);
     }
 }

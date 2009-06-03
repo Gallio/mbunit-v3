@@ -28,10 +28,10 @@ namespace Gallio.Framework.Pattern
         /// <summary>
         /// Creates an information object.
         /// </summary>
-        /// <param name="id">The unique id of the extension</param>
-        /// <param name="name">The display name of the extension</param>
+        /// <param name="id">The unique id of the extension.</param>
+        /// <param name="name">The display name of the extension.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="id"/> or <paramref name="name"/>
-        /// is null</exception>
+        /// is null.</exception>
         public PatternTestFrameworkExtensionInfo(string id, string name)
         {
             if (id == null)

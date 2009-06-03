@@ -31,10 +31,10 @@ namespace Gallio.Framework.Pattern
         /// <summary>
         /// Creates a test data context builder.
         /// </summary>
-        /// <param name="testModelBuilder">The associated test model builder</param>
-        /// <param name="testDataContext">The underlying test data context</param>
+        /// <param name="testModelBuilder">The associated test model builder.</param>
+        /// <param name="testDataContext">The underlying test data context.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="testModelBuilder"/>
-        /// or <paramref name="testDataContext"/> is null</exception>
+        /// or <paramref name="testDataContext"/> is null.</exception>
         public DefaultTestDataContextBuilder(ITestModelBuilder testModelBuilder, PatternTestDataContext testDataContext)
         {
             if (testModelBuilder == null)

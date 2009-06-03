@@ -51,8 +51,8 @@ namespace Gallio.Runner.Extensions
         /// <summary>
         /// Installs the extension into a test runner.
         /// </summary>
-        /// <param name="events">The test runner events, not null</param>
-        /// <param name="logger">The logger, not null</param>
+        /// <param name="events">The test runner events, not null.</param>
+        /// <param name="logger">The logger, not null.</param>
         void Install(ITestRunnerEvents events, ILogger logger);
     }
 }

@@ -27,8 +27,8 @@ namespace Gallio.Runner.Extensions
         /// <summary>
         /// Registers auto-activated extensions with the test runner.
         /// </summary>
-        /// <param name="testRunner">The test runner</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="testRunner"/> is null</exception>
+        /// <param name="testRunner">The test runner.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="testRunner"/> is null.</exception>
         void RegisterAutoActivatedExtensions(ITestRunner testRunner);
     }
 }

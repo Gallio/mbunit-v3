@@ -41,8 +41,8 @@ namespace Gallio.Schema.Plugins
         /// <summary>
         /// Creates an assembly reference.
         /// </summary>
-        /// <param name="fullName">The assembly full name</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="fullName"/> is null</exception>
+        /// <param name="fullName">The assembly full name.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="fullName"/> is null.</exception>
         public Assembly(string fullName)
         {
             if (fullName == null)
@@ -54,7 +54,7 @@ namespace Gallio.Schema.Plugins
         /// <summary>
         /// Gets or sets the assembly full name.
         /// </summary>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
         [XmlAttribute("fullName")]
         public string FullName
         {

@@ -34,38 +34,38 @@ namespace Gallio.Runner.Reports
         /// <summary>
         /// Gets the report formatter with the specified name, or null if none.
         /// </summary>
-        /// <param name="formatterName">The formatter name</param>
+        /// <param name="formatterName">The formatter name.</param>
         /// <returns>The formatter, or null on failure</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="formatterName"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="formatterName"/> is null.</exception>
         IReportFormatter GetReportFormatter(string formatterName);
 
         /// <summary>
         /// Formats the report indicated by the report writer.
         /// </summary>
-        /// <param name="reportWriter">The report writer</param>
-        /// <param name="formatterName">The formatter name</param>
-        /// <param name="formatterOptions">The report formatter options</param>
-        /// <param name="progressMonitor">The progress monitor</param>
+        /// <param name="reportWriter">The report writer.</param>
+        /// <param name="formatterName">The formatter name.</param>
+        /// <param name="formatterOptions">The report formatter options.</param>
+        /// <param name="progressMonitor">The progress monitor.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="reportWriter"/>, <paramref name="formatterName"/>,
-        /// <paramref name="formatterOptions"/> or <paramref name="progressMonitor"/> is null</exception>
-        /// <exception cref="InvalidOperationException">Thrown if there is no formatter with the specified name</exception>
+        /// <paramref name="formatterOptions"/> or <paramref name="progressMonitor"/> is null.</exception>
+        /// <exception cref="InvalidOperationException">Thrown if there is no formatter with the specified name.</exception>
         void Format(IReportWriter reportWriter, string formatterName, ReportFormatterOptions formatterOptions, IProgressMonitor progressMonitor);
 
         /// <summary>
         /// Gets a report reader to load a report from the specified container.
         /// </summary>
-        /// <param name="reportContainer">The report container</param>
+        /// <param name="reportContainer">The report container.</param>
         /// <returns>The report reader</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="reportContainer"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="reportContainer"/> is null.</exception>
         IReportReader CreateReportReader(IReportContainer reportContainer);
 
         /// <summary>
         /// Gets a report writer to save or format a report to the specified container.
         /// </summary>
-        /// <param name="report">The report</param>
-        /// <param name="reportContainer">The report container</param>
+        /// <param name="report">The report.</param>
+        /// <param name="reportContainer">The report container.</param>
         /// <returns>The report writer</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="report"/> or <paramref name="reportContainer"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="report"/> or <paramref name="reportContainer"/> is null.</exception>
         IReportWriter CreateReportWriter(Report report, IReportContainer reportContainer);
     }
 }

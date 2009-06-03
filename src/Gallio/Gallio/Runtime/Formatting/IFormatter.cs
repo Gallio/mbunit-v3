@@ -50,7 +50,7 @@ namespace Gallio.Runtime.Formatting
         /// a robust service to all clients.
         /// </para>
         /// </remarks>
-        /// <param name="obj">The object to format, may be null</param>
+        /// <param name="obj">The object to format, may be null.</param>
         /// <returns>The formatted string, never null and never an empty string</returns>
         string Format(object obj);
     }

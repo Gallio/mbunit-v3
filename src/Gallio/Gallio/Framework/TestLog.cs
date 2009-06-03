@@ -57,7 +57,7 @@ namespace Gallio.Framework
         /// Gets the current log writer.
         /// </summary>
         /// <returns>The execution log, never null</returns>
-        /// <exception cref="InvalidOperationException">Thrown if there is no current log writer</exception>
+        /// <exception cref="InvalidOperationException">Thrown if there is no current log writer.</exception>
         public static MarkupDocumentWriter Writer
         {
             get
@@ -151,12 +151,12 @@ namespace Gallio.Framework
         /// writer as returned by the <see cref="Writer" /> property.
         /// </para>
         /// </summary>
-        /// <param name="attachment">The attachment to include</param>
+        /// <param name="attachment">The attachment to include.</param>
         /// <returns>The attachment</returns>
         /// <seealso cref="MarkupStreamWriter.Embed"/>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="attachment"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="attachment"/> is null.</exception>
         /// <exception cref="InvalidOperationException">Thrown if there is already an attachment
-        /// with the same name</exception>
+        /// with the same name.</exception>
         public static Attachment Attach(Attachment attachment)
         {
             return Writer.Attach(attachment);
@@ -172,12 +172,12 @@ namespace Gallio.Framework
         /// <param name="attachmentName">The name of the attachment to create or null to
         /// automatically assign one.  The attachment name must be unique within the scope of the
         /// currently executing test step.</param>
-        /// <param name="text">The text to attach</param>
+        /// <param name="text">The text to attach.</param>
         /// <returns>The attachment</returns>
         /// <seealso cref="MarkupStreamWriter.EmbedPlainText"/>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="text"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="text"/> is null.</exception>
         /// <exception cref="InvalidOperationException">Thrown if there is already an attachment
-        /// with the same name</exception>
+        /// with the same name.</exception>
         public static TextAttachment AttachPlainText(string attachmentName, string text)
         {
             return Writer.AttachPlainText(attachmentName, text);
@@ -193,12 +193,12 @@ namespace Gallio.Framework
         /// <param name="attachmentName">The name of the attachment to create or null to
         /// automatically assign one.  The attachment name must be unique within the scope of the
         /// currently executing test step.</param>
-        /// <param name="html">The HTML to attach</param>
+        /// <param name="html">The HTML to attach.</param>
         /// <returns>The attachment</returns>
         /// <seealso cref="MarkupStreamWriter.EmbedHtml"/>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="html"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="html"/> is null.</exception>
         /// <exception cref="InvalidOperationException">Thrown if there is already an attachment
-        /// with the same name</exception>
+        /// with the same name.</exception>
         public static TextAttachment AttachHtml(string attachmentName, string html)
         {
             return Writer.AttachHtml(attachmentName, html);
@@ -214,12 +214,12 @@ namespace Gallio.Framework
         /// <param name="attachmentName">The name of the attachment to create or null to
         /// automatically assign one.  The attachment name must be unique within the scope of the
         /// currently executing test step.</param>
-        /// <param name="xhtml">The XHTML to attach</param>
+        /// <param name="xhtml">The XHTML to attach.</param>
         /// <returns>The attachment</returns>
         /// <seealso cref="MarkupStreamWriter.EmbedXHtml"/>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="xhtml"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="xhtml"/> is null.</exception>
         /// <exception cref="InvalidOperationException">Thrown if there is already an attachment
-        /// with the same name</exception>
+        /// with the same name.</exception>
         public static TextAttachment AttachXHtml(string attachmentName, string xhtml)
         {
             return Writer.AttachXHtml(attachmentName, xhtml);
@@ -235,12 +235,12 @@ namespace Gallio.Framework
         /// <param name="attachmentName">The name of the attachment to create or null to
         /// automatically assign one.  The attachment name must be unique within the scope of the
         /// currently executing test step.</param>
-        /// <param name="xml">The XML to attach</param>
+        /// <param name="xml">The XML to attach.</param>
         /// <returns>The attachment</returns>
         /// <seealso cref="MarkupStreamWriter.EmbedXml"/>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="xml"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="xml"/> is null.</exception>
         /// <exception cref="InvalidOperationException">Thrown if there is already an attachment
-        /// with the same name</exception>
+        /// with the same name.</exception>
         public static TextAttachment AttachXml(string attachmentName, string xml)
         {
             return Writer.AttachXml(attachmentName, xml);
@@ -256,12 +256,12 @@ namespace Gallio.Framework
         /// <param name="attachmentName">The name of the attachment to create or null to
         /// automatically assign one.  The attachment name must be unique within the scope of the
         /// currently executing test step.</param>
-        /// <param name="image">The image to attach</param>
+        /// <param name="image">The image to attach.</param>
         /// <returns>The attachment</returns>
         /// <seealso cref="MarkupStreamWriter.EmbedImage"/>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="image"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="image"/> is null.</exception>
         /// <exception cref="InvalidOperationException">Thrown if there is already an attachment
-        /// with the same name</exception>
+        /// with the same name.</exception>
         public static BinaryAttachment AttachImage(string attachmentName, Image image)
         {
             return Writer.AttachImage(attachmentName, image);
@@ -278,12 +278,12 @@ namespace Gallio.Framework
         /// <param name="attachmentName">The name of the attachment to create or null to
         /// automatically assign one.  The attachment name must be unique within the scope of the
         /// currently executing test step.</param>
-        /// <param name="obj">The object to serialize and embed, must not be null</param>
+        /// <param name="obj">The object to serialize and embed, must not be null.</param>
         /// <returns>The attachment</returns>
         /// <seealso cref="MarkupStreamWriter.EmbedObjectAsXml(string, object)"/>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="obj"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="obj"/> is null.</exception>
         /// <exception cref="InvalidOperationException">Thrown if there is already an attachment
-        /// with the same name</exception>
+        /// with the same name.</exception>
         public static TextAttachment AttachObjectAsXml(string attachmentName, object obj)
         {
             return Writer.AttachObjectAsXml(attachmentName, obj);
@@ -300,14 +300,14 @@ namespace Gallio.Framework
         /// <param name="attachmentName">The name of the attachment to create or null to
         /// automatically assign one.  The attachment name must be unique within the scope of the
         /// currently executing test step.</param>
-        /// <param name="obj">The object to serialize and embed, must not be null</param>
+        /// <param name="obj">The object to serialize and embed, must not be null.</param>
         /// <param name="xmlSerializer">The <see cref="XmlSerializer" /> to use, or null to use the default <see cref="XmlSerializer" />
-        /// for the object's type</param>
+        /// for the object's type.</param>
         /// <returns>The attachment</returns>
         /// <seealso cref="MarkupStreamWriter.EmbedObjectAsXml(string, object, XmlSerializer)"/>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="obj"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="obj"/> is null.</exception>
         /// <exception cref="InvalidOperationException">Thrown if there is already an attachment
-        /// with the same name</exception>
+        /// with the same name.</exception>
         public static TextAttachment AttachObjectAsXml(string attachmentName, object obj, XmlSerializer xmlSerializer)
         {
             return Writer.AttachObjectAsXml(attachmentName, obj, xmlSerializer);
@@ -322,7 +322,7 @@ namespace Gallio.Framework
         /// log stream writer as returned by the <see cref="Default" /> property.
         /// </para>
         /// </summary>
-        /// <param name="value">The character value</param>
+        /// <param name="value">The character value.</param>
         public static void Write(char value)
         {
             Default.Write(value);
@@ -335,7 +335,7 @@ namespace Gallio.Framework
         /// log stream writer as returned by the <see cref="Default" /> property.
         /// </para>
         /// </summary>
-        /// <param name="value">The string value</param>
+        /// <param name="value">The string value.</param>
         public static void Write(string value)
         {
             Default.Write(value);
@@ -348,7 +348,7 @@ namespace Gallio.Framework
         /// log stream writer as returned by the <see cref="Default" /> property.
         /// </para>
         /// </summary>
-        /// <param name="value">The object value</param>
+        /// <param name="value">The object value.</param>
         public static void Write(object value)
         {
             Default.Write(value);
@@ -361,7 +361,7 @@ namespace Gallio.Framework
         /// log stream writer as returned by the <see cref="Default" /> property.
         /// </para>
         /// </summary>
-        /// <param name="value">The array of characters</param>
+        /// <param name="value">The array of characters.</param>
         public static void Write(char[] value)
         {
             Default.Write(value);
@@ -374,11 +374,11 @@ namespace Gallio.Framework
         /// log stream writer as returned by the <see cref="Default" /> property.
         /// </para>
         /// </summary>
-        /// <param name="buffer">The character buffer</param>
-        /// <param name="index">The index of the first character in the buffer to write</param>
-        /// <param name="count">The number of characters from the buffer to write</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="buffer"/> is null</exception>
-        /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="index"/> or <paramref name="count"/> are out of range</exception>
+        /// <param name="buffer">The character buffer.</param>
+        /// <param name="index">The index of the first character in the buffer to write.</param>
+        /// <param name="count">The number of characters from the buffer to write.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="buffer"/> is null.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="index"/> or <paramref name="count"/> are out of range.</exception>
         public static void Write(char[] buffer, int index, int count)
         {
             Default.Write(buffer, index, count);
@@ -392,9 +392,9 @@ namespace Gallio.Framework
         /// log stream writer as returned by the <see cref="Default" /> property.
         /// </para>
         /// </summary>
-        /// <param name="format">The format string</param>
-        /// <param name="args">The format string arguments</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="format"/> is null</exception>
+        /// <param name="format">The format string.</param>
+        /// <param name="args">The format string arguments.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="format"/> is null.</exception>
         public static void Write(string format, params object[] args)
         {
             Default.Write(format, args);
@@ -419,7 +419,7 @@ namespace Gallio.Framework
         /// log stream writer as returned by the <see cref="Default" /> property.
         /// </para>
         /// </summary>
-        /// <param name="value">The character value</param>
+        /// <param name="value">The character value.</param>
         public static void WriteLine(char value)
         {
             Default.WriteLine(value);
@@ -432,7 +432,7 @@ namespace Gallio.Framework
         /// log stream writer as returned by the <see cref="Default" /> property.
         /// </para>
         /// </summary>
-        /// <param name="value">The string value</param>
+        /// <param name="value">The string value.</param>
         public static void WriteLine(string value)
         {
             Default.WriteLine(value);
@@ -445,7 +445,7 @@ namespace Gallio.Framework
         /// log stream writer as returned by the <see cref="Default" /> property.
         /// </para>
         /// </summary>
-        /// <param name="value">The object value</param>
+        /// <param name="value">The object value.</param>
         public static void WriteLine(object value)
         {
             Default.WriteLine(value);
@@ -458,7 +458,7 @@ namespace Gallio.Framework
         /// log stream writer as returned by the <see cref="Default" /> property.
         /// </para>
         /// </summary>
-        /// <param name="value">The array of characters</param>
+        /// <param name="value">The array of characters.</param>
         public static void WriteLine(char[] value)
         {
             Default.WriteLine(value);
@@ -472,9 +472,9 @@ namespace Gallio.Framework
         /// log stream writer as returned by the <see cref="Default" /> property.
         /// </para>
         /// </summary>
-        /// <param name="format">The format string</param>
-        /// <param name="args">The format string arguments</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="format"/> is null</exception>
+        /// <param name="format">The format string.</param>
+        /// <param name="args">The format string arguments.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="format"/> is null.</exception>
         public static void WriteLine(string format, params object[] args)
         {
             Default.WriteLine(format, args);
@@ -489,7 +489,7 @@ namespace Gallio.Framework
         /// log stream writer as returned by the <see cref="Default" /> property.
         /// </para>
         /// </summary>
-        /// <param name="obj">The object to write, or null if none</param>
+        /// <param name="obj">The object to write, or null if none.</param>
         public static void Write(IMarkupStreamWritable obj)
         {
             Default.Write(obj);
@@ -507,8 +507,8 @@ namespace Gallio.Framework
         /// <remarks>
         /// The exception will not be terminated by a new line.
         /// </remarks>
-        /// <param name="exception">The exception to write</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="exception"/> is null</exception>
+        /// <param name="exception">The exception to write.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="exception"/> is null.</exception>
         public static void WriteException(Exception exception)
         {
             Default.WriteException(exception);
@@ -526,10 +526,10 @@ namespace Gallio.Framework
         /// <remarks>
         /// The exception will not be terminated by a new line.
         /// </remarks>
-        /// <param name="exception">The exception to write</param>
-        /// <param name="sectionName">The section name, or null if none</param>
+        /// <param name="exception">The exception to write.</param>
+        /// <param name="sectionName">The section name, or null if none.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="exception"/>,
-        /// or <paramref name="sectionName"/> is null</exception>
+        /// or <paramref name="sectionName"/> is null.</exception>
         public static void WriteException(Exception exception, string sectionName)
         {
             Default.WriteException(exception, sectionName);
@@ -547,8 +547,8 @@ namespace Gallio.Framework
         /// <remarks>
         /// The exception will not be terminated by a new line.
         /// </remarks>
-        /// <param name="exception">The exception data to write</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="exception"/> is null</exception>
+        /// <param name="exception">The exception data to write.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="exception"/> is null.</exception>
         public static void WriteException(ExceptionData exception)
         {
             Default.WriteException(exception);
@@ -566,9 +566,9 @@ namespace Gallio.Framework
         /// <remarks>
         /// The exception will not be terminated by a new line.
         /// </remarks>
-        /// <param name="exception">The exception data to write</param>
-        /// <param name="sectionName">The section name, or null if none</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="exception"/> is null</exception>
+        /// <param name="exception">The exception data to write.</param>
+        /// <param name="sectionName">The section name, or null if none.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="exception"/> is null.</exception>
         public static void WriteException(ExceptionData exception, string sectionName)
         {
             Default.WriteException(exception, sectionName);
@@ -589,7 +589,7 @@ namespace Gallio.Framework
         /// This is a convenience method that simply encapsulates the highlighted text within a
         /// marker region of type <see cref="Marker.Highlight" />.
         /// </remarks>
-        /// <param name="text">The text to write, or null if none</param>
+        /// <param name="text">The text to write, or null if none.</param>
         public static void WriteHighlighted(string text)
         {
             Default.WriteHighlighted(text);
@@ -638,10 +638,10 @@ namespace Gallio.Framework
         /// }
         /// </code>
         /// </example>
-        /// <param name="sectionName">The name of the section</param>
+        /// <param name="sectionName">The name of the section.</param>
         /// <returns>A Disposable object that calls <see cref="End" /> when disposed.  This
         /// is a convenience for use with the C# "using" statement.</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="sectionName"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="sectionName"/> is null.</exception>
         public static IDisposable BeginSection(string sectionName)
         {
             return Default.BeginSection(sectionName);
@@ -669,7 +669,7 @@ namespace Gallio.Framework
         /// }
         /// </code>
         /// </example>
-        /// <param name="marker">The marker</param>
+        /// <param name="marker">The marker.</param>
         /// <returns>A Disposable object that calls <see cref="End" /> when disposed.  This
         /// is a convenience for use with the C# "using" statement.</returns>
         public static IDisposable BeginMarker(Marker marker)
@@ -686,7 +686,7 @@ namespace Gallio.Framework
         /// log stream writer as returned by the <see cref="Default" /> property.
         /// </para>
         /// </summary>
-        /// <exception cref="InvalidOperationException">Thrown if there is no current nested region</exception>
+        /// <exception cref="InvalidOperationException">Thrown if there is no current nested region.</exception>
         public static void End()
         {
             Default.End();
@@ -703,12 +703,12 @@ namespace Gallio.Framework
         /// An attachment instance can be embedded multiple times efficiently since each
         /// embedded copy is typically represented as a link to the same common attachment instance.
         /// </remarks>
-        /// <param name="attachment">The attachment to embed</param>
+        /// <param name="attachment">The attachment to embed.</param>
         /// <returns>The attachment</returns>
         /// <seealso cref="MarkupDocumentWriter.Attach"/>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="attachment"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="attachment"/> is null.</exception>
         /// <exception cref="InvalidOperationException">Thrown if there is already an attachment
-        /// with the same name</exception>
+        /// with the same name.</exception>
         public static Attachment Embed(Attachment attachment)
         {
             return Default.Embed(attachment);
@@ -735,12 +735,12 @@ namespace Gallio.Framework
         /// embedded copy is typically represented as a link to the same common attachment instance.
         /// </para>
         /// </remarks>
-        /// <param name="attachmentName">The name of the existing attachment to embed</param>
+        /// <param name="attachmentName">The name of the existing attachment to embed.</param>
         /// <seealso cref="MarkupDocumentWriter.Attach"/>
         /// <seealso cref="MarkupStreamWriter.Embed"/>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="attachmentName"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="attachmentName"/> is null.</exception>
         /// <exception cref="InvalidOperationException">Thrown if no attachment with the specified
-        /// name has been previously attached</exception>
+        /// name has been previously attached.</exception>
         public static void EmbedExisting(string attachmentName)
         {
             Default.EmbedExisting(attachmentName);
@@ -756,12 +756,12 @@ namespace Gallio.Framework
         /// <param name="attachmentName">The name of the attachment to create or null to
         /// automatically assign one.  The attachment name must be unique within the scope of the
         /// currently executing test step.</param>
-        /// <param name="text">The text to attach</param>
+        /// <param name="text">The text to attach.</param>
         /// <returns>The attachment</returns>
         /// <seealso cref="MarkupDocumentWriter.AttachPlainText"/>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="text"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="text"/> is null.</exception>
         /// <exception cref="InvalidOperationException">Thrown if there is already an attachment
-        /// with the same name</exception>
+        /// with the same name.</exception>
         public static TextAttachment EmbedPlainText(string attachmentName, string text)
         {
             return Default.EmbedPlainText(attachmentName, text);
@@ -777,12 +777,12 @@ namespace Gallio.Framework
         /// <param name="attachmentName">The name of the attachment to create or null to
         /// automatically assign one.  The attachment name must be unique within the scope of the
         /// currently executing test step.</param>
-        /// <param name="html">The HTML to attach</param>
+        /// <param name="html">The HTML to attach.</param>
         /// <returns>The attachment</returns>
         /// <seealso cref="MarkupDocumentWriter.AttachHtml"/>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="html"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="html"/> is null.</exception>
         /// <exception cref="InvalidOperationException">Thrown if there is already an attachment
-        /// with the same name</exception>
+        /// with the same name.</exception>
         public static TextAttachment EmbedHtml(string attachmentName, string html)
         {
             return Default.EmbedHtml(attachmentName, html);
@@ -798,12 +798,12 @@ namespace Gallio.Framework
         /// <param name="attachmentName">The name of the attachment to create or null to
         /// automatically assign one.  The attachment name must be unique within the scope of the
         /// currently executing test step.</param>
-        /// <param name="xhtml">The XHTML to attach</param>
+        /// <param name="xhtml">The XHTML to attach.</param>
         /// <returns>The attachment</returns>
         /// <seealso cref="MarkupDocumentWriter.AttachXHtml"/>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="xhtml"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="xhtml"/> is null.</exception>
         /// <exception cref="InvalidOperationException">Thrown if there is already an attachment
-        /// with the same name</exception>
+        /// with the same name.</exception>
         public static TextAttachment EmbedXHtml(string attachmentName, string xhtml)
         {
             return Default.EmbedXHtml(attachmentName, xhtml);
@@ -819,12 +819,12 @@ namespace Gallio.Framework
         /// <param name="attachmentName">The name of the attachment to create or null to
         /// automatically assign one.  The attachment name must be unique within the scope of the
         /// currently executing test step.</param>
-        /// <param name="xml">The XML to attach</param>
+        /// <param name="xml">The XML to attach.</param>
         /// <returns>The attachment</returns>
         /// <seealso cref="MarkupDocumentWriter.AttachXml"/>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="xml"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="xml"/> is null.</exception>
         /// <exception cref="InvalidOperationException">Thrown if there is already an attachment
-        /// with the same name</exception>
+        /// with the same name.</exception>
         public static TextAttachment EmbedXml(string attachmentName, string xml)
         {
             return Default.EmbedXml(attachmentName, xml);
@@ -840,12 +840,12 @@ namespace Gallio.Framework
         /// <param name="attachmentName">The name of the attachment to create or null to
         /// automatically assign one.  The attachment name must be unique within the scope of the
         /// currently executing test step.</param>
-        /// <param name="image">The image to attach</param>
+        /// <param name="image">The image to attach.</param>
         /// <returns>The attachment</returns>
         /// <seealso cref="MarkupDocumentWriter.AttachImage"/>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="image"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="image"/> is null.</exception>
         /// <exception cref="InvalidOperationException">Thrown if there is already an attachment
-        /// with the same name</exception>
+        /// with the same name.</exception>
         public static BinaryAttachment EmbedImage(string attachmentName, Image image)
         {
             return Default.EmbedImage(attachmentName, image);
@@ -862,12 +862,12 @@ namespace Gallio.Framework
         /// <param name="attachmentName">The name of the attachment to create or null to
         /// automatically assign one.  The attachment name must be unique within the scope of the
         /// currently executing test step.</param>
-        /// <param name="obj">The object to serialize and embed, must not be null</param>
+        /// <param name="obj">The object to serialize and embed, must not be null.</param>
         /// <returns>The attachment</returns>
         /// <seealso cref="MarkupDocumentWriter.AttachObjectAsXml(string, object)"/>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="obj"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="obj"/> is null.</exception>
         /// <exception cref="InvalidOperationException">Thrown if there is already an attachment
-        /// with the same name</exception>
+        /// with the same name.</exception>
         public static TextAttachment EmbedObjectAsXml(string attachmentName, object obj)
         {
             return Default.EmbedObjectAsXml(attachmentName, obj);
@@ -884,14 +884,14 @@ namespace Gallio.Framework
         /// <param name="attachmentName">The name of the attachment to create or null to
         /// automatically assign one.  The attachment name must be unique within the scope of the
         /// currently executing test step.</param>
-        /// <param name="obj">The object to serialize and embed, must not be null</param>
+        /// <param name="obj">The object to serialize and embed, must not be null.</param>
         /// <param name="xmlSerializer">The <see cref="XmlSerializer" /> to use, or null to use the default <see cref="XmlSerializer" />
-        /// for the object's type</param>
+        /// for the object's type.</param>
         /// <returns>The attachment</returns>
         /// <seealso cref="MarkupDocumentWriter.AttachObjectAsXml(string, object, XmlSerializer)"/>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="obj"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="obj"/> is null.</exception>
         /// <exception cref="InvalidOperationException">Thrown if there is already an attachment
-        /// with the same name</exception>
+        /// with the same name.</exception>
         public static TextAttachment EmbedObjectAsXml(string attachmentName, object obj, XmlSerializer xmlSerializer)
         {
             return Default.EmbedObjectAsXml(attachmentName, obj, xmlSerializer);

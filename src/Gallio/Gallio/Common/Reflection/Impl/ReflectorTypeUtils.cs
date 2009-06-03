@@ -34,7 +34,7 @@ namespace Gallio.Common.Reflection.Impl
         /// Determines the type code of a reflected type based on the
         /// type's name.
         /// </summary>
-        /// <param name="type">The reflected type, or null if none</param>
+        /// <param name="type">The reflected type, or null if none.</param>
         /// <returns>The type code of the type, or <see cref="TypeCode.Empty" />
         /// if <paramref name="type"/> was null</returns>
         public static TypeCode GetTypeCode(ITypeInfo type)
@@ -84,7 +84,7 @@ namespace Gallio.Common.Reflection.Impl
         /// <summary>
         /// Gets the default value for a reflected type.
         /// </summary>
-        /// <param name="type">The reflected type</param>
+        /// <param name="type">The reflected type.</param>
         /// <returns>The default value for the type, such as <c>0</c> if
         /// the type represents an integer, or <c>null</c> if the type
         /// is a reference type or if <paramref name="type"/> was null</returns>

@@ -28,8 +28,8 @@ namespace Gallio.Framework.Data
         /// <summary>
         /// Creates a bound data accessor.
         /// </summary>
-        /// <param name="binding">The binding to query</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="binding"/> is null</exception>
+        /// <param name="binding">The binding to query.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="binding"/> is null.</exception>
         public BoundDataAccessor(DataBinding binding)
         {
             if (binding == null)

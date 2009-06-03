@@ -51,7 +51,7 @@ namespace Gallio.Common.Reflection
         /// <summary>
         /// Gets information about the code element's custom attributes of the specified type.
         /// </summary>
-        /// <param name="attributeType">The attribute type, or null to return attributes of all types</param>
+        /// <param name="attributeType">The attribute type, or null to return attributes of all types.</param>
         /// <param name="inherit">If true, includes inherited attributes
         /// from base types (but not from interfaces, just like <see cref="ICustomAttributeProvider" /> does)</param>
         /// <returns>The code element's attributes</returns>
@@ -60,7 +60,7 @@ namespace Gallio.Common.Reflection
         /// <summary>
         /// Returns true if the code element has a custom attribute of the specified type.
         /// </summary>
-        /// <param name="attributeType">The attribute type, or null to search for attributes of all types</param>
+        /// <param name="attributeType">The attribute type, or null to search for attributes of all types.</param>
         /// <param name="inherit">If true, includes inherited attributes
         /// from base types (but not from interfaces, just like <see cref="ICustomAttributeProvider" /> does)</param>
         /// <returns>True if the code element has at least one attribute of the specified type</returns>
@@ -69,7 +69,7 @@ namespace Gallio.Common.Reflection
         /// <summary>
         /// Gets the code element's custom attributes of the specified type.
         /// </summary>
-        /// <param name="attributeType">The attribute type</param>
+        /// <param name="attributeType">The attribute type.</param>
         /// <param name="inherit">If true, includes inherited attributes
         /// from base types (but not from interfaces, just like <see cref="ICustomAttributeProvider" /> does)</param>
         /// <returns>The attributes</returns>

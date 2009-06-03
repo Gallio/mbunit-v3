@@ -36,9 +36,9 @@ namespace Gallio.Framework.Data
         /// Internal implementation of <see cref="GetValue" /> after argument
         /// validation has been performed.
         /// </summary>
-        /// <param name="item">The data item, not null</param>
+        /// <param name="item">The data item, not null.</param>
         /// <returns>The value</returns>
-        /// <exception cref="DataBindingException">Thrown if the data binding fails</exception>
+        /// <exception cref="DataBindingException">Thrown if the data binding fails.</exception>
         protected abstract object GetValueImpl(IDataItem item);
     }
 }

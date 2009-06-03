@@ -29,8 +29,8 @@ namespace Gallio.Runtime.ProgressMonitoring
         /// <summary>
         /// Creates a log progress monitor provider.
         /// </summary>
-        /// <param name="logger">The logger to which messages should be written</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="logger"/> is null</exception>
+        /// <param name="logger">The logger to which messages should be written.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="logger"/> is null.</exception>
         public LogProgressMonitorProvider(ILogger logger)
         {
             if (logger == null)

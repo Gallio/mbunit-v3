@@ -41,10 +41,10 @@ namespace Gallio.Schema.Preferences
         /// <summary>
         /// Creates a preference setting.
         /// </summary>
-        /// <param name="name">The setting name</param>
-        /// <param name="value">The setting value</param>
+        /// <param name="name">The setting name.</param>
+        /// <param name="value">The setting value.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/>
-        /// or <paramref name="value"/> is null</exception>
+        /// or <paramref name="value"/> is null.</exception>
         public PreferenceSetting(string name, string value)
         {
             Name = name;
@@ -54,7 +54,7 @@ namespace Gallio.Schema.Preferences
         /// <summary>
         /// Gets or sets the preference setting name.
         /// </summary>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
         [XmlAttribute("name")]
         public string Name
         {
@@ -70,7 +70,7 @@ namespace Gallio.Schema.Preferences
         /// <summary>
         /// Gets or sets the preference setting value.
         /// </summary>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
         [XmlAttribute("value")]
         public string Value
         {

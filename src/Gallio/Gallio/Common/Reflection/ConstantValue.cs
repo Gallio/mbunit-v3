@@ -29,9 +29,9 @@ namespace Gallio.Common.Reflection
         /// <summary>
         /// Creates a constant value.
         /// </summary>
-        /// <param name="type">The constant value type</param>
-        /// <param name="value">The constant value</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="type"/> is null</exception>
+        /// <param name="type">The constant value type.</param>
+        /// <param name="value">The constant value.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="type"/> is null.</exception>
         public ConstantValue(ITypeInfo type, object value)
         {
             if (type == null)
@@ -44,7 +44,7 @@ namespace Gallio.Common.Reflection
         /// <summary>
         /// Creates a constant value that wraps an existing native value.
         /// </summary>
-        /// <param name="value">The native value</param>
+        /// <param name="value">The native value.</param>
         /// <returns>The constant</returns>
         public static ConstantValue FromNative(object value)
         {
@@ -137,9 +137,9 @@ namespace Gallio.Common.Reflection
         /// and enums with <see cref="System.Enum" /> values.
         /// </summary>
         /// <param name="throwOnError">If true, throws an exception if the target could
-        /// not be resolved, otherwise the result may include unresolved types, enums or arrays</param>
+        /// not be resolved, otherwise the result may include unresolved types, enums or arrays.</param>
         /// <returns>The native constant value</returns>
-        /// <exception cref="ReflectionResolveException">Thrown if the target cannot be resolved</exception>
+        /// <exception cref="ReflectionResolveException">Thrown if the target cannot be resolved.</exception>
         public object Resolve(bool throwOnError)
         {
             if (IsNative)

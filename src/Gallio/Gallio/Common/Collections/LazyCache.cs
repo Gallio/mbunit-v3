@@ -36,8 +36,8 @@ namespace Gallio.Common.Collections
         /// <summary>
         /// Creates a cache with the specified populator function.
         /// </summary>
-        /// <param name="populator">A function that provides a value given a key</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="populator"/> is null</exception>
+        /// <param name="populator">A function that provides a value given a key.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="populator"/> is null.</exception>
         public LazyCache(Func<TKey, TValue> populator)
         {
             if (populator == null)
@@ -52,7 +52,7 @@ namespace Gallio.Common.Collections
         /// Gets the value associated with the specified key.
         /// Populates it on demand if not already cached.
         /// </summary>
-        /// <param name="key">The key</param>
+        /// <param name="key">The key.</param>
         /// <returns>The associated value</returns>
         public TValue this[TKey key]
         {

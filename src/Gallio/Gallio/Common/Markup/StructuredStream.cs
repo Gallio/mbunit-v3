@@ -48,8 +48,8 @@ namespace Gallio.Common.Markup
         /// <summary>
         /// Creates an initialized stream.
         /// </summary>
-        /// <param name="name">The stream name</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> is null</exception>
+        /// <param name="name">The stream name.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> is null.</exception>
         public StructuredStream(string name)
         {
             if (name == null)
@@ -61,7 +61,7 @@ namespace Gallio.Common.Markup
         /// <summary>
         /// Gets or sets the name of the stream, not null.
         /// </summary>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
         [XmlAttribute("name")]
         public string Name
         {
@@ -77,7 +77,7 @@ namespace Gallio.Common.Markup
         /// <summary>
         /// Gets or sets the body of the stream, not null.
         /// </summary>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
         [XmlElement("body", IsNullable = false)]
         public BodyTag Body
         {
@@ -98,8 +98,8 @@ namespace Gallio.Common.Markup
         /// <summary>
         /// Writes the contents of the stream to a markup stream writer.
         /// </summary>
-        /// <param name="writer">The writer</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="writer"/> is null</exception>
+        /// <param name="writer">The writer.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="writer"/> is null.</exception>
         public void WriteTo(MarkupStreamWriter writer)
         {
             if (writer == null)

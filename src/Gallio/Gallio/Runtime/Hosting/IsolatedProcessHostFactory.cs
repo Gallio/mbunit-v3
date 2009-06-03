@@ -35,8 +35,8 @@ namespace Gallio.Runtime.Hosting
         /// <summary>
         /// Creates a host factory.
         /// </summary>
-        /// <param name="runtime">The runtime</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="runtime"/> is null</exception>
+        /// <param name="runtime">The runtime.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="runtime"/> is null.</exception>
         public IsolatedProcessHostFactory(IRuntime runtime)
         {
             if (runtime == null)

@@ -38,7 +38,7 @@ namespace Gallio.Framework.Pattern
         /// data source using a <see cref="DataBinding"/> whose path is the name of this parameter and whose
         /// index is the implicit index computed by the pararameter's data context.
         /// </remarks>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
         IDataBinder Binder { get; set; }
 
         /// <summary>

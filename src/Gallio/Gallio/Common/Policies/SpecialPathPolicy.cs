@@ -57,7 +57,7 @@ namespace Gallio.Common.Policies
         /// <summary>
         /// Gets the special path policy for a partition whose name is derived from the type's full name.
         /// </summary>
-        /// <typeparam name="TPartition">The type used to define the name of the partition</typeparam>
+        /// <typeparam name="TPartition">The type used to define the name of the partition.</typeparam>
         /// <returns>The special path policy</returns>
         public static SpecialPathPolicy For<TPartition>()
         {
@@ -67,9 +67,9 @@ namespace Gallio.Common.Policies
         /// <summary>
         /// Gets the special path policy for a specified partition.
         /// </summary>
-        /// <param name="partition">The partition name</param>
+        /// <param name="partition">The partition name.</param>
         /// <returns>The special path policy</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="partition"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="partition"/> is null.</exception>
         public static SpecialPathPolicy For(string partition)
         {
             if (partition == null)

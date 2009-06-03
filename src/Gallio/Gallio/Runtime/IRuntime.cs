@@ -57,9 +57,9 @@ namespace Gallio.Runtime
         /// <summary>
         /// Initializes the runtime.
         /// </summary>
-        /// <param name="logger">The runtime logging service</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="logger"/> is null</exception>
-        /// <exception cref="RuntimeException">Thrown if the runtime could not be initialized</exception>
+        /// <param name="logger">The runtime logging service.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="logger"/> is null.</exception>
+        /// <exception cref="RuntimeException">Thrown if the runtime could not be initialized.</exception>
         void Initialize(ILogger logger);
 
         /// <summary>

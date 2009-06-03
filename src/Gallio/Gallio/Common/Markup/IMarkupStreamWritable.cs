@@ -26,8 +26,8 @@ namespace Gallio.Common.Markup
         /// <summary>
         /// Writes the object to a markup stream.
         /// </summary>
-        /// <param name="writer">The markup stream</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="writer"/> is null</exception>
+        /// <param name="writer">The markup stream.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="writer"/> is null.</exception>
         void WriteTo(MarkupStreamWriter writer);
     }
 }

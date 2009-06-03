@@ -75,7 +75,7 @@ namespace Gallio.Framework.Pattern
         /// </list>
         /// </para>
         /// </summary>
-        /// <param name="testState">The test state, never null</param>
+        /// <param name="testState">The test state, never null.</param>
         void BeforeTest(PatternTestState testState);
 
         /// <summary>
@@ -102,7 +102,7 @@ namespace Gallio.Framework.Pattern
         /// </list>
         /// </para>
         /// </summary>
-        /// <param name="testState">The test state, never null</param>
+        /// <param name="testState">The test state, never null.</param>
         void InitializeTest(PatternTestState testState);
 
         /// <summary>
@@ -128,7 +128,7 @@ namespace Gallio.Framework.Pattern
         /// </list>
         /// </para>
         /// </summary>
-        /// <param name="testState">The test state, never null</param>
+        /// <param name="testState">The test state, never null.</param>
         void DisposeTest(PatternTestState testState);
 
         /// <summary>
@@ -154,7 +154,7 @@ namespace Gallio.Framework.Pattern
         /// </list>
         /// </para>
         /// </summary>
-        /// <param name="testState">The test state, never null</param>
+        /// <param name="testState">The test state, never null.</param>
         void AfterTest(PatternTestState testState);
 
         /// <summary>
@@ -189,8 +189,8 @@ namespace Gallio.Framework.Pattern
         /// </list>
         /// </para>
         /// </summary>
-        /// <param name="testState">The test state, never null</param>
-        /// <param name="decoratedTestInstanceActions">The test instance's actions to decorate, never null</param>
+        /// <param name="testState">The test state, never null.</param>
+        /// <param name="decoratedTestInstanceActions">The test instance's actions to decorate, never null.</param>
         void DecorateTestInstance(PatternTestState testState, PatternTestInstanceActions decoratedTestInstanceActions);
     }
 }

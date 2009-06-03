@@ -25,7 +25,7 @@ namespace Gallio.Runner.Events
         /// <summary>
         /// Initializes the event arguments.
         /// </summary>
-        /// <param name="success">True if the test runner was successfully initialized</param>
+        /// <param name="success">True if the test runner was successfully initialized.</param>
         public InitializeFinishedEventArgs(bool success)
             : base(success)
         {

@@ -67,13 +67,13 @@ namespace Gallio.Framework.Pattern
         /// <summary>
         /// Creates an initial test instance state object.
         /// </summary>
-        /// <param name="testStep">The test step used to execute the test instance</param>
-        /// <param name="testInstanceHandler">The test instance handler</param>
-        /// <param name="testState">The test state</param>
-        /// <param name="bindingItem">The data item</param>
-        /// <param name="body">The body of the test instance</param>
+        /// <param name="testStep">The test step used to execute the test instance.</param>
+        /// <param name="testInstanceHandler">The test instance handler.</param>
+        /// <param name="testState">The test state.</param>
+        /// <param name="bindingItem">The data item.</param>
+        /// <param name="body">The body of the test instance.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="testStep"/>,
-        /// <paramref name="testInstanceHandler"/> or <paramref name="testState"/> or <paramref name="bindingItem"/> is null</exception>
+        /// <paramref name="testInstanceHandler"/> or <paramref name="testState"/> or <paramref name="bindingItem"/> is null.</exception>
         /// <exception cref="ArgumentException">Thrown if <paramref name="testState"/> belongs to a
         /// different test from the <paramref name="testStep"/></exception>
         internal PatternTestInstanceState(PatternTestStep testStep, 
@@ -107,9 +107,9 @@ namespace Gallio.Framework.Pattern
         /// <summary>
         /// Gets the pattern test instance state from the specified context.
         /// </summary>
-        /// <param name="context">The context</param>
+        /// <param name="context">The context.</param>
         /// <returns>The pattern test instance state, or null if none</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="context"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="context"/> is null.</exception>
         public static PatternTestInstanceState FromContext(TestContext context)
         {
             if (context == null)
@@ -196,7 +196,7 @@ namespace Gallio.Framework.Pattern
         /// Gets or sets the test fixture type or null if none.
         /// </summary>
         /// <exception cref="ArgumentException">Thrown if <paramref name="value"/>
-        /// contains unbound generic parameters, is a generic parameter, has an element type</exception>
+        /// contains unbound generic parameters, is a generic parameter, has an element type.</exception>
         public Type FixtureType
         {
             get { return fixtureType; }
@@ -225,7 +225,7 @@ namespace Gallio.Framework.Pattern
         /// Gets or sets the test method or null if none.
         /// </summary>
         /// <exception cref="ArgumentException">Thrown if <paramref name="value"/>
-        /// is contains unbound generic parameters</exception>
+        /// is contains unbound generic parameters.</exception>
         public MethodInfo TestMethod
         {
             get { return testMethod; }
@@ -304,12 +304,12 @@ namespace Gallio.Framework.Pattern
         /// <summary>
         /// Gets a fixture object creation specification using the state's bound <see cref="SlotValues"/>.
         /// </summary>
-        /// <param name="type">The fixture type or generic type definition</param>
+        /// <param name="type">The fixture type or generic type definition.</param>
         /// <returns>The fixture instance</returns>
         /// <remarks>
         /// The values of <see cref="FixtureType" /> and <see cref="FixtureInstance" /> are not used.
         /// </remarks>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="type"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="type"/> is null.</exception>
         /// <exception cref="ArgumentException">Thrown if the slots or values in <see cref="SlotValues" />
         /// are not appropriate for instantiating <paramref name="type"/></exception>
         /// <seealso cref="ObjectCreationSpec"/>
@@ -325,12 +325,12 @@ namespace Gallio.Framework.Pattern
         /// Gets a test method invocation specification using the state's bound <see cref="SlotValues"/>.
         /// </summary>
         /// <param name="method">The test method or generic method definition,
-        /// possibly declared by a generic type or generic type defintion</param>
+        /// possibly declared by a generic type or generic type defintion.</param>
         /// <returns>The method return value</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="method"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="method"/> is null.</exception>
         /// <exception cref="ArgumentException">Thrown if the slots or values in <see cref="SlotValues" />
         /// or <see cref="FixtureType" /> are not appropriate for invoking <paramref name="method"/></exception>
-        /// <exception cref="InvalidOperationException">Thrown if <see cref="FixtureType" /> is null</exception>
+        /// <exception cref="InvalidOperationException">Thrown if <see cref="FixtureType" /> is null.</exception>
         /// <seealso cref="MethodInvocationSpec"/>
         public MethodInvocationSpec GetTestMethodInvocationSpec(IMethodInfo method)
         {
@@ -348,15 +348,15 @@ namespace Gallio.Framework.Pattern
         /// </para>
         /// </summary>
         /// <param name="method">The fixture method or generic method definition,
-        /// possibly declared by a generic type or generic type defintion</param>
-        /// <param name="slotValues">The slot values to use for invoking the method</param>
+        /// possibly declared by a generic type or generic type defintion.</param>
+        /// <param name="slotValues">The slot values to use for invoking the method.</param>
         /// <returns>The method return value</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="method"/> or <paramref name="slotValues"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="method"/> or <paramref name="slotValues"/> is null.</exception>
         /// <exception cref="ArgumentException">Thrown if the slots or values in <see cref="SlotValues" />
         /// or <see cref="FixtureType" /> or <see cref="FixtureInstance" /> are not appropriate for
         /// invoking <paramref name="method"/></exception>
-        /// <exception cref="InvalidOperationException">Thrown if <see cref="FixtureType" /> is null</exception>
-        /// <exception cref="Exception">Any exception thrown by the invoked method</exception>
+        /// <exception cref="InvalidOperationException">Thrown if <see cref="FixtureType" /> is null.</exception>
+        /// <exception cref="Exception">Any exception thrown by the invoked method.</exception>
         /// <seealso cref="MethodInvocationSpec"/>
         [UserCodeEntryPoint]
         public object InvokeFixtureMethod(IMethodInfo method, IEnumerable<KeyValuePair<ISlotInfo, object>> slotValues)
@@ -379,7 +379,7 @@ namespace Gallio.Framework.Pattern
         /// </para>
         /// </summary>
         /// <returns>The method return value, or null if there was none</returns>
-        /// <exception cref="Exception">Any exception thrown by the invoked method</exception>
+        /// <exception cref="Exception">Any exception thrown by the invoked method.</exception>
         [UserCodeEntryPoint]
         public object InvokeTestMethod()
         {

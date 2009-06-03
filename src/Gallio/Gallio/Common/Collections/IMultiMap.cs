@@ -37,37 +37,37 @@ namespace Gallio.Common.Collections
         /// <summary>
         /// Adds a value to the list of those associated with a key.
         /// </summary>
-        /// <param name="key">The key</param>
-        /// <param name="value">The value to associate</param>
+        /// <param name="key">The key.</param>
+        /// <param name="value">The value to associate.</param>
         void Add(TKey key, TValue value);
 
         /// <summary>
         /// Adds all of the values from the specified map.
         /// </summary>
-        /// <param name="map">The map</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="map"/> is null</exception>
+        /// <param name="map">The map.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="map"/> is null.</exception>
         void AddAll(IEnumerable<KeyValuePair<TKey, IList<TValue>>> map);
 
         /// <summary>
         /// Adds all of the values from the specified enumeration of key-value pairs.
         /// </summary>
-        /// <param name="pairs">The key-value pairs</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="pairs"/> is null</exception>
+        /// <param name="pairs">The key-value pairs.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="pairs"/> is null.</exception>
         void AddAll(IEnumerable<KeyValuePair<TKey, TValue>> pairs);
 
         /// <summary>
         /// Returns true if the map contains an entry with the specified key and value.
         /// </summary>
-        /// <param name="key">The key</param>
-        /// <param name="value">The value to find</param>
+        /// <param name="key">The key.</param>
+        /// <param name="value">The value to find.</param>
         /// <returns>True if the map contains an entry with the specified key and value</returns>
         bool Contains(TKey key, TValue value);
 
         /// <summary>
         /// Removes a value from the list of those associated with a key.
         /// </summary>
-        /// <param name="key">The key</param>
-        /// <param name="value">The value to remove from the key</param>
+        /// <param name="key">The key.</param>
+        /// <param name="value">The value to remove from the key.</param>
         /// <returns>True if the value was removed</returns>
         bool Remove(TKey key, TValue value);
     }

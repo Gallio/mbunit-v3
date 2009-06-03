@@ -74,7 +74,7 @@ namespace Gallio.Runtime.Extensibility
         /// <summary>
         /// Gets the reason the service was disabled.
         /// </summary>
-        /// <exception cref="InvalidOperationException">Thrown if <see cref="IsDisabled" /> is false</exception>
+        /// <exception cref="InvalidOperationException">Thrown if <see cref="IsDisabled" /> is false.</exception>
         string DisabledReason { get; }
 
         /// <summary>
@@ -91,7 +91,7 @@ namespace Gallio.Runtime.Extensibility
         /// </para>
         /// </remarks>
         /// <returns>The service type</returns>
-        /// <exception cref="RuntimeException">Thrown if an error occurs during resolution</exception>
+        /// <exception cref="RuntimeException">Thrown if an error occurs during resolution.</exception>
         Type ResolveServiceType();
 
         /// <summary>
@@ -114,7 +114,7 @@ namespace Gallio.Runtime.Extensibility
         /// </para>
         /// </remarks>
         /// <returns>The traits type</returns>
-        /// <exception cref="RuntimeException">Thrown if an error occurs during resolution</exception>
+        /// <exception cref="RuntimeException">Thrown if an error occurs during resolution.</exception>
         Type ResolveTraitsType();
     }
 }

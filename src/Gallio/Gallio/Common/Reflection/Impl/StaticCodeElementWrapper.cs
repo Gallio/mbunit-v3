@@ -32,9 +32,9 @@ namespace Gallio.Common.Reflection.Impl
         /// <summary>
         /// Creates a wrapper.
         /// </summary>
-        /// <param name="policy">The reflection policy</param>
-        /// <param name="handle">The underlying reflection object</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="policy"/> or <paramref name="handle"/> is null</exception>
+        /// <param name="policy">The reflection policy.</param>
+        /// <param name="handle">The underlying reflection object.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="policy"/> or <paramref name="handle"/> is null.</exception>
         public StaticCodeElementWrapper(StaticReflectionPolicy policy, object handle)
             : base(policy, handle)
         {
@@ -217,7 +217,7 @@ namespace Gallio.Common.Reflection.Impl
         /// Determines whether a type should be represented by its short name
         /// for the purposes of creating a signature.
         /// </summary>
-        /// <param name="type">The reflected type</param>
+        /// <param name="type">The reflected type.</param>
         /// <returns>True if the type is primitive</returns>
         private static bool ShouldUseShortNameForSignature(ITypeInfo type)
         {

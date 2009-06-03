@@ -115,14 +115,14 @@ namespace Gallio.Runtime.ProgressMonitoring
         /// <remarks>
         /// Not safe for use by multiple concurrent threads.
         /// </remarks>
-        /// <param name="taskName">The name of the task being monitored</param>
+        /// <param name="taskName">The name of the task being monitored.</param>
         /// <param name="totalWorkUnits">The total number of work units to perform.  Must
         /// be greater than 0, or <see cref="double.NaN" /> if an indeterminate amount
         /// of work is to be performed.</param>
         /// <returns>An object that calls <see cref="Done"/> when disposed</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="taskName" /> is null</exception>
-        /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="totalWorkUnits" /> is not valid</exception>
-        /// <exception cref="InvalidOperationException">Thrown if <see cref="BeginTask" /> or <see cref="Done" /> have already been called</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="taskName" /> is null.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="totalWorkUnits" /> is not valid.</exception>
+        /// <exception cref="InvalidOperationException">Thrown if <see cref="BeginTask" /> or <see cref="Done" /> have already been called.</exception>
         ProgressMonitorTaskCookie BeginTask(string taskName, double totalWorkUnits);
 
         /// <summary>
@@ -134,9 +134,9 @@ namespace Gallio.Runtime.ProgressMonitoring
         /// <remarks>
         /// Not safe for use by multiple concurrent threads.
         /// </remarks>
-        /// <param name="status">The name of the current subtask</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="status"/> is null</exception>
-        /// <exception cref="InvalidOperationException">Thrown if the task is not running</exception>
+        /// <param name="status">The name of the current subtask.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="status"/> is null.</exception>
+        /// <exception cref="InvalidOperationException">Thrown if the task is not running.</exception>
         void SetStatus(string status);
 
         /// <summary>
@@ -151,8 +151,8 @@ namespace Gallio.Runtime.ProgressMonitoring
         /// </remarks>
         /// <param name="workUnits">The number of work units completed so far.  Must be
         /// a finite value greater than or equal to 0.</param>
-        /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="workUnits"/> is not valid</exception>
-        /// <exception cref="InvalidOperationException">Thrown if the task is not running</exception>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="workUnits"/> is not valid.</exception>
+        /// <exception cref="InvalidOperationException">Thrown if the task is not running.</exception>
         void Worked(double workUnits);
 
         /// <summary>
@@ -222,14 +222,14 @@ namespace Gallio.Runtime.ProgressMonitoring
         /// that are to be represented by the sub-task.  When the sub-task completes, this much
         /// work will have been performed on the parent.
         /// Must be a finite value greater than or equal to 0.</param>
-        /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="parentWorkUnits"/> is not valid</exception>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="parentWorkUnits"/> is not valid.</exception>
         IProgressMonitor CreateSubProgressMonitor(double parentWorkUnits);
 
         /// <summary>
         /// Throws an <see cref="OperationCanceledException" /> if the operation
         /// has been canceled.
         /// </summary>
-        /// <exception cref="OperationCanceledException">Thrown if <see cref="IsCanceled"/> is true</exception>
+        /// <exception cref="OperationCanceledException">Thrown if <see cref="IsCanceled"/> is true.</exception>
         void ThrowIfCanceled();
     }
 }

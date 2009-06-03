@@ -43,11 +43,11 @@ namespace Gallio.Schema.Plugins
         /// <summary>
         /// Creates a component descriptor.
         /// </summary>
-        /// <param name="componentId">The component id</param>
-        /// <param name="serviceId">The service id</param>
-        /// <param name="componentType">The assembly-qualified component type name</param>
+        /// <param name="componentId">The component id.</param>
+        /// <param name="serviceId">The service id.</param>
+        /// <param name="componentType">The assembly-qualified component type name.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="componentId"/>
-        /// or <paramref name="serviceId"/> is null</exception>
+        /// or <paramref name="serviceId"/> is null.</exception>
         public Component(string componentId, string serviceId, string componentType)
         {
             if (componentId == null)
@@ -65,7 +65,7 @@ namespace Gallio.Schema.Plugins
         /// <summary>
         /// Gets or sets the component id.
         /// </summary>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
         [XmlAttribute("componentId")]
         public string ComponentId
         {
@@ -81,7 +81,7 @@ namespace Gallio.Schema.Plugins
         /// <summary>
         /// Gets or sets the service id.
         /// </summary>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
         [XmlAttribute("serviceId")]
         public string ServiceId
         {

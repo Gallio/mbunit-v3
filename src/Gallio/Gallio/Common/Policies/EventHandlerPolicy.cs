@@ -28,9 +28,9 @@ namespace Gallio.Common.Policies
         /// Safely invokes each delegate in the invocation list of an event handler.
         /// Sends any exceptions thrown by the handler to <see cref="UnhandledExceptionPolicy.Report"/>.
         /// </summary>
-        /// <param name="handlerChain">The event handler chain</param>
-        /// <param name="sender">The sender</param>
-        /// <param name="e">The event arguments</param>
+        /// <param name="handlerChain">The event handler chain.</param>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The event arguments.</param>
         public static void SafeInvoke(EventHandler handlerChain, object sender, EventArgs e)
         {
             if (handlerChain == null)
@@ -53,9 +53,9 @@ namespace Gallio.Common.Policies
         /// Safely invokes each delegate in the invocation list of an event handler.
         /// Sends any exceptions thrown by the handler to <see cref="UnhandledExceptionPolicy.Report"/>.
         /// </summary>
-        /// <param name="handlerChain">The event handler chain</param>
-        /// <param name="sender">The sender</param>
-        /// <param name="e">The event arguments</param>
+        /// <param name="handlerChain">The event handler chain.</param>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The event arguments.</param>
         public static void SafeInvoke<T>(EventHandler<T> handlerChain, object sender, T e)
             where T : EventArgs
         {

@@ -121,7 +121,7 @@ namespace Gallio.Runtime
         /// Makes all paths in this instance absolute.
         /// </summary>
         /// <param name="baseDirectory">The base directory for resolving relative paths,
-        /// or null to use the current directory</param>
+        /// or null to use the current directory.</param>
         public void Canonicalize(string baseDirectory)
         {
             FileUtils.CanonicalizePaths(baseDirectory, pluginDirectories);
@@ -132,8 +132,8 @@ namespace Gallio.Runtime
         /// <summary>
         /// Sets the configuration file path to the *.config file associated with an assembly.
         /// </summary>
-        /// <param name="assembly">The assembly</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="assembly"/> is null</exception>
+        /// <param name="assembly">The assembly.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="assembly"/> is null.</exception>
         public void SetConfigurationFilePathFromAssembly(Assembly assembly)
         {
             if (assembly == null)

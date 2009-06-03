@@ -75,7 +75,7 @@ namespace Gallio.Framework.Data
         /// <summary>
         /// Creates a clone of the data binding with a different index.
         /// </summary>
-        /// <param name="index">The new index</param>
+        /// <param name="index">The new index.</param>
         /// <returns>The cloned binding</returns>
         public virtual DataBinding ReplaceIndex(int? index)
         {

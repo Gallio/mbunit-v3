@@ -40,8 +40,8 @@ namespace Gallio.Model.Filters
         /// Creates a filter parser.
         /// </summary>
         /// <param name="factory">The factory to use for constructing
-        /// filters based on filter keys and a filter rule for matching string values</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="factory"/> is null</exception>
+        /// filters based on filter keys and a filter rule for matching string values.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="factory"/> is null.</exception>
         public FilterParser(IFilterFactory<T> factory)
         {
             if (factory == null)
@@ -58,7 +58,7 @@ namespace Gallio.Model.Filters
         /// If the filter set expression is empty or contains only whitespace then the 
         /// resulting filter set will be empty.
         /// </remarks>
-        /// <param name="filterSetExpr">The filter set expression</param>
+        /// <param name="filterSetExpr">The filter set expression.</param>
         /// <returns>The parsed filter set</returns>
         public FilterSet<T> ParseFilterSet(string filterSetExpr)
         {
@@ -68,7 +68,7 @@ namespace Gallio.Model.Filters
         /// <summary>
         /// Creates a filter from its textual representation as a filter expression.
         /// </summary>
-        /// <param name="filterExpr">The filter expression</param>
+        /// <param name="filterExpr">The filter expression.</param>
         /// <returns>The parsed filter</returns>
         public Filter<T> ParseFilter(string filterExpr)
         {

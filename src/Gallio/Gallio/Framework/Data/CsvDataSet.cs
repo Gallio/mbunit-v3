@@ -46,9 +46,9 @@ namespace Gallio.Framework.Data
         /// <summary>
         /// Creates a CSV data set.
         /// </summary>
-        /// <param name="documentReaderProvider">A delegate that provides the text reader for reading the CSV document on demand</param>
-        /// <param name="isDynamic">True if the data set should be considered dynamic</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="documentReaderProvider"/> is null</exception>
+        /// <param name="documentReaderProvider">A delegate that provides the text reader for reading the CSV document on demand.</param>
+        /// <param name="isDynamic">True if the data set should be considered dynamic.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="documentReaderProvider"/> is null.</exception>
         public CsvDataSet(Func<TextReader> documentReaderProvider, bool isDynamic)
         {
             if (documentReaderProvider == null)

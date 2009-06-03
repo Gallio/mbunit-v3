@@ -51,7 +51,7 @@ namespace Gallio.Framework.Pattern
         /// Creates a usage error exception.
         /// </summary>
         /// <param name="message">A message that describes how the pattern was misused and possibly what should be done to correct it.</param>
-        /// <param name="innerException">An optional exception that will be used to provide aditional details about the usage error</param>
+        /// <param name="innerException">An optional exception that will be used to provide aditional details about the usage error.</param>
         public PatternUsageErrorException(string message, Exception innerException)
             : base(message, innerException)
         {
@@ -60,8 +60,8 @@ namespace Gallio.Framework.Pattern
         /// <summary>
         /// Creates an exception from serialization info.
         /// </summary>
-        /// <param name="info">The serialization info</param>
-        /// <param name="context">The streaming context</param>
+        /// <param name="info">The serialization info.</param>
+        /// <param name="context">The streaming context.</param>
         protected PatternUsageErrorException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {

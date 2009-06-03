@@ -37,7 +37,7 @@ namespace Gallio.Model.Filters
         /// <item>Simple name (aka. partial name) as returned by <see cref="AssemblyName.Name" /></item>
         /// </list>
         /// </param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="assemblyNameFilter"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="assemblyNameFilter"/> is null.</exception>
         public AssemblyFilter(Filter<string> assemblyNameFilter)
             :  base(assemblyNameFilter)
         {

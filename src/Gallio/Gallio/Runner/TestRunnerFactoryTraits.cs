@@ -31,8 +31,8 @@ namespace Gallio.Runner
         /// <summary>
         /// Creates test runner factory traits.
         /// </summary>
-        /// <param name="name">The unique name of the kind of test runner created by the factory</param>
-        /// <param name="description">The description of test runner created by the factory</param>
+        /// <param name="name">The unique name of the kind of test runner created by the factory.</param>
+        /// <param name="description">The description of test runner created by the factory.</param>
         public TestRunnerFactoryTraits(string name, string description)
         {
             if (name == null)

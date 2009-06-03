@@ -43,11 +43,11 @@ namespace Gallio.Runtime.Hosting
         /// <summary>
         /// Creates an uninitialized host.
         /// </summary>
-        /// <param name="hostSetup">The host setup</param>
-        /// <param name="logger">The logger for host message output</param>
-        /// <param name="pingInterval">The automatic ping interval, or null if none</param>
+        /// <param name="hostSetup">The host setup.</param>
+        /// <param name="logger">The logger for host message output.</param>
+        /// <param name="pingInterval">The automatic ping interval, or null if none.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="hostSetup"/>
-        /// or <paramref name="logger"/> is null</exception>
+        /// or <paramref name="logger"/> is null.</exception>
         protected RemoteHost(HostSetup hostSetup, ILogger logger, TimeSpan? pingInterval)
             : base(hostSetup, logger)
         {

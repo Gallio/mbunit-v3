@@ -30,7 +30,7 @@ namespace Gallio.Common.Markup
         /// </summary>
         /// <param name="verbose">If true, prints detailed information about the location of
         /// attachments, sections, and markers, otherwise discards these formatting details
-        /// and prints section headers as text on their own line</param>
+        /// and prints section headers as text on their own line.</param>
         public StringMarkupDocumentWriter(bool verbose)
             : base(CreateStringWriter(), verbose)
         {

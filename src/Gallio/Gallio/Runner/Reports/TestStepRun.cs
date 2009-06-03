@@ -50,8 +50,8 @@ namespace Gallio.Runner.Reports
         /// <summary>
         /// Creates a test run step.
         /// </summary>
-        /// <param name="step">Information about the step</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="step" /> is null</exception>
+        /// <param name="step">Information about the step.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="step" /> is null.</exception>
         public TestStepRun(TestStepData step)
             : this()
         {
@@ -64,7 +64,7 @@ namespace Gallio.Runner.Reports
         /// <summary>
         /// Gets or sets information about the step.
         /// </summary>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
         [XmlElement("testStep", IsNullable=false, Namespace=XmlSerializationUtils.GallioNamespace)]
         public TestStepData Step
         {
@@ -110,7 +110,7 @@ namespace Gallio.Runner.Reports
         /// <summary>
         /// Gets or sets the test result from the run.
         /// </summary>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
         [XmlElement("result", IsNullable = false, Namespace = XmlSerializationUtils.GallioNamespace)]
         public TestResult Result
         {
@@ -131,7 +131,7 @@ namespace Gallio.Runner.Reports
         /// <summary>
         /// Gets or sets the test log.
         /// </summary>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
         [XmlElement("testLog", IsNullable = false, Namespace = XmlSerializationUtils.GallioNamespace)]
         public StructuredDocument TestLog
         {

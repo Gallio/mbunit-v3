@@ -26,8 +26,8 @@ namespace Gallio.Model
         /// <summary>
         /// Creates a wrapper for the specified list of tests.
         /// </summary>
-        /// <param name="inputList">The source test list</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="inputList"/> is null</exception>
+        /// <param name="inputList">The source test list.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="inputList"/> is null.</exception>
         public TestInfoList(IList<ITest> inputList)
             : base(inputList)
         {

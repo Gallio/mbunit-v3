@@ -32,8 +32,8 @@ namespace Gallio.Framework.Pattern
         /// <summary>
         /// Creates a test model builder.
         /// </summary>
-        /// <param name="testModel">The underlying test model</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="testModel"/> is null</exception>
+        /// <param name="testModel">The underlying test model.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="testModel"/> is null.</exception>
         public DefaultTestModelBuilder(TestModel testModel)
         {
             if (testModel == null)

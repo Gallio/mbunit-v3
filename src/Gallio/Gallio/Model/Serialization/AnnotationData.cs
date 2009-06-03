@@ -47,12 +47,12 @@ namespace Gallio.Model.Serialization
         /// <summary>
         /// Creates an annotation.
         /// </summary>
-        /// <param name="type">The annotation type</param>
-        /// <param name="codeLocation">The code location</param>
-        /// <param name="codeReference">The code reference</param>
-        /// <param name="message">The annotation message</param>
-        /// <param name="details">Additional details such as exception text or null if none</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="message"/> is null</exception>
+        /// <param name="type">The annotation type.</param>
+        /// <param name="codeLocation">The code location.</param>
+        /// <param name="codeReference">The code reference.</param>
+        /// <param name="message">The annotation message.</param>
+        /// <param name="details">Additional details such as exception text or null if none.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="message"/> is null.</exception>
         public AnnotationData(AnnotationType type, CodeLocation codeLocation, CodeReference codeReference, string message, string details)
         {
             this.type = type;
@@ -65,8 +65,8 @@ namespace Gallio.Model.Serialization
         /// <summary>
         /// Copies the contents of an annotation.
         /// </summary>
-        /// <param name="source">The source annotation</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="source"/> is null</exception>
+        /// <param name="source">The source annotation.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="source"/> is null.</exception>
         public AnnotationData(Annotation source)
             : this(source.Type,
                 source.CodeElement != null ? source.CodeElement.GetCodeLocation() : CodeLocation.Unknown,
@@ -108,7 +108,7 @@ namespace Gallio.Model.Serialization
         /// <summary>
         /// Gets or sets the annotation message.
         /// </summary>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
         [XmlAttribute("message")]
         public string Message
         {
@@ -134,11 +134,11 @@ namespace Gallio.Model.Serialization
         /// <summary>
         /// Writes the annotation to a logger for presentation.
         /// </summary>
-        /// <param name="logger">The logger</param>
+        /// <param name="logger">The logger.</param>
         /// <param name="includePrefix">If true, includes an identifying prefix to describe
         /// the annotation type, otherwise we assume that the logger will do its own
-        /// thing based on the log severity</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="logger"/> is null</exception>
+        /// thing based on the log severity.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="logger"/> is null.</exception>
         public void Log(ILogger logger, bool includePrefix)
         {
             if (logger == null)

@@ -30,8 +30,8 @@ namespace Gallio.Runtime.Extensibility
         /// <summary>
         /// Creates an instance handler factory given a particular pre-manufactured instance.
         /// </summary>
-        /// <param name="instance">The instance to be returned by the handler</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="instance"/> is null</exception>
+        /// <param name="instance">The instance to be returned by the handler.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="instance"/> is null.</exception>
         public InstanceHandlerFactory(object instance)
         {
             if (instance == null)

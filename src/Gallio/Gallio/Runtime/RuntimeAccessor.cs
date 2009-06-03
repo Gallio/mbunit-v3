@@ -33,7 +33,7 @@ namespace Gallio.Runtime
         /// <summary>
         /// Gets the runtime instance.
         /// </summary>
-        /// <exception cref="InvalidOperationException">Thrown if the runtime has not been initialized</exception>
+        /// <exception cref="InvalidOperationException">Thrown if the runtime has not been initialized.</exception>
         public static IRuntime Instance
         {
             get
@@ -60,7 +60,7 @@ namespace Gallio.Runtime
         /// <summary>
         /// Gets the runtime's registry.
         /// </summary>
-        /// <exception cref="InvalidOperationException">Thrown if the runtime has not been initialized</exception>
+        /// <exception cref="InvalidOperationException">Thrown if the runtime has not been initialized.</exception>
         public static IRegistry Registry
         {
             get
@@ -72,7 +72,7 @@ namespace Gallio.Runtime
         /// <summary>
         /// Gets the runtime's service locator.
         /// </summary>
-        /// <exception cref="InvalidOperationException">Thrown if the runtime has not been initialized</exception>
+        /// <exception cref="InvalidOperationException">Thrown if the runtime has not been initialized.</exception>
         public static IServiceLocator ServiceLocator
         {
             get
@@ -84,7 +84,7 @@ namespace Gallio.Runtime
         /// <summary>
         /// Gets the runtime's resource locator.
         /// </summary>
-        /// <exception cref="InvalidOperationException">Thrown if the runtime has not been initialized</exception>
+        /// <exception cref="InvalidOperationException">Thrown if the runtime has not been initialized.</exception>
         public static IResourceLocator ResourceLocator
         {
             get
@@ -128,7 +128,7 @@ namespace Gallio.Runtime
         /// and not generally by client code.
         /// </para>
         /// </summary>
-        /// <param name="runtime">The runtime instance, or null if none</param>
+        /// <param name="runtime">The runtime instance, or null if none.</param>
         public static void SetRuntime(IRuntime runtime)
         {
             EventHandler instanceChangedHandlers = InstanceChanged;

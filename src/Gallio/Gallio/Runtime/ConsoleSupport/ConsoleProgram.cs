@@ -53,7 +53,7 @@ namespace Gallio.Runtime.ConsoleSupport
         /// These argument may be modified prior to calling <see cref="ParseArguments" /> to
         /// override the initial argument settings.
         /// </summary>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
         protected TArguments Arguments
         {
             get
@@ -98,7 +98,7 @@ namespace Gallio.Runtime.ConsoleSupport
         /// Gets or sets the application name.
         /// </summary>
         /// <value>The name, by default this is the program assembly's name</value>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
         protected string ApplicationName
         {
             get
@@ -119,7 +119,7 @@ namespace Gallio.Runtime.ConsoleSupport
         /// Gets or sets the application version.
         /// </summary>
         /// <value>The version, by default this is the program assembly's version</value>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
         protected Version ApplicationVersion
         {
             get
@@ -140,7 +140,7 @@ namespace Gallio.Runtime.ConsoleSupport
         /// Get or sets the application title.
         /// </summary>
         /// <value>The title, by default this is constructed from the application's name and version</value>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
         protected string ApplicationTitle
         {
             get
@@ -163,11 +163,11 @@ namespace Gallio.Runtime.ConsoleSupport
         /// <summary>
         /// Runs the program.
         /// </summary>
-        /// <param name="console">The console</param>
-        /// <param name="args">The command-line arguments</param>
+        /// <param name="console">The console.</param>
+        /// <param name="args">The command-line arguments.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="console"/>
-        /// or <paramref name="args"/> is null</exception>
-        /// <exception cref="InvalidOperationException">Thrown if the program has already started running</exception>
+        /// or <paramref name="args"/> is null.</exception>
+        /// <exception cref="InvalidOperationException">Thrown if the program has already started running.</exception>
         public int Run(IRichConsole console, string[] args)
         {
             if (console == null)
@@ -200,14 +200,14 @@ namespace Gallio.Runtime.ConsoleSupport
         /// <summary>
         /// Runs the program.
         /// </summary>
-        /// <param name="args">The command-line arguments</param>
+        /// <param name="args">The command-line arguments.</param>
         /// <returns>The program exit code</returns>
         protected abstract int RunImpl(string[] args);
 
         /// <summary>
         /// Handles a fatal exception that escaped the <see cref="RunImpl" /> method.
         /// </summary>
-        /// <param name="ex">The exception</param>
+        /// <param name="ex">The exception.</param>
         /// <returns>The exit code to return</returns>
         protected virtual int HandleFatalException(Exception ex)
         {
@@ -218,7 +218,7 @@ namespace Gallio.Runtime.ConsoleSupport
         /// <summary>
         /// Parses the arguments.
         /// </summary>
-        /// <param name="args">The command-line arguments</param>
+        /// <param name="args">The command-line arguments.</param>
         /// <returns>True if the arguments were parsed successfully</returns>
         protected virtual bool ParseArguments(string[] args)
         {
@@ -228,7 +228,7 @@ namespace Gallio.Runtime.ConsoleSupport
         /// <summary>
         /// Displays an error message to the console.
         /// </summary>
-        /// <param name="message">The error message</param>
+        /// <param name="message">The error message.</param>
         protected virtual void ShowErrorMessage(string message)
         {
             console.ForegroundColor = ConsoleColor.Red;

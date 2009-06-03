@@ -29,10 +29,10 @@ namespace Gallio.Common.Remoting
         /// <summary>
         /// Creates a channel.
         /// </summary>
-        /// <param name="hostName">The host name to connect to</param>
-        /// <param name="portNumber">The port number to connect to</param>
-        /// <param name="requestTimeout">The request timeout or null if none</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="hostName"/> is null</exception>
+        /// <param name="hostName">The host name to connect to.</param>
+        /// <param name="portNumber">The port number to connect to.</param>
+        /// <param name="requestTimeout">The request timeout or null if none.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="hostName"/> is null.</exception>
         public BinaryTcpClientChannel(string hostName, int portNumber, TimeSpan? requestTimeout)
             : base(CreateChannel(hostName, portNumber, requestTimeout), new Uri(@"tcp://" + hostName + ":" + portNumber))
         {

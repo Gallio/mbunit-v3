@@ -55,7 +55,7 @@ namespace Gallio.Model
         /// Creates a test outcome with an optional category.
         /// </summary>
         /// <param name="status">The test <see cref="Status"/></param>
-        /// <param name="category">The test <see cref="Category"/>, or null or an empty string if none</param>
+        /// <param name="category">The test <see cref="Category"/>, or null or an empty string if none.</param>
         public TestOutcome(TestStatus status, string category)
         {
             this.status = status;
@@ -126,7 +126,7 @@ namespace Gallio.Model
         /// This combination rule has the nice property of preserving the first
         /// failure encountered even if subsequent failures occur and are combined.
         /// </remarks>
-        /// <param name="other">The other outcome</param>
+        /// <param name="other">The other outcome.</param>
         /// <returns>The combined outcome</returns>
         /// <seealso cref="TestStatus"/> for test status severity ranking information.
         public TestOutcome CombineWith(TestOutcome other)
@@ -297,7 +297,7 @@ namespace Gallio.Model
         /// <summary>
         /// Provides the Xml schema for this element.
         /// </summary>
-        /// <param name="schemas">The schema set</param>
+        /// <param name="schemas">The schema set.</param>
         /// <returns>The schema type of the element</returns>
         public static XmlQualifiedName ProvideXmlSchema(XmlSchemaSet schemas)
         {
@@ -392,8 +392,8 @@ namespace Gallio.Model
         /// <summary>
         /// Compares two outcomes for equality.
         /// </summary>
-        /// <param name="a">The first outcome</param>
-        /// <param name="b">The second outcome</param>
+        /// <param name="a">The first outcome.</param>
+        /// <param name="b">The second outcome.</param>
         /// <returns>True if the outcomes are equal</returns>
         public static bool operator ==(TestOutcome a, TestOutcome b)
         {
@@ -403,8 +403,8 @@ namespace Gallio.Model
         /// <summary>
         /// Compares two outcomes for inequality.
         /// </summary>
-        /// <param name="a">The first outcome</param>
-        /// <param name="b">The second outcome</param>
+        /// <param name="a">The first outcome.</param>
+        /// <param name="b">The second outcome.</param>
         /// <returns>True if the outcomes are not equal</returns>
         public static bool operator !=(TestOutcome a, TestOutcome b)
         {

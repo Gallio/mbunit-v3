@@ -33,10 +33,10 @@ namespace Gallio.Runtime.Extensibility
         /// <item>plugin: Maps to a resource within the plugin's base directory, specified in the form: "plugin://Plugin.Id/RelativePath/To/Resource.txt".</item>
         /// </list>
         /// </remarks>
-        /// <param name="resourceUri">The resource Uri</param>
+        /// <param name="resourceUri">The resource Uri.</param>
         /// <returns>The resolved full path of the resource</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="resourceUri"/> is null</exception>
-        /// <exception cref="RuntimeException">Thrown if the uri cannot be resolved</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="resourceUri"/> is null.</exception>
+        /// <exception cref="RuntimeException">Thrown if the uri cannot be resolved.</exception>
         string ResolveResourcePath(Uri resourceUri);
     }
 }

@@ -80,7 +80,7 @@ namespace Gallio.Common.Collections
         /// If there are multiple values, returns only the first one.
         /// </para>
         /// </remarks>
-        /// <param name="key">The key</param>
+        /// <param name="key">The key.</param>
         /// <returns>The first associated value, or null if none</returns>
         public string GetValue(string key)
         {
@@ -99,8 +99,8 @@ namespace Gallio.Common.Collections
         /// Removes all values previously associated with that key.
         /// </para>
         /// </remarks>
-        /// <param name="key">The key</param>
-        /// <param name="value">The new value, or null to remove the existing values</param>
+        /// <param name="key">The key.</param>
+        /// <param name="value">The new value, or null to remove the existing values.</param>
         public void SetValue(string key, string value)
         {
             Remove(key);
@@ -309,7 +309,7 @@ namespace Gallio.Common.Collections
         /// <summary>
         /// Provides the Xml schema for this element.
         /// </summary>
-        /// <param name="schemas">The schema set</param>
+        /// <param name="schemas">The schema set.</param>
         /// <returns>The schema type of the element</returns>
         public static XmlQualifiedName ProvideXmlSchema(XmlSchemaSet schemas)
         {

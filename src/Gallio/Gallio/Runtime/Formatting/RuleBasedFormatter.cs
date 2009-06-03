@@ -30,8 +30,8 @@ namespace Gallio.Runtime.Formatting
         /// <summary>
         /// Creates a rule-based formatter.
         /// </summary>
-        /// <param name="rules">The rules to use</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="rules"/> is null</exception>
+        /// <param name="rules">The rules to use.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="rules"/> is null.</exception>
         public RuleBasedFormatter(IFormattingRule[] rules)
         {
             if (rules == null)

@@ -33,8 +33,8 @@ namespace Gallio.Framework.Data
         /// <summary>
         /// Creates a data source with a given name.
         /// </summary>
-        /// <param name="name">The name of the data source, or an empty string if it is anonymous</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> is null</exception>
+        /// <param name="name">The name of the data source, or an empty string if it is anonymous.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> is null.</exception>
         public DataSource(string name)
         {
             if (name == null)
@@ -54,9 +54,9 @@ namespace Gallio.Framework.Data
         /// <summary>
         /// Adds an alias for a binding path to map it to the specified index.
         /// </summary>
-        /// <param name="path">The binding path to match in a case-insensitive manner</param>
-        /// <param name="index">The associated index to use instead</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="path"/> is null</exception>
+        /// <param name="path">The binding path to match in a case-insensitive manner.</param>
+        /// <param name="index">The associated index to use instead.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="path"/> is null.</exception>
         public void AddIndexAlias(string path, int? index)
         {
             if (path == null)

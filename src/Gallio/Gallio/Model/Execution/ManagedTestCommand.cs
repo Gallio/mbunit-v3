@@ -37,9 +37,9 @@ namespace Gallio.Model.Execution
         /// <summary>
         /// Creates a test command.
         /// </summary>
-        /// <param name="contextManager">The test context manager</param>
-        /// <param name="test">The test</param>
-        /// <param name="isExplicit">True if the test is being executed explicitly</param>
+        /// <param name="contextManager">The test context manager.</param>
+        /// <param name="test">The test.</param>
+        /// <param name="isExplicit">True if the test is being executed explicitly.</param>
         public ManagedTestCommand(ITestContextManager contextManager, ITest test, bool isExplicit)
         {
             if (contextManager == null)
@@ -159,7 +159,7 @@ namespace Gallio.Model.Execution
         /// <summary>
         /// Adds a child test command.
         /// </summary>
-        /// <param name="child">The child to add</param>
+        /// <param name="child">The child to add.</param>
         public void AddChild(ManagedTestCommand child)
         {
             if (child == null)
@@ -173,7 +173,7 @@ namespace Gallio.Model.Execution
         /// <summary>
         /// Adds a test command dependency.
         /// </summary>
-        /// <param name="dependency">The dependency to add</param>
+        /// <param name="dependency">The dependency to add.</param>
         public void AddDependency(ManagedTestCommand dependency)
         {
             if (dependency == null)

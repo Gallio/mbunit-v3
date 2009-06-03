@@ -44,17 +44,17 @@ namespace Gallio.Common.Reflection.Impl
         /// <summary>
         /// Loads an assembly.
         /// </summary>
-        /// <param name="assemblyName">The assembly name, not null</param>
+        /// <param name="assemblyName">The assembly name, not null.</param>
         /// <returns>The loaded assembly wrapper</returns>
-        /// <exception cref="Exception">Any exception may be thrown if the loading fails</exception>
+        /// <exception cref="Exception">Any exception may be thrown if the loading fails.</exception>
         protected abstract IAssemblyInfo LoadAssemblyImpl(AssemblyName assemblyName);
 
         /// <summary>
         /// Loads an assembly from a file.
         /// </summary>
-        /// <param name="assemblyFile">The assembly file path, not null</param>
+        /// <param name="assemblyFile">The assembly file path, not null.</param>
         /// <returns>The loaded assembly wrapper</returns>
-        /// <exception cref="Exception">Any exception may be thrown if the loading fails</exception>
+        /// <exception cref="Exception">Any exception may be thrown if the loading fails.</exception>
         protected abstract IAssemblyInfo LoadAssemblyFromImpl(string assemblyFile);
     }
 }

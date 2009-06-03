@@ -44,7 +44,7 @@ namespace Gallio.Framework.Pattern
         /// <summary>
         /// Creates a new data context.
         /// </summary>
-        /// <param name="parent">The containing data context, or null if none</param>
+        /// <param name="parent">The containing data context, or null if none.</param>
         public PatternTestDataContext(PatternTestDataContext parent)
         {
             this.parent = parent;
@@ -91,9 +91,9 @@ namespace Gallio.Framework.Pattern
         /// Defines a new data source within this data context if one does not exist.
         /// Otherwise returns the existing one.
         /// </summary>
-        /// <param name="name">The data source name</param>
+        /// <param name="name">The data source name.</param>
         /// <returns>The defined data source</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> is null.</exception>
         public DataSource DefineDataSource(string name)
         {
             if (dataSourceTable == null)

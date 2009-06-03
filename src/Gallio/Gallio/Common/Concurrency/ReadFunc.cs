@@ -22,9 +22,9 @@ namespace Gallio.Common.Concurrency
     /// <summary>
     /// A function that reads the contents of a protected object and produces some result.  It should not modify the object in any way.
     /// </summary>
-    /// <param name="obj">The object</param>
-    /// <typeparam name="T">The type of object</typeparam>
-    /// <typeparam name="TResult">The result type</typeparam>
+    /// <param name="obj">The object.</param>
+    /// <typeparam name="T">The type of object.</typeparam>
+    /// <typeparam name="TResult">The result type.</typeparam>
     /// <seealso cref="LockBox{T}"/>
     public delegate TResult ReadFunc<T, TResult>(T obj);
 }

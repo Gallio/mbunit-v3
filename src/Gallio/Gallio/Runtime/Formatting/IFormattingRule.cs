@@ -36,7 +36,7 @@ namespace Gallio.Runtime.Formatting
         /// <remarks>
         /// A typical 
         /// </remarks>
-        /// <param name="type">The type of object, never null</param>
+        /// <param name="type">The type of object, never null.</param>
         /// <returns>The priority of this rule, or null if the rule does not support formatting the specified object type</returns>
         /// <seealso cref="FormattingRulePriority"/> for priority suggestions.
         int? GetPriority(Type type);
@@ -48,8 +48,8 @@ namespace Gallio.Runtime.Formatting
         /// Exceptions thrown by this method will not be reported to clients.
         /// Instead the formatter will substitute an appropriate placeholder string instead.
         /// </remarks>
-        /// <param name="obj">The object to format, never null</param>
-        /// <param name="formatter">The formatter to use for recursive formatting, never null</param>
+        /// <param name="obj">The object to format, never null.</param>
+        /// <param name="formatter">The formatter to use for recursive formatting, never null.</param>
         /// <returns>The formatted string representation of the object or null if the object
         /// could not be formatted to produce a non-empty string</returns>
         string Format(object obj, IFormatter formatter);

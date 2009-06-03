@@ -30,8 +30,8 @@ namespace Gallio.Model.Messages
         /// <summary>
         /// Creates a wrapper for the specified listener.
         /// </summary>
-        /// <param name="testExecutionListener">The listener to wrap</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="testExecutionListener"/> is null</exception>
+        /// <param name="testExecutionListener">The listener to wrap.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="testExecutionListener"/> is null.</exception>
         public RemoteTestExecutionListener(ITestExecutionListener testExecutionListener)
         {
             if (testExecutionListener == null)

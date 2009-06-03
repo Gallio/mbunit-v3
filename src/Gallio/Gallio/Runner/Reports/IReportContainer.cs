@@ -75,16 +75,16 @@ namespace Gallio.Runner.Reports
         /// <summary>
         /// Deletes the entire contents of the report in all of its formats.
         /// </summary>
-        /// <exception cref="IOException">Thrown if an I/O error occurs</exception>
+        /// <exception cref="IOException">Thrown if an I/O error occurs.</exception>
         void DeleteReport();
 
         /// <summary>
         /// Opens a report file for reading.
         /// </summary>
-        /// <param name="path">The relative path of the report file within the container</param>
+        /// <param name="path">The relative path of the report file within the container.</param>
         /// <returns>The stream</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="path"/> is null</exception>
-        /// <exception cref="IOException">Thrown if an I/O error occurs</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="path"/> is null.</exception>
+        /// <exception cref="IOException">Thrown if an I/O error occurs.</exception>
         Stream OpenRead(string path);
 
         /// <summary>
@@ -96,21 +96,21 @@ namespace Gallio.Runner.Reports
         /// automatically created when new files are opened for writing within them.
         /// </para>
         /// </summary>
-        /// <param name="path">The path of the report file</param>
-        /// <param name="contentType">The content type of the file, or null if not specified</param>
-        /// <param name="encoding">The text encoding of the file, or null if not specified or if the file is binary</param>
+        /// <param name="path">The path of the report file.</param>
+        /// <param name="contentType">The content type of the file, or null if not specified.</param>
+        /// <param name="encoding">The text encoding of the file, or null if not specified or if the file is binary.</param>
         /// <returns>The stream</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="path"/> is null</exception>
-        /// <exception cref="IOException">Thrown if an I/O error occurs</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="path"/> is null.</exception>
+        /// <exception cref="IOException">Thrown if an I/O error occurs.</exception>
         Stream OpenWrite(string path, string contentType, Encoding encoding);
 
         /// <summary>
         /// Replaces invalid characters in a file or directory name with underscores
         /// and trims it if it is too long.
         /// </summary>
-        /// <param name="fileName">The file or directory name</param>
+        /// <param name="fileName">The file or directory name.</param>
         /// <returns>The encoded file or directory name</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="fileName"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="fileName"/> is null.</exception>
         string EncodeFileName(string fileName);
     }
 }

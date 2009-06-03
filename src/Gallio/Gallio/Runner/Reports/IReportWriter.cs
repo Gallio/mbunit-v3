@@ -56,15 +56,15 @@ namespace Gallio.Runner.Reports
         /// <summary>
         /// Adds the path of a report document that has been created within the report container.
         /// </summary>
-        /// <param name="path">The document path</param>
+        /// <param name="path">The document path.</param>
         void AddReportDocumentPath(string path);
 
         /// <summary>
         /// Serializes the report to XML.
         /// </summary>
-        /// <param name="xmlWriter">The XML writer</param>
-        /// <param name="attachmentContentDisposition">The content disposition to use for all attachments</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="xmlWriter"/> is null</exception>
+        /// <param name="xmlWriter">The XML writer.</param>
+        /// <param name="attachmentContentDisposition">The content disposition to use for all attachments.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="xmlWriter"/> is null.</exception>
         void SerializeReport(XmlWriter xmlWriter, AttachmentContentDisposition attachmentContentDisposition);
 
         /// <summary>
@@ -85,8 +85,8 @@ namespace Gallio.Runner.Reports
         /// <param name="attachmentContentDisposition">The content disposition to use for all attachments.  If
         /// the content disposition is <see cref="AttachmentContentDisposition.Link" /> then
         /// this method will automatically call <see cref="SaveReportAttachments" /> to save the attachments.</param>
-        /// <param name="progressMonitor">The progress monitor</param>
-        /// <exception cref="ArgumentNullException">Thrown <paramref name="progressMonitor" /> is null</exception>
+        /// <param name="progressMonitor">The progress monitor.</param>
+        /// <exception cref="ArgumentNullException">Thrown <paramref name="progressMonitor" /> is null.</exception>
         void SaveReport(AttachmentContentDisposition attachmentContentDisposition, IProgressMonitor progressMonitor);
 
         /// <summary>
@@ -103,8 +103,8 @@ namespace Gallio.Runner.Reports
         /// <remarks>
         /// This method may do nothing if the attachments have already been saved.
         /// </remarks>
-        /// <param name="progressMonitor">The progress monitor</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="progressMonitor"/> is null</exception>
+        /// <param name="progressMonitor">The progress monitor.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="progressMonitor"/> is null.</exception>
         void SaveReportAttachments(IProgressMonitor progressMonitor);
     }
 }

@@ -34,8 +34,8 @@ namespace Gallio.Runner.Reports
         /// <summary>
         /// Creates a report manager.
         /// </summary>
-        /// <param name="formatterHandles">The report formatter handles</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="formatterHandles"/> is null</exception>
+        /// <param name="formatterHandles">The report formatter handles.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="formatterHandles"/> is null.</exception>
         public DefaultReportManager(ComponentHandle<IReportFormatter, ReportFormatterTraits>[] formatterHandles)
         {
             if (formatterHandles == null)

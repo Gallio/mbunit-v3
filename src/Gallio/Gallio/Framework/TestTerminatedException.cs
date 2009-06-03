@@ -35,7 +35,7 @@ namespace Gallio.Framework
         /// <summary>
         /// Creates a silent test exception with the specified outcome.
         /// </summary>
-        /// <param name="outcome">The test outcome</param>
+        /// <param name="outcome">The test outcome.</param>
         public TestTerminatedException(TestOutcome outcome)
             : this(outcome, null, null)
         {
@@ -44,8 +44,8 @@ namespace Gallio.Framework
         /// <summary>
         /// Creates a silent test exception with the specified outcome.
         /// </summary>
-        /// <param name="outcome">The test outcome</param>
-        /// <param name="message">The message, or null if none</param>
+        /// <param name="outcome">The test outcome.</param>
+        /// <param name="message">The message, or null if none.</param>
         public TestTerminatedException(TestOutcome outcome, string message)
             : this(outcome, message, null)
         {
@@ -54,9 +54,9 @@ namespace Gallio.Framework
         /// <summary>
         /// Creates an exception.
         /// </summary>
-        /// <param name="outcome">The test outcome</param>
-        /// <param name="message">The message, or null if none</param>
-        /// <param name="innerException">The inner exception, or null if none</param>
+        /// <param name="outcome">The test outcome.</param>
+        /// <param name="message">The message, or null if none.</param>
+        /// <param name="innerException">The inner exception, or null if none.</param>
         public TestTerminatedException(TestOutcome outcome, string message, Exception innerException)
             : base(message, innerException)
         {
@@ -66,8 +66,8 @@ namespace Gallio.Framework
         /// <summary>
         /// Creates a exception from serialization info.
         /// </summary>
-        /// <param name="info">The serialization info</param>
-        /// <param name="context">The streaming context</param>
+        /// <param name="info">The serialization info.</param>
+        /// <param name="context">The streaming context.</param>
         protected TestTerminatedException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {

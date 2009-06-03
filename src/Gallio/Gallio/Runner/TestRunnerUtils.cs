@@ -30,7 +30,7 @@ namespace Gallio.Runner
         /// Presents a generated report to the user using the default viewing
         /// application for the report's document type.
         /// </summary>
-        /// <param name="reportDocumentPath">The path of the report</param>
+        /// <param name="reportDocumentPath">The path of the report.</param>
         /// <returns>True if the report document was successfully opened</returns>
         public static bool ShowReportDocument(string reportDocumentPath)
         {
@@ -51,9 +51,9 @@ namespace Gallio.Runner
         /// <summary>
         /// Creates a test runner given its factory name.
         /// </summary>
-        /// <param name="factoryName">The test runner factory name</param>
+        /// <param name="factoryName">The test runner factory name.</param>
         /// <returns>The test runner</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="factoryName"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="factoryName"/> is null.</exception>
         public static ITestRunner CreateTestRunnerByName(string factoryName)
         {
             return RuntimeAccessor.ServiceLocator.Resolve<ITestRunnerManager>().CreateTestRunner(factoryName);

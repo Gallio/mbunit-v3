@@ -31,9 +31,9 @@ namespace Gallio.Model
         /// <summary>
         /// Initializes a test component.
         /// </summary>
-        /// <param name="name">The name of the component</param>
-        /// <param name="codeElement">The point of definition of the component, or null if unknown</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> is null</exception>
+        /// <param name="name">The name of the component.</param>
+        /// <param name="codeElement">The point of definition of the component, or null if unknown.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> is null.</exception>
         public BaseTestComponent(string name, ICodeElementInfo codeElement)
         {
             if (name == null)

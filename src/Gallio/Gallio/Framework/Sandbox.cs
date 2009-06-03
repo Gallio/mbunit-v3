@@ -71,7 +71,7 @@ namespace Gallio.Framework
         /// If the sandbox has already been aborted then the event handler is immediately invoked.
         /// </para>
         /// </summary>
-        /// <exception cref="ObjectDisposedException">Thrown if the sandbox was disposed</exception>
+        /// <exception cref="ObjectDisposedException">Thrown if the sandbox was disposed.</exception>
         public event EventHandler Aborted
         {
             add
@@ -103,7 +103,7 @@ namespace Gallio.Framework
         /// <summary>
         /// Returns true if <see cref="Abort(TestOutcome, string)" /> was called.
         /// </summary>
-        /// <exception cref="ObjectDisposedException">Thrown if the sandbox was disposed</exception>
+        /// <exception cref="ObjectDisposedException">Thrown if the sandbox was disposed.</exception>
         public bool WasAborted
         {
             get
@@ -120,7 +120,7 @@ namespace Gallio.Framework
         /// Returns the <see cref="TestOutcome" /> passed to <see cref="Abort(TestOutcome, string)" />,
         /// or null if <see cref="Abort(TestOutcome, string)" /> has not been called.
         /// </summary>
-        /// <exception cref="ObjectDisposedException">Thrown if the sandbox was disposed</exception>
+        /// <exception cref="ObjectDisposedException">Thrown if the sandbox was disposed.</exception>
         public TestOutcome? AbortOutcome
         {
             get
@@ -136,7 +136,7 @@ namespace Gallio.Framework
         /// <summary>
         /// Gets a message that will be logged when the sandbox is aborted, or null if none.
         /// </summary>
-        /// <exception cref="ObjectDisposedException">Thrown if the sandbox was disposed</exception>
+        /// <exception cref="ObjectDisposedException">Thrown if the sandbox was disposed.</exception>
         public string AbortMessage
         {
             get
@@ -187,7 +187,7 @@ namespace Gallio.Framework
         /// </para>
         /// </summary>
         /// <returns>The child sandbox</returns>
-        /// <exception cref="ObjectDisposedException">Thrown if the sandbox was disposed</exception>
+        /// <exception cref="ObjectDisposedException">Thrown if the sandbox was disposed.</exception>
         public Sandbox CreateChild()
         {
             ThrowIfDisposed();
@@ -208,9 +208,9 @@ namespace Gallio.Framework
         /// will have no effect.
         /// </para>
         /// </summary>
-        /// <param name="outcome">The outcome to be returned from aborted actions</param>
-        /// <param name="message">A message to be logged when the action is aborted, or null if none</param>
-        /// <exception cref="ObjectDisposedException">Thrown if the sandbox was disposed</exception>
+        /// <param name="outcome">The outcome to be returned from aborted actions.</param>
+        /// <param name="message">A message to be logged when the action is aborted, or null if none.</param>
+        /// <exception cref="ObjectDisposedException">Thrown if the sandbox was disposed.</exception>
         public void Abort(TestOutcome outcome, string message)
         {
             Abort(outcome, message, true);
@@ -252,11 +252,11 @@ namespace Gallio.Framework
         /// <summary>
         /// Uses a specified timeout for all actions run within a block of code.
         /// </summary>
-        /// <param name="timeout">The execution timeout or null if none</param>
-        /// <param name="action">The action to perform, protected by the timeout</param>
-        /// <exception cref="ObjectDisposedException">Thrown if the sandbox was disposed</exception>
-        /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="timeout"/> is negative</exception>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="action"/> is null</exception>
+        /// <param name="timeout">The execution timeout or null if none.</param>
+        /// <param name="action">The action to perform, protected by the timeout.</param>
+        /// <exception cref="ObjectDisposedException">Thrown if the sandbox was disposed.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="timeout"/> is negative.</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="action"/> is null.</exception>
         public void UseTimeout(TimeSpan? timeout, Action action)
         {
             if (timeout.HasValue && timeout.Value.Ticks < 0)
@@ -309,13 +309,13 @@ namespace Gallio.Framework
         /// </list>
         /// </para>
         /// </remarks>
-        /// <param name="markupDocumentWriter">The log writer for reporting failures</param>
-        /// <param name="action">The action to run</param>
+        /// <param name="markupDocumentWriter">The log writer for reporting failures.</param>
+        /// <param name="action">The action to run.</param>
         /// <param name="description">A description of the action being performed,
-        /// to be used as a log section name when reporting failures, or null if none</param>
+        /// to be used as a log section name when reporting failures, or null if none.</param>
         /// <returns>The outcome of the action</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="markupDocumentWriter"/> or <paramref name="action"/> is null</exception>
-        /// <exception cref="ObjectDisposedException">Thrown if the sandbox was disposed</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="markupDocumentWriter"/> or <paramref name="action"/> is null.</exception>
+        /// <exception cref="ObjectDisposedException">Thrown if the sandbox was disposed.</exception>
         public TestOutcome Run(MarkupDocumentWriter markupDocumentWriter, Action action, string description)
         {
             if (markupDocumentWriter == null)
@@ -412,8 +412,8 @@ namespace Gallio.Framework
         /// may affect the sandbox.  This call cannot be nested.
         /// </para>
         /// </remarks>
-        /// <param name="action">The action to run</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="action"/> is null</exception>
+        /// <param name="action">The action to run.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="action"/> is null.</exception>
         [DebuggerHidden]
         public void Protect(Action action)
         {

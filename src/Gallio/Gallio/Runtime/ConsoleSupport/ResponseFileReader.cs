@@ -22,7 +22,7 @@ namespace Gallio.Runtime.ConsoleSupport
     /// <summary>
     /// Reads the contents of a response file.
     /// </summary>
-    /// <param name="responseFileName">The response file name, never null</param>
+    /// <param name="responseFileName">The response file name, never null.</param>
     /// <returns>The plain text contents of the file</returns>
     public delegate string ResponseFileReader(string responseFileName);
 }

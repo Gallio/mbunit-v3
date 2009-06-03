@@ -94,7 +94,7 @@ namespace Gallio.Runner.Extensions
         /// <summary>
         /// Logs an annotation.
         /// </summary>
-        /// <param name="annotation">The annotation to log</param>
+        /// <param name="annotation">The annotation to log.</param>
         protected virtual void LogAnnotation(AnnotationData annotation)
         {
             annotation.Log(Logger, true);
@@ -106,7 +106,7 @@ namespace Gallio.Runner.Extensions
         /// <remarks>
         /// This method is not called for test steps that have <see cref="ITestStep.IsTestCase"/> set to false.
         /// </remarks>
-        /// <param name="e">The event</param>
+        /// <param name="e">The event.</param>
         protected virtual void LogTestCaseStarted(TestStepStartedEventArgs e)
         {
             Logger.Log(LogSeverity.Debug, String.Format("[starting] {0}", e.TestStepRun.Step.FullName));
@@ -118,7 +118,7 @@ namespace Gallio.Runner.Extensions
         /// <remarks>
         /// This method is not called for test steps that have <see cref="ITestStep.IsTestCase"/> set to false.
         /// </remarks>
-        /// <param name="e">The event</param>
+        /// <param name="e">The event.</param>
         protected virtual void LogTestCaseFinished(TestStepFinishedEventArgs e)
         {
             LogTest(e);
@@ -132,7 +132,7 @@ namespace Gallio.Runner.Extensions
         /// <remarks>
         /// This method is not called for test steps that have <see cref="ITestStep.IsTestCase"/> set to true.
         /// </remarks>
-        /// <param name="e">The event</param>
+        /// <param name="e">The event.</param>
         protected virtual void LogNonTestCaseProblem(TestStepFinishedEventArgs e)
         {
             LogTest(e);

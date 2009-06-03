@@ -41,7 +41,7 @@ namespace Gallio.Common.Collections
         /// <summary>
         /// Creates an empty set using the specified comparer.
         /// </summary>
-        /// <param name="comparer">The comparer, or null to use the default comparer</param>
+        /// <param name="comparer">The comparer, or null to use the default comparer.</param>
         public HashSet(IEqualityComparer<T> comparer)
         {
             objects = new Dictionary<T, bool>(comparer);

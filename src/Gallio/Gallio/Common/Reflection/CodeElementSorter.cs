@@ -26,8 +26,8 @@ namespace Gallio.Common.Reflection
         /// Sorts members such that those declared by supertypes appear before those
         /// declared by subtypes.
         /// </summary>
-        /// <typeparam name="T">The type of member</typeparam>
-        /// <param name="members">The members to sort</param>
+        /// <typeparam name="T">The type of member.</typeparam>
+        /// <param name="members">The members to sort.</param>
         /// <returns>The sorted members</returns>
         /// <seealso cref="DeclaringTypeComparer{T}"/>
         public static IList<T> SortMembersByDeclaringType<T>(IEnumerable<T> members)

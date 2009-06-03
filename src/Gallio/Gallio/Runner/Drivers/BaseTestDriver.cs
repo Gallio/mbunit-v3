@@ -136,7 +136,7 @@ namespace Gallio.Runner.Drivers
         /// <summary>
         /// Disposes the test driver.
         /// </summary>
-        /// <param name="disposing">True if <see cref="Dispose()" /> was called</param>
+        /// <param name="disposing">True if <see cref="Dispose()" /> was called.</param>
         protected virtual void Dispose(bool disposing)
         {
             if (disposing && initializedRuntime)

@@ -31,10 +31,10 @@ namespace Gallio.Framework.Data
         /// <summary>
         /// Creates a column sequence data set with optional metadata.
         /// </summary>
-        /// <param name="values">The sequence of column values, each generating an item</param>
-        /// <param name="metadataPairs">The metadata key/value pair enumeration, or null if none</param>
-        /// <param name="isDynamic">True if the sequence is dynamic</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="values"/> is null</exception>
+        /// <param name="values">The sequence of column values, each generating an item.</param>
+        /// <param name="metadataPairs">The metadata key/value pair enumeration, or null if none.</param>
+        /// <param name="isDynamic">True if the sequence is dynamic.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="values"/> is null.</exception>
         public ValueSequenceDataSet(IEnumerable values, IEnumerable<KeyValuePair<string, string>> metadataPairs, bool isDynamic)
         {
             if (values == null)

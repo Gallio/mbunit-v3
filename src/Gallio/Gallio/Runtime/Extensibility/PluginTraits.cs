@@ -28,7 +28,7 @@ namespace Gallio.Runtime.Extensibility
         /// <summary>
         /// Creates a plugin traits object.
         /// </summary>
-        /// <param name="name">The localized display name of the plugin</param>
+        /// <param name="name">The localized display name of the plugin.</param>
         public PluginTraits(string name)
         {
             if (name == null)

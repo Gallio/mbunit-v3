@@ -41,8 +41,8 @@ namespace Gallio.Runtime.ProgressMonitoring
         /// but the method should still complete synchronously.
         /// </para>
         /// </remarks>
-        /// <param name="task">The task to run, never null</param>
-        /// <exception cref="OperationCanceledException">Thrown if the task is canceled</exception>
+        /// <param name="task">The task to run, never null.</param>
+        /// <exception cref="OperationCanceledException">Thrown if the task is canceled.</exception>
         void Run(TaskWithProgress task);
     }
 }

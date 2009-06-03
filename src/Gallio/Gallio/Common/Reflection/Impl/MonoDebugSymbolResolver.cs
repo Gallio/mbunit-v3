@@ -27,7 +27,7 @@ namespace Gallio.Common.Reflection.Impl
         /// <summary>
         /// Creates a Mono debug symbol resolver.
         /// </summary>
-        /// <param name="avoidLocks">If true, avoids taking a lock on the PDB files but may use more memory or storage</param>
+        /// <param name="avoidLocks">If true, avoids taking a lock on the PDB files but may use more memory or storage.</param>
         public MonoDebugSymbolResolver(bool avoidLocks)
         {
         }

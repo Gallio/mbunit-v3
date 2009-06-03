@@ -25,7 +25,7 @@ namespace Gallio.Framework.Data
     /// index alone.
     /// </para>
     /// </summary>
-    /// <typeparam name="T">The value type</typeparam>
+    /// <typeparam name="T">The value type.</typeparam>
     public sealed class ListDataItem<T> : SimpleDataItem
     {
         private readonly IList<T> values;
@@ -33,10 +33,10 @@ namespace Gallio.Framework.Data
         /// <summary>
         /// Creates a list data item with optional metadata.
         /// </summary>
-        /// <param name="values">The list of values</param>
-        /// <param name="metadataPairs">The metadata key/value pairs, or null if none</param>
-        /// <param name="isDynamic">True if the item contains dynamic data</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="values"/> is null</exception>
+        /// <param name="values">The list of values.</param>
+        /// <param name="metadataPairs">The metadata key/value pairs, or null if none.</param>
+        /// <param name="isDynamic">True if the item contains dynamic data.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="values"/> is null.</exception>
         public ListDataItem(IList<T> values, IEnumerable<KeyValuePair<string, string>> metadataPairs, bool isDynamic)
             : base(metadataPairs, isDynamic)
         {

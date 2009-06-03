@@ -45,7 +45,7 @@ namespace Gallio.Common.Reflection.Impl
         /// <summary>
         /// Creates a new debug symbol resolver appropriate for this platform.
         /// </summary>
-        /// <param name="avoidLocks">If true, avoids taking a lock on the PDB files but may use more memory or storage</param>
+        /// <param name="avoidLocks">If true, avoids taking a lock on the PDB files but may use more memory or storage.</param>
         /// <returns>The debug symbol resolver</returns>
         public static IDebugSymbolResolver CreateResolver(bool avoidLocks)
         {
@@ -59,9 +59,9 @@ namespace Gallio.Common.Reflection.Impl
         /// Gets the location of a source file that contains the declaration of a type, or
         /// unknown if not available.
         /// </summary>
-        /// <param name="type">The type</param>
+        /// <param name="type">The type.</param>
         /// <returns>The code location, or <see cref="CodeLocation.Unknown" /> if unknown</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="type"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="type"/> is null.</exception>
         public static CodeLocation GetSourceLocation(Type type)
         {
             if (type == null)
@@ -97,9 +97,9 @@ namespace Gallio.Common.Reflection.Impl
         /// Gets the location of a source file that contains the declaration of a method, or
         /// unknown if not available.
         /// </summary>
-        /// <param name="method">The method</param>
+        /// <param name="method">The method.</param>
         /// <returns>The source location, or <see cref="CodeLocation.Unknown" /> if unknown</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="method"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="method"/> is null.</exception>
         public static CodeLocation GetSourceLocation(MethodBase method)
         {
             if (method == null)

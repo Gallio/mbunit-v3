@@ -31,7 +31,7 @@ namespace Gallio.Runtime.Installer
         /// <summary>
         /// Creates the command.
         /// </summary>
-        /// <param name="installerManager">The installer manager, not null</param>
+        /// <param name="installerManager">The installer manager, not null.</param>
         public SetupUtilityCommand(IInstallerManager installerManager)
         {
             this.installerManager = installerManager;

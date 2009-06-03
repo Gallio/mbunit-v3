@@ -31,7 +31,7 @@ namespace Gallio.Runtime.UtilityCommands
         /// <summary>
         /// Creates a utility command manager.
         /// </summary>
-        /// <param name="commandHandles">The command handles, not null</param>
+        /// <param name="commandHandles">The command handles, not null.</param>
         public DefaultUtilityCommandManager(ComponentHandle<IUtilityCommand, UtilityCommandTraits>[] commandHandles)
         {
             this.commandHandles = commandHandles;

@@ -19,7 +19,7 @@ namespace Gallio.Framework.Pattern
     /// A delegate used to lazily populate the children of an <see cref="PatternTest" />.
     /// </summary>
     /// <param name="recurse">If true, the populator should recursively populate
-    /// all of its newly populated test elements in addition to itself</param>
+    /// all of its newly populated test elements in addition to itself.</param>
     /// <seealso cref="PatternTestFramework"/>
     public delegate void PatternTestPopulator(bool recurse);
 }

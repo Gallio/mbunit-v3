@@ -28,9 +28,9 @@ namespace Gallio.Runtime.Loader
         /// <summary>
         /// Creates a loader.
         /// </summary>
-        /// <param name="assemblyResolverManager">The assembly resolver manager</param>
+        /// <param name="assemblyResolverManager">The assembly resolver manager.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="assemblyResolverManager"/>
-        /// is null</exception>
+        /// is null.</exception>
         public DefaultLoader(IAssemblyResolverManager assemblyResolverManager)
         {
             if (assemblyResolverManager == null)

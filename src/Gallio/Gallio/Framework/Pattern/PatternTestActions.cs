@@ -72,9 +72,9 @@ namespace Gallio.Framework.Pattern
         /// another <see cref="IPatternTestHandler" /> for a <see cref="PatternTest"/>.
         /// </para>
         /// </summary>
-        /// <param name="handler">The handler to decorate</param>
+        /// <param name="handler">The handler to decorate.</param>
         /// <returns>The decorated handler actions</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="handler"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="handler"/> is null.</exception>
         public static PatternTestActions CreateDecorator(IPatternTestHandler handler)
         {
             if (handler == null)

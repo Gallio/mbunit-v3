@@ -29,13 +29,13 @@ namespace Gallio.Runner.Events
         /// <summary>
         /// Initializes the event arguments.
         /// </summary>
-        /// <param name="report">The report</param>
-        /// <param name="test">The test data</param>
-        /// <param name="testStepRun">The test step run</param>
-        /// <param name="logStreamName">The log stream name</param>
-        /// <param name="attachmentName">The name of the attachment that was embedded</param>
+        /// <param name="report">The report.</param>
+        /// <param name="test">The test data.</param>
+        /// <param name="testStepRun">The test step run.</param>
+        /// <param name="logStreamName">The log stream name.</param>
+        /// <param name="attachmentName">The name of the attachment that was embedded.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="report"/>, <paramref name="test"/>
-        /// <paramref name="testStepRun"/>, <paramref name="logStreamName"/>, or <paramref name="attachmentName"/> is null</exception>
+        /// <paramref name="testStepRun"/>, <paramref name="logStreamName"/>, or <paramref name="attachmentName"/> is null.</exception>
         public TestStepLogStreamEmbedEventArgs(Report report, TestData test, TestStepRun testStepRun, string logStreamName, string attachmentName)
             : base(report, test, testStepRun, logStreamName)
         {

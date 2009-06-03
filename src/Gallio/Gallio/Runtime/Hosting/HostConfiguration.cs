@@ -157,7 +157,7 @@ namespace Gallio.Runtime.Hosting
         /// Adds a supported runtime version number.
         /// </summary>
         /// <param name="version">The version number, eg. "v2.0.50727"</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="version"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="version"/> is null.</exception>
         public void AddSupportedRuntimeVersion(string version)
         {
             if (version == null)
@@ -170,11 +170,11 @@ namespace Gallio.Runtime.Hosting
         /// <summary>
         /// Adds a binding to the configuration for the specified assembly.
         /// </summary>
-        /// <param name="assembly">The assembly</param>
+        /// <param name="assembly">The assembly.</param>
         /// <param name="bindingRedirect">True if a catch-all binding redirect should be used to
         /// ensure that this exact version of the assembly is loaded no matter which version
-        /// was originally requested</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="assembly"/> is null</exception>
+        /// was originally requested.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="assembly"/> is null.</exception>
         public void AddAssemblyBinding(Assembly assembly, bool bindingRedirect)
         {
             if (assembly == null)
@@ -186,13 +186,13 @@ namespace Gallio.Runtime.Hosting
         /// <summary>
         /// Adds a binding to the configuration for the specified assembly.
         /// </summary>
-        /// <param name="assemblyName">The assembly name</param>
-        /// <param name="codeBase">The assembly code base Uri</param>
+        /// <param name="assemblyName">The assembly name.</param>
+        /// <param name="codeBase">The assembly code base Uri.</param>
         /// <param name="bindingRedirect">True if a catch-all binding redirect should be used to
         /// ensure that this exact version of the assembly is loaded no matter which version
-        /// was originally requested</param>
+        /// was originally requested.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="assemblyName"/>
-        /// or <paramref name="codeBase"/> is null</exception>
+        /// or <paramref name="codeBase"/> is null.</exception>
         public void AddAssemblyBinding(AssemblyName assemblyName, Uri codeBase, bool bindingRedirect)
         {
             if (codeBase == null)
@@ -204,13 +204,13 @@ namespace Gallio.Runtime.Hosting
         /// <summary>
         /// Adds a binding to the configuration for the specified assembly.
         /// </summary>
-        /// <param name="assemblyName">The assembly name</param>
-        /// <param name="codeBase">The assembly code base Uri</param>
+        /// <param name="assemblyName">The assembly name.</param>
+        /// <param name="codeBase">The assembly code base Uri.</param>
         /// <param name="bindingRedirect">True if a catch-all binding redirect should be used to
         /// ensure that this exact version of the assembly is loaded no matter which version
-        /// was originally requested</param>
+        /// was originally requested.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="assemblyName"/>
-        /// or <paramref name="codeBase"/> is null</exception>
+        /// or <paramref name="codeBase"/> is null.</exception>
         public void AddAssemblyBinding(AssemblyName assemblyName, string codeBase, bool bindingRedirect)
         {
             if (assemblyName == null)
@@ -268,11 +268,11 @@ namespace Gallio.Runtime.Hosting
         /// <summary>
         /// Adds an assembly qualification element if a suitable one does not already exist.
         /// </summary>
-        /// <param name="partialName">The partial name to quality</param>
-        /// <param name="fullName">The full name</param>
+        /// <param name="partialName">The partial name to quality.</param>
+        /// <param name="fullName">The full name.</param>
         /// <returns>The assembly qualification element</returns>
         /// <exception cref="InvalidOperationException">Thrown if an assembly qualification already
-        /// exists for the same partial name but with a different full name</exception>
+        /// exists for the same partial name but with a different full name.</exception>
         public AssemblyQualification AddAssemblyQualification(string partialName, string fullName)
         {
             AssemblyQualification assemblyQualification = assemblyQualifications.Find(x => x.PartialName == partialName);
@@ -293,10 +293,10 @@ namespace Gallio.Runtime.Hosting
         /// <summary>
         /// Adds an assembly dependency element if a suitable one does not already exist.
         /// </summary>
-        /// <param name="name">The assembly name</param>
-        /// <param name="publicKeyToken">The assembly public key token, or null if none</param>
-        /// <param name="culture">The assembly culture</param>
-        /// <param name="architecture">The assembly processor architecture, or null if none</param>
+        /// <param name="name">The assembly name.</param>
+        /// <param name="publicKeyToken">The assembly public key token, or null if none.</param>
+        /// <param name="culture">The assembly culture.</param>
+        /// <param name="architecture">The assembly processor architecture, or null if none.</param>
         /// <returns>The assembly dependency element</returns>
         public AssemblyDependency AddAssemblyDependency(string name, string publicKeyToken, string culture, string architecture)
         {
@@ -340,7 +340,7 @@ namespace Gallio.Runtime.Hosting
         /// </summary>
         /// <param name="textWriter">The TextWriter where the Xml configuration will be written to.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="textWriter"/> is null.</exception>
-        /// <exception cref="IOException">Thrown if the configuration could not be written</exception>
+        /// <exception cref="IOException">Thrown if the configuration could not be written.</exception>
         public void WriteTo(TextWriter textWriter)
         {
             if (textWriter == null)
@@ -366,9 +366,9 @@ namespace Gallio.Runtime.Hosting
         /// entries necessary to enable the features described by this instance and writes
         /// the combined Xml configuration to a file with the given path.
         /// </summary>
-        /// <param name="path">The file path</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="path"/> is null</exception>
-        /// <exception cref="IOException">Thrown if the configuration could not be written</exception>
+        /// <param name="path">The file path.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="path"/> is null.</exception>
+        /// <exception cref="IOException">Thrown if the configuration could not be written.</exception>
         public void WriteToFile(string path)
         {
             if (path == null)
@@ -542,10 +542,10 @@ namespace Gallio.Runtime.Hosting
             /// <summary>
             /// Creates an assembly name qualification.
             /// </summary>
-            /// <param name="partialName">The assembly partial name to qualify</param>
-            /// <param name="fullName">The assembly full name to use</param>
+            /// <param name="partialName">The assembly partial name to qualify.</param>
+            /// <param name="fullName">The assembly full name to use.</param>
             /// <exception cref="ArgumentNullException">Thrown if <paramref name="partialName"/>
-            /// or <paramref name="fullName"/> is null</exception>
+            /// or <paramref name="fullName"/> is null.</exception>
             public AssemblyQualification(string partialName, string fullName)
             {
                 if (partialName == null)
@@ -560,7 +560,7 @@ namespace Gallio.Runtime.Hosting
             /// <summary>
             /// Gets or sets the assembly partial name to qualify.
             /// </summary>
-            /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+            /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
             [XmlAttribute("partialName")]
             public string PartialName
             {
@@ -576,7 +576,7 @@ namespace Gallio.Runtime.Hosting
             /// <summary>
             /// Gets or sets the assembly full name to use.
             /// </summary>
-            /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+            /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
             [XmlAttribute("fullName")]
             public string FullName
             {
@@ -656,8 +656,8 @@ namespace Gallio.Runtime.Hosting
             /// <summary>
             /// Creates an assembly dependency.
             /// </summary>
-            /// <param name="assemblyName">The assembly name</param>
-            /// <exception cref="ArgumentNullException">Thrown if <paramref name="assemblyName"/> is null</exception>
+            /// <param name="assemblyName">The assembly name.</param>
+            /// <exception cref="ArgumentNullException">Thrown if <paramref name="assemblyName"/> is null.</exception>
             public AssemblyDependency(string assemblyName)
                 : this()
             {
@@ -670,7 +670,7 @@ namespace Gallio.Runtime.Hosting
             /// <summary>
             /// Gets or sets assembly name.
             /// </summary>
-            /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+            /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
             [XmlAttribute("assemblyName")]
             public string AssemblyName
             {
@@ -825,8 +825,8 @@ namespace Gallio.Runtime.Hosting
             /// <summary>
             /// Adds an assembly binding redirect element if a suitable one is not already present.
             /// </summary>
-            /// <param name="oldVersionRange">Th old version range</param>
-            /// <param name="newVersion">The new version for redirection</param>
+            /// <param name="oldVersionRange">Th old version range.</param>
+            /// <param name="newVersion">The new version for redirection.</param>
             /// <returns>The binding redirect element</returns>
             public AssemblyBindingRedirect AddAssemblyBindingRedirect(string oldVersionRange, string newVersion)
             {
@@ -849,8 +849,8 @@ namespace Gallio.Runtime.Hosting
             /// a different Uri, then we do not add a new codebase since this most
             /// likely indicates that the same assembly can be loaded from multiple locations.
             /// </remarks>
-            /// <param name="version">The assembly version</param>
-            /// <param name="uri">The code base uri</param>
+            /// <param name="version">The assembly version.</param>
+            /// <param name="uri">The code base uri.</param>
             /// <returns>The code base element</returns>
             public AssemblyCodeBase AddAssemblyCodeBase(string version, string uri)
             {
@@ -891,7 +891,7 @@ namespace Gallio.Runtime.Hosting
             /// <param name="newVersion">The new version to which the binding should be redirected
             /// such as "1.2.3.4"</param>
             /// <exception cref="ArgumentNullException">Thrown if <paramref name="oldVersionRange"/>
-            /// or <paramref name="newVersion"/> is null</exception>
+            /// or <paramref name="newVersion"/> is null.</exception>
             public AssemblyBindingRedirect(string oldVersionRange, string newVersion)
             {
                 if (oldVersionRange == null)
@@ -907,7 +907,7 @@ namespace Gallio.Runtime.Hosting
             /// Gets or sets the range of old versions to redirect, specified
             /// either as a single version such as "1.2.3.4" or as a range such as "1.2.3.4-10.11.12.13"
             /// </summary>
-            /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+            /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
             [XmlAttribute("oldVersionRange")]
             public string OldVersionRange
             {
@@ -924,7 +924,7 @@ namespace Gallio.Runtime.Hosting
             /// Gets or sets the new version to which the binding should be redirected
             /// such as "1.2.3.4"
             /// </summary>
-            /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+            /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
             [XmlAttribute("newVersion")]
             public string NewVersion
             {
@@ -997,11 +997,11 @@ namespace Gallio.Runtime.Hosting
             /// </summary>
             /// <param name="version">The assembly version to which this element applies
             /// such as "1.2.3.4"</param>
-            /// <param name="uri">The Uri that specifies the location of the assembly</param>
+            /// <param name="uri">The Uri that specifies the location of the assembly.</param>
             /// <exception cref="ArgumentNullException">Thrown if <paramref name="version"/>
-            /// or <paramref name="uri"/> is null</exception>
-            /// <exception cref="ArgumentException">Thrown if <paramref name="uri"/> is not an absolute Uri</exception>
-            /// <exception cref="UriFormatException">Thrown if <paramref name="uri"/> is not a well-formed Uri</exception>
+            /// or <paramref name="uri"/> is null.</exception>
+            /// <exception cref="ArgumentException">Thrown if <paramref name="uri"/> is not an absolute Uri.</exception>
+            /// <exception cref="UriFormatException">Thrown if <paramref name="uri"/> is not a well-formed Uri.</exception>
             public AssemblyCodeBase(string version, string uri)
             {
                 if (version == null)
@@ -1017,7 +1017,7 @@ namespace Gallio.Runtime.Hosting
             /// Gets or sets the assembly version to which this element applies
             /// such as "1.2.3.4".
             /// </summary>
-            /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+            /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
             [XmlAttribute("version")]
             public string Version
             {
@@ -1033,9 +1033,9 @@ namespace Gallio.Runtime.Hosting
             /// <summary>
             /// Gets or sets the Uri that specifies the location of the assembly.
             /// </summary>
-            /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
-            /// <exception cref="ArgumentException">Thrown if <paramref name="value"/> is not an absolute Uri</exception>
-            /// <exception cref="UriFormatException">Thrown if <paramref name="value"/> is not a well-formed Uri</exception>
+            /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
+            /// <exception cref="ArgumentException">Thrown if <paramref name="value"/> is not an absolute Uri.</exception>
+            /// <exception cref="UriFormatException">Thrown if <paramref name="value"/> is not a well-formed Uri.</exception>
             [XmlAttribute("uri")]
             public string Uri
             {

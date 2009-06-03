@@ -31,8 +31,8 @@ namespace Gallio.Runner
         /// <summary>
         /// Creates a test runner manager.
         /// </summary>
-        /// <param name="factoryHandles">The factory handles</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="factoryResolver"/> is null</exception>
+        /// <param name="factoryHandles">The factory handles.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="factoryResolver"/> is null.</exception>
         public DefaultTestRunnerManager(ComponentHandle<ITestRunnerFactory, TestRunnerFactoryTraits>[] factoryHandles)
         {
             if (factoryHandles == null)

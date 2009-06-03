@@ -83,12 +83,12 @@ namespace Gallio.Common.Concurrency
         /// At most one action may be in progress at any time.  This method is not
         /// reentrant and cannot be called concurrently from multiple threads.
         /// </remarks>
-        /// <param name="action">The action to run</param>
+        /// <param name="action">The action to run.</param>
         /// <returns>The <see cref="ThreadAbortException" /> that was caught if the action
         /// was aborted, or null if the action completed normally</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="action"/> is null</exception>
-        /// <exception cref="InvalidOperationException">Thrown if an action is already running in this scope</exception>
-        /// <exception cref="Exception">Any other exception thrown by <paramref name="action"/> itself</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="action"/> is null.</exception>
+        /// <exception cref="InvalidOperationException">Thrown if an action is already running in this scope.</exception>
+        /// <exception cref="Exception">Any other exception thrown by <paramref name="action"/> itself.</exception>
         [DebuggerHidden]
         public ThreadAbortException Run(Action action)
         {
@@ -126,8 +126,8 @@ namespace Gallio.Common.Concurrency
         /// may affect the scope.  This call cannot be nested.
         /// </para>
         /// </remarks>
-        /// <param name="action">The action to run</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="action"/> is null</exception>
+        /// <param name="action">The action to run.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="action"/> is null.</exception>
         [DebuggerHidden]
         public void Protect(Action action)
         {

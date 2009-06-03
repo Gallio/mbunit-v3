@@ -32,11 +32,11 @@ namespace Gallio.Runner.Events
         /// <summary>
         /// Initializes the event arguments.
         /// </summary>
-        /// <param name="testPackageConfig">The test package configuration</param>
-        /// <param name="testExplorationOptions">The test exploration options</param>
-        /// <param name="reportLockBox">The report lock-box which may be used to access the report asynchronously during execution</param>
+        /// <param name="testPackageConfig">The test package configuration.</param>
+        /// <param name="testExplorationOptions">The test exploration options.</param>
+        /// <param name="reportLockBox">The report lock-box which may be used to access the report asynchronously during execution.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="testPackageConfig"/>
-        /// or <paramref name="testExplorationOptions"/> is null</exception>
+        /// or <paramref name="testExplorationOptions"/> is null.</exception>
         public ExploreStartedEventArgs(TestPackageConfig testPackageConfig, TestExplorationOptions testExplorationOptions,
             LockBox<Report> reportLockBox)
         {

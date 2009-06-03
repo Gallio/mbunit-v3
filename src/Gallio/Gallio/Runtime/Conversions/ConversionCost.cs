@@ -72,8 +72,8 @@ namespace Gallio.Runtime.Conversions
         /// <summary>
         /// Creates a conversion cost.
         /// </summary>
-        /// <param name="value">The number of units of work required by the conversion</param>
-        /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="value"/> is negative</exception>
+        /// <param name="value">The number of units of work required by the conversion.</param>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="value"/> is negative.</exception>
         public ConversionCost(int value)
         {
             if (value < 0)
@@ -106,7 +106,7 @@ namespace Gallio.Runtime.Conversions
         /// <summary>
         /// Adds this conversion cost with the other and returns the sum.
         /// </summary>
-        /// <param name="other">The other conversion cost</param>
+        /// <param name="other">The other conversion cost.</param>
         /// <returns>The summed conversion cost</returns>
         public ConversionCost Add(ConversionCost other)
         {

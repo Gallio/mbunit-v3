@@ -27,15 +27,15 @@ namespace Gallio.Runtime.Loader
         /// Adds an assembly load hint directory to search when standard assembly
         /// resolution fails.
         /// </summary>
-        /// <param name="hintDirectory">The hint directory</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="hintDirectory"/> is null</exception>
+        /// <param name="hintDirectory">The hint directory.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="hintDirectory"/> is null.</exception>
         void AddHintDirectory(string hintDirectory);
 
         /// <summary>
         /// Adds a custom assembly resolver to use when standard assembly resolution fails.
         /// </summary>
-        /// <param name="assemblyResolver">The assembly resolver</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="assemblyResolver"/> is null</exception>
+        /// <param name="assemblyResolver">The assembly resolver.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="assemblyResolver"/> is null.</exception>
         void AddAssemblyResolver(IAssemblyResolver assemblyResolver);
     }
 }

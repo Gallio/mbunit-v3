@@ -50,8 +50,8 @@ namespace Gallio.Framework.Assertions
         /// being thrown.  Refer to <see cref="AssertionContext.SubmitFailure"/> for details.
         /// </para>
         /// </remarks>
-        /// <param name="assertionFunc">The assertion function to evaluate</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="assertionFunc"/> is null</exception>
+        /// <param name="assertionFunc">The assertion function to evaluate.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="assertionFunc"/> is null.</exception>
         public static void Verify(Func<AssertionFailure> assertionFunc)
         {
             if (assertionFunc == null)
@@ -81,7 +81,7 @@ namespace Gallio.Framework.Assertions
         /// <summary>
         /// Submits a failure if the assertion failure object is non-null.
         /// </summary>
-        /// <param name="failure">Failure to be submited, or null if none</param>
+        /// <param name="failure">Failure to be submited, or null if none.</param>
         public static void Fail(AssertionFailure failure)
         {
             if (failure != null)
@@ -106,9 +106,9 @@ namespace Gallio.Framework.Assertions
         /// over a collection of items by composing an assertion over a single item.
         /// </para>
         /// </summary>
-        /// <param name="action">The action to invoke</param>
+        /// <param name="action">The action to invoke.</param>
         /// <returns>The array of failures, may be empty if none</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="action"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="action"/> is null.</exception>
         public static AssertionFailure[] Eval(Action action)
         {
             return Eval(action, AssertionFailureBehavior.Throw);
@@ -121,10 +121,10 @@ namespace Gallio.Framework.Assertions
         /// is reified as an assertion failure.
         /// </para>
         /// </summary>
-        /// <param name="action">The action to invoke</param>
-        /// <param name="assertionFailureBehavior">The assertion failure behavior to use while the action runs</param>
+        /// <param name="action">The action to invoke.</param>
+        /// <param name="assertionFailureBehavior">The assertion failure behavior to use while the action runs.</param>
         /// <returns>The array of failures, may be empty if none</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="action"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="action"/> is null.</exception>
         public static AssertionFailure[] Eval(Action action, AssertionFailureBehavior assertionFailureBehavior)
         {
             if (action == null)
@@ -149,8 +149,8 @@ namespace Gallio.Framework.Assertions
         /// <param name="action">The action to invoke.</param>
         /// <param name="explanation">A function that takes an array of inner failures and
         /// returns a single outer failure with a common explanation.</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="action"/> is null</exception>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="explanation"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="action"/> is null.</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="explanation"/> is null.</exception>
         public static void Explain(Action action, Explanation explanation)
         {
             if (action == null)

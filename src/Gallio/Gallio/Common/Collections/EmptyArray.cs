@@ -18,7 +18,7 @@ namespace Gallio.Common.Collections
     /// <summary>
     /// Provides a singleton empty array instance.
     /// </summary>
-    /// <typeparam name="T">The type of array to provide</typeparam>
+    /// <typeparam name="T">The type of array to provide.</typeparam>
     public static class EmptyArray<T>
     {
         /// <summary>

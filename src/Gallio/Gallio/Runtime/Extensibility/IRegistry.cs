@@ -62,32 +62,32 @@ namespace Gallio.Runtime.Extensibility
         /// <summary>
         /// Registers a plugin and returns its descriptor.
         /// </summary>
-        /// <param name="pluginRegistration">The plugin registration</param>
+        /// <param name="pluginRegistration">The plugin registration.</param>
         /// <returns>The new plugin descriptor</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="pluginRegistration"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="pluginRegistration"/> is null.</exception>
         /// <exception cref="ArgumentException">Thrown if there is already a plugin registered with the same id
-        /// or if the registration contains errors</exception>
+        /// or if the registration contains errors.</exception>
         IPluginDescriptor RegisterPlugin(PluginRegistration pluginRegistration);
 
         /// <summary>
         /// Registers a service and returns its descriptor.
         /// </summary>
-        /// <param name="serviceRegistration">The service registration</param>
+        /// <param name="serviceRegistration">The service registration.</param>
         /// <returns>The new service descriptor</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="serviceRegistration"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="serviceRegistration"/> is null.</exception>
         /// <exception cref="ArgumentException">Thrown if there is already a service registered with the same id or type name
-        /// or if the plugin does not belong to this registry</exception>
+        /// or if the plugin does not belong to this registry.</exception>
         IServiceDescriptor RegisterService(ServiceRegistration serviceRegistration);
 
         /// <summary>
         /// Registers a component and returns its descriptor.
         /// </summary>
-        /// <param name="componentRegistration">The component registration</param>
+        /// <param name="componentRegistration">The component registration.</param>
         /// <returns>The new component descriptor</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="componentRegistration"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="componentRegistration"/> is null.</exception>
         /// <exception cref="ArgumentException">Thrown if there is already a component registered with the same id
         /// or if the plugin or service does not belong to this registry or if the component implements a service
-        /// provided by a plugin that was not listed as a plugin dependency of the component's plugin</exception>
+        /// provided by a plugin that was not listed as a plugin dependency of the component's plugin.</exception>
         IComponentDescriptor RegisterComponent(ComponentRegistration componentRegistration);
     }
 }

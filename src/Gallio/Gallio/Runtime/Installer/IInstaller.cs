@@ -40,13 +40,13 @@ namespace Gallio.Runtime.Installer
         /// <summary>
         /// Installs components.
         /// </summary>
-        /// <param name="progressMonitor">The progress monitor, not null</param>
+        /// <param name="progressMonitor">The progress monitor, not null.</param>
         void Install(IProgressMonitor progressMonitor);
 
         /// <summary>
         /// Uninstalls components.
         /// </summary>
-        /// <param name="progressMonitor">The progress monitor, not null</param>
+        /// <param name="progressMonitor">The progress monitor, not null.</param>
         void Uninstall(IProgressMonitor progressMonitor);
     }
 }

@@ -28,8 +28,8 @@ namespace Gallio.Model.Filters
         /// <summary>
         /// Creates an identity filter.
         /// </summary>
-        /// <param name="idFilter">A filter for the id</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="idFilter"/> is null</exception>
+        /// <param name="idFilter">A filter for the id.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="idFilter"/> is null.</exception>
         public IdFilter(Filter<string> idFilter)
             : base(idFilter)
         {

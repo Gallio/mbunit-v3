@@ -34,11 +34,11 @@ namespace Gallio.Model
         /// <summary>
         /// Creates an annotation with a detail message string.
         /// </summary>
-        /// <param name="type">The annotation type</param>
-        /// <param name="codeElement">The associated code element, or null if none</param>
-        /// <param name="message">The annotation message</param>
-        /// <param name="details">Additional details such as exception text or null if none</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="message"/> is null</exception>
+        /// <param name="type">The annotation type.</param>
+        /// <param name="codeElement">The associated code element, or null if none.</param>
+        /// <param name="message">The annotation message.</param>
+        /// <param name="details">Additional details such as exception text or null if none.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="message"/> is null.</exception>
         public Annotation(AnnotationType type, ICodeElementInfo codeElement, string message, string details)
         {
             this.type = type;
@@ -50,11 +50,11 @@ namespace Gallio.Model
         /// <summary>
         /// Creates an annotation with a detail exception.
         /// </summary>
-        /// <param name="type">The annotation type</param>
-        /// <param name="codeElement">The associated code element, or null if none</param>
-        /// <param name="message">The annotation message</param>
-        /// <param name="ex">The exception to use as additional details or null if none</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="message"/> is null</exception>
+        /// <param name="type">The annotation type.</param>
+        /// <param name="codeElement">The associated code element, or null if none.</param>
+        /// <param name="message">The annotation message.</param>
+        /// <param name="ex">The exception to use as additional details or null if none.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="message"/> is null.</exception>
         public Annotation(AnnotationType type, ICodeElementInfo codeElement, string message, Exception ex)
             : this(type, codeElement, message, ex != null ? ExceptionUtils.SafeToString(ex) : null)
         {
@@ -63,10 +63,10 @@ namespace Gallio.Model
         /// <summary>
         /// Creates an annotation with no details.
         /// </summary>
-        /// <param name="type">The annotation type</param>
-        /// <param name="codeElement">The associated code element, or null if none</param>
-        /// <param name="message">The annotation message</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="message"/> is null</exception>
+        /// <param name="type">The annotation type.</param>
+        /// <param name="codeElement">The associated code element, or null if none.</param>
+        /// <param name="message">The annotation message.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="message"/> is null.</exception>
         public Annotation(AnnotationType type, ICodeElementInfo codeElement, string message)
             : this(type, codeElement, message, (string) null)
         {

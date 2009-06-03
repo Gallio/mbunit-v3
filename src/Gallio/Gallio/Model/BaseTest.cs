@@ -47,9 +47,9 @@ namespace Gallio.Model
         /// <summary>
         /// Initializes a test initially without a parent.
         /// </summary>
-        /// <param name="name">The name of the test</param>
-        /// <param name="codeElement">The point of definition of the test, or null if unknown</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> is null</exception>
+        /// <param name="name">The name of the test.</param>
+        /// <param name="codeElement">The point of definition of the test, or null if unknown.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> is null.</exception>
         public BaseTest(string name, ICodeElementInfo codeElement)
             : base(name, codeElement)
         {

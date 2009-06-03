@@ -130,12 +130,12 @@ namespace Gallio.Framework
         /// to ensure that the expected outcome was obtained.
         /// </para>
         /// </remarks>
-        /// <param name="name">The name of the step</param>
-        /// <param name="action">The action to perform</param>
+        /// <param name="name">The name of the step.</param>
+        /// <param name="action">The action to perform.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> or
-        /// <paramref name="action"/> is null</exception>
+        /// <paramref name="action"/> is null.</exception>
         /// <returns>The context of the step that ran</returns>
-        /// <exception cref="ArgumentException">Thrown if <paramref name="name"/> is the empty string</exception>
+        /// <exception cref="ArgumentException">Thrown if <paramref name="name"/> is the empty string.</exception>
         [MethodImpl(MethodImplOptions.NoInlining)]
         public static TestContext RunStep(string name, Action action)
         {
@@ -161,14 +161,14 @@ namespace Gallio.Framework
         /// to ensure that the expected outcome was obtained.
         /// </para>
         /// </remarks>
-        /// <param name="name">The name of the step</param>
-        /// <param name="action">The action to perform</param>
-        /// <param name="timeout">The step execution timeout, or null if none</param>
+        /// <param name="name">The name of the step.</param>
+        /// <param name="action">The action to perform.</param>
+        /// <param name="timeout">The step execution timeout, or null if none.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> or
-        /// <paramref name="action"/> is null</exception>
+        /// <paramref name="action"/> is null.</exception>
         /// <returns>The context of the step that ran</returns>
-        /// <exception cref="ArgumentException">Thrown if <paramref name="name"/> is the empty string</exception>
-        /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="timeout"/> is negative</exception>
+        /// <exception cref="ArgumentException">Thrown if <paramref name="name"/> is the empty string.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="timeout"/> is negative.</exception>
         [MethodImpl(MethodImplOptions.NoInlining)]
         public static TestContext RunStep(string name, Action action, TimeSpan? timeout)
         {
@@ -194,16 +194,16 @@ namespace Gallio.Framework
         /// to ensure that the expected outcome was obtained.
         /// </para>
         /// </remarks>
-        /// <param name="name">The name of the step</param>
-        /// <param name="action">The action to perform</param>
-        /// <param name="timeout">The step execution timeout, or null if none</param>
-        /// <param name="isTestCase">True if the step represents an independent test case</param>
-        /// <param name="codeElement">The associated code element, or null if none</param>
+        /// <param name="name">The name of the step.</param>
+        /// <param name="action">The action to perform.</param>
+        /// <param name="timeout">The step execution timeout, or null if none.</param>
+        /// <param name="isTestCase">True if the step represents an independent test case.</param>
+        /// <param name="codeElement">The associated code element, or null if none.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> or
-        /// <paramref name="action"/> is null</exception>
+        /// <paramref name="action"/> is null.</exception>
         /// <returns>The context of the step that ran</returns>
-        /// <exception cref="ArgumentException">Thrown if <paramref name="name"/> is the empty string</exception>
-        /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="timeout"/> is negative</exception>
+        /// <exception cref="ArgumentException">Thrown if <paramref name="name"/> is the empty string.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="timeout"/> is negative.</exception>
         public static TestContext RunStep(string name, Action action, TimeSpan? timeout, bool isTestCase, ICodeElementInfo codeElement)
         {
             return TestContext.CurrentContext.RunStep(name, action, timeout, isTestCase, codeElement);
@@ -227,14 +227,14 @@ namespace Gallio.Framework
         /// was obtained, then raises an assertion failure.
         /// </para>
         /// </remarks>
-        /// <param name="name">The name of the step</param>
-        /// <param name="action">The action to perform</param>
-        /// <param name="expectedOutcome">The expected outcome of the step</param>
+        /// <param name="name">The name of the step.</param>
+        /// <param name="action">The action to perform.</param>
+        /// <param name="expectedOutcome">The expected outcome of the step.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> or
-        /// <paramref name="action"/> is null</exception>
+        /// <paramref name="action"/> is null.</exception>
         /// <returns>The context of the step that ran</returns>
-        /// <exception cref="ArgumentException">Thrown if <paramref name="name"/> is the empty string</exception>
-        /// <exception cref="AssertionFailureException">Thrown if the expected outcome was not obtained</exception>
+        /// <exception cref="ArgumentException">Thrown if <paramref name="name"/> is the empty string.</exception>
+        /// <exception cref="AssertionFailureException">Thrown if the expected outcome was not obtained.</exception>
         [MethodImpl(MethodImplOptions.NoInlining)]
         public static TestContext RunStepAndVerifyOutcome(string name, Action action, TestOutcome expectedOutcome)
         {
@@ -259,16 +259,16 @@ namespace Gallio.Framework
         /// was obtained, then raises an assertion failure.
         /// </para>
         /// </remarks>
-        /// <param name="name">The name of the step</param>
-        /// <param name="action">The action to perform</param>
-        /// <param name="timeout">The step execution timeout, or null if none</param>
-        /// <param name="expectedOutcome">The expected outcome of the step</param>
+        /// <param name="name">The name of the step.</param>
+        /// <param name="action">The action to perform.</param>
+        /// <param name="timeout">The step execution timeout, or null if none.</param>
+        /// <param name="expectedOutcome">The expected outcome of the step.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> or
-        /// <paramref name="action"/> is null</exception>
+        /// <paramref name="action"/> is null.</exception>
         /// <returns>The context of the step that ran</returns>
-        /// <exception cref="ArgumentException">Thrown if <paramref name="name"/> is the empty string</exception>
-        /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="timeout"/> is negative</exception>
-        /// <exception cref="AssertionFailureException">Thrown if the expected outcome was not obtained</exception>
+        /// <exception cref="ArgumentException">Thrown if <paramref name="name"/> is the empty string.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="timeout"/> is negative.</exception>
+        /// <exception cref="AssertionFailureException">Thrown if the expected outcome was not obtained.</exception>
         [MethodImpl(MethodImplOptions.NoInlining)]
         public static TestContext RunStepAndVerifyOutcome(string name, Action action, TimeSpan? timeout, TestOutcome expectedOutcome)
         {
@@ -293,18 +293,18 @@ namespace Gallio.Framework
         /// was obtained, then raises an assertion failure.
         /// </para>
         /// </remarks>
-        /// <param name="name">The name of the step</param>
-        /// <param name="action">The action to perform</param>
-        /// <param name="timeout">The step execution timeout, or null if none</param>
-        /// <param name="isTestCase">True if the step represents an independent test case</param>
-        /// <param name="codeElement">The associated code element, or null if none</param>
-        /// <param name="expectedOutcome">The expected outcome of the step</param>
+        /// <param name="name">The name of the step.</param>
+        /// <param name="action">The action to perform.</param>
+        /// <param name="timeout">The step execution timeout, or null if none.</param>
+        /// <param name="isTestCase">True if the step represents an independent test case.</param>
+        /// <param name="codeElement">The associated code element, or null if none.</param>
+        /// <param name="expectedOutcome">The expected outcome of the step.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> or
-        /// <paramref name="action"/> is null</exception>
+        /// <paramref name="action"/> is null.</exception>
         /// <returns>The context of the step that ran</returns>
-        /// <exception cref="ArgumentException">Thrown if <paramref name="name"/> is the empty string</exception>
-        /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="timeout"/> is negative</exception>
-        /// <exception cref="AssertionFailureException">Thrown if the expected outcome was not obtained</exception>
+        /// <exception cref="ArgumentException">Thrown if <paramref name="name"/> is the empty string.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="timeout"/> is negative.</exception>
+        /// <exception cref="AssertionFailureException">Thrown if the expected outcome was not obtained.</exception>
         public static TestContext RunStepAndVerifyOutcome(string name, Action action, TimeSpan? timeout, bool isTestCase, ICodeElementInfo codeElement, TestOutcome expectedOutcome)
         {
             return TestContext.CurrentContext.RunStepAndVerifyOutcome(name, action, timeout, isTestCase, codeElement, expectedOutcome);
@@ -313,10 +313,10 @@ namespace Gallio.Framework
         /// <summary>
         /// Adds metadata to the step that is running in the context.
         /// </summary>
-        /// <param name="metadataKey">The metadata key</param>
-        /// <param name="metadataValue">The metadata value</param>
+        /// <param name="metadataKey">The metadata key.</param>
+        /// <param name="metadataValue">The metadata value.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="metadataKey"/>
-        /// or <paramref name="metadataValue"/> is null</exception>
+        /// or <paramref name="metadataValue"/> is null.</exception>
         public static void AddMetadata(string metadataKey, string metadataValue)
         {
             TestContext.CurrentContext.AddMetadata(metadataKey, metadataValue);

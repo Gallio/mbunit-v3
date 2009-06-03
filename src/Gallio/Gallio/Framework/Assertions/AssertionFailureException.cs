@@ -41,10 +41,10 @@ namespace Gallio.Framework.Assertions
         /// <summary>
         /// Creates an exception for a given assertion failure.
         /// </summary>
-        /// <param name="failure">The assertion failure</param>
+        /// <param name="failure">The assertion failure.</param>
         /// <param name="silent">True if the assertion failure exception should not be logged because
-        /// the information it contains has already been conveyed to the user</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="failure"/> is null</exception>
+        /// the information it contains has already been conveyed to the user.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="failure"/> is null.</exception>
         public AssertionFailureException(AssertionFailure failure, bool silent)
         {
             if (failure == null)
@@ -59,8 +59,8 @@ namespace Gallio.Framework.Assertions
         /// <summary>
         /// Creates an exception from serialization info.
         /// </summary>
-        /// <param name="info">The serialization info</param>
-        /// <param name="context">The streaming context</param>
+        /// <param name="info">The serialization info.</param>
+        /// <param name="context">The streaming context.</param>
         protected AssertionFailureException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {

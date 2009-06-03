@@ -60,10 +60,10 @@ namespace Gallio.Common.Collections
         /// <summary>
         /// Tries to get a value from the collection.
         /// </summary>
-        /// <param name="key">The key</param>
-        /// <param name="value">Set to the value, or <c>default(T)</c> if none present</param>
+        /// <param name="key">The key.</param>
+        /// <param name="value">Set to the value, or <c>default(T)</c> if none present.</param>
         /// <returns>True if a value was obtained</returns>
-        /// <typeparam name="T">The value type</typeparam>
+        /// <typeparam name="T">The value type.</typeparam>
         public bool TryGetValue<T>(Key<T> key, out T value)
         {
             lock (this)
@@ -86,10 +86,10 @@ namespace Gallio.Common.Collections
         /// <summary>
         /// Gets a value from the collection.
         /// </summary>
-        /// <param name="key">The key</param>
+        /// <param name="key">The key.</param>
         /// <returns>The associated value</returns>
         /// <exception cref="KeyNotFoundException">Thrown if <paramref name="key"/> was not found.</exception>
-        /// <typeparam name="T">The value type</typeparam>
+        /// <typeparam name="T">The value type.</typeparam>
         public T GetValue<T>(Key<T> key)
         {
             T value;
@@ -101,10 +101,10 @@ namespace Gallio.Common.Collections
         /// <summary>
         /// Gets a value from the collection or a default value if none found.
         /// </summary>
-        /// <param name="key">The key</param>
-        /// <param name="defaultValue">The default value</param>
+        /// <param name="key">The key.</param>
+        /// <param name="defaultValue">The default value.</param>
         /// <returns>The associated value, or the default value</returns>
-        /// <typeparam name="T">The value type</typeparam>
+        /// <typeparam name="T">The value type.</typeparam>
         public T GetValueOrDefault<T>(Key<T> key, T defaultValue)
         {
             T value;
@@ -114,10 +114,10 @@ namespace Gallio.Common.Collections
         /// <summary>
         /// Determines whether a key has an associated value in the collection.
         /// </summary>
-        /// <param name="key">The key</param>
+        /// <param name="key">The key.</param>
         /// <returns>True if the key has an associated value</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="key"/> is null</exception>
-        /// <typeparam name="T">The value type</typeparam>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="key"/> is null.</exception>
+        /// <typeparam name="T">The value type.</typeparam>
         public bool HasValue<T>(Key<T> key)
         {
             lock (this)
@@ -129,9 +129,9 @@ namespace Gallio.Common.Collections
         /// <summary>
         /// Sets a value in the collection.
         /// </summary>
-        /// <param name="key">The key</param>
-        /// <param name="value">The value to set</param>
-        /// <typeparam name="T">The value type</typeparam>
+        /// <param name="key">The key.</param>
+        /// <param name="value">The value to set.</param>
+        /// <typeparam name="T">The value type.</typeparam>
         public void SetValue<T>(Key<T> key, T value)
         {
             lock (this)
@@ -145,8 +145,8 @@ namespace Gallio.Common.Collections
         /// <summary>
         /// Removes a value from the collection.
         /// </summary>
-        /// <param name="key">The key</param>
-        /// <typeparam name="T">The value type</typeparam>
+        /// <param name="key">The key.</param>
+        /// <typeparam name="T">The value type.</typeparam>
         public void RemoveValue<T>(Key<T> key)
         {
             lock (this)

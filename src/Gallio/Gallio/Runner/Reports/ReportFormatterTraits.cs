@@ -31,8 +31,8 @@ namespace Gallio.Runner.Reports
         /// <summary>
         /// Creates report formatter traits.
         /// </summary>
-        /// <param name="name">The unique name of the report format</param>
-        /// <param name="description">The description of report format</param>
+        /// <param name="name">The unique name of the report format.</param>
+        /// <param name="description">The description of report format.</param>
         public ReportFormatterTraits(string name, string description)
         {
             if (name == null)

@@ -22,7 +22,7 @@ namespace Gallio.Common.Collections
     /// <summary>
     /// An equality comparer that compares values by reference.
     /// </summary>
-    /// <typeparam name="T">The type of values to compare, must be reference types</typeparam>
+    /// <typeparam name="T">The type of values to compare, must be reference types.</typeparam>
     public sealed class ReferentialEqualityComparer<T> : IEqualityComparer<T>
         where T : class
     {

@@ -27,8 +27,8 @@ namespace Gallio.Common.Markup.Tags
         /// <summary>
         /// Invokes the appropriate visitor method for this tag type.
         /// </summary>
-        /// <param name="visitor">The visitor</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="visitor"/> is null</exception>
+        /// <param name="visitor">The visitor.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="visitor"/> is null.</exception>
         public void Accept(ITagVisitor visitor)
         {
             if (visitor == null)
@@ -56,8 +56,8 @@ namespace Gallio.Common.Markup.Tags
         /// <summary>
         /// Writes the tag to a <see cref="MarkupStreamWriter" />.
         /// </summary>
-        /// <param name="writer">The markup stream writer</param>
-        /// <exception cref="ArgumentNullException">Throw if <paramref name="writer"/> is null</exception>
+        /// <param name="writer">The markup stream writer.</param>
+        /// <exception cref="ArgumentNullException">Throw if <paramref name="writer"/> is null.</exception>
         public void WriteTo(MarkupStreamWriter writer)
         {
             if (writer == null)

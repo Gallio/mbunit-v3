@@ -34,11 +34,11 @@ namespace Gallio.Framework.Pattern
         /// <summary>
         /// Creates a test pattern parameter.
         /// </summary>
-        /// <param name="name">The name of the test parameter</param>
-        /// <param name="codeElement">The code element (usually a slot) represented by the parameter, or null if none</param>
-        /// <param name="dataContext">The data context of the test parameter</param>
+        /// <param name="name">The name of the test parameter.</param>
+        /// <param name="codeElement">The code element (usually a slot) represented by the parameter, or null if none.</param>
+        /// <param name="dataContext">The data context of the test parameter.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/>,
-        /// <paramref name="codeElement"/> or <paramref name="dataContext"/> is null</exception>
+        /// <paramref name="codeElement"/> or <paramref name="dataContext"/> is null.</exception>
         public PatternTestParameter(string name, ICodeElementInfo codeElement, PatternTestDataContext dataContext)
             : base(name, codeElement)
         {
@@ -76,7 +76,7 @@ namespace Gallio.Framework.Pattern
         /// data source using a <see cref="DataBinding"/> whose path is the name of this parameter and whose
         /// index is the implicit index computed by the pararameter's data context.
         /// </remarks>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
         public IDataBinder Binder
         {
             get

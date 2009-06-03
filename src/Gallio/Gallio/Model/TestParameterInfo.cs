@@ -25,8 +25,8 @@ namespace Gallio.Model
         /// <summary>
         /// Creates a read-only wrapper of the specified test parameter.
         /// </summary>
-        /// <param name="source">The source test parameter</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="source"/> is null</exception>
+        /// <param name="source">The source test parameter.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="source"/> is null.</exception>
         public TestParameterInfo(ITestParameter source)
             : base(source)
         {

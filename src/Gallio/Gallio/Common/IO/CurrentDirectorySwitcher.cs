@@ -29,9 +29,9 @@ namespace Gallio.Common.IO
         /// <summary>
         /// Saves the current directory then changes it to the specified value.
         /// </summary>
-        /// <param name="directory">The new directory</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="directory"/> is null</exception>
-        /// <exception cref="IOException">Thrown if the current directory could not be set</exception>
+        /// <param name="directory">The new directory.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="directory"/> is null.</exception>
+        /// <exception cref="IOException">Thrown if the current directory could not be set.</exception>
         public CurrentDirectorySwitcher(string directory)
         {
             if (directory == null)
@@ -44,7 +44,7 @@ namespace Gallio.Common.IO
         /// <summary>
         /// Resets the current directory to its original saved value.
         /// </summary>
-        /// <exception cref="IOException">Thrown if the current directory could not be reset</exception>
+        /// <exception cref="IOException">Thrown if the current directory could not be reset.</exception>
         public void Dispose()
         {
             if (oldDirectory != null)

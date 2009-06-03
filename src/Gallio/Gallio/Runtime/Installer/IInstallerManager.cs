@@ -30,21 +30,21 @@ namespace Gallio.Runtime.Installer
         /// <summary>
         /// Installs components.
         /// </summary>
-        /// <param name="installerIds">The ids of the specific installers to include, or null to include all</param>
-        /// <param name="elevationContext">A privilege elevation context, or null if the installer manager should obtain its own when needed</param>
-        /// <param name="progressMonitor">The progress monitor</param>
+        /// <param name="installerIds">The ids of the specific installers to include, or null to include all.</param>
+        /// <param name="elevationContext">A privilege elevation context, or null if the installer manager should obtain its own when needed.</param>
+        /// <param name="progressMonitor">The progress monitor.</param>
         /// <returns>True on success, false if the user canceled the operation</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="progressMonitor"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="progressMonitor"/> is null.</exception>
         bool Install(IList<string> installerIds, IElevationContext elevationContext, IProgressMonitor progressMonitor);
 
         /// <summary>
         /// Uninstalls components.
         /// </summary>
-        /// <param name="installerIds">The ids of the specific installers to include, or null to include all</param>
-        /// <param name="elevationContext">A privilege elevation context, or null if the installer manager should obtain its own when needed</param>
-        /// <param name="progressMonitor">The progress monitor</param>
+        /// <param name="installerIds">The ids of the specific installers to include, or null to include all.</param>
+        /// <param name="elevationContext">A privilege elevation context, or null if the installer manager should obtain its own when needed.</param>
+        /// <param name="progressMonitor">The progress monitor.</param>
         /// <returns>True on success, false if the user canceled the operation</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="progressMonitor"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="progressMonitor"/> is null.</exception>
         bool Uninstall(IList<string> installerIds, IElevationContext elevationContext, IProgressMonitor progressMonitor);
     }
 }

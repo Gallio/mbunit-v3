@@ -28,14 +28,14 @@ namespace Gallio.Model.Messages
         /// <summary>
         /// Notifies the listener that a subtree of tests has been merged into the test model.
         /// </summary>
-        /// <param name="parentTestId">The id of the parent test, or null if adding the root</param>
-        /// <param name="test">The test at the top of the subtree was merged</param>
+        /// <param name="parentTestId">The id of the parent test, or null if adding the root.</param>
+        /// <param name="test">The test at the top of the subtree was merged.</param>
         void NotifySubtreeMerged(string parentTestId, TestData test);
 
         /// <summary>
         /// Notifies the listener that an annotation has been added to the test model.
         /// </summary>
-        /// <param name="annotation">The annotation that was added</param>
+        /// <param name="annotation">The annotation that was added.</param>
         void NotifyAnnotationAdded(AnnotationData annotation);
     }
 }

@@ -26,7 +26,7 @@ namespace Gallio.Common
     /// Not thread safe.
     /// </para>
     /// </remarks>
-    /// <typeparam name="T">The value type</typeparam>
+    /// <typeparam name="T">The value type.</typeparam>
     /// <example>
     /// <code><![CDATA[
     /// public class MyClass
@@ -55,7 +55,7 @@ namespace Gallio.Common
         /// Gets the memoized value if available, otherwise populates it
         /// using the specified populator function and stores it for later reuse.
         /// </summary>
-        /// <param name="populator">The populator</param>
+        /// <param name="populator">The populator.</param>
         /// <returns>The value returned by the populator, possibly memoized</returns>
         public T Memoize(Func<T> populator)
         {

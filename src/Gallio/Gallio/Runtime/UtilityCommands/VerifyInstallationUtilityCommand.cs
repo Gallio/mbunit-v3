@@ -30,7 +30,7 @@ namespace Gallio.Runtime.UtilityCommands
         /// <summary>
         /// Creates the command.
         /// </summary>
-        /// <param name="runtime">The runtime, not null</param>
+        /// <param name="runtime">The runtime, not null.</param>
         public VerifyInstallationUtilityCommand(IRuntime runtime)
         {
             this.runtime = runtime;

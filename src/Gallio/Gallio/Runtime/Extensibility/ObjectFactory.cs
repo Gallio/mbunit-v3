@@ -54,11 +54,11 @@ namespace Gallio.Runtime.Extensibility
         /// <summary>
         /// Creates an object factory.
         /// </summary>
-        /// <param name="dependencyResolver">The dependency resolver</param>
-        /// <param name="objectType">The object type</param>
-        /// <param name="properties">The object properties</param>
+        /// <param name="dependencyResolver">The dependency resolver.</param>
+        /// <param name="objectType">The object type.</param>
+        /// <param name="properties">The object properties.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="dependencyResolver"/>,
-        /// <paramref name="objectType"/> or <paramref name="properties"/> is null</exception>
+        /// <paramref name="objectType"/> or <paramref name="properties"/> is null.</exception>
         public ObjectFactory(IObjectDependencyResolver dependencyResolver, Type objectType, PropertySet properties)
         {
             if (dependencyResolver == null)

@@ -27,8 +27,8 @@ namespace Gallio.Common.Concurrency
         /// <summary>
         /// Creates event arguments for a task-related event.
         /// </summary>
-        /// <param name="task">The task that the event is about</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="task"/> is null</exception>
+        /// <param name="task">The task that the event is about.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="task"/> is null.</exception>
         public TaskEventArgs(Task task)
         {
             if (task == null)

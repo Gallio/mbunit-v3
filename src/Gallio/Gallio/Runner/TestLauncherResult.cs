@@ -37,7 +37,7 @@ namespace Gallio.Runner
         /// <summary>
         /// Creates a launcher result object.
         /// </summary>
-        /// <param name="report">The test report</param>
+        /// <param name="report">The test report.</param>
         public TestLauncherResult(Report report)
         {
             this.report = report;
@@ -97,7 +97,7 @@ namespace Gallio.Runner
         /// <summary>
         /// Sets the result code of the result.
         /// </summary>
-        /// <param name="value">The new result code</param>
+        /// <param name="value">The new result code.</param>
         public void SetResultCode(int value)
         {
             resultCode = value;
@@ -106,8 +106,8 @@ namespace Gallio.Runner
         /// <summary>
         /// Adds a new report document path.
         /// </summary>
-        /// <param name="reportDocumentPath">The report document path</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="reportDocumentPath"/> is null</exception>
+        /// <param name="reportDocumentPath">The report document path.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="reportDocumentPath"/> is null.</exception>
         public void AddReportDocumentPath(string reportDocumentPath)
         {
             if (reportDocumentPath == null)
@@ -124,12 +124,12 @@ namespace Gallio.Runner
         /// This method adds the paths of the generated report documents to <see cref="ReportDocumentPaths" />.
         /// </para>
         /// </summary>
-        /// <param name="reportDirectory">The report directory</param>
-        /// <param name="reportName">The report name</param>
-        /// <param name="reportFormats">The report formats to generate</param>
-        /// <param name="reportFormatOptions">The report formatter options</param>
-        /// <param name="reportManager">The report manager</param>
-        /// <param name="progressMonitor">A progress monitor for the operation</param>
+        /// <param name="reportDirectory">The report directory.</param>
+        /// <param name="reportName">The report name.</param>
+        /// <param name="reportFormats">The report formats to generate.</param>
+        /// <param name="reportFormatOptions">The report formatter options.</param>
+        /// <param name="reportManager">The report manager.</param>
+        /// <param name="progressMonitor">A progress monitor for the operation.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="reportDirectory"/>,
         /// <paramref name="reportName"/>, <paramref name="reportFormats"/>, <paramref name="reportFormatOptions"/>,
         /// <paramref name="reportManager"/>, or <paramref name="progressMonitor"/> is null.</exception>

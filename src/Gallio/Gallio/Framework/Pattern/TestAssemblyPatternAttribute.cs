@@ -76,9 +76,9 @@ namespace Gallio.Framework.Pattern
         /// <summary>
         /// Verifies that the attribute is being used correctly.
         /// </summary>
-        /// <param name="containingScope">The containing scope</param>
-        /// <param name="assembly">The assembly</param>
-        /// <exception cref="PatternUsageErrorException">Thrown if the attribute is being used incorrectly</exception>
+        /// <param name="containingScope">The containing scope.</param>
+        /// <param name="assembly">The assembly.</param>
+        /// <exception cref="PatternUsageErrorException">Thrown if the attribute is being used incorrectly.</exception>
         protected virtual void Validate(IPatternScope containingScope, IAssemblyInfo assembly)
         {
             if (!containingScope.CanAddChildTest || assembly == null)
@@ -88,8 +88,8 @@ namespace Gallio.Framework.Pattern
         /// <summary>
         /// Initializes a test for an assembly after it has been added to the test model.
         /// </summary>
-        /// <param name="assemblyScope">The assembly scope</param>
-        /// <param name="assembly">The assembly</param>
+        /// <param name="assemblyScope">The assembly scope.</param>
+        /// <param name="assembly">The assembly.</param>
         protected virtual void InitializeAssemblyTest(IPatternScope assemblyScope, IAssemblyInfo assembly)
         {
             PropertyBag metadata = new PropertyBag();
@@ -121,8 +121,8 @@ namespace Gallio.Framework.Pattern
         /// You can override this method to change the semantics as required.
         /// </para>
         /// </remarks>
-        /// <param name="testBuilder">The test builder</param>
-        /// <param name="assembly">The assembly</param>
+        /// <param name="testBuilder">The test builder.</param>
+        /// <param name="assembly">The assembly.</param>
         protected virtual void SetTestSemantics(ITestBuilder testBuilder, IAssemblyInfo assembly)
         {
             testBuilder.TestActions.InitializeTestChain.After(
@@ -138,8 +138,8 @@ namespace Gallio.Framework.Pattern
         /// <remarks>
         /// The default implementation processes all public and non-public types within the assembly.
         /// </remarks>
-        /// <param name="assemblyScope">The assembly scope</param>
-        /// <param name="assembly">The assembly</param>
+        /// <param name="assemblyScope">The assembly scope.</param>
+        /// <param name="assembly">The assembly.</param>
         protected virtual void PopulateChildrenImmediately(IPatternScope assemblyScope, IAssemblyInfo assembly)
         {
             foreach (ITypeInfo type in assembly.GetTypes())
@@ -153,8 +153,8 @@ namespace Gallio.Framework.Pattern
         /// Prepares to populate the children of the assembly test on demand by
         /// adding a deferred populator with <see cref="IPatternScope.AddDeferredComponentPopulator" />.
         /// </summary>
-        /// <param name="assemblyScope">The assembly scope</param>
-        /// <param name="assembly">The assembly</param>
+        /// <param name="assemblyScope">The assembly scope.</param>
+        /// <param name="assembly">The assembly.</param>
         protected virtual void PrepareToPopulateChildrenOnDemand(IPatternScope assemblyScope, IAssemblyInfo assembly)
         {
             HashSet<ITypeInfo> populatedTypes = new HashSet<ITypeInfo>();

@@ -52,9 +52,9 @@ namespace Gallio.Runtime.Logging
         /// <summary>
         /// Logs a message with an associated exception.
         /// </summary>
-        /// <param name="severity">The log message severity</param>
-        /// <param name="message">The log message, not null</param>
-        /// <param name="exceptionData">The associated exception data, or null if none</param>
+        /// <param name="severity">The log message severity.</param>
+        /// <param name="message">The log message, not null.</param>
+        /// <param name="exceptionData">The associated exception data, or null if none.</param>
         protected abstract void LogImpl(LogSeverity severity, string message, ExceptionData exceptionData);
     }
 }

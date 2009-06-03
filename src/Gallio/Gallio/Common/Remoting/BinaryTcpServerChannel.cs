@@ -30,9 +30,9 @@ namespace Gallio.Common.Remoting
         /// <summary>
         /// Creates a channel.
         /// </summary>
-        /// <param name="hostName">The remotely accessed hostname</param>
-        /// <param name="portNumber">The port number</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="hostName"/> is null</exception>
+        /// <param name="hostName">The remotely accessed hostname.</param>
+        /// <param name="portNumber">The port number.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="hostName"/> is null.</exception>
         public BinaryTcpServerChannel(string hostName, int portNumber)
             : base(CreateChannel(hostName, portNumber), new Uri("tcp://" + hostName + ":" + portNumber))
         {

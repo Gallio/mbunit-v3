@@ -33,9 +33,9 @@ namespace Gallio.Common.Reflection.Impl
         /// Adds <paramref name="flagToAdd"/> to the <paramref name="flags"/> enumeration
         /// if <paramref name="condition"/> is true.
         /// </summary>
-        /// <param name="flags">The flags enumeration to update</param>
-        /// <param name="flagToAdd">The flag to add if <paramref name="condition"/> is true</param>
-        /// <param name="condition">The condition to check</param>
+        /// <param name="flags">The flags enumeration to update.</param>
+        /// <param name="flagToAdd">The flag to add if <paramref name="condition"/> is true.</param>
+        /// <param name="condition">The condition to check.</param>
         public static void AddFlagIfTrue(ref TypeAttributes flags, TypeAttributes flagToAdd, bool condition)
         {
             if (condition)
@@ -46,9 +46,9 @@ namespace Gallio.Common.Reflection.Impl
         /// Adds <paramref name="flagToAdd"/> to the <paramref name="flags"/> enumeration
         /// if <paramref name="condition"/> is true.
         /// </summary>
-        /// <param name="flags">The flags enumeration to update</param>
-        /// <param name="flagToAdd">The flag to add if <paramref name="condition"/> is true</param>
-        /// <param name="condition">The condition to check</param>
+        /// <param name="flags">The flags enumeration to update.</param>
+        /// <param name="flagToAdd">The flag to add if <paramref name="condition"/> is true.</param>
+        /// <param name="condition">The condition to check.</param>
         public static void AddFlagIfTrue(ref MethodAttributes flags, MethodAttributes flagToAdd, bool condition)
         {
             if (condition)
@@ -59,9 +59,9 @@ namespace Gallio.Common.Reflection.Impl
         /// Adds <paramref name="flagToAdd"/> to the <paramref name="flags"/> enumeration
         /// if <paramref name="condition"/> is true.
         /// </summary>
-        /// <param name="flags">The flags enumeration to update</param>
-        /// <param name="flagToAdd">The flag to add if <paramref name="condition"/> is true</param>
-        /// <param name="condition">The condition to check</param>
+        /// <param name="flags">The flags enumeration to update.</param>
+        /// <param name="flagToAdd">The flag to add if <paramref name="condition"/> is true.</param>
+        /// <param name="condition">The condition to check.</param>
         public static void AddFlagIfTrue(ref FieldAttributes flags, FieldAttributes flagToAdd, bool condition)
         {
             if (condition)
@@ -72,9 +72,9 @@ namespace Gallio.Common.Reflection.Impl
         /// Adds <paramref name="flagToAdd"/> to the <paramref name="flags"/> enumeration
         /// if <paramref name="condition"/> is true.
         /// </summary>
-        /// <param name="flags">The flags enumeration to update</param>
-        /// <param name="flagToAdd">The flag to add if <paramref name="condition"/> is true</param>
-        /// <param name="condition">The condition to check</param>
+        /// <param name="flags">The flags enumeration to update.</param>
+        /// <param name="flagToAdd">The flag to add if <paramref name="condition"/> is true.</param>
+        /// <param name="condition">The condition to check.</param>
         public static void AddFlagIfTrue(ref PropertyAttributes flags, PropertyAttributes flagToAdd, bool condition)
         {
             if (condition)
@@ -85,9 +85,9 @@ namespace Gallio.Common.Reflection.Impl
         /// Adds <paramref name="flagToAdd"/> to the <paramref name="flags"/> enumeration
         /// if <paramref name="condition"/> is true.
         /// </summary>
-        /// <param name="flags">The flags enumeration to update</param>
-        /// <param name="flagToAdd">The flag to add if <paramref name="condition"/> is true</param>
-        /// <param name="condition">The condition to check</param>
+        /// <param name="flags">The flags enumeration to update.</param>
+        /// <param name="flagToAdd">The flag to add if <paramref name="condition"/> is true.</param>
+        /// <param name="condition">The condition to check.</param>
         public static void AddFlagIfTrue(ref ParameterAttributes flags, ParameterAttributes flagToAdd, bool condition)
         {
             if (condition)
@@ -98,9 +98,9 @@ namespace Gallio.Common.Reflection.Impl
         /// Adds <paramref name="flagToAdd"/> to the <paramref name="flags"/> enumeration
         /// if <paramref name="condition"/> is true.
         /// </summary>
-        /// <param name="flags">The flags enumeration to update</param>
-        /// <param name="flagToAdd">The flag to add if <paramref name="condition"/> is true</param>
-        /// <param name="condition">The condition to check</param>
+        /// <param name="flags">The flags enumeration to update.</param>
+        /// <param name="flagToAdd">The flag to add if <paramref name="condition"/> is true.</param>
+        /// <param name="condition">The condition to check.</param>
         public static void AddFlagIfTrue(ref GenericParameterAttributes flags, GenericParameterAttributes flagToAdd, bool condition)
         {
             if (condition)
@@ -111,9 +111,9 @@ namespace Gallio.Common.Reflection.Impl
         /// Adds <paramref name="flagToAdd"/> to the <paramref name="flags"/> enumeration
         /// if <paramref name="condition"/> is true.
         /// </summary>
-        /// <param name="flags">The flags enumeration to update</param>
-        /// <param name="flagToAdd">The flag to add if <paramref name="condition"/> is true</param>
-        /// <param name="condition">The condition to check</param>
+        /// <param name="flags">The flags enumeration to update.</param>
+        /// <param name="flagToAdd">The flag to add if <paramref name="condition"/> is true.</param>
+        /// <param name="condition">The condition to check.</param>
         public static void AddFlagIfTrue(ref CallingConventions flags, CallingConventions flagToAdd, bool condition)
         {
             if (condition)

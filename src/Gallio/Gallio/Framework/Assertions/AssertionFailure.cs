@@ -123,8 +123,8 @@ namespace Gallio.Framework.Assertions
         /// <summary>
         /// Writes the assertion failure to a test log stream.
         /// </summary>
-        /// <param name="writer">The test log stream</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="writer"/> is null</exception>
+        /// <param name="writer">The test log stream.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="writer"/> is null.</exception>
         public virtual void WriteTo(MarkupStreamWriter writer)
         {
             if (writer == null)
@@ -156,7 +156,7 @@ namespace Gallio.Framework.Assertions
         /// <summary>
         /// Writes the details about the assertion failure to the structured text writer.
         /// </summary>
-        /// <param name="writer">The structured text writer, not null</param>
+        /// <param name="writer">The structured text writer, not null.</param>
         protected virtual void WriteDetails(MarkupStreamWriter writer)
         {
             if (!string.IsNullOrEmpty(message))
@@ -254,11 +254,11 @@ namespace Gallio.Framework.Assertions
             /// <summary>
             /// Creates a labeled value with plain text.
             /// </summary>
-            /// <param name="label">The label</param>
-            /// <param name="formattedValue">The formatted value as plain text</param>
+            /// <param name="label">The label.</param>
+            /// <param name="formattedValue">The formatted value as plain text.</param>
             /// <exception cref="ArgumentNullException">Thrown if <paramref name="label"/> or
-            /// <paramref name="formattedValue"/> is null</exception>
-            /// <exception cref="ArgumentException">Thrown if <paramref name="label"/> is empty</exception>
+            /// <paramref name="formattedValue"/> is null.</exception>
+            /// <exception cref="ArgumentException">Thrown if <paramref name="label"/> is empty.</exception>
             public LabeledValue(string label, string formattedValue)
                 : this(label, new StructuredText(formattedValue))
             {
@@ -267,11 +267,11 @@ namespace Gallio.Framework.Assertions
             /// <summary>
             /// Creates a labeled value with structured text.
             /// </summary>
-            /// <param name="label">The label</param>
-            /// <param name="formattedValue">The formatted value as structured text</param>
+            /// <param name="label">The label.</param>
+            /// <param name="formattedValue">The formatted value as structured text.</param>
             /// <exception cref="ArgumentNullException">Thrown if <paramref name="label"/> or
-            /// <paramref name="formattedValue"/> is null</exception>
-            /// <exception cref="ArgumentException">Thrown if <paramref name="label"/> is empty</exception>
+            /// <paramref name="formattedValue"/> is null.</exception>
+            /// <exception cref="ArgumentException">Thrown if <paramref name="label"/> is empty.</exception>
             public LabeledValue(string label, StructuredText formattedValue)
             {
                 if (label == null)

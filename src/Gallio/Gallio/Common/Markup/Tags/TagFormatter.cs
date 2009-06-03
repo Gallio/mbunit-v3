@@ -84,7 +84,7 @@ namespace Gallio.Common.Markup.Tags
         /// Ensures that the next chunk of text appended is separated by at least the specified
         /// number of line breaks.
         /// </summary>
-        /// <param name="spacing">The minimum number of line breaks to insert</param>
+        /// <param name="spacing">The minimum number of line breaks to insert.</param>
         protected void RequestMinimumSpacing(int spacing)
         {
             pendingSpacing = Math.Max(pendingSpacing, spacing);
@@ -93,7 +93,7 @@ namespace Gallio.Common.Markup.Tags
         /// <summary>
         /// Appends text to the buffer including any requested spacing.
         /// </summary>
-        /// <param name="text">The text to append</param>
+        /// <param name="text">The text to append.</param>
         protected void Append(string text)
         {
             int length = text.Length;

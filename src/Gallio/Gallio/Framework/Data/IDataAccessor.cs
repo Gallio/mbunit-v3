@@ -25,10 +25,10 @@ namespace Gallio.Framework.Data
         /// <summary>
         /// Gets a value derived from the <see cref="IDataItem" />.
         /// </summary>
-        /// <param name="item">The data item</param>
+        /// <param name="item">The data item.</param>
         /// <returns>The value</returns>
-        /// <exception cref="DataBindingException">Thrown if the data binding fails</exception>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="item"/> is null</exception>
+        /// <exception cref="DataBindingException">Thrown if the data binding fails.</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="item"/> is null.</exception>
         object GetValue(IDataItem item);
     }
 }

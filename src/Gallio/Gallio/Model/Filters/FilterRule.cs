@@ -31,9 +31,9 @@ namespace Gallio.Model.Filters
         /// <summary>
         /// Creates a filter rule.
         /// </summary>
-        /// <param name="ruleType">The rule type: inclusion or exclusion</param>
-        /// <param name="filter">The filter</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="filter"/> is null</exception>
+        /// <param name="ruleType">The rule type: inclusion or exclusion.</param>
+        /// <param name="filter">The filter.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="filter"/> is null.</exception>
         public FilterRule(FilterRuleType ruleType, Filter<T> filter)
         {
             if (filter == null)

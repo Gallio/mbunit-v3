@@ -21,8 +21,8 @@ namespace Gallio.Common
     /// A function chain captures a sequence of actions to be performed as
     /// part of a complex multi-part process.
     /// </summary>
-    /// <typeparam name="T">The function argument type</typeparam>
-    /// <typeparam name="TResult">The function result type</typeparam>
+    /// <typeparam name="T">The function argument type.</typeparam>
+    /// <typeparam name="TResult">The function result type.</typeparam>
     public class FuncChain<T, TResult>
     {
         private Func<T, TResult> func;
@@ -30,8 +30,8 @@ namespace Gallio.Common
         /// <summary>
         /// Creates a function chain.
         /// </summary>
-        /// <param name="func">The initial function</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="func"/> is null</exception>
+        /// <param name="func">The initial function.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="func"/> is null.</exception>
         public FuncChain(Func<T, TResult> func)
         {
             if (func == null)
@@ -50,7 +50,7 @@ namespace Gallio.Common
         /// passed into the constructor.
         /// </para>
         /// </summary>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
         public Func<T, TResult> Func
         {
             get { return func; }
@@ -74,8 +74,8 @@ namespace Gallio.Common
         /// that performs the specified <paramref name="decorator"/> around
         /// the current <see cref="Func" />.
         /// </remarks>
-        /// <param name="decorator">The decorator to register</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="decorator"/> is null</exception>
+        /// <param name="decorator">The decorator to register.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="decorator"/> is null.</exception>
         public void Around(FuncDecorator<T, TResult> decorator)
         {
             if (decorator == null)

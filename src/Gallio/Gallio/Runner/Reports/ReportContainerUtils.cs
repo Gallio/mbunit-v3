@@ -29,11 +29,11 @@ namespace Gallio.Runner.Reports
         /// Recursively copies files and folders from the source path in the native
         /// file system to the destination path within the report container.
         /// </summary>
-        /// <param name="container">The container</param>
-        /// <param name="sourcePathInFileSystem">The source file or directory path in the native file system</param>
-        /// <param name="destPathInContainer">The destination file or directory path in the report container</param>
+        /// <param name="container">The container.</param>
+        /// <param name="sourcePathInFileSystem">The source file or directory path in the native file system.</param>
+        /// <param name="destPathInContainer">The destination file or directory path in the report container.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="container" />,
-        /// <paramref name="sourcePathInFileSystem"/> or <paramref name="destPathInContainer"/> is null</exception>
+        /// <paramref name="sourcePathInFileSystem"/> or <paramref name="destPathInContainer"/> is null.</exception>
         public static void CopyToReport(IReportContainer container, string sourcePathInFileSystem, string destPathInContainer)
         {
             FileUtils.CopyAllIndirect(sourcePathInFileSystem, destPathInContainer, null,

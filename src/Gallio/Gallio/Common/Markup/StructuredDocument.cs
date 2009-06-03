@@ -67,9 +67,9 @@ namespace Gallio.Common.Markup
         /// <summary>
         /// Gets an attachment by name.
         /// </summary>
-        /// <param name="name">The attachment name</param>
+        /// <param name="name">The attachment name.</param>
         /// <returns>The attachment or null if not found</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> is null.</exception>
         public AttachmentData GetAttachment(string name)
         {
             if (name == null)
@@ -81,9 +81,9 @@ namespace Gallio.Common.Markup
         /// <summary>
         /// Gets a stream by name.
         /// </summary>
-        /// <param name="name">The stream name</param>
+        /// <param name="name">The stream name.</param>
         /// <returns>The stream or null if not found</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> is null.</exception>
         public StructuredStream GetStream(string name)
         {
             if (name == null)
@@ -95,8 +95,8 @@ namespace Gallio.Common.Markup
         /// <summary>
         /// Writes the contents of the document to a markup document writer.
         /// </summary>
-        /// <param name="writer">The writer</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="writer"/> is null</exception>
+        /// <param name="writer">The writer.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="writer"/> is null.</exception>
         public void WriteTo(MarkupDocumentWriter writer)
         {
             if (writer == null)

@@ -128,9 +128,9 @@ namespace Gallio.Runner.Drivers
         /// The subclass should perform any setup / teardown around the callback.
         /// </para>
         /// </remarks>
-        /// <param name="testPackageConfig">The test package configuration, not null</param>
-        /// <param name="action">The action to perform given a list of partitions, not null</param>
-        /// <param name="setStatus">An action that can be used to report progress, not null</param>
+        /// <param name="testPackageConfig">The test package configuration, not null.</param>
+        /// <param name="action">The action to perform given a list of partitions, not null.</param>
+        /// <param name="setStatus">An action that can be used to report progress, not null.</param>
         protected abstract void DoWithPartitions(TestPackageConfig testPackageConfig, Action<IList<Partition>> action,
             Action<string> setStatus);
 
@@ -147,10 +147,10 @@ namespace Gallio.Runner.Drivers
             /// <summary>
             /// Creates a partition information structure.
             /// </summary>
-            /// <param name="testDriverFactory">The test driver factory</param>
-            /// <param name="testPackageConfig">The test package configuration for the driver</param>
+            /// <param name="testDriverFactory">The test driver factory.</param>
+            /// <param name="testPackageConfig">The test package configuration for the driver.</param>
             /// <exception cref="ArgumentNullException">Thrown if <paramref name="testDriverFactory"/>
-            /// or <paramref name="testPackageConfig"/> is null</exception>
+            /// or <paramref name="testPackageConfig"/> is null.</exception>
             public Partition(ITestDriverFactory testDriverFactory, TestPackageConfig testPackageConfig)
             {
                 if (testDriverFactory == null)

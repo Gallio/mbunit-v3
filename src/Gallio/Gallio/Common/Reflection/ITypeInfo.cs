@@ -205,7 +205,7 @@ namespace Gallio.Common.Reflection
         /// <summary>
         /// Gets the rank of the array type.
         /// </summary>
-        /// <exception cref="InvalidOperationException">Thrown if the type is not an array type</exception>
+        /// <exception cref="InvalidOperationException">Thrown if the type is not an array type.</exception>
         int ArrayRank { get; }
 
         /// <summary>
@@ -227,96 +227,96 @@ namespace Gallio.Common.Reflection
         /// <summary>
         /// Gets all constructors of the type that satisfy the binding flags.
         /// </summary>
-        /// <param name="bindingFlags">The binding flags</param>
+        /// <param name="bindingFlags">The binding flags.</param>
         /// <returns>The constructors</returns>
         IList<IConstructorInfo> GetConstructors(BindingFlags bindingFlags);
 
         /// <summary>
         /// Gets a method by name, or null if not found.
         /// </summary>
-        /// <param name="methodName">The method name</param>
-        /// <param name="bindingFlags">The binding flags</param>
+        /// <param name="methodName">The method name.</param>
+        /// <param name="bindingFlags">The binding flags.</param>
         /// <returns>The method</returns>
         IMethodInfo GetMethod(string methodName, BindingFlags bindingFlags);
 
         /// <summary>
         /// Gets all methods of the type that satisfy the binding flags.
         /// </summary>
-        /// <param name="bindingFlags">The binding flags</param>
+        /// <param name="bindingFlags">The binding flags.</param>
         /// <returns>The methods</returns>
         IList<IMethodInfo> GetMethods(BindingFlags bindingFlags);
 
         /// <summary>
         /// Gets a property by name, or null if not found.
         /// </summary>
-        /// <param name="propertyName">The property name</param>
-        /// <param name="bindingFlags">The binding flags</param>
+        /// <param name="propertyName">The property name.</param>
+        /// <param name="bindingFlags">The binding flags.</param>
         /// <returns>The property</returns>
         IPropertyInfo GetProperty(string propertyName, BindingFlags bindingFlags);
 
         /// <summary>
         /// Gets all properties of the type that satisfy the binding flags.
         /// </summary>
-        /// <param name="bindingFlags">The binding flags</param>
+        /// <param name="bindingFlags">The binding flags.</param>
         /// <returns>The properties</returns>
         IList<IPropertyInfo> GetProperties(BindingFlags bindingFlags);
 
         /// <summary>
         /// Gets a field by name, or null if not found.
         /// </summary>
-        /// <param name="fieldName">The field name</param>
-        /// <param name="bindingFlags">The binding flags</param>
+        /// <param name="fieldName">The field name.</param>
+        /// <param name="bindingFlags">The binding flags.</param>
         /// <returns>The property</returns>
         IFieldInfo GetField(string fieldName, BindingFlags bindingFlags);
 
         /// <summary>
         /// Gets all fields of the type that satisfy the binding flags.
         /// </summary>
-        /// <param name="bindingFlags">The binding flags</param>
+        /// <param name="bindingFlags">The binding flags.</param>
         /// <returns>The fields</returns>
         IList<IFieldInfo> GetFields(BindingFlags bindingFlags);
 
         /// <summary>
         /// Gets a event by name, or null if not found.
         /// </summary>
-        /// <param name="eventName">The event name</param>
-        /// <param name="bindingFlags">The binding flags</param>
+        /// <param name="eventName">The event name.</param>
+        /// <param name="bindingFlags">The binding flags.</param>
         /// <returns>The event</returns>
         IEventInfo GetEvent(string eventName, BindingFlags bindingFlags);
 
         /// <summary>
         /// Gets all events of the type that satisfy the binding flags.
         /// </summary>
-        /// <param name="bindingFlags">The binding flags</param>
+        /// <param name="bindingFlags">The binding flags.</param>
         /// <returns>The events</returns>
         IList<IEventInfo> GetEvents(BindingFlags bindingFlags);
 
         /// <summary>
         /// Gets a nested type by name, or null if not found.
         /// </summary>
-        /// <param name="nestedTypeName">The nested type name</param>
-        /// <param name="bindingFlags">The binding flags</param>
+        /// <param name="nestedTypeName">The nested type name.</param>
+        /// <param name="bindingFlags">The binding flags.</param>
         /// <returns>The nested type</returns>
         ITypeInfo GetNestedType(string nestedTypeName, BindingFlags bindingFlags);
 
         /// <summary>
         /// Gets all nested types of the type that satisfy the binding flags.
         /// </summary>
-        /// <param name="bindingFlags">The binding flags</param>
+        /// <param name="bindingFlags">The binding flags.</param>
         /// <returns>The nested types</returns>
         IList<ITypeInfo> GetNestedTypes(BindingFlags bindingFlags);
 
         /// <summary>
         /// Returns true if variables of this type can be assigned with values of the specified type.
         /// </summary>
-        /// <param name="type">The other type, or null if none</param>
+        /// <param name="type">The other type, or null if none.</param>
         /// <returns>True if the other type is not null and this type is assignable from the other type</returns>
         bool IsAssignableFrom(ITypeInfo type);
 
         /// <summary>
         /// Returns true if this type is a subclass of the specified type.
         /// </summary>
-        /// <param name="type">The other type, or null if none</param>
+        /// <param name="type">The other type, or null if none.</param>
         /// <returns>True if the other type is not null, this type is a subclass of the other type,
         /// and this type not the same as the other type</returns>
         bool IsSubclassOf(ITypeInfo type);
@@ -324,7 +324,7 @@ namespace Gallio.Common.Reflection
         /// <summary>
         /// Makes an array type of the specified rank.
         /// </summary>
-        /// <param name="arrayRank">The array rank</param>
+        /// <param name="arrayRank">The array rank.</param>
         /// <returns>The array type</returns>
         ITypeInfo MakeArrayType(int arrayRank);
 
@@ -343,7 +343,7 @@ namespace Gallio.Common.Reflection
         /// <summary>
         /// Makes a generic type instantiation.
         /// </summary>
-        /// <param name="genericArguments">The generic arguments</param>
+        /// <param name="genericArguments">The generic arguments.</param>
         /// <returns>The generic type instantiation</returns>
         ITypeInfo MakeGenericType(IList<ITypeInfo> genericArguments);
 
@@ -352,9 +352,9 @@ namespace Gallio.Common.Reflection
         /// </summary>
         /// <param name="throwOnError">If true, throws an exception if the target could
         /// not be resolved, otherwise returns a reflection object that represents an
-        /// unresolved member which may only support a subset of the usual operations</param>
+        /// unresolved member which may only support a subset of the usual operations.</param>
         /// <returns>The native reflection target</returns>
-        /// <exception cref="ReflectionResolveException">Thrown if the target cannot be resolved</exception>
+        /// <exception cref="ReflectionResolveException">Thrown if the target cannot be resolved.</exception>
         new Type Resolve(bool throwOnError);
     }
 }

@@ -53,8 +53,8 @@ namespace Gallio.Schema.Plugins
         /// <summary>
         /// Creates a plugin descriptor with an id.
         /// </summary>
-        /// <param name="pluginId">The plugin id</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="pluginId"/> is null</exception>
+        /// <param name="pluginId">The plugin id.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="pluginId"/> is null.</exception>
         public Plugin(string pluginId)
             : this()
         {
@@ -67,7 +67,7 @@ namespace Gallio.Schema.Plugins
         /// <summary>
         /// Gets or sets the plugin id.
         /// </summary>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
         [XmlAttribute("pluginId")]
         public string PluginId
         {

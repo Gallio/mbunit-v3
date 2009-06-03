@@ -34,10 +34,10 @@ namespace Gallio.Framework.Pattern
         /// <summary>
         /// Creates a pattern test controller.
         /// </summary>
-        /// <param name="formatter">The formatter for data binding</param>
-        /// <param name="converter">The converter for data binding</param>
+        /// <param name="formatter">The formatter for data binding.</param>
+        /// <param name="converter">The converter for data binding.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="formatter"/>
-        /// or <paramref name="converter"/> is null</exception>
+        /// or <paramref name="converter"/> is null.</exception>
         public PatternTestController(IFormatter formatter, IConverter converter)
         {
             if (formatter == null)

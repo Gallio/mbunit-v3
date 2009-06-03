@@ -34,11 +34,11 @@ namespace Gallio.Runtime.Extensibility
         /// <summary>
         /// Creates a service registration.
         /// </summary>
-        /// <param name="plugin">The plugin to which the service will belong</param>
-        /// <param name="serviceId">The service id</param>
-        /// <param name="serviceTypeName">The service type name</param>
+        /// <param name="plugin">The plugin to which the service will belong.</param>
+        /// <param name="serviceId">The service id.</param>
+        /// <param name="serviceTypeName">The service type name.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="plugin"/>, <paramref name="serviceId"/>
-        /// or <paramref name="serviceTypeName"/> is null</exception>
+        /// or <paramref name="serviceTypeName"/> is null.</exception>
         public ServiceRegistration(IPluginDescriptor plugin, string serviceId, TypeName serviceTypeName)
         {
             Plugin = plugin;
@@ -49,7 +49,7 @@ namespace Gallio.Runtime.Extensibility
         /// <summary>
         /// Gets or sets the plugin to which the service will belong.
         /// </summary>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
         public IPluginDescriptor Plugin
         {
             get { return plugin; }
@@ -64,7 +64,7 @@ namespace Gallio.Runtime.Extensibility
         /// <summary>
         /// Gets or sets the service id.
         /// </summary>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
         public string ServiceId
         {
             get { return serviceId; }
@@ -79,7 +79,7 @@ namespace Gallio.Runtime.Extensibility
         /// <summary>
         /// Gets or sets the service type name.
         /// </summary>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
         public TypeName ServiceTypeName
         {
             get { return serviceTypeName; }
@@ -103,7 +103,7 @@ namespace Gallio.Runtime.Extensibility
         /// <summary>
         /// Gets or sets the traits handler factory.
         /// </summary>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
         public IHandlerFactory TraitsHandlerFactory
         {
             get

@@ -27,10 +27,10 @@ namespace Gallio.Runtime.Hosting
         /// <summary>
         /// Creates an instance of an object within a host.
         /// </summary>
-        /// <param name="host">The host in which to create the object</param>
-        /// <typeparam name="T">The type of object to create</typeparam>
+        /// <param name="host">The host in which to create the object.</param>
+        /// <typeparam name="T">The type of object to create.</typeparam>
         /// <returns>The object instance</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="host" /> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="host" /> is null.</exception>
         public static T CreateInstance<T>(IHost host)
         {
             return (T) CreateInstance(host, typeof(T));
@@ -39,11 +39,11 @@ namespace Gallio.Runtime.Hosting
         /// <summary>
         /// Creates an instance of an object within a host.
         /// </summary>
-        /// <param name="host">The host in which to create the object</param>
-        /// <param name="type">The type of object to create</param>
+        /// <param name="host">The host in which to create the object.</param>
+        /// <param name="type">The type of object to create.</param>
         /// <returns>The object instance</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="host" />
-        /// or <paramref name="type"/> is null</exception>
+        /// or <paramref name="type"/> is null.</exception>
         public static object CreateInstance(IHost host, Type type)
         {
             if (type == null)

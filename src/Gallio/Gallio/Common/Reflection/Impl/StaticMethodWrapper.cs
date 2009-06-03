@@ -37,13 +37,13 @@ namespace Gallio.Common.Reflection.Impl
         /// <summary>
         /// Creates a wrapper.
         /// </summary>
-        /// <param name="policy">The reflection policy</param>
-        /// <param name="handle">The underlying reflection object</param>
-        /// <param name="declaringType">The declaring type</param>
-        /// <param name="reflectedType">The reflected type</param>
-        /// <param name="substitution">The type substitution for generic parameters</param>
+        /// <param name="policy">The reflection policy.</param>
+        /// <param name="handle">The underlying reflection object.</param>
+        /// <param name="declaringType">The declaring type.</param>
+        /// <param name="reflectedType">The reflected type.</param>
+        /// <param name="substitution">The type substitution for generic parameters.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="policy"/>, <paramref name="handle"/>,
-        /// or <paramref name="declaringType"/> or <paramref name="reflectedType"/> is null</exception>
+        /// or <paramref name="declaringType"/> or <paramref name="reflectedType"/> is null.</exception>
         public StaticMethodWrapper(StaticReflectionPolicy policy, object handle, StaticDeclaredTypeWrapper declaringType,
             StaticDeclaredTypeWrapper reflectedType, StaticTypeSubstitution substitution)
             : base(policy, handle, declaringType, reflectedType)
@@ -157,7 +157,7 @@ namespace Gallio.Common.Reflection.Impl
         /// Gets the methods that this one overrides or hides.
         /// Only includes overrides that appear on class types, not interfaces.
         /// </summary>
-        /// <param name="overridesOnly">If true, only returns overrides</param>
+        /// <param name="overridesOnly">If true, only returns overrides.</param>
         public IEnumerable<StaticMethodWrapper> GetOverridenOrHiddenMethods(bool overridesOnly)
         {
             if (overridesOnly && !IsOverride)
@@ -188,7 +188,7 @@ namespace Gallio.Common.Reflection.Impl
         /// method hiding has taken place based on the method's name and its signature
         /// (when IsHideBySig is true).
         /// </remarks>
-        /// <param name="other">The other method</param>
+        /// <param name="other">The other method.</param>
         /// <returns>True if this method hides the other method</returns>
         public bool HidesMethod(StaticMethodWrapper other)
         {

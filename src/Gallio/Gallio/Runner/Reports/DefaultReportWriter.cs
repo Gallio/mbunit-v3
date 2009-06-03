@@ -42,9 +42,9 @@ namespace Gallio.Runner.Reports
         /// <summary>
         /// Creates a report writer for the specified report.
         /// </summary>
-        /// <param name="report">The report</param>
-        /// <param name="reportContainer">The report container</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="report"/> or <paramref name="reportContainer"/> is null</exception>
+        /// <param name="report">The report.</param>
+        /// <param name="reportContainer">The report container.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="report"/> or <paramref name="reportContainer"/> is null.</exception>
         public DefaultReportWriter(Report report, IReportContainer reportContainer)
         {
             if (report == null)

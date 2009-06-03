@@ -30,7 +30,7 @@ namespace Gallio.Runner.Extensions
         /// <summary>
         /// Creates a test runner extension manager.
         /// </summary>
-        /// <param name="factoryHandles">The factory handles, not null</param>
+        /// <param name="factoryHandles">The factory handles, not null.</param>
         public DefaultTestRunnerExtensionManager(ComponentHandle<ITestRunnerExtensionFactory, TestRunnerExtensionFactoryTraits>[] factoryHandles)
         {
             this.factoryHandles = factoryHandles;

@@ -146,7 +146,7 @@ namespace Gallio.Runner.Reports
         /// <summary>
         /// Gets or sets the test outcome summaries.
         /// </summary>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
         [XmlArray("outcomeSummaries", IsNullable=false)]
         [XmlArrayItem("outcomeSummary", typeof(TestOutcomeSummary), IsNullable=false)]
         public TestOutcomeSummary[] OutcomeSummaries
@@ -177,7 +177,7 @@ namespace Gallio.Runner.Reports
         /// <summary>
         /// Gets the number of tests with the specified outcome.
         /// </summary>
-        /// <param name="outcome">The outcome</param>
+        /// <param name="outcome">The outcome.</param>
         /// <returns>The number of tests with the specified outcome</returns>
         public int GetOutcomeCount(TestOutcome outcome)
         {
@@ -189,9 +189,9 @@ namespace Gallio.Runner.Reports
         /// <summary>
         /// Ssets the number of tests with the specified outcomee.
         /// </summary>
-        /// <param name="outcome">The outcome</param>
-        /// <param name="count">The count</param>
-        /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="count"/> is less than 0</exception>
+        /// <param name="outcome">The outcome.</param>
+        /// <param name="count">The count.</param>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="count"/> is less than 0.</exception>
         public void SetOutcomeCount(TestOutcome outcome, int count)
         {
             if (count < 0)
@@ -257,8 +257,8 @@ namespace Gallio.Runner.Reports
         /// <summary>
         /// Merges statistics from a test step run, incrementing the relevant counters.
         /// </summary>
-        /// <param name="testStepRun">The test step run</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="testStepRun"/> is null</exception>
+        /// <param name="testStepRun">The test step run.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="testStepRun"/> is null.</exception>
         public void MergeStepStatistics(TestStepRun testStepRun)
         {
             if (testStepRun == null)
@@ -286,7 +286,7 @@ namespace Gallio.Runner.Reports
         /// <remarks>
         /// Does not update the test or step count.
         /// </remarks>
-        /// <param name="outcome">The test outcome</param>
+        /// <param name="outcome">The test outcome.</param>
         public void AddOutcome(TestOutcome outcome)
         {
 

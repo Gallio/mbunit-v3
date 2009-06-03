@@ -29,10 +29,10 @@ namespace Gallio.Framework.Data
         /// <summary>
         /// Creates a row data set.
         /// </summary>
-        /// <param name="items">The sequence of items</param>
-        /// <param name="columnCount">The column count</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="items"/> is null</exception>
-        /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="columnCount"/> is negative</exception>
+        /// <param name="items">The sequence of items.</param>
+        /// <param name="columnCount">The column count.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="items"/> is null.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="columnCount"/> is negative.</exception>
         public ItemSequenceDataSet(IEnumerable<IDataItem> items, int columnCount)
         {
             if (items == null)

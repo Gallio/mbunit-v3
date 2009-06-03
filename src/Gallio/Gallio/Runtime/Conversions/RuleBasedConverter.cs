@@ -31,8 +31,8 @@ namespace Gallio.Runtime.Conversions
         /// <summary>
         /// Creates a rule-based converter.
         /// </summary>
-        /// <param name="rules">The rules to use</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="rules"/> is null</exception>
+        /// <param name="rules">The rules to use.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="rules"/> is null.</exception>
         public RuleBasedConverter(IConversionRule[] rules)
         {
             if (rules == null)

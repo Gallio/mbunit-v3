@@ -43,9 +43,9 @@ namespace Gallio.Common.Reflection.Impl
         /// <summary>
         /// Gets the XML documentation for a member.
         /// </summary>
-        /// <param name="member">The member</param>
+        /// <param name="member">The member.</param>
         /// <returns>The XML documentation for the member, or null if none available</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="member"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="member"/> is null.</exception>
         public static string GetXmlDocumentation(MemberInfo member)
         {
             if (member == null)
@@ -63,9 +63,9 @@ namespace Gallio.Common.Reflection.Impl
         /// <summary>
         /// Gets the XML documentation id of a member.
         /// </summary>
-        /// <param name="member">The member</param>
+        /// <param name="member">The member.</param>
         /// <returns>The XML documentation id of the member</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="member"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="member"/> is null.</exception>
         public static string FormatId(MemberInfo member)
         {
             if (member == null)

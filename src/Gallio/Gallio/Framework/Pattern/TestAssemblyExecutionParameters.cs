@@ -36,7 +36,7 @@ namespace Gallio.Framework.Pattern
         /// Specifies the maximum number of concurrent threads to use when tests are run in parallel.
         /// </summary>
         /// <value>The degree of parallelism.  Defaults to <see cref="Environment.ProcessorCount" /> or 2, whichever is greater.</value>
-        /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="value"/> is less than 1</exception>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="value"/> is less than 1.</exception>
         public static int DegreeOfParallelism
         {
             get { return degreeOfParallelism; }

@@ -27,7 +27,7 @@ namespace Gallio.Common
     /// decorator that runs around the current action whose execution is then
     /// under your control.
     /// </remarks>
-    /// <typeparam name="T">The action argument type</typeparam>
+    /// <typeparam name="T">The action argument type.</typeparam>
     public class ActionChain<T>
     {
         private Action<T> action;
@@ -47,7 +47,7 @@ namespace Gallio.Common
         /// <see cref="Around" />.  By default the action is <see cref="NoOp" />.
         /// </para>
         /// </summary>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
         public Action<T> Action
         {
             get
@@ -72,8 +72,8 @@ namespace Gallio.Common
         /// that performs the specified <paramref name="action"/> before
         /// the current <see cref="Action" />.
         /// </remarks>
-        /// <param name="action">The action to register</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="action"/> is null</exception>
+        /// <param name="action">The action to register.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="action"/> is null.</exception>
         public void Before(Action<T> action)
         {
             if (action == null)
@@ -94,8 +94,8 @@ namespace Gallio.Common
         /// that performs the specified <paramref name="action"/> after
         /// the current <see cref="Action" />.
         /// </remarks>
-        /// <param name="action">The action to register</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="action"/> is null</exception>
+        /// <param name="action">The action to register.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="action"/> is null.</exception>
         public void After(Action<T> action)
         {
             if (action == null)
@@ -118,8 +118,8 @@ namespace Gallio.Common
         /// that performs the specified <paramref name="decorator"/> around
         /// the current <see cref="Action" />.
         /// </remarks>
-        /// <param name="decorator">The decorator to register</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="decorator"/> is null</exception>
+        /// <param name="decorator">The decorator to register.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="decorator"/> is null.</exception>
         public void Around(ActionDecorator<T> decorator)
         {
             if (decorator == null)
@@ -151,8 +151,8 @@ namespace Gallio.Common
     /// decorator that runs around the current action whose execution is then
     /// under your control.
     /// </remarks>
-    /// <typeparam name="T1">The first argument type</typeparam>
-    /// <typeparam name="T2">The second argument type</typeparam>
+    /// <typeparam name="T1">The first argument type.</typeparam>
+    /// <typeparam name="T2">The second argument type.</typeparam>
     public class ActionChain<T1, T2>
     {
         private Action<T1, T2> action;
@@ -172,7 +172,7 @@ namespace Gallio.Common
         /// <see cref="Around" />.  By default the action is <see cref="NoOp" />.
         /// </para>
         /// </summary>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
         public Action<T1, T2> Action
         {
             get
@@ -197,8 +197,8 @@ namespace Gallio.Common
         /// that performs the specified <paramref name="action"/> before
         /// the current <see cref="Action" />.
         /// </remarks>
-        /// <param name="action">The action to register</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="action"/> is null</exception>
+        /// <param name="action">The action to register.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="action"/> is null.</exception>
         public void Before(Action<T1, T2> action)
         {
             if (action == null)
@@ -219,8 +219,8 @@ namespace Gallio.Common
         /// that performs the specified <paramref name="action"/> after
         /// the current <see cref="Action" />.
         /// </remarks>
-        /// <param name="action">The action to register</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="action"/> is null</exception>
+        /// <param name="action">The action to register.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="action"/> is null.</exception>
         public void After(Action<T1, T2> action)
         {
             if (action == null)
@@ -243,8 +243,8 @@ namespace Gallio.Common
         /// that performs the specified <paramref name="decorator"/> around
         /// the current <see cref="Action" />.
         /// </remarks>
-        /// <param name="decorator">The decorator to register</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="decorator"/> is null</exception>
+        /// <param name="decorator">The decorator to register.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="decorator"/> is null.</exception>
         public void Around(ActionDecorator<T1, T2> decorator)
         {
             if (decorator == null)

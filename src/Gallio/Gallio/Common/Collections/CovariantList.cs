@@ -24,8 +24,8 @@ namespace Gallio.Common.Collections
     /// read-only list of the more generic output type.  The wrapped
     /// list can be used to mimic covariance in method return types.
     /// </summary>
-    /// <typeparam name="TInput">The input list type</typeparam>
-    /// <typeparam name="TOutput">The output list type</typeparam>
+    /// <typeparam name="TInput">The input list type.</typeparam>
+    /// <typeparam name="TOutput">The output list type.</typeparam>
     public class CovariantList<TInput, TOutput> : IList<TOutput>
         where TInput : TOutput
     {
@@ -34,8 +34,8 @@ namespace Gallio.Common.Collections
         /// <summary>
         /// Creates a wrapper for the specified list.
         /// </summary>
-        /// <param name="inputList">The input list</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="inputList"/> is null</exception>
+        /// <param name="inputList">The input list.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="inputList"/> is null.</exception>
         public CovariantList(IList<TInput> inputList)
         {
             if (inputList == null)
@@ -53,7 +53,7 @@ namespace Gallio.Common.Collections
         /// <summary>
         /// Gets an item from the list with the specified index.
         /// </summary>
-        /// <param name="index">The index</param>
+        /// <param name="index">The index.</param>
         /// <returns>The item</returns>
         /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="index"/> is out of range.</exception>
         public TOutput this[int index]

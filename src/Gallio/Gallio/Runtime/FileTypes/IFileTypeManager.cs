@@ -33,9 +33,9 @@ namespace Gallio.Runtime.FileTypes
         /// <summary>
         /// Gets information about a registered file type by its id.
         /// </summary>
-        /// <param name="id">The file type id</param>
+        /// <param name="id">The file type id.</param>
         /// <returns>The associated file type information, or null if not found</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="id"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="id"/> is null.</exception>
         FileType GetFileTypeById(string id);
 
         /// <summary>
@@ -47,41 +47,41 @@ namespace Gallio.Runtime.FileTypes
         /// <summary>
         /// Identifies the type of a file by consulting the set of all registered file types.
         /// </summary>
-        /// <param name="fileInfo">The file to identify</param>
+        /// <param name="fileInfo">The file to identify.</param>
         /// <returns>The file type of the file, or <see cref="UnknownFileType" /> type if unidentified</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="fileInfo"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="fileInfo"/> is null.</exception>
         FileType IdentifyFileType(FileInfo fileInfo);
 
         /// <summary>
         /// Identifies the type of a file by consulting the set of all registered file types.
         /// </summary>
-        /// <param name="fileInspector">The file inspector for the file to identify</param>
+        /// <param name="fileInspector">The file inspector for the file to identify.</param>
         /// <returns>The file type of the file, or <see cref="UnknownFileType" /> type if unidentified</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="fileInspector"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="fileInspector"/> is null.</exception>
         FileType IdentifyFileType(IFileInspector fileInspector);
 
         /// <summary>
         /// Identifies the type of a file by consulting only the specified list of file type candidates.
         /// This is more efficient when we are interested in only a few possible results.
         /// </summary>
-        /// <param name="fileInfo">The file to identify</param>
-        /// <param name="candidates">The collection of specific file type candidates to consider</param>
+        /// <param name="fileInfo">The file to identify.</param>
+        /// <param name="candidates">The collection of specific file type candidates to consider.</param>
         /// <returns>The file type of the file, or <see cref="UnknownFileType" /> type if unidentified
         /// among the candidates considered</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="fileInfo"/> or
-        /// <paramref name="candidates"/> is null</exception>
+        /// <paramref name="candidates"/> is null.</exception>
         FileType IdentifyFileType(FileInfo fileInfo, IEnumerable<FileType> candidates);
 
         /// <summary>
         /// Identifies the type of a file by consulting only the specified list of file type candidates.
         /// This is more efficient when we are interested in only a few possible results.
         /// </summary>
-        /// <param name="fileInspector">The file inspector for the file to identify</param>
-        /// <param name="candidates">The collection of specific file type candidates to consider</param>
+        /// <param name="fileInspector">The file inspector for the file to identify.</param>
+        /// <param name="candidates">The collection of specific file type candidates to consider.</param>
         /// <returns>The file type of the file, or <see cref="UnknownFileType" /> type if unidentified
         /// among the candidates considered</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="fileInspector"/> or
-        /// <paramref name="candidates"/> is null</exception>
+        /// <paramref name="candidates"/> is null.</exception>
         FileType IdentifyFileType(IFileInspector fileInspector, IEnumerable<FileType> candidates);
     }
 }

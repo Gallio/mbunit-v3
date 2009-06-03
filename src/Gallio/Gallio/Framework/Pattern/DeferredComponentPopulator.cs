@@ -30,6 +30,6 @@ namespace Gallio.Framework.Pattern
     /// components.
     /// </remarks>
     /// <param name="codeElementHint">The code element hint to identify the location of the
-    /// particular components to populate, or null to populate them all</param>
+    /// particular components to populate, or null to populate them all.</param>
     public delegate void DeferredComponentPopulator(ICodeElementInfo codeElementHint);
 }

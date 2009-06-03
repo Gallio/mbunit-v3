@@ -35,7 +35,7 @@ namespace Gallio.Runtime.ConsoleSupport
         /// <summary>
         /// Initializes new instance of CommandLineOutput.
         /// </summary>
-        ///<param name="console">The console</param>
+        ///<param name="console">The console.</param>
         public CommandLineOutput(IRichConsole console)
             : this(console.Out, console.Width)
         {
@@ -44,7 +44,7 @@ namespace Gallio.Runtime.ConsoleSupport
         /// <summary>
         /// Initializes new instance of CommandLineOutput that outputs to specified stream.
         /// </summary>
-        /// <param name="output">Text writer</param>
+        /// <param name="output">Text writer.</param>
         public CommandLineOutput(TextWriter output)
         {
             this.output = output;
@@ -54,8 +54,8 @@ namespace Gallio.Runtime.ConsoleSupport
         /// <summary>
         /// Initializes new instance of CommandLineOutput that outputs to specified stream.
         /// </summary>
-        /// <param name="output">Text writer</param>
-        /// <param name="width">The output width</param>
+        /// <param name="output">Text writer.</param>
+        /// <param name="width">The output width.</param>
         public CommandLineOutput(TextWriter output, int width)
         {
             this.output = output;

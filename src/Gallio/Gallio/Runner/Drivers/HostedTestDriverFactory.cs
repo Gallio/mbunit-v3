@@ -34,11 +34,11 @@ namespace Gallio.Runner.Drivers
         /// <summary>
         /// Creates a hosted test driver factory.
         /// </summary>
-        /// <param name="hostFactory">The host factory</param>
-        /// <param name="frameworkManager">The test framework manager</param>
-        /// <param name="runtime">The Gallio runtime</param>
+        /// <param name="hostFactory">The host factory.</param>
+        /// <param name="frameworkManager">The test framework manager.</param>
+        /// <param name="runtime">The Gallio runtime.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="hostFactory"/>,
-        /// <paramref name="frameworkManager"/>, or <paramref name="runtime"/> is null</exception>
+        /// <paramref name="frameworkManager"/>, or <paramref name="runtime"/> is null.</exception>
         public HostedTestDriverFactory(IHostFactory hostFactory, ITestFrameworkManager frameworkManager, IRuntime runtime)
         {
             if (hostFactory == null)

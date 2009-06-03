@@ -45,8 +45,8 @@ namespace Gallio.Model.Filters
         /// </list>
         /// </param>
         /// <param name="includeDerivedTypes">If true, subclasses and interface implementations of the specified
-        /// type are also matched by the filter if they can be located</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="typeNameFilter"/> is null</exception>
+        /// type are also matched by the filter if they can be located.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="typeNameFilter"/> is null.</exception>
         public TypeFilter(Filter<string> typeNameFilter, bool includeDerivedTypes)
             : base(typeNameFilter)
         {

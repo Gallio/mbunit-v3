@@ -24,8 +24,8 @@ namespace Gallio.Model
     /// The abstract base class of a list that wraps model objects
     /// with their corresponding reflection types derived from <see cref="BaseInfo" />.
     /// </summary>
-    /// <typeparam name="TModel">The model object type</typeparam>
-    /// <typeparam name="TInfo">The reflection type</typeparam>
+    /// <typeparam name="TModel">The model object type.</typeparam>
+    /// <typeparam name="TInfo">The reflection type.</typeparam>
     public abstract class BaseInfoList<TModel, TInfo> : IList<TInfo>
         where TModel : class where TInfo : BaseInfo, TModel
     {
@@ -34,8 +34,8 @@ namespace Gallio.Model
         /// <summary>
         /// Creates a wrapper for the specified input list of model objects.
         /// </summary>
-        /// <param name="inputList">The input list</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="inputList"/> is null</exception>
+        /// <param name="inputList">The input list.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="inputList"/> is null.</exception>
         internal BaseInfoList(IList<TModel> inputList)
         {
             if (inputList == null)
@@ -59,7 +59,7 @@ namespace Gallio.Model
         /// <summary>
         /// Gets an item from the list with the specified index.
         /// </summary>
-        /// <param name="index">The index</param>
+        /// <param name="index">The index.</param>
         /// <returns>The item</returns>
         /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="index"/> is out of range.</exception>
         public TInfo this[int index]
@@ -113,14 +113,14 @@ namespace Gallio.Model
         /// <summary>
         /// Wraps the specified input item.
         /// </summary>
-        /// <param name="inputItem">The input item</param>
+        /// <param name="inputItem">The input item.</param>
         /// <returns>The output item</returns>
         protected abstract TInfo Wrap(TModel inputItem);
 
         /// <summary>
         /// Unwraps the specified output item.
         /// </summary>
-        /// <param name="infoItem">The output item</param>
+        /// <param name="infoItem">The output item.</param>
         /// <returns>The corresponding input item or null if the output item is a valid wrapper</returns>
         protected static TModel Unwrap(TInfo infoItem)
         {

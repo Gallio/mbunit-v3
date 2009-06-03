@@ -79,10 +79,10 @@ namespace Gallio.Framework.Data
         /// <summary>
         /// Creates an XML data set.
         /// </summary>
-        /// <param name="documentProvider">A delegate that produces the XML document on demand</param>
-        /// <param name="itemPath">The XPath expression used to select items within the document</param>
-        /// <param name="isDynamic">True if the data set should be considered dynamic</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="documentProvider"/> or <paramref name="itemPath"/> is null</exception>
+        /// <param name="documentProvider">A delegate that produces the XML document on demand.</param>
+        /// <param name="itemPath">The XPath expression used to select items within the document.</param>
+        /// <param name="isDynamic">True if the data set should be considered dynamic.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="documentProvider"/> or <paramref name="itemPath"/> is null.</exception>
         public XmlDataSet(Func<IXPathNavigable> documentProvider, string itemPath, bool isDynamic)
         {
             if (documentProvider == null)

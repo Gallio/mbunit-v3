@@ -31,8 +31,8 @@ namespace Gallio.Common.Concurrency
         /// <summary>
         /// Creates event arguments.
         /// </summary>
-        /// <param name="processStartInfo">The process start info being configured</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="processStartInfo"/> is null</exception>
+        /// <param name="processStartInfo">The process start info being configured.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="processStartInfo"/> is null.</exception>
         public ConfigureProcessStartInfoEventArgs(ProcessStartInfo processStartInfo)
         {
             if (processStartInfo == null)

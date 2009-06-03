@@ -31,12 +31,12 @@ namespace Gallio.Runtime.Extensibility
         /// <summary>
         /// Creates an assembly reference object.
         /// </summary>
-        /// <param name="assemblyName">The assembly name</param>
-        /// <param name="codeBase">The assembly codebase, or null if unknown</param>
+        /// <param name="assemblyName">The assembly name.</param>
+        /// <param name="codeBase">The assembly codebase, or null if unknown.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="assemblyName"/>
-        /// is null</exception>
+        /// is null.</exception>
         /// <exception cref="ArgumentException">Thrown if <paramref name="codeBase"/>
-        /// is not null and is not an absolute Uri</exception>
+        /// is not null and is not an absolute Uri.</exception>
         public AssemblyReference(AssemblyName assemblyName, Uri codeBase)
         {
             if (assemblyName == null)

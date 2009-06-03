@@ -32,13 +32,13 @@ namespace Gallio.Common.Policies
         /// <summary>
         /// Creates event arguments for reporting an exception.
         /// </summary>
-        /// <param name="message">The message associated with the exception</param>
-        /// <param name="exception">The exception that occurred</param>
-        /// <param name="reporterStackTrace">The stack trace of the code that called to report the exception, or null if not available</param>
+        /// <param name="message">The message associated with the exception.</param>
+        /// <param name="exception">The exception that occurred.</param>
+        /// <param name="reporterStackTrace">The stack trace of the code that called to report the exception, or null if not available.</param>
         /// <param name="isRecursive">True if a second exception occurred while attempting to report a previous
-        /// unhandled exception on the same thread</param>
+        /// unhandled exception on the same thread.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="message"/> or
-        /// <paramref name="exception"/> is null</exception>
+        /// <paramref name="exception"/> is null.</exception>
         public CorrelatedExceptionEventArgs(string message, Exception exception, string reporterStackTrace, bool isRecursive)
         {
             if (message == null)
@@ -93,8 +93,8 @@ namespace Gallio.Common.Policies
         /// Adds a message that serves to describe the context in which the exception occurred.
         /// The <see cref="Message" /> will be augmented with these details.
         /// </summary>
-        /// <param name="correlationMessage">The correlation message to append</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="correlationMessage"/> is null</exception>
+        /// <param name="correlationMessage">The correlation message to append.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="correlationMessage"/> is null.</exception>
         /// <seealso cref="UnhandledExceptionPolicy.CorrelateUnhandledException"/>
         public void AddCorrelationMessage(string correlationMessage)
         {

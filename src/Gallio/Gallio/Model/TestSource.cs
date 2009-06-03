@@ -68,8 +68,8 @@ namespace Gallio.Model
         /// <summary>
         /// Adds an assembly.
         /// </summary>
-        /// <param name="assembly">The assembly to add</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="assembly"/> is null</exception>
+        /// <param name="assembly">The assembly to add.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="assembly"/> is null.</exception>
         public void AddAssembly(IAssemblyInfo assembly)
         {
             if (assembly == null)
@@ -81,8 +81,8 @@ namespace Gallio.Model
         /// <summary>
         /// Adds a type.
         /// </summary>
-        /// <param name="type">The type to add</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="type"/> is null</exception>
+        /// <param name="type">The type to add.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="type"/> is null.</exception>
         public void AddType(ITypeInfo type)
         {
             if (type == null)
@@ -94,8 +94,8 @@ namespace Gallio.Model
         /// <summary>
         /// Adds a file.
         /// </summary>
-        /// <param name="file">The file to add</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="file"/> is null</exception>
+        /// <param name="file">The file to add.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="file"/> is null.</exception>
         public void AddFile(FileInfo file)
         {
             if (file == null)

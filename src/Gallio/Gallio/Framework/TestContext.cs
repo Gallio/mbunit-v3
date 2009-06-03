@@ -59,9 +59,9 @@ namespace Gallio.Framework
         /// <summary>
         /// Creates a wrapper for a <see cref="ITestContext" />.
         /// </summary>
-        /// <param name="inner">The context to wrap</param>
-        /// <param name="sandbox">The sandbox to use, or null if none</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="inner"/> is null</exception>
+        /// <param name="inner">The context to wrap.</param>
+        /// <param name="sandbox">The sandbox to use, or null if none.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="inner"/> is null.</exception>
         private TestContext(ITestContext inner, Sandbox sandbox)
         {
             if (inner == null)
@@ -111,10 +111,10 @@ namespace Gallio.Framework
         /// represented by the specified context.
         /// </para>
         /// </remarks>
-        /// <param name="thread">The thread</param>
+        /// <param name="thread">The thread.</param>
         /// <param name="context">The context to associate with the thread, or null to reset the
-        /// thread's default context to inherit the <see cref="GlobalContext" /> once again</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="thread"/> is null</exception>
+        /// thread's default context to inherit the <see cref="GlobalContext" /> once again.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="thread"/> is null.</exception>
         public static void SetThreadDefaultContext(Thread thread, TestContext context)
         {
             ContextTracker.SetThreadDefaultContext(thread, context.inner);
@@ -137,9 +137,9 @@ namespace Gallio.Framework
         /// represented by the specified context.
         /// </para>
         /// </remarks>
-        /// <param name="thread">The thread</param>
+        /// <param name="thread">The thread.</param>
         /// <returns>The default context</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="thread"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="thread"/> is null.</exception>
         public static TestContext GetThreadDefaultContext(Thread thread)
         {
             return WrapContext(ContextTracker.GetThreadDefaultContext(thread));
@@ -154,7 +154,7 @@ namespace Gallio.Framework
         /// to restore the current thread's context to its previous value.
         /// </remarks>
         /// <param name="context">The context to enter, or null to enter a scope
-        /// without a context</param>
+        /// without a context.</param>
         /// <returns>A cookie that can be used to restore the current thread's context to its previous value</returns>
         /// <seealso cref="TestContextCookie"/>
         public static TestContextCookie EnterContext(TestContext context)
@@ -217,7 +217,7 @@ namespace Gallio.Framework
         /// Gets or sets the lifecycle phase the context is in.
         /// </summary>
         /// <seealso cref="LifecyclePhases"/>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
         public string LifecyclePhase
         {
             get { return inner.LifecyclePhase; }
@@ -313,16 +313,16 @@ namespace Gallio.Framework
         /// to ensure that the expected outcome was obtained.
         /// </para>
         /// </remarks>
-        /// <param name="name">The name of the step</param>
-        /// <param name="action">The action to perform</param>
-        /// <param name="timeout">The step execution timeout, or null if none</param>
-        /// <param name="isTestCase">True if the step represents an independent test case</param>
-        /// <param name="codeElement">The associated code element, or null if none</param>
+        /// <param name="name">The name of the step.</param>
+        /// <param name="action">The action to perform.</param>
+        /// <param name="timeout">The step execution timeout, or null if none.</param>
+        /// <param name="isTestCase">True if the step represents an independent test case.</param>
+        /// <param name="codeElement">The associated code element, or null if none.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> or
-        /// <paramref name="action"/> is null</exception>
+        /// <paramref name="action"/> is null.</exception>
         /// <returns>The context of the step that ran</returns>
-        /// <exception cref="ArgumentException">Thrown if <paramref name="name"/> is the empty string</exception>
-        /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="timeout"/> is negative</exception>
+        /// <exception cref="ArgumentException">Thrown if <paramref name="name"/> is the empty string.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="timeout"/> is negative.</exception>
         public TestContext RunStep(string name, Action action, TimeSpan? timeout, bool isTestCase, ICodeElementInfo codeElement)
         {
             if (name == null)
@@ -368,18 +368,18 @@ namespace Gallio.Framework
         /// was obtained, then raises an assertion failure.
         /// </para>
         /// </remarks>
-        /// <param name="name">The name of the step</param>
-        /// <param name="action">The action to perform</param>
-        /// <param name="timeout">The step execution timeout, or null if none</param>
-        /// <param name="isTestCase">True if the step represents an independent test case</param>
-        /// <param name="codeElement">The associated code element, or null if none</param>
-        /// <param name="expectedOutcome">The expected outcome of the step</param>
+        /// <param name="name">The name of the step.</param>
+        /// <param name="action">The action to perform.</param>
+        /// <param name="timeout">The step execution timeout, or null if none.</param>
+        /// <param name="isTestCase">True if the step represents an independent test case.</param>
+        /// <param name="codeElement">The associated code element, or null if none.</param>
+        /// <param name="expectedOutcome">The expected outcome of the step.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> or
-        /// <paramref name="action"/> is null</exception>
+        /// <paramref name="action"/> is null.</exception>
         /// <returns>The context of the step that ran</returns>
-        /// <exception cref="ArgumentException">Thrown if <paramref name="name"/> is the empty string</exception>
-        /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="timeout"/> is negative</exception>
-        /// <exception cref="AssertionFailureException">Thrown if the expected outcome was not obtained</exception>
+        /// <exception cref="ArgumentException">Thrown if <paramref name="name"/> is the empty string.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="timeout"/> is negative.</exception>
+        /// <exception cref="AssertionFailureException">Thrown if the expected outcome was not obtained.</exception>
         public TestContext RunStepAndVerifyOutcome(string name, Action action, TimeSpan? timeout, bool isTestCase, ICodeElementInfo codeElement, TestOutcome expectedOutcome)
         {
             TestContext childContext = RunStep(name, action, timeout, isTestCase, codeElement);
@@ -402,10 +402,10 @@ namespace Gallio.Framework
         /// <summary>
         /// Adds metadata to the step that is running in the context.
         /// </summary>
-        /// <param name="metadataKey">The metadata key</param>
-        /// <param name="metadataValue">The metadata value</param>
+        /// <param name="metadataKey">The metadata key.</param>
+        /// <param name="metadataValue">The metadata value.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="metadataKey"/>
-        /// or <paramref name="metadataValue"/> is null</exception>
+        /// or <paramref name="metadataValue"/> is null.</exception>
         public void AddMetadata(string metadataKey, string metadataValue)
         {
             inner.AddMetadata(metadataKey, metadataValue);
@@ -424,7 +424,7 @@ namespace Gallio.Framework
         /// that was set using this method.
         /// </para>
         /// </remarks>
-        /// <exception cref="InvalidOperationException">Thrown if attempting to set the outcome while the test is not running</exception>
+        /// <exception cref="InvalidOperationException">Thrown if attempting to set the outcome while the test is not running.</exception>
         /// <seealso cref="Outcome"/>
         public void SetInterimOutcome(TestOutcome outcome)
         {
@@ -457,7 +457,7 @@ namespace Gallio.Framework
         /// <summary>
         /// Adds the specified amount to the assert count atomically.
         /// </summary>
-        /// <param name="value">The amount to add to the assert count</param>
+        /// <param name="value">The amount to add to the assert count.</param>
         public void AddAssertCount(int value)
         {
             inner.AddAssertCount(value);
@@ -466,11 +466,11 @@ namespace Gallio.Framework
         /// <summary>
         /// Starts a child step of the context.
         /// </summary>
-        /// <param name="name">The name of the step</param>
-        /// <param name="codeElement">The code element, or null if none</param>
-        /// <param name="isTestCase">True if the step represents an independent test case</param>
+        /// <param name="name">The name of the step.</param>
+        /// <param name="codeElement">The code element, or null if none.</param>
+        /// <param name="isTestCase">True if the step represents an independent test case.</param>
         /// <returns>The context of the child step</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> is null.</exception>
         internal TestContext StartChildStep(string name, ICodeElementInfo codeElement, bool isTestCase)
         {
             BaseTestStep testStep = new BaseTestStep(inner.TestStep.Test, inner.TestStep, name, codeElement, false);
@@ -482,7 +482,7 @@ namespace Gallio.Framework
         /// <summary>
         /// Finishes the step represented by the context.
         /// </summary>
-        /// <param name="outcome">The outcome</param>
+        /// <param name="outcome">The outcome.</param>
         internal void FinishStep(TestOutcome outcome)
         {
             inner.FinishStep(outcome, null);
@@ -492,10 +492,10 @@ namespace Gallio.Framework
         /// Prepares a <see cref="TestContext" /> wrapper for the given inner context.
         /// The wrapper is cached for the duration of the lifetime of the inner context.
         /// </summary>
-        /// <param name="inner">The new inner context</param>
-        /// <param name="sandbox">The sandbox to use, or null if none</param>
+        /// <param name="inner">The new inner context.</param>
+        /// <param name="sandbox">The sandbox to use, or null if none.</param>
         /// <returns>The wrapper context</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="inner"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="inner"/> is null.</exception>
         internal static TestContext PrepareContext(ITestContext inner, Sandbox sandbox)
         {
             TestContext context = new TestContext(inner, sandbox);
@@ -508,7 +508,7 @@ namespace Gallio.Framework
         /// Wraps an existing context.  If the context has already been prepared, returns
         /// the prepared context.  Otherwise creates a new wrapper.
         /// </summary>
-        /// <param name="inner">The context to wrap, or null if none</param>
+        /// <param name="inner">The context to wrap, or null if none.</param>
         /// <returns>The wrapped context, or null if none</returns>
         internal static TestContext WrapContext(ITestContext inner)
         {

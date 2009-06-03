@@ -32,8 +32,8 @@ namespace Gallio.Model
         /// <summary>
         /// Creates a test model with a new empty root test.
         /// </summary>
-        /// <param name="testPackage">The test package from which the model was created</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="testPackage"/> is null</exception>
+        /// <param name="testPackage">The test package from which the model was created.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="testPackage"/> is null.</exception>
         public TestModel(TestPackage testPackage)
             : this(testPackage, new RootTest())
         {
@@ -42,9 +42,9 @@ namespace Gallio.Model
         /// <summary>
         /// Creates a test model.
         /// </summary>
-        /// <param name="testPackage">The test package from which the model was created</param>
-        /// <param name="rootTest">The root test</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="testPackage" /> or <paramref name="rootTest"/> is null</exception>
+        /// <param name="testPackage">The test package from which the model was created.</param>
+        /// <param name="rootTest">The root test.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="testPackage" /> or <paramref name="rootTest"/> is null.</exception>
         public TestModel(TestPackage testPackage, RootTest rootTest)
         {
             if (testPackage == null)
@@ -115,8 +115,8 @@ namespace Gallio.Model
         /// <summary>
         /// Adds an annotation.
         /// </summary>
-        /// <param name="annotation">The annotation to add</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="annotation"/> is null</exception>
+        /// <param name="annotation">The annotation to add.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="annotation"/> is null.</exception>
         /// <seealso cref="Annotations"/>
         public void AddAnnotation(Annotation annotation)
         {

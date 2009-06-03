@@ -63,7 +63,7 @@ namespace Gallio.Framework.Pattern
         /// The timeout may be null to indicate the absence of a timeout.
         /// </summary>
         /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="value"/>
-        /// represents a negative time span</exception>
+        /// represents a negative time span.</exception>
         /// <value>The timeout.  Default value is null.</value>
         TimeSpan? Timeout { get; set; }
 
@@ -163,28 +163,28 @@ namespace Gallio.Framework.Pattern
         /// <summary>
         /// Creates a child test and returns its builder.
         /// </summary>
-        /// <param name="name">The test name</param>
-        /// <param name="codeElement">The associated code element, or null if none</param>
-        /// <param name="dataContextBuilder">The data context builder for the new test</param>
+        /// <param name="name">The test name.</param>
+        /// <param name="codeElement">The associated code element, or null if none.</param>
+        /// <param name="dataContextBuilder">The data context builder for the new test.</param>
         /// <returns>The builder for the child test</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> or <paramref name="dataContextBuilder"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> or <paramref name="dataContextBuilder"/> is null.</exception>
         ITestBuilder CreateChild(string name, ICodeElementInfo codeElement, ITestDataContextBuilder dataContextBuilder);
 
         /// <summary>
         /// Creates a test parameter and returns its builder.
         /// </summary>
-        /// <param name="name">The test parameter name</param>
-        /// <param name="codeElement">The associated code element, or null if none</param>
-        /// <param name="dataContextBuilder">The data context builder for the new test parameter</param>
+        /// <param name="name">The test parameter name.</param>
+        /// <param name="codeElement">The associated code element, or null if none.</param>
+        /// <param name="dataContextBuilder">The data context builder for the new test parameter.</param>
         /// <returns>The builder for the test parameter</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> or <paramref name="dataContextBuilder"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> or <paramref name="dataContextBuilder"/> is null.</exception>
         ITestParameterBuilder CreateParameter(string name, ICodeElementInfo codeElement, ITestDataContextBuilder dataContextBuilder);
 
         /// <summary>
         /// Adds a test dependency.
         /// </summary>
-        /// <param name="testDependency">The test to add as a dependency</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="testDependency"/> is null</exception>
+        /// <param name="testDependency">The test to add as a dependency.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="testDependency"/> is null.</exception>
         void AddDependency(ITest testDependency);
 
         /// <summary>
@@ -194,8 +194,8 @@ namespace Gallio.Framework.Pattern
         /// This method works by adding <see cref="MetadataKeys.ExpectedException" /> metadata containing
         /// the type name as value.
         /// </remarks>
-        /// <param name="typeName">The expected exception type name</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="typeName"/> is null</exception>
+        /// <param name="typeName">The expected exception type name.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="typeName"/> is null.</exception>
         void SetExpectedExceptionType(string typeName);
 
         /// <summary>

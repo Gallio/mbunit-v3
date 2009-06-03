@@ -94,8 +94,8 @@ namespace Gallio.Framework.Pattern
         /// This method is only called for primary patterns.
         /// </para>
         /// </remarks>
-        /// <param name="evaluator">The evaluator</param>
-        /// <param name="codeElement">The code element</param>
+        /// <param name="evaluator">The evaluator.</param>
+        /// <param name="codeElement">The code element.</param>
         /// <returns>True if the code element represents a test</returns>
         /// <exception cref="PatternUsageErrorException">May be thrown to halt processing of the pattern
         /// and report an error message to the user as an annotation that describes how the
@@ -113,8 +113,8 @@ namespace Gallio.Framework.Pattern
         /// This method is only called for primary patterns.
         /// </para>
         /// </remarks>
-        /// <param name="evaluator">The evaluator</param>
-        /// <param name="codeElement">The code element</param>
+        /// <param name="evaluator">The evaluator.</param>
+        /// <param name="codeElement">The code element.</param>
         /// <returns>True if the code element represents a test</returns>
         /// <exception cref="PatternUsageErrorException">May be thrown to halt processing of the pattern
         /// and report an error message to the user as an annotation that describes how the
@@ -146,8 +146,8 @@ namespace Gallio.Framework.Pattern
         /// This method is only called for primary patterns.
         /// </para>
         /// </remarks>
-        /// <param name="containingScope">The containing scope</param>
-        /// <param name="codeElement">The code element to process</param>
+        /// <param name="containingScope">The containing scope.</param>
+        /// <param name="codeElement">The code element to process.</param>
         /// <param name="skipChildren">If true, skips generating child test components.
         /// Instead the children may be populated on demand using
         /// <see cref="IPatternScope.AddDeferredComponentPopulator" />.  The implementation
@@ -176,8 +176,8 @@ namespace Gallio.Framework.Pattern
         /// to add metadata, change its name, add new behaviors, and so on.
         /// </para>
         /// </summary>
-        /// <param name="scope">The scope</param>
-        /// <param name="codeElement">The code element to process</param>
+        /// <param name="scope">The scope.</param>
+        /// <param name="codeElement">The code element to process.</param>
         /// <exception cref="PatternUsageErrorException">May be thrown to halt processing of the pattern
         /// and report an error message to the user as an annotation that describes how the
         /// pattern was misapplied.</exception>

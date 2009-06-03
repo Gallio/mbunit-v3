@@ -27,8 +27,8 @@ namespace Gallio.Model
         /// <summary>
         /// Copies the contents of a model object.
         /// </summary>
-        /// <param name="source">The source model object</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="source"/> is null</exception>
+        /// <param name="source">The source model object.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="source"/> is null.</exception>
         internal BaseInfo(object source)
         {
             if (source == null)
@@ -46,7 +46,7 @@ namespace Gallio.Model
         /// <summary>
         /// Compares this object's source for equality with the other's source.
         /// </summary>
-        /// <param name="other">The other object</param>
+        /// <param name="other">The other object.</param>
         /// <returns>True if the objects are equal</returns>
         public bool Equals(BaseInfo other)
         {

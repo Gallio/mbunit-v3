@@ -123,17 +123,17 @@ namespace Gallio.Framework.Pattern
         /// <summary>
         /// Creates and registers a scope for a test component.
         /// </summary>
-        /// <param name="codeElement">The code element to associate with the scope</param>
-        /// <param name="testBuilder">The test builder</param>
+        /// <param name="codeElement">The code element to associate with the scope.</param>
+        /// <param name="testBuilder">The test builder.</param>
         /// <param name="testParameterBuilder">The test parameter builder, or null if the scope
-        /// is to be associated to the test only</param>
-        /// <param name="testDataContextBuilder">The test data context builder</param>
+        /// is to be associated to the test only.</param>
+        /// <param name="testDataContextBuilder">The test data context builder.</param>
         /// <param name="isDeclaration">If true, the scope represents the point of declaration
-        /// of the test component with which it is associated</param>
+        /// of the test component with which it is associated.</param>
         /// <returns>The new scope</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="codeElement"/>,
         /// <paramref name="testBuilder"/>, <paramref name="testParameterBuilder"/>
-        /// or <paramref name="testDataContextBuilder"/> is null</exception>
+        /// or <paramref name="testDataContextBuilder"/> is null.</exception>
         IPatternScope CreateScope(ICodeElementInfo codeElement,
             ITestBuilder testBuilder, ITestParameterBuilder testParameterBuilder,
             ITestDataContextBuilder testDataContextBuilder, bool isDeclaration);
@@ -142,11 +142,11 @@ namespace Gallio.Framework.Pattern
         /// Creates a child test with its own child data context derived from the
         /// builders of this scope.  Returns the scope of the newly created child test.
         /// </summary>
-        /// <param name="name">The test name</param>
-        /// <param name="codeElement">The associated code element, or null if none</param>
+        /// <param name="name">The test name.</param>
+        /// <param name="codeElement">The associated code element, or null if none.</param>
         /// <returns>The scope of the newly created child test</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> is null</exception>
-        /// <exception cref="PatternUsageErrorException">Thrown if <see cref="CanAddChildTest"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> is null.</exception>
+        /// <exception cref="PatternUsageErrorException">Thrown if <see cref="CanAddChildTest"/> is null.</exception>
         IPatternScope CreateChildTestScope(string name, ICodeElementInfo codeElement);
 
         /// <summary>
@@ -154,18 +154,18 @@ namespace Gallio.Framework.Pattern
         /// child data context derived from the builders of this scope.  Returns
         /// the scope of the newly created test parameter.
         /// </summary>
-        /// <param name="name">The test parameter name</param>
-        /// <param name="codeElement">The associated code element, or null if none</param>
+        /// <param name="name">The test parameter name.</param>
+        /// <param name="codeElement">The associated code element, or null if none.</param>
         /// <returns>The scope of the newly created test parameter</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> is null</exception>
-        /// <exception cref="PatternUsageErrorException">Thrown if <see cref="CanAddTestParameter"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> is null.</exception>
+        /// <exception cref="PatternUsageErrorException">Thrown if <see cref="CanAddTestParameter"/> is null.</exception>
         IPatternScope CreateTestParameterScope(string name, ICodeElementInfo codeElement);
 
         /// <summary>
         /// Creates a child test data context derived from the builders of this scope.
         /// Returns the scope of the newly created child test data context.
         /// </summary>
-        /// <param name="codeElement">The associated code element, or null if none</param>
+        /// <param name="codeElement">The associated code element, or null if none.</param>
         /// <returns>The scope of the newly created child test data context</returns>
         IPatternScope CreateChildTestDataContextScope(ICodeElementInfo codeElement);
 
@@ -175,8 +175,8 @@ namespace Gallio.Framework.Pattern
         /// <see cref="IPattern.Consume" /> is called with the option to skip children.
         /// </summary>
         /// <param name="populator">A <see cref="DeferredComponentPopulator" /> supplied by the pattern to populate
-        /// its components lazily</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="populator"/> is null</exception>
+        /// its components lazily.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="populator"/> is null.</exception>
         /// <seealso cref="PopulateDeferredComponents"/>
         void AddDeferredComponentPopulator(DeferredComponentPopulator populator);
 
@@ -185,7 +185,7 @@ namespace Gallio.Framework.Pattern
         /// construction had previously been deferred.
         /// </summary>
         /// <param name="codeElementHint">The code element hint to identify the location of the
-        /// particular components to populate, or null to populate them all</param>
+        /// particular components to populate, or null to populate them all.</param>
         /// <seealso cref="AddDeferredComponentPopulator"/>
         void PopulateDeferredComponents(ICodeElementInfo codeElementHint);
 
@@ -195,11 +195,11 @@ namespace Gallio.Framework.Pattern
         /// <remarks>
         /// This is a convenience method that calls <see cref="IPatternEvaluator.Consume" />.
         /// </remarks>
-        /// <param name="codeElement">The code element to consume</param>
-        /// <param name="skipChildren">If true, instructs the primary pattern to defer populating child tests</param>
+        /// <param name="codeElement">The code element to consume.</param>
+        /// <param name="skipChildren">If true, instructs the primary pattern to defer populating child tests.</param>
         /// <param name="defaultPrimaryPattern">The default primary pattern to use, if none can be resolved
         /// for the code element.  May be null if none.</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="codeElement"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="codeElement"/> is null.</exception>
         void Consume(ICodeElementInfo codeElement, bool skipChildren, IPattern defaultPrimaryPattern);
 
         /// <summary>
@@ -208,8 +208,8 @@ namespace Gallio.Framework.Pattern
         /// <remarks>
         /// This is a convenience method that calls <see cref="IPatternEvaluator.Process" />.
         /// </remarks>
-        /// <param name="codeElement">The code element to process</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="codeElement"/> is null</exception>
+        /// <param name="codeElement">The code element to process.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="codeElement"/> is null.</exception>
         void Process(ICodeElementInfo codeElement);
     }
 }

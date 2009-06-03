@@ -21,17 +21,17 @@ using Gallio.Framework.Pattern;
 namespace Gallio.Framework.Pattern
 {
     /// <summary>
-    /// <para>
     /// The <see cref="PatternAttribute" /> class is the base class for all pattern test framework
     /// attributes.  It associates a code element with a <see cref="IPattern" /> for building
     /// up parts of the test model using reflection.
-    /// </para>
+    /// </summary>
+    /// <remarks>
     /// <para>
     /// Subclasses of <see cref="IPattern" /> define simpler interfaces for implementing
     /// the semantics of common types of attributes such as test factories, decorators,
     /// and data providers.  Refer to the documentation of each subclass for details on its use.
     /// </para>
-    /// </summary>
+    /// </remarks>
     /// <seealso cref="IPattern"/>
     /// <seealso cref="PatternTestFramework"/>
     [SystemInternal]
@@ -69,7 +69,7 @@ namespace Gallio.Framework.Pattern
         /// Throws a <see cref="PatternUsageErrorException" /> with the specified message
         /// including a short heading that identifies the attribute type.
         /// </summary>
-        /// <param name="message">The message, not null</param>
+        /// <param name="message">The message, not null.</param>
         protected void ThrowUsageErrorException(string message)
         {
             ThrowUsageErrorException(message, null);
@@ -79,8 +79,8 @@ namespace Gallio.Framework.Pattern
         /// Throws a <see cref="PatternUsageErrorException" /> with the specified message
         /// including a short heading that identifies the attribute type.
         /// </summary>
-        /// <param name="message">The message, not null</param>
-        /// <param name="ex">The associated exception, or null if none</param>
+        /// <param name="message">The message, not null.</param>
+        /// <param name="ex">The associated exception, or null if none.</param>
         protected void ThrowUsageErrorException(string message, Exception ex)
         {
             throw new PatternUsageErrorException(String.Format("[{0}] - {1}", GetType().Name, message), ex);

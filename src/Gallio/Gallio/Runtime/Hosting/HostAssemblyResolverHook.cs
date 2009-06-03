@@ -51,10 +51,10 @@ namespace Gallio.Runtime.Hosting
         /// <remarks>
         /// This hook is recommended for newly created domains.
         /// </remarks>
-        /// <param name="host">The host</param>
-        /// <param name="runtimePath">The Gallio runtime path</param>
+        /// <param name="host">The host.</param>
+        /// <param name="runtimePath">The Gallio runtime path.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="host"/> or
-        /// <paramref name="runtimePath" /> is null</exception>
+        /// <paramref name="runtimePath" /> is null.</exception>
         public static void Bootstrap(IHost host, string runtimePath)
         {
             if (host == null)
@@ -81,8 +81,8 @@ namespace Gallio.Runtime.Hosting
         /// <remarks>
         /// This hook is useful for testing but should not be used in production code.
         /// </remarks>
-        /// <param name="host">The host</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="host"/> is null</exception>
+        /// <param name="host">The host.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="host"/> is null.</exception>
         public static void InstallCallback(IHost host)
         {
             if (host == null)

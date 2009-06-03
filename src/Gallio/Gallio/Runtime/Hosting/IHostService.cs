@@ -35,7 +35,7 @@ namespace Gallio.Runtime.Hosting
         /// <summary>
         /// Pings the host to verify and maintain connectivity.
         /// </summary>
-        /// <exception cref="HostException">Thrown if the remote host is unreachable</exception>
+        /// <exception cref="HostException">Thrown if the remote host is unreachable.</exception>
         void Ping();
 
         /// <summary>
@@ -49,32 +49,32 @@ namespace Gallio.Runtime.Hosting
         /// The argument and result values must also be serializable (or null).
         /// </para>
         /// </summary>
-        /// <param name="func">The action to perform</param>
-        /// <param name="arg">The argument value, if any</param>
+        /// <param name="func">The action to perform.</param>
+        /// <param name="arg">The argument value, if any.</param>
         /// <returns>The result value, if any</returns>
-        /// <typeparam name="TArg">The argument type</typeparam>
-        /// <typeparam name="TResult">The result type</typeparam>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="func"/> is null</exception>
+        /// <typeparam name="TArg">The argument type.</typeparam>
+        /// <typeparam name="TResult">The result type.</typeparam>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="func"/> is null.</exception>
         TResult Do<TArg, TResult>(Func<TArg, TResult> func, TArg arg);
 
         /// <summary>
         /// Creates an instance of a remote object given an assembly name and type name.
         /// </summary>
-        /// <param name="assemblyName">The name of assembly that contains the type</param>
-        /// <param name="typeName">The full name of the type</param>
+        /// <param name="assemblyName">The name of assembly that contains the type.</param>
+        /// <param name="typeName">The full name of the type.</param>
         /// <returns>The object handle of the instance</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="assemblyName"/> or
-        /// <paramref name="typeName"/> is null</exception>
+        /// <paramref name="typeName"/> is null.</exception>
         ObjectHandle CreateInstance(string assemblyName, string typeName);
 
         /// <summary>
         /// Creates an instance of a remote object given an assembly path and type name.
         /// </summary>
-        /// <param name="assemblyPath">The path of assembly that contains the type</param>
-        /// <param name="typeName">The full name of the type</param>
+        /// <param name="assemblyPath">The path of assembly that contains the type.</param>
+        /// <param name="typeName">The full name of the type.</param>
         /// <returns>The object handle of the instance</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="assemblyPath"/> or
-        /// <paramref name="typeName"/> is null</exception>
+        /// <paramref name="typeName"/> is null.</exception>
         ObjectHandle CreateInstanceFrom(string assemblyPath, string typeName);
     }
 }

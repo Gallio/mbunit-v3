@@ -53,11 +53,11 @@ namespace Gallio.Runtime.Hosting
         /// <summary>
         /// Creates an uninitialized host.
         /// </summary>
-        /// <param name="hostSetup">The host setup</param>
-        /// <param name="logger">The logger for host message output</param>
-        /// <param name="debuggerManager">The debugger manager</param>
+        /// <param name="hostSetup">The host setup.</param>
+        /// <param name="logger">The logger for host message output.</param>
+        /// <param name="debuggerManager">The debugger manager.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="hostSetup"/>, <paramref name="logger"/>
-        /// or <paramref name="debuggerManager"/> is null</exception>
+        /// or <paramref name="debuggerManager"/> is null.</exception>
         public IsolatedAppDomainHost(HostSetup hostSetup, ILogger logger, IDebuggerManager debuggerManager)
             : base(hostSetup, logger, null)
         {

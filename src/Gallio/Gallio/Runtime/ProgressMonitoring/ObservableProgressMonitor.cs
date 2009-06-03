@@ -282,8 +282,8 @@ namespace Gallio.Runtime.ProgressMonitoring
         /// <summary>
         /// Called after <see cref="BeginTask" /> performs its updates.
         /// </summary>
-        /// <param name="taskName">The task name</param>
-        /// <param name="totalWorkUnits">The total number of work units</param>
+        /// <param name="taskName">The task name.</param>
+        /// <param name="totalWorkUnits">The total number of work units.</param>
         protected virtual void OnBeginTask(string taskName, double totalWorkUnits)
         {
             EventHandlerPolicy.SafeInvoke(TaskStarting, this, EventArgs.Empty);
@@ -312,7 +312,7 @@ namespace Gallio.Runtime.ProgressMonitoring
         /// <summary>
         /// Called when <see cref="SetStatus" /> performs its updates.
         /// </summary>
-        /// <param name="status">The status message</param>
+        /// <param name="status">The status message.</param>
         protected virtual void OnSetStatus(string status)
         {
             OnChange();
@@ -321,7 +321,7 @@ namespace Gallio.Runtime.ProgressMonitoring
         /// <summary>
         /// Called when the active sub-task <see cref="BeginSubTask" /> performs its updates.
         /// </summary>
-        /// <param name="subProgressMonitor">The sub-task's progress monitor</param>
+        /// <param name="subProgressMonitor">The sub-task's progress monitor.</param>
         protected virtual void OnBeginSubTask(ObservableProgressMonitor subProgressMonitor)
         {
             OnChange();
@@ -330,7 +330,7 @@ namespace Gallio.Runtime.ProgressMonitoring
         /// <summary>
         /// Called when <see cref="EndSubTask" /> performs its updates.
         /// </summary>
-        /// <param name="subProgressMonitor">The sub-task's progress monitor</param>
+        /// <param name="subProgressMonitor">The sub-task's progress monitor.</param>
         protected virtual void OnEndSubTask(ObservableProgressMonitor subProgressMonitor)
         {
             OnChange();
@@ -339,7 +339,7 @@ namespace Gallio.Runtime.ProgressMonitoring
         /// <summary>
         /// Called when <see cref="NotifyRecursiveSubTaskChanged" /> performs its updates.
         /// </summary>
-        /// <param name="subProgressMonitor">The sub-task's progress monitor</param>
+        /// <param name="subProgressMonitor">The sub-task's progress monitor.</param>
         protected virtual void OnRecursiveSubTaskChange(ObservableProgressMonitor subProgressMonitor)
         {
             OnChange();
@@ -372,7 +372,7 @@ namespace Gallio.Runtime.ProgressMonitoring
         /// <summary>
         /// Begins a sub-task in a sub-progress monitor.
         /// </summary>
-        /// <param name="subProgressMonitor">The sub-progress monitor</param>
+        /// <param name="subProgressMonitor">The sub-progress monitor.</param>
         protected virtual void BeginSubTask(ObservableProgressMonitor subProgressMonitor)
         {
             if (subProgressMonitor == null)
@@ -392,7 +392,7 @@ namespace Gallio.Runtime.ProgressMonitoring
         /// <summary>
         /// Ends a sub-task in a sub-progress monitor.
         /// </summary>
-        /// <param name="subProgressMonitor">The sub-progress monitor</param>
+        /// <param name="subProgressMonitor">The sub-progress monitor.</param>
         protected virtual void EndSubTask(ObservableProgressMonitor subProgressMonitor)
         {
             if (subProgressMonitor == null)
@@ -412,7 +412,7 @@ namespace Gallio.Runtime.ProgressMonitoring
         /// <summary>
         /// Called when a subtask changes in any way, including one of its own subtasks changing.
         /// </summary>
-        /// <param name="subProgressMonitor">The sub-progress monitor</param>
+        /// <param name="subProgressMonitor">The sub-progress monitor.</param>
         protected virtual void NotifyRecursiveSubTaskChanged(ObservableProgressMonitor subProgressMonitor)
         {
             if (subProgressMonitor == null)
@@ -433,7 +433,7 @@ namespace Gallio.Runtime.ProgressMonitoring
             /// <summary>
             /// Creates a sub-progress monitor.
             /// </summary>
-            /// <param name="parent">The parent progress monitor</param>
+            /// <param name="parent">The parent progress monitor.</param>
             /// <param name="parentWorkUnits">The total number of work units of the parent task
             /// that are to be represented by the sub-task.</param>
             public SubProgressMonitor(ObservableProgressMonitor parent, double parentWorkUnits)

@@ -31,9 +31,9 @@ namespace Gallio.Common.Xml
         /// <summary>
         /// Saves an object graph to a pretty-printed Xml file using <see cref="XmlSerializer" />.
         /// </summary>
-        /// <param name="root">The root object</param>
-        /// <param name="filename">The filename</param>
-        /// <typeparam name="T">The root object type</typeparam>
+        /// <param name="root">The root object.</param>
+        /// <param name="filename">The filename.</param>
+        /// <typeparam name="T">The root object type.</typeparam>
         public static void SaveToXml<T>(T root, string filename)
         {
             XmlSerializer serializer = new XmlSerializer(typeof(T));
@@ -49,9 +49,9 @@ namespace Gallio.Common.Xml
         /// <summary>
         /// Loads an object graph from an Xml file using <see cref="XmlSerializer" />.
         /// </summary>
-        /// <param name="filename">The filename</param>
+        /// <param name="filename">The filename.</param>
         /// <returns>The root object</returns>
-        /// <typeparam name="T">The root object type</typeparam>
+        /// <typeparam name="T">The root object type.</typeparam>
         public static T LoadFromXml<T>(string filename)
         {
             XmlSerializer serializer = new XmlSerializer(typeof(T));

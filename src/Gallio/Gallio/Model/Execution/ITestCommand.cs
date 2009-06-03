@@ -143,11 +143,11 @@ namespace Gallio.Model.Execution
         /// test step that is starting.  The new context will be a child of the
         /// current thread's context.
         /// </remarks>
-        /// <param name="testStep">The test step to start</param>
+        /// <param name="testStep">The test step to start.</param>
         /// <returns>The test context for the test step</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="testStep"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="testStep"/> is null.</exception>
         /// <exception cref="ArgumentException">Thrown if <paramref name="testStep"/> does not
-        /// belong to the test associated with this test command</exception>
+        /// belong to the test associated with this test command.</exception>
         ITestContext StartStep(ITestStep testStep);
 
         /// <summary>
@@ -162,7 +162,7 @@ namespace Gallio.Model.Execution
         /// from the 
         /// </para>
         /// </summary>
-        /// <param name="parentTestStep">The parent test step, or null if none</param>
+        /// <param name="parentTestStep">The parent test step, or null if none.</param>
         /// <returns>The test context for the new primary test step</returns>
         /// <seealso cref="StartStep"/>
         ITestContext StartPrimaryChildStep(ITestStep parentTestStep);

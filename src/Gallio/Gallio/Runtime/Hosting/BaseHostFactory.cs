@@ -40,8 +40,8 @@ namespace Gallio.Runtime.Hosting
         /// <summary>
         /// Creates the host.
         /// </summary>
-        /// <param name="hostSetup">The canonicalized host setup, non-null</param>
-        /// <param name="logger">The logger, non-null</param>
+        /// <param name="hostSetup">The canonicalized host setup, non-null.</param>
+        /// <param name="logger">The logger, non-null.</param>
         /// <returns>The host</returns>
         protected abstract IHost CreateHostImpl(HostSetup hostSetup, ILogger logger);
     }

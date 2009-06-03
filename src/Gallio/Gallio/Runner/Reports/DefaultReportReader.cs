@@ -35,8 +35,8 @@ namespace Gallio.Runner.Reports
         /// <summary>
         /// Creates a report reader.
         /// </summary>
-        /// <param name="reportContainer">The report container</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="reportContainer"/> is null</exception>
+        /// <param name="reportContainer">The report container.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="reportContainer"/> is null.</exception>
         public DefaultReportReader(IReportContainer reportContainer)
         {
             if (reportContainer == null)

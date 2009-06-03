@@ -31,9 +31,9 @@ namespace Gallio.Runner.Events
         /// <summary>
         /// Initializes the event arguments.
         /// </summary>
-        /// <param name="report">The report</param>
-        /// <param name="test">The test at the top of the subtree that was added</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="report"/> is null</exception>
+        /// <param name="report">The report.</param>
+        /// <param name="test">The test at the top of the subtree that was added.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="report"/> is null.</exception>
         public TestModelSubtreeMergedEventArgs(Report report, TestData test)
         {
             if (report == null)

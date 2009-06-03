@@ -28,10 +28,10 @@ namespace Gallio.Runtime.Logging
         /// <summary>
         /// Creates a log event.
         /// </summary>
-        /// <param name="severity">The log severity</param>
-        /// <param name="message">The log message</param>
-        /// <param name="exceptionData">The exception data, or null if none</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="message"/> is null</exception>
+        /// <param name="severity">The log severity.</param>
+        /// <param name="message">The log message.</param>
+        /// <param name="exceptionData">The exception data, or null if none.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="message"/> is null.</exception>
         public LogMessageEventArgs(LogSeverity severity, string message, ExceptionData exceptionData)
         {
             if (message == null)

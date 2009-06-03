@@ -30,8 +30,8 @@ namespace Gallio.Model
         /// <summary>
         /// Creates a test kind manager.
         /// </summary>
-        /// <param name="testKindHandles">The test kind handles</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="testKindHandles"/> is null</exception>
+        /// <param name="testKindHandles">The test kind handles.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="testKindHandles"/> is null.</exception>
         public DefaultTestKindManager(ComponentHandle<ITestKind, TestKindTraits>[] testKindHandles)
         {
             if (testKindHandles == null || Array.IndexOf(testKindHandles, null) >= 0)

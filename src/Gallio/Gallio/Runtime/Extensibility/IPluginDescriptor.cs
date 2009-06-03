@@ -80,7 +80,7 @@ namespace Gallio.Runtime.Extensibility
         /// <summary>
         /// Gets the reason the plugin was disabled.
         /// </summary>
-        /// <exception cref="InvalidOperationException">Thrown if <see cref="IsDisabled" /> is false</exception>
+        /// <exception cref="InvalidOperationException">Thrown if <see cref="IsDisabled" /> is false.</exception>
         string DisabledReason { get; }
 
         /// <summary>
@@ -110,7 +110,7 @@ namespace Gallio.Runtime.Extensibility
         /// </para>
         /// </remarks>
         /// <param name="resourcePath">The relative or absolute path of the resource to find or null to return
-        /// the paths of the search directories themselves</param>
+        /// the paths of the search directories themselves.</param>
         /// <returns>An enumeration of search paths</returns>
         IEnumerable<string> GetSearchPaths(string resourcePath);
 
@@ -140,7 +140,7 @@ namespace Gallio.Runtime.Extensibility
         /// </para>
         /// </remarks>
         /// <returns>The plugin type</returns>
-        /// <exception cref="RuntimeException">Thrown if an error occurs during resolution</exception>
+        /// <exception cref="RuntimeException">Thrown if an error occurs during resolution.</exception>
         Type ResolvePluginType();
 
         /// <summary>
@@ -154,7 +154,7 @@ namespace Gallio.Runtime.Extensibility
         /// </para>
         /// </remarks>
         /// <returns>The plugin handler</returns>
-        /// <exception cref="RuntimeException">Thrown if an error occurs during resolution</exception>
+        /// <exception cref="RuntimeException">Thrown if an error occurs during resolution.</exception>
         IHandler ResolvePluginHandler();
 
         /// <summary>
@@ -168,7 +168,7 @@ namespace Gallio.Runtime.Extensibility
         /// </para>
         /// </remarks>
         /// <returns>The plugin instance</returns>
-        /// <exception cref="RuntimeException">Thrown if an error occurs during resolution</exception>
+        /// <exception cref="RuntimeException">Thrown if an error occurs during resolution.</exception>
         IPlugin ResolvePlugin();
 
         /// <summary>
@@ -182,7 +182,7 @@ namespace Gallio.Runtime.Extensibility
         /// </para>
         /// </remarks>
         /// <returns>The traits handler</returns>
-        /// <exception cref="RuntimeException">Thrown if an error occurs during resolution</exception>
+        /// <exception cref="RuntimeException">Thrown if an error occurs during resolution.</exception>
         IHandler ResolveTraitsHandler();
 
         /// <summary>
@@ -196,14 +196,14 @@ namespace Gallio.Runtime.Extensibility
         /// </para>
         /// </remarks>
         /// <returns>The plugin traits</returns>
-        /// <exception cref="RuntimeException">Thrown if an error occurs during resolution</exception>
+        /// <exception cref="RuntimeException">Thrown if an error occurs during resolution.</exception>
         PluginTraits ResolveTraits();
 
         /// <summary>
         /// Disables the plugin.
         /// </summary>
-        /// <param name="reason">The reason the plugin was disabled</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="reason"/> is null</exception>
+        /// <param name="reason">The reason the plugin was disabled.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="reason"/> is null.</exception>
         void Disable(string reason);
     }
 }

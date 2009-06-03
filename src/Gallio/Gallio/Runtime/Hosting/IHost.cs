@@ -35,7 +35,7 @@ namespace Gallio.Runtime.Hosting
         /// If the host has already been disconnected, the event is fired immediately.
         /// </summary>
         /// <seealso cref="IsConnected"/>
-        /// <exception cref="ObjectDisposedException">Thrown if the host has been disposed</exception>
+        /// <exception cref="ObjectDisposedException">Thrown if the host has been disposed.</exception>
         event EventHandler Disconnected;
 
         /// <summary>
@@ -52,26 +52,26 @@ namespace Gallio.Runtime.Hosting
         /// A host may become disconnected non-deterministically due to a failure in the
         /// host's communication channel or some other remote eventuality.
         /// </remarks>
-        /// <exception cref="ObjectDisposedException">Thrown if the host has been disposed</exception>
+        /// <exception cref="ObjectDisposedException">Thrown if the host has been disposed.</exception>
         bool IsConnected { get; }
 
         /// <summary>
         /// Gets a host service that can be used to perform operations within the host's environment.
         /// </summary>
-        /// <exception cref="InvalidOperationException">Thrown if the host has been disconnected</exception>
-        /// <exception cref="ObjectDisposedException">Thrown if the host has been disposed</exception>
+        /// <exception cref="InvalidOperationException">Thrown if the host has been disconnected.</exception>
+        /// <exception cref="ObjectDisposedException">Thrown if the host has been disposed.</exception>
         IHostService GetHostService();
 
         /// <summary>
         /// Gets a deep copy of the host setup information.
         /// </summary>
-        /// <exception cref="ObjectDisposedException">Thrown if the host has been disposed</exception>
+        /// <exception cref="ObjectDisposedException">Thrown if the host has been disposed.</exception>
         HostSetup GetHostSetup();
 
         /// <summary>
         /// Disconnects the host.
         /// </summary>
-        /// <exception cref="ObjectDisposedException">Thrown if the host has been disposed</exception>
+        /// <exception cref="ObjectDisposedException">Thrown if the host has been disposed.</exception>
         void Disconnect();
     }
 }

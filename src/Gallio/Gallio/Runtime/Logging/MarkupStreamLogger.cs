@@ -30,8 +30,8 @@ namespace Gallio.Runtime.Logging
         /// <summary>
         /// Creates a logger for the markup stream writer.
         /// </summary>
-        /// <param name="writer">The markup stream writer</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="writer"/> is null</exception>
+        /// <param name="writer">The markup stream writer.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="writer"/> is null.</exception>
         public MarkupStreamLogger(MarkupStreamWriter writer)
         {
             if (writer == null)

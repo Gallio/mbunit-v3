@@ -18,9 +18,9 @@ namespace Gallio.Common
     /// <summary>
     /// An immutable record that holds three values.
     /// </summary>
-    /// <typeparam name="TFirst">The type of the first value</typeparam>
-    /// <typeparam name="TSecond">The type of the second value</typeparam>
-    /// <typeparam name="TThird">The type of the third value</typeparam>
+    /// <typeparam name="TFirst">The type of the first value.</typeparam>
+    /// <typeparam name="TSecond">The type of the second value.</typeparam>
+    /// <typeparam name="TThird">The type of the third value.</typeparam>
     public struct Triple<TFirst, TSecond, TThird>
     {
         private readonly TFirst first;
@@ -30,9 +30,9 @@ namespace Gallio.Common
         /// <summary>
         /// Creates a triple.
         /// </summary>
-        /// <param name="first">The first value</param>
-        /// <param name="second">The second value</param>
-        /// <param name="third">The third value</param>
+        /// <param name="first">The first value.</param>
+        /// <param name="second">The second value.</param>
+        /// <param name="third">The third value.</param>
         public Triple(TFirst first, TSecond second, TThird third)
         {
             this.first = first;

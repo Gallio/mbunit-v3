@@ -26,10 +26,10 @@ namespace Gallio.Common.Remoting
         /// <summary>
         /// Registers a well-known service with the specified name.
         /// </summary>
-        /// <param name="serviceName">The name of the service</param>
-        /// <param name="component">The component that provides the service</param>
+        /// <param name="serviceName">The name of the service.</param>
+        /// <param name="component">The component that provides the service.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="serviceName"/> or
-        /// <paramref name="component"/> is null</exception>
+        /// <paramref name="component"/> is null.</exception>
         void RegisterService(string serviceName, MarshalByRefObject component);
     }
 }

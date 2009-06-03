@@ -37,13 +37,13 @@ namespace Gallio.Runtime.UtilityCommands
         /// <summary>
         /// Creates a utility command context.
         /// </summary>
-        /// <param name="arguments">The parsed command line arguments</param>
-        /// <param name="console">The console</param>
-        /// <param name="logger">The logger</param>
-        /// <param name="progressMonitorProvider">The progress monitor provider</param>
-        /// <param name="verbosity">The verbosity</param>
+        /// <param name="arguments">The parsed command line arguments.</param>
+        /// <param name="console">The console.</param>
+        /// <param name="logger">The logger.</param>
+        /// <param name="progressMonitorProvider">The progress monitor provider.</param>
+        /// <param name="verbosity">The verbosity.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="arguments"/>,
-        /// <paramref name="console"/>, <paramref name="logger"/> or <paramref name="progressMonitorProvider"/> is null</exception>
+        /// <paramref name="console"/>, <paramref name="logger"/> or <paramref name="progressMonitorProvider"/> is null.</exception>
         public UtilityCommandContext(object arguments, IRichConsole console, ILogger logger, IProgressMonitorProvider progressMonitorProvider, Verbosity verbosity)
         {
             if (arguments == null)

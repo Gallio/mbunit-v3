@@ -30,8 +30,8 @@ namespace Gallio.Common.Collections
         /// <summary>
         /// Creates a read-only view of the specified multi-map.
         /// </summary>
-        /// <param name="map">The multi-map</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="map"/> is null</exception>
+        /// <param name="map">The multi-map.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="map"/> is null.</exception>
         public ReadOnlyMultiMap(IMultiMap<TKey, TValue> map)
         {
             if (map == null)

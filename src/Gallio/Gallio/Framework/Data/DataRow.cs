@@ -44,7 +44,7 @@ namespace Gallio.Framework.Data
         /// <summary>
         /// Creates a data row with the specified array of values.
         /// </summary>
-        /// <param name="values">The array of values</param>
+        /// <param name="values">The array of values.</param>
         public DataRow(params object[] values)
             : this(values ?? new object[] { null }, null)
         {
@@ -56,11 +56,11 @@ namespace Gallio.Framework.Data
         /// <remarks>
         /// The original data row is not modified!
         /// </remarks>
-        /// <param name="key">The metadata key</param>
-        /// <param name="value">The metadata value</param>
+        /// <param name="key">The metadata key.</param>
+        /// <param name="value">The metadata value.</param>
         /// <returns>The augmented data row</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="key"/>
-        /// or <paramref name="value"/> is null</exception>
+        /// or <paramref name="value"/> is null.</exception>
         public DataRow WithMetadata(string key, string value)
         {
             if (key == null)
@@ -78,10 +78,10 @@ namespace Gallio.Framework.Data
         /// <remarks>
         /// The original data row is not modified!
         /// </remarks>
-        /// <param name="map">The metadata map</param>
+        /// <param name="map">The metadata map.</param>
         /// <returns>The augmented data row</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="map"/>
-        /// is null</exception>
+        /// is null.</exception>
         public DataRow WithMetadata(PropertyBag map)
         {
             if (map == null)

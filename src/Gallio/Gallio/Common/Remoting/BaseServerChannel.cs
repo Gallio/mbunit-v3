@@ -31,9 +31,9 @@ namespace Gallio.Common.Remoting
         /// <summary>
         /// Creates a channel.
         /// </summary>
-        /// <param name="channel">The .Net remoting channel</param>
-        /// <param name="channelUri">The root Uri associated with the channel</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="channel"/> or <paramref name="channelUri"/> is null</exception>
+        /// <param name="channel">The .Net remoting channel.</param>
+        /// <param name="channelUri">The root Uri associated with the channel.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="channel"/> or <paramref name="channelUri"/> is null.</exception>
         protected BaseServerChannel(IChannel channel, Uri channelUri)
             : base(channel, channelUri)
         {

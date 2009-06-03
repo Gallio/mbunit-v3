@@ -40,8 +40,8 @@ namespace Gallio.Common.Markup
         /// <summary>
         /// Creates a simple structured text object over a plain text string.
         /// </summary>
-        /// <param name="text">The text string</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="text"/> is null</exception>
+        /// <param name="text">The text string.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="text"/> is null.</exception>
         public StructuredText(string text)
         {
             if (text == null)
@@ -57,8 +57,8 @@ namespace Gallio.Common.Markup
         /// Creates a structured text object that wraps the body tag of a structured markup document stream
         /// and no attachments.
         /// </summary>
-        /// <param name="bodyTag">The body tag to wrap</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="bodyTag"/> is null</exception>
+        /// <param name="bodyTag">The body tag to wrap.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="bodyTag"/> is null.</exception>
         public StructuredText(BodyTag bodyTag)
             : this(bodyTag, EmptyArray<Attachment>.Instance)
         {
@@ -68,10 +68,10 @@ namespace Gallio.Common.Markup
         /// Creates a structured text object that wraps the body tag of a structured markup document stream
         /// and a list of attachments.
         /// </summary>
-        /// <param name="bodyTag">The body tag to wrap</param>
-        /// <param name="attachments">The list of attachments</param>
+        /// <param name="bodyTag">The body tag to wrap.</param>
+        /// <param name="attachments">The list of attachments.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="bodyTag"/>,
-        /// or <paramref name="attachments"/> is null</exception>
+        /// or <paramref name="attachments"/> is null.</exception>
         public StructuredText(BodyTag bodyTag, IList<Attachment> attachments)
         {
             if (bodyTag == null)
@@ -114,8 +114,8 @@ namespace Gallio.Common.Markup
         /// <summary>
         /// Writes the structured text to a markup stream writer.
         /// </summary>
-        /// <param name="writer">The writer</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="writer"/> is null</exception>
+        /// <param name="writer">The writer.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="writer"/> is null.</exception>
         public void WriteTo(MarkupStreamWriter writer)
         {
             WritePreambleTo(writer);
@@ -127,11 +127,11 @@ namespace Gallio.Common.Markup
         /// Writes the structured text to a markup stream writer and truncates its text
         /// to a particular maximum length, omitting all subsequent contents.
         /// </summary>
-        /// <param name="writer">The writer</param>
-        /// <param name="maxLength">The maximum length of text to write</param>
+        /// <param name="writer">The writer.</param>
+        /// <param name="maxLength">The maximum length of text to write.</param>
         /// <returns>True if truncation occurred</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="writer"/> is null</exception>
-        /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="maxLength"/> is negative</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="writer"/> is null.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="maxLength"/> is negative.</exception>
         public bool TruncatedWriteTo(MarkupStreamWriter writer, int maxLength)
         {
             if (maxLength < 0)
@@ -184,8 +184,8 @@ namespace Gallio.Common.Markup
         /// <summary>
         /// Returns true if two structured text objects are equal.
         /// </summary>
-        /// <param name="a">The first structured text object to compare</param>
-        /// <param name="b">The second structured text object to compare</param>
+        /// <param name="a">The first structured text object to compare.</param>
+        /// <param name="b">The second structured text object to compare.</param>
         /// <returns>True if the structured text objects are equal</returns>
         public static bool operator ==(StructuredText a, StructuredText b)
         {
@@ -195,8 +195,8 @@ namespace Gallio.Common.Markup
         /// <summary>
         /// Returns true if two structured text objects are not equal.
         /// </summary>
-        /// <param name="a">The first structured text object to compare</param>
-        /// <param name="b">The second structured text object to compare</param>
+        /// <param name="a">The first structured text object to compare.</param>
+        /// <param name="b">The second structured text object to compare.</param>
         /// <returns>True if the structured text objects are not equal</returns>
         public static bool operator !=(StructuredText a, StructuredText b)
         {

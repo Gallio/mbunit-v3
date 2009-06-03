@@ -195,34 +195,34 @@ namespace Gallio.Model
         /// <summary>
         /// Adds a test parameter and sets its <see cref="ITestParameter.Owner" /> property.
         /// </summary>
-        /// <param name="parameter">The test parameter to add</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="parameter"/> is null</exception>
+        /// <param name="parameter">The test parameter to add.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="parameter"/> is null.</exception>
         /// <exception cref="InvalidOperationException">Thrown if <paramref name="parameter"/> is already
-        /// owned by some other test</exception>
+        /// owned by some other test.</exception>
         void AddParameter(ITestParameter parameter);
 
         /// <summary>
         /// Adds a child test and sets its <see cref="ITest.Parent" /> property.
         /// </summary>
-        /// <param name="test">The test to add as a child</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="test"/> is null</exception>
+        /// <param name="test">The test to add as a child.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="test"/> is null.</exception>
         /// <exception cref="InvalidOperationException">Thrown if <paramref name="test"/> is already
-        /// the child of some other test</exception>
+        /// the child of some other test.</exception>
         void AddChild(ITest test);
 
         /// <summary>
         /// Adds a test dependency.
         /// </summary>
-        /// <param name="test">The test to add as a dependency</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="test"/> is null</exception>
+        /// <param name="test">The test to add as a dependency.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="test"/> is null.</exception>
         void AddDependency(ITest test);
 
         /// <summary>
         /// Obtains a unique local id for a child of this test.
         /// </summary>
-        /// <param name="localIdHint">A suggested id which will be used if no conflicts occur</param>
+        /// <param name="localIdHint">A suggested id which will be used if no conflicts occur.</param>
         /// <returns>The unique local id to use</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="localIdHint"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="localIdHint"/> is null.</exception>
         string GetUniqueLocalIdForChild(string localIdHint);
     }
 }

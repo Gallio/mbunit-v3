@@ -76,9 +76,9 @@ namespace Gallio.Framework.Pattern
         /// <summary>
         /// Verifies that the attribute is being used correctly.
         /// </summary>
-        /// <param name="containingScope">The containing scope</param>
-        /// <param name="slot">The slot</param>
-        /// <exception cref="PatternUsageErrorException">Thrown if the attribute is being used incorrectly</exception>
+        /// <param name="containingScope">The containing scope.</param>
+        /// <param name="slot">The slot.</param>
+        /// <exception cref="PatternUsageErrorException">Thrown if the attribute is being used incorrectly.</exception>
         protected virtual void Validate(IPatternScope containingScope, ISlotInfo slot)
         {
             if (!containingScope.CanAddTestParameter || slot == null)
@@ -88,8 +88,8 @@ namespace Gallio.Framework.Pattern
         /// <summary>
         /// Initializes a test parameter after it has been added to the containing test.
         /// </summary>
-        /// <param name="testParameterScope">The test parameter scope</param>
-        /// <param name="slot">The slot</param>
+        /// <param name="testParameterScope">The test parameter scope.</param>
+        /// <param name="slot">The slot.</param>
         protected virtual void InitializeTestParameter(IPatternScope testParameterScope, ISlotInfo slot)
         {
             int index = slot.Position;

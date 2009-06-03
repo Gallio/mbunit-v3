@@ -32,8 +32,8 @@ namespace Gallio.Model.Filters
         /// <summary>
         /// Creates a filter set consisting of a single inclusion filter.
         /// </summary>
-        /// <param name="inclusionFilter">The inclusion filter</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="inclusionFilter"/> is null</exception>
+        /// <param name="inclusionFilter">The inclusion filter.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="inclusionFilter"/> is null.</exception>
         public FilterSet(Filter<T> inclusionFilter)
         {
             if (inclusionFilter == null)
@@ -45,8 +45,8 @@ namespace Gallio.Model.Filters
         /// <summary>
         /// Creates a filter set consisting of a collection of rules.
         /// </summary>
-        /// <param name="rules">The filter rules</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="rules"/> is null</exception>
+        /// <param name="rules">The filter rules.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="rules"/> is null.</exception>
         public FilterSet(ICollection<FilterRule<T>> rules)
         {
             if (rules == null || rules.Contains(null))
@@ -98,7 +98,7 @@ namespace Gallio.Model.Filters
         /// Evaluates the rules of this filter set and indicates whether the item is included, excluded
         /// or not matched by the list of rules.
         /// </summary>
-        /// <param name="item">The item</param>
+        /// <param name="item">The item.</param>
         /// <returns>The result</returns>
         public FilterSetResult Evaluate(T item)
         {

@@ -49,11 +49,11 @@ namespace Gallio.Common.Reflection
         /// <summary>
         /// Creates a code reference from strings.
         /// </summary>
-        /// <param name="assemblyName">The assembly name, or null if none</param>
-        /// <param name="namespaceName">The namespace name, or null if none</param>
-        /// <param name="typeName">The fully-qualified type name, or null if none</param>
-        /// <param name="memberName">The member name, or null if none</param>
-        /// <param name="parameterName">The parameter name, or null if none</param>
+        /// <param name="assemblyName">The assembly name, or null if none.</param>
+        /// <param name="namespaceName">The namespace name, or null if none.</param>
+        /// <param name="typeName">The fully-qualified type name, or null if none.</param>
+        /// <param name="memberName">The member name, or null if none.</param>
+        /// <param name="parameterName">The parameter name, or null if none.</param>
         public CodeReference(string assemblyName, string namespaceName, string typeName,
             string memberName, string parameterName)
         {
@@ -163,9 +163,9 @@ namespace Gallio.Common.Reflection
         /// <summary>
         /// Creates a code reference from a method parameter.
         /// </summary>
-        /// <param name="parameter">The parameter</param>
+        /// <param name="parameter">The parameter.</param>
         /// <returns>The code reference</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="parameter"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="parameter"/> is null.</exception>
         public static CodeReference CreateFromParameter(ParameterInfo parameter)
         {
             if (parameter == null)
@@ -179,9 +179,9 @@ namespace Gallio.Common.Reflection
         /// <summary>
         /// Creates a code reference from a member.
         /// </summary>
-        /// <param name="member">The member</param>
+        /// <param name="member">The member.</param>
         /// <returns>The code reference</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="member"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="member"/> is null.</exception>
         public static CodeReference CreateFromMember(MemberInfo member)
         {
             if (member == null)
@@ -198,9 +198,9 @@ namespace Gallio.Common.Reflection
         /// <summary>
         /// Creates a code reference from a type.
         /// </summary>
-        /// <param name="type">The type</param>
+        /// <param name="type">The type.</param>
         /// <returns>The code reference</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="type"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="type"/> is null.</exception>
         public static CodeReference CreateFromType(Type type)
         {
             if (type == null)
@@ -213,9 +213,9 @@ namespace Gallio.Common.Reflection
         /// <summary>
         /// Creates a code reference from an namespace name.
         /// </summary>
-        /// <param name="namespaceName">The namespace name</param>
+        /// <param name="namespaceName">The namespace name.</param>
         /// <returns>The code reference</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="namespaceName"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="namespaceName"/> is null.</exception>
         public static CodeReference CreateFromNamespace(string namespaceName)
         {
             if (namespaceName == null)
@@ -227,9 +227,9 @@ namespace Gallio.Common.Reflection
         /// <summary>
         /// Creates a code reference from an assembly.
         /// </summary>
-        /// <param name="assembly">The assembly</param>
+        /// <param name="assembly">The assembly.</param>
         /// <returns>The code reference</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="assembly"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="assembly"/> is null.</exception>
         public static CodeReference CreateFromAssembly(Assembly assembly)
         {
             if (assembly == null)
@@ -242,8 +242,8 @@ namespace Gallio.Common.Reflection
         /// <summary>
         /// Compares two code references for equality.
         /// </summary>
-        /// <param name="a">The first code reference</param>
-        /// <param name="b">The second code reference</param>
+        /// <param name="a">The first code reference.</param>
+        /// <param name="b">The second code reference.</param>
         /// <returns>True if the code references are equal</returns>
         public static bool operator ==(CodeReference a, CodeReference b)
         {
@@ -253,8 +253,8 @@ namespace Gallio.Common.Reflection
         /// <summary>
         /// Compares two code references for inequality.
         /// </summary>
-        /// <param name="a">The first code reference</param>
-        /// <param name="b">The second code reference</param>
+        /// <param name="a">The first code reference.</param>
+        /// <param name="b">The second code reference.</param>
         /// <returns>True if the code references are not equal</returns>
         public static bool operator !=(CodeReference a, CodeReference b)
         {
@@ -295,7 +295,7 @@ namespace Gallio.Common.Reflection
         /// <summary>
         /// Provides the Xml schema for this element.
         /// </summary>
-        /// <param name="schemas">The schema set</param>
+        /// <param name="schemas">The schema set.</param>
         /// <returns>The schema type of the element</returns>
         public static XmlQualifiedName ProvideXmlSchema(XmlSchemaSet schemas)
         {

@@ -55,10 +55,10 @@ namespace Gallio.Model.Execution
         /// <summary>
         /// Creates an observable test context.
         /// </summary>
-        /// <param name="manager">The test context manager</param>
-        /// <param name="testStep">The test step</param>
-        /// <param name="parent">The parent test context</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="manager"/> or <paramref name="testStep"/> is null</exception>
+        /// <param name="manager">The test context manager.</param>
+        /// <param name="testStep">The test step.</param>
+        /// <param name="parent">The parent test context.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="manager"/> or <paramref name="testStep"/> is null.</exception>
         public ObservableTestContext(ObservableTestContextManager manager, ITestStep testStep, ITestContext parent)
         {
             if (manager == null)

@@ -44,9 +44,9 @@ namespace Gallio.Common.Diagnostics
         /// because one of the stack frames referred to a dynamic method with incorrect metadata.
         /// </para>
         /// </summary>
-        /// <param name="ex">The exception</param>
+        /// <param name="ex">The exception.</param>
         /// <returns>The string contents</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="ex"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="ex"/> is null.</exception>
         /// <seealso cref="Exception.ToString"/>
         public static string SafeToString(Exception ex)
         {
@@ -68,7 +68,7 @@ namespace Gallio.Common.Diagnostics
         /// Safely obtains the <see cref="Exception.Message"/> component of an exception.
         /// </summary>
         /// <returns>The message</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="ex"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="ex"/> is null.</exception>
         /// <seealso cref="SafeToString"/>
         public static string SafeGetMessage(Exception ex)
         {
@@ -90,7 +90,7 @@ namespace Gallio.Common.Diagnostics
         /// Safely obtains the <see cref="Exception.StackTrace"/> component of an exception.
         /// </summary>
         /// <returns>The stack trace</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="ex"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="ex"/> is null.</exception>
         /// <seealso cref="SafeToString"/>
         public static string SafeGetStackTrace(Exception ex)
         {
@@ -115,7 +115,7 @@ namespace Gallio.Common.Diagnostics
         /// <remarks>
         /// This implementation is based on code by Brad Wilson.
         /// </remarks>
-        /// <param name="ex">The exception to rethrow</param>
+        /// <param name="ex">The exception to rethrow.</param>
         [DebuggerStepThrough, DebuggerHidden]
         [ReflectionPermission(SecurityAction.Assert, MemberAccess=true)]
         public static void RethrowWithNoStackTraceLoss(Exception ex)
@@ -143,11 +143,11 @@ namespace Gallio.Common.Diagnostics
         /// <summary>
         /// Invokes a method without producing a <see cref="TargetInvocationException" />
         /// </summary>
-        /// <param name="method">The method to invoke</param>
-        /// <param name="obj">The instance on which to invoke the method, or null if none</param>
-        /// <param name="args">The method arguments, or null if none</param>
+        /// <param name="method">The method to invoke.</param>
+        /// <param name="obj">The instance on which to invoke the method, or null if none.</param>
+        /// <param name="args">The method arguments, or null if none.</param>
         /// <returns>The method return value, or null if none</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="method"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="method"/> is null.</exception>
         [DebuggerStepThrough, DebuggerHidden]
         public static object InvokeMethodWithoutTargetInvocationException(MethodBase method, object obj, object[] args)
         {

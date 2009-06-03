@@ -28,8 +28,8 @@ namespace Gallio.Model.Filters
         /// <summary>
         /// Creates a NOT-filter.
         /// </summary>
-        /// <param name="filter">The filter to be negated</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="filter"/> is null</exception>
+        /// <param name="filter">The filter to be negated.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="filter"/> is null.</exception>
         public NotFilter(Filter<T> filter)
         {
             if (filter == null)

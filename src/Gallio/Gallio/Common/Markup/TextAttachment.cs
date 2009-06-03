@@ -29,10 +29,10 @@ namespace Gallio.Common.Markup
         /// <summary>
         /// Creates an attachment.
         /// </summary>
-        /// <param name="name">The attachment name, or null to automatically assign one</param>
-        /// <param name="contentType">The content type, not null</param>
-        /// <param name="text">The text string, not null</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="contentType"/> or <paramref name="text"/> is null</exception>
+        /// <param name="name">The attachment name, or null to automatically assign one.</param>
+        /// <param name="contentType">The content type, not null.</param>
+        /// <param name="text">The text string, not null.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="contentType"/> or <paramref name="text"/> is null.</exception>
         public TextAttachment(string name, string contentType, string text)
             : base(name, contentType)
         {

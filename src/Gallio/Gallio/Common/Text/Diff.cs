@@ -33,9 +33,9 @@ namespace Gallio.Common.Text
         /// <summary>
         /// Create a diff.
         /// </summary>
-        /// <param name="kind">The diff kind which indicates whether there is a change over the range covered by the diff</param>
-        /// <param name="leftRange">The range of the left document that is affected</param>
-        /// <param name="rightRange">The range of the right document that is affected</param>
+        /// <param name="kind">The diff kind which indicates whether there is a change over the range covered by the diff.</param>
+        /// <param name="leftRange">The range of the left document that is affected.</param>
+        /// <param name="rightRange">The range of the right document that is affected.</param>
         public Diff(DiffKind kind, Range leftRange, Range rightRange)
         {
             this.leftRange = leftRange;
@@ -88,8 +88,8 @@ namespace Gallio.Common.Text
         /// <summary>
         /// Returns true if two diffs are equal.
         /// </summary>
-        /// <param name="a">The first diff to compare</param>
-        /// <param name="b">The second diff to compare</param>
+        /// <param name="a">The first diff to compare.</param>
+        /// <param name="b">The second diff to compare.</param>
         /// <returns>True if the diffs are equal</returns>
         public static bool operator ==(Diff a, Diff b)
         {
@@ -99,8 +99,8 @@ namespace Gallio.Common.Text
         /// <summary>
         /// Returns true if two diffs are not equal.
         /// </summary>
-        /// <param name="a">The first diff to compare</param>
-        /// <param name="b">The second diff to compare</param>
+        /// <param name="a">The first diff to compare.</param>
+        /// <param name="b">The second diff to compare.</param>
         /// <returns>True if the diffs are not equal</returns>
         public static bool operator !=(Diff a, Diff b)
         {

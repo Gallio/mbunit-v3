@@ -33,7 +33,7 @@ namespace Gallio.Runner.Harness
         /// <summary>
         /// Creates a text writer that writes to the specified execution log stream.
         /// </summary>
-        /// <param name="streamName">The execution log stream name</param>
+        /// <param name="streamName">The execution log stream name.</param>
         public ContextualLogTextWriter(string streamName)
         {
             this.streamName = streamName;

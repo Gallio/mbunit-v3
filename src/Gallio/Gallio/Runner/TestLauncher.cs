@@ -124,7 +124,7 @@ namespace Gallio.Runner
         /// The default provider is <see cref="NullProgressMonitorProvider.Instance" />.
         /// </para>
         /// </summary>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
         public IProgressMonitorProvider ProgressMonitorProvider
         {
             get { return progressMonitorProvider; }
@@ -145,7 +145,7 @@ namespace Gallio.Runner
         /// The default logger is <see cref="NullLogger.Instance" />.
         /// </para>
         /// </summary>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
         public ILogger Logger
         {
             get { return logger; }
@@ -189,7 +189,7 @@ namespace Gallio.Runner
         /// The default value is <see cref="StandardTestRunnerFactoryNames.IsolatedProcess"/>.
         /// </para>
         /// </summary>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
         public string TestRunnerFactoryName
         {
             get { return testRunnerFactoryName; }
@@ -205,7 +205,7 @@ namespace Gallio.Runner
         /// <summary>
         /// Gets or sets the test runner options.
         /// </summary>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
         public TestRunnerOptions TestRunnerOptions
         {
             get { return testRunnerOptions; }
@@ -241,7 +241,7 @@ namespace Gallio.Runner
         /// <summary>
         /// Gets or sets the test package.
         /// </summary>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
         public TestPackageConfig TestPackageConfig
         {
             get { return testPackageConfig; }
@@ -257,7 +257,7 @@ namespace Gallio.Runner
         /// <summary>
         /// Gets or sets the test exploration options.
         /// </summary>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
         public TestExplorationOptions TestExplorationOptions
         {
             get { return testExplorationOptions; }
@@ -273,7 +273,7 @@ namespace Gallio.Runner
         /// <summary>
         /// Gets or sets the test execution options.
         /// </summary>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
         public TestExecutionOptions TestExecutionOptions
         {
             get { return testExecutionOptions; }
@@ -325,7 +325,7 @@ namespace Gallio.Runner
         /// The default value is <c>""</c> which causes reports to be written to the current directory.
         /// </para>
         /// </summary>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
         public string ReportDirectory
         {
             get { return reportDirectory; }
@@ -347,7 +347,7 @@ namespace Gallio.Runner
         /// The default value is <c>"test-report-{0}-{1}"</c>.
         /// </para>
         /// </summary>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
         public string ReportNameFormat
         {
             get { return reportNameFormat; }
@@ -371,7 +371,7 @@ namespace Gallio.Runner
         /// <summary>
         /// Gets or sets the report formatter options.
         /// </summary>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
         public ReportFormatterOptions ReportFormatterOptions
         {
             get { return reportFormatterOptions; }

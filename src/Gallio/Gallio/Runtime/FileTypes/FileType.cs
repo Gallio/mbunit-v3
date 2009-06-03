@@ -34,12 +34,12 @@ namespace Gallio.Runtime.FileTypes
         /// <summary>
         /// Creates a file type object.
         /// </summary>
-        /// <param name="id">The file type id</param>
-        /// <param name="description">The file type description</param>
-        /// <param name="superType">The super type of the file type, or null if none</param>
+        /// <param name="id">The file type id.</param>
+        /// <param name="description">The file type description.</param>
+        /// <param name="superType">The super type of the file type, or null if none.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="id"/> 
-        /// or <paramref name="description"/> is null</exception>
-        /// <exception cref="ArgumentException">Thrown if <paramref name="id"/> is empty</exception>
+        /// or <paramref name="description"/> is null.</exception>
+        /// <exception cref="ArgumentException">Thrown if <paramref name="id"/> is empty.</exception>
         public FileType(string id, string description, FileType superType)
         {
             if (id == null)
@@ -81,9 +81,9 @@ namespace Gallio.Runtime.FileTypes
         /// <summary>
         /// Returns true if this file type is equal to or is a subtype of some other type.
         /// </summary>
-        /// <param name="otherType">The other type</param>
+        /// <param name="otherType">The other type.</param>
         /// <returns>True if the condition is satisfied</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="otherType"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="otherType"/> is null.</exception>
         public bool IsSameOrSubtypeOf(FileType otherType)
         {
             if (otherType == null)
