@@ -22,14 +22,14 @@ using Gallio.Common.Markup.Tags;
 namespace Gallio.Common.Markup
 {
     /// <summary>
-    /// <para>
     /// A structured text object contains attachments and formatted text with rich
     /// presentation elements.
-    /// </para>
+    /// </summary>
+    /// <remarks>
     /// <para>
     /// Structured text is emitted by a <see cref="StructuredTextWriter" />.
     /// </para>
-    /// </summary>
+    /// </remarks>
     /// <seealso cref="StructuredTextWriter"/>
     [Serializable]
     public sealed class StructuredText : IEquatable<StructuredText>, IMarkupStreamWritable

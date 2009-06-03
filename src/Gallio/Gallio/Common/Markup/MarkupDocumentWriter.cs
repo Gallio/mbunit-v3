@@ -143,8 +143,10 @@ namespace Gallio.Common.Markup
         /// does not exist, it is created on demand.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// This property may return different instances of <see cref="MarkupStreamWriter" />
         /// each time it is called but they always represent the same stream just the same.
+        /// </para>
         /// </remarks>
         /// <param name="streamName">The name of the markup stream.</param>
         /// <returns>The log stream.</returns>
@@ -193,8 +195,10 @@ namespace Gallio.Common.Markup
         /// Attaches an attachment to the document.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// An attachment instance can be embedded multiple times efficiently since each
         /// embedded copy is typically represented as a link to the same common attachment instance.
+        /// </para>
         /// </remarks>
         /// <param name="attachment">The attachment to include.</param>
         /// <returns>The attachment.</returns>
@@ -347,9 +351,11 @@ namespace Gallio.Common.Markup
         /// Closes the markup document writer.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// The implementation may prevent the document writer from being closed by throwing an
         /// exception.  When this happens, the log's <see cref="IsClosed" /> property
         /// will remain false.
+        /// </para>
         /// </remarks>
         protected virtual void CloseImpl()
         {
@@ -369,9 +375,11 @@ namespace Gallio.Common.Markup
         /// Adds an attachment to the markup document.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// The implementation should allow the same attachment instance to be attached
         /// multiple times and optimize this case by representing embedded attachments
         /// as links.
+        /// </para>
         /// </remarks>
         /// <param name="attachment">The attachment to write, never null.</param>
         /// <exception cref="InvalidOperationException">Thrown if there is already an attachment
@@ -382,8 +390,10 @@ namespace Gallio.Common.Markup
         /// Writes a text string to a markup stream.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// The implementation can assume that newlines are normalized to LFs ('\n') only
         /// and that CRs ('\r') have been stripped.
+        /// </para>
         /// </remarks>
         /// <param name="streamName">The markup stream name.</param>
         /// <param name="text">The text to write, never null.</param>
@@ -393,9 +403,11 @@ namespace Gallio.Common.Markup
         /// Embeds an attachment into a markup stream.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// The implementation should allow the same attachment instance to be attached
         /// multiple times and optimize this case by representing embedded attachments
         /// as links.
+        /// </para>
         /// </remarks>
         /// <param name="streamName">The markup stream name.</param>
         /// <param name="attachmentName">The name of the attachment to write, never null.</param>

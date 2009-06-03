@@ -19,9 +19,7 @@ using System.IO;
 namespace Gallio.Common.Markup
 {
     /// <summary>
-    /// <para>
     /// An implementation of <see cref="MarkupDocumentWriter" /> that writes its output to a string.
-    /// </para>
     /// </summary>
     public class StringMarkupDocumentWriter : TextualMarkupDocumentWriter
     {

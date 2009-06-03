@@ -19,7 +19,7 @@ using Gallio.Common;
 namespace Gallio.Common.Markup.Tags
 {
     /// <summary>
-    /// An tag is the fundamental unit of content within a markup stream.
+    /// A tag is the fundamental unit of content within a markup stream.
     /// </summary>
     [Serializable]
     public abstract class Tag : ICloneable<Tag>, IEquatable<Tag>, IMarkupStreamWritable

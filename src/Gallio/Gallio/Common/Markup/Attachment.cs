@@ -135,12 +135,12 @@ namespace Gallio.Common.Markup
         /// <summary>
         /// Embeds an XML-serialized object as an XML attachment with mime-type <see cref="MimeTypes.Xml" />
         /// using the specified serializer.
-        /// <seealso cref="XmlSerializer"/>
         /// </summary>
         /// <param name="name">The attachment name, or null to automatically assign one.</param>
         /// <param name="obj">The object to serialize and embed, must not be null.</param>
         /// <param name="xmlSerializer">The xml serializer to use, or null to use the default based on the object's type.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="obj"/> is null.</exception>
+        /// <seealso cref="XmlSerializer"/>
         public static TextAttachment CreateObjectAsXmlAttachment(string name, object obj, XmlSerializer xmlSerializer)
         {
             if (obj == null)

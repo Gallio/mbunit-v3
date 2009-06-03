@@ -150,12 +150,12 @@ namespace Gallio.Common.Markup
         }
 
         /// <summary>
-        /// <para>
         /// Writes an exception.
-        /// </para>
         /// </summary>
         /// <remarks>
+        /// <para>
         /// The exception will not be terminated by a new line.
+        /// </para>
         /// </remarks>
         /// <param name="exception">The exception to write.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="exception"/> is null.</exception>
@@ -165,12 +165,12 @@ namespace Gallio.Common.Markup
         }
 
         /// <summary>
-        /// <para>
         /// Writes an exception within its own section.
-        /// </para>
         /// </summary>
         /// <remarks>
+        /// <para>
         /// The exception will not be terminated by a new line.
+        /// </para>
         /// </remarks>
         /// <param name="exception">The exception to write.</param>
         /// <param name="sectionName">The section name, or null if none.</param>
@@ -184,12 +184,12 @@ namespace Gallio.Common.Markup
         }
 
         /// <summary>
-        /// <para>
         /// Writes an exception.
-        /// </para>
         /// </summary>
         /// <remarks>
+        /// <para>
         /// The exception will not be terminated by a new line.
+        /// </para>
         /// </remarks>
         /// <param name="exception">The exception data to write.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="exception"/> is null.</exception>
@@ -199,12 +199,12 @@ namespace Gallio.Common.Markup
         }
 
         /// <summary>
-        /// <para>
         /// Writes an exception within its own section which provides additional cues for interpretation.
-        /// </para>
         /// </summary>
         /// <remarks>
+        /// <para>
         /// The exception will not be terminated by a new line.
+        /// </para>
         /// </remarks>
         /// <param name="exception">The exception data to write.</param>
         /// <param name="sectionName">The section name, or null if none.</param>
@@ -219,15 +219,15 @@ namespace Gallio.Common.Markup
         }
 
         /// <summary>
-        /// <para>
         /// Writes highlighted text.  Highlights can be used to
         /// emphasize important information such differences between similar expected
         /// and actual values.
-        /// </para>
         /// </summary>
         /// <remarks>
+        /// <para>
         /// This is a convenience method that simply encapsulates the highlighted text within a
         /// marked region of type <see cref="Marker.Highlight" />.
+        /// </para>
         /// </remarks>
         /// <param name="text">The text to write, or null if none.</param>
         public void WriteHighlighted(string text)
@@ -237,17 +237,17 @@ namespace Gallio.Common.Markup
         }
 
         /// <summary>
-        /// <para>
         /// Writes an ellipsis to indicate where content has been elided for brevity.
         /// An ellipsis may be used, for example, when printing assertion failures to clearly
         /// identify sections where the user is not being presented all of the information
         /// because it was too long and had to be truncated.
-        /// </para>
         /// </summary>
         /// <remarks>
+        /// <para>
         /// This is a convenience method that simply encapsulates "..." within a
         /// marked region of type <see cref="Marker.Ellipsis" />.  However, tools
         /// may reinterpret the special marker to make the "..." less ambiguous.
+        /// </para>
         /// </remarks>
         public void WriteEllipsis()
         {
@@ -256,21 +256,21 @@ namespace Gallio.Common.Markup
         }
 
         /// <summary>
-        /// <para>
         /// Begins a section with the specified name.  Maybe be nested.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// A section groups together related content in the markup stream to make it
         /// easier to distinguish.  The section name is used as a heading for presentation.
         /// </para>
-        /// </summary>
+        /// </remarks>
         /// <example>
-        /// <code>
+        /// <code><![CDATA[
         /// using (TestLog.Default.BeginSection("Doing something interesting"))
         /// {
         ///     TestLog.Default.WriteLine("Ah ha!");
         /// }
-        /// </code>
+        /// ]]></code>
         /// </example>
         /// <param name="sectionName">The name of the section.</param>
         /// <returns>A Disposable object that calls <see cref="End" /> when disposed.  This
@@ -287,22 +287,22 @@ namespace Gallio.Common.Markup
         }
 
         /// <summary>
-        /// <para>
         /// Begins a marked region.  Maybe be nested.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// A marker is a hidden tag that labels its contents with a semantic class.
-        /// It is roughly equivalent in operation to an HTML "span" tag.  Various tools
+        /// It is roughly equivalent in operation to an HTML "span" tag. Various tools
         /// may inspect the markers and modify the presentation accordingly.
         /// </para>
-        /// </summary>
+        /// </remarks>
         /// <example>
-        /// <code>
+        /// <code><![CDATA[
         /// using (TestLog.Default.BeginMarker(Marker.Monospace))
         /// {
         ///     TestLog.Default.WriteLine(contents);
         /// }
-        /// </code>
+        /// ]]></code>
         /// </example>
         /// <param name="marker">The marker.</param>
         /// <returns>A Disposable object that calls <see cref="End" /> when disposed.  This
@@ -315,9 +315,7 @@ namespace Gallio.Common.Markup
         }
 
         /// <summary>
-        /// <para>
         /// Ends the region most recently started with one of the Begin* methods.
-        /// </para>
         /// </summary>
         /// <exception cref="InvalidOperationException">Thrown if there is no current nested region.</exception>
         public void End()
@@ -329,8 +327,10 @@ namespace Gallio.Common.Markup
         /// Embeds an attachment.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// An attachment instance can be embedded multiple times efficiently since each
         /// embedded copy is typically represented as a link to the same common attachment instance.
+        /// </para>
         /// </remarks>
         /// <param name="attachment">The attachment to embed.</param>
         /// <returns>The attachment.</returns>

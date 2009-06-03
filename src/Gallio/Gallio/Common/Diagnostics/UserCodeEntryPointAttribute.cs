@@ -18,9 +18,9 @@ using System;
 namespace Gallio.Common.Diagnostics
 {
     /// <summary>
-    /// <para>
     /// This attribute is used to mark methods that call into user code.
-    /// </para>
+    /// </summary>
+    /// <remarks>
     /// <para>
     /// The <see cref="StackTraceFilter" /> uses this attribute to determine at what
     /// point control flow initially transitioned from the test framework into the test.
@@ -31,10 +31,10 @@ namespace Gallio.Common.Diagnostics
     /// effect is the same as if the outermost entry point did not appear.  This enables
     /// test frameworks to support recursion into themselves.
     /// </para>
-    /// </summary>
-    /// <remarks>
+    /// <para>
     /// Other attributes may also contribute to stack trace filtering.  Refer to
     /// <see cref="StackTraceFilter"/> for details.
+    /// </para>
     /// </remarks>
     [AttributeUsage(AttributeTargets.Method | AttributeTargets.Constructor, AllowMultiple=false, Inherited=true)]
     public sealed class UserCodeEntryPointAttribute : Attribute

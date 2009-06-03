@@ -21,16 +21,16 @@ using Gallio.Common.Xml;
 namespace Gallio.Common.Markup
 {
     /// <summary>
-    /// <para>
     /// A structured stream object represents a recursively structured stream of rich text that
     /// supports embedded attachments, nested sections and marked regions.  Each part of the
     /// text is captured by a tag, some of which are composable and may therefore contain other tags.
-    /// </para>
+    /// </summary>
+    /// <remarks>
     /// <para>
     /// It is effectively an xml-serializable representation of a markup stream written by
     /// a <see cref="MarkupStreamWriter"/>.
     /// </para>
-    /// </summary>
+    /// </remarks>
     [Serializable]
     [XmlType(Namespace = XmlSerializationUtils.GallioNamespace)]
     public sealed class StructuredStream : IMarkupStreamWritable

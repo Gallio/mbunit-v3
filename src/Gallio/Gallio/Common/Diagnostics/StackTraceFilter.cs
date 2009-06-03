@@ -25,9 +25,9 @@ using System.Text.RegularExpressions;
 namespace Gallio.Common.Diagnostics
 {
     /// <summary>
-    /// <para>
     /// Provides methods for filtering the stack trace for tests.
-    /// </para>
+    /// </summary>
+    /// <remarks>
     /// <para>
     /// The objective of this filtering is to omit frames that are not relevant to the user
     /// when reporting stack traces.
@@ -41,7 +41,7 @@ namespace Gallio.Common.Diagnostics
     /// an associated <see cref="UserCodeEntryPointAttribute" />.</item>
     /// </list>
     /// </para>
-    /// </summary>
+    /// </remarks>
     public static class StackTraceFilter
     {
         // The " ?" in between generic params and method params is to allow for an extra

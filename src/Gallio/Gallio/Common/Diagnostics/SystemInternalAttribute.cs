@@ -19,10 +19,10 @@ using Gallio.Common.Diagnostics;
 namespace Gallio.Common.Diagnostics
 {
     /// <summary>
-    /// <para>
     /// This attribute is used to mark methods and types that are internal to the implementation
     /// of the system.
-    /// </para>
+    /// </summary>
+    /// <remarks>
     /// <para>
     /// The <see cref="StackTraceFilter" /> uses this attribute to identify stack
     /// frames that may safely be filtered out when describing failures to users.  If the
@@ -30,10 +30,10 @@ namespace Gallio.Common.Diagnostics
     /// with this attribute then it is omitted.  The attribute also applies to nested types
     /// to help cover anonymous delegates as well.
     /// </para>
-    /// </summary>
-    /// <remarks>
+    /// <para>
     /// Other attributes may also contribute to stack trace filtering.  Refer to
     /// <see cref="StackTraceFilter"/> for details.
+    /// </para>
     /// </remarks>
     [AttributeUsage(AttributeTargets.Method | AttributeTargets.Constructor | AttributeTargets.Class, AllowMultiple=false, Inherited=true)]
     public sealed class SystemInternalAttribute : Attribute

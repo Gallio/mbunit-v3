@@ -122,7 +122,9 @@ namespace Gallio.Common.Diagnostics
         /// would ordinarily construct.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// The exception will not be terminated by a new line.
+        /// </para>
         /// </remarks>
         /// <returns>The formatted exception.</returns>
         public override string ToString()
@@ -136,7 +138,9 @@ namespace Gallio.Common.Diagnostics
         /// Writes the exception in a structured format with markers to distinguish its component elements.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// The exception will not be terminated by a new line.
+        /// </para>
         /// </remarks>
         /// <param name="writer">The log stream writer.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="writer"/> is null.</exception>

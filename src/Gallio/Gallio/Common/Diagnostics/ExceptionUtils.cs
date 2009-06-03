@@ -27,9 +27,9 @@ namespace Gallio.Common.Diagnostics
     public static class ExceptionUtils
     {
         /// <summary>
-        /// <para>
         /// Safely converts an exception to a string.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// This method protects the caller from unexpected failures that may occur while
         /// reporting an exception of untrusted origin.  If an error occurs while converting the
@@ -43,7 +43,7 @@ namespace Gallio.Common.Diagnostics
         /// one case of a <see cref="TypeLoadException" /> being thrown while printing an exception
         /// because one of the stack frames referred to a dynamic method with incorrect metadata.
         /// </para>
-        /// </summary>
+        /// </remarks>
         /// <param name="ex">The exception.</param>
         /// <returns>The string contents.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="ex"/> is null.</exception>
@@ -113,7 +113,9 @@ namespace Gallio.Common.Diagnostics
         /// to be unwrapped.
         /// </summary>
         /// <remarks>
-        /// This implementation is based on code by Brad Wilson.
+        /// <remarks>
+        /// This implementation is based on code by <a href="http://bradwilson.typepad.com/">Brad Wilson</a>.
+        /// </remarks>
         /// </remarks>
         /// <param name="ex">The exception to rethrow.</param>
         [DebuggerStepThrough, DebuggerHidden]

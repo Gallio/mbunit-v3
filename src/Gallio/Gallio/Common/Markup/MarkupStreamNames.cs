@@ -57,8 +57,10 @@ namespace Gallio.Common.Markup
         /// The name of the standard stream for generic log messages.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// It is preferable to write log messages to this stream in place of the console
         /// output and error streams.
+        /// </para>
         /// </remarks>
         public const string Default = "Log";
     }
