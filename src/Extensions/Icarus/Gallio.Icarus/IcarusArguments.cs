@@ -22,10 +22,10 @@ namespace Gallio.Icarus
     {
         [DefaultCommandLineArgument(
             CommandLineArgumentFlags.MultipleUnique,
-            Description = "The test assemblies to load.",
-            ValueLabel = "assemblies"
+            Description = "The test files and assemblies to load.  Wildcards may be used.",
+            ValueLabel = "path"
             )]
-        public string[] Assemblies = new string[0];
+        public string[] Files = new string[0];
 
         [CommandLineArgument(
             CommandLineArgumentFlags.MultipleUnique,

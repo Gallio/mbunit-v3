@@ -44,6 +44,7 @@
         <frameworkAssemblyNames>MbUnit.Framework</frameworkAssemblyNames>
         <version>2.4.2.175</version>
         <icon>plugin://Gallio.MbUnit2Adapter/Resources/MbUnit.ico</icon>
+        <fileTypes>Assembly</fileTypes>
       </traits>
     </component>
 

@@ -70,6 +70,14 @@
       <Project>{A9B54755-56B7-48C1-8941-BB69FCEFFF32}</Project>
       <Name>MbUnit %28MbUnit\MbUnit%29</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\DLR\Gallio.DLRIntegration\Gallio.DLRIntegration.csproj">
+      <Project>{FCF9143C-3DF2-4DFF-972B-A2FEB30D7AA9}</Project>
+      <Name>Gallio.DLRIntegration</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Gallio.RSpecAdapter\Gallio.RSpecAdapter.csproj">
+      <Project>{F0E0CB93-617D-42E1-88EE-A7A451A0BDC5}</Project>
+      <Name>Gallio.RSpecAdapter</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="Ruby\bowling.rb" />

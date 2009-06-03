@@ -126,9 +126,9 @@ namespace Gallio.Icarus.Controllers
         private void HandleArguments()
         {
             var assemblyFiles = new List<string>();
-            if (arguments.Assemblies.Length > 0)
+            if (arguments.Files.Length > 0)
             {
-                foreach (var assembly in arguments.Assemblies)
+                foreach (var assembly in arguments.Files)
                 {
                     if (!fileSystem.FileExists(assembly))
                         continue;

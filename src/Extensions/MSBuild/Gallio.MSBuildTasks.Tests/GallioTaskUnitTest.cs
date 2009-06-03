@@ -107,7 +107,7 @@ namespace Gallio.MSBuildTasks.Tests
             task.RunnerExtensions = new[] { "DebugExtension,Gallio" };
 
             task.PluginDirectories = new ITaskItem[] { new TaskItem("plugin") };
-            task.Assemblies = new ITaskItem[] { new TaskItem("assembly1"), new TaskItem("assembly2") };
+            task.Files = new ITaskItem[] { new TaskItem("assembly1"), new TaskItem("assembly2") };
             task.HintDirectories = new ITaskItem[] { new TaskItem("hint1"), new TaskItem("hint2") };
 
             task.ApplicationBaseDirectory = new TaskItem("baseDir");

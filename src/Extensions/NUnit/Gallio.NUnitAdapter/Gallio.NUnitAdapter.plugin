@@ -36,6 +36,7 @@
         <name>NUnit</name>
         <frameworkAssemblyNames>nunit.framework</frameworkAssemblyNames>
         <version>2.4.8.0</version>
+        <fileTypes>Assembly</fileTypes>
       </traits>
     </component>
   </components>

@@ -27,6 +27,7 @@
         <name>xUnit.net</name>
         <frameworkAssemblyNames>xunit</frameworkAssemblyNames>
         <version>1.1.0.1323</version>
+        <fileTypes>Assembly</fileTypes>
       </traits>
     </component>
   </components>

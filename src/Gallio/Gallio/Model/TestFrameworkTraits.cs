@@ -27,7 +27,7 @@ namespace Gallio.Model
     {
         private readonly string name;
         private string[] frameworkAssemblyNames;
-        private string[] testFileExtensions;
+        private string[] fileTypes;
 
         /// <summary>
         /// Creates test framework traits.
@@ -99,26 +99,29 @@ namespace Gallio.Model
         }
 
         /// <summary>
-        /// Gets or sets the list of file extensions recognized by the framework as test files.
-        /// Extensions should be prefixed with a period, eg. '.xml'.
+        /// Gets or sets the list of file types ids recognized by the framework as test files.
         /// </summary>
         /// <remarks>
         /// <para>
         /// The framework manager consults this list to determine whether the framework component
-        /// should participate in test exploration.  If none of the test extensions match the files
+        /// should participate in test exploration.  If none of the file types match the files
         /// specified by the test source then the framework component will not be instantiated
         /// during test exploration in order to improve performance.
         /// </para>
+        /// <para>
+        /// For .Net-based test frameworks, the list of file types should probably include "Assembly"
+        /// or one of its subtypes.
+        /// </para>
         /// </remarks>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
-        public string[] TestFileExtensions
+        public string[] FileTypes
         {
-            get { return testFileExtensions ?? EmptyArray<string>.Instance; }
+            get { return fileTypes ?? EmptyArray<string>.Instance; }
             set
             {
                 if (value == null || Array.IndexOf(value, null) >= 0)
                     throw new ArgumentNullException("value");
-                testFileExtensions = value;
+                fileTypes = value;
             }
         }
     }

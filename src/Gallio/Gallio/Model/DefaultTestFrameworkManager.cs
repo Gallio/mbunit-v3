@@ -18,9 +18,11 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Reflection;
+using Gallio.Common.Collections;
 using Gallio.Common.Policies;
 using Gallio.Common.Reflection;
 using Gallio.Runtime.Extensibility;
+using Gallio.Runtime.FileTypes;
 
 namespace Gallio.Model
 {
@@ -30,18 +32,25 @@ namespace Gallio.Model
     public class DefaultTestFrameworkManager : ITestFrameworkManager
     {
         private readonly ComponentHandle<ITestFramework, TestFrameworkTraits>[] frameworkHandles;
+        private readonly IFileTypeManager fileTypeManager;
 
         /// <summary>
         /// Creates a test framework manager.
         /// </summary>
         /// <param name="frameworkHandles">The test framework handles.</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="frameworkHandles"/> is null.</exception>
-        public DefaultTestFrameworkManager(ComponentHandle<ITestFramework, TestFrameworkTraits>[] frameworkHandles)
+        /// <param name="fileTypeManager">The file type manager.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="frameworkHandles"/> 
+        /// or <paramref name="fileTypeManager "/>is null.</exception>
+        public DefaultTestFrameworkManager(ComponentHandle<ITestFramework, TestFrameworkTraits>[] frameworkHandles,
+            IFileTypeManager fileTypeManager)
         {
             if (frameworkHandles == null || Array.IndexOf(frameworkHandles, null) >= 0)
                 throw new ArgumentNullException("frameworkHandles");
+            if (fileTypeManager == null)
+                throw new ArgumentNullException("fileTypeManager");
 
             this.frameworkHandles = frameworkHandles;
+            this.fileTypeManager = fileTypeManager;
         }
 
         /// <inheritdoc />
@@ -54,23 +63,26 @@ namespace Gallio.Model
         public ITestExplorer GetTestExplorer(Predicate<string> frameworkIdFilter)
         {
             if (frameworkIdFilter == null)
-                return new FilteredTestExplorer(frameworkHandles);
+                return new FilteredTestExplorer(frameworkHandles, fileTypeManager);
 
             var filteredFrameworkHandles = new List<ComponentHandle<ITestFramework, TestFrameworkTraits>>();
             foreach (var frameworkHandle in frameworkHandles)
                 if (frameworkIdFilter(frameworkHandle.Id))
                     filteredFrameworkHandles.Add(frameworkHandle);
 
-            return new FilteredTestExplorer(filteredFrameworkHandles);
+            return new FilteredTestExplorer(filteredFrameworkHandles, fileTypeManager);
         }
 
         private sealed class FilteredTestExplorer : ITestExplorer
         {
             private readonly IList<ComponentHandle<ITestFramework, TestFrameworkTraits>> frameworkHandles;
+            private readonly IFileTypeManager fileTypeManager;
 
-            public FilteredTestExplorer(IList<ComponentHandle<ITestFramework, TestFrameworkTraits>> frameworkHandles)
+            public FilteredTestExplorer(IList<ComponentHandle<ITestFramework, TestFrameworkTraits>> frameworkHandles,
+                IFileTypeManager fileTypeManager)
             {
                 this.frameworkHandles = frameworkHandles;
+                this.fileTypeManager = fileTypeManager;
             }
 
             public void ConfigureTestDomain(TestDomainSetup testDomainSetup)
@@ -78,15 +90,15 @@ namespace Gallio.Model
                 if (testDomainSetup == null)
                     throw new ArgumentNullException("testDomainSetup");
 
-                var aggregateServices = new AggregateTestExplorer();
+                var aggregateTestExplorer = new AggregateTestExplorer();
                 foreach (var frameworkHandle in frameworkHandles)
                 {
                     TestFrameworkTraits frameworkTraits = frameworkHandle.GetTraits();
                     if (frameworkTraits.RequiresConfigureTestDomain)
-                        aggregateServices.RegisterFramework(frameworkHandle.GetComponent());
+                        aggregateTestExplorer.RegisterFramework(frameworkHandle.GetComponent());
                 }
 
-                aggregateServices.ConfigureTestDomain(testDomainSetup);
+                aggregateTestExplorer.ConfigureTestDomain(testDomainSetup);
             }
 
             public bool IsTest(IReflectionPolicy reflectionPolicy, ICodeElementInfo codeElement)
@@ -96,8 +108,8 @@ namespace Gallio.Model
                 if (codeElement == null)
                     throw new ArgumentNullException("codeElement");
 
-                var aggregateServices = CreateAggregateTestExplorerForCodeElement(codeElement);
-                return aggregateServices.IsTest(reflectionPolicy, codeElement);
+                var aggregateTestExplorer = CreateAggregateTestExplorerForCodeElement(codeElement);
+                return aggregateTestExplorer.IsTest(reflectionPolicy, codeElement);
             }
 
             public bool IsTestPart(IReflectionPolicy reflectionPolicy, ICodeElementInfo codeElement)
@@ -107,8 +119,8 @@ namespace Gallio.Model
                 if (codeElement == null)
                     throw new ArgumentNullException("codeElement");
 
-                var aggregateServices = CreateAggregateTestExplorerForCodeElement(codeElement);
-                return aggregateServices.IsTestPart(reflectionPolicy, codeElement);
+                var aggregateTestExplorer = CreateAggregateTestExplorerForCodeElement(codeElement);
+                return aggregateTestExplorer.IsTestPart(reflectionPolicy, codeElement);
             }
 
             public void Explore(TestModel testModel, TestSource testSource, Action<ITest> consumer)
@@ -118,36 +130,87 @@ namespace Gallio.Model
                 if (testSource == null)
                     throw new ArgumentNullException("testSource");
 
-                var aggregateServices = CreateAggregateTestExplorerForTestSource(testSource);
-                aggregateServices.Explore(testModel, testSource, consumer);
+                var aggregateTestExplorer = CreateAggregateTestExplorerForTestSource(testSource);
+                aggregateTestExplorer.Explore(testModel, testSource, consumer);
             }
 
             private AggregateTestExplorer CreateAggregateTestExplorerForTestSource(TestSource testSource)
             {
-                var aggregateServices = new AggregateTestExplorer();
+                var aggregateTestExplorer = new AggregateTestExplorer();
+
+                /* TODO: Needs to be redesigned to work from a higher level.
+                var frameworksToFileTypes = new MultiMap<TestFrameworkTraits, FileType>();
+                foreach (var frameworkHandle in frameworkHandles)
+                {
+                    TestFrameworkTraits frameworkTraits = frameworkHandle.GetTraits();
+                    foreach (string fileTypeId in frameworkTraits.FileTypes)
+                    {
+                        FileType fileType = fileTypeManager.GetFileTypeById(fileTypeId);
+                        if (fileType != null)
+                            frameworksToFileTypes.Add(frameworkTraits, fileType);
+                    }
+                }
+
+                var frameworksToFiles = new MultiMap<TestFrameworkTraits, FileInfo>();
+                foreach (var file in testSource.Files)
+                {
+                    FileType candidateFileType = IdentifyFileType(file);
+                    foreach (var pair in frameworksToFileTypes)
+                    {
+                        if (ContainsFileType(pair.Value, candidateFileType))
+                            frameworksToFiles.Add(pair.Key, file);
+                    }
+                }
+                 */
 
                 foreach (var frameworkHandle in frameworkHandles)
                 {
                     TestFrameworkTraits frameworkTraits = frameworkHandle.GetTraits();
-                    if (IsFrameworkNeededForTestSource(frameworkTraits, testSource))
-                        aggregateServices.RegisterFramework(frameworkHandle.GetComponent());
+                    if (/*frameworksToFiles.ContainsKey(frameworkTraits)
+                        ||*/ IsFrameworkNeededForAssembliesOrTypes(frameworkTraits, testSource))
+                    {
+                        aggregateTestExplorer.RegisterFramework(frameworkHandle.GetComponent());
+                    }
                 }
 
-                return aggregateServices;
+                return aggregateTestExplorer;
+            }
+
+            private FileType IdentifyFileType(FileInfo file)
+            {
+                try
+                {
+                    return fileTypeManager.IdentifyFileType(file);
+                }
+                catch (IOException)
+                {
+                    return fileTypeManager.UnknownFileType;
+                }
+            }
+
+            private static bool ContainsFileType(IEnumerable<FileType> fileTypes, FileType candidateFileType)
+            {
+                foreach (FileType fileType in fileTypes)
+                {
+                    if (candidateFileType.IsSameOrSubtypeOf(fileType))
+                        return true;
+                }
+
+                return false;
             }
 
             private AggregateTestExplorer CreateAggregateTestExplorerForCodeElement(ICodeElementInfo codeElement)
             {
-                var aggregateServices = new AggregateTestExplorer();
+                var aggregateTestExplorer = new AggregateTestExplorer();
 
                 IAssemblyInfo assembly = ReflectionUtils.GetAssembly(codeElement);
                 if (assembly != null)
-                    PopulateAggregateServicesByFrameworkAssembly(aggregateServices, assembly);
+                    PopulateAggregateTestExplorerByFrameworkAssembly(aggregateTestExplorer, assembly);
 
-                return aggregateServices;
+                return aggregateTestExplorer;
             }
 
-            private void PopulateAggregateServicesByFrameworkAssembly(AggregateTestExplorer aggregateTestExplorer, IAssemblyInfo assembly)
+            private void PopulateAggregateTestExplorerByFrameworkAssembly(AggregateTestExplorer aggregateTestExplorer, IAssemblyInfo assembly)
             {
                 foreach (var frameworkHandle in frameworkHandles)
                 {
@@ -157,7 +220,7 @@ namespace Gallio.Model
                 }
             }
 
-            private static bool IsFrameworkNeededForTestSource(TestFrameworkTraits frameworkTraits, TestSource testSource)
+            private static bool IsFrameworkNeededForAssembliesOrTypes(TestFrameworkTraits frameworkTraits, TestSource testSource)
             {
                 foreach (IAssemblyInfo assembly in testSource.Assemblies)
                 {
@@ -168,13 +231,6 @@ namespace Gallio.Model
                 foreach (ITypeInfo type in testSource.Types)
                 {
                     if (ContainsAssemblyReference(type.Assembly, frameworkTraits.FrameworkAssemblyNames))
-                        return true;
-                }
-
-                foreach (FileInfo file in testSource.Files)
-                {
-                    string extension = file.Extension;
-                    if (Array.IndexOf(frameworkTraits.TestFileExtensions, extension) >= 0)
                         return true;
                 }
 

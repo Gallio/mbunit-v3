@@ -113,7 +113,7 @@ namespace Gallio.Echo
                 launcher.TestPackageConfig.HostSetup.RuntimeVersion = arguments.RuntimeVersion;
 
             // add assemblies to testpackageconfig
-            foreach (string assembly in arguments.Assemblies)
+            foreach (string assembly in arguments.Files)
             {
                 if (!CheckAssembly(launcher, arguments, assembly))
                     break;
@@ -151,7 +151,7 @@ namespace Gallio.Echo
         {
             if (Path.GetExtension(assembly) == Project.Extension)
             {
-                if (arguments.Assemblies.Length > 1)
+                if (arguments.Files.Length > 1)
                     throw new ArgumentException("Please don't mix and match gallio project files and assemblies!");
 
                 ProjectUtils projectUtils = new ProjectUtils(new FileSystem(), new DefaultXmlSerializer());

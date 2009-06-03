@@ -49,20 +49,22 @@ namespace Gallio.MSBuildTasks
     /// and the TaskName attribute <strong>must</strong> be set to "Gallio", otherwise MSBuild won't load the task.
     /// </remarks>
     /// <example>
-    /// The following code is an example build file that shows how to load the task, specify the test assemblies
-    /// and set some of the task's properties:
+    /// The following code is an example build file that shows how to load the task, specify the test files
+    /// and assemblies and set some of the task's properties:
     /// <code>
     /// <![CDATA[
     /// <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
     ///     <!-- This is needed by MSBuild to locate the Gallio task -->
     ///     <UsingTask AssemblyFile="[Path-to-assembly]\Gallio.MSBuildTasks.dll" TaskName="Gallio" />
-    ///     <!-- Specify the tests assemblies -->
+    ///     <!-- Specify the test files and assemblies -->
     ///     <ItemGroup>
-    ///         <TestAssemblies Include="[Path-to-test-assembly1]/TestAssembly1.dll" />
-    ///         <TestAssemblies Include="[Path-to-test-assembly2]/TestAssembly2.dll" />
+    ///       <TestFile Include="[Path-to-test-assembly1]/TestAssembly1.dll" />
+    ///       <TestFile Include="[Path-to-test-assembly2]/TestAssembly2.dll" />
+    ///       <TestFile Include="[Path-to-test-script1]/TestScript1_spec.rb" />
+    ///       <TestFile Include="[Path-to-test-script2]/TestScript2.xml" />
     ///     </ItemGroup>
     ///     <Target Name="RunTests">
-    ///         <Gallio IgnoreFailures="true" Filter="Type=SomeFixture" Assemblies="@(TestAssemblies)">
+    ///         <Gallio IgnoreFailures="true" Filter="Type=SomeFixture" Files="@(TestFile)">
     ///             <!-- This tells MSBuild to store the output value of the task's ExitCode property
     ///                  into the project's ExitCode property -->
     ///             <Output TaskParameter="ExitCode" PropertyName="ExitCode"/>
@@ -80,7 +82,7 @@ namespace Gallio.MSBuildTasks
 
         #region Private Members
 
-        private ITaskItem[] assemblies;
+        private ITaskItem[] files;
         private ITaskItem[] pluginDirectories;
         private ITaskItem[] hintDirectories;
 
@@ -124,40 +126,44 @@ namespace Gallio.MSBuildTasks
         #region Public Properties
 
         /// <summary>
-        /// The list of relative or absolute paths of test assembly files to execute. This is required.
+        /// The list of relative or absolute paths of test files and assemblies to execute.
+        /// Wildcards may be used.  This is required.
         /// </summary>
-        /// <example>The following example shows how to specify the test assemblies (for a more complete example
+        /// <example>The following example shows how to specify the test files and assemblies (for a more complete example
         /// please see the <see cref="Gallio"/> task documentation):
         /// <code>
         /// <![CDATA[
+        /// <!-- Specify the test files and assemblies -->
         /// <ItemGroup>
-        ///     <TestAssemblies Include="[Path-to-test-assembly1]/TestAssembly1.dll" />
-        ///     <TestAssemblies Include="[Path-to-test-assembly2]/TestAssembly2.dll" />
+        ///     <TestFile Include="[Path-to-test-assembly1]/TestAssembly1.dll" />
+        ///     <TestFile Include="[Path-to-test-assembly2]/TestAssembly2.dll" />
+        ///     <TestFile Include="[Path-to-test-script1]/TestScript1_spec.rb" />
+        ///     <TestFile Include="[Path-to-test-script2]/TestScript2.xml" />
         /// </ItemGroup>
         /// <Target Name="MyTarget">
-        ///     <Gallio Assemblies="@(TestAssemblies)" />
+        ///     <Gallio Files="@(TestFile)" />
         /// </Target>
         /// ]]>
         /// </code>
         /// </example>
         [Required]
-        public ITaskItem[] Assemblies
+        public ITaskItem[] Files
         {
-            set { assemblies = value; }
+            set { files = value; }
         }
 
         /// <summary>
-        /// The list of directories used for loading assemblies and other dependent resources.
+        /// The list of directories used for loading referenced assemblies and other dependent resources.
         /// </summary>
         /// <example>The following example shows how to specify the hint directories:
         /// <code>
         /// <![CDATA[
         /// <ItemGroup>
-        ///     <HintDirectories Include="[Path-to-test-hint-directory-1]/" />
-        ///     <HintDirectories Include="[Path-to-test-hint-directory-2]/" />
+        ///     <HintDirectory Include="[Path-to-test-hint-directory-1]/" />
+        ///     <HintDirectory Include="[Path-to-test-hint-directory-2]/" />
         /// </ItemGroup>
         /// <Target Name="MyTarget">
-        ///     <Gallio HintDirectories="@(HintDirectories)" />
+        ///     <Gallio HintDirectories="@(HintDirectory)" />
         /// </Target>
         /// ]]>
         /// </code>
@@ -174,11 +180,11 @@ namespace Gallio.MSBuildTasks
         /// <code>
         /// <![CDATA[
         /// <ItemGroup>
-        ///     <PluginDirectories Include="[Path-to-test-plugin-directory-1]/" />
-        ///     <PluginDirectories Include="[Path-to-test-plugin-directory-2]/" />
+        ///     <PluginDirectory Include="[Path-to-test-plugin-directory-1]/" />
+        ///     <PluginDirectory Include="[Path-to-test-plugin-directory-2]/" />
         /// </ItemGroup>
         /// <Target Name="MyTarget">
-        ///     <Gallio PluginDirectories="@(PluginDirectories)" />
+        ///     <Gallio PluginDirectories="@(PluginDirectory)" />
         /// </Target>
         /// ]]>
         /// </code>
@@ -354,7 +360,7 @@ namespace Gallio.MSBuildTasks
         /// <code>
         /// <![CDATA[
         /// <Target Name="MyTarget">
-        ///     <Gallio Assemblies="MyAssembly" RunnerExtensions="FancyLogger,MyExtensions.dll%3BColorOutput,FancyIndenting" />
+        ///     <Gallio Files="MyTestAssembly.dll" RunnerExtensions="FancyLogger,MyExtensions.dll%3BColorOutput,FancyIndenting" />
         /// </Target>
         /// ]]>
         /// </code>
@@ -373,7 +379,7 @@ namespace Gallio.MSBuildTasks
         /// <![CDATA[
         /// <gallio>
         /// <Target Name="MyTarget">
-        ///     <Gallio Assemblies="MyAssembly" RunnerExtensions="NCoverArguments='//eas Gallio'" />
+        ///     <Gallio Files="MyTestAssembly.dll" RunnerExtensions="NCoverArguments='//eas Gallio'" />
         /// </Target>
         /// ]]>
         /// </code>
@@ -391,7 +397,7 @@ namespace Gallio.MSBuildTasks
         /// <code>
         /// <![CDATA[
         /// <Target Name="MyTarget">
-        ///     <Gallio Assemblies="MyAssembly" RunnerExtensions="AttachmentContentDisposition=Absent" />
+        ///     <Gallio Files="MyTestAssembly.dll" RunnerExtensions="AttachmentContentDisposition=Absent" />
         /// </Target>
         /// ]]>
         /// </code>
@@ -796,7 +802,7 @@ namespace Gallio.MSBuildTasks
             foreach (string option in runnerProperties)
                 launcher.TestRunnerOptions.Properties.Add(StringUtils.ParseKeyValuePair(option));
 
-            AddAllItemSpecs(launcher.TestPackageConfig.AssemblyFiles, assemblies);
+            AddAllItemSpecs(launcher.TestPackageConfig.AssemblyFiles, files);
             AddAllItemSpecs(launcher.TestPackageConfig.HintDirectories, hintDirectories);
             AddAllItemSpecs(launcher.RuntimeSetup.PluginDirectories, pluginDirectories);
 

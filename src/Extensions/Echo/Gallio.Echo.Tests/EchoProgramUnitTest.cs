@@ -88,7 +88,7 @@ namespace Gallio.Echo.Tests
             arguments.RunnerExtensions = new string[] { "DebugExtension,Gallio" };
 
             arguments.PluginDirectories = new string[] { "plugin" };
-            arguments.Assemblies = new[] { Assembly.GetExecutingAssembly().CodeBase };
+            arguments.Files = new[] { Assembly.GetExecutingAssembly().CodeBase };
             arguments.HintDirectories = new string[] { "hint1", "hint2" };
 
             arguments.ApplicationBaseDirectory = "baseDir";

@@ -28,16 +28,16 @@ namespace Gallio.Echo
 
         [DefaultCommandLineArgument(
             CommandLineArgumentFlags.MultipleUnique,
-            Description = "The test assemblies to run.",
-            ValueLabel = "assemblies"
+            Description = "The test files and assemblies to run.  Wildcards may be used.",
+            ValueLabel = "path"
             )]
-        public string[] Assemblies = EmptyArray<string>.Instance;
+        public string[] Files = EmptyArray<string>.Instance;
 
         [CommandLineArgument(
             CommandLineArgumentFlags.MultipleUnique,
             ShortName = "hd",
             LongName = "hint-directory",
-            Description = "Additional directories used for loading assemblies and other dependent resources.",
+            Description = "Additional directories used for loading referenced assemblies and other dependent resources.",
             ValueLabel = "dir"
             )]
         public string[] HintDirectories = EmptyArray<string>.Instance;
@@ -266,8 +266,8 @@ namespace Gallio.Echo
         {
             StringWriter sw = new StringWriter();
             sw.WriteLine("-- Parsed Arguments");
-            sw.WriteLine("Assemblies:");
-            foreach (string file in Assemblies)
+            sw.WriteLine("Files:");
+            foreach (string file in Files)
                 sw.WriteLine("\t{0}", file);
 
             sw.WriteLine("Hint Directories:");

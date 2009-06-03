@@ -92,7 +92,7 @@ namespace Gallio.PowerShellCommands.Tests
             task.RunnerExtensions = new string[] { "DebugExtension,Gallio" };
 
             task.PluginDirectories = new string[] { "plugin" };
-            task.Assemblies = new string[] { "assembly1", "assembly2" };
+            task.Files = new string[] { "assembly1", "assembly2" };
             task.HintDirectories = new string[] { "hint1", "hint2" };
 
             task.ApplicationBaseDirectory = "baseDir";

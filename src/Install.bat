@@ -15,7 +15,6 @@ if "%~1"=="/x" (
     shift
 ) else (
     call "%ELEVATE%" "%~dpnx0" /x %*
-    pause
     exit /b %ERRORLEVEL%
 )
 
@@ -46,7 +45,9 @@ if "%ANSWER%"=="0" call :UNINSTALL_ALL & goto :OK
 goto :PROMPT
 
 :OK
+pause
 exit /b 0
+
 
 REM Install Gallio.Loader into the GAC.
 :INSTALL_LOADER

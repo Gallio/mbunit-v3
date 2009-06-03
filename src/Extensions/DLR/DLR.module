@@ -27,9 +27,6 @@
     <Binary Include="libs\IronPython.Modules.dll">
       <Folder>DLR</Folder>
     </Binary>
-    <Binary Include="libs\IronPythonTest.dll">
-      <Folder>DLR</Folder>
-    </Binary>
     <Binary Include="libs\IronRuby.dll">
       <Folder>DLR</Folder>
     </Binary>
@@ -43,12 +40,6 @@
       <Folder>DLR</Folder>
     </Binary>
     <Binary Include="libs\Microsoft.Scripting.ExtensionAttribute.dll">
-      <Folder>DLR</Folder>
-    </Binary>
-    <Binary Include="libs\ToyScript.dll">
-      <Folder>DLR</Folder>
-    </Binary>
-    <Binary Include="libs\ts.exe">
       <Folder>DLR</Folder>
     </Binary>
     <Binary Include="libs\Ms-PL.txt">

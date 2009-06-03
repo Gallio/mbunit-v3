@@ -14,8 +14,48 @@
   <assemblies>
     <assembly fullName="Gallio.DLRIntegration, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null"
               codeBase="Gallio.DLRIntegration.dll" />
+
+    <assembly fullName="IronPython, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35"
+              codeBase="IronPython.dll" />
+
+    <assembly fullName="IronPython.Modules, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35"
+              codeBase="IronPython.Modules.dll" />
+
+    <assembly fullName="IronRuby, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35"
+              codeBase="IronRuby.dll" />
+
+    <assembly fullName="IronRuby.Libraries, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35"
+              codeBase="IronRuby.Libraries.dll" />
+
+    <assembly fullName="Microsoft.Scripting, Version=0.9.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35"
+              codeBase="Microsoft.Scripting.dll" />
+
+    <assembly fullName="Microsoft.Scripting.Core, Version=0.9.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35"
+              codeBase="Microsoft.Scripting.Core.dll" />
+
+    <assembly fullName="Microsoft.Scripting.ExtensionAttribute, Version=0.9.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35"
+              codeBase="Microsoft.Scripting.ExtensionAttribute.dll" />
   </assemblies>
 
   <components>
+    <!-- DLR File types -->
+    
+    <component componentId="DLRIntegration.FileTypeRecognizers.RubySource"
+               serviceId="Gallio.FileTypeRecognizer">
+      <traits>
+        <id>RubySource</id>
+        <description>A Ruby source file.</description>
+        <fileNameRegex>.*\.rb</fileNameRegex>
+      </traits>
+    </component>
+
+    <component componentId="DLRIntegration.FileTypeRecognizers.PythonSource"
+               serviceId="Gallio.FileTypeRecognizer">
+      <traits>
+        <id>PythonSource</id>
+        <description>A Python source file.</description>
+        <fileNameRegex>.*\.py</fileNameRegex>
+      </traits>
+    </component>
   </components>
 </plugin>

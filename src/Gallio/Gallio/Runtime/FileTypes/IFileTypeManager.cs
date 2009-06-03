@@ -50,6 +50,7 @@ namespace Gallio.Runtime.FileTypes
         /// <param name="fileInfo">The file to identify.</param>
         /// <returns>The file type of the file, or <see cref="UnknownFileType" /> type if unidentified.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="fileInfo"/> is null.</exception>
+        /// <exception cref="IOException">Thrown if the file cannot be accessed.</exception>
         FileType IdentifyFileType(FileInfo fileInfo);
 
         /// <summary>
@@ -58,6 +59,7 @@ namespace Gallio.Runtime.FileTypes
         /// <param name="fileInspector">The file inspector for the file to identify.</param>
         /// <returns>The file type of the file, or <see cref="UnknownFileType" /> type if unidentified.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="fileInspector"/> is null.</exception>
+        /// <exception cref="IOException">Thrown if the file cannot be accessed.</exception>
         FileType IdentifyFileType(IFileInspector fileInspector);
 
         /// <summary>
@@ -70,6 +72,7 @@ namespace Gallio.Runtime.FileTypes
         /// among the candidates considered.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="fileInfo"/> or
         /// <paramref name="candidates"/> is null.</exception>
+        /// <exception cref="IOException">Thrown if the file cannot be accessed.</exception>
         FileType IdentifyFileType(FileInfo fileInfo, IEnumerable<FileType> candidates);
 
         /// <summary>
@@ -82,6 +85,7 @@ namespace Gallio.Runtime.FileTypes
         /// among the candidates considered.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="fileInspector"/> or
         /// <paramref name="candidates"/> is null.</exception>
+        /// <exception cref="IOException">Thrown if the file cannot be accessed.</exception>
         FileType IdentifyFileType(IFileInspector fileInspector, IEnumerable<FileType> candidates);
     }
 }

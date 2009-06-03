@@ -37,7 +37,8 @@
              serviceType="Gallio.Runtime.Debugging.IDebuggerManager, Gallio" />
 
     <service serviceId="Gallio.FileTypeRecognizer"
-             serviceType="Gallio.Runtime.FileTypes.IFileTypeRecognizer, Gallio" />
+             serviceType="Gallio.Runtime.FileTypes.IFileTypeRecognizer, Gallio"
+             defaultComponentType="Gallio.Runtime.FileTypes.SimpleFileTypeRecognizer, Gallio" />
 
     <service serviceId="Gallio.FileTypeManager"
              serviceType="Gallio.Runtime.FileTypes.IFileTypeManager, Gallio" />
@@ -394,22 +395,20 @@
                componentType="Gallio.Runtime.FileTypes.FileTypeManager, Gallio" />
 
     <component componentId="Gallio.FileTypeRecognizers.Project"
-               serviceId="Gallio.FileTypeRecognizer"
-               componentType="Gallio.Runtime.FileTypes.SimpleFileTypeRecognizer, Gallio">
+               serviceId="Gallio.FileTypeRecognizer">
       <traits>
         <id>Project</id>
         <description>A Gallio project file.</description>
-        <fileNameRegex>.*.gallio</fileNameRegex>
+        <fileNameRegex>.*\.gallio</fileNameRegex>
       </traits>
     </component>
 
     <component componentId="Gallio.FileTypeRecognizers.Executable"
-               serviceId="Gallio.FileTypeRecognizer"
-               componentType="Gallio.Runtime.FileTypes.SimpleFileTypeRecognizer, Gallio">
+               serviceId="Gallio.FileTypeRecognizer">
       <traits>
         <id>Executable</id>
         <description>A library or program file.</description>
-        <fileNameRegex>.*.(dll|exe)</fileNameRegex>
+        <fileNameRegex>.*\.(dll|exe)</fileNameRegex>
       </traits>
     </component>
 
@@ -422,6 +421,8 @@
         <superTypeId>Executable</superTypeId>
       </traits>
     </component>
+    
+    <!-- Common helpers -->
 
     <component componentId="Gallio.FileSystem" 
                serviceId="Gallio.FileSystem" 

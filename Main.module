@@ -63,7 +63,7 @@
   <!-- TEST TARGETS -->
 
   <Target Name="AfterTest"
-          DependsOnTargets="VerifyInstallation;RunTestAssemblies" />
+          DependsOnTargets="VerifyInstallation;RunTests" />
 
 
   <!-- DIST TARGETS -->
@@ -427,15 +427,15 @@
         </Threshold>
     </SatisfactoryCoverage>
   </PropertyGroup>
-  <Target Name="RunTestAssemblies">
-    <Message Text="Running unit tests..."
+  <Target Name="RunTests">
+    <Message Text="Running tests..."
              Importance="High" />
 
     <Delete Files="Coverage.xml"
             Condition="Exists('Coverage.xml')" />   
 
     <Gallio Condition="'$(Runtime)'=='CLR'"
-            Assemblies="@(TestAssembly)"
+            Files="@(TestAssembly)"
             ReportDirectory="$(ReportDir)"
             ReportTypes="$(ReportTypes)"
             RunnerType="$(TestRunnerType)"

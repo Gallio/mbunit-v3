@@ -107,7 +107,7 @@ namespace Gallio.NAntTasks.Tests
             task.RunnerExtensions.Add(new Argument("DebugExtension,Gallio"));
 
             task.PluginDirectories = new DirSet[] { CreateDirSet("plugin") };
-            task.Assemblies = new FileSet[] { CreateFileSet("assembly1"), CreateFileSet("assembly2") };
+            task.Files = new FileSet[] { CreateFileSet("assembly1"), CreateFileSet("assembly2") };
             task.HintDirectories = new DirSet[] { CreateDirSet("hint1"), CreateDirSet("hint2") };
 
             task.ApplicationBaseDirectory = "baseDir";

@@ -10,14 +10,11 @@
                   <File Name="ipyw.exe" />
                   <File Name="IronPython.dll" />
                   <File Name="IronPython.Modules.dll" />
-                  <File Name="IronPythonTest.dll" />
                   <File Name="IronRuby.dll" />
                   <File Name="IronRuby.Libraries.dll" />
                   <File Name="Microsoft.Scripting.Core.dll" />
                   <File Name="Microsoft.Scripting.dll" />
                   <File Name="Microsoft.Scripting.ExtensionAttribute.dll" />
-                  <File Name="ToyScript.dll" />
-                  <File Name="ts.exe" />
                   <File Id="DLR.MS.PL.txt" Name="Ms-PL.txt" />
                 </Component>
             </Directory>

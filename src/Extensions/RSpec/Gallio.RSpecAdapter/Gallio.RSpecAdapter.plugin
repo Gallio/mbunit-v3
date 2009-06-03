@@ -17,6 +17,24 @@
               codeBase="Gallio.RSpecAdapter.dll" />
   </assemblies>
 
-  <components>
+  <components>    
+    <component componentId="RSpecAdapter.FileTypeRecognizers.RSpecSource"
+               serviceId="Gallio.FileTypeRecognizer">
+      <traits>
+        <id>RSpecSource</id>
+        <superTypeId>RubySource</superTypeId>
+        <description>An RSpec source file.</description>
+        <fileNameRegex>.*_spec\.rb</fileNameRegex>
+      </traits>
+    </component>
+
+    <component componentId="RSpecAdapter.TestFramework"
+               serviceId="Gallio.TestFramework"
+               componentType="Gallio.RSpecAdapter.Model.RSpecTestFramework, Gallio.RSpecAdapter">
+      <traits>
+        <name>RSpec</name>
+        <fileTypes>RSpecSource</fileTypes>
+      </traits>
+    </component>
   </components>
 </plugin>

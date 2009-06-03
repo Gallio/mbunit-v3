@@ -33,15 +33,15 @@ namespace Gallio.PowerShellCommands
     /// A PowerShell Cmdlet for running Gallio.
     /// </summary>
     /// <remarks>
-    /// Only the Assemblies parameter is required.
+    /// Only the <see cref="Files"/> parameter is required.
     /// </remarks>
     /// <example>
     /// <para>There are severals ways to run this cmdlet:</para>
     /// <code>
     /// # Makes the Gallio commands available
     /// Add-PSSnapIn Gallio
-    /// # Runs TestAssembly1.dll
-    /// Run-Gallio "[Path-to-assembly1]\TestAssembly1.dll" -f Category:UnitTests -rd C:\build\reports -rf html
+    /// # Runs a few assemblies and scripts.
+    /// Run-Gallio "[Path-to-assembly1]\TestAssembly1.dll","[Path-to-assembly2]\TestAssembly2.dll","[Path-to-test-script1]/TestScript1_spec.rb","[Path-to-test-script2]/TestScript2.xml" -f Category:UnitTests -rd C:\build\reports -rf html
     /// </code>
     /// </example>
     [Cmdlet("Run", "Gallio")]
@@ -49,7 +49,7 @@ namespace Gallio.PowerShellCommands
     {
         #region Private Members
 
-        private string[] assemblies;
+        private string[] files;
         private string[] pluginDirectories;
         private string[] hintDirectories;
 
@@ -79,12 +79,11 @@ namespace Gallio.PowerShellCommands
         #region Public Properties
 
         /// <summary>
-        /// The list of relative or absolute paths of test assembly files to execute.
-        /// This is required.
+        /// The list of relative or absolute paths of test files and assemblies to execute.
+        /// Wildcards may be used.  This is required.
         /// </summary>
         /// <example>
-        /// <para>There are severals ways to pass the test assemblies names to the
-        /// cmdlet:</para>
+        /// <para>There are severals ways to pass the test files to the cmdlet:</para>
         /// <code>
         /// # Runs TestAssembly1.dll
         /// Run-Gallio "[Path-to-assembly1]\TestAssembly1.dll"
@@ -96,18 +95,20 @@ namespace Gallio.PowerShellCommands
         /// $assemblies = "[Path-to-assembly1]\TestAssembly1.dll","[Path-to-assembly2]\TestAssembly2.dll"
         /// Run-Gallio $assemblies
         /// 
-        /// # Runs TestAssembly1.dll and TestAssembly2.dll
+        /// # Runs TestAssembly1.dll, TestAssembly2.dll, TestScript1_spec.rb, and TestScript2.xml
         /// $assembly1 = "[Path-to-assembly1]\TestAssembly1.dll"
         /// $assembly2 = "[Path-to-assembly2]\TestAssembly2.dll"
-        /// $assemblies = $assembly1,$assembly2
-        /// Run-Gallio $assemblies
+        /// $script1 = "[Path-to-test-script1]\TestScript1_spec.rb"
+        /// $script2 = "[Path-to-test-script2]/TestScript2.xml"
+        /// $files = $assembly1,$assembly2,$script1,$script2
+        /// Run-Gallio $files
         /// 
-        /// # If you don't specify the test assemblies, PowerShell will prompt you for the names:
+        /// # If you don't specify the test files, PowerShell will prompt you for the names:
         /// PS C:\Documents and Settings\jhi> Run-Gallio
         ///
         /// cmdlet Run-Gallio at command pipeline position
         /// Supply values for the following parameters:
-        /// Assemblies[0]:
+        /// Files[0]:
         /// </code>
         /// </example>
         [Parameter(
@@ -117,21 +118,20 @@ namespace Gallio.PowerShellCommands
             )]
         [ValidateNotNullOrEmpty]
         [ValidateCount(1, 99999)]
-        public string[] Assemblies
+        public string[] Files
         {
-            set { assemblies = value; }
+            set { files = value; }
         }
 
         /// <summary>
-        /// The list of directories used for loading assemblies and other dependent resources.
+        /// The list of directories used for loading referenced assemblies and other dependent resources.
         /// </summary>
         /// <example>
         /// <para>The following example shows how to specify the hint directories:</para>
         /// <code>
         /// Run-Gallio SomeAssembly.dll -hd C:\SomeFolder
         /// </code>
-        /// <para>See the Assemblies property for more ways of passing list of parameters to
-        /// the cmdlet.</para>
+        /// <para>See the <see cref="Files"/> property for more ways of passing list of parameters to the cmdlet.</para>
         /// </example>
         [Parameter(ValueFromPipelineByPropertyName = true)]
         [Alias("hd")]
@@ -148,7 +148,7 @@ namespace Gallio.PowerShellCommands
         /// <code>
         /// Run-Gallio SomeAssembly.dll -pd C:\SomeFolder
         /// </code>
-        /// <para>See the Assemblies property for more ways of passing list of parameters to
+        /// <para>See the <see cref="Files"/> property for more ways of passing list of parameters to
         /// the cmdlet.</para>
         /// </example>
         [Parameter(ValueFromPipelineByPropertyName = true)]
@@ -265,7 +265,7 @@ namespace Gallio.PowerShellCommands
         /// <code>
         /// Run-Gallio SomeAssembly.dll -rt "html","text"
         /// </code>
-        /// <para>See the Assemblies property for more ways of passing list of parameters to
+        /// <para>See the <see cref="Files"/> property for more ways of passing list of parameters to
         /// the cmdlet.</para>
         /// </example>
         [Parameter(ValueFromPipelineByPropertyName = true)]
@@ -550,7 +550,7 @@ namespace Gallio.PowerShellCommands
             foreach (string option in runnerProperties)
                 launcher.TestRunnerOptions.Properties.Add(StringUtils.ParseKeyValuePair(option));
 
-            AddAllItemSpecs(launcher.TestPackageConfig.AssemblyFiles, assemblies);
+            AddAllItemSpecs(launcher.TestPackageConfig.AssemblyFiles, files);
             AddAllItemSpecs(launcher.TestPackageConfig.HintDirectories, hintDirectories);
             AddAllItemSpecs(launcher.RuntimeSetup.PluginDirectories, pluginDirectories);
 

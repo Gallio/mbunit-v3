@@ -21,6 +21,7 @@ using Gallio.Common.Reflection;
 using Gallio.Runner.Harness;
 using Gallio.Runtime;
 using Gallio.Runtime.Extensibility;
+using Gallio.Runtime.FileTypes;
 using Gallio.Runtime.Loader;
 using Gallio.Runtime.ProgressMonitoring;
 using MbUnit.Framework;
@@ -66,7 +67,7 @@ namespace Gallio.Tests.Model
 
             frameworkHandle = GetFrameworkHandle();
             DefaultTestFrameworkManager frameworkManager = new DefaultTestFrameworkManager(
-                new[] { frameworkHandle });
+                new[] { frameworkHandle }, RuntimeAccessor.ServiceLocator.Resolve<IFileTypeManager>());
 
             harness = new DefaultTestHarness(TestContextTrackerAccessor.Instance,
                 RuntimeAccessor.ServiceLocator.Resolve<ILoader>(), frameworkManager);

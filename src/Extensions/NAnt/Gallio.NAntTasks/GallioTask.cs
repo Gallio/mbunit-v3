@@ -47,8 +47,8 @@ namespace Gallio.NAntTasks
     /// </code>
     /// </remarks>
     /// <example>
-    /// The following code is an example build file that shows how to load the task, specify the test assemblies
-    /// and set some of the task's properties:
+    /// The following code is an example build file that shows how to load the task, specify the test files
+    /// and assemblies and set some of the task's properties:
     /// <code>
     /// <![CDATA[
     ///    <?xml version="1.0" ?>
@@ -57,11 +57,13 @@ namespace Gallio.NAntTasks
     ///    <loadtasks assembly="[pathtoassembly]\Gallio.NAntTasks.dll" />
     ///    <target name="RunTests">
     ///     <gallio result-property="ExitCode" failonerror="false" filter="Type=SomeFixture" >
-    ///      <assemblies>
-    ///        <!-- Specify the tests assemblies -->
+    ///      <files>
+    ///        <!-- Specify the tests files and assemblies -->
     ///        <include name="[Path-to-test-assembly1]/TestAssembly1.dll" />
     ///        <include name="[Path-to-test-assembly2]/TestAssembly2.dll" />
-    ///      </assemblies>
+    ///        <include name="[Path-to-test-script1]/TestScript1_spec.rb" />
+    ///        <include name="[Path-to-test-script2]/TestScript2.xml" />
+    ///      </files>
     ///     </gallio>
     ///     <fail if="${ExitCode != '0'}" >The return code should have been 0!</fail>
     ///    </target>
@@ -75,7 +77,7 @@ namespace Gallio.NAntTasks
     {
         #region Private Members
 
-        private FileSet[] assemblies;
+        private FileSet[] files;
         private DirSet[] pluginDirectories;
         private DirSet[] hintDirectories;
 
@@ -108,30 +110,33 @@ namespace Gallio.NAntTasks
         #region Public Properties
 
         ///<summary>
-        /// The list of test assemblies to execute. This is required.
+        /// The list of test files and assemblies to execute. Wildcards may be used.
+        /// This is required.
         ///</summary>
-        ///<example>The following example shows how to specify the test assemblies (for a more complete example
+        ///<example>The following example shows how to specify the test files and assemblies (for a more complete example
         /// please see the <see cref="GallioTask"/> task documentation):
         /// <code>
         /// <![CDATA[
         /// <gallio>
-        ///     <assemblies>
-        ///         <!-- Specify the tests assemblies -->
-        ///         <include name="[Path-to-test-assembly1]/TestAssembly1.dll" />
-        ///         <include name="[Path-to-test-assembly2]/TestAssembly2.dll" />
-        ///     </assemblies>
+        ///     <files>
+        ///        <!-- Specify the tests files and assemblies -->
+        ///        <include name="[Path-to-test-assembly1]/TestAssembly1.dll" />
+        ///        <include name="[Path-to-test-assembly2]/TestAssembly2.dll" />
+        ///        <include name="[Path-to-test-script1]/TestScript1_spec.rb" />
+        ///        <include name="[Path-to-test-script2]/TestScript2.xml" />
+        ///     </files>
         /// </gallio>
         /// ]]>
         /// </code>
         /// </example>
-        [BuildElementArray("assemblies", Required = true, ElementType = typeof(FileSet))]
-        public FileSet[] Assemblies
+        [BuildElementArray("files", Required = true, ElementType = typeof(FileSet))]
+        public FileSet[] Files
         {
-            set { assemblies = value; }
+            set { files = value; }
         }
 
         /// <summary>
-        /// The list of directories used for loading assemblies and other dependent resources.
+        /// The list of directories used for loading referenced assemblies and other dependent resources.
         /// </summary>
         /// <example>The following example shows how to specify the hint directories:
         /// <code>
@@ -495,9 +500,9 @@ namespace Gallio.NAntTasks
         /// <![CDATA[
         /// <target name="RunTests">
         ///     <gallio statistics-properties-prefix="gallio.">
-        ///         <assemblies>
+        ///         <files>
         ///             <include name="SomeAssembly.dll" />
-        ///         </assemblies>
+        ///         </files>
         ///     </gallio>
         ///     <echo message="AssertCount = ${gallio.AssertCount}" />
         ///     <echo message="FailedCount = ${gallio.FailedCount}" />
@@ -541,7 +546,7 @@ namespace Gallio.NAntTasks
         /// <![CDATA[
         /// <target name="RunTests">
         ///     <gallio verbosity="Quiet" failonerror="false">
-        ///         <!-- Include test assemblies -->
+        ///         <!-- Include test files -->
         ///     </gallio>
         ///     <fail if="${ExitCode != 0}" >The return code should have been 0!</fail>
         /// </target>
@@ -704,9 +709,9 @@ namespace Gallio.NAntTasks
 
         private void AddAssemblies(TestLauncher launcher)
         {
-            if (assemblies != null)
+            if (files != null)
             {
-                foreach (FileSet fs in assemblies)
+                foreach (FileSet fs in files)
                 {
                     foreach (string f in fs.FileNames)
                         launcher.TestPackageConfig.AssemblyFiles.Add(f);

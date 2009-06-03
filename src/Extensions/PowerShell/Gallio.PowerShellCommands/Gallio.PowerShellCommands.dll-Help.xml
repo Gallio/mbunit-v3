@@ -74,9 +74,9 @@
         
         <maml:name>Run-Gallio</maml:name>
         <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="false" position="1">
-          <maml:name>Assemblies</maml:name>
+          <maml:name>Files</maml:name>
           <maml:description>
-            <maml:para>The list of comma-separated, relative or absolute paths of test assembly files to execute.</maml:para>
+            <maml:para>The list of comma-separated, relative or absolute paths of test files and assemblies to execute.  Wildcards may be used.</maml:para>
           </maml:description>
         </command:parameter>
         
@@ -107,7 +107,7 @@
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="false" position="named">
           <maml:name>HintDirectories</maml:name>
           <maml:description>
-            <maml:para>The list of directories used for loading assemblies and other dependent resources.</maml:para>
+            <maml:para>The list of directories used for loading referenced assemblies and other dependent resources.</maml:para>
           </maml:description>
         </command:parameter>
 
@@ -229,9 +229,9 @@
 
       <maml:name>Run-Gallio</maml:name>
       <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="false" position="1">
-        <maml:name>Assemblies</maml:name>
+        <maml:name>Files</maml:name>
         <maml:description>
-          <maml:para>The list of comma-separated, relative or absolute paths of test assembly files to execute.</maml:para>
+          <maml:para>The list of comma-separated, relative or absolute paths of test files and assemblies to execute.  Wildcards may be used.</maml:para>
         </maml:description>
       </command:parameter>
 
@@ -262,7 +262,7 @@
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="false" position="named">
         <maml:name>HintDirectories</maml:name>
         <maml:description>
-          <maml:para>The list of directories used for loading assemblies and other dependent resources.</maml:para>
+          <maml:para>The list of directories used for loading referenced assemblies and other dependent resources.</maml:para>
         </maml:description>
       </command:parameter>
 
@@ -379,7 +379,7 @@
         # Makes the Gallio commands available
         Add-PSSnapIn Gallio
         # Runs TestAssembly1.dll
-        Run-Gallio "[Path-to-assembly1]\TestAssembly1.dll","[Path-to-assembly2]\TestAssembly2.dll" -f Category:UnitTests -rd C:\build\reports -rf html
+        Run-Gallio "[Path-to-assembly1]\TestAssembly1.dll","[Path-to-assembly2]\TestAssembly2.dll","[Path-to-test-script1]/TestScript1_spec.rb","[Path-to-test-script2]/TestScript2.xml" -f Category:UnitTests -rd C:\build\reports -rf html
       </command:example>
     </command:examples>
 

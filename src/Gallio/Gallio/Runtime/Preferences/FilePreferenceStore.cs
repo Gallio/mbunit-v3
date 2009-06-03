@@ -17,6 +17,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using Gallio.Common.IO;
+using Gallio.Common.Text;
 
 namespace Gallio.Runtime.Preferences
 {
@@ -70,7 +72,8 @@ namespace Gallio.Runtime.Preferences
                 IPreferenceSet result;
                 if (!cachedPreferenceSets.TryGetValue(preferenceSetName, out result))
                 {
-                    FileInfo preferenceSetFile = new FileInfo(Path.Combine(preferenceStoreDir.FullName, preferenceSetName + ".gallioprefs"));
+                    FileInfo preferenceSetFile = new FileInfo(Path.Combine(preferenceStoreDir.FullName, 
+                        FileUtils.EncodeFileName(preferenceSetName) + ".gallioprefs"));
                     result = new FilePreferenceSet(preferenceSetFile);
                     cachedPreferenceSets.Add(preferenceSetName, result);
                 }

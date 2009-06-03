@@ -26,6 +26,7 @@
         <frameworkAssemblyNames>MbUnit</frameworkAssemblyNames>
         <icon>plugin://MbUnit/Resources/MbUnit.ico</icon>
         <version>0.0.0.0</version>
+        <fileTypes>Assembly</fileTypes>
       </traits>
     </component>
 

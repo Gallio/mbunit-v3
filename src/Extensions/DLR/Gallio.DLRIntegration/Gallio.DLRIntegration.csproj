@@ -61,6 +61,34 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\libs\ipy.exe">
+      <Link>ipy.exe</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\libs\ipyw.exe">
+      <Link>ipyw.exe</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\libs\ir.exe">
+      <Link>ir.exe</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\libs\IronPython.dll">
+      <Link>IronPython.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\libs\IronPython.Modules.dll">
+      <Link>IronPython.Modules.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\libs\IronRuby.dll">
+      <Link>IronRuby.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\libs\IronRuby.Libraries.dll">
+      <Link>IronRuby.Libraries.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <Content Include="Gallio.DLRIntegration.plugin" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
