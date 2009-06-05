@@ -39,15 +39,15 @@ namespace Gallio.Framework.Pattern
     public abstract class TestMethodPatternAttribute : PatternAttribute
     {
         /// <summary>
-        /// <para>
         /// Gets or sets a number that defines an ordering for the test with respect to its siblings.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// Unless compelled otherwise by test dependencies, tests with a lower order number than
         /// their siblings will run before those siblings and tests with the same order number
         /// as their siblings with run in an arbitrary sequence with respect to those siblings.
         /// </para>
-        /// </summary>
+        /// </remarks>
         /// <value>The test execution order with respect to siblings, initially zero.</value>
         public int Order { get; set; }
 
@@ -119,14 +119,12 @@ namespace Gallio.Framework.Pattern
         }
 
         /// <summary>
-        /// <para>
         /// Applies semantic actions to a test to estalish its runtime behavior.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// This method is called after <see cref="InitializeTest" />.
         /// </para>
-        /// </summary>
-        /// <remarks>
         /// <para>
         /// The default behavior for a <see cref="TestMethodPatternAttribute" />
         /// is to configure the test actions as follows:
@@ -175,7 +173,9 @@ namespace Gallio.Framework.Pattern
         /// Gets the default pattern to apply to generic parameters that do not have a primary pattern, or null if none.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// The default implementation returns <see cref="TestParameterPatternAttribute.DefaultInstance" />.
+        /// </para>
         /// </remarks>
         protected virtual IPattern DefaultGenericParameterPattern
         {
@@ -186,7 +186,9 @@ namespace Gallio.Framework.Pattern
         /// Gets the default pattern to apply to method parameters that do not have a primary pattern, or null if none.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// The default implementation returns <see cref="TestParameterPatternAttribute.DefaultInstance" />.
+        /// </para>
         /// </remarks>
         protected virtual IPattern DefaultMethodParameterPattern
         {

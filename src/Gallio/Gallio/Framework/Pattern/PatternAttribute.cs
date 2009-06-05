@@ -70,6 +70,7 @@ namespace Gallio.Framework.Pattern
         /// including a short heading that identifies the attribute type.
         /// </summary>
         /// <param name="message">The message, not null.</param>
+        /// <exception cref="PatternUsageErrorException">Always thrown.</exception>
         protected void ThrowUsageErrorException(string message)
         {
             ThrowUsageErrorException(message, null);
@@ -81,6 +82,7 @@ namespace Gallio.Framework.Pattern
         /// </summary>
         /// <param name="message">The message, not null.</param>
         /// <param name="ex">The associated exception, or null if none.</param>
+        /// <exception cref="PatternUsageErrorException">Always thrown.</exception>
         protected void ThrowUsageErrorException(string message, Exception ex)
         {
             throw new PatternUsageErrorException(String.Format("[{0}] - {1}", GetType().Name, message), ex);

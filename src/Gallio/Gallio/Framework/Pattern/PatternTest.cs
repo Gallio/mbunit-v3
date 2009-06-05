@@ -55,10 +55,14 @@ namespace Gallio.Framework.Pattern
 
         /// <summary>
         /// Gets or sets the maximum amount of time the whole test including
-        /// its setup, teardown and body should be permitted to run.  If the test
-        /// runs any longer than this, it will be aborted by the framework.
-        /// The timeout may be null to indicate the absence of a timeout.
+        /// its setup, teardown and body should be permitted to run.
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// If the test runs any longer than this, it will be aborted by the framework.
+        /// The timeout may be null to indicate the absence of a timeout.
+        /// </para>
+        /// </remarks>
         /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="value"/>
         /// represents a negative time span.</exception>
         /// <value>The timeout.  Default value is null.</value>

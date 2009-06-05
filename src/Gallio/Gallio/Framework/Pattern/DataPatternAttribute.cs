@@ -21,9 +21,12 @@ using Gallio.Framework.Pattern;
 namespace Gallio.Framework.Pattern
 {
     /// <summary>
-    /// <para>
     /// The data pattern attribute applies a data source to a fixture or test
-    /// parameter declaratively.  It can be attached to a fixture class, a public property
+    /// parameter declaratively.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// It can be attached to a fixture class, a public property
     /// or field of a fixture, a test method or a test method parameter.  When attached
     /// to a property or field of a fixture, implies that the property or field is
     /// a fixture parameter (so the <see cref="TestParameterPatternAttribute" />
@@ -35,27 +38,36 @@ namespace Gallio.Framework.Pattern
     /// property.  The contents of data sets with lower order indices are processed
     /// before those with higher indices.
     /// </para>
+    /// </remarks>
     /// <example>
-    /// <code>
-    /// // Ensures that the rows are processed in exactly the order they appear.
-    /// [Test]
-    /// [Row(1, "a"), Order=1)]
-    /// [Row(2, "b"), Order=2)]
-    /// [Row(3, "c"), Order=3)]
-    /// public void Test(int x, string y) { ... }
-    /// </code>
+    /// The following example ensures that the rows are processed in exactly the order they appear.
+    /// <code><![CDATA[
+    /// [TestFixture]
+    /// public class Fixture
+    /// {
+    ///     [Test]
+    ///     [Row(1, "a"), Order=1)]
+    ///     [Row(2, "b"), Order=2)]
+    ///     [Row(3, "c"), Order=3)]
+    ///     public void Test(int x, string y) 
+    ///     { 
+    ///         // Code logic here...
+    ///     }
+    /// }
+    /// ]]></code>
     /// </example>
-    /// </summary>
     [AttributeUsage(PatternAttributeTargets.DataContext, AllowMultiple=true, Inherited=true)]
     public abstract class DataPatternAttribute : DecoratorPatternAttribute
     {
         private string sourceName = "";
 
         /// <summary>
-        /// <para>
         /// Gets or sets the name of the data source to create so that the values produced
-        /// by this attribute can be referred to elsewhere.  Multiple data 
-        /// attributes may use the same data source name to produce a compound
+        /// by this attribute can be referred to elsewhere.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// Multiple data attributes may use the same data source name to produce a compound
         /// data source consisting of all of their values combined.
         /// </para>
         /// <para>
@@ -65,7 +77,7 @@ namespace Gallio.Framework.Pattern
         /// is associated.  By default, test parameters are bound to
         /// the anonymous data source of their enclosing scope.
         /// </para>
-        /// </summary>
+        /// </remarks>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
         public string SourceName
         {

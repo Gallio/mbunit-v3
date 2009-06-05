@@ -41,10 +41,10 @@ namespace Gallio.Framework.Pattern
         ITestDataContextBuilder CreateChild();
 
         /// <summary>
-        /// <para>
         /// Gets or sets the offset to add to a test parameter's implicit data binding index to map it
         /// into the containing data context.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// This property is used to determine the data binding index of a test parameter that
         /// has not been explicitly bound.  The offsets are summed cumulatively to produce an implicit
@@ -62,7 +62,7 @@ namespace Gallio.Framework.Pattern
         /// anonymous data source.  If none is found, then data binding will fail.</item>
         /// </list>
         /// </para>
-        /// </summary>
+        /// </remarks>
         int ImplicitDataBindingIndexOffset { get; set; }
 
         /// <summary>

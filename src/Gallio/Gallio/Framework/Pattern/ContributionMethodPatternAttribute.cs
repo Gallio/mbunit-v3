@@ -19,10 +19,8 @@ using Gallio.Common.Reflection;
 namespace Gallio.Framework.Pattern
 {
     /// <summary>
-    /// <para>
     /// A contribution method pattern attribute applies decorations to a containing scope
     /// such as by introducing a new setup or teardown action to a test.
-    /// </para>
     /// </summary>
     [AttributeUsage(PatternAttributeTargets.ContributionMethod, AllowMultiple=false, Inherited=true)]
     public abstract class ContributionMethodPatternAttribute : DecoratorPatternAttribute

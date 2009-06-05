@@ -25,9 +25,9 @@ using Gallio.Common.Reflection;
 namespace Gallio.Framework.Pattern
 {
     /// <summary>
-    /// <para>
     /// Represents the run-time state of a <see cref="PatternTest" /> that is to be executed.
-    /// </para>
+    /// </summary>
+    /// <remarks>
     /// <para>
     /// Typical lifecycle of <see cref="PatternTestState" />:
     /// <list type="bullet">
@@ -44,7 +44,7 @@ namespace Gallio.Framework.Pattern
     /// the opportunity to clean up the test state.</item>
     /// </list>
     /// </para>
-    /// </summary>
+    /// </remarks>
     public class PatternTestState
     {
         private static readonly Key<PatternTestState> ContextKey = new Key<PatternTestState>("Gallio.PatternTestState");
@@ -124,15 +124,15 @@ namespace Gallio.Framework.Pattern
         }
 
         /// <summary>
-        /// <para>
         /// Gets the primary test step associated with this test state.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// If the test has data bindings, the test instance for each data item will
         /// be executed as children of the primary test step.  Otherwise,
         /// the primary test step will be used for the entire test run.
         /// </para>
-        /// </summary>
+        /// </remarks>
         public PatternTestStep PrimaryTestStep
         {
             get { return primaryTestStep; }
@@ -148,8 +148,12 @@ namespace Gallio.Framework.Pattern
 
         /// <summary>
         /// Gets the data binding context of the test.
-        /// The context is used to produce data items for test instances.
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// The context is used to produce data items for test instances.
+        /// </para>
+        /// </remarks>
         public DataBindingContext BindingContext
         {
             get { return bindingContext; }
@@ -180,9 +184,13 @@ namespace Gallio.Framework.Pattern
         }
 
         /// <summary>
-        /// Gets the user data collection associated with the test state.  It may be used
-        /// to associate arbitrary key/value pairs with the execution of the test.
+        /// Gets the user data collection associated with the test state.  
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// It may be used to associate arbitrary key/value pairs with the execution of the test.
+        /// </para>
+        /// </remarks>
         public UserDataCollection Data
         {
             get { return data; }
@@ -193,9 +201,11 @@ namespace Gallio.Framework.Pattern
         /// values assigned to test parameters given a data binding item.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// The contents of the dictionary are initialized by the framework as part of the
         /// test parameter binding phase for the test instance, just before the "before test"
         /// actions run.
+        /// </para>
         /// </remarks>
         public IDictionary<PatternTestParameter, IDataAccessor> TestParameterDataAccessors
         {

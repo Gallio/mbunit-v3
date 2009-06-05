@@ -28,7 +28,9 @@ namespace Gallio.Framework.Pattern
         /// Registers a deferred action to be performed when <see cref="ApplyDeferredActions" /> is called.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// Typically used to enable decorations to be applied in a particular order.
+        /// </para>
         /// </remarks>
         /// <param name="codeElement">The associated code element, used to report errors if the deferred action throws an exception.</param>
         /// <param name="order">The order in which the action should be applied, from least order to greatest.</param>

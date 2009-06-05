@@ -20,10 +20,8 @@ using Gallio.Framework.Pattern;
 namespace Gallio.Framework.Pattern
 {
     /// <summary>
-    /// <para>
     /// A test type decorator pattern attribute applies decorations to an
     /// existing test declared at the type-level.
-    /// </para>
     /// </summary>
     /// <seealso cref="TestTypePatternAttribute"/>
     [AttributeUsage(PatternAttributeTargets.TestType, AllowMultiple = true, Inherited = true)]
@@ -54,14 +52,14 @@ namespace Gallio.Framework.Pattern
         }
 
         /// <summary>
-        /// <para>
         /// Applies decorations to a type-level test.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// A typical use of this method is to augment the test with additional metadata
         /// or to add additional behaviors to the test.
         /// </para>
-        /// </summary>
+        /// </remarks>
         /// <param name="typeScope">The type scope.</param>
         /// <param name="type">The type.</param>
         protected virtual void DecorateTest(IPatternScope typeScope, ITypeInfo type)

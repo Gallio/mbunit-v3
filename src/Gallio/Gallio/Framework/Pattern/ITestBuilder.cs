@@ -58,10 +58,14 @@ namespace Gallio.Framework.Pattern
 
         /// <summary>
         /// Gets or sets the maximum amount of time the whole test including
-        /// its setup, teardown and body should be permitted to run.  If the test
-        /// runs any longer than this, it will be aborted by the framework.
-        /// The timeout may be null to indicate the absence of a timeout.
+        /// its setup, teardown and body should be permitted to run.
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// If the test runs any longer than this, it will be aborted by the framework.
+        /// The timeout may be null to indicate the absence of a timeout.
+        /// </para>
+        /// </remarks>
         /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="value"/>
         /// represents a negative time span.</exception>
         /// <value>The timeout.  Default value is null.</value>
@@ -69,12 +73,14 @@ namespace Gallio.Framework.Pattern
 
         /// <summary>
         /// Gets whether this test represents an individual test case
-        /// as opposed to a test container such as a fixture or suite.  The value of
-        /// this property can be used by the test harness to avoid processing containers
-        /// that have no test cases.  It can also be used by the reporting infrastructure
-        /// to constrain output statistics to test cases only.
+        /// as opposed to a test container such as a fixture or suite.
         /// </summary>
         /// <remarks>
+        /// <para>
+        /// The value of this property can be used by the test harness to avoid processing containers
+        /// that have no test cases.  It can also be used by the reporting infrastructure
+        /// to constrain output statistics to test cases only.
+        /// </para>
         /// <para>
         /// Not all test cases are leaf nodes in the test tree and vice-versa.       
         /// </para>
@@ -94,31 +100,34 @@ namespace Gallio.Framework.Pattern
         bool IsParallelizable { get; set; }
 
         /// <summary>
-        /// <para>
         /// Gets or sets a number that defines an ordering for the test with respect to its siblings.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// Unless compelled otherwise by test dependencies, tests with a lower order number than
         /// their siblings will run before those siblings and tests with the same order number
         /// as their siblings with run in an arbitrary sequence with respect to those siblings.
         /// </para>
-        /// </summary>
-        /// <remarks>
+        /// <para>
         /// Some test frameworks may choose to ignore test order or may impose their own ordering schemes.
+        /// </para>
         /// </remarks>
         /// <value>The test execution order with respect to siblings, initially zero.</value>
         int Order { get; set; }
 
         /// <summary>
+        /// Gets a locally unique identifier for this test that satisfies some specific conditions.
+        /// </summary>
+        /// <remarks>
+        /// The local identifier must satisfy the following conditions:
         /// <para>
-        /// Gets a locally unique identifier for this test that satisfies the following conditions:
-        /// </para>
         /// <list type="bullet">
         /// <item>The identifier is unique among all siblings of this test belonging to the same parent.</item>
         /// <item>The identifier is likely to be stable across multiple sessions including
         /// changes and recompilations of the test projects.</item>
         /// <item>The identifier is non-null.</item>
         /// </list>
+        /// </para>
         /// <para>
         /// The local identifier may be the same as the test's name.  However since the name is
         /// intended for display to end-users, it may contain irrelevant details (such as version
@@ -127,8 +136,6 @@ namespace Gallio.Framework.Pattern
         /// <see cref="ITestComponent.CodeElement" /> and an ordering condition among siblings
         /// to guarantee uniqueness.
         /// </para>
-        /// </summary>
-        /// <remarks>
         /// <para>
         /// The locally unique <see cref="LocalId" /> property may be used to generate the
         /// globally unique <see cref="ITestComponent.Id" /> property of a test by combining
@@ -140,9 +147,13 @@ namespace Gallio.Framework.Pattern
 
         /// <summary>
         /// Gets or sets a suggested <see cref="LocalId" /> hint, or null if none.
+        /// </summary>
+        /// <remarks>
+        /// <para>
         /// The value returned by this method will be checked for uniqueness and amended as necessary
         /// to produce a truly unique <see cref="LocalId" />.
-        /// </summary>
+        /// </para>
+        /// </remarks>
         /// <value>
         /// The default value of this property is <c>null</c> which causes the <see cref="ITestComponentBuilder.Name" />
         /// property to be used as the local id hint.
@@ -191,8 +202,10 @@ namespace Gallio.Framework.Pattern
         /// Sets the name of the expected exception type.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// This method works by adding <see cref="MetadataKeys.ExpectedException" /> metadata containing
         /// the type name as value.
+        /// </para>
         /// </remarks>
         /// <param name="typeName">The expected exception type name.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="typeName"/> is null.</exception>

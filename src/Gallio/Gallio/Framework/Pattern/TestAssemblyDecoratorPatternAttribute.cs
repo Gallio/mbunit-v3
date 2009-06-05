@@ -52,14 +52,14 @@ namespace Gallio.Framework.Pattern
         }
 
         /// <summary>
-        /// <para>
         /// Applies decorations to an assembly-level test.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// A typical use of this method is to augment the test with additional metadata
         /// or to add additional behaviors to the test.
         /// </para>
-        /// </summary>
+        /// </remarks>
         /// <param name="assemblyScope">The assembly scope.</param>
         /// <param name="assembly">The assembly.</param>
         protected virtual void DecorateAssemblyTest(IPatternScope assemblyScope, IAssemblyInfo assembly)

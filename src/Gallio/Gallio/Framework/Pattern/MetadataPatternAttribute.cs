@@ -20,15 +20,15 @@ using Gallio.Common.Reflection;
 namespace Gallio.Framework.Pattern
 {
     /// <summary>
-    /// <para>
     /// Applies declarative metadata to a test component.
-    /// </para>
+    /// </summary>
+    /// <remarks>
     /// <para>
     /// A metadata attribute is similar to a decorator but more restrictive.  Metadata does
     /// not modify the structure of a test directly.  Instead it introduces additional metadata
     /// key / value pairs for classification, filtering, reporting, documentation or other purposes.
     /// </para>
-    /// </summary>
+    /// </remarks>
     [AttributeUsage(PatternAttributeTargets.TestComponent, AllowMultiple = true, Inherited = true)]
     public abstract class MetadataPatternAttribute : PatternAttribute
     {

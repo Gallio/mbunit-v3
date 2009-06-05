@@ -21,10 +21,8 @@ using Gallio.Common.Diagnostics;
 namespace Gallio.Framework.Pattern
 {
     /// <summary>
-    /// <para>
     /// An implementation of <see cref="IPatternTestInstanceHandler" /> based on
     /// actions that can be sequenced and composed as chains.
-    /// </para>
     /// </summary>
     /// <seealso cref="IPatternTestInstanceHandler" /> for documentation about the behaviors themselves.
     /// <seealso cref="PatternTestActions"/> for actions on tests.
@@ -58,9 +56,11 @@ namespace Gallio.Framework.Pattern
         }
 
         /// <summary>
-        /// <para>
         /// Creates a new <see cref="PatternTestInstanceActions" /> object initially configured
         /// to forward calls to the specified handler without change.
+        /// </summary>
+        /// <remarks>
+        /// <para>
         /// The result is that any behaviors added to the action chains of the returned
         /// <see cref="PatternTestInstanceActions" /> will be invoked before, after or around
         /// those of the specified handler. 
@@ -69,7 +69,7 @@ namespace Gallio.Framework.Pattern
         /// A pattern test decorator applies additional actions around those of
         /// another <see cref="IPatternTestInstanceHandler" /> for a <see cref="PatternTestStep"/>.
         /// </para>
-        /// </summary>
+        /// </remarks>
         /// <param name="handler">The handler to decorate.</param>
         /// <returns>The decorated handler actions.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="handler"/> is null.</exception>

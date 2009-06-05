@@ -41,25 +41,25 @@ namespace Gallio.Framework.Pattern
         ICodeElementInfo CodeElement { get; }
 
         /// <summary>
-        /// <para>
         /// Returns true if the scope represents a test declaration.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// An arbitrary scope nested within a test declaration scope is not itself considered a
         /// test declaration scope unless it also represents a test declaration.
         /// </para>
-        /// </summary>
+        /// </remarks>
         bool IsTestDeclaration { get; }
 
         /// <summary>
-        /// <para>
         /// Returns true if the scope represents a test parameter declaration.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// An arbitrary scope nested within a test parameter declaration scope is not itself considered a
         /// test parameter declaration scope unless it also represents a test parameter declaration.
         /// </para>
-        /// </summary>
+        /// </remarks>
         bool IsTestParameterDeclaration { get; }
 
         /// <summary>
@@ -90,7 +90,9 @@ namespace Gallio.Framework.Pattern
         /// constructed within this scope.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// The component may be a test or a test parameter.  It will never be null.
+        /// </para>
         /// </remarks>
         ITestComponentBuilder TestComponentBuilder { get; }
 
@@ -193,7 +195,9 @@ namespace Gallio.Framework.Pattern
         /// Consumes the specified code element using this scope as the containing scope.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// This is a convenience method that calls <see cref="IPatternEvaluator.Consume" />.
+        /// </para>
         /// </remarks>
         /// <param name="codeElement">The code element to consume.</param>
         /// <param name="skipChildren">If true, instructs the primary pattern to defer populating child tests.</param>
@@ -206,7 +210,9 @@ namespace Gallio.Framework.Pattern
         /// Processes the specified code element using this scope as the current scope.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// This is a convenience method that calls <see cref="IPatternEvaluator.Process" />.
+        /// </para>
         /// </remarks>
         /// <param name="codeElement">The code element to process.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="codeElement"/> is null.</exception>

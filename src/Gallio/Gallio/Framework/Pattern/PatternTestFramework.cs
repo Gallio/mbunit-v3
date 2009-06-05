@@ -22,10 +22,10 @@ using Gallio.Common.Reflection;
 namespace Gallio.Framework.Pattern
 {
     /// <summary>
-    /// <para>
     /// The pattern test framework is a built-in framework that Gallio provides based on
     /// reflection over attributes that implement <see cref="IPattern" />.
-    /// </para>
+    /// </summary>
+    /// <remarks>
     /// <para>
     /// The pattern test framework does not provide many attributes that end-users would use
     /// to write tests.  The framework is intended to be extended by 
@@ -43,8 +43,6 @@ namespace Gallio.Framework.Pattern
     /// test framework by registering components with the runtime or by subclassing
     /// pattern attributes.
     /// </para>
-    /// </summary>
-    /// <remarks>
     /// <para>
     /// Gallio supports the use of multiple test frameworks.  The pattern test framework
     /// model defined here may not be appropriate for all purposes.  Therefore you may
@@ -78,10 +76,12 @@ namespace Gallio.Framework.Pattern
 
         /// <summary>
         /// Gets information about a particular pattern test framework extension.
-        /// The information will be included in the report as part of the framework
-        /// node that contains the assembly.
         /// </summary>
         /// <remarks>
+        /// <para>
+        /// The information will be included in the report as part of the framework
+        /// node that contains the assembly.
+        /// </para>
         /// <para>
         /// If there are not framework extensions applied to a particular assembly then
         /// the assembly will not be explored for tests.

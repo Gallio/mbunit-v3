@@ -19,11 +19,13 @@ using System.Runtime.Serialization;
 namespace Gallio.Framework.Pattern
 {
     /// <summary>
-    /// <para>
     /// The type of exception thrown when a test declaration is malformed or
-    /// contains an error.  Implementations of <see cref="IPattern" /> may use
-    /// this exception to report that a pattern is malformed or not valid in
-    /// the context in which it appears.
+    /// contains an error.  
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// Implementations of <see cref="IPattern" /> may use this exception to report that a pattern 
+    /// is malformed or not valid in the context in which it appears.
     /// </para>
     /// <para>
     /// The exception effectively halts the processing of the pattern.  The message
@@ -34,7 +36,7 @@ namespace Gallio.Framework.Pattern
     /// is correct, all required parameters have been provided and they contain
     /// valid values.
     /// </para>
-    /// </summary>
+    /// </remarks>
     [Serializable]
     public class PatternUsageErrorException : Exception
     {

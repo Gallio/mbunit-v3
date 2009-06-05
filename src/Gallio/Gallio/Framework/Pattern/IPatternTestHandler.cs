@@ -46,15 +46,16 @@ namespace Gallio.Framework.Pattern
         /// Gets the test instance handler that describes the lifecycle of a test instance.
         /// </summary>
         /// <remarks>
-        /// These actions may be further decorated on a per-instance basis using
-        /// <see cref="DecorateTestInstance" />.
+        /// <para>
+        /// These actions may be further decorated on a per-instance basis using <see cref="DecorateTestInstance" />.
+        /// </para>
         /// </remarks>
         IPatternTestInstanceHandler TestInstanceHandler { get; }
 
         /// <summary>
-        /// <para>
         /// Prepares a newly created test state before its use.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// This method runs in the <see cref="TestContext" /> of its containing test
         /// step because the test has not yet been started.
@@ -74,14 +75,14 @@ namespace Gallio.Framework.Pattern
         /// <item>Modifying the <see cref="PatternTest" /> object in any way.</item>
         /// </list>
         /// </para>
-        /// </summary>
+        /// </remarks>
         /// <param name="testState">The test state, never null.</param>
         void BeforeTest(PatternTestState testState);
 
         /// <summary>
-        /// <para>
         /// Initializes a test prior to the execution of its instances.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// This method runs in the <see cref="TestContext" /> of the <see cref="PatternTestState.PrimaryTestStep" />.
         /// </para>
@@ -101,14 +102,14 @@ namespace Gallio.Framework.Pattern
         /// <item>Modifying the <see cref="PatternTestStep" /> object in any way.</item>
         /// </list>
         /// </para>
-        /// </summary>
+        /// </remarks>
         /// <param name="testState">The test state, never null.</param>
         void InitializeTest(PatternTestState testState);
 
         /// <summary>
-        /// <para>
         /// Cleans up a test following the execution of its instances.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// This method runs in the <see cref="TestContext" /> of the <see cref="PatternTestState.PrimaryTestStep" />.
         /// </para>
@@ -127,14 +128,14 @@ namespace Gallio.Framework.Pattern
         /// <item>Modifying the <see cref="PatternTestStep" /> object in any way.</item>
         /// </list>
         /// </para>
-        /// </summary>
+        /// </remarks>
         /// <param name="testState">The test state, never null.</param>
         void DisposeTest(PatternTestState testState);
 
         /// <summary>
-        /// <para>
         /// Cleans up a completed test state after its use.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// This method runs in the <see cref="TestContext" /> of its containing test
         /// step because the test has terminated.
@@ -153,15 +154,15 @@ namespace Gallio.Framework.Pattern
         /// <item>Modifying the <see cref="PatternTestStep" /> object in any way.</item>
         /// </list>
         /// </para>
-        /// </summary>
+        /// </remarks>
         /// <param name="testState">The test state, never null.</param>
         void AfterTest(PatternTestState testState);
 
         /// <summary>
-        /// <para>
         /// Decorates the <see cref="IPatternTestHandler" /> of a test instance before its
         /// <see cref="IPatternTestInstanceHandler.BeforeTestInstance" /> actions have a chance to run.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// This method runs in the <see cref="TestContext" /> of its containing test
         /// instance because the test has not yet been started.
@@ -188,7 +189,7 @@ namespace Gallio.Framework.Pattern
         /// <item>Modifying the <see cref="PatternTestState" /> object in any way.</item>
         /// </list>
         /// </para>
-        /// </summary>
+        /// </remarks>
         /// <param name="testState">The test state, never null.</param>
         /// <param name="decoratedTestInstanceActions">The test instance's actions to decorate, never null.</param>
         void DecorateTestInstance(PatternTestState testState, PatternTestInstanceActions decoratedTestInstanceActions);

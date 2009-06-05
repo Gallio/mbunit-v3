@@ -19,14 +19,16 @@ using Gallio.Common.Reflection;
 namespace Gallio.Framework.Pattern
 {
     /// <summary>
-    /// <para>
     /// Declares that a constructor is used to provide test fixture parameters.
+    /// </summary>
+    /// <remarks>
+    /// <para>
     /// Subclasses of this attribute can control what happens with the constructor.
     /// </para>
     /// <para>
     /// At most one attribute of this type may appear on any given constructor.
     /// </para>
-    /// </summary>
+    /// </remarks>
     [AttributeUsage(PatternAttributeTargets.TestConstructor, AllowMultiple=false, Inherited=true)]
     public abstract class TestConstructorPatternAttribute : PatternAttribute
     {
@@ -74,9 +76,7 @@ namespace Gallio.Framework.Pattern
         }
 
         /// <summary>
-        /// <para>
         /// Initializes the <see cref="PatternTestDataContext" />.
-        /// </para>
         /// </summary>
         /// <param name="dataContextScope">The data context scope.</param>
         /// <param name="constructor">The constructor.</param>
@@ -96,7 +96,9 @@ namespace Gallio.Framework.Pattern
         /// Gets the default pattern to apply to constructor parameters that do not have a primary pattern, or null if none.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// The default implementation returns <see cref="TestParameterPatternAttribute.DefaultInstance" />.
+        /// </para>
         /// </remarks>
         protected virtual IPattern DefaultConstructorParameterPattern
         {

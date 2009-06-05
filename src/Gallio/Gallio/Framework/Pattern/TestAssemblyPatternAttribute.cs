@@ -22,15 +22,16 @@ using Gallio.Framework.Pattern;
 namespace Gallio.Framework.Pattern
 {
     /// <summary>
-    /// <para>
     /// Declares that an assembly generates an assembly-level test.
-    /// Subclasses of this attribute can customize how test enumeration takes place within
-    /// the assembly.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// Subclasses of this attribute can customize how test enumeration takes place within the assembly.
     /// </para>
     /// <para>
     /// At most one attribute of this type may appear on any given assembly.
     /// </para>
-    /// </summary>
+    /// </remarks>
     /// <seealso cref="TestAssemblyDecoratorPatternAttribute"/>
     [AttributeUsage(PatternAttributeTargets.TestAssembly, AllowMultiple = false, Inherited = true)]
     public abstract class TestAssemblyPatternAttribute : PatternAttribute
@@ -56,7 +57,7 @@ namespace Gallio.Framework.Pattern
         /// <inheritdoc />
         public override void Consume(IPatternScope containingScope, ICodeElementInfo codeElement, bool skipChildren)
         {
-            IAssemblyInfo assembly = codeElement as IAssemblyInfo;
+            var assembly = codeElement as IAssemblyInfo;
             Validate(containingScope, assembly);
 
             IPatternScope assemblyScope = containingScope.CreateChildTestScope(assembly.Name, assembly);
@@ -92,7 +93,7 @@ namespace Gallio.Framework.Pattern
         /// <param name="assembly">The assembly.</param>
         protected virtual void InitializeAssemblyTest(IPatternScope assemblyScope, IAssemblyInfo assembly)
         {
-            PropertyBag metadata = new PropertyBag();
+            var metadata = new PropertyBag();
             ModelUtils.PopulateMetadataFromAssembly(assembly, metadata);
             foreach (var pair in metadata.Pairs)
                 assemblyScope.TestBuilder.AddMetadata(pair.Key, pair.Value);
@@ -101,14 +102,12 @@ namespace Gallio.Framework.Pattern
         }
 
         /// <summary>
-        /// <para>
         /// Applies semantic actions to the assembly-level test to estalish its runtime behavior.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// This method is called after <see cref="InitializeAssemblyTest" />.
         /// </para>
-        /// </summary>
-        /// <remarks>
         /// <para>
         /// The default behavior for a <see cref="TestAssemblyPatternAttribute" />
         /// is to configure the test actions as follows:
@@ -136,7 +135,9 @@ namespace Gallio.Framework.Pattern
         /// Populates the children of the assembly test all at once.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// The default implementation processes all public and non-public types within the assembly.
+        /// </para>
         /// </remarks>
         /// <param name="assemblyScope">The assembly scope.</param>
         /// <param name="assembly">The assembly.</param>
@@ -157,7 +158,7 @@ namespace Gallio.Framework.Pattern
         /// <param name="assembly">The assembly.</param>
         protected virtual void PrepareToPopulateChildrenOnDemand(IPatternScope assemblyScope, IAssemblyInfo assembly)
         {
-            HashSet<ITypeInfo> populatedTypes = new HashSet<ITypeInfo>();
+            var populatedTypes = new HashSet<ITypeInfo>();
             assemblyScope.AddDeferredComponentPopulator(childCodeElementHint =>
             {
                 ITypeInfo type = childCodeElementHint as ITypeInfo;
@@ -173,7 +174,9 @@ namespace Gallio.Framework.Pattern
         /// Gets the default pattern to apply to types that do not have a primary pattern, or null if none.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// The default implementation returns <see cref="TestTypePatternAttribute.AutomaticInstance"/>.
+        /// </para>
         /// </remarks>
         protected virtual IPattern DefaultTypePattern
         {

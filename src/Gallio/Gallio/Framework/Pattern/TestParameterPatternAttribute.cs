@@ -21,16 +21,18 @@ using Gallio.Framework.Pattern;
 namespace Gallio.Framework.Pattern
 {
     /// <summary>
-    /// <para>
     /// Declares that a field, property, method parameter or generic parameter
     /// represents a <see cref="PatternTestParameter" />.
+    /// </summary>
+    /// <remarks>
+    /// <para>
     /// Subclasses of this attribute can control what happens with the parameter.
     /// </para>
     /// <para>
     /// At most one attribute of this type may appear on any given property,
     /// field or parameter declaration.
     /// </para>
-    /// </summary>
+    /// </remarks>
     [AttributeUsage(PatternAttributeTargets.TestParameter, AllowMultiple = false, Inherited = true)]
     public abstract class TestParameterPatternAttribute : PatternAttribute
     {
@@ -43,10 +45,14 @@ namespace Gallio.Framework.Pattern
         /// <summary>
         /// Gets an instance of the parameter pattern attribute to use when no
         /// other pattern consumes the parameter but when the parameter appears to have
-        /// other contributing pattern attributes associated with it.  So a test parameter
-        /// is created automatically if we try to apply contributions to it, such as data items,
-        /// but otherwise it is silent.  This is particularly useful with fields and properties.
+        /// other contributing pattern attributes associated with it. 
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// So a test parameter is created automatically if we try to apply contributions to it, such as data items,
+        /// but otherwise it is silent.  This is particularly useful with fields and properties.
+        /// </para>
+        /// </remarks>
         public static readonly TestParameterPatternAttribute AutomaticInstance = new AutomaticImpl();
 
         /// <inheritdoc />
@@ -64,7 +70,7 @@ namespace Gallio.Framework.Pattern
         /// <inheritdoc />
         public override void Consume(IPatternScope containingScope, ICodeElementInfo codeElement, bool skipChildren)
         {
-            ISlotInfo slot = codeElement as ISlotInfo;
+            var slot = codeElement as ISlotInfo;
             Validate(containingScope, slot);
 
             IPatternScope testParameterScope = containingScope.CreateTestParameterScope(slot.Name, slot);
@@ -93,7 +99,7 @@ namespace Gallio.Framework.Pattern
         protected virtual void InitializeTestParameter(IPatternScope testParameterScope, ISlotInfo slot)
         {
             int index = slot.Position;
-            IParameterInfo parameter = slot as IParameterInfo;
+            var parameter = slot as IParameterInfo;
             if (parameter != null)
             {
                 // For generic methods, we offset the position of the parameter

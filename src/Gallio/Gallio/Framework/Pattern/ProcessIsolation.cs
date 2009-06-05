@@ -18,17 +18,17 @@ using System;
 namespace Gallio.Framework.Pattern
 {
     /// <summary>
-    /// <para>
     /// The process isolation object saves global process-level context
     /// information when it is created and restores it when it is disposed.
-    /// </para>
+    /// </summary>
+    /// <remarks>
     /// <para>
     /// The following context information is saved and restored:
     /// <list type="bullet">
     /// <item>The current working directory</item>
     /// </list>
     /// </para>
-    /// </summary>
+    /// </remarks>
     public sealed class ProcessIsolation : IDisposable
     {
         private bool restored;

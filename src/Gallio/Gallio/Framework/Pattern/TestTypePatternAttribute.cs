@@ -48,10 +48,12 @@ namespace Gallio.Framework.Pattern
 
         /// <summary>
         /// Gets an instance of the test type pattern attribute to use when no
-        /// other pattern consumes the type.  If the type can be inferred to be a
-        /// test type then the pattern will behave as if the type has a test type pattern attribute
-        /// applied to it.  Otherwise it will simply recurse into nested types.
+        /// other pattern consumes the type. 
         /// </summary>
+        /// <remarks>
+        /// If the type can be inferred to be a test type then the pattern will behave as if the type has a 
+        /// test type pattern attribute applied to it. Otherwise it will simply recurse into nested types.
+        /// </remarks>
         /// <seealso cref="InferTestType"/>
         public static readonly TestTypePatternAttribute AutomaticInstance = new AutomaticImpl();
 
@@ -83,7 +85,7 @@ namespace Gallio.Framework.Pattern
         /// <inheritdoc />
         public override void Consume(IPatternScope containingScope, ICodeElementInfo codeElement, bool skipChildren)
         {
-            ITypeInfo type = codeElement as ITypeInfo;
+            var type = codeElement as ITypeInfo;
             Validate(containingScope, type);
 
             IPatternScope typeScope = containingScope.CreateChildTestScope(type.Name, type);
@@ -311,7 +313,9 @@ namespace Gallio.Framework.Pattern
         /// Gets the default pattern to apply to generic parameters that do not have a primary pattern, or null if none.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// The default implementation returns <see cref="TestParameterPatternAttribute.DefaultInstance" />.
+        /// </para>
         /// </remarks>
         protected virtual IPattern DefaultGenericParameterPattern
         {
@@ -322,7 +326,9 @@ namespace Gallio.Framework.Pattern
         /// Gets the default pattern to apply to methods that do not have a primary pattern, or null if none.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// The default implementation returns <c>null</c>.
+        /// </para>
         /// </remarks>
         protected virtual IPattern DefaultMethodPattern
         {
@@ -333,7 +339,9 @@ namespace Gallio.Framework.Pattern
         /// Gets the default pattern to apply to events that do not have a primary pattern, or null if none.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// The default implementation returns <c>null</c>.
+        /// </para>
         /// </remarks>
         protected virtual IPattern DefaultEventPattern
         {
@@ -344,7 +352,9 @@ namespace Gallio.Framework.Pattern
         /// Gets the default pattern to apply to fields that do not have a primary pattern, or null if none.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// The default implementation returns <see cref="TestParameterPatternAttribute.AutomaticInstance" />.
+        /// </para>
         /// </remarks>
         protected virtual IPattern DefaultFieldPattern
         {
@@ -355,7 +365,9 @@ namespace Gallio.Framework.Pattern
         /// Gets the default pattern to apply to properties that do not have a primary pattern, or null if none.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// The default implementation returns <see cref="TestParameterPatternAttribute.AutomaticInstance" />.
+        /// </para>
         /// </remarks>
         protected virtual IPattern DefaultPropertyPattern
         {
@@ -366,7 +378,9 @@ namespace Gallio.Framework.Pattern
         /// Gets the default pattern to apply to constructors that do not have a primary pattern, or null if none.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// The default implementation returns <see cref="TestConstructorPatternAttribute.DefaultInstance" />.
+        /// </para>
         /// </remarks>
         protected virtual IPattern DefaultConstructorPattern
         {
@@ -377,7 +391,9 @@ namespace Gallio.Framework.Pattern
         /// Gets the default pattern to apply to nested types that do not have a primary pattern, or null if none.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// The default implementation returns <see cref="TestTypePatternAttribute.AutomaticInstance"/>.
+        /// </para>
         /// </remarks>
         protected virtual IPattern DefaultNestedTypePattern
         {
@@ -386,9 +402,13 @@ namespace Gallio.Framework.Pattern
 
         /// <summary>
         /// Gets the binding flags that should be used to enumerate non-nested type members
-        /// of the type for determining their contribution to the test fixture.  Instance members are
-        /// only included if the type is not abstract.
+        /// of the type for determining their contribution to the test fixture.  
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// Instance members are only included if the type is not abstract.
+        /// </para>
+        /// </remarks>
         /// <param name="type">The type.</param>
         /// <returns>The binding flags for enumerating members.</returns>
         protected virtual BindingFlags GetMemberBindingFlags(ITypeInfo type)
@@ -401,11 +421,15 @@ namespace Gallio.Framework.Pattern
 
         /// <summary>
         /// Infers whether the type is a test type based on its structure.
+        /// </summary>
+        /// <remarks>
+        /// <para>
         /// Returns true if the type any associated patterns, if it has
         /// non-nested type members (subject to <see cref="GetMemberBindingFlags" />)
         /// with patterns, if it has generic parameters with patterns, or if any
         /// of its nested types satisfy the preceding rules.
-        /// </summary>
+        /// </para>
+        /// </remarks>
         /// <param name="evaluator">The pattern evaluator.</param>
         /// <param name="type">The type.</param>
         /// <returns>True if the type is likely a test type.</returns>

@@ -19,9 +19,9 @@ using Gallio.Framework.Data;
 namespace Gallio.Framework.Pattern
 {
     /// <summary>
-    /// <para>
     /// A pattern test data context introduces a scope for data source declarations.
-    /// </para>
+    /// </summary>
+    /// <remarks>
     /// <para>
     /// Each <see cref="PatternTest" /> or <see cref="PatternTestParameter" /> has a <see cref="PatternTestDataContext" />.
     /// However, data contexts may also be nested.
@@ -33,12 +33,11 @@ namespace Gallio.Framework.Pattern
     /// constructor only.  To achieve this effect, the constructor declares a new <see cref="PatternTestDataContext" />
     /// within which its test parameters will be created.
     /// </para>
-    /// </summary>
+    /// </remarks>
     public class PatternTestDataContext : IDataSourceResolver
     {
         private readonly PatternTestDataContext parent;
         private int implicitDataBindingIndexOffset;
-
         private DataSourceTable dataSourceTable;
 
         /// <summary>
@@ -59,10 +58,10 @@ namespace Gallio.Framework.Pattern
         }
 
         /// <summary>
-        /// <para>
         /// Gets or sets the offset to add to a test parameter's implicit data binding index to map it
         /// into the containing data context.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// This property is used to determine the data binding index of a test parameter that
         /// has not been explicitly bound.  The offsets are summed cumulatively to produce an implicit
@@ -80,7 +79,7 @@ namespace Gallio.Framework.Pattern
         /// anonymous data source.  If none is found, then data binding will fail.</item>
         /// </list>
         /// </para>
-        /// </summary>
+        /// </remarks>
         public int ImplicitDataBindingIndexOffset
         {
             get { return implicitDataBindingIndexOffset; }
@@ -119,11 +118,15 @@ namespace Gallio.Framework.Pattern
 
         /// <summary>
         /// Returns the index that should be used to implicitly bind to the nearest
-        /// anonymous data source that can be found.  The index is computed as the
-        /// sum of the <see cref="ImplicitDataBindingIndexOffset" /> of each data
+        /// anonymous data source that can be found.  
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// The index is computed as the sum of the <see cref="ImplicitDataBindingIndexOffset" /> of each data
         /// context traversed to find the data source excluding the data context
         /// that actually has the data source.
-        /// </summary>
+        /// </para>
+        /// </remarks>
         /// <returns>The implicit data binding index, or null if no anonymous data sources were found.</returns>
         /// <seealso cref="ImplicitDataBindingIndexOffset"/>
         public int? ResolveImplicitDataBindingIndex()

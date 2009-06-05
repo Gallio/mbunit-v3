@@ -22,10 +22,10 @@ using Gallio.Common.Diagnostics;
 namespace Gallio.Framework.Pattern
 {
     /// <summary>
-    /// <para>
     /// An implementation of <see cref="IPatternTestHandler" /> based on
     /// actions that can be sequenced and composed as chains.
-    /// </para>
+    /// </summary>
+    /// <remarks>
     /// <para>
     /// This class is the backbone of the <see cref="PatternTestFramework" />
     /// extensibility model.  Because new behaviors can be defined and added
@@ -34,7 +34,7 @@ namespace Gallio.Framework.Pattern
     /// itself does not need to hardcode the mechanism by which the behaviors are
     /// selected.
     /// </para>
-    /// </summary>
+    /// </remarks>
     /// <seealso cref="IPatternTestHandler" /> for documentation about the behaviors themselves.
     public class PatternTestActions : IPatternTestHandler
     {
@@ -60,9 +60,11 @@ namespace Gallio.Framework.Pattern
         }
 
         /// <summary>
-        /// <para>
         /// Creates a new <see cref="PatternTestActions" /> object initially configured
         /// to forward calls to the specified handler without change.
+        /// </summary>
+        /// <remarks>
+        /// <para>
         /// The result is that any behaviors added to the action chains of the returned
         /// <see cref="PatternTestActions" /> will be invoked before, after or around
         /// those of the specified handler. 
@@ -71,7 +73,7 @@ namespace Gallio.Framework.Pattern
         /// A pattern test decorator applies additional actions around those of
         /// another <see cref="IPatternTestHandler" /> for a <see cref="PatternTest"/>.
         /// </para>
-        /// </summary>
+        /// </remarks>
         /// <param name="handler">The handler to decorate.</param>
         /// <returns>The decorated handler actions.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="handler"/> is null.</exception>
@@ -80,7 +82,7 @@ namespace Gallio.Framework.Pattern
             if (handler == null)
                 throw new ArgumentNullException("handler");
 
-            PatternTestActions decorator = new PatternTestActions();
+            var decorator = new PatternTestActions();
             decorator.beforeTestChain.Action = handler.BeforeTest;
             decorator.initializeTestChain.Action = handler.InitializeTest;
             decorator.disposeTestChain.Action = handler.DisposeTest;
@@ -95,8 +97,9 @@ namespace Gallio.Framework.Pattern
         /// Gets the test instance actions that describes the lifecycle of a test instance.
         /// </summary>
         /// <remarks>
-        /// These actions may be further decorated on a per-instance basis using
-        /// <see cref="DecorateTestInstanceChain" />.
+        /// <para>
+        /// These actions may be further decorated on a per-instance basis using <see cref="DecorateTestInstanceChain" />.
+        /// </para>
         /// </remarks>
         public PatternTestInstanceActions TestInstanceActions
         {

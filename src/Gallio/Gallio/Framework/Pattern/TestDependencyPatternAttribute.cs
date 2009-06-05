@@ -21,10 +21,8 @@ using Gallio.Framework.Pattern;
 namespace Gallio.Framework.Pattern
 {
     /// <summary>
-    /// <para>
     /// A dependency pattern attribute creates a dependency on the tests defined
     /// by some other code element.
-    /// </para>
     /// </summary>
     [AttributeUsage(PatternAttributeTargets.Test, AllowMultiple = true, Inherited = true)]
     public abstract class TestDependencyPatternAttribute : PatternAttribute

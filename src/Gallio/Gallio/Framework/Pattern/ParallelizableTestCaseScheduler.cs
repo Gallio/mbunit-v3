@@ -28,9 +28,11 @@ namespace Gallio.Framework.Pattern
     /// (variable) maximum number of threads.
     /// </summary>
     /// <remarks>
+    /// <para>
     /// The implementation is designed to support re-entrance while still maintaining an
     /// upper bound on active thread count.  To avoid blowing the limit on thread count
     /// due to re-entrance the caller's thread is also used to schedule work.
+    /// </para>
     /// </remarks>
     internal sealed class ParallelizableTestCaseScheduler
     {

@@ -51,14 +51,14 @@ namespace Gallio.Framework.Pattern
         }
 
         /// <summary>
-        /// <para>
         /// Applies decorations to a <see cref="PatternTestParameter" />.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// A typical use of this method is to augment the test parameter with additional metadata
         /// or to add additional behaviors to the test parameter.
         /// </para>
-        /// </summary>
+        /// </remarks>
         /// <param name="slotScope">The slot scope.</param>
         /// <param name="slot">The slot.</param>
         protected virtual void DecorateTestParameter(IPatternScope slotScope, ISlotInfo slot)

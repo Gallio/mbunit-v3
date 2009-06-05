@@ -34,9 +34,11 @@ namespace Gallio.Framework.Pattern
         /// Gets or sets the data binder for the parameter.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// The default value is a <see cref="ScalarDataBinder" /> bound to the anonymous
         /// data source using a <see cref="DataBinding"/> whose path is the name of this parameter and whose
         /// index is the implicit index computed by the pararameter's data context.
+        /// </para>
         /// </remarks>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
         IDataBinder Binder { get; set; }

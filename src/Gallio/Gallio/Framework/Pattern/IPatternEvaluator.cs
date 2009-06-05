@@ -21,10 +21,14 @@ using Gallio.Common.Reflection;
 namespace Gallio.Framework.Pattern
 {
     /// <summary>
-    /// A pattern evaluator maintains state that is needed to interpret patterns.  It is
-    /// used by the <see cref="PatternTestExplorer" /> to populate a <see cref="TestModel" />
-    /// during test enumeration.
+    /// A pattern evaluator maintains state that is needed to interpret patterns.  
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// It is used by the <see cref="PatternTestExplorer" /> to populate a <see cref="TestModel" />
+    /// during test enumeration.
+    /// </para>
+    /// </remarks>
     /// <seealso cref="PatternTestFramework"/>
     public interface IPatternEvaluator
     {
@@ -71,7 +75,9 @@ namespace Gallio.Framework.Pattern
         /// Returns true if the code element represents a test.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// If an exception occurs, this method returns false.
+        /// </para>
         /// </remarks>
         /// <param name="codeElement">The code element.</param>
         /// <param name="defaultPrimaryPattern">The default primary pattern to use, if none can be resolved
@@ -84,7 +90,9 @@ namespace Gallio.Framework.Pattern
         /// Returns true if the code element represents a part of a test.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// If an exception occurs, this method returns false.
+        /// </para>
         /// </remarks>
         /// <param name="codeElement">The code element.</param>
         /// <param name="defaultPrimaryPattern">The default primary pattern to use, if none can be resolved
@@ -97,8 +105,10 @@ namespace Gallio.Framework.Pattern
         /// Consumes the specified code element.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// Any exceptions thrown by a pattern are caught and manifested as annotations
         /// associated with the code element.  <seealso cref="PatternUsageErrorException"/>
+        /// </para>
         /// </remarks>
         /// <param name="containingScope">The containing scope.</param>
         /// <param name="codeElement">The code element to consume.</param>
@@ -114,8 +124,10 @@ namespace Gallio.Framework.Pattern
         /// Processes the specified code element.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// Any exceptions thrown by a pattern are caught and manifested as annotations
         /// associated with the code element.  <seealso cref="PatternUsageErrorException"/>
+        /// </para>
         /// </remarks>
         /// <param name="scope">The scope.</param>
         /// <param name="codeElement">The code element to process.</param>

@@ -20,16 +20,16 @@ using Gallio.Common.Reflection;
 namespace Gallio.Framework.Pattern
 {
     /// <summary>
-    /// <para>
     /// An assembly initialization attribute gets a chance to perform early initialization
     /// of the system before enumerating the tests within the assembly.
-    /// </para>
+    /// </summary>
+    /// <remarks>
     /// <para>
     /// For examples, a subclass of this attribute may be used to register an assembly
     /// resolver before test enumeration occurs to ensure that all referenced assemblies
     /// can be loaded.
     /// </para>
-    /// </summary>
+    /// </remarks>
     [AttributeUsage(PatternAttributeTargets.TestAssembly, AllowMultiple=true, Inherited=true)]
     public abstract class TestAssemblyInitializationAttribute : Attribute
     {
