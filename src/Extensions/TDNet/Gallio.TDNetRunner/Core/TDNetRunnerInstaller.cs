@@ -76,9 +76,9 @@ namespace Gallio.TDNetRunner.Core
                     if (installationMode != TDNetRunnerInstallationMode.Disabled)
                     {
                         int priority = installationMode == TDNetRunnerInstallationMode.Default ? 25 : 5;
-                        foreach (string frameworkAssemblyName in frameworkTraits.FrameworkAssemblyNames)
+                        foreach (AssemblySignature frameworkAssembly in frameworkTraits.FrameworkAssemblies)
                         {
-                            InstallRegistryKeysForFramework(frameworkTraits.Name, frameworkAssemblyName, priority,
+                            InstallRegistryKeysForFramework(frameworkTraits.Name, frameworkAssembly, priority,
                                 progressMonitor);
                         }
                     }
@@ -162,17 +162,17 @@ namespace Gallio.TDNetRunner.Core
             }
         }
 
-        private void InstallRegistryKeysForFramework(string frameworkName, string frameworkAssemblyName, int priority, IProgressMonitor progressMonitor)
+        private void InstallRegistryKeysForFramework(string frameworkName, AssemblySignature frameworkAssembly, int priority, IProgressMonitor progressMonitor)
         {
-            InstallRegistryKeysForFramework(frameworkName, frameworkAssemblyName, priority, progressMonitor, Registry.LocalMachine, LocalMachineRegKey);
+            InstallRegistryKeysForFramework(frameworkName, frameworkAssembly, priority, progressMonitor, Registry.LocalMachine, LocalMachineRegKey);
 
             if (ProcessSupport.Is64BitProcess)
-                InstallRegistryKeysForFramework(frameworkName, frameworkAssemblyName, priority, progressMonitor, Registry.LocalMachine, LocalMachineRegKey32Bit);
+                InstallRegistryKeysForFramework(frameworkName, frameworkAssembly, priority, progressMonitor, Registry.LocalMachine, LocalMachineRegKey32Bit);
         }
 
-        private void InstallRegistryKeysForFramework(string frameworkName, string frameworkAssemblyName, int priority, IProgressMonitor progressMonitor, RegistryKey hiveKey, string rootKeyPath)
+        private void InstallRegistryKeysForFramework(string frameworkName, AssemblySignature frameworkAssembly, int priority, IProgressMonitor progressMonitor, RegistryKey hiveKey, string rootKeyPath)
         {
-            string subKeyName = string.Concat(rootKeyPath, @"\", RunnerRegKeyPrefix, " - ", frameworkName, " (", frameworkAssemblyName, ")");
+            string subKeyName = string.Concat(rootKeyPath, @"\", RunnerRegKeyPrefix, " - ", frameworkName, " (", frameworkAssembly, ")");
             string message = string.Format("Adding TestDriven.Net runner registry key for framework '{0}'.", frameworkName);
 
             logger.Log(LogSeverity.Info, message);
@@ -182,7 +182,7 @@ namespace Gallio.TDNetRunner.Core
             {
                 subKey.SetValue(null, priority.ToString());
                 subKey.SetValue("AssemblyPath", AssemblyUtils.GetAssemblyLocalPath(GetType().Assembly));
-                subKey.SetValue("TargetFrameworkAssemblyName", frameworkAssemblyName);
+                subKey.SetValue("TargetFrameworkAssemblyName", frameworkAssembly.ToString()); // n.b. TDNet supports version ranges in the same format we use
                 subKey.SetValue("TypeName", "Gallio.TDNetRunner.GallioTestRunner");
                 subKey.SetValue("TypeName_Resident", "Gallio.TDNetRunner.GallioResidentTestRunner");
             }

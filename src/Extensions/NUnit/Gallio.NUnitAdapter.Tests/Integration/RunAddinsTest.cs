@@ -24,6 +24,7 @@ using MbUnit.Framework;
 
 namespace Gallio.NUnitAdapter.Tests.Integration
 {
+#if NUNIT248
     [TestFixture]
     [RunSample(typeof(AddinsTest))]
     public class RunAddinsTest : BaseTestWithSampleRunner
@@ -48,4 +49,5 @@ namespace Gallio.NUnitAdapter.Tests.Integration
             Assert.AreEqual(TestStatus.Failed, runs[1].Result.Outcome.Status);
         }
     }
+#endif
 }

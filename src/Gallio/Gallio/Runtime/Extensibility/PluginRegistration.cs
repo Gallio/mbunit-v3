@@ -33,7 +33,7 @@ namespace Gallio.Runtime.Extensibility
         private PropertySet pluginProperties;
         private PropertySet traitsProperties;
         private IHandlerFactory pluginHandlerFactory;
-        private IList<AssemblyReference> assemblyReferences;
+        private IList<AssemblyBinding> assemblyBindings;
         private IList<IPluginDescriptor> pluginDependencies;
         private IList<string> probingPaths;
 
@@ -98,22 +98,22 @@ namespace Gallio.Runtime.Extensibility
         }
 
         /// <summary>
-        /// Gets or sets the list of plugin assembly references.
+        /// Gets or sets the list of plugin assembly bindings.
         /// </summary>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
-        public IList<AssemblyReference> AssemblyReferences
+        public IList<AssemblyBinding> AssemblyBindings
         {
             get
             {
-                if (assemblyReferences == null)
-                    assemblyReferences = new List<AssemblyReference>();
-                return assemblyReferences;
+                if (assemblyBindings == null)
+                    assemblyBindings = new List<AssemblyBinding>();
+                return assemblyBindings;
             }
             set
             {
                 if (value == null)
                     throw new ArgumentNullException("value");
-                assemblyReferences = value;
+                assemblyBindings = value;
             }
         }
 

@@ -40,7 +40,13 @@ namespace Gallio.NUnitAdapter.Tests.Model
         protected override ComponentHandle<ITestFramework, TestFrameworkTraits> GetFrameworkHandle()
         {
             return (ComponentHandle<ITestFramework, TestFrameworkTraits>)
-                RuntimeAccessor.ServiceLocator.ResolveHandleByComponentId("NUnitAdapter.TestFramework");
+#if NUNIT248
+                RuntimeAccessor.ServiceLocator.ResolveHandleByComponentId("NUnitAdapter248.TestFramework");
+#elif NUNIT25
+                RuntimeAccessor.ServiceLocator.ResolveHandleByComponentId("NUnitAdapter25.TestFramework");
+#else
+#error "Unrecognized NUnit framework version."
+#endif
         }
         
         [Test]

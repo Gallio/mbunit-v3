@@ -28,7 +28,7 @@ namespace Gallio.Common.Diagnostics
     public sealed class StackTraceData : IMarkupStreamWritable
     {
         private static readonly Regex StackFrameRegex = new Regex(@"(?<prefix>\) in )(?<path>\S.*):line (?<line>[0-9]+)",
-            RegexOptions.Multiline | RegexOptions.Compiled);
+            RegexOptions.Multiline | RegexOptions.Compiled | RegexOptions.CultureInvariant);
 
         private readonly string stackTrace;
 

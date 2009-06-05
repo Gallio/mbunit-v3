@@ -48,9 +48,9 @@ namespace Gallio.Icarus.Models
             else
             {
                 var node = (PluginDetailsNode) treePath.LastNode;
-                if (node.Name == "Assembly References" && pluginDescriptor.AssemblyReferences != null)
+                if (node.Name == "Assembly References" && pluginDescriptor.AssemblyBindings != null)
                 {
-                    foreach (var assemblyReference in pluginDescriptor.AssemblyReferences)
+                    foreach (var assemblyReference in pluginDescriptor.AssemblyBindings)
                     {
                         string codeBase = assemblyReference.CodeBase != null ? 
                             assemblyReference.CodeBase.ToString() : "(unknown)";

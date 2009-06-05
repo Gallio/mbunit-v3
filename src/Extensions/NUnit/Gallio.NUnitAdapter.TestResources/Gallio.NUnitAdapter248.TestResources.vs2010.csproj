@@ -8,7 +8,8 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Gallio.NUnitAdapter.TestResources</RootNamespace>
-    <AssemblyName>Gallio.NUnitAdapter.TestResources</AssemblyName>
+    <AssemblyName>Gallio.NUnitAdapter248.TestResources</AssemblyName>
+    <BaseIntermediateOutputPath>obj\v2.4.8\</BaseIntermediateOutputPath>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
     <OldToolsVersion>3.5</OldToolsVersion>
@@ -19,33 +20,33 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <OutputPath>bin\v2.4.8\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;NUNIT248</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Gallio.NUnitAdapter.TestResources.xml</DocumentationFile>
+    <DocumentationFile>bin\v2.4.8\Gallio.NUnitAdapter248.TestResources.xml</DocumentationFile>
     <NoWarn>1591</NoWarn>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\</OutputPath>
+    <OutputPath>bin\v2.4.8\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Gallio.NUnitAdapter.TestResources.xml</DocumentationFile>
+    <DocumentationFile>bin\v2.4.8\Gallio.NUnitAdapter248.TestResources.xml</DocumentationFile>
     <NoWarn>1591</NoWarn>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="nunit.framework, Version=2.4.0.2, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\libs\nunit.framework.dll</HintPath>
+      <HintPath>..\libs\v2.4.8\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="nunit.framework.extensions, Version=2.4.8.0, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\libs\nunit.framework.extensions.dll</HintPath>
+      <HintPath>..\libs\v2.4.8\nunit.framework.extensions.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />

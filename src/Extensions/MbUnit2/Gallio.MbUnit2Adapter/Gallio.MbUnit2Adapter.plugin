@@ -14,25 +14,54 @@
 
   <assemblies>
     <assembly fullName="Gallio.MbUnit2Adapter, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null"
-              codeBase="Gallio.MbUnit2Adapter.dll" />
+              codeBase="Gallio.MbUnit2Adapter.dll">
+      <qualifyPartialName>true</qualifyPartialName>
+      <bindingRedirects>
+        <bindingRedirect oldVersion="0.0.0.0-65535.65535.65535.65535" />
+      </bindingRedirects>
+    </assembly>
 
     <assembly fullName="MbUnit.Framework, Version=2.4.2.175, Culture=neutral, PublicKeyToken=5e72ecd30bc408d5"
-              codeBase="MbUnit.Framework.dll" />
+              codeBase="MbUnit.Framework.dll">
+      <bindingRedirects>
+        <bindingRedirect oldVersion="2.4.0.0-2.4.65535.65535" />
+      </bindingRedirects>
+    </assembly>
 
     <assembly fullName="MbUnit.Framework.2.0, Version=2.4.2.175, Culture=neutral, PublicKeyToken=5e72ecd30bc408d5"
-              codeBase="MbUnit.Framework.2.0.dll" />
-    
+              codeBase="MbUnit.Framework.2.0.dll">
+      <bindingRedirects>
+        <bindingRedirect oldVersion="2.4.0.0-2.4.65535.65535" />
+      </bindingRedirects>
+    </assembly>
+
     <assembly fullName="QuickGraph.Algorithms, Version=2.4.2.175, Culture=neutral, PublicKeyToken=975e84d0c8d6464d"
-              codeBase="QuickGraph.Algorithms.dll" />
-    
+              codeBase="QuickGraph.Algorithms.dll">
+      <bindingRedirects>
+        <bindingRedirect oldVersion="2.4.0.0-2.4.65535.65535" />
+      </bindingRedirects>
+    </assembly>
+
     <assembly fullName="QuickGraph, Version=2.4.2.175, Culture=neutral, PublicKeyToken=975e84d0c8d6464d"
-              codeBase="QuickGraph.dll" />
-    
+              codeBase="QuickGraph.dll">
+      <bindingRedirects>
+        <bindingRedirect oldVersion="2.4.0.0-2.4.65535.65535" />
+      </bindingRedirects>
+    </assembly>
+
     <assembly fullName="Refly, Version=2.4.2.175, Culture=neutral, PublicKeyToken=829676e11975a31c"
-              codeBase="Refly.dll" />
-    
+              codeBase="Refly.dll">
+      <bindingRedirects>
+        <bindingRedirect oldVersion="2.4.0.0-2.4.65535.65535" />
+      </bindingRedirects>
+    </assembly>
+
     <assembly fullName="TestFu, Version=2.4.2.175, Culture=neutral, PublicKeyToken=5e72ecd30bc408d5"
-              codeBase="TestFu.dll" />
+              codeBase="TestFu.dll">
+      <bindingRedirects>
+        <bindingRedirect oldVersion="2.4.0.0-2.4.65535.65535" />
+      </bindingRedirects>
+    </assembly>
   </assemblies>
 
   <components>
@@ -41,7 +70,7 @@
                componentType="Gallio.MbUnit2Adapter.Model.MbUnit2TestFramework, Gallio.MbUnit2Adapter">
       <traits>
         <name>MbUnit v2</name>
-        <frameworkAssemblyNames>MbUnit.Framework</frameworkAssemblyNames>
+        <frameworkAssemblies>MbUnit.Framework</frameworkAssemblies>
         <version>2.4.2.175</version>
         <icon>plugin://Gallio.MbUnit2Adapter/Resources/MbUnit.ico</icon>
         <fileTypes>Assembly</fileTypes>

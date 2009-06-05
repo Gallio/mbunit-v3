@@ -36,7 +36,7 @@ namespace Gallio.Runtime.Extensibility
         private readonly PropertySet pluginProperties;
         private readonly PropertySet traitsProperties;
         private readonly IHandlerFactory pluginHandlerFactory;
-        private readonly ReadOnlyCollection<AssemblyReference> assemblyReferences;
+        private readonly ReadOnlyCollection<AssemblyBinding> assemblyBindings;
         private readonly ReadOnlyCollection<IPluginDescriptor> pluginDependencies;
         private readonly ReadOnlyCollection<string> probingPaths;
 
@@ -54,7 +54,7 @@ namespace Gallio.Runtime.Extensibility
             pluginProperties = pluginRegistration.PluginProperties.Copy().AsReadOnly();
             traitsProperties = pluginRegistration.TraitsProperties.Copy().AsReadOnly();
             pluginHandlerFactory = pluginRegistration.PluginHandlerFactory;
-            assemblyReferences = new ReadOnlyCollection<AssemblyReference>(GenericCollectionUtils.ToArray(pluginRegistration.AssemblyReferences));
+            assemblyBindings = new ReadOnlyCollection<AssemblyBinding>(GenericCollectionUtils.ToArray(pluginRegistration.AssemblyBindings));
             pluginDependencies = new ReadOnlyCollection<IPluginDescriptor>(completePluginDependenciesCopy);
             probingPaths = new ReadOnlyCollection<string>(GenericCollectionUtils.ToArray(pluginRegistration.ProbingPaths));
         }
@@ -94,9 +94,9 @@ namespace Gallio.Runtime.Extensibility
             get { return baseDirectory; }
         }
 
-        public IList<AssemblyReference> AssemblyReferences
+        public IList<AssemblyBinding> AssemblyBindings
         {
-            get { return assemblyReferences; }
+            get { return assemblyBindings; }
         }
 
         public PropertySet PluginProperties

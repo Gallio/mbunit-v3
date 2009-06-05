@@ -1,58 +1,54 @@
-﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>10.0.20506</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{6C54EE4A-65D5-4133-A89D-9F57C6ADB2C9}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Gallio.NUnitAdapter</RootNamespace>
-    <AssemblyName>Gallio.NUnitAdapter</AssemblyName>
+    <AssemblyName>Gallio.NUnitAdapter248</AssemblyName>
     <SignAssembly>true</SignAssembly>
-    <FileUpgradeFlags>
-    </FileUpgradeFlags>
-    <OldToolsVersion>3.5</OldToolsVersion>
-    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
-    <UpgradeBackupLocation />
+    <BaseIntermediateOutputPath>obj\v2.4.8\</BaseIntermediateOutputPath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <OutputPath>bin\v2.4.8\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;NUNIT248</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <DocumentationFile>bin\Gallio.NUnitAdapter.xml</DocumentationFile>
+    <DocumentationFile>bin\v2.4.8\Gallio.NUnitAdapter248.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+    <OutputPath>bin\v2.4.8\</OutputPath>
+    <DefineConstants>TRACE;NUNIT248</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <DocumentationFile>bin\Gallio.NUnitAdapter.xml</DocumentationFile>
+    <DocumentationFile>bin\v2.4.8\Gallio.NUnitAdapter248.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="nunit.core, Version=2.4.0.2, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\libs\nunit.core.dll</HintPath>
+      <HintPath>..\libs\v2.4.8\nunit.core.dll</HintPath>
     </Reference>
     <Reference Include="nunit.core.extensions, Version=2.4.8.0, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\libs\nunit.core.extensions.dll</HintPath>
+      <HintPath>..\libs\v2.4.8\nunit.core.extensions.dll</HintPath>
     </Reference>
     <Reference Include="nunit.core.interfaces, Version=2.4.0.2, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\libs\nunit.core.interfaces.dll</HintPath>
+      <HintPath>..\libs\v2.4.8\nunit.core.interfaces.dll</HintPath>
     </Reference>
     <Reference Include="nunit.util, Version=2.4.8.0, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\libs\nunit.util.dll</HintPath>
+      <HintPath>..\libs\v2.4.8\nunit.util.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -72,10 +68,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Gallio.NUnitAdapter.plugin">
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">
       <SubType>Designer</SubType>
       <Generator>ResXFileCodeGenerator</Generator>
@@ -87,10 +79,13 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Gallio\Gallio\Gallio.vs2010.csproj">
+    <ProjectReference Include="..\..\..\Gallio\Gallio\Gallio.csproj">
       <Project>{6CAB7735-05DA-480D-9A04-50615B00F886}</Project>
-      <Name>Gallio.vs2010</Name>
+      <Name>Gallio %28Gallio\Gallio%29</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Gallio.NUnitAdapter248.plugin" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

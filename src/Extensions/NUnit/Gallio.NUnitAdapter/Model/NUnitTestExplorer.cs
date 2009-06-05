@@ -36,7 +36,15 @@ namespace Gallio.NUnitAdapter.Model
     {
         private static bool nunitInitialized;
 
-        private const string FrameworkName = "NUnit";
+#if NUNIT248
+        internal const string FrameworkKind = "NUnit v2.4.8 Framework";
+        private const string FrameworkName = "NUnit v2.4.8";
+#elif NUNIT25
+        internal const string FrameworkKind = "NUnit v2.5 Framework";
+        private const string FrameworkName = "NUnit v2.5";
+#else
+#error "Unrecognized NUnit framework version."
+#endif
         private const string NUnitFrameworkAssemblyDisplayName = @"nunit.framework";
 
         public override void Explore(TestModel testModel, TestSource testSource, Action<ITest> consumer)
@@ -114,7 +122,7 @@ namespace Gallio.NUnitAdapter.Model
             {
                 BaseTest frameworkTest = new BaseTest(String.Format(Resources.NUnitTestExplorer_FrameworkNameWithVersionFormat, frameworkVersion), null);
                 frameworkTest.LocalIdHint = FrameworkName;
-                frameworkTest.Kind = TestKinds.Framework;
+                frameworkTest.Kind = FrameworkKind;
                 frameworkTest.Metadata.Add(MetadataKeys.Framework, FrameworkName);
 
                 return frameworkTest;
@@ -196,12 +204,20 @@ namespace Gallio.NUnitAdapter.Model
 
                 switch (nunitTest.TestType)
                 {
+#if NUNIT248
                     case @"Test Case":
+#else
+                    case @"NUnitTestMethod":
+#endif
                         kind = TestKinds.Test;
                         codeElement = ParseTestCaseName(parentTest.CodeElement, nunitTest.TestName.FullName);
                         break;
 
+#if NUNIT248
                     case @"Test Fixture":
+#else
+                    case @"NUnitTestFixture":
+#endif
                         kind = TestKinds.Fixture;
                         codeElement = ParseTestFixtureName(parentTest.CodeElement, nunitTest.TestName.FullName);
                         break;
@@ -246,7 +262,22 @@ namespace Gallio.NUnitAdapter.Model
                     test.Metadata.Add(MetadataKeys.Category, category);
 
                 foreach (DictionaryEntry entry in nunitTest.Properties)
-                    test.Metadata.Add(entry.Key.ToString(), entry.Value != null ? entry.Value.ToString() : null);
+                {
+                    string keyString = entry.Key.ToString();
+                    if (!keyString.StartsWith("_"))
+                    {
+                        ICollection values = entry.Value as ICollection;
+                        if (values != null)
+                        {
+                            foreach (object value in values)
+                                test.Metadata.Add(keyString, value != null ? value.ToString() : null);
+                        }
+                        else
+                        {
+                            test.Metadata.Add(keyString, entry.Value != null ? entry.Value.ToString() : null);
+                        }
+                    }
+                }
 
                 ICodeElementInfo codeElement = test.CodeElement;
                 if (codeElement != null)

@@ -89,6 +89,7 @@
     <Compile Include="Common\Markup\TextualMarkupDocumentWriterTest.cs" />
     <Compile Include="Common\MockableConditionContext.cs" />
     <Compile Include="Common\Policies\SpecialPathPolicyTest.cs" />
+    <Compile Include="Common\Reflection\AssemblySignatureTest.cs" />
     <Compile Include="Common\Reflection\BaseReflectionPolicyTest.cs" />
     <Compile Include="Common\Reflection\CodeElementSorterTest.cs" />
     <Compile Include="Common\Reflection\CodeLocationTest.cs" />
@@ -217,7 +218,7 @@
     <Compile Include="Runtime\Conversions\XPathNavigableToXPathNavigatorConversionRuleTest.cs" />
     <Compile Include="Runtime\Conversions\XPathNavigatorToStringConversionRuleTest.cs" />
     <Compile Include="Runtime\Conversions\XPathNavigatorToXmlSerializableTypeConversionRuleTest.cs" />
-    <Compile Include="Runtime\Extensibility\AssemblyReferenceTest.cs" />
+    <Compile Include="Common\Reflection\AssemblyBindingTest.cs" />
     <Compile Include="Runtime\Extensibility\CachingPluginLoaderTest.cs" />
     <Compile Include="Runtime\Extensibility\ComponentHandleTest.cs" />
     <Compile Include="Runtime\Extensibility\ComponentRegistrationTest.cs" />

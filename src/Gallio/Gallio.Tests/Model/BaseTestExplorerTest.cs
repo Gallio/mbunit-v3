@@ -13,6 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using System.Reflection;
 using Gallio.Model;
 using Gallio.Model.Execution;
@@ -73,7 +74,9 @@ namespace Gallio.Tests.Model
                 RuntimeAccessor.ServiceLocator.Resolve<ILoader>(), frameworkManager);
 
             adapterAssemblyName = frameworkHandle.GetComponent().GetType().Assembly.GetName().Name;
-            testResourcesNamespace = sampleAssembly.GetName().Name;
+
+            Type simpleTestType = Array.Find(sampleAssembly.GetExportedTypes(), x => x.Name == "SimpleTest");
+            testResourcesNamespace = simpleTestType.Namespace;
         }
 
         [TearDown]
@@ -189,7 +192,7 @@ namespace Gallio.Tests.Model
             Assert.Contains(assemblyTest.Metadata.GetValue(MetadataKeys.Copyright), "Gallio Project");
             Assert.AreEqual("A sample test assembly for " + frameworkHandle.GetTraits().Name + ".", assemblyTest.Metadata.GetValue(MetadataKeys.Description));
             Assert.AreEqual("Gallio", assemblyTest.Metadata.GetValue(MetadataKeys.Product));
-            Assert.AreEqual(testResourcesNamespace, assemblyTest.Metadata.GetValue(MetadataKeys.Title));
+            Assert.AreEqual(sampleAssembly.GetName().Name, assemblyTest.Metadata.GetValue(MetadataKeys.Title));
             Assert.AreEqual("Gallio", assemblyTest.Metadata.GetValue(MetadataKeys.Trademark));
 
             Assert.AreEqual("1.2.3.4", assemblyTest.Metadata.GetValue(MetadataKeys.InformationalVersion));

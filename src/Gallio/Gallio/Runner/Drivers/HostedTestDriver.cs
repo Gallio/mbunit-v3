@@ -22,7 +22,6 @@ using Gallio.Common.Collections;
 using Gallio.Model;
 using Gallio.Runtime;
 using Gallio.Runtime.Debugging;
-using Gallio.Runtime.Extensibility;
 using Gallio.Runtime.Hosting;
 using Gallio.Runtime.Logging;
 using Gallio.Common.Remoting;
@@ -222,12 +221,11 @@ namespace Gallio.Runner.Drivers
                 testDomain.TestPackageConfig.HostSetup.Configuration.ConfigurationXml = configurationXml;
             }
 
-            foreach (AssemblyReference reference in runtime.GetAllPluginAssemblyReferences())
+            foreach (AssemblyBinding assemblyBinding in runtime.GetAllPluginAssemblyBindings())
             {
-                if (reference.CodeBase != null)
+                if (assemblyBinding.CodeBase != null)
                 {
-                    testDomain.TestPackageConfig.HostSetup.Configuration.AddAssemblyBinding(reference.AssemblyName,
-                        reference.CodeBase, true);
+                    testDomain.TestPackageConfig.HostSetup.Configuration.AddAssemblyBinding(assemblyBinding);
                 }
             }
 

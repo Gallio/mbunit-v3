@@ -170,58 +170,18 @@ namespace Gallio.Runtime.Hosting
         /// <summary>
         /// Adds a binding to the configuration for the specified assembly.
         /// </summary>
-        /// <param name="assembly">The assembly.</param>
-        /// <param name="bindingRedirect">True if a catch-all binding redirect should be used to
-        /// ensure that this exact version of the assembly is loaded no matter which version
-        /// was originally requested.</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="assembly"/> is null.</exception>
-        public void AddAssemblyBinding(Assembly assembly, bool bindingRedirect)
+        /// <param name="assemblyBinding">The assembly binding.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="assemblyBinding"/> is null.</exception>
+        public void AddAssemblyBinding(AssemblyBinding assemblyBinding)
         {
-            if (assembly == null)
-                throw new ArgumentNullException("assembly");
+            if (assemblyBinding == null)
+                throw new ArgumentNullException("assemblyBinding");
 
-            AddAssemblyBinding(assembly.GetName(), assembly.CodeBase, bindingRedirect);
-        }
-
-        /// <summary>
-        /// Adds a binding to the configuration for the specified assembly.
-        /// </summary>
-        /// <param name="assemblyName">The assembly name.</param>
-        /// <param name="codeBase">The assembly code base Uri.</param>
-        /// <param name="bindingRedirect">True if a catch-all binding redirect should be used to
-        /// ensure that this exact version of the assembly is loaded no matter which version
-        /// was originally requested.</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="assemblyName"/>
-        /// or <paramref name="codeBase"/> is null.</exception>
-        public void AddAssemblyBinding(AssemblyName assemblyName, Uri codeBase, bool bindingRedirect)
-        {
-            if (codeBase == null)
-                throw new ArgumentNullException("codeBase");
-
-            AddAssemblyBinding(assemblyName, codeBase.ToString(), bindingRedirect);
-        }
-
-        /// <summary>
-        /// Adds a binding to the configuration for the specified assembly.
-        /// </summary>
-        /// <param name="assemblyName">The assembly name.</param>
-        /// <param name="codeBase">The assembly code base Uri.</param>
-        /// <param name="bindingRedirect">True if a catch-all binding redirect should be used to
-        /// ensure that this exact version of the assembly is loaded no matter which version
-        /// was originally requested.</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="assemblyName"/>
-        /// or <paramref name="codeBase"/> is null.</exception>
-        public void AddAssemblyBinding(AssemblyName assemblyName, string codeBase, bool bindingRedirect)
-        {
-            if (assemblyName == null)
-                throw new ArgumentNullException("assemblyName");
-            if (codeBase == null)
-                throw new ArgumentNullException("codeBase");
-
+            AssemblyName assemblyName = assemblyBinding.AssemblyName;
             byte[] publicKeyTokenBytes = assemblyName.GetPublicKeyToken();
             string publicKeyToken = publicKeyTokenBytes != null && publicKeyTokenBytes.Length != 0 ? ToHex(publicKeyTokenBytes) : null;
 
-            if (publicKeyToken != null)
+            if (assemblyBinding.QualifyPartialName && publicKeyToken != null)
                 AddAssemblyQualification(assemblyName.Name, assemblyName.FullName);
 
             AssemblyDependency assemblyDependency = AddAssemblyDependency(
@@ -230,15 +190,17 @@ namespace Gallio.Runtime.Hosting
                 AssemblyUtils.GetAssemblyNameCulture(assemblyName),
                 GetProcessorArchitectureName(assemblyName.ProcessorArchitecture));
 
-            if (bindingRedirect)
+            foreach (AssemblyBinding.BindingRedirect bindingRedirect in assemblyBinding.BindingRedirects)
             {
-                assemblyDependency.AddAssemblyBindingRedirect(@"0.0.0.0-65535.65535.65535.65535", assemblyName.Version.ToString());
+                assemblyDependency.AddAssemblyBindingRedirect(bindingRedirect.OldVersion, assemblyName.Version.ToString());
             }
 
             // Note: If unsigned assembly appears outside of appbase then we get an exception:
             //       "The private assembly was located outside the appbase directory."
-            if (publicKeyToken != null)
-                assemblyDependency.AddAssemblyCodeBase(assemblyName.Version.ToString(), codeBase);
+            if (assemblyBinding.CodeBase != null && publicKeyToken != null)
+                assemblyDependency.AddAssemblyCodeBase(assemblyName.Version.ToString(), assemblyBinding.CodeBase.ToString());
+
+            assemblyDependency.ApplyPublisherPolicy = assemblyBinding.ApplyPublisherPolicy;
         }
 
         private static string GetProcessorArchitectureName(ProcessorArchitecture architecture)

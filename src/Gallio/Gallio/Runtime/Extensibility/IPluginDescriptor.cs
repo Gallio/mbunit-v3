@@ -58,9 +58,9 @@ namespace Gallio.Runtime.Extensibility
         DirectoryInfo BaseDirectory { get; }
 
         /// <summary>
-        /// Gets the list of plugin assembly references.
+        /// Gets the list of plugin assembly bindings.
         /// </summary>
-        IList<AssemblyReference> AssemblyReferences { get; }
+        IList<AssemblyBinding> AssemblyBindings { get; }
 
         /// <summary>
         /// Gets the plugin properties.

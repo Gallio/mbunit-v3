@@ -92,8 +92,8 @@ namespace Gallio.Tests.Runtime.Extensibility
                     Assert.AreEqual(new TypeName(typeof(DefaultPlugin)), pluginRegistrations[0].PluginTypeName);
                     Assert.AreEqual(new PropertySet() { { "Parameter", "Value" } }, pluginRegistrations[0].PluginProperties);
                     Assert.AreEqual(new PropertySet() { { "Trait", "Value" } }, pluginRegistrations[0].TraitsProperties);
-                    Assert.AreEqual("Gallio", pluginRegistrations[0].AssemblyReferences[0].AssemblyName.Name);
-                    Assert.AreEqual(new Uri(codeBase), pluginRegistrations[0].AssemblyReferences[0].CodeBase);
+                    Assert.AreEqual("Gallio", pluginRegistrations[0].AssemblyBindings[0].AssemblyName.Name);
+                    Assert.AreEqual(new Uri(codeBase), pluginRegistrations[0].AssemblyBindings[0].CodeBase);
                 });
             }
 
@@ -128,8 +128,8 @@ namespace Gallio.Tests.Runtime.Extensibility
                     Assert.AreEqual(new TypeName("Plugin, Assembly"), pluginRegistrations[0].PluginTypeName);
                     Assert.AreEqual(new PropertySet() { { "Parameter", "Value" } }, pluginRegistrations[0].PluginProperties);
                     Assert.AreEqual(new PropertySet() { { "Trait", "Value" } }, pluginRegistrations[0].TraitsProperties);
-                    Assert.AreEqual("Gallio", pluginRegistrations[0].AssemblyReferences[0].AssemblyName.Name);
-                    Assert.AreEqual(new Uri(codeBase), pluginRegistrations[0].AssemblyReferences[0].CodeBase);
+                    Assert.AreEqual("Gallio", pluginRegistrations[0].AssemblyBindings[0].AssemblyName.Name);
+                    Assert.AreEqual(new Uri(codeBase), pluginRegistrations[0].AssemblyBindings[0].CodeBase);
                 });
             }
 

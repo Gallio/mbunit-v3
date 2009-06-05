@@ -4,60 +4,53 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{7CB9DB43-2428-40C7-A926-AD3C2687A646}</ProjectGuid>
+    <ProjectGuid>{5CCF0411-EDE6-4A26-8996-B4E7A358E9E9}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Gallio.NUnitAdapter.Tests</RootNamespace>
-    <AssemblyName>Gallio.NUnitAdapter.Tests</AssemblyName>
+    <AssemblyName>Gallio.NUnitAdapter25.Tests</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <BaseIntermediateOutputPath>obj\v2.5\</BaseIntermediateOutputPath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <OutputPath>bin\v2.5\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;NUNIT25</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Gallio.NUnitAdapter.Tests.xml</DocumentationFile>
+    <DocumentationFile>bin\v2.5\Gallio.NUnitAdapter25.Tests.xml</DocumentationFile>
     <NoWarn>1591</NoWarn>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+    <OutputPath>bin\v2.5\</OutputPath>
+    <DefineConstants>TRACE;NUNIT25</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Gallio.NUnitAdapter.Tests.xml</DocumentationFile>
+    <DocumentationFile>bin\v2.5\Gallio.NUnitAdapter25.Tests.xml</DocumentationFile>
     <NoWarn>1591</NoWarn>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="nunit.core, Version=2.4.0.2, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\libs\nunit.core.dll</HintPath>
-    </Reference>
-    <Reference Include="nunit.core.extensions, Version=2.4.8.0, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\libs\nunit.core.extensions.dll</HintPath>
+      <HintPath>..\libs\v2.5\nunit.core.dll</HintPath>
     </Reference>
     <Reference Include="nunit.core.interfaces, Version=2.4.0.2, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\libs\nunit.core.interfaces.dll</HintPath>
+      <HintPath>..\libs\v2.5\nunit.core.interfaces.dll</HintPath>
     </Reference>
     <Reference Include="nunit.framework, Version=2.4.0.2, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\libs\nunit.framework.dll</HintPath>
-    </Reference>
-    <Reference Include="nunit.framework.extensions, Version=2.4.8.0, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\libs\nunit.framework.extensions.dll</HintPath>
+      <HintPath>..\libs\v2.5\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="nunit.util, Version=2.4.8.0, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\libs\nunit.util.dll</HintPath>
+      <HintPath>..\libs\v2.5\nunit.util.dll</HintPath>
     </Reference>
     <Reference Include="Rhino.Mocks, Version=3.1.0.584, Culture=neutral, PublicKeyToken=0b3305902db7183f, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -98,13 +91,13 @@
       <Project>{A9B54755-56B7-48C1-8941-BB69FCEFFF32}</Project>
       <Name>MbUnit %28MbUnit\MbUnit%29</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Gallio.NUnitAdapter\Gallio.NUnitAdapter.csproj">
-      <Project>{6C54EE4A-65D5-4133-A89D-9F57C6ADB2C9}</Project>
-      <Name>Gallio.NUnitAdapter</Name>
+    <ProjectReference Include="..\Gallio.NUnitAdapter.TestResources\Gallio.NUnitAdapter25.TestResources.csproj">
+      <Project>{7B5AABA5-3349-4D21-8813-D0796EA6E625}</Project>
+      <Name>Gallio.NUnitAdapter25.TestResources</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Gallio.NUnitAdapter.TestResources\Gallio.NUnitAdapter.TestResources.csproj">
-      <Project>{42CC86A2-B9A9-447F-97DD-D6809D78A8EB}</Project>
-      <Name>Gallio.NUnitAdapter.TestResources</Name>
+    <ProjectReference Include="..\Gallio.NUnitAdapter\Gallio.NUnitAdapter25.csproj">
+      <Project>{8C2F707D-A342-434B-92CD-0AAD5112C7FB}</Project>
+      <Name>Gallio.NUnitAdapter25</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

@@ -1,0 +1,50 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+  <Import Project="$(MetaBuildBinDir)\MetaBuild.Module.targets" />
+  
+  <ItemGroup>
+    <CSharpProject Include="Gallio.NUnitAdapter\Gallio.NUnitAdapter25$(ProjectVariant).csproj" />
+
+    <CSharpProject Include="Gallio.NUnitAdapter.TestResources\Gallio.NUnitAdapter25.TestResources$(ProjectVariant).csproj" />
+    <CSharpProject Include="Gallio.NUnitAdapter.Tests\Gallio.NUnitAdapter25.Tests$(ProjectVariant).csproj" />    
+  </ItemGroup>
+
+  <ItemGroup>
+    <Binary Include="Gallio.NUnitAdapter\bin\v2.5\Gallio.NUnitAdapter25.dll">
+        <Folder>NUnit\v2.5</Folder>
+    </Binary>
+    <PluginFile Include="Gallio.NUnitAdapter\Gallio.NUnitAdapter25.plugin">
+        <Folder>NUnit\v2.5</Folder>
+    </PluginFile>
+    <Binary Include="Gallio.NUnitAdapter\Readme.txt">
+        <Folder>NUnit\v2.5</Folder>
+    </Binary>
+    <Binary Include="libs\v2.5\license.txt">
+        <Folder>NUnit\v2.5</Folder>
+    </Binary>
+    <Binary Include="libs\v2.5\nunit.framework.dll">
+        <Folder>NUnit\v2.5</Folder>
+    </Binary>
+    <Binary Include="libs\v2.5\nunit.framework.xml">
+        <Folder>NUnit\v2.5</Folder>
+    </Binary>
+    <Binary Include="libs\v2.5\nunit.core.dll">
+        <Folder>NUnit\v2.5</Folder>
+    </Binary>
+    <Binary Include="libs\v2.5\nunit.core.interfaces.dll">
+        <Folder>NUnit\v2.5</Folder>
+    </Binary>
+    <Binary Include="libs\v2.5\nunit.mocks.dll">
+        <Folder>NUnit\v2.5</Folder>
+    </Binary>
+    <Binary Include="libs\v2.5\nunit.util.dll">
+        <Folder>NUnit\v2.5</Folder>
+    </Binary>
+    <Binary Include="libs\v2.5\addins\NUnit Addins Readme.txt">
+        <Folder>NUnit\v2.5\addins</Folder>
+    </Binary>
+  </ItemGroup>
+
+  <ItemGroup>
+    <TestAssembly Include="Gallio.NUnitAdapter.Tests\bin\v2.5\Gallio.NUnitAdapter25.Tests.dll" />
+  </ItemGroup>
+</Project>

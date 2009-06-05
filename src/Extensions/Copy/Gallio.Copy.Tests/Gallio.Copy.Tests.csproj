@@ -48,11 +48,11 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\MbUnit\MbUnit\MbUnit.csproj">
       <Project>{A9B54755-56B7-48C1-8941-BB69FCEFFF32}</Project>
-      <Name>MbUnit</Name>
+      <Name>MbUnit %28MbUnit\MbUnit%29</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\Gallio\Gallio\Gallio.csproj">
       <Project>{6CAB7735-05DA-480D-9A04-50615B00F886}</Project>
-      <Name>Gallio</Name>
+      <Name>Gallio %28Gallio\Gallio%29</Name>
     </ProjectReference>
     <ProjectReference Include="..\Gallio.Copy\Gallio.Copy.csproj">
       <Project>{5DA3843B-9639-4E11-8673-44E30624926F}</Project>

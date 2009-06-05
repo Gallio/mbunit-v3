@@ -13,19 +13,40 @@
 
   <assemblies>
     <assembly fullName="Gallio.CSUnitAdapter, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null"
-              codeBase="Gallio.CSUnitAdapter.dll" />
+              codeBase="Gallio.CSUnitAdapter.dll">
+      <qualifyPartialName>true</qualifyPartialName>
+      <bindingRedirects>
+        <bindingRedirect oldVersion="0.0.0.0-65535.65535.65535.65535" />
+      </bindingRedirects>
+    </assembly>
 
     <assembly fullName="csUnit, Version=2.5.3081.40666, Culture=neutral, PublicKeyToken=6871f04765cca910"
-              codeBase="csUnit.dll" />
+              codeBase="csUnit.dll">
+      <bindingRedirects>
+        <bindingRedirect oldVersion="2.5.0.0-2.5.65535.65535" />
+      </bindingRedirects>
+    </assembly>
 
     <assembly fullName="csUnit.Common, Version=2.5.3081.40665, Culture=neutral, PublicKeyToken=6871f04765cca910"
-              codeBase="csUnit.Common.dll" />
+              codeBase="csUnit.Common.dll">
+      <bindingRedirects>
+        <bindingRedirect oldVersion="2.5.0.0-2.5.65535.65535" />
+      </bindingRedirects>
+    </assembly>
 
     <assembly fullName="csUnit.Interfaces, Version=2.5.3081.40666, Culture=neutral, PublicKeyToken=6871f04765cca910"
-              codeBase="csUnit.Interfaces.dll" />
+              codeBase="csUnit.Interfaces.dll">
+      <bindingRedirects>
+        <bindingRedirect oldVersion="2.5.0.0-2.5.65535.65535" />
+      </bindingRedirects>
+    </assembly>
 
     <assembly fullName="csUnitCore, Version=2.5.3081.40666, Culture=neutral, PublicKeyToken=6871f04765cca910"
-              codeBase="csUnitCore.dll" />
+              codeBase="csUnitCore.dll">
+      <bindingRedirects>
+        <bindingRedirect oldVersion="2.5.0.0-2.5.65535.65535" />
+      </bindingRedirects>
+    </assembly>
   </assemblies>
 
   <components>
@@ -34,7 +55,7 @@
                componentType="Gallio.CSUnitAdapter.Model.CSUnitTestFramework, Gallio.CSUnitAdapter">
       <traits>
         <name>csUnit</name>
-        <frameworkAssemblyNames>csUnit</frameworkAssemblyNames>
+        <frameworkAssemblies>csUnit</frameworkAssemblies>
         <version>2.5.3081.40666</version>
         <fileTypes>Assembly</fileTypes>
       </traits>

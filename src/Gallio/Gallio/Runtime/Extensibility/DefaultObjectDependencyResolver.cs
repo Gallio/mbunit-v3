@@ -18,9 +18,11 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
+using System.Reflection;
 using System.Text;
 using Gallio.Common;
 using Gallio.Common.Collections;
+using Gallio.Common.Reflection;
 
 namespace Gallio.Runtime.Extensibility
 {
@@ -55,6 +57,8 @@ namespace Gallio.Runtime.Extensibility
     /// implements the requested service type then a handle of that component is injected.</item>
     /// <item>If the parameter type is an enum then the value is parsed to a 
     /// value of that enum type, case-insensitively.</item>
+    /// <item>If the parameter type is <see cref="AssemblyName" /> then the value is parsed into an assembly name.</item>
+    /// <item>If the parameter type is <see cref="AssemblySignature" /> then the value is parsed into an assembly signature.</item>
     /// <item>If the parameter type is <see cref="Version" /> then the value is parsed into a version.</item>
     /// <item>If the parameter type is <see cref="Guid" /> then the value is parsed into a guid.</item>
     /// <item>If the parameter type is <see cref="Condition" /> then the value is parsed into a condition.</item>
@@ -184,6 +188,7 @@ namespace Gallio.Runtime.Extensibility
             return componentHandleType.GetGenericArguments()[0];
         }
 
+        // TODO: Refactor me.
         private object ConvertConfigurationArgumentToType(Type type, string value)
         {
             if (type == typeof(string))
@@ -212,6 +217,12 @@ namespace Gallio.Runtime.Extensibility
 
             if (type == typeof(DirectoryInfo))
                 return new DirectoryInfo(ResolveResourcePath(value));
+
+            if (type == typeof(AssemblyName))
+                return new AssemblyName(value);
+
+            if (type == typeof(AssemblySignature))
+                return AssemblySignature.Parse(value);
 
             if (value.StartsWith("${") && value.EndsWith("}"))
             {

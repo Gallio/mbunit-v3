@@ -2,31 +2,11 @@
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
     <Fragment>
         <DirectoryRef Id="binFolder" FileSource="$(var.GallioTargetDir)\bin\">
-            <Directory Id="NUnit" Name="NUnit">
-                <Component Id="Gallio.NUnitAdapter" Guid="d0bb56ff-3015-447c-9329-50e09c5f3a38" Win64="no">
-                    <File Name="Gallio.NUnitAdapter.dll" KeyPath="yes" />
-                    <File Name="Gallio.NUnitAdapter.plugin" />
-                    <File Id="nunit.license.txt" Name="license.txt" />
-                    <File Name="nunit.core.dll" />
-                    <File Name="nunit.core.extensions.dll" />
-                    <File Name="nunit.core.interfaces.dll" />
-                    <File Name="nunit.framework.dll" />
-                    <File Name="nunit.framework.extensions.dll" />
-                    <File Id="nunit.util.dll" Name="nunit.util.dll" />
-                    <File Id="nunit.Readme.txt" Name="Readme.txt" />
-                </Component>
-                <Directory Id="NUnit.Addins" Name="addins">
-                    <Component Id="Gallio.NUnitAdapter.Addins" Guid="{AE3699B6-00A1-4baa-BA3B-59065ABC12A0}" Win64="no">
-                        <File Id="nunit.AddinsReadme.txt" Name="NUnit Addins Readme.txt" KeyPath="yes" />
-                    </Component>
-                </Directory>
-            </Directory>
+            <Directory Id="NUnit" Name="NUnit" />
         </DirectoryRef>
 
         <Feature Id='feat_NUnitAdapter' Title='NUnit Adapter' Level='1' AllowAdvertise="no"
-            Description='Installs the NUnit adapter.  Enables Gallio to run NUnit tests.'>
-            <ComponentRef Id="Gallio.NUnitAdapter"/>
-            <ComponentRef Id="Gallio.NUnitAdapter.Addins"/>
+            Description='Installs the NUnit adapters.'>
         </Feature>
     </Fragment>
 </Wix>

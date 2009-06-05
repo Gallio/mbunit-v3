@@ -207,10 +207,10 @@ namespace Gallio.Runtime.FileTypes
                 FileTypeRecognizerTraits recognizerTraits = fileTypeInfo.RecognizerHandle.GetTraits();
 
                 if (recognizerTraits.FileNameRegex != null)
-                    fileTypeInfo.FileNameRegex = new Regex(recognizerTraits.FileNameRegex);
+                    fileTypeInfo.FileNameRegex = new Regex(recognizerTraits.FileNameRegex, RegexOptions.CultureInvariant);
 
                 if (recognizerTraits.ContentsRegex != null)
-                    fileTypeInfo.ContentsRegex = new Regex(recognizerTraits.ContentsRegex);
+                    fileTypeInfo.ContentsRegex = new Regex(recognizerTraits.ContentsRegex, RegexOptions.CultureInvariant);
 
                 string superTypeId = recognizerTraits.SuperTypeId;
                 if (superTypeId != null)

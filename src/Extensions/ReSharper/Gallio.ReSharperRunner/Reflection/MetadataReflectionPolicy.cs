@@ -32,6 +32,8 @@ using JetBrains.Shell;
 using JetBrains.Util;
 #else
 using JetBrains.Application;
+using AssemblyReference=JetBrains.Metadata.Access.AssemblyReference;
+
 #endif
 
 namespace Gallio.ReSharperRunner.Reflection

@@ -20,8 +20,15 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Gallio.NUnitAdapter.TestResources")]
-[assembly: AssemblyDescription("A sample test assembly for NUnit.")]
+#if NUNIT248
+[assembly: AssemblyDescription("A sample test assembly for NUnit v2.4.8.")]
+[assembly: AssemblyTitle("Gallio.NUnitAdapter248.TestResources")]
+#elif NUNIT25
+[assembly: AssemblyDescription("A sample test assembly for NUnit v2.5.")]
+[assembly: AssemblyTitle("Gallio.NUnitAdapter25.TestResources")]
+#else
+#error "Unrecognized NUnit framework version."
+#endif
 [assembly: AssemblyConfiguration("Test")]
 [assembly: AssemblyCompany("MbUnit Project")]
 [assembly: AssemblyProduct("Gallio")]

@@ -13,7 +13,12 @@
 
   <assemblies>
     <assembly fullName="Gallio.TypeMockIntegration, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null"
-              codeBase="Gallio.TypeMockIntegration.dll" />
+              codeBase="Gallio.TypeMockIntegration.dll">
+      <qualifyPartialName>true</qualifyPartialName>
+      <bindingRedirects>
+        <bindingRedirect oldVersion="0.0.0.0-65535.65535.65535.65535" />
+      </bindingRedirects>
+    </assembly>
 
     <assembly fullName="TypeMock.Integration, Version=5.1.2.0, Culture=neutral, PublicKeyToken=null"
               codeBase="TypeMock.Integration.dll" />

@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using Gallio.Common.Reflection;
 using Gallio.Runtime.Extensibility;
 using Gallio.Runtime.Logging;
 
@@ -69,10 +70,10 @@ namespace Gallio.Runtime
         RuntimeSetup GetRuntimeSetup();
 
         /// <summary>
-        /// Gets the list of all plugin assembly references.
+        /// Gets the list of all plugin assembly bindings.
         /// </summary>
-        /// <returns>The assembly references.</returns>
-        IList<AssemblyReference> GetAllPluginAssemblyReferences();
+        /// <returns>The assembly bindings.</returns>
+        IList<AssemblyBinding> GetAllPluginAssemblyBindings();
 
         /// <summary>
         /// Verifies that the runtime is correctly installed.  Writes details to the log.

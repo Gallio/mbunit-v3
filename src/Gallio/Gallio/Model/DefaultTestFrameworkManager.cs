@@ -215,7 +215,7 @@ namespace Gallio.Model
                 foreach (var frameworkHandle in frameworkHandles)
                 {
                     TestFrameworkTraits frameworkTraits = frameworkHandle.GetTraits();
-                    if (ContainsAssemblyReference(assembly, frameworkTraits.FrameworkAssemblyNames))
+                    if (ContainsAssemblyReference(assembly, frameworkTraits.FrameworkAssemblies))
                         aggregateTestExplorer.RegisterFramework(frameworkHandle.GetComponent());
                 }
             }
@@ -224,26 +224,26 @@ namespace Gallio.Model
             {
                 foreach (IAssemblyInfo assembly in testSource.Assemblies)
                 {
-                    if (ContainsAssemblyReference(assembly, frameworkTraits.FrameworkAssemblyNames))
+                    if (ContainsAssemblyReference(assembly, frameworkTraits.FrameworkAssemblies))
                         return true;
                 }
 
                 foreach (ITypeInfo type in testSource.Types)
                 {
-                    if (ContainsAssemblyReference(type.Assembly, frameworkTraits.FrameworkAssemblyNames))
+                    if (ContainsAssemblyReference(type.Assembly, frameworkTraits.FrameworkAssemblies))
                         return true;
                 }
 
                 return false;
             }
 
-            private static bool ContainsAssemblyReference(IAssemblyInfo assembly, string[] assemblyNames)
+            private static bool ContainsAssemblyReference(IAssemblyInfo assembly, AssemblySignature[] assemblySignatures)
             {
                 foreach (AssemblyName referencedAssemblyName in assembly.GetReferencedAssemblies())
                 {
-                    foreach (string assemblyName in assemblyNames)
+                    foreach (AssemblySignature assemblySignature in assemblySignatures)
                     {
-                        if (referencedAssemblyName.Name == assemblyName)
+                        if (assemblySignature.IsMatch(referencedAssemblyName))
                             return true;
                     }
                 }

@@ -16,6 +16,7 @@
 using System;
 using System.Drawing;
 using Gallio.Common.Collections;
+using Gallio.Common.Reflection;
 using Gallio.Runtime.Extensibility;
 
 namespace Gallio.Model
@@ -26,7 +27,7 @@ namespace Gallio.Model
     public class TestFrameworkTraits : Traits
     {
         private readonly string name;
-        private string[] frameworkAssemblyNames;
+        private AssemblySignature[] frameworkAssemblies;
         private string[] fileTypes;
 
         /// <summary>
@@ -75,7 +76,7 @@ namespace Gallio.Model
         public bool RequiresConfigureTestDomain { get; set; }
 
         /// <summary>
-        /// Gets or sets the list of framework assembly names that are recognized and supported
+        /// Gets or sets the list of framework assembly signatures that are recognized and supported
         /// by this framework component.
         /// </summary>
         /// <remarks>
@@ -85,16 +86,19 @@ namespace Gallio.Model
         /// among the test assembly references then the framework component will not be instantiated
         /// during test exploration in order to improve performance.
         /// </para>
+        /// <para>
+        /// Refer to <see cref="AssemblySignature.Parse" /> for a description of the format of an assembly signature.
+        /// </para>
         /// </remarks>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
-        public string[] FrameworkAssemblyNames
+        public AssemblySignature[] FrameworkAssemblies
         {
-            get { return frameworkAssemblyNames ?? EmptyArray<string>.Instance; }
+            get { return frameworkAssemblies ?? EmptyArray<AssemblySignature>.Instance; }
             set
             {
                 if (value == null || Array.IndexOf(value, null) >= 0)
                     throw new ArgumentNullException("value");
-                frameworkAssemblyNames = value;
+                frameworkAssemblies = value;
             }
         }
 
@@ -123,6 +127,13 @@ namespace Gallio.Model
                     throw new ArgumentNullException("value");
                 fileTypes = value;
             }
+        }
+
+        /// <summary>
+        /// Describes an assembly an a version range.
+        /// </summary>
+        public class AssemblyAndVersionRange
+        {
         }
     }
 }

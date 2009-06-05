@@ -25,6 +25,7 @@ using System.Windows.Forms;
 using Gallio.Common;
 using Gallio.Common.IO;
 using Gallio.Common.Platform;
+using Gallio.Common.Reflection;
 using Gallio.Runtime.Logging;
 using Gallio.Common.Concurrency;
 using Gallio.Common.Remoting;
@@ -253,7 +254,7 @@ namespace Gallio.Runtime.Hosting
             try
             {
                 HostSetup patchedSetup = HostSetup.Copy();
-                patchedSetup.Configuration.AddAssemblyBinding(typeof(IsolatedProcessHost).Assembly, false);
+                patchedSetup.Configuration.AddAssemblyBinding(new AssemblyBinding(typeof(IsolatedProcessHost).Assembly));
 
                 temporaryConfigurationFilePath = patchedSetup.WriteTemporaryConfigurationFile();
             }

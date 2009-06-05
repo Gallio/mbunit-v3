@@ -13,7 +13,12 @@
 
   <assemblies>
     <assembly fullName="Gallio.AutoCAD, Version=0.0.0.0, Culture=neutral, PublicKeyToken=eb9cfa67ee6ab36e"
-              codeBase="Gallio.AutoCAD.dll" />
+              codeBase="Gallio.AutoCAD.dll">
+      <qualifyPartialName>true</qualifyPartialName>
+      <bindingRedirects>
+        <bindingRedirect oldVersion="0.0.0.0-65535.65535.65535.65535" />
+      </bindingRedirects>
+    </assembly>
   </assemblies>
 
   <services>

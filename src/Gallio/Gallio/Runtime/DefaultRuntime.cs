@@ -262,14 +262,14 @@ namespace Gallio.Runtime
         }
 
         /// <inheritdoc />
-        public IList<AssemblyReference> GetAllPluginAssemblyReferences()
+        public IList<AssemblyBinding> GetAllPluginAssemblyBindings()
         {
             ThrowIfDisposed();
 
-            var result = new List<AssemblyReference>();
+            var result = new List<AssemblyBinding>();
 
             foreach (IPluginDescriptor plugin in registry.Plugins)
-                result.AddRange(plugin.AssemblyReferences);
+                result.AddRange(plugin.AssemblyBindings);
 
             return result;
         }
@@ -301,19 +301,19 @@ namespace Gallio.Runtime
                     continue;
                 }
 
-                foreach (AssemblyReference assemblyReference in plugin.AssemblyReferences)
+                foreach (AssemblyBinding assemblyBinding in plugin.AssemblyBindings)
                 {
                     try
                     {
-                        if (assemblyReference.CodeBase != null && assemblyReference.CodeBase.IsFile)
+                        if (assemblyBinding.CodeBase != null && assemblyBinding.CodeBase.IsFile)
                         {
-                            var assemblyName = AssemblyName.GetAssemblyName(assemblyReference.CodeBase.LocalPath);
-                            if (assemblyName.FullName != assemblyReference.AssemblyName.FullName)
+                            var assemblyName = AssemblyName.GetAssemblyName(assemblyBinding.CodeBase.LocalPath);
+                            if (assemblyName.FullName != assemblyBinding.AssemblyName.FullName)
                             {
                                 success = false;
                                 logger.Log(LogSeverity.Error, string.Format(
-                                    "Plugin '{0}' has an incorrect assembly reference.  Accoding to the plugin metadata we expected assembly name '{1}' but it was actually '{2}' when loaded.",
-                                    plugin.PluginId, assemblyReference.AssemblyName.FullName, assemblyName.FullName));
+                                    "Plugin '{0}' has an incorrect assembly binding.  Accoding to the plugin metadata we expected assembly name '{1}' but it was actually '{2}' when loaded.",
+                                    plugin.PluginId, assemblyBinding.AssemblyName.FullName, assemblyName.FullName));
                             }
                         }
                     }
@@ -321,7 +321,7 @@ namespace Gallio.Runtime
                     {
                         success = false;
                         logger.Log(LogSeverity.Error, string.Format("Plugin '{0}' has an assembly reference for that could not be loaded with code base '{1}'.",
-                            plugin.PluginId, assemblyReference.CodeBase), ex);
+                            plugin.PluginId, assemblyBinding.CodeBase), ex);
                     }
                 }
 

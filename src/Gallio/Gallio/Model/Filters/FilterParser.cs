@@ -264,7 +264,7 @@ namespace Gallio.Model.Filters
                 if (nextToken.Type == FilterTokenType.RegexWord)
                 {
                     GetNextToken(lexer);
-                    RegexOptions options = RegexOptions.Compiled;
+                    RegexOptions options = RegexOptions.CultureInvariant;
                     FilterToken caseInsensitiveToken = LookAhead(lexer, 1);
                     if (caseInsensitiveToken != null && caseInsensitiveToken.Type == FilterTokenType.CaseInsensitiveModifier)
                     {

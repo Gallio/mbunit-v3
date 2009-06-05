@@ -88,7 +88,7 @@ namespace Gallio.Runtime.Extensibility
         {
             if (pluginRegistration == null)
                 throw new ArgumentNullException("pluginRegistration");
-            if (pluginRegistration.AssemblyReferences.Contains(null))
+            if (pluginRegistration.AssemblyBindings.Contains(null))
                 throw new ArgumentException("The assembly references must not contain a null reference.", "pluginRegistration");
             if (pluginRegistration.PluginDependencies.Contains(null))
                 throw new ArgumentException("The plugin dependencies must not contain a null reference.", "pluginRegistration");

@@ -182,7 +182,7 @@ namespace Gallio.Tests.Model.Filters
                 + type.Substring(1, type.Length - 2)
                 + "', "
                 + (caseInsensitive ? "IgnoreCase, " : "")
-                + "Compiled), True)");
+                + "CultureInvariant), True)");
             Assert.IsTrue(parsedFilter.IsMatch(fixture1));
             Assert.IsFalse(parsedFilter.IsMatch(fixture2));
             Assert.IsFalse(parsedFilter.IsMatch(fixture3));
@@ -268,12 +268,12 @@ namespace Gallio.Tests.Model.Filters
         }
 
         [Test]
-        [Row("Type:/RegExp/", "Type(Regex('RegExp', Compiled), True)")]
-        [Row("Type:/RegExp/i", "Type(Regex('RegExp', IgnoreCase, Compiled), True)")]
-        [Row("Type://", "Type(Regex('', Compiled), True)")]
-        [Row("Type://i", "Type(Regex('', IgnoreCase, Compiled), True)")]
-        [Row(@"Abc: /123 456 \/ 789/", @"Metadata('Abc', Regex('123 456 / 789', Compiled))")]
-        [Row(@"Abc: /123 456 \/ 789/i", @"Metadata('Abc', Regex('123 456 / 789', IgnoreCase, Compiled))")]
+        [Row("Type:/RegExp/", "Type(Regex('RegExp', CultureInvariant), True)")]
+        [Row("Type:/RegExp/i", "Type(Regex('RegExp', IgnoreCase, CultureInvariant), True)")]
+        [Row("Type://", "Type(Regex('', CultureInvariant), True)")]
+        [Row("Type://i", "Type(Regex('', IgnoreCase, CultureInvariant), True)")]
+        [Row(@"Abc: /123 456 \/ 789/", @"Metadata('Abc', Regex('123 456 / 789', CultureInvariant))")]
+        [Row(@"Abc: /123 456 \/ 789/i", @"Metadata('Abc', Regex('123 456 / 789', IgnoreCase, CultureInvariant))")]
         public void RegularExpressions(string filter, string parsedFilterString)
         {
             Filter<ITest> parsedFilter = FilterUtils.ParseTestFilter(filter);

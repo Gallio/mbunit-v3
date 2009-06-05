@@ -18,9 +18,11 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using Gallio.Common;
 using Gallio.Common.Collections;
+using Gallio.Common.Reflection;
 using Gallio.Runtime;
 using Gallio.Runtime.Extensibility;
 using MbUnit.Framework;
@@ -346,6 +348,46 @@ namespace Gallio.Tests.Runtime.Extensibility
                     Assert.IsTrue(result.IsSatisfied);
                     Assert.IsInstanceOfType<Version>(result.Value);
                     Assert.AreEqual(new Version(1, 2, 3, 4), result.Value);
+                });
+
+                serviceLocator.VerifyAllExpectations();
+                resourceLocator.VerifyAllExpectations();
+            }
+
+            [Test]
+            public void ResolveDependency_WhenDependencyIsOfTypeAssemblyName_ConvertsPropertyStringToAssemblyName()
+            {
+                var serviceLocator = MockRepository.GenerateMock<IServiceLocator>();
+                var resourceLocator = MockRepository.GenerateMock<IResourceLocator>();
+                var dependencyResolver = new DefaultObjectDependencyResolver(serviceLocator, resourceLocator);
+
+                var result = dependencyResolver.ResolveDependency("assemblyName", typeof(AssemblyName), "Name");
+
+                Assert.Multiple(() =>
+                {
+                    Assert.IsTrue(result.IsSatisfied);
+                    Assert.IsInstanceOfType<AssemblyName>(result.Value);
+                    Assert.AreEqual("Name", ((AssemblyName)result.Value).Name);
+                });
+
+                serviceLocator.VerifyAllExpectations();
+                resourceLocator.VerifyAllExpectations();
+            }
+
+            [Test]
+            public void ResolveDependency_WhenDependencyIsOfTypeAssemblySignature_ConvertsPropertyStringToAssemblySignature()
+            {
+                var serviceLocator = MockRepository.GenerateMock<IServiceLocator>();
+                var resourceLocator = MockRepository.GenerateMock<IResourceLocator>();
+                var dependencyResolver = new DefaultObjectDependencyResolver(serviceLocator, resourceLocator);
+
+                var result = dependencyResolver.ResolveDependency("assemblySig", typeof(AssemblySignature), "Name, Version=1.0.0.0-2.0.0.0");
+
+                Assert.Multiple(() =>
+                {
+                    Assert.IsTrue(result.IsSatisfied);
+                    Assert.IsInstanceOfType<AssemblySignature>(result.Value);
+                    Assert.AreEqual("Name, Version=1.0.0.0-2.0.0.0", result.Value.ToString());
                 });
 
                 serviceLocator.VerifyAllExpectations();

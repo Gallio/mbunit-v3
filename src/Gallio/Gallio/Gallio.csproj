@@ -220,6 +220,7 @@
     <Compile Include="Runtime\ConsoleSupport\NamespaceDoc.cs" />
     <Compile Include="Runtime\Conversions\NamespaceDoc.cs" />
     <Compile Include="Runtime\Debugging\NamespaceDoc.cs" />
+    <Compile Include="Common\Reflection\AssemblySignature.cs" />
     <Compile Include="Runtime\Extensibility\NamespaceDoc.cs" />
     <Compile Include="Runtime\Extensibility\ResourceSearchRules.cs" />
     <Compile Include="Runtime\FileTypes\NamespaceDoc.cs" />
@@ -467,7 +468,7 @@
     <Compile Include="Runtime\Debugging\IDebugger.cs" />
     <Compile Include="Runtime\Debugging\IDebuggerManager.cs" />
     <Compile Include="Runtime\Debugging\NullDebugger.cs" />
-    <Compile Include="Runtime\Extensibility\AssemblyReference.cs" />
+    <Compile Include="Common\Reflection\AssemblyBinding.cs" />
     <Compile Include="Runtime\Extensibility\CachingPluginLoader.cs" />
     <Compile Include="Runtime\Extensibility\ComponentRegistration.cs" />
     <Compile Include="Runtime\Extensibility\DefaultObjectDependencyResolver.cs" />
@@ -780,6 +781,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Schema\Plugins\CachePluginInfo.cs" />
+    <Compile Include="Schema\Plugins\BindingRedirect.cs" />
     <Compile Include="Schema\Plugins\Dependency.cs" />
     <Compile Include="Schema\Plugins\NamespaceDoc.cs" />
     <Compile Include="Schema\Plugins\Plugin.cs">

@@ -61,11 +61,11 @@ namespace Gallio.Tests.Runtime.Extensibility
             }
 
             [Test]
-            public void RegistryPlugin_WhenRegistrationContainsNullAssemblyReference_Throws()
+            public void RegistryPlugin_WhenRegistrationContainsNullAssemblyBinding_Throws()
             {
                 var registry = new Registry();
                 var pluginRegistration = new PluginRegistration("pluginId", new TypeName("Plugin, Assembly"), new DirectoryInfo(@"C:\"));
-                pluginRegistration.AssemblyReferences.Add(null);
+                pluginRegistration.AssemblyBindings.Add(null);
 
                 var ex = Assert.Throws<ArgumentException>(() => registry.RegisterPlugin(pluginRegistration));
                 Assert.Contains(ex.Message, "The assembly references must not contain a null reference.");
@@ -115,7 +115,7 @@ namespace Gallio.Tests.Runtime.Extensibility
                 var registry = new Registry();
                 var dependentPlugin = registry.RegisterPlugin(new PluginRegistration("plugin1Id", new TypeName("Plugin, Assembly"), new DirectoryInfo(@"C:\")));
                 var handlerFactory = MockRepository.GenerateStub<IHandlerFactory>();
-                var assemblyReferences = new[] { new AssemblyReference(new AssemblyName("Gallio"), new Uri("file:///c:/foo.dll")) };
+                var assemblyBindings = new[] { new AssemblyBinding(new AssemblyName("Gallio")) };
                 var pluginDependencies = new[] { dependentPlugin };
                 var probingPaths = new[] { "publicBin", "privateBin" };
 
@@ -124,7 +124,7 @@ namespace Gallio.Tests.Runtime.Extensibility
                     PluginProperties = { { "ConfigName", "Value" } },
                     TraitsProperties = { { "TraitName", "Value" } },
                     PluginHandlerFactory = handlerFactory,
-                    AssemblyReferences = assemblyReferences,
+                    AssemblyBindings = assemblyBindings,
                     PluginDependencies = pluginDependencies,
                     ProbingPaths = probingPaths
                 });
@@ -137,7 +137,7 @@ namespace Gallio.Tests.Runtime.Extensibility
                     Assert.AreEqual(new PropertySet() { { "ConfigName", "Value" } }, plugin.PluginProperties);
                     Assert.AreEqual(new PropertySet() { { "TraitName", "Value" } }, plugin.TraitsProperties);
                     Assert.AreSame(handlerFactory, plugin.PluginHandlerFactory);
-                    Assert.AreElementsEqual(assemblyReferences, plugin.AssemblyReferences);
+                    Assert.AreElementsEqual(assemblyBindings, plugin.AssemblyBindings);
                     Assert.AreElementsEqual(pluginDependencies, plugin.PluginDependencies);
                     Assert.AreElementsEqual(probingPaths, plugin.ProbingPaths);
                 });

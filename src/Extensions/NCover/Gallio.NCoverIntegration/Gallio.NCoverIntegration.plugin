@@ -17,7 +17,12 @@
 
   <assemblies>
     <assembly fullName="Gallio.NCoverIntegration, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null"
-              codeBase="Gallio.NCoverIntegration.dll" />
+              codeBase="Gallio.NCoverIntegration.dll">
+      <qualifyPartialName>true</qualifyPartialName>
+      <bindingRedirects>
+        <bindingRedirect oldVersion="0.0.0.0-65535.65535.65535.65535" />
+      </bindingRedirects>
+    </assembly>
 
     <assembly fullName="NCover.Framework, Version=1.5.8.0, Culture=neutral, PublicKeyToken=f4018786f4b01bc6"
               codeBase="NCover.Framework.dll" />

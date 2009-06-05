@@ -102,7 +102,7 @@ namespace Gallio.Schema.Plugins
         }
 
         /// <summary>
-        /// Gets the mutable list of plugin assembly references.
+        /// Gets the mutable list of plugin assembly bindings.
         /// </summary>
         [XmlArray("assemblies", IsNullable = false)]
         [XmlArrayItem("assembly", typeof(Assembly), IsNullable = false)]

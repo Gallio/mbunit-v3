@@ -139,17 +139,17 @@ namespace Gallio.Tests.Runtime.Extensibility
         }
 
         [Test]
-        public void AssemblyReferences_Accessor_EnforcesConstraints()
+        public void AssemblyBindings_Accessor_EnforcesConstraints()
         {
             var registration = new PluginRegistration("pluginId", new TypeName("Plugin, Assembly"), new DirectoryInfo(@"C:\"));
 
-            Assert.IsEmpty(registration.AssemblyReferences);
-            Assert.Throws<ArgumentNullException>(() => { registration.AssemblyReferences = null; });
+            Assert.IsEmpty(registration.AssemblyBindings);
+            Assert.Throws<ArgumentNullException>(() => { registration.AssemblyBindings = null; });
 
-            var differentReferences = new[] { new AssemblyReference(new AssemblyName("Gallio"), null) };
-            registration.AssemblyReferences = differentReferences;
+            var differentReferences = new[] { new AssemblyBinding(new AssemblyName("Gallio")) };
+            registration.AssemblyBindings = differentReferences;
 
-            Assert.AreSame(differentReferences, registration.AssemblyReferences);
+            Assert.AreSame(differentReferences, registration.AssemblyBindings);
         }
 
         [Test]

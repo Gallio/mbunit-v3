@@ -142,10 +142,17 @@ namespace Gallio.Runtime.Extensibility
                             absoluteCodeBase = null;
                         }
 
-                        var assemblyReference = new AssemblyReference(
-                            new AssemblyName(assembly.FullName), absoluteCodeBase);
+                        var assemblyBinding = new AssemblyBinding(new AssemblyName(assembly.FullName))
+                        {
+                            CodeBase = absoluteCodeBase,
+                            QualifyPartialName = assembly.QualifyPartialName,
+                            ApplyPublisherPolicy = assembly.ApplyPublisherPolicy
+                        };
 
-                        pluginRegistration.AssemblyReferences.Add(assemblyReference);
+                        foreach (BindingRedirect redirect in assembly.BindingRedirects)
+                            assemblyBinding.AddBindingRedirect(new AssemblyBinding.BindingRedirect(redirect.OldVersion));
+
+                        pluginRegistration.AssemblyBindings.Add(assemblyBinding);
                     }
 
                     IPluginDescriptor pluginDescriptor = registry.RegisterPlugin(pluginRegistration);

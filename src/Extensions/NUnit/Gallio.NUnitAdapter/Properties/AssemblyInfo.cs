@@ -46,4 +46,10 @@ using System.Runtime.InteropServices;
 // Telling the system that this is the case yields a small performance improvement during startup.
 [assembly: NeutralResourcesLanguage("en-US")]
 
-[assembly: InternalsVisibleTo("Gallio.NUnitAdapter.Tests")]
+#if NUNIT248
+[assembly: InternalsVisibleTo("Gallio.NUnitAdapter248.Tests")]
+#elif NUNIT25
+[assembly: InternalsVisibleTo("Gallio.NUnitAdapter25.Tests")]
+#else
+#error "Unrecognized NUnit framework version."
+#endif

@@ -165,7 +165,11 @@ namespace Gallio.NUnitAdapter.Model
                 HandleTestOrSuiteStarted(testName);
             }
 
+#if NUNIT248
             void EventListener.TestFinished(TestCaseResult nunitResult)
+#else
+            void EventListener.TestFinished(NUnitTestResult nunitResult)
+#endif
             {
                 HandleTestOrSuiteFinished(nunitResult);
             }
@@ -200,7 +204,11 @@ namespace Gallio.NUnitAdapter.Model
                 HandleTestOrSuiteStarted(testName);
             }
 
+#if NUNIT248
             void EventListener.SuiteFinished(TestSuiteResult nunitResult)
+#else
+            void EventListener.SuiteFinished(NUnitTestResult nunitResult)
+#endif
             {
                 HandleTestOrSuiteFinished(nunitResult);
             }
@@ -270,6 +278,7 @@ namespace Gallio.NUnitAdapter.Model
 
             private static TestOutcome CreateOutcomeFromResult(NUnitTestResult nunitResult)
             {
+#if NUNIT248
                 switch (nunitResult.RunState)
                 {
                     case RunState.Executed:
@@ -294,6 +303,25 @@ namespace Gallio.NUnitAdapter.Model
                     case RunState.Explicit:
                         return TestOutcome.Skipped;
                 }
+#else
+                switch (nunitResult.ResultState)
+                {
+                    case ResultState.Success:
+                        return TestOutcome.Passed;
+                    case ResultState.Failure:
+                        return TestOutcome.Failed;
+                    case ResultState.Ignored:
+                        return TestOutcome.Ignored;
+                    case ResultState.Inconclusive:
+                        return TestOutcome.Inconclusive;
+                    case ResultState.NotRunnable:
+                    case ResultState.Skipped:
+                        return TestOutcome.Skipped;
+                    default:
+                    case ResultState.Error:
+                        return TestOutcome.Error;
+                }
+#endif
             }
             #endregion
 

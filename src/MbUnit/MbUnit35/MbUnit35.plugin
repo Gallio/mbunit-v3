@@ -16,7 +16,12 @@
   <?ifdef NET35?>
   <assemblies>
     <assembly fullName="MbUnit35, Version=0.0.0.0, Culture=neutral, PublicKeyToken=eb9cfa67ee6ab36e"
-              codeBase="MbUnit35.dll" />
+              codeBase="MbUnit35.dll">
+      <qualifyPartialName>true</qualifyPartialName>
+      <bindingRedirects>
+        <bindingRedirect oldVersion="0.0.0.0-65535.65535.65535.65535" />
+      </bindingRedirects>
+    </assembly>
   </assemblies>
   <?endif?>
 </plugin>

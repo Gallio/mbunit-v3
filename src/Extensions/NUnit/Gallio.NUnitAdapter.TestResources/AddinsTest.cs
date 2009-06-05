@@ -17,13 +17,21 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using NUnit.Framework;
+
+#if NUNIT248
 using NUnit.Framework.Extensions;
+#endif
 
 namespace Gallio.NUnitAdapter.TestResources
 {
+#if NUNIT248
     /// <summary>
     /// Verifies that NUnit addins are registered properly.
     /// </summary>
+    /// <remarks>
+    /// The idea behind this test is to actually try to use an NUnit addin such as
+    /// the Row extension for NUnit v2.4.8.
+    /// </remarks>
     [TestFixture]
     public class AddinsTest
     {
@@ -35,4 +43,5 @@ namespace Gallio.NUnitAdapter.TestResources
             Assert.AreEqual(z, x + y);
         }
     }
+#endif
 }

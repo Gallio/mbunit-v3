@@ -22,7 +22,7 @@ using Gallio.Common.Validation;
 namespace Gallio.Schema.Plugins
 {
     /// <summary>
-    /// Describes a reference to an assembly used by a plugin.
+    /// Describes an assembly used by a plugin and how the loader should bind to it.
     /// </summary>
     [Serializable]
     [XmlType(Namespace = SchemaConstants.XmlNamespace)]
@@ -30,12 +30,15 @@ namespace Gallio.Schema.Plugins
     {
         private string fullName;
         private string codeBase;
+        private readonly List<BindingRedirect> bindingRedirects;
 
         /// <summary>
         /// Creates an uninitialized assembly reference for XML deserialization.
         /// </summary>
         private Assembly()
         {
+            bindingRedirects = new List<BindingRedirect>();
+            ApplyPublisherPolicy = true;
         }
 
         /// <summary>
@@ -44,6 +47,7 @@ namespace Gallio.Schema.Plugins
         /// <param name="fullName">The assembly full name.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="fullName"/> is null.</exception>
         public Assembly(string fullName)
+            : this()
         {
             if (fullName == null)
                 throw new ArgumentNullException("fullName");
@@ -78,10 +82,35 @@ namespace Gallio.Schema.Plugins
             set { codeBase = value; }
         }
 
+        /// <summary>
+        /// Gets or sets whether the assembly full name should be used to qualify all partial
+        /// name references to the assembly.
+        /// </summary>
+        [XmlAttribute("qualifyPartialName")]
+        public bool QualifyPartialName { get; set; }
+
+        /// <summary>
+        /// Gets or sets whether to apply the assembly publisher policy.  Default is <c>true</c>.
+        /// </summary>
+        [XmlAttribute("applyPublisherPolicy")]
+        public bool ApplyPublisherPolicy { get; set; }
+
+        /// <summary>
+        /// Gets the mutable list of assembly binding redirects.
+        /// </summary>
+        [XmlArray("bindingRedirects", IsNullable = false)]
+        [XmlArrayItem("bindingRedirect", typeof(BindingRedirect), IsNullable = false)]
+        public List<BindingRedirect> BindingRedirects
+        {
+            get { return bindingRedirects; }
+        }
+
         /// <inheritdoc />
         public void Validate()
         {
             ValidationUtils.ValidateAssemblyName("fullName", fullName);
+            ValidationUtils.ValidateElementsAreNotNull("bindingRedirects", bindingRedirects);
+            ValidationUtils.ValidateAll(bindingRedirects);
         }
     }
 }

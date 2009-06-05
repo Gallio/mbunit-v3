@@ -53,9 +53,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.XunitAdapter.TestRes
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NUnit", "NUnit", "{6B756611-1B2E-4C55-901C-B6564000F784}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.NUnitAdapter", "Extensions\NUnit\Gallio.NUnitAdapter\Gallio.NUnitAdapter.csproj", "{6C54EE4A-65D5-4133-A89D-9F57C6ADB2C9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.NUnitAdapter248", "Extensions\NUnit\Gallio.NUnitAdapter\Gallio.NUnitAdapter248.csproj", "{6C54EE4A-65D5-4133-A89D-9F57C6ADB2C9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.NUnitAdapter.Tests", "Extensions\NUnit\Gallio.NUnitAdapter.Tests\Gallio.NUnitAdapter.Tests.csproj", "{7CB9DB43-2428-40C7-A926-AD3C2687A646}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.NUnitAdapter248.Tests", "Extensions\NUnit\Gallio.NUnitAdapter.Tests\Gallio.NUnitAdapter248.Tests.csproj", "{7CB9DB43-2428-40C7-A926-AD3C2687A646}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MbUnit2", "MbUnit2", "{046D3E80-13AA-4CAE-9BF8-880077BDDE5E}"
 EndProject
@@ -127,7 +127,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.MSTestAdapter", "Ext
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.MSTestAdapter.Tests", "Extensions\MSTest\Gallio.MSTestAdapter.Tests\Gallio.MSTestAdapter.Tests.csproj", "{45C971C1-3E47-47C8-B0B2-AEA866BA089A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.NUnitAdapter.TestResources", "Extensions\NUnit\Gallio.NUnitAdapter.TestResources\Gallio.NUnitAdapter.TestResources.csproj", "{42CC86A2-B9A9-447F-97DD-D6809D78A8EB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.NUnitAdapter248.TestResources", "Extensions\NUnit\Gallio.NUnitAdapter.TestResources\Gallio.NUnitAdapter248.TestResources.csproj", "{42CC86A2-B9A9-447F-97DD-D6809D78A8EB}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.MSTestAdapter.TestResources", "Extensions\MSTest\Gallio.MSTestAdapter.TestResources\Gallio.MSTestAdapter.TestResources.csproj", "{7AC1E83D-6979-48B5-8370-32F61A54B317}"
 EndProject
@@ -254,6 +254,12 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.Copy", "Extensions\Copy\Gallio.Copy\Gallio.Copy.csproj", "{5DA3843B-9639-4E11-8673-44E30624926F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.Copy.Tests", "Extensions\Copy\Gallio.Copy.Tests\Gallio.Copy.Tests.csproj", "{27D9A0F2-8E7E-45D4-8664-00D23ECBBB90}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.NUnitAdapter25", "Extensions\NUnit\Gallio.NUnitAdapter\Gallio.NUnitAdapter25.csproj", "{8C2F707D-A342-434B-92CD-0AAD5112C7FB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.NUnitAdapter25.TestResources", "Extensions\NUnit\Gallio.NUnitAdapter.TestResources\Gallio.NUnitAdapter25.TestResources.csproj", "{7B5AABA5-3349-4D21-8813-D0796EA6E625}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.NUnitAdapter25.Tests", "Extensions\NUnit\Gallio.NUnitAdapter.Tests\Gallio.NUnitAdapter25.Tests.csproj", "{5CCF0411-EDE6-4A26-8996-B4E7A358E9E9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -593,6 +599,18 @@ Global
 		{27D9A0F2-8E7E-45D4-8664-00D23ECBBB90}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{27D9A0F2-8E7E-45D4-8664-00D23ECBBB90}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{27D9A0F2-8E7E-45D4-8664-00D23ECBBB90}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8C2F707D-A342-434B-92CD-0AAD5112C7FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8C2F707D-A342-434B-92CD-0AAD5112C7FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8C2F707D-A342-434B-92CD-0AAD5112C7FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8C2F707D-A342-434B-92CD-0AAD5112C7FB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7B5AABA5-3349-4D21-8813-D0796EA6E625}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7B5AABA5-3349-4D21-8813-D0796EA6E625}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7B5AABA5-3349-4D21-8813-D0796EA6E625}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7B5AABA5-3349-4D21-8813-D0796EA6E625}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5CCF0411-EDE6-4A26-8996-B4E7A358E9E9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5CCF0411-EDE6-4A26-8996-B4E7A358E9E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5CCF0411-EDE6-4A26-8996-B4E7A358E9E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5CCF0411-EDE6-4A26-8996-B4E7A358E9E9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -653,6 +671,9 @@ Global
 		{6C54EE4A-65D5-4133-A89D-9F57C6ADB2C9} = {6B756611-1B2E-4C55-901C-B6564000F784}
 		{7CB9DB43-2428-40C7-A926-AD3C2687A646} = {6B756611-1B2E-4C55-901C-B6564000F784}
 		{42CC86A2-B9A9-447F-97DD-D6809D78A8EB} = {6B756611-1B2E-4C55-901C-B6564000F784}
+		{8C2F707D-A342-434B-92CD-0AAD5112C7FB} = {6B756611-1B2E-4C55-901C-B6564000F784}
+		{7B5AABA5-3349-4D21-8813-D0796EA6E625} = {6B756611-1B2E-4C55-901C-B6564000F784}
+		{5CCF0411-EDE6-4A26-8996-B4E7A358E9E9} = {6B756611-1B2E-4C55-901C-B6564000F784}
 		{0393BF1B-3E61-4AF9-B0E3-B9E77C60C67A} = {046D3E80-13AA-4CAE-9BF8-880077BDDE5E}
 		{050A5A14-3F4D-4407-AA40-C45E14FE1FF1} = {046D3E80-13AA-4CAE-9BF8-880077BDDE5E}
 		{886B1BB9-AB7A-45EC-B38B-DE36CABCE505} = {046D3E80-13AA-4CAE-9BF8-880077BDDE5E}

@@ -77,6 +77,8 @@ namespace Gallio.TDNetRunner.UI.Preferences
                 frameworkGridView.Rows.Add(traits.Name, InstallationModeToString(installationMode));
                 frameworkIds[i] = frameworkId;
             }
+
+            frameworkGridView.Sort(FrameworkNameColumn, ListSortDirection.Ascending);
         }
 
         private void frameworkGridView_CellValueChanged(object sender, DataGridViewCellEventArgs e)
@@ -102,7 +104,7 @@ namespace Gallio.TDNetRunner.UI.Preferences
             PendingSettingsChanges = false;
         }
 
-        private string InstallationModeToString(TDNetRunnerInstallationMode mode)
+        private static string InstallationModeToString(TDNetRunnerInstallationMode mode)
         {
             switch (mode)
             {
@@ -117,7 +119,7 @@ namespace Gallio.TDNetRunner.UI.Preferences
             }
         }
 
-        private TDNetRunnerInstallationMode InstallationModeFromString(string str)
+        private static TDNetRunnerInstallationMode InstallationModeFromString(string str)
         {
             switch (str)
             {

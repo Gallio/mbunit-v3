@@ -16,7 +16,12 @@
   <?ifdef NET40?>
   <assemblies>
     <assembly fullName="MbUnit40, Version=0.0.0.0, Culture=neutral, PublicKeyToken=eb9cfa67ee6ab36e"
-              codeBase="MbUnit40.dll" />
+              codeBase="MbUnit40.dll">
+      <qualifyPartialName>true</qualifyPartialName>
+      <bindingRedirects>
+        <bindingRedirect oldVersion="0.0.0.0-65535.65535.65535.65535" />
+      </bindingRedirects>
+    </assembly>
   </assemblies>
   <?endif?>
 </plugin>

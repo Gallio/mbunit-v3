@@ -13,10 +13,19 @@
 
   <assemblies>
     <assembly fullName="Gallio.XunitAdapter, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null"
-              codeBase="Gallio.XunitAdapter.dll" />
+              codeBase="Gallio.XunitAdapter.dll">
+      <qualifyPartialName>true</qualifyPartialName>
+      <bindingRedirects>
+        <bindingRedirect oldVersion="0.0.0.0-65535.65535.65535.65535" />
+      </bindingRedirects>
+    </assembly>
 
     <assembly fullName="xunit, Version=1.1.0.1323, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c"
-              codeBase="xunit.dll" />
+              codeBase="xunit.dll">
+      <bindingRedirects>
+        <bindingRedirect oldVersion="1.1.0.0-1.1.0.65535" />
+      </bindingRedirects>
+    </assembly>
   </assemblies>
 
   <components>
@@ -25,7 +34,7 @@
                componentType="Gallio.XunitAdapter.Model.XunitTestFramework, Gallio.XunitAdapter">
       <traits>
         <name>xUnit.net</name>
-        <frameworkAssemblyNames>xunit</frameworkAssemblyNames>
+        <frameworkAssemblies>xunit</frameworkAssemblies>
         <version>1.1.0.1323</version>
         <fileTypes>Assembly</fileTypes>
       </traits>

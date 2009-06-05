@@ -14,7 +14,12 @@
 
   <assemblies>
     <assembly fullName="Gallio.TDNetRunner, Version=0.0.0.0, Culture=neutral, PublicKeyToken=eb9cfa67ee6ab36e"
-              codeBase="Gallio.TDNetRunner.dll" />
+              codeBase="Gallio.TDNetRunner.dll">
+      <qualifyPartialName>true</qualifyPartialName>
+      <bindingRedirects>
+        <bindingRedirect oldVersion="0.0.0.0-65535.65535.65535.65535" />
+      </bindingRedirects>
+    </assembly>
 
     <assembly fullName="Gallio.Loader, Version=0.0.0.0, Culture=neutral, PublicKeyToken=eb9cfa67ee6ab36e"/>
   </assemblies>

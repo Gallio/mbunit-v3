@@ -1,0 +1,50 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+  <Import Project="$(MetaBuildBinDir)\MetaBuild.Module.targets" />
+  
+  <ItemGroup>
+    <CSharpProject Include="Gallio.NUnitAdapter\Gallio.NUnitAdapter248$(ProjectVariant).csproj" />
+
+    <CSharpProject Include="Gallio.NUnitAdapter.TestResources\Gallio.NUnitAdapter248.TestResources$(ProjectVariant).csproj" />
+    <CSharpProject Include="Gallio.NUnitAdapter.Tests\Gallio.NUnitAdapter248.Tests$(ProjectVariant).csproj" />    
+  </ItemGroup>
+
+  <ItemGroup>
+    <Binary Include="Gallio.NUnitAdapter\bin\v2.4.8\Gallio.NUnitAdapter248.dll">
+        <Folder>NUnit\v2.4.8</Folder>
+    </Binary>
+    <PluginFile Include="Gallio.NUnitAdapter\Gallio.NUnitAdapter248.plugin">
+        <Folder>NUnit\v2.4.8</Folder>
+    </PluginFile>
+    <Binary Include="Gallio.NUnitAdapter\Readme.txt">
+        <Folder>NUnit\v2.4.8</Folder>
+    </Binary>
+    <Binary Include="libs\v2.4.8\license.txt">
+        <Folder>NUnit\v2.4.8</Folder>
+    </Binary>
+    <Binary Include="libs\v2.4.8\nunit.framework.dll">
+        <Folder>NUnit\v2.4.8</Folder>
+    </Binary>
+    <Binary Include="libs\v2.4.8\nunit.framework.extensions.dll">
+        <Folder>NUnit\v2.4.8</Folder>
+    </Binary>
+    <Binary Include="libs\v2.4.8\nunit.core.dll">
+        <Folder>NUnit\v2.4.8</Folder>
+    </Binary>
+    <Binary Include="libs\v2.4.8\nunit.core.extensions.dll">
+        <Folder>NUnit\v2.4.8</Folder>
+    </Binary>
+    <Binary Include="libs\v2.4.8\nunit.core.interfaces.dll">
+        <Folder>NUnit\v2.4.8</Folder>
+    </Binary>
+    <Binary Include="libs\v2.4.8\nunit.util.dll">
+        <Folder>NUnit\v2.4.8</Folder>
+    </Binary>
+    <Binary Include="libs\v2.4.8\addins\NUnit Addins Readme.txt">
+        <Folder>NUnit\v2.4.8\addins</Folder>
+    </Binary>
+  </ItemGroup>
+
+  <ItemGroup>
+    <TestAssembly Include="Gallio.NUnitAdapter.Tests\bin\v2.4.8\Gallio.NUnitAdapter248.Tests.dll" />
+  </ItemGroup>
+</Project>

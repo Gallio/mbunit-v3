@@ -26,8 +26,8 @@ namespace Gallio.Common.Text.RegularExpression
     /// </summary>
     internal sealed class Parser
     {
-        private readonly static Regex ConstantQuantifier = new Regex(@"^\{(?<cst>\d+)\}", RegexOptions.Compiled);
-        private readonly static Regex RangedQuantifier = new Regex(@"^\{(?<min>\d+),(?<max>\d+)\}", RegexOptions.Compiled);
+        private readonly static Regex ConstantQuantifier = new Regex(@"^\{(?<cst>\d+)\}", RegexOptions.Compiled | RegexOptions.CultureInvariant);
+        private readonly static Regex RangedQuantifier = new Regex(@"^\{(?<min>\d+),(?<max>\d+)\}", RegexOptions.Compiled | RegexOptions.CultureInvariant);
         private readonly string input;
         private readonly ParsingInfo parsingInfo;
         private readonly Token token = new Token();

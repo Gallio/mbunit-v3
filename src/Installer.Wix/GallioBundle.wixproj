@@ -120,6 +120,12 @@
     <Compile Include="..\Extensions\NUnit\NUnit.wxs">
       <Link>NUnit.wxs</Link>
     </Compile>
+    <Compile Include="..\Extensions\NUnit\NUnit248.wxs">
+      <Link>NUnit248.wxs</Link>
+    </Compile>
+    <Compile Include="..\Extensions\NUnit\NUnit25.wxs">
+      <Link>NUnit25.wxs</Link>
+    </Compile>
     <Compile Include="..\Extensions\Xunit\Xunit.wxs">
       <Link>Xunit.wxs</Link>
     </Compile>

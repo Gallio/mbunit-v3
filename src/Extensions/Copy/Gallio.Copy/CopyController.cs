@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using Gallio.Common.Policies;
@@ -35,14 +35,14 @@ namespace Gallio.Copy
                         Directory.CreateDirectory(pluginFolder);
 
                     // copy required assemblies
-                    foreach (var assemblyReference in pluginDescriptor.AssemblyReferences)
+                    foreach (var assemblyBinding in pluginDescriptor.AssemblyBindings)
                     {
-                        if (assemblyReference.CodeBase == null)
+                        if (assemblyBinding.CodeBase == null)
                             return;
 
                         var assembly = Path.Combine(pluginFolder, 
-                            Path.GetFileName(assemblyReference.CodeBase.LocalPath));
-                        File.Copy(assemblyReference.CodeBase.LocalPath, assembly);
+                            Path.GetFileName(assemblyBinding.CodeBase.LocalPath));
+                        File.Copy(assemblyBinding.CodeBase.LocalPath, assembly);
                     }
                 }
                 catch (Exception ex)

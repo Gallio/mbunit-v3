@@ -13,7 +13,12 @@
 
   <assemblies>
     <assembly fullName="Gallio.DLRIntegration, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null"
-              codeBase="Gallio.DLRIntegration.dll" />
+              codeBase="Gallio.DLRIntegration.dll">
+      <qualifyPartialName>true</qualifyPartialName>
+      <bindingRedirects>
+        <bindingRedirect oldVersion="0.0.0.0-65535.65535.65535.65535" />
+      </bindingRedirects>
+    </assembly>
 
     <assembly fullName="IronPython, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35"
               codeBase="IronPython.dll" />

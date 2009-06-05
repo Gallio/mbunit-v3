@@ -114,7 +114,7 @@ namespace Gallio.Runtime.Hosting
             try
             {
                 HostSetup patchedSetup = HostSetup.Copy();
-                patchedSetup.Configuration.AddAssemblyBinding(typeof(IsolatedAppDomainHost).Assembly, false);
+                patchedSetup.Configuration.AddAssemblyBinding(new AssemblyBinding(typeof(IsolatedAppDomainHost).Assembly));
 
                 temporaryConfigurationFilePath = patchedSetup.WriteTemporaryConfigurationFile();
             }
