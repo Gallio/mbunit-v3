@@ -574,7 +574,7 @@ namespace Gallio.ReSharperRunner.Reflection
                 return new ConstantValue(MakeType(value.ArrayType),
                     GenericUtils.ConvertAllToArray<AttributeValue, ConstantValue>(value.ArrayValue, ConvertConstantValue));
 
-            throw new ReflectionResolveException("Unsupported attribute value type.");
+            throw new ReflectionWrapperResolveException("Unsupported attribute value type.");
         }
 #endif
         #endregion
@@ -1191,7 +1191,7 @@ namespace Gallio.ReSharperRunner.Reflection
             {
                 ITypeElement typeElement = typeHandle.GetTypeElement();
                 if (typeElement == null)
-                    throw new ReflectionResolveException(
+                    throw new ReflectionWrapperResolveException(
                         String.Format(
                             "Cannot obtain type element for type '{0}' possibly because its source code is not available.",
                             typeHandle.GetCLRName()));

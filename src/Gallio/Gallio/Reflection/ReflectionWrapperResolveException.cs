@@ -26,6 +26,15 @@ namespace Gallio.Reflection
     public class ReflectionWrapperResolveException : Exception
     {
         /// <summary>
+        /// Creates an exception.
+        /// </summary>
+        /// <param name="message">The message.</param>
+        public ReflectionWrapperResolveException(string message)
+            : base(message)
+        {
+        }
+    
+        /// <summary>
         /// Creates an exception for a code element that could not be resolved.
         /// </summary>
         /// <param name="codeElement">The code element that could not be resolved</param>
