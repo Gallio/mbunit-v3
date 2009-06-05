@@ -104,7 +104,6 @@ namespace Gallio.ReSharperRunner.Reflection
             if (@namespace != null)
                 return Reflector.WrapNamespace(@namespace.QualifiedName);
 
-            //throw new NotSupportedException("Unsupported declared element type: " + target);
             return null;
         }
 
@@ -237,7 +236,10 @@ namespace Gallio.ReSharperRunner.Reflection
             if (target == null)
                 return null;
 
-            StaticMemberWrapper member = (StaticMemberWrapper) Wrap(target.ContainingParametersOwner);
+            var member = (StaticMemberWrapper) Wrap(target.ContainingParametersOwner);
+            if (member == null)
+                return null;
+
             return new StaticParameterWrapper(this, target, member);
         }
         #endregion
@@ -314,8 +316,10 @@ namespace Gallio.ReSharperRunner.Reflection
                 });
             }
 
-            // FIXME! Don't know how to handle referenced assemblies for modules.
-            return assembly.Resolve(true).GetReferencedAssemblies();
+            // FIXME! Don't know how to handle referenced assemblies for assemblies without loading them.
+            //IAssembly assemblyHandle = (IAssembly)assembly.Handle;
+            //return assembly.Resolve(true).GetReferencedAssemblies();
+            return EmptyArray<AssemblyName>.Instance;
         }
 
         protected override IList<StaticDeclaredTypeWrapper> GetAssemblyExportedTypes(StaticAssemblyWrapper assembly)
@@ -570,7 +574,7 @@ namespace Gallio.ReSharperRunner.Reflection
                 return new ConstantValue(MakeType(value.ArrayType),
                     GenericUtils.ConvertAllToArray<AttributeValue, ConstantValue>(value.ArrayValue, ConvertConstantValue));
 
-            throw new NotSupportedException("Unsupported attribute value type.");
+            throw new ReflectionResolveException("Unsupported attribute value type.");
         }
 #endif
         #endregion
@@ -1187,7 +1191,7 @@ namespace Gallio.ReSharperRunner.Reflection
             {
                 ITypeElement typeElement = typeHandle.GetTypeElement();
                 if (typeElement == null)
-                    throw new NotSupportedException(
+                    throw new ReflectionResolveException(
                         String.Format(
                             "Cannot obtain type element for type '{0}' possibly because its source code is not available.",
                             typeHandle.GetCLRName()));
