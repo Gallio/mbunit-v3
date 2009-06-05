@@ -30,14 +30,6 @@
         </Directory>
       </DirectoryRef>
 
-      <FeatureRef Id="feat_NUnitAdapter">
-        <Feature Id='feat_NUnitAdapter248' Title='v2.4.8' Level='1' AllowAdvertise="no"
-            Description='Enables Gallio to run NUnit v2.4.8 tests.'>
-          <ComponentRef Id="Gallio.NUnitAdapter248"/>
-          <ComponentRef Id="Gallio.NUnitAdapter248.Addins"/>
-        </Feature>
-      </FeatureRef>
-
       <DirectoryRef Id="binFolder" FileSource="$(var.GallioTargetDir)\bin\">
             <Directory Id="NUnit" Name="NUnit">
                 <Component Id="Gallio.NUnitAdapter" Guid="d0bb56ff-3015-447c-9329-50e09c5f3a38" Win64="no">
@@ -60,11 +52,12 @@
             </Directory>
         </DirectoryRef>
 
-        <Feature Id='feat_NUnitAdapter' Title='NUnit Adapter' Level='1' AllowAdvertise="no"
-            Description='Installs the NUnit adapter.  Enables Gallio to run NUnit tests.'>
-            <ComponentRef Id="Gallio.NUnitAdapter"/>
-            <ComponentRef Id="Gallio.NUnitAdapter.Addins"/>
-            <ComponentRef Id="Gallio.NUnitAdapter.Resources"/>
-        </Feature>
+        <FeatureRef Id="feat_NUnitAdapter">
+            <Feature Id='feat_NUnitAdapter248' Title='v2.4.8' Level='1' AllowAdvertise="no"
+                     Description='Enables Gallio to run NUnit v2.4.8 tests.'>
+                <ComponentRef Id="Gallio.NUnitAdapter248"/>
+                <ComponentRef Id="Gallio.NUnitAdapter248.Addins"/>
+            </Feature>
+        </FeatureRef>
     </Fragment>
 </Wix>
