@@ -6,9 +6,9 @@
   
   <target name="PassingTests">
     <gallio result-property="ExitCode" filter="Type: PassingTests" ignore-annotations="true">
-      <assemblies>
+      <files>
         <include name="${TestAssembly}" />
-      </assemblies>
+      </files>
       <plugin-directories>
         <include name="${GallioPath}" />
       </plugin-directories>
@@ -19,9 +19,9 @@
 
   <target name="FailingTests">
     <gallio filter="Type: FailingTests" ignore-annotations="true">
-      <assemblies>
+      <files>
         <include name="${TestAssembly}" />
-      </assemblies>
+      </files>
       <plugin-directories>
         <include name="${GallioPath}" />
       </plugin-directories>
@@ -32,9 +32,9 @@
 
   <target name="FailingTestsWithIgnoreFailures">
     <gallio result-property="ExitCode" filter="Type: FailingTests" failonerror="false" ignore-annotations="true">
-      <assemblies>
+      <files>
         <include name="${TestAssembly}" />
-      </assemblies>
+      </files>
       <plugin-directories>
         <include name="${GallioPath}" />
       </plugin-directories>
@@ -45,8 +45,8 @@
 
   <target name="NoAssemblies">
     <gallio result-property="ExitCode" ignore-annotations="true">
-      <assemblies>
-      </assemblies>
+      <files>
+      </files>
       <plugin-directories>
         <include name="${GallioPath}" />
       </plugin-directories>
@@ -57,9 +57,9 @@
 
   <target name="NoTests">
     <gallio result-property="ExitCode" filter="Type: NoSuchType" ignore-annotations="true">
-      <assemblies>
+      <files>
         <include name="${TestAssembly}" />
-      </assemblies>
+      </files>
       <plugin-directories>
         <include name="${GallioPath}" />
       </plugin-directories>
@@ -70,9 +70,9 @@
 
   <target name="NoFilter">
     <gallio result-property="ExitCode" failonerror="false" ignore-annotations="true">
-      <assemblies>
+      <files>
         <include name="${TestAssembly}" />
-      </assemblies>
+      </files>
       <plugin-directories>
         <include name="${GallioPath}" />
       </plugin-directories>
@@ -83,9 +83,9 @@
   
   <target name="UnhandledException">
     <gallio result-property="ExitCode" filter="Type: UnhandledExceptionTest" ignore-annotations="true">
-      <assemblies>
+      <files>
         <include name="${TestAssembly}" />
-      </assemblies>
+      </files>
       <plugin-directories>
         <include name="${GallioPath}" />
       </plugin-directories>
@@ -96,9 +96,9 @@
   
   <target name="Extensions">
     <gallio result-property="ExitCode" filter="Type: PassingTests" ignore-annotations="true" verbosity="Debug">
-      <assemblies>
+      <files>
         <include name="${TestAssembly}" />
-      </assemblies>
+      </files>
       <plugin-directories>
         <include name="${GallioPath}" />
       </plugin-directories>
@@ -110,9 +110,9 @@
 
   <target name="Verbosity">
     <gallio result-property="ExitCode" filter="Type: PassingTests" ignore-annotations="true" verbosity="Verbose">
-      <assemblies>
+      <files>
         <include name="${TestAssembly}" />
-      </assemblies>
+      </files>
       <plugin-directories>
         <include name="${GallioPath}" />
       </plugin-directories>
