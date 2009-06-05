@@ -21,6 +21,12 @@
               <File Id="NUnit.v248.AddinsReadme.txt" Name="NUnit Addins Readme.txt" KeyPath="yes" />
             </Component>
           </Directory>
+	  
+          <Directory Id="NUnit.v248.Resources" Name="Resources">
+            <Component Id="Gallio.NUnitAdapter248.Resources" Guid="{240B4F67-04B0-4e1e-BFCE-F64341FA8658}" Win64="no">
+              <File Id="NUnit.v248.NUnit.ico" Name="NUnit.ico" KeyPath="yes" />
+            </Component>
+          </Directory>
         </Directory>
       </DirectoryRef>
 
@@ -58,6 +64,7 @@
             Description='Installs the NUnit adapter.  Enables Gallio to run NUnit tests.'>
             <ComponentRef Id="Gallio.NUnitAdapter"/>
             <ComponentRef Id="Gallio.NUnitAdapter.Addins"/>
+            <ComponentRef Id="Gallio.NUnitAdapter.Resources"/>
         </Feature>
     </Fragment>
 </Wix>

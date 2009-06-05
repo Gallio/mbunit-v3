@@ -39,8 +39,13 @@
     <Binary Include="libs\v2.4.8\nunit.util.dll">
         <Folder>NUnit\v2.4.8</Folder>
     </Binary>
+    
     <Binary Include="libs\v2.4.8\addins\NUnit Addins Readme.txt">
         <Folder>NUnit\v2.4.8\addins</Folder>
+    </Binary>
+    
+    <Binary Include="Gallio.NUnitAdapter\Resources\NUnit.ico">
+        <Folder>NUnit\v2.4.8\Resources</Folder>
     </Binary>
   </ItemGroup>
 

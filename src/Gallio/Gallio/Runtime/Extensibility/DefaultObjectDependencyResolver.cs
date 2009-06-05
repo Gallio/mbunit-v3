@@ -57,8 +57,6 @@ namespace Gallio.Runtime.Extensibility
     /// implements the requested service type then a handle of that component is injected.</item>
     /// <item>If the parameter type is an enum then the value is parsed to a 
     /// value of that enum type, case-insensitively.</item>
-    /// <item>If the parameter type is <see cref="AssemblyName" /> then the value is parsed into an assembly name.</item>
-    /// <item>If the parameter type is <see cref="AssemblySignature" /> then the value is parsed into an assembly signature.</item>
     /// <item>If the parameter type is <see cref="Version" /> then the value is parsed into a version.</item>
     /// <item>If the parameter type is <see cref="Guid" /> then the value is parsed into a guid.</item>
     /// <item>If the parameter type is <see cref="Condition" /> then the value is parsed into a condition.</item>
@@ -69,6 +67,10 @@ namespace Gallio.Runtime.Extensibility
     /// <item>If the parameter type is <see cref="FileInfo" /> or <see cref="DirectoryInfo"/> then the
     /// value is treated as a Uri to a file or directory resource and an instance of the
     /// appropriate file/directory info type is injected using the full path obtained from the resource locator.</item>
+    /// <item>If the parameter type is <see cref="Assembly" /> then the value is interpreted the name of an assembly which is loaded using <see cref="Assembly.Load(string)" />.</item>
+    /// <item>If the parameter type is <see cref="Type" /> then the value is interpereted as the assembly-qualified name of a type which is obtained using <see cref="Type.GetType(string)" />.</item>
+    /// <item>If the parameter type is <see cref="AssemblyName" /> then the value is parsed into an assembly name.</item>
+    /// <item>If the parameter type is <see cref="AssemblySignature" /> then the value is parsed into an assembly signature.</item>
     /// <item>Otherwise, the value is converted using <see cref="Convert.ChangeType(object, Type)" /> if possible.</item>
     /// </list>
     /// </para>
@@ -223,6 +225,12 @@ namespace Gallio.Runtime.Extensibility
 
             if (type == typeof(AssemblySignature))
                 return AssemblySignature.Parse(value);
+
+            if (type == typeof(Assembly))
+                return Assembly.Load(value);
+
+            if (type == typeof(Type))
+                return Type.GetType(value);
 
             if (value.StartsWith("${") && value.EndsWith("}"))
             {

@@ -395,6 +395,48 @@ namespace Gallio.Tests.Runtime.Extensibility
             }
 
             [Test]
+            public void ResolveDependency_WhenDependencyIsOfTypeAssembly_LoadsTheNamedAssembly()
+            {
+                var serviceLocator = MockRepository.GenerateMock<IServiceLocator>();
+                var resourceLocator = MockRepository.GenerateMock<IResourceLocator>();
+                var dependencyResolver = new DefaultObjectDependencyResolver(serviceLocator, resourceLocator);
+                Assembly assembly = GetType().Assembly;
+
+                var result = dependencyResolver.ResolveDependency("assembly", typeof(Assembly), assembly.FullName);
+
+                Assert.Multiple(() =>
+                {
+                    Assert.IsTrue(result.IsSatisfied);
+                    Assert.IsInstanceOfType<Assembly>(result.Value);
+                    Assert.AreEqual(assembly, result.Value);
+                });
+
+                serviceLocator.VerifyAllExpectations();
+                resourceLocator.VerifyAllExpectations();
+            }
+
+            [Test]
+            public void ResolveDependency_WhenDependencyIsOfTypeType_GetsTheNamedType()
+            {
+                var serviceLocator = MockRepository.GenerateMock<IServiceLocator>();
+                var resourceLocator = MockRepository.GenerateMock<IResourceLocator>();
+                var dependencyResolver = new DefaultObjectDependencyResolver(serviceLocator, resourceLocator);
+                Type type = GetType();
+
+                var result = dependencyResolver.ResolveDependency("type", typeof(Type), type.AssemblyQualifiedName);
+
+                Assert.Multiple(() =>
+                {
+                    Assert.IsTrue(result.IsSatisfied);
+                    Assert.IsInstanceOfType<Type>(result.Value);
+                    Assert.AreEqual(type, result.Value);
+                });
+
+                serviceLocator.VerifyAllExpectations();
+                resourceLocator.VerifyAllExpectations();
+            }
+
+            [Test]
             public void ResolveDependency_WhenDependencyIsOfTypeGuid_ConvertsPropertyStringToGuid()
             {
                 var serviceLocator = MockRepository.GenerateMock<IServiceLocator>();

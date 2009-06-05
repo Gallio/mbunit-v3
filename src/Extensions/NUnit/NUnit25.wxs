@@ -21,6 +21,12 @@
                 <File Id="NUnit.v25.AddinsReadme.txt" Name="NUnit Addins Readme.txt" KeyPath="yes" />
               </Component>
             </Directory>
+	    
+            <Directory Id="NUnit.v25.Resources" Name="Resources">
+              <Component Id="Gallio.NUnitAdapter25.Resources" Guid="{2E07E5B6-E699-4794-828F-2C454DDF2BD1}" Win64="no">
+                <File Id="NUnit.v25.NUnit.ico" Name="NUnit.ico" KeyPath="yes" />
+              </Component>
+            </Directory>
           </Directory>
         </DirectoryRef>
 
@@ -29,6 +35,7 @@
             Description='Enables Gallio to run NUnit v2.5 tests.'>
           <ComponentRef Id="Gallio.NUnitAdapter25"/>
           <ComponentRef Id="Gallio.NUnitAdapter25.Addins"/>
+          <ComponentRef Id="Gallio.NUnitAdapter25.Resources"/>
         </Feature>
       </FeatureRef>
     </Fragment>
