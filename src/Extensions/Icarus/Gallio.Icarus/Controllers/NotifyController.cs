@@ -14,8 +14,7 @@
 // limitations under the License.
 
 using System.ComponentModel;
-using Gallio.Icarus.Controllers.Interfaces;
-using Gallio.Icarus.Utilities;
+using Gallio.UI.Common.Synchronization;
 
 namespace Gallio.Icarus.Controllers
 {

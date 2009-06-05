@@ -33,19 +33,18 @@ namespace Gallio.UI.Progress
         ///<param name="progressMonitor">The progress monitor to display information for.</param>
         public ProgressMonitor(ObservableProgressMonitor progressMonitor)
         {
+            InitializeComponent();
+
             this.progressMonitor = progressMonitor;
 
             progressMonitor.Changed += (sender, e) => Sync.Invoke(this, ProgressUpdate);
-
-            InitializeComponent();
-
-            ProgressUpdate();
         }
 
         private void ProgressUpdate()
         {
             // update task details
-            progressBar.Maximum = Convert.ToInt32(progressMonitor.TotalWorkUnits);
+            progressBar.Maximum = double.IsNaN(progressMonitor.TotalWorkUnits)
+                ? 0 : Convert.ToInt32(progressMonitor.TotalWorkUnits);
             progressBar.Value = Convert.ToInt32(progressMonitor.CompletedWorkUnits);
             Text = progressMonitor.TaskName;
             subTaskNameLabel.Text = progressMonitor.LeafSubTaskName;

@@ -15,56 +15,78 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
+using System.Windows.Forms;
+using Gallio.Common.IO;
 using Gallio.Common.Policies;
 using Gallio.Runtime;
+using Gallio.Runtime.ProgressMonitoring;
+using Gallio.UI.Common.Policies;
+using Gallio.UI.Progress;
 
 namespace Gallio.Copy
 {
     internal class CopyController : ICopyController
     {
+        private readonly IFileSystem fileSystem;
+        private readonly IUnhandledExceptionPolicy unhandledExceptionPolicy;
+        private readonly ITaskManager taskManager;
+        private readonly Dictionary<string, string> pluginLocations;
+        private readonly Timer timer = new Timer();
+        private List<string> plugins;
+
+        public ObservableProgressMonitor ProgressMonitor
+        {
+            get { return taskManager.ProgressMonitor; }
+        }
+
+        public event EventHandler ShowProgressDialog;
+        public event EventHandler ProgressUpdate;
+
+        public CopyController(IFileSystem fileSystem, IUnhandledExceptionPolicy unhandledExceptionPolicy, 
+            ITaskManager taskManager, Dictionary<string, string> pluginLocations)
+        {
+            this.fileSystem = fileSystem;
+            this.unhandledExceptionPolicy = unhandledExceptionPolicy;
+            this.taskManager = taskManager;
+            this.pluginLocations = pluginLocations;
+
+            taskManager.ProgressUpdate += (sender, e) => EventHandlerPolicy.SafeInvoke(ProgressUpdate, this, EventArgs.Empty);
+            taskManager.TaskStarted += (sender, e) => timer.Start();
+            taskManager.TaskCompleted += (sender, e) => timer.Stop();
+            taskManager.TaskCanceled += (sender, e) => timer.Stop();
+
+            timer.Interval = 2000;
+            timer.Tick += (sender, e) =>
+            {
+                EventHandlerPolicy.SafeInvoke(ShowProgressDialog, this, EventArgs.Empty);
+                timer.Stop();
+            };
+        }
+
         public IList<string> Plugins
         {
             get
             {
-                var plugins = new List<string>();
-                foreach (var pluginDescriptor in RuntimeAccessor.Registry.Plugins)
+                if (plugins == null)
                 {
-                    plugins.Add(pluginDescriptor.PluginId);
+                    plugins = new List<string>();
+                    foreach (var pluginDescriptor in RuntimeAccessor.Registry.Plugins)
+                    {
+                        if (pluginDescriptor.PluginId != "BuiltIn")
+                            plugins.Add(pluginDescriptor.PluginId);
+                    }
+                    plugins.Sort();
                 }
                 return plugins;
             }
         }
 
-        public void CopyTo(string destinationFolder, IList<string> plugins)
+        public void CopyTo(string destinationFolder, IList<string> selectedPlugins)
         {
-            foreach (var pluginId in plugins)
-            {
-                try
-                {
+            var copyCommand = new CopyCommand(destinationFolder, selectedPlugins, pluginLocations, 
+                fileSystem, unhandledExceptionPolicy);
 
-                    var pluginDescriptor = RuntimeAccessor.Registry.Plugins[pluginId];
-
-                    var pluginFolder = Path.Combine(destinationFolder, pluginId);
-                    if (!Directory.Exists(pluginFolder))
-                        Directory.CreateDirectory(pluginFolder);
-
-                    // copy required assemblies
-                    foreach (var assemblyBinding in pluginDescriptor.AssemblyBindings)
-                    {
-                        if (assemblyBinding.CodeBase == null)
-                            return;
-
-                        var assembly = Path.Combine(pluginFolder, 
-                            Path.GetFileName(assemblyBinding.CodeBase.LocalPath));
-                        File.Copy(assemblyBinding.CodeBase.LocalPath, assembly);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    UnhandledExceptionPolicy.Report("Error copying plugin", ex);
-                }
-            }
+            taskManager.QueueTask(copyCommand);
         }
     }
 }

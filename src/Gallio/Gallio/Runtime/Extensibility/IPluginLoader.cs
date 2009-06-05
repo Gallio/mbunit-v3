@@ -14,7 +14,6 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
 using System.IO;
 
 namespace Gallio.Runtime.Extensibility
@@ -24,6 +23,11 @@ namespace Gallio.Runtime.Extensibility
     /// </summary>
     public interface IPluginLoader
     {
+        ///<summary>
+        /// Event raised when a plugin is loaded.
+        ///</summary>
+        event EventHandler<PluginLoadedEventArgs> PluginLoaded;
+
         /// <summary>
         /// Adds a plugin path.
         /// </summary>

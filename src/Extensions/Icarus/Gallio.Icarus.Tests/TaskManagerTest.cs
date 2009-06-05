@@ -18,6 +18,8 @@ using System.Threading;
 using Gallio.Icarus.Commands;
 using Gallio.Icarus.Utilities;
 using Gallio.Runtime.ProgressMonitoring;
+using Gallio.UI.Common.Policies;
+using Gallio.UI.Progress;
 using MbUnit.Framework;
 using Rhino.Mocks;
 
@@ -51,7 +53,6 @@ namespace Gallio.Icarus.Tests
             var taskManager = new TaskManager(unhandledExceptionPolicy);
 
             var manualResetEvent = new ManualResetEvent(false);
-            taskManager.Start();
             taskManager.QueueTask(new DelegateCommand(pm => manualResetEvent.Set()));
 
             manualResetEvent.WaitOne();

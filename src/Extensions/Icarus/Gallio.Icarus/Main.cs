@@ -30,9 +30,9 @@ using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Model;
 using Gallio.Runner.Projects;
 using Gallio.Runtime;
+using Gallio.UI.Common.Synchronization;
 using Gallio.UI.Progress;
 using WeifenLuo.WinFormsUI.Docking;
-using SynchronizationContext = System.Threading.SynchronizationContext;
 using UnhandledExceptionPolicy = Gallio.Common.Policies.UnhandledExceptionPolicy;
 using Gallio.Icarus.Utilities;
 using Gallio.UI.ControlPanel;
@@ -221,7 +221,7 @@ namespace Gallio.Icarus
             }
 
             // provide WindowsFormsSynchronizationContext for cross-thread databinding
-            Utilities.SynchronizationContext.Instance = new Utilities.SynchronizationContext(SynchronizationContext.Current);
+            SynchronizationContext.Instance = new SynchronizationContext(System.Threading.SynchronizationContext.Current);
 
             // restore window size & location
             if (!applicationController.Size.Equals(Size.Empty))

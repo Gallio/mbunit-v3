@@ -13,9 +13,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Gallio.UI.Common.Synchronization;
 using MbUnit.Framework;
 using Gallio.Framework.Pattern;
-using Gallio.Icarus.Utilities;
 
 namespace Gallio.Icarus.Tests.Utilities
 {

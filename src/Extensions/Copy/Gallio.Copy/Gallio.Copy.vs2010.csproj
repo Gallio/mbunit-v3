@@ -50,6 +50,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CopyArguments.cs" />
+    <Compile Include="CopyCommand.cs" />
     <Compile Include="CopyController.cs" />
     <Compile Include="CopyForm.cs">
       <SubType>Form</SubType>
@@ -57,8 +58,8 @@
     <Compile Include="CopyForm.Designer.cs">
       <DependentUpon>CopyForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="CopyProgram.cs" />
     <Compile Include="ICopyController.cs" />
-    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="CopyForm.resx">
       <DependentUpon>CopyForm.cs</DependentUpon>

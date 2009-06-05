@@ -21,6 +21,7 @@ using System.Xml;
 using System.Xml.Serialization;
 using Gallio.Common.Collections;
 using Gallio.Common;
+using Gallio.Common.Policies;
 using Gallio.Common.Xml;
 using Gallio.Schema.Plugins;
 
@@ -59,6 +60,9 @@ namespace Gallio.Runtime.Extensibility
         }
 
         /// <inheritdoc />
+        public event EventHandler<PluginLoadedEventArgs> PluginLoaded;
+
+        /// <inheritdoc />
         public void AddPluginPath(string pluginPath)
         {
             if (pluginPath == null)
@@ -93,7 +97,12 @@ namespace Gallio.Runtime.Extensibility
             if (catalog == null)
                 throw new ArgumentNullException("catalog");
 
-            LoadPlugins((plugin, baseDirectory, pluginFilePath) => catalog.AddPlugin(plugin, baseDirectory));
+            LoadPlugins((plugin, baseDirectory, pluginFilePath) =>
+            {
+                catalog.AddPlugin(plugin, baseDirectory);
+                EventHandlerPolicy.SafeInvoke(PluginLoaded, this,
+                    new PluginLoadedEventArgs(plugin, baseDirectory, pluginFilePath));
+            });
 
             foreach (Pair<string, DirectoryInfo> pair in pluginXmls)
             {

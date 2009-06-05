@@ -14,11 +14,15 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using System.Windows.Forms;
+using Gallio.Common.IO;
 using Gallio.Copy.Properties;
 using Gallio.Runtime;
 using Gallio.Runtime.ConsoleSupport;
 using Gallio.Runtime.Logging;
+using Gallio.UI.Common.Policies;
+using Gallio.UI.Progress;
 
 namespace Gallio.Copy
 {
@@ -53,10 +57,18 @@ namespace Gallio.Copy
             var runtimeSetup = new RuntimeSetup();
             runtimeSetup.PluginDirectories.AddRange(Arguments.PluginDirectories);
 
+            var pluginLocations = new Dictionary<string, string>();
+            RuntimeBootstrap.PluginLoader.PluginLoaded += (sender, e) => pluginLocations.Add(e.Plugin.PluginId, 
+                e.PluginFilePath);
+
             var logger = new FilteredLogger(new RichConsoleLogger(Console), Verbosity.Normal);
             using (RuntimeBootstrap.Initialize(runtimeSetup, logger))
             {
-                Application.Run(new CopyForm(new CopyController()));
+                var taskManager = RuntimeAccessor.ServiceLocator.Resolve<ITaskManager>();
+                var fileSystem = RuntimeAccessor.ServiceLocator.Resolve<IFileSystem>();
+                var unhandledExceptionPolicy = RuntimeAccessor.ServiceLocator.Resolve<IUnhandledExceptionPolicy>();
+                var copyController = new CopyController(fileSystem, unhandledExceptionPolicy, taskManager, pluginLocations);
+                Application.Run(new CopyForm(copyController));
             }
 
             return 0;

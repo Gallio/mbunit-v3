@@ -14,7 +14,7 @@
 // limitations under the License.
 
 using System.Threading;
-using Gallio.Icarus.Utilities;
+using Gallio.UI.Common.Synchronization;
 
 namespace Gallio.Icarus.Tests.Utilities
 {

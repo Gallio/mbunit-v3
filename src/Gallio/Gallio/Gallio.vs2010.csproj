@@ -222,6 +222,7 @@
     <Compile Include="Runtime\Debugging\NamespaceDoc.cs" />
     <Compile Include="Common\Reflection\AssemblySignature.cs" />
     <Compile Include="Runtime\Extensibility\NamespaceDoc.cs" />
+    <Compile Include="Runtime\Extensibility\PluginLoadedEventArgs.cs" />
     <Compile Include="Runtime\Extensibility\ResourceSearchRules.cs" />
     <Compile Include="Runtime\FileTypes\NamespaceDoc.cs" />
     <Compile Include="Runtime\Formatting\NamespaceDoc.cs" />

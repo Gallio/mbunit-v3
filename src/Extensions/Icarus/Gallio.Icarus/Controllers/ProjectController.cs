@@ -30,6 +30,7 @@ using Gallio.Runner.Projects;
 using Gallio.Runtime.ProgressMonitoring;
 using Gallio.Icarus.Utilities;
 using Gallio.UI.Common.Policies;
+using Gallio.UI.Common.Synchronization;
 
 namespace Gallio.Icarus.Controllers
 {

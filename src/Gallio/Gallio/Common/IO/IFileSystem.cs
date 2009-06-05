@@ -67,9 +67,36 @@ namespace Gallio.Common.IO
         /// </summary>
         /// <param name="path">The directory to inspect.</param>
         /// <param name="searchPattern">The pattern to match files with.</param>
-        /// <param name="searchOption">Whether to search all directories or just the top-level one.</param>
+        /// <param name="searchOption">Whether to search all directories or just 
+        /// the top-level one.</param>
         /// <returns>A string array of filenames.</returns>
         string[] GetFilesInDirectory(string path, string searchPattern, 
             SearchOption searchOption);
+
+        /// <summary>
+        /// Copies an existing file to a new file. Overwriting a file of the same name is allowed.
+        /// </summary>
+        /// <param name="sourceFileName">The file to copy.</param>
+        /// <param name="destinationFileName">The name of the destination file. 
+        /// This cannot be a directory or an existing file.</param>
+        /// <param name="overwrite">true if the destination file can be overwritten; 
+        /// otherwise, false.</param>
+        void CopyFile(string sourceFileName, string destinationFileName, bool overwrite);
+
+        ///<summary>
+        /// Deletes the specified directory and, if indicated, 
+        /// any subdirectories in the directory.
+        ///</summary>
+        ///<param name="path">The name of the directory to remove.</param>
+        ///<param name="recursive">true to remove directories, subdirectories, 
+        /// and files in path; otherwise, false.</param>
+        void DeleteDirectory(string path, bool recursive);
+
+        /// <summary>
+        /// Copy a directory and contents.
+        /// </summary>
+        /// <param name="sourceDirectory">The path of the directory to copy.</param>
+        /// <param name="targetDirectory">The destination.</param>
+        void CopyDirectory(string sourceDirectory, string targetDirectory);
     }
 }

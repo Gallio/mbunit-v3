@@ -1,4 +1,4 @@
-// Copyright 2005-2009 Gallio Project - http://www.gallio.org/
+﻿// Copyright 2005-2009 Gallio Project - http://www.gallio.org/
 // Portions Copyright 2000-2004 Jonathan de Halleux
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,9 +13,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
+using Gallio.Common.Concurrency;
 using Gallio.Common.Policies;
+using Gallio.UI.Progress;
 
 namespace Gallio.Copy
 {
@@ -29,19 +32,36 @@ namespace Gallio.Copy
 
             InitializeComponent();
 
+            // show list of available plugins
             foreach (var plugin in copyController.Plugins)
                 pluginsListView.Items.Add(plugin);
 
-            UnhandledExceptionPolicy.ReportUnhandledException += (sender, e) => MessageBox.Show(this, 
-                e.GetDescription(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            UnhandledExceptionPolicy.ReportUnhandledException += (sender, e) => Sync.Invoke(this, () => 
+                MessageBox.Show(this, e.GetDescription(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error));
+
+            copyController.ProgressUpdate += (sender, e) => Sync.Invoke(this, () =>
+            {
+                var progressMonitor = copyController.ProgressMonitor;
+                
+                taskNameStatusLabel.Text = progressMonitor.LeafSubTaskName;
+
+                toolStripProgressBar.Maximum = double.IsNaN(progressMonitor.TotalWorkUnits)
+                    ? 0 : Convert.ToInt32(progressMonitor.TotalWorkUnits);
+                
+                toolStripProgressBar.Value = (progressMonitor.CompletedWorkUnits == progressMonitor.TotalWorkUnits) 
+                    ? 0 : Convert.ToInt32(copyController.ProgressMonitor.CompletedWorkUnits);
+            });
+
+            copyController.ShowProgressDialog += 
+                (sender, e) => new ProgressMonitor(copyController.ProgressMonitor).Show(this);
         }
 
-        private void closeButton_Click(object sender, System.EventArgs e)
+        private void closeButton_Click(object sender, EventArgs e)
         {
             Close();
         }
 
-        private void copyButton_Click(object sender, System.EventArgs e)
+        private void copyButton_Click(object sender, EventArgs e)
         {
             using (var folderBrowserDialog = new FolderBrowserDialog())
             {
@@ -54,6 +74,12 @@ namespace Gallio.Copy
 
                 copyController.CopyTo(folderBrowserDialog.SelectedPath, list);
             }
+        }
+
+        private void selectAllButton_Click(object sender, EventArgs e)
+        {
+            foreach (ListViewItem plugin in pluginsListView.Items)
+                plugin.Checked = true;
         }
     }
 }

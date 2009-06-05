@@ -284,10 +284,8 @@
     <Compile Include="Packages\CodeViewerPackage.cs" />
     <Compile Include="Packages\PluginBrowserPackage.cs" />
     <Compile Include="Remoting\IAssemblyWatcher.cs" />
-    <Compile Include="Utilities\ISynchronizationContext.cs" />
     <Compile Include="Utilities\MRUList.cs" />
     <Compile Include="Utilities\NativeMethods.cs" />
-    <Compile Include="Utilities\SynchronizationContext.cs" />
     <Compile Include="Views\CodeViewer\CodeViewer.cs">
       <SubType>UserControl</SubType>
     </Compile>

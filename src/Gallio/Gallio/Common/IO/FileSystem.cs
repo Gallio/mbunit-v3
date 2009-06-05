@@ -23,74 +23,91 @@ namespace Gallio.Common.IO
     ///</summary>
     public class FileSystem : IFileSystem
     {
-        ///<summary>
-        /// Checks if a given file exists (File.Exists).
-        ///</summary>
-        ///<param name="path">The path of the file.</param>
-        ///<returns>True if the file exists, otherwise False.</returns>
+        /// <inheritdoc />
         public bool FileExists(string path)
         {
             return File.Exists(path);
         }
 
-        ///<summary>
-        /// Checks if a path is relative or absolute (Path.IsPathRooted).
-        ///</summary>
-        ///<param name="path">The path to check.</param>
-        ///<returns>True if the path is absolute, otherwise False.</returns>
+        /// <inheritdoc />
         public bool IsPathRooted(string path)
         {
             return Path.IsPathRooted(path);
         }
 
-        ///<summary>
-        /// Checks if a directory exists (Directory.Exists)
-        ///</summary>
-        ///<param name="path">The location of the directory.</param>
-        ///<returns>True if the directory exists, otherwise False.</returns>
+        /// <inheritdoc />
         public bool DirectoryExists(string path)
         {
             return Directory.Exists(path);
         }
 
-        ///<summary>
-        /// Attempts to create a directory.
-        ///</summary>
-        ///<param name="path">The location of the directory.</param>
+        /// <inheritdoc />
         public void CreateDirectory(string path)
         {
             Directory.CreateDirectory(path);
         }
 
-        ///<summary>
-        /// Attempts to delete a file.
-        ///</summary>
-        ///<param name="path">The location of the file.</param>
+        /// <inheritdoc />
         public void DeleteFile(string path)
         {
             File.Delete(path);
         }
 
-        /// <summary>
-        /// Attempts to open a file using the default program.
-        /// </summary>
-        /// <param name="path">The location of the file.</param>
+        /// <inheritdoc />
         public void OpenFile(string path)
         {
             Process.Start(path);
         }
 
-        /// <summary>
-        /// Returns a list of matching files in the specified directory.
-        /// </summary>
-        /// <param name="path">The directory to inspect.</param>
-        /// <param name="searchPattern">The pattern to match files with.</param>
-        /// <param name="searchOption">Whether to search all directories or just the top-level one.</param>
-        /// <returns>A string array of filenames.</returns>
+        /// <inheritdoc />
         public string[] GetFilesInDirectory(string path, string searchPattern, 
             SearchOption searchOption)
         {
             return Directory.GetFiles(path, searchPattern, searchOption);
+        }
+
+        /// <inheritdoc />
+        public void CopyFile(string sourceFileName, string destinationFileName, bool overwrite)
+        {
+            var destinationDirectory = Path.GetDirectoryName(destinationFileName);
+            
+            if (!DirectoryExists(destinationDirectory))
+                CreateDirectory(destinationDirectory);
+
+            File.Copy(sourceFileName, destinationFileName, overwrite);
+        }
+
+        /// <inheritdoc />
+        public void DeleteDirectory(string path, bool recursive)
+        {
+            Directory.Delete(path, recursive);
+        }
+
+        /// <inheritdoc />
+        public void CopyDirectory(string sourceDirectory, string targetDirectory)
+        {
+            var source = new DirectoryInfo(sourceDirectory);
+            var target = new DirectoryInfo(targetDirectory);
+
+            CopyAll(source, target);
+        }
+
+        private static void CopyAll(DirectoryInfo source, DirectoryInfo target)
+        {
+            // Check if the target directory exists, if not, create it.
+            if (!Directory.Exists(target.FullName))
+                Directory.CreateDirectory(target.FullName);
+
+            // Copy each file into it's new directory.
+            foreach (var fi in source.GetFiles())
+                fi.CopyTo(Path.Combine(target.ToString(), fi.Name), true);
+
+            // Copy each subdirectory using recursion.
+            foreach (var diSourceSubDir in source.GetDirectories())
+            {
+                var nextTargetSubDir = target.CreateSubdirectory(diSourceSubDir.Name);
+                CopyAll(diSourceSubDir, nextTargetSubDir);
+            }
         }
     }
 }
