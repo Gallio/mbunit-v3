@@ -19,7 +19,7 @@
             Condition="Exists('$(ImageDir)\samples\MbUnitSamples.zip')" />
 
     <RemoveDir Directories="$(TempDir)\samples\MbUnitSamples" />
-    <MakeDir Directories="$(TempDir)\samples" />
+    <MakeDir Directories="$(TempDir)\samples;$(ImageDir)\samples" />
     
     <SvnExport RepositoryPath="$(ModuleDir)"
                LocalPath="$(TempDir)\samples\MbUnitSamples" />
