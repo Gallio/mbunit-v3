@@ -12,13 +12,29 @@
   </ItemGroup>
 
   <Target Name="AfterImage">
-    <RemoveDir Directories="$(ImageDir)\samples\MbUnit" />
-    <MakeDir Directories="$(ImageDir)\samples" />
+    <Message Text="Generating MbUnit samples archive..."
+             Importance="High" />
+
+    <Delete Files="$(ImageDir)\samples\MbUnitSamples.zip"
+            Condition="Exists('$(ImageDir)\samples\MbUnitSamples.zip')" />
+
+    <RemoveDir Directories="$(TempDir)\samples\MbUnitSamples" />
+    <MakeDir Directories="$(TempDir)\samples" />
     
     <SvnExport RepositoryPath="$(ModuleDir)"
-               LocalPath="$(ImageDir)\samples\MbUnit" />
+               LocalPath="$(TempDir)\samples\MbUnitSamples" />
 
-    <Delete Files="@(ExcludedFile->'$(ImageDir)\samples\MbUnit\%(Identity)')"
+    <Delete Files="@(ExcludedFile->'$(TempDir)\samples\MbUnitSamples\%(Identity)')"
             Condition="'@(ExcludedFile)'!=''" />
+
+    <ItemGroup>
+      <MbUnitSampleFile Include="$(TempDir)\samples\MbUnitSamples\**\*" />
+    </ItemGroup>
+
+    <Zip Files="@(MbUnitSampleFile)"
+         WorkingDirectory="$(TempDir)\samples\MbUnitSamples"
+         ZipFileName="$(ImageDir)\samples\MbUnitSamples.zip"
+	 ZipLevel="9"
+         Comment="This archive contains MbUnit Samples.  Extract them to a directory of your choice to run them." />         
   </Target>
 </Project>
