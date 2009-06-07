@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <plugin pluginId="MbUnit40"
+        recommendedInstallationPath=""
         xmlns="http://www.gallio.org/">
   <traits>
     <name>MbUnit v3 Extensions for .Net 4.0</name>
@@ -12,6 +13,13 @@
     <dependency pluginId="Gallio40" />
     <dependency pluginId="MbUnit35" />
   </dependencies>
+
+  <files>
+    <file path="MbUnit40.plugin" />
+    <file path="MbUnit40.dll" />
+    <file path="MbUnit40.pdb" />
+    <file path="MbUnit40.xml" />
+  </files>
 
   <?ifdef NET40?>
   <assemblies>

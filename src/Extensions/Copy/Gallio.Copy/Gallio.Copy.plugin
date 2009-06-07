@@ -18,6 +18,7 @@
     <file path="Gallio.Copy.plugin" />
     <file path="Gallio.Copy.exe" />
     <file path="Gallio.Copy.exe.config" />
-    <file path="Gallio.Copy.ico" />
+    
+    <file path="Resources\Gallio.Copy.ico" />
   </files>
 </plugin>

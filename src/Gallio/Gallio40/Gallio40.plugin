@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <plugin pluginId="Gallio40"
+        recommendedInstallationPath=""
         xmlns="http://www.gallio.org/">
   <traits>
     <name>Gallio Extensions for .Net 4.0</name>
@@ -11,6 +12,13 @@
   <dependencies>
     <dependency pluginId="Gallio35" />
   </dependencies>
+
+  <files>
+    <file path="Gallio40.plugin" />
+    <file path="Gallio40.dll" />
+    <file path="Gallio40.pdb" />
+    <file path="Gallio40.xml" />
+  </files>
 
   <?ifdef NET40?>
   <assemblies>
