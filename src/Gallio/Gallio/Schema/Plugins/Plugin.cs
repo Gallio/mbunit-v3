@@ -33,6 +33,7 @@ namespace Gallio.Schema.Plugins
         private string pluginId;
         private string pluginType;
         private readonly List<Dependency> dependencies;
+        private readonly List<File> files;
         private readonly List<Assembly> assemblies;
         private readonly List<Service> services;
         private readonly List<Component> components;
@@ -44,6 +45,7 @@ namespace Gallio.Schema.Plugins
         private Plugin()
         {
             dependencies = new List<Dependency>();
+            files = new List<File>();
             assemblies = new List<Assembly>();
             services = new List<Service>();
             components = new List<Component>();
@@ -81,6 +83,13 @@ namespace Gallio.Schema.Plugins
         }
 
         /// <summary>
+        /// Gets or sets the recommended installation path for the plugin files relative to
+        /// the runtime installation directory, or null if there is no preference.
+        /// </summary>
+        [XmlAttribute("recommendedInstallationPath")]
+        public string RecommendedInstallationPath { get; set; }
+
+        /// <summary>
         /// Gets or sets the assembly-qualified plugin type name, or null if the default
         /// implementation may be used.
         /// </summary>
@@ -99,6 +108,16 @@ namespace Gallio.Schema.Plugins
         public List<Dependency> Dependencies
         {
             get { return dependencies; }
+        }
+
+        /// <summary>
+        /// Gets the mutable list of files that belong to a plugin.
+        /// </summary>
+        [XmlArray("files", IsNullable = false)]
+        [XmlArrayItem("file", typeof(File), IsNullable = false)]
+        public List<File> Files
+        {
+            get { return files; }
         }
 
         /// <summary>
@@ -158,8 +177,10 @@ namespace Gallio.Schema.Plugins
         public void Validate()
         {
             ValidationUtils.ValidateNotNull("pluginId", pluginId);
-            ValidationUtils.ValidateElementsAreNotNull("dependency", dependencies);
+            ValidationUtils.ValidateElementsAreNotNull("dependencies", dependencies);
             ValidationUtils.ValidateAll(dependencies);
+            ValidationUtils.ValidateElementsAreNotNull("files", files);
+            ValidationUtils.ValidateAll(files);
             ValidationUtils.ValidateElementsAreNotNull("assemblies", assemblies);
             ValidationUtils.ValidateAll(assemblies);
             ValidationUtils.ValidateElementsAreNotNull("services", services);

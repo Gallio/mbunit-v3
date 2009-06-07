@@ -10,6 +10,9 @@
     <CSharpProject Include="Gallio.ReSharperRunner\Gallio.ReSharperRunner45$(ProjectVariant).csproj" />
     <CSharpProject Include="Gallio.ReSharperRunner.Tests\Gallio.ReSharperRunner45.Tests$(ProjectVariant).csproj" />
 
+    <PluginFile Include="Gallio.ReSharperRunner\Gallio.ReSharperRunner45.plugin">
+      <Folder>ReSharper\v4.5</Folder>
+    </PluginFile>
     <Binary Include="Gallio.ReSharperRunner\bin\v4.5\Gallio.ReSharperRunner45.dll">
       <Folder>ReSharper\v4.5</Folder>
     </Binary>

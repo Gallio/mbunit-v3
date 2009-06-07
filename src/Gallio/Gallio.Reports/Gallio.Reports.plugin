@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <plugin pluginId="Gallio.Reports"
+        recommendedInstallationPath=""
         xmlns="http://www.gallio.org/">
   <traits>
     <name>Gallio Reports Library</name>
@@ -12,6 +13,32 @@
     <dependency pluginId="Gallio" />
   </dependencies>
 
+  <files>
+    <file path="Gallio.Reports.plugin" />
+    <file path="Gallio.Reports.dll" />
+    <file path="Gallio.Reports.pdb" />
+    <file path="Resources\css\Gallio-Report.css" />
+    <file path="Resources\img\Failed.gif" />
+    <file path="Resources\img\FullStop.gif" />
+    <file path="Resources\img\GallioTestReportHeader.png" />
+    <file path="Resources\img\header-background.gif" />
+    <file path="Resources\img\Ignored.gif" />
+    <file path="Resources\img\Minus.gif" />
+    <file path="Resources\img\Passed.gif" />
+    <file path="Resources\img\Plus.gif" />
+    <file path="Resources\img\UnknownTestKind.png" />
+    <file path="Resources\js\Gallio-Report.js" />
+    <file path="Resources\xsl\Gallio-Report.ccnet-details-condensed.xsl" />
+    <file path="Resources\xsl\Gallio-Report.ccnet-details.xsl" />
+    <file path="Resources\xsl\Gallio-Report.common.xsl" />
+    <file path="Resources\xsl\Gallio-Report.html-condensed.xsl" />
+    <file path="Resources\xsl\Gallio-Report.html.xsl" />
+    <file path="Resources\xsl\Gallio-Report.html+xhtml.xsl" />
+    <file path="Resources\xsl\Gallio-Report.txt.xsl" />
+    <file path="Resources\xsl\Gallio-Report.xhtml-condensed.xsl" />
+    <file path="Resources\xsl\Gallio-Report.xhtml.xsl" />
+  </files>
+
   <assemblies>
     <assembly fullName="Gallio.Reports, Version=0.0.0.0, Culture=neutral, PublicKeyToken=eb9cfa67ee6ab36e"
               codeBase="Gallio.Reports.dll">
@@ -20,8 +47,8 @@
         <bindingRedirect oldVersion="0.0.0.0-65535.65535.65535.65535" />
       </bindingRedirects>
     </assembly>
-  </assemblies>  
-  
+  </assemblies>
+
   <components>
     <component componentId="ReportFormatter.Xml"
                serviceId="Gallio.ReportFormatter"

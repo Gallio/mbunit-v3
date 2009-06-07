@@ -57,17 +57,15 @@ namespace Gallio.Copy
             var runtimeSetup = new RuntimeSetup();
             runtimeSetup.PluginDirectories.AddRange(Arguments.PluginDirectories);
 
-            var pluginLocations = new Dictionary<string, string>();
-            RuntimeBootstrap.PluginLoader.PluginLoaded += (sender, e) => pluginLocations.Add(e.Plugin.PluginId, 
-                e.PluginFilePath);
-
             var logger = new FilteredLogger(new RichConsoleLogger(Console), Verbosity.Normal);
             using (RuntimeBootstrap.Initialize(runtimeSetup, logger))
             {
                 var taskManager = RuntimeAccessor.ServiceLocator.Resolve<ITaskManager>();
                 var fileSystem = RuntimeAccessor.ServiceLocator.Resolve<IFileSystem>();
                 var unhandledExceptionPolicy = RuntimeAccessor.ServiceLocator.Resolve<IUnhandledExceptionPolicy>();
-                var copyController = new CopyController(fileSystem, unhandledExceptionPolicy, taskManager, pluginLocations);
+                var registry = RuntimeAccessor.Registry;
+
+                var copyController = new CopyController(fileSystem, unhandledExceptionPolicy, taskManager, registry);
                 Application.Run(new CopyForm(copyController));
             }
 

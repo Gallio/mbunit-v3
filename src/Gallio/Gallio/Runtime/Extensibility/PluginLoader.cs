@@ -60,9 +60,6 @@ namespace Gallio.Runtime.Extensibility
         }
 
         /// <inheritdoc />
-        public event EventHandler<PluginLoadedEventArgs> PluginLoaded;
-
-        /// <inheritdoc />
         public void AddPluginPath(string pluginPath)
         {
             if (pluginPath == null)
@@ -100,8 +97,6 @@ namespace Gallio.Runtime.Extensibility
             LoadPlugins((plugin, baseDirectory, pluginFilePath) =>
             {
                 catalog.AddPlugin(plugin, baseDirectory);
-                EventHandlerPolicy.SafeInvoke(PluginLoaded, this,
-                    new PluginLoadedEventArgs(plugin, baseDirectory, pluginFilePath));
             });
 
             foreach (Pair<string, DirectoryInfo> pair in pluginXmls)

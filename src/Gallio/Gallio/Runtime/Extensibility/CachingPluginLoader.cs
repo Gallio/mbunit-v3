@@ -82,7 +82,7 @@ namespace Gallio.Runtime.Extensibility
 
                 if (Directory.Exists(cacheDirPath))
                 {
-                    if (File.Exists(cacheFilePath))
+                    if (System.IO.File.Exists(cacheFilePath))
                     {
                         Cache oldCache = ReadCacheFile(cacheFilePath);
                         if (oldCache != null)
@@ -116,7 +116,7 @@ namespace Gallio.Runtime.Extensibility
                     Plugin = plugin,
                     BaseDirectory = baseDirectory.FullName,
                     PluginFile = pluginFile,
-                    PluginFileModificationTime = File.GetLastWriteTimeUtc(pluginFile)
+                    PluginFileModificationTime = System.IO.File.GetLastWriteTimeUtc(pluginFile)
                 });
 
                 pluginCallback(plugin, baseDirectory, pluginFile);
@@ -145,10 +145,10 @@ namespace Gallio.Runtime.Extensibility
 
             foreach (CachePluginInfo pluginInfo in cache.PluginInfos)
             {
-                if (! File.Exists(pluginInfo.PluginFile))
+                if (! System.IO.File.Exists(pluginInfo.PluginFile))
                     return null;
 
-                if (File.GetLastWriteTimeUtc(pluginInfo.PluginFile) > pluginInfo.PluginFileModificationTime)
+                if (System.IO.File.GetLastWriteTimeUtc(pluginInfo.PluginFile) > pluginInfo.PluginFileModificationTime)
                     return null;
             }
 

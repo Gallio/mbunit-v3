@@ -65,6 +65,8 @@ namespace Gallio.Copy
         {
             using (var folderBrowserDialog = new FolderBrowserDialog())
             {
+                folderBrowserDialog.Description = "Please choose a destination folder for the copy.";
+
                 if (folderBrowserDialog.ShowDialog(this) != DialogResult.OK)
                     return;
 

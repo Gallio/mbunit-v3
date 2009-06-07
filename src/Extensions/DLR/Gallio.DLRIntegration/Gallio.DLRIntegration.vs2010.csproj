@@ -61,18 +61,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\libs\ipy.exe">
-      <Link>ipy.exe</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\libs\ipyw.exe">
-      <Link>ipyw.exe</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\libs\ir.exe">
-      <Link>ir.exe</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Include="..\libs\IronPython.dll">
       <Link>IronPython.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

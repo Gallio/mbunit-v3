@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <plugin pluginId="MbUnit35"
+        recommendedInstallationPath=""
         xmlns="http://www.gallio.org/">
   <traits>
     <name>MbUnit v3 Extensions for .Net 3.5</name>
@@ -12,6 +13,13 @@
     <dependency pluginId="Gallio35" />
     <dependency pluginId="MbUnit" />
   </dependencies>
+
+  <files>
+    <file path="MbUnit35.plugin" />
+    <file path="MbUnit35.dll" />
+    <file path="MbUnit35.pdb" />
+    <file path="MbUnit35.xml" />
+  </files>
 
   <?ifdef NET35?>
   <assemblies>

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <plugin pluginId="Gallio.CSUnitAdapter"
+        recommendedInstallationPath="CSUnit"
         xmlns="http://www.gallio.org/">
   <traits>
     <name>csUnit Adapter Plugin</name>
@@ -11,6 +12,17 @@
     <dependency pluginId="Gallio" />
   </dependencies>
 
+  <files>
+    <file path="Gallio.CSUnitAdapter.plugin" />
+    <file path="Gallio.CSUnitAdapter.dll" />
+    <file path="csUnit.dll" />
+    <file path="csUnit.Common.dll" />
+    <file path="csUnit.Interfaces.dll" />
+    <file path="csUnitCore.dll" />
+    <file path="license.txt" />
+    <file path="Readme.txt" />
+  </files>
+  
   <assemblies>
     <assembly fullName="Gallio.CSUnitAdapter, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null"
               codeBase="Gallio.CSUnitAdapter.dll">

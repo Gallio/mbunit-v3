@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <plugin pluginId="MbUnit.Compatibility"
+        recommendedInstallationPath=""
         xmlns="http://www.gallio.org/">
   <traits>
     <name>MbUnit v3 Extensions for Backwards Compatibility</name>
@@ -11,6 +12,13 @@
   <dependencies>
     <dependency pluginId="Gallio" />
   </dependencies>
+
+  <files>
+    <file path="MbUnit.Compatibility.plugin" />
+    <file path="MbUnit.Compatibility.dll" />
+    <file path="MbUnit.Compatibility.pdb" />
+    <file path="MbUnit.Compatibility.xml" />
+  </files>
 
   <assemblies>
     <assembly fullName="MbUnit.Compatibility, Version=0.0.0.0, Culture=neutral, PublicKeyToken=eb9cfa67ee6ab36e"

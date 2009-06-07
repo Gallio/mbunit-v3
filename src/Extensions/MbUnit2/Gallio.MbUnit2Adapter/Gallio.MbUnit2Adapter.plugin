@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <plugin pluginId="Gallio.MbUnit2Adapter"
+        recommendedInstallationPath="MbUnit2"
         xmlns="http://www.gallio.org/">
   <traits>
     <name>MbUnit v2 Adapter Plugin</name>
@@ -11,6 +12,25 @@
   <dependencies>
     <dependency pluginId="Gallio" />
   </dependencies>
+
+  <files>
+    <file path="Gallio.MbUnit2Adapter.plugin" />
+    <file path="Gallio.MbUnit2Adapter.dll" />
+    <file path="MbUnit.Framework.dll" />
+    <file path="MbUnit.Framework.xml" />
+    <file path="MbUnit.Framework.2.0.dll" />
+    <file path="MbUnit.Framework.2.0.xml" />
+    <file path="QuickGraph.dll" />
+    <file path="QuickGraph.xml" />
+    <file path="QuickGraph.Algorithms.dll" />
+    <file path="QuickGraph.Algorithms.xml" />
+    <file path="Refly.dll" />
+    <file path="Refly.xml" />
+    <file path="TestFu.dll" />
+    <file path="TestFu.xml" />
+    <file path="Resources\MbUnit.ico" />
+    <file path="Readme.txt" />
+  </files>
 
   <assemblies>
     <assembly fullName="Gallio.MbUnit2Adapter, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null"

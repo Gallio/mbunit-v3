@@ -88,6 +88,10 @@ namespace Gallio.Runtime.Extensibility
                         pluginRegistration.TraitsProperties = plugin.Traits.PropertySet;
 
                     pluginRegistration.ProbingPaths = plugin.ProbingPaths;
+                    pluginRegistration.RecommendedInstallationPath = plugin.RecommendedInstallationPath;
+
+                    foreach (var file in plugin.Files)
+                        pluginRegistration.FilePaths.Add(file.Path);
 
                     foreach (var dependency in plugin.Dependencies)
                     {
@@ -238,7 +242,7 @@ namespace Gallio.Runtime.Extensibility
             {
                 attemptedPaths.Add(searchPath);
 
-                if (File.Exists(searchPath))
+                if (System.IO.File.Exists(searchPath))
                     return searchPath;
             }
 

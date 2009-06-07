@@ -19,6 +19,7 @@ using System.Windows.Forms;
 using Gallio.Common.IO;
 using Gallio.Common.Policies;
 using Gallio.Runtime;
+using Gallio.Runtime.Extensibility;
 using Gallio.Runtime.ProgressMonitoring;
 using Gallio.UI.Common.Policies;
 using Gallio.UI.Progress;
@@ -30,7 +31,7 @@ namespace Gallio.Copy
         private readonly IFileSystem fileSystem;
         private readonly IUnhandledExceptionPolicy unhandledExceptionPolicy;
         private readonly ITaskManager taskManager;
-        private readonly Dictionary<string, string> pluginLocations;
+        private readonly IRegistry registry;
         private readonly Timer timer = new Timer();
         private List<string> plugins;
 
@@ -43,12 +44,12 @@ namespace Gallio.Copy
         public event EventHandler ProgressUpdate;
 
         public CopyController(IFileSystem fileSystem, IUnhandledExceptionPolicy unhandledExceptionPolicy, 
-            ITaskManager taskManager, Dictionary<string, string> pluginLocations)
+            ITaskManager taskManager, IRegistry registry)
         {
             this.fileSystem = fileSystem;
             this.unhandledExceptionPolicy = unhandledExceptionPolicy;
             this.taskManager = taskManager;
-            this.pluginLocations = pluginLocations;
+            this.registry = registry;
 
             taskManager.ProgressUpdate += (sender, e) => EventHandlerPolicy.SafeInvoke(ProgressUpdate, this, EventArgs.Empty);
             taskManager.TaskStarted += (sender, e) => timer.Start();
@@ -83,7 +84,7 @@ namespace Gallio.Copy
 
         public void CopyTo(string destinationFolder, IList<string> selectedPlugins)
         {
-            var copyCommand = new CopyCommand(destinationFolder, selectedPlugins, pluginLocations, 
+            var copyCommand = new CopyCommand(destinationFolder, selectedPlugins, registry, 
                 fileSystem, unhandledExceptionPolicy);
 
             taskManager.QueueTask(copyCommand);

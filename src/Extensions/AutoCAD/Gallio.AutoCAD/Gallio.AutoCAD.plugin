@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <plugin pluginId="Gallio.AutoCAD"
+        recommendedInstallationPath=""
         xmlns="http://www.gallio.org/">
   <traits>
     <name>AutoCAD Integration Plugin</name>
@@ -10,6 +11,13 @@
   <dependencies>
     <dependency pluginId="Gallio" />
   </dependencies>
+
+  <files>
+    <file path="Gallio.AutoCAD.plugin" />
+    <file path="Gallio.AutoCAD.dll" />
+    <file path="Gallio.AutoCAD.Plugin.dll" />
+    <file path="objectarx_license.doc" />
+  </files>
 
   <assemblies>
     <assembly fullName="Gallio.AutoCAD, Version=0.0.0.0, Culture=neutral, PublicKeyToken=eb9cfa67ee6ab36e"

@@ -75,6 +75,9 @@
     <Compile Include="..\Extensions\AutoCAD\AutoCAD.wxs">
       <Link>AutoCAD.wxs</Link>
     </Compile>
+    <Compile Include="..\Extensions\Copy\Copy.wxs">
+      <Link>Copy.wxs</Link>
+    </Compile>
     <Compile Include="..\Extensions\DLR\DLR.wxs">
       <Link>DLR.wxs</Link>
     </Compile>

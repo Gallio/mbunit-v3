@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <plugin pluginId="MbUnit"
+        recommendedInstallationPath=""
         xmlns="http://www.gallio.org/">
   <traits>
     <name>MbUnit v3</name>
@@ -11,6 +12,15 @@
   <dependencies>
     <dependency pluginId="Gallio" />
   </dependencies>
+
+  <files>
+    <file path="MbUnit.plugin" />
+    <file path="MbUnit.dll" />
+    <file path="MbUnit.pdb" />
+    <file path="MbUnit.xml" />
+
+    <file path="Resources\MbUnit.ico" />
+  </files>
 
   <assemblies>
     <assembly fullName="MbUnit, Version=0.0.0.0, Culture=neutral, PublicKeyToken=eb9cfa67ee6ab36e"

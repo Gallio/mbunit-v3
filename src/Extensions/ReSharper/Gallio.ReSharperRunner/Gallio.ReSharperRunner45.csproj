@@ -200,6 +200,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Readme - Debugging.txt" />
+    <None Include="Gallio.ReSharperRunner45.plugin" />
     <None Include="Resources\GallioIcon.png" />
     <EmbeddedResource Include="Resources\Report.png" />
     <EmbeddedResource Include="Resources\Actions.xml" />

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <plugin pluginId="Gallio.RSpecAdapter"
+        recommendedInstallationPath="RSpec"
         xmlns="http://www.gallio.org/">
   <traits>
     <name>RSpec Adapter Plugin</name>
@@ -11,6 +12,12 @@
     <dependency pluginId="Gallio" />
     <dependency pluginId="Gallio.DLRIntegration" />
   </dependencies>
+
+  <files>
+    <file path="Gallio.RSpecAdapter.plugin" />
+    <file path="Gallio.RSpecAdapter.dll" />
+    <file path="MIT License.txt" />
+  </files>
 
   <assemblies>
     <assembly fullName="Gallio.RSpecAdapter, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null"

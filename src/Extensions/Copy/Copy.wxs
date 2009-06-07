@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+    <Fragment>
+        <DirectoryRef Id="binFolder" FileSource="$(var.GallioTargetDir)\bin\">
+            <Component Id="Gallio.Copy" Guid="{EC40CC4E-B37C-469b-9F87-215145AD066A}" Win64="no">
+                <File Name="Gallio.Copy.exe" KeyPath="yes" />
+                <File Name="Gallio.Copy.exe.config" />
+		<File Name="Gallio.Copy.plugin" />
+            </Component>
+        </DirectoryRef>
+
+        <DirectoryRef Id="ResourcesFolder" FileSource="$(var.GallioTargetDir)\bin\Resources\">
+            <Component Id="Gallio.Copy.Resources" Guid="{79523F5C-3251-4be1-9135-46DCE77587FA}" Win64="no">
+                <File Id="Gallio.Copy.ico" Name="Gallio.Copy.ico" KeyPath="yes" />
+            </Component>
+        </DirectoryRef>
+
+        <Feature Id="feat_Gallio.Copy" Title="Copy Tool" Level="1" AllowAdvertise="no"
+                 Description="Creates and maintains partial copies of a Gallio installation.">
+            <ComponentRef Id="Gallio.Copy"/>
+            <ComponentRef Id="Gallio.Copy.Resources"/>
+        </Feature>
+    </Fragment>
+</Wix>

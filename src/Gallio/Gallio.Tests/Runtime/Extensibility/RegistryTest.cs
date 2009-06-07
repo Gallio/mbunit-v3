@@ -126,7 +126,9 @@ namespace Gallio.Tests.Runtime.Extensibility
                     PluginHandlerFactory = handlerFactory,
                     AssemblyBindings = assemblyBindings,
                     PluginDependencies = pluginDependencies,
-                    ProbingPaths = probingPaths
+                    ProbingPaths = probingPaths,
+                    RecommendedInstallationPath = "Path",
+                    FilePaths = { "file1.txt", "file2.dll" }
                 });
 
                 Assert.Multiple(() =>
@@ -140,6 +142,8 @@ namespace Gallio.Tests.Runtime.Extensibility
                     Assert.AreElementsEqual(assemblyBindings, plugin.AssemblyBindings);
                     Assert.AreElementsEqual(pluginDependencies, plugin.PluginDependencies);
                     Assert.AreElementsEqual(probingPaths, plugin.ProbingPaths);
+                    Assert.AreEqual("Path", plugin.RecommendedInstallationPath);
+                    Assert.AreElementsEqual(new[] { "file1.txt", "file2.dll" }, plugin.FilePaths);
                 });
             }
 

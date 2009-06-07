@@ -179,5 +179,33 @@ namespace Gallio.Tests.Runtime.Extensibility
 
             Assert.AreSame(differentPaths, registration.ProbingPaths);
         }
+
+        [Test]
+        public void RecommendedInstallationPath_Accessor_EnforcesConstraints()
+        {
+            var registration = new PluginRegistration("pluginId", new TypeName("Plugin, Assembly"), new DirectoryInfo(@"C:\"));
+
+            Assert.IsNull(registration.RecommendedInstallationPath);
+
+            registration.RecommendedInstallationPath = "MyPlugin";
+            Assert.AreEqual("MyPlugin", registration.RecommendedInstallationPath);
+
+            registration.RecommendedInstallationPath = null;
+            Assert.IsNull(registration.RecommendedInstallationPath);
+        }
+
+        [Test]
+        public void FilePaths_Accessor_EnforcesConstraints()
+        {
+            var registration = new PluginRegistration("pluginId", new TypeName("Plugin, Assembly"), new DirectoryInfo(@"C:\"));
+
+            Assert.IsEmpty(registration.FilePaths);
+            Assert.Throws<ArgumentNullException>(() => { registration.FilePaths = null; });
+
+            var differentPaths = new[] { "file1.txt", "file2.dll" };
+            registration.FilePaths = differentPaths;
+
+            Assert.AreSame(differentPaths, registration.FilePaths);
+        }
     }
 }

@@ -4,17 +4,11 @@
   <ItemGroup>
     <CSharpProject Include="Gallio.NAntTasks\Gallio.NAntTasks$(ProjectVariant).csproj" />
     <CSharpProject Include="Gallio.NAntTasks.Tests\Gallio.NAntTasks.Tests$(ProjectVariant).csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <DocumentedAssembly Include="Gallio.NAntTasks\bin\Gallio.NAntTasks.dll" />
-  </ItemGroup>
-
-  <ItemGroup>
+    
+    <PluginFile Include="Gallio.NAntTasks\Gallio.NAntTasks.plugin" />
     <Binary Include="Gallio.NAntTasks\bin\Gallio.NAntTasks.dll" />
-  </ItemGroup>
-
-  <ItemGroup>
+    <DocumentedAssembly Include="Gallio.NAntTasks\bin\Gallio.NAntTasks.dll" />
+    
     <TestAssembly Include="Gallio.NAntTasks.Tests\bin\Gallio.NAntTasks.Tests.dll" />
   </ItemGroup>
 </Project>

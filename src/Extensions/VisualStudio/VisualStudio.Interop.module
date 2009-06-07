@@ -9,6 +9,7 @@
   <ItemGroup Condition="$(VSIPInstalled)">
     <CSharpProject Include="Gallio.VisualStudio.Interop\Gallio.VisualStudio.Interop$(ProjectVariant).csproj" />
     
+    <PluginFile Include="Gallio.VisualStudio.Interop\Gallio.VisualStudio.Interop.plugin" />
     <Binary Include="Gallio.VisualStudio.Interop\bin\Gallio.VisualStudio.Interop.dll" />
     <Binary Include="Gallio.VisualStudio.Interop\bin\Gallio.VisualStudio.Interop.pdb" />
   </ItemGroup>

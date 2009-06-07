@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <plugin pluginId="Gallio.Ambience"
+        recommendedInstallationPath=""
         xmlns="http://www.gallio.org/">
   <traits>
     <name>Gallio Ambience Library</name>
@@ -10,6 +11,15 @@
   <dependencies>
     <dependency pluginId="Gallio" />
   </dependencies>
+
+  <files>
+    <file path="Gallio.Ambience.plugin" />
+    <file path="Gallio.Ambience.dll" />
+    <file path="Gallio.Ambience.pdb" />
+    <file path="Gallio.Ambience.xml" />
+    <file path="Gallio.Ambience.Server.exe" />
+    <file path="Gallio.Ambience.Server.exe.config" />
+  </files>
 
   <assemblies>
     <assembly fullName="Gallio.Ambience, Version=0.0.0.0, Culture=neutral, PublicKeyToken=eb9cfa67ee6ab36e"

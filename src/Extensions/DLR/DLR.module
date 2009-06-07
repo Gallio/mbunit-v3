@@ -27,6 +27,9 @@
     <Binary Include="libs\IronPython.Modules.dll">
       <Folder>DLR</Folder>
     </Binary>
+    <Binary Include="libs\ir.exe">
+      <Folder>DLR</Folder>
+    </Binary>
     <Binary Include="libs\IronRuby.dll">
       <Folder>DLR</Folder>
     </Binary>

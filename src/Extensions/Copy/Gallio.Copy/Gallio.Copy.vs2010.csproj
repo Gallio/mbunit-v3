@@ -12,10 +12,10 @@
     <AssemblyName>Gallio.Copy</AssemblyName>
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <FileUpgradeFlags>
-    </FileUpgradeFlags>
-    <OldToolsVersion>3.5</OldToolsVersion>
-    <UpgradeBackupLocation />
+    <StartupObject>Gallio.Copy.CopyProgram</StartupObject>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\..\..\Key.snk</AssemblyOriginatorKeyFile>
+    <ApplicationIcon>Resources\Gallio.Copy.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -74,6 +74,11 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <Content Include="Gallio.Copy.plugin" />
+    <Content Include="Resources\Gallio.Copy.ico" />
+    <None Include="Gallio.Copy.exe.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -85,7 +90,11 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Gallio\Gallio\Gallio.csproj">
+    <ProjectReference Include="..\..\..\Gallio\Gallio.UI\Gallio.UI.vs2010.csproj">
+      <Project>{36B1F505-995B-41E7-AAC9-1E845B08F2D7}</Project>
+      <Name>Gallio.UI</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Gallio\Gallio\Gallio.vs2010.csproj">
       <Project>{6CAB7735-05DA-480D-9A04-50615B00F886}</Project>
       <Name>Gallio</Name>
     </ProjectReference>

@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System.Reflection;
+using System.Resources;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -21,11 +22,11 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("Gallio.Copy")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Creates and maintains partial copies of a Gallio installation.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Gallio.Copy")]
-[assembly: AssemblyCopyright("Copyright ©  2009")]
+[assembly: AssemblyProduct("Gallio")]
+[assembly: AssemblyCopyright("Copyright © 2005-2009 Gallio Project - http://www.gallio.org/")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -37,15 +38,8 @@ using System.Runtime.InteropServices;
 // The following GUID is for the ID of the typelib if this project is exposed to COM
 [assembly: Guid("ba1bab98-7e60-41a5-9d9f-792dafe7db8d")]
 
-// Version information for an assembly consists of the following four values:
-//
-//      Major Version
-//      Minor Version 
-//      Build Number
-//      Revision
-//
-// You can specify all the values or you can default the Build and Revision Numbers 
-// by using the '*' as shown below:
-// [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.0.0.0")]
-[assembly: AssemblyFileVersion("1.0.0.0")]
+// The neutral resources language is US English.
+// Telling the system that this is the case yields a small performance improvement during startup.
+[assembly: NeutralResourcesLanguage("en-US")]
+
+[assembly: InternalsVisibleTo("Gallio.Copy.Tests, PublicKey=0024000004800000940000000602000000240000525341310004000001000100afeba2c70157155869db20cf76a6d965e53139ff2e11a11f4b2c0a3bc8107e6dcd346d715f328e980db992ad5bdfe9d97474ff6fd3b21f42988d37a1cd21c0012730e77b446ac5fe24a857380f7cb34e3b90ba44c1dd95a8df74f5a91390efc0d7a4e57cd5f9ce5b76cb591c19df1ab69c8bb2060c97db095d8cca1830d82aaf")]

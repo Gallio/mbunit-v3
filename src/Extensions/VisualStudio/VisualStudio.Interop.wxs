@@ -10,6 +10,7 @@
                 <File Name="Gallio.VisualStudio.Interop.dll" KeyPath="yes" 
                       Assembly=".net" AssemblyApplication="Gallio.VisualStudio.Interop.dll" />
                 <File Name="Gallio.VisualStudio.Interop.pdb" />
+                <File Name="Gallio.VisualStudio.Interop.plugin" />
             </Component>
         </DirectoryRef>
 

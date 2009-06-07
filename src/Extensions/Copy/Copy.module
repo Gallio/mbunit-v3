@@ -1,0 +1,17 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+  <Import Project="$(MetaBuildBinDir)\MetaBuild.Module.targets" />
+  
+  <ItemGroup>
+    <CSharpProject Include="Gallio.Copy\Gallio.Copy$(ProjectVariant).csproj" />
+    <CSharpProject Include="Gallio.Copy.Tests\Gallio.Copy.Tests$(ProjectVariant).csproj" />
+    
+    <PluginFile Include="Gallio.Copy\Gallio.Copy.plugin" />
+    <Binary Include="Gallio.Copy\bin\Gallio.Copy.exe" />
+    <Binary Include="Gallio.Copy\bin\Gallio.Copy.exe.config" />
+    <Binary Include="Gallio.Copy\Resources\Gallio.Copy.ico">
+      <Folder>Resources</Folder>
+    </Binary>
+    
+    <TestAssembly Include="Gallio.Copy.Tests\bin\Gallio.Copy.Tests.dll" />
+  </ItemGroup>
+</Project>

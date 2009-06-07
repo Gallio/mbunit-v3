@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <plugin pluginId="Gallio.UI"
+        recommendedInstallationPath=""
         xmlns="http://www.gallio.org/">
   <traits>
     <name>Gallio UI Library</name>
@@ -11,6 +12,13 @@
   <dependencies>
     <dependency pluginId="Gallio" />
   </dependencies>
+
+  <files>
+    <file path="Gallio.UI.plugin" />
+    <file path="Gallio.UI.dll" />
+    <file path="Gallio.UI.pdb" />
+    <file path="Gallio.UI.xml" />
+  </files>
 
   <assemblies>
     <assembly fullName="Gallio.UI, Version=0.0.0.0, Culture=neutral, PublicKeyToken=eb9cfa67ee6ab36e"

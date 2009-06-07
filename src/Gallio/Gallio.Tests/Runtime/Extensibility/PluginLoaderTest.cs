@@ -323,7 +323,7 @@ namespace Gallio.Tests.Runtime.Extensibility
             try
             {
                 Directory.CreateDirectory(pluginDir);
-                File.WriteAllText(pluginFile, pluginFileContents);
+                System.IO.File.WriteAllText(pluginFile, pluginFileContents);
 
                 action(pluginDir, pluginFile);
             }

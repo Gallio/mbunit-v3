@@ -25,6 +25,7 @@ using Gallio.Runtime.Extensibility;
 using Gallio.Schema.Plugins;
 using MbUnit.Framework;
 using Rhino.Mocks;
+using File = Gallio.Schema.Plugins.File;
 
 namespace Gallio.Tests.Runtime.Extensibility
 {
@@ -71,7 +72,9 @@ namespace Gallio.Tests.Runtime.Extensibility
                 {
                     Parameters = new KeyValueTable() { PropertySet = { { "Parameter", "Value" } } },
                     Traits = new KeyValueTable() { PropertySet = { { "Trait", "Value" } } },
-                    Assemblies = { new Assembly("Gallio") { CodeBase = codeBase } }
+                    Assemblies = { new Assembly("Gallio") { CodeBase = codeBase } },
+                    RecommendedInstallationPath = "Path",
+                    Files = { new File("file1.txt"), new File("file2.dll") }
                 };
                 var baseDirectory = new DirectoryInfo(@"C:\");
 
@@ -94,6 +97,8 @@ namespace Gallio.Tests.Runtime.Extensibility
                     Assert.AreEqual(new PropertySet() { { "Trait", "Value" } }, pluginRegistrations[0].TraitsProperties);
                     Assert.AreEqual("Gallio", pluginRegistrations[0].AssemblyBindings[0].AssemblyName.Name);
                     Assert.AreEqual(new Uri(codeBase), pluginRegistrations[0].AssemblyBindings[0].CodeBase);
+                    Assert.AreEqual("Path", pluginRegistrations[0].RecommendedInstallationPath);
+                    Assert.AreElementsEqual(new[] { "file1.txt", "file2.dll" }, pluginRegistrations[0].FilePaths);
                 });
             }
 
@@ -105,9 +110,6 @@ namespace Gallio.Tests.Runtime.Extensibility
                 var plugin = new Plugin("pluginId")
                 {
                     PluginType = "Plugin, Assembly",
-                    Parameters = new KeyValueTable() { PropertySet = { { "Parameter", "Value" } } },
-                    Traits = new KeyValueTable() { PropertySet = { { "Trait", "Value" } } },
-                    Assemblies = { new Assembly("Gallio") { CodeBase = codeBase } }
                 };
                 var baseDirectory = new DirectoryInfo(@"C:\");
 
@@ -123,13 +125,7 @@ namespace Gallio.Tests.Runtime.Extensibility
                 registry.VerifyAllExpectations();
                 Assert.Multiple(() =>
                 {
-                    Assert.AreEqual("pluginId", pluginRegistrations[0].PluginId);
-                    Assert.AreEqual(baseDirectory, pluginRegistrations[0].BaseDirectory);
                     Assert.AreEqual(new TypeName("Plugin, Assembly"), pluginRegistrations[0].PluginTypeName);
-                    Assert.AreEqual(new PropertySet() { { "Parameter", "Value" } }, pluginRegistrations[0].PluginProperties);
-                    Assert.AreEqual(new PropertySet() { { "Trait", "Value" } }, pluginRegistrations[0].TraitsProperties);
-                    Assert.AreEqual("Gallio", pluginRegistrations[0].AssemblyBindings[0].AssemblyName.Name);
-                    Assert.AreEqual(new Uri(codeBase), pluginRegistrations[0].AssemblyBindings[0].CodeBase);
                 });
             }
 

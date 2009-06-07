@@ -10,6 +10,7 @@
                   <File Name="ipyw.exe" />
                   <File Name="IronPython.dll" />
                   <File Name="IronPython.Modules.dll" />
+                  <File Name="ir.exe" />
                   <File Name="IronRuby.dll" />
                   <File Name="IronRuby.Libraries.dll" />
                   <File Name="Microsoft.Scripting.Core.dll" />

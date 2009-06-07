@@ -197,6 +197,7 @@
     <Content Include="Readme - Debugging.txt" />
     <EmbeddedResource Include="Resources\Report.png" />
     <EmbeddedResource Include="Resources\Actions.xml" />
+    <None Include="Gallio.ReSharperRunner41.plugin" />
     <None Include="Reflection\Known Limitations and Workarounds.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

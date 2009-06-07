@@ -14,6 +14,7 @@
   <ItemGroup>
     <Binary Include="Gallio.Navigator\bin\Gallio.Navigator.exe" />
     <PluginFile Include="Gallio.Navigator\Gallio.Navigator.exe.config" />
+    <PluginFile Include="Gallio.Navigator\Gallio.Navigator.plugin" />
     <Binary Include="Gallio.Navigator\Gallio.Navigator.Readme.txt" />
   </ItemGroup>
 

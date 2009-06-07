@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <plugin pluginId="Gallio.TypeMockIntegration"
+        recommendedInstallationPath="TypeMock"
         xmlns="http://www.gallio.org/">
   <traits>
     <name>TypeMock Integration Plugin</name>
@@ -10,6 +11,12 @@
   <dependencies>
     <dependency pluginId="Gallio" />
   </dependencies>
+
+  <files>
+    <file path="Gallio.TypeMockIntegration.plugin" />
+    <file path="Gallio.TypeMockIntegration.dll" />
+    <file path="TypeMock.Integration.dll" />
+  </files>
 
   <assemblies>
     <assembly fullName="Gallio.TypeMockIntegration, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null"

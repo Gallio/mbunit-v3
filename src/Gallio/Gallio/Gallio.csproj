@@ -783,6 +783,7 @@
     </Compile>
     <Compile Include="Schema\Plugins\CachePluginInfo.cs" />
     <Compile Include="Schema\Plugins\BindingRedirect.cs" />
+    <Compile Include="Schema\Plugins\File.cs" />
     <Compile Include="Schema\Plugins\Dependency.cs" />
     <Compile Include="Schema\Plugins\NamespaceDoc.cs" />
     <Compile Include="Schema\Plugins\Plugin.cs">

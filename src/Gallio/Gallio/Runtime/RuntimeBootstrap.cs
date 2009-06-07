@@ -27,16 +27,6 @@ namespace Gallio.Runtime
     /// </summary>
     public static class RuntimeBootstrap
     {
-        private static readonly IPluginLoader pluginLoader = new CachingPluginLoader();
-
-        ///<summary>
-        /// The plugin loader used.
-        ///</summary>
-        public static IPluginLoader PluginLoader
-        {
-            get { return pluginLoader; }
-        }
-
         /// <summary>
         /// <para>
         /// Initializes the runtime.
@@ -66,6 +56,7 @@ namespace Gallio.Runtime
 
             var registry = new Registry();
             var assemblyResolverManager = new DefaultAssemblyResolverManager();
+            var pluginLoader = new CachingPluginLoader();
             IRuntime runtime = new DefaultRuntime(registry, pluginLoader, assemblyResolverManager, setup); // TODO: make me configurable via setup
             Debug.Assert(runtime != null, "The runtime returned by the runtime factory must not be null.");
 

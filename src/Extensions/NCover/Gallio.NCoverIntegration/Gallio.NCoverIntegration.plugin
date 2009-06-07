@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <plugin pluginId="Gallio.NCoverIntegration"
+        recommendedInstallationPath="NCover"
         xmlns="http://www.gallio.org/">
   <traits>
     <name>NCover Integration Plugin</name>
@@ -10,6 +11,20 @@
   <dependencies>
     <dependency pluginId="Gallio" />
   </dependencies>
+
+  <files>
+    <file path="Gallio.NCoverIntegration.plugin" />
+    <file path="Gallio.NCoverIntegration.dll" />
+    <file path="v1.5.8\Coverage.xsl" />
+    <file path="v1.5.8\CoverLib.dll" />
+    <file path="v1.5.8\Microsoft.VC80.CRT.manifest" />
+    <file path="v1.5.8\MSVCP80.dll" />
+    <file path="v1.5.8\MSVCR80.dll" />
+    <file path="v1.5.8\NCover.Console.exe" />
+    <file path="v1.5.8\NCover.Console.exe.config" />
+    <file path="v1.5.8\NCover.Framework.dll" />
+    <file path="v1.5.8\NCoverFAQ.html" />
+  </files>
 
   <probingPaths>
     <probingPath>v1.5.8</probingPath>

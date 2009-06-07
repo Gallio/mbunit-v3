@@ -36,6 +36,7 @@ namespace Gallio.Runtime.Extensibility
         private IList<AssemblyBinding> assemblyBindings;
         private IList<IPluginDescriptor> pluginDependencies;
         private IList<string> probingPaths;
+        private IList<string> filePaths;
 
         /// <summary>
         /// Creates a plugin registration.
@@ -94,6 +95,33 @@ namespace Gallio.Runtime.Extensibility
                 if (value == null)
                     throw new ArgumentNullException("value");
                 baseDirectory = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the recommended installation path for the plugin files relative to
+        /// the runtime installation directory, or null if there is no preference.
+        /// </summary>
+        public string RecommendedInstallationPath { get; set; }
+
+        /// <summary>
+        /// Gets or sets the paths of files that belong to the plugin relative to the
+        /// plugin base directory.
+        /// </summary>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
+        public IList<string> FilePaths
+        {
+            get
+            {
+                if (filePaths == null)
+                    filePaths = new List<string>();
+                return filePaths;
+            }
+            set
+            {
+                if (value == null)
+                    throw new ArgumentNullException("value");
+                filePaths = value;
             }
         }
 

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <plugin pluginId="Gallio.TeamCityIntegration"
+        recommendedInstallationPath="TeamCity"
         xmlns="http://www.gallio.org/">
   <traits>
     <name>TeamCity Integration Plugin</name>
@@ -10,6 +11,12 @@
   <dependencies>
     <dependency pluginId="Gallio" />
   </dependencies>
+
+  <files>
+    <file path="Gallio.TeamCityIntegration.plugin" />
+    <file path="Gallio.TeamCityIntegration.dll" />
+    <file path="Readme.txt" />
+  </files>
 
   <assemblies>
     <assembly fullName="Gallio.TeamCityIntegration, Version=0.0.0.0, Culture=neutral, PublicKeyToken=eb9cfa67ee6ab36e"

@@ -18,6 +18,13 @@
     <PluginFile Include="Gallio.VisualStudio.Shell\Gallio.VisualStudio.Shell.plugin">
       <Folder>VisualStudio</Folder>
     </PluginFile>
+    <Binary Include="Gallio.VisualStudio.Shell\Gallio.VisualStudio.Shell.vs2008.addin">
+      <Folder>VisualStudio</Folder>
+    </Binary>    
+    <Binary Include="Gallio.VisualStudio.Shell\Gallio.VisualStudio.Shell.vs2010.addin">
+      <Folder>VisualStudio</Folder>
+    </Binary>
+        
     <Binary Include="Gallio.VisualStudio.Sail\bin\Gallio.VisualStudio.Sail.dll">
       <Folder>VisualStudio</Folder>
     </Binary>
@@ -40,10 +47,6 @@
     <CSharpProject Include="Gallio.VisualStudio.Tip.Proxy\Gallio.VisualStudio.Tip90.Proxy$(ProjectVariant).csproj" />
     <CSharpProject Include="Gallio.VisualStudio.Tip.Tests\Gallio.VisualStudio.Tip90.Tests$(ProjectVariant).csproj" />
   
-    <Binary Include="Gallio.VisualStudio.Shell\Gallio.VisualStudio.Shell.vs2008.addin">
-      <Folder>VisualStudio</Folder>
-    </Binary>
-    
     <PluginFile Include="Gallio.VisualStudio.Tip\Gallio.VisualStudio.Tip90.plugin">
       <Folder>VisualStudio\v9.0</Folder>
     </PluginFile>
@@ -65,10 +68,6 @@
     <CSharpProject Include="Gallio.VisualStudio.Tip.Proxy\Gallio.VisualStudio.Tip100.Proxy$(ProjectVariant).csproj" />
     <CSharpProject Include="Gallio.VisualStudio.Tip.Tests\Gallio.VisualStudio.Tip100.Tests$(ProjectVariant).csproj" />
   
-    <Binary Include="Gallio.VisualStudio.Shell\Gallio.VisualStudio.Shell.vs2010.addin">
-      <Folder>VisualStudio</Folder>
-    </Binary>
-    
     <PluginFile Include="Gallio.VisualStudio.Tip\Gallio.VisualStudio.Tip100.plugin">
       <Folder>VisualStudio\v10.0</Folder>
     </PluginFile>

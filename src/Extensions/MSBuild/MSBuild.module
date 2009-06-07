@@ -8,17 +8,11 @@
   <ItemGroup>
     <CSharpProject Include="Gallio.MSBuildTasks\Gallio.MSBuildTasks$(ProjectVariant).csproj" />
     <CSharpProject Include="Gallio.MSBuildTasks.Tests\Gallio.MSBuildTasks.Tests$(ProjectVariant).csproj" />
-  </ItemGroup>
 
-  <ItemGroup>
-    <DocumentedAssembly Include="Gallio.MSBuildTasks\bin\Gallio.MSBuildTasks.dll" />
-  </ItemGroup>
-
-  <ItemGroup>
+    <PluginFile Include="Gallio.MSBuildTasks\Gallio.MSBuildTasks.plugin" />
     <Binary Include="Gallio.MSBuildTasks\bin\Gallio.MSBuildTasks.dll" />
-  </ItemGroup>
+    <DocumentedAssembly Include="Gallio.MSBuildTasks\bin\Gallio.MSBuildTasks.dll" />
 
-  <ItemGroup>
     <TestAssembly Include="Gallio.MSBuildTasks.Tests\bin\Gallio.MSBuildTasks.Tests.dll" />
   </ItemGroup>
 </Project>

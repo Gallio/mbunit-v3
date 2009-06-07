@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <plugin pluginId="Gallio.TDNetRunner"
+        recommendedInstallationPath="TDNet"
         xmlns="http://www.gallio.org/">
   <traits>
     <name>TestDriven.Net Runner</name>
@@ -11,6 +12,12 @@
   <dependencies>
     <dependency pluginId="Gallio" />
   </dependencies>
+
+  <files>
+    <file path="Gallio.TDNetRunner.plugin" />
+    <file path="Gallio.TDNetRunner.dll" />
+    <file path="Resources\TestDriven.ico" />
+  </files>
 
   <assemblies>
     <assembly fullName="Gallio.TDNetRunner, Version=0.0.0.0, Culture=neutral, PublicKeyToken=eb9cfa67ee6ab36e"

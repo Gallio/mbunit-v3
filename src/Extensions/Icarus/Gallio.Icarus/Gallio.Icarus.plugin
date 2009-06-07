@@ -1,5 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<plugin pluginId="Gallio.Icarus" xmlns="http://www.gallio.org/">
+<plugin pluginId="Gallio.Icarus"
+        recommendedInstallationPath=""
+        xmlns="http://www.gallio.org/">
   
   <traits>
     <name>Gallio Icarus Test Runner</name>
@@ -12,6 +14,17 @@
     <dependency pluginId="Gallio.UI" />
   </dependencies>
 
+  <files>
+    <file path="Gallio.Icarus.plugin" />
+    <file path="Gallio.Icarus.exe" />
+    <file path="Gallio.Icarus.exe.config" />
+    <file path="Gallio.Icarus.XmlSerializers.dll" />
+    <file path="Aga.Controls.dll" />
+    <file path="ICSharpCode.TextEditor.dll" />
+    <file path="WeifenLuo.WinFormsUI.Docking.dll" />
+    <file path="Resources\Gallio.Icarus.ico" />
+  </files>
+  
   <services>
 
     <service serviceId="Gallio.Icarus.WindowManager"

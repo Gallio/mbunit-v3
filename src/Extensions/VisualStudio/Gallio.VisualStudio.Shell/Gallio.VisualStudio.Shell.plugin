@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <plugin pluginId="Gallio.VisualStudio.Shell"
+        recommendedInstallationPath="VisualStudio"
         xmlns="http://www.gallio.org/">
   <traits>
     <name>Visual Studio Integration Shell</name>
@@ -10,6 +11,13 @@
   <dependencies>
     <dependency pluginId="Gallio" />
   </dependencies>
+
+  <files>
+    <file path="Gallio.VisualStudio.Shell.plugin" />
+    <file path="Gallio.VisualStudio.Shell.dll" />
+    <file path="Gallio.VisualStudio.Shell.vs2008.addin" />
+    <file path="Gallio.VisualStudio.Shell.vs2010.addin" />
+  </files>
 
   <assemblies>
     <assembly fullName="Gallio.VisualStudio.Shell, Version=0.0.0.0, Culture=neutral, PublicKeyToken=eb9cfa67ee6ab36e"

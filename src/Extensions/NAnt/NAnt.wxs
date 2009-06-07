@@ -3,8 +3,9 @@
     <Fragment>
         <DirectoryRef Id="binFolder" FileSource="$(var.GallioTargetDir)\bin\">
             <Component Id="Gallio.NAntTasks" Guid="521559b4-9925-4420-be87-5142705be635" Win64="no">
-                <File Id="Gallio.NAntTasks.dll" KeyPath="yes" />
-                <File Id="Gallio.NAntTasks.xml" />
+                <File Name="Gallio.NAntTasks.dll" KeyPath="yes" />
+                <File Name="Gallio.NAntTasks.xml" />
+		<File Name="Gallio.NAntTasks.plugin" />
             </Component>
         </DirectoryRef>
         <Feature Id="feat_Gallio.NAntTasks" Title="NAnt Tasks" Level="1" AllowAdvertise="no"

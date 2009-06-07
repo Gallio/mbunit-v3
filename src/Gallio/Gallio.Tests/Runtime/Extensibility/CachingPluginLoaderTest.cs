@@ -25,6 +25,7 @@ using Gallio.Runtime.Extensibility;
 using Gallio.Schema.Plugins;
 using MbUnit.Framework;
 using Rhino.Mocks;
+using File = System.IO.File;
 
 namespace Gallio.Tests.Runtime.Extensibility
 {
@@ -62,8 +63,8 @@ namespace Gallio.Tests.Runtime.Extensibility
                 var cacheDir = CachingPluginLoader.GetCurrentUserPluginCacheDir();
                 string cacheFilePath = Path.Combine(cacheDir, hash + ".xml");
 
-                if (File.Exists(cacheFilePath))
-                    File.Delete(cacheFilePath);
+                if (System.IO.File.Exists(cacheFilePath))
+                    System.IO.File.Delete(cacheFilePath);
 
                 // First pass.
                 {

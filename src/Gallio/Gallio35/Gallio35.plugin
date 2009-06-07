@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <plugin pluginId="Gallio35"
+        recommendedInstallationPath=""
         xmlns="http://www.gallio.org/">
   <traits>
     <name>Gallio Extensions for .Net 3.5</name>
@@ -11,6 +12,13 @@
   <dependencies>
     <dependency pluginId="Gallio" />
   </dependencies>
+
+  <files>
+    <file path="Gallio35.plugin" />
+    <file path="Gallio35.dll" />
+    <file path="Gallio35.pdb" />
+    <file path="Gallio35.xml" />
+  </files>
 
   <?ifdef NET35?>
   <assemblies>

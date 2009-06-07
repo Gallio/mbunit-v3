@@ -39,6 +39,8 @@ namespace Gallio.Runtime.Extensibility
         private readonly ReadOnlyCollection<AssemblyBinding> assemblyBindings;
         private readonly ReadOnlyCollection<IPluginDescriptor> pluginDependencies;
         private readonly ReadOnlyCollection<string> probingPaths;
+        private readonly string recommendedInstallationPath;
+        private readonly ReadOnlyCollection<string> filePaths;
 
         private Type pluginType;
         private IHandler pluginHandler;
@@ -57,6 +59,8 @@ namespace Gallio.Runtime.Extensibility
             assemblyBindings = new ReadOnlyCollection<AssemblyBinding>(GenericCollectionUtils.ToArray(pluginRegistration.AssemblyBindings));
             pluginDependencies = new ReadOnlyCollection<IPluginDescriptor>(completePluginDependenciesCopy);
             probingPaths = new ReadOnlyCollection<string>(GenericCollectionUtils.ToArray(pluginRegistration.ProbingPaths));
+            recommendedInstallationPath = pluginRegistration.RecommendedInstallationPath;
+            filePaths = new ReadOnlyCollection<string>(GenericCollectionUtils.ToArray(pluginRegistration.FilePaths));
         }
 
         // Used by unit tests.
@@ -145,6 +149,16 @@ namespace Gallio.Runtime.Extensibility
         public IList<string> ProbingPaths
         {
             get { return probingPaths; }
+        }
+
+        public string RecommendedInstallationPath
+        {
+            get { return recommendedInstallationPath; }
+        }
+
+        public IList<string> FilePaths
+        {
+            get { return filePaths; }
         }
 
         public IEnumerable<string> GetSearchPaths(string resourcePath)

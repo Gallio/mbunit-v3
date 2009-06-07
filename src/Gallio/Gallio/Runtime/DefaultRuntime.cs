@@ -43,6 +43,7 @@ namespace Gallio.Runtime
         private readonly List<string> pluginDirectories;
 
         private ILogger logger;
+        private bool debugMode;
 
         /// <summary>
         /// Initializes the runtime.
@@ -283,11 +284,63 @@ namespace Gallio.Runtime
 
             bool success = true;
 
+            if (! debugMode)
+                VerifyFiles(ref success);
+
             VerifyPlugins(ref success);
             VerifyServices(ref success);
             VerifyComponents(ref success);
 
             return success;
+        }
+
+        private void VerifyFiles(ref bool success)
+        {
+            var filePaths = new Dictionary<string, IPluginDescriptor>(StringComparer.OrdinalIgnoreCase);
+
+            // Make a list of all files in the runtime path.
+            foreach (var filePath in Directory.GetFiles(runtimeSetup.RuntimePath, "*.*", SearchOption.AllDirectories))
+            {
+                filePaths.Add(Path.GetFullPath(filePath), null);
+            }
+
+            // Mark all files referenced by plugins.  Make note of files that we did not find.
+            foreach (var plugin in registry.Plugins)
+            {
+                foreach (var relativeFilePath in plugin.FilePaths)
+                {
+                    var absoluteFilePath = Path.Combine(plugin.BaseDirectory.FullName, relativeFilePath);
+                    IPluginDescriptor otherPlugin;
+                    if (filePaths.TryGetValue(absoluteFilePath, out otherPlugin))
+                    {
+                        if (otherPlugin != null)
+                        {
+                            logger.Log(LogSeverity.Error, string.Format("Plugin '{0}' contains file '{1}' but it has also been claimed by plugin '{2}'.  Every file should be owned by exactly one plugin.",
+                                plugin.PluginId, relativeFilePath, otherPlugin.PluginId));
+                            success = false;
+                        }
+                        else
+                        {
+                            filePaths[absoluteFilePath] = plugin;
+                        }
+                    }
+                    else
+                    {
+                        logger.Log(LogSeverity.Error, string.Format("Plugin '{0}' contains file '{1}' but it does not exist.",
+                            plugin.PluginId, relativeFilePath));
+                            success = false;
+                    }
+                }
+            }
+
+            // Find any files that have not been claimed by any plugin.
+            foreach (var pair in filePaths)
+            {
+                if (pair.Value == null)
+                {
+                    logger.Log(LogSeverity.Info, string.Format("File '{0}' does not appear to be owned by any plugin.", pair.Key));
+                }
+            }
         }
 
         private void VerifyPlugins(ref bool success)
@@ -301,49 +354,62 @@ namespace Gallio.Runtime
                     continue;
                 }
 
-                foreach (AssemblyBinding assemblyBinding in plugin.AssemblyBindings)
+                VerifyPluginAssemblyBindings(plugin, ref success);
+                VerifyPluginObject(plugin, ref success);
+                VerifyPluginTraits(plugin, ref success);
+            }
+        }
+
+        private void VerifyPluginAssemblyBindings(IPluginDescriptor plugin, ref bool success)
+        {
+            foreach (AssemblyBinding assemblyBinding in plugin.AssemblyBindings)
+            {
+                try
                 {
-                    try
+                    if (assemblyBinding.CodeBase != null && assemblyBinding.CodeBase.IsFile)
                     {
-                        if (assemblyBinding.CodeBase != null && assemblyBinding.CodeBase.IsFile)
+                        var assemblyName = AssemblyName.GetAssemblyName(assemblyBinding.CodeBase.LocalPath);
+                        if (assemblyName.FullName != assemblyBinding.AssemblyName.FullName)
                         {
-                            var assemblyName = AssemblyName.GetAssemblyName(assemblyBinding.CodeBase.LocalPath);
-                            if (assemblyName.FullName != assemblyBinding.AssemblyName.FullName)
-                            {
-                                success = false;
-                                logger.Log(LogSeverity.Error, string.Format(
-                                    "Plugin '{0}' has an incorrect assembly binding.  Accoding to the plugin metadata we expected assembly name '{1}' but it was actually '{2}' when loaded.",
-                                    plugin.PluginId, assemblyBinding.AssemblyName.FullName, assemblyName.FullName));
-                            }
+                            success = false;
+                            logger.Log(LogSeverity.Error, string.Format(
+                                "Plugin '{0}' has an incorrect assembly binding.  Accoding to the plugin metadata we expected assembly name '{1}' but it was actually '{2}' when loaded.",
+                                plugin.PluginId, assemblyBinding.AssemblyName.FullName, assemblyName.FullName));
                         }
                     }
-                    catch (Exception ex)
-                    {
-                        success = false;
-                        logger.Log(LogSeverity.Error, string.Format("Plugin '{0}' has an assembly reference for that could not be loaded with code base '{1}'.",
-                            plugin.PluginId, assemblyBinding.CodeBase), ex);
-                    }
-                }
-
-                try
-                {
-                    plugin.ResolvePlugin();
                 }
                 catch (Exception ex)
                 {
                     success = false;
-                    logger.Log(LogSeverity.Error, "Unresolvable plugin.", ex);
+                    logger.Log(LogSeverity.Error, string.Format("Plugin '{0}' has an assembly reference for that could not be loaded with code base '{1}'.",
+                        plugin.PluginId, assemblyBinding.CodeBase), ex);
                 }
+            }
+        }
 
-                try
-                {
-                    plugin.ResolveTraits();
-                }
-                catch (Exception ex)
-                {
-                    success = false;
-                    logger.Log(LogSeverity.Error, "Unresolvable plugin traits.", ex);
-                }
+        private void VerifyPluginObject(IPluginDescriptor plugin, ref bool success)
+        {
+            try
+            {
+                plugin.ResolvePlugin();
+            }
+            catch (Exception ex)
+            {
+                success = false;
+                logger.Log(LogSeverity.Error, "Unresolvable plugin.", ex);
+            }
+        }
+
+        private void VerifyPluginTraits(IPluginDescriptor plugin, ref bool success)
+        {
+            try
+            {
+                plugin.ResolveTraits();
+            }
+            catch (Exception ex)
+            {
+                success = false;
+                logger.Log(LogSeverity.Error, "Unresolvable plugin traits.", ex);
             }
         }
 
@@ -354,25 +420,34 @@ namespace Gallio.Runtime
                 if (service.IsDisabled)
                     continue;
 
-                try
-                {
-                    service.ResolveServiceType();
-                }
-                catch (Exception ex)
-                {
-                    success = false;
-                    logger.Log(LogSeverity.Error, "Unresolvable service type.", ex);
-                }
+                VerifyServiceType(service, ref success);
+                VerifyServiceTraitsType(service, ref success);
+            }
+        }
 
-                try
-                {
-                    service.ResolveTraitsType();
-                }
-                catch (Exception ex)
-                {
-                    success = false;
-                    logger.Log(LogSeverity.Error, "Unresolvable service traits type.", ex);
-                }
+        private void VerifyServiceType(IServiceDescriptor service, ref bool success)
+        {
+            try
+            {
+                service.ResolveServiceType();
+            }
+            catch (Exception ex)
+            {
+                success = false;
+                logger.Log(LogSeverity.Error, "Unresolvable service type.", ex);
+            }
+        }
+
+        private void VerifyServiceTraitsType(IServiceDescriptor service, ref bool success)
+        {
+            try
+            {
+                service.ResolveTraitsType();
+            }
+            catch (Exception ex)
+            {
+                success = false;
+                logger.Log(LogSeverity.Error, "Unresolvable service traits type.", ex);
             }
         }
 
@@ -383,25 +458,34 @@ namespace Gallio.Runtime
                 if (component.IsDisabled)
                     continue;
 
-                try
-                {
-                    component.ResolveComponent();
-                }
-                catch (Exception ex)
-                {
-                    success = false;
-                    logger.Log(LogSeverity.Error, "Unresolvable component.", ex);
-                }
+                VerifyComponentObject(component, ref success);
+                VerifyComponentTraits(component, ref success);
+            }
+        }
 
-                try
-                {
-                    component.ResolveTraits();
-                }
-                catch (Exception ex)
-                {
-                    success = false;
-                    logger.Log(LogSeverity.Error, "Unresolvable component traits.", ex);
-                }
+        private void VerifyComponentObject(IComponentDescriptor component, ref bool success)
+        {
+            try
+            {
+                component.ResolveComponent();
+            }
+            catch (Exception ex)
+            {
+                success = false;
+                logger.Log(LogSeverity.Error, "Unresolvable component.", ex);
+            }
+        }
+
+        private void VerifyComponentTraits(IComponentDescriptor component, ref bool success)
+        {
+            try
+            {
+                component.ResolveTraits();
+            }
+            catch (Exception ex)
+            {
+                success = false;
+                logger.Log(LogSeverity.Error, "Unresolvable component traits.", ex);
             }
         }
 
@@ -503,6 +587,9 @@ namespace Gallio.Runtime
             // Add the solution folder to the list of plugin directories so that we can resolve
             // all plugins that have been compiled within the solution. 
             AddPluginDirectory(srcDir);
+
+            // Remember we are in debug mode.
+            debugMode = true;
         }
     }
 }

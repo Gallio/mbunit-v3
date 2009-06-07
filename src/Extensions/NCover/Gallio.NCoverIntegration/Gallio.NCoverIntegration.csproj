@@ -88,8 +88,16 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="..\libs\v1.5.8\Coverage.xsl">
+      <Link>v1.5.8\Coverage.xsl</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="..\libs\v1.5.8\NCover.Console.exe.config">
       <Link>v1.5.8\NCover.Console.exe.config</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\libs\v1.5.8\NCoverFAQ.html">
+      <Link>v1.5.8\NCoverFAQ.html</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

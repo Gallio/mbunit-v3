@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <plugin pluginId="Gallio"
+        recommendedInstallationPath=""
         xmlns="http://www.gallio.org/">
   <traits>
     <name>Gallio</name>
@@ -11,6 +12,32 @@
   <dependencies>
     <dependency pluginId="BuiltIn" />
   </dependencies>
+
+  <files>
+    <file path="Gallio.plugin" />
+    <file path="Gallio.dll" />
+    <file path="Gallio.pdb" />
+    <file path="Gallio.xml" />
+    <file path="Gallio.XmlSerializers.dll" />
+    <file path="Gallio.Loader.dll" />
+    <file path="Gallio.Loader.pdb" />
+    <file path="Gallio.Loader.xml" />
+    <file path="Gallio.Host.exe" />
+    <file path="Gallio.Host.exe.config" />
+    <file path="Gallio.Host.x86.exe" />
+    <file path="Gallio.Host.x86.exe.config" />
+    <file path="Gallio.Host.Elevated.exe" />
+    <file path="Gallio.Host.Elevated.exe.config" />
+    <file path="Gallio.Host.Elevated.x86.exe" />
+    <file path="Gallio.Host.Elevated.x86.exe.config" />
+    <file path="Gallio-Report.xsd" />
+
+    <file path="Resources\Assembly.ico" />
+    <file path="Resources\Container.ico" />
+    <file path="Resources\Fixture.ico" />
+    <file path="Resources\Gallio.ico" />
+    <file path="Resources\Test.ico" />
+  </files>
 
   <assemblies>
     <assembly fullName="Gallio, Version=0.0.0.0, Culture=neutral, PublicKeyToken=eb9cfa67ee6ab36e"

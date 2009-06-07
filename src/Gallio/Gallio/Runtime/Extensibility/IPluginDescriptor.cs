@@ -95,6 +95,18 @@ namespace Gallio.Runtime.Extensibility
         IList<string> ProbingPaths { get; }
 
         /// <summary>
+        /// Gets the recommended installation path for the plugin files relative to
+        /// the runtime installation directory, or null if there is no preference.
+        /// </summary>
+        string RecommendedInstallationPath { get; }
+
+        /// <summary>
+        /// Gets the paths of files that belong to the plugin relative to the
+        /// plugin base directory.
+        /// </summary>
+        IList<string> FilePaths { get; }
+
+        /// <summary>
         /// Gets an enumeration of all absolute paths to be searched in order to find a given resource.
         /// </summary>
         /// <remarks>

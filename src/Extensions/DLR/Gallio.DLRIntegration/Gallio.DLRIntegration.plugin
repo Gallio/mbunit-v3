@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <plugin pluginId="Gallio.DLRIntegration"
+        recommendedInstallationPath="DLR"
         xmlns="http://www.gallio.org/">
   <traits>
     <name>Dynamic Language Runtime Integration Plugin</name>
@@ -10,6 +11,22 @@
   <dependencies>
     <dependency pluginId="Gallio" />
   </dependencies>
+
+  <files>
+    <file path="Gallio.DLRIntegration.plugin" />
+    <file path="Gallio.DLRIntegration.dll" />
+    <file path="ipy.exe" />
+    <file path="ipyw.exe" />
+    <file path="IronPython.dll" />
+    <file path="IronPython.Modules.dll" />
+    <file path="ir.exe" />
+    <file path="IronRuby.dll" />
+    <file path="IronRuby.Libraries.dll" />
+    <file path="Ms-PL.txt" />
+    <file path="Microsoft.Scripting.dll" />
+    <file path="Microsoft.Scripting.Core.dll" />
+    <file path="Microsoft.Scripting.ExtensionAttribute.dll" />
+  </files>
 
   <assemblies>
     <assembly fullName="Gallio.DLRIntegration, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null"

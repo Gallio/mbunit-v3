@@ -11,14 +11,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <DocumentedAssembly Include="Gallio.PowerShellCommands\bin\Gallio.PowerShellCommands.dll" />
-  </ItemGroup>
-
-  <ItemGroup>
+    <PluginFile Include="Gallio.PowerShellCommands\Gallio.PowerShellCommands.plugin" />
     <Binary Include="Gallio.PowerShellCommands\bin\Gallio.PowerShellCommands.dll" />
-  </ItemGroup>
-  <ItemGroup>
     <Binary Include="Gallio.PowerShellCommands\Gallio.PowerShellCommands.dll-Help.xml" />
+    <DocumentedAssembly Include="Gallio.PowerShellCommands\bin\Gallio.PowerShellCommands.dll" />
   </ItemGroup>
 
   <ItemGroup>
