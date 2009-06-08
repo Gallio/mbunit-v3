@@ -25,7 +25,9 @@ namespace Gallio.Model.Serialization
     /// The test model captures the root of the test data tree along with an index by id.
     /// </summary>
     /// <remarks>
+    /// <para>
     /// This class is safe for used by multiple threads.
+    /// </para>
     /// </remarks>
     [Serializable]
     [XmlRoot("testModel", Namespace=XmlSerializationUtils.GallioNamespace)]
@@ -179,7 +181,7 @@ namespace Gallio.Model.Serialization
         /// </summary>
         /// <remarks>
         /// <para>
-        /// Merges tests with duplicate ids.  Adds new tests in place.
+        /// Merges tests with duplicate ids. Adds new tests in place.
         /// </para>
         /// </remarks>
         /// <param name="parentTestId">The id of the parent test, or null if adding the root.</param>

@@ -25,17 +25,19 @@ using Gallio.Runtime.Hosting;
 namespace Gallio.Model
 {
     /// <summary>
-    /// <para>
     /// A test package configuration specifies the options used by a test runner to load tests
-    /// into memory for execution.  The package may contain multiple test assemblies
-    /// that are to be loaded together for test execution.  It can also be serialized as
-    /// XML or using .Net remoting for persistence and remote operation.
-    /// </para>
+    /// into memory for execution.
     /// </summary>
-    /// <remarks author="jeff">
+    /// <remarks>
+    /// <para>
+    /// The package may contain multiple test assemblies that are to be loaded together for test execution.  
+    /// It can also be serialized as XML or using .Net remoting for persistence and remote operation.
+    /// </para>
+    /// <para>
     /// Someday a test package might allow other kinds of resources to be specified
     /// such as individual test scripts, archives, dependent files, environmental
     /// additional configuration settings, etc...
+    /// </para>
     /// </remarks>
     [Serializable]
     [XmlRoot("testPackageConfig", Namespace=XmlSerializationUtils.GallioNamespace)]

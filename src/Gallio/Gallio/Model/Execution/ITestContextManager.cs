@@ -32,9 +32,11 @@ namespace Gallio.Model.Execution
         /// Starts a test step and returns its associated test context.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// The current thread's test context is set to a new context for the
         /// test step that is starting.  The new context will be a child of the
         /// current thread's context.
+        /// </para>
         /// </remarks>
         /// <param name="testStep">The test step.</param>
         /// <returns>The test context associated with the test step.</returns>

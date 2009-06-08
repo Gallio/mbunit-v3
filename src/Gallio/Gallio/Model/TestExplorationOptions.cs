@@ -29,8 +29,7 @@ namespace Gallio.Model
         /// <returns>The copy.</returns>
         public TestExplorationOptions Copy()
         {
-            TestExplorationOptions copy = new TestExplorationOptions();
-
+            var copy = new TestExplorationOptions();
             return copy;
         }
     }

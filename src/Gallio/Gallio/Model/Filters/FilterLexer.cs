@@ -139,7 +139,7 @@ namespace Gallio.Model.Filters
 
         private void MatchUndelimitedWord()
         {
-            StringBuilder chars = new StringBuilder();
+            var chars = new StringBuilder();
             bool errorFound = false;
             int startPosition = inputPosition + 1;
             char previousChar = ConsumeNextChar();
@@ -206,7 +206,7 @@ namespace Gallio.Model.Filters
 
         private void MatchDelimitedWord(char delimiter)
         {
-            StringBuilder chars = new StringBuilder();
+            var chars = new StringBuilder();
             bool errorFound = false;
             int startPosition = inputPosition + 1;
             char previousChar = (char)0;
@@ -297,7 +297,7 @@ namespace Gallio.Model.Filters
 
         private static FilterTokenType GetReservedWord(string token)
         {
-            FilterTokenType reservedWord = FilterTokenType.None;
+            var reservedWord = FilterTokenType.None;
             string loweredToken = token.ToLower();
 
             if (loweredToken.CompareTo("and") == 0)

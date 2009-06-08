@@ -18,9 +18,7 @@ using Gallio.Runtime;
 namespace Gallio.Model.Execution
 {
     /// <summary>
-    /// <para>
     /// Static service locator for <see cref="ITestContextTracker" />.
-    /// </para>
     /// </summary>
     /// <remarks>
     /// <para>

@@ -27,15 +27,15 @@ using Gallio.Common.Markup;
 namespace Gallio.Framework
 {
     /// <summary>
-    /// <para>
     /// The tasks class provides a mechanism for coordinating the actions of multiple
     /// tasks within a test case.
-    /// </para>
+    /// </summary>
+    /// <remarks>
     /// <para>
     /// Each task started by a test case is monitored.  When the test exits, any
     /// remaining tasks are automatically aborted and disposed.
     /// </para>
-    /// </summary>
+    /// </remarks>
     public static class Tasks
     {
         private static readonly Key<TaskContainer> ContainerKey = new Key<TaskContainer>("Tasks.Container");
@@ -55,12 +55,14 @@ namespace Gallio.Framework
         /// <summary>
         /// Adds a new task for the task manager to watch.
         /// </summary>
+        /// <remarks>
         /// <para>
         /// The task manager will track when the task starts and finishes, ensure
         /// that the task is aborted when the test ends, report any exception thrown
         /// by the task as a warning in the log, and include the task in the list of those
         /// to join and/or verify.
         /// </para>
+        /// </remarks>
         /// <param name="task">The task to watch.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="task"/> is null.</exception>
         public static void WatchTask(Task task)
@@ -75,7 +77,9 @@ namespace Gallio.Framework
         /// Creates a new thread task but does not start it.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// There is no need to call <see cref="WatchTask" /> on the returned task.
+        /// </para>
         /// </remarks>
         /// <param name="name">The name of the task, or null to create a new name based
         /// on the method associated with the action.</param>
@@ -87,7 +91,7 @@ namespace Gallio.Framework
             if (action == null)
                 throw new ArgumentNullException("action");
 
-            ThreadTask task = new ThreadTask(GetTaskName(name, action), action);
+            var task = new ThreadTask(GetTaskName(name, action), action);
             WatchTask(task);
             return task;
         }
@@ -96,7 +100,9 @@ namespace Gallio.Framework
         /// Starts a new thread task.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// There is no need to call <see cref="WatchTask" /> on the returned task.
+        /// </para>
         /// </remarks>
         /// <param name="name">The name of the task, or null to create a new name based
         /// on the method associated with the action.</param>
@@ -111,18 +117,18 @@ namespace Gallio.Framework
         }
 
         /// <summary>
-        /// <para>
         /// Creates a new process task but does not start it.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// The output of the process will be logged and included as part of the test results.  It
         /// may also be examined using the <see cref="ProcessTask.ConsoleOutput" /> and
         /// <see cref="ProcessTask.ConsoleError" /> properties while the process executes and
         /// after it terminates.
         /// </para>
-        /// </summary>
-        /// <remarks>
+        /// <para>
         /// There is no need to call <see cref="WatchTask" /> on the returned task.
+        /// </para>
         /// </remarks>
         /// <param name="executablePath">The path of the executable executable.</param>
         /// <param name="arguments">The arguments for the executable.</param>
@@ -139,7 +145,7 @@ namespace Gallio.Framework
             if (workingDirectory == null)
                 throw new ArgumentNullException("workingDirectory");
 
-            ProcessTask task = new ProcessTask(executablePath, arguments, workingDirectory);
+            var task = new ProcessTask(executablePath, arguments, workingDirectory);
             task.CaptureConsoleOutput = true;
             task.CaptureConsoleError = true;
 
@@ -184,18 +190,18 @@ namespace Gallio.Framework
         }
 
         /// <summary>
-        /// <para>
         /// Starts a new process and begins watching it.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// The output of the process will be logged and included as part of the test results.  It
         /// may also be examined using the <see cref="ProcessTask.ConsoleOutput" /> and
         /// <see cref="ProcessTask.ConsoleError" /> properties while the process executes and
         /// after it terminates.
         /// </para>
-        /// </summary>
-        /// <remarks>
+        /// <para>
         /// There is no need to call <see cref="WatchTask" /> on the returned task.
+        /// </para>
         /// </remarks>
         /// <param name="executablePath">The path of the executable executable.</param>
         /// <param name="arguments">The arguments for the executable.</param>
@@ -211,8 +217,8 @@ namespace Gallio.Framework
         }
 
         /// <summary>
-        /// Waits for all tasks to complete or for timeout to occur.
-        /// Then verifies that no failures have occurred in any of the tasks.
+        /// Waits for all tasks to complete or for timeout to occur;
+        /// then verifies that no failures have occurred in any of the tasks.
         /// </summary>
         /// <param name="timeout">The timeout.</param>
         /// <exception cref="TestException">Thrown if some of the tasks did not complete
@@ -237,7 +243,7 @@ namespace Gallio.Framework
 
         private static TaskContainer GetTaskContainer()
         {
-            TestContext context = TestContext.CurrentContext;
+            var context = TestContext.CurrentContext;
             if (context == null || context.IsFinished)
                 throw new InvalidOperationException("This operation cannot be performed because there is no current context.");
 
@@ -256,7 +262,7 @@ namespace Gallio.Framework
 
         private static TaskContainer CreateContainer(TestContext context)
         {
-            TaskContainer container = new TaskContainer();
+            var container = new TaskContainer();
 
             context.Finishing += delegate { ReapTasks(context, container); };
             container.TaskTerminated += delegate(object sender, TaskEventArgs e) { RecordTaskResult(context, e.Task); };
@@ -287,7 +293,7 @@ namespace Gallio.Framework
             if (activeTasks.Count == 0)
                 return;
 
-            StringBuilder message = new StringBuilder(messagePrefix);
+            var message = new StringBuilder(messagePrefix);
 
             for (int i = 0; i < activeTasks.Count; i++)
             {

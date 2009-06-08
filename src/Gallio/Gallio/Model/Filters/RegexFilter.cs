@@ -20,8 +20,12 @@ namespace Gallio.Model.Filters
 {
     /// <summary>
     /// A regex filter matches strings against a given <see cref="Regex" />.
-    /// Null string values are converted to empty strings for regex evaluation purposes.
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// Null string values are converted to empty strings for regex evaluation purposes.
+    /// </para>
+    /// </remarks>
     [Serializable]
     public sealed class RegexFilter : Filter<string>
     {

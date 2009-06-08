@@ -63,8 +63,13 @@ namespace Gallio.Model
 
         /// <summary>
         /// Gets or sets the value of the <see cref="MetadataKeys.TestKind" />
-        /// metadata entry.  (This is a convenience method.)
+        /// metadata entry.
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// This is a convenience method.
+        /// </para>
+        /// </remarks>
         /// <value>
         /// One of the <see cref="TestKinds" /> constants.
         /// </value>

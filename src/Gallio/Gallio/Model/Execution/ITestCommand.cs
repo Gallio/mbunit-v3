@@ -20,10 +20,8 @@ using Gallio.Model;
 namespace Gallio.Model.Execution
 {
     /// <summary>
-    /// <para>
     /// A test command requests the execution of a tree of <see cref="ITest" />s.
     /// The test command hierarchy mirrors a filtered subset of the test hierarchy.
-    /// </para>
     /// </summary>
     /// <remarks>
     /// <para>
@@ -70,9 +68,11 @@ namespace Gallio.Model.Execution
         /// Returns true if the test was explicitly selected by a filter.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// This flag enables test controllers to distinguish the case when a particular test
         /// was explicitly selected by a user-specified filter rather than by virtue of
         /// one of its parents having been selected.
+        /// </para>
         /// </remarks>
         bool IsExplicit { get; }
 
@@ -80,15 +80,17 @@ namespace Gallio.Model.Execution
         /// Gets the number of times that a root step of this test has failed.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// The value of this field is automatically updated as each root step
         /// created by <see cref="StartPrimaryChildStep"/> finishes.
+        /// </para>
         /// </remarks>
         int RootStepFailureCount { get; }
 
         /// <summary>
-        /// <para>
         /// Gets the list of child commands to run within the scope of this command.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// Each child command represents a test that is a child of the test
         /// managed by this command.
@@ -97,21 +99,21 @@ namespace Gallio.Model.Execution
         /// The children are listed in an order that is consistent with
         /// their dependencies.  See class commends for details.
         /// </para>
-        /// </summary>
+        /// </remarks>
         IList<ITestCommand> Children { get; }
 
         /// <summary>
-        /// <para>
         /// Gets the list of other commands that this command depends upon.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// The dependent commands are guaranteed to have appeared before this
         /// command in a pre-order traversal of the command tree.
         /// A test command cannot depend on one of its direct ancestors.
         /// </para>
-        /// </summary>
-        /// <remarks>
+        /// <para>
         /// There must be no circular dependencies.
+        /// </para>
         /// </remarks>
         IList<ITestCommand> Dependencies { get; }
 
@@ -139,9 +141,11 @@ namespace Gallio.Model.Execution
         /// Starts a new step of the test using the specified test step object.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// The current thread's test context is set to a new context for the
         /// test step that is starting.  The new context will be a child of the
         /// current thread's context.
+        /// </para>
         /// </remarks>
         /// <param name="testStep">The test step to start.</param>
         /// <returns>The test context for the test step.</returns>
@@ -151,17 +155,17 @@ namespace Gallio.Model.Execution
         ITestContext StartStep(ITestStep testStep);
 
         /// <summary>
-        /// <para>
         /// Starts the primary step of the test associated with this command as a child
         /// of the specified test step and returns its test context.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// This method is equivalent to calling <see cref="StartStep" />
         /// using a default implementation of <see cref="ITestStep" /> that is
         /// initialized using <paramref name="parentTestStep" /> and the metadata
         /// from the 
         /// </para>
-        /// </summary>
+        /// </remarks>
         /// <param name="parentTestStep">The parent test step, or null if none.</param>
         /// <returns>The test context for the new primary test step.</returns>
         /// <seealso cref="StartStep"/>

@@ -43,7 +43,9 @@ namespace Gallio.Model
         /// The test represents a grouping of all contributions offered by a given test framework.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// A framework test should also have associated <see cref="MetadataKeys.Framework" /> metadata.
+        /// </para>
         /// </remarks>
         public const string Framework = "Framework";
 

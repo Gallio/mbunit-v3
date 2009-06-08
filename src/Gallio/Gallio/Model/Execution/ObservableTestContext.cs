@@ -278,7 +278,7 @@ namespace Gallio.Model.Execution
 
                 logWriter.Close();
 
-                TestResult result = new TestResult();
+                var result = new TestResult();
                 result.AssertCount = assertCount;
                 result.Duration = actualDuration.GetValueOrDefault(stopwatch.Elapsed).TotalSeconds;
                 result.Outcome = outcome;

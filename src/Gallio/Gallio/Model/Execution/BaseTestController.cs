@@ -57,8 +57,10 @@ namespace Gallio.Model.Execution
         /// sets the final outcome to <see cref="TestOutcome.Skipped" />.
         /// </summary>
         /// <remarks>
-        /// This is useful for implementing fallback behavior when
+        /// <para>
+        /// This is useful for implementing fallback behavior when 
         /// <see cref="TestExecutionOptions.SkipTestExecution" /> is true.
+        /// </para>
         /// </remarks>
         /// <param name="rootTestCommand">The root test command.</param>
         /// <param name="parentTestStep">The parent test step.</param>

@@ -18,10 +18,14 @@ using System;
 namespace Gallio.Model.Filters
 {
     /// <summary>
-    /// A filter is a serializable predicate.  The framework uses filters to select
-    /// among tests discovered through the process of test enumeration.
+    /// A filter is a serializable predicate.
     /// </summary>
     /// <remarks>
+    /// <para>
+    /// The framework uses filters to select among tests discovered through 
+    /// the process of test enumeration.
+    /// </para>
+    /// <para>
     /// Filters must be serializable objects defined in the framework assembly
     /// or in plugins.  The reason is that filter definitions may need to be
     /// transferred across AppDomains so the filter's concrete type must be
@@ -29,6 +33,7 @@ namespace Gallio.Model.Filters
     /// because there is no guarantee that a valid remoting context will exist
     /// in which to carry out the operation.  So, if you need a new filter type
     /// put it in a plugin.
+    /// </para>
     /// </remarks>
     [Serializable]
     public abstract class Filter<T>

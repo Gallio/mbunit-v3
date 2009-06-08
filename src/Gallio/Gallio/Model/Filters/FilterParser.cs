@@ -55,8 +55,10 @@ namespace Gallio.Model.Filters
         /// consisting of inclusion and exclusion rules.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// If the filter set expression is empty or contains only whitespace then the 
         /// resulting filter set will be empty.
+        /// </para>
         /// </remarks>
         /// <param name="filterSetExpr">The filter set expression.</param>
         /// <returns>The parsed filter set.</returns>
@@ -77,7 +79,7 @@ namespace Gallio.Model.Filters
 
         private FilterSet<T> MatchFilterSet(FilterLexer lexer)
         {
-            List<FilterRule<T>> filterRules = new List<FilterRule<T>>();
+            var filterRules = new List<FilterRule<T>>();
 
             FilterToken nextToken = LookAhead(lexer, 1);
             while (nextToken != null)
@@ -120,7 +122,7 @@ namespace Gallio.Model.Filters
 
         private Filter<T> MatchOrFilter(FilterLexer lexer)
         {
-            List<Filter<T>> filters = new List<Filter<T>>();
+            var filters = new List<Filter<T>>();
             Filter<T> firstFilter = MatchAndFilter(lexer);
             filters.Add(firstFilter);
 
@@ -140,7 +142,7 @@ namespace Gallio.Model.Filters
 
         private Filter<T> MatchAndFilter(FilterLexer lexer)
         {
-            List<Filter<T>> filters = new List<Filter<T>>();
+            var filters = new List<Filter<T>>();
             Filter<T> firstFilter = MatchNegationFilter(lexer);
             filters.Add(firstFilter);
 
@@ -239,7 +241,7 @@ namespace Gallio.Model.Filters
 
         private static Filter<string> MatchMatchSequence(FilterLexer lexer)
         {
-            List<Filter<string>> valueFilters = new List<Filter<string>>();
+            var valueFilters = new List<Filter<string>>();
             valueFilters.Add(MatchValue(lexer));
 
             FilterToken nextToken = LookAhead(lexer, 1);

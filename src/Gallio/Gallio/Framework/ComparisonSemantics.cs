@@ -25,20 +25,18 @@ using Gallio.Common.Diagnostics;
 namespace Gallio.Framework
 {
     /// <summary>
-    /// <para>
     /// Describes the semantics of how objects should be compared.
-    /// </para>
+    /// </summary>
+    /// <remarks>
     /// <para>
     /// This class encapsulates a default set of rules for comparing objects.  These rules may be
     /// used as the foundation of a suite of standard assertion functions for comparing identity,
     /// equality and relations.
     /// </para>
-    /// </summary>
-    /// <remarks>
     /// <para>
     /// At this time, there is no extensiblity mechanism provided for comparison semantics but
-    /// it would be nice to have one.  Feel free to add your comments to the issue:
-    /// http://code.google.com/p/mb-unit/issues/detail?id=304
+    /// it would be nice to have one.  Feel free to add your comments to that.
+    /// <a href="http://code.google.com/p/mb-unit/issues/detail?id=304">issue.</a>
     /// </para>
     /// </remarks>
     [SystemInternal]
@@ -86,9 +84,7 @@ namespace Gallio.Framework
         #endregion
 
         /// <summary>
-        /// <para>
-        /// Returns true if two objects are the same.
-        /// </para>
+        /// Returns <code>true</code> if two objects are the same.
         /// </summary>
         /// <remarks>
         /// <para>
@@ -111,9 +107,7 @@ namespace Gallio.Framework
         }
 
         /// <summary>
-        /// <para>
         /// Returns true if two objects are equal.
-        /// </para>
         /// </summary>
         /// <param name="left">The left object, may be null.</param>
         /// <param name="right">The right object, may be null.</param>
@@ -125,9 +119,7 @@ namespace Gallio.Framework
         }
 
         /// <summary>
-        /// <para>
         /// Returns true if two objects are equal.
-        /// </para>
         /// </summary>
         /// <remarks>
         /// <para>
@@ -194,9 +186,7 @@ namespace Gallio.Framework
         }
 
         /// <summary>
-        /// <para>
         /// Compares two objects.
-        /// </para>
         /// </summary>
         /// <remarks>
         /// <para>
@@ -301,12 +291,13 @@ namespace Gallio.Framework
         }
 
         /// <summary>
-        /// <para>
-        /// Returns true if the specified type is a simple enumerable type.  A simple enumerable
-        /// type is one that that does not override <see cref="Object.Equals(Object)"/>.
+        /// Returns <code>true</code> if the specified type is a simple enumerable type.
         /// </para>
         /// </summary>
         /// <remarks>
+        /// <para>
+        /// A simple enumerable type is one that that does not override <see cref="Object.Equals(Object)"/>.
+        /// </para>
         /// <para>
         /// The set of simple enumerable types includes arrays, lists, dictionaries and other
         /// standard collection types in the .Net framework.
@@ -363,9 +354,7 @@ namespace Gallio.Framework
         }
 
         /// <summary>
-        /// <para>
         /// Returns true if two values are equal to within a specified delta.
-        /// </para>
         /// </summary>
         /// <remarks>
         /// <para>

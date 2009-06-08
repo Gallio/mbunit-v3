@@ -131,14 +131,14 @@ namespace Gallio.Framework
 
         #region Current log writer shortcuts
         /// <summary>
-        /// <para>
         /// Flushes the log writer.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// This is a convenience method that forwards the request to the current log
         /// writer as returned by the <see cref="Writer" /> property.
         /// </para>
-        /// </summary>
+        /// </remarks>
         public static void Flush()
         {
             Writer.Flush();
@@ -146,11 +146,13 @@ namespace Gallio.Framework
 
         /// <summary>
         /// Attaches an attachment to the execution log.
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// This is a convenience method that forwards the request to the current log
         /// writer as returned by the <see cref="Writer" /> property.
         /// </para>
-        /// </summary>
+        /// </remarks>
         /// <param name="attachment">The attachment to include.</param>
         /// <returns>The attachment.</returns>
         /// <seealso cref="MarkupStreamWriter.Embed"/>
@@ -164,11 +166,13 @@ namespace Gallio.Framework
 
         /// <summary>
         /// Attaches an plain text attachment with mime-type <see cref="MimeTypes.PlainText" />.
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// This is a convenience method that forwards the request to the current log
         /// writer as returned by the <see cref="Writer" /> property.
         /// </para>
-        /// </summary>
+        /// </remarks>
         /// <param name="attachmentName">The name of the attachment to create or null to
         /// automatically assign one.  The attachment name must be unique within the scope of the
         /// currently executing test step.</param>
@@ -185,11 +189,13 @@ namespace Gallio.Framework
 
         /// <summary>
         /// Attaches an HTML attachment with mime-type <see cref="MimeTypes.Html" />.
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// This is a convenience method that forwards the request to the current log
         /// writer as returned by the <see cref="Writer" /> property.
         /// </para>
-        /// </summary>
+        /// </remarks>
         /// <param name="attachmentName">The name of the attachment to create or null to
         /// automatically assign one.  The attachment name must be unique within the scope of the
         /// currently executing test step.</param>
@@ -206,11 +212,13 @@ namespace Gallio.Framework
 
         /// <summary>
         /// Attaches an XHTML attachment with mime-type <see cref="MimeTypes.XHtml" />.
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// This is a convenience method that forwards the request to the current log
         /// writer as returned by the <see cref="Writer" /> property.
         /// </para>
-        /// </summary>
+        /// </remarks>
         /// <param name="attachmentName">The name of the attachment to create or null to
         /// automatically assign one.  The attachment name must be unique within the scope of the
         /// currently executing test step.</param>
@@ -227,11 +235,13 @@ namespace Gallio.Framework
 
         /// <summary>
         /// Attaches an XML attachment with mime-type <see cref="MimeTypes.Xml" />.
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// This is a convenience method that forwards the request to the current log
         /// writer as returned by the <see cref="Writer" /> property.
         /// </para>
-        /// </summary>
+        /// </remarks>
         /// <param name="attachmentName">The name of the attachment to create or null to
         /// automatically assign one.  The attachment name must be unique within the scope of the
         /// currently executing test step.</param>
@@ -248,11 +258,13 @@ namespace Gallio.Framework
 
         /// <summary>
         /// Attaches an image attachment with a mime-type compatible with its internal representation.
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// This is a convenience method that forwards the request to the current log
         /// writer as returned by the <see cref="Writer" /> property.
         /// </para>
-        /// </summary>
+        /// </remarks>
         /// <param name="attachmentName">The name of the attachment to create or null to
         /// automatically assign one.  The attachment name must be unique within the scope of the
         /// currently executing test step.</param>
@@ -270,11 +282,13 @@ namespace Gallio.Framework
         /// <summary>
         /// Attaches an XML-serialized object as an XML attachment with mime-type <see cref="MimeTypes.Xml" />
         /// using the default <see cref="XmlSerializer" /> for the object's type.
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// This is a convenience method that forwards the request to the current log
         /// writer as returned by the <see cref="Writer" /> property.
         /// </para>
-        /// </summary>
+        /// </remarks>
         /// <param name="attachmentName">The name of the attachment to create or null to
         /// automatically assign one.  The attachment name must be unique within the scope of the
         /// currently executing test step.</param>
@@ -292,11 +306,13 @@ namespace Gallio.Framework
         /// <summary>
         /// Attaches an XML-serialized object as an XML attachment with mime-type <see cref="MimeTypes.Xml" />
         /// using the specified <see cref="XmlSerializer" />.
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// This is a convenience method that forwards the request to the current log
         /// writer as returned by the <see cref="Writer" /> property.
         /// </para>
-        /// </summary>
+        /// </remarks>
         /// <param name="attachmentName">The name of the attachment to create or null to
         /// automatically assign one.  The attachment name must be unique within the scope of the
         /// currently executing test step.</param>
@@ -317,11 +333,13 @@ namespace Gallio.Framework
         #region Current default log stream writer shortcuts
         /// <summary>
         /// Writes a character.
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// This is a convenience method that forwards the request to the current default
         /// log stream writer as returned by the <see cref="Default" /> property.
         /// </para>
-        /// </summary>
+        /// </remarks>
         /// <param name="value">The character value.</param>
         public static void Write(char value)
         {
@@ -330,11 +348,13 @@ namespace Gallio.Framework
 
         /// <summary>
         /// Writes a string.
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// This is a convenience method that forwards the request to the current default
         /// log stream writer as returned by the <see cref="Default" /> property.
         /// </para>
-        /// </summary>
+        /// </remarks>
         /// <param name="value">The string value.</param>
         public static void Write(string value)
         {
@@ -343,11 +363,13 @@ namespace Gallio.Framework
 
         /// <summary>
         /// Writes a formatted object.
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// This is a convenience method that forwards the request to the current default
         /// log stream writer as returned by the <see cref="Default" /> property.
         /// </para>
-        /// </summary>
+        /// </remarks>
         /// <param name="value">The object value.</param>
         public static void Write(object value)
         {
@@ -356,11 +378,13 @@ namespace Gallio.Framework
 
         /// <summary>
         /// Writes an array of characters.
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// This is a convenience method that forwards the request to the current default
         /// log stream writer as returned by the <see cref="Default" /> property.
         /// </para>
-        /// </summary>
+        /// </remarks>
         /// <param name="value">The array of characters.</param>
         public static void Write(char[] value)
         {
@@ -369,11 +393,13 @@ namespace Gallio.Framework
 
         /// <summary>
         /// Writes an array of characters.
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// This is a convenience method that forwards the request to the current default
         /// log stream writer as returned by the <see cref="Default" /> property.
         /// </para>
-        /// </summary>
+        /// </remarks>
         /// <param name="buffer">The character buffer.</param>
         /// <param name="index">The index of the first character in the buffer to write.</param>
         /// <param name="count">The number of characters from the buffer to write.</param>
@@ -386,15 +412,17 @@ namespace Gallio.Framework
 
         /// <summary>
         /// Writes a formatted string.
-        /// <seealso cref="String.Format(string, object[])"/>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// This is a convenience method that forwards the request to the current default
         /// log stream writer as returned by the <see cref="Default" /> property.
         /// </para>
-        /// </summary>
+        /// </remarks>
         /// <param name="format">The format string.</param>
         /// <param name="args">The format string arguments.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="format"/> is null.</exception>
+        /// <seealso cref="String.Format(string, object[])"/>
         public static void Write(string format, params object[] args)
         {
             Default.Write(format, args);
@@ -402,11 +430,13 @@ namespace Gallio.Framework
 
         /// <summary>
         /// Writes a line delimiter.
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// This is a convenience method that forwards the request to the current default
         /// log stream writer as returned by the <see cref="Default" /> property.
         /// </para>
-        /// </summary>
+        /// </remarks>
         public static void WriteLine()
         {
             Default.WriteLine();
@@ -414,11 +444,13 @@ namespace Gallio.Framework
 
         /// <summary>
         /// Writes a character followed by a line delimiter.
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// This is a convenience method that forwards the request to the current default
         /// log stream writer as returned by the <see cref="Default" /> property.
         /// </para>
-        /// </summary>
+        /// </remarks>
         /// <param name="value">The character value.</param>
         public static void WriteLine(char value)
         {
@@ -427,11 +459,13 @@ namespace Gallio.Framework
 
         /// <summary>
         /// Writes a string followed by a line delimiter.
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// This is a convenience method that forwards the request to the current default
         /// log stream writer as returned by the <see cref="Default" /> property.
         /// </para>
-        /// </summary>
+        /// </remarks>
         /// <param name="value">The string value.</param>
         public static void WriteLine(string value)
         {
@@ -440,11 +474,13 @@ namespace Gallio.Framework
 
         /// <summary>
         /// Writes a formatted object followed by a line delimiter.
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// This is a convenience method that forwards the request to the current default
         /// log stream writer as returned by the <see cref="Default" /> property.
         /// </para>
-        /// </summary>
+        /// </remarks>
         /// <param name="value">The object value.</param>
         public static void WriteLine(object value)
         {
@@ -453,11 +489,13 @@ namespace Gallio.Framework
 
         /// <summary>
         /// Writes an array of characters followed by a line delimiter.
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// This is a convenience method that forwards the request to the current default
         /// log stream writer as returned by the <see cref="Default" /> property.
         /// </para>
-        /// </summary>
+        /// </remarks>
         /// <param name="value">The array of characters.</param>
         public static void WriteLine(char[] value)
         {
@@ -466,29 +504,31 @@ namespace Gallio.Framework
 
         /// <summary>
         /// Writes a formatted string followed by a line delimiter.
-        /// <seealso cref="String.Format(string, object[])"/>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// This is a convenience method that forwards the request to the current default
         /// log stream writer as returned by the <see cref="Default" /> property.
         /// </para>
-        /// </summary>
+        /// </remarks>
         /// <param name="format">The format string.</param>
         /// <param name="args">The format string arguments.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="format"/> is null.</exception>
+        /// <seealso cref="String.Format(string, object[])"/>
         public static void WriteLine(string format, params object[] args)
         {
             Default.WriteLine(format, args);
         }
 
         /// <summary>
-        /// <para>
         /// Writes a test log stream writable object to the stream.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// This is a convenience method that forwards the request to the current default
         /// log stream writer as returned by the <see cref="Default" /> property.
         /// </para>
-        /// </summary>
+        /// </remarks>
         /// <param name="obj">The object to write, or null if none.</param>
         public static void Write(IMarkupStreamWritable obj)
         {
@@ -496,16 +536,16 @@ namespace Gallio.Framework
         }
 
         /// <summary>
-        /// <para>
         /// Writes an exception.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// This is a convenience method that forwards the request to the current default
         /// log stream writer as returned by the <see cref="Default" /> property.
         /// </para>
-        /// </summary>
-        /// <remarks>
+        /// <para>
         /// The exception will not be terminated by a new line.
+        /// </para>
         /// </remarks>
         /// <param name="exception">The exception to write.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="exception"/> is null.</exception>
@@ -515,16 +555,16 @@ namespace Gallio.Framework
         }
 
         /// <summary>
-        /// <para>
         /// Writes an exception within its own section.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// This is a convenience method that forwards the request to the current default
         /// log stream writer as returned by the <see cref="Default" /> property.
         /// </para>
-        /// </summary>
-        /// <remarks>
+        /// <para>
         /// The exception will not be terminated by a new line.
+        /// </para>
         /// </remarks>
         /// <param name="exception">The exception to write.</param>
         /// <param name="sectionName">The section name, or null if none.</param>
@@ -536,16 +576,16 @@ namespace Gallio.Framework
         }
 
         /// <summary>
-        /// <para>
         /// Writes an exception.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// This is a convenience method that forwards the request to the current default
         /// log stream writer as returned by the <see cref="Default" /> property.
         /// </para>
-        /// </summary>
-        /// <remarks>
+        /// <para>
         /// The exception will not be terminated by a new line.
+        /// </para>
         /// </remarks>
         /// <param name="exception">The exception data to write.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="exception"/> is null.</exception>
@@ -555,16 +595,16 @@ namespace Gallio.Framework
         }
 
         /// <summary>
-        /// <para>
         /// Writes an exception within its own section which provides additional cues for interpretation.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// This is a convenience method that forwards the request to the current default
         /// log stream writer as returned by the <see cref="Default" /> property.
         /// </para>
-        /// </summary>
-        /// <remarks>
+        /// <para>
         /// The exception will not be terminated by a new line.
+        /// </para>
         /// </remarks>
         /// <param name="exception">The exception data to write.</param>
         /// <param name="sectionName">The section name, or null if none.</param>
@@ -575,19 +615,21 @@ namespace Gallio.Framework
         }
 
         /// <summary>
+        /// Writes highlighted text.
+        /// </summary>
+        /// <remarks>
         /// <para>
-        /// Writes highlighted text.  Highlights can be used to
-        /// emphasize important information such differences between similar expected
-        /// and actual values.
+        /// Highlights can be used to emphasize important information such differences 
+        /// between similar expected and actual values.
         /// </para>
         /// <para>
         /// This is a convenience method that forwards the request to the current default
         /// log stream writer as returned by the <see cref="Default" /> property.
         /// </para>
-        /// </summary>
-        /// <remarks>
+        /// <para>
         /// This is a convenience method that simply encapsulates the highlighted text within a
         /// marker region of type <see cref="Marker.Highlight" />.
+        /// </para>
         /// </remarks>
         /// <param name="text">The text to write, or null if none.</param>
         public static void WriteHighlighted(string text)
@@ -596,8 +638,10 @@ namespace Gallio.Framework
         }
 
         /// <summary>
-        /// <para>
         /// Writes an ellipsis to indicate where content has been elided for brevity.
+        /// </summary>
+        /// <remarks>
+        /// <para>
         /// An ellipsis may be used, for example, when printing assertion failures to clearly
         /// identify sections where the user is not being presented all of the information
         /// because it was too long and had to be truncated.
@@ -606,11 +650,11 @@ namespace Gallio.Framework
         /// This is a convenience method that forwards the request to the current default
         /// log stream writer as returned by the <see cref="Default" /> property.
         /// </para>
-        /// </summary>
-        /// <remarks>
+        /// <para>
         /// This is a convenience method that simply encapsulates "..." within a
         /// marked region of type <see cref="Marker.Ellipsis" />.  However, tools
         /// may reinterpret the special marker to make the "..." less ambiguous.
+        /// </para>
         /// </remarks>
         public static void WriteEllipsis()
         {
@@ -618,9 +662,9 @@ namespace Gallio.Framework
         }
 
         /// <summary>
-        /// <para>
         /// Begins a section with the specified name.  Maybe be nested.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// A section groups together related content in the test log to make it
         /// easier to distinguish.  The section name is used as a heading.
@@ -629,14 +673,14 @@ namespace Gallio.Framework
         /// This is a convenience method that forwards the request to the current default
         /// log stream writer as returned by the <see cref="Default" /> property.
         /// </para>
-        /// </summary>
+        /// </remarks>
         /// <example>
-        /// <code>
+        /// <code><![CDATA[
         /// using (Log.BeginSection("Doing something interesting"))
         /// {
         ///     Log.WriteLine("Ah ha!");
         /// }
-        /// </code>
+        /// ]]></code>
         /// </example>
         /// <param name="sectionName">The name of the section.</param>
         /// <returns>A Disposable object that calls <see cref="End" /> when disposed.  This
@@ -648,9 +692,9 @@ namespace Gallio.Framework
         }
 
         /// <summary>
-        /// <para>
         /// Begins a marked region.  Maybe be nested.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// A marker is a hidden tag that labels its contents with a semantic class.
         /// It is roughly equivalent in operation to an HTML "span" tag.  Various tools
@@ -660,14 +704,14 @@ namespace Gallio.Framework
         /// This is a convenience method that forwards the request to the current default
         /// log stream writer as returned by the <see cref="Default" /> property.
         /// </para>
-        /// </summary>
+        /// </remarks>
         /// <example>
-        /// <code>
+        /// <code><![CDATA[
         /// using (Log.BeginMarker(Marker.Monospace))
         /// {
         ///     Log.WriteLine(contents);
         /// }
-        /// </code>
+        /// ]]></code>
         /// </example>
         /// <param name="marker">The marker.</param>
         /// <returns>A Disposable object that calls <see cref="End" /> when disposed.  This
@@ -678,14 +722,14 @@ namespace Gallio.Framework
         }
 
         /// <summary>
-        /// <para>
         /// Ends the region most recently started with one of the Begin* methods.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// This is a convenience method that forwards the request to the current default
         /// log stream writer as returned by the <see cref="Default" /> property.
         /// </para>
-        /// </summary>
+        /// </remarks>
         /// <exception cref="InvalidOperationException">Thrown if there is no current nested region.</exception>
         public static void End()
         {
@@ -694,11 +738,13 @@ namespace Gallio.Framework
 
         /// <summary>
         /// Embeds an attachment.
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// This is a convenience method that forwards the request to the current default
         /// log stream writer as returned by the <see cref="Default" /> property.
         /// </para>
-        /// </summary>
+        /// </remarks>
         /// <remarks>
         /// An attachment instance can be embedded multiple times efficiently since each
         /// embedded copy is typically represented as a link to the same common attachment instance.
@@ -716,11 +762,13 @@ namespace Gallio.Framework
 
         /// <summary>
         /// Embeds another copy of an existing attachment.
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// This is a convenience method that forwards the request to the current default
         /// log stream writer as returned by the <see cref="Default" /> property.
         /// </para>
-        /// </summary>
+        /// </remarks>
         /// <remarks>
         /// <para>
         /// This method can be used to
@@ -748,11 +796,13 @@ namespace Gallio.Framework
 
         /// <summary>
         /// Embeds an plain text attachment with mime-type <see cref="MimeTypes.PlainText" />.
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// This is a convenience method that forwards the request to the current default
         /// log stream writer as returned by the <see cref="Default" /> property.
         /// </para>
-        /// </summary>
+        /// </remarks>
         /// <param name="attachmentName">The name of the attachment to create or null to
         /// automatically assign one.  The attachment name must be unique within the scope of the
         /// currently executing test step.</param>
@@ -769,11 +819,13 @@ namespace Gallio.Framework
 
         /// <summary>
         /// Embeds an HTML attachment with mime-type <see cref="MimeTypes.Html" />.
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// This is a convenience method that forwards the request to the current default
         /// log stream writer as returned by the <see cref="Default" /> property.
         /// </para>
-        /// </summary>
+        /// </remarks>
         /// <param name="attachmentName">The name of the attachment to create or null to
         /// automatically assign one.  The attachment name must be unique within the scope of the
         /// currently executing test step.</param>
@@ -790,11 +842,13 @@ namespace Gallio.Framework
 
         /// <summary>
         /// Embeds an XHTML attachment with mime-type <see cref="MimeTypes.XHtml" />.
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// This is a convenience method that forwards the request to the current default
         /// log stream writer as returned by the <see cref="Default" /> property.
         /// </para>
-        /// </summary>
+        /// </remarks>
         /// <param name="attachmentName">The name of the attachment to create or null to
         /// automatically assign one.  The attachment name must be unique within the scope of the
         /// currently executing test step.</param>
@@ -811,11 +865,13 @@ namespace Gallio.Framework
 
         /// <summary>
         /// Embeds an XML attachment with mime-type <see cref="MimeTypes.Xml" />.
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// This is a convenience method that forwards the request to the current default
         /// log stream writer as returned by the <see cref="Default" /> property.
         /// </para>
-        /// </summary>
+        /// </remarks>
         /// <param name="attachmentName">The name of the attachment to create or null to
         /// automatically assign one.  The attachment name must be unique within the scope of the
         /// currently executing test step.</param>
@@ -832,11 +888,13 @@ namespace Gallio.Framework
 
         /// <summary>
         /// Embeds an image attachment with a mime-type compatible with its internal representation.
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// This is a convenience method that forwards the request to the current default
         /// log stream writer as returned by the <see cref="Default" /> property.
         /// </para>
-        /// </summary>
+        /// </remarks>
         /// <param name="attachmentName">The name of the attachment to create or null to
         /// automatically assign one.  The attachment name must be unique within the scope of the
         /// currently executing test step.</param>
@@ -854,11 +912,13 @@ namespace Gallio.Framework
         /// <summary>
         /// Embeds an XML-serialized object as an XML attachment with mime-type <see cref="MimeTypes.Xml" />
         /// using the default <see cref="XmlSerializer" /> for the object's type.
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// This is a convenience method that forwards the request to the current default
         /// log stream writer as returned by the <see cref="Default" /> property.
         /// </para>
-        /// </summary>
+        /// </remarks>
         /// <param name="attachmentName">The name of the attachment to create or null to
         /// automatically assign one.  The attachment name must be unique within the scope of the
         /// currently executing test step.</param>
@@ -876,11 +936,13 @@ namespace Gallio.Framework
         /// <summary>
         /// Embeds an XML-serialized object as an XML attachment with mime-type <see cref="MimeTypes.Xml" />
         /// using the specified <see cref="XmlSerializer" />.
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// This is a convenience method that forwards the request to the current default
         /// log stream writer as returned by the <see cref="Default" /> property.
         /// </para>
-        /// </summary>
+        /// </remarks>
         /// <param name="attachmentName">The name of the attachment to create or null to
         /// automatically assign one.  The attachment name must be unique within the scope of the
         /// currently executing test step.</param>

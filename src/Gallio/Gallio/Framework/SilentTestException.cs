@@ -20,9 +20,7 @@ using Gallio.Model;
 namespace Gallio.Framework
 {
     /// <summary>
-    /// <para>
     /// This exception type is used to signal a test outcome silently without logging the exception.
-    /// </para>
     /// </summary>
     [Serializable]
     public class SilentTestException : TestTerminatedException

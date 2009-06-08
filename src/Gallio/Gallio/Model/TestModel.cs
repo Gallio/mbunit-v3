@@ -88,9 +88,9 @@ namespace Gallio.Model
         }
 
         /// <summary>
-        /// <para>
         /// Gets the read-only list of annotations.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// An annotation is an informational, warning or error message associated with
         /// a code element in the test model.
@@ -106,7 +106,7 @@ namespace Gallio.Model
         /// simply log them whereas an IDE plugin could generate new task items to incorporate
         /// them into the UI.
         /// </para>
-        /// </summary>
+        /// </remarks>
         public IList<Annotation> Annotations
         {
             get { return annotations.AsReadOnly(); }

@@ -225,7 +225,7 @@ namespace Gallio.Model.Filters
 
             public void VisitEqualityFilter<T>(EqualityFilter<T> filter) where T : class, IEquatable<T>
             {
-                EqualityFilter<string> stringFilter = filter as EqualityFilter<string>;
+                var stringFilter = filter as EqualityFilter<string>;
                 if (stringFilter == null)
                     ThrowNotSupportedException();
 

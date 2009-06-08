@@ -25,9 +25,13 @@ namespace Gallio.Model.Execution
     /// <summary>
     /// The default context tracker tracks the current context by way
     /// of the thread's <see cref="ExecutionContext" /> and <see cref="CallContext" />.
+    /// </summary>
+    /// <remarks>
+    /// <para>
     /// The .Net framework ensures that this context information flows across threads
     /// during asynchronous callbacks, timer events and thread pool work item execution.
-    /// </summary>
+    /// </para>
+    /// </remarks>
     public class DefaultTestContextTracker : ITestContextTracker
     {
         private const int CleanupInterval = 60000;
@@ -144,25 +148,19 @@ namespace Gallio.Model.Execution
             throw new InvalidOperationException("The context has already been exited.");
         }
 
-        /// <summary>
-        /// Gets or sets the top context link for the current thread.
-        /// </summary>
-        /// <remarks>
-        /// <para>
-        /// The trick here is to wrap the context link up in an <see cref="ObjectHandle" />.
-        /// This enables the context link to reside in the logical call context (so it flows
-        /// across threads) while preventing it from actually getting serialized during
-        /// remote calls (which won't work).  On the other hand, during callbacks from
-        /// remote calls we will be able to unwrap the context link and keep going.
-        /// </para>
-        /// <para>
-        /// We also use an illogical call context slot as a backup in case the logical
-        /// call context slot gets wiped.  This seems to happen during certain remote calls
-        /// which do not appear to correctly preserve the logical call context during
-        /// the round trip.  This backup value will not be transmitted across threads, however.
-        /// FIXME.  -- Jeff.
-        /// </para>
-        /// </remarks>
+        // Gets or sets the top context link for the current thread.
+        //
+        // The trick here is to wrap the context link up in an <see cref="ObjectHandle" />.
+        // This enables the context link to reside in the logical call context (so it flows
+        // across threads) while preventing it from actually getting serialized during
+        // remote calls (which won't work).  On the other hand, during callbacks from
+        // remote calls we will be able to unwrap the context link and keep going.
+        // 
+        // We also use an illogical call context slot as a backup in case the logical
+        // call context slot gets wiped.  This seems to happen during certain remote calls
+        // which do not appear to correctly preserve the logical call context during
+        // the round trip.  This backup value will not be transmitted across threads, however.
+        // FIXME.  -- Jeff.
         private InternalContextLink TopContextLinkForCurrentThread
         {
             get
@@ -203,9 +201,7 @@ namespace Gallio.Model.Execution
             return null;
         }
 
-        /// <summary>
-        /// Ensures the cleanup timer runs if and only if there is at least 1 thread override.
-        /// </summary>
+        // Ensures the cleanup timer runs if and only if there is at least 1 thread override.
         private void ConfigureThreadCleanupTimerWithLock()
         {
             if (threadOverrides.Count == 0)
@@ -225,9 +221,7 @@ namespace Gallio.Model.Execution
             }
         }
 
-        /// <summary>
-        /// Removes overrides for threads that are no longer alive.
-        /// </summary>
+        // Removes overrides for threads that are no longer alive.
         private void CleanupThreads(object dummy)
         {
             lock (SyncRoot)
@@ -254,12 +248,10 @@ namespace Gallio.Model.Execution
             }
         }
 
-        /// <summary>
-        /// Represents a single link in a chain of contexts per-thread.
-        /// We use a linked list because we want each stack of contexts to be distinct
-        /// across threads even when the execution context is cloned to flow across
-        /// threads.
-        /// </summary>
+        // Represents a single link in a chain of contexts per-thread.
+        // We use a linked list because we want each stack of contexts to be distinct
+        // across threads even when the execution context is cloned to flow across
+        // threads.
         private sealed class InternalContextLink
         {
             private readonly InternalContextLink parentLink;

@@ -23,9 +23,13 @@ namespace Gallio.Model.Execution
 {
     /// <summary>
     /// A test controller that recursively enters the context of each non master-test found.
+    /// </summary>
+    /// <remarks>
+    /// <para>
     /// When a master test is found, instantiates the <see cref="ITestController" /> for it
     /// and hands control over to it for the subtree of tests rooted at the master test.
-    /// </summary>
+    /// </para>
+    /// </remarks>
     public class RecursiveTestController : BaseTestController
     {
         /// <inheritdoc />

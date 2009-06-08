@@ -59,11 +59,13 @@ namespace Gallio.Model.Filters
         /// Returns an empty filter set.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// An empty filter set neither includes nor excludes any values on its own.
         /// However when filtering tests, Gallio applies an implicit inclusion rule when
         /// none is otherwise specified so the net effect if that all tests will be
         /// included (although "explicit" tests will not be selected explicitly so they
         /// will not run).
+        /// </para>
         /// </remarks>
         public static FilterSet<T> Empty
         {
@@ -115,7 +117,9 @@ namespace Gallio.Model.Filters
         /// Formats the filter set to a string suitable for parsing by <see cref="FilterParser{T}" />.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// The empty filter is represented by an empty string.
+        /// </para>
         /// </remarks>
         /// <returns>The formatted filter set expression.</returns>
         public string ToFilterSetExpr()
@@ -123,7 +127,7 @@ namespace Gallio.Model.Filters
             if (rules.Length == 0)
                 return "";
 
-            StringBuilder result = new StringBuilder();
+            var result = new StringBuilder();
             for (int i = 0; i < rules.Length; i++)
             {
                 if (rules[i].RuleType == FilterRuleType.Inclusion)

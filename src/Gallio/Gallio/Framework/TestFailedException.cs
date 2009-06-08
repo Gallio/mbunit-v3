@@ -20,16 +20,16 @@ using Gallio.Model;
 namespace Gallio.Framework
 {
     /// <summary>
-    /// <para>
     /// This exception type is used to signal that a test has failed to satisfy
     /// some predetermined condition established by the test author.
-    /// </para>
+    /// </summary>
+    /// <remarks>
     /// <para>
     /// For example, an assertion failure may be signaled using a <see cref="TestFailedException" />
     /// to distinguish it from other application or runtime errors that a test might encounter
     /// at runtime.
     /// </para>
-    /// </summary>
+    /// </remarks>
     [Serializable]
     public class TestFailedException : TestException
     {

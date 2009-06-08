@@ -16,16 +16,16 @@
 namespace Gallio.Model.Execution
 {
     /// <summary>
-    /// <para>
     /// The stub context tracker is a dummy implementation of <see cref="ITestContextTracker" />
     /// that is used in situations where the runtime environment has not been initialized.
-    /// </para>
+    /// </summary>
+    /// <remarks>
     /// <para>
     /// A typical use of this stub is to support the use of certain framework methods from
     /// clients that are not being executed inside of the Gallio test harness such as when
     /// test code is run by third party tools.
     /// </para>
-    /// </summary>
+    /// </remarks>
     public sealed class StubTestContextTracker : DefaultTestContextTracker
     {
         /// <summary>

@@ -28,10 +28,10 @@ namespace Gallio.Model
     public static class ModelUtils
     {
         /// <summary>
-        /// <para>
         /// Populates the provided metadata map with asembly-level metadata derived
         /// from custom attributes.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// Currently recognized attributes:
         /// <list type="bullet">
@@ -47,7 +47,7 @@ namespace Gallio.Model
         /// <item><see cref="AssemblyVersionAttribute" /></item>
         /// </list>
         /// </para>
-        /// </summary>
+        /// </remarks>
         /// <param name="assembly">The assembly.</param>
         /// <param name="metadataMap">The metadata map.</param>
         public static void PopulateMetadataFromAssembly(IAssemblyInfo assembly, PropertyBag metadataMap)

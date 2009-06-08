@@ -22,9 +22,9 @@ using Gallio.Common.Xml;
 namespace Gallio.Model
 {
     /// <summary>
-    /// <para>
     /// Describes the outcome of a test.
-    /// </para>
+    /// </summary>
+    /// <remarks>
     /// <para>
     /// An outcome consists of two parts.  First, a required <see cref="Status" /> that describes
     /// whether test passed, failed or was inconclusive.  Second, an optional <see cref="Category"/>
@@ -32,7 +32,7 @@ namespace Gallio.Model
     /// also provides an opportunity to extend the definition of a test outcome to include
     /// custom semantic details.
     /// </para>
-    /// </summary>
+    /// </remarks>
     [Serializable]
     [XmlRoot("outcome", Namespace = XmlSerializationUtils.GallioNamespace)]
     [XmlSchemaProvider("ProvideXmlSchema")]
@@ -63,24 +63,24 @@ namespace Gallio.Model
         }
 
         /// <summary>
-        /// <para>
         /// Gets the test status.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// The test status describes whether a test passed, failed or produced an inconclusive
         /// result.  This information may be reported to the user with icons and textual
         /// labels to explain the overall significance of the outcome.
         /// </para>
-        /// </summary>
+        /// </remarks>
         public TestStatus Status
         {
             get { return status; }
         }
 
         /// <summary>
-        /// <para>
         /// Gets the test outcome category, or null if none.  Never an empty string.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// The category, when provided, provides additional information to describe what happened
         /// to result in this particular outcome.
@@ -98,21 +98,21 @@ namespace Gallio.Model
         /// <item>It should not be too granular.  If too many categories are in common usage, test result summaries by category may become unwieldly.</item>
         /// </list>
         /// </para>
-        /// </summary>
+        /// </remarks>
         public string Category
         {
             get { return category; }
         }
 
         /// <summary>
-        /// <para>
         /// Gets the name of the outcome as it should be displayed.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// The display name is the outcome's <see cref="Category" />, if available.
         /// Otherwise it is a lowercase rendition of the outcome's <see cref="Status" />.
         /// </para>
-        /// </summary>
+        /// </remarks>
         public string DisplayName
         {
             get { return category ?? StatusToString(status); }
@@ -123,8 +123,10 @@ namespace Gallio.Model
         /// Otherwise returns this outcome.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// This combination rule has the nice property of preserving the first
         /// failure encountered even if subsequent failures occur and are combined.
+        /// </para>
         /// </remarks>
         /// <param name="other">The other outcome.</param>
         /// <returns>The combined outcome.</returns>
@@ -159,8 +161,10 @@ namespace Gallio.Model
         /// Gets a standard outcome for a test that passed.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// Status: <see cref="TestStatus.Passed"/>.
         /// Category: null.
+        /// </para>
         /// </remarks>
         /// <returns>The outcome.</returns>
         public static TestOutcome Passed
@@ -172,8 +176,10 @@ namespace Gallio.Model
         /// Gets a standard outcome for a test that failed.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// Status: <see cref="TestStatus.Failed"/>.
         /// Category: null.
+        /// </para>
         /// </remarks>
         /// <returns>The outcome.</returns>
         public static TestOutcome Failed
@@ -185,8 +191,10 @@ namespace Gallio.Model
         /// Gets a standard outcome for a test that failed due to an error.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// Status: <see cref="TestStatus.Failed"/>.
         /// Category: "error".
+        /// </para>
         /// </remarks>
         /// <returns>The outcome.</returns>
         public static TestOutcome Error
@@ -198,8 +206,10 @@ namespace Gallio.Model
         /// Gets a standard outcome for a test that failed because it ran out of time.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// Status: <see cref="TestStatus.Failed"/>.
         /// Category: "timeout".
+        /// </para>
         /// </remarks>
         /// <returns>The outcome.</returns>
         public static TestOutcome Timeout
@@ -211,8 +221,10 @@ namespace Gallio.Model
         /// Gets a standard outcome for a test that was inconclusive.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// Status: <see cref="TestStatus.Inconclusive"/>.
         /// Category: null.
+        /// </para>
         /// </remarks>
         /// <returns>The outcome.</returns>
         public static TestOutcome Inconclusive
@@ -224,8 +236,10 @@ namespace Gallio.Model
         /// Gets a standard outcome for a test that has an inconclusive outcome because it was canceled.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// Status: <see cref="TestStatus.Inconclusive"/>.
         /// Category: "canceled".
+        /// </para>
         /// </remarks>
         /// <returns>The outcome.</returns>
         public static TestOutcome Canceled
@@ -237,8 +251,10 @@ namespace Gallio.Model
         /// Gets a standard outcome for a test that did not run.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// Status: <see cref="TestStatus.Skipped"/>.
         /// Category: null.
+        /// </para>
         /// </remarks>
         /// <returns>The outcome.</returns>
         public static TestOutcome Skipped
@@ -251,8 +267,10 @@ namespace Gallio.Model
         /// to ignore it.  Perhaps the test is broken or non-functional.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// Status: <see cref="TestStatus.Skipped"/>.
         /// Category: "ignored".
+        /// </para>
         /// </remarks>
         /// <returns>The outcome.</returns>
         public static TestOutcome Ignored
@@ -266,8 +284,10 @@ namespace Gallio.Model
         /// or perhaps the test itself has yet to be implemented.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// Status: <see cref="TestStatus.Skipped"/>.
         /// Category: "pending".
+        /// </para>
         /// </remarks>
         /// <returns>The outcome.</returns>
         public static TestOutcome Pending
@@ -280,8 +300,10 @@ namespace Gallio.Model
         /// The test may be particularly expensive or require manual supervision by an operator.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// Status: <see cref="TestStatus.Skipped"/>.
         /// Category: "explicit".
+        /// </para>
         /// </remarks>
         /// <returns>The outcome.</returns>
         public static TestOutcome Explicit

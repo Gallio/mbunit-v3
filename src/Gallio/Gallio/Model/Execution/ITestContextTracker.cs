@@ -19,20 +19,20 @@ using System.Threading;
 namespace Gallio.Model.Execution
 {
     /// <summary>
-    /// <para>
     /// The context tracker tracks the <see cref="ITestContext" /> associated with threads.
-    /// </para>
     /// </summary>
     /// <remarks>
+    /// <para>
     /// All context tracker operations are thread safe.
+    /// </para>
     /// </remarks>
     public interface ITestContextTracker
     {
         /// <summary>
-        /// <para>
         /// Gets the context of the current thread, or null if there is no
         /// current context.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// A thread's current context is determined in the following manner:
         /// <list type="bullet">
@@ -48,7 +48,7 @@ namespace Gallio.Model.Execution
         /// thread acquires the context of its parent.  However, each thread has its own
         /// context stack distinct from that of any other.
         /// </para>
-        /// </summary>
+        /// </remarks>
         ITestContext CurrentContext { get; }
 
         /// <summary>
@@ -58,18 +58,14 @@ namespace Gallio.Model.Execution
         ITestContext GlobalContext { get; set; }
 
         /// <summary>
-        /// <para>
         /// Enters a context.
-        /// </para>
         /// </summary>
         /// <param name="context">The context to enter, or null to enter a scope without a context.</param>
         /// <returns>A cookie that can be used to restore the current thread's context to its previous value when disposed.</returns>
         IDisposable EnterContext(ITestContext context);
 
         /// <summary>
-        /// <para>
         /// Sets the default context for the specified thread.
-        /// </para>
         /// </summary>
         /// <remarks>
         /// <para>
@@ -90,9 +86,7 @@ namespace Gallio.Model.Execution
         void SetThreadDefaultContext(Thread thread, ITestContext context);
 
         /// <summary>
-        /// <para>
         /// Gets the default context for the specified thread.
-        /// </para>
         /// </summary>
         /// <remarks>
         /// <para>

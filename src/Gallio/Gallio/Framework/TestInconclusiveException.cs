@@ -20,12 +20,15 @@ using Gallio.Model;
 namespace Gallio.Framework
 {
     /// <summary>
-    /// <para>
     /// This exception type is used to signal that a test has not produced a conclusive
-    /// pass or fail result.  The exception message, if present, should explain the
+    /// pass or fail result.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// The exception message, if present, should explain the
     /// reason no conclusive result was obtained.
     /// </para>
-    /// </summary>
+    /// </remarks>
     [Serializable]
     public class TestInconclusiveException : TestException
     {

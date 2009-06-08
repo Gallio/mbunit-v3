@@ -27,7 +27,9 @@ namespace Gallio.Model.Execution
         /// Runs the tests.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// This method can be called at most once during the lifetime of a test controller.
+        /// </para>
         /// </remarks>
         /// <param name="rootTestCommand">The root test monitor.</param>
         /// <param name="parentTestStep">The parent test step, or null if starting a root step.</param>

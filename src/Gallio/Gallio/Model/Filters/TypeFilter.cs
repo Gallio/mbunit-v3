@@ -25,8 +25,10 @@ namespace Gallio.Model.Filters
     /// matches the specified type name.
     /// </summary>
     /// <remarks>
+    /// <para>
     /// Generic types should be specified by the name of their generic type definition.
     /// eg. Foo`1.
+    /// </para>
     /// </remarks>
     [Serializable]
     public class TypeFilter<T> : PropertyFilter<T> where T : ITestComponent

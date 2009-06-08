@@ -31,11 +31,11 @@ using Gallio.Common.Reflection;
 namespace Gallio.Framework
 {
     /// <summary>
-    /// <para>
     /// The test context provides information about the environment in which
     /// a test is executing.  A new context is created each time a test or
     /// test step begins execution.
-    /// </para>
+    /// </summary>
+    /// <remarks>
     /// <para>
     /// Test contexts are arranged in a hierarchy that corresponds to the order in which
     /// the contexts were entered.  Thus the context for a test likely has as
@@ -46,7 +46,7 @@ namespace Gallio.Framework
     /// code may attach <see cref="Finishing" /> event handlers to perform resource
     /// reclamation just prior to marking the test step as finished.
     /// </para>
-    /// </summary>
+    /// </remarks>
     /// <seealso cref="Framework.TestStep"/>
     [SystemInternal]
     public sealed class TestContext
@@ -95,9 +95,7 @@ namespace Gallio.Framework
         }
 
         /// <summary>
-        /// <para>
         /// Sets the default context for the specified thread.
-        /// </para>
         /// </summary>
         /// <remarks>
         /// <para>
@@ -121,9 +119,7 @@ namespace Gallio.Framework
         }
 
         /// <summary>
-        /// <para>
         /// Gets the default context for the specified thread.
-        /// </para>
         /// </summary>
         /// <remarks>
         /// <para>
@@ -149,9 +145,11 @@ namespace Gallio.Framework
         /// Enters the specified context with the current thread.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// Conceptually this method pushes the specified context onto the context
         /// stack for the current thread.  It then returns a cookie that can be used
         /// to restore the current thread's context to its previous value.
+        /// </para>
         /// </remarks>
         /// <param name="context">The context to enter, or null to enter a scope
         /// without a context.</param>
@@ -187,15 +185,15 @@ namespace Gallio.Framework
         }
 
         /// <summary>
-        /// <para>
         /// Gets the log writer for this context.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// Each test step gets its own log writer that is distinct from those
         /// of other steps.  So the log writer returned by this property is
         /// particular to the step represented by this test context.
         /// </para>
-        /// </summary>
+        /// </remarks>
         public MarkupDocumentWriter LogWriter
         {
             get { return inner.LogWriter; }
@@ -205,8 +203,10 @@ namespace Gallio.Framework
         /// Gets the sandbox of the test step, or null if none.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// The value will typically only be null in the case where the test step
         /// belongs to a different test framework that does not use sandboxes.
+        /// </para>
         /// </remarks>
         public Sandbox Sandbox
         {
@@ -233,18 +233,18 @@ namespace Gallio.Framework
         }
 
         /// <summary>
-        /// <para>
         /// Gets the step's outcome or its interim outcome if the test is still running.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// The value of this property is initially <see cref="TestOutcome.Passed" /> but may change
         /// over the course of execution to reflect the anticipated outcome of the test.  When
         /// the test finishes, its outcome is frozen.
         /// </para>
-        /// </summary>
-        /// <remarks>
+        /// <para>
         /// For example, this property enables code running as part of the tear down phase to
         /// determine whether the test is failing and to perform different actions in that case.
+        /// </para>
         /// </remarks>
         /// <seealso cref="SetInterimOutcome"/>
         public TestOutcome Outcome
@@ -412,12 +412,13 @@ namespace Gallio.Framework
         }
 
         /// <summary>
-        /// <para>
-        /// Sets the step's interim <see cref="Outcome" />.  The interim outcome is used
-        /// to communicate the anticipated outcome of the step to later phases of execution.
-        /// </para>
+        /// Sets the step's interim <see cref="Outcome" />.
         /// </summary>
         /// <remarks>
+        /// <para>
+        /// The interim outcome is used to communicate the anticipated outcome 
+        /// of the step to later phases of execution.
+        /// </para>
         /// <para>
         /// The value set here will be overridden by whatever final outcome the step
         /// returns.  Consequently the actual outcome may still differ from the anticipated outcome
@@ -435,9 +436,11 @@ namespace Gallio.Framework
         /// Enters this context with the current thread.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// Conceptually this method pushes this context onto the context
         /// stack for the current thread.  It then returns a cookie that can be used
         /// to restore the current thread's context to its previous value.
+        /// </para>
         /// </remarks>
         /// <returns>A cookie that can be used to restore the current thread's context to its previous value.</returns>
         /// <seealso cref="TestContextCookie"/>
@@ -490,8 +493,12 @@ namespace Gallio.Framework
 
         /// <summary>
         /// Prepares a <see cref="TestContext" /> wrapper for the given inner context.
-        /// The wrapper is cached for the duration of the lifetime of the inner context.
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// The wrapper is cached for the duration of the lifetime of the inner context.
+        /// </para>
+        /// </remarks>
         /// <param name="inner">The new inner context.</param>
         /// <param name="sandbox">The sandbox to use, or null if none.</param>
         /// <returns>The wrapper context.</returns>
@@ -505,9 +512,14 @@ namespace Gallio.Framework
         }
 
         /// <summary>
-        /// Wraps an existing context.  If the context has already been prepared, returns
-        /// the prepared context.  Otherwise creates a new wrapper.
+        /// Wraps an existing context.
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// If the context has already been prepared, returns
+        /// the prepared context.  Otherwise creates a new wrapper.
+        /// </para>
+        /// </remarks>
         /// <param name="inner">The context to wrap, or null if none.</param>
         /// <returns>The wrapped context, or null if none.</returns>
         internal static TestContext WrapContext(ITestContext inner)

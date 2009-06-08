@@ -28,20 +28,22 @@ using Gallio.Common.Markup;
 namespace Gallio.Framework
 {
     /// <summary>
+    /// A sandbox is an isolated environments for executing test actions.
+    /// </summary>
+    /// <remarks>
     /// <para>
-    /// A sandbox is an isolated environments for executing test actions.  It provides
-    /// the ability to abort actions in progress so that the test runner can proceed
+    /// It provides the ability to abort actions in progress so that the test runner can proceed
     /// to run other actions.
     /// </para>
     /// <para>
-    /// Sandboxes are hierarchically structured.  When an outer sandbox is aborted, all
-    /// of its inner sandboxes are likewise aborted.  A sandbox also provides the ability
+    /// Sandboxes are hierarchically structured. When an outer sandbox is aborted, all
+    /// of its inner sandboxes are likewise aborted. A sandbox also provides the ability
     /// to create new child sandboxes at will so that test actions can be isolated with
     /// fine granularity.
     /// </para>
-    /// </summary>
-    /// <remarks>
+    /// <para>
     /// This class is safe for use from multiple concurrent threads.
+    /// </para>
     /// </remarks>
     [SystemInternal]
     public sealed class Sandbox : IDisposable
@@ -64,13 +66,13 @@ namespace Gallio.Framework
         }
 
         /// <summary>
-        /// <para>
         /// An event that is dispatched when <see cref="Abort(TestOutcome, string)" /> is called.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// If the sandbox has already been aborted then the event handler is immediately invoked.
         /// </para>
-        /// </summary>
+        /// </remarks>
         /// <exception cref="ObjectDisposedException">Thrown if the sandbox was disposed.</exception>
         public event EventHandler Aborted
         {
@@ -101,7 +103,7 @@ namespace Gallio.Framework
         }
 
         /// <summary>
-        /// Returns true if <see cref="Abort(TestOutcome, string)" /> was called.
+        /// Returns <code>true</code> if <see cref="Abort(TestOutcome, string)" /> was called.
         /// </summary>
         /// <exception cref="ObjectDisposedException">Thrown if the sandbox was disposed.</exception>
         public bool WasAborted
@@ -150,14 +152,14 @@ namespace Gallio.Framework
         }
 
         /// <summary>
-        /// <para>
         /// Disposes the sandbox.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// All currently executing actions are aborted with <see cref="TestOutcome.Error" />
         /// if <see cref="Abort(TestOutcome, string)" /> has not already been called.
         /// </para>
-        /// </summary>
+        /// </remarks>
         public void Dispose()
         {
             Abort(TestOutcome.Error, "The sandbox was disposed.", false);
@@ -178,14 +180,14 @@ namespace Gallio.Framework
         }
 
         /// <summary>
-        /// <para>
         /// Creates a child sandbox.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// When the parent sandbox is aborted, the child will likewise be aborted.  This policy
         /// offers a mechanism to scope actions recursively.
         /// </para>
-        /// </summary>
+        /// </remarks>
         /// <returns>The child sandbox.</returns>
         /// <exception cref="ObjectDisposedException">Thrown if the sandbox was disposed.</exception>
         public Sandbox CreateChild()
@@ -199,15 +201,15 @@ namespace Gallio.Framework
         }
 
         /// <summary>
-        /// <para>
         /// Aborts all actions in progress within this context.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// The abort is persistent and cannot be reverted.  Therefore once aborted, no further
         /// test actions will be permitted to run.  Subsequent calls to <see cref="Abort(TestOutcome, string)" />
         /// will have no effect.
         /// </para>
-        /// </summary>
+        /// </remarks>
         /// <param name="outcome">The outcome to be returned from aborted actions.</param>
         /// <param name="message">A message to be logged when the action is aborted, or null if none.</param>
         /// <exception cref="ObjectDisposedException">Thrown if the sandbox was disposed.</exception>
@@ -447,7 +449,7 @@ namespace Gallio.Framework
 
         private void HandleParentAborted(object sender, EventArgs e)
         {
-            Sandbox parent = (Sandbox) sender;
+            var parent = (Sandbox)sender;
             Abort(parent.AbortOutcome.Value, parent.AbortMessage);
         }
 

@@ -22,6 +22,7 @@ namespace Gallio.Model.Filters
     /// Builds filters for <see cref="ITestComponent"/> objects.
     /// </summary>
     /// <remarks>
+    /// <para>
     /// Recognizes the following filter keys:
     /// <list type="bullet">
     /// <item>Id: Filter by id</item>
@@ -33,6 +34,7 @@ namespace Gallio.Model.Filters
     /// <item>Member: Filter by member name</item>
     /// <item>*: All other names are assumed to correspond to metadata keys</item>
     /// </list>
+    /// </para>
     /// </remarks>
     /// <typeparam name="T">The <see cref="ITestComponent"/> subtype.</typeparam>
     public class ModelComponentFilterFactory<T> : IFilterFactory<T>

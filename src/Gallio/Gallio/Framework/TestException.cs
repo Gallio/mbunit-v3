@@ -20,15 +20,15 @@ using Gallio.Model;
 namespace Gallio.Framework
 {
     /// <summary>
-    /// <para>
     /// This exception type is an abstract base class for exceptions that are used to
     /// explicitly signal the outcome of a test.
-    /// </para>
+    /// </summary>
+    /// <remarks>
     /// <para>
     /// The test framework uses the value of the <see cref="Outcome" /> property to set the test
     /// result instead of applying the standard behavior for unexpected exceptions.
     /// </para>
-    /// </summary>
+    /// </remarks>
     [Serializable]
     public abstract class TestException : Exception
     {
@@ -75,8 +75,12 @@ namespace Gallio.Framework
 
         /// <summary>
         /// Returns true if the test exception has a non-default message
-        /// (the message parameter was not null in the constructor arguments).
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// The message parameter was not null in the constructor arguments.
+        /// </para>
+        /// </remarks>
         public bool HasNonDefaultMessage
         {
             get { return hasNonDefaultMessageKey; }
@@ -89,7 +93,7 @@ namespace Gallio.Framework
         public abstract TestOutcome Outcome { get; }
 
         /// <summary>
-        /// Returns true if the outcome and message (if any) should be used but the exception
+        /// Returns <code>true</code> if the outcome and message (if any) should be used but the exception
         /// stack trace should not be logged.
         /// </summary>
         public virtual bool ExcludeStackTrace

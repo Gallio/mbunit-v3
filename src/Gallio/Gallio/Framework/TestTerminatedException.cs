@@ -20,12 +20,14 @@ using Gallio.Model;
 namespace Gallio.Framework
 {
     /// <summary>
-    /// <para>
     /// This exception type is used to signal that a test has been terminated with
-    /// a particular outcome.  The exception message, if present, should explain the
-    /// reason that the test was terminated.
-    /// </para>
+    /// a particular outcome.
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// The exception message, if present, should explain the reason that the test was terminated.
+    /// </para>
+    /// </remarks>
     [Serializable]
     public class TestTerminatedException : TestException
     {

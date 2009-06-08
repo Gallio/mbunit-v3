@@ -21,12 +21,12 @@ using Gallio.Model.Execution;
 namespace Gallio.Model
 {
     /// <summary>
-    /// <para>
     /// A test object represents a parameterized test case or test
     /// container.  The test parameters are used as placeholders for
     /// data-binding during test execution.  A single test can
     /// produce multiple steps (<seealso cref="ITestStep" />) at runtime.
-    /// </para>
+    /// </summary>
+    /// <remarks>
     /// <para>
     /// A <see cref="ITest" /> can be thought of as a declarative
     /// artifact that describes about what a test "looks like"
@@ -57,25 +57,26 @@ namespace Gallio.Model
     /// and other test containers.  Test containers are skipped if they do not
     /// contain any test cases or if none of their test cases have been selected for execution.
     /// </para>
-    /// </summary>
+    /// </remarks>
     public interface ITest : ITestComponent
     {
         /// <summary>
-        /// <para>
         /// Gets the full name of the test.  The full name is derived by concatenating the
         /// <see cref="FullName" /> of the <see cref="Parent"/> followed by a slash ('/')
         /// followed by the <see cref="ITestComponent.Name" /> of this test.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// The full name of the root test is empty.
         /// </para>
-        /// </summary>
+        /// </remarks>
         string FullName { get; }
 
         /// <summary>
-        /// <para>
         /// Gets a locally unique identifier for this test that satisfies the following conditions:
-        /// </para>
+        /// </summary>
+        /// <remarks>
+        /// <para>
         /// <list type="bullet">
         /// <item>The identifier is unique among all siblings of this test belonging to the same parent.</item>
         /// <item>The identifier is likely to be stable across multiple sessions including
@@ -90,8 +91,6 @@ namespace Gallio.Model
         /// <see cref="ITestComponent.CodeElement" /> and an ordering condition among siblings
         /// to guarantee uniqueness.
         /// </para>
-        /// </summary>
-        /// <remarks>
         /// <para>
         /// The locally unique <see cref="LocalId" /> property may be used to generate the
         /// globally unique <see cref="ITestComponent.Id" /> property of a test by combining
@@ -103,12 +102,14 @@ namespace Gallio.Model
 
         /// <summary>
         /// Gets whether this test represents an individual test case
-        /// as opposed to a test container such as a fixture or suite.  The value of
-        /// this property can be used by the test harness to avoid processing containers
-        /// that have no test cases.  It can also be used by the reporting infrastructure
-        /// to constrain output statistics to test cases only.
+        /// as opposed to a test container such as a fixture or suite.
         /// </summary>
         /// <remarks>
+        /// <para>
+        /// The value of this property can be used by the test harness to avoid processing 
+        /// containers that have no test cases.  It can also be used by the reporting infrastructure
+        /// to constrain output statistics to test cases only.
+        /// </para>
         /// <para>
         /// Not all test cases are leaf nodes in the test tree and vice-versa.       
         /// </para>
@@ -131,41 +132,52 @@ namespace Gallio.Model
 
         /// <summary>
         /// Gets a read-only list of the parameters of this test.
-        /// Each parameter must have a unique name.  The order in which
-        /// the parameters appear is not significant.
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// Each parameter must have a unique name.
+        /// </para>
+        /// <para>
+        /// The order in which the parameters appear is not significant.
+        /// </para>
+        /// </remarks>
         IList<ITestParameter> Parameters { get; }
 
         /// <summary>
         /// Gets a read-only list of the dependencies of this test.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// Some test frameworks may choose to ignore test dependencies or may impose their own dependency schemes.
+        /// </para>
         /// </remarks>
         IList<ITest> Dependencies { get; }
 
         /// <summary>
-        /// <para>
         /// Gets or sets a number that defines an ordering for the test with respect to its siblings.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// Unless compelled otherwise by test dependencies, tests with a lower order number than
         /// their siblings will run before those siblings and tests with the same order number
         /// as their siblings with run in an arbitrary sequence with respect to those siblings.
         /// </para>
-        /// </summary>
-        /// <remarks>
+        /// <para>
         /// Some test frameworks may choose to ignore test order or may impose their own ordering schemes.
+        /// </para>
         /// </remarks>
         /// <value>The test execution order with respect to siblings, initially zero.</value>
         int Order { get; set; }
 
         /// <summary>
         /// Gets a <see cref="ITestController" /> <see cref="Func{TResult}" /> to run this tes
-        /// and all of its children.  Returns null if this test is merely a container for
-        /// other tests or if it otherwise does not require or provide its own controller.
+        /// and all of its children.
         /// </summary>
         /// <remarks>
+        /// <para>
+        /// Returns null if this test is merely a container for other tests or if it otherwise 
+        /// does not require or provide its own controller.
+        /// </para>
         /// <para>
         /// The top-most test that returns a non-null <see cref="Func{T}" /> is
         /// referred to as the master test.  It may contain other tests that also have

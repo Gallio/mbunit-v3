@@ -50,8 +50,12 @@ namespace Gallio.Model.Execution
 
         /// <summary>
         /// Gets or sets whether the filter exactly specifies all tests to select.
-        /// If false, then children of the selected tests are also included.
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// If <code>false</code>, then children of the selected tests are also included.
+        /// </para>
+        /// </remarks>
         /// <value>Defaults to false.</value>
         public bool ExactFilter
         {
@@ -60,15 +64,15 @@ namespace Gallio.Model.Execution
         }
 
         /// <summary>
-        /// <para>
         /// Gets or sets whether to skip running tests that use dynamic data items.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// This flag can be useful in combination with <see cref="SkipTestExecution" />
         /// to enumerate non-dynamic tests only.
         /// </para>
-        /// </summary>
-        /// <value>Defaults to <c>false</c></value>
+        /// </remarks>
+        /// <value>Defaults to <code>false</code></value>
         public bool SkipDynamicTests
         {
             get { return skipDynamicTests; }
@@ -76,17 +80,17 @@ namespace Gallio.Model.Execution
         }
 
         /// <summary>
-        /// <para>
         /// Gets or sets whether to skip the execution of tests.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// The test runner will go through most of the motions of running tests but will skip
         /// the actual execution phase.  This option can be used to enumerate data-driven test
         /// steps without running them.  It can also be used to verify that the execution
         /// environment is sane without doing most of the work of running the tests.
         /// </para>
-        /// </summary>
-        /// <value>Defaults to <c>false</c></value>
+        /// </remarks>
+        /// <value>Defaults to <code>false</code></value>
         public bool SkipTestExecution
         {
             get { return skipTestExecution; }
@@ -104,7 +108,7 @@ namespace Gallio.Model.Execution
         /// that the default apartment state is <see cref="ApartmentState.STA"/>.
         /// </para>
         /// </remarks>
-        /// <value>Defaults to false.</value>
+        /// <value>Defaults to <code>false</code>.</value>
         public bool SingleThreaded
         {
             get { return singleThreaded; }
@@ -117,7 +121,7 @@ namespace Gallio.Model.Execution
         /// <returns>The copy.</returns>
         public TestExecutionOptions Copy()
         {
-            TestExecutionOptions copy = new TestExecutionOptions();
+            var copy = new TestExecutionOptions();
 
             copy.filterSet = filterSet;
             copy.exactFilter = exactFilter;

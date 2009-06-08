@@ -17,8 +17,12 @@ namespace Gallio.Model
 {
     /// <summary>
     /// Defines the names of common test step lifecycle phases.
-    /// Custom phases may also be defined.
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// Custom phases may also be defined.
+    /// </para>
+    /// </remarks>
     public static class LifecyclePhases
     {
         /// <summary>
@@ -27,7 +31,7 @@ namespace Gallio.Model
         public const string Starting = "Starting";
 
         /// <summary>
-        /// The test is being initialize.  (Fixture construction, etc.)
+        /// The test is being initialize. (Fixture construction, etc.)
         /// </summary>
         public const string Initialize = "Initialize";
 

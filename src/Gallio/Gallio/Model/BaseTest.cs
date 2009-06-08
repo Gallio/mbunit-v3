@@ -27,8 +27,10 @@ namespace Gallio.Model
     /// Base implementation of <see cref="ITest" />.
     /// </summary>
     /// <remarks>
+    /// <para>
     /// The base test implementation acts as a simple container for tests.
     /// Accordingly its kind is set to <see cref="TestKinds.Group" /> by default.
+    /// </para>
     /// </remarks>
     public class BaseTest : BaseTestComponent, ITest
     {
@@ -82,9 +84,13 @@ namespace Gallio.Model
 
         /// <summary>
         /// Gets or sets a suggested <see cref="LocalId" /> hint, or null if none.
+        /// </summary>
+        /// <remarks>
+        /// <para>
         /// The value returned by this method will be checked for uniqueness and amended as necessary
         /// to produce a truly unique <see cref="LocalId" />.
-        /// </summary>
+        /// </para>
+        /// </remarks>
         /// <value>
         /// The default value of this property is <c>null</c> which causes the <see cref="ITestComponent.Name" />
         /// property to be used as the local id hint.

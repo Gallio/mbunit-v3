@@ -25,9 +25,9 @@ using Gallio.Common.Reflection;
 namespace Gallio.Framework
 {
     /// <summary>
-    /// <para>
     /// Provides functions for manipulating test steps.
-    /// </para>
+    /// </summary>
+    /// <remarks>
     /// <para>
     /// A step is a delimited region of a test.  Each step appears in the report as
     /// if it were a dynamically generated test nested within the body of the test
@@ -67,37 +67,41 @@ namespace Gallio.Framework
     /// verified can be reported independently.</item>
     /// </list>
     /// </para>
-    /// </summary>
+    /// </remarks>
     /// <example>
     /// <para>
     /// Running as many iterations of a test as possible for a set maximum duration.
     /// Each iteration will run as a separate test step so that it has its own test
     /// execution log and test outcome included in the test report.
-    /// <code>
-    /// [Test]
-    /// public void MeasurePerformance()
+    /// <code><![CDATA[
+    /// [TestFixture]
+    /// public class Fixture
     /// {
-    ///     // Warm up.
-    ///     TestStep.RunStepAndVerify("Warm Up", DoSomething, TestOutcome.Passed);
-    /// 
-    ///     // Run as many iterations as possible for 10 seconds.
-    ///     int iterations = 0;
-    ///     Stopwatch stopwatch = Stopwatch.StartNew();
-    ///     while (stopwatch.ElapsedMilliseconds &lt; 10*1000)
+    ///     [Test]
+    ///     public void MeasurePerformance()
     ///     {
-    ///         iterations += 1;
-    ///         TestStep.RunStepAndVerify("Iteration #" + i, DoSomething, TestOutcome.Passed);
+    ///         // Warm up.
+    ///         TestStep.RunStepAndVerify("Warm Up", DoSomething, TestOutcome.Passed);
+    /// 
+    ///         // Run as many iterations as possible for 10 seconds.
+    ///         int iterations = 0;
+    ///         Stopwatch stopwatch = Stopwatch.StartNew();
+    ///         while (stopwatch.ElapsedMilliseconds < 10000)
+    ///         {
+    ///             iterations += 1;
+    ///             TestStep.RunStepAndVerify("Iteration #" + i, DoSomething, TestOutcome.Passed);
+    ///         }
+    /// 
+    ///         double iterationsPerSecond = iterations * 1000.0 / stopwatch.ElapsedMilliseconds;
+    ///         Assert.GreaterEqualThan(iterationsPerSecond, 5, "Unacceptable performance.");
     ///     }
     /// 
-    ///     double iterationsPerSecond = iterations * 1000.0 / stopwatch.ElapsedMilliseconds;
-    ///     Assert.GreaterEqualThan(iterationsPerSecond, 5, "Unacceptable performance.");
+    ///     private void DoSomething()
+    ///     {
+    ///         objectUnderTest.Wibble();
+    ///     }
     /// }
-    /// 
-    /// private void DoSomething()
-    /// {
-    ///     objectUnderTest.Wibble();
-    /// }
-    /// </code>
+    /// ]]></code>
     /// </para>
     /// </example>
     [SystemInternal]

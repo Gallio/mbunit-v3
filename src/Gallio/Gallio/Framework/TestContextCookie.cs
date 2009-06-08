@@ -19,10 +19,8 @@ using System.Threading;
 namespace Gallio.Framework
 {
     /// <summary>
-    /// <para>
     /// A context cookie is used to unwind the context stack of the current thread
     /// to its previous state prior to a context having been entered.
-    /// </para>
     /// </summary>
     public struct TestContextCookie : IDisposable
     {
@@ -38,18 +36,18 @@ namespace Gallio.Framework
         }
 
         /// <summary>
-        /// <para>
         /// Exits the context that was entered when the cookie was granted.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// Equivalent to calling <see cref="ExitContext" />.  This method is provded as a
         /// convenience for use with the C# using statement.
         /// </para>
-        /// </summary>
-        /// <remarks>
+        /// <para>
         /// This method will also exit nested contexts on the current thread that were
         /// entered after the context for which this cookie was produced but have not
         /// yet been exited.
+        /// </para>
         /// </remarks>
         /// <exception cref="InvalidOperationException">Thrown if the cookie belongs to a different
         /// <see cref="Thread" /> or if the context was already exited.</exception>
@@ -63,9 +61,11 @@ namespace Gallio.Framework
         /// Exits the context that was entered when the cookie was granted.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// This method will also exit nested contexts on the current thread that were
         /// entered after the context for which this cookie was produced but have not
         /// yet been exited.
+        /// </para>
         /// </remarks>
         /// <exception cref="InvalidOperationException">Thrown if the cookie belongs to a different
         /// <see cref="Thread" /> or if the context was already exited.</exception>

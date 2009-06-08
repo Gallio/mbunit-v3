@@ -46,8 +46,12 @@ namespace Gallio.Model.Filters
 
         /// <summary>
         /// Gets the filters from which at least one match must be found.
-        /// If the list is empty, the filter matches everything.
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// If the list is empty, the filter matches everything.
+        /// </para>
+        /// </remarks>
         public IList<Filter<T>> Filters
         {
             get { return new ReadOnlyCollection<Filter<T>>(filters); }
@@ -71,7 +75,7 @@ namespace Gallio.Model.Filters
         /// <inheritdoc />
         public override string ToString()
         {
-            StringBuilder result = new StringBuilder();
+            var result = new StringBuilder();
             result.Append(@"Or({ ");
 
             for (int i = 0; i < filters.Length; i++)

@@ -27,7 +27,9 @@ namespace Gallio.Model
         /// The metadata key for the author's email.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// May be derived from <c>AuthorAttribute</c> in MbUnit or its equivalent.
+        /// </para>
         /// </remarks>
         public const string AuthorEmail = "AuthorEmail";
 
@@ -35,7 +37,9 @@ namespace Gallio.Model
         /// The metadata key for the author's name.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// May be derived from <c>AuthorAttribute</c> in MbUnit or its equivalent.
+        /// </para>
         /// </remarks>
         public const string AuthorName = "AuthorName";
 
@@ -43,7 +47,9 @@ namespace Gallio.Model
         /// The metadata key for the author's homepage.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// May be derived from <c>AuthorAttribute</c> in MbUnit or its equivalent.
+        /// </para>
         /// </remarks>
         public const string AuthorHomepage = "AuthorHomepage";
 
@@ -51,7 +57,9 @@ namespace Gallio.Model
         /// The metadata key for the name of a category to which a test belongs.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// May be derived from <c>CategoryAttribute</c> in MbUnit or its equivalent.
+        /// </para>
         /// </remarks>
         public const string Category = "Category";
 
@@ -60,7 +68,9 @@ namespace Gallio.Model
         /// file path or as a Uri.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// May be derived from the assembly's <see cref="Assembly.CodeBase" /> property.
+        /// </para>
         /// </remarks>
         public const string CodeBase = "CodeBase";
 
@@ -68,16 +78,22 @@ namespace Gallio.Model
         /// The metadata key for the name of the company associated with a test.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// May be derived from <see cref="AssemblyCompanyAttribute" />.
+        /// </para>
         /// </remarks>
         public const string Company = "Company";
 
         /// <summary>
         /// The metadata key for build/release configuration information associated with a test.
-        /// It describes the target environment or usage for the test.
         /// </summary>
         /// <remarks>
+        /// <para>
+        /// It describes the target environment or usage for the test.
+        /// </para>
+        /// <para>
         /// May be derived from <see cref="AssemblyConfigurationAttribute" />.
+        /// </para>
         /// </remarks>
         public const string Configuration = "Configuration";
 
@@ -85,7 +101,9 @@ namespace Gallio.Model
         /// The metadata key for a copyright associated with a test.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// May be derived from <see cref="AssemblyCopyrightAttribute" />.
+        /// </para>
         /// </remarks>
         public const string Copyright = "Copyright";
 
@@ -93,8 +111,10 @@ namespace Gallio.Model
         /// The metadata key for specifying the origin of data used by a test.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// May be the file name and line number of a record in a file, the ID
         /// of a database record or some other identifying characteristic.
+        /// </para>
         /// </remarks>
         public const string DataLocation = "DataLocation";
 
@@ -102,8 +122,10 @@ namespace Gallio.Model
         /// The metadata key for the description of a test component.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// May be derived from <see cref="AssemblyDescriptionAttribute" />
         /// or <c>DescriptionAttribute</c> in MbUnit or its equivalent.
+        /// </para>
         /// </remarks>
         public const string Description = "Description";
 
@@ -112,17 +134,23 @@ namespace Gallio.Model
         /// full name or assembly-qualified name of the expected exception type.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// May be derived from <c>ExpectedExceptionAttribute</c> in MbUnit
         /// or its equivalent.
+        /// </para>
         /// </remarks>
         public const string ExpectedException = "ExpectedException";
 
         /// <summary>
         /// The metadata key that describes the reason that a test should be run explicitly.
-        /// (Tests may of course be marked explicit without a declared reason.)
         /// </summary>
         /// <remarks>
+        /// <para>
+        /// Tests may of course be marked explicit without a declared reason.
+        /// </para>
+        /// <para>
         /// May be derived from <c>ExplicitAttribute</c> in MbUnit or its equivalent.
+        /// </para>
         /// </remarks>
         public const string ExplicitReason = "ExplicitReason";
 
@@ -130,7 +158,9 @@ namespace Gallio.Model
         /// The metadata key for a file version number associated with a test.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// May be derived from <see cref="AssemblyFileVersionAttribute" />.
+        /// </para>
         /// </remarks>
         public const string FileVersion = "FileVersion";
 
@@ -138,16 +168,22 @@ namespace Gallio.Model
         /// The metadata key for the test framework name associated with a test framework node in the test tree.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// The value should be the name trait of the component that implements the "Gallio.TestFramework" service.
+        /// </para>
         /// </remarks>
         public const string Framework = "Framework";
 
         /// <summary>
         /// The metadata key that describes the reason that a test is being ignored.
-        /// (Tests may of course be ignored without a declared reason.)
         /// </summary>
         /// <remarks>
+        /// <para>
+        /// Tests may of course be ignored without a declared reason.
+        /// </para>
+        /// <para>
         /// May be derived from <c>IgnoreAttribute</c> in MbUnit or its equivalent.
+        /// </para>
         /// </remarks>
         public const string IgnoreReason = "IgnoreReason";
 
@@ -157,7 +193,9 @@ namespace Gallio.Model
         /// or its equivalent.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// May be derived from <c>ImportantAttribute</c> in MbUnit or its equivalent.
+        /// </para>
         /// </remarks>
         public const string Importance = "Importance";
 
@@ -165,16 +203,22 @@ namespace Gallio.Model
         /// The metadata key for an informational version number associated with a test.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// May be derived from <see cref="AssemblyInformationalVersionAttribute" />.
+        /// </para>
         /// </remarks>
         public const string InformationalVersion = "InformationalVersion";
 
         /// <summary>
         /// The metadata key that describes the reason that a test is pending.
-        /// (Tests may of course be marked pending without a declared reason.)
         /// </summary>
         /// <remarks>
+        /// <para>
+        /// Tests may of course be marked pending without a declared reason.
+        /// </para>
+        /// <para>
         /// May be derived from <c>PendingAttribute</c> in MbUnit or its equivalent.
+        /// </para>
         /// </remarks>
         public const string PendingReason = "PendingReason";
 
@@ -182,17 +226,23 @@ namespace Gallio.Model
         /// The metadata key for a product associated with a test.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// May be derived from <see cref="AssemblyProductAttribute" />.
+        /// </para>
         /// </remarks>
         public const string Product = "Product";
 
         /// <summary>
         /// The metadata key for the name of the type being tested.
-        /// The associated value should be the full name of the type from <see cref="Type.FullName" />
-        /// or the assembly qualified name of the type from <see cref="Type.AssemblyQualifiedName" />.
         /// </summary>
         /// <remarks>
+        /// <para>
+        /// The associated value should be the full name of the type from <see cref="Type.FullName" />
+        /// or the assembly qualified name of the type from <see cref="Type.AssemblyQualifiedName" />.
+        /// </para>
+        /// <para>
         /// May be derived from <c>TestsOnAttribute</c> in MbUnit or its equivalent.
+        /// </para>
         /// </remarks>
         public const string TestsOn = "TestsOn";
 
@@ -206,7 +256,9 @@ namespace Gallio.Model
         /// The metadata key for a title associated with a test.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// May be derived from <see cref="AssemblyTitleAttribute" />.
+        /// </para>
         /// </remarks>
         public const string Title = "Title";
 
@@ -214,7 +266,9 @@ namespace Gallio.Model
         /// The metadata key for a trademark associated with a test.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// May be derived from <see cref="AssemblyTrademarkAttribute" />.
+        /// </para>
         /// </remarks>
         public const string Trademark = "Trademark";
 
@@ -222,7 +276,9 @@ namespace Gallio.Model
         /// The metadata key for a version number associated with a test.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// May be derived from <see cref="AssemblyVersionAttribute" />.
+        /// </para>
         /// </remarks>
         public const string Version = "Version";
 

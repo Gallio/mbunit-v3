@@ -23,8 +23,12 @@ namespace Gallio.Model.Execution
 {
     /// <summary>
     /// A stub implementation of <see cref="ITestContext" /> using a <see cref="TextualMarkupDocumentWriter" />.
-    /// Does not fully support nested test steps or other dynamic features.
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// Does not fully support nested test steps or other dynamic features.
+    /// </para>
+    /// </remarks>
     /// <seealso cref="StubTestContextTracker" />
     /// <seealso cref="TextualMarkupDocumentWriter"/>
     public class StubTestContext : ITestContext

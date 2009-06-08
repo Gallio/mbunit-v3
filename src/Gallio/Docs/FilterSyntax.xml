@@ -1,22 +1,23 @@
 <doc>
   <summary>
     <para>
-    Sets the filter set to apply, which consists of a sequence of one or more inclusion
-    or exclusion filter rules prefixed using 'include' (optional) or 'exclude'.
-    A filter rule consists of zero or more filter expressions
-    that may be combined using 'and', 'or', and 'not' and grouped with
-    parentheses.  A filter expression consists of a filter key followed by one or
-    more comma-delimited matching values in the form 'key: value, "quoted value",
-    /regular expression/'.
+      Sets the filter set to apply, which consists of a sequence of one or more inclusion
+      or exclusion filter rules prefixed using 'include' (optional) or 'exclude'.
     </para>
   </summary>
   <remarks>
     <para>
+      A filter rule consists of zero or more filter expressions
+      that may be combined using 'and', 'or', and 'not' and grouped with
+      parentheses.  A filter expression consists of a filter key followed by one or
+      more comma-delimited matching values in the form 'key: value, "quoted value",
+      /regular expression/'.
+    </para>
+    <para>
       The filter grammar is defined as follows:
     </para>
     <para>
-      <code>
-        <![CDATA[
+      <code><![CDATA[
      INCLUDE          ::= "include"              # Not case-sensitive
      EXCLUDE          ::= "exclude"              # Not case-sensitive
 	
@@ -97,7 +98,7 @@
     <para>
       Assuming the following fixtures have been defined:
     </para>
-    <code>
+    <code><![CDATA[
       [TestFixture]
       [Category("UnitTest")]
       [Author("AlbertEinstein")]
@@ -126,7 +127,7 @@
         {
         }
       }
-    </code>
+    ]]></code>
     <para>The following filters could be applied:</para>
     <list type="bullet">
       <item>

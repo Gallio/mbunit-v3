@@ -49,14 +49,14 @@ namespace Gallio.Model.Execution
             if (contextManager == null)
                 throw new ArgumentNullException("contextManager");
 
-            Dictionary<ITest, ManagedTestCommand> commands = new Dictionary<ITest, ManagedTestCommand>();
+            var commands = new Dictionary<ITest, ManagedTestCommand>();
             bool hasExplicitAncestor = ! filterSet.HasInclusionRules;
             ManagedTestCommand rootCommand = CreateFilteredClosure(commands, testModel.RootTest, filterSet, exactFilter, 
                 hasExplicitAncestor, contextManager);
             if (rootCommand == null)
                 return null;
 
-            MultiMap<ManagedTestCommand, ManagedTestCommand> siblingDependencies = new MultiMap<ManagedTestCommand, ManagedTestCommand>();
+            var siblingDependencies = new MultiMap<ManagedTestCommand, ManagedTestCommand>();
             PopulateCommandDependencies(commands, siblingDependencies);
 
             SortChildren(rootCommand, siblingDependencies);
@@ -75,7 +75,7 @@ namespace Gallio.Model.Execution
             bool isExplicit = isMatch && ! hasExplicitAncestor;
             bool hasExplicitChild = false;
 
-            List<ManagedTestCommand> children = new List<ManagedTestCommand>(test.Children.Count);
+            var children = new List<ManagedTestCommand>(test.Children.Count);
             foreach (ITest child in test.Children)
             {
                 ManagedTestCommand childMonitor = CreateFilteredClosure(commands, child, filterSet, exactFilter,
@@ -98,7 +98,7 @@ namespace Gallio.Model.Execution
         private static ManagedTestCommand CreateCommand(Dictionary<ITest, ManagedTestCommand> commands,
             ITest test, IEnumerable<ManagedTestCommand> children, bool isExplicit, ITestContextManager contextManager)
         {
-            ManagedTestCommand testMonitor = new ManagedTestCommand(contextManager, test, isExplicit);
+            var testMonitor = new ManagedTestCommand(contextManager, test, isExplicit);
             foreach (ManagedTestCommand child in children)
                 testMonitor.AddChild(child);
 
@@ -159,7 +159,7 @@ namespace Gallio.Model.Execution
 
         private static Stack<ITest> CreateAncestorStack(ITest test)
         {
-            Stack<ITest> ancestors = new Stack<ITest>();
+            var ancestors = new Stack<ITest>();
             do
             {
                 ancestors.Push(test);

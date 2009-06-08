@@ -19,15 +19,18 @@ namespace Gallio.Model
 {
     /// <summary>
     /// Specifies setup options for a test domain.
+    /// </summary>
+    /// <remarks>
+    /// <para>
     /// A test domain represents an isolated host environment within which a subset of a test package
     /// will be loaded, explored and run.
-    /// </summary>
-    /// <todo author="jeff">
-    /// Provide a mechanism for configuring the host factory.
-    /// </todo>
+    /// </para>
+    /// </remarks>
     [Serializable]
     public class TestDomainSetup
     {
+        // TODO: Provide a mechanism for configuring the host factory.
+
         private TestPackageConfig testPackageConfig;
 
         /// <summary>

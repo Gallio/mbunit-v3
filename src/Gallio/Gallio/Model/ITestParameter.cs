@@ -16,16 +16,16 @@
 namespace Gallio.Model
 {
     /// <summary>
-    /// <para>
     /// A test parameter describes a formal parameter of a <see cref="ITest" />
     /// to which a value may be bound and used during test execution.
-    /// </para>
+    /// </summary>
+    /// <remarks>
     /// <para>
     /// The <see cref="ITestComponent.Name" /> property of a test parameter should be
     /// unique among the set parameters belonging to its <see cref="Owner"/> to ensure
     /// that it can be differentiated from others.  However, this constraint is not enforced.
     /// </para>
-    /// </summary>
+    /// </remarks>
     public interface ITestParameter : ITestComponent
     {
         /// <summary>

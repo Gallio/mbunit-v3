@@ -24,9 +24,13 @@ namespace Gallio.Model
 {
     /// <summary>
     /// Common interface for elements in the test object model.
+    /// </summary>
+    /// <remarks>
+    /// <para>
     /// All components have a name for presentation, metadata for
     /// annotations, and a code reference to its point of definition. 
-    /// </summary>
+    /// </para>
+    /// </remarks>
     public interface ITestComponent
     {
         /// <summary>
@@ -55,7 +59,9 @@ namespace Gallio.Model
         /// Gets the name of the component.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// The name does not need to be globally unique.
+        /// </para>
         /// </remarks>
         string Name { get; }
 

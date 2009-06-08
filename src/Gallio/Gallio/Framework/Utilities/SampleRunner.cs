@@ -31,16 +31,16 @@ using Gallio.Runtime.Logging;
 namespace Gallio.Framework.Utilities
 {
     /// <summary>
-    /// <para>
     /// Runs sample test cases within an embedded copy of the test runner and provides
-    /// access to the resulting test report.  Logs debug output from the embedded test runner
-    /// while the sample tests run.
+    /// access to the resulting test report.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// Logs debug output from the embedded test runner while the sample tests run.
     /// </para>
     /// <para>
     /// This utility class is intended to help write integration tests for test framework features.
     /// </para>
-    /// </summary>
-    /// <remarks>
     /// <para>
     /// This class is NOT intended to be used for instructional purposes as a template for
     /// creating a new test runner.  Do NOT copy this code and try to make a new test runner
@@ -81,14 +81,14 @@ namespace Gallio.Framework.Utilities
         }
 
         /// <summary>
-        /// <para>
         /// Gets the package configuration object for the test run.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// The returned object may be modified prior to running the tests to configure
         /// various parameters of the test run.
         /// </para>
-        /// </summary>
+        /// </remarks>
         public TestPackageConfig PackageConfig
         {
             get { return packageConfig; }
@@ -163,7 +163,9 @@ namespace Gallio.Framework.Utilities
         /// Gets information about the test with the given code reference.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// Can only be called after the tests have run.
+        /// </para>
         /// </remarks>
         /// <param name="codeReference">The code reference of the test.</param>
         /// <returns>The test data, or null if not found.</returns>
@@ -182,7 +184,9 @@ namespace Gallio.Framework.Utilities
         /// Gets all test step runs with the given code reference.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// Can only be called after the tests have run.
+        /// </para>
         /// </remarks>
         /// <param name="codeReference">The code reference of the test.</param>
         /// <returns>The enumeration of test step runs, or null if not found.</returns>
@@ -195,10 +199,14 @@ namespace Gallio.Framework.Utilities
 
         /// <summary>
         /// Gets the primary test step run of a test with the given code reference.
-        /// If there are multiple primary steps, returns the first one found.
         /// </summary>
         /// <remarks>
+        /// <para>
+        /// If there are multiple primary steps, returns the first one found.
+        /// </para>
+        /// <para>
         /// Can only be called after the tests have run.
+        /// </para>
         /// </remarks>
         /// <param name="codeReference">The code reference of the test.</param>
         /// <returns>The first test step run, or null if not found.</returns>
@@ -216,7 +224,9 @@ namespace Gallio.Framework.Utilities
         /// the specified code reference.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// Can only be called after the tests have run.
+        /// </para>
         /// </remarks>
         /// <param name="codeReference">The code reference of the test.</param>
         /// <returns>The first test step run, or null if not found.</returns>
@@ -258,7 +268,7 @@ namespace Gallio.Framework.Utilities
         {
             MarkupStreamWriter logStreamWriter = TestLog.Default;
 
-            TestLauncher launcher = new TestLauncher();
+            var launcher = new TestLauncher();
             launcher.TestPackageConfig = packageConfig;
             launcher.Logger = new MarkupStreamLogger(logStreamWriter);
             launcher.TestExecutionOptions.FilterSet = new FilterSet<ITest>(new OrFilter<ITest>(filters));

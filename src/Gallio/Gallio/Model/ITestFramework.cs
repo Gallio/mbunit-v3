@@ -21,10 +21,14 @@ namespace Gallio.Model
 {
     /// <summary>
     /// The test framework service provides support for enumerating and executing
-    /// tests that belong to some test framework.  A new third party test framework
-    /// may be supported by defining and registering a suitable implementation
-    /// of this interface.
+    /// tests that belong to some test framework.
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// A new third party test framework may be supported by defining and registering 
+    /// a suitable implementation of this interface.
+    /// </para>
+    /// </remarks>
     [Traits(typeof(TestFrameworkTraits))]
     public interface ITestFramework
     {

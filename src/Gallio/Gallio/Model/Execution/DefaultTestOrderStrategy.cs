@@ -20,15 +20,13 @@ using System.Text;
 namespace Gallio.Model.Execution
 {
     /// <summary>
-    /// <para>
     /// Defines the test ordering strategy.
-    /// </para>
+    /// </summary>
+    /// <remarks>
     /// <para>
     /// This default strategy first compares test by explicit ordering (using <see cref="ITest.Order"/>)
     /// then defines an implicit ordering by name (using <see cref="ITestComponent.Name"/>).
     /// </para>
-    /// </summary>
-    /// <remarks>
     /// <para>
     /// Why implicitly order tests by name instead of randomly?
     /// </para>
@@ -51,13 +49,10 @@ namespace Gallio.Model.Execution
     /// <para>
     /// Nevertheless, any test framework is still free to produce a random ordering of independent tests.
     /// It suffices for the framework to initialize the <see cref="ITest.Order" /> property of each of its
-    /// testsw to a distinct random number.  Problem solved.
+    /// testsw to a distinct random number. Problem solved.
     /// </para>
     /// <para>
     /// Perhaps someday we can also offer the user a global choice among alternative test ordering strategies.
-    /// </para>
-    /// <para>
-    /// -- Jeff.
     /// </para>
     /// </remarks>
     public sealed class DefaultTestOrderStrategy : IComparer<ITest>

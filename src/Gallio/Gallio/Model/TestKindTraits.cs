@@ -67,7 +67,9 @@ namespace Gallio.Model
         /// Gets or sets the icon for the test kind, or null if none.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// The icon should be available in a 16x16 size.
+        /// </para>
         /// </remarks>
         public Icon Icon { get; set; }
     }
