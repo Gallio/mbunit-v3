@@ -32,10 +32,10 @@ using System.Threading;
 namespace Gallio.Runner
 {
     /// <summary>
-    /// <para>
     /// The test launcher encapsulated the entire test execution lifecycle from
     /// start to finish and provides a simplified pattern for running tests.
-    /// </para>
+    /// </summary>
+    /// <remarks>
     /// <para>
     /// The basic usage pattern is as follows:
     /// <list type="numbered">
@@ -55,7 +55,7 @@ namespace Gallio.Runner
     /// You can override the default <see cref="ITestRunner" /> that is created
     /// by setting the <see cref="TestRunnerFactoryName" /> property.
     /// </para>
-    /// </summary>
+    /// </remarks>
     public class TestLauncher
     {
         #region Private Members
@@ -117,13 +117,13 @@ namespace Gallio.Runner
         }
 
         /// <summary>
-        /// <para>
         /// Gets or sets the progress monitor provider to use.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// The default provider is <see cref="NullProgressMonitorProvider.Instance" />.
         /// </para>
-        /// </summary>
+        /// </remarks>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
         public IProgressMonitorProvider ProgressMonitorProvider
         {
@@ -138,13 +138,13 @@ namespace Gallio.Runner
         }
 
         /// <summary>
-        /// <para>
         /// Gets or sets the logger to use.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// The default logger is <see cref="NullLogger.Instance" />.
         /// </para>
-        /// </summary>
+        /// </remarks>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
         public ILogger Logger
         {
@@ -159,10 +159,8 @@ namespace Gallio.Runner
         }
 
         /// <summary>
-        /// <para>
         /// Gets or sets the <see cref="RuntimeSetup" /> to use for automatically initializing
         /// the runtime during test execution or <c>null</c> if the runtime is already initialized.
-        /// </para>
         /// </summary>
         /// <remarks>
         /// <para>
@@ -181,14 +179,14 @@ namespace Gallio.Runner
         }
 
         /// <summary>
-        /// <para>
         /// Specifies the name of a <see cref="ITestRunnerFactory" /> to use for constructing
         /// the <see cref="ITestRunner" /> at test execution time.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// The default value is <see cref="StandardTestRunnerFactoryNames.IsolatedProcess"/>.
         /// </para>
-        /// </summary>
+        /// </remarks>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
         public string TestRunnerFactoryName
         {
@@ -287,14 +285,14 @@ namespace Gallio.Runner
         }
 
         /// <summary>
-        /// <para>
         /// Controls whether the test runner will echo result to the <see cref="Logger" />
         /// as each test finishes.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// The default value is <c>false</c>.
         /// </para>
-        /// </summary>
+        /// </remarks>
         public bool EchoResults
         {
             get { return echoResults; }
@@ -302,15 +300,17 @@ namespace Gallio.Runner
         }
 
         /// <summary>
-        /// <para>
         /// Gets or sets whether to skip test execution.
+        /// </summary>
+        /// <remarks>
+        /// <para>
         /// This option may be used to produce a report that contains test
         /// metadata for consumption by other tools.
         /// </para>
         /// <para>
         /// The default value is <c>false</c>.
         /// </para>
-        /// </summary>
+        /// </remarks>
         public bool DoNotRun
         {
             get { return doNotRun; }
@@ -318,13 +318,13 @@ namespace Gallio.Runner
         }
 
         /// <summary>
-        /// <para>
         /// Gets or sets the path of the directory to which reports will be written.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// The default value is <c>""</c> which causes reports to be written to the current directory.
         /// </para>
-        /// </summary>
+        /// </remarks>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
         public string ReportDirectory
         {
@@ -339,14 +339,16 @@ namespace Gallio.Runner
         }
 
         /// <summary>
-        /// <para>
-        /// </para>
         /// Gets or sets a format string used to construct the name of report files (without the extension).
+        /// </summary>
+        /// <remarks>
+        /// <para>
         /// Within the format string, <c>{0}</c> is replaced by the date and <c>{1}</c> by the time.
+        /// </para>
         /// <para>
         /// The default value is <c>"test-report-{0}-{1}"</c>.
         /// </para>
-        /// </summary>
+        /// </remarks>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
         public string ReportNameFormat
         {
@@ -385,13 +387,13 @@ namespace Gallio.Runner
         }
 
         /// <summary>
-        /// <para>
         /// Gets or sets whether to show the reports after the test run finishes.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// The default value is <c>false</c>.
         /// </para>
-        /// </summary>
+        /// </remarks>
         public bool ShowReports
         {
             get { return showReports; }
@@ -399,15 +401,17 @@ namespace Gallio.Runner
         }
 
         /// <summary>
-        /// <para>
         /// Gets or sets whether to ignore annotations when determining the result code.
+        /// </summary>
+        /// <remarks>
+        /// <para>
         /// If false, then error annotations, usually indicative of broken tests, will cause
         /// a failure result to be generated.
         /// </para>
         /// <para>
         /// The default value is <c>false</c>.
         /// </para>
-        /// </summary>
+        /// </remarks>
         public bool IgnoreAnnotations
         {
             get { return ignoreAnnotations; }
@@ -415,11 +419,13 @@ namespace Gallio.Runner
         }
 
         /// <summary>
-        /// <para>
         /// Gets or sets the maximum amount of time the tests can run before they are canceled.
-        /// </para>
-        /// <para>The default value is <c>null</c>, meaning an infinite time.</para>
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// The default value is <c>null</c>, meaning an infinite time.
+        /// </para>
+        /// </remarks>
         public TimeSpan? RunTimeLimit
         {
             get { return runTimeLimit; }
@@ -443,9 +449,7 @@ namespace Gallio.Runner
         }
 
         /// <summary>
-        /// <para>
         /// Runs the test package as configured.
-        /// </para>
         /// </summary>
         /// <remarks>
         /// <para>

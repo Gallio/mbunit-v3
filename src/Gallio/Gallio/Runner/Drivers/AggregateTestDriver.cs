@@ -136,9 +136,13 @@ namespace Gallio.Runner.Drivers
 
         /// <summary>
         /// Provides information about a partition of the aggregate test driver.
+        /// </summary>
+        /// <remarks>
+        /// <para>
         /// Each partition specifies a test driver and a test package configuration that
         /// covers a portion of the total test package.
-        /// </summary>
+        /// </para>
+        /// </remarks>
         protected struct Partition
         {
             private readonly ITestDriverFactory testDriverFactory;
@@ -179,15 +183,12 @@ namespace Gallio.Runner.Drivers
             }
         }
 
-        /// <summary>
-        /// A test listener that consolidates the root steps across all test
-        /// domains into a single one.
-        /// </summary>
-        /// <todo author="jeff">
-        /// This feels like a great big gigantic hack to make up for the fact that the
-        /// test model knows nothing at all about intersecting test domains.  Probably
-        /// what needs to happen is to allow the test model to have multiple roots.
-        /// </todo>
+        // A test listener that consolidates the root steps across all test
+        // domains into a single one.
+        //
+        // TODO: This feels like a great big gigantic hack to make up for the fact that the
+        // test model knows nothing at all about intersecting test domains.  Probably
+        // what needs to happen is to allow the test model to have multiple roots.
         private sealed class Listener : ITestExplorationListener, ITestExecutionListener, IDisposable
         {
             private readonly ITestExplorationListener testExplorationListener;

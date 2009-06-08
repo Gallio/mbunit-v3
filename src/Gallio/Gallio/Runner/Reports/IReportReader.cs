@@ -22,10 +22,8 @@ using Gallio.Runtime.ProgressMonitoring;
 namespace Gallio.Runner.Reports
 {
     /// <summary>
-    /// <para>
     /// A report writer provides services for loading a previously saved report
     /// from a <see cref="IReportContainer" />.
-    /// </para>
     /// </summary>
     public interface IReportReader
     {
@@ -35,14 +33,14 @@ namespace Gallio.Runner.Reports
         IReportContainer ReportContainer { get; }
 
         /// <summary>
-        /// <para>
         /// Loads the report from an XML file.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// The path of the saved report is constructed by appending the extension ".xml"
         /// to the container's <see cref="IReportContainer.ReportName" />.
         /// </para>
-        /// </summary>
+        /// </remarks>
         /// <param name="loadAttachmentContents">If true, loads attachment
         /// contents in referenced content files if they were not embedded otherwise
         /// the attachment contents are not loaded (but may be loaded later using <see cref="LoadReportAttachments" />).</param>
@@ -52,14 +50,14 @@ namespace Gallio.Runner.Reports
         Report LoadReport(bool loadAttachmentContents, IProgressMonitor progressMonitor);
 
         /// <summary>
-        /// <para>
         /// Loads referenced report attachments from the container.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// This method has the effect of populating the contents of all <see cref="AttachmentData" />
         /// nodes in the report that have non-null <see cref="AttachmentData.ContentPath" />.
         /// </para>
-        /// </summary>
+        /// </remarks>
         /// <param name="report">The report whose attachments are to be loaded.</param>
         /// <param name="progressMonitor">The progress monitor.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="report" /> or <paramref name="progressMonitor "/> is null.</exception>

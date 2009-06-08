@@ -25,9 +25,11 @@ namespace Gallio.Runner.Harness
     /// The default test harness factory creates a <see cref="DefaultTestHarness" />.
     /// </summary>
     /// <remarks>
+    /// <para>
     /// The <see cref="RuntimeAccessor" /> must be initialized prior to using this factory
     /// because the tests will run within the current <see cref="AppDomain" /> and
     /// <see cref="RuntimeAccessor"/>.
+    /// </para>
     /// </remarks>
     public class DefaultTestHarnessFactory : ITestHarnessFactory
     {
@@ -66,7 +68,7 @@ namespace Gallio.Runner.Harness
         /// <inheritdoc />
         public ITestHarness CreateHarness()
         {
-            DefaultTestHarness harness = new DefaultTestHarness(contextTracker, loader, frameworkManager);
+            var harness = new DefaultTestHarness(contextTracker, loader, frameworkManager);
 
             foreach (ITestEnvironment environment in environments)
                 harness.AddTestEnvironment(environment);

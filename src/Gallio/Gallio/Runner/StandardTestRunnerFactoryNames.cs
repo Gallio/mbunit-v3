@@ -24,9 +24,11 @@ namespace Gallio.Runner
         /// Runs the test runner in the local AppDomain.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// This is is usually the default mode because tests typically
         /// run inside of isolated AppDomains of their own nested within
         /// the test runner.
+        /// </para>
         /// </remarks>
         public const string Local = "Local";
 

@@ -205,7 +205,7 @@ namespace Gallio.Runner.Reports
         /// </summary>
         public string FormatTestCaseResultSummary()
         {
-            StringBuilder str = new StringBuilder();
+            var str = new StringBuilder();
 
             str.Append(runCount).Append(" run, ");
 
@@ -229,7 +229,7 @@ namespace Gallio.Runner.Reports
 
         private void AppendCategorizedOutcomeCounts(StringBuilder str, TestStatus status)
         {
-            SortedDictionary<string, int> categoryCounts = new SortedDictionary<string, int>();
+            var categoryCounts = new SortedDictionary<string, int>();
 
             foreach (KeyValuePair<TestOutcome, int> entry in outcomeCounts)
                 if (entry.Key.Status == status && entry.Key.Category != null)

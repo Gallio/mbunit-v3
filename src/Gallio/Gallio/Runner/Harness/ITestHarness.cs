@@ -23,11 +23,15 @@ namespace Gallio.Runner.Harness
 {
     /// <summary>
     /// The test harness manages the lifecycle of test enumeration and execution.
+    /// </summary>
+    /// <remarks>
+    /// <para>
     /// Contributors (such as test framework adapters) may attach event handlers
     /// to extend or modify the behavior at distinct points in the lifecycle.
     /// A new test harness instance is created when a test project is loaded into
     /// memory to serve as the ultimate container for all of its related resources.
-    /// </summary>
+    /// </para>
+    /// </remarks>
     public interface ITestHarness : IDisposable
     {
         /// <summary>

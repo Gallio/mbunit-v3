@@ -42,7 +42,7 @@ namespace Gallio.Runner.Projects
         }
 
         /// <summary>
-        /// Load a saved Gallio project file.
+        /// Loads a saved Gallio project file.
         /// </summary>
         /// <param name="projectLocation">The location of the project file.</param>
         /// <returns>A Gallio Project instance.</returns>
@@ -91,7 +91,7 @@ namespace Gallio.Runner.Projects
         }
 
         /// <summary>
-        /// Save a Gallio project to disk.
+        /// Saves a Gallio project to disk.
         /// </summary>
         /// <param name="project">The Project instance to save.</param>
         /// <param name="projectLocation">The location to save it to.</param>

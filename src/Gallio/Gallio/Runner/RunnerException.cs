@@ -20,9 +20,13 @@ namespace Gallio.Runner
 {
     /// <summary>
     /// The type of exception thrown when the test runner or one of its
-    /// supportive components like a test domain fails in an unrecoverable
-    /// manner.  It can happen that the test results will be lost or incomplete.
+    /// supportive components like a test domain fails in an unrecoverable manner.
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// It can happen that the test results will be lost or incomplete.
+    /// </para>
+    /// </remarks>
     [Serializable]
     public class RunnerException : Exception
     {

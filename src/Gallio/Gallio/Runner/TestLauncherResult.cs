@@ -57,8 +57,10 @@ namespace Gallio.Runner
         /// Gets the test report.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// The report might be incomplete in varying degrees depending on how much
         /// of the test execution was successfully performed.
+        /// </para>
         /// </remarks>
         public Report Report
         {
@@ -117,13 +119,13 @@ namespace Gallio.Runner
         }
 
         /// <summary>
-        /// <para>
         /// Generates reports of the desired forms.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// This method adds the paths of the generated report documents to <see cref="ReportDocumentPaths" />.
         /// </para>
-        /// </summary>
+        /// </remarks>
         /// <param name="reportDirectory">The report directory.</param>
         /// <param name="reportName">The report name.</param>
         /// <param name="reportFormats">The report formats to generate.</param>

@@ -22,17 +22,17 @@ using Gallio.Runtime.ProgressMonitoring;
 namespace Gallio.Runner.Reports
 {
     /// <summary>
-    /// <para>
     /// A report writer provides services for formatting or saving a report
     /// to a <see cref="IReportContainer" />.
-    /// </para>
+    /// </summary>
+    /// <remarks>
     /// <para>
     /// The writer tracks the paths of the report documents paths
     /// that are created within the report container.  Likewise it remembers whether
     /// attachments have been saved so as to avoid redundantly resaving them when
     /// the same report is generated in multiple formats.
     /// </para>
-    /// </summary>
+    /// </remarks>
     public interface IReportWriter
     {
         /// <summary>
@@ -47,10 +47,15 @@ namespace Gallio.Runner.Reports
 
         /// <summary>
         /// Gets the paths of all report documents that have been generated within
-        /// the report container.  Report documents are the primary files when reports
+        /// the report container.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// Report documents are the primary files when reports
         /// are formatted or saved such as an XML file, a Text file, or the main
         /// HTML file that contains the body of the report.
-        /// </summary>
+        /// </para>
+        /// </remarks>
         IList<string> ReportDocumentPaths { get; }
 
         /// <summary>
@@ -68,9 +73,9 @@ namespace Gallio.Runner.Reports
         void SerializeReport(XmlWriter xmlWriter, AttachmentContentDisposition attachmentContentDisposition);
 
         /// <summary>
-        /// <para>
         /// Saves the report as an XML file.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// The saved report XML file is automatically added to the <see cref="ReportDocumentPaths" /> list.
         /// </para>
@@ -78,9 +83,9 @@ namespace Gallio.Runner.Reports
         /// The path of the saved report is constructed by appending the extension ".xml"
         /// to the container's <see cref="IReportContainer.ReportName" />.
         /// </para>
-        /// </summary>
-        /// <remarks>
+        /// <para>
         /// This method may do nothing if the report has already been saved.
+        /// </para>
         /// </remarks>
         /// <param name="attachmentContentDisposition">The content disposition to use for all attachments.  If
         /// the content disposition is <see cref="AttachmentContentDisposition.Link" /> then
@@ -90,18 +95,18 @@ namespace Gallio.Runner.Reports
         void SaveReport(AttachmentContentDisposition attachmentContentDisposition, IProgressMonitor progressMonitor);
 
         /// <summary>
-        /// <para>
         /// Saves all report attachments as individual content files to the container.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// The convention for attachments is to save them in a directory with the same name
         /// as the container's <see cref="IReportContainer.ReportName" /> arranged in folders
         /// first by test id then by step id then by attachment name.
         /// For example: "Report\{testid}\{stepid}\attachment.jpg".
         /// </para>
-        /// </summary>
-        /// <remarks>
+        /// <para>
         /// This method may do nothing if the attachments have already been saved.
+        /// </para>
         /// </remarks>
         /// <param name="progressMonitor">The progress monitor.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="progressMonitor"/> is null.</exception>

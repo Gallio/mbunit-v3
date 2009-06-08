@@ -35,9 +35,11 @@ namespace Gallio.Runner.Harness
     /// Default implementation of a test harness.
     /// </summary>
     /// <remarks>
+    /// <para>
     /// The <see cref="RuntimeAccessor" /> must be initialized prior to using this factory
     /// because the tests will run within the current <see cref="AppDomain" /> and
     /// <see cref="RuntimeAccessor"/>.
+    /// </para>
     /// </remarks>
     public class DefaultTestHarness : ITestHarness
     {
@@ -247,7 +249,7 @@ namespace Gallio.Runner.Harness
             {
                 using (SwitchWorkingDirectory())
                 {
-                    List<IDisposable> environmentStates = new List<IDisposable>();
+                    var environmentStates = new List<IDisposable>();
                     try
                     {
                         progressMonitor.SetStatus("Setting up the test environment.");
@@ -308,7 +310,7 @@ namespace Gallio.Runner.Harness
             }
             else
             {
-                ThreadTask task = new ThreadTask("Test Runner", action);
+                var task = new ThreadTask("Test Runner", action);
 
                 // Use STA as the default for all tests.  A test framework may of course choose
                 // to create its own threads with different apartment states.

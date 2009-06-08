@@ -21,9 +21,7 @@ using Gallio.Runtime.Hosting;
 namespace Gallio.Runner.Drivers
 {
     /// <summary>
-    /// <para>
     /// Creates hosted test driver instances.
-    /// </para>
     /// </summary>
     public class HostedTestDriverFactory : ITestDriverFactory
     {

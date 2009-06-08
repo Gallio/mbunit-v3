@@ -26,9 +26,7 @@ using Gallio.Model.Serialization;
 namespace Gallio.Runner.Reports
 {
     /// <summary>
-    /// <para>
     /// Default implementation of a report writer.
-    /// </para>
     /// </summary>
     public class DefaultReportWriter : IReportWriter
     {
@@ -88,13 +86,13 @@ namespace Gallio.Runner.Reports
             if (xmlWriter == null)
                 throw new ArgumentNullException(@"xmlWriter");
 
-            Dictionary<AttachmentData, KeyValuePair<AttachmentContentDisposition, string>>
-                originalAttachmentData = new Dictionary<AttachmentData, KeyValuePair<AttachmentContentDisposition, string>>();
+            var originalAttachmentData = new Dictionary<AttachmentData, KeyValuePair<AttachmentContentDisposition, string>>();
+
             try
             {
-                XmlAttributes ignoreAttributes = new XmlAttributes();
+                var ignoreAttributes = new XmlAttributes();
                 ignoreAttributes.XmlIgnore = true;
-                XmlAttributeOverrides overrides = new XmlAttributeOverrides();
+                var overrides = new XmlAttributeOverrides();
 
                 // Prune unnecessary ids that can be determined implicitly from the report structure.
                 overrides.Add(typeof(TestStepData), @"ParentId", ignoreAttributes);
@@ -131,7 +129,7 @@ namespace Gallio.Runner.Reports
                 }
 
                 // Serialize the report.
-                XmlSerializer serializer = new XmlSerializer(typeof(Report), overrides);
+                var serializer = new XmlSerializer(typeof(Report), overrides);
                 serializer.Serialize(xmlWriter, report);
             }
             finally
@@ -159,8 +157,8 @@ namespace Gallio.Runner.Reports
             int attachmentCount = CountAttachments(report);
             using (progressMonitor.BeginTask("Saving report.", attachmentCount + 1))
             {
-                Encoding encoding = new UTF8Encoding(false);
-                XmlWriterSettings settings = new XmlWriterSettings();
+                var encoding = new UTF8Encoding(false);
+                var settings = new XmlWriterSettings();
                 settings.CheckCharacters = false;
                 settings.Indent = true;
                 settings.Encoding = encoding;
@@ -228,7 +226,7 @@ namespace Gallio.Runner.Reports
 
         private void SaveAttachmentContents(AttachmentData attachmentData, string attachmentPath)
         {
-            Encoding encoding = new UTF8Encoding(false);
+            var encoding = new UTF8Encoding(false);
             using (Stream attachmentStream = reportContainer.OpenWrite(attachmentPath, attachmentData.ContentType, encoding))
                 attachmentData.SaveContents(attachmentStream, encoding);
         }

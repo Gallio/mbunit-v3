@@ -28,8 +28,10 @@ namespace Gallio.Runner.Drivers
     /// Base implementation of a test driver.
     /// </summary>
     /// <remarks>
+    /// <para>
     /// The base implementation inherits from <see cref="LongLivedMarshalByRefObject" />
     /// so that test driver's services can be accessed remotely if needed.
+    /// </para>
     /// </remarks>
     public abstract class BaseTestDriver : LongLivedMarshalByRefObject, ITestDriver
     {
@@ -118,8 +120,12 @@ namespace Gallio.Runner.Drivers
 
         /// <summary>
         /// Internal implementation of <see cref="Initialize" />.
-        /// Called after argument validation takes place.
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// Called after argument validation takes place.
+        /// </para>
+        /// </remarks>
         protected virtual void InitializeImpl(RuntimeSetup runtimeSetup, TestRunnerOptions testRunnerOptions, ILogger logger)
         {
             this.runtimeSetup = runtimeSetup;
@@ -152,14 +158,22 @@ namespace Gallio.Runner.Drivers
 
         /// <summary>
         /// Internal implementation of <see cref="Explore" />.
-        /// Called after argument validation takes place.
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// Called after argument validation takes place.
+        /// </para>
+        /// </remarks>
         protected abstract void ExploreImpl(TestPackageConfig testPackageConfig, TestExplorationOptions testExplorationOptions, ITestExplorationListener testExplorationListener, IProgressMonitor progressMonitor);
 
         /// <summary>
         /// Internal implementation of <see cref="Run" />.
-        /// Called after argument validation takes place.
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// Called after argument validation takes place.
+        /// </para>
+        /// </remarks>
         protected abstract void RunImpl(TestPackageConfig testPackageConfig, TestExplorationOptions testExplorationOptions, ITestExplorationListener testExplorationListener, TestExecutionOptions testExecutionOptions, ITestExecutionListener testExecutionListener, IProgressMonitor progressMonitor);
     }
 }

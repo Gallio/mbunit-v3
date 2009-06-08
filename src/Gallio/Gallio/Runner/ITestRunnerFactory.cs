@@ -20,10 +20,14 @@ namespace Gallio.Runner
 {
     /// <summary>
     /// A test tunner factory is a service that creates an <see cref="ITestRunner" />
-    /// given a set of options.  Each factory has a name which is used by
-    /// <see cref="ITestRunnerManager" /> to select the particular factory to use
-    /// for a given test run.
+    /// given a set of options.
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// Each factory has a name which is used by <see cref="ITestRunnerManager" /> to select 
+    /// the particular factory to use for a given test run.
+    /// </para>
+    /// </remarks>
     [Traits(typeof(TestRunnerFactoryTraits))]
     public interface ITestRunnerFactory
     {

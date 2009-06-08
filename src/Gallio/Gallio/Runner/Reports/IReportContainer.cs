@@ -21,10 +21,12 @@ using System.Text;
 namespace Gallio.Runner.Reports
 {
     /// <summary>
+    /// A report container that is used to load or save the contents of a report.  
+    /// </summary>
+    /// <remarks>
     /// <para>
-    /// A report container is used to load or save the contents of a report.  A report container
-    /// consists of zero or more logical report files distinguished by extension and a content
-    /// folder.  The content folder holds attachment contents and format-specific resources.
+    /// A report container consists of zero or more logical report files distinguished by extension and
+    /// a content folder. The content folder holds attachment contents and format-specific resources.
     /// </para>
     /// <para>
     /// The definition of a report container is necessarily somewhat abstract.  It is intended
@@ -43,7 +45,7 @@ namespace Gallio.Runner.Reports
     /// By convention report content such as attachments and images are 
     /// stored in a folder with the same name as <see cref="ReportName" />.
     /// </para>
-    /// </summary>
+    /// </remarks>
     /// <example>
     /// <para>
     /// This example demonstrates the structure of report files with the report name of
@@ -62,14 +64,14 @@ namespace Gallio.Runner.Reports
     public interface IReportContainer
     {
         /// <summary>
-        /// <para>
         /// Gets the base name of the report.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// Logical files and folders associated with the report all begin with this
         /// name and are disambiguated by extension.
         /// </para>
-        /// </summary>
+        /// </remarks>
         string ReportName { get; }
 
         /// <summary>
@@ -88,14 +90,14 @@ namespace Gallio.Runner.Reports
         Stream OpenRead(string path);
 
         /// <summary>
-        /// <para>
         /// Opens a report file for writing, overwriting any previous file with the same name.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// It is not necessary to create "directories" within the container.  They are
         /// automatically created when new files are opened for writing within them.
         /// </para>
-        /// </summary>
+        /// </remarks>
         /// <param name="path">The path of the report file.</param>
         /// <param name="contentType">The content type of the file, or null if not specified.</param>
         /// <param name="encoding">The text encoding of the file, or null if not specified or if the file is binary.</param>

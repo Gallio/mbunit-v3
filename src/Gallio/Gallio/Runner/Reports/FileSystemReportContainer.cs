@@ -21,10 +21,8 @@ using Gallio.Common.IO;
 namespace Gallio.Runner.Reports
 {
     /// <summary>
-    /// <para>
     /// A file-system based representation of a report container that uses
     /// ordinary files and folders to store report contents.
-    /// </para>
     /// </summary>
     public class FileSystemReportContainer : IReportContainer
     {
@@ -76,7 +74,7 @@ namespace Gallio.Runner.Reports
         /// <inheritdoc />
         public void DeleteReport()
         {
-            DirectoryInfo dir = new DirectoryInfo(reportDirectory);
+            var dir = new DirectoryInfo(reportDirectory);
             if (dir.Exists)
             {
                 foreach (FileSystemInfo entry in dir.GetFileSystemInfos(reportName + @".*"))

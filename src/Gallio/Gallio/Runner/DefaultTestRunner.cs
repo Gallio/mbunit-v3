@@ -35,13 +35,15 @@ using Gallio.Runtime.ProgressMonitoring;
 namespace Gallio.Runner
 {
     /// <summary>
-    /// <para>
     /// An implementation of <see cref="ITestRunner" /> that runs tests using
-    /// a <see cref="ITestDriver" />.  The driver is created when the first package
-    /// is loaded and is disposed when the runner is disposed.  Consequently the test
-    /// driver may be reused for multiple test runs.
-    /// </para>
+    /// a <see cref="ITestDriver" />.
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// The driver is created when the first package is loaded and is disposed when 
+    /// the runner is disposed. Consequently the test driver may be reused for multiple test runs.
+    /// </para>
+    /// </remarks>
     public class DefaultTestRunner : ITestRunner
     {
         private readonly ITestDriverFactory testDriverFactory;

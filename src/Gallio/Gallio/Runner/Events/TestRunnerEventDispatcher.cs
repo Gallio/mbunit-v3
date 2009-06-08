@@ -21,9 +21,13 @@ namespace Gallio.Runner.Events
 {
     /// <summary>
     /// Dispatches test runner events to listeners.
+    /// </summary>
+    /// <remarks>
+    /// <para>
     /// Each notification function ensures that the event is safely dispatched
     /// via <see cref="EventHandlerPolicy.SafeInvoke" />.
-    /// </summary>
+    /// </para>
+    /// </remarks>
     public sealed class TestRunnerEventDispatcher : ITestRunnerEvents
     {
         /// <inheritdoc/>

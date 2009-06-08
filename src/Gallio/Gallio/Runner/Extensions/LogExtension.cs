@@ -27,20 +27,22 @@ using Gallio.Runner.Reports;
 namespace Gallio.Runner.Extensions
 {
     /// <summary>
-    /// <para>
     /// The log extension writes a summary of test execution progress to the test runner's logger
     /// so the user can monitor what's going on.
-    /// </para>
+    /// </summary>
+    /// <remarks>
+    /// <para>
     /// Passing tests are recorded with severity <see cref="LogSeverity.Info" />, warnings are
     /// recorded with severity <see cref="LogSeverity.Warning" /> and failures are recorded
     /// with severity <see cref="LogSeverity.Error" />.
-    /// </summary>
+    /// </para>
+    /// </remarks>
     public class LogExtension : TestRunnerExtension
     {
         /// <inheritdoc />
         protected override void Initialize()
         {
-            HashSet<string> testCaseSteps = new HashSet<string>();
+            var testCaseSteps = new HashSet<string>();
 
             Events.TestModelAnnotationAdded += delegate(object sender, TestModelAnnotationAddedEventArgs e)
             {
@@ -104,7 +106,9 @@ namespace Gallio.Runner.Extensions
         /// Logs a message about a test case that has started.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// This method is not called for test steps that have <see cref="ITestStep.IsTestCase"/> set to false.
+        /// </para>
         /// </remarks>
         /// <param name="e">The event.</param>
         protected virtual void LogTestCaseStarted(TestStepStartedEventArgs e)
@@ -116,7 +120,9 @@ namespace Gallio.Runner.Extensions
         /// Logs a message about a test case that has finished.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// This method is not called for test steps that have <see cref="ITestStep.IsTestCase"/> set to false.
+        /// </para>
         /// </remarks>
         /// <param name="e">The event.</param>
         protected virtual void LogTestCaseFinished(TestStepFinishedEventArgs e)
@@ -126,11 +132,15 @@ namespace Gallio.Runner.Extensions
 
         /// <summary>
         /// Logs a message about a non-test case that has finished with some problem that
-        /// may have prevented other test cases from running correctly.  This method is not
-        /// called for steps within test cases.
+        /// may have prevented other test cases from running correctly.
         /// </summary>
         /// <remarks>
+        /// <para>
+        /// This method is not called for steps within test cases.
+        /// </para>
+        /// <para>
         /// This method is not called for test steps that have <see cref="ITestStep.IsTestCase"/> set to true.
+        /// </para>
         /// </remarks>
         /// <param name="e">The event.</param>
         protected virtual void LogNonTestCaseProblem(TestStepFinishedEventArgs e)
@@ -145,7 +155,7 @@ namespace Gallio.Runner.Extensions
             string warnings = FormatStream(e.TestStepRun, MarkupStreamNames.Warnings);
             string failures = FormatStream(e.TestStepRun, MarkupStreamNames.Failures);
 
-            StringBuilder messageBuilder = new StringBuilder();
+            var messageBuilder = new StringBuilder();
             messageBuilder.AppendFormat("[{0}] {1} {2}", outcome.DisplayName, e.GetStepKind(), e.TestStepRun.Step.FullName);
 
             if (warnings.Length != 0)

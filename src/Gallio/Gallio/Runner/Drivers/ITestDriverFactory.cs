@@ -20,9 +20,7 @@ using System.Text;
 namespace Gallio.Runner.Drivers
 {
     /// <summary>
-    /// <para>
     /// Creates test drivers.
-    /// </para>
     /// </summary>
     public interface ITestDriverFactory
     {

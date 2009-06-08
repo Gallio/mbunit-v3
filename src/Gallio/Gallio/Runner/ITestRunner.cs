@@ -25,11 +25,13 @@ using Gallio.Model;
 namespace Gallio.Runner
 {
     /// <summary>
-    /// A test runner provides the basic functionality for loading, exploring and running
-    /// tests.  It abstracts away most concerns having to do with the execution of tests
-    /// in isolated (possibly remote) domains.
+    /// A test runner provides the basic functionality for loading, exploring and running tests.
     /// </summary>
     /// <remarks>
+    /// <para>
+    /// It abstracts away most concerns having to do with the execution of tests
+    /// in isolated (possibly remote) domains.
+    /// </para>
     /// <para>
     /// The basic usage pattern of a test runner is as follows:
     /// <list type="bullet">
@@ -54,15 +56,15 @@ namespace Gallio.Runner
         ITestRunnerEvents Events { get; }
 
         /// <summary>
-        /// <para>
         /// Registers a test runner extension.
-        /// </para>
         /// </summary>
         /// <remarks>
+        /// <para>
         /// The extension should already have been configured before this method
         /// is called.  Its <see cref="ITestRunnerExtension.Install" /> method will be
         /// called to register the extension with the test runner as part of the initialization
         /// of the test runner.
+        /// </para>
         /// </remarks>
         /// <param name="extension">The test runner extension to register.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="extension"/> is null.</exception>

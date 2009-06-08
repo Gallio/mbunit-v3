@@ -25,8 +25,12 @@ namespace Gallio.Runner.Drivers
 {
     /// <summary>
     /// A proxy for a remote test driver.
-    /// Wraps a test driver and forwards all messages to it.
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// Wraps a test driver and forwards all messages to it.
+    /// </para>
+    /// </remarks>
     public class RemoteTestDriver : BaseTestDriver
     {
         private ITestDriver testDriver;

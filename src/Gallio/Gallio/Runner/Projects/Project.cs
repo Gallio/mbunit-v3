@@ -69,8 +69,12 @@ namespace Gallio.Runner.Projects
 
         /// <summary>
         /// The folder to save generated reports to. 
-        /// Relative to project location, if not absolute.
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// Relative to project location, if not absolute.
+        /// </para>
+        /// </remarks>
         [XmlElement("reportDirectory")]
         public string ReportDirectory
         {

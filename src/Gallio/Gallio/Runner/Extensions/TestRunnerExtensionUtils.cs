@@ -25,9 +25,9 @@ namespace Gallio.Runner.Extensions
     public static class TestRunnerExtensionUtils
     {
         /// <summary>
-        /// <para>
         /// Creates an extension from its specification.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// An extension specification has the form "[Namespace.]Type,Assembly[;Parameters]".
         /// The extension class must implement <see cref="ITestRunnerExtension" />.  The namespace may be omitted
@@ -41,7 +41,7 @@ namespace Gallio.Runner.Extensions
         /// <item>"CustomLogger,MyExtensions"</item>
         /// </list>
         /// </para>
-        /// </summary>
+        /// </remarks>
         /// <param name="extensionSpecification">The extension specification.</param>
         /// <returns>The extension.</returns>
         /// <exception cref="RunnerException">Thrown if the extension cannot be instantiated and configured.</exception>

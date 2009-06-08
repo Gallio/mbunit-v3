@@ -20,10 +20,10 @@ using Gallio.Runtime.Logging;
 namespace Gallio.Runner.Extensions
 {
     /// <summary>
-    /// <para>
     /// A test runner extension plugs augments the behavior oa <see cref="ITestRunner"/>
     /// by attaching new behaviors to its event handlers.
-    /// </para>
+    /// </summary>
+    /// <remarks>
     /// <para>
     /// Typical extension use-cases:
     /// <list type="bullet">
@@ -34,8 +34,6 @@ namespace Gallio.Runner.Extensions
     /// and modifying the options in place.</item>
     /// </list>
     /// </para>
-    /// </summary>
-    /// <remarks>
     /// <para>
     /// More complex extensions such as integration of new test frameworks are typically
     /// performed by plugins because new runtime services must be registered to support them.

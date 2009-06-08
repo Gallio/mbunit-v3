@@ -24,9 +24,7 @@ using Gallio.Runtime.ProgressMonitoring;
 namespace Gallio.Runner.Reports
 {
     /// <summary>
-    /// <para>
     /// Default implementation of a report reader.
-    /// </para>
     /// </summary>
     public class DefaultReportReader : IReportReader
     {
@@ -64,7 +62,7 @@ namespace Gallio.Runner.Reports
                 progressMonitor.ThrowIfCanceled();
                 progressMonitor.SetStatus(reportPath);
 
-                XmlSerializer serializer = new XmlSerializer(typeof(Report));
+                var serializer = new XmlSerializer(typeof(Report));
 
                 Report report;
                 using (Stream stream = reportContainer.OpenRead(reportPath))
@@ -113,7 +111,7 @@ namespace Gallio.Runner.Reports
             if (report.TestPackageRun == null)
                 return;
 
-            List<AttachmentData> attachmentsToLoad = new List<AttachmentData>();
+            var attachmentsToLoad = new List<AttachmentData>();
             foreach (TestStepRun testStepRun in report.TestPackageRun.AllTestStepRuns)
             {
                 foreach (AttachmentData attachment in testStepRun.TestLog.Attachments)

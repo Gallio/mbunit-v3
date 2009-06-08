@@ -27,9 +27,11 @@ namespace Gallio.Runner.Events
         /// The event raised to indicate that a log message was written by the test runner.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// The runner automatically writes out these log messages to the logger with which it
         /// is initialized.  These events are raised to allow other subscribers to receive
         /// log messages as well.
+        /// </para>
         /// </remarks>
         event EventHandler<LogMessageEventArgs> LogMessage;
 

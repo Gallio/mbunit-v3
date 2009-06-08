@@ -30,10 +30,12 @@ using Gallio.Common.Reflection;
 namespace Gallio.Runner.Drivers
 {
     /// <summary>
-    /// A test driver that runs tests remotely within a remote host.  The driver further partitions
-    /// assemblies into test domains based on their configuration requirements.
+    /// A test driver that runs tests remotely within a remote host.  
     /// </summary>
     /// <remarks>
+    /// <para>
+    /// The driver further partitions assemblies into test domains based on their configuration requirements.
+    /// </para>
     /// <para>
     /// Copies down the test runner options to the containing host.
     /// </para>
@@ -204,7 +206,7 @@ namespace Gallio.Runner.Drivers
 
         private TestDomainSetup CreateTestDomain(TestPackageConfig testPackageConfig, string assemblyFile)
         {
-            TestDomainSetup testDomain = new TestDomainSetup(testPackageConfig.Copy());
+            var testDomain = new TestDomainSetup(testPackageConfig.Copy());
             testDomain.TestPackageConfig.AssemblyFiles.Clear();
             testDomain.TestPackageConfig.AssemblyFiles.Add(assemblyFile);
 
@@ -256,7 +258,7 @@ namespace Gallio.Runner.Drivers
             if (requestedRuntimeVersion != null)
                 return requestedRuntimeVersion;
 
-            List<string> commonRuntimeVersions = new List<string>();
+            var commonRuntimeVersions = new List<string>();
 
             foreach (TestDomainSetup testDomain in testDomains)
             {
@@ -264,7 +266,7 @@ namespace Gallio.Runner.Drivers
                 if (configurationXml == null)
                     continue;
 
-                XmlDocument doc = new XmlDocument();
+                var doc = new XmlDocument();
                 doc.LoadXml(configurationXml);
 
                 List<string> runtimeVersions = new List<string>();
@@ -315,7 +317,7 @@ namespace Gallio.Runner.Drivers
 
         private static ProcessorArchitecture GetCommonProcessorArchitecture(IEnumerable<AssemblyMetadata> assemblyMetadataList)
         {
-            ProcessorArchitecture commonArch = ProcessorArchitecture.MSIL;
+            var commonArch = ProcessorArchitecture.MSIL;
             foreach (AssemblyMetadata assemblyMetadata in assemblyMetadataList)
             {
                 ProcessorArchitecture assemblyArch = assemblyMetadata.ProcessorArchitecture;
