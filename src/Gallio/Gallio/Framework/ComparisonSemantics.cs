@@ -292,7 +292,6 @@ namespace Gallio.Framework
 
         /// <summary>
         /// Returns <code>true</code> if the specified type is a simple enumerable type.
-        /// </para>
         /// </summary>
         /// <remarks>
         /// <para>

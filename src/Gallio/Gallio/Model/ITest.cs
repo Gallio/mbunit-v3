@@ -83,6 +83,7 @@ namespace Gallio.Model
         /// changes and recompilations of the test projects.</item>
         /// <item>The identifier is non-null.</item>
         /// </list>
+        /// </para>
         /// <para>
         /// The local identifier may be the same as the test's name.  However since the name is
         /// intended for display to end-users, it may contain irrelevant details (such as version
