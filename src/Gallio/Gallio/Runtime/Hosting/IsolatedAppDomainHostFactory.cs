@@ -20,9 +20,7 @@ using Gallio.Runtime.Logging;
 namespace Gallio.Runtime.Hosting
 {
     /// <summary>
-    /// <para>
     /// A factory for initialized <see cref="IsolatedAppDomainHost" /> hosts.
-    /// </para>
     /// </summary>
     public class IsolatedAppDomainHostFactory : BaseHostFactory
     {

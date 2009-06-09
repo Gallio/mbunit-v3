@@ -40,16 +40,16 @@ namespace Gallio.Runtime.Hosting
         }
 
         /// <summary>
-        /// <para>
         /// Installs an assembly resolver that provides access to the installation path
         /// using the <see cref="AssemblyResolverBootstrap" />.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// Does nothing if the host is local.
         /// </para>
-        /// </summary>
-        /// <remarks>
+        /// <para>
         /// This hook is recommended for newly created domains.
+        /// </para>
         /// </remarks>
         /// <param name="host">The host.</param>
         /// <param name="runtimePath">The Gallio runtime path.</param>
@@ -70,16 +70,16 @@ namespace Gallio.Runtime.Hosting
         }
 
         /// <summary>
-        /// <para>
         /// Installs an assembly resolver that delegates to the creating <see cref="AppDomain" />'s
         /// assembly resolver to locate assemblies whenever the host is unable to find them.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// Does nothing if the host is local.
         /// </para>
-        /// </summary>
-        /// <remarks>
+        /// <para>
         /// This hook is useful for testing but should not be used in production code.
+        /// </para>
         /// </remarks>
         /// <param name="host">The host.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="host"/> is null.</exception>

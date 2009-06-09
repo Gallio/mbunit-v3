@@ -51,7 +51,9 @@ namespace Gallio.Runtime.Extensibility
         /// Gets or sets the plugin icon, or null if none.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// The image should be 32x32 pixels in size.
+        /// </para>
         /// </remarks>
         public Icon Icon { get; set; }
 

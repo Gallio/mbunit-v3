@@ -18,14 +18,14 @@ using System;
 namespace Gallio.Runtime.Conversions
 {
     /// <summary>
-    /// <para>
     /// A conversion rule encapsulates an algorithm for converting a value from a source
     /// type to a target type.
-    /// </para>
     /// </summary>
     /// <remarks>
+    /// <para>
     /// This type is not intended to be used directly by clients.  Instead refer to
     /// <see cref="IConverter" /> for a simpler abstraction that wraps <see cref="IConversionRule" />.
+    /// </para>
     /// </remarks>
     public interface IConversionRule
     {
@@ -44,10 +44,12 @@ namespace Gallio.Runtime.Conversions
         /// Converts the value <paramref name="sourceValue"/> to type <paramref name="targetType"/>.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// This method must not be called if <see cref="GetConversionCost" /> returned <see cref="ConversionCost.Invalid" />
         /// when asked about the <paramref name="sourceValue"/> type and <paramref name="targetType"/>.
         /// It must also not be called if <paramref name="sourceValue"/> is <c>null</c> or
         /// if it is already an instance of <paramref name="targetType"/>.
+        /// </para>
         /// </remarks>
         /// <param name="sourceValue">The value to convert, never null.</param>
         /// <param name="targetType">The target type, never null.</param>

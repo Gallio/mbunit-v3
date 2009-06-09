@@ -21,9 +21,13 @@ namespace Gallio.Runtime.ProgressMonitoring
 {
     /// <summary>
     /// A console progress monitor displays a simple tally of the amount of work
-    /// to be done on the main task as a bar chart.  The progress monitor responds
-    /// to cancelation events at the console.
+    /// to be done on the main task as a bar chart.
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// The progress monitor responds to cancelation events at the console.
+    /// </para>
+    /// </remarks>
     public class RichConsoleProgressMonitorProvider : BaseProgressMonitorProvider
     {
         private readonly IRichConsole console;

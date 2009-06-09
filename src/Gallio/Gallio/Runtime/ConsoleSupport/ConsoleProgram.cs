@@ -21,9 +21,13 @@ namespace Gallio.Runtime.ConsoleSupport
 {
     /// <summary>
     /// A base class for implementing robust console applications.
+    /// </summary>
+    /// <remarks>
+    /// <para>
     /// The subclass should provide a Main method that creates an instance and
     /// calls <see cref="Run(IRichConsole, string[])" />.
-    /// </summary>
+    /// </para>
+    /// </remarks>
     public abstract class ConsoleProgram<TArguments> : IDisposable
         where TArguments : new()
     {
@@ -50,9 +54,13 @@ namespace Gallio.Runtime.ConsoleSupport
 
         /// <summary>
         /// Gets or sets the parsed command-line arguments.
+        /// </summary>
+        /// <remarks>
+        /// <para>
         /// These argument may be modified prior to calling <see cref="ParseArguments" /> to
         /// override the initial argument settings.
-        /// </summary>
+        /// </para>
+        /// </remarks>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
         protected TArguments Arguments
         {

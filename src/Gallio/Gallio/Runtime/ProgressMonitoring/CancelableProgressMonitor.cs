@@ -100,15 +100,19 @@ namespace Gallio.Runtime.ProgressMonitoring
 
         /// <summary>
         /// Notifies that the task has actually been canceled.
+        /// </summary>
+        /// <remarks>
+        /// <para>
         /// If this is the first time <see cref="NotifyCanceled" /> has been called,
         /// sets <see cref="IsCanceled" /> to true and fires the <see cref="Canceled" /> event.
         /// Otherwise does nothing.
-        /// </summary>
-        /// <remarks>
+        /// </para>
+        /// <para>
         /// This is the ONLY method of the progress monitor that is allowed to
         /// be called concurrently from multiple threads.  It needs to be this
         /// way so that cancelation can be initiated by either participant in the
         /// progress monitoring dialog.
+        /// </para>
         /// </remarks>
         /// <returns>True if cancelation has just occurred, false if no
         /// state change was performed.</returns>
@@ -137,7 +141,9 @@ namespace Gallio.Runtime.ProgressMonitoring
         /// Called when <see cref="Cancel" /> performs its updates.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// This method is not called by <see cref="NotifyCanceled" />.
+        /// </para>
         /// </remarks>
         protected virtual void OnCancel()
         {

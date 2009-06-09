@@ -59,9 +59,13 @@ namespace Gallio.Runtime
 
         /// <summary>
         /// Gets or sets the runtime path, or null to determine it automatically
-        /// based on the location of the application itself.  The runtime path specifies
-        /// where the standard runtime plugins are located.
+        /// based on the location of the application itself.
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// The runtime path specifies where the standard runtime plugins are located.
+        /// </para>
+        /// </remarks>
         /// <value>
         /// The installation path.  Default is <c>null</c>.
         /// </value>
@@ -88,10 +92,14 @@ namespace Gallio.Runtime
 
         /// <summary>
         /// Gets or sets the path of the primary configuration file to be
-        /// loaded by the runtime (if it exists).  This is useful
-        /// when Gallio is launched by a library instead of as a standalone
-        /// executable.
+        /// loaded by the runtime (if it exists).
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// This is useful  when Gallio is launched by a library instead of as a standalone
+        /// executable.
+        /// </para>
+        /// </remarks>
         /// <value>
         /// The primary configuration file path.  Default is null to load the
         /// configuration from the <see cref="AppDomain" />.

@@ -23,11 +23,13 @@ using Gallio.Common;
 namespace Gallio.Runtime.ConsoleSupport
 {
     /// <summary>
-    /// <para>
     /// A rich console provides a number of services that enable a console to be
     /// shared among several cooperating tasks that are independently updating
-    /// different portions of the display.  One task can be writing to the main
-    /// body of text while another updates a footer.
+    /// different portions of the display.  
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// One task can be writing to the main body of text while another updates a footer.
     /// </para>
     /// <para>
     /// The rich console also supports intelligent cancelation of tasks.  When
@@ -43,7 +45,7 @@ namespace Gallio.Runtime.ConsoleSupport
     /// Finally, the rich console interface can be mocked for testing purposes
     /// unlike the standard <see cref="Console" /> API.
     /// </para>
-    /// </summary>
+    /// </remarks>
     public interface IRichConsole
     {
         /// <summary>
@@ -62,15 +64,15 @@ namespace Gallio.Runtime.ConsoleSupport
         bool IsCancelationEnabled { get; set; }
 
         /// <summary>
-        /// <para>
         /// Gets or sets whether cancelation has occurred.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// The <see cref="NativeConsole.Cancel" /> event handlers will be called
         /// when the value of <see cref="NativeConsole.IsCanceled" /> transitions from
         /// false to true.  The value will remain true unless it is reset.
         /// </para>
-        /// </summary>
+        /// </remarks>
         bool IsCanceled
         {
             get;
@@ -79,14 +81,19 @@ namespace Gallio.Runtime.ConsoleSupport
 
         /// <summary>
         /// Returns true if the console is being redirected and therefore the
-        /// output should be as simple as possible.  In particular, it may not be
-        /// possible to set the cursor position, console color or other properties.
+        /// output should be as simple as possible.
         /// </summary>
         /// <remarks>
+        /// <para>
+        /// In particular, it may not be possible to set the cursor position, 
+        /// console color or other properties.
+        /// </para>
+        /// <para>
         /// Trying to set the console color while output is redirected is tolerated
         /// by the system and won't cause an error; but it is pointless.  On the other
         /// hand cursor positioning or attempting to listen to Ctrl-C will fail with an
         /// <see cref="IOException" />.
+        /// </para>
         /// </remarks>
         bool IsRedirected
         {
@@ -150,8 +157,12 @@ namespace Gallio.Runtime.ConsoleSupport
 
         /// <summary>
         /// Gets the width of the console.
-        /// Returns 80 if the console is being redirected.
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// Returns 80 if the console is being redirected.
+        /// </para>
+        /// </remarks>
         int Width
         {
             get;
@@ -167,15 +178,15 @@ namespace Gallio.Runtime.ConsoleSupport
         }
 
         /// <summary>
-        /// <para>
         /// The event raised when console cancelation occurs.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// If the console cancelation signal is already set when
         /// an event handler is added, the event handler will be
         /// automatically invoked.
         /// </para>
-        /// </summary>
+        /// </remarks>
         event EventHandler Cancel;
 
         /// <summary>
@@ -185,10 +196,15 @@ namespace Gallio.Runtime.ConsoleSupport
 
         /// <summary>
         /// Sets a pair of delegates that together display a footer at the bottom
-        /// of the console.  The footer can be hidden so that new text can be written
+        /// of the console.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// The footer can be hidden so that new text can be written
         /// from that point.  Removes the previous footer and displays the new
         /// one automatically if the footer is visible.
-        /// </summary>
+        /// </para>
+        /// </remarks>
         /// <param name="showFooter">A delegate to display the footer.</param>
         /// <param name="hideFooter">A delegate to hide the footer, leaving the custor at
         /// the beginning of the line where the footer used to begin.</param>

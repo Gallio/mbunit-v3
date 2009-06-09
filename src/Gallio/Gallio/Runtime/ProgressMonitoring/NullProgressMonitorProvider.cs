@@ -16,9 +16,13 @@
 namespace Gallio.Runtime.ProgressMonitoring
 {
     /// <summary>
-    /// Runs tasks without reporting any progress.  Argument validation and state
-    /// changes are still noted but they do not have any outward effect.
+    /// Runs tasks without reporting any progress.
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// Argument validation and state changes are still noted but they do not have any outward effect.
+    /// </para>
+    /// </remarks>
     public sealed class NullProgressMonitorProvider : BaseProgressMonitorProvider
     {
         private static readonly NullProgressMonitorProvider instance = new NullProgressMonitorProvider();

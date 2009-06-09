@@ -20,11 +20,12 @@ using Gallio.Common.IO;
 
 namespace Gallio.Runtime.Caching
 {
+    // TODO: Support cache item expiration.
+
     /// <summary>
     /// A simple disk cache that stores its contents in a particular directory using hashes
     /// of the key values to ensure uniqueness.
     /// </summary>
-    /// <todo author="jeff">Support cache item expiration.</todo>
     public class SimpleDiskCache : IDiskCache, IDiskCacheGroupCollection
     {
         private readonly string cacheDirectoryPath;
@@ -75,7 +76,7 @@ namespace Gallio.Runtime.Caching
         /// <returns>The cache group.</returns>
         protected virtual IDiskCacheGroup GetGroup(string key)
         {
-            Hash64 hash = new Hash64();
+            var hash = new Hash64();
             hash = hash.Add(key);
             string path = Path.Combine(cacheDirectoryPath, hash.ToString());
             return new Group(this, key, new DirectoryInfo(path));

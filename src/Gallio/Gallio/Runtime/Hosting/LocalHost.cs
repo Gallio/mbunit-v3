@@ -22,10 +22,8 @@ using Gallio.Runtime.Logging;
 namespace Gallio.Runtime.Hosting
 {
     /// <summary>
-    /// <para>
     /// An implementation of <see cref="IHost" /> that runs code
     /// locally within the current AppDomain.
-    /// </para>
     /// </summary>
     public class LocalHost : BaseHost
     {

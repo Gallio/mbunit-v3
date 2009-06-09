@@ -19,10 +19,15 @@ namespace Gallio.Runtime.Loader
 {
     /// <summary>
     /// Bootstraps a globally reachable assembly resolver manager within the
-    /// Gallio installation path.  May be used by clients to ensure that Gallio
+    /// Gallio installation path.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// May be used by clients to ensure that Gallio
     /// assemblies can be resolved assuming we were able to load the main
     /// assembly and access the bootstrap.
-    /// </summary>
+    /// </para>
+    /// </remarks>
     public static class AssemblyResolverBootstrap
     {
         private static readonly object syncRoot = new object();

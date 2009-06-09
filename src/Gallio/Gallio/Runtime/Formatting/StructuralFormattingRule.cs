@@ -25,10 +25,8 @@ using System.Runtime.CompilerServices;
 namespace Gallio.Runtime.Formatting
 {
     /// <summary>
-    /// <para>
     /// A formatting rule that describes the structure of objects in terms of their constituent
     /// properties and fields.
-    /// </para>
     /// </summary>
     /// <remarks>
     /// <para>
@@ -83,7 +81,7 @@ namespace Gallio.Runtime.Formatting
         {
             Type objType = obj.GetType();
 
-            StringBuilder result = new StringBuilder();
+            var result = new StringBuilder();
             result.Append('{');
             result.Append(objType);
             result.Append(": ");

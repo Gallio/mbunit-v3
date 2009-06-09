@@ -26,7 +26,6 @@ namespace Gallio.Runtime.ProgressMonitoring
     {
         /// <summary>
         /// Runs a task with a progress monitor.
-        /// Throws <see cref="OperationCanceledException" /> if the task is canceled.
         /// </summary>
         /// <remarks>
         /// <para>

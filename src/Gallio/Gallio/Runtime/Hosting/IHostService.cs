@@ -20,16 +20,16 @@ using Gallio.Common;
 namespace Gallio.Runtime.Hosting
 {
     /// <summary>
-    /// <para>
     /// A host service enables a local client to interact with a remotely
     /// executing hosting environment.
-    /// </para>
+    /// </summary>
+    /// <remarks>
     /// <para>
     /// A host service implementation may choose to implement a keep-alive
     /// mechanism to automatically shut itself down when the service is disposed or
     /// when it has not received a ping within a set period of time.
     /// </para>
-    /// </summary>
+    /// </remarks>
     public interface IHostService
     {
         /// <summary>
@@ -39,16 +39,16 @@ namespace Gallio.Runtime.Hosting
         void Ping();
 
         /// <summary>
-        /// <para>
         /// Asks the host to perform the specified action remotely.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// The action must be a serializable delegate so that it can be sent
         /// to the host and executed.  Generally speaking, this means it must either be
         /// a delegate for a static method or its target object must be serializable.
         /// The argument and result values must also be serializable (or null).
         /// </para>
-        /// </summary>
+        /// </remarks>
         /// <param name="func">The action to perform.</param>
         /// <param name="arg">The argument value, if any.</param>
         /// <returns>The result value, if any.</returns>

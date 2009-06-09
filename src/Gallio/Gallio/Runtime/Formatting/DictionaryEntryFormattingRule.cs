@@ -19,13 +19,13 @@ using System.Collections;
 namespace Gallio.Runtime.Formatting
 {
     /// <summary>
-    /// <para>
     /// A formatting rule for <see cref="DictionaryEntry" />.
-    /// </para>
+    /// </summary>
+    /// <remarks>
     /// <para>
     /// Formats values as "\"key\": \"value\"".
     /// </para>
-    /// </summary>
+    /// </remarks>
     public sealed class DictionaryEntryFormattingRule : IFormattingRule
     {
         /// <inheritdoc />
@@ -39,7 +39,7 @@ namespace Gallio.Runtime.Formatting
         /// <inheritdoc />
         public string Format(object obj, IFormatter formatter)
         {
-            DictionaryEntry entry = (DictionaryEntry)obj;
+            var entry = (DictionaryEntry)obj;
             return string.Concat(formatter.Format(entry.Key), ": ", formatter.Format(entry.Value));
         }
     }

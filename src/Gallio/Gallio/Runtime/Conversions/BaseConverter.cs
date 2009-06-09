@@ -59,8 +59,10 @@ namespace Gallio.Runtime.Conversions
         /// Implements <see cref="CanConvert" />.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// The default implementation returns <c>true</c> if <see cref="GetConversionCostImpl"/>
         /// returns a valid conversion cost.
+        /// </para>
         /// </remarks>
         /// <param name="sourceType">The source type, never null.</param>
         /// <param name="targetType">The target type, never null.</param>

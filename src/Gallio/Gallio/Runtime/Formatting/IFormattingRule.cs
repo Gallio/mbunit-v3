@@ -18,23 +18,24 @@ using System;
 namespace Gallio.Runtime.Formatting
 {
     /// <summary>
-    /// <para>
     /// A formatting rule encapsulates an algorithm for formatting values of particular
     /// types to strings for presentation.
-    /// </para>
     /// </summary>
     /// <remarks>
+    /// <para>
     /// This type is not intended to be used directly by clients.  Instead refer to
     /// <see cref="IFormatter" /> for a simpler abstraction that wraps <see cref="IFormattingRule" />.
+    /// </para>
     /// </remarks>
     public interface IFormattingRule
     {
         /// <summary>
         /// Gets the formatting rule's priority for object of the specified type.
-        /// Rules with higher priority values take precedence over rules with lower priority values.
         /// </summary>
         /// <remarks>
-        /// A typical 
+        /// <para>
+        /// Rules with higher priority values take precedence over rules with lower priority values.
+        /// </para>
         /// </remarks>
         /// <param name="type">The type of object, never null.</param>
         /// <returns>The priority of this rule, or null if the rule does not support formatting the specified object type.</returns>
@@ -45,8 +46,10 @@ namespace Gallio.Runtime.Formatting
         /// Formats the specified object.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// Exceptions thrown by this method will not be reported to clients.
         /// Instead the formatter will substitute an appropriate placeholder string instead.
+        /// </para>
         /// </remarks>
         /// <param name="obj">The object to format, never null.</param>
         /// <param name="formatter">The formatter to use for recursive formatting, never null.</param>

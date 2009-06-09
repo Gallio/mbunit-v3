@@ -64,8 +64,12 @@ namespace Gallio.Runtime.FileTypes
 
         /// <summary>
         /// Identifies the type of a file by consulting only the specified list of file type candidates.
-        /// This is more efficient when we are interested in only a few possible results.
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// This is more efficient when we are interested in only a few possible results.
+        /// </para>
+        /// </remarks>
         /// <param name="fileInfo">The file to identify.</param>
         /// <param name="candidates">The collection of specific file type candidates to consider.</param>
         /// <returns>The file type of the file, or <see cref="UnknownFileType" /> type if unidentified
@@ -77,8 +81,12 @@ namespace Gallio.Runtime.FileTypes
 
         /// <summary>
         /// Identifies the type of a file by consulting only the specified list of file type candidates.
-        /// This is more efficient when we are interested in only a few possible results.
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// This is more efficient when we are interested in only a few possible results.
+        /// </para>
+        /// </remarks>
         /// <param name="fileInspector">The file inspector for the file to identify.</param>
         /// <param name="candidates">The collection of specific file type candidates to consider.</param>
         /// <returns>The file type of the file, or <see cref="UnknownFileType" /> type if unidentified

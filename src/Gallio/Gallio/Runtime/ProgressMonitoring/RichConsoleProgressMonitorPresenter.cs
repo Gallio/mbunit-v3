@@ -23,9 +23,13 @@ namespace Gallio.Runtime.ProgressMonitoring
 {
     /// <summary>
     /// A console progress monitor presenter displays a simple tally of the amount of work
-    /// to be done on the main task as a bar chart.  The progress monitor responds
-    /// to cancelation events at the console.
+    /// to be done on the main task as a bar chart.
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// The progress monitor responds to cancelation events at the console.
+    /// </para>
+    /// </remarks>
     public class RichConsoleProgressMonitorPresenter : BaseProgressMonitorPresenter
     {
         private readonly IRichConsole console;
@@ -228,8 +232,12 @@ namespace Gallio.Runtime.ProgressMonitoring
         /// <summary>
         /// It can happen that we'll receive all kinds of weird input because
         /// task names and status messages can be derived from user-data.
-        /// Make sure it doesn't corrupt the display integrity.
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// Make sure it doesn't corrupt the display integrity.
+        /// </para>
+        /// </remarks>
         private static string Sanitize(string str)
         {
             return str.Replace('\n', ' ').Replace("\r", @"");

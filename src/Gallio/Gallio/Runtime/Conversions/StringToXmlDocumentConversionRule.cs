@@ -37,7 +37,7 @@ namespace Gallio.Runtime.Conversions
         /// <inheritdoc />
         public object Convert(object sourceValue, Type targetType, IConverter elementConverter)
         {
-            XmlDocument doc = new XmlDocument();
+            var doc = new XmlDocument();
             doc.LoadXml((string)sourceValue);
             return elementConverter.Convert(doc, targetType);
         }

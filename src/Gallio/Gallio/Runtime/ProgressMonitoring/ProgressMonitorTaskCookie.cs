@@ -18,12 +18,14 @@ using System;
 namespace Gallio.Runtime.ProgressMonitoring
 {
     /// <summary>
-    /// <para>
-    /// A progress monitor task cookie represents a task in progress.  When it is disposed,
-    /// the corresponding <see cref="IProgressMonitor" />'s <see cref="IProgressMonitor.Done" />
-    /// method is called.
-    /// </para>
+    /// A progress monitor task cookie represents a task in progress.  
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// When it is disposed, the corresponding <see cref="IProgressMonitor" />'s 
+    /// <see cref="IProgressMonitor.Done" /> method is called.
+    /// </para>
+    /// </remarks>
     public struct ProgressMonitorTaskCookie : IDisposable
     {
         private readonly IProgressMonitor progressMonitor;
@@ -41,14 +43,14 @@ namespace Gallio.Runtime.ProgressMonitoring
         }
 
         /// <summary>
-        /// <para>
         /// Marks the task as finished.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// Equivalent to calling <see cref="IProgressMonitor.Done" /> on the associated <see cref="IProgressMonitor"/>.
         /// This method is provded as a convenience for use with the C# using statement.
         /// </para>
-        /// </summary>
+        /// </remarks>
         public void Dispose()
         {
             progressMonitor.Done();

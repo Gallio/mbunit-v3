@@ -22,10 +22,8 @@ using System.Xml;
 namespace Gallio.Runtime
 {
     /// <summary>
-    /// <para>
     /// A configuration section handler for Gallio used to register
     /// Gallio components in applications and in plugins.
-    /// </para>
     /// </summary>
     public class GallioSectionHandler : IConfigurationSectionHandler
     {

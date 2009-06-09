@@ -18,22 +18,25 @@ using System;
 namespace Gallio.Runtime.Caching
 {
     /// <summary>
-    /// <para>
     /// A disk cache manages temporary files and directories stored on disk and
-    /// arranged into groups associated with arbitrary string keys.  The files and
-    /// directories within each group are assumed to have the same lifetime.
-    /// </para>
+    /// arranged into groups associated with arbitrary string keys.
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// The files and directories within each group are assumed to have the same lifetime.
+    /// </para>
+    /// </remarks>
     /// <example>
     /// Write a file to the cache:
-    /// <code>
-    /// IDiskCache cache = ... get the cache ..;
-    /// using (StreamWriter writer = new StreamWriter(cache.Groups["SomeKey"].OpenFile("Foo",
+    /// <code><![CDATA[
+    /// IDiskCache cache = ... // Get the cache.
+    /// 
+    /// using (var writer = new StreamWriter(cache.Groups["SomeKey"].OpenFile("Foo",
     ///     FileMode.OpenOrCreate, FileAccess.Write, FileShare.Exclusive)))
     /// {
     ///     writer.WriteLine("Contents...");
     /// }
-    /// </code>
+    /// ]]></code>
     /// </example>
     public interface IDiskCache
     {

@@ -34,9 +34,12 @@ using Timer=System.Threading.Timer;
 namespace Gallio.Runtime.Hosting
 {
     /// <summary>
-    /// <para>
     /// An isolated process host is a <see cref="IHost" /> that runs code within a
-    /// new external process.  Communication with the external process occurs over
+    /// new external process.  
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// Communication with the external process occurs over
     /// an inter-process communication channel.
     /// </para>
     /// <para>
@@ -47,7 +50,7 @@ namespace Gallio.Runtime.Hosting
     /// can be configured to self-terminate when it looks like the connection
     /// has been severed.
     /// </para>
-    /// </summary>
+    /// </remarks>
     public class IsolatedProcessHost : RemoteHost
     {
         private static readonly TimeSpan ReadyTimeout = TimeSpan.FromSeconds(60);
@@ -134,7 +137,9 @@ namespace Gallio.Runtime.Hosting
         /// Creates the process task to start the process.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// This method can be overridden to change how the process is started.
+        /// </para>
         /// </remarks>
         /// <param name="executablePath">The executable path.</param>
         /// <param name="arguments">The command-line arguments.</param>

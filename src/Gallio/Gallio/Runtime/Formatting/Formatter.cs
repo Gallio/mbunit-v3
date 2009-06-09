@@ -21,9 +21,7 @@ using Gallio.Runtime;
 namespace Gallio.Runtime.Formatting
 {
     /// <summary>
-    /// <para>
     /// Service locator for <see cref="IFormatter" />.
-    /// </para>
     /// </summary>
     /// <remarks>
     /// <para>

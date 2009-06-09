@@ -20,9 +20,7 @@ using Gallio.Runtime.Logging;
 namespace Gallio.Runtime.Hosting
 {
     /// <summary>
-    /// <para>
     /// A factory for initialized <see cref="LocalHost" /> hosts.
-    /// </para>
     /// </summary>
     public class LocalHostFactory : BaseHostFactory
     {
@@ -49,7 +47,7 @@ namespace Gallio.Runtime.Hosting
         /// <inheritdoc />
         protected override IHost CreateHostImpl(HostSetup hostSetup, ILogger logger)
         {
-            LocalHost host = new LocalHost(hostSetup, logger, debuggerManager);
+            var host = new LocalHost(hostSetup, logger, debuggerManager);
             host.Connect();
             return host;
         }

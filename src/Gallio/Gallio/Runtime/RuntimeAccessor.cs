@@ -22,9 +22,7 @@ using Gallio.Runtime.Logging;
 namespace Gallio.Runtime
 {
     /// <summary>
-    /// <para>
     /// Provides functions for obtaining runtime services.
-    /// </para>
     /// </summary>
     public static class RuntimeAccessor
     {
@@ -120,14 +118,14 @@ namespace Gallio.Runtime
         }
 
         /// <summary>
-        /// <para>
         /// Sets the runtime instance.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// This method should only be used by applications that host Gallio
         /// and not generally by client code.
         /// </para>
-        /// </summary>
+        /// </remarks>
         /// <param name="runtime">The runtime instance, or null if none.</param>
         public static void SetRuntime(IRuntime runtime)
         {

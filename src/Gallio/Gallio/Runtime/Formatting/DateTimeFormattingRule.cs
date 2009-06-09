@@ -18,13 +18,13 @@ using System;
 namespace Gallio.Runtime.Formatting
 {
     /// <summary>
-    /// <para>
     /// A formatting rule for <see cref="DateTime" />.
-    /// </para>
+    /// </summary>
+    /// <remarks>
     /// <para>
     /// Formats values in the invariant round-trip format like: "yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'fffffffzz".
     /// </para>
-    /// </summary>
+    /// </remarks>
     public sealed class DateTimeFormattingRule : IFormattingRule
     {
         /// <inheritdoc />
@@ -38,7 +38,7 @@ namespace Gallio.Runtime.Formatting
         /// <inheritdoc />
         public string Format(object obj, IFormatter formatter)
         {
-            DateTime sourceValue = (DateTime)obj;
+            var sourceValue = (DateTime)obj;
             return sourceValue.ToString(@"o");
         }
     }

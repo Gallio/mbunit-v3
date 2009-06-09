@@ -20,13 +20,13 @@ using Gallio.Common.Text;
 namespace Gallio.Runtime.Formatting
 {
     /// <summary>
-    /// <para>
     /// A formatting rule for <see cref="sbyte"/>.
-    /// </para>
+    /// </summary>
+    /// <remarks>
     /// <para>
     /// Formats values as two digit signed hex values like "0x55" and "-0x55".
     /// </para>
-    /// </summary>
+    /// </remarks>
     public sealed class SByteFormattingRule : IFormattingRule
     {
         /// <inheritdoc />
@@ -42,7 +42,7 @@ namespace Gallio.Runtime.Formatting
         {
             sbyte value = (sbyte)obj;
 
-            StringBuilder str = new StringBuilder(5, 5);
+            var str = new StringBuilder(5, 5);
 
             if (value < 0)
             {
@@ -50,10 +50,10 @@ namespace Gallio.Runtime.Formatting
                 value = (sbyte)-value;
             }
 
-            str.Append("0x");
-            str.Append(StringUtils.ToHexDigit(value >> 4));
-            str.Append(StringUtils.ToHexDigit(value));
-            return str.ToString();
+            return str.Append("0x")
+                .Append(StringUtils.ToHexDigit(value >> 4))
+                .Append(StringUtils.ToHexDigit(value))
+                .ToString();
         }
     }
 }

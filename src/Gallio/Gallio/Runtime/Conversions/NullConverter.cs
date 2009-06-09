@@ -19,9 +19,14 @@ namespace Gallio.Runtime.Conversions
 {
     /// <summary>
     /// A null implementation of a converter that does not actually support
-    /// converting values.  Consequently <see cref="IConverter.CanConvert" /> returns
-    /// false whenever a conversion would be required.
+    /// converting values.
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// Consequently <see cref="IConverter.CanConvert" /> returns
+    /// false whenever a conversion would be required.
+    /// </para>
+    /// </remarks>
     public class NullConverter : BaseConverter
     {
         /// <summary>

@@ -22,8 +22,10 @@ namespace Gallio.Runtime.Loader
     /// Initializes the Gallio assembly loading a runtime policies.
     /// </summary>
     /// <remarks>
+    /// <para>
     /// This type is used only by the standalone Gallio.Loader assembly using late-binding.
     /// It should not be used by any other code.
+    /// </para>
     /// </remarks>
     internal static class GallioLoaderBootstrap
     {
@@ -42,7 +44,7 @@ namespace Gallio.Runtime.Loader
 
             if (!RuntimeAccessor.IsInitialized)
             {
-                RuntimeSetup setup = new RuntimeSetup();
+                var setup = new RuntimeSetup();
                 setup.RuntimePath = runtimePath;
                 RuntimeBootstrap.Initialize(setup, NullLogger.Instance);
             }

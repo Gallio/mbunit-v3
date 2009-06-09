@@ -21,10 +21,8 @@ using System.Xml.Serialization;
 namespace Gallio.Runtime.Hosting
 {
     /// <summary>
-    /// <para>
     /// Specifies where a <see cref="IHost" /> should store the temporary configuration file
     /// it generates when it is being initialized.
-    /// </para>
     /// </summary>
     public enum ConfigurationFileLocation
     {

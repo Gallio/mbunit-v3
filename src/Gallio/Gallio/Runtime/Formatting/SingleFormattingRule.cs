@@ -19,13 +19,13 @@ using System.Globalization;
 namespace Gallio.Runtime.Formatting
 {
     /// <summary>
-    /// <para>
     /// A formatting rule for <see cref="float" />.
-    /// </para>
+    /// </summary>
+    /// <remarks>
     /// <para>
     /// Formats values like: "5.6f".
     /// </para>
-    /// </summary>
+    /// </remarks>
     public sealed class SingleFormattingRule : IFormattingRule
     {
         /// <inheritdoc />
@@ -39,7 +39,7 @@ namespace Gallio.Runtime.Formatting
         /// <inheritdoc />
         public string Format(object obj, IFormatter formatter)
         {
-            float value = (float)obj;
+            var value = (float)obj;
             return value.ToString(CultureInfo.InvariantCulture) + @"f";
         }
     }

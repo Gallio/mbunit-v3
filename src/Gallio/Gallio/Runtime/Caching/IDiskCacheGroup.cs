@@ -19,12 +19,14 @@ using System.IO;
 namespace Gallio.Runtime.Caching
 {
     /// <summary>
-    /// <para>
     /// A disk cache group represents an indexed partition of the disk cache.
+    /// </summary>
+    /// <remarks>
+    /// <para>
     /// It is physically manifested as a directory on disk and may contain any
     /// number of related files or directories with the same lifetime.
     /// </para>
-    /// </summary>
+    /// </remarks>
     public interface IDiskCacheGroup
     {
         /// <summary>
@@ -62,12 +64,12 @@ namespace Gallio.Runtime.Caching
         void Delete();
 
         /// <summary>
-        /// <para>
         /// Gets information about a file within the group.
-        /// </para>
         /// </summary>
         /// <remarks>
+        /// <para>
         /// This method will succeed even if the file or the group does not exist.
+        /// </para>
         /// </remarks>
         /// <param name="relativeFilePath">The relative path of the file within the group.</param>
         /// <returns>The file info.</returns>
@@ -76,12 +78,12 @@ namespace Gallio.Runtime.Caching
         FileInfo GetFileInfo(string relativeFilePath);
 
         /// <summary>
-        /// <para>
         /// Gets information about a directory within the group.
-        /// </para>
         /// </summary>
         /// <remarks>
+        /// <para>
         /// This method will succeed even if the directory or the group does not exist.
+        /// </para>
         /// </remarks>
         /// <param name="relativeDirectoryPath">The relative path of the directory within the group.</param>
         /// <returns>The directory info.</returns>
@@ -90,14 +92,14 @@ namespace Gallio.Runtime.Caching
         DirectoryInfo GetSubdirectoryInfo(string relativeDirectoryPath);
 
         /// <summary>
-        /// <para>
         /// Opens a file within the group.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// If a new file is being created, automatically create the group and the
         /// containing directory for the file.
         /// </para>
-        /// </summary>
+        /// </remarks>
         /// <param name="relativeFilePath">The relative path of the file to open within the group.</param>
         /// <param name="mode">The file open mode.</param>
         /// <param name="access">The file access mode.</param>
@@ -108,9 +110,7 @@ namespace Gallio.Runtime.Caching
         Stream OpenFile(string relativeFilePath, FileMode mode, FileAccess access, FileShare share);
 
         /// <summary>
-        /// <para>
         /// Creates a directory within the group.
-        /// </para>
         /// </summary>
         /// <param name="relativeDirectoryPath">The relative path of the directory to create within the group.</param>
         /// <returns>Directory information for the directory that was created.</returns>

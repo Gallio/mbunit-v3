@@ -23,9 +23,14 @@ namespace Gallio.Runtime.Formatting
 {
     /// <summary>
     /// A default formatting rule for objects based on using the <see cref="IConverter" />
-    /// to convert the value to a string.  This rule has minimum priority so that
-    /// all other formatting rules should override it in principle.
+    /// to convert the value to a string.
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// This rule has minimum priority so that
+    /// all other formatting rules should override it in principle.
+    /// </para>
+    /// </remarks>
     public sealed class ConvertToStringFormattingRule : IFormattingRule
     {
         private readonly IConverter converter;

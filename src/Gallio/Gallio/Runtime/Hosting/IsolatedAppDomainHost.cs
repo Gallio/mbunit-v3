@@ -27,12 +27,10 @@ using Gallio.Common.Reflection;
 namespace Gallio.Runtime.Hosting
 {
     /// <summary>
-    /// <para>
     /// An isolated app domain host is a <see cref="IHost"/> the runs code within an
     /// isolated <see cref="AppDomain" /> of this process.  Communication with the
     /// <see cref="AppDomain" /> occurs over an inter-<see cref="AppDomain" /> .Net
     /// remoting channel.
-    /// </para>
     /// </summary>
     /// <remarks>
     /// <para>

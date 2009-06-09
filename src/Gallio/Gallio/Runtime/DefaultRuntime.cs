@@ -553,14 +553,12 @@ namespace Gallio.Runtime
                 pluginLoader.DefinePreprocessorConstant("NET20");
         }
 
-        /// <summary>
-        /// Configure the runtime for debugging purposes within Visual Studio.
-        /// This code makes assumptions about the layout of the projects on disk that
-        /// help to make debugging work "magically".  Unless a specific runtime
-        /// path has been set, it is overridden with the location of the Gallio project
-        /// "bin" folder and the root directory of the source tree is added
-        /// the list of plugin directories to ensure that plugins can be resolved.
-        /// </summary>
+        // Configure the runtime for debugging purposes within Visual Studio.
+        // This code makes assumptions about the layout of the projects on disk that
+        // help to make debugging work "magically".  Unless a specific runtime
+        // path has been set, it is overridden with the location of the Gallio project
+        // "bin" folder and the root directory of the source tree is added
+        // the list of plugin directories to ensure that plugins can be resolved.
         [Conditional("DEBUG")]
         private void ConfigureForDebugging()
         {

@@ -21,9 +21,11 @@ namespace Gallio.Runtime.Extensibility
     /// Specifies the traits class associated with a service contract.
     /// </summary>
     /// <remarks>
+    /// <para>
     /// This attribute enables the runtime to bind a service contract to its traits.
     /// If no attribute is specified then it is presumed that the service has an empty
     /// traits class (represented by <see cref="Traits" />).
+    /// </para>
     /// </remarks>
     [AttributeUsage(AttributeTargets.Interface | AttributeTargets.Class, AllowMultiple=false, Inherited=true)]
     public sealed class TraitsAttribute : Attribute

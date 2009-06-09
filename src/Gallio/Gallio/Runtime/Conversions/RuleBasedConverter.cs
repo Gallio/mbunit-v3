@@ -20,9 +20,14 @@ namespace Gallio.Runtime.Conversions
 {
     /// <summary>
     /// A rule-based converter uses a set of <see cref="IConversionRule" />s to
-    /// perform conversions.  It caches the best path it determines for each conversion
-    /// so that it only needs to compute the conversion cost once.
+    /// perform conversions.
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// It caches the best path it determines for each conversion
+    /// so that it only needs to compute the conversion cost once.
+    /// </para>
+    /// </remarks>
     public class RuleBasedConverter : BaseConverter
     {
         private readonly List<IConversionRule> rules;

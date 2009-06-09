@@ -19,14 +19,14 @@ using System.Globalization;
 namespace Gallio.Runtime.Formatting
 {
     /// <summary>
-    /// <para>
     /// A formatting rule for <see cref="short" />, <see cref="int"/>, <see cref="long"/>,
     /// <see cref="ushort"/>, <see cref="uint" />, and <see cref="ulong"/>.
-    /// </para>
+    /// </summary>
+    /// <remarks>
     /// <para>
     /// Formats values like: "5", "123", "-12".
     /// </para>
-    /// </summary>
+    /// </remarks>
     public sealed class IntegerFormattingRule : IFormattingRule
     {
         /// <inheritdoc />

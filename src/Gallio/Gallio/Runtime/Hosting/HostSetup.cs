@@ -63,18 +63,18 @@ namespace Gallio.Runtime.Hosting
         }
 
         /// <summary>
-        /// <para>
         /// Gets or sets the relative or absolute path of the application base directory,
         /// or null to use a default value selected by the consumer.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// If relative, the path is based on the current working directory,
         /// so a value of "" causes the current working directory to be used.
         /// </para>
-        /// </summary>
-        /// <remarks>
+        /// <para>
         /// Relative paths should be canonicalized as soon as possible.
         /// See <see cref="Canonicalize" />.
+        /// </para>
         /// </remarks>
         /// <value>
         /// The application base directory.  Default is <c>null</c>.
@@ -87,18 +87,18 @@ namespace Gallio.Runtime.Hosting
         }
 
         /// <summary>
-        /// <para>
         /// Gets or sets the relative or absolute path of the working directory
         /// or null to use a default value selected by the consumer.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// If relative, the path is based on the current working directory,
         /// so a value of "" causes the current working directory to be used.
         /// </para>
-        /// </summary>
-        /// <remarks>
+        /// <para>
         /// Relative paths should be canonicalized as soon as possible.
         /// See <see cref="Canonicalize" />.
+        /// </para>
         /// </remarks>
         /// <value>
         /// The working directory.  Default is <c>null</c>.
@@ -232,15 +232,17 @@ namespace Gallio.Runtime.Hosting
         }
 
         /// <summary>
-        /// <para>
         /// Writes a temporary configuration file for the application to disk and returns its path
-        /// based on <see cref="ConfigurationFileLocation" />.  The file is created with a unique
-        /// name each time.
+        /// based on <see cref="ConfigurationFileLocation" />.  
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// The file is created with a unique name each time.
         /// </para>
         /// <para>
         /// The file should be deleted by the caller when no longer required.
         /// </para>
-        /// </summary>
+        /// </remarks>
         /// <returns>The full path of the configuration file that was written, or null if no file was written.</returns>
         /// <exception cref="InvalidOperationException">Thrown if <see cref="ApplicationBaseDirectory"/>
         /// is <c>null</c> but <see cref="ConfigurationFileLocation" /> is <see cref="Hosting.ConfigurationFileLocation.AppBase" />.</exception>

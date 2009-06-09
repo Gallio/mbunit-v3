@@ -132,10 +132,12 @@ namespace Gallio.Runtime.Hosting
 
         /// <summary>
         /// Gets a mutable list of supported runtime versions in order of preference.
-        /// When the list is empty, the runtime version used to build the application is used.
-        /// Otherwise one of the supported runtimes in the list is used.
         /// </summary>
         /// <remarks>
+        /// <para>
+        /// When the list is empty, the runtime version used to build the application is used.
+        /// Otherwise one of the supported runtimes in the list is used.
+        /// </para>
         /// <para>
         /// The default value is an empty list.  Each entry should start with a "v".  eg. "v2.0.50727".
         /// </para>
@@ -310,7 +312,7 @@ namespace Gallio.Runtime.Hosting
 
             XmlDocument document = GenerateXmlDocument();
 
-            XmlWriterSettings settings = new XmlWriterSettings();
+            var settings = new XmlWriterSettings();
             // This setting is important! For some reason, if the user settings section
             // is not indented and it contains more than one setting, the CLR won't parse
             // them correctly and will throw a System.Configuration.ConfigurationErrorsException
@@ -347,7 +349,7 @@ namespace Gallio.Runtime.Hosting
         /// <returns>The copy.</returns>
         public HostConfiguration Copy()
         {
-            HostConfiguration copy = new HostConfiguration();
+            var copy = new HostConfiguration();
 
             copy.assertUiEnabled = assertUiEnabled;
             copy.configurationXml = configurationXml;
@@ -393,7 +395,7 @@ namespace Gallio.Runtime.Hosting
 
         private XmlDocument GenerateXmlDocument()
         {
-            XmlDocument document = new XmlDocument();
+            var document = new XmlDocument();
             document.LoadXml(configurationXml ?? @"<configuration/>");
 
             XmlElement rootElement = document.DocumentElement;
@@ -807,9 +809,11 @@ namespace Gallio.Runtime.Hosting
             /// Adds an assembly code-base element if a suitable one is not already present.
             /// </summary>
             /// <remarks>
+            /// <para>
             /// If another codebase element exists with the same version but perhaps
             /// a different Uri, then we do not add a new codebase since this most
             /// likely indicates that the same assembly can be loaded from multiple locations.
+            /// </para>
             /// </remarks>
             /// <param name="version">The assembly version.</param>
             /// <param name="uri">The code base uri.</param>

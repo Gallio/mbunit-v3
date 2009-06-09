@@ -20,13 +20,13 @@ using Gallio.Common.Text;
 namespace Gallio.Runtime.Formatting
 {
     /// <summary>
-    /// <para>
     /// A formatting rule for <see cref="byte" />.
-    /// </para>
+    /// </summary>
+    /// <remarks>
     /// <para>
     /// Formats values as two digit hex values like "0xa5".
     /// </para>
-    /// </summary>
+    /// </remarks>
     public sealed class ByteFormattingRule : IFormattingRule
     {
         /// <inheritdoc />
@@ -40,13 +40,12 @@ namespace Gallio.Runtime.Formatting
         /// <inheritdoc />
         public string Format(object obj, IFormatter formatter)
         {
-            byte value = (byte)obj;
-
-            StringBuilder str = new StringBuilder(4, 4);
-            str.Append("0x");
-            str.Append(StringUtils.ToHexDigit(value >> 4));
-            str.Append(StringUtils.ToHexDigit(value));
-            return str.ToString();
+            var value = (byte)obj;
+            return new StringBuilder(4, 4)
+                .Append("0x")
+                .Append(StringUtils.ToHexDigit(value >> 4))
+                .Append(StringUtils.ToHexDigit(value))
+                .ToString();
         }
     }
 }

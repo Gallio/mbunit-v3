@@ -18,13 +18,13 @@ using System;
 namespace Gallio.Runtime.Formatting
 {
     /// <summary>
-    /// <para>
     /// A formatting rule for <see cref="DBNull" />.
-    /// </para>
+    /// </summary>
+    /// <remarks>
     /// <para>
     /// Formats values as "dbnull".
     /// </para>
-    /// </summary>
+    /// </remarks>
     public sealed class DBNullFormattingRule : IFormattingRule
     {
         /// <inheritdoc />

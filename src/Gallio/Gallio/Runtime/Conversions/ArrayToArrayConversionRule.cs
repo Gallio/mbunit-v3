@@ -36,7 +36,7 @@ namespace Gallio.Runtime.Conversions
         /// <inheritdoc />
         public object Convert(object sourceValue, Type targetType, IConverter elementConverter)
         {
-            Array sourceArray = (Array) sourceValue;
+            var sourceArray = (Array)sourceValue;
             int length = sourceArray.Length;
 
             Type targetElementType = targetType.GetElementType();

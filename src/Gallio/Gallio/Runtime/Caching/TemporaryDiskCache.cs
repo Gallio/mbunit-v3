@@ -43,7 +43,8 @@ namespace Gallio.Runtime.Caching
         }
 
         /// <summary>
-        /// Creates a temporary disk cache within the <see cref="DefaultCacheDirectoryName" /> subdirectory of the user's temporary directory.
+        /// Creates a temporary disk cache within the <see cref="DefaultCacheDirectoryName" /> 
+        /// subdirectory of the user's temporary directory.
         /// </summary>
         public TemporaryDiskCache()
             : this(DefaultCacheDirectoryName)

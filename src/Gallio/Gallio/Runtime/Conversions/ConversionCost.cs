@@ -19,9 +19,14 @@ namespace Gallio.Runtime.Conversions
 {
     /// <summary>
     /// Describes the relative cost of performing a conversion so that different
-    /// conversions can be ranked by cost.  A typical direct conversion should have
-    /// a cost of one.  Lossy conversions should be more costly.
+    /// conversions can be ranked by cost.  
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// A typical direct conversion should have
+    /// a cost of one. Lossy conversions should be more costly.
+    /// </para>
+    /// </remarks>
     public struct ConversionCost : IComparable<ConversionCost>
     {
         private const int MaximumValue = 1000000000;
@@ -37,16 +42,24 @@ namespace Gallio.Runtime.Conversions
 
         /// <summary>
         /// The conversion is the best possible conversion available.
+        /// </summary>
+        /// <remarks>
+        /// <para>
         /// Built-in conversions should not use this value.  It should be reserved for
         /// user-created conversions that are intended to override the built-in conversions.
-        /// </summary>
+        /// </para>
+        /// </remarks>
         /// <value>The associated cost value is 1.</value>
         public static readonly ConversionCost Best = new ConversionCost(1);
 
         /// <summary>
         /// The conversion costs a typical amount of work to perform.
-        /// It may yet be trumped by a conversion that costs less.
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// It may yet be trumped by a conversion that costs less.
+        /// </para>
+        /// </remarks>
         /// <value>The associated cost value is 1000.</value>
         public static readonly ConversionCost Typical = new ConversionCost(1000);
 

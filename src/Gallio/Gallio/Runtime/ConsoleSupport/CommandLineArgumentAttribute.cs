@@ -19,13 +19,16 @@ namespace Gallio.Runtime.ConsoleSupport
 {
     /// <summary>
     /// Allows control of command line parsing.
-    /// Attach this attribute to instance fields of types used
-    /// as the destination of command line argument parsing.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// Command line parsing code from Peter Halam, 
-    /// http://www.gotdotnet.com/community/usersamples/details.aspx?sampleguid=62a0f27e-274e-4228-ba7f-bc0118ecc41e
+    /// Attach this attribute to instance fields of types used
+    /// as the destination of command line argument parsing.
+    /// </para>
+    /// <para>
+    /// Command line parsing code from 
+    /// <a href="http://www.gotdotnet.com/community/usersamples/details.aspx?sampleguid=62a0f27e-274e-4228-ba7f-bc0118ecc41e">
+    /// Peter Halam</a>, 
     /// </para>
     /// </remarks>
     [AttributeUsage(AttributeTargets.Field,AllowMultiple=false,Inherited=true)]

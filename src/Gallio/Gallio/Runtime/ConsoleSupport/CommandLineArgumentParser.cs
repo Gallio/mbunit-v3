@@ -55,11 +55,12 @@ namespace Gallio.Runtime.ConsoleSupport
 	/// Arguments which are array types are collection arguments. Collection
 	/// arguments can be specified multiple times.
 	/// </para>
-	/// <para>
-	/// Command line parsing code from Peter Halam, 
-	/// http://www.gotdotnet.com/community/usersamples/details.aspx?sampleguid=62a0f27e-274e-4228-ba7f-bc0118ecc41e
-	/// </para>
-	/// </remarks>
+    /// <para>
+    /// Command line parsing code from 
+    /// <a href="http://www.gotdotnet.com/community/usersamples/details.aspx?sampleguid=62a0f27e-274e-4228-ba7f-bc0118ecc41e">
+    /// Peter Halam</a>, 
+    /// </para>
+    /// </remarks>
 	public class CommandLineArgumentParser
 	{
         private readonly Type argumentSpecification;
@@ -117,7 +118,7 @@ namespace Gallio.Runtime.ConsoleSupport
             if (reporter == null)
                 throw new ArgumentNullException(@"reporter");
 
-            MultiMap<Argument, object> argumentValues = new MultiMap<Argument, object>();
+            var argumentValues = new MultiMap<Argument, object>();
             try
             {
                 bool hadError = ParseArgumentList(args, argumentValues, reporter);

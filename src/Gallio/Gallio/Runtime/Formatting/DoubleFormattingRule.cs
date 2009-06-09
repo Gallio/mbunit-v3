@@ -19,13 +19,13 @@ using System.Globalization;
 namespace Gallio.Runtime.Formatting
 {
     /// <summary>
-    /// <para>
     /// A formatting rule for <see cref="double" />.
-    /// </para>
+    /// </summary>
+    /// <remarks>
     /// <para>
     /// Formats values like: "5.6".
     /// </para>
-    /// </summary>
+    /// </remarks>
     public sealed class DoubleFormattingRule : IFormattingRule
     {
         /// <inheritdoc />
@@ -39,7 +39,8 @@ namespace Gallio.Runtime.Formatting
         /// <inheritdoc />
         public string Format(object obj, IFormatter formatter)
         {
-            double value = (double)obj;
+            var value = (double)obj;
+
             if (value == 0.0)
                 return @"0.0"; // special case to ensure exact zero can be distinguished from an integer
 

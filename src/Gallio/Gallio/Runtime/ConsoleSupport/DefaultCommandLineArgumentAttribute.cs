@@ -18,14 +18,17 @@ namespace Gallio.Runtime.ConsoleSupport
 {
 	/// <summary>
 	/// Indicates that this argument is the default argument.
-	/// '/' or '-' prefix only the argument value is specified.
 	/// </summary>
 	/// <remarks>
-	/// <para>
-	/// Command line parsing code from Peter Halam, 
-	/// http://www.gotdotnet.com/community/usersamples/details.aspx?sampleguid=62a0f27e-274e-4228-ba7f-bc0118ecc41e
-	/// </para>
-	/// </remarks>
+    /// <para>
+    /// '/' or '-' prefix only the argument value is specified.
+    /// </para>
+    /// <para>
+    /// Command line parsing code from 
+    /// <a href="http://www.gotdotnet.com/community/usersamples/details.aspx?sampleguid=62a0f27e-274e-4228-ba7f-bc0118ecc41e">
+    /// Peter Halam</a>, 
+    /// </para>
+    /// </remarks>
 	[AttributeUsage(AttributeTargets.Field)]
 	public class DefaultCommandLineArgumentAttribute : CommandLineArgumentAttribute
 	{

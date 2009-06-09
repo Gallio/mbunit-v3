@@ -21,10 +21,15 @@ namespace Gallio.Runtime.ProgressMonitoring
     /// <summary>
     /// An observable progress monitor tracks validates arguments and tracks the state
     /// of the progress monitor but it does not implement any of its own behavior in response
-    /// to the notifications received.  Instead, it is intended to be observed by a presenter that
-    /// translates state change events into changes of the view.
+    /// to the notifications received.  
     /// </summary>
-    /// <seealso cref="IProgressMonitor"/> for important thread-safety and usage remarks.
+    /// <remarks>
+    /// <para>
+    /// Instead, it is intended to be observed by a presenter that
+    /// translates state change events into changes of the view.
+    /// </para>
+    /// </remarks>
+    /// <seealso cref="IProgressMonitor"/>
     [Serializable]
     public class ObservableProgressMonitor : CancelableProgressMonitor
     {
@@ -65,7 +70,9 @@ namespace Gallio.Runtime.ProgressMonitoring
         /// has not yet also been called.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// This property is not affected by cancelation.
+        /// </para>
         /// </remarks>
         public bool IsRunning
         {
@@ -76,7 +83,9 @@ namespace Gallio.Runtime.ProgressMonitoring
         /// Returns true if <see cref="Done" /> has been called.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// This property is not affected by cancellation.
+        /// </para>
         /// </remarks>
         public bool IsDone
         {
@@ -89,7 +98,9 @@ namespace Gallio.Runtime.ProgressMonitoring
         /// to be performed.
         /// </summary>
         /// <remarks>
-        /// Returns NaN if <see cref="BeginTask" /> has not been called.
+        /// <para>
+        /// Returns <see cref="Double.NaN"/> if <see cref="BeginTask" /> has not been called.
+        /// </para>
         /// </remarks>
         public double TotalWorkUnits
         {
@@ -97,14 +108,18 @@ namespace Gallio.Runtime.ProgressMonitoring
         }
 		
         /// <summary>
-        /// Gets the number of work units completed so far.  It is the sum
-        /// of all values passed to the <see cref="Worked" /> method while
-        /// the task has been running.  This value is never NaN because at each
-        /// step a finite amount of work must be recorded.
+        /// Gets the number of work units completed so far.
         /// </summary>
         /// <remarks>
+        /// <para>
+        /// It is the sum of all values passed to the <see cref="Worked" /> method while
+        /// the task has been running. This value is never NaN because at each
+        /// step a finite amount of work must be recorded.
+        /// </para>
+        /// <para>
         /// Returns 0 if <see cref="BeginTask" /> and <see cref="Worked" /> have
         /// not been called.
+        /// </para>
         /// </remarks>
         public double CompletedWorkUnits
         {
@@ -112,13 +127,17 @@ namespace Gallio.Runtime.ProgressMonitoring
         }
 		
         /// <summary>
-        /// Gets the number of remaining work units to perform, or
-        /// NaN to indicate that an indeterminate amount of work remains
-        /// to be performed because <see cref="TotalWorkUnits" /> is NaN
-        /// and the operation is not done.
+        /// Gets the number of remaining work units to perform, or <see cref="Double.NaN"/>.
         /// </summary>
         /// <remarks>
-        /// Returns NaN if <see cref="BeginTask" /> has not been called.
+        /// <para>
+        /// <see cref="Double.NaN"/> is returned to to indicate that an indeterminate amount of 
+        /// work remains to be performed because <see cref="TotalWorkUnits" /> is <see cref="Double.NaN"/>
+        /// and the operation is not done.
+        /// </para>
+        /// <para>
+        /// Returns <see cref="Double.NaN"/> if <see cref="BeginTask" /> has not been called.
+        /// </para>
         /// </remarks>
         public double RemainingWorkUnits
         {

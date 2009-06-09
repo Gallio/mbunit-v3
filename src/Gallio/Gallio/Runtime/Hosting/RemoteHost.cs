@@ -23,15 +23,17 @@ using Gallio.Properties;
 
 namespace Gallio.Runtime.Hosting
 {
-    /// <para>
+    /// <summary>
     /// An implementation of <see cref="IHost" /> that communicates with a 
     /// <see cref="RemoteHostService" /> that resides in a different context
     /// using .Net remoting.
-    /// </para>
+    /// </summary>
+    /// <remarks>
     /// <para>
     /// This implementation also provides a mechanism for periodically polling
     /// the remote service to keep it alive and to detect abrupt disconnection.
     /// </para>
+    /// </remarks>
     public abstract class RemoteHost : BaseHost
     {
         private readonly TimeSpan? pingInterval;

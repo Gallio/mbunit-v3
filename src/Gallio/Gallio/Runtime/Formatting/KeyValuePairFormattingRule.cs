@@ -20,13 +20,13 @@ using System.Reflection;
 namespace Gallio.Runtime.Formatting
 {
     /// <summary>
-    /// <para>
     /// A formatting rule for <see cref="KeyValuePair{TKey,TValue}" />.
-    /// </para>
+    /// </summary>
+    /// <remarks>
     /// <para>
     /// Formats values as "\"key\": \"value\"".
     /// </para>
-    /// </summary>
+    /// </remarks>
     public sealed class KeyValuePairFormattingRule : IFormattingRule
     {
         /// <inheritdoc />

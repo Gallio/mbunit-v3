@@ -21,42 +21,69 @@ namespace Gallio.Runtime.Formatting
     public static class FormattingRulePriority
     {
         /// <summary>
-        /// The default formatting rule priority.  A rule with this priority will
-        /// be overridden by all other matching rules.
+        /// The default formatting rule priority.
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// A rule with this priority will be overridden by all other matching rules.
+        /// </para>
+        /// </remarks>
         /// <value><see cref="int.MaxValue" /></value>
         public const int Default = int.MinValue;
 
         /// <summary>
-        /// Generic rule priority.  Represents a generic rule that can represent objects
-        /// of any type structurally.
+        /// Generic rule priority.
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// Represents a generic rule that can represent objects
+        /// of any type structurally.
+        /// </para>
+        /// </remarks>
         /// <value>-20</value>
         public const int Generic = -20;
 
         /// <summary>
-        /// Fallback rule priority.  Represents a rule to be applied if the typical case fails.
+        /// Fallback rule priority.  
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// Represents a rule to be applied if the typical case fails.
+        /// </para>
+        /// </remarks>
         /// <value>-10</value>
         public const int Fallback = -10;
 
         /// <summary>
-        /// Typical rule priority.  This is a good starting point for rule priorities.
+        /// Typical rule priority.  
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// This is a good starting point for rule priorities.
+        /// </para>
+        /// </remarks>
         /// <value>0</value>
         public const int Typical = 0;
 
         /// <summary>
-        /// A better than typical rule.  This value should be used for cases where the
-        /// typical rule is not quite precise enough.
+        /// A better than typical rule.  
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// This value should be used for cases where the typical rule is not quite precise enough.
+        /// </para>
+        /// </remarks>
         /// <value>10</value>
         public const int Better = 10;
 
         /// <summary>
-        /// The best possible formatting rule priority.  A rule with this priority
-        /// will override all other matching rules.
+        /// The best possible formatting rule priority.  
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// A rule with this priority will override all other matching rules.
+        /// </para>
+        /// </remarks>
         /// <value><see cref="int.MaxValue" /></value>
         public const int Best = int.MaxValue;
     }

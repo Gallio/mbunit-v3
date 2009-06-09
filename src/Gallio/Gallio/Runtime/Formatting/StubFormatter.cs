@@ -20,9 +20,7 @@ using Gallio.Common.Collections;
 namespace Gallio.Runtime.Formatting
 {
     /// <summary>
-    /// <para>
     /// A formatter that is used when the runtime is not initialized.
-    /// </para>
     /// </summary>
     public class StubFormatter : RuleBasedFormatter
     {
@@ -36,7 +34,7 @@ namespace Gallio.Runtime.Formatting
 
         private static IFormattingRule[] GetBuiltInRules()
         {
-            List<IFormattingRule> rules = new List<IFormattingRule>();
+            var rules = new List<IFormattingRule>();
 
             foreach (Type type in typeof(StubFormatter).Assembly.GetExportedTypes())
             {

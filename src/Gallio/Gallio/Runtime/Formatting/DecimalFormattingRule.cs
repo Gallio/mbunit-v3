@@ -19,13 +19,13 @@ using System.Globalization;
 namespace Gallio.Runtime.Formatting
 {
     /// <summary>
-    /// <para>
     /// A formatting rule for <see cref="decimal" />.
-    /// </para>
+    /// </summary>
+    /// <remarks>
     /// <para>
     /// Formats values like: "5.6m".
     /// </para>
-    /// </summary>
+    /// </remarks>
     public sealed class DecimalFormattingRule : IFormattingRule
     {
         /// <inheritdoc />
@@ -39,7 +39,7 @@ namespace Gallio.Runtime.Formatting
         /// <inheritdoc />
         public string Format(object obj, IFormatter formatter)
         {
-            decimal value = (decimal)obj;
+            var value = (decimal)obj;
             return value.ToString(CultureInfo.InvariantCulture) + @"m";
         }
     }

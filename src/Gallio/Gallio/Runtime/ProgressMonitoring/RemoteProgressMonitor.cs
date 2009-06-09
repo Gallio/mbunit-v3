@@ -24,12 +24,16 @@ namespace Gallio.Runtime.ProgressMonitoring
 {
     /// <summary>
     /// A remote progress monitor is a serializable wrapper for another progress monitor.
-    /// The wrapper can be passed to another AppDomain and communication occurs over
-    /// .Net remoting.
     /// </summary>
     /// <remarks>
+    /// <para>
+    /// The wrapper can be passed to another AppDomain and communication occurs over
+    /// .Net remoting.
+    /// </para>
+    /// <para>
     /// The implementation is defined so as to guard against latency and failures
     /// in the remoting channel.
+    /// </para>
     /// </remarks>
     /// <seealso cref="IProgressMonitor"/> for important thread-safety and usage remarks.
     [Serializable]

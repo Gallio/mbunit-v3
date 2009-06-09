@@ -28,15 +28,15 @@ namespace Gallio.Runtime
     public static class RuntimeBootstrap
     {
         /// <summary>
-        /// <para>
         /// Initializes the runtime.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// Loads plugins and initalizes the runtime component model.  The
         /// specifics of the system can be configured by editing the appropriate
         /// *.plugin files to register new components and facilities as required.
         /// </para>
-        /// </summary>
+        /// </remarks>
         /// <param name="setup">The runtime setup parameters.</param>
         /// <param name="logger">The runtime logging service.</param>
         /// <returns>An object that when disposed automatically calls <see cref="Shutdown" />.
@@ -79,8 +79,12 @@ namespace Gallio.Runtime
 
         /// <summary>
         /// Shuts down the runtime if it is currently initialized.
-        /// Does nothing if the runtime has not been initialized.
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// Does nothing if the runtime has not been initialized.
+        /// </para>
+        /// </remarks>
         public static void Shutdown()
         {
             if (!RuntimeAccessor.IsInitialized)

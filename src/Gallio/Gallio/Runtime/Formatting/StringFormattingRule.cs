@@ -19,13 +19,13 @@ using Gallio.Common.Text;
 namespace Gallio.Runtime.Formatting
 {
     /// <summary>
-    /// <para>
     /// A formatting rule for <see cref="string" />.
-    /// </para>
+    /// </summary>
+    /// <remarks>
     /// <para>
     /// Formats values as literals like: ""abc\ndef"".
     /// </para>
-    /// </summary>
+    /// </remarks>
     public sealed class StringFormattingRule : IFormattingRule
     {
         /// <inheritdoc />
@@ -39,7 +39,7 @@ namespace Gallio.Runtime.Formatting
         /// <inheritdoc />
         public string Format(object obj, IFormatter formatter)
         {
-            string value = (string)obj;
+            var value = (string)obj;
             return StringUtils.ToStringLiteral(value);
         }
     }

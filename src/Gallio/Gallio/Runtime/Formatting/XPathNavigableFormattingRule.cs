@@ -19,13 +19,13 @@ using System.Xml.XPath;
 namespace Gallio.Runtime.Formatting
 {
     /// <summary>
-    /// <para>
     /// A formatting rule for <see cref="IXPathNavigable" />.
-    /// </para>
+    /// </summary>
+    /// <remarks>
     /// <para>
     /// Formats values as "&lt;root /&gt;".
     /// </para>
-    /// </summary>
+    /// </remarks>
     public sealed class XPathNavigableFormattingRule : IFormattingRule
     {
         /// <inheritdoc />

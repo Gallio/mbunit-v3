@@ -23,16 +23,16 @@ using Gallio.Runtime.Logging;
 namespace Gallio.Runtime
 {
     /// <summary>
-    /// <para>
     /// The runtime is instantiated within the test runner to provide a suitable
     /// hosting environment for test enumeration and execution.
-    /// </para>
+    /// </summary>
+    /// <remarks>
     /// <para>
     /// The runtime provides services to support the Gallio test automation platform.
     /// New services are typically registered by adding them to plugin configuration
     /// files.
     /// </para>
-    /// </summary>
+    /// </remarks>
     public interface IRuntime : IDisposable
     {
         /// <summary>

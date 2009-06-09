@@ -18,16 +18,16 @@ using System;
 namespace Gallio.Runtime.Hosting
 {
     /// <summary>
-    /// <para>
     /// A host represents an environment that may be used to perform various
     /// services in isolation.
-    /// </para>
+    /// </summary>
+    /// <remarks>
     /// <para>
     /// For example, a host might provide the ability to run code in an isolated
     /// <see cref="AppDomain" /> of the current process, or it might run code
     /// in an isolated process, or connect to an existing remote process.
     /// </para>
-    /// </summary>
+    /// </remarks>
     public interface IHost : IDisposable
     {
         /// <summary>
@@ -40,17 +40,23 @@ namespace Gallio.Runtime.Hosting
 
         /// <summary>
         /// Returns true if the host is local to the creating AppDomain, false if it
-        /// must be accessed across a remote channel.  A local host might not
-        /// support all configuration options.
+        /// must be accessed across a remote channel.  
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// A local host might not support all configuration options.
+        /// </para>
+        /// </remarks>
         bool IsLocal { get; }
 
         /// <summary>
         /// Returns true if the host is connected.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// A host may become disconnected non-deterministically due to a failure in the
         /// host's communication channel or some other remote eventuality.
+        /// </para>
         /// </remarks>
         /// <exception cref="ObjectDisposedException">Thrown if the host has been disposed.</exception>
         bool IsConnected { get; }

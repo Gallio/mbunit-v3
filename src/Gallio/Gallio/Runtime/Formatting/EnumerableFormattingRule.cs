@@ -20,13 +20,13 @@ using System.Text;
 namespace Gallio.Runtime.Formatting
 {
     /// <summary>
-    /// <para>
     /// A formatting rule for <see cref="IEnumerable" />.
-    /// </para>
+    /// </summary>
+    /// <remarks>
     /// <para>
     /// Formats values as "[1, 2, 3]".
     /// </para>
-    /// </summary>
+    /// </remarks>
     public sealed class EnumerableFormattingRule : IFormattingRule
     {
         /// <inheritdoc />
@@ -40,9 +40,9 @@ namespace Gallio.Runtime.Formatting
         /// <inheritdoc />
         public string Format(object obj, IFormatter formatter)
         {
-            IEnumerable enumerable = (IEnumerable)obj;
+            var enumerable = (IEnumerable)obj;
 
-            StringBuilder str = new StringBuilder();
+            var str = new StringBuilder();
             str.Append('[');
 
             bool first = true;

@@ -19,13 +19,13 @@ using System.Text;
 namespace Gallio.Runtime.Formatting
 {
     /// <summary>
-    /// <para>
     /// A formatting rule for <see cref="Type" />.
-    /// </para>
+    /// </summary>
+    /// <remarks>
     /// <para>
     /// Formats values like: string, MyType.Nested, int[], byte*, similar to C#.
     /// </para>
-    /// </summary>
+    /// </remarks>
     public sealed class TypeFormattingRule : IFormattingRule
     {
         /// <inheritdoc />
@@ -39,8 +39,8 @@ namespace Gallio.Runtime.Formatting
         /// <inheritdoc />
         public string Format(object obj, IFormatter formatter)
         {
-            Type value = (Type) obj;
-            StringBuilder result = new StringBuilder();
+            var value = (Type) obj;
+            var result = new StringBuilder();
             AppendType(result, value);
             return result.ToString();
         }

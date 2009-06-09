@@ -21,8 +21,12 @@ namespace Gallio.Runtime.Logging
 {
     /// <summary>
     /// A <see cref="ILogger" /> implementation that logs messages to the specified <see cref="MarkupStreamWriter" />.
-    /// This can be used to write log messages to a markup stream.
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// This can be used to write log messages to a markup stream.
+    /// </para>
+    /// </remarks>
     public sealed class MarkupStreamLogger : BaseLogger
     {
         private readonly MarkupStreamWriter writer;

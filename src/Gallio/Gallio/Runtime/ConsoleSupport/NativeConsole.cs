@@ -23,16 +23,16 @@ using Gallio.Common.Policies;
 namespace Gallio.Runtime.ConsoleSupport
 {
     /// <summary>
-    /// <para>
     /// An implementation of <see cref="IRichConsole" /> that targets the
     /// native <see cref="Console" />.
-    /// </para>
+    /// </summary>
+    /// <remarks>
     /// <para>
     /// This implementation offers protection against redirection of the <see cref="Console.Out" />
     /// and <see cref="Console.Error" /> streams.  This object will continue to refer to the
     /// standard output and error streams even if they are redirected after its initialization.
     /// </para>
-    /// </summary>
+    /// </remarks>
     public sealed class NativeConsole : IRichConsole
     {
         /// <summary>
