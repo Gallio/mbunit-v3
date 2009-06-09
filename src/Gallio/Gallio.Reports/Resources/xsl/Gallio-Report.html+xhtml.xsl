@@ -89,6 +89,7 @@ html
       <xsl:apply-templates select="g:testPackageRun" mode="navigator" />
     </div>
     <div id="Content" class="content">
+      <iframe id="_asyncLoadFrame" src="about:blank" style="border: 0px; margin: 0px 0px 0px 0px; padding: 0px 0px 0px 0px; width: 0px; height: 0px; display: none;" onload="_asyncLoadFrameOnLoad()" />
       <xsl:apply-templates select="g:testPackageRun" mode="statistics" />
       <xsl:apply-templates select="g:testPackageConfig" mode="assemblies" />
       <xsl:apply-templates select="g:testModel/g:annotations" mode="annotations"/>
@@ -585,63 +586,237 @@ html
     <xsl:param name="attachments" />
     <xsl:variable name="attachmentName" select="@attachmentName" />
     
-    <div class="logStreamEmbed">
-      <xsl:apply-templates select="$attachments/g:attachment[@name=$attachmentName]" mode="embed" />
-    </div>
+    <xsl:apply-templates select="$attachments/g:attachment[@name=$attachmentName]" mode="embed">
+      <xsl:with-param name="id" select="generate-id(.)" />
+    </xsl:apply-templates>
   </xsl:template>
 
-  <xsl:template match="g:attachment" mode="embed">
-    <xsl:variable name="isImage" select="starts-with(@contentType, 'image/')" />
-    <xsl:choose>
-      <xsl:when test="$attachmentBrokerUrl != ''">
-        <xsl:variable name="attachmentBrokerQuery"><xsl:value-of select="$attachmentBrokerUrl"/>testStepId=<xsl:value-of select="../../../g:testStep/@id"/>&amp;attachmentName=<xsl:value-of select="@name"/></xsl:variable>
-        <xsl:choose>
-          <xsl:when test="$isImage">
-            <a href="{$attachmentBrokerQuery}"><img class="embeddedImage" src="{$attachmentBrokerQuery}" alt="Attachment: {@name}" /></a>
-          </xsl:when>
-          <xsl:otherwise>
-            <xsl:text>Attachment: </xsl:text>
-            <a href="{$attachmentBrokerQuery}"><xsl:value-of select="@name" /></a>
-          </xsl:otherwise>
-        </xsl:choose>
-      </xsl:when>
-      <xsl:when test="@contentDisposition = 'link'">
-        <xsl:variable name="attachmentUri"><xsl:call-template name="path-to-uri"><xsl:with-param name="path" select="@contentPath" /></xsl:call-template></xsl:variable>
-        <xsl:choose>
-          <xsl:when test="$isImage">
-            <a href="{$attachmentUri}"><img class="embeddedImage" src="{$attachmentUri}" alt="Attachment: {@name}" /></a>
-          </xsl:when>
-          <xsl:otherwise>
-            <xsl:text>Attachment: </xsl:text>
-            <a href="{$attachmentUri}"><xsl:value-of select="@name" /></a>
-          </xsl:otherwise>
-        </xsl:choose>
-      </xsl:when>
-      <xsl:when test="@contentDisposition = 'inline' and $isImage and @encoding = 'base64'">
-        <img class="embeddedImage" src="data:{@contentType};base64,{text()}" alt="Attachment: {@name}" />
-      </xsl:when>
-      <xsl:otherwise>
-        <xsl:text>Attachment: </xsl:text>
-        <xsl:value-of select="@name" />
-        <xsl:text> (n/a)</xsl:text>
-      </xsl:otherwise>
-    </xsl:choose>
-  </xsl:template>
-  
   <xsl:template match="g:attachment" mode="link">
     <xsl:choose>
       <xsl:when test="$attachmentBrokerUrl != ''">
         <xsl:variable name="attachmentBrokerQuery"><xsl:value-of select="$attachmentBrokerUrl"/>testStepId=<xsl:value-of select="../../../g:testStep/@id"/>&amp;attachmentName=<xsl:value-of select="@name"/></xsl:variable>
+        
         <a href="{$attachmentBrokerQuery}"><xsl:value-of select="@name" /></a>
       </xsl:when>
       <xsl:when test="@contentDisposition = 'link'">
         <xsl:variable name="attachmentUri"><xsl:call-template name="path-to-uri"><xsl:with-param name="path" select="@contentPath" /></xsl:call-template></xsl:variable>
+        
         <a href="{$attachmentUri}"><xsl:value-of select="@name" /></a>
       </xsl:when>
       <xsl:otherwise>
         <xsl:value-of select="@name" /> (n/a)
       </xsl:otherwise>
     </xsl:choose>
+  </xsl:template>
+
+  <xsl:template match="g:attachment" mode="embed">
+    <xsl:param name="id" />
+    
+    <xsl:choose>
+      <!-- When using an attachment broker, we obtain content from a Uri consisting of a query for the attachment data. -->
+      <xsl:when test="$attachmentBrokerUrl != ''">
+        <xsl:variable name="attachmentBrokerQuery"><xsl:value-of select="$attachmentBrokerUrl"/>testStepId=<xsl:value-of select="../../../g:testStep/@id"/>&amp;attachmentName=<xsl:value-of select="@name"/></xsl:variable>
+
+        <xsl:call-template name="embed-attachment-with-uri">
+          <xsl:with-param name="id" select="$id" />
+          <xsl:with-param name="name" select="@name" />
+          <xsl:with-param name="contentType" select="@contentType" />
+          <xsl:with-param name="uri" select="$attachmentBrokerQuery" />
+        </xsl:call-template>
+      </xsl:when>
+      
+      <!-- When attachments are linked, we obtain content from a Uri generated from the attachment path. -->
+      <xsl:when test="@contentDisposition = 'link'">
+        <xsl:variable name="attachmentUri"><xsl:call-template name="path-to-uri"><xsl:with-param name="path" select="@contentPath" /></xsl:call-template></xsl:variable>
+
+        <xsl:call-template name="embed-attachment-with-uri">
+          <xsl:with-param name="id" select="$id" />
+          <xsl:with-param name="name" select="@name" />
+          <xsl:with-param name="contentType" select="@contentType" />
+          <xsl:with-param name="uri" select="$attachmentUri" />
+        </xsl:call-template>
+      </xsl:when>
+      
+      <!-- When attachments are inline, we try to embed the data within the HTML itself. -->
+      <xsl:when test="@contentDisposition = 'inline'">
+        <xsl:call-template name="embed-attachment-with-data">
+          <xsl:with-param name="id" select="$id" />
+          <xsl:with-param name="name" select="@name" />
+          <xsl:with-param name="contentType" select="@contentType" />
+          <xsl:with-param name="encoding" select="@encoding" />
+          <xsl:with-param name="data" select="text()" />
+        </xsl:call-template>
+      </xsl:when>
+      
+      <!-- When there is no data, we insert a placeholder. -->
+      <xsl:otherwise>
+        <xsl:call-template name="embed-attachment-placeholder">
+          <xsl:with-param name="id" select="$id" />
+          <xsl:with-param name="name" select="@name" />
+        </xsl:call-template>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+
+  <xsl:template name="embed-attachment-with-uri">
+    <xsl:param name="id" />
+    <xsl:param name="name" />
+    <xsl:param name="contentType" />
+    <xsl:param name="uri" />
+
+    <xsl:variable name="isImage" select="starts-with($contentType, 'image/')" />
+    <xsl:variable name="isHtml" select="starts-with($contentType, 'text/html') or starts-with($contentType, 'text/xhtml')" />
+    <xsl:variable name="isText" select="starts-with($contentType, 'text/')" />
+
+    <xsl:choose>
+      <xsl:when test="$isImage">
+        <div id="{$id}" class="logStreamEmbed">
+          <a href="{$uri}">
+            <img class="embeddedImage" src="{$uri}" alt="Attachment: {$name}" />
+          </a>
+        </div>
+      </xsl:when>
+      <xsl:when test="$isHtml">
+        <xsl:call-template name="embed-attachment-html-from-uri">
+          <xsl:with-param name="id" select="$id" />
+          <xsl:with-param name="name" select="$name" />
+          <xsl:with-param name="uri" select="$uri" />
+        </xsl:call-template>
+      </xsl:when>
+      <xsl:when test="$isText">
+        <xsl:call-template name="embed-attachment-text-from-uri">
+          <xsl:with-param name="id" select="$id" />
+          <xsl:with-param name="name" select="$name" />
+          <xsl:with-param name="uri" select="$uri" />
+        </xsl:call-template>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:call-template name="embed-attachment-link">
+          <xsl:with-param name="id" select="$id" />
+          <xsl:with-param name="name" select="$name" />
+          <xsl:with-param name="uri" select="$uri" />
+        </xsl:call-template>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+
+  <xsl:template name="embed-attachment-with-data">
+    <xsl:param name="id" />
+    <xsl:param name="name" />
+    <xsl:param name="contentType" />
+    <xsl:param name="encoding" />
+    <xsl:param name="data" />
+
+    <xsl:variable name="isImage" select="starts-with($contentType, 'image/')" />
+    <xsl:variable name="isHtml" select="starts-with($contentType, 'text/html') or starts-with($contentType, 'text/xhtml')" />
+    <xsl:variable name="isText" select="starts-with($contentType, 'text/')" />
+
+    <xsl:choose>
+      <xsl:when test="$isImage and $encoding = 'base64'">
+        <div id="{$id}" class="logStreamEmbed">
+          <img class="embeddedImage" src="data:{$contentType};base64,{$data}" alt="Attachment: {$name}" />
+        </div>
+      </xsl:when>
+      <xsl:when test="$isHtml and $encoding = 'text'">
+        <xsl:call-template name="embed-attachment-html-from-content">
+          <xsl:with-param name="id" select="$id" />
+          <xsl:with-param name="name" select="$name" />
+          <xsl:with-param name="content" select="$data" />
+        </xsl:call-template>
+      </xsl:when>
+      <xsl:when test="$isText and $encoding = 'text'">
+        <xsl:call-template name="embed-attachment-text-from-content">
+          <xsl:with-param name="id" select="$id" />
+          <xsl:with-param name="name" select="$name" />
+          <xsl:with-param name="content" select="$data" />
+        </xsl:call-template>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:call-template name="embed-attachment-placeholder">
+          <xsl:with-param name="id" select="$id" />
+          <xsl:with-param name="name" select="$name" />
+        </xsl:call-template>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+
+  <xsl:template name="embed-attachment-placeholder">
+    <xsl:param name="id" />
+    <xsl:param name="name" />
+
+    <div id="{$id}" class="logStreamEmbed">
+      <xsl:text>Attachment: </xsl:text><xsl:value-of select="$name" /><xsl:text> (n/a)</xsl:text>
+    </div>
+  </xsl:template>
+
+  <xsl:template name="embed-attachment-link">
+    <xsl:param name="id" />
+    <xsl:param name="name" />
+    <xsl:param name="uri" />
+
+    <div id="{$id}" class="logStreamEmbed">
+      <xsl:text>Attachment: </xsl:text><a href="{$uri}"><xsl:value-of select="$name" /></a>
+    </div>
+  </xsl:template>
+
+  <xsl:template name="embed-attachment-html-from-uri">
+    <xsl:param name="id" />
+    <xsl:param name="name" />
+    <xsl:param name="uri" />
+
+    <div id="{$id}" class="logStreamEmbed" title="{$name}">
+      <xsl:call-template name="embed-attachment-link">
+        <xsl:with-param name="id" select="$id" />
+        <xsl:with-param name="name" select="$name" />
+        <xsl:with-param name="uri" select="$uri" />
+      </xsl:call-template>
+    </div>
+    <script type="text/javascript">setInnerHTMLFromUri('<xsl:value-of select="$id"/>', '<xsl:value-of select="$uri"/>');</script>
+  </xsl:template>
+
+  <xsl:template name="embed-attachment-text-from-uri">
+    <xsl:param name="id" />
+    <xsl:param name="name" />
+    <xsl:param name="uri" />
+
+    <div id="{$id}" class="logStreamEmbed" title="{$name}">
+      <xsl:call-template name="embed-attachment-link">
+        <xsl:with-param name="id" select="$id" />
+        <xsl:with-param name="name" select="$name" />
+        <xsl:with-param name="uri" select="$uri" />
+      </xsl:call-template>
+    </div>
+    <script type="text/javascript">setInnerTextFromUri('<xsl:value-of select="$id"/>', '<xsl:value-of select="$uri"/>');</script>
+  </xsl:template>
+
+  <xsl:template name="embed-attachment-html-from-content">
+    <xsl:param name="id" />
+    <xsl:param name="name" />
+    <xsl:param name="content" />
+    
+    <div id="{$id}" class="logStreamEmbed" title="{$name}">
+      <xsl:call-template name="embed-attachment-placeholder">
+        <xsl:with-param name="id" select="$id" />
+        <xsl:with-param name="name" select="$name" />
+      </xsl:call-template>
+      <div id="${id}-hidden" class="logHiddenData"><xsl:value-of select="$content"/></div>
+    </div>
+    <script type="text/javascript">setInnerHTMLFromHiddenData('<xsl:value-of select="$id"/>');</script>
+  </xsl:template>
+
+  <xsl:template name="embed-attachment-text-from-content">
+    <xsl:param name="id" />
+    <xsl:param name="name" />
+    <xsl:param name="content" />
+
+    <div id="{$id}" class="logStreamEmbed" title="{$name}">
+      <xsl:call-template name="embed-attachment-placeholder">
+        <xsl:with-param name="id" select="$id" />
+        <xsl:with-param name="name" select="$name" />
+      </xsl:call-template>
+      <div id="${id}-hidden" class="logHiddenData"><xsl:value-of select="$content"/></div>
+    </div>
+    <script type="text/javascript">setInnerTextFromHiddenData('<xsl:value-of select="$id"/>');</script>
   </xsl:template>
 
   <xsl:template name="icon">

@@ -316,6 +316,11 @@ div.gallio-report div.navigator
 	padding: 5px 10px 5px 10px;
 }
 
+.gallio-report .logHiddenData
+{
+	display: none;
+}
+
 /* Test log streams */
 .gallio-report .logStream-Failures
 {
