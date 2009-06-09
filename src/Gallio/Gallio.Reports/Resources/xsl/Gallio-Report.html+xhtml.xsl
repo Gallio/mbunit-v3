@@ -799,7 +799,7 @@ html
         <xsl:with-param name="id" select="$id" />
         <xsl:with-param name="name" select="$name" />
       </xsl:call-template>
-      <div id="${id}-hidden" class="logHiddenData"><xsl:value-of select="$content"/></div>
+      <div id="{$id}-hidden" class="logHiddenData"><xsl:value-of select="$content"/></div>
     </div>
     <script type="text/javascript">setInnerHTMLFromHiddenData('<xsl:value-of select="$id"/>');</script>
   </xsl:template>
@@ -814,7 +814,7 @@ html
         <xsl:with-param name="id" select="$id" />
         <xsl:with-param name="name" select="$name" />
       </xsl:call-template>
-      <div id="${id}-hidden" class="logHiddenData"><xsl:value-of select="$content"/></div>
+      <div id="{$id}-hidden" class="logHiddenData"><xsl:value-of select="$content"/></div>
     </div>
     <script type="text/javascript">setInnerTextFromHiddenData('<xsl:value-of select="$id"/>');</script>
   </xsl:template>
