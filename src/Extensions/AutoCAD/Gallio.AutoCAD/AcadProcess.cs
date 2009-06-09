@@ -35,7 +35,6 @@ namespace Gallio.AutoCAD
     /// </summary>
     public class AcadProcess : IAcadProcess
     {
-        private const string AcadPluginFileName = "Gallio.AutoCAD.Plugin.dll";
         private static readonly TimeSpan PingTimeout = TimeSpan.FromSeconds(60);
         private static readonly TimeSpan ReadyTimeout = TimeSpan.FromSeconds(60);
         private static readonly TimeSpan ReadyPollInterval = TimeSpan.FromSeconds(0.5);
@@ -89,7 +88,7 @@ namespace Gallio.AutoCAD
             string portName = String.Concat(RemoteAcadTestDriver.ServiceName, ".", Hash64.CreateUniqueHash().ToString());
 
             // Load the AutoCAD plugin.
-            string pluginFileName = GetAcadPluginFileName();
+            string pluginFileName = AcadPluginLocator.GetAcadPluginLocation();
             bool pluginIsLoaded = false;
             for (var stopwatch = Stopwatch.StartNew(); !pluginIsLoaded && stopwatch.Elapsed < ReadyTimeout; )
             {
@@ -309,13 +308,6 @@ namespace Gallio.AutoCAD
             var remaining = timeout - stopwatch.Elapsed;
             if (remaining <= TimeSpan.Zero || !process.WaitForInputIdle((int)remaining.TotalMilliseconds))
                 throw new RunnerException("Timeout waiting for AutoCAD to enter an idle state.");
-        }
-
-        private static string GetAcadPluginFileName()
-        {
-            // The Gallio.AutoCAD.Plugin.dll should be in the same directory as Gallio.AutoCAD.dll.
-            string pluginDir = Path.GetDirectoryName(typeof(AcadProcess).Assembly.Location);
-            return Path.Combine(pluginDir, AcadPluginFileName);
         }
 
         private class AcadProcessTask : ProcessTask

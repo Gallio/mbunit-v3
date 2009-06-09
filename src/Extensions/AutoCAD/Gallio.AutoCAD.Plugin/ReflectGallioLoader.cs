@@ -22,73 +22,61 @@ namespace Gallio.AutoCAD.Plugin
     /// <summary>
     /// Provides access to the <c>GallioLoader</c> type via reflection.
     /// </summary>
-    internal class ReflectGallioLoader
+    public class ReflectGallioLoader
     {
-        private const string GallioLoaderTypeName = "Gallio.Loader.GallioLoader";
-        private const string IGallioLoaderTypeName = "Gallio.Loader.IGallioLoader";
-        
-        private const  string          InitializeMethodName    = "Initialize";
-        private const  BindingFlags    InitializeBindingFlags  = BindingFlags.Public | BindingFlags.Static;
-        private static readonly Type[] InitializeArgumentTypes = new Type[] { typeof(string) };
-        
-        private const  string          SetupRuntimeMethodName    = "SetupRuntime";
-        private const  BindingFlags    SetupRuntimeBindingFlags  = BindingFlags.Public | BindingFlags.Instance;
-        private static readonly Type[] SetupRuntimeArgumentTypes = new Type[0];
+        private delegate object InitializeDelegate(string runtimePath);
+        private delegate void SetupRuntimeDelegate();
 
-        private object actual;
+        private readonly SetupRuntimeDelegate setupMethod;
 
-        private ReflectGallioLoader(object actual)
+        private ReflectGallioLoader(SetupRuntimeDelegate setupMethod)
         {
-            this.actual = actual;
+            if (setupMethod == null)
+                throw new ArgumentNullException("setupMethod");
+            this.setupMethod = setupMethod;
         }
 
+        /// <summary>
+        /// Loads the Gallio.Loader assembly and creates a <see cref="ReflectGallioLoader"/> instance.
+        /// </summary>
+        /// <param name="runtimePath">The runtime path.</param>
+        /// <returns>A <see cref="ReflectGallioLoader"/> instance.</returns>
+        /// <exception cref="FileNotFoundException">If the Gallio.Loader assembly can't be found.</exception>
         public static ReflectGallioLoader Initialize(string runtimePath)
         {
-            Assembly assembly = GetLoaderAssembly(runtimePath);
-            Type gallioLoaderType = assembly.GetType(GallioLoaderTypeName, true);
-            MethodInfo initializeMethod = GetMethod(gallioLoaderType, InitializeMethodName, InitializeBindingFlags, InitializeArgumentTypes);
-            object actualLoader = initializeMethod.Invoke(null, new object[] { runtimePath });
-            return new ReflectGallioLoader(actualLoader);
+            if (!Directory.Exists(runtimePath))
+                throw new DirectoryNotFoundException(string.Format("Directory not found: {0}.", runtimePath));
+
+            var initializeDelegate = CreateInitializeDelegate(GallioLoaderAssemblyResolver.Resolve(runtimePath));
+            var actualLoader = initializeDelegate(runtimePath);
+            var setupRuntimeDelegate = CreateSetupRuntimeDelegate(actualLoader);
+
+            return new ReflectGallioLoader(setupRuntimeDelegate);
         }
 
-        private static Assembly GetLoaderAssembly(string runtimePath)
+        private static InitializeDelegate CreateInitializeDelegate(Assembly loaderAssembly)
         {
-            try
-            {
-                // We're assuming here that the full assembly names for Gallio.Loader.dll
-                // and Gallio.dll will share everything except the simple name portion.
-                AssemblyName gallioDll = AssemblyName.GetAssemblyName(Path.Combine(runtimePath, "Gallio.dll"));
-                AssemblyName gallioLoaderDll = new AssemblyName(gallioDll.FullName);
-                gallioLoaderDll.Name = "Gallio.Loader";
-                return Assembly.Load(gallioLoaderDll.FullName); // Need to use the full name to probe the GAC.
-            }
-            catch (FileNotFoundException)
-            {
-                return Assembly.LoadFrom(Path.Combine(runtimePath, "Gallio.Loader.dll"));
-            }
+            var loaderType = loaderAssembly.GetType("Gallio.Loader.GallioLoader", true);
+            var initMethod = loaderType.GetMethod(
+                "Initialize",
+                BindingFlags.Public | BindingFlags.Static, null,
+                new [] { typeof(string)}, null);
+
+            return (InitializeDelegate) Delegate.CreateDelegate(typeof(InitializeDelegate), initMethod, true);
         }
 
+        private static SetupRuntimeDelegate CreateSetupRuntimeDelegate(object actualLoader)
+        {
+            return (SetupRuntimeDelegate) Delegate.CreateDelegate(typeof(SetupRuntimeDelegate),
+                actualLoader, "SetupRuntime", false, true);
+        }
+
+        /// <summary>
+        /// Delegates to the <c>GallioLoader.SetupRuntime</c> method.
+        /// </summary>
         public void SetupRuntime()
         {
-            Type loaderInterface = GetInterface(actual.GetType(), IGallioLoaderTypeName);
-            MethodInfo setupMethod = GetMethod(loaderInterface, SetupRuntimeMethodName, SetupRuntimeBindingFlags, SetupRuntimeArgumentTypes);
-            setupMethod.Invoke(actual, null);
-        }
-
-        private static MethodInfo GetMethod(Type type, string methodName, BindingFlags bindingFlags, Type[] argumentTypes)
-        {
-            MethodInfo info = type.GetMethod(methodName, bindingFlags, null, argumentTypes, null);
-            if (info == null)
-                throw new MissingMethodException(type.Name, methodName);
-            return info;
-        }
-
-        private static Type GetInterface(Type type, string interfaceName)
-        {
-            Type interfaceType = type.GetInterface(interfaceName);
-            if (interfaceType == null)
-                throw new TypeLoadException(String.Concat("Unable to find interface \"", interfaceName, "\" on type \"", type.Name, "\""));
-            return interfaceType;
+            setupMethod();
         }
     }
 }
