@@ -40,10 +40,9 @@ namespace MbUnit.Framework
     /// a timeout, an order relative to the other tests in the fixture, and a list
     /// of children.  There are two test cases defined in line, and one reference
     /// to another statically defined test elsewhere.
-    /// </para>
-    /// <code>
+    /// <code><![CDATA[
     /// [StaticTestFactory]
-    /// public static IEnumerable&lt;Test&gt; TestSuite()
+    /// public static IEnumerable<Test> TestSuite()
     /// {
     ///     yield return new TestSuite("My Suite")
     ///     {
@@ -68,7 +67,8 @@ namespace MbUnit.Framework
     ///         }
     ///     };
     /// }
-    /// </code>
+    /// ]]></code>
+    /// </para>
     /// </example>
     /// <seealso cref="StaticTestFactoryAttribute"/>
     /// <seealso cref="DynamicTestFactoryAttribute"/>
@@ -80,11 +80,11 @@ namespace MbUnit.Framework
         /// <summary>
         /// Builds a collection of static tests during test exploration.
         /// </summary>
-        /// <param name="tests">The enumeration of tests to build as children of the containing scope</param>
-        /// <param name="containingScope">The containing pattern evaluation scope</param>
-        /// <param name="declaringCodeElement">The code element that represents the scope in which the test was defined</param>
+        /// <param name="tests">The enumeration of tests to build as children of the containing scope.</param>
+        /// <param name="containingScope">The containing pattern evaluation scope.</param>
+        /// <param name="declaringCodeElement">The code element that represents the scope in which the test was defined.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="containingScope"/>, <paramref name="declaringCodeElement"/>
-        /// or <paramref name="tests"/> is null or contains a null</exception>
+        /// or <paramref name="tests"/> is null or contains a null.</exception>
         /// <seealso cref="StaticTestFactoryAttribute" />
         public static void BuildStaticTests(IEnumerable<Test> tests, IPatternScope containingScope, ICodeElementInfo declaringCodeElement)
         {
@@ -113,12 +113,12 @@ namespace MbUnit.Framework
         /// <summary>
         /// Runs a collection of dynamic tests during test execution.
         /// </summary>
-        /// <param name="tests">The enumeration of tests to run</param>
-        /// <param name="declaringCodeElement">The code element that represents the scope in which the test was defined</param>
-        /// <param name="setUp">Optional set-up code to run before the test, or null if none</param>
-        /// <param name="tearDown">Optional tear-down code to run after the test, or null if none</param>
+        /// <param name="tests">The enumeration of tests to run.</param>
+        /// <param name="declaringCodeElement">The code element that represents the scope in which the test was defined.</param>
+        /// <param name="setUp">Optional set-up code to run before the test, or null if none.</param>
+        /// <param name="tearDown">Optional tear-down code to run after the test, or null if none.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="declaringCodeElement"/> or
-        /// <paramref name="tests"/> is null or contains a null</exception>
+        /// <paramref name="tests"/> is null or contains a null.</exception>
         /// <seealso cref="DynamicTestFactoryAttribute" />
         [SystemInternal]
         public static TestOutcome RunDynamicTests(IEnumerable<Test> tests, ICodeElementInfo declaringCodeElement, Action setUp, Action tearDown)
@@ -146,8 +146,8 @@ namespace MbUnit.Framework
         /// gets added to the test model.
         /// </para>
         /// </remarks>
-        /// <param name="containingScope">The containing pattern evaluation scope</param>
-        /// <param name="declaringCodeElement">The code element that represents the scope in which the test was defined</param>
+        /// <param name="containingScope">The containing pattern evaluation scope.</param>
+        /// <param name="declaringCodeElement">The code element that represents the scope in which the test was defined.</param>
         /// <seealso cref="StaticTestFactoryAttribute" />
         protected abstract void BuildStaticTest(IPatternScope containingScope, ICodeElementInfo declaringCodeElement);
 
@@ -160,9 +160,9 @@ namespace MbUnit.Framework
         /// is executed as a test step.
         /// </para>
         /// </remarks>
-        /// <param name="declaringCodeElement">The code element that represents the scope in which the test was defined</param>
-        /// <param name="setUp">Optional set-up code to run before the test, or null if none</param>
-        /// <param name="tearDown">Optional tear-down code to run after the test, or null if none</param>
+        /// <param name="declaringCodeElement">The code element that represents the scope in which the test was defined.</param>
+        /// <param name="setUp">Optional set-up code to run before the test, or null if none.</param>
+        /// <param name="tearDown">Optional tear-down code to run after the test, or null if none.</param>
         /// <seealso cref="DynamicTestFactoryAttribute" />
         [SystemInternal]
         protected abstract TestOutcome RunDynamicTest(ICodeElementInfo declaringCodeElement, Action setUp, Action tearDown);

@@ -54,9 +54,11 @@ namespace MbUnit.Framework
         /// Initializes the test.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// Override this method to add your own behavior around the default actions.
+        /// </para>
         /// </remarks>
-        /// <param name="testInstanceState">The test instance state, not null</param>
+        /// <param name="testInstanceState">The test instance state, not null.</param>
         /// <seealso cref="IPatternTestInstanceHandler.InitializeTestInstance"/>
         protected virtual void Initialize(PatternTestInstanceState testInstanceState)
         {
@@ -67,9 +69,11 @@ namespace MbUnit.Framework
         /// Sets up the test.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// Override this method to add your own behavior around the default actions.
+        /// </para>
         /// </remarks>
-        /// <param name="testInstanceState">The test instance state, not null</param>
+        /// <param name="testInstanceState">The test instance state, not null.</param>
         /// <seealso cref="IPatternTestInstanceHandler.SetUpTestInstance"/>
         protected virtual void SetUp(PatternTestInstanceState testInstanceState)
         {
@@ -80,9 +84,11 @@ namespace MbUnit.Framework
         /// Executes the test.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// Override this method to add your own behavior around the default actions.
+        /// </para>
         /// </remarks>
-        /// <param name="testInstanceState">The test instance state, not null</param>
+        /// <param name="testInstanceState">The test instance state, not null.</param>
         /// <seealso cref="IPatternTestInstanceHandler.ExecuteTestInstance"/>
         protected virtual void Execute(PatternTestInstanceState testInstanceState)
         {
@@ -93,9 +99,11 @@ namespace MbUnit.Framework
         /// Tears down the test.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// Override this method to add your own behavior around the default actions.
+        /// </para>
         /// </remarks>
-        /// <param name="testInstanceState">The test instance state, not null</param>
+        /// <param name="testInstanceState">The test instance state, not null.</param>
         /// <seealso cref="IPatternTestInstanceHandler.TearDownTestInstance"/>
         protected virtual void TearDown(PatternTestInstanceState testInstanceState)
         {
@@ -106,9 +114,11 @@ namespace MbUnit.Framework
         /// Disposes the test.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// Override this method to add your own behavior around the default actions.
+        /// </para>
         /// </remarks>
-        /// <param name="testInstanceState">The test instance state, not null</param>
+        /// <param name="testInstanceState">The test instance state, not null.</param>
         /// <seealso cref="IPatternTestInstanceHandler.DisposeTestInstance"/>
         protected virtual void Dispose(PatternTestInstanceState testInstanceState)
         {
@@ -134,7 +144,7 @@ namespace MbUnit.Framework
 
         private void WrapDefaultAction(ActionChain<PatternTestInstanceState> chain, Action<PatternTestInstanceState> decoratorAction)
         {
-            chain.Around(delegate(PatternTestInstanceState testInstanceState, Action<PatternTestInstanceState> decoratedAction)
+            chain.Around((testInstanceState, decoratedAction) =>
             {
                 try
                 {

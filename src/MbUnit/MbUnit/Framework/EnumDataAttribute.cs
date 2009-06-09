@@ -29,6 +29,12 @@ namespace MbUnit.Framework
     /// Each value from the specified enumeration type is used as input for the
     /// data-driven test method.
     /// </para>
+    /// <para>
+    /// It is possible to exclude some specific values of the enumeration from the column.
+    /// Use <see cref="EnumDataAttribute.Exclude"/> or <see cref="EnumDataAttribute.ExcludeArray"/> 
+    /// for that purpose.
+    /// </para>
+    /// </remarks>
     /// <example>
     /// <code><![CDATA[
     /// public enum Planet
@@ -54,12 +60,6 @@ namespace MbUnit.Framework
     ///     }
     /// }]]></code>
     /// </example>
-    /// <para>
-    /// It is possible to exclude some specific values of the enumeration from the column.
-    /// Use <see cref="EnumDataAttribute.Exclude"/> or <see cref="EnumDataAttribute.ExcludeArray"/> 
-    /// for that purpose.
-    /// </para>
-    /// </remarks>
     /// <seealso cref="ColumnAttribute"/>
     [CLSCompliant(false)]
     [AttributeUsage(PatternAttributeTargets.DataContext, AllowMultiple = true, Inherited = true)]
@@ -68,13 +68,13 @@ namespace MbUnit.Framework
         private readonly Type enumerationType;
 
         /// <summary>
-        /// <para>
         /// Sets or gets the single enumeration value that must be excluded from the column.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// If you want to exclude several values at once, use <see cref="EnumDataAttribute.ExcludeArray"/> instead.
         /// </para>
-        /// </summary>
+        /// </remarks>
         /// <seealso cref="EnumDataAttribute.ExcludeArray"/>
         public object Exclude
         {
@@ -83,13 +83,13 @@ namespace MbUnit.Framework
         }
 
         /// <summary>
-        /// <para>
         /// Sets or gets an array of values that must be excluded from the column.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// If you want to exclude one value only, use <see cref="EnumDataAttribute.Exclude"/> instead.
         /// </para>
-        /// </summary>
+        /// </remarks>
         /// <seealso cref="EnumDataAttribute.Exclude"/>
         public object[] ExcludeArray
         {
@@ -98,9 +98,7 @@ namespace MbUnit.Framework
         }
 
         /// <summary>
-        /// <para>
         /// Adds a column of enumeration values.
-        /// </para>
         /// </summary>
         /// <param name="enumerationType">The type of the enumeration.</param>
         /// <exception cref="ArgumentNullException">The specified type is null.</exception>

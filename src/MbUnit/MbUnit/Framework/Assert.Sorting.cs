@@ -28,10 +28,10 @@ namespace MbUnit.Framework
         /// <summary>
         /// Verifies that the sequence of values are sorted in the specified order.
         /// </summary>
-        /// <typeparam name="T">The type of value</typeparam>
-        /// <param name="values">The sequence of values to be tested</param>
-        /// <param name="sortOrder">The expected sort order</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        /// <typeparam name="T">The type of value.</typeparam>
+        /// <param name="values">The sequence of values to be tested.</param>
+        /// <param name="sortOrder">The expected sort order.</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
         public static void Sorted<T>(IEnumerable<T> values, SortOrder sortOrder)
         {
             Sorted(values, sortOrder, (Comparison<T>)null, null, null);
@@ -40,12 +40,12 @@ namespace MbUnit.Framework
         /// <summary>
         /// Verifies that the sequence of values are sorted in the specified order.
         /// </summary>
-        /// <typeparam name="T">The type of value</typeparam>
-        /// <param name="values">The sequence of values to be tested</param>
-        /// <param name="sortOrder">The expected sort order</param>
-        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
-        /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        /// <typeparam name="T">The type of value.</typeparam>
+        /// <param name="values">The sequence of values to be tested.</param>
+        /// <param name="sortOrder">The expected sort order.</param>
+        /// <param name="messageFormat">The custom assertion message format, or null if none.</param>
+        /// <param name="messageArgs">The custom assertion message arguments, or null if none.</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
         public static void Sorted<T>(IEnumerable<T> values, SortOrder sortOrder, string messageFormat, params object[] messageArgs)
         {
             Sorted(values, sortOrder, (Comparison<T>)null, messageFormat, messageArgs);
@@ -54,11 +54,11 @@ namespace MbUnit.Framework
         /// <summary>
         /// Verifies that the sequence of values are sorted in the specified order.
         /// </summary>
-        /// <typeparam name="T">The type of value</typeparam>
-        /// <param name="values">The sequence of values to be tested</param>
-        /// <param name="sortOrder">The expected sort order</param>
-        /// <param name="comparer">A comparer instance to be used to compare two elements of the sequence, or null to use a default one</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        /// <typeparam name="T">The type of value.</typeparam>
+        /// <param name="values">The sequence of values to be tested.</param>
+        /// <param name="sortOrder">The expected sort order.</param>
+        /// <param name="comparer">A comparer instance to be used to compare two elements of the sequence, or null to use a default one.</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
         public static void Sorted<T>(IEnumerable<T> values, SortOrder sortOrder, IComparer<T> comparer)
         {
             Sorted(values, sortOrder, comparer != null ? comparer.Compare : (Comparison<T>)null, null, null);
@@ -67,13 +67,13 @@ namespace MbUnit.Framework
         /// <summary>
         /// Verifies that the sequence of values are sorted in the specified order.
         /// </summary>
-        /// <typeparam name="T">The type of value</typeparam>
-        /// <param name="values">The sequence of values to be tested</param>
-        /// <param name="sortOrder">The expected sort order</param>
-        /// <param name="comparer">A comparer instance to be used to compare two elements of the sequence, or null to use a default one</param>
-        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
-        /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        /// <typeparam name="T">The type of value.</typeparam>
+        /// <param name="values">The sequence of values to be tested.</param>
+        /// <param name="sortOrder">The expected sort order.</param>
+        /// <param name="comparer">A comparer instance to be used to compare two elements of the sequence, or null to use a default one.</param>
+        /// <param name="messageFormat">The custom assertion message format, or null if none.</param>
+        /// <param name="messageArgs">The custom assertion message arguments, or null if none.</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
         public static void Sorted<T>(IEnumerable<T> values, SortOrder sortOrder, IComparer<T> comparer, string messageFormat, params object[] messageArgs)
         {
             Sorted(values, sortOrder, comparer != null ? comparer.Compare : (Comparison<T>)null, messageFormat, messageArgs);
@@ -82,11 +82,11 @@ namespace MbUnit.Framework
         /// <summary>
         /// Verifies that the sequence of values are sorted in the specified order.
         /// </summary>
-        /// <typeparam name="T">The type of value</typeparam>
-        /// <param name="values">The sequence of values to be tested</param>
-        /// <param name="sortOrder">The expected sort order</param>
-        /// <param name="compare">A comparison function to be used to compare two elements of the sequence, or null to use a default one</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        /// <typeparam name="T">The type of value.</typeparam>
+        /// <param name="values">The sequence of values to be tested.</param>
+        /// <param name="sortOrder">The expected sort order.</param>
+        /// <param name="compare">A comparison function to be used to compare two elements of the sequence, or null to use a default one.</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
         public static void Sorted<T>(IEnumerable<T> values, SortOrder sortOrder, Comparison<T> compare)
         {
             Sorted(values, sortOrder, compare, null, null);
@@ -95,13 +95,13 @@ namespace MbUnit.Framework
         /// <summary>
         /// Verifies that the sequence of values are sorted in the specified order.
         /// </summary>
-        /// <typeparam name="T">The type of value</typeparam>
-        /// <param name="values">The sequence of values to be tested</param>
-        /// <param name="sortOrder">The expected sort order</param>
-        /// <param name="comparer">A comparison function to be used to compare two elements of the sequence, or null to use a default one</param>
-        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
-        /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        /// <typeparam name="T">The type of value.</typeparam>
+        /// <param name="values">The sequence of values to be tested.</param>
+        /// <param name="sortOrder">The expected sort order.</param>
+        /// <param name="comparer">A comparison function to be used to compare two elements of the sequence, or null to use a default one.</param>
+        /// <param name="messageFormat">The custom assertion message format, or null if none.</param>
+        /// <param name="messageArgs">The custom assertion message arguments, or null if none.</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
         public static void Sorted<T>(IEnumerable<T> values, SortOrder sortOrder, Comparison<T> comparer, string messageFormat, params object[] messageArgs)
         {
             AssertionHelper.Verify(() =>

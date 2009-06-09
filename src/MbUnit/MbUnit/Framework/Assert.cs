@@ -25,10 +25,8 @@ using Gallio.Common.Diagnostics;
 namespace MbUnit.Framework
 {
     /// <summary>
-    /// <para>
     /// Defines a set of assertions that enable a test to verify the expected
     /// behavior of the subject under test.
-    /// </para>
     /// </summary>
     /// <remarks>
     /// <para>
@@ -125,7 +123,7 @@ namespace MbUnit.Framework
         /// instead when implementing custom assertions.
         /// </para>
         /// </remarks>
-        /// <exception cref="AssertionException">Thrown unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        /// <exception cref="AssertionException">Thrown unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
         public static void Fail()
         {
             Fail(null);
@@ -134,15 +132,15 @@ namespace MbUnit.Framework
         /// <summary>
         /// Signals an unconditional assertion failure with a particular message.
         /// </summary>
-        /// <param name="messageFormat">The format of the assertion failure message</param>
-        /// <param name="messageArgs">The arguments for the assertion failure message format string</param>
         /// <remarks>
         /// <para>
         /// Use <see cref="AssertionHelper.Verify" /> and <see cref="AssertionHelper.Fail" />
         /// instead when implementing custom assertions.
         /// </para>
         /// </remarks>
-        /// <exception cref="AssertionException">Thrown unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        /// <param name="messageFormat">The format of the assertion failure message.</param>
+        /// <param name="messageArgs">The arguments for the assertion failure message format string.</param>
+        /// <exception cref="AssertionException">Thrown unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
         public static void Fail(string messageFormat, params object[] messageArgs)
         {
             AssertionHelper.Fail(new AssertionFailureBuilder("An assertion failed.")
@@ -162,7 +160,7 @@ namespace MbUnit.Framework
         /// this exception and does not rethrow it then the test might not terminate correctly.
         /// </para>
         /// </remarks>
-        /// <exception cref="TestInconclusiveException">Thrown always</exception>
+        /// <exception cref="TestInconclusiveException">Thrown always.</exception>
         public static void Inconclusive()
         {
             Inconclusive(null, null);
@@ -178,9 +176,9 @@ namespace MbUnit.Framework
         /// this exception and does not rethrow it then the test might not terminate correctly.
         /// </para>
         /// </remarks>
-        /// <param name="messageFormat">The custom message format string, or null if none</param>
-        /// <param name="messageArgs">The custom message arguments, or null if none</param>
-        /// <exception cref="TestInconclusiveException">Thrown always</exception>
+        /// <param name="messageFormat">The custom message format string, or null if none.</param>
+        /// <param name="messageArgs">The custom message arguments, or null if none.</param>
+        /// <exception cref="TestInconclusiveException">Thrown always.</exception>
         public static void Inconclusive(string messageFormat, params object[] messageArgs)
         {
             throw new TestInconclusiveException(messageFormat != null && messageArgs != null
@@ -200,8 +198,8 @@ namespace MbUnit.Framework
         /// this exception and does not rethrow it then the test might not terminate correctly.
         /// </para>
         /// </remarks>
-        /// <param name="outcome">The desired test outcome</param>
-        /// <exception cref="TestTerminatedException">Thrown always</exception>
+        /// <param name="outcome">The desired test outcome.</param>
+        /// <exception cref="TestTerminatedException">Thrown always.</exception>
         public static void Terminate(TestOutcome outcome)
         {
             Terminate(outcome, null, null);
@@ -217,10 +215,10 @@ namespace MbUnit.Framework
         /// this exception and does not rethrow it then the test might not terminate correctly.
         /// </para>
         /// </remarks>
-        /// <param name="outcome">The desired test outcome</param>
-        /// <param name="messageFormat">The custom message format string, or null if none</param>
-        /// <param name="messageArgs">The custom message arguments, or null if none</param>
-        /// <exception cref="TestTerminatedException">Thrown always</exception>
+        /// <param name="outcome">The desired test outcome.</param>
+        /// <param name="messageFormat">The custom message format string, or null if none.</param>
+        /// <param name="messageArgs">The custom message arguments, or null if none.</param>
+        /// <exception cref="TestTerminatedException">Thrown always.</exception>
         public static void Terminate(TestOutcome outcome, string messageFormat, params object[] messageArgs)
         {
             throw new TestTerminatedException(outcome, messageFormat != null && messageArgs != null
@@ -245,8 +243,8 @@ namespace MbUnit.Framework
         /// this exception and does not rethrow it then the test might not terminate correctly.
         /// </para>
         /// </remarks>
-        /// <param name="outcome">The desired test outcome</param>
-        /// <exception cref="SilentTestException">Thrown always</exception>
+        /// <param name="outcome">The desired test outcome.</param>
+        /// <exception cref="SilentTestException">Thrown always.</exception>
         public static void TerminateSilently(TestOutcome outcome)
         {
             TerminateSilently(outcome, null, null);
@@ -267,10 +265,10 @@ namespace MbUnit.Framework
         /// this exception and does not rethrow it then the test might not terminate correctly.
         /// </para>
         /// </remarks>
-        /// <param name="outcome">The desired test outcome</param>
-        /// <param name="messageFormat">The custom message format string, or null if none</param>
-        /// <param name="messageArgs">The custom message arguments, or null if none</param>
-        /// <exception cref="SilentTestException">Thrown always</exception>
+        /// <param name="outcome">The desired test outcome.</param>
+        /// <param name="messageFormat">The custom message format string, or null if none.</param>
+        /// <param name="messageArgs">The custom message arguments, or null if none.</param>
+        /// <exception cref="SilentTestException">Thrown always.</exception>
         public static void TerminateSilently(TestOutcome outcome, string messageFormat, params object[] messageArgs)
         {
             throw new SilentTestException(outcome, messageFormat != null && messageArgs != null
@@ -299,8 +297,8 @@ namespace MbUnit.Framework
         /// become available at once.
         /// </para>
         /// </remarks>
-        /// <param name="action">The action to invoke</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="action"/> is null</exception>
+        /// <param name="action">The action to invoke.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="action"/> is null.</exception>
         public static void Multiple(Action action)
         {
             Multiple(action, null, null);
@@ -325,10 +323,10 @@ namespace MbUnit.Framework
         /// become available at once.
         /// </para>
         /// </remarks>
-        /// <param name="action">The action to invoke</param>
-        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
-        /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="action"/> is null</exception>
+        /// <param name="action">The action to invoke.</param>
+        /// <param name="messageFormat">The custom assertion message format, or null if none.</param>
+        /// <param name="messageArgs">The custom assertion message arguments, or null if none.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="action"/> is null.</exception>
         public static void Multiple(Action action, string messageFormat, params object[] messageArgs)
         {
             if (action == null)

@@ -21,9 +21,7 @@ using Gallio.Common.Reflection;
 namespace MbUnit.Framework
 {
     /// <summary>
-    /// <para>
     /// Provides a column of literal values as a data source.
-    /// </para>
     /// </summary>
     /// <remarks>
     /// <para>
@@ -36,16 +34,16 @@ namespace MbUnit.Framework
     /// Use <see cref="HeaderAttribute" /> to provide an explicit name for the column.
     /// </para>
     /// </remarks>
-    /// <example>
+    /// <example><![CDATA[
     /// [Test]
-    /// public void ATest([Column(1, 2, 3)] int x, [Column("a", "b")] string y, [Column(0.1, 0.2)] double z)
+    /// public void MyTest([Column(1, 2, 3)] int x, [Column("a", "b")] string y, [Column(0.1, 0.2)] double z)
     /// {
     ///     // This test will run 3 * 2 * 2 = 12 times with all combinations of
     ///     // the values specified in the column for each parameter.  This test
     ///     // is combinatorial because the values are assigned to each parameter
     ///     // separately.
     /// }
-    /// </example>
+    /// ]]></example>
     /// <seealso cref="RowAttribute"/>
     [CLSCompliant(false)]
     [AttributeUsage(PatternAttributeTargets.DataContext, AllowMultiple = true, Inherited = true)]
@@ -68,7 +66,7 @@ namespace MbUnit.Framework
         /// Since the value array cannot be null, the attribute will assume that
         /// you meant to create an array consiting of a single <c>null</c>.
         /// </para>
-        /// <code>
+        /// <code><![CDATA[
         /// // Example of case #1.
         /// // The attribute will assume that you intended to pass in a single null value.
         /// [Test]
@@ -77,7 +75,7 @@ namespace MbUnit.Framework
         /// {
         ///     Assert.IsNull(value);
         /// }
-        /// </code>
+        /// ]]></code>
         /// <para>
         /// Case 2: If there is only 1 argument and its value is an object array, the
         /// compiler will pass the array itself as the argument values.  Unfortunately,
@@ -85,20 +83,20 @@ namespace MbUnit.Framework
         /// when multiple arguments are present.  So you need to disambiguate this case
         /// explicitly.
         /// </para>
-        /// <code>
+        /// <code><![CDATA[
         /// // Example of case #2.
         /// // The attribute will treat both of the following declarations equivalently
         /// // contrary to what we probably intend.
         /// [Column(new object[] { 1, 2, 3 })]
         /// [Column(1, 2, 3)]
-        /// </code>
+        /// ]]></code>
         /// <para>
         /// To fix this case, you must provide explicit disambiguation.
         /// (We cannot do it automatically based on the number of method parameters provided
         /// because the row attribute can be applied to other elements besides methods and
         /// its contents might be consumed in other ways.)
         /// </para>
-        /// <code>
+        /// <code><![CDATA[
         /// // Example of case #2, disambiguated to define a column that contains only an array of values.
         /// [Test]
         /// [Column(new object[] { new object[] { 1, 2, 3 })]
@@ -106,9 +104,9 @@ namespace MbUnit.Framework
         /// {
         ///     ArrayAssert.AreElementsEqual(new object[] { 1, 2, 3 }, values);
         /// }
-        /// </code>
+        /// ]]></code>
         /// </remarks>
-        /// <param name="values">The array of values in the column</param>
+        /// <param name="values">The array of values in the column.</param>
         [CLSCompliant(false)]
         public ColumnAttribute(params object[] values)
         {

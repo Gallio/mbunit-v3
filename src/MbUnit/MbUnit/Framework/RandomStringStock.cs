@@ -65,7 +65,7 @@ namespace MbUnit.Framework
               new RandomStringStockInfo(RandomStringStock.EnCountries, "Database_EnCountries") },
         };
 
-        public string[] GetItems()
+        internal string[] GetItems()
         {
             if (items == null)
                 LoadItems();

@@ -53,7 +53,7 @@ namespace MbUnit.Framework.ContractVerifiers
         /// (<see cref="IComparable{T}"/>).
         /// </para>
         /// </remarks>
-        /// <param name="equivalentInstances">The type of equivalent object instances</param>
+        /// <param name="equivalentInstances">The type of equivalent object instances.</param>
         public EquivalenceClass(params T[] equivalentInstances)
         {
             if (equivalentInstances == null)
@@ -94,7 +94,7 @@ namespace MbUnit.Framework.ContractVerifiers
         /// <summary>
         /// Returns a strongly-typed enumerator that iterates through the collection.
         /// </summary>
-        /// <returns>A strongly-typed enumerator</returns>
+        /// <returns>A strongly-typed enumerator.</returns>
         public IEnumerator<T> GetEnumerator()
         {
             return equivalentInstances.GetEnumerator();

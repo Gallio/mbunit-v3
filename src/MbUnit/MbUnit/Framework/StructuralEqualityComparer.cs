@@ -35,7 +35,7 @@ namespace MbUnit.Framework
     /// The comparer must be initialized with a list of one or several matching criteria. Two instances are considered
     /// equal by the comparer if and only if all the criteria are true for that pair of instances.
     /// </para>
-    /// <para>
+    /// </remarks>
     /// <example>
     /// The following example shows a test fixture that checks for the equality between two <strong>Foo</strong> 
     /// objects by using the well known <see cref="Assert.AreEqual{T}(T, T, IEqualityComparer{T})"/> assertion. The custom equality comparer which 
@@ -66,23 +66,21 @@ namespace MbUnit.Framework
     /// }
     /// ]]></code>
     /// </example>
-    /// </para>
-    /// </remarks>
     /// <typeparam name="T">The type of the objects. to compare.</typeparam>
     public class StructuralEqualityComparer<T> : IEqualityComparer<T>, IEnumerable<EqualityComparison<T>>
     {
         private readonly List<EqualityComparison<T>> conditions = new List<EqualityComparison<T>>();
 
         /// <summary>
-        /// <para>
         /// Gets a default neutral structural equality comparer for the tested type.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// The default comparer uses <see cref="Object.Equals(Object)"/> to determine whether
         /// two objects are equal. Is is usually sufficient for primitive types, and
         /// user types implementing <see cref="IEquatable{T}"/>.
         /// </para>
-        /// </summary>
+        /// </remarks>
         /// <seealso cref="ComparisonSemantics.Equals"/>
         public static StructuralEqualityComparer<T> Default
         {
@@ -93,11 +91,13 @@ namespace MbUnit.Framework
         }
 
         /// <summary>
-        /// <para>
         /// Adds a matching criterion to the structural equality comparer.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// The values returned by the accessor are compared by using a default comparison evaluator.
+        /// </para>
+        /// </remarks>
         /// <example>
         /// <code><![CDATA[
         /// public class Foo
@@ -122,8 +122,6 @@ namespace MbUnit.Framework
         /// }
         /// ]]></code>
         /// </example>
-        /// </para>
-        /// </summary>
         /// <typeparam name="TValue">The type of the value returned by the accessor.</typeparam>
         /// <param name="accessor">An accessor that gets a value from the tested object.</param>
         /// <exception cref="ArgumentNullException">The specified accessor argument is a null reference.</exception>
@@ -133,11 +131,13 @@ namespace MbUnit.Framework
         }
 
         /// <summary>
-        /// <para>
         /// Adds a matching criterion to the structural equality comparer.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// The values returned by the accessor are compared by using the specified comparer object.
+        /// </para>
+        /// </remarks>
         /// <example>
         /// <code><![CDATA[
         /// public class Foo
@@ -175,8 +175,6 @@ namespace MbUnit.Framework
         /// }
         /// ]]></code>
         /// </example>
-        /// </para>
-        /// </summary>
         /// <typeparam name="TValue">The type of the value returned by the accessor.</typeparam>
         /// <param name="accessor">An accessor that gets a value from the tested object.</param>
         /// <param name="comparer">A comparer instance, or null to use the default one (<see cref="StructuralEqualityComparer{T}.Default"/>).</param>
@@ -190,11 +188,13 @@ namespace MbUnit.Framework
         }
 
         /// <summary>
-        /// <para>
         /// Adds a matching criterion to the structural equality comparer.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// The values returned by the accessor are compared by using the specified comparison delegate.
+        /// </para>
+        /// </remarks>
         /// <example>
         /// <code><![CDATA[
         /// public class Foo
@@ -219,8 +219,6 @@ namespace MbUnit.Framework
         /// }
         /// ]]></code>
         /// </example>
-        /// </para>
-        /// </summary>
         /// <typeparam name="TValue">The type of the value returned by the accessor.</typeparam>
         /// <param name="accessor">An accessor that gets a value from the tested object.</param>
         /// <param name="comparer">A equality comparison delegate to compare the values returned by the accessor, or null to use the default one.</param>
@@ -237,11 +235,13 @@ namespace MbUnit.Framework
         }
 
         /// <summary>
-        /// <para>
         /// Adds a matching criterion to the structural equality comparer.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// The evaluation process is done through the specified comparison delegate.
+        /// </para>
+        /// </remarks>
         /// <example>
         /// <code><![CDATA[
         /// public class Foo
@@ -266,8 +266,6 @@ namespace MbUnit.Framework
         /// }
         /// ]]></code>
         /// </example>
-        /// </para>
-        /// </summary>
         /// <param name="comparer">An equality comparison delegate to directly compare two instances, or null to use the default one.</param>
         public void Add(EqualityComparison<T> comparer)
         {
@@ -275,11 +273,13 @@ namespace MbUnit.Framework
         }
 
         /// <summary>
-        /// <para>
         /// Adds a matching criterion to the structural equality comparer.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// The evaluation process is done through the specified comparer object.
+        /// </para>
+        /// </remarks>
         /// <example>
         /// <code><![CDATA[
         /// public class Foo
@@ -317,8 +317,6 @@ namespace MbUnit.Framework
         /// }
         /// ]]></code>
         /// </example>
-        /// </para>
-        /// </summary>
         /// <param name="comparer">An comparer object to directly compare two instances, or null to use the default one.</param>
         public void Add(IEqualityComparer<T> comparer)
         {
@@ -329,12 +327,14 @@ namespace MbUnit.Framework
         }
 
         /// <summary>
-        /// <para>
         /// Adds a matching criterion to the structural equality comparer.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// The enumerations of values returned by the accessor are compared one by one, 
         /// by using the specified comparer.
+        /// </para>
+        /// </remarks>
         /// <example>
         /// <code><![CDATA[
         /// public class Foo
@@ -361,8 +361,6 @@ namespace MbUnit.Framework
         /// }
         /// ]]></code>
         /// </example>
-        /// </para>
-        /// </summary>
         /// <typeparam name="TValue">The type of the value returned by the accessor.</typeparam>
         /// <param name="accessor">An accessor that gets an enumeration of values from the tested object.</param>
         /// <param name="comparer">A comparer instance for the values returned by the accessor, or null to use the default one.</param>
@@ -373,11 +371,13 @@ namespace MbUnit.Framework
         }
 
         /// <summary>
-        /// <para>
         /// Adds a matching criterion to the structural equality comparer.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// The enumerations of values returned by the accessor are compared by using the specified comparer.
+        /// </para>
+        /// </remarks>
         /// <example>
         /// <code><![CDATA[
         /// public class Foo
@@ -405,8 +405,6 @@ namespace MbUnit.Framework
         /// }
         /// ]]></code>
         /// </example>
-        /// </para>
-        /// </summary>
         /// <typeparam name="TValue">The type of the value returned by the accessor.</typeparam>
         /// <param name="accessor">An accessor that gets an enumeration of values from the tested object.</param>
         /// <param name="comparer">A comparer instance for the values returned by the accessor, or null to use the default one.</param>
@@ -418,11 +416,13 @@ namespace MbUnit.Framework
         }
 
         /// <summary>
-        /// <para>
         /// Adds a matching criterion to the structural equality comparer.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// The enumerations of values returned by the accessor are compared by using the specified comparer.
+        /// </para>
+        /// </remarks>
         /// <example>
         /// <code><![CDATA[
         /// public class Foo
@@ -450,8 +450,6 @@ namespace MbUnit.Framework
         /// }
         /// ]]></code>
         /// </example>
-        /// </para>
-        /// </summary>
         /// <typeparam name="TValue">The type of the value returned by the accessor.</typeparam>
         /// <param name="accessor">An accessor that gets an enumeration of values from the tested object.</param>
         /// <param name="comparer">A comparer instance for the values returned by the accessor, or null to use the default one.</param>

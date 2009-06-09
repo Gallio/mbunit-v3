@@ -39,9 +39,13 @@ namespace MbUnit.Framework
 
         /// <summary>
         /// Declares that the associated test is expected to throw an <see cref="ArgumentOutOfRangeException" />.
-        /// The expected contents of the exception message may also optionally be specified.
         /// </summary>
-        /// <param name="message">The expected exception message, or null if not specified</param>
+        /// <remarks>
+        /// <para>
+        /// The expected contents of the exception message may also optionally be specified.
+        /// </para>
+        /// </remarks>
+        /// <param name="message">The expected exception message, or null if not specified.</param>
         public ExpectedArgumentOutOfRangeExceptionAttribute(string message)
             : base(typeof(ArgumentOutOfRangeException), message)
         {

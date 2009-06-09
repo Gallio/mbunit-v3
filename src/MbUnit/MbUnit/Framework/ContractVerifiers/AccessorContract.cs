@@ -50,7 +50,7 @@ namespace MbUnit.Framework.ContractVerifiers
     /// </item>
     /// </list>
     /// </para>
-    /// <para>
+    /// </remarks>
     /// <example>
     /// The following examples shows a simple class that contains a property, and a test fixture which declares an accessor
     /// contract to verify the expected behavior of the subject property.
@@ -92,7 +92,7 @@ namespace MbUnit.Framework.ContractVerifiers
     ///         PropertyName = "Name",
     ///         AcceptNullValue = false,
     ///         ValidValues = { "Value1", "Value2" },
-    ///         IncompetentValues =
+    ///         InvalidValues =
     ///         {
     ///             { typeof(ArgumentException), String.Empty }
     ///         }
@@ -100,8 +100,6 @@ namespace MbUnit.Framework.ContractVerifiers
     /// }
     /// ]]></code>
     /// </example>
-    /// </para>
-    /// </remarks>
     /// <typeparam name="TTarget">The type of the tested object which contain the accessors.</typeparam>
     /// <typeparam name="TValue">The type of the value handled by the accessors.</typeparam>
     /// <seealso cref="VerifyContractAttribute"/>
@@ -114,6 +112,8 @@ namespace MbUnit.Framework.ContractVerifiers
         /// <para>
         /// By default, the contract verifier attempts to invoke the default constructor to get an valid instance. 
         /// Overwrite the default provider if the type has no default constructor, or if you want to use a particular instance.
+        /// </para>
+        /// </remarks>
         /// <example>
         /// <code><![CDATA[
         /// [VerifyContract]
@@ -124,8 +124,6 @@ namespace MbUnit.Framework.ContractVerifiers
         /// };
         /// ]]></code>
         /// </example>
-        /// </para>
-        /// </remarks>
         public Func<TTarget> DefaultInstance
         {
             get;
@@ -153,7 +151,7 @@ namespace MbUnit.Framework.ContractVerifiers
         /// </item>
         /// </list>
         /// </para>
-        /// <para>
+        /// </remarks>
         /// <example>
         /// The following example shows how to specify explicitely a getter and a setter.
         /// <code><![CDATA[
@@ -179,8 +177,6 @@ namespace MbUnit.Framework.ContractVerifiers
         /// }
         /// ]]></code>
         /// </example>
-        /// </para>
-        /// </remarks>
         /// <seealso cref="Getter"/>
         /// <seealso cref="PropertyName"/>
         public Action<TTarget, TValue> Setter
@@ -221,7 +217,7 @@ namespace MbUnit.Framework.ContractVerifiers
         /// </item>
         /// </list>
         /// </para>
-        /// <para>
+        /// </remarks>
         /// <example>
         /// The following example shows how to specify the name of the property.
         /// <code><![CDATA[
@@ -246,8 +242,6 @@ namespace MbUnit.Framework.ContractVerifiers
         /// }
         /// ]]></code>
         /// </example>
-        /// </para>
-        /// </remarks>
         /// <seealso cref="Getter"/>
         /// <seealso cref="Setter"/>
         public string PropertyName
@@ -261,13 +255,13 @@ namespace MbUnit.Framework.ContractVerifiers
         /// </summary>
         /// <remarks>
         /// <para>
-        /// If set to <code>true</code>, the setter is expected to accept a null reference as a valid value, and the getter
-        /// to return a null reference as well. If set to <code>false</code>, the setter is expected to reject a null reference assignment by
+        /// If set to <c>true</c>, the setter is expected to accept a null reference as a valid value, and the getter
+        /// to return a null reference as well. If set to <c>false</c>, the setter is expected to reject a null reference assignment by
         /// throwing a <see cref="ArgumentNullException"/> exception. If the type handled by the tested accessors is not nullable 
         /// (a value type by example), the contract property is ignored.
         /// </para>
         /// <para>
-        /// The use of that contract property is optional, and its default state is <code>true</code>.
+        /// The use of that contract property is optional, and its default state is <c>true</c>.
         /// </para>
         /// </remarks>
         public bool AcceptNullValue
@@ -280,8 +274,6 @@ namespace MbUnit.Framework.ContractVerifiers
         /// Defines a collection of distinct object instances that are expected to be inconditionally accepted as
         /// valid input by the tested setter. Feeding that contract property with at least one value is mandatory.
         /// </summary>
-        /// <remarks>
-        /// <para>
         /// <example>
         /// The following example shows how to specify some valid values for the contract verifier:
         /// <code><![CDATA[
@@ -297,8 +289,6 @@ namespace MbUnit.Framework.ContractVerifiers
         /// }
         /// ]]></code>
         /// </example>
-        /// </para>
-        /// </remarks>
         /// <seealso cref="DistinctInstanceCollection{T}"/>
         public DistinctInstanceCollection<TValue> ValidValues
         {
@@ -316,7 +306,7 @@ namespace MbUnit.Framework.ContractVerifiers
         /// Specifying incompetent values is entirely optional. By default, the entire collection is empty; which causes the 
         /// test 'SetInvalidValues' to not be run.
         /// </para>
-        /// <para>
+        /// </remarks>
         /// <example>
         /// The following example shows how to specify some incompetent values for the contract verifier. The example
         /// assumes that the hypothetical 'Foo.MyProperty' property accepts any integer between 0 and 999, except 666
@@ -339,8 +329,6 @@ namespace MbUnit.Framework.ContractVerifiers
         /// }
         /// ]]></code>
         /// </example>
-        /// </para>
-        /// </remarks>
         /// <seealso cref="InvalidValuesClassCollection{T}"/>
         /// <seealso cref="InvalidValuesClass{T}"/>
         public InvalidValuesClassCollection<TValue> InvalidValues

@@ -103,7 +103,7 @@ namespace Gallio.Framework
         }
 
         /// <summary>
-        /// Returns <code>true</code> if <see cref="Abort(TestOutcome, string)" /> was called.
+        /// Returns <c>true</c> if <see cref="Abort(TestOutcome, string)" /> was called.
         /// </summary>
         /// <exception cref="ObjectDisposedException">Thrown if the sandbox was disposed.</exception>
         public bool WasAborted

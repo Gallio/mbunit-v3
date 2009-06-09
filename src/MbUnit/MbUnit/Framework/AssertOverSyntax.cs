@@ -43,11 +43,11 @@ namespace MbUnit.Framework
         /// This assertion fails if the collections have different sizes or if one is null but not the other.
         /// </para>
         /// </remarks>
-        /// <typeparam name="TLeftValue">The left value type</typeparam>
-        /// <typeparam name="TRightValue">The right value type</typeparam>
-        /// <param name="leftSequence">The left sequence, or null</param>
-        /// <param name="rightSequence">The right sequence, or null</param>
-        /// <param name="assertion">The assertion to evaluate given a left value and a right value</param>
+        /// <typeparam name="TLeftValue">The left value type.</typeparam>
+        /// <typeparam name="TRightValue">The right value type.</typeparam>
+        /// <param name="leftSequence">The left sequence, or null.</param>
+        /// <param name="rightSequence">The right sequence, or null.</param>
+        /// <param name="assertion">The assertion to evaluate given a left value and a right value.</param>
         public void Pairs<TLeftValue, TRightValue>(IEnumerable<TLeftValue> leftSequence,
             IEnumerable<TRightValue> rightSequence, Action<TLeftValue, TRightValue> assertion)
         {
@@ -62,13 +62,13 @@ namespace MbUnit.Framework
         /// This assertion fails if the collections have different sizes or if one is null but not the other.
         /// </para>
         /// </remarks>
-        /// <typeparam name="TLeftValue">The left value type</typeparam>
-        /// <typeparam name="TRightValue">The right value type</typeparam>
-        /// <param name="leftSequence">The left sequence, or null</param>
-        /// <param name="rightSequence">The right sequence, or null</param>
-        /// <param name="assertion">The assertion to evaluate given a left value and a right value</param>
-        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
-        /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
+        /// <typeparam name="TLeftValue">The left value type.</typeparam>
+        /// <typeparam name="TRightValue">The right value type.</typeparam>
+        /// <param name="leftSequence">The left sequence, or null.</param>
+        /// <param name="rightSequence">The right sequence, or null.</param>
+        /// <param name="assertion">The assertion to evaluate given a left value and a right value.</param>
+        /// <param name="messageFormat">The custom assertion message format, or null if none.</param>
+        /// <param name="messageArgs">The custom assertion message arguments, or null if none.</param>
         public void Pairs<TLeftValue, TRightValue>(IEnumerable<TLeftValue> leftSequence,
             IEnumerable<TRightValue> rightSequence, Action<TLeftValue, TRightValue> assertion,
             string messageFormat, params object[] messageArgs)
@@ -146,14 +146,14 @@ namespace MbUnit.Framework
         /// This assertion fails if the collections have different sizes or if one is null but not the other.
         /// </para>
         /// </remarks>
-        /// <typeparam name="TKey">The key type</typeparam>
-        /// <typeparam name="TLeftValue">The expected value type</typeparam>
-        /// <typeparam name="TRightValue">The expected value type</typeparam>
-        /// <param name="leftDictionary">The left dictionary, or null</param>
-        /// <param name="rightDictionary">The right dictionary, or null</param>
+        /// <typeparam name="TKey">The key type.</typeparam>
+        /// <typeparam name="TLeftValue">The expected value type.</typeparam>
+        /// <typeparam name="TRightValue">The expected value type.</typeparam>
+        /// <param name="leftDictionary">The left dictionary, or null.</param>
+        /// <param name="rightDictionary">The right dictionary, or null.</param>
         /// <param name="assertion">The assertion to evaluate over all pairs, with the left value as first
-        /// argument, and right value as second</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        /// argument, and right value as second.</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
         public void KeyedPairs<TKey, TLeftValue, TRightValue>(IDictionary<TKey, TLeftValue> leftDictionary,
             IDictionary<TKey, TRightValue> rightDictionary, Action<TLeftValue, TRightValue> assertion)
         {
@@ -168,14 +168,14 @@ namespace MbUnit.Framework
         /// This assertion fails if the collections have different sizes or if one is null but not the other.
         /// </para>
         /// </remarks>
-        /// <typeparam name="TKey">The key type</typeparam>
-        /// <typeparam name="TLeftValue">The expected value type</typeparam>
-        /// <typeparam name="TRightValue">The expected value type</typeparam>
-        /// <param name="leftDictionary">The left dictionary, or null</param>
-        /// <param name="rightDictionary">The right dictionary, or null</param>
+        /// <typeparam name="TKey">The key type.</typeparam>
+        /// <typeparam name="TLeftValue">The expected value type.</typeparam>
+        /// <typeparam name="TRightValue">The expected value type.</typeparam>
+        /// <param name="leftDictionary">The left dictionary, or null.</param>
+        /// <param name="rightDictionary">The right dictionary, or null.</param>
         /// <param name="assertion">The assertion to evaluate over all pairs, with the key as first
-        /// argument, left value as second, and right value as third</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        /// argument, left value as second, and right value as third.</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
         public void KeyedPairs<TKey, TLeftValue, TRightValue>(IDictionary<TKey, TLeftValue> leftDictionary,
             IDictionary<TKey, TRightValue> rightDictionary, Action<TKey, TLeftValue, TRightValue> assertion)
         {
@@ -190,16 +190,16 @@ namespace MbUnit.Framework
         /// This assertion fails if the collections have different sizes or if one is null but not the other.
         /// </para>
         /// </remarks>
-        /// <typeparam name="TKey">The key type</typeparam>
-        /// <typeparam name="TLeftValue">The expected value type</typeparam>
-        /// <typeparam name="TRightValue">The expected value type</typeparam>
-        /// <param name="leftDictionary">The left dictionary, or null</param>
-        /// <param name="rightDictionary">The right dictionary, or null</param>
+        /// <typeparam name="TKey">The key type.</typeparam>
+        /// <typeparam name="TLeftValue">The expected value type.</typeparam>
+        /// <typeparam name="TRightValue">The expected value type.</typeparam>
+        /// <param name="leftDictionary">The left dictionary, or null.</param>
+        /// <param name="rightDictionary">The right dictionary, or null.</param>
         /// <param name="assertion">The assertion to evaluate over all pairs, with the left value as first
-        /// argument, and right value as second</param>
-        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
-        /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        /// argument, and right value as second.</param>
+        /// <param name="messageFormat">The custom assertion message format, or null if none.</param>
+        /// <param name="messageArgs">The custom assertion message arguments, or null if none.</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
         public void KeyedPairs<TKey, TLeftValue, TRightValue>(IDictionary<TKey, TLeftValue> leftDictionary,
             IDictionary<TKey, TRightValue> rightDictionary, Action<TLeftValue, TRightValue> assertion,
             string messageFormat, params object[] messageArgs)
@@ -216,16 +216,16 @@ namespace MbUnit.Framework
         /// This assertion fails if the collections have different sizes or if one is null but not the other.
         /// </para>
         /// </remarks>
-        /// <typeparam name="TKey">The key type</typeparam>
-        /// <typeparam name="TLeftValue">The expected value type</typeparam>
-        /// <typeparam name="TRightValue">The expected value type</typeparam>
-        /// <param name="leftDictionary">The left dictionary, or null</param>
-        /// <param name="rightDictionary">The right dictionary, or null</param>
+        /// <typeparam name="TKey">The key type.</typeparam>
+        /// <typeparam name="TLeftValue">The expected value type.</typeparam>
+        /// <typeparam name="TRightValue">The expected value type.</typeparam>
+        /// <param name="leftDictionary">The left dictionary, or null.</param>
+        /// <param name="rightDictionary">The right dictionary, or null.</param>
         /// <param name="assertion">The assertion to evaluate over all pairs, with the key as first
-        /// argument, left value as second, and right value as third</param>
-        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
-        /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        /// argument, left value as second, and right value as third.</param>
+        /// <param name="messageFormat">The custom assertion message format, or null if none.</param>
+        /// <param name="messageArgs">The custom assertion message arguments, or null if none.</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
         public void KeyedPairs<TKey, TLeftValue, TRightValue>(IDictionary<TKey, TLeftValue> leftDictionary,
             IDictionary<TKey, TRightValue> rightDictionary, Action<TKey, TLeftValue, TRightValue> assertion,
             string messageFormat, params object[] messageArgs)

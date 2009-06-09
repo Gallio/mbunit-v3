@@ -51,15 +51,14 @@ namespace MbUnit.Framework
     /// </item>
     /// </list>
     /// </para>
+    /// </remarks>
     /// <example>
     /// <para>
     /// The XML may contain metadata at the row level by adding metadata elements in the
     /// http://www.gallio.org/ namespace containing metadata entries.  In the following example,
     /// the row values would be selected using an Item Path of "//row" and a Binding Path of "@value".
     /// Additionally, some rows would have metadata as specified.
-    /// </para>
-    /// <code>
-    /// <![CDATA[
+    /// <code><![CDATA[
     /// <data>
     ///   <row value="somevalue">
     ///     <metadata xmlns="http://www.gallio.org/">
@@ -69,10 +68,8 @@ namespace MbUnit.Framework
     ///   </row>
     ///   <row value="anothervalue" />
     /// </data>
-    /// ]]>
-    /// </code>
-    /// </example>
-    /// <example>
+    /// ]]></code>
+    /// </para>
     /// <para>
     /// This example reads data from an Embedded Resource called Data.xml within the
     /// same namespace as the test fixture.  Notice that the binding xpath expressions
@@ -80,42 +77,44 @@ namespace MbUnit.Framework
     /// </para>
     /// <para>
     /// Data files:
+    /// <code><![CDATA[
+    /// <shoppingCart>
+    ///   <item name="Bananas">
+    ///     <unitPrice>0.85</unitPrice>
+    ///     <quantity>3</quantity>
+    ///   </item>
+    ///   <item name="Cookies">
+    ///     <unitPrice>0.10</unitPrice>
+    ///     <quantity>10</quantity>
+    ///   </item>
+    ///   <-- Comment: mmm! -->
+    ///   <item name="Shortbread">
+    ///     <unitPrice>2.25</unitPrice>
+    ///     <quantity>1</quantity>
+    ///   </item>
+    /// </shoppingCart>
+    /// ]]></code>
     /// </para>
-    /// <code>
-    /// &lt;shoppingCart&gt;
-    ///   &lt;item name="Bananas"&gt;
-    ///     &lt;unitPrice&gt;0.85&lt;/unitPrice&gt;
-    ///     &lt;quantity&gt;3&lt;/quantity&gt;
-    ///   &lt;/item&gt;
-    ///   &lt;item name="Cookies"&gt;
-    ///     &lt;unitPrice&gt;0.10&lt;/unitPrice&gt;
-    ///     &lt;quantity&gt;10&lt;/quantity&gt;
-    ///   &lt;/item&gt;
-    ///   &lt;-- Comment: mmm! --&gt;
-    ///   &lt;item name="Shortbread"&gt;
-    ///     &lt;unitPrice&gt;2.25&lt;/unitPrice&gt;
-    ///     &lt;quantity&gt;1&lt;/quantity&gt;
-    ///   &lt;/item&gt;
-    /// &lt;/shoppingCart&gt;
-    /// </code>
     /// <para>
     /// A simple test.
-    /// </para>
-    /// <code>
+    /// <code><![CDATA[
     /// public class AccountingTests
     /// {
     ///     [Test]
     ///     [XmlData("//item", ResourcePath = "Data.xml")]
-    ///     public void ShoppingCartTotalWithSingleItem([Bind("@name")] string item, [Bind("unitPrice")] decimal unitPrice, [Bind("quantity")] decimal quantity)
+    ///     public void ShoppingCartTotalWithSingleItem(
+    ///         [Bind("@name")] string item, 
+    ///         [Bind("unitPrice")] decimal unitPrice, 
+    ///         [Bind("quantity")] decimal quantity)
     ///     {
-    ///         ShoppingCart shoppingCart = new ShoppingCart();
+    ///         var shoppingCart = new ShoppingCart();
     ///         shoppingCart.Add(item, unitprice, quantity);
     ///         Assert.AreEqual(unitPrice * quantity, shoppingCart.TotalCost);
     ///     }
     /// }
-    /// </code>
+    /// ]]></code>
+    /// </para>
     /// </example>
-    /// </remarks>
     /// <seealso cref="XmlDataSet"/>
     [AttributeUsage(PatternAttributeTargets.DataContext, AllowMultiple = true, Inherited = true)]
     public class XmlDataAttribute : ContentAttribute
@@ -125,8 +124,8 @@ namespace MbUnit.Framework
         /// <summary>
         /// Specifies a XML-based data source.
         /// </summary>
-        /// <param name="itemPath">The XPath expression used to select items within the document</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="itemPath"/> is null</exception>
+        /// <param name="itemPath">The XPath expression used to select items within the document.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="itemPath"/> is null.</exception>
         public XmlDataAttribute(string itemPath)
         {
             if (itemPath == null)
@@ -138,7 +137,7 @@ namespace MbUnit.Framework
         /// <inheritdoc />
         protected override void PopulateDataSource(IPatternScope scope, DataSource dataSource, ICodeElementInfo codeElement)
         {
-            XmlDataSet dataSet = new XmlDataSet(delegate { return OpenXPathDocument(codeElement); }, itemPath, IsDynamic);
+            var dataSet = new XmlDataSet(delegate { return OpenXPathDocument(codeElement); }, itemPath, IsDynamic);
             dataSet.DataLocationName = GetDataLocationName();
 
             dataSource.AddDataSet(dataSet);

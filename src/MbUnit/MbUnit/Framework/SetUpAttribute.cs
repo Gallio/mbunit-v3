@@ -23,9 +23,12 @@ namespace MbUnit.Framework
 {
     /// <summary>
     /// Specifies a method that is to be invoked before each test in a fixture executes
-    /// to set up the state of the test.  The method will run once for each test.
+    /// to set up the state of the test.  
     /// </summary>
     /// <remarks>
+    /// <para>
+    /// The method will run once for each test.
+    /// </para>
     /// <para>
     /// The attribute may be applied to multiple methods within a fixture, however
     /// the order in which they are processed is undefined.

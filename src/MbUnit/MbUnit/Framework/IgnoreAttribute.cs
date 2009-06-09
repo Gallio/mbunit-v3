@@ -23,10 +23,12 @@ namespace MbUnit.Framework
 {
     /// <summary>
     /// Indicates that a test is to be ignored by the framework and will not be run.
-    /// The test will still appear in test reports along with the reason that it
-    /// was ignored, if provided.
     /// </summary>
     /// <remarks>
+    /// <para>
+    /// The test will still appear in test reports along with the reason that it
+    /// was ignored, if provided.
+    /// </para>
     /// <para>
     /// This attribute can be used to disable tests that are broken or expensive
     /// without commenting them out or removing them from the source code.
@@ -48,9 +50,9 @@ namespace MbUnit.Framework
         /// <summary>
         /// Indicates that this test is to be ignored and provides a reason.
         /// </summary>
-        /// <param name="reason">The reason for which the test is to be ignored</param>
+        /// <param name="reason">The reason for which the test is to be ignored.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="reason"/>
-        /// is null</exception>
+        /// is null.</exception>
         public IgnoreAttribute(string reason)
         {
             if (reason == null)

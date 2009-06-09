@@ -32,7 +32,7 @@ namespace MbUnit.Framework
         /// <summary>
         /// Associates a <see cref="Framework.Importance" />  with the test component annotated by this attribute.
         /// </summary>
-        /// <param name="importance">The importance to associate</param>
+        /// <param name="importance">The importance to associate.</param>
         public ImportanceAttribute(Importance importance)
         {
             this.importance = importance;

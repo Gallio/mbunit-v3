@@ -41,8 +41,8 @@ namespace MbUnit.Framework
         /// <summary>
         /// Associates a description with the test component annotated by this attribute.
         /// </summary>
-        /// <param name="description">The description to associate</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="description"/> is null</exception>
+        /// <param name="description">The description to associate.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="description"/> is null.</exception>
         public DescriptionAttribute(string description)
         {
             if (description == null)

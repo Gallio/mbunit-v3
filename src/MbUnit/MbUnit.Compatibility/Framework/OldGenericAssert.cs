@@ -29,9 +29,9 @@ namespace MbUnit.Framework
          /// <summary>
         /// Assert that an array, list or other collection is empty
         /// </summary>
-        /// <param name="collection">An array, list or other collection implementing ICollection</param>
-        /// <param name="message">The message to be displayed on failure</param>
-        /// <param name="args">Arguments to be used in formatting the message</param>
+        /// <param name="collection">An array, list or other collection implementing ICollection.</param>
+        /// <param name="message">The message to be displayed on failure.</param>
+        /// <param name="args">Arguments to be used in formatting the message.</param>
         public static void IsEmpty<T>(ICollection<T> collection, string message, params object[] args)
         {
             if (collection.Count != 0)
@@ -46,8 +46,8 @@ namespace MbUnit.Framework
         /// <summary>
         /// Assert that an array, list or other collection is empty
         /// </summary>
-        /// <param name="collection">An array, list or other collection implementing ICollection</param>
-        /// <param name="message">The message to be displayed on failure</param>
+        /// <param name="collection">An array, list or other collection implementing ICollection.</param>
+        /// <param name="message">The message to be displayed on failure.</param>
         public static void IsEmpty<T>(ICollection<T> collection, string message)
         {
             IsEmpty(collection, message, null);
@@ -56,7 +56,7 @@ namespace MbUnit.Framework
         /// <summary>
         /// Assert that an array,list or other collection is empty
         /// </summary>
-        /// <param name="collection">An array, list or other collection implementing ICollection</param>
+        /// <param name="collection">An array, list or other collection implementing ICollection.</param>
         public static void IsEmpty<T>(ICollection<T> collection)
         {
             IsEmpty(collection, string.Empty, null);
@@ -68,9 +68,9 @@ namespace MbUnit.Framework
         /// <summary>
         /// Assert that an array, list or other collection is empty
         /// </summary>
-        /// <param name="collection">An array, list or other collection implementing ICollection</param>
-        /// <param name="message">The message to be displayed on failure</param>
-        /// <param name="args">Arguments to be used in formatting the message</param>
+        /// <param name="collection">An array, list or other collection implementing ICollection.</param>
+        /// <param name="message">The message to be displayed on failure.</param>
+        /// <param name="args">Arguments to be used in formatting the message.</param>
         public static void IsNotEmpty<T>(ICollection<T> collection, string message, params object[] args)
         {
             if (collection.Count == 0)
@@ -85,8 +85,8 @@ namespace MbUnit.Framework
         /// <summary>
         /// Assert that an array, list or other collection is empty
         /// </summary>
-        /// <param name="collection">An array, list or other collection implementing ICollection</param>
-        /// <param name="message">The message to be displayed on failure</param>
+        /// <param name="collection">An array, list or other collection implementing ICollection.</param>
+        /// <param name="message">The message to be displayed on failure.</param>
         public static void IsNotEmpty<T>(ICollection<T> collection, string message)
         {
             IsNotEmpty(collection, message, null);
@@ -95,7 +95,7 @@ namespace MbUnit.Framework
         /// <summary>
         /// Assert that an array,list or other collection is empty
         /// </summary>
-        /// <param name="collection">An array, list or other collection implementing ICollection</param>
+        /// <param name="collection">An array, list or other collection implementing ICollection.</param>
         public static void IsNotEmpty<T>(ICollection<T> collection)
         {
             IsNotEmpty(collection, string.Empty, null);

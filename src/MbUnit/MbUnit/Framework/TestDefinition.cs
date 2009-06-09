@@ -40,8 +40,8 @@ namespace MbUnit.Framework
         /// <summary>
         /// Creates a test.
         /// </summary>
-        /// <param name="name">The test name</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> is null</exception>
+        /// <param name="name">The test name.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> is null.</exception>
         protected TestDefinition(string name)
         {
             if (name == null)
@@ -89,12 +89,16 @@ namespace MbUnit.Framework
 
         /// <summary>
         /// Gets or sets the maximum amount of time the whole test including
-        /// its setup, teardown and body should be permitted to run.  If the test
-        /// runs any longer than this, it will be aborted by the framework.
-        /// The timeout may be null to indicate the absence of a timeout.
+        /// its setup, teardown and body should be permitted to run.
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// If the test runs any longer than this, it will be aborted by the framework.
+        /// The timeout may be null to indicate the absence of a timeout.
+        /// </para>
+        /// </remarks>
         /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="value"/>
-        /// represents a negative time span</exception>
+        /// represents a negative time span.</exception>
         /// <value>The timeout.  Default value is null.</value>
         public TimeSpan? Timeout
         {

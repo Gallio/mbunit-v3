@@ -38,8 +38,8 @@ namespace MbUnit.Framework
         /// <summary>
         /// Overrides the name of a test or test parameter.
         /// </summary>
-        /// <param name="name">The overridden name</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> is null</exception>
+        /// <param name="name">The overridden name.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> is null.</exception>
         public NameAttribute(string name)
         {
             if (name == null)
@@ -67,9 +67,9 @@ namespace MbUnit.Framework
         /// <summary>
         /// Verifies that the attribute is being used correctly.
         /// </summary>
-        /// <param name="scope">The scope</param>
-        /// <param name="codeElement">The code element</param>
-        /// <exception cref="PatternUsageErrorException">Thrown if the attribute is being used incorrectly</exception>
+        /// <param name="scope">The scope.</param>
+        /// <param name="codeElement">The code element.</param>
+        /// <exception cref="PatternUsageErrorException">Thrown if the attribute is being used incorrectly.</exception>
         protected virtual void Validate(IPatternScope scope, ICodeElementInfo codeElement)
         {
             if (!scope.IsTestDeclaration && !scope.IsTestParameterDeclaration)

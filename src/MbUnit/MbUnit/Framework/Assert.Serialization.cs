@@ -41,9 +41,9 @@ namespace MbUnit.Framework
         /// signature .ctor(SerializationInfo info, StreamingContext context).
         /// </para>
         /// </remarks>
-        /// <param name="type">The type to verify</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="type"/> is null</exception>
+        /// <param name="type">The type to verify.</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="type"/> is null.</exception>
         public static void IsSerializableType(Type type)
         {
             IsSerializableType(type, null);
@@ -59,11 +59,11 @@ namespace MbUnit.Framework
         /// signature .ctor(SerializationInfo, StreamingContext).
         /// </para>
         /// </remarks>
-        /// <param name="type">The type to verify</param>
-        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
-        /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="type"/> is null</exception>
+        /// <param name="type">The type to verify.</param>
+        /// <param name="messageFormat">The custom assertion message format, or null if none.</param>
+        /// <param name="messageArgs">The custom assertion message arguments, or null if none.</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="type"/> is null.</exception>
         public static void IsSerializableType(Type type, string messageFormat, params object[] messageArgs)
         {
             if (type == null)
@@ -110,11 +110,11 @@ namespace MbUnit.Framework
         /// The assertion fails if <paramref name="value"/> is null.
         /// </para>
         /// </remarks>
-        /// <param name="value">The value</param>
-        /// <param name="formatter">The object serialization formatter</param>
-        /// <returns>The serialized stream</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="formatter"/> is null</exception>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        /// <param name="value">The value.</param>
+        /// <param name="formatter">The object serialization formatter.</param>
+        /// <returns>The serialized stream.</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="formatter"/> is null.</exception>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
         public static MemoryStream Serialize(object value, IFormatter formatter)
         {
             return Serialize(value, formatter, null);
@@ -129,13 +129,13 @@ namespace MbUnit.Framework
         /// The assertion fails if <paramref name="value"/> is null.
         /// </para>
         /// </remarks>
-        /// <param name="value">The value</param>
-        /// <param name="formatter">The object serialization formatter</param>
-        /// <returns>The serialized stream</returns>
-        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
-        /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="formatter"/> is null</exception>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        /// <param name="value">The value.</param>
+        /// <param name="formatter">The object serialization formatter.</param>
+        /// <returns>The serialized stream.</returns>
+        /// <param name="messageFormat">The custom assertion message format, or null if none.</param>
+        /// <param name="messageArgs">The custom assertion message arguments, or null if none.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="formatter"/> is null.</exception>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
         public static MemoryStream Serialize(object value, IFormatter formatter, string messageFormat, params object[] messageArgs)
         {
             if (formatter == null)
@@ -181,11 +181,11 @@ namespace MbUnit.Framework
         /// The assertion fails if <paramref name="stream"/> is null.
         /// </para>
         /// </remarks>
-        /// <param name="stream">The stream to deserialize</param>
-        /// <param name="formatter">The object serialization formatter</param>
-        /// <returns>The deserialized object</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="formatter"/> is null</exception>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        /// <param name="stream">The stream to deserialize.</param>
+        /// <param name="formatter">The object serialization formatter.</param>
+        /// <returns>The deserialized object.</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="formatter"/> is null.</exception>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
         public static T Deserialize<T>(Stream stream, IFormatter formatter)
         {
             return Deserialize<T>(stream, formatter, null);
@@ -200,13 +200,13 @@ namespace MbUnit.Framework
         /// The assertion fails if <paramref name="stream"/> is null.
         /// </para>
         /// </remarks>
-        /// <param name="stream">The stream to deserialize</param>
-        /// <param name="formatter">The object serialization formatter</param>
-        /// <returns>The deserialized object</returns>
-        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
-        /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="formatter"/> is null</exception>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        /// <param name="stream">The stream to deserialize.</param>
+        /// <param name="formatter">The object serialization formatter.</param>
+        /// <returns>The deserialized object.</returns>
+        /// <param name="messageFormat">The custom assertion message format, or null if none.</param>
+        /// <param name="messageArgs">The custom assertion message arguments, or null if none.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="formatter"/> is null.</exception>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
         public static T Deserialize<T>(Stream stream, IFormatter formatter, string messageFormat, params object[] messageArgs)
         {
             return Deserialize<T>(stream, formatter, messageFormat, messageArgs, null);
@@ -258,11 +258,11 @@ namespace MbUnit.Framework
         /// The assertion fails if <paramref name="value"/> is null.
         /// </para>
         /// </remarks>
-        /// <param name="value">The value</param>
-        /// <param name="formatter">The object serialization formatter</param>
-        /// <returns>The serialized then deserialized object</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="formatter"/> is null</exception>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        /// <param name="value">The value.</param>
+        /// <param name="formatter">The object serialization formatter.</param>
+        /// <returns>The serialized then deserialized object.</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="formatter"/> is null.</exception>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
         public static T SerializeThenDeserialize<T>(T value, IFormatter formatter)
         {
             return SerializeThenDeserialize(value, formatter, null);
@@ -277,13 +277,13 @@ namespace MbUnit.Framework
         /// The assertion fails if <paramref name="value"/> is null.
         /// </para>
         /// </remarks>
-        /// <param name="value">The value</param>
-        /// <param name="formatter">The object serialization formatter</param>
-        /// <returns>The serialized then deserialized object</returns>
-        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
-        /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="formatter"/> is null</exception>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        /// <param name="value">The value.</param>
+        /// <param name="formatter">The object serialization formatter.</param>
+        /// <returns>The serialized then deserialized object.</returns>
+        /// <param name="messageFormat">The custom assertion message format, or null if none.</param>
+        /// <param name="messageArgs">The custom assertion message arguments, or null if none.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="formatter"/> is null.</exception>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
         public static T SerializeThenDeserialize<T>(T value, IFormatter formatter, string messageFormat, params object[] messageArgs)
         {
             MemoryStream stream = Serialize(value, formatter, messageFormat, messageArgs);
@@ -301,9 +301,9 @@ namespace MbUnit.Framework
         /// The assertion fails if <paramref name="value"/> is null.
         /// </para>
         /// </remarks>
-        /// <param name="value">The value</param>
-        /// <returns>The serialized stream</returns>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        /// <param name="value">The value.</param>
+        /// <returns>The serialized stream.</returns>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
         public static MemoryStream BinarySerialize(object value)
         {
             return BinarySerialize(value, null);
@@ -318,11 +318,11 @@ namespace MbUnit.Framework
         /// The assertion fails if <paramref name="value"/> is null.
         /// </para>
         /// </remarks>
-        /// <param name="value">The value</param>
-        /// <returns>The serialized stream</returns>
-        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
-        /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        /// <param name="value">The value.</param>
+        /// <returns>The serialized stream.</returns>
+        /// <param name="messageFormat">The custom assertion message format, or null if none.</param>
+        /// <param name="messageArgs">The custom assertion message arguments, or null if none.</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
         public static MemoryStream BinarySerialize(object value, string messageFormat, params object[] messageArgs)
         {
             return Serialize(value, CreateBinaryFormatter(), messageFormat, messageArgs);
@@ -339,9 +339,9 @@ namespace MbUnit.Framework
         /// The assertion fails if <paramref name="stream"/> is null.
         /// </para>
         /// </remarks>
-        /// <param name="stream">The stream to deserialize</param>
-        /// <returns>The deserialized object</returns>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        /// <param name="stream">The stream to deserialize.</param>
+        /// <returns>The deserialized object.</returns>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
         public static T BinaryDeserialize<T>(Stream stream)
         {
             return BinaryDeserialize<T>(stream, null);
@@ -356,11 +356,11 @@ namespace MbUnit.Framework
         /// The assertion fails if <paramref name="stream"/> is null.
         /// </para>
         /// </remarks>
-        /// <param name="stream">The stream to deserialize</param>
-        /// <returns>The deserialized object</returns>
-        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
-        /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        /// <param name="stream">The stream to deserialize.</param>
+        /// <returns>The deserialized object.</returns>
+        /// <param name="messageFormat">The custom assertion message format, or null if none.</param>
+        /// <param name="messageArgs">The custom assertion message arguments, or null if none.</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
         public static T BinaryDeserialize<T>(Stream stream, string messageFormat, params object[] messageArgs)
         {
             return Deserialize<T>(stream, CreateBinaryFormatter(), messageFormat, messageArgs);
@@ -377,9 +377,9 @@ namespace MbUnit.Framework
         /// The assertion fails if <paramref name="value"/> is null.
         /// </para>
         /// </remarks>
-        /// <param name="value">The value</param>
-        /// <returns>The serialized then deserialized object</returns>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        /// <param name="value">The value.</param>
+        /// <returns>The serialized then deserialized object.</returns>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
         public static T BinarySerializeThenDeserialize<T>(T value)
         {
             return BinarySerializeThenDeserialize(value, null);
@@ -394,11 +394,11 @@ namespace MbUnit.Framework
         /// The assertion fails if <paramref name="value"/> is null.
         /// </para>
         /// </remarks>
-        /// <param name="value">The value</param>
-        /// <returns>The serialized then deserialized object</returns>
-        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
-        /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        /// <param name="value">The value.</param>
+        /// <returns>The serialized then deserialized object.</returns>
+        /// <param name="messageFormat">The custom assertion message format, or null if none.</param>
+        /// <param name="messageArgs">The custom assertion message arguments, or null if none.</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
         public static T BinarySerializeThenDeserialize<T>(T value, string messageFormat, params object[] messageArgs)
         {
             return SerializeThenDeserialize<T>(value, CreateBinaryFormatter(), messageFormat, messageArgs);
@@ -414,9 +414,9 @@ namespace MbUnit.Framework
         /// Ensures that an <see cref="XmlSerializer"/> for the type can be constructed without error.
         /// </para>
         /// </remarks>
-        /// <param name="type">The type to verify</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="type"/> is null</exception>
+        /// <param name="type">The type to verify.</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="type"/> is null.</exception>
         public static void IsXmlSerializableType(Type type)
         {
             IsXmlSerializableType(type, null);
@@ -430,11 +430,11 @@ namespace MbUnit.Framework
         /// Ensures that an <see cref="XmlSerializer"/> for the type can be constructed without error.
         /// </para>
         /// </remarks>
-        /// <param name="type">The type to verify</param>
-        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
-        /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="type"/> is null</exception>
+        /// <param name="type">The type to verify.</param>
+        /// <param name="messageFormat">The custom assertion message format, or null if none.</param>
+        /// <param name="messageArgs">The custom assertion message arguments, or null if none.</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="type"/> is null.</exception>
         public static void IsXmlSerializableType(Type type, string messageFormat, params object[] messageArgs)
         {
             if (type == null)
@@ -469,9 +469,9 @@ namespace MbUnit.Framework
         /// The assertion fails if <paramref name="value"/> is null.
         /// </para>
         /// </remarks>
-        /// <param name="value">The value</param>
-        /// <returns>The serialized Xml</returns>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        /// <param name="value">The value.</param>
+        /// <returns>The serialized Xml.</returns>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
         public static string XmlSerialize(object value)
         {
             return XmlSerialize(value, null);
@@ -486,11 +486,11 @@ namespace MbUnit.Framework
         /// The assertion fails if <paramref name="value"/> is null.
         /// </para>
         /// </remarks>
-        /// <param name="value">The value</param>
-        /// <returns>The serialized Xml</returns>
-        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
-        /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        /// <param name="value">The value.</param>
+        /// <returns>The serialized Xml.</returns>
+        /// <param name="messageFormat">The custom assertion message format, or null if none.</param>
+        /// <param name="messageArgs">The custom assertion message arguments, or null if none.</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
         public static string XmlSerialize(object value, string messageFormat, params object[] messageArgs)
         {
             StringBuilder xml = new StringBuilder();
@@ -545,9 +545,9 @@ namespace MbUnit.Framework
         /// The assertion fails if <paramref name="xml"/> is null.
         /// </para>
         /// </remarks>
-        /// <param name="xml">The Xml</param>
-        /// <returns>The deserialized object</returns>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        /// <param name="xml">The Xml.</param>
+        /// <returns>The deserialized object.</returns>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
         public static T XmlDeserialize<T>(string xml)
         {
             return XmlDeserialize<T>(xml, null);
@@ -562,11 +562,11 @@ namespace MbUnit.Framework
         /// The assertion fails if <paramref name="xml"/> is null.
         /// </para>
         /// </remarks>
-        /// <param name="xml">The Xml</param>
-        /// <returns>The deserialized object</returns>
-        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
-        /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        /// <param name="xml">The Xml.</param>
+        /// <returns>The deserialized object.</returns>
+        /// <param name="messageFormat">The custom assertion message format, or null if none.</param>
+        /// <param name="messageArgs">The custom assertion message arguments, or null if none.</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
         public static T XmlDeserialize<T>(string xml, string messageFormat, params object[] messageArgs)
         {
             return XmlDeserialize<T>(typeof(T), xml, messageFormat, messageArgs, null);
@@ -627,9 +627,9 @@ namespace MbUnit.Framework
         /// The assertion fails if <paramref name="value"/> is null.
         /// </para>
         /// </remarks>
-        /// <param name="value">The value</param>
-        /// <returns>The serialized then deserialized object</returns>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        /// <param name="value">The value.</param>
+        /// <returns>The serialized then deserialized object.</returns>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
         public static T XmlSerializeThenDeserialize<T>(T value)
         {
             return XmlSerializeThenDeserialize(value, null);
@@ -644,11 +644,11 @@ namespace MbUnit.Framework
         /// The assertion fails if <paramref name="value"/> is null.
         /// </para>
         /// </remarks>
-        /// <param name="value">The value</param>
-        /// <returns>The serialized then deserialized object</returns>
-        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
-        /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        /// <param name="value">The value.</param>
+        /// <returns>The serialized then deserialized object.</returns>
+        /// <param name="messageFormat">The custom assertion message format, or null if none.</param>
+        /// <param name="messageArgs">The custom assertion message arguments, or null if none.</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
         public static T XmlSerializeThenDeserialize<T>(T value, string messageFormat, params object[] messageArgs)
         {
             string xml = XmlSerialize(value, messageFormat, messageArgs);

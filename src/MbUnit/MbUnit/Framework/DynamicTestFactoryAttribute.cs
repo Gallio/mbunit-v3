@@ -47,8 +47,7 @@ namespace MbUnit.Framework
     /// <para>
     /// A simple dynamic test factory that reads some data from a file and generates
     /// a number of dynamic tests.
-    /// </para>
-    /// <code>
+    /// <code><![CDATA[
     /// [DynamicTestFactory]
     /// public IEnumerable&lt;Test&gt; CreateDynamicTests()
     /// {
@@ -60,12 +59,12 @@ namespace MbUnit.Framework
     ///         });
     ///     }
     /// }
-    /// </code>
+    /// ]]></code>
+    /// </para>
     /// <para>
     /// A data-driven test factory that reads some data from a file and generates
     /// a number of dynamic tests repeatedly in multiple configurations.
-    /// </para>
-    /// <code>
+    /// <code><![CDATA[
     /// [DynamicTestFactory]
     /// [Row("Google")]
     /// [Row("Yahoo")]
@@ -79,7 +78,8 @@ namespace MbUnit.Framework
     ///         });
     ///     }
     /// }
-    /// </code>
+    /// ]]></code>
+    /// </para>
     /// </example>
     /// <seealso cref="DynamicTestFactoryAttribute"/>
     /// <seealso cref="TestCase"/>
@@ -89,7 +89,7 @@ namespace MbUnit.Framework
         /// <inheritdoc />
         protected override object Execute(PatternTestInstanceState state)
         {
-            IEnumerable<Test> tests = base.Execute(state) as IEnumerable<Test>;
+            var tests = base.Execute(state) as IEnumerable<Test>;
             if (tests == null)
                 throw new TestFailedException("Expected the dynamic test factory method to "
                     + "return a value that is assignable to type IEnumerable<Test>.");

@@ -49,19 +49,19 @@ namespace MbUnit.Framework.ContractVerifiers
     /// <description>The type has a static equality operator (==) overload which behaves
     /// correctly against the provided equivalence classes. Disable that test by setting 
     /// the <see cref="EqualityContract{TTarget}.ImplementsOperatorOverloads"/> 
-    /// property to <code>false</code>.</description>
+    /// property to <c>false</c>.</description>
     /// </item>
     /// <item>
     /// <term>OperatorNotEquals</term>
     /// <description>The type has a static inequality operator (!=) overload which 
     /// behaves correctly against the provided equivalence classes. Disable that test by 
     /// setting the <see cref="EqualityContract{TTarget}.ImplementsOperatorOverloads"/> 
-    /// property to <code>false</code>.
+    /// property to <c>false</c>.
     /// </description>
     /// </item>
     /// </list>
     /// </para>
-    /// <para>
+    /// </remarks>
     /// <example>
     /// The following example shows a simple class implementing the 
     /// <see cref="IEquatable{T}"/> interface, and a test fixture which uses the
@@ -124,8 +124,6 @@ namespace MbUnit.Framework.ContractVerifiers
     /// }
     /// ]]></code>
     /// </example>
-    /// </para>
-    /// </remarks>
     /// <typeparam name="TTarget">The target tested type which implements the generic <see cref="IEquatable{T}"/> interface. </typeparam>
     /// <seealso cref="VerifyContractAttribute"/>
     public class EqualityContract<TTarget> : AbstractContract
@@ -146,7 +144,7 @@ namespace MbUnit.Framework.ContractVerifiers
         /// </summary>
         /// <remarks>
         /// <para>
-        /// The default value is <code>true</code>.
+        /// The default value is <c>true</c>.
         /// </para>
         /// <para>
         /// Built-in verifications:

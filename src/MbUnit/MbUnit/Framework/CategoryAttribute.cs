@@ -22,9 +22,13 @@ namespace MbUnit.Framework
 {
     /// <summary>
     /// Associates a category name with a test fixture, test method, test parameter
-    /// or other test component.  The category name can be used to classify tests
-    /// and build test suites of related tests.
+    /// or other test component.
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// The category name can be used to classify tests and build test suites of related tests.
+    /// </para>
+    /// </remarks>
     [AttributeUsage(PatternAttributeTargets.TestComponent, AllowMultiple = true, Inherited = true)]
     public class CategoryAttribute : MetadataPatternAttribute
     {
@@ -33,8 +37,8 @@ namespace MbUnit.Framework
         /// <summary>
         /// Associates a category with the test component annotated by this attribute.
         /// </summary>
-        /// <param name="category">The name of the category to associate</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="category"/> is null</exception>
+        /// <param name="category">The name of the category to associate.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="category"/> is null.</exception>
         public CategoryAttribute(string category)
         {
             if (category == null)

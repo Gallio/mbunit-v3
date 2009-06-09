@@ -22,10 +22,12 @@ using Gallio.Common.Reflection;
 namespace MbUnit.Framework
 {
     /// <summary>
-    /// Describes a reference to another test fixture.  This is used
-    /// to enable test suites to include tests that are defined using attributes.
+    /// Describes a reference to another test fixture.
     /// </summary>
     /// <remarks>
+    /// <para>
+    /// This is used to enable test suites to include tests that are defined using attributes.
+    /// </para>
     /// <para>
     /// Refer to the examples on the <see cref="Test" /> class for more information.
     /// </para>
@@ -42,8 +44,8 @@ namespace MbUnit.Framework
         /// <summary>
         /// Creates a reference to a test fixture.
         /// </summary>
-        /// <param name="testFixtureType">The test fixture type</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="testFixtureType"/> is null</exception>
+        /// <param name="testFixtureType">The test fixture type.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="testFixtureType"/> is null.</exception>
         public TestFixtureReference(Type testFixtureType)
         {
             if (testFixtureType == null)

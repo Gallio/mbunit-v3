@@ -40,10 +40,10 @@ namespace MbUnit.Framework
         /// <summary>
         /// Creates a test case with a delegate to execute as its main body.
         /// </summary>
-        /// <param name="name">The test case name</param>
-        /// <param name="execute">The main body of the test case</param>
+        /// <param name="name">The test case name.</param>
+        /// <param name="execute">The main body of the test case.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> or <paramref name="execute"/>
-        /// is null</exception>
+        /// is null.</exception>
         public TestCase(string name, Action execute)
             : base(name)
         {

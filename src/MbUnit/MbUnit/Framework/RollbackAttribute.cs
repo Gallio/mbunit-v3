@@ -65,8 +65,7 @@ namespace MbUnit.Framework
     /// <example>
     /// <para>
     /// The following example shows the <see cref="RollbackAttribute"/> in use:
-    /// </para>
-    /// <code>
+    /// <code><![CDATA[
     /// [TestFixture]
     /// public class RollbackTest {
     /// 
@@ -84,7 +83,8 @@ namespace MbUnit.Framework
     ///         // teardown will be rolled back automatically when the test completes.
     ///     }
     /// } 
-    /// </code>
+    /// ]]></code>
+    /// </para>
     /// </example>
     [AttributeUsage(PatternAttributeTargets.Test, AllowMultiple = true, Inherited = true)]
     public class RollbackAttribute : TestDecoratorPatternAttribute
@@ -100,15 +100,15 @@ namespace MbUnit.Framework
         }
 
         /// <summary>
-        /// <para>
         /// When set to true, includes setup and teardown in the rollback.  Otherwise
         /// only transactions performed during the test itself are affected.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// The fixture setup and teardown is not included regardless unless this
         /// attribute is applied to the fixture class itself instead of the test method.
         /// </para>
-        /// </summary>
+        /// </remarks>
         public bool IncludeSetUpAndTearDown { get; set; }
 
         /// <inheritdoc />
@@ -146,7 +146,7 @@ namespace MbUnit.Framework
             if (state.Test.Timeout.HasValue && state.Test.Timeout.Value < timeout)
                 timeout = state.Test.Timeout.Value;
 
-            TransactionOptions options = new TransactionOptions()
+            var options = new TransactionOptions()
             {
                 Timeout = timeout
             };

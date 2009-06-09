@@ -25,9 +25,13 @@ using MbUnit.Framework.ContractVerifiers.Core;
 namespace MbUnit.Framework.ContractVerifiers
 {
     /// <summary>
-    /// Verifies that a contract has been satisfied.  The contract is described by a value
-    /// assigned to a field of the test fixture.
+    /// Verifies that a contract has been satisfied.
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// The contract is described by a value assigned to a field of the test fixture.
+    /// </para>
+    /// </remarks>
     /// <example>
     /// <code><![CDATA[
     /// [TestFixture]
@@ -38,11 +42,12 @@ namespace MbUnit.Framework.ContractVerifiers
     /// }
     /// ]]></code>
     /// </example>
+    /// <seealso cref="AccessorContract{TTarget, TValue}"/>
+    /// <seealso cref="CollectionContract{TList, TItem}"/>
     /// <seealso cref="ComparisonContract{TTarget}"/>
     /// <seealso cref="EqualityContract{TTarget}"/>
     /// <seealso cref="ExceptionContract{TException}"/>
     /// <seealso cref="ImmutabilityContract{TTarget}"/>
-    /// <seealso cref="CollectionContract{TList, TItem}"/>
     /// <seealso cref="ListContract{TList, TItem}"/>
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
     public class VerifyContractAttribute : PatternAttribute
@@ -84,9 +89,9 @@ namespace MbUnit.Framework.ContractVerifiers
         /// <summary>
         /// Verifies that the attribute is being used correctly.
         /// </summary>
-        /// <param name="containingScope">The containing scope</param>
-        /// <param name="field">The field</param>
-        /// <exception cref="PatternUsageErrorException">Thrown if the attribute is being used incorrectly</exception>
+        /// <param name="containingScope">The containing scope.</param>
+        /// <param name="field">The field.</param>
+        /// <exception cref="PatternUsageErrorException">Thrown if the attribute is being used incorrectly.</exception>
         protected virtual void Validate(IPatternScope containingScope, IFieldInfo field)
         {
             if (!containingScope.CanAddChildTest || field == null || ! field.IsInitOnly)
@@ -96,8 +101,8 @@ namespace MbUnit.Framework.ContractVerifiers
         /// <summary>
         /// Initializes a test for a contract verifier field after it has been added to the test model.
         /// </summary>
-        /// <param name="fieldScope">The field scope</param>
-        /// <param name="field">The field</param>
+        /// <param name="fieldScope">The field scope.</param>
+        /// <param name="field">The field.</param>
         protected virtual void InitializeTest(IPatternScope fieldScope, IFieldInfo field)
         {
             string xmlDocumentation = field.GetXmlDocumentation();
@@ -110,8 +115,8 @@ namespace MbUnit.Framework.ContractVerifiers
         /// <summary>
         /// Establishes the semantics of the contract verifier.
         /// </summary>
-        /// <param name="testBuilder">The test builder</param>
-        /// <param name="field">The field</param>
+        /// <param name="testBuilder">The test builder.</param>
+        /// <param name="field">The field.</param>
         protected virtual void SetTestSemantics(ITestBuilder testBuilder, IFieldInfo field)
         {
             testBuilder.TestInstanceActions.ExecuteTestInstanceChain.After(state =>

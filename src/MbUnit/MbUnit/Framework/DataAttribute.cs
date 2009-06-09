@@ -56,7 +56,7 @@ namespace MbUnit.Framework
         /// <summary>
         /// Gets the metadata for the data source.
         /// </summary>
-        /// <returns>The metadata keys and values</returns>
+        /// <returns>The metadata keys and values.</returns>
         protected virtual IEnumerable<KeyValuePair<string, string>> GetMetadata()
         {
             if (Description != null)

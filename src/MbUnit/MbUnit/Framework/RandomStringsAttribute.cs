@@ -26,9 +26,7 @@ using Gallio.Common;
 namespace MbUnit.Framework
 {
     /// <summary>
-    /// <para>
     /// Provides a column of random <see cref="string"/> values as a data source.
-    /// </para>
     /// </summary>
     /// <remarks>
     /// <para>
@@ -50,6 +48,9 @@ namespace MbUnit.Framework
     /// </list>
     /// </para>
     /// <para>
+    /// The <see cref="Stock"/> property selects a stock of predefined strings from which to draw random values.
+    /// </para>
+    /// </remarks>
     /// <example>
     /// <code><![CDATA[
     /// [TestFixture]
@@ -61,13 +62,9 @@ namespace MbUnit.Framework
     ///         // This test will run 3 times. It generates at each iteration
     ///         // a random string containing 5 to 8 uppercase alphabetic characters.
     ///     }
-    /// }]]></code>
+    /// }
+    /// ]]></code>
     /// </example>
-    /// </para>
-    /// <para>
-    /// The <see cref="Stock"/> property selects a stock of predefined strings from which to draw random values.
-    /// </para>
-    /// </remarks>
     /// <seealso cref="ColumnAttribute"/>
     [CLSCompliant(false)]
     [AttributeUsage(PatternAttributeTargets.DataContext, AllowMultiple = true, Inherited = true)]
@@ -143,6 +140,7 @@ namespace MbUnit.Framework
         ///     {
         ///         return text != "AAAAA";
         ///     }
+        /// }
         /// ]]></code>
         /// </example>
         /// </para>

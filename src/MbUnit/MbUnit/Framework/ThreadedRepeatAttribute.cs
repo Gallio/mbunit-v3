@@ -47,21 +47,19 @@ namespace MbUnit.Framework
         /// <summary>
         /// Executes the test method on the specified number of concurrent threads.
         /// </summary>
-        /// <remarks>
-        /// <para>
-        /// <code>
+        /// <example>
+        /// <code><![CDATA[
         /// [Test]
         /// [ThreadedRepeat(10)]
         /// public void Test()
         /// {
         ///     // This test will be executed 10 times on 10 concurrent threads.
         /// }
-        /// </code>
-        /// </para>
-        /// </remarks>
-        /// <param name="numThreads">The number of threads to execute the test on</param>
+        /// ]]></code>
+        /// </example>
+        /// <param name="numThreads">The number of threads to execute the test on.</param>
         /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="numThreads"/>
-        /// is less than 1</exception>
+        /// is less than 1.</exception>
         public ThreadedRepeatAttribute(int numThreads)
         {
             if (numThreads < 1)
@@ -86,7 +84,7 @@ namespace MbUnit.Framework
                         int index = i;
 
                         string name = String.Format("Threaded Repetition #{0}", index + 1);
-                        ThreadTask task = new ThreadTask(name, delegate
+                        var task = new ThreadTask(name, delegate
                         {
                             TestContext threadContext = TestStep.RunStep(name, delegate
                             {

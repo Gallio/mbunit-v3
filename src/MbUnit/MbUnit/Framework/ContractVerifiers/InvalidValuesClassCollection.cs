@@ -34,16 +34,13 @@ namespace MbUnit.Framework.ContractVerifiers
     /// </para>
     /// <para>
     /// Use the default constructor to create an empty collection, then use the 
-    /// <see cref="Add(Type, T[])"/> method, either explicitely, or by using the list initializer
-    /// syntax, to feed the collection with classes of objects:
-    /// <example>
+    /// <see cref="Add(Type, T[])"/> method, either explicitely.
     /// <code><![CDATA[
     /// var collection = new InvalidValuesClassCollection<Foo>();
     /// collection.Add(typeof(ArgumentException), new Foo(1), new Foo(2));
     /// collection.Add(typeof(ArgumentOutOfRangeException), new Foo(3));
     /// ]]></code>
-    /// </example>
-    /// <example>
+    /// Or by using the list initializer syntax, to feed the collection with classes of objects:
     /// <code><![CDATA[
     /// var collection = new InvalidValuesClassCollection<Foo>
     /// {
@@ -51,7 +48,6 @@ namespace MbUnit.Framework.ContractVerifiers
     ///     { typeof(ArgumentOutOfRangeException), new Foo(3) }
     /// };
     /// ]]></code>
-    /// </example>
     /// </para>
     /// </remarks>
     /// <typeparam name="T">The type of the object instances in the inner class collections.</typeparam>
@@ -71,23 +67,22 @@ namespace MbUnit.Framework.ContractVerifiers
         }
 
         /// <summary>
-        /// Constructs an empty collection of classes of distinct object instances. Each class
-        /// identifies a collection of distinct object instances and the type
-        /// of the exception which is expected to be raised when the subject instances are passed
-        /// to the tested method or property.
+        /// Constructs an empty collection of classes of distinct object instances.
         /// </summary>
         /// <remarks>
         /// <para>
+        /// Each class identifies a collection of distinct object instances and the type
+        /// of the exception which is expected to be raised when the subject instances are passed
+        /// to the tested method or property.
+        /// </para>
+        /// <para>
         /// Once the collection is created, populate it by using the <see cref="Add(Type, T[])"/>
         /// method; Either explicitely, or by using the list initializer syntax:
-        /// <example>
         /// <code><![CDATA[
         /// var collection = new InvalidValuesClassCollection<Foo>();
         /// collection.Add(typeof(ArgumentException), new Foo(1), new Foo(2));
         /// collection.Add(typeof(ArgumentOutOfRangeException), new Foo(3));
         /// ]]></code>
-        /// </example>
-        /// <example>
         /// <code><![CDATA[
         /// var collection = new InvalidValuesClassCollection<Foo>
         /// {
@@ -95,7 +90,6 @@ namespace MbUnit.Framework.ContractVerifiers
         ///     { typeof(ArgumentOutOfRangeException), new Foo(3) }
         /// };
         /// ]]></code>
-        /// </example>
         /// </para>
         /// </remarks>
         public InvalidValuesClassCollection()
@@ -118,8 +112,12 @@ namespace MbUnit.Framework.ContractVerifiers
 
         /// <summary>
         /// Adds a new class of distinct object instances to the collection.
-        /// The new class is created with the specified arguments.
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// The new class is created with the specified arguments.
+        /// </para>
+        /// </remarks>
         /// <param name="expectedException">The exception type to associate with the new class.</param>
         /// <param name="invalidValues">an array of distinct object instances to populate the new class.</param>
         public void Add(Type expectedException, params T[] invalidValues)

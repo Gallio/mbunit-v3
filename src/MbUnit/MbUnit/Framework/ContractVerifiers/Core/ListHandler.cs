@@ -21,22 +21,15 @@ using Gallio.Framework.Assertions;
 
 namespace MbUnit.Framework.ContractVerifiers.Core
 {
-    /// <summary>
-    /// Helper class to ease test operations on the tested list.
-    /// </summary>
-    /// <typeparam name="TList">The type of the list collection.</typeparam>
-    /// <typeparam name="TItem">The type of the list items.</typeparam>
+    // Helper class to ease test operations on the tested list.
     internal class ListHandler<TList, TItem> : CollectionHandler<TList, TItem>
         where TList : IList<TItem>
     {
-        public ListHandler(TList list, ContractVerificationContext context)
+        internal ListHandler(TList list, ContractVerificationContext context)
             : base(list, context)
         {
         }
 
-        /// <summary>
-        /// Gets the tested list.
-        /// </summary>
         protected TList List
         {
             get

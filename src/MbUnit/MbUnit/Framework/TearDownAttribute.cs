@@ -22,12 +22,13 @@ using Gallio.Framework.Pattern;
 namespace MbUnit.Framework
 {
     /// <summary>
-    /// <para>
     /// Specifies a method that is to be invoked after each test in a fixture executes
-    /// to tear down the state of the test.  The method will run once for each test.
-    /// </para>
+    /// to tear down the state of the test.  
     /// </summary>
     /// <remarks>
+    /// <para>
+    /// The method will run once for each test.
+    /// </para>
     /// <para>
     /// The attribute may be applied to multiple methods within a fixture, however
     /// the order in which they are processed is undefined.

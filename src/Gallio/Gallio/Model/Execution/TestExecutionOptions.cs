@@ -53,7 +53,7 @@ namespace Gallio.Model.Execution
         /// </summary>
         /// <remarks>
         /// <para>
-        /// If <code>false</code>, then children of the selected tests are also included.
+        /// If <c>false</c>, then children of the selected tests are also included.
         /// </para>
         /// </remarks>
         /// <value>Defaults to false.</value>
@@ -72,7 +72,7 @@ namespace Gallio.Model.Execution
         /// to enumerate non-dynamic tests only.
         /// </para>
         /// </remarks>
-        /// <value>Defaults to <code>false</code></value>
+        /// <value>Defaults to <c>false</c></value>
         public bool SkipDynamicTests
         {
             get { return skipDynamicTests; }
@@ -90,7 +90,7 @@ namespace Gallio.Model.Execution
         /// environment is sane without doing most of the work of running the tests.
         /// </para>
         /// </remarks>
-        /// <value>Defaults to <code>false</code></value>
+        /// <value>Defaults to <c>false</c></value>
         public bool SkipTestExecution
         {
             get { return skipTestExecution; }
@@ -108,7 +108,7 @@ namespace Gallio.Model.Execution
         /// that the default apartment state is <see cref="ApartmentState.STA"/>.
         /// </para>
         /// </remarks>
-        /// <value>Defaults to <code>false</code>.</value>
+        /// <value>Defaults to <c>false</c>.</value>
         public bool SingleThreaded
         {
             get { return singleThreaded; }

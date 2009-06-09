@@ -93,7 +93,7 @@ namespace Gallio.Framework
         public abstract TestOutcome Outcome { get; }
 
         /// <summary>
-        /// Returns <code>true</code> if the outcome and message (if any) should be used but the exception
+        /// Returns <c>true</c> if the outcome and message (if any) should be used but the exception
         /// stack trace should not be logged.
         /// </summary>
         public virtual bool ExcludeStackTrace

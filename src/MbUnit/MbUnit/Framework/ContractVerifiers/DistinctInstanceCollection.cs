@@ -33,7 +33,6 @@ namespace MbUnit.Framework.ContractVerifiers
     /// </para>
     /// <para>
     /// Use the default constructor followed by a list initializer.
-    /// <example>
     /// <code><![CDATA[
     /// var collection = new DistinctInstanceCollection<Foo>
     /// {
@@ -42,15 +41,12 @@ namespace MbUnit.Framework.ContractVerifiers
     ///     new Foo(3),
     /// };
     /// ]]></code>
-    /// </example>
     /// </para>
     /// <para>
     /// Or, use the single-parameter constructor to create a collection from an pre-existing enumeration.
-    /// <example>
     /// <code><![CDATA[
     /// var collection = new DistinctInstanceCollection<Foo>(Foo.GetThemAll());
     /// ]]></code>
-    /// </example>
     /// </para>
     /// </remarks>
     /// <typeparam name="T">The type of the object instances in the collection.</typeparam>

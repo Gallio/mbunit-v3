@@ -21,34 +21,33 @@ using Gallio.Common.Reflection;
 namespace MbUnit.Framework
 {
     /// <summary>
-    /// Provides data from Comma Separated Values contents.
+    /// Provides data from Comma Separated Values (CSV) contents.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// If the CSV document has a header, then it is interpreted as the names of the
-    /// columns.  Columns with names in brackets, such as "[ExpectedException]",
+    /// If the <a href="http://en.wikipedia.org/wiki/Comma-separated_values">CSV document</a> has a header, 
+    /// then it is interpreted as the names of the columns.  Columns with names in brackets, such as "[ExpectedException]",
     /// are interpreted as containing metadata values associated with the named key.
     /// </para>
     /// </remarks>
     /// <example>
     /// <para>
-    /// This example reads data from an Embedded Resource called Data.csv within the
+    /// This example reads data from an Embedded Resource called <c>Data.csv</c> within the
     /// same namespace as the test fixture.
     /// </para>
     /// <para>
     /// Data files:
-    /// </para>
-    /// <code>
+    /// <code><![CDATA[
     /// Item, Quantity, UnitPrice, [Category]
     /// Bananas, 3, 0.85, Produce
     /// Cookies, 10, 0.10, Snacks
     /// # Comment: mmmm!
     /// Shortbread, 1, 2.25, Snacks
-    /// </code>
+    /// ]]></code>
+    /// </para>
     /// <para>
     /// A simple test.
-    /// </para>
-    /// <code>
+    /// <code><![CDATA[
     /// public class AccountingTests
     /// {
     ///     [Test]
@@ -60,7 +59,8 @@ namespace MbUnit.Framework
     ///         Assert.AreEqual(unitPrice * quantity, shoppingCart.TotalCost);
     ///     }
     /// }
-    /// </code>
+    /// ]]></code>
+    /// </para>
     /// </example>
     /// <seealso cref="CsvDataSet"/>
     [AttributeUsage(PatternAttributeTargets.DataContext, AllowMultiple = true, Inherited = true)]
@@ -71,9 +71,7 @@ namespace MbUnit.Framework
         private bool hasHeader;
 
         /// <summary>
-        /// <para>
         /// Gets or sets the field delimiter character.
-        /// </para>
         /// </summary>
         /// <value>
         /// The default value is ',' (comma).
@@ -85,14 +83,16 @@ namespace MbUnit.Framework
         }
 
         /// <summary>
-        /// <para>
         /// Gets or sets a character that indicates that a line in the source represents a comment.
+        /// </summary>
+        /// <remarks>
+        /// <para>
         /// May be set to '\0' (null) to disable comment handling.
         /// </para>
         /// <para>
         /// Comment lines are excluded from the record set.
         /// </para>
-        /// </summary>
+        /// </remarks>
         /// <value>
         /// The default value is '#' (pound).
         /// </value>
@@ -107,7 +107,7 @@ namespace MbUnit.Framework
         /// aliases for indexed columns.
         /// </summary>
         /// <value>
-        /// The default value is <code>false</code> which indicates that the file does not have a header.
+        /// The default value is <c>false</c> which indicates that the file does not have a header.
         /// </value>
         public bool HasHeader
         {
@@ -118,12 +118,11 @@ namespace MbUnit.Framework
         /// <inheritdoc />
         protected override void PopulateDataSource(IPatternScope scope, DataSource dataSource, ICodeElementInfo codeElement)
         {
-            CsvDataSet dataSet = new CsvDataSet(delegate { return OpenTextReader(codeElement); }, IsDynamic);
+            var dataSet = new CsvDataSet(delegate { return OpenTextReader(codeElement); }, IsDynamic);
             dataSet.DataLocationName = GetDataLocationName();
             dataSet.FieldDelimiter = fieldDelimiter;
             dataSet.CommentPrefix = commentPrefix;
             dataSet.HasHeader = hasHeader;
-
             dataSource.AddDataSet(dataSet);
         }
     }

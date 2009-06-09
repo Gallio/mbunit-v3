@@ -44,21 +44,19 @@ namespace MbUnit.Framework
         /// <summary>
         /// Executes the test method repeatedly.
         /// </summary>
-        /// <remarks>
-        /// <para>
-        /// <code>
+        /// <example>
+        /// <code><![CDATA[
         /// [Test]
         /// [Repeat(10)]
         /// public void Test()
         /// {
         ///     // This test will be executed 10 times.
         /// }
-        /// </code>
-        /// </para>
-        /// </remarks>
-        /// <param name="numRepetitions">The number of times to repeat the test</param>
+        /// ]]></code>
+        /// </example>
+        /// <param name="numRepetitions">The number of times to repeat the test.</param>
         /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="numRepetitions"/>
-        /// is less than 1</exception>
+        /// is less than 1.</exception>
         public RepeatAttribute(int numRepetitions)
         {
             if (numRepetitions < 1)

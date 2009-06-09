@@ -47,16 +47,16 @@ namespace MbUnit.Framework.ContractVerifiers
         /// <summary>
         /// Gets an enumeration of test cases whose purpose is to verify the contract.
         /// </summary>
-        /// <returns>An enumeration of tests</returns>
+        /// <returns>An enumeration of tests.</returns>
         protected abstract IEnumerable<Test> GetContractVerificationTests();
 
         /// <summary>
         /// Gets the interface of a particular type if it is implemented by another type,
         /// otherwise returns null.
         /// </summary>
-        /// <param name="implementationType">The implementation type</param>
-        /// <param name="interfaceType">The interface type</param>
-        /// <returns>The interface type or null if it is not implemented by the implementation type</returns>
+        /// <param name="implementationType">The implementation type.</param>
+        /// <param name="interfaceType">The interface type.</param>
+        /// <returns>The interface type or null if it is not implemented by the implementation type.</returns>
         protected static Type GetInterface(Type implementationType, Type interfaceType)
         {
             return interfaceType.IsAssignableFrom(implementationType) ? interfaceType : null;
@@ -66,8 +66,8 @@ namespace MbUnit.Framework.ContractVerifiers
         /// Verifies that the specified method info object is not null, indicating that the
         /// method exists, otherwise raises an assertion failure and describes the expected method signature.
         /// </summary>
-        /// <param name="method">The method, or null if missing</param>
-        /// <param name="methodSignature">The expected method signature for diagnostic output</param>
+        /// <param name="method">The method, or null if missing.</param>
+        /// <param name="methodSignature">The expected method signature for diagnostic output.</param>
         protected static void AssertMethodExists(MethodInfo method, string methodSignature)
         {
             AssertionHelper.Explain(() =>

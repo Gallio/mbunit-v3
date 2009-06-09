@@ -55,7 +55,7 @@ namespace MbUnit.Framework
         /// may be overridden by setting <see cref="ApartmentStateAttribute" /> attribute on the assembly.
         /// </para>
         /// </remarks>
-        /// <param name="apartmentState">The apartment state to use</param>
+        /// <param name="apartmentState">The apartment state to use.</param>
         public ApartmentStateAttribute(ApartmentState apartmentState)
         {
             this.apartmentState = apartmentState;

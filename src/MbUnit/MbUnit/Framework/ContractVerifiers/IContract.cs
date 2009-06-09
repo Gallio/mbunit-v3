@@ -35,7 +35,7 @@ namespace MbUnit.Framework.ContractVerifiers
         /// Gets an enumeration of test cases whose purpose is to verify the contract.
         /// </summary>
         /// <param name="context">The context of execution.</param>
-        /// <returns>An enumeration of tests</returns>
+        /// <returns>An enumeration of tests.</returns>
         IEnumerable<Test> GetContractVerificationTests(ContractVerificationContext context);
     }
 }

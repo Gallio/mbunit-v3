@@ -21,15 +21,17 @@ using Gallio.Framework.Pattern;
 namespace MbUnit.Framework
 {
     /// <summary>
-    /// <para>
     /// Defines names as aliases for the columns in an indexed data source
     /// such as those that have been populated by <see cref="RowAttribute" /> or <see cref="ColumnAttribute" />.
+    /// </summary>
+    /// <remarks>
+    /// <para>
     /// The names may subsequently be used in data binding expressions in place
     /// of their corresponding column indices.
     /// </para>
-    /// </summary>
+    /// </remarks>
     /// <example>
-    /// <code>
+    /// <code><![CDATA[
     /// [Test]
     /// [Header("username", "password")]
     /// [Row("jeff", "letmein")]
@@ -44,7 +46,7 @@ namespace MbUnit.Framework
     ///     public string UserName;
     ///     public string Password;
     /// }
-    /// </code>
+    /// ]]></code>
     /// </example>
     /// <seealso cref="RowAttribute"/>
     /// <seealso cref="ColumnAttribute"/>
@@ -57,9 +59,9 @@ namespace MbUnit.Framework
         /// <summary>
         /// Defines names as aliases for the columns in an indexed data source.
         /// </summary>
-        /// <param name="columnNames">The names of the columns in the data source in order by index</param>
+        /// <param name="columnNames">The names of the columns in the data source in order by index.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="columnNames"/> or
-        /// if one of the values it contains is null</exception>
+        /// if one of the values it contains is null.</exception>
         [CLSCompliant(false)]
         public HeaderAttribute(params string[] columnNames)
         {

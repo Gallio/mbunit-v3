@@ -42,10 +42,10 @@ namespace MbUnit.Framework
         /// <summary>
         /// Associates custom metadata with a test component.
         /// </summary>
-        /// <param name="metadataKey">The metadata key</param>
-        /// <param name="metadataValue">The metadata value</param>
+        /// <param name="metadataKey">The metadata key.</param>
+        /// <param name="metadataValue">The metadata value.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="metadataKey"/>
-        /// or <paramref name="metadataValue"/> is null</exception>
+        /// or <paramref name="metadataValue"/> is null.</exception>
         public MetadataAttribute(string metadataKey, string metadataValue)
         {
             if (metadataKey == null)

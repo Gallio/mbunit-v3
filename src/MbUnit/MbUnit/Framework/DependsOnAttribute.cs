@@ -43,8 +43,8 @@ namespace MbUnit.Framework
         /// <summary>
         /// Creates a dependency from this test on another test fixture.
         /// </summary>
-        /// <param name="testFixtureType">The dependent test fixture type</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="testFixtureType"/> is null</exception>
+        /// <param name="testFixtureType">The dependent test fixture type.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="testFixtureType"/> is null.</exception>
         public DependsOnAttribute(Type testFixtureType)
         {
             if (testFixtureType == null)
@@ -56,9 +56,9 @@ namespace MbUnit.Framework
         /// <summary>
         /// Creates a dependency from this test on a particular test method within another test fixture.
         /// </summary>
-        /// <param name="testFixtureType">The dependent test fixture type</param>
-        /// <param name="testMethodName">The dependent test method name</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="testFixtureType"/> or <paramref name="testMethodName"/> is null</exception>
+        /// <param name="testFixtureType">The dependent test fixture type.</param>
+        /// <param name="testMethodName">The dependent test method name.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="testFixtureType"/> or <paramref name="testMethodName"/> is null.</exception>
         public DependsOnAttribute(Type testFixtureType, string testMethodName)
             : this(testFixtureType)
         {
@@ -71,8 +71,8 @@ namespace MbUnit.Framework
         /// <summary>
         /// Creates a dependency from this test on another test method within this test fixture.
         /// </summary>
-        /// <param name="testMethodName">The dependent test method name</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="testMethodName"/> is null</exception>
+        /// <param name="testMethodName">The dependent test method name.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="testMethodName"/> is null.</exception>
         public DependsOnAttribute(string testMethodName)
         {
             if (testMethodName == null)

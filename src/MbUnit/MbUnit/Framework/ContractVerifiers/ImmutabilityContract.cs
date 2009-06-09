@@ -41,7 +41,7 @@ namespace MbUnit.Framework.ContractVerifiers
     /// </item>
     /// </list>
     /// </para>
-    /// <para>
+    /// </remarks>
     /// <example>
     /// The following example shows a simple immutable class with all the
     /// instance fields marked as read only, and a test fixture which invokes the
@@ -66,8 +66,6 @@ namespace MbUnit.Framework.ContractVerifiers
     /// }
     /// ]]></code>
     /// </example>
-    /// </para>
-    /// </remarks>
     /// <typeparam name="TTarget">The target immutable type.</typeparam>
     /// <seealso cref="VerifyContractAttribute"/>
     public class ImmutabilityContract<TTarget> : AbstractContract

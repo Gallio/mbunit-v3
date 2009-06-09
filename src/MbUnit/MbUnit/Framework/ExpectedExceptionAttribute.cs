@@ -39,8 +39,8 @@ namespace MbUnit.Framework
         /// Declares that the associated test is expected to throw an exception of
         /// a particular type.
         /// </summary>
-        /// <param name="exceptionType">The expected exception type</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="exceptionType"/> is null</exception>
+        /// <param name="exceptionType">The expected exception type.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="exceptionType"/> is null.</exception>
         public ExpectedExceptionAttribute(Type exceptionType)
             : this(exceptionType, null)
         {
@@ -48,12 +48,16 @@ namespace MbUnit.Framework
 
         /// <summary>
         /// Declares that the associated test is expected to throw an exception of
-        /// a particular type.  The expected contents of the exception message may also
-        /// optionally be specified.
+        /// a particular type.
         /// </summary>
-        /// <param name="exceptionType">The expected exception type</param>
-        /// <param name="message">The expected exception message, or null if not specified</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="exceptionType"/> is null</exception>
+        /// <remarks>
+        /// <para>
+        /// The expected contents of the exception message may also optionally be specified.
+        /// </para>
+        /// </remarks>
+        /// <param name="exceptionType">The expected exception type.</param>
+        /// <param name="message">The expected exception message, or null if not specified.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="exceptionType"/> is null.</exception>
         public ExpectedExceptionAttribute(Type exceptionType, string message)
         {
             if (exceptionType == null)

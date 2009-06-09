@@ -35,8 +35,8 @@ namespace MbUnit.Framework
         /// Associates the author's name with the test component annotated
         /// by this attribute.
         /// </summary>
-        /// <param name="authorName">The author's name</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="authorName"/> is null</exception>
+        /// <param name="authorName">The author's name.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="authorName"/> is null.</exception>
         public AuthorAttribute(string authorName)
             : this(authorName, "", "")
         {
@@ -46,9 +46,9 @@ namespace MbUnit.Framework
         /// Associates the author's name and email address with the test component annotated
         /// by this attribute.
         /// </summary>
-        /// <param name="authorName">The author's name</param>
-        /// <param name="authorEmail">The author's email address</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="authorName"/> or <paramref name="authorEmail "/> is null</exception>
+        /// <param name="authorName">The author's name.</param>
+        /// <param name="authorEmail">The author's email address.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="authorName"/> or <paramref name="authorEmail "/> is null.</exception>
         public AuthorAttribute(string authorName, string authorEmail)
             : this(authorName, authorEmail, "")
         {
@@ -58,11 +58,11 @@ namespace MbUnit.Framework
         /// Associates the author's name, email address and homepage with the test component annotated
         /// by this attribute.
         /// </summary>
-        /// <param name="authorName">The author's name</param>
-        /// <param name="authorEmail">The author's email address</param>
-        /// <param name="authorHomepage">The author's home page</param>
+        /// <param name="authorName">The author's name.</param>
+        /// <param name="authorEmail">The author's email address.</param>
+        /// <param name="authorHomepage">The author's home page.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="authorName"/>,
-        /// <paramref name="authorEmail "/> or <paramref name="authorHomepage"/> is null</exception>
+        /// <paramref name="authorEmail "/> or <paramref name="authorHomepage"/> is null.</exception>
         public AuthorAttribute(string authorName, string authorEmail, string authorHomepage)
         {
             if (authorName == null)

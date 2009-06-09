@@ -47,20 +47,22 @@ namespace MbUnit.Framework
         private int columnCount;
 
         /// <summary>
-        /// <para>
         /// Specifies the name of a method, property or field of the fixture
-        /// class that will provide values for a data-driven test.  The factory
-        /// member must return an enumeration of values (<seealso cref="FactoryKind" />).
+        /// class that will provide values for a data-driven test.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// The factory member must return an enumeration of values (<seealso cref="FactoryKind" />).
         /// </para>
         /// <para>
         /// The factory member may be non-static if it will be used within the
         /// scope of an initialized fixture.  Typically this is the case for factory
         /// members referenced by non-static test methods.
         /// </para>
-        /// <seealso cref="FactoryAttribute" /> for more information about factories.
-        /// </summary>
-        /// <param name="memberName">The factory member name</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="memberName"/> is null</exception>
+        /// </remarks>
+        /// <param name="memberName">The factory member name.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="memberName"/> is null.</exception>
+        /// <seealso cref="FactoryAttribute" />
         public FactoryAttribute(string memberName)
         {
             if (memberName == null)
@@ -70,17 +72,19 @@ namespace MbUnit.Framework
         }
 
         /// <summary>
-        /// <para>
         /// Specifies the declaring type and name of a static method, property or field
-        /// that will provide values for a data-driven test.  The factory
-        /// member must return an enumeration of values (<seealso cref="FactoryKind" />).
-        /// </para>
-        /// <seealso cref="FactoryAttribute" /> for more information about factories.
+        /// that will provide values for a data-driven test.
         /// </summary>
-        /// <param name="type">The declaring type of the factory</param>
-        /// <param name="memberName">The factory member name</param>
+        /// <remarks>
+        /// <para>
+        /// The factory member must return an enumeration of values (<seealso cref="FactoryKind" />).
+        /// </para>
+        /// </remarks>
+        /// <param name="type">The declaring type of the factory.</param>
+        /// <param name="memberName">The factory member name.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="type"/>
-        /// or <paramref name="memberName"/> is null</exception>
+        /// or <paramref name="memberName"/> is null.</exception>
+        /// <seealso cref="FactoryAttribute" />
         public FactoryAttribute(Type type, string memberName)
         {
             if (type == null)
@@ -110,8 +114,12 @@ namespace MbUnit.Framework
 
         /// <summary>
         /// Gets or sets the kind of the factory.
-        /// Defaults to <see cref="FactoryKind.Auto" />.
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// Defaults to <see cref="FactoryKind.Auto" />.
+        /// </para>
+        /// </remarks>
         /// <value>The kind of the factory.</value>
         public FactoryKind Kind
         {
@@ -121,11 +129,15 @@ namespace MbUnit.Framework
 
         /// <summary>
         /// Gets or sets the number of columns produced by the factory, or 0 if unknown.
-        /// Defaults to 0.
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// Defaults to 0.
+        /// </para>
+        /// </remarks>
         /// <value>The number of columns</value>
         /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="value"/> is
-        /// less than zero</exception>
+        /// less than zero.</exception>
         public int ColumnCount
         {
             get { return columnCount; }

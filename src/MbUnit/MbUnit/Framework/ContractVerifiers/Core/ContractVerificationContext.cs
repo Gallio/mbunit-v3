@@ -43,7 +43,7 @@ namespace MbUnit.Framework.ContractVerifiers.Core
         /// Constructs an execution context for the verification tests of a contract verifier.
         /// </summary>
         /// <param name="codeElement">The code element for the contrat read-only field.</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="codeElement"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="codeElement"/> is null.</exception>
         public ContractVerificationContext(ICodeElementInfo codeElement)
         {
             if (codeElement == null)

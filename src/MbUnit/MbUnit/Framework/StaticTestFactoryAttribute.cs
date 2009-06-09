@@ -59,10 +59,9 @@ namespace MbUnit.Framework
     /// a number of static tests.  The file is read at test exploration time,
     /// so if the file changes, the test package must be reloaded to obtain the new
     /// contents.
-    /// </para>
-    /// <code>
+    /// <code><![CDATA[
     /// [StaticTestFactory]
-    /// public static IEnumerable&lt;Test&gt; CreateStaticTests()
+    /// public static IEnumerable<Test> CreateStaticTests()
     /// {
     ///     foreach (string searchTerm in File.ReadAllLines("SearchTerms.txt"))
     ///     {
@@ -72,7 +71,8 @@ namespace MbUnit.Framework
     ///         });
     ///     }
     /// }
-    /// </code>
+    /// ]]></code>
+    /// </para>
     /// </example>
     /// <seealso cref="DynamicTestFactoryAttribute"/>
     /// <seealso cref="TestCase"/>
@@ -108,7 +108,7 @@ namespace MbUnit.Framework
                 return;
             }
 
-            IEnumerable<Test> tests = factoryMethod.Invoke(null, null) as IEnumerable<Test>;
+            var tests = factoryMethod.Invoke(null, null) as IEnumerable<Test>;
             if (tests == null)
             {
                 containingScope.TestModelBuilder.AddAnnotation(new Annotation(AnnotationType.Error, method,

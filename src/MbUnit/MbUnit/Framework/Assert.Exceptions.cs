@@ -39,11 +39,11 @@ namespace MbUnit.Framework
         /// that was returned.
         /// </para>
         /// </remarks>
-        /// <typeparam name="TExpectedException">The expected type of exception</typeparam>
-        /// <param name="action">The action delegate to evaluate</param>
-        /// <returns>The exception that was thrown</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="action"/> is null</exception>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        /// <typeparam name="TExpectedException">The expected type of exception.</typeparam>
+        /// <param name="action">The action delegate to evaluate.</param>
+        /// <returns>The exception that was thrown.</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="action"/> is null.</exception>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
         public static TExpectedException Throws<TExpectedException>(Action action)
             where TExpectedException : Exception
         {
@@ -66,12 +66,12 @@ namespace MbUnit.Framework
         /// that was returned.
         /// </para>
         /// </remarks>
-        /// <typeparam name="TExpectedException">The expected type of exception</typeparam>
-        /// <typeparam name="TExpectedInnerException">The expected type of the inner exception</typeparam>
-        /// <param name="action">The action delegate to evaluate</param>
-        /// <returns>The exception that was thrown</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="action"/> is null</exception>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        /// <typeparam name="TExpectedException">The expected type of exception.</typeparam>
+        /// <typeparam name="TExpectedInnerException">The expected type of the inner exception.</typeparam>
+        /// <param name="action">The action delegate to evaluate.</param>
+        /// <returns>The exception that was thrown.</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="action"/> is null.</exception>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
         public static TExpectedException Throws<TExpectedException, TExpectedInnerException>(Action action)
             where TExpectedException : Exception
             where TExpectedInnerException : Exception
@@ -94,13 +94,13 @@ namespace MbUnit.Framework
         /// that was returned.
         /// </para>
         /// </remarks>
-        /// <typeparam name="TExpectedException">The expected type of exception</typeparam>
-        /// <param name="action">The action delegate to evaluate</param>
-        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
-        /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
-        /// <returns>The exception that was thrown</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="action"/> is null</exception>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        /// <typeparam name="TExpectedException">The expected type of exception.</typeparam>
+        /// <param name="action">The action delegate to evaluate.</param>
+        /// <param name="messageFormat">The custom assertion message format, or null if none.</param>
+        /// <param name="messageArgs">The custom assertion message arguments, or null if none.</param>
+        /// <returns>The exception that was thrown.</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="action"/> is null.</exception>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
         public static TExpectedException Throws<TExpectedException>(Action action, string messageFormat, params object[] messageArgs)
             where TExpectedException : Exception
         {
@@ -123,14 +123,14 @@ namespace MbUnit.Framework
         /// that was returned.
         /// </para>
         /// </remarks>
-        /// <typeparam name="TExpectedException">The expected type of the exception</typeparam>
-        /// <typeparam name="TExpectedInnerException">The expected type of the inner exception</typeparam>
-        /// <param name="action">The action delegate to evaluate</param>
-        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
-        /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
-        /// <returns>The exception that was thrown</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="action"/> is null</exception>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        /// <typeparam name="TExpectedException">The expected type of the exception.</typeparam>
+        /// <typeparam name="TExpectedInnerException">The expected type of the inner exception.</typeparam>
+        /// <param name="action">The action delegate to evaluate.</param>
+        /// <param name="messageFormat">The custom assertion message format, or null if none.</param>
+        /// <param name="messageArgs">The custom assertion message arguments, or null if none.</param>
+        /// <returns>The exception that was thrown.</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="action"/> is null.</exception>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
         public static TExpectedException Throws<TExpectedException, TExpectedInnerException>(Action action, string messageFormat, params object[] messageArgs)
             where TExpectedException : Exception
             where TExpectedInnerException : Exception
@@ -153,12 +153,12 @@ namespace MbUnit.Framework
         /// that was returned.
         /// </para>
         /// </remarks>
-        /// <param name="expectedExceptionType">The expected exception type</param>
-        /// <param name="action">The action delegate to evaluate</param>
-        /// <returns>The exception that was thrown</returns>
+        /// <param name="expectedExceptionType">The expected exception type.</param>
+        /// <param name="action">The action delegate to evaluate.</param>
+        /// <returns>The exception that was thrown.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="expectedExceptionType"/>
-        /// or <paramref name="action"/> is null</exception>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        /// or <paramref name="action"/> is null.</exception>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
         public static Exception Throws(Type expectedExceptionType, Action action)
         {
             return Throws(expectedExceptionType, null, action, null);
@@ -180,13 +180,13 @@ namespace MbUnit.Framework
         /// that was returned.
         /// </para>
         /// </remarks>
-        /// <param name="expectedExceptionType">The expected exception type</param>
-        /// <param name="expectedInnerExceptionType">The expected inner exception type, or null to ignore the inner exception</param>
-        /// <param name="action">The action delegate to evaluate</param>
-        /// <returns>The exception that was thrown</returns>
+        /// <param name="expectedExceptionType">The expected exception type.</param>
+        /// <param name="expectedInnerExceptionType">The expected inner exception type, or null to ignore the inner exception.</param>
+        /// <param name="action">The action delegate to evaluate.</param>
+        /// <returns>The exception that was thrown.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="expectedExceptionType"/>
-        /// or <paramref name="action"/> is null</exception>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        /// or <paramref name="action"/> is null.</exception>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
         public static Exception Throws(Type expectedExceptionType, Type expectedInnerExceptionType, Action action)
         {
             return Throws(expectedExceptionType, expectedInnerExceptionType, action, null);
@@ -207,14 +207,14 @@ namespace MbUnit.Framework
         /// that was returned.
         /// </para>
         /// </remarks>
-        /// <param name="expectedExceptionType">The expected exception type</param>
-        /// <param name="action">The action delegate to evaluate</param>
-        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
-        /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
-        /// <returns>The exception that was thrown</returns>
+        /// <param name="expectedExceptionType">The expected exception type.</param>
+        /// <param name="action">The action delegate to evaluate.</param>
+        /// <param name="messageFormat">The custom assertion message format, or null if none.</param>
+        /// <param name="messageArgs">The custom assertion message arguments, or null if none.</param>
+        /// <returns>The exception that was thrown.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="expectedExceptionType"/>
-        /// or <paramref name="action"/> is null</exception>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        /// or <paramref name="action"/> is null.</exception>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
         public static Exception Throws(Type expectedExceptionType, Action action, string messageFormat, params object[] messageArgs)
         {
             return Throws(expectedExceptionType, null, action, messageFormat, messageArgs);
@@ -236,15 +236,15 @@ namespace MbUnit.Framework
         /// that was returned.
         /// </para>
         /// </remarks>
-        /// <param name="expectedExceptionType">The expected exception type</param>
-        /// <param name="expectedInnerExceptionType">The expected inner exception type, or null to ignore the inner exception</param>
-        /// <param name="action">The action delegate to evaluate</param>
-        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
-        /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
-        /// <returns>The exception that was thrown</returns>
+        /// <param name="expectedExceptionType">The expected exception type.</param>
+        /// <param name="expectedInnerExceptionType">The expected inner exception type, or null to ignore the inner exception.</param>
+        /// <param name="action">The action delegate to evaluate.</param>
+        /// <param name="messageFormat">The custom assertion message format, or null if none.</param>
+        /// <param name="messageArgs">The custom assertion message arguments, or null if none.</param>
+        /// <returns>The exception that was thrown.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="expectedExceptionType"/>
-        /// or <paramref name="action"/> is null</exception>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        /// or <paramref name="action"/> is null.</exception>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
         public static Exception Throws(Type expectedExceptionType, Type expectedInnerExceptionType, Action action, string messageFormat, params object[] messageArgs)
         {
             if (expectedExceptionType == null)
@@ -318,9 +318,9 @@ namespace MbUnit.Framework
         /// is itself the primary behavior that is being verified.
         /// </para>
         /// </remarks>
-        /// <param name="action">The action delegate to evaluate</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="action"/> is null</exception>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        /// <param name="action">The action delegate to evaluate.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="action"/> is null.</exception>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
         public static void DoesNotThrow(Action action)
         {
             DoesNotThrow(action, null, null);
@@ -338,11 +338,11 @@ namespace MbUnit.Framework
         /// is itself the primary behavior that is being verified.
         /// </para>
         /// </remarks>
-        /// <param name="action">The action delegate to evaluate</param>
-        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
-        /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="action"/> is null</exception>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        /// <param name="action">The action delegate to evaluate.</param>
+        /// <param name="messageFormat">The custom assertion message format, or null if none.</param>
+        /// <param name="messageArgs">The custom assertion message arguments, or null if none.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="action"/> is null.</exception>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
         public static void DoesNotThrow(Action action, string messageFormat, params object[] messageArgs)
         {
             if (action == null)

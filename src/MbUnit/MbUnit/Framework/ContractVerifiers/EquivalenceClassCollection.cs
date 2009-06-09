@@ -33,7 +33,6 @@ namespace MbUnit.Framework.ContractVerifiers
     /// <para>
     /// Use the default constructor followed by a list initializer to create a 
     /// collection of equivalence classes which contains a variable number of object instances.
-    /// <example>
     /// <code><![CDATA[
     /// var collection = new EquivalenceClassCollection<Foo>
     /// {
@@ -42,16 +41,13 @@ namespace MbUnit.Framework.ContractVerifiers
     ///     { new Foo(3), new Foo("Three") }
     /// };
     /// ]]></code>
-    /// </example>
     /// </para>
     /// <para>
     /// Use the single-parameter constructor to create a collection of equivalence classes 
     /// which contains one single object instance each.
-    /// <example>
     /// <code><![CDATA[
     /// var collection = new EquivalenceClassCollection<Foo>(new Foo(1), new Foo(2), new Foo(3));
     /// ]]></code>
-    /// </example>
     /// </para>
     /// </remarks>
     /// <typeparam name="T">The type of equivalent object instances.</typeparam>
@@ -75,6 +71,8 @@ namespace MbUnit.Framework.ContractVerifiers
         /// The resulting collection contains as many equivalence class as provided instances. Each equivalence
         /// class contains one single object. To construct a collection with equivalence classes containing
         /// several equivalent instances, use preferably the default constructor followed by a list initializer.
+        /// </para>
+        /// </remarks>
         /// <example>
         /// <code><![CDATA[
         /// var collection = new EquivalenceClassCollection<Foo>
@@ -85,8 +83,6 @@ namespace MbUnit.Framework.ContractVerifiers
         /// };
         /// ]]></code>
         /// </example>
-        /// </para>
-        /// </remarks>
         /// <param name="distinctInstances">An enumeration of distinct instances.</param>
         public EquivalenceClassCollection(IEnumerable<T> distinctInstances)
             : this()
@@ -135,7 +131,7 @@ namespace MbUnit.Framework.ContractVerifiers
         /// <summary>
         /// Returns a strongly-typed enumerator that iterates through the collection.
         /// </summary>
-        /// <returns>A strongly-typed enumerator</returns>
+        /// <returns>A strongly-typed enumerator.</returns>
         public IEnumerator<EquivalenceClass<T>> GetEnumerator()
         {
             return equivalenceClasses.GetEnumerator();

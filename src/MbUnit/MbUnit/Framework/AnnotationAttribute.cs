@@ -52,9 +52,9 @@ namespace MbUnit.Framework
         /// <summary>
         /// Associates an annotation message of the specified type with the code element.
         /// </summary>
-        /// <param name="type">The annotation type</param>
-        /// <param name="message">The annotation message</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="message"/> is null</exception>
+        /// <param name="type">The annotation type.</param>
+        /// <param name="message">The annotation message.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="message"/> is null.</exception>
         public AnnotationAttribute(AnnotationType type, string message)
             : base(type, message)
         {

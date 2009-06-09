@@ -50,8 +50,8 @@ namespace MbUnit.Framework
         /// Creates a dependency from this test on all tests in another
         /// test assembly.
         /// </summary>
-        /// <param name="testAssemblyName">The dependent test assembly name</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="testAssemblyName"/> is null</exception>
+        /// <param name="testAssemblyName">The dependent test assembly name.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="testAssemblyName"/> is null.</exception>
         public DependsOnAssemblyAttribute(string testAssemblyName)
         {
             if (testAssemblyName == null)

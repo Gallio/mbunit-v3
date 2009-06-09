@@ -42,8 +42,8 @@ namespace MbUnit.Framework
         /// <summary>
         /// Creates a test suite.
         /// </summary>
-        /// <param name="name">The test suite name</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> is null</exception>
+        /// <param name="name">The test suite name.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> is null.</exception>
         public TestSuite(string name)
             : base(name)
         {

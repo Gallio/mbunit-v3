@@ -19,17 +19,16 @@ using System.Reflection;
 namespace MbUnit.Framework.Reflection
 {
     ///<summary>
-    /// Helps to test non-public classes and class members.
+    /// Helper class to test non-public classes and class members.
     ///</summary>
     public class Reflector
     {
         readonly object _obj;
 
-        #region Constructors
         /// <summary>
-        /// Constructor for object
+        /// Constructor for object.
         /// </summary>
-        /// <param name="obj">Object to be referred to in methods</param>
+        /// <param name="obj">Object to be referred to in methods.</param>
         public Reflector(object obj)
         {
             CheckObject(obj);
@@ -39,8 +38,8 @@ namespace MbUnit.Framework.Reflection
         /// <summary>
         /// Use this constructor if you plan to test default constructor of a non-public class.
         /// </summary>
-        /// <param name="assemblyName"></param>
-        /// <param name="typeName"></param>
+        /// <param name="assemblyName">Assembly name.</param>
+        /// <param name="typeName">Type name.</param>
         public Reflector(string assemblyName, string typeName)
             : this(assemblyName, typeName, null)
         {
@@ -49,51 +48,49 @@ namespace MbUnit.Framework.Reflection
         /// <summary>
         /// Use this constructor if you plan to test constructor with arguments of a non-public class.
         /// </summary>
-        /// <param name="assemblyName">Assembly name</param>
-        /// <param name="typeName">Type name</param>
+        /// <param name="assemblyName">Assembly name.</param>
+        /// <param name="typeName">Type name.</param>
         /// <param name="args">Parameters for a constructor.</param>
         public Reflector(string assemblyName, string typeName, params object[] args)
         {
             _obj = CreateInstance(assemblyName, typeName, args);
         }
-        #endregion
 
-        #region Get/Set Fields
         /// <summary>
-        /// Get public, non-public, or static field value.
+        /// Gets the public, non-public, or static field value.
         /// </summary>
         /// <param name="fieldName">Field name.</param>
-        /// <returns>Field value</returns>
+        /// <returns>Field value.</returns>
         public object GetField(string fieldName)
         {
             return GetField(AccessModifier.Default, _obj, fieldName);
         }
 
         /// <summary>
-        /// Get field value.
+        /// Gets the field value.
         /// </summary>
         /// <param name="fieldName">Field name.</param>
         /// <param name="access">Specify field access modifier.</param>
-        /// <returns>Field value</returns>
+        /// <returns>Field value.</returns>
         public object GetField(string fieldName, AccessModifier access)
         {
             return GetField(access, _obj, fieldName);
         }
 
         /// <summary>
-        /// Get field value.
+        /// Gets the field value.
         /// </summary>
         /// <param name="fieldName">Field name.</param>
         /// <param name="access">Specify field access modifier.</param>
         /// <param name="lookInBase">Specify if need to look in Base classes.</param>
-        /// <returns>Field value</returns>
+        /// <returns>Field value.</returns>
         public object GetField(string fieldName, AccessModifier access, bool lookInBase)
         {
             return GetField(access, _obj, fieldName, lookInBase);
         }
 
         /// <summary>
-        /// Set field value.
+        /// Sets the field value.
         /// </summary>
         /// <param name="fieldName">Field Name.</param>
         /// <param name="fieldValue">Field Value.</param>
@@ -103,7 +100,7 @@ namespace MbUnit.Framework.Reflection
         }
 
         /// <summary>
-        /// Set field value.
+        /// Sets the field value.
         /// </summary>
         /// <param name="fieldName">Field Name.</param>
         /// <param name="fieldValue">Field Value.</param>
@@ -112,10 +109,9 @@ namespace MbUnit.Framework.Reflection
         {
             SetField(access, _obj, fieldName, fieldValue);
         }
-        #endregion
 
         /// <summary>
-        /// Get Property Value
+        /// Gets the property value
         /// </summary>
         /// <param name="propertyName">Property Name.</param>
         /// <returns>Property Value.</returns>
@@ -125,7 +121,7 @@ namespace MbUnit.Framework.Reflection
         }
 
         /// <summary>
-        /// Get Property Value
+        /// Get the property value
         /// </summary>
         /// <param name="access">Specify property access modifier.</param>
         /// <param name="propertyName">Property Name.</param>
@@ -136,7 +132,7 @@ namespace MbUnit.Framework.Reflection
         }
 
         /// <summary>
-        /// Get Property Value
+        /// Get the property value.
         /// </summary>
         /// <param name="access">Specify property access modifier.</param>
         /// <param name="propertyName">Property Name.</param>
@@ -148,7 +144,7 @@ namespace MbUnit.Framework.Reflection
         }
 
         /// <summary>
-        /// Set Property value.
+        /// Sets the property value.
         /// </summary>
         /// <param name="propertyName">Property Name.</param>
         /// <param name="propertyValue">Property Value.</param>
@@ -158,7 +154,7 @@ namespace MbUnit.Framework.Reflection
         }
 
         /// <summary>
-        /// Set Property value.
+        /// Sets the property value.
         /// </summary>
         /// <param name="access">Specify property access modifier.</param>
         /// <param name="propertyName">Property Name.</param>
@@ -169,9 +165,9 @@ namespace MbUnit.Framework.Reflection
         }
 
         /// <summary>
-        /// Execute a NonPublic method with arguments on a object
+        /// Executes a non-public method with arguments on a object
         /// </summary>
-        /// <param name="methodName">Method to call</param>
+        /// <param name="methodName">Method to call.</param>
         /// <returns>The object the method should return.</returns>
         public object InvokeMethod(string methodName)
         {
@@ -179,9 +175,9 @@ namespace MbUnit.Framework.Reflection
         }
 
         /// <summary>
-        /// Execute a NonPublic method with arguments on a object
+        /// Executes a non-public method with arguments on a object
         /// </summary>
-        /// <param name="methodName">Method to call</param>
+        /// <param name="methodName">Method to call.</param>
         /// <param name="methodParams">Method's parameters.</param>
         /// <returns>The object the method should return.</returns>
         public object InvokeMethod(string methodName, params object[] methodParams)
@@ -190,9 +186,9 @@ namespace MbUnit.Framework.Reflection
         }
 
         /// <summary>
-        /// Execute a NonPublic method with arguments on a object
+        /// Executes a non-public method with arguments on a object
         /// </summary>
-        /// <param name="methodName">Method to call</param>
+        /// <param name="methodName">Method to call.</param>
         /// <param name="access">Specify method access modifier.</param>
         /// <param name="methodParams">Method's parameters.</param>
         /// <returns>The object the method should return.</returns>
@@ -202,7 +198,7 @@ namespace MbUnit.Framework.Reflection
         }
 
         /// <summary>
-        /// Create Instance
+        /// Creates an instance
         /// </summary>
         /// <param name="assemblyName">Full assembly path.</param>
         /// <param name="typeName">Type Name such as (System.String)</param>
@@ -213,7 +209,7 @@ namespace MbUnit.Framework.Reflection
         }
 
         /// <summary>
-        /// Create Instance
+        /// Creates an instance
         /// </summary>
         /// <param name="assemblyName">Full assembly path.</param>
         /// <param name="typeName">Type Name such as (System.String)</param>
@@ -223,8 +219,8 @@ namespace MbUnit.Framework.Reflection
         {
             Type[] argTypes = Type.EmptyTypes;
             Assembly a = Assembly.Load(assemblyName);
-            
             Type type = a.GetType(typeName);
+
             if (type == null)
                 Assert.Fail("Could not find type {0} in the specified assembly.", typeName);
 
@@ -234,47 +230,42 @@ namespace MbUnit.Framework.Reflection
                 for (int ndx = 0; ndx < args.Length; ndx++)
                     argTypes[ndx] = (args[ndx] == null) ? typeof(object) : args[ndx].GetType();
             }
-            ConstructorInfo ci = type.GetConstructor(
-                BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic
-                , null, argTypes, null);
-            object obj = ci.Invoke(args);
-            return obj;
+
+            ConstructorInfo ci = type.GetConstructor(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic, null, argTypes, null);
+            return ci.Invoke(args);
         }
 
-        #region Get/Set Fields
-
-        #region Get
         /// <summary>
-        /// Get public, non-public, or static field value.
+        /// Gets the public, non-public, or static field value.
         /// </summary>
         /// <param name="obj">Object where field is defined.</param>
         /// <param name="fieldName">Field name.</param>
-        /// <returns>Field value</returns>
+        /// <returns>Field value.</returns>
         public static object GetField(object obj, string fieldName)
         {
             return GetField(AccessModifier.Default, obj, fieldName, true);
         }
 
         /// <summary>
-        /// Get field value.
+        /// Gets the field value.
         /// </summary>
         /// <param name="access">Specify field access modifier.</param>
         /// <param name="obj">Object where field is defined.</param>
         /// <param name="fieldName">Field name.</param>
-        /// <returns>Field value</returns>
+        /// <returns>Field value.</returns>
         public static object GetField(AccessModifier access, object obj, string fieldName)
         {
             return GetField(access, obj, fieldName, true);
         }
 
         /// <summary>
-        /// Get field value.
+        /// Gets the field value.
         /// </summary>
         /// <param name="access">Specify field access modifier.</param>
         /// <param name="obj">Object where field is defined.</param>
         /// <param name="fieldName">Field name.</param>
         /// <param name="lookInBase">Specify if need to look in Base classes.</param>
-        /// <returns>Field value</returns>
+        /// <returns>Field value.</returns>
         public static object GetField(AccessModifier access, object obj, string fieldName, bool lookInBase)
         {
             CheckObject(obj);
@@ -290,11 +281,9 @@ namespace MbUnit.Framework.Reflection
                 return GetField(access, type.BaseType, fieldName, true);
             return fi;
         }
-        #endregion
 
-        #region Set
         /// <summary>
-        /// Set field value.
+        /// Sets the field value.
         /// </summary>
         /// <param name="obj">Object where field is defined.</param>
         /// <param name="fieldName">Field Name.</param>
@@ -305,7 +294,7 @@ namespace MbUnit.Framework.Reflection
         }
 
         /// <summary>
-        /// Set field value.
+        /// Sets the field value.
         /// </summary>
         /// <param name="access">Specify field access modifier.</param>
         /// <param name="obj">Object where field is defined.</param>
@@ -317,7 +306,7 @@ namespace MbUnit.Framework.Reflection
         }
 
         /// <summary>
-        /// Set field value.
+        /// Sets the field value.
         /// </summary>
         /// <param name="access">Specify field access modifier.</param>
         /// <param name="obj">Object where field is defined.</param>
@@ -331,15 +320,9 @@ namespace MbUnit.Framework.Reflection
             EnsureMemberExists(obj, fi, fieldName, MemberType.Field);
             fi.SetValue(obj, fieldValue);
         }
-        #endregion
 
-        #endregion
-
-        #region Get/Set Properties
-
-        #region Get
         /// <summary>
-        /// Get Property Value
+      /// Gets the property value.
         /// </summary>
         /// <param name="obj">Object where property is defined.</param>
         /// <param name="propertyName">Property Name.</param>
@@ -350,7 +333,7 @@ namespace MbUnit.Framework.Reflection
         }
 
         /// <summary>
-        /// Get Property Value
+        /// Gets the property value.
         /// </summary>
         /// <param name="access">Specify property access modifier.</param>
         /// <param name="obj">Object that has the property.</param>
@@ -362,7 +345,7 @@ namespace MbUnit.Framework.Reflection
         }
 
         /// <summary>
-        /// Get Property Value
+        /// Gets the property value.
         /// </summary>
         /// <param name="access">Specify property access modifier.</param>
         /// <param name="obj">Object that has the property.</param>
@@ -384,11 +367,9 @@ namespace MbUnit.Framework.Reflection
                 return GetProperty(access, type.BaseType, fieldName, true);
             return pi;
         }
-        #endregion
 
-        #region Set
         /// <summary>
-        /// Set Property value.
+        /// Sets the property value.
         /// </summary>
         /// <param name="obj">Object where property is defined.</param>
         /// <param name="propertyName">Property Name.</param>
@@ -399,7 +380,7 @@ namespace MbUnit.Framework.Reflection
         }
 
         /// <summary>
-        /// Set Property value.
+        /// Sets the property value.
         /// </summary>
         /// <param name="access">Specify property access modifier.</param>
         /// <param name="obj">Object where property is defined.</param>
@@ -411,7 +392,7 @@ namespace MbUnit.Framework.Reflection
         }
 
         /// <summary>
-        /// Set Property value.
+        /// Sets the property value.
         /// </summary>
         /// <param name="access">Specify property access modifier.</param>
         /// <param name="obj">Object where property is defined.</param>
@@ -425,16 +406,12 @@ namespace MbUnit.Framework.Reflection
             EnsureMemberExists(obj, pi, propertyName, MemberType.Property);
             pi.SetValue(obj, propertyValue, null);
         }
-        #endregion
 
-        #endregion
-
-        #region Methods
         /// <summary>
-        /// Execute a NonPublic method with arguments on a object
+        /// Executes a non-public method with arguments on a object
         /// </summary>
         /// <param name="obj">Object where method is defined.</param>
-        /// <param name="methodName">Method to call</param>
+        /// <param name="methodName">Method to call.</param>
         /// <returns>The object the method should return.</returns>
         public static object InvokeMethod(object obj, string methodName)
         {
@@ -442,10 +419,10 @@ namespace MbUnit.Framework.Reflection
         }
 
         /// <summary>
-        /// Execute a NonPublic method with arguments on a object
+        /// Executes a non-public method with arguments on a object
         /// </summary>
         /// <param name="obj">Object where method is defined.</param>
-        /// <param name="methodName">Method to call</param>
+        /// <param name="methodName">Method to call.</param>
         /// <param name="methodParams">Method's parameters.</param>
         /// <returns>The object the method should return.</returns>
         public static object InvokeMethod(object obj, string methodName, params object[] methodParams)
@@ -454,11 +431,11 @@ namespace MbUnit.Framework.Reflection
         }
 
         /// <summary>
-        /// Execute a NonPublic method with arguments on a object
+        /// Executes a non-public method with arguments on a object
         /// </summary>
         /// <param name="access">Specify method access modifier.</param>
         /// <param name="obj">Object where method is defined.</param>
-        /// <param name="methodName">Method to call</param>
+        /// <param name="methodName">Method to call.</param>
         /// <param name="methodParams">Method's parameters.</param>
         /// <returns>The object the method should return.</returns>
         public static object InvokeMethod(AccessModifier access, object obj, string methodName, params object[] methodParams)
@@ -467,11 +444,11 @@ namespace MbUnit.Framework.Reflection
         }
 
         /// <summary>
-        /// Execute a NonPublic method with arguments on a object
+        /// Executes a non-public method with arguments on a object
         /// </summary>
         /// <param name="access">Specify method access modifier.</param>
         /// <param name="obj">Object where method is defined.</param>
-        /// <param name="methodName">Method to call</param>
+        /// <param name="methodName">Method to call.</param>
         /// <param name="lookInBase">Speicifies if to search for the method in the base classes or not.</param>
         /// <param name="methodParams">Method's parameters.</param>
         /// <returns>The object the method should return.</returns>
@@ -503,9 +480,6 @@ namespace MbUnit.Framework.Reflection
             return mi;
         }
 
-        #endregion
-
-        #region Private Helpers
         private static void EnsureMemberExists(object obj, object member, string memberName, MemberType type)
         {
             if (member == null)
@@ -517,6 +491,5 @@ namespace MbUnit.Framework.Reflection
             if (obj == null)
                 throw new ArgumentNullException("obj");
         }
-        #endregion
     }
 }

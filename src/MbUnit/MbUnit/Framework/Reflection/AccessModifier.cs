@@ -23,19 +23,19 @@ namespace MbUnit.Framework.Reflection
     public enum AccessModifier
     { 
         ///<summary>
-        /// public
+        /// Public.
         ///</summary>
         Public = BindingFlags.Public, 
         ///<summary>
-        /// protected, internal, private
+        /// Protected, internal, private.
         ///</summary>
         NonPublic = BindingFlags.NonPublic, 
         /// <summary>
-        /// static
+        /// Static.
         /// </summary>
         Static  = BindingFlags.Static,
         /// <summary>
-        /// default that includes public, protected, internal, private, and static
+        /// Default that includes public, protected, internal, private, and static.
         /// </summary>
         Default = Public | NonPublic | Static
     }

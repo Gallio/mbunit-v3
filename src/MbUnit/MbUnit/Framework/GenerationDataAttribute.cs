@@ -23,9 +23,7 @@ using System.Collections;
 namespace MbUnit.Framework
 {
     /// <summary>
-    /// <para>
     /// Provides a column of sequential values as a data source.
-    /// </para>
     /// </summary>
     [CLSCompliant(false)]
     public abstract class GenerationDataAttribute : DataAttribute

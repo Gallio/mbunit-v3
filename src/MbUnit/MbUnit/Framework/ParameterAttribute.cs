@@ -19,10 +19,8 @@ using Gallio.Framework.Pattern;
 namespace MbUnit.Framework
 {
     /// <summary>
-    /// <para>
     /// Declares that a property, field, method parameter, constructor parameter,
     /// generic type parameter or generic method parameter represents a test parameter.
-    /// </para>
     /// </summary>
     /// <remarks>
     /// <para>
@@ -39,6 +37,7 @@ namespace MbUnit.Framework
     /// </para>
     /// </remarks>
     /// <example>
+    /// <code><![CDATA[
     /// [Header("Parameter1", "Parameter2")]
     /// [Row(1, "a")]
     /// [Row(2, "b")]
@@ -50,6 +49,7 @@ namespace MbUnit.Framework
     ///     [TestParameter]
     ///     public string Parameter2 { get; set; }
     /// }
+    /// ]]></code>
     /// </example>
     [AttributeUsage(PatternAttributeTargets.TestParameter, AllowMultiple = false, Inherited = true)]
     public class ParameterAttribute : TestParameterPatternAttribute

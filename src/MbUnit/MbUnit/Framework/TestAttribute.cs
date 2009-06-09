@@ -50,14 +50,13 @@ namespace MbUnit.Framework
     /// test is considered to be data-driven.
     /// </para>
     /// </remarks>
-    /// <todo author="jeff">
-    /// We should support explicit ordering of tests based on
-    /// an Order property similar to decorators.  Then we can deprecate the
-    /// TestSequence attribute.
-    /// </todo>
     [AttributeUsage(PatternAttributeTargets.TestMethod, AllowMultiple = false, Inherited = true)]
     public class TestAttribute : TestMethodPatternAttribute
     {
+        // TODO: We should support explicit ordering of tests based on
+        //       an Order property similar to decorators.  Then we can deprecate the
+        //       TestSequence attribute.
+
         /// <inheritdoc />
         protected override object Execute(PatternTestInstanceState state)
         {

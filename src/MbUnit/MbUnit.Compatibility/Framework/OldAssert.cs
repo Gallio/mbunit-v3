@@ -60,8 +60,8 @@ namespace MbUnit.Framework
         /// Checks the type of the object, returning true if
         /// the object is a numeric type.
         /// </summary>
-        /// <param name="obj">The object to check</param>
-        /// <returns>true if the object is a numeric type</returns>
+        /// <param name="obj">The object to check.</param>
+        /// <returns>true if the object is a numeric type.</returns>
         static private bool IsNumericType(Object obj)
         {
             if (null != obj)
@@ -134,7 +134,7 @@ namespace MbUnit.Framework
         /// Asserts that a condition is true. If the condition is false the method throws
         /// an <see cref="AssertionException"/>.
         /// </summary>
-        /// <param name="condition">The evaluated condition</param>
+        /// <param name="condition">The evaluated condition.</param>
         /// <param name="format">
         /// The format of the message to display if the condition is false,
         /// containing zero or more format items.
@@ -165,7 +165,7 @@ namespace MbUnit.Framework
         /// Asserts that a condition is true. If the condition is false the method throws
         /// an <see cref="AssertionException"/>.
         /// </summary>
-        /// <param name="condition">The evaluated condition</param>
+        /// <param name="condition">The evaluated condition.</param>
         static public void IsTrue(bool condition)
         {
             IsTrue(condition, string.Empty);
@@ -175,7 +175,7 @@ namespace MbUnit.Framework
         /// Asserts that a condition is false. If the condition is true the method throws
         /// an <see cref="AssertionException"/>.
         /// </summary>
-        /// <param name="condition">The evaluated condition</param>
+        /// <param name="condition">The evaluated condition.</param>
         /// <param name="format">
         /// The format of the message to display if the condition is false,
         /// containing zero or more format items.
@@ -206,7 +206,7 @@ namespace MbUnit.Framework
         /// Asserts that a condition is false. If the condition is true the method throws
         /// an <see cref="AssertionException"/>.
         /// </summary>
-        /// <param name="condition">The evaluated condition</param>
+        /// <param name="condition">The evaluated condition.</param>
         static public void IsFalse(bool condition)
         {
             IsFalse(condition, string.Empty);
@@ -220,11 +220,11 @@ namespace MbUnit.Framework
         /// they are not equals then an <see cref="AssertionException"/> is
         /// thrown.
         /// </summary>
-        /// <param name="expected">The expected value</param>
-        /// <param name="actual">The actual value</param>
+        /// <param name="expected">The expected value.</param>
+        /// <param name="actual">The actual value.</param>
         /// <param name="delta">The maximum acceptable difference between the
-        /// the expected and the actual</param>
-        /// <param name="message">The message printed out upon failure</param>
+        /// the expected and the actual.</param>
+        /// <param name="message">The message printed out upon failure.</param>
         static public void AreEqual(double expected,
             double actual, double delta, string message)
         {
@@ -250,10 +250,10 @@ namespace MbUnit.Framework
         /// they are not equals then an <see cref="AssertionException"/> is
         /// thrown.
         /// </summary>
-        /// <param name="expected">The expected value</param>
-        /// <param name="actual">The actual value</param>
+        /// <param name="expected">The expected value.</param>
+        /// <param name="actual">The actual value.</param>
         /// <param name="delta">The maximum acceptable difference between the
-        /// the expected and the actual</param>
+        /// the expected and the actual.</param>
         static public void AreEqual(double expected, double actual, double delta)
         {
             AreEqual(expected, actual, delta, string.Empty);
@@ -265,11 +265,11 @@ namespace MbUnit.Framework
         /// they are not equals then an <see cref="AssertionException"/> is
         /// thrown.
         /// </summary>
-        /// <param name="message">The message printed out upon failure</param>
-        /// <param name="expected">The expected value</param>
-        /// <param name="actual">The actual value</param>
+        /// <param name="message">The message printed out upon failure.</param>
+        /// <param name="expected">The expected value.</param>
+        /// <param name="actual">The actual value.</param>
         /// <param name="delta">The maximum acceptable difference between the
-        /// the expected and the actual</param>
+        /// the expected and the actual.</param>
         static public void AreEqual(float expected,
             float actual, float delta,
             string message)
@@ -304,10 +304,10 @@ namespace MbUnit.Framework
         /// they are not equals then an <see cref="AssertionException"/> is
         /// thrown.
         /// </summary>
-        /// <param name="expected">The expected value</param>
-        /// <param name="actual">The actual value</param>
+        /// <param name="expected">The expected value.</param>
+        /// <param name="actual">The actual value.</param>
         /// <param name="delta">The maximum acceptable difference between the
-        /// the expected and the actual</param>
+        /// the expected and the actual.</param>
         static public void AreEqual(float expected, float actual, float delta)
         {
             AreEqual(expected, actual, delta, string.Empty);
@@ -318,9 +318,9 @@ namespace MbUnit.Framework
         /// they are not equals then an <see cref="AssertionException"/> is
         /// thrown.
         /// </summary>
-        /// <param name="message">The message printed out upon failure</param>
-        /// <param name="expected">The expected value</param>
-        /// <param name="actual">The actual value</param>
+        /// <param name="message">The message printed out upon failure.</param>
+        /// <param name="expected">The expected value.</param>
+        /// <param name="actual">The actual value.</param>
         static public void AreEqual(decimal expected, decimal actual,
                                     string message)
         {
@@ -334,8 +334,8 @@ namespace MbUnit.Framework
         /// they are not equals then an <see cref="AssertionException"/> is
         /// thrown.
         /// </summary>
-        /// <param name="expected">The expected value</param>
-        /// <param name="actual">The actual value</param>
+        /// <param name="expected">The expected value.</param>
+        /// <param name="actual">The actual value.</param>
         /// <param name="format">
         /// The format of the message to display if the assertion fails,
         /// containing zero or more format items.
@@ -361,8 +361,8 @@ namespace MbUnit.Framework
         /// they are not equals then an <see cref="AssertionException"/> is
         /// thrown.
         /// </summary>
-        /// <param name="expected">The expected value</param>
-        /// <param name="actual">The actual value</param>
+        /// <param name="expected">The expected value.</param>
+        /// <param name="actual">The actual value.</param>
         static public void AreEqual(decimal expected, decimal actual)
         {
             AreEqual(expected, actual, string.Empty);
@@ -373,9 +373,9 @@ namespace MbUnit.Framework
         /// they are not equals then an <see cref="AssertionException"/> is
         /// thrown.
         /// </summary>
-        /// <param name="message">The message printed out upon failure</param>
-        /// <param name="expected">The expected value</param>
-        /// <param name="actual">The actual value</param>
+        /// <param name="message">The message printed out upon failure.</param>
+        /// <param name="expected">The expected value.</param>
+        /// <param name="actual">The actual value.</param>
         static public void AreEqual(int expected, int actual,
                                     string message)
         {
@@ -389,8 +389,8 @@ namespace MbUnit.Framework
         /// they are not equals then an <see cref="AssertionException"/> is
         /// thrown.
         /// </summary>
-        /// <param name="expected">The expected value</param>
-        /// <param name="actual">The actual value</param>
+        /// <param name="expected">The expected value.</param>
+        /// <param name="actual">The actual value.</param>
         /// <param name="format">
         /// The format of the message to display if the assertion fails,
         /// containing zero or more format items.
@@ -416,8 +416,8 @@ namespace MbUnit.Framework
         /// they are not equals then an <see cref="AssertionException"/> is
         /// thrown.
         /// </summary>
-        /// <param name="expected">The expected value</param>
-        /// <param name="actual">The actual value</param>
+        /// <param name="expected">The expected value.</param>
+        /// <param name="actual">The actual value.</param>
         static public void AreEqual(int expected, int actual)
         {
             AreEqual(expected, actual, string.Empty);
@@ -429,8 +429,8 @@ namespace MbUnit.Framework
         /// non-numeric types are compared by using the <c>Equals</c> method.
         /// If they are not equal an <see cref="AssertionException"/> is thrown.
         /// </summary>
-        /// <param name="expected">The value that is expected</param>
-        /// <param name="actual">The actual value</param>
+        /// <param name="expected">The value that is expected.</param>
+        /// <param name="actual">The actual value.</param>
         /// <param name="format">
         /// The format of the message to display if the assertion fails,
         /// containing zero or more format items.
@@ -455,9 +455,9 @@ namespace MbUnit.Framework
         /// non-numeric types are compared by using the <c>Equals</c> method.
         /// If they are not equal an <see cref="AssertionException"/> is thrown.
         /// </summary>
-        /// <param name="expected">The value that is expected</param>
-        /// <param name="actual">The actual value</param>
-        /// <param name="message">The message to display if objects are not equal</param>
+        /// <param name="expected">The value that is expected.</param>
+        /// <param name="actual">The actual value.</param>
+        /// <param name="message">The message to display if objects are not equal.</param>
         static public void AreEqual(Object expected, Object actual,
                                     string message)
         {
@@ -480,8 +480,8 @@ namespace MbUnit.Framework
         /// non-numeric types are compared by using the <c>Equals</c> method.
         /// If they are not equal an <see cref="AssertionException"/> is thrown.
         /// </summary>
-        /// <param name="expected">The value that is expected</param>
-        /// <param name="actual">The actual value</param>
+        /// <param name="expected">The value that is expected.</param>
+        /// <param name="actual">The actual value.</param>
         static public void AreEqual(Object expected, Object actual)
         {
             AreEqual(expected, actual, string.Empty);
@@ -533,10 +533,10 @@ namespace MbUnit.Framework
         /// Asserts that two objects are not equal. If they are equal
         /// an <see cref="AssertionException"/> is thrown.
         /// </summary>
-        /// <param name="expected">The expected object</param>
-        /// <param name="actual">The actual object</param>
+        /// <param name="expected">The expected object.</param>
+        /// <param name="actual">The actual object.</param>
         /// <param name="message">The message to be displayed when the two objects are the same object.</param>
-        /// <param name="args">Arguments to be used in formatting the message</param>
+        /// <param name="args">Arguments to be used in formatting the message.</param>
         static public void AreNotEqual(Object expected, Object actual, string message, params object[] args)
         {
             AreNotEqual(expected, actual, String.Format(message, args));
@@ -546,9 +546,9 @@ namespace MbUnit.Framework
         /// Asserts that two objects are not equal. If they are equal
         /// an <see cref="AssertionException"/> is thrown.
         /// </summary>
-        /// <param name="expected">The expected object</param>
-        /// <param name="actual">The actual object</param>
-        /// <param name="message">The message to be displayed when the objects are the same</param>
+        /// <param name="expected">The expected object.</param>
+        /// <param name="actual">The actual object.</param>
+        /// <param name="message">The message to be displayed when the objects are the same.</param>
         static public void AreNotEqual(Object expected, Object actual, string message)
         {
             IncrementAssertCount();
@@ -564,8 +564,8 @@ namespace MbUnit.Framework
         /// Asserts that two objects are not equal. If they are equal
         /// an <see cref="AssertionException"/> is thrown.
         /// </summary>
-        /// <param name="expected">The expected object</param>
-        /// <param name="actual">The actual object</param>
+        /// <param name="expected">The expected object.</param>
+        /// <param name="actual">The actual object.</param>
         static public void AreNotEqual(Object expected, Object actual)
         {
             AreNotEqual(expected, actual, string.Empty);
@@ -578,10 +578,10 @@ namespace MbUnit.Framework
         /// Asserts that two ints are not equal. If they are equal
         /// an <see cref="AssertionException"/> is thrown.
         /// </summary>
-        /// <param name="expected">The expected object</param>
-        /// <param name="actual">The actual object</param>
+        /// <param name="expected">The expected object.</param>
+        /// <param name="actual">The actual object.</param>
         /// <param name="message">The message to be displayed when the two objects are the same object.</param>
-        /// <param name="args">Arguments to be used in formatting the message</param>
+        /// <param name="args">Arguments to be used in formatting the message.</param>
         static public void AreNotEqual(int expected, int actual, string message, params object[] args)
         {
             if (actual == expected)
@@ -595,9 +595,9 @@ namespace MbUnit.Framework
         /// Asserts that two ints are not equal. If they are equal
         /// an <see cref="AssertionException"/> is thrown.
         /// </summary>
-        /// <param name="expected">The expected object</param>
-        /// <param name="actual">The actual object</param>
-        /// <param name="message">The message to be displayed when the objects are the same</param>
+        /// <param name="expected">The expected object.</param>
+        /// <param name="actual">The actual object.</param>
+        /// <param name="message">The message to be displayed when the objects are the same.</param>
         static public void AreNotEqual(int expected, int actual, string message)
         {
             AreNotEqual(expected, actual, message, null);
@@ -607,8 +607,8 @@ namespace MbUnit.Framework
         /// Asserts that two ints are not equal. If they are equal
         /// an <see cref="AssertionException"/> is thrown.
         /// </summary>
-        /// <param name="expected">The expected object</param>
-        /// <param name="actual">The actual object</param>
+        /// <param name="expected">The expected object.</param>
+        /// <param name="actual">The actual object.</param>
         static public void AreNotEqual(int expected, int actual)
         {
             AreNotEqual(expected, actual, string.Empty, null);
@@ -620,10 +620,10 @@ namespace MbUnit.Framework
         /// Asserts that two uints are not equal. If they are equal
         /// an <see cref="AssertionException"/> is thrown.
         /// </summary>
-        /// <param name="expected">The expected object</param>
-        /// <param name="actual">The actual object</param>
+        /// <param name="expected">The expected object.</param>
+        /// <param name="actual">The actual object.</param>
         /// <param name="message">The message to be displayed when the two objects are the same object.</param>
-        /// <param name="args">Arguments to be used in formatting the message</param>
+        /// <param name="args">Arguments to be used in formatting the message.</param>
         static public void AreNotEqual(uint expected, uint actual, string message, params object[] args)
         {
             if (actual == expected)
@@ -637,9 +637,9 @@ namespace MbUnit.Framework
         /// Asserts that two uints are not equal. If they are equal
         /// an <see cref="AssertionException"/> is thrown.
         /// </summary>
-        /// <param name="expected">The expected object</param>
-        /// <param name="actual">The actual object</param>
-        /// <param name="message">The message to be displayed when the objects are the same</param>
+        /// <param name="expected">The expected object.</param>
+        /// <param name="actual">The actual object.</param>
+        /// <param name="message">The message to be displayed when the objects are the same.</param>
         static public void AreNotEqual(uint expected, uint actual, string message)
         {
             AreNotEqual(expected, actual, message, null);
@@ -649,8 +649,8 @@ namespace MbUnit.Framework
         /// Asserts that two uints are not equal. If they are equal
         /// an <see cref="AssertionException"/> is thrown.
         /// </summary>
-        /// <param name="expected">The expected object</param>
-        /// <param name="actual">The actual object</param>
+        /// <param name="expected">The expected object.</param>
+        /// <param name="actual">The actual object.</param>
         static public void AreNotEqual(uint expected, uint actual)
         {
             AreNotEqual(expected, actual, string.Empty, null);
@@ -662,10 +662,10 @@ namespace MbUnit.Framework
         /// Asserts that two decimals are not equal. If they are equal
         /// an <see cref="AssertionException"/> is thrown.
         /// </summary>
-        /// <param name="expected">The expected object</param>
-        /// <param name="actual">The actual object</param>
+        /// <param name="expected">The expected object.</param>
+        /// <param name="actual">The actual object.</param>
         /// <param name="message">The message to be displayed when the two objects are the same object.</param>
-        /// <param name="args">Arguments to be used in formatting the message</param>
+        /// <param name="args">Arguments to be used in formatting the message.</param>
         static public void AreNotEqual(decimal expected, decimal actual, string message, params object[] args)
         {
             if (actual == expected)
@@ -679,9 +679,9 @@ namespace MbUnit.Framework
         /// Asserts that two decimals are not equal. If they are equal
         /// an <see cref="AssertionException"/> is thrown.
         /// </summary>
-        /// <param name="expected">The expected object</param>
-        /// <param name="actual">The actual object</param>
-        /// <param name="message">The message to be displayed when the objects are the same</param>
+        /// <param name="expected">The expected object.</param>
+        /// <param name="actual">The actual object.</param>
+        /// <param name="message">The message to be displayed when the objects are the same.</param>
         static public void AreNotEqual(decimal expected, decimal actual, string message)
         {
             AreNotEqual(expected, actual, message, null);
@@ -691,8 +691,8 @@ namespace MbUnit.Framework
         /// Asserts that two decimals are not equal. If they are equal
         /// an <see cref="AssertionException"/> is thrown.
         /// </summary>
-        /// <param name="expected">The expected object</param>
-        /// <param name="actual">The actual object</param>
+        /// <param name="expected">The expected object.</param>
+        /// <param name="actual">The actual object.</param>
         static public void AreNotEqual(decimal expected, decimal actual)
         {
             AreNotEqual(expected, actual, string.Empty, null);
@@ -704,10 +704,10 @@ namespace MbUnit.Framework
         /// Asserts that two floats are not equal. If they are equal
         /// an <see cref="AssertionException"/> is thrown.
         /// </summary>
-        /// <param name="expected">The expected object</param>
-        /// <param name="actual">The actual object</param>
+        /// <param name="expected">The expected object.</param>
+        /// <param name="actual">The actual object.</param>
         /// <param name="message">The message to be displayed when the two objects are the same object.</param>
-        /// <param name="args">Arguments to be used in formatting the message</param>
+        /// <param name="args">Arguments to be used in formatting the message.</param>
         static public void AreNotEqual(float expected, float actual, string message, params object[] args)
         {
             if (actual == expected)
@@ -721,9 +721,9 @@ namespace MbUnit.Framework
         /// Asserts that two floats are not equal. If they are equal
         /// an <see cref="AssertionException"/> is thrown.
         /// </summary>
-        /// <param name="expected">The expected object</param>
-        /// <param name="actual">The actual object</param>
-        /// <param name="message">The message to be displayed when the objects are the same</param>
+        /// <param name="expected">The expected object.</param>
+        /// <param name="actual">The actual object.</param>
+        /// <param name="message">The message to be displayed when the objects are the same.</param>
         static public void AreNotEqual(float expected, float actual, string message)
         {
             AreNotEqual(expected, actual, message, null);
@@ -733,8 +733,8 @@ namespace MbUnit.Framework
         /// Asserts that two floats are not equal. If they are equal
         /// an <see cref="AssertionException"/> is thrown.
         /// </summary>
-        /// <param name="expected">The expected object</param>
-        /// <param name="actual">The actual object</param>
+        /// <param name="expected">The expected object.</param>
+        /// <param name="actual">The actual object.</param>
         static public void AreNotEqual(float expected, float actual)
         {
             AreNotEqual(expected, actual, string.Empty, null);
@@ -746,10 +746,10 @@ namespace MbUnit.Framework
         /// Asserts that two doubles are not equal. If they are equal
         /// an <see cref="AssertionException"/> is thrown.
         /// </summary>
-        /// <param name="expected">The expected object</param>
-        /// <param name="actual">The actual object</param>
+        /// <param name="expected">The expected object.</param>
+        /// <param name="actual">The actual object.</param>
         /// <param name="message">The message to be displayed when the two objects are the same object.</param>
-        /// <param name="args">Arguments to be used in formatting the message</param>
+        /// <param name="args">Arguments to be used in formatting the message.</param>
         static public void AreNotEqual(double expected, double actual, string message, params object[] args)
         {
             if (actual == expected)
@@ -763,9 +763,9 @@ namespace MbUnit.Framework
         /// Asserts that two doubles are not equal. If they are equal
         /// an <see cref="AssertionException"/> is thrown.
         /// </summary>
-        /// <param name="expected">The expected object</param>
-        /// <param name="actual">The actual object</param>
-        /// <param name="message">The message to be displayed when the objects are the same</param>
+        /// <param name="expected">The expected object.</param>
+        /// <param name="actual">The actual object.</param>
+        /// <param name="message">The message to be displayed when the objects are the same.</param>
         static public void AreNotEqual(double expected, double actual, string message)
         {
             AreNotEqual(expected, actual, message, null);
@@ -775,8 +775,8 @@ namespace MbUnit.Framework
         /// Asserts that two doubles are not equal. If they are equal
         /// an <see cref="AssertionException"/> is thrown.
         /// </summary>
-        /// <param name="expected">The expected object</param>
-        /// <param name="actual">The actual object</param>
+        /// <param name="expected">The expected object.</param>
+        /// <param name="actual">The actual object.</param>
         static public void AreNotEqual(double expected, double actual)
         {
             AreNotEqual(expected, actual, string.Empty, null);
@@ -791,7 +791,7 @@ namespace MbUnit.Framework
         /// If the object is not <code>null</code> then an <see cref="AssertionException"/>
         /// is thrown.
         /// </summary>
-        /// <param name="anObject">The object that is to be tested</param>
+        /// <param name="anObject">The object that is to be tested.</param>
         /// <param name="format">
         /// The format of the message to display if the assertion fails,
         /// containing zero or more format items.
@@ -814,7 +814,7 @@ namespace MbUnit.Framework
         /// If the object is <code>null</code> then an <see cref="AssertionException"/>
         /// is thrown with the message that is passed in.
         /// </summary>
-        /// <param name="anObject">The object that is to be tested</param>
+        /// <param name="anObject">The object that is to be tested.</param>
         /// <param name="message">The message to initialize the <see cref="AssertionException"/> with.</param>
         static public void IsNotNull(Object anObject, string message)
         {
@@ -826,7 +826,7 @@ namespace MbUnit.Framework
         /// If the object is not <code>null</code> then an <see cref="AssertionException"/>
         /// is thrown.
         /// </summary>
-        /// <param name="anObject">The object that is to be tested</param>
+        /// <param name="anObject">The object that is to be tested.</param>
         static public void IsNotNull(Object anObject)
         {
             IsNotNull(anObject, string.Empty);
@@ -837,7 +837,7 @@ namespace MbUnit.Framework
         /// If the object is <code>null</code> then an <see cref="AssertionException"/>
         /// is thrown.
         /// </summary>
-        /// <param name="anObject">The object that is to be tested</param>
+        /// <param name="anObject">The object that is to be tested.</param>
         /// <param name="format">
         /// The format of the message to display if the assertion fails,
         /// containing zero or more format items.
@@ -860,7 +860,7 @@ namespace MbUnit.Framework
         /// If the object is <code>null</code> then an <see cref="AssertionException"/>
         /// is thrown with the message that is passed in.
         /// </summary>
-        /// <param name="anObject">The object that is to be tested</param>
+        /// <param name="anObject">The object that is to be tested.</param>
         /// <param name="message">The message to initialize the <see cref="AssertionException"/> with.</param>
         static public void IsNull(Object anObject, string message)
         {
@@ -872,7 +872,7 @@ namespace MbUnit.Framework
         /// If the object is <code>null</code> then an <see cref="AssertionException"/>
         /// is thrown.
         /// </summary>
-        /// <param name="anObject">The object that is to be tested</param>
+        /// <param name="anObject">The object that is to be tested.</param>
         static public void IsNull(Object anObject)
         {
             IsNull(anObject, string.Empty);
@@ -885,8 +885,8 @@ namespace MbUnit.Framework
         /// are not the same an <see cref="AssertionException"/> is thrown.
         /// </summary>
         /// <param name="message">The message to be printed when the two objects are not the same object.</param>
-        /// <param name="expected">The expected object</param>
-        /// <param name="actual">The actual object</param>
+        /// <param name="expected">The expected object.</param>
+        /// <param name="actual">The actual object.</param>
         static public void AreSame(Object expected, Object actual, string message)
         {
             IncrementAssertCount();
@@ -899,8 +899,8 @@ namespace MbUnit.Framework
         /// Asserts that two objects refer to the same object. If they
         /// are not the same an <see cref="AssertionException"/> is thrown.
         /// </summary>
-        /// <param name="expected">The expected object</param>
-        /// <param name="actual">The actual object</param>
+        /// <param name="expected">The expected object.</param>
+        /// <param name="actual">The actual object.</param>
         /// <param name="format">
         /// The format of the message to display if the assertion fails,
         /// containing zero or more format items.
@@ -922,8 +922,8 @@ namespace MbUnit.Framework
         /// Asserts that two objects refer to the same object. If they
         /// are not the same an <see cref="AssertionException"/> is thrown.
         /// </summary>
-        /// <param name="expected">The expected object</param>
-        /// <param name="actual">The actual object</param>
+        /// <param name="expected">The expected object.</param>
+        /// <param name="actual">The actual object.</param>
         static public void AreSame(Object expected, Object actual)
         {
             AreSame(expected, actual, string.Empty);
@@ -1502,10 +1502,10 @@ namespace MbUnit.Framework
         /// value. If it is not, then an
         /// <see cref="AssertionException"/> is thrown.
         /// </summary>
-        /// <param name="arg1">The first value, expected to be less</param>
-        /// <param name="arg2">The second value, expected to be greater</param>
-        /// <param name="message">The message that will be displayed on failure</param>
-        /// <param name="args">Arguments to be used in formatting the message</param>
+        /// <param name="arg1">The first value, expected to be less.</param>
+        /// <param name="arg2">The second value, expected to be greater.</param>
+        /// <param name="message">The message that will be displayed on failure.</param>
+        /// <param name="args">Arguments to be used in formatting the message.</param>
         static public void Less(int arg1, int arg2, string message, params object[] args)
         {
             LowerThan(arg1, arg2, message, args);
@@ -1516,9 +1516,9 @@ namespace MbUnit.Framework
         /// value. If it is not, then an
         /// <see cref="AssertionException"/> is thrown.
         /// </summary>
-        /// <param name="arg1">The first value, expected to be less</param>
-        /// <param name="arg2">The second value, expected to be greater</param>
-        /// <param name="message">The message that will be displayed on failure</param>
+        /// <param name="arg1">The first value, expected to be less.</param>
+        /// <param name="arg2">The second value, expected to be greater.</param>
+        /// <param name="message">The message that will be displayed on failure.</param>
         static public void Less(int arg1, int arg2, string message)
         {
             LowerThan(arg1, arg2, message);
@@ -1529,8 +1529,8 @@ namespace MbUnit.Framework
         /// value. If it is not, then an
         /// <see cref="AssertionException"/> is thrown.
         /// </summary>
-        /// <param name="arg1">The first value, expected to be less</param>
-        /// <param name="arg2">The second value, expected to be greater</param>
+        /// <param name="arg1">The first value, expected to be less.</param>
+        /// <param name="arg2">The second value, expected to be greater.</param>
         static public void Less(int arg1, int arg2)
         {
             LowerThan(arg1, arg2);
@@ -1545,10 +1545,10 @@ namespace MbUnit.Framework
         /// value. If it is not, then an
         /// <see cref="AssertionException"/> is thrown.
         /// </summary>
-        /// <param name="arg1">The first value, expected to be less</param>
-        /// <param name="arg2">The second value, expected to be greater</param>
-        /// <param name="message">The message that will be displayed on failure</param>
-        /// <param name="args">Arguments to be used in formatting the message</param>
+        /// <param name="arg1">The first value, expected to be less.</param>
+        /// <param name="arg2">The second value, expected to be greater.</param>
+        /// <param name="message">The message that will be displayed on failure.</param>
+        /// <param name="args">Arguments to be used in formatting the message.</param>
         static public void Less(uint arg1, uint arg2, string message, params object[] args)
         {
             LowerThan(arg1, arg2, message, args);
@@ -1559,9 +1559,9 @@ namespace MbUnit.Framework
         /// value. If it is not, then an
         /// <see cref="AssertionException"/> is thrown.
         /// </summary>
-        /// <param name="arg1">The first value, expected to be less</param>
-        /// <param name="arg2">The second value, expected to be greater</param>
-        /// <param name="message">The message that will be displayed on failure</param>
+        /// <param name="arg1">The first value, expected to be less.</param>
+        /// <param name="arg2">The second value, expected to be greater.</param>
+        /// <param name="message">The message that will be displayed on failure.</param>
         static public void Less(uint arg1, uint arg2, string message)
         {
             LowerThan(arg1, arg2, message);
@@ -1572,8 +1572,8 @@ namespace MbUnit.Framework
         /// value. If it is not, then an
         /// <see cref="AssertionException"/> is thrown.
         /// </summary>
-        /// <param name="arg1">The first value, expected to be less</param>
-        /// <param name="arg2">The second value, expected to be greater</param>
+        /// <param name="arg1">The first value, expected to be less.</param>
+        /// <param name="arg2">The second value, expected to be greater.</param>
         static public void Less(uint arg1, uint arg2)
         {
             LowerThan(arg1, arg2);
@@ -1588,10 +1588,10 @@ namespace MbUnit.Framework
         /// value. If it is not, then an
         /// <see cref="AssertionException"/> is thrown.
         /// </summary>
-        /// <param name="arg1">The first value, expected to be less</param>
-        /// <param name="arg2">The second value, expected to be greater</param>
-        /// <param name="message">The message that will be displayed on failure</param>
-        /// <param name="args">Arguments to be used in formatting the message</param>
+        /// <param name="arg1">The first value, expected to be less.</param>
+        /// <param name="arg2">The second value, expected to be greater.</param>
+        /// <param name="message">The message that will be displayed on failure.</param>
+        /// <param name="args">Arguments to be used in formatting the message.</param>
         static public void Less(decimal arg1, decimal arg2, string message, params object[] args)
         {
             LowerThan(arg1, arg2, message, args);
@@ -1602,9 +1602,9 @@ namespace MbUnit.Framework
         /// value. If it is not, then an
         /// <see cref="AssertionException"/> is thrown.
         /// </summary>
-        /// <param name="arg1">The first value, expected to be less</param>
-        /// <param name="arg2">The second value, expected to be greater</param>
-        /// <param name="message">The message that will be displayed on failure</param>
+        /// <param name="arg1">The first value, expected to be less.</param>
+        /// <param name="arg2">The second value, expected to be greater.</param>
+        /// <param name="message">The message that will be displayed on failure.</param>
         static public void Less(decimal arg1, decimal arg2, string message)
         {
             LowerThan(arg1, arg2, message);
@@ -1615,8 +1615,8 @@ namespace MbUnit.Framework
         /// value. If it is not, then an
         /// <see cref="AssertionException"/> is thrown.
         /// </summary>
-        /// <param name="arg1">The first value, expected to be less</param>
-        /// <param name="arg2">The second value, expected to be greater</param>
+        /// <param name="arg1">The first value, expected to be less.</param>
+        /// <param name="arg2">The second value, expected to be greater.</param>
         static public void Less(decimal arg1, decimal arg2)
         {
             LowerThan(arg1, arg2);
@@ -1631,10 +1631,10 @@ namespace MbUnit.Framework
         /// value. If it is not, then an
         /// <see cref="AssertionException"/> is thrown.
         /// </summary>
-        /// <param name="arg1">The first value, expected to be less</param>
-        /// <param name="arg2">The second value, expected to be greater</param>
-        /// <param name="message">The message that will be displayed on failure</param>
-        /// <param name="args">Arguments to be used in formatting the message</param>
+        /// <param name="arg1">The first value, expected to be less.</param>
+        /// <param name="arg2">The second value, expected to be greater.</param>
+        /// <param name="message">The message that will be displayed on failure.</param>
+        /// <param name="args">Arguments to be used in formatting the message.</param>
         static public void Less(long arg1, long arg2, string message, params object[] args)
         {
             LowerThan(arg1, arg2, message, args);
@@ -1645,9 +1645,9 @@ namespace MbUnit.Framework
         /// value. If it is not, then an
         /// <see cref="AssertionException"/> is thrown.
         /// </summary>
-        /// <param name="arg1">The first value, expected to be less</param>
-        /// <param name="arg2">The second value, expected to be greater</param>
-        /// <param name="message">The message that will be displayed on failure</param>
+        /// <param name="arg1">The first value, expected to be less.</param>
+        /// <param name="arg2">The second value, expected to be greater.</param>
+        /// <param name="message">The message that will be displayed on failure.</param>
         static public void Less(long arg1, long arg2, string message)
         {
             LowerThan(arg1, arg2, message);
@@ -1658,8 +1658,8 @@ namespace MbUnit.Framework
         /// value. If it is not, then an
         /// <see cref="AssertionException"/> is thrown.
         /// </summary>
-        /// <param name="arg1">The first value, expected to be less</param>
-        /// <param name="arg2">The second value, expected to be greater</param>
+        /// <param name="arg1">The first value, expected to be less.</param>
+        /// <param name="arg2">The second value, expected to be greater.</param>
         static public void Less(long arg1, long arg2)
         {
             LowerThan(arg1, arg2);
@@ -1674,10 +1674,10 @@ namespace MbUnit.Framework
         /// value. If it is not, then an
         /// <see cref="AssertionException"/> is thrown.
         /// </summary>
-        /// <param name="arg1">The first value, expected to be less</param>
-        /// <param name="arg2">The second value, expected to be greater</param>
-        /// <param name="message">The message that will be displayed on failure</param>
-        /// <param name="args">Arguments to be used in formatting the message</param>
+        /// <param name="arg1">The first value, expected to be less.</param>
+        /// <param name="arg2">The second value, expected to be greater.</param>
+        /// <param name="message">The message that will be displayed on failure.</param>
+        /// <param name="args">Arguments to be used in formatting the message.</param>
         static public void Less(double arg1, double arg2, string message, params object[] args)
         {
             LowerThan(arg1, arg2, message, args);
@@ -1688,9 +1688,9 @@ namespace MbUnit.Framework
         /// value. If it is not, then an
         /// <see cref="AssertionException"/> is thrown.
         /// </summary>
-        /// <param name="arg1">The first value, expected to be less</param>
-        /// <param name="arg2">The second value, expected to be greater</param>
-        /// <param name="message">The message that will be displayed on failure</param>
+        /// <param name="arg1">The first value, expected to be less.</param>
+        /// <param name="arg2">The second value, expected to be greater.</param>
+        /// <param name="message">The message that will be displayed on failure.</param>
         static public void Less(double arg1, double arg2, string message)
         {
             LowerThan(arg1, arg2, message);
@@ -1701,8 +1701,8 @@ namespace MbUnit.Framework
         /// value. If it is not, then an
         /// <see cref="AssertionException"/> is thrown.
         /// </summary>
-        /// <param name="arg1">The first value, expected to be less</param>
-        /// <param name="arg2">The second value, expected to be greater</param>
+        /// <param name="arg1">The first value, expected to be less.</param>
+        /// <param name="arg2">The second value, expected to be greater.</param>
         static public void Less(double arg1, double arg2)
         {
             LowerThan(arg1, arg2);
@@ -1717,10 +1717,10 @@ namespace MbUnit.Framework
         /// value. If it is not, then an
         /// <see cref="AssertionException"/> is thrown.
         /// </summary>
-        /// <param name="arg1">The first value, expected to be less</param>
-        /// <param name="arg2">The second value, expected to be greater</param>
-        /// <param name="message">The message that will be displayed on failure</param>
-        /// <param name="args">Arguments to be used in formatting the message</param>
+        /// <param name="arg1">The first value, expected to be less.</param>
+        /// <param name="arg2">The second value, expected to be greater.</param>
+        /// <param name="message">The message that will be displayed on failure.</param>
+        /// <param name="args">Arguments to be used in formatting the message.</param>
         static public void Less(float arg1, float arg2, string message, params object[] args)
         {
             LowerThan(arg1, arg2, message, args);
@@ -1731,9 +1731,9 @@ namespace MbUnit.Framework
         /// value. If it is not, then an
         /// <see cref="AssertionException"/> is thrown.
         /// </summary>
-        /// <param name="arg1">The first value, expected to be less</param>
-        /// <param name="arg2">The second value, expected to be greater</param>
-        /// <param name="message">The message that will be displayed on failure</param>
+        /// <param name="arg1">The first value, expected to be less.</param>
+        /// <param name="arg2">The second value, expected to be greater.</param>
+        /// <param name="message">The message that will be displayed on failure.</param>
         static public void Less(float arg1, float arg2, string message)
         {
             LowerThan(arg1, arg2, message);
@@ -1744,8 +1744,8 @@ namespace MbUnit.Framework
         /// value. If it is not, then an
         /// <see cref="AssertionException"/> is thrown.
         /// </summary>
-        /// <param name="arg1">The first value, expected to be less</param>
-        /// <param name="arg2">The second value, expected to be greater</param>
+        /// <param name="arg1">The first value, expected to be less.</param>
+        /// <param name="arg2">The second value, expected to be greater.</param>
         static public void Less(float arg1, float arg2)
         {
             LowerThan(arg1, arg2);
@@ -1760,10 +1760,10 @@ namespace MbUnit.Framework
         /// value. If it is not, then an
         /// <see cref="AssertionException"/> is thrown.
         /// </summary>
-        /// <param name="arg1">The first value, expected to be less</param>
-        /// <param name="arg2">The second value, expected to be greater</param>
-        /// <param name="message">The message that will be displayed on failure</param>
-        /// <param name="args">Arguments to be used in formatting the message</param>
+        /// <param name="arg1">The first value, expected to be less.</param>
+        /// <param name="arg2">The second value, expected to be greater.</param>
+        /// <param name="message">The message that will be displayed on failure.</param>
+        /// <param name="args">Arguments to be used in formatting the message.</param>
         static public void Less(IComparable arg1, IComparable arg2, string message, params object[] args)
         {
             LowerThan(arg1, arg2, message, args);
@@ -1774,9 +1774,9 @@ namespace MbUnit.Framework
         /// value. If it is not, then an
         /// <see cref="AssertionException"/> is thrown.
         /// </summary>
-        /// <param name="arg1">The first value, expected to be less</param>
-        /// <param name="arg2">The second value, expected to be greater</param>
-        /// <param name="message">The message that will be displayed on failure</param>
+        /// <param name="arg1">The first value, expected to be less.</param>
+        /// <param name="arg2">The second value, expected to be greater.</param>
+        /// <param name="message">The message that will be displayed on failure.</param>
         static public void Less(IComparable arg1, IComparable arg2, string message)
         {
             LowerThan(arg1, arg2, message);
@@ -1787,8 +1787,8 @@ namespace MbUnit.Framework
         /// value. If it is not, then an
         /// <see cref="AssertionException"/> is thrown.
         /// </summary>
-        /// <param name="arg1">The first value, expected to be less</param>
-        /// <param name="arg2">The second value, expected to be greater</param>
+        /// <param name="arg1">The first value, expected to be less.</param>
+        /// <param name="arg2">The second value, expected to be greater.</param>
         static public void Less(IComparable arg1, IComparable arg2)
         {
             LowerThan(arg1, arg2);
@@ -2033,10 +2033,10 @@ namespace MbUnit.Framework
         /// value. If they are not, then an
         /// <see cref="AssertionException"/> is thrown.
         /// </summary>
-        /// <param name="arg1">The first value, expected to be greater</param>
-        /// <param name="arg2">The second value, expected to be less</param>
-        /// <param name="message">The message that will be displayed on failure</param>
-        /// <param name="args">Arguments to be used in formatting the message</param>
+        /// <param name="arg1">The first value, expected to be greater.</param>
+        /// <param name="arg2">The second value, expected to be less.</param>
+        /// <param name="message">The message that will be displayed on failure.</param>
+        /// <param name="args">Arguments to be used in formatting the message.</param>
         static public void Greater(int arg1,
             int arg2, string message, params object[] args)
         {
@@ -2048,9 +2048,9 @@ namespace MbUnit.Framework
         /// value. If they are not, then an
         /// <see cref="AssertionException"/> is thrown.
         /// </summary>
-        /// <param name="arg1">The first value, expected to be greater</param>
-        /// <param name="arg2">The second value, expected to be less</param>
-        /// <param name="message">The message that will be displayed on failure</param>
+        /// <param name="arg1">The first value, expected to be greater.</param>
+        /// <param name="arg2">The second value, expected to be less.</param>
+        /// <param name="message">The message that will be displayed on failure.</param>
         static public void Greater(int arg1, int arg2, string message)
         {
             GreaterThan(arg1, arg2, message);
@@ -2061,8 +2061,8 @@ namespace MbUnit.Framework
         /// value. If they are not, then an
         /// <see cref="AssertionException"/> is thrown.
         /// </summary>
-        /// <param name="arg1">The first value, expected to be greater</param>
-        /// <param name="arg2">The second value, expected to be less</param>
+        /// <param name="arg1">The first value, expected to be greater.</param>
+        /// <param name="arg2">The second value, expected to be less.</param>
         static public void Greater(int arg1, int arg2)
         {
             GreaterThan(arg1, arg2);
@@ -2077,10 +2077,10 @@ namespace MbUnit.Framework
         /// value. If they are not, then an
         /// <see cref="AssertionException"/> is thrown.
         /// </summary>
-        /// <param name="arg1">The first value, expected to be greater</param>
-        /// <param name="arg2">The second value, expected to be less</param>
-        /// <param name="message">The message that will be displayed on failure</param>
-        /// <param name="args">Arguments to be used in formatting the message</param>
+        /// <param name="arg1">The first value, expected to be greater.</param>
+        /// <param name="arg2">The second value, expected to be less.</param>
+        /// <param name="message">The message that will be displayed on failure.</param>
+        /// <param name="args">Arguments to be used in formatting the message.</param>
         static public void Greater(uint arg1,
             uint arg2, string message, params object[] args)
         {
@@ -2092,9 +2092,9 @@ namespace MbUnit.Framework
         /// value. If they are not, then an
         /// <see cref="AssertionException"/> is thrown.
         /// </summary>
-        /// <param name="arg1">The first value, expected to be greater</param>
-        /// <param name="arg2">The second value, expected to be less</param>
-        /// <param name="message">The message that will be displayed on failure</param>
+        /// <param name="arg1">The first value, expected to be greater.</param>
+        /// <param name="arg2">The second value, expected to be less.</param>
+        /// <param name="message">The message that will be displayed on failure.</param>
         static public void Greater(uint arg1, uint arg2, string message)
         {
             GreaterThan(arg1, arg2, message);
@@ -2105,8 +2105,8 @@ namespace MbUnit.Framework
         /// value. If they are not, then an
         /// <see cref="AssertionException"/> is thrown.
         /// </summary>
-        /// <param name="arg1">The first value, expected to be greater</param>
-        /// <param name="arg2">The second value, expected to be less</param>
+        /// <param name="arg1">The first value, expected to be greater.</param>
+        /// <param name="arg2">The second value, expected to be less.</param>
         static public void Greater(uint arg1, uint arg2)
         {
             GreaterThan(arg1, arg2);
@@ -2121,10 +2121,10 @@ namespace MbUnit.Framework
         /// value. If they are not, then an
         /// <see cref="AssertionException"/> is thrown.
         /// </summary>
-        /// <param name="arg1">The first value, expected to be greater</param>
-        /// <param name="arg2">The second value, expected to be less</param>
-        /// <param name="message">The message that will be displayed on failure</param>
-        /// <param name="args">Arguments to be used in formatting the message</param>
+        /// <param name="arg1">The first value, expected to be greater.</param>
+        /// <param name="arg2">The second value, expected to be less.</param>
+        /// <param name="message">The message that will be displayed on failure.</param>
+        /// <param name="args">Arguments to be used in formatting the message.</param>
         static public void Greater(decimal arg1,
             decimal arg2, string message, params object[] args)
         {
@@ -2136,9 +2136,9 @@ namespace MbUnit.Framework
         /// value. If they are not, then an
         /// <see cref="AssertionException"/> is thrown.
         /// </summary>
-        /// <param name="arg1">The first value, expected to be greater</param>
-        /// <param name="arg2">The second value, expected to be less</param>
-        /// <param name="message">The message that will be displayed on failure</param>
+        /// <param name="arg1">The first value, expected to be greater.</param>
+        /// <param name="arg2">The second value, expected to be less.</param>
+        /// <param name="message">The message that will be displayed on failure.</param>
         static public void Greater(decimal arg1, decimal arg2, string message)
         {
             GreaterThan(arg1, arg2, message);
@@ -2149,8 +2149,8 @@ namespace MbUnit.Framework
         /// value. If they are not, then an
         /// <see cref="AssertionException"/> is thrown.
         /// </summary>
-        /// <param name="arg1">The first value, expected to be greater</param>
-        /// <param name="arg2">The second value, expected to be less</param>
+        /// <param name="arg1">The first value, expected to be greater.</param>
+        /// <param name="arg2">The second value, expected to be less.</param>
         static public void Greater(decimal arg1, decimal arg2)
         {
             GreaterThan(arg1, arg2);
@@ -2165,10 +2165,10 @@ namespace MbUnit.Framework
         /// value. If they are not, then an
         /// <see cref="AssertionException"/> is thrown.
         /// </summary>
-        /// <param name="arg1">The first value, expected to be greater</param>
-        /// <param name="arg2">The second value, expected to be less</param>
-        /// <param name="message">The message that will be displayed on failure</param>
-        /// <param name="args">Arguments to be used in formatting the message</param>
+        /// <param name="arg1">The first value, expected to be greater.</param>
+        /// <param name="arg2">The second value, expected to be less.</param>
+        /// <param name="message">The message that will be displayed on failure.</param>
+        /// <param name="args">Arguments to be used in formatting the message.</param>
         static public void Greater(long arg1,
             long arg2, string message, params object[] args)
         {
@@ -2180,9 +2180,9 @@ namespace MbUnit.Framework
         /// value. If they are not, then an
         /// <see cref="AssertionException"/> is thrown.
         /// </summary>
-        /// <param name="arg1">The first value, expected to be greater</param>
-        /// <param name="arg2">The second value, expected to be less</param>
-        /// <param name="message">The message that will be displayed on failure</param>
+        /// <param name="arg1">The first value, expected to be greater.</param>
+        /// <param name="arg2">The second value, expected to be less.</param>
+        /// <param name="message">The message that will be displayed on failure.</param>
         static public void Greater(long arg1, long arg2, string message)
         {
             GreaterThan(arg1, arg2, message);
@@ -2193,8 +2193,8 @@ namespace MbUnit.Framework
         /// value. If they are not, then an
         /// <see cref="AssertionException"/> is thrown.
         /// </summary>
-        /// <param name="arg1">The first value, expected to be greater</param>
-        /// <param name="arg2">The second value, expected to be less</param>
+        /// <param name="arg1">The first value, expected to be greater.</param>
+        /// <param name="arg2">The second value, expected to be less.</param>
         static public void Greater(long arg1, long arg2)
         {
             GreaterThan(arg1, arg2);
@@ -2209,10 +2209,10 @@ namespace MbUnit.Framework
         /// value. If they are not, then an
         /// <see cref="AssertionException"/> is thrown.
         /// </summary>
-        /// <param name="arg1">The first value, expected to be greater</param>
-        /// <param name="arg2">The second value, expected to be less</param>
-        /// <param name="message">The message that will be displayed on failure</param>
-        /// <param name="args">Arguments to be used in formatting the message</param>
+        /// <param name="arg1">The first value, expected to be greater.</param>
+        /// <param name="arg2">The second value, expected to be less.</param>
+        /// <param name="message">The message that will be displayed on failure.</param>
+        /// <param name="args">Arguments to be used in formatting the message.</param>
         static public void Greater(double arg1,
             double arg2, string message, params object[] args)
         {
@@ -2224,9 +2224,9 @@ namespace MbUnit.Framework
         /// value. If they are not, then an
         /// <see cref="AssertionException"/> is thrown.
         /// </summary>
-        /// <param name="arg1">The first value, expected to be greater</param>
-        /// <param name="arg2">The second value, expected to be less</param>
-        /// <param name="message">The message that will be displayed on failure</param>
+        /// <param name="arg1">The first value, expected to be greater.</param>
+        /// <param name="arg2">The second value, expected to be less.</param>
+        /// <param name="message">The message that will be displayed on failure.</param>
         static public void Greater(double arg1,
             double arg2, string message)
         {
@@ -2238,8 +2238,8 @@ namespace MbUnit.Framework
         /// value. If they are not, then an
         /// <see cref="AssertionException"/> is thrown.
         /// </summary>
-        /// <param name="arg1">The first value, expected to be greater</param>
-        /// <param name="arg2">The second value, expected to be less</param>
+        /// <param name="arg1">The first value, expected to be greater.</param>
+        /// <param name="arg2">The second value, expected to be less.</param>
         static public void Greater(double arg1, double arg2)
         {
             GreaterThan(arg1, arg2);
@@ -2254,10 +2254,10 @@ namespace MbUnit.Framework
         /// value. If they are not, then an
         /// <see cref="AssertionException"/> is thrown.
         /// </summary>
-        /// <param name="arg1">The first value, expected to be greater</param>
-        /// <param name="arg2">The second value, expected to be less</param>
-        /// <param name="message">The message that will be displayed on failure</param>
-        /// <param name="args">Arguments to be used in formatting the message</param>
+        /// <param name="arg1">The first value, expected to be greater.</param>
+        /// <param name="arg2">The second value, expected to be less.</param>
+        /// <param name="message">The message that will be displayed on failure.</param>
+        /// <param name="args">Arguments to be used in formatting the message.</param>
         static public void Greater(float arg1,
             float arg2, string message, params object[] args)
         {
@@ -2269,9 +2269,9 @@ namespace MbUnit.Framework
         /// value. If they are not, then an
         /// <see cref="AssertionException"/> is thrown.
         /// </summary>
-        /// <param name="arg1">The first value, expected to be greater</param>
-        /// <param name="arg2">The second value, expected to be less</param>
-        /// <param name="message">The message that will be displayed on failure</param>
+        /// <param name="arg1">The first value, expected to be greater.</param>
+        /// <param name="arg2">The second value, expected to be less.</param>
+        /// <param name="message">The message that will be displayed on failure.</param>
         static public void Greater(float arg1, float arg2, string message)
         {
             GreaterThan(arg1, arg2, message);
@@ -2282,8 +2282,8 @@ namespace MbUnit.Framework
         /// value. If they are not, then an
         /// <see cref="AssertionException"/> is thrown.
         /// </summary>
-        /// <param name="arg1">The first value, expected to be greater</param>
-        /// <param name="arg2">The second value, expected to be less</param>
+        /// <param name="arg1">The first value, expected to be greater.</param>
+        /// <param name="arg2">The second value, expected to be less.</param>
         static public void Greater(float arg1, float arg2)
         {
             GreaterThan(arg1, arg2);
@@ -2298,10 +2298,10 @@ namespace MbUnit.Framework
         /// value. If they are not, then an
         /// <see cref="AssertionException"/> is thrown.
         /// </summary>
-        /// <param name="arg1">The first value, expected to be greater</param>
-        /// <param name="arg2">The second value, expected to be less</param>
-        /// <param name="message">The message that will be displayed on failure</param>
-        /// <param name="args">Arguments to be used in formatting the message</param>
+        /// <param name="arg1">The first value, expected to be greater.</param>
+        /// <param name="arg2">The second value, expected to be less.</param>
+        /// <param name="message">The message that will be displayed on failure.</param>
+        /// <param name="args">Arguments to be used in formatting the message.</param>
         static public void Greater(IComparable arg1,
             IComparable arg2, string message, params object[] args)
         {
@@ -2313,9 +2313,9 @@ namespace MbUnit.Framework
         /// value. If they are not, then an
         /// <see cref="AssertionException"/> is thrown.
         /// </summary>
-        /// <param name="arg1">The first value, expected to be greater</param>
-        /// <param name="arg2">The second value, expected to be less</param>
-        /// <param name="message">The message that will be displayed on failure</param>
+        /// <param name="arg1">The first value, expected to be greater.</param>
+        /// <param name="arg2">The second value, expected to be less.</param>
+        /// <param name="message">The message that will be displayed on failure.</param>
         static public void Greater(IComparable arg1, IComparable arg2, string message)
         {
             GreaterThan(arg1, arg2, message);
@@ -2326,8 +2326,8 @@ namespace MbUnit.Framework
         /// value. If they are not, then an
         /// <see cref="AssertionException"/> is thrown.
         /// </summary>
-        /// <param name="arg1">The first value, expected to be greater</param>
-        /// <param name="arg2">The second value, expected to be less</param>
+        /// <param name="arg1">The first value, expected to be greater.</param>
+        /// <param name="arg2">The second value, expected to be less.</param>
         static public void Greater(IComparable arg1, IComparable arg2)
         {
             GreaterThan(arg1, arg2);
@@ -3064,9 +3064,9 @@ namespace MbUnit.Framework
         /// <summary>
         /// Assert that a string is empty - that is equal to string.Empty
         /// </summary>
-        /// <param name="aString">The string to be tested</param>
-        /// <param name="message">The message to be displayed on failure</param>
-        /// <param name="args">Arguments to be used in formatting the message</param>
+        /// <param name="aString">The string to be tested.</param>
+        /// <param name="message">The message to be displayed on failure.</param>
+        /// <param name="args">Arguments to be used in formatting the message.</param>
         public static void IsEmpty(string aString, string message, params object[] args)
         {
             if (aString != "" || !aString.Equals(string.Empty))
@@ -3081,8 +3081,8 @@ namespace MbUnit.Framework
         /// <summary>
         /// Assert that a string is empty - that is equal to string.Emtpy
         /// </summary>
-        /// <param name="aString">The string to be tested</param>
-        /// <param name="message">The message to be displayed on failure</param>
+        /// <param name="aString">The string to be tested.</param>
+        /// <param name="message">The message to be displayed on failure.</param>
         public static void IsEmpty(string aString, string message)
         {
             IsEmpty(aString, message, null);
@@ -3091,7 +3091,7 @@ namespace MbUnit.Framework
         /// <summary>
         /// Assert that a string is empty - that is equal to string.Emtpy
         /// </summary>
-        /// <param name="aString">The string to be tested</param>
+        /// <param name="aString">The string to be tested.</param>
         public static void IsEmpty(string aString)
         {
             IsEmpty(aString, string.Empty, null);
@@ -3100,9 +3100,9 @@ namespace MbUnit.Framework
         /// <summary>
         /// Assert that an array, list or other collection is empty
         /// </summary>
-        /// <param name="collection">An array, list or other collection implementing ICollection</param>
-        /// <param name="message">The message to be displayed on failure</param>
-        /// <param name="args">Arguments to be used in formatting the message</param>
+        /// <param name="collection">An array, list or other collection implementing ICollection.</param>
+        /// <param name="message">The message to be displayed on failure.</param>
+        /// <param name="args">Arguments to be used in formatting the message.</param>
         public static void IsEmpty(ICollection collection, string message, params object[] args)
         {
             if (collection.Count != 0)
@@ -3117,8 +3117,8 @@ namespace MbUnit.Framework
         /// <summary>
         /// Assert that an array, list or other collection is empty
         /// </summary>
-        /// <param name="collection">An array, list or other collection implementing ICollection</param>
-        /// <param name="message">The message to be displayed on failure</param>
+        /// <param name="collection">An array, list or other collection implementing ICollection.</param>
+        /// <param name="message">The message to be displayed on failure.</param>
         public static void IsEmpty(ICollection collection, string message)
         {
             IsEmpty(collection, message, null);
@@ -3127,7 +3127,7 @@ namespace MbUnit.Framework
         /// <summary>
         /// Assert that an array,list or other collection is empty
         /// </summary>
-        /// <param name="collection">An array, list or other collection implementing ICollection</param>
+        /// <param name="collection">An array, list or other collection implementing ICollection.</param>
         public static void IsEmpty(ICollection collection)
         {
             IsEmpty(collection, string.Empty, null);
@@ -3142,9 +3142,9 @@ namespace MbUnit.Framework
         /// <summary>
         /// Assert that a string is empty - that is equal to string.Emtpy
         /// </summary>
-        /// <param name="aString">The string to be tested</param>
-        /// <param name="message">The message to be displayed on failure</param>
-        /// <param name="args">Arguments to be used in formatting the message</param>
+        /// <param name="aString">The string to be tested.</param>
+        /// <param name="message">The message to be displayed on failure.</param>
+        /// <param name="args">Arguments to be used in formatting the message.</param>
         public static void IsNotEmpty(string aString, string message, params object[] args)
         {
             if (aString == "" || aString.Equals(string.Empty))
@@ -3159,8 +3159,8 @@ namespace MbUnit.Framework
         /// <summary>
         /// Assert that a string is empty - that is equal to string.Emtpy
         /// </summary>
-        /// <param name="aString">The string to be tested</param>
-        /// <param name="message">The message to be displayed on failure</param>
+        /// <param name="aString">The string to be tested.</param>
+        /// <param name="message">The message to be displayed on failure.</param>
         public static void IsNotEmpty(string aString, string message)
         {
             IsNotEmpty(aString, message, null);
@@ -3169,7 +3169,7 @@ namespace MbUnit.Framework
         /// <summary>
         /// Assert that a string is empty - that is equal to string.Emtpy
         /// </summary>
-        /// <param name="aString">The string to be tested</param>
+        /// <param name="aString">The string to be tested.</param>
         public static void IsNotEmpty(string aString)
         {
             IsNotEmpty(aString, string.Empty, null);
@@ -3178,9 +3178,9 @@ namespace MbUnit.Framework
         /// <summary>
         /// Assert that an array, list or other collection is empty
         /// </summary>
-        /// <param name="collection">An array, list or other collection implementing ICollection</param>
-        /// <param name="message">The message to be displayed on failure</param>
-        /// <param name="args">Arguments to be used in formatting the message</param>
+        /// <param name="collection">An array, list or other collection implementing ICollection.</param>
+        /// <param name="message">The message to be displayed on failure.</param>
+        /// <param name="args">Arguments to be used in formatting the message.</param>
         public static void IsNotEmpty(ICollection collection, string message, params object[] args)
         {
             if (collection.Count == 0)
@@ -3195,8 +3195,8 @@ namespace MbUnit.Framework
         /// <summary>
         /// Assert that an array, list or other collection is empty
         /// </summary>
-        /// <param name="collection">An array, list or other collection implementing ICollection</param>
-        /// <param name="message">The message to be displayed on failure</param>
+        /// <param name="collection">An array, list or other collection implementing ICollection.</param>
+        /// <param name="message">The message to be displayed on failure.</param>
         public static void IsNotEmpty(ICollection collection, string message)
         {
             IsNotEmpty(collection, message, null);
@@ -3205,7 +3205,7 @@ namespace MbUnit.Framework
         /// <summary>
         /// Assert that an array,list or other collection is empty
         /// </summary>
-        /// <param name="collection">An array, list or other collection implementing ICollection</param>
+        /// <param name="collection">An array, list or other collection implementing ICollection.</param>
         public static void IsNotEmpty(ICollection collection)
         {
             IsNotEmpty(collection, string.Empty, null);
@@ -3219,9 +3219,9 @@ namespace MbUnit.Framework
         /// If the object is not <code>NaN</code> then an <see cref="AssertionException"/>
         /// is thrown.
         /// </summary>
-        /// <param name="aDouble">The value that is to be tested</param>
-        /// <param name="message">The message to be displayed when the object is not null</param>
-        /// <param name="args">Arguments to be used in formatting the message</param>
+        /// <param name="aDouble">The value that is to be tested.</param>
+        /// <param name="message">The message to be displayed when the object is not null.</param>
+        /// <param name="args">Arguments to be used in formatting the message.</param>
         static public void IsNaN(double aDouble, string message, params object[] args)
         {
             if (!double.IsNaN(aDouble))
@@ -3235,8 +3235,8 @@ namespace MbUnit.Framework
         /// If the object is not <code>NaN</code> then an <see cref="AssertionException"/>
         /// is thrown.
         /// </summary>
-        /// <param name="aDouble">The object that is to be tested</param>
-        /// <param name="message">The message to be displayed when the object is not null</param>
+        /// <param name="aDouble">The object that is to be tested.</param>
+        /// <param name="message">The message to be displayed when the object is not null.</param>
         static public void IsNaN(double aDouble, string message)
         {
             if (!double.IsNaN(aDouble))
@@ -3250,7 +3250,7 @@ namespace MbUnit.Framework
         /// If the object is not <code>NaN</code> then an <see cref="AssertionException"/>
         /// is thrown.
         /// </summary>
-        /// <param name="aDouble">The object that is to be tested</param>
+        /// <param name="aDouble">The object that is to be tested.</param>
         static public void IsNaN(double aDouble)
         {
             IsNaN(aDouble, string.Empty);
@@ -3275,7 +3275,7 @@ namespace MbUnit.Framework
         /// Asserts that an object may be assigned a  value of a given Type.
         /// </summary>
         /// <param name="expected">The expected Type.</param>
-        /// <param name="actual">The object under examination</param>
+        /// <param name="actual">The object under examination.</param>
         static public void IsAssignableFrom(Type expected, object actual)
         {
             IsAssignableFrom(expected, actual, "");
@@ -3285,8 +3285,8 @@ namespace MbUnit.Framework
         /// Asserts that an object may be assigned a  value of a given Type.
         /// </summary>
         /// <param name="expected">The expected Type.</param>
-        /// <param name="actual">The object under examination</param>
-        /// <param name="message">The messge to display in case of failure</param>
+        /// <param name="actual">The object under examination.</param>
+        /// <param name="message">The messge to display in case of failure.</param>
         static public void IsAssignableFrom(Type expected, object actual, string message)
         {
             IsAssignableFrom(expected, actual, message, null);
@@ -3296,9 +3296,9 @@ namespace MbUnit.Framework
         /// Asserts that an object may be assigned a  value of a given Type.
         /// </summary>
         /// <param name="expected">The expected Type.</param>
-        /// <param name="actual">The object under examination</param>
-        /// <param name="message">The message to display in case of failure</param>
-        /// <param name="args">Array of objects to be used in formatting the message</param>
+        /// <param name="actual">The object under examination.</param>
+        /// <param name="message">The message to display in case of failure.</param>
+        /// <param name="args">Array of objects to be used in formatting the message.</param>
         static public void IsAssignableFrom(Type expected, object actual, string message, params object[] args)
         {
             if (!actual.GetType().IsAssignableFrom(expected))
@@ -3313,7 +3313,7 @@ namespace MbUnit.Framework
         /// Asserts that an object may not be assigned a  value of a given Type.
         /// </summary>
         /// <param name="expected">The expected Type.</param>
-        /// <param name="actual">The object under examination</param>
+        /// <param name="actual">The object under examination.</param>
         static public void IsNotAssignableFrom(Type expected, object actual)
         {
             IsNotAssignableFrom(expected, actual, "");
@@ -3323,8 +3323,8 @@ namespace MbUnit.Framework
         /// Asserts that an object may not be assigned a  value of a given Type.
         /// </summary>
         /// <param name="expected">The expected Type.</param>
-        /// <param name="actual">The object under examination</param>
-        /// <param name="message">The messge to display in case of failure</param>
+        /// <param name="actual">The object under examination.</param>
+        /// <param name="message">The messge to display in case of failure.</param>
         static public void IsNotAssignableFrom(Type expected, object actual, string message)
         {
             IsNotAssignableFrom(expected, actual, message, null);
@@ -3334,9 +3334,9 @@ namespace MbUnit.Framework
         /// Asserts that an object may not be assigned a  value of a given Type.
         /// </summary>
         /// <param name="expected">The expected Type.</param>
-        /// <param name="actual">The object under examination</param>
-        /// <param name="message">The message to display in case of failure</param>
-        /// <param name="args">Array of objects to be used in formatting the message</param>
+        /// <param name="actual">The object under examination.</param>
+        /// <param name="message">The message to display in case of failure.</param>
+        /// <param name="args">Array of objects to be used in formatting the message.</param>
         static public void IsNotAssignableFrom(Type expected, object actual, string message, params object[] args)
         {
      
@@ -3363,8 +3363,8 @@ namespace MbUnit.Framework
         /// <summary>
         /// Asserts that an object is an instance of a given type.
         /// </summary>
-        /// <param name="expected">The expected Type</param>
-        /// <param name="actual">The object being examined</param>
+        /// <param name="expected">The expected Type.</param>
+        /// <param name="actual">The object being examined.</param>
         public static void IsInstanceOfType(Type expected, object actual)
         {
             IsInstanceOfType(expected, actual, string.Empty, null);
@@ -3373,9 +3373,9 @@ namespace MbUnit.Framework
         /// <summary>
         /// Asserts that an object is an instance of a given type.
         /// </summary>
-        /// <param name="expected">The expected Type</param>
-        /// <param name="actual">The object being examined</param>
-        /// <param name="message">A message to display in case of failure</param>
+        /// <param name="expected">The expected Type.</param>
+        /// <param name="actual">The object being examined.</param>
+        /// <param name="message">A message to display in case of failure.</param>
         public static void IsInstanceOfType(Type expected, object actual, string message)
         {
             IsInstanceOfType(expected, actual, message, null);
@@ -3384,10 +3384,10 @@ namespace MbUnit.Framework
         /// <summary>
         /// Asserts that an object is an instance of a given type.
         /// </summary>
-        /// <param name="expected">The expected Type</param>
-        /// <param name="actual">The object being examined</param>
-        /// <param name="message">A message to display in case of failure</param>
-        /// <param name="args">An array of objects to be used in formatting the message</param>
+        /// <param name="expected">The expected Type.</param>
+        /// <param name="actual">The object being examined.</param>
+        /// <param name="message">A message to display in case of failure.</param>
+        /// <param name="args">An array of objects to be used in formatting the message.</param>
         public static void IsInstanceOfType(Type expected, object actual, string message, params object[] args)
         {
             if (!expected.IsInstanceOfType(actual))
@@ -3401,8 +3401,8 @@ namespace MbUnit.Framework
         /// <summary>
         /// Asserts that an object is not an instance of a given type.
         /// </summary>
-        /// <param name="expected">The expected Type</param>
-        /// <param name="actual">The object being examined</param>
+        /// <param name="expected">The expected Type.</param>
+        /// <param name="actual">The object being examined.</param>
         public static void IsNotInstanceOfType(Type expected, object actual)
         {
             IsNotInstanceOfType(expected, actual, string.Empty, null);
@@ -3411,9 +3411,9 @@ namespace MbUnit.Framework
         /// <summary>
         /// Asserts that an object is not an instance of a given type.
         /// </summary>
-        /// <param name="expected">The expected Type</param>
-        /// <param name="actual">The object being examined</param>
-        /// <param name="message">A message to display in case of failure</param>
+        /// <param name="expected">The expected Type.</param>
+        /// <param name="actual">The object being examined.</param>
+        /// <param name="message">A message to display in case of failure.</param>
         public static void IsNotInstanceOfType(Type expected, object actual, string message)
         {
             IsNotInstanceOfType(expected, actual, message, null);
@@ -3422,10 +3422,10 @@ namespace MbUnit.Framework
         /// <summary>
         /// Asserts that an object is not an instance of a given type.
         /// </summary>
-        /// <param name="expected">The expected Type</param>
-        /// <param name="actual">The object being examined</param>
-        /// <param name="message">A message to display in case of failure</param>
-        /// <param name="args">An array of objects to be used in formatting the message</param>
+        /// <param name="expected">The expected Type.</param>
+        /// <param name="actual">The object being examined.</param>
+        /// <param name="message">A message to display in case of failure.</param>
+        /// <param name="args">An array of objects to be used in formatting the message.</param>
         public static void IsNotInstanceOfType(Type expected, object actual, string message, params object[] args)
         {
             
@@ -3485,8 +3485,8 @@ namespace MbUnit.Framework
         /// This method is called when two objects have been compared and found to be
         /// different. This prints a nice message to the screen.
         /// </summary>
-        /// <param name="expected">The expected object</param>
-        /// <param name="actual">The actual object</param>
+        /// <param name="expected">The expected object.</param>
+        /// <param name="actual">The actual object.</param>
         /// <param name="format">
         /// The format of the message to display if the assertion fails,
         /// containing zero or more format items.
@@ -3508,8 +3508,8 @@ namespace MbUnit.Framework
         /// <summary>
         ///  This method is called when the two objects are not the same.
         /// </summary>
-        /// <param name="expected">The expected object</param>
-        /// <param name="actual">The actual object</param>
+        /// <param name="expected">The expected object.</param>
+        /// <param name="actual">The actual object.</param>
         /// <param name="format">
         /// The format of the message to display if the assertion fails,
         /// containing zero or more format items.

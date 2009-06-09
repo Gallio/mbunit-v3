@@ -74,10 +74,12 @@ namespace MbUnit.Framework
         IRetryOptions WithPolling(TimeSpan polling);
 
         /// <summary>
-        /// Specifies a timeout value expressed in milliseconds. The retry operation fails if the 
-        /// overall duration exceeds the specified timeout value.
+        /// Specifies a timeout value expressed in milliseconds.
         /// </summary>
         /// <remarks>
+        /// <para>
+        /// The retry operation fails if the overall duration exceeds the specified timeout value.
+        /// </para>
         /// <para>
         /// If not specified, the default timeout value is set to 10 seconds.
         /// </para>
@@ -89,10 +91,12 @@ namespace MbUnit.Framework
         IRetryOptions WithTimeout(int milliseconds);
 
         /// <summary>
-        /// Specifies a timeout value. The retry operation fails if the 
-        /// overall duration exceeds the specified timeout value.
+        /// Specifies a timeout value.
         /// </summary>
         /// <remarks>
+        /// <para>
+        /// The retry operation fails if the overall duration exceeds the specified timeout value.
+        /// </para>
         /// <para>
         /// If not specified, the default timeout value is set to 10 seconds.
         /// </para>
@@ -116,16 +120,20 @@ namespace MbUnit.Framework
         /// Specifies a custom formatted message to be added to the text of the assertion raised when
         /// the retry operation has failed.
         /// </summary>
-        /// <param name="messageFormat">A user-supplied assertion failure message string, or null if none</param>
-        /// <param name="messageArgs">The format arguments, or null or empty if none</param>
+        /// <param name="messageFormat">A user-supplied assertion failure message string, or null if none.</param>
+        /// <param name="messageArgs">The format arguments, or null or empty if none.</param>
         /// <returns></returns>
         IRetryOptions WithFailureMessage(string messageFormat, object[] messageArgs);
 
         /// <summary>
         /// Specifies the condition to evaluate repeatedly, and starts the entire operation.
-        /// The condition is considered fulfilled when it returns true.
         /// </summary>
-        /// <param name="condition">The condition to evaluate</param>
+        /// <remarks>
+        /// <para>
+        /// The condition is considered fulfilled when it returns true.
+        /// </para>
+        /// </remarks>
+        /// <param name="condition">The condition to evaluate.</param>
         /// <exception cref="AssertionFailureException">Thrown when the condition is false, and a timeout occured, or the maximum
         /// number of evaluation attempts was reached.</exception>
         void Until(Func<bool> condition);
@@ -133,7 +141,7 @@ namespace MbUnit.Framework
         /// <summary>
         /// Specifies a <see cref="WaitHandle"/> instance to wait for being signaled, and starts the entire operation.
         /// </summary>
-        /// <param name="waitHandle">The wait handle to evaluate</param>
+        /// <param name="waitHandle">The wait handle to evaluate.</param>
         /// <exception cref="AssertionFailureException">Thrown when the wait handle is unsignaled, and a timeout occured, or the maximum
         /// number of evaluation attempts was reached.</exception>
         /// <seealso cref="WaitHandle.WaitOne(int,bool)"/>
@@ -142,7 +150,7 @@ namespace MbUnit.Framework
         /// <summary>
         /// Specifies a <see cref="Thread"/> instance to wait for being terminated, and starts the entire operation.
         /// </summary>
-        /// <param name="tread">The thread to evaluate</param>
+        /// <param name="tread">The thread to evaluate.</param>
         /// <exception cref="AssertionFailureException">Thrown when the thread is still alive, and a timeout occured, or the maximum
         /// number of evaluation attempts was reached.</exception>
         /// <seealso cref="Thread.Join(int)"/>

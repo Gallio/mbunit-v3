@@ -47,9 +47,9 @@ namespace MbUnit.Framework
         /// <summary>
         /// Verifies that the attribute is being used correctly.
         /// </summary>
-        /// <param name="scope">The scope</param>
-        /// <param name="codeElement">The code element</param>
-        /// <exception cref="PatternUsageErrorException">Thrown if the attribute is being used incorrectly</exception>
+        /// <param name="scope">The scope.</param>
+        /// <param name="codeElement">The code element.</param>
+        /// <exception cref="PatternUsageErrorException">Thrown if the attribute is being used incorrectly.</exception>
         protected virtual void Validate(IPatternScope scope, ICodeElementInfo codeElement)
         {
             if (!scope.IsTestDeclaration)
@@ -59,7 +59,7 @@ namespace MbUnit.Framework
         /// <summary>
         /// Gets the join strategy to use.
         /// </summary>
-        /// <returns>The join strategy</returns>
+        /// <returns>The join strategy.</returns>
         protected abstract IJoinStrategy GetJoinStrategy();        
     }
 }

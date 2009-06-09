@@ -21,15 +21,15 @@ namespace MbUnit.Framework.Reflection
     public enum MemberType
     {
         ///<summary>
-        /// Method
+        /// Method.
         ///</summary>
         Method, 
         /// <summary>
-        /// Field or variable
+        /// Field or variable.
         /// </summary>
         Field, 
         ///<summary>
-        /// Property
+        /// Property.
         ///</summary>
         Property
     }

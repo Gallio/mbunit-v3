@@ -35,14 +35,16 @@ namespace MbUnit.Framework
     /// </para>
     /// </remarks>
     /// <example>
+    /// <code><![CDATA[
     /// [Test]
     /// [Row(1, "a", 0.1)]
     /// [Row(2, "b", 0.2)]
-    /// public void ATest(int x, string y, double z)
+    /// public void MyTest(int x, string y, double z)
     /// {
     ///     // This test will run twice.  Once with x = 1, y = "a", and z = 0.1
     ///     // then again with x = 2, y = "b", and z = 0.2.
     /// }
+    /// ]]></code>
     /// </example>
     /// <seealso cref="ColumnAttribute"/>
     /// <seealso cref="HeaderAttribute"/>
@@ -67,7 +69,7 @@ namespace MbUnit.Framework
         /// Since the value array cannot be null, the attribute will assume that
         /// you meant to create an array consiting of a single <c>null</c>.
         /// </para>
-        /// <code>
+        /// <code><![CDATA[
         /// // Example of case #1.
         /// // The attribute will assume that you intended to pass in a single null value.
         /// [Test]
@@ -76,7 +78,7 @@ namespace MbUnit.Framework
         /// {
         ///     Assert.IsNull(value);
         /// }
-        /// </code>
+        /// ]]></code>
         /// <para>
         /// Case 2: If there is only 1 argument and its value is an object array, the
         /// compiler will pass the array itself as the argument values.  Unfortunately,
@@ -84,20 +86,20 @@ namespace MbUnit.Framework
         /// when multiple arguments are present.  So you need to disambiguate this case
         /// explicitly.
         /// </para>
-        /// <code>
+        /// <code><![CDATA[
         /// // Example of case #2.
         /// // The attribute will treat both of the following declarations equivalently
         /// // contrary to what we probably intend.
         /// [Row(new object[] { 1, 2, 3 })]
         /// [Row(1, 2, 3)]
-        /// </code>
+        /// ]]></code>
         /// <para>
         /// To fix this case, you must provide explicit disambiguation.
         /// (We cannot do it automatically based on the number of method parameters provided
         /// because the row attribute can be applied to other elements besides methods and
         /// its contents might be consumed in other ways.)
         /// </para>
-        /// <code>
+        /// <code><![CDATA[
         /// // Example of case #2, disambiguated to define a row that contains only an array of values.
         /// [Test]
         /// [Row(new object[] { new object[] { 1, 2, 3 })]
@@ -105,9 +107,9 @@ namespace MbUnit.Framework
         /// {
         ///     ArrayAssert.AreElementsEqual(new object[] { 1, 2, 3 }, values);
         /// }
-        /// </code>
+        /// ]]></code>
         /// </remarks>
-        /// <param name="values">The array of values in the row</param>
+        /// <param name="values">The array of values in the row.</param>
         [CLSCompliant(false)]
         public RowAttribute(params object[] values)
         {

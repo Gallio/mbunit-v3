@@ -39,8 +39,8 @@ namespace MbUnit.Framework
         /// <summary>
         /// Specifies the maximum number of concurrent threads to use when tests are run in parallel.
         /// </summary>
-        /// <param name="degreeOfParallelism">The degree of parallelism</param>
-        /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="degreeOfParallelism"/> is less than 1</exception>
+        /// <param name="degreeOfParallelism">The degree of parallelism.</param>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="degreeOfParallelism"/> is less than 1.</exception>
         public DegreeOfParallelismAttribute(int degreeOfParallelism)
         {
             if (degreeOfParallelism < 1)

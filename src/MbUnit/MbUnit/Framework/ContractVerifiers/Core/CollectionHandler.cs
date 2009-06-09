@@ -20,18 +20,13 @@ using Gallio.Framework.Assertions;
 
 namespace MbUnit.Framework.ContractVerifiers.Core
 {
-    /// <summary>
-    /// Helper class to ease test operations on the tested collection.
-    /// </summary>
+    // Helper class to ease test operations on the tested collection.
     internal class CollectionHandler<TCollection, TItem>
         where TCollection : ICollection<TItem>
     {
         private readonly TCollection collection;
         private readonly ContractVerificationContext context;
 
-        /// <summary>
-        /// Gets the contract verification context.
-        /// </summary>
         protected ContractVerificationContext Context
         {
             get
@@ -40,19 +35,12 @@ namespace MbUnit.Framework.ContractVerifiers.Core
             }
         }
 
-        /// <summary>
-        /// Gets or sets the counter that tracks the expected
-        /// number of items currently in the collection.
-        /// </summary>
         protected int CountTrack
         {
             get;
             set;
         }
 
-        /// <summary>
-        /// Gets the collection.
-        /// </summary>
         protected TCollection Collection
         {
             get
@@ -61,24 +49,13 @@ namespace MbUnit.Framework.ContractVerifiers.Core
             }
         }
 
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        /// <param name="collection">An instance of the collection to test.</param>
-        /// <param name="context">The contract verification context.</param>
-        public CollectionHandler(TCollection collection, ContractVerificationContext context)
+        internal CollectionHandler(TCollection collection, ContractVerificationContext context)
         {
             this.collection = collection;
             this.CountTrack = collection.Count;
             this.context = context;
         }
 
-        /// <summary>
-        /// Adds the specified item to the tested collection and increments the tracking counter.
-        /// The operation is expected to be successful.
-        /// </summary>
-        /// <param name="item">The item to add to the tested collection.</param>
-        /// <param name="failureMessage"></param>
         protected void AssertAddItemOk(TItem item, string failureMessage)
         {
             AssertionHelper.Explain(() =>

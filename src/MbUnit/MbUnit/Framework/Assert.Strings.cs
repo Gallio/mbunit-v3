@@ -30,10 +30,10 @@ namespace MbUnit.Framework
         /// This assertion will fail if the string is null.
         /// </para>
         /// </remarks>
-        /// <param name="actualValue">The actual value</param>
-        /// <param name="expectedSubstring">The expected substring</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="expectedSubstring"/> is null</exception>
+        /// <param name="actualValue">The actual value.</param>
+        /// <param name="expectedSubstring">The expected substring.</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="expectedSubstring"/> is null.</exception>
         public static void Contains(string actualValue, string expectedSubstring)
         {
             Contains(actualValue, expectedSubstring, null);
@@ -47,12 +47,12 @@ namespace MbUnit.Framework
         /// This assertion will fail if the string is null.
         /// </para>
         /// </remarks>
-        /// <param name="actualValue">The actual value</param>
-        /// <param name="expectedSubstring">The expected substring</param>
-        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
-        /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="expectedSubstring"/> is null</exception>
+        /// <param name="actualValue">The actual value.</param>
+        /// <param name="expectedSubstring">The expected substring.</param>
+        /// <param name="messageFormat">The custom assertion message format, or null if none.</param>
+        /// <param name="messageArgs">The custom assertion message arguments, or null if none.</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="expectedSubstring"/> is null.</exception>
         public static void Contains(string actualValue, string expectedSubstring, string messageFormat, params object[] messageArgs)
         {
             if (expectedSubstring == null)
@@ -81,10 +81,10 @@ namespace MbUnit.Framework
         /// This assertion will fail if the string is null.
         /// </para>
         /// </remarks>
-        /// <param name="actualValue">The actual value</param>
-        /// <param name="unexpectedSubstring">The unexpected substring</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="unexpectedSubstring"/> is null</exception>
+        /// <param name="actualValue">The actual value.</param>
+        /// <param name="unexpectedSubstring">The unexpected substring.</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="unexpectedSubstring"/> is null.</exception>
         public static void DoesNotContain(string actualValue, string unexpectedSubstring)
         {
             DoesNotContain(actualValue, unexpectedSubstring, null);
@@ -98,12 +98,12 @@ namespace MbUnit.Framework
         /// This assertion will fail if the string is null.
         /// </para>
         /// </remarks>
-        /// <param name="actualValue">The actual value</param>
-        /// <param name="unexpectedSubstring">The unexpected substring</param>
-        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
-        /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="unexpectedSubstring"/> is null</exception>
+        /// <param name="actualValue">The actual value.</param>
+        /// <param name="unexpectedSubstring">The unexpected substring.</param>
+        /// <param name="messageFormat">The custom assertion message format, or null if none.</param>
+        /// <param name="messageArgs">The custom assertion message arguments, or null if none.</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="unexpectedSubstring"/> is null.</exception>
         public static void DoesNotContain(string actualValue, string unexpectedSubstring, string messageFormat, params object[] messageArgs)
         {
             if (unexpectedSubstring == null)
@@ -127,10 +127,10 @@ namespace MbUnit.Framework
         /// <summary>
         /// Asserts that two strings are equal according to a particular string comparison mode.
         /// </summary>
-        /// <param name="expectedValue">The expected value</param>
-        /// <param name="actualValue">The actual value</param>
-        /// <param name="comparisonType">The string comparison type</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        /// <param name="expectedValue">The expected value.</param>
+        /// <param name="actualValue">The actual value.</param>
+        /// <param name="comparisonType">The string comparison type.</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
         public static void AreEqual(string expectedValue, string actualValue, StringComparison comparisonType)
         {
             AreEqual(expectedValue, actualValue, comparisonType, null, null);
@@ -139,12 +139,12 @@ namespace MbUnit.Framework
         /// <summary>
         /// Asserts that two strings are equal according to a particular string comparison mode.
         /// </summary>
-        /// <param name="expectedValue">The expected value</param>
-        /// <param name="actualValue">The actual value</param>
-        /// <param name="comparisonType">The string comparison type</param>
-        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
-        /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        /// <param name="expectedValue">The expected value.</param>
+        /// <param name="actualValue">The actual value.</param>
+        /// <param name="comparisonType">The string comparison type.</param>
+        /// <param name="messageFormat">The custom assertion message format, or null if none.</param>
+        /// <param name="messageArgs">The custom assertion message arguments, or null if none.</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
         public static void AreEqual(string expectedValue, string actualValue, StringComparison comparisonType, string messageFormat, params object[] messageArgs)
         {
             AssertionHelper.Verify(delegate
@@ -173,10 +173,10 @@ namespace MbUnit.Framework
         /// <summary>
         /// Asserts that two strings are not equal according to a particular string comparison mode.
         /// </summary>
-        /// <param name="unexpectedValue">The unexpected value</param>
-        /// <param name="actualValue">The actual value</param>
-        /// <param name="comparisonType">The string comparison type</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        /// <param name="unexpectedValue">The unexpected value.</param>
+        /// <param name="actualValue">The actual value.</param>
+        /// <param name="comparisonType">The string comparison type.</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
         public static void AreNotEqual(string unexpectedValue, string actualValue, StringComparison comparisonType)
         {
             AreNotEqual(unexpectedValue, actualValue, comparisonType, null, null);
@@ -185,12 +185,12 @@ namespace MbUnit.Framework
         /// <summary>
         /// Asserts that two strings are not equal according to a particular string comparison mode.
         /// </summary>
-        /// <param name="unexpectedValue">The unexpected value</param>
-        /// <param name="actualValue">The actual value</param>
-        /// <param name="comparisonType">The string comparison type</param>
-        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
-        /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        /// <param name="unexpectedValue">The unexpected value.</param>
+        /// <param name="actualValue">The actual value.</param>
+        /// <param name="comparisonType">The string comparison type.</param>
+        /// <param name="messageFormat">The custom assertion message format, or null if none.</param>
+        /// <param name="messageArgs">The custom assertion message arguments, or null if none.</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
         public static void AreNotEqual(string unexpectedValue, string actualValue, StringComparison comparisonType, string messageFormat, params object[] messageArgs)
         {
             AssertionHelper.Verify(delegate
@@ -218,10 +218,10 @@ namespace MbUnit.Framework
         /// </para>
         /// </remarks>
         /// <seealso cref="Regex.Match(string, string, RegexOptions)"/>
-        /// <param name="actualValue">The actual value</param>
-        /// <param name="regexPattern">The regular expression pattern</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="regexPattern"/> is null</exception>
+        /// <param name="actualValue">The actual value.</param>
+        /// <param name="regexPattern">The regular expression pattern.</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="regexPattern"/> is null.</exception>
         public static void FullMatch(string actualValue, string regexPattern)
         {
             FullMatch(actualValue, regexPattern, RegexOptions.None, null, null);
@@ -236,12 +236,12 @@ namespace MbUnit.Framework
         /// </para>
         /// </remarks>
         /// <seealso cref="Regex.Match(string, string, RegexOptions)"/>
-        /// <param name="actualValue">The actual value</param>
-        /// <param name="regexPattern">The regular expression pattern</param>
-        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
-        /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="regexPattern"/> is null</exception>
+        /// <param name="actualValue">The actual value.</param>
+        /// <param name="regexPattern">The regular expression pattern.</param>
+        /// <param name="messageFormat">The custom assertion message format, or null if none.</param>
+        /// <param name="messageArgs">The custom assertion message arguments, or null if none.</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="regexPattern"/> is null.</exception>
         public static void FullMatch(string actualValue, string regexPattern, string messageFormat, params object[] messageArgs)
         {
             FullMatch(actualValue, regexPattern, RegexOptions.None, messageFormat, messageArgs);
@@ -256,11 +256,11 @@ namespace MbUnit.Framework
         /// </para>
         /// </remarks>
         /// <seealso cref="Regex.Match(string, string, RegexOptions)"/>
-        /// <param name="actualValue">The actual value</param>
-        /// <param name="regexPattern">The regular expression pattern</param>
-        /// <param name="regexOptions">The regular expression options</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="regexPattern"/> is null</exception>
+        /// <param name="actualValue">The actual value.</param>
+        /// <param name="regexPattern">The regular expression pattern.</param>
+        /// <param name="regexOptions">The regular expression options.</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="regexPattern"/> is null.</exception>
         public static void FullMatch(string actualValue, string regexPattern, RegexOptions regexOptions)
         {
             FullMatch(actualValue, regexPattern, regexOptions, null, null);
@@ -275,13 +275,13 @@ namespace MbUnit.Framework
         /// </para>
         /// </remarks>
         /// <seealso cref="Regex.Match(string, string, RegexOptions)"/>
-        /// <param name="actualValue">The actual value</param>
-        /// <param name="regexPattern">The regular expression pattern</param>
-        /// <param name="regexOptions">The regular expression options</param>
-        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
-        /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="regexPattern"/> is null</exception>
+        /// <param name="actualValue">The actual value.</param>
+        /// <param name="regexPattern">The regular expression pattern.</param>
+        /// <param name="regexOptions">The regular expression options.</param>
+        /// <param name="messageFormat">The custom assertion message format, or null if none.</param>
+        /// <param name="messageArgs">The custom assertion message arguments, or null if none.</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="regexPattern"/> is null.</exception>
         public static void FullMatch(string actualValue, string regexPattern, RegexOptions regexOptions, string messageFormat, params object[] messageArgs)
         {
             if (regexPattern == null)
@@ -299,10 +299,10 @@ namespace MbUnit.Framework
         /// </para>
         /// </remarks>
         /// <seealso cref="Regex.Match(string)"/>
-        /// <param name="actualValue">The actual value</param>
-        /// <param name="regex">The regular expression</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="regex"/> is null</exception>
+        /// <param name="actualValue">The actual value.</param>
+        /// <param name="regex">The regular expression.</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="regex"/> is null.</exception>
         public static void FullMatch(string actualValue, Regex regex)
         {
             FullMatch(actualValue, regex, null, null);
@@ -317,12 +317,12 @@ namespace MbUnit.Framework
         /// </para>
         /// </remarks>
         /// <seealso cref="Regex.Match(string)"/>
-        /// <param name="actualValue">The actual value</param>
-        /// <param name="regex">The regular expression</param>
-        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
-        /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="regex"/> is null</exception>
+        /// <param name="actualValue">The actual value.</param>
+        /// <param name="regex">The regular expression.</param>
+        /// <param name="messageFormat">The custom assertion message format, or null if none.</param>
+        /// <param name="messageArgs">The custom assertion message arguments, or null if none.</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="regex"/> is null.</exception>
         public static void FullMatch(string actualValue, Regex regex, string messageFormat, params object[] messageArgs)
         {
             if (regex == null)
@@ -358,10 +358,10 @@ namespace MbUnit.Framework
         /// </para>
         /// </remarks>
         /// <seealso cref="Regex.IsMatch(string, string, RegexOptions)"/>
-        /// <param name="actualValue">The actual value</param>
-        /// <param name="regexPattern">The regular expression pattern</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="regexPattern"/> is null</exception>
+        /// <param name="actualValue">The actual value.</param>
+        /// <param name="regexPattern">The regular expression pattern.</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="regexPattern"/> is null.</exception>
         public static void Like(string actualValue, string regexPattern)
         {
             Like(actualValue, regexPattern, RegexOptions.None, null, null);
@@ -376,12 +376,12 @@ namespace MbUnit.Framework
         /// </para>
         /// </remarks>
         /// <seealso cref="Regex.IsMatch(string, string, RegexOptions)"/>
-        /// <param name="actualValue">The actual value</param>
-        /// <param name="regexPattern">The regular expression pattern</param>
-        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
-        /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="regexPattern"/> is null</exception>
+        /// <param name="actualValue">The actual value.</param>
+        /// <param name="regexPattern">The regular expression pattern.</param>
+        /// <param name="messageFormat">The custom assertion message format, or null if none.</param>
+        /// <param name="messageArgs">The custom assertion message arguments, or null if none.</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="regexPattern"/> is null.</exception>
         public static void Like(string actualValue, string regexPattern, string messageFormat, params object[] messageArgs)
         {
             Like(actualValue, regexPattern, RegexOptions.None, messageFormat, messageArgs);
@@ -396,11 +396,11 @@ namespace MbUnit.Framework
         /// </para>
         /// </remarks>
         /// <seealso cref="Regex.IsMatch(string, string, RegexOptions)"/>
-        /// <param name="actualValue">The actual value</param>
-        /// <param name="regexPattern">The regular expression pattern</param>
-        /// <param name="regexOptions">The regular expression options</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="regexPattern"/> is null</exception>
+        /// <param name="actualValue">The actual value.</param>
+        /// <param name="regexPattern">The regular expression pattern.</param>
+        /// <param name="regexOptions">The regular expression options.</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="regexPattern"/> is null.</exception>
         public static void Like(string actualValue, string regexPattern, RegexOptions regexOptions)
         {
             Like(actualValue, regexPattern, regexOptions, null, null);
@@ -415,13 +415,13 @@ namespace MbUnit.Framework
         /// </para>
         /// </remarks>
         /// <seealso cref="Regex.IsMatch(string, string, RegexOptions)"/>
-        /// <param name="actualValue">The actual value</param>
-        /// <param name="regexPattern">The regular expression pattern</param>
-        /// <param name="regexOptions">The regular expression options</param>
-        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
-        /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="regexPattern"/> is null</exception>
+        /// <param name="actualValue">The actual value.</param>
+        /// <param name="regexPattern">The regular expression pattern.</param>
+        /// <param name="regexOptions">The regular expression options.</param>
+        /// <param name="messageFormat">The custom assertion message format, or null if none.</param>
+        /// <param name="messageArgs">The custom assertion message arguments, or null if none.</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="regexPattern"/> is null.</exception>
         public static void Like(string actualValue, string regexPattern, RegexOptions regexOptions, string messageFormat, params object[] messageArgs)
         {
             if (regexPattern == null)
@@ -439,10 +439,10 @@ namespace MbUnit.Framework
         /// </para>
         /// </remarks>
         /// <seealso cref="Regex.IsMatch(string)"/>
-        /// <param name="actualValue">The actual value</param>
-        /// <param name="regex">The regular expression</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="regex"/> is null</exception>
+        /// <param name="actualValue">The actual value.</param>
+        /// <param name="regex">The regular expression.</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="regex"/> is null.</exception>
         public static void Like(string actualValue, Regex regex)
         {
             Like(actualValue, regex, null, null);
@@ -457,12 +457,12 @@ namespace MbUnit.Framework
         /// </para>
         /// </remarks>
         /// <seealso cref="Regex.IsMatch(string)"/>
-        /// <param name="actualValue">The actual value</param>
-        /// <param name="regex">The regular expression</param>
-        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
-        /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="regex"/> is null</exception>
+        /// <param name="actualValue">The actual value.</param>
+        /// <param name="regex">The regular expression.</param>
+        /// <param name="messageFormat">The custom assertion message format, or null if none.</param>
+        /// <param name="messageArgs">The custom assertion message arguments, or null if none.</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="regex"/> is null.</exception>
         public static void Like(string actualValue, Regex regex, string messageFormat, params object[] messageArgs)
         {
             if (regex == null)
@@ -494,10 +494,10 @@ namespace MbUnit.Framework
         /// </para>
         /// </remarks>
         /// <seealso cref="Regex.IsMatch(string, string, RegexOptions)"/>
-        /// <param name="actualValue">The actual value</param>
-        /// <param name="regexPattern">The regular expression pattern</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="regexPattern"/> is null</exception>
+        /// <param name="actualValue">The actual value.</param>
+        /// <param name="regexPattern">The regular expression pattern.</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="regexPattern"/> is null.</exception>
         public static void NotLike(string actualValue, string regexPattern)
         {
             NotLike(actualValue, regexPattern, RegexOptions.None, null, null);
@@ -512,12 +512,12 @@ namespace MbUnit.Framework
         /// </para>
         /// </remarks>
         /// <seealso cref="Regex.IsMatch(string, string, RegexOptions)"/>
-        /// <param name="actualValue">The actual value</param>
-        /// <param name="regexPattern">The regular expression pattern</param>
-        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
-        /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="regexPattern"/> is null</exception>
+        /// <param name="actualValue">The actual value.</param>
+        /// <param name="regexPattern">The regular expression pattern.</param>
+        /// <param name="messageFormat">The custom assertion message format, or null if none.</param>
+        /// <param name="messageArgs">The custom assertion message arguments, or null if none.</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="regexPattern"/> is null.</exception>
         public static void NotLike(string actualValue, string regexPattern, string messageFormat, params object[] messageArgs)
         {
             NotLike(actualValue, regexPattern, RegexOptions.None, messageFormat, messageArgs);
@@ -532,11 +532,11 @@ namespace MbUnit.Framework
         /// </para>
         /// </remarks>
         /// <seealso cref="Regex.IsMatch(string, string, RegexOptions)"/>
-        /// <param name="actualValue">The actual value</param>
-        /// <param name="regexPattern">The regular expression pattern</param>
-        /// <param name="regexOptions">The regular expression options</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="regexPattern"/> is null</exception>
+        /// <param name="actualValue">The actual value.</param>
+        /// <param name="regexPattern">The regular expression pattern.</param>
+        /// <param name="regexOptions">The regular expression options.</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="regexPattern"/> is null.</exception>
         public static void NotLike(string actualValue, string regexPattern, RegexOptions regexOptions)
         {
             NotLike(actualValue, regexPattern, regexOptions, null, null);
@@ -551,13 +551,13 @@ namespace MbUnit.Framework
         /// </para>
         /// </remarks>
         /// <seealso cref="Regex.IsMatch(string, string, RegexOptions)"/>
-        /// <param name="actualValue">The actual value</param>
-        /// <param name="regexPattern">The regular expression pattern</param>
-        /// <param name="regexOptions">The regular expression options</param>
-        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
-        /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="regexPattern"/> is null</exception>
+        /// <param name="actualValue">The actual value.</param>
+        /// <param name="regexPattern">The regular expression pattern.</param>
+        /// <param name="regexOptions">The regular expression options.</param>
+        /// <param name="messageFormat">The custom assertion message format, or null if none.</param>
+        /// <param name="messageArgs">The custom assertion message arguments, or null if none.</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="regexPattern"/> is null.</exception>
         public static void NotLike(string actualValue, string regexPattern, RegexOptions regexOptions, string messageFormat, params object[] messageArgs)
         {
             if (regexPattern == null)
@@ -575,10 +575,10 @@ namespace MbUnit.Framework
         /// </para>
         /// </remarks>
         /// <seealso cref="Regex.IsMatch(string)"/>
-        /// <param name="actualValue">The actual value</param>
-        /// <param name="regex">The regular expression</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="regex"/> is null</exception>
+        /// <param name="actualValue">The actual value.</param>
+        /// <param name="regex">The regular expression.</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="regex"/> is null.</exception>
         public static void NotLike(string actualValue, Regex regex)
         {
             NotLike(actualValue, regex, null, null);
@@ -593,12 +593,12 @@ namespace MbUnit.Framework
         /// </para>
         /// </remarks>
         /// <seealso cref="Regex.IsMatch(string)"/>
-        /// <param name="actualValue">The actual value</param>
-        /// <param name="regex">The regular expression</param>
-        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
-        /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="regex"/> is null</exception>
+        /// <param name="actualValue">The actual value.</param>
+        /// <param name="regex">The regular expression.</param>
+        /// <param name="messageFormat">The custom assertion message format, or null if none.</param>
+        /// <param name="messageArgs">The custom assertion message arguments, or null if none.</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="regex"/> is null.</exception>
         public static void NotLike(string actualValue, Regex regex, string messageFormat, params object[] messageArgs)
         {
             if (regex == null)
@@ -630,10 +630,10 @@ namespace MbUnit.Framework
         /// </para>
         /// </remarks>
         /// <seealso cref="String.StartsWith(string)"/>
-        /// <param name="actualValue">The actual value</param>
-        /// <param name="expectedText">The expected pattern</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="expectedText"/> is null</exception>
+        /// <param name="actualValue">The actual value.</param>
+        /// <param name="expectedText">The expected pattern.</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="expectedText"/> is null.</exception>
         public static void StartsWith(string actualValue, string expectedText)
         {
             StartsWith(actualValue, expectedText, null, null);
@@ -648,12 +648,12 @@ namespace MbUnit.Framework
         /// </para>
         /// </remarks>
         /// <seealso cref="String.StartsWith(string)"/>
-        /// <param name="actualValue">The actual value</param>
-        /// <param name="expectedText">The expected pattern</param>
-        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
-        /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="expectedText"/> is null</exception>
+        /// <param name="actualValue">The actual value.</param>
+        /// <param name="expectedText">The expected pattern.</param>
+        /// <param name="messageFormat">The custom assertion message format, or null if none.</param>
+        /// <param name="messageArgs">The custom assertion message arguments, or null if none.</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="expectedText"/> is null.</exception>
         public static void StartsWith(string actualValue, string expectedText, string messageFormat, params object[] messageArgs)
         {
             if (expectedText == null)
@@ -685,10 +685,10 @@ namespace MbUnit.Framework
         /// </para>
         /// </remarks>
         /// <seealso cref="String.EndsWith(string)"/>
-        /// <param name="actualValue">The actual value</param>
-        /// <param name="expectedText">The expected pattern</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="expectedText"/> is null</exception>
+        /// <param name="actualValue">The actual value.</param>
+        /// <param name="expectedText">The expected pattern.</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="expectedText"/> is null.</exception>
         public static void EndsWith(string actualValue, string expectedText)
         {
             EndsWith(actualValue, expectedText, null, null);
@@ -703,12 +703,12 @@ namespace MbUnit.Framework
         /// </para>
         /// </remarks>
         /// <seealso cref="String.EndsWith(string)"/>
-        /// <param name="actualValue">The actual value</param>
-        /// <param name="expectedText">The expected pattern</param>
-        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
-        /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="expectedText"/> is null</exception>
+        /// <param name="actualValue">The actual value.</param>
+        /// <param name="expectedText">The expected pattern.</param>
+        /// <param name="messageFormat">The custom assertion message format, or null if none.</param>
+        /// <param name="messageArgs">The custom assertion message arguments, or null if none.</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="expectedText"/> is null.</exception>
         public static void EndsWith(string actualValue, string expectedText, string messageFormat, params object[] messageArgs)
         {
             if (expectedText == null)

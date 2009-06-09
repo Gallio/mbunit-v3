@@ -37,18 +37,20 @@ namespace MbUnit.Framework.ContractVerifiers
     /// detection of invalid or unexpected value assignment.
     /// </para>
     /// <para>
+    /// <list type="bullet">
+    /// <item>
     /// Use the single-parameter constructor to create an empty collection, which can be then
-    /// populated by calling explicitely the the <see cref="DistinctInstanceCollection{T}.Add(T)"/>
-    /// method inherited from <see cref="DistinctInstanceCollection{T}"/> or by using the list initializer syntax.
-    /// <example>
+    /// populated by calling explicitely the <see cref="DistinctInstanceCollection{T}.Add(T)"/>
+    /// method inherited from <see cref="DistinctInstanceCollection{T}"/>.
     /// <code><![CDATA[
     /// var collection = new IncompetenceClass<Foo>(typeof(ArgumentException));
     /// collection.Add(new Foo(1));
     /// collection.Add(new Foo(2));
     /// collection.Add(new Foo(3));
     /// ]]></code>
-    /// </example>
-    /// <example>
+    /// </item>
+    /// <item>
+    /// Use the list initializer syntax, to create a collection initialized with some content.
     /// <code><![CDATA[
     /// var collection = new IncompetenceClass<Foo>(typeof(ArgumentException))
     /// {
@@ -57,15 +59,14 @@ namespace MbUnit.Framework.ContractVerifiers
     ///     new Foo(3),
     /// };
     /// ]]></code>
-    /// </example>
-    /// </para>
-    /// <para>
-    /// Or, use the two-parameters constructor to create a collection from an pre-existing enumeration.
-    /// <example>
+    /// </item>
+    /// <item>
+    /// Use the two-parameters constructor to create a collection from an pre-existing enumeration..
     /// <code><![CDATA[
     /// var collection = new InvalidClass<Foo>(typeof(ArgumentException), Foo.GetThemAll());
     /// ]]></code>
-    /// </example>
+    /// </item>
+    /// </list>
     /// </para>
     /// </remarks>
     /// <typeparam name="T">The type of the object instances in the collection.</typeparam>
@@ -91,16 +92,14 @@ namespace MbUnit.Framework.ContractVerifiers
         /// <para>
         /// Use this constructor in conjunction with the <see cref="DistinctInstanceCollection{T}.Add(T)"/>
         /// method inherited from <see cref="DistinctInstanceCollection{T}"/> to initialize the collection; 
-        /// either explicitely, or by using the list initializer syntax.
-        /// <example>
+        /// either explicitely.
         /// <code><![CDATA[
         /// var collection = new IncompetenceClass<Foo>(typeof(ArgumentException));
         /// collection.Add(new Foo(1));
         /// collection.Add(new Foo(2));
         /// collection.Add(new Foo(3));
         /// ]]></code>
-        /// </example>
-        /// <example>
+        /// Or by using the list initializer syntax.
         /// <code><![CDATA[
         /// var collection = new IncompetenceClass<Foo>(typeof(ArgumentException))
         /// {
@@ -109,7 +108,6 @@ namespace MbUnit.Framework.ContractVerifiers
         ///     new Foo(3),
         /// };
         /// ]]></code>
-        /// </example>
         /// </para>
         /// </remarks>
         /// <param name="expectedExceptionType"></param>

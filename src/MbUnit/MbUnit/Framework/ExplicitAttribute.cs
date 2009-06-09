@@ -23,10 +23,12 @@ namespace MbUnit.Framework
 {
     /// <summary>
     /// Indicates that a test should only be run explicitly.
-    /// The test will still appear in the test tree but it will not run and it will not appear
-    /// in the test results unless it is explicitly selected for execution.
     /// </summary>
     /// <remarks>
+    /// <para>
+    /// The test will still appear in the test tree but it will not run and it will not appear
+    /// in the test results unless it is explicitly selected for execution.
+    /// </para>
     /// <para>
     /// A test is considered to be explicitly selected when the filter used to run the tests
     /// matches the test or its descendants but none of its ancestors.  For example, if the filter
@@ -55,9 +57,9 @@ namespace MbUnit.Framework
         /// <summary>
         /// Indicates that this test should only run explicitly and provides a reason.
         /// </summary>
-        /// <param name="reason">The reason for which the test should be run explicitly</param>
+        /// <param name="reason">The reason for which the test should be run explicitly.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="reason"/>
-        /// is null</exception>
+        /// is null.</exception>
         public ExplicitAttribute(string reason)
         {
             if (reason == null)

@@ -26,9 +26,7 @@ using Gallio.Common;
 namespace MbUnit.Framework
 {
     /// <summary>
-    /// <para>
     /// Provides a column of random <see cref="Decimal"/> values as a data source.
-    /// </para>
     /// </summary>
     /// <remarks>
     /// <para>
@@ -117,7 +115,7 @@ namespace MbUnit.Framework
         /// <see cref="Double"/>, or <see cref="Int32"/>, and returns a <see cref="Boolean"/> value indicating 
         /// whether the specified value must be accepted or rejected.
         /// </para>
-        /// <para>
+        /// </remarks>
         /// <example>
         /// <code><![CDATA[
         /// [TestFixture]
@@ -136,8 +134,6 @@ namespace MbUnit.Framework
         /// }
         /// ]]></code>
         /// </example>
-        /// </para>
-        /// </remarks>
         public string Filter
         {
             get;

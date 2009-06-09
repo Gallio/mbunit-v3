@@ -20,9 +20,7 @@ using Gallio.Framework.Pattern;
 namespace MbUnit.Framework
 {
     /// <summary>
-    /// <para>
     /// Sets the join strategy of a test to be pairwise.
-    /// </para>
     /// </summary>
     /// <remarks>
     /// <para>

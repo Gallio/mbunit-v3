@@ -20,10 +20,7 @@ using Gallio.Common;
 
 namespace MbUnit.Framework
 {
-    /// <summary>
-    /// Helper class used to compare two sequences of unordered elements.
-    /// </summary>
-    /// <typeparam name="T">The type of the elements in the sequences.</typeparam>
+    // Helper class used to compare two sequences of unordered elements.
     internal class MatchTable<T>
     {
         private readonly EqualityComparison<T> comparer;

@@ -43,8 +43,8 @@ namespace MbUnit.Framework
         /// <summary>
         /// Associates the type under test with the test component annotated by this attribute.
         /// </summary>
-        /// <param name="type">The type under test</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="type"/> is null</exception>
+        /// <param name="type">The type under test.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="type"/> is null.</exception>
         public TestsOnAttribute(Type type)
         {
             if (type == null)
@@ -59,7 +59,7 @@ namespace MbUnit.Framework
         /// </summary>
         /// <param name="typeName">The name of the type under test as obtained by <see cref="Type.FullName" />
         /// or <see cref="Type.AssemblyQualifiedName" /></param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="typeName"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="typeName"/> is null.</exception>
         public TestsOnAttribute(string typeName)
         {
             if (typeName == null)

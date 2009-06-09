@@ -28,9 +28,9 @@ namespace MbUnit.Framework
         /// <summary>
         /// Verifies that the sequence of objects contains distinct values.
         /// </summary>
-        /// <typeparam name="T">The type of value</typeparam>
-        /// <param name="values">The sequence of values to be tested</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        /// <typeparam name="T">The type of value.</typeparam>
+        /// <param name="values">The sequence of values to be tested.</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
         public static void Distinct<T>(IEnumerable<T> values)
         {
             Distinct(values, (EqualityComparison<T>)null, null, null);
@@ -39,11 +39,11 @@ namespace MbUnit.Framework
         /// <summary>
         /// Verifies that the sequence of objects contains distinct values.
         /// </summary>
-        /// <typeparam name="T">The type of value</typeparam>
-        /// <param name="values">The sequence of values to be tested</param>
-        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
-        /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        /// <typeparam name="T">The type of value.</typeparam>
+        /// <param name="values">The sequence of values to be tested.</param>
+        /// <param name="messageFormat">The custom assertion message format, or null if none.</param>
+        /// <param name="messageArgs">The custom assertion message arguments, or null if none.</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
         public static void Distinct<T>(IEnumerable<T> values, string messageFormat, params object[] messageArgs)
         {
             Distinct(values, (EqualityComparison<T>)null, messageFormat, messageArgs);
@@ -52,10 +52,10 @@ namespace MbUnit.Framework
         /// <summary>
         /// Verifies that the sequence of objects contains distinct values.
         /// </summary>
-        /// <typeparam name="T">The type of value</typeparam>
-        /// <param name="values">The sequence of values to be tested</param>
-        /// <param name="comparer">The comparer to use, or null to use the default one</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        /// <typeparam name="T">The type of value.</typeparam>
+        /// <param name="values">The sequence of values to be tested.</param>
+        /// <param name="comparer">The comparer to use, or null to use the default one.</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
         public static void Distinct<T>(IEnumerable<T> values, IEqualityComparer<T> comparer)
         {
             Distinct(values, comparer != null ? comparer.Equals : (EqualityComparison<T>)null, null, null);
@@ -64,12 +64,12 @@ namespace MbUnit.Framework
         /// <summary>
         /// Verifies that the sequence of objects contains distinct values.
         /// </summary>
-        /// <typeparam name="T">The type of value</typeparam>
-        /// <param name="values">The sequence of values to be tested</param>
-        /// <param name="comparer">The comparer to use, or null to use the default one</param>
-        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
-        /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        /// <typeparam name="T">The type of value.</typeparam>
+        /// <param name="values">The sequence of values to be tested.</param>
+        /// <param name="comparer">The comparer to use, or null to use the default one.</param>
+        /// <param name="messageFormat">The custom assertion message format, or null if none.</param>
+        /// <param name="messageArgs">The custom assertion message arguments, or null if none.</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
         public static void Distinct<T>(IEnumerable<T> values, IEqualityComparer<T> comparer, string messageFormat, params object[] messageArgs)
         {
             Distinct(values, comparer != null ? comparer.Equals : (EqualityComparison<T>)null, messageFormat, messageArgs);
@@ -78,10 +78,10 @@ namespace MbUnit.Framework
         /// <summary>
         /// Verifies that the sequence of objects contains distinct values.
         /// </summary>
-        /// <typeparam name="T">The type of value</typeparam>
-        /// <param name="values">The sequence of values to be tested</param>
-        /// <param name="comparer">The comparer to use, or null to use the default one</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        /// <typeparam name="T">The type of value.</typeparam>
+        /// <param name="values">The sequence of values to be tested.</param>
+        /// <param name="comparer">The comparer to use, or null to use the default one.</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
         public static void Distinct<T>(IEnumerable<T> values, EqualityComparison<T> comparer)
         {
             Distinct(values, comparer, null, null);
@@ -90,12 +90,12 @@ namespace MbUnit.Framework
         /// <summary>
         /// Verifies that the sequence of objects contains distinct values.
         /// </summary>
-        /// <typeparam name="T">The type of value</typeparam>
-        /// <param name="values">The sequence of values to be tested</param>
-        /// <param name="comparer">The comparer to use, or null to use the default one</param>
-        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
-        /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        /// <typeparam name="T">The type of value.</typeparam>
+        /// <param name="values">The sequence of values to be tested.</param>
+        /// <param name="comparer">The comparer to use, or null to use the default one.</param>
+        /// <param name="messageFormat">The custom assertion message format, or null if none.</param>
+        /// <param name="messageArgs">The custom assertion message arguments, or null if none.</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
         public static void Distinct<T>(IEnumerable<T> values, EqualityComparison<T> comparer, string messageFormat, params object[] messageArgs)
         {
             AssertionHelper.Verify(() =>

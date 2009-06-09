@@ -342,8 +342,8 @@ namespace MbUnit.Framework
         /// <summary>
         /// Asserts that all items contained in collection are of the type specified by expectedType.
         /// </summary>
-        /// <param name="collection">ICollection of objects to be considered</param>
-        /// <param name="expectedType">System.Type that all objects in collection must be instances of</param>
+        /// <param name="collection">ICollection of objects to be considered.</param>
+        /// <param name="expectedType">System.Type that all objects in collection must be instances of.</param>
         public static void AllItemsAreInstancesOfType(ICollection collection, Type expectedType)
         {
             AllItemsAreInstancesOfType(collection, expectedType, string.Empty, null);
@@ -352,9 +352,9 @@ namespace MbUnit.Framework
         /// <summary>
         /// Asserts that all items contained in collection are of the type specified by expectedType.
         /// </summary>
-        /// <param name="collection">ICollection of objects to be considered</param>
-        /// <param name="expectedType">System.Type that all objects in collection must be instances of</param>
-        /// <param name="message">The message that will be displayed on failure</param>
+        /// <param name="collection">ICollection of objects to be considered.</param>
+        /// <param name="expectedType">System.Type that all objects in collection must be instances of.</param>
+        /// <param name="message">The message that will be displayed on failure.</param>
         public static void AllItemsAreInstancesOfType(ICollection collection, Type expectedType, string message)
         {
             AllItemsAreInstancesOfType(collection, expectedType, message, null);
@@ -363,10 +363,10 @@ namespace MbUnit.Framework
         /// <summary>
         /// Asserts that all items contained in collection are of the type specified by expectedType.
         /// </summary>
-        /// <param name="collection">ICollection of objects to be considered</param>
-        /// <param name="expectedType">System.Type that all objects in collection must be instances of</param>
-        /// <param name="message">The message that will be displayed on failure</param>
-        /// <param name="args">Arguments to be used in formatting the message</param>
+        /// <param name="collection">ICollection of objects to be considered.</param>
+        /// <param name="expectedType">System.Type that all objects in collection must be instances of.</param>
+        /// <param name="message">The message that will be displayed on failure.</param>
+        /// <param name="args">Arguments to be used in formatting the message.</param>
         public static void AllItemsAreInstancesOfType(ICollection collection, Type expectedType, string message, params object[] args)
         {
             bool fail = false;
@@ -395,7 +395,7 @@ namespace MbUnit.Framework
         /// <summary>
         /// Asserts that all items contained in collection are not equal to null.
         /// </summary>
-        /// <param name="collection">ICollection of objects to be considered</param>
+        /// <param name="collection">ICollection of objects to be considered.</param>
         public static void AllItemsAreNotNull(ICollection collection)
         {
             AllItemsAreNotNull(collection, string.Empty, null);
@@ -404,8 +404,8 @@ namespace MbUnit.Framework
         /// <summary>
         /// Asserts that all items contained in collection are not equal to null.
         /// </summary>
-        /// <param name="collection">ICollection of objects to be considered</param>
-        /// <param name="message">The message that will be displayed on failure</param>
+        /// <param name="collection">ICollection of objects to be considered.</param>
+        /// <param name="message">The message that will be displayed on failure.</param>
         public static void AllItemsAreNotNull(ICollection collection, string message)
         {
             AllItemsAreNotNull(collection, message, null);
@@ -414,9 +414,9 @@ namespace MbUnit.Framework
         /// <summary>
         /// Asserts that all items contained in collection are not equal to null.
         /// </summary>
-        /// <param name="collection">ICollection of objects to be considered</param>
-        /// <param name="message">The message that will be displayed on failure</param>
-        /// <param name="args">Arguments to be used in formatting the message</param>
+        /// <param name="collection">ICollection of objects to be considered.</param>
+        /// <param name="message">The message that will be displayed on failure.</param>
+        /// <param name="args">Arguments to be used in formatting the message.</param>
         public static void AllItemsAreNotNull(ICollection collection, string message, params object[] args)
         {
             bool fail = false;
@@ -446,7 +446,7 @@ namespace MbUnit.Framework
         /// Ensures that every object contained in collection exists within the collection
         /// once and only once.
         /// </summary>
-        /// <param name="collection">ICollection of objects to be considered</param>
+        /// <param name="collection">ICollection of objects to be considered.</param>
         public static void AllItemsAreUnique(ICollection collection)
         {
             AllItemsAreUnique(collection, string.Empty, null);
@@ -456,8 +456,8 @@ namespace MbUnit.Framework
         /// Ensures that every object contained in collection exists within the collection
         /// once and only once.
         /// </summary>
-        /// <param name="collection">ICollection of objects to be considered</param>
-        /// <param name="message">The message that will be displayed on failure</param>
+        /// <param name="collection">ICollection of objects to be considered.</param>
+        /// <param name="message">The message that will be displayed on failure.</param>
         public static void AllItemsAreUnique(ICollection collection, string message)
         {
             AllItemsAreUnique(collection, message, null);
@@ -467,9 +467,9 @@ namespace MbUnit.Framework
         /// Ensures that every object contained in collection exists within the collection
         /// once and only once.
         /// </summary>
-        /// <param name="collection">ICollection of objects to be considered</param>
-        /// <param name="message">The message that will be displayed on failure</param>
-        /// <param name="args">Arguments to be used in formatting the message</param>
+        /// <param name="collection">ICollection of objects to be considered.</param>
+        /// <param name="message">The message that will be displayed on failure.</param>
+        /// <param name="args">Arguments to be used in formatting the message.</param>
         public static void AllItemsAreUnique(ICollection collection, string message, params object[] args)
         {
             bool fail = false;
@@ -504,8 +504,8 @@ namespace MbUnit.Framework
         /// <summary>
         /// Asserts that expected and actual are equivalent, containing the same objects but the match may be in any order.
         /// </summary>
-        /// <param name="expected">The first ICollection of objects to be considered</param>
-        /// <param name="actual">The second ICollection of objects to be considered</param>
+        /// <param name="expected">The first ICollection of objects to be considered.</param>
+        /// <param name="actual">The second ICollection of objects to be considered.</param>
         public static void AreEquivalent(ICollection expected, ICollection actual)
         {
             AreEquivalent(expected, actual, string.Empty, null);
@@ -514,9 +514,9 @@ namespace MbUnit.Framework
         /// <summary>
         /// Asserts that expected and actual are equivalent, containing the same objects but the match may be in any order.
         /// </summary>
-        /// <param name="expected">The first ICollection of objects to be considered</param>
-        /// <param name="actual">The second ICollection of objects to be considered</param>
-        /// <param name="message">The message that will be displayed on failure</param>
+        /// <param name="expected">The first ICollection of objects to be considered.</param>
+        /// <param name="actual">The second ICollection of objects to be considered.</param>
+        /// <param name="message">The message that will be displayed on failure.</param>
         public static void AreEquivalent(ICollection expected, ICollection actual, string message)
         {
             AreEquivalent(expected, actual, message, null);
@@ -525,10 +525,10 @@ namespace MbUnit.Framework
         /// <summary>
         /// Asserts that expected and actual are equivalent, containing the same objects but the match may be in any order.
         /// </summary>
-        /// <param name="expected">The first ICollection of objects to be considered</param>
-        /// <param name="actual">The second ICollection of objects to be considered</param>
-        /// <param name="message">The message that will be displayed on failure</param>
-        /// <param name="args">Arguments to be used in formatting the message</param>
+        /// <param name="expected">The first ICollection of objects to be considered.</param>
+        /// <param name="actual">The second ICollection of objects to be considered.</param>
+        /// <param name="message">The message that will be displayed on failure.</param>
+        /// <param name="args">Arguments to be used in formatting the message.</param>
         public static void AreEquivalent(ICollection expected, ICollection actual, string message, params object[] args)
         {
             bool found;
@@ -575,8 +575,8 @@ namespace MbUnit.Framework
         /// <summary>
         /// Asserts that expected and actual are not exactly equal.
         /// </summary>
-        /// <param name="expected">The first ICollection of objects to be considered</param>
-        /// <param name="actual">The second ICollection of objects to be considered</param>
+        /// <param name="expected">The first ICollection of objects to be considered.</param>
+        /// <param name="actual">The second ICollection of objects to be considered.</param>
         public static void AreNotEqual(ICollection expected, ICollection actual)
         {
             AreNotEqual(expected, actual, null, string.Empty, null);
@@ -586,9 +586,9 @@ namespace MbUnit.Framework
         /// Asserts that expected and actual are not exactly equal.
         /// If comparer is not null then it will be used to compare the objects.
         /// </summary>
-        /// <param name="expected">The first ICollection of objects to be considered</param>
-        /// <param name="actual">The second ICollection of objects to be considered</param>
-        /// <param name="comparer">The IComparer to use in comparing objects from each ICollection</param>
+        /// <param name="expected">The first ICollection of objects to be considered.</param>
+        /// <param name="actual">The second ICollection of objects to be considered.</param>
+        /// <param name="comparer">The IComparer to use in comparing objects from each ICollection.</param>
         public static void AreNotEqual(ICollection expected, ICollection actual, IComparer comparer)
         {
             AreNotEqual(expected, actual, comparer, string.Empty, null);
@@ -597,9 +597,9 @@ namespace MbUnit.Framework
         /// <summary>
         /// Asserts that expected and actual are not exactly equal.
         /// </summary>
-        /// <param name="expected">The first ICollection of objects to be considered</param>
-        /// <param name="actual">The second ICollection of objects to be considered</param>
-        /// <param name="message">The message that will be displayed on failure</param>
+        /// <param name="expected">The first ICollection of objects to be considered.</param>
+        /// <param name="actual">The second ICollection of objects to be considered.</param>
+        /// <param name="message">The message that will be displayed on failure.</param>
         public static void AreNotEqual(ICollection expected, ICollection actual, string message)
         {
             AreNotEqual(expected, actual, null, message, null);
@@ -609,10 +609,10 @@ namespace MbUnit.Framework
         /// Asserts that expected and actual are not exactly equal.
         /// If comparer is not null then it will be used to compare the objects.
         /// </summary>
-        /// <param name="expected">The first ICollection of objects to be considered</param>
-        /// <param name="actual">The second ICollection of objects to be considered</param>
-        /// <param name="comparer">The IComparer to use in comparing objects from each ICollection</param>
-        /// <param name="message">The message that will be displayed on failure</param>
+        /// <param name="expected">The first ICollection of objects to be considered.</param>
+        /// <param name="actual">The second ICollection of objects to be considered.</param>
+        /// <param name="comparer">The IComparer to use in comparing objects from each ICollection.</param>
+        /// <param name="message">The message that will be displayed on failure.</param>
         public static void AreNotEqual(ICollection expected, ICollection actual, IComparer comparer, string message)
         {
             AreNotEqual(expected, actual, comparer, message, null);
@@ -621,10 +621,10 @@ namespace MbUnit.Framework
         /// <summary>
         /// Asserts that expected and actual are not exactly equal.
         /// </summary>
-        /// <param name="expected">The first ICollection of objects to be considered</param>
-        /// <param name="actual">The second ICollection of objects to be considered</param>
-        /// <param name="message">The message that will be displayed on failure</param>
-        /// <param name="args">Arguments to be used in formatting the message</param>
+        /// <param name="expected">The first ICollection of objects to be considered.</param>
+        /// <param name="actual">The second ICollection of objects to be considered.</param>
+        /// <param name="message">The message that will be displayed on failure.</param>
+        /// <param name="args">Arguments to be used in formatting the message.</param>
         public static void AreNotEqual(ICollection expected, ICollection actual, string message, params object[] args)
         {
             AreNotEqual(expected, actual, null, message, args);
@@ -634,11 +634,11 @@ namespace MbUnit.Framework
         /// Asserts that expected and actual are not exactly equal.
         /// If comparer is not null then it will be used to compare the objects.
         /// </summary>
-        /// <param name="expected">The first ICollection of objects to be considered</param>
-        /// <param name="actual">The second ICollection of objects to be considered</param>
-        /// <param name="comparer">The IComparer to use in comparing objects from each ICollection</param>
-        /// <param name="message">The message that will be displayed on failure</param>
-        /// <param name="args">Arguments to be used in formatting the message</param>
+        /// <param name="expected">The first ICollection of objects to be considered.</param>
+        /// <param name="actual">The second ICollection of objects to be considered.</param>
+        /// <param name="comparer">The IComparer to use in comparing objects from each ICollection.</param>
+        /// <param name="message">The message that will be displayed on failure.</param>
+        /// <param name="args">Arguments to be used in formatting the message.</param>
         public static void AreNotEqual(ICollection expected, ICollection actual, IComparer comparer, string message, params object[] args)
         {            
             bool needToFail = false;
@@ -666,8 +666,8 @@ namespace MbUnit.Framework
         /// <summary>
         /// Asserts that expected and actual are not equivalent.
         /// </summary>
-        /// <param name="expected">The first ICollection of objects to be considered</param>
-        /// <param name="actual">The second ICollection of objects to be considered</param>
+        /// <param name="expected">The first ICollection of objects to be considered.</param>
+        /// <param name="actual">The second ICollection of objects to be considered.</param>
         public static void AreNotEquivalent(ICollection expected, ICollection actual)
         {
             AreNotEquivalent(expected, actual, string.Empty, null);
@@ -676,9 +676,9 @@ namespace MbUnit.Framework
         /// <summary>
         /// Asserts that expected and actual are not equivalent.
         /// </summary>
-        /// <param name="expected">The first ICollection of objects to be considered</param>
-        /// <param name="actual">The second ICollection of objects to be considered</param>
-        /// <param name="message">The message that will be displayed on failure</param>
+        /// <param name="expected">The first ICollection of objects to be considered.</param>
+        /// <param name="actual">The second ICollection of objects to be considered.</param>
+        /// <param name="message">The message that will be displayed on failure.</param>
         public static void AreNotEquivalent(ICollection expected, ICollection actual, string message)
         {
             AreNotEquivalent(expected, actual, message, null);
@@ -687,10 +687,10 @@ namespace MbUnit.Framework
         /// <summary>
         /// Asserts that expected and actual are not equivalent.
         /// </summary>
-        /// <param name="expected">The first ICollection of objects to be considered</param>
-        /// <param name="actual">The second ICollection of objects to be considered</param>
-        /// <param name="message">The message that will be displayed on failure</param>
-        /// <param name="args">Arguments to be used in formatting the message</param>
+        /// <param name="expected">The first ICollection of objects to be considered.</param>
+        /// <param name="actual">The second ICollection of objects to be considered.</param>
+        /// <param name="message">The message that will be displayed on failure.</param>
+        /// <param name="args">Arguments to be used in formatting the message.</param>
         public static void AreNotEquivalent(ICollection expected, ICollection actual, string message, params object[] args)
         {
             
@@ -720,8 +720,8 @@ namespace MbUnit.Framework
         /// <summary>
         /// Asserts that collection contains actual as an item.
         /// </summary>
-        /// <param name="collection">ICollection of objects to be considered</param>
-        /// <param name="actual">Object to be found within collection</param>
+        /// <param name="collection">ICollection of objects to be considered.</param>
+        /// <param name="actual">Object to be found within collection.</param>
         public static void Contains(ICollection collection, Object actual)
         {
             Contains(collection, actual, string.Empty, null);
@@ -730,9 +730,9 @@ namespace MbUnit.Framework
         /// <summary>
         /// Asserts that collection contains actual as an item.
         /// </summary>
-        /// <param name="collection">ICollection of objects to be considered</param>
-        /// <param name="actual">Object to be found within collection</param>
-        /// <param name="message">The message that will be displayed on failure</param>
+        /// <param name="collection">ICollection of objects to be considered.</param>
+        /// <param name="actual">Object to be found within collection.</param>
+        /// <param name="message">The message that will be displayed on failure.</param>
         public static void Contains(ICollection collection, Object actual, string message)
         {
             Contains(collection, actual, message, null);
@@ -741,10 +741,10 @@ namespace MbUnit.Framework
         /// <summary>
         /// Asserts that collection contains actual as an item.
         /// </summary>
-        /// <param name="collection">ICollection of objects to be considered</param>
-        /// <param name="actual">Object to be found within collection</param>
-        /// <param name="message">The message that will be displayed on failure</param>
-        /// <param name="args">Arguments to be used in formatting the message</param>
+        /// <param name="collection">ICollection of objects to be considered.</param>
+        /// <param name="actual">Object to be found within collection.</param>
+        /// <param name="message">The message that will be displayed on failure.</param>
+        /// <param name="args">Arguments to be used in formatting the message.</param>
         public static void Contains(ICollection collection, Object actual, string message, params object[] args)
         {
             bool found;
@@ -765,8 +765,8 @@ namespace MbUnit.Framework
         /// <summary>
         /// Asserts that collection does not contain actual as an item.
         /// </summary>
-        /// <param name="collection">ICollection of objects to be considered</param>
-        /// <param name="actual">Object that cannot exist within collection</param>
+        /// <param name="collection">ICollection of objects to be considered.</param>
+        /// <param name="actual">Object that cannot exist within collection.</param>
         public static void DoesNotContain(ICollection collection, Object actual)
         {
             DoesNotContain(collection, actual, string.Empty, null);
@@ -775,9 +775,9 @@ namespace MbUnit.Framework
         /// <summary>
         /// Asserts that collection does not contain actual as an item.
         /// </summary>
-        /// <param name="collection">ICollection of objects to be considered</param>
-        /// <param name="actual">Object that cannot exist within collection</param>
-        /// <param name="message">The message that will be displayed on failure</param>
+        /// <param name="collection">ICollection of objects to be considered.</param>
+        /// <param name="actual">Object that cannot exist within collection.</param>
+        /// <param name="message">The message that will be displayed on failure.</param>
         public static void DoesNotContain(ICollection collection, Object actual, string message)
         {
             DoesNotContain(collection, actual, message, null);
@@ -786,10 +786,10 @@ namespace MbUnit.Framework
         /// <summary>
         /// Asserts that collection does not contain actual as an item.
         /// </summary>
-        /// <param name="collection">ICollection of objects to be considered</param>
-        /// <param name="actual">Object that cannot exist within collection</param>
-        /// <param name="message">The message that will be displayed on failure</param>
-        /// <param name="args">Arguments to be used in formatting the message</param>
+        /// <param name="collection">ICollection of objects to be considered.</param>
+        /// <param name="actual">Object that cannot exist within collection.</param>
+        /// <param name="message">The message that will be displayed on failure.</param>
+        /// <param name="args">Arguments to be used in formatting the message.</param>
         public static void DoesNotContain(ICollection collection, Object actual, string message, params object[] args)
         {
             
@@ -819,8 +819,8 @@ namespace MbUnit.Framework
         /// <summary>
         /// Asserts that subset is not a subset of superset.
         /// </summary>
-        /// <param name="subset">The ICollection subset to be considered</param>
-        /// <param name="superset">The ICollection superset to be considered</param>
+        /// <param name="subset">The ICollection subset to be considered.</param>
+        /// <param name="superset">The ICollection superset to be considered.</param>
         public static void IsNotSubsetOf(ICollection subset, ICollection superset)
         {
             IsNotSubsetOf(subset, superset, string.Empty, null);
@@ -829,9 +829,9 @@ namespace MbUnit.Framework
         /// <summary>
         /// Asserts that subset is not a subset of superset.
         /// </summary>
-        /// <param name="subset">The ICollection subset to be considered</param>
-        /// <param name="superset">The ICollection superset to be considered</param>
-        /// <param name="message">The message that will be displayed on failure</param>
+        /// <param name="subset">The ICollection subset to be considered.</param>
+        /// <param name="superset">The ICollection superset to be considered.</param>
+        /// <param name="message">The message that will be displayed on failure.</param>
         public static void IsNotSubsetOf(ICollection subset, ICollection superset, string message)
         {
             IsNotSubsetOf(subset, superset, message, null);
@@ -840,10 +840,10 @@ namespace MbUnit.Framework
         /// <summary>
         /// Asserts that subset is not a subset of superset.
         /// </summary>
-        /// <param name="subset">The ICollection subset to be considered</param>
-        /// <param name="superset">The ICollection superset to be considered</param>
-        /// <param name="message">The message that will be displayed on failure</param>
-        /// <param name="args">Arguments to be used in formatting the message</param>
+        /// <param name="subset">The ICollection subset to be considered.</param>
+        /// <param name="superset">The ICollection superset to be considered.</param>
+        /// <param name="message">The message that will be displayed on failure.</param>
+        /// <param name="args">Arguments to be used in formatting the message.</param>
         public static void IsNotSubsetOf(ICollection subset, ICollection superset, string message, params object[] args)
         {
             
@@ -873,8 +873,8 @@ namespace MbUnit.Framework
         /// <summary>
         /// Asserts that subset is a subset of superset.
         /// </summary>
-        /// <param name="subset">The ICollection subset to be considered</param>
-        /// <param name="superset">The ICollection superset to be considered</param>
+        /// <param name="subset">The ICollection subset to be considered.</param>
+        /// <param name="superset">The ICollection superset to be considered.</param>
         public static void IsSubsetOf(ICollection subset, ICollection superset)
         {
             IsSubsetOf(subset, superset, string.Empty, null);
@@ -883,9 +883,9 @@ namespace MbUnit.Framework
         /// <summary>
         /// Asserts that subset is a subset of superset.
         /// </summary>
-        /// <param name="subset">The ICollection subset to be considered</param>
-        /// <param name="superset">The ICollection superset to be considered</param>
-        /// <param name="message">The message that will be displayed on failure</param>
+        /// <param name="subset">The ICollection subset to be considered.</param>
+        /// <param name="superset">The ICollection superset to be considered.</param>
+        /// <param name="message">The message that will be displayed on failure.</param>
         public static void IsSubsetOf(ICollection subset, ICollection superset, string message)
         {
             IsSubsetOf(subset, superset, message, null);
@@ -894,10 +894,10 @@ namespace MbUnit.Framework
         /// <summary>
         /// Asserts that subset is a subset of superset.
         /// </summary>
-        /// <param name="subset">The ICollection subset to be considered</param>
-        /// <param name="superset">The ICollection superset to be considered</param>
-        /// <param name="message">The message that will be displayed on failure</param>
-        /// <param name="args">Arguments to be used in formatting the message</param>
+        /// <param name="subset">The ICollection subset to be considered.</param>
+        /// <param name="superset">The ICollection superset to be considered.</param>
+        /// <param name="message">The message that will be displayed on failure.</param>
+        /// <param name="args">Arguments to be used in formatting the message.</param>
         public static void IsSubsetOf(ICollection subset, ICollection superset, string message, params object[] args)
         {
             bool foundAll = true;
@@ -927,9 +927,9 @@ namespace MbUnit.Framework
         /// <summary>
         /// Checks an item if included in a given collection.
         /// </summary>
-        /// <param name="collection">The collection to check from</param>
-        /// <param name="item">The item to be checked</param>
-        /// <returns>True if item is included, False otherwise</returns>
+        /// <param name="collection">The collection to check from.</param>
+        /// <param name="item">The item to be checked.</param>
+        /// <returns>True if item is included, False otherwise.</returns>
         private static bool CheckItemInCollection(ICollection collection, object item)
         {
             //Reused Arraylist's implementation of Contains, uses Equals override and null checking of items

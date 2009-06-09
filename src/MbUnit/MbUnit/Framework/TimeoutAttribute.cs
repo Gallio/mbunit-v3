@@ -35,8 +35,8 @@ namespace MbUnit.Framework
         /// <summary>
         /// Sets the test timeout in seconds, or zero if none.
         /// </summary>
-        /// <param name="timeoutSeconds">The timeout in seconds, or zero if none</param>
-        /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="timeoutSeconds"/> is less than 0</exception>
+        /// <param name="timeoutSeconds">The timeout in seconds, or zero if none.</param>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="timeoutSeconds"/> is less than 0.</exception>
         public TimeoutAttribute(int timeoutSeconds)
         {
             if (timeoutSeconds < 0)

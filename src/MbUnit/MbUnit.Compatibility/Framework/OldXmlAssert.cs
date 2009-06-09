@@ -144,7 +144,7 @@ namespace MbUnit.Framework
         /// </summary>
         /// <param name="xmlDiff">The XML diff.</param>
         /// <param name="equal">if set to <c>true</c> the assert passes if the XML is similar.
-        /// if <c>false</c>, the assert passes if the XML is not similar</param>
+        /// if <c>false</c>, the assert passes if the XML is not similar.</param>
         private static void XmlEquals(XmlDiff xmlDiff, bool equal)
         {
             DiffResult diffResult = xmlDiff.Compare();
@@ -182,7 +182,7 @@ namespace MbUnit.Framework
         /// </summary>
         /// <param name="xmlDiff">The XML diff.</param>
         /// <param name="identical">if set to <c>true</c> the assert passes if the XML is identical.
-        /// if <c>false</c>, the assert passes if the XML is not identical</param>
+        /// if <c>false</c>, the assert passes if the XML is not identical.</param>
         private static void XmlIdentical(XmlDiff xmlDiff, bool identical) {
             DiffResult diffResult = xmlDiff.Compare();
             OldAssert.AreEqual(identical, diffResult.Identical,xmlDiff.OptionalDescription);
@@ -192,7 +192,7 @@ namespace MbUnit.Framework
         /// <summary>
         /// Asserts that <paramref name="someXml"/> is valid XML.
         /// </summary>
-        /// <param name="someXml">The XMl to test</param>
+        /// <param name="someXml">The XMl to test.</param>
         public static void XmlValid(string someXml) {
             XmlValid(new XmlInput(someXml));
         }
@@ -239,7 +239,7 @@ namespace MbUnit.Framework
         /// <summary>
         /// Asserts that some XML is valid.
         /// </summary>
-        /// <param name="validator">A <see cref="Validator"/> object containing the XML to validate</param>
+        /// <param name="validator">A <see cref="Validator"/> object containing the XML to validate.</param>
         public static void XmlValid(Validator validator) {
             OldAssert.AreEqual(true, validator.IsValid,validator.ValidationMessage);
         }
@@ -259,7 +259,7 @@ namespace MbUnit.Framework
         /// Assert that an XPath expression matches at least one node in someXml
         /// </summary>
         /// <param name="anXPathExpression">An X path expression.</param>
-        /// <param name="inXml">A reader ontot eh XML being tested</param>
+        /// <param name="inXml">A reader ontot eh XML being tested.</param>
         public static void XPathExists(string anXPathExpression, TextReader inXml) {
             XPathExists(anXPathExpression, new XmlInput(inXml));
         }

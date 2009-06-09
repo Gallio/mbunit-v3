@@ -20,9 +20,7 @@ using Gallio.Common.Reflection;
 namespace MbUnit.Framework
 {
     /// <summary>
-    /// <para>
     /// Specifies that a test can be run in parallel with other parallelizable tests.
-    /// </para>
     /// </summary>
     /// <remarks>
     /// <para>
@@ -52,8 +50,7 @@ namespace MbUnit.Framework
     /// <example>
     /// <para>
     /// This C# example shows a fixture with a few tests, two of which are parallelizable.
-    /// </para>
-    /// <code>
+    /// <code><![CDATA[
     /// public class Fixture
     /// {
     ///     // may run in parallel with test 2
@@ -67,11 +64,11 @@ namespace MbUnit.Framework
     ///     // will not run in parallel because it is not parallelizable
     ///     public void Test3() { ... }
     /// }
-    /// </code>
+    /// ]]></code>
+    /// </para>
     /// <para>
     /// This C# example shows a fixture all of whose tests are parallelizable.
-    /// </para>
-    /// <code>
+    /// <code><![CDATA[
     /// [Parallizable(TestScope.Descendants)]
     /// public class Fixture
     /// {
@@ -81,13 +78,14 @@ namespace MbUnit.Framework
     ///     
     ///     public void Test3() { ... }
     /// }
-    /// </code>
+    /// ]]></code>
+    /// </para>
     /// <para>
     /// This C# example shows a test assembly all of whose tests are parallelizable.
-    /// </para>
-    /// <code>
+    /// <code><![CDATA[
     /// [assembly: Parallizable(TestScope.All)]
-    /// </code>
+    /// ]]></code>
+    /// </para>
     /// </example>
     [AttributeUsage(PatternAttributeTargets.Test, AllowMultiple = false, Inherited = true)]
     public class ParallelizableAttribute : TestDecoratorPatternAttribute
@@ -105,7 +103,7 @@ namespace MbUnit.Framework
         /// <summary>
         /// Specifies that the tests in the specified scope are parallelizable.
         /// </summary>
-        /// <param name="scope">The test scope</param>
+        /// <param name="scope">The test scope.</param>
         public ParallelizableAttribute(TestScope scope)
         {
             this.scope = scope;

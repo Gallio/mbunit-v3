@@ -84,7 +84,7 @@ namespace Gallio.Framework
         #endregion
 
         /// <summary>
-        /// Returns <code>true</code> if two objects are the same.
+        /// Returns <c>true</c> if two objects are the same.
         /// </summary>
         /// <remarks>
         /// <para>
@@ -291,7 +291,7 @@ namespace Gallio.Framework
         }
 
         /// <summary>
-        /// Returns <code>true</code> if the specified type is a simple enumerable type.
+        /// Returns <c>true</c> if the specified type is a simple enumerable type.
         /// </summary>
         /// <remarks>
         /// <para>

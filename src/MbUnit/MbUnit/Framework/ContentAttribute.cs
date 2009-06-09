@@ -23,31 +23,32 @@ using Gallio.Common.Reflection;
 namespace MbUnit.Framework
 {
     /// <summary>
-    /// <para>
     /// An abstract base class for data source attributes that obtain contents from
-    /// a local file, manifest resource, or inline data.  At most one location type
-    /// may be used.
-    /// </para>
+    /// a local file, manifest resource, or inline data.
     /// </summary>
-    /// <todo author="jeff">
-    /// Add support for Uris.  We will need to define an IUriLoader service to help
-    /// with this.  Such a service would be quite useful for many other reasons also.
-    /// </todo>
+    /// <remarks>
+    /// <para>
+    /// At most one location type may be used.
+    /// </para>
+    /// </remarks>
     [AttributeUsage(PatternAttributeTargets.DataContext, AllowMultiple = true, Inherited = true)]
     public abstract class ContentAttribute : DataPatternAttribute
     {
+        // TODO: Add support for Uris.  We will need to define an IUriLoader service to help
+        //       with this.  Such a service would be quite useful for many other reasons also.
+        
         private string contents;
         private string filePath;
         private Type resourceScope;
         private string resourcePath;
 
         /// <summary>
-        /// <para>
         /// Gets or sets the inline data contents as a string.
-        /// </para>
         /// </summary>
         /// <remarks>
+        /// <para>
         /// It is an error to specify more than one content source property.
+        /// </para>
         /// </remarks>
         public string Contents
         {
@@ -56,13 +57,13 @@ namespace MbUnit.Framework
         }
 
         /// <summary>
-        /// <para>
         /// Gets or sets the path of a local file relative to the current working
         /// directory from which the file contents should be read.
-        /// </para>
         /// </summary>
         /// <remarks>
+        /// <para>
         /// It is an error to specify more than one content source property.
+        /// </para>
         /// </remarks>
         public string FilePath
         {
@@ -71,15 +72,15 @@ namespace MbUnit.Framework
         }
 
         /// <summary>
-        /// <para>
         /// Gets or sets a <see cref="Type"/> that is used to locate the assembly and
         /// namespace within which to resolve a manifest resource in combination
         /// with the <see cref="ResourcePath"/> property.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// If no value is specified, the test fixture type is used as the resource scope.
         /// </para>
-        /// </summary>
+        /// </remarks>
         /// <seealso cref="ResourcePath"/>
         public Type ResourceScope
         {
@@ -88,9 +89,11 @@ namespace MbUnit.Framework
         }
 
         /// <summary>
+        /// Gets or sets the path of a manifest resource from which the contents should be read.  
+        /// </summary>
+        /// <remarks>
         /// <para>
-        /// Gets or sets the path of a manifest resource from which the contents
-        /// should be read.  The path will be resolved within the assembly containing the
+        /// The path will be resolved within the assembly containing the
         /// <see cref="ResourceScope"/> type or the test fixture type if none if provided.
         /// </para>
         /// <para>
@@ -112,9 +115,9 @@ namespace MbUnit.Framework
         /// will be used as the resource scope.  The above resolution strategy still applies.</item>
         /// </list>
         /// </para>
-        /// </summary>
-        /// <remarks>
+        /// <para>
         /// It is an error to specify more than one content source property.
+        /// </para>
         /// </remarks>
         /// <seealso cref="ResourceScope"/>
         public string ResourcePath
@@ -124,15 +127,15 @@ namespace MbUnit.Framework
         }
 
         /// <summary>
-        /// <para>
         /// Gets the name of the location that is providing the data, or null if none.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// The name will be the filename or resource path if specified, or a special
         /// locale-aware string (such as "&lt;inline&gt;") if the contents were specified
         /// inline via the <see cref="Contents"/> property.
         /// </para>
-        /// </summary>
+        /// </remarks>
         protected virtual string GetDataLocationName()
         {
             if (contents != null)
@@ -154,8 +157,8 @@ namespace MbUnit.Framework
         /// data source location is specified has also changed.
         /// </para>
         /// </remarks>
-        /// <param name="codeElement">The code element to which the attribute was applied</param>
-        /// <returns>The stream</returns>
+        /// <param name="codeElement">The code element to which the attribute was applied.</param>
+        /// <returns>The stream.</returns>
         protected virtual Stream OpenStream(ICodeElementInfo codeElement)
         {
             if (contents != null)
@@ -177,8 +180,8 @@ namespace MbUnit.Framework
         /// data source location is specified has also changed.
         /// </para>
         /// </remarks>
-        /// <param name="codeElement">The code element to which the attribute was applied</param>
-        /// <returns>The text reader</returns>
+        /// <param name="codeElement">The code element to which the attribute was applied.</param>
+        /// <returns>The text reader.</returns>
         protected virtual TextReader OpenTextReader(ICodeElementInfo codeElement)
         {
             if (contents != null)
@@ -189,8 +192,12 @@ namespace MbUnit.Framework
 
         /// <summary>
         /// Returns true if the contents are dynamic, or false if they are static.
-        /// Static contents can only change if the test assembly is recompiled.
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// Static contents can only change if the test assembly is recompiled.
+        /// </para>
+        /// </remarks>
         protected virtual bool IsDynamic
         {
             get
@@ -217,8 +224,10 @@ namespace MbUnit.Framework
         /// <see cref="ResourcePath"/> have been set.
         /// </para>
         /// </remarks>
-        /// <param name="scope">The pattern scope</param>
-        /// <param name="codeElement">The code element to which the attribute was applied</param>
+        /// <param name="scope">The pattern scope.</param>
+        /// <param name="codeElement">The code element to which the attribute was applied.</param>
+        /// <exception cref="PatternUsageErrorException">Thrown if none of the source properties, such as <see cref="Contents"/>, 
+        /// <see cref="FilePath" /> or <see cref="ResourcePath"/> have been set.</exception>
         protected virtual void ValidateSource(IPatternScope scope, ICodeElementInfo codeElement)
         {
             if (contents == null && filePath == null && resourcePath == null)

@@ -30,10 +30,10 @@ namespace MbUnit.Framework
         /// Verifies that expected and actual sequences have the same number of elements and
         /// that the elements are equal and in the same order.
         /// </summary>
-        /// <typeparam name="T">The type of value</typeparam>
-        /// <param name="expectedSequence">The expected sequence</param>
-        /// <param name="actualSequence">The actual sequence</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        /// <typeparam name="T">The type of value.</typeparam>
+        /// <param name="expectedSequence">The expected sequence.</param>
+        /// <param name="actualSequence">The actual sequence.</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
         public static void AreElementsEqual<T>(IEnumerable<T> expectedSequence, IEnumerable<T> actualSequence)
         {
             AreElementsEqual(expectedSequence, actualSequence, (EqualityComparison<T>)null, null, null);
@@ -43,12 +43,12 @@ namespace MbUnit.Framework
         /// Verifies that expected and actual sequences have the same number of elements and
         /// that the elements are equal and in the same order.
         /// </summary>
-        /// <typeparam name="T">The type of value</typeparam>
-        /// <param name="expectedSequence">The expected sequence</param>
-        /// <param name="actualSequence">The actual sequence</param>
-        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
-        /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        /// <typeparam name="T">The type of value.</typeparam>
+        /// <param name="expectedSequence">The expected sequence.</param>
+        /// <param name="actualSequence">The actual sequence.</param>
+        /// <param name="messageFormat">The custom assertion message format, or null if none.</param>
+        /// <param name="messageArgs">The custom assertion message arguments, or null if none.</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
         public static void AreElementsEqual<T>(IEnumerable<T> expectedSequence, IEnumerable<T> actualSequence, string messageFormat, params object[] messageArgs)
         {
             AreElementsEqual(expectedSequence, actualSequence, (EqualityComparison<T>)null, messageFormat, messageArgs);
@@ -58,11 +58,11 @@ namespace MbUnit.Framework
         /// Verifies that expected and actual sequences have the same number of elements and
         /// that the elements are equal and in the same order.
         /// </summary>
-        /// <typeparam name="T">The type of value</typeparam>
-        /// <param name="expectedSequence">The expected sequence</param>
-        /// <param name="actualSequence">The actual sequence</param>
-        /// <param name="comparer">The comparer to use, or null to use the default one</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        /// <typeparam name="T">The type of value.</typeparam>
+        /// <param name="expectedSequence">The expected sequence.</param>
+        /// <param name="actualSequence">The actual sequence.</param>
+        /// <param name="comparer">The comparer to use, or null to use the default one.</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
         public static void AreElementsEqual<T>(IEnumerable<T> expectedSequence, IEnumerable<T> actualSequence, IEqualityComparer<T> comparer)
         {
             AreElementsEqual(expectedSequence, actualSequence, comparer != null ? comparer.Equals : (EqualityComparison<T>)null, null, null);
@@ -72,13 +72,13 @@ namespace MbUnit.Framework
         /// Verifies that expected and actual sequences have the same number of elements and
         /// that the elements are equal and in the same order.
         /// </summary>
-        /// <typeparam name="T">The type of value</typeparam>
-        /// <param name="expectedSequence">The expected sequence</param>
-        /// <param name="actualSequence">The actual sequence</param>
-        /// <param name="comparer">The comparer to use</param>
-        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
-        /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        /// <typeparam name="T">The type of value.</typeparam>
+        /// <param name="expectedSequence">The expected sequence.</param>
+        /// <param name="actualSequence">The actual sequence.</param>
+        /// <param name="comparer">The comparer to use.</param>
+        /// <param name="messageFormat">The custom assertion message format, or null if none.</param>
+        /// <param name="messageArgs">The custom assertion message arguments, or null if none.</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
         public static void AreElementsEqual<T>(IEnumerable<T> expectedSequence, IEnumerable<T> actualSequence, IEqualityComparer<T> comparer, string messageFormat, params object[] messageArgs)
 		{
             AreElementsEqual(expectedSequence, actualSequence, comparer != null ? comparer.Equals : (EqualityComparison<T>)null, messageFormat, messageArgs);
@@ -88,11 +88,11 @@ namespace MbUnit.Framework
         /// Verifies that expected and actual sequences have the same number of elements and
         /// that the elements are equal and in the same order.
         /// </summary>
-        /// <typeparam name="T">The type of value</typeparam>
-        /// <param name="expectedSequence">The expected sequence</param>
-        /// <param name="actualSequence">The actual sequence</param>
-        /// <param name="comparer">The comparer to use, or null to use the default one</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        /// <typeparam name="T">The type of value.</typeparam>
+        /// <param name="expectedSequence">The expected sequence.</param>
+        /// <param name="actualSequence">The actual sequence.</param>
+        /// <param name="comparer">The comparer to use, or null to use the default one.</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
         public static void AreElementsEqual<T>(IEnumerable<T> expectedSequence, IEnumerable<T> actualSequence, EqualityComparison<T> comparer)
         {
             AreElementsEqual(expectedSequence, actualSequence, comparer, null, null);
@@ -102,13 +102,13 @@ namespace MbUnit.Framework
         /// Verifies that expected and actual sequences have the same number of elements and
         /// that the elements are equal and in the same order.
         /// </summary>
-        /// <typeparam name="T">The type of value</typeparam>
-        /// <param name="expectedSequence">The expected sequence</param>
-        /// <param name="actualSequence">The actual sequence</param>
-        /// <param name="comparer">The comparer to use, or null to use the default one</param>
-        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
-        /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        /// <typeparam name="T">The type of value.</typeparam>
+        /// <param name="expectedSequence">The expected sequence.</param>
+        /// <param name="actualSequence">The actual sequence.</param>
+        /// <param name="comparer">The comparer to use, or null to use the default one.</param>
+        /// <param name="messageFormat">The custom assertion message format, or null if none.</param>
+        /// <param name="messageArgs">The custom assertion message arguments, or null if none.</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
         public static void AreElementsEqual<T>(IEnumerable<T> expectedSequence, IEnumerable<T> actualSequence, EqualityComparison<T> comparer, string messageFormat, params object[] messageArgs)
         {
             AssertionHelper.Verify(delegate
@@ -181,10 +181,10 @@ namespace MbUnit.Framework
         /// <summary>
         /// Verifies that unexpected and actual sequences differ in at least one element.
         /// </summary>
-        /// <typeparam name="T">The type of value</typeparam>
-        /// <param name="unexpectedSequence">The unexpected sequence</param>
-        /// <param name="actualSequence">The actual sequence</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        /// <typeparam name="T">The type of value.</typeparam>
+        /// <param name="unexpectedSequence">The unexpected sequence.</param>
+        /// <param name="actualSequence">The actual sequence.</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
         public static void AreElementsNotEqual<T>(IEnumerable<T> unexpectedSequence, IEnumerable<T> actualSequence)
         {
             AreElementsNotEqual(unexpectedSequence, actualSequence, (EqualityComparison<T>)null, null, null);
@@ -193,12 +193,12 @@ namespace MbUnit.Framework
         /// <summary>
         /// Verifies that unexpected and actual sequences differ in at least one element.
         /// </summary>
-        /// <typeparam name="T">The type of value</typeparam>
-        /// <param name="unexpectedSequence">The unexpected sequence</param>
-        /// <param name="actualSequence">The actual sequence</param>
-        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
-        /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        /// <typeparam name="T">The type of value.</typeparam>
+        /// <param name="unexpectedSequence">The unexpected sequence.</param>
+        /// <param name="actualSequence">The actual sequence.</param>
+        /// <param name="messageFormat">The custom assertion message format, or null if none.</param>
+        /// <param name="messageArgs">The custom assertion message arguments, or null if none.</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
         public static void AreElementsNotEqual<T>(IEnumerable<T> unexpectedSequence, IEnumerable<T> actualSequence, string messageFormat, params object[] messageArgs)
         {
             AreElementsNotEqual(unexpectedSequence, actualSequence, (EqualityComparison<T>)null, messageFormat, messageArgs);
@@ -207,11 +207,11 @@ namespace MbUnit.Framework
         /// <summary>
         /// Verifies that unexpected and actual sequences differ in at least one element.
         /// </summary>
-        /// <typeparam name="T">The type of value</typeparam>
-        /// <param name="unexpectedSequence">The unexpected sequence</param>
-        /// <param name="actualSequence">The actual sequence</param>
-        /// <param name="comparer">The comparer to use, or null to use the default one</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        /// <typeparam name="T">The type of value.</typeparam>
+        /// <param name="unexpectedSequence">The unexpected sequence.</param>
+        /// <param name="actualSequence">The actual sequence.</param>
+        /// <param name="comparer">The comparer to use, or null to use the default one.</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
         public static void AreElementsNotEqual<T>(IEnumerable<T> unexpectedSequence, IEnumerable<T> actualSequence, IEqualityComparer<T> comparer)
         {
             AreElementsNotEqual(unexpectedSequence, actualSequence, comparer != null ? comparer.Equals : (EqualityComparison<T>)null, null, null);
@@ -220,14 +220,14 @@ namespace MbUnit.Framework
         /// <summary>
         /// Verifies that unexpected and actual sequences differ in at least one element.
         /// </summary>
-        /// <typeparam name="T">The type of value</typeparam>
-        /// <param name="unexpectedSequence">The unexpected sequence</param>
-        /// <param name="actualSequence">The actual sequence</param>
-        /// <param name="comparer">The comparer to use, or null to use the default one</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
-        /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        /// <typeparam name="T">The type of value.</typeparam>
+        /// <param name="unexpectedSequence">The unexpected sequence.</param>
+        /// <param name="actualSequence">The actual sequence.</param>
+        /// <param name="comparer">The comparer to use, or null to use the default one.</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
+        /// <param name="messageFormat">The custom assertion message format, or null if none.</param>
+        /// <param name="messageArgs">The custom assertion message arguments, or null if none.</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
         public static void AreElementsNotEqual<T>(IEnumerable<T> unexpectedSequence, IEnumerable<T> actualSequence, IEqualityComparer<T> comparer, string messageFormat, params object[] messageArgs)
 		{
             AreElementsNotEqual(unexpectedSequence, actualSequence, comparer != null ? comparer.Equals : (EqualityComparison<T>)null, messageFormat, messageArgs);
@@ -236,11 +236,11 @@ namespace MbUnit.Framework
         /// <summary>
         /// Verifies that unexpected and actual sequences differ in at least one element.
         /// </summary>
-        /// <typeparam name="T">The type of value</typeparam>
-        /// <param name="unexpectedSequence">The unexpected sequence</param>
-        /// <param name="actualSequence">The actual sequence</param>
-        /// <param name="comparer">The comparer to use, or null to use the default one</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        /// <typeparam name="T">The type of value.</typeparam>
+        /// <param name="unexpectedSequence">The unexpected sequence.</param>
+        /// <param name="actualSequence">The actual sequence.</param>
+        /// <param name="comparer">The comparer to use, or null to use the default one.</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
         public static void AreElementsNotEqual<T>(IEnumerable<T> unexpectedSequence, IEnumerable<T> actualSequence, EqualityComparison<T> comparer)
         {
             AreElementsNotEqual(unexpectedSequence, actualSequence, comparer, null, null);
@@ -249,13 +249,13 @@ namespace MbUnit.Framework
         /// <summary>
         /// Verifies that unexpected and actual sequences differ in at least one element.
         /// </summary>
-        /// <typeparam name="T">The type of value</typeparam>
-        /// <param name="unexpectedSequence">The unexpected sequence</param>
-        /// <param name="actualSequence">The actual sequence</param>
-        /// <param name="comparer">The comparer to use, or null to use the default one</param>
-        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
-        /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        /// <typeparam name="T">The type of value.</typeparam>
+        /// <param name="unexpectedSequence">The unexpected sequence.</param>
+        /// <param name="actualSequence">The actual sequence.</param>
+        /// <param name="comparer">The comparer to use, or null to use the default one.</param>
+        /// <param name="messageFormat">The custom assertion message format, or null if none.</param>
+        /// <param name="messageArgs">The custom assertion message arguments, or null if none.</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
         public static void AreElementsNotEqual<T>(IEnumerable<T> unexpectedSequence, IEnumerable<T> actualSequence, EqualityComparison<T> comparer, string messageFormat, params object[] messageArgs)
         {
             AssertionHelper.Verify(delegate
@@ -307,10 +307,10 @@ namespace MbUnit.Framework
         /// Verifies that expected and actual sequences have the same number of elements and
         /// that the elements are equal but perhaps in a different order.
         /// </summary>
-        /// <typeparam name="T">The type of value</typeparam>
-        /// <param name="expectedSequence">The expected sequence</param>
-        /// <param name="actualSequence">The actual sequence</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        /// <typeparam name="T">The type of value.</typeparam>
+        /// <param name="expectedSequence">The expected sequence.</param>
+        /// <param name="actualSequence">The actual sequence.</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
         public static void AreElementsEqualIgnoringOrder<T>(IEnumerable<T> expectedSequence, IEnumerable<T> actualSequence)
         {
             AreElementsEqualIgnoringOrder(expectedSequence, actualSequence, (EqualityComparison<T>)null, null, null);
@@ -320,12 +320,12 @@ namespace MbUnit.Framework
         /// Verifies that expected and actual sequences have the same number of elements and
         /// that the elements are equal but perhaps in a different order.
         /// </summary>
-        /// <typeparam name="T">The type of value</typeparam>
-        /// <param name="expectedSequence">The expected sequence</param>
-        /// <param name="actualSequence">The actual sequence</param>
-        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
-        /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        /// <typeparam name="T">The type of value.</typeparam>
+        /// <param name="expectedSequence">The expected sequence.</param>
+        /// <param name="actualSequence">The actual sequence.</param>
+        /// <param name="messageFormat">The custom assertion message format, or null if none.</param>
+        /// <param name="messageArgs">The custom assertion message arguments, or null if none.</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
         public static void AreElementsEqualIgnoringOrder<T>(IEnumerable<T> expectedSequence, IEnumerable<T> actualSequence, string messageFormat, params object[] messageArgs)
         {
             AreElementsEqualIgnoringOrder(expectedSequence, actualSequence, (EqualityComparison<T>)null, messageFormat, messageArgs);
@@ -335,11 +335,11 @@ namespace MbUnit.Framework
         /// Verifies that expected and actual sequences have the same number of elements and
         /// that the elements are equal but perhaps in a different order.
         /// </summary>
-        /// <typeparam name="T">The type of value</typeparam>
-        /// <param name="expectedSequence">The expected sequence</param>
-        /// <param name="actualSequence">The actual sequence</param>
-        /// <param name="comparer">The comparer to use, or null to use the default one</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        /// <typeparam name="T">The type of value.</typeparam>
+        /// <param name="expectedSequence">The expected sequence.</param>
+        /// <param name="actualSequence">The actual sequence.</param>
+        /// <param name="comparer">The comparer to use, or null to use the default one.</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
         public static void AreElementsEqualIgnoringOrder<T>(IEnumerable<T> expectedSequence, IEnumerable<T> actualSequence, IEqualityComparer<T> comparer)
         {
             AreElementsEqualIgnoringOrder(expectedSequence, actualSequence, comparer != null ? comparer.Equals : (EqualityComparison<T>)null, null, null);
@@ -349,13 +349,13 @@ namespace MbUnit.Framework
         /// Verifies that expected and actual sequences have the same number of elements and
         /// that the elements are equal but perhaps in a different order.
         /// </summary>
-        /// <typeparam name="T">The type of value</typeparam>
-        /// <param name="expectedSequence">The expected sequence</param>
-        /// <param name="actualSequence">The actual sequence</param>
-        /// <param name="comparer">The comparer to use, or null to use the default one</param>
-        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
-        /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        /// <typeparam name="T">The type of value.</typeparam>
+        /// <param name="expectedSequence">The expected sequence.</param>
+        /// <param name="actualSequence">The actual sequence.</param>
+        /// <param name="comparer">The comparer to use, or null to use the default one.</param>
+        /// <param name="messageFormat">The custom assertion message format, or null if none.</param>
+        /// <param name="messageArgs">The custom assertion message arguments, or null if none.</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
         public static void AreElementsEqualIgnoringOrder<T>(IEnumerable<T> expectedSequence, IEnumerable<T> actualSequence, IEqualityComparer<T> comparer, string messageFormat, params object[] messageArgs)
 		{
             AreElementsEqualIgnoringOrder(expectedSequence, actualSequence, comparer != null ? comparer.Equals : (EqualityComparison<T>)null, messageFormat, messageArgs);
@@ -365,11 +365,11 @@ namespace MbUnit.Framework
         /// Verifies that expected and actual sequences have the same number of elements and
         /// that the elements are equal but perhaps in a different order.
         /// </summary>
-        /// <typeparam name="T">The type of value</typeparam>
-        /// <param name="expectedSequence">The expected sequence</param>
-        /// <param name="actualSequence">The actual sequence</param>
-        /// <param name="comparer">The comparer to use, or null to use the default one</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        /// <typeparam name="T">The type of value.</typeparam>
+        /// <param name="expectedSequence">The expected sequence.</param>
+        /// <param name="actualSequence">The actual sequence.</param>
+        /// <param name="comparer">The comparer to use, or null to use the default one.</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
         public static void AreElementsEqualIgnoringOrder<T>(IEnumerable<T> expectedSequence, IEnumerable<T> actualSequence, EqualityComparison<T> comparer)
         {
             AreElementsEqualIgnoringOrder(expectedSequence, actualSequence, comparer, null, null);
@@ -379,13 +379,13 @@ namespace MbUnit.Framework
         /// Verifies that expected and actual sequences have the same number of elements and
         /// that the elements are equal but perhaps in a different order.
         /// </summary>
-        /// <typeparam name="T">The type of value</typeparam>
-        /// <param name="expectedSequence">The expected sequence</param>
-        /// <param name="actualSequence">The actual sequence</param>
-        /// <param name="comparer">The comparer to use, or null to use the default one</param>
-        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
-        /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        /// <typeparam name="T">The type of value.</typeparam>
+        /// <param name="expectedSequence">The expected sequence.</param>
+        /// <param name="actualSequence">The actual sequence.</param>
+        /// <param name="comparer">The comparer to use, or null to use the default one.</param>
+        /// <param name="messageFormat">The custom assertion message format, or null if none.</param>
+        /// <param name="messageArgs">The custom assertion message arguments, or null if none.</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
         public static void AreElementsEqualIgnoringOrder<T>(IEnumerable<T> expectedSequence, IEnumerable<T> actualSequence, EqualityComparison<T> comparer, string messageFormat, params object[] messageArgs)
         {
             AssertionHelper.Verify(delegate
@@ -454,10 +454,10 @@ namespace MbUnit.Framework
         /// <summary>
         /// Verifies that <paramref name="expectedValue"/> is in the enumeration <paramref name="enumeration"/>.
         /// </summary>
-        /// <typeparam name="T">The type of value</typeparam>
-        /// <param name="enumeration">The enumeration of items</param>
-        /// <param name="expectedValue">The expected value expected to be found in the collection</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        /// <typeparam name="T">The type of value.</typeparam>
+        /// <param name="enumeration">The enumeration of items.</param>
+        /// <param name="expectedValue">The expected value expected to be found in the collection.</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
         static public void Contains<T>(IEnumerable<T> enumeration, T expectedValue)
         {
             Contains(enumeration, expectedValue, null);
@@ -466,12 +466,12 @@ namespace MbUnit.Framework
         /// <summary>
         /// Verifies that <paramref name="expectedValue"/> is in the enumeration <paramref name="enumeration"/>.
         /// </summary>
-        /// <typeparam name="T">The type of value</typeparam>
-        /// <param name="enumeration">The enumeration of items</param>
-        /// <param name="expectedValue">The expected value expected to be found in the collection</param>
-        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
-        /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        /// <typeparam name="T">The type of value.</typeparam>
+        /// <param name="enumeration">The enumeration of items.</param>
+        /// <param name="expectedValue">The expected value expected to be found in the collection.</param>
+        /// <param name="messageFormat">The custom assertion message format, or null if none.</param>
+        /// <param name="messageArgs">The custom assertion message arguments, or null if none.</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
         static public void Contains<T>(IEnumerable<T> enumeration, T expectedValue, string messageFormat, params object[] messageArgs)
         {
             AssertionHelper.Verify(delegate
@@ -491,11 +491,11 @@ namespace MbUnit.Framework
         /// <summary>
         /// Verifies that <paramref name="expectedKey"/> is in the dictionary <paramref name="dictionary"/>.
         /// </summary>
-        /// <typeparam name="TKey">The type of key</typeparam>
-        /// <typeparam name="TValue">The type of value</typeparam>
-        /// <param name="dictionary">The dictionary of items</param>
-        /// <param name="expectedKey">The key expected to be found in the dictionary</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        /// <typeparam name="TKey">The type of key.</typeparam>
+        /// <typeparam name="TValue">The type of value.</typeparam>
+        /// <param name="dictionary">The dictionary of items.</param>
+        /// <param name="expectedKey">The key expected to be found in the dictionary.</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
         static public void ContainsKey<TKey, TValue>(IDictionary<TKey, TValue> dictionary, TKey expectedKey)
         {
             ContainsKey(dictionary, expectedKey, null);
@@ -504,13 +504,13 @@ namespace MbUnit.Framework
         /// <summary>
         /// Verifies that <paramref name="expectedKey"/> is in the dictionary <paramref name="dictionary"/>.
         /// </summary>
-        /// <typeparam name="TKey">The type of key</typeparam>
-        /// <typeparam name="TValue">The type of value</typeparam>
-        /// <param name="dictionary">The dictionary of items</param>
-        /// <param name="expectedKey">The key expected to be found in the dictionary</param>
-        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
-        /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        /// <typeparam name="TKey">The type of key.</typeparam>
+        /// <typeparam name="TValue">The type of value.</typeparam>
+        /// <param name="dictionary">The dictionary of items.</param>
+        /// <param name="expectedKey">The key expected to be found in the dictionary.</param>
+        /// <param name="messageFormat">The custom assertion message format, or null if none.</param>
+        /// <param name="messageArgs">The custom assertion message arguments, or null if none.</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
         static public void ContainsKey<TKey, TValue>(IDictionary<TKey, TValue> dictionary, TKey expectedKey, string messageFormat, params object[] messageArgs)
         {
             AssertionHelper.Verify(delegate
@@ -531,10 +531,10 @@ namespace MbUnit.Framework
         /// <summary>
         /// Verifies that <paramref name="unexpectedValue"/> is not in the enumeration <paramref name="enumeration"/>.
         /// </summary>
-        /// <typeparam name="T">The type of value</typeparam>
-        /// <param name="enumeration">The enumeration of items</param>
-        /// <param name="unexpectedValue">The unexpected value</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        /// <typeparam name="T">The type of value.</typeparam>
+        /// <param name="enumeration">The enumeration of items.</param>
+        /// <param name="unexpectedValue">The unexpected value.</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
         static public void DoesNotContain<T>(IEnumerable<T> enumeration, T unexpectedValue)
         {
             DoesNotContain(enumeration, unexpectedValue, null);
@@ -543,12 +543,12 @@ namespace MbUnit.Framework
         /// <summary>
         /// Verifies that <paramref name="unexpectedValue"/> is not in the enumeration <paramref name="enumeration"/>.
         /// </summary>
-        /// <typeparam name="T">The type of value</typeparam>
-        /// <param name="enumeration">The enumeration of items</param>
-        /// <param name="unexpectedValue">The unexpected value</param>
-        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
-        /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        /// <typeparam name="T">The type of value.</typeparam>
+        /// <param name="enumeration">The enumeration of items.</param>
+        /// <param name="unexpectedValue">The unexpected value.</param>
+        /// <param name="messageFormat">The custom assertion message format, or null if none.</param>
+        /// <param name="messageArgs">The custom assertion message arguments, or null if none.</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
         static public void DoesNotContain<T>(IEnumerable<T> enumeration, T unexpectedValue, string messageFormat, params object[] messageArgs)
         {
             AssertionHelper.Verify(delegate
@@ -570,11 +570,11 @@ namespace MbUnit.Framework
         /// <summary>
         /// Verifies that <paramref name="unexpectedKey"/> is not in the dictionary <paramref name="dictionary"/>.
         /// </summary>
-        /// <typeparam name="TKey">The type of key</typeparam>
-        /// <typeparam name="TValue">The type of value</typeparam>
-        /// <param name="dictionary">The dictionary of items</param>
-        /// <param name="unexpectedKey">The key that should not be found in the dictionary</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        /// <typeparam name="TKey">The type of key.</typeparam>
+        /// <typeparam name="TValue">The type of value.</typeparam>
+        /// <param name="dictionary">The dictionary of items.</param>
+        /// <param name="unexpectedKey">The key that should not be found in the dictionary.</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
         static public void DoesNotContainKey<TKey, TValue>(IDictionary<TKey, TValue> dictionary, TKey unexpectedKey)
         {
             DoesNotContainKey(dictionary, unexpectedKey, null);
@@ -583,13 +583,13 @@ namespace MbUnit.Framework
         /// <summary>
         /// Verifies that <paramref name="unexpectedKey"/> is not in the dictionary <paramref name="dictionary"/>.
         /// </summary>
-        /// <typeparam name="TKey">The type of key</typeparam>
-        /// <typeparam name="TValue">The type of value</typeparam>
-        /// <param name="dictionary">The dictionary of items</param>
-        /// <param name="unexpectedKey">The key expected to be found in the dictionary</param>
-        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
-        /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        /// <typeparam name="TKey">The type of key.</typeparam>
+        /// <typeparam name="TValue">The type of value.</typeparam>
+        /// <param name="dictionary">The dictionary of items.</param>
+        /// <param name="unexpectedKey">The key expected to be found in the dictionary.</param>
+        /// <param name="messageFormat">The custom assertion message format, or null if none.</param>
+        /// <param name="messageArgs">The custom assertion message arguments, or null if none.</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
         static public void DoesNotContainKey<TKey, TValue>(IDictionary<TKey, TValue> dictionary, TKey unexpectedKey, string messageFormat, params object[] messageArgs)
         {
             AssertionHelper.Verify(delegate
@@ -610,8 +610,8 @@ namespace MbUnit.Framework
         /// <summary>
         /// Verifies that an actual value contains no elements.
         /// </summary>
-        /// <param name="actualValue">The actual value</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        /// <param name="actualValue">The actual value.</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
         public static void IsEmpty(IEnumerable actualValue)
         {
             IsEmpty(actualValue, null, null);
@@ -620,10 +620,10 @@ namespace MbUnit.Framework
         /// <summary>
         /// Verifies that an actual value contains no elements.
         /// </summary>
-        /// <param name="actualValue">The actual value</param>
-        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
-        /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        /// <param name="actualValue">The actual value.</param>
+        /// <param name="messageFormat">The custom assertion message format, or null if none.</param>
+        /// <param name="messageArgs">The custom assertion message arguments, or null if none.</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
         public static void IsEmpty(IEnumerable actualValue, string messageFormat, params object[] messageArgs)
         {
             AssertionHelper.Verify(delegate
@@ -643,8 +643,8 @@ namespace MbUnit.Framework
         /// <summary>
         /// Verifies that an actual value contains at least one element.
         /// </summary>
-        /// <param name="actualValue">The actual value</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        /// <param name="actualValue">The actual value.</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
         public static void IsNotEmpty(IEnumerable actualValue)
         {
             IsNotEmpty(actualValue, null, null);
@@ -653,10 +653,10 @@ namespace MbUnit.Framework
         /// <summary>
         /// Verifies that an actual value contains at least one element.
         /// </summary>
-        /// <param name="actualValue">The actual value</param>
-        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
-        /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        /// <param name="actualValue">The actual value.</param>
+        /// <param name="messageFormat">The custom assertion message format, or null if none.</param>
+        /// <param name="messageArgs">The custom assertion message arguments, or null if none.</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
         public static void IsNotEmpty(IEnumerable actualValue, string messageFormat, params object[] messageArgs)
         {
             AssertionHelper.Verify(delegate

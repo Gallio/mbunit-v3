@@ -38,7 +38,7 @@ namespace MbUnit.Framework.ContractVerifiers
     /// <description>The read-only collection throws an exception when the method <see cref="IList{T}.Insert"/> is called.
     /// <para>
     /// The test is not run when the contract property <see cref="CollectionContract{TCollection,TItem}.IsReadOnly"/>
-    /// inherited from <see cref="CollectionContract{TCollection,TItem}"/>, is set to <code>false</code>.
+    /// inherited from <see cref="CollectionContract{TCollection,TItem}"/>, is set to <c>false</c>.
     /// </para>
     /// </description>
     /// </item>
@@ -48,7 +48,7 @@ namespace MbUnit.Framework.ContractVerifiers
     /// is called.
     /// <para>
     /// The test is not run when the contract property <see cref="CollectionContract{TCollection,TItem}.IsReadOnly"/> 
-    /// inherited from <see cref="CollectionContract{TCollection,TItem}"/>, is set to <code>false</code>.
+    /// inherited from <see cref="CollectionContract{TCollection,TItem}"/>, is set to <c>false</c>.
     /// </para>
     /// </description>
     /// </item>
@@ -58,7 +58,7 @@ namespace MbUnit.Framework.ContractVerifiers
     /// is called.
     /// <para>
     /// The test is not run when the contract property <see cref="CollectionContract{TCollection,TItem}.IsReadOnly"/> 
-    /// inherited from <see cref="CollectionContract{TCollection,TItem}"/>, is set to <code>false</code>.
+    /// inherited from <see cref="CollectionContract{TCollection,TItem}"/>, is set to <c>false</c>.
     /// </para>
     /// </description>
     /// </item>
@@ -68,7 +68,7 @@ namespace MbUnit.Framework.ContractVerifiers
     /// is called with a null reference item. 
     /// <para>
     /// The test is not run when the contract property <see cref="CollectionContract{TCollection,TItem}.AcceptNullReference"/> 
-    /// inherited from <see cref="CollectionContract{TCollection,TItem}"/>, is set to <code>true</code>.
+    /// inherited from <see cref="CollectionContract{TCollection,TItem}"/>, is set to <c>true</c>.
     /// </para>
     /// </description>
     /// </item>
@@ -78,7 +78,7 @@ namespace MbUnit.Framework.ContractVerifiers
     /// is called with a null reference item. 
     /// <para>
     /// The test is not run when the contract property <see cref="CollectionContract{TCollection,TItem}.AcceptNullReference"/> 
-    /// inherited from <see cref="CollectionContract{TCollection,TItem}"/>, is set to <code>true</code>.
+    /// inherited from <see cref="CollectionContract{TCollection,TItem}"/>, is set to <c>true</c>.
     /// </para>
     /// </description>
     /// </item>
@@ -88,7 +88,7 @@ namespace MbUnit.Framework.ContractVerifiers
     /// is called with a null reference item. 
     /// <para>
     /// The test is not run when the contract property <see cref="CollectionContract{TCollection,TItem}.AcceptNullReference"/> 
-    /// inherited from <see cref="CollectionContract{TCollection,TItem}"/>, is set to <code>true</code>.
+    /// inherited from <see cref="CollectionContract{TCollection,TItem}"/>, is set to <c>true</c>.
     /// </para>
     /// </description>
     /// </item>
@@ -102,7 +102,7 @@ namespace MbUnit.Framework.ContractVerifiers
     /// inherited from <see cref="CollectionContract{TCollection,TItem}"/>.
     /// <para>
     /// The test is not run when the contract property <see cref="CollectionContract{TCollection,TItem}.IsReadOnly"/> 
-    /// inherited from <see cref="CollectionContract{TCollection,TItem}"/>, is set to <code>true</code>.
+    /// inherited from <see cref="CollectionContract{TCollection,TItem}"/>, is set to <c>true</c>.
     /// </para>
     /// </description>
     /// </item>
@@ -114,7 +114,7 @@ namespace MbUnit.Framework.ContractVerifiers
     /// an index greater than the number of items in the list.
     /// <para>
     /// The test is not run when the contract property <see cref="CollectionContract{TCollection,TItem}.IsReadOnly"/> 
-    /// inherited from <see cref="CollectionContract{TCollection,TItem}"/>, is set to <code>true</code>.
+    /// inherited from <see cref="CollectionContract{TCollection,TItem}"/>, is set to <c>true</c>.
     /// </para>
     /// </description>
     /// </item>
@@ -125,7 +125,7 @@ namespace MbUnit.Framework.ContractVerifiers
     /// to return suitable results as well.
     /// <para>
     /// The test is not run when the contract property <see cref="CollectionContract{TCollection,TItem}.IsReadOnly"/> 
-    /// inherited from <see cref="CollectionContract{TCollection,TItem}"/>, is set to <code>true</code>.
+    /// inherited from <see cref="CollectionContract{TCollection,TItem}"/>, is set to <c>true</c>.
     /// </para>
     /// </item>
     /// <item>
@@ -136,7 +136,7 @@ namespace MbUnit.Framework.ContractVerifiers
     /// an index greater than the number of items in the list.
     /// <para>
     /// The test is not run when the contract property <see cref="CollectionContract{TCollection,TItem}.IsReadOnly"/> 
-    /// inherited from <see cref="CollectionContract{TCollection,TItem}"/>, is set to <code>true</code>.
+    /// inherited from <see cref="CollectionContract{TCollection,TItem}"/>, is set to <c>true</c>.
     /// </para>
     /// </description>
     /// </item>
@@ -154,7 +154,7 @@ namespace MbUnit.Framework.ContractVerifiers
     /// Setting and getting items by using the indexer property works as expected.
     /// <para>
     /// The test is not run when the contract property <see cref="CollectionContract{TCollection,TItem}.IsReadOnly"/> 
-    /// inherited from <see cref="CollectionContract{TCollection,TItem}"/>, is set to <code>true</code>.
+    /// inherited from <see cref="CollectionContract{TCollection,TItem}"/>, is set to <c>true</c>.
     /// </para>
     /// </description>
     /// </item>

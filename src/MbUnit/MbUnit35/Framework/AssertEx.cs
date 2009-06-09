@@ -27,42 +27,41 @@ namespace MbUnit.Framework
     /// </summary>
     public abstract class AssertEx : Assert
     {
-        #region That
         /// <summary>
-        /// <para>
         /// Verifies that a particular condition holds true.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// If the condition evaluates to false, the assertion failure message will
         /// describe in detail the intermediate value of relevant sub-expressions within
         /// the condition.  Consequently the assertion failure will include more diagnostic
         /// information than if <see cref="Assert.IsTrue(bool)" /> were used instead.
         /// </para>
-        /// </summary>
-        /// <param name="condition">The conditional expression to evaluate</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="condition"/> is null</exception>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        /// </remarks>
+        /// <param name="condition">The conditional expression to evaluate.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="condition"/> is null.</exception>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
         public static void That(Expression<System.Func<bool>> condition)
         {
             That(condition, (string)null, null);
         }
 
         /// <summary>
-        /// <para>
         /// Verifies that a particular condition holds true.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// If the condition evaluates to false, the assertion failure message will
         /// describe in detail the intermediate value of relevant sub-expressions within
         /// the condition.  Consequently the assertion failure will include more diagnostic
         /// information than if <see cref="Assert.IsTrue(bool, string, object[])" /> were used instead.
         /// </para>
-        /// </summary>
-        /// <param name="condition">The conditional expression to evaluate</param>
-        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
-        /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="condition"/> is null</exception>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        /// </remarks>
+        /// <param name="condition">The conditional expression to evaluate.</param>
+        /// <param name="messageFormat">The custom assertion message format, or null if none.</param>
+        /// <param name="messageArgs">The custom assertion message arguments, or null if none.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="condition"/> is null.</exception>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
         public static void That(Expression<System.Func<bool>> condition, string messageFormat, params object[] messageArgs)
         {
             if (condition == null)
@@ -72,6 +71,5 @@ namespace MbUnit.Framework
             if (failure != null)
                 AssertionContext.CurrentContext.SubmitFailure(failure);
         }
-        #endregion
     }
 }

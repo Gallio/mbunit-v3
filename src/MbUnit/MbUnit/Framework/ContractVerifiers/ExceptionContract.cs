@@ -73,7 +73,7 @@ namespace MbUnit.Framework.ContractVerifiers
     /// </item>
     /// </list>
     /// </para>
-    /// <para>
+    /// </remarks>
     /// <example>
     /// The following example shows a simple custom exception class with some 
     /// basic serialization support, and a test fixture which uses the
@@ -118,8 +118,6 @@ namespace MbUnit.Framework.ContractVerifiers
     /// }
     /// ]]></code>
     /// </example>
-    /// </para>
-    /// </remarks>
     /// <typeparam name="TException">The target custom exception type.</typeparam>
     /// <seealso cref="VerifyContractAttribute"/>
     public class ExceptionContract<TException> : AbstractContract
@@ -136,9 +134,11 @@ namespace MbUnit.Framework.ContractVerifiers
 
         /// <summary>
         /// Determines whether the verifier will check for the serialization support. 
-        /// The default value is <code>true</code>.
         /// </summary>
         /// <remarks>
+        /// <para>
+        /// The default value is <c>true</c>.
+        /// </para>
         /// <para>
         /// Built-in verifications:
         /// <list type="bullet">
@@ -157,9 +157,12 @@ namespace MbUnit.Framework.ContractVerifiers
 
         /// <summary>
         /// Determines whether the verifier will check for the presence of
-        /// the recommended standard constructors. The default value is <code>true</code>.
+        /// the recommended standard constructors.
         /// </summary>
         /// <remarks>
+        /// <para>
+        /// The default value is <c>true</c>.
+        /// </para>
         /// <para>
         /// Built-in verifications:
         /// <list type="bullet">
@@ -373,7 +376,7 @@ namespace MbUnit.Framework.ContractVerifiers
         /// Performs round-trip serialization of the exception and returns the result.
         /// </summary>
         /// <param name="instance">The exception instance.</param>
-        /// <returns>The instance produced after serialization and deserialization</returns>
+        /// <returns>The instance produced after serialization and deserialization.</returns>
         protected static Exception RoundTripSerialize(Exception instance)
         {
             using (var stream = new MemoryStream())

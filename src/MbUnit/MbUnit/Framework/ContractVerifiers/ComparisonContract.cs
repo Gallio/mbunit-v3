@@ -64,7 +64,7 @@ namespace MbUnit.Framework.ContractVerifiers
     /// </item>
     /// </list>
     /// </para>
-    /// <para>
+    /// </remarks>
     /// <example>
     /// The following example shows a simple class implementing the 
     /// <see cref="IComparable{T}"/> interface, and a test fixture which uses the
@@ -132,8 +132,6 @@ namespace MbUnit.Framework.ContractVerifiers
     /// }
     /// ]]></code>
     /// </example>
-    /// </para>
-    /// </remarks>
     /// <typeparam name="TTarget"></typeparam>
     /// <seealso cref="VerifyContractAttribute"/>
     public class ComparisonContract<TTarget> : AbstractContract
@@ -155,7 +153,7 @@ namespace MbUnit.Framework.ContractVerifiers
         /// </summary>
         /// <remarks>
         /// <para>
-        /// The default value is <code>true</code>.
+        /// The default value is <c>true</c>.
         /// </para>
         /// </remarks>
         public bool ImplementsOperatorOverloads

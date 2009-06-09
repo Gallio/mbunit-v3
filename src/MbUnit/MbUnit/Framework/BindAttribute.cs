@@ -22,10 +22,12 @@ namespace MbUnit.Framework
 {
     /// <summary>
     /// The bind attribute overrides the default binding rules for a test parameter
-    /// by specifying a different data source, a binding path or an index.  At most
-    /// one such attribute may appear on any given test parameter.
+    /// by specifying a different data source, a binding path or an index.
     /// </summary>
     /// <remarks>
+    /// <para>
+    /// At most one such attribute may appear on any given test parameter.
+    /// </para>
     /// <para>
     /// The bind attribute supports more complex data binding binding scenarios.
     /// For example, in a typical use of <see cref="CsvDataAttribute" />, the binding
@@ -48,8 +50,8 @@ namespace MbUnit.Framework
         /// <summary>
         /// Sets the binding path for the associated test parameter.
         /// </summary>
-        /// <param name="path">The binding path</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="path"/> is null</exception>
+        /// <param name="path">The binding path.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="path"/> is null.</exception>
         public BindAttribute(string path)
         {
             if (path == null)
@@ -61,22 +63,22 @@ namespace MbUnit.Framework
         /// <summary>
         /// Sets the binding index for the associated test parameter.
         /// </summary>
-        /// <param name="index">The binding index</param>
+        /// <param name="index">The binding index.</param>
         public BindAttribute(int index)
         {
             this.index = index;
         }
 
         /// <summary>
-        /// <para>
         /// Gets or sets the name of the data source to bind, or null to bind
         /// the default data source for the test parameter.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// The default source for a test parameter is the anonymous data source defined
         /// within the scope of the test parameter or by its enclosing test.
         /// </para>
-        /// </summary>
+        /// </remarks>
         public string Source
         {
             get { return source; }
@@ -102,7 +104,7 @@ namespace MbUnit.Framework
         /// <inheritdoc />
         protected override void DecorateTestParameter(IPatternScope slotScope, ISlotInfo slot)
         {
-            DataBinding binding = new DataBinding(index, path);
+            var binding = new DataBinding(index, path);
             slotScope.TestParameterBuilder.Binder = new ScalarDataBinder(binding, source ?? @"");
         }
     }

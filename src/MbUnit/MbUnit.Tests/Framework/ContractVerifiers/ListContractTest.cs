@@ -146,7 +146,7 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
         /// <summary>
         /// Minimal and operational implementation of a collection.
         /// </summary>
-        /// <typeparam name="T">The type of the items</typeparam>
+        /// <typeparam name="T">The type of the items.</typeparam>
         internal class BasicSample<T> : IList<T>
         {
             private readonly List<T> items = new List<T>();
@@ -252,7 +252,7 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
         /// Minimal and operational implementation of a read-only collection.
         /// Add, Remove, or Clear throws a NotSupportedException.
         /// </summary>
-        /// <typeparam name="T">The type of the items</typeparam>
+        /// <typeparam name="T">The type of the items.</typeparam>
         internal class ReadOnlySample<T> : BasicSample<T>
         {
             public override void Add(T item)
