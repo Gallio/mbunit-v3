@@ -34,136 +34,84 @@ namespace MbUnit.Framework.ContractVerifiers
     /// plus the following built-in verifications:
     /// <list type="bullet">
     /// <item>
-    /// <term>InsertShouldThrowException</term>
-    /// <description>The read-only collection throws an exception when the method <see cref="IList{T}.Insert"/> is called.
-    /// <para>
-    /// The test is not run when the contract property <see cref="CollectionContract{TCollection,TItem}.IsReadOnly"/>
-    /// inherited from <see cref="CollectionContract{TCollection,TItem}"/>, is set to <c>false</c>.
-    /// </para>
-    /// </description>
+    /// <strong>InsertShouldThrowException</strong> : The read-only collection throws an exception when the method 
+    /// <see cref="IList{T}.Insert"/> is called. The test is not run when the contract property 
+    /// <see cref="CollectionContract{TCollection,TItem}.IsReadOnly"/> inherited from 
+    /// <see cref="CollectionContract{TCollection,TItem}"/>, is set to <c>false</c>.
     /// </item>
     /// <item>
-    /// <term>RemoveAtShouldThrowException</term>
-    /// <description>The read-only collection throws an exception when the method <see cref="IList{T}.RemoveAt"/>
-    /// is called.
-    /// <para>
+    /// <strong>RemoveAtShouldThrowException</strong> :  The read-only collection throws an exception when the 
+    /// method <see cref="IList{T}.RemoveAt"/> is called. The test is not run when the contract property 
+    /// <see cref="CollectionContract{TCollection,TItem}.IsReadOnly"/> 
+    /// inherited from <see cref="CollectionContract{TCollection,TItem}"/>, is set to <c>false</c>.
+    /// </item>
+    /// <item>
+    /// <strong>IndexerSetShouldThrowException</strong> :  The read-only collection throws an exception when the 
+    /// setter of the indexer <see cref="IList{T}.this"/> is called.
     /// The test is not run when the contract property <see cref="CollectionContract{TCollection,TItem}.IsReadOnly"/> 
     /// inherited from <see cref="CollectionContract{TCollection,TItem}"/>, is set to <c>false</c>.
-    /// </para>
-    /// </description>
     /// </item>
     /// <item>
-    /// <term>IndexerSetShouldThrowException</term>
-    /// <description>The read-only collection throws an exception when the setter of the indexer <see cref="IList{T}.this"/>
-    /// is called.
-    /// <para>
-    /// The test is not run when the contract property <see cref="CollectionContract{TCollection,TItem}.IsReadOnly"/> 
-    /// inherited from <see cref="CollectionContract{TCollection,TItem}"/>, is set to <c>false</c>.
-    /// </para>
-    /// </description>
-    /// </item>
-    /// <item>
-    /// <term>InsertNullArgument</term>
-    /// <description>The collection throwns a <see cref="ArgumentNullException"/> when the method <see cref="IList{T}.Insert"/>
-    /// is called with a null reference item. 
-    /// <para>
+    /// <strong>InsertNullArgument</strong> :  The collection throwns a <see cref="ArgumentNullException"/> 
+    /// when the method <see cref="IList{T}.Insert"/> is called with a null reference item. 
     /// The test is not run when the contract property <see cref="CollectionContract{TCollection,TItem}.AcceptNullReference"/> 
     /// inherited from <see cref="CollectionContract{TCollection,TItem}"/>, is set to <c>true</c>.
-    /// </para>
-    /// </description>
     /// </item>
     /// <item>
-    /// <term>IndexOfNullArgument</term>
-    /// <description>The collection throwns a <see cref="ArgumentNullException"/> when the method <see cref="IList{T}.IndexOf"/>
-    /// is called with a null reference item. 
-    /// <para>
+    /// <strong>IndexOfNullArgument</strong> :  The collection throwns a <see cref="ArgumentNullException"/> 
+    /// when the method <see cref="IList{T}.IndexOf"/> is called with a null reference item. 
     /// The test is not run when the contract property <see cref="CollectionContract{TCollection,TItem}.AcceptNullReference"/> 
     /// inherited from <see cref="CollectionContract{TCollection,TItem}"/>, is set to <c>true</c>.
-    /// </para>
-    /// </description>
     /// </item>
     /// <item>
-    /// <term>IndexerSetNullArgument</term>
-    /// <description>The collection throwns a <see cref="ArgumentNullException"/> when the setter of the indexer <see cref="IList{T}.this"/>
-    /// is called with a null reference item. 
-    /// <para>
+    /// <strong>IndexerSetNullArgument</strong> :  The collection throwns a <see cref="ArgumentNullException"/> 
+    /// when the setter of the indexer <see cref="IList{T}.this"/> is called with a null reference item. 
     /// The test is not run when the contract property <see cref="CollectionContract{TCollection,TItem}.AcceptNullReference"/> 
     /// inherited from <see cref="CollectionContract{TCollection,TItem}"/>, is set to <c>true</c>.
-    /// </para>
-    /// </description>
     /// </item>
     /// <item>
-    /// <term>InsertItems</term>
-    /// <description>
-    /// The collection handles correctly with the insertion of new items. The method 
+    /// <strong>InsertItems</strong> :  The collection handles correctly with the insertion of new items. The method 
     /// <see cref="ICollection{T}.Contains"/> and the property <see cref="ICollection{T}.Count"/> are expected
     /// to return suitable results as well. The case of duplicate items (object equality) is tested too; according
     /// to the value of contract property <see cref="CollectionContract{TCollection,TItem}.AcceptEqualItems"/>,
-    /// inherited from <see cref="CollectionContract{TCollection,TItem}"/>.
-    /// <para>
-    /// The test is not run when the contract property <see cref="CollectionContract{TCollection,TItem}.IsReadOnly"/> 
+    /// inherited from <see cref="CollectionContract{TCollection,TItem}"/>. The test is not run when the contract 
+    /// property <see cref="CollectionContract{TCollection,TItem}.IsReadOnly"/> 
     /// inherited from <see cref="CollectionContract{TCollection,TItem}"/>, is set to <c>true</c>.
-    /// </para>
-    /// </description>
     /// </item>
     /// <item>
-    /// <term>InsertItemsAtInvalidIndex</term>
-    /// <description>
-    /// The collection handles correctly with the insertion of new items at an invalid index. The method
-    /// should throw an <see cref="ArgumentOutOfRangeException"/> when called with a negative index or with
-    /// an index greater than the number of items in the list.
-    /// <para>
+    /// <strong>InsertItemsAtInvalidIndex</strong> :  The collection handles correctly with the insertion of new 
+    /// items at an invalid index. The method should throw an <see cref="ArgumentOutOfRangeException"/> when 
+    /// called with a negative index or with an index greater than the number of items in the list.
     /// The test is not run when the contract property <see cref="CollectionContract{TCollection,TItem}.IsReadOnly"/> 
     /// inherited from <see cref="CollectionContract{TCollection,TItem}"/>, is set to <c>true</c>.
-    /// </para>
-    /// </description>
     /// </item>
     /// <item>
-    /// <term>RemoveItemsAt</term>
-    /// The collection handles correctly with the removal of items at specific indexes. The method 
-    /// <see cref="ICollection{T}.Contains"/> and the property <see cref="ICollection{T}.Count"/> are expected
+    /// <strong>RemoveItemsAt</strong> :  The collection handles correctly with the removal of items at specific indexes. 
+    /// The method  <see cref="ICollection{T}.Contains"/> and the property <see cref="ICollection{T}.Count"/> are expected
     /// to return suitable results as well.
-    /// <para>
     /// The test is not run when the contract property <see cref="CollectionContract{TCollection,TItem}.IsReadOnly"/> 
     /// inherited from <see cref="CollectionContract{TCollection,TItem}"/>, is set to <c>true</c>.
-    /// </para>
     /// </item>
     /// <item>
-    /// <term>RemoveItemsAtInvalidIndex</term>
-    /// <description>
-    /// The collection handles correctly with the removal of items at an invalid index. The method
-    /// should throw an <see cref="ArgumentOutOfRangeException"/> when called with a negative index or with
-    /// an index greater than the number of items in the list.
-    /// <para>
+    /// <strong>RemoveItemsAtInvalidIndex</strong> : The collection handles correctly with the removal of items at an 
+    /// invalid index. The method should throw an <see cref="ArgumentOutOfRangeException"/> when called with a 
+    /// negative index or with an index greater than the number of items in the list.
     /// The test is not run when the contract property <see cref="CollectionContract{TCollection,TItem}.IsReadOnly"/> 
     /// inherited from <see cref="CollectionContract{TCollection,TItem}"/>, is set to <c>true</c>.
-    /// </para>
-    /// </description>
     /// </item>
     /// <item>
-    /// <term>GetItemsAtInvalidIndex</term>
-    /// <description>
-    /// The collection handles correctly with the retrieval of items at an invalid index. The indexer
-    /// should throw an <see cref="ArgumentOutOfRangeException"/> when called with a negative index or with
-    /// an index greater than the number of items in the list.
-    /// </description>
+    /// <strong>GetItemsAtInvalidIndex</strong> : The collection handles correctly with the retrieval of items at 
+    /// an invalid index. The indexer should throw an <see cref="ArgumentOutOfRangeException"/> when called with 
+    /// a negative index or with an index greater than the number of items in the list.
     /// </item>
     /// <item>
-    /// <term>GetSetItemsWithIndexer</term>
-    /// <description>
-    /// Setting and getting items by using the indexer property works as expected.
-    /// <para>
+    /// <strong>GetSetItemsWithIndexer</strong> : Setting and getting items by using the indexer property works as expected.
     /// The test is not run when the contract property <see cref="CollectionContract{TCollection,TItem}.IsReadOnly"/> 
     /// inherited from <see cref="CollectionContract{TCollection,TItem}"/>, is set to <c>true</c>.
-    /// </para>
-    /// </description>
     /// </item>
     /// <item>
-    /// <term>IndexOfItem</term>
-    /// <description>
-    /// The retrieval of the index of an item in the collection works as expected, and the index can be used
-    /// effectively to get the item with the getter of the indexer property.
-    /// </description>
+    /// <strong>IndexOfItem</strong> : The retrieval of the index of an item in the collection works as expected, 
+    /// and the index can be used effectively to get the item with the getter of the indexer property.
     /// </item>
     /// </list>
     /// </para>

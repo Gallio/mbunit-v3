@@ -37,14 +37,24 @@ namespace MbUnit.Framework
     /// The <see cref="Pattern"/> property accepts a simplified regular expression syntax. 
     /// The following syntactic features are supported:
     /// <list type="bullet">
-    /// <item><term>Logical Grouping</term><description>Group a part of the expression (<code>(...)</code>).</description></item>
-    /// <item><term>Explicit Set</term><description>Define a set of possible characters (<code>[...]</code>). 
-    /// Ranges defined with a tiret are accepted.</description></item>
-    /// <item><term>Explicit Quantifier</term><description>Specify the number of times the previous expression must be repeated. 
-    /// 'Constant' (<code>{N}</code>) or 'Range' (<code>{N,M}</code>) syntax are both accepted.</description></item>
-    /// <item><term>Zero Or One Quantifier Metacharacter</term><description>0 or 1 of the previous expression (<code>?</code>).
-    /// Same effect as <code>{0,1}</code>.</description></item>
-    /// <item><term>Escape Character</term><description>Makes the next character literal instead of a special character (<code>\</code>).</description></item>
+    /// <item>
+    /// <strong>Logical Grouping</strong> : Group a part of the expression (<c>(...)</c>).
+    /// </item>
+    /// <item>
+    /// <strong>Explicit Set</strong> : Define a set of possible characters (<c>[...]</c>). 
+    /// Ranges defined with a tiret are accepted.
+    /// </item>
+    /// <item>
+    /// <strong>Explicit Quantifier</strong> : Specify the number of times the previous expression must be repeated. 
+    /// 'Constant' (<c>{N}</c>) or 'Range' (<c>{N,M}</c>) syntax are both accepted.
+    /// </item>
+    /// <item>
+    /// <strong>Zero Or One Quantifier Metacharacter</strong> : 0 or 1 of the previous expression (<c>?</c>).
+    /// Same effect as <c>{0,1}</c>.
+    /// </item>
+    /// <item>
+    /// <strong>Escape Character</strong> : Makes the next character literal instead of a special character (<c>\</c>).
+    /// </item>
     /// </list>
     /// </para>
     /// <para>

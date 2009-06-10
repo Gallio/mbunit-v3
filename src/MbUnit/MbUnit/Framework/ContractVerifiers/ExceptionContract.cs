@@ -32,44 +32,40 @@ namespace MbUnit.Framework.ContractVerifiers
     /// Built-in verifications:
     /// <list type="bullet">
     /// <item>
-    /// <name>HasSerializableAttribute</name>
-    /// <description>The exception type has the <see cref="SerializableAttribute" /> attribute.
-    /// Disable that test by settings the <see cref="ExceptionContract{TException}.ImplementsSerialization"/>
-    /// property to <c>false</c>.</description>
+    /// <strong>HasSerializableAttribute</strong> : The exception type has the <see cref="SerializableAttribute" /> 
+    /// attribute. Disable that test by settings the <see cref="ExceptionContract{TException}.ImplementsSerialization"/>
+    /// property to <c>false</c>.
     /// </item>
     /// <item>
-    /// <name>HasSerializationConstructor</name>
-    /// <description>The exception type has a protected serialization constructor similar to
-    /// <see cref="Exception(SerializationInfo, StreamingContext)" />. Disable that test 
+    /// <strong>HasSerializationConstructor</strong> : The exception type has a protected serialization 
+    /// constructor similar to <see cref="Exception(SerializationInfo, StreamingContext)" />. Disable that test 
     /// by settings the <see cref="ExceptionContract{TException}.ImplementsSerialization"/>
-    /// property to <c>false</c>.</description>
+    /// property to <c>false</c>.
     /// </item>
     /// <item>
-    /// <name>IsDefaultConstructorWellDefined</name>
-    /// <description>The exception type has a default parameter-less constructor. When
-    /// the <see cref="ExceptionContract{TException}.ImplementsSerialization"/> property
+    /// <strong>IsDefaultConstructorWellDefined</strong> : The exception type has a default parameter-less 
+    /// constructor. When the <see cref="ExceptionContract{TException}.ImplementsSerialization"/> property
     /// is set to <c>true</c> as well, the method verifies that the properties of 
     /// the exception are preserved during a roundtrip serialization. Disable the test 
     /// by settings the <see cref="ExceptionContract{TException}.ImplementsStandardConstructors"/>
-    /// property to <c>false</c>. </description>
+    /// property to <c>false</c>. 
     /// </item>
     /// <item>
-    /// <name>IsMessageConstructorWellDefined</name>
-    /// <description>The exception type has single argument constructor for the message. When
-    /// the <see cref="ExceptionContract{TException}.ImplementsSerialization"/> property
+    /// <strong>IsMessageConstructorWellDefined</strong> : The exception type has single argument constructor 
+    /// for the message. When the <see cref="ExceptionContract{TException}.ImplementsSerialization"/> property
     /// is set to <c>true</c> as well, the method verifies that the properties of 
     /// the exception are preserved during a roundtrip serialization. Disable the test 
     /// by settings the <see cref="ExceptionContract{TException}.ImplementsStandardConstructors"/>
-    /// property to <c>false</c>. </description>
+    /// property to <c>false</c>. 
     /// </item>
     /// <item>
-    /// <name>IsMessageAndInnerExceptionConstructorWellDefined</name>
-    /// <description>The exception type has two parameters constructor for the message and an inner exception. 
+    /// <strong>IsMessageAndInnerExceptionConstructorWellDefined</strong> : The exception type has two 
+    /// parameters constructor for the message and an inner exception. 
     /// When the <see cref="ExceptionContract{TException}.ImplementsSerialization"/> property
     /// is set to <c>true</c> as well, the method verifies that the properties of 
     /// the exception are preserved during a roundtrip serialization. Disable the test 
     /// by settings the <see cref="ExceptionContract{TException}.ImplementsStandardConstructors"/>
-    /// property to <c>false</c>. </description>
+    /// property to <c>false</c>. 
     /// </item>
     /// </list>
     /// </para>

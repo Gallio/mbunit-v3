@@ -32,103 +32,62 @@ namespace MbUnit.Framework.ContractVerifiers
     /// Built-in verifications:
     /// <list type="bullet">
     /// <item>
-    /// <term>VerifyReadOnlyProperty</term>
-    /// <description>The <see cref="ICollection{T}.IsReadOnly"/> property returns a value in accordance to 
-    /// the expected result determined in the declaration of the contract verifier, by setting the property
+    /// <strong>VerifyReadOnlyProperty</strong> :  The <see cref="ICollection{T}.IsReadOnly"/> property returns a value 
+    /// in accordance to the expected result determined in the declaration of the contract verifier, by setting the property
     /// <see cref="CollectionContract{TCollection,TItem}.IsReadOnly"/>. By default, the collection is
-    /// expected to be not read-only (items can be added and removed, and the collection to be cleared).</description>
+    /// expected to be not read-only (items can be added and removed, and the collection to be cleared).
     /// </item>
     /// <item>
-    /// <term>AddShouldThrowException</term>
-    /// <description>The read-only collection throws an exception when the method <see cref="ICollection{T}.Add"/> is called.
-    /// <para>
-    /// The test is not run when the contract property <see cref="CollectionContract{TCollection,TItem}.IsReadOnly"/> is set to <c>false</c>.
-    /// </para>
-    /// </description>
+    /// <strong>AddShouldThrowException</strong> : The read-only collection throws an exception when the method 
+    /// <see cref="ICollection{T}.Add"/> is called. The test is not run when the contract property 
+    /// <see cref="CollectionContract{TCollection,TItem}.IsReadOnly"/> is set to <c>false</c>.
     /// </item>
     /// <item>
-    /// <term>RemoveShouldThrowException</term>
-    /// <description>The read-only collection throws an exception when the method <see cref="ICollection{T}.Remove"/>
-    /// is called.
-    /// <para>
-    /// The test is not run when the contract property <see cref="CollectionContract{TCollection,TItem}.IsReadOnly"/> is set to <c>false</c>.
-    /// </para>
-    /// </description>
+    /// <strong>RemoveShouldThrowException</strong> : The read-only collection throws an exception when the method 
+    /// <see cref="ICollection{T}.Remove"/> is called. The test is not run when the contract property 
+    /// <see cref="CollectionContract{TCollection,TItem}.IsReadOnly"/> is set to <c>false</c>.
     /// </item>
     /// <item>
-    /// <term>ClearShouldThrowException</term>
-    /// <description>The read-only collection throws an exception when the method <see cref="ICollection{T}.Clear"/> is called. 
-    /// <para>
-    /// The test is not run when the contract property <see cref="CollectionContract{TCollection,TItem}.IsReadOnly"/> is set to <c>false</c>.
-    /// </para>
-    /// </description>
+    /// <strong>ClearShouldThrowException</strong> : The read-only collection throws an exception when the method 
+    /// <see cref="ICollection{T}.Clear"/> is called. The test is not run when the contract property 
+    /// <see cref="CollectionContract{TCollection,TItem}.IsReadOnly"/> is set to <c>false</c>.
     /// </item>
     /// <item>
-    /// <term>AddNullArgument</term>
-    /// <description>The collection throwns a <see cref="ArgumentNullException"/> when the method <see cref="ICollection{T}.Add"/>
-    /// is called with a null reference item. 
-    /// <para>
-    /// The test is not run when the contract property <see cref="CollectionContract{TCollection,TItem}.AcceptNullReference"/> is set to <c>true</c>.
-    /// </para>
-    /// </description>
-    /// </item>
-    /// <item>
-    /// <term>RemoveNullArgument</term>
-    /// <description>
-    /// The collection throwns a <see cref="ArgumentNullException"/> when the method <see cref="ICollection{T}.Remove"/>
-    /// is called with a null reference item.
-    /// <para>
-    /// The test is not run when the contract property <see cref="CollectionContract{TCollection,TItem}.AcceptNullReference"/> is set to <c>true</c>.
-    /// </para>
-    /// </description>
-    /// </item>
-    /// <item>
-    /// <term>ContainsNullArgument</term>
-    /// <description>
-    /// The collection throws a <see cref="ArgumentNullException"/> when the method <see cref="ICollection{T}.Contains"/> 
-    /// is called with a null reference item. 
-    /// <para>
-    /// The test is not run when the contract property 
+    /// <strong>AddNullArgument</strong> : The collection throwns a <see cref="ArgumentNullException"/> when the method <see cref="ICollection{T}.Add"/>
+    /// is called with a null reference item. The test is not run when the contract property 
     /// <see cref="CollectionContract{TCollection,TItem}.AcceptNullReference"/> is set to <c>true</c>.
-    /// </para>
-    /// </description>
     /// </item>
     /// <item>
-    /// <term>AddItems</term>
-    /// <description>
-    /// The collection handles correctly with the addition of new items. The method 
+    /// <strong>RemoveNullArgument</strong> : The collection throwns a <see cref="ArgumentNullException"/> when the method 
+    /// <see cref="ICollection{T}.Remove"/> is called with a null reference item. The test is not run when the contract 
+    /// property <see cref="CollectionContract{TCollection,TItem}.AcceptNullReference"/> is set to <c>true</c>.
+    /// </item>
+    /// <item>
+    /// <strong>ContainsNullArgument</strong> :  The collection throws a <see cref="ArgumentNullException"/> when the method 
+    /// <see cref="ICollection{T}.Contains"/> is called with a null reference item. The test is not run when the contract property 
+    /// <see cref="CollectionContract{TCollection,TItem}.AcceptNullReference"/> is set to <c>true</c>.
+    /// </item>
+    /// <item>
+    /// <strong>AddItems</strong> : The collection handles correctly with the addition of new items. The method 
     /// <see cref="ICollection{T}.Contains"/> and the property <see cref="ICollection{T}.Count"/> are expected
     /// to return suited results as well. The case of duplicate items (object equality) is tested too; according
     /// to the value of contract property <see cref="CollectionContract{TCollection,TItem}.AcceptEqualItems"/>.
-    /// <para>
-    /// The test is not run when the contract property <see cref="CollectionContract{TCollection,TItem}.IsReadOnly"/> is set to <c>true</c>.
-    /// </para>
-    /// </description>
+    /// The test is not run when the contract property <see cref="CollectionContract{TCollection,TItem}.IsReadOnly"/> 
+    /// is set to <c>true</c>.
     /// </item>
     /// <item>
-    /// <term>RemoveItems</term>
-    /// The collection handles correctly with the removal of items. The method 
+    /// <strong>RemoveItems</strong> : The collection handles correctly with the removal of items. The method 
     /// <see cref="ICollection{T}.Contains"/> and the property <see cref="ICollection{T}.Count"/> are expected
-    /// to return suited results as well.
-    /// <para>
-    /// The test is not run when the contract property <see cref="CollectionContract{TCollection,TItem}.IsReadOnly"/> is set to <c>true</c>.
-    /// </para>
+    /// to return suited results as well. The test is not run when the contract property 
+    /// <see cref="CollectionContract{TCollection,TItem}.IsReadOnly"/> is set to <c>true</c>.
     /// </item>
     /// <item>
-    /// <term>ClearItems</term>
-    /// <description>
-    /// The collection is cleared as expected when the method <see cref="ICollection{T}.Clear"/> is called.
-    /// <para>
+    /// <strong>ClearItems</strong> : The collection is cleared as expected when the method <see cref="ICollection{T}.Clear"/> is called.
     /// The test is not run when the contract property <see cref="CollectionContract{TCollection,TItem}.IsReadOnly"/> is set to <c>true</c>.
-    /// </para>
-    /// </description>
     /// </item>
     /// <item>
-    /// <term>CopyTo</term>
-    /// <description>
-    /// The collection performs a copy of the items in an output array. The implementation is expected to
+    /// <strong>CopyTo</strong> : The collection performs a copy of the items in an output array. The implementation is expected to
     /// handle properly with null arguments, and a valid or an invalid index argument.
-    /// </description>
     /// </item>
     /// </list>
     /// </para>

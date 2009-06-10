@@ -32,25 +32,23 @@ namespace Gallio.Framework.Data
     /// Two XPath expressions are used.
     /// <list type="bullet">
     /// <item>
-    /// <term>Item Path</term>
-    /// <description>An XPath expression that selects a set of nodes that are used to
+    /// <strong>Item Path</strong> : An XPath expression that selects a set of nodes that are used to
     /// uniquely identify records.  For example, the item path might be used to select
     /// the containing element of each Book element in an XML document of Books.
-    /// The item path is specified in the constructor.</description>
+    /// The item path is specified in the constructor.
     /// </item>
     /// <item>
-    /// <term>Binding Path</term>
-    /// <description>An XPath expression that selects a node relative to the item path
+    /// <strong>Binding Path</strong> : An XPath expression that selects a node relative to the item path
     /// that contains a particular data value of interest.  For example, the binding path
     /// might be used to select the Author attribute of a Book element in an XML document of Books.
-    /// The binding path is specified by the <see cref="DataBinding" />.</description>
+    /// The binding path is specified by the <see cref="DataBinding" />.
     /// </item>
     /// </list>
     /// </para>
     /// <example>
     /// <para>
     /// The XML may contain metadata at the row level by adding metadata elements in the
-    /// http://www.gallio.org/ namespace containing metadata entries.  In the following example,
+    /// <c>http://www.gallio.org/</c> namespace containing metadata entries.  In the following example,
     /// the row values would be selected using an Item Path of "//row" and a Binding Path of "@value".
     /// Additionally, some rows would have metadata as specified.
     /// </para>

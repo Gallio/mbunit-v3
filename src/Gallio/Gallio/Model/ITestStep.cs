@@ -60,9 +60,9 @@ namespace Gallio.Model
         /// <para>
         /// Examples:
         /// <list type="bullet">
-        /// <item><term>""</term><description>The root step</description></item>
-        /// <item><term>"SomeAssembly/SomeFixture/SomeTest"</term><description>The step corresponding to SomeTest</description></item>
-        /// <item><term>"SomeAssembly/SomeFixture/SomeTest/ChildStep"</term><description>A child step of SomeTest</description></item>
+        /// <item><strong>""</strong> : The root step.</item>
+        /// <item><strong>"SomeAssembly/SomeFixture/SomeTest"</strong> : The step corresponding to SomeTest.</item>
+        /// <item><strong>"SomeAssembly/SomeFixture/SomeTest/ChildStep"</strong> : A child step of SomeTest.</item>
         /// </list>
         /// </para>
         /// </remarks>
@@ -102,15 +102,15 @@ namespace Gallio.Model
         /// <para>
         /// This case is illustrated like this where periods delimit path segments in the test step hierarchy.
         /// <list type="bullet">
-        /// <item><term>F</term><description>Primary test step of F</description></item>
-        /// <item><term>F.F1</term><description>Non-primary test step of F with data bindings</description></item>
-        /// <item><term>F.F1.T</term><description>Primary test step of T</description></item>
-        /// <item><term>F.F1.T.T1</term><description>Non-primary test step of T with data bindings</description></item>
-        /// <item><term>F.F1.T.T2</term><description>Non-primary test step of T with data bindings</description></item>
-        /// <item><term>F.F2</term><description>Non-primary test step of F with data bindings</description></item>
-        /// <item><term>F.F2.T</term><description>Primary test step of T</description></item>
-        /// <item><term>F.F2.T.T1</term><description>Non-primary test step of T with data bindings</description></item>
-        /// <item><term>F.F2.T.T2</term><description>Non-primary test step of T with data bindings</description></item>
+        /// <item><strong>F</strong> : Primary test step of F</item>
+        /// <item><strong>F.F1</strong> : Non-primary test step of F with data bindings</item>
+        /// <item><strong>F.F1.T</strong> : Primary test step of T</item>
+        /// <item><strong>F.F1.T.T1</strong> : Non-primary test step of T with data bindings</item>
+        /// <item><strong>F.F1.T.T2</strong> : Non-primary test step of T with data bindings</item>
+        /// <item><strong>F.F2</strong> : Non-primary test step of F with data bindings</item>
+        /// <item><strong>F.F2.T</strong> : Primary test step of T</item>
+        /// <item><strong>F.F2.T.T1</strong> : Non-primary test step of T with data bindings</item>
+        /// <item><strong>F.F2.T.T2</strong> : Non-primary test step of T with data bindings</item>
         /// </list>
         /// </para>
         /// </remarks>

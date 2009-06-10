@@ -30,34 +30,28 @@ namespace MbUnit.Framework.ContractVerifiers
     /// Built-in verifications:
     /// <list type="bullet">
     /// <item>
-    /// <term>ObjectEquals</term>
-    /// <description>The <see cref="Object.Equals(object)"/> method was overriden and 
-    /// behaves correctly against the provided equivalence classes.</description>
+    /// <strong>ObjectEquals</strong> : The <see cref="Object.Equals(object)"/> method was overriden and 
+    /// behaves correctly against the provided equivalence classes.
     /// </item>
     /// <item>
-    /// <term>ObjectGetHashCode</term>
-    /// <description>The <see cref="Object.GetHashCode"/> method was overriden and behaves 
-    /// correctly against the provided equivalence classes.</description>
+    /// <strong>ObjectGetHashCode</strong> : The <see cref="Object.GetHashCode"/> method was overriden and behaves 
+    /// correctly against the provided equivalence classes.
     /// </item>
     /// <item>
-    /// <term>EquatableEquals</term>
-    /// <description>The <see cref="IEquatable{T}.Equals"/> method is implemented
-    /// and behaves as expected agains the provided equivalence classes.</description>
+    /// <strong>EquatableEquals</strong> : The <see cref="IEquatable{T}.Equals"/> method is implemented
+    /// and behaves as expected agains the provided equivalence classes.
     /// </item>
     /// <item>
-    /// <term>OperatorEquals</term>
-    /// <description>The type has a static equality operator (==) overload which behaves
+    /// <strong>OperatorEquals</strong> : The type has a static equality operator (==) overload which behaves
     /// correctly against the provided equivalence classes. Disable that test by setting 
     /// the <see cref="EqualityContract{TTarget}.ImplementsOperatorOverloads"/> 
-    /// property to <c>false</c>.</description>
+    /// property to <c>false</c>.
     /// </item>
     /// <item>
-    /// <term>OperatorNotEquals</term>
-    /// <description>The type has a static inequality operator (!=) overload which 
+    /// <strong>OperatorNotEquals</strong> : The type has a static inequality operator (!=) overload which 
     /// behaves correctly against the provided equivalence classes. Disable that test by 
     /// setting the <see cref="EqualityContract{TTarget}.ImplementsOperatorOverloads"/> 
     /// property to <c>false</c>.
-    /// </description>
     /// </item>
     /// </list>
     /// </para>

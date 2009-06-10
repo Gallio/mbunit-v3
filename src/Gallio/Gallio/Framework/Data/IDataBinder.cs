@@ -42,19 +42,16 @@ namespace Gallio.Framework.Data
     /// of a <see cref="IDataBinder" />.
     /// <list type="bullet">
     /// <item>
-    /// <term>Prebinding</term>
-    /// <description>The <see cref="IDataBinder.Register" /> method is called to register
-    /// interest in particular <see cref="IDataSet"/>s with the <see cref="DataBindingContext" />.</description>
+    /// <strong>Prebinding</strong> : The <see cref="IDataBinder.Register" /> method is called to register
+    /// interest in particular <see cref="IDataSet"/>s with the <see cref="DataBindingContext" />.
     /// </item>
     /// <item>
-    /// <term>Binding</term>
-    /// <description>The <see cref="IDataAccessor.GetValue" /> method is called to obtain
-    /// bound values from a <see cref="IDataItem" />.</description>
+    /// <strong>Binding</strong> : The <see cref="IDataAccessor.GetValue" /> method is called to obtain
+    /// bound values from a <see cref="IDataItem" />.
     /// </item>
     /// <item>
-    /// <term>Unbinding</term>
-    /// <description>The <see cref="IDataItem" />'s <see cref="IDisposable.Dispose" /> method
-    /// is called to release resources used by the bound values.</description>
+    /// <strong>Unbinding</strong> : The <see cref="IDataItem" />'s <see cref="IDisposable.Dispose" /> method
+    /// is called to release resources used by the bound values.
     /// </item>
     /// </list>
     /// </para>

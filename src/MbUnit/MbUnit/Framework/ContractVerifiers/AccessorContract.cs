@@ -31,22 +31,21 @@ namespace MbUnit.Framework.ContractVerifiers
     /// Built-in verifications:
     /// <list type="bullet">
     /// <item>
-    /// <term>SetValidValues</term>
-    /// <description>The setter accepts the values specified in the <see cref="ValidValues"/> contract property as valid assignment values,
-    /// and the getter returns equal values (object equality) when called afterwards.</description>
+    /// <strong>SetValidValues</strong> : The setter accepts the values specified in the <see cref="ValidValues"/> 
+    /// contract property as valid assignment values,
+    /// and the getter returns equal values (object equality) when called afterwards.
     /// </item>
     /// <item>
-    /// <term>SetIncompetentValues</term>
-    /// <description>The setter rejects the values specified in the <see cref="InvalidValues"/> contract property by throwing 
-    /// the appropriate exception. The test is not run when the <see cref="InvalidValues"/> contract property is left empty.</description>
+    /// <strong>SetInvalidValues</strong> : The setter rejects the values specified in the <see cref="InvalidValues"/> 
+    /// contract property by throwing the appropriate exception. The test is not run when the <see cref="InvalidValues"/> 
+    /// contract property is left empty.
     /// </item>
     /// <item>
-    /// <term>SetNullValue</term>
-    /// <description>The setter rejects or accepts a null reference value according to the state of the <see cref="AcceptNullValue"/> 
-    /// contract property. If set to true, the setter is expected to accept a null reference as a valid value, and the getter
-    /// to return a null reference as well. If set to false, the setter is expected to reject a null reference assignment by
-    /// throwing a <see cref="ArgumentNullException"/> exception. If the type handled by the tested accessors is not nullable 
-    /// (a value type by example), the test is not run.</description>
+    /// <strong>SetNullValue</strong> : The setter rejects or accepts a null reference value according to the state of the 
+    /// <see cref="AcceptNullValue"/> contract property. If set to true, the setter is expected to accept a null reference 
+    /// as a valid value, and the getter to return a null reference as well. If set to false, the setter is expected to reject 
+    /// a null reference assignment by throwing a <see cref="ArgumentNullException"/> exception. If the type handled by 
+    /// the tested accessors is not nullable (a value type by example), the test is not run.
     /// </item>
     /// </list>
     /// </para>
@@ -138,16 +137,14 @@ namespace MbUnit.Framework.ContractVerifiers
         /// Identify the tested accessors by using one of the following methods:
         /// <list type="bullet">
         /// <item>
-        /// <term>Explicitly invoke the getter and the setter.</term>
-        /// <description>Specify how to invoke to getter and the setter by providing appropriate
-        /// delegates to the <see cref="Getter"/> and <see cref="Setter"/> contract properties. The 
-        /// <see cref="PropertyName"/> contract property must be left unitialized (null).</description>
+        /// <strong>Explicitly invoke the getter and the setter.</strong> : Specify how to invoke to getter and 
+        /// the setter by providing appropriate  delegates to the <see cref="Getter"/> and <see cref="Setter"/> 
+        /// contract properties. The <see cref="PropertyName"/> contract property must be left unitialized (null).
         /// </item>
         /// <item>
-        /// <term>Specify the name of a property.</term>
-        /// <description>Set the name of the tested property by feeding the <see cref="PropertyName"/> contract 
-        /// property with a valid name. The explicit <see cref="Getter"/> and <see cref="Setter"/> contract properties
-        /// must then be left uninitialized (null).</description>
+        /// <strong>Specify the name of a property.</strong> : Set the name of the tested property by feeding the 
+        /// <see cref="PropertyName"/> contract property with a valid name. The explicit <see cref="Getter"/> and 
+        /// <see cref="Setter"/> contract properties must then be left uninitialized (null).
         /// </item>
         /// </list>
         /// </para>
@@ -204,16 +201,14 @@ namespace MbUnit.Framework.ContractVerifiers
         /// Identify the tested accessors with one of the following methods:
         /// <list type="bullet">
         /// <item>
-        /// <term>Explicitly invoke the getter and the setter.</term>
-        /// <description>Specify how to invoke to getter and the setter by providing appropriate
-        /// delegates to the <see cref="Getter"/> and <see cref="Setter"/> contract properties. The 
-        /// <see cref="PropertyName"/> contract property must be left unitialized (null).</description>
+        /// <strong>Explicitly invoke the getter and the setter.</strong> : Specify how to invoke to getter and 
+        /// the setter by providing appropriate delegates to the <see cref="Getter"/> and <see cref="Setter"/> 
+        /// contract properties. The <see cref="PropertyName"/> contract property must be left unitialized (null).
         /// </item>
         /// <item>
-        /// <term>Specify the name of a property.</term>
-        /// <description>Set the name of the tested property by feeding the <see cref="PropertyName"/> contract 
-        /// property with a valid name. The explicit <see cref="Getter"/> and <see cref="Setter"/> contract properties
-        /// must then be left uninitialized (null).</description>
+        /// <strong>Specify the name of a property.</strong> : Set the name of the tested property by feeding the 
+        /// <see cref="PropertyName"/> contract property with a valid name. The explicit <see cref="Getter"/> and 
+        /// <see cref="Setter"/> contract properties must then be left uninitialized (null).
         /// </item>
         /// </list>
         /// </para>
@@ -417,7 +412,7 @@ namespace MbUnit.Framework.ContractVerifiers
 
             if (InvalidValues.Count > 0)
             {
-                yield return CreateSetInvalidValuesTest("SetIncompetentValues");
+                yield return CreateSetInvalidValuesTest("SetInvalidValues");
             }
 
             if (!typeof(TValue).IsValueType)

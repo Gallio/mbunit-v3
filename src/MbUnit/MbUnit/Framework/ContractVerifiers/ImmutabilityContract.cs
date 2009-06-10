@@ -30,14 +30,12 @@ namespace MbUnit.Framework.ContractVerifiers
     /// Built-in verifications:
     /// <list type="bullet">
     /// <item>
-    /// <term>AreReadOnlyFields</term>
-    /// <description>All the public and non-public instance fields are marked
-    /// as read only. The evaluation is made recursively on the field types too.</description>
+    /// <strong>AreReadOnlyFields</strong> : All the public and non-public instance fields are marked
+    /// as read only. The evaluation is made recursively on the field types too.
     /// </item>
     /// <item>
-    /// <term>HasNoPublicPropertySetter</term>
-    /// <description>The type does not have any public property setter.
-    /// The evaluation is made recursively on the property types too.</description>
+    /// <strong>HasNoPublicPropertySetter</strong> : The type does not have any public property setter. 
+    /// The evaluation is made recursively on the property types too.
     /// </item>
     /// </list>
     /// </para>

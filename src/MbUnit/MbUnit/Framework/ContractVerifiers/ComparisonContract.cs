@@ -30,37 +30,28 @@ namespace MbUnit.Framework.ContractVerifiers
     /// Built-in verifications:
     /// <list type="bullet">
     /// <item>
-    /// <term>ComparableCompareTo</term>
-    /// <description>The type implements the method <see cref="IComparable{T}.CompareTo"/>.
-    /// The method behaves as expected agains the provided equivalence classes.</description>
+    /// <strong>ComparableCompareTo</strong> : The type implements the method <see cref="IComparable{T}.CompareTo"/>.
+    /// The method behaves as expected agains the provided equivalence classes.
     /// </item>
     /// <item>
-    /// <term>OperatorGreaterThan</term>
-    /// <description>The type has a static "Greater Than" operator overload which behaves
+    /// <strong>OperatorGreaterThan</strong> : The type has a static "Greater Than" operator overload which behaves
     /// correctly against the provided equivalence classes. Disable that test by setting 
-    /// the <see cref="ComparisonContract{TTarget}.ImplementsOperatorOverloads"/> 
-    /// property to <c>false</c>.</description>
+    /// the <see cref="ComparisonContract{TTarget}.ImplementsOperatorOverloads"/> property to <c>false</c>.
     /// </item>
     /// <item>
-    /// <term>OperatorGreaterThanOrEqual</term>
-    /// <description>The type has a static "Greater Than Or Equal" operator overload which behaves
-    /// correctly against the provided equivalence classes. Disable that test by setting 
-    /// the <see cref="ComparisonContract{TTarget}.ImplementsOperatorOverloads"/> 
-    /// property to <c>false</c>.</description>
+    /// <strong>OperatorGreaterThanOrEqual</strong> : The type has a static "Greater Than Or Equal" operator 
+    /// overload which behaves correctly against the provided equivalence classes. Disable that test by setting 
+    /// the <see cref="ComparisonContract{TTarget}.ImplementsOperatorOverloads"/> property to <c>false</c>.
     /// </item>
     /// <item>
-    /// <term>OperatorLessThan</term>
-    /// <description>The type has a static "Less Than" operator overload which behaves
+    /// <strong>OperatorLessThan</strong> : The type has a static "Less Than" operator overload which behaves
     /// correctly against the provided equivalence classes. Disable that test by setting 
-    /// the <see cref="ComparisonContract{TTarget}.ImplementsOperatorOverloads"/> 
-    /// property to <c>false</c>.</description>
+    /// the <see cref="ComparisonContract{TTarget}.ImplementsOperatorOverloads"/> property to <c>false</c>.
     /// </item>
     /// <item>
-    /// <term>OperatorLessThanOrEqual</term>
-    /// <description>The type has a static "Less Than Or Equal" operator overload which behaves
-    /// correctly against the provided equivalence classes. Disable that test by setting 
-    /// the <see cref="ComparisonContract{TTarget}.ImplementsOperatorOverloads"/> 
-    /// property to <c>false</c>.</description>
+    /// <strong>OperatorLessThanOrEqual</strong> : The type has a static "Less Than Or Equal" operator 
+    /// overload which behaves correctly against the provided equivalence classes. Disable that test by setting 
+    /// the <see cref="ComparisonContract{TTarget}.ImplementsOperatorOverloads"/> property to <c>false</c>.
     /// </item>
     /// </list>
     /// </para>
