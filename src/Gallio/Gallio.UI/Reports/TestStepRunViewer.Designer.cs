@@ -33,14 +33,15 @@
             // 
             // webBrowser
             // 
+            this.webBrowser.AllowWebBrowserDrop = false;
             this.webBrowser.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.webBrowser.IsWebBrowserContextMenuEnabled = false;
             this.webBrowser.Location = new System.Drawing.Point(0, 0);
             this.webBrowser.Name = "webBrowser";
             this.webBrowser.ScriptErrorsSuppressed = true;
             this.webBrowser.Size = new System.Drawing.Size(400, 200);
             this.webBrowser.TabIndex = 0;
             this.webBrowser.Url = new System.Uri("about:blank", System.UriKind.Absolute);
-            this.webBrowser.WebBrowserShortcutsEnabled = false;
             // 
             // TestStepRunViewer
             // 
