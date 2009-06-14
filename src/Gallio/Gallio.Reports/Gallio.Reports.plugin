@@ -36,6 +36,8 @@
     <file path="Resources\xsl\Gallio-Report.html.xsl" />
     <file path="Resources\xsl\Gallio-Report.html+xhtml.xsl" />
     <file path="Resources\xsl\Gallio-Report.txt.xsl" />
+    <file path="Resources\xsl\Gallio-Report.txt-common.xsl" />
+    <file path="Resources\xsl\Gallio-Report.txt-condensed.xsl" />
     <file path="Resources\xsl\Gallio-Report.xhtml-condensed.xsl" />
     <file path="Resources\xsl\Gallio-Report.xhtml.xsl" />
   </files>
@@ -97,6 +99,23 @@
       </traits>
     </component>
 
+    <component componentId="ReportFormatter.Text-Condensed"
+           serviceId="Gallio.ReportFormatter"
+           componentType="Gallio.Reports.XsltReportFormatter, Gallio.Reports">
+      <parameters>
+        <extension>txt</extension>
+        <contentType>text/plain</contentType>
+        <defaultAttachmentContentDisposition>Absent</defaultAttachmentContentDisposition>
+        <resourceDirectory>plugin://Gallio.Reports/Resources/</resourceDirectory>
+        <xsltPath>xsl/Gallio-Report.txt-condensed.xsl</xsltPath>
+        <resourcePaths></resourcePaths>
+      </parameters>
+      <traits>
+        <name>Text-Condensed</name>
+        <description>Generates plain text reports without passing tests.</description>
+      </traits>
+    </component>
+    
     <component componentId="ReportFormatter.Html"
                serviceId="Gallio.ReportFormatter"
                componentType="Gallio.Reports.XsltReportFormatter, Gallio.Reports">

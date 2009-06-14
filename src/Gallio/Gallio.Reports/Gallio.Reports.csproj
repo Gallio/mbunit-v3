@@ -83,6 +83,8 @@
     <Content Include="Resources\img\Passed.gif" />
     <Content Include="Resources\img\Plus.gif" />
     <Content Include="Resources\js\Gallio-Report.js" />
+    <Content Include="Resources\xsl\Gallio-Report.txt-common.xsl" />
+    <Content Include="Resources\xsl\Gallio-Report.txt-condensed.xsl" />
     <Content Include="Resources\xsl\Gallio-Report.ccnet-details-condensed.xsl" />
     <Content Include="Resources\xsl\Gallio-Report.ccnet-details.xsl" />
     <Content Include="Resources\xsl\Gallio-Report.common.xsl" />
