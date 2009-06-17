@@ -164,6 +164,8 @@
                 <Component Id="Gallio.Resources.xsl" Guid="1AE4D4DD-DE35-4887-8953-9079E1BE2447" Win64="no">
                     <File Id="Gallio.Report.common.xsl" Name="Gallio-Report.common.xsl" />
                     <File Id="Gallio.Report.txt.xsl" Name="Gallio-Report.txt.xsl" />
+                    <File Id="Gallio-Report.txt-common.xsl" Name="Gallio-Report.txt-common.xsl" />
+                    <File Id="Gallio-Report.txt-condensed.xsl" Name="Gallio-Report.txt-condensed.xsl" />
                     <File Id="Gallio.Report.html.xsl" Name="Gallio-Report.html.xsl" />
                     <File Id="Gallio.Report.html.condensed.xsl" Name="Gallio-Report.html-condensed.xsl"  />
                     <File Id="Gallio.Report.xhtml.xsl" Name="Gallio-Report.xhtml.xsl" />
