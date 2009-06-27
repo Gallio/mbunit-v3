@@ -163,19 +163,18 @@ namespace Gallio.Tests.Common.Media
             Assert.Contains(ex.Message, "Compression level must be between 0 and 9.");
         }
         
-
         [Test]
         public void KeyFramePeriod_CanGetAndSetValue()
         {
-            var parameters = new FlashScreenVideoParameters(32, 16, 29.776);
+            var parameters = new FlashScreenVideoParameters(32, 16, 30);
 
-            Assert.AreEqual(30, parameters.KeyFramePeriod);
+            Assert.AreEqual(TimeSpan.FromSeconds(2), parameters.KeyFramePeriod);
 
-            parameters.KeyFramePeriod = 1;
-            Assert.AreEqual(1, parameters.KeyFramePeriod);
+            parameters.KeyFramePeriod = TimeSpan.FromSeconds(0);
+            Assert.AreEqual(TimeSpan.FromSeconds(0), parameters.KeyFramePeriod);
 
-            var ex = Assert.Throws<ArgumentOutOfRangeException>(() => parameters.KeyFramePeriod = 0);
-            Assert.Contains(ex.Message, "Key frame period must be at least 1.");
+            var ex = Assert.Throws<ArgumentOutOfRangeException>(() => parameters.KeyFramePeriod = TimeSpan.FromSeconds(-1));
+            Assert.Contains(ex.Message, "Key frame period must not be negative.");
         }
     }
 }

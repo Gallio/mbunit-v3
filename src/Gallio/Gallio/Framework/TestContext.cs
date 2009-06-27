@@ -295,6 +295,85 @@ namespace Gallio.Framework
         }
 
         /// <summary>
+        /// Automatically executes an action when a triggering event occurs.
+        /// </summary>
+        /// <param name="triggerEvent">The triggering event.</param>
+        /// <param name="triggerAction">The action to execute when triggered.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="triggerAction"/> is null.</exception>
+        public void AutoExecute(TriggerEvent triggerEvent, Action triggerAction)
+        {
+            AutoExecute(triggerEvent, triggerAction, null);
+        }
+
+        /// <summary>
+        /// Automatically executes an action when a triggering event occurs.
+        /// </summary>
+        /// <param name="triggerEvent">The triggering event.</param>
+        /// <param name="triggerAction">The action to execute when triggered.</param>
+        /// <param name="cleanupAction">The action to execute to clean up after triggering or when the test finishes without triggering having occurred, or null if none.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="triggerAction"/> is null.</exception>
+        [UserCodeEntryPoint]
+        public void AutoExecute(TriggerEvent triggerEvent, Action triggerAction, Action cleanupAction)
+        {
+            if (triggerAction == null)
+                throw new ArgumentNullException("triggerAction");
+
+            Finishing += (sender, e) =>
+            {
+                if (IsTriggerSatisfied(triggerEvent))
+                {
+                    try
+                    {
+                        triggerAction();
+                    }
+                    catch (Exception ex)
+                    {
+                        UnhandledExceptionPolicy.Report("An exception occurred while performing an auto-execute trigger action.", ex);
+                    }
+                }
+
+                if (cleanupAction != null)
+                {
+                    try
+                    {
+                        cleanupAction();
+                    }
+                    catch (Exception ex)
+                    {
+                        UnhandledExceptionPolicy.Report("An exception occurred while performing an auto-execute cleanup action.", ex);
+                    }
+                }
+            };
+        }
+
+        private bool IsTriggerSatisfied(TriggerEvent triggerEvent)
+        {
+            switch (triggerEvent)
+            {
+                case TriggerEvent.TestFinished:
+                    return true;
+
+                case TriggerEvent.TestPassed:
+                    return Outcome.Status == TestStatus.Passed;
+
+                case TriggerEvent.TestPassedOrInconclusive:
+                    return Outcome.Status == TestStatus.Passed || Outcome.Status == TestStatus.Inconclusive;
+
+                case TriggerEvent.TestInconclusive:
+                    return Outcome.Status == TestStatus.Inconclusive;
+
+                case TriggerEvent.TestFailed:
+                    return Outcome.Status == TestStatus.Failed;
+
+                case TriggerEvent.TestFailedOrInconclusive:
+                    return Outcome.Status == TestStatus.Failed || Outcome.Status == TestStatus.Inconclusive;
+
+                default:
+                    return false;
+            }
+        }
+
+        /// <summary>
         /// Performs an action as a new step within the current context and associates it
         /// with the specified code reference.  Does not verify the outcome of the step.
         /// </summary>

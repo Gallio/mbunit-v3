@@ -26,7 +26,7 @@ namespace Gallio.Common.Media
         private int blockWidth;
         private int blockHeight;
         private int compressionLevel;
-        private int keyFramePeriod;
+        private TimeSpan keyFramePeriod;
 
         /// <summary>
         /// Creates a Flash video parameters object.
@@ -47,7 +47,7 @@ namespace Gallio.Common.Media
             blockWidth = 64;
             blockHeight = 64;
             compressionLevel = 6;
-            keyFramePeriod = (int) Math.Ceiling(framesPerSecond);
+            keyFramePeriod = TimeSpan.FromSeconds(2);
         }
 
         /// <summary>
@@ -111,22 +111,21 @@ namespace Gallio.Common.Media
         }
 
         /// <summary>
-        /// Gets the number of frames between successive key frames.
+        /// Gets the interval between successive key frames.
         /// </summary>
         /// <remarks>
         /// <para>
-        /// The default is <see cref="VideoParameters.FramesPerSecond" /> which produces approximately one key frame per second.
-        /// If you use a value of 1, then every frame will be a key frame.
+        /// The default is 2 seconds.  If you use a value of 0, then every frame will be a key frame.
         /// </para>
         /// </remarks>
-        /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="value"/> is less than 1.</exception>
-        public int KeyFramePeriod
+        /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="value"/> is negative.</exception>
+        public TimeSpan KeyFramePeriod
         {
             get { return keyFramePeriod; }
             set
             {
-                if (value < 1)
-                    throw new ArgumentOutOfRangeException("value", "Key frame period must be at least 1.");
+                if (value.Ticks < 0)
+                    throw new ArgumentOutOfRangeException("value", "Key frame period must not be negative.");
                 keyFramePeriod = value;
             }
         }

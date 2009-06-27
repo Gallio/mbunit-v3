@@ -44,7 +44,7 @@ namespace Gallio.Common.Media
         private readonly double framesPerSecond;
         private readonly int nominalBlockWidth;
         private readonly int nominalBlockHeight;
-        private readonly int keyFramePeriod;
+        private readonly int keyFramePeriodInFrames;
 
         private readonly int cols;
         private readonly int rows;
@@ -58,6 +58,7 @@ namespace Gallio.Common.Media
         private int[] previousFramePixels;
         private int[] currentFramePixels;
         private int frameCount;
+        private bool framePending;
 
         /// <summary>
         /// Creates a new Flash screen video.
@@ -72,7 +73,7 @@ namespace Gallio.Common.Media
             framesPerSecond = parameters.FramesPerSecond;
             nominalBlockWidth = parameters.BlockWidth;
             nominalBlockHeight = parameters.BlockHeight;
-            keyFramePeriod = parameters.KeyFramePeriod;
+            keyFramePeriodInFrames = Math.Max(1, (int) Math.Ceiling(parameters.KeyFramePeriod.TotalSeconds * framesPerSecond));
 
             cols = (width + nominalBlockWidth - 1) / nominalBlockWidth;
             rows = (height + nominalBlockHeight - 1) / nominalBlockHeight;
@@ -93,7 +94,8 @@ namespace Gallio.Common.Media
                 { "width", width },
                 { "height", height },
                 { "framerate", framesPerSecond },
-                { "videocodecid", 3 /*screen video*/ }
+                { "videocodecid", 3 /*screen video*/ },
+                { "canSeekToEnd", true }
             };
             flvMetadataUpdater = flvWriter.WriteFlvMetaFrame(flvMetadata, 0);
         }
@@ -115,10 +117,20 @@ namespace Gallio.Common.Media
         /// <inheritdoc />
         protected override void AddFrameImpl(VideoFrame frame)
         {
+            WritePendingFrame(false);
             SwitchFramePixels();
             LoadCurrentFramePixels(frame);
 
-            bool keyFrame = frameCount % keyFramePeriod == 0;
+            framePending = true;
+        }
+
+        private void WritePendingFrame(bool forceKeyFrame)
+        {
+            if (!framePending)
+                return;
+            framePending = false;
+
+            bool keyFrame = forceKeyFrame || frameCount % keyFramePeriodInFrames == 0;
 
             FlvWriter.FlvVideoFrameFlags frameFlags = FlvWriter.FlvVideoFrameFlags.Codec_ScreenVideo
                 | (keyFrame ? FlvWriter.FlvVideoFrameFlags.Type_KeyFrame : FlvWriter.FlvVideoFrameFlags.Type_InterFrame);
@@ -205,6 +217,8 @@ namespace Gallio.Common.Media
         /// <inheritdoc />
         protected override void SaveImpl(Stream stream)
         {
+            WritePendingFrame(true);
+
             flvMetadataUpdater.Update("duration", frameCount / framesPerSecond);
 
             flvWriter.WriteTo(stream);

@@ -87,6 +87,12 @@
     <Compile Include="Common\Markup\Tags\TextAttachmentTest.cs" />
     <Compile Include="Common\Markup\Tags\TextTagTest.cs" />
     <Compile Include="Common\Markup\TextualMarkupDocumentWriterTest.cs" />
+    <Compile Include="Common\Media\BitmapVideoFrameTest.cs" />
+    <Compile Include="Common\Media\CaptureParametersTest.cs" />
+    <Compile Include="Common\Media\ScreenRecorderTest.cs" />
+    <Compile Include="Common\Media\ScreenGrabberTest.cs" />
+    <Compile Include="Common\Media\FlashScreenVideoParametersTest.cs" />
+    <Compile Include="Common\Media\FlashScreenVideoTest.cs" />
     <Compile Include="Common\MockableConditionContext.cs" />
     <Compile Include="Common\Policies\SpecialPathPolicyTest.cs" />
     <Compile Include="Common\Reflection\AssemblySignatureTest.cs" />
@@ -118,6 +124,7 @@
     <Compile Include="Common\Text\RangeTest.cs" />
     <Compile Include="Common\Text\SubstringTest.cs" />
     <Compile Include="Framework\Assertions\AssertionHelperTest.cs" />
+    <Compile Include="Framework\CaptureTest.cs" />
     <Compile Include="Framework\Data\Generation\RandomStockStringsGeneratorTest.cs" />
     <Compile Include="Framework\Data\Generation\GenerationExceptionTest.cs" />
     <Compile Include="Common\Text\RegularExpression\ElementSetTest.cs" />

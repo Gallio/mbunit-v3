@@ -16,15 +16,20 @@
 using System;
 using System.Drawing;
 using System.Threading;
+using Gallio.Common.Markup;
 using Gallio.Common.Media;
+using Gallio.Common.Reflection;
 using Gallio.Framework;
+using Gallio.Runner.Reports;
 using MbUnit.Framework;
 
 namespace Gallio.Tests.Framework
 {
     [TestFixture]
     [TestsOn(typeof(Capture))]
-    public class CaptureTest
+    [RunSample(typeof(AutoEmbedScreenshotSamples))]
+    [RunSample(typeof(AutoEmbedRecordingSamples))]
+    public class CaptureTest : BaseTestWithSampleRunner
     {
         [Test]
         public void ScreenSize_ReturnsSensibleResult()
@@ -117,6 +122,100 @@ namespace Gallio.Tests.Framework
                     Assert.AreApproximatelyEqual(screenSize.Width / 2, recorder.Video.Parameters.Width, 1);
                     Assert.AreApproximatelyEqual(screenSize.Height / 2, recorder.Video.Parameters.Height, 1);
                 });
+            }
+        }
+
+        [Test]
+        public void AutoEmbedScreenshot_WhenCaptureParameteresIsNull_Throws()
+        {
+            Assert.Throws<ArgumentNullException>(() => Capture.AutoEmbedScreenshot(TriggerEvent.TestFinished, "name", null));
+        }
+
+        [Test]
+        [Row("Triggered", true)]
+        [Row("NotTriggered", false)]
+        public void AutoEmbedScreenshot_EmbedsImageWhenTriggered(string testName, bool triggered)
+        {
+            TestStepRun run = Runner.GetPrimaryTestStepRun(CodeReference.CreateFromMember(typeof(AutoEmbedScreenshotSamples).GetMethod(testName)));
+
+            if (triggered)
+            {
+                Assert.AreEqual(1, run.TestLog.Attachments.Count);
+                Assert.AreEqual(MimeTypes.Png, run.TestLog.Attachments[0].ContentType);
+            }
+            else
+            {
+                Assert.AreEqual(0, run.TestLog.Attachments.Count);
+            }
+        }
+
+        [Test]
+        public void AutoEmbedRecording_WhenCaptureParameteresIsNull_Throws()
+        {
+            Assert.Throws<ArgumentNullException>(() => Capture.AutoEmbedRecording(TriggerEvent.TestFinished, "name", null, 5));
+        }
+
+        [Test]
+        [Row("Triggered", true)]
+        [Row("NotTriggered", false)]
+        public void AutoEmbedRecording_EmbedsVideoWhenTriggered(string testName, bool triggered)
+        {
+            TestStepRun run = Runner.GetPrimaryTestStepRun(CodeReference.CreateFromMember(typeof(AutoEmbedRecordingSamples).GetMethod(testName)));
+
+            if (triggered)
+            {
+                Assert.AreEqual(1, run.TestLog.Attachments.Count);
+                Assert.AreEqual(MimeTypes.FlashVideo, run.TestLog.Attachments[0].ContentType);
+            }
+            else
+            {
+                Assert.AreEqual(0, run.TestLog.Attachments.Count);
+            }
+        }
+
+        [Explicit("Sample")]
+        public class AutoEmbedScreenshotSamples
+        {
+            [Test]
+            public void Triggered()
+            {
+                Register(TriggerEvent.TestPassed);
+            }
+
+            [Test]
+            public void NotTriggered()
+            {
+                Register(TriggerEvent.TestPassed);
+                Assert.Fail();
+            }
+
+            private static void Register(TriggerEvent triggerEvent)
+            {
+                Capture.AutoEmbedScreenshot(triggerEvent, null, new CaptureParameters() { Zoom = 0.25 });
+            }
+        }
+
+        [Explicit("Sample")]
+        public class AutoEmbedRecordingSamples
+        {
+            [Test]
+            public void Triggered()
+            {
+                Register(TriggerEvent.TestPassed);
+                Thread.Sleep(1000);
+            }
+
+            [Test]
+            public void NotTriggered()
+            {
+                Register(TriggerEvent.TestPassed);
+                Thread.Sleep(1000);
+                Assert.Fail();
+            }
+
+            private static void Register(TriggerEvent triggerEvent)
+            {
+                Capture.AutoEmbedRecording(triggerEvent, null, new CaptureParameters() { Zoom = 0.25 }, 5);
             }
         }
     }

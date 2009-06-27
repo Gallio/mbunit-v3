@@ -114,11 +114,21 @@ namespace Gallio.Common.Media
         /// <exception cref="ObjectDisposedException">Thrown if the object has been disposed.</exception>
         public void Stop()
         {
+            Stop(true);
+        }
+
+        private void Stop(bool throwIfDisposed)
+        {
             lock (timerLock)
             {
-                ThrowIfDisposed();
+                if (throwIfDisposed)
+                    ThrowIfDisposed();
 
-                DisposeTimer();
+                if (timer != null)
+                {
+                    timer.Dispose();
+                    timer = null;
+                }
             }
         }
 
@@ -139,7 +149,7 @@ namespace Gallio.Common.Media
         {
             if (disposing)
             {
-                DisposeTimer();
+                Stop(false);
 
                 if (grabber != null)
                     grabber.Dispose();
@@ -148,15 +158,6 @@ namespace Gallio.Common.Media
             grabber = null;
             lastBitmap = null;
             video = null;
-        }
-
-        private void DisposeTimer()
-        {
-            if (timer != null)
-            {
-                timer.Dispose();
-                timer = null;
-            }
         }
 
         /// <summary>
@@ -185,6 +186,9 @@ namespace Gallio.Common.Media
         {
             lock (timerLock)
             {
+                if (timer == null || grabber == null)
+                    return;
+
                 CaptureFrame();
             }
         }
