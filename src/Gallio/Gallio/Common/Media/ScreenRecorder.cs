@@ -176,6 +176,10 @@ namespace Gallio.Common.Media
                 lastBitmap = grabber.CaptureScreenshot(lastBitmap);
                 AddFrame(lastBitmap);
             }
+            catch (ScreenshotNotAvailableException)
+            {
+                // Ignore the exception.
+            }
             catch (Exception ex)
             {
                 UnhandledExceptionPolicy.Report("Could not capture screenshot.", ex);

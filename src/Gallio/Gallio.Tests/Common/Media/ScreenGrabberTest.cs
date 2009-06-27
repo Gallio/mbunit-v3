@@ -14,11 +14,7 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using Gallio.Common.Markup;
 using Gallio.Common.Media;
 using Gallio.Framework;
 using MbUnit.Framework;
@@ -115,16 +111,26 @@ namespace Gallio.Tests.Common.Media
             var parameters = new CaptureParameters();
             using (var grabber = new ScreenGrabber(parameters))
             {
-                Bitmap bitmap = grabber.CaptureScreenshot(null);
-                TestLog.EmbedImage("Screenshot", bitmap);
-
-                Assert.Multiple(() =>
+                if (ScreenGrabber.CanCaptureScreenshot())
                 {
-                    Assert.AreEqual(ScreenGrabber.GetScreenSize().Width, grabber.ScreenshotWidth);
-                    Assert.AreEqual(ScreenGrabber.GetScreenSize().Height, grabber.ScreenshotHeight);
-                    Assert.AreEqual(grabber.ScreenshotWidth, bitmap.Width);
-                    Assert.AreEqual(grabber.ScreenshotHeight, bitmap.Height);
-                });
+                    using (Bitmap bitmap = grabber.CaptureScreenshot(null))
+                    {
+                        TestLog.EmbedImage("Screenshot", bitmap);
+
+                        Assert.Multiple(() =>
+                        {
+                            Assert.AreEqual(ScreenGrabber.GetScreenSize().Width, grabber.ScreenshotWidth);
+                            Assert.AreEqual(ScreenGrabber.GetScreenSize().Height, grabber.ScreenshotHeight);
+                            Assert.AreEqual(grabber.ScreenshotWidth, bitmap.Width);
+                            Assert.AreEqual(grabber.ScreenshotHeight, bitmap.Height);
+                        });
+                    }
+                }
+                else
+                {
+                    Assert.Throws<ScreenshotNotAvailableException>(() => grabber.CaptureScreenshot(null),
+                        "CanCaptureScreenshot returned false so expected an exception to be thrown.");
+                }
             }
         }
 
@@ -134,16 +140,28 @@ namespace Gallio.Tests.Common.Media
             var parameters = new CaptureParameters() { Zoom = 0.25 };
             using (var grabber = new ScreenGrabber(parameters))
             {
-                Bitmap bitmap = grabber.CaptureScreenshot(null);
-                TestLog.EmbedImage("Screenshot with 0.25x zoom", bitmap);
-
-                Assert.Multiple(() =>
+                if (ScreenGrabber.CanCaptureScreenshot())
                 {
-                    Assert.AreApproximatelyEqual(ScreenGrabber.GetScreenSize().Width / 2, grabber.ScreenshotWidth, 1);
-                    Assert.AreApproximatelyEqual(ScreenGrabber.GetScreenSize().Height / 2, grabber.ScreenshotHeight, 1);
-                    Assert.AreEqual(grabber.ScreenshotWidth, bitmap.Width);
-                    Assert.AreEqual(grabber.ScreenshotHeight, bitmap.Height);
-                });
+                    using (Bitmap bitmap = grabber.CaptureScreenshot(null))
+                    {
+                        TestLog.EmbedImage("Screenshot with 0.25x zoom", bitmap);
+
+                        Assert.Multiple(() =>
+                        {
+                            Assert.AreApproximatelyEqual(ScreenGrabber.GetScreenSize().Width / 2,
+                                grabber.ScreenshotWidth, 1);
+                            Assert.AreApproximatelyEqual(ScreenGrabber.GetScreenSize().Height / 2,
+                                grabber.ScreenshotHeight, 1);
+                            Assert.AreEqual(grabber.ScreenshotWidth, bitmap.Width);
+                            Assert.AreEqual(grabber.ScreenshotHeight, bitmap.Height);
+                        });
+                    }
+                }
+                else
+                {
+                    Assert.Throws<ScreenshotNotAvailableException>(() => grabber.CaptureScreenshot(null),
+                        "CanCaptureScreenshot returned false so expected an exception to be thrown.");
+                }
             }
         }
 
@@ -153,12 +171,21 @@ namespace Gallio.Tests.Common.Media
             var parameters = new CaptureParameters() { Zoom = 0.25 };
             using (var grabber = new ScreenGrabber(parameters))
             {
-                Bitmap bitmap = new Bitmap(grabber.ScreenshotWidth, grabber.ScreenshotHeight);
+                using (Bitmap bitmap = new Bitmap(grabber.ScreenshotWidth, grabber.ScreenshotHeight))
+                {
+                    if (ScreenGrabber.CanCaptureScreenshot())
+                    {
+                        Bitmap returnedBitmap = grabber.CaptureScreenshot(bitmap);
+                        TestLog.EmbedImage("Screenshot with 0.25x zoom", bitmap);
 
-                Bitmap returnedBitmap = grabber.CaptureScreenshot(bitmap);
-                TestLog.EmbedImage("Screenshot with 0.25x zoom", bitmap);
-
-                Assert.AreSame(bitmap, returnedBitmap);
+                        Assert.AreSame(bitmap, returnedBitmap);
+                    }
+                    else
+                    {
+                        Assert.Throws<ScreenshotNotAvailableException>(() => grabber.CaptureScreenshot(bitmap),
+                            "CanCaptureScreenshot returned false so expected an exception to be thrown.");
+                    }
+                }
             }
         }
 

@@ -48,14 +48,24 @@ namespace Gallio.Tests.Framework
         {
             Size screenSize = Capture.GetScreenSize();
 
-            Bitmap bitmap = Capture.Screenshot();
-            TestLog.EmbedImage("Screenshot", bitmap);
-
-            Assert.Multiple(() =>
+            if (Capture.CanCaptureScreenshot())
             {
-                Assert.AreEqual(screenSize.Width, bitmap.Width);
-                Assert.AreEqual(screenSize.Height, bitmap.Height);
-            });
+                using (Bitmap bitmap = Capture.Screenshot())
+                {
+                    TestLog.EmbedImage("Screenshot", bitmap);
+
+                    Assert.Multiple(() =>
+                    {
+                        Assert.AreEqual(screenSize.Width, bitmap.Width);
+                        Assert.AreEqual(screenSize.Height, bitmap.Height);
+                    });
+                }
+            }
+            else
+            {
+                Assert.Throws<ScreenshotNotAvailableException>(() => Capture.Screenshot(),
+                    "CanCaptureScreenshot returned false so expected an exception to be thrown.");
+            }
         }
 
         [Test]
@@ -69,14 +79,24 @@ namespace Gallio.Tests.Framework
         {
             Size screenSize = Capture.GetScreenSize();
 
-            Bitmap bitmap = Capture.Screenshot(new CaptureParameters() { Zoom = 0.25 });
-            TestLog.EmbedImage("Screenshot with 0.25x zoom", bitmap);
-
-            Assert.Multiple(() =>
+            if (Capture.CanCaptureScreenshot())
             {
-                Assert.AreApproximatelyEqual(screenSize.Width / 2, bitmap.Width, 1);
-                Assert.AreApproximatelyEqual(screenSize.Height / 2, bitmap.Height, 1);
-            });
+                using (Bitmap bitmap = Capture.Screenshot(new CaptureParameters() {Zoom = 0.25}))
+                {
+                    TestLog.EmbedImage("Screenshot with 0.25x zoom", bitmap);
+
+                    Assert.Multiple(() =>
+                    {
+                        Assert.AreApproximatelyEqual(screenSize.Width / 2, bitmap.Width, 1);
+                        Assert.AreApproximatelyEqual(screenSize.Height / 2, bitmap.Height, 1);
+                    });
+                }
+            }
+            else
+            {
+                Assert.Throws<ScreenshotNotAvailableException>(() => Capture.Screenshot(new CaptureParameters() { Zoom = 0.25 }),
+                    "CanCaptureScreenshot returned false so expected an exception to be thrown.");
+            }
         }
 
         [Test]
@@ -84,18 +104,26 @@ namespace Gallio.Tests.Framework
         {
             Size screenSize = Capture.GetScreenSize();
 
-            using (ScreenRecorder recorder = Capture.StartRecording())
+            if (Capture.CanCaptureScreenshot())
             {
-                Thread.Sleep(2000);
-                recorder.Stop();
-
-                TestLog.EmbedVideo("Video", recorder.Video);
-
-                Assert.Multiple(() =>
+                using (ScreenRecorder recorder = Capture.StartRecording())
                 {
-                    Assert.AreEqual(screenSize.Width, recorder.Video.Parameters.Width);
-                    Assert.AreEqual(screenSize.Height, recorder.Video.Parameters.Height);
-                });
+                    Thread.Sleep(2000);
+                    recorder.Stop();
+
+                    TestLog.EmbedVideo("Video", recorder.Video);
+
+                    Assert.Multiple(() =>
+                    {
+                        Assert.AreEqual(screenSize.Width, recorder.Video.Parameters.Width);
+                        Assert.AreEqual(screenSize.Height, recorder.Video.Parameters.Height);
+                    });
+                }
+            }
+            else
+            {
+                Assert.Throws<ScreenshotNotAvailableException>(() => Capture.StartRecording(),
+                    "CanCaptureScreenshot returned false so expected an exception to be thrown.");
             }
         }
 
@@ -110,18 +138,26 @@ namespace Gallio.Tests.Framework
         {
             Size screenSize = Capture.GetScreenSize();
 
-            using (ScreenRecorder recorder = Capture.StartRecording(new CaptureParameters() { Zoom = 0.25 }, 5))
+            if (Capture.CanCaptureScreenshot())
             {
-                Thread.Sleep(2000);
-                recorder.Stop();
-
-                TestLog.EmbedVideo("Video", recorder.Video);
-
-                Assert.Multiple(() =>
+                using (ScreenRecorder recorder = Capture.StartRecording(new CaptureParameters() {Zoom = 0.25}, 5))
                 {
-                    Assert.AreApproximatelyEqual(screenSize.Width / 2, recorder.Video.Parameters.Width, 1);
-                    Assert.AreApproximatelyEqual(screenSize.Height / 2, recorder.Video.Parameters.Height, 1);
-                });
+                    Thread.Sleep(2000);
+                    recorder.Stop();
+
+                    TestLog.EmbedVideo("Video", recorder.Video);
+
+                    Assert.Multiple(() =>
+                    {
+                        Assert.AreApproximatelyEqual(screenSize.Width / 2, recorder.Video.Parameters.Width, 1);
+                        Assert.AreApproximatelyEqual(screenSize.Height / 2, recorder.Video.Parameters.Height, 1);
+                    });
+                }
+            }
+            else
+            {
+                Assert.Throws<ScreenshotNotAvailableException>(() => Capture.StartRecording(new CaptureParameters() { Zoom = 0.25 }, 5),
+                    "CanCaptureScreenshot returned false so expected an exception to be thrown.");
             }
         }
 
@@ -138,14 +174,21 @@ namespace Gallio.Tests.Framework
         {
             TestStepRun run = Runner.GetPrimaryTestStepRun(CodeReference.CreateFromMember(typeof(AutoEmbedScreenshotSamples).GetMethod(testName)));
 
-            if (triggered)
+            if (Capture.CanCaptureScreenshot())
             {
-                Assert.AreEqual(1, run.TestLog.Attachments.Count);
-                Assert.AreEqual(MimeTypes.Png, run.TestLog.Attachments[0].ContentType);
+                if (triggered)
+                {
+                    Assert.AreEqual(1, run.TestLog.Attachments.Count);
+                    Assert.AreEqual(MimeTypes.Png, run.TestLog.Attachments[0].ContentType);
+                }
+                else
+                {
+                    Assert.AreEqual(0, run.TestLog.Attachments.Count);
+                }
             }
             else
             {
-                Assert.AreEqual(0, run.TestLog.Attachments.Count);
+                Assert.Contains(run.TestLog.ToString(), "Screenshot not available.");
             }
         }
 
@@ -162,14 +205,21 @@ namespace Gallio.Tests.Framework
         {
             TestStepRun run = Runner.GetPrimaryTestStepRun(CodeReference.CreateFromMember(typeof(AutoEmbedRecordingSamples).GetMethod(testName)));
 
-            if (triggered)
+            if (Capture.CanCaptureScreenshot())
             {
-                Assert.AreEqual(1, run.TestLog.Attachments.Count);
-                Assert.AreEqual(MimeTypes.FlashVideo, run.TestLog.Attachments[0].ContentType);
+                if (triggered)
+                {
+                    Assert.AreEqual(1, run.TestLog.Attachments.Count);
+                    Assert.AreEqual(MimeTypes.FlashVideo, run.TestLog.Attachments[0].ContentType);
+                }
+                else
+                {
+                    Assert.AreEqual(0, run.TestLog.Attachments.Count);
+                }
             }
             else
             {
-                Assert.AreEqual(0, run.TestLog.Attachments.Count);
+                Assert.Contains(run.TestLog.ToString(), "Recording not available.");
             }
         }
 

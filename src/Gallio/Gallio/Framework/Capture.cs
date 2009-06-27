@@ -34,9 +34,25 @@ namespace Gallio.Framework
         }
 
         /// <summary>
+        /// Returns true if screenshots can be captured.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// This method may return false if the application is running as a service which has
+        /// not been granted the right to interact with the desktop.
+        /// </para>
+        /// </remarks>
+        /// <returns>True if the screen can be captured</returns>
+        public static bool CanCaptureScreenshot()
+        {
+            return ScreenGrabber.CanCaptureScreenshot();
+        }
+
+        /// <summary>
         /// Captures an image of the entire desktop.
         /// </summary>
         /// <returns>The screenshot.</returns>
+        /// <exception cref="ScreenshotNotAvailableException">Thrown if a screenshot cannot be captured at this time.</exception>
         public static Bitmap Screenshot()
         {
             return Screenshot(new CaptureParameters());
@@ -48,6 +64,7 @@ namespace Gallio.Framework
         /// <param name="parameters">The capture parameters.</param>
         /// <returns>The screenshot.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="parameters"/> is null.</exception>
+        /// <exception cref="ScreenshotNotAvailableException">Thrown if a screenshot cannot be captured at this time.</exception>
         public static Bitmap Screenshot(CaptureParameters parameters)
         {
             if (parameters == null)
@@ -70,6 +87,7 @@ namespace Gallio.Framework
         /// </para>
         /// </remarks>
         /// <returns>The recorder.</returns>
+        /// <exception cref="ScreenshotNotAvailableException">Thrown if a screenshot cannot be captured at this time.</exception>
         public static ScreenRecorder StartRecording()
         {
             return StartRecording(new CaptureParameters(), 5);
@@ -91,10 +109,13 @@ namespace Gallio.Framework
         /// <param name="framesPerSecond">The number of frames per second to capture.</param>
         /// <returns>The recorder.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="parameters"/> is null.</exception>
+        /// <exception cref="ScreenshotNotAvailableException">Thrown if a screenshot cannot be captured at this time.</exception>
         public static ScreenRecorder StartRecording(CaptureParameters parameters, double framesPerSecond)
         {
             if (parameters == null)
                 throw new ArgumentNullException("parameters");
+
+            ScreenGrabber.ThrowIfScreenshotNotAvailable();
 
             ScreenGrabber grabber = new ScreenGrabber(parameters);
             try
@@ -124,6 +145,11 @@ namespace Gallio.Framework
         /// <summary>
         /// Automatically embeds a screenshot when a trigger event occurs.
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// If screenshots cannot be captured, the method will embed a warning message to that effect.
+        /// </para>
+        /// </remarks>
         /// <param name="triggerEvent">The trigger event.</param>
         /// <param name="attachmentName">The name to give the image attachment, or null to assign one automatically.</param>
         public static void AutoEmbedScreenshot(TriggerEvent triggerEvent, string attachmentName)
@@ -134,6 +160,11 @@ namespace Gallio.Framework
         /// <summary>
         /// Automatically embeds a screenshot when a trigger event occurs.
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// If screenshots cannot be captured, the method will embed a warning message to that effect.
+        /// </para>
+        /// </remarks>
         /// <param name="triggerEvent">The trigger event.</param>
         /// <param name="attachmentName">The name to give the image attachment, or null to assign one automatically.</param>
         /// <param name="parameters">The capture parameters.</param>
@@ -148,8 +179,15 @@ namespace Gallio.Framework
             {
                 context.AutoExecute(triggerEvent, () =>
                 {
-                    Bitmap bitmap = Screenshot(parameters);
-                    context.LogWriter.Default.EmbedImage(attachmentName, bitmap);
+                    try
+                    {
+                        Bitmap bitmap = Screenshot(parameters);
+                        context.LogWriter.Default.EmbedImage(attachmentName, bitmap);
+                    }
+                    catch (ScreenshotNotAvailableException ex)
+                    {
+                        context.LogWriter.Default.WriteException(ex, "Screenshot not available.");
+                    }
                 });
             }
         }
@@ -164,6 +202,9 @@ namespace Gallio.Framework
         /// <see cref="AutoEmbedRecording(TriggerEvent, string, CaptureParameters, double)" /> with
         /// a <see cref="CaptureParameters.Zoom" /> factor of 0.25 or less and a frame rate
         /// of no more than 5 to 10 frames per second.
+        /// </para>
+        /// <para>
+        /// If screenshots cannot be captured, the method will embed a warning message to that effect.
         /// </para>
         /// </remarks>
         /// <param name="triggerEvent">The trigger event.</param>
@@ -184,6 +225,9 @@ namespace Gallio.Framework
         /// a <see cref="CaptureParameters.Zoom" /> factor of 0.25 or less and a frame rate
         /// of no more than 5 to 10 frames per second.
         /// </para>
+        /// <para>
+        /// If screenshots cannot be captured, the method will embed a warning message to that effect.
+        /// </para>
         /// </remarks>
         /// <param name="triggerEvent">The trigger event.</param>
         /// <param name="attachmentName">The name to give the video attachment, or null to assign one automatically.</param>
@@ -198,13 +242,23 @@ namespace Gallio.Framework
             TestContext context = TestContext.CurrentContext;
             if (context != null)
             {
-                ScreenRecorder recorder = StartRecording(parameters, framesPerSecond);
-
-                context.AutoExecute(triggerEvent, () =>
+                try
                 {
-                    recorder.Stop();
-                    context.LogWriter.Default.EmbedVideo(attachmentName, recorder.Video);
-                }, recorder.Dispose);
+                    ScreenRecorder recorder = StartRecording(parameters, framesPerSecond);
+
+                    context.AutoExecute(triggerEvent, () =>
+                    {
+                        recorder.Stop();
+                        context.LogWriter.Default.EmbedVideo(attachmentName, recorder.Video);
+                    }, recorder.Dispose);
+                }
+                catch (ScreenshotNotAvailableException ex)
+                {
+                    context.AutoExecute(triggerEvent, () =>
+                    {
+                        context.LogWriter.Default.WriteException(ex, "Recording not available.");
+                    });
+                }
             }
         }
     }

@@ -16,8 +16,10 @@
 using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
+using Gallio.Common.Platform;
 
 namespace Gallio.Common.Media
 {
@@ -64,6 +66,54 @@ namespace Gallio.Common.Media
         public static Size GetScreenSize()
         {
             return new Size(GetSystemMetrics(SM_CXSCREEN), GetSystemMetrics(SM_CYSCREEN));
+        }
+
+        /// <summary>
+        /// Returns true if screenshots can be captured.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// This method may return false if the application is running as a service which has
+        /// not been granted the right to interact with the desktop.
+        /// </para>
+        /// </remarks>
+        /// <returns>True if the screen can be captured</returns>
+        public static bool CanCaptureScreenshot()
+        {
+            if (DotNetRuntimeSupport.IsUsingMono)
+                return false;
+
+            try
+            {
+                IntPtr hWnd = IntPtr.Zero;
+                IntPtr hDC = IntPtr.Zero;
+
+                RuntimeHelpers.PrepareConstrainedRegions();
+                try
+                {
+                    hDC = GetDC(hWnd);
+                    return hDC != IntPtr.Zero;
+                }
+                finally
+                {
+                    if (hDC != IntPtr.Zero)
+                        ReleaseDC(hWnd, hDC);
+                }
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Throws an exception if a screenshot cannot be captured at this time.
+        /// </summary>
+        /// <exception cref="ScreenshotNotAvailableException">Thrown if a screenshot cannot be captured at this time.</exception>
+        public static void ThrowIfScreenshotNotAvailable()
+        {
+            if (! CanCaptureScreenshot())
+                throw new ScreenshotNotAvailableException("Cannot capture screenshots at this time.  The application may be running as a service that has not been granted the right to interact with the desktop.");
         }
 
         /// <summary>
@@ -117,69 +167,111 @@ namespace Gallio.Common.Media
         /// <summary>
         /// Captures a screenshot.
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// Captures a screenshot and returns the bitmap.  The caller is responsible for disposing
+        /// the bitmap when no longer needed.
+        /// </para>
+        /// </remarks>
         /// <param name="bitmap">If not null writes the screenshot into the specified bitmap,
         /// otherwise creates and returns a new bitmap.</param>
         /// <returns>The screenshot.</returns>
         /// <exception cref="ArgumentException">Thrown if the provided <paramref name="bitmap"/> is
         /// not of the expected size.</exception>
         /// <exception cref="ObjectDisposedException">Thrown if the object has been disposed.</exception>
+        /// <exception cref="ScreenshotNotAvailableException">Thrown if a screenshot cannot be captured at this time.</exception>
         public virtual Bitmap CaptureScreenshot(Bitmap bitmap)
         {
             ThrowIfDisposed();
 
-            if (bitmap != null)
-            {
-                if (bitmap.Width != screenshotWidth || bitmap.Height != screenshotHeight)
-                    throw new ArgumentException("The bitmap dimensions must exactly match the screenshot dimensions.");
-            }
-            else
-            {
-                bitmap = new Bitmap(screenshotWidth, screenshotHeight);
-            }
+            if (bitmap != null && (bitmap.Width != screenshotWidth || bitmap.Height != screenshotHeight))
+                throw new ArgumentException("The bitmap dimensions must exactly match the screenshot dimensions.");
 
-            if (xyScale != 1.0)
+            if (DotNetRuntimeSupport.IsUsingMono)
+                throw new ScreenshotNotAvailableException("Cannot capture screenshots when running under Mono.");
+
+            bool allocatedBitmap = false;
+            try
             {
-                if (screenBuffer == null)
+                if (bitmap == null)
                 {
-                    screenBuffer = new Bitmap(screenWidth, screenHeight);
+                    try
+                    {
+                        allocatedBitmap = true;
+                        bitmap = new Bitmap(screenshotWidth, screenshotHeight);
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new ScreenshotNotAvailableException("Could not allocate bitmap for screenshot.", ex);
+                    }
                 }
 
-                CaptureScreenToBitmap(screenBuffer);
-
-                using (Graphics graphics = Graphics.FromImage(bitmap))
+                if (xyScale != 1.0)
                 {
-                    graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                    graphics.DrawImage(screenBuffer, 0, 0, screenshotWidth, screenshotHeight);
-                }
-            }
-            else
-            {
-                CaptureScreenToBitmap(bitmap);
-            }
+                    if (screenBuffer == null)
+                    {
+                        try
+                        {
+                            screenBuffer = new Bitmap(screenWidth, screenHeight);
+                        }
+                        catch (Exception ex)
+                        {
+                            throw new ScreenshotNotAvailableException(
+                                "Could not allocate bitmap for internal screenshot buffer.", ex);
+                        }
+                    }
 
-            return bitmap;
+                    CaptureScreenToBitmap(screenBuffer);
+
+                    using (Graphics graphics = Graphics.FromImage(bitmap))
+                    {
+                        graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                        graphics.DrawImage(screenBuffer, 0, 0, screenshotWidth, screenshotHeight);
+                    }
+                }
+                else
+                {
+                    CaptureScreenToBitmap(bitmap);
+                }
+
+                return bitmap;
+            }
+            catch
+            {
+                if (allocatedBitmap && bitmap != null)
+                    bitmap.Dispose();
+                throw;
+            }
         }
 
         private void CaptureScreenToBitmap(Bitmap bitmap)
         {
-            using (Graphics graphics = Graphics.FromImage(bitmap))
+            try
             {
-                graphics.CopyFromScreen(0, 0, 0, 0, new Size(screenWidth, screenHeight), CopyPixelOperation.SourceCopy);
-
-                CURSORINFO cursorInfo = new CURSORINFO();
-                cursorInfo.cbSize = Marshal.SizeOf(cursorInfo);
-
-                if (GetCursorInfo(ref cursorInfo))
+                using (Graphics graphics = Graphics.FromImage(bitmap))
                 {
-                    if (cursorInfo.flags == CURSOR_SHOWING)
+                    graphics.CopyFromScreen(0, 0, 0, 0, new Size(screenWidth, screenHeight),
+                        CopyPixelOperation.SourceCopy);
+
+                    CURSORINFO cursorInfo = new CURSORINFO();
+                    cursorInfo.cbSize = Marshal.SizeOf(cursorInfo);
+
+                    if (GetCursorInfo(ref cursorInfo))
                     {
-                        Cursor cursor = new Cursor(cursorInfo.hCursor);
-                        cursor.Draw(graphics, new Rectangle(
-                            cursorInfo.ptScreenPos.x - cursor.HotSpot.X,
-                            cursorInfo.ptScreenPos.y - cursor.HotSpot.Y,
-                            cursor.Size.Width, cursor.Size.Height));
+                        if (cursorInfo.flags == CURSOR_SHOWING)
+                        {
+                            Cursor cursor = new Cursor(cursorInfo.hCursor);
+                            cursor.Draw(graphics, new Rectangle(
+                                cursorInfo.ptScreenPos.x - cursor.HotSpot.X,
+                                cursorInfo.ptScreenPos.y - cursor.HotSpot.Y,
+                                cursor.Size.Width, cursor.Size.Height));
+                        }
                     }
                 }
+            }
+            catch (Exception ex)
+            {
+                throw new ScreenshotNotAvailableException("Could not capture screenshot.  The application may be running as a service that has not been granted the right to interact with the desktop.", ex);
             }
         }
 
@@ -212,6 +304,12 @@ namespace Gallio.Common.Media
 
         [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true, ExactSpelling = true)]
         private static extern int GetSystemMetrics(int nIndex);
+
+        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true, ExactSpelling = true)]
+        private static extern IntPtr GetDC(IntPtr hWnd);
+
+        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true, ExactSpelling = true)]
+        private static extern int ReleaseDC(IntPtr hWnd, IntPtr hDC);
 
         // From PInvoke.Net.
 
