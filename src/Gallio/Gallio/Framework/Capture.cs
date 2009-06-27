@@ -62,8 +62,17 @@ namespace Gallio.Framework
         }
 
         /// <summary>
-        /// Starts recording a video of the entire desktop.
+        /// Starts recording a screen capture video of the entire desktop.
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// Recording a screen capture video can be very CPU and space intensive particularly
+        /// when running tests on a single-core CPU.  We recommend calling
+        /// <see cref="StartRecording(CaptureParameters, double)" /> with
+        /// a <see cref="CaptureParameters.Zoom" /> factor of 0.25 or less and a frame rate
+        /// of no more than 5 to 10 frames per second.
+        /// </para>
+        /// </remarks>
         /// <returns>The recorder.</returns>
         public static ScreenRecorder StartRecording()
         {
@@ -71,8 +80,17 @@ namespace Gallio.Framework
         }
 
         /// <summary>
-        /// Starts recording a video of the entire desktop.
+        /// Starts recording a screen capture video of the entire desktop.
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// Recording a screen capture video can be very CPU and space intensive particularly
+        /// when running tests on a single-core CPU.  We recommend calling
+        /// <see cref="StartRecording(CaptureParameters, double)" /> with
+        /// a <see cref="CaptureParameters.Zoom" /> factor of 0.25 or less and a frame rate
+        /// of no more than 5 to 10 frames per second.
+        /// </para>
+        /// </remarks>
         /// <param name="parameters">The capture parameters.</param>
         /// <param name="framesPerSecond">The number of frames per second to capture.</param>
         /// <returns>The recorder.</returns>
