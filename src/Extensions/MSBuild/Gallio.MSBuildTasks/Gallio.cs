@@ -789,12 +789,12 @@ namespace Gallio.MSBuildTasks
                 launcher.TestRunnerExtensions.Add(new TaskLogExtension(Log));
 
             if (applicationBaseDirectory != null)
-                launcher.TestPackageConfig.HostSetup.ApplicationBaseDirectory = applicationBaseDirectory.ItemSpec;
+                launcher.TestPackageConfig.ApplicationBaseDirectory = applicationBaseDirectory.ItemSpec;
             if (workingDirectory != null)
-                launcher.TestPackageConfig.HostSetup.WorkingDirectory = workingDirectory.ItemSpec;
-            launcher.TestPackageConfig.HostSetup.ShadowCopy = shadowCopy;
-            launcher.TestPackageConfig.HostSetup.Debug = debug;
-            launcher.TestPackageConfig.HostSetup.RuntimeVersion = runtimeVersion;
+                launcher.TestPackageConfig.WorkingDirectory = workingDirectory.ItemSpec;
+            launcher.TestPackageConfig.ShadowCopy = shadowCopy;
+            launcher.TestPackageConfig.Debug = debug;
+            launcher.TestPackageConfig.RuntimeVersion = runtimeVersion;
 
             foreach (string option in reportFormatterProperties)
                 launcher.ReportFormatterOptions.Properties.Add(StringUtils.ParseKeyValuePair(option));
@@ -802,7 +802,7 @@ namespace Gallio.MSBuildTasks
             foreach (string option in runnerProperties)
                 launcher.TestRunnerOptions.Properties.Add(StringUtils.ParseKeyValuePair(option));
 
-            AddAllItemSpecs(launcher.TestPackageConfig.AssemblyFiles, files);
+            AddAllItemSpecs(launcher.TestPackageConfig.Files, files);
             AddAllItemSpecs(launcher.TestPackageConfig.HintDirectories, hintDirectories);
             AddAllItemSpecs(launcher.RuntimeSetup.PluginDirectories, pluginDirectories);
 

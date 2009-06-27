@@ -77,7 +77,7 @@ namespace Gallio.Icarus.Models
             }
             else if (treePath.LastNode is AssembliesNode)
             {
-                foreach (string assemblyFile in project.TestPackageConfig.AssemblyFiles)
+                foreach (string assemblyFile in project.TestPackageConfig.Files)
                     yield return new AssemblyNode(assemblyFile);
             }
             else if (treePath.LastNode is ReportsNode && !string.IsNullOrEmpty(fileName))

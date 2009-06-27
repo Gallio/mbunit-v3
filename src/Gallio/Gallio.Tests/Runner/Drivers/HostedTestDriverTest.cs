@@ -48,7 +48,7 @@ namespace Gallio.Tests.Runner.Drivers
                 new TestRunnerOptions(), new MarkupStreamLogger(TestLog.Default));
 
             TestPackageConfig testPackageConfig = new TestPackageConfig();
-            testPackageConfig.AssemblyFiles.AddRange(testAssemblies);
+            testPackageConfig.Files.AddRange(testAssemblies);
 
             Assert.Throws<HostException>(() => driver.Explore(testPackageConfig,
                 new TestExplorationOptions(), MockRepository.GenerateStub<ITestExplorationListener>(),
@@ -65,8 +65,8 @@ namespace Gallio.Tests.Runner.Drivers
                 new TestRunnerOptions(), new MarkupStreamLogger(TestLog.Default));
 
             TestPackageConfig testPackageConfig = new TestPackageConfig();
-            testPackageConfig.AssemblyFiles.Add("MbUnit.TestResources.x86.dll");
-            testPackageConfig.AssemblyFiles.Add("MbUnit.TestResources.x64.dll");
+            testPackageConfig.Files.Add("MbUnit.TestResources.x86.dll");
+            testPackageConfig.Files.Add("MbUnit.TestResources.x64.dll");
 
             RunnerException ex = Assert.Throws<RunnerException>(() => driver.Explore(testPackageConfig,
                 new TestExplorationOptions(), MockRepository.GenerateStub<ITestExplorationListener>(),
@@ -83,8 +83,8 @@ namespace Gallio.Tests.Runner.Drivers
                 new TestRunnerOptions(), new MarkupStreamLogger(TestLog.Default));
 
             TestPackageConfig testPackageConfig = new TestPackageConfig();
-            testPackageConfig.AssemblyFiles.Add("MbUnit.TestResources.x86.dll");
-            testPackageConfig.AssemblyFiles.Add("MbUnit.TestResources.x64.dll");
+            testPackageConfig.Files.Add("MbUnit.TestResources.x86.dll");
+            testPackageConfig.Files.Add("MbUnit.TestResources.x64.dll");
 
             // HostedTestDriver should not throw a RunnerException when attempting to run multiple assemblies 
             // with different architectures when running in HostPerAssembly mode. We should just see the normal

@@ -111,8 +111,8 @@ namespace Gallio.Framework.Utilities
                 throw new ArgumentNullException("assembly");
 
             string assemblyFile = assembly.Location;
-            if (!packageConfig.AssemblyFiles.Contains(assemblyFile))
-                packageConfig.AssemblyFiles.Add(assemblyFile);
+            if (!packageConfig.Files.Contains(assemblyFile))
+                packageConfig.Files.Add(assemblyFile);
         }
 
         /// <summary>

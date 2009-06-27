@@ -538,11 +538,11 @@ namespace Gallio.PowerShellCommands
             // since otherwise we will look at the path of PowerShell.exe.
             launcher.RuntimeSetup.RuntimePath = Path.GetDirectoryName(AssemblyUtils.GetFriendlyAssemblyLocation(typeof(RunGallioCommand).Assembly));
 
-            launcher.TestPackageConfig.HostSetup.ApplicationBaseDirectory = applicationBaseDirectory;
-            launcher.TestPackageConfig.HostSetup.WorkingDirectory = workingDirectory;
-            launcher.TestPackageConfig.HostSetup.ShadowCopy = shadowCopy.IsPresent;
-            launcher.TestPackageConfig.HostSetup.Debug = debug.IsPresent;
-            launcher.TestPackageConfig.HostSetup.RuntimeVersion = runtimeVersion;
+            launcher.TestPackageConfig.ApplicationBaseDirectory = applicationBaseDirectory;
+            launcher.TestPackageConfig.WorkingDirectory = workingDirectory;
+            launcher.TestPackageConfig.ShadowCopy = shadowCopy.IsPresent;
+            launcher.TestPackageConfig.Debug = debug.IsPresent;
+            launcher.TestPackageConfig.RuntimeVersion = runtimeVersion;
 
             foreach (string option in reportFormatterProperties)
                 launcher.ReportFormatterOptions.Properties.Add(StringUtils.ParseKeyValuePair(option));
@@ -550,7 +550,7 @@ namespace Gallio.PowerShellCommands
             foreach (string option in runnerProperties)
                 launcher.TestRunnerOptions.Properties.Add(StringUtils.ParseKeyValuePair(option));
 
-            AddAllItemSpecs(launcher.TestPackageConfig.AssemblyFiles, files);
+            AddAllItemSpecs(launcher.TestPackageConfig.Files, files);
             AddAllItemSpecs(launcher.TestPackageConfig.HintDirectories, hintDirectories);
             AddAllItemSpecs(launcher.RuntimeSetup.PluginDirectories, pluginDirectories);
 

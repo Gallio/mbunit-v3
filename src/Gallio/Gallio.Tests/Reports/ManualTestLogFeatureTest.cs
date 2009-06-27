@@ -13,6 +13,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Diagnostics;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.Runtime.InteropServices;
+using Gallio.Common.Media;
 using Gallio.Framework;
 using Gallio.Common.Markup;
 using Gallio.Tests.Properties;
@@ -27,6 +32,61 @@ namespace Gallio.Tests.Reports
     [TestFixture]
     public class ManualTestLogFeatureTest
     {
+        private Video video;
+
+        [FixtureSetUp]
+        public void CreateVideo()
+        {
+            const int width = 640;
+            const int height = 480;
+            const int frames = 30;
+
+            Stopwatch stopwatch = Stopwatch.StartNew();
+            var parameters = new FlashScreenVideoParameters(width, height, 5)
+            {
+                BlockWidth = 256,
+                BlockHeight = 256
+            };
+            video = new FlashScreenVideo(parameters);
+            stopwatch.Stop();
+
+            Bitmap bitmap = new Bitmap(width, height);
+            BitmapVideoFrame bitmapVideoFrame = new BitmapVideoFrame(bitmap);
+            for (int frame = 0; frame < frames; frame++)
+            {
+                BitmapData bitmapData = bitmap.LockBits(new Rectangle(0, 0, width, height),
+                    ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
+                try
+                {
+                    int offset = 0;
+                    for (int y = 0; y < height; y++)
+                    {
+                        int scanOffset = offset;
+
+                        for (int x = 0; x < width; x++)
+                        {
+                            int color = (x * 255 / width) << 16 | (y * 255 / height) << 8 | frame * 255 / frames;
+                            Marshal.WriteInt32(bitmapData.Scan0, scanOffset, color);
+
+                            scanOffset += 4;
+                        }
+
+                        offset += bitmapData.Stride;
+                    }
+                }
+                finally
+                {
+                    bitmap.UnlockBits(bitmapData);
+                }
+
+                stopwatch.Start();
+                video.AddFrame(bitmapVideoFrame);
+                stopwatch.Stop();
+            }
+
+            TestLog.WriteLine("Video encoding {2} frames at {0}x{1} took {3}s", width, height, frames, stopwatch.Elapsed.TotalSeconds);
+        }
+
         [Test]
         public void EmbeddedResources()
         {
@@ -47,6 +107,9 @@ namespace Gallio.Tests.Reports
 
             TestLog.Write("Embedded binary data:");
             TestLog.Embed(new BinaryAttachment("Binary", "application/octet-stream", new byte[] { 67, 65, 66, 66, 65, 71, 69 }));
+
+            TestLog.Write("Embedded video:");
+            TestLog.EmbedVideo("Video", video);
 
             TestLog.Write("The same embedded image as above:");
             TestLog.EmbedExisting("Image");
@@ -72,6 +135,9 @@ namespace Gallio.Tests.Reports
 
             TestLog.WriteLine("Attached binary data.");
             TestLog.Attach(new BinaryAttachment("Binary", "application/octet-stream", new byte[] { 67, 65, 66, 66, 65, 71, 69 }));
+
+            TestLog.Write("Attached video.");
+            TestLog.AttachVideo("Video", video);
         }
 
         [Test]

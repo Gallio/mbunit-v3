@@ -61,6 +61,7 @@
                 <?ifdef NO_ILMERGE ?>
                 <File Name="Mono.Cecil.dll" />
                 <File Name="NDepend.Helpers.FileDirectoryPath.dll" />
+                <File Name="ICSharpCode.SharpZipLib.dll" />
                 <?endif ?>
             </Component>
             <Component Id="Gallio35" Guid="{015c2236-433f-45f4-86d8-88b87f7fad26}" Win64="no">

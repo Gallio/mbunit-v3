@@ -56,12 +56,12 @@ namespace Gallio.Icarus.Tests.Controllers
             var unhandledExceptionPolicy = MockRepository.GenerateStub<IUnhandledExceptionPolicy>();
             var projectController = new ProjectController(projectTreeModel, optionsController,
                 fileSystem, xmlSerializer, assemblyWatcher, unhandledExceptionPolicy);
-            Assert.AreEqual(0, projectController.TestPackageConfig.AssemblyFiles.Count);
+            Assert.AreEqual(0, projectController.TestPackageConfig.Files.Count);
 
             projectController.AddAssemblies(list, progressMonitor);
             
-            Assert.AreEqual(1, projectController.TestPackageConfig.AssemblyFiles.Count);
-            Assert.AreEqual(fileName, projectController.TestPackageConfig.AssemblyFiles[0]);
+            Assert.AreEqual(1, projectController.TestPackageConfig.Files.Count);
+            Assert.AreEqual(fileName, projectController.TestPackageConfig.Files[0]);
         }
 
         [Test]
@@ -253,7 +253,7 @@ namespace Gallio.Icarus.Tests.Controllers
             var projectTreeModel = MockRepository.GenerateStub<IProjectTreeModel>();
             var project = new Project();
             const string fileName = "test";
-            project.TestPackageConfig.AssemblyFiles.Add(fileName);
+            project.TestPackageConfig.Files.Add(fileName);
             projectTreeModel.Project = project;
             var fileSystem = MockRepository.GenerateStub<IFileSystem>();
             var xmlSerializer = MockRepository.GenerateStub<IXmlSerializer>();
@@ -264,10 +264,10 @@ namespace Gallio.Icarus.Tests.Controllers
             var projectController = new ProjectController(projectTreeModel, optionsController,
                 fileSystem, xmlSerializer, assemblyWatcher, unhandledExceptionPolicy);
 
-            Assert.AreEqual(1, project.TestPackageConfig.AssemblyFiles.Count);
+            Assert.AreEqual(1, project.TestPackageConfig.Files.Count);
             
             projectController.RemoveAssembly(fileName, progressMonitor);
-            Assert.AreEqual(0, project.TestPackageConfig.AssemblyFiles.Count);
+            Assert.AreEqual(0, project.TestPackageConfig.Files.Count);
         }
 
         [Test]

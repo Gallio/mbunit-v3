@@ -203,7 +203,7 @@ namespace Gallio.Tests.Model
         protected void PopulateTestTree()
         {
             TestPackageConfig config = new TestPackageConfig();
-            config.AssemblyFiles.Add(AssemblyUtils.GetFriendlyAssemblyCodeBase(sampleAssembly));
+            config.Files.Add(AssemblyUtils.GetFriendlyAssemblyCodeBase(sampleAssembly));
 
             harness.Load(config, NullProgressMonitor.CreateInstance());
             harness.Explore(new TestExplorationOptions(),

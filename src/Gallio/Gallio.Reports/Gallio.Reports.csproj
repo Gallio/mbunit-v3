@@ -73,6 +73,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\css\Gallio-Report.css" />
+    <Content Include="Resources\js\player.swf" />
     <Content Include="Resources\img\UnknownTestKind.png" />
     <Content Include="Resources\img\Failed.gif" />
     <Content Include="Resources\img\FullStop.gif" />
@@ -82,7 +83,9 @@
     <Content Include="Resources\img\Minus.gif" />
     <Content Include="Resources\img\Passed.gif" />
     <Content Include="Resources\img\Plus.gif" />
+    <Content Include="Resources\js\expressInstall.swf" />
     <Content Include="Resources\js\Gallio-Report.js" />
+    <Content Include="Resources\js\swfobject.js" />
     <Content Include="Resources\xsl\Gallio-Report.txt-common.xsl" />
     <Content Include="Resources\xsl\Gallio-Report.txt-condensed.xsl" />
     <Content Include="Resources\xsl\Gallio-Report.ccnet-details-condensed.xsl" />

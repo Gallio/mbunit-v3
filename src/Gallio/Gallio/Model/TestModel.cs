@@ -25,44 +25,44 @@ namespace Gallio.Model
     /// </summary>
     public sealed class TestModel
     {
-        private readonly TestPackage testPackage;
+        private readonly TestExplorationContext testExplorationContext;
         private readonly RootTest rootTest;
         private readonly List<Annotation> annotations;
 
         /// <summary>
         /// Creates a test model with a new empty root test.
         /// </summary>
-        /// <param name="testPackage">The test package from which the model was created.</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="testPackage"/> is null.</exception>
-        public TestModel(TestPackage testPackage)
-            : this(testPackage, new RootTest())
+        /// <param name="testExplorationContext">The test exploration context.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="testExplorationContext"/> is null.</exception>
+        public TestModel(TestExplorationContext testExplorationContext)
+            : this(testExplorationContext, new RootTest())
         {
         }
 
         /// <summary>
         /// Creates a test model.
         /// </summary>
-        /// <param name="testPackage">The test package from which the model was created.</param>
+        /// <param name="testExplorationContext">The test package from which the model was created.</param>
         /// <param name="rootTest">The root test.</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="testPackage" /> or <paramref name="rootTest"/> is null.</exception>
-        public TestModel(TestPackage testPackage, RootTest rootTest)
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="testExplorationContext" /> or <paramref name="rootTest"/> is null.</exception>
+        public TestModel(TestExplorationContext testExplorationContext, RootTest rootTest)
         {
-            if (testPackage == null)
+            if (testExplorationContext == null)
                 throw new ArgumentNullException("testPackage");
             if (rootTest == null)
                 throw new ArgumentNullException(@"rootTest");
 
-            this.testPackage = testPackage;
+            this.testExplorationContext = testExplorationContext;
             this.rootTest = rootTest;
             annotations = new List<Annotation>();
         }
 
         /// <summary>
-        /// Gets the test package.
+        /// Gets the test exploration context.
         /// </summary>
-        public TestPackage TestPackage
+        public TestExplorationContext TestExplorationContext
         {
-            get { return testPackage; }
+            get { return testExplorationContext; }
         }
 
         /// <summary>

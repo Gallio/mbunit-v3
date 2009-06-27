@@ -108,20 +108,20 @@ namespace Gallio.Runner.Drivers
                 {
                     // CreateRemoteHostAndPerformAction expects a collection of test domains, so fake it
                     TestDomainSetup[] domains = new[] { testDomain };
-                    CreateRemoteHostAndPerformAction(setStatus, testDomain.TestPackageConfig, domains, false, action);
+                    CreateRemoteHostAndPerformAction(setStatus, testDomain.HostSetup, domains, false, action);
                 }
             }
             else
             {
                 ICollection<TestDomainSetup> testDomains = CreateTestDomainPerGroupOfIdenticallyConfiguredAssemblies(testPackageConfig);
                 bool separateAppDomain = isolationMode == IsolationMode.AppDomainPerAssembly;
-                CreateRemoteHostAndPerformAction(setStatus, testPackageConfig, testDomains, separateAppDomain, action);
+                CreateRemoteHostAndPerformAction(setStatus, testPackageConfig.CreateHostSetup(), testDomains, separateAppDomain, action);
             }
         }
 
-        private void CreateRemoteHostAndPerformAction(Action<string> setStatus, TestPackageConfig testPackageConfig, ICollection<TestDomainSetup> testDomains, bool separateAppDomain, Action<IList<Partition>> action)
+        private void CreateRemoteHostAndPerformAction(Action<string> setStatus, HostSetup hostSetup, ICollection<TestDomainSetup> testDomains, bool separateAppDomain, Action<IList<Partition>> action)
         {
-            HostSetup hostSetup = testPackageConfig.HostSetup.Copy();
+            hostSetup = hostSetup.Copy();
             hostSetup.Properties.AddAll(TestRunnerOptions.Properties);
 
             if (separateAppDomain)
@@ -173,7 +173,7 @@ namespace Gallio.Runner.Drivers
         {
             var testDomains = new List<TestDomainSetup>();
 
-            foreach (string assemblyFile in testPackageConfig.AssemblyFiles)
+            foreach (string assemblyFile in testPackageConfig.Files)
             {
                 TestDomainSetup testDomain = CreateTestDomain(testPackageConfig.Copy(), assemblyFile);
                 testDomains.Add(testDomain);
@@ -186,18 +186,18 @@ namespace Gallio.Runner.Drivers
         {
             var testDomains = new Dictionary<HostSetup, TestDomainSetup>();
 
-            foreach (string assemblyFile in testPackageConfig.AssemblyFiles)
+            foreach (string assemblyFile in testPackageConfig.Files)
             {
                 TestDomainSetup testDomain = CreateTestDomain(testPackageConfig.Copy(), assemblyFile);
 
                 TestDomainSetup existingIdenticallyConfiguredTestDomain;
-                if (testDomains.TryGetValue(testDomain.TestPackageConfig.HostSetup, out existingIdenticallyConfiguredTestDomain))
+                if (testDomains.TryGetValue(testDomain.HostSetup, out existingIdenticallyConfiguredTestDomain))
                 {
                     existingIdenticallyConfiguredTestDomain.MergeFrom(testDomain);
                 }
                 else
                 {
-                    testDomains.Add(testDomain.TestPackageConfig.HostSetup, testDomain);
+                    testDomains.Add(testDomain.HostSetup, testDomain);
                 }
             }
 
@@ -206,28 +206,28 @@ namespace Gallio.Runner.Drivers
 
         private TestDomainSetup CreateTestDomain(TestPackageConfig testPackageConfig, string assemblyFile)
         {
-            var testDomain = new TestDomainSetup(testPackageConfig.Copy());
-            testDomain.TestPackageConfig.AssemblyFiles.Clear();
-            testDomain.TestPackageConfig.AssemblyFiles.Add(assemblyFile);
+            var testDomain = new TestDomainSetup(testPackageConfig.Copy(), testPackageConfig.CreateHostSetup());
+            testDomain.TestPackageConfig.Files.Clear();
+            testDomain.TestPackageConfig.Files.Add(assemblyFile);
 
             string assemblyDir = Path.GetDirectoryName(assemblyFile);
-            if (testDomain.TestPackageConfig.HostSetup.ApplicationBaseDirectory == null)
-                testDomain.TestPackageConfig.HostSetup.ApplicationBaseDirectory = assemblyDir;
-            if (testDomain.TestPackageConfig.HostSetup.WorkingDirectory == null)
-                testDomain.TestPackageConfig.HostSetup.WorkingDirectory = assemblyDir;
+            if (testDomain.HostSetup.ApplicationBaseDirectory == null)
+                testDomain.HostSetup.ApplicationBaseDirectory = assemblyDir;
+            if (testDomain.HostSetup.WorkingDirectory == null)
+                testDomain.HostSetup.WorkingDirectory = assemblyDir;
 
             string assemblyConfigFile = assemblyFile + @".config";
             if (File.Exists(assemblyConfigFile))
             {
                 string configurationXml = File.ReadAllText(assemblyConfigFile);
-                testDomain.TestPackageConfig.HostSetup.Configuration.ConfigurationXml = configurationXml;
+                testDomain.HostSetup.Configuration.ConfigurationXml = configurationXml;
             }
 
             foreach (AssemblyBinding assemblyBinding in runtime.GetAllPluginAssemblyBindings())
             {
                 if (assemblyBinding.CodeBase != null)
                 {
-                    testDomain.TestPackageConfig.HostSetup.Configuration.AddAssemblyBinding(assemblyBinding);
+                    testDomain.HostSetup.Configuration.AddAssemblyBinding(assemblyBinding);
                 }
             }
 
@@ -242,7 +242,7 @@ namespace Gallio.Runner.Drivers
             var metadataList = new List<AssemblyMetadata>();
             foreach (var testDomain in testDomains)
             {
-                foreach (var assemblyFile in testDomain.TestPackageConfig.AssemblyFiles)
+                foreach (var assemblyFile in testDomain.TestPackageConfig.Files)
                 {
                     AssemblyMetadata metadata = AssemblyUtils.GetAssemblyMetadata(assemblyFile);
                     if (metadata != null)
@@ -262,7 +262,7 @@ namespace Gallio.Runner.Drivers
 
             foreach (TestDomainSetup testDomain in testDomains)
             {
-                string configurationXml = testDomain.TestPackageConfig.HostSetup.Configuration.ConfigurationXml;
+                string configurationXml = testDomain.HostSetup.Configuration.ConfigurationXml;
                 if (configurationXml == null)
                     continue;
 
@@ -346,7 +346,7 @@ namespace Gallio.Runner.Drivers
             public ITestDriver CreateTestDriverInIsolatedAppDomain(TestDomainSetup setup, ILogger logger)
             {
                 IHostFactory hostFactory = new IsolatedAppDomainHostFactory(new DefaultDebuggerManager());
-                IHost host = hostFactory.CreateHost(setup.TestPackageConfig.HostSetup, logger);
+                IHost host = hostFactory.CreateHost(setup.HostSetup, logger);
 
                 ITestDriver hostTestDriver = HostUtils.CreateInstance<LocalTestDriver>(host);
                 RemoteTestDriver remoteTestDriver = new RemoteTestDriver(hostTestDriver);

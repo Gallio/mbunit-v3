@@ -52,7 +52,7 @@ namespace Gallio.Runner.Harness
         private List<ITestEnvironment> environments;
 
         private string workingDirectory;
-        private TestPackage package;
+        private TestExplorationContext explorationContext;
         private TestModel model;
 
         /// <summary>
@@ -87,19 +87,19 @@ namespace Gallio.Runner.Harness
             {
                 isDisposed = true;
 
-                package = null;
+                explorationContext = null;
                 model = null;
                 environments = null;
             }
         }
 
         /// <inheritdoc />
-        public TestPackage TestPackage
+        public TestExplorationContext TestExplorationContext
         {
             get
             {
                 ThrowIfDisposed();
-                return package;
+                return explorationContext;
             }
         }
 
@@ -133,29 +133,29 @@ namespace Gallio.Runner.Harness
 
             ThrowIfDisposed();
 
-            if (package != null)
+            if (explorationContext != null)
                 throw new InvalidOperationException("A package has already been loaded.");
 
             using (progressMonitor.BeginTask("Loading test package.", 10))
             {
                 progressMonitor.SetStatus("Performing pre-processing.");
 
-                workingDirectory = packageConfig.HostSetup.WorkingDirectory ?? Environment.CurrentDirectory;
+                workingDirectory = packageConfig.WorkingDirectory ?? Environment.CurrentDirectory;
 
                 using (SwitchWorkingDirectory())
                 {
-                    package = new TestPackage(packageConfig, Reflector.NativeReflectionPolicy, loader);
+                    explorationContext = new TestExplorationContext(packageConfig, Reflector.NativeReflectionPolicy, loader);
 
                     foreach (string path in packageConfig.HintDirectories)
                         loader.AssemblyResolverManager.AddHintDirectory(path);
 
-                    foreach (string assemblyFile in packageConfig.AssemblyFiles)
+                    foreach (string assemblyFile in packageConfig.Files)
                         loader.AssemblyResolverManager.AddHintDirectory(FileUtils.GetFullPathOfParentDirectory(assemblyFile));
 
                     progressMonitor.Worked(1);
 
                     using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(8))
-                        LoadAssemblies(packageConfig.AssemblyFiles, subProgressMonitor);
+                        LoadAssemblies(packageConfig.Files, subProgressMonitor);
                 }
             }
         }
@@ -167,7 +167,7 @@ namespace Gallio.Runner.Harness
 
             using (progressMonitor.BeginTask("Loading test assemblies.", assemblyFiles.Count))
             {
-                foreach (string assemblyFile in package.Config.AssemblyFiles)
+                foreach (string assemblyFile in explorationContext.Config.Files)
                 {
                     progressMonitor.SetStatus("Loading: " + assemblyFile + ".");
 
@@ -186,7 +186,7 @@ namespace Gallio.Runner.Harness
             try
             {
                 IAssemblyInfo assembly = Reflector.Wrap(loader.LoadAssemblyFrom(assemblyFile));
-                package.AddAssembly(assembly);
+                explorationContext.AddAssembly(assembly);
             }
             catch (Exception ex)
             {
@@ -205,19 +205,19 @@ namespace Gallio.Runner.Harness
 
             ThrowIfDisposed();
 
-            if (package == null)
+            if (explorationContext == null)
                 throw new InvalidOperationException("No test package has been loaded.");
 
             using (progressMonitor.BeginTask("Building test model.", 10))
             {
                 using (SwitchWorkingDirectory())
                 {
-                    model = new TestModel(package);
+                    model = new TestModel(explorationContext);
 
-                    ITestExplorer explorer = frameworkManager.GetTestExplorer(frameworkId => package.Config.IsFrameworkRequested(frameworkId));
+                    ITestExplorer explorer = frameworkManager.GetTestExplorer(frameworkId => explorationContext.Config.IsFrameworkRequested(frameworkId));
 
                     TestSource source = new TestSource();
-                    foreach (IAssemblyInfo assembly in package.Assemblies)
+                    foreach (IAssemblyInfo assembly in explorationContext.Assemblies)
                         source.AddAssembly(assembly);
 
                     explorer.Explore(model, source, null);
@@ -340,7 +340,7 @@ namespace Gallio.Runner.Harness
             using (progressMonitor.BeginTask("Unloading tests.", 1))
             {
                 workingDirectory = null;
-                package = null;
+                explorationContext = null;
                 model = null;
             }
         }

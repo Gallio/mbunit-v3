@@ -43,6 +43,10 @@
     <GenerateSerializationAssemblies>On</GenerateSerializationAssemblies>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="ICSharpCode.SharpZipLib, Version=0.85.5.452, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\libs\ICSharpCode.SharpZipLib.dll</HintPath>
+    </Reference>
     <Reference Include="Mono.Cecil, Version=0.6.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\libs\Mono.Cecil.dll</HintPath>
@@ -107,6 +111,16 @@
     <Compile Include="Common\IO\NamespaceDoc.cs" />
     <Compile Include="Common\Markup\NamespaceDoc.cs" />
     <Compile Include="Common\Markup\Tags\NamespaceDoc.cs" />
+    <Compile Include="Common\Media\BitmapVideoFrame.cs" />
+    <Compile Include="Common\Media\CaptureParameters.cs" />
+    <Compile Include="Common\Media\ScreenRecorder.cs" />
+    <Compile Include="Common\Media\VideoParameters.cs" />
+    <Compile Include="Common\Media\FlashScreenVideoParameters.cs" />
+    <Compile Include="Common\Media\FlvWriter.cs" />
+    <Compile Include="Common\Media\FlashScreenVideo.cs" />
+    <Compile Include="Common\Media\VideoFrame.cs" />
+    <Compile Include="Common\Media\Video.cs" />
+    <Compile Include="Common\Media\ScreenGrabber.cs" />
     <Compile Include="Common\NamespaceDoc.cs" />
     <Compile Include="Common\Platform\NamespaceDoc.cs" />
     <Compile Include="Common\Policies\NamespaceDoc.cs" />
@@ -159,6 +173,7 @@
     <Compile Include="Common\Validation\NamespaceDoc.cs" />
     <Compile Include="Common\Xml\NamespaceDoc.cs" />
     <Compile Include="Framework\Assertions\NamespaceDoc.cs" />
+    <Compile Include="Framework\Capture.cs" />
     <Compile Include="Framework\Data\Generation\RandomStockStringsGenerator.cs" />
     <Compile Include="Framework\Data\Generation\RandomRegexLiteStringsGenerator.cs" />
     <Compile Include="Framework\Data\Generation\NamespaceDoc.cs" />
@@ -815,7 +830,6 @@
     <Compile Include="Model\Execution\BaseTestController.cs" />
     <Compile Include="Model\Filters\FilterFormatter.cs" />
     <Compile Include="Model\Filters\IFilterVisitor.cs" />
-    <Compile Include="Model\Serialization\TestPackageData.cs" />
     <Compile Include="Model\Filters\EqualityFilter.cs" />
     <Compile Include="Model\Filters\FilterLexer.cs" />
     <Compile Include="Model\Filters\FilterToken.cs" />
@@ -829,7 +843,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Model\TestModel.cs" />
-    <Compile Include="Model\TestPackage.cs" />
+    <Compile Include="Model\TestExplorationContext.cs" />
     <Compile Include="Model\TestParameterInfo.cs">
       <SubType>Code</SubType>
     </Compile>

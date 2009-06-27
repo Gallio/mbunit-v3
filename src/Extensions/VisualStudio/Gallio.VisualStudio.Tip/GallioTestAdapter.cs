@@ -129,9 +129,9 @@ namespace Gallio.VisualStudio.Tip
                 {
                     GallioTestElement gallioTestElement = testElement as GallioTestElement;
                     if (gallioTestElement != null
-                        && !testPackageConfig.AssemblyFiles.Contains(gallioTestElement.AssemblyPath))
+                        && !testPackageConfig.Files.Contains(gallioTestElement.AssemblyPath))
                     {
-                        testPackageConfig.AssemblyFiles.Add(gallioTestElement.AssemblyPath);
+                        testPackageConfig.Files.Add(gallioTestElement.AssemblyPath);
                     }
                 }
 

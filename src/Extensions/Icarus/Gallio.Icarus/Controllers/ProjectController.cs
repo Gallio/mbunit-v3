@@ -166,7 +166,7 @@ namespace Gallio.Icarus.Controllers
                         validAssemblies.Add(assembly);
                     progressMonitor.Worked(1);
                 }
-                projectTreeModel.Project.TestPackageConfig.AssemblyFiles.AddRange(validAssemblies);
+                projectTreeModel.Project.TestPackageConfig.Files.AddRange(validAssemblies);
                 progressMonitor.Worked(1);
                 assemblyWatcher.Add(validAssemblies);
             }
@@ -193,12 +193,12 @@ namespace Gallio.Icarus.Controllers
 
         public void RemoveAllAssemblies(IProgressMonitor progressMonitor)
         {
-            projectTreeModel.Project.TestPackageConfig.AssemblyFiles.Clear();
+            projectTreeModel.Project.TestPackageConfig.Files.Clear();
         }
 
         public void RemoveAssembly(string fileName, IProgressMonitor progressMonitor)
         {
-            projectTreeModel.Project.TestPackageConfig.AssemblyFiles.Remove(fileName);
+            projectTreeModel.Project.TestPackageConfig.Files.Remove(fileName);
         }
 
         public void SaveFilterSet(string filterName, FilterSet<ITest> filterSet, IProgressMonitor progressMonitor)
@@ -271,7 +271,7 @@ namespace Gallio.Icarus.Controllers
                 projectTreeModel.Project = project;
 
                 assemblyWatcher.Clear();
-                assemblyWatcher.Add(project.TestPackageConfig.AssemblyFiles);
+                assemblyWatcher.Add(project.TestPackageConfig.Files);
 
                 PublishUpdates();
             }

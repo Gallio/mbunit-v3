@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using Gallio.Runtime.Hosting;
 
 namespace Gallio.Model
 {
@@ -32,18 +33,23 @@ namespace Gallio.Model
         // TODO: Provide a mechanism for configuring the host factory.
 
         private TestPackageConfig testPackageConfig;
+        private HostSetup hostSetup;
 
         /// <summary>
         /// Creates setup options a test domain.
         /// </summary>
         /// <param name="testPackageConfig">The test package configuration to load in the test domain.</param>
+        /// <param name="hostSetup">The host setup.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="testPackageConfig"/> is null.</exception>
-        public TestDomainSetup(TestPackageConfig testPackageConfig)
+        public TestDomainSetup(TestPackageConfig testPackageConfig, HostSetup hostSetup)
         {
             if (testPackageConfig == null)
                 throw new ArgumentNullException("testPackageConfig");
+            if (hostSetup == null)
+                throw new ArgumentNullException("hostSetup");
 
             this.testPackageConfig = testPackageConfig;
+            this.hostSetup = hostSetup;
         }
 
         /// <summary>
@@ -62,6 +68,20 @@ namespace Gallio.Model
         }
 
         /// <summary>
+        /// Gets or sets the host setup for the test domain.
+        /// </summary>
+        public HostSetup HostSetup
+        {
+            get { return hostSetup; }
+            set
+            {
+                if (value == null)
+                    throw new ArgumentNullException("value");
+                hostSetup = value;
+            }
+        }
+
+        /// <summary>
         /// Merges the contents of another test domain setup into this one.
         /// </summary>
         /// <param name="source">The source setup.</param>
@@ -71,9 +91,9 @@ namespace Gallio.Model
             if (source == null)
                 throw new ArgumentNullException("source");
 
-            foreach (string assemblyFile in source.TestPackageConfig.AssemblyFiles)
-                if (!TestPackageConfig.AssemblyFiles.Contains(assemblyFile))
-                    TestPackageConfig.AssemblyFiles.Add(assemblyFile);
+            foreach (string assemblyFile in source.TestPackageConfig.Files)
+                if (!TestPackageConfig.Files.Contains(assemblyFile))
+                    TestPackageConfig.Files.Add(assemblyFile);
 
             foreach (string hintDir in source.TestPackageConfig.HintDirectories)
                 if (!TestPackageConfig.HintDirectories.Contains(hintDir))

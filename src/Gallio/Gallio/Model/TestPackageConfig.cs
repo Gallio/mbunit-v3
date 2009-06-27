@@ -25,30 +25,22 @@ using Gallio.Runtime.Hosting;
 namespace Gallio.Model
 {
     /// <summary>
-    /// A test package configuration specifies the options used by a test runner to load tests
-    /// into memory for execution.
+    /// A test package specifies the test files, assemblies, and configuration options
+    /// that govern test execution.
     /// </summary>
-    /// <remarks>
-    /// <para>
-    /// The package may contain multiple test assemblies that are to be loaded together for test execution.  
-    /// It can also be serialized as XML or using .Net remoting for persistence and remote operation.
-    /// </para>
-    /// <para>
-    /// Someday a test package might allow other kinds of resources to be specified
-    /// such as individual test scripts, archives, dependent files, environmental
-    /// additional configuration settings, etc...
-    /// </para>
-    /// </remarks>
     [Serializable]
     [XmlRoot("testPackageConfig", Namespace=XmlSerializationUtils.GallioNamespace)]
     [XmlType(Namespace = XmlSerializationUtils.GallioNamespace)]
     public sealed class TestPackageConfig
     {
         private readonly List<string> hintDirectories;
-        private readonly List<string> assemblyFiles;
+        private readonly List<string> files;
         private readonly List<string> excludedFrameworkIds;
-
-        private HostSetup hostSetup;
+        private bool shadowCopy;
+        private bool debug;
+        private string applicationBaseDirectory;
+        private string workingDirectory;
+        private string runtimeVersion;
 
         /// <summary>
         /// Creates an empty package.
@@ -56,18 +48,18 @@ namespace Gallio.Model
         public TestPackageConfig()
         {
             hintDirectories = new List<string>();
-            assemblyFiles = new List<string>();
+            files = new List<string>();
             excludedFrameworkIds = new List<string>();
         }
 
         /// <summary>
-        /// Gets the list of relative or absolute paths of test assembly files.
+        /// Gets the list of relative or absolute paths of test files.
         /// </summary>
-        [XmlArray("assemblyFiles", IsNullable = false)]
-        [XmlArrayItem("assemblyFile", typeof(string), IsNullable = false)]
-        public List<string> AssemblyFiles
+        [XmlArray("files", IsNullable = false)]
+        [XmlArrayItem("file", typeof(string), IsNullable = false)]
+        public List<string> Files
         {
-            get { return assemblyFiles; }
+            get { return files; }
         }
 
         /// <summary>
@@ -92,46 +84,106 @@ namespace Gallio.Model
         }
 
         /// <summary>
-        /// Gets or sets the host setup parameters.
+        /// Gets or sets whether assembly shadow copying is enabled.
+        /// </summary>
+        /// <value>True if shadow copying is enabled.  Default is <c>false</c>.</value>
+        [XmlAttribute("enableShadowCopy")]
+        public bool ShadowCopy
+        {
+            get { return shadowCopy; }
+            set { shadowCopy = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets whether to attach the debugger to the host.
+        /// </summary>
+        /// <value>True if a debugger should be attached to the host.  Default is <c>false</c>.</value>
+        [XmlAttribute("debug")]
+        public bool Debug
+        {
+            get { return debug; }
+            set { debug = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets the relative or absolute path of the application base directory,
+        /// or null to use the directory containing each group of test files or some other
+        /// suitable default chosen by the test framework.
         /// </summary>
         /// <remarks>
         /// <para>
-        /// The defaults are as follows:
-        /// <list type="bullet">
-        /// <item>Use the test assembly directory as the application base directory and working directory.
-        /// (signaled by specifying null values in the host setup).</item>
-        /// <item>No shadow copying.</item>
-        /// <item>Store test assembly configuration files in the application base directory.</item>
-        /// <item>Use auto-detected processor architecture (signaled by specifying <see cref="ProcessorArchitecture.None" />
-        /// in the host setup).</item>
-        /// </list>
+        /// If relative, the path is based on the current working directory,
+        /// so a value of "" causes the current working directory to be used.
+        /// </para>
+        /// <para>
+        /// Relative paths should be canonicalized as soon as possible.
+        /// See <see cref="Canonicalize" />.
         /// </para>
         /// </remarks>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
-        [XmlElement("hostSetup", IsNullable = false)]
-        public HostSetup HostSetup
+        /// <value>
+        /// The application base directory.  Default is <c>null</c>.
+        /// </value>
+        [XmlAttribute("applicationBaseDirectory")]
+        public string ApplicationBaseDirectory
         {
-            get
-            {
-                if (hostSetup == null)
-                    Interlocked.CompareExchange(ref hostSetup, CreateDefaultHostSetup(), null);
-                return hostSetup;
-            }
-            set
-            {
-                if (value == null)
-                    throw new ArgumentNullException("value");
-                hostSetup = value;
-            }
+            get { return applicationBaseDirectory; }
+            set { applicationBaseDirectory = value; }
         }
 
-        private static HostSetup CreateDefaultHostSetup()
+        /// <summary>
+        /// Gets or sets the relative or absolute path of the working directory
+        /// or null to use the directory containing each group of test files or some other
+        /// suitable default chosen by the test framework.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// If relative, the path is based on the current working directory,
+        /// so a value of "" causes the current working directory to be used.
+        /// </para>
+        /// <para>
+        /// Relative paths should be canonicalized as soon as possible.
+        /// See <see cref="Canonicalize" />.
+        /// </para>
+        /// </remarks>
+        /// <value>
+        /// The working directory.  Default is <c>null</c>.
+        /// </value>
+        [XmlAttribute("workingDirectory")]
+        public string WorkingDirectory
         {
-            return new HostSetup
+            get { return workingDirectory; }
+            set { workingDirectory = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets the .Net runtime version, or null to auto-detect.
+        /// </summary>
+        /// <value>The runtime version, eg. "v2.0.50727".  Default is <c>null</c>.</value>
+        [XmlAttribute("runtimeVersion")]
+        public string RuntimeVersion
+        {
+            get { return runtimeVersion; }
+            set { runtimeVersion = value; }
+        }
+
+        /// <summary>
+        /// Creates a host setup based on the package properties.
+        /// </summary>
+        /// <returns>The host setup</returns>
+        public HostSetup CreateHostSetup()
+        {
+            var hostSetup = new HostSetup
             {
                 ConfigurationFileLocation = ConfigurationFileLocation.AppBase,
-                ProcessorArchitecture = ProcessorArchitecture.None
+                ProcessorArchitecture = ProcessorArchitecture.None,
+                Debug = debug,
+                ShadowCopy = shadowCopy,
+                ApplicationBaseDirectory = applicationBaseDirectory,
+                WorkingDirectory = workingDirectory,
+                RuntimeVersion = runtimeVersion
             };
+
+            return hostSetup;
         }
 
         /// <summary>
@@ -142,11 +194,14 @@ namespace Gallio.Model
         {
             TestPackageConfig copy = new TestPackageConfig();
 
-            copy.assemblyFiles.AddRange(assemblyFiles);
+            copy.files.AddRange(files);
             copy.hintDirectories.AddRange(hintDirectories);
-
-            if (hostSetup != null)
-                copy.hostSetup = hostSetup.Copy();
+            copy.excludedFrameworkIds.AddRange(excludedFrameworkIds);
+            copy.shadowCopy = shadowCopy;
+            copy.debug = debug;
+            copy.applicationBaseDirectory = applicationBaseDirectory;
+            copy.workingDirectory = workingDirectory;
+            copy.runtimeVersion = runtimeVersion;
 
             return copy;
         }
@@ -158,10 +213,10 @@ namespace Gallio.Model
         /// or null to use the current directory.</param>
         public void Canonicalize(string baseDirectory)
         {
-            FileUtils.CanonicalizePaths(baseDirectory, assemblyFiles);
+            FileUtils.CanonicalizePaths(baseDirectory, files);
             FileUtils.CanonicalizePaths(baseDirectory, hintDirectories);
-
-            HostSetup.Canonicalize(baseDirectory);
+            applicationBaseDirectory = FileUtils.CanonicalizePath(baseDirectory, applicationBaseDirectory);
+            workingDirectory = FileUtils.CanonicalizePath(baseDirectory, workingDirectory);
         }
 
         /// <summary>

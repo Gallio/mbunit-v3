@@ -220,7 +220,7 @@ namespace Gallio.Icarus.Controllers
                 DoWithTestRunner(testRunner =>
                 {
                     var testPackageConfigCopy = testPackageConfig.Copy();
-                    testPackageConfigCopy.HostSetup.Debug = debug;
+                    testPackageConfigCopy.Debug = debug;
 
                     var testExplorationOptions = new TestExplorationOptions();
                     var testExecutionOptions = new TestExecutionOptions

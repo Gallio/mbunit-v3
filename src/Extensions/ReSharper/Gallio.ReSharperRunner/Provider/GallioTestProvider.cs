@@ -259,7 +259,7 @@ namespace Gallio.ReSharperRunner.Provider
 
             private TestModel CreateTestModel(TestPackageConfig config, IReflectionPolicy reflectionPolicy)
             {
-                return new TestModel(new TestPackage(config, reflectionPolicy, loader));
+                return new TestModel(new TestExplorationContext(config, reflectionPolicy, loader));
             }
 
             /// <summary>

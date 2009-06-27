@@ -24,6 +24,7 @@ namespace Gallio.Schema.Plugins
     /// <summary>
     /// Represents a service descriptor in Xml.
     /// </summary>
+    [Serializable]
     [XmlType(Namespace = SchemaConstants.XmlNamespace)]
     public class Service : IValidatable
     {

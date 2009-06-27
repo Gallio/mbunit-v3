@@ -19,6 +19,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Xml.Serialization;
 using Gallio.Common.Collections;
+using Gallio.Common.Media;
 
 namespace Gallio.Common.Markup
 {
@@ -249,6 +250,22 @@ namespace Gallio.Common.Markup
         public BinaryAttachment AttachImage(string attachmentName, Image image)
         {
             return (BinaryAttachment) Attach(Attachment.CreateImageAttachment(attachmentName, image));
+        }
+
+        /// <summary>
+        /// Attaches a video attachment with a mime-type compatible with its internal representation.
+        /// </summary>
+        /// <param name="attachmentName">The name of the attachment to create or null to
+        /// automatically assign one.  The attachment name must be unique within the document.</param>
+        /// <param name="video">The video to attach.</param>
+        /// <returns>The attachment.</returns>
+        /// <seealso cref="MarkupStreamWriter.EmbedVideo"/>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="video"/> is null.</exception>
+        /// <exception cref="InvalidOperationException">Thrown if there is already an attachment
+        /// with the same name.</exception>
+        public BinaryAttachment AttachVideo(string attachmentName, Video video)
+        {
+            return (BinaryAttachment)Attach(Attachment.CreateVideoAttachment(attachmentName, video));
         }
 
         /// <summary>

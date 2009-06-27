@@ -24,7 +24,7 @@ namespace Gallio.Model
     /// A test package describes the resources that have been loaded
     /// in in preparation for enumerating and running the tests they contain.
     /// </summary>
-    public sealed class TestPackage
+    public sealed class TestExplorationContext
     {
         private readonly TestPackageConfig config;
         private readonly IReflectionPolicy reflectionPolicy;
@@ -39,7 +39,7 @@ namespace Gallio.Model
         /// <param name="loader">The loader for the package.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="config"/>,
         /// <paramref name="reflectionPolicy"/> or <paramref name="loader"/> is null.</exception>
-        public TestPackage(TestPackageConfig config, IReflectionPolicy reflectionPolicy,
+        public TestExplorationContext(TestPackageConfig config, IReflectionPolicy reflectionPolicy,
             ILoader loader)
         {
             if (config == null)

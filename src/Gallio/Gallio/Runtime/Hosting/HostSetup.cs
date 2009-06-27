@@ -57,6 +57,7 @@ namespace Gallio.Runtime.Hosting
         /// Gets a mutable collection of key/value pairs that specify configuration properties
         /// for the host.
         /// </summary>
+        [XmlElement("properties", IsNullable = false)]
         public PropertySet Properties
         {
             get { return properties; }

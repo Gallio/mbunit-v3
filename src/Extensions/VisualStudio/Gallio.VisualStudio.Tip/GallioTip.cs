@@ -56,15 +56,15 @@ namespace Gallio.VisualStudio.Tip
             TestPackageConfig testPackageConfig = new TestPackageConfig();
             testPackageConfig.ExcludedFrameworkIds.Add("MSTestAdapter.TestFramework");
 
-            testPackageConfig.AssemblyFiles.Add(location);
+            testPackageConfig.Files.Add(location);
 
             ReflectionOnlyAssemblyLoader loader = new ReflectionOnlyAssemblyLoader();
             loader.AddHintDirectory(Path.GetDirectoryName(location));
 
             ITestExplorer explorer = frameworkManager.GetTestExplorer(frameworkId => testPackageConfig.IsFrameworkRequested(frameworkId));
-            TestPackage testPackage = new TestPackage(testPackageConfig, loader.ReflectionPolicy,
+            TestExplorationContext testExplorationContext = new TestExplorationContext(testPackageConfig, loader.ReflectionPolicy,
                 RuntimeAccessor.ServiceLocator.Resolve<ILoader>());
-            TestModel testModel = new TestModel(testPackage);
+            TestModel testModel = new TestModel(testExplorationContext);
                 
             IAssemblyInfo assembly = loader.ReflectionPolicy.LoadAssemblyFrom(location);
             TestSource testSource = new TestSource();

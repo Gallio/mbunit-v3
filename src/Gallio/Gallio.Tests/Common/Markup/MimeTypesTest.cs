@@ -34,12 +34,34 @@ namespace Gallio.Tests.Common.Markup
         [Row(".css", MimeTypes.Css)]
         [Row(".js", MimeTypes.JavaScript)]
         [Row(".gif", MimeTypes.Gif)]
+        [Row(".jpg", MimeTypes.Jpeg)]
+        [Row(".jpeg", MimeTypes.Jpeg)]
         [Row(".png", MimeTypes.Png)]
+        [Row(".flv", MimeTypes.FlashVideo)]
         [Row(".unknown", null)]
         [Row("", null)]
         public void SupportsMappingExtensionToMimeType(string extension, string expectedMimeType)
         {
             Assert.AreEqual(expectedMimeType, MimeTypes.GetMimeTypeByExtension(extension));
+        }
+
+        [Test]
+        [Row(MimeTypes.PlainText, ".txt")]
+        [Row(MimeTypes.Xml, ".xml")]
+        [Row(MimeTypes.Html, ".html")]
+        [Row(MimeTypes.XHtml, ".xhtml")]
+        [Row(MimeTypes.MHtml, ".mht")]
+        [Row(MimeTypes.Css, ".css")]
+        [Row(MimeTypes.JavaScript, ".js")]
+        [Row(MimeTypes.Gif, ".gif")]
+        [Row(MimeTypes.Jpeg, ".jpg")]
+        [Row(MimeTypes.Png, ".png")]
+        [Row(MimeTypes.FlashVideo, ".flv")]
+        [Row("unknown", null)]
+        [Row("", null)]
+        public void SupportsMappingMimeTypeToExtension(string mimeType, string expectedExtension)
+        {
+            Assert.AreEqual(expectedExtension, MimeTypes.GetExtensionByMimeType(mimeType));
         }
     }
 }

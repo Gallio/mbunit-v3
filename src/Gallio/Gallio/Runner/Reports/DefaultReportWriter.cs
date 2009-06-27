@@ -121,7 +121,7 @@ namespace Gallio.Runner.Reports
                             originalAttachmentData.Add(attachment, new KeyValuePair<AttachmentContentDisposition, string>(
                                 attachment.ContentDisposition, attachment.ContentPath));
 
-                            string attachmentPath = GetAttachmentPath(testStepRun.Step.Id, attachment.Name);
+                            string attachmentPath = GetAttachmentPath(testStepRun.Step.Id, attachment.Name, attachment.ContentType);
                             attachment.ContentDisposition = attachmentContentDisposition;
                             attachment.ContentPath = attachmentPath;
                         }
@@ -209,7 +209,7 @@ namespace Gallio.Runner.Reports
                 {
                     foreach (AttachmentData attachment in testStepRun.TestLog.Attachments)
                     {
-                        string attachmentPath = GetAttachmentPath(testStepRun.Step.Id, attachment.Name);
+                        string attachmentPath = GetAttachmentPath(testStepRun.Step.Id, attachment.Name, attachment.ContentType);
 
                         progressMonitor.ThrowIfCanceled();
                         progressMonitor.SetStatus(attachmentPath);
@@ -231,12 +231,18 @@ namespace Gallio.Runner.Reports
                 attachmentData.SaveContents(attachmentStream, encoding);
         }
 
-        private string GetAttachmentPath(string testStepId, string attachmentName)
+        private string GetAttachmentPath(string testStepId, string attachmentName, string mimeType)
         {
-            return Path.Combine(Path.Combine(
+            string path = Path.Combine(Path.Combine(
                 reportContainer.ReportName,
                 reportContainer.EncodeFileName(testStepId)),
                 reportContainer.EncodeFileName(attachmentName));
+
+            string extension = MimeTypes.GetExtensionByMimeType(mimeType);
+            if (extension != null)
+                path += extension;
+
+            return path;
         }
 
         private static int CountAttachments(Report report)

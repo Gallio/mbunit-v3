@@ -479,7 +479,7 @@ namespace Gallio.Runner
                 }, null, (int)runTimeLimit.Value.TotalMilliseconds, Timeout.Infinite);
             }
 
-            if (testPackageConfig.AssemblyFiles.Count == 0)
+            if (testPackageConfig.Files.Count == 0)
             {
                 logger.Log(LogSeverity.Warning, "No test assemblies to execute!");
                 return CreateResult(ResultCode.NoTests);
@@ -689,7 +689,7 @@ namespace Gallio.Runner
                 using (progressMonitor.BeginTask("Verifying assembly names.", 1))
                 {
                     List<string> assembliesToRemove = new List<string>();
-                    foreach (string assemblyName in testPackageConfig.AssemblyFiles)
+                    foreach (string assemblyName in testPackageConfig.Files)
                     {
                         if (File.Exists(assemblyName) && assemblyName == assemblyName.TrimEnd('\\', '/')) 
                             continue;
@@ -700,14 +700,14 @@ namespace Gallio.Runner
 
                     // Remove invalid assemblies
                     foreach (string assemblyName in assembliesToRemove)
-                        testPackageConfig.AssemblyFiles.Remove(assemblyName);
+                        testPackageConfig.Files.Remove(assemblyName);
                 }
             }, ref canceled);
         }
 
         private void DisplayConfiguration()
         {
-            DisplayPaths(testPackageConfig.AssemblyFiles, "Test Assemblies:");
+            DisplayPaths(testPackageConfig.Files, "Test Assemblies:");
             DisplayPaths(testPackageConfig.HintDirectories, "Hint Directories:");
 
             if (runtimeSetup != null)
@@ -731,7 +731,7 @@ namespace Gallio.Runner
 
         private void Canonicalize(string baseDirectory)
         {
-            testPackageConfig.HostSetup.Canonicalize(baseDirectory);
+            testPackageConfig.Canonicalize(baseDirectory);
 
             if (runtimeSetup != null)
                 runtimeSetup.Canonicalize(baseDirectory);

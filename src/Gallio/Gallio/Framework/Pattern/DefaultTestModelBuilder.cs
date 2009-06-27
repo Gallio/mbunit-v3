@@ -45,7 +45,7 @@ namespace Gallio.Framework.Pattern
         /// <inheritdoc />
         public IReflectionPolicy ReflectionPolicy
         {
-            get { return testModel.TestPackage.ReflectionPolicy; }
+            get { return testModel.TestExplorationContext.ReflectionPolicy; }
         }
 
         /// <inheritdoc />
@@ -63,7 +63,7 @@ namespace Gallio.Framework.Pattern
             if (resolver == null)
                 throw new ArgumentNullException("resolver");
 
-            testModel.TestPackage.Loader.AssemblyResolverManager.AddAssemblyResolver(resolver);
+            testModel.TestExplorationContext.Loader.AssemblyResolverManager.AddAssemblyResolver(resolver);
         }
 
         /// <inheritdoc />

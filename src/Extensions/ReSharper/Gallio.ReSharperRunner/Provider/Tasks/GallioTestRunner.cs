@@ -114,10 +114,10 @@ namespace Gallio.ReSharperRunner.Provider.Tasks
 
             // Set parameters.
             TestPackageConfig packageConfig = new TestPackageConfig();
-            packageConfig.AssemblyFiles.AddRange(assemblyLocations);
-            packageConfig.HostSetup.ShadowCopy = config.ShadowCopy;
-            packageConfig.HostSetup.ApplicationBaseDirectory = config.AssemblyFolder;
-            packageConfig.HostSetup.WorkingDirectory = config.AssemblyFolder;
+            packageConfig.Files.AddRange(assemblyLocations);
+            packageConfig.ShadowCopy = config.ShadowCopy;
+            packageConfig.ApplicationBaseDirectory = config.AssemblyFolder;
+            packageConfig.WorkingDirectory = config.AssemblyFolder;
 
             TestRunnerOptions testRunnerOptions = new TestRunnerOptions();
 

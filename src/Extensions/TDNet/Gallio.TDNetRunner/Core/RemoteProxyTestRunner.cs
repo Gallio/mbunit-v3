@@ -182,12 +182,12 @@ namespace Gallio.TDNetRunner.Core
             // This monitor will inform the user in real-time what's going on
             launcher.TestRunnerExtensions.Add(new TDNetExtension(testListener));
 
-            launcher.TestPackageConfig.AssemblyFiles.Add(assemblyPath);
+            launcher.TestPackageConfig.Files.Add(assemblyPath);
 
             string assemblyDirectory = Path.GetDirectoryName(assemblyPath);
-            //launcher.TestPackageConfig.HostSetup.ShadowCopy = true;
-            launcher.TestPackageConfig.HostSetup.ApplicationBaseDirectory = assemblyDirectory;
-            launcher.TestPackageConfig.HostSetup.WorkingDirectory = assemblyDirectory;
+            //launcher.TestPackageConfig.ShadowCopy = true;
+            launcher.TestPackageConfig.ApplicationBaseDirectory = assemblyDirectory;
+            launcher.TestPackageConfig.WorkingDirectory = assemblyDirectory;
 
             TestLauncherResult result = RunLauncher(launcher);
 

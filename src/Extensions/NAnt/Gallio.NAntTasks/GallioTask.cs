@@ -603,11 +603,11 @@ namespace Gallio.NAntTasks
             launcher.RuntimeSetup.RuntimePath =
                 Path.GetDirectoryName(AssemblyUtils.GetFriendlyAssemblyLocation(typeof(GallioTask).Assembly));
 
-            launcher.TestPackageConfig.HostSetup.ApplicationBaseDirectory = applicationBaseDirectory;
-            launcher.TestPackageConfig.HostSetup.WorkingDirectory = workingDirectory;
-            launcher.TestPackageConfig.HostSetup.ShadowCopy = shadowCopy;
-            launcher.TestPackageConfig.HostSetup.Debug = debug;
-            launcher.TestPackageConfig.HostSetup.RuntimeVersion = runtimeVersion;
+            launcher.TestPackageConfig.ApplicationBaseDirectory = applicationBaseDirectory;
+            launcher.TestPackageConfig.WorkingDirectory = workingDirectory;
+            launcher.TestPackageConfig.ShadowCopy = shadowCopy;
+            launcher.TestPackageConfig.Debug = debug;
+            launcher.TestPackageConfig.RuntimeVersion = runtimeVersion;
 
             foreach (Argument option in reportFormatterProperties)
                 launcher.ReportFormatterOptions.Properties.Add(StringUtils.ParseKeyValuePair(option.Value));
@@ -714,7 +714,7 @@ namespace Gallio.NAntTasks
                 foreach (FileSet fs in files)
                 {
                     foreach (string f in fs.FileNames)
-                        launcher.TestPackageConfig.AssemblyFiles.Add(f);
+                        launcher.TestPackageConfig.Files.Add(f);
                 }
             }
         }

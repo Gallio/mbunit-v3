@@ -62,14 +62,14 @@ namespace Gallio.Runner.Projects
         private void ConvertFromRelativePaths(Project project, string directory)
         {
             var assemblyList = new List<string>();
-            foreach (string assembly in project.TestPackageConfig.AssemblyFiles)
+            foreach (string assembly in project.TestPackageConfig.Files)
             {
                 string assemblyPath = ConvertFromRelativePath(directory, assembly);
                 if (fileSystem.FileExists(assemblyPath))
                     assemblyList.Add(assemblyPath);
             }
-            project.TestPackageConfig.AssemblyFiles.Clear();
-            project.TestPackageConfig.AssemblyFiles.AddRange(assemblyList);
+            project.TestPackageConfig.Files.Clear();
+            project.TestPackageConfig.Files.AddRange(assemblyList);
 
             project.ReportDirectory = ConvertFromRelativePath(directory, project.ReportDirectory);
         }
@@ -105,11 +105,11 @@ namespace Gallio.Runner.Projects
         private void ConvertToRelativePaths(Project project, string directory)
         {
             var assemblyList = new List<string>();
-            foreach (string assembly in project.TestPackageConfig.AssemblyFiles)
+            foreach (string assembly in project.TestPackageConfig.Files)
                 assemblyList.Add(ConvertToRelativePath(directory, assembly));
 
-            project.TestPackageConfig.AssemblyFiles.Clear();
-            project.TestPackageConfig.AssemblyFiles.AddRange(assemblyList);
+            project.TestPackageConfig.Files.Clear();
+            project.TestPackageConfig.Files.AddRange(assemblyList);
 
             project.ReportDirectory = ConvertToRelativePath(directory, project.ReportDirectory);
         }

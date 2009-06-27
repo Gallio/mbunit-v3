@@ -14,6 +14,8 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
+using Gallio.Common.Collections;
 
 namespace Gallio.Common.Markup
 {
@@ -22,6 +24,36 @@ namespace Gallio.Common.Markup
     /// </summary>
     public static class MimeTypes
     {
+        private static readonly Dictionary<string, string> extensionsByMimeType;
+        private static readonly Dictionary<string, string> mimeTypesByExtension;
+
+        static MimeTypes()
+        {
+            extensionsByMimeType = new Dictionary<string, string>();
+            mimeTypesByExtension = new Dictionary<string, string>();
+
+            RegisterMimeTypeExtensions(PlainText, ".txt");
+            RegisterMimeTypeExtensions(Xml, ".xml");
+            RegisterMimeTypeExtensions(Html, ".html", ".htm");
+            RegisterMimeTypeExtensions(XHtml, ".xhtml");
+            RegisterMimeTypeExtensions(MHtml, ".mht", ".mhtml");
+            RegisterMimeTypeExtensions(Css, ".css");
+            RegisterMimeTypeExtensions(JavaScript, ".js");
+            RegisterMimeTypeExtensions(Png, ".png");
+            RegisterMimeTypeExtensions(Jpeg, ".jpg", ".jpeg");
+            RegisterMimeTypeExtensions(Gif, ".gif");
+            RegisterMimeTypeExtensions(FlashVideo, ".flv");
+        }
+
+        private static void RegisterMimeTypeExtensions(string mimeType, params string[] extensions)
+        {
+            if (extensions.Length != 0)
+                extensionsByMimeType.Add(mimeType, extensions[0]);
+
+            foreach (string extension in extensions)
+                mimeTypesByExtension.Add(extension, mimeType);
+        }
+
         /// <summary>
         /// Binary data.
         /// </summary>
@@ -63,6 +95,11 @@ namespace Gallio.Common.Markup
         public const string Png = "image/png";
 
         /// <summary>
+        /// JPEG image.
+        /// </summary>
+        public const string Jpeg = "image/jpeg";
+
+        /// <summary>
         /// GIF image.
         /// </summary>
         public const string Gif = "image/gif";
@@ -71,6 +108,11 @@ namespace Gallio.Common.Markup
         /// MHTML web archive.
         /// </summary>
         public const string MHtml = "multipart/related";
+
+        /// <summary>
+        /// Flash video.
+        /// </summary>
+        public const string FlashVideo = "video/x-flv";
 
         /// <summary>
         /// Guesses the mime type given a well-known extension.
@@ -83,41 +125,25 @@ namespace Gallio.Common.Markup
             if (extension == null)
                 throw new ArgumentNullException("extension");
 
-            switch (extension)
-            {
-                case ".txt":
-                    return PlainText;
-
-                case ".xml":
-                    return Xml;
-
-                case ".html":
-                case ".htm":
-                    return Html;
-
-                case ".xhtml":
-                    return XHtml;
-
-                case ".mhtml":
-                case ".mht":
-                    return MHtml;
-
-                case ".css":
-                    return Css;
-
-                case ".js":
-                    return JavaScript;
-
-                case ".png":
-                    return Png;
-
-                case ".gif":
-                    return Gif;
-
-                default:
-                    return null;
-            }
+            string mimeType;
+            mimeTypesByExtension.TryGetValue(extension, out mimeType);
+            return mimeType;
         }
 
+        /// <summary>
+        /// Guesses the extension given a well-known mime-type.
+        /// </summary>
+        /// <param name="mimeType">The mime type.</param>
+        /// <returns>The extension, or null if not known.</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="mimeType"/> is null.</exception>
+        public static string GetExtensionByMimeType(string mimeType)
+        {
+            if (mimeType == null)
+                throw new ArgumentNullException("mimeType");
+
+            string extension;
+            extensionsByMimeType.TryGetValue(mimeType, out extension);
+            return extension;
+        }
     }
 }

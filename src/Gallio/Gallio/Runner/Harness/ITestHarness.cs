@@ -35,9 +35,9 @@ namespace Gallio.Runner.Harness
     public interface ITestHarness : IDisposable
     {
         /// <summary>
-        /// Gets the test package loaded in the test harness, or null if none.
+        /// Gets the test exploration context in the test harness, or null if none.
         /// </summary>
-        TestPackage TestPackage { get; }
+        TestExplorationContext TestExplorationContext { get; }
 
         /// <summary>
         /// Gets the test model, or null if the test model has not been built.

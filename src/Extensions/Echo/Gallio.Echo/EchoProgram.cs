@@ -104,18 +104,18 @@ namespace Gallio.Echo
             launcher.RuntimeSetup = new RuntimeSetup();
             launcher.RuntimeSetup.PluginDirectories.AddRange(arguments.PluginDirectories);
 
-            launcher.TestPackageConfig.HostSetup.ShadowCopy = arguments.ShadowCopy;
-            launcher.TestPackageConfig.HostSetup.Debug = arguments.Debug;
-            launcher.TestPackageConfig.HostSetup.ApplicationBaseDirectory = arguments.ApplicationBaseDirectory;
-            launcher.TestPackageConfig.HostSetup.WorkingDirectory = arguments.WorkingDirectory;
+            launcher.TestPackageConfig.ShadowCopy = arguments.ShadowCopy;
+            launcher.TestPackageConfig.Debug = arguments.Debug;
+            launcher.TestPackageConfig.ApplicationBaseDirectory = arguments.ApplicationBaseDirectory;
+            launcher.TestPackageConfig.WorkingDirectory = arguments.WorkingDirectory;
 
             if (arguments.RuntimeVersion != null)
-                launcher.TestPackageConfig.HostSetup.RuntimeVersion = arguments.RuntimeVersion;
+                launcher.TestPackageConfig.RuntimeVersion = arguments.RuntimeVersion;
 
-            // add assemblies to testpackageconfig
-            foreach (string assembly in arguments.Files)
+            // add files to testpackageconfig
+            foreach (string file in arguments.Files)
             {
-                if (!CheckAssembly(launcher, arguments, assembly))
+                if (!CheckFile(launcher, arguments, file))
                     break;
             }
             launcher.TestPackageConfig.HintDirectories.AddRange(arguments.HintDirectories);
@@ -147,7 +147,8 @@ namespace Gallio.Echo
                 launcher.RunTimeLimit = TimeSpan.FromSeconds(arguments.RunTimeLimitInSeconds);
         }
 
-        private static bool CheckAssembly(TestLauncher launcher, EchoArguments arguments, string assembly)
+        // FIXME: need to move project file assumption elsewhere
+        private static bool CheckFile(TestLauncher launcher, EchoArguments arguments, string assembly)
         {
             if (Path.GetExtension(assembly) == Project.Extension)
             {
@@ -167,7 +168,7 @@ namespace Gallio.Echo
             }
                 
             if (File.Exists(assembly))
-                launcher.TestPackageConfig.AssemblyFiles.Add(assembly);
+                launcher.TestPackageConfig.Files.Add(assembly);
             else 
             {
                 // could be a wildcarded string
@@ -184,7 +185,7 @@ namespace Gallio.Echo
                 }
 
                 foreach (var file in files)
-                    launcher.TestPackageConfig.AssemblyFiles.Add(Path.Combine(path, file.Name));
+                    launcher.TestPackageConfig.Files.Add(Path.Combine(path, file.Name));
             }
             return true;
         }

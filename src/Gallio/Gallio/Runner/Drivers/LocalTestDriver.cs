@@ -121,7 +121,7 @@ namespace Gallio.Runner.Drivers
         // are set correctly during exploration and execution
         private IHost CreateLocalHost(TestPackageConfig testPackageConfig)
         {
-            return localHostFactory.CreateHost(testPackageConfig.HostSetup, Logger);
+            return localHostFactory.CreateHost(testPackageConfig.CreateHostSetup(), Logger);
         }
     }
 }

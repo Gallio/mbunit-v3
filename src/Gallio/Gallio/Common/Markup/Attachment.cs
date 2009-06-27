@@ -19,6 +19,7 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Xml.Serialization;
 using Gallio.Common;
+using Gallio.Common.Media;
 
 namespace Gallio.Common.Markup
 {
@@ -114,7 +115,7 @@ namespace Gallio.Common.Markup
         }
 
         /// <summary>
-        /// Embeds an image attachment with a mime-type compatible with its internal representation.
+        /// Creates an image attachment with a mime-type compatible with its internal representation.
         /// </summary>
         /// <param name="name">The attachment name, or null to automatically assign one.</param>
         /// <param name="image">The image to attach.</param>
@@ -133,8 +134,25 @@ namespace Gallio.Common.Markup
         }
 
         /// <summary>
-        /// Embeds an XML-serialized object as an XML attachment with mime-type <see cref="MimeTypes.Xml" />
-        /// using the specified serializer.
+        /// Creates an video attachment with a mime-type compatible with its internal representation.
+        /// </summary>
+        /// <param name="name">The attachment name, or null to automatically assign one.</param>
+        /// <param name="video">The video to attach.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="video"/> is null.</exception>
+        public static BinaryAttachment CreateVideoAttachment(string name, Video video)
+        {
+            if (video == null)
+                throw new ArgumentNullException("video");
+
+            using (MemoryStream stream = new MemoryStream())
+            {
+                video.Save(stream);
+                return new BinaryAttachment(name, video.MimeType, stream.ToArray());
+            }
+        }
+
+        /// <summary>
+        /// Creates XML attachment with mime-type <see cref="MimeTypes.Xml" /> by serializing an object.
         /// </summary>
         /// <param name="name">The attachment name, or null to automatically assign one.</param>
         /// <param name="obj">The object to serialize and embed, must not be null.</param>

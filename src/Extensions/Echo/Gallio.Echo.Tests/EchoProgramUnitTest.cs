@@ -56,14 +56,14 @@ namespace Gallio.Echo.Tests
             Assert.IsNull(launcher.RuntimeSetup.RuntimePath);
             Assert.AreElementsEqual(new string[] { }, launcher.RuntimeSetup.PluginDirectories);
 
-            Assert.AreElementsEqual(new string[] { }, launcher.TestPackageConfig.AssemblyFiles);
+            Assert.AreElementsEqual(new string[] { }, launcher.TestPackageConfig.Files);
             Assert.AreElementsEqual(new string[] { }, launcher.TestPackageConfig.HintDirectories);
 
-            Assert.IsNull(launcher.TestPackageConfig.HostSetup.ApplicationBaseDirectory);
-            Assert.IsNull(launcher.TestPackageConfig.HostSetup.WorkingDirectory);
-            Assert.IsFalse(launcher.TestPackageConfig.HostSetup.ShadowCopy);
-            Assert.IsFalse(launcher.TestPackageConfig.HostSetup.Debug);
-            Assert.IsNull(launcher.TestPackageConfig.HostSetup.RuntimeVersion);
+            Assert.IsNull(launcher.TestPackageConfig.ApplicationBaseDirectory);
+            Assert.IsNull(launcher.TestPackageConfig.WorkingDirectory);
+            Assert.IsFalse(launcher.TestPackageConfig.ShadowCopy);
+            Assert.IsFalse(launcher.TestPackageConfig.Debug);
+            Assert.IsNull(launcher.TestPackageConfig.RuntimeVersion);
 
             Assert.AreEqual(new PropertySet(), launcher.TestRunnerOptions.Properties);
             Assert.AreEqual(new PropertySet(), launcher.ReportFormatterOptions.Properties);
@@ -119,14 +119,14 @@ namespace Gallio.Echo.Tests
             Assert.IsNull(launcher.RuntimeSetup.RuntimePath);
             Assert.AreElementsEqual(new[] { "plugin" }, launcher.RuntimeSetup.PluginDirectories);
 
-            Assert.AreEqual(1, launcher.TestPackageConfig.AssemblyFiles.Count);
+            Assert.AreEqual(1, launcher.TestPackageConfig.Files.Count);
             Assert.AreElementsEqual(new[] { "hint1", "hint2" }, launcher.TestPackageConfig.HintDirectories);
 
-            Assert.AreEqual("baseDir", launcher.TestPackageConfig.HostSetup.ApplicationBaseDirectory);
-            Assert.AreEqual("workingDir", launcher.TestPackageConfig.HostSetup.WorkingDirectory);
-            Assert.IsTrue(launcher.TestPackageConfig.HostSetup.ShadowCopy);
-            Assert.IsTrue(launcher.TestPackageConfig.HostSetup.Debug);
-            Assert.AreEqual("v4.0.20506", launcher.TestPackageConfig.HostSetup.RuntimeVersion);
+            Assert.AreEqual("baseDir", launcher.TestPackageConfig.ApplicationBaseDirectory);
+            Assert.AreEqual("workingDir", launcher.TestPackageConfig.WorkingDirectory);
+            Assert.IsTrue(launcher.TestPackageConfig.ShadowCopy);
+            Assert.IsTrue(launcher.TestPackageConfig.Debug);
+            Assert.AreEqual("v4.0.20506", launcher.TestPackageConfig.RuntimeVersion);
 
             Assert.AreEqual(new PropertySet()
                 {

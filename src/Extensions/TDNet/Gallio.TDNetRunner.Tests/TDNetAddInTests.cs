@@ -287,12 +287,12 @@ namespace Gallio.TDNetRunner.Tests
 
             Assert.IsNull(launcher.RuntimeSetup);
 
-            Assert.AreElementsEqual(new string[] { assemblyFile }, launcher.TestPackageConfig.AssemblyFiles);
+            Assert.AreElementsEqual(new string[] { assemblyFile }, launcher.TestPackageConfig.Files);
             Assert.AreElementsEqual(new string[] { }, launcher.TestPackageConfig.HintDirectories);
 
-            Assert.AreEqual(Path.GetDirectoryName(assemblyFile), launcher.TestPackageConfig.HostSetup.ApplicationBaseDirectory);
-            Assert.IsFalse(launcher.TestPackageConfig.HostSetup.ShadowCopy);
-            Assert.AreEqual(Path.GetDirectoryName(assemblyFile), launcher.TestPackageConfig.HostSetup.WorkingDirectory);
+            Assert.AreEqual(Path.GetDirectoryName(assemblyFile), launcher.TestPackageConfig.ApplicationBaseDirectory);
+            Assert.IsFalse(launcher.TestPackageConfig.ShadowCopy);
+            Assert.AreEqual(Path.GetDirectoryName(assemblyFile), launcher.TestPackageConfig.WorkingDirectory);
         }
     }
 }

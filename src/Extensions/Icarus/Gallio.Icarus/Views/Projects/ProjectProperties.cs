@@ -34,11 +34,11 @@ namespace Gallio.Icarus.Views.Projects
 
             hintDirectoriesListBox.DataSource = projectController.HintDirectories;
             applicationBaseDirectoryTextBox.DataBindings.Add("Text", projectController,
-                "TestPackageConfig.HostSetup.ApplicationBaseDirectory", false, DataSourceUpdateMode.OnPropertyChanged);
+                "TestPackageConfig.ApplicationBaseDirectory", false, DataSourceUpdateMode.OnPropertyChanged);
             workingDirectoryTextBox.DataBindings.Add("Text", projectController,
-                "TestPackageConfig.HostSetup.WorkingDirectory", false, DataSourceUpdateMode.OnPropertyChanged);
+                "TestPackageConfig.WorkingDirectory", false, DataSourceUpdateMode.OnPropertyChanged);
             shadowCopyCheckBox.DataBindings.Add("Checked", projectController,
-                "TestPackageConfig.HostSetup.ShadowCopy", false, DataSourceUpdateMode.OnPropertyChanged);
+                "TestPackageConfig.ShadowCopy", false, DataSourceUpdateMode.OnPropertyChanged);
             testRunnerExtensionsListBox.DataSource = projectController.TestRunnerExtensions;
             reportDirectoryTextBox.Text = projectController.ReportDirectory;
             reportNameFormatTextBox.DataBindings.Add("Text", projectController, "ReportNameFormat", 
