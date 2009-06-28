@@ -83,27 +83,30 @@ namespace Gallio.Common.Media
             if (DotNetRuntimeSupport.IsUsingMono)
                 return false;
 
+            IntPtr hWnd = IntPtr.Zero;
+            IntPtr hDC = IntPtr.Zero;
+
+            RuntimeHelpers.PrepareConstrainedRegions();
             try
             {
-                IntPtr hWnd = IntPtr.Zero;
-                IntPtr hDC = IntPtr.Zero;
-
-                RuntimeHelpers.PrepareConstrainedRegions();
-                try
+                hDC = GetDC(hWnd);
+                if (hDC != IntPtr.Zero)
                 {
-                    hDC = GetDC(hWnd);
-                    return hDC != IntPtr.Zero;
-                }
-                finally
-                {
-                    if (hDC != IntPtr.Zero)
-                        ReleaseDC(hWnd, hDC);
+                    int caps = GetDeviceCaps(hDC, RASTERCAPS);
+                    if ((caps & RC_BITBLT) != 0)
+                        return true;
                 }
             }
             catch
             {
-                return false;
             }
+            finally
+            {
+                if (hDC != IntPtr.Zero)
+                    ReleaseDC(hWnd, hDC);
+            }
+
+            return false;
         }
 
         /// <summary>
@@ -299,8 +302,13 @@ namespace Gallio.Common.Media
                 throw new ObjectDisposedException("The screen recorder has been disposed.");
         }
 
+        // From PInvoke.Net.
+
         private const int SM_CXSCREEN = 0;
         private const int SM_CYSCREEN = 1;
+
+        private const int RASTERCAPS = 38;
+        private const int RC_BITBLT = 1;
 
         [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true, ExactSpelling = true)]
         private static extern int GetSystemMetrics(int nIndex);
@@ -311,7 +319,8 @@ namespace Gallio.Common.Media
         [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true, ExactSpelling = true)]
         private static extern int ReleaseDC(IntPtr hWnd, IntPtr hDC);
 
-        // From PInvoke.Net.
+        [DllImport("gdi32.dll", CharSet = CharSet.Auto, SetLastError = true, ExactSpelling = true)]
+        static extern int GetDeviceCaps(IntPtr hdc, int nIndex);
 
         [StructLayout(LayoutKind.Sequential)]
         private struct POINT
