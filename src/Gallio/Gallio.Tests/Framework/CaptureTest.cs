@@ -188,7 +188,14 @@ namespace Gallio.Tests.Framework
             }
             else
             {
-                Assert.Contains(run.TestLog.ToString(), "Screenshot not available.");
+                if (triggered)
+                {
+                    Assert.Contains(run.TestLog.ToString(), "Screenshot not available.");
+                }
+                else
+                {
+                    Assert.DoesNotContain(run.TestLog.ToString(), "Screenshot not available.");
+                }
             }
         }
 
@@ -219,7 +226,14 @@ namespace Gallio.Tests.Framework
             }
             else
             {
-                Assert.Contains(run.TestLog.ToString(), "Recording not available.");
+                if (triggered)
+                {
+                    Assert.Contains(run.TestLog.ToString(), "Recording not available.");
+                }
+                else
+                {
+                    Assert.DoesNotContain(run.TestLog.ToString(), "Recording not available.");
+                }
             }
         }
 
