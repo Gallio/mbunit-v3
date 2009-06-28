@@ -84,18 +84,7 @@ namespace Gallio.Common.Media
             if (DotNetRuntimeSupport.IsUsingMono)
                 return false;
 
-            IntPtr hWinSta = GetProcessWindowStation();
-            if (hWinSta != IntPtr.Zero)
-            {
-                USEROBJECTFLAGS flags = new USEROBJECTFLAGS();
-                int lengthNeeded;
-                if (GetUserObjectInformation(hWinSta, UOI_FLAGS, ref flags, Marshal.SizeOf(typeof(USEROBJECTFLAGS)), out lengthNeeded))
-                {
-                    return (flags.dwFlags & WSF_VISIBLE) != 0;
-                }
-            }
-
-            return false;
+            return SystemInformation.UserInteractive;
         }
 
         /// <summary>
@@ -294,10 +283,6 @@ namespace Gallio.Common.Media
         private const int SM_CXSCREEN = 0;
         private const int SM_CYSCREEN = 1;
 
-        private const int UOI_FLAGS = 1;
-
-        private const int WSF_VISIBLE = 1;
-
         private const Int32 CURSOR_SHOWING = 0x00000001;
 
         [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true, ExactSpelling = true)]
@@ -305,20 +290,6 @@ namespace Gallio.Common.Media
 
         [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true, ExactSpelling = true)]
         private static extern int GetSystemMetrics(int nIndex);
-
-        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true, ExactSpelling = true)]
-        private static extern IntPtr GetProcessWindowStation();
-
-        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-        private static extern bool GetUserObjectInformation(IntPtr hObj, int nIndex, ref USEROBJECTFLAGS pvInfo, int nLength, out int lpnLengthNeeded);
-
-        [StructLayout(LayoutKind.Sequential)]
-        private struct USEROBJECTFLAGS
-        {
-            public bool fInherit;
-            public bool fReserved;
-            public int dwFlags;
-        }
         
         [StructLayout(LayoutKind.Sequential)]
         private struct POINT
