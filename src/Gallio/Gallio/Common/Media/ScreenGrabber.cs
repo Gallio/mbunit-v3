@@ -16,6 +16,7 @@
 using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
@@ -83,27 +84,15 @@ namespace Gallio.Common.Media
             if (DotNetRuntimeSupport.IsUsingMono)
                 return false;
 
-            IntPtr hWnd = IntPtr.Zero;
-            IntPtr hDC = IntPtr.Zero;
-
-            RuntimeHelpers.PrepareConstrainedRegions();
-            try
+            IntPtr hWinSta = GetProcessWindowStation();
+            if (hWinSta != IntPtr.Zero)
             {
-                hDC = GetDC(hWnd);
-                if (hDC != IntPtr.Zero)
+                USEROBJECTFLAGS flags = new USEROBJECTFLAGS();
+                int lengthNeeded;
+                if (GetUserObjectInformation(hWinSta, UOI_FLAGS, ref flags, Marshal.SizeOf(typeof(USEROBJECTFLAGS)), out lengthNeeded))
                 {
-                    int caps = GetDeviceCaps(hDC, RASTERCAPS);
-                    if ((caps & RC_BITBLT) != 0)
-                        return true;
+                    return (flags.dwFlags & WSF_VISIBLE) != 0;
                 }
-            }
-            catch
-            {
-            }
-            finally
-            {
-                if (hDC != IntPtr.Zero)
-                    ReleaseDC(hWnd, hDC);
             }
 
             return false;
@@ -201,7 +190,7 @@ namespace Gallio.Common.Media
                     try
                     {
                         allocatedBitmap = true;
-                        bitmap = new Bitmap(screenshotWidth, screenshotHeight);
+                        bitmap = new Bitmap(screenshotWidth, screenshotHeight, PixelFormat.Format32bppRgb);
                     }
                     catch (Exception ex)
                     {
@@ -215,7 +204,7 @@ namespace Gallio.Common.Media
                     {
                         try
                         {
-                            screenBuffer = new Bitmap(screenWidth, screenHeight);
+                            screenBuffer = new Bitmap(screenWidth, screenHeight, PixelFormat.Format32bppRgb);
                         }
                         catch (Exception ex)
                         {
@@ -302,26 +291,35 @@ namespace Gallio.Common.Media
                 throw new ObjectDisposedException("The screen recorder has been disposed.");
         }
 
-        // From PInvoke.Net.
-
         private const int SM_CXSCREEN = 0;
         private const int SM_CYSCREEN = 1;
 
-        private const int RASTERCAPS = 38;
-        private const int RC_BITBLT = 1;
+        private const int UOI_FLAGS = 1;
+
+        private const int WSF_VISIBLE = 1;
+
+        private const Int32 CURSOR_SHOWING = 0x00000001;
+
+        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true, ExactSpelling = true)]
+        static extern bool GetCursorInfo(ref CURSORINFO pci);
 
         [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true, ExactSpelling = true)]
         private static extern int GetSystemMetrics(int nIndex);
 
         [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true, ExactSpelling = true)]
-        private static extern IntPtr GetDC(IntPtr hWnd);
+        private static extern IntPtr GetProcessWindowStation();
 
-        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true, ExactSpelling = true)]
-        private static extern int ReleaseDC(IntPtr hWnd, IntPtr hDC);
+        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        private static extern bool GetUserObjectInformation(IntPtr hObj, int nIndex, ref USEROBJECTFLAGS pvInfo, int nLength, out int lpnLengthNeeded);
 
-        [DllImport("gdi32.dll", CharSet = CharSet.Auto, SetLastError = true, ExactSpelling = true)]
-        static extern int GetDeviceCaps(IntPtr hdc, int nIndex);
-
+        [StructLayout(LayoutKind.Sequential)]
+        private struct USEROBJECTFLAGS
+        {
+            public bool fInherit;
+            public bool fReserved;
+            public int dwFlags;
+        }
+        
         [StructLayout(LayoutKind.Sequential)]
         private struct POINT
         {
@@ -340,10 +338,5 @@ namespace Gallio.Common.Media
             public IntPtr hCursor;      // Handle to the cursor.
             public POINT ptScreenPos;   // A POINT structure that receives the screen coordinates of the cursor.
         }
-
-        [DllImport("user32.dll")]
-        static extern bool GetCursorInfo(ref CURSORINFO pci);
-
-        private const Int32 CURSOR_SHOWING = 0x00000001;
     }
 }
