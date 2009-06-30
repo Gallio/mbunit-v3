@@ -3,6 +3,9 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
     <Version Condition="'$(Version)'==''">3.0.0.0</Version>
+    <MajorVersion Condition="'$(MajorVersion)'==''">3</MajorVersion>
+    <MinorVersion Condition="'$(MinorVersion)'==''">0</MinorVersion>
+    <BuildNumber Condition="'$(BuildNumber)'==''">0</BuildNumber>
     <ProductVersion>3.0</ProductVersion>
     <ProjectGuid>{a00a00a0-a0a0-4355-a2e3-b48284792334}</ProjectGuid>
     <SchemaVersion>2.0</SchemaVersion>
@@ -15,7 +18,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <OutputPath>bin\$(Platform)\$(Configuration)\</OutputPath>
     <IntermediateOutputPath>obj\$(Platform)\$(Configuration)\</IntermediateOutputPath>
-    <DefineConstants>Debug;GallioTargetDir=$(TargetDir);Version=$(Version)</DefineConstants>
+    <DefineConstants>Debug;GallioTargetDir=$(TargetDir);Version=$(Version);MajorVersion=$(MajorVersion);MinorVersion=$(MinorVersion);BuildNumber=$(BuildNumber)</DefineConstants>
     <Cultures>en-US</Cultures>
     <SuppressIces>ICE69;ICE61;ICE30</SuppressIces>
     <SuppressPdbOutput>true</SuppressPdbOutput>
@@ -23,13 +26,13 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <OutputPath>bin\$(Platform)\$(Configuration)\</OutputPath>
     <IntermediateOutputPath>obj\$(Platform)\$(Configuration)\</IntermediateOutputPath>
-    <DefineConstants>GallioTargetDir=$(TargetDir);Version=$(Version)</DefineConstants>
+    <DefineConstants>GallioTargetDir=$(TargetDir);Version=$(Version);MajorVersion=$(MajorVersion);MinorVersion=$(MinorVersion);BuildNumber=$(BuildNumber)</DefineConstants>
     <Cultures>en-US</Cultures>
     <SuppressIces>ICE69;ICE61;ICE30</SuppressIces>
     <SuppressPdbOutput>true</SuppressPdbOutput>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
-    <DefineConstants>Debug;GallioTargetDir=$(TargetDir);Version=$(Version)</DefineConstants>
+    <DefineConstants>Debug;GallioTargetDir=$(TargetDir);Version=$(Version);MajorVersion=$(MajorVersion);MinorVersion=$(MinorVersion);BuildNumber=$(BuildNumber)</DefineConstants>
     <Cultures>en-US</Cultures>
     <SuppressIces>ICE69;ICE61;ICE30</SuppressIces>
     <SuppressPdbOutput>true</SuppressPdbOutput>
@@ -37,7 +40,7 @@
     <IntermediateOutputPath>obj\$(Platform)\$(Configuration)\</IntermediateOutputPath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
-    <DefineConstants>GallioTargetDir=$(TargetDir);Version=$(Version)</DefineConstants>
+    <DefineConstants>GallioTargetDir=$(TargetDir);Version=$(Version);MajorVersion=$(MajorVersion);MinorVersion=$(MinorVersion);BuildNumber=$(BuildNumber)</DefineConstants>
     <Cultures>en-US</Cultures>
     <SuppressIces>ICE69;ICE61;ICE30</SuppressIces>
     <SuppressPdbOutput>true</SuppressPdbOutput>

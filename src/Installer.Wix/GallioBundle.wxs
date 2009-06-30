@@ -5,7 +5,7 @@
 
     <Product
         Id="*"
-        Name="Gallio $(var.MajorVersion).$(var.MinorVersion) build $(var.BuildNumber)"
+        Name="Gallio $(var.MajorVersion).$(var.MinorVersion) (build $(var.BuildNumber))"
         Version="$(var.Version)"
         Manufacturer="www.gallio.org"
         UpgradeCode="FAAF3C4B-8757-437A-A3D6-9D882DE7D088"

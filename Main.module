@@ -1,6 +1,9 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <Import Project="$(MetaBuildBinDir)\MetaBuild.Module.targets" />
 
+  <UsingTask TaskName="ParseVersion"
+             AssemblyFile="bin\Gallio.BuildTools.Tasks.dll" />
+
   <PropertyGroup>
     <Coverage Condition="'$(Coverage)'==''">false</Coverage>
 
@@ -177,7 +180,7 @@
       WixTasksPath=$(ToolsDir)\Wix\WixTasks.dll;
       WixToolPath=$(ToolsDir)\Wix;
       WixExtDir=$(ToolsDir)\Wix;
-      DefineSolutionProperties=false;
+      DefineSolutionProperties=false
     </InstallerWixProperties>
     <InstallerFeatureFile>$(SourceDir)\Installer.Wix\Features.wxi</InstallerFeatureFile>
   </PropertyGroup>
@@ -208,7 +211,7 @@
         $(InstallerWixProperties);
         MajorVersion=$(MajorVersion);
         MinorVersion=$(MinorVersion);
-        BuildNumber=$(BuildNumber);      
+        BuildNumber=$(BuildNumber)     
       </InstallerWixProperties>
     </PropertyGroup>
   </Target>
