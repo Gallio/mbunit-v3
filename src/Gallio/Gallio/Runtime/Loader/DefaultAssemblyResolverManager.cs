@@ -105,11 +105,22 @@ namespace Gallio.Runtime.Loader
             // Note: The name passed into the resolve event has already had assembly binding policy applied
             //       to it.  So if there was a partial qualification or binding redirect then it will
             //       already be applied (no need to call AppDomain.ApplyPolicy).
-            AssemblyName assemblyName = new AssemblyName(args.Name);
-            Assembly assembly;
+
+            AssemblyName assemblyName;
+            try
+            {
+                assemblyName = new AssemblyName(args.Name);
+            }
+            catch
+            {
+                // Sometimes the name provided is not a valid assembly name (though it should be).
+                // For example, it can happen that client code will call Assembly.Load an provide
+                // a path.  This usage is incorrect but we tolerate it by returning null.
+                return null;
+            }
 
             // Try with current directory
-            assembly = ResolveAssembly(assemblyName, Directory.GetCurrentDirectory(), reflectionOnly);
+            Assembly assembly = ResolveAssembly(assemblyName, Directory.GetCurrentDirectory(), reflectionOnly);
             if (assembly != null)
                 return assembly;
 
