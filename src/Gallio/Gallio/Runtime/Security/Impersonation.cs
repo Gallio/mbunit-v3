@@ -50,6 +50,7 @@ namespace Gallio.Runtime.Security
 		/// <param name="password">The password.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="userName"/>, <paramref name="domain"/>, 
         /// or <paramref name="password"/> is null.</exception>
+        /// <exception cref="Win32Exception">Thrown when the impersonation process has failed.</exception>
 		public Impersonation(string userName, string domain, string password)
 		{
             if (userName == null)
