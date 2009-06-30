@@ -14,29 +14,54 @@
       <Folder>CCNet</Folder>
     </Extra>
     
-    <Extra Include="CCNet.Gallio.WebDashboard.Plugin\bin\CCNet.Gallio.WebDashboard.Plugin.dll">
-      <Folder>CCNet\webdashboard\bin</Folder>
-    </Extra>
-    <Extra Include="$(ReportResourcesDir)\css\*">
-      <Folder>CCNet\webdashboard\gallio\css</Folder>
-    </Extra>
-    <Extra Include="$(ReportResourcesDir)\js\*">
-      <Folder>CCNet\webdashboard\gallio\js</Folder>
-    </Extra>
-    <Extra Include="$(ReportResourcesDir)\img\*">
-      <Folder>CCNet\webdashboard\gallio\img</Folder>
-    </Extra>
-    <Extra Include="$(ReportResourcesDir)\xsl\Gallio-Report.ccnet-details.xsl">
-      <Folder>CCNet\webdashboard\gallio\xsl</Folder>
-    </Extra>
-    <Extra Include="$(ReportResourcesDir)\xsl\Gallio-Report.ccnet-details-condensed.xsl">
-      <Folder>CCNet\webdashboard\gallio\xsl</Folder>
-    </Extra>
-    <Extra Include="$(ReportResourcesDir)\xsl\Gallio-Report.html+xhtml.xsl">
-      <Folder>CCNet\webdashboard\gallio\xsl</Folder>
-    </Extra>
-    <Extra Include="$(ReportResourcesDir)\xsl\Gallio-Report.common.xsl">
-      <Folder>CCNet\webdashboard\gallio\xsl</Folder>
-    </Extra>
+    <CCNetPackageFile Include="CCNet.Gallio.WebDashboard.Plugin\bin\CCNet.Gallio.WebDashboard.Plugin.dll">
+      <Folder>bin</Folder>
+    </CCNetPackageFile>
+    <CCNetPackageFile Include="$(ReportResourcesDir)\css\*"
+                      Exclude="$(ReportResourcesDir)\css\Gallio-Report.Generated.css">
+      <Folder>gallio\css</Folder>
+    </CCNetPackageFile>
+    <CCNetPackageFile Include="$(ReportResourcesDir)\js\*">
+      <Folder>gallio\js</Folder>
+    </CCNetPackageFile>
+    <CCNetPackageFile Include="$(ReportResourcesDir)\img\*">
+      <Folder>gallio\img</Folder>
+    </CCNetPackageFile>
+    <CCNetPackageFile Include="$(ReportResourcesDir)\xsl\Gallio-Report.ccnet-details.xsl">
+      <Folder>gallio\xsl</Folder>
+    </CCNetPackageFile>
+    <CCNetPackageFile Include="$(ReportResourcesDir)\xsl\Gallio-Report.ccnet-details-condensed.xsl">
+      <Folder>gallio\xsl</Folder>
+    </CCNetPackageFile>
+    <CCNetPackageFile Include="$(ReportResourcesDir)\xsl\Gallio-Report.html+xhtml.xsl">
+      <Folder>gallio\xsl</Folder>
+    </CCNetPackageFile>
+    <CCNetPackageFile Include="$(ReportResourcesDir)\xsl\Gallio-Report.common.xsl">
+      <Folder>gallio\xsl</Folder>
+    </CCNetPackageFile>
   </ItemGroup>
+
+  <Target Name="AfterImage">
+    <Message Text="Generating CCNet package..."
+             Importance="High" />
+    
+    <Delete Files="$(ImageDir)\extras\CCNet\GallioReports.zip"
+            Condition="Exists('$(ImageDir)\extras\CCNet\GallioReports.zip')" />
+
+    <RemoveDir Directories="$(TempDir)\CCNet\GallioReports" />
+    <MakeDir Directories="$(TempDir)\CCNet\GallioReports;$(ImageDir)\extras\CCNet" />
+
+    <Copy SourceFiles="@(CCNetPackageFile)"
+          DestinationFiles="@(CCNetPackageFile->'$(TempDir)\CCNet\GallioReports\%(Folder)\%(Filename)%(Extension)')" />
+
+    <ItemGroup>
+      <CCNetPackageFileTempCopy Include="$(TempDir)\CCNet\GallioReports\**\*" />
+    </ItemGroup>
+
+    <Zip Files="@(CCNetPackageFileTempCopy)"
+         WorkingDirectory="$(TempDir)\CCNet\GallioReports"
+         ZipFileName="$(ImageDir)\extras\CCNet\GallioReports.zip"
+	 ZipLevel="9"
+         Comment="This archive contains MbUnit Samples.  Extract them to a directory of your choice to run them." />
+  </Target>
 </Project>

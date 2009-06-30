@@ -6,86 +6,16 @@
                 <Component Id="CCNet.Docs" Guid="{735B640A-D57A-4193-906F-7B102BE5E321}" Win64="no">
                     <File Name="How to use Gallio with CruiseControl.Net.txt" KeyPath="yes" />
                 </Component>
-                <Directory Id="webdashboard" Name="webdashboard">
-                    <Directory Id="webdashboard.bin" Name="bin">
-                        <Component Id="CCNet.Gallio.WebDashboard.Plugin.dll" Guid="{04852E1E-D257-4731-A417-46B17C307B82}" Win64="no">
-                            <File Name="CCNet.Gallio.WebDashboard.Plugin.dll" KeyPath="yes" />
-                        </Component>
-                    </Directory>
-                    <Directory Id="webdashboard.gallio" Name="gallio">
-                        <Directory Id="webdashboard.gallio.css" Name="css">
-                            <Component Id="CCNet.Gallio.Report.css" Guid="{48A8273A-F100-4702-B45C-4B2BE9AD6235}" Win64="no">
-                                <File Id="CCNet.Gallio.Report.css" Name="Gallio-Report.css" KeyPath="yes" />
-                            </Component>
-                        </Directory>
-                        <Directory Id="webdashboard.gallio.js" Name="js">
-                            <Component Id="CCNet.Gallio.Report.js" Guid="{4C1835D0-8DAA-46cd-B7CF-A2B63A0D01C7}" Win64="no">
-                                <File Id="CCNet.Gallio.Report.js" Name="Gallio-Report.js" KeyPath="yes" />
-                            </Component>
-                        </Directory>
-                        <Directory Id="webdashboard.gallio.xsl" Name="xsl">
-                            <Component Id="CCNet.Gallio.Report.common.xsl" Guid="{2F0CD423-5884-44a7-8A89-1F80D9EAC957}" Win64="no">
-                                <File Id="CCNet.Gallio.Report.common.xsl" Name="Gallio-Report.common.xsl" KeyPath="yes" />
-                            </Component>
-                            <Component Id="CCNet.Gallio.Report.ccnet.details.xsl" Guid="{0E80D765-AC87-4ff1-92B8-0F1F92875C1C}" Win64="no">
-                                <File Id="CCNet.Gallio.Report.ccnet.details.xsl" Name="Gallio-Report.ccnet-details.xsl" KeyPath="yes" />
-                            </Component>
-                            <Component Id="CCNet.Gallio.Report.ccnet.details.condensed.xsl" Guid="{52D7D117-8004-4cc2-B59F-B0436482ECC4}" Win64="no">
-                                <File Id="CCNet.Gallio.Report.ccnet.details.condensed.xsl" Name="Gallio-Report.ccnet-details-condensed.xsl" KeyPath="yes" />
-                            </Component>
-                            <Component Id="CCNet.Gallio.Report.html.xhtml.xsl" Guid="{2861BE2A-EDEF-4293-8070-18E1B7600440}" Win64="no">
-                                <File Id="CCNet.Gallio.Report.html.xhtml.xsl" Name="Gallio-Report.html+xhtml.xsl" KeyPath="yes" />
-                            </Component>
-                        </Directory>
-                        <Directory Id="webdashboard.gallio.img" Name="img">
-                            <Component Id="CCNet.Failed.gif" Guid="{7FF8901F-5F93-4131-9E03-768ED987DD4D}" Win64="no">
-                                <File Id="CCNet.Failed.gif" Name="Failed.gif" KeyPath="yes" />
-                            </Component>
-                            <Component Id="CCNet.FullStop.gif" Guid="{6B9FCD61-D4B8-4ab6-ADAB-8BB2526BEC38}" Win64="no">
-                                <File Id="CCNet.FullStop.gif" Name="FullStop.gif" KeyPath="yes" />
-                            </Component>
-                            <Component Id="CCNet.GallioTestReportHeader.png" Guid="{4C77B635-8DA8-4bfa-BD3E-620DD6E22797}" Win64="no">
-                                <File Id="CCNet.GallioTestReportHeader.png" Name="GallioTestReportHeader.png" KeyPath="yes" />
-                            </Component>
-                            <Component Id="CCNet.header.background.gif" Guid="{262B947F-879A-4ba0-965D-76593206B868}" Win64="no">
-                                <File Id="CCNet.header.background.gif" Name="header-background.gif" KeyPath="yes" />
-                            </Component>
-                            <Component Id="CCNet.Ignored.gif" Guid="{83AE6D5C-EDAD-4427-A3F4-A504BE2A8F23}" Win64="no">
-                                <File Id="CCNet.Ignored.gif" Name="Ignored.gif" KeyPath="yes" />
-                            </Component>
-                            <Component Id="CCNet.Minus.gif" Guid="{4BBACD67-59B4-4cc2-8622-C8DA7DCD4BF8}" Win64="no">
-                                <File Id="CCNet.Minus.gif" Name="Minus.gif" KeyPath="yes" />
-                            </Component>
-                            <Component Id="CCNet.Passed.gif" Guid="{0DF6FB86-8824-45d4-9F04-AD194FC78C04}" Win64="no">
-                                <File Id="CCNet.Passed.gif" Name="Passed.gif" KeyPath="yes" />
-                            </Component>
-                            <Component Id="CCNet.Plus.gif" Guid="{13D35790-04AC-472e-A67E-9A945E8876AF}" Win64="no">
-                                <File Id="CCNet.Plus.gif" Name="Plus.gif" KeyPath="yes" />
-                            </Component>
-                        </Directory>
-                    </Directory>
-                </Directory>
+                <Component Id="CCNet.GallioReports.zip" Guid="{7BB4972F-8004-46ec-9EA8-690DD8666CEB}" Win64="no">
+                    <File Name="GallioReports.zip" KeyPath="yes" />
+                </Component>
             </Directory>
         </DirectoryRef>
 
         <Feature Id='feat_CCNetExtensions' Title='CruiseControl.Net extensions' Level='1' AllowAdvertise="no"
             Description='Installs additional resources to assist with CruiseControl.Net integration.'>
             <ComponentRef Id="CCNet.Docs"/>
-            <ComponentRef Id="CCNet.Gallio.WebDashboard.Plugin.dll"/>
-            <ComponentRef Id="CCNet.Gallio.Report.css"/>
-            <ComponentRef Id="CCNet.Gallio.Report.js"/>
-            <ComponentRef Id="CCNet.Gallio.Report.ccnet.details.xsl"/>
-            <ComponentRef Id="CCNet.Gallio.Report.ccnet.details.condensed.xsl"/>
-            <ComponentRef Id="CCNet.Gallio.Report.html.xhtml.xsl"/>
-            <ComponentRef Id="CCNet.Gallio.Report.common.xsl"/>
-            <ComponentRef Id="CCNet.Failed.gif"/>
-            <ComponentRef Id="CCNet.FullStop.gif"/>
-            <ComponentRef Id="CCNet.GallioTestReportHeader.png"/>
-            <ComponentRef Id="CCNet.header.background.gif"/>
-            <ComponentRef Id="CCNet.Ignored.gif"/>
-            <ComponentRef Id="CCNet.Minus.gif"/>
-            <ComponentRef Id="CCNet.Passed.gif"/>
-            <ComponentRef Id="CCNet.Plus.gif"/>
+	    <ComponentRef Id="CCNet.GallioReports.zip" />
         </Feature>
     </Fragment>
 </Wix>

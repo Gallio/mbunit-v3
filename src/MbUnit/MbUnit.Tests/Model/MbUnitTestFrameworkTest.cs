@@ -15,6 +15,7 @@
 
 using System;
 using System.Reflection;
+using Gallio.Common.Policies;
 using Gallio.Framework.Pattern;
 using Gallio.Common.Reflection;
 using Gallio.Runtime;
@@ -51,7 +52,7 @@ namespace MbUnit.Tests.Model
         [Test]
         public void PopulateTestTree_WhenAssemblyReferencesMbUnit_ContainsSimpleTest()
         {
-            Version expectedVersion = AssemblyUtils.GetApplicationVersion(typeof(Assert).Assembly);
+            Version expectedVersion = VersionPolicy.GetVersionNumber(typeof(Assert).Assembly);
             PopulateTestTree();
 
             RootTest rootTest = testModel.RootTest;

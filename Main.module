@@ -196,6 +196,21 @@
     <WriteLinesToFile File="$(InstallerFeatureFile)"
                       Lines="&lt;/Include&gt;"
                       Overwrite="false" />
+
+    <ParseVersion Version="$(Version)">
+      <Output TaskParameter="Major" PropertyName="MajorVersion" />
+      <Output TaskParameter="Minor" PropertyName="MinorVersion" />
+      <Output TaskParameter="Build" PropertyName="BuildNumber" />
+    </ParseVersion>
+
+    <PropertyGroup>
+      <InstallerWixProperties>
+        $(InstallerWixProperties);
+        MajorVersion=$(MajorVersion);
+        MinorVersion=$(MinorVersion);
+        BuildNumber=$(BuildNumber);      
+      </InstallerWixProperties>
+    </PropertyGroup>
   </Target>
 
   <Target Name="BuildInstaller-x86" DependsOnTargets="PrepareToBuildInstaller">

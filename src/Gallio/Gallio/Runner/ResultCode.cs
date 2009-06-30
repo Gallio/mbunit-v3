@@ -23,31 +23,37 @@ namespace Gallio.Runner
         /// <summary>
         /// The tests ran successfully or there were no tests to run.
         /// </summary>
+        /// <value>0</value>
         public const int Success = 0;
 
         /// <summary>
         /// Some tests failed.
         /// </summary>
+        /// <value>1</value>
         public const int Failure = 1;
 
         /// <summary>
         /// The tests were canceled.
         /// </summary>
+        /// <value>2</value>
         public const int Canceled = 2;
 
         /// <summary>
         /// A fatal runtime exception occurred.
         /// </summary>
+        /// <value>3</value>
         public const int FatalException = 3;
 
         /// <summary>
         /// Invalid arguments were supplied on the command-line.
         /// </summary>
+        /// <value>10</value>
         public const int InvalidArguments = 10;
 
         /// <summary>
         /// No tests were found.
         /// </summary>
+        /// <value>16</value>
         public const int NoTests = 16;
     }
 }

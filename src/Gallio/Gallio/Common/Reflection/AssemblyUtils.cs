@@ -124,24 +124,6 @@ namespace Gallio.Common.Reflection
         }
 
         /// <summary>
-        /// Gets the application version given its primary assembly.  Uses the assembly file version if available.
-        /// </summary>
-        /// <param name="assembly">The assembly.</param>
-        /// <returns>The assembly's file version.</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="assembly"/> is null.</exception>
-        public static Version GetApplicationVersion(Assembly assembly)
-        {
-            if (assembly == null)
-                throw new ArgumentNullException(@"assembly");
-
-            var attribs = (AssemblyFileVersionAttribute[]) assembly.GetCustomAttributes(typeof(AssemblyFileVersionAttribute), false);
-            if (attribs.Length == 0)
-                return assembly.GetName().Version;
-
-            return new Version(attribs[0].Version);
-        }
-
-        /// <summary>
         /// Returns true if the stream represents a CLI Assembly in Microsoft PE format.
         /// </summary>
         /// <remarks>

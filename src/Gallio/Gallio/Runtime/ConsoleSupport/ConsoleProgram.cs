@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using Gallio.Common.Policies;
 using Gallio.Properties;
 using Gallio.Common.Reflection;
 
@@ -126,14 +127,15 @@ namespace Gallio.Runtime.ConsoleSupport
         /// <summary>
         /// Gets or sets the application version.
         /// </summary>
-        /// <value>The version, by default this is the program assembly's version</value>
+        /// <value>The version, by default this is the program assembly's version derived
+        /// using <see cref="VersionPolicy.GetVersionNumber" />.</value>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
         protected Version ApplicationVersion
         {
             get
             {
                 if (applicationVersion == null)
-                    applicationVersion = AssemblyUtils.GetApplicationVersion(GetType().Assembly);
+                    applicationVersion = VersionPolicy.GetVersionNumber(GetType().Assembly);
                 return applicationVersion;
             }
             set
@@ -147,7 +149,8 @@ namespace Gallio.Runtime.ConsoleSupport
         /// <summary>
         /// Get or sets the application title.
         /// </summary>
-        /// <value>The title, by default this is constructed from the application's name and version</value>
+        /// <value>The title, by default this is constructed from the application's name and version
+        /// using <see cref="VersionPolicy.GetVersionLabel(Version)" />.</value>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
         protected string ApplicationTitle
         {
@@ -157,8 +160,7 @@ namespace Gallio.Runtime.ConsoleSupport
                     return applicationTitle;
 
                 return string.Format(Resources.ConsoleProgram_ApplicationTitleFormat, ApplicationName,
-                    ApplicationVersion.Major, ApplicationVersion.Minor, ApplicationVersion.Build,
-                    ApplicationVersion.Revision);
+                    VersionPolicy.GetVersionLabel(ApplicationVersion));
             }
             set
             {

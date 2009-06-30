@@ -127,7 +127,7 @@
     <value>NO TESTS WERE RUN</value>
   </data>
   <data name="RunnerNameAndVersion" xml:space="preserve">
-    <value>Gallio TestDriven.Net Runner - Version {0}.{1}.{2} build {3}</value>
+    <value>Gallio TestDriven.Net Runner - Version {0}</value>
   </data>
   <data name="TDNetLogMonitor_TestCasePassed" xml:space="preserve">
     <value>TestCase '{0}' passed.</value>

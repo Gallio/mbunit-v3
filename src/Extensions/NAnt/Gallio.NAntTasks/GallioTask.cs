@@ -17,6 +17,7 @@ using System;
 using System.Globalization;
 using System.IO;
 using System.Reflection;
+using Gallio.Common.Policies;
 using Gallio.Common.Text;
 using Gallio.Runtime;
 using Gallio.NAntTasks.Properties;
@@ -701,10 +702,8 @@ namespace Gallio.NAntTasks
 
         private void DisplayVersion()
         {
-            Version appVersion = AssemblyUtils.GetApplicationVersion(Assembly.GetExecutingAssembly());
-
-            Log(Level.Info, String.Format(Resources.TaskNameAndVersion,
-                appVersion.Major, appVersion.Minor, appVersion.Build, appVersion.Revision));
+            string versionLabel = VersionPolicy.GetVersionLabel(Assembly.GetExecutingAssembly());
+            Log(Level.Info, String.Format(Resources.TaskNameAndVersion, versionLabel));
         }
 
         private void AddAssemblies(TestLauncher launcher)

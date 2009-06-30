@@ -3,8 +3,16 @@ How to use Gallio with CruiseControl.Net
 
 Using Gallio in CruiseControl.Net is very straightforward.
 
-NOTE: These instructions are designed for use with CruiseControl.Net v1.4 RTM.
+NOTE: These instructions are designed for use with CruiseControl.Net v1.4.4 RTM.
       They may work with other versions but there are no guarantees.
+
+
+UPGRADE REMARKS
+---------------
+
+If upgrading to Gallio v3.1 or more recent, please be aware that CCNet.Gallio.WebDashboard.Plugin.dll
+is now compiled with the version of NetReflector.dll that ships with CruiseControl.Net v1.4.4.
+Consequently the plugin will not work with earlier versions of CruiseControl.Net!
 
 
 CONFIGURING THE SERVER
@@ -53,7 +61,7 @@ CONFIGURING THE DASHBOARD
 For the dashboard, we need to add some new resources that are used to render the Gallio Test Report
 we must update the dashboard configuration file to include the new test report plugin.
 
-1. Copy the entire contents of the "extras\CCNet\webdashboard" folder from the Gallio
+1. Extract the entire contents of the "extras\CCNet\GallioReports.zip" archive from the Gallio
    installation direction into the "webdashboard" folder of your CruiseControl.Net
    installation.
 
@@ -78,7 +86,7 @@ we must update the dashboard configuration file to include the new test report p
 
 4. Double-check:
 
-     * The "webdashboard" folder now contains "gallio\css", "gallio\img", "gallio\js", "gallio\xml".
+     * The "webdashboard" folder now contains "gallio\css", "gallio\img", "gallio\js", "gallio\xsl".
      * The "webdashboard" folder now contains "bin\CCNet.Gallio.WebDashboard.Plugin.dll".
      * The "webdashboard" folder now contains "templates\SiteTemplate.vm" with an updated DTD declaration.
      * The "dashboard.config" file has been edited to include the new build report section.

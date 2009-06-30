@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Reflection;
+using Gallio.Common.Policies;
 using Gallio.Common.Reflection;
 using Gallio.Model;
 
@@ -43,9 +44,8 @@ namespace Gallio.Icarus.Controllers
         {
             get
             {
-                Version appVersion = AssemblyUtils.GetApplicationVersion(Assembly.GetExecutingAssembly());
-                return String.Format(CultureInfo.CurrentCulture, "Gallio Icarus - Version {0}.{1}.{2} build {3}",
-                    appVersion.Major, appVersion.Minor, appVersion.Build, appVersion.Revision);
+                string versionLabel = VersionPolicy.GetVersionLabel(Assembly.GetExecutingAssembly());
+                return String.Format(CultureInfo.CurrentCulture, "Gallio Icarus - Version {0}", versionLabel);
             }
         }
 

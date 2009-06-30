@@ -158,6 +158,9 @@
             <Directory Id="Reports.js" Name="js">
                 <Component Id="Gallio.Resources.js" Guid="09db9a62-2734-4624-9d6c-8ce1688d21ce" Win64="no">
                     <File Id="Gallio.Report.js" Name="Gallio-Report.js" KeyPath="yes" />
+                    <File Id="swfobject.js" Name="swfobject.js" />
+                    <File Id="player.swf" Name="player.swf" />
+                    <File Id="expressInstall.swf" Name="expressInstall.swf" />
                 </Component>
             </Directory>
 

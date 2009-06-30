@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
+using Gallio.Common.Policies;
 using Gallio.Framework.Pattern;
 using Gallio.Common.Reflection;
 
@@ -35,7 +36,7 @@ namespace MbUnit.Core
                 yield break;
 
             yield return new PatternTestFrameworkExtensionInfo("MbUnit v3",
-                String.Format("MbUnit v{0}", AssemblyUtils.GetApplicationVersion(Assembly.GetExecutingAssembly())))
+                String.Format("MbUnit v{0}", VersionPolicy.GetVersionNumber(Assembly.GetExecutingAssembly())))
                 {
                     FrameworkKind = "MbUnit v3 Framework"
                 };

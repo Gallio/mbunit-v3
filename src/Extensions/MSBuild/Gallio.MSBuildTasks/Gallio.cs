@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using Gallio.Common.Policies;
 using Gallio.Common.Text;
 using Gallio.Runtime;
 using Gallio.MSBuildTasks.Properties;
@@ -877,10 +878,8 @@ namespace Gallio.MSBuildTasks
 
         private void DisplayVersion()
         {
-            Version appVersion = AssemblyUtils.GetApplicationVersion(Assembly.GetExecutingAssembly());
-
-            Log.LogMessage(String.Format(Resources.TaskNameAndVersion,
-                                         appVersion.Major, appVersion.Minor, appVersion.Build, appVersion.Revision));
+            string versionLabel = VersionPolicy.GetVersionLabel(Assembly.GetExecutingAssembly());
+            Log.LogMessage(String.Format(Resources.TaskNameAndVersion, versionLabel));
         }
 
         private static void AddAllItemSpecs(ICollection<string> collection, IEnumerable<ITaskItem> items)

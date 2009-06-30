@@ -121,7 +121,7 @@
     <value>test-report-{0}-{1}</value>
   </data>
   <data name="TaskNameAndVersion" xml:space="preserve">
-    <value>Gallio NAnt Task - Version {0}.{1}.{2} build {3}</value>
+    <value>Gallio NAnt Task - Version {0}</value>
   </data>
   <data name="TestExecutionFailed" xml:space="preserve">
     <value>Test Execution Failed</value>

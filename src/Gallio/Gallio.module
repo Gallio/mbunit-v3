@@ -64,7 +64,8 @@
     <Binary Include="Gallio.Reports\bin\Gallio.Reports.dll" />
     <Binary Include="Gallio.Reports\bin\Gallio.Reports.pdb" />
     <PluginFile Include="Gallio.Reports\Gallio.Reports.plugin" />
-    <Binary Include="Gallio.Reports\Resources\css\*">
+    <Binary Include="Gallio.Reports\Resources\css\*"
+            Exclude="Gallio.Reports\Resources\css\Gallio-Report.Generated.css">
         <Folder>Resources\css</Folder>
     </Binary>
     <Binary Include="Gallio.Reports\Resources\js\*">

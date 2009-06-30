@@ -96,9 +96,9 @@ namespace Gallio.VisualStudio.Shell
 
         int IVsInstalledProduct.ProductID(out string pbstrPID)
         {
-            Version version = GallioLoader.GetApplicationVersion(Assembly.GetExecutingAssembly());
-            pbstrPID = String.Format(VSPackage.PackageVersionFormat, version.Major,
-                version.Minor, version.Build, version.Revision);
+            string versionLabel = Gallio.Loader.VersionPolicy.GetVersionLabel(Assembly.GetExecutingAssembly());
+
+            pbstrPID = String.Format(VSPackage.PackageVersionFormat, versionLabel);
             return VSConstants.S_OK;
         }
 

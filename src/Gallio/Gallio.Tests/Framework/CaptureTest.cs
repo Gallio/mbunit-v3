@@ -162,7 +162,7 @@ namespace Gallio.Tests.Framework
         }
 
         [Test]
-        public void AutoEmbedScreenshot_WhenCaptureParameteresIsNull_Throws()
+        public void AutoEmbedScreenshot_WhenCaptureParametersIsNull_Throws()
         {
             Assert.Throws<ArgumentNullException>(() => Capture.AutoEmbedScreenshot(TriggerEvent.TestFinished, "name", null));
         }
@@ -200,7 +200,7 @@ namespace Gallio.Tests.Framework
         }
 
         [Test]
-        public void AutoEmbedRecording_WhenCaptureParameteresIsNull_Throws()
+        public void AutoEmbedRecording_WhenCaptureParametersIsNull_Throws()
         {
             Assert.Throws<ArgumentNullException>(() => Capture.AutoEmbedRecording(TriggerEvent.TestFinished, "name", null, 5));
         }
