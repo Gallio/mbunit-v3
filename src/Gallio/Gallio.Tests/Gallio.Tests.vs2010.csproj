@@ -94,6 +94,7 @@
     <Compile Include="Common\Media\FlashScreenVideoParametersTest.cs" />
     <Compile Include="Common\Media\FlashScreenVideoTest.cs" />
     <Compile Include="Common\MockableConditionContext.cs" />
+    <Compile Include="Common\Policies\VersionPolicyTest.cs" />
     <Compile Include="Common\Policies\SpecialPathPolicyTest.cs" />
     <Compile Include="Common\Reflection\AssemblySignatureTest.cs" />
     <Compile Include="Common\Reflection\BaseReflectionPolicyTest.cs" />

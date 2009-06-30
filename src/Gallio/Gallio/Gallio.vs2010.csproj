@@ -113,6 +113,7 @@
     <Compile Include="Common\Markup\Tags\NamespaceDoc.cs" />
     <Compile Include="Common\Media\BitmapVideoFrame.cs" />
     <Compile Include="Common\Media\CaptureParameters.cs" />
+    <Compile Include="Common\Media\NamespaceDoc.cs" />
     <Compile Include="Common\Media\ScreenshotNotAvailableException.cs" />
     <Compile Include="Common\Media\ScreenRecorder.cs" />
     <Compile Include="Common\Media\MediaException.cs" />
@@ -153,6 +154,7 @@
     <Compile Include="Common\Markup\Tags\Tag.cs" />
     <Compile Include="Common\Markup\Tags\TagFormatter.cs" />
     <Compile Include="Common\Markup\Tags\TextTag.cs" />
+    <Compile Include="Common\Policies\VersionPolicy.cs" />
     <Compile Include="Common\Reflection\AssemblyMetadata.cs" />
     <Compile Include="Common\Reflection\Impl\NamespaceDoc.cs" />
     <Compile Include="Common\Reflection\NamespaceDoc.cs" />
