@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+    <?include ..\..\Installer.Wix\Features.wxi ?>
+
     <Fragment>
         <DirectoryRef Id="binFolder" FileSource="$(var.GallioTargetDir)\bin\">
             <Directory Id="NUnit" Name="NUnit" />
@@ -7,6 +9,12 @@
 
         <Feature Id='feat_NUnitAdapter' Title='NUnit Adapter' Level='1' AllowAdvertise="no"
             Description='Installs the NUnit adapters.'>
+<?ifdef FEATURE_NUNIT_ADAPTER_248 ?>
+            <FeatureRef Id='feat_NUnit.v248'/>
+<?endif?>
+<?ifdef FEATURE_NUNIT_ADAPTER_25 ?>
+            <FeatureRef Id='feat_NUnit.v25'/>
+<?endif?>
         </Feature>
     </Fragment>
 </Wix>

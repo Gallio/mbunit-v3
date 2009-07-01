@@ -5,10 +5,8 @@
     <CSharpProject Include="Gallio.NUnitAdapter\Gallio.NUnitAdapter25$(ProjectVariant).csproj" />
 
     <CSharpProject Include="Gallio.NUnitAdapter.TestResources\Gallio.NUnitAdapter25.TestResources$(ProjectVariant).csproj" />
-    <CSharpProject Include="Gallio.NUnitAdapter.Tests\Gallio.NUnitAdapter25.Tests$(ProjectVariant).csproj" />    
-  </ItemGroup>
-
-  <ItemGroup>
+    <CSharpProject Include="Gallio.NUnitAdapter.Tests\Gallio.NUnitAdapter25.Tests$(ProjectVariant).csproj" />
+    
     <Binary Include="Gallio.NUnitAdapter\bin\v2.5\Gallio.NUnitAdapter25.dll">
         <Folder>NUnit\v2.5</Folder>
     </Binary>
@@ -47,9 +45,9 @@
     <Binary Include="Gallio.NUnitAdapter\Resources\NUnit.ico">
         <Folder>NUnit\v2.5\Resources</Folder>
     </Binary>
-  </ItemGroup>
-
-  <ItemGroup>
+    
     <TestAssembly Include="Gallio.NUnitAdapter.Tests\bin\v2.5\Gallio.NUnitAdapter25.Tests.dll" />
+    
+    <Feature Include="FEATURE_NUNIT_ADAPTER_25" />
   </ItemGroup>
 </Project>

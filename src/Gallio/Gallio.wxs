@@ -6,7 +6,6 @@
 
     <Fragment>
         <!-- TODO: Replace H2Reg.exe with the recommended way of registering help. -->
-
         <Property Id="GALLIO_HOMEPAGE" Value="http://www.gallio.org/" />
 
         <DirectoryRef Id="INSTALLDIR">
@@ -270,8 +269,11 @@
             <ComponentRef Id="GallioMenuFolder.RemoveFolder"/>
         </Feature>
 
-        <CustomAction Id="Setup.Install" FileKey="Gallio.Utility.exe" ExeCommand="Setup /install" Execute="deferred" Return="check" Impersonate="no" />
-        <CustomAction Id="Setup.Uninstall" FileKey="Gallio.Utility.exe" ExeCommand="Setup /uninstall" Execute="deferred" Return="ignore" Impersonate="no" />
+        <Property Id="Setup.Install" Value='"[#Gallio.Utility.exe]" Setup /install' />
+        <CustomAction Id="Setup.Install" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="check" Impersonate="no"/>
+
+        <Property Id="Setup.Uninstall" Value='"[#Gallio.Utility.exe]" Setup /uninstall' />
+        <CustomAction Id="Setup.Uninstall" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
 
         <InstallExecuteSequence>
             <Custom Action="Setup.Install" After="InstallFiles" />
@@ -301,8 +303,10 @@
             <ComponentRef Id="H2Reg.exe" />
         </Feature>
 
-        <CustomAction Id="H2Reg.Install" FileKey="H2Reg.exe" ExeCommand='-r -q CmdFile="[#Gallio.H2Reg.ini]"' Execute="deferred" Return="check" Impersonate="no"/>
-        <CustomAction Id="H2Reg.Uninstall" FileKey="H2Reg.exe" ExeCommand='-u -q CmdFile="[#Gallio.H2Reg.ini]"' Execute="deferred" Return="ignore" Impersonate="no"/>
+        <Property Id="H2Reg.Install" Value='"[#H2Reg.exe]" -r -q CmdFile="[#Gallio.H2Reg.ini]"' />
+        <CustomAction Id="H2Reg.Install" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="check" Impersonate="no"/>
+        <Property Id="H2Reg.Uninstall" Value='"[#H2Reg.exe]" -u -q CmdFile="[#Gallio.H2Reg.ini]"' />
+        <CustomAction Id="H2Reg.Uninstall" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
 
         <InstallExecuteSequence>
             <Custom Action="H2Reg.Install" After="InstallFiles"><![CDATA[(&feat_Gallio.VSHelp = 3) AND NOT(!feat_Gallio.VSHelp = 3)]]></Custom>

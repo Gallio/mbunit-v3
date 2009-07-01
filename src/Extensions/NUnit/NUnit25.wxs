@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+    <?include ..\..\Installer.Wix\Features.wxi ?>
+
+<?ifdef NUNIT_ADAPTER_25 ?>
     <Fragment>
         <DirectoryRef Id="NUnit">
           <Directory Id="NUnit.v25" Name="v2.5">
@@ -30,7 +33,6 @@
           </Directory>
         </DirectoryRef>
 
-      <FeatureRef Id="feat_NUnitAdapter">
         <Feature Id='feat_NUnitAdapter25' Title='v2.5' Level='1' AllowAdvertise="no"
             Description='Enables Gallio to run NUnit v2.5 tests.'>
           <ComponentRef Id="Gallio.NUnitAdapter25"/>
@@ -39,4 +41,5 @@
         </Feature>
       </FeatureRef>
     </Fragment>
+<?endif?>
 </Wix>
