@@ -112,8 +112,14 @@
     <Compile Include="Common\Markup\NamespaceDoc.cs" />
     <Compile Include="Common\Markup\Tags\NamespaceDoc.cs" />
     <Compile Include="Common\Media\BitmapVideoFrame.cs" />
+    <Compile Include="Common\Media\VerticalAlignment.cs" />
+    <Compile Include="Common\Media\HorizontalAlignment.cs" />
+    <Compile Include="Common\Media\CaptionOverlay.cs" />
     <Compile Include="Common\Media\CaptureParameters.cs" />
     <Compile Include="Common\Media\NamespaceDoc.cs" />
+    <Compile Include="Common\Media\Overlay.cs" />
+    <Compile Include="Common\Media\OverlayManager.cs" />
+    <Compile Include="Common\Media\OverlayPaintRequest.cs" />
     <Compile Include="Common\Media\ScreenshotNotAvailableException.cs" />
     <Compile Include="Common\Media\ScreenRecorder.cs" />
     <Compile Include="Common\Media\MediaException.cs" />

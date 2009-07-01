@@ -100,6 +100,12 @@ namespace Gallio.Common.Media
             flvMetadataUpdater = flvWriter.WriteFlvMetaFrame(flvMetadata, 0);
         }
 
+        /// <inheritdoc />
+        public override int FrameCount
+        {
+            get { return frameCount; }
+        }
+
         /// <summary>
         /// Gets the video parameters.
         /// </summary>

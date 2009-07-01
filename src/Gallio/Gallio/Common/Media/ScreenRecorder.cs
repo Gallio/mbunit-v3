@@ -15,6 +15,7 @@
 
 using System;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Threading;
 using Gallio.Common.Policies;
 
@@ -27,6 +28,7 @@ namespace Gallio.Common.Media
     {
         private ScreenGrabber grabber;
         private Video video;
+        private readonly OverlayManager overlayManager;
 
         private readonly object timerLock = new object();
         private Timer timer;
@@ -53,6 +55,36 @@ namespace Gallio.Common.Media
 
             this.grabber = grabber;
             this.video = video;
+
+            overlayManager = new OverlayManager();
+        }
+
+        /// <summary>
+        /// Gets the overlay manager.
+        /// </summary>
+        public OverlayManager OverlayManager
+        {
+            get
+            {
+                ThrowIfDisposed();
+                return overlayManager;
+            }
+        }
+
+        /// <summary>
+        /// Gets the current frame number.
+        /// </summary>
+        protected int FrameNumber
+        {
+            get { return video.FrameCount; }
+        }
+
+        /// <summary>
+        /// Gets the number of frames per second.
+        /// </summary>
+        protected double FramesPerSecond
+        {
+            get { return video.Parameters.FramesPerSecond; }
         }
 
         /// <summary>
@@ -133,11 +165,22 @@ namespace Gallio.Common.Media
         }
 
         /// <summary>
+        /// Paints overlays onto a bitmap.
+        /// </summary>
+        /// <param name="bitmap">The bitmap, not null.</param>
+        protected virtual void PaintOverlays(Bitmap bitmap)
+        {
+            overlayManager.PaintOverlaysOnImage(bitmap, FrameNumber, FramesPerSecond);
+        }
+
+        /// <summary>
         /// Adds a captured screenshot to the video.
         /// </summary>
-        /// <param name="bitmap">The bitmap.</param>
+        /// <param name="bitmap">The bitmap, not null.</param>
         protected virtual void AddFrame(Bitmap bitmap)
         {
+            PaintOverlays(bitmap);
+
             Video.AddFrame(new BitmapVideoFrame(bitmap));
         }
 

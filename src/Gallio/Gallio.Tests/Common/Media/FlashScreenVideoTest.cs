@@ -68,6 +68,26 @@ namespace Gallio.Tests.Common.Media
         }
 
         [Test]
+        public void FrameCount_WhenInitiallyCreated_IsZero()
+        {
+            var flashScreenVideo = new FlashScreenVideo(new FlashScreenVideoParameters(32, 32, 30));
+
+            Assert.AreEqual(0, flashScreenVideo.FrameCount);
+        }
+
+        [Test]
+        public void AddFrame_WhenFrameIsValid_IncreasesFrameCount()
+        {
+            var flashScreenVideo = new FlashScreenVideo(new FlashScreenVideoParameters(32, 32, 30));
+
+            flashScreenVideo.AddFrame(new BitmapVideoFrame(new Bitmap(32, 32)));
+            Assert.AreEqual(1, flashScreenVideo.FrameCount);
+
+            flashScreenVideo.AddFrame(new BitmapVideoFrame(new Bitmap(32, 32)));
+            Assert.AreEqual(2, flashScreenVideo.FrameCount);
+        }
+
+        [Test]
         public void Save_WhenStreamIsNull_Throws()
         {
             var flashScreenVideo = new FlashScreenVideo(new FlashScreenVideoParameters(32, 16, 30));

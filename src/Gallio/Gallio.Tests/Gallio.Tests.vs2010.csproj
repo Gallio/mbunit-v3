@@ -88,7 +88,9 @@
     <Compile Include="Common\Markup\Tags\TextTagTest.cs" />
     <Compile Include="Common\Markup\TextualMarkupDocumentWriterTest.cs" />
     <Compile Include="Common\Media\BitmapVideoFrameTest.cs" />
+    <Compile Include="Common\Media\CaptionOverlayTest.cs" />
     <Compile Include="Common\Media\CaptureParametersTest.cs" />
+    <Compile Include="Common\Media\OverlayManagerTest.cs" />
     <Compile Include="Common\Media\ScreenRecorderTest.cs" />
     <Compile Include="Common\Media\ScreenGrabberTest.cs" />
     <Compile Include="Common\Media\FlashScreenVideoParametersTest.cs" />

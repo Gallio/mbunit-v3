@@ -15,15 +15,26 @@
 
 using System;
 using System.Drawing;
+using Gallio.Common.Collections;
 using Gallio.Common.Media;
 
 namespace Gallio.Framework
 {
     /// <summary>
-    /// Captures screen shots and screen videos.
+    /// Captures screenshot images and videos.
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// These functions are intended to provide a simple interface for capturing,
+    /// captioning, and embedding images and video.  If you desire more control over the manner
+    /// in which the capture occurs, you may prefer to use the <see cref="ScreenGrabber"/>,
+    /// <see cref="ScreenRecorder"/>, and <see cref="Overlay"/> classes directly.
+    /// </para>
+    /// </remarks>
     public static class Capture
     {
+        private static readonly Key<OverlayManager> OverlayManagerKey = new Key<OverlayManager>("OverlayManager");
+
         /// <summary>
         /// Gets the size of the screen.
         /// </summary>
@@ -71,7 +82,10 @@ namespace Gallio.Framework
                 throw new ArgumentNullException("parameters");
 
             using (var grabber = new ScreenGrabber(parameters))
+            {
+                grabber.OverlayManager.AddOverlay(GetOverlayManager().ToOverlay());
                 return grabber.CaptureScreenshot(null);
+            }
         }
 
         /// <summary>
@@ -126,6 +140,8 @@ namespace Gallio.Framework
                 ScreenRecorder recorder = new ScreenRecorder(grabber, video);
                 try
                 {
+                    recorder.OverlayManager.AddOverlay(GetOverlayManager().ToOverlay());
+
                     recorder.Start();
                     return recorder;
                 }
@@ -152,6 +168,7 @@ namespace Gallio.Framework
         /// </remarks>
         /// <param name="triggerEvent">The trigger event.</param>
         /// <param name="attachmentName">The name to give the image attachment, or null to assign one automatically.</param>
+        /// <seealso cref="TestContext.AutoExecute(TriggerEvent, Gallio.Common.Action)"/>
         public static void AutoEmbedScreenshot(TriggerEvent triggerEvent, string attachmentName)
         {
             AutoEmbedScreenshot(triggerEvent, attachmentName, new CaptureParameters());
@@ -169,6 +186,7 @@ namespace Gallio.Framework
         /// <param name="attachmentName">The name to give the image attachment, or null to assign one automatically.</param>
         /// <param name="parameters">The capture parameters.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="parameters"/> is null.</exception>
+        /// <seealso cref="TestContext.AutoExecute(TriggerEvent, Gallio.Common.Action)"/>
         public static void AutoEmbedScreenshot(TriggerEvent triggerEvent, string attachmentName, CaptureParameters parameters)
         {
             if (parameters == null)
@@ -209,6 +227,7 @@ namespace Gallio.Framework
         /// </remarks>
         /// <param name="triggerEvent">The trigger event.</param>
         /// <param name="attachmentName">The name to give the video attachment, or null to assign one automatically.</param>
+        /// <seealso cref="TestContext.AutoExecute(TriggerEvent, Gallio.Common.Action)"/>
         public static void AutoEmbedRecording(TriggerEvent triggerEvent, string attachmentName)
         {
             AutoEmbedRecording(triggerEvent, attachmentName, new CaptureParameters(), 5);
@@ -234,6 +253,7 @@ namespace Gallio.Framework
         /// <param name="parameters">The capture parameters.</param>
         /// <param name="framesPerSecond">The number of frames per second to capture.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="parameters"/> is null.</exception>
+        /// <seealso cref="TestContext.AutoExecute(TriggerEvent, Gallio.Common.Action)"/>
         public static void AutoEmbedRecording(TriggerEvent triggerEvent, string attachmentName, CaptureParameters parameters, double framesPerSecond)
         {
             if (parameters == null)
@@ -260,6 +280,107 @@ namespace Gallio.Framework
                     });
                 }
             }
+        }
+
+        /// <summary>
+        /// Gets the overlay manager for the current test context.
+        /// </summary>
+        /// <returns>The overlay manager.</returns>
+        public static OverlayManager GetOverlayManager()
+        {
+            return GetOverlayManager(TestContext.CurrentContext);
+        }
+
+        /// <summary>
+        /// Gets the overlay manager for the specified test context.
+        /// </summary>
+        /// <param name="context">The test context.</param>
+        /// <returns>The overlay manager.</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="context"/> is null.</exception>
+        public static OverlayManager GetOverlayManager(TestContext context)
+        {
+            if (context == null)
+                throw new ArgumentNullException("context");
+
+            lock (context.Data)
+            {
+                OverlayManager overlayManager;
+                if (! context.Data.TryGetValue(OverlayManagerKey, out overlayManager))
+                {
+                    overlayManager = new OverlayManager();
+                    context.Data.SetValue(OverlayManagerKey, overlayManager);
+                }
+
+                return overlayManager;
+            }
+        }
+
+        /// <summary>
+        /// Adds an overlay to display over screenshot images and videos.
+        /// </summary>
+        /// <param name="overlay">The overlay to add.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="overlay"/> is null.</exception>
+        public static void AddOverlay(Overlay overlay)
+        {
+            if (overlay == null)
+                throw new ArgumentNullException("overlay");
+
+            GetOverlayManager().AddOverlay(overlay);
+        }
+
+        /// <summary>
+        /// Sets a caption to display over screenshots images and videos. 
+        /// </summary>
+        /// <param name="text">The caption text, an empty string to remove it.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="text"/> is null.</exception>
+        public static void SetCaption(string text)
+        {
+            GetCaptionOverlay().Text = text;
+        }
+
+        /// <summary>
+        /// Sets the font size of the caption to display over screenshots images and videos. 
+        /// </summary>
+        /// <param name="fontSize">The caption font size.</param>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="value"/> is less than 1.</exception>
+        public static void SetCaptionFontSize(int fontSize)
+        {
+            GetCaptionOverlay().FontSize = fontSize;
+        }
+
+        /// <summary>
+        /// Sets the alignment of the caption to display over screenshots images and videos. 
+        /// </summary>
+        /// <param name="horizontalAlignment">The horizontal alignment.</param>
+        /// <param name="verticalAlignment">The vertical alignment.</param>
+        public static void SetCaptionAlignment(HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment)
+        {
+            CaptionOverlay captionOverlay = GetCaptionOverlay();
+            captionOverlay.HorizontalAlignment = horizontalAlignment;
+            captionOverlay.VerticalAlignment = verticalAlignment;
+        }
+
+        /// <summary>
+        /// Gets the caption overlay to display over of screenshots images and videos.
+        /// </summary>
+        /// <returns>The caption overlay.</returns>
+        public static CaptionOverlay GetCaptionOverlay()
+        {
+            OverlayManager overlayManager = GetOverlayManager();
+
+            DefaultCaptionOverlay defaultCaptionOverlay = (DefaultCaptionOverlay)
+                GenericCollectionUtils.Find(overlayManager.Overlays, x => x is DefaultCaptionOverlay);
+            if (defaultCaptionOverlay == null)
+            {
+                defaultCaptionOverlay = new DefaultCaptionOverlay();
+                overlayManager.AddOverlay(defaultCaptionOverlay);
+            }
+
+            return defaultCaptionOverlay;
+        }
+
+        private sealed class DefaultCaptionOverlay : CaptionOverlay
+        {
         }
     }
 }

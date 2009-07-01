@@ -35,6 +35,7 @@ namespace Gallio.Common.Media
         private readonly int screenshotWidth;
         private readonly int screenshotHeight;
         private readonly double xyScale;
+        private readonly OverlayManager overlayManager;
 
         private bool isDisposed;
         private Bitmap screenBuffer;
@@ -58,6 +59,8 @@ namespace Gallio.Common.Media
             xyScale = Math.Sqrt(parameters.Zoom);
             screenshotWidth = (int) Math.Round(screenWidth * xyScale);
             screenshotHeight = (int) Math.Round(screenHeight * xyScale);
+
+            overlayManager = new OverlayManager();
         }
 
         /// <summary>
@@ -95,6 +98,18 @@ namespace Gallio.Common.Media
         {
             if (! CanCaptureScreenshot())
                 throw new ScreenshotNotAvailableException("Cannot capture screenshots at this time.  The application may be running as a service that has not been granted the right to interact with the desktop.");
+        }
+
+        /// <summary>
+        /// Gets the overlay manager.
+        /// </summary>
+        public OverlayManager OverlayManager
+        {
+            get
+            {
+                ThrowIfDisposed();
+                return overlayManager;
+            }
         }
 
         /// <summary>
@@ -215,6 +230,7 @@ namespace Gallio.Common.Media
                     CaptureScreenToBitmap(bitmap);
                 }
 
+                PaintOverlays(bitmap);
                 return bitmap;
             }
             catch
@@ -254,6 +270,15 @@ namespace Gallio.Common.Media
             {
                 throw new ScreenshotNotAvailableException("Could not capture screenshot.  The application may be running as a service that has not been granted the right to interact with the desktop.", ex);
             }
+        }
+
+        /// <summary>
+        /// Paints overlays onto a bitmap.
+        /// </summary>
+        /// <param name="bitmap">The bitmap, not null.</param>
+        protected virtual void PaintOverlays(Bitmap bitmap)
+        {
+            overlayManager.PaintOverlaysOnImage(bitmap, 0, 0);
         }
 
         /// <summary>

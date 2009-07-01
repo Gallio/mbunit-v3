@@ -16,6 +16,7 @@
 using System;
 using System.Drawing;
 using System.Threading;
+using System.Linq;
 using Gallio.Common.Markup;
 using Gallio.Common.Media;
 using Gallio.Common.Reflection;
@@ -44,12 +45,17 @@ namespace Gallio.Tests.Framework
         }
 
         [Test]
-        public void Screenshot_CapturesScreenshot()
+        [Row("A caption.")]
+        [Row(null)]
+        public void Screenshot_CapturesScreenshot(string caption)
         {
             Size screenSize = Capture.GetScreenSize();
 
             if (Capture.CanCaptureScreenshot())
             {
+                if (caption != null)
+                    Capture.SetCaption(caption);
+
                 using (Bitmap bitmap = Capture.Screenshot())
                 {
                     TestLog.EmbedImage("Screenshot", bitmap);
@@ -75,12 +81,17 @@ namespace Gallio.Tests.Framework
         }
 
         [Test]
-        public void Screenshot_WithCaptureParametersIncludingZoomFactor_CapturesZoomedScreenshot()
+        [Row("A caption.")]
+        [Row(null)]
+        public void Screenshot_WithCaptureParametersIncludingZoomFactor_CapturesZoomedScreenshot(string caption)
         {
             Size screenSize = Capture.GetScreenSize();
 
             if (Capture.CanCaptureScreenshot())
             {
+                if (caption != null)
+                    Capture.SetCaption(caption);
+
                 using (Bitmap bitmap = Capture.Screenshot(new CaptureParameters() {Zoom = 0.25}))
                 {
                     TestLog.EmbedImage("Screenshot with 0.25x zoom", bitmap);
@@ -100,12 +111,17 @@ namespace Gallio.Tests.Framework
         }
 
         [Test]
-        public void StartRecording_CapturesVideo()
+        [Row("A caption.")]
+        [Row(null)]
+        public void StartRecording_CapturesVideo(string caption)
         {
             Size screenSize = Capture.GetScreenSize();
 
             if (Capture.CanCaptureScreenshot())
             {
+                if (caption != null)
+                    Capture.SetCaption(caption);
+
                 using (ScreenRecorder recorder = Capture.StartRecording())
                 {
                     Thread.Sleep(2000);
@@ -134,12 +150,17 @@ namespace Gallio.Tests.Framework
         }
 
         [Test]
-        public void StartRecording_WithCaptureParametersIncludingZoomFactor_CapturesZoomedVideo()
+        [Row("A caption.")]
+        [Row(null)]
+        public void StartRecording_WithCaptureParametersIncludingZoomFactor_CapturesZoomedVideo(string caption)
         {
             Size screenSize = Capture.GetScreenSize();
 
             if (Capture.CanCaptureScreenshot())
             {
+                if (caption != null)
+                    Capture.SetCaption(caption);
+
                 using (ScreenRecorder recorder = Capture.StartRecording(new CaptureParameters() {Zoom = 0.25}, 5))
                 {
                     Thread.Sleep(2000);
@@ -235,6 +256,127 @@ namespace Gallio.Tests.Framework
                     Assert.DoesNotContain(run.TestLog.ToString(), "Recording not available.");
                 }
             }
+        }
+
+        [Test]
+        public void GetOverlayManager_ReturnsSameOverlayManagerEachTime()
+        {
+            var first = Capture.GetOverlayManager();
+            var second = Capture.GetOverlayManager();
+
+            Assert.Multiple(() =>
+            {
+                Assert.IsNotNull(first);
+                Assert.AreSame(first, second);
+            });
+        }
+
+        [Test]
+        public void GetOverlayManager_WhenContextIsNull_Throws()
+        {
+            Assert.Throws<ArgumentNullException>(() => Capture.GetOverlayManager(null));
+        }
+
+        [Test]
+        public void AddOverlay_WhenOverlayIsNull_Throws()
+        {
+            Assert.Throws<ArgumentNullException>(() => Capture.AddOverlay(null));
+        }
+
+        [Test]
+        public void AddOverlay_WhenOverlayIsValid_AddsTheOverlayToTheOverlayManager()
+        {
+            var overlay = new CaptionOverlay();
+
+            Capture.AddOverlay(overlay);
+
+            Assert.Contains(Capture.GetOverlayManager().Overlays, overlay);
+        }
+
+        [Test]
+        public void SetCaption_WhenTextIsNull_Throws()
+        {
+            Assert.Throws<ArgumentNullException>(() => Capture.SetCaption(null));
+        }
+
+        [Test]
+        public void SetCaption_WhenTextIsNotNullAndNotEmpty_AddsACaptionOverlay()
+        {
+            Capture.SetCaption("A caption.");
+
+            var captionOverlay = Capture.GetCaptionOverlay();
+
+            Assert.Multiple(() =>
+            {
+                Assert.IsNotNull(captionOverlay);
+                Assert.AreEqual("A caption.", captionOverlay.Text);
+            });
+        }
+
+        [Test]
+        public void SetCaption_WhenTextIsNotNullAndNotEmptyAndThereIsAPreviousCaption_ReplacesExistingCaptionOverlay()
+        {
+            Capture.SetCaption("A caption.");
+            Capture.SetCaption("Another caption.");
+
+            var overlays = Capture.GetOverlayManager().Overlays.Where(x => x is CaptionOverlay).ToArray();
+
+            Assert.Multiple(() =>
+            {
+                Assert.AreEqual(1, overlays.Length);
+
+                var captionOverlay = (CaptionOverlay)overlays[0];
+                Assert.AreEqual("Another caption.", captionOverlay.Text);
+
+                Assert.AreSame(captionOverlay, Capture.GetCaptionOverlay());
+            });
+        }
+
+        [Test]
+        public void SetCaption_WhenTextIsEmptyAndThereIsNoPreviousCaption_CaptionRemainsEmpty()
+        {
+            Capture.SetCaption("");
+
+            var captionOverlay = Capture.GetCaptionOverlay();
+            Assert.AreEqual("", captionOverlay.Text);
+        }
+
+        [Test]
+        public void SetCaption_WhenTextIsEmptyAndThereIsAPreviousCaption_CaptionBecomesEmpty()
+        {
+            Capture.SetCaption("A caption.");
+            Capture.SetCaption("");
+
+            var captionOverlay = Capture.GetCaptionOverlay();
+            Assert.AreEqual("", captionOverlay.Text);
+        }
+
+        [Test]
+        public void SetCaptionFontSize_WhenFontSizeIsLessThan1_Throws()
+        {
+            Assert.Throws<ArgumentOutOfRangeException>(() => Capture.SetCaptionFontSize(0));
+            Assert.Throws<ArgumentOutOfRangeException>(() => Capture.SetCaptionFontSize(-1));
+        }
+
+        [Test]
+        public void SetCaptionFontSize_WhenFontSizeIsValid_SetsTheCaptionFontSize()
+        {
+            Capture.SetCaptionFontSize(5);
+
+            Assert.AreEqual(5, Capture.GetCaptionOverlay().FontSize);
+        }
+
+        [Test]
+        public void SetCaptionAlignment_SetsTheCaptionHoriontalAndVerticalAlignment()
+        {
+            Capture.SetCaptionAlignment(HorizontalAlignment.Right, VerticalAlignment.Middle);
+
+            Assert.Multiple(() =>
+            {
+                var captionOverlay = Capture.GetCaptionOverlay();
+                Assert.AreEqual(HorizontalAlignment.Right, captionOverlay.HorizontalAlignment);
+                Assert.AreEqual(VerticalAlignment.Middle, captionOverlay.VerticalAlignment);
+            });
         }
 
         [Explicit("Sample")]

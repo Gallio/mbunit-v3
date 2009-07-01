@@ -67,6 +67,11 @@ namespace Gallio.Common.Media
         }
 
         /// <summary>
+        /// Gets the number of frames currently in the video.
+        /// </summary>
+        public abstract int FrameCount { get; }
+
+        /// <summary>
         /// Adds a frame to the video.
         /// </summary>
         /// <remarks>
