@@ -791,10 +791,10 @@
     <Compile Include="Runtime\Security\IElevatedCommand.cs" />
     <Compile Include="Runtime\Security\IElevationContext.cs" />
     <Compile Include="Runtime\Security\IElevationManager.cs" />
-    <Compile Include="Runtime\Security\Impersonation.cs" />
+    <Compile Include="Common\Security\Impersonation.cs" />
     <Compile Include="Runtime\Security\NamespaceDoc.cs" />
-    <Compile Include="Runtime\Security\NativeMethods.cs" />
-    <Compile Include="Runtime\Security\ImpersonationException.cs" />
+    <Compile Include="Common\Security\NativeMethods.cs" />
+    <Compile Include="Common\Security\ImpersonationException.cs" />
     <Compile Include="Runtime\UtilityCommands\BaseUtilityCommand.cs" />
     <Compile Include="Runtime\UtilityCommands\ClearCurrentUserPluginCacheUtilityCommand.cs" />
     <Compile Include="Runtime\UtilityCommands\DefaultUtilityCommandManager.cs" />

@@ -123,7 +123,7 @@ namespace MbUnit.Framework
         /// <param name="messageFormat">A user-supplied assertion failure message string, or null if none.</param>
         /// <param name="messageArgs">The format arguments, or null or empty if none.</param>
         /// <returns></returns>
-        IRetryOptions WithFailureMessage(string messageFormat, object[] messageArgs);
+        IRetryOptions WithFailureMessage(string messageFormat, params object[] messageArgs);
 
         /// <summary>
         /// Specifies the condition to evaluate repeatedly, and starts the entire operation.

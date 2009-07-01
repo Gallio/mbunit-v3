@@ -168,7 +168,7 @@ namespace MbUnit.Framework
         /// <param name="messageFormat">A user-supplied assertion failure message string, or null if none.</param>
         /// <param name="messageArgs">The format arguments, or null or empty if none.</param>
         /// <returns></returns>
-        public static IRetryOptions WithFailureMessage(string messageFormat, object[] messageArgs)
+        public static IRetryOptions WithFailureMessage(string messageFormat, params object[] messageArgs)
         {
             return GetDefaultOptions().WithFailureMessage(messageFormat, messageArgs);
         }
@@ -290,7 +290,7 @@ namespace MbUnit.Framework
                 return this;
             }
 
-            public IRetryOptions WithFailureMessage(string messageFormat, object[] messageArgs)
+            public IRetryOptions WithFailureMessage(string messageFormat, params object[] messageArgs)
             {
                 this.messageFormat = messageFormat;
                 this.messageArgs = messageArgs;
