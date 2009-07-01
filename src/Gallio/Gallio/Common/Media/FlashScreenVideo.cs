@@ -103,7 +103,7 @@ namespace Gallio.Common.Media
         /// <inheritdoc />
         public override int FrameCount
         {
-            get { return frameCount; }
+            get { return framePending ? frameCount + 1 : frameCount; }
         }
 
         /// <summary>

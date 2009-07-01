@@ -130,6 +130,7 @@ namespace Gallio.Tests.Common.Media
         {
             var overlayManager = new OverlayManager();
             var overlay = new OverlayThatChangesInterpolationMode();
+            overlayManager.AddOverlay(overlay);
 
             Overlay compositeOverlay = overlayManager.ToOverlay();
 
