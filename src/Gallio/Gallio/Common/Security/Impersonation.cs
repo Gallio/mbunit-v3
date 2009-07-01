@@ -20,7 +20,7 @@ using System.Security.Principal;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
 
-namespace Gallio.Runtime.Security
+namespace Gallio.Common.Security
 {
     /// <summary>
     /// Impersonate a user according to the specified credentials.
@@ -68,20 +68,24 @@ namespace Gallio.Runtime.Security
 			IntPtr token = IntPtr.Zero;
 			IntPtr tokenDuplicate = IntPtr.Zero;
 
-			try
-			{
-                if (NativeMethods.RevertToSelf() && 
-				    NativeMethods.LogonUser(userName, domain, password, 2, 0, ref token) != 0 &&
+            try
+            {
+                if (NativeMethods.RevertToSelf() &&
+                    NativeMethods.LogonUser(userName, domain, password, 2, 0, ref token) != 0 &&
                     NativeMethods.DuplicateToken(token, 2, ref tokenDuplicate) != 0)
-				{
-					var tempWindowsIdentity = new WindowsIdentity(tokenDuplicate);
-					impersonationContext = tempWindowsIdentity.Impersonate();
+                {
+                    var tempWindowsIdentity = new WindowsIdentity(tokenDuplicate);
+                    impersonationContext = tempWindowsIdentity.Impersonate();
                 }
                 else
-				{
-					throw new Win32Exception(Marshal.GetLastWin32Error());
-				}
-			}
+                {
+                    throw new Win32Exception(Marshal.GetLastWin32Error());
+                }
+            }
+            catch (Win32Exception exception)
+            {
+                throw new ImpersonationException(String.Format("Cannot impersonate the specified user ({0})", exception.Message), exception);
+            }
 			finally
 			{
                 if (token != IntPtr.Zero)

@@ -16,13 +16,13 @@
 using System;
 using System.Runtime.Serialization;
 
-namespace Gallio.Runtime.Security
+namespace Gallio.Common.Security
 {
     /// <summary>
-    /// An exception that expresses a problem performing a runtime service.
+    /// An exception that expresses a problem while trying to impersonata user account.
     /// </summary>
     [Serializable]
-    public class ImpersonationException : RuntimeException
+    public class ImpersonationException : Exception
     {
         /// <summary>
         /// Creates an exception.
@@ -47,6 +47,16 @@ namespace Gallio.Runtime.Security
         /// <param name="innerException">The inner exception.</param>
         public ImpersonationException(string message, Exception innerException)
             : base(message, innerException)
+        {
+        }
+   
+        /// <summary>
+        /// Creates an exception from serialization info.
+        /// </summary>
+        /// <param name="info">The serialization info.</param>
+        /// <param name="context">The streaming context.</param>
+        protected ImpersonationException(SerializationInfo info, StreamingContext context)
+            : base(info, context)
         {
         }
     }

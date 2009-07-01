@@ -18,7 +18,7 @@ using System.Collections.Generic;
 using Gallio.Model;
 using Gallio.Framework.Pattern;
 using Gallio.Common.Reflection;
-using Gallio.Runtime.Security;
+using Gallio.Common.Security;
 using System.ComponentModel;
 
 namespace MbUnit.Framework
@@ -80,16 +80,9 @@ namespace MbUnit.Framework
         {
             scope.TestBuilder.TestInstanceActions.RunTestInstanceBodyChain.Around((state, inner) =>
             {
-                try
+                using (new Impersonation(UserName, Domain ?? String.Empty, Password))
                 {
-                    using (new Impersonation(UserName, Domain ?? String.Empty, Password))
-                    {
-                        return inner(state);
-                    }
-                }
-                catch (Win32Exception exception)
-                {
-                    throw new ImpersonationException(String.Format("Cannot impersonate the specified user ({0})", exception.Message), exception);
+                    return inner(state);
                 }
             });
         }

@@ -18,7 +18,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Runtime.InteropServices;
 
-namespace Gallio.Runtime.Security
+namespace Gallio.Common.Security
 {
     internal class NativeMethods
     {
