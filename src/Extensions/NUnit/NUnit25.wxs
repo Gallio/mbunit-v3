@@ -39,7 +39,6 @@
           <ComponentRef Id="Gallio.NUnitAdapter25.Addins"/>
           <ComponentRef Id="Gallio.NUnitAdapter25.Resources"/>
         </Feature>
-      </FeatureRef>
     </Fragment>
 <?endif?>
 </Wix>
