@@ -52,12 +52,16 @@ namespace Gallio.Runtime.Extensibility
             pluginPaths = new List<string>();
             pluginXmls = new List<Pair<string, DirectoryInfo>>();
             initialPreprocessorConstants = new HashSet<string>();
+            InstallationId = Guid.Empty;
         }
 
         private XmlSerializer PluginXmlSerializer
         {
             get { return pluginXmlSerializerMemoizer.Memoize(() => new XmlSerializer(typeof(Plugin))); }
         }
+
+        /// <inheritdoc />
+        public Guid InstallationId { get; set; }
 
         /// <inheritdoc />
         public void AddPluginPath(string pluginPath)

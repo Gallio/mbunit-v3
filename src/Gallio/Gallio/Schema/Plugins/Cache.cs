@@ -45,6 +45,12 @@ namespace Gallio.Schema.Plugins
         }
 
         /// <summary>
+        /// Gets or sets the installation id of the Gallio installation whose plugin information has been recorded in the cache, or null if not known.
+        /// </summary>
+        [XmlElement("installationId", IsNullable = false)]
+        public string InstallationId { get; set; }
+
+        /// <summary>
         /// Gets the mutable list of plugin information records in the cache.
         /// </summary>
         [XmlArray("pluginInfos", IsNullable = false)]

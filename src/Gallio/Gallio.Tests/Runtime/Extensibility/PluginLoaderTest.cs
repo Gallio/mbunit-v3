@@ -314,6 +314,19 @@ namespace Gallio.Tests.Runtime.Extensibility
             Assert.AreEqual(new PropertySet() { { "name", "A" } }, plugin.Traits.PropertySet);
         }
 
+        [Test]
+        public void InstallationId_CanGetSet()
+        {
+            var loader = new PluginLoader();
+
+            Assert.AreEqual(Guid.Empty, loader.InstallationId);
+
+            Guid guid = Guid.NewGuid();
+            loader.InstallationId = guid;
+
+            Assert.AreEqual(guid, loader.InstallationId);
+        }
+
         internal static void RunWithTemporaryPluginFile(Gallio.Common.Action<string, string> action, string pluginFileContents)
         {
             var pluginDir = SpecialPathPolicy.For<PluginLoaderTest>().GetTempDirectory().FullName;

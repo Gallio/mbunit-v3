@@ -133,18 +133,20 @@ namespace Gallio.Runtime.Security
             private static object RoundTripSerializeForDebugging(object obj)
             {
 #if true
-                // For debugging, perform the serialization even when not required
-                // so that we can ensure that arguments and results can be serialized
-                // correctly even if the developer has UAC turned off.
-                BinaryFormatter formatter = new BinaryFormatter();
-                formatter.FilterLevel = TypeFilterLevel.Full;
-                MemoryStream stream = new MemoryStream();
-                formatter.Serialize(stream, obj);
-                stream.Position = 0;
-                return formatter.Deserialize(stream);
-#else
-                return obj;
+                if (obj != null)
+                {
+                    // For debugging, perform the serialization even when not required
+                    // so that we can ensure that arguments and results can be serialized
+                    // correctly even if the developer has UAC turned off.
+                    BinaryFormatter formatter = new BinaryFormatter();
+                    formatter.FilterLevel = TypeFilterLevel.Full;
+                    MemoryStream stream = new MemoryStream();
+                    formatter.Serialize(stream, obj);
+                    stream.Position = 0;
+                    return formatter.Deserialize(stream);
+                }
 #endif
+                return obj;
             }
         }
 

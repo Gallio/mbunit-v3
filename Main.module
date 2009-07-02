@@ -104,7 +104,7 @@
     <Message Text="Building Docs..."
              Importance="High" />
 
-    <Error Text="Sandcastle and Sandcastle Help File Builder must be installed to generate documentation.  To only generate Xml Intellisense docs without Sandcastle, build with '// /p:NoSandcastle=true'.  Be sure to also install the Sandcastle Styles patches.  Look in tools\Setup Files for the Sandcastle installers and patches."
+    <Error Text="Sandcastle and Sandcastle Help File Builder must be installed to generate documentation.  To only generate Xml Intellisense docs without Sandcastle, build with 'BuildNoSandcastle.bat'.  Be sure to also install the Sandcastle Styles patches.  Look in tools\Setup Files for the Sandcastle installers and patches."
            Condition="! Exists('$(SandcastlePath)') or ! Exists('$(SandcastleHelpFileBuilderPath)')" />
 
     <Error Text="Visual Studio 2005 or 2008 SDK must be installed so that HTML Help 2 (HxS) documentation can be generated for integration with the Visual Studio help system.  Check Microsoft's site for the Visual Studio SDK installer."

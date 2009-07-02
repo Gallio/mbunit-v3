@@ -145,6 +145,7 @@ namespace Gallio.Runtime
                 ConfigureDefaultPluginDirectories();
                 ConfigurePluginDirectoriesFromSetup();
                 ConfigurePluginDirectoriesFromInstallationConfiguration();
+                ConfigurePluginLoaderForInstallationId();
                 ConfigurePluginLoaderForEnvironment();
 
                 RegisterBuiltInComponents();
@@ -536,6 +537,11 @@ namespace Gallio.Runtime
                 foreach (string pluginDirectory in runtimeSetup.InstallationConfiguration.AdditionalPluginDirectories)
                     AddPluginDirectory(pluginDirectory);
             }
+        }
+
+        private void ConfigurePluginLoaderForInstallationId()
+        {
+            pluginLoader.InstallationId = runtimeSetup.InstallationConfiguration.InstallationId;
         }
 
         private void ConfigurePluginLoaderForEnvironment()

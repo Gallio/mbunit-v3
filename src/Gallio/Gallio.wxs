@@ -269,18 +269,28 @@
             <ComponentRef Id="GallioMenuFolder.RemoveFolder"/>
         </Feature>
 
-        <Property Id="Setup.Install" Value='"[#Gallio.Utility.exe]" Setup /install' />
+        <CustomAction Id="ResetInstallationId.SetCommandLine" Value='"[#Gallio.Utility.exe]" ResetInstallationId' Property="ResetInstallationId" />
+        <CustomAction Id="ResetInstallationId" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="check" Impersonate="no"/>
+
+        <CustomAction Id="Setup.Install.SetCommandLine" Value='"[#Gallio.Utility.exe]" Setup /install' Property="Setup.Install" />
         <CustomAction Id="Setup.Install" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="check" Impersonate="no"/>
 
-        <Property Id="Setup.Uninstall" Value='"[#Gallio.Utility.exe]" Setup /uninstall' />
+        <CustomAction Id="Setup.Uninstall.SetCommandLine" Value='"[#Gallio.Utility.exe]" Setup /uninstall' Property="Setup.Uninstall" />
         <CustomAction Id="Setup.Uninstall" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
 
         <InstallExecuteSequence>
-            <Custom Action="Setup.Install" After="InstallFiles" />
-            <Custom Action="Setup.Uninstall" Before="RemoveFiles" />
+            <Custom Action="ResetInstallationId.SetCommandLine" After="InstallValidate" />
+            <Custom Action="ResetInstallationId" Before="InstallServices"><![CDATA[(&feat_Gallio = 3) OR (NOT(&feat_Gallio = 2) AND !feat_Gallio = 3)]]></Custom>
+	
+            <Custom Action="Setup.Install.SetCommandLine" After="InstallValidate" />
+            <Custom Action="Setup.Install" After="InstallServices"><![CDATA[(&feat_Gallio = 3) OR (NOT(&feat_Gallio = 2) AND !feat_Gallio = 3)]]></Custom>
+
+            <Custom Action="Setup.Uninstall.SetCommandLine" After="InstallValidate" />
+            <Custom Action="Setup.Uninstall" Before="DeleteServices"><![CDATA[(!feat_Gallio = 3)]]></Custom>
         </InstallExecuteSequence>
 
         <UI>
+            <ProgressText Action="ResetInstallationId" Template="[1]">Resetting the installation id to refresh the plugins list ...</ProgressText>
             <ProgressText Action="Setup.Install" Template="[1]">Installing components ...</ProgressText>
             <ProgressText Action="Setup.Uninstall" Template="[1]">Uninstalling components ...</ProgressText>
         </UI>
@@ -303,14 +313,18 @@
             <ComponentRef Id="H2Reg.exe" />
         </Feature>
 
-        <Property Id="H2Reg.Install" Value='"[#H2Reg.exe]" -r -q CmdFile="[#Gallio.H2Reg.ini]"' />
+        <CustomAction Id="H2Reg.Install.SetCommandLine" Value='"[#H2Reg.exe]" -r -q CmdFile="[#Gallio.H2Reg.ini]"' Property="H2Reg.Install" />
         <CustomAction Id="H2Reg.Install" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="check" Impersonate="no"/>
-        <Property Id="H2Reg.Uninstall" Value='"[#H2Reg.exe]" -u -q CmdFile="[#Gallio.H2Reg.ini]"' />
+	
+        <CustomAction Id="H2Reg.Uninstall.SetCommandLine" Value='"[#H2Reg.exe]" -u -q CmdFile="[#Gallio.H2Reg.ini]"' Property="H2Reg.Uninstall" />
         <CustomAction Id="H2Reg.Uninstall" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
 
         <InstallExecuteSequence>
-            <Custom Action="H2Reg.Install" After="InstallFiles"><![CDATA[(&feat_Gallio.VSHelp = 3) AND NOT(!feat_Gallio.VSHelp = 3)]]></Custom>
-            <Custom Action="H2Reg.Uninstall" Before="RemoveFiles"><![CDATA[(&feat_Gallio.VSHelp = 2) AND (!feat_Gallio.VSHelp = 3)]]></Custom>
+            <Custom Action="H2Reg.Install.SetCommandLine" After="InstallValidate" />
+            <Custom Action="H2Reg.Install" After="InstallServices"><![CDATA[(&feat_Gallio.VSHelp = 3) AND NOT(!feat_Gallio.VSHelp = 3)]]></Custom>
+
+            <Custom Action="H2Reg.Uninstall.SetCommandLine" After="InstallValidate" />
+            <Custom Action="H2Reg.Uninstall" Before="DeleteServices"><![CDATA[(&feat_Gallio.VSHelp = 2) AND (!feat_Gallio.VSHelp = 3)]]></Custom>
         </InstallExecuteSequence>
 
         <UI>

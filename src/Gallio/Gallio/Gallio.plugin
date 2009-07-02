@@ -470,7 +470,7 @@
                serviceId="Gallio.UtilityCommandManager"
                componentType="Gallio.Runtime.UtilityCommands.DefaultUtilityCommandManager, Gallio" />
 
-    <component componentId="Gallio.ClearCurrentUserPluginCacheCommand"
+    <component componentId="Gallio.ClearCurrentUserPluginCacheUtilityCommand"
                serviceId="Gallio.UtilityCommand"
                componentType="Gallio.Runtime.UtilityCommands.ClearCurrentUserPluginCacheUtilityCommand, Gallio">
       <traits>
@@ -482,7 +482,7 @@
       </traits>
     </component>
 
-    <component componentId="Gallio.VerifyInstallationCommand"
+    <component componentId="Gallio.VerifyInstallationUtilityCommand"
                serviceId="Gallio.UtilityCommand"
                componentType="Gallio.Runtime.UtilityCommands.VerifyInstallationUtilityCommand, Gallio">
       <traits>
@@ -491,7 +491,7 @@
       </traits>
     </component>
 
-    <component componentId="Gallio.SetupCommand"
+    <component componentId="Gallio.SetupUtilityCommand"
                serviceId="Gallio.UtilityCommand"
                componentType="Gallio.Runtime.Installer.SetupUtilityCommand, Gallio">
       <traits>
@@ -499,6 +499,19 @@
         <description>Installs or uninstalls components.</description>
       </traits>
     </component>
+
+    <component componentId="Gallio.ResetInstallationIdUtilityCommand"
+               serviceId="Gallio.UtilityCommand"
+               componentType="Gallio.Runtime.UtilityCommands.ResetInstallationIdUtilityCommand, Gallio">
+      <traits>
+        <name>ResetInstallationId</name>
+        <description>Resets the installation id.  The plugin list will be refreshed the next time a Gallio application is started.</description>
+      </traits>
+    </component>
+
+    <component componentId="Gallio.ResetInstallationIdElevatedCommand"
+               serviceId="Gallio.ElevatedCommand"
+               componentType="Gallio.Runtime.UtilityCommands.ResetInstallationIdElevatedCommand, Gallio" />
 
     <!-- Installers -->
 

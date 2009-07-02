@@ -24,6 +24,11 @@ namespace Gallio.Runtime.Extensibility
     public interface IPluginLoader
     {
         /// <summary>
+        /// Gets or sets the installation id.
+        /// </summary>
+        Guid InstallationId { get; set; }
+
+        /// <summary>
         /// Adds a plugin path.
         /// </summary>
         /// <remarks>

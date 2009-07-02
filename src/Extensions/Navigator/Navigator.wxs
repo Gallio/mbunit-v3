@@ -21,12 +21,18 @@
 	     The recommended workaround is Tallow but it does not support
 	     ComRegister and ComUnregister operations.  Sure we can duplicate
 	     those registry keys here, but that's error-prone. -->
-        <CustomAction Id="Navigator.Install" Directory='INSTALLDIR' ExeCommand='"[WindowsFolder]Microsoft.NET\Framework\v2.0.50727\regasm.exe" "[#Gallio.Navigator.exe]" /codebase' Execute="deferred" Return="check" Impersonate="no"/>
-        <CustomAction Id="Navigator.Uninstall" Directory='INSTALLDIR' ExeCommand='"[WindowsFolder]Microsoft.NET\Framework\v2.0.50727\regasm.exe" /unregister "[#Gallio.Navigator.exe]"' Execute="deferred" Return="ignore" Impersonate="no"/>
+        <CustomAction Id="Navigator.Install.SetCommandLine" Value='"[WindowsFolder]Microsoft.NET\Framework\v2.0.50727\regasm.exe" "[#Gallio.Navigator.exe]" /codebase /nologo' Property="Navigator.Install" />
+        <CustomAction Id="Navigator.Install" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="check" Impersonate="no"/>
+	
+        <CustomAction Id="Navigator.Uninstall.SetCommandLine" Value='"[WindowsFolder]Microsoft.NET\Framework\v2.0.50727\regasm.exe" "[#Gallio.Navigator.exe]" /unregister /nologo' Property="Navigator.Uninstall" />
+        <CustomAction Id="Navigator.Uninstall" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
       
         <InstallExecuteSequence>
-            <Custom Action="Navigator.Install" After="InstallFiles"><![CDATA[(&feat_Navigator = 3) AND NOT(!feat_Navigator = 3)]]></Custom>
-            <Custom Action="Navigator.Uninstall" Before="RemoveFiles"><![CDATA[(&feat_Navigator = 2) AND (!feat_Navigator = 3)]]></Custom>
+            <Custom Action="Navigator.Install.SetCommandLine" After="InstallValidate" />
+            <Custom Action="Navigator.Install" After="InstallServices"><![CDATA[(&feat_Navigator = 3) AND NOT(!feat_Navigator = 3)]]></Custom>
+
+            <Custom Action="Navigator.Uninstall.SetCommandLine" After="InstallValidate" />
+            <Custom Action="Navigator.Uninstall" Before="DeleteServices"><![CDATA[(&feat_Navigator = 2) AND (!feat_Navigator = 3)]]></Custom>
         </InstallExecuteSequence>
 
         <UI>

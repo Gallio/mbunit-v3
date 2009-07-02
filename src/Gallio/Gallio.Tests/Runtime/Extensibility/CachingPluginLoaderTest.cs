@@ -55,7 +55,9 @@ namespace Gallio.Tests.Runtime.Extensibility
 
             PluginLoaderTest.RunWithTemporaryPluginFile((pluginDir, pluginFile) =>
             {
+                Guid installationId = Guid.NewGuid();
                 var loader = new CachingPluginLoader();
+                loader.InstallationId = installationId;
                 loader.AddPluginPath(pluginFile);
                 loader.DefinePreprocessorConstant("A");
 
@@ -89,6 +91,7 @@ namespace Gallio.Tests.Runtime.Extensibility
 
                     Cache cache = Assert.XmlDeserialize<Cache>(File.ReadAllText(cacheFilePath));
 
+                    Assert.AreEqual(installationId.ToString(), cache.InstallationId);
                     Assert.AreEqual(1, cache.PluginInfos.Count);
                     Assert.AreEqual(pluginDir, cache.PluginInfos[0].BaseDirectory);
                     Assert.AreEqual("pluginId", cache.PluginInfos[0].Plugin.PluginId);

@@ -75,6 +75,7 @@ namespace Gallio.Runtime.Extensibility
                     hash = hash.Add(pluginPath);
                 foreach (string constant in InitialPreprocessorConstants)
                     hash = hash.Add(constant);
+                hash = hash.Add(InstallationId.ToString());
 
                 string cacheDirPath = GetCurrentUserPluginCacheDir();
                 string cacheFileName = hash + ".xml";
@@ -108,7 +109,8 @@ namespace Gallio.Runtime.Extensibility
             }
 
             // Load plugin metadata.
-            var newCache = new Cache();
+            var newCache = new Cache() { InstallationId = InstallationId.ToString() };
+
             base.LoadPlugins((plugin, baseDirectory, pluginFile) =>
             {
                 newCache.PluginInfos.Add(new CachePluginInfo()
@@ -142,6 +144,9 @@ namespace Gallio.Runtime.Extensibility
             }
 
             cache.Validate();
+
+            if (cache.InstallationId != InstallationId.ToString())
+                return null;
 
             foreach (CachePluginInfo pluginInfo in cache.PluginInfos)
             {

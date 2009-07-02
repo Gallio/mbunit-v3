@@ -39,6 +39,7 @@ namespace Gallio.Runtime
 
         private string installedVersion;
         private string installationFolder;
+        private Guid installationId;
         private readonly List<string> additionalPluginDirectories = new List<string>();
 
         /// <summary>
@@ -53,15 +54,6 @@ namespace Gallio.Runtime
                 configuration.LoadFromRegistry(pair.First, pair.Second);
 
             return configuration;
-        }
-
-        /// <summary>
-        /// Saves the additional plugin directories into the registry.
-        /// </summary>
-        public void SaveAdditionalPluginDirectoriesToRegistry()
-        {
-            foreach (Pair<RegistryKey, string> pair in RootKeys)
-                SaveAdditionalPluginDirectoriesToRegistry(pair.First, pair.Second);
         }
 
         /// <summary>
@@ -83,11 +75,43 @@ namespace Gallio.Runtime
         }
 
         /// <summary>
+        /// Gets or sets the unique id of this Gallio installation.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// Returns <see cref="Guid.Empty" /> if Gallio does not appear to have an installation id.
+        /// </para>
+        /// </remarks>
+        public Guid InstallationId
+        {
+            get { return installationId; }
+            set { installationId = value; }
+        }
+
+        /// <summary>
         /// Gets the mutable list of additional plugin directories.
         /// </summary>
         public IList<string> AdditionalPluginDirectories
         {
             get { return additionalPluginDirectories; }
+        }
+
+        /// <summary>
+        /// Saves the additional plugin directories into the registry.
+        /// </summary>
+        public void SaveAdditionalPluginDirectoriesToRegistry()
+        {
+            foreach (Pair<RegistryKey, string> pair in RootKeys)
+                SaveAdditionalPluginDirectoriesToRegistry(pair.First, pair.Second);
+        }
+        
+        /// <summary>
+        /// Saves the installation id into the registry.
+        /// </summary>
+        public void SaveInstallationIdToRegistry()
+        {
+            foreach (Pair<RegistryKey, string> pair in RootKeys)
+                SaveInstallationIdToRegistry(pair.First, pair.Second);
         }
 
         private void LoadFromRegistry(RegistryKey hive, string rootKeyName)
@@ -105,11 +129,37 @@ namespace Gallio.Runtime
                     if (installationFolder == null)
                         installationFolder = rootKey.GetValue(@"InstallationFolder", installationFolder) as string;
 
+                    if (installationId == Guid.Empty)
+                    {
+                        string installationIdString = rootKey.GetValue(@"InstallationId", installationId) as string;
+                        if (installationIdString != null)
+                        {
+                            try
+                            {
+                                installationId = new Guid(installationIdString);
+                            }
+                            catch
+                            {
+                            }
+                        }
+                    }
+
                     LoadAdditionalPluginDirectoriesFromRegistry(rootKey);
                 }
             }
             catch
             {
+            }
+        }
+
+        private void SaveInstallationIdToRegistry(RegistryKey hive, string rootKeyName)
+        {
+            using (RegistryKey rootKey = hive.OpenSubKey(rootKeyName, true))
+            {
+                if (rootKey == null)
+                    return;
+
+                rootKey.SetValue(@"InstallationId", installationId.ToString());
             }
         }
 
