@@ -2,7 +2,7 @@
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
     <?include ..\..\Installer.Wix\Features.wxi ?>
 
-<?ifdef NUNIT_ADAPTER_25 ?>
+<?ifdef FEATURE_NUNIT_ADAPTER_25 ?>
     <Fragment>
         <DirectoryRef Id="NUnit">
           <Directory Id="NUnit.v25" Name="v2.5">
