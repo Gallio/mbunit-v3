@@ -4,7 +4,7 @@
 
 <?ifdef FEATURE_NUNIT_ADAPTER_25 ?>
     <Fragment>
-        <DirectoryRef Id="NUnit">
+        <DirectoryRef Id="NUnit" FileSource="$(var.GallioTargetDir)\bin\NUnit">
           <Directory Id="NUnit.v25" Name="v2.5">
             <Component Id="Gallio.NUnitAdapter25" Guid="{156A9E25-863F-4f45-BDE4-D516B22B1244}" Win64="no">
               <File Id="NUnit.v25.NUnitAdapter25.dll" Name="Gallio.NUnitAdapter25.dll" KeyPath="yes" />

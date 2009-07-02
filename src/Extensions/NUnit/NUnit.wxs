@@ -10,10 +10,10 @@
         <Feature Id='feat_NUnitAdapter' Title='NUnit Adapter' Level='1' AllowAdvertise="no"
             Description='Installs the NUnit adapters.'>
 <?ifdef FEATURE_NUNIT_ADAPTER_248 ?>
-            <FeatureRef Id='feat_NUnit.v248'/>
+            <FeatureRef Id="feat_NUnitAdapter248"/>
 <?endif?>
 <?ifdef FEATURE_NUNIT_ADAPTER_25 ?>
-            <FeatureRef Id='feat_NUnit.v25'/>
+            <FeatureRef Id="feat_NUnitAdapter25"/>
 <?endif?>
         </Feature>
     </Fragment>

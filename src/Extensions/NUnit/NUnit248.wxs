@@ -4,7 +4,7 @@
 
 <?ifdef FEATURE_NUNIT_ADAPTER_248 ?>
     <Fragment>
-      <DirectoryRef Id="NUnit">
+      <DirectoryRef Id="NUnit" FileSource="$(var.GallioTargetDir)\bin\NUnit">
         <Directory Id="NUnit.v248" Name="v2.4.8">
           <Component Id="Gallio.NUnitAdapter248" Guid="{2DD17F03-5416-47d4-9260-F10332DDBEA8}" Win64="no">
             <File Id="NUnit.v248.NUnitAdapter248.dll" Name="Gallio.NUnitAdapter248.dll" KeyPath="yes" />
@@ -33,33 +33,12 @@
         </Directory>
       </DirectoryRef>
 
-      <DirectoryRef Id="binFolder" FileSource="$(var.GallioTargetDir)\bin\">
-            <Directory Id="NUnit" Name="NUnit">
-                <Component Id="Gallio.NUnitAdapter" Guid="d0bb56ff-3015-447c-9329-50e09c5f3a38" Win64="no">
-                    <File Name="Gallio.NUnitAdapter.dll" KeyPath="yes" />
-                    <File Name="Gallio.NUnitAdapter.plugin" />
-                    <File Id="nunit.license.txt" Name="license.txt" />
-                    <File Name="nunit.core.dll" />
-                    <File Name="nunit.core.extensions.dll" />
-                    <File Name="nunit.core.interfaces.dll" />
-                    <File Name="nunit.framework.dll" />
-                    <File Name="nunit.framework.extensions.dll" />
-                    <File Id="nunit.util.dll" Name="nunit.util.dll" />
-                    <File Id="nunit.Readme.txt" Name="Readme.txt" />
-                </Component>
-                <Directory Id="NUnit.Addins" Name="addins">
-                    <Component Id="Gallio.NUnitAdapter.Addins" Guid="{AE3699B6-00A1-4baa-BA3B-59065ABC12A0}" Win64="no">
-                        <File Id="nunit.AddinsReadme.txt" Name="NUnit Addins Readme.txt" KeyPath="yes" />
-                    </Component>
-                </Directory>
-            </Directory>
-        </DirectoryRef>
-
-        <Feature Id='feat_NUnitAdapter248' Title='v2.4.8' Level='1' AllowAdvertise="no"
-                 Description='Enables Gallio to run NUnit v2.4.8 tests.'>
-            <ComponentRef Id="Gallio.NUnitAdapter248"/>
-            <ComponentRef Id="Gallio.NUnitAdapter248.Addins"/>
-        </Feature>
+      <Feature Id='feat_NUnitAdapter248' Title='v2.4.8' Level='1' AllowAdvertise="no"
+               Description='Enables Gallio to run NUnit v2.4.8 tests.'>
+        <ComponentRef Id="Gallio.NUnitAdapter248"/>
+        <ComponentRef Id="Gallio.NUnitAdapter248.Addins"/>
+        <ComponentRef Id="Gallio.NUnitAdapter248.Resources"/>
+      </Feature>
     </Fragment>
 <?endif ?>
 </Wix>
