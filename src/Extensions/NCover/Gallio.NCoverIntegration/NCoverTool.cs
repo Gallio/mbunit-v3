@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 using System.Text;
 using Gallio.Common.Concurrency;
 using Gallio.Common.Platform;
@@ -50,10 +51,18 @@ namespace Gallio.NCoverIntegration
         private static ProcessTask CreateNCoverEmbeddedProcessTask(string executablePath, string arguments, string workingDirectory,
             ILogger logger, string ncoverArguments, string ncoverCoverageFile)
         {
+            // We have stopped embedding NCover within the Gallio test runner process despite the fact
+            // that is allows us to work around certain NCover bugs because in fact it causes
+            // more serious issues to surface.  For example, NCover's ProfileMessageCenter object creates
+            // a few global event objects whose names are derived from the process id (eg. "Global\CmdReadyEvent_12345")
+            // but it does not dispose them so if we attempt to run more tests a second time around
+            // then we get a crash like "Global\CmdReadyEvent_3676 event already exists on this machine.".
+            // http://www.ncover.com/forum/show_topic/1007
+#if false
             // Can host directly inside 32bit process.
             if (ProcessSupport.Is32BitProcess && DotNetRuntimeSupport.RuntimeVersion.StartsWith("v2.0."))
                 return new EmbeddedNCoverProcessTask(executablePath, arguments, workingDirectory, logger, ncoverArguments, ncoverCoverageFile);
-
+#endif
             // When running as 64bit process or on .Net 4.0 we need to use another process as a shim.
             // We have less control over what's going on but at least it might work.
             return CreateNCoverConsoleProcessTask(executablePath, arguments, workingDirectory, 1, logger, ncoverArguments, ncoverCoverageFile);
@@ -76,7 +85,8 @@ namespace Gallio.NCoverIntegration
 
             if (majorVersion == 1)
             {
-                ncoverArgumentsCombined.Append(" //reg");
+                //ncoverArgumentsCombined.Append(" //reg");
+                RegisterProfiler(installDir);
 
                 if (!ncoverArguments.Contains("//l"))
                     ncoverArgumentsCombined.Append(" //q");
@@ -88,6 +98,22 @@ namespace Gallio.NCoverIntegration
             logger.Log(LogSeverity.Info, string.Format("Starting NCover v{0} with arguments: {1}", majorVersion, ncoverArgumentsCombined));
 
             return new ProcessTask(ncoverConsolePath, ncoverArgumentsCombined.ToString(), workingDirectory);
+        }
+
+        private const string NCover1ProfilerKey = @"Software\Classes\CLSID\{6287B5F9-08A1-45e7-9498-B5B2E7B02995}";
+        private const string NCover1ProfilerKey64Bit = @"Software\Wow6432Node\Classes\CLSID\{6287B5F9-08A1-45e7-9498-B5B2E7B02995}";
+
+        private static void RegisterProfiler(string installDir)
+        {
+            using (RegistryKey key = Registry.CurrentUser.CreateSubKey(ProcessSupport.Is64BitProcess ? NCover1ProfilerKey64Bit : NCover1ProfilerKey))
+            {
+                using (RegistryKey subKey = key.CreateSubKey("InprocServer32"))
+                {
+                    subKey.SetValue(null, Path.Combine(installDir, "CoverLib.dll"));
+                    subKey.SetValue("ThreadingModel", "Both");
+                }
+                key.SetValue(null, "NCover Profiler");
+            }
         }
 
         public static bool IsNCoverVersionInstalled(int majorVersion)

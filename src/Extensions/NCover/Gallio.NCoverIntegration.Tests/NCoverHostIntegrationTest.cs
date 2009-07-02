@@ -43,9 +43,6 @@ namespace Gallio.NCoverIntegration.Tests
         public void GeneratesNCoverCoverageAndProcessesHostProperties(string factoryName, int majorVersion,
             string ncoverCoverageFile, bool includeLogArgument)
         {
-            if (Process.GetProcessesByName("NCover.Console").Length != 0)
-                Assert.Inconclusive("Cannot run this test while another instance of NCover is running.");
-
             string tempPath = SpecialPathPolicy.For<NCoverHostIntegrationTest>().GetTempDirectory().FullName;
             string coverageFilePath = Path.Combine(tempPath, ncoverCoverageFile ?? "Coverage.xml");
             string coverageLogFilePath = Path.Combine(tempPath, "CoverageLog.txt");

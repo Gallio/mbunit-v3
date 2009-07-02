@@ -55,6 +55,21 @@ namespace Gallio.Common.Platform
             get { return processType.Memoize(DetectProcessType); }
         }
 
+        /// <summary>
+        /// Returns true if the current process has elevated privileges.
+        /// </summary>
+        public static bool HasElevatedPrivileges
+        {
+            get
+            {
+                if (DotNetRuntimeSupport.IsUsingMono)
+                    return true; // FIXME
+
+                WindowsPrincipal principal = new WindowsPrincipal(WindowsIdentity.GetCurrent());
+                return principal.IsInRole(WindowsBuiltInRole.Administrator);
+            }
+        }
+
         [SecurityPermission(SecurityAction.Demand, UnmanagedCode=true)]
         private static ProcessType DetectProcessType()
         {

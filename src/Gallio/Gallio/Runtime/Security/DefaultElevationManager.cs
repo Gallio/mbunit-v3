@@ -49,10 +49,7 @@ namespace Gallio.Runtime.Security
         /// <inheritdoc />
         public bool HasElevatedPrivileges
         {
-            get
-            {
-                return CurrentUserHasElevatedPrivileges();
-            }
+            get { return ProcessSupport.HasElevatedPrivileges; }
         }
 
         /// <inheritdoc />
@@ -97,18 +94,9 @@ namespace Gallio.Runtime.Security
             return host;
         }
 
-        private static bool CurrentUserHasElevatedPrivileges()
-        {
-            if (DotNetRuntimeSupport.IsUsingMono)
-                return true; // FIXME
-
-            WindowsPrincipal principal = new WindowsPrincipal(WindowsIdentity.GetCurrent());
-            return principal.IsInRole(WindowsBuiltInRole.Administrator);
-        }
-
         private static object Execute(IRuntime runtime, string elevatedCommandId, object parameters, IProgressMonitor progressMonitor)
         {
-            if (!CurrentUserHasElevatedPrivileges())
+            if (!ProcessSupport.HasElevatedPrivileges)
                 throw new RuntimeException("Expected the process to have elevated privileges despite having established an elevation context.");
 
             IElevatedCommand command = (IElevatedCommand)runtime.ServiceLocator.ResolveByComponentId(elevatedCommandId);
@@ -184,7 +172,7 @@ namespace Gallio.Runtime.Security
         {
             public bool HasElevatedPrivileges()
             {
-                return CurrentUserHasElevatedPrivileges();
+                return ProcessSupport.HasElevatedPrivileges;
             }
 
             public void Initialize(RuntimeSetup runtimeSetup, ILogger logger)

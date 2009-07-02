@@ -61,7 +61,7 @@ namespace Gallio.Tests.Runtime.Extensibility
                 loader.AddPluginPath(pluginFile);
                 loader.DefinePreprocessorConstant("A");
 
-                Hash64 hash = new Hash64().Add(pluginFile).Add("A");
+                Hash64 hash = new Hash64().Add(pluginFile).Add("A").Add(installationId.ToString());
                 var cacheDir = CachingPluginLoader.GetCurrentUserPluginCacheDir();
                 string cacheFilePath = Path.Combine(cacheDir, hash + ".xml");
 
