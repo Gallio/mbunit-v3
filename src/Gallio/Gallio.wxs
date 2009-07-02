@@ -269,24 +269,26 @@
             <ComponentRef Id="GallioMenuFolder.RemoveFolder"/>
         </Feature>
 
-        <CustomAction Id="ResetInstallationId.SetCommandLine" Value='"[#Gallio.Utility.exe]" ResetInstallationId' Property="ResetInstallationId" />
+        <CustomAction Id="ResetInstallationId.SetCommandLine" Value='"[#Gallio.Utility.exe]" ResetInstallationId /v:debug' Property="ResetInstallationId" />
         <CustomAction Id="ResetInstallationId" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="check" Impersonate="no"/>
 
-        <CustomAction Id="Setup.Install.SetCommandLine" Value='"[#Gallio.Utility.exe]" Setup /install' Property="Setup.Install" />
+        <CustomAction Id="Setup.Install.SetCommandLine" Value='"[#Gallio.Utility.exe]" Setup /install /v:debug' Property="Setup.Install" />
         <CustomAction Id="Setup.Install" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="check" Impersonate="no"/>
 
-        <CustomAction Id="Setup.Uninstall.SetCommandLine" Value='"[#Gallio.Utility.exe]" Setup /uninstall' Property="Setup.Uninstall" />
+        <CustomAction Id="Setup.Uninstall.SetCommandLine" Value='"[#Gallio.Utility.exe]" Setup /uninstall /v:debug' Property="Setup.Uninstall" />
         <CustomAction Id="Setup.Uninstall" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
 
         <InstallExecuteSequence>
+            <InstallExecute After="PublishProduct" />
+
             <Custom Action="ResetInstallationId.SetCommandLine" After="InstallValidate" />
-            <Custom Action="ResetInstallationId" Before="InstallServices"><![CDATA[(&feat_Gallio = 3) OR (NOT(&feat_Gallio = 2) AND !feat_Gallio = 3)]]></Custom>
+            <Custom Action="ResetInstallationId" After="InstallExecute"><![CDATA[(&feat_Gallio = 3) OR (NOT(&feat_Gallio = 2) AND !feat_Gallio = 3)]]></Custom>
 	
             <Custom Action="Setup.Install.SetCommandLine" After="InstallValidate" />
-            <Custom Action="Setup.Install" After="InstallServices"><![CDATA[(&feat_Gallio = 3) OR (NOT(&feat_Gallio = 2) AND !feat_Gallio = 3)]]></Custom>
+            <Custom Action="Setup.Install" After="ResetInstallationId"><![CDATA[(&feat_Gallio = 3) OR (NOT(&feat_Gallio = 2) AND !feat_Gallio = 3)]]></Custom>
 
             <Custom Action="Setup.Uninstall.SetCommandLine" After="InstallValidate" />
-            <Custom Action="Setup.Uninstall" Before="DeleteServices"><![CDATA[(!feat_Gallio = 3)]]></Custom>
+            <Custom Action="Setup.Uninstall" After="ProcessComponents"><![CDATA[(!feat_Gallio = 3)]]></Custom>
         </InstallExecuteSequence>
 
         <UI>
@@ -321,10 +323,10 @@
 
         <InstallExecuteSequence>
             <Custom Action="H2Reg.Install.SetCommandLine" After="InstallValidate" />
-            <Custom Action="H2Reg.Install" After="InstallServices"><![CDATA[(&feat_Gallio.VSHelp = 3) AND NOT(!feat_Gallio.VSHelp = 3)]]></Custom>
+            <Custom Action="H2Reg.Install" After="InstallExecute"><![CDATA[(&feat_Gallio.VSHelp = 3) AND NOT(!feat_Gallio.VSHelp = 3)]]></Custom>
 
             <Custom Action="H2Reg.Uninstall.SetCommandLine" After="InstallValidate" />
-            <Custom Action="H2Reg.Uninstall" Before="DeleteServices"><![CDATA[(&feat_Gallio.VSHelp = 2) AND (!feat_Gallio.VSHelp = 3)]]></Custom>
+            <Custom Action="H2Reg.Uninstall" After="ProcessComponents"><![CDATA[(&feat_Gallio.VSHelp = 2) AND (!feat_Gallio.VSHelp = 3)]]></Custom>
         </InstallExecuteSequence>
 
         <UI>

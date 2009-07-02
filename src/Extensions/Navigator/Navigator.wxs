@@ -29,10 +29,10 @@
       
         <InstallExecuteSequence>
             <Custom Action="Navigator.Install.SetCommandLine" After="InstallValidate" />
-            <Custom Action="Navigator.Install" After="InstallServices"><![CDATA[(&feat_Navigator = 3) AND NOT(!feat_Navigator = 3)]]></Custom>
+            <Custom Action="Navigator.Install" After="InstallExecute"><![CDATA[(&feat_Navigator = 3) AND NOT(!feat_Navigator = 3)]]></Custom>
 
             <Custom Action="Navigator.Uninstall.SetCommandLine" After="InstallValidate" />
-            <Custom Action="Navigator.Uninstall" Before="DeleteServices"><![CDATA[(&feat_Navigator = 2) AND (!feat_Navigator = 3)]]></Custom>
+            <Custom Action="Navigator.Uninstall" After="ProcessComponents"><![CDATA[(&feat_Navigator = 2) AND (!feat_Navigator = 3)]]></Custom>
         </InstallExecuteSequence>
 
         <UI>
