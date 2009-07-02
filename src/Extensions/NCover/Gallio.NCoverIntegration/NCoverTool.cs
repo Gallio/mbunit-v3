@@ -104,7 +104,7 @@ namespace Gallio.NCoverIntegration
 
         private static void RegisterProfiler(string installDir)
         {
-            using (RegistryKey key = Registry.CurrentUser.CreateSubKey(ProcessSupport.Is64BitProcess ? NCover1ProfilerKey64Bit : NCover1ProfilerKey))
+            using (RegistryKey key = Registry.CurrentUser.CreateSubKey(IntPtr.Size == 8 ? NCover1ProfilerKey64Bit : NCover1ProfilerKey))
             {
                 using (RegistryKey subKey = key.CreateSubKey("InprocServer32"))
                 {
