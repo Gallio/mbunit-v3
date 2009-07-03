@@ -45,13 +45,6 @@ namespace Gallio.Runner.Harness
         TestModel TestModel { get; }
 
         /// <summary>
-        /// Adds a test environment.
-        /// </summary>
-        /// <param name="environment">The test framework to add.</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="environment"/> is null.</exception>
-        void AddTestEnvironment(ITestEnvironment environment);
-
-        /// <summary>
         /// Loads a test package into the test harness.
         /// </summary>
         /// <param name="packageConfig">The test package configuration.</param>

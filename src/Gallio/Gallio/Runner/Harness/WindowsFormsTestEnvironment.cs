@@ -50,10 +50,10 @@ namespace Gallio.Runner.Harness
     /// http://www.aaronlerch.com/blog/2008/12/15/debugging-ui/
     /// </para>
     /// </remarks>
-    public class WindowsFormsTestEnvironment : ITestEnvironment
+    public class WindowsFormsTestEnvironment : BaseTestEnvironment
     {
         /// <inheritdoc />
-        public IDisposable SetUp()
+        public override IDisposable SetUpThread()
         {
             return new State();
         }

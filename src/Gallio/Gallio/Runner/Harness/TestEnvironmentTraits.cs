@@ -16,25 +16,14 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Gallio.Runtime.Extensibility;
 
 namespace Gallio.Runner.Harness
 {
     /// <summary>
-    /// The test environment configures global behavior related to preparing
-    /// the test execution environment for running tests and tearing them down.
+    /// Specifies traits for <see cref="ITestEnvironment" />.
     /// </summary>
-    public interface ITestEnvironment
+    public class TestEnvironmentTraits : Traits
     {
-        /// <summary>
-        /// Sets up the current test AppDomain.
-        /// </summary>
-        /// <returns>Returns an object that when disposed causes the test environment to be torn down, or null if none.</returns>
-        IDisposable SetUpAppDomain();
-
-        /// <summary>
-        /// Sets up the current test Thread.
-        /// </summary>
-        /// <returns>Returns an object that when disposed causes the test environment to be torn down, or null if none.</returns>
-        IDisposable SetUpThread();
     }
 }

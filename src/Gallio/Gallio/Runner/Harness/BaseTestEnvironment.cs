@@ -20,21 +20,20 @@ using System.Text;
 namespace Gallio.Runner.Harness
 {
     /// <summary>
-    /// The test environment configures global behavior related to preparing
-    /// the test execution environment for running tests and tearing them down.
+    /// Base implementation of a test environment.
     /// </summary>
-    public interface ITestEnvironment
+    public class BaseTestEnvironment : ITestEnvironment
     {
-        /// <summary>
-        /// Sets up the current test AppDomain.
-        /// </summary>
-        /// <returns>Returns an object that when disposed causes the test environment to be torn down, or null if none.</returns>
-        IDisposable SetUpAppDomain();
+        /// <inheritdoc />
+        public virtual IDisposable SetUpAppDomain()
+        {
+            return null;
+        }
 
-        /// <summary>
-        /// Sets up the current test Thread.
-        /// </summary>
-        /// <returns>Returns an object that when disposed causes the test environment to be torn down, or null if none.</returns>
-        IDisposable SetUpThread();
+        /// <inheritdoc />
+        public virtual IDisposable SetUpThread()
+        {
+            return null;
+        }
     }
 }

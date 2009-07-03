@@ -20,10 +20,9 @@ using System.Text;
 namespace Gallio.Runner.Harness
 {
     /// <summary>
-    /// The test environment configures global behavior related to preparing
-    /// the test execution environment for running tests and tearing them down.
+    /// The test environment manager configures test AppDomains and threads.
     /// </summary>
-    public interface ITestEnvironment
+    public interface ITestEnvironmentManager
     {
         /// <summary>
         /// Sets up the current test AppDomain.

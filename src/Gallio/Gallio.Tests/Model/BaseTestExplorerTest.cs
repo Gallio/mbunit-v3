@@ -69,9 +69,10 @@ namespace Gallio.Tests.Model
             frameworkHandle = GetFrameworkHandle();
             DefaultTestFrameworkManager frameworkManager = new DefaultTestFrameworkManager(
                 new[] { frameworkHandle }, RuntimeAccessor.ServiceLocator.Resolve<IFileTypeManager>());
+            ITestEnvironmentManager environmentManager = RuntimeAccessor.ServiceLocator.Resolve<ITestEnvironmentManager>();
 
             harness = new DefaultTestHarness(TestContextTrackerAccessor.Instance,
-                RuntimeAccessor.ServiceLocator.Resolve<ILoader>(), frameworkManager);
+                RuntimeAccessor.ServiceLocator.Resolve<ILoader>(), environmentManager, frameworkManager);
 
             adapterAssemblyName = frameworkHandle.GetComponent().GetType().Assembly.GetName().Name;
 

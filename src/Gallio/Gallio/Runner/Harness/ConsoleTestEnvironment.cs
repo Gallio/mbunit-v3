@@ -23,10 +23,10 @@ namespace Gallio.Runner.Harness
     /// <summary>
     /// Sets up console I/O streams.
     /// </summary>
-    public class ConsoleTestEnvironment : ITestEnvironment
+    public class ConsoleTestEnvironment : BaseTestEnvironment
     {
         /// <inheritdoc />
-        public IDisposable SetUp()
+        public override IDisposable SetUpAppDomain()
         {
             return new State();
         }

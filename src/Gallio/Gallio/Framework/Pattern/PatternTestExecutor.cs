@@ -20,6 +20,7 @@ using Gallio.Common;
 using Gallio.Common.Collections;
 using Gallio.Common.Concurrency;
 using Gallio.Framework.Data;
+using Gallio.Runner.Harness;
 using Gallio.Runtime.Conversions;
 using Gallio.Runtime.Formatting;
 using Gallio.Framework;
@@ -44,15 +45,17 @@ namespace Gallio.Framework.Pattern
         private readonly IProgressMonitor progressMonitor;
         private readonly IFormatter formatter;
         private readonly IConverter converter;
+        private readonly ITestEnvironmentManager environmentManager;
         private readonly ParallelizableTestCaseScheduler scheduler;
 
         public PatternTestExecutor(TestExecutionOptions options, IProgressMonitor progressMonitor,
-            IFormatter formatter, IConverter converter)
+            IFormatter formatter, IConverter converter, ITestEnvironmentManager environmentManager)
         {
             this.options = options;
             this.progressMonitor = progressMonitor;
             this.formatter = formatter;
             this.converter = converter;
+            this.environmentManager = environmentManager;
 
             scheduler = new ParallelizableTestCaseScheduler(() =>
                 options.SingleThreaded ? 1 : TestAssemblyExecutionParameters.DegreeOfParallelism);
@@ -652,12 +655,12 @@ namespace Gallio.Framework.Pattern
             }
         }
 
-        private static void DoWithApartmentState(ApartmentState apartmentState, Action action)
+        private void DoWithApartmentState(ApartmentState apartmentState, Action action)
         {
             if (apartmentState != ApartmentState.Unknown
                 && Thread.CurrentThread.GetApartmentState() != apartmentState)
             {
-                ThreadTask task = new ThreadTask("Test Runner " + apartmentState, action);
+                ThreadTask task = new TestThreadTask("Test Runner " + apartmentState, action, environmentManager);
                 task.ApartmentState = apartmentState;
                 task.Run(null);
 

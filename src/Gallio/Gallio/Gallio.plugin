@@ -142,6 +142,9 @@
     <service serviceId="Gallio.TestEnvironment"
              serviceType="Gallio.Runner.Harness.ITestEnvironment, Gallio" />
 
+    <service serviceId="Gallio.TestEnvironmentManager"
+             serviceType="Gallio.Runner.Harness.ITestEnvironmentManager, Gallio" />
+    
     <service serviceId="Gallio.ReportManager"
              serviceType="Gallio.Runner.Reports.IReportManager, Gallio" />
 
@@ -171,6 +174,10 @@
     <component componentId="Gallio.TestHarnessFactory"
                serviceId="Gallio.TestHarnessFactory"
                componentType="Gallio.Runner.Harness.DefaultTestHarnessFactory, Gallio" />
+
+    <component componentId="Gallio.TestEnvironmentManager"
+               serviceId="Gallio.TestEnvironmentManager"
+               componentType="Gallio.Runner.Harness.DefaultTestEnvironmentManager, Gallio" />
 
     <component componentId="Gallio.ConsoleTestEnvironment"
                serviceId="Gallio.TestEnvironment"

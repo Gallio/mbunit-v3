@@ -34,7 +34,7 @@ namespace Gallio.Runner.Harness
     public class DefaultTestHarnessFactory : ITestHarnessFactory
     {
         private readonly ITestContextTracker contextTracker;
-        private readonly ITestEnvironment[] environments;
+        private readonly ITestEnvironmentManager environmentManager;
         private readonly ILoader loader;
         private readonly ITestFrameworkManager frameworkManager;
 
@@ -43,35 +43,32 @@ namespace Gallio.Runner.Harness
         /// </summary>
         /// <param name="contextTracker">The test context tracker.</param>
         /// <param name="loader">The loader.</param>
-        /// <param name="environments">The collection of test environments.</param>
+        /// <param name="environmentManager">The test environments manager.</param>
         /// <param name="frameworkManager">The framework manager.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="contextTracker"/>,
-        /// <paramref name="loader"/>, <paramref name="frameworks" /> or <paramref name="environments"/> is null.</exception>
+        /// <paramref name="loader"/>, <paramref name="environmentManager" /> or <paramref name="frameworkManager"/> is null.</exception>
         public DefaultTestHarnessFactory(ITestContextTracker contextTracker, ILoader loader,
-            ITestEnvironment[] environments, ITestFrameworkManager frameworkManager)
+            ITestEnvironmentManager environmentManager, ITestFrameworkManager frameworkManager)
         {
             if (contextTracker == null)
                 throw new ArgumentNullException("contextTracker");
             if (loader == null)
                 throw new ArgumentNullException("loader");
-            if (environments == null)
-                throw new ArgumentNullException("environments");
+            if (environmentManager == null)
+                throw new ArgumentNullException("environmentManager");
             if (frameworkManager == null)
                 throw new ArgumentNullException("frameworkManager");
 
             this.contextTracker = contextTracker;
             this.loader = loader;
-            this.environments = environments;
+            this.environmentManager = environmentManager;
             this.frameworkManager = frameworkManager;
         }
 
         /// <inheritdoc />
         public ITestHarness CreateHarness()
         {
-            var harness = new DefaultTestHarness(contextTracker, loader, frameworkManager);
-
-            foreach (ITestEnvironment environment in environments)
-                harness.AddTestEnvironment(environment);
+            var harness = new DefaultTestHarness(contextTracker, loader, environmentManager, frameworkManager);
 
             return harness;
         }

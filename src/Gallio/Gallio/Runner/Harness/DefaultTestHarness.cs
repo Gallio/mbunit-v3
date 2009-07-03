@@ -45,11 +45,10 @@ namespace Gallio.Runner.Harness
     {
         private readonly ITestContextTracker contextTracker;
         private readonly ILoader loader;
+        private readonly ITestEnvironmentManager environmentManager;
         private readonly ITestFrameworkManager frameworkManager;
 
         private bool isDisposed;
-
-        private List<ITestEnvironment> environments;
 
         private string workingDirectory;
         private TestExplorationContext explorationContext;
@@ -60,24 +59,27 @@ namespace Gallio.Runner.Harness
         /// </summary>
         /// <param name="contextTracker">The test context tracker.</param>
         /// <param name="loader">The loader.</param>
+        /// <param name="environmentManager">The test environments manager.</param>
         /// <param name="frameworkManager">The test framework manager.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="contextTracker"/>,
-        /// <paramref name="loader "/> or <paramref name="frameworkManager"/> is null.</exception>
+        /// <paramref name="loader "/>, <paramref name="environmentManager"/>
+        /// or <paramref name="frameworkManager"/> is null.</exception>
         public DefaultTestHarness(ITestContextTracker contextTracker, ILoader loader,
-            ITestFrameworkManager frameworkManager)
+            ITestEnvironmentManager environmentManager, ITestFrameworkManager frameworkManager)
         {
             if (contextTracker == null)
                 throw new ArgumentNullException("contextTracker");
             if (loader == null)
                 throw new ArgumentNullException("loader");
+            if (environmentManager == null)
+                throw new ArgumentNullException("environmentManager");
             if (frameworkManager == null)
                 throw new ArgumentNullException("frameworkManager");
 
             this.contextTracker = contextTracker;
             this.loader = loader;
+            this.environmentManager = environmentManager;
             this.frameworkManager = frameworkManager;
-
-            environments = new List<ITestEnvironment>();
         }
 
         /// <inheritdoc />
@@ -89,7 +91,6 @@ namespace Gallio.Runner.Harness
 
                 explorationContext = null;
                 model = null;
-                environments = null;
             }
         }
 
@@ -111,16 +112,6 @@ namespace Gallio.Runner.Harness
                 ThrowIfDisposed();
                 return model;
             }
-        }
-
-        /// <inheritdoc />
-        public void AddTestEnvironment(ITestEnvironment environment)
-        {
-            if (environment == null)
-                throw new ArgumentNullException(@"environment");
-
-            ThrowIfDisposed();
-            environments.Add(environment);
         }
 
         /// <inheritdoc />
@@ -249,29 +240,30 @@ namespace Gallio.Runner.Harness
             {
                 using (SwitchWorkingDirectory())
                 {
-                    var environmentStates = new List<IDisposable>();
+                    IDisposable environmentState = null;
                     try
                     {
                         progressMonitor.SetStatus("Setting up the test environment.");
-                        foreach (ITestEnvironment environment in environments)
-                            environmentStates.Add(environment.SetUp());
-                        progressMonitor.Worked(5);
+                        environmentState = environmentManager.SetUpAppDomain();
+                        progressMonitor.Worked(1);
 
                         progressMonitor.SetStatus("Sorting tests.");
-                        ObservableTestContextManager contextManager = new ObservableTestContextManager(contextTracker, testExecutionListener);
-                        ITestCommand rootTestCommand = TestCommandFactory.BuildCommands(model, testExecutionOptions.FilterSet, testExecutionOptions.ExactFilter, contextManager);
-                        progressMonitor.Worked(5);
+                        ObservableTestContextManager contextManager =
+                            new ObservableTestContextManager(contextTracker, testExecutionListener);
+                        ITestCommand rootTestCommand = TestCommandFactory.BuildCommands(model,
+                            testExecutionOptions.FilterSet, testExecutionOptions.ExactFilter, contextManager);
+                        progressMonitor.Worked(2);
                         progressMonitor.SetStatus(@"");
 
-                        using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(85))
+                        using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(96))
                             RunAllTestCommands(rootTestCommand, testExecutionOptions, subProgressMonitor);
                     }
                     finally
                     {
                         progressMonitor.SetStatus("Tearing down the test environment.");
-                        foreach (IDisposable environmentState in environmentStates)
+                        if (environmentState != null)
                             environmentState.Dispose();
-                        progressMonitor.Worked(5);
+                        progressMonitor.Worked(1);
                         progressMonitor.SetStatus(@"");
                     }
                 }
@@ -301,7 +293,10 @@ namespace Gallio.Runner.Harness
             {
                 try
                 {
-                    action();
+                    using (environmentManager.SetUpThread())
+                    {
+                        action();
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -310,7 +305,7 @@ namespace Gallio.Runner.Harness
             }
             else
             {
-                var task = new ThreadTask("Test Runner", action);
+                var task = new TestThreadTask("Test Runner", action, environmentManager);
 
                 // Use STA as the default for all tests.  A test framework may of course choose
                 // to create its own threads with different apartment states.

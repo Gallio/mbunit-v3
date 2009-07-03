@@ -34,19 +34,19 @@ namespace Gallio.Common.Concurrency
         /// <summary>
         /// Creates a task that will execute code within a new locally running thread.
         /// When the task terminates successfully, its result will contain the value
-        /// returned by <paramref name="action"/>.
+        /// returned by <paramref name="func"/>.
         /// </summary>
         /// <param name="name">The name of the task.</param>
-        /// <param name="action">The action to perform within the thread.</param>
+        /// <param name="func">The function to perform within the thread.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> 
-        /// or <paramref name="action"/> is null.</exception>
-        public ThreadTask(string name, Func<object> action)
+        /// or <paramref name="func"/> is null.</exception>
+        public ThreadTask(string name, Func<object> func)
             : base(name)
         {
-            if (action == null)
-                throw new ArgumentNullException("action");
+            if (func == null)
+                throw new ArgumentNullException("func");
 
-            invoker = new Invoker(action);
+            invoker = new Invoker(func);
         }
 
         /// <summary>
@@ -94,6 +94,30 @@ namespace Gallio.Common.Concurrency
         public Thread Thread
         {
             get { return thread; }
+        }
+        
+        /// <summary>
+        /// Performs an action within the thread before the task's main action runs.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// The default implementation does nothing but may be overridden to introduce new behaviors.
+        /// </para>
+        /// </remarks>
+        protected virtual void BeforeTask()
+        {
+        }
+
+        /// <summary>
+        /// Performs an action within the thread after the task's main action runs.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// The default implementation does nothing but may be overridden to introduce new behaviors.
+        /// </para>
+        /// </remarks>
+        protected virtual void AfterTask()
+        {
         }
 
         /// <inheritdoc />
@@ -143,15 +167,24 @@ namespace Gallio.Common.Concurrency
             {
                 try
                 {
-                    ThreadAbortException ex = threadAbortScope.Run(invoker.Invoke);
+                    try
+                    {
+                        BeforeTask();
 
-                    if (ex != null)
-                    {
-                        NotifyTerminated(TaskResult.CreateFromException(ex));
+                        ThreadAbortException ex = threadAbortScope.Run(invoker.Invoke);
+
+                        if (ex != null)
+                        {
+                            NotifyTerminated(TaskResult.CreateFromException(ex));
+                        }
+                        else
+                        {
+                            NotifyTerminated(TaskResult.CreateFromValue(invoker.Result));
+                        }
                     }
-                    else
+                    finally
                     {
-                        NotifyTerminated(TaskResult.CreateFromValue(invoker.Result));
+                        AfterTask();
                     }
                 }
                 catch (Exception ex)

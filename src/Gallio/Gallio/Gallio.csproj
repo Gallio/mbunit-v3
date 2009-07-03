@@ -232,7 +232,12 @@
     <Compile Include="Runner\Extensions\NamespaceDoc.cs" />
     <Compile Include="Runner\Extensions\TestRunnerExtensionFactoryTraits.cs" />
     <Compile Include="Runner\Extensions\DefaultTestRunnerExtensionManager.cs" />
+    <Compile Include="Runner\Harness\BaseTestEnvironment.cs" />
+    <Compile Include="Runner\Harness\DefaultTestEnvironmentManager.cs" />
+    <Compile Include="Runner\Harness\TestEnvironmentTraits.cs" />
+    <Compile Include="Runner\Harness\ITestEnvironmentManager.cs" />
     <Compile Include="Runner\Harness\NamespaceDoc.cs" />
+    <Compile Include="Runner\Harness\TestThreadTask.cs" />
     <Compile Include="Runner\Harness\WindowsFormsTestEnvironment.cs" />
     <Compile Include="Runner\NamespaceDoc.cs" />
     <Compile Include="Runner\Projects\NamespaceDoc.cs" />

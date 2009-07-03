@@ -22,10 +22,10 @@ namespace Gallio.Runner.Harness
     /// <summary>
     /// Logs unhandled exceptions instead of killing the AppDomain.
     /// </summary>
-    public class UnhandledExceptionTestEnvironment : ITestEnvironment
+    public class UnhandledExceptionTestEnvironment : BaseTestEnvironment
     {
         /// <inheritdoc />
-        public IDisposable SetUp()
+        public override IDisposable SetUpAppDomain()
         {
             return new State();
         }

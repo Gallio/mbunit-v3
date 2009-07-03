@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using Gallio.Runner.Harness;
 using Gallio.Runtime.Conversions;
 using Gallio.Runtime.Formatting;
 using Gallio.Model.Execution;
@@ -30,23 +31,28 @@ namespace Gallio.Framework.Pattern
     {
         private readonly IConverter converter;
         private readonly IFormatter formatter;
+        private readonly ITestEnvironmentManager environmentManager;
 
         /// <summary>
         /// Creates a pattern test controller.
         /// </summary>
         /// <param name="formatter">The formatter for data binding.</param>
         /// <param name="converter">The converter for data binding.</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="formatter"/>
-        /// or <paramref name="converter"/> is null.</exception>
-        public PatternTestController(IFormatter formatter, IConverter converter)
+        /// <param name="environmentManager">The test environment manager.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="formatter"/>,
+        /// <paramref name="converter"/> or <paramref name="environmentManager"/> is null.</exception>
+        public PatternTestController(IFormatter formatter, IConverter converter, ITestEnvironmentManager environmentManager)
         {
             if (formatter == null)
                 throw new ArgumentNullException("formatter");
             if (converter == null)
                 throw new ArgumentNullException("converter");
+            if (environmentManager == null)
+                throw new ArgumentNullException("environmentManager");
 
             this.formatter = formatter;
             this.converter = converter;
+            this.environmentManager = environmentManager;
         }
 
         /// <inheritdoc />
@@ -66,7 +72,7 @@ namespace Gallio.Framework.Pattern
 
                     TestAssemblyExecutionParameters.Reset();
 
-                    PatternTestExecutor executor = new PatternTestExecutor(options, progressMonitor, formatter, converter);
+                    PatternTestExecutor executor = new PatternTestExecutor(options, progressMonitor, formatter, converter, environmentManager);
                     return executor.RunTest(rootTestCommand, parentTestStep, sandbox, null);
                 }
                 finally

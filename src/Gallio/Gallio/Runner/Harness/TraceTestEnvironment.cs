@@ -22,10 +22,10 @@ namespace Gallio.Runner.Harness
     /// <summary>
     /// Sets up trace listeners.
     /// </summary>
-    public class TraceTestEnvironment : ITestEnvironment
+    public class TraceTestEnvironment : BaseTestEnvironment
     {
         /// <inheritdoc />
-        public IDisposable SetUp()
+        public override IDisposable SetUpAppDomain()
         {
             return new State();
         }
