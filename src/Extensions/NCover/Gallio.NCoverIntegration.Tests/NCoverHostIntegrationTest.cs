@@ -27,6 +27,7 @@ using MbUnit.TestResources;
 
 namespace Gallio.NCoverIntegration.Tests
 {
+    [Ignore("Ignore for v3.0.6, some issues fixed in v3.1")]
     [TestFixture]
     [TestsOn(typeof(NCoverHost))]
     [TestsOn(typeof(NCoverHostFactory))]
@@ -72,8 +73,7 @@ namespace Gallio.NCoverIntegration.Tests
 
             if (majorVersion != 0 && !NCoverTool.IsNCoverVersionInstalled(majorVersion))
             {
-                // Disabled in v3.0.6 branch because of another bug that has been fixed in v3.1 but will not be fixed here.
-		// Assert.AreEqual(ResultCode.Failure, result.ResultCode);
+		Assert.AreEqual(ResultCode.Failure, result.ResultCode);
 
                 var annotations = result.Report.TestModel.Annotations;
                 Assert.AreEqual(1, annotations.Count);
