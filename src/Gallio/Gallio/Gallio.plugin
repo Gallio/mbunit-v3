@@ -184,6 +184,10 @@
                serviceId="Gallio.TestEnvironment"
                componentType="Gallio.Runner.Harness.UnhandledExceptionTestEnvironment, Gallio" />
 
+    <component componentId="Gallio.WindowsFormsTestEnvironment"
+               serviceId="Gallio.TestEnvironment"
+               componentType="Gallio.Runner.Harness.WindowsFormsTestEnvironment, Gallio" />
+
     <component componentId="Gallio.ReportManager"
                serviceId="Gallio.ReportManager"
                componentType="Gallio.Runner.Reports.DefaultReportManager, Gallio" />

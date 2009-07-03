@@ -233,6 +233,7 @@
     <Compile Include="Runner\Extensions\TestRunnerExtensionFactoryTraits.cs" />
     <Compile Include="Runner\Extensions\DefaultTestRunnerExtensionManager.cs" />
     <Compile Include="Runner\Harness\NamespaceDoc.cs" />
+    <Compile Include="Runner\Harness\WindowsFormsTestEnvironment.cs" />
     <Compile Include="Runner\NamespaceDoc.cs" />
     <Compile Include="Runner\Projects\NamespaceDoc.cs" />
     <Compile Include="Runner\Reports\NamespaceDoc.cs" />
