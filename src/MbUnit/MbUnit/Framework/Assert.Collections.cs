@@ -672,6 +672,118 @@ namespace MbUnit.Framework
         }
         #endregion
 
+        #region ForAll
+
+        /// <summary>
+        /// Verifies that all the elements of the sequence meet the specified condition.
+        /// </summary>
+        /// <typeparam name="T">The type of values in the sequence.</typeparam>
+        /// <param name="values">The sequence of values to evaluate.</param>
+        /// <param name="condition">The condition that must be fulfilled (returns <c>true</c>) by all the elements of the sequence.</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
+        public static void ForAll<T>(IEnumerable<T> values, Func<T, bool> condition)
+        {
+            ForAll(values, condition, null, null);
+        }
+
+        /// <summary>
+        /// Verifies that all the elements of the sequence meet the specified condition.
+        /// </summary>
+        /// <typeparam name="T">The type of values in the sequence.</typeparam>
+        /// <param name="values">The sequence of values to evaluate.</param>
+        /// <param name="condition">The condition that must be fulfilled (returns <c>true</c>) by all the elements of the sequence.</param>
+        /// <param name="messageFormat">The custom assertion message format, or null if none.</param>
+        /// <param name="messageArgs">The custom assertion message arguments, or null if none.</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
+        public static void ForAll<T>(IEnumerable<T> values, Func<T, bool> condition, string messageFormat, params object[] messageArgs)
+        {
+            if (condition == null)
+                throw new ArgumentNullException("condition");
+
+            AssertionHelper.Verify(() =>
+            {
+                if (values == null)
+                    return null;
+
+                var failing = new List<int>();
+                int index = 0;
+                IEnumerator<T> enumerator = values.GetEnumerator();
+
+                while (enumerator.MoveNext())
+                {
+                    if (!condition(enumerator.Current))
+                        failing.Add(index);
+
+                    index++;
+                }
+
+                if (failing.Count == 0)
+                    return null;
+
+                var builder = new AssertionFailureBuilder("Expected all the elements of the sequence to meet the specified condition, but at least one failed.")
+                    .SetMessage(messageFormat, messageArgs)
+                    .AddRawLabeledValue("Number of failing elements", failing.Count);
+                    
+                var elements = new List<T>(values);
+
+                for (int i = 0; i < failing.Count; i++)
+                    builder.AddRawLabeledValue(String.Format("Element #{0}", failing[i]), elements[failing[i]]);
+
+                return builder.ToAssertionFailure();
+            });
+        }
+
+        #endregion
+
+        #region Exists
+
+        /// <summary>
+        /// Verifies that at least one element of the sequence meets the specified condition.
+        /// </summary>
+        /// <typeparam name="T">The type of values in the sequence.</typeparam>
+        /// <param name="values">The sequence of values to evaluate.</param>
+        /// <param name="condition">The condition that must be fulfilled (returns <c>true</c>) by at least one element of the sequence.</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
+        public static void Exists<T>(IEnumerable<T> values, Func<T, bool> condition)
+        {
+            Exists(values, condition, null, null);
+        }
+
+        /// <summary>
+        /// Verifies that at least one element of the sequence meets the specified condition.
+        /// </summary>
+        /// <typeparam name="T">The type of values in the sequence.</typeparam>
+        /// <param name="values">The sequence of values to evaluate.</param>
+        /// <param name="condition">The condition that must be fulfilled (returns <c>true</c>) by at least one element of the sequence.</param>
+        /// <param name="messageFormat">The custom assertion message format, or null if none.</param>
+        /// <param name="messageArgs">The custom assertion message arguments, or null if none.</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
+        public static void Exists<T>(IEnumerable<T> values, Func<T, bool> condition, string messageFormat, params object[] messageArgs)
+        {
+            if (condition == null)
+                throw new ArgumentNullException("condition");
+
+            AssertionHelper.Verify(() =>
+            {
+                if (values == null)
+                    return null;
+
+                IEnumerator<T> enumerator = values.GetEnumerator();
+
+                while (enumerator.MoveNext())
+                {
+                    if (condition(enumerator.Current))
+                        return null;
+                }
+
+                return new AssertionFailureBuilder("Expected at least one element of the sequence to meet the specified condition, but none passed.")
+                    .SetMessage(messageFormat, messageArgs)
+                    .ToAssertionFailure();
+            });
+        }
+
+        #endregion
+
         internal static int CountRemainingElements(IEnumerator enumerator)
         {
             int count = 0;

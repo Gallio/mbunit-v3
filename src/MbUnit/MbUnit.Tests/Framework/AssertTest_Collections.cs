@@ -255,5 +255,45 @@ namespace MbUnit.Tests.Framework
             Assert.AreEqual("custom message.", failures[0].Message);
         }
         #endregion
+
+        #region ForAll
+
+        [Test]
+        public void ForAll_should_pass()
+        {
+            var data = new[] { "Athos", "Porthos", "Aramis" };
+            Assert.ForAll(data, x => x.Contains("a") || x.Contains("o"));
+        }
+
+        [Test]
+        public void ForAll_should_fail()
+        {
+            var data = new[] { "Athos", "Porthos", "Aramis" };
+            AssertionFailure[] failures = Capture(() => Assert.ForAll(data, x => x.StartsWith("A")));
+            Assert.AreEqual(1, failures.Length);
+            Assert.AreEqual("Expected all the elements of the sequence to meet the specified condition, but at least one failed.", failures[0].Description);
+        }
+
+        #endregion
+
+        #region Exists
+
+        [Test]
+        public void Exists_should_pass()
+        {
+            var data = new[] { "Athos", "Porthos", "Aramis" };
+            Assert.Exists(data, x => x.Contains("th"));
+        }
+
+        [Test]
+        public void Exists_should_fail()
+        {
+            var data = new[] { "Athos", "Porthos", "Aramis" };
+            AssertionFailure[] failures = Capture(() => Assert.Exists(data, x => x == "D'Artagnan"));
+            Assert.AreEqual(1, failures.Length);
+            Assert.AreEqual("Expected at least one element of the sequence to meet the specified condition, but none passed.", failures[0].Description);
+        }
+
+        #endregion
     }
 }
