@@ -32,7 +32,7 @@ namespace Gallio.Framework.Data.Generation
         /// Gets or sets the filter function that can be used
         /// to reject or accept generated values.
         /// </summary>
-        public Func<T, bool> Filter
+        public Predicate<T> Filter
         {
             get;
             set;

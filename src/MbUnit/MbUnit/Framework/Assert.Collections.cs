@@ -679,11 +679,11 @@ namespace MbUnit.Framework
         /// </summary>
         /// <typeparam name="T">The type of values in the sequence.</typeparam>
         /// <param name="values">The sequence of values to evaluate.</param>
-        /// <param name="condition">The condition that must be fulfilled (returns <c>true</c>) by all the elements of the sequence.</param>
+        /// <param name="predicate">The condition that must be fulfilled (returns <c>true</c>) by all the elements of the sequence.</param>
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
-        public static void ForAll<T>(IEnumerable<T> values, Func<T, bool> condition)
+        public static void ForAll<T>(IEnumerable<T> values, Predicate<T> predicate)
         {
-            ForAll(values, condition, null, null);
+            ForAll(values, predicate, null, null);
         }
 
         /// <summary>
@@ -691,45 +691,35 @@ namespace MbUnit.Framework
         /// </summary>
         /// <typeparam name="T">The type of values in the sequence.</typeparam>
         /// <param name="values">The sequence of values to evaluate.</param>
-        /// <param name="condition">The condition that must be fulfilled (returns <c>true</c>) by all the elements of the sequence.</param>
+        /// <param name="predicate">The condition that must be fulfilled (returns <c>true</c>) by all the elements of the sequence.</param>
         /// <param name="messageFormat">The custom assertion message format, or null if none.</param>
         /// <param name="messageArgs">The custom assertion message arguments, or null if none.</param>
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
-        public static void ForAll<T>(IEnumerable<T> values, Func<T, bool> condition, string messageFormat, params object[] messageArgs)
+        public static void ForAll<T>(IEnumerable<T> values, Predicate<T> predicate, string messageFormat, params object[] messageArgs)
         {
-            if (condition == null)
-                throw new ArgumentNullException("condition");
+            if (values == null)
+                throw new ArgumentNullException("values");
+            if (predicate == null)
+                throw new ArgumentNullException("predicate");
 
             AssertionHelper.Verify(() =>
             {
-                if (values == null)
-                    return null;
+                var failing = new List<T>();
 
-                var failing = new List<int>();
-                int index = 0;
-                IEnumerator<T> enumerator = values.GetEnumerator();
-
-                while (enumerator.MoveNext())
+                foreach (T value in values)
                 {
-                    if (!condition(enumerator.Current))
-                        failing.Add(index);
-
-                    index++;
+                    if (!predicate(value))
+                        failing.Add(value);
                 }
 
                 if (failing.Count == 0)
                     return null;
 
-                var builder = new AssertionFailureBuilder("Expected all the elements of the sequence to meet the specified condition, but at least one failed.")
+                return new AssertionFailureBuilder("Expected all the elements of the sequence to meet the specified condition, but at least one failed.")
                     .SetMessage(messageFormat, messageArgs)
-                    .AddRawLabeledValue("Number of failing elements", failing.Count);
-                    
-                var elements = new List<T>(values);
-
-                for (int i = 0; i < failing.Count; i++)
-                    builder.AddRawLabeledValue(String.Format("Element #{0}", failing[i]), elements[failing[i]]);
-
-                return builder.ToAssertionFailure();
+                    .AddRawLabeledValue("Sequence", values)
+                    .AddRawLabeledValue("Failing elements", failing)
+                    .ToAssertionFailure();
             });
         }
 
@@ -742,11 +732,11 @@ namespace MbUnit.Framework
         /// </summary>
         /// <typeparam name="T">The type of values in the sequence.</typeparam>
         /// <param name="values">The sequence of values to evaluate.</param>
-        /// <param name="condition">The condition that must be fulfilled (returns <c>true</c>) by at least one element of the sequence.</param>
+        /// <param name="predicate">The condition that must be fulfilled (returns <c>true</c>) by at least one element of the sequence.</param>
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
-        public static void Exists<T>(IEnumerable<T> values, Func<T, bool> condition)
+        public static void Exists<T>(IEnumerable<T> values, Predicate<T> predicate)
         {
-            Exists(values, condition, null, null);
+            Exists(values, predicate, null, null);
         }
 
         /// <summary>
@@ -754,25 +744,22 @@ namespace MbUnit.Framework
         /// </summary>
         /// <typeparam name="T">The type of values in the sequence.</typeparam>
         /// <param name="values">The sequence of values to evaluate.</param>
-        /// <param name="condition">The condition that must be fulfilled (returns <c>true</c>) by at least one element of the sequence.</param>
+        /// <param name="predicate">The condition that must be fulfilled (returns <c>true</c>) by at least one element of the sequence.</param>
         /// <param name="messageFormat">The custom assertion message format, or null if none.</param>
         /// <param name="messageArgs">The custom assertion message arguments, or null if none.</param>
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
-        public static void Exists<T>(IEnumerable<T> values, Func<T, bool> condition, string messageFormat, params object[] messageArgs)
+        public static void Exists<T>(IEnumerable<T> values, Predicate<T> predicate, string messageFormat, params object[] messageArgs)
         {
-            if (condition == null)
-                throw new ArgumentNullException("condition");
+            if (values == null)
+                throw new ArgumentNullException("values");
+            if (predicate == null)
+                throw new ArgumentNullException("predicate");
 
             AssertionHelper.Verify(() =>
             {
-                if (values == null)
-                    return null;
-
-                IEnumerator<T> enumerator = values.GetEnumerator();
-
-                while (enumerator.MoveNext())
+                foreach (T value in values)
                 {
-                    if (condition(enumerator.Current))
+                    if (predicate(value))
                         return null;
                 }
 

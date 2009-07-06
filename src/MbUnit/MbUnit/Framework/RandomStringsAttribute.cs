@@ -207,7 +207,7 @@ namespace MbUnit.Framework
             }
         }
 
-        private Func<string, bool> MakeFilterInvoker(IPatternScope scope)
+        private Predicate<string> MakeFilterInvoker(IPatternScope scope)
         {
             if (Filter == null)
                 return null;

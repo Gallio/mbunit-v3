@@ -161,7 +161,6 @@
     <Compile Include="Framework\ContractVerifiers\AbstractContractTest.cs" />
     <Compile Include="Framework\ContractVerifiers\ComparisonContractTest.cs" />
     <Compile Include="Framework\ContractVerifiers\AccessorContractTest.cs" />
-    <Compile Include="Framework\ContractVerifiers\ArgumentValidationContractTest.cs" />
     <Compile Include="Framework\ContractVerifiers\InvalidValuesClassCollectionTest.cs" />
     <Compile Include="Framework\ContractVerifiers\InvalidValuesClassTest.cs" />
     <Compile Include="Framework\ContractVerifiers\Core\ContractVerificationContextTest.cs" />

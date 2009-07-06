@@ -169,7 +169,7 @@ namespace MbUnit.Framework
             }
         }
 
-        private Func<decimal, bool> MakeFilterInvoker(IPatternScope scope)
+        private Predicate<decimal> MakeFilterInvoker(IPatternScope scope)
         {
             if (Filter == null)
                 return null;
