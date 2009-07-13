@@ -94,7 +94,7 @@ namespace MbUnit.Framework
                 throw new ArgumentNullException("declaringCodeElement");
             if (tests == null)
                 throw new ArgumentNullException("tests");
-            if (GenericCollectionUtils.Find(tests, test => test == null) != null)
+            if (GenericCollectionUtils.Exists(tests, test => test == null))
                 throw new ArgumentNullException("tests", "Test enumeration should not contain null.");
 
             // HACK: Preserve exact test ordering.  No easy way to decorate all newly created tests at this time
@@ -127,7 +127,7 @@ namespace MbUnit.Framework
                 throw new ArgumentNullException("declaringCodeElement");
             if (tests == null)
                 throw new ArgumentNullException("tests");
-            if (GenericCollectionUtils.Find(tests, test => test == null) != null)
+            if (GenericCollectionUtils.Exists(tests, test => test == null))
                 throw new ArgumentNullException("tests", "Test enumeration should not contain null.");
 
             TestOutcome combinedOutcome = TestOutcome.Passed;

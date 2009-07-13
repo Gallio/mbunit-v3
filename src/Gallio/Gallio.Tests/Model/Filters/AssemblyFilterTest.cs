@@ -21,15 +21,14 @@ using System;
 using Gallio.Model.Filters;
 using Gallio.Model;
 using Rhino.Mocks;
-using ITestComponent=Gallio.Model.ITestComponent;
 
 namespace Gallio.Tests.Model.Filters
 {
     [TestFixture]
-    [TestsOn(typeof(AssemblyFilter<ITestComponent>))]
+    [TestsOn(typeof(AssemblyFilter<ITestDescriptor>))]
     public class AssemblyFilterTest : BaseTestWithMocks, ITypeFilterTest
     {
-        private ITestComponent component;
+        private ITestDescriptor component;
 
         [SetUp]
         public override void SetUp()
@@ -37,7 +36,7 @@ namespace Gallio.Tests.Model.Filters
             base.SetUp();
 
             ICodeElementInfo codeElement = Reflector.Wrap(typeof(TypeFilterTest));
-            component = Mocks.StrictMock<ITestComponent>();
+            component = Mocks.StrictMock<ITestDescriptor>();
             SetupResult.For(component.CodeElement).Return(codeElement);
             Mocks.ReplayAll();
         }
@@ -47,7 +46,7 @@ namespace Gallio.Tests.Model.Filters
         [Row(false, typeof(Int32))]
         public void IsMatchWithFullName(bool expectedMatch, Type type)
         {
-            Assert.AreEqual(expectedMatch, new AssemblyFilter<ITestComponent>(
+            Assert.AreEqual(expectedMatch, new AssemblyFilter<ITestDescriptor>(
                 new EqualityFilter<string>(type.Assembly.FullName)).IsMatch(component));
         }
 
@@ -56,7 +55,7 @@ namespace Gallio.Tests.Model.Filters
         [Row(false, typeof(Int32))]
         public void IsMatchWithDisplayName(bool expectedMatch, Type type)
         {
-            Assert.AreEqual(expectedMatch, new AssemblyFilter<ITestComponent>(
+            Assert.AreEqual(expectedMatch, new AssemblyFilter<ITestDescriptor>(
                 new EqualityFilter<string>(type.Assembly.GetName().Name)).IsMatch(component));
         }
 
@@ -66,7 +65,7 @@ namespace Gallio.Tests.Model.Filters
         public void ToStringTest(bool expectedMatch, Type type)
         {
             string assemblyName = type.Assembly.GetName().Name;
-            AssemblyFilter<ITestComponent> filter = new AssemblyFilter<ITestComponent>(
+            AssemblyFilter<ITestDescriptor> filter = new AssemblyFilter<ITestDescriptor>(
                 new EqualityFilter<string>(assemblyName));
             Assert.AreEqual("Assembly(Equality('" + assemblyName + "'))", filter.ToString());
         }

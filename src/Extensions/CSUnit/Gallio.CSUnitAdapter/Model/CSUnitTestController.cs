@@ -23,10 +23,13 @@ using csUnit.Interfaces;
 using Gallio.Common.Collections;
 using Gallio.CSUnitAdapter.Properties;
 using Gallio.Model;
-using Gallio.Model.Execution;
+using Gallio.Model.Commands;
+using Gallio.Model.Contexts;
 using Gallio.Common.Markup;
 using Gallio.Common.Reflection;
-using Gallio.Runner.Harness;
+using Gallio.Model.Helpers;
+using Gallio.Model.Tree;
+using Gallio.Model.Environments;
 using Gallio.Runtime;
 using Gallio.Runtime.Debugging;
 using Gallio.Runtime.Hosting;
@@ -36,7 +39,7 @@ using ITestListener=csUnit.Interfaces.ITestListener;
 
 namespace Gallio.CSUnitAdapter.Model
 {
-    internal class CSUnitTestController : BaseTestController
+    internal class CSUnitTestController : TestController
     {
         private readonly string assemblyLocation;
 
@@ -49,7 +52,7 @@ namespace Gallio.CSUnitAdapter.Model
         }
 
         /// <inheritdoc />
-        protected override TestOutcome RunTestsImpl(ITestCommand rootTestCommand, ITestStep parentTestStep, TestExecutionOptions options, IProgressMonitor progressMonitor)
+        protected override TestOutcome RunImpl(ITestCommand rootTestCommand, TestStep parentTestStep, TestExecutionOptions options, IProgressMonitor progressMonitor)
         {
             IList<ITestCommand> testCommands = rootTestCommand.GetAllCommands();
             using (progressMonitor.BeginTask(Resources.CSUnitTestController_RunningCSUnitTests, testCommands.Count))
@@ -75,7 +78,7 @@ namespace Gallio.CSUnitAdapter.Model
         public class RunnerMonitor : LongLivedMarshalByRefObject, ITestListener, ITestSpec, IDisposable
         {
             private readonly IProgressMonitor progressMonitor;
-            private readonly ITestStep topTestStep;
+            private readonly TestStep topTestStep;
 
             private readonly Stack<ITestContext> testContextStack;
             private readonly Dictionary<string, ITestCommand> testCommandsByName;
@@ -88,7 +91,7 @@ namespace Gallio.CSUnitAdapter.Model
             private int assemblyErrorCount;
             private int fixtureErrorCount;
 
-            public RunnerMonitor(IList<ITestCommand> testCommands, ITestStep topTestStep, IProgressMonitor progressMonitor)
+            public RunnerMonitor(IList<ITestCommand> testCommands, TestStep topTestStep, IProgressMonitor progressMonitor)
             {
                 if (topTestStep == null)
                     throw new ArgumentNullException("topTestStep");
@@ -170,7 +173,7 @@ namespace Gallio.CSUnitAdapter.Model
 
             private void RunTests(string assemblyPath)
             {
-                AssemblyMetadata assemblyMetadata = AssemblyUtils.GetAssemblyMetadata(assemblyPath);
+                AssemblyMetadata assemblyMetadata = AssemblyUtils.GetAssemblyMetadata(assemblyPath, AssemblyMetadataFields.Default);
                 if (assemblyMetadata == null)
                 {
                     ITestContext testContext = listOfTestCommands[0].StartPrimaryChildStep(topTestStep);
@@ -469,7 +472,7 @@ namespace Gallio.CSUnitAdapter.Model
                 ITestContext parentContext = testContextStack.Peek();
                 if (parentContext.TestStep.Test != fixtureCommand.Test)
                 {
-                    while (((BaseTest)parentContext.TestStep.Test).Kind != "Assembly")
+                    while (((Test)parentContext.TestStep.Test).Kind != "Assembly")
                     {
                         testContextStack.Pop();
 

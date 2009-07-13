@@ -22,6 +22,7 @@ using System.IO;
 using System.Reflection;
 using Gallio.Model;
 using Gallio.Common.Reflection;
+using Gallio.Model.Tree;
 using AssemblyDependsOnAttribute2 = MbUnit2::MbUnit.Framework.AssemblyDependsOnAttribute;
 using TestFixturePatternAttribute2 = MbUnit2::MbUnit.Core.Framework.TestFixturePatternAttribute;
 using TestFixtureAttribute2 = MbUnit2::MbUnit.Framework.TestFixtureAttribute;
@@ -51,15 +52,15 @@ namespace Gallio.MbUnit2Adapter.Model
     /// <seealso cref="MbUnit2NativeTestExplorer"/>
     internal static class MbUnit2ReflectiveTestExplorer
     {
-        public static ITest BuildAssemblyTest(TestModel testModel, IAssemblyInfo assembly, ICollection<KeyValuePair<ITest, string>> unresolvedDependencies)
+        public static Test BuildAssemblyTest(TestModel testModel, IAssemblyInfo assembly, ICollection<KeyValuePair<Test, string>> unresolvedDependencies)
         {
-            BaseTest assemblyTest = new BaseTest(assembly.Name, assembly);
+            Test assemblyTest = new Test(assembly.Name, assembly);
             assemblyTest.Kind = TestKinds.Assembly;
 
             MbUnit2MetadataUtils.PopulateAssemblyMetadata(assemblyTest, assembly);
 
             foreach (AssemblyDependsOnAttribute2 attrib in AttributeUtils.GetAttributes<AssemblyDependsOnAttribute2>(assembly, false))
-                unresolvedDependencies.Add(new KeyValuePair<ITest, string>(assemblyTest, attrib.AssemblyName));
+                unresolvedDependencies.Add(new KeyValuePair<Test, string>(assemblyTest, attrib.AssemblyName));
 
             foreach (ITypeInfo type in assembly.GetExportedTypes())
                 BuildFixturesFromType(testModel, assemblyTest, type);
@@ -67,7 +68,7 @@ namespace Gallio.MbUnit2Adapter.Model
             return assemblyTest;
         }
 
-        private static void BuildFixturesFromType(TestModel testModel, ITest parent, ITypeInfo type)
+        private static void BuildFixturesFromType(TestModel testModel, Test parent, ITypeInfo type)
         {
             try
             {
@@ -81,9 +82,9 @@ namespace Gallio.MbUnit2Adapter.Model
             }
         }
 
-        private static void BuildTestFixtureFromPatternAttribute(TestModel testModel, ITest parent, ITypeInfo type, TestFixturePatternAttribute2 attrib)
+        private static void BuildTestFixtureFromPatternAttribute(TestModel testModel, Test parent, ITypeInfo type, TestFixturePatternAttribute2 attrib)
         {
-            BaseTest fixtureTest = new BaseTest(type.Name, type);
+            Test fixtureTest = new Test(type.Name, type);
             fixtureTest.Kind = TestKinds.Fixture;
 
             MbUnit2MetadataUtils.PopulateFixtureMetadata(fixtureTest, type);
@@ -101,7 +102,7 @@ namespace Gallio.MbUnit2Adapter.Model
             parent.AddChild(fixtureTest);
         }
 
-        private static void PopulateTestFixture(TestModel testModel, ITest fixtureTest, ITypeInfo type, TestFixtureAttribute2 fixtureAttrib)
+        private static void PopulateTestFixture(TestModel testModel, Test fixtureTest, ITypeInfo type, TestFixtureAttribute2 fixtureAttrib)
         {
             IMethodInfo setUpMethod = GetMethodWithAttribute<SetUpAttribute2>(type);
             IMethodInfo tearDownMethod = GetMethodWithAttribute<TearDownAttribute2>(type);
@@ -115,7 +116,7 @@ namespace Gallio.MbUnit2Adapter.Model
             }
         }
 
-        private static void BuildTestsFromMethod(TestModel testModel, ITest parent, IMethodInfo method, string namePrefix, string nameSuffix)
+        private static void BuildTestsFromMethod(TestModel testModel, Test parent, IMethodInfo method, string namePrefix, string nameSuffix)
         {
             try
             {
@@ -135,13 +136,13 @@ namespace Gallio.MbUnit2Adapter.Model
             }
         }
 
-        private static void BuildTest(ITest parent, IMethodInfo method, string namePrefix, string nameSuffix,
+        private static void BuildTest(Test parent, IMethodInfo method, string namePrefix, string nameSuffix,
             TestAttribute2 attrib)
         {
             AddChildTest(parent, method, namePrefix, nameSuffix);
         }
 
-        private static void BuildRowTest(ITest parent, IMethodInfo method, string namePrefix, string nameSuffix,
+        private static void BuildRowTest(Test parent, IMethodInfo method, string namePrefix, string nameSuffix,
             RowTestAttribute2 attrib)
         {
             foreach (RowAttribute2 rowAttrib in AttributeUtils.GetAttributes<RowAttribute2>(method, true))
@@ -162,15 +163,15 @@ namespace Gallio.MbUnit2Adapter.Model
             }
         }
 
-        private static void BuildCombinatorialTest(ITest parent, IMethodInfo method, string namePrefix, string nameSuffix,
+        private static void BuildCombinatorialTest(Test parent, IMethodInfo method, string namePrefix, string nameSuffix,
             CombinatorialTestAttribute2 attrib)
         {
             ThrowUnsupportedAttribute(attrib);
         }
 
-        private static void AddChildTest(ITest parent, IMethodInfo method, string namePrefix, string nameSuffix)
+        private static void AddChildTest(Test parent, IMethodInfo method, string namePrefix, string nameSuffix)
         {
-            BaseTest test = new BaseTest(namePrefix + method.Name + nameSuffix, method);
+            Test test = new Test(namePrefix + method.Name + nameSuffix, method);
             test.IsTestCase = true;
             test.Kind = TestKinds.Test;
 

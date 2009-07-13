@@ -19,6 +19,7 @@ using System.Text;
 using System.Threading;
 using Gallio.Model;
 using Gallio.Common.Reflection;
+using Gallio.Model.Tree;
 
 namespace Gallio.Framework.Pattern
 {
@@ -133,12 +134,12 @@ namespace Gallio.Framework.Pattern
         /// intended for display to end-users, it may contain irrelevant details (such as version
         /// numbers) that would reduce its long-term stability.  In that case, a different
         /// local identifier should be selected such as one based on the test's
-        /// <see cref="ITestComponent.CodeElement" /> and an ordering condition among siblings
+        /// <see cref="TestComponent.CodeElement" /> and an ordering condition among siblings
         /// to guarantee uniqueness.
         /// </para>
         /// <para>
         /// The locally unique <see cref="LocalId" /> property may be used to generate the
-        /// globally unique <see cref="ITestComponent.Id" /> property of a test by combining
+        /// globally unique <see cref="TestComponent.Id" /> property of a test by combining
         /// it with the locally unique identifiers of its parents.
         /// </para>
         /// </remarks>
@@ -196,7 +197,7 @@ namespace Gallio.Framework.Pattern
         /// </summary>
         /// <param name="testDependency">The test to add as a dependency.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="testDependency"/> is null.</exception>
-        void AddDependency(ITest testDependency);
+        void AddDependency(Test testDependency);
 
         /// <summary>
         /// Sets the name of the expected exception type.

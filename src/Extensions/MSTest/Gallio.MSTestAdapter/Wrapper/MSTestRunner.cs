@@ -20,10 +20,12 @@ using System.IO;
 using System.Text;
 using System.Xml;
 using Gallio.Model;
-using Gallio.Model.Execution;
+using Gallio.Model.Commands;
+using Gallio.Model.Contexts;
+using Gallio.Model.Tree;
 using Gallio.MSTestAdapter.Model;
 using Gallio.MSTestAdapter.Properties;
-using Gallio.Runtime.Caching;
+using Gallio.Common.Caching;
 using Gallio.Runtime.ProgressMonitoring;
 
 namespace Gallio.MSTestAdapter.Wrapper
@@ -57,7 +59,7 @@ namespace Gallio.MSTestAdapter.Wrapper
         }
 
         public TestOutcome RunSession(ITestContext assemblyContext, MSTestAssembly assemblyTest,
-            ITestCommand assemblyTestCommand, ITestStep parentTestStep, IProgressMonitor progressMonitor)
+            ITestCommand assemblyTestCommand, TestStep parentTestStep, IProgressMonitor progressMonitor)
         {
             IDiskCacheGroup cacheGroup = diskCache.Groups["MSTestAdapter:" + Guid.NewGuid()];
             try
@@ -215,7 +217,7 @@ namespace Gallio.MSTestAdapter.Wrapper
             }
         }
 
-        private static bool ProcessTestCommand(ITestCommand command, ITestStep parentStep, Dictionary<string, MSTestResult> testResults)
+        private static bool ProcessTestCommand(ITestCommand command, TestStep parentStep, Dictionary<string, MSTestResult> testResults)
         {
             ITestContext testContext = command.StartPrimaryChildStep(parentStep);
             MSTest test = (MSTest)command.Test;

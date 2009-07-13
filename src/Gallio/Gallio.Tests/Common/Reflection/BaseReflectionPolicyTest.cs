@@ -18,11 +18,12 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Gallio.Common.Collections;
-using Gallio.Model;
 using Gallio.Common.Reflection;
+using Gallio.Model.Tree;
 using MbUnit.TestResources;
 using MbUnit.TestResources.Reflection;
 using MbUnit.Framework;
+using Test=Gallio.Model.Tree.Test;
 
 namespace Gallio.Tests.Common.Reflection
 {
@@ -178,7 +179,7 @@ namespace Gallio.Tests.Common.Reflection
         {
             VerifyEqualityAndHashcodeContracts<Assembly, IAssemblyInfo>(
                 typeof(ReflectionPolicySample).Assembly,
-                typeof(ITest).Assembly,
+                typeof(Test).Assembly,
                 GetAssembly);
         }
 

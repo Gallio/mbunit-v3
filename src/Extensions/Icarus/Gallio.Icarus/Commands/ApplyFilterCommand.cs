@@ -24,9 +24,9 @@ namespace Gallio.Icarus.Commands
     internal class ApplyFilterCommand : ICommand
     {
         private readonly ITestController testController;
-        private readonly FilterSet<ITest> filterSet;
+        private readonly FilterSet<ITestDescriptor> filterSet;
 
-        public ApplyFilterCommand(ITestController testController, FilterSet<ITest> filterSet)
+        public ApplyFilterCommand(ITestController testController, FilterSet<ITestDescriptor> filterSet)
         {
             this.testController = testController;
             this.filterSet = filterSet;

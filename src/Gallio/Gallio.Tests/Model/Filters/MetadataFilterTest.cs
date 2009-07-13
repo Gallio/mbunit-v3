@@ -20,19 +20,18 @@ using Gallio.Tests;
 using Gallio.Model.Filters;
 using MbUnit.Framework;
 using Rhino.Mocks;
-using ITestComponent=Gallio.Model.ITestComponent;
 
 namespace Gallio.Tests.Model.Filters
 {
     [TestFixture]
-    [TestsOn(typeof(MetadataFilter<ITestComponent>))]
+    [TestsOn(typeof(MetadataFilter<ITestDescriptor>))]
     public class MetadataFilterTest : BaseTestWithMocks
     {
         [Test]
         [ExpectedException(typeof(ArgumentNullException))]
         public void NullArgument()
         {
-            new MetadataFilter<ITestComponent>(null, new EqualityFilter<string>("expectedValue"));
+            new MetadataFilter<ITestDescriptor>(null, new EqualityFilter<string>("expectedValue"));
         }
 
         [Test]
@@ -46,11 +45,11 @@ namespace Gallio.Tests.Model.Filters
             foreach (string value in values)
                 metadata.Add("key", value);
 
-            ITestComponent component = Mocks.StrictMock<ITestComponent>();
+            ITestDescriptor component = Mocks.StrictMock<ITestDescriptor>();
             SetupResult.For(component.Metadata).Return(metadata);
             Mocks.ReplayAll();
 
-            Assert.AreEqual(expectedMatch, new MetadataFilter<ITestComponent>("key",
+            Assert.AreEqual(expectedMatch, new MetadataFilter<ITestDescriptor>("key",
                 new EqualityFilter<string>("expectedValue")).IsMatch(component));
         }
 
@@ -59,7 +58,7 @@ namespace Gallio.Tests.Model.Filters
         [Row("Key1", "Member2")]
         public void ToStringTest(string key, string value)
         {
-            MetadataFilter<ITestComponent> filter = new MetadataFilter<ITestComponent>(key,
+            MetadataFilter<ITestDescriptor> filter = new MetadataFilter<ITestDescriptor>(key,
                 new EqualityFilter<string>(value));
             Assert.AreEqual("Metadata('" + key + "', Equality('" + value + "'))", filter.ToString());
         }

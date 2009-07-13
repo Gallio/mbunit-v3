@@ -1,0 +1,124 @@
+﻿using System;
+using System.Threading;
+using Gallio.Common.Diagnostics;
+using Gallio.Model.Isolation.Messages;
+using Gallio.Common.Messaging;
+using Gallio.Common.Policies;
+using Gallio.Common.Remoting;
+
+namespace Gallio.Model.Isolation
+{
+    /// <summary>
+    /// Manages the client end of a remote connection that runs isolated tasks provided by the server.
+    /// </summary>
+    public class TestIsolationClient : IDisposable
+    {
+        private static readonly TimeSpan PollTimeout = TimeSpan.FromSeconds(2);
+        private static readonly TimeSpan PingInterval = TimeSpan.FromSeconds(5);
+
+        private readonly BinaryIpcClientChannel clientChannel;
+        private readonly BinaryIpcServerChannel serverChannel;
+
+        /// <summary>
+        /// Creates a test isolation client.
+        /// </summary>
+        /// <param name="ipcPortName">The IPC port name.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="ipcPortName"/> is null.</exception>
+        public TestIsolationClient(string ipcPortName)
+        {
+            if (ipcPortName == null)
+                throw new ArgumentNullException("ipcPortName");
+
+            clientChannel = new BinaryIpcClientChannel(ipcPortName);
+            serverChannel = new BinaryIpcServerChannel(ipcPortName + ".ClientCallback");
+        }
+
+        /// <inheritdoc />
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        /// Disposes the client.
+        /// </summary>
+        /// <param name="disposing">True if <see cref="Dispose()"/> was called directly.</param>
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                serverChannel.Dispose();
+                clientChannel.Dispose();
+            }
+        }
+
+        /// <summary>
+        /// Runs isolated tasks until the server shuts down.
+        /// </summary>
+        public void Run()
+        {
+            try
+            {
+                var link = (IMessageExchangeLink)clientChannel.GetService(typeof(IMessageExchangeLink), TestIsolationServer.MessageExchangeLinkServiceName);
+                using (new Timer(dummy => Ping(link), null, TimeSpan.Zero, PingInterval))
+                {
+                    for (; ; )
+                    {
+                        Message message = link.Receive(PollTimeout);
+                        if (message == null)
+                            continue;
+
+                        if (message is ShutdownMessage)
+                            break;
+
+                        RunIsolatedTask(link, (RunIsolatedTaskMessage)message);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                UnhandledExceptionPolicy.Report("An exception occurred while processing messages.  Assuming the server is no longer available.", ex);
+            }
+        }
+
+        private static void Ping(IMessageExchangeLink link)
+        {
+            try
+            {
+                link.Send(new PingMessage());
+            }
+            catch (Exception ex)
+            {
+                UnhandledExceptionPolicy.Report("An exception occurred while sending a ping.  Ignoring it.", ex);
+            }
+        }
+
+        private static void RunIsolatedTask(IMessageExchangeLink link, RunIsolatedTaskMessage message)
+        {
+            object result;
+            try
+            {
+                using (IsolatedTask isolatedTask = (IsolatedTask) Activator.CreateInstance(message.IsolatedTaskType))
+                {
+                    result = isolatedTask.Run(message.Arguments);
+                }
+            }
+            catch (Exception ex)
+            {
+                link.Send(new IsolatedTaskFinishedMessage()
+                {
+                    Id = message.Id,
+                    Exception = new ExceptionData(ex)
+                });
+                return;
+            }
+
+            link.Send(new IsolatedTaskFinishedMessage()
+            {
+                Id = message.Id,
+                Result = result
+            });
+        }
+    }
+}

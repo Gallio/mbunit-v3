@@ -15,8 +15,8 @@
 
 using System;
 using System.Collections.Generic;
-using Gallio.Model;
 using Gallio.Common.Reflection;
+using Gallio.Model.Tree;
 
 namespace Gallio.Framework.Pattern
 {
@@ -25,7 +25,7 @@ namespace Gallio.Framework.Pattern
     /// </summary>
     /// <remarks>
     /// <para>
-    /// It is used by the <see cref="PatternTestExplorer" /> to populate a <see cref="TestModel" />
+    /// It is used by the <see cref="PatternTestDriver" /> to populate a <see cref="TestModel" />
     /// during test enumeration.
     /// </para>
     /// </remarks>

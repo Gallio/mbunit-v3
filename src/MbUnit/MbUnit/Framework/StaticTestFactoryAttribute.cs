@@ -19,6 +19,7 @@ using System.Reflection;
 using Gallio.Framework.Pattern;
 using Gallio.Model;
 using Gallio.Common.Reflection;
+using Gallio.Model.Tree;
 
 namespace MbUnit.Framework
 {

@@ -15,16 +15,16 @@
 
 using System;
 using Gallio.Common;
-using Gallio.Model.Execution;
-using Gallio.Model;
+using Gallio.Model.Commands;
 using Gallio.Common.Reflection;
+using Gallio.Model.Tree;
 
 namespace Gallio.XunitAdapter.Model
 {
     /// <summary>
     /// Wraps an Xunit test.
     /// </summary>
-    internal class XunitTest : BaseTest
+    internal class XunitTest : Test
     {
         private readonly XunitTypeInfoAdapter typeInfo;
         private readonly XunitMethodInfoAdapter methodInfo;
@@ -61,17 +61,6 @@ namespace Gallio.XunitAdapter.Model
         public XunitMethodInfoAdapter MethodInfo
         {
             get { return methodInfo; }
-        }
-
-        /// <inheritdoc />
-        public override Func<ITestController> TestControllerFactory
-        {
-            get { return CreateTestController; }
-        }
-
-        private static ITestController CreateTestController()
-        {
-            return new XunitTestController();
         }
     }
 }

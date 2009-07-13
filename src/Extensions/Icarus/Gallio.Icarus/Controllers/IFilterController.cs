@@ -15,7 +15,7 @@
 
 using System;
 using System.ComponentModel;
-using Gallio.Runner.Projects;
+using Gallio.Runner.Projects.Schema;
 
 namespace Gallio.Icarus.Controllers
 {

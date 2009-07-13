@@ -18,7 +18,7 @@ extern alias MbUnit2;
 using System;
 using Gallio.Common;
 using Gallio.Model;
-using Gallio.Model.Execution;
+using Gallio.Model.Commands;
 using Gallio.Common.Reflection;
 
 using MbUnit2::MbUnit.Core.Remoting;
@@ -48,15 +48,12 @@ namespace Gallio.MbUnit2Adapter.Model
             Kind = TestKinds.Assembly;
         }
 
-        /// <inheritdoc />
-        public override Func<ITestController> TestControllerFactory
+        /// <summary>
+        /// Gets the fixture explorer.
+        /// </summary>
+        public FixtureExplorer FixtureExplorer
         {
-            get { return CreateTestController; }
-        }
-
-        private ITestController CreateTestController()
-        {
-            return new MbUnit2TestController(fixtureExplorer);
+            get { return fixtureExplorer; }
         }
     }
 }

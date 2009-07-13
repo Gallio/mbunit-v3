@@ -49,16 +49,28 @@ namespace Gallio.NCoverIntegration
         /// <inheritdoc />
         protected override ProcessTask CreateProcessTask(string executablePath, string arguments, string workingDirectory)
         {
-            string ncoverArguments = HostSetup.Properties.GetValue("NCoverArguments");
-            string ncoverCoverageFile = HostSetup.Properties.GetValue("NCoverCoverageFile");
+            string ncoverArguments, ncoverCoverageFile;
+            GetNCoverProperties(HostSetup, out ncoverArguments, out ncoverCoverageFile);
+            return NCoverTool.CreateProcessTask(executablePath, arguments, workingDirectory, version, Logger, ncoverArguments, ncoverCoverageFile);
+        }
+
+        internal static void GetNCoverProperties(HostSetup hostSetup,
+            out string ncoverArguments, out string ncoverCoverageFile)
+        {
+            ncoverArguments = hostSetup.Properties.GetValue("NCoverArguments");
+            ncoverCoverageFile = hostSetup.Properties.GetValue("NCoverCoverageFile");
 
             if (ncoverArguments == null)
                 ncoverArguments = string.Empty;
             if (string.IsNullOrEmpty(ncoverCoverageFile))
                 ncoverCoverageFile = "Coverage.xml";
 
-            ncoverCoverageFile = Path.Combine(workingDirectory, ncoverCoverageFile);
-            return NCoverTool.CreateProcessTask(executablePath, arguments, workingDirectory, version, Logger, ncoverArguments, ncoverCoverageFile);
+            ncoverCoverageFile = Path.Combine(hostSetup.WorkingDirectory ?? Environment.CurrentDirectory, ncoverCoverageFile);
+        }
+
+        internal static void SetNCoverCoverageFile(HostSetup hostSetup, string ncoverCoverageFile)
+        {
+            hostSetup.Properties.SetValue("NCoverCoverageFile", ncoverCoverageFile);
         }
 
         private static HostSetup ForceProcessorArchitectureAndRuntimeVersionIfRequired(HostSetup hostSetup, NCoverVersion version)

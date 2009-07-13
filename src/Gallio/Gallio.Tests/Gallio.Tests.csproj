@@ -95,6 +95,8 @@
     <Compile Include="Common\Media\ScreenGrabberTest.cs" />
     <Compile Include="Common\Media\FlashScreenVideoParametersTest.cs" />
     <Compile Include="Common\Media\FlashScreenVideoTest.cs" />
+    <Compile Include="Common\Messaging\TopicPatternTest.cs" />
+    <Compile Include="Common\Messaging\TopicTest.cs" />
     <Compile Include="Common\MockableConditionContext.cs" />
     <Compile Include="Common\Policies\VersionPolicyTest.cs" />
     <Compile Include="Common\Policies\SpecialPathPolicyTest.cs" />
@@ -193,9 +195,8 @@
     <Compile Include="Framework\SilentTestExceptionTest.cs" />
     <Compile Include="Framework\TestFailedExceptionTest.cs" />
     <Compile Include="Framework\TestInconclusiveExceptionTest.cs" />
-    <Compile Include="Model\BaseTestTest.cs" />
+    <Compile Include="Model\Tree\TestTest.cs" />
     <Compile Include="Host\HostExceptionTest.cs" />
-    <Compile Include="Model\BaseTestExplorerTest.cs" />
     <Compile Include="Model\Filters\FilterRuleTest.cs" />
     <Compile Include="Model\Filters\FilterSetTest.cs" />
     <Compile Include="Model\Filters\FilterParseExceptionTest.cs" />
@@ -209,7 +210,6 @@
     <Compile Include="Reports\MHtmlReportFormatterTest.cs" />
     <Compile Include="Reports\XmlReportFormatterTest.cs" />
     <Compile Include="Reports\XsltReportFormatterTest.cs" />
-    <Compile Include="Runner\Drivers\HostedTestDriverTest.cs" />
     <Compile Include="Runner\Extensions\TestRunnerExtensionUtilsTest.cs" />
     <Compile Include="Runner\RunnerExceptionTest.cs" />
     <Compile Include="RunSampleAttribute.cs" />
@@ -283,7 +283,7 @@
     <Compile Include="Runtime\Logging\SeverityPrefixLoggerTest.cs" />
     <Compile Include="Runtime\Logging\TextLoggerTest.cs" />
     <Compile Include="Host\HostProgramIntegrationTest.cs" />
-    <Compile Include="Model\Execution\DefaultTestContextTrackerTest.cs" />
+    <Compile Include="Model\Contexts\DefaultTestContextTrackerTest.cs" />
     <Compile Include="Framework\TestStepTest.cs" />
     <Compile Include="Runtime\Hosting\RemoteHostFactoryTest.cs" />
     <Compile Include="Runtime\ConsoleSupport\CommandLineArgumentParserTests.cs" />
@@ -301,7 +301,7 @@
     <Compile Include="Runtime\RuntimeAccessorTest.cs" />
     <Compile Include="Integration\StubContextIntegrationTest.cs" />
     <Compile Include="Framework\TestLogTest.cs" />
-    <Compile Include="Model\Execution\TestCommandFactoryTest.cs" />
+    <Compile Include="Model\Commands\DefaultTestCommandFactoryTest.cs" />
     <Compile Include="Model\Filters\NameFilterTest.cs" />
     <Compile Include="Model\Filters\EqualityFilterTest.cs" />
     <Compile Include="Model\Filters\FilterFormatterTest.cs" />
@@ -311,7 +311,7 @@
     <Compile Include="Model\Filters\RegexFilterTest.cs" />
     <Compile Include="Model\TestOutcomeTest.cs" />
     <Compile Include="Runner\Reports\FileSystemReportContainerTest.cs" />
-    <Compile Include="Runner\Reports\ReportAssert.cs" />
+    <Compile Include="Runner\Reports\Schema\ReportAssert.cs" />
     <Compile Include="Model\ModelAssert.cs" />
     <Compile Include="BaseTestWithSampleRunner.cs" />
     <Compile Include="Common\ActionChainTest.cs" />
@@ -328,10 +328,10 @@
     <Compile Include="Model\Filters\TypeFilterTest.cs" />
     <Compile Include="Model\BaseTestFrameworkTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Runner\Reports\PackageRunStatisticsTests.cs" />
-    <Compile Include="Runner\Reports\TestPackageRunTests.cs" />
-    <Compile Include="Runner\Reports\ReportTest.cs" />
-    <Compile Include="Runner\Reports\TestStepRunTests.cs" />
+    <Compile Include="Runner\Reports\Schema\PackageRunStatisticsTests.cs" />
+    <Compile Include="Runner\Reports\Schema\TestPackageRunTests.cs" />
+    <Compile Include="Runner\Reports\Schema\ReportTest.cs" />
+    <Compile Include="Runner\Reports\Schema\TestStepRunTests.cs" />
     <Compile Include="Runner\TestLauncherTest.cs" />
     <Compile Include="Common\IO\CurrentDirectorySwitcherTest.cs" />
     <Compile Include="Common\Diagnostics\ExceptionUtilsTest.cs" />

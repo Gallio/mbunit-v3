@@ -14,10 +14,13 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using System.Drawing;
+using System.Reflection;
 using Gallio.Common.Collections;
 using Gallio.Common.Reflection;
 using Gallio.Runtime.Extensibility;
+using Gallio.Runtime.FileTypes;
 
 namespace Gallio.Model
 {
@@ -60,20 +63,6 @@ namespace Gallio.Model
         /// The version of the test framework.
         /// </summary>
         public string Version { get; set; }
-
-        /// <summary>
-        /// Gets or sets a flag that configures whether the <see cref="ITestExplorer.ConfigureTestDomain" />
-        /// method must be called.
-        /// </summary>
-        /// <remarks>
-        /// <para>
-        /// The framework manager consults this list to determine whether the framework component
-        /// should participate in test domain setup.  If the flag is false, the default, then the
-        /// framework component will not be instantiated during test domain setup in order to
-        /// improve performance.
-        /// </para>
-        /// </remarks>
-        public bool RequiresConfigureTestDomain { get; set; }
 
         /// <summary>
         /// Gets or sets the list of framework assembly signatures that are recognized and supported
@@ -130,10 +119,50 @@ namespace Gallio.Model
         }
 
         /// <summary>
-        /// Describes an assembly an a version range.
+        /// Returns true if at least one of the assembly references is in <see cref="FrameworkAssemblies"/>.
         /// </summary>
-        public class AssemblyAndVersionRange
+        /// <param name="assemblyReferences">The assembly references.</param>
+        /// <returns>True if the framework is compatible.</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="assemblyReferences"/> is null.</exception>
+        public bool IsFrameworkCompatibleWithAssemblyReferences(IEnumerable<AssemblyName> assemblyReferences)
         {
+            if (assemblyReferences == null)
+                throw new ArgumentNullException("assemblyReference");
+
+            foreach (AssemblyName referencedAssemblyName in assemblyReferences)
+            {
+                foreach (AssemblySignature assemblySignature in FrameworkAssemblies)
+                {
+                    if (assemblySignature.IsMatch(referencedAssemblyName))
+                        return true;
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Returns true if the file type is the same or a subtype of one of those specified by <see cref="FileTypes"/>.
+        /// </summary>
+        /// <param name="fileType">The file type.</param>
+        /// <param name="fileTypeManager">The file type manager used to resolve file type ids to file types.</param>
+        /// <returns>True if the framework is compatible.</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="fileType"/> or <paramref name="fileTypeManager"/> is null.</exception>
+        public bool IsFrameworkCompatibleWithFileType(FileType fileType, IFileTypeManager fileTypeManager)
+        {
+            if (fileType == null)
+                throw new ArgumentNullException("fileType");
+            if (fileTypeManager == null)
+                throw new ArgumentNullException("fileTypeManager");
+
+            foreach (string fileTypeId in FileTypes)
+            {
+                FileType supportedFileType = fileTypeManager.GetFileTypeById(fileTypeId);
+                if (fileType.IsSameOrSubtypeOf(supportedFileType))
+                    return true;
+            }
+
+            return false;
         }
     }
 }

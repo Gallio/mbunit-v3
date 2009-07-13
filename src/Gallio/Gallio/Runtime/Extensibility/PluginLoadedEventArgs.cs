@@ -15,7 +15,7 @@
 
 using System;
 using System.IO;
-using Gallio.Schema.Plugins;
+using Gallio.Runtime.Extensibility.Schema;
 
 namespace Gallio.Runtime.Extensibility
 {

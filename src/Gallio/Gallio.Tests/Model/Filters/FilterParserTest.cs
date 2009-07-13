@@ -26,14 +26,14 @@ using Rhino.Mocks;
 namespace Gallio.Tests.Model.Filters
 {
     [TestFixture]
-    [TestsOn(typeof(FilterParser<ITest>))]
+    [TestsOn(typeof(FilterParser<ITestDescriptor>))]
     [Author("Julian Hidalgo")]
     public class FilterParserTest : BaseTestWithMocks
     {
-        private ITest fixture1 = null;
-        private ITest fixture2 = null;
-        private ITest fixture3 = null;
-        private ITest fixture4 = null;
+        private ITestDescriptor fixture1 = null;
+        private ITestDescriptor fixture2 = null;
+        private ITestDescriptor fixture3 = null;
+        private ITestDescriptor fixture4 = null;
         private string fixture1TypeName = null;
         private string fixture2TypeName = null;
         private string fixture3TypeName = null;
@@ -41,10 +41,10 @@ namespace Gallio.Tests.Model.Filters
         [SetUp]
         public override void SetUp()
         {
-            fixture1 = Mocks.StrictMock<ITest>();
-            fixture2 = Mocks.StrictMock<ITest>();
-            fixture3 = Mocks.StrictMock<ITest>();
-            fixture4 = Mocks.StrictMock<ITest>();
+            fixture1 = Mocks.StrictMock<ITestDescriptor>();
+            fixture2 = Mocks.StrictMock<ITestDescriptor>();
+            fixture3 = Mocks.StrictMock<ITestDescriptor>();
+            fixture4 = Mocks.StrictMock<ITestDescriptor>();
 
             ICodeElementInfo codeElement1 = Reflector.Wrap(typeof(SimpleTest));
             SetupResult.For(fixture1.CodeElement).Return(codeElement1);
@@ -68,7 +68,7 @@ namespace Gallio.Tests.Model.Filters
         [ExpectedException(typeof(ArgumentNullException))]
         public void InstantiateWithNullFactory()
         {
-            new FilterParser<ITest>(null);
+            new FilterParser<ITestDescriptor>(null);
         }
 
         [Test]
@@ -77,7 +77,7 @@ namespace Gallio.Tests.Model.Filters
         public void ExactType(string filterType, bool shouldMatch)
         {
             string filter = filterType + "Type:" + fixture3TypeName;
-            Filter<ITest> parsedFilter = FilterUtils.ParseTestFilter(filter);
+            Filter<ITestDescriptor> parsedFilter = FilterUtils.ParseTestFilter(filter);
             Assert.IsTrue(parsedFilter.IsMatch(fixture3));
             Assert.AreEqual(parsedFilter.IsMatch(fixture4), shouldMatch);
             Assert.AreEqual(parsedFilter.ToString(), "Type(Equality('" + fixture3TypeName + "'), "
@@ -105,10 +105,10 @@ namespace Gallio.Tests.Model.Filters
         public void AnyFilterIsReturnedForStar()
         {
             string filter = "*";
-            Filter<ITest> parsedFilter = FilterUtils.ParseTestFilter(filter);
+            Filter<ITestDescriptor> parsedFilter = FilterUtils.ParseTestFilter(filter);
             Assert.IsNotNull(parsedFilter);
             Assert.AreEqual(parsedFilter.ToString(), "Any()");
-            Assert.AreSame(parsedFilter.GetType(), typeof(AnyFilter<ITest>));
+            Assert.AreSame(parsedFilter.GetType(), typeof(AnyFilter<ITestDescriptor>));
             Assert.IsTrue(parsedFilter.IsMatch(fixture1));
             Assert.IsTrue(parsedFilter.IsMatch(fixture2));
             Assert.IsTrue(parsedFilter.IsMatch(fixture3));
@@ -120,10 +120,10 @@ namespace Gallio.Tests.Model.Filters
         [Row("not * or not * and *", "(not *) or ((not *) and *)", false)]
         public void FilterWithStars(string filter1, string filter2, bool matches)
         {
-            Filter<ITest> parsedFilter1 = FilterUtils.ParseTestFilter(filter1);
+            Filter<ITestDescriptor> parsedFilter1 = FilterUtils.ParseTestFilter(filter1);
             Assert.IsNotNull(parsedFilter1);
 
-            Filter<ITest> parsedFilter2 = FilterUtils.ParseTestFilter(filter2);
+            Filter<ITestDescriptor> parsedFilter2 = FilterUtils.ParseTestFilter(filter2);
             Assert.IsNotNull(parsedFilter2);
 
             Assert.AreEqual(parsedFilter1.ToString(), parsedFilter2.ToString());
@@ -142,7 +142,7 @@ namespace Gallio.Tests.Model.Filters
         public void FilterWithOneValue(string type)
         {
             string filter = "Type:" + type;
-            Filter<ITest> parsedFilter = FilterUtils.ParseTestFilter(filter);
+            Filter<ITestDescriptor> parsedFilter = FilterUtils.ParseTestFilter(filter);
             Assert.IsNotNull(parsedFilter);
             Assert.AreEqual(parsedFilter.ToString(), "Type(Equality('" + type + "'), True)");
             Assert.IsTrue(parsedFilter.IsMatch(fixture1));
@@ -158,7 +158,7 @@ namespace Gallio.Tests.Model.Filters
         public void FilterWithQuotedValue(string type)
         {
             string filter = "Type:" + type;
-            Filter<ITest> parsedFilter = FilterUtils.ParseTestFilter(filter);
+            Filter<ITestDescriptor> parsedFilter = FilterUtils.ParseTestFilter(filter);
             Assert.IsNotNull(parsedFilter);
             Assert.AreEqual(parsedFilter.ToString(), "Type(Equality('"
                 + type.Substring(1, type.Length - 2)
@@ -176,7 +176,7 @@ namespace Gallio.Tests.Model.Filters
         public void FilterWithRegexValue(string type, bool caseInsensitive)
         {
             string filter = "Type:" + type + (caseInsensitive ? "i" : "");
-            Filter<ITest> parsedFilter = FilterUtils.ParseTestFilter(filter);
+            Filter<ITestDescriptor> parsedFilter = FilterUtils.ParseTestFilter(filter);
             Assert.IsNotNull(parsedFilter);
             Assert.AreEqual(parsedFilter.ToString(), "Type(Regex('"
                 + type.Substring(1, type.Length - 2)
@@ -194,7 +194,7 @@ namespace Gallio.Tests.Model.Filters
         public void FilterWithTwoValues(string type1, string type2)
         {
             string filter = "Type:" + type1 + "," + type2;
-            Filter<ITest> parsedFilter = FilterUtils.ParseTestFilter(filter);
+            Filter<ITestDescriptor> parsedFilter = FilterUtils.ParseTestFilter(filter);
             Assert.IsNotNull(parsedFilter);
             Assert.AreEqual(parsedFilter.ToString(), "Type(Or({ Equality('" + type1 + "'), Equality('" + type2 + "') }), True)");
             Assert.IsTrue(parsedFilter.IsMatch(fixture1));
@@ -208,7 +208,7 @@ namespace Gallio.Tests.Model.Filters
         public void OrFilter(string type1, string type2)
         {
             string filter = "Type:" + type1 + " or Type:" + type2;
-            Filter<ITest> parsedFilter = FilterUtils.ParseTestFilter(filter);
+            Filter<ITestDescriptor> parsedFilter = FilterUtils.ParseTestFilter(filter);
             Assert.IsNotNull(parsedFilter);
             Assert.AreEqual(parsedFilter.ToString(), "Or({ Type(Equality('" + type1 + "'), True), Type(Equality('" + type2 + "'), True) })");
             Assert.IsTrue(parsedFilter.IsMatch(fixture1));
@@ -222,7 +222,7 @@ namespace Gallio.Tests.Model.Filters
         public void AndFilter(string type1, string type2)
         {
             string filter = "Type:" + type1 + " and Type:" + type2;
-            Filter<ITest> parsedFilter = FilterUtils.ParseTestFilter(filter);
+            Filter<ITestDescriptor> parsedFilter = FilterUtils.ParseTestFilter(filter);
             Assert.IsNotNull(parsedFilter);
             Assert.AreEqual(parsedFilter.ToString(), "And({ Type(Equality('" + type1 + "'), True), Type(Equality('" + type2 + "'), True) })");
             Assert.IsFalse(parsedFilter.IsMatch(fixture1));
@@ -236,7 +236,7 @@ namespace Gallio.Tests.Model.Filters
         public void NotFilter(string type1, string type2)
         {
             string filter = "Type:" + type1 + " and not Type:" + type2;
-            Filter<ITest> parsedFilter = FilterUtils.ParseTestFilter(filter);
+            Filter<ITestDescriptor> parsedFilter = FilterUtils.ParseTestFilter(filter);
             Assert.IsNotNull(parsedFilter);
             Assert.AreEqual(parsedFilter.ToString(), "And({ Type(Equality('" + type1 + "'), True), Not(Type(Equality('" + type2 + "'), True)) })");
             Assert.IsTrue(parsedFilter.IsMatch(fixture1));
@@ -276,7 +276,7 @@ namespace Gallio.Tests.Model.Filters
         [Row(@"Abc: /123 456 \/ 789/i", @"Metadata('Abc', Regex('123 456 / 789', IgnoreCase, CultureInvariant))")]
         public void RegularExpressions(string filter, string parsedFilterString)
         {
-            Filter<ITest> parsedFilter = FilterUtils.ParseTestFilter(filter);
+            Filter<ITestDescriptor> parsedFilter = FilterUtils.ParseTestFilter(filter);
             Assert.IsNotNull(parsedFilter);
             Assert.AreEqual(parsedFilter.ToString(), parsedFilterString);
         }
@@ -291,7 +291,7 @@ namespace Gallio.Tests.Model.Filters
         [Row("Type: foo and Type: bar", "(Type: foo and Type: bar)")]
         public void FilterSets(string filterSetExpr, string parsedFilterSetString)
         {
-            FilterSet<ITest> parsedFilterSet = FilterUtils.ParseTestFilterSet(filterSetExpr);
+            FilterSet<ITestDescriptor> parsedFilterSet = FilterUtils.ParseTestFilterSet(filterSetExpr);
             Assert.IsNotNull(parsedFilterSet);
             Assert.AreEqual(parsedFilterSetString, parsedFilterSet.ToFilterSetExpr());
         }
@@ -329,7 +329,7 @@ namespace Gallio.Tests.Model.Filters
         {
             string filter = "((Type: " + fixture1TypeName + ") or (Type: " + fixture2TypeName +
                 ")) and not Type:" + fixture3TypeName;
-            Filter<ITest> parsedFilter = FilterUtils.ParseTestFilter(filter);
+            Filter<ITestDescriptor> parsedFilter = FilterUtils.ParseTestFilter(filter);
             Assert.IsNotNull(parsedFilter);
             Assert.AreEqual(parsedFilter.ToString(), "And({ Or({ Type(Equality('" + fixture1TypeName
                 + "'), True), Type(Equality('" + fixture2TypeName
@@ -344,7 +344,7 @@ namespace Gallio.Tests.Model.Filters
         public void ComplexFilter2()
         {
             string filter = "not ((Type: " + fixture1TypeName + ") or (Type: " + fixture2TypeName + ")) and Type:" + fixture3TypeName + "";
-            Filter<ITest> parsedFilter = FilterUtils.ParseTestFilter(filter);
+            Filter<ITestDescriptor> parsedFilter = FilterUtils.ParseTestFilter(filter);
             Assert.IsNotNull(parsedFilter);
             Assert.AreEqual(parsedFilter.ToString(), "And({ Not(Or({ Type(Equality('" + fixture1TypeName + "'), True), Type(Equality('" + fixture2TypeName + "'), True) })), Type(Equality('" + fixture3TypeName + "'), True) })");
             Assert.IsFalse(parsedFilter.IsMatch(fixture1));

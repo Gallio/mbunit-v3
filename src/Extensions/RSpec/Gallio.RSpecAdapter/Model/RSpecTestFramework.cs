@@ -17,14 +17,21 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Gallio.Model;
+using Gallio.Runtime.Extensibility;
 
 namespace Gallio.RSpecAdapter.Model
 {
     public class RSpecTestFramework : BaseTestFramework
     {
-        public override void RegisterTestExplorers(IList<ITestExplorer> explorers)
+        /// <inheritdoc />
+        sealed public override TestDriverFactory GetTestDriverFactory()
         {
-            base.RegisterTestExplorers(explorers);
+            return CreateTestDriver;
+        }
+
+        private static ITestDriver CreateTestDriver(IList<ComponentHandle<ITestFramework, TestFrameworkTraits>> frameworkHandles)
+        {
+            return new RSpecTestDriver();
         }
     }
 }

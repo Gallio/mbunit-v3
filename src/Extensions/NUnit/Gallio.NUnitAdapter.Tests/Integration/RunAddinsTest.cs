@@ -18,7 +18,7 @@ using Gallio.Model;
 using Gallio.Common.Markup;
 using Gallio.NUnitAdapter.TestResources;
 using Gallio.Common.Reflection;
-using Gallio.Runner.Reports;
+using Gallio.Runner.Reports.Schema;
 using Gallio.Tests;
 using MbUnit.Framework;
 

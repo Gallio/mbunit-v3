@@ -34,6 +34,9 @@ namespace Gallio.Runner.Events
         public event EventHandler<LogMessageEventArgs> LogMessage;
 
         /// <inheritdoc/>
+        public event EventHandler<MessageReceivedEventArgs> MessageReceived;
+
+        /// <inheritdoc/>
         public event EventHandler<InitializeStartedEventArgs> InitializeStarted;
 
         /// <inheritdoc/>
@@ -58,10 +61,10 @@ namespace Gallio.Runner.Events
         public event EventHandler<RunFinishedEventArgs> RunFinished;
 
         /// <inheritdoc/>
-        public event EventHandler<TestModelSubtreeMergedEventArgs> TestModelSubtreeMerged;
+        public event EventHandler<TestDiscoveredEventArgs> TestDiscovered;
 
         /// <inheritdoc/>
-        public event EventHandler<TestModelAnnotationAddedEventArgs> TestModelAnnotationAdded;
+        public event EventHandler<AnnotationDiscoveredEventArgs> AnnotationDiscovered;
 
         /// <inheritdoc/>
         public event EventHandler<TestStepStartedEventArgs> TestStepStarted;
@@ -85,13 +88,13 @@ namespace Gallio.Runner.Events
         public event EventHandler<TestStepLogStreamEmbedEventArgs> TestStepLogStreamEmbed;
 
         /// <inheritdoc/>
-        public event EventHandler<TestStepLogStreamBeginSectionEventArgs> TestStepLogStreamBeginSection;
+        public event EventHandler<TestStepLogStreamBeginSectionBlockEventArgs> TestStepLogStreamBeginSectionBlock;
 
         /// <inheritdoc/>
-        public event EventHandler<TestStepLogStreamBeginMarkerEventArgs> TestStepLogStreamBeginMarker;
+        public event EventHandler<TestStepLogStreamBeginMarkerBlockEventArgs> TestStepLogStreamBeginMarkerBlock;
 
         /// <inheritdoc/>
-        public event EventHandler<TestStepLogStreamEndEventArgs> TestStepLogStreamEnd;
+        public event EventHandler<TestStepLogStreamEndBlockEventArgs> TestStepLogStreamEndBlock;
 
         /// <summary>
         /// Dispatches the <see cref="LogMessage" /> event.
@@ -100,6 +103,15 @@ namespace Gallio.Runner.Events
         public void NotifyLogMessage(LogMessageEventArgs e)
         {
             EventHandlerPolicy.SafeInvoke(LogMessage, this, e);
+        }
+
+        /// <summary>
+        /// Dispatches the <see cref="MessageReceived" /> event.
+        /// </summary>
+        /// <param name="e">The event arguments.</param>
+        public void NotifyMessageReceived(MessageReceivedEventArgs e)
+        {
+            EventHandlerPolicy.SafeInvoke(MessageReceived, this, e);
         }
 
         /// <summary>
@@ -175,21 +187,21 @@ namespace Gallio.Runner.Events
         }
 
         /// <summary>
-        /// Dispatches the <see cref="TestModelSubtreeMerged" /> event.
+        /// Dispatches the <see cref="TestDiscovered" /> event.
         /// </summary>
         /// <param name="e">The event arguments.</param>
-        public void NotifyTestModelSubtreeMerged(TestModelSubtreeMergedEventArgs e)
+        public void NotifyTestDiscovered(TestDiscoveredEventArgs e)
         {
-            EventHandlerPolicy.SafeInvoke(TestModelSubtreeMerged, this, e);
+            EventHandlerPolicy.SafeInvoke(TestDiscovered, this, e);
         }
 
         /// <summary>
-        /// Dispatches the <see cref="TestModelAnnotationAdded" /> event.
+        /// Dispatches the <see cref="AnnotationDiscovered" /> event.
         /// </summary>
         /// <param name="e">The event arguments.</param>
-        public void NotifyTestModelAnnotationAdded(TestModelAnnotationAddedEventArgs e)
+        public void NotifyAnnotationDiscovered(AnnotationDiscoveredEventArgs e)
         {
-            EventHandlerPolicy.SafeInvoke(TestModelAnnotationAdded, this, e);
+            EventHandlerPolicy.SafeInvoke(AnnotationDiscovered, this, e);
         }
 
         /// <summary>
@@ -256,30 +268,30 @@ namespace Gallio.Runner.Events
         }
 
         /// <summary>
-        /// Dispatches the <see cref="TestStepLogStreamBeginSection" /> event.
+        /// Dispatches the <see cref="TestStepLogStreamBeginSectionBlock" /> event.
         /// </summary>
         /// <param name="e">The event arguments.</param>
-        public void NotifyTestStepLogStreamBeginSection(TestStepLogStreamBeginSectionEventArgs e)
+        public void NotifyTestStepLogStreamBeginSectionBlock(TestStepLogStreamBeginSectionBlockEventArgs e)
         {
-            EventHandlerPolicy.SafeInvoke(TestStepLogStreamBeginSection, this, e);
+            EventHandlerPolicy.SafeInvoke(TestStepLogStreamBeginSectionBlock, this, e);
         }
 
         /// <summary>
-        /// Dispatches the <see cref="TestStepLogStreamBeginMarker" /> event.
+        /// Dispatches the <see cref="TestStepLogStreamBeginMarkerBlock" /> event.
         /// </summary>
         /// <param name="e">The event arguments.</param>
-        public void NotifyTestStepLogStreamBeginMarker(TestStepLogStreamBeginMarkerEventArgs e)
+        public void NotifyTestStepLogStreamBeginMarkerBlock(TestStepLogStreamBeginMarkerBlockEventArgs e)
         {
-            EventHandlerPolicy.SafeInvoke(TestStepLogStreamBeginMarker, this, e);
+            EventHandlerPolicy.SafeInvoke(TestStepLogStreamBeginMarkerBlock, this, e);
         }
 
         /// <summary>
-        /// Dispatches the <see cref="TestStepLogStreamEnd" /> event.
+        /// Dispatches the <see cref="TestStepLogStreamEndBlock" /> event.
         /// </summary>
         /// <param name="e">The event arguments.</param>
-        public void NotifyTestStepLogStreamEnd(TestStepLogStreamEndEventArgs e)
+        public void NotifyTestStepLogStreamEndBlock(TestStepLogStreamEndBlockEventArgs e)
         {
-            EventHandlerPolicy.SafeInvoke(TestStepLogStreamEnd, this, e);
+            EventHandlerPolicy.SafeInvoke(TestStepLogStreamEndBlock, this, e);
         }
 
         /// <summary>
@@ -294,6 +306,7 @@ namespace Gallio.Runner.Events
                 throw new ArgumentNullException("events");
 
             events.LogMessage += (sender, e) => NotifyLogMessage(e);
+            events.MessageReceived += (sender, e) => NotifyMessageReceived(e);
             events.InitializeFinished += (sender, e) => NotifyInitializeFinished(e);
             events.InitializeStarted += (sender, e) => NotifyInitializeStarted(e);
             events.DisposeFinished += (sender, e) => NotifyDisposeFinished(e);
@@ -302,15 +315,15 @@ namespace Gallio.Runner.Events
             events.ExploreStarted += (sender, e) => NotifyExploreStarted(e);
             events.RunFinished += (sender, e) => NotifyRunFinished(e);
             events.RunStarted += (sender, e) => NotifyRunStarted(e);
-            events.TestModelSubtreeMerged += (sender, e) => NotifyTestModelSubtreeMerged(e);
-            events.TestModelAnnotationAdded += (sender, e) => NotifyTestModelAnnotationAdded(e);
+            events.TestDiscovered += (sender, e) => NotifyTestDiscovered(e);
+            events.AnnotationDiscovered += (sender, e) => NotifyAnnotationDiscovered(e);
             events.TestStepFinished += (sender, e) => NotifyTestStepFinished(e);
             events.TestStepLifecyclePhaseChanged += (sender, e) => NotifyTestStepLifecyclePhaseChanged(e);
             events.TestStepLogAttach += (sender, e) => NotifyTestStepLogAttach(e);
-            events.TestStepLogStreamBeginMarker += (sender, e) => NotifyTestStepLogStreamBeginMarker(e);
-            events.TestStepLogStreamBeginSection += (sender, e) => NotifyTestStepLogStreamBeginSection(e);
+            events.TestStepLogStreamBeginMarkerBlock += (sender, e) => NotifyTestStepLogStreamBeginMarkerBlock(e);
+            events.TestStepLogStreamBeginSectionBlock += (sender, e) => NotifyTestStepLogStreamBeginSectionBlock(e);
             events.TestStepLogStreamEmbed += (sender, e) => NotifyTestStepLogStreamEmbed(e);
-            events.TestStepLogStreamEnd += (sender, e) => NotifyTestStepLogStreamEnd(e);
+            events.TestStepLogStreamEndBlock += (sender, e) => NotifyTestStepLogStreamEndBlock(e);
             events.TestStepLogStreamWrite += (sender, e) => NotifyTestStepLogStreamWrite(e);
             events.TestStepMetadataAdded += (sender, e) => NotifyTestStepMetadataAdded(e);
             events.TestStepStarted += (sender, e) => NotifyTestStepStarted(e);

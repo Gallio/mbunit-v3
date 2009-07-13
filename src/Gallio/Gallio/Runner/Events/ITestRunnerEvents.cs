@@ -36,6 +36,11 @@ namespace Gallio.Runner.Events
         event EventHandler<LogMessageEventArgs> LogMessage;
 
         /// <summary>
+        /// The event raised to indicate that a raw message was received by the test runner.
+        /// </summary>
+        event EventHandler<MessageReceivedEventArgs> MessageReceived;
+
+        /// <summary>
         /// The event raised to indicate that the test runner initialization has started.
         /// </summary>
         event EventHandler<InitializeStartedEventArgs> InitializeStarted;
@@ -78,12 +83,12 @@ namespace Gallio.Runner.Events
         /// <summary>
         /// The event raised to indicate that a subtree of tests was merged into the test model.
         /// </summary>
-        event EventHandler<TestModelSubtreeMergedEventArgs> TestModelSubtreeMerged;
+        event EventHandler<TestDiscoveredEventArgs> TestDiscovered;
 
         /// <summary>
         /// The event raised to indicate that an annotation was added to the test model.
         /// </summary>
-        event EventHandler<TestModelAnnotationAddedEventArgs> TestModelAnnotationAdded;
+        event EventHandler<AnnotationDiscoveredEventArgs> AnnotationDiscovered;
 
         /// <summary>
         /// The event raised to indicate that a test step has started execution.
@@ -123,16 +128,16 @@ namespace Gallio.Runner.Events
         /// <summary>
         /// The event raised to indicate that a section has been started within a test step log stream.
         /// </summary>
-        event EventHandler<TestStepLogStreamBeginSectionEventArgs> TestStepLogStreamBeginSection;
+        event EventHandler<TestStepLogStreamBeginSectionBlockEventArgs> TestStepLogStreamBeginSectionBlock;
 
         /// <summary>
         /// The event raised to indicate that a marker has been started within a test step log stream.
         /// </summary>
-        event EventHandler<TestStepLogStreamBeginMarkerEventArgs> TestStepLogStreamBeginMarker;
+        event EventHandler<TestStepLogStreamBeginMarkerBlockEventArgs> TestStepLogStreamBeginMarkerBlock;
 
         /// <summary>
-        /// The event raised to indicate that a section has finished within a test step log stream.
+        /// The event raised to indicate that a block has finished within a test step log stream.
         /// </summary>
-        event EventHandler<TestStepLogStreamEndEventArgs> TestStepLogStreamEnd;
+        event EventHandler<TestStepLogStreamEndBlockEventArgs> TestStepLogStreamEndBlock;
     }
 }

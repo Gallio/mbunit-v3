@@ -9,6 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Gallio.MSTestAdapter</RootNamespace>
     <AssemblyName>Gallio.MSTestAdapter</AssemblyName>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -39,6 +40,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Model\MSTestDriver.cs" />
     <Compile Include="Wrapper\DebugMSTestCommand.cs" />
     <Compile Include="Wrapper\MSTestCommand.cs" />
     <Compile Include="Wrapper\MSTestCommandArguments.cs" />

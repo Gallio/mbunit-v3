@@ -73,7 +73,7 @@ namespace Gallio.Loader
         };
 
         private const string GallioLoaderBootstrapTypeFullName = "Gallio.Runtime.Loader.GallioLoaderBootstrap";
-        private const string BootstrapInstallAssemblyResolverMethodName = "InstallAssemblyResolver";
+        private const string BootstrapInstallAssemblyLoaderMethodName = "InstallAssemblyLoader";
         private const string BootstrapSetupRuntimeMethodName = "SetupRuntime";
         private const string BootstrapAddHintDirectoryMethodName = "AddHintDirectory";
         private const string BootstrapResolveMethodName = "Resolve";
@@ -166,7 +166,7 @@ namespace Gallio.Loader
                     try
                     {
                         GallioLoader loader = new GallioLoader(runtimePath);
-                        loader.InstallAssemblyResolver();
+                        loader.InstallAssemblyLoader();
                         instance = loader;
                     }
                     catch (Exception ex)
@@ -311,9 +311,9 @@ namespace Gallio.Loader
             return null;
         }
 
-        private void InstallAssemblyResolver()
+        private void InstallAssemblyLoader()
         {
-            MethodInfo method = GetBootstrapMethod(BootstrapInstallAssemblyResolverMethodName);
+            MethodInfo method = GetBootstrapMethod(BootstrapInstallAssemblyLoaderMethodName);
             method.Invoke(null, new object[] { runtimePath });
         }
 

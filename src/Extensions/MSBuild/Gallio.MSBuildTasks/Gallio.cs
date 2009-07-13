@@ -19,6 +19,7 @@ using System.IO;
 using System.Reflection;
 using Gallio.Common.Policies;
 using Gallio.Common.Text;
+using Gallio.Runner.Reports.Schema;
 using Gallio.Runtime;
 using Gallio.MSBuildTasks.Properties;
 using Gallio.Common.Collections;
@@ -28,7 +29,6 @@ using Gallio.Model;
 using Gallio.Model.Filters;
 using Gallio.Common.Reflection;
 using Gallio.Runner;
-using Gallio.Runner.Reports;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
 using ILogger=Gallio.Runtime.Logging.ILogger;
@@ -89,15 +89,15 @@ namespace Gallio.MSBuildTasks
 
         private ITaskItem applicationBaseDirectory;
         private ITaskItem workingDirectory;
-        private bool shadowCopy;
-        private bool debug;
+        private bool? shadowCopy;
+        private bool? debug;
         private string runtimeVersion;
 
         private string filter = string.Empty;
         private string[] reportTypes = EmptyArray<string>.Instance;
-        private string reportNameFormat = Resources.DefaultReportNameFormat;
+        private string reportNameFormat;
         private ITaskItem reportDirectory;
-        private string runnerType = StandardTestRunnerFactoryNames.IsolatedProcess;
+        private string runnerType;
         private string[] runnerExtensions = EmptyArray<string>.Instance;
         private bool ignoreFailures;
         private bool showReports;
@@ -127,14 +127,14 @@ namespace Gallio.MSBuildTasks
         #region Public Properties
 
         /// <summary>
-        /// The list of relative or absolute paths of test files and assemblies to execute.
+        /// The list of relative or absolute paths of test files, projects and assemblies to execute.
         /// Wildcards may be used.  This is required.
         /// </summary>
-        /// <example>The following example shows how to specify the test files and assemblies (for a more complete example
-        /// please see the <see cref="Gallio"/> task documentation):
+        /// <example>The following example shows how to specify the test files, projects and assemblies
+        /// (for a more complete example please see the <see cref="Gallio"/> task documentation):
         /// <code>
         /// <![CDATA[
-        /// <!-- Specify the test files and assemblies -->
+        /// <!-- Specify the test files, projects and assemblies -->
         /// <ItemGroup>
         ///     <TestFile Include="[Path-to-test-assembly1]/TestAssembly1.dll" />
         ///     <TestFile Include="[Path-to-test-assembly2]/TestAssembly2.dll" />
@@ -318,7 +318,8 @@ namespace Gallio.MSBuildTasks
         /// Sets the name of the directory where the reports will be put.
         /// </summary>
         /// <remarks>
-        /// The directory will be created if it doesn't exist. Existing files will be overwrited.
+        /// The directory will be created if it doesn't exist.  Existing files will be overwritten.
+        /// The default report directory is "Reports".
         /// </remarks>
         public ITaskItem ReportDirectory
         {
@@ -787,15 +788,18 @@ namespace Gallio.MSBuildTasks
             launcher.RuntimeSetup.RuntimePath = Path.GetDirectoryName(AssemblyUtils.GetFriendlyAssemblyLocation(typeof(Gallio).Assembly));
 
             if (echoResults)
-                launcher.TestRunnerExtensions.Add(new TaskLogExtension(Log));
+                launcher.TestProject.AddTestRunnerExtension(new TaskLogExtension(Log));
 
             if (applicationBaseDirectory != null)
-                launcher.TestPackageConfig.ApplicationBaseDirectory = applicationBaseDirectory.ItemSpec;
+                launcher.TestProject.TestPackage.ApplicationBaseDirectory = new DirectoryInfo(applicationBaseDirectory.ItemSpec);
             if (workingDirectory != null)
-                launcher.TestPackageConfig.WorkingDirectory = workingDirectory.ItemSpec;
-            launcher.TestPackageConfig.ShadowCopy = shadowCopy;
-            launcher.TestPackageConfig.Debug = debug;
-            launcher.TestPackageConfig.RuntimeVersion = runtimeVersion;
+                launcher.TestProject.TestPackage.WorkingDirectory = new DirectoryInfo(workingDirectory.ItemSpec);
+            if (shadowCopy.HasValue)
+                launcher.TestProject.TestPackage.ShadowCopy = shadowCopy.Value;
+            if (debug.HasValue)
+                launcher.TestProject.TestPackage.Debug = debug.Value;
+            if (runtimeVersion != null)
+                launcher.TestProject.TestPackage.RuntimeVersion = runtimeVersion;
 
             foreach (string option in reportFormatterProperties)
                 launcher.ReportFormatterOptions.Properties.Add(StringUtils.ParseKeyValuePair(option));
@@ -803,20 +807,21 @@ namespace Gallio.MSBuildTasks
             foreach (string option in runnerProperties)
                 launcher.TestRunnerOptions.Properties.Add(StringUtils.ParseKeyValuePair(option));
 
-            AddAllItemSpecs(launcher.TestPackageConfig.Files, files);
-            AddAllItemSpecs(launcher.TestPackageConfig.HintDirectories, hintDirectories);
-            AddAllItemSpecs(launcher.RuntimeSetup.PluginDirectories, pluginDirectories);
+            ForEachItemSpec(files, x => launcher.FilePatterns.Add(x));
+            ForEachItemSpec(hintDirectories, x => launcher.TestProject.TestPackage.AddHintDirectory(new DirectoryInfo(x)));
+            ForEachItemSpec(pluginDirectories, x => launcher.RuntimeSetup.PluginDirectories.Add(x));
 
             if (reportDirectory != null)
-                launcher.ReportDirectory = reportDirectory.ItemSpec;
-            if (!String.IsNullOrEmpty(reportNameFormat))
-                launcher.ReportNameFormat = reportNameFormat;
+                launcher.TestProject.ReportDirectory = reportDirectory.ItemSpec;
+            if (reportNameFormat != null)
+                launcher.TestProject.ReportNameFormat = reportNameFormat;
             if (reportTypes != null)
                 GenericCollectionUtils.AddAll(reportTypes, launcher.ReportFormats);
 
-            launcher.TestRunnerFactoryName = runnerType;
+            if (runnerType != null)
+                launcher.TestProject.TestRunnerFactoryName = runnerType;
             if (runnerExtensions != null)
-                GenericCollectionUtils.AddAll(runnerExtensions, launcher.TestRunnerExtensionSpecifications);
+                GenericCollectionUtils.ForEach(runnerExtensions, x => launcher.TestProject.AddTestRunnerExtensionSpecification(x));
 
             TestLauncherResult result = RunLauncher(launcher);
             exitCode = result.ResultCode;
@@ -866,11 +871,11 @@ namespace Gallio.MSBuildTasks
             }
         }
 
-        private FilterSet<ITest> GetFilterSet()
+        private FilterSet<ITestDescriptor> GetFilterSet()
         {
             if (String.IsNullOrEmpty(filter))
             {
-                return FilterSet<ITest>.Empty;
+                return FilterSet<ITestDescriptor>.Empty;
             }
 
             return FilterUtils.ParseTestFilterSet(filter);
@@ -882,12 +887,12 @@ namespace Gallio.MSBuildTasks
             Log.LogMessage(String.Format(Resources.TaskNameAndVersion, versionLabel));
         }
 
-        private static void AddAllItemSpecs(ICollection<string> collection, IEnumerable<ITaskItem> items)
+        private static void ForEachItemSpec(IEnumerable<ITaskItem> items, Action<string> action)
         {
             if (items != null)
             {
                 foreach (ITaskItem item in items)
-                    collection.Add(item.ItemSpec);
+                    action(item.ItemSpec);
             }
         }
 

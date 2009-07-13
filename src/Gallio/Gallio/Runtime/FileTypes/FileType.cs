@@ -102,6 +102,24 @@ namespace Gallio.Runtime.FileTypes
             return false;
         }
 
+        /// <summary>
+        /// Returns true if this file type is equal to or is a subtype of any of the specified other types.
+        /// </summary>
+        /// <param name="otherTypes">The other types.</param>
+        /// <returns>True if the condition is satisfied.</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="otherTypes"/> is null
+        /// or contains a null.</exception>
+        public bool IsSameOrSubtypeOfAny(params FileType[] otherTypes)
+        {
+            foreach (FileType otherType in otherTypes)
+            {
+                if (IsSameOrSubtypeOf(otherType))
+                    return true;
+            }
+
+            return false;
+        }
+
         /// <inheritdoc />
         public override string ToString()
         {

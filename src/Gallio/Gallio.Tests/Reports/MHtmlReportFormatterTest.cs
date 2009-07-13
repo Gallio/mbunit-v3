@@ -21,6 +21,7 @@ using Gallio.Common.Policies;
 using Gallio.Framework;
 using Gallio.Common.Markup;
 using Gallio.Reports;
+using Gallio.Runner.Reports.Schema;
 using Gallio.Runtime.ProgressMonitoring;
 using Gallio.Runner.Reports;
 using Gallio.Tests;

@@ -30,7 +30,7 @@ namespace Gallio.Icarus.Tests.Commands
         public void Execute_should_call_ApplyFilterSet_on_TestController()
         {
             var testController = MockRepository.GenerateStub<ITestController>();
-            var filterSet = new FilterSet<ITest>(new NoneFilter<ITest>());
+            var filterSet = new FilterSet<ITestDescriptor>(new NoneFilter<ITestDescriptor>());
             var cmd = new ApplyFilterCommand(testController, filterSet);
 
             cmd.Execute(MockProgressMonitor.GetMockProgressMonitor());

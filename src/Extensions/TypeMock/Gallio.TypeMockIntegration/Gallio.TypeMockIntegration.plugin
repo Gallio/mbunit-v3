@@ -40,7 +40,7 @@
                serviceId="Gallio.TestRunnerFactory"
                componentType="Gallio.Runner.DefaultTestRunnerFactory, Gallio">
       <parameters>
-        <testDriverFactory>${TypeMockIntegration.TypeMockTestDriverFactory}</testDriverFactory>
+        <testIsolationProvider>${TypeMockIntegration.TypeMockTestIsolationProvider}</testIsolationProvider>
       </parameters>
       <traits>
         <name>TypeMock</name>
@@ -48,9 +48,9 @@
       </traits>
     </component>
 
-    <component componentId="TypeMockIntegration.TypeMockTestDriverFactory"
-               serviceId="Gallio.TestDriverFactory"
-               componentType="Gallio.Runner.Drivers.HostedTestDriverFactory, Gallio">
+    <component componentId="TypeMockIntegration.TypeMockTestIsolationProvider"
+               serviceId="Gallio.TestIsolationProvider"
+               componentType="Gallio.Model.Isolation.HostedTestIsolationProvider, Gallio">
       <parameters>
         <hostFactory>${TypeMockIntegration.TypeMockHostFactory}</hostFactory>
       </parameters>

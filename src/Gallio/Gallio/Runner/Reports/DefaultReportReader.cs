@@ -19,6 +19,7 @@ using System.Globalization;
 using System.IO;
 using System.Xml.Serialization;
 using Gallio.Common.Markup;
+using Gallio.Runner.Reports.Schema;
 using Gallio.Runtime.ProgressMonitoring;
 
 namespace Gallio.Runner.Reports

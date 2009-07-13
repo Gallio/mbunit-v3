@@ -14,7 +14,7 @@
 // limitations under the License.
 
 using System.ComponentModel;
-using Gallio.Model.Serialization;
+using Gallio.Model.Schema;
 
 namespace Gallio.Icarus.Controllers.Interfaces
 {

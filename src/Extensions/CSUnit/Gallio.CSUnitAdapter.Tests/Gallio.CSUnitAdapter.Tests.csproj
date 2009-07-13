@@ -44,7 +44,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Integration\RunSimpleTest.cs" />
-    <Compile Include="Model\CSUnitTestExplorerTest.cs" />
     <Compile Include="Model\CSUnitTestFrameworkTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

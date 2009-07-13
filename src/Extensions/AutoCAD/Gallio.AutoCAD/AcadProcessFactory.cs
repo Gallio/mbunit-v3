@@ -26,7 +26,7 @@ namespace Gallio.AutoCAD
     /// </summary>
     public class AcadProcessFactory : IAcadProcessFactory
     {
-        private ILogger logger;
+        private readonly ILogger logger;
 
         /// <summary>
         /// Intializes a new <see cref="AcadProcessFactory"/> instance.

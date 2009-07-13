@@ -19,12 +19,11 @@ using MbUnit.Framework;
 using Gallio.Model.Filters;
 using Gallio.Model;
 using Rhino.Mocks;
-using ITestComponent=Gallio.Model.ITestComponent;
 
 namespace Gallio.Tests.Model.Filters
 {
     [TestFixture]
-    [TestsOn(typeof(NameFilter<ITestComponent>))]
+    [TestsOn(typeof(NameFilter<ITestDescriptor>))]
     public class NameFilterTest : BaseTestWithMocks
     {
         [Test]
@@ -32,12 +31,12 @@ namespace Gallio.Tests.Model.Filters
         [Row(false, "otherValue")]
         public void IsMatchCombinations(bool expectedMatch, string value)
         {
-            ITestComponent component = Mocks.StrictMock<ITestComponent>();
+            ITestDescriptor component = Mocks.StrictMock<ITestDescriptor>();
             SetupResult.For(component.Name).Return(value);
             Mocks.ReplayAll();
 
             Assert.AreEqual(expectedMatch,
-                new NameFilter<ITestComponent>(new EqualityFilter<string>("expectedValue")).IsMatch(component));
+                new NameFilter<ITestDescriptor>(new EqualityFilter<string>("expectedValue")).IsMatch(component));
         }
 
         [Test]
@@ -45,7 +44,7 @@ namespace Gallio.Tests.Model.Filters
         [Row("name1212")]
         public void ToStringTest(string name)
         {
-            Filter<ITestComponent> filter = new NameFilter<ITestComponent>(new EqualityFilter<string>(name));
+            Filter<ITestDescriptor> filter = new NameFilter<ITestDescriptor>(new EqualityFilter<string>(name));
             Assert.AreEqual("Name(Equality('" + name + "'))", filter.ToString());
         }
     }

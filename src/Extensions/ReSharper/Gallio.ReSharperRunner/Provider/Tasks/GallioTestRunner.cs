@@ -15,18 +15,19 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using Gallio.Common.Collections;
 using Gallio.Model;
 using Gallio.Common.Diagnostics;
-using Gallio.Model.Execution;
 using Gallio.Model.Filters;
 using Gallio.Common.Markup;
 using Gallio.Common.Markup.Tags;
+using Gallio.Model.Schema;
 using Gallio.ReSharperRunner.Provider.Facade;
 using Gallio.Runner;
 using Gallio.Runner.Events;
-using Gallio.Runner.Reports;
+using Gallio.Runner.Reports.Schema;
 using Gallio.Runtime.Logging;
 using Gallio.Runtime.ProgressMonitoring;
 using HashSetOfString = Gallio.Common.Collections.HashSet<string>;
@@ -113,18 +114,19 @@ namespace Gallio.ReSharperRunner.Provider.Tasks
             ILogger logger = new FacadeLoggerWrapper(this.logger);
 
             // Set parameters.
-            TestPackageConfig packageConfig = new TestPackageConfig();
-            packageConfig.Files.AddRange(assemblyLocations);
-            packageConfig.ShadowCopy = config.ShadowCopy;
-            packageConfig.ApplicationBaseDirectory = config.AssemblyFolder;
-            packageConfig.WorkingDirectory = config.AssemblyFolder;
+            TestPackage testPackage = new TestPackage();
+            foreach (string assemblyLocation in assemblyLocations)
+                testPackage.AddFile(new FileInfo(assemblyLocation));
+            testPackage.ShadowCopy = config.ShadowCopy;
+            testPackage.ApplicationBaseDirectory = new DirectoryInfo(config.AssemblyFolder);
+            testPackage.WorkingDirectory = new DirectoryInfo(config.AssemblyFolder);
 
             TestRunnerOptions testRunnerOptions = new TestRunnerOptions();
 
             TestExplorationOptions testExplorationOptions = new TestExplorationOptions();
 
             TestExecutionOptions testExecutionOptions = new TestExecutionOptions();
-            testExecutionOptions.FilterSet = new FilterSet<ITest>(new IdFilter<ITest>(new OrFilter<string>(GenericCollectionUtils.ConvertAllToArray<string, Filter<string>>(
+            testExecutionOptions.FilterSet = new FilterSet<ITestDescriptor>(new IdFilter<ITestDescriptor>(new OrFilter<string>(GenericCollectionUtils.ConvertAllToArray<string, Filter<string>>(
                 explicitTestIds, delegate(string testId)
                 {
                     return new EqualityFilter<string>(testId);
@@ -141,7 +143,7 @@ namespace Gallio.ReSharperRunner.Provider.Tasks
                 try
                 {
                     runner.Initialize(testRunnerOptions, logger, CreateProgressMonitor());
-                    Report report = runner.Run(packageConfig, testExplorationOptions, testExecutionOptions, CreateProgressMonitor());
+                    Report report = runner.Run(testPackage, testExplorationOptions, testExecutionOptions, CreateProgressMonitor());
 
                     if (sessionId != null)
                         SessionCache.SaveSerializedReport(sessionId, report);

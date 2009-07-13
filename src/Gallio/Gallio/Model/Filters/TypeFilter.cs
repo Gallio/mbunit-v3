@@ -21,7 +21,7 @@ using Gallio.Common.Reflection;
 namespace Gallio.Model.Filters
 {
     /// <summary>
-    /// A filter that matches objects whose <see cref="ITestComponent.CodeElement" />
+    /// A filter that matches objects whose <see cref="ITestDescriptor.CodeElement" />
     /// matches the specified type name.
     /// </summary>
     /// <remarks>
@@ -31,7 +31,7 @@ namespace Gallio.Model.Filters
     /// </para>
     /// </remarks>
     [Serializable]
-    public class TypeFilter<T> : PropertyFilter<T> where T : ITestComponent
+    public class TypeFilter<T> : PropertyFilter<T> where T : ITestDescriptor
     {
         private readonly bool includeDerivedTypes;
 

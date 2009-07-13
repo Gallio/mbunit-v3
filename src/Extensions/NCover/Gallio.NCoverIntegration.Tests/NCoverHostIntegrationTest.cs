@@ -61,10 +61,10 @@ namespace Gallio.NCoverIntegration.Tests
 
             TestLauncher launcher = new TestLauncher();
             launcher.Logger = new MarkupStreamLogger(TestLog.Default);
-            launcher.TestPackageConfig.Files.Add(AssemblyUtils.GetAssemblyLocalPath(simpleTestType.Assembly));
-            launcher.TestPackageConfig.WorkingDirectory = tempPath;
-            launcher.TestRunnerFactoryName = factoryName;
-            launcher.TestExecutionOptions.FilterSet = new FilterSet<ITest>(new TypeFilter<ITest>(new EqualityFilter<string>(simpleTestType.FullName), false));
+            launcher.TestProject.TestPackage.AddFile(new FileInfo(AssemblyUtils.GetAssemblyLocalPath(simpleTestType.Assembly)));
+            launcher.TestProject.TestPackage.WorkingDirectory = new DirectoryInfo(tempPath);
+            launcher.TestProject.TestRunnerFactoryName = factoryName;
+            launcher.TestExecutionOptions.FilterSet = new FilterSet<ITestDescriptor>(new TypeFilter<ITestDescriptor>(new EqualityFilter<string>(simpleTestType.FullName), false));
 
             launcher.TestRunnerOptions.Properties.SetValue("NCoverArguments", ncoverArguments);
             launcher.TestRunnerOptions.Properties.SetValue("NCoverCoverageFile", ncoverCoverageFile);

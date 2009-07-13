@@ -14,8 +14,8 @@
 // limitations under the License.
 
 using System;
-using Gallio.Model;
 using Gallio.Common.Reflection;
+using Gallio.Model.Tree;
 
 namespace Gallio.Framework.Pattern
 {
@@ -23,7 +23,7 @@ namespace Gallio.Framework.Pattern
     /// A step that belongs to a <see cref="PatternTest" />.
     /// </summary>
     /// <seealso cref="PatternTestFramework"/>
-    public class PatternTestStep : BaseTestStep
+    public class PatternTestStep : Model.Tree.TestStep
     {
         /// <summary>
         /// Creates a primary step using the same name, code element and metadata
@@ -32,7 +32,7 @@ namespace Gallio.Framework.Pattern
         /// <param name="test">The test to which the step belongs.</param>
         /// <param name="parent">The parent test step, or null if creating the root step.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="test"/> is null.</exception>
-        public PatternTestStep(PatternTest test, ITestStep parent)
+        public PatternTestStep(PatternTest test, Model.Tree.TestStep parent)
             : base(test, parent)
         {
         }
@@ -53,7 +53,7 @@ namespace Gallio.Framework.Pattern
         /// <param name="isPrimary">True if the test step is primary.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/>
         /// or <paramref name="test"/> is null.</exception>
-        public PatternTestStep(PatternTest test, ITestStep parent, string name, ICodeElementInfo codeElement, bool isPrimary)
+        public PatternTestStep(PatternTest test, Model.Tree.TestStep parent, string name, ICodeElementInfo codeElement, bool isPrimary)
             : base(test, parent, name, codeElement, isPrimary)
         {
         }

@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using Gallio.Common.Reflection;
 using Gallio.Runtime.Extensibility;
+using Gallio.Runtime.Loader;
 using Gallio.Runtime.Logging;
 
 namespace Gallio.Runtime
@@ -54,6 +55,11 @@ namespace Gallio.Runtime
         /// Gets the runtime logger.
         /// </summary>
         ILogger Logger { get; }
+
+        /// <summary>
+        /// Gets the runtime assembly loader.
+        /// </summary>
+        IAssemblyLoader AssemblyLoader { get; }
 
         /// <summary>
         /// Initializes the runtime.

@@ -15,7 +15,10 @@
 
 using System;
 using System.Collections.Generic;
+using Gallio.Common;
+using Gallio.Common.Reflection;
 using Gallio.Model;
+using Gallio.Model.Schema;
 using Gallio.ReSharperRunner.Reflection;
 using JetBrains.ReSharper.Psi;
 
@@ -40,7 +43,7 @@ namespace Gallio.ReSharperRunner.Provider
             this.declaredElementResolver = declaredElementResolver;
         }
 
-        public static AnnotationState CreateFromAnnotation(Annotation annotation)
+        public static AnnotationState CreateFromAnnotation(AnnotationData annotation)
         {
             return new AnnotationState(annotation.Type,
                 annotation.Message, annotation.Details,

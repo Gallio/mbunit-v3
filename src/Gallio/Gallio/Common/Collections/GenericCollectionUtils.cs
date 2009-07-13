@@ -24,6 +24,18 @@ namespace Gallio.Common.Collections
     public static class GenericCollectionUtils
     {
         /// <summary>
+        /// Converts each element of the input collection and stores the result in place.
+        /// </summary>
+        /// <typeparam name="T">The item type.</typeparam>
+        /// <param name="list">The list to mutate.</param>
+        /// <param name="converter">The conversion function to apply to each element.</param>
+        public static void ConvertInPlace<T>(IList<T> list, Converter<T, T> converter)
+        {
+            for (int i = 0; i < list.Count; i++)
+                list[i] = converter(list[i]);
+        }
+
+        /// <summary>
         /// Converts each element of the input collection and stores the result in the
         /// output list using the same index.  The output list must be at least as
         /// large as the input list.
@@ -117,6 +129,34 @@ namespace Gallio.Common.Collections
                     return value;
 
             return default(T);
+        }
+
+        /// <summary>
+        /// Returns true if the input enumeration contains an element for which the predicate returns true.
+        /// </summary>
+        /// <typeparam name="T">The element type.</typeparam>
+        /// <param name="enumeration">The input enumeration.</param>
+        /// <param name="predicate">The predicate.</param>
+        /// <returns>True if a matching element exists.</returns>
+        public static bool Exists<T>(IEnumerable<T> enumeration, Predicate<T> predicate)
+        {
+            foreach (T value in enumeration)
+                if (predicate(value))
+                    return true;
+
+            return false;
+        }
+
+        /// <summary>
+        /// Performs an action for each element in an enumeration.
+        /// </summary>
+        /// <typeparam name="T">The element type.</typeparam>
+        /// <param name="enumeration">The input enumeration.</param>
+        /// <param name="action">The action to perform.</param>
+        public static void ForEach<T>(IEnumerable<T> enumeration, Action<T> action)
+        {
+            foreach (T value in enumeration)
+                action(value);
         }
 
         /// <summary>

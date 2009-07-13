@@ -18,11 +18,11 @@ using System;
 namespace Gallio.Model.Filters
 {
     /// <summary>
-    /// A filter that matches objects whose <see cref="ITestComponent.Name" />
+    /// A filter that matches objects whose <see cref="ITestDescriptor.Name" />
     /// matches the specified name filter.
     /// </summary>
     [Serializable]
-    public class NameFilter<T> : PropertyFilter<T> where T : ITestComponent
+    public class NameFilter<T> : PropertyFilter<T> where T : ITestDescriptor
     {
         /// <summary>
         /// Creates a name filter.

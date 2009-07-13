@@ -18,6 +18,8 @@ using System.Collections.Generic;
 using System.Text;
 using Gallio.Model;
 using Gallio.Common.Reflection;
+using Gallio.Model.Tree;
+using Gallio.Runtime;
 using Gallio.Runtime.Loader;
 
 namespace Gallio.Framework.Pattern
@@ -27,25 +29,31 @@ namespace Gallio.Framework.Pattern
     /// </summary>
     public class DefaultTestModelBuilder : BaseBuilder, ITestModelBuilder
     {
-        private readonly TestModel testModel;
+        private readonly IReflectionPolicy reflectionPolicy;
+        private readonly PatternTestModel testModel;
 
         /// <summary>
         /// Creates a test model builder.
         /// </summary>
+        /// <param name="reflectionPolicy">The reflection policy.</param>
         /// <param name="testModel">The underlying test model.</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="testModel"/> is null.</exception>
-        public DefaultTestModelBuilder(TestModel testModel)
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="reflectionPolicy"/>
+        /// or <paramref name="testModel"/> is null.</exception>
+        public DefaultTestModelBuilder(IReflectionPolicy reflectionPolicy, PatternTestModel testModel)
         {
+            if (reflectionPolicy == null)
+                throw new ArgumentNullException("reflectionPolicy");
             if (testModel == null)
                 throw new ArgumentNullException("testModel");
 
+            this.reflectionPolicy = reflectionPolicy;
             this.testModel = testModel;
         }
 
         /// <inheritdoc />
         public IReflectionPolicy ReflectionPolicy
         {
-            get { return testModel.TestExplorationContext.ReflectionPolicy; }
+            get { return reflectionPolicy; }
         }
 
         /// <inheritdoc />
@@ -63,7 +71,7 @@ namespace Gallio.Framework.Pattern
             if (resolver == null)
                 throw new ArgumentNullException("resolver");
 
-            testModel.TestExplorationContext.Loader.AssemblyResolverManager.AddAssemblyResolver(resolver);
+            RuntimeAccessor.AssemblyLoader.AddAssemblyResolver(resolver);
         }
 
         /// <inheritdoc />
@@ -95,7 +103,7 @@ namespace Gallio.Framework.Pattern
         }
 
         /// <inheritdoc />
-        public TestModel ToTestModel()
+        public PatternTestModel ToTestModel()
         {
             return testModel;
         }

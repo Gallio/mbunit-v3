@@ -32,7 +32,7 @@ namespace Gallio.Common.Reflection
     /// </para>
     /// </remarks>
     [Serializable]
-    [XmlRoot("codeLocation", Namespace = XmlSerializationUtils.GallioNamespace)]
+    [XmlRoot("codeLocation", Namespace = SchemaConstants.XmlNamespace)]
     [XmlSchemaProvider("ProvideXmlSchema")]
     public struct CodeLocation : IEquatable<CodeLocation>, IXmlSerializable, ISerializable
     {
@@ -172,7 +172,7 @@ namespace Gallio.Common.Reflection
         {
             schemas.Add(new XmlSchema()
             {
-                TargetNamespace = XmlSerializationUtils.GallioNamespace,
+                TargetNamespace = SchemaConstants.XmlNamespace,
                 Items =
                 {
                     new XmlSchemaComplexType()
@@ -203,7 +203,7 @@ namespace Gallio.Common.Reflection
                 }
             });
 
-            return new XmlQualifiedName("CodeLocation", XmlSerializationUtils.GallioNamespace);
+            return new XmlQualifiedName("CodeLocation", SchemaConstants.XmlNamespace);
         }
 
         XmlSchema IXmlSerializable.GetSchema()

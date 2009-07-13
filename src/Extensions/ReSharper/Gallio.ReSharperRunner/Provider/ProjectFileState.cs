@@ -15,9 +15,10 @@
 
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
+using Gallio.Common;
 using Gallio.Common.Collections;
-using Gallio.Model;
+using Gallio.Common.Reflection;
+using Gallio.Model.Schema;
 using Gallio.ReSharperRunner.Provider.Daemons;
 using JetBrains.ProjectModel;
 
@@ -42,9 +43,11 @@ namespace Gallio.ReSharperRunner.Provider
         /// Creates a state object with the specified annotations. 
         /// </summary>
         /// <param name="annotations">The annotations</param>
-        public static ProjectFileState CreateFromAnnotations(IList<Annotation> annotations)
+        public static ProjectFileState CreateFromAnnotations(IList<AnnotationData> annotations)
         {
-            return new ProjectFileState(GenericCollectionUtils.ConvertAllToArray<Annotation, AnnotationState>(annotations, AnnotationState.CreateFromAnnotation));
+            return new ProjectFileState(
+                GenericCollectionUtils.ConvertAllToArray<AnnotationData, AnnotationState>(
+                annotations, AnnotationState.CreateFromAnnotation));
         }
 
         /// <summary>

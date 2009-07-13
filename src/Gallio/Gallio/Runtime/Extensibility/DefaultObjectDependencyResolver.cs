@@ -117,6 +117,8 @@ namespace Gallio.Runtime.Extensibility
 
         private DependencyResolution ResolveDependencyByConfiguration(string parameterName, Type parameterType, string configurationArgument)
         {
+            configurationArgument = configurationArgument.Trim();
+
             if (parameterType.IsArray)
             {
                 // TODO: Should really provide a better way to extract structural information from the configuration argument.

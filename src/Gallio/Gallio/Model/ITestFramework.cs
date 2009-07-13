@@ -33,10 +33,17 @@ namespace Gallio.Model
     public interface ITestFramework
     {
         /// <summary>
-        /// Registers the test explorers of this framework into an aggregate list of explorers
-        /// from all frameworks.
+        /// Gets the test driver factory for the framework.
         /// </summary>
-        /// <param name="explorers">The explorer list, not null.</param>
-        void RegisterTestExplorers(IList<ITestExplorer> explorers);
+        /// <remarks>
+        /// <para>
+        /// When multiple test frameworks result the same test driver factory
+        /// then only one instance of the test driver will be created and it will
+        /// be shared by those frameworks.  Factory identity is based on delegate
+        /// equality.
+        /// </para>
+        /// </remarks>
+        /// <returns>The test driver factory.</returns>
+        TestDriverFactory GetTestDriverFactory();
     }
 }

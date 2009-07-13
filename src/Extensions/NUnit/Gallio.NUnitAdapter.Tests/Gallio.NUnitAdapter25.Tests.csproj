@@ -65,7 +65,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Integration\RunAddinsTest.cs" />
-    <Compile Include="Model\NUnitTestExplorerTest.cs" />
     <Compile Include="Model\NUnitTestFrameworkTest.cs" />
     <Compile Include="Integration\RunSimpleTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

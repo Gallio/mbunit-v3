@@ -26,6 +26,7 @@ using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Controls;
 using Gallio.Icarus.Helpers;
 using Gallio.Runner.Projects;
+using Gallio.Runner.Projects.Schema;
 using Gallio.Runtime;
 using Gallio.Runtime.Extensibility;
 using Gallio.Runtime.ProgressMonitoring;
@@ -133,7 +134,7 @@ namespace Gallio.Icarus.Controllers
                     if (!fileSystem.FileExists(assembly))
                         continue;
 
-                    if (Path.GetExtension(assembly) == Project.Extension)
+                    if (Path.GetExtension(assembly) == TestProject.Extension)
                     {
                         OpenProject(assembly);
                         return;

@@ -14,7 +14,7 @@
 // limitations under the License.
 
 using System;
-using Gallio.Runtime.Caching;
+using Gallio.Common.Caching;
 using MbUnit.Framework;
 using MbUnit.Framework.ContractVerifiers;
 

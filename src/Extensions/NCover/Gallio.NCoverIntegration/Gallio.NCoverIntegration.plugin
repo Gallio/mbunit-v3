@@ -47,19 +47,11 @@
 
     <!-- v1.5.8 -->
 
-    <component componentId="NCoverIntegration.NCoverHostFactory.v1.5.8"
-               serviceId="Gallio.HostFactory"
-               componentType="Gallio.NCoverIntegration.NCoverHostFactory, Gallio.NCoverIntegration">
-      <parameters>
-        <version>V1</version>
-      </parameters>
-    </component>
-
     <component componentId="NCoverIntegration.NCoverTestRunnerFactory.v1.5.8"
                serviceId="Gallio.TestRunnerFactory"
                componentType="Gallio.Runner.DefaultTestRunnerFactory, Gallio">
       <parameters>
-        <testDriverFactory>${NCoverIntegration.NCoverTestDriverFactory.v1.5.8}</testDriverFactory>
+        <testIsolationProvider>${NCoverIntegration.NCoverTestIsolationProvider.v1.5.8}</testIsolationProvider>
       </parameters>
       <traits>
         <name>NCover</name>
@@ -73,30 +65,21 @@
       </traits>
     </component>
 
-    <component componentId="NCoverIntegration.NCoverTestDriverFactory.v1.5.8"
-               serviceId="Gallio.TestDriverFactory"
-               componentType="Gallio.Runner.Drivers.HostedTestDriverFactory, Gallio">
+    <component componentId="NCoverIntegration.NCoverTestIsolationProvider.v1.5.8"
+               serviceId="Gallio.TestIsolationProvider"
+               componentType="Gallio.NCoverIntegration.NCoverTestIsolationProvider, Gallio.NCoverIntegration">
       <parameters>
-        <hostFactory>${NCoverIntegration.NCoverHostFactory.v1.5.8}</hostFactory>
-        <isolationMode>AppDomainPerAssembly</isolationMode>
+        <version>V1</version>
       </parameters>
     </component>
 
     <!-- v2 -->
 
-    <component componentId="NCoverIntegration.NCoverHostFactory.v2"
-               serviceId="Gallio.HostFactory"
-               componentType="Gallio.NCoverIntegration.NCoverHostFactory, Gallio.NCoverIntegration">
-      <parameters>
-        <version>V2</version>
-      </parameters>
-    </component>
-
     <component componentId="NCoverIntegration.NCoverTestRunnerFactory.v2"
                serviceId="Gallio.TestRunnerFactory"
                componentType="Gallio.Runner.DefaultTestRunnerFactory, Gallio">
       <parameters>
-        <testDriverFactory>${NCoverIntegration.NCoverTestDriverFactory.v2}</testDriverFactory>
+        <testIsolationProvider>${NCoverIntegration.NCoverTestIsolationProvider.v2}</testIsolationProvider>
       </parameters>
       <traits>
         <name>NCover2</name>
@@ -110,30 +93,21 @@
       </traits>
     </component>
 
-    <component componentId="NCoverIntegration.NCoverTestDriverFactory.v2"
-               serviceId="Gallio.TestDriverFactory"
-               componentType="Gallio.Runner.Drivers.HostedTestDriverFactory, Gallio">
+    <component componentId="NCoverIntegration.NCoverTestIsolationProvider.v2"
+               serviceId="Gallio.TestIsolationProvider"
+               componentType="Gallio.NCoverIntegration.NCoverTestIsolationProvider, Gallio.NCoverIntegration">
       <parameters>
-        <hostFactory>${NCoverIntegration.NCoverHostFactory.v2}</hostFactory>
-        <isolationMode>AppDomainPerAssembly</isolationMode>
+        <version>V2</version>
       </parameters>
     </component>
 
     <!-- v3 -->
 
-    <component componentId="NCoverIntegration.NCoverHostFactory.v3"
-               serviceId="Gallio.HostFactory"
-               componentType="Gallio.NCoverIntegration.NCoverHostFactory, Gallio.NCoverIntegration">
-      <parameters>
-        <version>V3</version>
-      </parameters>
-    </component>
-
     <component componentId="NCoverIntegration.NCoverTestRunnerFactory.v3"
                serviceId="Gallio.TestRunnerFactory"
                componentType="Gallio.Runner.DefaultTestRunnerFactory, Gallio">
       <parameters>
-        <testDriverFactory>${NCoverIntegration.NCoverTestDriverFactory.v3}</testDriverFactory>
+        <testIsolationProvider>${NCoverIntegration.NCoverTestIsolationProvider.v3}</testIsolationProvider>
       </parameters>
       <traits>
         <name>NCover3</name>
@@ -147,12 +121,11 @@
       </traits>
     </component>
 
-    <component componentId="NCoverIntegration.NCoverTestDriverFactory.v3"
-               serviceId="Gallio.TestDriverFactory"
-               componentType="Gallio.Runner.Drivers.HostedTestDriverFactory, Gallio">
+    <component componentId="NCoverIntegration.NCoverTestIsolationProvider.v3"
+               serviceId="Gallio.TestIsolationProvider"
+               componentType="Gallio.NCoverIntegration.NCoverTestIsolationProvider, Gallio.NCoverIntegration">
       <parameters>
-        <hostFactory>${NCoverIntegration.NCoverHostFactory.v3}</hostFactory>
-        <isolationMode>AppDomainPerAssembly</isolationMode>
+        <version>V3</version>
       </parameters>
     </component>
   </components>

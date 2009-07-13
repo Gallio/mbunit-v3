@@ -20,10 +20,10 @@ using System.Text;
 using Gallio.Framework;
 using Gallio.Model;
 using Gallio.Common.Reflection;
-using Gallio.Runner.Reports;
+using Gallio.Runner.Reports.Schema;
 using Gallio.Tests;
 using MbUnit.Framework;
-using Gallio.Model.Serialization;
+using Gallio.Model.Schema;
 
 namespace MbUnit.Tests.Framework
 {

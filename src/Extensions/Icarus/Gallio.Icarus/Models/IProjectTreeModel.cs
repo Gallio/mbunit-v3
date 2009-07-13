@@ -15,12 +15,13 @@
 
 using Aga.Controls.Tree;
 using Gallio.Runner.Projects;
+using Gallio.Runner.Projects.Schema;
 
 namespace Gallio.Icarus.Models
 {
     public interface IProjectTreeModel : ITreeModel
     {
         string FileName { get; set; }
-        Project Project { get; set; }
+        TestProject TestProject { get; set; }
     }
 }

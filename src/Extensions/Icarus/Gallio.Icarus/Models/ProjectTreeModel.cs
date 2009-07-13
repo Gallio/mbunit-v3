@@ -18,8 +18,9 @@ using System.IO;
 using Aga.Controls.Tree;
 using Gallio.Common.IO;
 using Gallio.Icarus.Models.ProjectTreeNodes;
-using Gallio.Runner.Projects;
 using Gallio.Icarus.Reports;
+using Gallio.Runner.Projects;
+using Gallio.Runner.Projects.Schema;
 
 namespace Gallio.Icarus.Models
 {
@@ -27,7 +28,7 @@ namespace Gallio.Icarus.Models
     {
         private readonly IFileSystem fileSystem;
         private readonly Node projectRoot;
-        private Project project = new Project();
+        private TestProject testProject = new TestProject();
         private string fileName = string.Empty;
         private ReportMonitor reportMonitor;
 
@@ -41,14 +42,14 @@ namespace Gallio.Icarus.Models
             }
         }
 
-        public Project Project
+        public TestProject TestProject
         {
-            get { return project; }
+            get { return testProject; }
             set
             {
-                project = value;
+                testProject = value;
                 OnStructureChanged(new TreePathEventArgs(new TreePath(projectRoot)));
-                reportMonitor = new ReportMonitor(project);
+                reportMonitor = new ReportMonitor(testProject);
                 reportMonitor.ReportDirectoryChanged += (sender, e) => OnStructureChanged(new TreePathEventArgs());
             }
         }
@@ -77,8 +78,8 @@ namespace Gallio.Icarus.Models
             }
             else if (treePath.LastNode is AssembliesNode)
             {
-                foreach (string assemblyFile in project.TestPackageConfig.Files)
-                    yield return new AssemblyNode(assemblyFile);
+                foreach (FileInfo file in testProject.TestPackage.Files)
+                    yield return new AssemblyNode(file.FullName);
             }
             else if (treePath.LastNode is ReportsNode && !string.IsNullOrEmpty(fileName))
             {

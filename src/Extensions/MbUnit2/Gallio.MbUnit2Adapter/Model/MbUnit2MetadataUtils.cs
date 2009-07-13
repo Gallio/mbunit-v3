@@ -18,7 +18,7 @@ extern alias MbUnit2;
 using System;
 using Gallio.Model;
 using Gallio.Common.Reflection;
-
+using Gallio.Model.Tree;
 using TestFixturePatternAttribute2 = MbUnit2::MbUnit.Core.Framework.TestFixturePatternAttribute;
 using TestPatternAttribute2 = MbUnit2::MbUnit.Core.Framework.TestPatternAttribute;
 using FixtureCategoryAttribute2 = MbUnit2::MbUnit.Framework.FixtureCategoryAttribute;
@@ -36,12 +36,12 @@ namespace Gallio.MbUnit2Adapter.Model
     /// </summary>
     internal static class MbUnit2MetadataUtils
     {
-        public static void PopulateAssemblyMetadata(ITest test, IAssemblyInfo assembly)
+        public static void PopulateAssemblyMetadata(Test test, IAssemblyInfo assembly)
         {
             ModelUtils.PopulateMetadataFromAssembly(assembly, test.Metadata);
         }
 
-        public static void PopulateFixtureMetadata(ITest test, ITypeInfo fixtureType)
+        public static void PopulateFixtureMetadata(Test test, ITypeInfo fixtureType)
         {
             foreach (AuthorAttribute2 attrib in AttributeUtils.GetAttributes<AuthorAttribute2>(fixtureType, true))
             {
@@ -84,7 +84,7 @@ namespace Gallio.MbUnit2Adapter.Model
             PopulateFixtureOrTestMetadata(test, fixtureType);
         }
 
-        public static void PopulateTestMetadata(ITest test, IMemberInfo member)
+        public static void PopulateTestMetadata(Test test, IMemberInfo member)
         {
             foreach (TestPatternAttribute2 attrib in AttributeUtils.GetAttributes<TestPatternAttribute2>(member, true))
             {
@@ -95,7 +95,7 @@ namespace Gallio.MbUnit2Adapter.Model
             PopulateFixtureOrTestMetadata(test, member);
         }
 
-        private static void PopulateFixtureOrTestMetadata(ITest test, ICodeElementInfo codeElement)
+        private static void PopulateFixtureOrTestMetadata(Test test, ICodeElementInfo codeElement)
         {
             foreach (IgnoreAttribute2 attrib in AttributeUtils.GetAttributes<IgnoreAttribute2>(codeElement, true))
             {

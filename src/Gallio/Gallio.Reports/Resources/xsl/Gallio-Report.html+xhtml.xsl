@@ -89,7 +89,7 @@ html
     <div id="Content" class="content">
       <iframe id="_asyncLoadFrame" src="about:blank" style="border: 0px; margin: 0px 0px 0px 0px; padding: 0px 0px 0px 0px; width: 0px; height: 0px; display: none;" onload="_asyncLoadFrameOnLoad()" />
       <xsl:apply-templates select="g:testPackageRun" mode="statistics" />
-      <xsl:apply-templates select="g:testPackageConfig" mode="assemblies" />
+      <xsl:apply-templates select="g:testPackage" mode="files" />
       <xsl:apply-templates select="g:testModel/g:annotations" mode="annotations"/>
       <xsl:apply-templates select="g:testPackageRun" mode="summary"/>
       <xsl:apply-templates select="g:testPackageRun" mode="details"/>
@@ -97,12 +97,12 @@ html
     </div>
   </xsl:template>
   
-  <xsl:template match="g:testPackageConfig" mode="assemblies">
-    <div id="Assemblies" class="section">
-      <h2>Assemblies</h2>
+  <xsl:template match="g:testPackage" mode="files">
+    <div id="Files" class="section">
+      <h2>Files</h2>
       <div class="section-content">
         <ul>
-          <xsl:for-each select="g:assemblyFiles/g:assemblyFile">
+          <xsl:for-each select="g:files/g:file">
             <li><xsl:call-template name="print-text-with-breaks"><xsl:with-param name="text" select="text()" /></xsl:call-template></li>
           </xsl:for-each>
         </ul>

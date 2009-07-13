@@ -19,7 +19,7 @@ using Gallio.Icarus.Commands;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Reports;
 using Gallio.Icarus.Tests.Utilities;
-using Gallio.Runner.Reports;
+using Gallio.Runner.Reports.Schema;
 using MbUnit.Framework;
 using MbUnit.Framework.ContractVerifiers;
 using Rhino.Mocks;

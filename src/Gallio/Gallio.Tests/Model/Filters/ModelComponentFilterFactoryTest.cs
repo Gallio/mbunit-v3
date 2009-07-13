@@ -21,23 +21,23 @@ using MbUnit.Framework;
 namespace Gallio.Tests.Model.Filters
 {
     [TestFixture]
-    [TestsOn(typeof(ModelComponentFilterFactory<ITest>))]
+    [TestsOn(typeof(TestDescriptorFilterFactory<ITestDescriptor>))]
     [Author("Julian Hidalgo")]
     public class ModelComponentFilterFactoryTest
     {
         [Test]
-        [Row("Id", typeof(IdFilter<ITest>))]
-        [Row("Name", typeof(NameFilter<ITest>))]
-        [Row("Assembly", typeof(AssemblyFilter<ITest>))]
-        [Row("Namespace", typeof(NamespaceFilter<ITest>))]
-        [Row("Type", typeof(TypeFilter<ITest>))]
-        [Row("ExactType", typeof(TypeFilter<ITest>))]
-        [Row("Member", typeof(MemberFilter<ITest>))]
-        [Row("SomeOtherKey", typeof(MetadataFilter<ITest>))]
+        [Row("Id", typeof(IdFilter<ITestDescriptor>))]
+        [Row("Name", typeof(NameFilter<ITestDescriptor>))]
+        [Row("Assembly", typeof(AssemblyFilter<ITestDescriptor>))]
+        [Row("Namespace", typeof(NamespaceFilter<ITestDescriptor>))]
+        [Row("Type", typeof(TypeFilter<ITestDescriptor>))]
+        [Row("ExactType", typeof(TypeFilter<ITestDescriptor>))]
+        [Row("Member", typeof(MemberFilter<ITestDescriptor>))]
+        [Row("SomeOtherKey", typeof(MetadataFilter<ITestDescriptor>))]
         public void CreateFilter(string key, Type filterType)
         {
             Filter<string> filterValue = new EqualityFilter<string>("");
-            Filter<ITest> filter = (new ModelComponentFilterFactory<ITest>()).CreateFilter(key, filterValue);
+            Filter<ITestDescriptor> filter = (new TestDescriptorFilterFactory<ITestDescriptor>()).CreateFilter(key, filterValue);
             Assert.AreEqual(filter.GetType(), filterType);
         }
     }

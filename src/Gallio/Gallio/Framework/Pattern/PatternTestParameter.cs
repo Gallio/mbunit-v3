@@ -15,8 +15,8 @@
 
 using System;
 using Gallio.Framework.Data;
-using Gallio.Model;
 using Gallio.Common.Reflection;
+using Gallio.Model.Tree;
 
 namespace Gallio.Framework.Pattern
 {
@@ -25,7 +25,7 @@ namespace Gallio.Framework.Pattern
     /// or method parameter.
     /// </summary>
     /// <seealso cref="PatternTestFramework"/>
-    public class PatternTestParameter : BaseTestParameter, IPatternTestComponent
+    public class PatternTestParameter : TestParameter, IPatternTestComponent
     {
         private readonly PatternTestDataContext dataContext;
         private readonly PatternTestParameterActions testParameterActions;

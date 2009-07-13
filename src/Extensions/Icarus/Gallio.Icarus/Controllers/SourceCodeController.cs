@@ -19,7 +19,7 @@ using Gallio.Icarus.Controllers.EventArgs;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Runtime.ProgressMonitoring;
 using Gallio.Common.Reflection;
-using Gallio.Model.Serialization;
+using Gallio.Model.Schema;
 
 namespace Gallio.Icarus.Controllers
 {

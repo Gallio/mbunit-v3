@@ -13,83 +13,108 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
+using System.IO;
 using System.Reflection;
+using Gallio.Common.Messaging;
+using Gallio.Model.Contexts;
+using Gallio.Model.Isolation;
 using Gallio.Model.Messages;
+using Gallio.Model.Messages.Exploration;
+using Gallio.Model.Schema;
+using Gallio.Model.Tree;
 using Gallio.Runtime.Extensibility;
 using Gallio.Runtime.FileTypes;
+using Gallio.Runtime.Hosting;
 using Gallio.Runtime.Loader;
 using Gallio.Runtime;
 using Gallio.Framework;
 using Gallio.Common.Reflection;
 using Gallio.Model;
+using Gallio.Runtime.Logging;
 using MbUnit.Framework;
-using Gallio.Runner.Harness;
-using Gallio.Model.Execution;
+using Gallio.Model.Environments;
 using Gallio.Runtime.ProgressMonitoring;
 using Rhino.Mocks;
+using Test=Gallio.Model.Tree.Test;
 
 namespace Gallio.Tests.Model
 {
-    public abstract class BaseTestFrameworkTest
+    public abstract class BaseTestFrameworkTest<TSampleFixture>
     {
-        protected Assembly sampleAssembly;
-        protected ComponentHandle<ITestFramework, TestFrameworkTraits> frameworkHandle;
-        protected TestModel testModel;
-
-        private ITestHarness harness;
-
-        protected abstract Assembly GetSampleAssembly();
-
-        protected abstract ComponentHandle<ITestFramework, TestFrameworkTraits> GetFrameworkHandle();
-
-        [SetUp]
-        public void SetUp()
+        protected Assembly SimpleFixtureAssembly
         {
-            sampleAssembly = GetSampleAssembly();
-
-            frameworkHandle = GetFrameworkHandle();
-            DefaultTestFrameworkManager frameworkManager = new DefaultTestFrameworkManager(
-                new[] { frameworkHandle }, RuntimeAccessor.ServiceLocator.Resolve<IFileTypeManager>());
-            ITestEnvironmentManager environmentManager = RuntimeAccessor.ServiceLocator.Resolve<ITestEnvironmentManager>();
-
-            harness = new DefaultTestHarness(TestContextTrackerAccessor.Instance,
-                RuntimeAccessor.ServiceLocator.Resolve<ILoader>(),
-                environmentManager, frameworkManager);
+            get { return SimpleFixtureType.Assembly; }
         }
 
-        [TearDown]
-        public void TearDown()
+        protected Type SimpleFixtureType
         {
-            if (harness != null)
+            get { return typeof (TSampleFixture); }
+        }
+
+        protected string SimpleFixtureNamespace
+        {
+            get { return SimpleFixtureType.Namespace; }
+        }
+
+        protected abstract ComponentHandle<ITestFramework, TestFrameworkTraits> FrameworkHandle { get; }
+
+        protected virtual string FrameworkKind
+        {
+            get { return TestKinds.Framework; }
+        }
+
+        protected virtual string PassTestName
+        {
+            get { return "Pass"; }
+        }
+
+        protected virtual string FailTestName
+        {
+            get { return "Fail"; }
+        }
+
+        protected TestModel PopulateTestTree()
+        {
+            return PopulateTestTree(SimpleFixtureAssembly);
+        }
+
+        protected TestModel PopulateTestTree(Assembly assembly)
+        {
+            TestModel testModel = new TestModel();
+
+            var testFrameworkManager = RuntimeAccessor.ServiceLocator.Resolve<ITestFrameworkManager>();
+            ITestDriver testDriver = testFrameworkManager.GetTestDriver(frameworkId => frameworkId == FrameworkHandle.Id);
+
+            var testIsolationProvider = (ITestIsolationProvider) RuntimeAccessor.ServiceLocator.ResolveByComponentId("Gallio.LocalTestIsolationProvider");
+            var testIsolationOptions = new TestIsolationOptions();
+            var logger = new MarkupStreamLogger(TestLog.Default);
+            using (ITestIsolationContext testIsolationContext = testIsolationProvider.CreateContext(testIsolationOptions, logger))
             {
-                harness.Dispose();
-                harness = null;
-                frameworkHandle = null;
-                sampleAssembly = null;
+                var testPackage = new TestPackage();
+                testPackage.AddFile(new FileInfo(AssemblyUtils.GetFriendlyAssemblyCodeBase(assembly)));
+                var testExplorationOptions = new TestExplorationOptions();
+
+                var messageSink = TestModelSerializer.CreateMessageSinkToPopulateTestModel(testModel);
+
+                new LogProgressMonitorProvider(logger).Run(progressMonitor =>
+                {
+                    testDriver.Explore(testIsolationContext, testPackage, testExplorationOptions,
+                        messageSink, progressMonitor);
+                });
             }
+
+            return testModel;
         }
 
-        protected void PopulateTestTree()
+        protected Test GetDescendantByName(Test parent, string name)
         {
-            TestPackageConfig config = new TestPackageConfig();
-            config.Files.Add(AssemblyUtils.GetFriendlyAssemblyCodeBase(sampleAssembly));
-
-            harness.Load(config, NullProgressMonitor.CreateInstance());
-            harness.Explore(new TestExplorationOptions(),
-                MockRepository.GenerateStub<ITestExplorationListener>(),
-                NullProgressMonitor.CreateInstance());
-
-            testModel = harness.TestModel;
-        }
-
-        protected ITest GetDescendantByName(ITest parent, string name)
-        {
-            foreach (ITest test in parent.Children)
+            foreach (Test test in parent.Children)
             {
                 if (test.Name == name)
                     return test;
 
-                ITest descendant = GetDescendantByName(test, name);
+                Test descendant = GetDescendantByName(test, name);
                 if (descendant != null)
                     return descendant;
             }
@@ -97,15 +122,123 @@ namespace Gallio.Tests.Model
             return null;
         }
 
-        protected ITestParameter GetParameterByName(ITest test, string name)
+        protected TestParameter GetParameterByName(Test test, string name)
         {
-            foreach (ITestParameter testParameter in test.Parameters)
+            foreach (TestParameter testParameter in test.Parameters)
             {
                 if (testParameter.Name == name)
                     return testParameter;
             }
 
             return null;
+        }
+
+        [Test]
+        public void PopulateTestTree_WhenAssemblyDoesNotReferenceFramework_IsEmpty()
+        {
+            TestModel testModel = PopulateTestTree(typeof(int).Assembly);
+
+            Assert.AreEqual(0, testModel.RootTest.Children.Count);
+        }
+
+        [Test]
+        public void PopulateTestTree_CapturesTestStructureAndBasicMetadata()
+        {
+            TestModel testModel = PopulateTestTree();
+
+            Test rootTest = testModel.RootTest;
+            Assert.IsNull(rootTest.Parent);
+            Assert.AreEqual(TestKinds.Root, rootTest.Kind);
+            Assert.IsNull(rootTest.CodeElement);
+            Assert.IsFalse(rootTest.IsTestCase);
+            Assert.AreEqual(1, rootTest.Children.Count);
+
+            Test frameworkTest = (Test)rootTest.Children[0];
+            Assert.AreSame(testModel.RootTest, frameworkTest.Parent);
+            Assert.AreEqual(FrameworkKind, frameworkTest.Kind);
+            Assert.AreEqual(FrameworkHandle.GetTraits().Name, frameworkTest.Metadata.GetValue(MetadataKeys.Framework));
+            Assert.IsNull(frameworkTest.CodeElement);
+            //Assert.AreEqual("MSTest v9.0.0.0", frameworkTest.Name);
+            //Assert.AreEqual("MbUnit v" + expectedVersion, frameworkTest.Name);
+            //Assert.AreEqual("xUnit.net v" + expectedVersion, frameworkTest.Name);
+            //Assert.AreEqual("NUnit v" + expectedVersion, frameworkTest.Name);
+            //Assert.AreEqual("MbUnit v" + expectedVersion, frameworkTest.Name);
+            Assert.IsFalse(frameworkTest.IsTestCase);
+            Assert.AreEqual(1, frameworkTest.Children.Count);
+
+            Test assemblyTest = (Test)frameworkTest.Children[0];
+            Assert.AreSame(frameworkTest, assemblyTest.Parent);
+            Assert.AreEqual(TestKinds.Assembly, assemblyTest.Kind);
+            Assert.AreEqual(CodeReference.CreateFromAssembly(SimpleFixtureAssembly), assemblyTest.CodeElement.CodeReference);
+            Assert.AreEqual(SimpleFixtureAssembly.GetName().Name, assemblyTest.Name);
+            Assert.IsFalse(assemblyTest.IsTestCase);
+            Assert.GreaterThanOrEqualTo(assemblyTest.Children.Count, 2);
+
+            Test fixtureTest = (Test)GetDescendantByName(assemblyTest, "SimpleTest");
+            Assert.AreSame(assemblyTest, fixtureTest.Parent);
+            Assert.AreEqual(TestKinds.Fixture, fixtureTest.Kind);
+            Assert.AreEqual(new CodeReference(SimpleFixtureAssembly.FullName, SimpleFixtureNamespace, SimpleFixtureNamespace + ".SimpleTest", null, null),
+                fixtureTest.CodeElement.CodeReference);
+            Assert.AreEqual("SimpleTest", fixtureTest.Name);
+            Assert.IsFalse(fixtureTest.IsTestCase);
+            Assert.AreEqual(2, fixtureTest.Children.Count);
+
+            Test passTest = (Test)GetDescendantByName(fixtureTest, PassTestName);
+            Test failTest = (Test)GetDescendantByName(fixtureTest, FailTestName);
+
+            Assert.IsNotNull(passTest, "Cannot find test case '{0}'", PassTestName);
+            Assert.IsNotNull(failTest, "Cannot find test case '{0}'", FailTestName);
+
+            Assert.AreSame(fixtureTest, passTest.Parent);
+            Assert.AreEqual(TestKinds.Test, passTest.Kind);
+            Assert.AreEqual(new CodeReference(SimpleFixtureAssembly.FullName, SimpleFixtureNamespace, SimpleFixtureNamespace + ".SimpleTest", "Pass", null),
+                passTest.CodeElement.CodeReference);
+            Assert.AreEqual(PassTestName, passTest.Name);
+            Assert.IsTrue(passTest.IsTestCase);
+            Assert.AreEqual(0, passTest.Children.Count);
+
+            Assert.AreSame(fixtureTest, failTest.Parent);
+            Assert.AreEqual(TestKinds.Test, failTest.Kind);
+            Assert.AreEqual(new CodeReference(SimpleFixtureAssembly.FullName, SimpleFixtureNamespace, SimpleFixtureNamespace + ".SimpleTest", "Fail", null),
+                failTest.CodeElement.CodeReference);
+            Assert.AreEqual(FailTestName, failTest.Name);
+            Assert.IsTrue(failTest.IsTestCase);
+            Assert.AreEqual(0, failTest.Children.Count);
+        }
+
+        [Test]
+        public void MetadataImport_XmlDocumentation()
+        {
+            TestModel testModel = PopulateTestTree();
+
+            Test test = (Test)GetDescendantByName(testModel.RootTest, typeof(TSampleFixture).Name);
+            Test passTest = (Test)GetDescendantByName(test, PassTestName);
+            Test failTest = (Test)GetDescendantByName(test, FailTestName);
+
+            Assert.AreEqual("<summary>\nA simple test fixture.\n</summary>", test.Metadata.GetValue(MetadataKeys.XmlDocumentation));
+            Assert.AreEqual("<summary>\nA passing test.\n</summary>", passTest.Metadata.GetValue(MetadataKeys.XmlDocumentation));
+            Assert.AreEqual("<summary>\nA failing test.\n</summary>", failTest.Metadata.GetValue(MetadataKeys.XmlDocumentation));
+        }
+
+        [Test]
+        public void MetadataImport_AssemblyAttributes()
+        {
+            TestModel testModel = PopulateTestTree();
+
+            Test frameworkTest = testModel.RootTest.Children[0];
+            Test assemblyTest = frameworkTest.Children[0];
+
+            Assert.AreEqual("MbUnit Project", assemblyTest.Metadata.GetValue(MetadataKeys.Company));
+            Assert.AreEqual("Test", assemblyTest.Metadata.GetValue(MetadataKeys.Configuration));
+            Assert.Contains(assemblyTest.Metadata.GetValue(MetadataKeys.Copyright), "Gallio Project");
+            Assert.AreEqual("A sample test assembly for " + FrameworkHandle.GetTraits().Name + ".", assemblyTest.Metadata.GetValue(MetadataKeys.Description));
+            Assert.AreEqual("Gallio", assemblyTest.Metadata.GetValue(MetadataKeys.Product));
+            Assert.AreEqual(SimpleFixtureAssembly.GetName().Name, assemblyTest.Metadata.GetValue(MetadataKeys.Title));
+            Assert.AreEqual("Gallio", assemblyTest.Metadata.GetValue(MetadataKeys.Trademark));
+
+            Assert.AreEqual("1.2.3.4", assemblyTest.Metadata.GetValue(MetadataKeys.InformationalVersion));
+            Assert.IsNotEmpty(assemblyTest.Metadata.GetValue(MetadataKeys.FileVersion));
+            Assert.IsNotEmpty(assemblyTest.Metadata.GetValue(MetadataKeys.Version));
         }
     }
 }

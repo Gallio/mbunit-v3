@@ -20,7 +20,8 @@ using Gallio.Icarus.Controllers.EventArgs;
 using Gallio.Icarus.Models;
 using Gallio.Model;
 using Gallio.Model.Filters;
-using Gallio.Runner.Projects;
+using Gallio.Model.Schema;
+using Gallio.Runner.Projects.Schema;
 using Gallio.Runtime.ProgressMonitoring;
 
 namespace Gallio.Icarus.Controllers.Interfaces
@@ -28,7 +29,7 @@ namespace Gallio.Icarus.Controllers.Interfaces
     public interface IProjectController
     {
         IProjectTreeModel Model { get; }
-        TestPackageConfig TestPackageConfig { get; }
+        TestPackage TestPackage { get; }
         BindingList<FilterInfo> TestFilters { get; }
         BindingList<string> HintDirectories { get; }
         BindingList<string> TestRunnerExtensions { get; }
@@ -42,12 +43,12 @@ namespace Gallio.Icarus.Controllers.Interfaces
 
         void AddAssemblies(IList<string> assemblies, IProgressMonitor progressMonitor);
         void DeleteFilter(FilterInfo filterInfo, IProgressMonitor progressMonitor);
-        FilterSet<ITest> GetFilterSet(string filterName, IProgressMonitor progressMonitor);
+        FilterSet<ITestDescriptor> GetFilterSet(string filterName, IProgressMonitor progressMonitor);
         void NewProject(IProgressMonitor progressMonitor);
         void OpenProject(string projectName, IProgressMonitor progressMonitor);
         void RemoveAllAssemblies(IProgressMonitor progressMonitor);
         void RemoveAssembly(string fileName, IProgressMonitor progressMonitor);
-        void SaveFilterSet(string filterName, FilterSet<ITest> filterSet, IProgressMonitor progressMonitor);
+        void SaveFilterSet(string filterName, FilterSet<ITestDescriptor> filterSet, IProgressMonitor progressMonitor);
         void SaveProject(string projectName, IProgressMonitor progressMonitor);
     }
 }

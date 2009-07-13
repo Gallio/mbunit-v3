@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using Gallio.Common.Text;
+using NDepend.Helpers.FileDirectoryPath;
 
 namespace Gallio.Common.IO
 {
@@ -197,6 +198,64 @@ namespace Gallio.Common.IO
             // Omit hidden and system files to prevent copying of SVN metadata during debugging
             // and other similar resources.
             return (entry.Attributes & (FileAttributes.ReparsePoint | FileAttributes.Hidden | FileAttributes.System)) == 0;
+        }
+
+        /// <summary>
+        /// Makes a relative path from an absolute path if possible.
+        /// </summary>
+        /// <param name="absolutePath">The absolute path.</param>
+        /// <param name="basePath">The base path.</param>
+        /// <returns>The path relative to the base path, or an absolute path if the paths are unrelated.</returns>
+        public static string MakeRelativePath(string absolutePath, string basePath)
+        {
+            if (absolutePath == null)
+                throw new ArgumentNullException("absolutePath");
+            if (basePath == null)
+                throw new ArgumentNullException("basePath");
+
+            if (Path.IsPathRooted(absolutePath))
+            {
+                try
+                {
+                    var filePath = new FilePathAbsolute(absolutePath);
+                    var directoryPath = new DirectoryPathAbsolute(basePath);
+                    return filePath.GetPathRelativeFrom(directoryPath).Path;
+                }
+                catch (ArgumentException)
+                {
+                }
+            }
+
+            return absolutePath;
+        }
+
+        /// <summary>
+        /// Makes an absolute path from an relative path if possible.
+        /// </summary>
+        /// <param name="relativePath">The relative path.</param>
+        /// <param name="basePath">The base path.</param>
+        /// <returns>The absolute path.</returns>
+        public static string MakeAbsolutePath(string relativePath, string basePath)
+        {
+            if (relativePath == null)
+                throw new ArgumentNullException("relativePath");
+            if (basePath == null)
+                throw new ArgumentNullException("basePath");
+
+            if (! Path.IsPathRooted(relativePath))
+            {
+                try
+                {
+                    var filePath = new FilePathRelative(relativePath);
+                    var directoryPath = new DirectoryPathAbsolute(basePath);
+                    return filePath.GetAbsolutePathFrom(directoryPath).Path;
+                }
+                catch (ArgumentException)
+                {
+                }
+            }
+
+            return relativePath;
         }
     }
 }

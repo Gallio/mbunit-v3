@@ -29,14 +29,14 @@ namespace MbUnit.Core
     public class MbUnitTestFramework : PatternTestFramework
     {
         /// <inheritdoc />
-        protected override IEnumerable<PatternTestFrameworkExtensionInfo> GetExtensions(IAssemblyInfo assembly)
+        public override IEnumerable<PatternTestFrameworkExtensionInfo> GetExtensions(IAssemblyInfo assembly)
         {
             AssemblyName frameworkAssemblyName = ReflectionUtils.FindAssemblyReference(assembly, "MbUnit");
             if (frameworkAssemblyName == null)
                 yield break;
 
             yield return new PatternTestFrameworkExtensionInfo("MbUnit v3",
-                String.Format("MbUnit v{0}", VersionPolicy.GetVersionNumber(Assembly.GetExecutingAssembly())))
+                String.Format("MbUnit v{0}", VersionPolicy.GetVersionLabel(Assembly.GetExecutingAssembly())))
                 {
                     FrameworkKind = "MbUnit v3 Framework"
                 };

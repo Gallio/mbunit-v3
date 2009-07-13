@@ -16,13 +16,13 @@
 using System;
 using System.Security.Cryptography;
 using System.Text;
-using Gallio.Model;
 using Gallio.Common.Reflection;
-using Gallio.Model.Execution;
+using Gallio.Model.Commands;
+using Gallio.Model.Tree;
 
 namespace Gallio.MSTestAdapter.Model
 {
-    internal class MSTest : BaseTest
+    internal class MSTest : Test
     {
         private static readonly SHA1CryptoServiceProvider provider = new SHA1CryptoServiceProvider();
         private string testName;

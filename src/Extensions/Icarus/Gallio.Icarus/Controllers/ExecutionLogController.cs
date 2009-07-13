@@ -20,9 +20,9 @@ using Gallio.Common.Collections;
 using Gallio.Common.Policies;
 using Gallio.Icarus.Controllers.EventArgs;
 using Gallio.Icarus.Controllers.Interfaces;
-using Gallio.Model.Serialization;
+using Gallio.Model.Schema;
 using Gallio.Runner.Events;
-using Gallio.Runner.Reports;
+using Gallio.Runner.Reports.Schema;
 using Gallio.UI.Progress;
 
 namespace Gallio.Icarus.Controllers

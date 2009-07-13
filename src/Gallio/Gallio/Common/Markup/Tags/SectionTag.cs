@@ -25,8 +25,8 @@ namespace Gallio.Common.Markup.Tags
     /// A section tag.
     /// </summary>
     [Serializable]
-    [XmlRoot("section", Namespace = XmlSerializationUtils.GallioNamespace)]
-    [XmlType(Namespace = XmlSerializationUtils.GallioNamespace)]
+    [XmlRoot("section", Namespace = SchemaConstants.XmlNamespace)]
+    [XmlType(Namespace = SchemaConstants.XmlNamespace)]
     public sealed class SectionTag : ContainerTag, ICloneable<SectionTag>, IEquatable<SectionTag>
     {
         private string name;

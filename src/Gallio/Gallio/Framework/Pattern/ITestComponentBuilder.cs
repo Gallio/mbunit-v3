@@ -16,6 +16,7 @@
 using System;
 using Gallio.Model;
 using Gallio.Common.Reflection;
+using Gallio.Model.Tree;
 
 namespace Gallio.Framework.Pattern
 {
@@ -35,7 +36,7 @@ namespace Gallio.Framework.Pattern
         /// do not alter the underlying declarations (insofar as is possible).
         /// </para>
         /// <para>
-        /// The identifier does not refer to a specific instance of <see cref="ITestComponent" />,
+        /// The identifier does not refer to a specific instance of <see cref="TestComponent" />,
         /// but rather incorporates enough information so that we can unambiguously find a
         /// corresponding instance in a model that has been populated.  When we rebuild
         /// the model, assuming the code hasn't changed too much, the objects in the model
@@ -49,7 +50,7 @@ namespace Gallio.Framework.Pattern
         /// <summary>
         /// Gets or sets the name of the component.
         /// </summary>
-        /// <seealso cref="ITestComponent.Name"/>
+        /// <seealso cref="TestComponent.Name"/>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
         string Name { get; set; }
 
@@ -65,7 +66,7 @@ namespace Gallio.Framework.Pattern
         /// <param name="key">The metadata key.</param>
         /// <param name="value">The value to add.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="key"/> or <paramref name="value"/> is null.</exception>
-        /// <seealso cref="ITestComponent.Metadata"/>
+        /// <seealso cref="TestComponent.Metadata"/>
         /// <seealso cref="MetadataKeys"/>
         void AddMetadata(string key, string value);
 

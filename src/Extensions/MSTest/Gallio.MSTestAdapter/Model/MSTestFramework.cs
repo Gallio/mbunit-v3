@@ -1,4 +1,4 @@
-﻿// Copyright 2005-2009 Gallio Project - http://www.gallio.org/
+// Copyright 2005-2009 Gallio Project - http://www.gallio.org/
 // Portions Copyright 2000-2004 Jonathan de Halleux
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using Gallio.Model;
+using Gallio.Runtime.Extensibility;
 
 namespace Gallio.MSTestAdapter.Model
 {
@@ -25,9 +26,14 @@ namespace Gallio.MSTestAdapter.Model
     public class MSTestFramework : BaseTestFramework
     {
         /// <inheritdoc />
-        public override void RegisterTestExplorers(IList<ITestExplorer> explorers)
+        sealed public override TestDriverFactory GetTestDriverFactory()
         {
-            explorers.Add(new MSTestExplorer());
-        } 
+            return CreateTestDriver;
+        }
+
+        private static ITestDriver CreateTestDriver(IList<ComponentHandle<ITestFramework, TestFrameworkTraits>> frameworkHandles)
+        {
+            return new MSTestDriver();
+        }
     }
 }

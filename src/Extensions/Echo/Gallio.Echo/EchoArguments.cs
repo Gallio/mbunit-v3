@@ -75,7 +75,7 @@ namespace Gallio.Echo
              LongName = "shadow-copy",
              Description = "Enable shadow copying of the assemblies.  Shadow copying allows the original assemblies to be modified while the tests are running.  However, shadow copying may occasionally cause some tests to fail if they depend on their original location."
              )]
-        public bool ShadowCopy;
+        public bool? ShadowCopy;
 
         [CommandLineArgument(
              CommandLineArgumentFlags.AtMostOnce,
@@ -83,7 +83,7 @@ namespace Gallio.Echo
              LongName = "debug",
              Description = "Attach the debugger to the test process."
              )]
-        public bool Debug;
+        public bool? Debug;
 
         [CommandLineArgument(
             CommandLineArgumentFlags.AtMostOnce,
@@ -100,19 +100,19 @@ namespace Gallio.Echo
              CommandLineArgumentFlags.AtMostOnce,
              ShortName = "rd",
              LongName = "report-directory",
-             Description = "Target output directory for the reports.",
+             Description = "Target output directory for the reports.  Default is 'Reports'.",
              ValueLabel = "dir"
              )]
-        public string ReportDirectory = "";
+        public string ReportDirectory;
 
         [CommandLineArgument(
              CommandLineArgumentFlags.AtMostOnce,
              ShortName = "rnf",
              LongName = "report-name-format",
-             Description = "Format string for the report name. {0} is replaced by the date, {1} by the time.  Default = test-report-{0}-{1}.",
+             Description = "Format string for the report name. {0} is replaced by the date, {1} by the time.  Default is 'test-report-{0}-{1}'.",
              ValueLabel = "pattern"
              )]
-        public string ReportNameFormat = "test-report-{0}-{1}";
+        public string ReportNameFormat;
 
         [CommandLineArgument(
              CommandLineArgumentFlags.MultipleUnique,
@@ -177,7 +177,7 @@ namespace Gallio.Echo
              ValueLabel = "type",
              Description = "Specifies the type of test runner to use.  See below for all supported types.  The default is '" + StandardTestRunnerFactoryNames.IsolatedProcess + "'"
              )]
-        public string RunnerType = StandardTestRunnerFactoryNames.IsolatedProcess;
+        public string RunnerType;
 
         [CommandLineArgument(
              CommandLineArgumentFlags.Multiple,

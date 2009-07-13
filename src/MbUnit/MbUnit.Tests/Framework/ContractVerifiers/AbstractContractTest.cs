@@ -17,9 +17,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Gallio.Runner.Reports.Schema;
 using Gallio.Tests;
 using Gallio.Model;
-using Gallio.Runner.Reports;
 using MbUnit.Framework;
 
 namespace MbUnit.Tests.Framework.ContractVerifiers

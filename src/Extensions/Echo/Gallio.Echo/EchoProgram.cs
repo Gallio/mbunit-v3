@@ -21,6 +21,7 @@ using Gallio.Common.IO;
 using Gallio.Common.Text;
 using Gallio.Common.Xml;
 using Gallio.Runner.Projects;
+using Gallio.Runner.Projects.Schema;
 using Gallio.Runtime.Logging;
 using Gallio.Runtime;
 using Gallio.Echo.Properties;
@@ -104,29 +105,36 @@ namespace Gallio.Echo
             launcher.RuntimeSetup = new RuntimeSetup();
             launcher.RuntimeSetup.PluginDirectories.AddRange(arguments.PluginDirectories);
 
-            launcher.TestPackageConfig.ShadowCopy = arguments.ShadowCopy;
-            launcher.TestPackageConfig.Debug = arguments.Debug;
-            launcher.TestPackageConfig.ApplicationBaseDirectory = arguments.ApplicationBaseDirectory;
-            launcher.TestPackageConfig.WorkingDirectory = arguments.WorkingDirectory;
+            if (arguments.ShadowCopy.HasValue)
+                launcher.TestProject.TestPackage.ShadowCopy = arguments.ShadowCopy.Value;
+
+            if (arguments.Debug.HasValue)
+                launcher.TestProject.TestPackage.Debug = arguments.Debug.Value;
+
+            if (arguments.ApplicationBaseDirectory != null)
+                launcher.TestProject.TestPackage.ApplicationBaseDirectory = new DirectoryInfo(arguments.ApplicationBaseDirectory);
+
+            if (arguments.WorkingDirectory != null)
+                launcher.TestProject.TestPackage.WorkingDirectory = new DirectoryInfo(arguments.WorkingDirectory);
 
             if (arguments.RuntimeVersion != null)
-                launcher.TestPackageConfig.RuntimeVersion = arguments.RuntimeVersion;
+                launcher.TestProject.TestPackage.RuntimeVersion = arguments.RuntimeVersion;
 
-            // add files to testpackageconfig
-            foreach (string file in arguments.Files)
-            {
-                if (!CheckFile(launcher, arguments, file))
-                    break;
-            }
-            launcher.TestPackageConfig.HintDirectories.AddRange(arguments.HintDirectories);
+            GenericCollectionUtils.ForEach(arguments.Files, x => launcher.FilePatterns.Add(x));
 
-            launcher.ReportDirectory = arguments.ReportDirectory;
-            launcher.ReportNameFormat = arguments.ReportNameFormat;
+            foreach (string hintDirectory in arguments.HintDirectories)
+                launcher.TestProject.TestPackage.AddHintDirectory(new DirectoryInfo(hintDirectory));
+
+            if (arguments.ReportDirectory != null)
+                launcher.TestProject.ReportDirectory = arguments.ReportDirectory;
+            if (arguments.ReportNameFormat != null)
+                launcher.TestProject.ReportNameFormat = arguments.ReportNameFormat;
 
             GenericCollectionUtils.AddAll(arguments.ReportTypes, launcher.ReportFormats);
 
-            launcher.TestRunnerFactoryName = arguments.RunnerType;
-            GenericCollectionUtils.AddAll(arguments.RunnerExtensions, launcher.TestRunnerExtensionSpecifications);
+            if (arguments.RunnerType != null)
+                launcher.TestProject.TestRunnerFactoryName = arguments.RunnerType;
+            GenericCollectionUtils.ForEach(arguments.RunnerExtensions, x => launcher.TestProject.AddTestRunnerExtensionSpecification(x));
 
             foreach (string option in arguments.ReportFormatterProperties)
                 launcher.ReportFormatterOptions.Properties.Add(StringUtils.ParseKeyValuePair(option));
@@ -145,49 +153,6 @@ namespace Gallio.Echo
 
             if (arguments.RunTimeLimitInSeconds >= 0)
                 launcher.RunTimeLimit = TimeSpan.FromSeconds(arguments.RunTimeLimitInSeconds);
-        }
-
-        // FIXME: need to move project file assumption elsewhere
-        private static bool CheckFile(TestLauncher launcher, EchoArguments arguments, string assembly)
-        {
-            if (Path.GetExtension(assembly) == Project.Extension)
-            {
-                if (arguments.Files.Length > 1)
-                    throw new ArgumentException("Please don't mix and match gallio project files and assemblies!");
-
-                ProjectUtils projectUtils = new ProjectUtils(new FileSystem(), new DefaultXmlSerializer());
-                Project project = projectUtils.LoadProject(assembly);
-                launcher.TestPackageConfig = project.TestPackageConfig;
-
-                // add test runner extensions from project to command line args
-                List<string> testRunnerExtensions = project.TestRunnerExtensions;
-                testRunnerExtensions.AddRange(arguments.RunnerExtensions);
-                arguments.RunnerExtensions = testRunnerExtensions.ToArray();
-
-                return false;
-            }
-                
-            if (File.Exists(assembly))
-                launcher.TestPackageConfig.Files.Add(assembly);
-            else 
-            {
-                // could be a wildcarded string
-                string path = Environment.CurrentDirectory;
-                if (Path.IsPathRooted(assembly))
-                    path = Path.GetDirectoryName(assembly);
-                var info = new DirectoryInfo(path);
-                var files = info.GetFiles(Path.GetFileName(assembly));
-
-                if (files.Length == 0)
-                {
-                    System.Console.WriteLine(string.Format("Could not find any match for assembly: {0}", assembly));
-                    return true;
-                }
-
-                foreach (var file in files)
-                    launcher.TestPackageConfig.Files.Add(Path.Combine(path, file.Name));
-            }
-            return true;
         }
 
         private void DisplayResultSummary(TestLauncherResult result)

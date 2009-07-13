@@ -15,11 +15,8 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Reflection;
 using Gallio.Model;
-using Gallio.MbUnit2Adapter.Properties;
-using Gallio.Runtime.Hosting;
+using Gallio.Runtime.Extensibility;
 
 namespace Gallio.MbUnit2Adapter.Model
 {
@@ -29,9 +26,14 @@ namespace Gallio.MbUnit2Adapter.Model
     public class MbUnit2TestFramework : BaseTestFramework
     {
         /// <inheritdoc />
-        public override void RegisterTestExplorers(IList<ITestExplorer> explorers)
+        sealed public override TestDriverFactory GetTestDriverFactory()
         {
-            explorers.Add(new MbUnit2TestExplorer());
+            return CreateTestDriver;
+        }
+
+        private static ITestDriver CreateTestDriver(IList<ComponentHandle<ITestFramework, TestFrameworkTraits>> frameworkHandles)
+        {
+            return new MbUnit2TestDriver();
         }
     }
 }

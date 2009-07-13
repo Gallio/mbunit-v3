@@ -16,7 +16,6 @@
 using csUnit.Core;
 using Gallio.Common;
 using Gallio.Model;
-using Gallio.Model.Execution;
 using Gallio.Common.Reflection;
 
 namespace Gallio.CSUnitAdapter.Model
@@ -37,16 +36,12 @@ namespace Gallio.CSUnitAdapter.Model
             this.location = location;
         }
 
-        /// <inheritdoc />
-        public override Func<ITestController> TestControllerFactory
+        /// <summary>
+        /// Gets the assembly location.
+        /// </summary>
+        public string AssemblyLocation
         {
-            get { return CreateTestController; }
+            get { return location; }
         }
-
-        private ITestController CreateTestController()
-        {
-            return new CSUnitTestController(location);
-        }
-
     }
 }

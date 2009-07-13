@@ -20,8 +20,9 @@ using System.IO;
 using System.Runtime.Serialization.Formatters;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
-using Gallio.Runtime.Caching;
+using Gallio.Common.Caching;
 using Gallio.Runner.Reports;
+using Gallio.Runner.Reports.Schema;
 using Gallio.Runtime;
 using Gallio.Runtime.ProgressMonitoring;
 

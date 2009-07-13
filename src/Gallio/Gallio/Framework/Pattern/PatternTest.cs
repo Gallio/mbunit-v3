@@ -16,10 +16,10 @@
 using System;
 using System.Threading;
 using Gallio.Common;
+using Gallio.Model.Tree;
 using Gallio.Runtime;
-using Gallio.Model.Execution;
+using Gallio.Model.Commands;
 using Gallio.Common.Reflection;
-using Gallio.Model;
 using Gallio;
 
 namespace Gallio.Framework.Pattern
@@ -28,7 +28,7 @@ namespace Gallio.Framework.Pattern
     /// A test case that has been defined by the <see cref="PatternTestFramework" />.
     /// </summary>
     /// <seealso cref="PatternTestFramework"/>
-    public class PatternTest : BaseTest, IPatternTestComponent
+    public class PatternTest : Test, IPatternTestComponent
     {
         private readonly PatternTestDataContext dataContext;
         private readonly PatternTestActions testActions;
@@ -130,12 +130,6 @@ namespace Gallio.Framework.Pattern
         }
 
         /// <inheritdoc />
-        public override Func<ITestController> TestControllerFactory
-        {
-            get { return GetTestController; }
-        }
-
-        /// <inheritdoc />
         public PatternTestDataContext DataContext
         {
             get { return dataContext; }
@@ -145,16 +139,6 @@ namespace Gallio.Framework.Pattern
         public void SetName(string value)
         {
             Name = value;
-        }
-
-        private static ITestController GetTestController()
-        {
-            return ResolveTestController();
-        }
-
-        private static PatternTestController ResolveTestController()
-        {
-            return RuntimeAccessor.ServiceLocator.Resolve<PatternTestController>();
         }
     }
 }

@@ -17,6 +17,7 @@ using System;
 using Gallio.Common.Policies;
 using Gallio.Runtime;
 using Gallio.Runtime.Extensibility;
+using Gallio.Runtime.Loader;
 using Gallio.Runtime.Logging;
 
 namespace Gallio.Runtime
@@ -52,6 +53,18 @@ namespace Gallio.Runtime
             {
                 IRuntime cachedInstance = instance;
                 return cachedInstance != null ? cachedInstance.Logger : NullLogger.Instance;
+            }
+        }
+
+        /// <summary>
+        /// Gets the runtime's assembly loader.
+        /// </summary>
+        /// <exception cref="InvalidOperationException">Thrown if the runtime has not been initialized.</exception>
+        public static IAssemblyLoader AssemblyLoader
+        {
+            get
+            {
+                return Instance.AssemblyLoader;
             }
         }
 

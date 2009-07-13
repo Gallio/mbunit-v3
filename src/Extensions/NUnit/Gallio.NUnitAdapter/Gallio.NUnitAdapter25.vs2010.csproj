@@ -12,10 +12,6 @@
     <SignAssembly>true</SignAssembly>
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <BaseIntermediateOutputPath>obj\v2.5\</BaseIntermediateOutputPath>
-    <FileUpgradeFlags>
-    </FileUpgradeFlags>
-    <OldToolsVersion>3.5</OldToolsVersion>
-    <UpgradeBackupLocation />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -58,6 +54,7 @@
   <ItemGroup>
     <Compile Include="Model\NUnitTest.cs" />
     <Compile Include="Model\NUnitTestController.cs" />
+    <Compile Include="Model\NUnitTestDriver.cs" />
     <Compile Include="Model\NUnitTestExplorer.cs" />
     <Compile Include="Model\NUnitTestFramework.cs" />
     <Compile Include="Model\NUnitAssemblyTest.cs" />

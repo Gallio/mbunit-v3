@@ -18,9 +18,9 @@ using Gallio.Common.Concurrency;
 using Gallio.Icarus.Controllers;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Model;
-using Gallio.Model.Serialization;
+using Gallio.Model.Schema;
 using Gallio.Common.Reflection;
-using Gallio.Runner.Reports;
+using Gallio.Runner.Reports.Schema;
 using MbUnit.Framework;
 using Rhino.Mocks;
 

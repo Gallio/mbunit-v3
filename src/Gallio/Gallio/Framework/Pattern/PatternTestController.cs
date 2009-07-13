@@ -14,10 +14,12 @@
 // limitations under the License.
 
 using System;
-using Gallio.Runner.Harness;
+using Gallio.Model.Commands;
+using Gallio.Model.Helpers;
+using Gallio.Model.Tree;
+using Gallio.Model.Environments;
 using Gallio.Runtime.Conversions;
 using Gallio.Runtime.Formatting;
-using Gallio.Model.Execution;
 using Gallio.Runtime.ProgressMonitoring;
 using Gallio.Model;
 
@@ -27,7 +29,7 @@ namespace Gallio.Framework.Pattern
     /// Controls the execution of <see cref="PatternTest" /> instances.
     /// </summary>
     /// <seealso cref="PatternTestFramework"/>
-    public class PatternTestController : BaseTestController
+    public class PatternTestController : TestController
     {
         private readonly IConverter converter;
         private readonly IFormatter formatter;
@@ -56,7 +58,7 @@ namespace Gallio.Framework.Pattern
         }
 
         /// <inheritdoc />
-        protected override TestOutcome RunTestsImpl(ITestCommand rootTestCommand, ITestStep parentTestStep, TestExecutionOptions options, IProgressMonitor progressMonitor)
+        protected override TestOutcome RunImpl(ITestCommand rootTestCommand, Model.Tree.TestStep parentTestStep, TestExecutionOptions options, IProgressMonitor progressMonitor)
         {
             using (progressMonitor.BeginTask("Running tests.", rootTestCommand.TestCount))
             {

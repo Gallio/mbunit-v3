@@ -16,8 +16,8 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Gallio.Model;
 using Gallio.Common.Reflection;
+using Gallio.Model.Tree;
 using Gallio.Runtime.Loader;
 
 namespace Gallio.Framework.Pattern
@@ -67,6 +67,6 @@ namespace Gallio.Framework.Pattern
         /// Gets the underlying test model.
         /// </summary>
         /// <returns>The underlying test model.</returns>
-        TestModel ToTestModel();
+        PatternTestModel ToTestModel();
     }
 }

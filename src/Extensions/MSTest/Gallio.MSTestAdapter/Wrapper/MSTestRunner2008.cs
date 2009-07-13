@@ -18,7 +18,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Xml;
 using Gallio.MSTestAdapter.Model;
-using Gallio.Runtime.Caching;
+using Gallio.Common.Caching;
 
 namespace Gallio.MSTestAdapter.Wrapper
 {

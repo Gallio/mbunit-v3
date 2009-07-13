@@ -42,7 +42,7 @@ namespace Gallio.TDNetRunner.Core
         /// <inheritdoc />
         protected override FacadeTestRunState RunImpl(IFacadeTestListener testListener, string assemblyPath, string cref, FacadeOptions facadeOptions)
         {
-            string versionLabel = Gallio.Loader.VersionPolicy.GetVersionLabel(Assembly.GetExecutingAssembly());
+            string versionLabel = VersionPolicy.GetVersionLabel(Assembly.GetExecutingAssembly());
 
             testListener.WriteLine(String.Format(Resources.RunnerNameAndVersion + "\n", versionLabel), FacadeCategory.Info);
 

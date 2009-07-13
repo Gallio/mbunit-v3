@@ -13,15 +13,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Gallio.Model;
 using Gallio.Common.Reflection;
+using Gallio.Model.Tree;
 
 namespace Gallio.CSUnitAdapter.Model
 {
     /// <summary>
     /// Class that represents a CSUnit test.
     /// </summary>
-    public class CSUnitTest : BaseTest
+    public class CSUnitTest : Test
     {
         /// <inheritdoc />
         public CSUnitTest(string name, ICodeElementInfo codeElement)

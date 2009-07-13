@@ -15,9 +15,11 @@
 
 using System;
 using System.Collections.Generic;
+using System.Text;
 using Gallio.Common.Collections;
 using Gallio.Model;
 using Gallio.Common.Reflection;
+using Gallio.Runtime.Extensibility;
 
 namespace Gallio.Framework.Pattern
 {
@@ -47,7 +49,7 @@ namespace Gallio.Framework.Pattern
     /// Gallio supports the use of multiple test frameworks.  The pattern test framework
     /// model defined here may not be appropriate for all purposes.  Therefore you may
     /// consider creating a new test framework from scratch by implementing <see cref="ITestFramework" />
-    /// and <see cref="ITestExplorer" /> appropriately to obtain the desired semantics.
+    /// and <see cref="ITestDriver" /> appropriately to obtain the desired semantics.
     /// </para>
     /// <para>
     /// The name of the Pattern Test Framework derives from the similarity between the recursive
@@ -62,16 +64,25 @@ namespace Gallio.Framework.Pattern
     public abstract class PatternTestFramework : BaseTestFramework
     {
         /// <inheritdoc />
-        public override void RegisterTestExplorers(IList<ITestExplorer> explorers)
+        sealed public override TestDriverFactory GetTestDriverFactory()
         {
-            var explorer = (PatternTestExplorer)GenericCollectionUtils.Find(explorers, x => x is PatternTestExplorer);
-            if (explorer == null)
+            return CreateTestDriver;
+        }
+
+        private static ITestDriver CreateTestDriver(IList<ComponentHandle<ITestFramework, TestFrameworkTraits>> frameworkHandles)
+        {
+            string[] frameworkIds = GenericCollectionUtils.ConvertAllToArray(frameworkHandles, x => x.Id);
+
+            StringBuilder frameworkName = new StringBuilder();
+            foreach (var frameworkHandle in frameworkHandles)
             {
-                explorer = new PatternTestExplorer();
-                explorers.Add(explorer);
+                if (frameworkName.Length != 0)
+                    frameworkName.Append(" and ");
+
+                frameworkName.Append(frameworkHandle.GetTraits().Name);
             }
 
-            explorer.RegisterExtensionProvider(GetExtensions);
+            return new PatternTestDriver(frameworkIds, frameworkName.ToString());
         }
 
         /// <summary>
@@ -83,12 +94,12 @@ namespace Gallio.Framework.Pattern
         /// node that contains the assembly.
         /// </para>
         /// <para>
-        /// If there are not framework extensions applied to a particular assembly then
+        /// If there are no framework extensions associated with a particular assembly then
         /// the assembly will not be explored for tests.
         /// </para>
         /// </remarks>
         /// <param name="assembly">The test assembly.</param>
         /// <returns>The pattern test framework extension information.</returns>
-        protected abstract IEnumerable<PatternTestFrameworkExtensionInfo> GetExtensions(IAssemblyInfo assembly);
+        public abstract IEnumerable<PatternTestFrameworkExtensionInfo> GetExtensions(IAssemblyInfo assembly);
     }
 }

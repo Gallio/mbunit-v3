@@ -17,6 +17,7 @@ using System;
 using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
+using Gallio.Common;
 using Gallio.Common.Xml;
 
 namespace Gallio.Model
@@ -34,7 +35,7 @@ namespace Gallio.Model
     /// </para>
     /// </remarks>
     [Serializable]
-    [XmlRoot("outcome", Namespace = XmlSerializationUtils.GallioNamespace)]
+    [XmlRoot("outcome", Namespace = SchemaConstants.XmlNamespace)]
     [XmlSchemaProvider("ProvideXmlSchema")]
     public struct TestOutcome : IXmlSerializable, IEquatable<TestOutcome>
     {
@@ -325,7 +326,7 @@ namespace Gallio.Model
         {
             schemas.Add(new XmlSchema()
             {
-                TargetNamespace = XmlSerializationUtils.GallioNamespace,
+                TargetNamespace = SchemaConstants.XmlNamespace,
                 Items =
                 {
                     new XmlSchemaComplexType()
@@ -350,7 +351,7 @@ namespace Gallio.Model
                 }
             });
 
-            return new XmlQualifiedName("TestOutcome", XmlSerializationUtils.GallioNamespace);
+            return new XmlQualifiedName("TestOutcome", SchemaConstants.XmlNamespace);
         }
 
         XmlSchema IXmlSerializable.GetSchema()

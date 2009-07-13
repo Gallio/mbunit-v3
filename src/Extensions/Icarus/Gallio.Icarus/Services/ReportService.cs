@@ -20,6 +20,7 @@ using Gallio.Common.Collections;
 using Gallio.Common.Policies;
 using Gallio.Icarus.Services.Interfaces;
 using Gallio.Runner.Reports;
+using Gallio.Runner.Reports.Schema;
 using Gallio.Runtime.ProgressMonitoring;
 
 namespace Gallio.Icarus.Services

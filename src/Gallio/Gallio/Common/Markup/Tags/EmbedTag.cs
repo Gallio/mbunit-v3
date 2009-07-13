@@ -24,8 +24,8 @@ namespace Gallio.Common.Markup.Tags
     /// An embedded attachment tag.
     /// </summary>
     [Serializable]
-    [XmlRoot("embed", Namespace = XmlSerializationUtils.GallioNamespace)]
-    [XmlType(Namespace = XmlSerializationUtils.GallioNamespace)]
+    [XmlRoot("embed", Namespace = SchemaConstants.XmlNamespace)]
+    [XmlType(Namespace = SchemaConstants.XmlNamespace)]
     public sealed class EmbedTag : Tag, ICloneable<EmbedTag>, IEquatable<EmbedTag>
     {
         private string attachmentName;

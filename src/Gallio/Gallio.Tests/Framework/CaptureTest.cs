@@ -21,7 +21,7 @@ using Gallio.Common.Markup;
 using Gallio.Common.Media;
 using Gallio.Common.Reflection;
 using Gallio.Framework;
-using Gallio.Runner.Reports;
+using Gallio.Runner.Reports.Schema;
 using MbUnit.Framework;
 
 namespace Gallio.Tests.Framework

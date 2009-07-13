@@ -24,8 +24,6 @@ namespace Gallio.Model
     public abstract class BaseTestFramework : ITestFramework
     {
         /// <inheritdoc />
-        public virtual void RegisterTestExplorers(IList<ITestExplorer> explorers)
-        {
-        }
+        public abstract TestDriverFactory GetTestDriverFactory();
     }
 }

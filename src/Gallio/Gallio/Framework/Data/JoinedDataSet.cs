@@ -215,7 +215,7 @@ namespace Gallio.Framework.Data
 
             public override bool IsDynamic
             {
-                get { return GenericCollectionUtils.Find(items, delegate(IDataItem item) { return item.IsDynamic; }) != null; }
+                get { return GenericCollectionUtils.Exists(items, item => item.IsDynamic); }
             }
 
             public override IEnumerable<DataBinding> GetBindingsForInformalDescription()

@@ -20,13 +20,15 @@ using Gallio.Common;
 using Gallio.Common.Collections;
 using Gallio.Common.Concurrency;
 using Gallio.Framework.Data;
-using Gallio.Runner.Harness;
+using Gallio.Model.Commands;
+using Gallio.Model.Contexts;
+using Gallio.Model.Tree;
+using Gallio.Model.Environments;
 using Gallio.Runtime.Conversions;
 using Gallio.Runtime.Formatting;
 using Gallio.Framework;
 using Gallio.Model;
 using Gallio.Common.Diagnostics;
-using Gallio.Model.Execution;
 using Gallio.Common.Markup;
 using Gallio.Common.Reflection;
 using Gallio.Runtime.ProgressMonitoring;
@@ -61,7 +63,7 @@ namespace Gallio.Framework.Pattern
                 options.SingleThreaded ? 1 : TestAssemblyExecutionParameters.DegreeOfParallelism);
         }
 
-        public TestOutcome RunTest(ITestCommand testCommand, ITestStep parentTestStep,
+        public TestOutcome RunTest(ITestCommand testCommand, Model.Tree.TestStep parentTestStep,
             Sandbox parentSandbox, PatternTestHandlerDecorator testHandlerDecorator)
         {
             if (progressMonitor.IsCanceled)
@@ -99,14 +101,11 @@ namespace Gallio.Framework.Pattern
             }
             else
             {
-                ITestController controller = testCommand.Test.TestControllerFactory();
-                using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(1))
-                    controller.RunTests(testCommand, parentTestStep, options, subProgressMonitor);
-                return testCommand.RootStepFailureCount == 0 ? TestOutcome.Passed : TestOutcome.Failed;
+                throw new NotImplementedException("Need to handle root tests.");
             }
         }
 
-        private TestOutcome RunTestBody(ITestCommand testCommand, ITestStep parentTestStep,
+        private TestOutcome RunTestBody(ITestCommand testCommand, Model.Tree.TestStep parentTestStep,
             Sandbox sandbox, PatternTestHandlerDecorator testHandlerDecorator, PatternTest test)
         {
             TestOutcome outcome = TestOutcome.Error;
@@ -365,7 +364,7 @@ namespace Gallio.Framework.Pattern
                                         decoratedChildTestActions);
                                 };
 
-                            ITestStep parentTestStep = context != null ? context.TestStep : testInstanceState.TestStep;
+                            Model.Tree.TestStep parentTestStep = context != null ? context.TestStep : testInstanceState.TestStep;
                             outcome = RunTest(childTestCommand, parentTestStep, sandbox, testHandlerDecorator);
                         }
 
@@ -383,7 +382,7 @@ namespace Gallio.Framework.Pattern
             context.SetInterimOutcome(outcome);
         }
 
-        private static void PublishOutcomeFromInvisibleTest(ITestCommand testCommand, ITestStep testStep, ref TestOutcome outcome)
+        private static void PublishOutcomeFromInvisibleTest(ITestCommand testCommand, Model.Tree.TestStep testStep, ref TestOutcome outcome)
         {
             switch (outcome.Status)
             {
@@ -639,7 +638,7 @@ namespace Gallio.Framework.Pattern
             }
         }
 
-        private static TestOutcome ReportTestError(ITestCommand testCommand, ITestStep parentTestStep, Exception ex, string message)
+        private static TestOutcome ReportTestError(ITestCommand testCommand, Model.Tree.TestStep parentTestStep, Exception ex, string message)
         {
             ITestContext context = testCommand.StartPrimaryChildStep(parentTestStep);
             TestLog.Failures.WriteException(ex, message);
@@ -660,7 +659,7 @@ namespace Gallio.Framework.Pattern
             if (apartmentState != ApartmentState.Unknown
                 && Thread.CurrentThread.GetApartmentState() != apartmentState)
             {
-                ThreadTask task = new TestThreadTask("Test Runner " + apartmentState, action, environmentManager);
+                ThreadTask task = new TestEnvironmentAwareThreadTask("Test Runner " + apartmentState, action, environmentManager);
                 task.ApartmentState = apartmentState;
                 task.Run(null);
 

@@ -156,9 +156,9 @@ namespace Gallio.Framework.Data
             if (dataLocationName != null)
                 yield return new KeyValuePair<string, string>(MetadataKeys.DataLocation, dataLocationName);
 
-            foreach (XPathNavigator metadataNavigator in navigator.SelectChildren("metadata", XmlSerializationUtils.GallioNamespace))
+            foreach (XPathNavigator metadataNavigator in navigator.SelectChildren("metadata", SchemaConstants.XmlNamespace))
             {
-                foreach (XPathNavigator entryNavigator in metadataNavigator.SelectChildren("entry", XmlSerializationUtils.GallioNamespace))
+                foreach (XPathNavigator entryNavigator in metadataNavigator.SelectChildren("entry", SchemaConstants.XmlNamespace))
                 {
                     string key = entryNavigator.GetAttribute("key", string.Empty);
                     string value = entryNavigator.GetAttribute("value", string.Empty);

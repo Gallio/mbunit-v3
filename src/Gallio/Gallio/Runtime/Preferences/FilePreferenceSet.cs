@@ -22,7 +22,7 @@ using Gallio.Common;
 using Gallio.Common.Collections;
 using Gallio.Common.Concurrency;
 using Gallio.Common.Policies;
-using Gallio.Schema.Preferences;
+using Gallio.Runtime.Preferences.Schema;
 
 namespace Gallio.Runtime.Preferences
 {

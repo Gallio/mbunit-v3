@@ -30,8 +30,8 @@ namespace Gallio.Runtime.Hosting
     /// Specifies a collection of parameters for setting up a <see cref="IHost" />.
     /// </summary>
     [Serializable]
-    [XmlRoot("hostSetup", Namespace = XmlSerializationUtils.GallioNamespace)]
-    [XmlType(Namespace = XmlSerializationUtils.GallioNamespace)]
+    [XmlRoot("hostSetup", Namespace = SchemaConstants.XmlNamespace)]
+    [XmlType(Namespace = SchemaConstants.XmlNamespace)]
     public sealed class HostSetup : IEquatable<HostSetup>
     {
         private string applicationBaseDirectory;
@@ -43,7 +43,7 @@ namespace Gallio.Runtime.Hosting
         private ConfigurationFileLocation configurationFileLocation = ConfigurationFileLocation.Temp;
         private HostConfiguration configuration;
         private ProcessorArchitecture processorArchitecture = ProcessorArchitecture.MSIL;
-        private PropertySet properties;
+        private readonly PropertySet properties;
 
         /// <summary>
         /// Creates a default host setup.

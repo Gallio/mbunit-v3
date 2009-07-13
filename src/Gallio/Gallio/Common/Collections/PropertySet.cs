@@ -33,7 +33,7 @@ namespace Gallio.Common.Collections
     /// </para>
     /// </remarks>
     [Serializable]
-    [XmlRoot("propertySet", Namespace = XmlSerializationUtils.GallioNamespace)]
+    [XmlRoot("propertySet", Namespace = SchemaConstants.XmlNamespace)]
     [XmlSchemaProvider("ProvideXmlSchema")]
     public sealed class PropertySet : IDictionary<string, string>, IEquatable<PropertySet>, IXmlSerializable
     {
@@ -270,7 +270,7 @@ namespace Gallio.Common.Collections
         {
             schemas.Add(new XmlSchema()
             {
-                TargetNamespace = XmlSerializationUtils.GallioNamespace,
+                TargetNamespace = SchemaConstants.XmlNamespace,
                 Items =
                 {
                     new XmlSchemaComplexType()
@@ -311,7 +311,7 @@ namespace Gallio.Common.Collections
                 }
             });
 
-            return new XmlQualifiedName("PropertySet", XmlSerializationUtils.GallioNamespace);
+            return new XmlQualifiedName("PropertySet", SchemaConstants.XmlNamespace);
         }
 
         XmlSchema IXmlSerializable.GetSchema()

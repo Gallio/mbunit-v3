@@ -100,6 +100,23 @@ namespace Gallio.NCoverIntegration
             return new ProcessTask(ncoverConsolePath, ncoverArgumentsCombined.ToString(), workingDirectory);
         }
 
+        public static void Merge(NCoverVersion version, IList<string> sources, string destination)
+        {
+            if (File.Exists(destination))
+                File.Delete(destination);
+
+            if (sources.Count == 0)
+                return;
+
+            if (sources.Count == 1)
+            {
+                File.Move(sources[0], destination);
+                return;
+            }
+
+            throw new NotImplementedException("Merging NCover coverage files not implemented yet.");
+        }
+
         private const string NCover1ProfilerKey = @"Software\Classes\CLSID\{6287B5F9-08A1-45e7-9498-B5B2E7B02995}";
         private const string NCover1ProfilerKey64Bit = @"Software\Wow6432Node\Classes\CLSID\{6287B5F9-08A1-45e7-9498-B5B2E7B02995}";
 

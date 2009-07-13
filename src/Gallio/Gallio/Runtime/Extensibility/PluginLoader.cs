@@ -23,7 +23,7 @@ using Gallio.Common.Collections;
 using Gallio.Common;
 using Gallio.Common.Policies;
 using Gallio.Common.Xml;
-using Gallio.Schema.Plugins;
+using Gallio.Runtime.Extensibility.Schema;
 
 namespace Gallio.Runtime.Extensibility
 {

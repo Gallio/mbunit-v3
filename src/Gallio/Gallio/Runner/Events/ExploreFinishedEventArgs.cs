@@ -14,7 +14,7 @@
 // limitations under the License.
 
 using System;
-using Gallio.Runner.Reports;
+using Gallio.Runner.Reports.Schema;
 
 namespace Gallio.Runner.Events
 {

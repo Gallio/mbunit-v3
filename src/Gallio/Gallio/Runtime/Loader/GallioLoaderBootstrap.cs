@@ -29,12 +29,12 @@ namespace Gallio.Runtime.Loader
     /// </remarks>
     internal static class GallioLoaderBootstrap
     {
-        public static void InstallAssemblyResolver(string runtimePath)
+        public static void InstallAssemblyLoader(string runtimePath)
         {
             if (runtimePath == null)
                 throw new ArgumentNullException("runtimePath");
 
-            AssemblyResolverBootstrap.Install(runtimePath);
+            AssemblyLoaderBootstrap.Install(runtimePath);
         }
 
         public static void SetupRuntime(string runtimePath)
@@ -55,7 +55,7 @@ namespace Gallio.Runtime.Loader
             if (path == null)
                 throw new ArgumentNullException("path");
 
-            AssemblyResolverBootstrap.AssemblyResolverManager.AddHintDirectory(path);
+            AssemblyLoaderBootstrap.AssemblyLoader.AddHintDirectory(path);
         }
 
         public static object Resolve(Type serviceType)

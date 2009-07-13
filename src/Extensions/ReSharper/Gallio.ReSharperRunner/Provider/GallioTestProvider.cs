@@ -16,15 +16,22 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using Gallio.Common;
+using Gallio.Common.Messaging;
+using Gallio.Framework.Pattern;
 using Gallio.Loader;
 using Gallio.Model;
 using Gallio.Common.Reflection;
+using Gallio.Model.Messages.Exploration;
+using Gallio.Model.Schema;
+using Gallio.Model.Tree;
 using Gallio.ReSharperRunner.Properties;
 using Gallio.ReSharperRunner.Provider;
 using Gallio.ReSharperRunner.Provider.Facade;
 using Gallio.ReSharperRunner.Reflection;
 using Gallio.ReSharperRunner.Provider.Tasks;
 using Gallio.Runtime;
+using Gallio.Runtime.ProgressMonitoring;
 using JetBrains.CommonControls;
 using JetBrains.Metadata.Reader.API;
 using JetBrains.ProjectModel;
@@ -166,7 +173,7 @@ namespace Gallio.ReSharperRunner.Provider
             private readonly IUnitTestProvider provider;
             private readonly GallioTestPresenter presenter;
             private readonly ITestFrameworkManager frameworkManager;
-            private readonly ILoader loader;
+            private readonly IAssemblyLoader assemblyLoader;
 
             /// <summary>
             /// Initializes the provider.
@@ -176,7 +183,7 @@ namespace Gallio.ReSharperRunner.Provider
                 this.provider = provider;
 
                 frameworkManager = RuntimeAccessor.ServiceLocator.Resolve<ITestFrameworkManager>();
-                loader = RuntimeAccessor.ServiceLocator.Resolve<ILoader>();
+                assemblyLoader = RuntimeAccessor.AssemblyLoader;
                 presenter = new GallioTestPresenter();
             }
 
@@ -226,40 +233,9 @@ namespace Gallio.ReSharperRunner.Provider
                     if (assemblyInfo != null)
                     {
                         ConsumerAdapter consumerAdapter = new ConsumerAdapter(provider, consumer);
-                        TestPackageConfig config = CreateTestPackageConfig();
-                        ITestExplorer explorer = CreateTestExplorer(config);
-                        TestModel model = CreateTestModel(config, reflectionPolicy);
-                        TestSource source = new TestSource();
-                        source.AddAssembly(assemblyInfo);
-
-                        explorer.Explore(model, source, consumerAdapter.Consume);
+                        Describe(reflectionPolicy, new ICodeElementInfo[] { assemblyInfo }, consumerAdapter);
                     }
                 }
-            }
-
-            private TestPackageConfig CreateTestPackageConfig()
-            {
-                TestPackageConfig config = new TestPackageConfig();
-                
-                // Exclude the NUnit framework if the built-in NUnit provider is enabled.
-                foreach (IUnitTestProvider provider in UnitTestManager.GetInstance(SolutionManager.Instance.CurrentSolution).GetEnabledProviders())
-                {
-                    string frameworkId;
-                    if (IncompatibleProviders.TryGetValue(provider.ID, out frameworkId))
-                        config.ExcludedFrameworkIds.Add(frameworkId);
-                }
-
-                return config;
-            }
-
-            private ITestExplorer CreateTestExplorer(TestPackageConfig config)
-            {
-                return frameworkManager.GetTestExplorer(frameworkId => config.IsFrameworkRequested(frameworkId));
-            }
-
-            private TestModel CreateTestModel(TestPackageConfig config, IReflectionPolicy reflectionPolicy)
-            {
-                return new TestModel(new TestExplorationContext(config, reflectionPolicy, loader));
             }
 
             /// <summary>
@@ -278,16 +254,13 @@ namespace Gallio.ReSharperRunner.Provider
                 {
                     PsiReflectionPolicy reflectionPolicy = new PsiReflectionPolicy(psiFile.GetManager());
                     ConsumerAdapter consumerAdapter = new ConsumerAdapter(provider, consumer, psiFile);
-                    TestPackageConfig config = CreateTestPackageConfig();
-                    ITestExplorer explorer = CreateTestExplorer(config);
-                    TestModel model = CreateTestModel(config, reflectionPolicy);
-                    TestSource source = new TestSource();
 
+                    var codeElements = new List<ICodeElementInfo>();
                     psiFile.ProcessDescendants(new OneActionProcessorWithoutVisit(delegate(IElement element)
                     {
                         ITypeDeclaration declaration = element as ITypeDeclaration;
                         if (declaration != null)
-                            PopulateTestSourceFromTypeDeclaration(source, reflectionPolicy, declaration);
+                            PopulateCodeElementsFromTypeDeclaration(codeElements, reflectionPolicy, declaration);
                     }, delegate(IElement element)
                     {
                         if (interrupted())
@@ -297,24 +270,42 @@ namespace Gallio.ReSharperRunner.Provider
                         return element is ITypeDeclaration;
                     }));
 
-                    explorer.Explore(model, source, consumerAdapter.Consume);
+                    Describe(reflectionPolicy, codeElements, consumerAdapter);
 
-                    ProjectFileState state = model.Annotations.Count != 0
-                        ? ProjectFileState.CreateFromAnnotations(model.Annotations)
-                        : null;
-                    ProjectFileState.SetFileState(psiFile.GetProjectFile(), state);
+                    ProjectFileState.SetFileState(psiFile.GetProjectFile(), consumerAdapter.CreateProjectFileState());
                 }
             }
 
-            private static void PopulateTestSourceFromTypeDeclaration(TestSource source, PsiReflectionPolicy reflectionPolicy, ITypeDeclaration declaration)
+            private static void PopulateCodeElementsFromTypeDeclaration(List<ICodeElementInfo> codeElements, PsiReflectionPolicy reflectionPolicy, ITypeDeclaration declaration)
             {
                 ITypeInfo typeInfo = reflectionPolicy.Wrap(declaration.DeclaredElement);
 
                 if (typeInfo != null)
-                    source.AddType(typeInfo);
+                    codeElements.Add(typeInfo);
 
                 foreach (ITypeDeclaration nestedDeclaration in declaration.NestedTypeDeclarations)
-                    PopulateTestSourceFromTypeDeclaration(source, reflectionPolicy, nestedDeclaration);
+                    PopulateCodeElementsFromTypeDeclaration(codeElements, reflectionPolicy, nestedDeclaration);
+            }
+
+            private ITestDriver CreateTestDriver()
+            {
+                var excludedFrameworkIds = new List<string>();
+                foreach (IUnitTestProvider provider in UnitTestManager.GetInstance(SolutionManager.Instance.CurrentSolution).GetEnabledProviders())
+                {
+                    string frameworkId;
+                    if (IncompatibleProviders.TryGetValue(provider.ID, out frameworkId))
+                        excludedFrameworkIds.Add(frameworkId);
+                }
+
+                return frameworkManager.GetTestDriver(frameworkId => !excludedFrameworkIds.Contains(frameworkId));
+            }
+
+            private void Describe(IReflectionPolicy reflectionPolicy, IList<ICodeElementInfo> codeElements, ConsumerAdapter consumerAdapter)
+            {
+                var testDriver = CreateTestDriver();
+                var testExplorationOptions = new TestExplorationOptions();
+                testDriver.Describe(reflectionPolicy, codeElements, testExplorationOptions, consumerAdapter,
+                    NullProgressMonitor.CreateInstance());
             }
 
             /// <summary>
@@ -334,9 +325,8 @@ namespace Gallio.ReSharperRunner.Provider
                     if (elementInfo == null)
                         return false;
 
-                    TestPackageConfig config = CreateTestPackageConfig();
-                    ITestExplorer explorer = CreateTestExplorer(config);
-                    return explorer.IsTest(reflectionPolicy, elementInfo);
+                    ITestDriver driver = CreateTestDriver();
+                    return driver.IsTest(reflectionPolicy, elementInfo);
                 }
             }
 
@@ -357,9 +347,8 @@ namespace Gallio.ReSharperRunner.Provider
                     if (elementInfo == null)
                         return false;
 
-                    TestPackageConfig config = CreateTestPackageConfig();
-                    ITestExplorer explorer = CreateTestExplorer(config);
-                    return explorer.IsTestPart(reflectionPolicy, elementInfo);
+                    ITestDriver driver = CreateTestDriver();
+                    return driver.IsTestPart(reflectionPolicy, elementInfo);
                 }
             }
 #endif
@@ -523,16 +512,22 @@ namespace Gallio.ReSharperRunner.Provider
             }
 #endif
 
-            private sealed class ConsumerAdapter
+            private sealed class ConsumerAdapter : IMessageSink
             {
                 private readonly IUnitTestProvider provider;
-                private readonly Dictionary<ITest, GallioTestElement> tests = new Dictionary<ITest, GallioTestElement>();
                 private readonly UnitTestElementConsumer consumer;
+                private readonly MessageConsumer messageConsumer;
+                private readonly Dictionary<string, GallioTestElement> tests = new Dictionary<string, GallioTestElement>();
+                private readonly List<AnnotationData> annotations = new List<AnnotationData>();
 
                 public ConsumerAdapter(IUnitTestProvider provider, UnitTestElementConsumer consumer)
                 {
                     this.provider = provider;
                     this.consumer = consumer;
+
+                    messageConsumer = new MessageConsumer()
+                        .Handle<TestDiscoveredMessage>(HandleTestDiscoveredMessage)
+                        .Handle<AnnotationDiscoveredMessage>(HandleAnnotationDiscoveredMessage);
                 }
 
                 public ConsumerAdapter(IUnitTestProvider provider, UnitTestElementLocationConsumer consumer, IFile psiFile)
@@ -553,27 +548,39 @@ namespace Gallio.ReSharperRunner.Provider
                 {
                 }
 
-                public void Consume(ITest test)
+                public void Publish(Message message)
                 {
-                    Consume(test, null);
+                    messageConsumer.Consume(message);
                 }
 
-                private void Consume(ITest test, GallioTestElement parentElement)
+                private void HandleTestDiscoveredMessage(TestDiscoveredMessage message)
                 {
                     GallioTestElement element;
-                    if (!tests.TryGetValue(test, out element))
+                    if (!tests.TryGetValue(message.Test.Id, out element))
                     {
-                        if (ShouldTestBePresented(test))
+                        if (ShouldTestBePresented(message.Test.CodeElement))
                         {
-                            element = GallioTestElement.CreateFromTest(test, provider, parentElement);
+                            GallioTestElement parentElement;
+                            tests.TryGetValue(message.ParentTestId, out parentElement);
+
+                            element = GallioTestElement.CreateFromTest(message.Test, message.Test.CodeElement, provider, parentElement);
                             consumer(element);
                         }
 
-                        tests.Add(test, element);
-
-                        foreach (ITest child in test.Children)
-                            Consume(child, element);
+                        tests.Add(message.Test.Id, element);
                     }
+                }
+
+                private void HandleAnnotationDiscoveredMessage(AnnotationDiscoveredMessage message)
+                {
+                    annotations.Add(message.Annotation);
+                }
+
+                public ProjectFileState CreateProjectFileState()
+                {
+                    return annotations.Count != 0
+                        ? ProjectFileState.CreateFromAnnotations(annotations)
+                        : null;
                 }
 
                 /// <summary>
@@ -583,9 +590,8 @@ namespace Gallio.ReSharperRunner.Provider
                 /// project that resides in the root namespace.  So we filter out
                 /// certain kinds of tests from view.
                 /// </summary>
-                private static bool ShouldTestBePresented(ITest test)
+                private static bool ShouldTestBePresented(ICodeElementInfo codeElement)
                 {
-                    ICodeElementInfo codeElement = test.CodeElement;
                     if (codeElement == null)
                         return false;
 

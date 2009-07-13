@@ -19,13 +19,13 @@ using System.IO;
 using System.Reflection;
 using Gallio.Common.Collections;
 using Gallio.Common.Policies;
-using Gallio.Model;
 using Gallio.Common.Markup;
-using Gallio.Model.Serialization;
+using Gallio.Model;
+using Gallio.Model.Schema;
 using Gallio.Common.Reflection;
-using Gallio.Runner.Reports;
 using Gallio.Runner;
 using Gallio.Model.Filters;
+using Gallio.Runner.Reports.Schema;
 using Gallio.Runtime.Logging;
 
 namespace Gallio.Framework.Utilities
@@ -50,8 +50,8 @@ namespace Gallio.Framework.Utilities
     /// </remarks>
     public class SampleRunner
     {
-        private readonly TestPackageConfig packageConfig;
-        private readonly List<Filter<ITest>> filters;
+        private readonly TestPackage testPackage;
+        private readonly List<Filter<ITestDescriptor>> filters;
         private TestLauncherResult result;
 
         /// <summary>
@@ -59,8 +59,8 @@ namespace Gallio.Framework.Utilities
         /// </summary>
         public SampleRunner()
         {
-            packageConfig = new TestPackageConfig();
-            filters = new List<Filter<ITest>>();
+            testPackage = new TestPackage();
+            filters = new List<Filter<ITestDescriptor>>();
             TestRunnerFactoryName = StandardTestRunnerFactoryNames.Local;
         }
 
@@ -81,7 +81,7 @@ namespace Gallio.Framework.Utilities
         }
 
         /// <summary>
-        /// Gets the package configuration object for the test run.
+        /// Gets the test package for the test run.
         /// </summary>
         /// <remarks>
         /// <para>
@@ -89,9 +89,9 @@ namespace Gallio.Framework.Utilities
         /// various parameters of the test run.
         /// </para>
         /// </remarks>
-        public TestPackageConfig PackageConfig
+        public TestPackage TestPackage
         {
-            get { return packageConfig; }
+            get { return testPackage; }
         }
 
         /// <summary>
@@ -110,9 +110,7 @@ namespace Gallio.Framework.Utilities
             if (assembly == null)
                 throw new ArgumentNullException("assembly");
 
-            string assemblyFile = assembly.Location;
-            if (!packageConfig.Files.Contains(assemblyFile))
-                packageConfig.Files.Add(assemblyFile);
+            testPackage.AddFile(new FileInfo(assembly.Location));
         }
 
         /// <summary>
@@ -124,7 +122,7 @@ namespace Gallio.Framework.Utilities
         public void AddFixture(Type fixtureType)
         {
             AddAssembly(fixtureType.Assembly);
-            AddFilter(new TypeFilter<ITest>(new EqualityFilter<string>(fixtureType.AssemblyQualifiedName), false));
+            AddFilter(new TypeFilter<ITestDescriptor>(new EqualityFilter<string>(fixtureType.AssemblyQualifiedName), false));
         }
 
         /// <summary>
@@ -137,10 +135,10 @@ namespace Gallio.Framework.Utilities
         public void AddMethod(Type fixtureType, string methodName)
         {
             AddAssembly(fixtureType.Assembly);
-            AddFilter(new AndFilter<ITest>(new Filter<ITest>[]
+            AddFilter(new AndFilter<ITestDescriptor>(new Filter<ITestDescriptor>[]
             {
-                new TypeFilter<ITest>(new EqualityFilter<string>(fixtureType.AssemblyQualifiedName), false),
-                new MemberFilter<ITest>(new EqualityFilter<string>(methodName))
+                new TypeFilter<ITestDescriptor>(new EqualityFilter<string>(fixtureType.AssemblyQualifiedName), false),
+                new MemberFilter<ITestDescriptor>(new EqualityFilter<string>(methodName))
             }));
         }
 
@@ -150,7 +148,7 @@ namespace Gallio.Framework.Utilities
         /// </summary>
         /// <param name="filter">The filter to add.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="filter"/> is null.</exception>
-        public void AddFilter(Filter<ITest> filter)
+        public void AddFilter(Filter<ITestDescriptor> filter)
         {
             if (filter == null)
                 throw new ArgumentNullException("filter");
@@ -269,14 +267,14 @@ namespace Gallio.Framework.Utilities
             MarkupStreamWriter logStreamWriter = TestLog.Default;
 
             var launcher = new TestLauncher();
-            launcher.TestPackageConfig = packageConfig;
+            launcher.TestProject.TestPackage = testPackage;
             launcher.Logger = new MarkupStreamLogger(logStreamWriter);
-            launcher.TestExecutionOptions.FilterSet = new FilterSet<ITest>(new OrFilter<ITest>(filters));
-            launcher.TestRunnerFactoryName = TestRunnerFactoryName;
+            launcher.TestExecutionOptions.FilterSet = new FilterSet<ITestDescriptor>(new OrFilter<ITestDescriptor>(filters));
+            launcher.TestProject.TestRunnerFactoryName = TestRunnerFactoryName;
 
             string reportDirectory = SpecialPathPolicy.For<SampleRunner>().GetTempDirectory().FullName;
-            launcher.ReportDirectory = reportDirectory;
-            launcher.ReportNameFormat = "SampleRunnerReport";
+            launcher.TestProject.ReportDirectory = reportDirectory;
+            launcher.TestProject.ReportNameFormat = "SampleRunnerReport";
             launcher.ReportFormatterOptions.Properties.Add(@"SaveAttachmentContents", @"false");
             launcher.ReportFormats.Add(@"Text");
 

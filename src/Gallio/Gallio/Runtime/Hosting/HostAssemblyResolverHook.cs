@@ -41,7 +41,7 @@ namespace Gallio.Runtime.Hosting
 
         /// <summary>
         /// Installs an assembly resolver that provides access to the installation path
-        /// using the <see cref="AssemblyResolverBootstrap" />.
+        /// using the <see cref="AssemblyLoaderBootstrap" />.
         /// </summary>
         /// <remarks>
         /// <para>
@@ -106,7 +106,7 @@ namespace Gallio.Runtime.Hosting
 
             public void Bootstrap(string runtimePath)
             {
-                AssemblyResolverBootstrap.Install(runtimePath);
+                AssemblyLoaderBootstrap.Install(runtimePath);
             }
 
             public void InstallCallback(IResolver masterResolver)

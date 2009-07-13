@@ -15,6 +15,7 @@
 
 using System;
 using System.Reflection;
+using Gallio.Model.Tree;
 using Gallio.NUnitAdapter.Model;
 using Gallio.Common.Reflection;
 using Gallio.Runtime;
@@ -24,65 +25,69 @@ using Gallio.Model;
 using Gallio.NUnitAdapter.TestResources;
 using Gallio.NUnitAdapter.TestResources.Metadata;
 using Gallio.Tests.Model;
+using Test = Gallio.Model.Tree.Test;
 
 namespace Gallio.NUnitAdapter.Tests.Model
 {
     [TestFixture]
     [TestsOn(typeof(NUnitTestFramework))]
     [Author("Jeff", "jeff@ingenio.com")]
-    public class NUnitTestFrameworkTest : BaseTestFrameworkTest
+    public class NUnitTestFrameworkTest : BaseTestFrameworkTest<SimpleTest>
     {
-        protected override Assembly GetSampleAssembly()
+        protected override ComponentHandle<ITestFramework, TestFrameworkTraits> FrameworkHandle
         {
-            return typeof(SimpleTest).Assembly;
-        }
-
-        protected override ComponentHandle<ITestFramework, TestFrameworkTraits> GetFrameworkHandle()
-        {
-            return (ComponentHandle<ITestFramework, TestFrameworkTraits>)
+            get
+            {
+                return (ComponentHandle<ITestFramework, TestFrameworkTraits>)
 #if NUNIT248
-                RuntimeAccessor.ServiceLocator.ResolveHandleByComponentId("NUnitAdapter248.TestFramework");
+                    RuntimeAccessor.ServiceLocator.ResolveHandleByComponentId("NUnitAdapter248.TestFramework");
 #elif NUNIT25
                 RuntimeAccessor.ServiceLocator.ResolveHandleByComponentId("NUnitAdapter25.TestFramework");
 #else
 #error "Unrecognized NUnit framework version."
 #endif
+            }
+        }
+
+        protected override string FrameworkKind
+        {
+            get { return NUnitTestExplorer.FrameworkKind; }
         }
         
         [Test]
         public void MetadataImport_Description()
         {
-            PopulateTestTree();
+            TestModel testModel = PopulateTestTree();
 
-            NUnitTest test = (NUnitTest)GetDescendantByName(testModel.RootTest, typeof(DescriptionSample).Name);
+            Test test = GetDescendantByName(testModel.RootTest, typeof(DescriptionSample).Name);
             Assert.AreEqual("A sample description.", test.Metadata.GetValue(MetadataKeys.Description));
         }
 
         [Test]
         public void MetadataImport_Category()
         {
-            PopulateTestTree();
+            TestModel testModel = PopulateTestTree();
 
-            NUnitTest test = (NUnitTest)GetDescendantByName(testModel.RootTest, typeof(CategorySample).Name);
+            Test test = GetDescendantByName(testModel.RootTest, typeof(CategorySample).Name);
             Assert.AreEqual("samples", test.Metadata.GetValue(MetadataKeys.Category));
         }
 
         [Test]
         public void MetadataImport_IgnoreReason()
         {
-            PopulateTestTree();
+            TestModel testModel = PopulateTestTree();
 
-            NUnitTest fixture = (NUnitTest)GetDescendantByName(testModel.RootTest, typeof(IgnoreReasonSample).Name);
-            NUnitTest test = (NUnitTest)fixture.Children[0];
+            Test fixture = GetDescendantByName(testModel.RootTest, typeof(IgnoreReasonSample).Name);
+            Test test = fixture.Children[0];
             Assert.AreEqual("For testing purposes.", test.Metadata.GetValue(MetadataKeys.IgnoreReason));
         }
 
         [Test]
         public void MetadataImport_Property()
         {
-            PopulateTestTree();
+            TestModel testModel = PopulateTestTree();
 
-            NUnitTest test = (NUnitTest)GetDescendantByName(testModel.RootTest, typeof(PropertySample).Name);
+            Test test = GetDescendantByName(testModel.RootTest, typeof(PropertySample).Name);
             Assert.AreEqual("customvalue-1", test.Metadata.GetValue("customkey-1"));
             Assert.AreEqual("customvalue-2", test.Metadata.GetValue("customkey-2"));
         }
@@ -90,12 +95,12 @@ namespace Gallio.NUnitAdapter.Tests.Model
         [Test]
         public void DoesNotChokeOnAmbiguousMatch()
         {
-            PopulateTestTree();
+            TestModel testModel = PopulateTestTree();
 
-            NUnitTest fixture = (NUnitTest)GetDescendantByName(testModel.RootTest, typeof(AmbiguousMatchSample).Name);
+            Test fixture = GetDescendantByName(testModel.RootTest, typeof(AmbiguousMatchSample).Name);
             Assert.AreEqual(1, fixture.Children.Count);
 
-            NUnitTest test = (NUnitTest) fixture.Children[0];
+            Test test =  fixture.Children[0];
             Assert.AreEqual("Test", test.Name);
             Assert.IsNull(test.CodeElement);
         }

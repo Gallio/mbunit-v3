@@ -20,7 +20,7 @@ using System.Xml;
 using System.Xml.Serialization;
 using Gallio.Model;
 using Gallio.Common.Markup;
-using Gallio.Runner.Reports;
+using Gallio.Runner.Reports.Schema;
 using Microsoft.VisualStudio.TestTools.Common;
 using GallioTestOutcome = Gallio.Model.TestOutcome;
 using VSTestOutcome=Microsoft.VisualStudio.TestTools.Common.TestOutcome;

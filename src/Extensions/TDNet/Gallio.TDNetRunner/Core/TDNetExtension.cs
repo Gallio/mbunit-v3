@@ -16,7 +16,7 @@
 using System;
 using System.Text;
 using Gallio.Common.Markup;
-using Gallio.Model.Serialization;
+using Gallio.Model.Schema;
 using Gallio.Common.Reflection;
 using Gallio.Runner;
 using Gallio.Runner.Events;

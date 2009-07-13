@@ -14,43 +14,50 @@
 // limitations under the License.
 
 using System;
-using Gallio.Runner.Drivers;
+using Gallio.Model;
+using Gallio.Model.Isolation;
 using Gallio.Runner.Extensions;
 
 namespace Gallio.Runner
 {
     /// <summary>
-    /// A <see cref="ITestRunnerFactory" /> for <see cref="DefaultTestRunner" /> using
-    /// different implementations of <see cref="ITestDriver" />.
+    /// A factory for <see cref="DefaultTestRunner" />.
     /// </summary>
     public class DefaultTestRunnerFactory : ITestRunnerFactory
     {
-        private readonly ITestDriverFactory testDriverFactory;
-        private readonly ITestRunnerExtensionManager extensionManager;
+        private readonly ITestIsolationProvider testIsolationProvider;
+        private readonly ITestFrameworkManager testFrameworkManager;
+        private readonly ITestRunnerExtensionManager testRunnerExtensionManager;
 
         /// <summary>
         /// Creates a test runner factory.
         /// </summary>
-        /// <param name="testDriverFactory">The test driver factory.</param>
-        /// <param name="extensionManager">The extension manager.</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="testDriverFactory"/>
-        /// or <paramref name="extensionManager" /> is null.</exception>
-        public DefaultTestRunnerFactory(ITestDriverFactory testDriverFactory, ITestRunnerExtensionManager extensionManager)
+        /// <param name="testIsolationProvider">The test isolation provider.</param>
+        /// <param name="testFrameworkManager">The test framework manager.</param>
+        /// <param name="testRunnerExtensionManager">The extension manager.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="testIsolationProvider"/>
+        /// or <paramref name="testRunnerExtensionManager" /> is null.</exception>
+        public DefaultTestRunnerFactory(ITestIsolationProvider testIsolationProvider,
+            ITestFrameworkManager testFrameworkManager,
+            ITestRunnerExtensionManager testRunnerExtensionManager)
         {
-            if (testDriverFactory == null)
-                throw new ArgumentNullException("testDriverFactory");
-            if (extensionManager == null)
-                throw new ArgumentNullException("extensionManager");
+            if (testIsolationProvider == null)
+                throw new ArgumentNullException("testIsolationProvider");
+            if (testFrameworkManager == null)
+                throw new ArgumentNullException("testFrameworkManager");
+            if (testRunnerExtensionManager == null)
+                throw new ArgumentNullException("testRunnerExtensionManager");
 
-            this.testDriverFactory = testDriverFactory;
-            this.extensionManager = extensionManager;
+            this.testIsolationProvider = testIsolationProvider;
+            this.testFrameworkManager = testFrameworkManager;
+            this.testRunnerExtensionManager = testRunnerExtensionManager;
         }
 
         /// <inheritdoc />
         public ITestRunner CreateTestRunner()
         {
-            var runner = new DefaultTestRunner(testDriverFactory);
-            extensionManager.RegisterAutoActivatedExtensions(runner);
+            var runner = new DefaultTestRunner(testIsolationProvider, testFrameworkManager);
+            testRunnerExtensionManager.RegisterAutoActivatedExtensions(runner);
             return runner;
         }
     }

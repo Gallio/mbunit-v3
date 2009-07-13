@@ -16,7 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using Gallio.Model.Execution;
+using Gallio.Model.Commands;
 
 namespace Gallio.Common.Markup
 {

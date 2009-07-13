@@ -11,11 +11,7 @@
     <AssemblyName>Gallio.NUnitAdapter248</AssemblyName>
     <SignAssembly>true</SignAssembly>
     <BaseIntermediateOutputPath>obj\v2.4.8\</BaseIntermediateOutputPath>
-    <FileUpgradeFlags>
-    </FileUpgradeFlags>
-    <OldToolsVersion>3.5</OldToolsVersion>
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
-    <UpgradeBackupLocation />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -60,9 +56,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Model\NUnitTestExplorer.cs" />
     <Compile Include="Model\NUnitTest.cs" />
     <Compile Include="Model\NUnitTestController.cs" />
-    <Compile Include="Model\NUnitTestExplorer.cs" />
+    <Compile Include="Model\NUnitTestDriver.cs" />
     <Compile Include="Model\NUnitTestFramework.cs" />
     <Compile Include="Model\NUnitAssemblyTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -14,7 +14,7 @@
 // limitations under the License.
 
 using System.Collections.Generic;
-using Gallio.Runner.Reports;
+using Gallio.Runner.Reports.Schema;
 using Gallio.Runtime.ProgressMonitoring;
 using Gallio.Icarus.Reports;
 

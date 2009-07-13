@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Xml.Serialization;
+using Gallio.Common;
 using Gallio.Common.Collections;
 using Gallio.Common.Xml;
 using MbUnit.Framework;
@@ -169,8 +170,8 @@ namespace Gallio.Tests.Common.Collections
                 Assert.IsTrue(actual.Contains(entry));
         }
 
-        [XmlRoot("propertySetContainer", Namespace = XmlSerializationUtils.GallioNamespace)]
-        [XmlType(Namespace = XmlSerializationUtils.GallioNamespace)]
+        [XmlRoot("propertySetContainer", Namespace = SchemaConstants.XmlNamespace)]
+        [XmlType(Namespace = SchemaConstants.XmlNamespace)]
         public class MetadataContainer
         {
             [XmlElement("metadata")]

@@ -20,6 +20,7 @@ using Gallio.Icarus.Commands;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Tests.Utilities;
 using Gallio.Model;
+using Gallio.Model.Schema;
 using MbUnit.Framework;
 using Rhino.Mocks;
 
@@ -45,8 +46,8 @@ namespace Gallio.Icarus.Tests.Commands
         public void Execute_should_reload_test_package()
         {
             var projectController = MockRepository.GenerateStub<IProjectController>();
-            var testPackageConfig = new TestPackageConfig();
-            projectController.Stub(pc => pc.TestPackageConfig).Return(testPackageConfig);
+            var testPackage = new TestPackage();
+            projectController.Stub(pc => pc.TestPackage).Return(testPackage);
             var testRunnerExtensions = new BindingList<string>(new List<string>());
             projectController.Stub(pc => pc.TestRunnerExtensions).Return(testRunnerExtensions);
             var testController = MockRepository.GenerateStub<ITestController>();
@@ -55,7 +56,7 @@ namespace Gallio.Icarus.Tests.Commands
 
             newProjectCommand.Execute(progressMonitor);
 
-            testController.AssertWasCalled(tc => tc.SetTestPackageConfig(testPackageConfig));
+            testController.AssertWasCalled(tc => tc.SetTestPackage(testPackage));
             testController.AssertWasCalled(tc => tc.Explore(progressMonitor, testRunnerExtensions));
         }
 

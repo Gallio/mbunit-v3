@@ -69,14 +69,14 @@ namespace Gallio.Runner.Extensions
                 LogDebugFormat("[DisposeFinished]\n\tSuccess: {0}", e.Success);
             };
 
-            Events.TestModelSubtreeMerged += delegate(object sender, TestModelSubtreeMergedEventArgs e)
+            Events.TestDiscovered += delegate(object sender, TestDiscoveredEventArgs e)
             {
-                LogDebugFormat("[TestModelSubtreeMerged]\n\tTest: {0}", e.Test.FullName);
+                LogDebugFormat("[TestDiscovered]\n\tTest: {0}", e.Test.FullName);
             };
 
-            Events.TestModelAnnotationAdded += delegate(object sender, TestModelAnnotationAddedEventArgs e)
+            Events.AnnotationDiscovered += delegate(object sender, AnnotationDiscoveredEventArgs e)
             {
-                LogDebugFormat("[TestModelAnnotationAdded]\n\tType: {0}\n\tCode Location: {1}\n\tCode Reference: {2}\n\tMessage: {3}\n\tDetails: {4}",
+                LogDebugFormat("[AnnotationDiscovered]\n\tType: {0}\n\tCode Location: {1}\n\tCode Reference: {2}\n\tMessage: {3}\n\tDetails: {4}",
                     e.Annotation.Type, e.Annotation.CodeLocation, e.Annotation.CodeReference, e.Annotation.Message, e.Annotation.Details);
             };
 
@@ -134,25 +134,25 @@ namespace Gallio.Runner.Extensions
                     e.AttachmentName);
             };
 
-            Events.TestStepLogStreamBeginSection += delegate(object sender, TestStepLogStreamBeginSectionEventArgs e)
+            Events.TestStepLogStreamBeginSectionBlock += delegate(object sender, TestStepLogStreamBeginSectionBlockEventArgs e)
             {
-                LogDebugFormat("[TestStepLogStreamBeginSection({0})]\n\tStream: {1}\n\tSection Name: {2}",
+                LogDebugFormat("[TestStepLogStreamBeginSectionBlock({0})]\n\tStream: {1}\n\tSection Name: {2}",
                     e.TestStepRun.Step.FullName,
                     e.LogStreamName,
                     e.SectionName);
             };
 
-            Events.TestStepLogStreamBeginMarker += delegate(object sender, TestStepLogStreamBeginMarkerEventArgs e)
+            Events.TestStepLogStreamBeginMarkerBlock += delegate(object sender, TestStepLogStreamBeginMarkerBlockEventArgs e)
             {
-                LogDebugFormat("[TestStepLogStreamBeginMarker({0})]\n\tStream: {1}\n\tClass: {2}",
+                LogDebugFormat("[TestStepLogStreamBeginMarkerBlock({0})]\n\tStream: {1}\n\tClass: {2}",
                     e.TestStepRun.Step.FullName,
                     e.LogStreamName,
                     e.Marker);
             };
 
-            Events.TestStepLogStreamEnd += delegate(object sender, TestStepLogStreamEndEventArgs e)
+            Events.TestStepLogStreamEndBlock += delegate(object sender, TestStepLogStreamEndBlockEventArgs e)
             {
-                LogDebugFormat("[TestStepLogStreamEnd({0})]\n\tStream: {1}",
+                LogDebugFormat("[TestStepLogStreamEndBlock({0})]\n\tStream: {1}",
                     e.TestStepRun.Step.FullName,
                     e.LogStreamName);
             };

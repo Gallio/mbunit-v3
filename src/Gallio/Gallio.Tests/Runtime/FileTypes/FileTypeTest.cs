@@ -93,6 +93,58 @@ namespace Gallio.Tests.Runtime.FileTypes
         }
 
         [Test]
+        public void IsSameOrSubtypeOfAny_WhenOtherTypesIsNull_Throws()
+        {
+            var type = new FileType("id", "description", null);
+
+            Assert.Throws<ArgumentNullException>(() => type.IsSameOrSubtypeOfAny(null));
+        }
+
+        [Test]
+        public void IsSameOrSubtypeOfAny_WhenOtherTypesContainsNull_Throws()
+        {
+            var type = new FileType("id", "description", null);
+
+            Assert.Throws<ArgumentNullException>(() => type.IsSameOrSubtypeOfAny(new FileType[] { null }));
+        }
+
+        [Test]
+        public void IsSameOrSubtypeOfAny_WhenOtherTypesContainsSame_ReturnsTrue()
+        {
+            var type = new FileType("id", "description", null);
+
+            Assert.IsTrue(type.IsSameOrSubtypeOfAny(type));
+        }
+
+        [Test]
+        public void IsSameOrSubtypeOfAny_WhenOtherTypesIsEmpty_ReturnsFalse()
+        {
+            var type = new FileType("id", "description", null);
+
+            Assert.IsFalse(type.IsSameOrSubtypeOfAny());
+        }
+
+        [Test]
+        public void IsSameOrSubtypeOfAny_WhenOtherTypesIsUnrelated_ReturnsFalse()
+        {
+            var superType = new FileType("superId", "superDescription", null);
+            var type = new FileType("id", "description", superType);
+            var unrelatedType = new FileType("otherId", "otherDescription", superType);
+
+            Assert.IsFalse(type.IsSameOrSubtypeOfAny(unrelatedType));
+        }
+
+        [Test]
+        public void IsSameOrSubtypeOfAny_WhenOtherTypesContainsUnrelatedAndSame_ReturnsTrue()
+        {
+            var superType = new FileType("superId", "superDescription", null);
+            var type = new FileType("id", "description", superType);
+            var unrelatedType = new FileType("otherId", "otherDescription", superType);
+
+            Assert.IsTrue(type.IsSameOrSubtypeOfAny(unrelatedType, type));
+        }
+
+        [Test]
         public void ToString_Always_ReturnsIdConcatenatedWithDescription()
         {
             var type = new FileType("id", "description", null);

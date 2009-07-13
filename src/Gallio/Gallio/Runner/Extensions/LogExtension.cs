@@ -17,12 +17,13 @@ using System;
 using System.Text;
 using Gallio.Common.Collections;
 using Gallio.Common.Markup;
+using Gallio.Model.Tree;
 using Gallio.Runner.Events;
+using Gallio.Runner.Reports.Schema;
 using Gallio.Runtime.Logging;
 using Gallio.Model;
-using Gallio.Model.Serialization;
+using Gallio.Model.Schema;
 using Gallio.Common.Reflection;
-using Gallio.Runner.Reports;
 
 namespace Gallio.Runner.Extensions
 {
@@ -44,7 +45,7 @@ namespace Gallio.Runner.Extensions
         {
             var testCaseSteps = new HashSet<string>();
 
-            Events.TestModelAnnotationAdded += delegate(object sender, TestModelAnnotationAddedEventArgs e)
+            Events.AnnotationDiscovered += delegate(object sender, AnnotationDiscoveredEventArgs e)
             {
                 LogAnnotation(e.Annotation);
             };
@@ -107,7 +108,7 @@ namespace Gallio.Runner.Extensions
         /// </summary>
         /// <remarks>
         /// <para>
-        /// This method is not called for test steps that have <see cref="ITestStep.IsTestCase"/> set to false.
+        /// This method is not called for test steps that have <see cref="TestStep.IsTestCase"/> set to false.
         /// </para>
         /// </remarks>
         /// <param name="e">The event.</param>
@@ -121,7 +122,7 @@ namespace Gallio.Runner.Extensions
         /// </summary>
         /// <remarks>
         /// <para>
-        /// This method is not called for test steps that have <see cref="ITestStep.IsTestCase"/> set to false.
+        /// This method is not called for test steps that have <see cref="TestStep.IsTestCase"/> set to false.
         /// </para>
         /// </remarks>
         /// <param name="e">The event.</param>
@@ -139,7 +140,7 @@ namespace Gallio.Runner.Extensions
         /// This method is not called for steps within test cases.
         /// </para>
         /// <para>
-        /// This method is not called for test steps that have <see cref="ITestStep.IsTestCase"/> set to true.
+        /// This method is not called for test steps that have <see cref="TestStep.IsTestCase"/> set to true.
         /// </para>
         /// </remarks>
         /// <param name="e">The event.</param>

@@ -17,13 +17,14 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Xml.Serialization;
+using Gallio.Common;
 using Gallio.Common.Xml;
 
 namespace Gallio.Icarus
 {
     [Serializable]
-    [XmlRoot("userOptions", Namespace = XmlSerializationUtils.GallioNamespace)]
-    [XmlType(Namespace = XmlSerializationUtils.GallioNamespace)]
+    [XmlRoot("userOptions", Namespace = SchemaConstants.XmlNamespace)]
+    [XmlType(Namespace = SchemaConstants.XmlNamespace)]
     public class UserOptions
     {
         public static readonly string Extension = ".user";

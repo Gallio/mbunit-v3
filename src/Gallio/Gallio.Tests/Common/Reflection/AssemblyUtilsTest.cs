@@ -14,10 +14,12 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using Gallio.Common.Reflection;
 using MbUnit.Framework;
+using MbUnit.TestResources;
 using MbUnit.TestResources.ProcessorArchitecture;
 
 namespace Gallio.Tests.Common.Reflection
@@ -69,17 +71,17 @@ namespace Gallio.Tests.Common.Reflection
 
             Assert.IsFalse(AssemblyUtils.IsAssembly(path));
         }
-
+        
         [Test]
         public void GetAssemblyMetadata_WhenStreamIsNull_Throws()
         {
-            Assert.Throws<ArgumentNullException>(() => AssemblyUtils.GetAssemblyMetadata((Stream)null));
+            Assert.Throws<ArgumentNullException>(() => AssemblyUtils.GetAssemblyMetadata((Stream)null, AssemblyMetadataFields.Default));
         }
 
         [Test]
         public void GetAssemblyMetadata_WhenFilePathIsNull_Throws()
         {
-            Assert.Throws<ArgumentNullException>(() => AssemblyUtils.GetAssemblyMetadata((string)null));
+            Assert.Throws<ArgumentNullException>(() => AssemblyUtils.GetAssemblyMetadata((string)null, AssemblyMetadataFields.Default));
         }
 
         [Test]
@@ -87,7 +89,7 @@ namespace Gallio.Tests.Common.Reflection
         {
             var stream = new MemoryStream();
 
-            Assert.IsNull(AssemblyUtils.GetAssemblyMetadata(stream));
+            Assert.IsNull(AssemblyUtils.GetAssemblyMetadata(stream, AssemblyMetadataFields.Default));
         }
 
         [Test]
@@ -96,7 +98,7 @@ namespace Gallio.Tests.Common.Reflection
             var stream = new MemoryStream();
             stream.SetLength(1024); // only contains nulls
 
-            Assert.IsNull(AssemblyUtils.GetAssemblyMetadata(stream));
+            Assert.IsNull(AssemblyUtils.GetAssemblyMetadata(stream, AssemblyMetadataFields.Default));
         }
 
         [Test]
@@ -104,7 +106,7 @@ namespace Gallio.Tests.Common.Reflection
         {
             var path = "MbUnit.TestResources.dll";
 
-            AssemblyMetadata metadata = AssemblyUtils.GetAssemblyMetadata(path);
+            AssemblyMetadata metadata = AssemblyUtils.GetAssemblyMetadata(path, AssemblyMetadataFields.Default);
 
             Assert.Multiple(() =>
             {
@@ -120,7 +122,7 @@ namespace Gallio.Tests.Common.Reflection
         {
             var path = "MbUnit.TestResources.x86.dll";
 
-            AssemblyMetadata metadata = AssemblyUtils.GetAssemblyMetadata(path);
+            AssemblyMetadata metadata = AssemblyUtils.GetAssemblyMetadata(path, AssemblyMetadataFields.Default);
 
             Assert.Multiple(() =>
             {
@@ -136,7 +138,7 @@ namespace Gallio.Tests.Common.Reflection
         {
             var path = "MbUnit.TestResources.x64.dll";
 
-            AssemblyMetadata metadata = AssemblyUtils.GetAssemblyMetadata(path);
+            AssemblyMetadata metadata = AssemblyUtils.GetAssemblyMetadata(path, AssemblyMetadataFields.Default);
 
             Assert.Multiple(() =>
             {
@@ -152,7 +154,51 @@ namespace Gallio.Tests.Common.Reflection
         {
             var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), @"kernel32.dll");
 
-            Assert.IsNull(AssemblyUtils.GetAssemblyMetadata(path));
+            Assert.IsNull(AssemblyUtils.GetAssemblyMetadata(path, AssemblyMetadataFields.Default));
+        }
+        
+        [Test]
+        public void GetAssemblyMetadata_WhenAttemptingToAccessAssemblyNameButNotRead_Throws()
+        {
+            var path = "MbUnit.TestResources.dll";
+
+            AssemblyMetadata metadata = AssemblyUtils.GetAssemblyMetadata(path, AssemblyMetadataFields.Default);
+
+            AssemblyName x;
+            Assert.Throws<InvalidOperationException>(() => x = metadata.AssemblyName);
+        }
+
+        [Test]
+        public void GetAssemblyMetadata_WhenAttemptingToAccessAssemblyReferencesButNotRead_Throws()
+        {
+            var path = "MbUnit.TestResources.dll";
+
+            AssemblyMetadata metadata = AssemblyUtils.GetAssemblyMetadata(path, AssemblyMetadataFields.Default);
+
+            IList<AssemblyName> x;
+            Assert.Throws<InvalidOperationException>(() => x = metadata.AssemblyReferences);
+        }
+
+        [Test]
+        public void GetAssemblyMetadata_WhenAssemblyNameFieldSpecified_ReturnsMetadataIncludingAssemblyName()
+        {
+            var path = "MbUnit.TestResources.dll";
+
+            AssemblyMetadata metadata = AssemblyUtils.GetAssemblyMetadata(path, AssemblyMetadataFields.AssemblyName);
+
+            Assembly assembly = typeof(SimpleTest).Assembly;
+            Assert.AreEqual(assembly.GetName(), metadata.AssemblyName);
+        }
+
+        [Test]
+        public void GetAssemblyMetadata_WhenAssemblyReferencesFieldSpecified_ReturnsMetadataIncludingAssemblyReferences()
+        {
+            var path = "MbUnit.TestResources.dll";
+
+            AssemblyMetadata metadata = AssemblyUtils.GetAssemblyMetadata(path, AssemblyMetadataFields.AssemblyReferences);
+
+            Assembly assembly = typeof(SimpleTest).Assembly;
+            Assert.AreElementsEqual(assembly.GetReferencedAssemblies(), metadata.AssemblyReferences);
         }
     }
 }

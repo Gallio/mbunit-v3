@@ -16,7 +16,7 @@
 using System;
 using Gallio.Common;
 using Gallio.Model;
-using Gallio.Model.Execution;
+using Gallio.Model.Commands;
 using Gallio.Common.Reflection;
 using NUnitTestRunner = NUnit.Core.TestRunner;
 using NUnitTestName = NUnit.Core.TestName;
@@ -44,15 +44,12 @@ namespace Gallio.NUnitAdapter.Model
             this.runner = runner;
         }
 
-        /// <inheritdoc />
-        public override Func<ITestController> TestControllerFactory
+        /// <summary>
+        /// Gets the NUnit test runner.
+        /// </summary>
+        public NUnitTestRunner Runner
         {
-            get { return CreateTestController; }
-        }
-
-        private ITestController CreateTestController()
-        {
-            return new NUnitTestController(runner);
+            get { return runner; }
         }
 
         /// <inheritdoc />

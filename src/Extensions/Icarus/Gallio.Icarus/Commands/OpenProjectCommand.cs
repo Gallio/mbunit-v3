@@ -57,7 +57,7 @@ namespace Gallio.Icarus.Commands
 
                 using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(85))
                 {
-                    testController.SetTestPackageConfig(projectController.TestPackageConfig);
+                    testController.SetTestPackage(projectController.TestPackage);
                     testController.Explore(subProgressMonitor, projectController.TestRunnerExtensions);
                 }
 

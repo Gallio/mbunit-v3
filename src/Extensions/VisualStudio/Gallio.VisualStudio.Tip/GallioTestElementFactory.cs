@@ -17,7 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Gallio.Model;
-using Gallio.Model.Serialization;
+using Gallio.Model.Schema;
 using Microsoft.VisualStudio.TestTools.Common;
 
 namespace Gallio.VisualStudio.Tip

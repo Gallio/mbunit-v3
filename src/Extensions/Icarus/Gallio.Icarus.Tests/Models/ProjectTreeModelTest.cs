@@ -13,9 +13,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Gallio.Runner.Projects;
+using Gallio.Runner.Projects.Schema;
 using MbUnit.Framework;
 using Gallio.Icarus.Models;
-using Gallio.Runner.Projects;
 using System.Collections;
 using Aga.Controls.Tree;
 using Rhino.Mocks;
@@ -47,9 +48,9 @@ namespace Gallio.Icarus.Tests.Models
             var fileSystem = MockRepository.GenerateStub<IFileSystem>();
             var projectTreeModel = new ProjectTreeModel(fileSystem);
 
-            var project = new Project();
-            projectTreeModel.Project = project;
-            Assert.AreEqual(project, projectTreeModel.Project);
+            var project = new TestProject();
+            projectTreeModel.TestProject = project;
+            Assert.AreEqual(project, projectTreeModel.TestProject);
         }
 
         [Test]

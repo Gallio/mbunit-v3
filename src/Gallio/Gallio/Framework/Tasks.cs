@@ -23,7 +23,7 @@ using Gallio.Common.Collections;
 using Gallio.Common.Concurrency;
 using Gallio.Framework;
 using Gallio.Common.Markup;
-using Gallio.Runner.Harness;
+using Gallio.Model.Environments;
 
 namespace Gallio.Framework
 {
@@ -92,7 +92,7 @@ namespace Gallio.Framework
             if (action == null)
                 throw new ArgumentNullException("action");
 
-            var task = new TestThreadTask(GetTaskName(name, action), action, null);
+            var task = new TestEnvironmentAwareThreadTask(GetTaskName(name, action), action, null);
             WatchTask(task);
             return task;
         }

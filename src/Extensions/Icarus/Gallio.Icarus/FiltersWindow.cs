@@ -31,7 +31,7 @@
 using System;
 using System.Windows.Forms;
 using Gallio.Icarus.Controllers;
-using Gallio.Runner.Projects;
+using Gallio.Runner.Projects.Schema;
 
 namespace Gallio.Icarus
 {
@@ -84,7 +84,7 @@ namespace Gallio.Icarus
         private void applyFilterButton_Click(object sender, EventArgs e)
         {
             var filterInfo = (FilterInfo)filtersListBox.SelectedItem;
-            filterController.ApplyFilter(filterInfo.Filter);
+            filterController.ApplyFilter(filterInfo.FilterExpr);
         }
     }
 }

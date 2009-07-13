@@ -27,17 +27,15 @@ namespace Gallio.CSUnitAdapter.Tests.Model
     [TestFixture]
     [TestsOn(typeof(CSUnitTestFramework))]
     [Author("Francois Retief", "fgretief@gmail.com")]
-    public class CSUnitTestFrameworkTest : BaseTestFrameworkTest
+    public class CSUnitTestFrameworkTest : BaseTestFrameworkTest<SimpleTest>
     {
-        protected override Assembly GetSampleAssembly()
+        protected override ComponentHandle<ITestFramework, TestFrameworkTraits> FrameworkHandle
         {
-            return typeof(SimpleTest).Assembly;
-        }
-
-        protected override ComponentHandle<ITestFramework, TestFrameworkTraits> GetFrameworkHandle()
-        {
-            return (ComponentHandle<ITestFramework, TestFrameworkTraits>)
-                RuntimeAccessor.ServiceLocator.ResolveHandleByComponentId("CSUnitAdapter.TestFramework");
+            get
+            {
+                return (ComponentHandle<ITestFramework, TestFrameworkTraits>)
+                    RuntimeAccessor.ServiceLocator.ResolveHandleByComponentId("CSUnitAdapter.TestFramework");
+            }
         }
     }
 }

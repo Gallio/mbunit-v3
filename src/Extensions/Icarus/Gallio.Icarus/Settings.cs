@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Xml.Serialization;
+using Gallio.Common;
 using Gallio.Common.Xml;
 using Gallio.Icarus.Controls;
 using Gallio.Runtime.Logging;
@@ -25,8 +26,8 @@ using Gallio.Runner;
 namespace Gallio.Icarus
 {
     [Serializable]
-    [XmlRoot("settings", Namespace = XmlSerializationUtils.GallioNamespace)]
-    [XmlType(Namespace = XmlSerializationUtils.GallioNamespace)]
+    [XmlRoot("settings", Namespace = SchemaConstants.XmlNamespace)]
+    [XmlType(Namespace = SchemaConstants.XmlNamespace)]
     public class Settings
     {
         private string testRunnerFactory = StandardTestRunnerFactoryNames.IsolatedProcess;

@@ -13,8 +13,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Gallio.Model;
 using Gallio.Common.Reflection;
+using Gallio.Model.Tree;
 using Gallio.ReSharperRunner.Reflection;
 using Gallio.Tests.Common.Reflection;
 using JetBrains.ProjectModel;
@@ -22,6 +22,7 @@ using JetBrains.ReSharper.Psi;
 using MbUnit.Framework;
 using System.Reflection;
 using MbUnit.TestResources;
+using Test=Gallio.Model.Tree.Test;
 
 namespace Gallio.ReSharperRunner.Tests.Reflection
 {
@@ -93,7 +94,7 @@ namespace Gallio.ReSharperRunner.Tests.Reflection
         {
             VerifyEqualityAndHashcodeContracts<Assembly, IAssemblyInfo>(
                 typeof(SimpleTest).Assembly,
-                typeof(ITest).Assembly,
+                typeof(Test).Assembly,
                 GetAssembly);
         }
     }

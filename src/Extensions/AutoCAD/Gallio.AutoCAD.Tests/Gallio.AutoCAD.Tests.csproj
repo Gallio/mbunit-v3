@@ -49,12 +49,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AcadTestDriverFactoryTest.cs" />
-    <Compile Include="AcadTestDriverTest.cs" />
-    <Compile Include="AcadThreadTest.cs" />
+    <Compile Include="Isolation\AcadTestIsolationProviderTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RemoteAcadTestDriverTest.cs" />
-    <Compile Include="RemoteTestDriverTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\Gallio\Gallio.Tests\Gallio.Tests.csproj">

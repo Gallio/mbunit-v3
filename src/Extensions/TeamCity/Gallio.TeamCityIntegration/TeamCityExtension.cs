@@ -21,10 +21,10 @@ using Gallio.Common;
 using Gallio.Common.Collections;
 using Gallio.Model;
 using Gallio.Common.Markup;
-using Gallio.Model.Serialization;
+using Gallio.Model.Schema;
 using Gallio.Runner.Events;
 using Gallio.Runner.Extensions;
-using Gallio.Runner.Reports;
+using Gallio.Runner.Reports.Schema;
 using Gallio.Runtime.Logging;
 using Gallio.Runner;
 

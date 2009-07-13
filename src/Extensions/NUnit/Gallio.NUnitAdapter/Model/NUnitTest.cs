@@ -14,9 +14,8 @@
 // limitations under the License.
 
 using System;
-using Gallio.Model;
 using Gallio.Common.Reflection;
-
+using Gallio.Model.Tree;
 using NUnitITest = NUnit.Core.ITest;
 using NUnitTestName = NUnit.Core.TestName;
 
@@ -25,7 +24,7 @@ namespace Gallio.NUnitAdapter.Model
     /// <summary>
     /// Wraps an NUnit test.
     /// </summary>
-    internal class NUnitTest : BaseTest
+    internal class NUnitTest : Test
     {
         private NUnitITest test;
 

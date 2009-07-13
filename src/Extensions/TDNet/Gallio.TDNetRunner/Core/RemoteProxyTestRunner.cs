@@ -23,6 +23,7 @@ using Gallio.Model;
 using Gallio.Model.Filters;
 using Gallio.Runner;
 using Gallio.Runner.Reports;
+using Gallio.Runner.Reports.Schema;
 using Gallio.Runtime;
 using Gallio.Runtime.Logging;
 using Gallio.Runtime.ProgressMonitoring;
@@ -31,7 +32,7 @@ using Gallio.TDNetRunner.Properties;
 
 namespace Gallio.TDNetRunner.Core
 {
-    public class RemoteProxyTestRunner : BaseProxyTestRunner, IProxyTestRunner
+    public class RemoteProxyTestRunner : BaseProxyTestRunner
     {
         private const string ShortReportType = @"html-condensed";
         private const string LongReportType = @"html";
@@ -96,31 +97,31 @@ namespace Gallio.TDNetRunner.Core
 
         private FacadeTestRunState RunAssembly(IFacadeTestListener testListener, string assemblyPath, FacadeOptions facadeOptions)
         {
-            return Run(testListener, assemblyPath, new AnyFilter<ITest>(), facadeOptions);
+            return Run(testListener, assemblyPath, new AnyFilter<ITestDescriptor>(), facadeOptions);
         }
 
         private FacadeTestRunState RunNamespace(IFacadeTestListener testListener, string assemblyPath, string @namespace, FacadeOptions facadeOptions)
         {
-            return Run(testListener, assemblyPath, new AndFilter<ITest>(new Filter<ITest>[]
+            return Run(testListener, assemblyPath, new AndFilter<ITestDescriptor>(new Filter<ITestDescriptor>[]
             { 
-                new NamespaceFilter<ITest>(new EqualityFilter<string>(@namespace))
+                new NamespaceFilter<ITestDescriptor>(new EqualityFilter<string>(@namespace))
             }), facadeOptions);
         }
 
         private FacadeTestRunState RunType(IFacadeTestListener testListener, string assemblyPath, string typeName, FacadeOptions facadeOptions)
         {
-            return Run(testListener, assemblyPath, new AndFilter<ITest>(new Filter<ITest>[]
+            return Run(testListener, assemblyPath, new AndFilter<ITestDescriptor>(new Filter<ITestDescriptor>[]
             { 
-                new TypeFilter<ITest>(new EqualityFilter<string>(typeName), true)
+                new TypeFilter<ITestDescriptor>(new EqualityFilter<string>(typeName), true)
             }), facadeOptions);
         }
 
         private FacadeTestRunState RunMember(IFacadeTestListener testListener, string assemblyPath, string typeName, string memberName, FacadeOptions facadeOptions)
         {
-            return Run(testListener, assemblyPath, new AndFilter<ITest>(new Filter<ITest>[]
+            return Run(testListener, assemblyPath, new AndFilter<ITestDescriptor>(new Filter<ITestDescriptor>[]
             { 
-                new TypeFilter<ITest>(new EqualityFilter<string>(typeName), true),
-                new MemberFilter<ITest>(new EqualityFilter<string>(memberName))
+                new TypeFilter<ITestDescriptor>(new EqualityFilter<string>(typeName), true),
+                new MemberFilter<ITestDescriptor>(new EqualityFilter<string>(memberName))
             }), facadeOptions);
         }
 
@@ -137,13 +138,13 @@ namespace Gallio.TDNetRunner.Core
             return launcher.Run();
         }
 
-        private static Filter<ITest> ToCategoryFilter(IList<string> categoryNames)
+        private static Filter<ITestDescriptor> ToCategoryFilter(IList<string> categoryNames)
         {
-            return new MetadataFilter<ITest>(MetadataKeys.Category, new OrFilter<string>(GenericCollectionUtils.ConvertAllToArray(categoryNames,
+            return new MetadataFilter<ITestDescriptor>(MetadataKeys.Category, new OrFilter<string>(GenericCollectionUtils.ConvertAllToArray(categoryNames,
                 categoryName => new EqualityFilter<string>(categoryName))));
         }
 
-        private FacadeTestRunState Run(IFacadeTestListener testListener, string assemblyPath, Filter<ITest> filter, FacadeOptions facadeOptions)
+        private FacadeTestRunState Run(IFacadeTestListener testListener, string assemblyPath, Filter<ITestDescriptor> filter, FacadeOptions facadeOptions)
         {
             if (testListener == null)
                 throw new ArgumentNullException(@"testListener");
@@ -152,42 +153,42 @@ namespace Gallio.TDNetRunner.Core
             if (facadeOptions == null)
                 throw new ArgumentNullException("facadeOptions");
 
-            var filterRules = new List<FilterRule<ITest>>();
+            var filterRules = new List<FilterRule<ITestDescriptor>>();
             switch (facadeOptions.FilterCategoryMode)
             {
                 case FacadeFilterCategoryMode.Disabled:
-                    filterRules.Add(new FilterRule<ITest>(FilterRuleType.Inclusion, filter));
+                    filterRules.Add(new FilterRule<ITestDescriptor>(FilterRuleType.Inclusion, filter));
                     break;
 
                 case FacadeFilterCategoryMode.Include:
-                    filterRules.Add(new FilterRule<ITest>(FilterRuleType.Inclusion,
-                        new AndFilter<ITest>(new[] { filter, ToCategoryFilter(facadeOptions.FilterCategoryNames) })));
+                    filterRules.Add(new FilterRule<ITestDescriptor>(FilterRuleType.Inclusion,
+                        new AndFilter<ITestDescriptor>(new[] { filter, ToCategoryFilter(facadeOptions.FilterCategoryNames) })));
                     break;
 
                 case FacadeFilterCategoryMode.Exclude:
-                    filterRules.Add(new FilterRule<ITest>(FilterRuleType.Exclusion, ToCategoryFilter(facadeOptions.FilterCategoryNames)));
-                    filterRules.Add(new FilterRule<ITest>(FilterRuleType.Inclusion, filter));
+                    filterRules.Add(new FilterRule<ITestDescriptor>(FilterRuleType.Exclusion, ToCategoryFilter(facadeOptions.FilterCategoryNames)));
+                    filterRules.Add(new FilterRule<ITestDescriptor>(FilterRuleType.Inclusion, filter));
                     break;
             }
 
-            var filterSet = new FilterSet<ITest>(filterRules);
+            var filterSet = new FilterSet<ITestDescriptor>(filterRules);
 
             ILogger logger = new FilteredLogger(new TDNetLogger(testListener), LogSeverity.Info);
 
             launcher.Logger = logger;
             launcher.ProgressMonitorProvider = new LogProgressMonitorProvider(logger);
             launcher.TestExecutionOptions.FilterSet = filterSet;
-            launcher.TestRunnerFactoryName = StandardTestRunnerFactoryNames.IsolatedAppDomain;
+            launcher.TestProject.TestRunnerFactoryName = StandardTestRunnerFactoryNames.IsolatedAppDomain;
 
             // This monitor will inform the user in real-time what's going on
-            launcher.TestRunnerExtensions.Add(new TDNetExtension(testListener));
+            launcher.TestProject.AddTestRunnerExtension(new TDNetExtension(testListener));
 
-            launcher.TestPackageConfig.Files.Add(assemblyPath);
+            launcher.TestProject.TestPackage.AddFile(new FileInfo(assemblyPath));
 
             string assemblyDirectory = Path.GetDirectoryName(assemblyPath);
             //launcher.TestPackageConfig.ShadowCopy = true;
-            launcher.TestPackageConfig.ApplicationBaseDirectory = assemblyDirectory;
-            launcher.TestPackageConfig.WorkingDirectory = assemblyDirectory;
+            launcher.TestProject.TestPackage.ApplicationBaseDirectory = new DirectoryInfo(assemblyDirectory);
+            launcher.TestProject.TestPackage.WorkingDirectory = new DirectoryInfo(assemblyDirectory);
 
             TestLauncherResult result = RunLauncher(launcher);
 
@@ -236,11 +237,20 @@ namespace Gallio.TDNetRunner.Core
         {
             try
             {
-                DirectoryInfo reportDirectory = SpecialPathPolicy.For("TDNetRunner").GetTempDirectory();
+                DirectoryInfo reportDirectory = new DirectoryInfo(Path.Combine(SpecialPathPolicy.For("TDNetRunner").GetTempDirectory().FullName, "Report"));
                 if (reportDirectory.Exists)
                 {
                     // Make sure the folder is empty
-                    reportDirectory.Delete(true);
+                    try
+                    {
+                        reportDirectory.Delete(true);
+                    }
+                    catch (IOException)
+                    {
+                        // If we cannot delete the directory (perhaps it is still in use), then
+                        // create a new directory with a unique name.
+                        reportDirectory = SpecialPathPolicy.For("TDNetRunner").CreateTempDirectoryWithUniqueName();
+                    }
                 }
 
                 reportDirectory.Create();

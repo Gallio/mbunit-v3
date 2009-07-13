@@ -17,16 +17,13 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
-using System.Runtime.Remoting;
 using System.Text;
 using System.Threading;
 using Gallio.AutoCAD.Commands;
 using Gallio.AutoCAD.Native;
-using Gallio.Common;
 using Gallio.Common.Concurrency;
 using Gallio.Common.Text;
 using Gallio.Runner;
-using Gallio.Common.Remoting;
 
 namespace Gallio.AutoCAD
 {
@@ -35,14 +32,21 @@ namespace Gallio.AutoCAD
     /// </summary>
     public class AcadProcess : IAcadProcess
     {
-        private static readonly TimeSpan PingTimeout = TimeSpan.FromSeconds(60);
         private static readonly TimeSpan ReadyTimeout = TimeSpan.FromSeconds(60);
         private static readonly TimeSpan ReadyPollInterval = TimeSpan.FromSeconds(0.5);
 
         private bool shutdownAcadOnDispose;
         private AcadProcessTask processTask;
-        private IClientChannel clientChannel;
-        private IServerChannel serverChannel;
+
+        private AcadProcess(AcadProcessTask processTask)
+        {
+            if (processTask == null)
+                throw new ArgumentNullException("processTask");
+
+            this.processTask = processTask;
+
+            shutdownAcadOnDispose = !processTask.IsAttached;
+        }
 
         /// <summary>
         /// Creates a new <see cref="AcadProcess"/> instance
@@ -69,23 +73,13 @@ namespace Gallio.AutoCAD
             return new AcadProcess(AcadProcessTask.Create(executablePath));
         }
 
-        // Use AcadProcess.Attach or AcadProcess.Create to
-        // create new AcadProcess objects.
-        private AcadProcess(AcadProcessTask processTask)
+        /// <inheritdoc />
+        public void Start(string ipcPortName)
         {
-            if (processTask == null)
-                throw new ArgumentNullException("processTask");
+            if (ipcPortName == null)
+                throw new ArgumentNullException("ipcPortName");
 
-            shutdownAcadOnDispose = !processTask.IsAttached;
-            this.processTask = processTask;
-            ConnectToProcess();
-        }
-
-        private void ConnectToProcess()
-        {
             processTask.Start();
-
-            string portName = String.Concat(RemoteAcadTestDriver.ServiceName, ".", Hash64.CreateUniqueHash().ToString());
 
             // Load the AutoCAD plugin.
             string pluginFileName = AcadPluginLocator.GetAcadPluginLocation();
@@ -112,13 +106,9 @@ namespace Gallio.AutoCAD
             //
             SendCommand(new CreateEndpointAndWaitCommand()
             {
-                IpcPortName = portName,
-                PingTimeout = PingTimeout,
+                IpcPortName = ipcPortName,
                 SendAsynchronously = true
             });
-
-            clientChannel = new BinaryIpcClientChannel(portName);
-            serverChannel = new BinaryIpcServerChannel(portName + ".Callback");
         }
 
         private static bool ModuleIsLoaded(Process process, string fileName)
@@ -129,17 +119,6 @@ namespace Gallio.AutoCAD
                     return true;
             }
             return false;
-        }
-
-        /// <inheritdoc/>
-        public IRemoteTestDriver GetRemoteTestDriver()
-        {
-            if (!IsRunning)
-                throw new InvalidOperationException("The AutoCAD process is not running.");
-
-            IRemoteTestDriver remoteDriver = (IRemoteTestDriver)clientChannel.GetService(typeof(IRemoteTestDriver), RemoteAcadTestDriver.ServiceName);
-            WaitForRemoteService(remoteDriver);
-            return remoteDriver;
         }
 
         /// <summary>
@@ -174,16 +153,6 @@ namespace Gallio.AutoCAD
 
             if (disposing)
             {
-                if (clientChannel != null)
-                {
-                    clientChannel.Dispose();
-                    clientChannel = null;
-                }
-                if (serverChannel != null)
-                {
-                    serverChannel.Dispose();
-                    serverChannel = null;
-                }
             }
 
             // Try to kill the acad.exe process, even if Dispose(bool)
@@ -192,23 +161,7 @@ namespace Gallio.AutoCAD
             {
                 var task = Interlocked.Exchange(ref processTask, null);
                 if (task != null && task.IsRunning)
-                {
-                    try
-                    {
-                        var driver = GetRemoteTestDriver();
-                        if (driver != null)
-                            driver.Shutdown();
-                    }
-                    catch (InvalidOperationException)
-                    {
-                        // We'll get this if the remote test driver is no longer available.
-                        // Since we're about to kill the process anyways, we ignore it.
-                    }
-                    finally
-                    {
-                        task.Abort(); // TODO: be polite about shutting down the acad.exe process. :)
-                    }
-                }
+                    task.Abort(); // TODO: be polite about shutting down the acad.exe process. :)
             }
         }
 
@@ -264,31 +217,6 @@ namespace Gallio.AutoCAD
             GC.KeepAlive(cds);
         }
 
-        private void WaitForRemoteService(IRemoteTestDriver driver)
-        {
-            var stopwatch = Stopwatch.StartNew();
-            for (; ; )
-            {
-                if (!IsRunning)
-                    throw new TimeoutException("Remote test driver is not responding.");
-
-                try
-                {
-                    driver.Ping();
-                    return;
-                }
-                catch (RemotingException)
-                {
-                    if (stopwatch.Elapsed >= ReadyTimeout)
-                        throw;
-                }
-
-                if (!IsRunning)
-                    throw new TimeoutException("Remote test driver is not responding.");
-                Thread.Sleep(ReadyPollInterval);
-            }
-        }
-
         private static void WaitForMessagePump(Process process, TimeSpan timeout, TimeSpan pollInterval)
         {
             var stopwatch = Stopwatch.StartNew();
@@ -312,7 +240,13 @@ namespace Gallio.AutoCAD
 
         private class AcadProcessTask : ProcessTask
         {
-            private Process attachedProcess;
+            private readonly Process attachedProcess;
+
+            private AcadProcessTask(string executablePath, string arguments, string workingDirectory, Process existing)
+                : base(executablePath, arguments, workingDirectory)
+            {
+                attachedProcess = existing;
+            }
 
             public static AcadProcessTask Create(string executablePath)
             {
@@ -325,12 +259,6 @@ namespace Gallio.AutoCAD
                 string arguments = existingProcess.StartInfo.Arguments;
                 string workingDirectory = existingProcess.StartInfo.WorkingDirectory;
                 return new AcadProcessTask(executablePath, arguments, workingDirectory, existingProcess);
-            }
-
-            private AcadProcessTask(string executablePath, string arguments, string workingDirectory, Process existing)
-                : base(executablePath, arguments, workingDirectory)
-            {
-                attachedProcess = existing;
             }
 
             /// <inheritdoc/>

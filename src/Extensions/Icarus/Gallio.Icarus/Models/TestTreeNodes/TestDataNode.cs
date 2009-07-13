@@ -14,7 +14,7 @@
 // limitations under the License.
 
 using Gallio.Common.Reflection;
-using Gallio.Model.Serialization;
+using Gallio.Model.Schema;
 
 namespace Gallio.Icarus.Models.TestTreeNodes
 {

@@ -15,7 +15,7 @@
 
 using System;
 using Gallio.Icarus.Controllers.EventArgs;
-using Gallio.Model.Serialization;
+using Gallio.Model.Schema;
 
 namespace Gallio.Icarus.Controllers.Interfaces
 {

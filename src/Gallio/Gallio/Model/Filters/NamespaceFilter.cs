@@ -20,11 +20,11 @@ using Gallio.Common.Reflection;
 namespace Gallio.Model.Filters
 {
     /// <summary>
-    /// A filter that matches objects whose <see cref="ITestComponent.CodeElement" />
+    /// A filter that matches objects whose <see cref="ITestDescriptor.CodeElement" />
     /// matches the specified namespace name.
     /// </summary>
     [Serializable]
-    public class NamespaceFilter<T> : PropertyFilter<T> where T : ITestComponent
+    public class NamespaceFilter<T> : PropertyFilter<T> where T : ITestDescriptor
     {
         /// <summary>
         /// Creates a namespace filter.

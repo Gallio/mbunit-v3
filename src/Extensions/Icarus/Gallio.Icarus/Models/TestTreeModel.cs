@@ -22,8 +22,8 @@ using Aga.Controls.Tree;
 using Gallio.Icarus.Models.TestTreeNodes;
 using Gallio.Model;
 using Gallio.Model.Filters;
-using Gallio.Model.Serialization;
-using Gallio.Runner.Reports;
+using Gallio.Model.Schema;
+using Gallio.Runner.Reports.Schema;
 using Gallio.Runtime.ProgressMonitoring;
 using Gallio.Icarus.Helpers;
 
@@ -347,12 +347,12 @@ namespace Gallio.Icarus.Models
             return inner.FindNode(path);
         }
 
-        public void ApplyFilterSet(FilterSet<ITest> filterSet)
+        public void ApplyFilterSet(FilterSet<ITestDescriptor> filterSet)
         {
             if (Root == null)
                 return;
 
-            if (filterSet.IsEmpty || filterSet.Rules[0].Filter is AnyFilter<ITest>)
+            if (filterSet.IsEmpty || filterSet.Rules[0].Filter is AnyFilter<ITestDescriptor>)
             {
                 Root.CheckState = CheckState.Checked;
                 Root.UpdateStateOfRelatedNodes();
@@ -366,19 +366,19 @@ namespace Gallio.Icarus.Models
             RecursivelyApplyFilter(filterSet.Rules[0].Filter);
         }
 
-        private void RecursivelyApplyFilter(Filter<ITest> filter)
+        private void RecursivelyApplyFilter(Filter<ITestDescriptor> filter)
         {
-            if (filter is NoneFilter<ITest>)
+            if (filter is NoneFilter<ITestDescriptor>)
                 return;
-            if (filter is OrFilter<ITest>)
+            if (filter is OrFilter<ITestDescriptor>)
             {
-                OrFilter<ITest> orFilter = (OrFilter<ITest>)filter;
-                foreach (Filter<ITest> childFilter in orFilter.Filters)
+                OrFilter<ITestDescriptor> orFilter = (OrFilter<ITestDescriptor>)filter;
+                foreach (Filter<ITestDescriptor> childFilter in orFilter.Filters)
                     RecursivelyApplyFilter(childFilter);
             }
-            else if (filter is PropertyFilter<ITest>)
+            else if (filter is PropertyFilter<ITestDescriptor>)
             {
-                PropertyFilter<ITest> propertyFilter = (PropertyFilter<ITest>)filter;
+                PropertyFilter<ITestDescriptor> propertyFilter = (PropertyFilter<ITestDescriptor>)filter;
                 EqualityFilter<string> equalityFilter = (EqualityFilter<string>)propertyFilter.ValueFilter;
                 foreach (TestTreeNode n in Root.Find(equalityFilter.Comparand, true))
                 {
@@ -388,18 +388,18 @@ namespace Gallio.Icarus.Models
             }
         }
 
-        public FilterSet<ITest> GenerateFilterSetFromSelectedTests()
+        public FilterSet<ITestDescriptor> GenerateFilterSetFromSelectedTests()
         {
             if (Root == null || Root.CheckState == CheckState.Checked)
-                return FilterSet<ITest>.Empty;
+                return FilterSet<ITestDescriptor>.Empty;
 
-            Filter<ITest> filter = Root.CheckState == CheckState.Unchecked ? new NoneFilter<ITest>() : CreateFilter(inner.Root.Nodes);
-            return new FilterSet<ITest>(filter);
+            Filter<ITestDescriptor> filter = Root.CheckState == CheckState.Unchecked ? new NoneFilter<ITestDescriptor>() : CreateFilter(inner.Root.Nodes);
+            return new FilterSet<ITestDescriptor>(filter);
         }
 
-        private static Filter<ITest> CreateFilter(IEnumerable<Node> nodes)
+        private static Filter<ITestDescriptor> CreateFilter(IEnumerable<Node> nodes)
         {
-            List<Filter<ITest>> filters = new List<Filter<ITest>>();
+            List<Filter<ITestDescriptor>> filters = new List<Filter<ITestDescriptor>>();
             foreach (Node n in nodes)
             {
                 if (!(n is TestTreeNode))
@@ -413,19 +413,19 @@ namespace Gallio.Icarus.Models
                             EqualityFilter<string> equalityFilter = new EqualityFilter<string>(node.Name);
                             if (node is NamespaceNode)
                             {
-                                filters.Add(new NamespaceFilter<ITest>(equalityFilter));
+                                filters.Add(new NamespaceFilter<ITestDescriptor>(equalityFilter));
                             }
                             else if (node is FixtureNode || node is TestNode)
                             {
-                                filters.Add(new IdFilter<ITest>(equalityFilter));
+                                filters.Add(new IdFilter<ITestDescriptor>(equalityFilter));
                             }
                             else if (node is MetadataNode && node.Name != "None")
                             {
-                                filters.Add(new MetadataFilter<ITest>(node.Name, equalityFilter));
+                                filters.Add(new MetadataFilter<ITestDescriptor>(node.Name, equalityFilter));
                             }
                             else
                             {
-                                Filter<ITest> childFilters = CreateFilter(node.Nodes);
+                                Filter<ITestDescriptor> childFilters = CreateFilter(node.Nodes);
                                 if (childFilters != null)
                                     filters.Add(childFilters);
                             }
@@ -433,14 +433,14 @@ namespace Gallio.Icarus.Models
                         break;
                     case CheckState.Indeterminate:
                         {
-                            Filter<ITest> childFilters = CreateFilter(node.Nodes);
+                            Filter<ITestDescriptor> childFilters = CreateFilter(node.Nodes);
                             if (childFilters != null)
                                 filters.Add(childFilters);
                             break;
                         }
                 }
             }
-            return filters.Count > 1 ? new OrFilter<ITest>(filters) : filters[0];
+            return filters.Count > 1 ? new OrFilter<ITestDescriptor>(filters) : filters[0];
         }
 
         public IList<TestTreeNode> GetSelectedTests()

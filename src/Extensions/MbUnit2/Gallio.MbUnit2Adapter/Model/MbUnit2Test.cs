@@ -16,9 +16,9 @@
 extern alias MbUnit2;
 
 using System;
-using Gallio.Model.Execution;
-using Gallio.Model;
+using Gallio.Model.Commands;
 using Gallio.Common.Reflection;
+using Gallio.Model.Tree;
 using MbUnit2::MbUnit.Core;
 
 namespace Gallio.MbUnit2Adapter.Model
@@ -26,7 +26,7 @@ namespace Gallio.MbUnit2Adapter.Model
     /// <summary>
     /// Wraps an MbUnit v2 test.
     /// </summary>
-    internal class MbUnit2Test : BaseTest
+    internal class MbUnit2Test : Test
     {
         private readonly Fixture fixture;
         private readonly RunPipe runPipe;

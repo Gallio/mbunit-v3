@@ -17,7 +17,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Model;
-using Gallio.Model.Serialization;
+using Gallio.Model.Schema;
 
 namespace Gallio.Icarus.Controllers
 {

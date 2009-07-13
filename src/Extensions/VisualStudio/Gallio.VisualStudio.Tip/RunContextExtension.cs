@@ -15,7 +15,7 @@
 
 using System;
 using System.Collections.Generic;
-using Gallio.Model.Serialization;
+using Gallio.Model.Schema;
 using Gallio.Runner.Events;
 using Gallio.Runner.Extensions;
 using Microsoft.VisualStudio.TestTools.Common;

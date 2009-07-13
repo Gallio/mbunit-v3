@@ -19,6 +19,7 @@ using System.IO;
 using System.Reflection;
 using Gallio.Common.Policies;
 using Gallio.Common.Text;
+using Gallio.Runner.Reports.Schema;
 using Gallio.Runtime;
 using Gallio.NAntTasks.Properties;
 using Gallio.Common.Collections;
@@ -28,7 +29,6 @@ using Gallio.Model;
 using Gallio.Model.Filters;
 using Gallio.Common.Reflection;
 using Gallio.Runner;
-using Gallio.Runner.Reports;
 using NAnt.Core;
 using NAnt.Core.Attributes;
 using NAnt.Core.Types;
@@ -84,18 +84,18 @@ namespace Gallio.NAntTasks
 
         private string applicationBaseDirectory;
         private string workingDirectory;
-        private bool shadowCopy;
-        private bool debug;
+        private bool? shadowCopy;
+        private bool? debug;
         private string runtimeVersion;
 
         private string filter = string.Empty;
         private string reportTypes = string.Empty;
-        private string reportNameFormat = Resources.DefaultReportNameFormat;
+        private string reportNameFormat;
         private string reportDirectory = String.Empty;
         private string resultProperty;
         private string statisticsPropertiesPrefix;
         private bool showReports;
-        private string runnerType = StandardTestRunnerFactoryNames.IsolatedProcess;
+        private string runnerType;
         private readonly ArgumentCollection runnerExtensions = new ArgumentCollection();
         private bool doNotRun;
         private bool ignoreAnnotations;
@@ -111,16 +111,16 @@ namespace Gallio.NAntTasks
         #region Public Properties
 
         ///<summary>
-        /// The list of test files and assemblies to execute. Wildcards may be used.
+        /// The list of test files, projects and assemblies to execute. Wildcards may be used.
         /// This is required.
         ///</summary>
-        ///<example>The following example shows how to specify the test files and assemblies (for a more complete example
-        /// please see the <see cref="GallioTask"/> task documentation):
+        ///<example>The following example shows how to specify the test files, projects and assemblies
+        ///(for a more complete example please see the <see cref="GallioTask"/> task documentation):
         /// <code>
         /// <![CDATA[
         /// <gallio>
         ///     <files>
-        ///        <!-- Specify the tests files and assemblies -->
+        ///        <!-- Specify the tests files, projects and assemblies -->
         ///        <include name="[Path-to-test-assembly1]/TestAssembly1.dll" />
         ///        <include name="[Path-to-test-assembly2]/TestAssembly2.dll" />
         ///        <include name="[Path-to-test-script1]/TestScript1_spec.rb" />
@@ -308,7 +308,8 @@ namespace Gallio.NAntTasks
         /// Sets the name of the directory where the reports will be put.
         /// </summary>
         /// <remarks>
-        /// The directory will be created if it doesn't exist. Existing files will be overwrited.
+        /// The directory will be created if it doesn't exist. Existing files will be overwritten.
+        /// The default report directory is "Reports".
         /// </remarks>
         [TaskAttribute("report-directory", Required = false)]
         public string ReportDirectory
@@ -590,11 +591,12 @@ namespace Gallio.NAntTasks
             launcher.EchoResults = echoResults;
             launcher.RunTimeLimit = runTimeLimit;
 
-            launcher.TestRunnerFactoryName = runnerType;
+            if (runnerType != null)
+                launcher.TestProject.TestRunnerFactoryName = runnerType;
             if (runnerExtensions != null)
             {
                 foreach (Argument arg in runnerExtensions)
-                    launcher.TestRunnerExtensionSpecifications.Add(arg.Value);
+                    launcher.TestProject.AddTestRunnerExtensionSpecification(arg.Value);
             }
 
             launcher.RuntimeSetup = new RuntimeSetup();
@@ -604,11 +606,16 @@ namespace Gallio.NAntTasks
             launcher.RuntimeSetup.RuntimePath =
                 Path.GetDirectoryName(AssemblyUtils.GetFriendlyAssemblyLocation(typeof(GallioTask).Assembly));
 
-            launcher.TestPackageConfig.ApplicationBaseDirectory = applicationBaseDirectory;
-            launcher.TestPackageConfig.WorkingDirectory = workingDirectory;
-            launcher.TestPackageConfig.ShadowCopy = shadowCopy;
-            launcher.TestPackageConfig.Debug = debug;
-            launcher.TestPackageConfig.RuntimeVersion = runtimeVersion;
+            if (applicationBaseDirectory != null)
+                launcher.TestProject.TestPackage.ApplicationBaseDirectory = new DirectoryInfo(applicationBaseDirectory);
+            if (workingDirectory != null)
+                launcher.TestProject.TestPackage.WorkingDirectory = new DirectoryInfo(workingDirectory);
+            if (shadowCopy.HasValue)
+                launcher.TestProject.TestPackage.ShadowCopy = shadowCopy.Value;
+            if (debug.HasValue)
+                launcher.TestProject.TestPackage.Debug = debug.Value;
+            if (runtimeVersion != null)
+                launcher.TestProject.TestPackage.RuntimeVersion = runtimeVersion;
 
             foreach (Argument option in reportFormatterProperties)
                 launcher.ReportFormatterOptions.Properties.Add(StringUtils.ParseKeyValuePair(option.Value));
@@ -621,9 +628,9 @@ namespace Gallio.NAntTasks
             AddPluginDirectories(launcher);
 
             if (reportDirectory != null)
-                launcher.ReportDirectory = reportDirectory;
-            if (!String.IsNullOrEmpty(reportNameFormat))
-                launcher.ReportNameFormat = reportNameFormat;
+                launcher.TestProject.ReportDirectory = reportDirectory;
+            if (reportNameFormat != null)
+                launcher.TestProject.ReportNameFormat = reportNameFormat;
             if (reportTypes != null)
                 GenericCollectionUtils.AddAll(reportTypes.Split(new[] {';'}, StringSplitOptions.RemoveEmptyEntries),
                                     launcher.ReportFormats);
@@ -676,11 +683,11 @@ namespace Gallio.NAntTasks
             Properties[statisticsPropertiesPrefix + @"AssertCount"] = stats.AssertCount.ToString();
         }
 
-        private FilterSet<ITest> GetFilterSet()
+        private FilterSet<ITestDescriptor> GetFilterSet()
         {
             if (String.IsNullOrEmpty(filter))
             {
-                return FilterSet<ITest>.Empty;
+                return FilterSet<ITestDescriptor>.Empty;
             }
 
             return FilterUtils.ParseTestFilterSet(filter);
@@ -713,7 +720,7 @@ namespace Gallio.NAntTasks
                 foreach (FileSet fs in files)
                 {
                     foreach (string f in fs.FileNames)
-                        launcher.TestPackageConfig.Files.Add(f);
+                        launcher.FilePatterns.Add(f);
                 }
             }
         }
@@ -725,7 +732,7 @@ namespace Gallio.NAntTasks
                 foreach (DirSet ds in hintDirectories)
                 {
                     foreach (string d in ds.DirectoryNames)
-                        launcher.TestPackageConfig.HintDirectories.Add(d);
+                        launcher.TestProject.TestPackage.AddHintDirectory(new DirectoryInfo(d));
                 }
             }
         }

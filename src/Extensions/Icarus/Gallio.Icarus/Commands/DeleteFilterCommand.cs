@@ -14,7 +14,7 @@
 // limitations under the License.
 
 using Gallio.Icarus.Controllers.Interfaces;
-using Gallio.Runner.Projects;
+using Gallio.Runner.Projects.Schema;
 using Gallio.Runtime.ProgressMonitoring;
 using Gallio.UI.Progress;
 

@@ -27,8 +27,8 @@ namespace Gallio.Common.Markup
     /// </summary>
     /// <seealso cref="StructuredDocumentWriter"/>
     [Serializable]
-    [XmlType(Namespace = XmlSerializationUtils.GallioNamespace)]
-    [XmlRoot("testLog", Namespace=XmlSerializationUtils.GallioNamespace)]
+    [XmlType(Namespace = SchemaConstants.XmlNamespace)]
+    [XmlRoot("testLog", Namespace=SchemaConstants.XmlNamespace)]
     public sealed class StructuredDocument
     {
         private readonly List<StructuredStream> streams;
@@ -47,8 +47,8 @@ namespace Gallio.Common.Markup
         /// Gets the list of streams, not null.
         /// Used for Xml-serialization.
         /// </summary>
-        [XmlArray("streams", IsNullable = false, Namespace = XmlSerializationUtils.GallioNamespace)]
-        [XmlArrayItem("stream", typeof(StructuredStream), IsNullable = false, Namespace = XmlSerializationUtils.GallioNamespace)]
+        [XmlArray("streams", IsNullable = false, Namespace = SchemaConstants.XmlNamespace)]
+        [XmlArrayItem("stream", typeof(StructuredStream), IsNullable = false, Namespace = SchemaConstants.XmlNamespace)]
         public List<StructuredStream> Streams
         {
             get { return streams; }
@@ -57,8 +57,8 @@ namespace Gallio.Common.Markup
         /// <summary>
         /// Gets the list of attachments, not null.
         /// </summary>
-        [XmlArray("attachments", IsNullable = false, Namespace = XmlSerializationUtils.GallioNamespace)]
-        [XmlArrayItem("attachment", typeof(AttachmentData), IsNullable = false, Namespace = XmlSerializationUtils.GallioNamespace)]
+        [XmlArray("attachments", IsNullable = false, Namespace = SchemaConstants.XmlNamespace)]
+        [XmlArrayItem("attachment", typeof(AttachmentData), IsNullable = false, Namespace = SchemaConstants.XmlNamespace)]
         public List<AttachmentData> Attachments
         {
             get { return attachments; }

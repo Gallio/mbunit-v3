@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Xml.Serialization;
+using Gallio.Common;
 using Gallio.Common.IO;
 using Gallio.Common.Xml;
 using Gallio.Common.Reflection;
@@ -28,8 +29,8 @@ namespace Gallio.Runtime
     /// Provides configuration parameters for setting up the <see cref="RuntimeAccessor" />.
     /// </summary>
     [Serializable]
-    [XmlRoot("runtimeSetup", Namespace = XmlSerializationUtils.GallioNamespace)]
-    [XmlType(Namespace = XmlSerializationUtils.GallioNamespace)]
+    [XmlRoot("runtimeSetup", Namespace = SchemaConstants.XmlNamespace)]
+    [XmlType(Namespace = SchemaConstants.XmlNamespace)]
     public sealed class RuntimeSetup
     {
         private readonly List<string> pluginDirectories;

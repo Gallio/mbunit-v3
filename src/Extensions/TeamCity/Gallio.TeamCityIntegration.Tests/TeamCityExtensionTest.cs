@@ -19,12 +19,11 @@ using Gallio.Common.Concurrency;
 using Gallio.Framework;
 using Gallio.Model;
 using Gallio.Common.Diagnostics;
-using Gallio.Model.Execution;
 using Gallio.Common.Markup;
-using Gallio.Model.Serialization;
+using Gallio.Model.Schema;
 using Gallio.Runner;
 using Gallio.Runner.Events;
-using Gallio.Runner.Reports;
+using Gallio.Runner.Reports.Schema;
 using Gallio.Runtime.Logging;
 using MbUnit.Framework;
 
@@ -74,7 +73,7 @@ namespace Gallio.TeamCityIntegration.Tests
         [Test]
         public void ExploreStarted()
         {
-            dispatcher.NotifyExploreStarted(new ExploreStartedEventArgs(new TestPackageConfig(), new TestExplorationOptions(),
+            dispatcher.NotifyExploreStarted(new ExploreStartedEventArgs(new TestPackage(), new TestExplorationOptions(),
                 new LockBox<Report>(new Report())));
 
             Assert.AreEqual("##teamcity[progressStart 'Exploring tests.' flowId='flow']\n", log.ToString());
@@ -91,7 +90,7 @@ namespace Gallio.TeamCityIntegration.Tests
         [Test]
         public void RunStarted()
         {
-            dispatcher.NotifyRunStarted(new RunStartedEventArgs(new TestPackageConfig(), new TestExplorationOptions(), new TestExecutionOptions(),
+            dispatcher.NotifyRunStarted(new RunStartedEventArgs(new TestPackage(), new TestExplorationOptions(), new TestExecutionOptions(),
                 new LockBox<Report>(new Report())));
 
             Assert.AreEqual("##teamcity[progressStart 'Running tests.' flowId='flow']\n", log.ToString());

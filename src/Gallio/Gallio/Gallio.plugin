@@ -19,9 +19,11 @@
     <file path="Gallio.pdb" />
     <file path="Gallio.xml" />
     <file path="Gallio.XmlSerializers.dll" />
+    <!-- These assemblies are installed in the GAC.
     <file path="Gallio.Loader.dll" />
     <file path="Gallio.Loader.pdb" />
     <file path="Gallio.Loader.xml" />
+    -->
     <file path="Gallio.Host.exe" />
     <file path="Gallio.Host.exe.config" />
     <file path="Gallio.Host.x86.exe" />
@@ -56,9 +58,6 @@
     <service serviceId="Gallio.XmlSerializer"
              serviceType="Gallio.Common.Xml.IXmlSerializer, Gallio" />
     
-    <service serviceId="Gallio.Loader"
-             serviceType="Gallio.Runtime.Loader.ILoader, Gallio" />
-
     <service serviceId="Gallio.HostFactory"
              serviceType="Gallio.Runtime.Hosting.IHostFactory, Gallio" />
 
@@ -122,13 +121,13 @@
              serviceType="Gallio.Model.ITestKindManager, Gallio" />
 
     <service serviceId="Gallio.TestContextTracker"
-             serviceType="Gallio.Model.Execution.ITestContextTracker, Gallio" />
+             serviceType="Gallio.Model.Contexts.ITestContextTracker, Gallio" />
 
     <service serviceId="Gallio.TestRunnerFactory"
              serviceType="Gallio.Runner.ITestRunnerFactory, Gallio" />
 
-    <service serviceId="Gallio.TestDriverFactory"
-             serviceType="Gallio.Runner.Drivers.ITestDriverFactory, Gallio" />
+    <service serviceId="Gallio.TestIsolationProvider"
+             serviceType="Gallio.Model.Isolation.ITestIsolationProvider, Gallio" />
 
     <service serviceId="Gallio.ReportFormatter"
              serviceType="Gallio.Runner.Reports.IReportFormatter, Gallio" />
@@ -136,17 +135,17 @@
     <service serviceId="Gallio.TestRunnerManager"
              serviceType="Gallio.Runner.ITestRunnerManager, Gallio" />
 
-    <service serviceId="Gallio.TestHarnessFactory"
-             serviceType="Gallio.Runner.Harness.ITestHarnessFactory, Gallio" />
-
     <service serviceId="Gallio.TestEnvironment"
-             serviceType="Gallio.Runner.Harness.ITestEnvironment, Gallio" />
+             serviceType="Gallio.Model.Environments.ITestEnvironment, Gallio" />
 
     <service serviceId="Gallio.TestEnvironmentManager"
-             serviceType="Gallio.Runner.Harness.ITestEnvironmentManager, Gallio" />
-    
+             serviceType="Gallio.Model.Environments.ITestEnvironmentManager, Gallio" />
+
     <service serviceId="Gallio.ReportManager"
              serviceType="Gallio.Runner.Reports.IReportManager, Gallio" />
+
+    <service serviceId="Gallio.TestProjectManager"
+             serviceType="Gallio.Runner.Projects.ITestProjectManager, Gallio" />
 
     <service serviceId="Gallio.TestRunnerExtensionFactory"
              serviceType="Gallio.Runner.Extensions.ITestRunnerExtensionFactory, Gallio" />
@@ -159,10 +158,6 @@
   </services>
   
   <components>
-    <component componentId="Gallio.Loader"
-               serviceId="Gallio.Loader"
-               componentType="Gallio.Runtime.Loader.DefaultLoader, Gallio" />
-
     <component componentId="Gallio.TestFrameworkManager"
                serviceId="Gallio.TestFrameworkManager"
                componentType="Gallio.Model.DefaultTestFrameworkManager, Gallio" />
@@ -171,37 +166,37 @@
                serviceId="Gallio.TestRunnerManager"
                componentType="Gallio.Runner.DefaultTestRunnerManager, Gallio" />
 
-    <component componentId="Gallio.TestHarnessFactory"
-               serviceId="Gallio.TestHarnessFactory"
-               componentType="Gallio.Runner.Harness.DefaultTestHarnessFactory, Gallio" />
-
     <component componentId="Gallio.TestEnvironmentManager"
                serviceId="Gallio.TestEnvironmentManager"
-               componentType="Gallio.Runner.Harness.DefaultTestEnvironmentManager, Gallio" />
+               componentType="Gallio.Model.Environments.DefaultTestEnvironmentManager, Gallio" />
 
     <component componentId="Gallio.ConsoleTestEnvironment"
                serviceId="Gallio.TestEnvironment"
-               componentType="Gallio.Runner.Harness.ConsoleTestEnvironment, Gallio" />
+               componentType="Gallio.Model.Environments.ConsoleTestEnvironment, Gallio" />
 
     <component componentId="Gallio.TraceTestEnvironment"
                serviceId="Gallio.TestEnvironment"
-               componentType="Gallio.Runner.Harness.TraceTestEnvironment, Gallio" />
+               componentType="Gallio.Model.Environments.TraceTestEnvironment, Gallio" />
 
     <component componentId="Gallio.UnhandledExceptionTestEnvironment"
                serviceId="Gallio.TestEnvironment"
-               componentType="Gallio.Runner.Harness.UnhandledExceptionTestEnvironment, Gallio" />
+               componentType="Gallio.Model.Environments.UnhandledExceptionTestEnvironment, Gallio" />
 
     <component componentId="Gallio.WindowsFormsTestEnvironment"
                serviceId="Gallio.TestEnvironment"
-               componentType="Gallio.Runner.Harness.WindowsFormsTestEnvironment, Gallio" />
+               componentType="Gallio.Model.Environments.WindowsFormsTestEnvironment, Gallio" />
 
     <component componentId="Gallio.ReportManager"
                serviceId="Gallio.ReportManager"
                componentType="Gallio.Runner.Reports.DefaultReportManager, Gallio" />
 
+    <component componentId="Gallio.TestProjectManager"
+               serviceId="Gallio.TestProjectManager"
+               componentType="Gallio.Runner.Projects.DefaultTestProjectManager, Gallio" />
+
     <component componentId="Gallio.TestContextTracker"
                serviceId="Gallio.TestContextTracker"
-               componentType="Gallio.Model.Execution.DefaultTestContextTracker, Gallio" />
+               componentType="Gallio.Model.Contexts.DefaultTestContextTracker, Gallio" />
 
     <component componentId="Gallio.PatternTestController"
                serviceId="Gallio.PatternTestController"
@@ -219,7 +214,7 @@
                serviceId="Gallio.PreferenceManager"
                componentType="Gallio.Runtime.Preferences.FilePreferenceManager, Gallio" />
     
-    <!-- Host, RUnner and Driver Factories -->
+    <!-- Host Factories -->
     
     <component componentId="Gallio.LocalHostFactory"
                serviceId="Gallio.HostFactory"
@@ -233,15 +228,17 @@
                serviceId="Gallio.HostFactory"
                componentType="Gallio.Runtime.Hosting.IsolatedProcessHostFactory, Gallio" />
 
+    <!-- Test Runner Factories -->
+
     <component componentId="Gallio.LocalTestRunnerFactory"
                serviceId="Gallio.TestRunnerFactory"
                componentType="Gallio.Runner.DefaultTestRunnerFactory, Gallio">
       <parameters>
-        <testDriverFactory>${Gallio.LocalTestDriverFactory}</testDriverFactory>
+        <testIsolationProvider>${Gallio.LocalTestIsolationProvider}</testIsolationProvider>
       </parameters>
       <traits>
         <name>Local</name>
-        <description>Runs tests locally within the same process as the test runner application.</description>
+        <description>Runs tests locally within the same process and AppDomain as the test runner application.  Each test isolation context runs locally.  This mode offers no isolation between tests and the test runner; it does not support loading test assembly configuration files or using a different runtime version or processor architecture.</description>
       </traits>
     </component>
 
@@ -249,11 +246,11 @@
                serviceId="Gallio.TestRunnerFactory"
                componentType="Gallio.Runner.DefaultTestRunnerFactory, Gallio">
       <parameters>
-        <testDriverFactory>${Gallio.IsolatedAppDomainTestDriverFactory}</testDriverFactory>
+        <testIsolationProvider>${Gallio.IsolatedAppDomainTestIsolationProvider}</testIsolationProvider>
       </parameters>
       <traits>
         <name>IsolatedAppDomain</name>
-        <description>Runs tests within an isolated AppDomain of the same process as the test runner application.  The additional isolation provided is not generally required since tests typically run in their own isolated AppDomain nested within the test runner.</description>
+        <description>Runs tests within an isolated AppDomain of the same process as the test runner application.  Each test isolation context runs in its own AppDomain.  This mode provides lightweight but limited isolation between tests and the test runner; it does not support using different runtime version or processor architecture.</description>
       </traits>
     </component>
 
@@ -261,59 +258,37 @@
                serviceId="Gallio.TestRunnerFactory"
                componentType="Gallio.Runner.DefaultTestRunnerFactory, Gallio">
       <parameters>
-        <testDriverFactory>${Gallio.IsolatedProcessTestDriverFactory}</testDriverFactory>
+        <testIsolationProvider>${Gallio.IsolatedProcessTestIsolationProvider}</testIsolationProvider>
       </parameters>
       <traits>
         <name>IsolatedProcess</name>
-        <description>Runs tests within an isolated process external to the test runner.  This mode protects the test runner application from faults that may occur during test execution.</description>
-      </traits>
-    </component>
-
-    <component componentId="Gallio.IsolatedProcessPerAssemblyTestRunnerFactory"
-               serviceId="Gallio.TestRunnerFactory"
-               componentType="Gallio.Runner.DefaultTestRunnerFactory, Gallio">
-      <parameters>
-        <testDriverFactory>${Gallio.IsolatedProcessPerAssemblyTestDriverFactory}</testDriverFactory>
-      </parameters>
-      <traits>
-        <name>IsolatedProcessPerAssembly</name>
-        <description>Runs each assembly's tests within an isolated process external to the test runner.  This mode protects the test runner application from faults that may occur during test execution, runs each assembly with the correct processor architecture and provides additional isolation for each test assembly.</description>
+        <description>Runs tests within an isolated process external to the test runner.  Each test isolation context runs in its own process.  This mode protects the test runner application from most faults that may occur during test execution; it supports all features.</description>
       </traits>
     </component>
     
-    <component componentId="Gallio.LocalTestDriverFactory"
-               serviceId="Gallio.TestDriverFactory"
-               componentType="Gallio.Runner.Drivers.HostedTestDriverFactory, Gallio">
+    <!-- Test Isolation Providers -->
+    
+    <component componentId="Gallio.LocalTestIsolationProvider"
+               serviceId="Gallio.TestIsolationProvider"
+               componentType="Gallio.Model.Isolation.HostedTestIsolationProvider, Gallio">
       <parameters>
         <hostFactory>${Gallio.LocalHostFactory}</hostFactory>
-        <isolationMode>None</isolationMode>
       </parameters>
     </component>
 
-    <component componentId="Gallio.IsolatedAppDomainTestDriverFactory"
-               serviceId="Gallio.TestDriverFactory"
-               componentType="Gallio.Runner.Drivers.HostedTestDriverFactory, Gallio">
+    <component componentId="Gallio.IsolatedAppDomainTestIsolationProvider"
+               serviceId="Gallio.TestIsolationProvider"
+               componentType="Gallio.Model.Isolation.HostedTestIsolationProvider, Gallio">
       <parameters>
-        <hostFactory>${Gallio.LocalHostFactory}</hostFactory>
-        <isolationMode>AppDomainPerAssembly</isolationMode>
+        <hostFactory>${Gallio.IsolatedAppDomainHostFactory}</hostFactory>
       </parameters>
     </component>
 
-    <component componentId="Gallio.IsolatedProcessTestDriverFactory"
-               serviceId="Gallio.TestDriverFactory"
-               componentType="Gallio.Runner.Drivers.HostedTestDriverFactory, Gallio">
+    <component componentId="Gallio.IsolatedProcessTestIsolationProvider"
+               serviceId="Gallio.TestIsolationProvider"
+               componentType="Gallio.Model.Isolation.HostedTestIsolationProvider, Gallio">
       <parameters>
         <hostFactory>${Gallio.IsolatedProcessHostFactory}</hostFactory>
-        <isolationMode>AppDomainPerAssembly</isolationMode>
-      </parameters>
-    </component>
-
-    <component componentId="Gallio.IsolatedProcessPerAssemblyTestDriverFactory"
-               serviceId="Gallio.TestDriverFactory"
-               componentType="Gallio.Runner.Drivers.HostedTestDriverFactory, Gallio">
-      <parameters>
-        <hostFactory>${Gallio.IsolatedProcessHostFactory}</hostFactory>
-        <isolationMode>HostPerAssembly</isolationMode>
       </parameters>
     </component>
 

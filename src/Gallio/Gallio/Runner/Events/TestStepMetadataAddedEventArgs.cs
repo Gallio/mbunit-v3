@@ -15,8 +15,8 @@
 
 using System;
 using Gallio.Model;
-using Gallio.Model.Serialization;
-using Gallio.Runner.Reports;
+using Gallio.Model.Schema;
+using Gallio.Runner.Reports.Schema;
 
 namespace Gallio.Runner.Events
 {

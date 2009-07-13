@@ -9,11 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Gallio.MSTestAdapter</RootNamespace>
     <AssemblyName>Gallio.MSTestAdapter</AssemblyName>
-    <FileUpgradeFlags>
-    </FileUpgradeFlags>
-    <OldToolsVersion>3.5</OldToolsVersion>
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
-    <UpgradeBackupLocation />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -44,6 +40,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Model\MSTestDriver.cs" />
     <Compile Include="Wrapper\DebugMSTestCommand.cs" />
     <Compile Include="Wrapper\MSTestCommand.cs" />
     <Compile Include="Wrapper\MSTestCommandArguments.cs" />

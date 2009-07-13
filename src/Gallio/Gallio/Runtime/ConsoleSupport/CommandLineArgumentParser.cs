@@ -56,9 +56,9 @@ namespace Gallio.Runtime.ConsoleSupport
 	/// arguments can be specified multiple times.
 	/// </para>
     /// <para>
-    /// Command line parsing code from 
+    /// Command line parsing code adapted from 
     /// <a href="http://www.gotdotnet.com/community/usersamples/details.aspx?sampleguid=62a0f27e-274e-4228-ba7f-bc0118ecc41e">
-    /// Peter Halam</a>, 
+    /// Peter Halam</a>.
     /// </para>
     /// </remarks>
 	public class CommandLineArgumentParser
@@ -454,7 +454,7 @@ namespace Gallio.Runtime.ConsoleSupport
             throw new InvalidOperationException(String.Format(message, args));
         }
 
-		private class Argument
+		private sealed class Argument
 		{
             private readonly FieldInfo field;
 
@@ -657,6 +657,11 @@ namespace Gallio.Runtime.ConsoleSupport
 			{
 				get { return IsCollectionType(Type); }
 			}
+
+            public bool IsNullable
+            {
+                get { return IsNullableType(Type); }
+            }
             
 			public bool IsDefault
 			{
@@ -682,8 +687,9 @@ namespace Gallio.Runtime.ConsoleSupport
             {
                 if (IsCollectionType(field.FieldType))
                     return field.FieldType.GetElementType();
-                else
-                    return field.FieldType;
+                if (IsNullableType(field.FieldType))
+                    return Nullable.GetUnderlyingType(field.FieldType);
+                return field.FieldType;
             }
 
             private static CommandLineArgumentFlags GetFlags(CommandLineArgumentAttribute attribute, FieldInfo field)
@@ -701,7 +707,12 @@ namespace Gallio.Runtime.ConsoleSupport
                 return type.IsArray;
             }
 
-            private static bool IsValidElementType(Type type)
+            private static bool IsNullableType(Type type)
+            {
+                return Nullable.GetUnderlyingType(type) != null;
+            }
+
+		    private static bool IsValidElementType(Type type)
             {
                 return type != null && (
                     type == typeof(int) ||

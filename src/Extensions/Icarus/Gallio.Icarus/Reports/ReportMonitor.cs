@@ -13,10 +13,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Gallio.Runner.Projects;
 using System.IO;
 using System;
 using Gallio.Common.Policies;
+using Gallio.Runner.Projects;
+using Gallio.Runner.Projects.Schema;
 
 namespace Gallio.Icarus.Reports
 {
@@ -26,25 +27,25 @@ namespace Gallio.Icarus.Reports
 
         public event EventHandler ReportDirectoryChanged;
 
-        public ReportMonitor(Project project)
+        public ReportMonitor(TestProject testProject)
         {
-            if (File.Exists(project.ReportDirectory))
+            if (File.Exists(testProject.ReportDirectory))
             {
-                SetupDirectoryWatcher(project.ReportDirectory);
+                SetupDirectoryWatcher(testProject.ReportDirectory);
             }
             else
             {
-                string parentDirectory = Directory.GetParent(project.ReportDirectory).FullName;
+                string parentDirectory = Directory.GetParent(testProject.ReportDirectory).FullName;
                 if (Directory.Exists(parentDirectory))
                 {
                     reportDirectoryWatcher = new FileSystemWatcher();
                     reportDirectoryWatcher.NotifyFilter = NotifyFilters.DirectoryName;
                     reportDirectoryWatcher.Created += (sender, e) =>
                     {
-                        if (e.FullPath == project.ReportDirectory)
+                        if (e.FullPath == testProject.ReportDirectory)
                         {
                             reportDirectoryWatcher.EnableRaisingEvents = false;
-                            SetupDirectoryWatcher(project.ReportDirectory);
+                            SetupDirectoryWatcher(testProject.ReportDirectory);
                             OnReportDirectoryChanged();
                         }
                     };

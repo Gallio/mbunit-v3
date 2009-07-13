@@ -22,12 +22,11 @@ using Gallio.Model.Filters;
 using Gallio.Model;
 using MbUnit.Framework;
 using Rhino.Mocks;
-using ITestComponent=Gallio.Model.ITestComponent;
 
 namespace Gallio.Tests.Model.Filters
 {
     [TestFixture]
-    [TestsOn(typeof(MemberFilter<ITestComponent>))]
+    [TestsOn(typeof(MemberFilter<ITestDescriptor>))]
     public class MemberFilterTest : BaseTestWithMocks
     {
         [Test]
@@ -40,12 +39,12 @@ namespace Gallio.Tests.Model.Filters
                 ? Reflector.Wrap((MemberInfo) GetType().GetMethod(memberName, BindingFlags.Static | BindingFlags.NonPublic))
                 : null;
 
-            ITestComponent component = Mocks.StrictMock<ITestComponent>();
+            ITestDescriptor component = Mocks.StrictMock<ITestDescriptor>();
             SetupResult.For(component.CodeElement).Return(codeElement);
             Mocks.ReplayAll();
 
             Assert.AreEqual(expectedMatch,
-                new MemberFilter<ITestComponent>(new EqualityFilter<string>("A")).IsMatch(component));
+                new MemberFilter<ITestDescriptor>(new EqualityFilter<string>("A")).IsMatch(component));
         }
 
         [Test]
@@ -53,7 +52,7 @@ namespace Gallio.Tests.Model.Filters
         [Row("Member2")]
         public void ToStringTest(string member)
         {
-            MemberFilter<ITestComponent> filter = new MemberFilter<ITestComponent>(new EqualityFilter<string>(member));
+            MemberFilter<ITestDescriptor> filter = new MemberFilter<ITestDescriptor>(new EqualityFilter<string>(member));
             Assert.AreEqual("Member(Equality('" + member + "'))", filter.ToString());
         }
 

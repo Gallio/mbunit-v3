@@ -16,7 +16,8 @@
 using System;
 using Gallio.Common.Concurrency;
 using Gallio.Model;
-using Gallio.Runner.Reports;
+using Gallio.Model.Schema;
+using Gallio.Runner.Reports.Schema;
 
 namespace Gallio.Runner.Events
 {
@@ -25,37 +26,37 @@ namespace Gallio.Runner.Events
     /// </summary>
     public sealed class ExploreStartedEventArgs : OperationStartedEventArgs
     {
-        private readonly TestPackageConfig testPackageConfig;
+        private readonly TestPackage testPackage;
         private readonly TestExplorationOptions testExplorationOptions;
         private readonly LockBox<Report> reportLockBox;
 
         /// <summary>
         /// Initializes the event arguments.
         /// </summary>
-        /// <param name="testPackageConfig">The test package configuration.</param>
+        /// <param name="testPackage">The test package configuration.</param>
         /// <param name="testExplorationOptions">The test exploration options.</param>
         /// <param name="reportLockBox">The report lock-box which may be used to access the report asynchronously during execution.</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="testPackageConfig"/>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="testPackage"/>
         /// or <paramref name="testExplorationOptions"/> is null.</exception>
-        public ExploreStartedEventArgs(TestPackageConfig testPackageConfig, TestExplorationOptions testExplorationOptions,
+        public ExploreStartedEventArgs(TestPackage testPackage, TestExplorationOptions testExplorationOptions,
             LockBox<Report> reportLockBox)
         {
-            if (testPackageConfig == null)
-                throw new ArgumentNullException("testPackageConfig");
+            if (testPackage == null)
+                throw new ArgumentNullException("testPackage");
             if (testExplorationOptions == null)
                 throw new ArgumentNullException("testExplorationOptions");
 
-            this.testPackageConfig = testPackageConfig;
+            this.testPackage = testPackage;
             this.testExplorationOptions = testExplorationOptions;
             this.reportLockBox = reportLockBox;
         }
 
         /// <summary>
-        /// Gets the test package configuration.
+        /// Gets the test package.
         /// </summary>
-        public TestPackageConfig TestPackageConfig
+        public TestPackage TestPackage
         {
-            get { return testPackageConfig; }
+            get { return testPackage; }
         }
 
         /// <summary>

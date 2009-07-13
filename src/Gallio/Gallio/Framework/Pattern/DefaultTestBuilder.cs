@@ -19,6 +19,7 @@ using System.Text;
 using System.Threading;
 using Gallio.Model;
 using Gallio.Common.Reflection;
+using Gallio.Model.Tree;
 
 namespace Gallio.Framework.Pattern
 {
@@ -139,7 +140,7 @@ namespace Gallio.Framework.Pattern
         }
 
         /// <inheritdoc />
-        public void AddDependency(ITest testDependency)
+        public void AddDependency(Test testDependency)
         {
             if (testDependency == null)
                 throw new ArgumentNullException("testDependency");

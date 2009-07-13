@@ -18,10 +18,12 @@ using System.Collections.Generic;
 using System.Reflection;
 using Gallio.Common.Diagnostics;
 using Gallio.Common.Reflection;
+using Gallio.Model.Commands;
+using Gallio.Model.Contexts;
+using Gallio.Model.Helpers;
+using Gallio.Model.Tree;
 using Gallio.Runtime.ProgressMonitoring;
 using Gallio.Model;
-using Gallio.Model.Execution;
-using Gallio.Common.Markup;
 using Gallio.XunitAdapter.Properties;
 using XunitMethodInfo = Xunit.Sdk.IMethodInfo;
 using XunitMethodResult = Xunit.Sdk.MethodResult;
@@ -38,10 +40,9 @@ namespace Gallio.XunitAdapter.Model
     /// <summary>
     /// Controls the execution of Xunit tests.
     /// </summary>
-    internal class XunitTestController : BaseTestController
+    internal class XunitTestController : TestController
     {
-        /// <inheritdoc />
-        protected override TestOutcome RunTestsImpl(ITestCommand rootTestCommand, ITestStep parentTestStep, TestExecutionOptions options, IProgressMonitor progressMonitor)
+        protected override TestOutcome RunImpl(ITestCommand rootTestCommand, TestStep parentTestStep, TestExecutionOptions options, IProgressMonitor progressMonitor)
         {
             using (progressMonitor.BeginTask(Resources.XunitTestController_RunningXunitTests, rootTestCommand.TestCount))
             {
@@ -58,9 +59,9 @@ namespace Gallio.XunitAdapter.Model
             }
         }
 
-        private static bool RunTest(ITestCommand testCommand, ITestStep parentTestStep, IProgressMonitor progressMonitor)
+        private static bool RunTest(ITestCommand testCommand, TestStep parentTestStep, IProgressMonitor progressMonitor)
         {
-            ITest test = testCommand.Test;
+            Test test = testCommand.Test;
             progressMonitor.SetStatus(test.Name);
 
             bool passed;
@@ -78,7 +79,7 @@ namespace Gallio.XunitAdapter.Model
             return passed;
         }
 
-        private static bool RunChildTests(ITestCommand testCommand, ITestStep parentTestStep, IProgressMonitor progressMonitor)
+        private static bool RunChildTests(ITestCommand testCommand, TestStep parentTestStep, IProgressMonitor progressMonitor)
         {
             ITestContext testContext = testCommand.StartPrimaryChildStep(parentTestStep);
 
@@ -91,7 +92,7 @@ namespace Gallio.XunitAdapter.Model
         }
 
         private static bool RunTestFixture(ITestCommand testCommand, XunitTypeInfoAdapter typeInfo,
-            ITestStep parentTestStep)
+            TestStep parentTestStep)
         {
             ITestContext testContext = testCommand.StartPrimaryChildStep(parentTestStep);
 
@@ -176,7 +177,7 @@ namespace Gallio.XunitAdapter.Model
         }
 
         private static bool RunTestMethod(ITestCommand testCommand, MethodInfo methodInfo, XunitTestClassCommand testClassCommand,
-            ITestStep parentTestStep)
+            TestStep parentTestStep)
         {
             List<XunitTestCommand> xunitTestCommands;
             try
@@ -206,12 +207,12 @@ namespace Gallio.XunitAdapter.Model
         }
 
         private static bool RunTestCommands(ITestCommand testCommand, XunitTestClassCommand testClassCommand,
-            IEnumerable<XunitTestCommand> xunitTestCommands, ITestStep parentTestStep, bool isPrimary)
+            IEnumerable<XunitTestCommand> xunitTestCommands, TestStep parentTestStep, bool isPrimary)
         {
             bool passed = true;
             foreach (XunitTestCommand xunitTestCommand in xunitTestCommands)
             {
-                BaseTestStep testStep = new BaseTestStep(testCommand.Test, parentTestStep,
+                TestStep testStep = new TestStep(testCommand.Test, parentTestStep,
                     testCommand.Test.Name, testCommand.Test.CodeElement, isPrimary);
                 testStep.IsDynamic = !isPrimary;
 

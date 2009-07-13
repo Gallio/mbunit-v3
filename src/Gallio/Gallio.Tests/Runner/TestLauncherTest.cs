@@ -70,7 +70,7 @@ namespace Gallio.Tests.Runner
         [Test]
         public void TestRunnerName()
         {
-            Assert.AreEqual(StandardTestRunnerFactoryNames.IsolatedProcess, launcher.TestRunnerFactoryName);
+            Assert.AreEqual(StandardTestRunnerFactoryNames.IsolatedProcess, launcher.TestProject.TestRunnerFactoryName);
         }
     }
 }

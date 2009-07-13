@@ -18,7 +18,7 @@ using Gallio.Icarus.Models;
 using Gallio.Icarus.Tests.Utilities;
 using Gallio.Model;
 using Gallio.Model.Filters;
-using Gallio.Model.Serialization;
+using Gallio.Model.Schema;
 using Gallio.Common.Reflection;
 using Gallio.Runtime.ProgressMonitoring;
 using MbUnit.Framework;
@@ -32,7 +32,7 @@ namespace Gallio.Icarus.Tests.Models
         public void ApplyFilter_NullRoot_Test()
         {
             TestTreeModel testTreeModel = new TestTreeModel();
-            var filter = new FilterSet<ITest>(new NoneFilter<ITest>());
+            var filter = new FilterSet<ITestDescriptor>(new NoneFilter<ITestDescriptor>());
             testTreeModel.ApplyFilterSet(filter);
         }
 
@@ -42,7 +42,7 @@ namespace Gallio.Icarus.Tests.Models
         //    TestTreeModel testTreeModel = new TestTreeModel();
         //    TestTreeNode n = new TestTreeNode("root", "root", "root");
         //    testTreeModel.Root.Nodes.Add(n);
-        //    Filter<ITest> filter = new AnyFilter<ITest>();
+        //    Filter<ITestDescriptor> filter = new AnyFilter<ITestDescriptor>();
         //    //testTreeModel.ApplyFilter(filter);
         //    Assert.AreEqual(CheckState.Checked, n.CheckState);
         //}
@@ -54,8 +54,8 @@ namespace Gallio.Icarus.Tests.Models
         //    TestTreeModel testTreeModel = new TestTreeModel();
         //    TestTreeNode n = new TestTreeNode("root", "root", "root");
         //    testTreeModel.Root.Nodes.Add(n);
-        //    Filter<ITest> filter = new NoneFilter<ITest>();
-        //    FilterSet<ITest> filterSet = new FilterSet<ITest>(filter);
+        //    Filter<ITestDescriptor> filter = new NoneFilter<ITestDescriptor>();
+        //    FilterSet<ITestDescriptor> filterSet = new FilterSet<ITestDescriptor>(filter);
         //    testTreeModel.ApplyFilterSet(filterSet);
         //    Assert.AreEqual(CheckState.Unchecked, n.CheckState);
         //}
@@ -73,10 +73,10 @@ namespace Gallio.Icarus.Tests.Models
         //    n.Nodes.Add(a);
         //    n.Nodes.Add(b);
         //    n.Nodes.Add(c);
-        //    Filter<ITest> left = new IdFilter<ITest>(new EqualityFilter<string>("a"));
-        //    Filter<ITest> right = new IdFilter<ITest>(new EqualityFilter<string>("b"));
-        //    Filter<ITest> orFilter = new OrFilter<ITest>(new[] { left, right});
-        //    FilterSet<ITest> filterSet = new FilterSet<ITest>(orFilter);
+        //    Filter<ITestDescriptor> left = new IdFilter<ITestDescriptor>(new EqualityFilter<string>("a"));
+        //    Filter<ITestDescriptor> right = new IdFilter<ITestDescriptor>(new EqualityFilter<string>("b"));
+        //    Filter<ITestDescriptor> orFilter = new OrFilter<ITestDescriptor>(new[] { left, right});
+        //    FilterSet<ITestDescriptor> filterSet = new FilterSet<ITestDescriptor>(orFilter);
         //    testTreeModel.ApplyFilterSet(filterSet);
         //    Assert.AreEqual(CheckState.Indeterminate, n.CheckState);
         //    Assert.AreEqual(CheckState.Checked, a.CheckState);

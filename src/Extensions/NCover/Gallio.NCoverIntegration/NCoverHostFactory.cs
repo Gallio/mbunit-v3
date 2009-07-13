@@ -21,9 +21,7 @@ using Gallio.Runtime.Hosting;
 namespace Gallio.NCoverIntegration
 {
     /// <summary>
-    /// <para>
     /// A factory for initialized <see cref="NCoverHost" /> hosts.
-    /// </para>
     /// </summary>
     public class NCoverHostFactory : IsolatedProcessHostFactory
     {

@@ -17,6 +17,7 @@ using System;
 using System.Reflection;
 using Gallio.Model;
 using Gallio.Common.Reflection;
+using Gallio.Model.Tree;
 using Gallio.Runtime;
 using Gallio.Runtime.Extensibility;
 using Gallio.XunitAdapter.Model;
@@ -25,42 +26,41 @@ using Gallio.XunitAdapter.TestResources.Metadata;
 using Gallio.Tests.Model;
 using MbUnit.Framework;
 using XunitAssert=Xunit.Assert;
+using Test = Gallio.Model.Tree.Test;
 
 namespace Gallio.XunitAdapter.Tests.Model
 {
     [TestFixture]
     [TestsOn(typeof(XunitTestFramework))]
     [Author("Jeff", "jeff@ingenio.com")]
-    public class XunitTestFrameworkTest : BaseTestFrameworkTest
+    public class XunitTestFrameworkTest : BaseTestFrameworkTest<SimpleTest>
     {
-        protected override Assembly GetSampleAssembly()
+        protected override ComponentHandle<ITestFramework, TestFrameworkTraits> FrameworkHandle
         {
-            return typeof(SimpleTest).Assembly;
-        }
-
-        protected override ComponentHandle<ITestFramework, TestFrameworkTraits> GetFrameworkHandle()
-        {
-            return (ComponentHandle<ITestFramework, TestFrameworkTraits>)
-                RuntimeAccessor.ServiceLocator.ResolveHandleByComponentId("XunitAdapter.TestFramework");
+            get
+            {
+                return (ComponentHandle<ITestFramework, TestFrameworkTraits>)
+                    RuntimeAccessor.ServiceLocator.ResolveHandleByComponentId("XunitAdapter.TestFramework");
+            }
         }
 
         [Test]
         public void MetadataImport_SkipReason()
         {
-            PopulateTestTree();
+            TestModel testModel = PopulateTestTree();
 
-            XunitTest fixture = (XunitTest)GetDescendantByName(testModel.RootTest, typeof(MetadataSample).Name);
-            XunitTest test = (XunitTest)fixture.Children[0];
+            Test fixture = GetDescendantByName(testModel.RootTest, typeof(MetadataSample).Name);
+            Test test = fixture.Children[0];
             Assert.AreEqual("For testing purposes.", test.Metadata.GetValue(MetadataKeys.IgnoreReason));
         }
 
         [Test]
         public void MetadataImport_Property()
         {
-            PopulateTestTree();
+            TestModel testModel = PopulateTestTree();
 
-            XunitTest fixture = (XunitTest)GetDescendantByName(testModel.RootTest, typeof(MetadataSample).Name);
-            XunitTest test = (XunitTest)fixture.Children[0];
+            Test fixture = GetDescendantByName(testModel.RootTest, typeof(MetadataSample).Name);
+            Test test = fixture.Children[0];
             Assert.AreEqual("customvalue-1", test.Metadata.GetValue("customkey-1"));
             Assert.AreEqual("customvalue-2", test.Metadata.GetValue("customkey-2"));
         }

@@ -32,7 +32,7 @@ namespace Gallio.Common.Markup
     /// </para>
     /// </remarks>
     [Serializable]
-    [XmlType(Namespace = XmlSerializationUtils.GallioNamespace)]
+    [XmlType(Namespace = SchemaConstants.XmlNamespace)]
     public sealed class StructuredStream : IMarkupStreamWritable
     {
         private string name;

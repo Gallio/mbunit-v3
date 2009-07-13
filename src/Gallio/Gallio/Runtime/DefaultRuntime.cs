@@ -20,14 +20,13 @@ using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Xml;
-using Gallio.Common.Collections;
+using Gallio.Common;
 using Gallio.Common.Platform;
 using Gallio.Properties;
 using Gallio.Common.Reflection;
 using Gallio.Runtime.Extensibility;
 using Gallio.Runtime.Loader;
 using Gallio.Runtime.Logging;
-using Gallio.Schema;
 
 namespace Gallio.Runtime
 {
@@ -38,7 +37,7 @@ namespace Gallio.Runtime
     {
         private IRegistry registry;
         private readonly IPluginLoader pluginLoader;
-        private readonly IAssemblyResolverManager assemblyResolverManager;
+        private readonly IAssemblyLoader assemblyLoader;
         private readonly RuntimeSetup runtimeSetup;
         private readonly List<string> pluginDirectories;
 
@@ -50,26 +49,26 @@ namespace Gallio.Runtime
         /// </summary>
         /// <param name="registry">The registry.</param>
         /// <param name="pluginLoader">The plugin loader.</param>
-        /// <param name="assemblyResolverManager">The assembly resolver to use.</param>
+        /// <param name="assemblyLoader">The assembly loader.</param>
         /// <param name="runtimeSetup">The runtime setup options.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="registry"/>,
-        /// <paramref name="pluginLoader"/>, <paramref name="assemblyResolverManager"/> or
+        /// <paramref name="pluginLoader"/>, <paramref name="assemblyLoader"/> or
         /// <paramref name="runtimeSetup" /> is null.</exception>
         public DefaultRuntime(IRegistry registry, IPluginLoader pluginLoader,
-            IAssemblyResolverManager assemblyResolverManager, RuntimeSetup runtimeSetup)
+            IAssemblyLoader assemblyLoader, RuntimeSetup runtimeSetup)
         {
             if (registry == null)
                 throw new ArgumentNullException("registry");
             if (pluginLoader == null)
                 throw new ArgumentNullException("pluginLoader");
-            if (assemblyResolverManager == null)
+            if (assemblyLoader == null)
                 throw new ArgumentNullException(@"assemblyResolverManager");
             if (runtimeSetup == null)
                 throw new ArgumentNullException(@"runtimeSetup");
 
             this.registry = registry;
             this.pluginLoader = pluginLoader;
-            this.assemblyResolverManager = assemblyResolverManager;
+            this.assemblyLoader = assemblyLoader;
             this.runtimeSetup = runtimeSetup.Copy();
 
             pluginDirectories = new List<string>();
@@ -126,6 +125,16 @@ namespace Gallio.Runtime
         }
 
         /// <inheritdoc />
+        public IAssemblyLoader AssemblyLoader
+        {
+            get
+            {
+                ThrowIfDisposed();
+                return assemblyLoader;
+            }
+        }
+
+        /// <inheritdoc />
         public void Initialize(ILogger logger)
         {
             if (logger == null)
@@ -156,7 +165,7 @@ namespace Gallio.Runtime
                     if (! pluginDescriptor.IsDisabled)
                     {
                         foreach (string searchPath in pluginDescriptor.GetSearchPaths(null))
-                            assemblyResolverManager.AddHintDirectory(searchPath);
+                            assemblyLoader.AddHintDirectory(searchPath);
                     }
                 }
 
@@ -185,7 +194,7 @@ namespace Gallio.Runtime
             RegisterBuiltInComponent(builtInPlugin, "BuiltIn.ServiceLocator", typeof(IServiceLocator), registry.ServiceLocator);
             RegisterBuiltInComponent(builtInPlugin, "BuiltIn.Logger", typeof(ILogger), logger);
             RegisterBuiltInComponent(builtInPlugin, "BuiltIn.Runtime", typeof(IRuntime), this);
-            RegisterBuiltInComponent(builtInPlugin, "BuiltIn.AssemblyResolverManager", typeof(IAssemblyResolverManager), assemblyResolverManager);
+            RegisterBuiltInComponent(builtInPlugin, "BuiltIn.AssemblyLoader", typeof(IAssemblyLoader), assemblyLoader);
             RegisterBuiltInComponent(builtInPlugin, "BuiltIn.PluginLoader", typeof(IPluginLoader), pluginLoader);
         }
 
@@ -300,9 +309,16 @@ namespace Gallio.Runtime
             var filePaths = new Dictionary<string, IPluginDescriptor>(StringComparer.OrdinalIgnoreCase);
 
             // Make a list of all files in the runtime path.
-            foreach (var filePath in Directory.GetFiles(runtimeSetup.RuntimePath, "*.*", SearchOption.AllDirectories))
+            foreach (var pluginDirectory in pluginDirectories)
             {
-                filePaths.Add(Path.GetFullPath(filePath), null);
+                foreach (var filePath in Directory.GetFiles(pluginDirectory, "*.*", SearchOption.AllDirectories))
+                {
+                    string fullFilePath = Path.GetFullPath(filePath);
+                    if (!filePaths.ContainsKey(fullFilePath))
+                    {
+                        filePaths.Add(fullFilePath, null);
+                    }
+                }
             }
 
             // Mark all files referenced by plugins.  Make note of files that we did not find.

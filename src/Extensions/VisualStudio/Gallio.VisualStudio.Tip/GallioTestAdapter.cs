@@ -15,10 +15,12 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
+using Gallio.Common.Collections;
 using Gallio.Common.Concurrency;
 using Gallio.Model;
-using Gallio.Model.Execution;
 using Gallio.Model.Filters;
+using Gallio.Model.Schema;
 using Gallio.Runtime;
 using Gallio.Runner;
 using Gallio.Runtime.Logging;
@@ -122,16 +124,15 @@ namespace Gallio.VisualStudio.Tip
                 if (isCanceled)
                     return;
 
-                TestPackageConfig testPackageConfig = new TestPackageConfig();
-                testPackageConfig.ExcludedFrameworkIds.Add("MSTestAdapter.TestFramework");
+                TestPackage testPackage = new TestPackage();
+                testPackage.AddExcludedFrameworkId("MSTestAdapter.TestFramework");
 
                 foreach (ITestElement testElement in runContext.RunConfig.TestElements)
                 {
                     GallioTestElement gallioTestElement = testElement as GallioTestElement;
-                    if (gallioTestElement != null
-                        && !testPackageConfig.Files.Contains(gallioTestElement.AssemblyPath))
+                    if (gallioTestElement != null)
                     {
-                        testPackageConfig.Files.Add(gallioTestElement.AssemblyPath);
+                        testPackage.AddFile(new FileInfo(gallioTestElement.AssemblyPath));
                     }
                 }
 
@@ -146,11 +147,11 @@ namespace Gallio.VisualStudio.Tip
                         idFilters.Add(new EqualityFilter<string>(gallioTestElement.GallioTestId));
                 }
 
-                testExecutionOptions.FilterSet = new FilterSet<ITest>(new IdFilter<ITest>(new OrFilter<string>(idFilters)));
+                testExecutionOptions.FilterSet = new FilterSet<ITestDescriptor>(new IdFilter<ITestDescriptor>(new OrFilter<string>(idFilters)));
 
                 RunWithProgressMonitor(delegate(IProgressMonitor progressMonitor)
                 {
-                    runner.Run(testPackageConfig, testExplorationOptions, testExecutionOptions, progressMonitor);
+                    runner.Run(testPackage, testExplorationOptions, testExecutionOptions, progressMonitor);
                 });
             }
             finally

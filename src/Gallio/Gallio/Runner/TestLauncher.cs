@@ -20,8 +20,10 @@ using System.Globalization;
 using System.IO;
 using System.Text;
 using Gallio.Common.Collections;
-using Gallio.Model.Execution;
+using Gallio.Model.Schema;
 using Gallio.Runner.Extensions;
+using Gallio.Runner.Projects;
+using Gallio.Runner.Reports.Schema;
 using Gallio.Runtime.Logging;
 using Gallio.Runtime.ProgressMonitoring;
 using Gallio.Runtime;
@@ -51,10 +53,6 @@ namespace Gallio.Runner
     /// is no runtime yet, then you can cause one to be configured automatically for the
     /// duration of the test run by setting the <see cref="RuntimeSetup"/> property accordingly.
     /// </para>
-    /// <para>
-    /// You can override the default <see cref="ITestRunner" /> that is created
-    /// by setting the <see cref="TestRunnerFactoryName" /> property.
-    /// </para>
     /// </remarks>
     public class TestLauncher
     {
@@ -62,9 +60,10 @@ namespace Gallio.Runner
 
         private RuntimeSetup runtimeSetup;
 
-        private string testRunnerFactoryName;
+        private List<string> filePatterns;
+        private TestProject testProject;
+
         private TestRunnerOptions testRunnerOptions;
-        private TestPackageConfig testPackageConfig;
         private TestExplorationOptions testExplorationOptions;
         private TestExecutionOptions testExecutionOptions;
 
@@ -79,12 +78,6 @@ namespace Gallio.Runner
         private bool ignoreAnnotations;
         private TimeSpan? runTimeLimit;
 
-        private string reportDirectory;
-        private string reportNameFormat;
-
-        private readonly List<ITestRunnerExtension> extensions;
-        private readonly List<string> extensionSpecifications;
-
         private bool showReports;
 
         private readonly object cancelationSyncRoot = new object();
@@ -98,22 +91,18 @@ namespace Gallio.Runner
         /// </summary>
         public TestLauncher()
         {
-            testRunnerFactoryName = StandardTestRunnerFactoryNames.IsolatedProcess;
+            filePatterns = new List<string>();
+            testProject = new TestProject();
+
             testRunnerOptions = new TestRunnerOptions();
-            testPackageConfig = new TestPackageConfig();
             testExplorationOptions = new TestExplorationOptions();
             testExecutionOptions = new TestExecutionOptions();
 
-            reportDirectory = @"";
-            reportNameFormat = @"test-report-{0}-{1}";
             reportFormats = new List<string>();
             reportFormatterOptions = new ReportFormatterOptions();
 
             progressMonitorProvider = NullProgressMonitorProvider.Instance;
             logger = NullLogger.Instance;
-
-            extensions = new List<ITestRunnerExtension>();
-            extensionSpecifications = new List<string>();
         }
 
         /// <summary>
@@ -179,28 +168,6 @@ namespace Gallio.Runner
         }
 
         /// <summary>
-        /// Specifies the name of a <see cref="ITestRunnerFactory" /> to use for constructing
-        /// the <see cref="ITestRunner" /> at test execution time.
-        /// </summary>
-        /// <remarks>
-        /// <para>
-        /// The default value is <see cref="StandardTestRunnerFactoryNames.IsolatedProcess"/>.
-        /// </para>
-        /// </remarks>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
-        public string TestRunnerFactoryName
-        {
-            get { return testRunnerFactoryName; }
-            set
-            {
-                if (value == null)
-                    throw new ArgumentNullException(@"value");
-
-                testRunnerFactoryName = value;
-            }
-        }
-
-        /// <summary>
         /// Gets or sets the test runner options.
         /// </summary>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
@@ -217,38 +184,27 @@ namespace Gallio.Runner
         }
 
         /// <summary>
-        /// Gets a mutable list of test runner extensions to register with
-        /// the test runner during test execution.
+        /// Gets a mutable list of test file patterns (with wildcards) or test project files
+        /// that are to be resolved and included in the test package prior to execution.
         /// </summary>
-        public IList<ITestRunnerExtension> TestRunnerExtensions
+        public IList<string> FilePatterns
         {
-            get { return extensions; }
+            get { return filePatterns; }
         }
 
         /// <summary>
-        /// Gets a mutable list of test runner extension specifications to instantiate
-        /// and register with the test runner during test execution.
-        /// </summary>
-        /// <seealso cref="TestRunnerExtensionUtils.CreateExtensionFromSpecification"/>
-        /// for an explanation of the specification syntax.
-        public IList<string> TestRunnerExtensionSpecifications
-        {
-            get { return extensionSpecifications; }
-        }
-
-        /// <summary>
-        /// Gets or sets the test package.
+        /// Gets or sets the test project.
         /// </summary>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
-        public TestPackageConfig TestPackageConfig
+        public TestProject TestProject
         {
-            get { return testPackageConfig; }
+            get { return testProject; }
             set
             {
                 if (value == null)
                     throw new ArgumentNullException(@"value");
 
-                testPackageConfig = value;
+                testProject = value;
             }
         }
 
@@ -315,51 +271,6 @@ namespace Gallio.Runner
         {
             get { return doNotRun; }
             set { doNotRun = value; }
-        }
-
-        /// <summary>
-        /// Gets or sets the path of the directory to which reports will be written.
-        /// </summary>
-        /// <remarks>
-        /// <para>
-        /// The default value is <c>""</c> which causes reports to be written to the current directory.
-        /// </para>
-        /// </remarks>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
-        public string ReportDirectory
-        {
-            get { return reportDirectory; }
-            set
-            {
-                if (value == null)
-                    throw new ArgumentNullException(@"value");
-
-                reportDirectory = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets a format string used to construct the name of report files (without the extension).
-        /// </summary>
-        /// <remarks>
-        /// <para>
-        /// Within the format string, <c>{0}</c> is replaced by the date and <c>{1}</c> by the time.
-        /// </para>
-        /// <para>
-        /// The default value is <c>"test-report-{0}-{1}"</c>.
-        /// </para>
-        /// </remarks>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
-        public string ReportNameFormat
-        {
-            get { return reportNameFormat; }
-            set
-            {
-                if (value == null)
-                    throw new ArgumentNullException(@"value");
-
-                reportNameFormat = value; 
-            }
         }
 
         /// <summary>
@@ -479,25 +390,15 @@ namespace Gallio.Runner
                 }, null, (int)runTimeLimit.Value.TotalMilliseconds, Timeout.Infinite);
             }
 
-            if (testPackageConfig.Files.Count == 0)
-            {
-                logger.Log(LogSeverity.Warning, "No test assemblies to execute!");
-                return CreateResult(ResultCode.NoTests);
-            }
-
             Stopwatch stopWatch = Stopwatch.StartNew();
             logger.Log(LogSeverity.Important, String.Format("Start time: {0}", DateTime.Now.ToShortTimeString()));
             bool wasCanceled = false;
             try
             {
-                VerifyAssemblies(ref wasCanceled);
-                if (wasCanceled)
-                    return CreateResult(ResultCode.Canceled);
-
                 using (InitializeRuntimeIfNeeded(ref wasCanceled))
                 {
                     if (wasCanceled)
-                        return CreateResult(ResultCode.Canceled);
+                        return CreateResult(ResultCode.Canceled, testProject);
 
                     return RunWithRuntime();
                 }
@@ -532,29 +433,44 @@ namespace Gallio.Runner
 
         private TestLauncherResult RunWithRuntime()
         {
-            IReportManager reportManager = RuntimeAccessor.ServiceLocator.Resolve<IReportManager>();
-            if (!ValidateReportFormats(reportManager))
-                return CreateResult(ResultCode.InvalidArguments);
+            bool wasCanceled = false;
 
-            ITestRunnerManager manager = RuntimeAccessor.ServiceLocator.Resolve<ITestRunnerManager>();
-            ITestRunnerFactory factory = manager.GetFactory(testRunnerFactoryName);
-            if (factory == null)
+            ITestProjectManager testProjectManager = RuntimeAccessor.ServiceLocator.Resolve<ITestProjectManager>();
+
+            TestProject consolidatedTestProject = ConsolidateTestProject(testProjectManager, ref wasCanceled);
+            if (wasCanceled)
+                return CreateResult(ResultCode.Canceled, testProject);
+            if (consolidatedTestProject == null)
+                return CreateResult(ResultCode.InvalidArguments, testProject);
+
+            if (consolidatedTestProject.TestPackage.Files.Count == 0)
             {
-                logger.Log(LogSeverity.Error, String.Format("Unrecognized test runner factory name: '{0}'.", testRunnerFactoryName));
-                return CreateResult(ResultCode.InvalidArguments);
+                logger.Log(LogSeverity.Warning, "No test files to execute!");
+                return CreateResult(ResultCode.NoTests, consolidatedTestProject);
             }
 
-            ITestRunner runner = factory.CreateTestRunner();
-            TestLauncherResult result = new TestLauncherResult(new Report { TestPackageConfig = TestPackageConfig });
-            bool wasCanceled = false;
+            IReportManager reportManager = RuntimeAccessor.ServiceLocator.Resolve<IReportManager>();
+            if (!ValidateReportFormats(reportManager, consolidatedTestProject))
+                return CreateResult(ResultCode.InvalidArguments, consolidatedTestProject);
+
+            ITestRunnerManager testRunnerManager = RuntimeAccessor.ServiceLocator.Resolve<ITestRunnerManager>();
+            ITestRunnerFactory testRunnerFactory = testRunnerManager.GetFactory(consolidatedTestProject.TestRunnerFactoryName);
+            if (testRunnerFactory == null)
+            {
+                logger.Log(LogSeverity.Error, String.Format("Unrecognized test runner factory name: '{0}'.", consolidatedTestProject.TestRunnerFactoryName));
+                return CreateResult(ResultCode.InvalidArguments, consolidatedTestProject);
+            }
+
+            ITestRunner runner = testRunnerFactory.CreateTestRunner();
+            TestLauncherResult result = new TestLauncherResult(new Report { TestPackage = new TestPackageData(TestProject.TestPackage) });
             try
             {
-                DoRegisterExtensions(runner);
+                DoRegisterExtensions(runner, consolidatedTestProject);
                 DoInitialize(runner, ref wasCanceled);
 
                 if (!wasCanceled)
                 {
-                    result = RunWithInitializedRunner(runner, reportManager);
+                    result = RunWithInitializedRunner(runner, consolidatedTestProject, reportManager);
                 }
             }
             finally
@@ -568,12 +484,12 @@ namespace Gallio.Runner
             return result;
         }
 
-        private TestLauncherResult RunWithInitializedRunner(ITestRunner runner, IReportManager reportManager)
+        private TestLauncherResult RunWithInitializedRunner(ITestRunner runner, TestProject consolidatedTestProject, IReportManager reportManager)
         {
             bool wasCanceled = false;
 
             // Explore or Run tests.
-            Report report = DoExploreOrRun(runner, ref wasCanceled);
+            Report report = DoExploreOrRun(runner, consolidatedTestProject.TestPackage, ref wasCanceled);
 
             if (report == null)
                 report = new Report();
@@ -582,7 +498,7 @@ namespace Gallio.Runner
             // Generate reports even if the test run is canceled, unless this step
             // also gets canceled.
             if (result.Report.TestPackageRun != null)
-                GenerateReports(result, reportManager, ref wasCanceled);
+                GenerateReports(result, reportManager, consolidatedTestProject, ref wasCanceled);
 
             // Done.
             if (showReports)
@@ -615,13 +531,13 @@ namespace Gallio.Runner
         #region Private Methods
 
         private void GenerateReports(TestLauncherResult result, IReportManager reportManager,
-            ref bool canceled)
+            TestProject consolidatedTestProject, ref bool canceled)
         {
             if (reportFormats.Count == 0)
                 return;
 
-            RunWithProgress(progressMonitor => result.GenerateReports(reportDirectory, 
-                GenerateReportName(result.Report), reportFormats, reportFormatterOptions, 
+            RunWithProgress(progressMonitor => result.GenerateReports(consolidatedTestProject.ReportDirectory, 
+                GenerateReportName(result.Report, consolidatedTestProject), reportFormats, reportFormatterOptions,
                 reportManager, progressMonitor), ref canceled);
         }
 
@@ -636,7 +552,7 @@ namespace Gallio.Runner
                 logger.Log(LogSeverity.Important, "There was an error opening the report documents.");
         }
 
-        private bool ValidateReportFormats(IReportManager reportManager)
+        private bool ValidateReportFormats(IReportManager reportManager, TestProject consolidatedTestProject)
         {
             foreach (string reportFormat in reportFormats)
             {
@@ -649,7 +565,7 @@ namespace Gallio.Runner
                 return false;
             }
 
-            if (reportNameFormat.Length == 0)
+            if (consolidatedTestProject.ReportNameFormat.Length == 0)
             {
                 logger.Log(LogSeverity.Error, "Report name format must not be empty.");
                 return false;
@@ -658,17 +574,17 @@ namespace Gallio.Runner
             return true;
         }
 
-        private void DoRegisterExtensions(ITestRunner runner)
+        private void DoRegisterExtensions(ITestRunner runner, TestProject consolidatedTestProject)
         {
             if (echoResults)
                 runner.RegisterExtension(new LogExtension());
 
-            foreach (ITestRunnerExtension extension in extensions)
+            foreach (ITestRunnerExtension extension in consolidatedTestProject.TestRunnerExtensions)
                 runner.RegisterExtension(extension);
 
             // de-dupe extension specs
             List<string> uniqueExtensionSpecifications = new List<string>();
-            GenericCollectionUtils.AddAllIfNotAlreadyPresent(extensionSpecifications, 
+            GenericCollectionUtils.AddAllIfNotAlreadyPresent(consolidatedTestProject.TestRunnerExtensionSpecifications, 
                 uniqueExtensionSpecifications);
 
             foreach (string extensionSpecification in uniqueExtensionSpecifications)
@@ -679,39 +595,19 @@ namespace Gallio.Runner
             }
         }
 
-        /// <summary>
-        /// Removes any non-existing assemblies from the list of test assemblies.
-        /// </summary>
-        private void VerifyAssemblies(ref bool canceled)
-        {
-            RunWithProgress(delegate(IProgressMonitor progressMonitor)
-            {
-                using (progressMonitor.BeginTask("Verifying assembly names.", 1))
-                {
-                    List<string> assembliesToRemove = new List<string>();
-                    foreach (string assemblyName in testPackageConfig.Files)
-                    {
-                        if (File.Exists(assemblyName) && assemblyName == assemblyName.TrimEnd('\\', '/')) 
-                            continue;
-
-                        assembliesToRemove.Add(assemblyName);
-                        logger.Log(LogSeverity.Error, String.Format("Cannot find assembly: {0}", assemblyName));
-                    }
-
-                    // Remove invalid assemblies
-                    foreach (string assemblyName in assembliesToRemove)
-                        testPackageConfig.Files.Remove(assemblyName);
-                }
-            }, ref canceled);
-        }
-
         private void DisplayConfiguration()
         {
-            DisplayPaths(testPackageConfig.Files, "Test Assemblies:");
-            DisplayPaths(testPackageConfig.HintDirectories, "Hint Directories:");
+            DisplayPaths(testProject.TestPackage.Files, "Test Files:");
+            DisplayPaths(testProject.TestPackage.HintDirectories, "Hint Directories:");
 
             if (runtimeSetup != null)
                 DisplayPaths(runtimeSetup.PluginDirectories, "Plugin Directories:");
+        }
+
+        private void DisplayPaths<T>(ICollection<T> paths, string name)
+            where T : FileSystemInfo
+        {
+            DisplayPaths(GenericCollectionUtils.ConvertAllToArray(paths, path => path.ToString()), name);
         }
 
         private void DisplayPaths(ICollection<string> paths, string name)
@@ -731,10 +627,114 @@ namespace Gallio.Runner
 
         private void Canonicalize(string baseDirectory)
         {
-            testPackageConfig.Canonicalize(baseDirectory);
-
             if (runtimeSetup != null)
                 runtimeSetup.Canonicalize(baseDirectory);
+        }
+
+        /// <summary>
+        /// Processes test file patterns and generates a consolidated test project.
+        /// </summary>
+        private TestProject ConsolidateTestProject(ITestProjectManager testProjectManager, ref bool canceled)
+        {
+            TestProject consolidatedTestProject = null;
+
+            RunWithProgress(delegate(IProgressMonitor progressMonitor)
+            {
+                List<string> allFilePatterns = new List<string>(filePatterns);
+                GenericCollectionUtils.ConvertAndAddAll(testProject.TestPackage.Files, allFilePatterns, x => x.ToString());
+
+                TestProject overlayTestProject = testProject.Copy();
+                overlayTestProject.TestPackage.ClearFiles();
+                TestProject baseTestProject = null;
+
+                bool haveProject = false;
+                using (progressMonitor.BeginTask("Verifying test files.", Math.Max(allFilePatterns.Count, 1)))
+                {
+                    foreach (string filePattern in allFilePatterns)
+                    {
+                        IList<FileInfo> files = ExpandFilePattern(filePattern);
+                        if (files == null)
+                            return;
+
+                        foreach (FileInfo file in files)
+                        {
+                            bool isProject = file.Extension == TestProject.Extension;
+                            if (isProject && overlayTestProject.TestPackage.Files.Count != 0 || haveProject)
+                            {
+                                logger.Log(LogSeverity.Error, "At most one test project can be specified at a time and it cannot be combined with other test files.");
+                                return;
+                            }
+
+                            if (isProject)
+                            {
+                                haveProject = true;
+
+                                try
+                                {
+                                    baseTestProject = testProjectManager.LoadProject(file);
+                                }
+                                catch (Exception ex)
+                                {
+                                    logger.Log(LogSeverity.Error, string.Format("Could not load test project '{0}'.", file.FullName), ex);
+                                }
+                            }
+                            else
+                            {
+                                overlayTestProject.TestPackage.AddFile(file);
+                            }
+                        }
+
+                        progressMonitor.Worked(1);
+                    }
+
+                    if (baseTestProject != null)
+                    {
+                        baseTestProject.ApplyOverlay(overlayTestProject);
+                        consolidatedTestProject = baseTestProject;
+                    }
+                    else
+                    {
+                        consolidatedTestProject = overlayTestProject;
+                    }
+                }
+            }, ref canceled);
+
+            return consolidatedTestProject;
+        }
+
+        private IList<FileInfo> ExpandFilePattern(string filePattern)
+        {
+            if (filePattern.Contains("?") || filePattern.Contains("*"))
+            {
+                string directory = Environment.CurrentDirectory;
+                if (Path.IsPathRooted(filePattern))
+                    directory = Path.GetDirectoryName(filePattern);
+
+                if (! Directory.Exists(directory))
+                {
+                    logger.Log(LogSeverity.Error,
+                        String.Format("Cannot find directory containing file pattern '{0}'.", filePattern));
+                    return null;
+                }
+
+                var files = new List<FileInfo>();
+
+                string searchPattern = Path.GetFileName(filePattern);
+                directory = Path.GetFullPath(directory);
+
+                foreach (string file in Directory.GetFiles(directory, searchPattern))
+                    files.Add(new FileInfo(Path.Combine(directory, file)));
+
+                return files;
+            }
+
+            if (! File.Exists(filePattern))
+            {
+                logger.Log(LogSeverity.Error, String.Format("Cannot find file '{0}'.", filePattern));
+                return null;
+            }
+
+            return new[] { new FileInfo(Path.GetFullPath(filePattern)) };
         }
 
         private void DoInitialize(ITestRunner runner, ref bool canceled)
@@ -743,13 +743,13 @@ namespace Gallio.Runner
                 logger, progressMonitor), ref canceled);
         }
 
-        private Report DoExploreOrRun(ITestRunner runner, ref bool canceled)
+        private Report DoExploreOrRun(ITestRunner runner, TestPackage testPackage, ref bool canceled)
         {
             Report report = null;
             RunWithProgress(delegate(IProgressMonitor progressMonitor)
             {
-                report = doNotRun ? runner.Explore(testPackageConfig, testExplorationOptions, progressMonitor) : 
-                    runner.Run(testPackageConfig, testExplorationOptions, testExecutionOptions, progressMonitor);
+                report = doNotRun ? runner.Explore(testPackage, testExplorationOptions, progressMonitor) : 
+                    runner.Run(testPackage, testExplorationOptions, testExecutionOptions, progressMonitor);
             }, ref canceled);
 
             return report;
@@ -760,19 +760,19 @@ namespace Gallio.Runner
             RunWithProgress(runner.Dispose, ref canceled);
         }
 
-        private string GenerateReportName(Report report)
+        private string GenerateReportName(Report report, TestProject consolidatedTestProject)
         {
             DateTime reportTime = report.TestPackageRun != null ? report.TestPackageRun.StartTime : DateTime.Now;
 
-            return String.Format(CultureInfo.InvariantCulture, reportNameFormat,
+            return String.Format(CultureInfo.InvariantCulture, consolidatedTestProject.ReportNameFormat,
                 reportTime.ToString(@"yyyyMMdd"),
                 reportTime.ToString(@"HHmmss"));
         }
 
-        private TestLauncherResult CreateResult(int resultCode)
+        private TestLauncherResult CreateResult(int resultCode, TestProject consolidatedTestProject)
         {
             Report report = new Report();
-            report.TestPackageConfig = testPackageConfig;
+            report.TestPackage = new TestPackageData(consolidatedTestProject.TestPackage);
 
             TestLauncherResult result = new TestLauncherResult(report);
             result.SetResultCode(resultCode);

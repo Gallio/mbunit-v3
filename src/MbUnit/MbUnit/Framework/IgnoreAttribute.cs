@@ -18,6 +18,7 @@ using Gallio.Framework;
 using Gallio.Model;
 using Gallio.Common.Reflection;
 using Gallio.Framework.Pattern;
+using Gallio.Model.Tree;
 
 namespace MbUnit.Framework
 {

@@ -55,14 +55,14 @@ namespace Gallio.PowerShellCommands
 
         private string applicationBaseDirectory;
         private string workingDirectory;
-        private SwitchParameter shadowCopy;
-        private SwitchParameter debug;
+        private SwitchParameter? shadowCopy;
+        private SwitchParameter? debug;
         private string runtimeVersion;
 
         private string[] reportTypes = EmptyArray<string>.Instance;
-        private string reportNameFormat = Resources.DefaultReportNameFormat;
-        private string reportDirectory = String.Empty;
-        private string runnerType = StandardTestRunnerFactoryNames.IsolatedProcess;
+        private string reportNameFormat;
+        private string reportDirectory;
+        private string runnerType;
         private string[] runnerExtensions = EmptyArray<string>.Instance;
         private string filter = string.Empty;
         private SwitchParameter showReports;
@@ -79,7 +79,7 @@ namespace Gallio.PowerShellCommands
         #region Public Properties
 
         /// <summary>
-        /// The list of relative or absolute paths of test files and assemblies to execute.
+        /// The list of relative or absolute paths of test files, projects and assemblies to execute.
         /// Wildcards may be used.  This is required.
         /// </summary>
         /// <example>
@@ -293,7 +293,8 @@ namespace Gallio.PowerShellCommands
         /// Sets the name of the directory where the reports will be put.
         /// </summary>
         /// <remarks>
-        /// The directory will be created if it doesn't exist. Existing files will be overwrited.
+        /// The directory will be created if it doesn't exist. Existing files will be overwritten.
+        /// The default report directory is "Reports".
         /// </remarks>
         [Parameter(ValueFromPipelineByPropertyName = true)]
         [Alias("rd", "report-directory")]
@@ -528,9 +529,10 @@ namespace Gallio.PowerShellCommands
             launcher.EchoResults = !noEchoResults.IsPresent;
             launcher.RunTimeLimit = runTimeLimit;
 
-            launcher.TestRunnerFactoryName = runnerType;
+            if (runnerType == null)
+                launcher.TestProject.TestRunnerFactoryName = runnerType;
             if (runnerExtensions != null)
-                GenericCollectionUtils.AddAll(runnerExtensions, launcher.TestRunnerExtensionSpecifications);
+                GenericCollectionUtils.AddAll(runnerExtensions, launcher.TestProject.TestRunnerExtensionSpecifications);
 
             launcher.RuntimeSetup = new RuntimeSetup();
 
@@ -538,11 +540,16 @@ namespace Gallio.PowerShellCommands
             // since otherwise we will look at the path of PowerShell.exe.
             launcher.RuntimeSetup.RuntimePath = Path.GetDirectoryName(AssemblyUtils.GetFriendlyAssemblyLocation(typeof(RunGallioCommand).Assembly));
 
-            launcher.TestPackageConfig.ApplicationBaseDirectory = applicationBaseDirectory;
-            launcher.TestPackageConfig.WorkingDirectory = workingDirectory;
-            launcher.TestPackageConfig.ShadowCopy = shadowCopy.IsPresent;
-            launcher.TestPackageConfig.Debug = debug.IsPresent;
-            launcher.TestPackageConfig.RuntimeVersion = runtimeVersion;
+            if (applicationBaseDirectory != null)
+                launcher.TestProject.TestPackage.ApplicationBaseDirectory = new DirectoryInfo(applicationBaseDirectory);
+            if (workingDirectory != null)
+                launcher.TestProject.TestPackage.WorkingDirectory = new DirectoryInfo(workingDirectory);
+            if (shadowCopy.HasValue)
+                launcher.TestProject.TestPackage.ShadowCopy = shadowCopy.Value.IsPresent;
+            if (debug.HasValue)
+                launcher.TestProject.TestPackage.Debug = debug.Value.IsPresent;
+            if (runtimeVersion != null)
+                launcher.TestProject.TestPackage.RuntimeVersion = runtimeVersion;
 
             foreach (string option in reportFormatterProperties)
                 launcher.ReportFormatterOptions.Properties.Add(StringUtils.ParseKeyValuePair(option));
@@ -550,14 +557,14 @@ namespace Gallio.PowerShellCommands
             foreach (string option in runnerProperties)
                 launcher.TestRunnerOptions.Properties.Add(StringUtils.ParseKeyValuePair(option));
 
-            AddAllItemSpecs(launcher.TestPackageConfig.Files, files);
-            AddAllItemSpecs(launcher.TestPackageConfig.HintDirectories, hintDirectories);
-            AddAllItemSpecs(launcher.RuntimeSetup.PluginDirectories, pluginDirectories);
+            ForEachItem(files, x => launcher.FilePatterns.Add(x));
+            ForEachItem(hintDirectories, x => launcher.TestProject.TestPackage.AddHintDirectory(new DirectoryInfo(x)));
+            ForEachItem(pluginDirectories, x => launcher.RuntimeSetup.PluginDirectories.Add(x));
 
             if (reportDirectory != null)
-                launcher.ReportDirectory = reportDirectory;
-            if (!String.IsNullOrEmpty(reportNameFormat))
-                launcher.ReportNameFormat = reportNameFormat;
+                launcher.TestProject.ReportDirectory = reportDirectory;
+            if (reportNameFormat != null)
+                launcher.TestProject.ReportNameFormat = reportNameFormat;
             if (reportTypes != null)
                 GenericCollectionUtils.AddAll(reportTypes, launcher.ReportFormats);
 
@@ -574,22 +581,22 @@ namespace Gallio.PowerShellCommands
             return launcher.Run();
         }
 
-        private FilterSet<ITest> GetFilterSet()
+        private FilterSet<ITestDescriptor> GetFilterSet()
         {
             if (String.IsNullOrEmpty(filter))
             {
-                return FilterSet<ITest>.Empty;
+                return FilterSet<ITestDescriptor>.Empty;
             }
 
             return FilterUtils.ParseTestFilterSet(filter);
         }
 
-        private static void AddAllItemSpecs(ICollection<string> collection, IEnumerable<string> items)
+        private static void ForEachItem(IEnumerable<string> items, Action<string> action)
         {
             if (items != null)
             {
                 foreach (string item in items)
-                    collection.Add(item);
+                    action(item);
             }
         }
 

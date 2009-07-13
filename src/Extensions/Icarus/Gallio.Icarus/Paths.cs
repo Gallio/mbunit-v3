@@ -17,6 +17,7 @@ using System;
 using System.IO;
 using Gallio.Common.Policies;
 using Gallio.Runner.Projects;
+using Gallio.Runner.Projects.Schema;
 
 namespace Gallio.Icarus
 {
@@ -33,7 +34,7 @@ namespace Gallio.Icarus
         /// <summary>
         /// The location of the default project used by Icarus.
         /// </summary>
-        public static string DefaultProject = Path.Combine(IcarusAppDataFolder, "Icarus" + Project.Extension);
+        public static string DefaultProject = Path.Combine(IcarusAppDataFolder, "Icarus" + TestProject.Extension);
         
         /// <summary>
         /// The location of the Icarus settings (options) file

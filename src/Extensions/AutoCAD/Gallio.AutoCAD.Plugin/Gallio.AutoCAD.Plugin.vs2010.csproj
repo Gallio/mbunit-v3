@@ -10,10 +10,6 @@
     <RootNamespace>Gallio.AutoCAD.Plugin</RootNamespace>
     <AssemblyName>Gallio.AutoCAD.Plugin</AssemblyName>
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
-    <FileUpgradeFlags>
-    </FileUpgradeFlags>
-    <OldToolsVersion>3.5</OldToolsVersion>
-    <UpgradeBackupLocation />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -52,11 +48,22 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="GallioLoaderAssemblyResolver.cs" />
-    <Compile Include="ReflectAcadEndpoint.cs" />
     <Compile Include="Commands.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ReflectGallioLoader.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Gallio\Gallio.Loader\Gallio.Loader.vs2010.csproj">
+      <Project>{67FB2969-E6BF-4754-91AA-B6075F8E67EE}</Project>
+      <Name>Gallio.Loader</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Gallio\Gallio\Gallio.vs2010.csproj">
+      <Project>{6CAB7735-05DA-480D-9A04-50615B00F886}</Project>
+      <Name>Gallio %28Gallio\Gallio%29</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Gallio.AutoCAD\Gallio.AutoCAD.vs2010.csproj">
+      <Project>{F7F0D285-79D0-452A-A791-84B174C1546E}</Project>
+      <Name>Gallio.AutoCAD</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

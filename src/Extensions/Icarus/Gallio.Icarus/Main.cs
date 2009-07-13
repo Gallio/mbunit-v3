@@ -28,7 +28,7 @@ using Gallio.Icarus.Controllers;
 using Gallio.Icarus.Controllers.EventArgs;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Model;
-using Gallio.Runner.Projects;
+using Gallio.Runner.Projects.Schema;
 using Gallio.Runtime;
 using Gallio.UI.Common.Synchronization;
 using Gallio.UI.Progress;
@@ -36,6 +36,7 @@ using WeifenLuo.WinFormsUI.Docking;
 using UnhandledExceptionPolicy = Gallio.Common.Policies.UnhandledExceptionPolicy;
 using Gallio.Icarus.Utilities;
 using Gallio.UI.ControlPanel;
+using Gallio.Runner.Projects;
 
 namespace Gallio.Icarus
 {
@@ -61,7 +62,7 @@ namespace Gallio.Icarus
         private readonly AnnotationsWindow annotationsWindow;
 
         private readonly string projectFileFilter = string.Format("Gallio Projects (*{0})|*{0}", 
-            Project.Extension);
+            TestProject.Extension);
 
         internal Main(IApplicationController applicationController)
         {

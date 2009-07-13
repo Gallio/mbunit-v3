@@ -20,7 +20,8 @@ using Gallio.Icarus.Commands;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Tests.Utilities;
 using Gallio.Model;
-using Gallio.Runner.Projects;
+using Gallio.Model.Schema;
+using Gallio.Runner.Projects.Schema;
 using MbUnit.Framework;
 using Rhino.Mocks;
 
@@ -65,8 +66,8 @@ namespace Gallio.Icarus.Tests.Commands
             var testController = MockRepository.GenerateStub<ITestController>();
             var projectController = MockRepository.GenerateStub<IProjectController>();
             projectController.Stub(pc => pc.TestFilters).Return(new BindingList<FilterInfo>(new List<FilterInfo>()));
-            var testPackageConfig = new TestPackageConfig();
-            projectController.Stub(pc => pc.TestPackageConfig).Return(testPackageConfig);
+            var testPackage = new TestPackage();
+            projectController.Stub(pc => pc.TestPackage).Return(testPackage);
             var testRunnerExtensions = new BindingList<string>(new List<string>());
             projectController.Stub(pc => pc.TestRunnerExtensions).Return(testRunnerExtensions);
             const string fileName = "fileName";
@@ -75,7 +76,7 @@ namespace Gallio.Icarus.Tests.Commands
 
             openProjectCommand.Execute(progressMonitor);
 
-            testController.AssertWasCalled(tc => tc.SetTestPackageConfig(testPackageConfig));
+            testController.AssertWasCalled(tc => tc.SetTestPackage(testPackage));
             testController.AssertWasCalled(tc => tc.Explore(progressMonitor, testRunnerExtensions));
         }
 

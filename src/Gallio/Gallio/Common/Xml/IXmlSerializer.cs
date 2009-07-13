@@ -13,12 +13,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using System.Xml.Serialization;
 
 namespace Gallio.Common.Xml
 {
     ///<summary>
-    /// Wrapper for XmlSerializationUtils static methods (allows testing).
+    /// Provides Xml serialization and deserialization services.
     ///</summary>
     public interface IXmlSerializer
     {
@@ -28,6 +29,8 @@ namespace Gallio.Common.Xml
         /// <param name="root">The root object.</param>
         /// <param name="filename">The filename.</param>
         /// <typeparam name="T">The root object type.</typeparam>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="root"/>
+        /// or <paramref name="filename"/> is null.</exception>
         void SaveToXml<T>(T root, string filename);
 
         /// <summary>
@@ -36,6 +39,7 @@ namespace Gallio.Common.Xml
         /// <param name="filename">The filename.</param>
         /// <returns>The root object.</returns>
         /// <typeparam name="T">The root object type.</typeparam>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="filename"/> is null.</exception>
         T LoadFromXml<T>(string filename);
     }
 }

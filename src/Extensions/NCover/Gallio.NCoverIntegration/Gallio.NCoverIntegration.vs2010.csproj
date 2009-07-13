@@ -47,6 +47,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="NCoverTestIsolationContext.cs" />
+    <Compile Include="NCoverTestIsolationProvider.cs" />
     <Compile Include="NCoverHost.cs" />
     <Compile Include="NCoverHostFactory.cs" />
     <Compile Include="NCoverTool.cs" />

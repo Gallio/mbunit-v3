@@ -17,36 +17,30 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using Gallio.Common.Concurrency;
+using Gallio.Common.Messaging;
 using Gallio.Model;
 using Gallio.Common.Diagnostics;
-using Gallio.Model.Execution;
 using Gallio.Common.Markup;
-using Gallio.Model.Messages;
-using Gallio.Model.Serialization;
+using Gallio.Model.Messages.Exploration;
+using Gallio.Model.Schema;
 using Gallio.Common.Reflection;
-using Gallio.Runner.Drivers;
 using Gallio.Runner.Events;
 using Gallio.Runner.Extensions;
-using Gallio.Runner.Reports;
-using Gallio.Runtime;
+using Gallio.Runner.Reports.Schema;
 using Gallio.Runtime.Logging;
 using Gallio.Runtime.ProgressMonitoring;
+using Gallio.Model.Isolation;
+using Gallio.Model.Messages.Execution;
 
 namespace Gallio.Runner
 {
     /// <summary>
-    /// An implementation of <see cref="ITestRunner" /> that runs tests using
-    /// a <see cref="ITestDriver" />.
+    /// A default implementation of <see cref="ITestRunner" />.
     /// </summary>
-    /// <remarks>
-    /// <para>
-    /// The driver is created when the first package is loaded and is disposed when 
-    /// the runner is disposed. Consequently the test driver may be reused for multiple test runs.
-    /// </para>
-    /// </remarks>
     public class DefaultTestRunner : ITestRunner
     {
-        private readonly ITestDriverFactory testDriverFactory;
+        private readonly ITestIsolationProvider testIsolationProvider;
+        private readonly ITestFrameworkManager testFrameworkManager;
         private readonly TestRunnerEventDispatcher eventDispatcher;
         private readonly List<ITestRunnerExtension> extensions;
 
@@ -54,7 +48,7 @@ namespace Gallio.Runner
         private TestRunnerOptions testRunnerOptions;
 
         private State state;
-        private ITestDriver testDriver;
+        private ITestIsolationContext testIsolationContext;
 
         private enum State
         {
@@ -66,14 +60,19 @@ namespace Gallio.Runner
         /// <summary>
         /// Creates a test runner.
         /// </summary>
-        /// <param name="testDriverFactory">The test driver factory.</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="testDriverFactory"/> is null.</exception>
-        public DefaultTestRunner(ITestDriverFactory testDriverFactory)
+        /// <param name="testIsolationProvider">The test isolation provider.</param>
+        /// <param name="testFrameworkManager">The test framework manager.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="testIsolationProvider"/> 
+        /// or <paramref name="testFrameworkManager"/> is null.</exception>
+        public DefaultTestRunner(ITestIsolationProvider testIsolationProvider, ITestFrameworkManager testFrameworkManager)
         {
-            if (testDriverFactory == null)
-                throw new ArgumentNullException("testDriverFactory");
+            if (testIsolationProvider == null)
+                throw new ArgumentNullException("testIsolationProvider");
+            if (testFrameworkManager == null)
+                throw new ArgumentNullException("testFrameworkManager");
 
-            this.testDriverFactory = testDriverFactory;
+            this.testIsolationProvider = testIsolationProvider;
+            this.testFrameworkManager = testFrameworkManager;
 
             eventDispatcher = new TestRunnerEventDispatcher();
             state = State.Created;
@@ -170,19 +169,18 @@ namespace Gallio.Runner
                 {
                     eventDispatcher.NotifyInitializeStarted(new InitializeStartedEventArgs(testRunnerOptions));
 
-                    progressMonitor.SetStatus("Initializing the test driver.");
+                    progressMonitor.SetStatus("Initializing the test isolation context.");
 
-                    // Create test driver.
-                    RuntimeSetup runtimeSetup = RuntimeAccessor.Instance.GetRuntimeSetup();
-                    testDriver = testDriverFactory.CreateTestDriver();
-                    testDriver.Initialize(runtimeSetup, testRunnerOptions, tappedLogger);
+                    TestIsolationOptions testIsolationOptions = new TestIsolationOptions();
+                    testIsolationOptions.Properties.AddAll(testRunnerOptions.Properties);
+                    testIsolationContext = testIsolationProvider.CreateContext(testIsolationOptions, tappedLogger);
 
                     progressMonitor.Worked(1);
                 }
                 catch (Exception ex)
                 {
                     eventDispatcher.NotifyInitializeFinished(new InitializeFinishedEventArgs(false));
-                    throw new RunnerException("A fatal exception occurred while initializing the test driver.", ex);
+                    throw new RunnerException("A fatal exception occurred while initializing the test isolation context.", ex);
                 }
 
                 state = State.Initialized;
@@ -191,9 +189,9 @@ namespace Gallio.Runner
         }
 
         /// <inheritdoc />
-        public Report Explore(TestPackageConfig testPackageConfig, TestExplorationOptions testExplorationOptions, IProgressMonitor progressMonitor)
+        public Report Explore(TestPackage testPackage, TestExplorationOptions testExplorationOptions, IProgressMonitor progressMonitor)
         {
-            if (testPackageConfig == null)
+            if (testPackage == null)
                 throw new ArgumentNullException("testPackageConfig");
             if (testExplorationOptions == null)
                 throw new ArgumentNullException("testExplorationOptions");
@@ -204,15 +202,14 @@ namespace Gallio.Runner
             if (state != State.Initialized)
                 throw new InvalidOperationException("The test runner must be initialized before this operation is performed.");
 
-            testPackageConfig = testPackageConfig.Copy();
-            testPackageConfig.Canonicalize(null);
+            testPackage = testPackage.Copy();
             testExplorationOptions = testExplorationOptions.Copy();
 
             using (progressMonitor.BeginTask("Exploring the tests.", 10))
             {
                 Report report = new Report()
                 {
-                    TestPackageConfig = testPackageConfig,
+                    TestPackage = new TestPackageData(testPackage),
                     TestModel = new TestModelData()
                 };
                 var reportLockBox = new LockBox<Report>(report);
@@ -220,15 +217,19 @@ namespace Gallio.Runner
                 using (new LogReporter(reportLockBox, eventDispatcher))
                 {
                     bool success;
-                    eventDispatcher.NotifyExploreStarted(new ExploreStartedEventArgs(testPackageConfig,
+                    eventDispatcher.NotifyExploreStarted(new ExploreStartedEventArgs(testPackage,
                         testExplorationOptions, reportLockBox));
                     try
                     {
                         using (Listener listener = new Listener(eventDispatcher, reportLockBox))
                         {
-                            testDriver.Explore(testPackageConfig,
-                                testExplorationOptions, listener,
-                                progressMonitor.CreateSubProgressMonitor(10));
+                            ITestDriver testDriver = testFrameworkManager.GetTestDriver(testPackage.IsFrameworkRequested);
+
+                            using (testIsolationContext.BeginBatch(progressMonitor.SetStatus))
+                            {
+                                testDriver.Explore(testIsolationContext, testPackage, testExplorationOptions,
+                                    listener, progressMonitor.CreateSubProgressMonitor(10));
+                            }
                         }
 
                         success = true;
@@ -252,9 +253,9 @@ namespace Gallio.Runner
         }
 
         /// <inheritdoc />
-        public Report Run(TestPackageConfig testPackageConfig, TestExplorationOptions testExplorationOptions, TestExecutionOptions testExecutionOptions, IProgressMonitor progressMonitor)
+        public Report Run(TestPackage testPackage, TestExplorationOptions testExplorationOptions, TestExecutionOptions testExecutionOptions, IProgressMonitor progressMonitor)
         {
-            if (testPackageConfig == null)
+            if (testPackage == null)
                 throw new ArgumentNullException("testPackageConfig");
             if (testExplorationOptions == null)
                 throw new ArgumentNullException("testExplorationOptions");
@@ -267,8 +268,7 @@ namespace Gallio.Runner
             if (state != State.Initialized)
                 throw new InvalidOperationException("The test runner must be initialized before this operation is performed.");
 
-            testPackageConfig = testPackageConfig.Copy();
-            testPackageConfig.Canonicalize(null);
+            testPackage = testPackage.Copy();
             testExplorationOptions = testExplorationOptions.Copy();
             testExecutionOptions = testExecutionOptions.Copy();
 
@@ -277,7 +277,7 @@ namespace Gallio.Runner
                 Stopwatch stopwatch = Stopwatch.StartNew();
                 Report report = new Report()
                 {
-                    TestPackageConfig = testPackageConfig,
+                    TestPackage = new TestPackageData(testPackage),
                     TestModel = new TestModelData(),
                     TestPackageRun = new TestPackageRun()
                     {
@@ -288,7 +288,7 @@ namespace Gallio.Runner
 
                 using (new LogReporter(reportLockBox, eventDispatcher))
                 {
-                    eventDispatcher.NotifyRunStarted(new RunStartedEventArgs(testPackageConfig, testExplorationOptions,
+                    eventDispatcher.NotifyRunStarted(new RunStartedEventArgs(testPackage, testExplorationOptions,
                         testExecutionOptions, reportLockBox));
 
                     bool success;
@@ -296,10 +296,13 @@ namespace Gallio.Runner
                     {
                         using (Listener listener = new Listener(eventDispatcher, reportLockBox))
                         {
-                            testDriver.Run(testPackageConfig,
-                                testExplorationOptions, listener,
-                                testExecutionOptions, listener,
-                                progressMonitor.CreateSubProgressMonitor(10));
+                            ITestDriver testDriver = testFrameworkManager.GetTestDriver(testPackage.IsFrameworkRequested);
+
+                            using (testIsolationContext.BeginBatch(progressMonitor.SetStatus))
+                            {
+                                testDriver.Run(testIsolationContext, testPackage, testExplorationOptions,
+                                    testExecutionOptions, listener, progressMonitor.CreateSubProgressMonitor(10));
+                            }
                         }
 
                         success = true;
@@ -342,12 +345,12 @@ namespace Gallio.Runner
                 {
                     eventDispatcher.NotifyDisposeStarted(new DisposeStartedEventArgs());
 
-                    if (testDriver != null)
+                    if (testIsolationContext != null)
                     {
-                        progressMonitor.SetStatus("Disposing the test driver.");
+                        progressMonitor.SetStatus("Disposing the test isolation context.");
 
-                        testDriver.Dispose();
-                        testDriver = null;
+                        testIsolationContext.Dispose();
+                        testIsolationContext = null;
                     }
 
                     progressMonitor.Worked(10);
@@ -356,7 +359,7 @@ namespace Gallio.Runner
                 catch (Exception ex)
                 {
                     if (tappedLogger != null)
-                        tappedLogger.Log(LogSeverity.Warning, "An exception occurred while disposing the test driver.  This may indicate that the test driver previously encountered another fault from which it could not recover.", ex);
+                        tappedLogger.Log(LogSeverity.Warning, "An exception occurred while disposing the test isolation context.  This may indicate that the test isolation context previously encountered another fault from which it could not recover.", ex);
                     success = false;
                 }
 
@@ -376,12 +379,19 @@ namespace Gallio.Runner
                 throw new ObjectDisposedException(GetType().Name);
         }
 
-        private sealed class Listener : ITestExplorationListener, ITestExecutionListener, IDisposable
+        private sealed class Listener : IMessageSink, IDisposable
         {
             private readonly TestRunnerEventDispatcher eventDispatcher;
             private readonly LockBox<Report> reportBox;
+            private readonly MessageConsumer consumer;
 
             private Dictionary<string, TestStepState> states;
+
+            private readonly Dictionary<string, string> redirectedStepIds;
+
+            private TestStepData rootTestStepData;
+            private TestResult rootTestStepResult;
+            private Stopwatch rootTestStepStopwatch;
 
             public Listener(TestRunnerEventDispatcher eventDispatcher, LockBox<Report> reportBox)
             {
@@ -389,196 +399,292 @@ namespace Gallio.Runner
                 this.reportBox = reportBox;
 
                 states = new Dictionary<string, TestStepState>();
+
+                redirectedStepIds = new Dictionary<string, string>();
+
+                rootTestStepStopwatch = Stopwatch.StartNew();
+                rootTestStepResult = new TestResult()
+                {
+                    Outcome = TestOutcome.Passed
+                };
+
+                consumer = new MessageConsumer()
+                    .Handle<TestDiscoveredMessage>(HandleTestDiscoveredMessage)
+                    .Handle<AnnotationDiscoveredMessage>(HandleAnnotationDiscoveredMessage)
+                    .Handle<TestStepStartedMessage>(HandleTestStepStartedMessage)
+                    .Handle<TestStepLifecyclePhaseChangedMessage>(HandleTestStepLifecyclePhaseChangedMessage)
+                    .Handle<TestStepMetadataAddedMessage>(HandleTestStepMetadataAddedMessage)
+                    .Handle<TestStepFinishedMessage>(HandleTestStepFinishedMessage)
+                    .Handle<TestStepLogAttachMessage>(HandleTestStepLogAttachMessage)
+                    .Handle<TestStepLogStreamWriteMessage>(HandleTestStepLogStreamWriteMessage)
+                    .Handle<TestStepLogStreamEmbedMessage>(HandleTestStepLogStreamEmbedMessage)
+                    .Handle<TestStepLogStreamBeginSectionBlockMessage>(HandleTestStepLogStreamBeginSectionBlockMessage)
+                    .Handle<TestStepLogStreamBeginMarkerBlockMessage>(HandleTestStepLogStreamBeginMarkerBlockMessage)
+                    .Handle<TestStepLogStreamEndBlockMessage>(HandleTestStepLogStreamEndBlockMessage);
             }
 
             public void Dispose()
             {
                 reportBox.Write(report =>
                 {
+                    FinishRoot(report);
+
                     states = null;
                 });
             }
 
-            public void NotifySubtreeMerged(string parentTestId, TestData test)
+            public void Publish(Message message)
+            {
+                message.Validate();
+
+                eventDispatcher.NotifyMessageReceived(new MessageReceivedEventArgs(message));
+
+                consumer.Consume(message);
+            }
+
+            public void HandleTestDiscoveredMessage(TestDiscoveredMessage message)
             {
                 reportBox.Write(report =>
                 {
                     ThrowIfDisposed();
 
-                    test = report.TestModel.MergeSubtree(parentTestId, test);
+                    TestData mergedTest = report.TestModel.MergeSubtree(message.ParentTestId, message.Test);
 
-                    eventDispatcher.NotifyTestModelSubtreeMerged(
-                        new TestModelSubtreeMergedEventArgs(report, test));
+                    eventDispatcher.NotifyTestDiscovered(
+                        new TestDiscoveredEventArgs(report, mergedTest));
                 });
             }
 
-            public void NotifyAnnotationAdded(AnnotationData annotation)
+            public void HandleAnnotationDiscoveredMessage(AnnotationDiscoveredMessage message)
             {
                 reportBox.Write(report =>
                 {
                     ThrowIfDisposed();
 
-                    report.TestModel.Annotations.Add(annotation);
+                    report.TestModel.Annotations.Add(message.Annotation);
 
-                    eventDispatcher.NotifyTestModelAnnotationAdded(
-                        new TestModelAnnotationAddedEventArgs(report, annotation));
+                    eventDispatcher.NotifyAnnotationDiscovered(
+                        new AnnotationDiscoveredEventArgs(report, message.Annotation));
                 });
             }
 
-            public void NotifyTestStepStarted(TestStepData step)
+            public void HandleTestStepStartedMessage(TestStepStartedMessage message)
             {
                 reportBox.Write(report =>
                 {
                     ThrowIfDisposed();
 
-                    TestData testData = GetTestData(report, step.TestId);
-                    TestStepRun testStepRun = new TestStepRun(step);
-                    testStepRun.StartTime = DateTime.Now;
-
-                    if (step.ParentId != null)
+                    if (message.Step.ParentId == null)
                     {
-                        TestStepState parentState = GetTestStepState(step.ParentId);
-                        parentState.TestStepRun.Children.Add(testStepRun);
+                        if (IsRootStarted)
+                        {
+                            redirectedStepIds.Add(message.Step.Id, rootTestStepData.Id);
+                        }
+                        else
+                        {
+                            StartRoot(report, message.Step);
+                        }
                     }
                     else
                     {
-                        report.TestPackageRun.RootTestStepRun = testStepRun;
+                        TestStepData step = RedirectParentIdOfStep(message.Step);
+                        StartStep(report, step);
                     }
-
-                    TestStepState state = new TestStepState(testData, testStepRun);
-                    states.Add(step.Id, state);
-
-                    eventDispatcher.NotifyTestStepStarted(
-                        new TestStepStartedEventArgs(report, testData, testStepRun));
                 });
             }
 
-            public void NotifyTestStepLifecyclePhaseChanged(string stepId, string lifecyclePhase)
+            public void HandleTestStepFinishedMessage(TestStepFinishedMessage message)
             {
                 reportBox.Write(report =>
                 {
                     ThrowIfDisposed();
 
+                    if (redirectedStepIds.ContainsKey(message.StepId))
+                    {
+                        rootTestStepResult.AssertCount += message.Result.AssertCount;
+                        rootTestStepResult.Outcome = rootTestStepResult.Outcome.CombineWith(message.Result.Outcome);
+                    }
+                    else
+                    {
+                        FinishStep(report, message.StepId, message.Result);
+                    }
+                });
+            }
+
+            private bool IsRootStarted
+            {
+                get { return rootTestStepData != null; }
+            }
+
+            private void StartRoot(Report report, TestStepData step)
+            {
+                rootTestStepData = step;
+
+                StartStep(report, step);
+            }
+
+            private void FinishRoot(Report report)
+            {
+                if (rootTestStepData != null)
+                {
+                    rootTestStepResult.Duration = rootTestStepStopwatch.Elapsed.TotalSeconds;
+                    FinishStep(report, rootTestStepData.Id, rootTestStepResult);
+                    rootTestStepData = null;
+                }
+            }
+
+            private void StartStep(Report report, TestStepData step)
+            {
+                TestData testData = GetTestData(report, step.TestId);
+                TestStepRun testStepRun = new TestStepRun(step);
+                testStepRun.StartTime = DateTime.Now;
+
+                if (step.ParentId != null)
+                {
+                    TestStepState parentState = GetTestStepState(step.ParentId);
+                    parentState.TestStepRun.Children.Add(testStepRun);
+                }
+                else
+                {
+                    report.TestPackageRun.RootTestStepRun = testStepRun;
+                }
+
+                TestStepState state = new TestStepState(testData, testStepRun);
+                states.Add(step.Id, state);
+
+                eventDispatcher.NotifyTestStepStarted(
+                    new TestStepStartedEventArgs(report, testData, testStepRun));
+            }
+
+            private void FinishStep(Report report, string stepId, TestResult result)
+            {
+                TestStepState state = GetTestStepState(stepId);
+                state.TestStepRun.EndTime = DateTime.Now;
+                state.TestStepRun.Result = result;
+                report.TestPackageRun.Statistics.MergeStepStatistics(state.TestStepRun);
+
+                state.logWriter.Close();
+
+                eventDispatcher.NotifyTestStepFinished(
+                    new TestStepFinishedEventArgs(report, state.TestData, state.TestStepRun));
+            }
+
+            public void HandleTestStepLifecyclePhaseChangedMessage(TestStepLifecyclePhaseChangedMessage message)
+            {
+                reportBox.Write(report =>
+                {
+                    ThrowIfDisposed();
+
+                    string stepId = RedirectStepId(message.StepId);
                     TestStepState state = GetTestStepState(stepId);
 
                     eventDispatcher.NotifyTestStepLifecyclePhaseChanged(
-                        new TestStepLifecyclePhaseChangedEventArgs(report, state.TestData, state.TestStepRun, lifecyclePhase));
+                        new TestStepLifecyclePhaseChangedEventArgs(report, state.TestData, state.TestStepRun, message.LifecyclePhase));
                 });
             }
 
-            public void NotifyTestStepMetadataAdded(string stepId, string metadataKey, string metadataValue)
+            public void HandleTestStepMetadataAddedMessage(TestStepMetadataAddedMessage message)
             {
                 reportBox.Write(report =>
                 {
                     ThrowIfDisposed();
 
+                    string stepId = RedirectStepId(message.StepId);
                     TestStepState state = GetTestStepState(stepId);
-                    state.TestStepRun.Step.Metadata.Add(metadataKey, metadataValue);
+                    state.TestStepRun.Step.Metadata.Add(message.MetadataKey, message.MetadataValue);
 
                     eventDispatcher.NotifyTestStepMetadataAdded(
-                        new TestStepMetadataAddedEventArgs(report, state.TestData, state.TestStepRun, metadataKey, metadataValue));
+                        new TestStepMetadataAddedEventArgs(report, state.TestData, state.TestStepRun, message.MetadataKey, message.MetadataValue));
                 });
             }
 
-            public void NotifyTestStepFinished(string stepId, TestResult result)
+            public void HandleTestStepLogAttachMessage(TestStepLogAttachMessage message)
             {
                 reportBox.Write(report =>
                 {
                     ThrowIfDisposed();
 
+                    string stepId = RedirectStepId(message.StepId);
                     TestStepState state = GetTestStepState(stepId);
-                    state.TestStepRun.EndTime = DateTime.Now;
-                    state.TestStepRun.Result = result;
-                    report.TestPackageRun.Statistics.MergeStepStatistics(state.TestStepRun);
-
-                    state.logWriter.Close();
-
-                    eventDispatcher.NotifyTestStepFinished(
-                        new TestStepFinishedEventArgs(report, state.TestData, state.TestStepRun));
-                });
-            }
-
-            public void NotifyTestStepLogAttach(string stepId, Attachment attachment)
-            {
-                reportBox.Write(report =>
-                {
-                    ThrowIfDisposed();
-
-                    TestStepState state = GetTestStepState(stepId);
-                    state.logWriter.Attach(attachment);
+                    state.logWriter.Attach(message.Attachment);
 
                     eventDispatcher.NotifyTestStepLogAttach(
-                        new TestStepLogAttachEventArgs(report, state.TestData, state.TestStepRun, attachment));
+                        new TestStepLogAttachEventArgs(report, state.TestData, state.TestStepRun, message.Attachment));
                 });
             }
 
-            public void NotifyTestStepLogStreamWrite(string stepId, string streamName, string text)
+            public void HandleTestStepLogStreamWriteMessage(TestStepLogStreamWriteMessage message)
             {
                 reportBox.Write(report =>
                 {
                     ThrowIfDisposed();
 
+                    string stepId = RedirectStepId(message.StepId);
                     TestStepState state = GetTestStepState(stepId);
-                    state.logWriter[streamName].Write(text);
+                    state.logWriter[message.StreamName].Write(message.Text);
 
                     eventDispatcher.NotifyTestStepLogStreamWrite(
-                        new TestStepLogStreamWriteEventArgs(report, state.TestData, state.TestStepRun, streamName, text));
+                        new TestStepLogStreamWriteEventArgs(report, state.TestData, state.TestStepRun, message.StreamName, message.Text));
                 });
             }
 
-            public void NotifyTestStepLogStreamEmbed(string stepId, string streamName, string attachmentName)
+            public void HandleTestStepLogStreamEmbedMessage(TestStepLogStreamEmbedMessage message)
             {
                 reportBox.Write(report =>
                 {
                     ThrowIfDisposed();
 
+                    string stepId = RedirectStepId(message.StepId);
                     TestStepState state = GetTestStepState(stepId);
-                    state.logWriter[streamName].EmbedExisting(attachmentName);
+                    state.logWriter[message.StreamName].EmbedExisting(message.AttachmentName);
 
                     eventDispatcher.NotifyTestStepLogStreamEmbed(
-                        new TestStepLogStreamEmbedEventArgs(report, state.TestData, state.TestStepRun, streamName, attachmentName));
+                        new TestStepLogStreamEmbedEventArgs(report, state.TestData, state.TestStepRun, message.StreamName, message.AttachmentName));
                 });
             }
 
-            public void NotifyTestStepLogStreamBeginSection(string stepId, string streamName, string sectionName)
+            public void HandleTestStepLogStreamBeginSectionBlockMessage(TestStepLogStreamBeginSectionBlockMessage message)
             {
                 reportBox.Write(report =>
                 {
                     ThrowIfDisposed();
 
+                    string stepId = RedirectStepId(message.StepId);
                     TestStepState state = GetTestStepState(stepId);
-                    state.logWriter[streamName].BeginSection(sectionName);
+                    state.logWriter[message.StreamName].BeginSection(message.SectionName);
 
-                    eventDispatcher.NotifyTestStepLogStreamBeginSection(
-                        new TestStepLogStreamBeginSectionEventArgs(report, state.TestData, state.TestStepRun, streamName, sectionName));
+                    eventDispatcher.NotifyTestStepLogStreamBeginSectionBlock(
+                        new TestStepLogStreamBeginSectionBlockEventArgs(report, state.TestData, state.TestStepRun, message.StreamName, message.SectionName));
                 });
             }
 
-            public void NotifyTestStepLogStreamBeginMarker(string stepId, string streamName, Marker marker)
+            public void HandleTestStepLogStreamBeginMarkerBlockMessage(TestStepLogStreamBeginMarkerBlockMessage message)
             {
                 reportBox.Write(report =>
                 {
                     ThrowIfDisposed();
 
+                    string stepId = RedirectStepId(message.StepId);
                     TestStepState state = GetTestStepState(stepId);
-                    state.logWriter[streamName].BeginMarker(marker);
+                    state.logWriter[message.StreamName].BeginMarker(message.Marker);
 
-                    eventDispatcher.NotifyTestStepLogStreamBeginMarker(
-                        new TestStepLogStreamBeginMarkerEventArgs(report, state.TestData, state.TestStepRun, streamName, marker));
+                    eventDispatcher.NotifyTestStepLogStreamBeginMarkerBlock(
+                        new TestStepLogStreamBeginMarkerBlockEventArgs(report, state.TestData, state.TestStepRun, message.StreamName, message.Marker));
                 });
             }
 
-            public void NotifyTestStepLogStreamEnd(string stepId, string streamName)
+            public void HandleTestStepLogStreamEndBlockMessage(TestStepLogStreamEndBlockMessage message)
             {
                 reportBox.Write(report =>
                 {
                     ThrowIfDisposed();
 
+                    string stepId = RedirectStepId(message.StepId);
                     TestStepState state = GetTestStepState(stepId);
-                    state.logWriter[streamName].End();
+                    state.logWriter[message.StreamName].End();
 
-                    eventDispatcher.NotifyTestStepLogStreamEnd(
-                        new TestStepLogStreamEndEventArgs(report, state.TestData, state.TestStepRun, streamName));
+                    eventDispatcher.NotifyTestStepLogStreamEndBlock(
+                        new TestStepLogStreamEndBlockEventArgs(report, state.TestData, state.TestStepRun, message.StreamName));
                 });
             }
 
@@ -596,6 +702,35 @@ namespace Gallio.Runner
                 if (!states.TryGetValue(testStepId, out testStepData))
                     throw new InvalidOperationException("The test step id was not recognized.  It may belong to an earlier test run that has since completed.");
                 return testStepData;
+            }
+
+            private TestStepData RedirectParentIdOfStep(TestStepData step)
+            {
+                string targetStepId;
+                if (step.ParentId != null && redirectedStepIds.TryGetValue(step.ParentId, out targetStepId))
+                {
+                    TestStepData targetStep = new TestStepData(step.Id, step.Name, step.FullName, step.TestId)
+                    {
+                        CodeLocation = step.CodeLocation,
+                        CodeReference = step.CodeReference,
+                        IsDynamic = step.IsDynamic,
+                        IsPrimary = step.IsPrimary,
+                        IsTestCase = step.IsTestCase,
+                        Metadata = step.Metadata,
+                        ParentId = targetStepId
+                    };
+                    return targetStep;
+                }
+
+                return step;
+            }
+
+            private string RedirectStepId(string stepId)
+            {
+                string targetStepId;
+                if (redirectedStepIds.TryGetValue(stepId, out targetStepId))
+                    return targetStepId;
+                return stepId;
             }
 
             private void ThrowIfDisposed()

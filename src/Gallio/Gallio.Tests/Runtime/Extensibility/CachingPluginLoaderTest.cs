@@ -22,7 +22,7 @@ using Gallio.Common.Collections;
 using Gallio.Common;
 using Gallio.Common.Policies;
 using Gallio.Runtime.Extensibility;
-using Gallio.Schema.Plugins;
+using Gallio.Runtime.Extensibility.Schema;
 using MbUnit.Framework;
 using Rhino.Mocks;
 using File = System.IO.File;

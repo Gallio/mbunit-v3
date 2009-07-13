@@ -18,7 +18,7 @@ using System.Windows.Forms;
 using Gallio.Common.Concurrency;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Model;
-using Gallio.Model.Serialization;
+using Gallio.Model.Schema;
 
 namespace Gallio.Icarus
 {

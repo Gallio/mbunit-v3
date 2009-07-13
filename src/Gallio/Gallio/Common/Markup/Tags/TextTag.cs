@@ -26,7 +26,7 @@ namespace Gallio.Common.Markup.Tags
     /// A text tag, containing text.
     /// </summary>
     [Serializable]
-    [XmlRoot("text", Namespace = XmlSerializationUtils.GallioNamespace)]
+    [XmlRoot("text", Namespace = SchemaConstants.XmlNamespace)]
     [XmlSchemaProvider("ProvideXmlSchema")]
     public sealed class TextTag : Tag, IXmlSerializable, ICloneable<TextTag>, IEquatable<TextTag>
     {

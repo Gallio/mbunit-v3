@@ -20,7 +20,7 @@ using System.Reflection;
 using System.Text;
 using Gallio.Common.Collections;
 using Gallio.Common.Reflection;
-using Gallio.Schema.Plugins;
+using Gallio.Runtime.Extensibility.Schema;
 
 namespace Gallio.Runtime.Extensibility
 {

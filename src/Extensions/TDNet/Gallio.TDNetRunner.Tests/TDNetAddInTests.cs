@@ -15,14 +15,15 @@
 
 using System;
 using System.IO;
+using System.Linq;
 using System.Reflection;
+using Gallio.Runner.Reports.Schema;
 using Gallio.Runtime.Logging;
 using Gallio.Runtime.ProgressMonitoring;
 using Gallio.Model;
 using Gallio.Model.Filters;
 using Gallio.Common.Reflection;
 using Gallio.Runner;
-using Gallio.Runner.Reports;
 using Gallio.TDNetRunner.Facade;
 using MbUnit.Framework;
 using Rhino.Mocks;
@@ -283,16 +284,16 @@ namespace Gallio.TDNetRunner.Tests
             Assert.IsInstanceOfType(typeof(FilteredLogger), launcher.Logger);
             Assert.IsInstanceOfType(typeof(LogProgressMonitorProvider), launcher.ProgressMonitorProvider);
             Assert.IsFalse(launcher.ShowReports);
-            Assert.AreEqual(StandardTestRunnerFactoryNames.IsolatedAppDomain, launcher.TestRunnerFactoryName);
+            Assert.AreEqual(StandardTestRunnerFactoryNames.IsolatedAppDomain, launcher.TestProject.TestRunnerFactoryName);
 
             Assert.IsNull(launcher.RuntimeSetup);
 
-            Assert.AreElementsEqual(new string[] { assemblyFile }, launcher.TestPackageConfig.Files);
-            Assert.AreElementsEqual(new string[] { }, launcher.TestPackageConfig.HintDirectories);
+            Assert.AreElementsEqual(new string[] { assemblyFile }, from x in launcher.TestProject.TestPackage.Files select x.ToString());
+            Assert.AreElementsEqual(new string[] { }, from x in launcher.TestProject.TestPackage.HintDirectories select x.ToString());
 
-            Assert.AreEqual(Path.GetDirectoryName(assemblyFile), launcher.TestPackageConfig.ApplicationBaseDirectory);
-            Assert.IsFalse(launcher.TestPackageConfig.ShadowCopy);
-            Assert.AreEqual(Path.GetDirectoryName(assemblyFile), launcher.TestPackageConfig.WorkingDirectory);
+            Assert.AreEqual(Path.GetDirectoryName(assemblyFile), launcher.TestProject.TestPackage.ApplicationBaseDirectory.ToString());
+            Assert.IsFalse(launcher.TestProject.TestPackage.ShadowCopy);
+            Assert.AreEqual(Path.GetDirectoryName(assemblyFile), launcher.TestProject.TestPackage.WorkingDirectory.ToString());
         }
     }
 }

@@ -21,6 +21,7 @@ using System.Reflection;
 using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
+using Gallio.Common;
 using Gallio.Common.Collections;
 using Gallio.Common.Xml;
 using Gallio.Common.Reflection;
@@ -31,8 +32,8 @@ namespace Gallio.Runtime.Hosting
     /// Describes the runtime configuration of a <see cref="IHost" />.
     /// </summary>
     [Serializable]
-    [XmlRoot("hostConfiguration", Namespace = XmlSerializationUtils.GallioNamespace)]
-    [XmlType(Namespace = XmlSerializationUtils.GallioNamespace)]
+    [XmlRoot("hostConfiguration", Namespace = SchemaConstants.XmlNamespace)]
+    [XmlType(Namespace = SchemaConstants.XmlNamespace)]
     public sealed class HostConfiguration : IEquatable<HostConfiguration>
     {
         private readonly List<AssemblyQualification> assemblyQualifications;
@@ -490,7 +491,7 @@ namespace Gallio.Runtime.Hosting
         /// maps an assembly partial name to its full name.
         /// </summary>
         [Serializable]
-        [XmlType(Namespace = XmlSerializationUtils.GallioNamespace)]
+        [XmlType(Namespace = SchemaConstants.XmlNamespace)]
         public sealed class AssemblyQualification : IEquatable<AssemblyQualification>
         {
             private string partialName;
@@ -596,7 +597,7 @@ namespace Gallio.Runtime.Hosting
         /// specifies the codebase, a publisher policy and binding redirects.
         /// </summary>
         [Serializable]
-        [XmlType(Namespace = XmlSerializationUtils.GallioNamespace)]
+        [XmlType(Namespace = SchemaConstants.XmlNamespace)]
         public sealed class AssemblyDependency : IEquatable<AssemblyDependency>
         {
             private readonly List<AssemblyBindingRedirect> bindingRedirects;
@@ -836,7 +837,7 @@ namespace Gallio.Runtime.Hosting
         /// a new version.
         /// </summary>
         [Serializable]
-        [XmlType(Namespace = XmlSerializationUtils.GallioNamespace)]
+        [XmlType(Namespace = SchemaConstants.XmlNamespace)]
         public sealed class AssemblyBindingRedirect : IEquatable<AssemblyBindingRedirect>
         {
             private string oldVersionRange;
@@ -945,7 +946,7 @@ namespace Gallio.Runtime.Hosting
         /// Describes the location of the codebase of a particular assembly version.
         /// </summary>
         [Serializable]
-        [XmlType(Namespace = XmlSerializationUtils.GallioNamespace)]
+        [XmlType(Namespace = SchemaConstants.XmlNamespace)]
         public class AssemblyCodeBase : IEquatable<AssemblyCodeBase>
         {
             private string version;

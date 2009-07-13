@@ -16,8 +16,11 @@
 using System;
 using System.Collections.Generic;
 using System.Threading;
-using Gallio.Model.Execution;
+using Gallio.Model.Commands;
+using Gallio.Model.Contexts;
 using Gallio.Common.Markup;
+using Gallio.Model.Helpers;
+using Gallio.Model.Tree;
 using Gallio.Runtime.ProgressMonitoring;
 using Gallio.Model;
 using Gallio.NUnitAdapter.Properties;
@@ -30,9 +33,9 @@ namespace Gallio.NUnitAdapter.Model
     /// <summary>
     /// Controls the execution of NUnit tests.
     /// </summary>
-    internal class NUnitTestController : BaseTestController
+    internal class NUnitTestController : TestController
     {
-        private TestRunner runner;
+        private readonly TestRunner runner;
 
         /// <summary>
         /// Creates a test controller.
@@ -44,13 +47,7 @@ namespace Gallio.NUnitAdapter.Model
         }
 
         /// <inheritdoc />
-        public override void Dispose()
-        {
-            runner = null;
-        }
-
-        /// <inheritdoc />
-        protected override TestOutcome RunTestsImpl(ITestCommand rootTestCommand, ITestStep parentTestStep, TestExecutionOptions options, IProgressMonitor progressMonitor)
+        protected override TestOutcome RunImpl(ITestCommand rootTestCommand, TestStep parentTestStep, TestExecutionOptions options, IProgressMonitor progressMonitor)
         {
             ThrowIfDisposed();
 
@@ -86,12 +83,12 @@ namespace Gallio.NUnitAdapter.Model
             private readonly IProgressMonitor progressMonitor;
             private readonly TestRunner runner;
             private readonly IList<ITestCommand> testCommands;
-            private readonly ITestStep topTestStep;
+            private readonly TestStep topTestStep;
 
             private Dictionary<TestName, ITestCommand> testCommandsByTestName;
             private Stack<ITestContext> testContextStack;
 
-            public RunMonitor(TestRunner runner, IList<ITestCommand> testCommands, ITestStep topTestStep,
+            public RunMonitor(TestRunner runner, IList<ITestCommand> testCommands, TestStep topTestStep,
                 IProgressMonitor progressMonitor)
             {
                 this.progressMonitor = progressMonitor;
@@ -236,7 +233,7 @@ namespace Gallio.NUnitAdapter.Model
 
                 progressMonitor.SetStatus(testCommand.Test.Name);
 
-                ITestStep parentTestStep = testContextStack.Count != 0 ? testContextStack.Peek().TestStep : topTestStep;
+                TestStep parentTestStep = testContextStack.Count != 0 ? testContextStack.Peek().TestStep : topTestStep;
                 ITestContext testContext = testCommand.StartPrimaryChildStep(parentTestStep);
                 testContextStack.Push(testContext);
 

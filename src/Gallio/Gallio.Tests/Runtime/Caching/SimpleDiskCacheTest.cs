@@ -18,7 +18,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using Gallio.Common.Policies;
-using Gallio.Runtime.Caching;
+using Gallio.Common.Caching;
 using MbUnit.Framework;
 
 namespace Gallio.Tests.Runtime.Caching

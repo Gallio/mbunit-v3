@@ -26,8 +26,8 @@ namespace Gallio.Common.Markup.Tags
     /// A marker tag.
     /// </summary>
     [Serializable]
-    [XmlRoot("marker", Namespace = XmlSerializationUtils.GallioNamespace)]
-    [XmlType(Namespace = XmlSerializationUtils.GallioNamespace)]
+    [XmlRoot("marker", Namespace = SchemaConstants.XmlNamespace)]
+    [XmlType(Namespace = SchemaConstants.XmlNamespace)]
     public sealed class MarkerTag : ContainerTag, ICloneable<MarkerTag>, IEquatable<MarkerTag>
     {
         private string @class;
@@ -148,7 +148,7 @@ namespace Gallio.Common.Markup.Tags
         /// Represents a marker attribute.
         /// </summary>
         [Serializable]
-        [XmlType(Namespace = XmlSerializationUtils.GallioNamespace)]
+        [XmlType(Namespace = SchemaConstants.XmlNamespace)]
         public sealed class Attribute
         {
             private string name;

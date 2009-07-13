@@ -20,7 +20,7 @@ using Gallio.Framework;
 using Gallio.Framework.Pattern;
 using Gallio.Model;
 using Gallio.Common.Reflection;
-using Gallio.Runner.Harness;
+using Gallio.Model.Environments;
 
 namespace MbUnit.Framework
 {
@@ -85,7 +85,7 @@ namespace MbUnit.Framework
                         int index = i;
 
                         string name = String.Format("Threaded Repetition #{0}", index + 1);
-                        var task = new TestThreadTask(name, delegate
+                        var task = new TestEnvironmentAwareThreadTask(name, delegate
                         {
                             TestContext threadContext = TestStep.RunStep(name, delegate
                             {

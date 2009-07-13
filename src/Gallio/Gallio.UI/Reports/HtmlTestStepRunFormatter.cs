@@ -26,10 +26,10 @@ using Gallio.Model;
 using Gallio.Common.Markup;
 using Gallio.Common.Markup.Tags;
 using Gallio.Common.Reflection;
-using Gallio.Runner.Reports;
+using Gallio.Runner.Reports.Schema;
 using Gallio.Runtime;
-using Gallio.Runtime.Caching;
-using Gallio.Model.Serialization;
+using Gallio.Common.Caching;
+using Gallio.Model.Schema;
 
 namespace Gallio.UI.Reports
 {

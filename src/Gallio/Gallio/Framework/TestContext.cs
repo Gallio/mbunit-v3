@@ -24,9 +24,10 @@ using Gallio.Framework;
 using Gallio.Framework.Assertions;
 using Gallio.Model;
 using Gallio.Common.Diagnostics;
-using Gallio.Model.Execution;
+using Gallio.Model.Contexts;
 using Gallio.Common.Markup;
 using Gallio.Common.Reflection;
+using Gallio.Model.Tree;
 
 namespace Gallio.Framework
 {
@@ -171,7 +172,7 @@ namespace Gallio.Framework
         /// <summary>
         /// Gets the test associated with the context.
         /// </summary>
-        public TestInfo Test
+        public Test Test
         {
             get { return TestStep.Test; }
         }
@@ -179,9 +180,9 @@ namespace Gallio.Framework
         /// <summary>
         /// Gets the test step associated with the context.
         /// </summary>
-        public TestStepInfo TestStep
+        public Model.Tree.TestStep TestStep
         {
-            get { return new TestStepInfo(inner.TestStep); }
+            get { return inner.TestStep; }
         }
 
         /// <summary>
@@ -379,7 +380,7 @@ namespace Gallio.Framework
         /// </summary>
         /// <remarks>
         /// <para>
-        /// This method creates a new child context with a new nested <see cref="ITestStep" />,
+        /// This method creates a new child context with a new nested <see cref="Model.Tree.TestStep" />,
         /// enters the child context, performs the action, then exits the child context.
         /// </para>
         /// <para>
@@ -435,7 +436,7 @@ namespace Gallio.Framework
         /// </summary>
         /// <remarks>
         /// <para>
-        /// This method creates a new child context with a new nested <see cref="ITestStep" />,
+        /// This method creates a new child context with a new nested <see cref="Model.Tree.TestStep" />,
         /// enters the child context, performs the action, then exits the child context.
         /// </para>
         /// <para>
@@ -555,7 +556,7 @@ namespace Gallio.Framework
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> is null.</exception>
         internal TestContext StartChildStep(string name, ICodeElementInfo codeElement, bool isTestCase)
         {
-            BaseTestStep testStep = new BaseTestStep(inner.TestStep.Test, inner.TestStep, name, codeElement, false);
+            Model.Tree.TestStep testStep = new Model.Tree.TestStep(inner.TestStep.Test, inner.TestStep, name, codeElement, false);
             testStep.IsTestCase = isTestCase;
             testStep.IsDynamic = true;
             return PrepareContext(inner.StartChildStep(testStep), Sandbox.CreateChild());

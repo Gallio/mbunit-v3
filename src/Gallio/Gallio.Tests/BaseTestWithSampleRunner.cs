@@ -16,7 +16,7 @@
 using System;
 using Gallio.Framework.Utilities;
 using Gallio.Common.Markup;
-using Gallio.Runner.Reports;
+using Gallio.Runner.Reports.Schema;
 using MbUnit.Framework;
 
 namespace Gallio.Tests

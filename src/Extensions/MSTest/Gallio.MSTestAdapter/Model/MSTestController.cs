@@ -20,16 +20,20 @@ using System.IO;
 using System.Xml;
 using Gallio.Framework;
 using Gallio.Model;
-using Gallio.Model.Execution;
+using Gallio.Model.Commands;
+using Gallio.Model.Contexts;
 using Gallio.Common.Markup;
+using Gallio.Model.Helpers;
+using Gallio.Model.Tree;
 using Gallio.MSTestAdapter.Properties;
 using Gallio.MSTestAdapter.Wrapper;
-using Gallio.Runtime.Caching;
+using Gallio.Common.Caching;
 using Gallio.Runtime.ProgressMonitoring;
+using TestStep=Gallio.Model.Tree.TestStep;
 
 namespace Gallio.MSTestAdapter.Model
 {
-    internal class MSTestController : BaseTestController
+    internal class MSTestController : TestController
     {
         private readonly Version frameworkVersion;
         private readonly IDiskCache diskCache;
@@ -51,7 +55,7 @@ namespace Gallio.MSTestAdapter.Model
         }
 
         /// <inheritdoc />
-        protected override TestOutcome RunTestsImpl(ITestCommand rootTestCommand, ITestStep parentTestStep, TestExecutionOptions options, IProgressMonitor progressMonitor)
+        protected override TestOutcome RunImpl(ITestCommand rootTestCommand, TestStep parentTestStep, TestExecutionOptions options, IProgressMonitor progressMonitor)
         {
             using (progressMonitor.BeginTask(Resources.MSTestController_RunningMSTestTests, rootTestCommand.TestCount))
             {
@@ -67,9 +71,9 @@ namespace Gallio.MSTestAdapter.Model
             }
         }
 
-        private TestOutcome RunTest(ITestCommand testCommand, ITestStep parentTestStep, IProgressMonitor progressMonitor)
+        private TestOutcome RunTest(ITestCommand testCommand, TestStep parentTestStep, IProgressMonitor progressMonitor)
         {
-            ITest test = testCommand.Test;
+            Test test = testCommand.Test;
             progressMonitor.SetStatus(test.Name);
 
             // The first test should be an assembly test

@@ -20,9 +20,10 @@ using Gallio.Common.Concurrency;
 using Gallio.Icarus.Models;
 using Gallio.Model;
 using Gallio.Model.Filters;
+using Gallio.Model.Schema;
 using Gallio.Runner;
 using Gallio.Runner.Events;
-using Gallio.Runner.Reports;
+using Gallio.Runner.Reports.Schema;
 using Gallio.Runtime.ProgressMonitoring;
 
 namespace Gallio.Icarus.Controllers.Interfaces
@@ -127,10 +128,10 @@ namespace Gallio.Icarus.Controllers.Interfaces
         void SetTestRunnerFactory(ITestRunnerFactory factory);
 
         /// <summary>
-        /// Sets the test package configuration to be used during subsequent calls to <see cref="Explore" /> or <see cref="Run" />.
+        /// Sets the test package to be used during subsequent calls to <see cref="Explore" /> or <see cref="Run" />.
         /// </summary>
-        /// <param name="config">The test package configuration</param>
-        void SetTestPackageConfig(TestPackageConfig config);
+        /// <param name="testPackage">The test package</param>
+        void SetTestPackage(TestPackage testPackage);
 
         /// <summary>
         /// Acquires a read lock on the report and executes the specified action.
@@ -142,13 +143,13 @@ namespace Gallio.Icarus.Controllers.Interfaces
         /// Applies a filter to the tests, potentially altering selections.
         /// </summary>
         /// <param name="filterSet">The filter to apply</param>
-        void ApplyFilterSet(FilterSet<ITest> filterSet);
+        void ApplyFilterSet(FilterSet<ITestDescriptor> filterSet);
 
         /// <summary>
         /// Generates a filter from selected tests.
         /// </summary>
         /// <returns>The generated filter</returns>
-        FilterSet<ITest> GenerateFilterSetFromSelectedTests();
+        FilterSet<ITestDescriptor> GenerateFilterSetFromSelectedTests();
 
         /// <summary>
         /// Explores the tests and updates the model, does not run them.

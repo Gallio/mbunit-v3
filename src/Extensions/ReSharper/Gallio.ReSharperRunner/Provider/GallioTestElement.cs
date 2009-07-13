@@ -15,9 +15,10 @@
 
 using System;
 using System.Collections.Generic;
-using Gallio.Common.Collections;
 using Gallio.Model;
+using Gallio.Common.Collections;
 using Gallio.Common.Reflection;
+using Gallio.Model.Schema;
 using Gallio.ReSharperRunner.Reflection;
 using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Psi;
@@ -58,16 +59,16 @@ namespace Gallio.ReSharperRunner.Provider
             this.namespaceName = namespaceName;
         }
 
-        public static GallioTestElement CreateFromTest(ITest test, IUnitTestProvider provider, GallioTestElement parent)
+        public static GallioTestElement CreateFromTest(TestData test, ICodeElementInfo codeElement, IUnitTestProvider provider, GallioTestElement parent)
         {
             if (test == null)
                 throw new ArgumentNullException("test");
 
             // The idea here is to generate a test element object that does not retain any direct
-            // references to ITest and other heavyweight objects.  A test element may survive in memory
-            // for quite a long time so we don't want it holding on to all sorts of irrelevant stuff.
-            // Basically we flatten out the ITest to just those properties that we need to keep.
-            ICodeElementInfo codeElement = test.CodeElement;
+            // references to the code element info and other heavyweight objects.  A test element may
+            // survive in memory for quite a long time so we don't want it holding on to all sorts of
+            // irrelevant stuff.  Basically we flatten out the test to just those properties that we
+            // need to keep.
             GallioTestElement element = new GallioTestElement(provider, parent,
                 test.Id,
                 test.Name,

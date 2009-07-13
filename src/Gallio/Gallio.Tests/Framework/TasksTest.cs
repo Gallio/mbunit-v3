@@ -21,7 +21,7 @@ using System.Threading;
 using Gallio.Framework;
 using Gallio.Model;
 using Gallio.Common.Reflection;
-using Gallio.Runner.Reports;
+using Gallio.Runner.Reports.Schema;
 using MbUnit.Framework;
 
 namespace Gallio.Tests.Framework

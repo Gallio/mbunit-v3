@@ -22,12 +22,11 @@ using System.Reflection;
 using Gallio.Model.Filters;
 using Gallio.Model;
 using Rhino.Mocks;
-using ITestComponent=Gallio.Model.ITestComponent;
 
 namespace Gallio.Tests.Model.Filters
 {
     [TestFixture]
-    [TestsOn(typeof(TypeFilter<ITestComponent>))]
+    [TestsOn(typeof(TypeFilter<ITestDescriptor>))]
     public class TypeFilterTest : BaseTestWithMocks, ITypeFilterTest
     {
         [Test]
@@ -39,9 +38,9 @@ namespace Gallio.Tests.Model.Filters
         [Row(true, typeof(ITypeFilterTest), true)]
         public void IsMatchWithAssemblyQualifiedName(bool expectedMatch, Type type, bool includeDerivedTypes)
         {
-            ITestComponent component = GetMockComponentForType(typeof(TypeFilterTest));
+            ITestDescriptor component = GetMockComponentForType(typeof(TypeFilterTest));
             Assert.AreEqual(expectedMatch,
-                new TypeFilter<ITestComponent>(new EqualityFilter<string>(type.AssemblyQualifiedName), includeDerivedTypes).IsMatch(component));
+                new TypeFilter<ITestDescriptor>(new EqualityFilter<string>(type.AssemblyQualifiedName), includeDerivedTypes).IsMatch(component));
         }
 
         [Test]
@@ -53,9 +52,9 @@ namespace Gallio.Tests.Model.Filters
         [Row(true, typeof(ITypeFilterTest), true)]
         public void IsMatchWithFullName(bool expectedMatch, Type type, bool includeDerivedTypes)
         {
-            ITestComponent component = GetMockComponentForType(typeof(TypeFilterTest));
+            ITestDescriptor component = GetMockComponentForType(typeof(TypeFilterTest));
             Assert.AreEqual(expectedMatch,
-                new TypeFilter<ITestComponent>(new EqualityFilter<string>(type.FullName), includeDerivedTypes).IsMatch(component));
+                new TypeFilter<ITestDescriptor>(new EqualityFilter<string>(type.FullName), includeDerivedTypes).IsMatch(component));
         }
 
         [Test]
@@ -67,22 +66,22 @@ namespace Gallio.Tests.Model.Filters
         [Row(true, typeof(ITypeFilterTest), true)]
         public void IsMatchWithName(bool expectedMatch, Type type, bool includeDerivedTypes)
         {
-            ITestComponent component = GetMockComponentForType(typeof(TypeFilterTest));
+            ITestDescriptor component = GetMockComponentForType(typeof(TypeFilterTest));
             Assert.AreEqual(expectedMatch,
-                new TypeFilter<ITestComponent>(new EqualityFilter<string>(type.Name), includeDerivedTypes).IsMatch(component));
+                new TypeFilter<ITestDescriptor>(new EqualityFilter<string>(type.Name), includeDerivedTypes).IsMatch(component));
         }
 
         [Test]
         public void IsMatchConsidersDotDelimiterNestedTypes()
         {
-            ITestComponent component = GetMockComponentForType(typeof(NestedTypeFilterTest));
-            Assert.IsTrue(new TypeFilter<ITestComponent>(new EqualityFilter<string>(typeof(NestedTypeFilterTest).FullName.Replace('+', '.')), false).IsMatch(component));
+            ITestDescriptor component = GetMockComponentForType(typeof(NestedTypeFilterTest));
+            Assert.IsTrue(new TypeFilter<ITestDescriptor>(new EqualityFilter<string>(typeof(NestedTypeFilterTest).FullName.Replace('+', '.')), false).IsMatch(component));
         }
 
-        private ITestComponent GetMockComponentForType(Type type)
+        private ITestDescriptor GetMockComponentForType(Type type)
         {
             ICodeElementInfo codeElement = Reflector.Wrap(type);
-            ITestComponent component = Mocks.StrictMock<ITestComponent>();
+            ITestDescriptor component = Mocks.StrictMock<ITestDescriptor>();
             SetupResult.For(component.CodeElement).Return(codeElement);
             Mocks.ReplayAll();
             return component;

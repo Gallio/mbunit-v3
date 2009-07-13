@@ -30,7 +30,7 @@ namespace Gallio.Common.Reflection
     /// typically used to identify the point of definition of a test component.
     /// </summary>
     [Serializable]
-    [XmlRoot("codeReference", Namespace = XmlSerializationUtils.GallioNamespace)]
+    [XmlRoot("codeReference", Namespace = SchemaConstants.XmlNamespace)]
     [XmlSchemaProvider("ProvideXmlSchema")]
     public struct CodeReference : IEquatable<CodeReference>, IXmlSerializable
     {
@@ -301,7 +301,7 @@ namespace Gallio.Common.Reflection
         {
             schemas.Add(new XmlSchema()
             {
-                TargetNamespace = XmlSerializationUtils.GallioNamespace,
+                TargetNamespace = SchemaConstants.XmlNamespace,
                 Items =
                 {
                     new XmlSchemaComplexType()
@@ -344,7 +344,7 @@ namespace Gallio.Common.Reflection
                 }
             });
 
-            return new XmlQualifiedName("CodeReference", XmlSerializationUtils.GallioNamespace);
+            return new XmlQualifiedName("CodeReference", SchemaConstants.XmlNamespace);
         }
 
         XmlSchema IXmlSerializable.GetSchema()

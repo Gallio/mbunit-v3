@@ -15,7 +15,7 @@
 
 using System;
 using Gallio.Common;
-using Gallio.Model.Execution;
+using Gallio.Model.Commands;
 using Gallio.Common.Reflection;
 
 namespace Gallio.MSTestAdapter.Model
@@ -46,10 +46,12 @@ namespace Gallio.MSTestAdapter.Model
             get { return ((IAssemblyInfo)CodeElement).Path; }
         }
 
-        /// <inheritdoc />
-        public override Func<ITestController> TestControllerFactory
+        /// <summary>
+        /// Gets the MSTest framework version.
+        /// </summary>
+        public Version FrameworkVersion
         {
-            get { return () => MSTestController.CreateController(frameworkVersion); }
+            get { return frameworkVersion; }
         }
     }
 }

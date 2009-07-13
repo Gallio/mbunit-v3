@@ -134,7 +134,7 @@ namespace Gallio.Common.Reflection
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="stream"/> is null.</exception>
         public static bool IsAssembly(Stream stream)
         {
-            return GetAssemblyMetadata(stream) != null;
+            return GetAssemblyMetadata(stream, AssemblyMetadataFields.Default) != null;
         }
 
         /// <summary>
@@ -145,31 +145,33 @@ namespace Gallio.Common.Reflection
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="filePath"/> is null.</exception>
         public static bool IsAssembly(string filePath)
         {
-            return GetAssemblyMetadata(filePath) != null;
+            return GetAssemblyMetadata(filePath, AssemblyMetadataFields.Default) != null;
         }
 
         /// <summary>
         /// Gets metadata about CLI Assembly in Microsoft PE format.
         /// </summary>
         /// <param name="stream">The stream.</param>
+        /// <param name="fields">The optional fields of the <see cref="AssemblyMetadata" /> structure to populate.</param>
         /// <returns>The metadata or null if the stream does not represent a CLI assembly.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="stream"/> is null.</exception>
-        public static AssemblyMetadata GetAssemblyMetadata(Stream stream)
+        public static AssemblyMetadata GetAssemblyMetadata(Stream stream, AssemblyMetadataFields fields)
         {
             if (stream == null)
                 throw new ArgumentNullException("stream");
 
-            return AssemblyMetadata.ReadAssemblyMetadata(stream);
+            return AssemblyMetadata.ReadAssemblyMetadata(stream, fields);
         }
 
         /// <summary>
         /// Gets the Major and Minor components of the CLI runtime version of a CLI Assembly in Microsoft PE format.
         /// </summary>
         /// <param name="filePath">The file path.</param>
+        /// <param name="fields">The optional fields of the <see cref="AssemblyMetadata" /> structure to populate.</param>
         /// <returns>The version, of which only the major and minor components are populated,
         /// or null if the stream does not represent a CLI assembly.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="filePath"/> is null.</exception>
-        public static AssemblyMetadata GetAssemblyMetadata(string filePath)
+        public static AssemblyMetadata GetAssemblyMetadata(string filePath, AssemblyMetadataFields fields)
         {
             if (filePath == null)
                 throw new ArgumentNullException("filePath");
@@ -179,7 +181,7 @@ namespace Gallio.Common.Reflection
 
             using (FileStream stream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read))
             {
-                return AssemblyMetadata.ReadAssemblyMetadata(stream);
+                return AssemblyMetadata.ReadAssemblyMetadata(stream, fields);
             }
         }
     }

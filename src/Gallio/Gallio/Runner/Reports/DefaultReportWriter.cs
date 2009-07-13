@@ -20,8 +20,9 @@ using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
 using Gallio.Common.Markup;
+using Gallio.Runner.Reports.Schema;
 using Gallio.Runtime.ProgressMonitoring;
-using Gallio.Model.Serialization;
+using Gallio.Model.Schema;
 
 namespace Gallio.Runner.Reports
 {

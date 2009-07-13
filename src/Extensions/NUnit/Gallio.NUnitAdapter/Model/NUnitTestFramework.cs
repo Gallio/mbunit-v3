@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using Gallio.Common.Reflection;
 using Gallio.NUnitAdapter.Properties;
 using Gallio.Model;
+using Gallio.Runtime.Extensibility;
 
 namespace Gallio.NUnitAdapter.Model
 {
@@ -27,9 +28,14 @@ namespace Gallio.NUnitAdapter.Model
     public class NUnitTestFramework : BaseTestFramework
     {
         /// <inheritdoc />
-        public override void RegisterTestExplorers(IList<ITestExplorer> explorers)
+        sealed public override TestDriverFactory GetTestDriverFactory()
         {
-            explorers.Add(new NUnitTestExplorer());
+            return CreateTestDriver;
+        }
+
+        private static ITestDriver CreateTestDriver(IList<ComponentHandle<ITestFramework, TestFrameworkTraits>> frameworkHandles)
+        {
+            return new NUnitTestDriver();
         }
     }
 }

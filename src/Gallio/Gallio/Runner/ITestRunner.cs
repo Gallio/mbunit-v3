@@ -14,10 +14,10 @@
 // limitations under the License.
 
 using System;
-using Gallio.Model.Execution;
+using Gallio.Model.Schema;
 using Gallio.Runner.Events;
 using Gallio.Runner.Extensions;
-using Gallio.Runner.Reports;
+using Gallio.Runner.Reports.Schema;
 using Gallio.Runtime.Logging;
 using Gallio.Runtime.ProgressMonitoring;
 using Gallio.Model;
@@ -91,15 +91,15 @@ namespace Gallio.Runner
         /// Returns a report that contains test package and test model information only.
         /// </para>
         /// </remarks>
-        /// <param name="testPackageConfig">The test package configuration.</param>
+        /// <param name="testPackage">The test package.</param>
         /// <param name="testExplorationOptions">The test exploration options.</param>
         /// <param name="progressMonitor">The progress monitor.</param>
         /// <returns>The test report.</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="testPackageConfig"/>,
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="testPackage"/>,
         /// <paramref name="testExplorationOptions"/>, or <paramref name="progressMonitor"/> is null.</exception>
         /// <exception cref="RunnerException">Thrown if the operation failed.</exception>
         /// <exception cref="ObjectDisposedException">Thrown if the runner has been disposed.</exception>
-        Report Explore(TestPackageConfig testPackageConfig, TestExplorationOptions testExplorationOptions,
+        Report Explore(TestPackage testPackage, TestExplorationOptions testExplorationOptions,
             IProgressMonitor progressMonitor);
 
         /// <summary>
@@ -110,16 +110,16 @@ namespace Gallio.Runner
         /// Returns a report that contains test package, test model and test run data.
         /// </para>
         /// </remarks>
-        /// <param name="testPackageConfig">The test package configuration.</param>
+        /// <param name="testPackage">The test package.</param>
         /// <param name="testExplorationOptions">The test exploration options.</param>
         /// <param name="testExecutionOptions">The test execution options.</param>
         /// <param name="progressMonitor">The progress monitor.</param>
         /// <returns>The test report.</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="testPackageConfig"/>,
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="testPackage"/>,
         /// <paramref name="testExplorationOptions"/>, <paramref name="testExecutionOptions"/>, or <paramref name="progressMonitor"/> is null.</exception>
         /// <exception cref="RunnerException">Thrown if the operation failed.</exception>
         /// <exception cref="ObjectDisposedException">Thrown if the runner has been disposed.</exception>
-        Report Run(TestPackageConfig testPackageConfig, TestExplorationOptions testExplorationOptions,
+        Report Run(TestPackage testPackage, TestExplorationOptions testExplorationOptions,
             TestExecutionOptions testExecutionOptions, IProgressMonitor progressMonitor);
 
         /// <summary>

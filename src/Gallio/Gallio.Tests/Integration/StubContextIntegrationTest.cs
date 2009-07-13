@@ -15,9 +15,9 @@
 
 using System;
 using System.IO;
+using Gallio.Model.Contexts;
 using Gallio.Runtime;
 using Gallio.Framework;
-using Gallio.Model.Execution;
 using Gallio.Common.Reflection;
 using MbUnit.Framework;
 

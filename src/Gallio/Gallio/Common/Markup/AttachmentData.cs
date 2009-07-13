@@ -32,7 +32,7 @@ namespace Gallio.Common.Markup
     /// </para>
     /// </summary>
     [Serializable]
-    [XmlType(Namespace = XmlSerializationUtils.GallioNamespace)]
+    [XmlType(Namespace = SchemaConstants.XmlNamespace)]
     public sealed class AttachmentData
     {
         private string name;

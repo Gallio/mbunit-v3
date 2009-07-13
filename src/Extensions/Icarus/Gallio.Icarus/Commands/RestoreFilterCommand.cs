@@ -41,7 +41,7 @@ namespace Gallio.Icarus.Commands
 
                 if (filterInfo.FilterName == "AutoSave")
                 {
-                    var filterSet = FilterUtils.ParseTestFilterSet(filterInfo.Filter);
+                    var filterSet = FilterUtils.ParseTestFilterSet(filterInfo.FilterExpr);
                     var applyFilterCommand = new ApplyFilterCommand(testController, filterSet);
                     applyFilterCommand.Execute(progressMonitor);
                     return;

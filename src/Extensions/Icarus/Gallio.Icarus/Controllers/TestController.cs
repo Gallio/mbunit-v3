@@ -24,12 +24,12 @@ using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Helpers;
 using Gallio.Icarus.Models;
 using Gallio.Model;
-using Gallio.Model.Execution;
 using Gallio.Model.Filters;
+using Gallio.Model.Schema;
 using Gallio.Runner;
 using Gallio.Runner.Events;
 using Gallio.Runner.Extensions;
-using Gallio.Runner.Reports;
+using Gallio.Runner.Reports.Schema;
 using Gallio.Runtime;
 using Gallio.Runtime.ProgressMonitoring;
 using Gallio.UI.Progress;
@@ -44,8 +44,8 @@ namespace Gallio.Icarus.Controllers
         private LockBox<Report> reportLockBox;
 
         private ITestRunnerFactory testRunnerFactory;
-        private TestPackageConfig testPackageConfig;
-        private FilterSet<ITest> filterSet;
+        private TestPackage testPackage;
+        private FilterSet<ITestDescriptor> filterSet;
 
         public event EventHandler<TestStepFinishedEventArgs> TestStepFinished;
         public event EventHandler RunStarted;
@@ -179,7 +179,7 @@ namespace Gallio.Icarus.Controllers
             this.optionsController = optionsController;
             this.taskManager = taskManager;
 
-            testPackageConfig = new TestPackageConfig();
+            testPackage = new TestPackage();
             reportLockBox = new LockBox<Report>(new Report());
 
             testTreeModel.PropertyChanged += (sender, e) => OnPropertyChanged(e);
@@ -196,7 +196,7 @@ namespace Gallio.Icarus.Controllers
                 {
                     var testExplorationOptions = new TestExplorationOptions();
 
-                    testRunner.Explore(testPackageConfig, testExplorationOptions,
+                    testRunner.Explore(testPackage, testExplorationOptions,
                         progressMonitor.CreateSubProgressMonitor(80));
 
                     RefreshTestTree(progressMonitor.CreateSubProgressMonitor(10));
@@ -219,8 +219,8 @@ namespace Gallio.Icarus.Controllers
 
                 DoWithTestRunner(testRunner =>
                 {
-                    var testPackageConfigCopy = testPackageConfig.Copy();
-                    testPackageConfigCopy.Debug = debug;
+                    var testPackageCopy = testPackage.Copy();
+                    testPackageCopy.Debug = debug;
 
                     var testExplorationOptions = new TestExplorationOptions();
                     var testExecutionOptions = new TestExecutionOptions
@@ -229,7 +229,7 @@ namespace Gallio.Icarus.Controllers
                         FilterSet = filterSet
                     };
 
-                    testRunner.Run(testPackageConfigCopy, testExplorationOptions, testExecutionOptions,
+                    testRunner.Run(testPackageCopy, testExplorationOptions, testExecutionOptions,
                         progressMonitor.CreateSubProgressMonitor(85));
 
                 }, progressMonitor, 5, testRunnerExtensions);
@@ -238,12 +238,12 @@ namespace Gallio.Icarus.Controllers
             }
         }
 
-        public void SetTestPackageConfig(TestPackageConfig config)
+        public void SetTestPackage(TestPackage testPackage)
         {
-            if (config == null)
-                throw new ArgumentNullException("config");
+            if (testPackage == null)
+                throw new ArgumentNullException("testPackage");
 
-            testPackageConfig = config.Copy();
+            this.testPackage = testPackage.Copy();
         }
 
         public void ReadReport(ReadAction<Report> action)
@@ -251,12 +251,12 @@ namespace Gallio.Icarus.Controllers
             reportLockBox.Read(action);
         }
 
-        public void ApplyFilterSet(FilterSet<ITest> filter)
+        public void ApplyFilterSet(FilterSet<ITestDescriptor> filter)
         {
             testTreeModel.ApplyFilterSet(filter);
         }
 
-        public FilterSet<ITest> GenerateFilterSetFromSelectedTests()
+        public FilterSet<ITestDescriptor> GenerateFilterSetFromSelectedTests()
         {
             filterSet = testTreeModel.GenerateFilterSetFromSelectedTests();
             return filterSet;

@@ -39,20 +39,22 @@
                serviceId="Gallio.TestRunnerFactory"
                componentType="Gallio.Runner.DefaultTestRunnerFactory, Gallio">
       <parameters>
-        <testDriverFactory>${AutoCAD.AcadTestDriverFactory}</testDriverFactory>
+        <testIsolationProvider>${AutoCAD.AcadTestIsolationProvider}</testIsolationProvider>
       </parameters>
       <traits>
         <name>AutoCAD</name>
-        <description>Runs tests within an AutoCAD instance.</description>
+        <description>
+          Runs tests within an AutoCAD instance.
+
+          Supported test runner properties:
+          - AcadAttachToExisting: If "true" attaches to an existing Acad process, otherwise starts a new one.
+          - AcadExePath: Specifies the full path of the "acad.exe" program.
+        </description>
       </traits>
     </component>
 
-    <component componentId="AutoCAD.AcadTestDriverFactory"
-               serviceId="Gallio.TestDriverFactory"
-               componentType="Gallio.AutoCAD.AcadTestDriverFactory, Gallio.AutoCAD" />
-
-    <component componentId="AutoCAD.AcadProcessFactory"
-               serviceId="AutoCAD.AcadProcessFactory"
-               componentType="Gallio.AutoCAD.AcadProcessFactory, Gallio.AutoCAD" />
+    <component componentId="AutoCAD.AcadTestIsolationProvider"
+               serviceId="Gallio.TestIsolationProvider"
+               componentType="Gallio.AutoCAD.Isolation.AcadTestIsolationProvider, Gallio.AutoCAD" />
   </components>
 </plugin>

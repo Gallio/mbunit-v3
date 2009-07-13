@@ -17,8 +17,8 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Gallio.Common;
-using Gallio.Model;
 using Gallio.Common.Reflection;
+using Gallio.Model.Tree;
 using Gallio.Runtime.Loader;
 
 namespace Gallio.Framework.Pattern
@@ -70,7 +70,7 @@ namespace Gallio.Framework.Pattern
             throw new NotSupportedException();
         }
 
-        TestModel ITestModelBuilder.ToTestModel()
+        PatternTestModel ITestModelBuilder.ToTestModel()
         {
             throw new NotSupportedException();
         }

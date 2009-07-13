@@ -19,7 +19,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using Gallio.Model;
 using Gallio.Common.Reflection;
-
+using Gallio.Model.Tree;
 using FixtureExplorer = MbUnit2::MbUnit.Core.Remoting.FixtureExplorer;
 using RunPipe = MbUnit2::MbUnit.Core.RunPipe;
 using RunPipeStarter = MbUnit2::MbUnit.Core.RunPipeStarter;
@@ -39,7 +39,7 @@ namespace Gallio.MbUnit2Adapter.Model
     /// <seealso cref="MbUnit2ReflectiveTestExplorer" />
     internal static class MbUnit2NativeTestExplorer
     {
-        public static ITest BuildAssemblyTest(Assembly assembly, ICollection<KeyValuePair<ITest, string>> unresolvedDependencies)
+        public static Test BuildAssemblyTest(Assembly assembly, ICollection<KeyValuePair<Test, string>> unresolvedDependencies)
         {
             FixtureExplorer fixtureExplorer = InitializeFixtureExplorer(assembly);
             MbUnit2AssemblyTest assemblyTest = CreateAssemblyTest(fixtureExplorer, Reflector.Wrap(assembly));
@@ -59,7 +59,7 @@ namespace Gallio.MbUnit2Adapter.Model
             }
 
             foreach (string assemblyName in fixtureExplorer.GetDependentAssemblies())
-                unresolvedDependencies.Add(new KeyValuePair<ITest, string>(assemblyTest, assemblyName));
+                unresolvedDependencies.Add(new KeyValuePair<Test, string>(assemblyTest, assemblyName));
 
             return assemblyTest;
         }

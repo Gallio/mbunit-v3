@@ -64,13 +64,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Model\MbUnit2TestExplorer.cs" />
     <Compile Include="Model\MbUnit2AssemblyTest.cs" />
     <Compile Include="Model\MbUnit2MetadataUtils.cs" />
     <Compile Include="Model\MbUnit2NativeTestExplorer.cs" />
     <Compile Include="Model\MbUnit2ReflectiveTestExplorer.cs" />
     <Compile Include="Model\MbUnit2Test.cs" />
     <Compile Include="Model\MbUnit2TestController.cs" />
-    <Compile Include="Model\MbUnit2TestExplorer.cs" />
+    <Compile Include="Model\MbUnit2TestDriver.cs" />
     <Compile Include="Model\MbUnit2TestFramework.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">

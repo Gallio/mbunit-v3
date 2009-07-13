@@ -16,7 +16,7 @@
 using System;
 using Gallio.Common.Collections;
 using Gallio.Model;
-using Gallio.Model.Serialization;
+using Gallio.Model.Schema;
 using MbUnit.Framework;
 
 namespace Gallio.Tests.Model

@@ -15,8 +15,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
-using Gallio.Common.Reflection;
 using Gallio.Runtime.Extensibility;
 
 namespace Gallio.Model
@@ -32,11 +30,11 @@ namespace Gallio.Model
         IList<ComponentHandle<ITestFramework, TestFrameworkTraits>> FrameworkHandles { get; }
 
         /// <summary>
-        /// Gets an aggregate test explorer for selected frameworks.
+        /// Gets an aggregate test driver for selected frameworks.
         /// </summary>
         /// <param name="frameworkIdFilter">A predicate to select which frameworks should
         /// be consulted based on the framework id, or null to include all frameworks.</param>
-        /// <returns>The test explorer.</returns>
-        ITestExplorer GetTestExplorer(Predicate<string> frameworkIdFilter);
+        /// <returns>The test driver.</returns>
+        ITestDriver GetTestDriver(Predicate<string> frameworkIdFilter);
     }
 }

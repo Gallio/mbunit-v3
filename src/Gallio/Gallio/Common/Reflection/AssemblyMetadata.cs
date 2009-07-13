@@ -15,9 +15,12 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Reflection;
 using System.Text;
+using Mono.Cecil.Binary;
+using Mono.Cecil.Metadata;
 
 namespace Gallio.Common.Reflection
 {
@@ -30,13 +33,18 @@ namespace Gallio.Common.Reflection
         private readonly ushort minorRuntimeVersion;
         private readonly CorFlags corflags;
         private readonly PEFormat peFormat;
+        private readonly AssemblyName assemblyName;
+        private readonly IList<AssemblyName> assemblyReferences;
 
-        private AssemblyMetadata(ushort majorRuntimeVersion, ushort minorRuntimeVersion, CorFlags corflags, PEFormat peFormat)
+        private AssemblyMetadata(ushort majorRuntimeVersion, ushort minorRuntimeVersion, CorFlags corflags, PEFormat peFormat,
+            AssemblyName assemblyName, IList<AssemblyName> assemblyReferences)
         {
             this.majorRuntimeVersion = majorRuntimeVersion;
             this.minorRuntimeVersion = minorRuntimeVersion;
             this.corflags = corflags;
             this.peFormat = peFormat;
+            this.assemblyName = assemblyName;
+            this.assemblyReferences = assemblyReferences;
         }
 
         /// <summary>
@@ -90,7 +98,45 @@ namespace Gallio.Common.Reflection
             }
         }
 
-        internal static AssemblyMetadata ReadAssemblyMetadata(Stream stream)
+        /// <summary>
+        /// Gets the assembly references.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// This field is only populated when the <see cref="AssemblyMetadataFields.AssemblyName"/> flag is specified.
+        /// </para>
+        /// </remarks>
+        /// <exception cref="InvalidOperationException">Thrown if the assembly name was not populated.</exception>
+        public AssemblyName AssemblyName
+        {
+            get
+            {
+                if (assemblyName == null)
+                    throw new InvalidOperationException("The assembly name was not populated.");
+                return assemblyName;
+            }
+        }
+
+        /// <summary>
+        /// Gets the assembly references.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// This field is only populated when the <see cref="AssemblyMetadataFields.AssemblyReferences"/> flag is specified.
+        /// </para>
+        /// </remarks>
+        /// <exception cref="InvalidOperationException">Thrown if the assembly references were not populated.</exception>
+        public IList<AssemblyName> AssemblyReferences
+        {
+            get
+            {
+                if (assemblyReferences == null)
+                    throw new InvalidOperationException("The assembly references were not populated.");
+                return assemblyReferences;
+            }
+        }
+
+        internal static AssemblyMetadata ReadAssemblyMetadata(Stream stream, AssemblyMetadataFields fields)
         {
             long length = stream.Length;
             if (length < 0x40)
@@ -169,11 +215,30 @@ namespace Gallio.Common.Reflection
             stream.Position = cliHeaderPtr + 4;
             ushort majorRuntimeVersion = reader.ReadUInt16();
             ushort minorRuntimeVersion = reader.ReadUInt16();
-
-            stream.Position = cliHeaderPtr + 16;
+            uint metadataRva = reader.ReadUInt32();
+            uint metadataSize = reader.ReadUInt32();
             CorFlags corflags = (CorFlags)reader.ReadUInt32();
 
-            return new AssemblyMetadata(majorRuntimeVersion, minorRuntimeVersion, corflags, peFormat);
+            // Read optional fields.
+            AssemblyName assemblyName = null;
+            IList<AssemblyName> assemblyReferences = null;
+
+            if (fields != AssemblyMetadataFields.Default)
+            {
+                // Using Cecil.
+                stream.Position = 0;
+                var imageReader = new ImageReader(stream);
+
+                if ((fields & AssemblyMetadataFields.AssemblyName) != 0)
+                    assemblyName = imageReader.GetAssemblyName();
+
+                if ((fields & AssemblyMetadataFields.AssemblyReferences) != 0)
+                    assemblyReferences = imageReader.GetAssemblyReferences();
+            }
+
+            // Done.
+            return new AssemblyMetadata(majorRuntimeVersion, minorRuntimeVersion, corflags, peFormat,
+                assemblyName, assemblyReferences);
         }
 
         private static uint ResolveRva(Section[] sections, uint rva)
@@ -185,6 +250,85 @@ namespace Gallio.Common.Reflection
             }
 
             return 0;
+        }
+
+        private sealed class ImageReader
+        {
+            private readonly Image image;
+
+            public ImageReader(Stream stream)
+            {
+                image = Image.GetImage(stream);
+            }
+
+            public AssemblyName GetAssemblyName()
+            {
+                var assemblyTable = GetTable<AssemblyTable>(AssemblyTable.RId);
+                var assemblyRow = (AssemblyRow) assemblyTable.Rows[0];
+
+                AssemblyName assemblyName = new AssemblyName()
+                {
+                    Name = ReadString(assemblyRow.Name),
+                    Version =
+                        new Version(assemblyRow.MajorVersion, assemblyRow.MinorVersion, assemblyRow.BuildNumber,
+                            assemblyRow.RevisionNumber),
+                    CultureInfo = new CultureInfo(ReadString(assemblyRow.Culture))
+                };
+
+                if (assemblyRow.PublicKey != 0)
+                    assemblyName.SetPublicKey(ReadBlob(assemblyRow.PublicKey));
+
+                return assemblyName;
+            }
+
+            public IList<AssemblyName> GetAssemblyReferences()
+            {
+                var assemblyReferences = new List<AssemblyName>();
+                var assemblyRefTable = GetTable<AssemblyRefTable>(AssemblyRefTable.RId);
+
+                if (assemblyRefTable != null)
+                {
+                    foreach (AssemblyRefRow assemblyRefRow in assemblyRefTable.Rows)
+                    {
+                        AssemblyName assemblyName = new AssemblyName()
+                        {
+                            Name = ReadString(assemblyRefRow.Name),
+                            Version =
+                                new Version(assemblyRefRow.MajorVersion, assemblyRefRow.MinorVersion,
+                                    assemblyRefRow.BuildNumber, assemblyRefRow.RevisionNumber),
+                            CultureInfo = new CultureInfo(ReadString(assemblyRefRow.Culture))
+                        };
+
+                        if (assemblyRefRow.PublicKeyOrToken != 0)
+                        {
+                            if ((assemblyRefRow.Flags & Mono.Cecil.AssemblyFlags.PublicKey) != 0)
+                                assemblyName.SetPublicKey(ReadBlob(assemblyRefRow.PublicKeyOrToken));
+                            else
+                                assemblyName.SetPublicKeyToken(ReadBlob(assemblyRefRow.PublicKeyOrToken));
+                        }
+
+                        assemblyReferences.Add(assemblyName);
+                    }
+                }
+
+                return assemblyReferences;
+            }
+
+            private T GetTable<T>(int rid)
+                where T : IMetadataTable
+            {
+                return (T) image.MetadataRoot.Streams.TablesHeap.Tables[rid];
+            }
+
+            private string ReadString(uint stringsIdx)
+            {
+                return image.MetadataRoot.Streams.StringsHeap[stringsIdx];
+            }
+
+            private byte[] ReadBlob(uint blobIdx)
+            {
+                return image.MetadataRoot.Streams.BlobHeap.Read(blobIdx);
+            }
         }
 
         private enum PEFormat : ushort

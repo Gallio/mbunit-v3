@@ -17,11 +17,16 @@ using System;
 using System.Collections;
 using System.IO;
 using Gallio.Common.Collections;
+using Gallio.Common.Messaging;
+using Gallio.Framework.Pattern;
 using Gallio.Model;
-using Gallio.Model.Serialization;
+using Gallio.Model.Messages.Exploration;
+using Gallio.Model.Schema;
+using Gallio.Model.Tree;
 using Gallio.Runtime;
 using Gallio.Common.Reflection;
 using Gallio.Runtime.Loader;
+using Gallio.Runtime.ProgressMonitoring;
 using Microsoft.VisualStudio.TestTools.Common;
 using TestResult=Microsoft.VisualStudio.TestTools.Common.TestResult;
 
@@ -53,33 +58,27 @@ namespace Gallio.VisualStudio.Tip
             ITestFrameworkManager frameworkManager = RuntimeAccessor.ServiceLocator.Resolve<ITestFrameworkManager>();
             WarningLogger logger = new WarningLogger(warningHandler);
 
-            TestPackageConfig testPackageConfig = new TestPackageConfig();
-            testPackageConfig.ExcludedFrameworkIds.Add("MSTestAdapter.TestFramework");
-
-            testPackageConfig.Files.Add(location);
-
             ReflectionOnlyAssemblyLoader loader = new ReflectionOnlyAssemblyLoader();
             loader.AddHintDirectory(Path.GetDirectoryName(location));
 
-            ITestExplorer explorer = frameworkManager.GetTestExplorer(frameworkId => testPackageConfig.IsFrameworkRequested(frameworkId));
-            TestExplorationContext testExplorationContext = new TestExplorationContext(testPackageConfig, loader.ReflectionPolicy,
-                RuntimeAccessor.ServiceLocator.Resolve<ILoader>());
-            TestModel testModel = new TestModel(testExplorationContext);
-                
             IAssemblyInfo assembly = loader.ReflectionPolicy.LoadAssemblyFrom(location);
-            TestSource testSource = new TestSource();
-            testSource.AddAssembly(assembly);
-            explorer.Explore(testModel, testSource, null);
+            ITestDriver driver = frameworkManager.GetTestDriver(frameworkId => frameworkId != "MSTestAdapter.TestFramework");
+            TestExplorationOptions testExplorationOptions = new TestExplorationOptions();
 
             ArrayList tests = new ArrayList();
-            foreach (ITest test in testModel.AllTests)
-            {
-                if (test.IsTestCase)
-                    tests.Add(GallioTestElementFactory.CreateTestElement(new TestData(test), location, projectData));
-            }
+            MessageConsumer messageConsumer = new MessageConsumer()
+                .Handle<TestDiscoveredMessage>(message =>
+                {
+                    if (message.Test.IsTestCase)
+                        tests.Add(GallioTestElementFactory.CreateTestElement(message.Test, location, projectData));
+                })
+                .Handle<AnnotationDiscoveredMessage>(message =>
+                {
+                    message.Annotation.Log(logger, true);
+                });
 
-            foreach (Annotation annotation in testModel.Annotations)
-                new AnnotationData(annotation).Log(logger, true);
+            driver.Describe(loader.ReflectionPolicy, new ICodeElementInfo[] { assembly },
+                testExplorationOptions, messageConsumer, NullProgressMonitor.CreateInstance());
 
             return tests;
         }

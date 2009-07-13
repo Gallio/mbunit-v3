@@ -16,8 +16,8 @@
 using System;
 using Gallio.Common.Concurrency;
 using Gallio.Model;
-using Gallio.Model.Execution;
-using Gallio.Runner.Reports;
+using Gallio.Model.Schema;
+using Gallio.Runner.Reports.Schema;
 
 namespace Gallio.Runner.Events
 {
@@ -26,7 +26,7 @@ namespace Gallio.Runner.Events
     /// </summary>
     public sealed class RunStartedEventArgs : OperationStartedEventArgs
     {
-        private readonly TestPackageConfig testPackageConfig;
+        private readonly TestPackage testPackage;
         private readonly TestExplorationOptions testExplorationOptions;
         private readonly TestExecutionOptions testExecutionOptions;
         private readonly LockBox<Report> reportLockBox;
@@ -34,35 +34,35 @@ namespace Gallio.Runner.Events
         /// <summary>
         /// Initializes the event arguments.
         /// </summary>
-        /// <param name="testPackageConfig">The test package configuration.</param>
+        /// <param name="testPackage">The test package.</param>
         /// <param name="testExplorationOptions">The test exploration options.</param>
         /// <param name="testExecutionOptions">The test execution options.</param>
         /// <param name="reportLockBox">The report lock-box which may be used to access the report asynchronously during execution.</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="testPackageConfig"/>,
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="testPackage"/>,
         /// <paramref name="testExplorationOptions"/> or <paramref name="testExecutionOptions"/> is null.</exception>
-        public RunStartedEventArgs(TestPackageConfig testPackageConfig,
+        public RunStartedEventArgs(TestPackage testPackage,
             TestExplorationOptions testExplorationOptions, TestExecutionOptions testExecutionOptions,
             LockBox<Report> reportLockBox)
         {
-            if (testPackageConfig == null)
-                throw new ArgumentNullException("testPackageConfig");
+            if (testPackage == null)
+                throw new ArgumentNullException("testPackage");
             if (testExplorationOptions == null)
                 throw new ArgumentNullException("testExplorationOptions");
             if (testExecutionOptions == null)
                 throw new ArgumentNullException("testExecutionOptions");
 
-            this.testPackageConfig = testPackageConfig;
+            this.testPackage = testPackage;
             this.testExplorationOptions = testExplorationOptions;
             this.testExecutionOptions = testExecutionOptions;
             this.reportLockBox = reportLockBox;
         }
 
         /// <summary>
-        /// Gets the test package configuration.
+        /// Gets the test package.
         /// </summary>
-        public TestPackageConfig TestPackageConfig
+        public TestPackage TestPackage
         {
-            get { return testPackageConfig; }
+            get { return testPackage; }
         }
 
         /// <summary>

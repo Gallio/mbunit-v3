@@ -13,6 +13,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
+using System.Xml;
 using System.Xml.Serialization;
 
 namespace Gallio.Common.Xml
@@ -22,26 +24,34 @@ namespace Gallio.Common.Xml
     ///</summary>
     public class DefaultXmlSerializer : IXmlSerializer
     {
-        /// <summary>
-        /// Saves an object graph to a pretty-printed Xml file using <see cref="XmlSerializer" />.
-        /// </summary>
-        /// <param name="root">The root object.</param>
-        /// <param name="filename">The filename.</param>
-        /// <typeparam name="T">The root object type.</typeparam>
+        /// <inheritdoc />
         public void SaveToXml<T>(T root, string filename)
         {
-            XmlSerializationUtils.SaveToXml(root, filename);
+            if (root == null)
+                throw new ArgumentNullException("root");
+            if (filename == null)
+                throw new ArgumentNullException("filename");
+
+            var serializer = new XmlSerializer(typeof(T));
+
+            var settings = new XmlWriterSettings();
+            settings.Indent = true;
+            settings.CloseOutput = true;
+
+            using (var writer = XmlWriter.Create(filename, settings))
+                serializer.Serialize(writer, root);
         }
 
-        /// <summary>
-        /// Loads an object graph from an Xml file using <see cref="XmlSerializer" />.
-        /// </summary>
-        /// <param name="filename">The filename.</param>
-        /// <returns>The root object.</returns>
-        /// <typeparam name="T">The root object type.</typeparam>
+        /// <inheritdoc />
         public T LoadFromXml<T>(string filename)
         {
-            return XmlSerializationUtils.LoadFromXml<T>(filename);
+            if (filename == null)
+                throw new ArgumentNullException("filename");
+
+            var serializer = new XmlSerializer(typeof(T));
+
+            using (XmlReader reader = XmlReader.Create(filename))
+                return (T)serializer.Deserialize(reader);
         }
     }
 }

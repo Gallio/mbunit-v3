@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
 using Gallio.Runner.Reports;
+using Gallio.Runner.Reports.Schema;
 using Gallio.Runtime.Logging;
 using Gallio.Runtime.ProgressMonitoring;
 

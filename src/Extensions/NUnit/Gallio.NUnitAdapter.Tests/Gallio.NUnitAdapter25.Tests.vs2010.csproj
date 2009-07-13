@@ -11,10 +11,6 @@
     <AssemblyName>Gallio.NUnitAdapter25.Tests</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <BaseIntermediateOutputPath>obj\v2.5\</BaseIntermediateOutputPath>
-    <FileUpgradeFlags>
-    </FileUpgradeFlags>
-    <OldToolsVersion>3.5</OldToolsVersion>
-    <UpgradeBackupLocation />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -69,7 +65,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Integration\RunAddinsTest.cs" />
-    <Compile Include="Model\NUnitTestExplorerTest.cs" />
     <Compile Include="Model\NUnitTestFrameworkTest.cs" />
     <Compile Include="Integration\RunSimpleTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -95,13 +90,13 @@
       <Project>{A9B54755-56B7-48C1-8941-BB69FCEFFF32}</Project>
       <Name>MbUnit %28MbUnit\MbUnit%29</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Gallio.NUnitAdapter\Gallio.NUnitAdapter25.vs2010.csproj">
-      <Project>{6C54EE4A-65D5-4133-A89D-9F57C6ADB2C9}</Project>
-      <Name>Gallio.NUnitAdapter25</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Gallio.NUnitAdapter.TestResources\Gallio.NUnitAdapter25.TestResources.vs2010.csproj">
       <Project>{42CC86A2-B9A9-447F-97DD-D6809D78A8EB}</Project>
       <Name>Gallio.NUnitAdapter25.TestResources</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Gallio.NUnitAdapter\Gallio.NUnitAdapter25.vs2010.csproj">
+      <Project>{6C54EE4A-65D5-4133-A89D-9F57C6ADB2C9}</Project>
+      <Name>Gallio.NUnitAdapter25</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

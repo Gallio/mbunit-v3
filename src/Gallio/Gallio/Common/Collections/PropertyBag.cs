@@ -33,7 +33,7 @@ namespace Gallio.Common.Collections
     /// </para>
     /// </remarks>
     [Serializable]
-    [XmlRoot("propertyBag", Namespace=XmlSerializationUtils.GallioNamespace)]
+    [XmlRoot("propertyBag", Namespace=SchemaConstants.XmlNamespace)]
     [XmlSchemaProvider("ProvideXmlSchema")]
     public sealed class PropertyBag : IMultiMap<string, string>, IXmlSerializable, IEquatable<PropertyBag>
     {
@@ -315,7 +315,7 @@ namespace Gallio.Common.Collections
         {
             schemas.Add(new XmlSchema()
             {
-                TargetNamespace = XmlSerializationUtils.GallioNamespace,
+                TargetNamespace = SchemaConstants.XmlNamespace,
                 Items =
                     {
                         new XmlSchemaComplexType()
@@ -368,7 +368,7 @@ namespace Gallio.Common.Collections
                     }
             });
 
-            return new XmlQualifiedName("PropertyBag", XmlSerializationUtils.GallioNamespace);
+            return new XmlQualifiedName("PropertyBag", SchemaConstants.XmlNamespace);
         }
 
         XmlSchema IXmlSerializable.GetSchema()

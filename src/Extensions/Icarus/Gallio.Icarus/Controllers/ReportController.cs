@@ -24,7 +24,7 @@ using Gallio.Icarus.Reports;
 using Gallio.Icarus.Services;
 using Gallio.Icarus.Services.Interfaces;
 using Gallio.Icarus.Utilities;
-using Gallio.Runner.Reports;
+using Gallio.Runner.Reports.Schema;
 using Gallio.Runtime.ProgressMonitoring;
 
 namespace Gallio.Icarus.Controllers

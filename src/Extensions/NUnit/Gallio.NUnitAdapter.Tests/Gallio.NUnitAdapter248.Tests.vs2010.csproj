@@ -11,10 +11,6 @@
     <AssemblyName>Gallio.NUnitAdapter248.Tests</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <BaseIntermediateOutputPath>obj\v2.4.8\</BaseIntermediateOutputPath>
-    <FileUpgradeFlags>
-    </FileUpgradeFlags>
-    <OldToolsVersion>3.5</OldToolsVersion>
-    <UpgradeBackupLocation />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -77,7 +73,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Integration\RunAddinsTest.cs" />
-    <Compile Include="Model\NUnitTestExplorerTest.cs" />
     <Compile Include="Model\NUnitTestFrameworkTest.cs" />
     <Compile Include="Integration\RunSimpleTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

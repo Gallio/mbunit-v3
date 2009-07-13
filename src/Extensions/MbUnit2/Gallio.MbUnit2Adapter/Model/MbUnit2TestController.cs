@@ -20,9 +20,12 @@ using System.Text;
 using Gallio.Common.Collections;
 using Gallio.MbUnit2Adapter.Properties;
 using Gallio.Common.Diagnostics;
+using Gallio.Model.Commands;
+using Gallio.Model.Contexts;
+using Gallio.Model.Helpers;
+using Gallio.Model.Tree;
 using Gallio.Runtime.ProgressMonitoring;
 using Gallio.Model;
-using Gallio.Model.Execution;
 using Gallio.Common.Markup;
 using MbUnit2::MbUnit.Core;
 using MbUnit2::MbUnit.Core.Remoting;
@@ -34,7 +37,7 @@ namespace Gallio.MbUnit2Adapter.Model
     /// <summary>
     /// Controls the execution of MbUnit v2 tests.
     /// </summary>
-    internal class MbUnit2TestController : BaseTestController
+    internal class MbUnit2TestController : TestController
     {
         private FixtureExplorer fixtureExplorer;
 
@@ -48,13 +51,7 @@ namespace Gallio.MbUnit2Adapter.Model
         }
 
         /// <inheritdoc />
-        public override void Dispose()
-        {
-            fixtureExplorer = null;
-        }
-
-        /// <inheritdoc />
-        protected override TestOutcome RunTestsImpl(ITestCommand rootTestCommand, ITestStep parentTestStep, TestExecutionOptions options, IProgressMonitor progressMonitor)
+        protected override TestOutcome RunImpl(ITestCommand rootTestCommand, TestStep parentTestStep, TestExecutionOptions options, IProgressMonitor progressMonitor)
         {
             ThrowIfDisposed();
 
@@ -92,7 +89,7 @@ namespace Gallio.MbUnit2Adapter.Model
             private readonly FixtureExplorer fixtureExplorer;
             private readonly IList<ITestCommand> testCommands;
             private readonly IProgressMonitor progressMonitor;
-            private readonly ITestStep topTestStep;
+            private readonly TestStep topTestStep;
 
             private HashSet<Type> includedFixtureTypes;
 
@@ -106,7 +103,7 @@ namespace Gallio.MbUnit2Adapter.Model
             private double workUnit;
 
             public InstrumentedFixtureRunner(FixtureExplorer fixtureExplorer,
-                IList<ITestCommand> testCommands, IProgressMonitor progressMonitor, ITestStep topTestStep)
+                IList<ITestCommand> testCommands, IProgressMonitor progressMonitor, TestStep topTestStep)
             {
                 this.fixtureExplorer = fixtureExplorer;
                 this.progressMonitor = progressMonitor;

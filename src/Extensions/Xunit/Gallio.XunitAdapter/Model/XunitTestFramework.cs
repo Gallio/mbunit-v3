@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using Gallio.Model;
+using Gallio.Runtime.Extensibility;
 
 namespace Gallio.XunitAdapter.Model
 {
@@ -25,9 +26,14 @@ namespace Gallio.XunitAdapter.Model
     public class XunitTestFramework : BaseTestFramework
     {
         /// <inheritdoc />
-        public override void RegisterTestExplorers(IList<ITestExplorer> explorers)
+        sealed public override TestDriverFactory GetTestDriverFactory()
         {
-            explorers.Add(new XunitTestExplorer());
+            return CreateTestDriver;
+        }
+
+        private static ITestDriver CreateTestDriver(IList<ComponentHandle<ITestFramework, TestFrameworkTraits>> frameworkHandles)
+        {
+            return new XunitTestDriver();
         }
     }
 }

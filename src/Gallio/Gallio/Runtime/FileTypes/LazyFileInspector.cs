@@ -23,7 +23,7 @@ namespace Gallio.Runtime.FileTypes
     /// <summary>
     /// A file inspector that opens a file only on demand as needed.
     /// </summary>
-    internal class LazyFileInspector : IFileInspector, IDisposable
+    public class LazyFileInspector : IFileInspector, IDisposable
     {
         private FileInfo fileInfo;
         private string contents;
@@ -42,12 +42,14 @@ namespace Gallio.Runtime.FileTypes
             this.fileInfo = fileInfo;
         }
 
+        /// <inheritdoc />
         public void Dispose()
         {
             Dispose(true);
             GC.SuppressFinalize(this);
         }
 
+        /// <inheritdoc />
         public bool TryGetFileInfo(out FileInfo fileInfo)
         {
             ThrowIfDisposed();
@@ -56,6 +58,7 @@ namespace Gallio.Runtime.FileTypes
             return true;
         }
 
+        /// <inheritdoc />
         public bool TryGetContents(out string contents)
         {
             ThrowIfDisposed();
@@ -77,6 +80,7 @@ namespace Gallio.Runtime.FileTypes
             return true;
         }
 
+        /// <inheritdoc />
         public bool TryGetStream(out Stream stream)
         {
             ThrowIfDisposed();

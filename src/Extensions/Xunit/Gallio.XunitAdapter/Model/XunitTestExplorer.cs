@@ -18,6 +18,8 @@ using System.Collections.Generic;
 using System.Reflection;
 using Gallio.Model;
 using Gallio.Common.Reflection;
+using Gallio.Model.Helpers;
+using Gallio.Model.Tree;
 using Gallio.XunitAdapter.Properties;
 using Xunit.Sdk;
 using ITypeInfo = Gallio.Common.Reflection.ITypeInfo;
@@ -29,200 +31,172 @@ namespace Gallio.XunitAdapter.Model
     /// <summary>
     /// Explores tests in Xunit assemblies.
     /// </summary>
-    internal class XunitTestExplorer : BaseTestExplorer
+    internal class XunitTestExplorer : TestExplorer
     {
         private const string FrameworkName = "xUnit.net";
         private const string XunitAssemblyDisplayName = @"xunit";
 
-        public override void Explore(TestModel testModel, TestSource testSource, Action<ITest> consumer)
+        private readonly Dictionary<Version, Test> frameworkTests;
+        private readonly Dictionary<IAssemblyInfo, Test> assemblyTests;
+        private readonly Dictionary<ITypeInfo, Test> typeTests;
+
+        public XunitTestExplorer()
         {
-            var state = new ExplorerState(testModel);
-
-            foreach (IAssemblyInfo assembly in testSource.Assemblies)
-                state.ExploreAssembly(assembly, consumer);
-
-            foreach (ITypeInfo type in testSource.Types)
-                state.ExploreType(type, consumer);
+            frameworkTests = new Dictionary<Version, Test>();
+            assemblyTests = new Dictionary<IAssemblyInfo, Test>();
+            typeTests = new Dictionary<ITypeInfo, Test>();
         }
 
-        private sealed class ExplorerState
+        protected override void ExploreImpl(IReflectionPolicy reflectionPolicy, ICodeElementInfo codeElement)
         {
-            private readonly TestModel testModel;
-            private readonly Dictionary<Version, ITest> frameworkTests;
-            private readonly Dictionary<IAssemblyInfo, ITest> assemblyTests;
-            private readonly Dictionary<ITypeInfo, ITest> typeTests;
+            IAssemblyInfo assembly = ReflectionUtils.GetAssembly(codeElement);
+            Version frameworkVersion = GetFrameworkVersion(assembly);
 
-            public ExplorerState(TestModel testModel)
+            if (frameworkVersion != null)
             {
-                this.testModel = testModel;
-                frameworkTests = new Dictionary<Version, ITest>();
-                assemblyTests = new Dictionary<IAssemblyInfo, ITest>();
-                typeTests = new Dictionary<ITypeInfo, ITest>();
+                Test frameworkTest = GetFrameworkTest(frameworkVersion, TestModel.RootTest);
+                Test assemblyTest = GetAssemblyTest(assembly, frameworkTest, false);
+
+                ITypeInfo type = ReflectionUtils.GetType(codeElement);
+                if (type != null)
+                {
+                    TryGetTypeTest(type, assemblyTest);
+                }
+            }
+        }
+
+        private static Version GetFrameworkVersion(IAssemblyInfo assembly)
+        {
+            AssemblyName frameworkAssemblyName = ReflectionUtils.FindAssemblyReference(assembly, XunitAssemblyDisplayName);
+            return frameworkAssemblyName != null ? frameworkAssemblyName.Version : null;
+        }
+
+        private Test GetFrameworkTest(Version frameworkVersion, Test rootTest)
+        {
+            Test frameworkTest;
+            if (! frameworkTests.TryGetValue(frameworkVersion, out frameworkTest))
+            {
+                frameworkTest = CreateFrameworkTest(frameworkVersion);
+                rootTest.AddChild(frameworkTest);
+
+                frameworkTests.Add(frameworkVersion, frameworkTest);
             }
 
-            public void ExploreAssembly(IAssemblyInfo assembly, Action<ITest> consumer)
+            return frameworkTest;
+        }
+
+        private static Test CreateFrameworkTest(Version frameworkVersion)
+        {
+            Test frameworkTest = new Test(String.Format(Resources.XunitTestExplorer_FrameworkNameWithVersionFormat, frameworkVersion), null);
+            frameworkTest.LocalIdHint = FrameworkName;
+            frameworkTest.Kind = TestKinds.Framework;
+            frameworkTest.Metadata.Add(MetadataKeys.Framework, FrameworkName);
+
+            return frameworkTest;
+        }
+
+        private Test GetAssemblyTest(IAssemblyInfo assembly, Test frameworkTest, bool populateRecursively)
+        {
+            Test assemblyTest;
+            if (!assemblyTests.TryGetValue(assembly, out assemblyTest))
             {
-                Version frameworkVersion = GetFrameworkVersion(assembly);
+                assemblyTest = CreateAssemblyTest(assembly);
+                frameworkTest.AddChild(assemblyTest);
 
-                if (frameworkVersion != null)
+                assemblyTests.Add(assembly, assemblyTest);
+            }
+
+            if (populateRecursively)
+            {
+                foreach (ITypeInfo type in assembly.GetExportedTypes())
+                    TryGetTypeTest(type, assemblyTest);
+            }
+
+            return assemblyTest;
+        }
+
+        private static Test CreateAssemblyTest(IAssemblyInfo assembly)
+        {
+            Test assemblyTest = new Test(assembly.Name, assembly);
+            assemblyTest.Kind = TestKinds.Assembly;
+
+            ModelUtils.PopulateMetadataFromAssembly(assembly, assemblyTest.Metadata);
+
+            return assemblyTest;
+        }
+
+        private Test TryGetTypeTest(ITypeInfo type, Test assemblyTest)
+        {
+            Test typeTest;
+            if (!typeTests.TryGetValue(type, out typeTest))
+            {
+                try
                 {
-                    ITest frameworkTest = GetFrameworkTest(frameworkVersion, testModel.RootTest);
-                    ITest assemblyTest = GetAssemblyTest(assembly, frameworkTest, true);
+                    XunitTypeInfoAdapter xunitTypeInfo = new XunitTypeInfoAdapter(type);
+                    ITestClassCommand command = TestClassCommandFactory.Make(xunitTypeInfo);
+                    if (command != null)
+                        typeTest = CreateTypeTest(xunitTypeInfo, command);
+                }
+                catch (Exception ex)
+                {
+                    TestModel.AddAnnotation(new Annotation(AnnotationType.Error, type, "An exception was thrown while exploring an xUnit.net test type.", ex));
+                }
 
-                    if (consumer != null)
-                        consumer(assemblyTest);
+                if (typeTest != null)
+                {
+                    assemblyTest.AddChild(typeTest);
+                    typeTests.Add(type, typeTest);
                 }
             }
 
-            public void ExploreType(ITypeInfo type, Action<ITest> consumer)
+            return typeTest;
+        }
+
+        private static XunitTest CreateTypeTest(XunitTypeInfoAdapter typeInfo, ITestClassCommand testClassCommand)
+        {
+            XunitTest typeTest = new XunitTest(typeInfo.Target.Name, typeInfo.Target, typeInfo, null);
+            typeTest.Kind = TestKinds.Fixture;
+
+            foreach (XunitMethodInfoAdapter methodInfo in testClassCommand.EnumerateTestMethods())
+                typeTest.AddChild(CreateMethodTest(typeInfo, methodInfo));
+
+            // Add XML documentation.
+            string xmlDocumentation = typeInfo.Target.GetXmlDocumentation();
+            if (xmlDocumentation != null)
+                typeTest.Metadata.SetValue(MetadataKeys.XmlDocumentation, xmlDocumentation);
+
+            return typeTest;
+        }
+
+        private static XunitTest CreateMethodTest(XunitTypeInfoAdapter typeInfo, XunitMethodInfoAdapter methodInfo)
+        {
+            XunitTest methodTest = new XunitTest(methodInfo.Name, methodInfo.Target, typeInfo, methodInfo);
+            methodTest.Kind = TestKinds.Test;
+            methodTest.IsTestCase = true;
+
+            // Add skip reason.
+            if (XunitMethodUtility.IsSkip(methodInfo))
             {
-                IAssemblyInfo assembly = type.Assembly;
-                Version frameworkVersion = GetFrameworkVersion(assembly);
+                string skipReason = XunitMethodUtility.GetSkipReason(methodInfo);
+                if (skipReason != null)
+                    methodTest.Metadata.SetValue(MetadataKeys.IgnoreReason, skipReason);
+            }
 
-                if (frameworkVersion != null)
+            // Add traits.
+            if (XunitMethodUtility.HasTraits(methodInfo))
+            {
+                foreach (KeyValuePair<string, string> entry in XunitMethodUtility.GetTraits(methodInfo))
                 {
-                    ITest frameworkTest = GetFrameworkTest(frameworkVersion, testModel.RootTest);
-                    ITest assemblyTest = GetAssemblyTest(assembly, frameworkTest, false);
-
-                    ITest typeTest = TryGetTypeTest(type, assemblyTest);
-                    if (typeTest != null && consumer != null)
-                        consumer(typeTest);
+                    methodTest.Metadata.Add(entry.Key ?? @"", entry.Value ?? @"");
                 }
             }
 
-            private static Version GetFrameworkVersion(IAssemblyInfo assembly)
-            {
-                AssemblyName frameworkAssemblyName = ReflectionUtils.FindAssemblyReference(assembly, XunitAssemblyDisplayName);
-                return frameworkAssemblyName != null ? frameworkAssemblyName.Version : null;
-            }
+            // Add XML documentation.
+            string xmlDocumentation = methodInfo.Target.GetXmlDocumentation();
+            if (xmlDocumentation != null)
+                methodTest.Metadata.SetValue(MetadataKeys.XmlDocumentation, xmlDocumentation);
 
-            private ITest GetFrameworkTest(Version frameworkVersion, ITest rootTest)
-            {
-                ITest frameworkTest;
-                if (! frameworkTests.TryGetValue(frameworkVersion, out frameworkTest))
-                {
-                    frameworkTest = CreateFrameworkTest(frameworkVersion);
-                    rootTest.AddChild(frameworkTest);
-
-                    frameworkTests.Add(frameworkVersion, frameworkTest);
-                }
-
-                return frameworkTest;
-            }
-
-            private static ITest CreateFrameworkTest(Version frameworkVersion)
-            {
-                BaseTest frameworkTest = new BaseTest(String.Format(Resources.XunitTestExplorer_FrameworkNameWithVersionFormat, frameworkVersion), null);
-                frameworkTest.LocalIdHint = FrameworkName;
-                frameworkTest.Kind = TestKinds.Framework;
-                frameworkTest.Metadata.Add(MetadataKeys.Framework, FrameworkName);
-
-                return frameworkTest;
-            }
-
-            private ITest GetAssemblyTest(IAssemblyInfo assembly, ITest frameworkTest, bool populateRecursively)
-            {
-                ITest assemblyTest;
-                if (!assemblyTests.TryGetValue(assembly, out assemblyTest))
-                {
-                    assemblyTest = CreateAssemblyTest(assembly);
-                    frameworkTest.AddChild(assemblyTest);
-
-                    assemblyTests.Add(assembly, assemblyTest);
-                }
-
-                if (populateRecursively)
-                {
-                    foreach (ITypeInfo type in assembly.GetExportedTypes())
-                        TryGetTypeTest(type, assemblyTest);
-                }
-
-                return assemblyTest;
-            }
-
-            private static ITest CreateAssemblyTest(IAssemblyInfo assembly)
-            {
-                BaseTest assemblyTest = new BaseTest(assembly.Name, assembly);
-                assemblyTest.Kind = TestKinds.Assembly;
-
-                ModelUtils.PopulateMetadataFromAssembly(assembly, assemblyTest.Metadata);
-
-                return assemblyTest;
-            }
-
-            private ITest TryGetTypeTest(ITypeInfo type, ITest assemblyTest)
-            {
-                ITest typeTest;
-                if (!typeTests.TryGetValue(type, out typeTest))
-                {
-                    try
-                    {
-                        XunitTypeInfoAdapter xunitTypeInfo = new XunitTypeInfoAdapter(type);
-                        ITestClassCommand command = TestClassCommandFactory.Make(xunitTypeInfo);
-                        if (command != null)
-                            typeTest = CreateTypeTest(xunitTypeInfo, command);
-                    }
-                    catch (Exception ex)
-                    {
-                        testModel.AddAnnotation(new Annotation(AnnotationType.Error, type, "An exception was thrown while exploring an xUnit.net test type.", ex));
-                    }
-
-                    if (typeTest != null)
-                    {
-                        assemblyTest.AddChild(typeTest);
-                        typeTests.Add(type, typeTest);
-                    }
-                }
-
-                return typeTest;
-            }
-
-            private static XunitTest CreateTypeTest(XunitTypeInfoAdapter typeInfo, ITestClassCommand testClassCommand)
-            {
-                XunitTest typeTest = new XunitTest(typeInfo.Target.Name, typeInfo.Target, typeInfo, null);
-                typeTest.Kind = TestKinds.Fixture;
-
-                foreach (XunitMethodInfoAdapter methodInfo in testClassCommand.EnumerateTestMethods())
-                    typeTest.AddChild(CreateMethodTest(typeInfo, methodInfo));
-
-                // Add XML documentation.
-                string xmlDocumentation = typeInfo.Target.GetXmlDocumentation();
-                if (xmlDocumentation != null)
-                    typeTest.Metadata.SetValue(MetadataKeys.XmlDocumentation, xmlDocumentation);
-
-                return typeTest;
-            }
-
-            private static XunitTest CreateMethodTest(XunitTypeInfoAdapter typeInfo, XunitMethodInfoAdapter methodInfo)
-            {
-                XunitTest methodTest = new XunitTest(methodInfo.Name, methodInfo.Target, typeInfo, methodInfo);
-                methodTest.Kind = TestKinds.Test;
-                methodTest.IsTestCase = true;
-
-                // Add skip reason.
-                if (XunitMethodUtility.IsSkip(methodInfo))
-                {
-                    string skipReason = XunitMethodUtility.GetSkipReason(methodInfo);
-                    if (skipReason != null)
-                        methodTest.Metadata.SetValue(MetadataKeys.IgnoreReason, skipReason);
-                }
-
-                // Add traits.
-                if (XunitMethodUtility.HasTraits(methodInfo))
-                {
-                    foreach (KeyValuePair<string, string> entry in XunitMethodUtility.GetTraits(methodInfo))
-                    {
-                        methodTest.Metadata.Add(entry.Key ?? @"", entry.Value ?? @"");
-                    }
-                }
-
-                // Add XML documentation.
-                string xmlDocumentation = methodInfo.Target.GetXmlDocumentation();
-                if (xmlDocumentation != null)
-                    methodTest.Metadata.SetValue(MetadataKeys.XmlDocumentation, xmlDocumentation);
-
-                return methodTest;
-            }
+            return methodTest;
         }
     }
 }

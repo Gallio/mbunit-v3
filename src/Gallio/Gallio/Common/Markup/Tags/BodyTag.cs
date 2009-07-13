@@ -25,8 +25,8 @@ namespace Gallio.Common.Markup.Tags
     /// The top-level container tag of markup.
     /// </summary>
     [Serializable]
-    [XmlRoot("body", Namespace = XmlSerializationUtils.GallioNamespace)]
-    [XmlType(Namespace = XmlSerializationUtils.GallioNamespace)]
+    [XmlRoot("body", Namespace = SchemaConstants.XmlNamespace)]
+    [XmlType(Namespace = SchemaConstants.XmlNamespace)]
     public sealed class BodyTag : ContainerTag, ICloneable<BodyTag>, IEquatable<BodyTag>
     {
         /// <inheritdoc />

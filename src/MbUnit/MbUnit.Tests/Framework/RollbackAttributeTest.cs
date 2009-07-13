@@ -17,7 +17,7 @@ using System;
 using System.Transactions;
 using Gallio.Framework;
 using Gallio.Common.Reflection;
-using Gallio.Runner.Reports;
+using Gallio.Runner.Reports.Schema;
 using Gallio.Tests;
 using MbUnit.Framework;
 

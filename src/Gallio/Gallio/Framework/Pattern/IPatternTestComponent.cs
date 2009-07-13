@@ -15,13 +15,14 @@
 
 using System;
 using Gallio.Model;
+using Gallio.Model.Filters;
 
 namespace Gallio.Framework.Pattern
 {
     /// <summary>
     /// An interface shared by <see cref="PatternTest" /> and <see cref="PatternTestParameter" />.
     /// </summary>
-    public interface IPatternTestComponent : ITestComponent
+    public interface IPatternTestComponent : ITestDescriptor
     {
         /// <summary>
         /// Gets the data context of the component.

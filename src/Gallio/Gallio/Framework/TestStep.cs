@@ -21,6 +21,7 @@ using Gallio.Framework.Assertions;
 using Gallio.Model;
 using Gallio.Common.Diagnostics;
 using Gallio.Common.Reflection;
+using Gallio.Model.Tree;
 
 namespace Gallio.Framework
 {
@@ -110,7 +111,7 @@ namespace Gallio.Framework
         /// <summary>
         /// Gets reflection information about the current step.
         /// </summary>
-        public static TestStepInfo CurrentStep
+        public static Model.Tree.TestStep CurrentStep
         {
             get { return TestContext.CurrentContext.TestStep; }
         }
@@ -121,7 +122,7 @@ namespace Gallio.Framework
         /// </summary>
         /// <remarks>
         /// <para>
-        /// This method creates a new child context with a new nested <see cref="ITestStep" />,
+        /// This method creates a new child context with a new nested <see cref="Model.Tree.TestStep" />,
         /// enters the child context, performs the action, then exits the child context.
         /// </para>
         /// <para>
@@ -152,7 +153,7 @@ namespace Gallio.Framework
         /// </summary>
         /// <remarks>
         /// <para>
-        /// This method creates a new child context with a new nested <see cref="ITestStep" />,
+        /// This method creates a new child context with a new nested <see cref="Model.Tree.TestStep" />,
         /// enters the child context, performs the action, then exits the child context.
         /// </para>
         /// <para>
@@ -185,7 +186,7 @@ namespace Gallio.Framework
         /// </summary>
         /// <remarks>
         /// <para>
-        /// This method creates a new child context with a new nested <see cref="ITestStep" />,
+        /// This method creates a new child context with a new nested <see cref="Model.Tree.TestStep" />,
         /// enters the child context, performs the action, then exits the child context.
         /// </para>
         /// <para>
@@ -219,7 +220,7 @@ namespace Gallio.Framework
         /// </summary>
         /// <remarks>
         /// <para>
-        /// This method creates a new child context with a new nested <see cref="ITestStep" />,
+        /// This method creates a new child context with a new nested <see cref="Model.Tree.TestStep" />,
         /// enters the child context, performs the action, then exits the child context.
         /// </para>
         /// <para>
@@ -251,7 +252,7 @@ namespace Gallio.Framework
         /// </summary>
         /// <remarks>
         /// <para>
-        /// This method creates a new child context with a new nested <see cref="ITestStep" />,
+        /// This method creates a new child context with a new nested <see cref="Model.Tree.TestStep" />,
         /// enters the child context, performs the action, then exits the child context.
         /// </para>
         /// <para>
@@ -285,7 +286,7 @@ namespace Gallio.Framework
         /// </summary>
         /// <remarks>
         /// <para>
-        /// This method creates a new child context with a new nested <see cref="ITestStep" />,
+        /// This method creates a new child context with a new nested <see cref="Model.Tree.TestStep" />,
         /// enters the child context, performs the action, then exits the child context.
         /// </para>
         /// <para>

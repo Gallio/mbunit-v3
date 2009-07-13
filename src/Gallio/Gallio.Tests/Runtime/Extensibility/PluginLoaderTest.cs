@@ -25,7 +25,7 @@ using Gallio.Common.Reflection;
 using Gallio.Common.Validation;
 using Gallio.Runtime;
 using Gallio.Runtime.Extensibility;
-using Gallio.Schema.Plugins;
+using Gallio.Runtime.Extensibility.Schema;
 using MbUnit.Framework;
 using Rhino.Mocks;
 

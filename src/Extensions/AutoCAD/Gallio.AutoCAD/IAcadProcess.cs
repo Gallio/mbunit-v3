@@ -23,9 +23,10 @@ namespace Gallio.AutoCAD
     public interface IAcadProcess : IDisposable
     {
         /// <summary>
-        /// Gets the <see cref="IRemoteTestDriver"/> instance.
+        /// Starts the AutoCAD process and the client.
         /// </summary>
-        /// <returns>The <see cref="IRemoteTestDriver"/> instance.</returns>
-        IRemoteTestDriver GetRemoteTestDriver();
+        /// <param name="ipcPortName">The IPC port name.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="ipcPortName"/> is null.</exception>
+        void Start(string ipcPortName);
     }
 }

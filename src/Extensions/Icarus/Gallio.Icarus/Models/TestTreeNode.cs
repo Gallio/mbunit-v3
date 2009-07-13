@@ -19,7 +19,7 @@ using System.Windows.Forms;
 using Aga.Controls.Tree;
 using Gallio.Icarus.Properties;
 using Gallio.Model;
-using Gallio.Runner.Reports;
+using Gallio.Runner.Reports.Schema;
 using Gallio.Runtime;
 
 namespace Gallio.Icarus.Models

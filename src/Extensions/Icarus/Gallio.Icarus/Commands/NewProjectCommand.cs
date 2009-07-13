@@ -45,7 +45,7 @@ namespace Gallio.Icarus.Commands
                 // reload
                 using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(90))
                 {
-                    testController.SetTestPackageConfig(projectController.TestPackageConfig);
+                    testController.SetTestPackage(projectController.TestPackage);
                     testController.Explore(subProgressMonitor, projectController.TestRunnerExtensions);
                 }
             }

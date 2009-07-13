@@ -21,7 +21,7 @@ using Gallio.Icarus.Controllers;
 using Gallio.Icarus.Reports;
 using Gallio.Icarus.Services.Interfaces;
 using Gallio.Icarus.Tests.Utilities;
-using Gallio.Runner.Reports;
+using Gallio.Runner.Reports.Schema;
 using Gallio.Runtime.ProgressMonitoring;
 using MbUnit.Framework;
 using Rhino.Mocks;

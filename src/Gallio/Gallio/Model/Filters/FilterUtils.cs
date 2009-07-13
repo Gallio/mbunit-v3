@@ -25,9 +25,9 @@ namespace Gallio.Model.Filters
         /// </summary>
         /// <param name="filterExpr">The filter expression.</param>
         /// <returns>The parsed filter set.</returns>
-        public static FilterSet<ITest> ParseTestFilterSet(string filterExpr)
+        public static FilterSet<ITestDescriptor> ParseTestFilterSet(string filterExpr)
         {
-            FilterParser<ITest> parser = new FilterParser<ITest>(new ModelComponentFilterFactory<ITest>());
+            FilterParser<ITestDescriptor> parser = new FilterParser<ITestDescriptor>(new TestDescriptorFilterFactory<ITestDescriptor>());
             return parser.ParseFilterSet(filterExpr);
         }
 
@@ -36,9 +36,9 @@ namespace Gallio.Model.Filters
         /// </summary>
         /// <param name="filterExpr">The filter expression.</param>
         /// <returns>The parsed filter.</returns>
-        public static Filter<ITest> ParseTestFilter(string filterExpr)
+        public static Filter<ITestDescriptor> ParseTestFilter(string filterExpr)
         {
-            FilterParser<ITest> parser = new FilterParser<ITest>(new ModelComponentFilterFactory<ITest>());
+            FilterParser<ITestDescriptor> parser = new FilterParser<ITestDescriptor>(new TestDescriptorFilterFactory<ITestDescriptor>());
             return parser.ParseFilter(filterExpr);
         }
     }

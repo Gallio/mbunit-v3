@@ -19,8 +19,8 @@ using Aga.Controls.Tree;
 using Gallio.Icarus.Helpers;
 using Gallio.Model;
 using Gallio.Model.Filters;
-using Gallio.Model.Serialization;
-using Gallio.Runner.Reports;
+using Gallio.Model.Schema;
+using Gallio.Runner.Reports.Schema;
 using Gallio.Runtime.ProgressMonitoring;
 
 namespace Gallio.Icarus.Models
@@ -39,11 +39,11 @@ namespace Gallio.Icarus.Models
         int Skipped { get; }
         int Inconclusive { get; }
 
-        void ApplyFilterSet(FilterSet<ITest> filterSet);
+        void ApplyFilterSet(FilterSet<ITestDescriptor> filterSet);
         void BuildTestTree(IProgressMonitor progressMonitor, TestModelData testModelData, 
             TestTreeBuilderOptions options);
         Node FindNode(TreePath path);
-        FilterSet<ITest> GenerateFilterSetFromSelectedTests();
+        FilterSet<ITestDescriptor> GenerateFilterSetFromSelectedTests();
         TreePath GetPath(Node node);
         void RemoveFilter(TestStatus testStatus);
         void ResetTestStatus(IProgressMonitor progressMonitor);

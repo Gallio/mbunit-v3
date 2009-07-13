@@ -35,10 +35,10 @@ namespace Gallio.Tests.Model.Filters
         [Row(@"Abc: /123 456 \/ 789/i")]        
         public void RoundTripFormatting(string filterExpr)
         {
-            Filter<ITest> filter = FilterUtils.ParseTestFilter(filterExpr);
+            Filter<ITestDescriptor> filter = FilterUtils.ParseTestFilter(filterExpr);
                         
             string formattedFilterExpression = filter.ToFilterExpr();
-            Filter<ITest> filterFromFormattedFilterExpression = FilterUtils.ParseTestFilter(formattedFilterExpression);
+            Filter<ITestDescriptor> filterFromFormattedFilterExpression = FilterUtils.ParseTestFilter(formattedFilterExpression);
 
             // The exact filter expression may be different (redundant parentheses are lost for
             // example), so we compare the final structure of the filters created by parsing the
