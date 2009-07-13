@@ -303,7 +303,7 @@ namespace Gallio.Echo
             sw.WriteLine("No Echo Results: {0}", NoEchoResults);
             sw.WriteLine("Save Test Model: {0}", DoNotRun);
             
-            sw.WriteLine("RunTimeLimit: {0}", (RunTimeLimitInSeconds >= 0) ? RunTimeLimitInSeconds + " seconds" : "infinte");
+            sw.WriteLine("RunTimeLimit: {0}", (RunTimeLimitInSeconds >= 0) ? RunTimeLimitInSeconds + " seconds" : "infinite");
             return sw.ToString();
         }
     }

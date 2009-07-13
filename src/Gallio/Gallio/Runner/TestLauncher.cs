@@ -706,9 +706,11 @@ namespace Gallio.Runner
         {
             if (filePattern.Contains("?") || filePattern.Contains("*"))
             {
-                string directory = Environment.CurrentDirectory;
-                if (Path.IsPathRooted(filePattern))
-                    directory = Path.GetDirectoryName(filePattern);
+                string directory = Path.GetDirectoryName(filePattern);
+                if (string.IsNullOrEmpty(directory))
+                    directory = Environment.CurrentDirectory;
+                else
+                    directory = Path.GetFullPath(directory);
 
                 if (! Directory.Exists(directory))
                 {
@@ -720,7 +722,6 @@ namespace Gallio.Runner
                 var files = new List<FileInfo>();
 
                 string searchPattern = Path.GetFileName(filePattern);
-                directory = Path.GetFullPath(directory);
 
                 foreach (string file in Directory.GetFiles(directory, searchPattern))
                     files.Add(new FileInfo(Path.Combine(directory, file)));
