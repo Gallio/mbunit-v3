@@ -56,7 +56,7 @@
                 <File Name="Gallio.plugin" />
                 <File Name="Gallio.pdb" />
                 <File Name="Gallio.xml" />
-                <File Id="Gallio.Report.xsd" Name="Gallio-Report.xsd" />
+                <File Id="Gallio.xsd" Name="Gallio.xsd" />
                 <?ifdef NO_ILMERGE ?>
                 <File Name="Mono.Cecil.dll" />
                 <File Name="NDepend.Helpers.FileDirectoryPath.dll" />

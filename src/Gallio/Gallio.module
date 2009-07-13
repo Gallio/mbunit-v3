@@ -131,8 +131,8 @@
       <Output TaskParameter="Path" PropertyName="SdkPath" />
     </GetFrameworkSdkPath>
 
-    <Exec Command="&quot;$(SdkPath)&quot;\bin\xsd.exe &quot;$(ImageDir)\bin\Gallio.dll&quot; /o:&quot;$(TempDir)&quot; /nologo /type:Gallio.Runner.Reports.Report" />
+    <Exec Command="&quot;$(SdkPath)&quot;\bin\xsd.exe &quot;$(ImageDir)\bin\Gallio.dll&quot; /o:&quot;$(TempDir)&quot; /nologo /type:Gallio.Runner.Reports.Schema.Report /type:Gallio.Runtime.Extensibility.Schema.Plugin /type:Gallio.Runner.Projects.Schema.TestProjectData" />
     <Copy SourceFiles="$(TempDir)\schema0.xsd"
-          DestinationFiles="$(ImageDir)\bin\Gallio-Report.xsd" />
+          DestinationFiles="$(ImageDir)\bin\Gallio.xsd" />
   </Target>
 </Project>
