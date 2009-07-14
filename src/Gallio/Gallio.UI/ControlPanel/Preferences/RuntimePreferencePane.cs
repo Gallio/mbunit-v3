@@ -68,7 +68,7 @@ namespace Gallio.UI.ControlPanel.Preferences
                     string newPath = dialog.SelectedPath;
                     if (!configuration.AdditionalPluginDirectories.Contains(newPath))
                     {
-                        configuration.AdditionalPluginDirectories.Add(newPath);
+                        configuration.AddAdditionalPluginDirectory(newPath);
                         pluginPathListBox.Items.Add(newPath);
                         PendingSettingsChanges = true;
                     }
@@ -80,7 +80,7 @@ namespace Gallio.UI.ControlPanel.Preferences
         {
             if (pluginPathListBox.SelectedItem != null)
             {
-                configuration.AdditionalPluginDirectories.Remove((string) pluginPathListBox.SelectedItem);
+                configuration.RemoveAdditionalPluginDirectory((string) pluginPathListBox.SelectedItem);
                 pluginPathListBox.Items.RemoveAt(pluginPathListBox.SelectedIndex);
                 PendingSettingsChanges = true;
             }

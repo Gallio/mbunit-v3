@@ -15,6 +15,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
@@ -60,7 +61,7 @@ namespace Gallio.Runner
 
         private RuntimeSetup runtimeSetup;
 
-        private List<string> filePatterns;
+        private readonly List<string> filePatterns;
         private TestProject testProject;
 
         private TestRunnerOptions testRunnerOptions;
@@ -184,12 +185,12 @@ namespace Gallio.Runner
         }
 
         /// <summary>
-        /// Gets a mutable list of test file patterns (with wildcards) or test project files
+        /// Gets a read-only list of test file patterns (with wildcards) or test project files
         /// that are to be resolved and included in the test package prior to execution.
         /// </summary>
         public IList<string> FilePatterns
         {
-            get { return filePatterns; }
+            get { return new ReadOnlyCollection<string>(filePatterns); }
         }
 
         /// <summary>
@@ -274,11 +275,11 @@ namespace Gallio.Runner
         }
 
         /// <summary>
-        /// Gets the mutable list of report formats to generate.
+        /// Gets a read-only list of report formats to generate.
         /// </summary>
         public IList<string> ReportFormats
         {
-            get { return reportFormats; }
+            get { return new ReadOnlyCollection<string>(reportFormats); }
         }
 
         /// <summary>
@@ -341,6 +342,76 @@ namespace Gallio.Runner
         {
             get { return runTimeLimit; }
             set { runTimeLimit = value; }
+        }
+
+        /// <summary>
+        /// Clears the list of file patterns.
+        /// </summary>
+        public void ClearFilePatterns()
+        {
+            filePatterns.Clear();
+        }
+
+        /// <summary>
+        /// Adds a file pattern if not already added to the launcher.
+        /// </summary>
+        /// <param name="filePattern">The file path or a wildcard pattern to add.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="filePattern"/> is null.</exception>
+        public void AddFilePattern(string filePattern)
+        {
+            if (filePattern == null)
+                throw new ArgumentNullException("filePattern");
+
+            if (!filePatterns.Contains(filePattern))
+                filePatterns.Add(filePattern);
+        }
+
+        /// <summary>
+        /// Removes a file pattern.
+        /// </summary>
+        /// <param name="filePattern">The file pattern to remove.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="filePattern"/> is null.</exception>
+        public void RemoveFilePattern(string filePattern)
+        {
+            if (filePattern == null)
+                throw new ArgumentNullException("filePattern");
+
+            filePatterns.Remove(filePattern);
+        }
+
+        /// <summary>
+        /// Clears the list of report formats.
+        /// </summary>
+        public void ClearReportFormats()
+        {
+            reportFormats.Clear();
+        }
+
+        /// <summary>
+        /// Adds a report format if not already added to the launcher.
+        /// </summary>
+        /// <param name="reportFormat">The report format to add.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="reportFormat"/> is null.</exception>
+        public void AddReportFormat(string reportFormat)
+        {
+            if (reportFormat == null)
+                throw new ArgumentNullException("reportFormat");
+
+            if (!reportFormats.Contains(reportFormat))
+                reportFormats.Add(reportFormat);
+        }
+
+        /// <summary>
+        /// Removes a report format.
+        /// </summary>
+        /// <param name="reportFormat">The report format to remove.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="reportFormat"/> is null.</exception>
+        public void RemoveReportFormat(string reportFormat)
+        {
+            if (reportFormat == null)
+                throw new ArgumentNullException("reportFormat");
+
+            reportFormats.Remove(reportFormat);
         }
 
         #region Public Methods

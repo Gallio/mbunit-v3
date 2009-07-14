@@ -103,7 +103,7 @@ namespace Gallio.Echo
         internal static void ConfigureLauncherFromArguments(TestLauncher launcher, EchoArguments arguments)
         {
             launcher.RuntimeSetup = new RuntimeSetup();
-            launcher.RuntimeSetup.PluginDirectories.AddRange(arguments.PluginDirectories);
+            GenericCollectionUtils.ForEach(arguments.PluginDirectories, x => launcher.RuntimeSetup.AddPluginDirectory(x));
 
             if (arguments.ShadowCopy.HasValue)
                 launcher.TestProject.TestPackage.ShadowCopy = arguments.ShadowCopy.Value;
@@ -120,7 +120,7 @@ namespace Gallio.Echo
             if (arguments.RuntimeVersion != null)
                 launcher.TestProject.TestPackage.RuntimeVersion = arguments.RuntimeVersion;
 
-            GenericCollectionUtils.ForEach(arguments.Files, x => launcher.FilePatterns.Add(x));
+            GenericCollectionUtils.ForEach(arguments.Files, x => launcher.AddFilePattern(x));
 
             foreach (string hintDirectory in arguments.HintDirectories)
                 launcher.TestProject.TestPackage.AddHintDirectory(new DirectoryInfo(hintDirectory));
@@ -130,17 +130,23 @@ namespace Gallio.Echo
             if (arguments.ReportNameFormat != null)
                 launcher.TestProject.ReportNameFormat = arguments.ReportNameFormat;
 
-            GenericCollectionUtils.AddAll(arguments.ReportTypes, launcher.ReportFormats);
+            GenericCollectionUtils.ForEach(arguments.ReportTypes, x => launcher.AddReportFormat(x));
 
             if (arguments.RunnerType != null)
                 launcher.TestProject.TestRunnerFactoryName = arguments.RunnerType;
             GenericCollectionUtils.ForEach(arguments.RunnerExtensions, x => launcher.TestProject.AddTestRunnerExtensionSpecification(x));
 
             foreach (string option in arguments.ReportFormatterProperties)
-                launcher.ReportFormatterOptions.Properties.Add(StringUtils.ParseKeyValuePair(option));
+            {
+                KeyValuePair<string, string> pair = StringUtils.ParseKeyValuePair(option);
+                launcher.ReportFormatterOptions.Properties.Add(pair.Key, pair.Value);
+            }
 
             foreach (string option in arguments.RunnerProperties)
-                launcher.TestRunnerOptions.Properties.Add(StringUtils.ParseKeyValuePair(option));
+            {
+                KeyValuePair<string, string> pair = StringUtils.ParseKeyValuePair(option);
+                launcher.TestRunnerOptions.AddProperty(pair.Key, pair.Value);
+            }
 
             launcher.DoNotRun = arguments.DoNotRun;
             launcher.IgnoreAnnotations = arguments.IgnoreAnnotations;
@@ -216,7 +222,9 @@ namespace Gallio.Echo
             // Print out options related to the currently available set of plugins.
             RuntimeSetup setup = new RuntimeSetup();
             if (Arguments != null && Arguments.PluginDirectories != null)
-                setup.PluginDirectories.AddRange(Arguments.PluginDirectories);
+            {
+                GenericCollectionUtils.ForEach(Arguments.PluginDirectories, x => setup.AddPluginDirectory(x));
+            }
 
             using (RuntimeBootstrap.Initialize(setup, CreateLogger()))
             {

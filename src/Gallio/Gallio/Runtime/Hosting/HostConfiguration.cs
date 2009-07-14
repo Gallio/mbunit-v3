@@ -15,15 +15,12 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Text;
 using System.Xml;
-using System.Xml.Serialization;
-using Gallio.Common;
-using Gallio.Common.Collections;
-using Gallio.Common.Xml;
 using Gallio.Common.Reflection;
 
 namespace Gallio.Runtime.Hosting
@@ -32,9 +29,7 @@ namespace Gallio.Runtime.Hosting
     /// Describes the runtime configuration of a <see cref="IHost" />.
     /// </summary>
     [Serializable]
-    [XmlRoot("hostConfiguration", Namespace = SchemaConstants.XmlNamespace)]
-    [XmlType(Namespace = SchemaConstants.XmlNamespace)]
-    public sealed class HostConfiguration : IEquatable<HostConfiguration>
+    public sealed class HostConfiguration
     {
         private readonly List<AssemblyQualification> assemblyQualifications;
         private readonly List<AssemblyDependency> assemblyDependencies;
@@ -61,7 +56,6 @@ namespace Gallio.Runtime.Hosting
         /// <value>
         /// The default value is <c>null</c>.
         /// </value>
-        [XmlElement("configurationXml", IsNullable = false)]
         public string ConfigurationXml
         {
             get { return configurationXml; }
@@ -75,7 +69,6 @@ namespace Gallio.Runtime.Hosting
         /// The default value is <c>true</c> which prevents the application from terminating
         /// abruptly when an unhandled exception occurs.
         /// </value>
-        [XmlAttribute("legacyUnhandledExceptionPolicyEnabled")]
         public bool LegacyUnhandledExceptionPolicyEnabled
         {
             get { return legacyUnhandledExceptionPolicyEnabled; }
@@ -89,7 +82,6 @@ namespace Gallio.Runtime.Hosting
         /// The default value is <c>false</c> which prevents the assertion dialog from appearing
         /// when an assertion fails.
         /// </value>
-        [XmlAttribute("assertUiEnabled")]
         public bool AssertUiEnabled
         {
             get { return assertUiEnabled; }
@@ -104,7 +96,6 @@ namespace Gallio.Runtime.Hosting
         /// The default value is <c>false</c> which ensures that the remote client receives
         /// all exception details.
         /// </value>
-        [XmlAttribute("remotingCustomErrorsEnabled")]
         public bool RemotingCustomErrorsEnabled
         {
             get { return remotingCustomErrorsEnabled; }
@@ -112,27 +103,23 @@ namespace Gallio.Runtime.Hosting
         }
 
         /// <summary>
-        /// Gets a mutable list of assembly qualifications.
+        /// Gets a read-only list of assembly qualifications.
         /// </summary>
-        [XmlArray("assemblyQualifications", IsNullable = false)]
-        [XmlArrayItem("assemblyQualification", typeof(AssemblyQualification), IsNullable = false)]
-        public List<AssemblyQualification> AssemblyQualifications
+        public IList<AssemblyQualification> AssemblyQualifications
         {
-            get { return assemblyQualifications; }
+            get { return new ReadOnlyCollection<AssemblyQualification>(assemblyQualifications); }
         }
 
         /// <summary>
-        /// Gets a mutable list of assembly dependencies.
+        /// Gets a read-only list of assembly dependencies.
         /// </summary>
-        [XmlArray("assemblyDependencies", IsNullable = false)]
-        [XmlArrayItem("assemblyDependency", typeof(AssemblyDependency), IsNullable = false)]
-        public List<AssemblyDependency> AssemblyDependencies
+        public IList<AssemblyDependency> AssemblyDependencies
         {
-            get { return assemblyDependencies; }
+            get { return new ReadOnlyCollection<AssemblyDependency>(assemblyDependencies); }
         }
 
         /// <summary>
-        /// Gets a mutable list of supported runtime versions in order of preference.
+        /// Gets a read-only list of supported runtime versions in order of preference.
         /// </summary>
         /// <remarks>
         /// <para>
@@ -149,15 +136,21 @@ namespace Gallio.Runtime.Hosting
         /// in mind that it can be ignored.
         /// </para>
         /// </remarks>
-        [XmlArray("supportedRuntimeVersions", IsNullable=false)]
-        [XmlArrayItem("supportedRuntimeVersion", typeof(string), IsNullable = false)]
-        public List<string> SupportedRuntimeVersions
+        public IList<string> SupportedRuntimeVersions
         {
-            get { return supportedRuntimeVersions; }
+            get { return new ReadOnlyCollection<string>(supportedRuntimeVersions); }
         }
 
         /// <summary>
-        /// Adds a supported runtime version number.
+        /// Clears the list of supported runtime versions.
+        /// </summary>
+        public void ClearSupportedRuntimeVersions()
+        {
+            supportedRuntimeVersions.Clear();
+        }
+
+        /// <summary>
+        /// Adds a supported runtime version number if it is not already in the configuration.
         /// </summary>
         /// <param name="version">The version number, eg. "v2.0.50727"</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="version"/> is null.</exception>
@@ -171,8 +164,27 @@ namespace Gallio.Runtime.Hosting
         }
 
         /// <summary>
+        /// Removes a supported runtime version number.
+        /// </summary>
+        /// <param name="version">The version number, eg. "v2.0.50727"</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="version"/> is null.</exception>
+        public void RemoveSupportedRuntimeVersion(string version)
+        {
+            if (version == null)
+                throw new ArgumentNullException("version");
+
+            supportedRuntimeVersions.Remove(version);
+        }
+
+        /// <summary>
         /// Adds a binding to the configuration for the specified assembly.
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// Depending on how the binding is configured, this method will add an assembly dependency
+        /// record and possibly an assembly qualification record.
+        /// </para>
+        /// </remarks>
         /// <param name="assemblyBinding">The assembly binding.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="assemblyBinding"/> is null.</exception>
         public void AddAssemblyBinding(AssemblyBinding assemblyBinding)
@@ -231,6 +243,94 @@ namespace Gallio.Runtime.Hosting
         }
 
         /// <summary>
+        /// Clears the list of assembly dependencies.
+        /// </summary>
+        public void ClearAssemblyDependencies()
+        {
+            assemblyDependencies.Clear();
+        }
+
+        /// <summary>
+        /// Adds an assembly dependency if it is not already in the configuration.
+        /// </summary>
+        /// <param name="assemblyDependency">The assembly dependency to add.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="assemblyDependency"/> is null.</exception>
+        public void AddAssemblyDependency(AssemblyDependency assemblyDependency)
+        {
+            if (assemblyDependency == null)
+                throw new ArgumentNullException("assemblyDependency");
+
+            if (!assemblyDependencies.Contains(assemblyDependency))
+                assemblyDependencies.Add(assemblyDependency);
+        }
+
+        /// <summary>
+        /// Adds an assembly dependency element if a suitable one does not already exist.
+        /// </summary>
+        /// <param name="name">The assembly name.</param>
+        /// <param name="publicKeyToken">The assembly public key token, or null if none.</param>
+        /// <param name="culture">The assembly culture.</param>
+        /// <param name="architecture">The assembly processor architecture, or null if none.</param>
+        /// <returns>The assembly dependency element.</returns>
+        public AssemblyDependency AddAssemblyDependency(string name, string publicKeyToken, string culture, string architecture)
+        {
+            if (publicKeyToken != null && publicKeyToken.Length == 0)
+                throw new InvalidOperationException();
+
+            AssemblyDependency assemblyDependency = assemblyDependencies.Find(x =>
+                x.AssemblyName == name && x.AssemblyPublicKeyToken == publicKeyToken
+                    && x.AssemblyCulture == culture && x.AssemblyProcessorArchitecture == architecture);
+            if (assemblyDependency == null)
+            {
+                assemblyDependency = new AssemblyDependency(name)
+                {
+                    AssemblyPublicKeyToken = publicKeyToken,
+                    AssemblyCulture = culture,
+                    AssemblyProcessorArchitecture = architecture
+                };
+
+                assemblyDependencies.Add(assemblyDependency);
+            }
+
+            return assemblyDependency;
+        }
+
+        /// <summary>
+        /// Removes an assembly dependency.
+        /// </summary>
+        /// <param name="assemblyDependency">The assembly dependency to remove.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="assemblyDependency"/> is null.</exception>
+        public void RemoveAssemblyDependency(AssemblyDependency assemblyDependency)
+        {
+            if (assemblyDependency == null)
+                throw new ArgumentNullException("assemblyDependency");
+
+            assemblyDependencies.Remove(assemblyDependency);
+        }
+
+        /// <summary>
+        /// Clears the list of assembly qualifications.
+        /// </summary>
+        public void ClearAssemblyQualifications()
+        {
+            assemblyQualifications.Clear();
+        }
+
+        /// <summary>
+        /// Adds an assembly qualification if it is not already in the configuration.
+        /// </summary>
+        /// <param name="assemblyQualification">The assembly qualification to add.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="assemblyQualification"/> is null.</exception>
+        public void AddAssemblyQualification(AssemblyQualification assemblyQualification)
+        {
+            if (assemblyQualification == null)
+                throw new ArgumentNullException("assemblyQualification");
+
+            if (!assemblyQualifications.Contains(assemblyQualification))
+                assemblyQualifications.Add(assemblyQualification);
+        }
+
+        /// <summary>
         /// Adds an assembly qualification element if a suitable one does not already exist.
         /// </summary>
         /// <param name="partialName">The partial name to quality.</param>
@@ -256,34 +356,16 @@ namespace Gallio.Runtime.Hosting
         }
 
         /// <summary>
-        /// Adds an assembly dependency element if a suitable one does not already exist.
+        /// Removes an assembly qualification.
         /// </summary>
-        /// <param name="name">The assembly name.</param>
-        /// <param name="publicKeyToken">The assembly public key token, or null if none.</param>
-        /// <param name="culture">The assembly culture.</param>
-        /// <param name="architecture">The assembly processor architecture, or null if none.</param>
-        /// <returns>The assembly dependency element.</returns>
-        public AssemblyDependency AddAssemblyDependency(string name, string publicKeyToken, string culture, string architecture)
+        /// <param name="assemblyQualification">The assembly qualification to remove.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="assemblyQualification"/> is null.</exception>
+        public void RemoveAssemblyQualification(AssemblyQualification assemblyQualification)
         {
-            if (publicKeyToken != null && publicKeyToken.Length == 0)
-                throw new InvalidOperationException();
+            if (assemblyQualification == null)
+                throw new ArgumentNullException("assemblyQualification");
 
-            AssemblyDependency assemblyDependency = assemblyDependencies.Find(x =>
-                x.AssemblyName == name && x.AssemblyPublicKeyToken == publicKeyToken
-                && x.AssemblyCulture == culture && x.AssemblyProcessorArchitecture == architecture);
-            if (assemblyDependency == null)
-            {
-                assemblyDependency = new AssemblyDependency(name)
-                {
-                    AssemblyPublicKeyToken = publicKeyToken,
-                    AssemblyCulture = culture,
-                    AssemblyProcessorArchitecture = architecture
-                };
-
-                assemblyDependencies.Add(assemblyDependency);
-            }
-
-            return assemblyDependency;
+            assemblyQualifications.Remove(assemblyQualification);
         }
 
         /// <summary>
@@ -364,34 +446,6 @@ namespace Gallio.Runtime.Hosting
                 copy.assemblyQualifications.Add(qualification.Copy());
 
             return copy;
-        }
-
-        /// <inheritdoc />
-        public override bool Equals(object obj)
-        {
-            return Equals(obj as HostConfiguration);
-        }
-
-        /// <inheritdoc />
-        public bool Equals(HostConfiguration other)
-        {
-            return other != null
-                && legacyUnhandledExceptionPolicyEnabled == other.legacyUnhandledExceptionPolicyEnabled
-                && assertUiEnabled == other.assertUiEnabled
-                && remotingCustomErrorsEnabled == other.remotingCustomErrorsEnabled
-                && configurationXml == other.configurationXml
-                && GenericCollectionUtils.ElementsEqualOrderIndependent(assemblyQualifications, other.assemblyQualifications)
-                && GenericCollectionUtils.ElementsEqualOrderIndependent(assemblyDependencies, other.assemblyDependencies)
-                && GenericCollectionUtils.ElementsEqualOrderIndependent(supportedRuntimeVersions, other.supportedRuntimeVersions);
-        }
-
-        /// <inheritdoc />
-        public override int GetHashCode()
-        {
-            return legacyUnhandledExceptionPolicyEnabled.GetHashCode()
-                ^ assertUiEnabled.GetHashCode()
-                ^ remotingCustomErrorsEnabled.GetHashCode()
-                ^ (configurationXml != null ? configurationXml.GetHashCode() : 0);
         }
 
         private XmlDocument GenerateXmlDocument()
@@ -491,18 +545,10 @@ namespace Gallio.Runtime.Hosting
         /// maps an assembly partial name to its full name.
         /// </summary>
         [Serializable]
-        [XmlType(Namespace = SchemaConstants.XmlNamespace)]
-        public sealed class AssemblyQualification : IEquatable<AssemblyQualification>
+        public sealed class AssemblyQualification
         {
             private string partialName;
             private string fullName;
-
-            /// <summary>
-            /// Creates an uninitialized instance for Xml deserialization.
-            /// </summary>
-            private AssemblyQualification()
-            {
-            }
 
             /// <summary>
             /// Creates an assembly name qualification.
@@ -526,7 +572,6 @@ namespace Gallio.Runtime.Hosting
             /// Gets or sets the assembly partial name to qualify.
             /// </summary>
             /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
-            [XmlAttribute("partialName")]
             public string PartialName
             {
                 get { return partialName; }
@@ -542,7 +587,6 @@ namespace Gallio.Runtime.Hosting
             /// Gets or sets the assembly full name to use.
             /// </summary>
             /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
-            [XmlAttribute("fullName")]
             public string FullName
             {
                 get { return fullName; }
@@ -569,27 +613,6 @@ namespace Gallio.Runtime.Hosting
                 qualifyAssemblyElement.SetAttribute("partialName", partialName);
                 qualifyAssemblyElement.SetAttribute("fullName", fullName);
             }
-
-            /// <inheritdoc />
-            public override bool Equals(object obj)
-            {
-                return Equals(obj as AssemblyQualification);
-            }
-
-            /// <inheritdoc />
-            public bool Equals(AssemblyQualification other)
-            {
-                return other != null
-                    && partialName == other.partialName
-                    && fullName == other.fullName;
-            }
-
-            /// <inheritdoc />
-            public override int GetHashCode()
-            {
-                return partialName.GetHashCode()
-                    ^ fullName.GetHashCode();
-            }
         }
 
         /// <summary>
@@ -597,11 +620,10 @@ namespace Gallio.Runtime.Hosting
         /// specifies the codebase, a publisher policy and binding redirects.
         /// </summary>
         [Serializable]
-        [XmlType(Namespace = SchemaConstants.XmlNamespace)]
-        public sealed class AssemblyDependency : IEquatable<AssemblyDependency>
+        public sealed class AssemblyDependency
         {
-            private readonly List<AssemblyBindingRedirect> bindingRedirects;
-            private readonly List<AssemblyCodeBase> codeBases;
+            private readonly List<AssemblyBindingRedirect> assemblyBindingRedirects;
+            private readonly List<AssemblyCodeBase> assemblyCodeBases;
 
             private string assemblyName;
             private string assemblyPublicKeyToken;
@@ -610,33 +632,25 @@ namespace Gallio.Runtime.Hosting
             private bool applyPublisherPolicy = true;
 
             /// <summary>
-            /// Creates an uninitialized instance for Xml deserialization.
-            /// </summary>
-            private AssemblyDependency()
-            {
-                bindingRedirects = new List<AssemblyBindingRedirect>();
-                codeBases = new List<AssemblyCodeBase>();
-            }
-
-            /// <summary>
             /// Creates an assembly dependency.
             /// </summary>
             /// <param name="assemblyName">The assembly name.</param>
             /// <exception cref="ArgumentNullException">Thrown if <paramref name="assemblyName"/> is null.</exception>
             public AssemblyDependency(string assemblyName)
-                : this()
             {
                 if (assemblyName == null)
                     throw new ArgumentNullException("assemblyName");
 
                 this.assemblyName = assemblyName;
+
+                assemblyBindingRedirects = new List<AssemblyBindingRedirect>();
+                assemblyCodeBases = new List<AssemblyCodeBase>();
             }
 
             /// <summary>
             /// Gets or sets assembly name.
             /// </summary>
             /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
-            [XmlAttribute("assemblyName")]
             public string AssemblyName
             {
                 get { return assemblyName; }
@@ -651,7 +665,6 @@ namespace Gallio.Runtime.Hosting
             /// <summary>
             /// Gets or sets the assembly public key token, or null if none.
             /// </summary>
-            [XmlAttribute("assemblyPublicKeyToken")]
             public string AssemblyPublicKeyToken
             {
                 get { return assemblyPublicKeyToken; }
@@ -661,7 +674,6 @@ namespace Gallio.Runtime.Hosting
             /// <summary>
             /// Gets or sets the assembly culture, or null if none.
             /// </summary>
-            [XmlAttribute("assemblyCulture")]
             public string AssemblyCulture
             {
                 get { return assemblyCulture; }
@@ -671,7 +683,6 @@ namespace Gallio.Runtime.Hosting
             /// <summary>
             /// Gets or sets the assembly processor architecture, or null if none.
             /// </summary>
-            [XmlAttribute("assemblyProcessorArchitecture")]
             public string AssemblyProcessorArchitecture
             {
                 get { return assemblyProcessorArchitecture; }
@@ -691,23 +702,19 @@ namespace Gallio.Runtime.Hosting
             }
 
             /// <summary>
-            /// Gets a mutable list of assembly binding redirect elements.
+            /// Gets a read-only list of assembly binding redirect elements.
             /// </summary>
-            [XmlArray("bindingRedirects", IsNullable = false)]
-            [XmlArrayItem("bindingRedirect", typeof(AssemblyBindingRedirect), IsNullable = false)]
-            public List<AssemblyBindingRedirect> BindingRedirects
+            public IList<AssemblyBindingRedirect> AssemblyBindingRedirects
             {
-                get { return bindingRedirects; }
+                get { return new ReadOnlyCollection<AssemblyBindingRedirect>(assemblyBindingRedirects); }
             }
 
             /// <summary>
             /// Gets a mutable list of assembly code base elements.
             /// </summary>
-            [XmlArray("codeBases", IsNullable = false)]
-            [XmlArrayItem("codeBase", typeof(AssemblyCodeBase), IsNullable = false)]
-            public List<AssemblyCodeBase> CodeBases
+            public IList<AssemblyCodeBase> AssemblyCodeBases
             {
-                get { return codeBases; }
+                get { return new ReadOnlyCollection<AssemblyCodeBase>(assemblyCodeBases); }
             }
 
             /// <summary>
@@ -716,46 +723,19 @@ namespace Gallio.Runtime.Hosting
             /// <returns>The copy.</returns>
             public AssemblyDependency Copy()
             {
-                AssemblyDependency copy = new AssemblyDependency();
+                AssemblyDependency copy = new AssemblyDependency(assemblyName);
 
                 copy.applyPublisherPolicy = applyPublisherPolicy;
                 copy.assemblyCulture = assemblyCulture;
-                copy.assemblyName = assemblyName;
                 copy.assemblyProcessorArchitecture = assemblyProcessorArchitecture;
                 copy.assemblyPublicKeyToken = assemblyPublicKeyToken;
 
-                foreach (AssemblyBindingRedirect bindingRedirect in bindingRedirects)
-                    copy.bindingRedirects.Add(bindingRedirect.Copy());
-                foreach (AssemblyCodeBase codeBase in codeBases)
-                    copy.codeBases.Add(codeBase.Copy());
+                foreach (AssemblyBindingRedirect bindingRedirect in assemblyBindingRedirects)
+                    copy.assemblyBindingRedirects.Add(bindingRedirect.Copy());
+                foreach (AssemblyCodeBase codeBase in assemblyCodeBases)
+                    copy.assemblyCodeBases.Add(codeBase.Copy());
 
                 return copy;
-            }
-
-            /// <inheritdoc />
-            public override bool Equals(object obj)
-            {
-                return Equals(obj as AssemblyDependency);
-            }
-
-            /// <inheritdoc />
-            public bool Equals(AssemblyDependency other)
-            {
-                return other != null
-                    && applyPublisherPolicy == other.applyPublisherPolicy
-                    && assemblyCulture == other.assemblyCulture
-                    && assemblyName == other.assemblyName
-                    && assemblyProcessorArchitecture == other.assemblyProcessorArchitecture
-                    && assemblyPublicKeyToken == other.assemblyPublicKeyToken
-                    && GenericCollectionUtils.ElementsEqualOrderIndependent(bindingRedirects, other.bindingRedirects)
-                    && GenericCollectionUtils.ElementsEqualOrderIndependent(codeBases, other.codeBases);
-            }
-
-            /// <inheritdoc />
-            public override int GetHashCode()
-            {
-                return applyPublisherPolicy.GetHashCode()
-                    ^ (assemblyName != null ? assemblyName.GetHashCode() : 0);
             }
 
             internal void AddConfigurationElement(XmlElement parent)
@@ -780,11 +760,33 @@ namespace Gallio.Runtime.Hosting
                     publisherPolicyElement.SetAttribute("apply", "no");
                 }
 
-                foreach (AssemblyBindingRedirect bindingRedirect in bindingRedirects)
+                foreach (AssemblyBindingRedirect bindingRedirect in assemblyBindingRedirects)
                     bindingRedirect.AddConfigurationElement(dependentAssemblyElement);
 
-                foreach (AssemblyCodeBase codeBase in codeBases)
+                foreach (AssemblyCodeBase codeBase in assemblyCodeBases)
                     codeBase.AddConfigurationElement(dependentAssemblyElement);
+            }
+
+            /// <summary>
+            /// Clears the list of assembly binding redirects.
+            /// </summary>
+            public void ClearAssemblyBindingRedirects()
+            {
+                assemblyBindingRedirects.Clear();
+            }
+
+            /// <summary>
+            /// Adds an assembly binding redirect if it is not already in the configuration.
+            /// </summary>
+            /// <param name="assemblyBindingRedirect">The assembly binding redirect to add.</param>
+            /// <exception cref="ArgumentNullException">Thrown if <paramref name="assemblyBindingRedirect"/> is null.</exception>
+            public void AddAssemblyBindingRedirect(AssemblyBindingRedirect assemblyBindingRedirect)
+            {
+                if (assemblyBindingRedirect == null)
+                    throw new ArgumentNullException("assemblyBindingRedirect");
+
+                if (!assemblyBindingRedirects.Contains(assemblyBindingRedirect))
+                    assemblyBindingRedirects.Add(assemblyBindingRedirect);
             }
 
             /// <summary>
@@ -795,15 +797,63 @@ namespace Gallio.Runtime.Hosting
             /// <returns>The binding redirect element.</returns>
             public AssemblyBindingRedirect AddAssemblyBindingRedirect(string oldVersionRange, string newVersion)
             {
-                AssemblyBindingRedirect assemblyBindingRedirect = BindingRedirects.Find(x =>
+                AssemblyBindingRedirect assemblyBindingRedirect = assemblyBindingRedirects.Find(x =>
                     x.OldVersionRange == oldVersionRange && x.NewVersion == newVersion);
                 if (assemblyBindingRedirect == null)
                 {
                     assemblyBindingRedirect = new AssemblyBindingRedirect(oldVersionRange, newVersion);
-                    BindingRedirects.Add(assemblyBindingRedirect);
+                    assemblyBindingRedirects.Add(assemblyBindingRedirect);
                 }
 
                 return assemblyBindingRedirect;
+            }
+
+            /// <summary>
+            /// Removes an assembly binding redirect.
+            /// </summary>
+            /// <param name="assemblyBindingRedirect">The assembly binding redirect to remove.</param>
+            /// <exception cref="ArgumentNullException">Thrown if <paramref name="assemblyBindingRedirect"/> is null.</exception>
+            public void RemoveAssemblyBindingRedirect(AssemblyBindingRedirect assemblyBindingRedirect)
+            {
+                if (assemblyBindingRedirect == null)
+                    throw new ArgumentNullException("assemblyBindingRedirect");
+
+                assemblyBindingRedirects.Remove(assemblyBindingRedirect);
+            }
+
+            /// <summary>
+            /// Clears the list of assembly codebases.
+            /// </summary>
+            public void ClearAssemblyCodeBases()
+            {
+                assemblyCodeBases.Clear();
+            }
+
+            /// <summary>
+            /// Adds an assembly codebase if it is not already in the configuration.
+            /// </summary>
+            /// <param name="assemblyCodeBase">The assembly codebase to add.</param>
+            /// <exception cref="ArgumentNullException">Thrown if <paramref name="assemblyCodeBase"/> is null.</exception>
+            public void AddAssemblyCodeBase(AssemblyCodeBase assemblyCodeBase)
+            {
+                if (assemblyCodeBase == null)
+                    throw new ArgumentNullException("assemblyCodeBase");
+
+                if (!assemblyCodeBases.Contains(assemblyCodeBase))
+                    assemblyCodeBases.Add(assemblyCodeBase);
+            }
+
+            /// <summary>
+            /// Removes an assembly codebase.
+            /// </summary>
+            /// <param name="assemblyCodeBase">The assembly codebase to remove.</param>
+            /// <exception cref="ArgumentNullException">Thrown if <paramref name="assemblyCodeBase"/> is null.</exception>
+            public void RemoveAssemblyCodeBase(AssemblyCodeBase assemblyCodeBase)
+            {
+                if (assemblyCodeBase == null)
+                    throw new ArgumentNullException("assemblyCodeBase");
+
+                assemblyCodeBases.Remove(assemblyCodeBase);
             }
 
             /// <summary>
@@ -821,11 +871,11 @@ namespace Gallio.Runtime.Hosting
             /// <returns>The code base element.</returns>
             public AssemblyCodeBase AddAssemblyCodeBase(string version, string uri)
             {
-                AssemblyCodeBase assemblyCodeBase = CodeBases.Find(x => x.Version == version);
+                AssemblyCodeBase assemblyCodeBase = assemblyCodeBases.Find(x => x.Version == version);
                 if (assemblyCodeBase == null)
                 {
                     assemblyCodeBase = new AssemblyCodeBase(version, uri);
-                    CodeBases.Add(assemblyCodeBase);
+                    assemblyCodeBases.Add(assemblyCodeBase);
                 }
 
                 return assemblyCodeBase;
@@ -837,18 +887,10 @@ namespace Gallio.Runtime.Hosting
         /// a new version.
         /// </summary>
         [Serializable]
-        [XmlType(Namespace = SchemaConstants.XmlNamespace)]
-        public sealed class AssemblyBindingRedirect : IEquatable<AssemblyBindingRedirect>
+        public sealed class AssemblyBindingRedirect
         {
             private string oldVersionRange;
             private string newVersion;
-
-            /// <summary>
-            /// Creates an uninitialized instance for Xml deserialization.
-            /// </summary>
-            private AssemblyBindingRedirect()
-            {
-            }
 
             /// <summary>
             /// Creates an assembly binding redirect.
@@ -875,7 +917,6 @@ namespace Gallio.Runtime.Hosting
             /// either as a single version such as "1.2.3.4" or as a range such as "1.2.3.4-10.11.12.13"
             /// </summary>
             /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
-            [XmlAttribute("oldVersionRange")]
             public string OldVersionRange
             {
                 get { return oldVersionRange; }
@@ -892,7 +933,6 @@ namespace Gallio.Runtime.Hosting
             /// such as "1.2.3.4"
             /// </summary>
             /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
-            [XmlAttribute("newVersion")]
             public string NewVersion
             {
                 get { return newVersion; }
@@ -913,27 +953,6 @@ namespace Gallio.Runtime.Hosting
                 return new AssemblyBindingRedirect(oldVersionRange, newVersion);
             }
 
-            /// <inheritdoc />
-            public override bool Equals(object obj)
-            {
-                return Equals(obj as AssemblyBindingRedirect);
-            }
-
-            /// <inheritdoc />
-            public bool Equals(AssemblyBindingRedirect other)
-            {
-                return other != null
-                    && oldVersionRange == other.oldVersionRange
-                    && newVersion == other.newVersion;
-            }
-
-            /// <inheritdoc />
-            public override int GetHashCode()
-            {
-                return oldVersionRange.GetHashCode()
-                    ^ newVersion.GetHashCode();
-            }
-
             internal void AddConfigurationElement(XmlElement parent)
             {
                 XmlElement bindingRedirectElement = CreateChildElement(parent, "bindingRedirect", null);
@@ -946,18 +965,10 @@ namespace Gallio.Runtime.Hosting
         /// Describes the location of the codebase of a particular assembly version.
         /// </summary>
         [Serializable]
-        [XmlType(Namespace = SchemaConstants.XmlNamespace)]
-        public class AssemblyCodeBase : IEquatable<AssemblyCodeBase>
+        public class AssemblyCodeBase
         {
             private string version;
             private string uri;
-
-            /// <summary>
-            /// Creates an uninitialized instance for Xml deserialization.
-            /// </summary>
-            private AssemblyCodeBase()
-            {
-            }
 
             /// <summary>
             /// Creates an assembly code base element.
@@ -985,7 +996,6 @@ namespace Gallio.Runtime.Hosting
             /// such as "1.2.3.4".
             /// </summary>
             /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
-            [XmlAttribute("version")]
             public string Version
             {
                 get { return version; }
@@ -1003,7 +1013,6 @@ namespace Gallio.Runtime.Hosting
             /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
             /// <exception cref="ArgumentException">Thrown if <paramref name="value"/> is not an absolute Uri.</exception>
             /// <exception cref="UriFormatException">Thrown if <paramref name="value"/> is not a well-formed Uri.</exception>
-            [XmlAttribute("uri")]
             public string Uri
             {
                 get { return uri; }
@@ -1026,27 +1035,6 @@ namespace Gallio.Runtime.Hosting
             public AssemblyCodeBase Copy()
             {
                 return new AssemblyCodeBase(version, uri);
-            }
-
-            /// <inheritdoc />
-            public override bool Equals(object obj)
-            {
-                return Equals(obj as AssemblyCodeBase);
-            }
-
-            /// <inheritdoc />
-            public bool Equals(AssemblyCodeBase other)
-            {
-                return other != null
-                    && version == other.version
-                    && uri == other.uri;
-            }
-
-            /// <inheritdoc />
-            public override int GetHashCode()
-            {
-                return version.GetHashCode()
-                    ^ uri.GetHashCode();
             }
 
             internal void AddConfigurationElement(XmlElement parent)

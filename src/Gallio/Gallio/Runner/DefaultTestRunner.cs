@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using Gallio.Common.Collections;
 using Gallio.Common.Concurrency;
 using Gallio.Common.Messaging;
 using Gallio.Model;
@@ -172,7 +173,7 @@ namespace Gallio.Runner
                     progressMonitor.SetStatus("Initializing the test isolation context.");
 
                     TestIsolationOptions testIsolationOptions = new TestIsolationOptions();
-                    testIsolationOptions.Properties.AddAll(testRunnerOptions.Properties);
+                    GenericCollectionUtils.ForEach(testRunnerOptions.Properties, x => testIsolationOptions.AddProperty(x.Key, x.Value));
                     testIsolationContext = testIsolationProvider.CreateContext(testIsolationOptions, tappedLogger);
 
                     progressMonitor.Worked(1);

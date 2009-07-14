@@ -165,11 +165,14 @@ namespace Gallio.Model
         public const string FileVersion = "FileVersion";
 
         /// <summary>
-        /// The metadata key for the test framework name associated with a test framework node in the test tree.
+        /// The metadata key for the test framework name associated with a test assembly in the test tree.
         /// </summary>
         /// <remarks>
         /// <para>
-        /// The value should be the name trait of the component that implements the "Gallio.TestFramework" service.
+        /// The value should be the descriptive name of the framework including its version.  eg. "MbUnit v3.1 build 200"
+        /// </para>
+        /// <para>
+        /// A single assembly may have multiple associated frameworks.
         /// </para>
         /// </remarks>
         public const string Framework = "Framework";

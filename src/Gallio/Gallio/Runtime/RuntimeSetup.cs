@@ -15,13 +15,10 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Reflection;
-using System.Xml.Serialization;
-using Gallio.Common;
 using Gallio.Common.IO;
-using Gallio.Common.Xml;
 using Gallio.Common.Reflection;
-using Gallio.Runtime;
 
 namespace Gallio.Runtime
 {
@@ -29,8 +26,6 @@ namespace Gallio.Runtime
     /// Provides configuration parameters for setting up the <see cref="RuntimeAccessor" />.
     /// </summary>
     [Serializable]
-    [XmlRoot("runtimeSetup", Namespace = SchemaConstants.XmlNamespace)]
-    [XmlType(Namespace = SchemaConstants.XmlNamespace)]
     public sealed class RuntimeSetup
     {
         private readonly List<string> pluginDirectories;
@@ -47,15 +42,13 @@ namespace Gallio.Runtime
         }
 
         /// <summary>
-        /// Gets list of relative or absolute paths of directories to be
+        /// Gets a read-only list of relative or absolute paths of directories to be
         /// searched for plugin configuration files in addition to the
         /// primary Gallio directories.
         /// </summary>
-        [XmlArray("pluginDirectories", IsNullable = false)]
-        [XmlArrayItem("pluginDirectory", typeof(string), IsNullable = false)]
-        public List<string> PluginDirectories
+        public IList<string> PluginDirectories
         {
-            get { return pluginDirectories; }
+            get { return new ReadOnlyCollection<string>(pluginDirectories); }
         }
 
         /// <summary>
@@ -68,9 +61,8 @@ namespace Gallio.Runtime
         /// </para>
         /// </remarks>
         /// <value>
-        /// The installation path.  Default is <c>null</c>.
+        /// The runtime path.  Default is <c>null</c>.
         /// </value>
-        [XmlAttribute("runtimePath")]
         public string RuntimePath
         {
             get { return runtimePath; }
@@ -84,7 +76,6 @@ namespace Gallio.Runtime
         /// <value>
         /// The installation configuration.  Default is <c>null</c>.
         /// </value>
-        [XmlElement("installationConfiguration")]
         public InstallationConfiguration InstallationConfiguration
         {
             get { return installationConfiguration; }
@@ -105,7 +96,6 @@ namespace Gallio.Runtime
         /// The primary configuration file path.  Default is null to load the
         /// configuration from the <see cref="AppDomain" />.
         /// </value>
-        [XmlAttribute("configurationFilePath")]
         public string ConfigurationFilePath
         {
             get { return configurationFilePath; }
@@ -149,6 +139,43 @@ namespace Gallio.Runtime
                 throw new ArgumentNullException("assembly");
 
             configurationFilePath = AssemblyUtils.GetAssemblyLocalPath(assembly) + @".config";
+        }
+
+        /// <summary>
+        /// Clears the list of plugin directories.
+        /// </summary>
+        public void ClearPluginDirectories()
+        {
+            pluginDirectories.Clear();
+        }
+
+        /// <summary>
+        /// Adds a plugin directory if not already in the configuration.
+        /// </summary>
+        /// <param name="pluginDirectory">The relative or absolute path of a directory to be
+        /// searched for plugin configuration files in addition to the
+        /// primary Gallio directories.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="pluginDirectory"/> is null.</exception>
+        public void AddPluginDirectory(string pluginDirectory)
+        {
+            if (pluginDirectory == null)
+                throw new ArgumentNullException("pluginDirectory");
+
+            if (! pluginDirectories.Contains(pluginDirectory))
+                pluginDirectories.Add(pluginDirectory);
+        }
+
+        /// <summary>
+        /// Removes a plugin directory.
+        /// </summary>
+        /// <param name="pluginDirectory">The plugin directory to remove.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="pluginDirectory"/> is null.</exception>
+        public void RemovePluginDirectory(string pluginDirectory)
+        {
+            if (pluginDirectory == null)
+                throw new ArgumentNullException("pluginDirectory");
+
+            pluginDirectories.Remove(pluginDirectory);
         }
     }
 }

@@ -70,7 +70,8 @@ namespace Gallio.NCoverIntegration
 
         internal static void SetNCoverCoverageFile(HostSetup hostSetup, string ncoverCoverageFile)
         {
-            hostSetup.Properties.SetValue("NCoverCoverageFile", ncoverCoverageFile);
+            hostSetup.RemoveProperty("NCoverCoverageFile");
+            hostSetup.AddProperty("NCoverCoverageFile", ncoverCoverageFile);
         }
 
         private static HostSetup ForceProcessorArchitectureAndRuntimeVersionIfRequired(HostSetup hostSetup, NCoverVersion version)

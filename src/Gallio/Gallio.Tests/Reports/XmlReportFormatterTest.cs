@@ -78,7 +78,7 @@ namespace Gallio.Tests.Reports
             {
                 XmlReportFormatter formatter = new XmlReportFormatter();
                 ReportFormatterOptions options = new ReportFormatterOptions();
-                options.Properties.Add(XmlReportFormatter.AttachmentContentDispositionOption, AttachmentContentDisposition.Link.ToString());
+                options.AddProperty(XmlReportFormatter.AttachmentContentDispositionOption, AttachmentContentDisposition.Link.ToString());
 
                 formatter.Format(writer, options, progressMonitor);
             }

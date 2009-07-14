@@ -17,12 +17,10 @@ using System;
 using System.IO;
 using System.Reflection;
 using System.Threading;
-using System.Xml.Serialization;
 using Gallio.Common.Collections;
 using Gallio.Common;
 using Gallio.Common.IO;
 using Gallio.Common.Policies;
-using Gallio.Common.Xml;
 
 namespace Gallio.Runtime.Hosting
 {
@@ -30,9 +28,7 @@ namespace Gallio.Runtime.Hosting
     /// Specifies a collection of parameters for setting up a <see cref="IHost" />.
     /// </summary>
     [Serializable]
-    [XmlRoot("hostSetup", Namespace = SchemaConstants.XmlNamespace)]
-    [XmlType(Namespace = SchemaConstants.XmlNamespace)]
-    public sealed class HostSetup : IEquatable<HostSetup>
+    public sealed class HostSetup
     {
         private string applicationBaseDirectory;
         private string workingDirectory;
@@ -54,13 +50,11 @@ namespace Gallio.Runtime.Hosting
         }
 
         /// <summary>
-        /// Gets a mutable collection of key/value pairs that specify configuration properties
-        /// for the host.
+        /// Gets a read-only collection of configuration properties for the host.
         /// </summary>
-        [XmlElement("properties", IsNullable = false)]
         public PropertySet Properties
         {
-            get { return properties; }
+            get { return properties.AsReadOnly(); }
         }
 
         /// <summary>
@@ -80,7 +74,6 @@ namespace Gallio.Runtime.Hosting
         /// <value>
         /// The application base directory.  Default is <c>null</c>.
         /// </value>
-        [XmlAttribute("applicationBaseDirectory")]
         public string ApplicationBaseDirectory
         {
             get { return applicationBaseDirectory; }
@@ -104,7 +97,6 @@ namespace Gallio.Runtime.Hosting
         /// <value>
         /// The working directory.  Default is <c>null</c>.
         /// </value>
-        [XmlAttribute("workingDirectory")]
         public string WorkingDirectory
         {
             get { return workingDirectory; }
@@ -115,7 +107,6 @@ namespace Gallio.Runtime.Hosting
         /// Gets or sets whether assembly shadow copying is enabled.
         /// </summary>
         /// <value>True if shadow copying is enabled.  Default is <c>false</c>.</value>
-        [XmlAttribute("enableShadowCopy")]
         public bool ShadowCopy
         {
             get { return shadowCopy; }
@@ -126,7 +117,6 @@ namespace Gallio.Runtime.Hosting
         /// Gets or sets whether to attach the debugger to the host.
         /// </summary>
         /// <value>True if a debugger should be attached to the host.  Default is <c>false</c>.</value>
-        [XmlAttribute("debug")]
         public bool Debug
         {
             get { return debug; }
@@ -137,7 +127,6 @@ namespace Gallio.Runtime.Hosting
         /// Gets or sets the .Net runtime version of the host, or null to auto-detect.
         /// </summary>
         /// <value>The runtime version, eg. "v2.0.50727".  Default is <c>null</c>.</value>
-        [XmlAttribute("runtimeVersion")]
         public string RuntimeVersion
         {
             get { return runtimeVersion; }
@@ -148,7 +137,6 @@ namespace Gallio.Runtime.Hosting
         /// Gets or sets whether the host should run with elevated privileges.
         /// </summary>
         /// <value>True if the host should have elevated privileges.  Default is <c>false</c>.</value>
-        [XmlAttribute("elevated")]
         public bool Elevated
         {
             get { return elevated; }
@@ -159,7 +147,6 @@ namespace Gallio.Runtime.Hosting
         /// Gets or sets where the host should write out the configuration file for the hosted components.
         /// </summary>
         /// <value>The configuration file location.  Default is <see cref="Hosting.ConfigurationFileLocation.Temp" />.</value>
-        [XmlAttribute("configurationFileLocation")]
         public ConfigurationFileLocation ConfigurationFileLocation
         {
             get { return configurationFileLocation; }
@@ -170,7 +157,6 @@ namespace Gallio.Runtime.Hosting
         /// Gets or sets the host configuration information.
         /// </summary>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
-        [XmlElement("configuration", IsNullable=false)]
         public HostConfiguration Configuration
         {
             get
@@ -191,11 +177,40 @@ namespace Gallio.Runtime.Hosting
         /// Gets or sets the processor architecture that the host should target, when supported.
         /// </summary>
         /// <value>The processor architecture.  Default is <see cref="System.Reflection.ProcessorArchitecture.MSIL" /></value>
-        [XmlAttribute("processorArchitecture")]
         public ProcessorArchitecture ProcessorArchitecture
         {
             get { return processorArchitecture; }
             set { processorArchitecture = value; }
+        }
+
+        /// <summary>
+        /// Clears the collection of properties.
+        /// </summary>
+        public void ClearProperties()
+        {
+            properties.Clear();
+        }
+
+        /// <summary>
+        /// Adds a property key/value pair.
+        /// </summary>
+        /// <param name="key">The property key.</param>
+        /// <param name="value">The property value.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="key"/> or <paramref name="value"/> is null</exception>
+        /// <exception cref="InvalidOperationException">Thrown if <paramref name="key"/> is already in the property set.</exception>
+        public void AddProperty(string key, string value)
+        {
+            properties.Add(key, value); // note: implicitly checks arguments
+        }
+
+        /// <summary>
+        /// Removes a property key/value pair.
+        /// </summary>
+        /// <param name="key">The property key.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="key"/> is null</exception>
+        public void RemoveProperty(string key)
+        {
+            properties.Remove(key); // note: implicitly checks arguments
         }
 
         /// <summary>
@@ -280,43 +295,6 @@ namespace Gallio.Runtime.Hosting
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-        }
-
-        /// <inheritdoc />
-        public override bool Equals(object obj)
-        {
-            return Equals(obj as HostSetup);
-        }
-
-        /// <inheritdoc />
-        public bool Equals(HostSetup other)
-        {
-            return other != null
-                && applicationBaseDirectory == other.applicationBaseDirectory
-                && workingDirectory == other.workingDirectory
-                && shadowCopy == other.shadowCopy
-                && debug == other.debug
-                && runtimeVersion == other.runtimeVersion
-                && elevated == other.elevated
-                && processorArchitecture == other.processorArchitecture
-                && configurationFileLocation == other.configurationFileLocation
-                && properties.Equals(other.properties)
-                && Configuration.Equals(other.Configuration);
-        }
-
-        /// <inheritdoc />
-        public override int GetHashCode()
-        {
-            return (applicationBaseDirectory != null ? applicationBaseDirectory.GetHashCode() : 0)
-                ^ (workingDirectory != null ? workingDirectory.GetHashCode() : 0)
-                ^ (shadowCopy.GetHashCode() << 16)
-                ^ (debug.GetHashCode() << 21)
-                ^ (runtimeVersion != null ? runtimeVersion.GetHashCode() : 0)
-                ^ (elevated.GetHashCode() << 25)
-                ^ (processorArchitecture.GetHashCode() << 5)
-                ^ (configurationFileLocation.GetHashCode() << 2)
-                ^ properties.GetHashCode()
-                ^ Configuration.GetHashCode();
         }
 
         private string GetCanonicalApplicationBaseDirectory(string baseDirectory)

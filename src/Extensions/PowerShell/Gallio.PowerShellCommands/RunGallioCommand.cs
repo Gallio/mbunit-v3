@@ -552,21 +552,27 @@ namespace Gallio.PowerShellCommands
                 launcher.TestProject.TestPackage.RuntimeVersion = runtimeVersion;
 
             foreach (string option in reportFormatterProperties)
-                launcher.ReportFormatterOptions.Properties.Add(StringUtils.ParseKeyValuePair(option));
+            {
+                KeyValuePair<string, string> pair = StringUtils.ParseKeyValuePair(option);
+                launcher.ReportFormatterOptions.Properties.Add(pair.Key, pair.Value);
+            }
 
             foreach (string option in runnerProperties)
-                launcher.TestRunnerOptions.Properties.Add(StringUtils.ParseKeyValuePair(option));
+            {
+                KeyValuePair<string, string> pair = StringUtils.ParseKeyValuePair(option);
+                launcher.TestRunnerOptions.AddProperty(pair.Key, pair.Value);
+            }
 
-            ForEachItem(files, x => launcher.FilePatterns.Add(x));
+            ForEachItem(files, x => launcher.AddFilePattern(x));
             ForEachItem(hintDirectories, x => launcher.TestProject.TestPackage.AddHintDirectory(new DirectoryInfo(x)));
-            ForEachItem(pluginDirectories, x => launcher.RuntimeSetup.PluginDirectories.Add(x));
+            ForEachItem(pluginDirectories, x => launcher.RuntimeSetup.AddPluginDirectory(x));
 
             if (reportDirectory != null)
                 launcher.TestProject.ReportDirectory = reportDirectory;
             if (reportNameFormat != null)
                 launcher.TestProject.ReportNameFormat = reportNameFormat;
             if (reportTypes != null)
-                GenericCollectionUtils.AddAll(reportTypes, launcher.ReportFormats);
+                GenericCollectionUtils.ForEach(reportTypes, x => launcher.AddReportFormat(x));
 
             TestLauncherResult result = RunLauncher(launcher);
             return result;

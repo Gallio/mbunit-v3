@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Reflection;
@@ -618,10 +619,16 @@ namespace Gallio.NAntTasks
                 launcher.TestProject.TestPackage.RuntimeVersion = runtimeVersion;
 
             foreach (Argument option in reportFormatterProperties)
-                launcher.ReportFormatterOptions.Properties.Add(StringUtils.ParseKeyValuePair(option.Value));
+            {
+                KeyValuePair<string, string> pair = StringUtils.ParseKeyValuePair(option.Value);
+                launcher.ReportFormatterOptions.Properties.Add(pair.Key, pair.Value);
+            }
 
             foreach (Argument option in runnerProperties)
-                launcher.TestRunnerOptions.Properties.Add(StringUtils.ParseKeyValuePair(option.Value));
+            {
+                KeyValuePair<string, string> pair = StringUtils.ParseKeyValuePair(option.Value);
+                launcher.TestRunnerOptions.AddProperty(pair.Key, pair.Value);
+            }
 
             AddAssemblies(launcher);
             AddHintDirectories(launcher);
@@ -632,8 +639,8 @@ namespace Gallio.NAntTasks
             if (reportNameFormat != null)
                 launcher.TestProject.ReportNameFormat = reportNameFormat;
             if (reportTypes != null)
-                GenericCollectionUtils.AddAll(reportTypes.Split(new[] {';'}, StringSplitOptions.RemoveEmptyEntries),
-                                    launcher.ReportFormats);
+                GenericCollectionUtils.ForEach(reportTypes.Split(new[] {';'}, StringSplitOptions.RemoveEmptyEntries),
+                                    x => launcher.AddReportFormat(x));
 
             TestLauncherResult result = RunLauncher(launcher);
 
@@ -720,7 +727,7 @@ namespace Gallio.NAntTasks
                 foreach (FileSet fs in files)
                 {
                     foreach (string f in fs.FileNames)
-                        launcher.FilePatterns.Add(f);
+                        launcher.AddFilePattern(f);
                 }
             }
         }
@@ -744,7 +751,7 @@ namespace Gallio.NAntTasks
                 foreach (DirSet ds in pluginDirectories)
                 {
                     foreach (string d in ds.DirectoryNames)
-                        launcher.RuntimeSetup.PluginDirectories.Add(d);
+                        launcher.RuntimeSetup.AddPluginDirectory(d);
                 }
             }
         }

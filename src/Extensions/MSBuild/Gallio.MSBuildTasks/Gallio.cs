@@ -802,21 +802,27 @@ namespace Gallio.MSBuildTasks
                 launcher.TestProject.TestPackage.RuntimeVersion = runtimeVersion;
 
             foreach (string option in reportFormatterProperties)
-                launcher.ReportFormatterOptions.Properties.Add(StringUtils.ParseKeyValuePair(option));
+            {
+                KeyValuePair<string, string> pair = StringUtils.ParseKeyValuePair(option);
+                launcher.ReportFormatterOptions.Properties.Add(pair.Key, pair.Value);
+            }
 
             foreach (string option in runnerProperties)
-                launcher.TestRunnerOptions.Properties.Add(StringUtils.ParseKeyValuePair(option));
+            {
+                KeyValuePair<string, string> pair = StringUtils.ParseKeyValuePair(option);
+                launcher.TestRunnerOptions.AddProperty(pair.Key, pair.Value);
+            }
 
-            ForEachItemSpec(files, x => launcher.FilePatterns.Add(x));
+            ForEachItemSpec(files, x => launcher.AddFilePattern(x));
             ForEachItemSpec(hintDirectories, x => launcher.TestProject.TestPackage.AddHintDirectory(new DirectoryInfo(x)));
-            ForEachItemSpec(pluginDirectories, x => launcher.RuntimeSetup.PluginDirectories.Add(x));
+            ForEachItemSpec(pluginDirectories, x => launcher.RuntimeSetup.AddPluginDirectory(x));
 
             if (reportDirectory != null)
                 launcher.TestProject.ReportDirectory = reportDirectory.ItemSpec;
             if (reportNameFormat != null)
                 launcher.TestProject.ReportNameFormat = reportNameFormat;
             if (reportTypes != null)
-                GenericCollectionUtils.AddAll(reportTypes, launcher.ReportFormats);
+                GenericCollectionUtils.ForEach(reportTypes, x => launcher.AddReportFormat(x));
 
             if (runnerType != null)
                 launcher.TestProject.TestRunnerFactoryName = runnerType;

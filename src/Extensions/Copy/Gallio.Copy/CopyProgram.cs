@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
+using Gallio.Common.Collections;
 using Gallio.Common.IO;
 using Gallio.Copy.Properties;
 using Gallio.Runtime;
@@ -55,7 +56,7 @@ namespace Gallio.Copy
             Application.SetCompatibleTextRenderingDefault(false);
 
             var runtimeSetup = new RuntimeSetup();
-            runtimeSetup.PluginDirectories.AddRange(Arguments.PluginDirectories);
+            GenericCollectionUtils.ForEach(Arguments.PluginDirectories, x => runtimeSetup.AddPluginDirectory(x));
 
             var logger = new FilteredLogger(new RichConsoleLogger(Console), Verbosity.Normal);
             using (RuntimeBootstrap.Initialize(runtimeSetup, logger))

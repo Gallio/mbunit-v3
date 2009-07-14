@@ -73,7 +73,7 @@ namespace Gallio.Icarus
 
             var runtimeLogger = new RuntimeLogger();
 
-            GenericCollectionUtils.AddAllIfNotAlreadyPresent(Arguments.PluginDirectories, runtimeSetup.PluginDirectories);
+            GenericCollectionUtils.ForEach(Arguments.PluginDirectories, x => runtimeSetup.AddPluginDirectory(x));
 
             using (RuntimeBootstrap.Initialize(runtimeSetup, runtimeLogger))
             {

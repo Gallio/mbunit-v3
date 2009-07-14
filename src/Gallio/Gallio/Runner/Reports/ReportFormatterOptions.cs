@@ -38,12 +38,41 @@ namespace Gallio.Runner.Reports
         }
 
         /// <summary>
-        /// Gets a mutable collection of key/value pairs that specify configuration properties
-        /// for the report formatter.
+        /// Gets a read-only collection of configuration properties for the report formatter.
         /// </summary>
         public PropertySet Properties
         {
-            get { return properties; }
+            get { return properties.AsReadOnly(); }
+        }
+
+        /// <summary>
+        /// Clears the collection of properties.
+        /// </summary>
+        public void ClearProperties()
+        {
+            properties.Clear();
+        }
+
+        /// <summary>
+        /// Adds a property key/value pair.
+        /// </summary>
+        /// <param name="key">The property key.</param>
+        /// <param name="value">The property value.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="key"/> or <paramref name="value"/> is null</exception>
+        /// <exception cref="InvalidOperationException">Thrown if <paramref name="key"/> is already in the property set.</exception>
+        public void AddProperty(string key, string value)
+        {
+            properties.Add(key, value); // note: implicitly checks arguments
+        }
+
+        /// <summary>
+        /// Removes a property key/value pair.
+        /// </summary>
+        /// <param name="key">The property key.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="key"/> is null</exception>
+        public void RemoveProperty(string key)
+        {
+            properties.Remove(key); // note: implicitly checks arguments
         }
 
         /// <summary>

@@ -131,7 +131,7 @@ namespace Gallio.Tests.Reports
                 {
                     XsltReportFormatter formatter = new XsltReportFormatter("ext", MimeTypes.PlainText, new DirectoryInfo(resourcePath), "Diagnostic.xslt", new string[] { "MbUnitLogo.png" });
                     var reportFormatterOptions = new ReportFormatterOptions();
-                    reportFormatterOptions.Properties.Add(XsltReportFormatter.AttachmentContentDispositionOption, AttachmentContentDisposition.Link.ToString());
+                    reportFormatterOptions.AddProperty(XsltReportFormatter.AttachmentContentDispositionOption, AttachmentContentDisposition.Link.ToString());
 
                     formatter.Format(reportWriter, reportFormatterOptions, progressMonitor);
 

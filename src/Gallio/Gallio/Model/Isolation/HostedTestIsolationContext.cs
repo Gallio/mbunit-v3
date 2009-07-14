@@ -60,7 +60,7 @@ namespace Gallio.Model.Isolation
             hostSetup = hostSetup.Copy();
             foreach (var pair in testIsolationOptions.Properties)
                 if (! hostSetup.Properties.ContainsKey(pair.Key))
-                    hostSetup.Properties.Add(pair);
+                    hostSetup.AddProperty(pair.Key, pair.Value);
 
             IHost host = null;
             try

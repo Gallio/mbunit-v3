@@ -19,39 +19,12 @@ using System.Reflection;
 using Gallio.Common.Policies;
 using Gallio.Runtime.Hosting;
 using MbUnit.Framework;
-using MbUnit.Framework.ContractVerifiers;
 
 namespace Gallio.Tests.Runtime.Hosting
 {
     [TestsOn(typeof(HostSetup))]
     public class HostSetupTest
     {
-        [VerifyContract]
-        public readonly IContract EqualityTests = new EqualityContract<HostSetup>
-        {
-            ImplementsOperatorOverloads = false,
-            EquivalenceClasses =
-            {
-                { new HostSetup { }},
-                { new HostSetup { ApplicationBaseDirectory = @"C:\AppBase" }},
-                { new HostSetup { ApplicationBaseDirectory = @"C:\AppBase-2" }},
-                { new HostSetup { Configuration = { ConfigurationXml = "<config/>" }}},
-                { new HostSetup { Configuration = { ConfigurationXml = "<config-2/>" }}},
-                { new HostSetup { ConfigurationFileLocation = ConfigurationFileLocation.AppBase }},
-                { new HostSetup { ConfigurationFileLocation = ConfigurationFileLocation.None }},
-                { new HostSetup { ProcessorArchitecture = ProcessorArchitecture.Amd64 }},
-                { new HostSetup { ProcessorArchitecture = ProcessorArchitecture.IA64 }},
-                { new HostSetup { ShadowCopy = true }},
-                { new HostSetup { Debug = true }},
-                { new HostSetup { Elevated = true }},
-                { new HostSetup { WorkingDirectory = @"C:\WorkingDir" }},
-                { new HostSetup { WorkingDirectory = @"C:\WorkingDir-2" }},
-                { new HostSetup { Properties = { { "prop", "value" } }}},
-                { new HostSetup { Properties = { { "prop", "value2" } }}},
-                { new HostSetup { Properties = { { "prop", "value" }, { "other prop", "value" } }}}
-            }
-        };
-
         [Test]
         public void WriteTemporaryConfigurationFile_ReturnsNullWhenNone()
         {

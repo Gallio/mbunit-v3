@@ -15,7 +15,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
+using System.Collections.ObjectModel;
 using Gallio.Common;
 using Microsoft.Win32;
 
@@ -89,11 +89,48 @@ namespace Gallio.Runtime
         }
 
         /// <summary>
-        /// Gets the mutable list of additional plugin directories.
+        /// Gets a read-only list of additional plugin directories.
         /// </summary>
         public IList<string> AdditionalPluginDirectories
         {
-            get { return additionalPluginDirectories; }
+            get { return new ReadOnlyCollection<string>(additionalPluginDirectories); }
+        }
+
+        /// <summary>
+        /// Clears the list of additional plugin directories.
+        /// </summary>
+        public void ClearAdditionalPluginDirectories()
+        {
+            additionalPluginDirectories.Clear();
+        }
+
+        /// <summary>
+        /// Adds an additional plugin directory if not already in the configuration.
+        /// </summary>
+        /// <param name="pluginDirectory">The relative or absolute path of a directory to be
+        /// searched for plugin configuration files in addition to the
+        /// primary Gallio directories.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="pluginDirectory"/> is null.</exception>
+        public void AddAdditionalPluginDirectory(string pluginDirectory)
+        {
+            if (pluginDirectory == null)
+                throw new ArgumentNullException("pluginDirectory");
+
+            if (!additionalPluginDirectories.Contains(pluginDirectory))
+                additionalPluginDirectories.Add(pluginDirectory);
+        }
+
+        /// <summary>
+        /// Removes an additional plugin directory.
+        /// </summary>
+        /// <param name="pluginDirectory">The plugin directory to remove.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="pluginDirectory"/> is null.</exception>
+        public void RemoveAdditionalPluginDirectory(string pluginDirectory)
+        {
+            if (pluginDirectory == null)
+                throw new ArgumentNullException("pluginDirectory");
+
+            additionalPluginDirectories.Remove(pluginDirectory);
         }
 
         /// <summary>

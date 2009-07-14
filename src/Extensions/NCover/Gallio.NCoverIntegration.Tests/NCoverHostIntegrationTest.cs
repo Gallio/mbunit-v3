@@ -66,8 +66,8 @@ namespace Gallio.NCoverIntegration.Tests
             launcher.TestProject.TestRunnerFactoryName = factoryName;
             launcher.TestExecutionOptions.FilterSet = new FilterSet<ITestDescriptor>(new TypeFilter<ITestDescriptor>(new EqualityFilter<string>(simpleTestType.FullName), false));
 
-            launcher.TestRunnerOptions.Properties.SetValue("NCoverArguments", ncoverArguments);
-            launcher.TestRunnerOptions.Properties.SetValue("NCoverCoverageFile", ncoverCoverageFile);
+            launcher.TestRunnerOptions.AddProperty("NCoverArguments", ncoverArguments);
+            launcher.TestRunnerOptions.AddProperty("NCoverCoverageFile", ncoverCoverageFile);
 
             TestLauncherResult result = launcher.Run();
 

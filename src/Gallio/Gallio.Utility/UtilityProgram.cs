@@ -67,7 +67,7 @@ namespace Gallio.Utility
             bool isSpecialCommand = command != null;
 
             var runtimeSetup = new RuntimeSetup();
-            runtimeSetup.PluginDirectories.AddRange(Arguments.PluginDirectories);
+            GenericCollectionUtils.ForEach(Arguments.PluginDirectories, x => runtimeSetup.AddPluginDirectory(x));
 
             using (isSpecialCommand ? null : RuntimeBootstrap.Initialize(runtimeSetup, logger))
             {

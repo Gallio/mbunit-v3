@@ -82,7 +82,7 @@ namespace Gallio.Model
         }
 
         /// <summary>
-        /// Gets a read-only list of properties for the test runner.
+        /// Gets a read-only collection of properties for the test runner.
         /// </summary>
         public PropertySet Properties
         {
@@ -385,7 +385,7 @@ namespace Gallio.Model
         }
 
         /// <summary>
-        /// Clears the list of properties.
+        /// Clears the collection of properties.
         /// </summary>
         public void ClearProperties()
         {

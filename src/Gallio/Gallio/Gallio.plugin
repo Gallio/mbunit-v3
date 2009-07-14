@@ -542,6 +542,15 @@
       </traits>
     </component>
 
+    <component componentId="Gallio.TestKinds.File"
+               serviceId="Gallio.TestKind">
+      <traits>
+        <name>File</name>
+        <description>A test file.</description>
+        <icon>plugin://Gallio/Resources/Container.ico</icon>
+      </traits>
+    </component>
+
     <component componentId="Gallio.TestKinds.Namespace"
                serviceId="Gallio.TestKind">
       <traits>

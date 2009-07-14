@@ -50,8 +50,23 @@ namespace Gallio.Model
         public const string Framework = "Framework";
 
         /// <summary>
+        /// The test represents the tests contained in a single test file.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// A file should have an associated <see cref="MetadataKeys.Framework" /> metadata.
+        /// </para>
+        /// </remarks>
+        public const string File = "File";
+
+        /// <summary>
         /// The test represents the tests contained in a single test assembly.
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// An assembly should have an associated <see cref="MetadataKeys.Framework" /> metadata.
+        /// </para>
+        /// </remarks>
         public const string Assembly = "Assembly";
 
         /// <summary>
