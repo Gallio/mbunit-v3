@@ -92,7 +92,7 @@ namespace Gallio.NAntTasks
         private string filter = string.Empty;
         private string reportTypes = string.Empty;
         private string reportNameFormat;
-        private string reportDirectory = String.Empty;
+        private string reportDirectory;
         private string resultProperty;
         private string statisticsPropertiesPrefix;
         private bool showReports;
@@ -621,7 +621,7 @@ namespace Gallio.NAntTasks
             foreach (Argument option in reportFormatterProperties)
             {
                 KeyValuePair<string, string> pair = StringUtils.ParseKeyValuePair(option.Value);
-                launcher.ReportFormatterOptions.Properties.Add(pair.Key, pair.Value);
+                launcher.ReportFormatterOptions.AddProperty(pair.Key, pair.Value);
             }
 
             foreach (Argument option in runnerProperties)

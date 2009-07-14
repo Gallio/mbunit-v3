@@ -14,48 +14,49 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
-using System.Windows.Forms;
-using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Runtime.ProgressMonitoring;
+using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.UI.Progress;
 
 namespace Gallio.Icarus.Commands
 {
-    internal class AddAssembliesCommand : ICommand
+    internal class RemoveFileCommand : ICommand
     {
         private readonly IProjectController projectController;
         private readonly ITestController testController;
 
-        public IList<string> AssemblyFiles
+        public string FileName
         {
             get;
             set;
         }
 
-        public AddAssembliesCommand(IProjectController projectController, ITestController testController)
+        public RemoveFileCommand(IProjectController projectController, ITestController testController)
         {
             this.projectController = projectController;
             this.testController = testController;
-            AssemblyFiles = new List<string>();
         }
 
         public void Execute(IProgressMonitor progressMonitor)
         {
-            using (progressMonitor.BeginTask("Adding assemblies", 100))
+            using (progressMonitor.BeginTask("Removing file.", 100))
             {
-                // add assemblies to test package
-                using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(10))
-                    projectController.AddAssemblies(AssemblyFiles, subProgressMonitor);
-
-                if (progressMonitor.IsCanceled)
-                    throw new OperationCanceledException();
-
-                // reload tests
-                using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(90))
+                if (! string.IsNullOrEmpty(FileName))
                 {
-                    testController.SetTestPackage(projectController.TestPackage);
-                    testController.Explore(subProgressMonitor, projectController.TestRunnerExtensions);
+                    using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(50))
+                    {
+                        projectController.RemoveFile(FileName, subProgressMonitor);
+                    }
+
+                    if (progressMonitor.IsCanceled)
+                        throw new OperationCanceledException();
+
+                    // reload
+                    using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(50))
+                    {
+                        testController.SetTestPackage(projectController.TestPackage);
+                        testController.Explore(subProgressMonitor, projectController.TestRunnerExtensions);
+                    }
                 }
             }
         }

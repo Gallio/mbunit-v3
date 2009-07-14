@@ -51,8 +51,8 @@ namespace Gallio.Runner.Projects
         /// <summary>
         /// The default report directory relative path.
         /// </summary>
-        /// <value>".\Reports"</value>
-        public static readonly string DefaultReportDirectoryRelativePath = @".\Reports";
+        /// <value>"Reports"</value>
+        public static readonly string DefaultReportDirectoryRelativePath = @"Reports";
 
         /// <summary>
         /// The default test runner factory name.

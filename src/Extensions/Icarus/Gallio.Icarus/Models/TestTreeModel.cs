@@ -415,7 +415,7 @@ namespace Gallio.Icarus.Models
                             {
                                 filters.Add(new NamespaceFilter<ITestDescriptor>(equalityFilter));
                             }
-                            else if (node is FixtureNode || node is TestNode)
+                            else if (node is TestDataNode)
                             {
                                 filters.Add(new IdFilter<ITestDescriptor>(equalityFilter));
                             }

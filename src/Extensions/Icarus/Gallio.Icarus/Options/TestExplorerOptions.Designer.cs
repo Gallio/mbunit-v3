@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.alwaysReloadAssemblies = new System.Windows.Forms.CheckBox();
+            this.alwaysReloadFiles = new System.Windows.Forms.CheckBox();
             this.runTestsAfterReload = new System.Windows.Forms.CheckBox();
             this.generalGroupBox = new System.Windows.Forms.GroupBox();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
@@ -44,15 +44,15 @@
             this.panel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel.Size = new System.Drawing.Size(450, 252);
             // 
-            // alwaysReloadAssemblies
+            // alwaysReloadFiles
             // 
-            this.alwaysReloadAssemblies.AutoSize = true;
-            this.alwaysReloadAssemblies.Location = new System.Drawing.Point(17, 30);
-            this.alwaysReloadAssemblies.Name = "alwaysReloadAssemblies";
-            this.alwaysReloadAssemblies.Size = new System.Drawing.Size(145, 17);
-            this.alwaysReloadAssemblies.TabIndex = 5;
-            this.alwaysReloadAssemblies.Text = "Always reload assemblies";
-            this.alwaysReloadAssemblies.UseVisualStyleBackColor = true;
+            this.alwaysReloadFiles.AutoSize = true;
+            this.alwaysReloadFiles.Location = new System.Drawing.Point(17, 30);
+            this.alwaysReloadFiles.Name = "alwaysReloadFiles";
+            this.alwaysReloadFiles.Size = new System.Drawing.Size(145, 17);
+            this.alwaysReloadFiles.TabIndex = 5;
+            this.alwaysReloadFiles.Text = "Always reload files";
+            this.alwaysReloadFiles.UseVisualStyleBackColor = true;
             // 
             // runTestsAfterReload
             // 
@@ -70,7 +70,7 @@
             this.generalGroupBox.Controls.Add(this.splitNamespacesCheckBox);
             this.generalGroupBox.Controls.Add(this.checkBox1);
             this.generalGroupBox.Controls.Add(this.runTestsAfterReload);
-            this.generalGroupBox.Controls.Add(this.alwaysReloadAssemblies);
+            this.generalGroupBox.Controls.Add(this.alwaysReloadFiles);
             this.generalGroupBox.Dock = System.Windows.Forms.DockStyle.Fill;
             this.generalGroupBox.Location = new System.Drawing.Point(0, 0);
             this.generalGroupBox.Name = "generalGroupBox";
@@ -113,7 +113,7 @@
 
         #endregion
 
-        private System.Windows.Forms.CheckBox alwaysReloadAssemblies;
+        private System.Windows.Forms.CheckBox alwaysReloadFiles;
         private System.Windows.Forms.CheckBox runTestsAfterReload;
         private System.Windows.Forms.GroupBox generalGroupBox;
         private System.Windows.Forms.CheckBox splitNamespacesCheckBox;

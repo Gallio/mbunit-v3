@@ -61,7 +61,7 @@ namespace Gallio.Icarus
         }
 
         [XmlElement("alwaysReloadTests")]
-        public bool AlwaysReloadAssemblies { get; set; }
+        public bool AlwaysReloadFiles { get; set; }
 
         [XmlElement("runTestsAfterReload")]
         public bool RunTestsAfterReload { get; set; }

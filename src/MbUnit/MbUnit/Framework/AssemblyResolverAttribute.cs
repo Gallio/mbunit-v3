@@ -63,12 +63,12 @@ namespace MbUnit.Framework
         }
 
         /// <inheritdoc />
-        public override void Initialize(IPatternScope frameworkScope, IAssemblyInfo assembly)
+        public override void Initialize(IPatternScope rootScope, IAssemblyInfo assembly)
         {
             try
             {
                 IAssemblyResolver resolver = (IAssemblyResolver)Activator.CreateInstance(assemblyResolverType);
-                frameworkScope.TestModelBuilder.AddAssemblyResolver(resolver);
+                rootScope.TestModelBuilder.AddAssemblyResolver(resolver);
             }
             catch (Exception ex)
             {

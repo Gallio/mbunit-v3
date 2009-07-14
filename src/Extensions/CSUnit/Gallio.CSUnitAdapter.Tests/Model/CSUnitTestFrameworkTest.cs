@@ -37,6 +37,11 @@ namespace Gallio.CSUnitAdapter.Tests.Model
                     RuntimeAccessor.ServiceLocator.ResolveHandleByComponentId("CSUnitAdapter.TestFramework");
             }
         }
+
+        protected override string AssemblyKind
+        {
+            get { return CSUnitTestExplorer.AssemblyKind; }
+        }
     }
 }
 

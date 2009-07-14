@@ -29,6 +29,7 @@
     <BootstrapperEnabled>true</BootstrapperEnabled>
     <SGenUseProxyTypes>false</SGenUseProxyTypes>
     <SGenShouldGenerateSerializer>true</SGenShouldGenerateSerializer>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -84,7 +85,7 @@
     <Compile Include="AboutDialog.Designer.cs">
       <DependentUpon>AboutDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="Commands\AddAssembliesCommand.cs" />
+    <Compile Include="Commands\AddFilesCommand.cs" />
     <Compile Include="Commands\ApplyFilterCommand.cs" />
     <Compile Include="Commands\ConvertSavedReportCommand.cs" />
     <Compile Include="Commands\DeleteFilterCommand.cs" />
@@ -95,8 +96,8 @@
     <Compile Include="Commands\OpenReportCommand.cs" />
     <Compile Include="Commands\RefreshTestTreeCommand.cs" />
     <Compile Include="Commands\ReloadCommand.cs" />
-    <Compile Include="Commands\RemoveAllAssembliesCommand.cs" />
-    <Compile Include="Commands\RemoveAssemblyCommand.cs" />
+    <Compile Include="Commands\RemoveAllFilesCommand.cs" />
+    <Compile Include="Commands\RemoveFileCommand.cs" />
     <Compile Include="Commands\ResetTestsCommand.cs" />
     <Compile Include="Commands\RestoreFilterCommand.cs" />
     <Compile Include="Commands\RunTestsCommand.cs" />
@@ -107,7 +108,7 @@
     <Compile Include="Controllers\AboutController.cs" />
     <Compile Include="Controllers\AnnotationsController.cs" />
     <Compile Include="Controllers\ApplicationController.cs" />
-    <Compile Include="Controllers\EventArgs\AssemblyChangedEventArgs.cs" />
+    <Compile Include="Controllers\EventArgs\FileChangedEventArgs.cs" />
     <Compile Include="Controllers\EventArgs\DisplayProgressDialogEventArgs.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -187,20 +188,11 @@
     <Compile Include="Controls\PropertiesTabControl.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Helpers\TestTreeNodeFactory.cs" />
     <Compile Include="Logging\BlackBoxLogger.cs" />
-    <Compile Include="Models\TestTreeNodes\AssemblyNode.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Models\TestTreeNodes\FilterNode.cs" />
-    <Compile Include="Models\TestTreeNodes\FixtureNode.cs" />
-    <Compile Include="Models\TestTreeNodes\FrameworkNode.cs" />
-    <Compile Include="Models\TestTreeNodes\GroupNode.cs" />
     <Compile Include="Models\TestTreeNodes\MetadataNode.cs" />
     <Compile Include="Models\TestTreeNodes\NamespaceNode.cs" />
-    <Compile Include="Models\TestTreeNodes\RootNode.cs" />
     <Compile Include="Models\TestTreeNodes\TestDataNode.cs" />
-    <Compile Include="Models\TestTreeNodes\TestNode.cs" />
     <Compile Include="Options\IOptionsManager.cs" />
     <Compile Include="Options\OptionsPanel.cs">
       <SubType>UserControl</SubType>
@@ -209,6 +201,7 @@
       <DependentUpon>OptionsPanel.cs</DependentUpon>
     </Compile>
     <Compile Include="Packages\ProjectsPackage.cs" />
+    <Compile Include="Remoting\FileChangedHandler.cs" />
     <Compile Include="Reports\ReportMonitor.cs" />
     <Compile Include="Reports\ReportOptions.cs" />
     <Compile Include="Utilities\Dialogs.cs" />
@@ -263,8 +256,8 @@
     <Compile Include="Models\PluginNodes\ComponentNode.cs" />
     <Compile Include="Models\PluginNodes\PluginNode.cs" />
     <Compile Include="Models\PluginNodes\ServiceNode.cs" />
-    <Compile Include="Models\ProjectTreeNodes\AssembliesNode.cs" />
-    <Compile Include="Models\ProjectTreeNodes\AssemblyNode.cs" />
+    <Compile Include="Models\ProjectTreeNodes\FilesNode.cs" />
+    <Compile Include="Models\ProjectTreeNodes\FileNode.cs" />
     <Compile Include="Models\ProjectTreeNodes\ProjectTreeNode.cs" />
     <Compile Include="Models\ProjectTreeNodes\PropertiesNode.cs" />
     <Compile Include="Models\ProjectTreeNodes\ReportNode.cs" />
@@ -278,7 +271,7 @@
     </Compile>
     <Compile Include="Packages\CodeViewerPackage.cs" />
     <Compile Include="Packages\PluginBrowserPackage.cs" />
-    <Compile Include="Remoting\IAssemblyWatcher.cs" />
+    <Compile Include="Remoting\IFileWatcher.cs" />
     <Compile Include="Utilities\MRUList.cs" />
     <Compile Include="Utilities\NativeMethods.cs" />
     <Compile Include="Views\CodeViewer\CodeViewer.cs">
@@ -309,7 +302,7 @@
     <Compile Include="IWindowManager.cs" />
     <Compile Include="Controllers\Interfaces\IRuntimeLogController.cs" />
     <Compile Include="Controllers\Interfaces\ITestController.cs" />
-    <Compile Include="Remoting\AssemblyWatcher.cs" />
+    <Compile Include="Remoting\FileWatcher.cs" />
     <Compile Include="Services\Interfaces\IReportService.cs" />
     <Compile Include="Models\ProjectTreeModel.cs" />
     <Compile Include="Models\TestTreeModel.cs" />

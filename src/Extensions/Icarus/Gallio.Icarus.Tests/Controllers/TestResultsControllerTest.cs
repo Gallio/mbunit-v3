@@ -438,7 +438,7 @@ namespace Gallio.Icarus.Tests.Controllers
             Assert.AreEqual("0.500", listViewItem.SubItems[2].Text); // duration
             Assert.AreEqual("5", listViewItem.SubItems[3].Text); // assert count
             Assert.AreEqual("", listViewItem.SubItems[4].Text); // code ref
-            Assert.AreEqual("", listViewItem.SubItems[5].Text); // assembly name
+            Assert.AreEqual("", listViewItem.SubItems[5].Text); // file name
             Assert.AreEqual(2, listViewItem.IndentCount);
         }
 
@@ -497,7 +497,7 @@ namespace Gallio.Icarus.Tests.Controllers
             Assert.AreEqual("0.200", listViewItem.SubItems[2].Text); // duration
             Assert.AreEqual("2", listViewItem.SubItems[3].Text); // assert count
             Assert.AreEqual("", listViewItem.SubItems[4].Text); // code ref
-            Assert.AreEqual("", listViewItem.SubItems[5].Text); // assembly name
+            Assert.AreEqual("", listViewItem.SubItems[5].Text); // file name
             Assert.AreEqual(0, listViewItem.IndentCount);
         }
 
@@ -534,14 +534,14 @@ namespace Gallio.Icarus.Tests.Controllers
         {
             get
             {
-                var root = new RootNode(new TestData("root", "root", "root"));
+                var root = new TestDataNode(new TestData("root", "root", "root") { Metadata = { { MetadataKeys.TestKind, TestKinds.Root } } });
 
-                var fixture = new FixtureNode(new TestData("fixture", "fixture", "fixture"));
+                var fixture = new TestDataNode(new TestData("fixture", "fixture", "fixture") { Metadata = { { MetadataKeys.TestKind, TestKinds.Fixture } } });
                 root.Nodes.Add(fixture);
 
-                var test1 = new TestNode(new TestData("test1", "test1", "test1"));
+                var test1 = new TestDataNode(new TestData("test1", "test1", "test1") { Metadata = { { MetadataKeys.TestKind, TestKinds.Test } } });
                 fixture.Nodes.Add(test1);
-                var testStepRun1 = new TestStepRun(new TestStepData("test1", "test1", "test1", "test1"))
+                var testStepRun1 = new TestStepRun(new TestStepData("test1", "test1", "test1", "test1") { Metadata = { { MetadataKeys.TestKind, TestKinds.Test } } })
                 {
                     Result = new TestResult
                     {
@@ -552,9 +552,9 @@ namespace Gallio.Icarus.Tests.Controllers
                 };
                 test1.AddTestStepRun(testStepRun1);
 
-                var test2 = new TestNode(new TestData("test2", "test2", "test2"));
+                var test2 = new TestDataNode(new TestData("test2", "test2", "test2") { Metadata = { { MetadataKeys.TestKind, TestKinds.Test } } });
                 fixture.Nodes.Add(test2);
-                var testStepRun2 = new TestStepRun(new TestStepData("test2", "test2", "test2", "test2"))
+                var testStepRun2 = new TestStepRun(new TestStepData("test2", "test2", "test2", "test2") { Metadata = { { MetadataKeys.TestKind, TestKinds.Test } } })
                 {
                     Result = new TestResult
                     {
@@ -565,9 +565,9 @@ namespace Gallio.Icarus.Tests.Controllers
                 };
                 test2.AddTestStepRun(testStepRun2);
 
-                var test3 = new TestNode(new TestData("test3", "test3", "test3"));
+                var test3 = new TestDataNode(new TestData("test3", "test3", "test3") { Metadata = { { MetadataKeys.TestKind, TestKinds.Test } } });
                 fixture.Nodes.Add(test3);
-                var testStepRun3 = new TestStepRun(new TestStepData("test3", "test3", "test3", "test3"))
+                var testStepRun3 = new TestStepRun(new TestStepData("test3", "test3", "test3", "test3") { Metadata = { { MetadataKeys.TestKind, TestKinds.Test } } })
                 {
                     Result = new TestResult
                     {

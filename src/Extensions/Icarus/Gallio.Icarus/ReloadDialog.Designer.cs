@@ -30,7 +30,7 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ReloadDialog));
             this.warningIcon = new System.Windows.Forms.Label();
-            this.assemblyLabel = new System.Windows.Forms.Label();
+            this.fileModifiedLabel = new System.Windows.Forms.Label();
             this.ignoreButton = new System.Windows.Forms.Button();
             this.reloadButton = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
@@ -45,14 +45,14 @@
             this.warningIcon.Size = new System.Drawing.Size(62, 53);
             this.warningIcon.TabIndex = 0;
             // 
-            // assemblyLabel
+            // fileModifiedLabel
             // 
-            this.assemblyLabel.AutoSize = true;
-            this.assemblyLabel.Location = new System.Drawing.Point(90, 19);
-            this.assemblyLabel.Name = "assemblyLabel";
-            this.assemblyLabel.Size = new System.Drawing.Size(181, 13);
-            this.assemblyLabel.TabIndex = 1;
-            this.assemblyLabel.Text = "The assembly {0} has been modified.";
+            this.fileModifiedLabel.AutoSize = true;
+            this.fileModifiedLabel.Location = new System.Drawing.Point(90, 19);
+            this.fileModifiedLabel.Name = "fileModifiedLabel";
+            this.fileModifiedLabel.Size = new System.Drawing.Size(136, 13);
+            this.fileModifiedLabel.TabIndex = 1;
+            this.fileModifiedLabel.Text = "File \'{0}\' has been modified.";
             // 
             // ignoreButton
             // 
@@ -107,7 +107,7 @@
             this.Controls.Add(this.label1);
             this.Controls.Add(this.reloadButton);
             this.Controls.Add(this.ignoreButton);
-            this.Controls.Add(this.assemblyLabel);
+            this.Controls.Add(this.fileModifiedLabel);
             this.Controls.Add(this.warningIcon);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -127,7 +127,7 @@
         #endregion
 
         private System.Windows.Forms.Label warningIcon;
-        private System.Windows.Forms.Label assemblyLabel;
+        private System.Windows.Forms.Label fileModifiedLabel;
         private System.Windows.Forms.Button ignoreButton;
         private System.Windows.Forms.Button reloadButton;
         private System.Windows.Forms.Label label1;

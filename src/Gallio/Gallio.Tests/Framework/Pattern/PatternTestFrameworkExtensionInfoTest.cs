@@ -50,11 +50,11 @@ namespace Gallio.Tests.Framework.Pattern
         {
             PatternTestFrameworkExtensionInfo info = new PatternTestFrameworkExtensionInfo("id", "name");
 
-            Assert.IsNull(info.FrameworkKind);
+            Assert.IsNull(info.AssemblyKind);
 
-            info.FrameworkKind = "Foo";
+            info.AssemblyKind = "Foo";
 
-            Assert.AreEqual("Foo", info.FrameworkKind);
+            Assert.AreEqual("Foo", info.AssemblyKind);
         }
     }
 }

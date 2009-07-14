@@ -40,20 +40,42 @@ namespace Gallio.UI.Progress
             progressMonitor.Changed += (sender, e) => Sync.Invoke(this, ProgressUpdate);
         }
 
+        /// <inheritdoc />
+        protected override void OnLoad(EventArgs e)
+        {
+            base.OnLoad(e);
+
+            ProgressUpdate();
+        }
+
         private void ProgressUpdate()
         {
             // update task details
-            progressBar.Maximum = double.IsNaN(progressMonitor.TotalWorkUnits)
-                ? 0 : Convert.ToInt32(progressMonitor.TotalWorkUnits);
-            progressBar.Value = Convert.ToInt32(progressMonitor.CompletedWorkUnits);
+            if (double.IsNaN(progressMonitor.TotalWorkUnits))
+            {
+                progressBar.Style = ProgressBarStyle.Marquee;
+            }
+            else
+            {
+                progressBar.Style = ProgressBarStyle.Continuous;
+                progressBar.Maximum = Convert.ToInt32(progressMonitor.TotalWorkUnits);
+                progressBar.Value = Convert.ToInt32(progressMonitor.CompletedWorkUnits);
+            }
+
             Text = progressMonitor.TaskName;
+
             subTaskNameLabel.Text = progressMonitor.LeafSubTaskName;
+            if (subTaskNameLabel.Text.Length == 0)
+                subTaskNameLabel.Text = progressMonitor.TaskName;
+
+            statusLabel.Text = progressMonitor.LeafStatus;
+
             percentLabel.Text = (progressMonitor.TotalWorkUnits > 0) ? 
                 String.Format("({0:P0})", progressMonitor.CompletedWorkUnits / 
                 progressMonitor.TotalWorkUnits) : String.Empty;
 
             // if we're finished, then close the window
-            if (progressMonitor.CompletedWorkUnits == progressMonitor.TotalWorkUnits)
+            if (progressMonitor.IsDone)
                 Close();
         }
 

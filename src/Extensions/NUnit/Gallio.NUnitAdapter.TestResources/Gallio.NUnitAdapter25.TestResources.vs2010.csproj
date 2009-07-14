@@ -10,11 +10,7 @@
     <RootNamespace>Gallio.NUnitAdapter.TestResources</RootNamespace>
     <AssemblyName>Gallio.NUnitAdapter25.TestResources</AssemblyName>
     <BaseIntermediateOutputPath>obj\v2.5\</BaseIntermediateOutputPath>
-    <FileUpgradeFlags>
-    </FileUpgradeFlags>
-    <OldToolsVersion>3.5</OldToolsVersion>
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
-    <UpgradeBackupLocation />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -62,6 +58,8 @@
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
     <Compile Include="SettingsTest.cs" />
+    <Compile Include="SetUpFixtureSample\FixtureDependentUponSetUpFixture.cs" />
+    <Compile Include="SetUpFixtureSample\SetUpFixture.cs" />
     <Compile Include="SimpleTest.cs" />
   </ItemGroup>
   <ItemGroup>

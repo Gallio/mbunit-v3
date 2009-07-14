@@ -1,4 +1,4 @@
-﻿namespace Gallio.Icarus.ControlPanel
+namespace Gallio.Icarus.ControlPanel
 {
     internal partial class TestExplorerPane
     {
@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.alwaysReloadAssembliesCheckBox = new System.Windows.Forms.CheckBox();
+            this.alwaysReloadFilesCheckBox = new System.Windows.Forms.CheckBox();
             this.runTestsAfterReloadCheckBox = new System.Windows.Forms.CheckBox();
             this.generalGroupBox = new System.Windows.Forms.GroupBox();
             this.splitNamespacesCheckBox = new System.Windows.Forms.CheckBox();
@@ -40,16 +40,16 @@
             this.runtimeGroupBox.SuspendLayout();
             this.SuspendLayout();
             // 
-            // alwaysReloadAssembliesCheckBox
+            // alwaysReloadFilesCheckBox
             // 
-            this.alwaysReloadAssembliesCheckBox.AutoSize = true;
-            this.alwaysReloadAssembliesCheckBox.Location = new System.Drawing.Point(17, 28);
-            this.alwaysReloadAssembliesCheckBox.Name = "alwaysReloadAssembliesCheckBox";
-            this.alwaysReloadAssembliesCheckBox.Size = new System.Drawing.Size(145, 17);
-            this.alwaysReloadAssembliesCheckBox.TabIndex = 5;
-            this.alwaysReloadAssembliesCheckBox.Text = "Always reload assemblies";
-            this.alwaysReloadAssembliesCheckBox.UseVisualStyleBackColor = true;
-            this.alwaysReloadAssembliesCheckBox.CheckedChanged += new System.EventHandler(this.alwaysReloadAssembliesCheckBox_CheckedChanged);
+            this.alwaysReloadFilesCheckBox.AutoSize = true;
+            this.alwaysReloadFilesCheckBox.Location = new System.Drawing.Point(17, 28);
+            this.alwaysReloadFilesCheckBox.Name = "alwaysReloadFilesCheckBox";
+            this.alwaysReloadFilesCheckBox.Size = new System.Drawing.Size(145, 17);
+            this.alwaysReloadFilesCheckBox.TabIndex = 5;
+            this.alwaysReloadFilesCheckBox.Text = "Always reload files";
+            this.alwaysReloadFilesCheckBox.UseVisualStyleBackColor = true;
+            this.alwaysReloadFilesCheckBox.CheckedChanged += new System.EventHandler(this.alwaysReloadFilesCheckBox_CheckedChanged);
             // 
             // runTestsAfterReloadCheckBox
             // 
@@ -68,7 +68,7 @@
             this.generalGroupBox.Controls.Add(this.splitNamespacesCheckBox);
             this.generalGroupBox.Controls.Add(this.checkBox1);
             this.generalGroupBox.Controls.Add(this.runTestsAfterReloadCheckBox);
-            this.generalGroupBox.Controls.Add(this.alwaysReloadAssembliesCheckBox);
+            this.generalGroupBox.Controls.Add(this.alwaysReloadFilesCheckBox);
             this.generalGroupBox.Location = new System.Drawing.Point(0, 0);
             this.generalGroupBox.Name = "generalGroupBox";
             this.generalGroupBox.Size = new System.Drawing.Size(450, 116);
@@ -146,7 +146,7 @@
 
         #endregion
 
-        private System.Windows.Forms.CheckBox alwaysReloadAssembliesCheckBox;
+        private System.Windows.Forms.CheckBox alwaysReloadFilesCheckBox;
         private System.Windows.Forms.CheckBox runTestsAfterReloadCheckBox;
         private System.Windows.Forms.GroupBox generalGroupBox;
         private System.Windows.Forms.CheckBox splitNamespacesCheckBox;

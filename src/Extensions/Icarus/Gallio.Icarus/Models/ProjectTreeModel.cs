@@ -13,6 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using System.Collections;
 using System.IO;
 using Aga.Controls.Tree;
@@ -48,10 +49,21 @@ namespace Gallio.Icarus.Models
             set
             {
                 testProject = value;
-                OnStructureChanged(new TreePathEventArgs(new TreePath(projectRoot)));
+                NotifyTestProjectChanged();
+
                 reportMonitor = new ReportMonitor(testProject);
-                reportMonitor.ReportDirectoryChanged += (sender, e) => OnStructureChanged(new TreePathEventArgs());
+                reportMonitor.ReportDirectoryChanged += (sender, e) => NotifyReportsChanged();
             }
+        }
+
+        public void NotifyTestProjectChanged()
+        {
+            OnStructureChanged(new TreePathEventArgs(new TreePath(projectRoot)));
+        }
+
+        public void NotifyReportsChanged()
+        {
+            OnStructureChanged(new TreePathEventArgs());
         }
 
         public ProjectTreeModel(IFileSystem fileSystem)
@@ -61,7 +73,7 @@ namespace Gallio.Icarus.Models
             projectRoot = new Node();
             
             projectRoot.Nodes.Add(new PropertiesNode());
-            projectRoot.Nodes.Add(new AssembliesNode());
+            projectRoot.Nodes.Add(new FilesNode());
             projectRoot.Nodes.Add(new ReportsNode());
         }
 
@@ -76,10 +88,10 @@ namespace Gallio.Icarus.Models
                 foreach (Node n in projectRoot.Nodes)
                     yield return n;
             }
-            else if (treePath.LastNode is AssembliesNode)
+            else if (treePath.LastNode is FilesNode)
             {
                 foreach (FileInfo file in testProject.TestPackage.Files)
-                    yield return new AssemblyNode(file.FullName);
+                    yield return new FileNode(file.FullName);
             }
             else if (treePath.LastNode is ReportsNode && !string.IsNullOrEmpty(fileName))
             {
@@ -93,7 +105,7 @@ namespace Gallio.Icarus.Models
         public override bool IsLeaf(TreePath treePath)
         {
             Node n = treePath.LastNode as Node;
-            return n != projectRoot && !(n is AssembliesNode) && !(n is ReportsNode);
+            return n != projectRoot && !(n is FilesNode) && !(n is ReportsNode);
         }
     }
 }

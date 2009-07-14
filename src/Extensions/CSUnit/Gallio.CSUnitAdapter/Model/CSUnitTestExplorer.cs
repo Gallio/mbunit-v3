@@ -30,15 +30,13 @@ namespace Gallio.CSUnitAdapter.Model
 {
     internal class CSUnitTestExplorer : TestExplorer
     {
-        private const string FrameworkName = "csUnit";
+        internal const string AssemblyKind = TestKinds.Assembly;
         private const string CSUnitAssemblyDisplayName = @"csUnit";
 
-        private readonly Dictionary<Version, Test> frameworkTests;
         private readonly Dictionary<IAssemblyInfo, Test> assemblyTests;
 
         public CSUnitTestExplorer()
         {
-            frameworkTests = new Dictionary<Version, Test>();
             assemblyTests = new Dictionary<IAssemblyInfo, Test>();
         }
 
@@ -51,8 +49,7 @@ namespace Gallio.CSUnitAdapter.Model
 
                 if (frameworkVersion != null)
                 {
-                    Test frameworkTest = GetFrameworkTest(frameworkVersion, TestModel.RootTest);
-                    GetAssemblyTest(assembly, frameworkTest);
+                    GetAssemblyTest(assembly, TestModel.RootTest, frameworkVersion);
                 }
             }
         }
@@ -70,23 +67,7 @@ namespace Gallio.CSUnitAdapter.Model
             return null;
         }
 
-        private Test GetFrameworkTest(Version frameworkVersion, Test rootTest)
-        {
-            Test frameworkTest;
-            if (!frameworkTests.TryGetValue(frameworkVersion, out frameworkTest))
-            {
-                frameworkTest = CreateFrameworkTest(frameworkVersion);
-                if (frameworkTest != null)
-                {
-                    rootTest.AddChild(frameworkTest);
-
-                    frameworkTests.Add(frameworkVersion, frameworkTest);
-                }
-            }
-            return frameworkTest;
-        }
-
-        private Test GetAssemblyTest(IAssemblyInfo assembly, Test frameworkTest)
+        private Test GetAssemblyTest(IAssemblyInfo assembly, Test parentTest, Version frameworkVersion)
         {
             Test assemblyTest;
             if (assemblyTests.TryGetValue(assembly, out assemblyTest))
@@ -100,6 +81,11 @@ namespace Gallio.CSUnitAdapter.Model
                     assemblyTest = BuildAssemblyTest_Native(assembly, loadedAssembly.Location);
                 else
                     assemblyTest = BuildAssemblyTest_Reflective(assembly);
+
+                string frameworkName = String.Format(Resources.CSUnitTestExplorer_FrameworkNameWithVersionFormat, frameworkVersion);
+                assemblyTest.Metadata.SetValue(MetadataKeys.Framework, frameworkName);
+                assemblyTest.Metadata.SetValue(MetadataKeys.File, assembly.Path);
+                assemblyTest.Kind = AssemblyKind;
             }
             catch (Exception ex)
             {
@@ -110,7 +96,7 @@ namespace Gallio.CSUnitAdapter.Model
 
             if (assemblyTest != null)
             {
-                frameworkTest.AddChild(assemblyTest);
+                parentTest.AddChild(assemblyTest);
                 
                 assemblyTests.Add(assembly, assemblyTest);
             }
@@ -238,18 +224,6 @@ namespace Gallio.CSUnitAdapter.Model
                 return true;
 
             return false;
-        }
-
-        private static Test CreateFrameworkTest(Version frameworkVersion)
-        {
-            string name = String.Format(Resources.CSUnitTestExplorer_FrameworkNameWithVersionFormat, frameworkVersion);
-
-            Test frameworkTest = new Test(name, null);
-            frameworkTest.LocalIdHint = FrameworkName;
-            frameworkTest.Kind = TestKinds.Framework;
-            frameworkTest.Metadata.Add(MetadataKeys.Framework, FrameworkName);
-
-            return frameworkTest;
         }
 
         private static Test CreateAssemblyTest(IAssemblyInfo assembly, string assemblyLocation, Action<Test> consumer)

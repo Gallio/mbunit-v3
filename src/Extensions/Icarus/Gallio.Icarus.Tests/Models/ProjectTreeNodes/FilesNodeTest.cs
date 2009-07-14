@@ -13,18 +13,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Gallio.Model;
-using Gallio.Model.Schema;
+using Gallio.Icarus.Models.ProjectTreeNodes;
+using MbUnit.Framework;
 
-namespace Gallio.Icarus.Models.TestTreeNodes
+namespace Gallio.Icarus.Tests.Models.ProjectTreeNodes
 {
-    internal class GroupNode : TestDataNode
+    [Category("Models"), Author("Graham Hay"), TestsOn(typeof(FilesNode)), Importance(Importance.NoOneReallyCaresAbout)]
+    internal class FilesNodeTest
     {
-        public GroupNode(TestData testData)
-            : base(testData)
+        [Test]
+        public void Check_node_text()
         {
-            NodeTypeIcon = Properties.Resources.Group;
-            TestKind = TestKinds.Group;
+            var node = new FilesNode();
+            Assert.AreEqual("Files", node.Text);
         }
     }
 }

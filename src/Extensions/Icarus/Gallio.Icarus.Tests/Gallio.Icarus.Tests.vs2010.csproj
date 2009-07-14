@@ -12,10 +12,6 @@
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\..\Key.snk</AssemblyOriginatorKeyFile>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
-    <FileUpgradeFlags>
-    </FileUpgradeFlags>
-    <OldToolsVersion>3.5</OldToolsVersion>
-    <UpgradeBackupLocation />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -63,7 +59,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Commands\AddAssembliesCommandTest.cs" />
+    <Compile Include="Commands\AddFilesCommandTest.cs" />
     <Compile Include="Commands\ApplyFilterCommandTest.cs" />
     <Compile Include="Commands\ConvertSavedReportCommandTest.cs" />
     <Compile Include="Commands\DeleteFilterCommandTest.cs" />
@@ -94,7 +90,7 @@
     <Compile Include="Controls\TestTreeViewTest.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Models\ProjectTreeNodes\AssembliesNodeTest.cs" />
+    <Compile Include="Models\ProjectTreeNodes\FilesNodeTest.cs" />
     <Compile Include="Models\ProjectTreeModelTest.cs" />
     <Compile Include="Models\TestTreeModelTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

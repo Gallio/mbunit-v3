@@ -31,7 +31,6 @@ namespace Gallio.Framework.Pattern
     {
         private readonly PatternTestFrameworkExtensionProvider extensionProvider;
         private readonly Dictionary<IAssemblyInfo, bool> assemblies;
-        private readonly Dictionary<string, IPatternScope> frameworkScopes;
         private ITestModelBuilder testModelBuilder;
         private IPatternEvaluator evaluator;
 
@@ -40,16 +39,20 @@ namespace Gallio.Framework.Pattern
             this.extensionProvider = extensionProvider;
 
             assemblies = new Dictionary<IAssemblyInfo, bool>();
-            frameworkScopes = new Dictionary<string, IPatternScope>();
+        }
+
+        private void InitializeExplorerIfNeeded(IReflectionPolicy reflectionPolicy)
+        {
+            if (testModelBuilder != null)
+                return;
+
+            testModelBuilder = new DefaultTestModelBuilder(reflectionPolicy, (PatternTestModel)TestModel);
+            evaluator = new DefaultPatternEvaluator(testModelBuilder, DeclarativePatternResolver.Instance);
         }
 
         protected override void ExploreImpl(IReflectionPolicy reflectionPolicy, ICodeElementInfo codeElement)
         {
-            if (testModelBuilder == null)
-            {
-                testModelBuilder = new DefaultTestModelBuilder(reflectionPolicy, (PatternTestModel) TestModel);
-                evaluator = new DefaultPatternEvaluator(testModelBuilder, DeclarativePatternResolver.Instance);
-            }
+            InitializeExplorerIfNeeded(reflectionPolicy);
 
             IAssemblyInfo assembly = ReflectionUtils.GetAssembly(codeElement);
             if (assembly != null)
@@ -81,7 +84,8 @@ namespace Gallio.Framework.Pattern
 
         protected override TestModel CreateTestModel()
         {
-            return new PatternTestModel();
+            PatternTestModel testModel = new PatternTestModel();
+            return testModel;
         }
 
         private bool BuildAssemblyTest(IAssemblyInfo assembly, bool skipChildren)
@@ -98,81 +102,38 @@ namespace Gallio.Framework.Pattern
 
             if (!fullyPopulated)
             {
-                IPatternScope frameworkScope = BuildFrameworkTest(extensions);
+                IPatternScope rootScope = evaluator.RootScope;
 
-                InitializeAssembly(frameworkScope, assembly);
+                InitializeAssembly(rootScope, assembly);
 
-                frameworkScope.Consume(assembly, skipChildren, TestAssemblyPatternAttribute.DefaultInstance);
+                rootScope.Consume(assembly, skipChildren, TestAssemblyPatternAttribute.DefaultInstance);
+
+                foreach (PatternTest assemblyTest in evaluator.GetDeclaredTests(assembly))
+                {
+                    if (extensions.Count == 1 && assemblyTest.Kind == TestKinds.Assembly)
+                        assemblyTest.Kind = extensions[0].AssemblyKind;
+
+                    foreach (var extension in extensions)
+                        assemblyTest.Metadata.Add(MetadataKeys.Framework, extension.Name);
+                }
             }
 
             return fullyPopulated;
         }
 
-        private IPatternScope BuildFrameworkTest(IList<PatternTestFrameworkExtensionInfo> extensions)
-        {
-            string id = BuildFrameworkTestId(extensions);
-            string frameworkKind = extensions.Count == 1 ? extensions[0].FrameworkKind : null;
-            if (frameworkKind == null)
-                frameworkKind = TestKinds.Framework;
-
-            IPatternScope frameworkScope;
-            if (!frameworkScopes.TryGetValue(id, out frameworkScope))
-            {
-                frameworkScope = evaluator.CreateTopLevelTestScope(BuildFrameworkTestName(extensions), null);
-                frameworkScope.TestBuilder.Kind = frameworkKind;
-                frameworkScope.TestBuilder.LocalIdHint = id;
-
-                foreach (var tool in extensions)
-                    frameworkScope.TestBuilder.AddMetadata(TestKinds.Framework, tool.Id);
-
-                // Define the anonymous data source on the top-level test as a backstop
-                // for data bindings without associated data sources.
-                frameworkScope.TestDataContextBuilder.DefineDataSource("");
-
-                frameworkScopes.Add(id, frameworkScope);
-            }
-
-            return frameworkScope;
-        }
-
-        private static void InitializeAssembly(IPatternScope frameworkScope, IAssemblyInfo assembly)
+        private static void InitializeAssembly(IPatternScope rootScope, IAssemblyInfo assembly)
         {
             foreach (TestAssemblyInitializationAttribute attrib in AttributeUtils.GetAttributes<TestAssemblyInitializationAttribute>(assembly, false))
             {
                 try
                 {
-                    attrib.Initialize(frameworkScope, assembly);
+                    attrib.Initialize(rootScope, assembly);
                 }
                 catch (Exception ex)
                 {
-                    frameworkScope.TestModelBuilder.PublishExceptionAsAnnotation(assembly, ex);
+                    rootScope.TestModelBuilder.PublishExceptionAsAnnotation(assembly, ex);
                 }
             }
-        }
-
-        private static string BuildFrameworkTestId(IEnumerable<PatternTestFrameworkExtensionInfo> extensions)
-        {
-            Hash64 hash = new Hash64();
-            hash.Add("PatternTestFramework");
-
-            foreach (PatternTestFrameworkExtensionInfo extension in extensions)
-                hash = hash.Add(extension.Id);
-
-            return hash.ToString();
-        }
-
-        private static string BuildFrameworkTestName(IEnumerable<PatternTestFrameworkExtensionInfo> extensions)
-        {
-            StringBuilder name = new StringBuilder();
-
-            foreach (PatternTestFrameworkExtensionInfo tool in extensions)
-            {
-                if (name.Length != 0)
-                    name.Append(", ");
-                name.Append(tool.Name);
-            }
-
-            return name.ToString();
         }
     }
 }

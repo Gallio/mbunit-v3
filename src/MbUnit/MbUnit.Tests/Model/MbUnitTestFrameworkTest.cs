@@ -44,9 +44,9 @@ namespace MbUnit.Tests.Model
             }
         }
 
-        protected override string FrameworkKind
+        protected override string AssemblyKind
         {
-            get { return "MbUnit v3 Framework"; }
+            get { return MbUnitTestFramework.AssemblyKind; }
         }
 
         /// <summary>
@@ -67,17 +67,10 @@ namespace MbUnit.Tests.Model
             Assert.IsNull(rootTest.CodeElement);
             Assert.AreEqual(1, rootTest.Children.Count);
 
-            Test frameworkTest = rootTest.Children[0];
-            Assert.AreSame(rootTest, frameworkTest.Parent);
-            Assert.AreEqual("MbUnit v3 Framework", frameworkTest.Kind);
-            Assert.AreEqual(FrameworkHandle.GetTraits().Name, frameworkTest.Metadata.GetValue(MetadataKeys.Framework));
-            Assert.IsNull(frameworkTest.CodeElement);
-            Assert.AreEqual("MbUnit v" + expectedVersion, frameworkTest.Name);
-            Assert.AreEqual(1, frameworkTest.Children.Count);
-
-            Test assemblyTest = frameworkTest.Children[0];
-            Assert.AreSame(frameworkTest, assemblyTest.Parent);
-            Assert.AreEqual(TestKinds.Assembly, assemblyTest.Kind);
+            Test assemblyTest = rootTest.Children[0];
+            Assert.AreSame(rootTest, assemblyTest.Parent);
+            Assert.AreEqual(MbUnitTestFramework.AssemblyKind, assemblyTest.Kind);
+            Assert.AreEqual(MbUnitTestFramework.VersionLabel, assemblyTest.Metadata.GetValue(MetadataKeys.Framework));
             Assert.AreEqual(CodeReference.CreateFromAssembly(SimpleFixtureAssembly), assemblyTest.CodeElement.CodeReference);
             Assert.AreEqual(SimpleFixtureAssembly, ((IAssemblyInfo)assemblyTest.CodeElement).Resolve(true));
             Assert.GreaterThanOrEqualTo(assemblyTest.Children.Count, 1);

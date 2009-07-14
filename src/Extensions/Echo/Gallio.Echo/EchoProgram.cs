@@ -139,7 +139,7 @@ namespace Gallio.Echo
             foreach (string option in arguments.ReportFormatterProperties)
             {
                 KeyValuePair<string, string> pair = StringUtils.ParseKeyValuePair(option);
-                launcher.ReportFormatterOptions.Properties.Add(pair.Key, pair.Value);
+                launcher.ReportFormatterOptions.AddProperty(pair.Key, pair.Value);
             }
 
             foreach (string option in arguments.RunnerProperties)

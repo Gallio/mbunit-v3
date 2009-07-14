@@ -36,10 +36,10 @@ namespace Gallio.Icarus.Controllers
 
         private List<string> unselectedTreeViewCategoriesList;
 
-        public bool AlwaysReloadAssemblies
+        public bool AlwaysReloadFiles
         {
-            get { return Settings.AlwaysReloadAssemblies; }
-            set { Settings.AlwaysReloadAssemblies = value; }
+            get { return Settings.AlwaysReloadFiles; }
+            set { Settings.AlwaysReloadFiles = value; }
         }
 
         public bool RunTestsAfterReload

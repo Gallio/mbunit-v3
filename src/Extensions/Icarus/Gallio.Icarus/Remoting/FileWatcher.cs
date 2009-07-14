@@ -24,10 +24,10 @@ using System.Timers;
 namespace Gallio.Icarus.Remoting
 {
 	/// <summary>
-	/// AssemblyWatcher keeps track of one or more assemblies to 
+	/// FileWatcher keeps track of one or more files to 
 	/// see if they have changed. It incorporates a delayed notification
 	/// and uses a standard event to notify any interested parties
-	/// about the change. The path to the assembly is provided as
+	/// about the change. The path to the file is provided as
 	/// an argument to the event handler so that one routine can
 	/// be used to handle events from multiple watchers.
 	/// </summary>
@@ -64,17 +64,16 @@ namespace Gallio.Icarus.Remoting
 	/// </code>
 	/// </para>
 	/// </remarks>
-	public class AssemblyWatcher : IAssemblyWatcher
+	public class FileWatcher : IFileWatcher
 	{
-		private readonly Dictionary<string, FileWatcher> fileWatchers = new Dictionary<string, FileWatcher>();
+		private readonly Dictionary<string, SingleFileWatcher> fileWatchers = new Dictionary<string, SingleFileWatcher>();
 
 		protected Timer timer;
-		protected string changedAssemblyPath; 
+		protected string changedFilePath;
 
-		public delegate void AssemblyChangedHandler(string fullPath);
-		public event AssemblyChangedHandler AssemblyChangedEvent;
+	    public event FileChangedHandler FileChangedEvent;
 
-		public AssemblyWatcher()
+		public FileWatcher()
 		{
 			timer = new Timer(1000);
 			timer.AutoReset = false;
@@ -93,7 +92,7 @@ namespace Gallio.Icarus.Remoting
             if (fileWatchers.ContainsKey(filePath))
                 return;
             
-            FileWatcher fw = new FileWatcher(new FileInfo(filePath));
+            SingleFileWatcher fw = new SingleFileWatcher(new FileInfo(filePath));
 
             fw.Watcher.Path = fw.Info.DirectoryName;
             fw.Watcher.Filter = fw.Info.Name;
@@ -118,7 +117,7 @@ namespace Gallio.Icarus.Remoting
 			Stop();
 			foreach(string key in fileWatchers.Keys)
 			{
-                FileWatcher fw = fileWatchers[key];
+                SingleFileWatcher fw = fileWatchers[key];
 				fw.Watcher.Changed -= OnChanged;
 			}
 			fileWatchers.Clear();
@@ -138,7 +137,7 @@ namespace Gallio.Icarus.Remoting
 		{
             foreach (string key in fileWatchers.Keys)
             {
-                FileWatcher watcher = fileWatchers[key];
+                SingleFileWatcher watcher = fileWatchers[key];
                 watcher.Watcher.EnableRaisingEvents = enable;
             }
 		}
@@ -154,7 +153,7 @@ namespace Gallio.Icarus.Remoting
 		
 		protected void OnChanged(object source, FileSystemEventArgs e)
 		{
-			changedAssemblyPath = e.FullPath;
+			changedFilePath = e.FullPath;
 			if ( timer != null )
 			{
 				lock(this)
@@ -172,16 +171,16 @@ namespace Gallio.Icarus.Remoting
 	
 		protected void PublishEvent()
 		{
-			if (AssemblyChangedEvent != null)
-				AssemblyChangedEvent(changedAssemblyPath);
+			if (FileChangedEvent != null)
+				FileChangedEvent(changedFilePath);
 		}
 
-		public class FileWatcher
+		private sealed class SingleFileWatcher
 		{
 			private readonly FileSystemWatcher watcher = new FileSystemWatcher();
 			private readonly FileInfo info;
 
-			public FileWatcher(FileInfo info)
+			public SingleFileWatcher(FileInfo info)
 			{
 				this.info = info;
 			}

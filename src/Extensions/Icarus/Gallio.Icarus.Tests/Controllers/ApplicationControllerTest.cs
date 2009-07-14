@@ -99,13 +99,13 @@ namespace Gallio.Icarus.Tests.Controllers
         }
 
         [Test]
-        public void Load_assemblies_from_arguments_should_be_added_if_they_exist()
+        public void Load_files_from_arguments_should_be_added_if_they_exist()
         {
-            const string assembly1 = "test1.dll";
-            const string assembly2 = "test2.dll";
-            var arguments = new IcarusArguments { Assemblies = new[] { assembly1, assembly2 } };
+            const string file1 = "test1.dll";
+            const string file2 = "test2.dll";
+            var arguments = new IcarusArguments { Files = new[] { file1, file2 } };
             var fileSystem = MockRepository.GenerateStub<IFileSystem>();
-            fileSystem.Stub(fs => fs.FileExists(assembly1)).Return(true);
+            fileSystem.Stub(fs => fs.FileExists(file1)).Return(true);
             var mediator = MockRepository.GenerateStub<IMediator>();
             mediator.OptionsController = MockRepository.GenerateStub<IOptionsController>();
             var taskManager = new TestTaskManager();
@@ -115,14 +115,14 @@ namespace Gallio.Icarus.Tests.Controllers
             applicationController.Load();
 
             Assert.AreEqual(1, taskManager.Queue.Count);
-            Assert.IsInstanceOfType(typeof(AddAssembliesCommand), taskManager.Queue[0]);
+            Assert.IsInstanceOfType(typeof(AddFilesCommand), taskManager.Queue[0]);
         }
 
         [Test]
         public void Load_project_files_from_arguments_should_be_loaded_if_they_exist()
         {
             const string projectFile = "test.gallio";
-            var arguments = new IcarusArguments { Assemblies = new[] { projectFile } };
+            var arguments = new IcarusArguments { Files = new[] { projectFile } };
             var fileSystem = MockRepository.GenerateStub<IFileSystem>();
             fileSystem.Stub(fs => fs.FileExists(projectFile)).Return(true);
             var mediator = MockRepository.GenerateStub<IMediator>();

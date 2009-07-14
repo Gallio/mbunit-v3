@@ -28,7 +28,7 @@ namespace Gallio.Icarus.Helpers
         public static TestTreeNode BuildTestTree(IProgressMonitor progressMonitor, TestModelData testModelData, 
             TestTreeBuilderOptions options)
         {
-            var root = TestTreeNodeFactory.CreateNode(testModelData.RootTest);
+            var root = new TestDataNode(testModelData.RootTest);
 
             progressMonitor.Worked(1);
 
@@ -39,8 +39,7 @@ namespace Gallio.Icarus.Helpers
             }
             else
             {
-                PopulateMetadataTree(progressMonitor, options.TreeViewCategory, 
-                    testModelData.RootTest.Children, root, root);
+                PopulateMetadataTree(progressMonitor, options.TreeViewCategory, root, testModelData.RootTest, root);
             }
 
             root.CheckState = CheckState.Checked;
@@ -55,8 +54,8 @@ namespace Gallio.Icarus.Helpers
             {
                 TestData testData = list[i];
 
-                TestTreeNode testTreeNode = TestTreeNodeFactory.CreateNode(testData);
-                if (testTreeNode is FixtureNode)
+                TestTreeNode testTreeNode = new TestDataNode(testData);
+                if (testData.CodeReference.MemberName == null)
                 {
                     // fixtures need special treatment to insert the namespace layer!
                     testTreeNode = BuildNamespaceNode(parent, testData, testTreeNode, splitNamespaces);
@@ -81,83 +80,68 @@ namespace Gallio.Icarus.Helpers
             string[] namespaceArray = splitNamespaces ? @namespace.Split('.') 
                 : new[] { @namespace };
 
-            TestTreeNode nsNode = null;
             foreach (string ns in namespaceArray)
             {
-                // find the namespace node (or add if it doesn't exist)
-                List<TestTreeNode> nodes = parent.Find(ns, true);
-                if (nodes.Count > 0)
+                if (ns.Length != 0)
                 {
-                    nsNode = nodes[0];
+                    // find the namespace node (or add if it doesn't exist)
+                    List<TestTreeNode> nodes = parent.Find(ns, true);
+                    if (nodes.Count > 0)
+                    {
+                        parent = nodes[0];
+                    }
+                    else
+                    {
+                        var nsNode = new NamespaceNode(ns, ns);
+                        parent.Nodes.Add(nsNode);
+                        parent = nsNode;
+                    }
                 }
-                else
-                {
-                    nsNode = new NamespaceNode(ns, ns);
-                    parent.Nodes.Add(nsNode);
-                }
-                parent = nsNode;
             }
             
-            if (nsNode != null) 
-                nsNode.Nodes.Add(fixtureNode);
-
+            parent.Nodes.Add(fixtureNode);
             return fixtureNode;
         }
 
-        private static void PopulateMetadataTree(IProgressMonitor progressMonitor, string metadataType, 
-            IEnumerable<TestData> list, Node parent, TestTreeNode root)
+        private static void PopulateMetadataTree(IProgressMonitor progressMonitor, string metadataType, TestDataNode parentTestDataNode, TestData parentTestData, TestDataNode rootTestDataNode)
         {
-            foreach (var testData in list)
+            foreach (TestData childTestData in parentTestData.Children)
             {
-                var testTreeNode = TestTreeNodeFactory.CreateNode(testData);
+                var metadataList = childTestData.Metadata[metadataType];
+                if (metadataList.Count == 0)
+                    metadataList = new[] { "None" };
 
-                if (testTreeNode is FixtureNode || testTreeNode is TestNode)
+                foreach (string metadata in metadataList)
                 {
-                    var metadataList = testData.Metadata[metadataType];
-                    if (metadataList.Count == 0)
-                        metadataList = new List<string> { "None" };
+                    // if already within the right metadata node, move on
+                    if (parentTestData.Metadata[metadataType].Contains(metadata)
+                        || metadata == "None" && parentTestDataNode != rootTestDataNode)
+                        continue;
 
-                    foreach (string metadata in metadataList)
+                    // find appropriate metadata node (or add if it doesn't exist)
+                    TestTreeNode metadataNode;
+                    List<TestTreeNode> nodes = rootTestDataNode.Find(metadata, false);
+                    if (nodes.Count > 0)
                     {
-                        // find metadata node (or add if it doesn't exist)
-                        TestTreeNode metadataNode;
-                        List<TestTreeNode> nodes = root.Find(metadata, false);
-                        if (nodes.Count > 0)
-                        {
-                            metadataNode = nodes[0];
-                        }
-                        else
-                        {
-                            metadataNode = new MetadataNode(metadata, metadataType);
-                            root.Nodes.Add(metadataNode);
-                        }
-
-                        // add node in the appropriate place
-                        if (testTreeNode is FixtureNode)
-                        {
-                            metadataNode.Nodes.Add(testTreeNode);
-                            PopulateMetadataTree(progressMonitor, metadataType, testData.Children, 
-                                testTreeNode, root);
-                        }
-                        else
-                        {
-                            if (metadata != "None")
-                                metadataNode.Nodes.Add(testTreeNode);
-                            else
-                                parent.Nodes.Add(testTreeNode);
-                        }
-
-                        // add children, if there are any (fixtures)
-                        foreach (var child in testData.Children)
-                        {
-                            var childNode = TestTreeNodeFactory.CreateNode(child);
-                            testTreeNode.Nodes.Add(childNode);
-                        }
+                        metadataNode = nodes[0];
                     }
+                    else
+                    {
+                        metadataNode = new MetadataNode(metadata, metadataType);
+                        rootTestDataNode.Nodes.Add(metadataNode);
+                    }
+
+                    // add node
+                    var indirectChildTestDataNode = new TestDataNode(childTestData);
+                    metadataNode.Nodes.Add(indirectChildTestDataNode);
+                    PopulateMetadataTree(progressMonitor, metadataType, indirectChildTestDataNode, childTestData, rootTestDataNode);
                 }
-                else
+
+                if (parentTestDataNode != rootTestDataNode)
                 {
-                    PopulateMetadataTree(progressMonitor, metadataType, testData.Children, parent, root);
+                    var directChildTestDataNode = new TestDataNode(childTestData);
+                    parentTestDataNode.Nodes.Add(directChildTestDataNode);
+                    PopulateMetadataTree(progressMonitor, metadataType, directChildTestDataNode, childTestData, rootTestDataNode);
                 }
 
                 progressMonitor.Worked(1);

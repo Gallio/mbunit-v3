@@ -155,6 +155,19 @@ namespace Gallio.Model
         public const string ExplicitReason = "ExplicitReason";
 
         /// <summary>
+        /// The metadata key for a file associated with a test.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// The file key should be associated with the top test produced by a file that
+        /// the test framework was asked to explore.  For example, if the test package
+        /// included "C:\Tests\MyTests.dll" then the assembly-level test emitted by the framework
+        /// should have a File metadata entry with the value "C:\Tests\MyTests.dll".
+        /// </para>
+        /// </remarks>
+        public const string File = "File";
+
+        /// <summary>
         /// The metadata key for a file version number associated with a test.
         /// </summary>
         /// <remarks>

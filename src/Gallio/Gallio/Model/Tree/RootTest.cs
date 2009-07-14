@@ -24,10 +24,15 @@ namespace Gallio.Model.Tree
     public class RootTest : Test
     {
         /// <summary>
+        /// Gets the root test name.
+        /// </summary>
+        public static readonly string RootTestName = Resources.RootTest_RootTestName;
+
+        /// <summary>
         /// Creates the root test.
         /// </summary>
         public RootTest()
-            : base(Resources.RootTest_RootTestName, null)
+            : base(RootTestName, null)
         {
             Kind = TestKinds.Root;
         }

@@ -35,8 +35,8 @@ namespace Gallio.Icarus.ControlPanel
 
             InitializeComponent();
 
-            alwaysReloadAssembliesCheckBox.Checked = optionsController.AlwaysReloadAssemblies;
-            runTestsAfterReloadCheckBox.Enabled = optionsController.AlwaysReloadAssemblies;
+            alwaysReloadFilesCheckBox.Checked = optionsController.AlwaysReloadFiles;
+            runTestsAfterReloadCheckBox.Enabled = optionsController.AlwaysReloadFiles;
             runTestsAfterReloadCheckBox.Checked = optionsController.RunTestsAfterReload;
             splitNamespacesCheckBox.Checked = optionsController.TestTreeSplitNamespaces;
 
@@ -51,16 +51,16 @@ namespace Gallio.Icarus.ControlPanel
 
         public override void ApplyPendingSettingsChanges(IElevationContext elevationContext, IProgressMonitor progressMonitor)
         {
-            optionsController.AlwaysReloadAssemblies = alwaysReloadAssembliesCheckBox.Checked;
+            optionsController.AlwaysReloadFiles = alwaysReloadFilesCheckBox.Checked;
             optionsController.RunTestsAfterReload = runTestsAfterReloadCheckBox.Checked;
             optionsController.TestTreeSplitNamespaces = splitNamespacesCheckBox.Checked;
             
             optionsController.TestRunnerFactory = testRunnerFactories.Text;
         }
 
-        private void alwaysReloadAssembliesCheckBox_CheckedChanged(object sender, EventArgs e)
+        private void alwaysReloadFilesCheckBox_CheckedChanged(object sender, EventArgs e)
         {
-            runTestsAfterReloadCheckBox.Enabled = alwaysReloadAssembliesCheckBox.Checked;
+            runTestsAfterReloadCheckBox.Enabled = alwaysReloadFilesCheckBox.Checked;
 
             PendingSettingsChanges = true;
         }

@@ -22,18 +22,16 @@ namespace Gallio.Icarus.Utilities
 {
     internal static class Dialogs
     {
-        public static OpenFileDialog OpenDialog
+        public static OpenFileDialog CreateAddFilesDialog()
         {
-            get
+            var openFileDialog = new OpenFileDialog
             {
-                const string fileFilter = "Assemblies or Executables (*.dll, *.exe)|*.dll;*.exe|All Files (*.*)|*.*";
-                var openFileDialog = new OpenFileDialog
-                {
-                    Filter = fileFilter,
-                    Multiselect = true
-                };
-                return openFileDialog;
-            }
+                Title = "Add Files...",
+                Filter = "Test Files (*.*)|*.*",
+                Multiselect = true
+            };
+
+            return openFileDialog;
         }
     }
 }

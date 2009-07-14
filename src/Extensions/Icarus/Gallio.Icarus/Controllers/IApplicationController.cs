@@ -29,7 +29,7 @@ namespace Gallio.Icarus.Controllers
         Point Location { get; set; }
         bool FailedTests { get; }
 
-        event EventHandler<AssemblyChangedEventArgs> AssemblyChanged;
+        event EventHandler<FileChangedEventArgs> FileChanged;
 
         void Load();
         void NewProject();

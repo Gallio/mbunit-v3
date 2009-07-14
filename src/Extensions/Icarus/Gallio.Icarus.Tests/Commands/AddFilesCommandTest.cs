@@ -25,11 +25,11 @@ using Rhino.Mocks;
 
 namespace Gallio.Icarus.Tests.Commands
 {
-    [Category("Commands"), TestsOn(typeof(AddAssembliesCommand))]
-    internal class AddAssembliesCommandTest
+    [Category("Commands"), TestsOn(typeof(AddFilesCommand))]
+    internal class AddFilesCommandTest
     {
         [Test, Author("Graham Hay")]
-        public void Execute_with_assembly_files_set()
+        public void Execute_with_files_set()
         {
             var projectController = MockRepository.GenerateStub<IProjectController>();
             var testPackage = new TestPackage();
@@ -37,14 +37,14 @@ namespace Gallio.Icarus.Tests.Commands
             var testRunnerExtensions = new System.ComponentModel.BindingList<string>(new List<string>());
             projectController.Stub(pc => pc.TestRunnerExtensions).Return(testRunnerExtensions);
             var testController = MockRepository.GenerateStub<ITestController>();
-            var command = new AddAssembliesCommand(projectController, testController);
-            var assemblyFiles = new List<string>();
-            command.AssemblyFiles = assemblyFiles;
+            var command = new AddFilesCommand(projectController, testController);
+            var files = new List<string>();
+            command.Files = files;
             var progressMonitor = MockProgressMonitor.GetMockProgressMonitor();
             
             command.Execute(progressMonitor);
 
-            projectController.AssertWasCalled(pc => pc.AddAssemblies(assemblyFiles, progressMonitor));
+            projectController.AssertWasCalled(pc => pc.AddFiles(files, progressMonitor));
             testController.AssertWasCalled(tc => tc.SetTestPackage(testPackage));
             testController.AssertWasCalled(tc => tc.Explore(progressMonitor, testRunnerExtensions));
         }
@@ -54,7 +54,7 @@ namespace Gallio.Icarus.Tests.Commands
         {
             var projectController = MockRepository.GenerateStub<IProjectController>();
             var testController = MockRepository.GenerateStub<ITestController>();
-            var command = new AddAssembliesCommand(projectController, testController);
+            var command = new AddFilesCommand(projectController, testController);
             var progressMonitor = MockProgressMonitor.GetMockProgressMonitor();
             progressMonitor.Stub(pm => pm.IsCanceled).Return(true);
 

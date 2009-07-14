@@ -464,7 +464,7 @@ namespace Gallio.Icarus.Tests.Controllers
         }
 
         [Test]
-        public void SetTestPackageConfig_should_throw_if_test_package_is_null()
+        public void SetTestPackage_should_throw_if_test_package_is_null()
         {
             var testTreeModel = MockRepository.GenerateStub<ITestTreeModel>();
             var optionsController = MockRepository.GenerateStub<IOptionsController>();

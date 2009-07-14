@@ -40,16 +40,6 @@ namespace Gallio.Model
         public const string Root = "Root";
 
         /// <summary>
-        /// The test represents a grouping of all contributions offered by a given test framework.
-        /// </summary>
-        /// <remarks>
-        /// <para>
-        /// A framework test should also have associated <see cref="MetadataKeys.Framework" /> metadata.
-        /// </para>
-        /// </remarks>
-        public const string Framework = "Framework";
-
-        /// <summary>
         /// The test represents the tests contained in a single test file.
         /// </summary>
         /// <remarks>

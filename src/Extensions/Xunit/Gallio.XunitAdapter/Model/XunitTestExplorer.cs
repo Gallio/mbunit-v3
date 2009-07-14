@@ -33,16 +33,14 @@ namespace Gallio.XunitAdapter.Model
     /// </summary>
     internal class XunitTestExplorer : TestExplorer
     {
-        private const string FrameworkName = "xUnit.net";
+        internal const string AssemblyKind = TestKinds.Assembly;
         private const string XunitAssemblyDisplayName = @"xunit";
 
-        private readonly Dictionary<Version, Test> frameworkTests;
         private readonly Dictionary<IAssemblyInfo, Test> assemblyTests;
         private readonly Dictionary<ITypeInfo, Test> typeTests;
 
         public XunitTestExplorer()
         {
-            frameworkTests = new Dictionary<Version, Test>();
             assemblyTests = new Dictionary<IAssemblyInfo, Test>();
             typeTests = new Dictionary<ITypeInfo, Test>();
         }
@@ -54,10 +52,9 @@ namespace Gallio.XunitAdapter.Model
 
             if (frameworkVersion != null)
             {
-                Test frameworkTest = GetFrameworkTest(frameworkVersion, TestModel.RootTest);
-                Test assemblyTest = GetAssemblyTest(assembly, frameworkTest, false);
-
                 ITypeInfo type = ReflectionUtils.GetType(codeElement);
+                Test assemblyTest = GetAssemblyTest(assembly, TestModel.RootTest, frameworkVersion, type == null);
+
                 if (type != null)
                 {
                     TryGetTypeTest(type, assemblyTest);
@@ -71,38 +68,19 @@ namespace Gallio.XunitAdapter.Model
             return frameworkAssemblyName != null ? frameworkAssemblyName.Version : null;
         }
 
-        private Test GetFrameworkTest(Version frameworkVersion, Test rootTest)
-        {
-            Test frameworkTest;
-            if (! frameworkTests.TryGetValue(frameworkVersion, out frameworkTest))
-            {
-                frameworkTest = CreateFrameworkTest(frameworkVersion);
-                rootTest.AddChild(frameworkTest);
-
-                frameworkTests.Add(frameworkVersion, frameworkTest);
-            }
-
-            return frameworkTest;
-        }
-
-        private static Test CreateFrameworkTest(Version frameworkVersion)
-        {
-            Test frameworkTest = new Test(String.Format(Resources.XunitTestExplorer_FrameworkNameWithVersionFormat, frameworkVersion), null);
-            frameworkTest.LocalIdHint = FrameworkName;
-            frameworkTest.Kind = TestKinds.Framework;
-            frameworkTest.Metadata.Add(MetadataKeys.Framework, FrameworkName);
-
-            return frameworkTest;
-        }
-
-        private Test GetAssemblyTest(IAssemblyInfo assembly, Test frameworkTest, bool populateRecursively)
+        private Test GetAssemblyTest(IAssemblyInfo assembly, Test parentTest, Version frameworkVersion, bool populateRecursively)
         {
             Test assemblyTest;
             if (!assemblyTests.TryGetValue(assembly, out assemblyTest))
             {
                 assemblyTest = CreateAssemblyTest(assembly);
-                frameworkTest.AddChild(assemblyTest);
 
+                string frameworkName = String.Format(Resources.XunitTestExplorer_FrameworkNameWithVersionFormat, frameworkVersion);
+                assemblyTest.Metadata.SetValue(MetadataKeys.Framework, frameworkName);
+                assemblyTest.Metadata.SetValue(MetadataKeys.File, assembly.Path);
+                assemblyTest.Kind = AssemblyKind;
+
+                parentTest.AddChild(assemblyTest);
                 assemblyTests.Add(assembly, assemblyTest);
             }
 

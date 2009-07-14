@@ -169,9 +169,24 @@ namespace Gallio.Framework.Utilities
         /// <returns>The test data, or null if not found.</returns>
         public TestData GetTestData(CodeReference codeReference)
         {
+            return GetTestData(test => test.CodeReference == codeReference);
+        }
+
+        /// <summary>
+        /// Gets information about the test that matches a predicate.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// Can only be called after the tests have run.
+        /// </para>
+        /// </remarks>
+        /// <param name="predicate">The predicate to match.</param>
+        /// <returns>The test data, or null if not found.</returns>
+        public TestData GetTestData(Predicate<TestData> predicate)
+        {
             foreach (TestData data in Report.TestModel.AllTests)
             {
-                if (data.CodeReference == codeReference)
+                if (predicate(data))
                     return data;
             }
 
@@ -190,8 +205,23 @@ namespace Gallio.Framework.Utilities
         /// <returns>The enumeration of test step runs, or null if not found.</returns>
         public IEnumerable<TestStepRun> GetTestStepRuns(CodeReference codeReference)
         {
+            return GetTestStepRuns(run => run.Step.CodeReference == codeReference);
+        }
+
+        /// <summary>
+        /// Gets all test step runs that match a predicate.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// Can only be called after the tests have run.
+        /// </para>
+        /// </remarks>
+        /// <param name="predicate">The predicate to match.</param>
+        /// <returns>The enumeration of test step runs, or null if not found.</returns>
+        public IEnumerable<TestStepRun> GetTestStepRuns(Predicate<TestStepRun> predicate)
+        {
             foreach (TestStepRun run in Report.TestPackageRun.AllTestStepRuns)
-                if (run.Step.CodeReference == codeReference)
+                if (predicate(run))
                     yield return run;
         }
 
@@ -211,6 +241,28 @@ namespace Gallio.Framework.Utilities
         public TestStepRun GetPrimaryTestStepRun(CodeReference codeReference)
         {
             foreach (TestStepRun run in GetTestStepRuns(codeReference))
+                if (run.Step.IsPrimary)
+                    return run;
+
+            return null;
+        }
+
+        /// <summary>
+        /// Gets the primary test step run that match a predicate.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// If there are multiple primary steps, returns the first one found.
+        /// </para>
+        /// <para>
+        /// Can only be called after the tests have run.
+        /// </para>
+        /// </remarks>
+        /// <param name="predicate">The predicate to match.</param>
+        /// <returns>The first test step run, or null if not found.</returns>
+        public TestStepRun GetPrimaryTestStepRun(Predicate<TestStepRun> predicate)
+        {
+            foreach (TestStepRun run in GetTestStepRuns(predicate))
                 if (run.Step.IsPrimary)
                     return run;
 

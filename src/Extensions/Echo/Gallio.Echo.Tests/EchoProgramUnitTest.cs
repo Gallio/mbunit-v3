@@ -60,7 +60,7 @@ namespace Gallio.Echo.Tests
             Assert.IsNull(launcher.RuntimeSetup.RuntimePath);
             Assert.AreElementsEqual(new string[] { }, launcher.RuntimeSetup.PluginDirectories);
 
-            Assert.AreElementsEqual(new string[] { }, from x in launcher.TestProject.TestPackage.Files select x.ToString());
+            Assert.AreElementsEqual(new string[] { }, from x in launcher.FilePatterns select x.ToString());
             Assert.AreElementsEqual(new string[] { }, from x in launcher.TestProject.TestPackage.HintDirectories select x.ToString());
 
             Assert.IsNull(launcher.TestProject.TestPackage.ApplicationBaseDirectory);
@@ -131,7 +131,7 @@ namespace Gallio.Echo.Tests
             Assert.IsNull(launcher.RuntimeSetup.RuntimePath);
             Assert.AreElementsEqual(new[] { "plugin" }, launcher.RuntimeSetup.PluginDirectories);
 
-            Assert.AreEqual(1, launcher.TestProject.TestPackage.Files.Count);
+            Assert.AreEqual(1, launcher.FilePatterns.Count);
             Assert.AreElementsEqual(new[] { "hint1", "hint2" }, from x in launcher.TestProject.TestPackage.HintDirectories select x.ToString());
 
             Assert.AreEqual("baseDir", launcher.TestProject.TestPackage.ApplicationBaseDirectory.ToString());

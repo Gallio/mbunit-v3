@@ -295,7 +295,7 @@ namespace Gallio.Model
             if (file == null)
                 throw new ArgumentNullException("file");
 
-            if (! GenericCollectionUtils.Exists(files, x => x.ToString() == file.ToString()))
+            if (FindFile(file) == null)
                 files.Add(file);
         }
 
@@ -309,8 +309,14 @@ namespace Gallio.Model
             if (file == null)
                 throw new ArgumentNullException("file");
 
-            var existingFile = GenericCollectionUtils.Find(files, x => x.ToString() == file.ToString());
-            files.Remove(existingFile);
+            var existingFile = FindFile(file);
+            if (existingFile != null)
+                files.Remove(existingFile);
+        }
+
+        private FileInfo FindFile(FileInfo file)
+        {
+            return GenericCollectionUtils.Find(files, x => string.Compare(x.ToString(), file.ToString(), StringComparison.OrdinalIgnoreCase) == 0);
         }
 
         /// <summary>

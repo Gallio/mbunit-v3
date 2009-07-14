@@ -203,6 +203,18 @@ namespace Gallio.Runtime.ProgressMonitoring
             }
         }
 
+        /// <summary>
+        /// Gets the status of the most deeply nested sub-task, or the status of this
+        /// task if there are no sub-progress monitors.
+        /// </summary>
+        public string LeafStatus
+        {
+            get
+            {
+                return Leaf.Status;
+            }
+        }
+
         /// <inheritdoc />
         public override ProgressMonitorTaskCookie BeginTask(string taskName, double totalWorkUnits)
         {

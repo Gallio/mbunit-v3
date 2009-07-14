@@ -99,11 +99,11 @@
       </traits>
     </component>
 
-    <component componentId="NUnitAdapter248.TestKinds.MbUnitFramework"
+    <component componentId="NUnitAdapter248.TestKinds.NUnitTestAssembly"
                serviceId="Gallio.TestKind">
       <traits>
-        <name>NUnit v2.4.8 Framework</name>
-        <description>NUnit v2.4.8 Test Framework</description>
+        <name>NUnit v2.4.8 Assembly</name>
+        <description>NUnit v2.4.8 Test Assembly</description>
         <icon>plugin://Gallio.NUnitAdapter248/Resources/NUnit.ico</icon>
       </traits>
     </component>

@@ -114,14 +114,14 @@ namespace Gallio.Common.Policies
         {
             StringBuilder description = new StringBuilder(message);
             description.AppendLine();
-            description.AppendLine(ExceptionUtils.SafeToString(exception));
+            description.AppendLine(StackTraceFilter.FilterException(exception).ToString());
 
             if (reporterStackTrace != null)
             {
                 if (description[description.Length - 1] != '\n')
                     description.AppendLine();
 
-                description.AppendLine("Reported by: ").Append(ReporterStackTrace);
+                description.AppendLine("Reported by: ").Append(StackTraceFilter.FilterStackTrace(reporterStackTrace));
             }
 
             return description.ToString();

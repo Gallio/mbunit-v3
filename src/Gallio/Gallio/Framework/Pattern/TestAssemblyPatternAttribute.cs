@@ -62,6 +62,7 @@ namespace Gallio.Framework.Pattern
 
             IPatternScope assemblyScope = containingScope.CreateChildTestScope(assembly.Name, assembly);
             assemblyScope.TestBuilder.Kind = TestKinds.Assembly;
+            assemblyScope.TestBuilder.AddMetadata(MetadataKeys.File, assembly.Path);
 
             InitializeAssemblyTest(assemblyScope, assembly);
             SetTestSemantics(assemblyScope.TestBuilder, assembly);

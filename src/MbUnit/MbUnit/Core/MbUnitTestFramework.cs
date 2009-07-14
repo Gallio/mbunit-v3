@@ -28,6 +28,17 @@ namespace MbUnit.Core
     /// </summary>
     public class MbUnitTestFramework : PatternTestFramework
     {
+        internal const string AssemblyKind = "MbUnit v3 Assembly";
+
+        /// <summary>
+        /// Gets the MbUnit version label.
+        /// </summary>
+        /// <value>A string similar to "MbUnit v3.1 build 200".</value>
+        public static string VersionLabel
+        {
+            get { return String.Format("MbUnit v{0}", VersionPolicy.GetVersionLabel(Assembly.GetExecutingAssembly())); }
+        }
+
         /// <inheritdoc />
         public override IEnumerable<PatternTestFrameworkExtensionInfo> GetExtensions(IAssemblyInfo assembly)
         {
@@ -35,10 +46,9 @@ namespace MbUnit.Core
             if (frameworkAssemblyName == null)
                 yield break;
 
-            yield return new PatternTestFrameworkExtensionInfo("MbUnit v3",
-                String.Format("MbUnit v{0}", VersionPolicy.GetVersionLabel(Assembly.GetExecutingAssembly())))
+            yield return new PatternTestFrameworkExtensionInfo("MbUnit v3", VersionLabel)
                 {
-                    FrameworkKind = "MbUnit v3 Framework"
+                    AssemblyKind = "MbUnit v3 Assembly"
                 };
         }
     }

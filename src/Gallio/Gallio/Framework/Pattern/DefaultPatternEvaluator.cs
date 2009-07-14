@@ -27,9 +27,9 @@ namespace Gallio.Framework.Pattern
     public class DefaultPatternEvaluator : IPatternEvaluator
     {
         private readonly ITestModelBuilder testModelBuilder;
+        private readonly IPatternScope rootScope;
         private readonly IPatternResolver patternResolver;
         private readonly MultiMap<ICodeElementInfo, IPatternScope> registeredScopes;
-        private readonly ITestDataContextBuilder rootDataContextBuilder;
 
         /// <summary>
         /// Creates a pattern evaluator.
@@ -50,9 +50,9 @@ namespace Gallio.Framework.Pattern
 
             registeredScopes = new MultiMap<ICodeElementInfo, IPatternScope>();
 
-            // Define an empty root data context so that all anonymous data source lookups terminate.
-            rootDataContextBuilder = new DefaultTestDataContextBuilder(testModelBuilder, new PatternTestDataContext(null));
+            var rootDataContextBuilder = new DefaultTestDataContextBuilder(testModelBuilder, new PatternTestDataContext(null));
             rootDataContextBuilder.DefineDataSource("");
+            rootScope = new DefaultPatternScope(this, null, testModelBuilder.RootTestBuilder, null, rootDataContextBuilder, false);
         }
 
         /// <inheritdoc />
@@ -62,14 +62,9 @@ namespace Gallio.Framework.Pattern
         }
 
         /// <inheritdoc />
-        public IPatternScope CreateTopLevelTestScope(string name, ICodeElementInfo codeElement)
+        public IPatternScope RootScope
         {
-            ITestDataContextBuilder testDataContextBuilder = rootDataContextBuilder.CreateChild();
-            ITestBuilder testBuilder = testModelBuilder.CreateTopLevelTest(name, codeElement, testDataContextBuilder);
-
-            var scope = new DefaultPatternScope(this, codeElement, testBuilder, null, testDataContextBuilder, true);
-            RegisterScope(scope);
-            return scope;
+            get { return rootScope; }
         }
 
         /// <inheritdoc />

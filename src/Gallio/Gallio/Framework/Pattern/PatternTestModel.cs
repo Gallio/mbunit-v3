@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using Gallio.Model;
 using Gallio.Model.Tree;
 
 namespace Gallio.Framework.Pattern
@@ -23,5 +24,22 @@ namespace Gallio.Framework.Pattern
     /// </summary>
     public class PatternTestModel : TestModel
     {
+        /// <summary>
+        /// Creates a pattern test model.
+        /// </summary>
+        public PatternTestModel()
+        {
+            RootTest = new PatternTest(Model.Tree.RootTest.RootTestName, null, new PatternTestDataContext(null));
+            RootTest.Kind = TestKinds.Root;
+        }
+
+        /// <summary>
+        /// Gets or sets the root test.
+        /// </summary>
+        new public PatternTest RootTest
+        {
+            get { return (PatternTest) base.RootTest; }
+            set { base.RootTest = value; }
+        }
     }
 }

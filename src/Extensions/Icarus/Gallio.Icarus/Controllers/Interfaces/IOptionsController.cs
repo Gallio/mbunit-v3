@@ -24,7 +24,7 @@ namespace Gallio.Icarus.Controllers.Interfaces
 {
     public interface IOptionsController : INotifyPropertyChanged
     {
-        bool AlwaysReloadAssemblies { get; set; }
+        bool AlwaysReloadFiles { get; set; }
         bool RunTestsAfterReload { get; set; }
         string TestStatusBarStyle { get; set; }
         bool ShowProgressDialogs { get; set; }

@@ -24,7 +24,7 @@ namespace Gallio.Icarus.Controls
             ColumnHeader stepName = new ColumnHeader();
             ColumnHeader duration = new ColumnHeader();
             ColumnHeader codeReference = new ColumnHeader();
-            ColumnHeader assembly = new ColumnHeader();
+            ColumnHeader fileName = new ColumnHeader();
             ColumnHeader testKind = new ColumnHeader();
             ColumnHeader asserts = new ColumnHeader();
 
@@ -38,10 +38,10 @@ namespace Gallio.Icarus.Controls
             asserts.Width = 50;
             codeReference.Text = "Code reference";
             codeReference.Width = 200;
-            assembly.Text = "Assembly";
-            assembly.Width = 200;
+            fileName.Text = "File";
+            fileName.Width = 200;
             
-            Columns.AddRange(new[] { stepName, testKind, duration, asserts, codeReference, assembly });
+            Columns.AddRange(new[] { stepName, testKind, duration, asserts, codeReference, fileName });
             
             FullRowSelect = true;
             View = View.Details;

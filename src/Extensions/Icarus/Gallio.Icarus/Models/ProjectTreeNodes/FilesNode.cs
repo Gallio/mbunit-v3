@@ -13,17 +13,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Gallio.Model;
-using Gallio.Model.Schema;
-
-namespace Gallio.Icarus.Models.TestTreeNodes
+namespace Gallio.Icarus.Models.ProjectTreeNodes
 {
-    internal class FixtureNode : TestDataNode
+    internal sealed class FilesNode : ProjectTreeNode
     {
-        public FixtureNode(TestData testData)
-            : base(testData)
+        public FilesNode()
         {
-            TestKind = TestKinds.Fixture;
+            // TODO: i18n
+            Text = "Files";
         }
     }
 }

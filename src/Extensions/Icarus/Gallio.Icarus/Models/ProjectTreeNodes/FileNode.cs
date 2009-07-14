@@ -13,31 +13,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Gallio.Runtime.ProgressMonitoring;
-using Gallio.Icarus.Controllers.Interfaces;
-using Gallio.UI.Progress;
+using System.IO;
 
-namespace Gallio.Icarus.Commands
+namespace Gallio.Icarus.Models.ProjectTreeNodes
 {
-    internal class RemoveAssemblyCommand : ICommand
+    internal sealed class FileNode : ProjectTreeNode
     {
-        private readonly IProjectController projectController;
-
         public string FileName
         {
             get;
-            set;
+            private set;
         }
 
-        public RemoveAssemblyCommand(IProjectController projectController)
+        public FileNode(string fileName)
         {
-            this.projectController = projectController;
-        }
-
-        public void Execute(IProgressMonitor progressMonitor)
-        {
-            if (!string.IsNullOrEmpty(FileName))
-                projectController.RemoveAssembly(FileName, progressMonitor);
+            Text = fileName;
+            Image = Properties.Resources.File;
+            FileName = fileName;
         }
     }
 }

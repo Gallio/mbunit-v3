@@ -20,13 +20,13 @@ namespace Gallio.Icarus
 {
     public partial class ReloadDialog : Form
     {
-        public ReloadDialog(string assembly, IOptionsController optionsController)
+        public ReloadDialog(string fileName, IOptionsController optionsController)
         {
             InitializeComponent();
 
-            assemblyLabel.Text = string.Format("The assembly {0} has been modified.", assembly);
+            fileModifiedLabel.Text = string.Format("File '{0}' has been modified.", fileName);
 
-            alwaysReload.DataBindings.Add("Checked", optionsController, "AlwaysReloadAssemblies", 
+            alwaysReload.DataBindings.Add("Checked", optionsController, "AlwaysReloadFiles", 
                 false, DataSourceUpdateMode.OnPropertyChanged);
         }
     }

@@ -56,6 +56,9 @@ namespace Gallio.NCoverIntegration
             string ncoverArguments, ncoverCoverageFile;
             NCoverHost.GetNCoverProperties(hostSetup, out ncoverArguments, out ncoverCoverageFile);
 
+            if (File.Exists(ncoverCoverageFile))
+                File.Delete(ncoverCoverageFile);
+
             if (batch != null)
             {
                 hostSetup = hostSetup.Copy();

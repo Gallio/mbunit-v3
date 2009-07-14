@@ -36,6 +36,8 @@ namespace Gallio.Icarus.Models
 
         public string Name { get; private set; }
 
+        public string FileName { get; protected set; }
+
         public TestStatus TestStatus
         {
             get { return testStatus; }

@@ -32,7 +32,7 @@ namespace Gallio.MbUnit2Adapter.Tests.Model
     [TestFixture]
     [TestsOn(typeof(MbUnit2TestFramework))]
     [Author("Jeff", "jeff@ingenio.com")]
-    public class TestFrameworkTest : BaseTestFrameworkTest<SimpleTest>
+    public class MbUnit2TestFrameworkTest : BaseTestFrameworkTest<SimpleTest>
     {
         protected override ComponentHandle<ITestFramework, TestFrameworkTraits> FrameworkHandle
         {
@@ -43,9 +43,9 @@ namespace Gallio.MbUnit2Adapter.Tests.Model
             }
         }
 
-        protected override string FrameworkKind
+        protected override string AssemblyKind
         {
-            get { return "MbUnit v2 Framework"; }
+            get { return MbUnit2TestExplorer.AssemblyKind; }
         }
 
         protected override string PassTestName

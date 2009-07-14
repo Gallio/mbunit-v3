@@ -23,5 +23,6 @@ namespace Gallio.Icarus.Models
     {
         string FileName { get; set; }
         TestProject TestProject { get; set; }
+        void NotifyTestProjectChanged();
     }
 }

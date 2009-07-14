@@ -29,23 +29,25 @@ namespace Gallio.Icarus.Reports
 
         public ReportMonitor(TestProject testProject)
         {
-            if (File.Exists(testProject.ReportDirectory))
+            string reportDirectory = Path.GetFullPath(testProject.ReportDirectory);
+
+            if (Directory.Exists(reportDirectory))
             {
-                SetupDirectoryWatcher(testProject.ReportDirectory);
+                SetupDirectoryWatcher(reportDirectory);
             }
             else
             {
-                string parentDirectory = Directory.GetParent(testProject.ReportDirectory).FullName;
+                string parentDirectory = Path.GetDirectoryName(reportDirectory);
                 if (Directory.Exists(parentDirectory))
                 {
                     reportDirectoryWatcher = new FileSystemWatcher();
                     reportDirectoryWatcher.NotifyFilter = NotifyFilters.DirectoryName;
                     reportDirectoryWatcher.Created += (sender, e) =>
                     {
-                        if (e.FullPath == testProject.ReportDirectory)
+                        if (e.FullPath == reportDirectory)
                         {
                             reportDirectoryWatcher.EnableRaisingEvents = false;
-                            SetupDirectoryWatcher(testProject.ReportDirectory);
+                            SetupDirectoryWatcher(reportDirectory);
                             OnReportDirectoryChanged();
                         }
                     };

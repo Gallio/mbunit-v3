@@ -97,11 +97,11 @@
       </traits>
     </component>
 
-    <component componentId="MbUnit2Adapter.TestKinds.MbUnitFramework"
+    <component componentId="MbUnit2Adapter.TestKinds.MbUnitTestAssembly"
                serviceId="Gallio.TestKind">
       <traits>
-        <name>MbUnit v2 Framework</name>
-        <description>MbUnit v2 Test Framework</description>
+        <name>MbUnit v2 Assembly</name>
+        <description>MbUnit v2 Test Assembly</description>
         <icon>plugin://Gallio.MbUnit2Adapter/Resources/MbUnit.ico</icon>
       </traits>
     </component>

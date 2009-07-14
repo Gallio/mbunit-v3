@@ -13,17 +13,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Gallio.Model;
-using Gallio.Model.Schema;
+using Gallio.Icarus.Interfaces;
 
-namespace Gallio.Icarus.Models.TestTreeNodes
+namespace Gallio.Icarus.Options
 {
-    internal class RootNode : TestDataNode
+    internal partial class FilesOptions : OptionsPanel
     {
-        public RootNode(TestData testData)
-            : base(testData)
+        public FilesOptions(IOptionsController optionsController)
         {
-            TestKind = TestKinds.Root;
+            InitializeComponent();
+
+            alwaysReloadFiles.DataBindings.Add("Checked", optionsController, "AlwaysReloadFiles");
         }
     }
 }

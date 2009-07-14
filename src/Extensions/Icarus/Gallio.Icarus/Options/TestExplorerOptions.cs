@@ -29,10 +29,10 @@ namespace Gallio.Icarus.Options
 
             InitializeComponent();
 
-            alwaysReloadAssemblies.DataBindings.Add("Checked", optionsController, "AlwaysReloadAssemblies", false, 
+            alwaysReloadFiles.DataBindings.Add("Checked", optionsController, "AlwaysReloadFiles", false, 
                 DataSourceUpdateMode.OnPropertyChanged);
             
-            runTestsAfterReload.DataBindings.Add("Enabled", optionsController, "AlwaysReloadAssemblies", false, 
+            runTestsAfterReload.DataBindings.Add("Enabled", optionsController, "AlwaysReloadFiles", false, 
                 DataSourceUpdateMode.OnPropertyChanged);
             runTestsAfterReload.DataBindings.Add("Checked", optionsController, "RunTestsAfterReload", false, 
                 DataSourceUpdateMode.OnPropertyChanged);

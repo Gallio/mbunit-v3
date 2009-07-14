@@ -50,6 +50,12 @@ namespace Gallio.Framework.Pattern
             get { return reflectionPolicy; }
         }
 
+        /// <inheritdoc />
+        public ITestBuilder RootTestBuilder
+        {
+            get { throw new NotImplementedException(); }
+        }
+
         void ITestModelBuilder.AddAnnotation(Annotation annotation)
         {
             throw new NotSupportedException();
@@ -61,11 +67,6 @@ namespace Gallio.Framework.Pattern
         }
 
         void ITestModelBuilder.PublishExceptionAsAnnotation(ICodeElementInfo codeElement, Exception ex)
-        {
-            throw new NotSupportedException();
-        }
-
-        ITestBuilder ITestModelBuilder.CreateTopLevelTest(string name, ICodeElementInfo codeElement, ITestDataContextBuilder dataContextBuilder)
         {
             throw new NotSupportedException();
         }

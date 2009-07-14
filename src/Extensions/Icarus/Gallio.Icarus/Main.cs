@@ -68,7 +68,7 @@ namespace Gallio.Icarus
         {
             this.applicationController = applicationController;
 
-            applicationController.AssemblyChanged += AssemblyChanged;
+            applicationController.FileChanged += FileChanged;
 
             testController = RuntimeAccessor.ServiceLocator.Resolve<ITestController>();
             testController.RunStarted += (sender, e) => Sync.Invoke(this, delegate
@@ -287,6 +287,7 @@ namespace Gallio.Icarus
         {
             using (OpenFileDialog openFile = new OpenFileDialog())
             {
+                openFile.Title = "Open Project...";
                 openFile.Filter = projectFileFilter;
 
                 if (openFile.ShowDialog() != DialogResult.OK)
@@ -300,6 +301,7 @@ namespace Gallio.Icarus
         {
             SaveFileDialog saveFile = new SaveFileDialog
             {
+                Title = "Save Project As...",
                 OverwritePrompt = true,
                 AddExtension = true,
                 DefaultExt = projectFileFilter,
@@ -317,16 +319,16 @@ namespace Gallio.Icarus
             applicationController.SaveProject(true);
         }
 
-        private void addAssemblyToolStripMenuItem_Click(object sender, EventArgs e)
+        private void addFilesToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            using (var openFileDialog = Dialogs.OpenDialog)
+            using (var openFileDialog = Dialogs.CreateAddFilesDialog())
             {
                 if (openFileDialog.ShowDialog(this) != DialogResult.OK)
                     return;
 
-                var addAssembliesCommand = new AddAssembliesCommand(projectController, testController) 
-                    { AssemblyFiles = openFileDialog.FileNames };
-                taskManager.QueueTask(addAssembliesCommand);
+                var command = new AddFilesCommand(projectController, testController) 
+                    { Files = openFileDialog.FileNames };
+                taskManager.QueueTask(command);
             }
         }
 
@@ -340,14 +342,14 @@ namespace Gallio.Icarus
                 optionsController.Save();
         }
 
-        private void removeAssembliesToolStripMenuItem_Click(object sender, EventArgs e)
+        private void removeAllFilesToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            RemoveAllAssemblies();
+            RemoveAllFiles();
         }
 
-        private void RemoveAllAssemblies()
+        private void RemoveAllFiles()
         {
-            var cmd = new RemoveAllAssembliesCommand(testController, projectController);
+            var cmd = new RemoveAllFilesCommand(testController, projectController);
             taskManager.QueueTask(cmd);
         }
 
@@ -482,17 +484,17 @@ namespace Gallio.Icarus
             });
         }
 
-        private void AssemblyChanged(object sender, AssemblyChangedEventArgs e)
+        private void FileChanged(object sender, FileChangedEventArgs e)
         {
             // Do this asynchronously when called from another thread.
-            BeginInvoke(new MethodInvoker(() => HandleAssemblyChanged(e.AssemblyName)));
+            BeginInvoke(new MethodInvoker(() => HandleFileChanged(e.FileName)));
         }
 
-        private void HandleAssemblyChanged(string assemblyName)
+        private void HandleFileChanged(string fileName)
         {
-            if (!optionsController.AlwaysReloadAssemblies)
+            if (!optionsController.AlwaysReloadFiles)
             {
-                var reloadDialog = new ReloadDialog(assemblyName, optionsController);
+                var reloadDialog = new ReloadDialog(fileName, optionsController);
 
                 if (reloadDialog.ShowDialog(this) != DialogResult.OK)
                     return;
@@ -510,8 +512,16 @@ namespace Gallio.Icarus
         {
             var progressMonitor = taskManager.ProgressMonitor;
 
-            toolStripProgressBar.Maximum = Convert.ToInt32(progressMonitor.TotalWorkUnits);
-            toolStripProgressBar.Value = Convert.ToInt32(progressMonitor.CompletedWorkUnits);
+            if (double.IsNaN(progressMonitor.TotalWorkUnits))
+            {
+                toolStripProgressBar.Style = ProgressBarStyle.Marquee;
+            }
+            else
+            {
+                toolStripProgressBar.Style = ProgressBarStyle.Continuous;
+                toolStripProgressBar.Maximum = Convert.ToInt32(progressMonitor.TotalWorkUnits);
+                toolStripProgressBar.Value = Convert.ToInt32(progressMonitor.CompletedWorkUnits);
+            }
 
             var sb = new StringBuilder();
             sb.Append(progressMonitor.TaskName);

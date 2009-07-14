@@ -43,7 +43,7 @@ namespace Gallio.Icarus.Controllers
         private readonly IOptionsController optionsController;
         private readonly IFileSystem fileSystem;
         private readonly IXmlSerializer xmlSerializer;
-        private readonly IAssemblyWatcher assemblyWatcher;
+        private readonly IFileWatcher fileWatcher;
         private readonly IUnhandledExceptionPolicy unhandledExceptionPolicy;
 
         private readonly List<FilterInfo> testFilters = new List<FilterInfo>();
@@ -54,7 +54,7 @@ namespace Gallio.Icarus.Controllers
 
         private bool updating;
 
-        public event EventHandler<AssemblyChangedEventArgs> AssemblyChanged;
+        public event EventHandler<FileChangedEventArgs> FileChanged;
 
         public IProjectTreeModel Model
         {
@@ -107,14 +107,14 @@ namespace Gallio.Icarus.Controllers
         }
 
         public ProjectController(IProjectTreeModel projectTreeModel, IOptionsController optionsController, 
-            IFileSystem fileSystem, IXmlSerializer xmlSerializer, IAssemblyWatcher assemblyWatcher, 
+            IFileSystem fileSystem, IXmlSerializer xmlSerializer, IFileWatcher fileWatcher, 
             IUnhandledExceptionPolicy unhandledExceptionPolicy)
         {
             this.projectTreeModel = projectTreeModel;
             this.optionsController = optionsController;
             this.fileSystem = fileSystem;
             this.xmlSerializer = xmlSerializer;
-            this.assemblyWatcher = assemblyWatcher;
+            this.fileWatcher = fileWatcher;
             this.unhandledExceptionPolicy = unhandledExceptionPolicy;
 
             TestFilters = new BindingList<FilterInfo>(testFilters);
@@ -147,10 +147,10 @@ namespace Gallio.Icarus.Controllers
                 GenericCollectionUtils.ForEach(TestRunnerExtensions, x => projectTreeModel.TestProject.AddTestRunnerExtensionSpecification(x));
             };
 
-            assemblyWatcher.AssemblyChangedEvent += delegate(string fullPath)
+            fileWatcher.FileChangedEvent += delegate(string fullPath)
             {
-                string assemblyName = Path.GetFileNameWithoutExtension(fullPath);
-                EventHandlerPolicy.SafeInvoke(AssemblyChanged, this, new AssemblyChangedEventArgs(assemblyName));
+                string fileName = Path.GetFileName(fullPath);
+                EventHandlerPolicy.SafeInvoke(FileChanged, this, new FileChangedEventArgs(fileName));
             };
 
             // default tree view category
@@ -158,21 +158,25 @@ namespace Gallio.Icarus.Controllers
             CollapsedNodes = new List<string>();
         }
 
-        public void AddAssemblies(IList<string> assemblies, IProgressMonitor progressMonitor)
+        public void AddFiles(IList<string> files, IProgressMonitor progressMonitor)
         {
-            using (progressMonitor.BeginTask("Adding assemblies", (assemblies.Count + 2)))
+            using (progressMonitor.BeginTask("Adding files.", (files.Count + 2)))
             {
-                IList<string> validAssemblies = new List<string>();
-                foreach (string assembly in assemblies)
+                IList<string> validFiles = new List<string>();
+                foreach (string file in files)
                 {
-                    if (fileSystem.FileExists(assembly))
-                        validAssemblies.Add(assembly);
+                    string filePath = Path.GetFullPath(file);
+
+                    if (fileSystem.FileExists(filePath))
+                        validFiles.Add(filePath);
                     progressMonitor.Worked(1);
                 }
 
-                GenericCollectionUtils.ForEach(validAssemblies, x => projectTreeModel.TestProject.TestPackage.AddFile(new FileInfo(x)));
+                GenericCollectionUtils.ForEach(validFiles, x => projectTreeModel.TestProject.TestPackage.AddFile(new FileInfo(x)));
+                projectTreeModel.NotifyTestProjectChanged();
+
                 progressMonitor.Worked(1);
-                assemblyWatcher.Add(validAssemblies);
+                fileWatcher.Add(validFiles);
             }
         }
 
@@ -195,14 +199,17 @@ namespace Gallio.Icarus.Controllers
             }
         }
 
-        public void RemoveAllAssemblies(IProgressMonitor progressMonitor)
+        public void RemoveAllFiles(IProgressMonitor progressMonitor)
         {
             projectTreeModel.TestProject.TestPackage.ClearFiles();
+            projectTreeModel.NotifyTestProjectChanged();
         }
 
-        public void RemoveAssembly(string fileName, IProgressMonitor progressMonitor)
+        public void RemoveFile(string fileName, IProgressMonitor progressMonitor)
         {
-            projectTreeModel.TestProject.TestPackage.RemoveFile(new FileInfo(fileName));
+            string filePath = Path.GetFullPath(fileName);
+            projectTreeModel.TestProject.TestPackage.RemoveFile(new FileInfo(filePath));
+            projectTreeModel.NotifyTestProjectChanged();
         }
 
         public void SaveFilterSet(string filterName, FilterSet<ITestDescriptor> filterSet, IProgressMonitor progressMonitor)
@@ -274,8 +281,8 @@ namespace Gallio.Icarus.Controllers
                 projectTreeModel.FileName = projectName;
                 projectTreeModel.TestProject = testProject;
 
-                assemblyWatcher.Clear();
-                GenericCollectionUtils.ForEach(testProject.TestPackage.Files, x => assemblyWatcher.Add(x.FullName));
+                fileWatcher.Clear();
+                GenericCollectionUtils.ForEach(testProject.TestPackage.Files, x => fileWatcher.Add(x.FullName));
 
                 PublishUpdates();
             }
@@ -288,7 +295,7 @@ namespace Gallio.Icarus.Controllers
                 projectTreeModel.FileName = Paths.DefaultProject;
                 projectTreeModel.TestProject = new TestProject();
 
-                assemblyWatcher.Clear();
+                fileWatcher.Clear();
 
                 PublishUpdates();
             }
@@ -358,7 +365,7 @@ namespace Gallio.Icarus.Controllers
                 foreach (var testRunnerExtension in projectTreeModel.TestProject.TestRunnerExtensionSpecifications)
                     TestRunnerExtensions.Add(testRunnerExtension);
 
-                OnPropertyChanged(new PropertyChangedEventArgs("TestPackageConfig"));
+                OnPropertyChanged(new PropertyChangedEventArgs("TestPackage"));
 
                 updating = false;
             }, null);

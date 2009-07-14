@@ -45,11 +45,11 @@
       </traits>
     </component>
 
-    <component componentId="MbUnit.TestKinds.MbUnitFramework"
+    <component componentId="MbUnit.TestKinds.MbUnitTestAssembly"
                serviceId="Gallio.TestKind">
       <traits>
-        <name>MbUnit v3 Framework</name>
-        <description>MbUnit v3 Test Framework</description>
+        <name>MbUnit v3 Assembly</name>
+        <description>MbUnit v3 Test Assembly</description>
         <icon>plugin://MbUnit/Resources/MbUnit.ico</icon>
       </traits>
     </component>

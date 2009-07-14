@@ -13,18 +13,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Gallio.Model;
-using Gallio.Model.Schema;
+using System.Collections.Generic;
 
-namespace Gallio.Icarus.Models.TestTreeNodes
+namespace Gallio.Icarus.Remoting
 {
-    internal class TestNode : TestDataNode
+    public interface IFileWatcher
     {
-        public TestNode(TestData testData)
-            : base(testData)
-        {
-            NodeTypeIcon = Properties.Resources.Test;
-            TestKind = TestKinds.Test;
-        }
+        event FileChangedHandler FileChangedEvent;
+        void Add(IList<string> files);
+        void Add(string filePath);
+        void Remove(string filePath);
+        void Clear();
+        void Start();
+        void Stop();
     }
 }

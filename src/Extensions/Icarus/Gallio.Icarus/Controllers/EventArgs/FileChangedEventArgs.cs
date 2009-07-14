@@ -13,14 +13,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Gallio.Icarus.Models.ProjectTreeNodes
+namespace Gallio.Icarus.Controllers.EventArgs
 {
-    internal sealed class AssembliesNode : ProjectTreeNode
+    public class FileChangedEventArgs : System.EventArgs
     {
-        public AssembliesNode()
+        private readonly string fileName;
+
+        public FileChangedEventArgs(string fileName)
         {
-            // TODO: i18n
-            Text = "Assemblies";
+            this.fileName = fileName;
+        }
+
+        public string FileName
+        {
+            get { return fileName; }
         }
     }
 }

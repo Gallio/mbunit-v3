@@ -206,7 +206,7 @@ namespace Gallio.Model.Schema
             testPackage.ApplicationBaseDirectory = applicationBaseDirectory != null ? new DirectoryInfo(applicationBaseDirectory) : null;
             testPackage.WorkingDirectory = workingDirectory != null ? new DirectoryInfo(workingDirectory) : null;
             testPackage.RuntimeVersion = runtimeVersion;
-            GenericCollectionUtils.ForEach(properties, x => testPackage.AddProperty(x.Key, x.Value));
+            GenericCollectionUtils.ForEach(Properties, x => testPackage.AddProperty(x.Key, x.Value));
         }
 
         /// <summary>
@@ -251,8 +251,8 @@ namespace Gallio.Model.Schema
                 applicationBaseDirectory = converter(applicationBaseDirectory, basePath);
             if (applicationBaseDirectory != null)
                 applicationBaseDirectory = converter(applicationBaseDirectory, basePath);
-            GenericCollectionUtils.ConvertInPlace(files, x => converter(basePath, x));
-            GenericCollectionUtils.ConvertInPlace(hintDirectories, x => converter(basePath, x));
+            GenericCollectionUtils.ConvertInPlace(files, x => converter(x, basePath));
+            GenericCollectionUtils.ConvertInPlace(hintDirectories, x => converter(x, basePath));
         }
 
         /// <inheritdoc />

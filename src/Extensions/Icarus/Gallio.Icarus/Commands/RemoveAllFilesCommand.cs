@@ -20,12 +20,12 @@ using Gallio.UI.Progress;
 
 namespace Gallio.Icarus.Commands
 {
-    internal class RemoveAllAssembliesCommand : ICommand
+    internal class RemoveAllFilesCommand : ICommand
     {
         private readonly ITestController testController;
         private readonly IProjectController projectController;
 
-        public RemoveAllAssembliesCommand(ITestController testController, IProjectController projectController)
+        public RemoveAllFilesCommand(ITestController testController, IProjectController projectController)
         {
             this.testController = testController;
             this.projectController = projectController;
@@ -33,11 +33,11 @@ namespace Gallio.Icarus.Commands
 
         public void Execute(IProgressMonitor progressMonitor)
         {
-            using (progressMonitor.BeginTask("Removing all assemblies.", 100))
+            using (progressMonitor.BeginTask("Removing all files.", 100))
             {
-                // remove all assemblies from test package
+                // remove all files from test package
                 using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(50))
-                    projectController.RemoveAllAssemblies(subProgressMonitor);
+                    projectController.RemoveAllFiles(subProgressMonitor);
 
                 if (progressMonitor.IsCanceled)
                     throw new OperationCanceledException();

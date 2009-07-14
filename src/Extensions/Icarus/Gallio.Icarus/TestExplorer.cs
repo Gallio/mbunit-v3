@@ -99,15 +99,18 @@ namespace Gallio.Icarus
             set { base.BindingContext = value; }
         }
 
-        private void removeAssemblyToolStripMenuItem_Click(object sender, EventArgs e)
+        private void removeFileToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (testTree.SelectedNode == null || !(testTree.SelectedNode.Tag is TestTreeNode))
                 return;
 
             var node = (TestTreeNode)testTree.SelectedNode.Tag;
-
-            var cmd = new RemoveAssemblyCommand(projectController) {FileName = node.Name};
-            taskManager.QueueTask(cmd);
+            string fileName = node.FileName;
+            if (fileName != null)
+            {
+                var cmd = new RemoveFileCommand(projectController, testController) {FileName = fileName};
+                taskManager.QueueTask(cmd);
+            }
         }
 
         private void treeViewComboBox_SelectedIndexChanged(object sender, EventArgs e)
@@ -173,22 +176,22 @@ namespace Gallio.Icarus
             testTree.Expand(TestStatus.Inconclusive);
         }
 
-        private void addAssembliesToolStripMenuItem_Click(object sender, EventArgs e)
+        private void addFilesToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            using (var openFileDialog = Dialogs.OpenDialog)
+            using (var openFileDialog = Dialogs.CreateAddFilesDialog())
             {
                 if (openFileDialog.ShowDialog(this) != DialogResult.OK)
                     return;
 
-                var addAssembliesCommand = new AddAssembliesCommand(projectController, testController)
-                                               {AssemblyFiles = openFileDialog.FileNames};
-                taskManager.QueueTask(addAssembliesCommand);
+                var command = new AddFilesCommand(projectController, testController)
+                                               {Files = openFileDialog.FileNames};
+                taskManager.QueueTask(command);
             }
         }
 
-        private void removeAssembliesToolStripMenuItem_Click(object sender, EventArgs e)
+        private void removeAllFilesToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var cmd = new RemoveAllAssembliesCommand(testController, projectController);
+            var cmd = new RemoveAllFilesCommand(testController, projectController);
             taskManager.QueueTask(cmd);
         }
 
@@ -199,20 +202,18 @@ namespace Gallio.Icarus
             if (testTree.SelectedNode != null)
             {
                 TestTreeNode testTreeNode = (TestTreeNode)testTree.SelectedNode.Tag;
-                removeAssemblyToolStripMenuItem.Enabled = (testTreeNode is AssemblyNode);
+                removeFileToolStripMenuItem.Enabled = testTreeNode.FileName != null;
                 viewSourceCodeToolStripMenuItem.Enabled = testTreeNode.SourceCodeAvailable;
 
                 if (testTreeNode is NamespaceNode)
                 {
                     foreach (Node n in testTreeNode.Nodes)
-                        if (n != null) // don't know how this happens yet -- JB
+                    {
+                        if (n != null)
                         {
                             nodes.Add((TestTreeNode) n);
                         }
-                        else
-                        {
-                            Debugger.Break();
-                        }
+                    }
                 }
                 else
                 {
@@ -221,7 +222,7 @@ namespace Gallio.Icarus
             }
             else
             {
-                removeAssemblyToolStripMenuItem.Enabled = false;
+                removeFileToolStripMenuItem.Enabled = false;
                 viewSourceCodeToolStripMenuItem.Enabled = false;
             }
 

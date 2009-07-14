@@ -43,6 +43,11 @@ namespace Gallio.MSTestAdapter.Tests.Model
             }
         }
 
+        protected override string AssemblyKind
+        {
+            get { return MSTestExplorer.AssemblyKind; }
+        }
+
         [Test]
         public void MetadataImport_IgnoreReason()
         {

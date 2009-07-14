@@ -36,8 +36,8 @@ namespace Gallio.Framework.Pattern
         /// <summary>
         /// Performs early initialization for the specified assembly.
         /// </summary>
-        /// <param name="frameworkScope">The framework-level scope that will eventually contain the assembly-level test.</param>
+        /// <param name="rootScope">The root scope that will eventually contain the assembly-level test.</param>
         /// <param name="assembly">The assembly to process.</param>
-        public abstract void Initialize(IPatternScope frameworkScope, IAssemblyInfo assembly);
+        public abstract void Initialize(IPatternScope rootScope, IAssemblyInfo assembly);
     }
 }

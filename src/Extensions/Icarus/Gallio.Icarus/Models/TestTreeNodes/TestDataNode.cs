@@ -13,7 +13,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Gallio.Common.Collections;
 using Gallio.Common.Reflection;
+using Gallio.Model;
 using Gallio.Model.Schema;
 
 namespace Gallio.Icarus.Models.TestTreeNodes
@@ -23,6 +25,8 @@ namespace Gallio.Icarus.Models.TestTreeNodes
         public TestDataNode(TestData testData)
             : base(testData.Id, testData.Name)
         {
+            TestKind = testData.Metadata.GetValue(MetadataKeys.TestKind) ?? TestKinds.Group;
+            FileName = testData.Metadata.GetValue(MetadataKeys.File);
             SourceCodeAvailable = (testData.CodeLocation != CodeLocation.Unknown);
             IsTest = testData.IsTestCase;
         }

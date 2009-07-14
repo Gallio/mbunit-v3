@@ -2,7 +2,7 @@
 
 namespace Gallio.Icarus.Options
 {
-    internal partial class AssembliesOptions
+    internal partial class FilesOptions
     {
         /// <summary> 
         /// Required designer variable.
@@ -30,36 +30,36 @@ namespace Gallio.Icarus.Options
         /// </summary>
         private void InitializeComponent()
         {
-            this.alwaysReloadAssemblies = new System.Windows.Forms.CheckBox();
+            this.alwaysReloadFiles = new System.Windows.Forms.CheckBox();
             this.panel.SuspendLayout();
             this.SuspendLayout();
             // 
             // panel
             // 
-            this.panel.Controls.Add(this.alwaysReloadAssemblies);
+            this.panel.Controls.Add(this.alwaysReloadFiles);
             // 
-            // alwaysReloadAssemblies
+            // alwaysReloadFiles
             // 
-            this.alwaysReloadAssemblies.AutoSize = true;
-            this.alwaysReloadAssemblies.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.alwaysReloadAssemblies.Location = new System.Drawing.Point(15, 13);
-            this.alwaysReloadAssemblies.Name = "alwaysReloadAssemblies";
-            this.alwaysReloadAssemblies.Size = new System.Drawing.Size(148, 17);
-            this.alwaysReloadAssemblies.TabIndex = 0;
-            this.alwaysReloadAssemblies.Text = "Always reload assemblies:";
-            this.alwaysReloadAssemblies.UseVisualStyleBackColor = true;
+            this.alwaysReloadFiles.AutoSize = true;
+            this.alwaysReloadFiles.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.alwaysReloadFiles.Location = new System.Drawing.Point(15, 13);
+            this.alwaysReloadFiles.Name = "alwaysReloadFiles";
+            this.alwaysReloadFiles.Size = new System.Drawing.Size(148, 17);
+            this.alwaysReloadFiles.TabIndex = 0;
+            this.alwaysReloadFiles.Text = "Always reload files:";
+            this.alwaysReloadFiles.UseVisualStyleBackColor = true;
             // 
-            // AssembliesOptions
+            // FilesOptions
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.Name = "AssembliesOptions";
+            this.Name = "FilesOptions";
             this.panel.ResumeLayout(false);
             this.panel.PerformLayout();
             this.ResumeLayout(false);
 
         }
 
-        private System.Windows.Forms.CheckBox alwaysReloadAssemblies;
+        private System.Windows.Forms.CheckBox alwaysReloadFiles;
 
         #endregion
 

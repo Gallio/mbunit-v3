@@ -47,7 +47,7 @@ namespace Gallio.Icarus.Controllers
         private readonly IProjectController projectController;
         private readonly IUnhandledExceptionPolicy unhandledExceptionPolicy;
 
-        public event EventHandler<AssemblyChangedEventArgs> AssemblyChanged;
+        public event EventHandler<FileChangedEventArgs> FileChanged;
         
         public string Title
         {
@@ -112,7 +112,7 @@ namespace Gallio.Icarus.Controllers
             testController = serviceLocator.Resolve<ITestController>();
             
             projectController = serviceLocator.Resolve<IProjectController>();
-            projectController.AssemblyChanged += (sender, e) => EventHandlerPolicy.SafeInvoke(AssemblyChanged, this, e);
+            projectController.FileChanged += (sender, e) => EventHandlerPolicy.SafeInvoke(FileChanged, this, e);
             
             unhandledExceptionPolicy = serviceLocator.Resolve<IUnhandledExceptionPolicy>();
         }
@@ -126,23 +126,23 @@ namespace Gallio.Icarus.Controllers
 
         private void HandleArguments()
         {
-            var assemblyFiles = new List<string>();
+            var files = new List<string>();
             if (arguments.Files.Length > 0)
             {
-                foreach (var assembly in arguments.Files)
+                foreach (var file in arguments.Files)
                 {
-                    if (!fileSystem.FileExists(assembly))
+                    if (!fileSystem.FileExists(file))
                         continue;
 
-                    if (Path.GetExtension(assembly) == TestProject.Extension)
+                    if (Path.GetExtension(file) == TestProject.Extension)
                     {
-                        OpenProject(assembly);
+                        OpenProject(file);
                         return;
                     }
-                    assemblyFiles.Add(assembly);
+                    files.Add(file);
                 }
-                var cmd = new AddAssembliesCommand(projectController, testController) 
-                    { AssemblyFiles = assemblyFiles };
+                var cmd = new AddFilesCommand(projectController, testController) 
+                    { Files = files };
                 taskManager.QueueTask(cmd);
             }
             else if (optionsController.RestorePreviousSettings && optionsController.RecentProjects.Count > 0)

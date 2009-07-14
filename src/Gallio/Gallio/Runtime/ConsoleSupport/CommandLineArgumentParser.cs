@@ -557,7 +557,7 @@ namespace Gallio.Runtime.ConsoleSupport
             
 			public Type ValueType
 			{
-				get { return IsCollection ? valueType : Type; }
+				get { return valueType; }
 			}
             
 			private static bool ParseValue(Type type, string stringData, out object value)

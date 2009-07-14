@@ -103,14 +103,14 @@ namespace Gallio.Tests.Runtime.Hosting
                 Debug = true,
                 RuntimeVersion = "2.0.50727",
                 Elevated = true,
-                WorkingDirectory = @"C:\WorkingDir",
-                Properties = { { "abc", "def" } }
+                WorkingDirectory = @"C:\WorkingDir"
             };
+            setup.AddProperty("abc", "def");
 
             HostSetup copy = setup.Copy();
 
             Assert.AreEqual(setup.ApplicationBaseDirectory, copy.ApplicationBaseDirectory);
-            Assert.AreEqual(setup.Configuration, copy.Configuration);
+            Assert.AreEqual(setup.Configuration.ConfigurationXml, copy.Configuration.ConfigurationXml);
             Assert.AreEqual(setup.ConfigurationFileLocation, copy.ConfigurationFileLocation);
             Assert.AreEqual(setup.ProcessorArchitecture, copy.ProcessorArchitecture);
             Assert.AreEqual(setup.ShadowCopy, copy.ShadowCopy);

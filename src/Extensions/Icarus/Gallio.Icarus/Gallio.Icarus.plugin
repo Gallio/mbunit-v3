@@ -30,8 +30,8 @@
     <service serviceId="Gallio.Icarus.WindowManager"
              serviceType="Gallio.Icarus.IWindowManager, Gallio.Icarus" />
 
-    <service serviceId="Gallio.Icarus.AssemblyWatcher"
-             serviceType="Gallio.Icarus.Remoting.IAssemblyWatcher, Gallio.Icarus" />
+    <service serviceId="Gallio.Icarus.FileWatcher"
+             serviceType="Gallio.Icarus.Remoting.IFileWatcher, Gallio.Icarus" />
   
     <!-- Controllers -->
 
@@ -85,9 +85,9 @@
   </services>
   <components>
     
-    <component componentId="Gallio.Icarus.AssemblyWatcher"
-               serviceId="Gallio.Icarus.AssemblyWatcher"
-               componentType="Gallio.Icarus.Remoting.AssemblyWatcher, Gallio.Icarus" />
+    <component componentId="Gallio.Icarus.FileyWatcher"
+               serviceId="Gallio.Icarus.FileWatcher"
+               componentType="Gallio.Icarus.Remoting.FileWatcher, Gallio.Icarus" />
 
     <component componentId="Gallio.Icarus.WindowManager" 
                serviceId="Gallio.Icarus.WindowManager" 

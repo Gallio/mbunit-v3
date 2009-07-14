@@ -59,9 +59,9 @@ namespace Gallio.Tests.Model
 
         protected abstract ComponentHandle<ITestFramework, TestFrameworkTraits> FrameworkHandle { get; }
 
-        protected virtual string FrameworkKind
+        protected virtual string AssemblyKind
         {
-            get { return TestKinds.Framework; }
+            get { return TestKinds.Assembly; }
         }
 
         protected virtual string PassTestName
@@ -153,29 +153,16 @@ namespace Gallio.Tests.Model
             Assert.IsFalse(rootTest.IsTestCase);
             Assert.AreEqual(1, rootTest.Children.Count);
 
-            Test frameworkTest = (Test)rootTest.Children[0];
-            Assert.AreSame(testModel.RootTest, frameworkTest.Parent);
-            Assert.AreEqual(FrameworkKind, frameworkTest.Kind);
-            Assert.AreEqual(FrameworkHandle.GetTraits().Name, frameworkTest.Metadata.GetValue(MetadataKeys.Framework));
-            Assert.IsNull(frameworkTest.CodeElement);
-            //Assert.AreEqual("MSTest v9.0.0.0", frameworkTest.Name);
-            //Assert.AreEqual("MbUnit v" + expectedVersion, frameworkTest.Name);
-            //Assert.AreEqual("xUnit.net v" + expectedVersion, frameworkTest.Name);
-            //Assert.AreEqual("NUnit v" + expectedVersion, frameworkTest.Name);
-            //Assert.AreEqual("MbUnit v" + expectedVersion, frameworkTest.Name);
-            Assert.IsFalse(frameworkTest.IsTestCase);
-            Assert.AreEqual(1, frameworkTest.Children.Count);
-
-            Test assemblyTest = (Test)frameworkTest.Children[0];
-            Assert.AreSame(frameworkTest, assemblyTest.Parent);
-            Assert.AreEqual(TestKinds.Assembly, assemblyTest.Kind);
+            Test assemblyTest = rootTest.Children[0];
+            Assert.AreSame(rootTest, assemblyTest.Parent);
+            Assert.AreEqual(AssemblyKind, assemblyTest.Kind);
+            Assert.AreEqual(SimpleFixtureAssembly.Location, assemblyTest.Metadata.GetValue(MetadataKeys.File), StringComparison.OrdinalIgnoreCase);
             Assert.AreEqual(CodeReference.CreateFromAssembly(SimpleFixtureAssembly), assemblyTest.CodeElement.CodeReference);
             Assert.AreEqual(SimpleFixtureAssembly.GetName().Name, assemblyTest.Name);
             Assert.IsFalse(assemblyTest.IsTestCase);
-            Assert.GreaterThanOrEqualTo(assemblyTest.Children.Count, 2);
+            Assert.GreaterThanOrEqualTo(assemblyTest.Children.Count, 1);
 
-            Test fixtureTest = (Test)GetDescendantByName(assemblyTest, "SimpleTest");
-            Assert.AreSame(assemblyTest, fixtureTest.Parent);
+            Test fixtureTest = GetDescendantByName(assemblyTest, "SimpleTest");
             Assert.AreEqual(TestKinds.Fixture, fixtureTest.Kind);
             Assert.AreEqual(new CodeReference(SimpleFixtureAssembly.FullName, SimpleFixtureNamespace, SimpleFixtureNamespace + ".SimpleTest", null, null),
                 fixtureTest.CodeElement.CodeReference);
@@ -183,8 +170,8 @@ namespace Gallio.Tests.Model
             Assert.IsFalse(fixtureTest.IsTestCase);
             Assert.AreEqual(2, fixtureTest.Children.Count);
 
-            Test passTest = (Test)GetDescendantByName(fixtureTest, PassTestName);
-            Test failTest = (Test)GetDescendantByName(fixtureTest, FailTestName);
+            Test passTest = GetDescendantByName(fixtureTest, PassTestName);
+            Test failTest = GetDescendantByName(fixtureTest, FailTestName);
 
             Assert.IsNotNull(passTest, "Cannot find test case '{0}'", PassTestName);
             Assert.IsNotNull(failTest, "Cannot find test case '{0}'", FailTestName);
@@ -211,9 +198,9 @@ namespace Gallio.Tests.Model
         {
             TestModel testModel = PopulateTestTree();
 
-            Test test = (Test)GetDescendantByName(testModel.RootTest, typeof(TSampleFixture).Name);
-            Test passTest = (Test)GetDescendantByName(test, PassTestName);
-            Test failTest = (Test)GetDescendantByName(test, FailTestName);
+            Test test = GetDescendantByName(testModel.RootTest, typeof(TSampleFixture).Name);
+            Test passTest = GetDescendantByName(test, PassTestName);
+            Test failTest = GetDescendantByName(test, FailTestName);
 
             Assert.AreEqual("<summary>\nA simple test fixture.\n</summary>", test.Metadata.GetValue(MetadataKeys.XmlDocumentation));
             Assert.AreEqual("<summary>\nA passing test.\n</summary>", passTest.Metadata.GetValue(MetadataKeys.XmlDocumentation));
@@ -225,8 +212,7 @@ namespace Gallio.Tests.Model
         {
             TestModel testModel = PopulateTestTree();
 
-            Test frameworkTest = testModel.RootTest.Children[0];
-            Test assemblyTest = frameworkTest.Children[0];
+            Test assemblyTest = testModel.RootTest.Children[0];
 
             Assert.AreEqual("MbUnit Project", assemblyTest.Metadata.GetValue(MetadataKeys.Company));
             Assert.AreEqual("Test", assemblyTest.Metadata.GetValue(MetadataKeys.Configuration));

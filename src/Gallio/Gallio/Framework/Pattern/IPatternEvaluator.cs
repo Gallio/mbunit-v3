@@ -38,14 +38,10 @@ namespace Gallio.Framework.Pattern
         ITestModelBuilder TestModelBuilder { get; }
 
         /// <summary>
-        /// Creates a top-level test as a child of the root test.
-        /// Returns the scope of the newly created top-level test.
+        /// Gets the scope of the root test.
         /// </summary>
-        /// <param name="name">The test name.</param>
-        /// <param name="codeElement">The associated code element, or null if none.</param>
-        /// <returns>The builder for the top-level test.</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> is null.</exception>
-        IPatternScope CreateTopLevelTestScope(string name, ICodeElementInfo codeElement);
+        /// <returns>The root scope.</returns>
+        IPatternScope RootScope { get; }
 
         /// <summary>
         /// Registers the scope so that it can be resolved later by <see cref="IPatternEvaluator.GetScopes" />.

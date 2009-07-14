@@ -39,17 +39,14 @@ namespace Gallio.MbUnit2Adapter.Model
     /// </summary>
     internal class MbUnit2TestExplorer : TestExplorer
     {
-        private const string FrameworkKind = "MbUnit v2 Framework";
-        private const string FrameworkName = "MbUnit v2";
+        internal const string AssemblyKind = "MbUnit v2 Assembly";
         private const string MbUnitFrameworkAssemblyDisplayName = @"MbUnit.Framework";
 
-        private readonly Dictionary<Version, Test> frameworkTests;
         private readonly Dictionary<IAssemblyInfo, Test> assemblyTests;
         private readonly List<KeyValuePair<Test, string>> unresolvedDependencies;
 
         public MbUnit2TestExplorer()
         {
-            frameworkTests = new Dictionary<Version, Test>();
             assemblyTests = new Dictionary<IAssemblyInfo, Test>();
             unresolvedDependencies = new List<KeyValuePair<Test, string>>();
         }
@@ -63,10 +60,8 @@ namespace Gallio.MbUnit2Adapter.Model
 
                 if (frameworkVersion != null)
                 {
-                    Test frameworkTest = GetFrameworkTest(frameworkVersion, TestModel.RootTest);
-                    GetAssemblyTest(assembly, frameworkTest);
-
-                    // TODO: Optimize me to only populate what's strictly required for a given type.
+                    // TODO: Optimize me to only populate what's strictly required when code element is a type.
+                    GetAssemblyTest(assembly, TestModel.RootTest, frameworkVersion);
                 }
             }
         }
@@ -77,32 +72,7 @@ namespace Gallio.MbUnit2Adapter.Model
             return frameworkAssemblyName != null ? frameworkAssemblyName.Version : null;
         }
 
-        private Test GetFrameworkTest(Version frameworkVersion, Test rootTest)
-        {
-            Test frameworkTest;
-            if (! frameworkTests.TryGetValue(frameworkVersion, out frameworkTest))
-            {
-                frameworkTest = CreateFrameworkTest(frameworkVersion);
-                rootTest.AddChild(frameworkTest);
-
-                frameworkTests.Add(frameworkVersion, frameworkTest);
-            }
-
-            return frameworkTest;
-        }
-
-        private static Test CreateFrameworkTest(Version frameworkVersion)
-        {
-            Test frameworkTest = new Test(
-                String.Format(Resources.MbUnit2TestExplorer_FrameworkNameWithVersionFormat, frameworkVersion), null);
-            frameworkTest.LocalIdHint = FrameworkName;
-            frameworkTest.Kind = FrameworkKind;
-            frameworkTest.Metadata.Add(MetadataKeys.Framework, FrameworkName);
-
-            return frameworkTest;
-        }
-
-        private Test GetAssemblyTest(IAssemblyInfo assembly, Test frameworkTest)
+        private Test GetAssemblyTest(IAssemblyInfo assembly, Test parentTest, Version frameworkVersion)
         {
             Test assemblyTest;
             if (assemblyTests.TryGetValue(assembly, out assemblyTest))
@@ -116,6 +86,11 @@ namespace Gallio.MbUnit2Adapter.Model
                     assemblyTest = MbUnit2NativeTestExplorer.BuildAssemblyTest(loadedAssembly, unresolvedDependencies);
                 else
                     assemblyTest = MbUnit2ReflectiveTestExplorer.BuildAssemblyTest(TestModel, assembly, unresolvedDependencies);
+
+                string frameworkName = String.Format(Resources.MbUnit2TestExplorer_FrameworkNameWithVersionFormat, frameworkVersion);
+                assemblyTest.Metadata.SetValue(MetadataKeys.Framework, frameworkName);
+                assemblyTest.Metadata.SetValue(MetadataKeys.File, assembly.Path);
+                assemblyTest.Kind = AssemblyKind;
             }
             catch (Exception ex)
             {
@@ -137,7 +112,7 @@ namespace Gallio.MbUnit2Adapter.Model
                 }
             }
 
-            frameworkTest.AddChild(assemblyTest);
+            parentTest.AddChild(assemblyTest);
 
             assemblyTests.Add(assembly, assemblyTest);
             return assemblyTest;

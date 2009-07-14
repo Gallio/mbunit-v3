@@ -343,7 +343,7 @@ namespace Gallio.UI.Reports
                 WriteHtmlEncoded(writer, testStepRun.Step.Id);
                 writer.Write("\" class=\"panel\">");
 
-                if (nestingLevel == 1 || nestingLevel == 2)
+                if (nestingLevel == 1)
                 {
                     writer.Write("<table class=\"statistics-table\"><tr class=\"alternate-row\">");
                     writer.Write("<td class=\"statistics-label-cell\">Results:</td><td>");

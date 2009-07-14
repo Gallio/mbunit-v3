@@ -392,7 +392,7 @@ html
 
         <div id="detailPanel-{$id}" class="panel">
           <xsl:choose>
-            <xsl:when test="$nestingLevel = 1 or $nestingLevel = 2">
+            <xsl:when test="$nestingLevel = 1">
               <table class="statistics-table">
                 <tr class="alternate-row">
                   <td class="statistics-label-cell">Results:</td>

@@ -29,16 +29,14 @@ namespace Gallio.MSTestAdapter.Model
     /// </summary>
     internal class MSTestExplorer : TestExplorer
     {
-        private const string FrameworkName = "MSTest";
+        internal const string AssemblyKind = TestKinds.Assembly;
         private const string MSTestAssemblyDisplayName = @"Microsoft.VisualStudio.QualityTools.UnitTestFramework";
 
-        private readonly Dictionary<Version, Test> frameworkTests;
         private readonly Dictionary<IAssemblyInfo, Test> assemblyTests;
         private readonly Dictionary<ITypeInfo, Test> typeTests;
 
         public MSTestExplorer()
         {
-            frameworkTests = new Dictionary<Version, Test>();
             assemblyTests = new Dictionary<IAssemblyInfo, Test>();
             typeTests = new Dictionary<ITypeInfo, Test>();
         }
@@ -51,10 +49,10 @@ namespace Gallio.MSTestAdapter.Model
                 Version frameworkVersion = GetFrameworkVersion(assembly);
                 if (frameworkVersion != null)
                 {
-                    Test frameworkTest = GetFrameworkTest(frameworkVersion, TestModel.RootTest);
-                    Test assemblyTest = GetAssemblyTest(assembly, frameworkTest, frameworkVersion, true);
-
                     ITypeInfo type = ReflectionUtils.GetType(codeElement);
+
+                    Test assemblyTest = GetAssemblyTest(assembly, TestModel.RootTest, frameworkVersion, type == null);
+
                     if (type != null)
                     {
                         TryGetTypeTest(type, assemblyTest);
@@ -69,38 +67,19 @@ namespace Gallio.MSTestAdapter.Model
             return frameworkAssemblyName != null ? frameworkAssemblyName.Version : null;
         }
 
-        private Test GetFrameworkTest(Version frameworkVersion, Test rootTest)
-        {
-            Test frameworkTest;
-            if (!frameworkTests.TryGetValue(frameworkVersion, out frameworkTest))
-            {
-                frameworkTest = CreateFrameworkTest(frameworkVersion);
-                rootTest.AddChild(frameworkTest);
-
-                frameworkTests.Add(frameworkVersion, frameworkTest);
-            }
-
-            return frameworkTest;
-        }
-
-        private static Test CreateFrameworkTest(Version frameworkVersion)
-        {
-            //TODO: Use resource strings
-            Test frameworkTest = new Test(String.Format("MSTest v{0}", frameworkVersion), null);
-            frameworkTest.LocalIdHint = FrameworkName;
-            frameworkTest.Kind = TestKinds.Framework;
-            frameworkTest.Metadata.Add(MetadataKeys.Framework, FrameworkName);
-
-            return frameworkTest;
-        }
-
-        private Test GetAssemblyTest(IAssemblyInfo assembly, Test frameworkTest, Version frameworkVersion, bool populateRecursively)
+        private Test GetAssemblyTest(IAssemblyInfo assembly, Test parentTest, Version frameworkVersion, bool populateRecursively)
         {
             Test assemblyTest;
             if (!assemblyTests.TryGetValue(assembly, out assemblyTest))
             {
                 assemblyTest = CreateAssemblyTest(assembly, frameworkVersion);
-                frameworkTest.AddChild(assemblyTest);
+
+                string frameworkName = String.Format("MSTest v{0}", frameworkVersion);
+                assemblyTest.Metadata.SetValue(MetadataKeys.Framework, frameworkName);
+                assemblyTest.Metadata.SetValue(MetadataKeys.File, assembly.Path);
+                assemblyTest.Kind = AssemblyKind;
+
+                parentTest.AddChild(assemblyTest);
                 assemblyTests.Add(assembly, assemblyTest);
             }
 

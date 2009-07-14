@@ -35,6 +35,7 @@
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.percentLabel = new System.Windows.Forms.Label();
+            this.statusLabel = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.flowLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
@@ -42,8 +43,8 @@
             // progressBar
             // 
             this.progressBar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                                                                            | System.Windows.Forms.AnchorStyles.Right)));
-            this.progressBar.Location = new System.Drawing.Point(82, 28);
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.progressBar.Location = new System.Drawing.Point(82, 31);
             this.progressBar.Name = "progressBar";
             this.progressBar.Size = new System.Drawing.Size(315, 23);
             this.progressBar.TabIndex = 0;
@@ -61,7 +62,8 @@
             // cancelButton
             // 
             this.cancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.cancelButton.Location = new System.Drawing.Point(284, 59);
+            this.cancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.cancelButton.Location = new System.Drawing.Point(284, 85);
             this.cancelButton.Name = "cancelButton";
             this.cancelButton.Size = new System.Drawing.Size(113, 23);
             this.cancelButton.TabIndex = 2;
@@ -73,17 +75,17 @@
             // 
             this.runInBackgroundButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.runInBackgroundButton.AutoSize = true;
-            this.runInBackgroundButton.Location = new System.Drawing.Point(165, 59);
+            this.runInBackgroundButton.Location = new System.Drawing.Point(165, 85);
             this.runInBackgroundButton.Name = "runInBackgroundButton";
             this.runInBackgroundButton.Size = new System.Drawing.Size(113, 23);
             this.runInBackgroundButton.TabIndex = 2;
-            this.runInBackgroundButton.Text = "Run in background";
+            this.runInBackgroundButton.Text = "Run in Background";
             this.runInBackgroundButton.UseVisualStyleBackColor = true;
             this.runInBackgroundButton.Click += new System.EventHandler(this.runInBackgroundButton_Click);
             // 
             // pictureBox1
             // 
-            this.pictureBox1.Image = Properties.Resources.Pillar;
+            this.pictureBox1.Image = global::Gallio.UI.Properties.Resources.Pillar;
             this.pictureBox1.Location = new System.Drawing.Point(12, 12);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(64, 65);
@@ -94,7 +96,7 @@
             // flowLayoutPanel1
             // 
             this.flowLayoutPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                                                                                 | System.Windows.Forms.AnchorStyles.Right)));
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.flowLayoutPanel1.Controls.Add(this.subTaskNameLabel);
             this.flowLayoutPanel1.Controls.Add(this.percentLabel);
             this.flowLayoutPanel1.Location = new System.Drawing.Point(82, 9);
@@ -111,18 +113,29 @@
             this.percentLabel.TabIndex = 2;
             this.percentLabel.Text = "(88 %)";
             // 
+            // statusLabel
+            // 
+            this.statusLabel.AutoEllipsis = true;
+            this.statusLabel.Location = new System.Drawing.Point(82, 61);
+            this.statusLabel.Name = "statusLabel";
+            this.statusLabel.Size = new System.Drawing.Size(315, 16);
+            this.statusLabel.TabIndex = 5;
+            this.statusLabel.Text = "Processing file...";
+            // 
             // ProgressMonitor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.cancelButton;
-            this.ClientSize = new System.Drawing.Size(409, 94);
+            this.ClientSize = new System.Drawing.Size(409, 120);
             this.ControlBox = false;
+            this.Controls.Add(this.statusLabel);
             this.Controls.Add(this.flowLayoutPanel1);
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.runInBackgroundButton);
             this.Controls.Add(this.cancelButton);
             this.Controls.Add(this.progressBar);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "ProgressMonitor";
@@ -148,5 +161,6 @@
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
         private System.Windows.Forms.Label percentLabel;
+        private System.Windows.Forms.Label statusLabel;
     }
 }

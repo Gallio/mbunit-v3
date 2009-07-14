@@ -37,22 +37,18 @@ namespace Gallio.NUnitAdapter.Model
     internal class NUnitTestExplorer : TestExplorer
     {
 #if NUNIT248
-        internal const string FrameworkKind = "NUnit v2.4.8 Framework";
-        private const string FrameworkName = "NUnit v2.4.8";
+        internal const string AssemblyKind = "NUnit v2.4.8 Assembly";
 #elif NUNIT25
-        internal const string FrameworkKind = "NUnit v2.5 Framework";
-        private const string FrameworkName = "NUnit v2.5";
+        internal const string AssemblyKind = "NUnit v2.5 Assembly";
 #else
 #error "Unrecognized NUnit framework version."
 #endif
         private const string NUnitFrameworkAssemblyDisplayName = @"nunit.framework";
 
-        private readonly Dictionary<Version, Test> frameworkTests;
         private readonly Dictionary<IAssemblyInfo, Test> assemblyTests;
 
         public NUnitTestExplorer()
         {
-            frameworkTests = new Dictionary<Version, Test>();
             assemblyTests = new Dictionary<IAssemblyInfo, Test>();
         }
 
@@ -65,8 +61,7 @@ namespace Gallio.NUnitAdapter.Model
 
                 if (frameworkVersion != null)
                 {
-                    Test frameworkTest = GetFrameworkTest(frameworkVersion, TestModel.RootTest);
-                    GetAssemblyTest(assembly, frameworkTest);
+                    GetAssemblyTest(assembly, TestModel.RootTest, frameworkVersion);
                 }
             }
         }
@@ -77,31 +72,7 @@ namespace Gallio.NUnitAdapter.Model
             return frameworkAssemblyName != null ? frameworkAssemblyName.Version : null;
         }
 
-        private Test GetFrameworkTest(Version frameworkVersion, Test rootTest)
-        {
-            Test frameworkTest;
-            if (!frameworkTests.TryGetValue(frameworkVersion, out frameworkTest))
-            {
-                frameworkTest = CreateFrameworkTest(frameworkVersion);
-                rootTest.AddChild(frameworkTest);
-
-                frameworkTests.Add(frameworkVersion, frameworkTest);
-            }
-
-            return frameworkTest;
-        }
-
-        private static Test CreateFrameworkTest(Version frameworkVersion)
-        {
-            Test frameworkTest = new Test(String.Format(Resources.NUnitTestExplorer_FrameworkNameWithVersionFormat, frameworkVersion), null);
-            frameworkTest.LocalIdHint = FrameworkName;
-            frameworkTest.Kind = FrameworkKind;
-            frameworkTest.Metadata.Add(MetadataKeys.Framework, FrameworkName);
-
-            return frameworkTest;
-        }
-
-        private Test GetAssemblyTest(IAssemblyInfo assembly, Test frameworkTest)
+        private Test GetAssemblyTest(IAssemblyInfo assembly, Test parentTest, Version frameworkVersion)
         {
             Test assemblyTest;
             if (!assemblyTests.TryGetValue(assembly, out assemblyTest))
@@ -109,7 +80,12 @@ namespace Gallio.NUnitAdapter.Model
                 assemblyTest = CreateAssemblyTest(assembly);
                 if (assemblyTest != null)
                 {
-                    frameworkTest.AddChild(assemblyTest);
+                    string frameworkName = String.Format(Resources.NUnitTestExplorer_FrameworkNameWithVersionFormat, frameworkVersion);
+                    assemblyTest.Metadata.SetValue(MetadataKeys.Framework, frameworkName);
+                    assemblyTest.Metadata.SetValue(MetadataKeys.File, assembly.Path);
+                    assemblyTest.Kind = AssemblyKind;
+
+                    parentTest.AddChild(assemblyTest);
 
                     assemblyTests.Add(assembly, assemblyTest);
                 }
@@ -138,9 +114,10 @@ namespace Gallio.NUnitAdapter.Model
 
                 NUnitAssemblyTest assemblyTest = new NUnitAssemblyTest(assembly, runner);
                 PopulateMetadata(assemblyTest);
+                ModelUtils.PopulateMetadataFromAssembly(assembly, assemblyTest.Metadata);
 
                 foreach (NUnitITest assemblyTestSuite in runner.Test.Tests)
-                    BuildTestChildren(assemblyTest, assemblyTestSuite);
+                    BuildTestChildren(assembly, assemblyTest, assemblyTestSuite);
 
                 return assemblyTest;
             }
@@ -167,7 +144,7 @@ namespace Gallio.NUnitAdapter.Model
             return runner;
         }
 
-        private static void BuildTest(NUnitTest parentTest, NUnitITest nunitTest)
+        private static void BuildTest(IAssemblyInfo assembly, NUnitTest parentTest, NUnitITest nunitTest)
         {
             string kind;
             ICodeElementInfo codeElement;
@@ -180,7 +157,7 @@ namespace Gallio.NUnitAdapter.Model
                 case @"NUnitTestMethod":
 #endif
                     kind = TestKinds.Test;
-                    codeElement = ParseTestCaseName(parentTest.CodeElement, nunitTest.TestName.FullName);
+                    codeElement = ParseTestCaseName(assembly, nunitTest.TestName.FullName);
                     break;
 
 #if NUNIT248
@@ -189,7 +166,7 @@ namespace Gallio.NUnitAdapter.Model
                 case @"NUnitTestFixture":
 #endif
                     kind = TestKinds.Fixture;
-                    codeElement = ParseTestFixtureName(parentTest.CodeElement, nunitTest.TestName.FullName);
+                    codeElement = ParseTestFixtureName(assembly, nunitTest.TestName.FullName);
                     break;
 
                 default:
@@ -206,15 +183,15 @@ namespace Gallio.NUnitAdapter.Model
             PopulateMetadata(test);
 
             parentTest.AddChild(test);
-            BuildTestChildren(test, nunitTest);
+            BuildTestChildren(assembly, test, nunitTest);
         }
 
-        private static void BuildTestChildren(NUnitTest parentTest, NUnitITest parentNUnitTest)
+        private static void BuildTestChildren(IAssemblyInfo assembly, NUnitTest parentTest, NUnitITest parentNUnitTest)
         {
             if (parentNUnitTest.Tests != null)
             {
                 foreach (NUnitITest childNUnitTest in parentNUnitTest.Tests)
-                    BuildTest(parentTest, childNUnitTest);
+                    BuildTest(assembly, parentTest, childNUnitTest);
             }
         }
 
@@ -256,11 +233,6 @@ namespace Gallio.NUnitAdapter.Model
                 string xmlDocumentation = codeElement.GetXmlDocumentation();
                 if (xmlDocumentation != null)
                     test.Metadata.Add(MetadataKeys.XmlDocumentation, xmlDocumentation);
-
-                // Add assembly-level metadata.
-                IAssemblyInfo assemblyInfo = codeElement as IAssemblyInfo;
-                if (assemblyInfo != null)
-                    ModelUtils.PopulateMetadataFromAssembly(assemblyInfo, test.Metadata);
             }
         }
 
@@ -269,18 +241,17 @@ namespace Gallio.NUnitAdapter.Model
         /// The name generally consists of the fixture type full-name followed by
         /// a dot and the test method name.
         /// </summary>
-        private static ICodeElementInfo ParseTestCaseName(ICodeElementInfo parent, string name)
+        private static ICodeElementInfo ParseTestCaseName(IAssemblyInfo assembly, string name)
         {
-            // Handle row-test naming scheme.
-            int firstParen = name.IndexOf('(');
-            if (firstParen >= 0)
-                name = name.Substring(0, firstParen);
-
-            // Parse the identifier.
-            if (IsProbableIdentifier(name))
+            if (assembly != null)
             {
-                IAssemblyInfo assembly = ReflectionUtils.GetAssembly(parent);
-                if (assembly != null)
+                // Handle row-test naming scheme.
+                int firstParen = name.IndexOf('(');
+                if (firstParen >= 0)
+                    name = name.Substring(0, firstParen);
+
+                // Parse the identifier.
+                if (IsProbableIdentifier(name))
                 {
                     int lastDot = name.LastIndexOf('.');
                     if (lastDot > 0 && lastDot < name.Length - 1)
@@ -312,13 +283,14 @@ namespace Gallio.NUnitAdapter.Model
         /// Parses a code reference from an NUnit test fixture name.
         /// The name generally consists of the fixture type full-name.
         /// </summary>
-        private static ICodeElementInfo ParseTestFixtureName(ICodeElementInfo parent, string name)
+        private static ICodeElementInfo ParseTestFixtureName(IAssemblyInfo assembly, string name)
         {
-            if (IsProbableIdentifier(name))
+            if (assembly != null)
             {
-                IAssemblyInfo assembly = ReflectionUtils.GetAssembly(parent);
-                if (assembly != null)
+                if (IsProbableIdentifier(name))
+                {
                     return assembly.GetType(name);
+                }
             }
 
             return null;

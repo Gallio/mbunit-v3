@@ -134,7 +134,7 @@ namespace Gallio.Framework.Pattern
             return new DelegatingTestController(test =>
             {
                 var topTest = test as PatternTest;
-                return topTest != null ? RuntimeAccessor.ServiceLocator.Resolve<PatternTestController>() : null;
+                return topTest != null && topTest.Parent != null ? RuntimeAccessor.ServiceLocator.Resolve<PatternTestController>() : null;
             });
         }
     }

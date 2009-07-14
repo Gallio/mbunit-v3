@@ -92,11 +92,11 @@
       </traits>
     </component>
 
-    <component componentId="NUnitAdapter25.TestKinds.MbUnitFramework"
+    <component componentId="NUnitAdapter25.TestKinds.NUnitTestAssembly"
                serviceId="Gallio.TestKind">
       <traits>
-        <name>NUnit v2.5 Framework</name>
-        <description>NUnit v2.5 Test Framework</description>
+        <name>NUnit v2.5 Assembly</name>
+        <description>NUnit v2.5 Test Assembly</description>
         <icon>plugin://Gallio.NUnitAdapter25/Resources/NUnit.ico</icon>
       </traits>
     </component>

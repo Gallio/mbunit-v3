@@ -33,6 +33,12 @@ namespace Gallio.Framework.Pattern
         IReflectionPolicy ReflectionPolicy { get; }
 
         /// <summary>
+        /// Gets the builder of the root test.
+        /// </summary>
+        /// <returns>The builder for the root test.</returns>
+        ITestBuilder RootTestBuilder { get; }
+
+        /// <summary>
         /// Adds an annotation to the test model.
         /// </summary>
         /// <param name="annotation">The annotation to add.</param>
@@ -52,16 +58,6 @@ namespace Gallio.Framework.Pattern
         /// <param name="codeElement">The code element, or null if none.</param>
         /// <param name="ex">The exception to publish.</param>
         void PublishExceptionAsAnnotation(ICodeElementInfo codeElement, Exception ex);
-
-        /// <summary>
-        /// Creates a top-level test as a child of the root test and returns its builder.
-        /// </summary>
-        /// <param name="name">The test name.</param>
-        /// <param name="codeElement">The associated code element, or null if none.</param>
-        /// <param name="dataContextBuilder">The data context builder for the new test.</param>
-        /// <returns>The builder for the top-level test.</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> or <paramref name="dataContextBuilder"/> is null.</exception>
-        ITestBuilder CreateTopLevelTest(string name, ICodeElementInfo codeElement, ITestDataContextBuilder dataContextBuilder);
 
         /// <summary>
         /// Gets the underlying test model.

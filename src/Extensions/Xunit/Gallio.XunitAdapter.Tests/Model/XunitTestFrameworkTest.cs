@@ -44,6 +44,11 @@ namespace Gallio.XunitAdapter.Tests.Model
             }
         }
 
+        protected override string AssemblyKind
+        {
+            get { return XunitTestExplorer.AssemblyKind; }
+        }
+
         [Test]
         public void MetadataImport_SkipReason()
         {

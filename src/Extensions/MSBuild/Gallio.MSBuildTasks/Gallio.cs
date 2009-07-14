@@ -804,7 +804,7 @@ namespace Gallio.MSBuildTasks
             foreach (string option in reportFormatterProperties)
             {
                 KeyValuePair<string, string> pair = StringUtils.ParseKeyValuePair(option);
-                launcher.ReportFormatterOptions.Properties.Add(pair.Key, pair.Value);
+                launcher.ReportFormatterOptions.AddProperty(pair.Key, pair.Value);
             }
 
             foreach (string option in runnerProperties)

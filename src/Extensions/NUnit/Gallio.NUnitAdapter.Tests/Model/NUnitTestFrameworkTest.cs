@@ -49,9 +49,9 @@ namespace Gallio.NUnitAdapter.Tests.Model
             }
         }
 
-        protected override string FrameworkKind
+        protected override string AssemblyKind
         {
-            get { return NUnitTestExplorer.FrameworkKind; }
+            get { return NUnitTestExplorer.AssemblyKind; }
         }
         
         [Test]

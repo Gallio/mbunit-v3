@@ -39,15 +39,15 @@ namespace Gallio.Icarus.Controllers.Interfaces
         string ReportDirectory { get; }
         string ReportNameFormat { get; }
 
-        event EventHandler<AssemblyChangedEventArgs> AssemblyChanged;
+        event EventHandler<FileChangedEventArgs> FileChanged;
 
-        void AddAssemblies(IList<string> assemblies, IProgressMonitor progressMonitor);
+        void AddFiles(IList<string> files, IProgressMonitor progressMonitor);
         void DeleteFilter(FilterInfo filterInfo, IProgressMonitor progressMonitor);
         FilterSet<ITestDescriptor> GetFilterSet(string filterName, IProgressMonitor progressMonitor);
         void NewProject(IProgressMonitor progressMonitor);
         void OpenProject(string projectName, IProgressMonitor progressMonitor);
-        void RemoveAllAssemblies(IProgressMonitor progressMonitor);
-        void RemoveAssembly(string fileName, IProgressMonitor progressMonitor);
+        void RemoveAllFiles(IProgressMonitor progressMonitor);
+        void RemoveFile(string fileName, IProgressMonitor progressMonitor);
         void SaveFilterSet(string filterName, FilterSet<ITestDescriptor> filterSet, IProgressMonitor progressMonitor);
         void SaveProject(string projectName, IProgressMonitor progressMonitor);
     }

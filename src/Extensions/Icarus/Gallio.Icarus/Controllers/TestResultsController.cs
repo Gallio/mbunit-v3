@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Windows.Forms;
 using Aga.Controls.Tree;
 using Gallio.Icarus.Controllers.Interfaces;
@@ -343,21 +344,21 @@ namespace Gallio.Icarus.Controllers
             string duration = testStepRun.Result.DurationInSeconds.ToString("0.000");
             string assertCount = testStepRun.Result.AssertCount.ToString();
             string codeReference = testStepRun.Step.CodeReference.TypeName ?? string.Empty;
-            string assemblyName = testStepRun.Step.CodeReference.AssemblyName ?? string.Empty;
+            string fileName = testStepRun.Step.Metadata.GetValue(MetadataKeys.File) ?? string.Empty;
             ListViewItem listViewItem = CreateListViewItem(testStepRun.Step.Name, imgIndex, testKind, duration, assertCount,
-                codeReference, assemblyName, indentCount);
+                codeReference, fileName, indentCount);
             listViewItems.Add(listViewItem);
         }
 
         private static ListViewItem CreateListViewItem(string name, int imgIndex, string testKind, string duration, string assertCount,
-            string codeReference, string assemblyName, int indentCount)
+            string codeReference, string fileName, int indentCount)
         {
             // http://blogs.msdn.com/cumgranosalis/archive/2006/03/18/ListViewVirtualModeBugs.aspx
             if (name.Length == 260)
                 name += " ";
 
             ListViewItem lvi = new ListViewItem(name, imgIndex);
-            lvi.SubItems.AddRange(new[] { testKind, duration, assertCount, codeReference, assemblyName });
+            lvi.SubItems.AddRange(new[] { testKind, duration, assertCount, codeReference, fileName });
             lvi.IndentCount = indentCount;
             return lvi;
         }

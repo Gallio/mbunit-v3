@@ -524,15 +524,6 @@
       </traits>
     </component>
 
-    <component componentId="Gallio.TestKinds.Framework"
-               serviceId="Gallio.TestKind">
-      <traits>
-        <name>Framework</name>
-        <description>A test framework.</description>
-        <icon>plugin://Gallio/Resources/Assembly.ico</icon>
-      </traits>
-    </component>
-
     <component componentId="Gallio.TestKinds.Assembly"
                serviceId="Gallio.TestKind">
       <traits>

@@ -69,13 +69,6 @@ namespace Gallio.Icarus.Properties {
             }
         }
         
-        internal static System.Drawing.Bitmap Assembly {
-            get {
-                object obj = ResourceManager.GetObject("Assembly", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
         internal static System.Drawing.Bitmap cross {
             get {
                 object obj = ResourceManager.GetObject("cross", resourceCulture);
@@ -86,6 +79,13 @@ namespace Gallio.Icarus.Properties {
         internal static System.Drawing.Bitmap error {
             get {
                 object obj = ResourceManager.GetObject("error", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap File {
+            get {
+                object obj = ResourceManager.GetObject("File", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

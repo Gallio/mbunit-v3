@@ -529,10 +529,10 @@ namespace Gallio.PowerShellCommands
             launcher.EchoResults = !noEchoResults.IsPresent;
             launcher.RunTimeLimit = runTimeLimit;
 
-            if (runnerType == null)
+            if (runnerType != null)
                 launcher.TestProject.TestRunnerFactoryName = runnerType;
             if (runnerExtensions != null)
-                GenericCollectionUtils.AddAll(runnerExtensions, launcher.TestProject.TestRunnerExtensionSpecifications);
+                GenericCollectionUtils.ForEach(runnerExtensions, x => launcher.TestProject.AddTestRunnerExtensionSpecification(x));
 
             launcher.RuntimeSetup = new RuntimeSetup();
 
@@ -554,7 +554,7 @@ namespace Gallio.PowerShellCommands
             foreach (string option in reportFormatterProperties)
             {
                 KeyValuePair<string, string> pair = StringUtils.ParseKeyValuePair(option);
-                launcher.ReportFormatterOptions.Properties.Add(pair.Key, pair.Value);
+                launcher.ReportFormatterOptions.AddProperty(pair.Key, pair.Value);
             }
 
             foreach (string option in runnerProperties)

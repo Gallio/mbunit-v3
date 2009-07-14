@@ -74,13 +74,13 @@ namespace Gallio.Icarus.Tests.Controllers
         }
 
         [Test]
-        public void AlwaysReloadAssemblies_Test()
+        public void AlwaysReloadFiles_Test()
         {
             var optionsController = SetUpOptionsController(new Settings());
 
-            Assert.IsFalse(optionsController.AlwaysReloadAssemblies);
-            optionsController.AlwaysReloadAssemblies = true;
-            Assert.IsTrue(optionsController.AlwaysReloadAssemblies);
+            Assert.IsFalse(optionsController.AlwaysReloadFiles);
+            optionsController.AlwaysReloadFiles = true;
+            Assert.IsTrue(optionsController.AlwaysReloadFiles);
         }
 
         [Test]

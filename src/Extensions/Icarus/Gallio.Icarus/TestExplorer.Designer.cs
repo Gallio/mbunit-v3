@@ -58,13 +58,17 @@ namespace Gallio.Icarus
             this.filterPassedTestsToolStripMenuItem = new Gallio.Icarus.Controls.ToolStripMenuItem();
             this.filterFailedTestsToolStripMenuItem = new Gallio.Icarus.Controls.ToolStripMenuItem();
             this.filterInconclusiveTestsToolStripMenuItem = new Gallio.Icarus.Controls.ToolStripMenuItem();
+            this.selectAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.selectPassedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.selectFailedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.selectInconclusiveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator9 = new System.Windows.Forms.ToolStripSeparator();
             this.resetTestsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator10 = new System.Windows.Forms.ToolStripSeparator();
-            this.assembliesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.addAssembliesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.removeAssemblyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.removeAssembliesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.filesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.addFilesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.removeFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.removeAllFilesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.viewSourceCodeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
@@ -74,10 +78,6 @@ namespace Gallio.Icarus
             this.filterInconclusiveTestsToolStripButton = new Gallio.Icarus.Controls.ToolStripButton();
             this.sortAscToolStripButton = new Gallio.Icarus.Controls.ToolStripButton();
             this.sortDescToolStripButton = new Gallio.Icarus.Controls.ToolStripButton();
-            this.selectAlToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.selectPassedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.selectFailedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.selectInconclusiveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.testTreeMenuStrip.SuspendLayout();
             this.toolStripContainer1.ContentPanel.SuspendLayout();
             this.toolStripContainer1.TopToolStripPanel.SuspendLayout();
@@ -94,12 +94,16 @@ namespace Gallio.Icarus
             this.testTree.Dock = System.Windows.Forms.DockStyle.Fill;
             this.testTree.DragDropMarkColor = System.Drawing.Color.Black;
             this.testTree.EditEnabled = true;
+            this.testTree.FailedColor = System.Drawing.Color.Empty;
+            this.testTree.InconclusiveColor = System.Drawing.Color.Empty;
             this.testTree.LineColor = System.Drawing.SystemColors.ControlDark;
             this.testTree.Location = new System.Drawing.Point(0, 0);
             this.testTree.Model = null;
             this.testTree.Name = "testTree";
+            this.testTree.PassedColor = System.Drawing.Color.Empty;
             this.testTree.SelectedNode = null;
             this.testTree.Size = new System.Drawing.Size(281, 248);
+            this.testTree.SkippedColor = System.Drawing.Color.Empty;
             this.testTree.TabIndex = 5;
             this.testTree.SelectionChanged += new System.EventHandler(this.testTree_SelectionChanged);
             this.testTree.DoubleClick += new System.EventHandler(this.testTree_DoubleClick);
@@ -112,33 +116,33 @@ namespace Gallio.Icarus
             this.toolStripSeparator7,
             this.expandMenuItem,
             this.filterToolStripMenuItem,
-            this.selectAlToolStripMenuItem,
+            this.selectAllToolStripMenuItem,
             this.toolStripSeparator9,
             this.resetTestsMenuItem,
             this.toolStripSeparator10,
-            this.assembliesToolStripMenuItem,
+            this.filesToolStripMenuItem,
             this.viewSourceCodeToolStripMenuItem});
             this.testTreeMenuStrip.Name = "classTreeMenuStrip";
-            this.testTreeMenuStrip.Size = new System.Drawing.Size(169, 220);
+            this.testTreeMenuStrip.Size = new System.Drawing.Size(170, 220);
             // 
             // expandAllMenuItem
             // 
             this.expandAllMenuItem.Name = "expandAllMenuItem";
-            this.expandAllMenuItem.Size = new System.Drawing.Size(168, 22);
-            this.expandAllMenuItem.Text = "&Expand all";
+            this.expandAllMenuItem.Size = new System.Drawing.Size(169, 22);
+            this.expandAllMenuItem.Text = "&Expand All";
             this.expandAllMenuItem.Click += new System.EventHandler(this.expandAllMenuItem_Click);
             // 
             // collapseAllMenuItem
             // 
             this.collapseAllMenuItem.Name = "collapseAllMenuItem";
-            this.collapseAllMenuItem.Size = new System.Drawing.Size(168, 22);
-            this.collapseAllMenuItem.Text = "&Collapse all";
+            this.collapseAllMenuItem.Size = new System.Drawing.Size(169, 22);
+            this.collapseAllMenuItem.Text = "&Collapse All";
             this.collapseAllMenuItem.Click += new System.EventHandler(this.collapseAllMenuItem_Click);
             // 
             // toolStripSeparator7
             // 
             this.toolStripSeparator7.Name = "toolStripSeparator7";
-            this.toolStripSeparator7.Size = new System.Drawing.Size(165, 6);
+            this.toolStripSeparator7.Size = new System.Drawing.Size(166, 6);
             // 
             // expandMenuItem
             // 
@@ -147,7 +151,7 @@ namespace Gallio.Icarus
             this.expandFailedTestsToolStripMenuItem,
             this.expandSkippedTestsToolStripMenuItem});
             this.expandMenuItem.Name = "expandMenuItem";
-            this.expandMenuItem.Size = new System.Drawing.Size(168, 22);
+            this.expandMenuItem.Size = new System.Drawing.Size(169, 22);
             this.expandMenuItem.Text = "Expand";
             // 
             // expandPassedTestsToolStripMenuItem
@@ -181,7 +185,7 @@ namespace Gallio.Icarus
             this.filterFailedTestsToolStripMenuItem,
             this.filterInconclusiveTestsToolStripMenuItem});
             this.filterToolStripMenuItem.Name = "filterToolStripMenuItem";
-            this.filterToolStripMenuItem.Size = new System.Drawing.Size(168, 22);
+            this.filterToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
             this.filterToolStripMenuItem.Text = "Filter";
             // 
             // filterPassedTestsToolStripMenuItem
@@ -208,61 +212,95 @@ namespace Gallio.Icarus
             this.filterInconclusiveTestsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.filterInconclusiveTestsToolStripMenuItem.Text = "Inconclusive";
             // 
+            // selectAllToolStripMenuItem
+            // 
+            this.selectAllToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.selectPassedToolStripMenuItem,
+            this.selectFailedToolStripMenuItem,
+            this.selectInconclusiveToolStripMenuItem});
+            this.selectAllToolStripMenuItem.Name = "selectAllToolStripMenuItem";
+            this.selectAllToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
+            this.selectAllToolStripMenuItem.Text = "Select";
+            // 
+            // selectPassedToolStripMenuItem
+            // 
+            this.selectPassedToolStripMenuItem.Image = global::Gallio.Icarus.Properties.Resources.tick;
+            this.selectPassedToolStripMenuItem.Name = "selectPassedToolStripMenuItem";
+            this.selectPassedToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.selectPassedToolStripMenuItem.Text = "Passed";
+            this.selectPassedToolStripMenuItem.Click += new System.EventHandler(this.selectPassedToolStripMenuItem_Click);
+            // 
+            // selectFailedToolStripMenuItem
+            // 
+            this.selectFailedToolStripMenuItem.Image = global::Gallio.Icarus.Properties.Resources.cross;
+            this.selectFailedToolStripMenuItem.Name = "selectFailedToolStripMenuItem";
+            this.selectFailedToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.selectFailedToolStripMenuItem.Text = "Failed";
+            this.selectFailedToolStripMenuItem.Click += new System.EventHandler(this.selectFailedToolStripMenuItem_Click);
+            // 
+            // selectInconclusiveToolStripMenuItem
+            // 
+            this.selectInconclusiveToolStripMenuItem.Image = global::Gallio.Icarus.Properties.Resources.error;
+            this.selectInconclusiveToolStripMenuItem.Name = "selectInconclusiveToolStripMenuItem";
+            this.selectInconclusiveToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.selectInconclusiveToolStripMenuItem.Text = "Inconclusive";
+            this.selectInconclusiveToolStripMenuItem.Click += new System.EventHandler(this.selectInconclusiveToolStripMenuItem_Click);
+            // 
             // toolStripSeparator9
             // 
             this.toolStripSeparator9.Name = "toolStripSeparator9";
-            this.toolStripSeparator9.Size = new System.Drawing.Size(165, 6);
+            this.toolStripSeparator9.Size = new System.Drawing.Size(166, 6);
             // 
             // resetTestsMenuItem
             // 
             this.resetTestsMenuItem.Name = "resetTestsMenuItem";
-            this.resetTestsMenuItem.Size = new System.Drawing.Size(168, 22);
-            this.resetTestsMenuItem.Text = "&Reset tests";
+            this.resetTestsMenuItem.Size = new System.Drawing.Size(169, 22);
+            this.resetTestsMenuItem.Text = "&Reset Tests";
             this.resetTestsMenuItem.Click += new System.EventHandler(this.resetTestsMenuItem_Click);
             // 
             // toolStripSeparator10
             // 
             this.toolStripSeparator10.Name = "toolStripSeparator10";
-            this.toolStripSeparator10.Size = new System.Drawing.Size(165, 6);
+            this.toolStripSeparator10.Size = new System.Drawing.Size(166, 6);
             // 
-            // assembliesToolStripMenuItem
+            // filesToolStripMenuItem
             // 
-            this.assembliesToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.addAssembliesToolStripMenuItem,
-            this.removeAssemblyToolStripMenuItem,
-            this.removeAssembliesToolStripMenuItem});
-            this.assembliesToolStripMenuItem.Name = "assembliesToolStripMenuItem";
-            this.assembliesToolStripMenuItem.Size = new System.Drawing.Size(168, 22);
-            this.assembliesToolStripMenuItem.Text = "Assemblies";
+            this.filesToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.addFilesToolStripMenuItem,
+            this.removeFileToolStripMenuItem,
+            this.removeAllFilesToolStripMenuItem});
+            this.filesToolStripMenuItem.Name = "filesToolStripMenuItem";
+            this.filesToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
+            this.filesToolStripMenuItem.Text = "Files";
             // 
-            // addAssembliesToolStripMenuItem
+            // addFilesToolStripMenuItem
             // 
-            this.addAssembliesToolStripMenuItem.Name = "addAssembliesToolStripMenuItem";
-            this.addAssembliesToolStripMenuItem.Size = new System.Drawing.Size(178, 22);
-            this.addAssembliesToolStripMenuItem.Text = "Add assemblies...";
-            this.addAssembliesToolStripMenuItem.Click += new System.EventHandler(this.addAssembliesToolStripMenuItem_Click);
+            this.addFilesToolStripMenuItem.Name = "addFilesToolStripMenuItem";
+            this.addFilesToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
+            this.addFilesToolStripMenuItem.Text = "Add Files...";
+            this.addFilesToolStripMenuItem.Click += new System.EventHandler(this.addFilesToolStripMenuItem_Click);
             // 
-            // removeAssemblyToolStripMenuItem
+            // removeFileToolStripMenuItem
             // 
-            this.removeAssemblyToolStripMenuItem.Enabled = false;
-            this.removeAssemblyToolStripMenuItem.Name = "removeAssemblyToolStripMenuItem";
-            this.removeAssemblyToolStripMenuItem.Size = new System.Drawing.Size(178, 22);
-            this.removeAssemblyToolStripMenuItem.Text = "Remove assembly";
-            this.removeAssemblyToolStripMenuItem.Click += new System.EventHandler(this.removeAssemblyToolStripMenuItem_Click);
+            this.removeFileToolStripMenuItem.Enabled = false;
+            this.removeFileToolStripMenuItem.Name = "removeFileToolStripMenuItem";
+            this.removeFileToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
+            this.removeFileToolStripMenuItem.Text = "Remove File";
+            this.removeFileToolStripMenuItem.Click += new System.EventHandler(this.removeFileToolStripMenuItem_Click);
             // 
-            // removeAssembliesToolStripMenuItem
+            // removeAllFilesToolStripMenuItem
             // 
-            this.removeAssembliesToolStripMenuItem.Name = "removeAssembliesToolStripMenuItem";
-            this.removeAssembliesToolStripMenuItem.Size = new System.Drawing.Size(178, 22);
-            this.removeAssembliesToolStripMenuItem.Text = "Remove assemblies";
-            this.removeAssembliesToolStripMenuItem.Click += new System.EventHandler(this.removeAssembliesToolStripMenuItem_Click);
+            this.removeAllFilesToolStripMenuItem.Name = "removeAllFilesToolStripMenuItem";
+            this.removeAllFilesToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
+            this.removeAllFilesToolStripMenuItem.Text = "Remove All Files";
+            this.removeAllFilesToolStripMenuItem.Click += new System.EventHandler(this.removeAllFilesToolStripMenuItem_Click);
             // 
             // viewSourceCodeToolStripMenuItem
             // 
             this.viewSourceCodeToolStripMenuItem.Enabled = false;
             this.viewSourceCodeToolStripMenuItem.Name = "viewSourceCodeToolStripMenuItem";
-            this.viewSourceCodeToolStripMenuItem.Size = new System.Drawing.Size(168, 22);
-            this.viewSourceCodeToolStripMenuItem.Text = "View source code";
+            this.viewSourceCodeToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
+            this.viewSourceCodeToolStripMenuItem.Text = "View Source Code";
             this.viewSourceCodeToolStripMenuItem.Click += new System.EventHandler(this.viewSourceCodeToolStripMenuItem_Click);
             // 
             // toolStripContainer1
@@ -297,7 +335,7 @@ namespace Gallio.Icarus
             this.sortDescToolStripButton});
             this.toolStrip1.Location = new System.Drawing.Point(3, 0);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(248, 25);
+            this.toolStrip1.Size = new System.Drawing.Size(250, 25);
             this.toolStrip1.TabIndex = 5;
             // 
             // treeViewComboBox
@@ -357,40 +395,6 @@ namespace Gallio.Icarus
             this.sortDescToolStripButton.Size = new System.Drawing.Size(23, 22);
             this.sortDescToolStripButton.Text = "Sort tree (desc)";
             // 
-            // selectAlToolStripMenuItem
-            // 
-            this.selectAlToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.selectPassedToolStripMenuItem,
-            this.selectFailedToolStripMenuItem,
-            this.selectInconclusiveToolStripMenuItem});
-            this.selectAlToolStripMenuItem.Name = "selectAlToolStripMenuItem";
-            this.selectAlToolStripMenuItem.Size = new System.Drawing.Size(168, 22);
-            this.selectAlToolStripMenuItem.Text = "Select";
-            // 
-            // selectPassedToolStripMenuItem
-            // 
-            this.selectPassedToolStripMenuItem.Image = global::Gallio.Icarus.Properties.Resources.tick;
-            this.selectPassedToolStripMenuItem.Name = "selectPassedToolStripMenuItem";
-            this.selectPassedToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.selectPassedToolStripMenuItem.Text = "Passed";
-            this.selectPassedToolStripMenuItem.Click += new System.EventHandler(this.selectPassedToolStripMenuItem_Click);
-            // 
-            // selectFailedToolStripMenuItem
-            // 
-            this.selectFailedToolStripMenuItem.Image = global::Gallio.Icarus.Properties.Resources.cross;
-            this.selectFailedToolStripMenuItem.Name = "selectFailedToolStripMenuItem";
-            this.selectFailedToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.selectFailedToolStripMenuItem.Text = "Failed";
-            this.selectFailedToolStripMenuItem.Click += new System.EventHandler(this.selectFailedToolStripMenuItem_Click);
-            // 
-            // selectInconclusiveToolStripMenuItem
-            // 
-            this.selectInconclusiveToolStripMenuItem.Image = global::Gallio.Icarus.Properties.Resources.error;
-            this.selectInconclusiveToolStripMenuItem.Name = "selectInconclusiveToolStripMenuItem";
-            this.selectInconclusiveToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.selectInconclusiveToolStripMenuItem.Text = "Inconclusive";
-            this.selectInconclusiveToolStripMenuItem.Click += new System.EventHandler(this.selectInconclusiveToolStripMenuItem_Click);
-            // 
             // TestExplorer
             // 
             this.AllowDrop = true;
@@ -440,12 +444,12 @@ namespace Gallio.Icarus
         private Gallio.Icarus.Controls.ToolStripMenuItem filterPassedTestsToolStripMenuItem;
         private Gallio.Icarus.Controls.ToolStripMenuItem filterFailedTestsToolStripMenuItem;
         private Gallio.Icarus.Controls.ToolStripMenuItem filterInconclusiveTestsToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem assembliesToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem addAssembliesToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem removeAssemblyToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem removeAssembliesToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem filesToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem addFilesToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem removeFileToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem removeAllFilesToolStripMenuItem;
         private Gallio.Icarus.Controls.ToolStripButton sortAscToolStripButton;
-        private System.Windows.Forms.ToolStripMenuItem selectAlToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem selectAllToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem selectPassedToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem selectFailedToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem selectInconclusiveToolStripMenuItem;

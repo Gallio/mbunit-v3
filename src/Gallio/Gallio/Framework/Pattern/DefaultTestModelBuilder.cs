@@ -31,6 +31,7 @@ namespace Gallio.Framework.Pattern
     {
         private readonly IReflectionPolicy reflectionPolicy;
         private readonly PatternTestModel testModel;
+        private readonly ITestBuilder rootTestBuilder;
 
         /// <summary>
         /// Creates a test model builder.
@@ -48,12 +49,20 @@ namespace Gallio.Framework.Pattern
 
             this.reflectionPolicy = reflectionPolicy;
             this.testModel = testModel;
+
+            rootTestBuilder = new DefaultTestBuilder(this, testModel.RootTest);
         }
 
         /// <inheritdoc />
         public IReflectionPolicy ReflectionPolicy
         {
             get { return reflectionPolicy; }
+        }
+
+        /// <inheritdoc />
+        public ITestBuilder RootTestBuilder
+        {
+            get { return rootTestBuilder; }
         }
 
         /// <inheritdoc />
@@ -87,19 +96,6 @@ namespace Gallio.Framework.Pattern
                 testModel.AddAnnotation(new Annotation(AnnotationType.Error, codeElement,
                     "An exception was thrown while exploring tests.", ex));
             }
-        }
-
-        /// <inheritdoc />
-        public ITestBuilder CreateTopLevelTest(string name, ICodeElementInfo codeElement, ITestDataContextBuilder dataContextBuilder)
-        {
-            if (name == null)
-                throw new ArgumentNullException("name");
-            if (dataContextBuilder == null)
-                throw new ArgumentNullException("dataContextBuilder");
-
-            PatternTest topLevelTest = new PatternTest(name, codeElement, dataContextBuilder.ToPatternTestDataContext());
-            testModel.RootTest.AddChild(topLevelTest);
-            return new DefaultTestBuilder(this, topLevelTest);
         }
 
         /// <inheritdoc />
