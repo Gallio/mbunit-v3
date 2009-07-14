@@ -279,7 +279,7 @@
     <Compile Include="Runtime\Hosting\HostSetupTest.cs" />
     <Compile Include="Runtime\Hosting\LocalHostFactoryTest.cs" />
     <Compile Include="Runtime\Logging\SeverityPrefixParserTest.cs" />
-    <Compile Include="Runtime\Logging\EventLoggerTest.cs" />
+    <Compile Include="Runtime\Logging\DispatchLoggerTest.cs" />
     <Compile Include="Runtime\Logging\SeverityPrefixLoggerTest.cs" />
     <Compile Include="Runtime\Logging\TextLoggerTest.cs" />
     <Compile Include="Host\HostProgramIntegrationTest.cs" />

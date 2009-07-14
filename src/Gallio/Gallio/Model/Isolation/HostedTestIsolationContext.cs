@@ -55,27 +55,41 @@ namespace Gallio.Model.Isolation
         }
 
         /// <inheritdoc />
-        protected override object RunIsolatedTaskImpl<TIsolatedTask>(HostSetup hostSetup, StatusReporter statusReporter, object[] args)
+        sealed protected override object RunIsolatedTaskImpl<TIsolatedTask>(HostSetup hostSetup, StatusReporter statusReporter, object[] args)
         {
             hostSetup = hostSetup.Copy();
             foreach (var pair in testIsolationOptions.Properties)
                 if (! hostSetup.Properties.ContainsKey(pair.Key))
                     hostSetup.AddProperty(pair.Key, pair.Value);
 
+            return RunIsolatedTaskInHost<TIsolatedTask>(hostSetup, statusReporter, args);
+        }
+
+        /// <summary>
+        /// Runs an isolated task in a host.
+        /// </summary>
+        /// <typeparam name="TIsolatedTask">The isolated task type.</typeparam>
+        /// <param name="hostSetup">The host setup which includes the test isolation option properties copied down, not null.</param>
+        /// <param name="statusReporter">The status reporter, not null.</param>
+        /// <param name="args">The task arguments.</param>
+        /// <returns>The task result.</returns>
+        protected virtual object RunIsolatedTaskInHost<TIsolatedTask>(HostSetup hostSetup, StatusReporter statusReporter, object[] args)
+            where TIsolatedTask : IsolatedTask
+        {
             IHost host = null;
             try
             {
                 statusReporter("Creating test host.");
                 host = hostFactory.CreateHost(hostSetup, logger);
 
-                IRuntime runtime = RuntimeAccessor.Instance;
-                RemoteLogger remoteLogger = new RemoteLogger(runtime.Logger);
+                RemoteLogger remoteLogger = new RemoteLogger(logger);
+                RuntimeSetup runtimeSetup = RuntimeAccessor.Instance.GetRuntimeSetup().Copy();
 
                 Shim shim = HostUtils.CreateInstance<Shim>(host);
                 try
                 {
                     statusReporter("Initializing the runtime.");
-                    shim.Initialize(runtime.GetRuntimeSetup(), remoteLogger);
+                    shim.Initialize(runtimeSetup, remoteLogger);
                     statusReporter("");
 
                     TIsolatedTask isolatedTask = null;

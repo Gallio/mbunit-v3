@@ -19,6 +19,7 @@ using System.Diagnostics;
 using Gallio.Common.Collections;
 using Gallio.Common.Concurrency;
 using Gallio.Common.Messaging;
+using Gallio.Common.Policies;
 using Gallio.Model;
 using Gallio.Common.Diagnostics;
 using Gallio.Common.Markup;
@@ -168,6 +169,8 @@ namespace Gallio.Runner
 
                 try
                 {
+                    UnhandledExceptionPolicy.ReportUnhandledException += OnUnhandledException;
+
                     eventDispatcher.NotifyInitializeStarted(new InitializeStartedEventArgs(testRunnerOptions));
 
                     progressMonitor.SetStatus("Initializing the test isolation context.");
@@ -181,6 +184,9 @@ namespace Gallio.Runner
                 catch (Exception ex)
                 {
                     eventDispatcher.NotifyInitializeFinished(new InitializeFinishedEventArgs(false));
+
+                    UnhandledExceptionPolicy.ReportUnhandledException -= OnUnhandledException;
+
                     throw new RunnerException("A fatal exception occurred while initializing the test isolation context.", ex);
                 }
 
@@ -224,7 +230,7 @@ namespace Gallio.Runner
                     {
                         using (Listener listener = new Listener(eventDispatcher, reportLockBox))
                         {
-                            ITestDriver testDriver = testFrameworkManager.GetTestDriver(testPackage.IsFrameworkRequested);
+                            ITestDriver testDriver = testFrameworkManager.GetTestDriver(testPackage.IsFrameworkRequested, tappedLogger);
 
                             using (testIsolationContext.BeginBatch(progressMonitor.SetStatus))
                             {
@@ -297,7 +303,7 @@ namespace Gallio.Runner
                     {
                         using (Listener listener = new Listener(eventDispatcher, reportLockBox))
                         {
-                            ITestDriver testDriver = testFrameworkManager.GetTestDriver(testPackage.IsFrameworkRequested);
+                            ITestDriver testDriver = testFrameworkManager.GetTestDriver(testPackage.IsFrameworkRequested, tappedLogger);
 
                             using (testIsolationContext.BeginBatch(progressMonitor.SetStatus))
                             {
@@ -366,12 +372,19 @@ namespace Gallio.Runner
 
                 state = State.Disposed;
                 eventDispatcher.NotifyDisposeFinished(new DisposeFinishedEventArgs(success));
+
+                UnhandledExceptionPolicy.ReportUnhandledException -= OnUnhandledException;
             }
         }
 
         private void OnLog(LogSeverity logSeverity, string message, ExceptionData exceptionData)
         {
             eventDispatcher.NotifyLogMessage(new LogMessageEventArgs(logSeverity, message, exceptionData));
+        }
+
+        private void OnUnhandledException(object sender, CorrelatedExceptionEventArgs e)
+        {
+            OnLog(LogSeverity.Error, e.GetDescription(), null);
         }
 
         private void ThrowIfDisposed()

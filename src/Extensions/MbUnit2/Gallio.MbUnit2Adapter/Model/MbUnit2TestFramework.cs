@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using Gallio.Model;
 using Gallio.Runtime.Extensibility;
+using Gallio.Runtime.Logging;
 
 namespace Gallio.MbUnit2Adapter.Model
 {
@@ -31,7 +32,7 @@ namespace Gallio.MbUnit2Adapter.Model
             return CreateTestDriver;
         }
 
-        private static ITestDriver CreateTestDriver(IList<ComponentHandle<ITestFramework, TestFrameworkTraits>> frameworkHandles)
+        private static ITestDriver CreateTestDriver(IList<ComponentHandle<ITestFramework, TestFrameworkTraits>> frameworkHandles, ILogger logger)
         {
             return new MbUnit2TestDriver();
         }

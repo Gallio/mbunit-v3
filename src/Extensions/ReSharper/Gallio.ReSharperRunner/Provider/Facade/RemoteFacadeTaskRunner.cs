@@ -14,14 +14,26 @@
 // limitations under the License.
 
 using System;
+using Gallio.Runtime;
+using Gallio.Runtime.Logging;
 
 namespace Gallio.ReSharperRunner.Provider.Facade
 {
     internal sealed class RemoteFacadeTaskRunner : MarshalByRefObject, IRemoteFacadeTaskRunner
     {
-        public FacadeTaskResult Execute(IFacadeTaskServer server, IFacadeLogger logger, FacadeTask facadeTask, FacadeTaskExecutorConfiguration config)
+        public FacadeTaskResult Execute(IFacadeTaskServer facadeTaskServer, IFacadeLogger facadeLogger, FacadeTask facadeTask, FacadeTaskExecutorConfiguration facadeTaskExecutorConfiguration)
         {
-            return facadeTask.Execute(server, logger, config);
+            ILogger logger = new FacadeLoggerWrapper(facadeLogger);
+            try
+            {
+                RuntimeAccessor.Instance.AddLogListener(logger);
+
+                return facadeTask.Execute(facadeTaskServer, facadeLogger, facadeTaskExecutorConfiguration);
+            }
+            finally
+            {
+                RuntimeAccessor.Instance.RemoveLogListener(logger);
+            }
         }
 
         public override object InitializeLifetimeService()

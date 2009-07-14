@@ -26,6 +26,7 @@ using Gallio.Common.Reflection;
 using Gallio.Model.Isolation;
 using Gallio.Runtime.Extensibility;
 using Gallio.Runtime.FileTypes;
+using Gallio.Runtime.Logging;
 
 namespace Gallio.Model
 {
@@ -63,29 +64,34 @@ namespace Gallio.Model
         }
 
         /// <inheritdoc />
-        public ITestDriver GetTestDriver(Predicate<string> frameworkIdFilter)
+        public ITestDriver GetTestDriver(Predicate<string> frameworkIdFilter, ILogger logger)
         {
+            if (logger == null)
+                throw new ArgumentNullException("logger");
+
             if (frameworkIdFilter == null)
-                return new FilteredTestDriver(frameworkHandles, fileTypeManager);
+                return new FilteredTestDriver(frameworkHandles, fileTypeManager, logger);
 
             var filteredFrameworkHandles = new List<ComponentHandle<ITestFramework, TestFrameworkTraits>>();
             foreach (var frameworkHandle in frameworkHandles)
                 if (frameworkIdFilter(frameworkHandle.Id))
                     filteredFrameworkHandles.Add(frameworkHandle);
 
-            return new FilteredTestDriver(filteredFrameworkHandles, fileTypeManager);
+            return new FilteredTestDriver(filteredFrameworkHandles, fileTypeManager, logger);
         }
 
         private sealed class FilteredTestDriver : BaseTestDriver
         {
             private readonly IList<ComponentHandle<ITestFramework, TestFrameworkTraits>> frameworkHandles;
             private readonly IFileTypeManager fileTypeManager;
+            private readonly ILogger logger;
 
             public FilteredTestDriver(IList<ComponentHandle<ITestFramework, TestFrameworkTraits>> frameworkHandles,
-                IFileTypeManager fileTypeManager)
+                IFileTypeManager fileTypeManager, ILogger logger)
             {
                 this.frameworkHandles = frameworkHandles;
                 this.fileTypeManager = fileTypeManager;
+                this.logger = logger;
             }
 
             protected override bool IsTestImpl(IReflectionPolicy reflectionPolicy, ICodeElementInfo codeElement)
@@ -161,7 +167,7 @@ namespace Gallio.Model
                 return result;
             }
 
-            private static bool ForEachDriver<T>(MultiMap<ComponentHandle<ITestFramework, TestFrameworkTraits>, T> frameworkPartitions,
+            private bool ForEachDriver<T>(MultiMap<ComponentHandle<ITestFramework, TestFrameworkTraits>, T> frameworkPartitions,
                 Func<ITestDriver, IList<T>, int, bool> func)
             {
                 var driverFactoryPartitions = new MultiMap<TestDriverFactory, ComponentHandle<ITestFramework, TestFrameworkTraits>>();
@@ -189,13 +195,15 @@ namespace Gallio.Model
 
                     try
                     {
-                        ITestDriver driver = driverPartition.Key(frameworks);
+                        TestDriverFactory driverFactory = driverPartition.Key;
+                        ITestDriver driver = driverFactory(frameworks, logger);
                         if (func(driver, items, driverCount))
                             return true;
                     }
                     catch (Exception ex)
                     {
-                        UnhandledExceptionPolicy.Report("An unhandled exception occurred while invoking a test driver.", ex);
+                        //UnhandledExceptionPolicy.Report("An unhandled exception occurred while invoking a test driver.", ex);
+                        throw new ModelException("An exception occurred while invoking a test driver.", ex);
                     }
                 }
 

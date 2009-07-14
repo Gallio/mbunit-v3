@@ -153,73 +153,81 @@ namespace Gallio.TDNetRunner.Core
             if (facadeOptions == null)
                 throw new ArgumentNullException("facadeOptions");
 
-            var filterRules = new List<FilterRule<ITestDescriptor>>();
-            switch (facadeOptions.FilterCategoryMode)
-            {
-                case FacadeFilterCategoryMode.Disabled:
-                    filterRules.Add(new FilterRule<ITestDescriptor>(FilterRuleType.Inclusion, filter));
-                    break;
-
-                case FacadeFilterCategoryMode.Include:
-                    filterRules.Add(new FilterRule<ITestDescriptor>(FilterRuleType.Inclusion,
-                        new AndFilter<ITestDescriptor>(new[] { filter, ToCategoryFilter(facadeOptions.FilterCategoryNames) })));
-                    break;
-
-                case FacadeFilterCategoryMode.Exclude:
-                    filterRules.Add(new FilterRule<ITestDescriptor>(FilterRuleType.Exclusion, ToCategoryFilter(facadeOptions.FilterCategoryNames)));
-                    filterRules.Add(new FilterRule<ITestDescriptor>(FilterRuleType.Inclusion, filter));
-                    break;
-            }
-
-            var filterSet = new FilterSet<ITestDescriptor>(filterRules);
-
             ILogger logger = new FilteredLogger(new TDNetLogger(testListener), LogSeverity.Info);
-
-            launcher.Logger = logger;
-            launcher.ProgressMonitorProvider = new LogProgressMonitorProvider(logger);
-            launcher.TestExecutionOptions.FilterSet = filterSet;
-            launcher.TestProject.TestRunnerFactoryName = StandardTestRunnerFactoryNames.IsolatedAppDomain;
-
-            // This monitor will inform the user in real-time what's going on
-            launcher.TestProject.AddTestRunnerExtension(new TDNetExtension(testListener));
-
-            launcher.TestProject.TestPackage.AddFile(new FileInfo(assemblyPath));
-
-            string assemblyDirectory = Path.GetDirectoryName(assemblyPath);
-            //launcher.TestPackageConfig.ShadowCopy = true;
-            launcher.TestProject.TestPackage.ApplicationBaseDirectory = new DirectoryInfo(assemblyDirectory);
-            launcher.TestProject.TestPackage.WorkingDirectory = new DirectoryInfo(assemblyDirectory);
-
-            TestLauncherResult result = RunLauncher(launcher);
-
-            string reportDirectory = GetReportDirectory(logger);
-            if (reportDirectory != null)
+            try
             {
-                var reportFormatterOptions = new ReportFormatterOptions();
-                result.GenerateReports(reportDirectory, Path.GetFileName(assemblyPath),
-                    new[] {DetermineReportFormat(result.Report)}, reportFormatterOptions,
-                    RuntimeAccessor.ServiceLocator.Resolve<IReportManager>(), NullProgressMonitor.CreateInstance());
+                RuntimeAccessor.Instance.AddLogListener(logger);
 
-                // This will generate a link to the generated report
-                if (result.ReportDocumentPaths.Count != 0)
+                var filterRules = new List<FilterRule<ITestDescriptor>>();
+                switch (facadeOptions.FilterCategoryMode)
                 {
-                    Uri rawUrl = new Uri(result.ReportDocumentPaths[0]);
-                    string displayUrl = "file:///" + rawUrl.LocalPath.Replace(" ", "%20").Replace(@"\", @"/");
+                    case FacadeFilterCategoryMode.Disabled:
+                        filterRules.Add(new FilterRule<ITestDescriptor>(FilterRuleType.Inclusion, filter));
+                        break;
 
-                    // TDNet just prints the link on its own but it's not always clear to users what it represents.
-                    // testListener.TestResultsUrl(displayUrl);
+                    case FacadeFilterCategoryMode.Include:
+                        filterRules.Add(new FilterRule<ITestDescriptor>(FilterRuleType.Inclusion,
+                            new AndFilter<ITestDescriptor>(new[] { filter, ToCategoryFilter(facadeOptions.FilterCategoryNames) })));
+                        break;
 
-                    testListener.WriteLine("\nTest Report: " + displayUrl, FacadeCategory.Info);
+                    case FacadeFilterCategoryMode.Exclude:
+                        filterRules.Add(new FilterRule<ITestDescriptor>(FilterRuleType.Exclusion, ToCategoryFilter(facadeOptions.FilterCategoryNames)));
+                        filterRules.Add(new FilterRule<ITestDescriptor>(FilterRuleType.Inclusion, filter));
+                        break;
                 }
+
+                var filterSet = new FilterSet<ITestDescriptor>(filterRules);
+
+                launcher.Logger = logger;
+                launcher.ProgressMonitorProvider = new LogProgressMonitorProvider(logger);
+                launcher.TestExecutionOptions.FilterSet = filterSet;
+                launcher.TestProject.TestRunnerFactoryName = StandardTestRunnerFactoryNames.IsolatedAppDomain;
+
+                // This monitor will inform the user in real-time what's going on
+                launcher.TestProject.AddTestRunnerExtension(new TDNetExtension(testListener));
+
+                launcher.TestProject.TestPackage.AddFile(new FileInfo(assemblyPath));
+
+                string assemblyDirectory = Path.GetDirectoryName(assemblyPath);
+                //launcher.TestPackageConfig.ShadowCopy = true;
+                launcher.TestProject.TestPackage.ApplicationBaseDirectory = new DirectoryInfo(assemblyDirectory);
+                launcher.TestProject.TestPackage.WorkingDirectory = new DirectoryInfo(assemblyDirectory);
+
+                TestLauncherResult result = RunLauncher(launcher);
+
+                string reportDirectory = GetReportDirectory(logger);
+                if (reportDirectory != null)
+                {
+                    var reportFormatterOptions = new ReportFormatterOptions();
+                    result.GenerateReports(reportDirectory, Path.GetFileName(assemblyPath),
+                        new[] { DetermineReportFormat(result.Report) }, reportFormatterOptions,
+                        RuntimeAccessor.ServiceLocator.Resolve<IReportManager>(), NullProgressMonitor.CreateInstance());
+
+                    // This will generate a link to the generated report
+                    if (result.ReportDocumentPaths.Count != 0)
+                    {
+                        Uri rawUrl = new Uri(result.ReportDocumentPaths[0]);
+                        string displayUrl = "file:///" + rawUrl.LocalPath.Replace(" ", "%20").Replace(@"\", @"/");
+
+                        // TDNet just prints the link on its own but it's not always clear to users what it represents.
+                        // testListener.TestResultsUrl(displayUrl);
+
+                        testListener.WriteLine("\nTest Report: " + displayUrl, FacadeCategory.Info);
+                    }
+                }
+
+                // Inform no tests run, if necessary.
+                if (result.ResultCode == ResultCode.NoTests)
+                    InformNoTestsWereRun(testListener, Resources.MbUnitTestRunner_NoTestsFound);
+                else if (result.Statistics.TestCount == 0)
+                    InformNoTestsWereRun(testListener, null);
+
+                return GetTestRunState(result);
             }
-
-            // Inform no tests run, if necessary.
-            if (result.ResultCode == ResultCode.NoTests)
-                InformNoTestsWereRun(testListener, Resources.MbUnitTestRunner_NoTestsFound);
-            else if (result.Statistics.TestCount == 0)
-                InformNoTestsWereRun(testListener, null);
-
-            return GetTestRunState(result);
+            finally
+            {
+                RuntimeAccessor.Instance.RemoveLogListener(logger);
+            }
         }
 
         private static string DetermineReportFormat(Report report)

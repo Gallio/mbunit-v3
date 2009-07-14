@@ -51,7 +51,7 @@ namespace Gallio.NCoverIntegration
         }
 
         /// <inheritdoc />
-        protected override object RunIsolatedTaskImpl<TIsolatedTask>(HostSetup hostSetup, StatusReporter statusReporter, object[] args)
+        protected override object RunIsolatedTaskInHost<TIsolatedTask>(HostSetup hostSetup, StatusReporter statusReporter, object[] args)
         {
             string ncoverArguments, ncoverCoverageFile;
             NCoverHost.GetNCoverProperties(hostSetup, out ncoverArguments, out ncoverCoverageFile);
@@ -67,7 +67,7 @@ namespace Gallio.NCoverIntegration
                 NCoverHost.SetNCoverCoverageFile(hostSetup, tempCoverageFile);
             }
 
-            return base.RunIsolatedTaskImpl<TIsolatedTask>(hostSetup, statusReporter, args);
+            return base.RunIsolatedTaskInHost<TIsolatedTask>(hostSetup, statusReporter, args);
         }
 
         /// <inheritdoc />

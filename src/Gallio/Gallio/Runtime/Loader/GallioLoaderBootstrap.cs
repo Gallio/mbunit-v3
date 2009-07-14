@@ -46,7 +46,7 @@ namespace Gallio.Runtime.Loader
             {
                 var setup = new RuntimeSetup();
                 setup.RuntimePath = runtimePath;
-                RuntimeBootstrap.Initialize(setup, NullLogger.Instance);
+                RuntimeBootstrap.Initialize(setup, null);
             }
         }
 

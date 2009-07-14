@@ -19,6 +19,7 @@ using Gallio.Common.Reflection;
 using Gallio.NUnitAdapter.Properties;
 using Gallio.Model;
 using Gallio.Runtime.Extensibility;
+using Gallio.Runtime.Logging;
 
 namespace Gallio.NUnitAdapter.Model
 {
@@ -33,7 +34,7 @@ namespace Gallio.NUnitAdapter.Model
             return CreateTestDriver;
         }
 
-        private static ITestDriver CreateTestDriver(IList<ComponentHandle<ITestFramework, TestFrameworkTraits>> frameworkHandles)
+        private static ITestDriver CreateTestDriver(IList<ComponentHandle<ITestFramework, TestFrameworkTraits>> frameworkHandles, ILogger logger)
         {
             return new NUnitTestDriver();
         }

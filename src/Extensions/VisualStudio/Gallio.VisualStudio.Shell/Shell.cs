@@ -39,6 +39,7 @@ namespace Gallio.VisualStudio.Shell
         private DTE2 dte;
         private AddIn addIn;
         private ShellAddInHandler addInHandler;
+        private ShellLogger logger;
 
         /// <summary>
         /// Creates an uninitialized shell.
@@ -48,6 +49,7 @@ namespace Gallio.VisualStudio.Shell
             actionManager = new ShellActionManager();
             windowManager = new ShellWindowManager();
             extensions = new List<IShellExtension>();
+            logger = new ShellLogger();
         }
 
         /// <inheritdoc />
@@ -172,14 +174,31 @@ namespace Gallio.VisualStudio.Shell
 
         private void Initialize()
         {
-            InitializeShellServices();
-            InitializeShellExtensions();
+            try
+            {
+                RuntimeAccessor.Instance.AddLogListener(logger);
+
+                InitializeShellServices();
+                InitializeShellExtensions();
+            }
+            catch
+            {
+                RuntimeAccessor.Instance.RemoveLogListener(logger);
+                throw;
+            }
         }
 
         private void Shutdown()
         {
-            ShutdownShellExtensions();
-            ShutdownShellServices();
+            try
+            {
+                ShutdownShellExtensions();
+                ShutdownShellServices();
+            }
+            finally
+            {
+                RuntimeAccessor.Instance.RemoveLogListener(logger);
+            }
         }
 
         private void InitializeShellServices()

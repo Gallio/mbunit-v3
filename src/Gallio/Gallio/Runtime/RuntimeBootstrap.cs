@@ -38,18 +38,16 @@ namespace Gallio.Runtime
         /// </para>
         /// </remarks>
         /// <param name="setup">The runtime setup parameters.</param>
-        /// <param name="logger">The runtime logging service.</param>
+        /// <param name="logger">The logger to attach, or null if none.</param>
         /// <returns>An object that when disposed automatically calls <see cref="Shutdown" />.
         /// This is particularly useful in combination with the C# "using" statement
         /// or its equivalent.</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="setup"/> or <paramref name="logger"/> is null.</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="setup"/> is null.</exception>
         /// <exception cref="InvalidOperationException">Thrown if the runtime has already been initialized.</exception>
         public static IDisposable Initialize(RuntimeSetup setup, ILogger logger)
         {
             if (setup == null)
                 throw new ArgumentNullException("setup");
-            if (logger == null)
-                throw new ArgumentNullException("logger");
 
             if (RuntimeAccessor.IsInitialized)
                 throw new InvalidOperationException("The runtime has already been initialized.");
@@ -58,12 +56,14 @@ namespace Gallio.Runtime
             var assemblyResolverManager = new DefaultAssemblyLoader();
             var pluginLoader = new CachingPluginLoader();
             IRuntime runtime = new DefaultRuntime(registry, pluginLoader, assemblyResolverManager, setup); // TODO: make me configurable via setup
-            Debug.Assert(runtime != null, "The runtime returned by the runtime factory must not be null.");
+            if (logger != null)
+                runtime.AddLogListener(logger);
 
             try
             {
                 RuntimeAccessor.SetRuntime(runtime);
-                runtime.Initialize(logger);
+
+                runtime.Initialize();
 
                 if (!UnhandledExceptionPolicy.HasReportUnhandledExceptionHandler)
                     UnhandledExceptionPolicy.ReportUnhandledException += HandleUnhandledExceptionNotification;

@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using Gallio.Runtime.Extensibility;
+using Gallio.Runtime.Logging;
 
 namespace Gallio.Model
 {
@@ -34,7 +35,9 @@ namespace Gallio.Model
         /// </summary>
         /// <param name="frameworkIdFilter">A predicate to select which frameworks should
         /// be consulted based on the framework id, or null to include all frameworks.</param>
+        /// <param name="logger">The logger for the test driver.</param>
         /// <returns>The test driver.</returns>
-        ITestDriver GetTestDriver(Predicate<string> frameworkIdFilter);
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="logger"/> is null.</exception>
+        ITestDriver GetTestDriver(Predicate<string> frameworkIdFilter, ILogger logger);
     }
 }

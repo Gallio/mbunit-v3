@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Text;
 using Gallio.Model;
 using Gallio.Runtime.Extensibility;
+using Gallio.Runtime.Logging;
 
 namespace Gallio.RSpecAdapter.Model
 {
@@ -29,7 +30,7 @@ namespace Gallio.RSpecAdapter.Model
             return CreateTestDriver;
         }
 
-        private static ITestDriver CreateTestDriver(IList<ComponentHandle<ITestFramework, TestFrameworkTraits>> frameworkHandles)
+        private static ITestDriver CreateTestDriver(IList<ComponentHandle<ITestFramework, TestFrameworkTraits>> frameworkHandles, ILogger logger)
         {
             return new RSpecTestDriver();
         }

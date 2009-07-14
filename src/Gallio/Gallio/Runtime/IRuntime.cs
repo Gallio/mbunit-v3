@@ -64,10 +64,8 @@ namespace Gallio.Runtime
         /// <summary>
         /// Initializes the runtime.
         /// </summary>
-        /// <param name="logger">The runtime logging service.</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="logger"/> is null.</exception>
         /// <exception cref="RuntimeException">Thrown if the runtime could not be initialized.</exception>
-        void Initialize(ILogger logger);
+        void Initialize();
 
         /// <summary>
         /// Gets a deep copy of the runtime setup used to configure this runtime.
@@ -86,5 +84,24 @@ namespace Gallio.Runtime
         /// </summary>
         /// <returns>True if the installation appears ok.</returns>
         bool VerifyInstallation();
+
+        /// <summary>
+        /// An event that is fired when a log message is sent to the runtime logger.
+        /// </summary>
+        event EventHandler<LogMessageEventArgs> LogMessage;
+
+        /// <summary>
+        /// Adds a log listener that will receive log messages dispatched to the runtime logger.
+        /// </summary>
+        /// <param name="logger">The log listener to add.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="logger"/> is null.</exception>
+        void AddLogListener(ILogger logger);
+
+        /// <summary>
+        /// Removes a log listener so that it will no longer receive log messages dispatched to the runtime logger.
+        /// </summary>
+        /// <param name="logger">The log listener to remove.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="logger"/> is null.</exception>
+        void RemoveLogListener(ILogger logger);
     }
 }

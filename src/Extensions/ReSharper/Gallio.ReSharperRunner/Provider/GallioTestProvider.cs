@@ -31,6 +31,7 @@ using Gallio.ReSharperRunner.Provider.Facade;
 using Gallio.ReSharperRunner.Reflection;
 using Gallio.ReSharperRunner.Provider.Tasks;
 using Gallio.Runtime;
+using Gallio.Runtime.Logging;
 using Gallio.Runtime.ProgressMonitoring;
 using JetBrains.CommonControls;
 using JetBrains.Metadata.Reader.API;
@@ -173,7 +174,7 @@ namespace Gallio.ReSharperRunner.Provider
             private readonly IUnitTestProvider provider;
             private readonly GallioTestPresenter presenter;
             private readonly ITestFrameworkManager frameworkManager;
-            private readonly IAssemblyLoader assemblyLoader;
+            private readonly ILogger logger;
 
             /// <summary>
             /// Initializes the provider.
@@ -183,8 +184,10 @@ namespace Gallio.ReSharperRunner.Provider
                 this.provider = provider;
 
                 frameworkManager = RuntimeAccessor.ServiceLocator.Resolve<ITestFrameworkManager>();
-                assemblyLoader = RuntimeAccessor.AssemblyLoader;
                 presenter = new GallioTestPresenter();
+                logger = new FacadeLoggerWrapper(new AdapterFacadeLogger());
+
+                RuntimeAccessor.Instance.AddLogListener(logger);
             }
 
             /// <summary>
@@ -297,7 +300,7 @@ namespace Gallio.ReSharperRunner.Provider
                         excludedFrameworkIds.Add(frameworkId);
                 }
 
-                return frameworkManager.GetTestDriver(frameworkId => !excludedFrameworkIds.Contains(frameworkId));
+                return frameworkManager.GetTestDriver(frameworkId => !excludedFrameworkIds.Contains(frameworkId), logger);
             }
 
             private void Describe(IReflectionPolicy reflectionPolicy, IList<ICodeElementInfo> codeElements, ConsumerAdapter consumerAdapter)

@@ -14,25 +14,20 @@
 // limitations under the License.
 
 using System;
-using Gallio.Common.Policies;
 using Gallio.Common.Diagnostics;
+using Gallio.Runtime.Logging;
 
-namespace Gallio.Runtime.Logging
+namespace Gallio.VisualStudio.Shell
 {
     /// <summary>
-    /// A logger that dispatches log messages via events.
+    /// A logger for writing log messages to the Visual Studio shell.
     /// </summary>
-    public class EventLogger : BaseLogger
+    public class ShellLogger : BaseLogger
     {
-        /// <summary>
-        /// An event that is fired when a log message is received.
-        /// </summary>
-        public event EventHandler<LogMessageEventArgs> LogMessage;
-
         /// <inheritdoc />
         protected override void LogImpl(LogSeverity severity, string message, ExceptionData exceptionData)
         {
-            EventHandlerPolicy.SafeInvoke(LogMessage, this, new LogMessageEventArgs(severity, message, exceptionData));
+            // TODO: Should write the log messages someplace a Visual Studio user would be able to see them.
         }
     }
 }

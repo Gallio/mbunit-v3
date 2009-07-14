@@ -21,7 +21,7 @@ using Gallio.Common.Diagnostics;
 namespace Gallio.Runtime.Logging
 {
     /// <summary>
-    /// Event arguments for the <see cref="EventLogger"/>
+    /// Event arguments for the <see cref="DispatchLogger"/>
     /// </summary>
     public class LogMessageEventArgs : EventArgs
     {

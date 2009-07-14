@@ -628,7 +628,7 @@
     <Compile Include="Runtime\Formatting\XPathNavigableFormattingRule.cs" />
     <Compile Include="Runtime\Hosting\ConfigurationFileLocation.cs" />
     <Compile Include="Runtime\Extensibility\IServiceLocator.cs" />
-    <Compile Include="Runtime\Logging\EventLogger.cs" />
+    <Compile Include="Runtime\Logging\DispatchLogger.cs" />
     <Compile Include="Runtime\Logging\LogMessageEventArgs.cs" />
     <Compile Include="Runner\TestRunnerOptions.cs" />
     <Compile Include="Runner\Events\TestRunnerEventDispatcher.cs" />

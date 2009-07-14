@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.IO;
 using Gallio.Model;
 using Gallio.Runtime.Extensibility;
+using Gallio.Runtime.Logging;
 
 namespace Gallio.CSUnitAdapter.Model
 {
@@ -32,7 +33,7 @@ namespace Gallio.CSUnitAdapter.Model
             return CreateTestDriver;
         }
 
-        private static ITestDriver CreateTestDriver(IList<ComponentHandle<ITestFramework, TestFrameworkTraits>> frameworkHandles)
+        private static ITestDriver CreateTestDriver(IList<ComponentHandle<ITestFramework, TestFrameworkTraits>> frameworkHandles, ILogger logger)
         {
             return new CSUnitTestDriver();
         }

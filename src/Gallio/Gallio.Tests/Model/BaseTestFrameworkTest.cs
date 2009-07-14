@@ -84,11 +84,11 @@ namespace Gallio.Tests.Model
             TestModel testModel = new TestModel();
 
             var testFrameworkManager = RuntimeAccessor.ServiceLocator.Resolve<ITestFrameworkManager>();
-            ITestDriver testDriver = testFrameworkManager.GetTestDriver(frameworkId => frameworkId == FrameworkHandle.Id);
+            var logger = new MarkupStreamLogger(TestLog.Default);
+            ITestDriver testDriver = testFrameworkManager.GetTestDriver(frameworkId => frameworkId == FrameworkHandle.Id, logger);
 
             var testIsolationProvider = (ITestIsolationProvider) RuntimeAccessor.ServiceLocator.ResolveByComponentId("Gallio.LocalTestIsolationProvider");
             var testIsolationOptions = new TestIsolationOptions();
-            var logger = new MarkupStreamLogger(TestLog.Default);
             using (ITestIsolationContext testIsolationContext = testIsolationProvider.CreateContext(testIsolationOptions, logger))
             {
                 var testPackage = new TestPackage();

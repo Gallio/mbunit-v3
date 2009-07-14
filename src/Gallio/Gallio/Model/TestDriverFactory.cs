@@ -16,12 +16,14 @@
 using System;
 using System.Collections.Generic;
 using Gallio.Runtime.Extensibility;
+using Gallio.Runtime.Logging;
 
 namespace Gallio.Model
 {
     /// <summary>
     /// A factory for test drivers.
     /// </summary>
-    /// <param name="frameworkHandles">The component handles of frameworks which share this test driver factory.</param>
-    public delegate ITestDriver TestDriverFactory(IList<ComponentHandle<ITestFramework, TestFrameworkTraits>> frameworkHandles);
+    /// <param name="frameworkHandles">The component handles of frameworks which share this test driver factory, not null.</param>
+    /// <param name="logger">The logger for the test driver, not null.</param>
+    public delegate ITestDriver TestDriverFactory(IList<ComponentHandle<ITestFramework, TestFrameworkTraits>> frameworkHandles, ILogger logger);
 }

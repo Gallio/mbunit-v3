@@ -62,7 +62,7 @@ namespace Gallio.VisualStudio.Tip
             loader.AddHintDirectory(Path.GetDirectoryName(location));
 
             IAssemblyInfo assembly = loader.ReflectionPolicy.LoadAssemblyFrom(location);
-            ITestDriver driver = frameworkManager.GetTestDriver(frameworkId => frameworkId != "MSTestAdapter.TestFramework");
+            ITestDriver driver = frameworkManager.GetTestDriver(frameworkId => frameworkId != "MSTestAdapter.TestFramework", logger);
             TestExplorationOptions testExplorationOptions = new TestExplorationOptions();
 
             ArrayList tests = new ArrayList();

@@ -25,6 +25,7 @@ using Gallio.NUnitAdapter.TestResources;
 
 namespace Gallio.NUnitAdapter.Tests.Integration
 {
+#if ! NUNIT248 // does not support v2.4.8
     [TestFixture]
     [RunSample(typeof(FixtureDependentUponSetUpFixture))]
     public class FixtureDependentUponSetUpFixtureTest : BaseTestWithSampleRunner
@@ -40,4 +41,5 @@ namespace Gallio.NUnitAdapter.Tests.Integration
             AssertLogContains(namespaceRun, "[SetUpFixture] TearDown", MarkupStreamNames.ConsoleOutput);
         }
     }
+#endif
 }

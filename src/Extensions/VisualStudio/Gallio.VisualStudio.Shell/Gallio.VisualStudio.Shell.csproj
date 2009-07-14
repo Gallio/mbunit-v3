@@ -89,6 +89,7 @@
     <Compile Include="Actions\ShellActionManager.cs" />
     <Compile Include="Actions\IActionManager.cs" />
     <Compile Include="BaseShellExtension.cs" />
+    <Compile Include="ShellLogger.cs" />
     <Compile Include="IShellPackage.cs" />
     <Compile Include="IShellComponent.cs" />
     <Compile Include="IShell.cs" />
@@ -153,9 +154,7 @@
     <None Include="Gallio.VisualStudio.Shell.vs2008.addin">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Gallio.VisualStudio.Shell.vs2010.addin">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    <None Include="Gallio.VisualStudio.Shell.vs2010.addin"/>
     <None Include="Resources\Product.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

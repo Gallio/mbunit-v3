@@ -47,9 +47,9 @@ namespace Gallio.ReSharperRunner.Provider.Tasks
     /// </remarks>
     internal sealed class GallioTestRunner
     {
-        private readonly IFacadeTaskServer server;
-        private readonly IFacadeLogger logger;
-        private readonly FacadeTaskExecutorConfiguration config;
+        private readonly IFacadeTaskServer facadeTaskServer;
+        private readonly IFacadeLogger facadeLogger;
+        private readonly FacadeTaskExecutorConfiguration facadeTaskExecutorConfiguration;
         private readonly string sessionId;
 
         private readonly HashSetOfString assemblyLocations;
@@ -57,12 +57,12 @@ namespace Gallio.ReSharperRunner.Provider.Tasks
         private readonly Dictionary<string, TestMonitor> testMonitors;
         private readonly HashSetOfString explicitTestIds;
 
-        public GallioTestRunner(IFacadeTaskServer server, IFacadeLogger logger, FacadeTaskExecutorConfiguration config)
+        public GallioTestRunner(IFacadeTaskServer facadeTaskServer, IFacadeLogger facadeLogger, FacadeTaskExecutorConfiguration facadeTaskExecutorConfiguration)
         {
-            this.server = server;
-            this.logger = logger;
-            this.config = config;
-            sessionId = server.SessionId;
+            this.facadeTaskServer = facadeTaskServer;
+            this.facadeLogger = facadeLogger;
+            this.facadeTaskExecutorConfiguration = facadeTaskExecutorConfiguration;
+            sessionId = facadeTaskServer.SessionId;
 
             assemblyLocations = new HashSetOfString();
             testTasks = new Dictionary<string, GallioTestItemTask>();
@@ -110,16 +110,21 @@ namespace Gallio.ReSharperRunner.Provider.Tasks
 
         private FacadeTaskResult RunTests()
         {
+            ILogger logger = new FacadeLoggerWrapper(facadeLogger);
             ITestRunner runner = TestRunnerUtils.CreateTestRunnerByName(StandardTestRunnerFactoryNames.IsolatedAppDomain);
-            ILogger logger = new FacadeLoggerWrapper(this.logger);
 
             // Set parameters.
             TestPackage testPackage = new TestPackage();
             foreach (string assemblyLocation in assemblyLocations)
                 testPackage.AddFile(new FileInfo(assemblyLocation));
-            testPackage.ShadowCopy = config.ShadowCopy;
-            testPackage.ApplicationBaseDirectory = new DirectoryInfo(config.AssemblyFolder);
-            testPackage.WorkingDirectory = new DirectoryInfo(config.AssemblyFolder);
+
+            testPackage.ShadowCopy = facadeTaskExecutorConfiguration.ShadowCopy;
+
+            if (facadeTaskExecutorConfiguration.AssemblyFolder != null)
+            {
+                testPackage.ApplicationBaseDirectory = new DirectoryInfo(facadeTaskExecutorConfiguration.AssemblyFolder);
+                testPackage.WorkingDirectory = new DirectoryInfo(facadeTaskExecutorConfiguration.AssemblyFolder);
+            }
 
             TestRunnerOptions testRunnerOptions = new TestRunnerOptions();
 
@@ -209,7 +214,7 @@ namespace Gallio.ReSharperRunner.Provider.Tasks
                     GallioTestItemTask testTask;
                     if (testTasks.TryGetValue(testId, out testTask))
                     {
-                        testMonitor = new TestMonitor(server, testTask);
+                        testMonitor = new TestMonitor(facadeTaskServer, testTask);
                         testMonitors.Add(testId, testMonitor);
                     }
                 }

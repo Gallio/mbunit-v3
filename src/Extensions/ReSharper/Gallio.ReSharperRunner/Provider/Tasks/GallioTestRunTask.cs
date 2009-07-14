@@ -68,9 +68,9 @@ namespace Gallio.ReSharperRunner.Provider.Tasks
             return 0;
         }
 
-        public override FacadeTaskResult Execute(IFacadeTaskServer server, IFacadeLogger logger, FacadeTaskExecutorConfiguration config)
+        public override FacadeTaskResult Execute(IFacadeTaskServer facadeTaskServer, IFacadeLogger facadeLogger, FacadeTaskExecutorConfiguration facadeTaskExecutorConfiguration)
         {
-            return new GallioTestRunner(server, logger, config).Run(this);
+            return new GallioTestRunner(facadeTaskServer, facadeLogger, facadeTaskExecutorConfiguration).Run(this);
         }
     }
 }

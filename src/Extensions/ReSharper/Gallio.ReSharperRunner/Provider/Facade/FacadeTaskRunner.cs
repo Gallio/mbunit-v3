@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using System.Diagnostics;
 using System.Threading;
 using Gallio.Loader;
 using JetBrains.ReSharper.TaskRunnerFramework;
@@ -77,17 +78,17 @@ namespace Gallio.ReSharperRunner.Provider.Facade
             AdapterFacadeTaskServer facadeTaskServer = new AdapterFacadeTaskServer(Server);
             AdapterFacadeLogger facadeLogger = new AdapterFacadeLogger();
 
-            FacadeTaskExecutorConfiguration config = new FacadeTaskExecutorConfiguration()
+            FacadeTaskExecutorConfiguration facadeTaskExecutorConfiguration = new FacadeTaskExecutorConfiguration()
             {
                 ShadowCopy = TaskExecutor.Configuration.ShadowCopy,
                 AssemblyFolder = TaskExecutor.Configuration.AssemblyFolder
             };
 
             FacadeTask facadeTask = facadeTaskServer.MapTasks(node);
-            executeResult = FacadeUtils.ToTaskResult(Execute(facadeTaskServer, facadeLogger, facadeTask, config));
+            executeResult = FacadeUtils.ToTaskResult(Execute(facadeTaskServer, facadeLogger, facadeTask, facadeTaskExecutorConfiguration));
         }
 
-        protected virtual FacadeTaskResult Execute(IFacadeTaskServer server, IFacadeLogger logger, FacadeTask task, FacadeTaskExecutorConfiguration config)
+        protected virtual FacadeTaskResult Execute(IFacadeTaskServer facadeTaskServer, IFacadeLogger facadeLogger, FacadeTask facadeTask, FacadeTaskExecutorConfiguration facadeTaskExecutorConfiguration)
         {
             IGallioRemoteEnvironment environment = EnvironmentManager.GetSharedEnvironment();
 
@@ -95,7 +96,7 @@ namespace Gallio.ReSharperRunner.Provider.Facade
             IRemoteFacadeTaskRunner taskRunner = (IRemoteFacadeTaskRunner)environment.AppDomain.CreateInstanceAndUnwrap(
                 taskRunnerType.Assembly.FullName, taskRunnerType.FullName);
 
-            return taskRunner.Execute(server, logger, task, config);
+            return taskRunner.Execute(facadeTaskServer, facadeLogger, facadeTask, facadeTaskExecutorConfiguration);
         }
     }
 }

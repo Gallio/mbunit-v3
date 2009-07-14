@@ -40,8 +40,8 @@ namespace Gallio.Runtime
         private readonly IAssemblyLoader assemblyLoader;
         private readonly RuntimeSetup runtimeSetup;
         private readonly List<string> pluginDirectories;
+        private readonly DispatchLogger dispatchLogger;
 
-        private ILogger logger;
         private bool debugMode;
 
         /// <summary>
@@ -71,6 +71,7 @@ namespace Gallio.Runtime
             this.assemblyLoader = assemblyLoader;
             this.runtimeSetup = runtimeSetup.Copy();
 
+            dispatchLogger = new DispatchLogger();
             pluginDirectories = new List<string>();
         }
 
@@ -120,7 +121,7 @@ namespace Gallio.Runtime
             get
             {
                 ThrowIfDisposed();
-                return logger;
+                return dispatchLogger;
             }
         }
 
@@ -135,17 +136,12 @@ namespace Gallio.Runtime
         }
 
         /// <inheritdoc />
-        public void Initialize(ILogger logger)
+        public void Initialize()
         {
-            if (logger == null)
-                throw new ArgumentNullException("logger");
-
             ThrowIfDisposed();
 
             try
             {
-                this.logger = logger;
-
                 ConfigureForDebugging();
 
                 SetRuntimePath();
@@ -192,7 +188,7 @@ namespace Gallio.Runtime
 
             RegisterBuiltInComponent(builtInPlugin, "BuiltIn.Registry", typeof(IRegistry), registry);
             RegisterBuiltInComponent(builtInPlugin, "BuiltIn.ServiceLocator", typeof(IServiceLocator), registry.ServiceLocator);
-            RegisterBuiltInComponent(builtInPlugin, "BuiltIn.Logger", typeof(ILogger), logger);
+            RegisterBuiltInComponent(builtInPlugin, "BuiltIn.Logger", typeof(ILogger), dispatchLogger);
             RegisterBuiltInComponent(builtInPlugin, "BuiltIn.Runtime", typeof(IRuntime), this);
             RegisterBuiltInComponent(builtInPlugin, "BuiltIn.AssemblyLoader", typeof(IAssemblyLoader), assemblyLoader);
             RegisterBuiltInComponent(builtInPlugin, "BuiltIn.PluginLoader", typeof(IPluginLoader), pluginLoader);
@@ -261,7 +257,7 @@ namespace Gallio.Runtime
             {
                 if (plugin.IsDisabled)
                 {
-                    logger.Log(LogSeverity.Debug, string.Format("Disabled plugin '{0}': {1}", plugin.PluginId, plugin.DisabledReason));
+                    dispatchLogger.Log(LogSeverity.Debug, string.Format("Disabled plugin '{0}': {1}", plugin.PluginId, plugin.DisabledReason));
                 }
             }
         }
@@ -290,7 +286,7 @@ namespace Gallio.Runtime
         {
             ThrowIfDisposed();
 
-            logger.Log(LogSeverity.Info, "Checking plugins.");
+            dispatchLogger.Log(LogSeverity.Info, "Checking plugins.");
 
             bool success = true;
 
@@ -302,6 +298,35 @@ namespace Gallio.Runtime
             VerifyComponents(ref success);
 
             return success;
+        }
+
+        /// <inheritdoc />
+        public event EventHandler<LogMessageEventArgs> LogMessage
+        {
+            add
+            {
+                ThrowIfDisposed();
+                dispatchLogger.LogMessage += value;
+            }
+            remove
+            {
+                ThrowIfDisposed();
+                dispatchLogger.LogMessage -= value;
+            }
+        }
+
+        /// <inheritdoc />
+        public void AddLogListener(ILogger logger)
+        {
+            ThrowIfDisposed();
+            dispatchLogger.AddLogListener(logger); // note: callee checks arguments
+        }
+
+        /// <inheritdoc />
+        public void RemoveLogListener(ILogger logger)
+        {
+            ThrowIfDisposed();
+            dispatchLogger.RemoveLogListener(logger); // note: callee checks arguments
         }
 
         private void VerifyFiles(ref bool success)
@@ -332,7 +357,7 @@ namespace Gallio.Runtime
                     {
                         if (otherPlugin != null)
                         {
-                            logger.Log(LogSeverity.Error, string.Format("Plugin '{0}' contains file '{1}' but it has also been claimed by plugin '{2}'.  Every file should be owned by exactly one plugin.",
+                            dispatchLogger.Log(LogSeverity.Error, string.Format("Plugin '{0}' contains file '{1}' but it has also been claimed by plugin '{2}'.  Every file should be owned by exactly one plugin.",
                                 plugin.PluginId, relativeFilePath, otherPlugin.PluginId));
                             success = false;
                         }
@@ -343,7 +368,7 @@ namespace Gallio.Runtime
                     }
                     else
                     {
-                        logger.Log(LogSeverity.Error, string.Format("Plugin '{0}' contains file '{1}' but it does not exist.",
+                        dispatchLogger.Log(LogSeverity.Error, string.Format("Plugin '{0}' contains file '{1}' but it does not exist.",
                             plugin.PluginId, relativeFilePath));
                             success = false;
                     }
@@ -355,7 +380,7 @@ namespace Gallio.Runtime
             {
                 if (pair.Value == null)
                 {
-                    logger.Log(LogSeverity.Info, string.Format("File '{0}' does not appear to be owned by any plugin.", pair.Key));
+                    dispatchLogger.Log(LogSeverity.Info, string.Format("File '{0}' does not appear to be owned by any plugin.", pair.Key));
                 }
             }
         }
@@ -366,7 +391,7 @@ namespace Gallio.Runtime
             {
                 if (plugin.IsDisabled)
                 {
-                    logger.Log(LogSeverity.Warning, string.Format("Plugin '{0}' is disabled: {1}'",
+                    dispatchLogger.Log(LogSeverity.Warning, string.Format("Plugin '{0}' is disabled: {1}'",
                         plugin.PluginId, plugin.DisabledReason));
                     continue;
                 }
@@ -389,7 +414,7 @@ namespace Gallio.Runtime
                         if (assemblyName.FullName != assemblyBinding.AssemblyName.FullName)
                         {
                             success = false;
-                            logger.Log(LogSeverity.Error, string.Format(
+                            dispatchLogger.Log(LogSeverity.Error, string.Format(
                                 "Plugin '{0}' has an incorrect assembly binding.  Accoding to the plugin metadata we expected assembly name '{1}' but it was actually '{2}' when loaded.",
                                 plugin.PluginId, assemblyBinding.AssemblyName.FullName, assemblyName.FullName));
                         }
@@ -398,7 +423,7 @@ namespace Gallio.Runtime
                 catch (Exception ex)
                 {
                     success = false;
-                    logger.Log(LogSeverity.Error, string.Format("Plugin '{0}' has an assembly reference for that could not be loaded with code base '{1}'.",
+                    dispatchLogger.Log(LogSeverity.Error, string.Format("Plugin '{0}' has an assembly reference for that could not be loaded with code base '{1}'.",
                         plugin.PluginId, assemblyBinding.CodeBase), ex);
                 }
             }
@@ -413,7 +438,7 @@ namespace Gallio.Runtime
             catch (Exception ex)
             {
                 success = false;
-                logger.Log(LogSeverity.Error, "Unresolvable plugin.", ex);
+                dispatchLogger.Log(LogSeverity.Error, "Unresolvable plugin.", ex);
             }
         }
 
@@ -426,7 +451,7 @@ namespace Gallio.Runtime
             catch (Exception ex)
             {
                 success = false;
-                logger.Log(LogSeverity.Error, "Unresolvable plugin traits.", ex);
+                dispatchLogger.Log(LogSeverity.Error, "Unresolvable plugin traits.", ex);
             }
         }
 
@@ -451,7 +476,7 @@ namespace Gallio.Runtime
             catch (Exception ex)
             {
                 success = false;
-                logger.Log(LogSeverity.Error, "Unresolvable service type.", ex);
+                dispatchLogger.Log(LogSeverity.Error, "Unresolvable service type.", ex);
             }
         }
 
@@ -464,7 +489,7 @@ namespace Gallio.Runtime
             catch (Exception ex)
             {
                 success = false;
-                logger.Log(LogSeverity.Error, "Unresolvable service traits type.", ex);
+                dispatchLogger.Log(LogSeverity.Error, "Unresolvable service traits type.", ex);
             }
         }
 
@@ -489,7 +514,7 @@ namespace Gallio.Runtime
             catch (Exception ex)
             {
                 success = false;
-                logger.Log(LogSeverity.Error, "Unresolvable component.", ex);
+                dispatchLogger.Log(LogSeverity.Error, "Unresolvable component.", ex);
             }
         }
 
@@ -502,7 +527,7 @@ namespace Gallio.Runtime
             catch (Exception ex)
             {
                 success = false;
-                logger.Log(LogSeverity.Error, "Unresolvable component traits.", ex);
+                dispatchLogger.Log(LogSeverity.Error, "Unresolvable component traits.", ex);
             }
         }
 

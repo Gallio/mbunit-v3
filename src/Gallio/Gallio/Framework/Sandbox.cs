@@ -321,7 +321,7 @@ namespace Gallio.Framework
         public TestOutcome Run(MarkupDocumentWriter markupDocumentWriter, Action action, string description)
         {
             if (markupDocumentWriter == null)
-                throw new ArgumentNullException("testLogWriter");
+                throw new ArgumentNullException("markupDocumentWriter");
             if (action == null)
                 throw new ArgumentNullException("action");
 
@@ -460,7 +460,7 @@ namespace Gallio.Framework
                 return outcome;
 
             alreadyLoggedAbortOnce = true;
-            LogMessage(markupDocumentWriter, actionDescription, outcome, abortMessage, ex);
+            LogMessage(markupDocumentWriter, actionDescription, outcome, abortMessage, null);
             return outcome;
         }
 

@@ -20,6 +20,7 @@ using Gallio.Common.Collections;
 using Gallio.Model;
 using Gallio.Common.Reflection;
 using Gallio.Runtime.Extensibility;
+using Gallio.Runtime.Logging;
 
 namespace Gallio.Framework.Pattern
 {
@@ -69,7 +70,7 @@ namespace Gallio.Framework.Pattern
             return CreateTestDriver;
         }
 
-        private static ITestDriver CreateTestDriver(IList<ComponentHandle<ITestFramework, TestFrameworkTraits>> frameworkHandles)
+        private static ITestDriver CreateTestDriver(IList<ComponentHandle<ITestFramework, TestFrameworkTraits>> frameworkHandles, ILogger logger)
         {
             string[] frameworkIds = GenericCollectionUtils.ConvertAllToArray(frameworkHandles, x => x.Id);
 

@@ -112,19 +112,34 @@ namespace Gallio.Common.Policies
         /// <returns>The formatted string.</returns>
         public string GetDescription()
         {
-            StringBuilder description = new StringBuilder(message);
-            description.AppendLine();
-            description.AppendLine(StackTraceFilter.FilterException(exception).ToString());
+            StringBuilder str = new StringBuilder(message);
+            str.AppendLine();
+            AppendDetails(str);
+            return str.ToString();
+        }
+
+        /// <summary>
+        /// Formats the defaults of the exception to a string like: "Exception\nReported by: ReporterStackTrace".
+        /// </summary>
+        /// <returns>The formatted string.</returns>
+        public string GetDetails()
+        {
+            StringBuilder str = new StringBuilder();
+            AppendDetails(str);
+            return str.ToString();
+        }
+
+        private void AppendDetails(StringBuilder str)
+        {
+            str.AppendLine(StackTraceFilter.FilterException(exception).ToString());
 
             if (reporterStackTrace != null)
             {
-                if (description[description.Length - 1] != '\n')
-                    description.AppendLine();
+                if (str[str.Length - 1] != '\n')
+                    str.AppendLine();
 
-                description.AppendLine("Reported by: ").Append(StackTraceFilter.FilterStackTrace(reporterStackTrace));
+                str.AppendLine("Reported by: ").Append(StackTraceFilter.FilterStackTrace(reporterStackTrace));
             }
-
-            return description.ToString();
         }
     }
 }
