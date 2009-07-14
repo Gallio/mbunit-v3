@@ -19,6 +19,7 @@ using System.Reflection;
 using Gallio.Common.Collections;
 using Gallio.Framework.Assertions;
 using MbUnit.Framework.ContractVerifiers.Core;
+using System.Collections.ObjectModel;
 
 namespace MbUnit.Framework.ContractVerifiers
 {
@@ -88,39 +89,14 @@ namespace MbUnit.Framework.ContractVerifiers
         {
             return new TestCase(name, () =>
             {
-                var visitedTypes = new HashSet<Type>
-                {
-                    typeof (Boolean),
-                    typeof (Int16),
-                    typeof (Int32),
-                    typeof (Int64),
-                    typeof (IntPtr),
-                    typeof (UInt16),
-                    typeof (UInt32),
-                    typeof (UInt64),
-                    typeof (UIntPtr),
-                    typeof (Single),
-                    typeof (Double),
-                    typeof (Decimal),
-                    typeof (Byte),
-                    typeof (Char),
-                    typeof (String),
-                    typeof (DateTime),
-                    typeof (TimeSpan),
-                };
-
-                Assert.Multiple(() =>
-                {
-                    VerifyMemberTypes(typeof(TTarget), visitedTypes, Context);
-                });
+                var visitedTypes = new ImmutableTypeCollection();
+                Assert.Multiple(() => VerifyMemberTypes(typeof(TTarget), visitedTypes, Context));
             });
         }
 
         private static void VerifyMemberTypes(Type type, ICollection<Type> visitedTypes, ContractVerificationContext context)
         {
-            if (!visitedTypes.Contains(type) && 
-                !type.IsEnum && 
-                !typeof(Delegate).IsAssignableFrom(type))
+            if (!visitedTypes.Contains(type))
             {
                 visitedTypes.Add(type);
 

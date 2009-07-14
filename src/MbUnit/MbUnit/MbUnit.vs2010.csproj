@@ -145,6 +145,7 @@
     <Compile Include="Framework\Assert.Relations.cs" />
     <Compile Include="Framework\ContractVerifiers\AbstractContract.cs" />
     <Compile Include="Framework\ContractVerifiers\AccessorContract.cs" />
+    <Compile Include="Framework\ContractVerifiers\Core\ImmutableTypeCollection.cs" />
     <Compile Include="Framework\ContractVerifiers\Core\NamespaceDoc.cs" />
     <Compile Include="Framework\ContractVerifiers\InvalidValuesClass.cs" />
     <Compile Include="Framework\ContractVerifiers\InvalidValuesClassCollection.cs" />

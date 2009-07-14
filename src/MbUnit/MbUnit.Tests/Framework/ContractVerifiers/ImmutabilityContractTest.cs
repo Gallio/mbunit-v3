@@ -22,6 +22,8 @@ using Gallio.Tests;
 using Gallio.Tests.Integration;
 using MbUnit.Framework;
 using MbUnit.Framework.ContractVerifiers;
+using System.Collections.ObjectModel;
+using System.Collections.Generic;
 
 namespace MbUnit.Tests.Framework.ContractVerifiers
 {
@@ -96,6 +98,7 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
             private readonly SampleEnumeration digit;
             private readonly Func<int> function;
             private readonly IFoo foo;
+            private readonly ReadOnlyCollection<int> readOnlyCollection;
 
             public ImmutableSample(int number, string text, ImmutableSubSample subSample, 
                 SampleEnumeration digit, Func<int> function)
@@ -106,6 +109,7 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
                 this.digit = digit;
                 this.function = function;
                 this.foo = new Foo();
+                this.readOnlyCollection = new ReadOnlyCollection<int>(new List<int>());
             }
         }
 
