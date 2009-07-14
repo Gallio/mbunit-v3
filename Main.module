@@ -302,7 +302,7 @@
     <TestRunnerType Condition="! $(Coverage)">IsolatedProcess</TestRunnerType>
     <TestRunnerType Condition="'$(Runtime)'=='Mono'">IsolatedAppDomain</TestRunnerType>
     -->
-    <TestRunnerType>IsolatedProcessPerAssembly</TestRunnerType>
+    <TestRunnerType>IsolatedProcess</TestRunnerType>
 
     <CoverageFilters>
     <!-- Should no longer be needed since we are telling NCover to filter upfront.

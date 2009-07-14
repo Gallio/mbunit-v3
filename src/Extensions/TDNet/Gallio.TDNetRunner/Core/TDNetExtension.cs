@@ -106,7 +106,7 @@ namespace Gallio.TDNetRunner.Core
             // Inform TD.NET what happened 
             FacadeTestResult result = new FacadeTestResult();
             result.Name = e.TestStepRun.Step.FullName;
-            result.TimeSpan = TimeSpan.FromSeconds(e.TestStepRun.Result.Duration);
+            result.TimeSpan = e.TestStepRun.Result.Duration;
             // result.TestRunner = "Gallio"; // note: can crash in older versions of TD.Net with MissingFieldException
 
             // It's important to set the stack trace here so the user can double-click in the

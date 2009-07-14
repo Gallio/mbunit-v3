@@ -270,7 +270,7 @@ namespace Gallio.Runner.Reports.Schema
             // root test will contain the official final tally which will be larger than all previously
             // seen tallies.
             assertCount = Math.Max(assertCount, testStepRun.Result.AssertCount);
-            duration = Math.Max(duration, testStepRun.Result.Duration);
+            duration = Math.Max(duration, testStepRun.Result.DurationInSeconds);
 
             stepCount += 1;
 

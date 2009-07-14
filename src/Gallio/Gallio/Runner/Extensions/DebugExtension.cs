@@ -92,7 +92,7 @@ namespace Gallio.Runner.Extensions
                     e.TestStepRun.Step.FullName,
                     e.TestStepRun.Result.Outcome,
                     e.TestStepRun.Result.AssertCount,
-                    e.TestStepRun.Result.Duration);
+                    e.TestStepRun.Result.DurationInSeconds);
             };
 
             Events.TestStepLifecyclePhaseChanged += delegate(object sender, TestStepLifecyclePhaseChangedEventArgs e)

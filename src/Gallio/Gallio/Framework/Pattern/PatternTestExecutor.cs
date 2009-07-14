@@ -63,18 +63,17 @@ namespace Gallio.Framework.Pattern
                 options.SingleThreaded ? 1 : TestAssemblyExecutionParameters.DegreeOfParallelism);
         }
 
-        public TestOutcome RunTest(ITestCommand testCommand, Model.Tree.TestStep parentTestStep,
+        public TestResult RunTest(ITestCommand testCommand, Model.Tree.TestStep parentTestStep,
             Sandbox parentSandbox, PatternTestHandlerDecorator testHandlerDecorator)
         {
             if (progressMonitor.IsCanceled)
-                return TestOutcome.Canceled;
+                return new TestResult(TestOutcome.Canceled);
 
             if (!testCommand.AreDependenciesSatisfied())
             {
                 ITestContext context = testCommand.StartPrimaryChildStep(parentTestStep);
                 context.LogWriter.Warnings.WriteLine("Skipped due to an unsatisfied test dependency.");
-                context.FinishStep(TestOutcome.Skipped, null);
-                return TestOutcome.Skipped;
+                return context.FinishStep(TestOutcome.Skipped, null);
             }
 
             progressMonitor.SetStatus(testCommand.Test.Name);
@@ -105,10 +104,10 @@ namespace Gallio.Framework.Pattern
             }
         }
 
-        private TestOutcome RunTestBody(ITestCommand testCommand, Model.Tree.TestStep parentTestStep,
+        private TestResult RunTestBody(ITestCommand testCommand, Model.Tree.TestStep parentTestStep,
             Sandbox sandbox, PatternTestHandlerDecorator testHandlerDecorator, PatternTest test)
         {
-            TestOutcome outcome = TestOutcome.Error;
+            TestResult result = new TestResult(TestOutcome.Error);
 
             DoWithProcessIsolation(delegate
             {
@@ -118,10 +117,11 @@ namespace Gallio.Framework.Pattern
                     {
                         if (progressMonitor.IsCanceled)
                         {
-                            outcome = TestOutcome.Canceled;
+                            result = new TestResult(TestOutcome.Canceled);
                             return;
                         }
 
+                        TestOutcome outcome;
                         IPatternTestHandler testHandler = test.TestActions;
 
                         if (testHandlerDecorator != null)
@@ -152,25 +152,26 @@ namespace Gallio.Framework.Pattern
                                 outcome = outcome.CombineWith(DoInitializeTest(context, testState));
 
                                 if (outcome.Status == TestStatus.Passed)
-                                    outcome =
-                                        outcome.CombineWith(RunTestInstances(testCommand, context, testState,
-                                            reusePrimaryTestStep));
+                                {
+                                    TestOutcome instancesOutcome = RunTestInstances(testCommand, context, testState, reusePrimaryTestStep);
+                                    outcome = outcome.CombineWith(instancesOutcome);
+                                }
 
                                 outcome = outcome.CombineWith(DoDisposeTest(context, testState));
 
-                                context.FinishStep(outcome);
+                                result = context.FinishStep(outcome);
                             }
 
                             outcome = outcome.CombineWith(DoAfterTest(sandbox, testState));
 
                             if (invisible)
-                                PublishOutcomeFromInvisibleTest(testCommand, primaryTestStep, ref outcome);
+                                result = PublishOutcomeFromInvisibleTest(testCommand, primaryTestStep, outcome);
                         }
                     });
                 });
             });
 
-            return outcome;
+            return result;
         }
 
         private TestOutcome RunTestInstances(ITestCommand testCommand, TestContext primaryContext,
@@ -184,9 +185,12 @@ namespace Gallio.Framework.Pattern
                     if (progressMonitor.IsCanceled)
                         return TestOutcome.Canceled;
 
-                    outcome = outcome.CombineWith(RunTestInstance(testCommand, primaryContext, testState, item, reusePrimaryTestStep));
+                    TestOutcome instanceOutcome = RunTestInstance(testCommand, primaryContext, testState, item, reusePrimaryTestStep);
+                    outcome = outcome.CombineWith(instanceOutcome);
                 }
 
+                // If we are reporting a single result (reuse = true) then provide full details, otherwise
+                // just keep the general status.
                 return reusePrimaryTestStep ? outcome : outcome.Generalize();
             }
             catch (Exception ex)
@@ -268,7 +272,7 @@ namespace Gallio.Framework.Pattern
                     outcome = outcome.CombineWith(DoAfterTestInstance(primaryContext.Sandbox, testInstanceState));
 
                     if (invisible)
-                        PublishOutcomeFromInvisibleTest(testCommand, testStep, ref outcome);
+                        outcome = PublishOutcomeFromInvisibleTest(testCommand, testStep, outcome).Outcome;
                 }
 
                 return outcome;
@@ -284,7 +288,7 @@ namespace Gallio.Framework.Pattern
                 }
                 else
                 {
-                    return ReportTestError(testCommand, testState.PrimaryTestStep, ex, message);
+                    return ReportTestError(testCommand, testState.PrimaryTestStep, ex, message).Outcome;
                 }
             }
         }
@@ -346,10 +350,10 @@ namespace Gallio.Framework.Pattern
                 {
                     using (contextTracker.EnterContext(context))
                     {
-                        TestOutcome outcome;
+                        TestResult result;
                         if (progressMonitor.IsCanceled)
                         {
-                            outcome = TestOutcome.Canceled;
+                            result = new TestResult(TestOutcome.Canceled);
                         }
                         else
                         {
@@ -365,10 +369,10 @@ namespace Gallio.Framework.Pattern
                                 };
 
                             Model.Tree.TestStep parentTestStep = context != null ? context.TestStep : testInstanceState.TestStep;
-                            outcome = RunTest(childTestCommand, parentTestStep, sandbox, testHandlerDecorator);
+                            result = RunTest(childTestCommand, parentTestStep, sandbox, testHandlerDecorator);
                         }
 
-                        outcomeAccumulator.Combine(outcome);
+                        outcomeAccumulator.Combine(result.Outcome);
                     }
                 }));
             }
@@ -382,15 +386,14 @@ namespace Gallio.Framework.Pattern
             context.SetInterimOutcome(outcome);
         }
 
-        private static void PublishOutcomeFromInvisibleTest(ITestCommand testCommand, Model.Tree.TestStep testStep, ref TestOutcome outcome)
+        private static TestResult PublishOutcomeFromInvisibleTest(ITestCommand testCommand, Model.Tree.TestStep testStep, TestOutcome outcome)
         {
             switch (outcome.Status)
             {
                 case TestStatus.Skipped:
                 case TestStatus.Passed:
                     // Either nothing interesting happened or the test was silently skipped during Before/After.
-                    outcome = TestOutcome.Passed;
-                    break;
+                    return new TestResult(TestOutcome.Passed);
 
                 case TestStatus.Failed:
                 case TestStatus.Inconclusive:
@@ -398,9 +401,7 @@ namespace Gallio.Framework.Pattern
                     // Something bad happened during Before/After that prevented the test from running.
                     ITestContext context = testCommand.StartStep(testStep);
                     context.LogWriter.Failures.Write("The test did not run.  Consult the parent test log for more details.");
-                    context.FinishStep(outcome, null);
-                    outcome = outcome.Generalize();
-                    break;
+                    return context.FinishStep(outcome, null);
             }
         }
 
@@ -638,12 +639,11 @@ namespace Gallio.Framework.Pattern
             }
         }
 
-        private static TestOutcome ReportTestError(ITestCommand testCommand, Model.Tree.TestStep parentTestStep, Exception ex, string message)
+        private static TestResult ReportTestError(ITestCommand testCommand, Model.Tree.TestStep parentTestStep, Exception ex, string message)
         {
             ITestContext context = testCommand.StartPrimaryChildStep(parentTestStep);
             TestLog.Failures.WriteException(ex, message);
-            context.FinishStep(TestOutcome.Error, null);
-            return TestOutcome.Error;
+            return context.FinishStep(TestOutcome.Error, null);
         }
 
         private static void DoWithProcessIsolation(Action action)

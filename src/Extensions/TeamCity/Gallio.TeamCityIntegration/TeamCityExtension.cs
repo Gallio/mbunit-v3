@@ -182,7 +182,7 @@ namespace Gallio.TeamCityIntegration
                                 writer.WriteTestIgnored(flowId, name, warningText.ToString());
                             }
 
-                            writer.WriteTestFinished(flowId, name, TimeSpan.FromSeconds(stepRun.Result.Duration));
+                            writer.WriteTestFinished(flowId, name, stepRun.Result.Duration);
                         }
                         else if (step.IsPrimary)
                         {

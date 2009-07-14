@@ -64,10 +64,10 @@ namespace Gallio.Model.Helpers
         /// <param name="parentTestStep">The parent test step, or null if starting a root step.</param>
         /// <param name="options">The test execution options.</param>
         /// <param name="progressMonitor">The progress monitor.</param>
-        /// <returns>The combined outcome of the root test command.</returns>
+        /// <returns>The combined result of the root test command.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="rootTestCommand"/>
         /// <paramref name="progressMonitor"/>, or <paramref name="options"/> is null.</exception>
-        public TestOutcome Run(ITestCommand rootTestCommand, TestStep parentTestStep, TestExecutionOptions options, IProgressMonitor progressMonitor)
+        public TestResult Run(ITestCommand rootTestCommand, TestStep parentTestStep, TestExecutionOptions options, IProgressMonitor progressMonitor)
         {
             if (rootTestCommand == null)
                 throw new ArgumentNullException("rootTestCommand");
@@ -86,8 +86,8 @@ namespace Gallio.Model.Helpers
         /// <param name="parentTestStep">The parent test step, or null if none.</param>
         /// <param name="options">The test execution options, not null.</param>
         /// <param name="progressMonitor">The progress monitor, not null.</param>
-        /// <returns>The combined outcome of the root test command.</returns>
-        protected abstract TestOutcome RunImpl(ITestCommand rootTestCommand, TestStep parentTestStep, TestExecutionOptions options, IProgressMonitor progressMonitor);
+        /// <returns>The combined result of the root test command.</returns>
+        protected abstract TestResult RunImpl(ITestCommand rootTestCommand, TestStep parentTestStep, TestExecutionOptions options, IProgressMonitor progressMonitor);
 
         /// <summary>
         /// Recursively generates single test steps for each <see cref="ITestCommand" /> and
@@ -101,14 +101,15 @@ namespace Gallio.Model.Helpers
         /// </remarks>
         /// <param name="rootTestCommand">The root test command.</param>
         /// <param name="parentTestStep">The parent test step.</param>
-        protected static void SkipAll(ITestCommand rootTestCommand, TestStep parentTestStep)
+        /// <returns>The combined result of the test commands.</returns>
+        protected static TestResult SkipAll(ITestCommand rootTestCommand, TestStep parentTestStep)
         {
             ITestContext context = rootTestCommand.StartPrimaryChildStep(parentTestStep);
 
             foreach (ITestCommand child in rootTestCommand.Children)
                 SkipAll(child, context.TestStep);
 
-            context.FinishStep(TestOutcome.Skipped, null);
+            return context.FinishStep(TestOutcome.Skipped, null);
         }
     }
 }

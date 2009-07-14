@@ -34,7 +34,7 @@ namespace Gallio.Common.Messaging
     [Serializable]
     public class TopicPattern
     {
-        private static readonly Regex PatternRegex = new Regex(@"^(?:[0-9a-zA-Z]*|#|\*)?(?:.(?:[0-9a-zA-Z]*|#|\*))*$", RegexOptions.CultureInvariant | RegexOptions.Singleline);
+        private static readonly Regex PatternRegex = new Regex(@"^(?:[0-9a-zA-Z]*|#|\*)?(?:\.(?:[0-9a-zA-Z]*|#|\*))*$", RegexOptions.CultureInvariant | RegexOptions.Singleline);
 
         private readonly string pattern;
 
@@ -92,7 +92,7 @@ namespace Gallio.Common.Messaging
             if (matchRegex == null)
             {
                 matchRegex = new Regex(
-                    Regex.Escape(pattern).Replace(@"#", "[^.]+").Replace(@"\*", ".*"),
+                    "^" + Regex.Escape(pattern).Replace(@"\*", "[^.]+").Replace(@"\#", ".*") + "$",
                     RegexOptions.CultureInvariant | RegexOptions.Singleline);
             }
 

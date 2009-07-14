@@ -42,56 +42,53 @@ namespace Gallio.XunitAdapter.Model
     /// </summary>
     internal class XunitTestController : TestController
     {
-        protected override TestOutcome RunImpl(ITestCommand rootTestCommand, TestStep parentTestStep, TestExecutionOptions options, IProgressMonitor progressMonitor)
+        protected override TestResult RunImpl(ITestCommand rootTestCommand, TestStep parentTestStep, TestExecutionOptions options, IProgressMonitor progressMonitor)
         {
             using (progressMonitor.BeginTask(Resources.XunitTestController_RunningXunitTests, rootTestCommand.TestCount))
             {
                 if (options.SkipTestExecution)
                 {
-                    SkipAll(rootTestCommand, parentTestStep);
-                    return TestOutcome.Skipped;
+                    return SkipAll(rootTestCommand, parentTestStep);
                 }
                 else
                 {
-                    bool success = RunTest(rootTestCommand, parentTestStep, progressMonitor);
-                    return success ? TestOutcome.Passed : TestOutcome.Failed;
+                    return RunTest(rootTestCommand, parentTestStep, progressMonitor);
                 }
             }
         }
 
-        private static bool RunTest(ITestCommand testCommand, TestStep parentTestStep, IProgressMonitor progressMonitor)
+        private static TestResult RunTest(ITestCommand testCommand, TestStep parentTestStep, IProgressMonitor progressMonitor)
         {
             Test test = testCommand.Test;
             progressMonitor.SetStatus(test.Name);
 
-            bool passed;
+            TestResult result;
             XunitTest xunitTest = test as XunitTest;
             if (xunitTest == null)
             {
-                passed = RunChildTests(testCommand, parentTestStep, progressMonitor);
+                result = RunChildTests(testCommand, parentTestStep, progressMonitor);
             }
             else
             {
-                passed = RunTestFixture(testCommand, xunitTest.TypeInfo, parentTestStep);
+                result = RunTestFixture(testCommand, xunitTest.TypeInfo, parentTestStep);
             }
 
             progressMonitor.Worked(1);
-            return passed;
+            return result;
         }
 
-        private static bool RunChildTests(ITestCommand testCommand, TestStep parentTestStep, IProgressMonitor progressMonitor)
+        private static TestResult RunChildTests(ITestCommand testCommand, TestStep parentTestStep, IProgressMonitor progressMonitor)
         {
             ITestContext testContext = testCommand.StartPrimaryChildStep(parentTestStep);
 
             bool passed = true;
             foreach (ITestCommand child in testCommand.Children)
-                passed &= RunTest(child, testContext.TestStep, progressMonitor);
+                passed &= RunTest(child, testContext.TestStep, progressMonitor).Outcome.Status == TestStatus.Passed;
 
-            testContext.FinishStep(passed ? TestOutcome.Passed : TestOutcome.Failed, null);
-            return passed;
+            return testContext.FinishStep(passed ? TestOutcome.Passed : TestOutcome.Failed, null);
         }
 
-        private static bool RunTestFixture(ITestCommand testCommand, XunitTypeInfoAdapter typeInfo,
+        private static TestResult RunTestFixture(ITestCommand testCommand, XunitTypeInfoAdapter typeInfo,
             TestStep parentTestStep)
         {
             ITestContext testContext = testCommand.StartPrimaryChildStep(parentTestStep);
@@ -105,14 +102,13 @@ namespace Gallio.XunitAdapter.Model
             {
                 // Xunit can throw exceptions when making commands if the test is malformed.
                 testContext.LogWriter.Failures.WriteException(ex, "Internal Error");
-                testContext.FinishStep(TestOutcome.Failed, null);
-                return false;
+                return testContext.FinishStep(TestOutcome.Failed, null);
             }
 
             return RunTestClassCommandAndFinishStep(testCommand, testContext, testClassCommand);
         }
 
-        private static bool RunTestClassCommandAndFinishStep(ITestCommand testCommand, ITestContext testContext, XunitTestClassCommand testClassCommand)
+        private static TestResult RunTestClassCommandAndFinishStep(ITestCommand testCommand, ITestContext testContext, XunitTestClassCommand testClassCommand)
         {
             try
             {
@@ -163,16 +159,14 @@ namespace Gallio.XunitAdapter.Model
                     passed = false;
                 }
 
-                testContext.FinishStep(passed ? TestOutcome.Passed : TestOutcome.Failed, null);
-                return passed;
+                return testContext.FinishStep(passed ? TestOutcome.Passed : TestOutcome.Failed, null);
             }
             catch (Exception ex)
             {
                 // Xunit probably shouldn't throw an exception in a test command.
                 // But just in case...
                 testContext.LogWriter.Failures.WriteException(ex, "Internal Error");
-                testContext.FinishStep(TestOutcome.Failed, null);
-                return false;
+                return testContext.FinishStep(TestOutcome.Failed, null);
             }
         }
 

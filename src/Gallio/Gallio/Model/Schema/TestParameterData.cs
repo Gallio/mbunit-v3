@@ -74,6 +74,7 @@ namespace Gallio.Model.Schema
                 Id = Id                
             };
 
+            testParameter.Metadata.Clear();
             testParameter.Metadata.AddAll(Metadata);
             return testParameter;
         }

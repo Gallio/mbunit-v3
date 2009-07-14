@@ -55,14 +55,13 @@ namespace Gallio.MSTestAdapter.Model
         }
 
         /// <inheritdoc />
-        protected override TestOutcome RunImpl(ITestCommand rootTestCommand, TestStep parentTestStep, TestExecutionOptions options, IProgressMonitor progressMonitor)
+        protected override TestResult RunImpl(ITestCommand rootTestCommand, TestStep parentTestStep, TestExecutionOptions options, IProgressMonitor progressMonitor)
         {
             using (progressMonitor.BeginTask(Resources.MSTestController_RunningMSTestTests, rootTestCommand.TestCount))
             {
                 if (options.SkipTestExecution)
                 {
-                    SkipAll(rootTestCommand, parentTestStep);
-                    return TestOutcome.Skipped;
+                    return SkipAll(rootTestCommand, parentTestStep);
                 }
                 else
                 {
@@ -71,7 +70,7 @@ namespace Gallio.MSTestAdapter.Model
             }
         }
 
-        private TestOutcome RunTest(ITestCommand testCommand, TestStep parentTestStep, IProgressMonitor progressMonitor)
+        private TestResult RunTest(ITestCommand testCommand, TestStep parentTestStep, IProgressMonitor progressMonitor)
         {
             Test test = testCommand.Test;
             progressMonitor.SetStatus(test.Name);
@@ -79,6 +78,7 @@ namespace Gallio.MSTestAdapter.Model
             // The first test should be an assembly test
             MSTestAssembly assemblyTest = testCommand.Test as MSTestAssembly;
             TestOutcome outcome;
+            TestResult result;
             if (assemblyTest != null)
             {
                 ITestContext assemblyContext = testCommand.StartPrimaryChildStep(parentTestStep);
@@ -95,15 +95,15 @@ namespace Gallio.MSTestAdapter.Model
                     outcome = TestOutcome.Error;
                 }
 
-                assemblyContext.FinishStep(outcome, null);
+                result = assemblyContext.FinishStep(outcome, null);
             }
             else
             {
-                outcome = TestOutcome.Skipped;
+                result = new TestResult(TestOutcome.Skipped);
             }
 
             progressMonitor.Worked(1);
-            return outcome;
+            return result;
         }
     }
 }

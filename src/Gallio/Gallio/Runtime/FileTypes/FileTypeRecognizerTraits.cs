@@ -72,13 +72,13 @@ namespace Gallio.Runtime.FileTypes
 
         /// <summary>
         /// Specifies a regular expression used to identify the type of a file by its name,
-        /// or null if none.
+        /// or null if none.  The matching is performed case-insensitively.
         /// </summary>
         public string FileNameRegex { get; set; }
 
         /// <summary>
         /// Specifies a regular expression used to identify the type of a file by its contents,
-        /// or null if none.
+        /// or null if none.  The matching is performed case-insensitively.
         /// </summary>
         public string ContentsRegex { get; set; }
     }

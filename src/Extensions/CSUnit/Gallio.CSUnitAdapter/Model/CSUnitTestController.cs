@@ -52,20 +52,19 @@ namespace Gallio.CSUnitAdapter.Model
         }
 
         /// <inheritdoc />
-        protected override TestOutcome RunImpl(ITestCommand rootTestCommand, TestStep parentTestStep, TestExecutionOptions options, IProgressMonitor progressMonitor)
+        protected override TestResult RunImpl(ITestCommand rootTestCommand, TestStep parentTestStep, TestExecutionOptions options, IProgressMonitor progressMonitor)
         {
             IList<ITestCommand> testCommands = rootTestCommand.GetAllCommands();
             using (progressMonitor.BeginTask(Resources.CSUnitTestController_RunningCSUnitTests, testCommands.Count))
             {
                 if (progressMonitor.IsCanceled)
                 {
-                    return TestOutcome.Canceled;
+                    return new TestResult(TestOutcome.Canceled);
                 }
 
                 if (options.SkipTestExecution)
                 {
-                    SkipAll(rootTestCommand, parentTestStep);
-                    return TestOutcome.Skipped;
+                    return SkipAll(rootTestCommand, parentTestStep);
                 }
 
                 using (RunnerMonitor monitor = new RunnerMonitor(testCommands, parentTestStep, progressMonitor))
@@ -90,6 +89,8 @@ namespace Gallio.CSUnitAdapter.Model
             private int fixtureFailureCount;
             private int assemblyErrorCount;
             private int fixtureErrorCount;
+
+            private TestResult topResult;
 
             public RunnerMonitor(IList<ITestCommand> testCommands, TestStep topTestStep, IProgressMonitor progressMonitor)
             {
@@ -145,25 +146,23 @@ namespace Gallio.CSUnitAdapter.Model
                 }
             }
 
-            public TestOutcome Run(string assemblyPath)
+            public TestResult Run(string assemblyPath)
             {
                 try
                 {
                     // Save the thread to allow us to abort later
                     runnerThread = Thread.CurrentThread;
 
-                    RunTests(assemblyPath);
-
-                    return CalculateOutcome(assemblyFailureCount, assemblyErrorCount);
+                    return RunTests(assemblyPath);
                 }
                 catch (ThreadAbortException)
                 {
                     if (progressMonitor.IsCanceled)
                     {
                         Thread.ResetAbort();
-                        return TestOutcome.Canceled;
+                        return new TestResult(TestOutcome.Canceled);
                     }
-                    return TestOutcome.Error;
+                    return new TestResult(TestOutcome.Error);
                 }
                 finally
                 {
@@ -171,7 +170,7 @@ namespace Gallio.CSUnitAdapter.Model
                 }
             }
 
-            private void RunTests(string assemblyPath)
+            private TestResult RunTests(string assemblyPath)
             {
                 AssemblyMetadata assemblyMetadata = AssemblyUtils.GetAssemblyMetadata(assemblyPath, AssemblyMetadataFields.Default);
                 if (assemblyMetadata == null)
@@ -179,8 +178,7 @@ namespace Gallio.CSUnitAdapter.Model
                     ITestContext testContext = listOfTestCommands[0].StartPrimaryChildStep(topTestStep);
                     testContext.LifecyclePhase = LifecyclePhases.Execute;
                     testContext.LogWriter.Failures.WriteLine("Test assembly does not exist or is not a valid .Net assembly. [{0}]", assemblyPath ?? String.Empty);
-                    testContext.FinishStep(TestOutcome.Error, null);
-                    return;
+                    return testContext.FinishStep(TestOutcome.Error, null);
                 }
 
                 // Remark: We cannot use the RemoteLoader directly from this AppDomain.
@@ -229,6 +227,8 @@ namespace Gallio.CSUnitAdapter.Model
                         loader.RunTests(this, consoleOutputWriter);
                     }
                 }
+
+                return topResult ?? new TestResult(TestOutcome.Error);
             }
 
             #region ITestListener Members
@@ -268,18 +268,18 @@ namespace Gallio.CSUnitAdapter.Model
                     return;
 
                 ITestContext testContext = testContextStack.Pop();
-
                 
                 while (testContext.TestStep.Test != testCommand.Test)
                 {
-                    progressMonitor.Worked(1);
-
                     testContext.FinishStep(GetFixtureOutcome(fixtureFailureCount, fixtureErrorCount), null);
                     testContext = testContextStack.Pop();
+
+                    progressMonitor.Worked(1);
                 }
 
+                topResult = testContext.FinishStep(CalculateOutcome(assemblyFailureCount, assemblyErrorCount), null);
+
                 progressMonitor.Worked(1);
-                testContext.FinishStep(CalculateOutcome(assemblyFailureCount, assemblyErrorCount), null);
             }            
 
             void ITestListener.OnTestStarted(object sender, TestResultEventArgs args)
@@ -441,8 +441,6 @@ namespace Gallio.CSUnitAdapter.Model
                         progressMonitor.SetStatus(testCommand.Test.Name);
                     }
 
-                    progressMonitor.Worked(1);
-
                     TimeSpan? duration = null;
                     if (durationNanosec > 0)
                     {
@@ -455,6 +453,8 @@ namespace Gallio.CSUnitAdapter.Model
 
                     testContext.AddAssertCount(assertCount);
                     testContext.FinishStep(outcome, duration);
+
+                    progressMonitor.Worked(1);
                 }
                 else if (!String.IsNullOrEmpty(reason))
                 {
@@ -478,8 +478,8 @@ namespace Gallio.CSUnitAdapter.Model
 
                         TestOutcome outcome = GetFixtureOutcome(fixtureFailureCount, fixtureErrorCount);
 
-                        progressMonitor.Worked(1);
                         parentContext.FinishStep(outcome, null);
+                        progressMonitor.Worked(1);
 
                         parentContext = testContextStack.Peek();
                     }

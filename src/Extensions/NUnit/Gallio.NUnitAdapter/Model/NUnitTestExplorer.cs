@@ -155,10 +155,9 @@ namespace Gallio.NUnitAdapter.Model
         {
             NUnitTestPackage package = new NUnitTestPackage(@"Tests");
 
-            // Note: Don't build nodes for namespaces.  Grouping by namespace is a
-            //       presentation concern of the test runner, not strictly a structural one
-            //       so we turn this feature off.
-            package.Settings.Add(@"AutoNamespaceSuites", false);
+            // The SetupFixture feature requires namespace suites even though we
+            // would prefer to turn this off since the namespaces are mainly a presentation concern.
+            package.Settings.Add(@"AutoNamespaceSuites", true);
             package.Assemblies.Add(assemblyLocation);
 
             NUnitTestRunner runner = new NUnitRemoteTestRunner();

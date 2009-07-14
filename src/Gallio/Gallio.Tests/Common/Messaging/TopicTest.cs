@@ -35,6 +35,9 @@ namespace Gallio.Tests.Common.Messaging
         [Row("invalid-topic")]
         [Row("invalid topic")]
         [Row("!")]
+        [Row("###")]
+        [Row("#*")]
+        [Row("**")]
         public void Constructor_WhenKeyContainsInvalidCharacters_Throws(string key)
         {
             var ex = Assert.Throws<ArgumentException>(() => new Topic(key));
@@ -59,37 +62,6 @@ namespace Gallio.Tests.Common.Messaging
             var topic = new Topic("my.topic");
 
             Assert.AreEqual("my.topic", topic.ToString());
-        }
-
-        [Test]
-        public void IsMatch_WhenTopicIsNull_Throws()
-        {
-            var topicPattern = new TopicPattern("topic");
-
-            Assert.Throws<ArgumentNullException>(() => topicPattern.IsMatch(null));
-        }
-
-        [Test]
-        [Row("", "", true)]
-        [Row("", "topic", false)]
-        [Row("topic", "", false)]
-        [Row("topic", "topic", true)]
-        [Row("topic", "differenttopic", false)]
-        [Row("topic", "topic.suffix", false)]
-        [Row("topic", "prefix.topic", false)]
-        [Row("*", "word", true)]
-        [Row("*", "word.anotherword", false)]
-        [Row("#", "word", true)]
-        [Row("#", "word.anotherword", true)]
-        [Row("prefix.*.suffix", "prefix.word.suffix", true)]
-        [Row("prefix.*.suffix", "prefix.word.word.suffix", false)]
-        [Row("prefix.#.suffix", "prefix.word.suffix", true)]
-        [Row("prefix.#.suffix", "prefix.word.word.suffix", true)]
-        public void IsMatch_WhenTopicIsNotNull_ReturnsTrueIfMatched(string pattern, string topic, bool expectedResult)
-        {
-            var topicPattern = new TopicPattern(pattern);
-
-            Assert.AreEqual(expectedResult, topicPattern.IsMatch(new Topic(topic)));
         }
     }
 }

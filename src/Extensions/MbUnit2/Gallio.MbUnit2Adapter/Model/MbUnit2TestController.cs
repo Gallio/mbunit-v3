@@ -39,7 +39,7 @@ namespace Gallio.MbUnit2Adapter.Model
     /// </summary>
     internal class MbUnit2TestController : TestController
     {
-        private FixtureExplorer fixtureExplorer;
+        private readonly FixtureExplorer fixtureExplorer;
 
         /// <summary>
         /// Creates a runner.
@@ -51,19 +51,18 @@ namespace Gallio.MbUnit2Adapter.Model
         }
 
         /// <inheritdoc />
-        protected override TestOutcome RunImpl(ITestCommand rootTestCommand, TestStep parentTestStep, TestExecutionOptions options, IProgressMonitor progressMonitor)
+        protected override TestResult RunImpl(ITestCommand rootTestCommand, TestStep parentTestStep, TestExecutionOptions options, IProgressMonitor progressMonitor)
         {
             ThrowIfDisposed();
 
             using (progressMonitor.BeginTask(Resources.MbUnit2TestController_RunningMbUnitTests, 1))
             {
                 if (progressMonitor.IsCanceled)
-                    return TestOutcome.Canceled;
+                    return new TestResult(TestOutcome.Canceled);
 
                 if (options.SkipTestExecution)
                 {
-                    SkipAll(rootTestCommand, parentTestStep);
-                    return TestOutcome.Skipped;
+                    return SkipAll(rootTestCommand, parentTestStep);
                 }
                 else
                 {
@@ -94,6 +93,7 @@ namespace Gallio.MbUnit2Adapter.Model
             private HashSet<Type> includedFixtureTypes;
 
             private TestOutcome assemblyTestOutcome;
+            private TestResult assemblyTestResult;
             private ITestCommand assemblyTestCommand;
             private Dictionary<Fixture, ITestCommand> fixtureTestCommands;
             private Dictionary<RunPipe, ITestCommand> runPipeTestCommands;
@@ -175,7 +175,7 @@ namespace Gallio.MbUnit2Adapter.Model
                 progressMonitor.Worked(workUnit);
             }
 
-            public TestOutcome Run()
+            public TestResult Run()
             {
                 assemblyTestOutcome = TestOutcome.Passed;
 
@@ -187,7 +187,7 @@ namespace Gallio.MbUnit2Adapter.Model
                     // TODO: Do we need to do anyhing with the result in the report listener?
                 }
 
-                return assemblyTestOutcome;
+                return assemblyTestResult ?? new TestResult(TestOutcome.Error);
             }
 
             #region Overrides to track assembly and fixture lifecycle
@@ -382,7 +382,7 @@ namespace Gallio.MbUnit2Adapter.Model
                 if (outcome.Status > assemblyTestOutcome.Status)
                     assemblyTestOutcome = outcome;
 
-                assemblyTestContext.FinishStep(assemblyTestOutcome, null);
+                assemblyTestResult = assemblyTestContext.FinishStep(assemblyTestOutcome, null);
             }
 
             private void HandleFixtureStart(Fixture fixture)

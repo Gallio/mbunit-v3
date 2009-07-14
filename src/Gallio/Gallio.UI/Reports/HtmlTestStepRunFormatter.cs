@@ -506,7 +506,7 @@ namespace Gallio.UI.Reports
                 if (!child)
                 {
                     statistics.AssertCount += testStepRun.Result.AssertCount;
-                    statistics.Duration += testStepRun.Result.Duration;
+                    statistics.Duration += testStepRun.Result.DurationInSeconds;
                 }
 
                 if (testStepRun.Step.IsTestCase)

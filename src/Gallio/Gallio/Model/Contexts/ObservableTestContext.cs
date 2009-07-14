@@ -54,6 +54,7 @@ namespace Gallio.Model.Contexts
         private int executionStatus;
         private Stopwatch stopwatch;
         private IDisposable contextCookie;
+        private TestResult result;
 
         /// <summary>
         /// Creates an observable test context.
@@ -134,6 +135,11 @@ namespace Gallio.Model.Contexts
         public int AssertCount
         {
             get { return assertCount; }
+        }
+
+        public TestResult Result
+        {
+            get { return result; }
         }
 
         public IMessageSink MessageSink
@@ -225,9 +231,9 @@ namespace Gallio.Model.Contexts
             return manager.StartStep(childStep);
         }
 
-        public void FinishStep(TestOutcome outcome, TimeSpan? actualDuration)
+        public TestResult FinishStep(TestOutcome outcome, TimeSpan? actualDuration)
         {
-            FinishStep(outcome, actualDuration, false);
+            return FinishStep(outcome, actualDuration, false);
         }
 
         public void Dispose()
@@ -264,7 +270,7 @@ namespace Gallio.Model.Contexts
                 parent.Finishing += HandleParentFinishedBeforeThisContext;
         }
 
-        private void FinishStep(TestOutcome outcome, TimeSpan? actualDuration, bool isDisposing)
+        private TestResult FinishStep(TestOutcome outcome, TimeSpan? actualDuration, bool isDisposing)
         {
             EventHandler cachedFinishingHandlers;
             lock (syncRoot)
@@ -272,7 +278,7 @@ namespace Gallio.Model.Contexts
                 if (! IsRunning)
                 {
                     if (isDisposing)
-                        return;
+                        return result ?? new TestResult(TestOutcome.Error);
                     throw new InvalidOperationException("Cannot finish a step unless the test step is running.");
                 }
 
@@ -299,10 +305,11 @@ namespace Gallio.Model.Contexts
 
                 logWriter.Close();
 
-                var result = new TestResult();
-                result.AssertCount = assertCount;
-                result.Duration = actualDuration.GetValueOrDefault(stopwatch.Elapsed).TotalSeconds;
-                result.Outcome = outcome;
+                result = new TestResult(outcome)
+                {
+                    AssertCount = assertCount,
+                    Duration = actualDuration.GetValueOrDefault(stopwatch.Elapsed)
+                };
 
                 MessageSink.Publish(new TestStepFinishedMessage()
                 {
@@ -316,10 +323,13 @@ namespace Gallio.Model.Contexts
                         contextCookie.Dispose();
                     contextCookie = null;
                 }
+
+                return result;
             }
             catch (Exception ex)
             {
                 UnhandledExceptionPolicy.Report("An unhandled exception occurred while finishing a test step.", ex);
+                return new TestResult(TestOutcome.Error);
             }
         }
 

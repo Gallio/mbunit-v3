@@ -25,6 +25,7 @@ using Gallio.Runtime.ProgressMonitoring;
 using Gallio.Model;
 using Gallio.NUnitAdapter.Properties;
 using NUnit.Core;
+using TestResult = Gallio.Model.TestResult;
 using NUnitTestResult=NUnit.Core.TestResult;
 using NUnitTestName = NUnit.Core.TestName;
 
@@ -47,7 +48,7 @@ namespace Gallio.NUnitAdapter.Model
         }
 
         /// <inheritdoc />
-        protected override TestOutcome RunImpl(ITestCommand rootTestCommand, TestStep parentTestStep, TestExecutionOptions options, IProgressMonitor progressMonitor)
+        protected override TestResult RunImpl(ITestCommand rootTestCommand, TestStep parentTestStep, TestExecutionOptions options, IProgressMonitor progressMonitor)
         {
             ThrowIfDisposed();
 
@@ -55,12 +56,11 @@ namespace Gallio.NUnitAdapter.Model
             using (progressMonitor.BeginTask(Resources.NUnitTestController_RunningNUnitTests, testCommands.Count))
             {
                 if (progressMonitor.IsCanceled)
-                    return TestOutcome.Canceled;
+                    return new TestResult(TestOutcome.Canceled);
 
                 if (options.SkipTestExecution)
                 {
-                    SkipAll(rootTestCommand, parentTestStep);
-                    return TestOutcome.Skipped;
+                    return SkipAll(rootTestCommand, parentTestStep);
                 }
                 else
                 {
@@ -87,6 +87,7 @@ namespace Gallio.NUnitAdapter.Model
 
             private Dictionary<TestName, ITestCommand> testCommandsByTestName;
             private Stack<ITestContext> testContextStack;
+            private TestResult topResult;
 
             public RunMonitor(TestRunner runner, IList<ITestCommand> testCommands, TestStep topTestStep,
                 IProgressMonitor progressMonitor)
@@ -104,7 +105,7 @@ namespace Gallio.NUnitAdapter.Model
                 progressMonitor.Canceled -= HandleCanceled;
             }
 
-            public TestOutcome Run()
+            public TestResult Run()
             {
                 try
                 {
@@ -120,7 +121,7 @@ namespace Gallio.NUnitAdapter.Model
                         Thread.ResetAbort();
                 }
 
-                return CreateOutcomeFromResult(runner.TestResult);
+                return topResult ?? new TestResult(TestOutcome.Error);
             }
 
             private void Initialize()
@@ -270,7 +271,9 @@ namespace Gallio.NUnitAdapter.Model
                 }
 
                 testContext.AddAssertCount(nunitResult.AssertCount);
-                testContext.FinishStep(CreateOutcomeFromResult(nunitResult), null);
+                TestResult result = testContext.FinishStep(CreateOutcomeFromResult(nunitResult), null);
+                if (testContextStack.Count == 0)
+                    topResult = result;
             }
 
             private static TestOutcome CreateOutcomeFromResult(NUnitTestResult nunitResult)

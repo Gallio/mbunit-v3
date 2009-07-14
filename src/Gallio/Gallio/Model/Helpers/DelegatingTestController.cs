@@ -45,7 +45,7 @@ namespace Gallio.Model.Helpers
         }
 
         /// <inheritdoc />
-        protected override TestOutcome RunImpl(ITestCommand rootTestCommand, TestStep parentTestStep, TestExecutionOptions options, IProgressMonitor progressMonitor)
+        protected override TestResult RunImpl(ITestCommand rootTestCommand, TestStep parentTestStep, TestExecutionOptions options, IProgressMonitor progressMonitor)
         {
             using (progressMonitor.BeginTask("Running tests.", rootTestCommand.TestCount))
             {
@@ -53,7 +53,7 @@ namespace Gallio.Model.Helpers
             }
         }
 
-        private TestOutcome RunTest(ITestCommand testCommand, TestStep parentTestStep,
+        private TestResult RunTest(ITestCommand testCommand, TestStep parentTestStep,
             TestExecutionOptions options, IProgressMonitor progressMonitor)
         {
             using (TestController testController = testControllerProvider(testCommand.Test))
@@ -65,7 +65,7 @@ namespace Gallio.Model.Helpers
             return RunWithoutController(testCommand, parentTestStep, options, progressMonitor);
         }
 
-        private static TestOutcome RunWithController(TestController testController, ITestCommand testCommand,
+        private static TestResult RunWithController(TestController testController, ITestCommand testCommand,
             TestStep parentTestStep, TestExecutionOptions options, IProgressMonitor progressMonitor)
         {
             try
@@ -79,12 +79,11 @@ namespace Gallio.Model.Helpers
             {
                 ITestContext context = testCommand.StartPrimaryChildStep(parentTestStep);
                 context.LogWriter.Failures.WriteException(ex, "Fatal Exception in test controller");
-                context.FinishStep(TestOutcome.Error, null);
-                return TestOutcome.Error;
+                return context.FinishStep(TestOutcome.Error, null);
             }
         }
 
-        private TestOutcome RunWithoutController(ITestCommand testCommand, TestStep parentTestStep,
+        private TestResult RunWithoutController(ITestCommand testCommand, TestStep parentTestStep,
             TestExecutionOptions options, IProgressMonitor progressMonitor)
         {
             // Enter the scope of the test and recurse until we find a controller.
@@ -98,16 +97,17 @@ namespace Gallio.Model.Helpers
                 if (progressMonitor.IsCanceled)
                     break;
 
-                outcome = outcome.CombineWith(RunTest(monitor, testContext.TestStep, options, progressMonitor)).Generalize();
+                TestResult childResult = RunTest(monitor, testContext.TestStep, options, progressMonitor);
+                outcome = outcome.CombineWith(childResult.Outcome).Generalize();
             }
 
             if (progressMonitor.IsCanceled)
                 outcome = TestOutcome.Canceled;
 
-            testContext.FinishStep(outcome, null);
+            TestResult result = testContext.FinishStep(outcome, null);
 
             progressMonitor.Worked(1);
-            return outcome;
+            return result;
         }
     }
 }

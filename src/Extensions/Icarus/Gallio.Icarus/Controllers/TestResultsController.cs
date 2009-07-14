@@ -340,7 +340,7 @@ namespace Gallio.Icarus.Controllers
                     break;
             }
             // convert the test step run information to a format for display as a list view item
-            string duration = testStepRun.Result.Duration.ToString("0.000");
+            string duration = testStepRun.Result.DurationInSeconds.ToString("0.000");
             string assertCount = testStepRun.Result.AssertCount.ToString();
             string codeReference = testStepRun.Step.CodeReference.TypeName ?? string.Empty;
             string assemblyName = testStepRun.Step.CodeReference.AssemblyName ?? string.Empty;

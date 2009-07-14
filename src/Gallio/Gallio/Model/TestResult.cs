@@ -27,9 +27,26 @@ namespace Gallio.Model
     [XmlType(Namespace=SchemaConstants.XmlNamespace)]
     public sealed class TestResult
     {
-        private TestOutcome outcome = TestOutcome.Inconclusive;
+        private TestOutcome outcome;
         private int assertCount;
-        private double duration;
+        private double durationInSeconds;
+
+        /// <summary>
+        /// Creates a test result with an inconclusive outcome.
+        /// </summary>
+        public TestResult()
+            : this(TestOutcome.Inconclusive)
+        {
+        }
+
+        /// <summary>
+        /// Creates a test result with a particular outcome.
+        /// </summary>
+        /// <param name="outcome">The outcome.</param>
+        public TestResult(TestOutcome outcome)
+        {
+            Outcome = outcome;
+        }
 
         /// <summary>
         /// Gets or sets the test outcome, including its children (unless they were skipped
@@ -56,13 +73,36 @@ namespace Gallio.Model
         }
 
         /// <summary>
+        /// Gets or sets the test duration, including its children.
+        /// </summary>
+        [XmlIgnore]
+        public TimeSpan Duration
+        {
+            get { return TimeSpan.FromSeconds(durationInSeconds); }
+            set { durationInSeconds = value.TotalSeconds; }
+        }
+
+        /// <summary>
         /// Gets or sets the test duration in seconds, including its children.
         /// </summary>
         [XmlAttribute("duration")]
-        public double Duration
+        public double DurationInSeconds
         {
-            get { return duration; }
-            set { duration = value; }
+            get { return durationInSeconds; }
+            set { durationInSeconds = value; }
+        }
+
+        /// <summary>
+        /// Creates a copy of the test result.
+        /// </summary>
+        /// <returns>The copy.</returns>
+        public TestResult Copy()
+        {
+            return new TestResult(outcome)
+            {
+                assertCount = assertCount,
+                durationInSeconds = durationInSeconds
+            };
         }
     }
 }

@@ -111,6 +111,9 @@ namespace Gallio.Runtime.FileTypes
         /// or contains a null.</exception>
         public bool IsSameOrSubtypeOfAny(params FileType[] otherTypes)
         {
+            if (otherTypes == null || Array.IndexOf(otherTypes, null) >= 0)
+                throw new ArgumentNullException("otherTypes");
+
             foreach (FileType otherType in otherTypes)
             {
                 if (IsSameOrSubtypeOf(otherType))

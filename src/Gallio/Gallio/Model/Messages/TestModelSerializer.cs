@@ -54,7 +54,7 @@ namespace Gallio.Model.Messages
             {
                 messageSink.Publish(new TestDiscoveredMessage()
                 {
-                    Test = new TestData(test),
+                    Test = new TestData(test, true),
                     ParentTestId = test.Parent != null ? test.Parent.Id : null
                 });
             }

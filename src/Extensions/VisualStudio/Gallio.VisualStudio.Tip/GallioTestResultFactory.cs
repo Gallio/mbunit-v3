@@ -51,7 +51,7 @@ namespace Gallio.VisualStudio.Tip
                     result.DebugTrace += contents;
             }
 
-            result.SetTimings(run.StartTime, run.EndTime, TimeSpan.FromSeconds(run.Result.Duration));
+            result.SetTimings(run.StartTime, run.EndTime, run.Result.Duration);
             result.TestStepRunXml = TestStepRunToXml(run);
             return result;
         }

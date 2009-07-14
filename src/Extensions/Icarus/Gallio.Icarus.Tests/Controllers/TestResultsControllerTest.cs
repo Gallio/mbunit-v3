@@ -546,7 +546,7 @@ namespace Gallio.Icarus.Tests.Controllers
                     Result = new TestResult
                     {
                         AssertCount = 5,
-                        Duration = 0.5,
+                        DurationInSeconds = 0.5,
                         Outcome = TestOutcome.Passed
                     }
                 };
@@ -559,7 +559,7 @@ namespace Gallio.Icarus.Tests.Controllers
                     Result = new TestResult
                     {
                         AssertCount = 1,
-                        Duration = 0.1,
+                        DurationInSeconds = 0.1,
                         Outcome = TestOutcome.Failed
                     }
                 };
@@ -572,7 +572,7 @@ namespace Gallio.Icarus.Tests.Controllers
                     Result = new TestResult
                     {
                         AssertCount = 2,
-                        Duration = 0.2,
+                        DurationInSeconds = 0.2,
                         Outcome = TestOutcome.Inconclusive
                     }
                 };

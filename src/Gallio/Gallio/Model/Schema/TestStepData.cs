@@ -182,6 +182,7 @@ namespace Gallio.Model.Schema
                 IsTestCase = IsTestCase                
             };
 
+            testStep.Metadata.Clear();
             testStep.Metadata.AddAll(Metadata);
             return testStep;
         }

@@ -254,6 +254,19 @@ namespace Gallio.Framework
         }
 
         /// <summary>
+        /// Gets a copy of the step's final result or null if the test has not finished yet.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// The test result cannot be changed.
+        /// </para>
+        /// </remarks>
+        public TestResult Result
+        {
+            get { return inner.Result.Copy(); }
+        }
+
+        /// <summary>
         /// Returns true if the step associated with the context has finished execution
         /// and completed all <see cref="Finishing" /> actions.
         /// </summary>
@@ -566,9 +579,10 @@ namespace Gallio.Framework
         /// Finishes the step represented by the context.
         /// </summary>
         /// <param name="outcome">The outcome.</param>
-        internal void FinishStep(TestOutcome outcome)
+        /// <returns>The final test result.</returns>
+        internal TestResult FinishStep(TestOutcome outcome)
         {
-            inner.FinishStep(outcome, null);
+            return inner.FinishStep(outcome, null);
         }
 
         /// <summary>

@@ -93,6 +93,12 @@ namespace Gallio.Model.Contexts
         }
 
         /// <inheritdoc />
+        public TestResult Result
+        {
+            get { return new TestResult(Outcome); }
+        }
+
+        /// <inheritdoc />
         public IMessageSink MessageSink
         {
             get { return NullMessageSink.Instance; }
@@ -123,8 +129,9 @@ namespace Gallio.Model.Contexts
         }
 
         /// <inheritdoc />
-        public void FinishStep(TestOutcome outcome, TimeSpan? actualDuration)
+        public TestResult FinishStep(TestOutcome outcome, TimeSpan? actualDuration)
         {
+            return Result;
         }
 
         /// <inheritdoc />

@@ -216,7 +216,7 @@ namespace Gallio.TeamCityIntegration.Tests
             var testData = new TestData("id", "testName", "testFullName");
             var testStepRun = new TestStepRun(new TestStepData("stepId", "stepName", "stepFullName", "id") { IsPrimary = primary, IsTestCase = true })
             {
-                Result = new TestResult() { Outcome = TestOutcome.Passed, Duration = 0.3 },
+                Result = new TestResult() { Outcome = TestOutcome.Passed, DurationInSeconds = 0.3 },
                 TestLog = ComprehensiveDocument
             };
             dispatcher.NotifyTestStepStarted(new TestStepStartedEventArgs(report, testData, testStepRun));
@@ -236,7 +236,7 @@ namespace Gallio.TeamCityIntegration.Tests
             var testData = new TestData("id", "testName", "testFullName");
             var testStepRun = new TestStepRun(new TestStepData("stepId", "stepName", "stepFullName", "id") { IsPrimary = primary, IsTestCase = true })
             {
-                Result = new TestResult() { Outcome = new TestOutcome(TestStatus.Failed, "myError"), Duration = 0.3 },
+                Result = new TestResult() { Outcome = new TestOutcome(TestStatus.Failed, "myError"), DurationInSeconds = 0.3 },
                 TestLog = ComprehensiveDocument
             };
             dispatcher.NotifyTestStepStarted(new TestStepStartedEventArgs(report, testData, testStepRun));
@@ -257,7 +257,7 @@ namespace Gallio.TeamCityIntegration.Tests
             var testData = new TestData("id", "testName", "testFullName");
             var testStepRun = new TestStepRun(new TestStepData("stepId", "stepName", "stepFullName", "id") { IsPrimary = primary, IsTestCase = true })
             {
-                Result = new TestResult() { Outcome = TestOutcome.Ignored, Duration = 0.3 },
+                Result = new TestResult() { Outcome = TestOutcome.Ignored, DurationInSeconds = 0.3 },
                 TestLog = ComprehensiveDocument
             };
             dispatcher.NotifyTestStepStarted(new TestStepStartedEventArgs(report, testData, testStepRun));

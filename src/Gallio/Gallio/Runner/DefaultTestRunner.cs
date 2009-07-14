@@ -387,8 +387,7 @@ namespace Gallio.Runner
 
             private Dictionary<string, TestStepState> states;
 
-            private readonly Dictionary<string, string> redirectedStepIds;
-
+            private readonly List<string> rootTestStepIds;
             private TestStepData rootTestStepData;
             private TestResult rootTestStepResult;
             private Stopwatch rootTestStepStopwatch;
@@ -400,8 +399,7 @@ namespace Gallio.Runner
 
                 states = new Dictionary<string, TestStepState>();
 
-                redirectedStepIds = new Dictionary<string, string>();
-
+                rootTestStepIds = new List<string>();
                 rootTestStepStopwatch = Stopwatch.StartNew();
                 rootTestStepResult = new TestResult()
                 {
@@ -476,18 +474,14 @@ namespace Gallio.Runner
 
                     if (message.Step.ParentId == null)
                     {
-                        if (IsRootStarted)
-                        {
-                            redirectedStepIds.Add(message.Step.Id, rootTestStepData.Id);
-                        }
-                        else
-                        {
+                        rootTestStepIds.Add(message.Step.Id);
+
+                        if (! IsRootStarted)
                             StartRoot(report, message.Step);
-                        }
                     }
                     else
                     {
-                        TestStepData step = RedirectParentIdOfStep(message.Step);
+                        TestStepData step = RedirectParentIdOfTestStepData(message.Step);
                         StartStep(report, step);
                     }
                 });
@@ -499,7 +493,7 @@ namespace Gallio.Runner
                 {
                     ThrowIfDisposed();
 
-                    if (redirectedStepIds.ContainsKey(message.StepId))
+                    if (rootTestStepIds.Contains(message.StepId))
                     {
                         rootTestStepResult.AssertCount += message.Result.AssertCount;
                         rootTestStepResult.Outcome = rootTestStepResult.Outcome.CombineWith(message.Result.Outcome);
@@ -527,7 +521,7 @@ namespace Gallio.Runner
             {
                 if (rootTestStepData != null)
                 {
-                    rootTestStepResult.Duration = rootTestStepStopwatch.Elapsed.TotalSeconds;
+                    rootTestStepResult.DurationInSeconds = rootTestStepStopwatch.Elapsed.TotalSeconds;
                     FinishStep(report, rootTestStepData.Id, rootTestStepResult);
                     rootTestStepData = null;
                 }
@@ -575,7 +569,7 @@ namespace Gallio.Runner
                 {
                     ThrowIfDisposed();
 
-                    string stepId = RedirectStepId(message.StepId);
+                    string stepId = RedirectTestStepId(message.StepId);
                     TestStepState state = GetTestStepState(stepId);
 
                     eventDispatcher.NotifyTestStepLifecyclePhaseChanged(
@@ -589,7 +583,7 @@ namespace Gallio.Runner
                 {
                     ThrowIfDisposed();
 
-                    string stepId = RedirectStepId(message.StepId);
+                    string stepId = RedirectTestStepId(message.StepId);
                     TestStepState state = GetTestStepState(stepId);
                     state.TestStepRun.Step.Metadata.Add(message.MetadataKey, message.MetadataValue);
 
@@ -604,7 +598,7 @@ namespace Gallio.Runner
                 {
                     ThrowIfDisposed();
 
-                    string stepId = RedirectStepId(message.StepId);
+                    string stepId = RedirectTestStepId(message.StepId);
                     TestStepState state = GetTestStepState(stepId);
                     state.logWriter.Attach(message.Attachment);
 
@@ -619,7 +613,7 @@ namespace Gallio.Runner
                 {
                     ThrowIfDisposed();
 
-                    string stepId = RedirectStepId(message.StepId);
+                    string stepId = RedirectTestStepId(message.StepId);
                     TestStepState state = GetTestStepState(stepId);
                     state.logWriter[message.StreamName].Write(message.Text);
 
@@ -634,7 +628,7 @@ namespace Gallio.Runner
                 {
                     ThrowIfDisposed();
 
-                    string stepId = RedirectStepId(message.StepId);
+                    string stepId = RedirectTestStepId(message.StepId);
                     TestStepState state = GetTestStepState(stepId);
                     state.logWriter[message.StreamName].EmbedExisting(message.AttachmentName);
 
@@ -649,7 +643,7 @@ namespace Gallio.Runner
                 {
                     ThrowIfDisposed();
 
-                    string stepId = RedirectStepId(message.StepId);
+                    string stepId = RedirectTestStepId(message.StepId);
                     TestStepState state = GetTestStepState(stepId);
                     state.logWriter[message.StreamName].BeginSection(message.SectionName);
 
@@ -664,7 +658,7 @@ namespace Gallio.Runner
                 {
                     ThrowIfDisposed();
 
-                    string stepId = RedirectStepId(message.StepId);
+                    string stepId = RedirectTestStepId(message.StepId);
                     TestStepState state = GetTestStepState(stepId);
                     state.logWriter[message.StreamName].BeginMarker(message.Marker);
 
@@ -679,7 +673,7 @@ namespace Gallio.Runner
                 {
                     ThrowIfDisposed();
 
-                    string stepId = RedirectStepId(message.StepId);
+                    string stepId = RedirectTestStepId(message.StepId);
                     TestStepState state = GetTestStepState(stepId);
                     state.logWriter[message.StreamName].End();
 
@@ -704,10 +698,9 @@ namespace Gallio.Runner
                 return testStepData;
             }
 
-            private TestStepData RedirectParentIdOfStep(TestStepData step)
+            private TestStepData RedirectParentIdOfTestStepData(TestStepData step)
             {
-                string targetStepId;
-                if (step.ParentId != null && redirectedStepIds.TryGetValue(step.ParentId, out targetStepId))
+                if (step.ParentId != null && rootTestStepIds.Contains(step.ParentId))
                 {
                     TestStepData targetStep = new TestStepData(step.Id, step.Name, step.FullName, step.TestId)
                     {
@@ -717,7 +710,7 @@ namespace Gallio.Runner
                         IsPrimary = step.IsPrimary,
                         IsTestCase = step.IsTestCase,
                         Metadata = step.Metadata,
-                        ParentId = targetStepId
+                        ParentId = rootTestStepData.Id
                     };
                     return targetStep;
                 }
@@ -725,12 +718,9 @@ namespace Gallio.Runner
                 return step;
             }
 
-            private string RedirectStepId(string stepId)
+            private string RedirectTestStepId(string stepId)
             {
-                string targetStepId;
-                if (redirectedStepIds.TryGetValue(stepId, out targetStepId))
-                    return targetStepId;
-                return stepId;
+                return rootTestStepIds.Contains(stepId) ? rootTestStepData.Id : stepId;
             }
 
             private void ThrowIfDisposed()

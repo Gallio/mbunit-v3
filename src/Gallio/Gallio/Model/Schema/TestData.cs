@@ -69,11 +69,22 @@ namespace Gallio.Model.Schema
         }
 
         /// <summary>
-        /// Copies the contents of a test.
+        /// Copies the contents of a test recursively including its children.
         /// </summary>
         /// <param name="source">The source test.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="source"/> is null.</exception>
         public TestData(Test source)
+            : this(source, false)
+        {
+        }
+
+        /// <summary>
+        /// Copies the contents of a test.
+        /// </summary>
+        /// <param name="source">The source test.</param>
+        /// <param name="nonRecursive">If true, does not recursively populate the children of the test.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="source"/> is null.</exception>
+        public TestData(Test source, bool nonRecursive)
             : base(source)
         {
             fullName = source.FullName;
@@ -82,10 +93,13 @@ namespace Gallio.Model.Schema
             children = new List<TestData>();
             parameters = new List<TestParameterData>();
 
-            GenericCollectionUtils.ConvertAndAddAll(source.Children, children, delegate(Test child)
+            if (!nonRecursive)
             {
-                return new TestData(child);
-            });
+                GenericCollectionUtils.ConvertAndAddAll(source.Children, children, delegate(Test child)
+                {
+                    return new TestData(child);
+                });
+            }
 
             GenericCollectionUtils.ConvertAndAddAll(source.Parameters, parameters, delegate(TestParameter parameter)
             {
@@ -172,6 +186,7 @@ namespace Gallio.Model.Schema
                 IsTestCase = IsTestCase
             };
 
+            test.Metadata.Clear();
             test.Metadata.AddAll(Metadata);
             Parameters.ForEach(x => test.AddParameter(x.ToTestParameter()));
             Children.ForEach(x => test.AddChild(x.ToTest()));

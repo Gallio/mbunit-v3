@@ -58,7 +58,7 @@ namespace Gallio.Framework.Pattern
         }
 
         /// <inheritdoc />
-        protected override TestOutcome RunImpl(ITestCommand rootTestCommand, Model.Tree.TestStep parentTestStep, TestExecutionOptions options, IProgressMonitor progressMonitor)
+        protected override TestResult RunImpl(ITestCommand rootTestCommand, Model.Tree.TestStep parentTestStep, TestExecutionOptions options, IProgressMonitor progressMonitor)
         {
             using (progressMonitor.BeginTask("Running tests.", rootTestCommand.TestCount))
             {

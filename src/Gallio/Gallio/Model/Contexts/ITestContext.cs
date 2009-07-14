@@ -116,6 +116,16 @@ namespace Gallio.Model.Contexts
         int AssertCount { get; }
 
         /// <summary>
+        /// Gets the final test result or null if the test has not yet finished running.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// The test result cannot be changed.
+        /// </para>
+        /// </remarks>
+        TestResult Result { get; }
+
+        /// <summary>
         /// Gets the message sink to which custom test messages may be published.
         /// </summary>
         IMessageSink MessageSink { get; }
@@ -204,7 +214,8 @@ namespace Gallio.Model.Contexts
         /// <param name="outcome">The final test outcome.</param>
         /// <param name="actualDuration">The actual duration of the step, if null the step monitor
         /// will record the duration as the total amount of time since the step monitor was started.</param>
+        /// <returns>The final test result.</returns>
         /// <seealso cref="Finishing"/>
-        void FinishStep(TestOutcome outcome, TimeSpan? actualDuration);
+        TestResult FinishStep(TestOutcome outcome, TimeSpan? actualDuration);
     }
 }

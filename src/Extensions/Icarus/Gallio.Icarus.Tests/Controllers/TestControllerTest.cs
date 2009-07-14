@@ -132,7 +132,7 @@ namespace Gallio.Icarus.Tests.Controllers
             testController.Explore(progressMonitor, new List<string>());
             var testStepRun = new TestStepRun(new TestStepData("id", "name", "fullName", "testId"))
                                   {
-                                      Result = new TestResult { Outcome = new TestOutcome(TestStatus.Failed) }
+                                      Result = new TestResult(TestOutcome.Failed)
                                   };
             TestStepFinishedEventArgs testStepFinishedEventArgs = new TestStepFinishedEventArgs(new Report(),
                 new TestData("id", "name", "fullName"),
