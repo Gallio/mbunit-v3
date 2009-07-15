@@ -30,13 +30,17 @@
                   <Permission User="NT AUTHORITY\NetworkService" GenericRead="yes" GenericWrite="yes" />
                 </CreateFolder>
             </Component>
-            
-            <Component Id="Gallio.Ambience.Server.exe.Manual" Guid="{AA41B9E3-8C18-4615-81CA-8A932B0783EA}" Win64="no" Transitive="yes">
-                <Condition>GALLIO.AMBIENCE.STARTMODE = "Manual"</Condition>
-                <File Id="Gallio.Ambience.Server.exe.Manual" Name="Gallio.Ambience.Server.exe" KeyPath="yes" />
-                <File Id="Gallio.Ambience.Server.exe.config.Manual" Name="Gallio.Ambience.Server.exe.config" />
 
-                <ServiceInstall Id="svc_Gallio.Ambience.Service.Manual"
+            <Component Id="Gallio.Ambience.UI.dll" Guid="{069BABDC-0960-497d-BADA-370D995D03DD}" Win64="no">
+                <File Name="Gallio.Ambience.UI.dll" KeyPath="yes" />
+		<File Name="Gallio.Ambience.UI.plugin" />
+            </Component>
+
+            <Component Id="Gallio.Ambience.Server.exe" Guid="{AA41B9E3-8C18-4615-81CA-8A932B0783EA}" Win64="no" Transitive="yes">
+                <File Id="Gallio.Ambience.Server.exe" Name="Gallio.Ambience.Server.exe" KeyPath="yes" />
+                <File Id="Gallio.Ambience.Server.exe.config" Name="Gallio.Ambience.Server.exe.config" />
+
+                <ServiceInstall Id="svc_Gallio.Ambience.Service"
                      Name="Gallio.Ambience"
                      DisplayName="Gallio Ambience database server"
                      Type="ownProcess"
@@ -45,24 +49,7 @@
                      Description="Stores persistent data shared across test runs."
                      Account="NT AUTHORITY\NetworkService" />
 
-                <ServiceControl Id="Gallio.Ambience.ServiceControl.Manual" Name="Gallio.Ambience" Stop="both" Remove="uninstall" Wait="yes" />
-            </Component>
-
-            <Component Id="Gallio.Ambience.Server.exe.Automatic" Guid="{9D5CB932-02C1-4bd1-A928-9F5CFA9EEEA7}" Win64="no" Transitive="yes">
-                <Condition>GALLIO.AMBIENCE.STARTMODE = "Automatic"</Condition>
-                <File Id="Gallio.Ambience.Server.exe.Automatic" Name="Gallio.Ambience.Server.exe" KeyPath="yes" />
-                <File Id="Gallio.Ambience.Server.exe.config.Automatic" Name="Gallio.Ambience.Server.exe.config" />
-
-                <ServiceInstall Id="svc_Gallio.Ambience.Service.Automatic"
-                     Name="Gallio.Ambience"
-                     DisplayName="Gallio Ambience database server"
-                     Type="ownProcess"
-                     Start="auto"
-                     ErrorControl="normal"
-                     Description="Stores persistent data shared across test runs."
-                     Account="NT AUTHORITY\NetworkService" />
-
-                <ServiceControl Id="Gallio.Ambience.ServiceControl.Automatic" Name="Gallio.Ambience" Start="install" Stop="both" Remove="uninstall" Wait="yes" />
+                <ServiceControl Id="Gallio.Ambience.ServiceControl" Name="Gallio.Ambience" Stop="both" Remove="uninstall" Wait="yes" />
             </Component>
         </DirectoryRef>
 
@@ -74,18 +61,12 @@
             Description="Installs the Ambience database client and server.  Stores persistent data shared across test runs.">
 
             <ComponentRef Id="Gallio.Ambience.dll" />
-            <ComponentRef Id="Gallio.Ambience.Server.exe.Manual" />
-            <ComponentRef Id="Gallio.Ambience.Server.exe.Automatic" />
+            <ComponentRef Id="Gallio.Ambience.UI.dll" />
+            <ComponentRef Id="Gallio.Ambience.Server.exe" />
             <ComponentRef Id="Mono.GetOptions.License" />
             <ComponentRef Id="Cecil.FlowAnalysis.License" />
             <ComponentRef Id="db4o.License" />
         </Feature>
-
-        <InstallUISequence>
-            <Custom Action="Set.Gallio.Ambience.StartMode.Automatic" After="CostFinalize">?Gallio.Ambience.Server.exe.Automatic &gt; 2</Custom>
-        </InstallUISequence>
-
-        <CustomAction Id="Set.Gallio.Ambience.StartMode.Automatic" Property="GALLIO.AMBIENCE.STARTMODE" Value="Automatic"></CustomAction>
     </Fragment>
 <?endif?>
 </Wix>

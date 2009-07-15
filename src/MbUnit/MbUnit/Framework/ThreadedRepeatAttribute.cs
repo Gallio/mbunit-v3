@@ -92,7 +92,7 @@ namespace MbUnit.Framework
                                 TestOutcome innerOutcome = inner(state);
                                 if (innerOutcome.Status != TestStatus.Passed)
                                     throw new SilentTestException(innerOutcome);
-                            });
+                            }, null, false, codeElement);
 
                             threadOutcomes[index] = threadContext.Outcome;
                         }, null);

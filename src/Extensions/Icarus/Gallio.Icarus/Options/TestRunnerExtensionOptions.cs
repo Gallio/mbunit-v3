@@ -15,9 +15,11 @@
 
 using System;
 using System.Windows.Forms;
+using Gallio.Common.Policies;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Runner;
 using Gallio.Runner.Extensions;
+using Gallio.UI.ErrorReporting;
 
 namespace Gallio.Icarus.Options
 {
@@ -45,13 +47,15 @@ namespace Gallio.Icarus.Options
             try
             {
                 TestRunnerExtensionUtils.CreateExtensionFromSpecification(newExtensionTextBox.Text);
-                optionsController.TestRunnerExtensions.Add(newExtensionTextBox.Text);
-                newExtensionTextBox.Text = string.Empty;
             }
             catch (RunnerException ex)
             {
-                MessageBox.Show(ex.ToString());
+                ErrorDialog.Show(this, "Add Extension", "Could not instantiate an extension from the given specification.  The extension has not been added.", ex.ToString());
+                return;
             }
+
+            optionsController.TestRunnerExtensions.Add(newExtensionTextBox.Text);
+            newExtensionTextBox.Text = string.Empty;
         }
 
         private void testRunnerExtensionsListBox_SelectedIndexChanged(object sender, EventArgs e)

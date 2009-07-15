@@ -23,35 +23,6 @@
             <DialogRef Id="ResumeDlg" />
             <DialogRef Id="UserExit" />
 
-            <Dialog Id="SettingsDlg" Width="370" Height="270" Title="Settings">
-                <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Text="!(loc.WixUIBack)" />
-                <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="!(loc.WixUINext)" />
-                <Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Cancel="yes" Text="!(loc.WixUICancel)">
-                    <Publish Event="SpawnDialog" Value="CancelDlg">1</Publish>
-                </Control>
-                <Control Id="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44" TabSkip="no" Text="!(loc.CustomizeDlgBannerBitmap)" />
-                <Control Id="BannerLine" Type="Line" X="0" Y="44" Width="370" Height="0" />
-                <Control Id="BottomLine" Type="Line" X="0" Y="234" Width="370" Height="0" />
-                <Control Id="Description" Type="Text" X="25" Y="23" Width="280" Height="15" Transparent="yes" NoPrefix="yes" Text="Specify settings for installed components." />
-                <Control Id="Title" Type="Text" X="15" Y="6" Width="210" Height="15" Transparent="yes" NoPrefix="yes" Text="{\WixUI_Font_Title}Settings" />
-
-<?ifdef FEATURE_AMBIENCE ?>
-                <Control Id="Gallio.Ambience.StartMode.Label" Type="Text" X="25" Y="75" Width="225" Height="20" Text="Ambience database server startup mode:">
-                    <Condition Action="hide">not (&amp;feat_Gallio.Ambience &gt; 2 or (&amp;feat_Gallio.Ambience = -1 and !feat_Gallio.Ambience &gt; 2))</Condition>
-                </Control>
-
-                <Control Id="Gallio.Ambience.StartMode.ComboBox" Type="ComboBox" X="250" Y="75" Width="70" Height="20" Property="GALLIO.AMBIENCE.STARTMODE" ComboList="yes">
-                    <ComboBox Property="GALLIO.AMBIENCE.STARTMODE">
-                        <ListItem Value="Manual" />
-                        <ListItem Value="Automatic" />
-                    </ComboBox>
-                    <Condition Action="hide">not (&amp;feat_Gallio.Ambience &gt; 2 or (&amp;feat_Gallio.Ambience = -1 and !feat_Gallio.Ambience &gt; 2))</Condition>
-                    <!-- FIXME: We are unable to update the existing setting in place. -->
-                    <Condition Action="disable">not (&amp;feat_Gallio.Ambience &gt; 2)</Condition>
-                </Control>
-<?endif?>
-            </Dialog>
-
             <Publish Dialog="ExitDialog" Control="Finish" Event="EndDialog" Value="Return" Order="999">1</Publish>
 
             <Publish Dialog="WelcomeDlg" Control="Next" Event="NewDialog" Value="LicenseAgreementDlg">1</Publish>
@@ -60,22 +31,17 @@
             <Publish Dialog="LicenseAgreementDlg" Control="Next" Event="NewDialog" Value="SetupTypeDlg" Order="2">LicenseAccepted = "1"</Publish>
 
             <Publish Dialog="SetupTypeDlg" Control="Back" Event="NewDialog" Value="LicenseAgreementDlg">1</Publish>
-            <Publish Dialog="SetupTypeDlg" Control="TypicalButton" Event="NewDialog" Value="SettingsDlg">1</Publish>
+            <Publish Dialog="SetupTypeDlg" Control="TypicalButton" Event="NewDialog" Value="VerifyReadyDlg">1</Publish>
             <Publish Dialog="SetupTypeDlg" Control="CustomButton" Event="NewDialog" Value="CustomizeDlg">1</Publish>
-            <Publish Dialog="SetupTypeDlg" Control="CompleteButton" Event="NewDialog" Value="SettingsDlg">1</Publish>
+            <Publish Dialog="SetupTypeDlg" Control="CompleteButton" Event="NewDialog" Value="VerifyReadyDlg">1</Publish>
 
             <Publish Dialog="CustomizeDlg" Control="Back" Event="NewDialog" Value="MaintenanceTypeDlg" Order="1">WixUI_InstallMode = "Change"</Publish>
             <Publish Dialog="CustomizeDlg" Control="Back" Event="NewDialog" Value="SetupTypeDlg" Order="2">WixUI_InstallMode = "InstallCustom"</Publish>
-            <Publish Dialog="CustomizeDlg" Control="Next" Event="NewDialog" Value="SettingsDlg">1</Publish>
+            <Publish Dialog="CustomizeDlg" Control="Next" Event="NewDialog" Value="VerifyReadyDlg">1</Publish>
 
-            <Publish Dialog="SettingsDlg" Control="Back" Event="NewDialog" Value="CustomizeDlg" Order="1">WixUI_InstallMode = "InstallCustom"</Publish>
-            <Publish Dialog="SettingsDlg" Control="Back" Event="NewDialog" Value="SetupTypeDlg" Order="2">WixUI_InstallMode = "InstallTypical" OR WixUI_InstallMode = "InstallComplete"</Publish>
-            <Publish Dialog="SettingsDlg" Control="Back" Event="NewDialog" Value="CustomizeDlg" Order="3">WixUI_InstallMode = "Change"</Publish>
-            <Publish Dialog="SettingsDlg" Control="Next" Event="NewDialog" Value="VerifyReadyDlg">1</Publish>
-
-            <Publish Dialog="VerifyReadyDlg" Control="Back" Event="NewDialog" Value="SettingsDlg" Order="1">WixUI_InstallMode = "InstallCustom"</Publish>
-            <Publish Dialog="VerifyReadyDlg" Control="Back" Event="NewDialog" Value="SettingsDlg" Order="2">WixUI_InstallMode = "InstallTypical" OR WixUI_InstallMode = "InstallComplete"</Publish>
-            <Publish Dialog="VerifyReadyDlg" Control="Back" Event="NewDialog" Value="SettingsDlg" Order="3">WixUI_InstallMode = "Change"</Publish>
+            <Publish Dialog="VerifyReadyDlg" Control="Back" Event="NewDialog" Value="CustomizeDlg" Order="1">WixUI_InstallMode = "InstallCustom"</Publish>
+            <Publish Dialog="VerifyReadyDlg" Control="Back" Event="NewDialog" Value="SetupTypeDlg" Order="2">WixUI_InstallMode = "InstallTypical" OR WixUI_InstallMode = "InstallComplete"</Publish>
+            <Publish Dialog="VerifyReadyDlg" Control="Back" Event="NewDialog" Value="CustomizeDlg" Order="3">WixUI_InstallMode = "Change"</Publish>
             <Publish Dialog="VerifyReadyDlg" Control="Back" Event="NewDialog" Value="MaintenanceTypeDlg" Order="4">WixUI_InstallMode = "Repair" OR WixUI_InstallMode = "Remove"</Publish>
 
             <Publish Dialog="MaintenanceWelcomeDlg" Control="Next" Event="NewDialog" Value="MaintenanceTypeDlg">1</Publish>

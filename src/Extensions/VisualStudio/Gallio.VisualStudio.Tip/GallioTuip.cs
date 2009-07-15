@@ -14,14 +14,12 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using EnvDTE;
-using Gallio.VisualStudio.Shell.UI;
+using Gallio.UI.ErrorReporting;
 using Gallio.VisualStudio.Tip.UI;
 using Microsoft.VisualStudio.TestTools.Common;
-using Microsoft.VisualStudio.TestTools.Exceptions;
 using Microsoft.VisualStudio.TestTools.Vsip;
 
 namespace Gallio.VisualStudio.Tip
@@ -74,11 +72,10 @@ namespace Gallio.VisualStudio.Tip
             {
                 if (gallioTest.Path == null)
                 {
-                    MessageBox.Show(
-                        Properties.Resources.UnknownTestCodeLocation, 
+                    ErrorDialog.Show(NativeWindow.FromHandle((IntPtr) ext.Shell.DTE.MainWindow.HWnd),
                         Properties.Resources.UnknownTestCodeLocationCaption, 
-                        MessageBoxButtons.OK, 
-                        MessageBoxIcon.Error);
+                        Properties.Resources.UnknownTestCodeLocation,
+                        "");
                 }
                 else
                 {

@@ -18,7 +18,7 @@ using System.Timers;
 using Gallio.Common.Policies;
 using Gallio.Icarus.Controllers.EventArgs;
 using Gallio.Icarus.Controllers.Interfaces;
-using Gallio.UI.Progress;
+using Gallio.UI.ProgressMonitoring;
 
 namespace Gallio.Icarus.Controllers
 {

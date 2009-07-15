@@ -1,6 +1,6 @@
-﻿namespace Gallio.UI.Progress
+namespace Gallio.UI.ProgressMonitoring
 {
-    partial class ProgressMonitor
+    partial class ProgressMonitorDialog
     {
         /// <summary>
         /// Required designer variable.
@@ -122,13 +122,12 @@
             this.statusLabel.TabIndex = 5;
             this.statusLabel.Text = "Processing file...";
             // 
-            // ProgressMonitor
+            // ProgressMonitorDialog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.cancelButton;
             this.ClientSize = new System.Drawing.Size(409, 120);
-            this.ControlBox = false;
             this.Controls.Add(this.statusLabel);
             this.Controls.Add(this.flowLayoutPanel1);
             this.Controls.Add(this.pictureBox1);
@@ -138,7 +137,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "ProgressMonitor";
+            this.Name = "ProgressMonitorDialog";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;

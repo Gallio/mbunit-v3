@@ -21,6 +21,7 @@
     <file path="Gallio.Ambience.Server.exe.config" />
   </files>
 
+  <?ifdef NET35?>
   <assemblies>
     <assembly fullName="Gallio.Ambience, Version=0.0.0.0, Culture=neutral, PublicKeyToken=eb9cfa67ee6ab36e"
               codeBase="Gallio.Ambience.dll">
@@ -30,4 +31,5 @@
       </bindingRedirects>
     </assembly>
   </assemblies>
+  <?endif?>
 </plugin>

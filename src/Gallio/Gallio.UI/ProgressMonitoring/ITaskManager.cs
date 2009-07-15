@@ -17,7 +17,7 @@ using System;
 using Gallio.Common;
 using Gallio.Runtime.ProgressMonitoring;
 
-namespace Gallio.UI.Progress
+namespace Gallio.UI.ProgressMonitoring
 {
     ///<summary>
     /// A task manager for UI applications.

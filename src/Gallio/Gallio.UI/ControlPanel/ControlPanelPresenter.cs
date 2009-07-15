@@ -21,6 +21,7 @@ using Gallio.Common;
 using Gallio.Runtime.Extensibility;
 using Gallio.Runtime.ProgressMonitoring;
 using Gallio.Runtime.Security;
+using Gallio.UI.ErrorReporting;
 
 namespace Gallio.UI.ControlPanel
 {
@@ -56,7 +57,7 @@ namespace Gallio.UI.ControlPanel
             }
             else
             {
-                Application.Run(dialog);
+                ErrorDialogUnhandledExceptionHandler.RunApplicationWithHandler(dialog);
                 return dialog.DialogResult;
             }
         }

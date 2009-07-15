@@ -31,7 +31,7 @@ using Gallio.Runtime;
 using Gallio.Runtime.Extensibility;
 using Gallio.Runtime.ProgressMonitoring;
 using Gallio.UI.Common.Policies;
-using Gallio.UI.Progress;
+using Gallio.UI.ProgressMonitoring;
 
 namespace Gallio.Icarus.Controllers
 {

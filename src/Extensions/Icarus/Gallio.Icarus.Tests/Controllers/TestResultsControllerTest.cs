@@ -26,7 +26,7 @@ using Gallio.Model;
 using Gallio.Model.Schema;
 using Gallio.Runner.Events;
 using Gallio.Runner.Reports.Schema;
-using Gallio.UI.Progress;
+using Gallio.UI.ProgressMonitoring;
 using MbUnit.Framework;
 using Rhino.Mocks;
 

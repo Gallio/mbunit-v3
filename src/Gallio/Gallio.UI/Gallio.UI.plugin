@@ -42,7 +42,7 @@
              defaultComponentType="Gallio.UI.ControlPanel.Preferences.PlaceholderPreferencePaneProvider, Gallio.UI"/>
 
     <service serviceId="Gallio.UI.TaskManager" 
-             serviceType="Gallio.UI.Progress.ITaskManager, Gallio.UI" />
+             serviceType="Gallio.UI.ProgressMonitoring.ITaskManager, Gallio.UI" />
 
     <service serviceId="Gallio.UI.UnhandledExceptionPolicy"
          serviceType="Gallio.UI.Common.Policies.IUnhandledExceptionPolicy, Gallio.UI" />
@@ -96,7 +96,7 @@
 
     <component componentId="Gallio.UI.TaskManager" 
                serviceId="Gallio.UI.TaskManager" 
-               componentType="Gallio.UI.Progress.TaskManager, Gallio.UI" />
+               componentType="Gallio.UI.ProgressMonitoring.TaskManager, Gallio.UI" />
 
     <component componentId="Gallio.UI.UnhandledExceptionPolicy" 
                serviceId="Gallio.UI.UnhandledExceptionPolicy" 

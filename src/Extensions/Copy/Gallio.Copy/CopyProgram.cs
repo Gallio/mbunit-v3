@@ -23,7 +23,8 @@ using Gallio.Runtime;
 using Gallio.Runtime.ConsoleSupport;
 using Gallio.Runtime.Logging;
 using Gallio.UI.Common.Policies;
-using Gallio.UI.Progress;
+using Gallio.UI.ErrorReporting;
+using Gallio.UI.ProgressMonitoring;
 
 namespace Gallio.Copy
 {
@@ -67,7 +68,8 @@ namespace Gallio.Copy
                 var registry = RuntimeAccessor.Registry;
 
                 var copyController = new CopyController(fileSystem, unhandledExceptionPolicy, taskManager, registry);
-                Application.Run(new CopyForm(copyController));
+
+                ErrorDialogUnhandledExceptionHandler.RunApplicationWithHandler(new CopyForm(copyController));
             }
 
             return 0;

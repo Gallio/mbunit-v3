@@ -32,6 +32,7 @@ using System;
 using System.Windows.Forms;
 using Gallio.Icarus.Controllers;
 using Gallio.Runner.Projects.Schema;
+using Gallio.UI.ErrorReporting;
 
 namespace Gallio.Icarus
 {
@@ -70,9 +71,7 @@ namespace Gallio.Icarus
             if (filtersListBox.Items.Contains(filterNameTextBox.Text))
             {
                 // TODO: Localisation 
-                const string title = "Duplicate test filter";
-                const string message = "A test filter with that name already exists. Please choose another.";
-                MessageBox.Show(message, title, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ErrorDialog.Show(this, "Duplicate test filter", "A test filter with that name already exists. Please choose another.", "");
             }
             else
             {

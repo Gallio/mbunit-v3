@@ -18,12 +18,12 @@ using System.Windows.Forms;
 using Gallio.Common.Concurrency;
 using Gallio.Runtime.ProgressMonitoring;
 
-namespace Gallio.UI.Progress
+namespace Gallio.UI.ProgressMonitoring
 {
     ///<summary>
     /// Progress dialog.
     ///</summary>
-    public partial class ProgressMonitor : Form
+    public partial class ProgressMonitorDialog : Form
     {
         private readonly ObservableProgressMonitor progressMonitor;
 
@@ -31,7 +31,7 @@ namespace Gallio.UI.Progress
         /// Default constructor.
         ///</summary>
         ///<param name="progressMonitor">The progress monitor to display information for.</param>
-        public ProgressMonitor(ObservableProgressMonitor progressMonitor)
+        public ProgressMonitorDialog(ObservableProgressMonitor progressMonitor)
         {
             InitializeComponent();
 

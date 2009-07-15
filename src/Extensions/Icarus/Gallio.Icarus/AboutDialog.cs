@@ -17,6 +17,7 @@ using System;
 using System.Diagnostics;
 using System.Windows.Forms;
 using Gallio.Icarus.Controllers;
+using Gallio.UI.ErrorReporting;
 
 namespace Gallio.Icarus
 {
@@ -64,7 +65,7 @@ namespace Gallio.Icarus
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Unable to open the gallio.org website.\n" + ex);
+                ErrorDialog.Show(this, "Navigation Error", "Unable to open the gallio.org website.", ex.ToString());
             }
         }
     }

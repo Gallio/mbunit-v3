@@ -31,7 +31,8 @@ using Gallio.Model;
 using Gallio.Runner.Projects.Schema;
 using Gallio.Runtime;
 using Gallio.UI.Common.Synchronization;
-using Gallio.UI.Progress;
+using Gallio.UI.ErrorReporting;
+using Gallio.UI.ProgressMonitoring;
 using WeifenLuo.WinFormsUI.Docking;
 using UnhandledExceptionPolicy = Gallio.Common.Policies.UnhandledExceptionPolicy;
 using Gallio.Icarus.Utilities;
@@ -107,8 +108,6 @@ namespace Gallio.Icarus
 
             InitializeComponent();
 
-            UnhandledExceptionPolicy.ReportUnhandledException += ReportUnhandledException;
-
             var sourceCodeController = RuntimeAccessor.ServiceLocator.Resolve<ISourceCodeController>();
 
             testExplorer = new TestExplorer(optionsController, projectController, testController, 
@@ -145,7 +144,7 @@ namespace Gallio.Icarus
             taskManager.TaskCompleted += (sender, e) => Sync.Invoke(this, TaskCompleted);
             progressController.DisplayProgressDialog += (sender, e) => Sync.Invoke(this, () =>
             {
-                var dialog = new ProgressMonitor(e.ProgressMonitor);
+                var dialog = new ProgressMonitorDialog(e.ProgressMonitor);
                 dialog.Show(this);
             });
         }
@@ -321,13 +320,17 @@ namespace Gallio.Icarus
 
         private void addFilesToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            AddFiles();
+        }
+
+        private void AddFiles()
+        {
             using (var openFileDialog = Dialogs.CreateAddFilesDialog())
             {
                 if (openFileDialog.ShowDialog(this) != DialogResult.OK)
                     return;
 
-                var command = new AddFilesCommand(projectController, testController) 
-                    { Files = openFileDialog.FileNames };
+                var command = new AddFilesCommand(projectController, testController) { Files = openFileDialog.FileNames };
                 taskManager.QueueTask(command);
             }
         }
@@ -437,8 +440,6 @@ namespace Gallio.Icarus
 
                 // save dock panel config
                 dockPanel.SaveAsXml(Paths.DockConfigFile);
-
-                UnhandledExceptionPolicy.ReportUnhandledException -= ReportUnhandledException;
             }
             catch
             { }
@@ -502,12 +503,6 @@ namespace Gallio.Icarus
             Reload(optionsController.RunTestsAfterReload);
         }
 
-        private void ReportUnhandledException(object sender, CorrelatedExceptionEventArgs e)
-        {
-            Sync.Invoke(this, () => MessageBox.Show(this, e.GetDescription(), e.Message, 
-                MessageBoxButtons.OK, MessageBoxIcon.Error));
-        }
-
         private void ProgressUpdate()
         {
             var progressMonitor = taskManager.ProgressMonitor;
@@ -555,6 +550,21 @@ namespace Gallio.Icarus
         private void runTestsWithDebuggerButton_Click(object sender, EventArgs e)
         {
             StartTests(true);
+        }
+
+        private void saveProjectToolStripButton_Click(object sender, EventArgs e)
+        {
+            SaveProject();
+        }
+
+        private void addFilesToolStripButton_Click(object sender, EventArgs e)
+        {
+            AddFiles();
+        }
+
+        private void removeAllFilesToolStripButton_Click(object sender, EventArgs e)
+        {
+            RemoveAllFiles();
         }
     }
 }

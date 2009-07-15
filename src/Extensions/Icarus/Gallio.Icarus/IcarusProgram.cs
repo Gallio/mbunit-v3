@@ -29,6 +29,7 @@ using Gallio.Runtime.ConsoleSupport;
 using Gallio.Common.IO;
 using Gallio.Common.Xml;
 using Gallio.Common.Policies;
+using Gallio.UI.ErrorReporting;
 
 namespace Gallio.Icarus
 {
@@ -92,16 +93,8 @@ namespace Gallio.Icarus
                 runtimeLogController.SetLogger(runtimeLogger);
 
                 var applicationController = new ApplicationController(Arguments, RuntimeAccessor.ServiceLocator);
-                var main = new Main(applicationController);
 
-                try
-                {
-                    Application.Run(main);
-                }
-                catch (Exception ex)
-                {
-                    UnhandledExceptionPolicy.Report("Error in Application.Run", ex);
-                }
+                ErrorDialogUnhandledExceptionHandler.RunApplicationWithHandler(new Main(applicationController));
             }
 
             return ResultCode.Success;

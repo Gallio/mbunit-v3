@@ -14,15 +14,10 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Text;
 using System.Windows.Forms;
 using Gallio.Model;
 using Gallio.Runtime.Installer;
-using Gallio.Runtime.Preferences;
 using Gallio.Runtime.ProgressMonitoring;
 using Gallio.Runtime.Security;
 using Gallio.TDNetRunner.Core;
@@ -32,7 +27,7 @@ namespace Gallio.TDNetRunner.UI.Preferences
 {
     public partial class TDNetRunnerInstallationPreferencePane : PreferencePane
     {
-        private string[] frameworkIds;
+        private bool frameworksPopulated;
 
         public TDNetRunnerInstallationPreferencePane()
         {
@@ -53,10 +48,12 @@ namespace Gallio.TDNetRunner.UI.Preferences
             {
                 base.ApplyPendingSettingsChanges(elevationContext, progressMonitor);
 
-                for (int i = 0; i < frameworkIds.Length; i++)
+                foreach (DataGridViewRow row in frameworkGridView.Rows)
                 {
-                    var installationMode = InstallationModeFromString((string) frameworkGridView.Rows[i].Cells[1].Value);
-                    PreferenceManager.SetInstallationModeForFramework(frameworkIds[i], installationMode);
+                    var installationMode = InstallationModeFromString((string)row.Cells[1].Value);
+                    var frameworkId = (string)row.Tag;
+
+                    PreferenceManager.SetInstallationModeForFramework(frameworkId, installationMode);
                 }
                 progressMonitor.Worked(1);
 
@@ -66,24 +63,23 @@ namespace Gallio.TDNetRunner.UI.Preferences
 
         private void TDNetPreferencePane_Load(object sender, EventArgs e)
         {
-            var frameworkHandles = FrameworkManager.FrameworkHandles;
-            frameworkIds = new string[frameworkHandles.Count];
-
-            for (int i = 0; i < frameworkHandles.Count; i++)
+            foreach (var frameworkHandle in FrameworkManager.FrameworkHandles)
             {
-                TestFrameworkTraits traits = frameworkHandles[i].GetTraits();
-                string frameworkId = frameworkHandles[i].Id;
+                TestFrameworkTraits traits = frameworkHandle.GetTraits();
+                string frameworkId = frameworkHandle.Id;
                 TDNetRunnerInstallationMode installationMode = PreferenceManager.GetInstallationModeForFramework(frameworkId);
-                frameworkGridView.Rows.Add(traits.Name, InstallationModeToString(installationMode));
-                frameworkIds[i] = frameworkId;
+                int index = frameworkGridView.Rows.Add(traits.Name, InstallationModeToString(installationMode));
+                DataGridViewRow row = frameworkGridView.Rows[index];
+                row.Tag = frameworkId;
             }
 
             frameworkGridView.Sort(FrameworkNameColumn, ListSortDirection.Ascending);
+            frameworksPopulated = true;
         }
 
         private void frameworkGridView_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
-            if (frameworkIds == null)
+            if (! frameworksPopulated)
                 return; // This method may be called during InitializeComponent.
 
             RefreshSettingsChanges();
@@ -91,10 +87,12 @@ namespace Gallio.TDNetRunner.UI.Preferences
 
         private void RefreshSettingsChanges()
         {
-            for (int i = 0; i < frameworkIds.Length; i++)
+            foreach (DataGridViewRow row in frameworkGridView.Rows)
             {
-                var installationMode = InstallationModeFromString((string) frameworkGridView.Rows[i].Cells[1].Value);
-                if (installationMode != PreferenceManager.GetInstallationModeForFramework(frameworkIds[i]))
+                var installationMode = InstallationModeFromString((string) row.Cells[1].Value);
+                var frameworkId = (string) row.Tag;
+
+                if (installationMode != PreferenceManager.GetInstallationModeForFramework(frameworkId))
                 {
                     PendingSettingsChanges = true;
                     return;

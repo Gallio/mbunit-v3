@@ -116,20 +116,27 @@
     </Compile>
     <Compile Include="ControlPanel\Preferences\PreferencePaneProviderTraits.cs" />
     <Compile Include="ControlPanel\NamespaceDoc.cs" />
+    <Compile Include="ErrorReporting\ErrorDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ErrorReporting\ErrorDialog.Designer.cs">
+      <DependentUpon>ErrorDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\NamespaceDoc.cs" />
     <Compile Include="Controls\Native.cs" />
     <Compile Include="Controls\ShieldButton.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Progress\ICommand.cs" />
-    <Compile Include="Progress\ITaskManager.cs" />
-    <Compile Include="Progress\ProgressMonitor.cs">
+    <Compile Include="ErrorReporting\ErrorDialogUnhandledExceptionHandler.cs" />
+    <Compile Include="ProgressMonitoring\ICommand.cs" />
+    <Compile Include="ProgressMonitoring\ITaskManager.cs" />
+    <Compile Include="ProgressMonitoring\ProgressMonitorDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Progress\ProgressMonitor.Designer.cs">
-      <DependentUpon>ProgressMonitor.cs</DependentUpon>
+    <Compile Include="ProgressMonitoring\ProgressMonitorDialog.Designer.cs">
+      <DependentUpon>ProgressMonitorDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="Progress\TaskManager.cs" />
+    <Compile Include="ProgressMonitoring\TaskManager.cs" />
     <Compile Include="Reports\HtmlTestStepRunFormatter.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -179,8 +186,11 @@
       <DependentUpon>PreferencePane.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Progress\ProgressMonitor.resx">
-      <DependentUpon>ProgressMonitor.cs</DependentUpon>
+    <EmbeddedResource Include="ErrorReporting\ErrorDialog.resx">
+      <DependentUpon>ErrorDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ProgressMonitoring\ProgressMonitorDialog.resx">
+      <DependentUpon>ProgressMonitorDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

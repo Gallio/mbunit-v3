@@ -22,6 +22,7 @@ using EnvDTE;
 using System.Runtime.InteropServices;
 using Gallio.Navigator.Native;
 using Gallio.Runtime.Logging;
+using Gallio.UI.ErrorReporting;
 using Gallio.VisualStudio.Interop;
 
 namespace Gallio.Navigator
@@ -74,11 +75,9 @@ namespace Gallio.Navigator
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
-
-                MessageBox.Show(String.Format(
+                ErrorDialog.Show(null, "Gallio Navigator", String.Format(
                     "Gallio could not navigate to: {0} ({1},{2}) because the file was not found or Visual Studio could not be controlled.\nPlease try again after launching Visual Studio manually and opening the appropriate solution.",
-                    path, lineNumber, columnNumber));
+                    path, lineNumber, columnNumber), ex.ToString());
                 return false;
             }
         }

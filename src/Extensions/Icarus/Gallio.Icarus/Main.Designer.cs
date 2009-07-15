@@ -92,6 +92,10 @@ namespace Gallio.Icarus
             this.mainToolStrip = new System.Windows.Forms.ToolStrip();
             this.newProjectToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.openProjectToolStripButton = new System.Windows.Forms.ToolStripButton();
+            this.saveProjectToolStripButton = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator13 = new System.Windows.Forms.ToolStripSeparator();
+            this.addFilesToolStripButton = new System.Windows.Forms.ToolStripButton();
+            this.removeAllFilesToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.reloadToolbarButton = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
@@ -398,7 +402,7 @@ namespace Gallio.Icarus
             // viewAsToolStripMenuItem
             // 
             this.viewAsToolStripMenuItem.Name = "viewAsToolStripMenuItem";
-            this.viewAsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.viewAsToolStripMenuItem.Size = new System.Drawing.Size(115, 22);
             this.viewAsToolStripMenuItem.Text = "View As";
             // 
             // toolsToolStripMenuItem
@@ -413,7 +417,7 @@ namespace Gallio.Icarus
             // 
             this.optionsMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("optionsMenuItem.Image")));
             this.optionsMenuItem.Name = "optionsMenuItem";
-            this.optionsMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.optionsMenuItem.Size = new System.Drawing.Size(125, 22);
             this.optionsMenuItem.Text = "&Options...";
             this.optionsMenuItem.Click += new System.EventHandler(this.optionsMenuItem_Click);
             // 
@@ -479,6 +483,10 @@ namespace Gallio.Icarus
             this.mainToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.newProjectToolStripButton,
             this.openProjectToolStripButton,
+            this.saveProjectToolStripButton,
+            this.toolStripSeparator13,
+            this.addFilesToolStripButton,
+            this.removeAllFilesToolStripButton,
             this.toolStripSeparator1,
             this.reloadToolbarButton,
             this.toolStripSeparator6,
@@ -489,29 +497,64 @@ namespace Gallio.Icarus
             this.helpToolbarButton});
             this.mainToolStrip.Location = new System.Drawing.Point(3, 0);
             this.mainToolStrip.Name = "mainToolStrip";
-            this.mainToolStrip.Size = new System.Drawing.Size(387, 25);
+            this.mainToolStrip.Size = new System.Drawing.Size(543, 25);
             this.mainToolStrip.TabIndex = 3;
             this.mainToolStrip.Text = "Main Menu";
             // 
             // newProjectToolStripButton
             // 
+            this.newProjectToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.newProjectToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("newProjectToolStripButton.Image")));
             this.newProjectToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.newProjectToolStripButton.Name = "newProjectToolStripButton";
-            this.newProjectToolStripButton.Size = new System.Drawing.Size(51, 22);
-            this.newProjectToolStripButton.Text = "New";
+            this.newProjectToolStripButton.Size = new System.Drawing.Size(23, 22);
+            this.newProjectToolStripButton.Text = "New Project";
             this.newProjectToolStripButton.ToolTipText = "New Project";
             this.newProjectToolStripButton.Click += new System.EventHandler(this.newProjectToolStripButton_Click);
             // 
             // openProjectToolStripButton
             // 
+            this.openProjectToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.openProjectToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("openProjectToolStripButton.Image")));
             this.openProjectToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.openProjectToolStripButton.Name = "openProjectToolStripButton";
-            this.openProjectToolStripButton.Size = new System.Drawing.Size(56, 22);
-            this.openProjectToolStripButton.Text = "Open";
+            this.openProjectToolStripButton.Size = new System.Drawing.Size(23, 22);
+            this.openProjectToolStripButton.Text = "Open Project";
             this.openProjectToolStripButton.ToolTipText = "Open Project";
             this.openProjectToolStripButton.Click += new System.EventHandler(this.openProject_Click);
+            // 
+            // saveProjectToolStripButton
+            // 
+            this.saveProjectToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.saveProjectToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("saveProjectToolStripButton.Image")));
+            this.saveProjectToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.saveProjectToolStripButton.Name = "saveProjectToolStripButton";
+            this.saveProjectToolStripButton.Size = new System.Drawing.Size(23, 22);
+            this.saveProjectToolStripButton.Text = "Save Project";
+            this.saveProjectToolStripButton.Click += new System.EventHandler(this.saveProjectToolStripButton_Click);
+            // 
+            // toolStripSeparator13
+            // 
+            this.toolStripSeparator13.Name = "toolStripSeparator13";
+            this.toolStripSeparator13.Size = new System.Drawing.Size(6, 25);
+            // 
+            // addFilesToolStripButton
+            // 
+            this.addFilesToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("addFilesToolStripButton.Image")));
+            this.addFilesToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.addFilesToolStripButton.Name = "addFilesToolStripButton";
+            this.addFilesToolStripButton.Size = new System.Drawing.Size(75, 22);
+            this.addFilesToolStripButton.Text = "Add Files";
+            this.addFilesToolStripButton.Click += new System.EventHandler(this.addFilesToolStripButton_Click);
+            // 
+            // removeAllFilesToolStripButton
+            // 
+            this.removeAllFilesToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("removeAllFilesToolStripButton.Image")));
+            this.removeAllFilesToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.removeAllFilesToolStripButton.Name = "removeAllFilesToolStripButton";
+            this.removeAllFilesToolStripButton.Size = new System.Drawing.Size(113, 22);
+            this.removeAllFilesToolStripButton.Text = "Remove All Files";
+            this.removeAllFilesToolStripButton.Click += new System.EventHandler(this.removeAllFilesToolStripButton_Click);
             // 
             // toolStripSeparator1
             // 
@@ -700,6 +743,10 @@ namespace Gallio.Icarus
         private System.Windows.Forms.ToolStripButton runTestsWithDebuggerButton;
         private System.Windows.Forms.ToolStripMenuItem recentProjectsToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator12;
+        private System.Windows.Forms.ToolStripButton saveProjectToolStripButton;
+        private System.Windows.Forms.ToolStripButton addFilesToolStripButton;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator13;
+        private System.Windows.Forms.ToolStripButton removeAllFilesToolStripButton;
     }
 }
 

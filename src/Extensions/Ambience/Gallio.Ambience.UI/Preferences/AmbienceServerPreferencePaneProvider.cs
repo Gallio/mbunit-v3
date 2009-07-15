@@ -13,19 +13,22 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Gallio.Runtime.ProgressMonitoring;
+using System;
+using System.Collections.Generic;
+using System.Text;
+using Gallio.Model;
+using Gallio.Runtime.Installer;
+using Gallio.Runtime.Preferences;
+using Gallio.UI.ControlPanel.Preferences;
 
-namespace Gallio.UI.Progress
+namespace Gallio.Ambience.UI.Preferences
 {
-    /// <summary>
-    /// Command pattern.
-    /// </summary>
-    public interface ICommand
+    public class AmbienceServerPreferencePaneProvider : IPreferencePaneProvider
     {
-        /// <summary>
-        /// Run a task (with progress information).
-        /// </summary>
-        /// <param name="progressMonitor"></param>
-        void Execute(IProgressMonitor progressMonitor);
+        public PreferencePane CreatePreferencePane()
+        {
+            var preferencePane = new AmbienceServerPreferencePane();
+            return preferencePane;
+        }
     }
 }

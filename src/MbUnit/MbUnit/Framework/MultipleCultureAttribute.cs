@@ -99,7 +99,7 @@ namespace MbUnit.Framework
 
                             if (innerOutcome.Status != TestStatus.Passed)
                                 throw new SilentTestException(innerOutcome);
-                        });
+                        }, null, false, codeElement);
 
                         outcome = outcome.CombineWith(context.Outcome);
 

@@ -19,6 +19,7 @@ using System.Windows.Forms;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Runner;
 using Gallio.Runner.Extensions;
+using Gallio.UI.ErrorReporting;
 
 namespace Gallio.Icarus.Views.Projects
 {
@@ -77,12 +78,12 @@ namespace Gallio.Icarus.Views.Projects
                 applicationBaseDirectoryTextBox.Text = folderBrowserDialog.SelectedPath;
         }
 
-        private static void DisplayInvalidFolderMessage()
+        private void DisplayInvalidFolderMessage()
         {
             // TODO: move to resources for localisation
             string message = "Folder path does not exist." + Environment.NewLine + "Please select a valid folder path.";
-            const string title = "Invalid folder path";
-            MessageBox.Show(message, title, MessageBoxButtons.OK, MessageBoxIcon.Error);
+            const string title = "Invalid Folder Path";
+            ErrorDialog.Show(this, title, message, "");
         }
 
         private void findWorkingDirectoryButton_Click(object sender, EventArgs e)
@@ -90,25 +91,6 @@ namespace Gallio.Icarus.Views.Projects
             FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog();
             if (folderBrowserDialog.ShowDialog() == DialogResult.OK)
                 workingDirectoryTextBox.Text = folderBrowserDialog.SelectedPath;
-        }
-
-        private void addExtensionButton_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                TestRunnerExtensionUtils.CreateExtensionFromSpecification(newExtensionTextBox.Text);
-                projectController.TestRunnerExtensions.Add(newExtensionTextBox.Text);
-                newExtensionTextBox.Text = string.Empty;
-            }
-            catch (RunnerException ex)
-            {
-                MessageBox.Show(ex.ToString());
-            }
-        }
-
-        private void removeExtensionButton_Click(object sender, EventArgs e)
-        {
-            projectController.TestRunnerExtensions.Remove((string)testRunnerExtensionsListBox.SelectedItem);
         }
 
         private void testRunnerExtensionsListBox_SelectedIndexChanged(object sender, EventArgs e)

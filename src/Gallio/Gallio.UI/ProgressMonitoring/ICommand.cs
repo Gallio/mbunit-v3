@@ -13,34 +13,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Gallio.Common.IO;
 using Gallio.Runtime.ProgressMonitoring;
-using Gallio.UI.ProgressMonitoring;
 
-namespace Gallio.Icarus.Commands
+namespace Gallio.UI.ProgressMonitoring
 {
-    internal class OpenReportCommand : ICommand
+    /// <summary>
+    /// Command pattern.
+    /// </summary>
+    public interface ICommand
     {
-        private readonly IFileSystem fileSystem;
-
-        public string FileName
-        {
-            get;
-            set;
-        }
-
-        public OpenReportCommand(IFileSystem fileSystem)
-        {
-            this.fileSystem = fileSystem;
-        }
-
-        public void Execute(IProgressMonitor progressMonitor)
-        {
-            using (progressMonitor.BeginTask("Opening report", 100))
-            {
-                if (!string.IsNullOrEmpty(FileName))
-                    fileSystem.OpenFile(FileName);
-            }
-        }
+        /// <summary>
+        /// Run a task (with progress information).
+        /// </summary>
+        /// <param name="progressMonitor"></param>
+        void Execute(IProgressMonitor progressMonitor);
     }
 }

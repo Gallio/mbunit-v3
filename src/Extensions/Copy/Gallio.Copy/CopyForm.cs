@@ -1,4 +1,4 @@
-﻿// Copyright 2005-2009 Gallio Project - http://www.gallio.org/
+// Copyright 2005-2009 Gallio Project - http://www.gallio.org/
 // Portions Copyright 2000-2004 Jonathan de Halleux
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,7 +18,8 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using Gallio.Common.Concurrency;
 using Gallio.Common.Policies;
-using Gallio.UI.Progress;
+using Gallio.UI.ErrorReporting;
+using Gallio.UI.ProgressMonitoring;
 
 namespace Gallio.Copy
 {
@@ -36,9 +37,6 @@ namespace Gallio.Copy
             foreach (var plugin in copyController.Plugins)
                 pluginsListView.Items.Add(plugin);
 
-            UnhandledExceptionPolicy.ReportUnhandledException += (sender, e) => Sync.Invoke(this, () => 
-                MessageBox.Show(this, e.GetDescription(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error));
-
             copyController.ProgressUpdate += (sender, e) => Sync.Invoke(this, () =>
             {
                 var progressMonitor = copyController.ProgressMonitor;
@@ -53,7 +51,7 @@ namespace Gallio.Copy
             });
 
             copyController.ShowProgressDialog += 
-                (sender, e) => new ProgressMonitor(copyController.ProgressMonitor).Show(this);
+                (sender, e) => new ProgressMonitorDialog(copyController.ProgressMonitor).Show(this);
         }
 
         private void closeButton_Click(object sender, EventArgs e)

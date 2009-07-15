@@ -22,7 +22,7 @@ using Gallio.Common.Policies;
 using Gallio.Runtime.ProgressMonitoring;
 using Gallio.UI.Common.Policies;
 
-namespace Gallio.UI.Progress
+namespace Gallio.UI.ProgressMonitoring
 {
     /// <inheritdoc />
     public class TaskManager : ITaskManager

@@ -25,7 +25,7 @@ using Gallio.Icarus.Models.ProjectTreeNodes;
 using Gallio.Icarus.Utilities;
 using Gallio.Runtime;
 using Gallio.Icarus.Packages;
-using Gallio.UI.Progress;
+using Gallio.UI.ProgressMonitoring;
 
 namespace Gallio.Icarus
 {

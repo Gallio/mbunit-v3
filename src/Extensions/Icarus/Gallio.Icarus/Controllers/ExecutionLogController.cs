@@ -23,7 +23,7 @@ using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Model.Schema;
 using Gallio.Runner.Events;
 using Gallio.Runner.Reports.Schema;
-using Gallio.UI.Progress;
+using Gallio.UI.ProgressMonitoring;
 
 namespace Gallio.Icarus.Controllers
 {

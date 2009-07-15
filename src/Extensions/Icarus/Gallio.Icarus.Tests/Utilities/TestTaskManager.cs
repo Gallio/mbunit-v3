@@ -17,7 +17,7 @@ using System;
 using Gallio.Common.Policies;
 using System.Collections.Generic;
 using Gallio.Runtime.ProgressMonitoring;
-using Gallio.UI.Progress;
+using Gallio.UI.ProgressMonitoring;
 using Action=Gallio.Common.Action;
 
 namespace Gallio.Icarus.Tests.Utilities
