@@ -10,7 +10,7 @@
     <PluginFile Include="Gallio.Ambience\Gallio.Ambience.plugin" />
 
     <PluginFile Include="Gallio.Ambience.UI\Gallio.Ambience.UI.plugin" />
-    <Binary Include="Gallio.Ambience.UI\bin\Gallio.Ambience.UI.exe" />
+    <Binary Include="Gallio.Ambience.UI\bin\Gallio.Ambience.UI.dll" />
 
     <Binary Include="Gallio.Ambience.Server\bin\Gallio.Ambience.Server.exe" />
     <PluginFile Include="Gallio.Ambience.Server\bin\Gallio.Ambience.Server.exe.config" />
