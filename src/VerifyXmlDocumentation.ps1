@@ -126,7 +126,7 @@ function AnalyseParam([string] $filePath, [string] $header, [string] $doc)
     
     if ($ruleParamMustTerminateByPeriod -and !$data.EndsWith('.'))
     {
-      Warn -filePath $filePath -header $header -message "The content of the <param> element must ends with a period character."
+      Warn -filePath $filePath -header $header -message "The content of the <param> element must end with a period character."
     }
     
     #TODO: implemented other analysis criteria here...
@@ -145,7 +145,7 @@ function AnalyseTypeParam([string] $filePath, [string] $header, [string] $doc)
     
     if ($ruleParamTypeMustTerminateByPeriod -and !$data.EndsWith('.'))
     {
-      Warn -filePath $filePath -header $header -message "The content of the <typeparam> element must ends with a period character."
+      Warn -filePath $filePath -header $header -message "The content of the <typeparam> element must end with a period character."
     }
     
     #TODO: implemented other analysis criteria here...
@@ -164,7 +164,7 @@ function AnalyseException([string] $filePath, [string] $header, [string] $doc)
     
     if ($ruleExceptionMustTerminateByPeriod -and !$data.EndsWith('.'))
     {
-      Warn -filePath $filePath -header $header -message "The content of the <exception> element must ends with a period character."
+      Warn -filePath $filePath -header $header -message "The content of the <exception> element must end with a period character."
     }
     
     #TODO: implemented other analysis criteria here...
