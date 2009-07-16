@@ -18,8 +18,8 @@
         <Feature Id="feat_Gallio.DLRIntegration" Title="DLR Integration" Level="1" AllowAdvertise="no"
             Description="Installs the Gallio Dynamic Language Runtime integration." Absent="disallow">
             <ComponentRef Id="Gallio.DLRIntegration" />
-            <ComponentGroupRef Id="DLR-libs-ComponentGroup1" />
-            <ComponentGroupRef Id="DLR-scripts-ComponentGroup1" />
+            <ComponentGroupRef Id="DLR.libs.ComponentGroup1" />
+            <ComponentGroupRef Id="DLR.scripts.ComponentGroup1" />
         </Feature>
     </Fragment>
     <?endif ?>

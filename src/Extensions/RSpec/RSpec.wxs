@@ -19,8 +19,8 @@
         <Feature Id="feat_RSpecAdapter" Title="RSpec" Level="1" AllowAdvertise="no"
             Description="Installs the RSpec adapter.  Enables Gallio to run RSpec tests.">
             <ComponentRef Id="Gallio.RSpecAdapter" />
-            <ComponentGroupRef Id="RSpec-libs-ComponentGroup1" />
-            <ComponentGroupRef Id="RSpec-scripts-ComponentGroup1" />
+            <ComponentGroupRef Id="RSpec.libs.ComponentGroup1" />
+            <ComponentGroupRef Id="RSpec.scripts.ComponentGroup1" />
         </Feature>
     </Fragment>
     <?endif ?>

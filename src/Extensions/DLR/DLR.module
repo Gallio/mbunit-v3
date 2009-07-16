@@ -21,21 +21,21 @@
   </ItemGroup>
 
   <Target Name="AfterImage">
-    <RemoveDir Directories="$(ImageDir)\DLR\libs" />
-    <MakeDir Directories="$(ImageDir)\DLR" />
+    <RemoveDir Directories="$(ImageDir)\bin\DLR\libs" />
+    <MakeDir Directories="$(ImageDir)\bin\DLR" />
 
     <SvnExport RepositoryPath="$(ModuleDir)\libs"
-               LocalPath="$(ImageDir)\DLR\libs" />
+               LocalPath="$(ImageDir)\bin\DLR\libs" />
 			   
-    <RemoveDir Directories="$(ImageDir)\DLR\Scripts" />
-    <MakeDir Directories="$(ImageDir)\DLR" />
+    <RemoveDir Directories="$(ImageDir)\bin\DLR\Scripts" />
+    <MakeDir Directories="$(ImageDir)\bin\DLR" />
 
     <SvnExport RepositoryPath="$(ModuleDir)\Gallio.DLRIntegration\Scripts"
-               LocalPath="$(ImageDir)\DLR\Scripts" />
+               LocalPath="$(ImageDir)\bin\DLR\Scripts" />
   </Target>
 
   <Target Name="BeforeDist">
-    <Exec Command="&quot;$(ToolsDir)\Wix\heat.exe&quot; dir &quot;$(ImageDir)\DLR\libs&quot; -ag -ke -nologo -sfrag -sreg -t:DLR-libs.xslt -out DLR-libs.wxi" />
-    <Exec Command="&quot;$(ToolsDir)\Wix\heat.exe&quot; dir &quot;$(ImageDir)\DLR\Scripts&quot; -ag -ke -nologo -sfrag -sreg -t:DLR-scripts.xslt -out DLR-scripts.wxi" />
+    <Exec Command="&quot;$(ToolsDir)\Wix\heat.exe&quot; dir &quot;$(ImageDir)\bin\DLR\libs&quot; -gg -ke -nologo -sfrag -sreg -t:DLR-libs.xslt -out DLR-libs.wxi" />
+    <Exec Command="&quot;$(ToolsDir)\Wix\heat.exe&quot; dir &quot;$(ImageDir)\bin\DLR\Scripts&quot; -gg -ke -nologo -sfrag -sreg -t:DLR-scripts.xslt -out DLR-scripts.wxi" />
   </Target>
 </Project>

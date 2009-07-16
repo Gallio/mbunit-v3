@@ -21,21 +21,21 @@
   </ItemGroup>
   
   <Target Name="AfterImage">
-    <RemoveDir Directories="$(ImageDir)\RSpec\libs" />
-    <MakeDir Directories="$(ImageDir)\RSpec" />
+    <RemoveDir Directories="$(ImageDir)\bin\RSpec\libs" />
+    <MakeDir Directories="$(ImageDir)\bin\RSpec" />
   
     <SvnExport RepositoryPath="$(ModuleDir)\libs"
-               LocalPath="$(ImageDir)\RSpec\libs" />
+               LocalPath="$(ImageDir)\bin\RSpec\libs" />
 			   
-    <RemoveDir Directories="$(ImageDir)\RSpec\Scripts" />
-    <MakeDir Directories="$(ImageDir)\RSpec\Scripts" />
+    <RemoveDir Directories="$(ImageDir)\bin\RSpec\Scripts" />
+    <MakeDir Directories="$(ImageDir)\bin\RSpec" />
   
     <SvnExport RepositoryPath="$(ModuleDir)\Gallio.RSpecAdapter\Scripts"
-               LocalPath="$(ImageDir)\RSpec\Scripts" />
+               LocalPath="$(ImageDir)\bin\RSpec\Scripts" />
   </Target>
   
   <Target Name="BeforeDist">
-    <Exec Command="&quot;$(ToolsDir)\Wix\heat.exe&quot; dir &quot;$(ImageDir)\RSpec\libs&quot; -ag -ke -nologo -sfrag -sreg -t:RSpec-libs.xslt -out RSpec-libs.wxi" />
-    <Exec Command="&quot;$(ToolsDir)\Wix\heat.exe&quot; dir &quot;$(ImageDir)\RSpec\Scriptsquot; -ag -ke -nologo -sfrag -sreg -t:RSpec-scripts.xslt -out RSpec-scripts.wxi" />
+    <Exec Command="&quot;$(ToolsDir)\Wix\heat.exe&quot; dir &quot;$(ImageDir)\bin\RSpec\libs&quot; -gg -ke -nologo -sfrag -sreg -t:RSpec-libs.xslt -out RSpec-libs.wxi" />
+    <Exec Command="&quot;$(ToolsDir)\Wix\heat.exe&quot; dir &quot;$(ImageDir)\bin\RSpec\Scripts&quot; -gg -ke -nologo -sfrag -sreg -t:RSpec-scripts.xslt -out RSpec-scripts.wxi" />
   </Target>
 </Project>
