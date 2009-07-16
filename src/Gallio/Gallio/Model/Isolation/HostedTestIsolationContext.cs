@@ -92,24 +92,8 @@ namespace Gallio.Model.Isolation
                     shim.Initialize(runtimeSetup, remoteLogger);
                     statusReporter("");
 
-                    TIsolatedTask isolatedTask = null;
-                    try
-                    {
-                        isolatedTask = HostUtils.CreateInstance<TIsolatedTask>(host);
-                        return isolatedTask.Run(args);
-                    }
-                    finally
-                    {
-                        try
-                        {
-                            if (isolatedTask != null)
-                                isolatedTask.Dispose();
-                        }
-                        catch (Exception ex)
-                        {
-                            UnhandledExceptionPolicy.Report("An unhandled exception occurred while disposing the isolated task.", ex);
-                        }
-                    }
+                    var isolatedTask = HostUtils.CreateInstance<TIsolatedTask>(host);
+                    return isolatedTask.Run(args);
                 }
                 finally
                 {

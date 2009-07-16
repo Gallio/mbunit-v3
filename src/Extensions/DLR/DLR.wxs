@@ -1,28 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+    <?include ..\..\Installer.Wix\Features.wxi ?>
+    
+    <?ifdef FEATURE_DLR_INTEGRATION ?>
+    <?include DLR-libs.wxi ?>
+    <?include DLR-scripts.wxi ?>
+
     <Fragment>
         <DirectoryRef Id="binFolder" FileSource="$(var.GallioTargetDir)\bin\">
             <Directory Id="DLR" Name="DLR">
                 <Component Id="Gallio.DLRIntegration" Guid="{2E94473F-CF78-4113-91EA-4B0B87CF4C48}" Win64="no">
                   <File Name="Gallio.DLRIntegration.dll" KeyPath="yes" />
                   <File Name="Gallio.DLRIntegration.plugin" />
-                  <File Name="ipy.exe" />
-                  <File Name="ipyw.exe" />
-                  <File Name="IronPython.dll" />
-                  <File Name="IronPython.Modules.dll" />
-                  <File Name="ir.exe" />
-                  <File Name="IronRuby.dll" />
-                  <File Name="IronRuby.Libraries.dll" />
-                  <File Name="Microsoft.Scripting.Core.dll" />
-                  <File Name="Microsoft.Scripting.dll" />
-                  <File Name="Microsoft.Scripting.ExtensionAttribute.dll" />
-                  <File Id="DLR.MS.PL.txt" Name="Ms-PL.txt" />
                 </Component>
             </Directory>
         </DirectoryRef>
         <Feature Id="feat_Gallio.DLRIntegration" Title="DLR Integration" Level="1" AllowAdvertise="no"
             Description="Installs the Gallio Dynamic Language Runtime integration." Absent="disallow">
             <ComponentRef Id="Gallio.DLRIntegration" />
+            <ComponentGroupRef Id="DLR-libs-ComponentGroup1" />
+            <ComponentGroupRef Id="DLR-scripts-ComponentGroup1" />
         </Feature>
     </Fragment>
+    <?endif ?>
 </Wix>

@@ -12,17 +12,15 @@
     <dependency pluginId="Gallio" />
   </dependencies>
 
+  <probingPaths>
+    <probingPath>libs</probingPath>
+    <probingPath>..\libs</probingPath>
+  </probingPaths>
+
   <files>
     <file path="Gallio.DLRIntegration.plugin" />
     <file path="Gallio.DLRIntegration.dll" />
-    <file path="ipy.exe" />
-    <file path="ipyw.exe" />
-    <file path="IronPython.dll" />
-    <file path="IronPython.Modules.dll" />
-    <file path="ir.exe" />
-    <file path="IronRuby.dll" />
-    <file path="IronRuby.Libraries.dll" />
-    <file path="Ms-PL.txt" />
+    <file path="Microsoft.Dynamic.dll" />
     <file path="Microsoft.Scripting.dll" />
     <file path="Microsoft.Scripting.Core.dll" />
     <file path="Microsoft.Scripting.ExtensionAttribute.dll" />
@@ -37,25 +35,16 @@
       </bindingRedirects>
     </assembly>
 
-    <assembly fullName="IronPython, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35"
-              codeBase="IronPython.dll" />
+    <assembly fullName="Microsoft.Dynamic, Version=0.9.6.10, Culture=neutral, PublicKeyToken=31bf3856ad364e35"
+              codeBase="Microsoft.Dynamic.dll" />
 
-    <assembly fullName="IronPython.Modules, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35"
-              codeBase="IronPython.Modules.dll" />
-
-    <assembly fullName="IronRuby, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35"
-              codeBase="IronRuby.dll" />
-
-    <assembly fullName="IronRuby.Libraries, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35"
-              codeBase="IronRuby.Libraries.dll" />
-
-    <assembly fullName="Microsoft.Scripting, Version=0.9.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35"
+    <assembly fullName="Microsoft.Scripting, Version=0.9.6.10, Culture=neutral, PublicKeyToken=31bf3856ad364e35"
               codeBase="Microsoft.Scripting.dll" />
 
-    <assembly fullName="Microsoft.Scripting.Core, Version=0.9.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35"
+    <assembly fullName="Microsoft.Scripting.Core, Version=0.9.6.10, Culture=neutral, PublicKeyToken=31bf3856ad364e35"
               codeBase="Microsoft.Scripting.Core.dll" />
 
-    <assembly fullName="Microsoft.Scripting.ExtensionAttribute, Version=0.9.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35"
+    <assembly fullName="Microsoft.Scripting.ExtensionAttribute, Version=0.9.6.10, Culture=neutral, PublicKeyToken=31bf3856ad364e35"
               codeBase="Microsoft.Scripting.ExtensionAttribute.dll" />
   </assemblies>
 

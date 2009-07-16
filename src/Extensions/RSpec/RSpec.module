@@ -14,13 +14,28 @@
     <PluginFile Include="Gallio.RSpecAdapter\Gallio.RSpecAdapter.plugin">
       <Folder>RSpec</Folder>
     </PluginFile>
-
-    <Binary Include="libs/MIT License.txt">
-      <Folder>RSpec</Folder>
-    </Binary>
-  </ItemGroup>
-
-  <ItemGroup>
+    
     <TestAssembly Include="Gallio.RSpecAdapter.Tests\bin\Gallio.RSpecAdapter.Tests.dll" />
+
+    <Feature Include="FEATURE_RSPEC_ADAPTER" />
   </ItemGroup>
+  
+  <Target Name="AfterImage">
+    <RemoveDir Directories="$(ImageDir)\RSpec\libs" />
+    <MakeDir Directories="$(ImageDir)\RSpec" />
+  
+    <SvnExport RepositoryPath="$(ModuleDir)\libs"
+               LocalPath="$(ImageDir)\RSpec\libs" />
+			   
+    <RemoveDir Directories="$(ImageDir)\RSpec\Scripts" />
+    <MakeDir Directories="$(ImageDir)\RSpec\Scripts" />
+  
+    <SvnExport RepositoryPath="$(ModuleDir)\Gallio.RSpecAdapter\Scripts"
+               LocalPath="$(ImageDir)\RSpec\Scripts" />
+  </Target>
+  
+  <Target Name="BeforeDist">
+    <Exec Command="&quot;$(ToolsDir)\Wix\heat.exe&quot; dir &quot;$(ImageDir)\RSpec\libs&quot; -ag -ke -nologo -sfrag -sreg -t:RSpec-libs.xslt -out RSpec-libs.wxi" />
+    <Exec Command="&quot;$(ToolsDir)\Wix\heat.exe&quot; dir &quot;$(ImageDir)\RSpec\Scriptsquot; -ag -ke -nologo -sfrag -sreg -t:RSpec-scripts.xslt -out RSpec-scripts.wxi" />
+  </Target>
 </Project>

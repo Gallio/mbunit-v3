@@ -39,6 +39,10 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.Dynamic, Version=0.9.6.10, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\libs\Microsoft.Dynamic.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Scripting, Version=0.9.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\libs\Microsoft.Scripting.dll</HintPath>
@@ -52,6 +56,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Model\DLRTestDriver.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -61,22 +66,16 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\libs\IronPython.dll">
-      <Link>IronPython.dll</Link>
+    <None Include="Gallio.DLRIntegration.dll.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="..\libs\IronPython.Modules.dll">
-      <Link>IronPython.Modules.dll</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    <None Include="Scripts\gallio.rb">
     </None>
-    <None Include="..\libs\IronRuby.dll">
-      <Link>IronRuby.dll</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\libs\IronRuby.Libraries.dll">
-      <Link>IronRuby.Libraries.dll</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    <None Include="Scripts\gallio\wrappers.rb" />
+    <None Include="Scripts\gallio\wrappers\runtime.rb" />
+    <None Include="Scripts\gallio\wrappers\message_sink.rb" />
+    <None Include="Scripts\gallio\wrappers\progress_monitor.rb" />
+    <None Include="Scripts\gallio\wrappers\logger.rb" />
     <Content Include="Gallio.DLRIntegration.plugin" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

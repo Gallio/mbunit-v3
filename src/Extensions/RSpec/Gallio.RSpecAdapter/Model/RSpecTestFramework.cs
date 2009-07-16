@@ -32,7 +32,7 @@ namespace Gallio.RSpecAdapter.Model
 
         private static ITestDriver CreateTestDriver(IList<ComponentHandle<ITestFramework, TestFrameworkTraits>> frameworkHandles, ILogger logger)
         {
-            return new RSpecTestDriver();
+            return new RSpecTestDriver(logger, frameworkHandles[0].Descriptor.Plugin.BaseDirectory);
         }
     }
 }

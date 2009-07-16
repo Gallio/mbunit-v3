@@ -19,8 +19,8 @@ using Gallio.Model.Tree;
 namespace Gallio.Model.Contexts
 {
     /// <summary>
-    /// A test context manager functions as a factory for <see cref="ITestContextTracker" />
-    /// objects and tracks them with an <see cref="ITestContext" />.
+    /// A test context manager provides access to the <see cref="ITestContextTracker" />
+    /// and creates new <see cref="ITestContext" />s with the help of the tracker.
     /// </summary>
     public interface ITestContextManager
     {

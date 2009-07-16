@@ -269,7 +269,9 @@ namespace Gallio.Framework
                     context.AutoExecute(triggerEvent, () =>
                     {
                         recorder.Stop();
-                        context.LogWriter.Default.EmbedVideo(attachmentName, recorder.Video);
+
+                        if (recorder.Video.FrameCount != 0)
+                            context.LogWriter.Default.EmbedVideo(attachmentName, recorder.Video);
                     }, recorder.Dispose);
                 }
                 catch (ScreenshotNotAvailableException ex)

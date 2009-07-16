@@ -15,6 +15,7 @@
 
 using System;
 using System.IO;
+using Gallio.Common.IO;
 using Gallio.Common.Markup;
 using Gallio.Common.Platform;
 
@@ -28,51 +29,9 @@ namespace Gallio.Model.Environments
         /// <inheritdoc />
         public override IDisposable SetUpAppDomain()
         {
-            return new State();
-        }
-
-        private sealed class State : IDisposable
-        {
-            private TextReader oldConsoleIn;
-            private TextWriter oldConsoleOut;
-            private TextWriter oldConsoleError;
-
-            public State()
-            {
-                // Save the old console streams.
-                oldConsoleIn = Console.In;
-                oldConsoleOut = Console.Out;
-                oldConsoleError = Console.Error;
-
-                // Inject console streams.
-                if (! DotNetRuntimeSupport.IsUsingMono)
-                    Console.SetIn(TextReader.Null);
-
-                Console.SetOut(new ContextualLogTextWriter(MarkupStreamNames.ConsoleOutput));
-                Console.SetError(new ContextualLogTextWriter(MarkupStreamNames.ConsoleError));
-            }
-
-            public void Dispose()
-            {
-                // Restore the old console streams.
-                if (oldConsoleIn != null)
-                {
-                    Console.SetIn(oldConsoleIn);
-                    oldConsoleIn = null;
-                }
-
-                if (oldConsoleOut != null)
-                {
-                    Console.SetOut(oldConsoleOut);
-                    oldConsoleOut = null;
-                }
-
-                if (oldConsoleError != null)
-                {
-                    Console.SetError(oldConsoleError);
-                    oldConsoleError = null;
-                }
-            }
+            return new ConsoleRedirection(
+                new ContextualLogTextWriter(MarkupStreamNames.ConsoleOutput),
+                new ContextualLogTextWriter(MarkupStreamNames.ConsoleError));
         }
     }
 }

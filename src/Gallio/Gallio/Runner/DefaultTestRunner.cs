@@ -211,6 +211,7 @@ namespace Gallio.Runner
 
             testPackage = testPackage.Copy();
             testExplorationOptions = testExplorationOptions.Copy();
+            GenericCollectionUtils.ForEach(testRunnerOptions.Properties, x => testPackage.AddProperty(x.Key, x.Value));
 
             using (progressMonitor.BeginTask("Exploring the tests.", 10))
             {
@@ -278,6 +279,7 @@ namespace Gallio.Runner
             testPackage = testPackage.Copy();
             testExplorationOptions = testExplorationOptions.Copy();
             testExecutionOptions = testExecutionOptions.Copy();
+            GenericCollectionUtils.ForEach(testRunnerOptions.Properties, x => testPackage.AddProperty(x.Key, x.Value));
 
             using (progressMonitor.BeginTask("Running the tests.", 10))
             {

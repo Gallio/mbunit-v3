@@ -144,7 +144,9 @@
         
         <FeatureRef Id='feat_Gallio'> <!-- Display="2" -->
             <FeatureRef Id='feat_Gallio.VisualStudio.Interop'/>
+<?ifdef FEATURE_DLR_INTEGRATION ?>
             <FeatureRef Id='feat_Gallio.DLRIntegration'/>
+<?endif?>
         </FeatureRef>
 
         <FeatureRef Id='feat_MbUnit3'> <!-- Display="4" -->
@@ -160,7 +162,9 @@
             <FeatureRef Id='feat_MSTestAdapter'/>
 <?endif?>
             <FeatureRef Id='feat_NUnitAdapter'/>
+<?ifdef FEATURE_RSPEC_ADAPTER ?>
             <FeatureRef Id='feat_RSpecAdapter'/>
+<?endif?>
             <FeatureRef Id='feat_XunitAdapter'/>
         </Feature>
 

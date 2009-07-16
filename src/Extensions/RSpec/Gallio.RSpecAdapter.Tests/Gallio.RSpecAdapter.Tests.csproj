@@ -80,8 +80,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Ruby\bowling.rb" />
-    <None Include="Ruby\bowling_spec.rb" />
+    <None Include="Scripts\bowling.rb" />
+    <None Include="Scripts\bowling_spec.rb" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -17,7 +17,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
-using System.Reflection;
 using Gallio.Common.Collections;
 using Gallio.Runtime.Hosting;
 
@@ -27,6 +26,7 @@ namespace Gallio.Model
     /// A test package specifies the test files, assemblies, and configuration options
     /// that govern test execution.
     /// </summary>
+    [Serializable]
     public class TestPackage
     {
         private readonly List<FileInfo> files;
@@ -428,8 +428,6 @@ namespace Gallio.Model
         {
             var hostSetup = new HostSetup
             {
-                ConfigurationFileLocation = ConfigurationFileLocation.AppBase,
-                ProcessorArchitecture = ProcessorArchitecture.None,
                 Debug = Debug,
                 ShadowCopy = ShadowCopy,
                 ApplicationBaseDirectory = ApplicationBaseDirectory != null ? ApplicationBaseDirectory.FullName : null,

@@ -27,26 +27,31 @@ namespace Gallio.Model.Isolation
     /// separate from the test runner.
     /// </para>
     /// </remarks>
-    public abstract class IsolatedTask : LongLivedMarshalByRefObject, IDisposable
+    public abstract class IsolatedTask : LongLivedMarshalByRefObject
     {
         /// <summary>
-        /// Disposes the task.
+        /// Runs the task.
         /// </summary>
-        public void Dispose()
+        /// <remarks>
+        /// <para>
+        /// Wraps any exception thrown within a <see cref="ModelException"/>.
+        /// </para>
+        /// </remarks>
+        public object Run(object[] args)
         {
+            try
+            {
+                return RunImpl(args);
+            }
+            catch (Exception ex)
+            {
+                throw new ModelException(ex.ToString());
+            }
         }
 
         /// <summary>
         /// Runs the task.
         /// </summary>
-        public abstract object Run(object[] args);
-
-        /// <summary>
-        /// Disposes the task.
-        /// </summary>
-        /// <param name="disposing">True if <see cref="Dispose()" /> was called directly.</param>
-        public virtual void Dispose(bool disposing)
-        {
-        }
+        protected abstract object RunImpl(object[] args);
     }
 }

@@ -15,13 +15,36 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
+using System.IO;
+using Gallio.DLRIntegration.Model;
 using Gallio.Model;
-using Gallio.Runtime.Extensibility;
+using Gallio.Runtime.Logging;
+using Microsoft.Scripting.Hosting;
 
 namespace Gallio.RSpecAdapter.Model
 {
-    internal class RSpecTestDriver : BaseTestDriver
+    internal class RSpecTestDriver : DLRTestDriver
     {
+        private readonly DirectoryInfo pluginBaseDirectory;
+
+        public RSpecTestDriver(ILogger logger, DirectoryInfo pluginBaseDirectory)
+            : base(logger)
+        {
+            this.pluginBaseDirectory = pluginBaseDirectory;
+        }
+
+        protected override FileInfo GetTestDriverScriptFile(TestPackage testPackage)
+        {
+            return new FileInfo(Path.Combine(pluginBaseDirectory.FullName, @"Scripts\driver.rb"));
+        }
+
+        protected override void ConfigureIronRuby(LanguageSetup languageSetup, IList<string> libraryPaths)
+        {
+            libraryPaths.Add(Path.Combine(pluginBaseDirectory.FullName, "Scripts"));
+            libraryPaths.Add(Path.Combine(pluginBaseDirectory.FullName, @"libs\rspec-1.2.7\lib"));
+#if DEBUG
+            libraryPaths.Add(Path.Combine(pluginBaseDirectory.FullName, @"..\libs\rspec-1.2.7\lib"));
+#endif
+        }
     }
 }

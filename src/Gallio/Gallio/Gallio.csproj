@@ -68,6 +68,7 @@
   <ItemGroup>
     <Compile Include="Common\Accessor.cs" />
     <Compile Include="Common\Action.cs" />
+    <Compile Include="Common\IO\ConsoleRedirection.cs" />
     <Compile Include="Common\Messaging\IMessageExchangeLink.cs" />
     <Compile Include="Common\Messaging\MessageConsumer.cs" />
     <Compile Include="Common\Messaging\NamespaceDoc.cs" />
@@ -338,6 +339,7 @@
     <Compile Include="Runtime\Installer\NamespaceDoc.cs" />
     <Compile Include="Runtime\Installer\SetupUtilityCommand.cs" />
     <Compile Include="Runtime\Loader\NamespaceDoc.cs" />
+    <Compile Include="Runtime\Logging\BufferedLogWriter.cs" />
     <Compile Include="Runtime\Logging\MarkupStreamLogger.cs" />
     <Compile Include="Common\Markup\MarkupStreamNames.cs" />
     <Compile Include="Common\Markup\MarkupStreamWriter.cs" />

@@ -114,10 +114,8 @@ namespace Gallio.Model.Isolation
             object result;
             try
             {
-                using (IsolatedTask isolatedTask = (IsolatedTask) Activator.CreateInstance(message.IsolatedTaskType))
-                {
-                    result = isolatedTask.Run(message.Arguments);
-                }
+                var isolatedTask = (IsolatedTask)Activator.CreateInstance(message.IsolatedTaskType);
+                result = isolatedTask.Run(message.Arguments);
             }
             catch (Exception ex)
             {

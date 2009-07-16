@@ -15,42 +15,27 @@
       <Folder>DLR</Folder>
     </PluginFile>
 
-    <Binary Include="libs\ipy.exe">
-      <Folder>DLR</Folder>
-    </Binary>
-    <Binary Include="libs\ipyw.exe">
-      <Folder>DLR</Folder>
-    </Binary>
-    <Binary Include="libs\IronPython.dll">
-      <Folder>DLR</Folder>
-    </Binary>
-    <Binary Include="libs\IronPython.Modules.dll">
-      <Folder>DLR</Folder>
-    </Binary>
-    <Binary Include="libs\ir.exe">
-      <Folder>DLR</Folder>
-    </Binary>
-    <Binary Include="libs\IronRuby.dll">
-      <Folder>DLR</Folder>
-    </Binary>
-    <Binary Include="libs\IronRuby.Libraries.dll">
-      <Folder>DLR</Folder>
-    </Binary>
-    <Binary Include="libs\Microsoft.Scripting.Core.dll">
-      <Folder>DLR</Folder>
-    </Binary>
-    <Binary Include="libs\Microsoft.Scripting.dll">
-      <Folder>DLR</Folder>
-    </Binary>
-    <Binary Include="libs\Microsoft.Scripting.ExtensionAttribute.dll">
-      <Folder>DLR</Folder>
-    </Binary>
-    <Binary Include="libs\Ms-PL.txt">
-      <Folder>DLR</Folder>
-    </Binary>
+    <TestAssembly Include="Gallio.DLRIntegration.Tests\bin\Gallio.DLRIntegration.Tests.dll" />
+	
+    <Feature Include="FEATURE_DLR_INTEGRATION" />
   </ItemGroup>
 
-  <ItemGroup>
-    <TestAssembly Include="Gallio.DLRIntegration.Tests\bin\Gallio.DLRIntegration.Tests.dll" />
-  </ItemGroup>
+  <Target Name="AfterImage">
+    <RemoveDir Directories="$(ImageDir)\DLR\libs" />
+    <MakeDir Directories="$(ImageDir)\DLR" />
+
+    <SvnExport RepositoryPath="$(ModuleDir)\libs"
+               LocalPath="$(ImageDir)\DLR\libs" />
+			   
+    <RemoveDir Directories="$(ImageDir)\DLR\Scripts" />
+    <MakeDir Directories="$(ImageDir)\DLR" />
+
+    <SvnExport RepositoryPath="$(ModuleDir)\Gallio.DLRIntegration\Scripts"
+               LocalPath="$(ImageDir)\DLR\Scripts" />
+  </Target>
+
+  <Target Name="BeforeDist">
+    <Exec Command="&quot;$(ToolsDir)\Wix\heat.exe&quot; dir &quot;$(ImageDir)\DLR\libs&quot; -ag -ke -nologo -sfrag -sreg -t:DLR-libs.xslt -out DLR-libs.wxi" />
+    <Exec Command="&quot;$(ToolsDir)\Wix\heat.exe&quot; dir &quot;$(ImageDir)\DLR\Scripts&quot; -ag -ke -nologo -sfrag -sreg -t:DLR-scripts.xslt -out DLR-scripts.wxi" />
+  </Target>
 </Project>

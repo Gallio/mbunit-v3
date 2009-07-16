@@ -188,21 +188,53 @@ namespace Gallio.Model
                     Type driverType = GetType();
                     object[] driverArguments = GetRemoteTestDriverArguments();
 
-                    HostSetup hostSetup = testPackage.CreateHostSetup();
-                    ConfigureHostSetupForAssembly(hostSetup, assemblyPath, assemblyMetadata);
+                    HostSetup hostSetup = CreateHostSetup(testPackage, assemblyPath, assemblyMetadata);
 
-                    RemoteProgressMonitor remoteProgressMonitor = new RemoteProgressMonitor(
-                        progressMonitor.CreateSubProgressMonitor(97));
-
-                    testIsolationContext.RunIsolatedTask<ExploreOrRunTask>(hostSetup,
-                        (statusMessage) => progressMonitor.SetStatus(statusMessage),
-                        new object[] { driverType, driverArguments, assemblyPath, testExplorationOptions, testExecutionOptions, remoteMessageSink, remoteProgressMonitor });
+                    using (var remoteProgressMonitor = new RemoteProgressMonitor(
+                        progressMonitor.CreateSubProgressMonitor(97)))
+                    {
+                        testIsolationContext.RunIsolatedTask<ExploreOrRunTask>(hostSetup,
+                            (statusMessage) => progressMonitor.SetStatus(statusMessage),
+                            new object[] { driverType, driverArguments, assemblyPath, testExplorationOptions, testExecutionOptions, remoteMessageSink, remoteProgressMonitor });
+                    }
 
                     // Record one final work unit after the isolated task has been fully cleaned up.
                     progressMonitor.SetStatus("");
                     progressMonitor.Worked(1);
                 }
             }
+        }
+
+        /// <summary>
+        /// Creates a host setup for a particular assembly within a test package.
+        /// </summary>
+        /// <param name="testPackage">The test package, not null.</param>
+        /// <param name="assemblyPath">The assembly path, not null.</param>
+        /// <param name="assemblyMetadata">The assembly metadata, not null.</param>
+        /// <returns>The host setup setup.</returns>
+        protected HostSetup CreateHostSetup(TestPackage testPackage, string assemblyPath, AssemblyMetadata assemblyMetadata)
+        {
+            HostSetup hostSetup = testPackage.CreateHostSetup();
+            ConfigureHostSetupForAssembly(hostSetup, assemblyPath, assemblyMetadata);
+            ConfigureHostSetup(hostSetup, testPackage, assemblyPath, assemblyMetadata);
+            return hostSetup;
+        }
+
+        /// <summary>
+        /// Configures the host setup prior to the initialization of the script runtime.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// The default implementation does nothing.  Subclasses may override this method
+        /// to customize the host setup.
+        /// </para>
+        /// </remarks>
+        /// <param name="hostSetup">The host setup, not null.</param>
+        /// <param name="testPackage">The test package, not null.</param>
+        /// <param name="assemblyPath">The assembly path, not null.</param>
+        /// <param name="assemblyMetadata">The assembly metadata, not null.</param>
+        protected virtual void ConfigureHostSetup(HostSetup hostSetup, TestPackage testPackage, string assemblyPath, AssemblyMetadata assemblyMetadata)
+        {
         }
 
         private void ConfigureHostSetupForAssembly(HostSetup hostSetup, string assemblyPath, AssemblyMetadata assemblyMetadata)
@@ -214,6 +246,8 @@ namespace Gallio.Model
 
             if (hostSetup.WorkingDirectory == null)
                 hostSetup.WorkingDirectory = assemblyDir;
+
+            hostSetup.ConfigurationFileLocation = ConfigurationFileLocation.AppBase;
 
             string assemblyConfigFilePath = assemblyPath + @".config";
             if (File.Exists(assemblyConfigFilePath))
@@ -255,7 +289,7 @@ namespace Gallio.Model
 
         private class ExploreOrRunTask : IsolatedTask
         {
-            public override object Run(object[] args)
+            protected override object RunImpl(object[] args)
             {
                 ExploreOrRun(
                     (Type)args[0],
@@ -263,20 +297,20 @@ namespace Gallio.Model
                     (string)args[2],
                     (TestExplorationOptions)args[3],
                     (TestExecutionOptions)args[4],
-                    (RemoteMessageSink)args[5],
+                    (IMessageSink)args[5],
                     (IProgressMonitor)args[6]);
                 return null;
             }
 
             private void ExploreOrRun(Type driverType, object[] driverArguments,
                 string assemblyPath, TestExplorationOptions testExplorationOptions, TestExecutionOptions testExecutionOptions,
-                RemoteMessageSink remoteMessageSink, IProgressMonitor progressMonitor)
+                IMessageSink messageSink, IProgressMonitor progressMonitor)
             {
                 Assembly assembly = LoadAssembly(assemblyPath);
 
-                using (QueuedMessageSink queuedMessageSink = new QueuedMessageSink(remoteMessageSink))
+                using (var queuedMessageSink = new QueuedMessageSink(messageSink))
                 {
-                    DotNetTestDriver testDriver = (DotNetTestDriver) Activator.CreateInstance(driverType, driverArguments);
+                    var testDriver = (DotNetTestDriver) Activator.CreateInstance(driverType, driverArguments);
 
                     if (testExecutionOptions == null)
                         testDriver.ExploreAssembly(assembly, testExplorationOptions, queuedMessageSink, progressMonitor);

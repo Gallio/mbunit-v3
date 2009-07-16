@@ -47,7 +47,18 @@ namespace Gallio.Common.IO
         /// <exception cref="IOException">Thrown if the current directory could not be reset.</exception>
         public void Dispose()
         {
-            if (oldDirectory != null)
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        /// Resets the current directory to its original saved value if disposing.
+        /// </summary>
+        /// <param name="disposing">True if <see cref="Dispose()" /> was called directly.</param>
+        /// <exception cref="IOException">Thrown if the current directory could not be reset.</exception>
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing && oldDirectory != null)
             {
                 Environment.CurrentDirectory = oldDirectory;
                 oldDirectory = null;

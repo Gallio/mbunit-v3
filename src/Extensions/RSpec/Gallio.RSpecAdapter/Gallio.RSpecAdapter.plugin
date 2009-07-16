@@ -16,6 +16,7 @@
   <files>
     <file path="Gallio.RSpecAdapter.plugin" />
     <file path="Gallio.RSpecAdapter.dll" />
+    <file path="RSpecTestDriver.rb" />
     <file path="MIT License.txt" />
   </files>
 
@@ -46,6 +47,24 @@
       <traits>
         <name>RSpec</name>
         <fileTypes>RSpecSource</fileTypes>
+      </traits>
+    </component>
+
+    <component componentId="RSpecAdapter.TestKinds.Fixture"
+               serviceId="Gallio.TestKind">
+      <traits>
+        <name>RSpecExampleGroup</name>
+        <description>An RSpec example group.</description>
+        <icon>plugin://Gallio/Resources/Fixture.ico</icon>
+      </traits>
+    </component>
+
+    <component componentId="RSpecAdapter.TestKinds.Test"
+               serviceId="Gallio.TestKind">
+      <traits>
+        <name>RSpecExample</name>
+        <description>An RSpec example.</description>
+        <icon>plugin://Gallio/Resources/Test.ico</icon>
       </traits>
     </component>
   </components>
