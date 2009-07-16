@@ -42,7 +42,7 @@ namespace Gallio.Ambience
         /// <summary>
         /// Gets the client's data container.
         /// </summary>
-        /// <exception cref="ObjectDisposedException">Thrown if the client has been disposed</exception>
+        /// <exception cref="ObjectDisposedException">Thrown if the client has been disposed.</exception>
         public IAmbientDataContainer Container
         {
             get
@@ -73,9 +73,9 @@ namespace Gallio.Ambience
         /// <summary>
         /// Connects the client to the remote server.
         /// </summary>
-        /// <param name="configuration">The client configuration</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="configuration"/> is null</exception>
-        /// <exception cref="AmbienceException">Thrown if the operation failed</exception>
+        /// <param name="configuration">The client configuration.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="configuration"/> is null.</exception>
+        /// <exception cref="AmbienceException">Thrown if the operation failed.</exception>
         public static AmbienceClient Connect(AmbienceClientConfiguration configuration)
         {
             if (configuration == null)

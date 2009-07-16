@@ -75,7 +75,7 @@ namespace Gallio.Framework.Pattern
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="testStep"/>,
         /// <paramref name="testInstanceHandler"/> or <paramref name="testState"/> or <paramref name="bindingItem"/> is null.</exception>
         /// <exception cref="ArgumentException">Thrown if <paramref name="testState"/> belongs to a
-        /// different test from the <paramref name="testStep"/></exception>
+        /// different test from the <paramref name="testStep"/>.</exception>
         internal PatternTestInstanceState(PatternTestStep testStep, 
             IPatternTestInstanceHandler testInstanceHandler,
             PatternTestState testState, IDataItem bindingItem, TestAction body)
@@ -311,7 +311,7 @@ namespace Gallio.Framework.Pattern
         /// </remarks>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="type"/> is null.</exception>
         /// <exception cref="ArgumentException">Thrown if the slots or values in <see cref="SlotValues" />
-        /// are not appropriate for instantiating <paramref name="type"/></exception>
+        /// are not appropriate for instantiating <paramref name="type"/>.</exception>
         /// <seealso cref="ObjectCreationSpec"/>
         public ObjectCreationSpec GetFixtureObjectCreationSpec(ITypeInfo type)
         {

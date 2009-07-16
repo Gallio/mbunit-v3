@@ -70,7 +70,7 @@ namespace Gallio.UI.Reports
         /// <summary>
         /// Displays information about a set of test step run.
         /// </summary>
-        /// <param name="testStepRuns">The test step runs</param>
+        /// <param name="testStepRuns">The test step runs.</param>
         public void Show(ICollection<TestStepRun> testStepRuns)
         {
             Show(testStepRuns, null);
@@ -80,8 +80,8 @@ namespace Gallio.UI.Reports
         /// Displays information about a set of test step runs, using additional
         /// information from the test model when available.
         /// </summary>
-        /// <param name="testStepRuns">The test step runs</param>
-        /// <param name="testModelData">The test model data, or null if not available</param>
+        /// <param name="testStepRuns">The test step runs.</param>
+        /// <param name="testModelData">The test model data, or null if not available.</param>
         public void Show(ICollection<TestStepRun> testStepRuns, TestModelData testModelData)
         {
             if (testStepRuns == null || testStepRuns.Contains(null))

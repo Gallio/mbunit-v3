@@ -23,6 +23,6 @@ namespace Gallio.Framework.Pattern
     /// Gets the list of test framework extensions associated with a given assembly.
     /// </summary>
     /// <param name="assembly">The assembly.</param>
-    /// <returns>The associated extensions</returns>
+    /// <returns>The associated extensions.</returns>
     internal delegate IList<PatternTestFrameworkExtensionInfo> PatternTestFrameworkExtensionProvider(IAssemblyInfo assembly);
 }

@@ -41,9 +41,9 @@ namespace Gallio.Ambience
         /// select a value from the container using LINQ syntax.
         /// </para>
         /// </remarks>
-        /// <typeparam name="T">The result type</typeparam>
-        /// <param name="container">The container</param>
-        /// <returns>The query object</returns>
+        /// <typeparam name="T">The result type.</typeparam>
+        /// <param name="container">The container.</param>
+        /// <returns>The query object.</returns>
         public static IAmbientDataQuery<T> Cast<T>(this IAmbientDataContainer container)
         {
             var db4oContainer = (Db4oAmbientDataContainer)container;

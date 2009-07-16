@@ -77,9 +77,9 @@ namespace Gallio.ReSharperRunner.Reflection
         /// <summary>
         /// Converts constant values from a foreign form to a native one.
         /// </summary>
-        /// <param name="value">The foreign constant value</param>
-        /// <param name="typeConstructor">A function for resolving types</param>
-        /// <returns>The native constant value</returns>
+        /// <param name="value">The foreign constant value.</param>
+        /// <param name="typeConstructor">A function for resolving types.</param>
+        /// <returns>The native constant value.</returns>
         protected static ConstantValue ConvertConstantValue<TType>(object value, Common.Func<TType, ITypeInfo> typeConstructor)
             where TType : class
         {
@@ -112,8 +112,8 @@ namespace Gallio.ReSharperRunner.Reflection
         /// <summary>
         /// Gets the location associated with a declared element.
         /// </summary>
-        /// <param name="declaredElement"></param>
-        /// <returns></returns>
+        /// <param name="declaredElement">The declared element.</param>
+        /// <returns>The resulting code location.</returns>
         protected static CodeLocation GetDeclaredElementSourceLocation(IDeclaredElement declaredElement)
         {
             IList<IDeclaration> decl = declaredElement.GetDeclarations();

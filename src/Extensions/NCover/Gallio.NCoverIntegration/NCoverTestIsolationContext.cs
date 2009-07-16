@@ -42,7 +42,7 @@ namespace Gallio.NCoverIntegration
         /// <param name="runtime">The runtime.</param>
         /// <param name="version">The NCover version.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="testIsolationOptions" />,
-        /// <paramref name="logger"/> or <paramref name="runtime"/> is null</exception>
+        /// <paramref name="logger"/> or <paramref name="runtime"/> is null.</exception>
         public NCoverTestIsolationContext(TestIsolationOptions testIsolationOptions, ILogger logger,
             IRuntime runtime, NCoverVersion version)
             : base(new NCoverHostFactory(runtime, version), testIsolationOptions, logger)

@@ -239,7 +239,7 @@ namespace Gallio.TDNetRunner.Core
         /// <summary>
         /// Gets a temporary folder to store the HTML report.
         /// </summary>
-        /// <param name="logger">The logger</param>
+        /// <param name="logger">The logger.</param>
         /// <returns>The full name of the folder or null if it could not be created.</returns>
         private static string GetReportDirectory(ILogger logger)
         {

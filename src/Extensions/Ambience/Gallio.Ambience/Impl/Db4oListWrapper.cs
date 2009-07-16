@@ -29,7 +29,7 @@ namespace Gallio.Ambience.Impl
     /// can catch them in a meaningful way.  (Db4o is internalized by Ambience so its exception
     /// types are not accessible to clients.)
     /// </summary>
-    /// <typeparam name="T">The item type</typeparam>
+    /// <typeparam name="T">The item type.</typeparam>
     internal sealed class Db4oListWrapper<T> : IAmbientDataSet<T>
     {
         private readonly IList<T> inner;

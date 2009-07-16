@@ -37,8 +37,8 @@ namespace Gallio.Navigator
         /// <summary>
         /// Creates a navigator.
         /// </summary>
-        /// <param name="visualStudioManager">The visual studio manager</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="visualStudioManager"/> is null</exception>
+        /// <param name="visualStudioManager">The visual studio manager.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="visualStudioManager"/> is null.</exception>
         public GallioNavigatorImpl(IVisualStudioManager visualStudioManager)
         {
             if (visualStudioManager == null)

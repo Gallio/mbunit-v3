@@ -41,7 +41,7 @@ namespace Gallio.Common.Collections
         /// Creates an array equality comparer using the specified element comparer.
         /// </summary>
         /// <param name="elementComparer">The comparer to use to compare individual elements,
-        /// or null to use <see cref="EqualityComparer{T}.Default" /></param>
+        /// or null to use <see cref="EqualityComparer{T}.Default" />.</param>
         public ArrayEqualityComparer(IEqualityComparer<T> elementComparer)
         {
             if (elementComparer == null)

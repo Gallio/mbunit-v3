@@ -28,8 +28,8 @@ namespace Gallio.MSTestAdapter.Wrapper
         /// <summary>
         /// Finds the path of a particular version of MSTest.
         /// </summary>
-        /// <param name="visualStudioVersion">The visual studio version (eg. "8.0" or "9.0")</param>
-        /// <returns>The full path of the MSTest.exe program, or null if not found</returns>
+        /// <param name="visualStudioVersion">The visual studio version (eg. "8.0" or "9.0").</param>
+        /// <returns>The full path of the MSTest.exe program, or null if not found.</returns>
         public static string FindMSTestPathForVisualStudioVersion(string visualStudioVersion)
         {
             using (RegistryKey key = Registry.LocalMachine.OpenSubKey(

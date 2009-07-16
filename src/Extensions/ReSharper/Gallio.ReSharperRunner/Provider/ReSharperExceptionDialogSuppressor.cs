@@ -42,8 +42,8 @@ namespace Gallio.ReSharperRunner.Provider
         /// <summary>
         /// Temporarily disables exception logging.
         /// </summary>
-        /// <param name="bugExplanation">An explanation of the bug that we are working around</param>
-        /// <param name="action">The action to perform</param>
+        /// <param name="bugExplanation">An explanation of the bug that we are working around.</param>
+        /// <param name="action">The action to perform.</param>
         public static void Suppress(string bugExplanation, Action action)
         {
             try

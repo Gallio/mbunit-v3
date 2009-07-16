@@ -37,9 +37,9 @@ namespace Gallio.VisualStudio.Interop
         /// <summary>
         /// Creates a wrapper for a particular DTE object.
         /// </summary>
-        /// <param name="dte">The DTE object to wrap</param>
-        /// <param name="version">The version of Visual Studio represented by this object</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="dte"/> is null</exception>
+        /// <param name="dte">The DTE object to wrap.</param>
+        /// <param name="version">The version of Visual Studio represented by this object.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="dte"/> is null.</exception>
         public VisualStudio(DTE dte, VisualStudioVersion version)
         {
             if (dte == null)

@@ -34,8 +34,8 @@ namespace Gallio.NUnitAdapter.Model
         /// <summary>
         /// Creates an NUnit assembly-level test.
         /// </summary>
-        /// <param name="assembly">The assembly</param>
-        /// <param name="runner">The NUnit test runner</param>
+        /// <param name="assembly">The assembly.</param>
+        /// <param name="runner">The NUnit test runner.</param>
         public NUnitAssemblyTest(IAssemblyInfo assembly, NUnitTestRunner runner)
             : base(assembly.Name, assembly, runner.Test)
         {

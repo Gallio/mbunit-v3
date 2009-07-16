@@ -209,10 +209,10 @@ namespace MbUnit.Framework
         /// is synchronized with the number of iterated elements.
         /// </summary>
         /// <param name="col">
-        /// Collection to test
+        /// Collection to test.
         /// </param>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="col"/> is a null reference (Nothing in Visual Basic)
+        /// <paramref name="col"/> is a null reference (Nothing in Visual Basic).
         /// </exception>
         public static void IsCountCorrect(ICollection col)
         {

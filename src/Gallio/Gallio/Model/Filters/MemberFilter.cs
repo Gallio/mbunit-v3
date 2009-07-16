@@ -31,7 +31,7 @@ namespace Gallio.Model.Filters
         /// <summary>
         /// Creates a member filter.
         /// </summary>
-        /// <param name="memberNameFilter">A filter for the member name as returned by <see cref="MemberInfo.Name" /></param>
+        /// <param name="memberNameFilter">A filter for the member name as returned by <see cref="MemberInfo.Name" />.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="memberNameFilter"/> is null.</exception>
         public MemberFilter(Filter<string> memberNameFilter)
             : base(memberNameFilter)

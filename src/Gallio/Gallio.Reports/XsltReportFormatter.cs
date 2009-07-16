@@ -63,12 +63,12 @@ namespace Gallio.Reports
         /// Creates an XSLT report formatter.
         /// </summary>
         /// <param name="extension">The preferred extension without a '.'</param>
-        /// <param name="contentType">The content type of the main report document</param>
-        /// <param name="resourceDirectory">The resource directory</param>
-        /// <param name="xsltPath">The path of the XSLT relative to the resource directory</param>
+        /// <param name="contentType">The content type of the main report document.</param>
+        /// <param name="resourceDirectory">The resource directory.</param>
+        /// <param name="xsltPath">The path of the XSLT relative to the resource directory.</param>
         /// <param name="resourcePaths">The paths of the resources (such as images or CSS) to copy
-        /// to the report directory relative to the resource directory</param>
-        /// <exception cref="ArgumentNullException">Thrown if any arguments are null</exception>
+        /// to the report directory relative to the resource directory.</param>
+        /// <exception cref="ArgumentNullException">Thrown if any arguments are null.</exception>
         public XsltReportFormatter(string extension, string contentType, DirectoryInfo resourceDirectory, string xsltPath, string[] resourcePaths)
         {
             if (extension == null)
@@ -177,8 +177,8 @@ namespace Gallio.Reports
         /// <summary>
         /// Loads the XSL transform.
         /// </summary>
-        /// <param name="resolvedXsltPath">The full path of the XSLT</param>
-        /// <returns>The transform</returns>
+        /// <param name="resolvedXsltPath">The full path of the XSLT.</param>
+        /// <returns>The transform.</returns>
         protected virtual XslCompiledTransform LoadTransform(string resolvedXsltPath)
         {
             XmlReaderSettings settings = new XmlReaderSettings();

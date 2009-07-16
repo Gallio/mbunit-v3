@@ -124,52 +124,52 @@ namespace Gallio.Icarus.Controllers.Interfaces
         /// <summary>
         /// Sets the test runner factory used by the test controller.
         /// </summary>
-        /// <param name="factory">The test runner factory to use</param>
+        /// <param name="factory">The test runner factory to use.</param>
         void SetTestRunnerFactory(ITestRunnerFactory factory);
 
         /// <summary>
         /// Sets the test package to be used during subsequent calls to <see cref="Explore" /> or <see cref="Run" />.
         /// </summary>
-        /// <param name="testPackage">The test package</param>
+        /// <param name="testPackage">The test package.</param>
         void SetTestPackage(TestPackage testPackage);
 
         /// <summary>
         /// Acquires a read lock on the report and executes the specified action.
         /// </summary>
-        /// <param name="action">The action to execute within the context of the read lock</param>
+        /// <param name="action">The action to execute within the context of the read lock.</param>
         void ReadReport(ReadAction<Report> action);
 
         /// <summary>
         /// Applies a filter to the tests, potentially altering selections.
         /// </summary>
-        /// <param name="filterSet">The filter to apply</param>
+        /// <param name="filterSet">The filter to apply.</param>
         void ApplyFilterSet(FilterSet<ITestDescriptor> filterSet);
 
         /// <summary>
         /// Generates a filter from selected tests.
         /// </summary>
-        /// <returns>The generated filter</returns>
+        /// <returns>The generated filter.</returns>
         FilterSet<ITestDescriptor> GenerateFilterSetFromSelectedTests();
 
         /// <summary>
         /// Explores the tests and updates the model, does not run them.
         /// </summary>
-        /// <param name="progressMonitor">The progress monitor</param>
+        /// <param name="progressMonitor">The progress monitor.</param>
         /// <param name="testRunnerExtensions">A list of test runner extensions to use.</param>
         void Explore(IProgressMonitor progressMonitor, IEnumerable<string> testRunnerExtensions);
 
         /// <summary>
         /// Runs the tests and updates the model.
         /// </summary>
-        /// <param name="debug">If true, runs tests with the debugger</param>
-        /// <param name="progressMonitor">The progress monitor</param>
+        /// <param name="debug">If true, runs tests with the debugger.</param>
+        /// <param name="progressMonitor">The progress monitor.</param>
         /// <param name="testRunnerExtensions">A list of test runner extensions to use.</param>
         void Run(bool debug, IProgressMonitor progressMonitor, IEnumerable<string> testRunnerExtensions);
 
         /// <summary>
         /// Refreshes the contents of the test tree based on the tests most recently run or explored.
         /// </summary>
-        /// <param name="progressMonitor">The progress monitor</param>
+        /// <param name="progressMonitor">The progress monitor.</param>
         void RefreshTestTree(IProgressMonitor progressMonitor);
 
         /// <summary>

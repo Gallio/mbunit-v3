@@ -35,8 +35,8 @@ namespace Gallio.Framework.Data
         /// <summary>
         /// Creates a new data binding with an optional index and path.
         /// </summary>
-        /// <param name="index">The binding index or null if none.  <seealso cref="Index"/></param>
-        /// <param name="path">The binding path or null if none.  <seealso cref="Path"/></param>
+        /// <param name="index">The binding index or null if none. <seealso cref="Index"/>.</param>
+        /// <param name="path">The binding path or null if none. <seealso cref="Path"/>.</param>
         public DataBinding(int? index, string path)
         {
             this.path = path;

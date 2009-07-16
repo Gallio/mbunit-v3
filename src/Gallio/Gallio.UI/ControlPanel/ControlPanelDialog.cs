@@ -44,8 +44,8 @@ namespace Gallio.UI.ControlPanel
         /// <summary>
         /// Adds a tab.
         /// </summary>
-        /// <param name="name">The tab name</param>
-        /// <param name="tabFactory">The tab factory</param>
+        /// <param name="name">The tab name.</param>
+        /// <param name="tabFactory">The tab factory.</param>
         public void AddTab(string name, Func<ControlPanelTab> tabFactory)
         {
             TabPage tabPage = new TabPage(name);

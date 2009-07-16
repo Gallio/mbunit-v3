@@ -40,8 +40,8 @@ namespace Gallio.VisualStudio.Shell.Reflection
         /// <summary>
         /// Creates a reflector with the specified CodeModel.
         /// </summary>
-        /// <param name="solution">The Visual Studio Solution</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="solution"/> is null</exception>
+        /// <param name="solution">The Visual Studio Solution.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="solution"/> is null.</exception>
         public CodeModelReflectionPolicy(Solution solution)
         {
             if (solution == null)
@@ -54,8 +54,8 @@ namespace Gallio.VisualStudio.Shell.Reflection
         /// <summary>
         /// Obtains a reflection wrapper for a code element.
         /// </summary>
-        /// <param name="target">The element, or null if none</param>
-        /// <returns>The reflection wrapper, or null if none</returns>
+        /// <param name="target">The element, or null if none.</param>
+        /// <returns>The reflection wrapper, or null if none.</returns>
         public ICodeElementInfo Wrap(CodeElement2 target)
         {
             if (target == null)
@@ -87,8 +87,8 @@ namespace Gallio.VisualStudio.Shell.Reflection
         /// <summary>
         /// Obtains a reflection wrapper for a type.
         /// </summary>
-        /// <param name="target">The type, or null if none</param>
-        /// <returns>The reflection wrapper, or null if none</returns>
+        /// <param name="target">The type, or null if none.</param>
+        /// <returns>The reflection wrapper, or null if none.</returns>
         public StaticTypeWrapper Wrap(CodeType target)
         {
             return target != null ? MakeDeclaredType(target) : null;
@@ -97,8 +97,8 @@ namespace Gallio.VisualStudio.Shell.Reflection
         /// <summary>
         /// Obtains a reflection wrapper for a function.
         /// </summary>
-        /// <param name="target">The function, or null if none</param>
-        /// <returns>The reflection wrapper, or null if none</returns>
+        /// <param name="target">The function, or null if none.</param>
+        /// <returns>The reflection wrapper, or null if none.</returns>
         public StaticFunctionWrapper Wrap(CodeFunction2 target)
         {
             if (target == null)
@@ -114,8 +114,8 @@ namespace Gallio.VisualStudio.Shell.Reflection
         /// <summary>
         /// Obtains a reflection wrapper for a property.
         /// </summary>
-        /// <param name="target">The property, or null if none</param>
-        /// <returns>The reflection wrapper, or null if none</returns>
+        /// <param name="target">The property, or null if none.</param>
+        /// <returns>The reflection wrapper, or null if none.</returns>
         public StaticPropertyWrapper Wrap(CodeProperty2 target)
         {
             if (target == null)
@@ -128,8 +128,8 @@ namespace Gallio.VisualStudio.Shell.Reflection
         /// <summary>
         /// Obtains a reflection wrapper for a field.
         /// </summary>
-        /// <param name="target">The field, or null if none</param>
-        /// <returns>The reflection wrapper, or null if none</returns>
+        /// <param name="target">The field, or null if none.</param>
+        /// <returns>The reflection wrapper, or null if none.</returns>
         public StaticFieldWrapper Wrap(CodeVariable2 target)
         {
             if (target == null)
@@ -142,8 +142,8 @@ namespace Gallio.VisualStudio.Shell.Reflection
         /// <summary>
         /// Obtains a reflection wrapper for an event.
         /// </summary>
-        /// <param name="target">The event, or null if none</param>
-        /// <returns>The reflection wrapper, or null if none</returns>
+        /// <param name="target">The event, or null if none.</param>
+        /// <returns>The reflection wrapper, or null if none.</returns>
         public StaticEventWrapper Wrap(CodeEvent target)
         {
             if (target == null)
@@ -156,8 +156,8 @@ namespace Gallio.VisualStudio.Shell.Reflection
         /// <summary>
         /// Obtains a reflection wrapper for a parameter.
         /// </summary>
-        /// <param name="target">The parameter, or null if none</param>
-        /// <returns>The reflection wrapper, or null if none</returns>
+        /// <param name="target">The parameter, or null if none.</param>
+        /// <returns>The reflection wrapper, or null if none.</returns>
         public StaticParameterWrapper Wrap(CodeParameter2 target)
         {
             if (target == null)

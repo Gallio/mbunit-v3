@@ -36,13 +36,13 @@ namespace Gallio.Framework.Assertions
         /// <summary>
         /// Evaluates a conditional expression.
         /// </summary>
-        /// <param name="condition">The conditional expression</param>
-        /// <param name="expectedResult">The expected result</param>
-        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
-        /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
+        /// <param name="condition">The conditional expression.</param>
+        /// <param name="expectedResult">The expected result.</param>
+        /// <param name="messageFormat">The custom assertion message format, or null if none.</param>
+        /// <param name="messageArgs">The custom assertion message arguments, or null if none.</param>
         /// <returns>The assertion failure if the conditional expression evaluated
-        /// to a different result than was expected or threw an exception, otherwise null</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="condition"/> is null</exception>
+        /// to a different result than was expected or threw an exception, otherwise null.</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="condition"/> is null.</exception>
         public static AssertionFailure Eval(Expression<System.Func<bool>> condition, bool expectedResult,
             string messageFormat, params object[] messageArgs)
         {

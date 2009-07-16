@@ -196,7 +196,7 @@ namespace Gallio.Runtime.Hosting
         /// </summary>
         /// <param name="key">The property key.</param>
         /// <param name="value">The property value.</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="key"/> or <paramref name="value"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="key"/> or <paramref name="value"/> is null.</exception>
         /// <exception cref="InvalidOperationException">Thrown if <paramref name="key"/> is already in the property set.</exception>
         public void AddProperty(string key, string value)
         {
@@ -207,7 +207,7 @@ namespace Gallio.Runtime.Hosting
         /// Removes a property key/value pair.
         /// </summary>
         /// <param name="key">The property key.</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="key"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="key"/> is null.</exception>
         public void RemoveProperty(string key)
         {
             properties.Remove(key); // note: implicitly checks arguments

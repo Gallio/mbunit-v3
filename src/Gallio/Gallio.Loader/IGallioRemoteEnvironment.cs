@@ -27,13 +27,13 @@ namespace Gallio.Loader
         /// <summary>
         /// Gets the remote AppDomain.
         /// </summary>
-        /// <exception cref="ObjectDisposedException">Thrown if the remote environment has been disposed</exception>
+        /// <exception cref="ObjectDisposedException">Thrown if the remote environment has been disposed.</exception>
         AppDomain AppDomain { get; }
         
         /// <summary>
         /// Gets the remote loader.
         /// </summary>
-        /// <exception cref="ObjectDisposedException">Thrown if the remote environment has been disposed</exception>
+        /// <exception cref="ObjectDisposedException">Thrown if the remote environment has been disposed.</exception>
         IGallioLoader Loader { get; }
     }
 }

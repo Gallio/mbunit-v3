@@ -29,8 +29,8 @@ namespace MbUnit.Framework
 		/// <summary>
 		/// Verifies that both array have the same dimension and elements.
 		/// </summary>
-		/// <param name="expected"></param>
-		/// <param name="actual"></param>
+		/// <param name="expected">The expected values.</param>
+		/// <param name="actual">The actual values.</param>
 		public static void AreEqual(bool[] expected, bool[] actual)
 		{
 			if(expected==null && actual==null)

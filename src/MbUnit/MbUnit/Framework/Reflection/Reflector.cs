@@ -201,7 +201,7 @@ namespace MbUnit.Framework.Reflection
         /// Creates an instance
         /// </summary>
         /// <param name="assemblyName">Full assembly path.</param>
-        /// <param name="typeName">Type Name such as (System.String)</param>
+        /// <param name="typeName">Type Name such as (System.String).</param>
         /// <returns>Newly created object.</returns>
         public static object CreateInstance(string assemblyName, string typeName)
         {

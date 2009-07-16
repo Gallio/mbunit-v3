@@ -115,8 +115,8 @@ namespace Gallio.Loader
         /// The path is determined by looking up the location of the Gallio installation
         /// in the registry.  It may be overridden by setting the development runtime path key.
         /// </summary>
-        /// <returns>The installed runtime path</returns>
-        /// <exception cref="InvalidOperationException">Thrown if Gallio does not appear to be installed</exception>
+        /// <returns>The installed runtime path.</returns>
+        /// <exception cref="InvalidOperationException">Thrown if Gallio does not appear to be installed.</exception>
         public static string GetDefaultRuntimePath()
         {
             lock (syncRoot)
@@ -137,9 +137,9 @@ namespace Gallio.Loader
         /// Initializes the Gallio loader (if not already initialized) and returns
         /// its singleton reference.
         /// </summary>
-        /// <returns>The loader</returns>
-        /// <exception cref="InvalidOperationException">Thrown if Gallio does not appear to be installed</exception>
-        /// <exception cref="SafeException">Thrown if the operation could not be performed</exception>
+        /// <returns>The loader.</returns>
+        /// <exception cref="InvalidOperationException">Thrown if Gallio does not appear to be installed.</exception>
+        /// <exception cref="SafeException">Thrown if the operation could not be performed.</exception>
         public static IGallioLoader Initialize()
         {
             return Initialize(null);
@@ -150,10 +150,10 @@ namespace Gallio.Loader
         /// its singleton reference.
         /// </summary>
         /// <param name="runtimePath">The runtime path from which to load Gallio,
-        /// or null to determine it automatically</param>
-        /// <returns>The loader</returns>
-        /// <exception cref="InvalidOperationException">Thrown if Gallio does not appear to be installed</exception>
-        /// <exception cref="SafeException">Thrown if the operation could not be performed</exception>
+        /// or null to determine it automatically.</param>
+        /// <returns>The loader.</returns>
+        /// <exception cref="InvalidOperationException">Thrown if Gallio does not appear to be installed.</exception>
+        /// <exception cref="SafeException">Thrown if the operation could not be performed.</exception>
         public static IGallioLoader Initialize(string runtimePath)
         {
             lock (syncRoot)
@@ -183,11 +183,11 @@ namespace Gallio.Loader
         /// Remotely initializes the Gallio loader (if not already initialized) and returns
         /// its singleton reference within a foreign AppDomain.
         /// </summary>
-        /// <param name="appDomain">The AppDomain in which to initialize the loader</param>
-        /// <returns>The loader</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="appDomain"/> is null</exception>
-        /// <exception cref="InvalidOperationException">Thrown if Gallio does not appear to be installed</exception>
-        /// <exception cref="SafeException">Thrown if the operation could not be performed</exception>
+        /// <param name="appDomain">The AppDomain in which to initialize the loader.</param>
+        /// <returns>The loader.</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="appDomain"/> is null.</exception>
+        /// <exception cref="InvalidOperationException">Thrown if Gallio does not appear to be installed.</exception>
+        /// <exception cref="SafeException">Thrown if the operation could not be performed.</exception>
         public static IGallioLoader InitializeRemote(AppDomain appDomain)
         {
             return InitializeRemote(appDomain, null);
@@ -197,13 +197,13 @@ namespace Gallio.Loader
         /// Remotely initializes the Gallio loader (if not already initialized) and returns
         /// its singleton reference within a foreign AppDomain.
         /// </summary>
-        /// <param name="appDomain">The AppDomain in which to initialize the loader</param>
+        /// <param name="appDomain">The AppDomain in which to initialize the loader.</param>
         /// <param name="runtimePath">The runtime path from which to load Gallio,
-        /// or null to determine it automatically</param>
-        /// <returns>The loader</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="appDomain"/> is null</exception>
-        /// <exception cref="InvalidOperationException">Thrown if Gallio does not appear to be installed</exception>
-        /// <exception cref="SafeException">Thrown if the operation could not be performed</exception>
+        /// or null to determine it automatically.</param>
+        /// <returns>The loader.</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="appDomain"/> is null.</exception>
+        /// <exception cref="InvalidOperationException">Thrown if Gallio does not appear to be installed.</exception>
+        /// <exception cref="SafeException">Thrown if the operation could not be performed.</exception>
         public static IGallioLoader InitializeRemote(AppDomain appDomain, string runtimePath)
         {
             if (appDomain == null)
@@ -225,9 +225,9 @@ namespace Gallio.Loader
         /// on the environment's loader.
         /// </para>
         /// </remarks>
-        /// <returns>The remote environment</returns>
-        /// <exception cref="InvalidOperationException">Thrown if Gallio does not appear to be installed</exception>
-        /// <exception cref="SafeException">Thrown if the operation could not be performed</exception>
+        /// <returns>The remote environment.</returns>
+        /// <exception cref="InvalidOperationException">Thrown if Gallio does not appear to be installed.</exception>
+        /// <exception cref="SafeException">Thrown if the operation could not be performed.</exception>
         public static IGallioRemoteEnvironment CreateRemoteEnvironment()
         {
             string runtimePath = GetDefaultRuntimePath();

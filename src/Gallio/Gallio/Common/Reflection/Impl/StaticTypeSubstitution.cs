@@ -115,11 +115,11 @@ namespace Gallio.Common.Reflection.Impl
         /// </remarks>
         /// <param name="genericParameters">The generic parameters.</param>
         /// <param name="genericArguments">The generic arguments.</param>
-        /// <returns></returns>
+        /// <returns>The resulting substitution.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="genericParameters"/> or <paramref name="genericArguments"/> is null
         /// or contain nulls.</exception>
         /// <exception cref="ArgumentException">Thrown if <paramref name="genericArguments"/> does not have the same
-        /// number of elements as <paramref name="genericParameters"/></exception>
+        /// number of elements as <paramref name="genericParameters"/>.</exception>
         public StaticTypeSubstitution Extend(IList<StaticGenericParameterWrapper> genericParameters, IList<ITypeInfo> genericArguments)
         {
             if (genericParameters == null)

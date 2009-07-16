@@ -36,8 +36,8 @@ namespace Gallio.UI.ControlPanel
         /// <summary>
         /// Creates a control panel presenter.
         /// </summary>
-        /// <param name="controlPanelTabProviderHandles">The preference page provider handles, not null</param>
-        /// <param name="elevationManager">The elevation manager, not null</param>
+        /// <param name="controlPanelTabProviderHandles">The preference page provider handles, not null.</param>
+        /// <param name="elevationManager">The elevation manager, not null.</param>
         public ControlPanelPresenter(ComponentHandle<IControlPanelTabProvider, ControlPanelTabProviderTraits>[] controlPanelTabProviderHandles,
             IElevationManager elevationManager)
         {

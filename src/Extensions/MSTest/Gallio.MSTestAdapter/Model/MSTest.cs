@@ -31,9 +31,9 @@ namespace Gallio.MSTestAdapter.Model
         /// <summary>
         /// Initializes a test initially without a parent.
         /// </summary>
-        /// <param name="name">The name of the component</param>
-        /// <param name="codeElement">The point of definition, or null if none</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> is null</exception>
+        /// <param name="name">The name of the component.</param>
+        /// <param name="codeElement">The point of definition, or null if none.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> is null.</exception>
         public MSTest(string name, ICodeElementInfo codeElement)
             : base(name, codeElement)
         {

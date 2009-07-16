@@ -49,7 +49,7 @@ namespace Gallio.VisualStudio.Shell.UI
         /// <summary>
         /// Constructs the tool window.
         /// </summary>
-        /// <param name="shell">The shell</param>
+        /// <param name="shell">The shell.</param>
         public ShellToolWindowPane(IShell shell)
             : base(shell.Package)
         {
@@ -105,7 +105,7 @@ namespace Gallio.VisualStudio.Shell.UI
         /// Gets or sets the window caption.
         /// Due to a bug in the VS2008 SDK, <see cref="ToolWindowPane.Caption"/> does not work properly.
         /// </summary>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
         public new string Caption
         {
             get

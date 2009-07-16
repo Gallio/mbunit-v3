@@ -33,12 +33,12 @@ namespace Gallio.TypeMockIntegration
         /// <summary>
         /// Creates a process task.
         /// </summary>
-        /// <param name="executablePath">The path of the executable executable</param>
-        /// <param name="arguments">The arguments for the executable</param>
-        /// <param name="workingDirectory">The working directory</param>
-        /// <param name="logger">The logger</param>
+        /// <param name="executablePath">The path of the executable executable.</param>
+        /// <param name="arguments">The arguments for the executable.</param>
+        /// <param name="workingDirectory">The working directory.</param>
+        /// <param name="logger">The logger.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="executablePath"/>,
-        /// <paramref name="arguments"/>, <paramref name="workingDirectory"/>, or <paramref name="logger"/> is null</exception>
+        /// <paramref name="arguments"/>, <paramref name="workingDirectory"/>, or <paramref name="logger"/> is null.</exception>
         public TypeMockProcessTask(string executablePath, string arguments, string workingDirectory, ILogger logger)
             : base(executablePath, arguments, workingDirectory)
         {

@@ -27,7 +27,7 @@ namespace Gallio.ReSharperRunner.Reflection
         /// <summary>
         /// Resolves the declared element.
         /// </summary>
-        /// <returns>The declared element</returns>
+        /// <returns>The declared element.</returns>
         IDeclaredElement ResolveDeclaredElement();
     }
 }

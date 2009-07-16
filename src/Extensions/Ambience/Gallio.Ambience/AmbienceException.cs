@@ -34,7 +34,7 @@ namespace Gallio.Ambience
         /// <summary>
         /// Creates an exception.
         /// </summary>
-        /// <param name="message">The message</param>
+        /// <param name="message">The message.</param>
         public AmbienceException(string message)
             : base(message)
         {
@@ -43,8 +43,8 @@ namespace Gallio.Ambience
         /// <summary>
         /// Creates an exception.
         /// </summary>
-        /// <param name="message">The message</param>
-        /// <param name="innerException">The inner exception</param>
+        /// <param name="message">The message.</param>
+        /// <param name="innerException">The inner exception.</param>
         public AmbienceException(string message, Exception innerException)
             : base(message, innerException)
         {
@@ -53,8 +53,8 @@ namespace Gallio.Ambience
         /// <summary>
         /// Creates an exception from serialization info.
         /// </summary>
-        /// <param name="info">The serialization info</param>
-        /// <param name="context">The streaming context</param>
+        /// <param name="info">The serialization info.</param>
+        /// <param name="context">The streaming context.</param>
         protected AmbienceException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {

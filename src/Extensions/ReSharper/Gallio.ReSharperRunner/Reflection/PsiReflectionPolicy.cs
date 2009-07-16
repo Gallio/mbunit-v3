@@ -54,8 +54,8 @@ namespace Gallio.ReSharperRunner.Reflection
         /// <summary>
         /// Creates a reflector with the specified PSI manager.
         /// </summary>
-        /// <param name="psiManager">The PSI manager</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="psiManager"/> is null</exception>
+        /// <param name="psiManager">The PSI manager.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="psiManager"/> is null.</exception>
         public PsiReflectionPolicy(PsiManager psiManager)
         {
             if (psiManager == null)
@@ -68,8 +68,8 @@ namespace Gallio.ReSharperRunner.Reflection
         /// <summary>
         /// Obtains a reflection wrapper for a declared element.
         /// </summary>
-        /// <param name="target">The element, or null if none</param>
-        /// <returns>The reflection wrapper, or null if none</returns>
+        /// <param name="target">The element, or null if none.</param>
+        /// <returns>The reflection wrapper, or null if none.</returns>
         public ICodeElementInfo Wrap(IDeclaredElement target)
         {
             if (target == null)
@@ -109,8 +109,8 @@ namespace Gallio.ReSharperRunner.Reflection
         /// <summary>
         /// Obtains a reflection wrapper for a type.
         /// </summary>
-        /// <param name="target">The type, or null if none</param>
-        /// <returns>The reflection wrapper, or null if none</returns>
+        /// <param name="target">The type, or null if none.</param>
+        /// <returns>The reflection wrapper, or null if none.</returns>
         public StaticTypeWrapper Wrap(ITypeElement target)
         {
             return target != null ? MakeTypeWithoutSubstitution(target) : null;
@@ -119,8 +119,8 @@ namespace Gallio.ReSharperRunner.Reflection
         /// <summary>
         /// Obtains a reflection wrapper for a function.
         /// </summary>
-        /// <param name="target">The function, or null if none</param>
-        /// <returns>The reflection wrapper, or null if none</returns>
+        /// <param name="target">The function, or null if none.</param>
+        /// <returns>The reflection wrapper, or null if none.</returns>
         public StaticFunctionWrapper Wrap(IFunction target)
         {
             if (target == null)
@@ -144,8 +144,8 @@ namespace Gallio.ReSharperRunner.Reflection
         /// <summary>
         /// Obtains a reflection wrapper for a constructor.
         /// </summary>
-        /// <param name="target">The constructor, or null if none</param>
-        /// <returns>The reflection wrapper, or null if none</returns>
+        /// <param name="target">The constructor, or null if none.</param>
+        /// <returns>The reflection wrapper, or null if none.</returns>
         public StaticConstructorWrapper Wrap(IConstructor target)
         {
             if (target == null)
@@ -158,8 +158,8 @@ namespace Gallio.ReSharperRunner.Reflection
         /// <summary>
         /// Obtains a reflection wrapper for a method.
         /// </summary>
-        /// <param name="target">The method, or null if none</param>
-        /// <returns>The reflection wrapper, or null if none</returns>
+        /// <param name="target">The method, or null if none.</param>
+        /// <returns>The reflection wrapper, or null if none.</returns>
         public StaticMethodWrapper Wrap(IMethod target)
         {
             if (target == null)
@@ -172,8 +172,8 @@ namespace Gallio.ReSharperRunner.Reflection
         /// <summary>
         /// Obtains a reflection wrapper for an operator.
         /// </summary>
-        /// <param name="target">The method, or null if none</param>
-        /// <returns>The reflection wrapper, or null if none</returns>
+        /// <param name="target">The method, or null if none.</param>
+        /// <returns>The reflection wrapper, or null if none.</returns>
         public StaticMethodWrapper Wrap(IOperator target)
         {
             if (target == null)
@@ -186,8 +186,8 @@ namespace Gallio.ReSharperRunner.Reflection
         /// <summary>
         /// Obtains a reflection wrapper for a property.
         /// </summary>
-        /// <param name="target">The property, or null if none</param>
-        /// <returns>The reflection wrapper, or null if none</returns>
+        /// <param name="target">The property, or null if none.</param>
+        /// <returns>The reflection wrapper, or null if none.</returns>
         public StaticPropertyWrapper Wrap(IProperty target)
         {
             if (target == null)
@@ -200,8 +200,8 @@ namespace Gallio.ReSharperRunner.Reflection
         /// <summary>
         /// Obtains a reflection wrapper for a field.
         /// </summary>
-        /// <param name="target">The field, or null if none</param>
-        /// <returns>The reflection wrapper, or null if none</returns>
+        /// <param name="target">The field, or null if none.</param>
+        /// <returns>The reflection wrapper, or null if none.</returns>
         public StaticFieldWrapper Wrap(IField target)
         {
             if (target == null)
@@ -214,8 +214,8 @@ namespace Gallio.ReSharperRunner.Reflection
         /// <summary>
         /// Obtains a reflection wrapper for an event.
         /// </summary>
-        /// <param name="target">The event, or null if none</param>
-        /// <returns>The reflection wrapper, or null if none</returns>
+        /// <param name="target">The event, or null if none.</param>
+        /// <returns>The reflection wrapper, or null if none.</returns>
         public StaticEventWrapper Wrap(IEvent target)
         {
             if (target == null)
@@ -228,8 +228,8 @@ namespace Gallio.ReSharperRunner.Reflection
         /// <summary>
         /// Obtains a reflection wrapper for a parameter.
         /// </summary>
-        /// <param name="target">The parameter, or null if none</param>
-        /// <returns>The reflection wrapper, or null if none</returns>
+        /// <param name="target">The parameter, or null if none.</param>
+        /// <returns>The reflection wrapper, or null if none.</returns>
         public StaticParameterWrapper Wrap(IParameter target)
         {
             if (target == null)

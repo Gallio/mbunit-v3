@@ -47,9 +47,9 @@ namespace Gallio.ReSharperRunner.Provider.Facade
         /// duration of its lifetime so that it can perform an inverse mapping as
         /// required.
         /// </summary>
-        /// <param name="node">The execution node to map</param>
-        /// <returns>The facade task tree</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="node"/> is null</exception>
+        /// <param name="node">The execution node to map.</param>
+        /// <returns>The facade task tree.</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="node"/> is null.</exception>
         public FacadeTask MapTasks(TaskExecutionNode node)
         {
             if (node == null)
@@ -70,8 +70,8 @@ namespace Gallio.ReSharperRunner.Provider.Facade
         /// <summary>
         /// Gets the remote task that corresponds to a particular facade task.
         /// </summary>
-        /// <param name="task">The facade task</param>
-        /// <returns>The corresponding remote task</returns>
+        /// <param name="task">The facade task.</param>
+        /// <returns>The corresponding remote task.</returns>
         public RemoteTask GetRemoteTask(FacadeTask task)
         {
             if (task == null)

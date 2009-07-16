@@ -30,7 +30,7 @@ namespace Gallio.UI.ControlPanel.Plugins
         /// <summary>
         /// Creates a control panel tab for managing installed plugins.
         /// </summary>
-        /// <param name="registry">The plugin registry, not null</param>
+        /// <param name="registry">The plugin registry, not null.</param>
         public PluginControlPanelTabProvider(IRegistry registry)
         {
             this.registry = registry;

@@ -58,7 +58,7 @@ namespace MbUnit.Framework
         /// with the test component annotated by this attribute.
         /// </summary>
         /// <param name="typeName">The name of the type under test as obtained by <see cref="Type.FullName" />
-        /// or <see cref="Type.AssemblyQualifiedName" /></param>
+        /// or <see cref="Type.AssemblyQualifiedName" />.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="typeName"/> is null.</exception>
         public TestsOnAttribute(string typeName)
         {

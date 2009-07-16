@@ -63,7 +63,7 @@ namespace Gallio.Icarus.Utilities
         /// If the item is already in the list, it is removed
         /// and still added to the front.
         /// </summary>
-        /// <param name="item"></param>
+        /// <param name="item">The item to be added.</param>
         public void Add(string item)
         {
             if (items.Contains(item))

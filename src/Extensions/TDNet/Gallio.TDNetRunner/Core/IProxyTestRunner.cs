@@ -27,17 +27,17 @@ namespace Gallio.TDNetRunner.Core
         /// <summary>
         /// Aborts the test run.
         /// </summary>
-        /// <exception cref="SafeException">Thrown if the operation could not be performed</exception>
+        /// <exception cref="SafeException">Thrown if the operation could not be performed.</exception>
         void Abort();
 
         /// <summary>
         /// Runs the tests.
         /// </summary>
-        /// <param name="testListener">The test listener</param>
-        /// <param name="assemblyPath">The test assembly</param>
-        /// <param name="cref">The code reference for the test to run</param>
-        /// <param name="facadeOptions">The TDNet options</param>
-        /// <exception cref="SafeException">Thrown if the operation could not be performed</exception>
+        /// <param name="testListener">The test listener.</param>
+        /// <param name="assemblyPath">The test assembly.</param>
+        /// <param name="cref">The code reference for the test to run.</param>
+        /// <param name="facadeOptions">The TDNet options.</param>
+        /// <exception cref="SafeException">Thrown if the operation could not be performed.</exception>
         FacadeTestRunState Run(IFacadeTestListener testListener, string assemblyPath, string cref, FacadeOptions facadeOptions);
     }
 }

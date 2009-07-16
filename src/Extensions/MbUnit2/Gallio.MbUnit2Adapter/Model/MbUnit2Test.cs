@@ -34,11 +34,11 @@ namespace Gallio.MbUnit2Adapter.Model
         /// <summary>
         /// Initializes a test initially without a parent.
         /// </summary>
-        /// <param name="name">The name of the component</param>
-        /// <param name="codeElement">The point of definition, or null if none</param>
-        /// <param name="fixture">The MbUnit v2 fixture, or null if none</param>
-        /// <param name="runPipe">The MbUnit v2 run pipe, or null if none</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> is null</exception>
+        /// <param name="name">The name of the component.</param>
+        /// <param name="codeElement">The point of definition, or null if none.</param>
+        /// <param name="fixture">The MbUnit v2 fixture, or null if none.</param>
+        /// <param name="runPipe">The MbUnit v2 run pipe, or null if none.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> is null.</exception>
         public MbUnit2Test(string name, ICodeElementInfo codeElement, Fixture fixture, RunPipe runPipe)
             : base(name, codeElement)
         {

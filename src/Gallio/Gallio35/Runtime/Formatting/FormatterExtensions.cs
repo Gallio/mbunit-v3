@@ -28,8 +28,8 @@ namespace Gallio.Runtime.Formatting
         /// <summary>
         /// Formats an object using the default <see cref="IFormatter" />.
         /// </summary>
-        /// <param name="obj">The object to format</param>
-        /// <returns>The formatted object</returns>
+        /// <param name="obj">The object to format.</param>
+        /// <returns>The formatted object.</returns>
         public static string Format(this object obj)
         {
             return Format(obj, null);
@@ -38,9 +38,9 @@ namespace Gallio.Runtime.Formatting
         /// <summary>
         /// Formats an object using the specified <see cref="IFormatter" />.
         /// </summary>
-        /// <param name="obj">The object to format</param>
-        /// <param name="formatter">The formatter to use, or null for the default</param>
-        /// <returns>The formatted object</returns>
+        /// <param name="obj">The object to format.</param>
+        /// <param name="formatter">The formatter to use, or null for the default.</param>
+        /// <returns>The formatted object.</returns>
         public static string Format(this object obj, IFormatter formatter)
         {
             return (formatter ?? Formatter.Instance).Format(obj);

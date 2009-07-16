@@ -25,7 +25,7 @@ namespace Gallio.VisualStudio.Shell.Actions
         /// <summary>
         /// Installs an action button.
         /// </summary>
-        /// <param name="descriptor">The action button descriptor</param>
+        /// <param name="descriptor">The action button descriptor.</param>
         void InstallActionButton(ActionButtonDescriptor descriptor);
     }
 }

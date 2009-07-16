@@ -53,7 +53,7 @@ namespace Gallio.Framework
         /// not been granted the right to interact with the desktop.
         /// </para>
         /// </remarks>
-        /// <returns>True if the screen can be captured</returns>
+        /// <returns>True if the screen can be captured.</returns>
         public static bool CanCaptureScreenshot()
         {
             return ScreenGrabber.CanCaptureScreenshot();

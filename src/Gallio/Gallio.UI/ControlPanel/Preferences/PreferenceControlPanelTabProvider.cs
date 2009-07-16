@@ -32,7 +32,7 @@ namespace Gallio.UI.ControlPanel.Preferences
         /// <summary>
         /// Creates a control panel tab provider for preference panes.
         /// </summary>
-        /// <param name="preferencePaneProviderHandles">The preference page provider handles, not null</param>
+        /// <param name="preferencePaneProviderHandles">The preference page provider handles, not null.</param>
         public PreferenceControlPanelTabProvider(ComponentHandle<IPreferencePaneProvider, PreferencePaneProviderTraits>[] preferencePaneProviderHandles)
         {
             this.preferencePaneProviderHandles = preferencePaneProviderHandles;

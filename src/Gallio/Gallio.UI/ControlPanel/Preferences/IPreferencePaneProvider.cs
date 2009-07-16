@@ -29,7 +29,7 @@ namespace Gallio.UI.ControlPanel.Preferences
         /// <summary>
         /// Creates a preference pane to include in the control panel.
         /// </summary>
-        /// <returns>The preference pane</returns>
+        /// <returns>The preference pane.</returns>
         PreferencePane CreatePreferencePane();
     }
 }

@@ -29,7 +29,7 @@ namespace Gallio.UI.ControlPanel
         /// <summary>
         /// Creates a control panel tab to include in the control panel.
         /// </summary>
-        /// <returns>The control panel tab</returns>
+        /// <returns>The control panel tab.</returns>
         ControlPanelTab CreateControlPanelTab();
     }
 }

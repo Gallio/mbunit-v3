@@ -63,7 +63,7 @@ namespace Gallio.UI.Controls
         /// <summary>
         /// Raises the <see cref="ShieldChanged" /> event.
         /// </summary>
-        /// <param name="e">The event arguments</param>
+        /// <param name="e">The event arguments.</param>
         protected virtual void OnShieldChanged(EventArgs e)
         {
             if (ShieldChanged != null)

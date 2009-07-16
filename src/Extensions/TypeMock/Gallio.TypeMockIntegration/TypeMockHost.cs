@@ -29,11 +29,11 @@ namespace Gallio.TypeMockIntegration
         /// <summary>
         /// Creates an uninitialized host.
         /// </summary>
-        /// <param name="hostSetup">The host setup</param>
-        /// <param name="logger">The logger for host message output</param>
-        /// <param name="installationPath">The runtime installation path where the hosting executable will be found</param>
+        /// <param name="hostSetup">The host setup.</param>
+        /// <param name="logger">The logger for host message output.</param>
+        /// <param name="installationPath">The runtime installation path where the hosting executable will be found.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="hostSetup"/> 
-        /// <paramref name="logger"/>, or <paramref name="installationPath"/> is null</exception>
+        /// <paramref name="logger"/>, or <paramref name="installationPath"/> is null.</exception>
         public TypeMockHost(HostSetup hostSetup, ILogger logger, string installationPath)
             : base(hostSetup, logger, installationPath)
         {

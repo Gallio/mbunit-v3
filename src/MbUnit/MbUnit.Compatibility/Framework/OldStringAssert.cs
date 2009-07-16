@@ -31,10 +31,10 @@ namespace MbUnit.Framework
 		/// Asserts that two strings are equal, ignoring the case
 		/// </summary>
 		/// <param name="s1">
-		/// Expected string
+		/// Expected string.
 		/// </param>
 		/// <param name="s2">
-		/// Actual string
+		/// Actual string.
 		/// </param>
 		public static void AreEqualIgnoreCase(string s1, string s2)
 		{
@@ -77,7 +77,7 @@ namespace MbUnit.Framework
 		/// String to test.
 		/// </param>
 		/// <param name="reg">
-		/// Regular expression
+		/// Regular expression.
 		/// </param>
 		public static void FullMatch(String s, string reg)
 		{
@@ -93,7 +93,7 @@ namespace MbUnit.Framework
 		/// String to test.
 		/// </param>
 		/// <param name="regex">
-		/// Regular expression
+		/// Regular expression.
 		/// </param>
 		public static void FullMatch(String s, Regex regex)
 		{
@@ -111,7 +111,7 @@ namespace MbUnit.Framework
 		/// String to test.
 		/// </param>
 		/// <param name="reg">
-		/// Regular expression
+		/// Regular expression.
 		/// </param>
 		public static void Like(String s, string reg)
 		{
@@ -126,7 +126,7 @@ namespace MbUnit.Framework
 		/// String to test.
 		/// </param>
 		/// <param name="regex">
-		/// A <see cref="Regex"/> instance. 
+		/// A <see cref="Regex"/> instance.
 		/// </param>
 		public static void Like(String s, Regex regex)
 		{
@@ -143,7 +143,7 @@ namespace MbUnit.Framework
 		/// String to test.
 		/// </param>
 		/// <param name="reg">
-		/// Regular expression
+		/// Regular expression.
 		/// </param>
 		public static void NotLike(String s, string reg)
 		{
@@ -158,7 +158,7 @@ namespace MbUnit.Framework
 		/// String to test.
 		/// </param>
 		/// <param name="regex">
-		/// A <see cref="Regex"/> instance. 
+		/// A <see cref="Regex"/> instance.
 		/// </param>
 		public static void NotLike(String s, Regex regex)
 		{

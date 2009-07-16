@@ -25,7 +25,7 @@ namespace Gallio.UI.ProgressMonitoring
         /// <summary>
         /// Run a task (with progress information).
         /// </summary>
-        /// <param name="progressMonitor"></param>
+        /// <param name="progressMonitor">The progress monitor.</param>
         void Execute(IProgressMonitor progressMonitor);
     }
 }

@@ -59,7 +59,7 @@ namespace Gallio.Common.Markup.Tags
         /// </summary>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
         /// <exception cref="ArgumentException">Thrown if the <paramref name="value"/> is not a valid identifier.
-        /// <seealso cref="Markup.Marker.ValidateIdentifier"/></exception>
+        /// <seealso cref="Markup.Marker.ValidateIdentifier"/>.</exception>
         [XmlAttribute("class")]
         public string Class
         {

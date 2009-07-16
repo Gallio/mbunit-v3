@@ -34,8 +34,8 @@ namespace Gallio.VisualStudio.Interop
         /// <summary>
         /// Installs a retry message filter.
         /// </summary>
-        /// <param name="retryTimeout">The retry timeout</param>
-        /// <exception cref="InvalidOperationException">Thrown if the filter has already been installed</exception>
+        /// <param name="retryTimeout">The retry timeout.</param>
+        /// <exception cref="InvalidOperationException">Thrown if the filter has already been installed.</exception>
         public static void Install(TimeSpan retryTimeout)
         {
             lock (syncRoot)

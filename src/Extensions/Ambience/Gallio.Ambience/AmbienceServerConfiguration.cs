@@ -59,7 +59,7 @@ namespace Gallio.Ambience
         /// Gets or sets the Ambient server port number.
         /// </summary>
         /// <value>The port number, defaults to 7822.</value>
-        /// <exception cref="ArgumentOutOfRangeException">Thrown if the port number is not in the range 1..65535</exception>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown if the port number is not in the range 1..65535.</exception>
         public int Port
         {
             get { return port; }
@@ -74,7 +74,7 @@ namespace Gallio.Ambience
         /// Gets or sets the Ambient server username and password.
         /// </summary>
         /// <value>The username and password, defaults to an anonymous credential.</value>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
         public NetworkCredential Credential
         {
             get { return credential; }

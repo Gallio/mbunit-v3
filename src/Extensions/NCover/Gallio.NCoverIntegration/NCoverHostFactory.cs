@@ -30,9 +30,9 @@ namespace Gallio.NCoverIntegration
         /// <summary>
         /// Creates a host factory.
         /// </summary>
-        /// <param name="runtime">The runtime</param>
-        /// <param name="version">The NCover version</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="runtime"/> is null</exception>
+        /// <param name="runtime">The runtime.</param>
+        /// <param name="version">The NCover version.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="runtime"/> is null.</exception>
         public NCoverHostFactory(IRuntime runtime, NCoverVersion version)
             : base(runtime)
         {

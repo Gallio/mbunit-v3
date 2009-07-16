@@ -42,7 +42,7 @@ namespace Gallio.Loader
         /// <summary>
         /// Creates an exception.
         /// </summary>
-        /// <param name="message">The message</param>
+        /// <param name="message">The message.</param>
         public SafeException(string message)
             : base(message)
         {
@@ -51,8 +51,8 @@ namespace Gallio.Loader
         /// <summary>
         /// Creates an exception.
         /// </summary>
-        /// <param name="message">The message</param>
-        /// <param name="innerException">The inner exception</param>
+        /// <param name="message">The message.</param>
+        /// <param name="innerException">The inner exception.</param>
         public SafeException(string message, Exception innerException)
             : base(message, innerException)
         {
@@ -61,8 +61,8 @@ namespace Gallio.Loader
         /// <summary>
         /// Creates an exception from serialization info.
         /// </summary>
-        /// <param name="info">The serialization info</param>
-        /// <param name="context">The streaming context</param>
+        /// <param name="info">The serialization info.</param>
+        /// <param name="context">The streaming context.</param>
         protected SafeException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
@@ -71,9 +71,9 @@ namespace Gallio.Loader
         /// <summary>
         /// Wraps an exception as a <see cref="SafeException" />.
         /// </summary>
-        /// <param name="ex">The exception type</param>
-        /// <returns>The wrapped exception</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="ex"/> is null</exception>
+        /// <param name="ex">The exception type.</param>
+        /// <returns>The wrapped exception.</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="ex"/> is null.</exception>
         public static SafeException Wrap(Exception ex)
         {
             if (ex == null)

@@ -62,7 +62,7 @@ namespace Gallio.VisualStudio.Shell.UI
         /// <summary>
         /// Gets or sets the window caption.
         /// </summary>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
         public string Caption
         {
             get

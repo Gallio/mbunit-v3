@@ -219,10 +219,7 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
 
         #region Sample collections
 
-        /// <summary>
-        /// Minimal and operational implementation of a collection.
-        /// </summary>
-        /// <typeparam name="T">The type of the items.</typeparam>
+        // Minimal and operational implementation of a collection.
         internal class BasicSample<T> : ICollection<T>
         {
             private List<T> items = new List<T>();
@@ -293,11 +290,8 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
             }
         }
 
-        /// <summary>
-        /// Minimal and operational implementation of a read-only collection.
-        /// Add, Remove, or Clear throws a NotSupportedException.
-        /// </summary>
-        /// <typeparam name="T">The type of the items.</typeparam>
+        // Minimal and operational implementation of a read-only collection.
+        // Add, Remove, or Clear throws a NotSupportedException.
         internal class ReadOnlySample<T> : BasicSample<T>
         {
             public override void Add(T item)
@@ -324,12 +318,9 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
             }
         }
 
-        /// <summary>
-        /// Same as "BasicSample" but with hiding the default constructor.
-        /// Most of tests will fail if the user does not provide manually a default instance 
-        /// to the contract verifyer by using the property "DefaultInstance".
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
+        // Same as "BasicSample" but with hiding the default constructor.
+        // Most of tests will fail if the user does not provide manually a default instance 
+        // to the contract verifyer by using the property "DefaultInstance".
         internal class BasicSampleWithNoDefaultConstructor<T> : BasicSample<T>
         {
             public BasicSampleWithNoDefaultConstructor(IEnumerable<T> items)
@@ -341,10 +332,7 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
             }
         }
 
-        /// <summary>
-        /// Same as "BasicSample", but with a buggy implementation of "Add".
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
+        // Same as "BasicSample", but with a buggy implementation of "Add".
         internal class BuggyAddSample<T> : BasicSample<T>
         {
             public override void Add(T item)
@@ -353,10 +341,7 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
             }
         }
 
-        /// <summary>
-        /// Same as "BasicSample", but with a buggy implementation of "Clear".
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
+        // Same as "BasicSample", but with a buggy implementation of "Clear".
         internal class BuggyClearSample<T> : BasicSample<T>
         {
             public override void Clear()
@@ -365,10 +350,7 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
             }
         }
 
-        /// <summary>
-        /// Same as "BasicSample", which does not accept doublet items.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
+        // Same as "BasicSample", which does not accept doublet items.
         internal class NoDoubletSample<T> : BasicSample<T>
         {
             public override void Add(T item)

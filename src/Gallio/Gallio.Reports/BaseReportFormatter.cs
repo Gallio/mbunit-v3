@@ -52,8 +52,8 @@ namespace Gallio.Reports
         /// <summary>
         /// Gets the attachment content disposition.
         /// </summary>
-        /// <param name="options">The formatter options</param>
-        /// <returns>The attachment content disposition</returns>
+        /// <param name="options">The formatter options.</param>
+        /// <returns>The attachment content disposition.</returns>
         protected AttachmentContentDisposition GetAttachmentContentDisposition(ReportFormatterOptions options)
         {
             string contentDisposition = options.Properties.GetValue(AttachmentContentDispositionOption);

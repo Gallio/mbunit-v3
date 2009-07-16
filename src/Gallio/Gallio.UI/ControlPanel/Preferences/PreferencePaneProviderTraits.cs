@@ -32,9 +32,9 @@ namespace Gallio.UI.ControlPanel.Preferences
         /// Creates a traits object for a preference pane provider.
         /// </summary>
         /// <param name="path">The preference pane path consisting of slash-delimited name segments
-        /// specifying tree nodes</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="path"/> is null</exception>
-        /// <exception cref="ArgumentException">Thrown if <paramref name="path"/> is empty</exception>
+        /// specifying tree nodes.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="path"/> is null.</exception>
+        /// <exception cref="ArgumentException">Thrown if <paramref name="path"/> is empty.</exception>
         public PreferencePaneProviderTraits(string path)
         {
             if (path == null)

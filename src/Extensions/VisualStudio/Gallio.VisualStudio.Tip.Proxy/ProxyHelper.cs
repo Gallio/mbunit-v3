@@ -25,7 +25,7 @@ namespace Gallio.VisualStudio.Tip
         /// <summary>
         /// Gets the factory for constructing the target of the proxy.
         /// </summary>
-        /// <returns>The target factory</returns>
+        /// <returns>The target factory.</returns>
         public static IProxyTargetFactory GetTargetFactory()
         {
             IGallioLoader loader = GallioLoader.Initialize();

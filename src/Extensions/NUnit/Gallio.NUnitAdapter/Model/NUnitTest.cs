@@ -31,10 +31,10 @@ namespace Gallio.NUnitAdapter.Model
         /// <summary>
         /// Initializes a test initially without a parent.
         /// </summary>
-        /// <param name="name">The name of the component</param>
-        /// <param name="codeElement">The point of definition, or null if none</param>
-        /// <param name="test">The NUnit test, or null if none</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> is null</exception>
+        /// <param name="name">The name of the component.</param>
+        /// <param name="codeElement">The point of definition, or null if none.</param>
+        /// <param name="test">The NUnit test, or null if none.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> is null.</exception>
         public NUnitTest(string name, ICodeElementInfo codeElement, NUnitITest test)
             : base(name, codeElement)
         {
@@ -53,7 +53,7 @@ namespace Gallio.NUnitAdapter.Model
         /// <summary>
         /// Processes all of the test names associated with the test.
         /// </summary>
-        /// <param name="action">The action to apply</param>
+        /// <param name="action">The action to apply.</param>
         public virtual void ProcessTestNames(Action<NUnitTestName> action)
         {
             action(test.TestName);

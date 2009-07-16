@@ -48,7 +48,7 @@ namespace Gallio.Framework.Pattern
         /// then waits for them all to complete.
         /// </summary>
         /// <param name="actions">The actions to run in parallel (up to the
-        /// supported degree of parallelism)</param>
+        /// supported degree of parallelism).</param>
         public void Run(IList<Action> actions)
         {
             WorkSet workSet = workScheduler.BeginWorkSet(actions);

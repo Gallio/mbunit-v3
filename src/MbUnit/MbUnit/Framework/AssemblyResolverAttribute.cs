@@ -43,7 +43,7 @@ namespace MbUnit.Framework
         /// Registers a custom assembly resolver.
         /// </summary>
         /// <param name="assemblyResolverType">The assembly resolver type, must
-        /// implement <see cref="IAssemblyResolver" /></param>
+        /// implement <see cref="IAssemblyResolver" />.</param>
         public AssemblyResolverAttribute(Type assemblyResolverType)
         {
             if (assemblyResolverType == null)

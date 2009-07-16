@@ -35,10 +35,10 @@ namespace Gallio.UI.ControlPanel.Preferences
         /// Adds a preference pane.
         /// </summary>
         /// <param name="path">The preference pane path consisting of slash-delimited name segments
-        /// specifying tree nodes</param>
-        /// <param name="icon">The preference pane icon, or null if none</param>
-        /// <param name="scope">The preference pane scope, or null if none</param>
-        /// <param name="paneFactory">The preference pane factory</param>
+        /// specifying tree nodes.</param>
+        /// <param name="icon">The preference pane icon, or null if none.</param>
+        /// <param name="scope">The preference pane scope, or null if none.</param>
+        /// <param name="paneFactory">The preference pane factory.</param>
         public void AddPane(string path, Icon icon, PreferencePaneScope scope, Func<PreferencePane> paneFactory)
         {
             string[] pathSegments = path.Split('/');

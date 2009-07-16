@@ -36,10 +36,10 @@ namespace Gallio.Common.Linq
         /// <summary>
         /// Compiles an expression to introduce trace points.
         /// </summary>
-        /// <typeparam name="T">The expression type</typeparam>
-        /// <param name="expr">The expression tree</param>
-        /// <returns>The compiled delegate representing expression</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="expr"/> is null</exception>
+        /// <typeparam name="T">The expression type.</typeparam>
+        /// <param name="expr">The expression tree.</param>
+        /// <returns>The compiled delegate representing expression.</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="expr"/> is null.</exception>
         public T Compile<T>(Expression<T> expr)
         {
             return Rewrite(expr).Compile();
@@ -48,10 +48,10 @@ namespace Gallio.Common.Linq
         /// <summary>
         /// Rewrites an expression tree to introduce trace points.
         /// </summary>
-        /// <typeparam name="T">The expression type</typeparam>
-        /// <param name="expr">The expression tree</param>
-        /// <returns>The compiled delegate representing expression</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="expr"/> is null</exception>
+        /// <typeparam name="T">The expression type.</typeparam>
+        /// <param name="expr">The expression tree.</param>
+        /// <returns>The compiled delegate representing expression.</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="expr"/> is null.</exception>
         public Expression<T> Rewrite<T>(Expression<T> expr)
         {
             if (expr == null)
@@ -65,10 +65,10 @@ namespace Gallio.Common.Linq
         /// <summary>
         /// Evaluates a sub-expression and collects trace information.
         /// </summary>
-        /// <typeparam name="T">The return type of the sub-expression</typeparam>
-        /// <param name="expr">The sub-expression to evaluate</param>
-        /// <param name="continuation">The continuation that evaluates the sub-expression</param>
-        /// <returns>The result of the evaluation</returns>
+        /// <typeparam name="T">The return type of the sub-expression.</typeparam>
+        /// <param name="expr">The sub-expression to evaluate.</param>
+        /// <param name="continuation">The continuation that evaluates the sub-expression.</param>
+        /// <returns>The result of the evaluation.</returns>
         [DebuggerHidden, DebuggerStepThrough]
         protected virtual T Intercept<T>(Expression expr, System.Func<T> continuation)
         {

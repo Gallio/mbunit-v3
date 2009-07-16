@@ -34,12 +34,12 @@ namespace Gallio.NCoverIntegration
         /// <summary>
         /// Creates an uninitialized host.
         /// </summary>
-        /// <param name="hostSetup">The host setup</param>
-        /// <param name="logger">The logger for host message output</param>
-        /// <param name="installationPath">The runtime installation path where the hosting executable will be found</param>
-        /// <param name="version">The NCover version</param>
+        /// <param name="hostSetup">The host setup.</param>
+        /// <param name="logger">The logger for host message output.</param>
+        /// <param name="installationPath">The runtime installation path where the hosting executable will be found.</param>
+        /// <param name="version">The NCover version.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="hostSetup"/> 
-        /// <paramref name="logger"/>, or <paramref name="installationPath"/> is null</exception>
+        /// <paramref name="logger"/>, or <paramref name="installationPath"/> is null.</exception>
         public NCoverHost(HostSetup hostSetup, ILogger logger, string installationPath, NCoverVersion version)
             : base(ForceProcessorArchitectureAndRuntimeVersionIfRequired(hostSetup, version), logger, installationPath)
         {

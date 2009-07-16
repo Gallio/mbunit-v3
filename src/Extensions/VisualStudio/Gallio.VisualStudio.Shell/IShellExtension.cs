@@ -25,7 +25,7 @@ namespace Gallio.VisualStudio.Shell
         /// <summary>
         /// Initializes the shell extension.
         /// </summary>
-        /// <param name="shell">The shell</param>
+        /// <param name="shell">The shell.</param>
         void Initialize(IShell shell);
 
         /// <summary>

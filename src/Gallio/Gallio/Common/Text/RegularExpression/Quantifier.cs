@@ -64,7 +64,7 @@ namespace Gallio.Common.Text.RegularExpression
         /// <summary>
         /// Constructs a quantifier with a constant value.
         /// </summary>
-        /// <param name="repeat"></param>
+        /// <param name="repeat">The number of repetitions.</param>
         public Quantifier(int repeat)
         {
             if (repeat < 0)

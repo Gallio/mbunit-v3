@@ -45,7 +45,7 @@ namespace Gallio.Model
         /// <summary>
         /// Creates a test outcome with no category.
         /// </summary>
-        /// <param name="status">The test <see cref="Status"/></param>
+        /// <param name="status">The test <see cref="Status"/>.</param>
         public TestOutcome(TestStatus status)
         {
             this.status = status;

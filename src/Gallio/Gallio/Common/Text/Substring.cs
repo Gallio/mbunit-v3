@@ -103,7 +103,7 @@ namespace Gallio.Common.Text
         /// <param name="index">The index at which to start.</param>
         /// <returns>The substring.</returns>
         /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="index"/> is negative or
-        /// if is greater than <see cref="Length"/></exception>
+        /// if is greater than <see cref="Length"/>.</exception>
         public Substring Extract(int index)
         {
             if (index < 0 || index > Length)
@@ -119,7 +119,7 @@ namespace Gallio.Common.Text
         /// <param name="length">The length of the substring to produce.</param>
         /// <returns>The substring.</returns>
         /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="index"/> or
-        /// <paramref name="length"/> are negative or if their sum is greater than <see cref="Length"/></exception>
+        /// <paramref name="length"/> are negative or if their sum is greater than <see cref="Length"/>.</exception>
         public Substring Extract(int index, int length)
         {
             if (index < 0 || length < 0 || index + length > Length)

@@ -152,7 +152,7 @@ namespace Gallio.Runtime.Hosting
         /// <summary>
         /// Adds a supported runtime version number if it is not already in the configuration.
         /// </summary>
-        /// <param name="version">The version number, eg. "v2.0.50727"</param>
+        /// <param name="version">The version number, eg. "v2.0.50727".</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="version"/> is null.</exception>
         public void AddSupportedRuntimeVersion(string version)
         {
@@ -166,7 +166,7 @@ namespace Gallio.Runtime.Hosting
         /// <summary>
         /// Removes a supported runtime version number.
         /// </summary>
-        /// <param name="version">The version number, eg. "v2.0.50727"</param>
+        /// <param name="version">The version number, eg. "v2.0.50727".</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="version"/> is null.</exception>
         public void RemoveSupportedRuntimeVersion(string version)
         {
@@ -896,9 +896,9 @@ namespace Gallio.Runtime.Hosting
             /// Creates an assembly binding redirect.
             /// </summary>
             /// <param name="oldVersionRange">The range of old versions to redirect, specified
-            /// either as a single version such as "1.2.3.4" or as a range such as "1.2.3.4-10.11.12.13"</param>
+            /// either as a single version such as "1.2.3.4" or as a range such as "1.2.3.4-10.11.12.13".</param>
             /// <param name="newVersion">The new version to which the binding should be redirected
-            /// such as "1.2.3.4"</param>
+            /// such as "1.2.3.4".</param>
             /// <exception cref="ArgumentNullException">Thrown if <paramref name="oldVersionRange"/>
             /// or <paramref name="newVersion"/> is null.</exception>
             public AssemblyBindingRedirect(string oldVersionRange, string newVersion)

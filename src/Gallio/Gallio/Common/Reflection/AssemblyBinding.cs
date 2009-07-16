@@ -55,7 +55,7 @@ namespace Gallio.Common.Reflection
         /// <summary>
         /// Creates an assembly binding using the name and codebase of the specified assembly.
         /// </summary>
-        /// <param name="assembly">The assembly</param>
+        /// <param name="assembly">The assembly.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="assembly"/> is null.</exception>
         public AssemblyBinding(Assembly assembly)
             : this()

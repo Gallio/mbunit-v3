@@ -27,11 +27,11 @@ namespace Gallio.MSTestAdapter.Model
         /// <summary>
         /// Creates an object to represent an MSTest assembly.
         /// </summary>
-        /// <param name="name">The name of the component</param>
-        /// <param name="codeElement">The point of definition, or null if none</param>
-        /// <param name="frameworkVersion">The version number of the Microsoft.VisualStudio.QualityTools.UnitTestFramework assembly</param>
+        /// <param name="name">The name of the component.</param>
+        /// <param name="codeElement">The point of definition, or null if none.</param>
+        /// <param name="frameworkVersion">The version number of the Microsoft.VisualStudio.QualityTools.UnitTestFramework assembly.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/>, or
-        /// <paramref name="frameworkVersion" /> is null</exception>
+        /// <paramref name="frameworkVersion" /> is null.</exception>
         public MSTestAssembly(string name, ICodeElementInfo codeElement, Version frameworkVersion) 
             : base(name, codeElement)
         {

@@ -33,8 +33,8 @@ namespace Gallio.Model.Filters
         /// <param name="assemblyNameFilter">A filter for the assembly name that is used
         /// to match one of the following values:
         /// <list type="bullet">
-        /// <item>Full name as returned by <see cref="Assembly.FullName" /></item>
-        /// <item>Simple name (aka. partial name) as returned by <see cref="AssemblyName.Name" /></item>
+        /// <item>Full name as returned by <see cref="Assembly.FullName" />.</item>
+        /// <item>Simple name (aka. partial name) as returned by <see cref="AssemblyName.Name" />.</item>
         /// </list>
         /// </param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="assemblyNameFilter"/> is null.</exception>

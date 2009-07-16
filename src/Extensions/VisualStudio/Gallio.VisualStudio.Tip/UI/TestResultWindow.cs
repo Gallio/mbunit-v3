@@ -38,8 +38,8 @@ namespace Gallio.VisualStudio.Tip.UI
         /// <summary>
         /// Default constructor.
         /// </summary>
-        /// <param name="testResult">The test result to be displayed</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="testResult"/> is null</exception>
+        /// <param name="testResult">The test result to be displayed.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="testResult"/> is null.</exception>
         public TestResultWindow(GallioTestResult testResult)
         {
             if (testResult == null)

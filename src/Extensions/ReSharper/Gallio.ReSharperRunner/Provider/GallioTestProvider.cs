@@ -507,8 +507,8 @@ namespace Gallio.ReSharperRunner.Provider
             /// <summary>
             /// Gets a custom options panel control or null if none.
             /// </summary>
-            /// <param name="solution">The solution</param>
-            /// <returns>The control, or null if none</returns>
+            /// <param name="solution">The solution.</param>
+            /// <returns>The control, or null if none.</returns>
             public ProviderCustomOptionsControl GetCustomOptionsControl(ISolution solution)
             {
                 return null;

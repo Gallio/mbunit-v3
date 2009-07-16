@@ -26,7 +26,7 @@ namespace Gallio.Framework.Data
         /// <summary>
         /// Creates a data accessor that returns a specified constant value.
         /// </summary>
-        /// <param name="value">The constant value to be returned by <see cref="IDataAccessor.GetValue" /></param>
+        /// <param name="value">The constant value to be returned by <see cref="IDataAccessor.GetValue" />.</param>
         public ConstantDataAccessor(object value)
         {
             this.value = value;

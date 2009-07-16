@@ -30,9 +30,9 @@ namespace Gallio.UI.ControlPanel
         /// <summary>
         /// Creates a traits object for a control panel tab provider.
         /// </summary>
-        /// <param name="name">The control panel tab name</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> is null</exception>
-        /// <exception cref="ArgumentException">Thrown if <paramref name="name"/> is empty</exception>
+        /// <param name="name">The control panel tab name.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> is null.</exception>
+        /// <exception cref="ArgumentException">Thrown if <paramref name="name"/> is empty.</exception>
         public ControlPanelTabProviderTraits(string name)
         {
             if (name == null)

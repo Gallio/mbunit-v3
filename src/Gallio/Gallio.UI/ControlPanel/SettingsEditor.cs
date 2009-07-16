@@ -76,8 +76,8 @@ namespace Gallio.UI.ControlPanel
         /// Applies pending settings changes.
         /// </summary>
         /// <param name="elevationContext">An elevation context when <see cref="RequiresElevation" />
-        /// is true, otherwise null</param>
-        /// <param name="progressMonitor">The progress monitor, not null</param>
+        /// is true, otherwise null.</param>
+        /// <param name="progressMonitor">The progress monitor, not null.</param>
         /// <remarks>
         /// The default implementation simply sets <see cref="PendingSettingsChanges" /> to false.
         /// </remarks>
@@ -89,7 +89,7 @@ namespace Gallio.UI.ControlPanel
         /// <summary>
         /// Raises the <see cref="PendingSettingsChanges" /> event.
         /// </summary>
-        /// <param name="e">The event arguments</param>
+        /// <param name="e">The event arguments.</param>
         protected virtual void OnPendingSettingsChangesChanged(EventArgs e)
         {
             if (PendingSettingsChangesChanged != null)
@@ -99,7 +99,7 @@ namespace Gallio.UI.ControlPanel
         /// <summary>
         /// Raises the <see cref="RequiresElevationChanged" /> event.
         /// </summary>
-        /// <param name="e">The event arguments</param>
+        /// <param name="e">The event arguments.</param>
         protected virtual void OnRequiresElevationChanged(EventArgs e)
         {
             if (RequiresElevationChanged != null)

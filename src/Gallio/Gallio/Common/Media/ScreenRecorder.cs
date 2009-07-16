@@ -42,7 +42,7 @@ namespace Gallio.Common.Media
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="grabber"/> or
         /// <paramref name="video"/> is null.</exception>
         /// <exception cref="ArgumentException">Thrown if <paramref name="video"/> size
-        /// is not exactly equal to the <paramref name="grabber"/> screenshot size</exception>
+        /// is not exactly equal to the <paramref name="grabber"/> screenshot size.</exception>
         public ScreenRecorder(ScreenGrabber grabber, Video video)
         {
             if (grabber == null)

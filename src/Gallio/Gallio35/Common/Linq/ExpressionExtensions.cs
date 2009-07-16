@@ -26,11 +26,11 @@ namespace Gallio.Common.Linq
         /// <summary>
         /// Binds the arguments of a function expression.
         /// </summary>
-        /// <typeparam name="T">The parameter type</typeparam>
-        /// <typeparam name="TResult">The result type</typeparam>
-        /// <param name="expr">The expression</param>
-        /// <param name="arg">The argument value</param>
-        /// <returns>The bound function</returns>
+        /// <typeparam name="T">The parameter type.</typeparam>
+        /// <typeparam name="TResult">The result type.</typeparam>
+        /// <param name="expr">The expression.</param>
+        /// <param name="arg">The argument value.</param>
+        /// <returns>The bound function.</returns>
         public static Expression<System.Func<TResult>> Bind<T, TResult>(this Expression<System.Func<T, TResult>> expr, T arg)
         {
             return Expression.Lambda<System.Func<TResult>>(
@@ -40,13 +40,13 @@ namespace Gallio.Common.Linq
         /// <summary>
         /// Binds the arguments of a function expression.
         /// </summary>
-        /// <typeparam name="T1">The first parameter type</typeparam>
-        /// <typeparam name="T2">The second parameter type</typeparam>
-        /// <typeparam name="TResult">The result type</typeparam>
-        /// <param name="expr">The expression</param>
-        /// <param name="arg1">The first argument value</param>
-        /// <param name="arg2">The second argument value</param>
-        /// <returns>The bound function</returns>
+        /// <typeparam name="T1">The first parameter type.</typeparam>
+        /// <typeparam name="T2">The second parameter type.</typeparam>
+        /// <typeparam name="TResult">The result type.</typeparam>
+        /// <param name="expr">The expression.</param>
+        /// <param name="arg1">The first argument value.</param>
+        /// <param name="arg2">The second argument value.</param>
+        /// <returns>The bound function.</returns>
         public static Expression<System.Func<TResult>> Bind<T1, T2, TResult>(this Expression<System.Func<T1, TResult>> expr, T1 arg1, T2 arg2)
         {
             return Expression.Lambda<System.Func<TResult>>(
@@ -56,8 +56,8 @@ namespace Gallio.Common.Linq
         /// <summary>
         /// Returns true if the expression represents a captured variable within a closure.
         /// </summary>
-        /// <param name="expr">The expression</param>
-        /// <returns>True if the expression represents a captured variable</returns>
+        /// <param name="expr">The expression.</param>
+        /// <returns>True if the expression represents a captured variable.</returns>
         public static bool IsCapturedVariable(this Expression expr)
         {
             MemberExpression memberExpr = expr as MemberExpression;
@@ -67,8 +67,8 @@ namespace Gallio.Common.Linq
         /// <summary>
         /// Returns true if the expression represents a captured variable within a closure.
         /// </summary>
-        /// <param name="expr">The expression</param>
-        /// <returns>True if the expression represents a captured variable</returns>
+        /// <param name="expr">The expression.</param>
+        /// <returns>True if the expression represents a captured variable.</returns>
         public static bool IsCapturedVariable(this MemberExpression expr)
         {
             return expr.Expression is ConstantExpression
@@ -78,8 +78,8 @@ namespace Gallio.Common.Linq
         /// <summary>
         /// Returns true if the expression represents a captured variable or a parameter.
         /// </summary>
-        /// <param name="expr">The expression</param>
-        /// <returns>True if the expression represents a captured variable or a parameter</returns>
+        /// <param name="expr">The expression.</param>
+        /// <returns>True if the expression represents a captured variable or a parameter.</returns>
         public static bool IsCapturedVariableOrParameter(this Expression expr)
         {
             return expr is ParameterExpression || IsCapturedVariable(expr);

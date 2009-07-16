@@ -110,7 +110,7 @@ namespace MbUnit.Framework.ContractVerifiers
         /// ]]></code>
         /// </para>
         /// </remarks>
-        /// <param name="expectedExceptionType"></param>
+        /// <param name="expectedExceptionType">The type of the expected exception.</param>
         public InvalidValuesClass(Type expectedExceptionType)
         {
             this.expectedExceptionType = CheckValidExceptionType(expectedExceptionType);

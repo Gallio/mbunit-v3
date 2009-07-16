@@ -123,7 +123,7 @@ namespace MbUnit.Framework.ContractVerifiers
     /// }
     /// ]]></code>
     /// </example>
-    /// <typeparam name="TTarget"></typeparam>
+    /// <typeparam name="TTarget">The type of the object to evaluate.</typeparam>
     /// <seealso cref="VerifyContractAttribute"/>
     public class ComparisonContract<TTarget> : AbstractContract
         where TTarget : IComparable<TTarget>

@@ -64,7 +64,7 @@ namespace Gallio.Model.Isolation
         /// <param name="hostSetup">The host setup parameters for the isolated task.</param>
         /// <param name="statusReporter">The status reporter.</param>
         /// <param name="args">The task arguments, or null if none.  Must be serializable.</param>
-        /// <returns>The task result, or null if none.  Must be serializable</returns>
+        /// <returns>The task result, or null if none.  Must be serializable.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="hostSetup"/>
         /// or <paramref name="statusReporter"/> is null.</exception>
         object RunIsolatedTask<TIsolatedTask>(HostSetup hostSetup, StatusReporter statusReporter, object[] args)

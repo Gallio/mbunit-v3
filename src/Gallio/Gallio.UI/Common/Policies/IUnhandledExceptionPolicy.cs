@@ -25,10 +25,10 @@ namespace Gallio.UI.Common.Policies
         /// <summary>
         /// Reports an unhandled exception.
         /// </summary>
-        /// <param name="message">A message to explain how the exception was intercepted</param>
-        /// <param name="unhandledException">The unhandled exception</param>
+        /// <param name="message">A message to explain how the exception was intercepted.</param>
+        /// <param name="unhandledException">The unhandled exception.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="message"/> or 
-        /// <paramref name="unhandledException"/> is null</exception>
+        /// <paramref name="unhandledException"/> is null.</exception>
         void Report(string message, Exception unhandledException);
     }
 }

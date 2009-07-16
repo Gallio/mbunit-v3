@@ -55,8 +55,8 @@ namespace Gallio.ReSharperRunner.Reflection
         /// Creates a reflector with the specified project as its context.
         /// The context project is used to resolve metadata items to declared elements.
         /// </summary>
-        /// <param name="assembly">The assembly provide context for the loader</param>
-        /// <param name="contextProject">The context project, or null if none</param>
+        /// <param name="assembly">The assembly provide context for the loader.</param>
+        /// <param name="contextProject">The context project, or null if none.</param>
         public MetadataReflectionPolicy(IMetadataAssembly assembly, IProject contextProject)
         {
             if (assembly == null)
@@ -78,8 +78,8 @@ namespace Gallio.ReSharperRunner.Reflection
         /// <summary>
         /// Obtains a reflection wrapper for an assembly.
         /// </summary>
-        /// <param name="target">The assembly, or null if none</param>
-        /// <returns>The reflection wrapper, or null if none</returns>
+        /// <param name="target">The assembly, or null if none.</param>
+        /// <returns>The reflection wrapper, or null if none.</returns>
         public StaticAssemblyWrapper Wrap(IMetadataAssembly target)
         {
             return target != null
@@ -90,8 +90,8 @@ namespace Gallio.ReSharperRunner.Reflection
         /// <summary>
         /// Obtains a reflection wrapper for a property.
         /// </summary>
-        /// <param name="target">The property, or null if none</param>
-        /// <returns>The reflection wrapper, or null if none</returns>
+        /// <param name="target">The property, or null if none.</param>
+        /// <returns>The reflection wrapper, or null if none.</returns>
         public StaticPropertyWrapper Wrap(IMetadataProperty target)
         {
             if (target == null)
@@ -104,8 +104,8 @@ namespace Gallio.ReSharperRunner.Reflection
         /// <summary>
         /// Obtains a reflection wrapper for a field.
         /// </summary>
-        /// <param name="target">The field, or null if none</param>
-        /// <returns>The reflection wrapper, or null if none</returns>
+        /// <param name="target">The field, or null if none.</param>
+        /// <returns>The reflection wrapper, or null if none.</returns>
         public StaticFieldWrapper Wrap(IMetadataField target)
         {
             if (target == null)

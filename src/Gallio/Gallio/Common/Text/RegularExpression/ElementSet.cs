@@ -38,7 +38,7 @@ namespace Gallio.Common.Text.RegularExpression
         /// </summary>
         /// <param name="quantifier">A quantifier specifying how many times the element is repeated.</param>
         /// <param name="raw">A raw string containing the characters to include into the set, 
-        /// expressed in the usual regular expression syntax (example: "ABCX-Z0-9")</param>
+        /// expressed in the usual regular expression syntax (example: "ABCX-Z0-9").</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="quantifier"/> or <paramref name="raw"/> are null.</exception>
         public ElementSet(Quantifier quantifier, string raw)
             : base(quantifier)

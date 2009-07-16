@@ -35,8 +35,8 @@ namespace Gallio.Reports
         /// <summary>
         /// Creates a report formatter.
         /// </summary>
-        /// <param name="htmlReportFormatter">The HTML report formatter</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="htmlReportFormatter"/> is null</exception>
+        /// <param name="htmlReportFormatter">The HTML report formatter.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="htmlReportFormatter"/> is null.</exception>
         public MHtmlReportFormatter(IReportFormatter htmlReportFormatter)
         {
             if (htmlReportFormatter == null)

@@ -40,8 +40,8 @@ namespace Gallio.Reports
         /// <summary>
         /// Creates the multipart mime report container.
         /// </summary>
-        /// <param name="inner">The container to which the archived report should be saved</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="inner"/> is null</exception>
+        /// <param name="inner">The container to which the archived report should be saved.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="inner"/> is null.</exception>
         public MultipartMimeReportContainer(IReportContainer inner)
         {
             if (inner == null)
@@ -59,9 +59,9 @@ namespace Gallio.Reports
         /// <summary>
         /// Opens the archive within the inner container.
         /// </summary>
-        /// <param name="archivePath">The path of the archive to create</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="archivePath"/> is null</exception>
-        /// <exception cref="InvalidOperationException">Thrown if the archive has already been opened</exception>
+        /// <param name="archivePath">The path of the archive to create.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="archivePath"/> is null.</exception>
+        /// <exception cref="InvalidOperationException">Thrown if the archive has already been opened.</exception>
         public void OpenArchive(string archivePath)
         {
             if (archivePath == null)

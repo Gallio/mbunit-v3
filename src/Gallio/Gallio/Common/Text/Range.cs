@@ -51,7 +51,7 @@ namespace Gallio.Common.Text
         /// <param name="endIndex">The end index.</param>
         /// <returns>The new range.</returns>
         /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="startIndex"/>
-        /// is negative or greater than <paramref name="endIndex"/></exception>
+        /// is negative or greater than <paramref name="endIndex"/>.</exception>
         public static Range Between(int startIndex, int endIndex)
         {
             return new Range(startIndex, endIndex - startIndex);

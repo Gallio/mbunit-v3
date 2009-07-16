@@ -58,7 +58,7 @@ namespace Gallio.Ambience
         /// <summary>
         /// Gets the configuration section contents, or a default instance if none available.
         /// </summary>
-        /// <returns>The configuration section</returns>
+        /// <returns>The configuration section.</returns>
         internal static AmbienceConfigurationSection GetSection()
         {
             return (AmbienceConfigurationSection)ConfigurationManager.GetSection(SectionName) ?? AmbienceConfigurationSection.CreateDefault();

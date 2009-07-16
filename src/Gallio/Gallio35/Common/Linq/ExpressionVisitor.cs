@@ -22,14 +22,14 @@ namespace Gallio.Common.Linq
     /// <summary>
     /// Performs different actions depending on the type of <see cref="Expression"/> visited.
     /// </summary>
-    /// <typeparam name="T">The visitor result type</typeparam>
+    /// <typeparam name="T">The visitor result type.</typeparam>
     public abstract class ExpressionVisitor<T>
     {
         /// <summary>
         /// Visits the expression.
         /// </summary>
-        /// <param name="expr">The expression</param>
-        /// <returns>The result</returns>
+        /// <param name="expr">The expression.</param>
+        /// <returns>The result.</returns>
         public T Visit(Expression expr)
         {
             switch (expr.NodeType)
@@ -116,8 +116,8 @@ namespace Gallio.Common.Linq
         /// <summary>
         /// Visits a binary expression.
         /// </summary>
-        /// <param name="expr">The expression</param>
-        /// <returns>The result</returns>
+        /// <param name="expr">The expression.</param>
+        /// <returns>The result.</returns>
         protected virtual T VisitBinary(BinaryExpression expr)
         {
             return VisitAny(expr);
@@ -126,8 +126,8 @@ namespace Gallio.Common.Linq
         /// <summary>
         /// Visits a unary expression.
         /// </summary>
-        /// <param name="expr">The expression</param>
-        /// <returns>The result</returns>
+        /// <param name="expr">The expression.</param>
+        /// <returns>The result.</returns>
         protected virtual T VisitUnary(UnaryExpression expr)
         {
             return VisitAny(expr);
@@ -136,8 +136,8 @@ namespace Gallio.Common.Linq
         /// <summary>
         /// Visits a call expression.
         /// </summary>
-        /// <param name="expr">The expression</param>
-        /// <returns>The result</returns>
+        /// <param name="expr">The expression.</param>
+        /// <returns>The result.</returns>
         protected virtual T VisitMethodCall(MethodCallExpression expr)
         {
             return VisitAny(expr);
@@ -146,8 +146,8 @@ namespace Gallio.Common.Linq
         /// <summary>
         /// Visits a conditional expression.
         /// </summary>
-        /// <param name="expr">The expression</param>
-        /// <returns>The result</returns>
+        /// <param name="expr">The expression.</param>
+        /// <returns>The result.</returns>
         protected virtual T VisitConditional(ConditionalExpression expr)
         {
             return VisitAny(expr);
@@ -156,8 +156,8 @@ namespace Gallio.Common.Linq
         /// <summary>
         /// Visits a constant expression.
         /// </summary>
-        /// <param name="expr">The expression</param>
-        /// <returns>The result</returns>
+        /// <param name="expr">The expression.</param>
+        /// <returns>The result.</returns>
         protected virtual T VisitConstant(ConstantExpression expr)
         {
             return VisitAny(expr);
@@ -166,8 +166,8 @@ namespace Gallio.Common.Linq
         /// <summary>
         /// Visits an invocation expression.
         /// </summary>
-        /// <param name="expr">The expression</param>
-        /// <returns>The result</returns>
+        /// <param name="expr">The expression.</param>
+        /// <returns>The result.</returns>
         protected virtual T VisitInvocation(InvocationExpression expr)
         {
             return VisitAny(expr);
@@ -176,8 +176,8 @@ namespace Gallio.Common.Linq
         /// <summary>
         /// Visits a lambda expression.
         /// </summary>
-        /// <param name="expr">The expression</param>
-        /// <returns>The result</returns>
+        /// <param name="expr">The expression.</param>
+        /// <returns>The result.</returns>
         protected virtual T VisitLambda(LambdaExpression expr)
         {
             return VisitAny(expr);
@@ -186,8 +186,8 @@ namespace Gallio.Common.Linq
         /// <summary>
         /// Visits an list init expression.
         /// </summary>
-        /// <param name="expr">The expression</param>
-        /// <returns>The result</returns>
+        /// <param name="expr">The expression.</param>
+        /// <returns>The result.</returns>
         protected virtual T VisitListInit(ListInitExpression expr)
         {
             return VisitAny(expr);
@@ -196,8 +196,8 @@ namespace Gallio.Common.Linq
         /// <summary>
         /// Visits a member access expression.
         /// </summary>
-        /// <param name="expr">The expression</param>
-        /// <returns>The result</returns>
+        /// <param name="expr">The expression.</param>
+        /// <returns>The result.</returns>
         protected virtual T VisitMember(MemberExpression expr)
         {
             return VisitAny(expr);
@@ -206,8 +206,8 @@ namespace Gallio.Common.Linq
         /// <summary>
         /// Visits a member init expression.
         /// </summary>
-        /// <param name="expr">The expression</param>
-        /// <returns>The result</returns>
+        /// <param name="expr">The expression.</param>
+        /// <returns>The result.</returns>
         protected virtual T VisitMemberInit(MemberInitExpression expr)
         {
             return VisitAny(expr);
@@ -216,8 +216,8 @@ namespace Gallio.Common.Linq
         /// <summary>
         /// Visits a new expression.
         /// </summary>
-        /// <param name="expr">The expression</param>
-        /// <returns>The result</returns>
+        /// <param name="expr">The expression.</param>
+        /// <returns>The result.</returns>
         protected virtual T VisitNew(NewExpression expr)
         {
             return VisitAny(expr);
@@ -226,8 +226,8 @@ namespace Gallio.Common.Linq
         /// <summary>
         /// Visits a new array expression.
         /// </summary>
-        /// <param name="expr">The expression</param>
-        /// <returns>The result</returns>
+        /// <param name="expr">The expression.</param>
+        /// <returns>The result.</returns>
         protected virtual T VisitNewArray(NewArrayExpression expr)
         {
             return VisitAny(expr);
@@ -236,8 +236,8 @@ namespace Gallio.Common.Linq
         /// <summary>
         /// Visits a parameter expression.
         /// </summary>
-        /// <param name="expr">The expression</param>
-        /// <returns>The result</returns>
+        /// <param name="expr">The expression.</param>
+        /// <returns>The result.</returns>
         protected virtual T VisitParameter(ParameterExpression expr)
         {
             return VisitAny(expr);
@@ -246,8 +246,8 @@ namespace Gallio.Common.Linq
         /// <summary>
         /// Visits a type binary expression.
         /// </summary>
-        /// <param name="expr">The expression</param>
-        /// <returns>The result</returns>
+        /// <param name="expr">The expression.</param>
+        /// <returns>The result.</returns>
         protected virtual T VisitTypeBinary(TypeBinaryExpression expr)
         {
             return VisitAny(expr);
@@ -261,8 +261,8 @@ namespace Gallio.Common.Linq
         /// The default implementation throws <see cref="NotSupportedException"/>.
         /// </para>
         /// </summary>
-        /// <param name="expr">The expression</param>
-        /// <returns>The result</returns>
+        /// <param name="expr">The expression.</param>
+        /// <returns>The result.</returns>
         protected virtual T VisitAny(Expression expr)
         {
             throw new NotSupportedException(String.Format("Expression node type {0} is not supported by this visitor.",

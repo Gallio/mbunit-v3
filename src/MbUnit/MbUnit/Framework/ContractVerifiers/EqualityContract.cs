@@ -118,7 +118,7 @@ namespace MbUnit.Framework.ContractVerifiers
     /// }
     /// ]]></code>
     /// </example>
-    /// <typeparam name="TTarget">The target tested type which implements the generic <see cref="IEquatable{T}"/> interface. </typeparam>
+    /// <typeparam name="TTarget">The target tested type which implements the generic <see cref="IEquatable{T}"/> interface.</typeparam>
     /// <seealso cref="VerifyContractAttribute"/>
     public class EqualityContract<TTarget> : AbstractContract
         where TTarget : IEquatable<TTarget>

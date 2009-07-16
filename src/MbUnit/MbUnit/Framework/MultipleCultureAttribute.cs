@@ -54,7 +54,7 @@ namespace MbUnit.Framework
         /// <summary>
         /// Initializes a new instance of the <see cref="MultipleCultureAttribute"/> class.
         /// </summary>
-        /// <param name="cultures">An array of culture names to run the test under</param>
+        /// <param name="cultures">An array of culture names to run the test under.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="cultures"/> is a null reference.</exception>
         public MultipleCultureAttribute(params string[] cultures)
         {

@@ -44,7 +44,7 @@ namespace Gallio.MbUnit2Adapter.Model
         /// <summary>
         /// Creates a runner.
         /// </summary>
-        /// <param name="fixtureExplorer">The fixture explorer</param>
+        /// <param name="fixtureExplorer">The fixture explorer.</param>
         public MbUnit2TestController(FixtureExplorer fixtureExplorer)
         {
             this.fixtureExplorer = fixtureExplorer;

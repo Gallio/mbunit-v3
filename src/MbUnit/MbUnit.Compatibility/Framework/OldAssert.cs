@@ -36,8 +36,8 @@ namespace MbUnit.Framework
         /// The Equals method throws an AssertionException. This is done
         /// to make sure there is no mistake by calling this function.
         /// </summary>
-        /// <param name="a"></param>
-        /// <param name="b"></param>
+        /// <param name="a">The first object.</param>
+        /// <param name="b">The second object.</param>
         [EditorBrowsable(EditorBrowsableState.Never)]
         public static new void Equals(object a, object b)
         {
@@ -49,8 +49,8 @@ namespace MbUnit.Framework
         /// implementation makes sure there is no mistake in calling this function
         /// as part of Assert.
         /// </summary>
-        /// <param name="a"></param>
-        /// <param name="b"></param>
+        /// <param name="a">The first object.</param>
+        /// <param name="b">The second object.</param>
         public static new void ReferenceEquals(object a, object b)
         {
             throw new AssertionException("Assert.ReferenceEquals should not be used for Assertions");
@@ -100,8 +100,8 @@ namespace MbUnit.Framework
         /// be handled correctly, by using <c>ToString</c> and
         /// comparing the result
         /// </summary>
-        /// <param name="expected"></param>
-        /// <param name="actual"></param>
+        /// <param name="expected">The expected value.</param>
+        /// <param name="actual">The actual value.</param>
         /// <returns></returns>
         static internal bool ObjectsEqual(Object expected, Object actual)
         {
@@ -997,8 +997,8 @@ namespace MbUnit.Framework
         /// Makes the current test ignored using <see cref="String.Format(string, object[])"/> like
         /// formatting
         /// </summary>
-        /// <param name="format"></param>
-        /// <param name="args"></param>
+        /// <param name="format">The text.</param>
+        /// <param name="args">The arguments.</param>
         public static void Ignore(string format, params object[] args)
         {
             Ignore(String.Format(format, args));
@@ -1007,7 +1007,7 @@ namespace MbUnit.Framework
         /// Makes the current test ignored using <see cref="String.Format(string, object[])"/> like
         /// formatting
         /// </summary>
-        /// <param name="message"></param>
+        /// <param name="message">The message.</param>
         public static void Ignore(string message)
         {
             if (message == null)

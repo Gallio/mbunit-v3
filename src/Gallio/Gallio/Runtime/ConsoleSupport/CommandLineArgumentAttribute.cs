@@ -28,7 +28,7 @@ namespace Gallio.Runtime.ConsoleSupport
     /// <para>
     /// Command line parsing code from 
     /// <a href="http://www.gotdotnet.com/community/usersamples/details.aspx?sampleguid=62a0f27e-274e-4228-ba7f-bc0118ecc41e">
-    /// Peter Halam</a>, 
+    /// Peter Halam</a>. 
     /// </para>
     /// </remarks>
     [AttributeUsage(AttributeTargets.Field,AllowMultiple=false,Inherited=true)]
@@ -44,7 +44,7 @@ namespace Gallio.Runtime.ConsoleSupport
         /// <summary>
         /// Allows control of command line parsing.
         /// </summary>
-        /// <param name="flags"> Specifies the error checking to be done on the argument. </param>
+        /// <param name="flags">Specifies the error checking to be done on the argument.</param>
         public CommandLineArgumentAttribute(CommandLineArgumentFlags flags)
         {
             this.flags = flags;

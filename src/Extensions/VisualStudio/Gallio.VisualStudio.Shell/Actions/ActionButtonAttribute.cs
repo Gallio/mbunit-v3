@@ -27,8 +27,8 @@ namespace Gallio.VisualStudio.Shell.Actions
         /// <summary>
         /// Creates an action button registration.
         /// </summary>
-        /// <param name="commandName">The command name</param>
-        /// <param name="commandPath">The command path</param>
+        /// <param name="commandName">The command name.</param>
+        /// <param name="commandPath">The command path.</param>
         public ActionButtonAttribute(string commandName, string commandPath)
         {
             if (commandName == null)
@@ -81,8 +81,8 @@ namespace Gallio.VisualStudio.Shell.Actions
         /// <summary>
         /// Gets a descriptor object formed from the attribute.
         /// </summary>
-        /// <param name="actionType">The action type on which the attribute appears</param>
-        /// <returns>The descriptor</returns>
+        /// <param name="actionType">The action type on which the attribute appears.</param>
+        /// <returns>The descriptor.</returns>
         public ActionButtonDescriptor GetDescriptor(Type actionType)
         {
             return new ActionButtonDescriptor()

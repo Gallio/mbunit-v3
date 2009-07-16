@@ -28,10 +28,12 @@ namespace Gallio.Runtime.Extensibility
         /// The loaded plugin.
         /// </summary>
         public Plugin Plugin { get; private set; }
+        
         /// <summary>
         /// The base directory for the plugin.
         /// </summary>
         public DirectoryInfo BaseDirectory { get; private set; }
+        
         /// <summary>
         /// The file path of the plugin.
         /// </summary>
@@ -41,8 +43,8 @@ namespace Gallio.Runtime.Extensibility
         /// Constructor.
         ///</summary>
         ///<param name="plugin">The loaded plugin.</param>
-        ///<param name="baseDirectory"></param>
-        ///<param name="pluginFilePath"></param>
+        ///<param name="baseDirectory">The base directory.</param>
+        ///<param name="pluginFilePath">The plugin file path.</param>
         public PluginLoadedEventArgs(Plugin plugin, DirectoryInfo baseDirectory, string pluginFilePath)
         {
             Plugin = plugin;

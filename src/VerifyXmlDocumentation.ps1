@@ -110,6 +110,11 @@ function AnalyseSummary([string] $filePath, [string] $header, [string] $doc)
       Warn -filePath $filePath -header $header -message "The content of the <summary> element is too long (max. $ruleSummaryLengthMax characters)."
     }
     
+    if ($data.Length -eq 0)
+    {
+      Warn -filePath $filePath -header $header -message "The content of the <summary> element is empty."
+    }
+    
     #TODO: implemented other analysis criteria here...
   }
 }
@@ -124,11 +129,18 @@ function AnalyseParam([string] $filePath, [string] $header, [string] $doc)
   {
     $data = $match.Groups['data'].Value
     
-    if ($ruleParamMustTerminateByPeriod -and !$data.EndsWith('.'))
+    if ($data.Length -eq 0)
     {
-      Warn -filePath $filePath -header $header -message "The content of the <param> element must end with a period character."
+      Warn -filePath $filePath -header $header -message "The content of the <param> element is empty."
     }
-    
+    else 
+    {
+      if ($ruleParamMustTerminateByPeriod -and !$data.EndsWith('.'))
+      {
+        Warn -filePath $filePath -header $header -message "The content of the <param> element must end with a period character."
+      }
+    }
+
     #TODO: implemented other analysis criteria here...
   }
 }
@@ -143,11 +155,18 @@ function AnalyseTypeParam([string] $filePath, [string] $header, [string] $doc)
   {
     $data = $match.Groups['data'].Value
     
-    if ($ruleParamTypeMustTerminateByPeriod -and !$data.EndsWith('.'))
+    if ($data.Length -eq 0)
     {
-      Warn -filePath $filePath -header $header -message "The content of the <typeparam> element must end with a period character."
+      Warn -filePath $filePath -header $header -message "The content of the <typeparam> element is empty."
     }
-    
+    else 
+    {
+      if ($ruleParamTypeMustTerminateByPeriod -and !$data.EndsWith('.'))
+      {
+        Warn -filePath $filePath -header $header -message "The content of the <typeparam> element must end with a period character."
+      }
+    }
+
     #TODO: implemented other analysis criteria here...
   }
 }
@@ -162,9 +181,16 @@ function AnalyseException([string] $filePath, [string] $header, [string] $doc)
   {
     $data = $match.Groups['data'].Value
     
-    if ($ruleExceptionMustTerminateByPeriod -and !$data.EndsWith('.'))
+    if ($data.Length -eq 0)
     {
-      Warn -filePath $filePath -header $header -message "The content of the <exception> element must end with a period character."
+      Warn -filePath $filePath -header $header -message "The content of the <exception> element is empty."
+    }
+    else
+    {
+      if ($ruleExceptionMustTerminateByPeriod -and !$data.EndsWith('.'))
+      {
+        Warn -filePath $filePath -header $header -message "The content of the <exception> element must end with a period character."
+      }
     }
     
     #TODO: implemented other analysis criteria here...

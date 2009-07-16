@@ -88,7 +88,7 @@ namespace Gallio.Ambience
         /// Gets the default ambient data container.
         /// </para>
         /// </summary>
-        /// <exception cref="AmbienceException">Thrown if the operation failed</exception>
+        /// <exception cref="AmbienceException">Thrown if the operation failed.</exception>
         public static IAmbientDataContainer Data
         {
             get
@@ -108,7 +108,7 @@ namespace Gallio.Ambience
         /// <value>The default client configuration.  The initial value is populated from the contents
         /// of the Ambience configuration section in the application's or test's configuration file.
         /// See also <seealso cref="AmbienceSectionHandler"/>.</value>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
         public static AmbienceClientConfiguration DefaultClientConfiguration
         {
             get

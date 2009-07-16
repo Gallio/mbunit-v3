@@ -98,7 +98,7 @@ namespace Gallio.Common.Media
         /// Saves the video to a stream.
         /// </summary>
         /// <param name="stream">The stream.</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="stream"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="stream"/> is null.</exception>
         public void Save(Stream stream)
         {
             if (stream == null)

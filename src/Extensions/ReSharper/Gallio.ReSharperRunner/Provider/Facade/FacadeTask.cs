@@ -47,7 +47,7 @@ namespace Gallio.ReSharperRunner.Provider.Facade
         /// <summary>
         /// Deserializes a facade task from Xml.
         /// </summary>
-        /// <param name="element">The xml element</param>
+        /// <param name="element">The xml element.</param>
         protected FacadeTask(XmlElement element)
         {
         }
@@ -63,10 +63,10 @@ namespace Gallio.ReSharperRunner.Provider.Facade
         /// <summary>
         /// Executes the task and its children recursively.
         /// </summary>
-        /// <param name="facadeTaskServer">The task server</param>
-        /// <param name="facadeLogger">The logger</param>
-        /// <param name="facadeTaskExecutorConfiguration">The task executor configuration</param>
-        /// <returns>The task result</returns>
+        /// <param name="facadeTaskServer">The task server.</param>
+        /// <param name="facadeLogger">The logger.</param>
+        /// <param name="facadeTaskExecutorConfiguration">The task executor configuration.</param>
+        /// <returns>The task result.</returns>
         public virtual FacadeTaskResult Execute(IFacadeTaskServer facadeTaskServer, IFacadeLogger facadeLogger, FacadeTaskExecutorConfiguration facadeTaskExecutorConfiguration)
         {
             throw new NotSupportedException("This task is not executable.");
@@ -75,7 +75,7 @@ namespace Gallio.ReSharperRunner.Provider.Facade
         /// <summary>
         /// Serializes a facade task to Xml.
         /// </summary>
-        /// <param name="element">The xml element</param>
+        /// <param name="element">The xml element.</param>
         public virtual void SaveXml(XmlElement element)
         {
         }
@@ -83,7 +83,7 @@ namespace Gallio.ReSharperRunner.Provider.Facade
         /// <summary>
         /// Adds a child task.
         /// </summary>
-        /// <param name="child">The child task</param>
+        /// <param name="child">The child task.</param>
         public void AddChild(FacadeTask child)
         {
             if (child == null)

@@ -41,7 +41,7 @@ namespace Gallio.NUnitAdapter.Model
         /// <summary>
         /// Creates a test controller.
         /// </summary>
-        /// <param name="runner">The test runner</param>
+        /// <param name="runner">The test runner.</param>
         public NUnitTestController(TestRunner runner)
         {
             this.runner = runner;

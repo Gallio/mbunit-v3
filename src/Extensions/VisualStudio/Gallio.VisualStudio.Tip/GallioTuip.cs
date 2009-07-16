@@ -113,7 +113,7 @@ namespace Gallio.VisualStudio.Tip
         /// <summary>
         /// Closes the test result viewer for the specified Gallio result.
         /// </summary>
-        /// <param name="result"></param>
+        /// <param name="result">The test result message.</param>
         public void CloseResultViewer(TestResultMessage result)
         {
             if (!TipShellExtension.IsInitialized)
@@ -134,8 +134,8 @@ namespace Gallio.VisualStudio.Tip
         /// <summary>
         /// Returns true if the properties of the test are read only.
         /// </summary>
-        /// <param name="test">The test</param>
-        /// <returns>True if the properties are read-only</returns>
+        /// <param name="test">The test.</param>
+        /// <returns>True if the properties are read-only.</returns>
         public bool IsTestPropertiesReadOnly(ITestElement test)
         {
             return true;
@@ -144,8 +144,8 @@ namespace Gallio.VisualStudio.Tip
         /// <summary>
         /// Updates a custom test property.
         /// </summary>
-        /// <param name="test">The test</param>
-        /// <param name="propertyToChange">The property to change</param>
+        /// <param name="test">The test.</param>
+        /// <param name="propertyToChange">The property to change.</param>
         public void UpdateTestCustomProperty(ITestElement test, string propertyToChange)
         {
         }
@@ -153,8 +153,8 @@ namespace Gallio.VisualStudio.Tip
         /// <summary>
         /// Updates a test property.
         /// </summary>
-        /// <param name="test">The test</param>
-        /// <param name="propertyToChange">The property to change</param>
+        /// <param name="test">The test.</param>
+        /// <param name="propertyToChange">The property to change.</param>
         public void UpdateTestProperty(ITestElement test, System.ComponentModel.PropertyDescriptor propertyToChange)
         {
         }

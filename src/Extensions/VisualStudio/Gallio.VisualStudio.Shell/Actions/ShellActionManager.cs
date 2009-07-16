@@ -38,8 +38,8 @@ namespace Gallio.VisualStudio.Shell.Actions
         /// <summary>
         /// Installs an action button specified by the provided descriptor.
         /// </summary>
-        /// <param name="descriptor">The action button descriptor</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="descriptor"/> is null</exception>
+        /// <param name="descriptor">The action button descriptor.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="descriptor"/> is null.</exception>
         public void InstallActionButton(ActionButtonDescriptor descriptor)
         {
             if (descriptor == null)

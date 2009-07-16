@@ -32,7 +32,7 @@ namespace Gallio.VisualStudio.Tip
         /// <summary>
         /// Gets the shared remote environment.
         /// </summary>
-        /// <returns>The remote environment</returns>
+        /// <returns>The remote environment.</returns>
         public static IGallioRemoteEnvironment GetSharedEnvironment()
         {
             lock (sharedEnvironmentSyncRoot)

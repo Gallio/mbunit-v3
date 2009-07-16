@@ -42,7 +42,7 @@ namespace Gallio.ReSharperRunner.Provider
         /// <summary>
         /// Creates a state object with the specified annotations. 
         /// </summary>
-        /// <param name="annotations">The annotations</param>
+        /// <param name="annotations">The annotations.</param>
         public static ProjectFileState CreateFromAnnotations(IList<AnnotationData> annotations)
         {
             return new ProjectFileState(
@@ -53,8 +53,8 @@ namespace Gallio.ReSharperRunner.Provider
         /// <summary>
         /// Sets the state associated with a file.
         /// </summary>
-        /// <param name="file">The file</param>
-        /// <param name="state">The associated state, or null if none</param>
+        /// <param name="file">The file.</param>
+        /// <param name="state">The associated state, or null if none.</param>
         public static void SetFileState(IProjectFile file, ProjectFileState state)
         {
             file.PutData(key, state);
@@ -63,8 +63,8 @@ namespace Gallio.ReSharperRunner.Provider
         /// <summary>
         /// Gets the state associated with a file.
         /// </summary>
-        /// <param name="file">The file</param>
-        /// <returns>The associated state, or null if none</returns>
+        /// <param name="file">The file.</param>
+        /// <returns>The associated state, or null if none.</returns>
         public static ProjectFileState GetFileState(IProjectFile file)
         {
             return file.GetData(key);

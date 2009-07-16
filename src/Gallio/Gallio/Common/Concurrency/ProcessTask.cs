@@ -175,7 +175,7 @@ namespace Gallio.Common.Concurrency
         /// Gets the captured contents of the console output stream written by the process.
         /// </summary>
         /// <exception cref="InvalidOperationException">Thrown if the process has not been started
-        /// or if <see cref="CaptureConsoleOutput" /> is <c>null</c></exception>
+        /// or if <see cref="CaptureConsoleOutput" /> is <c>null</c>.</exception>
         public string ConsoleOutput
         {
             get
@@ -190,7 +190,7 @@ namespace Gallio.Common.Concurrency
         /// Gets the captured contents of the console error stream written by the process.
         /// </summary>
         /// <exception cref="InvalidOperationException">Thrown if the process has not been started
-        /// or if <see cref="CaptureConsoleError" /> is <c>null</c></exception>
+        /// or if <see cref="CaptureConsoleError" /> is <c>null</c>.</exception>
         public string ConsoleError
         {
             get

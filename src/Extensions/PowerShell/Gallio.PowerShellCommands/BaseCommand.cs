@@ -115,7 +115,7 @@ namespace Gallio.PowerShellCommands
         /// <summary>
         /// Posts an action to perform later within the message loop.
         /// </summary>
-        /// <param name="action">The action to perform</param>
+        /// <param name="action">The action to perform.</param>
         /// <seealso cref="RunWithMessagePump"/>
         public void PostMessage(Action action)
         {
@@ -134,7 +134,7 @@ namespace Gallio.PowerShellCommands
         /// specified action in another thread.  The action can asynchronously communicate back to the
         /// cmdlet using <see cref="PostMessage" /> on the current thread.
         /// </summary>
-        /// <param name="action">The action to perform</param>
+        /// <param name="action">The action to perform.</param>
         public void RunWithMessagePump(Action action)
         {
             bool loopInitialized = false;

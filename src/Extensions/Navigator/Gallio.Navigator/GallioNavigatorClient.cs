@@ -59,9 +59,9 @@ namespace Gallio.Navigator
         /// <summary>
         /// Performs the command requested by the url.
         /// </summary>
-        /// <param name="url">The url</param>
-        /// <returns>The true if the command completed successfull</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="url"/> is null</exception>
+        /// <param name="url">The url.</param>
+        /// <returns>The true if the command completed successfull.</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="url"/> is null.</exception>
         protected internal bool ProcessCommandUrl(string url)
         {
             if (url == null)

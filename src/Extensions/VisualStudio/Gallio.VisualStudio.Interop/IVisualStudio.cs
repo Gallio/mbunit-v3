@@ -39,9 +39,9 @@ namespace Gallio.VisualStudio.Interop
         /// to guard against COM timeouts.
         /// </para>
         /// </remarks>
-        /// <param name="action">The action to run</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="action"/> is null</exception>
-        /// <exception cref="VisualStudioException">Thrown if the call into Visual Studio failed</exception>
+        /// <param name="action">The action to run.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="action"/> is null.</exception>
+        /// <exception cref="VisualStudioException">Thrown if the call into Visual Studio failed.</exception>
         void Call(Action<DTE> action);
 
         /// <summary>

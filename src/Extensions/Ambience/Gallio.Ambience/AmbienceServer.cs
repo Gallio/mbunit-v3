@@ -36,8 +36,8 @@ namespace Gallio.Ambience
         /// <summary>
         /// Creates an ambient server with parameters initialized to defaults.
         /// </summary>
-        /// <param name="configuration">The server configuration</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="configuration"/> is null</exception>
+        /// <param name="configuration">The server configuration.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="configuration"/> is null.</exception>
         public AmbienceServer(AmbienceServerConfiguration configuration)
         {
             if (configuration == null)
@@ -58,9 +58,9 @@ namespace Gallio.Ambience
         /// <summary>
         /// Starts the server.
         /// </summary>
-        /// <exception cref="InvalidOperationException">Thrown if the server has already been started</exception>
-        /// <exception cref="ObjectDisposedException">Thrown if the server has been disposed</exception>
-        /// <exception cref="AmbienceException">Thrown if the operation failed</exception>
+        /// <exception cref="InvalidOperationException">Thrown if the server has already been started.</exception>
+        /// <exception cref="ObjectDisposedException">Thrown if the server has been disposed.</exception>
+        /// <exception cref="AmbienceException">Thrown if the operation failed.</exception>
         public void Start()
         {
             ThrowIfDisposed();
@@ -83,7 +83,7 @@ namespace Gallio.Ambience
         /// Stops the server.
         /// Does nothing if the server has already been stopped.
         /// </summary>
-        /// <exception cref="ObjectDisposedException">Thrown if the server has been disposed</exception>
+        /// <exception cref="ObjectDisposedException">Thrown if the server has been disposed.</exception>
         public void Stop()
         {
             ThrowIfDisposed();
@@ -108,7 +108,7 @@ namespace Gallio.Ambience
         /// <summary>
         /// Stops and disposes the server.
         /// </summary>
-        /// <param name="disposing">True if disposing</param>
+        /// <param name="disposing">True if disposing.</param>
         protected virtual void Dispose(bool disposing)
         {
             try

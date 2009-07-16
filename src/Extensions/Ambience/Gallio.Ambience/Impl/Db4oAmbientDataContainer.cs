@@ -33,7 +33,7 @@ namespace Gallio.Ambience.Impl
         /// <summary>
         /// Creates a wrapper for a Db4o object container.
         /// </summary>
-        /// <param name="inner">The inner container</param>
+        /// <param name="inner">The inner container.</param>
         public Db4oAmbientDataContainer(IObjectContainer inner)
         {
             if (inner == null)

@@ -35,7 +35,7 @@ namespace Gallio.Runtime.ConsoleSupport
 		/// <summary>
 		/// Indicates that this argument is the default argument.
 		/// </summary>
-		/// <param name="flags"> Specifies the error checking to be done on the argument. </param>
+		/// <param name="flags"> Specifies the error checking to be done on the argument.</param>
 		public DefaultCommandLineArgumentAttribute(CommandLineArgumentFlags flags)
 			: base (flags)
 		{

@@ -35,8 +35,8 @@ namespace Gallio.MbUnit2Adapter.Model
         /// <summary>
         /// Creates an MbUnit v2 assembly-level test.
         /// </summary>
-        /// <param name="fixtureExplorer">The fixture explorer</param>
-        /// <param name="assembly">The test assembly</param>
+        /// <param name="fixtureExplorer">The fixture explorer.</param>
+        /// <param name="assembly">The test assembly.</param>
         public MbUnit2AssemblyTest(FixtureExplorer fixtureExplorer, IAssemblyInfo assembly)
             : base(assembly.Name, assembly, null, null)
         {

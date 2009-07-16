@@ -32,11 +32,11 @@ namespace Gallio.XunitAdapter.Model
         /// <summary>
         /// Initializes a test initially without a parent.
         /// </summary>
-        /// <param name="name">The name of the component</param>
-        /// <param name="codeElement">The point of definition, or null if none</param>
-        /// <param name="typeInfo">The Xunit test type information</param>
-        /// <param name="methodInfo">The Xunit test method information, or null if none</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> or <paramref name="typeInfo"/> is null</exception>
+        /// <param name="name">The name of the component.</param>
+        /// <param name="codeElement">The point of definition, or null if none.</param>
+        /// <param name="typeInfo">The Xunit test type information.</param>
+        /// <param name="methodInfo">The Xunit test method information, or null if none.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> or <paramref name="typeInfo"/> is null.</exception>
         public XunitTest(string name, ICodeElementInfo codeElement, XunitTypeInfoAdapter typeInfo, XunitMethodInfoAdapter methodInfo)
             : base(name, codeElement)
         {

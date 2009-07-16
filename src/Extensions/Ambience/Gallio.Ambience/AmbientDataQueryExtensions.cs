@@ -30,9 +30,9 @@ namespace Gallio.Ambience
         /// <summary>
         /// Counts the number of objects produced by the query.
         /// </summary>
-        /// <typeparam name="TSource">The type of object being queried</typeparam>
-        /// <param name="self">The query</param>
-        /// <returns>The number of objects</returns>
+        /// <typeparam name="TSource">The type of object being queried.</typeparam>
+        /// <param name="self">The query.</param>
+        /// <returns>The number of objects.</returns>
         public static int Count<TSource>(this IAmbientDataQuery<TSource> self)
         {
             var query = (Db4oAmbientDataQuery<TSource>)self;
@@ -42,11 +42,11 @@ namespace Gallio.Ambience
         /// <summary>
         /// Produces a new query to select a projection of a component of another query.
         /// </summary>
-        /// <typeparam name="TSource">The type of object being queried</typeparam>
-        /// <typeparam name="TRet">The projection result type</typeparam>
-        /// <param name="self">The query</param>
-        /// <param name="selector">The selection expression</param>
-        /// <returns>The projected query</returns>
+        /// <typeparam name="TSource">The type of object being queried.</typeparam>
+        /// <typeparam name="TRet">The projection result type.</typeparam>
+        /// <param name="self">The query.</param>
+        /// <param name="selector">The selection expression.</param>
+        /// <returns>The projected query.</returns>
         public static IAmbientDataQuery<TRet> Select<TSource, TRet>(this IAmbientDataQuery<TSource> self, System.Func<TSource, TRet> selector)
         {
             var query = (Db4oAmbientDataQuery<TSource>)self;
@@ -56,10 +56,10 @@ namespace Gallio.Ambience
         /// <summary>
         /// Produces a new query to filter another query by a criteria.
         /// </summary>
-        /// <typeparam name="TSource">The type of object being queried</typeparam>
-        /// <param name="self">The query</param>
-        /// <param name="expression">The filter expression</param>
-        /// <returns>The filtered query</returns>
+        /// <typeparam name="TSource">The type of object being queried.</typeparam>
+        /// <param name="self">The query.</param>
+        /// <param name="expression">The filter expression.</param>
+        /// <returns>The filtered query.</returns>
         public static IAmbientDataQuery<TSource> Where<TSource>(this IAmbientDataQuery<TSource> self, Expression<System.Func<TSource, bool>> expression)
         {
             var query = (Db4oAmbientDataQuery<TSource>)self;
@@ -69,11 +69,11 @@ namespace Gallio.Ambience
         /// <summary>
         /// Produces a new query ordered by a comparison expression in ascending order.
         /// </summary>
-        /// <typeparam name="TSource">The type of object being queried</typeparam>
-        /// <typeparam name="TKey">The sort key type</typeparam>
-        /// <param name="self">The query</param>
-        /// <param name="expression">The sort comparison expression</param>
-        /// <returns>The ordered query</returns>
+        /// <typeparam name="TSource">The type of object being queried.</typeparam>
+        /// <typeparam name="TKey">The sort key type.</typeparam>
+        /// <param name="self">The query.</param>
+        /// <param name="expression">The sort comparison expression.</param>
+        /// <returns>The ordered query.</returns>
         public static IAmbientDataQuery<TSource> OrderBy<TSource, TKey>(this IAmbientDataQuery<TSource> self, Expression<System.Func<TSource, TKey>> expression)
         {
             var query = (Db4oAmbientDataQuery<TSource>)self;
@@ -83,11 +83,11 @@ namespace Gallio.Ambience
         /// <summary>
         /// Produces a new query ordered by a comparison expression in descending order.
         /// </summary>
-        /// <typeparam name="TSource">The type of object being queried</typeparam>
-        /// <typeparam name="TKey">The sort key type</typeparam>
-        /// <param name="self">The query</param>
-        /// <param name="expression">The sort comparison expression</param>
-        /// <returns>The ordered query</returns>
+        /// <typeparam name="TSource">The type of object being queried.</typeparam>
+        /// <typeparam name="TKey">The sort key type.</typeparam>
+        /// <param name="self">The query.</param>
+        /// <param name="expression">The sort comparison expression.</param>
+        /// <returns>The ordered query.</returns>
         public static IAmbientDataQuery<TSource> OrderByDescending<TSource, TKey>(this IAmbientDataQuery<TSource> self, Expression<System.Func<TSource, TKey>> expression)
         {
             var query = (Db4oAmbientDataQuery<TSource>)self;
@@ -97,11 +97,11 @@ namespace Gallio.Ambience
         /// <summary>
         /// Produces a new query ordered by an additional comparison expression in ascending order.
         /// </summary>
-        /// <typeparam name="TSource">The type of object being queried</typeparam>
-        /// <typeparam name="TKey">The sort key type</typeparam>
-        /// <param name="self">The query</param>
-        /// <param name="expression">The sort comparison expression</param>
-        /// <returns>The ordered query</returns>
+        /// <typeparam name="TSource">The type of object being queried.</typeparam>
+        /// <typeparam name="TKey">The sort key type.</typeparam>
+        /// <param name="self">The query.</param>
+        /// <param name="expression">The sort comparison expression.</param>
+        /// <returns>The ordered query.</returns>
         public static IAmbientDataQuery<TSource> ThenBy<TSource, TKey>(this IAmbientDataQuery<TSource> self, Expression<System.Func<TSource, TKey>> expression)
         {
             var query = (Db4oAmbientDataQuery<TSource>)self;
@@ -111,11 +111,11 @@ namespace Gallio.Ambience
         /// <summary>
         /// Produces a new query ordered by an additional comparison expression in descending order.
         /// </summary>
-        /// <typeparam name="TSource">The type of object being queried</typeparam>
-        /// <typeparam name="TKey">The sort key type</typeparam>
-        /// <param name="self">The query</param>
-        /// <param name="expression">The sort comparison expression</param>
-        /// <returns>The ordered query</returns>
+        /// <typeparam name="TSource">The type of object being queried.</typeparam>
+        /// <typeparam name="TKey">The sort key type.</typeparam>
+        /// <param name="self">The query.</param>
+        /// <param name="expression">The sort comparison expression.</param>
+        /// <returns>The ordered query.</returns>
         public static IAmbientDataQuery<TSource> ThenByDescending<TSource, TKey>(this IAmbientDataQuery<TSource> self, Expression<System.Func<TSource, TKey>> expression)
         {
             var query = (Db4oAmbientDataQuery<TSource>)self;

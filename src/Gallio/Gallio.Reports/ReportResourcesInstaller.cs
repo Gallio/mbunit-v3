@@ -38,9 +38,9 @@ namespace Gallio.Reports
         /// <summary>
         /// Initializes the installer.
         /// </summary>
-        /// <param name="testKindManager">The test kind manager, not null</param>
-        /// <param name="testKindImageDir">The test kind image directory, not null</param>
-        /// <param name="generatedCssFile">The generated CSS file, not null</param>
+        /// <param name="testKindManager">The test kind manager, not null.</param>
+        /// <param name="testKindImageDir">The test kind image directory, not null.</param>
+        /// <param name="generatedCssFile">The generated CSS file, not null.</param>
         public ReportResourcesInstaller(ITestKindManager testKindManager, DirectoryInfo testKindImageDir,
             FileInfo generatedCssFile)
         {

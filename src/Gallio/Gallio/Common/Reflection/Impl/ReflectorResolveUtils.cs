@@ -118,7 +118,7 @@ namespace Gallio.Common.Reflection.Impl
         /// This parameter is used when resolving types that are part of the signature
         /// of a generic method so that generic method arguments can be handled correctly.</param>
         /// <param name="throwOnError">If true, throws an exception if resolution fails,
-        /// otherwise returns an <see cref="UnresolvedType" /></param>
+        /// otherwise returns an <see cref="UnresolvedType" />.</param>
         /// <returns>The resolved <see cref="Type" />.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="type"/>
         /// is null.</exception>
@@ -212,7 +212,7 @@ namespace Gallio.Common.Reflection.Impl
         /// </summary>
         /// <param name="field">The reflected type.</param>
         /// <param name="throwOnError">If true, throws an exception if resolution fails,
-        /// otherwise returns an <see cref="UnresolvedFieldInfo" /></param>
+        /// otherwise returns an <see cref="UnresolvedFieldInfo" />.</param>
         /// <returns>The resolved <see cref="FieldInfo" />.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="field"/>
         /// is null.</exception>
@@ -252,7 +252,7 @@ namespace Gallio.Common.Reflection.Impl
         /// </summary>
         /// <param name="property">The reflected property.</param>
         /// <param name="throwOnError">If true, throws an exception if resolution fails,
-        /// otherwise returns an <see cref="UnresolvedPropertyInfo" /></param>
+        /// otherwise returns an <see cref="UnresolvedPropertyInfo" />.</param>
         /// <returns>The resolved <see cref="PropertyInfo" />.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="property"/>
         /// is null.</exception>
@@ -296,7 +296,7 @@ namespace Gallio.Common.Reflection.Impl
         /// </summary>
         /// <param name="event">The reflected event.</param>
         /// <param name="throwOnError">If true, throws an exception if resolution fails,
-        /// otherwise returns an <see cref="UnresolvedEventInfo" /></param>
+        /// otherwise returns an <see cref="UnresolvedEventInfo" />.</param>
         /// <returns>The resolved <see cref="EventInfo" />.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="event"/>
         /// is null.</exception>
@@ -337,7 +337,7 @@ namespace Gallio.Common.Reflection.Impl
         /// </summary>
         /// <param name="constructor">The reflected constructor.</param>
         /// <param name="throwOnError">If true, throws an exception if resolution fails,
-        /// otherwise returns an <see cref="UnresolvedConstructorInfo" /></param>
+        /// otherwise returns an <see cref="UnresolvedConstructorInfo" />.</param>
         /// <returns>The resolved <see cref="ConstructorInfo" />.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="constructor"/>
         /// is null.</exception>
@@ -382,7 +382,7 @@ namespace Gallio.Common.Reflection.Impl
         /// </summary>
         /// <param name="method">The reflected method.</param>
         /// <param name="throwOnError">If true, throws an exception if resolution fails,
-        /// otherwise returns an <see cref="UnresolvedMethodInfo" /></param>
+        /// otherwise returns an <see cref="UnresolvedMethodInfo" />.</param>
         /// <returns>The resolved <see cref="MethodInfo" />.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="method"/>
         /// is null.</exception>
@@ -480,7 +480,7 @@ namespace Gallio.Common.Reflection.Impl
         /// </summary>
         /// <param name="parameter">The reflected parameter.</param>
         /// <param name="throwOnError">If true, throws an exception if resolution fails,
-        /// otherwise returns an <see cref="UnresolvedParameterInfo" /></param>
+        /// otherwise returns an <see cref="UnresolvedParameterInfo" />.</param>
         /// <returns>The resolved <see cref="ParameterInfo" />.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="parameter"/>
         /// is null.</exception>

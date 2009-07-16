@@ -29,7 +29,7 @@ namespace Gallio.Common.Linq
         /// <summary>
         /// Wraps an action as a function that returns a dummy <see cref="Unit" /> value.
         /// </summary>
-        /// <returns>The function</returns>
+        /// <returns>The function.</returns>
         public static System.Func<Unit> AsUnitFunc(this System.Action action)
         {
             return new Shim(action).Invoke;

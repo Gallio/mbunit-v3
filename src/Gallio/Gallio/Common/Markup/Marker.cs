@@ -262,7 +262,7 @@ namespace Gallio.Common.Markup
         /// </summary>
         /// <param name="class">The marker class.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="class"/> is null.</exception>
-        /// <exception cref="ArgumentException">Thrown if the <paramref name="class"/> is not a valid identifier.  <seealso cref="ValidateIdentifier"/></exception>
+        /// <exception cref="ArgumentException">Thrown if the <paramref name="class"/> is not a valid identifier.  <seealso cref="ValidateIdentifier"/>.</exception>
         public Marker(string @class)
             : this(@class, EmptyDictionary<string, string>.Instance)
         {
@@ -275,7 +275,7 @@ namespace Gallio.Common.Markup
         /// <param name="attributes">The attributes.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="class"/> or
         /// <paramref name="attributes"/> is null.</exception>
-        /// <exception cref="ArgumentException">Thrown if the <paramref name="class"/> is not a valid identifier.  <seealso cref="ValidateIdentifier"/></exception>
+        /// <exception cref="ArgumentException">Thrown if the <paramref name="class"/> is not a valid identifier.  <seealso cref="ValidateIdentifier"/>.</exception>
         public Marker(string @class, IDictionary<string, string> attributes)
         {
             ValidateIdentifier(@class);
@@ -321,7 +321,7 @@ namespace Gallio.Common.Markup
         /// <returns>The marker copy with the attribute.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/>
         /// or <paramref name="value"/> is null.</exception>
-        /// <exception cref="ArgumentException">Thrown if the <paramref name="name"/> is not a valid identifier.  <seealso cref="ValidateIdentifier"/></exception>
+        /// <exception cref="ArgumentException">Thrown if the <paramref name="name"/> is not a valid identifier.  <seealso cref="ValidateIdentifier"/>.</exception>
         public Marker WithAttribute(string name, string value)
         {
             ValidateAttribute(name, value);

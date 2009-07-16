@@ -28,18 +28,18 @@ namespace Gallio.Ambience
         /// <summary>
         /// Gets all objects of a particular type in the container.
         /// </summary>
-        /// <typeparam name="T">The object type</typeparam>
-        /// <returns>The data set</returns>
-        /// <exception cref="AmbienceException">Thrown if the operation failed</exception>
+        /// <typeparam name="T">The object type.</typeparam>
+        /// <returns>The data set.</returns>
+        /// <exception cref="AmbienceException">Thrown if the operation failed.</exception>
         IAmbientDataSet<T> Query<T>();
 
         /// <summary>
         /// Gets all objects of a particular type in the container that match a particular filtering criteria.
         /// </summary>
-        /// <typeparam name="T">The object type</typeparam>
-        /// <param name="predicate">The filtering criteria</param>
-        /// <returns>The data set</returns>
-        /// <exception cref="AmbienceException">Thrown if the operation failed</exception>
+        /// <typeparam name="T">The object type.</typeparam>
+        /// <param name="predicate">The filtering criteria.</param>
+        /// <returns>The data set.</returns>
+        /// <exception cref="AmbienceException">Thrown if the operation failed.</exception>
         IAmbientDataSet<T> Query<T>(Predicate<T> predicate);
 
         /// <summary>
@@ -47,8 +47,8 @@ namespace Gallio.Ambience
         /// Deletes the object from the container.
         /// </para>
         /// </summary>
-        /// <param name="obj">The object to delete</param>
-        /// <exception cref="AmbienceException">Thrown if the operation failed</exception>
+        /// <param name="obj">The object to delete.</param>
+        /// <exception cref="AmbienceException">Thrown if the operation failed.</exception>
         void Delete(object obj);
 
         /// <summary>
@@ -56,8 +56,8 @@ namespace Gallio.Ambience
         /// Stores or updates an object in the container.
         /// </para>
         /// </summary>
-        /// <param name="obj">The object to store</param>
-        /// <exception cref="AmbienceException">Thrown if the operation failed</exception>
+        /// <param name="obj">The object to store.</param>
+        /// <exception cref="AmbienceException">Thrown if the operation failed.</exception>
         void Store(object obj);
 
         /// <summary>
@@ -65,7 +65,7 @@ namespace Gallio.Ambience
         /// Deletes all objects in the container.  (Use with caution!)
         /// </para>
         /// </summary>
-        /// <exception cref="AmbienceException">Thrown if the operation failed</exception>
+        /// <exception cref="AmbienceException">Thrown if the operation failed.</exception>
         void DeleteAll();
     }
 }
