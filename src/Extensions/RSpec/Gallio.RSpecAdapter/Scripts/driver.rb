@@ -231,7 +231,7 @@ module Gallio
           
           file_name = ::System::IO::Path.GetFileNameWithoutExtension(file_path)
           file_test = create_test(file_name)
-          file_test.Kind = "RSpecFile"
+          file_test.Kind = "RSpec File"
           file_test.Metadata.Add(::Gallio::Model::MetadataKeys.File, file_path)
           @test_stack.last.AddChild(file_test)
           @test_stack.push(file_test)
@@ -258,7 +258,7 @@ module Gallio
           @progress_monitor.set_status("Running example group: #{description}.")
           
           example_group_test = create_test(description)
-          example_group_test.Kind = "RSpecExampleGroup"
+          example_group_test.Kind = "RSpec Example Group"
           @test_stack.last.AddChild(example_group_test)
           @test_stack.push(example_group_test)          
           @example_group_depth += 1
@@ -286,7 +286,7 @@ module Gallio
           @progress_monitor.set_status("Running example: #{description}.")
           
           example_test = create_test(description)
-          example_test.Kind = "RSpecExample"
+          example_test.Kind = "RSpec Example"
           example_test.IsTestCase = true
           @test_stack.last.AddChild(example_test)
           @test_stack.push(example_test)

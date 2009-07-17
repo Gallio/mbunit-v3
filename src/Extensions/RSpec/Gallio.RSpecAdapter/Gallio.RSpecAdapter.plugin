@@ -51,19 +51,28 @@
       </traits>
     </component>
 
-    <component componentId="RSpecAdapter.TestKinds.Fixture"
+    <component componentId="RSpecAdapter.TestKinds.File"
                serviceId="Gallio.TestKind">
       <traits>
-        <name>RSpecExampleGroup</name>
+        <name>RSpec File</name>
+        <description>An RSpec file.</description>
+        <icon>plugin://Gallio/Resources/Assembly.ico</icon>
+      </traits>
+    </component>
+
+    <component componentId="RSpecAdapter.TestKinds.ExampleGroup"
+               serviceId="Gallio.TestKind">
+      <traits>
+        <name>RSpec Example Group</name>
         <description>An RSpec example group.</description>
         <icon>plugin://Gallio/Resources/Fixture.ico</icon>
       </traits>
     </component>
 
-    <component componentId="RSpecAdapter.TestKinds.Test"
+    <component componentId="RSpecAdapter.TestKinds.Example"
                serviceId="Gallio.TestKind">
       <traits>
-        <name>RSpecExample</name>
+        <name>RSpec Example</name>
         <description>An RSpec example.</description>
         <icon>plugin://Gallio/Resources/Test.ico</icon>
       </traits>

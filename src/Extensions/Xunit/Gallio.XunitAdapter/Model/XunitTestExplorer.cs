@@ -33,7 +33,7 @@ namespace Gallio.XunitAdapter.Model
     /// </summary>
     internal class XunitTestExplorer : TestExplorer
     {
-        internal const string AssemblyKind = TestKinds.Assembly;
+        internal const string AssemblyKind = "xUnit Assembly";
         private const string XunitAssemblyDisplayName = @"xunit";
 
         private readonly Dictionary<IAssemblyInfo, Test> assemblyTests;

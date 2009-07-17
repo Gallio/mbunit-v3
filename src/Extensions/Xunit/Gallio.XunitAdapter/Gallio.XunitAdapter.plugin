@@ -6,6 +6,7 @@
     <name>xUnit.Net Adapter</name>
     <version>0.0.0.0</version>
     <description>Provides support for running xUnit.Net tests.</description>
+    <icon>plugin://Gallio.XunitAdapter/Resources/xUnit.ico</icon>
   </traits>
 
   <dependencies>
@@ -49,6 +50,16 @@
         <frameworkAssemblies>xunit</frameworkAssemblies>
         <version>1.1.0.1323</version>
         <fileTypes>Assembly</fileTypes>
+        <icon>plugin://Gallio.XunitAdapter/Resources/xUnit.ico</icon>
+      </traits>
+    </component>
+
+    <component componentId="XunitAdapter.TestKinds.NUnitTestAssembly"
+               serviceId="Gallio.TestKind">
+      <traits>
+        <name>xUnit Assembly</name>
+        <description>xUnit Test Assembly</description>
+        <icon>plugin://Gallio.XunitAdapter/Resources/xUnit.ico</icon>
       </traits>
     </component>
   </components>

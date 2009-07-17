@@ -13,5 +13,9 @@
     </Binary>
     
     <TestAssembly Include="Gallio.Copy.Tests\bin\Gallio.Copy.Tests.dll" />
+
+    <!-- Not ready for prime time yet.     
+    <Feature Include="FEATURE_COPY" />
+    -->
   </ItemGroup>
 </Project>

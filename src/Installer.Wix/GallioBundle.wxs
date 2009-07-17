@@ -199,7 +199,9 @@
 <?ifdef FEATURE_AUTOCAD ?>
             <FeatureRef Id='feat_Gallio.AutoCAD'/>
 <?endif?>
+<?ifdef FEATURE_COPY ?>
             <FeatureRef Id="feat_Gallio.Copy"/>
+<?endif?>
 <?ifdef FEATURE_AMBIENCE ?>
             <FeatureRef Id="feat_Gallio.Ambience"/>
 <?endif?>

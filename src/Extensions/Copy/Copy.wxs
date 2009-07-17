@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+    <?include ..\..\Installer.Wix\Features.wxi ?>
+    <?ifdef FEATURE_COPY ?>
+
     <Fragment>
         <DirectoryRef Id="binFolder" FileSource="$(var.GallioTargetDir)\bin\">
             <Component Id="Gallio.Copy" Guid="{EC40CC4E-B37C-469b-9F87-215145AD066A}" Win64="no">
@@ -21,4 +24,5 @@
             <ComponentRef Id="Gallio.Copy.Resources"/>
         </Feature>
     </Fragment>
+    <?endif?>
 </Wix>
