@@ -51,11 +51,15 @@ module Gallio
       end
       
       def explore_or_run(exploring)
+        @progress_monitor.begin_task(exploring ? "Exploring RSpec tests." : "Running RSpec tests.", 1)
+          
         options = create_options(exploring)
         options.formatters << Formatter.new(options, @message_sink, @progress_monitor)
         
         ::Spec::Runner.use options
         ::Spec::Runner.run
+        
+        @progress_monitor.done
       end
       
       def create_options(exploring)
@@ -67,6 +71,8 @@ module Gallio
         options_array << '--format' << 'silent'
         @test_package.Files.each do |file|
           options_array << file.FullName
+          dirName = file.Directory.FullName
+          $: << dirName if $:.index(dirName) == nil
         end
         
         workaround_option_parser_use_of_argument_zero        
@@ -82,6 +88,17 @@ module Gallio
         $0 = ''  
       end
       
+      #
+      # The Formatter listens for events from the RSpec test runner and generates
+      # messages for Gallio.  The implementation is a little bit complicated because
+      # we have to rederive the file list and nested example group structure based
+      # on flattened events.
+      #
+      # In some places we call ToString() on an existing string or on some other
+      # object that is implicitly convertible to strings.  This is a workaround for
+      # an error 'incompatible character encodings: utf-8 (KCODE) and Windows-1252'
+      # that can appear when mixing literal strings with computed values.
+      #
       class Formatter < ::Spec::Runner::Formatter::BaseFormatter
         def initialize(options, message_sink, progress_monitor)
           @options = options
@@ -92,12 +109,103 @@ module Gallio
           @test_context_manager = ::Gallio::Model::Contexts::ObservableTestContextManager.new(test_context_tracker, message_sink.inner)
           @test_stack = []
           @test_context_stack = []
+          @work_per_example = 1
+          @example_group_depth = 0
+          @current_file_path = nil
         end
         
         def start(example_count)
           #puts "start"
-          @progress_monitor.begin_task(dry_run? ? "Exploring RSpec tests." : "Running RSpec tests.", example_count < 1 ? 1 : example_count)
+          @work_per_example = 1.0 / example_count if example_count > 1
           
+          # Push the root onto the stack.
+          internal_root_started
+        end
+
+        def example_group_started(example_group_proxy)
+          #puts "example_group_started"
+          
+          # Pop all deeper example groups and siblings off the stack.
+          while @example_group_depth >= example_group_proxy.nested_descriptions.length
+            internal_example_group_finished
+          end
+
+          # Check whether we are working on a new file.
+          if @example_group_depth == 0
+            path, line = parse_location(example_group_proxy.location)
+            if path != @current_file_path
+              internal_file_finished if @current_file_path != nil
+              @current_file_path = path
+              internal_file_started(path) if path != nil
+            end
+          end
+
+          # Push this group onto the stack.
+          internal_example_group_started(example_group_proxy)
+        end
+        
+        def example_started(example_proxy)
+          #puts "example_started"
+          
+          internal_example_started(example_proxy)
+        end
+
+        def example_passed(example_proxy)
+          #puts "example_passed"
+          
+          internal_example_finished(::Gallio::Model::TestOutcome.Passed) do |example_test_context|
+          end
+        end
+
+        def example_failed(example_proxy, counter, failure)
+          #puts "example_failed"
+          
+          internal_example_finished(::Gallio::Model::TestOutcome.Failed) do |example_test_context|
+            example_test_context.LogWriter.Warnings.BeginSection(failure.header)
+            example_test_context.LogWriter.Warnings.Write(failure.exception.message) unless failure.exception.nil?
+            example_test_context.LogWriter.Warnings.Write(format_backtrace(failure.exception.backtrace)) unless failure.exception.nil?
+            example_test_context.LogWriter.Warnings.End()
+          end
+        end
+        
+        def example_pending(example_proxy, message, deprecated_pending_location=nil)
+          #puts "example_pending"
+          
+          internal_example_finished(::Gallio::Model::TestOutcome.Pending) do |example_test_context|
+            example_test_context.AddMetadata(::Gallio::Model::MetadataKeys::PendingReason, message)
+            example_test_context.LogWriter.Warnings.BeginSection("Pending")
+            example_test_context.LogWriter.Warnings.Write(message)
+            example_test_context.LogWriter.Warnings.End()
+          end
+        end
+        
+        def start_dump
+          #puts "start_dump"
+          
+          # Pop all example groups off the stack.
+          while @example_group_depth > 0 do
+            internal_example_group_finished
+          end
+
+          # Pop off the current file if there is one
+          if @current_file_path != nil
+            internal_file_finished
+            @current_file_path = nil
+          end
+
+          # Pop the root off the stack.
+          if @test_stack.length > 0
+            internal_root_finished
+          end
+        end
+
+        def close
+          #puts "close"
+        end
+        
+      private
+      
+        def internal_root_started
           root_test = create_root_test
           @test_stack.push(root_test)
           
@@ -105,36 +213,79 @@ module Gallio
         
           return if dry_run?
           
-          root_test_step = create_test_step(root_test)
-          root_test_context = @test_context_manager.StartStep(root_test_step)
+          root_test_context = start_test_step(root_test)
           @test_context_stack.push(root_test_context)
         end
-
-        def example_group_started(example_group_proxy)
-          #puts "example_group_started"
-          example_group_finished unless @test_stack.length < 2
         
-          @progress_monitor.set_status("Running example group: #{example_group_proxy.description}.")
+        def internal_root_finished
+          @test_stack.pop()
           
-          example_group_test = create_test(example_group_proxy.description)
+          return if dry_run?
+          
+          root_test_context = @test_context_stack.pop()
+          finish_test_step(root_test_context)
+        end
+      
+        def internal_file_started(file_path)
+          @progress_monitor.set_status("Running file: #{file_path}.")
+          
+          file_name = ::System::IO::Path.GetFileNameWithoutExtension(file_path)
+          file_test = create_test(file_name)
+          file_test.Kind = "RSpecFile"
+          file_test.Metadata.Add(::Gallio::Model::MetadataKeys.File, file_path)
+          @test_stack.last.AddChild(file_test)
+          @test_stack.push(file_test)
+          
+          notify_test_discovered(file_test)
+          
+          return if dry_run?
+          
+          file_test_context = start_test_step(file_test)
+          @test_context_stack.push(file_test_context)          
+        end
+        
+        def internal_file_finished
+          @test_stack.pop()
+          
+          return if dry_run?
+          
+          file_test_context = @test_context_stack.pop()
+          finish_test_step(file_test_context)
+        end
+      
+        def internal_example_group_started(example_group_proxy)
+          description = example_group_proxy.nested_descriptions.last.ToString()
+          @progress_monitor.set_status("Running example group: #{description}.")
+          
+          example_group_test = create_test(description)
           example_group_test.Kind = "RSpecExampleGroup"
           @test_stack.last.AddChild(example_group_test)
-          @test_stack.push(example_group_test)
+          @test_stack.push(example_group_test)          
+          @example_group_depth += 1
           
           notify_test_discovered(example_group_test, example_group_proxy.location)
           
           return if dry_run?
           
-          example_group_test_context_step = create_test_step(example_group_test, @test_context_stack.last.TestStep)
-          example_group_test_context = @test_context_stack.last.StartChildStep(example_group_test_context_step)
+          example_group_test_context = start_test_step(example_group_test)
           @test_context_stack.push(example_group_test_context)
         end
-        
-        def example_started(example_proxy)
-          #puts "example_started"
-          @progress_monitor.set_status("Running example: #{example_proxy.description.ToString()}.")
+      
+        def internal_example_group_finished
+          @example_group_depth -= 1
+          @test_stack.pop()
           
-          example_test = create_test(example_proxy.description)
+          return if dry_run?
+          
+          example_group_test_context = @test_context_stack.pop()
+          finish_test_step(example_group_test_context)
+        end
+        
+        def internal_example_started(example_proxy)
+          description = example_proxy.description.ToString()
+          @progress_monitor.set_status("Running example: #{description}.")
+          
+          example_test = create_test(description)
           example_test.Kind = "RSpecExample"
           example_test.IsTestCase = true
           @test_stack.last.AddChild(example_test)
@@ -144,101 +295,48 @@ module Gallio
           
           return if dry_run?
           
-          example_test_context_step = create_test_step(example_test, @test_context_stack.last.TestStep)
-          example_test_context = @test_context_stack.last.StartChildStep(example_test_context_step)
+          example_test_context = start_test_step(example_test)
           @test_context_stack.push(example_test_context)
         end
-
-        def example_passed(example_proxy)
-          #puts "example_passed"
-          @progress_monitor.worked(1)
+        
+        def internal_example_finished(outcome, &blk)
+          @progress_monitor.worked(@work_per_example)
           @test_stack.pop()
           
           return if dry_run?
           
           example_test_context = @test_context_stack.pop()
-          set_outcome(example_test_context, ::Gallio::Model::TestOutcome.Passed)
+          set_outcome(example_test_context, outcome)
+          blk.call(example_test_context)
           finish_test_step(example_test_context)
-        end
-
-        def example_failed(example_proxy, counter, failure)
-          #puts "example_failed"
-          @progress_monitor.worked(1)
-          @test_stack.pop()
-          
-          return if dry_run?
-          
-          example_test_context = @test_context_stack.pop()
-          example_test_context.LogWriter.Warnings.BeginSection(failure.header)
-          example_test_context.LogWriter.Warnings.Write(failure.exception.message) unless failure.exception.nil?
-          example_test_context.LogWriter.Warnings.Write(format_backtrace(failure.exception.backtrace)) unless failure.exception.nil?
-          example_test_context.LogWriter.Warnings.End()
-          set_outcome(example_test_context, ::Gallio::Model::TestOutcome.Failed)
-          finish_test_step(example_test_context, true)
-        end
-        
-        def example_pending(example_proxy, message, deprecated_pending_location=nil)
-          #puts "example_pending"
-          @progress_monitor.worked(1)
-          @test_stack.pop()
-          
-          return if dry_run?
-          
-          example_test_context = @test_context_stack.pop()
-          example_test_context.AddMetadata(::Gallio::Model::MetadataKeys::PendingReason, message)
-          example_test_context.LogWriter.Warnings.BeginSection("Pending")
-          example_test_context.LogWriter.Warnings.Write(message)
-          example_test_context.LogWriter.Warnings.End()
-          set_outcome(example_test_context, ::Gallio::Model::TestOutcome.Pending)
-          finish_test_step(example_test_context)
-        end
-        
-        def start_dump
-          #puts "start_dump"
-          example_group_finished unless @test_stack.length < 2
-          finished_run unless @test_stack.length < 1
-        end
-
-        def close
-          @progress_monitor.done
-        end
-        
-      private
-      
-        def example_group_finished
-          @test_stack.pop()
-          
-          return if dry_run?
-          
-          example_group_test_context = @test_context_stack.pop()
-          finish_test_step(example_group_test_context)
-        end
-        
-        def finished_run
-          if ! dry_run? && @test_stack.length != @test_context_stack.length
-            puts "The test stack length is #{@test_stack.length} but the context stack length is #{test_context_stack.length}.  This usually indicates a fatal error occurred somewhere else inside the test adapter."
-          end
-        
-          #puts "#{} #{}"
-          @test_stack.pop()
-          
-          return if dry_run?
-          
-          root_test_context = @test_context_stack.pop()
-          finish_test_step(root_test_context)
         end
         
         def set_outcome(test_context, outcome)
           test_context.SetInterimOutcome(outcome)
         end
         
-        def finish_test_step(test_context, propagate_to_parent = false)
+        def start_test_step(test)
+          if @test_context_stack.length == 0
+            test_step = create_test_step(test)
+            test_context = @test_context_manager.StartStep(test_step)
+          else
+            test_step = create_test_step(test, @test_context_stack.last.TestStep)
+            test_context = @test_context_stack.last.StartChildStep(test_step)
+          end
+          
+          test_context
+        end
+        
+        def finish_test_step(test_context)
           outcome = test_context.Outcome
           test_context.FinishStep(outcome, nil)
           
-          if propagate_to_parent
-            parent_outcome = test_context.Parent.Outcome.CombineWith(outcome).Generalize()
-            test_context.Parent.SetInterimOutcome(parent_outcome)
+          parent_test_context = test_context.Parent
+          if parent_test_context != nil
+            if outcome.Status != ::Gallio::Model::TestStatus.Inconclusive
+              parent_outcome = parent_test_context.Outcome.CombineWith(outcome).Generalize()
+              parent_test_context.SetInterimOutcome(parent_outcome)
+            end
           end
         end
         
@@ -272,21 +370,26 @@ module Gallio
           message.ParentTestId = test.Parent.Id if test.Parent
           message.Test = ::Gallio::Model::Schema::TestData.new(test)
           
-          if location != nil
-            matches = /^(.*):([0-9]+)$/.match(location)
-            if matches != nil
-              path = matches[1]
-              line = matches[2].to_i
-            else
-              path = location
-              line = 0
-            end
-            
+          path, line = parse_location(location)
+          if path != nil
             message.Test.CodeLocation = ::Gallio::Common::Reflection::CodeLocation.new(path, line, 0)
           end
         
           @message_sink.publish(message)
-        end        
+        end
+        
+        def parse_location(location)
+          if (location != nil)
+            matches = /^(.*):([0-9]+)$/.match(location)
+            if matches != nil
+              [matches[1].ToString(), matches[2].to_i]
+            else
+              [location.ToString(), 0]
+            end
+          else
+            [nil, 0]
+          end
+        end
       end
     end
   end
