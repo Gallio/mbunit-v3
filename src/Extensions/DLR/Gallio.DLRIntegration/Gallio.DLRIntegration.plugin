@@ -20,10 +20,9 @@
   <files>
     <file path="Gallio.DLRIntegration.plugin" />
     <file path="Gallio.DLRIntegration.dll" />
-    <file path="Microsoft.Dynamic.dll" />
-    <file path="Microsoft.Scripting.dll" />
-    <file path="Microsoft.Scripting.Core.dll" />
-    <file path="Microsoft.Scripting.ExtensionAttribute.dll" />
+    <!-- The following tokens are replaced during the build. -->
+    ${LibsFilesToken}
+    ${ScriptsFilesToken}
   </files>
 
   <assemblies>
@@ -44,7 +43,7 @@
     <assembly fullName="Microsoft.Scripting.Core, Version=0.9.6.10, Culture=neutral, PublicKeyToken=31bf3856ad364e35"
               codeBase="Microsoft.Scripting.Core.dll" />
 
-    <assembly fullName="Microsoft.Scripting.ExtensionAttribute, Version=0.9.6.10, Culture=neutral, PublicKeyToken=31bf3856ad364e35"
+    <assembly fullName="Microsoft.Scripting.ExtensionAttribute, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35"
               codeBase="Microsoft.Scripting.ExtensionAttribute.dll" />
   </assemblies>
 

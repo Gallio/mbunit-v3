@@ -32,6 +32,24 @@
 
     <SvnExport RepositoryPath="$(ModuleDir)\Gallio.DLRIntegration\Scripts"
                LocalPath="$(ImageDir)\bin\DLR\Scripts" />
+	       
+    <ItemGroup>
+      <LibsFiles Include="$(ImageDir)\bin\DLR\libs\**\*" />
+      <ScriptsFiles Include="$(ImageDir)\bin\DLR\scripts\**\*" />
+
+      <Token Include="LibsFilesToken">
+        <ReplacementValue>@(LibsFiles->'&lt;file path="libs\%(RecursiveDir)%(Filename)%(Extension)"/&gt;', '%0A    ')</ReplacementValue>
+      </Token>
+      <Token Include="ScriptsFilesToken">
+        <ReplacementValue>@(ScriptsFiles->'&lt;file path="scripts\%(RecursiveDir)%(Filename)%(Extension)"/&gt;', '%0A    ')</ReplacementValue>
+      </Token>
+    </ItemGroup>
+
+    <TemplateFile Template="$(ImageDir)\bin\DLR\Gallio.DLRIntegration.plugin"
+		  Tokens="@(Token)" />
+    <Delete Files="$(ImageDir)\bin\DLR\Gallio.DLRIntegration.plugin" />
+    <Move SourceFiles="$(ImageDir)\bin\DLR\Gallio.DLRIntegration.out"
+          DestinationFiles="$(ImageDir)\bin\DLR\Gallio.DLRIntegration.plugin" />
   </Target>
 
   <Target Name="BeforeDist">

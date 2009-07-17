@@ -15,9 +15,11 @@
     
     <DocumentedAssembly Include="Gallio\bin\Gallio.dll" />
     <DocumentedAssembly Include="Gallio35\bin\Gallio35.dll" />
-    <DocumentedAssembly Include="Gallio.Loader\bin\Gallio.Loader.dll" />
     <DocumentedAssembly Include="Gallio.Reports\bin\Gallio.Reports.dll" />
     <DocumentedAssembly Include="Gallio.UI\bin\Gallio.UI.dll" />
+    <DocumentedAssembly Include="Gallio.Loader\bin\Gallio.Loader.dll">
+      <Folder>Loader</Folder>
+    </DocumentedAssembly>
     
     <Content Include="Gallio Website.url" />
   
@@ -36,8 +38,12 @@
     <Binary Include="Gallio\bin\Gallio.Host.Elevated.x86.exe" />
     <PluginFile Include="Gallio\bin\Gallio.Host.Elevated.x86.exe.config" />
 
-    <Binary Include="Gallio.Loader\bin\Gallio.Loader.dll" />
-    <Binary Include="Gallio.Loader\bin\Gallio.Loader.pdb" />
+    <Binary Include="Gallio.Loader\bin\Gallio.Loader.dll">
+      <Folder>Loader</Folder>
+    </Binary>
+    <Binary Include="Gallio.Loader\bin\Gallio.Loader.pdb">
+      <Folder>Loader</Folder>
+    </Binary>
     
     <Binary Include="Gallio35\bin\Gallio35.dll" />
     <Binary Include="Gallio35\bin\Gallio35.pdb" />

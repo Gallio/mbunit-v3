@@ -16,8 +16,9 @@
   <files>
     <file path="Gallio.RSpecAdapter.plugin" />
     <file path="Gallio.RSpecAdapter.dll" />
-    <file path="RSpecTestDriver.rb" />
-    <file path="MIT License.txt" />
+    <!-- The following tokens are replaced during the build. -->
+    ${LibsFilesToken}
+    ${ScriptsFilesToken}
   </files>
 
   <assemblies>

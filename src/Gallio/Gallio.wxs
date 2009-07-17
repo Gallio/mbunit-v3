@@ -121,13 +121,15 @@
                 <File Name="Gallio.ControlPanel.plugin" />
             </Component>
 
-            <Component Id="Gallio.Loader" Guid="{1b752f49-373c-4a57-8f72-eb97287d0d35}" Win64="no">
-                <!-- Install in the GAC -->
-                <File Name="Gallio.Loader.dll" KeyPath="yes" Assembly=".net" />
+            <Directory Id="LoaderFolder" Name="Loader">
+                <Component Id="Gallio.Loader" Guid="{1b752f49-373c-4a57-8f72-eb97287d0d35}" Win64="no">
+                    <!-- Install in the GAC -->
+                    <File Name="Gallio.Loader.dll" KeyPath="yes" Assembly=".net" />
 
-		<!-- TODO: Install the PDB and XML in the GAC also.
+	            <!-- TODO: Install the PDB and XML in the GAC also.
 		           This may require using a custom task. -->
-            </Component>
+                </Component>
+            </Directory>
 
             <Directory Id="ResourcesFolder" Name="Resources" />
         </DirectoryRef>

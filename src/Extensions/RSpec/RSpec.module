@@ -32,6 +32,24 @@
   
     <SvnExport RepositoryPath="$(ModuleDir)\Gallio.RSpecAdapter\Scripts"
                LocalPath="$(ImageDir)\bin\RSpec\Scripts" />
+
+    <ItemGroup>
+      <LibsFiles Include="$(ImageDir)\bin\RSpec\libs\**\*" />
+      <ScriptsFiles Include="$(ImageDir)\bin\RSpec\scripts\**\*" />
+
+      <Token Include="LibsFilesToken">
+        <ReplacementValue>@(LibsFiles->'&lt;file path="libs\%(RecursiveDir)%(Filename)%(Extension)"/&gt;', '%0A    ')</ReplacementValue>
+      </Token>
+      <Token Include="ScriptsFilesToken">
+        <ReplacementValue>@(ScriptsFiles->'&lt;file path="scripts\%(RecursiveDir)%(Filename)%(Extension)"/&gt;', '%0A    ')</ReplacementValue>
+      </Token>
+    </ItemGroup>
+
+    <TemplateFile Template="$(ImageDir)\bin\RSpec\Gallio.RSpecAdapter.plugin"
+		  Tokens="@(Token)" />
+    <Delete Files="$(ImageDir)\bin\RSpec\Gallio.RSpecAdapter.plugin" />
+    <Move SourceFiles="$(ImageDir)\bin\RSpec\Gallio.RSpecAdapter.out"
+          DestinationFiles="$(ImageDir)\bin\RSpec\Gallio.RSpecAdapter.plugin" />
   </Target>
   
   <Target Name="BeforeDist">

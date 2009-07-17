@@ -29,6 +29,9 @@
     <file path="Resources\img\Plus.gif" />
     <file path="Resources\img\UnknownTestKind.png" />
     <file path="Resources\js\Gallio-Report.js" />
+    <file path="Resources\js\expressInstall.swf" />
+    <file path="Resources\js\player.swf" />
+    <file path="Resources\js\swfobject.js" />
     <file path="Resources\xsl\Gallio-Report.ccnet-details-condensed.xsl" />
     <file path="Resources\xsl\Gallio-Report.ccnet-details.xsl" />
     <file path="Resources\xsl\Gallio-Report.common.xsl" />
