@@ -14,23 +14,18 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
 using System.Windows.Forms;
 using Gallio.Common.Collections;
-using Gallio.Common.IO;
 using Gallio.Copy.Properties;
 using Gallio.Runtime;
 using Gallio.Runtime.ConsoleSupport;
 using Gallio.Runtime.Logging;
-using Gallio.UI.Common.Policies;
-using Gallio.UI.ErrorReporting;
-using Gallio.UI.ProgressMonitoring;
 
 namespace Gallio.Copy
 {
     internal class CopyProgram : ConsoleProgram<CopyArguments>
     {
-                /// <summary>
+        /// <summary>
         /// Creates an instance of the program.
         /// </summary>
         private CopyProgram()
@@ -57,19 +52,12 @@ namespace Gallio.Copy
             Application.SetCompatibleTextRenderingDefault(false);
 
             var runtimeSetup = new RuntimeSetup();
-            GenericCollectionUtils.ForEach(Arguments.PluginDirectories, x => runtimeSetup.AddPluginDirectory(x));
+            GenericCollectionUtils.ForEach(Arguments.PluginDirectories, runtimeSetup.AddPluginDirectory);
 
             var logger = new FilteredLogger(new RichConsoleLogger(Console), Verbosity.Normal);
             using (RuntimeBootstrap.Initialize(runtimeSetup, logger))
             {
-                var taskManager = RuntimeAccessor.ServiceLocator.Resolve<ITaskManager>();
-                var fileSystem = RuntimeAccessor.ServiceLocator.Resolve<IFileSystem>();
-                var unhandledExceptionPolicy = RuntimeAccessor.ServiceLocator.Resolve<IUnhandledExceptionPolicy>();
-                var registry = RuntimeAccessor.Registry;
-
-                var copyController = new CopyController(fileSystem, unhandledExceptionPolicy, taskManager, registry);
-
-                ErrorDialogUnhandledExceptionHandler.RunApplicationWithHandler(new CopyForm(copyController));
+                Application.Run(new CopyForm());
             }
 
             return 0;

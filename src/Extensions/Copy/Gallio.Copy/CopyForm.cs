@@ -1,4 +1,4 @@
-// Copyright 2005-2009 Gallio Project - http://www.gallio.org/
+﻿// Copyright 2005-2009 Gallio Project - http://www.gallio.org/
 // Portions Copyright 2000-2004 Jonathan de Halleux
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,44 +14,22 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
+using System.IO;
+using System.Reflection;
 using System.Windows.Forms;
-using Gallio.Common.Concurrency;
-using Gallio.Common.Policies;
-using Gallio.UI.ErrorReporting;
-using Gallio.UI.ProgressMonitoring;
+using Gallio.Common.Reflection;
 
 namespace Gallio.Copy
 {
     internal partial class CopyForm : Form
     {
-        private readonly ICopyController copyController;
-
-        public CopyForm(ICopyController copyController)
+        public CopyForm()
         {
-            this.copyController = copyController;
-
             InitializeComponent();
-
-            // show list of available plugins
-            foreach (var plugin in copyController.Plugins)
-                pluginsListView.Items.Add(plugin);
-
-            copyController.ProgressUpdate += (sender, e) => Sync.Invoke(this, () =>
-            {
-                var progressMonitor = copyController.ProgressMonitor;
-                
-                taskNameStatusLabel.Text = progressMonitor.LeafSubTaskName;
-
-                toolStripProgressBar.Maximum = double.IsNaN(progressMonitor.TotalWorkUnits)
-                    ? 0 : Convert.ToInt32(progressMonitor.TotalWorkUnits);
-                
-                toolStripProgressBar.Value = (progressMonitor.CompletedWorkUnits == progressMonitor.TotalWorkUnits) 
-                    ? 0 : Convert.ToInt32(copyController.ProgressMonitor.CompletedWorkUnits);
-            });
-
-            copyController.ShowProgressDialog += 
-                (sender, e) => new ProgressMonitorDialog(copyController.ProgressMonitor).Show(this);
+           
+            var pluginFolder = GetSourcePluginFolder();
+            sourcePluginTreeView.Model = new PluginTreeModel(pluginFolder);
+            sourcePluginFolderTextBox.Text = pluginFolder;
         }
 
         private void closeButton_Click(object sender, EventArgs e)
@@ -67,19 +45,20 @@ namespace Gallio.Copy
 
                 if (folderBrowserDialog.ShowDialog(this) != DialogResult.OK)
                     return;
-
-                var list = new List<string>();
-                foreach (ListViewItem item in pluginsListView.CheckedItems)
-                    list.Add(item.Text);
-
-                copyController.CopyTo(folderBrowserDialog.SelectedPath, list);
             }
         }
 
-        private void selectAllButton_Click(object sender, EventArgs e)
+        // modified version of debug method in DefaultRuntime.
+        private static string GetSourcePluginFolder()
         {
-            foreach (ListViewItem plugin in pluginsListView.Items)
-                plugin.Checked = true;
-        }
+            // Find the root "src" dir.
+            string initPath = AssemblyUtils.GetAssemblyLocalPath(Assembly.GetExecutingAssembly());
+
+            string srcDir = initPath;
+            while (srcDir != null && Path.GetFileName(srcDir) != @"src")
+                srcDir = Path.GetDirectoryName(srcDir);
+
+            return srcDir;
+       }
     }
 }

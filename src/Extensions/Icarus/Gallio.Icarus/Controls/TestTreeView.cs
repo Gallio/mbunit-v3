@@ -16,7 +16,6 @@
 using System.Collections.Generic;
 using Aga.Controls.Tree;
 using Aga.Controls.Tree.NodeControls;
-using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Models;
 using Gallio.Model;
 using System.Windows.Forms;
