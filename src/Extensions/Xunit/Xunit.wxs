@@ -27,6 +27,12 @@
                 <Component Id="xunit.extensions.xml" Guid="{1DE39816-B747-4ccc-B112-9D0C2CAADFCD}" Win64="no">
                     <File Name="xunit.extensions.xml" KeyPath="yes" />
                 </Component>
+		
+                <Directory Id="XUnitAdapter.Resources" Name="Resources">
+                    <Component Id="xUnit.ico" Guid="{4417172C-9A53-413e-B423-7F1B40976083}" Win64="no">
+                        <File Name="xUnit.ico" KeyPath="yes" />
+                    </Component>
+                </Directory>
             </Directory>
         </DirectoryRef>
 
@@ -40,6 +46,7 @@
             <ComponentRef Id="xunit.xml"/>
             <ComponentRef Id="xunit.extensions.dll"/>
             <ComponentRef Id="xunit.extensions.xml"/>
+            <ComponentRef Id="xUnit.ico"/>
         </Feature>
     </Fragment>
 </Wix>

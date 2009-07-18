@@ -18,6 +18,9 @@
     <Binary Include="Gallio.XunitAdapter\Readme.txt">
         <Folder>Xunit</Folder>
     </Binary>
+    <Binary Include="Gallio.XunitAdapter\Resources\xUnit.ico">
+        <Folder>Xunit\Resources</Folder>
+    </Binary>
     <Binary Include="libs\EULA.txt">
         <Folder>Xunit</Folder>
     </Binary>
