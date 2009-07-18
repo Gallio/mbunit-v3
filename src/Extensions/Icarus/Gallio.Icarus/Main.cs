@@ -233,12 +233,20 @@ namespace Gallio.Icarus
 
         private void DefaultDockState()
         {
+            // We show the test results, execution log, project explorer and annotations
+            // by default in order to draw the user's attention to these elements.
+            // I've seen users get lost trying to add/remove files when only presented
+            // with the test explorer.  Likewise I've seen them confused when tests
+            // won't run due to an error that could be diagnosted in the annotation window
+            // or in the runtime log.  Auto-hidden panels are less likely to be
+            // looked at than regular tabs.
+            // -- Jeff.
             testResults.Show(dockPanel, DockState.Document);
             executionLogWindow.Show(dockPanel, DockState.Document);
-            runtimeLogWindow.Show(dockPanel, DockState.DockBottomAutoHide);
-            annotationsWindow.Show(dockPanel, DockState.DockBottomAutoHide);
+            runtimeLogWindow.Show(dockPanel, DockState.DockBottom);
+            projectExplorer.Show(dockPanel, DockState.DockLeft);
             testExplorer.Show(dockPanel, DockState.DockLeft);
-            projectExplorer.Show(dockPanel, DockState.DockLeftAutoHide);
+            annotationsWindow.Show(dockPanel, DockState.DockBottom);
             filtersWindow.DockPanel = dockPanel;
         }
 

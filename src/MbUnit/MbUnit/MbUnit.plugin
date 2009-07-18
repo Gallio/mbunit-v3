@@ -26,9 +26,6 @@
     <assembly fullName="MbUnit, Version=0.0.0.0, Culture=neutral, PublicKeyToken=eb9cfa67ee6ab36e"
               codeBase="MbUnit.dll">
       <qualifyPartialName>true</qualifyPartialName>
-      <bindingRedirects>
-        <bindingRedirect oldVersion="0.0.0.0-65535.65535.65535.65535" />
-      </bindingRedirects>
     </assembly>
   </assemblies>
 
@@ -38,7 +35,7 @@
                componentType="MbUnit.Core.MbUnitTestFramework, MbUnit">
       <traits>
         <name>MbUnit v3</name>
-        <frameworkAssemblies>MbUnit</frameworkAssemblies>
+        <frameworkAssemblies>MbUnit, Version=0.0.0.0</frameworkAssemblies>
         <icon>plugin://MbUnit/Resources/MbUnit.ico</icon>
         <version>0.0.0.0</version>
         <fileTypes>Assembly</fileTypes>

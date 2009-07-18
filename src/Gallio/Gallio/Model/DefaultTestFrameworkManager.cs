@@ -21,12 +21,16 @@ using System.IO;
 using System.Reflection;
 using Gallio.Common;
 using Gallio.Common.Collections;
+using Gallio.Common.Messaging;
 using Gallio.Common.Policies;
 using Gallio.Common.Reflection;
 using Gallio.Model.Isolation;
+using Gallio.Model.Messages.Exploration;
+using Gallio.Model.Schema;
 using Gallio.Runtime.Extensibility;
 using Gallio.Runtime.FileTypes;
 using Gallio.Runtime.Logging;
+using Gallio.Runtime.ProgressMonitoring;
 
 namespace Gallio.Model
 {
@@ -96,7 +100,9 @@ namespace Gallio.Model
 
             protected override bool IsTestImpl(IReflectionPolicy reflectionPolicy, ICodeElementInfo codeElement)
             {
-                return ForEachDriver(PartitionCodeElementsByFramework(new[] { codeElement }), (driver, items, driverCount) =>
+                Action<ICodeElementInfo> unsupportedCodeElementHandler = null;
+
+                return ForEachDriver(PartitionCodeElementsByFramework(new[] { codeElement }, unsupportedCodeElementHandler), (driver, items, driverCount) =>
                 {
                     return driver.IsTest(reflectionPolicy, codeElement);
                 });
@@ -104,7 +110,9 @@ namespace Gallio.Model
 
             protected override bool IsTestPartImpl(IReflectionPolicy reflectionPolicy, ICodeElementInfo codeElement)
             {
-                return ForEachDriver(PartitionCodeElementsByFramework(new[] { codeElement }), (driver, items, driverCount) =>
+                Action<ICodeElementInfo> unsupportedCodeElementHandler = null;
+
+                return ForEachDriver(PartitionCodeElementsByFramework(new[] { codeElement }, unsupportedCodeElementHandler), (driver, items, driverCount) =>
                 {
                     return driver.IsTestPart(reflectionPolicy, codeElement);
                 });
@@ -112,9 +120,11 @@ namespace Gallio.Model
 
             protected override void DescribeImpl(IReflectionPolicy reflectionPolicy, IList<ICodeElementInfo> codeElements, TestExplorationOptions testExplorationOptions, Common.Messaging.IMessageSink messageSink, Gallio.Runtime.ProgressMonitoring.IProgressMonitor progressMonitor)
             {
+                Action<ICodeElementInfo> unsupportedCodeElementHandler = null;
+
                 using (progressMonitor.BeginTask("Describing tests.", 1))
                 {
-                    ForEachDriver(PartitionCodeElementsByFramework(codeElements), (driver, items, driverCount) =>
+                    ForEachDriver(PartitionCodeElementsByFramework(codeElements, unsupportedCodeElementHandler), (driver, items, driverCount) =>
                     {
                         driver.Describe(reflectionPolicy, items, testExplorationOptions, messageSink,
                             progressMonitor.CreateSubProgressMonitor(1.0 / driverCount));
@@ -123,11 +133,13 @@ namespace Gallio.Model
                 }
             }
 
-            protected override void ExploreImpl(ITestIsolationContext testIsolationContext, TestPackage testPackage, TestExplorationOptions testExplorationOptions, Common.Messaging.IMessageSink messageSink, Gallio.Runtime.ProgressMonitoring.IProgressMonitor progressMonitor)
+            protected override void ExploreImpl(ITestIsolationContext testIsolationContext, TestPackage testPackage, TestExplorationOptions testExplorationOptions, IMessageSink messageSink, IProgressMonitor progressMonitor)
             {
+                Action<FileInfo> unsupportedFileHandler = file => AddUnsupportedFileAsAnnotation(file, messageSink);
+
                 using (progressMonitor.BeginTask("Exploring tests.", 1))
                 {
-                    ForEachDriver(PartitionFilesByFramework(testPackage.Files), (driver, items, driverCount) =>
+                    ForEachDriver(PartitionFilesByFramework(testPackage.Files, unsupportedFileHandler), (driver, items, driverCount) =>
                     {
                         TestPackage testPackageForDriver = CreateTestPackageWithFiles(testPackage, items);
                         driver.Explore(testIsolationContext, testPackageForDriver, testExplorationOptions, messageSink,
@@ -137,8 +149,10 @@ namespace Gallio.Model
                 }
             }
 
-            protected override void RunImpl(ITestIsolationContext testIsolationContext, TestPackage testPackage, TestExplorationOptions testExplorationOptions, TestExecutionOptions testExecutionOptions, Common.Messaging.IMessageSink messageSink, Gallio.Runtime.ProgressMonitoring.IProgressMonitor progressMonitor)
+            protected override void RunImpl(ITestIsolationContext testIsolationContext, TestPackage testPackage, TestExplorationOptions testExplorationOptions, TestExecutionOptions testExecutionOptions, IMessageSink messageSink, IProgressMonitor progressMonitor)
             {
+                Action<FileInfo> unsupportedFileHandler = file => AddUnsupportedFileAsAnnotation(file, messageSink);
+
                 using (progressMonitor.BeginTask("Running tests.", 1))
                 {
                     if (testIsolationContext.RequiresSingleThreadedExecution && ! testExecutionOptions.SingleThreaded)
@@ -147,7 +161,7 @@ namespace Gallio.Model
                         testExecutionOptions.SingleThreaded = true;
                     }
 
-                    ForEachDriver(PartitionFilesByFramework(testPackage.Files), (driver, items, driverCount) =>
+                    ForEachDriver(PartitionFilesByFramework(testPackage.Files, unsupportedFileHandler), (driver, items, driverCount) =>
                     {
                         TestPackage testPackageForDriver = CreateTestPackageWithFiles(testPackage, items);
                         driver.Run(testIsolationContext, testPackageForDriver, testExplorationOptions, testExecutionOptions,
@@ -156,6 +170,17 @@ namespace Gallio.Model
                         return false;
                     });
                 }
+            }
+
+            private static void AddUnsupportedFileAsAnnotation(FileInfo file, IMessageSink messageSink)
+            {
+                messageSink.Publish(new AnnotationDiscoveredMessage()
+                {
+                    Annotation = new AnnotationData(AnnotationType.Error,
+                        new CodeLocation(file.FullName, 0, 0),
+                        CodeReference.Unknown,
+                        string.Format("File '{0}' is not supported by any registered framework.", file.Name), null)
+                });
             }
 
             private static TestPackage CreateTestPackageWithFiles(TestPackage testPackage, IList<FileInfo> files)
@@ -211,7 +236,8 @@ namespace Gallio.Model
             }
 
             private MultiMap<ComponentHandle<ITestFramework, TestFrameworkTraits>, ICodeElementInfo>
-                PartitionCodeElementsByFramework(IEnumerable<ICodeElementInfo> codeElements)
+                PartitionCodeElementsByFramework(IEnumerable<ICodeElementInfo> codeElements,
+                Action<ICodeElementInfo> unsupportedCodeElementHandler)
             {
                 var partitions = new MultiMap<ComponentHandle<ITestFramework, TestFrameworkTraits>, ICodeElementInfo>();
 
@@ -222,18 +248,26 @@ namespace Gallio.Model
                     {
                         IList<AssemblyName> assemblyReferences = assembly.GetReferencedAssemblies();
 
+                        bool supported = false;
                         foreach (var frameworkHandle in frameworkHandles)
                         {
                             if (frameworkHandle.GetTraits().IsFrameworkCompatibleWithAssemblyReferences(assemblyReferences))
+                            {
                                 partitions.Add(frameworkHandle, codeElement);
+                                supported = true;
+                            }
                         }
+
+                        if (!supported && unsupportedCodeElementHandler != null)
+                            unsupportedCodeElementHandler(codeElement);
                     }
                 }
 
                 return partitions;
             }
 
-            private MultiMap<ComponentHandle<ITestFramework, TestFrameworkTraits>, FileInfo> PartitionFilesByFramework(IEnumerable<FileInfo> files)
+            private MultiMap<ComponentHandle<ITestFramework, TestFrameworkTraits>, FileInfo> PartitionFilesByFramework(IEnumerable<FileInfo> files,
+                Action<FileInfo> unsupportedFileHandler)
             {
                 var partitions = new MultiMap<ComponentHandle<ITestFramework, TestFrameworkTraits>, FileInfo>();
 
@@ -241,6 +275,7 @@ namespace Gallio.Model
                 {
                     try
                     {
+                        bool supported = false;
                         using (LazyFileInspector fileInspector = new LazyFileInspector(file))
                         {
                             FileType fileType = fileTypeManager.IdentifyFileType(fileInspector);
@@ -263,8 +298,12 @@ namespace Gallio.Model
                                 }
 
                                 partitions.Add(frameworkHandle, file);
+                                supported = true;
                             }
                         }
+
+                        if (!supported && unsupportedFileHandler != null)
+                            unsupportedFileHandler(file);
                     }
                     catch (IOException)
                     {
