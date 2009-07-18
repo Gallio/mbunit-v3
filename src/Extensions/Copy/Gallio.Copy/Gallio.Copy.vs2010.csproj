@@ -41,6 +41,10 @@
     <DocumentationFile>bin\Gallio.Copy.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Aga.Controls, Version=1.6.1.0, Culture=neutral, PublicKeyToken=fcc90fbf924463a3, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\libs\Aga.Controls.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Deployment" />
@@ -59,7 +63,13 @@
       <DependentUpon>CopyForm.cs</DependentUpon>
     </Compile>
     <Compile Include="CopyProgram.cs" />
+    <Compile Include="FileNode.cs" />
     <Compile Include="ICopyController.cs" />
+    <Compile Include="PluginNode.cs" />
+    <Compile Include="PluginTreeModel.cs" />
+    <Compile Include="PluginTreeView.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="CopyForm.resx">
       <DependentUpon>CopyForm.cs</DependentUpon>
