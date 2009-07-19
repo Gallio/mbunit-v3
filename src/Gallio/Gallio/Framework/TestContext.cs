@@ -19,6 +19,7 @@ using System.Threading;
 using Gallio;
 using Gallio.Common;
 using Gallio.Common.Collections;
+using Gallio.Common.Messaging;
 using Gallio.Common.Policies;
 using Gallio.Framework;
 using Gallio.Framework.Assertions;
@@ -557,6 +558,16 @@ namespace Gallio.Framework
         public void AddAssertCount(int value)
         {
             inner.AddAssertCount(value);
+        }
+
+        /// <summary>
+        /// Publishes a message to the message sink.
+        /// </summary>
+        /// <param name="message">The message to publish.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="message"/> is null.</exception>
+        internal void PublishMessage(Message message)
+        {
+            inner.MessageSink.Publish(message); // Callee checks argument.
         }
 
         /// <summary>

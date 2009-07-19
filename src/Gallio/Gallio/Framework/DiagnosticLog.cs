@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
+using Gallio.Model.Messages.Logging;
 using Gallio.Runtime;
 using Gallio.Runtime.Logging;
 
@@ -48,10 +49,22 @@ namespace Gallio.Framework
         {
             if (message != null)
             {
-                if (RuntimeAccessor.IsInitialized)
+                if (TestContext.CurrentContext != null)
+                {
+                    TestContext.CurrentContext.PublishMessage(new LogEntrySubmittedMessage()
+                    {
+                        Severity = LogSeverity.Important,
+                        Message = message
+                    });
+                }
+                else if (RuntimeAccessor.IsInitialized)
+                {
                     RuntimeAccessor.Logger.Log(LogSeverity.Important, message);
+                }
                 else
+                {
                     Debug.WriteLine(message);
+                }
             }
         }
 

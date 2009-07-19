@@ -225,33 +225,36 @@ namespace Gallio.Runner
                 };
                 var reportLockBox = new LockBox<Report>(report);
 
-                bool success;
                 eventDispatcher.NotifyExploreStarted(new ExploreStartedEventArgs(testPackage,
                     testExplorationOptions, reportLockBox));
-                try
+
+                bool success;
+                using (Listener listener = new Listener(eventDispatcher, tappedLogger, reportLockBox))
                 {
-                    using (Listener listener = new Listener(eventDispatcher, tappedLogger, reportLockBox))
+                    try
                     {
-                        ITestDriver testDriver = testFrameworkManager.GetTestDriver(testPackage.IsFrameworkRequested, tappedLogger);
+                        ITestDriver testDriver = testFrameworkManager.GetTestDriver(testPackage.IsFrameworkRequested,
+                            tappedLogger);
 
                         using (testIsolationContext.BeginBatch(progressMonitor.SetStatus))
                         {
                             testDriver.Explore(testIsolationContext, testPackage, testExplorationOptions,
                                 listener, progressMonitor.CreateSubProgressMonitor(10));
                         }
+
+                        success = true;
                     }
+                    catch (Exception ex)
+                    {
+                        success = false;
 
-                    success = true;
-                }
-                catch (Exception ex)
-                {
-                    success = false;
-
-                    tappedLogger.Log(LogSeverity.Error,
-                        "A fatal exception occurred while exploring tests.  Possible causes include invalid test runner parameters.",
-                        ex);
-                    report.TestModel.Annotations.Add(new AnnotationData(AnnotationType.Error,
-                        CodeLocation.Unknown, CodeReference.Unknown, "A fatal exception occurred while exploring tests.  See log for details.", null));
+                        tappedLogger.Log(LogSeverity.Error,
+                            "A fatal exception occurred while exploring tests.  Possible causes include invalid test runner parameters.",
+                            ex);
+                        report.TestModel.Annotations.Add(new AnnotationData(AnnotationType.Error,
+                            CodeLocation.Unknown, CodeReference.Unknown,
+                            "A fatal exception occurred while exploring tests.  See log for details.", null));
+                    }
                 }
 
                 eventDispatcher.NotifyExploreFinished(new ExploreFinishedEventArgs(success, report));
@@ -299,35 +302,37 @@ namespace Gallio.Runner
                     testExecutionOptions, reportLockBox));
 
                 bool success;
-                try
+                using (Listener listener = new Listener(eventDispatcher, tappedLogger, reportLockBox))
                 {
-                    using (Listener listener = new Listener(eventDispatcher, tappedLogger, reportLockBox))
+                    try
                     {
-                        ITestDriver testDriver = testFrameworkManager.GetTestDriver(testPackage.IsFrameworkRequested, tappedLogger);
+                        ITestDriver testDriver = testFrameworkManager.GetTestDriver(testPackage.IsFrameworkRequested,
+                            tappedLogger);
 
                         using (testIsolationContext.BeginBatch(progressMonitor.SetStatus))
                         {
                             testDriver.Run(testIsolationContext, testPackage, testExplorationOptions,
                                 testExecutionOptions, listener, progressMonitor.CreateSubProgressMonitor(10));
                         }
+
+                        success = true;
                     }
+                    catch (Exception ex)
+                    {
+                        success = false;
 
-                    success = true;
-                }
-                catch (Exception ex)
-                {
-                    success = false;
-
-                    tappedLogger.Log(LogSeverity.Error,
-                        "A fatal exception occurred while running tests.  Possible causes include invalid test runner parameters and stack overflows.",
-                        ex);
-                    report.TestModel.Annotations.Add(new AnnotationData(AnnotationType.Error,
-                        CodeLocation.Unknown, CodeReference.Unknown, "A fatal exception occurred while running tests.  See log for details.", null));
-                }
-                finally
-                {
-                    report.TestPackageRun.EndTime = DateTime.Now;
-                    report.TestPackageRun.Statistics.Duration = stopwatch.Elapsed.TotalSeconds;
+                        tappedLogger.Log(LogSeverity.Error,
+                            "A fatal exception occurred while running tests.  Possible causes include invalid test runner parameters and stack overflows.",
+                            ex);
+                        report.TestModel.Annotations.Add(new AnnotationData(AnnotationType.Error,
+                            CodeLocation.Unknown, CodeReference.Unknown,
+                            "A fatal exception occurred while running tests.  See log for details.", null));
+                    }
+                    finally
+                    {
+                        report.TestPackageRun.EndTime = DateTime.Now;
+                        report.TestPackageRun.Statistics.Duration = stopwatch.Elapsed.TotalSeconds;
+                    }
                 }
 
                 eventDispatcher.NotifyRunFinished(new RunFinishedEventArgs(success, report));

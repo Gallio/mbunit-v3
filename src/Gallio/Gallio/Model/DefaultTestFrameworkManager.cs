@@ -176,10 +176,10 @@ namespace Gallio.Model
             {
                 messageSink.Publish(new AnnotationDiscoveredMessage()
                 {
-                    Annotation = new AnnotationData(AnnotationType.Error,
+                    Annotation = new AnnotationData(AnnotationType.Warning,
                         new CodeLocation(file.FullName, 0, 0),
                         CodeReference.Unknown,
-                        string.Format("File '{0}' is not supported by any installed test framework.", file.Name), null)
+                        string.Format("File '{0}' is not supported by any installed test framework.  It will be ignored.", file.Name), null)
                 });
             }
 
