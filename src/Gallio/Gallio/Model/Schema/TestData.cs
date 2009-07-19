@@ -18,10 +18,8 @@ using System.Collections.Generic;
 using System.Xml.Serialization;
 using Gallio.Common;
 using Gallio.Common.Collections;
+using Gallio.Common.Normalization;
 using Gallio.Common.Reflection;
-using Gallio.Common.Xml;
-using Gallio.Model;
-using Gallio.Model.Schema;
 using Gallio.Model.Tree;
 
 namespace Gallio.Model.Schema
@@ -33,7 +31,7 @@ namespace Gallio.Model.Schema
     [Serializable]
     [XmlRoot("test", Namespace = SchemaConstants.XmlNamespace)]
     [XmlType(Namespace = SchemaConstants.XmlNamespace)]
-    public sealed class TestData : TestComponentData
+    public sealed class TestData : TestComponentData, INormalizable<TestData>
     {
         private string fullName;
         private readonly List<TestData> children;
@@ -46,10 +44,11 @@ namespace Gallio.Model.Schema
         private TestData()
         {
             children = new List<TestData>();
+            parameters = new List<TestParameterData>();
         }
 
         /// <summary>
-        /// Creates a test info.
+        /// Creates a test data object.
         /// </summary>
         /// <param name="id">The component id.</param>
         /// <param name="name">The component name.</param>
@@ -57,15 +56,20 @@ namespace Gallio.Model.Schema
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="id"/>, <paramref name="name"/>,
         /// or <paramref name="fullName"/> is null.</exception>
         public TestData(string id, string name, string fullName)
+            : this(id, name, fullName, new List<TestData>(), new List<TestParameterData>())
+        {
+        }
+
+        private TestData(string id, string name, string fullName,
+            List<TestData> children, List<TestParameterData> parameters)
             : base(id, name)
         {
             if (fullName == null)
                 throw new ArgumentNullException(@"fullName");
 
             this.fullName = fullName;
-
-            children = new List<TestData>();
-            parameters = new List<TestParameterData>();
+            this.children = children;
+            this.parameters = parameters;
         }
 
         /// <summary>
@@ -191,6 +195,40 @@ namespace Gallio.Model.Schema
             Parameters.ForEach(x => test.AddParameter(x.ToTestParameter()));
             Children.ForEach(x => test.AddChild(x.ToTest()));
             return test;
+        }
+
+        /// <inheritdoc />
+        public TestData Normalize()
+        {
+            string normalizedId = ModelNormalizationUtils.NormalizeTestComponentId(Id);
+            string normalizedName = ModelNormalizationUtils.NormalizeTestComponentName(Name);
+            string normalizedFullName = ModelNormalizationUtils.NormalizeTestComponentName(fullName);
+            CodeLocation normalizedCodeLocation = CodeLocation.Normalize();
+            CodeReference normalizedCodeReference = CodeReference.Normalize();
+            PropertyBag normalizedMetadata = ModelNormalizationUtils.NormalizeMetadata(Metadata);
+            List<TestData> normalizedChildren = NormalizationUtils.NormalizeCollection<List<TestData>, TestData>(
+                children, () => new List<TestData>(), child => child.Normalize(), ReferenceEquals);
+            List<TestParameterData> normalizedParameters = NormalizationUtils.NormalizeCollection<List<TestParameterData>, TestParameterData>(
+                parameters, () => new List<TestParameterData>(), parameter => parameter.Normalize(), ReferenceEquals);
+
+            if (ReferenceEquals(Id, normalizedId)
+                && ReferenceEquals(Name, normalizedName)
+                && ReferenceEquals(fullName, normalizedFullName)
+                && CodeLocation == normalizedCodeLocation
+                && CodeReference == normalizedCodeReference
+                && ReferenceEquals(Metadata, normalizedMetadata)
+                && ReferenceEquals(children, normalizedChildren)
+                && ReferenceEquals(parameters, normalizedParameters))
+                return this;
+
+            return new TestData(normalizedId, normalizedName, normalizedFullName, normalizedChildren, normalizedParameters)
+            {
+                CodeElement = CodeElement,
+                CodeLocation = normalizedCodeLocation,
+                CodeReference = normalizedCodeReference,
+                Metadata = normalizedMetadata,
+                isTestCase = isTestCase
+            };
         }
     }
 }

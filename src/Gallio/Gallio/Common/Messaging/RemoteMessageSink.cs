@@ -47,6 +47,8 @@ namespace Gallio.Common.Messaging
             if (message == null)
                 throw new ArgumentNullException("message");
 
+            message.Validate();
+
             forwarder.Publish(message);
         }
 

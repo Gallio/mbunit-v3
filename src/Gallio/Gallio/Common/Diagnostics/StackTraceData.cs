@@ -17,6 +17,7 @@ using System;
 using System.Globalization;
 using System.Text.RegularExpressions;
 using Gallio.Common.Markup;
+using Gallio.Common.Normalization;
 using Gallio.Common.Reflection;
 
 namespace Gallio.Common.Diagnostics
@@ -25,7 +26,7 @@ namespace Gallio.Common.Diagnostics
     /// Describes a stack trace in a serializable form.
     /// </summary>
     [Serializable]
-    public sealed class StackTraceData : IMarkupStreamWritable
+    public sealed class StackTraceData : IMarkupStreamWritable, INormalizable<StackTraceData>
     {
         private static readonly Regex StackFrameRegex = new Regex(@"(?<prefix>\) in )(?<path>\S.*):line (?<line>[0-9]+)",
             RegexOptions.Multiline | RegexOptions.Compiled | RegexOptions.CultureInvariant);
@@ -55,7 +56,6 @@ namespace Gallio.Common.Diagnostics
             if (codeElement == null)
                 throw new ArgumentNullException("codeElement");
 
-
             var codeLocation = codeElement.GetCodeLocation();
             var codeReference = codeElement.CodeReference;
             this.stackTrace = String.Format("   at {0}\n   at {1}.{2}() in {3}:line {4}",
@@ -68,6 +68,17 @@ namespace Gallio.Common.Diagnostics
         public bool IsEmpty
         {
             get { return stackTrace.Length == 0; }
+        }
+
+        /// <inheritdoc />
+        public StackTraceData Normalize()
+        {
+            string normalizedStackTrace = NormalizationUtils.NormalizeXmlText(stackTrace);
+
+            if (ReferenceEquals(stackTrace, normalizedStackTrace))
+                return this;
+
+            return new StackTraceData(normalizedStackTrace);
         }
 
         /// <summary>

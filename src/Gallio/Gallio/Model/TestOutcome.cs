@@ -18,6 +18,7 @@ using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
 using Gallio.Common;
+using Gallio.Common.Normalization;
 using Gallio.Common.Xml;
 
 namespace Gallio.Model
@@ -37,7 +38,7 @@ namespace Gallio.Model
     [Serializable]
     [XmlRoot("outcome", Namespace = SchemaConstants.XmlNamespace)]
     [XmlSchemaProvider("ProvideXmlSchema")]
-    public struct TestOutcome : IXmlSerializable, IEquatable<TestOutcome>
+    public struct TestOutcome : IXmlSerializable, IEquatable<TestOutcome>, INormalizable<TestOutcome>
     {
         private TestStatus status;
         private string category;
@@ -146,6 +147,12 @@ namespace Gallio.Model
         public TestOutcome Generalize()
         {
             return new TestOutcome(status);
+        }
+
+        /// <inheritdoc />
+        public TestOutcome Normalize()
+        {
+            return new TestOutcome(status, NormalizationUtils.NormalizeXmlText(category));
         }
 
         /// <summary>

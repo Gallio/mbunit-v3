@@ -19,6 +19,7 @@ using System.Text;
 using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
+using Gallio.Common.Normalization;
 using Gallio.Common.Xml;
 using Gallio.Properties;
 
@@ -32,7 +33,7 @@ namespace Gallio.Common.Reflection
     [Serializable]
     [XmlRoot("codeReference", Namespace = SchemaConstants.XmlNamespace)]
     [XmlSchemaProvider("ProvideXmlSchema")]
-    public struct CodeReference : IEquatable<CodeReference>, IXmlSerializable
+    public struct CodeReference : IEquatable<CodeReference>, IXmlSerializable, INormalizable<CodeReference>
     {
         private string assemblyName;
         private string namespaceName;
@@ -237,6 +238,27 @@ namespace Gallio.Common.Reflection
 
             return new CodeReference(assembly.FullName, null, null, null, null);
         }
+
+        /// <inheritdoc />
+        public CodeReference Normalize()
+        {
+            string normalizedAssemblyName = NormalizationUtils.NormalizeName(assemblyName);
+            string normalizedNamespaceName = NormalizationUtils.NormalizeName(namespaceName);
+            string normalizedTypeName = NormalizationUtils.NormalizeName(typeName);
+            string normalizedMemberName = NormalizationUtils.NormalizeName(memberName);
+            string normalizedParameterName = NormalizationUtils.NormalizeName(parameterName);
+
+            if (ReferenceEquals(assemblyName, normalizedAssemblyName)
+                && ReferenceEquals(namespaceName, normalizedNamespaceName)
+                && ReferenceEquals(typeName, normalizedTypeName)
+                && ReferenceEquals(memberName, normalizedMemberName)
+                && ReferenceEquals(parameterName, normalizedParameterName))
+                return this;
+
+            return new CodeReference(normalizedAssemblyName, normalizedNamespaceName,
+                normalizedTypeName, normalizedMemberName, normalizedParameterName);
+        }
+
 
         #region Equality
         /// <summary>

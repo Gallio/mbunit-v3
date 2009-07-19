@@ -76,5 +76,20 @@ namespace Gallio.Common.Markup
         {
             return Name.GetHashCode() ^ ContentType.GetHashCode() ^ text.GetHashCode();
         }
+
+        /// <inheritdoc />
+        public override Attachment Normalize()
+        {
+            string normalizedName = MarkupNormalizationUtils.NormalizeAttachmentName(Name);
+            string normalizedContentType = MarkupNormalizationUtils.NormalizeContentType(ContentType);
+            string normalizedText = MarkupNormalizationUtils.NormalizeText(text);
+
+            if (ReferenceEquals(Name, normalizedName)
+                && ReferenceEquals(ContentType, normalizedContentType)
+                && ReferenceEquals(text, normalizedText))
+                return this;
+
+            return new TextAttachment(normalizedName, normalizedContentType, text);
+        }
     }
 }

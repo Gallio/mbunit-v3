@@ -16,14 +16,17 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Threading;
 using Gallio.Common.Collections;
 using Gallio.Common.Concurrency;
 using Gallio.Common.Messaging;
+using Gallio.Common.Normalization;
 using Gallio.Common.Policies;
 using Gallio.Model;
 using Gallio.Common.Diagnostics;
 using Gallio.Common.Markup;
 using Gallio.Model.Messages.Exploration;
+using Gallio.Model.Messages.Logging;
 using Gallio.Model.Schema;
 using Gallio.Common.Reflection;
 using Gallio.Runner.Events;
@@ -222,39 +225,36 @@ namespace Gallio.Runner
                 };
                 var reportLockBox = new LockBox<Report>(report);
 
-                using (new LogReporter(reportLockBox, eventDispatcher))
+                bool success;
+                eventDispatcher.NotifyExploreStarted(new ExploreStartedEventArgs(testPackage,
+                    testExplorationOptions, reportLockBox));
+                try
                 {
-                    bool success;
-                    eventDispatcher.NotifyExploreStarted(new ExploreStartedEventArgs(testPackage,
-                        testExplorationOptions, reportLockBox));
-                    try
+                    using (Listener listener = new Listener(eventDispatcher, tappedLogger, reportLockBox))
                     {
-                        using (Listener listener = new Listener(eventDispatcher, reportLockBox))
+                        ITestDriver testDriver = testFrameworkManager.GetTestDriver(testPackage.IsFrameworkRequested, tappedLogger);
+
+                        using (testIsolationContext.BeginBatch(progressMonitor.SetStatus))
                         {
-                            ITestDriver testDriver = testFrameworkManager.GetTestDriver(testPackage.IsFrameworkRequested, tappedLogger);
-
-                            using (testIsolationContext.BeginBatch(progressMonitor.SetStatus))
-                            {
-                                testDriver.Explore(testIsolationContext, testPackage, testExplorationOptions,
-                                    listener, progressMonitor.CreateSubProgressMonitor(10));
-                            }
+                            testDriver.Explore(testIsolationContext, testPackage, testExplorationOptions,
+                                listener, progressMonitor.CreateSubProgressMonitor(10));
                         }
-
-                        success = true;
-                    }
-                    catch (Exception ex)
-                    {
-                        success = false;
-
-                        tappedLogger.Log(LogSeverity.Error,
-                            "A fatal exception occurred while exploring tests.  Possible causes include invalid test runner parameters.",
-                            ex);
-                        report.TestModel.Annotations.Add(new AnnotationData(AnnotationType.Error,
-                            CodeLocation.Unknown, CodeReference.Unknown, "A fatal exception occurred while exploring tests.  See log for details.", null));
                     }
 
-                    eventDispatcher.NotifyExploreFinished(new ExploreFinishedEventArgs(success, report));
+                    success = true;
                 }
+                catch (Exception ex)
+                {
+                    success = false;
+
+                    tappedLogger.Log(LogSeverity.Error,
+                        "A fatal exception occurred while exploring tests.  Possible causes include invalid test runner parameters.",
+                        ex);
+                    report.TestModel.Annotations.Add(new AnnotationData(AnnotationType.Error,
+                        CodeLocation.Unknown, CodeReference.Unknown, "A fatal exception occurred while exploring tests.  See log for details.", null));
+                }
+
+                eventDispatcher.NotifyExploreFinished(new ExploreFinishedEventArgs(success, report));
 
                 return report;
             }
@@ -295,45 +295,42 @@ namespace Gallio.Runner
                 };
                 var reportLockBox = new LockBox<Report>(report);
 
-                using (new LogReporter(reportLockBox, eventDispatcher))
+                eventDispatcher.NotifyRunStarted(new RunStartedEventArgs(testPackage, testExplorationOptions,
+                    testExecutionOptions, reportLockBox));
+
+                bool success;
+                try
                 {
-                    eventDispatcher.NotifyRunStarted(new RunStartedEventArgs(testPackage, testExplorationOptions,
-                        testExecutionOptions, reportLockBox));
-
-                    bool success;
-                    try
+                    using (Listener listener = new Listener(eventDispatcher, tappedLogger, reportLockBox))
                     {
-                        using (Listener listener = new Listener(eventDispatcher, reportLockBox))
+                        ITestDriver testDriver = testFrameworkManager.GetTestDriver(testPackage.IsFrameworkRequested, tappedLogger);
+
+                        using (testIsolationContext.BeginBatch(progressMonitor.SetStatus))
                         {
-                            ITestDriver testDriver = testFrameworkManager.GetTestDriver(testPackage.IsFrameworkRequested, tappedLogger);
-
-                            using (testIsolationContext.BeginBatch(progressMonitor.SetStatus))
-                            {
-                                testDriver.Run(testIsolationContext, testPackage, testExplorationOptions,
-                                    testExecutionOptions, listener, progressMonitor.CreateSubProgressMonitor(10));
-                            }
+                            testDriver.Run(testIsolationContext, testPackage, testExplorationOptions,
+                                testExecutionOptions, listener, progressMonitor.CreateSubProgressMonitor(10));
                         }
-
-                        success = true;
-                    }
-                    catch (Exception ex)
-                    {
-                        success = false;
-
-                        tappedLogger.Log(LogSeverity.Error,
-                            "A fatal exception occurred while running tests.  Possible causes include invalid test runner parameters and stack overflows.",
-                            ex);
-                        report.TestModel.Annotations.Add(new AnnotationData(AnnotationType.Error,
-                            CodeLocation.Unknown, CodeReference.Unknown, "A fatal exception occurred while running tests.  See log for details.", null));
-                    }
-                    finally
-                    {
-                        report.TestPackageRun.EndTime = DateTime.Now;
-                        report.TestPackageRun.Statistics.Duration = stopwatch.Elapsed.TotalSeconds;
                     }
 
-                    eventDispatcher.NotifyRunFinished(new RunFinishedEventArgs(success, report));
+                    success = true;
                 }
+                catch (Exception ex)
+                {
+                    success = false;
+
+                    tappedLogger.Log(LogSeverity.Error,
+                        "A fatal exception occurred while running tests.  Possible causes include invalid test runner parameters and stack overflows.",
+                        ex);
+                    report.TestModel.Annotations.Add(new AnnotationData(AnnotationType.Error,
+                        CodeLocation.Unknown, CodeReference.Unknown, "A fatal exception occurred while running tests.  See log for details.", null));
+                }
+                finally
+                {
+                    report.TestPackageRun.EndTime = DateTime.Now;
+                    report.TestPackageRun.Statistics.Duration = stopwatch.Elapsed.TotalSeconds;
+                }
+
+                eventDispatcher.NotifyRunFinished(new RunFinishedEventArgs(success, report));
 
                 return report;
             }
@@ -379,14 +376,9 @@ namespace Gallio.Runner
             }
         }
 
-        private void OnLog(LogSeverity logSeverity, string message, ExceptionData exceptionData)
-        {
-            eventDispatcher.NotifyLogMessage(new LogMessageEventArgs(logSeverity, message, exceptionData));
-        }
-
         private void OnUnhandledException(object sender, CorrelatedExceptionEventArgs e)
         {
-            OnLog(LogSeverity.Error, e.GetDescription(), null);
+            tappedLogger.RecordLogMessage(LogSeverity.Error, e.GetDescription(), null);
         }
 
         private void ThrowIfDisposed()
@@ -398,6 +390,7 @@ namespace Gallio.Runner
         private sealed class Listener : IMessageSink, IDisposable
         {
             private readonly TestRunnerEventDispatcher eventDispatcher;
+            private readonly TappedLogger tappedLogger;
             private readonly LockBox<Report> reportBox;
             private readonly MessageConsumer consumer;
 
@@ -408,9 +401,10 @@ namespace Gallio.Runner
             private TestResult rootTestStepResult;
             private Stopwatch rootTestStepStopwatch;
 
-            public Listener(TestRunnerEventDispatcher eventDispatcher, LockBox<Report> reportBox)
+            public Listener(TestRunnerEventDispatcher eventDispatcher, TappedLogger tappedLogger, LockBox<Report> reportBox)
             {
                 this.eventDispatcher = eventDispatcher;
+                this.tappedLogger = tappedLogger;
                 this.reportBox = reportBox;
 
                 states = new Dictionary<string, TestStepState>();
@@ -434,7 +428,10 @@ namespace Gallio.Runner
                     .Handle<TestStepLogStreamEmbedMessage>(HandleTestStepLogStreamEmbedMessage)
                     .Handle<TestStepLogStreamBeginSectionBlockMessage>(HandleTestStepLogStreamBeginSectionBlockMessage)
                     .Handle<TestStepLogStreamBeginMarkerBlockMessage>(HandleTestStepLogStreamBeginMarkerBlockMessage)
-                    .Handle<TestStepLogStreamEndBlockMessage>(HandleTestStepLogStreamEndBlockMessage);
+                    .Handle<TestStepLogStreamEndBlockMessage>(HandleTestStepLogStreamEndBlockMessage)
+                    .Handle<LogEntrySubmittedMessage>(HandleLogEntrySubmittedMessage);
+
+                tappedLogger.SetListener(this);
             }
 
             public void Dispose()
@@ -445,18 +442,22 @@ namespace Gallio.Runner
 
                     states = null;
                 });
+
+                tappedLogger.SetListener(null);
             }
 
             public void Publish(Message message)
             {
                 message.Validate();
 
+                message = message.Normalize();
+
                 eventDispatcher.NotifyMessageReceived(new MessageReceivedEventArgs(message));
 
                 consumer.Consume(message);
             }
 
-            public void HandleTestDiscoveredMessage(TestDiscoveredMessage message)
+            private void HandleTestDiscoveredMessage(TestDiscoveredMessage message)
             {
                 reportBox.Write(report =>
                 {
@@ -469,7 +470,7 @@ namespace Gallio.Runner
                 });
             }
 
-            public void HandleAnnotationDiscoveredMessage(AnnotationDiscoveredMessage message)
+            private void HandleAnnotationDiscoveredMessage(AnnotationDiscoveredMessage message)
             {
                 reportBox.Write(report =>
                 {
@@ -482,7 +483,30 @@ namespace Gallio.Runner
                 });
             }
 
-            public void HandleTestStepStartedMessage(TestStepStartedMessage message)
+            private void HandleLogEntrySubmittedMessage(LogEntrySubmittedMessage message)
+            {
+                tappedLogger.Log(message.Severity, message.Message, message.ExceptionData);
+            }
+
+            public void RecordLogEntry(LogSeverity severity, string message, ExceptionData exceptionData)
+            {
+                reportBox.Write(report =>
+                {
+                    if (states == null)
+                        return; // ignore the message if the listener was disposed before it could be written
+
+                    report.AddLogEntry(new LogEntry()
+                    {
+                        Severity = severity,
+                        Message = message,
+                        Details = exceptionData != null ? exceptionData.ToString() : null
+                    });
+
+                    eventDispatcher.NotifyLogEntrySubmitted(new LogEntrySubmittedEventArgs(severity, message, exceptionData));
+                });
+            }
+
+            private void HandleTestStepStartedMessage(TestStepStartedMessage message)
             {
                 reportBox.Write(report =>
                 {
@@ -503,7 +527,7 @@ namespace Gallio.Runner
                 });
             }
 
-            public void HandleTestStepFinishedMessage(TestStepFinishedMessage message)
+            private void HandleTestStepFinishedMessage(TestStepFinishedMessage message)
             {
                 reportBox.Write(report =>
                 {
@@ -573,13 +597,13 @@ namespace Gallio.Runner
                 state.TestStepRun.Result = result;
                 report.TestPackageRun.Statistics.MergeStepStatistics(state.TestStepRun);
 
-                state.logWriter.Close();
+                state.LogWriter.Close();
 
                 eventDispatcher.NotifyTestStepFinished(
                     new TestStepFinishedEventArgs(report, state.TestData, state.TestStepRun));
             }
 
-            public void HandleTestStepLifecyclePhaseChangedMessage(TestStepLifecyclePhaseChangedMessage message)
+            private void HandleTestStepLifecyclePhaseChangedMessage(TestStepLifecyclePhaseChangedMessage message)
             {
                 reportBox.Write(report =>
                 {
@@ -593,7 +617,7 @@ namespace Gallio.Runner
                 });
             }
 
-            public void HandleTestStepMetadataAddedMessage(TestStepMetadataAddedMessage message)
+            private void HandleTestStepMetadataAddedMessage(TestStepMetadataAddedMessage message)
             {
                 reportBox.Write(report =>
                 {
@@ -608,7 +632,7 @@ namespace Gallio.Runner
                 });
             }
 
-            public void HandleTestStepLogAttachMessage(TestStepLogAttachMessage message)
+            private void HandleTestStepLogAttachMessage(TestStepLogAttachMessage message)
             {
                 reportBox.Write(report =>
                 {
@@ -616,14 +640,14 @@ namespace Gallio.Runner
 
                     string stepId = RedirectTestStepId(message.StepId);
                     TestStepState state = GetTestStepState(stepId);
-                    state.logWriter.Attach(message.Attachment);
+                    state.LogWriter.Attach(message.Attachment);
 
                     eventDispatcher.NotifyTestStepLogAttach(
                         new TestStepLogAttachEventArgs(report, state.TestData, state.TestStepRun, message.Attachment));
                 });
             }
 
-            public void HandleTestStepLogStreamWriteMessage(TestStepLogStreamWriteMessage message)
+            private void HandleTestStepLogStreamWriteMessage(TestStepLogStreamWriteMessage message)
             {
                 reportBox.Write(report =>
                 {
@@ -631,14 +655,14 @@ namespace Gallio.Runner
 
                     string stepId = RedirectTestStepId(message.StepId);
                     TestStepState state = GetTestStepState(stepId);
-                    state.logWriter[message.StreamName].Write(message.Text);
+                    state.LogWriter[message.StreamName].Write(message.Text);
 
                     eventDispatcher.NotifyTestStepLogStreamWrite(
                         new TestStepLogStreamWriteEventArgs(report, state.TestData, state.TestStepRun, message.StreamName, message.Text));
                 });
             }
 
-            public void HandleTestStepLogStreamEmbedMessage(TestStepLogStreamEmbedMessage message)
+            private void HandleTestStepLogStreamEmbedMessage(TestStepLogStreamEmbedMessage message)
             {
                 reportBox.Write(report =>
                 {
@@ -646,14 +670,14 @@ namespace Gallio.Runner
 
                     string stepId = RedirectTestStepId(message.StepId);
                     TestStepState state = GetTestStepState(stepId);
-                    state.logWriter[message.StreamName].EmbedExisting(message.AttachmentName);
+                    state.LogWriter[message.StreamName].EmbedExisting(message.AttachmentName);
 
                     eventDispatcher.NotifyTestStepLogStreamEmbed(
                         new TestStepLogStreamEmbedEventArgs(report, state.TestData, state.TestStepRun, message.StreamName, message.AttachmentName));
                 });
             }
 
-            public void HandleTestStepLogStreamBeginSectionBlockMessage(TestStepLogStreamBeginSectionBlockMessage message)
+            private void HandleTestStepLogStreamBeginSectionBlockMessage(TestStepLogStreamBeginSectionBlockMessage message)
             {
                 reportBox.Write(report =>
                 {
@@ -661,14 +685,14 @@ namespace Gallio.Runner
 
                     string stepId = RedirectTestStepId(message.StepId);
                     TestStepState state = GetTestStepState(stepId);
-                    state.logWriter[message.StreamName].BeginSection(message.SectionName);
+                    state.LogWriter[message.StreamName].BeginSection(message.SectionName);
 
                     eventDispatcher.NotifyTestStepLogStreamBeginSectionBlock(
                         new TestStepLogStreamBeginSectionBlockEventArgs(report, state.TestData, state.TestStepRun, message.StreamName, message.SectionName));
                 });
             }
 
-            public void HandleTestStepLogStreamBeginMarkerBlockMessage(TestStepLogStreamBeginMarkerBlockMessage message)
+            private void HandleTestStepLogStreamBeginMarkerBlockMessage(TestStepLogStreamBeginMarkerBlockMessage message)
             {
                 reportBox.Write(report =>
                 {
@@ -676,14 +700,14 @@ namespace Gallio.Runner
 
                     string stepId = RedirectTestStepId(message.StepId);
                     TestStepState state = GetTestStepState(stepId);
-                    state.logWriter[message.StreamName].BeginMarker(message.Marker);
+                    state.LogWriter[message.StreamName].BeginMarker(message.Marker);
 
                     eventDispatcher.NotifyTestStepLogStreamBeginMarkerBlock(
                         new TestStepLogStreamBeginMarkerBlockEventArgs(report, state.TestData, state.TestStepRun, message.StreamName, message.Marker));
                 });
             }
 
-            public void HandleTestStepLogStreamEndBlockMessage(TestStepLogStreamEndBlockMessage message)
+            private void HandleTestStepLogStreamEndBlockMessage(TestStepLogStreamEndBlockMessage message)
             {
                 reportBox.Write(report =>
                 {
@@ -691,7 +715,7 @@ namespace Gallio.Runner
 
                     string stepId = RedirectTestStepId(message.StepId);
                     TestStepState state = GetTestStepState(stepId);
-                    state.logWriter[message.StreamName].End();
+                    state.LogWriter[message.StreamName].End();
 
                     eventDispatcher.NotifyTestStepLogStreamEndBlock(
                         new TestStepLogStreamEndBlockEventArgs(report, state.TestData, state.TestStepRun, message.StreamName));
@@ -749,15 +773,15 @@ namespace Gallio.Runner
             {
                 public readonly TestData TestData;
                 public readonly TestStepRun TestStepRun;
-                public readonly StructuredDocumentWriter logWriter;
+                public readonly StructuredDocumentWriter LogWriter;
 
                 public TestStepState(TestData testData, TestStepRun testStepRun)
                 {
                     TestData = testData;
                     TestStepRun = testStepRun;
 
-                    logWriter = new StructuredDocumentWriter();
-                    testStepRun.TestLog = logWriter.Document;
+                    LogWriter = new StructuredDocumentWriter();
+                    testStepRun.TestLog = LogWriter.Document;
                 }
             }
         }
@@ -766,6 +790,7 @@ namespace Gallio.Runner
         {
             private readonly DefaultTestRunner runner;
             private readonly ILogger inner;
+            private volatile Listener listener;
 
             public TappedLogger(DefaultTestRunner runner, ILogger inner)
             {
@@ -773,39 +798,36 @@ namespace Gallio.Runner
                 this.inner = inner;
             }
 
+            public void SetListener(Listener listener)
+            {
+                this.listener = listener;
+            }
+
             protected override void LogImpl(LogSeverity severity, string message, ExceptionData exceptionData)
             {
-                inner.Log(severity, message, exceptionData);
-                runner.OnLog(severity, message, exceptionData);
-            }
-        }
-
-        private sealed class LogReporter : IDisposable
-        {
-            private readonly LockBox<Report> reportLockBox;
-            private readonly TestRunnerEventDispatcher eventDispatcher;
-
-            public LogReporter(LockBox<Report> reportLockBox, TestRunnerEventDispatcher eventDispatcher)
-            {
-                this.reportLockBox = reportLockBox;
-                this.eventDispatcher = eventDispatcher;
-
-                eventDispatcher.LogMessage += OnLog;
+                Handle(severity, message, exceptionData, true);
             }
 
-            public void Dispose()
+            public void RecordLogMessage(LogSeverity severity, string message, ExceptionData exceptionData)
             {
-                eventDispatcher.LogMessage -= OnLog;
+                Handle(severity, message, exceptionData, false);
             }
 
-            private void OnLog(object sender, LogMessageEventArgs e)
+            private void Handle(LogSeverity severity, string message, ExceptionData exceptionData, bool log)
             {
-                reportLockBox.Write(report => report.AddLogEntry(new LogEntry()
-                {
-                    Severity = e.Severity,
-                    Message = e.Message,
-                    Details = e.ExceptionData != null ? e.ExceptionData.ToString() : null
-                }));
+                message = NormalizationUtils.NormalizeXmlText(message);
+                if (exceptionData != null)
+                    exceptionData = exceptionData.Normalize();
+
+                if (log)
+                    inner.Log(severity, message, exceptionData);
+
+                // Note: We avoid taking any locks here because it would be too easy to end up
+                // in a deadlock between logging and reporting code.  Instead we compensate in
+                // the listener by dropping the log message if the listener has been disposed.
+                Listener currentListener = listener;
+                if (currentListener != null)
+                    listener.RecordLogEntry(severity, message, exceptionData);
             }
         }
     }

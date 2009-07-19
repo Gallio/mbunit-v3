@@ -18,6 +18,7 @@ using System.Globalization;
 using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
+using Gallio.Common.Normalization;
 using Gallio.Common.Xml;
 using System.Runtime.Serialization;
 
@@ -34,7 +35,7 @@ namespace Gallio.Common.Reflection
     [Serializable]
     [XmlRoot("codeLocation", Namespace = SchemaConstants.XmlNamespace)]
     [XmlSchemaProvider("ProvideXmlSchema")]
-    public struct CodeLocation : IEquatable<CodeLocation>, IXmlSerializable, ISerializable
+    public struct CodeLocation : IEquatable<CodeLocation>, IXmlSerializable, ISerializable, INormalizable<CodeLocation>
     {
         private string path;
         private int line;
@@ -112,6 +113,17 @@ namespace Gallio.Common.Reflection
             }
 
             return path ?? "(unknown)";
+        }
+
+        /// <inheritdoc />
+        public CodeLocation Normalize()
+        {
+            string normalizedPath = NormalizationUtils.NormalizeName(path);
+
+            if (ReferenceEquals(path, normalizedPath))
+                return this;
+
+            return new CodeLocation(normalizedPath, line, column);
         }
 
         #region Equality

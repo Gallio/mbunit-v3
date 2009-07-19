@@ -17,6 +17,7 @@ using System;
 using System.Text;
 using System.Xml.Serialization;
 using Gallio.Common;
+using Gallio.Common.Normalization;
 using Gallio.Common.Xml;
 using Gallio.Common.Reflection;
 using Gallio.Model.Tree;
@@ -31,7 +32,7 @@ namespace Gallio.Model.Schema
     [Serializable]
     [XmlRoot("annotation", Namespace = SchemaConstants.XmlNamespace)]
     [XmlType(Namespace = SchemaConstants.XmlNamespace)]
-    public sealed class AnnotationData
+    public sealed class AnnotationData : INormalizable<AnnotationData>
     {
         private AnnotationType type;
         private CodeLocation codeLocation;
@@ -242,6 +243,27 @@ namespace Gallio.Model.Schema
                 default:
                     throw new ArgumentException("type");
             }
+        }
+
+        /// <inheritdoc />
+        public AnnotationData Normalize()
+        {
+            CodeLocation normalizedCodeLocation = codeLocation.Normalize();
+            CodeReference normalizedCodeReference = codeReference.Normalize();
+            string normalizedMessage = ModelNormalizationUtils.NormalizeAnnotationText(message);
+            string normalizedDetails = ModelNormalizationUtils.NormalizeAnnotationText(details);
+
+            if (codeLocation == normalizedCodeLocation
+                && codeReference == normalizedCodeReference
+                && ReferenceEquals(message, normalizedMessage)
+                && ReferenceEquals(details, normalizedDetails))
+                return this;
+
+            return new AnnotationData(type, normalizedCodeLocation, normalizedCodeReference,
+                normalizedMessage, normalizedDetails)
+                {
+                    codeElement = codeElement
+                };
         }
     }
 }

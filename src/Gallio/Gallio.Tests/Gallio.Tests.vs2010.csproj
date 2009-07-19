@@ -98,6 +98,7 @@
     <Compile Include="Common\Messaging\TopicPatternTest.cs" />
     <Compile Include="Common\Messaging\TopicTest.cs" />
     <Compile Include="Common\MockableConditionContext.cs" />
+    <Compile Include="Common\Normalization\NormalizationUtilsTest.cs" />
     <Compile Include="Common\Policies\VersionPolicyTest.cs" />
     <Compile Include="Common\Policies\SpecialPathPolicyTest.cs" />
     <Compile Include="Common\Reflection\AssemblySignatureTest.cs" />
@@ -195,6 +196,7 @@
     <Compile Include="Framework\SilentTestExceptionTest.cs" />
     <Compile Include="Framework\TestFailedExceptionTest.cs" />
     <Compile Include="Framework\TestInconclusiveExceptionTest.cs" />
+    <Compile Include="Model\ModelNormalizationTest.cs" />
     <Compile Include="Model\Tree\TestTest.cs" />
     <Compile Include="Host\HostExceptionTest.cs" />
     <Compile Include="Model\Filters\FilterRuleTest.cs" />

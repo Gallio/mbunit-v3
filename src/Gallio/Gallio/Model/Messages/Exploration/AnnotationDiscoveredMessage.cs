@@ -14,9 +14,6 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
-using System.Text;
-using Gallio.Common.Reflection;
 using Gallio.Common.Validation;
 using Gallio.Model.Schema;
 using Gallio.Common.Messaging;
@@ -38,6 +35,20 @@ namespace Gallio.Model.Messages.Exploration
         public override void Validate()
         {
             ValidationUtils.ValidateNotNull("annotation", Annotation);
+        }
+
+        /// <inheritdoc />
+        public override Message Normalize()
+        {
+            AnnotationData normalizedAnnotation = Annotation.Normalize();
+
+            if (ReferenceEquals(Annotation, normalizedAnnotation))
+                return this;
+
+            return new AnnotationDiscoveredMessage()
+            {
+                Annotation = normalizedAnnotation
+            };
         }
     }
 }

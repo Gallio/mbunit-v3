@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Gallio.Common.Validation;
 
 namespace Gallio.Common.Messaging
 {
@@ -29,6 +30,7 @@ namespace Gallio.Common.Messaging
         /// </summary>
         /// <param name="message">The message.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="message"/> is null.</exception>
+        /// <exception cref="ValidationException">Thrown if <paramref name="message"/> is not valid.</exception>
         void Publish(Message message);
     }
 }

@@ -15,6 +15,7 @@
 
 using System;
 using Gallio.Common.Collections;
+using Gallio.Common.Normalization;
 
 namespace Gallio.Common.Markup
 {
@@ -54,6 +55,19 @@ namespace Gallio.Common.Markup
         public override AttachmentData ToAttachmentData()
         {
             return new AttachmentData(Name, ContentType, AttachmentEncoding.Base64, null, bytes);
+        }
+
+        /// <inheritdoc />
+        public override Attachment Normalize()
+        {
+            string normalizedName = MarkupNormalizationUtils.NormalizeAttachmentName(Name);
+            string normalizedContentType = MarkupNormalizationUtils.NormalizeContentType(ContentType);
+
+            if (ReferenceEquals(Name, normalizedName)
+                && ReferenceEquals(ContentType, normalizedContentType))
+                return this;
+
+            return new BinaryAttachment(normalizedName, normalizedContentType, bytes);
         }
 
         /// <inheritdoc />

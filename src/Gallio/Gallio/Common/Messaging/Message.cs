@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Xml.Serialization;
+using Gallio.Common.Normalization;
 using Gallio.Common.Validation;
 
 namespace Gallio.Common.Messaging
@@ -68,11 +69,17 @@ namespace Gallio.Common.Messaging
     /// <seealso cref="IValidatable"/>
     /// <seealso cref="ValidationUtils"/>
     [Serializable]
-    public class Message : IValidatable
+    public class Message : IValidatable, INormalizable<Message>
     {
         /// <inheritdoc />
         public virtual void Validate()
         {
+        }
+
+        /// <inheritdoc />
+        public virtual Message Normalize()
+        {
+            return this;
         }
     }
 }

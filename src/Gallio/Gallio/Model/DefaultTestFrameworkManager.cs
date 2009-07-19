@@ -179,7 +179,7 @@ namespace Gallio.Model
                     Annotation = new AnnotationData(AnnotationType.Error,
                         new CodeLocation(file.FullName, 0, 0),
                         CodeReference.Unknown,
-                        string.Format("File '{0}' is not supported by any registered framework.", file.Name), null)
+                        string.Format("File '{0}' is not supported by any installed test framework.", file.Name), null)
                 });
             }
 

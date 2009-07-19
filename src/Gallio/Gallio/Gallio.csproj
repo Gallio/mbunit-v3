@@ -69,6 +69,7 @@
     <Compile Include="Common\Accessor.cs" />
     <Compile Include="Common\Action.cs" />
     <Compile Include="Common\IO\ConsoleRedirection.cs" />
+    <Compile Include="Common\Markup\MarkupNormalizationUtils.cs" />
     <Compile Include="Common\Messaging\IMessageExchangeLink.cs" />
     <Compile Include="Common\Messaging\MessageConsumer.cs" />
     <Compile Include="Common\Messaging\NamespaceDoc.cs" />
@@ -145,6 +146,7 @@
     <Compile Include="Common\Messaging\Topic.cs" />
     <Compile Include="Common\Messaging\TopicPattern.cs" />
     <Compile Include="Common\NamespaceDoc.cs" />
+    <Compile Include="Common\Normalization\NamespaceDoc.cs" />
     <Compile Include="Common\Platform\NamespaceDoc.cs" />
     <Compile Include="Common\Policies\NamespaceDoc.cs" />
     <Compile Include="Common\Policies\SpecialPathPolicy.cs" />
@@ -195,7 +197,9 @@
     <Compile Include="Common\Time\Clock.cs" />
     <Compile Include="Common\Time\IClock.cs" />
     <Compile Include="Common\Time\NamespaceDoc.cs" />
+    <Compile Include="Common\Normalization\INormalizable.cs" />
     <Compile Include="Common\Validation\NamespaceDoc.cs" />
+    <Compile Include="Common\Normalization\NormalizationUtils.cs" />
     <Compile Include="Common\Xml\NamespaceDoc.cs" />
     <Compile Include="Framework\Assertions\NamespaceDoc.cs" />
     <Compile Include="Framework\Capture.cs" />
@@ -271,6 +275,7 @@
     <Compile Include="Model\Isolation\TestIsolationClient.cs" />
     <Compile Include="Model\Isolation\TestIsolationOptions.cs" />
     <Compile Include="Model\Isolation\TestIsolationServer.cs" />
+    <Compile Include="Model\ModelNormalizationUtils.cs" />
     <Compile Include="Model\Messages\TestModelSerializer.cs" />
     <Compile Include="Model\TestDriverFactory.cs" />
     <Compile Include="Model\Isolation\ITestIsolationContext.cs" />
@@ -631,7 +636,7 @@
     <Compile Include="Runtime\Hosting\ConfigurationFileLocation.cs" />
     <Compile Include="Runtime\Extensibility\IServiceLocator.cs" />
     <Compile Include="Runtime\Logging\DispatchLogger.cs" />
-    <Compile Include="Runtime\Logging\LogMessageEventArgs.cs" />
+    <Compile Include="Runtime\Logging\LogEntrySubmittedEventArgs.cs" />
     <Compile Include="Runner\TestRunnerOptions.cs" />
     <Compile Include="Runner\Events\TestRunnerEventDispatcher.cs" />
     <Compile Include="Runner\Events\TestStepEventArgs.cs" />
@@ -685,6 +690,7 @@
     </Compile>
     <Compile Include="Common\Messaging\Message.cs" />
     <Compile Include="Common\Messaging\MessagingException.cs" />
+    <Compile Include="Model\Messages\Logging\LogEntrySubmittedMessage.cs" />
     <Compile Include="Runtime\NamespaceDoc.cs" />
     <Compile Include="Runtime\Preferences\FilePreferenceManager.cs" />
     <Compile Include="Runtime\Preferences\FilePreferenceSet.cs" />

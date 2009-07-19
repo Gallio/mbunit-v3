@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Gallio.Common.Markup;
+using Gallio.Common.Normalization;
 using Gallio.Common.Validation;
 using Gallio.Model.Schema;
 using Gallio.Common.Messaging;
@@ -44,6 +45,23 @@ namespace Gallio.Model.Messages.Execution
         {
             ValidationUtils.ValidateNotNull("stepId", StepId);
             ValidationUtils.ValidateNotNull("attachment", Attachment);
+        }
+
+        /// <inheritdoc />
+        public override Message Normalize()
+        {
+            string normalizedStepId = ModelNormalizationUtils.NormalizeTestComponentId(StepId);
+            Attachment normalizedAttachment = Attachment.Normalize();
+
+            if (ReferenceEquals(StepId, normalizedStepId)
+                && ReferenceEquals(Attachment, normalizedAttachment))
+                return this;
+
+            return new TestStepLogAttachMessage()
+            {
+                StepId = normalizedStepId,
+                Attachment = normalizedAttachment
+            };
         }
     }
 }

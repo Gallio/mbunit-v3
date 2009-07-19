@@ -301,7 +301,7 @@ namespace Gallio.Runtime
         }
 
         /// <inheritdoc />
-        public event EventHandler<LogMessageEventArgs> LogMessage
+        public event EventHandler<LogEntrySubmittedEventArgs> LogMessage
         {
             add
             {

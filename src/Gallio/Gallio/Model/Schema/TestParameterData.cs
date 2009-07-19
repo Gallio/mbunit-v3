@@ -16,6 +16,9 @@
 using System;
 using System.Xml.Serialization;
 using Gallio.Common;
+using Gallio.Common.Collections;
+using Gallio.Common.Normalization;
+using Gallio.Common.Reflection;
 using Gallio.Model.Tree;
 
 namespace Gallio.Model.Schema
@@ -26,7 +29,7 @@ namespace Gallio.Model.Schema
     /// <seealso cref="TestParameter"/>
     [Serializable]
     [XmlType(Namespace=SchemaConstants.XmlNamespace)]
-    public sealed class TestParameterData : TestComponentData
+    public sealed class TestParameterData : TestComponentData, INormalizable<TestParameterData>
     {
         /// <summary>
         /// Creates an uninitialized instance for Xml deserialization.
@@ -77,6 +80,31 @@ namespace Gallio.Model.Schema
             testParameter.Metadata.Clear();
             testParameter.Metadata.AddAll(Metadata);
             return testParameter;
+        }
+
+        /// <inheritdoc />
+        public TestParameterData Normalize()
+        {
+            string normalizedId = ModelNormalizationUtils.NormalizeTestComponentId(Id);
+            string normalizedName = ModelNormalizationUtils.NormalizeTestComponentName(Name);
+            CodeLocation normalizedCodeLocation = CodeLocation.Normalize();
+            CodeReference normalizedCodeReference = CodeReference.Normalize();
+            PropertyBag normalizedMetadata = ModelNormalizationUtils.NormalizeMetadata(Metadata);
+
+            if (ReferenceEquals(Id, normalizedId)
+                && ReferenceEquals(Name, normalizedName)
+                && CodeLocation == normalizedCodeLocation
+                && CodeReference == normalizedCodeReference
+                && ReferenceEquals(Metadata, normalizedMetadata))
+                return this;
+
+            return new TestParameterData(normalizedId, normalizedName)
+            {
+                CodeElement = CodeElement,
+                CodeLocation = normalizedCodeLocation,
+                CodeReference = normalizedCodeReference,
+                Metadata = normalizedMetadata
+            };
         }
     }
 }

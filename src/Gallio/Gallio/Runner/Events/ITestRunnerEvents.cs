@@ -33,7 +33,7 @@ namespace Gallio.Runner.Events
         /// log messages as well.
         /// </para>
         /// </remarks>
-        event EventHandler<LogMessageEventArgs> LogMessage;
+        event EventHandler<LogEntrySubmittedEventArgs> LogEntrySubmitted;
 
         /// <summary>
         /// The event raised to indicate that a raw message was received by the test runner.

@@ -16,6 +16,9 @@
 using System;
 using System.Xml.Serialization;
 using Gallio.Common;
+using Gallio.Common.Collections;
+using Gallio.Common.Normalization;
+using Gallio.Common.Reflection;
 using Gallio.Model.Tree;
 
 namespace Gallio.Model.Schema
@@ -27,7 +30,7 @@ namespace Gallio.Model.Schema
     [Serializable]
     [XmlRoot("testStep", Namespace = SchemaConstants.XmlNamespace)]
     [XmlType(Namespace = SchemaConstants.XmlNamespace)]
-    public sealed class TestStepData : TestComponentData
+    public sealed class TestStepData : TestComponentData, INormalizable<TestStepData>
     {
         private string fullName;
         private string parentId;
@@ -185,6 +188,41 @@ namespace Gallio.Model.Schema
             testStep.Metadata.Clear();
             testStep.Metadata.AddAll(Metadata);
             return testStep;
+        }
+
+        /// <inheritdoc />
+        public TestStepData Normalize()
+        {
+            string normalizedId = ModelNormalizationUtils.NormalizeTestComponentId(Id);
+            string normalizedName = ModelNormalizationUtils.NormalizeTestComponentName(Name);
+            string normalizedFullName = ModelNormalizationUtils.NormalizeTestComponentName(fullName);
+            string normalizedParentId = ModelNormalizationUtils.NormalizeTestComponentId(parentId);
+            string normalizedTestId = ModelNormalizationUtils.NormalizeTestComponentId(testId);
+            CodeLocation normalizedCodeLocation = CodeLocation.Normalize();
+            CodeReference normalizedCodeReference = CodeReference.Normalize();
+            PropertyBag normalizedMetadata = ModelNormalizationUtils.NormalizeMetadata(Metadata);
+
+            if (ReferenceEquals(Id, normalizedId)
+                && ReferenceEquals(Name, normalizedName)
+                && ReferenceEquals(fullName, normalizedFullName)
+                && ReferenceEquals(parentId, normalizedParentId)
+                && ReferenceEquals(testId, normalizedTestId)
+                && CodeLocation == normalizedCodeLocation
+                && CodeReference == normalizedCodeReference
+                && ReferenceEquals(Metadata, normalizedMetadata))
+                return this;
+
+            return new TestStepData(normalizedId, normalizedName, normalizedFullName, normalizedTestId)
+            {
+                parentId = normalizedParentId,
+                CodeElement = CodeElement,
+                CodeLocation = normalizedCodeLocation,
+                CodeReference = normalizedCodeReference,
+                Metadata = normalizedMetadata,
+                isPrimary = isPrimary,
+                isTestCase = isTestCase,
+                isDynamic = isDynamic
+            };
         }
     }
 }

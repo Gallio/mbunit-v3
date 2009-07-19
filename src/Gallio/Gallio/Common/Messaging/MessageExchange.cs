@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 using Gallio.Common.Remoting;
+using Gallio.Common.Validation;
 
 namespace Gallio.Common.Messaging
 {
@@ -65,10 +66,12 @@ namespace Gallio.Common.Messaging
         /// </summary>
         /// <param name="message">The message to send.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="message"/> is null.</exception>
+        /// <exception cref="ValidationException">Thrown if <paramref name="message"/> is not valid.</exception>
         public void Publish(Message message)
         {
             if (message == null)
                 throw new ArgumentNullException("message");
+
             message.Validate();
 
             lock (receiveQueue)

@@ -20,6 +20,7 @@ using System.IO;
 using System.Xml.Serialization;
 using Gallio.Common;
 using Gallio.Common.Media;
+using Gallio.Common.Normalization;
 
 namespace Gallio.Common.Markup
 {
@@ -28,7 +29,7 @@ namespace Gallio.Common.Markup
     /// content type (a MIME type), and some contents.
     /// </summary>
     [Serializable]
-    public abstract class Attachment
+    public abstract class Attachment : INormalizable<Attachment>
     {
         private readonly string name;
         private readonly string contentType;
@@ -195,5 +196,8 @@ namespace Gallio.Common.Markup
                 return new TextAttachment(data.Name, data.ContentType, data.GetText());
             return new BinaryAttachment(data.Name, data.ContentType, data.GetBytes());
         }
+
+        /// <inheritdoc />
+        public abstract Attachment Normalize();
     }
 }

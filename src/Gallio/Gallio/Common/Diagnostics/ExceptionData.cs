@@ -16,6 +16,7 @@
 using System;
 using Gallio.Common;
 using Gallio.Common.Markup;
+using Gallio.Common.Normalization;
 
 namespace Gallio.Common.Diagnostics
 {
@@ -23,7 +24,7 @@ namespace Gallio.Common.Diagnostics
     /// Describes an exception in a serializable form.
     /// </summary>
     [Serializable]
-    public sealed class ExceptionData : IMarkupStreamWritable
+    public sealed class ExceptionData : IMarkupStreamWritable, INormalizable<ExceptionData>
     {
         private readonly string type;
         private readonly string message;
@@ -115,6 +116,23 @@ namespace Gallio.Common.Diagnostics
         public ExceptionData InnerException
         {
             get { return innerException; }
+        }
+
+        /// <inheritdoc />
+        public ExceptionData Normalize()
+        {
+            string normalizedType = NormalizationUtils.NormalizeName(type);
+            string normalizedMessage = NormalizationUtils.NormalizeXmlText(message);
+            StackTraceData normalizedStackTrace = stackTrace.Normalize();
+            ExceptionData normalizedInnerException = innerException != null ? innerException.Normalize() : null;
+
+            if (ReferenceEquals(type, normalizedType)
+                && ReferenceEquals(message, normalizedMessage)
+                && ReferenceEquals(stackTrace, normalizedStackTrace)
+                && ReferenceEquals(innerException, normalizedInnerException))
+                return this;
+
+            return new ExceptionData(normalizedType, normalizedMessage, normalizedStackTrace, normalizedInnerException);
         }
 
         /// <summary>

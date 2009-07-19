@@ -51,5 +51,25 @@ namespace Gallio.Model.Messages.Execution
             ValidationUtils.ValidateNotNull("metadataKey", MetadataKey);
             ValidationUtils.ValidateNotNull("metadataValue", MetadataValue);
         }
+
+        /// <inheritdoc />
+        public override Message Normalize()
+        {
+            string normalizedStepId = ModelNormalizationUtils.NormalizeTestComponentId(StepId);
+            string normalizedMetadataKey = ModelNormalizationUtils.NormalizeMetadataKey(MetadataKey);
+            string normalizedMetadataValue = ModelNormalizationUtils.NormalizeMetadataValue(MetadataValue);
+
+            if (ReferenceEquals(StepId, normalizedStepId)
+                && ReferenceEquals(MetadataKey, normalizedMetadataKey)
+                && ReferenceEquals(MetadataValue, normalizedMetadataValue))
+                return this;
+
+            return new TestStepMetadataAddedMessage()
+            {
+                StepId = normalizedStepId,
+                MetadataKey = normalizedMetadataKey,
+                MetadataValue = normalizedMetadataValue
+            };
+        }
     }
 }

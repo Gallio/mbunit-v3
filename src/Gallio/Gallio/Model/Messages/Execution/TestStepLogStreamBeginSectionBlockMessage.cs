@@ -51,5 +51,25 @@ namespace Gallio.Model.Messages.Execution
             ValidationUtils.ValidateNotNull("streamName", StreamName);
             ValidationUtils.ValidateNotNull("sectionName", SectionName);
         }
+
+        /// <inheritdoc />
+        public override Message Normalize()
+        {
+            string normalizedStepId = ModelNormalizationUtils.NormalizeTestComponentId(StepId);
+            string normalizedStreamName = MarkupNormalizationUtils.NormalizeStreamName(StreamName);
+            string normalizedSectionName = MarkupNormalizationUtils.NormalizeSectionName(SectionName);
+
+            if (ReferenceEquals(StepId, normalizedStepId)
+                && ReferenceEquals(StreamName, normalizedStreamName)
+                && ReferenceEquals(SectionName, normalizedSectionName))
+                return this;
+
+            return new TestStepLogStreamBeginSectionBlockMessage()
+            {
+                StepId = normalizedStepId,
+                SectionName = normalizedSectionName,
+                StreamName = normalizedStreamName
+            };
+        }
     }
 }

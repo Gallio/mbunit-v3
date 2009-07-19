@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using Gallio.Common.Validation;
 
 namespace Gallio.Common.Messaging
 {
@@ -61,10 +62,13 @@ namespace Gallio.Common.Messaging
         /// <param name="message">The message to consume.</param>
         /// <returns>True if the message was consumed by a handler, false if no handler could consume it.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="message"/> is null.</exception>
+        /// <exception cref="ValidationException">Thrown if <paramref name="message"/> is not valid.</exception>
         public bool Consume(Message message)
         {
             if (message == null)
                 throw new ArgumentNullException("message");
+
+            message.Validate();
 
             return handler != null && handler.Consume(message);
         }

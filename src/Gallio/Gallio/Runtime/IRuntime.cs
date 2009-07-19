@@ -88,7 +88,7 @@ namespace Gallio.Runtime
         /// <summary>
         /// An event that is fired when a log message is sent to the runtime logger.
         /// </summary>
-        event EventHandler<LogMessageEventArgs> LogMessage;
+        event EventHandler<LogEntrySubmittedEventArgs> LogMessage;
 
         /// <summary>
         /// Adds a log listener that will receive log messages dispatched to the runtime logger.

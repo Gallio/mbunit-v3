@@ -23,7 +23,7 @@ namespace Gallio.Runtime.Logging
     /// <summary>
     /// Event arguments for the <see cref="DispatchLogger"/>
     /// </summary>
-    public class LogMessageEventArgs : EventArgs
+    public class LogEntrySubmittedEventArgs : EventArgs
     {
         /// <summary>
         /// Creates a log event.
@@ -32,7 +32,7 @@ namespace Gallio.Runtime.Logging
         /// <param name="message">The log message.</param>
         /// <param name="exceptionData">The exception data, or null if none.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="message"/> is null.</exception>
-        public LogMessageEventArgs(LogSeverity severity, string message, ExceptionData exceptionData)
+        public LogEntrySubmittedEventArgs(LogSeverity severity, string message, ExceptionData exceptionData)
         {
             if (message == null)
                 throw new ArgumentNullException("message");

@@ -71,6 +71,8 @@ namespace Gallio.Common.Messaging
             if (message == null)
                 throw new ArgumentNullException("message");
 
+            message.Validate();
+
             lock (queue)
             {
                 queue.Enqueue(message);

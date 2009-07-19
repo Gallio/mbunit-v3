@@ -14,10 +14,8 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
-using System.Text;
+using Gallio.Common.Normalization;
 using Gallio.Common.Validation;
-using Gallio.Model.Schema;
 using Gallio.Common.Messaging;
 
 namespace Gallio.Model.Messages.Execution
@@ -44,6 +42,23 @@ namespace Gallio.Model.Messages.Execution
         {
             ValidationUtils.ValidateNotNull("stepId", StepId);
             ValidationUtils.ValidateNotNull("lifecyclePhase", LifecyclePhase);
+        }
+
+        /// <inheritdoc />
+        public override Message Normalize()
+        {
+            string normalizedStepId = ModelNormalizationUtils.NormalizeTestComponentId(StepId);
+            string normalizedLifecyclePhase = ModelNormalizationUtils.NormalizeLifecyclePhase(LifecyclePhase);
+
+            if (ReferenceEquals(StepId, normalizedStepId)
+                && ReferenceEquals(LifecyclePhase, normalizedLifecyclePhase))
+                return this;
+
+            return new TestStepLifecyclePhaseChangedMessage()
+            {
+                StepId = normalizedStepId,
+                LifecyclePhase = normalizedLifecyclePhase
+            };
         }
     }
 }

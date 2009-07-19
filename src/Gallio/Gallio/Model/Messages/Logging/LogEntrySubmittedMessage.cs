@@ -14,56 +14,56 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
-using System.Text;
-using Gallio.Common.Reflection;
+using Gallio.Common.Diagnostics;
 using Gallio.Common.Validation;
 using Gallio.Model.Schema;
 using Gallio.Common.Messaging;
+using Gallio.Runtime.Logging;
 
-namespace Gallio.Model.Messages.Execution
+namespace Gallio.Model.Messages.Logging
 {
     /// <summary>
-    /// Notifies that a test step has started execution and provides its definition.
+    /// Notifies that a diagnostic log message has been submitted.
     /// </summary>
     [Serializable]
-    public class TestStepStartedMessage : Message
+    public class LogEntrySubmittedMessage : Message
     {
-        [NonSerialized]
-        private ICodeElementInfo codeElement;
+        /// <summary>
+        /// Gets or sets the log severity.
+        /// </summary>
+        public LogSeverity Severity { get; set; }
 
         /// <summary>
-        /// Gets or sets information about the test step that is about to start, not null.
+        /// Gets or sets the log message.
         /// </summary>
-        public TestStepData Step { get; set; }
-        
+        public string Message { get; set; }
+
         /// <summary>
-        /// Gets or sets the code element associated with the test step, or null if none.
+        /// Gets or sets the exception, or null if none.
         /// </summary>
-        public ICodeElementInfo CodeElement
-        {
-            get { return codeElement; }
-            set { codeElement = value; }
-        }
+        public ExceptionData ExceptionData { get; set; }
 
         /// <inheritdoc />
         public override void Validate()
         {
-            ValidationUtils.ValidateNotNull("step", Step);
+            ValidationUtils.ValidateNotNull("message", Message);
         }
 
         /// <inheritdoc />
         public override Message Normalize()
         {
-            TestStepData normalizedStep = Step.Normalize();
+            string normalizedMessage = ModelNormalizationUtils.NormalizeLogMessage(Message);
+            ExceptionData normalizedExceptionData = ExceptionData != null ? ExceptionData.Normalize() : null;
 
-            if (ReferenceEquals(Step, normalizedStep))
+            if (ReferenceEquals(Message, normalizedMessage)
+                && ReferenceEquals(ExceptionData, normalizedExceptionData))
                 return this;
 
-            return new TestStepStartedMessage()
+            return new LogEntrySubmittedMessage()
             {
-                Step = normalizedStep,
-                CodeElement = codeElement
+                Severity = Severity,
+                Message = normalizedMessage,
+                ExceptionData = normalizedExceptionData
             };
         }
     }

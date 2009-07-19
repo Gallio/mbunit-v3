@@ -31,7 +31,7 @@ namespace Gallio.Runtime.Logging
         /// <summary>
         /// An event that is fired when a log message is received.
         /// </summary>
-        public event EventHandler<LogMessageEventArgs> LogMessage
+        public event EventHandler<LogEntrySubmittedEventArgs> LogMessage
         {
             add { dataBox.Write(data => data.LogMessage += value); }
             remove { dataBox.Write(data => data.LogMessage -= value); }
@@ -72,11 +72,11 @@ namespace Gallio.Runtime.Logging
         private sealed class Data
         {
             public readonly List<ILogger> Listeners = new List<ILogger>();
-            public event EventHandler<LogMessageEventArgs> LogMessage;
+            public event EventHandler<LogEntrySubmittedEventArgs> LogMessage;
 
             public void Dispatch(LogSeverity severity, string message, ExceptionData exceptionData)
             {
-                EventHandlerPolicy.SafeInvoke(LogMessage, this, new LogMessageEventArgs(severity, message, exceptionData));
+                EventHandlerPolicy.SafeInvoke(LogMessage, this, new LogEntrySubmittedEventArgs(severity, message, exceptionData));
 
                 foreach (ILogger logger in Listeners)
                 {

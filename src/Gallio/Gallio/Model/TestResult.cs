@@ -16,6 +16,7 @@
 using System;
 using System.Xml.Serialization;
 using Gallio.Common;
+using Gallio.Common.Normalization;
 using Gallio.Common.Xml;
 
 namespace Gallio.Model
@@ -25,7 +26,7 @@ namespace Gallio.Model
     /// </summary>
     [Serializable]
     [XmlType(Namespace=SchemaConstants.XmlNamespace)]
-    public sealed class TestResult
+    public sealed class TestResult : INormalizable<TestResult>
     {
         private TestOutcome outcome;
         private int assertCount;
@@ -99,6 +100,21 @@ namespace Gallio.Model
         public TestResult Copy()
         {
             return new TestResult(outcome)
+            {
+                assertCount = assertCount,
+                durationInSeconds = durationInSeconds
+            };
+        }
+
+        /// <inheritdoc />
+        public TestResult Normalize()
+        {
+            TestOutcome normalizedOutcome = outcome.Normalize();
+
+            if (normalizedOutcome == outcome)
+                return this;
+
+            return new TestResult(normalizedOutcome)
             {
                 assertCount = assertCount,
                 durationInSeconds = durationInSeconds

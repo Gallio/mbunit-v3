@@ -36,6 +36,10 @@ namespace Gallio.Common.Messaging
         /// <inheritdoc />
         public void Publish(Message message)
         {
+            if (message == null)
+                throw new ArgumentNullException("message");
+
+            message.Validate();
         }
     }
 }

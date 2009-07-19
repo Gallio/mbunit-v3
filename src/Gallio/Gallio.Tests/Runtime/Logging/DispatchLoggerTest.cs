@@ -46,7 +46,7 @@ namespace Gallio.Tests.Runtime.Logging
         [Test]
         public void Log_WhenEventHandlerRegistered_FiresEvent()
         {
-            LogMessageEventArgs receivedEvent = null;
+            LogEntrySubmittedEventArgs receivedEvent = null;
             DispatchLogger logger = new DispatchLogger();
             logger.LogMessage += (sender, e) => receivedEvent = e;
 

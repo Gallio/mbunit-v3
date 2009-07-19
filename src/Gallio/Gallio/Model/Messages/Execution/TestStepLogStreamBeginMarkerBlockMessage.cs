@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Gallio.Common.Markup;
+using Gallio.Common.Normalization;
 using Gallio.Common.Validation;
 using Gallio.Model.Schema;
 using Gallio.Common.Messaging;
@@ -49,6 +50,24 @@ namespace Gallio.Model.Messages.Execution
         {
             ValidationUtils.ValidateNotNull("stepId", StepId);
             ValidationUtils.ValidateNotNull("streamName", StreamName);
+        }
+
+        /// <inheritdoc />
+        public override Message Normalize()
+        {
+            string normalizedStepId = ModelNormalizationUtils.NormalizeTestComponentId(StepId);
+            string normalizedStreamName = MarkupNormalizationUtils.NormalizeStreamName(StreamName);
+
+            if (ReferenceEquals(StepId, normalizedStepId)
+                && ReferenceEquals(StreamName, normalizedStreamName))
+                return this;
+
+            return new TestStepLogStreamBeginMarkerBlockMessage()
+            {
+                StepId = normalizedStepId,
+                StreamName = normalizedStreamName,
+                Marker = Marker
+            };
         }
     }
 }

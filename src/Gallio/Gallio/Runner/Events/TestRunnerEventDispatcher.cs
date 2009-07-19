@@ -31,7 +31,7 @@ namespace Gallio.Runner.Events
     public sealed class TestRunnerEventDispatcher : ITestRunnerEvents
     {
         /// <inheritdoc/>
-        public event EventHandler<LogMessageEventArgs> LogMessage;
+        public event EventHandler<LogEntrySubmittedEventArgs> LogEntrySubmitted;
 
         /// <inheritdoc/>
         public event EventHandler<MessageReceivedEventArgs> MessageReceived;
@@ -97,12 +97,12 @@ namespace Gallio.Runner.Events
         public event EventHandler<TestStepLogStreamEndBlockEventArgs> TestStepLogStreamEndBlock;
 
         /// <summary>
-        /// Dispatches the <see cref="LogMessage" /> event.
+        /// Dispatches the <see cref="LogEntrySubmitted" /> event.
         /// </summary>
         /// <param name="e">The event arguments.</param>
-        public void NotifyLogMessage(LogMessageEventArgs e)
+        public void NotifyLogEntrySubmitted(LogEntrySubmittedEventArgs e)
         {
-            EventHandlerPolicy.SafeInvoke(LogMessage, this, e);
+            EventHandlerPolicy.SafeInvoke(LogEntrySubmitted, this, e);
         }
 
         /// <summary>
@@ -305,7 +305,7 @@ namespace Gallio.Runner.Events
             if (events == null)
                 throw new ArgumentNullException("events");
 
-            events.LogMessage += (sender, e) => NotifyLogMessage(e);
+            events.LogEntrySubmitted += (sender, e) => NotifyLogEntrySubmitted(e);
             events.MessageReceived += (sender, e) => NotifyMessageReceived(e);
             events.InitializeFinished += (sender, e) => NotifyInitializeFinished(e);
             events.InitializeStarted += (sender, e) => NotifyInitializeStarted(e);
