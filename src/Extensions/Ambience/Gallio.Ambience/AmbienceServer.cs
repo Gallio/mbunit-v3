@@ -22,9 +22,7 @@ using Db4objects.Db4o.Ext;
 namespace Gallio.Ambience
 {
     /// <summary>
-    /// <para>
     /// The Ambience server provides shared data to remote <see cref="AmbienceClient"/>s.
-    /// </para>
     /// </summary>
     public class AmbienceServer : IDisposable
     {
@@ -81,8 +79,12 @@ namespace Gallio.Ambience
 
         /// <summary>
         /// Stops the server.
-        /// Does nothing if the server has already been stopped.
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// Does nothing if the server has already been stopped.
+        /// </para>
+        /// </remarks>
         /// <exception cref="ObjectDisposedException">Thrown if the server has been disposed.</exception>
         public void Stop()
         {

@@ -36,7 +36,9 @@ namespace Gallio.AutoCAD.Plugin
         /// Creates an <c>AcadTestDriver</c> instance and registers it as a service.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// This command blocks on the calling thread until <c>Shutdown</c> is called.
+        /// </para>
         /// </remarks>
         [CommandMethod("CREATEENDPOINTANDWAIT")]
         public static void CreateEndPointAndWait()

@@ -25,8 +25,10 @@ namespace Gallio.AutoCAD.Commands
     /// Maps to the <c>CREATEENDPOINTANDWAIT</c> command.
     /// </summary>
     /// <remarks>
+    /// <para>
     /// The <c>CREATEENDPOINTANDWAIT</c> command is provided by the plugin assembly.
     /// If it is not loaded into AutoCAD this command will not be available.
+    /// </para>
     /// </remarks>
     internal class CreateEndpointAndWaitCommand : AcadCommand
     {

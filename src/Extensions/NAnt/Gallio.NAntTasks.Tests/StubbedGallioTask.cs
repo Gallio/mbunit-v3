@@ -25,16 +25,20 @@ namespace Gallio.NAntTasks.Tests
     /// Makes possible to unit test the <see cref="GallioTask" /> class.
     /// </summary>
     /// <remarks>
+    /// <para>
     /// The NAnt.Core.Task class is hard to unit test for a number of reasons. The
     /// main is that the Execute() method uses a Logger and a Project member. The
     /// Project property therefore must be assigned, but Project class itself
     /// requires a lot of stuff to be instantiated, and since it's a concrete class
     /// is hard to be mocked. This class therefore exposes the protected ExecuteTask
     /// method that don't use those properties.
+    /// </para>
+    /// <para>
     /// Also, for some reason the the Log method of the task will fail with a
     /// NullReference exception in the IsLogEnabledFor(Level messageLevel) method,
     /// so we need to avoid calling the instance Log methods directly and use a
     /// interface too.
+    /// </para>
     /// </remarks>
     internal class StubbedGallioTask : GallioTask
     {

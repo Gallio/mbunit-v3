@@ -40,19 +40,18 @@ namespace Gallio.NAntTasks
     /// A NAnt task that provides support for running Gallio tests.
     /// </summary>
     /// <remarks>
+    /// <para>
     /// In order for NAnt to find this task, either the Gallio.NAntTasks.dll assembly needs
     /// to be put in NAnt's bin folder, or it must be loaded with the loadtasks directive:
-    /// <code>
-    /// <![CDATA[
+    /// <code><![CDATA[
     ///    <loadtasks assembly="[pathtoassembly]\Gallio.NAntTasks.dll" />
-    /// ]]>
-    /// </code>
+    /// ]]></code>
+    /// </para>
     /// </remarks>
     /// <example>
     /// The following code is an example build file that shows how to load the task, specify the test files
     /// and assemblies and set some of the task's properties:
-    /// <code>
-    /// <![CDATA[
+    /// <code><![CDATA[
     ///    <?xml version="1.0" ?>
     ///    <project name="TestProject" default="RunTests">
     ///    <!-- This is needed by NAnt to locate the Gallio task -->
@@ -71,14 +70,11 @@ namespace Gallio.NAntTasks
     ///    </target>
     ///
     ///    </project>
-    /// ]]>
-    /// </code>
+    /// ]]></code>
     /// </example>
     [TaskName(@"gallio")]
     public class GallioTask : Task
     {
-        #region Private Members
-
         private FileSet[] files;
         private DirSet[] pluginDirectories;
         private DirSet[] hintDirectories;
@@ -107,18 +103,21 @@ namespace Gallio.NAntTasks
         private readonly ArgumentCollection runnerProperties = new ArgumentCollection();
         private readonly ArgumentCollection reportFormatterProperties = new ArgumentCollection();
 
-        #endregion
-
-        #region Public Properties
-
-        ///<summary>
-        /// The list of test files, projects and assemblies to execute. Wildcards may be used.
+        /// <summary>
+        /// The list of test files, projects and assemblies to execute. 
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// Wildcards may be used.
+        /// </para>
+        /// <para>
         /// This is required.
-        ///</summary>
-        ///<example>The following example shows how to specify the test files, projects and assemblies
-        ///(for a more complete example please see the <see cref="GallioTask"/> task documentation):
-        /// <code>
-        /// <![CDATA[
+        /// </para>
+        /// </remarks>
+        /// <example>
+        /// The following example shows how to specify the test files, projects and assemblies
+        /// (for a more complete example please see the <see cref="GallioTask"/> task documentation):
+        /// <code><![CDATA[
         /// <gallio>
         ///     <files>
         ///        <!-- Specify the tests files, projects and assemblies -->
@@ -128,8 +127,7 @@ namespace Gallio.NAntTasks
         ///        <include name="[Path-to-test-script2]/TestScript2.xml" />
         ///     </files>
         /// </gallio>
-        /// ]]>
-        /// </code>
+        /// ]]></code>
         /// </example>
         [BuildElementArray("files", Required = true, ElementType = typeof(FileSet))]
         public FileSet[] Files
@@ -140,17 +138,16 @@ namespace Gallio.NAntTasks
         /// <summary>
         /// The list of directories used for loading referenced assemblies and other dependent resources.
         /// </summary>
-        /// <example>The following example shows how to specify the hint directories:
-        /// <code>
-        /// <![CDATA[
+        /// <example>
+        /// The following example shows how to specify the hint directories:
+        /// <code><![CDATA[
         /// <gallio>
         ///     <hint-directories>
         ///         <include name="C:\SomeFolder\AnotherFolder" />
         ///         <include name="../somefolder" />
         ///     </hint-directories>
         /// </gallio>
-        /// ]]>
-        /// </code>
+        /// ]]></code>
         /// </example>
         [BuildElementArray("hint-directories", ElementType = typeof(DirSet))]
         public DirSet[] HintDirectories
@@ -161,17 +158,16 @@ namespace Gallio.NAntTasks
         /// <summary>
         /// Additional Gallio plugin directories to search recursively.
         /// </summary>
-        /// <example>The following example shows how to specify the plugins directories:
-        /// <code>
-        /// <![CDATA[
+        /// <example>
+        /// The following example shows how to specify the plugins directories:
+        /// <code><![CDATA[
         /// <gallio>
         ///     <plugin-directories>
         ///         <include name="C:\SomeFolder\AnotherFolder" />
         ///         <include name="../somefolder" />
         ///     </plugin-directories>
         /// </gallio>
-        /// ]]>
-        /// </code>
+        /// ]]></code>
         /// </example>
         [BuildElementArray("plugin-directories", ElementType = typeof(DirSet))]
         public DirSet[] PluginDirectories
@@ -180,10 +176,10 @@ namespace Gallio.NAntTasks
         }
 
         /// <summary>
-        /// <para>
         /// Gets or sets the relative or absolute path of the application base directory,
         /// or null to use a default value selected by the consumer.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// If relative, the path is based on the current working directory,
         /// so a value of "" causes the current working directory to be used.
@@ -191,7 +187,7 @@ namespace Gallio.NAntTasks
         /// <para>
         /// The default is null.
         /// </para>
-        /// </summary>
+        /// </remarks>
         [TaskAttribute("application-base-directory")]
         public string ApplicationBaseDirectory
         {
@@ -199,10 +195,10 @@ namespace Gallio.NAntTasks
         }
 
         /// <summary>
-        /// <para>
         /// Gets or sets the relative or absolute path of the working directory
         /// or null to use a default value selected by the consumer.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// If relative, the path is based on the current working directory,
         /// so a value of "" causes the current working directory to be used.
@@ -210,7 +206,7 @@ namespace Gallio.NAntTasks
         /// <para>
         /// The default is null.
         /// </para>
-        /// </summary>
+        /// </remarks>
         [TaskAttribute("working-directory")]
         public string WorkingDirectory
         {
@@ -218,9 +214,9 @@ namespace Gallio.NAntTasks
         }
 
         /// <summary>
-        /// <para>
         /// Enables shadow copying when set to true.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// Shadow copying allows the original assemblies to be modified while the tests are running.
         /// However, shadow copying may occasionally cause some tests to fail if they depend on their original location.
@@ -228,7 +224,7 @@ namespace Gallio.NAntTasks
         /// <para>
         /// The default is false.
         /// </para>
-        /// </summary>
+        /// </remarks>
         [TaskAttribute("shadow-copy")]
         public bool ShadowCopy
         {
@@ -236,13 +232,13 @@ namespace Gallio.NAntTasks
         }
 
         /// <summary>
-        /// <para>
         /// Attaches the debugger to the test process when set to true.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// The default is false.
         /// </para>
-        /// </summary>
+        /// </remarks>
         [TaskAttribute("debug")]
         public bool Debug
         {
@@ -250,16 +246,16 @@ namespace Gallio.NAntTasks
         }
 
         /// <summary>
-        /// <para>
         /// Gets or sets the version of the .Net runtime to use for running tests.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// For the CLR, this must be the name of one of the framework directories in %SystemRoot%\Microsoft.Net\Framework.  eg. 'v2.0.50727'.
         /// </para>
         /// <para>
         /// The default is null which uses the most recent installed and supported framework.
         /// </para>
-        /// </summary>
+        /// </remarks>
         [TaskAttribute("runtime-version")]
         public string RuntimeVersion
         {
@@ -278,13 +274,11 @@ namespace Gallio.NAntTasks
         /// </remarks>
         /// <example>
         /// In the following example reports will be generated in both HTML and XML format.
-        /// <code>
-        /// <![CDATA[
+        /// <code><![CDATA[
         /// <gallio report-types="html;xml">
         ///     <!-- More options -->
         /// </gallio>
-        /// ]]>
-        /// </code>
+        /// ]]></code>
         /// </example>
         [TaskAttribute("report-types")]
         public string ReportTypes
@@ -296,8 +290,10 @@ namespace Gallio.NAntTasks
         /// Sets the format string to use to generate the reports filenames.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// Any occurence of {0} will be replaced by the date, and any occurrence of {1} by the time.
         /// The default format string is test-report-{0}-{1}.
+        /// </para>
         /// </remarks>
         [TaskAttribute("report-name-format", Required = false)]
         public string ReportNameFormat
@@ -309,8 +305,10 @@ namespace Gallio.NAntTasks
         /// Sets the name of the directory where the reports will be put.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// The directory will be created if it doesn't exist. Existing files will be overwritten.
         /// The default report directory is "Reports".
+        /// </para>
         /// </remarks>
         [TaskAttribute("report-directory", Required = false)]
         public string ReportDirectory
@@ -345,25 +343,25 @@ namespace Gallio.NAntTasks
         }
 
         /// <summary>
-        /// <para>
         /// Specifies the type, assembly, and parameters of custom test runner
-        /// extensions to use during the test run in the form:
-        /// '[Namespace.]Type,Assembly[;Parameters]'.
+        /// extensions to use during the test run.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// The value must be in the form '[Namespace.]Type,Assembly[;Parameters]'.
         /// </para>
         /// <para>
         /// eg. 'FancyLogger,MyCustomExtensions.dll;SomeParameters'
         /// </para>
-        /// </summary>
+        /// </remarks>
         /// <example>
         /// The following example runs tests using a custom logger extension:
-        /// <code>
-        /// <![CDATA[
+        /// <code><![CDATA[
         /// <gallio>
         ///     <runner-extension value="FancyLogger,MyExtensions.dll;ColorOutput,FancyIndenting" />
         ///     <!-- More options -->
         /// </gallio>
-        /// ]]>
-        /// </code>
+        /// ]]></code>
         /// </example>
         [BuildElementArray("runner-extension")]
         public ArgumentCollection RunnerExtensions
@@ -376,14 +374,12 @@ namespace Gallio.NAntTasks
         /// </summary>
         /// <example>
         /// The following example specifies some extra NCover arguments.
-        /// <code>
-        /// <![CDATA[
+        /// <code><![CDATA[
         /// <gallio>
         ///     <runner-property value="NCoverArguments='//eas Gallio'" />
         ///     <!-- More options -->
         /// </gallio>
-        /// ]]>
-        /// </code>
+        /// ]]></code>
         /// </example>
         [BuildElementArray("runner-property")]
         public ArgumentCollection RunnerProperties
@@ -396,14 +392,12 @@ namespace Gallio.NAntTasks
         /// </summary>
         /// <example>
         /// The following example changes the default attachment content disposition for the reports.
-        /// <code>
-        /// <![CDATA[
+        /// <code><![CDATA[
         /// <gallio>
         ///     <report-formatter-property value="AttachmentContentDisposition=Absent" />
         ///     <!-- More options -->
         /// </gallio>
-        /// ]]>
-        /// </code>
+        /// ]]></code>
         /// </example>
         [BuildElementArray("report-formatter-property")]
         public ArgumentCollection ReportFormatterProperties
@@ -412,9 +406,14 @@ namespace Gallio.NAntTasks
         }
 
         /// <summary>
-        /// Sets whether to load the tests but not run them.  This option may be used to produce a
-        /// report that contains test metadata for consumption by other tools.
+        /// Sets whether to load the tests but not run them.
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// This option may be used to produce a
+        /// report that contains test metadata for consumption by other tools.
+        /// </para>
+        /// </remarks>
         [TaskAttribute("do-not-run", Required = false)]
         public bool DoNotRun
         {
@@ -422,12 +421,14 @@ namespace Gallio.NAntTasks
         }
 
         /// <summary>
-        /// <para>
         /// Sets whether to ignore annotations when determining the result code.
+        /// </summary>
+        /// <remarks>
+        /// <para>
         /// If false (default), then error annotations, usually indicative of broken tests, will cause
         /// a failure result to be generated.
         /// </para>
-        /// </summary>
+        /// </remarks>
         [TaskAttribute("ignore-annotations", Required = false)]
         public bool IgnoreAnnotations
         {
@@ -435,11 +436,15 @@ namespace Gallio.NAntTasks
         }
 
         /// <summary>
-        /// Sets whether to echo results to the screen as tests finish.  If this option is set
-        /// to true, the default, test results are echoed to the console
+        /// Sets whether to echo results to the screen as tests finish.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// If this option is set to true, the default, test results are echoed to the console
         /// in varying detail depending on the current verbosity level.  Otherwise
         /// only the final summary statistics are displayed.
-        /// </summary>
+        /// </para>
+        /// </remarks>
         [TaskAttribute("echo-results", Required = false)]
         public bool EchoResults
         {
@@ -448,8 +453,13 @@ namespace Gallio.NAntTasks
 
         /// <summary>
         /// Sets the maximum amount of time (in seconds) the tests can run 
-        /// before they are canceled. The default is an infinite time to run. 
+        /// before they are canceled.
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// The default is an infinite time to run. 
+        /// </para>
+        /// </remarks>
         [TaskAttribute("run-time-limit", Required = false)]
         public double RunTimeLimit
         {
@@ -461,19 +471,19 @@ namespace Gallio.NAntTasks
         /// should be stored.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// Only of interest if FailOnError is set to false.
+        /// </para>
         /// </remarks>
         /// <example>
-        /// <code>
-        /// <![CDATA[
+        /// <code><![CDATA[
         /// <target name="RunTests">
         ///     <gallio result-property="ExitCode" failonerror="false">
         ///         <!-- Include test assemblies -->
         ///     </gallio>
         ///     <fail if="${ExitCode != 0}" >The return code should have been 0!</fail>
         /// </target>
-        /// ]]>
-        /// </code>
+        /// ]]></code>
         /// </example>
         [TaskAttribute("result-property")]
         [StringValidator(AllowEmpty = false)]
@@ -486,6 +496,7 @@ namespace Gallio.NAntTasks
         /// Sets the prefix that will be used for the statistics result properties.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// The following properties are available:
         /// <list type="bullet">
         /// <item><term>AssertCount</term><description>Gets the number of assertions evaluated.</description></item>
@@ -497,10 +508,11 @@ namespace Gallio.NAntTasks
         /// <item><term>TestCount</term><description>Gets the total number of test cases.</description></item>
         /// <item><term>StepCount</term><description>Gets the total number of test steps.</description></item>
         /// </list>
+        /// </para>
         /// </remarks>
-        /// <example>The following example shows how to use the result-properties-prefix property :
-        /// <code>
-        /// <![CDATA[
+        /// <example>
+        /// The following example shows how to use the result-properties-prefix property:
+        /// <code><![CDATA[
         /// <target name="RunTests">
         ///     <gallio statistics-properties-prefix="gallio.">
         ///         <files>
@@ -516,8 +528,7 @@ namespace Gallio.NAntTasks
         ///     <echo message="TestCount = ${gallio.TestCount}" />
         ///     <echo message="StepCount = ${gallio.StepCount}" />
         /// </target>
-        /// ]]>
-        /// </code>
+        /// ]]></code>
         /// </example>
         [TaskAttribute("statistics-properties-prefix")]
         [StringValidator(AllowEmpty = false)]
@@ -542,28 +553,28 @@ namespace Gallio.NAntTasks
         }
 
         /// <summary>
-        /// Controls the level of information logged.  The default is "Normal".
+        /// Controls the level of information logged.
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// The default is "Normal".
+        /// </para>
+        /// </remarks>
         /// <example>
-        /// <code>
-        /// <![CDATA[
+        /// <code><![CDATA[
         /// <target name="RunTests">
         ///     <gallio verbosity="Quiet" failonerror="false">
         ///         <!-- Include test files -->
         ///     </gallio>
         ///     <fail if="${ExitCode != 0}" >The return code should have been 0!</fail>
         /// </target>
-        /// ]]>
-        /// </code>
+        /// ]]></code>
         /// </example>
         [TaskAttribute("verbosity")]
         public Verbosity Verbosity
         {
             set { verbosity = value; }
         }
-        #endregion
-
-        #region Public Methods
 
         /// <summary>
         /// Executes the task.
@@ -662,9 +673,6 @@ namespace Gallio.NAntTasks
             TaskLogger logger = new TaskLogger(this);
             return new FilteredLogger(logger, verbosity);
         }
-        #endregion
-
-        #region Private Methods
 
         /// <exclude />
         /// <summary>
@@ -755,7 +763,5 @@ namespace Gallio.NAntTasks
                 }
             }
         }
-
-        #endregion
     }
 }

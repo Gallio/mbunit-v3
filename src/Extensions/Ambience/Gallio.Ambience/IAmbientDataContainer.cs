@@ -18,10 +18,8 @@ using System;
 namespace Gallio.Ambience
 {
     /// <summary>
-    /// <para>
     /// Represents a container of Ambient data and providers operations to
     /// query, store and update its contents.
-    /// </para>
     /// </summary>
     public interface IAmbientDataContainer
     {
@@ -43,28 +41,27 @@ namespace Gallio.Ambience
         IAmbientDataSet<T> Query<T>(Predicate<T> predicate);
 
         /// <summary>
-        /// <para>
         /// Deletes the object from the container.
-        /// </para>
         /// </summary>
         /// <param name="obj">The object to delete.</param>
         /// <exception cref="AmbienceException">Thrown if the operation failed.</exception>
         void Delete(object obj);
 
         /// <summary>
-        /// <para>
         /// Stores or updates an object in the container.
-        /// </para>
         /// </summary>
         /// <param name="obj">The object to store.</param>
         /// <exception cref="AmbienceException">Thrown if the operation failed.</exception>
         void Store(object obj);
 
         /// <summary>
-        /// <para>
-        /// Deletes all objects in the container.  (Use with caution!)
-        /// </para>
+        /// Deletes all objects in the container.
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// Use with caution!
+        /// </para>
+        /// </remarks>
         /// <exception cref="AmbienceException">Thrown if the operation failed.</exception>
         void DeleteAll();
     }

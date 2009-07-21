@@ -471,11 +471,16 @@ namespace Gallio.MbUnit2Adapter.Model
             }
 
             /// <summary>
-            /// MbUnit's handling of Abort() isn't very robust.  It is susceptible to
+            /// Checks for requested cancelation.
+            /// </summary>
+            /// <remarks>
+            /// <para>
+            /// MbUnit's handling of Abort() isn't very robust. It is susceptible to
             /// race conditions in various placed.  For example, the fixture runner resets
             /// its AbortPending flag when Run is invoked.  It is possible that this
             /// will prevent the abort from succeeding if it happens too early.
-            /// </summary>
+            /// </para>
+            /// </remarks>
             private void CheckCanceled()
             {
                 if (progressMonitor.IsCanceled)

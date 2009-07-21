@@ -32,8 +32,12 @@ namespace Gallio.Navigator
         /// Opens up an editor for the specified path and line number.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// Lines and columns are numbered starting from 1.
+        /// </para>
+        /// <para>
         /// Zero indicates an unspecified value.
+        /// </para>
         /// </remarks>
         /// <param name="path">The path.</param>
         /// <param name="lineNumber">The line number, or 0 if unspecified.</param>

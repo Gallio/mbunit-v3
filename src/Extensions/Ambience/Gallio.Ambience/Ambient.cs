@@ -20,9 +20,11 @@ using Gallio.Ambience.Impl;
 namespace Gallio.Ambience
 {
     /// <summary>
+    /// The Ambient object store is a shared lightweight repository for intermediate test data.  
+    /// </summary>
+    /// <remarks>
     /// <para>
-    /// The Ambient object store is a shared lightweight repository for intermediate
-    /// test data.  It is like a persistent whiteboard used to pass information from one test
+    /// The Ambient object is like a persistent whiteboard used to pass information from one test
     /// to another or to store it for subsequent analysis.
     /// </para>
     /// <para>
@@ -32,7 +34,7 @@ namespace Gallio.Ambience
     /// databases (that are not wiped and restored each time) or time-sensitive processes
     /// such as asynchronous jobs.
     /// </para>
-    /// </summary>
+    /// </remarks>
     /// <example>
     /// <para>
     /// Suppose we are testing a periodic invoicing process.  The business requirement
@@ -84,9 +86,7 @@ namespace Gallio.Ambience
         private static AmbienceClientConfiguration defaultClientConfig;
 
         /// <summary>
-        /// <para>
         /// Gets the default ambient data container.
-        /// </para>
         /// </summary>
         /// <exception cref="AmbienceException">Thrown if the operation failed.</exception>
         public static IAmbientDataContainer Data
