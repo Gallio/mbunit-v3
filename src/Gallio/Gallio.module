@@ -52,6 +52,8 @@
     <Binary Include="Gallio.UI\bin\Gallio.UI.dll" />
     <Binary Include="Gallio.UI\bin\Gallio.UI.pdb" />
     <PluginFile Include="Gallio.UI\Gallio.UI.plugin" />
+    <Binary Include="libs\Aga.Controls.dll" />
+    <Binary Include="libs\WeifenLuo.WinFormsUI.Docking.dll" />
 
     <Binary Include="Gallio.ControlPanel\bin\Gallio.ControlPanel.exe" />
     <PluginFile Include="Gallio.ControlPanel\Gallio.ControlPanel.exe.config" />

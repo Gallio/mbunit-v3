@@ -25,6 +25,7 @@ using Gallio.Runtime.Extensibility;
 using MbUnit.Framework;
 using Rhino.Mocks;
 using System.Reflection;
+using Rhino.Mocks.Constraints;
 
 namespace Gallio.Tests.Runtime.Extensibility
 {
@@ -798,8 +799,8 @@ namespace Gallio.Tests.Runtime.Extensibility
                     PluginProperties = { { "Name", "Value" } }
                 });
 
-                handlerFactory.Expect(x => x.CreateHandler(registry.ServiceLocator, registry.ResourceLocator,
-                    typeof(IPlugin), typeof(DummyPlugin), new PropertySet() { { "Name", "Value" } }))
+                handlerFactory.Expect(x => x.CreateHandler(null, null, null, null))
+                    .Constraints(Is.NotNull(), Is.Equal(typeof(IPlugin)), Is.Equal(typeof(DummyPlugin)), Is.Equal(new PropertySet() { { "Name", "Value" } }))
                     .Throw(new Exception("Boom"));
 
                 var ex = Assert.Throws<RuntimeException>(() => plugin.ResolvePluginHandler());
@@ -819,14 +820,68 @@ namespace Gallio.Tests.Runtime.Extensibility
                 });
                 var handler = MockRepository.GenerateStub<IHandler>();
 
-                handlerFactory.Expect(x => x.CreateHandler(registry.ServiceLocator, registry.ResourceLocator,
-                    typeof(IPlugin), typeof(DummyPlugin), new PropertySet() { { "Name", "Value" } }))
+                handlerFactory.Expect(x => x.CreateHandler(null, null, null, null))
+                    .Constraints(Is.NotNull(), Is.Equal(typeof(IPlugin)), Is.Equal(typeof(DummyPlugin)), Is.Equal(new PropertySet() { { "Name", "Value" } }))
                     .Return(handler);
 
                 var result = plugin.ResolvePluginHandler();
 
                 Assert.AreSame(handler, result);
                 handlerFactory.VerifyAllExpectations();
+            }
+
+            [Test]
+            public void ResolvePluginHandler_WhenComponentHasDependencyOnTraits_OwnTraitsAreResolved()
+            {
+                var registry = new Registry();
+                var handlerFactory = MockRepository.GenerateMock<IHandlerFactory>();
+                var plugin = registry.RegisterPlugin(new PluginRegistration("pluginId", new TypeName(typeof(DummyPlugin)), new DirectoryInfo(@"C:\"))
+                {
+                    PluginHandlerFactory = handlerFactory,
+                    PluginProperties = { { "Name", "Value" } },
+                    TraitsProperties = { { "name", "pluginName" } }
+                });
+                var handler = MockRepository.GenerateStub<IHandler>();
+
+                handlerFactory.Expect(x => x.CreateHandler(null, null, null, null))
+                    .IgnoreArguments()
+                    .Return(handler);
+
+                plugin.ResolvePluginHandler();
+
+                var args = handlerFactory.GetArgumentsForCallsMadeOn(x => x.CreateHandler(null, null, null, null), x => x.IgnoreArguments());
+                var suppliedDependencyResolver = (IObjectDependencyResolver)args[0][0];
+
+                var dependencyResolution = suppliedDependencyResolver.ResolveDependency("traits", typeof(PluginTraits), null);
+                Assert.AreEqual(plugin.ResolveTraits(), dependencyResolution.Value);
+                dependencyResolution = suppliedDependencyResolver.ResolveDependency("traits", typeof(Traits), null);
+                Assert.AreEqual(plugin.ResolveTraits(), dependencyResolution.Value);
+            }
+
+            [Test]
+            public void ResolvePluginHandler_WhenComponentHasDependencyOnPluginDescriptor_OwnPluginDescriptorIsResolved()
+            {
+                var registry = new Registry();
+                var handlerFactory = MockRepository.GenerateMock<IHandlerFactory>();
+                var plugin = registry.RegisterPlugin(new PluginRegistration("pluginId", new TypeName(typeof(DummyPlugin)), new DirectoryInfo(@"C:\"))
+                {
+                    PluginHandlerFactory = handlerFactory,
+                    PluginProperties = { { "Name", "Value" } },
+                    TraitsProperties = { { "name", "pluginName" } }
+                });
+                var handler = MockRepository.GenerateStub<IHandler>();
+
+                handlerFactory.Expect(x => x.CreateHandler(null, null, null, null))
+                    .IgnoreArguments()
+                    .Return(handler);
+
+                plugin.ResolvePluginHandler();
+
+                var args = handlerFactory.GetArgumentsForCallsMadeOn(x => x.CreateHandler(null, null, null, null), x => x.IgnoreArguments());
+                var suppliedDependencyResolver = (IObjectDependencyResolver)args[0][0];
+
+                var dependencyResolution = suppliedDependencyResolver.ResolveDependency("descriptor", typeof(IPluginDescriptor), null);
+                Assert.AreSame(plugin, dependencyResolution.Value);
             }
 
             [Test]
@@ -839,8 +894,8 @@ namespace Gallio.Tests.Runtime.Extensibility
                     TraitsProperties = { { "Name", "Value" } }
                 });
 
-                handlerFactory.Expect(x => x.CreateHandler(registry.ServiceLocator, registry.ResourceLocator,
-                    typeof(PluginTraits), typeof(PluginTraits), new PropertySet() { { "Name", "Value" } }))
+                handlerFactory.Expect(x => x.CreateHandler(null, null, null, null))
+                    .Constraints(Is.NotNull(), Is.Equal(typeof(PluginTraits)), Is.Equal(typeof(PluginTraits)), Is.Equal(new PropertySet() { { "Name", "Value" } }))
                     .Throw(new Exception("Boom"));
 
                 PluginDescriptor.RunWithInjectedTraitsHandlerFactoryMock(handlerFactory, () =>
@@ -863,8 +918,8 @@ namespace Gallio.Tests.Runtime.Extensibility
                 });
                 var handler = MockRepository.GenerateStub<IHandler>();
 
-                handlerFactory.Expect(x => x.CreateHandler(registry.ServiceLocator, registry.ResourceLocator,
-                    typeof(PluginTraits), typeof(PluginTraits), new PropertySet() { { "Name", "Value" } }))
+                handlerFactory.Expect(x => x.CreateHandler(null, null, null, null))
+                    .Constraints(Is.NotNull(), Is.Equal(typeof(PluginTraits)), Is.Equal(typeof(PluginTraits)), Is.Equal(new PropertySet() { { "Name", "Value" } }))
                     .Return(handler);
 
                 PluginDescriptor.RunWithInjectedTraitsHandlerFactoryMock(handlerFactory, () =>
@@ -890,8 +945,8 @@ namespace Gallio.Tests.Runtime.Extensibility
                 var handler = MockRepository.GenerateMock<IHandler>();
                 var pluginInstance = new DummyPlugin();
 
-                handlerFactory.Expect(x => x.CreateHandler(registry.ServiceLocator, registry.ResourceLocator,
-                    typeof(IPlugin), typeof(DummyPlugin), new PropertySet() { { "Name", "Value" } }))
+                handlerFactory.Expect(x => x.CreateHandler(null, null, null, null))
+                    .Constraints(Is.NotNull(), Is.Equal(typeof(IPlugin)), Is.Equal(typeof(DummyPlugin)), Is.Equal(new PropertySet() { { "Name", "Value" } }))
                     .Return(handler);
                 handler.Expect(x => x.Activate()).Return(pluginInstance);
 
@@ -914,8 +969,8 @@ namespace Gallio.Tests.Runtime.Extensibility
                 });
                 var handler = MockRepository.GenerateMock<IHandler>();
 
-                handlerFactory.Expect(x => x.CreateHandler(registry.ServiceLocator, registry.ResourceLocator,
-                    typeof(IPlugin), typeof(DummyPlugin), new PropertySet() { { "Name", "Value" } }))
+                handlerFactory.Expect(x => x.CreateHandler(null, null, null, null))
+                    .Constraints(Is.NotNull(), Is.Equal(typeof(IPlugin)), Is.Equal(typeof(DummyPlugin)), Is.Equal(new PropertySet() { { "Name", "Value" } }))
                     .Return(handler);
                 handler.Expect(x => x.Activate()).Throw(new InvalidOperationException("Boom"));
 
@@ -937,8 +992,8 @@ namespace Gallio.Tests.Runtime.Extensibility
                 var handler = MockRepository.GenerateMock<IHandler>();
                 var traitsInstance = new PluginTraits("name");
 
-                handlerFactory.Expect(x => x.CreateHandler(registry.ServiceLocator, registry.ResourceLocator,
-                    typeof(PluginTraits), typeof(PluginTraits), new PropertySet() { { "Name", "Value" } }))
+                handlerFactory.Expect(x => x.CreateHandler(null, null, null, null))
+                    .Constraints(Is.NotNull(), Is.Equal(typeof(PluginTraits)), Is.Equal(typeof(PluginTraits)), Is.Equal(new PropertySet() { { "Name", "Value" } }))
                     .Return(handler);
                 handler.Expect(x => x.Activate()).Return(traitsInstance);
 
@@ -964,8 +1019,8 @@ namespace Gallio.Tests.Runtime.Extensibility
                 });
                 var handler = MockRepository.GenerateMock<IHandler>();
 
-                handlerFactory.Expect(x => x.CreateHandler(registry.ServiceLocator, registry.ResourceLocator,
-                    typeof(PluginTraits), typeof(PluginTraits), new PropertySet() { { "Name", "Value" } }))
+                handlerFactory.Expect(x => x.CreateHandler(null, null, null, null))
+                    .Constraints(Is.NotNull(), Is.Equal(typeof(PluginTraits)), Is.Equal(typeof(PluginTraits)), Is.Equal(new PropertySet() { { "Name", "Value" } }))
                     .Return(handler);
                 handler.Expect(x => x.Activate()).Throw(new InvalidOperationException("Boom"));
 
@@ -1055,7 +1110,7 @@ namespace Gallio.Tests.Runtime.Extensibility
         public class ComponentDescriptorResolution
         {
             [Test]
-            public void ResolveComponenType_WhenTypeIsInvalid_Throws()
+            public void ResolveComponentType_WhenTypeIsInvalid_Throws()
             {
                 var registry = new Registry();
                 var plugin = registry.RegisterPlugin(new PluginRegistration("pluginId", new TypeName("Plugin, Assembly"), new DirectoryInfo(@"C:\")));
@@ -1092,8 +1147,8 @@ namespace Gallio.Tests.Runtime.Extensibility
                     ComponentProperties = { { "Name", "Value" } }
                 });
 
-                handlerFactory.Expect(x => x.CreateHandler(registry.ServiceLocator, registry.ResourceLocator,
-                    typeof(DummyService), typeof(DummyComponent), new PropertySet() { { "Name", "Value" } }))
+                handlerFactory.Expect(x => x.CreateHandler(null, null, null, null))
+                    .Constraints(Is.NotNull(), Is.Equal(typeof(DummyService)), Is.Equal(typeof(DummyComponent)), Is.Equal(new PropertySet() { { "Name", "Value" } }))
                     .Throw(new Exception("Boom"));
 
                 var ex = Assert.Throws<RuntimeException>(() => component.ResolveComponentHandler());
@@ -1115,14 +1170,70 @@ namespace Gallio.Tests.Runtime.Extensibility
                 });
                 var handler = MockRepository.GenerateStub<IHandler>();
 
-                handlerFactory.Expect(x => x.CreateHandler(registry.ServiceLocator, registry.ResourceLocator,
-                    typeof(DummyService), typeof(DummyComponent), new PropertySet() { { "Name", "Value" } }))
+                handlerFactory.Expect(x => x.CreateHandler(null, null, null, null))
+                    .Constraints(Is.NotNull(), Is.Equal(typeof(DummyService)), Is.Equal(typeof(DummyComponent)), Is.Equal(new PropertySet() { { "Name", "Value" } }))
                     .Return(handler);
 
                 var result = component.ResolveComponentHandler();
 
                 Assert.AreSame(handler, result);
                 handlerFactory.VerifyAllExpectations();
+            }
+
+            [Test]
+            public void ResolveComponentHandler_WhenComponentHasDependencyOnTraits_OwnTraitsAreResolved()
+            {
+                var registry = new Registry();
+                var plugin = registry.RegisterPlugin(new PluginRegistration("pluginId", new TypeName("Plugin, Assembly"), new DirectoryInfo(@"C:\")));
+                var service = registry.RegisterService(new ServiceRegistration(plugin, "serviceId", new TypeName(typeof(DummyServiceWithTraits))));
+                var handlerFactory = MockRepository.GenerateMock<IHandlerFactory>();
+                var component = registry.RegisterComponent(new ComponentRegistration(plugin, service, "componentId", new TypeName(typeof(DummyComponentWithTraits)))
+                {
+                    ComponentHandlerFactory = handlerFactory,
+                    ComponentProperties = { { "Name", "Value" } }
+                });
+                var handler = MockRepository.GenerateStub<IHandler>();
+
+                handlerFactory.Expect(x => x.CreateHandler(null, null, null, null))
+                    .IgnoreArguments()
+                    .Return(handler);
+
+                component.ResolveComponentHandler();
+
+                var args = handlerFactory.GetArgumentsForCallsMadeOn(x => x.CreateHandler(null, null, null, null), x => x.IgnoreArguments());
+                var suppliedDependencyResolver = (IObjectDependencyResolver) args[0][0];
+
+                var dependencyResolution = suppliedDependencyResolver.ResolveDependency("traits", typeof(DummyTraits), null);
+                Assert.AreEqual(component.ResolveTraits(), dependencyResolution.Value);
+                dependencyResolution = suppliedDependencyResolver.ResolveDependency("traits", typeof(Traits), null);
+                Assert.AreEqual(component.ResolveTraits(), dependencyResolution.Value);
+            }
+
+            [Test]
+            public void ResolveComponentHandler_WhenComponentHasDependencyOnComponentDescriptor_OwnComponentDescriptorIsResolved()
+            {
+                var registry = new Registry();
+                var plugin = registry.RegisterPlugin(new PluginRegistration("pluginId", new TypeName("Plugin, Assembly"), new DirectoryInfo(@"C:\")));
+                var service = registry.RegisterService(new ServiceRegistration(plugin, "serviceId", new TypeName(typeof(DummyServiceWithTraits))));
+                var handlerFactory = MockRepository.GenerateMock<IHandlerFactory>();
+                var component = registry.RegisterComponent(new ComponentRegistration(plugin, service, "componentId", new TypeName(typeof(DummyComponentWithTraits)))
+                {
+                    ComponentHandlerFactory = handlerFactory,
+                    ComponentProperties = { { "Name", "Value" } }
+                });
+                var handler = MockRepository.GenerateStub<IHandler>();
+
+                handlerFactory.Expect(x => x.CreateHandler(null, null, null, null))
+                    .IgnoreArguments()
+                    .Return(handler);
+
+                component.ResolveComponentHandler();
+
+                var args = handlerFactory.GetArgumentsForCallsMadeOn(x => x.CreateHandler(null, null, null, null), x => x.IgnoreArguments());
+                var suppliedDependencyResolver = (IObjectDependencyResolver)args[0][0];
+
+                var dependencyResolution = suppliedDependencyResolver.ResolveDependency("descriptor", typeof(IComponentDescriptor), null);
+                Assert.AreSame(component, dependencyResolution.Value);
             }
 
             [Test]
@@ -1140,8 +1251,8 @@ namespace Gallio.Tests.Runtime.Extensibility
                     TraitsProperties = { { "Name", "Value" } }
                 });
 
-                handlerFactory.Expect(x => x.CreateHandler(registry.ServiceLocator, registry.ResourceLocator,
-                    typeof(Traits), typeof(DummyTraits), new PropertySet() { { "Name", "Value" } }))
+                handlerFactory.Expect(x => x.CreateHandler(null, null, null, null))
+                    .Constraints(Is.NotNull(), Is.Equal(typeof(Traits)), Is.Equal(typeof(DummyTraits)), Is.Equal(new PropertySet() { { "Name", "Value" } }))
                     .Throw(new Exception("Boom"));
 
                 var ex = Assert.Throws<RuntimeException>(() => component.ResolveTraitsHandler());
@@ -1165,8 +1276,8 @@ namespace Gallio.Tests.Runtime.Extensibility
                 });
                 var handler = MockRepository.GenerateStub<IHandler>();
 
-                handlerFactory.Expect(x => x.CreateHandler(registry.ServiceLocator, registry.ResourceLocator,
-                    typeof(Traits), typeof(DummyTraits), new PropertySet() { { "Name", "Value" } }))
+                handlerFactory.Expect(x => x.CreateHandler(null, null, null, null))
+                    .Constraints(Is.NotNull(), Is.Equal(typeof(Traits)), Is.Equal(typeof(DummyTraits)), Is.Equal(new PropertySet() { { "Name", "Value" } }))
                     .Return(handler);
 
                 var result = component.ResolveTraitsHandler();
@@ -1190,8 +1301,8 @@ namespace Gallio.Tests.Runtime.Extensibility
                 var handler = MockRepository.GenerateMock<IHandler>();
                 var componentInstance = new DummyComponent();
 
-                handlerFactory.Expect(x => x.CreateHandler(registry.ServiceLocator, registry.ResourceLocator,
-                    typeof(DummyService), typeof(DummyComponent), new PropertySet() { { "Name", "Value" } }))
+                handlerFactory.Expect(x => x.CreateHandler(null, null, null, null))
+                    .Constraints(Is.NotNull(), Is.Equal(typeof(DummyService)), Is.Equal(typeof(DummyComponent)), Is.Equal(new PropertySet() { { "Name", "Value" } }))
                     .Return(handler);
                 handler.Expect(x => x.Activate()).Return(componentInstance);
 
@@ -1216,8 +1327,8 @@ namespace Gallio.Tests.Runtime.Extensibility
                 });
                 var handler = MockRepository.GenerateMock<IHandler>();
 
-                handlerFactory.Expect(x => x.CreateHandler(registry.ServiceLocator, registry.ResourceLocator,
-                    typeof(DummyService), typeof(DummyComponent), new PropertySet() { { "Name", "Value" } }))
+                handlerFactory.Expect(x => x.CreateHandler(null, null, null, null))
+                    .Constraints(Is.NotNull(), Is.Equal(typeof(DummyService)), Is.Equal(typeof(DummyComponent)), Is.Equal(new PropertySet() { { "Name", "Value" } }))
                     .Return(handler);
                 handler.Expect(x => x.Activate()).Throw(new InvalidOperationException("Boom"));
 
@@ -1244,8 +1355,8 @@ namespace Gallio.Tests.Runtime.Extensibility
                 var handler = MockRepository.GenerateMock<IHandler>();
                 var traitsInstance = new DummyTraits();
 
-                handlerFactory.Expect(x => x.CreateHandler(registry.ServiceLocator, registry.ResourceLocator,
-                    typeof(Traits), typeof(DummyTraits), new PropertySet() { { "Name", "Value" } }))
+                handlerFactory.Expect(x => x.CreateHandler(null, null, null, null))
+                    .Constraints(Is.NotNull(), Is.Equal(typeof(Traits)), Is.Equal(typeof(DummyTraits)), Is.Equal(new PropertySet() { { "Name", "Value" } }))
                     .Return(handler);
                 handler.Expect(x => x.Activate()).Return(traitsInstance);
 
@@ -1272,8 +1383,8 @@ namespace Gallio.Tests.Runtime.Extensibility
                 });
                 var handler = MockRepository.GenerateMock<IHandler>();
 
-                handlerFactory.Expect(x => x.CreateHandler(registry.ServiceLocator, registry.ResourceLocator,
-                    typeof(Traits), typeof(DummyTraits), new PropertySet() { { "Name", "Value" } }))
+                handlerFactory.Expect(x => x.CreateHandler(null, null, null, null))
+                    .Constraints(Is.NotNull(), Is.Equal(typeof(Traits)), Is.Equal(typeof(DummyTraits)), Is.Equal(new PropertySet() { { "Name", "Value" } }))
                     .Return(handler);
                 handler.Expect(x => x.Activate()).Throw(new InvalidOperationException("Boom"));
 
@@ -1556,7 +1667,7 @@ namespace Gallio.Tests.Runtime.Extensibility
         {
         }
 
-        private class DummyComponent2 : DummyService
+        private class DummyComponentWithTraits : DummyServiceWithTraits
         {
         }
 

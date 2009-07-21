@@ -39,12 +39,11 @@ namespace Gallio.Tests.Runtime.Extensibility
         {
             string instance = "";
             var instanceHandlerFactory = new InstanceHandlerFactory(instance);
-            var serviceLocator = MockRepository.GenerateStub<IServiceLocator>();
-            var resourceLocator = MockRepository.GenerateStub<IResourceLocator>();
+            var dependencyResolver = MockRepository.GenerateStub<IObjectDependencyResolver>();
             var contractType = typeof(int); // not a string as the instance is
             var objectType = typeof(int);
 
-            var ex = Assert.Throws<RuntimeException>(() => instanceHandlerFactory.CreateHandler(serviceLocator, resourceLocator,
+            var ex = Assert.Throws<RuntimeException>(() => instanceHandlerFactory.CreateHandler(dependencyResolver,
                 contractType, objectType, new PropertySet()));
             Assert.AreEqual("Could not satisfy contract of type 'System.Int32' using pre-manufactured instance of type 'System.String'.", ex.Message);
         }
@@ -54,12 +53,11 @@ namespace Gallio.Tests.Runtime.Extensibility
         {
             string instance = "";
             var instanceHandlerFactory = new InstanceHandlerFactory(instance);
-            var serviceLocator = MockRepository.GenerateStub<IServiceLocator>();
-            var resourceLocator = MockRepository.GenerateStub<IResourceLocator>();
+            var dependencyResolver = MockRepository.GenerateStub<IObjectDependencyResolver>();
             var contractType = typeof(string);
             var objectType = typeof(string);
 
-            IHandler handler = instanceHandlerFactory.CreateHandler(serviceLocator, resourceLocator,
+            IHandler handler = instanceHandlerFactory.CreateHandler(dependencyResolver,
                 contractType, objectType, new PropertySet());
 
             Assert.AreSame(instance, handler.Activate());

@@ -131,7 +131,7 @@ namespace Gallio.Runtime.Extensibility
                     {
                         if (componentHandler == null)
                             componentHandler = componentHandlerFactory.CreateHandler(
-                                registry.ServiceLocator, registry.ResourceLocator,
+                                new ComponentDependencyResolver(this),
                                 contractType, objectType, componentProperties);
                     });
                 }
@@ -168,7 +168,7 @@ namespace Gallio.Runtime.Extensibility
                     {
                         if (traitsHandler == null)
                             traitsHandler = serviceDescriptor.TraitsHandlerFactory.CreateHandler(
-                                registry.ServiceLocator, registry.ResourceLocator,
+                                new DefaultObjectDependencyResolver(registry.ServiceLocator, registry.ResourceLocator),
                                 contractType, objectType, traitsProperties);
                     });
                 }
@@ -190,6 +190,32 @@ namespace Gallio.Runtime.Extensibility
             catch (Exception ex)
             {
                 throw new RuntimeException(string.Format("Could not resolve traits of component '{0}'.", componentId), ex);
+            }
+        }
+
+        private sealed class ComponentDependencyResolver : DefaultObjectDependencyResolver
+        {
+            private readonly ComponentDescriptor descriptor;
+
+            public ComponentDependencyResolver(ComponentDescriptor descriptor)
+                : base(descriptor.registry.ServiceLocator, descriptor.registry.ResourceLocator)
+            {
+                this.descriptor = descriptor;
+            }
+
+            public override DependencyResolution ResolveDependency(string parameterName, Type parameterType, string configurationArgument)
+            {
+                if (configurationArgument == null)
+                {
+                    if (typeof (Traits).IsAssignableFrom(parameterType) // check we want traits (fast, do this first)
+                        && parameterType.IsAssignableFrom(descriptor.serviceDescriptor.ResolveTraitsType())) // confirm we can handle the traits (slow)
+                        return DependencyResolution.Satisfied(descriptor.ResolveTraits());
+
+                    if (parameterType == typeof (IComponentDescriptor))
+                        return DependencyResolution.Satisfied(descriptor);
+                }
+
+                return base.ResolveDependency(parameterName, parameterType, configurationArgument);
             }
         }
     }

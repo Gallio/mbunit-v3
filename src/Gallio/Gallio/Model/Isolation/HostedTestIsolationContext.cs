@@ -16,6 +16,7 @@
 using System;
 using Gallio.Common.Collections;
 using Gallio.Common.Policies;
+using Gallio.Common.Remoting;
 using Gallio.Runtime;
 using Gallio.Runtime.Hosting;
 using Gallio.Runtime.Logging;
@@ -121,7 +122,7 @@ namespace Gallio.Model.Isolation
             }
         }
 
-        private sealed class Shim : MarshalByRefObject
+        private sealed class Shim : LongLivedMarshalByRefObject
         {
             private bool initializedRuntime;
 

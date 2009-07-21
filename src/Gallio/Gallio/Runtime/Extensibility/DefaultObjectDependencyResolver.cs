@@ -102,7 +102,7 @@ namespace Gallio.Runtime.Extensibility
         }
 
         /// <inheritdoc />
-        public DependencyResolution ResolveDependency(string parameterName, Type parameterType, string configurationArgument)
+        public virtual DependencyResolution ResolveDependency(string parameterName, Type parameterType, string configurationArgument)
         {
             if (parameterName == null)
                 throw new ArgumentNullException("parameterName");

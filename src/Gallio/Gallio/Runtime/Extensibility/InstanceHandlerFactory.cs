@@ -41,7 +41,7 @@ namespace Gallio.Runtime.Extensibility
         }
 
         /// <inheritdoc />
-        public IHandler CreateHandler(IServiceLocator serviceLocator, IResourceLocator resourceLocator, Type contractType, Type objectType, PropertySet properties)
+        public IHandler CreateHandler(IObjectDependencyResolver dependencyResolver, Type contractType, Type objectType, PropertySet properties)
         {
             if (! contractType.IsInstanceOfType(instance))
                 throw new RuntimeException(string.Format("Could not satisfy contract of type '{0}' using pre-manufactured instance of type '{1}'.",

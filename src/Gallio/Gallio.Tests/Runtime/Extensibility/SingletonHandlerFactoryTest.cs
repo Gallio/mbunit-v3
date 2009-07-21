@@ -32,10 +32,9 @@ namespace Gallio.Tests.Runtime.Extensibility
         public void CreateHandler_WhenContractTypeNotSatisfiedByObjectType_Throws()
         {
             var factory = new SingletonHandlerFactory();
-            var serviceLocator = MockRepository.GenerateStub<IServiceLocator>();
-            var resourceLocator = MockRepository.GenerateStub<IResourceLocator>();
+            var dependencyResolver = MockRepository.GenerateStub<IObjectDependencyResolver>();
 
-            var ex = Assert.Throws<RuntimeException>(() => factory.CreateHandler(serviceLocator, resourceLocator,
+            var ex = Assert.Throws<RuntimeException>(() => factory.CreateHandler(dependencyResolver,
                 typeof(IService), typeof(ComponentThatDoesNotImplementIService), new PropertySet()));
             Assert.AreEqual(string.Format("Could not satisfy contract of type '{0}' by creating an instance of type '{1}'.",
                 typeof(IService), typeof(ComponentThatDoesNotImplementIService)), ex.Message);
@@ -45,10 +44,9 @@ namespace Gallio.Tests.Runtime.Extensibility
         public void CreateHandler_WhenArgumentsValid_ReturnsAHandlerThatGeneratesTheSameComponentInstanceEachTime()
         {
             var factory = new SingletonHandlerFactory();
-            var serviceLocator = MockRepository.GenerateStub<IServiceLocator>();
-            var resourceLocator = MockRepository.GenerateStub<IResourceLocator>();
+            var dependencyResolver = MockRepository.GenerateStub<IObjectDependencyResolver>();
 
-            var handler = factory.CreateHandler(serviceLocator, resourceLocator,
+            var handler = factory.CreateHandler(dependencyResolver,
                 typeof(IService), typeof(Component), new PropertySet());
 
             var instance1 = handler.Activate();

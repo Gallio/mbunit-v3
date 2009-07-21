@@ -199,7 +199,8 @@ namespace Gallio.Runtime.Extensibility
                     registry.DataBox.Write(data =>
                     {
                         if (pluginHandler == null)
-                            pluginHandler = pluginHandlerFactory.CreateHandler(registry.ServiceLocator, registry.ResourceLocator,
+                            pluginHandler = pluginHandlerFactory.CreateHandler(
+                                new PluginDependencyResolver(this),
                                 contractType, objectType, pluginProperties);
                     });
                 }
@@ -235,7 +236,8 @@ namespace Gallio.Runtime.Extensibility
                     registry.DataBox.Write(data =>
                     {
                         if (traitsHandler == null)
-                            traitsHandler = traitsHandlerFactory.CreateHandler(registry.ServiceLocator, registry.ResourceLocator,
+                            traitsHandler = traitsHandlerFactory.CreateHandler(
+                                new DefaultObjectDependencyResolver(registry.ServiceLocator, registry.ResourceLocator),
                                 contractType, objectType, traitsProperties);
                     });
                 }
@@ -266,6 +268,32 @@ namespace Gallio.Runtime.Extensibility
                 throw new ArgumentNullException("reason");
 
             disabledReason = reason;
+        }
+
+        private sealed class PluginDependencyResolver : DefaultObjectDependencyResolver
+        {
+            private readonly PluginDescriptor descriptor;
+
+            public PluginDependencyResolver(PluginDescriptor descriptor)
+                : base(descriptor.registry.ServiceLocator, descriptor.registry.ResourceLocator)
+            {
+                this.descriptor = descriptor;
+            }
+
+            public override DependencyResolution ResolveDependency(string parameterName, Type parameterType, string configurationArgument)
+            {
+                if (configurationArgument == null)
+                {
+                    if (typeof (Traits).IsAssignableFrom(parameterType) // check we want traits
+                        && parameterType.IsAssignableFrom(typeof (PluginTraits))) // check we can handle the traits
+                        return DependencyResolution.Satisfied(descriptor.ResolveTraits());
+
+                    if (parameterType == typeof (IPluginDescriptor))
+                        return DependencyResolution.Satisfied(descriptor);
+                }
+
+                return base.ResolveDependency(parameterName, parameterType, configurationArgument);
+            }
         }
     }
 }

@@ -120,6 +120,12 @@
                 <File Name="Gallio.ControlPanel.exe.config" />
                 <File Name="Gallio.ControlPanel.plugin" />
             </Component>
+            <Component Id="Aga.Controls.dll" Guid="3c58ac7a-fe23-4bd4-9bb4-1bd5c107ba89" Win64="no">
+                <File Name="Aga.Controls.dll" Assembly=".net" AssemblyApplication="Gallio.Icarus.exe" KeyPath="yes" />
+            </Component>
+            <Component Id="WeifenLuo.WinFormsUI.Docking.dll" Guid="3B11B01F-71EB-4423-AC66-55CE8E6E30D9" Win64="no">
+                <File Name="WeifenLuo.WinFormsUI.Docking.dll" Assembly=".net" AssemblyApplication="Gallio.Icarus.exe" KeyPath="yes" />
+            </Component>
 
             <Directory Id="LoaderFolder" Name="Loader">
                 <Component Id="Gallio.Loader" Guid="{1b752f49-373c-4a57-8f72-eb97287d0d35}" Win64="no">
@@ -261,6 +267,8 @@
             <ComponentRef Id="Gallio.Utility"/>
             <ComponentRef Id="Gallio.ControlPanel"/>
             <ComponentRef Id="Gallio.Reports"/>
+            <ComponentRef Id="Aga.Controls.dll" />
+            <ComponentRef Id="WeifenLuo.WinFormsUI.Docking.dll" />
 
             <ComponentRef Id="Gallio.Resources"/>
             <ComponentRef Id="Gallio.Resources.css"/>
