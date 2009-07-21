@@ -122,14 +122,14 @@ namespace Gallio.AutoCAD
         }
 
         /// <summary>
-        /// <para>
         /// Frees any resources unknown to the GC.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// If the <see cref="AcadProcess"/> created a new <c>acad.exe</c> instance
         /// the finalizer tries to shut it down.
         /// </para>
-        /// </summary>
+        /// </remarks>
         ~AcadProcess()
         {
             Dispose(false);

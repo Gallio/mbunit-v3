@@ -21,9 +21,7 @@ using Gallio.Ambience.Impl;
 namespace Gallio.Ambience
 {
     /// <summary>
-    /// <para>
     /// Provides configuration data for <see cref="AmbienceServer" />.
-    /// </para>
     /// </summary>
     public class AmbienceServerConfiguration
     {

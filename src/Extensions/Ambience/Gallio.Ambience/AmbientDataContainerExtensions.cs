@@ -23,16 +23,12 @@ using Gallio.Ambience.Impl;
 namespace Gallio.Ambience
 {
     /// <summary>
-    /// <para>
     /// Extension methods for LINQ syntax over Ambient data containers.
-    /// </para>
     /// </summary>
     public static class AmbientDataContainerExtensions
     {
         /// <summary>
-        /// <para>
         /// Obtains a query over a data container.
-        /// </para>
         /// </summary>
         /// <remarks>
         /// <para>

@@ -21,14 +21,11 @@ using Gallio.Ambience.Impl;
 namespace Gallio.Ambience
 {
     /// <summary>
-    /// <para>
     /// Recognizes and processes the &lt;ambience&gt; configuration section.
-    /// </para>
     /// </summary>
     /// <example>
-    /// <para>
     /// Example configuration:
-    /// <![CDATA[
+    /// <code><![CDATA[
     /// <?xml version="1.0" encoding="utf-8" ?>
     /// <configuration>
     ///   <configSections>
@@ -39,8 +36,7 @@ namespace Gallio.Ambience
     ///     <defaultClient hostName="localhost" port="65436" userName="Test" password="Password" />
     ///   </ambience>
     /// </configuration>
-    /// ]]>
-    /// </para>
+    /// ]]></code>
     /// </example>
     public class AmbienceSectionHandler : IConfigurationSectionHandler
     {

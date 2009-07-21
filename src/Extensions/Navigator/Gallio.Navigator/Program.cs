@@ -20,9 +20,13 @@ namespace Gallio.Navigator
 {
     /// <summary>
     /// This program entry point enables the navigator library to function as an external
-    /// application protocol handler for Windows and Firefox.  It accepts a single argument
-    /// which is the Url to which navigation should take place.
+    /// application protocol handler for Windows and Firefox.
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// It accepts a single argument which is the Url to which navigation should take place.
+    /// </para>
+    /// </remarks>
     internal class Program : GallioNavigatorClient
     {
         public static int Main(string[] args)

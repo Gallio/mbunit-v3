@@ -26,9 +26,13 @@ namespace Gallio.Ambience.Impl
 {
     /// <summary>
     /// This wrapper reinterprets Db4o exceptions as Ambience exceptions so that the client
-    /// can catch them in a meaningful way.  (Db4o is internalized by Ambience so its exception
-    /// types are not accessible to clients.)
+    /// can catch them in a meaningful way.
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// Db4o is internalized by Ambience so its exception types are not accessible to clients.
+    /// </para>
+    /// </remarks>
     /// <typeparam name="T">The item type.</typeparam>
     internal sealed class Db4oListWrapper<T> : IAmbientDataSet<T>
     {

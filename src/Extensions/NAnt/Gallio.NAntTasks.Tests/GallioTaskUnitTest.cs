@@ -35,9 +35,11 @@ namespace Gallio.NAntTasks.Tests
     /// A set of unit tests for the <see cref="GallioTask" /> class (a custom Gallio task for NAnt).
     /// </summary>
     /// <remarks>
+    /// <para>
     /// If you modify these tests please make sure to review the corresponding
     /// tests for the Gallio MSBuild task, since the both the tasks for NAnt and MSBuild
     /// should exhibit a similar behavior and features set.
+    /// </para>
     /// </remarks>
     [TestFixture]
     [TestsOn(typeof(GallioTask))]

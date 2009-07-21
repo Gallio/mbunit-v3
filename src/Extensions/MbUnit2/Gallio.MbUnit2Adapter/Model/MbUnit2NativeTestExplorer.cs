@@ -32,10 +32,14 @@ using IRunInvoker = MbUnit2::MbUnit.Core.Invokers.IRunInvoker;
 namespace Gallio.MbUnit2Adapter.Model
 {
     /// <summary>
-    /// Builds a test tree using the MbUnit v2 framework itself to
-    /// perform reflection.  This mechanism can only be used when the
-    /// test assemblies have been loaded into the AppDomain and are executable.
+    /// Builds a test tree using the MbUnit v2 framework itself to perform reflection.  
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// This mechanism can only be used when the
+    /// test assemblies have been loaded into the AppDomain and are executable.
+    /// </para>
+    /// </remarks>
     /// <seealso cref="MbUnit2ReflectiveTestExplorer" />
     internal static class MbUnit2NativeTestExplorer
     {
@@ -111,12 +115,16 @@ namespace Gallio.MbUnit2Adapter.Model
         }
 
         /// <summary>
-        /// MbUnit v2 does not expose the MemberInfo directly.  Arguably
-        /// that allows more general filtering rules than Gallio's simple
+        /// MbUnit v2 does not expose the MemberInfo directly.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// Arguably that allows more general filtering rules than Gallio's simple
         /// CodeReference but it is a bit of a nuisance for us here.
         /// So to avoid breaking the MbUnit v2 API, we resort to a
         /// hack based on guessing the right method.
-        /// </summary>
+        /// </para>
+        /// </remarks>
         private static IMemberInfo GuessMemberInfoFromRunPipe(RunPipe runPipe)
         {
             foreach (RunInvokerVertex vertex in runPipe.Invokers)

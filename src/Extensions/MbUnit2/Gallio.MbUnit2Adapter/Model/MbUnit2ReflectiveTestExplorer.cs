@@ -38,20 +38,22 @@ namespace Gallio.MbUnit2Adapter.Model
     /// <summary>
     /// Builds a test tree using reflection-only techniques that are intended
     /// to produce an identical structure to that which the native MbUnit v2
-    /// framework would have produced.  This mechanism is used when the test
-    /// code is not loaded into the AppDomain.  Obviously the tests that are
-    /// produced are not executable but because the generated test ids are
+    /// framework would have produced.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// This mechanism is used when the test code is not loaded into the AppDomain.  
+    /// Obviously the tests that are produced are not executable but because the generated test ids are
     /// the same as those produced by the native framework, they can be used
     /// to build a list of tests to be executed later.
-    /// </summary>
-    /// <todo author="jeff">
-    /// Support more standard MbUnit v2 features.
-    /// Provide better diagnostic output in cases where unsupported extensions
-    /// are used.
-    /// </todo>
+    /// </para>
+    /// </remarks>
     /// <seealso cref="MbUnit2NativeTestExplorer"/>
     internal static class MbUnit2ReflectiveTestExplorer
     {
+        // TODO: Support more standard MbUnit v2 features.
+        // Provide better diagnostic output in cases where unsupported extensions are used.
+
         public static Test BuildAssemblyTest(TestModel testModel, IAssemblyInfo assembly, ICollection<KeyValuePair<Test, string>> unresolvedDependencies)
         {
             Test assemblyTest = new Test(assembly.Name, assembly);

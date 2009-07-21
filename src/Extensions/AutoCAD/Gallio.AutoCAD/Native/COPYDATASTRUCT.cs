@@ -46,8 +46,10 @@ namespace Gallio.AutoCAD.Native
         /// Pointer to data to be passed to the receiving application.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// This has been specialized for string data to avoid having
         /// to marshal the string to an IntPtr manually.
+        /// </para>
         /// </remarks>
         [MarshalAs(UnmanagedType.LPTStr)]
         public string lpData; // PVOID: Pointer to command string.

@@ -19,10 +19,8 @@ using System.Collections.Generic;
 namespace Gallio.Ambience
 {
     /// <summary>
-    /// <para>
     /// Represents a lazily evaluated query over Ambient data for use with
     /// the LINQ query syntax.
-    /// </para>
     /// </summary>
     public interface IAmbientDataQuery<T> : IEnumerable<T>
     {

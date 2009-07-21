@@ -24,9 +24,7 @@ using Gallio.Ambience.Impl;
 namespace Gallio.Ambience
 {
     /// <summary>
-    /// <para>
     /// The Ambience client accesses shared data provided by a remote <see cref="AmbienceServer" />.
-    /// </para>
     /// </summary>
     public sealed class AmbienceClient : IDisposable
     {

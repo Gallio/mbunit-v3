@@ -21,9 +21,7 @@ using Gallio.Ambience.Impl;
 namespace Gallio.Ambience
 {
     /// <summary>
-    /// <para>
     /// Extension methods for LINQ syntax over Ambient data queries.
-    /// </para>
     /// </summary>
     public static class AmbientDataQueryExtensions
     {
