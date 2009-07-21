@@ -60,16 +60,20 @@ namespace Gallio.BuildTools.Tasks
                 {
                     // FIXME: Imprecise
                     var requestedAssemblyName = new AssemblyName(e.Name).Name;
-
-                    foreach (string reference in references)
+                    if (! requestedAssemblyName.Contains("System"))
                     {
-                        if (reference.ToLowerInvariant().Contains(requestedAssemblyName.ToLowerInvariant()))
-                            return Assembly.LoadFrom(reference);
-                    }
+                        string requestedAssemblyDll = requestedAssemblyName + ".dll";
 
-                    var candidateAssemblyPath = Path.Combine(absoluteAssemblyDir, requestedAssemblyName + ".dll");
-                    if (File.Exists(candidateAssemblyPath))
-                        return Assembly.LoadFrom(candidateAssemblyPath);
+                        foreach (string reference in references)
+                        {
+                            if (reference.ToLowerInvariant().Contains(requestedAssemblyDll.ToLowerInvariant()))
+                                return Assembly.LoadFrom(reference);
+                        }
+
+                        var candidateAssemblyPath = Path.Combine(absoluteAssemblyDir, requestedAssemblyDll);
+                        if (File.Exists(candidateAssemblyPath))
+                            return Assembly.LoadFrom(candidateAssemblyPath);
+                    }
 
                     return null;
                 };
