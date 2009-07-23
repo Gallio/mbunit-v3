@@ -23,7 +23,9 @@ namespace Gallio.TDNetRunner.Facade
     /// A facade and remote proxy for the TestDriven.Net test listener.
     /// </summary>
     /// <remarks>
+    /// <para>
     /// This type is part of a facade that decouples the Gallio test runner from the TestDriven.Net interfaces.
+    /// </para>
     /// </remarks>
     internal class AdapterFacadeTestListener : MarshalByRefObject, IFacadeTestListener
     {

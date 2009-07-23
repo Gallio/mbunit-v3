@@ -111,16 +111,16 @@ namespace Gallio.TDNetRunner.Core
         }
 
         /// <summary>
-        /// <para>
         /// This resolver is used to ensure that we can cast the test runner's transparent proxy to IGallioTestRunner.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// TestDriven.Net initially loaded this assembly using Assembly.LoadFrom.  When the cast occurs, the runtime implicitly
         /// tries to load the interface using Assembly.Load by fullname which does not normally consider anything loaded with LoadFrom.
         /// So we introduce a resolver that recognizes when we are attempting to load this assembly by fullname and
         /// just returns it.  Without it, an InvalidCastException will occur.
         /// </para>
-        /// </summary>
+        /// </remarks>
         private static Assembly ResolveRunnerAssembly(object sender, ResolveEventArgs e)
         {
             Assembly runnerAssembly = typeof(LocalProxyTestRunner).Assembly;

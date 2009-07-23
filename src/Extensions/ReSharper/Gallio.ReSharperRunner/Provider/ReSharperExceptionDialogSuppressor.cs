@@ -22,9 +22,12 @@ using Action = Gallio.Common.Action;
 namespace Gallio.ReSharperRunner.Provider
 {
     /// <summary>
+    /// Provides a mechanism to suppress ReSharper logger exceptions 
+    /// such as assertion failures being displayed.
+    /// </summary>
+    /// <remarks>
     /// <para>
-    /// Provides a mechanism to suppress ReSharper logger exceptions such as assertion failures
-    /// being displayed.  This is used to work around bugs within the R# object model
+    /// This is used to work around bugs within the R# object model
     /// that may interfere with normal use of the application.
     /// </para>
     /// <para>
@@ -32,7 +35,7 @@ namespace Gallio.ReSharperRunner.Provider
     /// attributes with typed array parameters.  This causes an assertion error to be
     /// raised.  However Gallio is capable of tolerating these problems itself.
     /// </para>
-    /// </summary>
+    /// </remarks>
     internal static class ReSharperExceptionDialogSuppressor
     {
         private static readonly object syncRoot = new object();

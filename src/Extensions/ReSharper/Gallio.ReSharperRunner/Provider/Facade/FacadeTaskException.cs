@@ -21,7 +21,9 @@ namespace Gallio.ReSharperRunner.Provider.Facade
     /// Describes details about an exception that occurred within a task.
     /// </summary>
     /// <remarks>
+    /// <para>
     /// This type is part of a facade that decouples the Gallio test runner from the ReSharper interfaces.
+    /// </para>
     /// </remarks>
     [Serializable]
     public class FacadeTaskException

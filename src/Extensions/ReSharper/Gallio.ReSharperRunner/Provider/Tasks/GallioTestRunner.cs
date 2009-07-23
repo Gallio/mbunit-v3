@@ -37,16 +37,15 @@ namespace Gallio.ReSharperRunner.Provider.Tasks
     /// <summary>
     /// Gallio test runner for ReSharper.
     /// </summary>
-    /// <todo author="jeff">
-    /// Handle test steps.
-    /// Handle metadata.
-    /// Handle custom log streams and attachments.
-    /// </todo>
     /// <remarks>
+    /// <para>
     /// This type is decoupled from the ReSharper interfaces by means of a proxy facade.
+    /// </para>
     /// </remarks>
     internal sealed class GallioTestRunner
     {
+        // TODO: Handle test steps, metadata, and custom log streams and attachments.
+
         private readonly IFacadeTaskServer facadeTaskServer;
         private readonly IFacadeLogger facadeLogger;
         private readonly FacadeTaskExecutorConfiguration facadeTaskExecutorConfiguration;

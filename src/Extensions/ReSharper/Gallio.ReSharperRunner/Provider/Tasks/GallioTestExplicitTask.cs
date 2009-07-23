@@ -21,8 +21,12 @@ namespace Gallio.ReSharperRunner.Provider.Tasks
 {
     /// <summary>
     /// This task specifies that a test has been explicitly selected to run.
-    /// It should always appear after <see cref="GallioTestRunTask" />.
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// It should always appear after <see cref="GallioTestRunTask" />.
+    /// </para>
+    /// </remarks>
     [Serializable]
     public class GallioTestExplicitTask : FacadeTask, IEquatable<GallioTestExplicitTask>
     {

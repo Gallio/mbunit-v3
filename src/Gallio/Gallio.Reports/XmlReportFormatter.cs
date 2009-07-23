@@ -21,9 +21,9 @@ using Gallio.Runner.Reports;
 namespace Gallio.Reports
 {
     /// <summary>
-    /// <para>
     /// Formats reports as Xml.
-    /// </para>
+    /// </summary>
+    /// <remarks>
     /// <para>
     /// Recognizes the following options:
     /// <list type="bullet">
@@ -41,7 +41,7 @@ namespace Gallio.Reports
     /// </item>
     /// </list>
     /// </para>
-    /// </summary>
+    /// </remarks>
     public class XmlReportFormatter : BaseReportFormatter
     {
         /// <summary>

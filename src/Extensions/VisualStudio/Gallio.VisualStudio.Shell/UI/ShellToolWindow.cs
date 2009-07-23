@@ -29,7 +29,7 @@ namespace Gallio.VisualStudio.Shell.UI
         private string storedCaption = string.Empty;
 
         /// <summary>
-        /// Default constructor.  (For designer.)
+        /// Default constructor. (For designer.)
         /// </summary>
         public ShellToolWindow()
         {

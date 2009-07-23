@@ -24,9 +24,13 @@ namespace Gallio.VisualStudio.Shell
 {
     /// <summary>
     /// The Shell add-in functions as an adjunct to the package to provide the user with
-    /// the ability to enable and disable it.  It is also used to access a few APIs of the
-    /// DTE (such as AddNamedCommand) that require an add-in instance.
+    /// the ability to enable and disable it.
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// It is also used to access a few APIs of the DTE (such as AddNamedCommand) that require an add-in instance.
+    /// </para>
+    /// </remarks>
     [ComVisible(true)]
     public class ShellAddInHandler : IDTExtensibility2, IDTCommandTarget
     {
@@ -50,8 +54,14 @@ namespace Gallio.VisualStudio.Shell
             get { return addIn; }
         }
 
-        /// <summary>Implements the OnConnection method of the IDTExtensibility2 interface.
-        /// Receives notification that the Add-in is being loaded.</summary>
+        /// <summary>
+        /// Implements the OnConnection method of the IDTExtensibility2 interface.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// Receives notification that the Add-in is being loaded.
+        /// </para>
+        /// </remarks>
         /// <param term='application'>Root object of the host application.</param>
         /// <param term='connectMode'>Describes how the Add-in is being loaded.</param>
         /// <param term='addInInst'>Object representing this Add-in.</param>
@@ -65,8 +75,14 @@ namespace Gallio.VisualStudio.Shell
             shell.OnAddInConnected(this);
         }
 
-        /// <summary>Implements the OnDisconnection method of the IDTExtensibility2 interface.
-        /// Receives notification that the Add-in is being unloaded.</summary>
+        /// <summary>
+        /// Implements the OnDisconnection method of the IDTExtensibility2 interface.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// Receives notification that the Add-in is being unloaded.
+        /// </para>
+        /// </remarks>
         /// <param term='disconnectMode'>Describes how the Add-in is being unloaded.</param>
         /// <param term='custom'>Array of parameters that are host application specific.</param>
         /// <seealso class='IDTExtensibility2' />
@@ -82,24 +98,42 @@ namespace Gallio.VisualStudio.Shell
             dte = null;
         }
 
-        /// <summary>Implements the OnAddInsUpdate method of the IDTExtensibility2 interface.
-        /// Receives notification when the collection of Add-ins has changed.</summary>
+        /// <summary>
+        /// Implements the OnAddInsUpdate method of the IDTExtensibility2 interface.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// Receives notification when the collection of Add-ins has changed.
+        /// </para>
+        /// </remarks>
         /// <param term='custom'>Array of parameters that are host application specific.</param>
         /// <seealso class='IDTExtensibility2' />               
         void IDTExtensibility2.OnAddInsUpdate(ref Array custom)
         {
         }
 
-        /// <summary>Implements the OnStartupComplete method of the IDTExtensibility2 interface.
-        /// Receives notification that the host application has completed loading.</summary>
+        /// <summary>
+        /// Implements the OnStartupComplete method of the IDTExtensibility2 interface.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// Receives notification that the host application has completed loading.
+        /// </para>
+        /// </remarks>
         /// <param term='custom'>Array of parameters that are host application specific.</param>
         /// <seealso class='IDTExtensibility2' />
         void IDTExtensibility2.OnStartupComplete(ref Array custom)
         {
         }
 
-        /// <summary>Implements the OnBeginShutdown method of the IDTExtensibility2 interface.
-        /// Receives notification that the host application is being unloaded.</summary>
+        /// <summary>
+        /// Implements the OnBeginShutdown method of the IDTExtensibility2 interface.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// Receives notification that the host application is being unloaded.
+        /// </para>
+        /// </remarks>
         /// <param term='custom'>Array of parameters that are host application specific.</param>
         /// <seealso class='IDTExtensibility2' />
         void IDTExtensibility2.OnBeginShutdown(ref Array custom)

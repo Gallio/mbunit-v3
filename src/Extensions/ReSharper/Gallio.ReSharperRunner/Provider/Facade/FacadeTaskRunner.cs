@@ -22,17 +22,15 @@ using JetBrains.ReSharper.TaskRunnerFramework;
 namespace Gallio.ReSharperRunner.Provider.Facade
 {
     /// <summary>
-    /// <para>
     /// Runs remote tasks via the facade.
-    /// </para>
+    /// </summary>
+    /// <remarks>
     /// <para>
     /// The implementation creates a facade for the ReSharper interfaces used
     /// by Gallio then kicks off the work in a fresh AppDomain.  This ensures
     /// that the Gallio runtime environment is not polluted with test assemblies
     /// or ReSharper dependencies that may interfere with test execution.
     /// </para>
-    /// </summary>
-    /// <remarks>
     /// <para>
     /// This type is part of a facade that decouples the Gallio test runner from the ReSharper interfaces.
     /// </para>

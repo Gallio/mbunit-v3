@@ -31,7 +31,9 @@ namespace Gallio.VisualStudio.Shell.Reflection
     /// A reflection policy implemented over the Visual Studio CodeModel (ie. Intellisense).
     /// </summary>
     /// <remarks>
+    /// <para>
     /// The implementation is currently incomplete.
+    /// </para>
     /// </remarks>
     public class CodeModelReflectionPolicy : StaticReflectionPolicy
     {

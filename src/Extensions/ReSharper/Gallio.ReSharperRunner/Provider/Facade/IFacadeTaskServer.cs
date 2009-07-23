@@ -21,7 +21,9 @@ namespace Gallio.ReSharperRunner.Provider.Facade
     /// A facade of the ReSharper task server interface.
     /// </summary>
     /// <remarks>
+    /// <para>
     /// This type is part of a facade that decouples the Gallio test runner from the ReSharper interfaces.
+    /// </para>
     /// </remarks>
     public interface IFacadeTaskServer
     {

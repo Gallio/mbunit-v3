@@ -27,10 +27,10 @@ using Gallio.Common.Reflection;
 namespace Gallio.Framework.Pattern
 {
     /// <summary>
-    /// <para>
     /// Represents the run-time state of a single instance of a <see cref="PatternTest" />
     /// that is to be executed.
-    /// </para>
+    /// </summary>
+    /// <remarks>
     /// <para>
     /// Typical lifecycle of <see cref="PatternTestInstanceState" />:
     /// <list type="bullet">
@@ -45,7 +45,7 @@ namespace Gallio.Framework.Pattern
     /// the opportunity to clean up the instance state.</item>
     /// </list>
     /// </para>
-    /// </summary>
+    /// </remarks>
     public class PatternTestInstanceState
     {
         private static readonly Key<PatternTestInstanceState> ContextKey = new Key<PatternTestInstanceState>("Gallio.PatternTestInstanceState");
@@ -184,9 +184,14 @@ namespace Gallio.Framework.Pattern
         }
 
         /// <summary>
-        /// Gets the user data collection associated with the test instance state.  It may be used
-        /// to associate arbitrary key/value pairs with the execution of the test instance.
+        /// Gets the user data collection associated with the test instance state.
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// It may be used
+        /// to associate arbitrary key/value pairs with the execution of the test instance.
+        /// </para>
+        /// </remarks>
         public UserDataCollection Data
         {
             get { return data; }
@@ -251,15 +256,13 @@ namespace Gallio.Framework.Pattern
         }
 
         /// <summary>
-        /// <para>
         /// Gets a mutable dictionary of slots and their bound values.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// The dictionary maps slots to the values that will be stored in them
         /// during test execution.
         /// </para>
-        /// </summary>
-        /// <remarks>
         /// <para>
         /// The slots should be valid for the type of test in question.  For example,
         /// a test fixture supports constructor parameters, generic type parameters,
@@ -282,9 +285,11 @@ namespace Gallio.Framework.Pattern
         /// Gets a mutable dictionary of values assigned to test parameters.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// The contents of the dictionary are initialized by the framework as part of the
         /// test parameter binding phase for the test instance, just before the "before test instance"
         /// actions run.
+        /// </para>
         /// </remarks>
         public IDictionary<PatternTestParameter, object> TestParameterValues
         {
@@ -293,9 +298,14 @@ namespace Gallio.Framework.Pattern
 
         /// <summary>
         /// Returns true if the <see cref="TestStep" /> is the <see cref="PatternTestState.PrimaryTestStep" />
-        /// that was created for the test.  False if a new <see cref="PatternTestStep"/> 
-        /// was created as a child of the primary test step just for this test instance.
+        /// that was created for the test.  
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// False if a new <see cref="PatternTestStep"/> 
+        /// was created as a child of the primary test step just for this test instance.
+        /// </para>
+        /// </remarks>
         public bool IsReusingPrimaryTestStep
         {
             get { return testStep.IsPrimary; }
@@ -343,9 +353,7 @@ namespace Gallio.Framework.Pattern
         }
 
         /// <summary>
-        /// <para>
         /// Invokes a fixture method using the specified <paramref name="slotValues"/>.
-        /// </para>
         /// </summary>
         /// <param name="method">The fixture method or generic method definition,
         /// possibly declared by a generic type or generic type defintion.</param>
@@ -373,11 +381,14 @@ namespace Gallio.Framework.Pattern
         }
 
         /// <summary>
-        /// <para>
         /// Invokes the test method specified by <see cref="TestMethod" />, <see cref="FixtureInstance" />
-        /// and <see cref="TestArguments" />.  If there is no test method or no arguments, does nothing.
-        /// </para>
+        /// and <see cref="TestArguments" />.  
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// If there is no test method or no arguments, the method does nothing.
+        /// </para>
+        /// </remarks>
         /// <returns>The method return value, or null if there was none.</returns>
         /// <exception cref="Exception">Any exception thrown by the invoked method.</exception>
         [UserCodeEntryPoint]

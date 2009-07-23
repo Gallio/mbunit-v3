@@ -21,7 +21,9 @@ namespace Gallio.TDNetRunner.Facade
     /// Specifies the outcome of a test run.
     /// </summary>
     /// <remarks>
+    /// <para>
     /// This type is part of a facade that decouples the Gallio test runner from the TestDriven.Net interfaces.
+    /// </para>
     /// </remarks>
     public enum FacadeTestRunState
     {

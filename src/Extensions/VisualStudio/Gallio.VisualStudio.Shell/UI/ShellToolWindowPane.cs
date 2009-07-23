@@ -23,14 +23,14 @@ using Microsoft.VisualStudio.Shell.Interop;
 namespace Gallio.VisualStudio.Shell.UI
 {
     /// <summary>
-    /// <para>
     /// General purpose container for tool windows.
-    /// </para>
+    /// </summary>
+    /// <remarks>
     /// <para>
     /// This type cannot be subclassed because tool windows must be registered with
     /// packages using a custom attribute on the package itself.
     /// </para>
-    /// </summary>
+    /// </remarks>
     [Guid("9C9191A4-CDFB-4931-9B96-6CC7CD0BC203")]
     [ComVisible(true)]
     public sealed class ShellToolWindowPane : ToolWindowPane, IShellComponent
@@ -103,8 +103,12 @@ namespace Gallio.VisualStudio.Shell.UI
 
         /// <summary>
         /// Gets or sets the window caption.
-        /// Due to a bug in the VS2008 SDK, <see cref="ToolWindowPane.Caption"/> does not work properly.
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// Due to a bug in the VS2008 SDK, <see cref="ToolWindowPane.Caption"/> does not work properly.
+        /// </para>
+        /// </remarks>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
         public new string Caption
         {
@@ -123,7 +127,7 @@ namespace Gallio.VisualStudio.Shell.UI
         }
 
         /// <summary>
-        /// Gets/sets the frame hosting the window.
+        /// Gets or sets the frame hosting the window.
         /// </summary>
         public new IVsWindowFrame Frame
         {

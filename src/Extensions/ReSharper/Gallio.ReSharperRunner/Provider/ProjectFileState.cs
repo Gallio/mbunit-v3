@@ -26,9 +26,14 @@ namespace Gallio.ReSharperRunner.Provider
 {
     /// <summary>
     /// Provides state information to the <see cref="AnnotationDaemonStageProcess" />
-    /// when associated with a <see cref="IProjectFile" />.  This allows the <see cref="GallioTestProvider" />
-    /// to feed annotations and other information to the daemons for use in generating custom highlights.
+    /// when associated with a <see cref="IProjectFile" />.  
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// This allows the <see cref="GallioTestProvider" />
+    /// to feed annotations and other information to the daemons for use in generating custom highlights.
+    /// </para>
+    /// </remarks>
     internal class ProjectFileState
     {
         private static readonly JetBrains.Util.Key<ProjectFileState> key = new JetBrains.Util.Key<ProjectFileState>(typeof(ProjectFileState).Name);

@@ -23,7 +23,9 @@ namespace Gallio.TDNetRunner.Facade
     /// Utilities for translating facade types.
     /// </summary>
     /// <remarks>
+    /// <para>
     /// This type is part of a facade that decouples the Gallio test runner from the TestDriven.Net interfaces.
+    /// </para>
     /// </remarks>
     public static class FacadeUtils
     {

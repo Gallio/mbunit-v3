@@ -335,9 +335,14 @@ namespace Gallio.ReSharperRunner.Provider
 
 #if ! RESHARPER_31 && ! RESHARPER_40 && ! RESHARPER_41
             /// <summary>
-            /// Checks if given declared element is part of a unit test.  Could be a set up or tear down
-            /// method, or something else that belongs to a test.
+            /// Checks if given declared element is part of a unit test.  
             /// </summary>
+            /// <remarks>
+            /// <para>
+            /// Could be a set up or tear down
+            /// method, or something else that belongs to a test.
+            /// </para>
+            /// </remarks>
             public bool IsUnitTestStuff(IDeclaredElement element)
             {
                 if (element == null)
@@ -357,7 +362,7 @@ namespace Gallio.ReSharperRunner.Provider
 #endif
 
             /// <summary>
-            /// Present unit test.
+            /// Presents unit test.
             ///</summary>
             public void Present(UnitTestElement element, IPresentableItem item, TreeModelNode node, PresentationState state)
             {
@@ -588,11 +593,16 @@ namespace Gallio.ReSharperRunner.Provider
 
                 /// <summary>
                 /// ReSharper does not know how to present tests with a granularity any
-                /// larger than a type.  The tree it shows to users in such cases is
+                /// larger than a type.
+                /// </summary>
+                /// <remarks>
+                /// <para>
+                /// The tree it shows to users in such cases is
                 /// not very helpful because it appears that the root test is a child of the
                 /// project that resides in the root namespace.  So we filter out
                 /// certain kinds of tests from view.
-                /// </summary>
+                /// </para>
+                /// </remarks>
                 private static bool ShouldTestBePresented(ICodeElementInfo codeElement)
                 {
                     if (codeElement == null)

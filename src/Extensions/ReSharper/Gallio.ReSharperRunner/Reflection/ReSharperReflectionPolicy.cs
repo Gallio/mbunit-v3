@@ -33,9 +33,13 @@ namespace Gallio.ReSharperRunner.Reflection
 {
     /// <summary>
     /// Base class for ReSharper reflection policies.
+    /// </summary>
+    /// <remarks>
+    /// <para>
     /// Provides additional support for getting the <see cref="IProject" /> and <see cref="IDeclaredElement" />
     /// associated with a code element, if available.
-    /// </summary>
+    /// </para>
+    /// </remarks>
     public abstract class ReSharperReflectionPolicy : StaticReflectionPolicy
     {
         /// <summary>

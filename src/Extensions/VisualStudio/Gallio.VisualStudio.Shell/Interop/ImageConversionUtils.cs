@@ -20,14 +20,13 @@ using stdole;
 namespace Gallio.VisualStudio.Shell.Interop
 {
     /// <summary>
-    /// <para>
     /// Converts images to native formats.
-    /// </para>
-    /// <para>
-    /// From Roy Osherove's blog.
-    /// http://weblogs.asp.net/rosherove/archive/2008/08/02/declarative-visual-studio-addin-buttons-with-icons.aspx
-    /// </para>
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// From <a href="http://weblogs.asp.net/rosherove/archive/2008/08/02/declarative-visual-studio-addin-buttons-with-icons.aspx">Roy Osherove's blog</a>.
+    /// </para>
+    /// </remarks>
     internal abstract class ImageConversionUtils : AxHost
     {
         private ImageConversionUtils() : base("") { }

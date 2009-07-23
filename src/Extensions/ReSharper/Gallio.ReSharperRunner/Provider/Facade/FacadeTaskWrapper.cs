@@ -23,7 +23,9 @@ namespace Gallio.ReSharperRunner.Provider.Facade
     /// Wraps a <see cref="FacadeTask" /> to represent it as a <see cref="RemoteTask"/> for ReSharper.
     /// </summary>
     /// <remarks>
+    /// <para>
     /// This type is part of a facade that decouples the Gallio test runner from the ReSharper interfaces.
+    /// </para>
     /// </remarks>
     [Serializable]
     public sealed class FacadeTaskWrapper : RemoteTask, IEquatable<FacadeTaskWrapper>
