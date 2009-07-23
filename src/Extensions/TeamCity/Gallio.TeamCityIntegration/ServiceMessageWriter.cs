@@ -21,9 +21,13 @@ namespace Gallio.TeamCityIntegration
 {
     /// <summary>
     /// Writes specially formatted service messages for TeamCity.
-    /// These messages are interpreted by TeamCity to perform some task.
-    /// See also: http://www.jetbrains.net/confluence/display/TCD3/Build+Script+Interaction+with+TeamCity
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// These messages are interpreted by TeamCity to perform some task.
+    /// See also <a href="http://www.jetbrains.net/confluence/display/TCD3/Build+Script+Interaction+with+TeamCity">here</a>.
+    /// </para>
+    /// </remarks>
     internal class ServiceMessageWriter
     {
         private readonly Action<string> writer;

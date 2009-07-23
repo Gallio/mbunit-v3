@@ -25,7 +25,9 @@ namespace Gallio.ReSharperRunner.Provider.Facade
     /// A facade and remote proxy for the ReSharper task server interface.
     /// </summary>
     /// <remarks>
+    /// <para>
     /// This type is part of a facade that decouples the Gallio test runner from the ReSharper interfaces.
+    /// </para>
     /// </remarks>
     public class AdapterFacadeTaskServer : MarshalByRefObject, IFacadeTaskServer
     {
@@ -43,10 +45,14 @@ namespace Gallio.ReSharperRunner.Provider.Facade
 
         /// <summary>
         /// Recursively maps a tree of task execution nodes to facade tasks.
+        /// </summary>
+        /// <remarks>
+        /// <para>
         /// The server will retain references to the nodes and the tasks for the
         /// duration of its lifetime so that it can perform an inverse mapping as
         /// required.
-        /// </summary>
+        /// </para>
+        /// </remarks>
         /// <param name="node">The execution node to map.</param>
         /// <returns>The facade task tree.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="node"/> is null.</exception>

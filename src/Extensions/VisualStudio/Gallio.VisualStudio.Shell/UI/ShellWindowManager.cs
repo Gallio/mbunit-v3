@@ -25,10 +25,14 @@ namespace Gallio.VisualStudio.Shell.UI
     internal class ShellWindowManager : BaseShellExtension, IWindowManager
     {
         /// <summary>
-        /// Map string ids to ints.  We try to make the system a little friendlier
-        /// by providing a larger id space defined by strings since we are unable to
-        /// use subclasses of <see cref="ToolWindowPane" /> to create separate id namespaces.
+        /// Map string ids to ints.
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// We try to make the system a little friendlier by providing a larger id space defined by strings 
+        /// since we are unable to use subclasses of <see cref="ToolWindowPane" /> to create separate id namespaces.
+        /// </para>
+        /// </remarks>
         private readonly Dictionary<string, int> windowIdMap = new Dictionary<string, int>();
 
         private int nextId;

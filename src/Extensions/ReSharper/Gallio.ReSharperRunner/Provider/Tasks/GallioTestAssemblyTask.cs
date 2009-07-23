@@ -21,8 +21,12 @@ namespace Gallio.ReSharperRunner.Provider.Tasks
 {
     /// <summary>
     /// This task specifies a single test assembly that contains tests to be executed.
-    /// It should always appear after <see cref="GallioTestRunTask" />.
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// It should always appear after <see cref="GallioTestRunTask" />.
+    /// </para>
+    /// </remarks>
     [Serializable]
     public class GallioTestAssemblyTask : FacadeTask, IEquatable<GallioTestAssemblyTask>
     {

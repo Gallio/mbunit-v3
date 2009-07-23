@@ -21,11 +21,13 @@ namespace Gallio.ReSharperRunner.Provider.Tasks
 {
     /// <summary>
     /// This is the root task for running Gallio tests.
+    /// </summary>
+    /// <remarks>
+    /// <para>
     /// It must always appear first in a task sequence followed by
     /// any number <see cref="GallioTestItemTask" /> instances that describe the work to
     /// be done.
-    /// </summary>
-    /// <remarks>
+    /// </para>
     /// <para>
     /// Equality comparison is used by ReSharper to coalesce sequences of tasks into a tree.
     /// Sequential tasks form a chain of nested nodes.  When identical tasks are found they are

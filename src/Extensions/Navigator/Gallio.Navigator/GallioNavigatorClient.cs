@@ -98,8 +98,12 @@ namespace Gallio.Navigator
 
         /// <summary>
         /// Performs the navigation.
-        /// Subclasses may override to do additional processing.
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// Subclasses may override to do additional processing.
+        /// </para>
+        /// </remarks>
         protected virtual bool HandleNavigateToCommand(string path, int lineNumber, int columnNumber)
         {
             return Navigator.NavigateTo(path, lineNumber, columnNumber);

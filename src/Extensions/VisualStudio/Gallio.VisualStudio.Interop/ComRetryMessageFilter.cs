@@ -20,12 +20,13 @@ using Gallio.VisualStudio.Interop.Native;
 namespace Gallio.VisualStudio.Interop
 {
     /// <summary>
-    /// <para>
-    /// Installs a COM message filter that automatically retries COM RPC requests
-    /// until a timeout expires.  This is used to handle "Application is Busy" and
-    /// "Call was Rejected By Callee" transient errors.
-    /// </para>
+    /// Installs a COM message filter that automatically retries COM RPC requests until a timeout expires.  
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// This is used to handle "Application is Busy" and "Call was Rejected By Callee" transient errors.
+    /// </para>
+    /// </remarks>
     public static class ComRetryMessageFilter
     {
         private static readonly object syncRoot = new object();

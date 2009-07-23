@@ -230,9 +230,9 @@ namespace Gallio.Framework.Pattern
         void DisposeTestInstance(PatternTestInstanceState testInstanceState);
 
         /// <summary>
-        /// <para>
         /// Cleans up a completed test instance after its use.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// This method runs in the <see cref="TestContext" /> of the <see cref="PatternTestState.PrimaryTestStep" />
         /// because the test step for this instance (if different from the primary step) has terminated.
@@ -253,15 +253,15 @@ namespace Gallio.Framework.Pattern
         /// <item>Modifying the <see cref="PatternTestStep" /> object in any way.</item>
         /// </list>
         /// </para>
-        /// </summary>
+        /// </remarks>
         /// <param name="testInstanceState">The test instance state, never null.</param>
         void AfterTestInstance(PatternTestInstanceState testInstanceState);
 
         /// <summary>
-        /// <para>
         /// Decorates the <see cref="IPatternTestInstanceHandler" /> of a child test before its
         /// <see cref="IPatternTestHandler.BeforeTest" /> actions have a chance to run.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// This method runs in the <see cref="TestContext" /> of the test instance
         /// in the <see cref="LifecyclePhases.Execute" /> lifecycle phase.
@@ -299,8 +299,6 @@ namespace Gallio.Framework.Pattern
         /// <item>Modifying the <see cref="PatternTestStep" /> object in any way.</item>
         /// </list>
         /// </para>
-        /// </summary>
-        /// <remarks>
         /// <para>
         /// The <paramref name="testInstanceState"/> represents the state of the currently
         /// executing instance of this test; not the child.  The child has not started

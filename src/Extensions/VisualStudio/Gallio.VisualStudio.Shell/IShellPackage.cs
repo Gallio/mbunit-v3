@@ -27,8 +27,10 @@ using System;
 namespace Gallio.VisualStudio.Shell
 {
     /// <summary>
-    /// <para>
     /// The shell package is a meta-package for all Gallio-related extensions to Visual Studio.
+    /// </summary>
+    /// <remarks>
+    /// <para>
     /// By itself it does nothing much except to display Gallio product information in the
     /// Visual Studio About Box.  Actual functionality is contributed by other plugins
     /// that implement <see cref="IShellExtension" />.
@@ -36,7 +38,7 @@ namespace Gallio.VisualStudio.Shell
     /// <para>
     /// The shell package exposes Visual Studio services by way of its associated <see cref="IShell" />.
     /// </para>
-    /// </summary>
+    /// </remarks>
     public interface IShellPackage : IVsInstalledProduct, IVsPackage, Microsoft.VisualStudio.OLE.Interop.IServiceProvider, System.IServiceProvider, IOleCommandTarget, IVsPersistSolutionOpts, IServiceContainer, IVsUserSettings, IVsUserSettingsMigration, IVsToolWindowFactory
     {
         /// <summary>

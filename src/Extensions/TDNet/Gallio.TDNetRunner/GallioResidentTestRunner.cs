@@ -22,10 +22,14 @@ namespace Gallio.TDNetRunner
 {
     /// <summary>
     /// Gallio resident test runner for TestDriven.NET.
-    /// (A resident test runner is one that TestDriven.Net creates within its principal
-    /// AppDomain instead of starting a new one for each test.  So this way Gallio can
-    /// start memory resident across multiple test runs.
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// A resident test runner is one that TestDriven.Net creates within its principal
+    /// AppDomain instead of starting a new one for each test. So this way Gallio can
+    /// start memory resident across multiple test runs.
+    /// </para>
+    /// </remarks>
     public class GallioResidentTestRunner : BaseTestRunner, IResidentTestRunner
     {
         public TestRunState Run(ITestListener testListener, string assemblyFile, string cref)

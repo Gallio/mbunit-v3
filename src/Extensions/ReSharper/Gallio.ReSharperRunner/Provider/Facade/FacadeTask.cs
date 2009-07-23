@@ -25,7 +25,9 @@ namespace Gallio.ReSharperRunner.Provider.Facade
     /// Describes a task that can be executed within the Gallio runtime environment.
     /// </summary>
     /// <remarks>
+    /// <para>
     /// This type is part of a facade that decouples the Gallio test runner from the ReSharper interfaces.
+    /// </para>
     /// </remarks>
     [Serializable]
     public abstract class FacadeTask

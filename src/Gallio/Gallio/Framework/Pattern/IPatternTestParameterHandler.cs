@@ -42,9 +42,9 @@ namespace Gallio.Framework.Pattern
     public interface IPatternTestParameterHandler
     {
         /// <summary>
-        /// <para>
         /// Binds a value to a test parameter.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// The following actions are typically performed during this phase:
         /// <list type="bullet">
@@ -60,15 +60,15 @@ namespace Gallio.Framework.Pattern
         /// <item>Modifying the <see cref="PatternTestState" /> object in any way.</item>
         /// </list>
         /// </para>
-        /// </summary>
+        /// </remarks>
         /// <param name="testInstanceState">The test instance state, never null.</param>
         /// <param name="value">The value to bind to the parameter.</param>
         void BindTestParameter(PatternTestInstanceState testInstanceState, object value);
 
         /// <summary>
-        /// <para>
         /// Unbinds a test parameter.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// The following actions are typically performed during this phase:
         /// <list type="bullet">
@@ -83,7 +83,7 @@ namespace Gallio.Framework.Pattern
         /// <item>Modifying the <see cref="PatternTestState" /> object in any way.</item>
         /// </list>
         /// </para>
-        /// </summary>
+        /// </remarks>
         /// <param name="testInstanceState">The test instance state, never null.</param>
         /// <param name="value">The value that was bound to the test parameter.</param>
         void UnbindTestParameter(PatternTestInstanceState testInstanceState, object value);

@@ -20,13 +20,13 @@ using Gallio.TDNetRunner.Facade;
 namespace Gallio.TDNetRunner.Core
 {
     /// <summary>
-    /// <para>
     /// Abstract base class for proxy test runners.
-    /// </para>
+    /// </summary>
+    /// <remarks>
     /// <para>
     /// Wraps exceptions to safely smuggle them back to TDNet.
     /// </para>
-    /// </summary>
+    /// </remarks>
     public abstract class BaseProxyTestRunner : MarshalByRefObject, IProxyTestRunner
     {
         public void Dispose()

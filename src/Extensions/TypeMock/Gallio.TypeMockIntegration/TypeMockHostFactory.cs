@@ -22,9 +22,7 @@ using TypeMock.Integration;
 namespace Gallio.TypeMockIntegration
 {
     /// <summary>
-    /// <para>
     /// A factory for initialized <see cref="TypeMockHost" /> hosts.
-    /// </para>
     /// </summary>
     public class TypeMockHostFactory : IsolatedProcessHostFactory
     {

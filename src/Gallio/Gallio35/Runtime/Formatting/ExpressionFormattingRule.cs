@@ -26,9 +26,9 @@ using Gallio.Common.Linq;
 namespace Gallio.Runtime.Formatting
 {
     /// <summary>
-    /// <para>
     /// A formatting rule for <see cref="Expression" />.
-    /// </para>
+    /// </summary>
+    /// <remarks>
     /// <para>
     /// Formats expression trees using a more familiar C#-like syntax than
     /// the default.  Also recognizes captured variables and displays them
@@ -42,7 +42,7 @@ namespace Gallio.Runtime.Formatting
     /// <item>Constants: formatted recursively using other formatters, which may yield unusual syntax</item>
     /// </list>
     /// </para>
-    /// </summary>
+    /// </remarks>
     public sealed class ExpressionFormattingRule : IFormattingRule
     {
         /// <inheritdoc />

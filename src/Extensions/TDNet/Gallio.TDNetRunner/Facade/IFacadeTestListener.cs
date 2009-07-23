@@ -20,12 +20,12 @@ using System.Text;
 namespace Gallio.TDNetRunner.Facade
 {
     /// <summary>
-    /// <para>
     /// A facade of the TestDriven.Net test listener.
-    /// </para>
     /// </summary>
     /// <remarks>
+    /// <para>
     /// This type is part of a facade that decouples the Gallio test runner from the TestDriven.Net interfaces.
+    /// </para>
     /// </remarks>
     public interface IFacadeTestListener
     {

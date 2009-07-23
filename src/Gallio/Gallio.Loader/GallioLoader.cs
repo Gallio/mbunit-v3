@@ -24,10 +24,10 @@ using Microsoft.Win32;
 namespace Gallio.Loader
 {
     /// <summary>
-    /// <para>
     /// The Gallio loader provides access to installed Gallio assemblies so that we can reference
     /// them even if they are not copied locally.
-    /// </para>
+    /// </summary>
+    /// <remarks>
     /// <para>
     /// We must avoid copying these assemblies because it is possible for multiple copies
     /// to be loaded in the same process simultaneously in different load context (Load / LoadFrom / LoadFile).
@@ -51,8 +51,6 @@ namespace Gallio.Loader
     /// Once the loader has been initialized, all Gallio types should become accessible.
     /// In particular, the runtime can then be initialized.
     /// </para>
-    /// </summary>
-    /// <remarks>
     /// <para>
     /// Then install the assembly resolver in your program BEFORE referencing any
     /// Gallio types.  Beware that types are referenced implicitly by field and
@@ -96,14 +94,14 @@ namespace Gallio.Loader
         }
 
         /// <summary>
-        /// <para>
         /// Gets the Gallio loader instance, or null if not initialized.
-        /// </para>
         /// </summary>
         /// <remarks>
+        /// <para>
         /// A null result does not mean that Gallio is not loaded or that its assemblies
         /// cannot be resolved.  It may simply means that this particular loading mechanism
         /// has not been used.
+        /// </para>
         /// </remarks>
         public static IGallioLoader Instance
         {
@@ -112,9 +110,13 @@ namespace Gallio.Loader
 
         /// <summary>
         /// Gets the runtime path that will be used by default by the loader.
+        /// </summary>
+        /// <remarks>
+        /// <para>
         /// The path is determined by looking up the location of the Gallio installation
         /// in the registry.  It may be overridden by setting the development runtime path key.
-        /// </summary>
+        /// </para>
+        /// </remarks>
         /// <returns>The installed runtime path.</returns>
         /// <exception cref="InvalidOperationException">Thrown if Gallio does not appear to be installed.</exception>
         public static string GetDefaultRuntimePath()
@@ -215,9 +217,7 @@ namespace Gallio.Loader
         }
 
         /// <summary>
-        /// <para>
         /// Creates a private AppDomain that Gallio can reside in.
-        /// </para>
         /// </summary>
         /// <remarks>
         /// <para>

@@ -25,7 +25,9 @@ namespace Gallio.ReSharperRunner.Provider.Facade
     /// A facade and remote proxy for the ReSharper logger utilities.
     /// </summary>
     /// <remarks>
+    /// <para>
     /// This type is part of a facade that decouples the Gallio test runner from the ReSharper interfaces.
+    /// </para>
     /// </remarks>
     public class AdapterFacadeLogger : MarshalByRefObject, IFacadeLogger
     {

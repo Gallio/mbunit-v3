@@ -11,14 +11,12 @@ using MbUnit.Framework;
 
 namespace Gallio.Tests.Model
 {
-    /// <summary>
-    /// This test verifies that the contents of the model and its output are normalized
-    /// by the test runner before being incorporated into the test report.  Normalization
-    /// is important to ensure that invalid (non-XML encodable or unprintable)
-    /// characters do not end up in the report even if they happen to be emitted by the
-    /// test.  Without normalization, test report generation may fail due to encoding
-    /// errors or reports may contain garbage.
-    /// </summary>
+    // This test verifies that the contents of the model and its output are normalized
+    // by the test runner before being incorporated into the test report.  Normalization
+    // is important to ensure that invalid (non-XML encodable or unprintable)
+    // characters do not end up in the report even if they happen to be emitted by the
+    // test.  Without normalization, test report generation may fail due to encoding
+    // errors or reports may contain garbage.
     [RunSample(typeof(ModelNormalizationSample))]
     public class ModelNormalizationTest : BaseTestWithSampleRunner
     {

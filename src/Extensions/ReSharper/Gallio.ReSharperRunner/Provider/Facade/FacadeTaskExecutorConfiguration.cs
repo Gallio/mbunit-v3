@@ -21,7 +21,9 @@ namespace Gallio.ReSharperRunner.Provider.Facade
     /// Specifies task execution configuration information.
     /// </summary>
     /// <remarks>
+    /// <para>
     /// This type is part of a facade that decouples the Gallio test runner from the ReSharper interfaces.
+    /// </para>
     /// </remarks>
     [Serializable]
     public class FacadeTaskExecutorConfiguration
@@ -33,8 +35,12 @@ namespace Gallio.ReSharperRunner.Provider.Facade
 
         /// <summary>
         /// Gets or sets the folder to use as the base directory for task assemblies.
-        /// Or null if the project's assembly should be used.
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// Returns null if the project's assembly should be used.
+        /// </para>
+        /// </remarks>
         public string AssemblyFolder { get; set; }
     }
 }
