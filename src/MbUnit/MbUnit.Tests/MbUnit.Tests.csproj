@@ -37,6 +37,8 @@
     <DocumentationFile>bin\MbUnit.Tests.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Gallio, Version=3.1.0.0, Culture=neutral, PublicKeyToken=eb9cfa67ee6ab36e, processorArchitecture=MSIL" />
+    <Reference Include="MbUnit, Version=3.1.0.0, Culture=neutral, PublicKeyToken=eb9cfa67ee6ab36e, processorArchitecture=MSIL" />
     <Reference Include="Rhino.Mocks, Version=3.1.0.584, Culture=neutral, PublicKeyToken=0b3305902db7183f, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\libs\Rhino.Mocks\bin\Rhino.Mocks.dll</HintPath>
@@ -176,6 +178,7 @@
     <Compile Include="Framework\AssertTest_Distinct.cs" />
     <Compile Include="Framework\ColumnAttributeTest.cs" />
     <Compile Include="Framework\MultipleCultureAttributeTest.cs" />
+    <Compile Include="Framework\PrincipalAttributeTest.cs" />
     <Compile Include="Framework\RandomStringsAttributeTest.cs" />
     <Compile Include="Framework\SequentialNumbersAttributeTest.cs" />
     <Compile Include="Framework\RandomNumbersAttributeTest.cs" />

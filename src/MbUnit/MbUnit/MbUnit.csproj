@@ -162,6 +162,7 @@
     <Compile Include="Framework\Assert.Serialization.cs" />
     <Compile Include="Framework\Assert.Sorting.cs" />
     <Compile Include="Framework\Assert.Distinct.cs" />
+    <Compile Include="Framework\PrincipalAttribute.cs" />
     <Compile Include="Framework\MultipleCultureAttribute.cs" />
     <Compile Include="Framework\ImpersonateAttribute.cs" />
     <Compile Include="Framework\NamespaceDoc.cs" />
