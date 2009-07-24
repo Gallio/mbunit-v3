@@ -37,6 +37,36 @@ namespace MbUnit.Framework
     /// <seealso cref="Test"/>
     public class TestCase : TestDefinition
     {
+        private readonly Action execute;
+
+        /// <summary>
+        /// Gets or sets a set-up action to be executed before the test case.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// If set to <c>null</c> (default), no action is performed.
+        /// </para>
+        /// </remarks>
+        public Action SetUp
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// Gets or sets a tear-down action to be executed after the test case.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// If set to <c>null</c> (default), no action is performed.
+        /// </para>
+        /// </remarks>
+        public Action TearDown
+        {
+            get;
+            set;
+        }
+
         /// <summary>
         /// Creates a test case with a delegate to execute as its main body.
         /// </summary>
@@ -50,32 +80,55 @@ namespace MbUnit.Framework
             if (execute == null)
                 throw new ArgumentNullException("execute");
 
-            Execute = execute;
+            this.execute = execute;
             Timeout = TestAssemblyExecutionParameters.DefaultTestCaseTimeout;
         }
 
         /// <summary>
         /// Gets the delegate to run as the main body of the test case.
         /// </summary>
-        public Action Execute { get; private set; }
+        public Action Execute
+        {
+            get
+            {
+                return execute;
+            }
+        }
 
         /// <inheritdoc />
         protected override bool IsTestCase
         {
-            get { return true; }
+            get
+            {
+                return true;
+            }
         }
 
         /// <inheritdoc />
         protected override string Kind
         {
-            get { return TestKinds.Test; }
+            get
+            {
+                return TestKinds.Test;
+            }
         }
 
         /// <inheritdoc />
         [UserCodeEntryPoint]
         protected override void OnExecuteSelf()
         {
-            Execute();
+            try
+            {
+                if (SetUp != null)
+                    SetUp();
+
+                Execute();
+            }
+            finally
+            {
+                if (TearDown != null)
+                    TearDown();
+            }
         }
     }
 }
