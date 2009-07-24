@@ -21,7 +21,6 @@ using Gallio.Runner.Reports.Schema;
 using Gallio.Tests;
 using MbUnit.Framework;
 using System.Security.Principal;
-using Rhino.Mocks;
 using System.Threading;
 using System.Text;
 
@@ -41,12 +40,26 @@ namespace MbUnit.Tests.Framework
 
         internal class MyPrincipalAttribute : PrincipalAttribute
         {
+            internal class MyPrincipal : IPrincipal
+            {
+                public IIdentity Identity
+                {
+                    get
+                    {
+                        return WindowsIdentity.GetCurrent();
+                    }
+                }
+
+                public bool IsInRole(string role)
+                {
+                    return role == "InRole";
+                }
+            }
+
+
             protected override IPrincipal CreatePrincipal()
             {
-                var mockPrincipal = MockRepository.GenerateStub<IPrincipal>();
-                mockPrincipal.Stub(x => x.IsInRole("InRole")).Return(true);
-                mockPrincipal.Stub(x => x.IsInRole("NotInRole")).Return(false);
-                return mockPrincipal;
+                return new MyPrincipal();
             }
         }
         
