@@ -107,7 +107,7 @@ namespace MbUnit.Tests.Framework
             Assert.AreEqual("System.Int32", testRun.Step.CodeReference.TypeName);
             Assert.AreEqual("Me", testRun.Step.Metadata.GetValue(MetadataKeys.AuthorName));
             Assert.AreEqual(TestKinds.Test, testRun.Step.Metadata.GetValue(MetadataKeys.TestKind));
-            Assert.AreEqual("*** Log ***\n\nExecute\n", testRun.TestLog.ToString());
+            Assert.AreEqual("*** Log ***\n\nSetup->Execute->TearDown\n", testRun.TestLog.ToString());
             Assert.AreEqual(0, testRun.Children.Count);
         }
 
@@ -136,17 +136,19 @@ namespace MbUnit.Tests.Framework
             Assert.AreEqual("System.Int32", testRun.Step.CodeReference.TypeName);
             Assert.AreEqual("Me", testRun.Step.Metadata.GetValue(MetadataKeys.AuthorName));
             Assert.AreEqual(TestKinds.Test, testRun.Step.Metadata.GetValue(MetadataKeys.TestKind));
-            Assert.AreEqual("*** Log ***\n\nExecute\n", testRun.TestLog.ToString());
+            Assert.AreEqual("*** Log ***\n\nSetup->Execute->TearDown\n", testRun.TestLog.ToString());
             Assert.AreEqual(0, testRun.Children.Count);
         }
 
         private static readonly Test[] tests = new Test[]
         {
-            new TestCase("Test", () => TestLog.WriteLine("Execute"))
+            new TestCase("Test", () => TestLog.Write("->Execute"))
             {
                 CodeElement = Reflector.Wrap(typeof(Int32)),
                 Description = "Description",
                 Metadata = { { MetadataKeys.AuthorName, "Me" }},
+                SetUp = () => TestLog.Write("Setup"),
+                TearDown = () => TestLog.WriteLine("->TearDown")
             }
         };
 
