@@ -24,6 +24,7 @@ using Gallio.AutoCAD.Native;
 using Gallio.Common.Concurrency;
 using Gallio.Common.Text;
 using Gallio.Runner;
+using Gallio.Model;
 
 namespace Gallio.AutoCAD
 {
@@ -227,7 +228,7 @@ namespace Gallio.AutoCAD
             while (process.MainWindowHandle == IntPtr.Zero)
             {
                 if (stopwatch.Elapsed > timeout)
-                    throw new RunnerException("Timeout waiting for AutoCAD to create message pump.");
+                    throw new ModelException("Timeout waiting for AutoCAD to create message pump.");
 
                 Thread.Sleep(pollInterval);
                 process.Refresh();
@@ -235,7 +236,7 @@ namespace Gallio.AutoCAD
 
             var remaining = timeout - stopwatch.Elapsed;
             if (remaining <= TimeSpan.Zero || !process.WaitForInputIdle((int)remaining.TotalMilliseconds))
-                throw new RunnerException("Timeout waiting for AutoCAD to enter an idle state.");
+                throw new ModelException("Timeout waiting for AutoCAD to enter an idle state.");
         }
 
         private class AcadProcessTask : ProcessTask
