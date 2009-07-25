@@ -72,6 +72,7 @@ namespace Gallio.Runner.Projects
 
             var testProjectData = new TestProjectData(testProject);
             testProjectData.Validate(); // sanity check
+            testProjectData.MakeRelativePaths(testProjectFile.DirectoryName);
             xmlSerializer.SaveToXml(testProjectData, testProjectFile.FullName);
         }
     }
