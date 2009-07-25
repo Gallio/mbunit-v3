@@ -69,5 +69,15 @@ namespace Gallio.Icarus
         {
             logBody.Clear();
         }
+
+        private void selectAllToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            logBody.SelectAll();
+        }
+
+        private void copyToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Clipboard.SetText(logBody.SelectedText);
+        }
     }
 }
