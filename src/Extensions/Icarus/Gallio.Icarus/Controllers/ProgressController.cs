@@ -46,6 +46,11 @@ namespace Gallio.Icarus.Controllers
                 if (!displayProgressDialog) 
                     return;
 
+                // HACK: we don't want to display the progress dialog when running tests
+                // but relying on the task name is not ideal
+                if (taskManager.ProgressMonitor.TaskName == "Running tests")
+                    return;
+
                 EventHandlerPolicy.SafeInvoke(DisplayProgressDialog, this, 
                     new DisplayProgressDialogEventArgs(taskManager.ProgressMonitor));
                 displayProgressDialog = false;
