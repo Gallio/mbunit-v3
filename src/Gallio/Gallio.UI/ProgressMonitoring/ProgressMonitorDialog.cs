@@ -37,7 +37,12 @@ namespace Gallio.UI.ProgressMonitoring
 
             this.progressMonitor = progressMonitor;
 
-            progressMonitor.Changed += (sender, e) => Sync.Invoke(this, ProgressUpdate);
+            progressMonitor.Changed += OnProgressMonitorOnChanged;
+        }
+
+        private void OnProgressMonitorOnChanged(object sender, EventArgs e)
+        {
+            Sync.Invoke(this, ProgressUpdate);
         }
 
         /// <inheritdoc />
@@ -87,6 +92,14 @@ namespace Gallio.UI.ProgressMonitoring
         private void runInBackgroundButton_Click(object sender, EventArgs e)
         {
             Close();
+        }
+
+        /// <inherit />
+        protected override void OnFormClosing(FormClosingEventArgs e)
+        {
+            base.OnFormClosing(e);
+
+            progressMonitor.Changed += OnProgressMonitorOnChanged;
         }
     }
 }
