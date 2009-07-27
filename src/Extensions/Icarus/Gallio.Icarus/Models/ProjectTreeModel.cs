@@ -28,7 +28,7 @@ namespace Gallio.Icarus.Models
         private readonly IFileSystem fileSystem;
         private readonly Node projectRoot;
         private TestProject testProject = new TestProject();
-        private string fileName = string.Empty;
+        private string fileName = Paths.DefaultProject;
         private ReportMonitor reportMonitor;
 
         public string FileName
