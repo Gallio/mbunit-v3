@@ -242,7 +242,20 @@ namespace Gallio.Common.IO
             if (basePath == null)
                 throw new ArgumentNullException("basePath");
 
-            return Path.Combine(basePath, relativePath);
+            if (!Path.IsPathRooted(relativePath))
+            {
+                try
+                {
+                    var filePath = new FilePathRelative(relativePath);
+                    var directoryPath = new DirectoryPathAbsolute(basePath);
+                    return filePath.GetAbsolutePathFrom(directoryPath).Path;
+                }
+                catch (ArgumentException)
+                {
+                }
+            }
+
+            return relativePath;
         }
     }
 }
