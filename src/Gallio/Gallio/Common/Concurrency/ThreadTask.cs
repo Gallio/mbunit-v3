@@ -160,7 +160,7 @@ namespace Gallio.Common.Concurrency
             return true;
         }
 
-        [DebuggerHidden, DebuggerStepThrough]
+        [DebuggerHidden]
         private void Run()
         {
             try

@@ -367,7 +367,7 @@ namespace Gallio.Framework.Pattern
         /// <exception cref="InvalidOperationException">Thrown if <see cref="FixtureType" /> is null.</exception>
         /// <exception cref="Exception">Any exception thrown by the invoked method.</exception>
         /// <seealso cref="MethodInvocationSpec"/>
-        [UserCodeEntryPoint, DebuggerHidden, DebuggerStepThrough]
+        [UserCodeEntryPoint, DebuggerNonUserCode]
         public object InvokeFixtureMethod(IMethodInfo method, IEnumerable<KeyValuePair<ISlotInfo, object>> slotValues)
         {
             if (method == null)
@@ -392,7 +392,7 @@ namespace Gallio.Framework.Pattern
         /// </remarks>
         /// <returns>The method return value, or null if there was none.</returns>
         /// <exception cref="Exception">Any exception thrown by the invoked method.</exception>
-        [UserCodeEntryPoint, DebuggerHidden, DebuggerStepThrough]
+        [UserCodeEntryPoint, DebuggerNonUserCode]
         public object InvokeTestMethod()
         {
             if (testMethod != null && testArguments != null)
@@ -405,7 +405,7 @@ namespace Gallio.Framework.Pattern
         /// Runs the body of the test.
         /// </summary>
         /// <returns>The test outcome.</returns>
-        [UserCodeEntryPoint, DebuggerHidden, DebuggerStepThrough]
+        [UserCodeEntryPoint, DebuggerHidden, DebuggerStepThrough, DebuggerNonUserCode]
         internal static TestOutcome RunBody(PatternTestInstanceState state)
         {
             return state.body();

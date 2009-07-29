@@ -144,7 +144,7 @@ namespace Gallio.Framework.Data
         /// </summary>
         /// <returns>The new instance, never null.</returns>
         /// <exception cref="InvalidOperationException">Thrown if the type is not instantiable.</exception>
-        [DebuggerStepThrough, DebuggerHidden]
+        [DebuggerHidden, DebuggerStepThrough]
         public object CreateInstance()
         {
             object instance;

@@ -89,7 +89,7 @@ namespace Gallio.Common.Concurrency
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="action"/> is null.</exception>
         /// <exception cref="InvalidOperationException">Thrown if an action is already running in this scope.</exception>
         /// <exception cref="Exception">Any other exception thrown by <paramref name="action"/> itself.</exception>
-        [DebuggerStepThrough, DebuggerHidden]
+        [DebuggerHidden, DebuggerStepThrough]
         public ThreadAbortException Run(Action action)
         {
             // NOTE: This method has been optimized to minimize the total stack depth of the action
@@ -127,22 +127,21 @@ namespace Gallio.Common.Concurrency
 
                             // Run the action.
                             action();
+                            return null;
                         }
                         finally // THIS IS A CONSTRAINED REGION
                         {
                             // Reset the state.
                             Interlocked.CompareExchange(ref state, QuiescentState, RunningState);
                         }
-
-                        return null;
                     }
-                    finally
+                    finally // NOT A CONSTRAINED REGION
                     {
                         // Cause the Abort to occur here if it is still pending.
                         WaitForThreadAbortIfAborting();
                     }
                 }
-                catch (ThreadAbortException ex)
+                catch (ThreadAbortException ex) // NOT A CONSTRAINED REGION
                 {
                     // Unwind the aborted state.
                     if (ex.ExceptionState == this)
@@ -173,6 +172,7 @@ namespace Gallio.Common.Concurrency
         /// </para>
         /// </remarks>
         /// <returns>An object that when disposed ends the protected block, possibly null if there was no protection necessary.</returns>
+        [DebuggerHidden, DebuggerStepThrough]
         public IDisposable Protect()
         {
             if (Thread.VolatileRead(ref activeThread) == Thread.CurrentThread)
@@ -195,10 +195,11 @@ namespace Gallio.Common.Concurrency
                 this.scope = scope;
             }
 
+            [DebuggerHidden, DebuggerStepThrough]
             public void Dispose()
             {
                 if (Interlocked.CompareExchange(ref scope.state, RunningState, QuiescentState) == AbortedState)
-                    Thread.CurrentThread.Abort(this);
+                    Thread.CurrentThread.Abort(scope);
             }
         }
 
@@ -206,6 +207,7 @@ namespace Gallio.Common.Concurrency
         /// Aborts the currently running action and prevents any further actions from running
         /// inside of this scope.
         /// </summary>
+        [DebuggerHidden, DebuggerStepThrough]
         public void Abort()
         {
             for (;;)
@@ -242,7 +244,7 @@ namespace Gallio.Common.Concurrency
         /// it to ensure that it gets delivered.  Otherwise the pending thread abort exception
         /// could occur outside of our special region.
         /// </summary>
-        [DebuggerStepThrough, DebuggerHidden]
+        [DebuggerHidden, DebuggerStepThrough]
         private void WaitForThreadAbortIfAborting()
         {
             // The polling limit is designed to work around a problem where the Thread.Abort

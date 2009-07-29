@@ -421,12 +421,14 @@ namespace Gallio.Framework
         /// </para>
         /// </remarks>
         /// <returns>An object that when disposed ends the protected block, possibly null if there was no protection necessary.</returns>
+        [DebuggerHidden, DebuggerStepThrough]
         public IDisposable Protect()
         {
             ThreadAbortScope scope = FindActiveScopeForThread(Thread.CurrentThread);
             return scope != null ? scope.Protect() : null;
         }
 
+        [DebuggerHidden, DebuggerStepThrough]
         private ThreadAbortScope FindActiveScopeForThread(Thread currentThread)
         {
             lock (syncRoot)
