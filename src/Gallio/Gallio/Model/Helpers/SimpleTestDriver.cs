@@ -65,10 +65,11 @@ namespace Gallio.Model.Helpers
             {
                 using (TestHarness testHarness = CreateTestHarness())
                 {
+                    IDisposable appDomainState = null;
                     try
                     {
                         progressMonitor.SetStatus("Setting up the test harness.");
-                        testHarness.SetUp();
+                        appDomainState = testHarness.SetUpAppDomain();
                         progressMonitor.Worked(1);
 
                         progressMonitor.SetStatus("Building the test model.");
@@ -78,7 +79,8 @@ namespace Gallio.Model.Helpers
                     finally
                     {
                         progressMonitor.SetStatus("Tearing down the test harness.");
-                        testHarness.TearDown();
+                        if (appDomainState != null)
+                            appDomainState.Dispose();
                         progressMonitor.Worked(1);
                     }
                 }
@@ -92,10 +94,11 @@ namespace Gallio.Model.Helpers
             {
                 using (TestHarness testHarness = CreateTestHarness())
                 {
+                    IDisposable appDomainState = null;
                     try
                     {
                         progressMonitor.SetStatus("Setting up the test harness.");
-                        testHarness.SetUp();
+                        appDomainState = testHarness.SetUpAppDomain();
                         progressMonitor.Worked(1);
 
                         progressMonitor.SetStatus("Building the test model.");
@@ -120,7 +123,8 @@ namespace Gallio.Model.Helpers
                     finally
                     {
                         progressMonitor.SetStatus("Tearing down the test harness.");
-                        testHarness.TearDown();
+                        if (appDomainState != null)
+                            appDomainState.Dispose();
                         progressMonitor.Worked(1);
                     }
                 }
@@ -230,44 +234,48 @@ namespace Gallio.Model.Helpers
 
         private void RunTestCommands(ITestCommand rootTestCommand, TestExecutionOptions options, TestHarness testHarness, ITestContextManager testContextManager, IProgressMonitor progressMonitor)
         {
-            Action action = () =>
+            Exception actionException = null;
+            ThreadStart action = () =>
             {
-                testHarness.Run(() =>
+                try
                 {
-                    using (testContextManager.ContextTracker.EnterContext(null))
+                    using (testHarness.SetUpThread())
                     {
-                        using (TestController testController = CreateTestController())
+                        using (testContextManager.ContextTracker.EnterContext(null))
                         {
-                            testController.Run(rootTestCommand, null, options, progressMonitor);
+                            using (TestController testController = CreateTestController())
+                            {
+                                testController.Run(rootTestCommand, null, options, progressMonitor);
+                            }
                         }
                     }
-                });
+                }
+                catch (Exception ex)
+                {
+                    actionException = ex;
+                }
             };
 
             if (options.SingleThreaded)
             {
-                try
-                {
-                    action();
-                }
-                catch (Exception ex)
-                {
-                    throw new ModelException("A fatal exception occurred while running test commands.", ex);
-                }
+                // The execution options require the use of a single thread.
+                action();
             }
             else
             {
-                var task = new ThreadTask("Test Runner", action);
-
-                // Use STA as the default for all tests.  A test framework may of course choose
-                // to create its own threads with different apartment states.
-                task.ApartmentState = ApartmentState.STA;
-                task.Run(null);
-
-                if (task.Result.Exception != null)
-                    throw new ModelException("A fatal exception occurred while running test commands.",
-                        task.Result.Exception);
+                // Create a new thread so that we can consistently set the default apartment
+                // state to STA and so as to reduce the effective stack depth during the
+                // test run.  We use Thread instead of ThreadTask because we do not
+                // require the ability to abort the Thread so we do not need to take the
+                // extra overhead.
+                Thread thread = new Thread(action);
+                thread.SetApartmentState(ApartmentState.STA);
+                thread.Start();
+                thread.Join();
             }
+
+            if (actionException != null)
+                throw new ModelException("A fatal exception occurred while running test commands.", actionException);
         }
     }
 }

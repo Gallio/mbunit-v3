@@ -13,23 +13,55 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Gallio.Common.Linq
+using System;
+using System.Runtime.Serialization;
+
+namespace Gallio.Common
 {
     /// <summary>
     /// A value type that represents the result of evaluating an
     /// expression of type <see cref="System.Void" />.
     /// </summary>
-    public struct Unit
+    [Serializable]
+    public struct Unit : ISerializable
     {
         /// <summary>
         /// Gets the singular value of the <see cref="Unit" /> type.
         /// </summary>
         public static readonly Unit Value;
 
+        // Serialization constructor.
+        private Unit(SerializationInfo info, StreamingContext context)
+        {
+        }
+
         /// <inheritdoc />
         public override string ToString()
         {
             return "Void";
+        }
+
+        void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            info.SetType(typeof(UnitHolder));
+        }
+
+        private sealed class UnitHolder : ISerializable, IObjectReference
+        {
+            // Serialization constructor.
+            private UnitHolder(SerializationInfo info, StreamingContext context)
+            {
+            }
+
+            void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
+            {
+                info.SetType(typeof(UnitHolder));
+            }
+
+            object IObjectReference.GetRealObject(StreamingContext context)
+            {
+                return Value;
+            }
         }
     }
 }

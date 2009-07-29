@@ -89,9 +89,11 @@ namespace Gallio.Common.Concurrency
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="action"/> is null.</exception>
         /// <exception cref="InvalidOperationException">Thrown if an action is already running in this scope.</exception>
         /// <exception cref="Exception">Any other exception thrown by <paramref name="action"/> itself.</exception>
-        [DebuggerHidden]
         public ThreadAbortException Run(Action action)
         {
+            // NOTE: This method has been optimized to minimize the total stack depth of the action
+            //       by inlining blocks on the critical path that had previously been factored out.
+
             if (action == null)
                 throw new ArgumentNullException("action");
 
@@ -106,8 +108,51 @@ namespace Gallio.Common.Concurrency
                 if (Interlocked.CompareExchange(ref activeThread, Thread.CurrentThread, null) != null)
                     throw new InvalidOperationException(Resources.ThreadAbortScope_ReentranceException);
 
-                // Proceed.
-                return RunActionWithThreadAbort(action);
+                // Run the action on the current thread (which is the "active" thread) and guarantee
+                // that if an abort will occur, it must occur within this block and nowhere else.
+                // This implies that we must wait for a pending abort to occur in case it has not
+                // happened yet.
+                try
+                {
+                    try
+                    {
+                        RuntimeHelpers.PrepareConstrainedRegions(); // MUST IMMEDIATELY PRECEDE TRY
+                        try
+                        {
+                            // Preempt the action if it has been previously aborted.
+                            int oldState = Interlocked.CompareExchange(ref state, RunningState, QuiescentState);
+                            if (oldState == AbortedState)
+                                Thread.CurrentThread.Abort(this);
+
+                            // Run the action.
+                            action();
+                        }
+                        finally // THIS IS A CONSTRAINED REGION
+                        {
+                            // Reset the state.
+                            Interlocked.CompareExchange(ref state, QuiescentState, RunningState);
+                        }
+
+                        return null;
+                    }
+                    finally
+                    {
+                        // Cause the Abort to occur here if it is still pending.
+                        WaitForThreadAbortIfAborting();
+                    }
+                }
+                catch (ThreadAbortException ex)
+                {
+                    // Unwind the aborted state.
+                    if (ex.ExceptionState == this)
+                    {
+                        Thread.ResetAbort();
+                        Thread.VolatileWrite(ref state, AbortedState);
+                        return ex;
+                    }
+
+                    throw;
+                }
             }
             finally // THIS IS A CONSTRAINED REGION
             {
@@ -117,8 +162,8 @@ namespace Gallio.Common.Concurrency
         }
 
         /// <summary>
-        /// Runs an action inside of a protected context wherein it cannot receive
-        /// a thread abort from this <see cref="ThreadAbortScope"/>.
+        /// Enters a protected context wherein it cannot receive a thread abort from this
+        /// <see cref="ThreadAbortScope"/>.
         /// </summary>
         /// <remarks>
         /// <para>
@@ -126,40 +171,33 @@ namespace Gallio.Common.Concurrency
         /// may affect the scope.  This call cannot be nested.
         /// </para>
         /// </remarks>
-        /// <param name="action">The action to run.</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="action"/> is null.</exception>
-        [DebuggerHidden]
-        public void Protect(Action action)
+        /// <returns>An object that when disposed ends the protected block, possibly null if there was no protection necessary.</returns>
+        public IDisposable Protect()
         {
-            if (action == null)
-                throw new ArgumentNullException("action");
-
-            bool mustResetToRunningState = false;
-
-            RuntimeHelpers.PrepareConstrainedRegions(); // MUST IMMEDIATELY PRECEDE TRY
-            try
+            if (Thread.VolatileRead(ref activeThread) == Thread.CurrentThread)
             {
-                if (Thread.VolatileRead(ref activeThread) == Thread.CurrentThread)
-                {
-                    if (Interlocked.CompareExchange(ref state, QuiescentState, RunningState) == RunningState)
-                    {
-                        mustResetToRunningState = true;
-                    }
-                    else
-                    {
-                        WaitForThreadAbortIfAborting();
-                    }
-                }
+                if (Interlocked.CompareExchange(ref state, QuiescentState, RunningState) == RunningState)
+                    return new ResetToRunningState(this);
 
-                action();
+                WaitForThreadAbortIfAborting();
             }
-            finally // THIS IS A CONSTRAINED REGION
+
+            return null;
+        }
+
+        private sealed class ResetToRunningState : IDisposable
+        {
+            private readonly ThreadAbortScope scope;
+
+            public ResetToRunningState(ThreadAbortScope scope)
             {
-                if (mustResetToRunningState)
-                {
-                    if (Interlocked.CompareExchange(ref state, RunningState, QuiescentState) == AbortedState)
-                        Thread.CurrentThread.Abort(this);
-                }
+                this.scope = scope;
+            }
+
+            public void Dispose()
+            {
+                if (Interlocked.CompareExchange(ref scope.state, RunningState, QuiescentState) == AbortedState)
+                    Thread.CurrentThread.Abort(this);
             }
         }
 
@@ -195,70 +233,6 @@ namespace Gallio.Common.Concurrency
                     // pending abort or if that abort was lost somehow (reset by other code).
                     Interlocked.CompareExchange(ref state, AbortedState, AbortPendingState);
                 }
-            }
-        }
-
-        /// <summary>
-        /// Runs the action on the current thread (which is the "active" thread) and guarantees
-        /// that if an abort will occur, it must occur within this block and nowhere else.
-        /// </summary>
-        /// <remarks>
-        /// <para>
-        /// This method ensures that an asynchronous thread abort will be triggered within
-        /// this block rather than anywhere else.
-        /// </para>
-        /// </remarks>
-        [DebuggerHidden]
-        private ThreadAbortException RunActionWithThreadAbort(Action action)
-        {
-            try
-            {
-                // Run the action.  If an abort occurs, it will occur within this block.
-                try
-                {
-                    RunActionWithStateTransitions(action);
-                    return null;
-                }
-                finally
-                {
-                    WaitForThreadAbortIfAborting();
-                }
-            }
-            catch (ThreadAbortException ex)
-            {
-                // Unwind the aborted state.
-                if (ex.ExceptionState == this)
-                {
-                    Thread.ResetAbort();
-                    Thread.VolatileWrite(ref state, AbortedState);
-                    return ex;
-                }
-
-                throw;
-            }
-        }
-
-        /// <summary>
-        /// Runs the action with the appropriate transitions to/from the running state.
-        /// </summary>
-        [DebuggerHidden]
-        private void RunActionWithStateTransitions(Action action)
-        {
-            RuntimeHelpers.PrepareConstrainedRegions(); // MUST IMMEDIATELY PRECEDE TRY
-            try
-            {
-                // Preempt the action if it has been previously aborted.
-                int oldState = Interlocked.CompareExchange(ref state, RunningState, QuiescentState);
-                if (oldState == AbortedState)
-                    Thread.CurrentThread.Abort(this);
-
-                // Run the action.
-                action();
-            }
-            finally // THIS IS A CONSTRAINED REGION
-            {
-                // Reset the state.
-                Interlocked.CompareExchange(ref state, QuiescentState, RunningState);
             }
         }
 

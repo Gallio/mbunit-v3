@@ -113,7 +113,7 @@ namespace Gallio.Framework.Pattern
         /// The default behavior for a <see cref="TestAssemblyPatternAttribute" />
         /// is to configure the test actions as follows:
         /// <list type="bullet">
-        /// <item><see cref="IPatternTestHandler.InitializeTest" />: Reset the <see cref="TestAssemblyExecutionParameters" />
+        /// <item><see cref="PatternTestActions.InitializeTestChain" />: Reset the <see cref="TestAssemblyExecutionParameters" />
         /// to defaults.</item>
         /// </list>
         /// </para>

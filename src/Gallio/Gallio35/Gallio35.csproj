@@ -56,7 +56,6 @@
     <Compile Include="Common\Linq\ExpressionInstrumentor.cs" />
     <Compile Include="Common\Linq\ExpressionVisitor.cs" />
     <Compile Include="Common\Linq\NamespaceDoc.cs" />
-    <Compile Include="Common\Linq\Unit.cs" />
     <Compile Include="Framework\Assertions\AssertionConditionEvaluator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Runtime\Formatting\ExpressionFormattingRule.cs" />

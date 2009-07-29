@@ -231,15 +231,15 @@ namespace Gallio.Framework.Pattern
         /// The default behavior for a <see cref="TestTypePatternAttribute" />
         /// is to configure the test actions as follows:
         /// <list type="bullet">
-        /// <item><see cref="IPatternTestInstanceHandler.BeforeTestInstance" />: Set the
+        /// <item><see cref="PatternTestInstanceActions.BeforeTestInstanceChain" />: Set the
         /// fixture instance name and <see cref="PatternTestInstanceState.FixtureType" />.</item>
-        /// <item><see cref="IPatternTestInstanceHandler.InitializeTestInstance" />: Create
+        /// <item><see cref="PatternTestInstanceActions.InitializeTestInstanceChain" />: Create
         /// the fixture instance and set the <see cref="PatternTestInstanceState.FixtureInstance" />
         /// property accordingly.</item>
-        /// <item><see cref="IPatternTestInstanceHandler.DisposeTestInstance" />: If the fixture type
+        /// <item><see cref="PatternTestInstanceActions.DisposeTestInstanceChain" />: If the fixture type
         /// implements <see cref="IDisposable" />, disposes the fixture instance.</item>
-        /// <item><see cref="IPatternTestInstanceHandler.DecorateChildTest" />: Decorates the child's
-        /// <see cref="IPatternTestInstanceHandler.BeforeTestInstance" /> to set its <see cref="PatternTestInstanceState.FixtureInstance" />
+        /// <item><see cref="PatternTestInstanceActions.DecorateChildTestChain" />: Decorates the child's
+        /// <see cref="PatternTestInstanceActions.BeforeTestInstanceChain" /> to set its <see cref="PatternTestInstanceState.FixtureInstance" />
         /// and <see cref="PatternTestInstanceState.FixtureType" /> properties to those
         /// of the fixture.  The child test may override these values later on but this
         /// is a reasonable default setting for test methods within a fixture.</item>

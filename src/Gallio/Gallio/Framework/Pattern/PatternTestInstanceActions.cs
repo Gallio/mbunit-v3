@@ -16,17 +16,38 @@
 using System;
 using Gallio.Common;
 using Gallio.Model;
-using Gallio.Common.Diagnostics;
 
 namespace Gallio.Framework.Pattern
 {
     /// <summary>
-    /// An implementation of <see cref="IPatternTestInstanceHandler" /> based on
-    /// actions that can be sequenced and composed as chains.
+    /// Pattern test instance actions provide the logic that implements the various
+    /// phases of the test instance execution lifecycle.
     /// </summary>
-    /// <seealso cref="IPatternTestInstanceHandler" /> for documentation about the behaviors themselves.
+    /// <remarks>
+    /// <para>
+    /// Each chain represents the behavior to be performed during a particular phase.
+    /// Different actions are permitted during each phase.  Consult the
+    /// documentation of the chains for restrictions.
+    /// </para>
+    /// <para>
+    /// The phases generally run in the following order.  Some phases may be skipped
+    /// due to exceptions or if there is no work to be done.
+    /// <list type="bullet">
+    /// <item><see cref="BeforeTestInstanceChain" /></item>
+    /// <item>--- begin <see cref="RunTestInstanceBodyChain" /> ---</item>
+    /// <item><see cref="InitializeTestInstanceChain" /></item>
+    /// <item><see cref="SetUpTestInstanceChain" /></item>
+    /// <item><see cref="ExecuteTestInstanceChain" /></item>
+    /// <item><see cref="DecorateChildTestChain" /> before each child test</item>
+    /// <item><see cref="TearDownTestInstanceChain" /></item>
+    /// <item><see cref="DisposeTestInstanceChain" /></item>
+    /// <item>--- end <see cref="RunTestInstanceBodyChain" /> ---</item>
+    /// <item><see cref="AfterTestInstanceChain" /></item>
+    /// </list>
+    /// </para>
+    /// </remarks>
     /// <seealso cref="PatternTestActions"/> for actions on tests.
-    public class PatternTestInstanceActions : IPatternTestInstanceHandler
+    public class PatternTestInstanceActions
     {
         private readonly ActionChain<PatternTestInstanceState> beforeTestInstanceChain;
         private readonly ActionChain<PatternTestInstanceState> initializeTestInstanceChain;
@@ -52,187 +73,331 @@ namespace Gallio.Framework.Pattern
             disposeTestInstanceChain = new ActionChain<PatternTestInstanceState>();
             afterTestInstanceChain = new ActionChain<PatternTestInstanceState>();
             decorateChildTestChain = new ActionChain<PatternTestInstanceState, PatternTestActions>();
-            runTestInstanceBodyChain = new FuncChain<PatternTestInstanceState, TestOutcome>(state => state.RunBody());
+            runTestInstanceBodyChain = new FuncChain<PatternTestInstanceState, TestOutcome>(PatternTestInstanceState.RunBody);
         }
 
         /// <summary>
-        /// Creates a new <see cref="PatternTestInstanceActions" /> object initially configured
-        /// to forward calls to the specified handler without change.
+        /// Creates a copy of the test instance actions.
+        /// </summary>
+        /// <returns>The new copy.</returns>
+        public PatternTestInstanceActions Copy()
+        {
+            var copy = new PatternTestInstanceActions();
+            copy.beforeTestInstanceChain.Action = beforeTestInstanceChain.Action;
+            copy.initializeTestInstanceChain.Action = initializeTestInstanceChain.Action;
+            copy.setUpTestInstanceChain.Action = setUpTestInstanceChain.Action;
+            copy.executeTestInstanceChain.Action = executeTestInstanceChain.Action;
+            copy.tearDownTestInstanceChain.Action = tearDownTestInstanceChain.Action;
+            copy.disposeTestInstanceChain.Action = disposeTestInstanceChain.Action;
+            copy.afterTestInstanceChain.Action = afterTestInstanceChain.Action;
+            copy.decorateChildTestChain.Action = decorateChildTestChain.Action;
+            copy.runTestInstanceBodyChain.Func = runTestInstanceBodyChain.Func;
+            return copy;
+        }
+
+        /// <summary>
+        /// Prepares a newly created test instance state before its use.
         /// </summary>
         /// <remarks>
         /// <para>
-        /// The result is that any behaviors added to the action chains of the returned
-        /// <see cref="PatternTestInstanceActions" /> will be invoked before, after or around
-        /// those of the specified handler. 
+        /// This method runs in the <see cref="TestContext" /> of the <see cref="PatternTestState.PrimaryTestStep" />
+        /// because the test step for this instance (if different from the primary step) has not yet started.
         /// </para>
         /// <para>
-        /// A pattern test decorator applies additional actions around those of
-        /// another <see cref="IPatternTestInstanceHandler" /> for a <see cref="PatternTestStep"/>.
+        /// If <see cref="PatternTestInstanceState.IsReusingPrimaryTestStep" /> is false
+        /// then this method has the opportunity to modify the name or add metadata to the
+        /// brand new <see cref="PatternTestStep" /> that was created for just this test instance.
+        /// </para>
+        /// <para>
+        /// The following actions are typically performed during this phase:
+        /// <list type="bullet">
+        /// <item>Adding or changing slot values.</item>
+        /// <item>Configuring the test environment in advance of test initialization.</item>
+        /// <item>Modifying the name or metadata of the <see cref="PatternTestStep" />, if 
+        /// <see cref="PatternTestInstanceState.IsReusingPrimaryTestStep" /> is false
+        /// (since the primary test step has already started execution).</item>
+        /// <item>Accessing user data via <see cref="PatternTestInstanceState.Data" />.</item>
+        /// </list>
+        /// </para>
+        /// <para>
+        /// The following actions are forbidden during this phase because they would
+        /// either go unnoticed or have undesirable side-effects upon test execution:
+        /// <list type="bullet">
+        /// <item>Modifying the <see cref="PatternTest" /> object in any way.</item>
+        /// <item>Modifying the <see cref="PatternTestState" /> object in any way.</item>
+        /// <item>Modifying the <see cref="PatternTestStep" /> object in any way UNLESS <see cref="PatternTestInstanceState.IsReusingPrimaryTestStep" />
+        /// is false.</item>
+        /// <item>Skipping the test instance by throwing an appropriate <see cref="SilentTestException" />.</item>
+        /// </list>
         /// </para>
         /// </remarks>
-        /// <param name="handler">The handler to decorate.</param>
-        /// <returns>The decorated handler actions.</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="handler"/> is null.</exception>
-        public static PatternTestInstanceActions CreateDecorator(IPatternTestInstanceHandler handler)
-        {
-            if (handler == null)
-                throw new ArgumentNullException("handler");
-
-            PatternTestInstanceActions decorator = new PatternTestInstanceActions();
-            decorator.beforeTestInstanceChain.Action = handler.BeforeTestInstance;
-            decorator.initializeTestInstanceChain.Action = handler.InitializeTestInstance;
-            decorator.setUpTestInstanceChain.Action = handler.SetUpTestInstance;
-            decorator.executeTestInstanceChain.Action = handler.ExecuteTestInstance;
-            decorator.tearDownTestInstanceChain.Action = handler.TearDownTestInstance;
-            decorator.disposeTestInstanceChain.Action = handler.DisposeTestInstance;
-            decorator.afterTestInstanceChain.Action = handler.AfterTestInstance;
-            decorator.decorateChildTestChain.Action = handler.DecorateChildTest;
-            decorator.runTestInstanceBodyChain.Func = handler.RunTestInstanceBody;
-            return decorator;
-        }
-
-        /// <summary>
-        /// Gets the chain of <see cref="IPatternTestInstanceHandler.BeforeTestInstance" /> actions.
-        /// </summary>
-        /// <seealso cref="IPatternTestInstanceHandler.BeforeTestInstance"/> for details about the semantics of these actions.
         public ActionChain<PatternTestInstanceState> BeforeTestInstanceChain
         {
             get { return beforeTestInstanceChain; }
         }
 
         /// <summary>
-        /// Gets the chain of <see cref="IPatternTestInstanceHandler.InitializeTestInstance" /> actions.
+        /// Initializes a test instance that has just started running.
         /// </summary>
-        /// <seealso cref="IPatternTestInstanceHandler.InitializeTestInstance"/> for details about the semantics of these actions.
+        /// <remarks>
+        /// <para>
+        /// This method runs in the <see cref="TestContext" /> of the test instance
+        /// in the <see cref="LifecyclePhases.Initialize" /> lifecycle phase.
+        /// </para>
+        /// <para>
+        /// The following actions are typically performed during this phase:
+        /// <list type="bullet">
+        /// <item>Creating the test fixture instance and setting <see cref="PatternTestInstanceState.FixtureType"/>
+        /// and <see cref="PatternTestInstanceState.FixtureInstance"/>.</item>
+        /// <item>Configuring the test fixture in advance of test execution.</item>
+        /// <item>Accessing user data via <see cref="PatternTestInstanceState.Data" />.</item>
+        /// </list>
+        /// </para>
+        /// <para>
+        /// The following actions are forbidden during this phase because they would
+        /// either go unnoticed or have undesirable side-effects upon test execution:
+        /// <list type="bullet">
+        /// <item>Modifying the <see cref="PatternTest" /> object in any way.</item>
+        /// <item>Modifying the <see cref="PatternTestState" /> object in any way.</item>
+        /// <item>Modifying the <see cref="PatternTestStep" /> object in any way.</item>
+        /// </list>
+        /// </para>
+        /// </remarks>
         public ActionChain<PatternTestInstanceState> InitializeTestInstanceChain
         {
             get { return initializeTestInstanceChain; }
         }
 
         /// <summary>
-        /// Gets the chain of <see cref="IPatternTestInstanceHandler.SetUpTestInstance" /> actions.
+        /// Sets up a test instance prior to execution.
         /// </summary>
-        /// <seealso cref="IPatternTestInstanceHandler.SetUpTestInstance"/> for details about the semantics of these actions.
+        /// <remarks>
+        /// <para>
+        /// This method runs in the <see cref="TestContext" /> of the test instance
+        /// in the <see cref="LifecyclePhases.SetUp" /> lifecycle phase.
+        /// </para>
+        /// <para>
+        /// The following actions are typically performed during this phase:
+        /// <list type="bullet">
+        /// <item>Invoking test setup methods.</item>
+        /// <item>Accessing user data via <see cref="PatternTestInstanceState.Data" />.</item>
+        /// </list>
+        /// </para>
+        /// <para>
+        /// The following actions are forbidden during this phase because they would
+        /// either go unnoticed or have undesirable side-effects upon test execution:
+        /// <list type="bullet">
+        /// <item>Modifying the <see cref="PatternTest" /> object in any way.</item>
+        /// <item>Modifying the <see cref="PatternTestState" /> object in any way.</item>
+        /// <item>Modifying the <see cref="PatternTestStep" /> object in any way.</item>
+        /// </list>
+        /// </para>
+        /// </remarks>
         public ActionChain<PatternTestInstanceState> SetUpTestInstanceChain
         {
             get { return setUpTestInstanceChain; }
         }
 
         /// <summary>
-        /// Gets the chain of <see cref="IPatternTestInstanceHandler.ExecuteTestInstance" /> actions.
+        /// Executes the test instance.
         /// </summary>
-        /// <seealso cref="IPatternTestInstanceHandler.ExecuteTestInstance"/> for details about the semantics of these actions.
+        /// <remarks>
+        /// <para>
+        /// This method runs in the <see cref="TestContext" /> of the test instance
+        /// in the <see cref="LifecyclePhases.Execute" /> lifecycle phase.
+        /// </para>
+        /// <para>
+        /// The following actions are typically performed during this phase:
+        /// <list type="bullet">
+        /// <item>Invoking test methods.</item>
+        /// <item>Accessing user data via <see cref="PatternTestInstanceState.Data" />.</item>
+        /// </list>
+        /// </para>
+        /// <para>
+        /// The following actions are forbidden during this phase because they would
+        /// either go unnoticed or have undesirable side-effects upon test execution:
+        /// <list type="bullet">
+        /// <item>Modifying the <see cref="PatternTest" /> object in any way.</item>
+        /// <item>Modifying the <see cref="PatternTestState" /> object in any way.</item>
+        /// <item>Modifying the <see cref="PatternTestStep" /> object in any way.</item>
+        /// </list>
+        /// </para>
+        /// </remarks>
         public ActionChain<PatternTestInstanceState> ExecuteTestInstanceChain
         {
             get { return executeTestInstanceChain; }
         }
 
         /// <summary>
-        /// Gets the chain of <see cref="IPatternTestInstanceHandler.TearDownTestInstance" /> actions.
+        /// Tears down a test instance following execution.
         /// </summary>
-        /// <seealso cref="IPatternTestInstanceHandler.TearDownTestInstance"/> for details about the semantics of these actions.
+        /// <remarks>
+        /// <para>
+        /// This method runs in the <see cref="TestContext" /> of the test instance
+        /// in the <see cref="LifecyclePhases.TearDown" /> lifecycle phase.
+        /// </para>
+        /// <para>
+        /// The following actions are typically performed during this phase:
+        /// <list type="bullet">
+        /// <item>Invoking test teardown methods.</item>
+        /// <item>Accessing user data via <see cref="PatternTestInstanceState.Data" />.</item>
+        /// </list>
+        /// </para>
+        /// <para>
+        /// The following actions are forbidden during this phase because they would
+        /// either go unnoticed or have undesirable side-effects upon test execution:
+        /// <list type="bullet">
+        /// <item>Modifying the <see cref="PatternTest" /> object in any way.</item>
+        /// <item>Modifying the <see cref="PatternTestState" /> object in any way.</item>
+        /// <item>Modifying the <see cref="PatternTestStep" /> object in any way.</item>
+        /// </list>
+        /// </para>
+        /// </remarks>
         public ActionChain<PatternTestInstanceState> TearDownTestInstanceChain
         {
             get { return tearDownTestInstanceChain; }
         }
 
         /// <summary>
-        /// Gets the chain of <see cref="IPatternTestInstanceHandler.DisposeTestInstance" /> actions.
+        /// Disposes a test instance that is about to terminate.
         /// </summary>
-        /// <seealso cref="IPatternTestInstanceHandler.DisposeTestInstance"/> for details about the semantics of these actions.
+        /// <remarks>
+        /// <para>
+        /// This method runs in the <see cref="TestContext" /> of the test instance
+        /// in the <see cref="LifecyclePhases.Dispose" /> lifecycle phase.
+        /// </para>
+        /// <para>
+        /// The following actions are typically performed during this phase:
+        /// <list type="bullet">
+        /// <item>Deconfiguring the test fixture following test execution.</item>
+        /// <item>Disposing the test fixture instance.</item>
+        /// <item>Disposing other resources.</item>
+        /// <item>Accessing user data via <see cref="PatternTestInstanceState.Data" />.</item>
+        /// </list>
+        /// </para>
+        /// <para>
+        /// The following actions are forbidden during this phase because they would
+        /// either go unnoticed or have undesirable side-effects upon test execution:
+        /// <list type="bullet">
+        /// <item>Modifying the <see cref="PatternTest" /> object in any way.</item>
+        /// <item>Modifying the <see cref="PatternTestState" /> object in any way.</item>
+        /// <item>Modifying the <see cref="PatternTestStep" /> object in any way.</item>
+        /// </list>
+        /// </para>
+        /// </remarks>
         public ActionChain<PatternTestInstanceState> DisposeTestInstanceChain
         {
             get { return disposeTestInstanceChain; }
         }
 
         /// <summary>
-        /// Gets the chain of <see cref="IPatternTestInstanceHandler.AfterTestInstance" /> actions.
+        /// Cleans up a completed test instance after its use.
         /// </summary>
-        /// <seealso cref="IPatternTestInstanceHandler.AfterTestInstance"/> for details about the semantics of these actions.
+        /// <remarks>
+        /// <para>
+        /// This method runs in the <see cref="TestContext" /> of the <see cref="PatternTestState.PrimaryTestStep" />
+        /// because the test step for this instance (if different from the primary step) has terminated.
+        /// </para>
+        /// <para>
+        /// The following actions are typically performed during this phase:
+        /// <list type="bullet">
+        /// <item>Deconfiguring the test environment following the test disposal.</item>
+        /// <item>Accessing user data via <see cref="PatternTestInstanceState.Data" />.</item>
+        /// </list>
+        /// </para>
+        /// <para>
+        /// The following actions are forbidden during this phase because they would
+        /// either go unnoticed or have undesirable side-effects upon test execution:
+        /// <list type="bullet">
+        /// <item>Modifying the <see cref="PatternTest" /> object in any way.</item>
+        /// <item>Modifying the <see cref="PatternTestState" /> object in any way.</item>
+        /// <item>Modifying the <see cref="PatternTestStep" /> object in any way.</item>
+        /// </list>
+        /// </para>
+        /// </remarks>
         public ActionChain<PatternTestInstanceState> AfterTestInstanceChain
         {
             get { return afterTestInstanceChain; }
         }
 
         /// <summary>
-        /// Gets the chain of <see cref="IPatternTestInstanceHandler.DecorateChildTest" /> actions.
+        /// Decorates the <see cref="PatternTestActions" /> of a child test before its
+        /// <see cref="PatternTestActions.BeforeTestChain" /> actions have a chance to run.
         /// </summary>
-        /// <seealso cref="IPatternTestInstanceHandler.DecorateChildTest"/> for details about the semantics of these actions.
+        /// <remarks>
+        /// <para>
+        /// This method runs in the <see cref="TestContext" /> of the test instance
+        /// in the <see cref="LifecyclePhases.Execute" /> lifecycle phase.
+        /// </para>
+        /// <para>
+        /// This method may apply any number of decorations to the child test's actions
+        /// to the supplied <see cref="PatternTestActions" /> object.
+        /// The child test's original actions are unmodified by this operation and the
+        /// decorated actions are discarded once the child test is finished.
+        /// </para>
+        /// <para>
+        /// A typical use of this method is to augment the <see cref="SetUpTestInstanceChain" />
+        /// and <see cref="TearDownTestInstanceChain" /> behaviors of the child test with
+        /// additional contributions provided by the parent.
+        /// </para>
+        /// <para>
+        /// It is also possible to decorate descendants besides direct children.
+        /// To do so, decorate the child's <see cref="DecorateChildTestChain" /> behavior
+        /// to perpetuate the decoration down to more deeply nested descendants.  This
+        /// process of recursive decoration may be carried along to whatever depth is required.
+        /// </para>
+        /// <para>
+        /// The following actions are typically performed during this phase:
+        /// <list type="bullet">
+        /// <item>Adding additional actions for the child test to the <see cref="PatternTestActions"/>.</item>
+        /// <item>Accessing user data via <see cref="PatternTestInstanceState.Data" />.</item>
+        /// </list>
+        /// </para>
+        /// <para>
+        /// The following actions are forbidden during this phase because they would
+        /// either go unnoticed or have undesirable side-effects upon test execution:
+        /// <list type="bullet">
+        /// <item>Modifying the <see cref="PatternTest" /> object in any way.</item>
+        /// <item>Modifying the <see cref="PatternTestState" /> object in any way.</item>
+        /// <item>Modifying the <see cref="PatternTestStep" /> object in any way.</item>
+        /// </list>
+        /// </para>
+        /// <para>
+        /// The <see cref="PatternTestInstanceState"/> represents the state of the currently
+        /// executing instance of this test; not the child.  The child has not started
+        /// running yet.  When the child runs, the decorator actions installed in
+        /// <see cref="PatternTestActions"/> will be invoked with references to the
+        /// child's state as usual.
+        /// </para>
+        /// <para>
+        /// For some purposes it may be useful to save the <see cref="PatternTestInstanceState"/>
+        /// for later use in the decorated action.  For example, if the decorated action
+        /// needs to invoke a method on the parent test fixture, then it will need to
+        /// have the parent's <see cref="PatternTestInstanceState"/>.  This is very easy
+        /// using anonymous delegates (due to variable capture) but can also be accomplished
+        /// with other means as required.
+        /// </para>
+        /// </remarks>
         public ActionChain<PatternTestInstanceState, PatternTestActions> DecorateChildTestChain
         {
             get { return decorateChildTestChain; }
         }
 
         /// <summary>
-        /// Gets the chain of <see cref="IPatternTestInstanceHandler.RunTestInstanceBody" /> functions.
+        /// Runs the body of the test from the Initialize phase through the Dispose phase.
         /// </summary>
-        /// <seealso cref="IPatternTestInstanceHandler.RunTestInstanceBody"/> for details about the semantics of these functions.
+        /// <remarks>
+        /// <para>
+        /// This method is somewhat special in that it gives the test instance actions a chance to
+        /// encapsulate the context in which the test runs.  It can cause the test to run repeatedly,
+        /// or in another thread, or with some special execution context.  Of course, if it does any
+        /// of these things then it is responsible for properly cleaning up the test and responding
+        /// in a timely manner to abort events from the current test context's <see cref="Sandbox" />.
+        /// </para>
+        /// </remarks>
         public FuncChain<PatternTestInstanceState, TestOutcome> RunTestInstanceBodyChain
         {
             get { return runTestInstanceBodyChain; }
-        }
-
-        /// <inheritdoc />
-        [UserCodeEntryPoint]
-        public void BeforeTestInstance(PatternTestInstanceState testInstanceState)
-        {
-            beforeTestInstanceChain.Action(testInstanceState);
-        }
-
-        /// <inheritdoc />
-        [UserCodeEntryPoint]
-        public void InitializeTestInstance(PatternTestInstanceState testInstanceState)
-        {
-            initializeTestInstanceChain.Action(testInstanceState);
-        }
-
-        /// <inheritdoc />
-        [UserCodeEntryPoint]
-        public void SetUpTestInstance(PatternTestInstanceState testInstanceState)
-        {
-            setUpTestInstanceChain.Action(testInstanceState);
-        }
-
-        /// <inheritdoc />
-        [UserCodeEntryPoint]
-        public void ExecuteTestInstance(PatternTestInstanceState testInstanceState)
-        {
-            executeTestInstanceChain.Action(testInstanceState);
-        }
-
-        /// <inheritdoc />
-        [UserCodeEntryPoint]
-        public void TearDownTestInstance(PatternTestInstanceState testInstanceState)
-        {
-            tearDownTestInstanceChain.Action(testInstanceState);
-        }
-
-        /// <inheritdoc />
-        [UserCodeEntryPoint]
-        public void DisposeTestInstance(PatternTestInstanceState testInstanceState)
-        {
-            disposeTestInstanceChain.Action(testInstanceState);
-        }
-
-        /// <inheritdoc />
-        [UserCodeEntryPoint]
-        public void AfterTestInstance(PatternTestInstanceState testInstanceState)
-        {
-            afterTestInstanceChain.Action(testInstanceState);
-        }
-
-        /// <inheritdoc />
-        [UserCodeEntryPoint]
-        public void DecorateChildTest(PatternTestInstanceState testInstanceState, PatternTestActions decoratedChildTestActions)
-        {
-            decorateChildTestChain.Action(testInstanceState, decoratedChildTestActions);
-        }
-
-        /// <inheritdoc />
-        [UserCodeEntryPoint]
-        public TestOutcome RunTestInstanceBody(PatternTestInstanceState testInstanceState)
-        {
-            return runTestInstanceBodyChain.Func(testInstanceState);
         }
     }
 }

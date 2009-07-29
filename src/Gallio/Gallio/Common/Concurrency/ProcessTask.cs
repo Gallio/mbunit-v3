@@ -400,7 +400,7 @@ namespace Gallio.Common.Concurrency
 
             if (Interlocked.Exchange(ref exited, 1) == 0)
             {
-                NotifyTerminated(TaskResult.CreateFromValue(process.ExitCode));
+                NotifyTerminated(TaskResult<object>.CreateFromValue(process.ExitCode));
             }
         }
 

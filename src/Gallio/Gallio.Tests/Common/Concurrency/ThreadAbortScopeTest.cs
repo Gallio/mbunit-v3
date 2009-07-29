@@ -192,19 +192,13 @@ namespace Gallio.Tests.Common.Concurrency
         }
 
         [Test]
-        public void ProtectThrowsIfActionIsNull()
-        {
-            ThreadAbortScope scope = new ThreadAbortScope();
-            Assert.Throws<ArgumentNullException>(() => scope.Protect(null));
-        }
-
-        [Test]
         public void ProtectOutsideOfScopeJustRunsTheAction()
         {
             ThreadAbortScope scope = new ThreadAbortScope();
 
             bool ran = false;
-            scope.Protect(() => ran = true);
+            using (scope.Protect())
+                ran = true;
 
             Assert.IsTrue(ran, "Should have run the action.");
         }
@@ -218,7 +212,8 @@ namespace Gallio.Tests.Common.Concurrency
 
             Tasks.StartThreadTask("Different thread", () =>
             {
-                scope.Protect(() => ran = true);
+                using (scope.Protect())
+                    ran = true;
             });
             Tasks.JoinAndVerify(TimeSpan.FromMilliseconds(100));
 
@@ -232,11 +227,11 @@ namespace Gallio.Tests.Common.Concurrency
             ThreadAbortScope scope = new ThreadAbortScope();
             ThreadAbortException ex = scope.Run(() =>
             {
-                scope.Protect(() =>
+                using (scope.Protect())
                 {
                     scope.Abort();
                     ranToCompletion = true;
-                });
+                }
             });
 
             Assert.IsNotNull(ex, "Should have aborted.");
@@ -260,13 +255,13 @@ namespace Gallio.Tests.Common.Concurrency
             {
                 count += 1;
 
-                scope.Protect(() =>
+                using (scope.Protect())
                 {
                     count += 1;
                     barrier.Set();
                     Thread.Sleep(5000);
                     count += 1;
-                });
+                }
 
                 count += 1; // should not run
             }));

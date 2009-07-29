@@ -144,8 +144,9 @@
     <Compile Include="Framework\Data\Generation\RandomNumbersGeneratorTest.cs" />
     <Compile Include="Framework\Pattern\FixtureMemberInvokerTest.cs" />
     <Compile Include="Framework\Pattern\PatternTestFrameworkExtensionInfoTest.cs" />
+    <Compile Include="Framework\Pattern\PatternTestFrameworkStackDepthTest.cs" />
     <Compile Include="Framework\TestTerminatedExceptionTest.cs" />
-    <Compile Include="Framework\Pattern\ParallelizableTestCaseSchedulerTest.cs" />
+    <Compile Include="Common\Concurrency\WorkSchedulerTest.cs" />
     <Compile Include="Framework\Pattern\TestAssemblyExecutionParametersTest.cs" />
     <Compile Include="Common\FuncChainTest.cs" />
     <Compile Include="Framework\Assertions\AssertionConditionEvaluatorTest.cs" />

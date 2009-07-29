@@ -175,11 +175,11 @@ namespace Gallio.Common.Concurrency
 
                         if (ex != null)
                         {
-                            NotifyTerminated(TaskResult.CreateFromException(ex));
+                            NotifyTerminated(TaskResult<object>.CreateFromException(ex));
                         }
                         else
                         {
-                            NotifyTerminated(TaskResult.CreateFromValue(invoker.Result));
+                            NotifyTerminated(TaskResult<object>.CreateFromValue(invoker.Result));
                         }
                     }
                     finally
@@ -189,7 +189,7 @@ namespace Gallio.Common.Concurrency
                 }
                 catch (Exception ex)
                 {
-                    NotifyTerminated(TaskResult.CreateFromException(ex));
+                    NotifyTerminated(TaskResult<object>.CreateFromException(ex));
                 }
             }
             catch (Exception ex)

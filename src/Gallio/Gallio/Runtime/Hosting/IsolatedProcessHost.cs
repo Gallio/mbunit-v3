@@ -326,10 +326,9 @@ namespace Gallio.Runtime.Hosting
         {
             var processTask = (ProcessTask)e.Task;
 
-            var exception = processTask.Result.Exception;
-            if (exception != null)
+            if (! processTask.Result.HasValue)
             {
-                Logger.Log(LogSeverity.Error, "Host process encountered an exception.", exception);
+                Logger.Log(LogSeverity.Error, "Host process encountered an exception.", processTask.Result.Exception);
             }
             else
             {

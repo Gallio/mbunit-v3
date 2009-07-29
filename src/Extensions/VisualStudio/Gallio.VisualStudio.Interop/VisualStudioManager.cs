@@ -113,7 +113,7 @@ namespace Gallio.VisualStudio.Interop
 
             if (devenvProcessTask.IsTerminated && devenvProcessTask.Result != null)
             {
-                if (devenvProcessTask.Result.Exception != null)
+                if (! devenvProcessTask.Result.HasValue)
                     logger.Log(LogSeverity.Debug, "Failed to launch Visual Studio.", devenvProcessTask.Result.Exception);
             }
 

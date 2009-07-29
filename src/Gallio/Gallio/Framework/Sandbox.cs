@@ -253,30 +253,36 @@ namespace Gallio.Framework
 
         /// <summary>
         /// Uses a specified timeout for all actions run within a block of code.
+        /// When the timeout expires, the sandbox will be aborted.
         /// </summary>
+        /// <example>
+        /// <![CDATA[
+        /// using (sandbox.UseTimeout(TimeSpan.FromSeconds(5))
+        /// {
+        ///     // do abortable code
+        /// }
+        /// ]]>
+        /// </example>
         /// <param name="timeout">The execution timeout or null if none.</param>
-        /// <param name="action">The action to perform, protected by the timeout.</param>
+        /// <returns>An object that when disposed ends the timeout block, possibly null if there was no timeout.</returns>
         /// <exception cref="ObjectDisposedException">Thrown if the sandbox was disposed.</exception>
         /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="timeout"/> is negative.</exception>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="action"/> is null.</exception>
-        public void UseTimeout(TimeSpan? timeout, Action action)
+        public IDisposable StartTimer(TimeSpan? timeout)
         {
             if (timeout.HasValue && timeout.Value.Ticks < 0)
                 throw new ArgumentOutOfRangeException("timeout", "Timeout must not be negative.");
-            if (action == null)
-                throw new ArgumentNullException("action");
 
             ThrowIfDisposed();
 
-            using (timeout.HasValue ? new Timer(delegate
+            if (!timeout.HasValue)
+                return null;
+
+            return new Timer(delegate
                 {
                     Abort(TestOutcome.Timeout,
                         String.Format("The test timed out after {0} seconds.", timeout.Value.TotalSeconds),
                         false);
-                }, null, (int) timeout.Value.TotalMilliseconds, Timeout.Infinite) : null)
-            {
-                action();
-            }
+                }, null, (int)timeout.Value.TotalMilliseconds, Timeout.Infinite);
         }
 
         /// <summary>
@@ -320,6 +326,9 @@ namespace Gallio.Framework
         /// <exception cref="ObjectDisposedException">Thrown if the sandbox was disposed.</exception>
         public TestOutcome Run(MarkupDocumentWriter markupDocumentWriter, Action action, string description)
         {
+            // NOTE: This method has been optimized to minimize the total stack depth of the action
+            //       by inlining blocks on the critical path that had previously been factored out.
+
             if (markupDocumentWriter == null)
                 throw new ArgumentNullException("markupDocumentWriter");
             if (action == null)
@@ -345,7 +354,43 @@ namespace Gallio.Framework
                 if (scope == null)
                     return HandleAbort(markupDocumentWriter, description, null);
 
-                return RunWithScope(markupDocumentWriter, scope, action, description);
+                // Run the action within the scope we have acquired.
+                try
+                {
+                    ThreadAbortException ex = scope.Run(action);
+                    if (ex != null)
+                        return HandleAbort(markupDocumentWriter, description, ex);
+
+                    return TestOutcome.Passed;
+                }
+                catch (Exception ex)
+                {
+                    // If the test itself threw a thread abort, not because we aborted it
+                    // ourselves but most likely due to a bug in the test subject, then we
+                    // prevent the abort from bubbling up any further.
+                    if (ex is ThreadAbortException &&
+                        !AppDomain.CurrentDomain.IsFinalizingForUnload())
+                        Thread.ResetAbort();
+
+                    TestOutcome outcome;
+                    TestException testException = ex as TestException;
+                    if (testException != null)
+                    {
+                        outcome = testException.Outcome;
+
+                        if (testException.ExcludeStackTrace)
+                            LogMessage(markupDocumentWriter, description, outcome, testException.HasNonDefaultMessage ? testException.Message : null, null);
+                        else
+                            LogMessage(markupDocumentWriter, description, outcome, null, testException);
+                    }
+                    else
+                    {
+                        outcome = TestOutcome.Failed;
+                        LogMessage(markupDocumentWriter, description, outcome, null, ex);
+                    }
+
+                    return outcome;
+                }
             }
             finally
             {
@@ -364,46 +409,6 @@ namespace Gallio.Framework
             }
         }
 
-        private TestOutcome RunWithScope(MarkupDocumentWriter markupDocumentWriter, ThreadAbortScope scope, Action action, string description)
-        {
-            try
-            {
-                ThreadAbortException ex = scope.Run(action);
-                if (ex != null)
-                    return HandleAbort(markupDocumentWriter, description, ex);
-
-                return TestOutcome.Passed;
-            }
-            catch (Exception ex)
-            {
-                // If the test itself threw a thread abort, not because we aborted it
-                // ourselves but most likely due to a bug in the test subject, then we
-                // prevent the abort from bubbling up any further.
-                if (ex is ThreadAbortException &&
-                    ! AppDomain.CurrentDomain.IsFinalizingForUnload())
-                    Thread.ResetAbort();
-
-                TestOutcome outcome;
-                TestException testException = ex as TestException;
-                if (testException != null)
-                {
-                    outcome = testException.Outcome;
-
-                    if (testException.ExcludeStackTrace)
-                        LogMessage(markupDocumentWriter, description, outcome, testException.HasNonDefaultMessage ? testException.Message : null, null);
-                    else
-                        LogMessage(markupDocumentWriter, description, outcome, null, testException);
-                }
-                else
-                {
-                    outcome = TestOutcome.Failed;
-                    LogMessage(markupDocumentWriter, description, outcome, null, ex);
-                }
-
-                return outcome;
-            }
-        }
-
         /// <summary>
         /// Runs an action inside of a protected context wherein it cannot receive
         /// a thread abort from this <see cref="Sandbox"/>.
@@ -414,19 +419,11 @@ namespace Gallio.Framework
         /// may affect the sandbox.  This call cannot be nested.
         /// </para>
         /// </remarks>
-        /// <param name="action">The action to run.</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="action"/> is null.</exception>
-        [DebuggerHidden]
-        public void Protect(Action action)
+        /// <returns>An object that when disposed ends the protected block, possibly null if there was no protection necessary.</returns>
+        public IDisposable Protect()
         {
-            if (action == null)
-                throw new ArgumentNullException("action");
-
             ThreadAbortScope scope = FindActiveScopeForThread(Thread.CurrentThread);
-            if (scope != null)
-                scope.Protect(action);
-            else
-                action();
+            return scope != null ? scope.Protect() : null;
         }
 
         private ThreadAbortScope FindActiveScopeForThread(Thread currentThread)

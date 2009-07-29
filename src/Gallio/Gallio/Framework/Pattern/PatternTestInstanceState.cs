@@ -15,6 +15,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Reflection;
 using Gallio.Common.Collections;
 using Gallio.Framework.Data;
@@ -38,10 +39,10 @@ namespace Gallio.Framework.Pattern
     /// instance of the <see cref="PatternTest" /> to be executed using particular data bindings.</item>
     /// <item>The controller populates the instance state with slot values for each slot with
     /// an associated <see cref="IDataAccessor" /> in the <see cref="PatternTestState" />.</item>
-    /// <item>The controller calls <see cref="IPatternTestInstanceHandler.BeforeTestInstance" /> to give test extensions
+    /// <item>The controller calls <see cref="PatternTestInstanceActions.BeforeTestInstanceChain" /> to give test extensions
     /// the opportunity to modify the instance state.</item>
     /// <item>The controller initializes, sets up, executes, tears down and disposes the test instance.</item>
-    /// <item>The controller calls <see cref="IPatternTestInstanceHandler.AfterTestInstance" /> to give test extensions
+    /// <item>The controller calls <see cref="PatternTestInstanceActions.AfterTestInstanceChain" /> to give test extensions
     /// the opportunity to clean up the instance state.</item>
     /// </list>
     /// </para>
@@ -51,7 +52,7 @@ namespace Gallio.Framework.Pattern
         private static readonly Key<PatternTestInstanceState> ContextKey = new Key<PatternTestInstanceState>("Gallio.PatternTestInstanceState");
 
         private readonly PatternTestStep testStep;
-        private readonly IPatternTestInstanceHandler testInstanceHandler;
+        private readonly PatternTestInstanceActions testInstanceActions;
         private readonly PatternTestState testState;
         private readonly IDataItem bindingItem;
         private readonly Dictionary<PatternTestParameter, object> testParameterValues;
@@ -68,22 +69,22 @@ namespace Gallio.Framework.Pattern
         /// Creates an initial test instance state object.
         /// </summary>
         /// <param name="testStep">The test step used to execute the test instance.</param>
-        /// <param name="testInstanceHandler">The test instance handler.</param>
+        /// <param name="testInstanceActions">The test instance actions.</param>
         /// <param name="testState">The test state.</param>
         /// <param name="bindingItem">The data item.</param>
         /// <param name="body">The body of the test instance.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="testStep"/>,
-        /// <paramref name="testInstanceHandler"/> or <paramref name="testState"/> or <paramref name="bindingItem"/> is null.</exception>
+        /// <paramref name="testInstanceActions"/> or <paramref name="testState"/> or <paramref name="bindingItem"/> is null.</exception>
         /// <exception cref="ArgumentException">Thrown if <paramref name="testState"/> belongs to a
         /// different test from the <paramref name="testStep"/>.</exception>
         internal PatternTestInstanceState(PatternTestStep testStep, 
-            IPatternTestInstanceHandler testInstanceHandler,
+            PatternTestInstanceActions testInstanceActions,
             PatternTestState testState, IDataItem bindingItem, TestAction body)
         {
             if (testStep == null)
                 throw new ArgumentNullException("testStep");
-            if (testInstanceHandler == null)
-                throw new ArgumentNullException("testInstanceHandler");
+            if (testInstanceActions == null)
+                throw new ArgumentNullException("testInstanceActions");
             if (testState == null)
                 throw new ArgumentNullException("testState");
             if (testStep.Test != testState.Test)
@@ -94,7 +95,7 @@ namespace Gallio.Framework.Pattern
                 throw new ArgumentNullException("body");
 
             this.testStep = testStep;
-            this.testInstanceHandler = testInstanceHandler;
+            this.testInstanceActions = testInstanceActions;
             this.testState = testState;
             this.bindingItem = bindingItem;
             this.body = body;
@@ -151,11 +152,11 @@ namespace Gallio.Framework.Pattern
         }
 
         /// <summary>
-        /// Gets the handler for the test instance.
+        /// Gets the test instance actions.
         /// </summary>
-        public IPatternTestInstanceHandler TestInstanceHandler
+        public PatternTestInstanceActions TestInstanceActions
         {
-            get { return testInstanceHandler; }
+            get { return testInstanceActions; }
         }
 
         /// <summary>
@@ -404,10 +405,10 @@ namespace Gallio.Framework.Pattern
         /// Runs the body of the test.
         /// </summary>
         /// <returns>The test outcome.</returns>
-        [UserCodeEntryPoint]
-        public TestOutcome RunBody()
+        [UserCodeEntryPoint, DebuggerHidden]
+        internal static TestOutcome RunBody(PatternTestInstanceState state)
         {
-            return body();
+            return state.body();
         }
     }
 }

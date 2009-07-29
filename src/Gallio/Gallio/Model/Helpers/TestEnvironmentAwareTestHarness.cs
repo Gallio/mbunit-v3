@@ -26,7 +26,6 @@ namespace Gallio.Model.Helpers
     public class TestEnvironmentAwareTestHarness : TestHarness
     {
         private readonly ITestEnvironmentManager testEnvironmentManager;
-        private IDisposable appDomainContext;
 
         /// <summary>
         /// Creates the test harness.
@@ -42,23 +41,15 @@ namespace Gallio.Model.Helpers
         }
 
         /// <inheritdoc />
-        public override void SetUp()
+        public override IDisposable SetUpAppDomain()
         {
-            appDomainContext = testEnvironmentManager.SetUpAppDomain();
+            return testEnvironmentManager.SetUpAppDomain();
         }
 
         /// <inheritdoc />
-        public override void TearDown()
+        public override IDisposable SetUpThread()
         {
-            if (appDomainContext != null)
-                appDomainContext.Dispose();
-        }
-
-        /// <inheritdoc />
-        protected override void RunImpl(Action action)
-        {
-            using (testEnvironmentManager.SetUpThread())
-                action();
+            return testEnvironmentManager.SetUpThread();
         }
     }
 }
