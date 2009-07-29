@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using System.Diagnostics;
 using Gallio.Model.Commands;
 using Gallio.Model.Contexts;
 using Gallio.Model.Tree;
@@ -45,7 +46,8 @@ namespace Gallio.Model.Helpers
         }
 
         /// <inheritdoc />
-        protected override TestResult RunImpl(ITestCommand rootTestCommand, TestStep parentTestStep, TestExecutionOptions options, IProgressMonitor progressMonitor)
+        [DebuggerNonUserCode]
+        protected internal override TestResult RunImpl(ITestCommand rootTestCommand, TestStep parentTestStep, TestExecutionOptions options, IProgressMonitor progressMonitor)
         {
             using (progressMonitor.BeginTask("Running tests.", rootTestCommand.TestCount))
             {
@@ -53,6 +55,7 @@ namespace Gallio.Model.Helpers
             }
         }
 
+        [DebuggerNonUserCode]
         private TestResult RunTest(ITestCommand testCommand, TestStep parentTestStep,
             TestExecutionOptions options, IProgressMonitor progressMonitor)
         {
@@ -67,7 +70,9 @@ namespace Gallio.Model.Helpers
                     {
                         using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(testCommand.TestCount))
                         {
-                            return testController.Run(testCommand, parentTestStep, options, subProgressMonitor);
+                            // Calling RunImpl directly instead of Run to minimize stack depth
+                            // because we already know the arguments are valid.
+                            return testController.RunImpl(testCommand, parentTestStep, options, subProgressMonitor);
                         }
                     }
                     catch (Exception ex)

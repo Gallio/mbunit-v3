@@ -205,6 +205,25 @@ namespace Gallio.Tests.Common.Diagnostics
             }
 
             [Test]
+            public void OmitsDebuggerNonUserCodeMethods()
+            {
+                string trace = null;
+                try
+                {
+                    ThrowNonUserCode();
+                    Assert.Fail();
+                }
+                catch (InvalidOperationException ex)
+                {
+                    trace = StackTraceFilter.FilterException(ex).ToString();
+                    TestLog.WriteLine(trace);
+                }
+
+                Assert.Contains(trace, "OmitsDebuggerNonUserCodeMethods");
+                Assert.IsFalse(trace.Contains("ThrowNonUserCode"));
+            }
+
+            [Test]
             public void OmitsDebuggerHiddenConstructors()
             {
                 string trace = null;
@@ -356,6 +375,13 @@ namespace Gallio.Tests.Common.Diagnostics
             [MethodImpl(MethodImplOptions.NoInlining)]
             [DebuggerHidden]
             private void ThrowHidden()
+            {
+                throw new InvalidOperationException("Boom");
+            }
+
+            [MethodImpl(MethodImplOptions.NoInlining)]
+            [DebuggerNonUserCode]
+            private void ThrowNonUserCode()
             {
                 throw new InvalidOperationException("Boom");
             }

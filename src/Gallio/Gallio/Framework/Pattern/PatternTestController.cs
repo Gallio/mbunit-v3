@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using System.Diagnostics;
 using Gallio.Model.Commands;
 using Gallio.Model.Helpers;
 using Gallio.Model.Tree;
@@ -58,7 +59,8 @@ namespace Gallio.Framework.Pattern
         }
 
         /// <inheritdoc />
-        protected override TestResult RunImpl(ITestCommand rootTestCommand, Model.Tree.TestStep parentTestStep, TestExecutionOptions options, IProgressMonitor progressMonitor)
+        [DebuggerNonUserCode]
+        protected internal override TestResult RunImpl(ITestCommand rootTestCommand, Model.Tree.TestStep parentTestStep, TestExecutionOptions options, IProgressMonitor progressMonitor)
         {
             using (progressMonitor.BeginTask("Running tests.", rootTestCommand.TestCount))
             {
@@ -75,7 +77,11 @@ namespace Gallio.Framework.Pattern
                     TestAssemblyExecutionParameters.Reset();
 
                     PatternTestExecutor executor = new PatternTestExecutor(options, progressMonitor, formatter, converter, environmentManager);
-                    return executor.RunTest(rootTestCommand, parentTestStep, sandbox, null);
+
+                    // Inlined to minimize stack depth.
+                    var action = executor.CreateActionToRunTest(rootTestCommand, parentTestStep, sandbox, null);
+                    action.Run();
+                    return action.Result;
                 }
                 finally
                 {

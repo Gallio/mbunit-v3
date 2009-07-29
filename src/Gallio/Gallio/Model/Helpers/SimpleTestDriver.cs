@@ -16,6 +16,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Reflection;
 using System.Threading;
 using Gallio.Common;
@@ -113,7 +114,29 @@ namespace Gallio.Model.Helpers
                         progressMonitor.SetStatus("Running the tests.");
                         if (rootTestCommand != null)
                         {
-                            RunTestCommands(rootTestCommand, testExecutionOptions, testHarness, testContextManager, progressMonitor.CreateSubProgressMonitor(93));
+                            RunTestCommandsAction action = new RunTestCommandsAction(this, rootTestCommand, testExecutionOptions,
+                                testHarness, testContextManager, progressMonitor.CreateSubProgressMonitor(93));
+
+                            if (testExecutionOptions.SingleThreaded)
+                            {
+                                // The execution options require the use of a single thread.
+                                action.Run();
+                            }
+                            else
+                            {
+                                // Create a new thread so that we can consistently set the default apartment
+                                // state to STA and so as to reduce the effective stack depth during the
+                                // test run.  We use Thread instead of ThreadTask because we do not
+                                // require the ability to abort the Thread so we do not need to take the
+                                // extra overhead.
+                                Thread thread = new Thread(action.Run);
+                                thread.SetApartmentState(ApartmentState.STA);
+                                thread.Start();
+                                thread.Join();
+                            }
+
+                            if (action.Exception != null)
+                                throw new ModelException("A fatal exception occurred while running test commands.", action.Exception);
                         }
                         else
                         {
@@ -232,10 +255,34 @@ namespace Gallio.Model.Helpers
             return rootCommand;
         }
 
-        private void RunTestCommands(ITestCommand rootTestCommand, TestExecutionOptions options, TestHarness testHarness, ITestContextManager testContextManager, IProgressMonitor progressMonitor)
+        private sealed class RunTestCommandsAction
         {
-            Exception actionException = null;
-            ThreadStart action = () =>
+            private readonly SimpleTestDriver driver;
+            private readonly ITestCommand rootTestCommand;
+            private readonly TestExecutionOptions options;
+            private readonly TestHarness testHarness;
+            private readonly ITestContextManager testContextManager;
+            private readonly IProgressMonitor progressMonitor;
+
+            private Exception exception;
+
+            public RunTestCommandsAction(SimpleTestDriver driver, ITestCommand rootTestCommand, TestExecutionOptions options, TestHarness testHarness, ITestContextManager testContextManager, IProgressMonitor progressMonitor)
+            {
+                this.driver = driver;
+                this.rootTestCommand = rootTestCommand;
+                this.options = options;
+                this.testHarness = testHarness;
+                this.testContextManager = testContextManager;
+                this.progressMonitor = progressMonitor;
+            }
+
+            public Exception Exception
+            {
+                get { return exception; }
+            }
+
+            [DebuggerNonUserCode]
+            public void Run()
             {
                 try
                 {
@@ -243,39 +290,20 @@ namespace Gallio.Model.Helpers
                     {
                         using (testContextManager.ContextTracker.EnterContext(null))
                         {
-                            using (TestController testController = CreateTestController())
+                            using (TestController testController = driver.CreateTestController())
                             {
-                                testController.Run(rootTestCommand, null, options, progressMonitor);
+                                // Calling RunImpl directly instead of Run to minimize stack depth
+                                // because we already know the arguments are valid.
+                                testController.RunImpl(rootTestCommand, null, options, progressMonitor);
                             }
                         }
                     }
                 }
                 catch (Exception ex)
                 {
-                    actionException = ex;
+                    exception = ex;
                 }
-            };
-
-            if (options.SingleThreaded)
-            {
-                // The execution options require the use of a single thread.
-                action();
             }
-            else
-            {
-                // Create a new thread so that we can consistently set the default apartment
-                // state to STA and so as to reduce the effective stack depth during the
-                // test run.  We use Thread instead of ThreadTask because we do not
-                // require the ability to abort the Thread so we do not need to take the
-                // extra overhead.
-                Thread thread = new Thread(action);
-                thread.SetApartmentState(ApartmentState.STA);
-                thread.Start();
-                thread.Join();
-            }
-
-            if (actionException != null)
-                throw new ModelException("A fatal exception occurred while running test commands.", actionException);
         }
     }
 }

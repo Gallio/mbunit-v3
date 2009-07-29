@@ -89,6 +89,7 @@ namespace Gallio.Common.Concurrency
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="action"/> is null.</exception>
         /// <exception cref="InvalidOperationException">Thrown if an action is already running in this scope.</exception>
         /// <exception cref="Exception">Any other exception thrown by <paramref name="action"/> itself.</exception>
+        [DebuggerStepThrough, DebuggerHidden]
         public ThreadAbortException Run(Action action)
         {
             // NOTE: This method has been optimized to minimize the total stack depth of the action
@@ -241,7 +242,7 @@ namespace Gallio.Common.Concurrency
         /// it to ensure that it gets delivered.  Otherwise the pending thread abort exception
         /// could occur outside of our special region.
         /// </summary>
-        [DebuggerHidden]
+        [DebuggerStepThrough, DebuggerHidden]
         private void WaitForThreadAbortIfAborting()
         {
             // The polling limit is designed to work around a problem where the Thread.Abort

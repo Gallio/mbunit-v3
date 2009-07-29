@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
+using Gallio.Common.Reflection;
 using Gallio.Framework;
 using MbUnit.Framework;
 
@@ -22,6 +25,52 @@ namespace Gallio.Tests.Framework.Pattern
     [RunSample(typeof(StackDepthSample))]
     public class PatternTestFrameworkStackDepthTest : BaseTestWithSampleRunner
     {
+        // acceptable depth is based on the best measured depth plus a little slack for runtime variations
+        [Test]
+        [Row(typeof(StackDepthSample), "SimpleTest", 51 + 3)]
+        [Row(typeof(StackDepthSample), "DataDrivenTest", 51 + 3)]
+        [Row(typeof(StackDepthSample), "DecoratedTest", 58 + 3)]
+        [Row(typeof(StackDepthSample.Nested), "NestedTest", 58 + 3)]
+        public void StackDepthIsBounded(Type sampleType, string methodName, int maxAcceptableStackDepth)
+        {
+            var primaryTestStepRun = Runner.GetPrimaryTestStepRun(CodeReference.CreateFromMember(sampleType.GetMethod(methodName)));
+
+            StringBuilder combinedLogFromAllSteps = new StringBuilder();
+            foreach (var run in primaryTestStepRun.AllTestStepRuns)
+                combinedLogFromAllSteps.Append(run.TestLog.ToString());
+
+            Match match = Regex.Match(combinedLogFromAllSteps.ToString(), "Stack depth: ([0-9]+)");
+            int stackDepth = int.Parse(match.Groups[1].Value);
+            Assert.LessThan(stackDepth, maxAcceptableStackDepth, "Actual stack depth was greater than acceptable threshold.");
+        }
+
+        /// <summary>
+        /// With the debugger attached, step-over manually through all trials of this test as quickly
+        /// as possible from BEGIN to END to time how long it takes to progress.  Write this number
+        /// down and compare it across multiple runs to observe how optimizing stack depth has
+        /// helped or hindered.
+        /// </summary>
+        [Test, Explicit("Manual timing test.")]
+        public void ManualSingleStepTime()
+        {
+            const int trials = 5;
+            const int stepsPerTrial = 5;
+
+            TimeSpan totalElapsed = TimeSpan.Zero;
+            for (int trial = 1; trial <= trials; trial++)
+            {
+                // --BEGIN--
+                Stopwatch stopwatch = Stopwatch.StartNew();
+                totalElapsed += TimeSpan.Zero; // waste time
+                totalElapsed += TimeSpan.Zero; // waste time
+                totalElapsed += TimeSpan.Zero; // waste time
+                totalElapsed += stopwatch.Elapsed;
+                // --END--
+            }
+
+            TestLog.WriteLine("Time per single-step: approx. {0}ms.", totalElapsed.TotalMilliseconds / trials / stepsPerTrial);
+        }
+
         [Explicit("Sample")]
         public class StackDepthSample
         {

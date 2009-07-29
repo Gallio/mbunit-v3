@@ -185,7 +185,7 @@ namespace Gallio.Common.Diagnostics
 
         private static bool ShouldFilterOmitFrame(MethodBase method)
         {
-            if (HasHiddenOrInternalAttribute(method))
+            if (HasHiddenOrNonUserCodeOrInternalAttribute(method))
                 return true;
 
             Type declaringType = method.DeclaringType;
@@ -203,7 +203,7 @@ namespace Gallio.Common.Diagnostics
         private static bool HasSignificantAttribute(MethodBase method)
         {
             return HasTestEntryPointAttribute(method)
-                || HasHiddenOrInternalAttribute(method);
+                || HasHiddenOrNonUserCodeOrInternalAttribute(method);
         }
 
         private static bool HasTestEntryPointAttribute(MethodBase method)
@@ -211,9 +211,10 @@ namespace Gallio.Common.Diagnostics
             return method.IsDefined(typeof(UserCodeEntryPointAttribute), true);
         }
 
-        private static bool HasHiddenOrInternalAttribute(MethodBase method)
+        private static bool HasHiddenOrNonUserCodeOrInternalAttribute(MethodBase method)
         {
             return method.IsDefined(typeof(DebuggerHiddenAttribute), true)
+                || method.IsDefined(typeof(DebuggerNonUserCodeAttribute), true)
                 || method.IsDefined(typeof(SystemInternalAttribute), true);
         }
 

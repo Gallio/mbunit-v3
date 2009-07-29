@@ -87,7 +87,7 @@ namespace Gallio.Model.Helpers
         /// <param name="options">The test execution options, not null.</param>
         /// <param name="progressMonitor">The progress monitor, not null.</param>
         /// <returns>The combined result of the root test command.</returns>
-        protected abstract TestResult RunImpl(ITestCommand rootTestCommand, TestStep parentTestStep, TestExecutionOptions options, IProgressMonitor progressMonitor);
+        protected internal abstract TestResult RunImpl(ITestCommand rootTestCommand, TestStep parentTestStep, TestExecutionOptions options, IProgressMonitor progressMonitor);
 
         /// <summary>
         /// Recursively generates single test steps for each <see cref="ITestCommand" /> and

@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using System.Diagnostics;
 using Gallio.Framework;
 using Gallio.Framework.Pattern;
 using Gallio.Model;
@@ -58,17 +59,21 @@ namespace MbUnit.Framework
         //       TestSequence attribute.
 
         /// <inheritdoc />
-        protected override object Execute(PatternTestInstanceState state)
+        [DebuggerNonUserCode]
+        protected override void Execute(PatternTestInstanceState state)
         {
             string expectedExceptionType = state.TestStep.Metadata.GetValue(MetadataKeys.ExpectedException)
                 ?? state.Test.Metadata.GetValue(MetadataKeys.ExpectedException);
 
             if (expectedExceptionType == null)
-                return base.Execute(state);
+            {
+                state.InvokeTestMethod();
+                return;
+            }
 
             try
             {
-                base.Execute(state);
+                state.InvokeTestMethod();
 
                 using (TestLog.Failures.BeginSection("Expected Exception"))
                     TestLog.Failures.WriteLine("Expected an exception of type '{0}' but none was thrown.", expectedExceptionType);
@@ -77,7 +82,7 @@ namespace MbUnit.Framework
             {
                 Type exceptionType = ex.GetType();
                 if (ReflectionUtils.IsAssignableFrom(expectedExceptionType, exceptionType))
-                    return null;
+                    return;
 
                 if (ex is TestException)
                     throw;

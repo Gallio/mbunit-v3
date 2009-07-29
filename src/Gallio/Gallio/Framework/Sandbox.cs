@@ -324,6 +324,7 @@ namespace Gallio.Framework
         /// <returns>The outcome of the action.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="markupDocumentWriter"/> or <paramref name="action"/> is null.</exception>
         /// <exception cref="ObjectDisposedException">Thrown if the sandbox was disposed.</exception>
+        [DebuggerHidden, DebuggerStepThrough]
         public TestOutcome Run(MarkupDocumentWriter markupDocumentWriter, Action action, string description)
         {
             // NOTE: This method has been optimized to minimize the total stack depth of the action

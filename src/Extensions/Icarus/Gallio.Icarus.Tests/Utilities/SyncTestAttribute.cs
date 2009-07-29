@@ -13,6 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Diagnostics;
 using Gallio.UI.Common.Synchronization;
 using MbUnit.Framework;
 using Gallio.Framework.Pattern;
@@ -21,12 +22,19 @@ namespace Gallio.Icarus.Tests.Utilities
 {
     internal class SyncTestAttribute : TestAttribute
     {
-        protected override object Execute(PatternTestInstanceState state)
+        [DebuggerNonUserCode]
+        protected override void Execute(PatternTestInstanceState state)
         {
-            SynchronizationContext.Instance = new TestSynchronizationContext();
-            var o = base.Execute(state);
-            SynchronizationContext.Instance = null;
-            return o;
+            try
+            {
+                SynchronizationContext.Instance = new TestSynchronizationContext();
+
+                state.InvokeTestMethod();
+            }
+            finally
+            {
+                SynchronizationContext.Instance = null;
+            }
         }
     }
 }
