@@ -44,7 +44,7 @@ namespace Gallio.Framework.Pattern
     /// to be more debugger-friendly.  That means some of these methods (and the methods
     /// they call) are rather a lot longer and harder to read than they used to be.
     /// However the payoff is very significant for end-users.  As a result of this optimization
-    /// the effective stack depth for a simple test has been reduced from over 160 to less than 60.
+    /// the effective stack depth for a simple test has been reduced from over 160 to about 30 in many cases.
     /// -- Jeff.
     /// </para>
     /// </remarks>
@@ -282,7 +282,7 @@ namespace Gallio.Framework.Pattern
                                                                 bindingItem.PopulateMetadata(testStep.Metadata);
                                                             }
 
-                                                            var bodyAction = new RunBodyAction(executor, testCommand);
+                                                            var bodyAction = new RunTestInstanceAction(executor, testCommand);
                                                             var testInstanceState = new PatternTestInstanceState(testStep, decoratedTestInstanceActions, testState, bindingItem, bodyAction.Run);
                                                             bodyAction.TestInstanceState = testInstanceState;
 
@@ -302,10 +302,18 @@ namespace Gallio.Framework.Pattern
 
                                                                 using (context.Enter())
                                                                 {
-                                                                    var runTestInstanceBodyAction = new RunTestInstanceBodyAction(testInstanceState);
-                                                                    TestOutcome sandboxOutcome = context.Sandbox.Run(TestLog.Writer, runTestInstanceBodyAction.Run, "Body");
+                                                                    if (RunTestInstanceBodyAction.CanOptimizeCallChainAndInvokeBodyActionDirectly(testInstanceState))
+                                                                    {
+                                                                        bodyAction.SkipProtect = true;
+                                                                        instanceOutcome = instanceOutcome.CombineWith(bodyAction.Run());
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        var runTestInstanceBodyAction = new RunTestInstanceBodyAction(testInstanceState);
+                                                                        TestOutcome sandboxOutcome = context.Sandbox.Run(TestLog.Writer, runTestInstanceBodyAction.Run, "Body");
 
-                                                                    instanceOutcome = instanceOutcome.CombineWith(runTestInstanceBodyAction.Outcome.CombineWith(sandboxOutcome));
+                                                                        instanceOutcome = instanceOutcome.CombineWith(runTestInstanceBodyAction.Outcome.CombineWith(sandboxOutcome));
+                                                                    }
                                                                 }
 
                                                                 if (!reusePrimaryTestStep)
@@ -384,13 +392,14 @@ namespace Gallio.Framework.Pattern
             }
         }
 
-        private sealed class RunBodyAction
+        private sealed class RunTestInstanceAction
         {
             private readonly PatternTestExecutor executor;
             private readonly ITestCommand testCommand;
             private PatternTestInstanceState testInstanceState;
+            private bool skipProtect;
 
-            public RunBodyAction(PatternTestExecutor executor, ITestCommand testCommand)
+            public RunTestInstanceAction(PatternTestExecutor executor, ITestCommand testCommand)
             {
                 this.executor = executor;
                 this.testCommand = testCommand;
@@ -401,12 +410,17 @@ namespace Gallio.Framework.Pattern
                 set { testInstanceState = value; }
             }
 
+            public bool SkipProtect
+            {
+                set { skipProtect = value ; }
+            }
+
             [DebuggerNonUserCode]
             public TestOutcome Run()
             {
                 TestContext context = TestContext.CurrentContext;
 
-                using (context.Sandbox.Protect())
+                using (skipProtect ? null : context.Sandbox.Protect())
                 {
                     try
                     {
@@ -455,16 +469,29 @@ namespace Gallio.Framework.Pattern
 
                                     foreach (TestBatch batch in GenerateTestBatches(testCommand.Children))
                                     {
-                                        RunTestAction[] actions = GenericCollectionUtils.ConvertAllToArray(batch.Commands,
-                                            childTestCommand => new RunTestAction(executor, childTestCommand, context, testActionsDecorator));
+                                        if (batch.Commands.Count == 1)
+                                        {
+                                            // Special case to reduce effective stack depth and cost since there is no
+                                            // need to use the scheduler if nothing is running in parallel.
+                                            RunTestAction action = new RunTestAction(executor, batch.Commands[0], context, testActionsDecorator);
 
-                                        executor.scheduler.Run(Array.ConvertAll<RunTestAction, Action>(actions, action => action.Run));
+                                            action.Run();
 
-                                        TestOutcome combinedChildOutcome = TestOutcome.Passed;
-                                        foreach (var action in actions)
-                                            combinedChildOutcome = combinedChildOutcome.CombineWith(action.Result.Outcome);
+                                            UpdateInterimOutcome(context, ref outcome, action.Result.Outcome.Generalize());
+                                        }
+                                        else
+                                        {
+                                            RunTestAction[] actions = GenericCollectionUtils.ConvertAllToArray(batch.Commands,
+                                                childTestCommand => new RunTestAction(executor, childTestCommand, context, testActionsDecorator));
 
-                                        UpdateInterimOutcome(context, ref outcome, combinedChildOutcome.Generalize());
+                                            executor.scheduler.Run(Array.ConvertAll<RunTestAction, Action>(actions, action => action.Run));
+
+                                            TestOutcome combinedChildOutcome = TestOutcome.Passed;
+                                            foreach (var action in actions)
+                                                combinedChildOutcome = combinedChildOutcome.CombineWith(action.Result.Outcome);
+
+                                            UpdateInterimOutcome(context, ref outcome, combinedChildOutcome.Generalize());
+                                        }
                                     }
                                 }
                             }
@@ -683,6 +710,11 @@ namespace Gallio.Framework.Pattern
             public void Run()
             {
                 outcome = testInstanceState.TestInstanceActions.RunTestInstanceBodyChain.Func(testInstanceState);
+            }
+
+            public static bool CanOptimizeCallChainAndInvokeBodyActionDirectly(PatternTestInstanceState testInstanceState)
+            {
+                return testInstanceState.TestInstanceActions.IsDefaultRunTestInstanceBodyChain;
             }
         }
 

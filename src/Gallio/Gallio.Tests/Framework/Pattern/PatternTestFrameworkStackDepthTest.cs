@@ -27,10 +27,10 @@ namespace Gallio.Tests.Framework.Pattern
     {
         // acceptable depth is based on the best measured depth plus a little slack for runtime variations
         [Test]
-        [Row(typeof(StackDepthSample), "SimpleTest", 51 + 3)]
-        [Row(typeof(StackDepthSample), "DataDrivenTest", 51 + 3)]
-        [Row(typeof(StackDepthSample), "DecoratedTest", 58 + 3)]
-        [Row(typeof(StackDepthSample.Nested), "NestedTest", 58 + 3)]
+        [Row(typeof(StackDepthSample), "SimpleTest", 32 + 3)]
+        [Row(typeof(StackDepthSample), "DataDrivenTest", 32 + 3)]
+        [Row(typeof(StackDepthSample), "DecoratedTest", 43 + 3)]
+        [Row(typeof(StackDepthSample.Nested), "NestedTest", 34 + 3)]
         public void StackDepthIsBounded(Type sampleType, string methodName, int maxAcceptableStackDepth)
         {
             var primaryTestStepRun = Runner.GetPrimaryTestStepRun(CodeReference.CreateFromMember(sampleType.GetMethod(methodName)));

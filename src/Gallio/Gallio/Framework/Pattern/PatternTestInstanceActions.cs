@@ -49,6 +49,8 @@ namespace Gallio.Framework.Pattern
     /// <seealso cref="PatternTestActions"/> for actions on tests.
     public class PatternTestInstanceActions
     {
+        private static readonly Func<PatternTestInstanceState, TestOutcome> DefaultRunTestInstanceBodyFunc = PatternTestInstanceState.RunBody;
+
         private readonly ActionChain<PatternTestInstanceState> beforeTestInstanceChain;
         private readonly ActionChain<PatternTestInstanceState> initializeTestInstanceChain;
         private readonly ActionChain<PatternTestInstanceState> setUpTestInstanceChain;
@@ -73,7 +75,7 @@ namespace Gallio.Framework.Pattern
             disposeTestInstanceChain = new ActionChain<PatternTestInstanceState>();
             afterTestInstanceChain = new ActionChain<PatternTestInstanceState>();
             decorateChildTestChain = new ActionChain<PatternTestInstanceState, PatternTestActions>();
-            runTestInstanceBodyChain = new FuncChain<PatternTestInstanceState, TestOutcome>(PatternTestInstanceState.RunBody);
+            runTestInstanceBodyChain = new FuncChain<PatternTestInstanceState, TestOutcome>(DefaultRunTestInstanceBodyFunc);
         }
 
         /// <summary>
@@ -398,6 +400,11 @@ namespace Gallio.Framework.Pattern
         public FuncChain<PatternTestInstanceState, TestOutcome> RunTestInstanceBodyChain
         {
             get { return runTestInstanceBodyChain; }
+        }
+
+        internal bool IsDefaultRunTestInstanceBodyChain
+        {
+            get { return runTestInstanceBodyChain.Func == DefaultRunTestInstanceBodyFunc; }
         }
     }
 }
