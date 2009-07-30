@@ -3,6 +3,8 @@ Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.BuildTools.Tasks", "Gallio.BuildTools.Tasks\Gallio.BuildTools.Tasks.csproj", "{C0089B19-59A5-485D-9F83-5E40ACBF0AD5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.BuildTools.XsdGen", "Gallio.BuildTools.XsdGen\Gallio.BuildTools.XsdGen.csproj", "{D5AAAB67-D51F-4F6C-A0B5-074A5CC9E7E1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -13,6 +15,10 @@ Global
 		{C0089B19-59A5-485D-9F83-5E40ACBF0AD5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C0089B19-59A5-485D-9F83-5E40ACBF0AD5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C0089B19-59A5-485D-9F83-5E40ACBF0AD5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D5AAAB67-D51F-4F6C-A0B5-074A5CC9E7E1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D5AAAB67-D51F-4F6C-A0B5-074A5CC9E7E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D5AAAB67-D51F-4F6C-A0B5-074A5CC9E7E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D5AAAB67-D51F-4F6C-A0B5-074A5CC9E7E1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

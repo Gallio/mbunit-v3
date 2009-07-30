@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{C0089B19-59A5-485D-9F83-5E40ACBF0AD5}</ProjectGuid>
-    <OutputType>Library</OutputType>
+    <ProjectGuid>{D5AAAB67-D51F-4F6C-A0B5-074A5CC9E7E1}</ProjectGuid>
+    <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Gallio.BuildTools.Tasks</RootNamespace>
-    <AssemblyName>Gallio.BuildTools.Tasks</AssemblyName>
+    <RootNamespace>Gallio.BuildTools.XsdGen</RootNamespace>
+    <AssemblyName>Gallio.BuildTools.XsdGen</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -23,7 +23,7 @@
     <WarningLevel>4</WarningLevel>
     <NoWarn>1591</NoWarn>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <DocumentationFile>bin\Gallio.BuildTools.Tasks.XML</DocumentationFile>
+    <DocumentationFile>bin\Gallio.BuildTools.XsdGen.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -34,14 +34,9 @@
     <WarningLevel>4</WarningLevel>
     <NoWarn>1591</NoWarn>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <DocumentationFile>bin\Gallio.BuildTools.Tasks.XML</DocumentationFile>
+    <DocumentationFile>bin\Gallio.BuildTools.XsdGen.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.Build.Engine" />
-    <Reference Include="Microsoft.Build.Framework" />
-    <Reference Include="Microsoft.Build.Utilities.v3.5">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -56,15 +51,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ParseVersion.cs" />
-    <Compile Include="SGenMultipleTypes.cs" />
+    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Gallio.BuildTools.XsdGen\Gallio.BuildTools.XsdGen.csproj">
-      <Project>{D5AAAB67-D51F-4F6C-A0B5-074A5CC9E7E1}</Project>
-      <Name>Gallio.BuildTools.XsdGen</Name>
-    </ProjectReference>
+    <None Include="Gallio.BuildTools.XsdGen.exe.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

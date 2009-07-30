@@ -23,12 +23,18 @@ echo Copying compiled files to bin folder.
 echo.
 
 copy "%BASE_DIR%\Gallio.BuildTools.Tasks\bin\Gallio.BuildTools.Tasks.dll" "%BIN_DIR%"
-if errorlevel 1 (
-    echo Copy failed.
-    exit /b 1
-)
+if errorlevel 1 goto :COPY_FAILED
+copy "%BASE_DIR%\Gallio.BuildTools.Tasks\bin\Gallio.BuildTools.XsdGen.exe" "%BIN_DIR%"
+if errorlevel 1 goto :COPY_FAILED
+copy "%BASE_DIR%\Gallio.BuildTools.Tasks\bin\Gallio.BuildTools.XsdGen.exe.config" "%BIN_DIR%"
+if errorlevel 1 goto :COPY_FAILED
 
 echo Done.
 echo.
 
 exit /b 0
+
+:COPY_FAILED
+echo Copy failed.
+exit /b 1
+
