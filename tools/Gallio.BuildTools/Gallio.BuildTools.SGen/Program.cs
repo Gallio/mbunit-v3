@@ -7,7 +7,7 @@ using System.Reflection;
 using System.Text;
 using System.Xml.Serialization;
 
-namespace Gallio.BuildTools.XsdGen
+namespace Gallio.BuildTools.SGen
 {
     class Program
     {

@@ -61,7 +61,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Gallio.BuildTools.XsdGen\Gallio.BuildTools.XsdGen.csproj">
+    <ProjectReference Include="..\Gallio.BuildTools.SGen\Gallio.BuildTools.SGen.csproj">
       <Project>{D5AAAB67-D51F-4F6C-A0B5-074A5CC9E7E1}</Project>
       <Name>Gallio.BuildTools.XsdGen</Name>
     </ProjectReference>
