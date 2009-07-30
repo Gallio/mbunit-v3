@@ -328,7 +328,7 @@ namespace Gallio.Model
                 }
                 catch (Exception ex)
                 {
-                    throw new RunnerException(String.Format(CultureInfo.CurrentCulture,
+                    throw new ModelException(String.Format(CultureInfo.CurrentCulture,
                         "Could not load test assembly from '{0}'.", assemblyPath), ex);
                 }
             }

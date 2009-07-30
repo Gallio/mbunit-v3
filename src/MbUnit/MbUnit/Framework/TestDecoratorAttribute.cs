@@ -59,7 +59,7 @@ namespace MbUnit.Framework
         /// </para>
         /// </remarks>
         /// <param name="testInstanceState">The test instance state, not null.</param>
-        /// <seealso cref="IPatternTestInstanceHandler.InitializeTestInstance"/>
+        /// <seealso cref="PatternTestInstanceActions.InitializeTestInstanceChain"/>
         protected virtual void Initialize(PatternTestInstanceState testInstanceState)
         {
             InvokeDefaultAction(testInstanceState);
@@ -74,7 +74,7 @@ namespace MbUnit.Framework
         /// </para>
         /// </remarks>
         /// <param name="testInstanceState">The test instance state, not null.</param>
-        /// <seealso cref="IPatternTestInstanceHandler.SetUpTestInstance"/>
+        /// <seealso cref="PatternTestInstanceActions.SetUpTestInstanceChain"/>
         protected virtual void SetUp(PatternTestInstanceState testInstanceState)
         {
             InvokeDefaultAction(testInstanceState);
@@ -89,7 +89,7 @@ namespace MbUnit.Framework
         /// </para>
         /// </remarks>
         /// <param name="testInstanceState">The test instance state, not null.</param>
-        /// <seealso cref="IPatternTestInstanceHandler.ExecuteTestInstance"/>
+        /// <seealso cref="PatternTestInstanceActions.ExecuteTestInstanceChain"/>
         protected virtual void Execute(PatternTestInstanceState testInstanceState)
         {
             InvokeDefaultAction(testInstanceState);
@@ -104,7 +104,7 @@ namespace MbUnit.Framework
         /// </para>
         /// </remarks>
         /// <param name="testInstanceState">The test instance state, not null.</param>
-        /// <seealso cref="IPatternTestInstanceHandler.TearDownTestInstance"/>
+        /// <seealso cref="PatternTestInstanceActions.TearDownTestInstanceChain"/>
         protected virtual void TearDown(PatternTestInstanceState testInstanceState)
         {
             InvokeDefaultAction(testInstanceState);
@@ -119,7 +119,7 @@ namespace MbUnit.Framework
         /// </para>
         /// </remarks>
         /// <param name="testInstanceState">The test instance state, not null.</param>
-        /// <seealso cref="IPatternTestInstanceHandler.DisposeTestInstance"/>
+        /// <seealso cref="PatternTestInstanceActions.DisposeTestInstanceChain"/>
         protected virtual void Dispose(PatternTestInstanceState testInstanceState)
         {
             InvokeDefaultAction(testInstanceState);

@@ -16,6 +16,7 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using Gallio.Model;
 using Gallio.Runner;
 using Gallio.Runtime.Logging;
 
@@ -52,7 +53,7 @@ namespace Gallio.AutoCAD
                 Process[] processes = Process.GetProcessesByName("acad");
                 if (processes.Length == 0)
                 {
-                    throw new RunnerException("Unable to attach to acad.exe: No existing acad.exe instances found.");
+                    throw new ModelException("Unable to attach to acad.exe: No existing acad.exe instances found.");
                 }
                 if (processes.Length > 1)
                 {
@@ -68,7 +69,7 @@ namespace Gallio.AutoCAD
             {
                 if (!File.Exists(AcadExePath))
                 {
-                    throw new RunnerException(String.Concat("Executable not found: \"", AcadExePath, "\"."));
+                    throw new ModelException(String.Concat("Executable not found: \"", AcadExePath, "\"."));
                 }
                 executablePath = AcadExePath;
             }

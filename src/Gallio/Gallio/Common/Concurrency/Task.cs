@@ -176,7 +176,7 @@ namespace Gallio.Common.Concurrency
                 }
                 catch (Exception ex)
                 {
-                    NotifyTerminated(TaskResult.CreateFromException(ex));
+                    NotifyTerminated(TaskResult<object>.CreateFromException(ex));
                 }
             }
         }

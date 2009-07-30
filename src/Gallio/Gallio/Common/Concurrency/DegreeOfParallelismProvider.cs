@@ -13,28 +13,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.Diagnostics;
-using Gallio.UI.Common.Synchronization;
-using MbUnit.Framework;
-using Gallio.Framework.Pattern;
-
-namespace Gallio.Icarus.Tests.Utilities
+namespace Gallio.Common.Concurrency
 {
-    internal class SyncTestAttribute : TestAttribute
-    {
-        [DebuggerNonUserCode]
-        protected override void Execute(PatternTestInstanceState state)
-        {
-            try
-            {
-                SynchronizationContext.Instance = new TestSynchronizationContext();
-
-                state.InvokeTestMethod();
-            }
-            finally
-            {
-                SynchronizationContext.Instance = null;
-            }
-        }
-    }
+    /// <summary>
+    /// A function that returns the maximum number of threads that a work scheduler 
+    /// may use to perform work.  The value may change over time and cause the
+    /// scheduler to adapt to changing degrees of parallelism.
+    /// </summary>
+    /// <returns>The degree of parallelism which must be at least 1.</returns>
+    /// <seealso cref="WorkScheduler"/>
+    public delegate int DegreeOfParallelismProvider();
 }

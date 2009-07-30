@@ -15,6 +15,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using Gallio.Framework;
 using Gallio.Framework.Pattern;
 using Gallio.Model;
@@ -87,9 +88,10 @@ namespace MbUnit.Framework
     public class DynamicTestFactoryAttribute : TestMethodPatternAttribute
     {
         /// <inheritdoc />
-        protected override object Execute(PatternTestInstanceState state)
+        [DebuggerNonUserCode]
+        protected override void Execute(PatternTestInstanceState state)
         {
-            var tests = base.Execute(state) as IEnumerable<Test>;
+            var tests = state.InvokeTestMethod() as IEnumerable<Test>;
             if (tests == null)
                 throw new TestFailedException("Expected the dynamic test factory method to "
                     + "return a value that is assignable to type IEnumerable<Test>.");
@@ -97,8 +99,6 @@ namespace MbUnit.Framework
             TestOutcome outcome = Test.RunDynamicTests(tests, state.Test.CodeElement, null, null);
             if (outcome != TestOutcome.Passed)
                 throw new SilentTestException(outcome);
-
-            return tests;
         }
     }
 }

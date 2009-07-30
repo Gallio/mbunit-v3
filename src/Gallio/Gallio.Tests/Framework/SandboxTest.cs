@@ -185,14 +185,14 @@ namespace Gallio.Tests.Framework
             Sandbox sandbox = new Sandbox();
 
             TestOutcome outcome = TestOutcome.Error;
-            sandbox.UseTimeout(timeout, () =>
+            using (sandbox.StartTimer(timeout))
             {
                 outcome = sandbox.Run(writer, () =>
                 {
                     Thread.Sleep(waitTime);
                     completed = true;
                 }, "Run Description");
-            });
+            }
 
             if (timeout.HasValue && timeout.Value < waitTime)
             {
@@ -234,12 +234,12 @@ namespace Gallio.Tests.Framework
 
             TestOutcome outcome = sandbox.Run(writer, () =>
             {
-                sandbox.Protect(() =>
+                using (sandbox.Protect())
                 {
                     barrier.Set();
                     Thread.Sleep(300);
                     completed = true;
-                });
+                }
                 Thread.Sleep(300);
             }, "Run Description");
 

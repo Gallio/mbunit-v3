@@ -16,8 +16,6 @@
 using System.IO;
 using System;
 using Gallio.Common.Policies;
-using Gallio.Runner.Projects;
-using Gallio.Runner.Projects.Schema;
 
 namespace Gallio.Icarus.Reports
 {
@@ -27,10 +25,8 @@ namespace Gallio.Icarus.Reports
 
         public event EventHandler ReportDirectoryChanged;
 
-        public ReportMonitor(TestProject testProject)
+        public ReportMonitor(string reportDirectory)
         {
-            string reportDirectory = Path.GetFullPath(testProject.ReportDirectory);
-
             if (Directory.Exists(reportDirectory))
             {
                 SetupDirectoryWatcher(reportDirectory);
@@ -40,36 +36,39 @@ namespace Gallio.Icarus.Reports
                 string parentDirectory = Path.GetDirectoryName(reportDirectory);
                 if (Directory.Exists(parentDirectory))
                 {
-                    reportDirectoryWatcher = new FileSystemWatcher();
-                    reportDirectoryWatcher.NotifyFilter = NotifyFilters.DirectoryName;
+                    reportDirectoryWatcher = new FileSystemWatcher
+                    {
+                        NotifyFilter = NotifyFilters.DirectoryName,
+                        Path = parentDirectory,
+                        EnableRaisingEvents = true
+                    };
                     reportDirectoryWatcher.Created += (sender, e) =>
                     {
-                        if (e.FullPath == reportDirectory)
-                        {
-                            reportDirectoryWatcher.EnableRaisingEvents = false;
-                            SetupDirectoryWatcher(reportDirectory);
-                            OnReportDirectoryChanged();
-                        }
+                        if (e.FullPath != reportDirectory) 
+                            return;
+
+                        reportDirectoryWatcher.EnableRaisingEvents = false;
+                        SetupDirectoryWatcher(reportDirectory);
+                        OnReportDirectoryChanged();
                     };
-                    reportDirectoryWatcher.Path = parentDirectory;
-                    reportDirectoryWatcher.EnableRaisingEvents = true;
                 }
             }
         }
 
         private void SetupDirectoryWatcher(string reportDirectory)
         {
-            reportDirectoryWatcher = new FileSystemWatcher();
-            reportDirectoryWatcher.Filter = "*.xml";
-            reportDirectoryWatcher.NotifyFilter = NotifyFilters.FileName;
+            reportDirectoryWatcher = new FileSystemWatcher
+            {
+                Filter = "*.xml",
+                NotifyFilter = NotifyFilters.FileName,
+                Path = reportDirectory,
+                EnableRaisingEvents = true
+            };
 
             reportDirectoryWatcher.Changed += (sender, e) => OnReportDirectoryChanged();
             reportDirectoryWatcher.Created += (sender, e) => OnReportDirectoryChanged();
             reportDirectoryWatcher.Deleted += (sender, e) => OnReportDirectoryChanged();
             reportDirectoryWatcher.Renamed += (sender, e) => OnReportDirectoryChanged();
-
-            reportDirectoryWatcher.Path = reportDirectory;
-            reportDirectoryWatcher.EnableRaisingEvents = true;
         }
 
         private void OnReportDirectoryChanged()

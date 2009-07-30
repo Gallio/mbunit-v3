@@ -214,16 +214,18 @@ namespace Gallio.Icarus.Controls
 
             // Define the drawing area.
             Rectangle r = ClientRectangle;
-            r = new Rectangle(
-                r.Location,
-                new Size(r.Width - 1, r.Height - 1)
-                );
+            r = new Rectangle(r.Location, new Size(r.Width - 1, r.Height - 1));
 
             // Fill the background.
             e.Graphics.FillRectangle(backBrush, r);
 
-            SmoothingMode m = e.Graphics.SmoothingMode;
+            var smoothingMode = e.Graphics.SmoothingMode;
             e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
+
+            // HACK: due to dynamic tests we don't know how many tests there will be before we start
+            var testCount = passedTests + failedTests + skippedTests + inconclusiveTests;
+            if (testCount > totalTests)
+                totalTests = testCount;
 
             if (totalTests > 0)
             {
@@ -269,18 +271,14 @@ namespace Gallio.Icarus.Controls
                 passedTests, failedTests, inconclusiveTests, skippedTests, elapsedTime);
 
             // Draw the text to the center of the control.
-            StringFormat format = new StringFormat(StringFormatFlags.NoClip);
-            format.Alignment = StringAlignment.Center;
-            format.LineAlignment = StringAlignment.Center;
-            e.Graphics.DrawString(
-                text,
-                Font,
-                textBrush,
-                r.Left + r.Width/2,
-                (r.Top + r.Height/2) + 1,
-                format
-                );
-            e.Graphics.SmoothingMode = m;
+            var format = new StringFormat(StringFormatFlags.NoClip)
+            {
+                Alignment = StringAlignment.Center,
+                LineAlignment = StringAlignment.Center
+            };
+            
+            e.Graphics.DrawString(text, Font, textBrush, r.Left + r.Width/2, (r.Top + r.Height/2) + 1, format);
+            e.Graphics.SmoothingMode = smoothingMode;
         }
 
         /// <summary>

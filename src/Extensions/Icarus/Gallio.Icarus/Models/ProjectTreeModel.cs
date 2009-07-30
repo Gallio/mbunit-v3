@@ -13,7 +13,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
 using System.Collections;
 using System.IO;
 using Aga.Controls.Tree;
@@ -21,7 +20,6 @@ using Gallio.Common.IO;
 using Gallio.Icarus.Models.ProjectTreeNodes;
 using Gallio.Icarus.Reports;
 using Gallio.Runner.Projects;
-using Gallio.Runner.Projects.Schema;
 
 namespace Gallio.Icarus.Models
 {
@@ -30,7 +28,7 @@ namespace Gallio.Icarus.Models
         private readonly IFileSystem fileSystem;
         private readonly Node projectRoot;
         private TestProject testProject = new TestProject();
-        private string fileName = string.Empty;
+        private string fileName = Paths.DefaultProject;
         private ReportMonitor reportMonitor;
 
         public string FileName
@@ -51,7 +49,7 @@ namespace Gallio.Icarus.Models
                 testProject = value;
                 NotifyTestProjectChanged();
 
-                reportMonitor = new ReportMonitor(testProject);
+                reportMonitor = new ReportMonitor(testProject.ReportDirectory);
                 reportMonitor.ReportDirectoryChanged += (sender, e) => NotifyReportsChanged();
             }
         }

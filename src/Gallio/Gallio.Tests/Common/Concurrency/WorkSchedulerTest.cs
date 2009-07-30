@@ -19,20 +19,20 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using Gallio.Common.Concurrency;
 using Gallio.Framework;
-using Gallio.Framework.Pattern;
 using MbUnit.Framework;
 using Action=Gallio.Common.Action;
 
-namespace Gallio.Tests.Framework.Pattern
+namespace Gallio.Tests.Common.Concurrency
 {
-    [TestsOn(typeof(ParallelizableTestCaseScheduler))]
-    public class ParallelizableTestCaseSchedulerTest
+    [TestsOn(typeof(WorkScheduler))]
+    public class WorkSchedulerTest
     {
         private int maxThreads;
 
         [Column(1, 2, 4, 8)]
-        public ParallelizableTestCaseSchedulerTest(int maxThreads)
+        public WorkSchedulerTest(int maxThreads)
         {
             this.maxThreads = maxThreads;
         }
@@ -56,7 +56,7 @@ namespace Gallio.Tests.Framework.Pattern
                 };
             }
 
-            var scheduler = new ParallelizableTestCaseScheduler(() => maxThreads);
+            var scheduler = new WorkScheduler(() => maxThreads);
             scheduler.Run(actions);
 
             for (int i = 0; i < numActions; i++)
@@ -66,11 +66,11 @@ namespace Gallio.Tests.Framework.Pattern
         [Test, Timeout(1000)]
         public void SupportsReentrance()
         {
-            var scheduler = new ParallelizableTestCaseScheduler(() => maxThreads);
+            var scheduler = new WorkScheduler(() => maxThreads);
             Assert.AreEqual(21, Fibonnaci(scheduler, 8));
         }
 
-        private static int Fibonnaci(ParallelizableTestCaseScheduler scheduler, int count)
+        private static int Fibonnaci(WorkScheduler scheduler, int count)
         {
             if (count < 2)
                 return count;

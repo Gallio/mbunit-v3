@@ -18,65 +18,119 @@ using System;
 namespace Gallio.Common.Concurrency
 {
     /// <summary>
-    /// Holds the result of executing a task.
+    /// Holds the value or exception produced by a task.
     /// </summary>
     [Serializable]
-    public sealed class TaskResult
+    public abstract class TaskResult
     {
-        private readonly object value;
         private readonly Exception exception;
 
-        private TaskResult(object value, Exception exception)
+        internal TaskResult(Exception exception)
         {
-            this.value = value;
             this.exception = exception;
         }
 
         /// <summary>
-        /// Creates a task result that contains the specified value yielded by the task
-        /// when it terminated.
+        /// Returns true if the task ran to completion and returned a value,
+        /// or false if an exception was thrown.
         /// </summary>
-        /// <param name="value">The value.</param>
-        public static TaskResult CreateFromValue(object value)
+        public bool HasValue
         {
-            return new TaskResult(value, null);
+            get { return exception == null; }
         }
 
         /// <summary>
-        /// Creates a task result that contains the specified exception that was encountered
-        /// by the task and caused it to terminate.
+        /// Gets the value that was returned by the task.
         /// </summary>
-        /// <param name="exception">The exception.</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="exception"/> is null.</exception>
-        public static TaskResult CreateFromException(Exception exception)
-        {
-            if (exception == null)
-                throw new ArgumentNullException("exception");
-
-            return new TaskResult(null, exception);
-        }
-
-        /// <summary>
-        /// Gets the value yielded by the task when it terminated, or null if an exception was thrown.
-        /// </summary>
+        /// <exception cref="InvalidOperationException">Thrown if <see cref="HasValue" /> is false.</exception>
         public object Value
         {
-            get { return value; }
+            get
+            {
+                if (!HasValue)
+                    throw new InvalidOperationException("The value is not available because the task threw an exception.");
+                return GetValueAsObject();
+            }
         }
 
         /// <summary>
-        /// Gets the exception that was encountered by the task and caused it to terminated, or null
-        /// if no exception was thrown.
+        /// Gets the exception that was thrown by the task.
         /// </summary>
+        /// <exception cref="InvalidOperationException">Thrown if <see cref="HasValue" /> is true.</exception>
         public Exception Exception
         {
-            get { return exception; }
+            get
+            {
+                if (HasValue)
+                    throw new InvalidOperationException("The exception is not available because the task returned a value.");
+                return exception;
+            }
         }
 
         /// <inheritdoc />
         public override string ToString()
         {
-            return (exception ?? value ?? "").ToString();
+            return (exception ?? GetValueAsObject() ?? string.Empty).ToString();
+        }
+
+        internal abstract object GetValueAsObject();
+    }
+
+    /// <summary>
+    /// Holds the value or exception produced by a task.
+    /// </summary>
+    [Serializable]
+    public sealed class TaskResult<T> : TaskResult
+    {
+        private readonly T value;
+
+        private TaskResult(T value, Exception exception)
+            : base(exception)
+        {
+            this.value = value;
+        }
+
+        /// <summary>
+        /// Creates a result object containing the value returned by the task.
+        /// </summary>
+        /// <returns>The new task result.</returns>
+        /// <param name="value">The value.</param>
+        public static TaskResult<T> CreateFromValue(T value)
+        {
+            return new TaskResult<T>(value, null);
+        }
+
+        /// <summary>
+        /// Creates a result object containing the exception thrown by the task.
+        /// </summary>
+        /// <param name="exception">The exception.</param>
+        /// <returns>The new task result.</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="exception"/> is null.</exception>
+        public static TaskResult<T> CreateFromException(Exception exception)
+        {
+            if (exception == null)
+                throw new ArgumentNullException("exception");
+
+            return new TaskResult<T>(default(T), exception);
+        }
+
+        /// <summary>
+        /// Gets the value that was returned by the task.
+        /// </summary>
+        /// <exception cref="InvalidOperationException">Thrown if <see cref="TaskResult.HasValue" /> is false.</exception>
+        new public T Value
+        {
+            get
+            {
+                if (!HasValue)
+                    throw new InvalidOperationException("The value is not available because the task threw an exception.");
+                return value;
+            }
+        }
+
+        internal override object GetValueAsObject()
+        {
+            return value;
         }
     }
 }

@@ -308,7 +308,7 @@ namespace Gallio.Framework
 
         private static void RecordTaskResult(TestContext context, Task task)
         {
-            if (task.Result != null && task.Result.Exception != null)
+            if (task.Result != null && ! task.Result.HasValue)
             {
                 context.LogWriter.Warnings.WriteException(task.Result.Exception,
                     String.Format("Task '{0}' failed.", task.Name));

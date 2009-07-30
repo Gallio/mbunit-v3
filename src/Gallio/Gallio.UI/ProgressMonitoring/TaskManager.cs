@@ -103,7 +103,7 @@ namespace Gallio.UI.ProgressMonitoring
             {
                 if (!workerTask.IsAborted)
                 {
-                    if (workerTask.Result.Exception != null)
+                    if (! workerTask.Result.HasValue)
                     {
                         if (workerTask.Result.Exception is OperationCanceledException)
                         {

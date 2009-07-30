@@ -189,10 +189,6 @@ namespace Gallio.Icarus.Models
                 Filter(node);
             }
 
-            // only update test status count if the test is complete
-            if (!testStepRun.Step.IsPrimary || (!testStepRun.Step.IsTestCase && !testData.IsTestCase))
-                return;
-
             switch (testStepRun.Result.Outcome.Status)
             {
                 case TestStatus.Passed:

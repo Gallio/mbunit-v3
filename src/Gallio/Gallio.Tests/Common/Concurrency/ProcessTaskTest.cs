@@ -80,7 +80,6 @@ namespace Gallio.Tests.Common.Concurrency
             public void ResultObjectIsSet()
             {
                 Assert.AreEqual(COR_E_STACKOVERFLOW, processTask.Result.Value);
-                Assert.IsNull(processTask.Result.Exception);
             }
 
             [Test]

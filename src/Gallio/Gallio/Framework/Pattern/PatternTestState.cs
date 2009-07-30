@@ -35,12 +35,12 @@ namespace Gallio.Framework.Pattern
     /// <see cref="PatternTest" /> to be executed.</item>
     /// <item>The controller populates the test state with slot binding accessors for each <see cref="PatternTestParameter" />
     /// associated with the test.</item>
-    /// <item>The controller calls <see cref="IPatternTestHandler.BeforeTest" /> to give test extensions
+    /// <item>The controller calls <see cref="PatternTestActions.BeforeTestChain" /> to give test extensions
     /// the opportunity to modify the test state.</item>
     /// <item>The controller begins iterating over the <see cref="IDataItem"/>s produced by the
     /// state's <see cref="BindingContext" />.  For each item it constructs a <see cref="PatternTestInstanceState" />
     /// and executes the test instance.</item>
-    /// <item>The controller calls <see cref="IPatternTestHandler.AfterTest" /> to give test extensions
+    /// <item>The controller calls <see cref="PatternTestActions.AfterTestChain" /> to give test extensions
     /// the opportunity to clean up the test state.</item>
     /// </list>
     /// </para>
@@ -50,7 +50,7 @@ namespace Gallio.Framework.Pattern
         private static readonly Key<PatternTestState> ContextKey = new Key<PatternTestState>("Gallio.PatternTestState");
 
         private readonly PatternTestStep primaryTestStep;
-        private readonly IPatternTestHandler testHandler;
+        private readonly PatternTestActions testActions;
         private readonly IConverter converter;
         private readonly IFormatter formatter;
         private readonly bool isExplicit;
@@ -63,27 +63,27 @@ namespace Gallio.Framework.Pattern
         /// Creates an initial test state object.
         /// </summary>
         /// <param name="primaryTestStep">The primary test step.</param>
-        /// <param name="testHandler">The handler for the test.</param>
+        /// <param name="testActions">The test actions.</param>
         /// <param name="converter">The converter for data binding.</param>
         /// <param name="formatter">The formatter for data binding.</param>
         /// <param name="isExplicit">True if the test was selected explicitly.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="primaryTestStep"/>,
-        /// <paramref name="testHandler"/>, <paramref name="converter"/>
+        /// <paramref name="testActions"/>, <paramref name="converter"/>
         /// or <paramref name="formatter"/> is null.</exception>
         internal PatternTestState(PatternTestStep primaryTestStep,
-            IPatternTestHandler testHandler, IConverter converter, IFormatter formatter, bool isExplicit)
+            PatternTestActions testActions, IConverter converter, IFormatter formatter, bool isExplicit)
         {
             if (primaryTestStep == null)
                 throw new ArgumentNullException("primaryTestStep");
-            if (testHandler == null)
-                throw new ArgumentNullException("testHandler");
+            if (testActions == null)
+                throw new ArgumentNullException("testActions");
             if (converter == null)
                 throw new ArgumentNullException("converter");
             if (formatter == null)
                 throw new ArgumentNullException("formatter");
 
             this.primaryTestStep = primaryTestStep;
-            this.testHandler = testHandler;
+            this.testActions = testActions;
             this.converter = converter;
             this.formatter = formatter;
             this.isExplicit = isExplicit;
@@ -139,11 +139,11 @@ namespace Gallio.Framework.Pattern
         }
 
         /// <summary>
-        /// Gets the handler for the test.
+        /// Gets the test actions.
         /// </summary>
-        public IPatternTestHandler TestHandler
+        public PatternTestActions TestActions
         {
-            get { return testHandler; }
+            get { return testActions; }
         }
 
         /// <summary>

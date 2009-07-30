@@ -1,24 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.gallio.org/">
-  <testPackageConfig>
-    <assemblyFiles>
-      <assemblyFile>.\Gallio.Icarus.Tests\bin\Gallio.Icarus.Tests.dll</assemblyFile>
-    </assemblyFiles>
+<testProject xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.gallio.org/">
+  <testPackage shadowCopy="false" debug="false">
+    <files>
+      <file>.\Gallio.Icarus.Tests\bin\Gallio.Icarus.Tests.dll</file>
+    </files>
     <hintDirectories />
     <excludedFrameworkIds />
-    <hostSetup enableShadowCopy="false" debug="false" elevated="false" configurationFileLocation="appBase" processorArchitecture="None">
-      <configuration legacyUnhandledExceptionPolicyEnabled="true" assertUiEnabled="false" remotingCustomErrorsEnabled="false">
-        <assemblyQualifications />
-        <assemblyDependencies />
-        <supportedRuntimeVersions />
-      </configuration>
-    </hostSetup>
-  </testPackageConfig>
+    <properties />
+  </testPackage>
   <testFilters>
-    <testFilter filterName="AutoSave" filter="" />
-    <testFilter filterName="LastRun" filter="" />
+    <testFilter filterName="AutoSave" filterExpr="" />
   </testFilters>
   <extensionSpecifications />
   <reportDirectory>.\Reports</reportDirectory>
   <reportNameFormat>test-report-{0}-{1}</reportNameFormat>
-</project>
+</testProject>

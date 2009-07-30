@@ -136,10 +136,7 @@ namespace Gallio.Icarus.Controllers
                 CountResults();
             };
             testController.ExploreStarted += (sender, e) => Reset();
-            testController.ExploreFinished += (sender, e) => 
-            {
-                OnPropertyChanged(new PropertyChangedEventArgs("ElapsedTime"));
-            };
+            testController.ExploreFinished += (sender, e) => OnPropertyChanged(new PropertyChangedEventArgs("ElapsedTime"));
             testController.RunStarted += (sender, e) =>
             {
                 Reset();
@@ -183,7 +180,7 @@ namespace Gallio.Icarus.Controllers
             });
         }
 
-        private void CountResults(TestTreeNode node, ref int count)
+        private static void CountResults(TestTreeNode node, ref int count)
         {
             count += node.TestStepRuns.Count;
 

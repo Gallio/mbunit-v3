@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using System.Diagnostics;
 using Gallio.Framework.Data;
 using Gallio.Model;
 using Gallio.Common.Reflection;
@@ -129,11 +130,11 @@ namespace Gallio.Framework.Pattern
         /// The default behavior for a <see cref="TestMethodPatternAttribute" />
         /// is to configure the test actions as follows:
         /// <list type="bullet">
-        /// <item><see cref="IPatternTestInstanceHandler.BeforeTestInstance" />: Set the
+        /// <item><see cref="PatternTestInstanceActions.BeforeTestInstanceChain" />: Set the
         /// test step name, <see cref="PatternTestInstanceState.TestMethod" /> and
         /// <see cref="PatternTestInstanceState.TestArguments" /> based on any values bound
         /// to the test method's generic parameter and method parameter slots.</item>
-        /// <item><see cref="IPatternTestInstanceHandler.ExecuteTestInstance" />: Invoke the method.</item>
+        /// <item><see cref="PatternTestInstanceActions.ExecuteTestInstanceChain" />: Invoke the method.</item>
         /// </list>
         /// </para>
         /// <para>
@@ -156,17 +157,23 @@ namespace Gallio.Framework.Pattern
                         testInstanceState.TestStep.Name = spec.Format(testInstanceState.TestStep.Name, testInstanceState.Formatter);
                 });
 
-            testBuilder.TestInstanceActions.ExecuteTestInstanceChain.After(state => Execute(state));
+            testBuilder.TestInstanceActions.ExecuteTestInstanceChain.After(Execute);
         }
 
         /// <summary>
         /// Executes the test method.
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// The default implementation just calls <see cref="PatternTestInstanceState.InvokeTestMethod" />
+        /// and ignores the result.
+        /// </para>
+        /// </remarks>
         /// <param name="state">The test instance state, not null.</param>
-        /// <returns>The test method result.</returns>
-        protected virtual object Execute(PatternTestInstanceState state)
+        [DebuggerNonUserCode]
+        protected virtual void Execute(PatternTestInstanceState state)
         {
-            return state.InvokeTestMethod();
+            state.InvokeTestMethod();
         }
 
         /// <summary>

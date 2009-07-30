@@ -30,25 +30,35 @@ using Gallio.Framework;
 using Gallio.Model;
 using Gallio.Common.Diagnostics;
 using Gallio.Common.Markup;
-using Gallio.Common.Reflection;
 using Gallio.Runtime.ProgressMonitoring;
+using System.Diagnostics;
 
 namespace Gallio.Framework.Pattern
 {
     /// <summary>
     /// Encapsulates the algorithm for recursively running a <see cref="PatternTest" />.
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// Please note that this code has been optimized to minimize the stack depth so as
+    /// to be more debugger-friendly.  That means some of these methods (and the methods
+    /// they call) are rather a lot longer and harder to read than they used to be.
+    /// However the payoff is very significant for end-users.  As a result of this optimization
+    /// the effective stack depth for a simple test has been reduced from over 160 to about 30 in many cases.
+    /// -- Jeff.
+    /// </para>
+    /// </remarks>
     [SystemInternal]
     internal class PatternTestExecutor
     {
-        public delegate TestOutcome PatternTestHandlerDecorator(Sandbox sandbox, ref IPatternTestHandler handler);
+        public delegate TestOutcome PatternTestActionsDecorator(Sandbox sandbox, ref PatternTestActions testActions);
 
         private readonly TestExecutionOptions options;
         private readonly IProgressMonitor progressMonitor;
         private readonly IFormatter formatter;
         private readonly IConverter converter;
         private readonly ITestEnvironmentManager environmentManager;
-        private readonly ParallelizableTestCaseScheduler scheduler;
+        private readonly WorkScheduler scheduler;
 
         public PatternTestExecutor(TestExecutionOptions options, IProgressMonitor progressMonitor,
             IFormatter formatter, IConverter converter, ITestEnvironmentManager environmentManager)
@@ -59,325 +69,14 @@ namespace Gallio.Framework.Pattern
             this.converter = converter;
             this.environmentManager = environmentManager;
 
-            scheduler = new ParallelizableTestCaseScheduler(() =>
+            scheduler = new WorkScheduler(() =>
                 options.SingleThreaded ? 1 : TestAssemblyExecutionParameters.DegreeOfParallelism);
         }
 
-        public TestResult RunTest(ITestCommand testCommand, Model.Tree.TestStep parentTestStep,
-            Sandbox parentSandbox, PatternTestHandlerDecorator testHandlerDecorator)
+        public RunTestAction CreateActionToRunTest(ITestCommand testCommand, Model.Tree.TestStep parentTestStep,
+            Sandbox parentSandbox, PatternTestActionsDecorator testActionsDecorator)
         {
-            if (progressMonitor.IsCanceled)
-                return new TestResult(TestOutcome.Canceled);
-
-            if (!testCommand.AreDependenciesSatisfied())
-            {
-                ITestContext context = testCommand.StartPrimaryChildStep(parentTestStep);
-                context.LogWriter.Warnings.WriteLine("Skipped due to an unsatisfied test dependency.");
-                return context.FinishStep(TestOutcome.Skipped, null);
-            }
-
-            progressMonitor.SetStatus(testCommand.Test.Name);
-
-            PatternTest test = testCommand.Test as PatternTest;
-            if (test != null)
-            {
-                try
-                {
-                    using (Sandbox sandbox = parentSandbox.CreateChild())
-                    {
-                        return RunTestBody(testCommand, parentTestStep, sandbox, testHandlerDecorator, test);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    return ReportTestError(testCommand, parentTestStep, ex, String.Format("An exception occurred while preparing to run test '{0}'.", test.FullName));
-                }
-                finally
-                {
-                    progressMonitor.SetStatus("");
-                    progressMonitor.Worked(1);
-                }
-            }
-            else
-            {
-                throw new NotImplementedException("Need to handle root tests.");
-            }
-        }
-
-        private TestResult RunTestBody(ITestCommand testCommand, Model.Tree.TestStep parentTestStep,
-            Sandbox sandbox, PatternTestHandlerDecorator testHandlerDecorator, PatternTest test)
-        {
-            TestResult result = new TestResult(TestOutcome.Error);
-
-            DoWithProcessIsolation(delegate
-            {
-                sandbox.UseTimeout(test.Timeout, delegate
-                {
-                    DoWithApartmentState(test.ApartmentState, delegate
-                    {
-                        if (progressMonitor.IsCanceled)
-                        {
-                            result = new TestResult(TestOutcome.Canceled);
-                            return;
-                        }
-
-                        TestOutcome outcome;
-                        IPatternTestHandler testHandler = test.TestActions;
-
-                        if (testHandlerDecorator != null)
-                            outcome = testHandlerDecorator(sandbox, ref testHandler);
-                        else
-                            outcome = TestOutcome.Passed;
-
-                        if (outcome.Status == TestStatus.Passed)
-                        {
-                            PatternTestStep primaryTestStep = new PatternTestStep(test, parentTestStep);
-                            PatternTestState testState = new PatternTestState(primaryTestStep, testHandler, converter,
-                                formatter, testCommand.IsExplicit);
-
-                            bool invisible = true;
-
-                            outcome = outcome.CombineWith(DoBeforeTest(sandbox, testState));
-                            if (outcome.Status == TestStatus.Passed)
-                            {
-                                bool reusePrimaryTestStep = !testState.BindingContext.HasBindings;
-                                if (!reusePrimaryTestStep)
-                                    primaryTestStep.IsTestCase = false;
-
-                                invisible = false;
-                                TestContext context = TestContext.PrepareContext(
-                                    testCommand.StartStep(primaryTestStep), sandbox);
-                                testState.SetInContext(context);
-
-                                outcome = outcome.CombineWith(DoInitializeTest(context, testState));
-
-                                if (outcome.Status == TestStatus.Passed)
-                                {
-                                    TestOutcome instancesOutcome = RunTestInstances(testCommand, context, testState, reusePrimaryTestStep);
-                                    outcome = outcome.CombineWith(instancesOutcome);
-                                }
-
-                                outcome = outcome.CombineWith(DoDisposeTest(context, testState));
-
-                                result = context.FinishStep(outcome);
-                            }
-
-                            outcome = outcome.CombineWith(DoAfterTest(sandbox, testState));
-
-                            if (invisible)
-                                result = PublishOutcomeFromInvisibleTest(testCommand, primaryTestStep, outcome);
-                        }
-                    });
-                });
-            });
-
-            return result;
-        }
-
-        private TestOutcome RunTestInstances(ITestCommand testCommand, TestContext primaryContext,
-            PatternTestState testState, bool reusePrimaryTestStep)
-        {
-            try
-            {
-                TestOutcome outcome = TestOutcome.Passed;
-                foreach (IDataItem item in testState.BindingContext.GetItems(!options.SkipDynamicTests))
-                {
-                    if (progressMonitor.IsCanceled)
-                        return TestOutcome.Canceled;
-
-                    TestOutcome instanceOutcome = RunTestInstance(testCommand, primaryContext, testState, item, reusePrimaryTestStep);
-                    outcome = outcome.CombineWith(instanceOutcome);
-                }
-
-                // If we are reporting a single result (reuse = true) then provide full details, otherwise
-                // just keep the general status.
-                return reusePrimaryTestStep ? outcome : outcome.Generalize();
-            }
-            catch (Exception ex)
-            {
-                TestLog.Failures.WriteException(ex, String.Format("An exception occurred while getting data items for test '{0}'.", testState.Test.FullName));
-                return TestOutcome.Error;
-            }
-        }
-
-        private TestOutcome RunTestInstance(ITestCommand testCommand, TestContext primaryContext,
-            PatternTestState testState, IDataItem bindingItem, bool reusePrimaryTestStep)
-        {
-            try
-            {
-                PatternTestInstanceActions decoratedTestInstanceActions =
-                    PatternTestInstanceActions.CreateDecorator(testState.TestHandler.TestInstanceHandler);
-
-                TestOutcome outcome = DoDecorateTestInstance(primaryContext.Sandbox, testState, decoratedTestInstanceActions);
-                if (outcome.Status == TestStatus.Passed)
-                {
-                    bool invisible = true;
-
-                    PatternTestStep testStep;
-                    if (reusePrimaryTestStep)
-                    {
-                        testStep = testState.PrimaryTestStep;
-                        invisible = false;
-
-                        PropertyBag map = DataItemUtils.GetMetadata(bindingItem);
-                        foreach (KeyValuePair<string, string> entry in map.Pairs)
-                            primaryContext.AddMetadata(entry.Key, entry.Value);
-                    }
-                    else
-                    {
-                        testStep = new PatternTestStep(testState.Test, testState.PrimaryTestStep,
-                            testState.Test.Name, testState.Test.CodeElement, false);
-                        testStep.Kind = testState.Test.Kind;
-
-                        testStep.IsDynamic = bindingItem.IsDynamic;
-                        bindingItem.PopulateMetadata(testStep.Metadata);
-                    }
-
-                    PatternTestInstanceState testInstanceState = null;
-                    TestAction body = () =>
-                    {
-                        TestOutcome innerOutcome = TestOutcome.Error;
-                        TestContext currentContext = TestContext.CurrentContext;
-
-                        currentContext.Sandbox.Protect(() =>
-                        {
-                            innerOutcome = RunTestInstanceWithContext(testCommand, currentContext, testInstanceState);
-                        });
-
-                        return innerOutcome;
-                    };
-
-                    testInstanceState = new PatternTestInstanceState(testStep, decoratedTestInstanceActions, testState, bindingItem, body);
-
-                    outcome = outcome.CombineWith(DoBeforeTestInstance(primaryContext.Sandbox, testInstanceState));
-                    if (outcome.Status == TestStatus.Passed)
-                    {
-                        progressMonitor.SetStatus(testStep.Name);
-
-                        TestContext context = reusePrimaryTestStep
-                            ? primaryContext
-                            : TestContext.PrepareContext(testCommand.StartStep(testStep), primaryContext.Sandbox.CreateChild());
-                        testState.SetInContext(context);
-                        testInstanceState.SetInContext(context);
-                        invisible = false;
-
-                        outcome = outcome.CombineWith(DoRunTestInstanceBody(context, testInstanceState));
-
-                        if (!reusePrimaryTestStep)
-                            context.FinishStep(outcome);
-
-                        progressMonitor.SetStatus("");
-                    }
-
-                    outcome = outcome.CombineWith(DoAfterTestInstance(primaryContext.Sandbox, testInstanceState));
-
-                    if (invisible)
-                        outcome = PublishOutcomeFromInvisibleTest(testCommand, testStep, outcome).Outcome;
-                }
-
-                return outcome;
-            }
-            catch (Exception ex)
-            {
-                string message = String.Format("An exception occurred while preparing an instance of test '{0}'.", testState.Test.FullName);
-
-                if (reusePrimaryTestStep)
-                {
-                    TestLog.Failures.WriteException(ex, message);
-                    return TestOutcome.Error;
-                }
-                else
-                {
-                    return ReportTestError(testCommand, testState.PrimaryTestStep, ex, message).Outcome;
-                }
-            }
-        }
-
-        private TestOutcome RunTestInstanceWithContext(ITestCommand testCommand, TestContext context,
-            PatternTestInstanceState testInstanceState)
-        {
-            try
-            {
-                if (progressMonitor.IsCanceled)
-                    return TestOutcome.Canceled;
-
-                if (options.SkipTestExecution)
-                {
-                    return RunTestChildren(testCommand, context.Sandbox, testInstanceState);
-                }
-                else
-                {
-                    TestOutcome outcome = TestOutcome.Passed;                    
-                    UpdateInterimOutcome(context, ref outcome, DoInitializeTestInstance(context, testInstanceState));
-                    if (outcome.Status == TestStatus.Passed)
-                    {
-                        UpdateInterimOutcome(context, ref outcome, DoSetUpTestInstance(context, testInstanceState));
-                        if (outcome.Status == TestStatus.Passed)
-                        {
-                            UpdateInterimOutcome(context, ref outcome, DoExecuteTestInstance(context, testInstanceState));
-
-                            if (outcome.Status == TestStatus.Passed)
-                            {
-                                UpdateInterimOutcome(context, ref outcome, RunTestChildren(testCommand, context.Sandbox, testInstanceState));
-                            }
-                        }
-
-                        UpdateInterimOutcome(context, ref outcome, DoTearDownTestInstance(context, testInstanceState));
-                    }
-
-                    UpdateInterimOutcome(context, ref outcome, DoDisposeTestInstance(context, testInstanceState));
-                    return outcome;
-                }
-            }
-            catch (Exception ex)
-            {
-                TestLog.Failures.WriteException(ex,
-                    String.Format("An exception occurred while running test instance '{0}'.", testInstanceState.TestStep.Name));
-                return TestOutcome.Error;
-            }
-        }
-
-        private TestOutcome RunTestChildren(ITestCommand testCommand, Sandbox sandbox,
-            PatternTestInstanceState testInstanceState)
-        {
-            var outcomeAccumulator = new ThreadSafeTestOutcomeAccumulator();
-            ITestContextTracker contextTracker = TestContextTrackerAccessor.Instance;
-            ITestContext context = contextTracker.CurrentContext;
-
-            foreach (TestBatch batch in GenerateTestBatches(testCommand.Children))
-            {
-                scheduler.Run(batch.ToActions(childTestCommand => () =>
-                {
-                    using (contextTracker.EnterContext(context))
-                    {
-                        TestResult result;
-                        if (progressMonitor.IsCanceled)
-                        {
-                            result = new TestResult(TestOutcome.Canceled);
-                        }
-                        else
-                        {
-                            PatternTestHandlerDecorator testHandlerDecorator =
-                                delegate(Sandbox childSandbox, ref IPatternTestHandler childHandler)
-                                {
-                                    PatternTestActions decoratedChildTestActions =
-                                        PatternTestActions.CreateDecorator(childHandler);
-                                    childHandler = decoratedChildTestActions;
-
-                                    return DoDecorateChildTest(childSandbox, testInstanceState,
-                                        decoratedChildTestActions);
-                                };
-
-                            Model.Tree.TestStep parentTestStep = context != null ? context.TestStep : testInstanceState.TestStep;
-                            result = RunTest(childTestCommand, parentTestStep, sandbox, testHandlerDecorator);
-                        }
-
-                        outcomeAccumulator.Combine(result.Outcome);
-                    }
-                }));
-            }
-
-            return outcomeAccumulator.Generalize();
+            return new RunTestAction(this, testCommand, parentTestStep, parentSandbox, testActionsDecorator);
         }
 
         private static void UpdateInterimOutcome(TestContext context, ref TestOutcome outcome, TestOutcome newOutcome)
@@ -406,10 +105,437 @@ namespace Gallio.Framework.Pattern
         }
 
         #region Actions
-        [UserCodeEntryPoint]
-        private static TestOutcome DoBeforeTest(Sandbox sandbox, PatternTestState testState)
+        internal sealed class RunTestAction
         {
-            return sandbox.Run(TestLog.Writer, delegate
+            private readonly PatternTestExecutor executor;
+            private readonly ITestCommand testCommand;
+            private readonly Model.Tree.TestStep parentTestStep;
+            private readonly Sandbox parentSandbox;
+            private readonly PatternTestActionsDecorator testActionsDecorator;
+            private readonly TestContext parentContext;
+
+            private TestResult result;
+            private bool reentered;
+
+            public RunTestAction(PatternTestExecutor executor, ITestCommand testCommand, Model.Tree.TestStep parentTestStep, Sandbox parentSandbox, PatternTestActionsDecorator testActionsDecorator)
+            {
+                this.executor = executor;
+                this.testCommand = testCommand;
+                this.parentTestStep = parentTestStep;
+                this.parentSandbox = parentSandbox;
+                this.testActionsDecorator = testActionsDecorator;
+
+                result = new TestResult(TestOutcome.Error);
+            }
+
+            public RunTestAction(PatternTestExecutor executor, ITestCommand testCommand, TestContext parentContext, PatternTestActionsDecorator testActionsDecorator)
+                : this(executor, testCommand, parentContext.TestStep, parentContext.Sandbox, testActionsDecorator)
+            {
+                this.parentContext = parentContext;
+            }
+
+            public TestResult Result
+            {
+                get { return result; }
+            }
+
+            [DebuggerNonUserCode]
+            public void Run()
+            {
+                var test = (PatternTest)testCommand.Test;
+
+                TestContextCookie? parentContextCookie = null;
+                try
+                {
+                    if (parentContext != null)
+                        parentContextCookie = parentContext.Enter();
+
+                    // The first time we call Run, we check whether the ApartmentState of the
+                    // Thread is correct.  If it is not, then we start a new thread and reenter
+                    // with a flag set to skip initial processing.
+                    if (!reentered)
+                    {
+                        if (executor.progressMonitor.IsCanceled)
+                        {
+                            result = new TestResult(TestOutcome.Canceled);
+                            return;
+                        }
+
+                        if (!testCommand.AreDependenciesSatisfied())
+                        {
+                            ITestContext context = testCommand.StartPrimaryChildStep(parentTestStep);
+                            context.LogWriter.Warnings.WriteLine("Skipped due to an unsatisfied test dependency.");
+                            result = context.FinishStep(TestOutcome.Skipped, null);
+                            return;
+                        }
+
+                        executor.progressMonitor.SetStatus(test.Name);
+
+                        if (test.ApartmentState != ApartmentState.Unknown
+                            && Thread.CurrentThread.GetApartmentState() != test.ApartmentState)
+                        {
+                            reentered = true;
+
+                            ThreadTask task = new TestEnvironmentAwareThreadTask("Test Runner " + test.ApartmentState,
+                                (Action) Run, executor.environmentManager);
+                            task.ApartmentState = test.ApartmentState;
+                            task.Run(null);
+
+                            if (!task.Result.HasValue)
+                            {
+                                throw new ModelException(
+                                    String.Format("Failed to perform action in thread with overridden apartment state {0}.",
+                                        test.ApartmentState), task.Result.Exception);
+                            }
+
+                            return;
+                        }
+                    }
+
+                    // Actually run the test.
+                    // Yes, this is a monstruously long method due to the inlining optimzation to minimize stack depth.
+                    using (Sandbox sandbox = parentSandbox.CreateChild())
+                    {
+                        using (new ProcessIsolation())
+                        {
+                            using (sandbox.StartTimer(test.Timeout))
+                            {
+                                TestOutcome outcome;
+                                PatternTestActions testActions = test.TestActions;
+
+                                if (testActionsDecorator != null)
+                                    outcome = testActionsDecorator(sandbox, ref testActions);
+                                else
+                                    outcome = TestOutcome.Passed;
+
+                                if (outcome.Status == TestStatus.Passed)
+                                {
+                                    PatternTestStep primaryTestStep = new PatternTestStep(test, parentTestStep);
+                                    PatternTestState testState = new PatternTestState(primaryTestStep, testActions,
+                                        executor.converter, executor.formatter, testCommand.IsExplicit);
+
+                                    bool invisibleTest = true;
+
+                                    outcome = outcome.CombineWith(sandbox.Run(TestLog.Writer,
+                                        new BeforeTestAction(testState).Run, "Before Test"));
+
+                                    if (outcome.Status == TestStatus.Passed)
+                                    {
+                                        bool reusePrimaryTestStep = !testState.BindingContext.HasBindings;
+                                        if (!reusePrimaryTestStep)
+                                            primaryTestStep.IsTestCase = false;
+
+                                        invisibleTest = false;
+                                        TestContext primaryContext = TestContext.PrepareContext(
+                                            testCommand.StartStep(primaryTestStep), sandbox);
+                                        testState.SetInContext(primaryContext);
+
+                                        using (primaryContext.Enter())
+                                        {
+                                            primaryContext.LifecyclePhase = LifecyclePhases.Initialize;
+
+                                            outcome = outcome.CombineWith(primaryContext.Sandbox.Run(TestLog.Writer,
+                                                new InitializeTestAction(testState).Run, "Initialize"));
+                                        }
+
+                                        if (outcome.Status == TestStatus.Passed)
+                                        {
+                                            try
+                                            {
+                                                foreach (IDataItem bindingItem in testState.BindingContext.GetItems(!executor.options.SkipDynamicTests))
+                                                {
+                                                    if (executor.progressMonitor.IsCanceled)
+                                                    {
+                                                        outcome = TestOutcome.Canceled;
+                                                        break;
+                                                    }
+
+                                                    TestOutcome instanceOutcome;
+                                                    try
+                                                    {
+                                                        PatternTestInstanceActions decoratedTestInstanceActions = testState.TestActions.TestInstanceActions.Copy();
+
+                                                        instanceOutcome = primaryContext.Sandbox.Run(TestLog.Writer,
+                                                            new DecorateTestInstanceAction(testState, decoratedTestInstanceActions).Run, "Decorate Child Test");
+
+                                                        if (instanceOutcome.Status == TestStatus.Passed)
+                                                        {
+                                                            bool invisibleTestInstance = true;
+
+                                                            PatternTestStep testStep;
+                                                            if (reusePrimaryTestStep)
+                                                            {
+                                                                testStep = testState.PrimaryTestStep;
+                                                                invisibleTestInstance = false;
+
+                                                                PropertyBag map = DataItemUtils.GetMetadata(bindingItem);
+                                                                foreach (KeyValuePair<string, string> entry in map.Pairs)
+                                                                    primaryContext.AddMetadata(entry.Key, entry.Value);
+                                                            }
+                                                            else
+                                                            {
+                                                                testStep = new PatternTestStep(testState.Test, testState.PrimaryTestStep,
+                                                                    testState.Test.Name, testState.Test.CodeElement, false);
+                                                                testStep.Kind = testState.Test.Kind;
+
+                                                                testStep.IsDynamic = bindingItem.IsDynamic;
+                                                                bindingItem.PopulateMetadata(testStep.Metadata);
+                                                            }
+
+                                                            var bodyAction = new RunTestInstanceAction(executor, testCommand);
+                                                            var testInstanceState = new PatternTestInstanceState(testStep, decoratedTestInstanceActions, testState, bindingItem, bodyAction.Run);
+                                                            bodyAction.TestInstanceState = testInstanceState;
+
+                                                            instanceOutcome = instanceOutcome.CombineWith(primaryContext.Sandbox.Run(
+                                                                TestLog.Writer, new BeforeTestInstanceAction(testInstanceState).Run, "Before Test Instance"));
+
+                                                            if (instanceOutcome.Status == TestStatus.Passed)
+                                                            {
+                                                                executor.progressMonitor.SetStatus(testStep.Name);
+
+                                                                TestContext context = reusePrimaryTestStep
+                                                                    ? primaryContext
+                                                                    : TestContext.PrepareContext(testCommand.StartStep(testStep), primaryContext.Sandbox.CreateChild());
+                                                                testState.SetInContext(context);
+                                                                testInstanceState.SetInContext(context);
+                                                                invisibleTestInstance = false;
+
+                                                                using (context.Enter())
+                                                                {
+                                                                    if (RunTestInstanceBodyAction.CanOptimizeCallChainAndInvokeBodyActionDirectly(testInstanceState))
+                                                                    {
+                                                                        bodyAction.SkipProtect = true;
+                                                                        instanceOutcome = instanceOutcome.CombineWith(bodyAction.Run());
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        var runTestInstanceBodyAction = new RunTestInstanceBodyAction(testInstanceState);
+                                                                        TestOutcome sandboxOutcome = context.Sandbox.Run(TestLog.Writer, runTestInstanceBodyAction.Run, "Body");
+
+                                                                        instanceOutcome = instanceOutcome.CombineWith(runTestInstanceBodyAction.Outcome.CombineWith(sandboxOutcome));
+                                                                    }
+                                                                }
+
+                                                                if (!reusePrimaryTestStep)
+                                                                    context.FinishStep(instanceOutcome);
+
+                                                                executor.progressMonitor.SetStatus("");
+                                                            }
+
+                                                            instanceOutcome = instanceOutcome.CombineWith(primaryContext.Sandbox.Run(
+                                                                TestLog.Writer, new AfterTestInstanceAction(testInstanceState).Run, "After Test Instance"));
+
+                                                            if (invisibleTestInstance)
+                                                                instanceOutcome = PublishOutcomeFromInvisibleTest(testCommand, testStep, instanceOutcome).Outcome;
+                                                        }
+                                                    }
+                                                    catch (Exception ex)
+                                                    {
+                                                        string message = String.Format("An exception occurred while preparing an instance of test '{0}'.", testState.Test.FullName);
+
+                                                        if (reusePrimaryTestStep)
+                                                        {
+                                                            TestLog.Failures.WriteException(ex, message);
+                                                            instanceOutcome = TestOutcome.Error;
+                                                        }
+                                                        else
+                                                        {
+                                                            instanceOutcome = ReportTestError(testCommand, testState.PrimaryTestStep, ex, message).Outcome;
+                                                        }
+                                                    }
+
+                                                    // If we are reporting a single result (reuse = true) then provide full details, otherwise
+                                                    // just keep the general status.
+                                                    outcome = outcome.CombineWith(reusePrimaryTestStep ? instanceOutcome : instanceOutcome.Generalize());
+                                                }
+                                            }
+                                            catch (Exception ex)
+                                            {
+                                                TestLog.Failures.WriteException(ex, String.Format("An exception occurred while getting data items for test '{0}'.", testState.Test.FullName));
+                                                outcome = TestOutcome.Error;
+                                            }
+                                        }
+
+                                        using (primaryContext.Enter())
+                                        {
+                                            primaryContext.LifecyclePhase = LifecyclePhases.Dispose;
+
+                                            outcome = outcome.CombineWith(primaryContext.Sandbox.Run(TestLog.Writer,
+                                                new DisposeTestAction(testState).Run, "Dispose"));
+                                        }
+
+                                        result = primaryContext.FinishStep(outcome);
+                                    }
+
+                                    outcome = outcome.CombineWith(sandbox.Run(TestLog.Writer,
+                                        new AfterTestAction(testState).Run, "After Test"));
+
+                                    if (invisibleTest)
+                                        result = PublishOutcomeFromInvisibleTest(testCommand, primaryTestStep, outcome);
+                                }
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    result = ReportTestError(testCommand, parentTestStep, ex, String.Format("An exception occurred while preparing to run test '{0}'.", test.FullName));
+                }
+                finally
+                {
+                    if (parentContextCookie.HasValue)
+                        parentContextCookie.Value.ExitContext();
+
+                    executor.progressMonitor.SetStatus("");
+                    executor.progressMonitor.Worked(1);
+                }
+            }
+        }
+
+        private sealed class RunTestInstanceAction
+        {
+            private readonly PatternTestExecutor executor;
+            private readonly ITestCommand testCommand;
+            private PatternTestInstanceState testInstanceState;
+            private bool skipProtect;
+
+            public RunTestInstanceAction(PatternTestExecutor executor, ITestCommand testCommand)
+            {
+                this.executor = executor;
+                this.testCommand = testCommand;
+            }
+
+            public PatternTestInstanceState TestInstanceState
+            {
+                set { testInstanceState = value; }
+            }
+
+            public bool SkipProtect
+            {
+                set { skipProtect = value ; }
+            }
+
+            [DebuggerNonUserCode]
+            public TestOutcome Run()
+            {
+                TestContext context = TestContext.CurrentContext;
+
+                using (skipProtect ? null : context.Sandbox.Protect())
+                {
+                    try
+                    {
+                        if (executor.progressMonitor.IsCanceled)
+                            return TestOutcome.Canceled;
+
+                        var outcome = TestOutcome.Passed;
+
+                        if (!executor.options.SkipTestExecution)
+                        {
+                            context.LifecyclePhase = LifecyclePhases.Initialize;
+
+                            UpdateInterimOutcome(context, ref outcome,
+                                context.Sandbox.Run(TestLog.Writer, new InitializeTestInstanceAction(testInstanceState).Run, "Initialize"));
+                        }
+
+                        if (outcome.Status == TestStatus.Passed)
+                        {
+                            if (!executor.options.SkipTestExecution)
+                            {
+                                context.LifecyclePhase = LifecyclePhases.SetUp;
+
+                                UpdateInterimOutcome(context, ref outcome,
+                                    context.Sandbox.Run(TestLog.Writer, new SetUpTestInstanceAction(testInstanceState).Run, "Set Up"));
+                            }
+
+                            if (outcome.Status == TestStatus.Passed)
+                            {
+                                if (!executor.options.SkipTestExecution)
+                                {
+                                    context.LifecyclePhase = LifecyclePhases.Execute;
+
+                                    UpdateInterimOutcome(context, ref outcome,
+                                        context.Sandbox.Run(TestLog.Writer, new ExecuteTestInstanceAction(testInstanceState).Run, "Execute"));
+                                }
+
+                                if (outcome.Status == TestStatus.Passed)
+                                {
+                                    // Run all test children.
+                                    PatternTestActionsDecorator testActionsDecorator =
+                                        delegate(Sandbox childSandbox, ref PatternTestActions childTestActions)
+                                        {
+                                            childTestActions = childTestActions.Copy();
+                                            return childSandbox.Run(TestLog.Writer, new DecorateChildTestAction(testInstanceState, childTestActions).Run, "Decorate Child Test");
+                                        };
+
+                                    foreach (TestBatch batch in GenerateTestBatches(testCommand.Children))
+                                    {
+                                        if (batch.Commands.Count == 1)
+                                        {
+                                            // Special case to reduce effective stack depth and cost since there is no
+                                            // need to use the scheduler if nothing is running in parallel.
+                                            RunTestAction action = new RunTestAction(executor, batch.Commands[0], context, testActionsDecorator);
+
+                                            action.Run();
+
+                                            UpdateInterimOutcome(context, ref outcome, action.Result.Outcome.Generalize());
+                                        }
+                                        else
+                                        {
+                                            RunTestAction[] actions = GenericCollectionUtils.ConvertAllToArray(batch.Commands,
+                                                childTestCommand => new RunTestAction(executor, childTestCommand, context, testActionsDecorator));
+
+                                            executor.scheduler.Run(Array.ConvertAll<RunTestAction, Action>(actions, action => action.Run));
+
+                                            TestOutcome combinedChildOutcome = TestOutcome.Passed;
+                                            foreach (var action in actions)
+                                                combinedChildOutcome = combinedChildOutcome.CombineWith(action.Result.Outcome);
+
+                                            UpdateInterimOutcome(context, ref outcome, combinedChildOutcome.Generalize());
+                                        }
+                                    }
+                                }
+                            }
+
+                            if (!executor.options.SkipTestExecution)
+                            {
+                                context.LifecyclePhase = LifecyclePhases.TearDown;
+
+                                UpdateInterimOutcome(context, ref outcome,
+                                    context.Sandbox.Run(TestLog.Writer, new TearDownTestInstanceAction(testInstanceState).Run, "Tear Down"));
+                            }
+                        }
+
+                        if (!executor.options.SkipTestExecution)
+                        {
+                            context.LifecyclePhase = LifecyclePhases.Dispose;
+
+                            UpdateInterimOutcome(context, ref outcome,
+                                context.Sandbox.Run(TestLog.Writer, new DisposeTestInstanceAction(testInstanceState).Run, "Dispose"));
+                        }
+
+                        return outcome;
+                    }
+                    catch (Exception ex)
+                    {
+                        TestLog.Failures.WriteException(ex,
+                            String.Format("An exception occurred while running test instance '{0}'.", testInstanceState.TestStep.Name));
+                        return TestOutcome.Error;
+                    }
+                }
+            }
+        }
+
+        private sealed class BeforeTestAction
+        {
+            private readonly PatternTestState testState;
+
+            public BeforeTestAction(PatternTestState testState)
+            {
+                this.testState = testState;
+            }
+
+            [UserCodeEntryPoint, DebuggerNonUserCode]
+            public void Run()
             {
                 foreach (PatternTestParameter parameter in testState.Test.Parameters)
                 {
@@ -417,62 +543,89 @@ namespace Gallio.Framework.Pattern
                     testState.TestParameterDataAccessors.Add(parameter, accessor);
                 }
 
-                testState.TestHandler.BeforeTest(testState);
-            }, "Before Test");
-        }
-
-        [UserCodeEntryPoint]
-        private static TestOutcome DoInitializeTest(TestContext context, PatternTestState testState)
-        {
-            using (context.Enter())
-            {
-                context.LifecyclePhase = LifecyclePhases.Initialize;
-
-                return context.Sandbox.Run(TestLog.Writer, delegate
-                {
-                    testState.TestHandler.InitializeTest(testState);
-                }, "Initialize");
+                testState.TestActions.BeforeTestChain.Action(testState);
             }
         }
 
-        [UserCodeEntryPoint]
-        private static TestOutcome DoDisposeTest(TestContext context, PatternTestState testState)
+        private sealed class InitializeTestAction
         {
-            using (context.Enter())
-            {
-                context.LifecyclePhase = LifecyclePhases.Dispose;
+            private readonly PatternTestState testState;
 
-                return context.Sandbox.Run(TestLog.Writer, delegate
-                {
-                    testState.TestHandler.DisposeTest(testState);
-                }, "Dispose");
+            public InitializeTestAction(PatternTestState testState)
+            {
+                this.testState = testState;
+            }
+
+            [UserCodeEntryPoint, DebuggerNonUserCode]
+            public void Run()
+            {
+                testState.TestActions.InitializeTestChain.Action(testState);
             }
         }
 
-        [UserCodeEntryPoint]
-        private static TestOutcome DoAfterTest(Sandbox sandbox, PatternTestState testState)
+        private sealed class DisposeTestAction
         {
-            return sandbox.Run(TestLog.Writer, delegate
+            private readonly PatternTestState testState;
+
+            public DisposeTestAction(PatternTestState testState)
             {
-                testState.TestHandler.AfterTest(testState);
+                this.testState = testState;
+            }
+
+            [UserCodeEntryPoint, DebuggerNonUserCode]
+            public void Run()
+            {
+                testState.TestActions.DisposeTestChain.Action(testState);
+            }
+        }
+
+        private sealed class AfterTestAction
+        {
+            private readonly PatternTestState testState;
+
+            public AfterTestAction(PatternTestState testState)
+            {
+                this.testState = testState;
+            }
+
+            [UserCodeEntryPoint, DebuggerNonUserCode]
+            public void Run()
+            {
+                testState.TestActions.AfterTestChain.Action(testState);
 
                 testState.TestParameterDataAccessors.Clear();
-            }, "After Test");
+            }
         }
 
-        [UserCodeEntryPoint]
-        private static TestOutcome DoDecorateTestInstance(Sandbox sandbox, PatternTestState testState, PatternTestInstanceActions decoratedTestInstanceActions)
+        private sealed class DecorateTestInstanceAction
         {
-            return sandbox.Run(TestLog.Writer, delegate
+            private readonly PatternTestState testState;
+            private readonly PatternTestInstanceActions decoratedTestInstanceActions;
+
+            public DecorateTestInstanceAction(PatternTestState testState, PatternTestInstanceActions decoratedTestInstanceActions)
             {
-                testState.TestHandler.DecorateTestInstance(testState, decoratedTestInstanceActions);
-            }, "Decorate Child Test");
+                this.testState = testState;
+                this.decoratedTestInstanceActions = decoratedTestInstanceActions;
+            }
+
+            [UserCodeEntryPoint, DebuggerNonUserCode]
+            public void Run()
+            {
+                testState.TestActions.DecorateTestInstanceChain.Action(testState, decoratedTestInstanceActions);
+            }
         }
 
-        [UserCodeEntryPoint]
-        private static TestOutcome DoBeforeTestInstance(Sandbox sandbox, PatternTestInstanceState testInstanceState)
+        private sealed class BeforeTestInstanceAction
         {
-            return sandbox.Run(TestLog.Writer, delegate
+            private readonly PatternTestInstanceState testInstanceState;
+
+            public BeforeTestInstanceAction(PatternTestInstanceState testInstanceState)
+            {
+                this.testInstanceState = testInstanceState;
+            }
+
+            [UserCodeEntryPoint, DebuggerNonUserCode]
+            public void Run()
             {
                 foreach (KeyValuePair<PatternTestParameter, IDataAccessor> accessorPair in testInstanceState.TestState.TestParameterDataAccessors)
                 {
@@ -485,86 +638,131 @@ namespace Gallio.Framework.Pattern
                     dataPair.Key.TestParameterActions.BindTestParameter(testInstanceState, dataPair.Value);
                 }
 
-                testInstanceState.TestInstanceHandler.BeforeTestInstance(testInstanceState);
-            }, "Before Test Instance");
-        }
-
-        [UserCodeEntryPoint]
-        private static TestOutcome DoInitializeTestInstance(TestContext context, PatternTestInstanceState testInstanceState)
-        {
-            using (context.Enter())
-            {
-                context.LifecyclePhase = LifecyclePhases.Initialize;
-
-                return context.Sandbox.Run(context.LogWriter, delegate
-                {
-                    testInstanceState.TestInstanceHandler.InitializeTestInstance(testInstanceState);
-                }, "Initialize");
+                testInstanceState.TestInstanceActions.BeforeTestInstanceChain.Action(testInstanceState);
             }
         }
 
-        [UserCodeEntryPoint]
-        private static TestOutcome DoSetUpTestInstance(TestContext context, PatternTestInstanceState testInstanceState)
+        private sealed class InitializeTestInstanceAction
         {
-            using (context.Enter())
-            {
-                context.LifecyclePhase = LifecyclePhases.SetUp;
+            private readonly PatternTestInstanceState testInstanceState;
 
-                return context.Sandbox.Run(context.LogWriter, delegate
-                {
-                    testInstanceState.TestInstanceHandler.SetUpTestInstance(testInstanceState);
-                }, "Set Up");
+            public InitializeTestInstanceAction(PatternTestInstanceState testInstanceState)
+            {
+                this.testInstanceState = testInstanceState;
+            }
+
+            [UserCodeEntryPoint, DebuggerNonUserCode]
+            public void Run()
+            {
+                testInstanceState.TestInstanceActions.InitializeTestInstanceChain.Action(testInstanceState);
             }
         }
 
-        [UserCodeEntryPoint]
-        private static TestOutcome DoExecuteTestInstance(TestContext context, PatternTestInstanceState testInstanceState)
+        private sealed class SetUpTestInstanceAction
         {
-            using (context.Enter())
-            {
-                context.LifecyclePhase = LifecyclePhases.Execute;
+            private readonly PatternTestInstanceState testInstanceState;
 
-                return context.Sandbox.Run(context.LogWriter, delegate
-                {
-                    testInstanceState.TestInstanceHandler.ExecuteTestInstance(testInstanceState);
-                }, null);
+            public SetUpTestInstanceAction(PatternTestInstanceState testInstanceState)
+            {
+                this.testInstanceState = testInstanceState;
+            }
+
+            [UserCodeEntryPoint, DebuggerNonUserCode]
+            public void Run()
+            {
+                testInstanceState.TestInstanceActions.SetUpTestInstanceChain.Action(testInstanceState);
             }
         }
 
-        [UserCodeEntryPoint]
-        private static TestOutcome DoTearDownTestInstance(TestContext context, PatternTestInstanceState testInstanceState)
+        private sealed class ExecuteTestInstanceAction
         {
-            using (context.Enter())
-            {
-                context.LifecyclePhase = LifecyclePhases.TearDown;
+            private readonly PatternTestInstanceState testInstanceState;
 
-                return context.Sandbox.Run(context.LogWriter, delegate
-                {
-                    testInstanceState.TestInstanceHandler.TearDownTestInstance(testInstanceState);
-                }, "Tear Down");
+            public ExecuteTestInstanceAction(PatternTestInstanceState testInstanceState)
+            {
+                this.testInstanceState = testInstanceState;
+            }
+
+            [UserCodeEntryPoint, DebuggerNonUserCode]
+            public void Run()
+            {
+                testInstanceState.TestInstanceActions.ExecuteTestInstanceChain.Action(testInstanceState);
             }
         }
 
-        [UserCodeEntryPoint]
-        private static TestOutcome DoDisposeTestInstance(TestContext context, PatternTestInstanceState testInstanceState)
+        private sealed class RunTestInstanceBodyAction
         {
-            using (context.Enter())
-            {
-                context.LifecyclePhase = LifecyclePhases.Dispose;
+            private readonly PatternTestInstanceState testInstanceState;
+            private TestOutcome outcome;
 
-                return context.Sandbox.Run(context.LogWriter, delegate
-                {
-                    testInstanceState.TestInstanceHandler.DisposeTestInstance(testInstanceState);
-                }, "Dispose");
+            public RunTestInstanceBodyAction(PatternTestInstanceState testInstanceState)
+            {
+                this.testInstanceState = testInstanceState;
+                outcome = TestOutcome.Error;
+            }
+
+            public TestOutcome Outcome
+            {
+                get { return outcome; }
+            }
+
+            [UserCodeEntryPoint, DebuggerNonUserCode]
+            public void Run()
+            {
+                outcome = testInstanceState.TestInstanceActions.RunTestInstanceBodyChain.Func(testInstanceState);
+            }
+
+            public static bool CanOptimizeCallChainAndInvokeBodyActionDirectly(PatternTestInstanceState testInstanceState)
+            {
+                return testInstanceState.TestInstanceActions.IsDefaultRunTestInstanceBodyChain;
             }
         }
 
-        [UserCodeEntryPoint]
-        private static TestOutcome DoAfterTestInstance(Sandbox sandbox, PatternTestInstanceState testInstanceState)
+        private sealed class TearDownTestInstanceAction
         {
-            return sandbox.Run(TestLog.Writer, delegate
+            private readonly PatternTestInstanceState testInstanceState;
+
+            public TearDownTestInstanceAction(PatternTestInstanceState testInstanceState)
             {
-                testInstanceState.TestInstanceHandler.AfterTestInstance(testInstanceState);
+                this.testInstanceState = testInstanceState;
+            }
+
+            [UserCodeEntryPoint, DebuggerNonUserCode]
+            public void Run()
+            {
+                testInstanceState.TestInstanceActions.TearDownTestInstanceChain.Action(testInstanceState);
+            }
+        }
+
+        private sealed class DisposeTestInstanceAction
+        {
+            private readonly PatternTestInstanceState testInstanceState;
+
+            public DisposeTestInstanceAction(PatternTestInstanceState testInstanceState)
+            {
+                this.testInstanceState = testInstanceState;
+            }
+
+            [UserCodeEntryPoint, DebuggerNonUserCode]
+            public void Run()
+            {
+                testInstanceState.TestInstanceActions.DisposeTestInstanceChain.Action(testInstanceState);
+            }
+        }
+
+        private sealed class AfterTestInstanceAction
+        {
+            private readonly PatternTestInstanceState testInstanceState;
+
+            public AfterTestInstanceAction(PatternTestInstanceState testInstanceState)
+            {
+                this.testInstanceState = testInstanceState;
+            }
+
+            [UserCodeEntryPoint, DebuggerNonUserCode]
+            public void Run()
+            {
+                testInstanceState.TestInstanceActions.AfterTestInstanceChain.Action(testInstanceState);
 
                 foreach (KeyValuePair<PatternTestParameter, object> dataPair in testInstanceState.TestParameterValues)
                 {
@@ -572,30 +770,24 @@ namespace Gallio.Framework.Pattern
                 }
 
                 testInstanceState.TestParameterValues.Clear();
-            }, "After Test Instance");
+            }
         }
 
-        [UserCodeEntryPoint]
-        private static TestOutcome DoDecorateChildTest(Sandbox sandbox, PatternTestInstanceState testInstanceState, PatternTestActions decoratedChildTestActions)
+        private sealed class DecorateChildTestAction
         {
-            return sandbox.Run(TestLog.Writer, delegate
-            {
-                testInstanceState.TestInstanceHandler.DecorateChildTest(testInstanceState, decoratedChildTestActions);
-            }, "Decorate Child Test");
-        }
+            private readonly PatternTestInstanceState testInstanceState;
+            private readonly PatternTestActions decoratedChildTestActions;
 
-        [UserCodeEntryPoint]
-        private static TestOutcome DoRunTestInstanceBody(TestContext context, PatternTestInstanceState testInstanceState)
-        {
-            using (context.Enter())
+            public DecorateChildTestAction(PatternTestInstanceState testInstanceState, PatternTestActions decoratedChildTestActions)
             {
-                TestOutcome outerOutcome = TestOutcome.Error;
-                TestOutcome sandboxOutcome = context.Sandbox.Run(TestLog.Writer, delegate
-                {
-                    outerOutcome = testInstanceState.TestInstanceHandler.RunTestInstanceBody(testInstanceState);
-                }, "Body");
+                this.testInstanceState = testInstanceState;
+                this.decoratedChildTestActions = decoratedChildTestActions;
+            }
 
-                return outerOutcome.CombineWith(sandboxOutcome);
+            [UserCodeEntryPoint, DebuggerNonUserCode]
+            public void Run()
+            {
+                testInstanceState.TestInstanceActions.DecorateChildTestChain.Action(testInstanceState, decoratedChildTestActions);
             }
         }
         #endregion
@@ -644,33 +836,6 @@ namespace Gallio.Framework.Pattern
             ITestContext context = testCommand.StartPrimaryChildStep(parentTestStep);
             TestLog.Failures.WriteException(ex, message);
             return context.FinishStep(TestOutcome.Error, null);
-        }
-
-        private static void DoWithProcessIsolation(Action action)
-        {
-            using (new ProcessIsolation())
-            {
-                action();
-            }
-        }
-
-        private void DoWithApartmentState(ApartmentState apartmentState, Action action)
-        {
-            if (apartmentState != ApartmentState.Unknown
-                && Thread.CurrentThread.GetApartmentState() != apartmentState)
-            {
-                ThreadTask task = new TestEnvironmentAwareThreadTask("Test Runner " + apartmentState, action, environmentManager);
-                task.ApartmentState = apartmentState;
-                task.Run(null);
-
-                if (task.Result.Exception != null)
-                    throw new ModelException(String.Format("Failed to perform action in thread with overridden apartment state {0}.",
-                        apartmentState), task.Result.Exception);
-            }
-            else
-            {
-                action();
-            }
         }
 
         private static IEnumerable<TestBatch> GenerateTestBatches(IEnumerable<ITestCommand> commands)
@@ -728,11 +893,6 @@ namespace Gallio.Framework.Pattern
             }
 
             public IList<ITestCommand> Commands { get; private set; }
-
-            public IList<Action> ToActions(Converter<ITestCommand, Action> converter)
-            {
-                return GenericCollectionUtils.ConvertAllToArray(Commands, converter);
-            }
         }
 
         private sealed class TestPartition
@@ -745,23 +905,6 @@ namespace Gallio.Framework.Pattern
 
             public IList<ITestCommand> ParallelCommands { get; private set; }
             public IList<ITestCommand> SequentialCommands { get; private set; }
-        }
-
-        private sealed class ThreadSafeTestOutcomeAccumulator
-        {
-            private TestOutcome combinedOutcome = TestOutcome.Passed;
-
-            public void Combine(TestOutcome outcome)
-            {
-                lock (this)
-                    combinedOutcome = combinedOutcome.CombineWith(outcome);
-            }
-
-            public TestOutcome Generalize()
-            {
-                lock (this)
-                    return combinedOutcome.Generalize();
-            }
         }
     }
 }

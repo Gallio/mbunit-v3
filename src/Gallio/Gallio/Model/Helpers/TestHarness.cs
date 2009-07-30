@@ -37,60 +37,35 @@ namespace Gallio.Model.Helpers
         }
 
         /// <summary>
-        /// Sets up the test harness.
+        /// Sets up the test AppDomain.
         /// </summary>
         /// <remarks>
         /// <para>
-        /// The default implementation does nothing.  Subclasses should override this method
+        /// The default implementation returns null.  Subclasses should override this method
         /// to prepare the AppDomain for testing such as by redirecting the console streams
-        /// to a logging aparatus.
+        /// to a logging apparatus.
         /// </para>
         /// </remarks>
-        public virtual void SetUp()
+        /// <returns>Returns an object that when disposed causes the changes to be torn down, or null if none.</returns>
+        public virtual IDisposable SetUpAppDomain()
         {
+            return null;
         }
 
         /// <summary>
-        /// Tears down the test harness.
+        /// Sets up the test Thread.
         /// </summary>
         /// <remarks>
         /// <para>
-        /// The default implementation does nothing.  Subclasses should override this method
-        /// to cleanup the AppDomain after testing and revert all actions performed by <see cref="SetUp" />.
-        /// </para>
-        /// </remarks>
-        public virtual void TearDown()
-        {
-        }
-
-        /// <summary>
-        /// Runs an action within the test harness.
-        /// </summary>
-        /// <param name="action">The action to run.</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="action"/> is null.</exception>
-        public void Run(Action action)
-        {
-            if (action == null)
-                throw new ArgumentNullException("action");
-
-            RunImpl(action);
-        }
-
-
-        /// <summary>
-        /// Runs an action within the test harness.
-        /// </summary>
-        /// <remarks>
-        /// <para>
-        /// The default implementation simply invokes the action.  Subclasses should override this method
+        /// The default implementation returns null.  Subclasses should override this method
         /// to configure the Thread properties around the action such as setting the thread
         /// synchronization context.
         /// </para>
         /// </remarks>
-        /// <param name="action">The action to run, not null.</param>
-        protected virtual void RunImpl(Action action)
+        /// <returns>Returns an object that when disposed causes the changes to be torn down, or null if none.</returns>
+        public virtual IDisposable SetUpThread()
         {
-            action();
+            return null;
         }
 
         /// <summary>

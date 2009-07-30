@@ -242,7 +242,7 @@ namespace Gallio.Common.IO
             if (basePath == null)
                 throw new ArgumentNullException("basePath");
 
-            if (! Path.IsPathRooted(relativePath))
+            if (!Path.IsPathRooted(relativePath))
             {
                 try
                 {

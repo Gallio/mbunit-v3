@@ -99,11 +99,10 @@ namespace MbUnit.Framework
 
                         task.Terminated += delegate
                         {
-                            Exception ex = task.Result.Exception;
-                            if (ex != null)
+                            if (! task.Result.HasValue)
                             {
                                 threadOutcomes[index] = TestOutcome.Error;
-                                context.LogWriter.Default.WriteException(ex,
+                                context.LogWriter.Default.WriteException(task.Result.Exception,
                                     String.Format("An exception occurred while starting Threaded Repetition #{0}.",
                                         index));
                             }

@@ -15,6 +15,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Reflection;
 using System.IO;
 using Gallio.Common.Platform;
@@ -109,6 +110,7 @@ namespace Gallio.Runtime.Loader
             return RecursiveAssemblyResolve(args, reflectionOnly);
         }
 
+        [DebuggerStepThrough, DebuggerHidden, DebuggerNonUserCode]
         private Assembly RecursiveAssemblyResolve(ResolveEventArgs args, bool reflectionOnly)
         {
             // Note: The name passed into the resolve event has already had assembly binding policy applied

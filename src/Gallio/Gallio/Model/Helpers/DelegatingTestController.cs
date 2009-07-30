@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using System.Diagnostics;
 using Gallio.Model.Commands;
 using Gallio.Model.Contexts;
 using Gallio.Model.Tree;
@@ -45,7 +46,8 @@ namespace Gallio.Model.Helpers
         }
 
         /// <inheritdoc />
-        protected override TestResult RunImpl(ITestCommand rootTestCommand, TestStep parentTestStep, TestExecutionOptions options, IProgressMonitor progressMonitor)
+        [DebuggerNonUserCode]
+        protected internal override TestResult RunImpl(ITestCommand rootTestCommand, TestStep parentTestStep, TestExecutionOptions options, IProgressMonitor progressMonitor)
         {
             using (progressMonitor.BeginTask("Running tests.", rootTestCommand.TestCount))
             {
@@ -53,39 +55,35 @@ namespace Gallio.Model.Helpers
             }
         }
 
+        [DebuggerNonUserCode]
         private TestResult RunTest(ITestCommand testCommand, TestStep parentTestStep,
             TestExecutionOptions options, IProgressMonitor progressMonitor)
         {
+            // NOTE: This method has been optimized to minimize the total stack depth of the action
+            //       by inlining blocks on the critical path that had previously been factored out.
+
             using (TestController testController = testControllerProvider(testCommand.Test))
             {
                 if (testController != null)
-                    return RunWithController(testController, testCommand, parentTestStep, options, progressMonitor);
-            }
-
-            return RunWithoutController(testCommand, parentTestStep, options, progressMonitor);
-        }
-
-        private static TestResult RunWithController(TestController testController, ITestCommand testCommand,
-            TestStep parentTestStep, TestExecutionOptions options, IProgressMonitor progressMonitor)
-        {
-            try
-            {
-                using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(testCommand.TestCount))
                 {
-                    return testController.Run(testCommand, parentTestStep, options, subProgressMonitor);
+                    try
+                    {
+                        using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(testCommand.TestCount))
+                        {
+                            // Calling RunImpl directly instead of Run to minimize stack depth
+                            // because we already know the arguments are valid.
+                            return testController.RunImpl(testCommand, parentTestStep, options, subProgressMonitor);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        ITestContext context = testCommand.StartPrimaryChildStep(parentTestStep);
+                        context.LogWriter.Failures.WriteException(ex, "Fatal Exception in test controller");
+                        return context.FinishStep(TestOutcome.Error, null);
+                    }
                 }
             }
-            catch (Exception ex)
-            {
-                ITestContext context = testCommand.StartPrimaryChildStep(parentTestStep);
-                context.LogWriter.Failures.WriteException(ex, "Fatal Exception in test controller");
-                return context.FinishStep(TestOutcome.Error, null);
-            }
-        }
 
-        private TestResult RunWithoutController(ITestCommand testCommand, TestStep parentTestStep,
-            TestExecutionOptions options, IProgressMonitor progressMonitor)
-        {
             // Enter the scope of the test and recurse until we find a controller.
             progressMonitor.SetStatus(testCommand.Test.FullName);
 

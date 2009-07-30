@@ -43,18 +43,23 @@ namespace Gallio.Icarus
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(RuntimeLogWindow));
             this.toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
             this.logBody = new System.Windows.Forms.RichTextBox();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.severityLabel = new System.Windows.Forms.ToolStripLabel();
             this.severityComboBox = new System.Windows.Forms.ToolStripComboBox();
-            this.clearAllToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.clearAllToolStripButton = new System.Windows.Forms.ToolStripButton();
+            this.contextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.selectAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.copyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripContainer1.ContentPanel.SuspendLayout();
             this.toolStripContainer1.TopToolStripPanel.SuspendLayout();
             this.toolStripContainer1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
+            this.contextMenuStrip.SuspendLayout();
             this.SuspendLayout();
             // 
             // toolStripContainer1
@@ -77,6 +82,7 @@ namespace Gallio.Icarus
             // 
             // logBody
             // 
+            this.logBody.ContextMenuStrip = this.contextMenuStrip;
             this.logBody.Dock = System.Windows.Forms.DockStyle.Fill;
             this.logBody.Location = new System.Drawing.Point(0, 0);
             this.logBody.Name = "logBody";
@@ -109,6 +115,11 @@ namespace Gallio.Icarus
             this.severityComboBox.Name = "severityComboBox";
             this.severityComboBox.Size = new System.Drawing.Size(121, 25);
             // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 25);
+            // 
             // clearAllToolStripButton
             // 
             this.clearAllToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("clearAllToolStripButton.Image")));
@@ -118,10 +129,29 @@ namespace Gallio.Icarus
             this.clearAllToolStripButton.Text = "Clear Log";
             this.clearAllToolStripButton.Click += new System.EventHandler(this.clearAllToolStripButton_Click);
             // 
-            // toolStripSeparator1
+            // contextMenuStrip
             // 
-            this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 25);
+            this.contextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.selectAllToolStripMenuItem,
+            this.copyToolStripMenuItem});
+            this.contextMenuStrip.Name = "contextMenuStrip";
+            this.contextMenuStrip.Size = new System.Drawing.Size(168, 48);
+            // 
+            // selectAllToolStripMenuItem
+            // 
+            this.selectAllToolStripMenuItem.Name = "selectAllToolStripMenuItem";
+            this.selectAllToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.A)));
+            this.selectAllToolStripMenuItem.Size = new System.Drawing.Size(167, 22);
+            this.selectAllToolStripMenuItem.Text = "Select All";
+            this.selectAllToolStripMenuItem.Click += new System.EventHandler(this.selectAllToolStripMenuItem_Click);
+            // 
+            // copyToolStripMenuItem
+            // 
+            this.copyToolStripMenuItem.Name = "copyToolStripMenuItem";
+            this.copyToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.C)));
+            this.copyToolStripMenuItem.Size = new System.Drawing.Size(167, 22);
+            this.copyToolStripMenuItem.Text = "Copy";
+            this.copyToolStripMenuItem.Click += new System.EventHandler(this.copyToolStripMenuItem_Click);
             // 
             // RuntimeLogWindow
             // 
@@ -140,6 +170,7 @@ namespace Gallio.Icarus
             this.toolStripContainer1.PerformLayout();
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();
+            this.contextMenuStrip.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -153,6 +184,9 @@ namespace Gallio.Icarus
         private System.Windows.Forms.ToolStripComboBox severityComboBox;
         private System.Windows.Forms.ToolStripLabel severityLabel;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStrip;
+        private System.Windows.Forms.ToolStripMenuItem selectAllToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem copyToolStripMenuItem;
 
     }
 }

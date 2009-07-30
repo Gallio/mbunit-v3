@@ -431,10 +431,10 @@ namespace Gallio.Framework
             try
             {
                 childContext.LifecyclePhase = LifecyclePhases.Execute;
-                childContext.Sandbox.UseTimeout(timeout, delegate
+                using (childContext.Sandbox.StartTimer(timeout))
                 {
                     outcome = childContext.Sandbox.Run(childContext.LogWriter, action, null);
-                });
+                }
             }
             finally
             {
