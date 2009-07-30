@@ -23,7 +23,7 @@ namespace Gallio.BuildTools.Tasks
 
         protected override string ToolName
         {
-            get { return "Gallio.BuildTools.XsdGen.exe"; }
+            get { return "Gallio.BuildTools.SGen.exe"; }
         }
 
         protected override string GenerateFullPathToTool()

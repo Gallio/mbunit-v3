@@ -24,9 +24,9 @@ echo.
 
 copy "%BASE_DIR%\Gallio.BuildTools.Tasks\bin\Gallio.BuildTools.Tasks.dll" "%BIN_DIR%"
 if errorlevel 1 goto :COPY_FAILED
-copy "%BASE_DIR%\Gallio.BuildTools.Tasks\bin\Gallio.BuildTools.XsdGen.exe" "%BIN_DIR%"
+copy "%BASE_DIR%\Gallio.BuildTools.Tasks\bin\Gallio.BuildTools.SGen.exe" "%BIN_DIR%"
 if errorlevel 1 goto :COPY_FAILED
-copy "%BASE_DIR%\Gallio.BuildTools.Tasks\bin\Gallio.BuildTools.XsdGen.exe.config" "%BIN_DIR%"
+copy "%BASE_DIR%\Gallio.BuildTools.Tasks\bin\Gallio.BuildTools.SGen.exe.config" "%BIN_DIR%"
 if errorlevel 1 goto :COPY_FAILED
 
 echo Done.
