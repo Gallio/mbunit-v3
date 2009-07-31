@@ -33,7 +33,7 @@ namespace Gallio.Tests.Framework.Pattern
     /// through code when the stack depth is high.  Previously the pattern
     /// test framework would regularly have a stack depth well over 150 levels!
     /// Now we have specifically inlined certain methods and changed control structures
-    /// (such as using IDisposable blocks and using statements instead of lambdas) to
+    /// (such as C# "using" statements instead of lambdas) to
     /// minimize stack depth.  The code is a bit uglier but performance is significantly
     /// better during debugging.
     /// </summary>

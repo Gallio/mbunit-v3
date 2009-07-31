@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using System.IO;
 using Gallio.Framework.Utilities;
 using Gallio.Common.Markup;
 using Gallio.Runner.Reports.Schema;
@@ -27,9 +28,9 @@ namespace Gallio.Tests
     /// <remarks>
     /// <para>
     /// This fixture runs the samples specified by <see cref="RunSampleAttribute" />
-    /// then presents the results from the runner via the <see cref="Runner" /> and
-    /// <see cref="Report"/> properties.  Test cases should then verify the results
-    /// from the samples.
+    /// and <see cref="RunSampleFileAttribute" /> then presents the results from the runner
+    /// via the <see cref="Runner" /> and <see cref="Report"/> properties.  Test cases should
+    /// then verify the results from the samples.
     /// </para>
     /// </remarks>
     public abstract class BaseTestWithSampleRunner
@@ -64,23 +65,30 @@ namespace Gallio.Tests
             try
             {
                 isSampleRunning = true;
-                object[] attribs = GetType().GetCustomAttributes(typeof(RunSampleAttribute), true);
-                if (attribs.Length != 0)
-                {
-                    foreach (RunSampleAttribute attrib in attribs)
-                    {
-                        if (attrib.MethodName == null)
-                            runner.AddFixture(attrib.FixtureType);
-                        else
-                            runner.AddMethod(attrib.FixtureType, attrib.MethodName);
-                    }
+                ConfigureRunner();
 
+                if (runner.TestPackage.Files.Count != 0)
                     runner.Run();
-                }
             }
             finally
             {
                 isSampleRunning = false;
+            }
+        }
+
+        private void ConfigureRunner()
+        {
+            foreach (RunSampleAttribute attrib in GetType().GetCustomAttributes(typeof(RunSampleAttribute), true))
+            {
+                if (attrib.MethodName == null)
+                    runner.AddFixture(attrib.FixtureType);
+                else
+                    runner.AddMethod(attrib.FixtureType, attrib.MethodName);
+            }
+
+            foreach (RunSampleFileAttribute attrib in GetType().GetCustomAttributes(typeof(RunSampleFileAttribute), true))
+            {
+                runner.AddFile(new FileInfo(attrib.FilePath));
             }
         }
 

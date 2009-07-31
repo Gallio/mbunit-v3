@@ -15,6 +15,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
 using System.Threading;
@@ -321,19 +322,8 @@ namespace Gallio.DLRIntegration.Model
 
             private static void RunScript(ScriptRuntime scriptRuntime, string scriptPath)
             {
-                string exceptionMessage = null;
-                var thread = new Thread(() =>
-                {
-                    ScriptEngine engine = scriptRuntime.GetEngineByFileExtension(Path.GetExtension(scriptPath));
-                    try
-                    {
-                        engine.ExecuteFile(scriptPath);
-                    }
-                    catch (Exception ex)
-                    {
-                        exceptionMessage = engine.GetService<ExceptionOperations>().FormatException(ex);
-                    }
-                });
+                var scriptRunner = new ScriptRunner(scriptRuntime, scriptPath);
+                var thread = new Thread(scriptRunner.Run);
 
                 thread.Name = "DLR Test Driver";
                 thread.SetApartmentState(ApartmentState.STA);
@@ -350,8 +340,36 @@ namespace Gallio.DLRIntegration.Model
 
                 thread.Join();
 
-                if (exceptionMessage != null)
-                    throw new ModelException(exceptionMessage);
+                if (scriptRunner.ExceptionMessage != null)
+                    throw new ModelException(scriptRunner.ExceptionMessage);
+            }
+        }
+
+        private sealed class ScriptRunner
+        {
+            private readonly ScriptRuntime scriptRuntime;
+            private readonly string scriptPath;
+
+            public ScriptRunner(ScriptRuntime scriptRuntime, string scriptPath)
+            {
+                this.scriptRuntime = scriptRuntime;
+                this.scriptPath = scriptPath;
+            }
+
+            public string ExceptionMessage { get; private set; }
+
+            [DebuggerNonUserCode]
+            public void Run()
+            {
+                ScriptEngine engine = scriptRuntime.GetEngineByFileExtension(Path.GetExtension(scriptPath));
+                try
+                {
+                    engine.ExecuteFile(scriptPath);
+                }
+                catch (Exception ex)
+                {
+                    ExceptionMessage = engine.GetService<ExceptionOperations>().FormatException(ex);
+                }
             }
         }
 

@@ -101,6 +101,19 @@ namespace Gallio.Framework.Utilities
         public string TestRunnerFactoryName { get; set; }
 
         /// <summary>
+        /// Adds a test file to the package configuration, if not already added.
+        /// </summary>
+        /// <param name="file">The file to add.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="file"/> is null.</exception>
+        public void AddFile(FileInfo file)
+        {
+            if (file == null)
+                throw new ArgumentNullException("file");
+
+            testPackage.AddFile(file);
+        }
+
+        /// <summary>
         /// Adds a test assembly to the package configuration, if not already added.
         /// </summary>
         /// <param name="assembly">The assembly to add.</param>
