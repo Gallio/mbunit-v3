@@ -19,6 +19,8 @@ using System.Text;
 using System.Threading;
 using EnvDTE;
 using Gallio.Common;
+using Gallio.Runtime.Debugging;
+using Gallio.Runtime.Logging;
 using Gallio.VisualStudio.Interop.Native;
 using Thread=System.Threading.Thread;
 
@@ -31,28 +33,42 @@ namespace Gallio.VisualStudio.Interop
     {
         private static readonly TimeSpan ComRetryTimeout = TimeSpan.FromSeconds(30);
 
+        private readonly ILogger logger;
         private readonly DTE dte;
         private readonly VisualStudioVersion version;
+        private readonly bool wasLaunched;
 
         /// <summary>
         /// Creates a wrapper for a particular DTE object.
         /// </summary>
         /// <param name="dte">The DTE object to wrap.</param>
         /// <param name="version">The version of Visual Studio represented by this object.</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="dte"/> is null.</exception>
-        public VisualStudio(DTE dte, VisualStudioVersion version)
+        /// <param name="wasLaunched">True if Visual Studio was launched by our code, false if an existing instance was obtained.</param>
+        /// <param name="logger">The logger.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="dte"/> or <paramref name="logger"/> is null.</exception>
+        public VisualStudio(DTE dte, VisualStudioVersion version, bool wasLaunched, ILogger logger)
         {
+            if (logger == null)
+                throw new ArgumentNullException("logger");
             if (dte == null)
                 throw new ArgumentNullException("dte");
 
+            this.logger = logger;
             this.dte = dte;
             this.version = version;
+            this.wasLaunched = wasLaunched;
         }
 
         /// <inheritdoc />
         public VisualStudioVersion Version
         {
             get { return version; }
+        }
+
+        /// <inheritdoc />
+        public bool WasLaunched
+        {
+            get { return wasLaunched; }
         }
 
         /// <inheritdoc />
@@ -64,7 +80,7 @@ namespace Gallio.VisualStudio.Interop
             Protect(() => action(dte));
         }
 
-        private void Protect(Action action)
+        private static void Protect(Action action)
         {
             Exception exception = null;
 
@@ -121,6 +137,21 @@ namespace Gallio.VisualStudio.Interop
                     window.Activate();
                     window.Visible = true;
                 });
+        }
+
+        /// <inheritdoc />
+        public void Quit()
+        {
+            Protect(() => dte.Quit());
+        }
+
+        /// <inheritdoc />
+        public IDebugger GetDebugger(DebuggerSetup debuggerSetup)
+        {
+            if (debuggerSetup == null)
+                throw new ArgumentNullException("debuggerSetup");
+
+            return new VisualStudioDebugger(debuggerSetup, logger, this);
         }
     }
 }

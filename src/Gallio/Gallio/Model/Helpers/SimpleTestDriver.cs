@@ -130,6 +130,7 @@ namespace Gallio.Model.Helpers
                                 // require the ability to abort the Thread so we do not need to take the
                                 // extra overhead.
                                 Thread thread = new Thread(action.Run);
+                                thread.Name = "Simple Test Driver";
                                 thread.SetApartmentState(ApartmentState.STA);
                                 thread.Start();
                                 thread.Join();

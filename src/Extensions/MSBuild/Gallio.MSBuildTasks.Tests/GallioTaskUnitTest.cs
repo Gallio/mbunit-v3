@@ -82,8 +82,8 @@ namespace Gallio.MSBuildTasks.Tests
                 Assert.IsFalse(launcher.TestProject.TestPackage.IsWorkingDirectorySpecified);
                 Assert.IsFalse(launcher.TestProject.TestPackage.ShadowCopy);
                 Assert.IsFalse(launcher.TestProject.TestPackage.IsShadowCopySpecified);
-                Assert.IsFalse(launcher.TestProject.TestPackage.Debug);
-                Assert.IsFalse(launcher.TestProject.TestPackage.IsDebugSpecified);
+                Assert.IsNull(launcher.TestProject.TestPackage.DebuggerSetup);
+                Assert.IsFalse(launcher.TestProject.TestPackage.IsDebuggerSetupSpecified);
                 Assert.IsNull(launcher.TestProject.TestPackage.RuntimeVersion);
                 Assert.IsFalse(launcher.TestProject.TestPackage.IsRuntimeVersionSpecified);
 
@@ -161,8 +161,8 @@ namespace Gallio.MSBuildTasks.Tests
                 Assert.IsTrue(launcher.TestProject.TestPackage.IsWorkingDirectorySpecified);
                 Assert.IsTrue(launcher.TestProject.TestPackage.ShadowCopy);
                 Assert.IsTrue(launcher.TestProject.TestPackage.IsShadowCopySpecified);
-                Assert.IsTrue(launcher.TestProject.TestPackage.Debug);
-                Assert.IsTrue(launcher.TestProject.TestPackage.IsDebugSpecified);
+                Assert.IsNotNull(launcher.TestProject.TestPackage.DebuggerSetup);
+                Assert.IsTrue(launcher.TestProject.TestPackage.IsDebuggerSetupSpecified);
                 Assert.AreEqual("v4.0.20506", launcher.TestProject.TestPackage.RuntimeVersion);
                 Assert.IsTrue(launcher.TestProject.TestPackage.IsRuntimeVersionSpecified);
 

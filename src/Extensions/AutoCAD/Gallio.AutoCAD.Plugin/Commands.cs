@@ -47,21 +47,39 @@ namespace Gallio.AutoCAD.Plugin
             if (!GetIpcPortName(out ipcPortName))
                 return;
 
+            Guid linkId;
+            if (!GetLinkId(out linkId))
+                return;
+
             IGallioLoader loader = GallioLoader.Initialize();
             loader.SetupRuntime(); // note: after this point we can reference Gallio types.
 
-            Shim.Run(ipcPortName);
+            Shim.Run(ipcPortName, linkId);
         }
 
         private static bool GetIpcPortName(out string ipcPortName)
         {
-            ipcPortName = String.Empty;
-
             PromptResult prompt = ActiveEditor.GetString("IPC port name:");
             if (prompt.Status != PromptStatus.OK)
+            {
+                ipcPortName = String.Empty;
                 return false;
+            }
 
             ipcPortName = prompt.StringResult;
+            return true;
+        }
+
+        private static bool GetLinkId(out Guid linkId)
+        {
+            PromptResult prompt = ActiveEditor.GetString("Link Id:");
+            if (prompt.Status != PromptStatus.OK)
+            {
+                linkId = Guid.Empty;
+                return false;
+            }
+
+            linkId = new Guid(prompt.StringResult);
             return true;
         }
 
@@ -75,9 +93,9 @@ namespace Gallio.AutoCAD.Plugin
         /// </summary>
         private static class Shim
         {
-            public static void Run(string ipcPortName)
+            public static void Run(string ipcPortName, Guid linkId)
             {
-                using (TestIsolationClient client = new TestIsolationClient(ipcPortName))
+                using (TestIsolationClient client = new TestIsolationClient(ipcPortName, linkId))
                 {
                     client.Run();
                 }

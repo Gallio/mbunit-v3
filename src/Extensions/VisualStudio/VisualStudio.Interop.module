@@ -8,10 +8,13 @@
 
   <ItemGroup Condition="$(VSIPInstalled)">
     <CSharpProject Include="Gallio.VisualStudio.Interop\Gallio.VisualStudio.Interop$(ProjectVariant).csproj" />
+    <CSharpProject Include="Gallio.VisualStudio.Interop\Gallio.VisualStudio.Interop.Tests$(ProjectVariant).csproj" />
     
     <PluginFile Include="Gallio.VisualStudio.Interop\Gallio.VisualStudio.Interop.plugin" />
     <Binary Include="Gallio.VisualStudio.Interop\bin\Gallio.VisualStudio.Interop.dll" />
     <Binary Include="Gallio.VisualStudio.Interop\bin\Gallio.VisualStudio.Interop.pdb" />
+
+    <TestAssembly Include="Gallio.VisualStudio.Interop.Tests\bin\Gallio.VisualStudio.Interop.Tests.dll" />
   </ItemGroup>
 
   <Target Name="BeforeBuild">

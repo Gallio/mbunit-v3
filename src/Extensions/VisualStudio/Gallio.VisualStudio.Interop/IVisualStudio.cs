@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using EnvDTE;
+using Gallio.Runtime.Debugging;
 
 namespace Gallio.VisualStudio.Interop
 {
@@ -29,6 +30,12 @@ namespace Gallio.VisualStudio.Interop
         /// Gets the version of Visual Studio represented by this object.
         /// </summary>
         VisualStudioVersion Version { get; }
+
+        /// <summary>
+        /// Returns true if the instance of Visual Studio was launched by our code, or
+        /// false if it had been previously running.
+        /// </summary>
+        bool WasLaunched { get; }
 
         /// <summary>
         /// Runs a block of code with the Visual Studio DTE.
@@ -48,5 +55,18 @@ namespace Gallio.VisualStudio.Interop
         /// Makes Visual Studio the foreground window.
         /// </summary>
         void BringToFront();
+
+        /// <summary>
+        /// Quits Visual Studio.
+        /// </summary>
+        void Quit();
+
+        /// <summary>
+        /// Gets the associated Visual Studio debugger.
+        /// </summary>
+        /// <param name="debuggerSetup">The debugger setup options.</param>
+        /// <returns>The debugger.</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="debuggerSetup"/> is null.</exception>
+        IDebugger GetDebugger(DebuggerSetup debuggerSetup);
     }
 }

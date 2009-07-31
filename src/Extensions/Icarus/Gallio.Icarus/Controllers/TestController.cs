@@ -31,6 +31,7 @@ using Gallio.Runner.Events;
 using Gallio.Runner.Extensions;
 using Gallio.Runner.Reports.Schema;
 using Gallio.Runtime;
+using Gallio.Runtime.Debugging;
 using Gallio.Runtime.ProgressMonitoring;
 using Gallio.UI.ProgressMonitoring;
 
@@ -220,7 +221,7 @@ namespace Gallio.Icarus.Controllers
                 DoWithTestRunner(testRunner =>
                 {
                     var testPackageCopy = testPackage.Copy();
-                    testPackageCopy.Debug = debug;
+                    testPackageCopy.DebuggerSetup = debug ? new DebuggerSetup() : null;
 
                     var testExplorationOptions = new TestExplorationOptions();
                     var testExecutionOptions = new TestExecutionOptions

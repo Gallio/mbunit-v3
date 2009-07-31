@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using System.Diagnostics;
 using System.Threading;
 using Gallio.Common.Diagnostics;
 using Gallio.Model.Isolation.Messages;
@@ -33,16 +34,20 @@ namespace Gallio.Model.Isolation
 
         private readonly BinaryIpcClientChannel clientChannel;
         private readonly BinaryIpcServerChannel serverChannel;
+        private readonly Guid linkId;
 
         /// <summary>
         /// Creates a test isolation client.
         /// </summary>
         /// <param name="ipcPortName">The IPC port name.</param>
+        /// <param name="linkId">The unique id of the client/server pair.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="ipcPortName"/> is null.</exception>
-        public TestIsolationClient(string ipcPortName)
+        public TestIsolationClient(string ipcPortName, Guid linkId)
         {
             if (ipcPortName == null)
                 throw new ArgumentNullException("ipcPortName");
+
+            this.linkId = linkId;
 
             clientChannel = new BinaryIpcClientChannel(ipcPortName);
             serverChannel = new BinaryIpcServerChannel(ipcPortName + ".ClientCallback");
@@ -75,7 +80,7 @@ namespace Gallio.Model.Isolation
         {
             try
             {
-                var link = (IMessageExchangeLink)clientChannel.GetService(typeof(IMessageExchangeLink), TestIsolationServer.MessageExchangeLinkServiceName);
+                var link = (IMessageExchangeLink)clientChannel.GetService(typeof(IMessageExchangeLink), TestIsolationServer.GetMessageExchangeLinkServiceName(linkId));
                 using (new Timer(dummy => Ping(link), null, TimeSpan.Zero, PingInterval))
                 {
                     for (; ; )
@@ -97,6 +102,7 @@ namespace Gallio.Model.Isolation
             }
         }
 
+        [DebuggerNonUserCode]
         private static void Ping(IMessageExchangeLink link)
         {
             try

@@ -26,6 +26,7 @@ using Gallio.Common;
 using Gallio.Common.IO;
 using Gallio.Common.Platform;
 using Gallio.Common.Reflection;
+using Gallio.Runtime.Debugging;
 using Gallio.Runtime.Logging;
 using Gallio.Common.Concurrency;
 using Gallio.Common.Remoting;
@@ -147,7 +148,7 @@ namespace Gallio.Runtime.Hosting
         /// <returns>The process task.</returns>
         protected virtual ProcessTask CreateProcessTask(string executablePath, string arguments, string workingDirectory)
         {
-            return new ProcessTask(executablePath, arguments, workingDirectory);
+            return new HostProcessTask(executablePath, arguments, workingDirectory, HostSetup.DebuggerSetup, Logger);
         }
 
         /// <summary>
@@ -194,7 +195,7 @@ namespace Gallio.Runtime.Hosting
             hostArguments.Append(@" /configuration-file:""").Append(temporaryConfigurationFilePath).Append('"');
             if (HostSetup.ShadowCopy)
                 hostArguments.Append(@" /shadow-copy");
-            if (HostSetup.Debug)
+            if (HostSetup.DebuggerSetup != null)
                 hostArguments.Append(@" /debug");
             hostArguments.Append(" /severity-prefix");
 
@@ -344,6 +345,7 @@ namespace Gallio.Runtime.Hosting
             }
         }
 
+        [DebuggerNonUserCode]
         private void WaitUntilReady(IHostService hostService)
         {
             Stopwatch stopwatch = Stopwatch.StartNew();
@@ -449,6 +451,32 @@ namespace Gallio.Runtime.Hosting
 
                 default:
                     throw new ArgumentOutOfRangeException("processorArchitecture");
+            }
+        }
+
+        private sealed class HostProcessTask : ProcessTask
+        {
+            private readonly DebuggerSetup debuggerSetup;
+            private readonly ILogger logger;
+
+            public HostProcessTask(string executablePath, string arguments, string workingDirectory, DebuggerSetup debuggerSetup, ILogger logger)
+                : base(executablePath, arguments, workingDirectory)
+            {
+                this.debuggerSetup = debuggerSetup;
+                this.logger = logger;
+            }
+
+            protected override Process StartProcess(ProcessStartInfo startInfo)
+            {
+                if (debuggerSetup != null)
+                {
+                    IDebugger debugger = new DefaultDebuggerManager().GetDebugger(debuggerSetup, logger);
+                    Process process = debugger.LaunchProcess(startInfo);
+                    if (process != null)
+                        return process;
+                }
+
+                return base.StartProcess(startInfo);
             }
         }
     }

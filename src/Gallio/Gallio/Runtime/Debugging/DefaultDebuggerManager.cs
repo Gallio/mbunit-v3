@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Gallio.Runtime.Logging;
 
 namespace Gallio.Runtime.Debugging
 {
@@ -27,8 +28,13 @@ namespace Gallio.Runtime.Debugging
         private const string VisualStudioDebuggerTypeName = "Gallio.VisualStudio.Interop.VisualStudioDebugger, Gallio.VisualStudio.Interop";
 
         /// <inheritdoc />
-        public IDebugger GetDefaultDebugger()
+        public IDebugger GetDebugger(DebuggerSetup debuggerSetup, ILogger logger)
         {
+            if (debuggerSetup == null)
+                throw new ArgumentNullException("debuggerSetup");
+            if (logger == null)
+                throw new ArgumentNullException("logger");
+
             // FIXME: Should resolve service using IoC but runtime start-up time is too crappy in v3.0
             //        for some cases where we would like to use the debugger.  (Like in the host process.)
             //        Replace when runtime has been rewritten.  -- Jeff.
@@ -36,7 +42,7 @@ namespace Gallio.Runtime.Debugging
             if (debuggerType == null)
                 return new NullDebugger();
 
-            return (IDebugger)Activator.CreateInstance(debuggerType);
+            return (IDebugger)Activator.CreateInstance(debuggerType, debuggerSetup, logger, null);
         }
     }
 }

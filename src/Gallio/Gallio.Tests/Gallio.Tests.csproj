@@ -95,6 +95,9 @@
     <Compile Include="Common\Media\ScreenGrabberTest.cs" />
     <Compile Include="Common\Media\FlashScreenVideoParametersTest.cs" />
     <Compile Include="Common\Media\FlashScreenVideoTest.cs" />
+    <Compile Include="Common\Messaging\QueuedMessageSinkTest.cs" />
+    <Compile Include="Common\Messaging\MessageExchangeTest.cs" />
+    <Compile Include="Common\Messaging\MessageConsumerTest.cs" />
     <Compile Include="Common\Messaging\TopicPatternTest.cs" />
     <Compile Include="Common\Messaging\TopicTest.cs" />
     <Compile Include="Common\MockableConditionContext.cs" />
@@ -197,6 +200,8 @@
     <Compile Include="Framework\SilentTestExceptionTest.cs" />
     <Compile Include="Framework\TestFailedExceptionTest.cs" />
     <Compile Include="Framework\TestInconclusiveExceptionTest.cs" />
+    <Compile Include="Model\Isolation\TestIsolationServerTest.cs" />
+    <Compile Include="Model\Isolation\TestIsolationClientTest.cs" />
     <Compile Include="Model\ModelNormalizationTest.cs" />
     <Compile Include="Model\Tree\TestTest.cs" />
     <Compile Include="Host\HostExceptionTest.cs" />
@@ -233,6 +238,7 @@
     <Compile Include="Runtime\Conversions\XPathNavigatorToStringConversionRuleTest.cs" />
     <Compile Include="Runtime\Conversions\XPathNavigatorToXmlSerializableTypeConversionRuleTest.cs" />
     <Compile Include="Common\Reflection\AssemblyBindingTest.cs" />
+    <Compile Include="Runtime\Debugging\DefaultDebuggerManagerTest.cs" />
     <Compile Include="Runtime\Extensibility\CachingPluginLoaderTest.cs" />
     <Compile Include="Runtime\Extensibility\ComponentHandleTest.cs" />
     <Compile Include="Runtime\Extensibility\ComponentRegistrationTest.cs" />

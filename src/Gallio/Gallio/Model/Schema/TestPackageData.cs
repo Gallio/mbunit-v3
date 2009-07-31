@@ -21,6 +21,7 @@ using Gallio.Common;
 using Gallio.Common.Collections;
 using Gallio.Common.IO;
 using Gallio.Common.Validation;
+using Gallio.Runtime.Debugging;
 
 namespace Gallio.Model.Schema
 {
@@ -68,7 +69,7 @@ namespace Gallio.Model.Schema
             GenericCollectionUtils.ConvertAndAddAll(source.Files, files, file => file.FullName);
             excludedFrameworkIds.AddRange(source.ExcludedFrameworkIds);
             shadowCopy = source.ShadowCopy;
-            debug = source.Debug;
+            debug = source.DebuggerSetup != null;
             applicationBaseDirectory = source.ApplicationBaseDirectory != null ? source.ApplicationBaseDirectory.FullName : null;
             workingDirectory = source.WorkingDirectory != null ? source.WorkingDirectory.FullName : null;
             runtimeVersion = source.RuntimeVersion;
@@ -123,7 +124,7 @@ namespace Gallio.Model.Schema
         /// <summary>
         /// Gets or sets whether to attach the debugger to the host.
         /// </summary>
-        /// <seealso cref="TestPackage.Debug"/>
+        /// <seealso cref="TestPackage.DebuggerSetup"/>
         [XmlAttribute("debug")]
         public bool Debug
         {
@@ -202,7 +203,7 @@ namespace Gallio.Model.Schema
             GenericCollectionUtils.ForEach(hintDirectories, x => testPackage.AddHintDirectory(new DirectoryInfo(x)));
             GenericCollectionUtils.ForEach(excludedFrameworkIds, x => testPackage.AddExcludedFrameworkId(x));
             testPackage.ShadowCopy = shadowCopy;
-            testPackage.Debug = debug;
+            testPackage.DebuggerSetup = debug ? new DebuggerSetup() : null;
             testPackage.ApplicationBaseDirectory = applicationBaseDirectory != null ? new DirectoryInfo(applicationBaseDirectory) : null;
             testPackage.WorkingDirectory = workingDirectory != null ? new DirectoryInfo(workingDirectory) : null;
             testPackage.RuntimeVersion = runtimeVersion;

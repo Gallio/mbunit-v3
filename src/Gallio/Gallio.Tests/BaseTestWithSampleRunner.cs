@@ -76,7 +76,10 @@ namespace Gallio.Tests
             }
         }
 
-        private void ConfigureRunner()
+        /// <summary>
+        /// Configures the test runner.
+        /// </summary>
+        protected virtual void ConfigureRunner()
         {
             foreach (RunSampleAttribute attrib in GetType().GetCustomAttributes(typeof(RunSampleAttribute), true))
             {

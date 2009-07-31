@@ -16,6 +16,7 @@
 using System;
 using Gallio.Common;
 using Gallio.Model.Isolation;
+using Gallio.Runtime.Debugging;
 using Gallio.Runtime.Hosting;
 using Gallio.Runtime.Logging;
 
@@ -51,6 +52,14 @@ namespace Gallio.AutoCAD.Isolation
             this.logger = logger;
         }
 
+        /// <summary>
+        /// Gets the AutoCAD process factory.
+        /// </summary>
+        public IAcadProcessFactory ProcessFactory
+        {
+            get { return processFactory; }
+        }
+
         /// <inheritdoc />
         public override bool RequiresSingleThreadedExecution
         {
@@ -73,7 +82,7 @@ namespace Gallio.AutoCAD.Isolation
                     RunIsolatedTaskImpl<TIsolatedTask>(hostSetup, statusReporter, args);
             }
 
-            TestIsolationServer server = batch.GetTestIsolationServer();
+            TestIsolationServer server = batch.GetTestIsolationServer(hostSetup.DebuggerSetup);
             return server.RunIsolatedTaskOnClient(typeof(TIsolatedTask), args);
         }
 
@@ -91,17 +100,20 @@ namespace Gallio.AutoCAD.Isolation
                 this.processFactory = processFactory;
             }
 
-            public TestIsolationServer GetTestIsolationServer()
+            public TestIsolationServer GetTestIsolationServer(DebuggerSetup debuggerSetup)
             {
                 if (server != null)
                     return server;
 
                 try
                 {
+                    statusReporter("Attaching to AutoCAD.");
+
                     string ipcPortName = "AcadTestIsolationContext." + Hash64.CreateUniqueHash();
-                    server = new TestIsolationServer(ipcPortName);
-                    process = processFactory.CreateProcess();
-                    process.Start(ipcPortName);
+                    Guid uniqueId = Guid.NewGuid();
+                    server = new TestIsolationServer(ipcPortName, uniqueId);
+                    process = processFactory.CreateProcess(debuggerSetup);
+                    process.Start(ipcPortName, uniqueId);
                     return server;
                 }
                 catch
@@ -116,6 +128,8 @@ namespace Gallio.AutoCAD.Isolation
 
             public void Dispose()
             {
+                statusReporter("Detaching from AutoCAD.");
+
                 if (server != null)
                 {
                     server.Shutdown(ShutdownTimeout);

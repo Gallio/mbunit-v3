@@ -25,6 +25,8 @@ using Gallio.Common.Concurrency;
 using Gallio.Common.Text;
 using Gallio.Runner;
 using Gallio.Model;
+using Gallio.Runtime.Debugging;
+using Gallio.Runtime.Logging;
 
 namespace Gallio.AutoCAD
 {
@@ -36,7 +38,7 @@ namespace Gallio.AutoCAD
         private static readonly TimeSpan ReadyTimeout = TimeSpan.FromSeconds(60);
         private static readonly TimeSpan ReadyPollInterval = TimeSpan.FromSeconds(0.5);
 
-        private bool shutdownAcadOnDispose;
+        private readonly bool shutdownAcadOnDispose;
         private AcadProcessTask processTask;
 
         private AcadProcess(AcadProcessTask processTask)
@@ -53,6 +55,7 @@ namespace Gallio.AutoCAD
         /// Creates a new <see cref="AcadProcess"/> instance
         /// by attaching to an existing <c>acad.exe</c> instance.
         /// </summary>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="existingProcess"/> is null.</exception>
         public static AcadProcess Attach(Process existingProcess)
         {
             if (existingProcess == null)
@@ -66,16 +69,21 @@ namespace Gallio.AutoCAD
         /// by creating a new <c>acad.exe</c> process.
         /// </summary>
         /// <param name="executablePath">The path to <c>acad.exe</c>.</param>
-        public static AcadProcess Create(string executablePath)
+        /// <param name="debuggerSetup">The debugger setup options, or null if not debugging.</param>
+        /// <param name="logger">The logger.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="executablePath"/> or <paramref name="logger"/> is null.</exception>
+        public static AcadProcess Create(string executablePath, DebuggerSetup debuggerSetup, ILogger logger)
         {
             if (executablePath == null)
                 throw new ArgumentNullException("executablePath");
+            if (logger == null)
+                throw new ArgumentNullException("logger");
 
-            return new AcadProcess(AcadProcessTask.Create(executablePath));
+            return new AcadProcess(AcadProcessTask.Create(executablePath, debuggerSetup, logger));
         }
 
         /// <inheritdoc />
-        public void Start(string ipcPortName)
+        public void Start(string ipcPortName, Guid linkId)
         {
             if (ipcPortName == null)
                 throw new ArgumentNullException("ipcPortName");
@@ -91,10 +99,13 @@ namespace Gallio.AutoCAD
                 {
                     AssemblyPath = pluginFileName
                 });
+
                 Thread.Sleep(200);
                 processTask.Process.Refresh();
+
                 pluginIsLoaded = ModuleIsLoaded(processTask.Process, pluginFileName);
             }
+
             if (!pluginIsLoaded)
             {
                 throw new TimeoutException("Unable to load AutoCAD plugin.");
@@ -108,6 +119,7 @@ namespace Gallio.AutoCAD
             SendCommand(new CreateEndpointAndWaitCommand()
             {
                 IpcPortName = ipcPortName,
+                LinkId = linkId,
                 SendAsynchronously = true
             });
         }
@@ -152,10 +164,6 @@ namespace Gallio.AutoCAD
             if (processTask == null)
                 return;
 
-            if (disposing)
-            {
-            }
-
             // Try to kill the acad.exe process, even if Dispose(bool)
             // is being called from the finalizer.
             if (shutdownAcadOnDispose && processTask != null)
@@ -178,7 +186,7 @@ namespace Gallio.AutoCAD
 
         private void SendCommand(AcadCommand command)
         {
-            if (!IsRunning)
+            if (! IsRunning)
                 throw new InvalidOperationException("The process is not running.");
 
             Process actualProcess = processTask.Process;
@@ -188,7 +196,7 @@ namespace Gallio.AutoCAD
 
             if (command.SendAsynchronously)
             {
-                new Thread(() => SendCopyDataMessage(new HandleRef(null, actualProcess.MainWindowHandle), lispExpr)).Start();
+                ThreadPool.QueueUserWorkItem(dummy => SendCopyDataMessage(new HandleRef(null, actualProcess.MainWindowHandle), lispExpr));
             }
             else
             {
@@ -211,11 +219,20 @@ namespace Gallio.AutoCAD
             return builder.ToString();
         }
 
-        private static void SendCopyDataMessage(HandleRef hwnd, string message)
+        private static bool SendCopyDataMessage(HandleRef hwnd, string message)
         {
-            var cds = new COPYDATASTRUCT(message);
-            NativeMethods.SendMessage(hwnd, ref cds);
-            GC.KeepAlive(cds);
+            try
+            {
+                var cds = new COPYDATASTRUCT(message);
+                NativeMethods.SendMessage(hwnd, ref cds);
+                GC.KeepAlive(cds);
+                return true;
+            }
+            catch (FileNotFoundException)
+            {
+                // Can fail if the handle is not valid.
+                return false;
+            }
         }
 
         private static void WaitForMessagePump(Process process, TimeSpan timeout, TimeSpan pollInterval)
@@ -241,17 +258,23 @@ namespace Gallio.AutoCAD
 
         private class AcadProcessTask : ProcessTask
         {
-            private readonly Process attachedProcess;
+            private readonly Process existingProcess;
+            private readonly DebuggerSetup debuggerSetup;
+            private readonly ILogger logger;
 
-            private AcadProcessTask(string executablePath, string arguments, string workingDirectory, Process existing)
+            private AcadProcessTask(string executablePath, string arguments, string workingDirectory, Process existingProcess,
+                DebuggerSetup debuggerSetup, ILogger logger)
                 : base(executablePath, arguments, workingDirectory)
             {
-                attachedProcess = existing;
+                this.existingProcess = existingProcess;
+
+                this.debuggerSetup = debuggerSetup;
+                this.logger = logger;
             }
 
-            public static AcadProcessTask Create(string executablePath)
+            public static AcadProcessTask Create(string executablePath, DebuggerSetup debuggerSetup, ILogger logger)
             {
-                return new AcadProcessTask(executablePath, String.Empty, Path.GetDirectoryName(executablePath), null);
+                return new AcadProcessTask(executablePath, String.Empty, Path.GetDirectoryName(executablePath), null, debuggerSetup, logger);
             }
 
             public static AcadProcessTask Attach(Process existingProcess)
@@ -259,14 +282,25 @@ namespace Gallio.AutoCAD
                 string executablePath = Path.GetFullPath(existingProcess.MainModule.FileName);
                 string arguments = existingProcess.StartInfo.Arguments;
                 string workingDirectory = existingProcess.StartInfo.WorkingDirectory;
-                return new AcadProcessTask(executablePath, arguments, workingDirectory, existingProcess);
+                return new AcadProcessTask(executablePath, arguments, workingDirectory, existingProcess, null, null);
             }
 
             /// <inheritdoc/>
             protected override Process StartProcess(ProcessStartInfo startInfo)
             {
-                if (attachedProcess != null)
-                    return attachedProcess;
+                if (existingProcess != null)
+                {
+                    return existingProcess;
+                }
+
+                if (debuggerSetup != null)
+                {
+                    IDebugger debugger = new DefaultDebuggerManager().GetDebugger(debuggerSetup, logger);
+                    Process process = debugger.LaunchProcess(startInfo);
+                    if (process != null)
+                        return process;
+                }
+
                 return base.StartProcess(startInfo);
             }
 
@@ -276,7 +310,7 @@ namespace Gallio.AutoCAD
             /// </summary>
             public bool IsAttached
             {
-                get { return attachedProcess != null; }
+                get { return existingProcess != null; }
             }
         }
     }

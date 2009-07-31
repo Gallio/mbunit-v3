@@ -37,5 +37,31 @@ namespace Gallio.AutoCAD.Tests.Isolation
 
             Assert.IsInstanceOfType<AcadTestIsolationContext>(context);
         }
+
+        [Test]
+        public void CreateContext_WhenAcadExePathPropertyProvided_SetsAcadExePathOfProcessFactory()
+        {
+            AcadTestIsolationProvider provider = new AcadTestIsolationProvider();
+            TestIsolationOptions testIsolationOptions = new TestIsolationOptions();
+            ILogger logger = MockRepository.GenerateStub<ILogger>();
+            testIsolationOptions.AddProperty("AcadExePath", @"C:\path\to\acad.exe");
+
+            var context = (AcadTestIsolationContext) provider.CreateContext(testIsolationOptions, logger);
+
+            Assert.AreEqual(@"C:\path\to\acad.exe", context.ProcessFactory.AcadExePath);
+        }
+
+        [Test]
+        public void CreateContext_WhenAcadAttachToExistingPropertyProvided_SetsAttachToExistingProcessfProcessFactory()
+        {
+            AcadTestIsolationProvider provider = new AcadTestIsolationProvider();
+            TestIsolationOptions testIsolationOptions = new TestIsolationOptions();
+            ILogger logger = MockRepository.GenerateStub<ILogger>();
+            testIsolationOptions.AddProperty("AcadAttachToExisting", @"true");
+
+            var context = (AcadTestIsolationContext)provider.CreateContext(testIsolationOptions, logger);
+
+            Assert.IsTrue(context.ProcessFactory.AttachToExistingProcess);
+        }
     }
 }

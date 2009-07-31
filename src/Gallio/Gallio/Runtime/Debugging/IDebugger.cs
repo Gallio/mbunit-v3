@@ -30,21 +30,17 @@ namespace Gallio.Runtime.Debugging
         /// Returns true if the debugger is attached to a process.
         /// </summary>
         /// <param name="process">The process to which the debugger should be attached.</param>
-        /// <param name="logger">The logger for writing progress and failure messages.</param>
         /// <returns>True if the debugger is already attached.</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="process"/> 
-        /// or <paramref name="logger"/> is null.</exception>
-        bool IsAttachedToProcess(Process process, ILogger logger);
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="process"/> is null.</exception>
+        bool IsAttachedToProcess(Process process);
 
         /// <summary>
         /// Attaches the debugger to a process.
         /// </summary>
         /// <param name="process">The process to which the debugger should be attached.</param>
-        /// <param name="logger">The logger for writing progress and failure messages.</param>
         /// <returns>A result code to indicate whether the debugger was attached.</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="process"/> 
-        /// or <paramref name="logger"/> is null.</exception>
-        AttachDebuggerResult AttachToProcess(Process process, ILogger logger);
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="process"/> is null.</exception>
+        AttachDebuggerResult AttachToProcess(Process process);
 
         /// <summary>
         /// Detaches the debugger from a process.
@@ -55,10 +51,16 @@ namespace Gallio.Runtime.Debugging
         /// </para>
         /// </remarks>
         /// <param name="process">The process from which the debugger should be detached.</param>
-        /// <param name="logger">The logger for writing progress and failure messages.</param>
         /// <returns>A result code to indicate whether the debugger was detached.</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="process"/>
-        /// or <paramref name="logger"/> is null.</exception>
-        DetachDebuggerResult DetachFromProcess(Process process, ILogger logger);
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="process"/> is null.</exception>
+        DetachDebuggerResult DetachFromProcess(Process process);
+
+        /// <summary>
+        /// Launches a process and attaches the debugger.
+        /// </summary>
+        /// <param name="processStartInfo">The process start information.</param>
+        /// <returns>The process that was started, or null if the process could not be launched with the debugger.</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="processStartInfo"/> is null.</exception>
+        Process LaunchProcess(ProcessStartInfo processStartInfo);
     }
 }
