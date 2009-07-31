@@ -51,10 +51,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\libs\Mono.Cecil.dll</HintPath>
     </Reference>
-    <Reference Include="NDepend.Helpers.FileDirectoryPath, Version=1.0.0.0, Culture=neutral, PublicKeyToken=eb9cfa67ee6ab36e, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\libs\NDepend.Helpers.FileDirectoryPath.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Data" />
