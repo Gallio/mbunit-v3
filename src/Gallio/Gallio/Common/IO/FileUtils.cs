@@ -16,8 +16,8 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using Gallio.Common.Text;
-using NDepend.Helpers.FileDirectoryPath;
 
 namespace Gallio.Common.IO
 {
@@ -200,6 +200,8 @@ namespace Gallio.Common.IO
             return (entry.Attributes & (FileAttributes.ReparsePoint | FileAttributes.Hidden | FileAttributes.System)) == 0;
         }
 
+        private static readonly char[] PathChars = new[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar};
+
         /// <summary>
         /// Makes a relative path from an absolute path if possible.
         /// </summary>
@@ -213,20 +215,39 @@ namespace Gallio.Common.IO
             if (basePath == null)
                 throw new ArgumentNullException("basePath");
 
-            if (Path.IsPathRooted(absolutePath))
+            absolutePath = Path.GetFullPath(absolutePath);
+            basePath = Path.GetFullPath(basePath);
+
+            string[] absolutePathSegments = absolutePath.Split(PathChars, StringSplitOptions.RemoveEmptyEntries);
+            string[] basePathSegments = basePath.Split(PathChars, StringSplitOptions.RemoveEmptyEntries);
+
+            var relativePath = new StringBuilder();
+
+            int commonSegments;
+            for (commonSegments = 0; commonSegments < Math.Min(absolutePathSegments.Length, basePathSegments.Length); commonSegments++)
             {
-                try
-                {
-                    var filePath = new FilePathAbsolute(absolutePath);
-                    var directoryPath = new DirectoryPathAbsolute(basePath);
-                    return filePath.GetPathRelativeFrom(directoryPath).Path;
-                }
-                catch (ArgumentException)
-                {
-                }
+                if (string.Compare(absolutePathSegments[commonSegments], basePathSegments[commonSegments],
+                    StringComparison.OrdinalIgnoreCase) != 0)
+                    break;
             }
 
-            return absolutePath;
+            if (commonSegments == 0)
+                return absolutePath;
+
+            for (int i = commonSegments; i < basePathSegments.Length; i++)
+                relativePath.Append(@"..").Append(Path.DirectorySeparatorChar);
+
+            for (int i = commonSegments; i < absolutePathSegments.Length; i++)
+            {
+                if (i != commonSegments)
+                    relativePath.Append(Path.DirectorySeparatorChar);
+                relativePath.Append(absolutePathSegments[i]);
+            }
+
+            if (relativePath.Length == 0)
+                return ".";
+
+            return relativePath.ToString();
         }
 
         /// <summary>
@@ -242,20 +263,7 @@ namespace Gallio.Common.IO
             if (basePath == null)
                 throw new ArgumentNullException("basePath");
 
-            if (!Path.IsPathRooted(relativePath))
-            {
-                try
-                {
-                    var filePath = new FilePathRelative(relativePath);
-                    var directoryPath = new DirectoryPathAbsolute(basePath);
-                    return filePath.GetAbsolutePathFrom(directoryPath).Path;
-                }
-                catch (ArgumentException)
-                {
-                }
-            }
-
-            return relativePath;
+            return Path.GetFullPath(Path.Combine(basePath, relativePath));
         }
     }
 }

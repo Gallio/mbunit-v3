@@ -59,7 +59,6 @@
                 <File Id="Gallio.xsd" Name="Gallio.xsd" />
                 <?ifdef NO_ILMERGE ?>
                 <File Name="Mono.Cecil.dll" />
-                <File Name="NDepend.Helpers.FileDirectoryPath.dll" />
                 <File Name="ICSharpCode.SharpZipLib.dll" />
                 <?endif ?>
             </Component>
