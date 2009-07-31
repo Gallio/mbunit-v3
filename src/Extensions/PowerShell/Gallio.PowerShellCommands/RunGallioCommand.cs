@@ -26,6 +26,7 @@ using Gallio.Model.Filters;
 using Gallio.PowerShellCommands.Properties;
 using Gallio.Common.Reflection;
 using Gallio.Runner;
+using Gallio.Runtime.Debugging;
 
 namespace Gallio.PowerShellCommands
 {
@@ -546,8 +547,8 @@ namespace Gallio.PowerShellCommands
                 launcher.TestProject.TestPackage.WorkingDirectory = new DirectoryInfo(workingDirectory);
             if (shadowCopy.HasValue)
                 launcher.TestProject.TestPackage.ShadowCopy = shadowCopy.Value.IsPresent;
-            if (debug.HasValue)
-                launcher.TestProject.TestPackage.Debug = debug.Value.IsPresent;
+            if (debug.HasValue && debug.Value.IsPresent)
+                launcher.TestProject.TestPackage.DebuggerSetup = new DebuggerSetup();
             if (runtimeVersion != null)
                 launcher.TestProject.TestPackage.RuntimeVersion = runtimeVersion;
 

@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using Gallio.Common.Collections;
+using Gallio.Runtime.Debugging;
 using Gallio.Runtime.Hosting;
 
 namespace Gallio.Model
@@ -36,8 +37,8 @@ namespace Gallio.Model
 
         private bool shadowCopy;
         private bool isShadowCopySpecified;
-        private bool debug;
-        private bool isDebugSpecified;
+        private DebuggerSetup debuggerSetup;
+        private bool isDebuggetSetupSpecified;
         private DirectoryInfo applicationBaseDirectory;
         private bool isApplicationBaseDirectorySpecified;
         private DirectoryInfo workingDirectory;
@@ -112,25 +113,25 @@ namespace Gallio.Model
         }
 
         /// <summary>
-        /// Gets or sets whether to attach the debugger to the host.
+        /// Gets or sets the debugger setup options, or null if not debugging.
         /// </summary>
-        /// <value>True if a debugger should be attached to the host.  Default is <c>false</c>.</value>
-        public bool Debug
+        /// <value>The debugger setup options.  Default is <c>null</c>.</value>
+        public DebuggerSetup DebuggerSetup
         {
-            get { return debug; }
+            get { return debuggerSetup; }
             set
             {
-                debug = value;
-                isDebugSpecified = true;
+                debuggerSetup = value;
+                isDebuggetSetupSpecified = true;
             }
         }
 
         /// <summary>
-        /// Returns true if <see cref="Debug" /> has been set explicitly.
+        /// Returns true if <see cref="DebuggerSetup" /> has been set explicitly.
         /// </summary>
-        public bool IsDebugSpecified
+        public bool IsDebuggerSetupSpecified
         {
-            get { return isDebugSpecified; }
+            get { return isDebuggetSetupSpecified; }
         }
 
         /// <summary>
@@ -215,8 +216,8 @@ namespace Gallio.Model
             {
                 applicationBaseDirectory = applicationBaseDirectory,
                 isApplicationBaseDirectorySpecified = isApplicationBaseDirectorySpecified,
-                debug = debug,
-                isDebugSpecified = isDebugSpecified,
+                debuggerSetup = debuggerSetup,
+                isDebuggetSetupSpecified = isDebuggetSetupSpecified,
                 runtimeVersion = runtimeVersion,
                 isRuntimeVersionSpecified = isRuntimeVersionSpecified,
                 shadowCopy = shadowCopy,
@@ -242,12 +243,12 @@ namespace Gallio.Model
         }
 
         /// <summary>
-        /// Resets <see cref="Debug"/> to its default value and sets <see cref="IsDebugSpecified" /> to false.
+        /// Resets <see cref="DebuggerSetup"/> to its default value and sets <see cref="IsDebuggerSetupSpecified" /> to false.
         /// </summary>
         public void ResetDebug()
         {
-            debug = false;
-            isDebugSpecified = false;
+            debuggerSetup = null;
+            isDebuggetSetupSpecified = false;
         }
 
         /// <summary>
@@ -428,7 +429,7 @@ namespace Gallio.Model
         {
             var hostSetup = new HostSetup
             {
-                Debug = Debug,
+                DebuggerSetup = DebuggerSetup,
                 ShadowCopy = ShadowCopy,
                 ApplicationBaseDirectory = ApplicationBaseDirectory != null ? ApplicationBaseDirectory.FullName : null,
                 WorkingDirectory = WorkingDirectory != null ? WorkingDirectory.FullName : null,
@@ -468,8 +469,8 @@ namespace Gallio.Model
 
             if (overlay.IsApplicationBaseDirectorySpecified)
                 ApplicationBaseDirectory = overlay.ApplicationBaseDirectory;
-            if (overlay.IsDebugSpecified)
-                Debug = overlay.Debug;
+            if (overlay.IsDebuggerSetupSpecified)
+                DebuggerSetup = overlay.DebuggerSetup;
             if (overlay.IsRuntimeVersionSpecified)
                 RuntimeVersion = overlay.RuntimeVersion;
             if (overlay.IsShadowCopySpecified)

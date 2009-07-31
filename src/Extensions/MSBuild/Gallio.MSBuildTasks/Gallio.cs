@@ -23,6 +23,7 @@ using Gallio.Runner.Reports.Schema;
 using Gallio.Runtime;
 using Gallio.MSBuildTasks.Properties;
 using Gallio.Common.Collections;
+using Gallio.Runtime.Debugging;
 using Gallio.Runtime.Logging;
 using Gallio.Runtime.ProgressMonitoring;
 using Gallio.Model;
@@ -796,8 +797,8 @@ namespace Gallio.MSBuildTasks
                 launcher.TestProject.TestPackage.WorkingDirectory = new DirectoryInfo(workingDirectory.ItemSpec);
             if (shadowCopy.HasValue)
                 launcher.TestProject.TestPackage.ShadowCopy = shadowCopy.Value;
-            if (debug.HasValue)
-                launcher.TestProject.TestPackage.Debug = debug.Value;
+            if (debug.HasValue && debug.Value)
+                launcher.TestProject.TestPackage.DebuggerSetup = new DebuggerSetup();
             if (runtimeVersion != null)
                 launcher.TestProject.TestPackage.RuntimeVersion = runtimeVersion;
 

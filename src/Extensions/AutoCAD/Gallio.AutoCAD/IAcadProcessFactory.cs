@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using Gallio.Runtime.Debugging;
 
 namespace Gallio.AutoCAD
 {
@@ -25,7 +26,20 @@ namespace Gallio.AutoCAD
         /// <summary>
         /// Creates a new AutoCAD process.
         /// </summary>
+        /// <param name="debuggerSetup">The debugger setup options, or null if not debugging.</param>
         /// <returns>The new process.</returns>
-        IAcadProcess CreateProcess();
+        IAcadProcess CreateProcess(DebuggerSetup debuggerSetup);
+
+        /// <summary>
+        /// Gets or sets the path to <c>acad.exe</c>.
+        /// </summary>
+        string AcadExePath { get; set; }
+
+        /// <summary>
+        /// Set to <c>true</c> to have Gallio attach to an existing
+        /// AutoCAD process; otherwise, set to false to always create
+        /// new AutoCAD instances.
+        /// </summary>
+        bool AttachToExistingProcess { get; set; }
     }
 }

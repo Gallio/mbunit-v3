@@ -331,6 +331,7 @@
     <Compile Include="Runtime\Conversions\NamespaceDoc.cs" />
     <Compile Include="Runtime\Debugging\NamespaceDoc.cs" />
     <Compile Include="Common\Reflection\AssemblySignature.cs" />
+    <Compile Include="Runtime\Debugging\DebuggerSetup.cs" />
     <Compile Include="Runtime\Extensibility\NamespaceDoc.cs" />
     <Compile Include="Runtime\Extensibility\PluginLoadedEventArgs.cs" />
     <Compile Include="Runtime\Extensibility\ResourceSearchRules.cs" />

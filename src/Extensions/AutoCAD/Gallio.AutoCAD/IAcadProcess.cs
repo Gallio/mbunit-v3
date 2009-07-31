@@ -26,7 +26,8 @@ namespace Gallio.AutoCAD
         /// Starts the AutoCAD process and the client.
         /// </summary>
         /// <param name="ipcPortName">The IPC port name.</param>
+        /// <param name="linkId">The unique id of the client/server pair.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="ipcPortName"/> is null.</exception>
-        void Start(string ipcPortName);
+        void Start(string ipcPortName, Guid linkId);
     }
 }

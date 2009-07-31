@@ -46,6 +46,7 @@ namespace Gallio.AutoCAD.Commands
             get
             {
                 yield return IpcPortName;
+                yield return LinkId.ToString();
             }
         }
 
@@ -53,6 +54,15 @@ namespace Gallio.AutoCAD.Commands
         /// Gets or sets the IPC port name that the endpoint should create.
         /// </summary>
         public string IpcPortName
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// Gets or sets the unique id of the client/server pair.
+        /// </summary>
+        public Guid LinkId
         {
             get;
             set;

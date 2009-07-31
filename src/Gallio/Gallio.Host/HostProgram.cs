@@ -143,14 +143,15 @@ namespace Gallio.Host
             Process currentProcess = Process.GetCurrentProcess();
 
             IDebuggerManager debuggerManager = new DefaultDebuggerManager(); // FIXME: Get from IoC
-            IDebugger debugger = debuggerManager.GetDefaultDebugger();
+            var debuggerSetup = new DebuggerSetup();
+            IDebugger debugger = debuggerManager.GetDebugger(debuggerSetup, logger);
             AttachDebuggerResult attachResult = AttachDebuggerResult.CouldNotAttach;
             try
             {
-                if (!debugger.IsAttachedToProcess(currentProcess, logger))
+                if (! Debugger.IsAttached)
                 {
                     logger.Log(LogSeverity.Important, "Attaching the debugger to the host.");
-                    attachResult = debugger.AttachToProcess(currentProcess, logger);
+                    attachResult = debugger.AttachToProcess(currentProcess);
                     if (attachResult == AttachDebuggerResult.CouldNotAttach)
                         logger.Log(LogSeverity.Warning, "Could not attach debugger to the host.");
                 }
@@ -162,7 +163,7 @@ namespace Gallio.Host
                 if (attachResult == AttachDebuggerResult.Attached)
                 {
                     logger.Log(LogSeverity.Important, "Detaching the debugger from the host.");
-                    DetachDebuggerResult detachResult = debugger.DetachFromProcess(currentProcess, logger);
+                    DetachDebuggerResult detachResult = debugger.DetachFromProcess(currentProcess);
                     if (detachResult == DetachDebuggerResult.CouldNotDetach)
                         logger.Log(LogSeverity.Warning, "Could not detach debugger from the host.");
                 }

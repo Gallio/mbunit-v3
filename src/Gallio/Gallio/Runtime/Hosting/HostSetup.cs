@@ -21,6 +21,7 @@ using Gallio.Common.Collections;
 using Gallio.Common;
 using Gallio.Common.IO;
 using Gallio.Common.Policies;
+using Gallio.Runtime.Debugging;
 
 namespace Gallio.Runtime.Hosting
 {
@@ -33,7 +34,7 @@ namespace Gallio.Runtime.Hosting
         private string applicationBaseDirectory;
         private string workingDirectory;
         private bool shadowCopy;
-        private bool debug;
+        private DebuggerSetup debuggerSetup;
         private string runtimeVersion;
         private bool elevated;
         private ConfigurationFileLocation configurationFileLocation = ConfigurationFileLocation.Temp;
@@ -114,13 +115,13 @@ namespace Gallio.Runtime.Hosting
         }
 
         /// <summary>
-        /// Gets or sets whether to attach the debugger to the host.
+        /// Gets or sets the debugger setup options, or null if not debugging.
         /// </summary>
-        /// <value>True if a debugger should be attached to the host.  Default is <c>false</c>.</value>
-        public bool Debug
+        /// <value>The debugger setup options.  Default is <c>null</c>.</value>
+        public DebuggerSetup DebuggerSetup
         {
-            get { return debug; }
-            set { debug = value; }
+            get { return debuggerSetup; }
+            set { debuggerSetup = value; }
         }
 
         /// <summary>
@@ -223,7 +224,8 @@ namespace Gallio.Runtime.Hosting
             copy.applicationBaseDirectory = applicationBaseDirectory;
             copy.workingDirectory = workingDirectory;
             copy.shadowCopy = shadowCopy;
-            copy.debug = debug;
+            if (debuggerSetup != null)
+                copy.debuggerSetup = debuggerSetup.Copy();
             copy.processorArchitecture = processorArchitecture;
             copy.runtimeVersion = runtimeVersion;
             copy.elevated = elevated;

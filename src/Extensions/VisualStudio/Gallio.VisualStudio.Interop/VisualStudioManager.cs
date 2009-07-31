@@ -60,7 +60,7 @@ namespace Gallio.VisualStudio.Interop
             if (logger == null)
                 throw new ArgumentNullException("logger");
 
-            IVisualStudio visualStudio = GetActiveVisualStudio(version);
+            IVisualStudio visualStudio = GetActiveVisualStudio(version, logger);
             if (visualStudio == null && launchIfNoActiveInstance)
                 visualStudio = LaunchVisualStudio(version, logger);
 
@@ -94,7 +94,7 @@ namespace Gallio.VisualStudio.Interop
                 Stopwatch stopwatch = Stopwatch.StartNew();
                 for (;;)
                 {
-                    IVisualStudio visualStudio = GetVisualStudioFromProcess(processId, installDirAndVersion.Value.Second);
+                    IVisualStudio visualStudio = GetVisualStudioFromProcess(processId, installDirAndVersion.Value.Second, true, logger);
                     if (visualStudio != null)
                         return visualStudio;
 
@@ -120,7 +120,7 @@ namespace Gallio.VisualStudio.Interop
             return null;
         }
 
-        private static IVisualStudio GetActiveVisualStudio(VisualStudioVersion version)
+        private static IVisualStudio GetActiveVisualStudio(VisualStudioVersion version, ILogger logger)
         {
             IVisualStudio visualStudio = null;
             ForEachApplicableVersion(version, aVersion =>
@@ -128,7 +128,7 @@ namespace Gallio.VisualStudio.Interop
                 object obj = GetActiveObject(versionInfos[aVersion].ProgID);
                 if (obj != null)
                 {
-                    visualStudio = new VisualStudio((DTE) obj, aVersion);
+                    visualStudio = new VisualStudio((DTE) obj, aVersion, false, logger);
                     return true;
                 }
 
@@ -138,7 +138,7 @@ namespace Gallio.VisualStudio.Interop
             return visualStudio;
         }
 
-        private static IVisualStudio GetVisualStudioFromProcess(int processId, VisualStudioVersion version)
+        private static IVisualStudio GetVisualStudioFromProcess(int processId, VisualStudioVersion version, bool wasLaunched, ILogger logger)
         {
             // This code inspired from a forum post by Leonard Jiang.
             // http://social.msdn.microsoft.com/Forums/en-US/vsx/thread/3120db69-a89c-4545-874f-2d61c9317c8a/
@@ -146,7 +146,7 @@ namespace Gallio.VisualStudio.Interop
 
             object obj = GetActiveObjectWithMonikerDisplayName(monikerDisplayName);
             if (obj != null)
-                return new VisualStudio((DTE)obj, version);
+                return new VisualStudio((DTE)obj, version, wasLaunched, logger);
 
             return null;
         }

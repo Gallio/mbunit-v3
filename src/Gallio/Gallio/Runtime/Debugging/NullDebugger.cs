@@ -27,21 +27,27 @@ namespace Gallio.Runtime.Debugging
     public class NullDebugger : IDebugger
     {
         /// <inheritdoc />
-        public bool IsAttachedToProcess(Process process, ILogger logger)
+        public bool IsAttachedToProcess(Process process)
         {
             return false;
         }
 
         /// <inheritdoc />
-        public AttachDebuggerResult AttachToProcess(Process process, ILogger logger)
+        public AttachDebuggerResult AttachToProcess(Process process)
         {
             return AttachDebuggerResult.CouldNotAttach;
         }
 
         /// <inheritdoc />
-        public DetachDebuggerResult DetachFromProcess(Process process, ILogger logger)
+        public DetachDebuggerResult DetachFromProcess(Process process)
         {
             return DetachDebuggerResult.CouldNotDetach;
+        }
+
+        /// <inheritdoc />
+        public Process LaunchProcess(ProcessStartInfo processStartInfo)
+        {
+            return null;
         }
     }
 }

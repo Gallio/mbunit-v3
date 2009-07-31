@@ -22,6 +22,7 @@ using Gallio.Common.Text;
 using Gallio.Common.Xml;
 using Gallio.Runner.Projects;
 using Gallio.Runner.Projects.Schema;
+using Gallio.Runtime.Debugging;
 using Gallio.Runtime.Logging;
 using Gallio.Runtime;
 using Gallio.Echo.Properties;
@@ -108,8 +109,8 @@ namespace Gallio.Echo
             if (arguments.ShadowCopy.HasValue)
                 launcher.TestProject.TestPackage.ShadowCopy = arguments.ShadowCopy.Value;
 
-            if (arguments.Debug.HasValue)
-                launcher.TestProject.TestPackage.Debug = arguments.Debug.Value;
+            if (arguments.Debug.HasValue && arguments.Debug.Value)
+                launcher.TestProject.TestPackage.DebuggerSetup = new DebuggerSetup();
 
             if (arguments.ApplicationBaseDirectory != null)
                 launcher.TestProject.TestPackage.ApplicationBaseDirectory = new DirectoryInfo(arguments.ApplicationBaseDirectory);

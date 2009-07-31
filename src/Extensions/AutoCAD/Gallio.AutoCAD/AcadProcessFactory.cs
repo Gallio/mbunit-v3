@@ -18,6 +18,7 @@ using System.Diagnostics;
 using System.IO;
 using Gallio.Model;
 using Gallio.Runner;
+using Gallio.Runtime.Debugging;
 using Gallio.Runtime.Logging;
 
 namespace Gallio.AutoCAD
@@ -41,7 +42,7 @@ namespace Gallio.AutoCAD
         }
 
         /// <inheritdoc/>
-        public IAcadProcess CreateProcess()
+        public IAcadProcess CreateProcess(DebuggerSetup debuggerSetup)
         {
             if (AttachToExistingProcess)
             {
@@ -49,7 +50,12 @@ namespace Gallio.AutoCAD
                 {
                     logger.Log(LogSeverity.Warning, "Ignoring specified path to acad.exe and attaching to an existing process.");
                 }
-                
+
+                if (debuggerSetup != null)
+                {
+                    logger.Log(LogSeverity.Warning, "Cannot attach the debugger to an existing instance of AutoCAD.");
+                }
+
                 Process[] processes = Process.GetProcessesByName("acad");
                 if (processes.Length == 0)
                 {
@@ -80,7 +86,7 @@ namespace Gallio.AutoCAD
 
             executablePath = Path.GetFullPath(executablePath);
             logger.Log(LogSeverity.Debug, String.Concat("Creating new AutoCAD instance: ", executablePath));
-            return AcadProcess.Create(executablePath);
+            return AcadProcess.Create(executablePath, debuggerSetup, logger);
         }
 
         /// <summary>

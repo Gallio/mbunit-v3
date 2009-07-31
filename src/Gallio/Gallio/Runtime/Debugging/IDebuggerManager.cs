@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Gallio.Runtime.Logging;
 
 namespace Gallio.Runtime.Debugging
 {
@@ -25,9 +26,12 @@ namespace Gallio.Runtime.Debugging
     public interface IDebuggerManager
     {
         /// <summary>
-        /// Gets the default debugger.
+        /// Gets a debugger.
         /// </summary>
-        /// <returns>The default debugger.</returns>
-        IDebugger GetDefaultDebugger();
+        /// <param name="debuggerSetup">The debugger setup options.</param>
+        /// <param name="logger">The logger for writing progress and failure messages.</param>
+        /// <returns>The debugger.</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="debuggerSetup"/> or <paramref name="logger"/> is null.</exception>
+        IDebugger GetDebugger(DebuggerSetup debuggerSetup, ILogger logger);
     }
 }

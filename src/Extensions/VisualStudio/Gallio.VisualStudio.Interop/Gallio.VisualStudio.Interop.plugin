@@ -29,8 +29,5 @@
   </assemblies>
 
   <components>
-    <component componentId="VisualStudio.Debugger"
-               serviceId="Gallio.Debugger"
-               componentType="Gallio.VisualStudio.Interop.VisualStudioDebugger, Gallio.VisualStudio.Interop" />
   </components>
 </plugin>

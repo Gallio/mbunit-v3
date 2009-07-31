@@ -30,7 +30,7 @@ namespace Gallio.Model.Isolation
     /// </summary>
     public class TestIsolationServer : IDisposable
     {
-        internal const string MessageExchangeLinkServiceName = "TestIsolationServer.MessageExchangeLink";
+        private const string MessageExchangeLinkServicePrefix = "TestIsolationServer.MessageExchangeLink.";
 
         private static readonly TimeSpan PollInterval = TimeSpan.FromSeconds(2);
         private static readonly TimeSpan PingTimeout = TimeSpan.FromSeconds(30);
@@ -45,8 +45,9 @@ namespace Gallio.Model.Isolation
         /// Creates a test isolation server.
         /// </summary>
         /// <param name="ipcPortName">The IPC port name.</param>
+        /// <param name="linkId">The unique id of the client/server pair.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="ipcPortName"/> is null.</exception>
-        public TestIsolationServer(string ipcPortName)
+        public TestIsolationServer(string ipcPortName, Guid linkId)
         {
             if (ipcPortName == null)
                 throw new ArgumentNullException("ipcPortName");
@@ -60,7 +61,12 @@ namespace Gallio.Model.Isolation
                 .Handle<IsolatedTaskFinishedMessage>(HandleIsolatedTaskFinished);
 
             messageExchange = new MessageExchange(messageConsumer);
-            serverChannel.RegisterService(MessageExchangeLinkServiceName, messageExchange);
+            serverChannel.RegisterService(GetMessageExchangeLinkServiceName(linkId), messageExchange);
+        }
+
+        internal static string GetMessageExchangeLinkServiceName(Guid uniqueId)
+        {
+            return MessageExchangeLinkServicePrefix + uniqueId;
         }
 
         /// <inheritdoc />
