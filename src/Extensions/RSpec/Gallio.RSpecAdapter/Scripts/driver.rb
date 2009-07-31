@@ -161,10 +161,10 @@ module Gallio
           #puts "example_failed"
           
           internal_example_finished(::Gallio::Model::TestOutcome.Failed) do |example_test_context|
-            example_test_context.LogWriter.Warnings.BeginSection(failure.header)
-            example_test_context.LogWriter.Warnings.Write(failure.exception.message) unless failure.exception.nil?
-            example_test_context.LogWriter.Warnings.Write(format_backtrace(failure.exception.backtrace)) unless failure.exception.nil?
-            example_test_context.LogWriter.Warnings.End()
+            example_test_context.LogWriter.Failures.BeginSection(failure.header)
+            example_test_context.LogWriter.Failures.Write(failure.exception.message) unless failure.exception.nil?
+            example_test_context.LogWriter.Failures.Write(format_backtrace(failure.exception.backtrace)) unless failure.exception.nil?
+            example_test_context.LogWriter.Failures.End()
           end
         end
         
@@ -172,7 +172,7 @@ module Gallio
           #puts "example_pending"
           
           internal_example_finished(::Gallio::Model::TestOutcome.Pending) do |example_test_context|
-            example_test_context.AddMetadata(::Gallio::Model::MetadataKeys::PendingReason, message)
+            example_test_context.AddMetadata(::Gallio::Model::MetadataKeys.PendingReason, message)
             example_test_context.LogWriter.Warnings.BeginSection("Pending")
             example_test_context.LogWriter.Warnings.Write(message)
             example_test_context.LogWriter.Warnings.End()

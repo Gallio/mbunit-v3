@@ -69,13 +69,12 @@
     <None Include="Gallio.DLRIntegration.dll.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Scripts\gallio.rb">
-    </None>
-    <None Include="Scripts\gallio\wrappers.rb" />
-    <None Include="Scripts\gallio\wrappers\runtime.rb" />
-    <None Include="Scripts\gallio\wrappers\message_sink.rb" />
-    <None Include="Scripts\gallio\wrappers\progress_monitor.rb" />
-    <None Include="Scripts\gallio\wrappers\logger.rb" />
+    <None Include="Scripts\IronRuby\gallio.rb" />
+    <None Include="Scripts\IronRuby\gallio\wrappers.rb" />
+    <None Include="Scripts\IronRuby\gallio\wrappers\logger.rb" />
+    <None Include="Scripts\IronRuby\gallio\wrappers\message_sink.rb" />
+    <None Include="Scripts\IronRuby\gallio\wrappers\progress_monitor.rb" />
+    <None Include="Scripts\IronRuby\gallio\wrappers\runtime.rb" />
     <Content Include="Gallio.DLRIntegration.plugin" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -12,10 +12,6 @@
     <AssemblyName>Gallio.DLRIntegration.Tests</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <FileUpgradeFlags>
-    </FileUpgradeFlags>
-    <OldToolsVersion>3.5</OldToolsVersion>
-    <UpgradeBackupLocation />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -41,6 +37,14 @@
     <DocumentationFile>bin\Gallio.DLRIntegration.Tests.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.Scripting, Version=0.9.6.10, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\libs\Microsoft.Scripting.dll</HintPath>
+    </Reference>
+    <Reference Include="Rhino.Mocks, Version=3.5.0.1337, Culture=neutral, PublicKeyToken=0b3305902db7183f, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\libs\Rhino.Mocks\bin\Rhino.Mocks.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -55,6 +59,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Model\IronRubyIntegrationTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -69,6 +74,10 @@
     <ProjectReference Include="..\..\..\MbUnit\MbUnit35\MbUnit35.vs2010.csproj">
       <Project>{D147F5CC-0166-4B9C-B095-F905220090FA}</Project>
       <Name>MbUnit35.vs2010</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\MbUnit\MbUnit\MbUnit.vs2010.csproj">
+      <Project>{A9B54755-56B7-48C1-8941-BB69FCEFFF32}</Project>
+      <Name>MbUnit %28MbUnit\MbUnit%29</Name>
     </ProjectReference>
     <ProjectReference Include="..\Gallio.DLRIntegration\Gallio.DLRIntegration.vs2010.csproj">
       <Project>{FCF9143C-3DF2-4DFF-972B-A2FEB30D7AA9}</Project>

@@ -12,33 +12,135 @@
   </xsl:template>
 
   <xsl:template match="g:report">
-    <xsl:apply-templates select="g:testPackageRun/g:statistics" />
-    <xsl:apply-templates select="g:testModel/g:annotations" />
     <xsl:apply-templates select="." mode="results"/>
-    <xsl:apply-templates select="g:logEntries" />
+    <xsl:apply-templates select="." mode="annotations" />
+    <xsl:apply-templates select="." mode="log" />
   </xsl:template>
   
-	<xsl:template match="g:statistics">
+  <!-- Results -->
+
+  <xsl:template match="g:report" mode="results">
     <xsl:text>* Results: </xsl:text>
     <xsl:call-template name="format-statistics">
-      <xsl:with-param name="statistics" select="." />
+      <xsl:with-param name="statistics" select="g:testPackageRun/g:statistics" />
     </xsl:call-template>
-		<xsl:text>&#xA;</xsl:text>
-	</xsl:template>
+		<xsl:text>&#xA;&#xA;</xsl:text>
+
+    <xsl:variable name="testCases" select="g:testPackageRun/g:testStepRun/descendant-or-self::g:testStepRun[g:testStep/@isTestCase='true']" />
+    
+    <xsl:variable name="passed" select="$testCases[g:result/g:outcome/@status='passed']" />
+    <xsl:variable name="failed" select="$testCases[g:result/g:outcome/@status='failed']" />
+    <xsl:variable name="inconclusive" select="$testCases[g:result/g:outcome/@status='inconclusive']" />
+    <xsl:variable name="skipped" select="$testCases[g:result/g:outcome/@status='skipped']" />
+
+    <xsl:if test="$show-failed-tests">
+      <xsl:apply-templates select="$failed" mode="results" />
+    </xsl:if>
+    
+    <xsl:if test="$show-inconclusive-tests">
+      <xsl:apply-templates select="$inconclusive" mode="results"/>
+    </xsl:if>
+
+    <xsl:if test="$show-passed-tests">
+      <xsl:apply-templates select="$passed" mode="results"/>
+    </xsl:if>
+
+    <xsl:if test="$show-skipped-tests">
+      <xsl:apply-templates select="$skipped" mode="results"/>
+    </xsl:if>
+
+    <xsl:text>&#xA;</xsl:text>
+  </xsl:template>
   
-  <xsl:template match="g:annotations">
-    <xsl:if test="g:annotation">
+  <xsl:template match="g:testStepRun" mode="results">
+    <xsl:text>[</xsl:text>
+    <xsl:choose>
+      <xsl:when test="g:result/g:outcome/@category">
+        <xsl:value-of select="g:result/g:outcome/@category"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:value-of select="g:result/g:outcome/@status"/>
+      </xsl:otherwise>
+    </xsl:choose>
+    <xsl:text>] </xsl:text>
+
+    <xsl:variable name="kind" select="g:testStep/g:metadata/g:entry[@key='TestKind']/g:value" />
+    <xsl:if test="$kind">
+      <xsl:value-of select="$kind"/>
+      <xsl:text> </xsl:text>
+    </xsl:if>
+
+    <xsl:value-of select="g:testStep/@fullName" />
+    <xsl:text>&#xA;</xsl:text>
+    <xsl:apply-templates select="g:testLog" mode="results"/>
+    <xsl:text>&#xA;</xsl:text>
+
+    <xsl:apply-templates select="g:children/g:testStepRun" mode="results"/>
+  </xsl:template>
+
+  <xsl:template match="g:testLog" mode="results">
+    <xsl:apply-templates select="g:streams/g:stream/g:body"/>
+  </xsl:template>
+
+  <xsl:template match="g:body">
+    <xsl:apply-templates select="g:contents" mode="block" />
+  </xsl:template>
+
+  <xsl:template match="g:contents" mode="block">
+    <xsl:variable name="text">
+      <xsl:apply-templates select="." mode="inline" />
+    </xsl:variable>
+    
+    <xsl:call-template name="indent">
+      <xsl:with-param name="text" select="$text"/>
+    </xsl:call-template>
+  </xsl:template>
+
+  <xsl:template match="g:contents" mode="inline">
+    <xsl:apply-templates select="child::node()[self::g:text or self::g:section or self::g:embed or self::g:marker]" />
+  </xsl:template>
+
+  <xsl:template match="g:text">
+    <xsl:value-of select="text()"/>
+  </xsl:template>
+
+  <xsl:template match="g:section">
+    <xsl:text>&#xA;</xsl:text>
+    <xsl:value-of select="@name" />
+    <xsl:text>&#xA;</xsl:text>
+    <xsl:apply-templates select="g:contents" mode="block" />
+  </xsl:template>
+
+  <xsl:template match="g:marker">
+    <xsl:apply-templates select="g:contents" mode="inline" />
+  </xsl:template>
+
+  <xsl:template match="g:embed">
+    <xsl:text>&#xA;[Attachment: </xsl:text>
+    <xsl:value-of select="@attachmentName"/>
+    <xsl:text>]&#xA;</xsl:text>
+  </xsl:template>
+
+  <!-- Annotations -->
+  
+  <xsl:template match="g:report" mode="annotations">
+    <xsl:variable name="annotations" select="g:testModel/g:annotations/g:annotation" />
+    
+    <xsl:if test="$annotations">
       <xsl:text>* Annotations:&#xA;&#xA;</xsl:text>
-      <xsl:apply-templates select="g:annotation[@type='error']"/>
-      <xsl:apply-templates select="g:annotation[@type='warning']"/>
-      <xsl:apply-templates select="g:annotation[@type='info']"/>
+      <xsl:apply-templates select="$annotations[@type='error']"/>
+      <xsl:apply-templates select="$annotations[@type='warning']"/>
+      <xsl:apply-templates select="$annotations[@type='info']"/>
+      <xsl:text>&#xA;</xsl:text>
     </xsl:if>
   </xsl:template>
 
   <xsl:template match="g:annotation">
     <xsl:call-template name="indent">
       <xsl:with-param name="text">
-        <xsl:text>[</xsl:text><xsl:value-of select="@type"/><xsl:text>] </xsl:text>
+        <xsl:text>[</xsl:text>
+        <xsl:value-of select="@type"/>
+        <xsl:text>] </xsl:text>
         <xsl:value-of select="@message"/>
       </xsl:with-param>
       <xsl:with-param name="firstLinePrefix" select="''" />
@@ -48,22 +150,26 @@
       <xsl:call-template name="indent">
         <xsl:with-param name="text">
           <xsl:text>Location: </xsl:text>
-          <xsl:call-template name="format-code-location"><xsl:with-param name="codeLocation" select="g:codeLocation" /></xsl:call-template>
+          <xsl:call-template name="format-code-location">
+            <xsl:with-param name="codeLocation" select="g:codeLocation" />
+          </xsl:call-template>
         </xsl:with-param>
         <xsl:with-param name="secondLinePrefix" select="'    '" />
       </xsl:call-template>
     </xsl:if>
-      
+
     <xsl:if test="g:codeReference/@assembly">
       <xsl:call-template name="indent">
         <xsl:with-param name="text">
           <xsl:text>Reference: </xsl:text>
-          <xsl:call-template name="format-code-reference"><xsl:with-param name="codeReference" select="g:codeReference" /></xsl:call-template>
+          <xsl:call-template name="format-code-reference">
+            <xsl:with-param name="codeReference" select="g:codeReference" />
+          </xsl:call-template>
         </xsl:with-param>
         <xsl:with-param name="secondLinePrefix" select="'    '" />
       </xsl:call-template>
     </xsl:if>
-      
+
     <xsl:if test="@details">
       <xsl:call-template name="indent">
         <xsl:with-param name="text">
@@ -73,155 +179,19 @@
         <xsl:with-param name="secondLinePrefix" select="'    '" />
       </xsl:call-template>
     </xsl:if>
-    
+
     <xsl:text>&#xA;</xsl:text>
   </xsl:template>
 
-  <xsl:template match="g:report" mode="results">
-    <xsl:variable name="testCases" select="g:testPackageRun/g:testStepRun/descendant-or-self::g:testStepRun[g:testStep/@isTestCase='true']" />
-    
-    <xsl:variable name="passed" select="$testCases[g:result/g:outcome/@status='passed']" />
-    <xsl:variable name="failed" select="$testCases[g:result/g:outcome/@status='failed']" />
-    <xsl:variable name="inconclusive" select="$testCases[g:result/g:outcome/@status='inconclusive']" />
-    <xsl:variable name="skipped" select="$testCases[g:result/g:outcome/@status='skipped']" />
-
-    <xsl:if test="$show-passed-tests and $passed">
-      <xsl:text>* Passed:&#xA;&#xA;</xsl:text>
-      <xsl:apply-templates select="$passed" />
-      <xsl:text>&#xA;</xsl:text>
-    </xsl:if>
-
-    <xsl:if test="$show-failed-tests and $failed">
-      <xsl:text>* Failed:&#xA;&#xA;</xsl:text>
-      <xsl:apply-templates select="$failed" />
-      <xsl:text>&#xA;</xsl:text>
-    </xsl:if>
-    
-    <xsl:if test="$show-inconclusive-tests and $inconclusive">
-      <xsl:text>* Inconclusive:&#xA;&#xA;</xsl:text>
-      <xsl:apply-templates select="$inconclusive" />
-      <xsl:text>&#xA;</xsl:text>
-    </xsl:if>
-    
-    <xsl:if test="$show-skipped-tests and $skipped">
-      <xsl:text>* Skipped:&#xA;&#xA;</xsl:text>
-      <xsl:apply-templates select="$skipped" />
-      <xsl:text>&#xA;</xsl:text>
-    </xsl:if>
-	</xsl:template>
+  <!-- Log -->
   
-  <xsl:template match="g:testStepRun">
-    <xsl:variable name="kind" select="g:testStep/g:metadata/g:entry[@key='TestKind']/g:value" />
-
-    <xsl:if test="$kind">
-      <xsl:text>[</xsl:text>
-      <xsl:value-of select="$kind" />
-      <xsl:text>] </xsl:text>
-    </xsl:if>
-    
-    <xsl:value-of select="g:testStep/@fullName" />
-    <xsl:text>&#xA;</xsl:text>
-    <xsl:apply-templates select="g:testLog" />
-    <xsl:text>&#xA;</xsl:text>
-
-    <xsl:apply-templates select="g:children/g:testStepRun" />
-  </xsl:template>
-
-  <xsl:template match="g:testLog">
-    <xsl:apply-templates select="g:streams" />
-  </xsl:template>
-
-  <xsl:template match="g:streams">
-    <xsl:apply-templates select="g:stream" />
-  </xsl:template>
-  
-  <xsl:template match="g:stream">
-    <xsl:param name="prefix" select="'  '" />
-
-    <xsl:value-of select="$prefix"/>
-    <xsl:text>&lt;Stream: </xsl:text>
-    <xsl:value-of select="@name" />
-    <xsl:text>&gt;&#xA;</xsl:text>
-    <xsl:apply-templates select="g:body">
-      <xsl:with-param name="prefix" select="concat($prefix, '  ')" />
-    </xsl:apply-templates>
-    <xsl:value-of select="$prefix"/>
-    <xsl:text>&lt;End Stream&gt;&#xA;</xsl:text>
-  </xsl:template>
-  
-  <xsl:template match="g:body">
-    <xsl:param name="prefix" select="''" />
-
-    <xsl:apply-templates select="g:contents">
-      <xsl:with-param name="prefix" select="$prefix" />
-    </xsl:apply-templates>
-  </xsl:template>
-
-  <xsl:template match="g:contents">
-    <xsl:param name="prefix" select="''"  />
-
-    <xsl:apply-templates select="child::node()[self::g:text or self::g:section or self::g:embed or self::g:marker]">
-      <xsl:with-param name="prefix" select="$prefix" />
-    </xsl:apply-templates>
-  </xsl:template>
-
-  <xsl:template match="g:text">
-    <xsl:param name="prefix" select="''"  />
-
-    <xsl:variable name="preceding-inline-tag" select="preceding::node()[self::g:body or self::g:text or self::g:section or self::g:embed][1][self::g:text]"/>
-    <xsl:variable name="following-inline-tag" select="following::node()[self::g:body or self::g:text or self::g:section or self::g:embed][1][self::g:text]"/>
-
-    <xsl:call-template name="indent">
-      <xsl:with-param name="text" select="text()" />
-      <xsl:with-param name="firstLinePrefix">
-        <!-- omit prefix when we have a preceding text node with no intervening block tags -->
-        <xsl:if test="not($preceding-inline-tag)">
-          <xsl:value-of select="$prefix"/>
-        </xsl:if>
-      </xsl:with-param>
-      <xsl:with-param name="otherLinePrefix" select="$prefix" />
-      <!-- omit suffix when we have a following text node with no intervening block tags -->
-      <xsl:with-param name="trailingNewline" select="not($following-inline-tag)" />
-    </xsl:call-template>
-  </xsl:template>
-
-  <xsl:template match="g:section">
-    <xsl:param name="prefix" select="''"  />
-    
-    <xsl:value-of select="$prefix"/>
-    <xsl:text>&lt;Section: </xsl:text>
-    <xsl:value-of select="@name" />
-    <xsl:text>&gt;&#xA;</xsl:text>
-    <xsl:apply-templates select="g:contents">
-      <xsl:with-param name="prefix" select="concat($prefix, '  ')" />
-    </xsl:apply-templates>
-    <xsl:value-of select="$prefix"/>
-    <xsl:text>&lt;End Section&gt;&#xA;</xsl:text>
-  </xsl:template>
-
-  <xsl:template match="g:marker">
-    <xsl:param name="prefix" select="''"  />
-
-    <xsl:apply-templates select="g:contents">
-      <xsl:with-param name="prefix" select="$prefix" />
-    </xsl:apply-templates>
-  </xsl:template>
-
-  <xsl:template match="g:embed">
-    <xsl:param name="prefix" select="''"  />
-    
-    <xsl:value-of select="$prefix"/>
-    <xsl:text>&lt;Attachment: </xsl:text>
-    <xsl:value-of select="@attachmentName"/>
-    <xsl:text>&gt;&#xA;</xsl:text>
-  </xsl:template>
-
-  <xsl:template match="g:logEntries">
-    <xsl:variable name="logEntries" select="g:logEntry[@severity != 'debug']"/>
+  <xsl:template match="g:report" mode="log">
+    <xsl:variable name="logEntries" select="g:logEntries/g:logEntry[@severity != 'debug']"/>
     
     <xsl:if test="$logEntries">
       <xsl:text>* Diagnostic Log:&#xA;&#xA;</xsl:text>
       <xsl:apply-templates select="$logEntries"/>
+      <xsl:text>&#xA;</xsl:text>
     </xsl:if>
   </xsl:template>
 
@@ -247,6 +217,8 @@
 
     <xsl:text>&#xA;</xsl:text>
   </xsl:template>
+  
+  <!-- -->
 
   <xsl:template match="*">
   </xsl:template>

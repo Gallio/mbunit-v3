@@ -216,6 +216,7 @@
     <Compile Include="Runner\Extensions\TestRunnerExtensionUtilsTest.cs" />
     <Compile Include="Runner\RunnerExceptionTest.cs" />
     <Compile Include="RunSampleAttribute.cs" />
+    <Compile Include="RunSampleFileAttribute.cs" />
     <Compile Include="Runtime\Caching\DiskCacheExceptionTest.cs" />
     <Compile Include="Runtime\Caching\SimpleDiskCacheTest.cs" />
     <Compile Include="Runtime\Caching\TemporaryDiskCacheTest.cs" />

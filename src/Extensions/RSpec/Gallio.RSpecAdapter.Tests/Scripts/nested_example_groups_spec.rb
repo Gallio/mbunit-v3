@@ -1,5 +1,3 @@
-require 'bowling'
-
 describe "Outer" do
   it "Outer Example1" do
   end
