@@ -28,6 +28,7 @@ namespace Gallio.AutoCAD.Tests.Integration
 {
     [Category("Integration")]
     [RunSample(typeof(AcadSampleTest))]
+    [Ignore("This fixture appears to be causing the build server to hang!")]
     public class RunAcadSampleTest : BaseTestWithSampleRunner
     {
         [Row(false)]
