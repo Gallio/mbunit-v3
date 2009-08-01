@@ -38,6 +38,8 @@ namespace Gallio.Common.Concurrency
     /// </remarks>
     public class ProcessTask : Task
     {
+        private readonly TimeSpan WaitForFinalIOTimeout = TimeSpan.FromSeconds(5);
+
         private readonly string executablePath;
         private readonly string arguments;
         private readonly string workingDirectory;
@@ -56,6 +58,7 @@ namespace Gallio.Common.Concurrency
 
         private ManualResetEvent consoleOutputFinished;
         private ManualResetEvent consoleErrorFinished;
+        private bool loggingStarted;
 
         /// <summary>
         /// Creates a process task.
@@ -442,6 +445,8 @@ namespace Gallio.Common.Concurrency
                 process.ErrorDataReceived += LogErrorData;
                 process.BeginErrorReadLine();
             }
+
+            loggingStarted = true;
         }
 
         private void LogOutputData(object sender, DataReceivedEventArgs e)
@@ -478,6 +483,9 @@ namespace Gallio.Common.Concurrency
 
         private void WaitForConsoleToBeCompletelyReadOnceProcessHasExited()
         {
+            if (!loggingStarted)
+                return;
+
             if (DotNetRuntimeSupport.IsUsingMono)
                 return; // hangs on Mono 1.9.1.  Seems we never get the final events.
 
@@ -487,9 +495,9 @@ namespace Gallio.Common.Concurrency
             // robustly as it is guaranteed to have all of the output available
             // at that time.
             if (consoleOutputFinished != null)
-                consoleOutputFinished.WaitOne();
+                consoleOutputFinished.WaitOne(WaitForFinalIOTimeout);
             if (consoleErrorFinished != null)
-                consoleErrorFinished.WaitOne();
+                consoleErrorFinished.WaitOne(WaitForFinalIOTimeout);
         }
     }
 }
