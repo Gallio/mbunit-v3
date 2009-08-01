@@ -27,7 +27,11 @@
   <!-- ROOT CONTENT -->
 
   <ItemGroup>
-    <Module Include="*\*.module" />
+    <Module Include="src\All.module" />
+    <!--
+    <Module Include="compat\FxCop.module" />
+    <Module Include="compat\LibCheck.module" />
+    -->
   </ItemGroup>
 
   <ItemGroup>
