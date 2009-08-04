@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Reflection;
+using Gallio.Common.Collections;
 using Gallio.Model;
 using Gallio.Common.Reflection;
 using Gallio.Model.Tree;
@@ -60,6 +61,7 @@ namespace Gallio.MbUnit2Adapter.Model
 
         private Test assemblyTest;
         private bool fullyPopulated;
+        private HashSet<ITypeInfo> populatedTypes;
 
         public MbUnit2ReflectiveTestExplorerEngine(TestModel testModel, IAssemblyInfo assembly)
         {
@@ -82,7 +84,7 @@ namespace Gallio.MbUnit2Adapter.Model
             if (!skipChildren && ! fullyPopulated)
             {
                 foreach (ITypeInfo type in assembly.GetExportedTypes())
-                    BuildFixturesFromType(assemblyTest, type);
+                    ExploreTypeIfNotAlreadyPopulated(type);
 
                 fullyPopulated = true;
             }
@@ -93,7 +95,22 @@ namespace Gallio.MbUnit2Adapter.Model
             if (fullyPopulated)
                 return;
 
+            ExploreTypeIfNotAlreadyPopulated(type);
+        }
+
+        private void ExploreTypeIfNotAlreadyPopulated(ITypeInfo type)
+        {
+            if (populatedTypes == null)
+            {
+                populatedTypes = new HashSet<ITypeInfo>();
+            }
+            else if (populatedTypes.Contains(type))
+            {
+                return;
+            }
+
             BuildFixturesFromType(assemblyTest, type);
+            populatedTypes.Add(type);
         }
 
         private Test BuildAssemblyTest(Test parent, ICollection<KeyValuePair<Test, string>> unresolvedDependencies)

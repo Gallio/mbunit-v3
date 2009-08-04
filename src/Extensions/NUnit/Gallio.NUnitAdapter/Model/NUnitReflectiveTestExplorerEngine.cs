@@ -14,6 +14,8 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
+using Gallio.Common.Collections;
 using Gallio.Model;
 using Gallio.Common.Reflection;
 using Gallio.Model.Tree;
@@ -30,6 +32,7 @@ namespace Gallio.NUnitAdapter.Model
 
         private Test assemblyTest;
         private bool fullyPopulated;
+        private HashSet<ITypeInfo> populatedTypes;
 
         public NUnitReflectiveTestExplorerEngine(TestModel testModel, IAssemblyInfo assembly)
         {
@@ -52,7 +55,7 @@ namespace Gallio.NUnitAdapter.Model
             if (!skipChildren && !fullyPopulated)
             {
                 foreach (ITypeInfo type in assembly.GetExportedTypes())
-                    BuildFixturesFromType(assemblyTest, type);
+                    ExploreTypeIfNotAlreadyPopulated(type);
 
                 fullyPopulated = true;
             }
@@ -63,7 +66,22 @@ namespace Gallio.NUnitAdapter.Model
             if (fullyPopulated)
                 return;
 
+            ExploreTypeIfNotAlreadyPopulated(type);
+        }
+
+        private void ExploreTypeIfNotAlreadyPopulated(ITypeInfo type)
+        {
+            if (populatedTypes == null)
+            {
+                populatedTypes = new HashSet<ITypeInfo>();
+            }
+            else if (populatedTypes.Contains(type))
+            {
+                return;
+            }
+
             BuildFixturesFromType(assemblyTest, type);
+            populatedTypes.Add(type);
         }
 
         private Test BuildAssemblyTest(Test parent)
