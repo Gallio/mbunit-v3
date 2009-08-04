@@ -308,11 +308,14 @@ namespace Gallio.ReSharperRunner.Reflection
             IProject projectHandle = assembly.Handle as IProject;
             if (projectHandle != null)
             {
-                ICollection<IModuleReference> moduleRefs = projectHandle.GetModuleReferences();
-                return GenericCollectionUtils.ConvertAllToArray(moduleRefs, delegate(IModuleReference moduleRef)
+                if (projectHandle.IsValid)
                 {
-                    return GetAssemblyName(moduleRef.ResolveReferencedModule());
-                });
+                    ICollection<IModuleReference> moduleRefs = projectHandle.GetModuleReferences();
+                    return GenericCollectionUtils.ConvertAllToArray(moduleRefs, delegate(IModuleReference moduleRef)
+                    {
+                        return GetAssemblyName(moduleRef.ResolveReferencedModule());
+                    });
+                }
             }
 
             // FIXME! Don't know how to handle referenced assemblies for assemblies without loading them.
@@ -337,7 +340,8 @@ namespace Gallio.ReSharperRunner.Reflection
         {
             IModule moduleHandle = (IModule)assembly.Handle;
             ITypeElement typeHandle = GetAssemblyDeclarationsCache(moduleHandle).GetTypeElementByCLRName(typeName);
-            return typeHandle != null ? MakeDeclaredTypeWithoutSubstitution(typeHandle) : null;
+            return typeHandle != null && typeHandle.IsValid() ?
+                MakeDeclaredTypeWithoutSubstitution(typeHandle) : null;
         }
 
         private static bool IsMatchingAssemblyName(AssemblyName desiredAssemblyName, AssemblyName candidateAssemblyName)
@@ -399,6 +403,9 @@ namespace Gallio.ReSharperRunner.Reflection
         private void PopulateAssemblyTypes(List<StaticDeclaredTypeWrapper> types, INamespace namespaceHandle,
             IDeclarationsCache cache, bool includeNonPublicTypes)
         {
+            if (! namespaceHandle.IsValid())
+                return;
+
             foreach (IDeclaredElement elementHandle in namespaceHandle.GetNestedElements(cache))
             {
                 ITypeElement typeHandle = elementHandle as ITypeElement;
@@ -417,6 +424,9 @@ namespace Gallio.ReSharperRunner.Reflection
 
         private void PopulateAssemblyTypes(List<StaticDeclaredTypeWrapper> types, ITypeElement typeHandle, bool includeNonPublicTypes)
         {
+            if (!typeHandle.IsValid())
+                return;
+
             IModifiersOwner modifiers = typeHandle as IModifiersOwner;
             if (modifiers != null && (includeNonPublicTypes || modifiers.GetAccessRights() == AccessRights.PUBLIC))
             {
@@ -618,19 +628,31 @@ namespace Gallio.ReSharperRunner.Reflection
         protected override StaticMethodWrapper GetEventAddMethod(StaticEventWrapper @event)
         {
             IEvent eventHandle = (IEvent)@event.Handle;
-            return WrapAccessor(eventHandle.Adder, @event);
+            if (!eventHandle.IsValid())
+                return null;
+
+            IAccessor accessorHandle = eventHandle.Adder;
+            return accessorHandle != null && accessorHandle.IsValid() ? WrapAccessor(accessorHandle, @event) : null;
         }
 
         protected override StaticMethodWrapper GetEventRaiseMethod(StaticEventWrapper @event)
         {
             IEvent eventHandle = (IEvent)@event.Handle;
-            return WrapAccessor(eventHandle.Raiser, @event);
+            if (!eventHandle.IsValid())
+                return null;
+
+            IAccessor accessorHandle = eventHandle.Raiser;
+            return accessorHandle != null && accessorHandle.IsValid() ? WrapAccessor(accessorHandle, @event) : null;
         }
 
         protected override StaticMethodWrapper GetEventRemoveMethod(StaticEventWrapper @event)
         {
             IEvent eventHandle = (IEvent)@event.Handle;
-            return WrapAccessor(eventHandle.Remover, @event);
+            if (!eventHandle.IsValid())
+                return null;
+
+            IAccessor accessorHandle = eventHandle.Remover;
+            return accessorHandle != null && accessorHandle.IsValid() ? WrapAccessor(accessorHandle, @event) : null;
         }
 
         protected override StaticTypeWrapper GetEventHandlerType(StaticEventWrapper @event)
@@ -698,25 +720,29 @@ namespace Gallio.ReSharperRunner.Reflection
         protected override StaticMethodWrapper GetPropertyGetMethod(StaticPropertyWrapper property)
         {
             IProperty propertyHandle = (IProperty)property.Handle;
-            return WrapAccessor(
+            if (!propertyHandle.IsValid())
+                return null;
+
 #if RESHARPER_31
-                propertyHandle.Getter(false),
+            IAccessor accessorHandle = propertyHandle.Getter(false);
 #else
-                propertyHandle.Getter,
+            IAccessor accessorHandle = propertyHandle.Getter;
 #endif
-                property);
+            return accessorHandle != null && accessorHandle.IsValid() ? WrapAccessor(accessorHandle, property) : null;
         }
 
         protected override StaticMethodWrapper GetPropertySetMethod(StaticPropertyWrapper property)
         {
             IProperty propertyHandle = (IProperty)property.Handle;
-            return WrapAccessor(
+            if (!propertyHandle.IsValid())
+                return null;
+
 #if RESHARPER_31
-                propertyHandle.Setter(false),
+            IAccessor accessorHandle = propertyHandle.Setter(false);
 #else
-                propertyHandle.Setter,
+            IAccessor accessorHandle = propertyHandle.Setter;
 #endif
-                property);
+            return accessorHandle != null && accessorHandle.IsValid() ? WrapAccessor(accessorHandle, property) : null;
         }
         #endregion
 
@@ -792,6 +818,8 @@ namespace Gallio.ReSharperRunner.Reflection
         protected override IList<StaticParameterWrapper> GetFunctionParameters(StaticFunctionWrapper function)
         {
             IFunction functionHandle = (IFunction)function.Handle;
+            if (!functionHandle.IsValid())
+                return EmptyArray<StaticParameterWrapper>.Instance;
 
             return GenericCollectionUtils.ConvertAllToArray<IParameter, StaticParameterWrapper>(functionHandle.Parameters, delegate(IParameter parameter)
             {
@@ -804,6 +832,9 @@ namespace Gallio.ReSharperRunner.Reflection
         protected override IList<StaticGenericParameterWrapper> GetMethodGenericParameters(StaticMethodWrapper method)
         {
             IFunction methodHandle = (IFunction)method.Handle;
+            if (!methodHandle.IsValid())
+                return EmptyArray<StaticGenericParameterWrapper>.Instance;
+
             ITypeParameter[] parameterHandles = methodHandle.GetSignature(methodHandle.IdSubstitution).GetTypeParameters();
 
             return Array.ConvertAll<ITypeParameter, StaticGenericParameterWrapper>(parameterHandles, delegate(ITypeParameter parameter)
@@ -815,10 +846,16 @@ namespace Gallio.ReSharperRunner.Reflection
         protected override StaticParameterWrapper GetMethodReturnParameter(StaticMethodWrapper method)
         {
             IFunction methodHandle = (IFunction)method.Handle;
+            if (!methodHandle.IsValid())
+                return null;
 
             // TODO: This won't provide access to any parameter attributes.  How should we retrieve them?
             IType type = methodHandle.ReturnType;
-            if (type == null)
+#if RESHARPER_31 || RESHARPER_40 || RESHARPER_41
+            if (type == null || ! type.IsValid)
+#else
+            if (type == null || ! type.IsValid())
+#endif
                 return null;
 
 #if RESHARPER_31 || RESHARPER_40 || RESHARPER_41
@@ -946,10 +983,12 @@ namespace Gallio.ReSharperRunner.Reflection
         protected override StaticDeclaredTypeWrapper GetTypeBaseType(StaticDeclaredTypeWrapper type)
         {
             ITypeElement typeHandle = (ITypeElement)type.Handle;
+            if (!typeHandle.IsValid())
+                return null;
 
             if (!(typeHandle is IInterface))
             {
-                foreach (IDeclaredType superTypeHandle in typeHandle.GetSuperTypes())
+                foreach (IDeclaredType superTypeHandle in SafeGetSuperTypes(typeHandle))
                 {
                     IClass @class = superTypeHandle.GetTypeElement() as IClass;
                     if (@class != null)
@@ -979,7 +1018,25 @@ namespace Gallio.ReSharperRunner.Reflection
             return null;
         }
 
-        private bool IsContainingType(ITypeElement candidateContainingType, ITypeElement type)
+        protected override IList<StaticDeclaredTypeWrapper> GetTypeInterfaces(StaticDeclaredTypeWrapper type)
+        {
+            ITypeElement typeHandle = (ITypeElement)type.Handle;
+            if (!typeHandle.IsValid())
+                return EmptyArray<StaticDeclaredTypeWrapper>.Instance;
+
+            List<StaticDeclaredTypeWrapper> interfaces = new List<StaticDeclaredTypeWrapper>();
+
+            foreach (IDeclaredType superTypeHandle in SafeGetSuperTypes(typeHandle))
+            {
+                IInterface @interface = superTypeHandle.GetTypeElement() as IInterface;
+                if (@interface != null)
+                    interfaces.Add(MakeDeclaredType(superTypeHandle));
+            }
+
+            return interfaces;
+        }
+
+        private static bool IsContainingType(ITypeElement candidateContainingType, ITypeElement type)
         {
             ITypeElement containingType = type;
             for (; ; )
@@ -988,29 +1045,75 @@ namespace Gallio.ReSharperRunner.Reflection
                 if (containingType == null)
                     return false;
 
-                if (containingType == candidateContainingType)
+                if (containingType.Equals(candidateContainingType))
                     return true;
             }
         }
 
-        protected override IList<StaticDeclaredTypeWrapper> GetTypeInterfaces(StaticDeclaredTypeWrapper type)
+        /// <summary>
+        /// It is possible for GetSuperTypes to return types that would form a cycle
+        /// if the user typed in something like "class A : A" (even accidentally).
+        /// This will cause big problems down the line so we drop supertypes with cycles.
+        /// </summary>
+        private static IEnumerable<IDeclaredType> SafeGetSuperTypes(ITypeElement typeElement)
         {
-            ITypeElement typeHandle = (ITypeElement)type.Handle;
-            List<StaticDeclaredTypeWrapper> interfaces = new List<StaticDeclaredTypeWrapper>();
+            if (!typeElement.IsValid())
+                yield break;
 
-            foreach (IDeclaredType superType in typeHandle.GetSuperTypes())
+            IList<IDeclaredType> superTypes = typeElement.GetSuperTypes();
+            if (superTypes.Count == 0)
+                yield break;
+
+            foreach (IDeclaredType superType in typeElement.GetSuperTypes())
             {
-                IInterface @interface = superType.GetTypeElement() as IInterface;
-                if (@interface != null)
-                    interfaces.Add(MakeDeclaredType(superType));
+#if RESHARPER_31 || RESHARPER_40 || RESHARPER_41
+                if (superType.IsValid)
+#else
+                if (superType.IsValid())
+#endif
+                {
+                    ITypeElement superTypeElement = superType.GetTypeElement();
+                    if (superTypeElement.IsValid())
+                    {
+                        if (!HasSuperTypeCycle(superTypeElement))
+                            yield return superType;
+                    }
+                }
+            }
+        }
+
+        private static bool HasSuperTypeCycle(ITypeElement typeElement)
+        {
+            var visitedSet = new Gallio.Common.Collections.HashSet<ITypeElement>();
+            var queue = new Queue<ITypeElement>();
+            queue.Enqueue(typeElement);
+
+            while (queue.Count > 0)
+            {
+                ITypeElement currentTypeElement = queue.Dequeue();
+                if (visitedSet.Contains(currentTypeElement))
+                    continue;
+
+                visitedSet.Add(currentTypeElement);
+
+                foreach (IDeclaredType superType in currentTypeElement.GetSuperTypes())
+                {
+                    ITypeElement superTypeElement = superType.GetTypeElement();
+                    if (superTypeElement == typeElement)
+                        return true;
+
+                    queue.Enqueue(superTypeElement);
+                }
             }
 
-            return interfaces;
+            return false;
         }
 
         protected override IList<StaticGenericParameterWrapper> GetTypeGenericParameters(StaticDeclaredTypeWrapper type)
         {
             ITypeElement typeHandle = (ITypeElement)type.Handle;
+            if (!typeHandle.IsValid())
+                return EmptyArray<StaticGenericParameterWrapper>.Instance;
 
             var genericParameters = new List<StaticGenericParameterWrapper>();
             BuildTypeGenericParameters(type, typeHandle, genericParameters);
@@ -1030,18 +1133,23 @@ namespace Gallio.ReSharperRunner.Reflection
         protected override IEnumerable<StaticConstructorWrapper> GetTypeConstructors(StaticDeclaredTypeWrapper type)
         {
             ITypeElement typeHandle = (ITypeElement)type.Handle;
+            if (!typeHandle.IsValid())
+                yield break;
 
             bool foundDefault = false;
             foreach (IConstructor constructorHandle in typeHandle.Constructors)
             {
-                if (constructorHandle.IsDefault)
+                if (constructorHandle.IsValid())
                 {
-                    if (typeHandle is IStruct)
-                        continue; // Note: Default constructors for structs are not visible via reflection
-                    foundDefault = true;
-                }
+                    if (constructorHandle.IsDefault)
+                    {
+                        if (typeHandle is IStruct)
+                            continue; // Note: Default constructors for structs are not visible via reflection
+                        foundDefault = true;
+                    }
 
-                yield return new StaticConstructorWrapper(this, constructorHandle, type);
+                    yield return new StaticConstructorWrapper(this, constructorHandle, type);
+                }
             }
 
             if (!foundDefault)
@@ -1060,12 +1168,20 @@ namespace Gallio.ReSharperRunner.Reflection
             StaticDeclaredTypeWrapper reflectedType)
         {
             ITypeElement typeHandle = (ITypeElement)type.Handle;
+            if (!typeHandle.IsValid())
+                yield break;
 
             foreach (IMethod methodHandle in typeHandle.Methods)
-                yield return new StaticMethodWrapper(this, methodHandle, type, reflectedType, type.Substitution);
+            {
+                if (methodHandle.IsValid())
+                    yield return new StaticMethodWrapper(this, methodHandle, type, reflectedType, type.Substitution);
+            }
 
             foreach (IOperator operatorHandle in typeHandle.Operators)
-                yield return new StaticMethodWrapper(this, operatorHandle, type, reflectedType, type.Substitution);
+            {
+                if (operatorHandle.IsValid())
+                    yield return new StaticMethodWrapper(this, operatorHandle, type, reflectedType, type.Substitution);
+            }
 
             foreach (StaticPropertyWrapper property in GetTypeProperties(type, reflectedType))
             {
@@ -1090,23 +1206,37 @@ namespace Gallio.ReSharperRunner.Reflection
             StaticDeclaredTypeWrapper reflectedType)
         {
             ITypeElement typeHandle = (ITypeElement)type.Handle;
+            if (!typeHandle.IsValid())
+                yield break;
 
             foreach (IProperty propertyHandle in typeHandle.Properties)
-                yield return new StaticPropertyWrapper(this, propertyHandle, type, reflectedType);
+            {
+                if (propertyHandle.IsValid())
+                    yield return new StaticPropertyWrapper(this, propertyHandle, type, reflectedType);
+            }
         }
 
         protected override IEnumerable<StaticFieldWrapper> GetTypeFields(StaticDeclaredTypeWrapper type,
             StaticDeclaredTypeWrapper reflectedType)
         {
             ITypeElement typeHandle = (ITypeElement)type.Handle;
+            if (!typeHandle.IsValid())
+                yield break;
 
             IClass classHandle = typeHandle as IClass;
             if (classHandle != null)
             {
                 foreach (IField fieldHandle in classHandle.Fields)
-                    yield return new StaticFieldWrapper(this, fieldHandle, type, reflectedType);
+                {
+                    if (fieldHandle.IsValid())
+                        yield return new StaticFieldWrapper(this, fieldHandle, type, reflectedType);
+                }
+
                 foreach (IField fieldHandle in classHandle.Constants)
-                    yield return new StaticFieldWrapper(this, fieldHandle, type, reflectedType);
+                {
+                    if (fieldHandle.IsValid())
+                        yield return new StaticFieldWrapper(this, fieldHandle, type, reflectedType);
+                }
             }
             else
             {
@@ -1114,9 +1244,16 @@ namespace Gallio.ReSharperRunner.Reflection
                 if (structHandle != null)
                 {
                     foreach (IField fieldHandle in structHandle.Fields)
-                        yield return new StaticFieldWrapper(this, fieldHandle, type, reflectedType);
+                    {
+                        if (fieldHandle.IsValid())
+                            yield return new StaticFieldWrapper(this, fieldHandle, type, reflectedType);
+                    }
+
                     foreach (IField fieldHandle in structHandle.Constants)
-                        yield return new StaticFieldWrapper(this, fieldHandle, type, reflectedType);
+                    {
+                        if (fieldHandle.IsValid())
+                            yield return new StaticFieldWrapper(this, fieldHandle, type, reflectedType);
+                    }
                 }
             }
         }
@@ -1125,17 +1262,27 @@ namespace Gallio.ReSharperRunner.Reflection
             StaticDeclaredTypeWrapper reflectedType)
         {
             ITypeElement typeHandle = (ITypeElement)type.Handle;
+            if (!typeHandle.IsValid())
+                yield break;
 
             foreach (IEvent eventHandle in typeHandle.Events)
-                yield return new StaticEventWrapper(this, eventHandle, type, reflectedType);
+            {
+                if (eventHandle.IsValid())
+                    yield return new StaticEventWrapper(this, eventHandle, type, reflectedType);
+            }
         }
 
         protected override IEnumerable<StaticTypeWrapper> GetTypeNestedTypes(StaticDeclaredTypeWrapper type)
         {
             ITypeElement typeHandle = (ITypeElement)type.Handle;
+            if (!typeHandle.IsValid())
+                yield break;
 
             foreach (ITypeElement nestedTypeHandle in typeHandle.NestedTypes)
-                yield return new StaticDeclaredTypeWrapper(this, nestedTypeHandle, type, type.Substitution);
+            {
+                if (nestedTypeHandle.IsValid())
+                    yield return new StaticDeclaredTypeWrapper(this, nestedTypeHandle, type, type.Substitution);
+            }
         }
 
         private StaticTypeWrapper MakeType(IType typeHandle)
@@ -1324,7 +1471,7 @@ namespace Gallio.ReSharperRunner.Reflection
 
         private sealed class DeclaredElementResolver : IDeclaredElementResolver
         {
-            private IDeclaredElement declaredElement;
+            private readonly IDeclaredElement declaredElement;
 
             public DeclaredElementResolver(IDeclaredElement declaredElement)
             {
@@ -1341,6 +1488,9 @@ namespace Gallio.ReSharperRunner.Reflection
         #region Misc
         private IEnumerable<StaticAttributeWrapper> GetAttributesForAttributeOwner(IAttributesOwner owner)
         {
+            if (!owner.IsValid())
+                yield break;
+
             foreach (IAttributeInstance attribute in owner.GetAttributeInstances(false))
                 yield return new StaticAttributeWrapper(this, attribute);
         }

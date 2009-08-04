@@ -211,7 +211,16 @@ namespace Gallio.ReSharperRunner.Provider
                 if (consumer == null)
                     throw new ArgumentNullException("consumer");
 
-                // Nothing to do currently.
+#if ! RESHARPER_31 && ! RESHARPER_40 && ! RESHARPER_41
+                using (ReadLockCookie.Create())
+#endif
+                {
+                    if (!solution.IsValid)
+                        return;
+
+                    // Nothing to do currently.
+                    // TODO: Should consider test files supported by other frameworks like RSpec.
+                }
             }
 
             /// <summary>
@@ -230,13 +239,24 @@ namespace Gallio.ReSharperRunner.Provider
                 using (ReadLockCookie.Create())
 #endif
                 {
-                    MetadataReflectionPolicy reflectionPolicy = new MetadataReflectionPolicy(assembly, project);
-                    IAssemblyInfo assemblyInfo = reflectionPolicy.Wrap(assembly);
+                    if (!project.IsValid)
+                        return;
 
-                    if (assemblyInfo != null)
+                    try
                     {
-                        ConsumerAdapter consumerAdapter = new ConsumerAdapter(provider, consumer);
-                        Describe(reflectionPolicy, new ICodeElementInfo[] { assemblyInfo }, consumerAdapter);
+                        MetadataReflectionPolicy reflectionPolicy = new MetadataReflectionPolicy(assembly, project);
+                        IAssemblyInfo assemblyInfo = reflectionPolicy.Wrap(assembly);
+
+                        if (assemblyInfo != null)
+                        {
+                            ConsumerAdapter consumerAdapter = new ConsumerAdapter(provider, consumer);
+                            Describe(reflectionPolicy, new ICodeElementInfo[] { assemblyInfo }, consumerAdapter);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        HandleEmbeddedProcessCancelledException(ex);
+                        throw;
                     }
                 }
             }
@@ -255,32 +275,46 @@ namespace Gallio.ReSharperRunner.Provider
                 using (ReadLockCookie.Create())
 #endif
                 {
-                    PsiReflectionPolicy reflectionPolicy = new PsiReflectionPolicy(psiFile.GetManager());
-                    ConsumerAdapter consumerAdapter = new ConsumerAdapter(provider, consumer, psiFile);
+                    if (!psiFile.IsValid())
+                        return;
 
-                    var codeElements = new List<ICodeElementInfo>();
-                    psiFile.ProcessDescendants(new OneActionProcessorWithoutVisit(delegate(IElement element)
+                    try
                     {
-                        ITypeDeclaration declaration = element as ITypeDeclaration;
-                        if (declaration != null)
-                            PopulateCodeElementsFromTypeDeclaration(codeElements, reflectionPolicy, declaration);
-                    }, delegate(IElement element)
+                        PsiReflectionPolicy reflectionPolicy = new PsiReflectionPolicy(psiFile.GetManager());
+                        ConsumerAdapter consumerAdapter = new ConsumerAdapter(provider, consumer, psiFile);
+
+                        var codeElements = new List<ICodeElementInfo>();
+                        psiFile.ProcessDescendants(new OneActionProcessorWithoutVisit(delegate(IElement element)
+                        {
+                            ITypeDeclaration declaration = element as ITypeDeclaration;
+                            if (declaration != null)
+                                PopulateCodeElementsFromTypeDeclaration(codeElements, reflectionPolicy, declaration);
+                        }, delegate(IElement element)
+                        {
+                            if (interrupted())
+                                throw new ProcessCancelledException();
+
+                            // Stop recursing at the first type declaration found.
+                            return element is ITypeDeclaration;
+                        }));
+
+                        Describe(reflectionPolicy, codeElements, consumerAdapter);
+
+                        ProjectFileState.SetFileState(psiFile.GetProjectFile(), consumerAdapter.CreateProjectFileState());
+                    }
+                    catch (Exception ex)
                     {
-                        if (interrupted())
-                            throw new ProcessCancelledException();
-
-                        // Stop recursing at the first type declaration found.
-                        return element is ITypeDeclaration;
-                    }));
-
-                    Describe(reflectionPolicy, codeElements, consumerAdapter);
-
-                    ProjectFileState.SetFileState(psiFile.GetProjectFile(), consumerAdapter.CreateProjectFileState());
+                        HandleEmbeddedProcessCancelledException(ex);
+                        throw;
+                    }
                 }
             }
 
             private static void PopulateCodeElementsFromTypeDeclaration(List<ICodeElementInfo> codeElements, PsiReflectionPolicy reflectionPolicy, ITypeDeclaration declaration)
             {
+                if (! declaration.IsValid())
+                    return;
+
                 ITypeInfo typeInfo = reflectionPolicy.Wrap(declaration.DeclaredElement);
 
                 if (typeInfo != null)
@@ -323,13 +357,24 @@ namespace Gallio.ReSharperRunner.Provider
                 using (ReadLockCookie.Create())
 #endif
                 {
-                    PsiReflectionPolicy reflectionPolicy = new PsiReflectionPolicy(element.GetManager());
-                    ICodeElementInfo elementInfo = reflectionPolicy.Wrap(element);
-                    if (elementInfo == null)
+                    if (!element.IsValid())
                         return false;
 
-                    ITestDriver driver = CreateTestDriver();
-                    return driver.IsTest(reflectionPolicy, elementInfo);
+                    try
+                    {
+                        PsiReflectionPolicy reflectionPolicy = new PsiReflectionPolicy(element.GetManager());
+                        ICodeElementInfo elementInfo = reflectionPolicy.Wrap(element);
+                        if (elementInfo == null)
+                            return false;
+
+                        ITestDriver driver = CreateTestDriver();
+                        return driver.IsTest(reflectionPolicy, elementInfo);
+                    }
+                    catch (Exception ex)
+                    {
+                        HandleEmbeddedProcessCancelledException(ex);
+                        throw;
+                    }
                 }
             }
 
@@ -350,13 +395,24 @@ namespace Gallio.ReSharperRunner.Provider
 
                 using (ReadLockCookie.Create())
                 {
-                    PsiReflectionPolicy reflectionPolicy = new PsiReflectionPolicy(element.GetManager());
-                    ICodeElementInfo elementInfo = reflectionPolicy.Wrap(element);
-                    if (elementInfo == null)
+                    if (!element.IsValid())
                         return false;
 
-                    ITestDriver driver = CreateTestDriver();
-                    return driver.IsTestPart(reflectionPolicy, elementInfo);
+                    try
+                    {
+                        PsiReflectionPolicy reflectionPolicy = new PsiReflectionPolicy(element.GetManager());
+                        ICodeElementInfo elementInfo = reflectionPolicy.Wrap(element);
+                        if (elementInfo == null)
+                            return false;
+
+                        ITestDriver driver = CreateTestDriver();
+                        return driver.IsTestPart(reflectionPolicy, elementInfo);
+                    }
+                    catch (Exception ex)
+                    {
+                        HandleEmbeddedProcessCancelledException(ex);
+                        throw;
+                    }
                 }
             }
 #endif
@@ -520,6 +576,23 @@ namespace Gallio.ReSharperRunner.Provider
             }
 #endif
 
+            /// <summary>
+            /// ReSharper can throw ProcessCancelledException while we are performing reflection
+            /// over code elements.  Gallio will then often wrap the exception as a ModelException
+            /// which ReSharper does not expect.  So we check to see whether a ProcessCancelledException
+            /// was wrapped up and throw it again if needed.
+            /// </summary>
+            private static void HandleEmbeddedProcessCancelledException(Exception exception)
+            {
+                do
+                {
+                    if (exception is ProcessCancelledException)
+                        throw exception;
+                    exception = exception.InnerException;
+                }
+                while (exception != null);
+            }
+
             private sealed class ConsumerAdapter : IMessageSink
             {
                 private readonly IUnitTestProvider provider;
@@ -546,11 +619,13 @@ namespace Gallio.ReSharperRunner.Provider
 #else
                         IProjectFile projectFile = psiFile.ProjectFile;
 #endif
-
-                        UnitTestElementDisposition disposition = element.GetDisposition();
-                        if (disposition.Locations.Count != 0 && disposition.Locations[0].ProjectFile == projectFile)
+                        if (projectFile.IsValid)
                         {
-                            consumer(element.GetDisposition());
+                            UnitTestElementDisposition disposition = element.GetDisposition();
+                            if (disposition.Locations.Count != 0 && disposition.Locations[0].ProjectFile == projectFile)
+                            {
+                                consumer(element.GetDisposition());
+                            }
                         }
                     })
                 {

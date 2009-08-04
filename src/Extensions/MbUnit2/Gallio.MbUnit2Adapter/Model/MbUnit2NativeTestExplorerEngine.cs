@@ -40,13 +40,40 @@ namespace Gallio.MbUnit2Adapter.Model
     /// test assemblies have been loaded into the AppDomain and are executable.
     /// </para>
     /// </remarks>
-    /// <seealso cref="MbUnit2ReflectiveTestExplorer" />
-    internal static class MbUnit2NativeTestExplorer
+    /// <seealso cref="MbUnit2ReflectiveTestExplorerEngine" />
+    internal class MbUnit2NativeTestExplorerEngine : MbUnit2TestExplorerEngine
     {
-        public static Test BuildAssemblyTest(Assembly assembly, ICollection<KeyValuePair<Test, string>> unresolvedDependencies)
+        private readonly TestModel testModel;
+        private readonly Assembly assembly;
+
+        private MbUnit2AssemblyTest assemblyTest;
+
+        public MbUnit2NativeTestExplorerEngine(TestModel testModel, Assembly assembly)
+        {
+            this.testModel = testModel;
+            this.assembly = assembly;
+        }
+
+        public override Test GetAssemblyTest()
+        {
+            return assemblyTest;
+        }
+
+        public override void ExploreAssembly(bool skipChildren, ICollection<KeyValuePair<Test, string>> unresolvedDependencies)
+        {
+            if (assemblyTest == null)
+            {
+                assemblyTest = BuildAssemblyTest(testModel.RootTest, unresolvedDependencies);
+            }
+        }
+
+        private MbUnit2AssemblyTest BuildAssemblyTest(Test parent, ICollection<KeyValuePair<Test, string>> unresolvedDependencies)
         {
             FixtureExplorer fixtureExplorer = InitializeFixtureExplorer(assembly);
-            MbUnit2AssemblyTest assemblyTest = CreateAssemblyTest(fixtureExplorer, Reflector.Wrap(assembly));
+            IAssemblyInfo assemblyInfo = Reflector.Wrap(assembly);
+
+            MbUnit2AssemblyTest assemblyTest = new MbUnit2AssemblyTest(fixtureExplorer, assemblyInfo);
+            PopulateAssemblyTestMetadata(assemblyTest, assemblyInfo);
 
             foreach (Fixture fixture in fixtureExplorer.FixtureGraph.Fixtures)
             {
@@ -65,6 +92,7 @@ namespace Gallio.MbUnit2Adapter.Model
             foreach (string assemblyName in fixtureExplorer.GetDependentAssemblies())
                 unresolvedDependencies.Add(new KeyValuePair<Test, string>(assemblyTest, assemblyName));
 
+            parent.AddChild(assemblyTest);
             return assemblyTest;
         }
 
@@ -79,14 +107,6 @@ namespace Gallio.MbUnit2Adapter.Model
                 fixture.Load(runPipeFilter);
 
             return fixtureExplorer;
-        }
-
-        private static MbUnit2AssemblyTest CreateAssemblyTest(FixtureExplorer fixtureExplorer, IAssemblyInfo assembly)
-        {
-            MbUnit2AssemblyTest test = new MbUnit2AssemblyTest(fixtureExplorer, assembly);
-
-            MbUnit2MetadataUtils.PopulateAssemblyMetadata(test, assembly);
-            return test;
         }
 
         private static MbUnit2Test CreateFixtureTest(Fixture fixture)

@@ -56,6 +56,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Model\NUnitTestExplorerEngine.cs" />
+    <Compile Include="Model\NUnitNativeTestExplorerEngine.cs" />
+    <Compile Include="Model\NUnitReflectiveTestExplorerEngine.cs" />
     <Compile Include="Model\NUnitTestExplorer.cs" />
     <Compile Include="Model\NUnitTest.cs" />
     <Compile Include="Model\NUnitTestController.cs" />

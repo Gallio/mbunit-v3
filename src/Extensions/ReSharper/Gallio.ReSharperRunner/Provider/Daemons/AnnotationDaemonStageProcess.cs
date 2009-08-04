@@ -24,6 +24,14 @@ using JetBrains.ReSharper.Daemon;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.Tree;
 
+#if RESHARPER_31
+using JetBrains.ReSharper.Editor;
+using ReSharperDocumentRange = JetBrains.ReSharper.Editor.DocumentRange;
+#else
+using JetBrains.DocumentModel;
+using ReSharperDocumentRange = JetBrains.DocumentModel.DocumentRange;
+#endif
+
 namespace Gallio.ReSharperRunner.Provider.Daemons
 {
     internal class AnnotationDaemonStageProcess : IDaemonStageProcess
@@ -54,28 +62,40 @@ namespace Gallio.ReSharperRunner.Provider.Daemons
         private HighlightingInfo[] GetHighlightings()
         {
             IProjectFile projectFile = process.ProjectFile;
-            ProjectFileState state = ProjectFileState.GetFileState(projectFile);
-            if (state != null)
-            {
-                List<HighlightingInfo> highlightings = new List<HighlightingInfo>();
+            if (! projectFile.IsValid)
+                return EmptyArray<HighlightingInfo>.Instance;
 
-                foreach (AnnotationState annotation in state.Annotations)
+            ProjectFileState state = ProjectFileState.GetFileState(projectFile);
+            if (state == null)
+                return EmptyArray<HighlightingInfo>.Instance;
+
+            List<HighlightingInfo> highlightings = new List<HighlightingInfo>();
+
+            foreach (AnnotationState annotation in state.Annotations)
+            {
+                IDeclaredElement declaredElement = annotation.GetDeclaredElement();
+                if (declaredElement != null && declaredElement.IsValid())
                 {
-                    IDeclaredElement declaredElement = annotation.GetDeclaredElement();
-                    if (declaredElement != null)
+                    foreach (IDeclaration declaration in declaredElement.GetDeclarationsIn(projectFile))
                     {
-                        foreach (IDeclaration declaration in declaredElement.GetDeclarationsIn(projectFile))
+                        if (declaration.IsValid())
                         {
-                            highlightings.Add(new HighlightingInfo(declaration.GetNameDocumentRange(),
-                                AnnotationHighlighting.CreateHighlighting(annotation)));
+                            ReSharperDocumentRange range = declaration.GetNameDocumentRange();
+#if RESHARPER_31 || RESHARPER_40 || RESHARPER_41
+                            if (range.IsValid)
+#else
+                            if (range.IsValid())
+#endif
+                            {
+                                highlightings.Add(new HighlightingInfo(range,
+                                    AnnotationHighlighting.CreateHighlighting(annotation)));
+                            }
                         }
                     }
                 }
-
-                return highlightings.ToArray();
             }
 
-            return EmptyArray<HighlightingInfo>.Instance;
+            return highlightings.ToArray();
         }
     }
 }
