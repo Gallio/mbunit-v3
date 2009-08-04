@@ -81,7 +81,7 @@ namespace Gallio.ReSharperRunner.Provider.Daemons
                         if (declaration.IsValid())
                         {
                             ReSharperDocumentRange range = declaration.GetNameDocumentRange();
-#if RESHARPER_31
+#if RESHARPER_31 || RESHARPER_40 || RESHARPER_41
                             if (range.IsValid)
 #else
                             if (range.IsValid())

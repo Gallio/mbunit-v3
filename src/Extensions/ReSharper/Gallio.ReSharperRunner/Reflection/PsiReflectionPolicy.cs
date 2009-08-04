@@ -851,7 +851,7 @@ namespace Gallio.ReSharperRunner.Reflection
 
             // TODO: This won't provide access to any parameter attributes.  How should we retrieve them?
             IType type = methodHandle.ReturnType;
-#if RESHARPER_31
+#if RESHARPER_31 || RESHARPER_40 || RESHARPER_41
             if (type == null || ! type.IsValid)
 #else
             if (type == null || ! type.IsValid())
@@ -1066,7 +1066,7 @@ namespace Gallio.ReSharperRunner.Reflection
 
             foreach (IDeclaredType superType in typeElement.GetSuperTypes())
             {
-#if RESHARPER_31
+#if RESHARPER_31 || RESHARPER_40 || RESHARPER_41
                 if (superType.IsValid)
 #else
                 if (superType.IsValid())
@@ -1075,7 +1075,6 @@ namespace Gallio.ReSharperRunner.Reflection
                     ITypeElement superTypeElement = superType.GetTypeElement();
                     if (superTypeElement.IsValid())
                     {
-
                         if (!HasSuperTypeCycle(superTypeElement))
                             yield return superType;
                     }

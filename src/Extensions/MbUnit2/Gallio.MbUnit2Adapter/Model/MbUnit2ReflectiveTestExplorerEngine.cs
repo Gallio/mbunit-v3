@@ -48,34 +48,72 @@ namespace Gallio.MbUnit2Adapter.Model
     /// to build a list of tests to be executed later.
     /// </para>
     /// </remarks>
-    /// <seealso cref="MbUnit2NativeTestExplorer"/>
-    internal static class MbUnit2ReflectiveTestExplorer
+    /// <todo>
+    /// TODO: Support more standard MbUnit v2 features.
+    /// Provide better diagnostic output in cases where unsupported extensions are used.
+    /// </todo>
+    /// <seealso cref="MbUnit2NativeTestExplorerEngine"/>
+    internal class MbUnit2ReflectiveTestExplorerEngine : MbUnit2TestExplorerEngine
     {
-        // TODO: Support more standard MbUnit v2 features.
-        // Provide better diagnostic output in cases where unsupported extensions are used.
+        private readonly TestModel testModel;
+        private readonly IAssemblyInfo assembly;
 
-        public static Test BuildAssemblyTest(TestModel testModel, IAssemblyInfo assembly, ICollection<KeyValuePair<Test, string>> unresolvedDependencies)
+        private Test assemblyTest;
+        private bool fullyPopulated;
+
+        public MbUnit2ReflectiveTestExplorerEngine(TestModel testModel, IAssemblyInfo assembly)
+        {
+            this.testModel = testModel;
+            this.assembly = assembly;
+        }
+
+        public override Test GetAssemblyTest()
+        {
+            return assemblyTest;
+        }
+
+        public override void ExploreAssembly(bool skipChildren, ICollection<KeyValuePair<Test, string>> unresolvedDependencies)
+        {
+            if (assemblyTest == null)
+            {
+                assemblyTest = BuildAssemblyTest(testModel.RootTest, unresolvedDependencies);
+            }
+
+            if (!skipChildren && ! fullyPopulated)
+            {
+                foreach (ITypeInfo type in assembly.GetExportedTypes())
+                    BuildFixturesFromType(assemblyTest, type);
+
+                fullyPopulated = true;
+            }
+        }
+
+        public override void ExploreType(ITypeInfo type)
+        {
+            if (fullyPopulated)
+                return;
+
+            BuildFixturesFromType(assemblyTest, type);
+        }
+
+        private Test BuildAssemblyTest(Test parent, ICollection<KeyValuePair<Test, string>> unresolvedDependencies)
         {
             Test assemblyTest = new Test(assembly.Name, assembly);
-            assemblyTest.Kind = TestKinds.Assembly;
-
-            MbUnit2MetadataUtils.PopulateAssemblyMetadata(assemblyTest, assembly);
+            PopulateAssemblyTestMetadata(assemblyTest, assembly);
 
             foreach (AssemblyDependsOnAttribute2 attrib in AttributeUtils.GetAttributes<AssemblyDependsOnAttribute2>(assembly, false))
                 unresolvedDependencies.Add(new KeyValuePair<Test, string>(assemblyTest, attrib.AssemblyName));
 
-            foreach (ITypeInfo type in assembly.GetExportedTypes())
-                BuildFixturesFromType(testModel, assemblyTest, type);
-
+            parent.AddChild(assemblyTest);
             return assemblyTest;
         }
 
-        private static void BuildFixturesFromType(TestModel testModel, Test parent, ITypeInfo type)
+        private void BuildFixturesFromType(Test parent, ITypeInfo type)
         {
             try
             {
                 foreach (TestFixturePatternAttribute2 attrib in AttributeUtils.GetAttributes<TestFixturePatternAttribute2>(type, true))
-                    BuildTestFixtureFromPatternAttribute(testModel, parent, type, attrib);
+                    BuildTestFixtureFromPatternAttribute(parent, type, attrib);
             }
             catch (Exception ex)
             {
@@ -84,7 +122,7 @@ namespace Gallio.MbUnit2Adapter.Model
             }
         }
 
-        private static void BuildTestFixtureFromPatternAttribute(TestModel testModel, Test parent, ITypeInfo type, TestFixturePatternAttribute2 attrib)
+        private void BuildTestFixtureFromPatternAttribute(Test parent, ITypeInfo type, TestFixturePatternAttribute2 attrib)
         {
             Test fixtureTest = new Test(type.Name, type);
             fixtureTest.Kind = TestKinds.Fixture;
@@ -94,7 +132,7 @@ namespace Gallio.MbUnit2Adapter.Model
             TestFixtureAttribute2 fixtureAttrib = attrib as TestFixtureAttribute2;
             if (fixtureAttrib != null)
             {
-                PopulateTestFixture(testModel, fixtureTest, type, fixtureAttrib);
+                PopulateTestFixture(fixtureTest, type, fixtureAttrib);
             }
             else
             {
@@ -104,7 +142,7 @@ namespace Gallio.MbUnit2Adapter.Model
             parent.AddChild(fixtureTest);
         }
 
-        private static void PopulateTestFixture(TestModel testModel, Test fixtureTest, ITypeInfo type, TestFixtureAttribute2 fixtureAttrib)
+        private void PopulateTestFixture(Test fixtureTest, ITypeInfo type, TestFixtureAttribute2 fixtureAttrib)
         {
             IMethodInfo setUpMethod = GetMethodWithAttribute<SetUpAttribute2>(type);
             IMethodInfo tearDownMethod = GetMethodWithAttribute<TearDownAttribute2>(type);
@@ -114,11 +152,11 @@ namespace Gallio.MbUnit2Adapter.Model
 
             foreach (IMethodInfo method in type.GetMethods(BindingFlags.Instance | BindingFlags.Public))
             {
-                BuildTestsFromMethod(testModel, fixtureTest, method, namePrefix, nameSuffix);
+                BuildTestsFromMethod(fixtureTest, method, namePrefix, nameSuffix);
             }
         }
 
-        private static void BuildTestsFromMethod(TestModel testModel, Test parent, IMethodInfo method, string namePrefix, string nameSuffix)
+        private void BuildTestsFromMethod(Test parent, IMethodInfo method, string namePrefix, string nameSuffix)
         {
             try
             {

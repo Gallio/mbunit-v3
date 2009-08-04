@@ -200,7 +200,7 @@ namespace Gallio.ReSharperRunner.Provider
                     {
                         var nameRange = declaration.GetNameRange();
                         var containingRange = declaration.GetDocumentRange().TextRange;
-#if RESHARPER_31
+#if RESHARPER_31 || RESHARPER_40 || RESHARPER_41
                         if (nameRange.IsValid && containingRange.IsValid)
 #else
                         if (nameRange.IsValid() && containingRange.IsValid())
