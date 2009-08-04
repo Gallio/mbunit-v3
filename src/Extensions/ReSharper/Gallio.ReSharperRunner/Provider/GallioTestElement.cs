@@ -192,17 +192,29 @@ namespace Gallio.ReSharperRunner.Provider
 
             foreach (IDeclaration declaration in element.GetDeclarations())
             {
-                IFile file = declaration.GetContainingFile();
-
-                if (file != null)
+                if (declaration.IsValid())
                 {
-                    locations.Add(new UnitTestElementLocation(
+                    IFile file = declaration.GetContainingFile();
+
+                    if (file != null && file.IsValid())
+                    {
+                        var nameRange = declaration.GetNameRange();
+                        var containingRange = declaration.GetDocumentRange().TextRange;
 #if RESHARPER_31
-                        file.ProjectItem,
+                        if (nameRange.IsValid && containingRange.IsValid)
 #else
-                        file.ProjectFile,
+                        if (nameRange.IsValid() && containingRange.IsValid())
 #endif
-                        declaration.GetNameRange(), declaration.GetDocumentRange().TextRange));
+                        {
+                            locations.Add(new UnitTestElementLocation(
+#if RESHARPER_31
+                                file.ProjectItem,
+#else
+                                file.ProjectFile,
+#endif
+                                nameRange, containingRange));
+                        }
+                    }
                 }
             }
 
