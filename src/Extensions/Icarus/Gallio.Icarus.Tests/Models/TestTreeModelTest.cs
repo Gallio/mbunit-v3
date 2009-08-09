@@ -227,5 +227,32 @@ namespace Gallio.Icarus.Tests.Models
 
         //    Assert.IsTrue(structureChangedFlag);
         //}
+
+        [Test]
+        public void FilterPassed_should_return_true_if_passed_filter_is_set()
+        {
+            var testTreeModel = new TestTreeModel();
+            testTreeModel.SetFilter(TestStatus.Passed);
+
+            Assert.IsTrue(testTreeModel.FilterPassed);
+        }
+
+        [Test]
+        public void FilterFailed_should_return_true_if_passed_filter_is_set()
+        {
+            var testTreeModel = new TestTreeModel();
+            testTreeModel.SetFilter(TestStatus.Failed);
+
+            Assert.IsTrue(testTreeModel.FilterFailed);
+        }
+
+        [Test]
+        public void FilterInconclusive_should_return_true_if_passed_filter_is_set()
+        {
+            var testTreeModel = new TestTreeModel();
+            testTreeModel.SetFilter(TestStatus.Inconclusive);
+
+            Assert.IsTrue(testTreeModel.FilterInconclusive);
+        }
     }
 }

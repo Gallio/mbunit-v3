@@ -25,7 +25,6 @@ using Gallio.Icarus.Helpers;
 using Gallio.Icarus.Models;
 using Gallio.Model;
 using Gallio.Model.Filters;
-using Gallio.Model.Schema;
 using Gallio.Runner;
 using Gallio.Runner.Events;
 using Gallio.Runner.Extensions;
@@ -37,7 +36,7 @@ using Gallio.UI.ProgressMonitoring;
 
 namespace Gallio.Icarus.Controllers
 {
-    public class TestController : NotifyController, Interfaces.ITestController
+    public class TestController : NotifyController, ITestController
     {
         private readonly ITestTreeModel testTreeModel;
         private readonly IOptionsController optionsController;
@@ -83,11 +82,12 @@ namespace Gallio.Icarus.Controllers
             {
                 return testTreeModel.FilterPassed;
             }
-            // ReSharper disable ValueParameterNotUsed
             set
-            // ReSharper restore ValueParameterNotUsed
             {
-                testTreeModel.SetFilter(TestStatus.Passed);
+                if (value)
+                    testTreeModel.SetFilter(TestStatus.Passed);
+                else
+                    testTreeModel.RemoveFilter(TestStatus.Passed);
             }
         }
 
@@ -97,11 +97,12 @@ namespace Gallio.Icarus.Controllers
             {
                 return testTreeModel.FilterFailed;
             }
-            // ReSharper disable ValueParameterNotUsed
             set
-            // ReSharper restore ValueParameterNotUsed
             {
-                testTreeModel.SetFilter(TestStatus.Failed);
+                if (value)
+                    testTreeModel.SetFilter(TestStatus.Failed);
+                else
+                    testTreeModel.RemoveFilter(TestStatus.Failed);
             }
         }
 
@@ -111,11 +112,12 @@ namespace Gallio.Icarus.Controllers
             {
                 return testTreeModel.FilterInconclusive;
             }
-            // ReSharper disable ValueParameterNotUsed
             set
-            // ReSharper restore ValueParameterNotUsed
             {
-                testTreeModel.SetFilter(TestStatus.Inconclusive);
+                if (value)
+                    testTreeModel.SetFilter(TestStatus.Inconclusive);
+                else
+                    testTreeModel.RemoveFilter(TestStatus.Inconclusive);
             }
         }
 
@@ -239,12 +241,12 @@ namespace Gallio.Icarus.Controllers
             }
         }
 
-        public void SetTestPackage(TestPackage testPackage)
+        public void SetTestPackage(TestPackage package)
         {
-            if (testPackage == null)
-                throw new ArgumentNullException("testPackage");
+            if (package == null)
+                throw new ArgumentNullException("package");
 
-            this.testPackage = testPackage.Copy();
+            testPackage = package.Copy();
         }
 
         public void ReadReport(ReadAction<Report> action)

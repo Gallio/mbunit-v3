@@ -216,7 +216,7 @@ namespace Gallio.Icarus.Tests.Controllers
         }
 
         [Test]
-        public void FilterFailed_Set_Test()
+        public void FilterFailed_Set_true_Test()
         {
             var testTreeModel = MockRepository.GenerateStub<ITestTreeModel>();
             var optionsController = MockRepository.GenerateStub<IOptionsController>();
@@ -225,6 +225,18 @@ namespace Gallio.Icarus.Tests.Controllers
             Assert.IsFalse(testController.FilterFailed);
             testController.FilterFailed = true;
             testTreeModel.AssertWasCalled(ttm => ttm.SetFilter(TestStatus.Failed));
+        }
+
+        [Test]
+        public void FilterFailed_Set_false_Test()
+        {
+            var testTreeModel = MockRepository.GenerateStub<ITestTreeModel>();
+            var optionsController = MockRepository.GenerateStub<IOptionsController>();
+            var testController = new TestController(testTreeModel, optionsController, new TestTaskManager());
+
+            Assert.IsFalse(testController.FilterFailed);
+            testController.FilterFailed = false;
+            testTreeModel.AssertWasCalled(ttm => ttm.RemoveFilter(TestStatus.Failed));
         }
 
         [Test]
@@ -239,7 +251,7 @@ namespace Gallio.Icarus.Tests.Controllers
         }
 
         [Test]
-        public void FilterInconclusive_Set_Test()
+        public void FilterInconclusive_Set_true_Test()
         {
             var testTreeModel = MockRepository.GenerateStub<ITestTreeModel>();
             var optionsController = MockRepository.GenerateStub<IOptionsController>();
@@ -248,6 +260,18 @@ namespace Gallio.Icarus.Tests.Controllers
             Assert.IsFalse(testController.FilterInconclusive);
             testController.FilterInconclusive = true;
             testTreeModel.AssertWasCalled(ttm => ttm.SetFilter(TestStatus.Inconclusive));
+        }
+
+        [Test]
+        public void FilterInconclusive_Set_false_Test()
+        {
+            var testTreeModel = MockRepository.GenerateStub<ITestTreeModel>();
+            var optionsController = MockRepository.GenerateStub<IOptionsController>();
+            var testController = new TestController(testTreeModel, optionsController, new TestTaskManager());
+
+            Assert.IsFalse(testController.FilterInconclusive);
+            testController.FilterInconclusive = false;
+            testTreeModel.AssertWasCalled(ttm => ttm.RemoveFilter(TestStatus.Inconclusive));
         }
 
         [Test]
@@ -262,7 +286,7 @@ namespace Gallio.Icarus.Tests.Controllers
         }
 
         [Test]
-        public void FilterPassed_Set_Test()
+        public void FilterPassed_Set_true_Test()
         {
             var testTreeModel = MockRepository.GenerateStub<ITestTreeModel>();
             var optionsController = MockRepository.GenerateStub<IOptionsController>();
@@ -271,6 +295,18 @@ namespace Gallio.Icarus.Tests.Controllers
             Assert.IsFalse(testController.FilterPassed);
             testController.FilterPassed = true;
             testTreeModel.AssertWasCalled(ttm => ttm.SetFilter(TestStatus.Passed));
+        }
+
+        [Test]
+        public void FilterPassed_Set_false_Test()
+        {
+            var testTreeModel = MockRepository.GenerateStub<ITestTreeModel>();
+            var optionsController = MockRepository.GenerateStub<IOptionsController>();
+            var testController = new TestController(testTreeModel, optionsController, new TestTaskManager());
+
+            Assert.IsFalse(testController.FilterPassed);
+            testController.FilterPassed = false;
+            testTreeModel.AssertWasCalled(ttm => ttm.RemoveFilter(TestStatus.Passed));
         }        
 
         [Test]

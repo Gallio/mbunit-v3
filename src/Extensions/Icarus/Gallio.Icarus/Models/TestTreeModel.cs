@@ -57,7 +57,7 @@ namespace Gallio.Icarus.Models
         {
             get
             {
-                return filterStatuses.Contains(TestStatus.Skipped);
+                return filterStatuses.Contains(TestStatus.Inconclusive);
             }
         }
 
