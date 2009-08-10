@@ -343,6 +343,7 @@
     <Compile Include="Runtime\Installer\InstallerTraits.cs" />
     <Compile Include="Runtime\Installer\NamespaceDoc.cs" />
     <Compile Include="Runtime\Installer\SetupUtilityCommand.cs" />
+    <Compile Include="Runtime\Loader\GallioLoaderLocator.cs" />
     <Compile Include="Runtime\Loader\NamespaceDoc.cs" />
     <Compile Include="Runtime\Logging\BufferedLogWriter.cs" />
     <Compile Include="Runtime\Logging\MarkupStreamLogger.cs" />

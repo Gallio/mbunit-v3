@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using System.Reflection;
 using Autodesk.AutoCAD.ApplicationServices;
 using Autodesk.AutoCAD.EditorInput;
 using Autodesk.AutoCAD.Runtime;
@@ -51,35 +52,49 @@ namespace Gallio.AutoCAD.Plugin
             if (!GetLinkId(out linkId))
                 return;
 
-            IGallioLoader loader = GallioLoader.Initialize();
-            loader.SetupRuntime(); // note: after this point we can reference Gallio types.
+            string gallioLoaderAssemblyPath;
+            if (!GetGallioLoaderAssemblyPath(out gallioLoaderAssemblyPath))
+                return;
 
-            Shim.Run(ipcPortName, linkId);
+            if (!string.IsNullOrEmpty(gallioLoaderAssemblyPath))
+                Assembly.LoadFrom(gallioLoaderAssemblyPath);
+
+            ShimWithLoader.Run(ipcPortName, linkId);
         }
 
         private static bool GetIpcPortName(out string ipcPortName)
         {
-            PromptResult prompt = ActiveEditor.GetString("IPC port name:");
-            if (prompt.Status != PromptStatus.OK)
-            {
-                ipcPortName = String.Empty;
-                return false;
-            }
-
-            ipcPortName = prompt.StringResult;
-            return true;
+            return Prompt("IPC port name:", out ipcPortName);
         }
 
         private static bool GetLinkId(out Guid linkId)
         {
-            PromptResult prompt = ActiveEditor.GetString("Link Id:");
-            if (prompt.Status != PromptStatus.OK)
+            string result;
+            if (! Prompt("Link Id:", out result))
             {
                 linkId = Guid.Empty;
                 return false;
             }
 
-            linkId = new Guid(prompt.StringResult);
+            linkId = new Guid(result);
+            return true;
+        }
+
+        private static bool GetGallioLoaderAssemblyPath(out string gallioLoaderAssemblyPath)
+        {
+            return Prompt("Gallio.Loader Assembly Path:", out gallioLoaderAssemblyPath);
+        }
+
+        private static bool Prompt(string promptMessage, out string result)
+        {
+            PromptResult prompt = ActiveEditor.GetString(promptMessage);
+            if (prompt.Status != PromptStatus.OK)
+            {
+                result = String.Empty;
+                return false;
+            }
+
+            result = prompt.StringResult;
             return true;
         }
 
@@ -89,13 +104,27 @@ namespace Gallio.AutoCAD.Plugin
         }
 
         /// <summary>
-        /// Within this class we can access Gallio types because the loader has been initialized.
+        /// Within this class we can access Gallio.Loader types because the loader has been loaded.
         /// </summary>
-        private static class Shim
+        private static class ShimWithLoader
         {
             public static void Run(string ipcPortName, Guid linkId)
             {
-                using (TestIsolationClient client = new TestIsolationClient(ipcPortName, linkId))
+                IGallioLoader loader = GallioLoader.Initialize();
+                loader.SetupRuntime(); // note: after this point we can reference Gallio types.
+
+                ShimWithRuntime.Run(ipcPortName, linkId);
+            }
+        }
+
+        /// <summary>
+        /// Within this class we can access Gallio types because the runtime has been initialized.
+        /// </summary>
+        private static class ShimWithRuntime
+        {
+            public static void Run(string ipcPortName, Guid linkId)
+            {
+                using (var client = new TestIsolationClient(ipcPortName, linkId))
                 {
                     client.Run();
                 }
