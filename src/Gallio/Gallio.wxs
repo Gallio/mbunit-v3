@@ -136,7 +136,7 @@
                 </Component>
 		
                 <Component Id="Gallio.Loader.NonGAC" Guid="{335A459C-AF25-4e9a-A0A7-745C06B00911}" Win64="no">
-                    <File Id="Gallio.Loader.dll.NonGAC" Name="Gallio.Loader.dll" KeyPath="yes" Assembly=".net" AssemblyApplication="Gallio.Loader.dll" />
+                    <File Id="Gallio.Loader.dll.NonGAC" Name="Gallio.Loader.dll" KeyPath="yes" Assembly=".net" AssemblyApplication="Gallio.Loader.dll.NonGAC" />
                     <File Id="Gallio.Loader.xml.NonGAC" Name="Gallio.Loader.xml" />
                     <File Id="Gallio.Loader.pdb.NonGAC" Name="Gallio.Loader.pdb" />
                     <File Id="Gallio.Loader.plugin.NonGAC" Name="Gallio.Loader.plugin" />
