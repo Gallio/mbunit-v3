@@ -50,7 +50,7 @@ namespace MbUnit.Framework
     /// a number of dynamic tests.
     /// <code><![CDATA[
     /// [DynamicTestFactory]
-    /// public IEnumerable&lt;Test&gt; CreateDynamicTests()
+    /// public IEnumerable<Test> CreateDynamicTests()
     /// {
     ///     foreach (string searchTerm in File.ReadAllLines("SearchTerms.txt"))
     ///     {
@@ -69,7 +69,7 @@ namespace MbUnit.Framework
     /// [DynamicTestFactory]
     /// [Row("Google")]
     /// [Row("Yahoo")]
-    /// public IEnumerable&lt;Test&gt; CreateDynamicTests(string searchProvider)
+    /// public IEnumerable<Test> CreateDynamicTests(string searchProvider)
     /// {
     ///     foreach (string searchTerm in File.ReadAllLines("SearchTerms.txt"))
     ///     {
