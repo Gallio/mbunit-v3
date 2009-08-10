@@ -19,11 +19,6 @@
     <file path="Gallio.pdb" />
     <file path="Gallio.xml" />
     <file path="Gallio.XmlSerializers.dll" />
-    <!-- These assemblies are installed in the GAC.
-    <file path="Gallio.Loader.dll" />
-    <file path="Gallio.Loader.pdb" />
-    <file path="Gallio.Loader.xml" />
-    -->
     <file path="Gallio.Host.exe" />
     <file path="Gallio.Host.exe.config" />
     <file path="Gallio.Host.x86.exe" />

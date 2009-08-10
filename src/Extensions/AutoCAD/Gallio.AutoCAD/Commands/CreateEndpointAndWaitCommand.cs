@@ -47,6 +47,7 @@ namespace Gallio.AutoCAD.Commands
             {
                 yield return IpcPortName;
                 yield return LinkId.ToString();
+                yield return GallioLoaderAssemblyPath;
             }
         }
 
@@ -63,6 +64,16 @@ namespace Gallio.AutoCAD.Commands
         /// Gets or sets the unique id of the client/server pair.
         /// </summary>
         public Guid LinkId
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// Gets or sets the path of the Gallio.Loader.dll assembly or null if it is
+        /// to be loaded from the GAC.
+        /// </summary>
+        public string GallioLoaderAssemblyPath
         {
             get;
             set;

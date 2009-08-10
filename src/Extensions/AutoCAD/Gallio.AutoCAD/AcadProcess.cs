@@ -83,7 +83,7 @@ namespace Gallio.AutoCAD
         }
 
         /// <inheritdoc />
-        public void Start(string ipcPortName, Guid linkId)
+        public void Start(string ipcPortName, Guid linkId, string gallioLoaderAssemblyPath)
         {
             if (ipcPortName == null)
                 throw new ArgumentNullException("ipcPortName");
@@ -120,6 +120,7 @@ namespace Gallio.AutoCAD
             {
                 IpcPortName = ipcPortName,
                 LinkId = linkId,
+                GallioLoaderAssemblyPath = gallioLoaderAssemblyPath,
                 SendAsynchronously = true
             });
         }

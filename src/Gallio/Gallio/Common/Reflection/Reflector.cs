@@ -312,7 +312,7 @@ namespace Gallio.Common.Reflection
         /// <para>
         /// The inlining problem can be circumvented like this:
         /// <code><![CDATA[
-        /// [NonInlined(SecurityAction.Demand)]
+        /// [MethodImpl(MethodImplOptions.NoInlining)]
         /// public void Foo()
         /// {
         ///     IMethodInfo r = NativeReflector.GetExecutingFunction();
@@ -341,7 +341,7 @@ namespace Gallio.Common.Reflection
         /// <para>
         /// The inlining problem can be circumvented like this:
         /// <code><![CDATA[
-        /// [NonInlined(SecurityAction.Demand)]
+        /// [MethodImpl(MethodImplOptions.NoInlining)]
         /// public void Foo()
         /// {
         ///     IMethodInfo r = NativeReflector.GetCallingFunction();

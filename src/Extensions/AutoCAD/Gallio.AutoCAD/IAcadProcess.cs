@@ -27,7 +27,9 @@ namespace Gallio.AutoCAD
         /// </summary>
         /// <param name="ipcPortName">The IPC port name.</param>
         /// <param name="linkId">The unique id of the client/server pair.</param>
+        /// <param name="gallioLoaderAssemblyPath">The path of the Gallio.Loader assembly or null if it is
+        /// to be loaded from the GAC.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="ipcPortName"/> is null.</exception>
-        void Start(string ipcPortName, Guid linkId);
+        void Start(string ipcPortName, Guid linkId, string gallioLoaderAssemblyPath);
     }
 }

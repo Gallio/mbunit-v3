@@ -18,6 +18,7 @@ using Gallio.Common;
 using Gallio.Model.Isolation;
 using Gallio.Runtime.Debugging;
 using Gallio.Runtime.Hosting;
+using Gallio.Runtime.Loader;
 using Gallio.Runtime.Logging;
 
 namespace Gallio.AutoCAD.Isolation
@@ -109,11 +110,12 @@ namespace Gallio.AutoCAD.Isolation
                 {
                     statusReporter("Attaching to AutoCAD.");
 
+                    string gallioLoaderAssemblyPath = GallioLoaderLocator.GetGallioLoaderAssemblyPath();
                     string ipcPortName = "AcadTestIsolationContext." + Hash64.CreateUniqueHash();
                     Guid uniqueId = Guid.NewGuid();
                     server = new TestIsolationServer(ipcPortName, uniqueId);
                     process = processFactory.CreateProcess(debuggerSetup);
-                    process.Start(ipcPortName, uniqueId);
+                    process.Start(ipcPortName, uniqueId, gallioLoaderAssemblyPath);
                     return server;
                 }
                 catch

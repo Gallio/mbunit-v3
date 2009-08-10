@@ -23,8 +23,6 @@
       <Folder>AutoCAD</Folder>
     </Binary>
 
-    <File Include="libs\objectarx_license.doc" />
-
     <TestAssembly Include="Gallio.AutoCAD.Tests\bin\Gallio.AutoCAD.Tests.dll" />
 
     <Feature Include="FEATURE_AUTOCAD" />

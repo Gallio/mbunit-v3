@@ -19,7 +19,7 @@ an assembly that cannot be resolved.
 The loader assembly should only use late-binding to access types in Gallio assemblies.
 
 To ensure version independence, primary Gallio assemblies should not refer to
-types in the GallioLoader.
+types in the Gallio.Loader assembly.
 
 The loader is intended to be resolved either from the GAC or copy-local alongside
 the application.
