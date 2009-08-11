@@ -121,25 +121,30 @@ namespace Gallio.NUnitAdapter.Model
             if (nunitTest.Categories != null)
             {
                 foreach (string category in nunitTest.Categories)
-                    test.Metadata.Add(MetadataKeys.Category, category);
+                    if (! string.IsNullOrEmpty(category))
+                        test.Metadata.Add(MetadataKeys.Category, category);
             }
 
             if (nunitTest.Properties != null)
             {
                 foreach (DictionaryEntry entry in nunitTest.Properties)
                 {
-                    string keyString = entry.Key != null ? entry.Key.ToString() : "";
-                    if (!keyString.StartsWith("_"))
+                    if (entry.Key != null && entry.Value != null)
                     {
-                        ICollection values = entry.Value as ICollection;
-                        if (values != null)
+                        string keyString = entry.Key.ToString();
+                        if (!keyString.StartsWith("_") && keyString.Length != 0)
                         {
-                            foreach (object value in values)
-                                test.Metadata.Add(keyString, value != null ? value.ToString() : "");
-                        }
-                        else
-                        {
-                            test.Metadata.Add(keyString, entry.Value != null ? entry.Value.ToString() : "");
+                            ICollection values = entry.Value as ICollection;
+                            if (values != null)
+                            {
+                                foreach (object value in values)
+                                    if (value != null)
+                                        test.Metadata.Add(keyString, value.ToString());
+                            }
+                            else
+                            {
+                                test.Metadata.Add(keyString, entry.Value.ToString());
+                            }
                         }
                     }
                 }
