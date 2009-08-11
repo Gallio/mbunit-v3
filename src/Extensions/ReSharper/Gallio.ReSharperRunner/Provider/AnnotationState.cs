@@ -67,7 +67,7 @@ namespace Gallio.ReSharperRunner.Provider
 
         public IDeclaredElement GetDeclaredElement()
         {
-            return declaredElementResolver.ResolveDeclaredElement();
+            return declaredElementResolver != null ? declaredElementResolver.ResolveDeclaredElement() : null;
         }
     }
 }
