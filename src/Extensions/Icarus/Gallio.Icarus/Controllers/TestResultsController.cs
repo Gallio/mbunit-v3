@@ -18,7 +18,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
-using System.IO;
 using System.Windows.Forms;
 using Aga.Controls.Tree;
 using Gallio.Icarus.Controllers.Interfaces;
@@ -156,6 +155,7 @@ namespace Gallio.Icarus.Controllers
             taskManager.BackgroundTask(() =>
             {
                 int count = 0;
+                ResultsCount = count;
 
                 if (testController.Model.Root != null)
                 {

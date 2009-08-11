@@ -400,13 +400,22 @@ namespace Gallio.Icarus.Tests.Controllers
             var taskManager = new TestTaskManager();
             var testResultsController = new TestResultsController(testController, optionsController, taskManager);
             var resultsCountFlag = false;
+            var firstTime = true;
             testResultsController.PropertyChanged += (sender, e) =>
             {
                 if (e.PropertyName != "ResultsCount")
                     return;
 
-                Assert.AreEqual(3, testResultsController.ResultsCount);
-                resultsCountFlag = true;
+                if (firstTime)
+                {
+                    Assert.AreEqual(0, testResultsController.ResultsCount);
+                    firstTime = false;
+                }
+                else
+                {
+                    Assert.AreEqual(3, testResultsController.ResultsCount);
+                    resultsCountFlag = true;
+                }
             };
 
             testController.Raise(tc => tc.TestStepFinished += null, testController, 
@@ -517,13 +526,22 @@ namespace Gallio.Icarus.Tests.Controllers
             var taskManager = new TestTaskManager();
             var testResultsController = new TestResultsController(testController, optionsController, taskManager);
             var resultsCountFlag = false;
+            var firstTime = true;
             testResultsController.PropertyChanged += (sender, e) =>
             {
                 if (e.PropertyName != "ResultsCount")
                     return;
 
-                Assert.AreEqual(1, testResultsController.ResultsCount);
-                resultsCountFlag = true;
+                if (firstTime)
+                {
+                    Assert.AreEqual(0, testResultsController.ResultsCount);
+                    firstTime = false;
+                }
+                else
+                {
+                    Assert.AreEqual(1, testResultsController.ResultsCount);
+                    resultsCountFlag = true;
+                }
             };
 
             testController.Raise(tc => tc.PropertyChanged += null, testController, new PropertyChangedEventArgs("SelectedTests"));
