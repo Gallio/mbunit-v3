@@ -146,6 +146,7 @@
     <Compile Include="Framework\Data\Generation\RandomRegexLiteStringsGeneratorTest.cs" />
     <Compile Include="Framework\Data\Generation\SequentialNumbersGeneratorTest.cs" />
     <Compile Include="Framework\Data\Generation\RandomNumbersGeneratorTest.cs" />
+    <Compile Include="Framework\Pattern\PatternTestExecutorIntegrationTest.cs" />
     <Compile Include="Framework\Pattern\FixtureMemberInvokerTest.cs" />
     <Compile Include="Framework\Pattern\PatternTestFrameworkExtensionInfoTest.cs" />
     <Compile Include="Framework\Pattern\PatternTestFrameworkStackDepthTest.cs" />

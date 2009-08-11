@@ -9,6 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Gallio.XunitAdapter.TestResources</RootNamespace>
     <AssemblyName>Gallio.XunitAdapter.TestResources</AssemblyName>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -47,6 +48,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ConsoleAndDebugTraceSample.cs" />
     <Compile Include="UseFixtureSample.cs" />
     <Compile Include="Metadata\MetadataSample.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

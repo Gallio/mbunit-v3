@@ -9,11 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Gallio.XunitAdapter.TestResources</RootNamespace>
     <AssemblyName>Gallio.XunitAdapter.TestResources</AssemblyName>
-    <FileUpgradeFlags>
-    </FileUpgradeFlags>
-    <OldToolsVersion>3.5</OldToolsVersion>
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
-    <UpgradeBackupLocation />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -52,6 +48,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ConsoleAndDebugTraceSample.cs" />
     <Compile Include="UseFixtureSample.cs" />
     <Compile Include="Metadata\MetadataSample.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

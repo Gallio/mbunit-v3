@@ -74,7 +74,7 @@ namespace Gallio.CSUnitAdapter.Model
             }            
         }
 
-        public class RunnerMonitor : LongLivedMarshalByRefObject, ITestListener, ITestSpec, IDisposable
+        public class RunnerMonitor : LongLivedMarshalByRefObject, ITestListener, IDisposable
         {
             private readonly IProgressMonitor progressMonitor;
             private readonly TestStep topTestStep;
@@ -137,6 +137,11 @@ namespace Gallio.CSUnitAdapter.Model
             }
 
             #endregion
+
+            public bool IncludesTest(string testName)
+            {
+                return testCommandsByName.ContainsKey(testName);
+            }
 
             public void Canceled(object sender, EventArgs e)
             {
@@ -204,13 +209,9 @@ namespace Gallio.CSUnitAdapter.Model
                 var hostFactory = (IHostFactory)RuntimeAccessor.ServiceLocator.ResolveByComponentId(IsolatedAppDomainHostFactory.ComponentId);
                 using (IHost host = hostFactory.CreateHost(hostSetup, RuntimeAccessor.Logger))
                 {
+                    HostAssemblyResolverHook.InstallCallback(host);
+
                     Type loaderType = typeof(RemoteLoader);
-                    if (!loaderType.Assembly.GlobalAssemblyCache)
-                    {
-                        string loaderPath = Path.GetDirectoryName(
-                                AssemblyUtils.GetFriendlyAssemblyLocation(loaderType.Assembly));
-                        HostAssemblyResolverHook.Bootstrap(host, loaderPath);
-                    }
 
                     using (RemoteLoader loader = (RemoteLoader) host.GetHostService().CreateInstance(
                         loaderType.Assembly.FullName,
@@ -224,7 +225,8 @@ namespace Gallio.CSUnitAdapter.Model
 
                         // Run the tests of that assembly
                         TextWriter consoleOutputWriter = new ContextualLogTextWriter(MarkupStreamNames.ConsoleOutput);
-                        loader.RunTests(this, consoleOutputWriter);
+                        var spec = new CallbackTestSpec(this);
+                        loader.RunTests(spec, consoleOutputWriter);
                     }
                 }
 
@@ -264,7 +266,7 @@ namespace Gallio.CSUnitAdapter.Model
                 if (!testCommandsByName.TryGetValue(testName, out testCommand))
                     return;
 
-                if (testContextStack.Count <= 0)
+                if (testContextStack.Count == 0)
                     return;
 
                 ITestContext testContext = testContextStack.Pop();
@@ -361,56 +363,6 @@ namespace Gallio.CSUnitAdapter.Model
 
             #endregion
 
-            #region ITestSpec Members
-
-            bool ITestSpec.Includes(ITestFixture testFixture)
-            {
-                return testCommandsByName.ContainsKey(testFixture.FullName);
-            }
-
-            bool ITestSpec.Includes(ITestMethod testMethod)
-            {
-                return testCommandsByName.ContainsKey(testMethod.FullName);
-            }
-
-            void ITestSpec.Clear()
-            {
-                throw new NotSupportedException();
-            }
-
-            bool ITestSpec.Empty
-            {
-                get { throw new NotSupportedException(); }
-            }
-
-            bool ITestSpec.IsAssemblyConfigured(string assemblyName)
-            {
-                throw new NotSupportedException();
-            }
-
-            bool ITestSpec.IsFixtureConfigured(string assemblyName, string fixtureFullName)
-            {
-                throw new NotSupportedException();
-            }
-
-            bool ITestSpec.IsTestConfigured(string assemblyName, string fixtureFullName, string methodName)
-            {
-                throw new NotSupportedException();
-            }
-
-            csUnit.Set<ISelector> ITestSpec.Selectors
-            {
-                get { throw new NotSupportedException(); }
-                set { throw new NotSupportedException(); }
-            }
-
-            TestRunKind ITestSpec.TestRunKind
-            {
-                get { throw new NotSupportedException(); }
-            }
-
-            #endregion
-
             private delegate void TestContextCallback(ITestContext context);
 
             private void TestFinished(TestOutcome outcome, string fixtureName, string testName, int assertCount, ulong durationNanosec, string reason, TestContextCallback callback)
@@ -472,7 +424,7 @@ namespace Gallio.CSUnitAdapter.Model
                 ITestContext parentContext = testContextStack.Peek();
                 if (parentContext.TestStep.Test != fixtureCommand.Test)
                 {
-                    while (((Test)parentContext.TestStep.Test).Kind != "Assembly")
+                    while (parentContext.TestStep.Test.Kind != CSUnitTestExplorer.AssemblyKind)
                     {
                         testContextStack.Pop();
 
@@ -530,6 +482,63 @@ namespace Gallio.CSUnitAdapter.Model
                     outcome = TestOutcome.Passed;
 
                 return outcome;
+            }
+        }
+
+        [Serializable]
+        private sealed class CallbackTestSpec : ITestSpec
+        {
+            private readonly RunnerMonitor runnerMonitor;
+
+            public CallbackTestSpec(RunnerMonitor runnerMonitor)
+            {
+                this.runnerMonitor = runnerMonitor;
+            }
+
+            bool ITestSpec.Includes(ITestFixture testFixture)
+            {
+                return runnerMonitor.IncludesTest(testFixture.FullName);
+            }
+
+            bool ITestSpec.Includes(ITestMethod testMethod)
+            {
+                return runnerMonitor.IncludesTest(testMethod.FullName);
+            }
+
+            void ITestSpec.Clear()
+            {
+                throw new NotSupportedException();
+            }
+
+            bool ITestSpec.Empty
+            {
+                get { throw new NotSupportedException(); }
+            }
+
+            bool ITestSpec.IsAssemblyConfigured(string assemblyName)
+            {
+                throw new NotSupportedException();
+            }
+
+            bool ITestSpec.IsFixtureConfigured(string assemblyName, string fixtureFullName)
+            {
+                throw new NotSupportedException();
+            }
+
+            bool ITestSpec.IsTestConfigured(string assemblyName, string fixtureFullName, string methodName)
+            {
+                throw new NotSupportedException();
+            }
+
+            csUnit.Set<ISelector> ITestSpec.Selectors
+            {
+                get { throw new NotSupportedException(); }
+                set { throw new NotSupportedException(); }
+            }
+
+            TestRunKind ITestSpec.TestRunKind
+            {
+                get { throw new NotSupportedException(); }
             }
         }
     }

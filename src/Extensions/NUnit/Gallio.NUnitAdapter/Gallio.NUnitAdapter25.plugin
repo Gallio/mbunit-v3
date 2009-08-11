@@ -37,42 +37,26 @@
       </bindingRedirects>
     </assembly>
 
-    <assembly fullName="nunit.core, Version=2.5.0.9122, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77"
+    <assembly fullName="nunit.core, Version=2.5.2.9222, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77"
               codeBase="nunit.core.dll">
       <bindingRedirects>
-        <bindingRedirect oldVersion="2.5.0.0-2.5.0.65535" />
+        <bindingRedirect oldVersion="2.5.0.0-2.5.2.65535" />
       </bindingRedirects>
     </assembly>
 
-    <assembly fullName="nunit.core.interfaces, Version=2.5.0.9122, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77"
+    <assembly fullName="nunit.core.interfaces, Version=2.5.2.9222, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77"
               codeBase="nunit.core.interfaces.dll">
       <bindingRedirects>
-        <bindingRedirect oldVersion="2.5.0.0-2.5.0.65535" />
+        <bindingRedirect oldVersion="2.5.0.0-2.5.2.65535" />
       </bindingRedirects>
     </assembly>
 
-    <assembly fullName="nunit.util, Version=2.5.0.9122, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77"
+    <assembly fullName="nunit.util, Version=2.5.2.9222, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77"
               codeBase="nunit.util.dll">
       <bindingRedirects>
-        <bindingRedirect oldVersion="2.5.0.0-2.5.0.65535" />
+        <bindingRedirect oldVersion="2.5.0.0-2.5.2.65535" />
       </bindingRedirects>
     </assembly>
-
-    <!--
-    <assembly fullName="nunit.framework, Version=2.5.0.9122, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77"
-              codeBase="nunit.framework.dll">
-      <bindingRedirects>
-        <bindingRedirect oldVersion="2.5.0.0-2.5.0.65535" />
-      </bindingRedirects>
-    </assembly>
-
-    <assembly fullName="nunit.mocks, Version=2.5.0.9122, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77"
-              codeBase="nunit.mocks.dll">
-      <bindingRedirects>
-        <bindingRedirect oldVersion="2.5.0.0-2.5.0.65535" />
-      </bindingRedirects>
-    </assembly>
-    -->
   </assemblies>
 
   <probingPaths>
@@ -85,8 +69,8 @@
                componentType="Gallio.NUnitAdapter.Model.NUnitTestFramework, Gallio.NUnitAdapter25">
       <traits>
         <name>NUnit v2.5</name>
-        <frameworkAssemblies>nunit.framework, Version=2.5.0.0-2.5.0.65535</frameworkAssemblies>
-        <version>2.5.0.9122</version>
+        <frameworkAssemblies>nunit.framework, Version=2.5.0.0-2.5.2.65535</frameworkAssemblies>
+        <version>2.5.2.9222</version>
         <fileTypes>Assembly</fileTypes>
         <icon>plugin://Gallio.NUnitAdapter25/Resources/NUnit.ico</icon>
       </traits>

@@ -242,8 +242,11 @@ namespace Gallio.Framework.Pattern
                                         {
                                             try
                                             {
+                                                bool atLeastOneItem = false;
                                                 foreach (IDataItem bindingItem in testState.BindingContext.GetItems(!executor.options.SkipDynamicTests))
                                                 {
+                                                    atLeastOneItem = true;
+
                                                     if (executor.progressMonitor.IsCanceled)
                                                     {
                                                         outcome = TestOutcome.Canceled;
@@ -347,6 +350,12 @@ namespace Gallio.Framework.Pattern
                                                     // If we are reporting a single result (reuse = true) then provide full details, otherwise
                                                     // just keep the general status.
                                                     outcome = outcome.CombineWith(reusePrimaryTestStep ? instanceOutcome : instanceOutcome.Generalize());
+                                                }
+
+                                                if (!atLeastOneItem && outcome == TestOutcome.Passed)
+                                                {
+                                                    TestLog.Warnings.WriteLine("Test skipped because it is parameterized but no data was provided.");
+                                                    outcome = TestOutcome.Skipped;
                                                 }
                                             }
                                             catch (Exception ex)
