@@ -149,7 +149,7 @@ namespace Gallio.TDNetRunner.Core
 
         private void InstallRegistryKeysForIcarus(string icarusPath, IProgressMonitor progressMonitor, RegistryKey hiveKey, string rootKeyPath)
         {
-            string subKeyName = string.Concat(rootKeyPath, @"\", RunnerRegKeyPrefix, " - Icarus");
+            string subKeyName = string.Concat(rootKeyPath, @"\", RunnerRegKeyPrefix + "_Icarus"); // Note: 'Gallio_Icarus' is hardcoded in TDNet's config file.
             string message = "Adding TestDriven.Net runner registry key for Icarus.";
 
             logger.Log(LogSeverity.Info, message);
