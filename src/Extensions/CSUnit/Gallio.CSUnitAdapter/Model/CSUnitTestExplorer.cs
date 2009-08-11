@@ -30,7 +30,7 @@ namespace Gallio.CSUnitAdapter.Model
 {
     internal class CSUnitTestExplorer : TestExplorer
     {
-        internal const string AssemblyKind = TestKinds.Assembly;
+        internal const string AssemblyKind = "csUnit Assembly";
         private const string CSUnitAssemblyDisplayName = @"csUnit";
 
         private readonly Dictionary<IAssemblyInfo, Test> assemblyTests;

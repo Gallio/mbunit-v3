@@ -261,6 +261,9 @@ namespace Gallio.XunitAdapter.Model
         {
             TimeSpan? testTime = useXunitTime ? (TimeSpan?)TimeSpan.FromSeconds(result.ExecutionTime) : null;
 
+            if (!string.IsNullOrEmpty(result.Output))
+                testContext.LogWriter.ConsoleOutput.Write(result.Output);
+
             if (result is XunitPassedResult)
             {
                 testContext.FinishStep(TestOutcome.Passed, testTime);

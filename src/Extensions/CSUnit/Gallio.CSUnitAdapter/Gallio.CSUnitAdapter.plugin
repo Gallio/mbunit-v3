@@ -6,6 +6,7 @@
     <name>csUnit Adapter Plugin</name>
     <version>0.0.0.0</version>
     <description>Provides support for running csUnit tests.</description>
+    <icon>plugin://Gallio.CSUnitAdapter/Resources/csUnit.ico</icon>
   </traits>
 
   <dependencies>
@@ -18,7 +19,7 @@
     <file path="csUnit.dll" />
     <file path="csUnit.Common.dll" />
     <file path="csUnit.Interfaces.dll" />
-    <file path="csUnitCore.dll" />
+    <file path="csUnit.Core.dll" />
     <file path="license.txt" />
     <file path="Readme.txt" />
   </files>
@@ -32,31 +33,31 @@
       </bindingRedirects>
     </assembly>
 
-    <assembly fullName="csUnit, Version=2.5.3081.40666, Culture=neutral, PublicKeyToken=6871f04765cca910"
+    <assembly fullName="csUnit, Version=2.6.3374.34355, Culture=neutral, PublicKeyToken=6871f04765cca910"
               codeBase="csUnit.dll">
       <bindingRedirects>
-        <bindingRedirect oldVersion="2.5.0.0-2.5.65535.65535" />
+        <bindingRedirect oldVersion="2.6.0.0-2.6.65535.65535" />
       </bindingRedirects>
     </assembly>
 
-    <assembly fullName="csUnit.Common, Version=2.5.3081.40665, Culture=neutral, PublicKeyToken=6871f04765cca910"
+    <assembly fullName="csUnit.Common, Version=2.6.3374.34355, Culture=neutral, PublicKeyToken=6871f04765cca910"
               codeBase="csUnit.Common.dll">
       <bindingRedirects>
-        <bindingRedirect oldVersion="2.5.0.0-2.5.65535.65535" />
+        <bindingRedirect oldVersion="2.6.0.0-2.6.65535.65535" />
       </bindingRedirects>
     </assembly>
 
-    <assembly fullName="csUnit.Interfaces, Version=2.5.3081.40666, Culture=neutral, PublicKeyToken=6871f04765cca910"
+    <assembly fullName="csUnit.Interfaces, Version=2.6.3374.34355, Culture=neutral, PublicKeyToken=6871f04765cca910"
               codeBase="csUnit.Interfaces.dll">
       <bindingRedirects>
-        <bindingRedirect oldVersion="2.5.0.0-2.5.65535.65535" />
+        <bindingRedirect oldVersion="2.6.0.0-2.6.65535.65535" />
       </bindingRedirects>
     </assembly>
 
-    <assembly fullName="csUnitCore, Version=2.5.3081.40666, Culture=neutral, PublicKeyToken=6871f04765cca910"
-              codeBase="csUnitCore.dll">
+    <assembly fullName="csUnit.Core, Version=2.6.3374.34355, Culture=neutral, PublicKeyToken=6871f04765cca910"
+              codeBase="csUnit.Core.dll">
       <bindingRedirects>
-        <bindingRedirect oldVersion="2.5.0.0-2.5.65535.65535" />
+        <bindingRedirect oldVersion="2.6.0.0-2.6.65535.65535" />
       </bindingRedirects>
     </assembly>
   </assemblies>
@@ -68,8 +69,18 @@
       <traits>
         <name>csUnit</name>
         <frameworkAssemblies>csUnit</frameworkAssemblies>
-        <version>2.5.3081.40666</version>
+        <version>2.6.3374.34355</version>
         <fileTypes>Assembly</fileTypes>
+        <icon>plugin://Gallio.CSUnitAdapter/Resources/csUnit.ico</icon>
+      </traits>
+    </component>
+
+    <component componentId="CSUnitAdapter.TestKinds.csUnitTestAssembly"
+               serviceId="Gallio.TestKind">
+      <traits>
+        <name>csUnit Assembly</name>
+        <description>csUnit Test Assembly</description>
+        <icon>plugin://Gallio.CSUnitAdapter/Resources/csUnit.ico</icon>
       </traits>
     </component>
   </components>

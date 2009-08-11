@@ -48,9 +48,9 @@
       <HintPath>..\libs\csUnit.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="csUnitCore">
+    <Reference Include="csUnit.Core">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\libs\csUnitCore.dll</HintPath>
+      <HintPath>..\libs\csUnit.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="csUnit.Interfaces">
@@ -76,6 +76,7 @@
   <ItemGroup>
     <Content Include="Gallio.CSUnitAdapter.plugin">
     </Content>
+    <Content Include="Resources\csUnit.ico" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">

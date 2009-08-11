@@ -64,22 +64,6 @@
         <bindingRedirect oldVersion="2.4.8.0-2.4.8.65535" />
       </bindingRedirects>
     </assembly>
-
-    <!--
-    <assembly fullName="nunit.framework, Version=2.4.8.0, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77"
-              codeBase="nunit.framework.dll">
-      <bindingRedirects>
-        <bindingRedirect oldVersion="2.4.8.0-2.4.8.65535" />
-      </bindingRedirects>
-    </assembly>
-
-    <assembly fullName="nunit.framework.extensions, Version=2.4.8.0, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77"
-              codeBase="nunit.framework.extensions.dll">
-      <bindingRedirects>
-        <bindingRedirect oldVersion="2.4.8.0-2.4.8.65535" />
-      </bindingRedirects>
-    </assembly>
-    -->
   </assemblies>
 
   <probingPaths>

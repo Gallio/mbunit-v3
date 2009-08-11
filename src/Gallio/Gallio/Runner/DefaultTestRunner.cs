@@ -578,17 +578,19 @@ namespace Gallio.Runner
                 TestStepRun testStepRun = new TestStepRun(step);
                 testStepRun.StartTime = DateTime.Now;
 
+                TestStepState parentState;
                 if (step.ParentId != null)
                 {
-                    TestStepState parentState = GetTestStepState(step.ParentId);
+                    parentState = GetTestStepState(step.ParentId);
                     parentState.TestStepRun.Children.Add(testStepRun);
                 }
                 else
                 {
+                    parentState = null;
                     report.TestPackageRun.RootTestStepRun = testStepRun;
                 }
 
-                TestStepState state = new TestStepState(testData, testStepRun);
+                TestStepState state = new TestStepState(parentState, testData, testStepRun);
                 states.Add(step.Id, state);
 
                 eventDispatcher.NotifyTestStepStarted(
@@ -600,12 +602,54 @@ namespace Gallio.Runner
                 TestStepState state = GetTestStepState(stepId);
                 state.TestStepRun.EndTime = DateTime.Now;
                 state.TestStepRun.Result = result;
+
+                PromoteToTestCaseIfStepAppearsToHaveBlockedChildrenFromRunning(state);
+
                 report.TestPackageRun.Statistics.MergeStepStatistics(state.TestStepRun);
 
                 state.LogWriter.Close();
 
                 eventDispatcher.NotifyTestStepFinished(
                     new TestStepFinishedEventArgs(report, state.TestData, state.TestStepRun));
+            }
+
+            /// <summary>
+            /// In some situations, we may receive a report that a test step representing an
+            /// inner node of the test tree failed and therefore prevented other test cases
+            /// from running.  When this happens, we automatically promote the test step to
+            /// behave as if it were a test case and report the failure.
+            /// </summary>
+            /// <remarks>
+            /// This is really a hack to make up for the fact that most of the information
+            /// presented to users is about test cases rather than test suites and other inner
+            /// nodes of the test tree.  Because test cases can be constructed dynamically,
+            /// we have a bit of a problem counting and presenting them when inner nodes fail.
+            /// I hope someday we come up with a better solution to this issue with our test model.
+            /// Perhaps we could introduce a "blocked" status.
+            /// -- Jeff.
+            /// </remarks>
+            private static void PromoteToTestCaseIfStepAppearsToHaveBlockedChildrenFromRunning(TestStepState state)
+            {
+                if (state.TestStepRun.Result.Outcome.Status != TestStatus.Passed
+                    && state.TestStepRun.Children.Count == 0
+                    && ! IsTestCaseAncestorOrSelf(state))
+                {
+                    state.TestStepRun.Step.IsTestCase = true;
+                }
+            }
+
+            private static bool IsTestCaseAncestorOrSelf(TestStepState state)
+            {
+                do
+                {
+                    if (state.TestStepRun.Step.IsTestCase)
+                        return true;
+
+                    state = state.Parent;
+                }
+                while (state != null);
+
+                return false;
             }
 
             private void HandleTestStepLifecyclePhaseChangedMessage(TestStepLifecyclePhaseChangedMessage message)
@@ -776,12 +820,14 @@ namespace Gallio.Runner
 
             private sealed class TestStepState
             {
+                public readonly TestStepState Parent;
                 public readonly TestData TestData;
                 public readonly TestStepRun TestStepRun;
                 public readonly StructuredDocumentWriter LogWriter;
 
-                public TestStepState(TestData testData, TestStepRun testStepRun)
+                public TestStepState(TestStepState parent, TestData testData, TestStepRun testStepRun)
                 {
+                    Parent = parent;
                     TestData = testData;
                     TestStepRun = testStepRun;
 

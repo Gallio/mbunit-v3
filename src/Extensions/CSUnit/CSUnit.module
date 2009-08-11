@@ -23,7 +23,7 @@
     <Binary Include="libs\csUnit.Common.dll">
         <Folder>CSUnit</Folder>
     </Binary>
-    <Binary Include="libs\csUnitCore.dll">
+    <Binary Include="libs\csUnit.Core.dll">
         <Folder>CSUnit</Folder>
     </Binary>
     <Binary Include="libs\csUnit.Interfaces.dll">

@@ -16,7 +16,7 @@
                     <File Name="csUnit.Common.dll" KeyPath="yes" />
                 </Component>
                 <Component Id="csUnit.Core.dll" Guid="128ba730-0468-410b-858e-1fb36c2b4a26" Win64="no">
-                    <File Id="csUnit.Core.dll" Name="csUnitCore.dll" KeyPath="yes" />
+                    <File Id="csUnit.Core.dll" Name="csUnit.Core.dll" KeyPath="yes" />
                 </Component>
                 <Component Id="csUnit.Interfaces.dll" Guid="27b81576-0be2-468e-b043-bb5b16adb788" Win64="no">
                     <File Name="csUnit.Interfaces.dll" KeyPath="yes" />
