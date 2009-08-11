@@ -32,6 +32,10 @@
     <Binary Include="libs\license.txt">
         <Folder>CSUnit</Folder>
     </Binary>
+    
+    <Binary Include="Gallio.CSUnitAdapter\Resources\csUnit.ico">
+        <Folder>CSUnit\Resources</Folder>
+    </Binary>
   </ItemGroup>
 
   <ItemGroup>

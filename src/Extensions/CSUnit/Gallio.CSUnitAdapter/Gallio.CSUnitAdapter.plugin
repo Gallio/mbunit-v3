@@ -22,6 +22,7 @@
     <file path="csUnit.Core.dll" />
     <file path="license.txt" />
     <file path="Readme.txt" />
+    <file path="Resources\csUnit.ico" />
   </files>
   
   <assemblies>
