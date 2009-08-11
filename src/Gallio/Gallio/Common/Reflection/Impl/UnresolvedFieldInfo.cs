@@ -63,7 +63,7 @@ namespace Gallio.Common.Reflection.Impl
         /// <inheritdoc />
         public override RuntimeFieldHandle FieldHandle
         {
-            get { throw new NotSupportedException(); }
+            get { throw new NotSupportedException("Cannot get field handle of unresolved field."); }
         }
 
         /// <inheritdoc />
@@ -87,7 +87,7 @@ namespace Gallio.Common.Reflection.Impl
         /// <inheritdoc />
         public override object GetRawConstantValue()
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException("Cannot get constant value of unresolved field.");
         }
 
         /// <inheritdoc />
@@ -99,28 +99,28 @@ namespace Gallio.Common.Reflection.Impl
         /// <inheritdoc />
         public override object GetValue(object obj)
         {
-            throw new NotSupportedException();
+            throw new NotSupportedException("Cannot get value of unresolved field.");
         }
 
         /// <inheritdoc />
         [CLSCompliant(false)]
         public override object GetValueDirect(TypedReference obj)
         {
-            throw new NotSupportedException();
+            throw new NotSupportedException("Cannot get value of unresolved field.");
         }
 
         /// <inheritdoc />
         public override void SetValue(object obj, object value, BindingFlags invokeAttr, Binder binder,
             CultureInfo culture)
         {
-            throw new NotSupportedException();
+            throw new NotSupportedException("Cannot set value of unresolved field.");
         }
 
         /// <inheritdoc />
         [CLSCompliant(false)]
         public override void SetValueDirect(TypedReference obj, object value)
         {
-            throw new NotSupportedException();
+            throw new NotSupportedException("Cannot set value of unresolved field.");
         }
     }
 }

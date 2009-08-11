@@ -53,7 +53,7 @@ namespace Gallio.Common.Reflection.Impl
             {
                 return methodAttributesMemoizer.Memoize(delegate
                 {
-                    return Policy.GetFunctionAttributes(this);
+                    return ReflectionPolicy.GetFunctionAttributes(this);
                 });
             }
         }
@@ -62,7 +62,7 @@ namespace Gallio.Common.Reflection.Impl
         public CallingConventions CallingConvention
         {
             get { return callingConventionMemoizer.Memoize(
-                () => Policy.GetFunctionCallingConvention(this)); }
+                () => ReflectionPolicy.GetFunctionCallingConvention(this)); }
         }
 
         /// <inheritdoc />
@@ -138,7 +138,7 @@ namespace Gallio.Common.Reflection.Impl
             {
                 return parametersMemoizer.Memoize(delegate
                 {
-                    return Policy.GetFunctionParameters(this); 
+                    return ReflectionPolicy.GetFunctionParameters(this); 
                 });
             }
         }

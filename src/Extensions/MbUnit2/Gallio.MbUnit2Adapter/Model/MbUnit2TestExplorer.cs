@@ -54,10 +54,12 @@ namespace Gallio.MbUnit2Adapter.Model
                 {
                     Assembly loadedAssembly = assembly.Resolve(false);
 
-                    if (loadedAssembly != null)
-                        engine = new MbUnit2NativeTestExplorerEngine(TestModel, loadedAssembly);
-                    else
+                    if (Reflector.IsUnresolved(loadedAssembly))
                         engine = new MbUnit2ReflectiveTestExplorerEngine(TestModel, assembly);
+                    else
+                        engine = new MbUnit2NativeTestExplorerEngine(TestModel, loadedAssembly);
+
+                    assemblyTestExplorerEngines.Add(assembly, engine);
 
                     bool skipChildren = !(codeElement is IAssemblyInfo);
                     engine.ExploreAssembly(skipChildren, unresolvedDependencies);

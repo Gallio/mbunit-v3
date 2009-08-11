@@ -21,7 +21,7 @@ namespace Gallio.Common.Reflection.Impl
 {
     // TODO: We could wrap CustomAttributeData to get the positional and
     //       named parameter information.
-    internal sealed class NativeAttributeWrapper : IAttributeInfo
+    internal sealed class NativeAttributeWrapper : NativeWrapper, IAttributeInfo
     {
         private readonly Attribute attrib;
 
@@ -95,6 +95,5 @@ namespace Gallio.Common.Reflection.Impl
         public object Resolve(bool throwOnError)
         {
             return attrib;
-        }
-    }
+        }    }
 }

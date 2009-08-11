@@ -14,13 +14,8 @@
 // limitations under the License.
 
 using System;
-using Gallio.Common;
 using Gallio.Model;
-using Gallio.Model.Commands;
 using Gallio.Common.Reflection;
-using NUnitTestRunner = NUnit.Core.TestRunner;
-using NUnitTestName = NUnit.Core.TestName;
-using NUnitITest = NUnit.Core.ITest;
 
 namespace Gallio.NUnitAdapter.Model
 {
@@ -29,14 +24,14 @@ namespace Gallio.NUnitAdapter.Model
     /// </summary>
     internal class NUnitAssemblyTest : NUnitTest
     {
-        private readonly NUnitTestRunner runner;
+        private readonly NUnit.Core.TestRunner runner;
 
         /// <summary>
         /// Creates an NUnit assembly-level test.
         /// </summary>
         /// <param name="assembly">The assembly.</param>
         /// <param name="runner">The NUnit test runner.</param>
-        public NUnitAssemblyTest(IAssemblyInfo assembly, NUnitTestRunner runner)
+        public NUnitAssemblyTest(IAssemblyInfo assembly, NUnit.Core.TestRunner runner)
             : base(assembly.Name, assembly, runner.Test)
         {
             Kind = TestKinds.Assembly;
@@ -47,15 +42,15 @@ namespace Gallio.NUnitAdapter.Model
         /// <summary>
         /// Gets the NUnit test runner.
         /// </summary>
-        public NUnitTestRunner Runner
+        public NUnit.Core.TestRunner Runner
         {
             get { return runner; }
         }
 
         /// <inheritdoc />
-        public override void ProcessTestNames(Action<NUnitTestName> action)
+        public override void ProcessTestNames(Action<NUnit.Core.TestName> action)
         {
-            foreach (NUnitITest test in Test.Tests)
+            foreach (NUnit.Core.ITest test in Test.Tests)
                 action(test.TestName);
         }
     }

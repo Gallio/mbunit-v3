@@ -15,6 +15,7 @@
 
 using System;
 using Gallio.Model.Helpers;
+using NUnit.Core;
 using NUnit.Util;
 
 namespace Gallio.NUnitAdapter.Model

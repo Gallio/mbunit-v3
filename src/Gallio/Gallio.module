@@ -117,6 +117,7 @@
   <ItemGroup>
     <GallioMergeDependency Include="Gallio\bin\Mono.Cecil.dll" />
     <GallioMergeDependency Include="Gallio\bin\ICSharpCode.SharpZipLib.dll" />
+    <GallioMergeDependency Include="Gallio\bin\Gallio.ReflectionShim.dll" />
   </ItemGroup>
 
   <Target Name="AfterImage"

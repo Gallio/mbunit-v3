@@ -20,12 +20,6 @@ using Gallio.Model;
 using Gallio.Common.Reflection;
 using Gallio.Model.Helpers;
 using Gallio.Model.Tree;
-using Gallio.NUnitAdapter.Properties;
-using NUnitCoreExtensions = NUnit.Core.CoreExtensions;
-using NUnitTestRunner = NUnit.Core.TestRunner;
-using NUnitTestPackage = NUnit.Core.TestPackage;
-using NUnitRemoteTestRunner = NUnit.Core.RemoteTestRunner;
-using NUnitITest = NUnit.Core.ITest;
 
 namespace Gallio.NUnitAdapter.Model
 {
@@ -62,10 +56,12 @@ namespace Gallio.NUnitAdapter.Model
                 {
                     Assembly loadedAssembly = assembly.Resolve(false);
 
-                    if (loadedAssembly != null)
-                        engine = new NUnitNativeTestExplorerEngine(TestModel, loadedAssembly);
-                    else
+                    if (Reflector.IsUnresolved(loadedAssembly))
                         engine = new NUnitReflectiveTestExplorerEngine(TestModel, assembly);
+                    else
+                        engine = new NUnitNativeTestExplorerEngine(TestModel, loadedAssembly);
+
+                    assemblyTestExplorerEngines.Add(assembly, engine);
 
                     bool skipChildren = !(codeElement is IAssemblyInfo);
                     engine.ExploreAssembly(skipChildren);
@@ -82,6 +78,22 @@ namespace Gallio.NUnitAdapter.Model
                 TestModel.AddAnnotation(new Annotation(AnnotationType.Error, assembly,
                     "An exception was thrown while exploring an NUnit test assembly.", ex));
             }
+        }
+
+        public override void Finish()
+        {
+            try
+            {
+                foreach (NUnitTestExplorerEngine engine in assemblyTestExplorerEngines.Values)
+                    engine.Finish();
+            }
+            catch (Exception ex)
+            {
+                TestModel.AddAnnotation(new Annotation(AnnotationType.Error, null,
+                    "An exception was thrown while finishing the population of the NUnit test model.", ex));
+            }
+
+            base.Finish();
         }
     }
 }

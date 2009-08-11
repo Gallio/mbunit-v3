@@ -21,7 +21,7 @@ namespace Gallio.Common.Reflection
     /// <summary>
     /// Provides information about the contents of a custom attribute.
     /// </summary>
-    public interface IAttributeInfo
+    public interface IAttributeInfo : IMirror
     {
         /// <summary>
         /// Gets the attribute type.

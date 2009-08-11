@@ -71,7 +71,7 @@ namespace Gallio.Common.Reflection.Impl
             {
                 return typeAttriutesMemoizer.Memoize(delegate
                 {
-                    return Policy.GetTypeAttributes(this);
+                    return ReflectionPolicy.GetTypeAttributes(this);
                 });
             }
         }
@@ -83,13 +83,13 @@ namespace Gallio.Common.Reflection.Impl
         }
         private StaticAssemblyWrapper AssemblyInternal
         {
-            get { return assemblyMemoizer.Memoize(() => Policy.GetTypeAssembly(this)); }
+            get { return assemblyMemoizer.Memoize(() => ReflectionPolicy.GetTypeAssembly(this)); }
         }
 
         /// <inheritdoc />
         public override string NamespaceName
         {
-            get { return namespaceNameMemoizer.Memoize(() => Policy.GetTypeNamespace(this)); }
+            get { return namespaceNameMemoizer.Memoize(() => ReflectionPolicy.GetTypeNamespace(this)); }
         }
 
         /// <summary>
@@ -101,7 +101,7 @@ namespace Gallio.Common.Reflection.Impl
             {
                 return baseTypeMemoizer.Memoize(() =>
                 {
-                    StaticDeclaredTypeWrapper baseType = Policy.GetTypeBaseType(this);
+                    StaticDeclaredTypeWrapper baseType = ReflectionPolicy.GetTypeBaseType(this);
                     return baseType != null ? baseType.ComposeSubstitution(substitution) : null;
                 });
             }
@@ -129,7 +129,7 @@ namespace Gallio.Common.Reflection.Impl
 
                     while (queue.Count != 0)
                     {
-                        foreach (StaticDeclaredTypeWrapper @interface in Policy.GetTypeInterfaces(queue.Dequeue()))
+                        foreach (StaticDeclaredTypeWrapper @interface in ReflectionPolicy.GetTypeInterfaces(queue.Dequeue()))
                         {
                             if (!result.Contains(@interface))
                             {
@@ -201,7 +201,7 @@ namespace Gallio.Common.Reflection.Impl
                     if (IsGenericTypeDefinition)
                         return this;
 
-                    return new StaticDeclaredTypeWrapper(Policy, Handle, DeclaringType,
+                    return new StaticDeclaredTypeWrapper(ReflectionPolicy, Handle, DeclaringType,
                         DeclaringType != null ? DeclaringType.Substitution : StaticTypeSubstitution.Empty);
                 });
             }
@@ -213,7 +213,7 @@ namespace Gallio.Common.Reflection.Impl
             if (!IsGenericTypeDefinition)
                 throw new InvalidOperationException("The type is not a generic type definition.");
 
-            return new StaticDeclaredTypeWrapper(Policy, Handle, DeclaringType, Substitution.Extend(GenericParameters, genericArguments));
+            return new StaticDeclaredTypeWrapper(ReflectionPolicy, Handle, DeclaringType, Substitution.Extend(GenericParameters, genericArguments));
         }
         
         /// <inheritdoc />
@@ -221,7 +221,7 @@ namespace Gallio.Common.Reflection.Impl
         {
             List<IConstructorInfo> result = new List<IConstructorInfo>();
 
-            foreach (StaticConstructorWrapper constructor in Policy.GetTypeConstructors(this))
+            foreach (StaticConstructorWrapper constructor in ReflectionPolicy.GetTypeConstructors(this))
             {
                 if (MatchesBindingFlags(bindingFlags, constructor.IsPublic, constructor.IsStatic))
                     result.Add(constructor);
@@ -281,7 +281,7 @@ namespace Gallio.Common.Reflection.Impl
         private IEnumerable<StaticMethodWrapper> EnumerateDeclaredMethods(BindingFlags bindingFlags,
             StaticDeclaredTypeWrapper reflectedType)
         {
-            foreach (StaticMethodWrapper method in Policy.GetTypeMethods(this, reflectedType))
+            foreach (StaticMethodWrapper method in ReflectionPolicy.GetTypeMethods(this, reflectedType))
             {
                 if (MatchesBindingFlags(bindingFlags, method.IsPublic, method.IsStatic))
                     yield return method;
@@ -329,7 +329,7 @@ namespace Gallio.Common.Reflection.Impl
         private IEnumerable<StaticPropertyWrapper> EnumerateProperties(BindingFlags bindingFlags,
             StaticDeclaredTypeWrapper reflectedType)
         {
-            foreach (StaticPropertyWrapper property in Policy.GetTypeProperties(this, reflectedType))
+            foreach (StaticPropertyWrapper property in ReflectionPolicy.GetTypeProperties(this, reflectedType))
             {
                 IMethodInfo getMethod = property.GetMethod;
                 IMethodInfo setMethod = property.SetMethod;
@@ -385,7 +385,7 @@ namespace Gallio.Common.Reflection.Impl
         private IEnumerable<StaticEventWrapper> EnumerateEvents(BindingFlags bindingFlags,
             StaticDeclaredTypeWrapper reflectedType)
         {
-            foreach (StaticEventWrapper @event in Policy.GetTypeEvents(this, reflectedType))
+            foreach (StaticEventWrapper @event in ReflectionPolicy.GetTypeEvents(this, reflectedType))
             {
                 IMethodInfo addMethod = @event.AddMethod;
                 IMethodInfo removeMethod = @event.RemoveMethod;
@@ -452,7 +452,7 @@ namespace Gallio.Common.Reflection.Impl
         private IEnumerable<StaticFieldWrapper> EnumerateFields(BindingFlags bindingFlags,
             StaticDeclaredTypeWrapper reflectedType)
         {
-            foreach (StaticFieldWrapper field in Policy.GetTypeFields(this, reflectedType))
+            foreach (StaticFieldWrapper field in ReflectionPolicy.GetTypeFields(this, reflectedType))
             {
                 if (MatchesBindingFlags(bindingFlags, field.IsPublic, field.IsStatic))
                     yield return field;
@@ -530,7 +530,7 @@ namespace Gallio.Common.Reflection.Impl
             // declaring type the generic type definition.
             StaticDeclaredTypeWrapper unspecializedType = IsGenericType ? GenericTypeDefinition : this;
 
-            foreach (StaticTypeWrapper nestedType in Policy.GetTypeNestedTypes(unspecializedType))
+            foreach (StaticTypeWrapper nestedType in ReflectionPolicy.GetTypeNestedTypes(unspecializedType))
             {
                 if (nestedType.IsNestedPublic)
                 {
@@ -663,7 +663,7 @@ namespace Gallio.Common.Reflection.Impl
         /// <returns>The new wrapper with the composed substitution.</returns>
         public StaticDeclaredTypeWrapper ComposeSubstitution(StaticTypeSubstitution substitution)
         {
-            return new StaticDeclaredTypeWrapper(Policy, Handle, DeclaringType, Substitution.Compose(substitution));
+            return new StaticDeclaredTypeWrapper(ReflectionPolicy, Handle, DeclaringType, Substitution.Compose(substitution));
         }
 
         /// <excludedoc />
@@ -687,7 +687,7 @@ namespace Gallio.Common.Reflection.Impl
             {
                 return genericParametersMemoizer.Memoize(delegate
                 {
-                    return Policy.GetTypeGenericParameters(this);
+                    return ReflectionPolicy.GetTypeGenericParameters(this);
                 });
             }
         }

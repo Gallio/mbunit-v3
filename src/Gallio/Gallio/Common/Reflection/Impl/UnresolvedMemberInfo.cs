@@ -53,13 +53,13 @@ namespace Gallio.Common.Reflection.Impl
         /// <inheritdoc />
         public override int MetadataToken
         {
-            get { throw new NotSupportedException(); }
+            get { throw new NotSupportedException("Cannot get metadata token of unresolved type."); }
         }
 
         /// <inheritdoc />
         public override Module Module
         {
-            get { throw new NotSupportedException(); }
+            get { throw new NotSupportedException("Cannot get module of unresolved type."); }
         }
 
         /// <inheritdoc />
@@ -105,13 +105,13 @@ namespace Gallio.Common.Reflection.Impl
         /// <inheritdoc />
         public override int MetadataToken
         {
-            get { throw new NotSupportedException(); }
+            get { throw new NotSupportedException("Cannot get metadata token of unresolved field."); }
         }
 
         /// <inheritdoc />
         public override Module Module
         {
-            get { throw new NotSupportedException(); }
+            get { throw new NotSupportedException("Cannot get module of unresolved field."); }
         }
 
         /// <inheritdoc />
@@ -157,13 +157,13 @@ namespace Gallio.Common.Reflection.Impl
         /// <inheritdoc />
         public override int MetadataToken
         {
-            get { throw new NotSupportedException(); }
+            get { throw new NotSupportedException("Cannot get metadata token of unresolved property."); }
         }
 
         /// <inheritdoc />
         public override Module Module
         {
-            get { throw new NotSupportedException(); }
+            get { throw new NotSupportedException("Cannot get module of unresolved property."); }
         }
 
         /// <inheritdoc />
@@ -209,13 +209,13 @@ namespace Gallio.Common.Reflection.Impl
         /// <inheritdoc />
         public override int MetadataToken
         {
-            get { throw new NotSupportedException(); }
+            get { throw new NotSupportedException("Cannot get metadata token of unresolved event."); }
         }
 
         /// <inheritdoc />
         public override Module Module
         {
-            get { throw new NotSupportedException(); }
+            get { throw new NotSupportedException("Cannot get module of unresolved event."); }
         }
 
         /// <inheritdoc />
@@ -261,13 +261,13 @@ namespace Gallio.Common.Reflection.Impl
         /// <inheritdoc />
         public override int MetadataToken
         {
-            get { throw new NotSupportedException(); }
+            get { throw new NotSupportedException("Cannot get metadata token of unresolved method."); }
         }
 
         /// <inheritdoc />
         public override Module Module
         {
-            get { throw new NotSupportedException(); }
+            get { throw new NotSupportedException("Cannot get module of unresolved method."); }
         }
 
         /// <inheritdoc />
@@ -313,13 +313,13 @@ namespace Gallio.Common.Reflection.Impl
         /// <inheritdoc />
         public override int MetadataToken
         {
-            get { throw new NotSupportedException(); }
+            get { throw new NotSupportedException("Cannot get metadata token of unresolved constructor."); }
         }
 
         /// <inheritdoc />
         public override Module Module
         {
-            get { throw new NotSupportedException(); }
+            get { throw new NotSupportedException("Cannot get module of unresolved constructor."); }
         }
 
         /// <inheritdoc />

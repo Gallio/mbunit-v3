@@ -62,7 +62,7 @@ namespace Gallio.Common.Reflection.Impl
         /// <inheritdoc />
         public override object DefaultValue
         {
-            get { throw new NotSupportedException(); }
+            get { throw new NotSupportedException("Cannot get default value of unresolved parameter."); }
         }
 
         /// <inheritdoc />
@@ -92,7 +92,7 @@ namespace Gallio.Common.Reflection.Impl
         /// <inheritdoc />
         public override object RawDefaultValue
         {
-            get { throw new NotSupportedException(); }
+            get { throw new NotSupportedException("Cannot get default value of unresolved parameter."); }
         }
 
         /// <inheritdoc />

@@ -70,7 +70,7 @@ namespace Gallio.Common.Reflection.Impl
         /// <inheritdoc />
         public override RuntimeMethodHandle MethodHandle
         {
-            get { throw new NotSupportedException(); }
+            get { throw new NotSupportedException("Cannot get method handle of unresolved constructor."); }
         }
 
         /// <inheritdoc />
@@ -82,7 +82,7 @@ namespace Gallio.Common.Reflection.Impl
         /// <inheritdoc />
         public override MethodBody GetMethodBody()
         {
-            throw new NotSupportedException();
+            throw new NotSupportedException("Cannot get method body of unresolved constructor.");
         }
 
         /// <inheritdoc />
@@ -101,7 +101,7 @@ namespace Gallio.Common.Reflection.Impl
         public override object Invoke(object obj, BindingFlags invokeAttr, Binder binder, object[] parameters,
             CultureInfo culture)
         {
-            throw new NotSupportedException();
+            throw new NotSupportedException("Cannot invoke unresolved constructor.");
         }
     }
 
@@ -140,7 +140,7 @@ namespace Gallio.Common.Reflection.Impl
         /// <inheritdoc />
         public override RuntimeMethodHandle MethodHandle
         {
-            get { throw new NotSupportedException(); }
+            get { throw new NotSupportedException("Cannot get method handle of unresolved method."); }
         }
 
         /// <inheritdoc />
@@ -153,7 +153,7 @@ namespace Gallio.Common.Reflection.Impl
         /// <inheritdoc />
         public override MethodBody GetMethodBody()
         {
-            throw new NotSupportedException();
+            throw new NotSupportedException("Cannot get method body of unresolved method.");
         }
 
         /// <inheritdoc />
@@ -172,7 +172,7 @@ namespace Gallio.Common.Reflection.Impl
         public override object Invoke(object obj, BindingFlags invokeAttr, Binder binder, object[] parameters,
             CultureInfo culture)
         {
-            throw new NotSupportedException();
+            throw new NotSupportedException("Cannot invoke unresolved method.");
         }
     }
 }

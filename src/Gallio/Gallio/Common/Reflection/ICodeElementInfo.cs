@@ -30,7 +30,7 @@ namespace Gallio.Common.Reflection
     /// </para>
     /// </remarks>
     /// <seealso cref="Reflector"/>
-    public interface ICodeElementInfo : IEquatable<ICodeElementInfo>
+    public interface ICodeElementInfo : IMirror, IEquatable<ICodeElementInfo>
     {
         /// <summary>
         /// Gets the name of the code element.

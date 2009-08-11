@@ -62,7 +62,7 @@ namespace Gallio.Common.Reflection.Impl
         /// <inheritdoc />
         public override object Invoke(BindingFlags invokeAttr, Binder binder, object[] parameters, CultureInfo culture)
         {
-            throw new NotSupportedException();
+            throw new NotSupportedException("Cannot invoke unresolved constructor.");
         }
     }
 }

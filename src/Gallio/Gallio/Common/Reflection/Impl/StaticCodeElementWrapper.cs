@@ -86,7 +86,7 @@ namespace Gallio.Common.Reflection.Impl
 
                         if (attributeUsage == null)
                         {
-                            attributeUsage = Policy.GetAttributeUsage(inheritedAttributeType);
+                            attributeUsage = ReflectionPolicy.GetAttributeUsage(inheritedAttributeType);
                             attributeUsages[inheritedAttributeType] = attributeUsage;
                         }
 

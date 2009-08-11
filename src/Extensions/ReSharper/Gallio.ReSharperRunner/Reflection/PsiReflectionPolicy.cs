@@ -282,12 +282,18 @@ namespace Gallio.ReSharperRunner.Reflection
 
 #if RESHARPER_31 || RESHARPER_40 || RESHARPER_41
             foreach (IAttributeInstance attrib in psiManager.GetModuleAttributes(moduleHandle).AttributeInstances)
-                yield return new StaticAttributeWrapper(this, attrib);
+            {
+                if (IsAttributeInstanceValid(attrib))
+                    yield return new StaticAttributeWrapper(this, attrib);
+            }
 #else
             CacheManagerEx cacheManager = CacheManagerEx.GetInstance(psiManager.Solution);
             IPsiModule psiModule = GetPsiModule(moduleHandle);
             foreach (IAttributeInstance attrib in cacheManager.GetModuleAttributes(psiModule).AttributeInstances)
-                yield return new StaticAttributeWrapper(this, attrib);
+            {
+                if (IsAttributeInstanceValid(attrib))
+                    yield return new StaticAttributeWrapper(this, attrib);
+            }
 #endif
         }
 
@@ -1492,7 +1498,10 @@ namespace Gallio.ReSharperRunner.Reflection
                 yield break;
 
             foreach (IAttributeInstance attribute in owner.GetAttributeInstances(false))
-                yield return new StaticAttributeWrapper(this, attribute);
+            {
+                if (IsAttributeInstanceValid(attribute))
+                    yield return new StaticAttributeWrapper(this, attribute);
+            }
         }
 
         private StaticMethodWrapper WrapAccessor(IAccessor accessorHandle, StaticMemberWrapper member)
@@ -1624,5 +1633,10 @@ namespace Gallio.ReSharperRunner.Reflection
         }
 #endif
         #endregion
+
+        private bool IsAttributeInstanceValid(IAttributeInstance attrib)
+        {
+            return attrib.Constructor != null && attrib.AttributeType != null;
+        }
     }
 }

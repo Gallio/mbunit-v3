@@ -54,7 +54,7 @@ namespace Gallio.Common.Reflection.Impl
         {
             get
             {
-                return constructorMemoizer.Memoize(() => Policy.GetAttributeConstructor(this));
+                return constructorMemoizer.Memoize(() => ReflectionPolicy.GetAttributeConstructor(this));
             }
         }
 
@@ -95,7 +95,7 @@ namespace Gallio.Common.Reflection.Impl
         /// <inheritdoc />
         public ConstantValue[] InitializedArgumentValues
         {
-            get { return Policy.GetAttributeConstructorArguments(this); }
+            get { return ReflectionPolicy.GetAttributeConstructorArguments(this); }
         }
 
         /// <inheritdoc />
@@ -123,7 +123,7 @@ namespace Gallio.Common.Reflection.Impl
             get
             {
                 return fieldArgumentsMemoizer.Memoize(() =>
-                    new List<KeyValuePair<StaticFieldWrapper, ConstantValue>>(Policy.GetAttributeFieldArguments(this)));
+                    new List<KeyValuePair<StaticFieldWrapper, ConstantValue>>(ReflectionPolicy.GetAttributeFieldArguments(this)));
             }
         }
 
@@ -132,7 +132,7 @@ namespace Gallio.Common.Reflection.Impl
             get
             {
                 return propertyArgumentsMemoizer.Memoize(() =>
-                    new List<KeyValuePair<StaticPropertyWrapper, ConstantValue>>(Policy.GetAttributePropertyArguments(this)));
+                    new List<KeyValuePair<StaticPropertyWrapper, ConstantValue>>(ReflectionPolicy.GetAttributePropertyArguments(this)));
             }
         }
 

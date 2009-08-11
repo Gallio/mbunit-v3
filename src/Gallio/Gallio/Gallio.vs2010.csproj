@@ -43,6 +43,10 @@
     <GenerateSerializationAssemblies>On</GenerateSerializationAssemblies>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Gallio.ReflectionShim, Version=0.0.0.0, Culture=neutral, PublicKeyToken=eb9cfa67ee6ab36e, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\libs\Gallio.ReflectionShim.dll</HintPath>
+    </Reference>
     <Reference Include="ICSharpCode.SharpZipLib, Version=0.85.5.452, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\libs\ICSharpCode.SharpZipLib.dll</HintPath>
@@ -177,7 +181,10 @@
     <Compile Include="Common\Policies\VersionPolicy.cs" />
     <Compile Include="Common\Reflection\AssemblyMetadata.cs" />
     <Compile Include="Common\Reflection\AssemblyMetadataFields.cs" />
+    <Compile Include="Common\Reflection\Impl\UnresolvedAssembly.cs" />
+    <Compile Include="Common\Reflection\Impl\NativeWrapper.cs" />
     <Compile Include="Common\Reflection\Impl\NamespaceDoc.cs" />
+    <Compile Include="Common\Reflection\IMirror.cs" />
     <Compile Include="Common\Reflection\NamespaceDoc.cs" />
     <Compile Include="Common\Remoting\BaseChannel.cs" />
     <Compile Include="Common\Remoting\BaseClientChannel.cs" />

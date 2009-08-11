@@ -51,7 +51,7 @@ namespace Gallio.ReSharperRunner.Reflection
             if (element == null)
                 return null;
 
-            ReSharperReflectionPolicy policy = element.Policy as ReSharperReflectionPolicy;
+            ReSharperReflectionPolicy policy = element.ReflectionPolicy as ReSharperReflectionPolicy;
             return policy != null ? policy.GetDeclaredElementResolver(element) : null;
         }
 
@@ -64,7 +64,7 @@ namespace Gallio.ReSharperRunner.Reflection
             if (element == null)
                 return null;
 
-            ReSharperReflectionPolicy policy = element.Policy as ReSharperReflectionPolicy;
+            ReSharperReflectionPolicy policy = element.ReflectionPolicy as ReSharperReflectionPolicy;
             return policy != null ? policy.GetProject(element) : null;
         }
 

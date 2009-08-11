@@ -14,7 +14,6 @@
 // limitations under the License.
 
 using System;
-using Gallio.Common;
 
 namespace Gallio.Common.Reflection.Impl
 {
@@ -25,14 +24,14 @@ namespace Gallio.Common.Reflection.Impl
     /// <para>
     /// A wrapper holds an underlying reflection object.  Its behavior is
     /// derived from by primitive operations on the <see cref="Handle" /> defined by the
-    /// particular <see cref="Policy"/> implementation that is in use.
+    /// particular <see cref="ReflectionPolicy"/> implementation that is in use.
     /// </para>
     /// </remarks>
-    public abstract class StaticWrapper : IEquatable<StaticWrapper>
+    public abstract class StaticWrapper : IMirror, IEquatable<StaticWrapper>
     {
         private Memoizer<int> hashCodeMemoizer = new Memoizer<int>();
 
-        private readonly StaticReflectionPolicy policy;
+        private readonly StaticReflectionPolicy reflectionPolicy;
         private readonly object handle;
 
         /// <summary>
@@ -48,16 +47,21 @@ namespace Gallio.Common.Reflection.Impl
             if (handle == null)
                 throw new ArgumentNullException("handle");
 
-            this.policy = policy;
+            this.reflectionPolicy = policy;
             this.handle = handle;
+        }
+
+        IReflectionPolicy IMirror.ReflectionPolicy
+        {
+            get { return reflectionPolicy; }
         }
 
         /// <summary>
         /// Gets the reflection policy.
         /// </summary>
-        public StaticReflectionPolicy Policy
+        public StaticReflectionPolicy ReflectionPolicy
         {
-            get { return policy; }
+            get { return reflectionPolicy; }
         }
 
         /// <summary>
@@ -88,14 +92,14 @@ namespace Gallio.Common.Reflection.Impl
         protected bool EqualsByHandle(StaticWrapper other)
         {
             return other != null
-                && policy == other.policy
-                && policy.Equals(this, other);
+                && reflectionPolicy == other.reflectionPolicy
+                && reflectionPolicy.Equals(this, other);
         }
 
         /// <inhertdoc />
         public override int GetHashCode()
         {
-            return hashCodeMemoizer.Memoize(() => policy.GetHashCode(this));
+            return hashCodeMemoizer.Memoize(() => reflectionPolicy.GetHashCode(this));
         }
     }
 }

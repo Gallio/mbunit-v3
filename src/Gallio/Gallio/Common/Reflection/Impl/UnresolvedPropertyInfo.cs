@@ -103,7 +103,7 @@ namespace Gallio.Common.Reflection.Impl
         /// <inheritdoc />
         public override object GetConstantValue()
         {
-            throw new NotSupportedException();
+            throw new NotSupportedException("Cannot get constant value of unresolved property.");
         }
 
         /// <inheritdoc />
@@ -127,7 +127,7 @@ namespace Gallio.Common.Reflection.Impl
         /// <inheritdoc />
         public override object GetRawConstantValue()
         {
-            throw new NotSupportedException();
+            throw new NotSupportedException("Cannot get constant value of unresolved property.");
         }
 
         /// <inheritdoc />
@@ -146,26 +146,26 @@ namespace Gallio.Common.Reflection.Impl
         public override object GetValue(object obj, BindingFlags invokeAttr, Binder binder, object[] index,
             CultureInfo culture)
         {
-            throw new NotSupportedException();
+            throw new NotSupportedException("Cannot get value of unresolved property.");
         }
 
         /// <inheritdoc />
         public override object GetValue(object obj, object[] index)
         {
-            throw new NotSupportedException();
+            throw new NotSupportedException("Cannot get value of unresolved property.");
         }
 
         /// <inheritdoc />
         public override void SetValue(object obj, object value, BindingFlags invokeAttr, Binder binder, object[] index,
             CultureInfo culture)
         {
-            throw new NotSupportedException();
+            throw new NotSupportedException("Cannot set value of unresolved property.");
         }
 
         /// <inheritdoc />
         public override void SetValue(object obj, object value, object[] index)
         {
-            throw new NotSupportedException();
+            throw new NotSupportedException("Cannot set value of unresolved property.");
         }
     }
 }

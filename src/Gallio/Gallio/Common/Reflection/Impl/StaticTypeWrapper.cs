@@ -342,7 +342,7 @@ namespace Gallio.Common.Reflection.Impl
         /// <inheritdoc cref="ITypeInfo.MakeArrayType" />
         public StaticArrayTypeWrapper MakeArrayType(int arrayRank)
         {
-            return new StaticArrayTypeWrapper(Policy, this, arrayRank);
+            return new StaticArrayTypeWrapper(ReflectionPolicy, this, arrayRank);
         }
         ITypeInfo ITypeInfo.MakeArrayType(int arrayRank)
         {
@@ -352,7 +352,7 @@ namespace Gallio.Common.Reflection.Impl
         /// <inheritdoc cref="ITypeInfo.MakePointerType" />
         public StaticPointerTypeWrapper MakePointerType()
         {
-            return new StaticPointerTypeWrapper(Policy, this);
+            return new StaticPointerTypeWrapper(ReflectionPolicy, this);
         }
         ITypeInfo ITypeInfo.MakePointerType()
         {
@@ -362,7 +362,7 @@ namespace Gallio.Common.Reflection.Impl
         /// <inheritdoc cref="ITypeInfo.MakeByRefType" />
         public StaticByRefTypeWrapper MakeByRefType()
         {
-            return new StaticByRefTypeWrapper(Policy, this);
+            return new StaticByRefTypeWrapper(ReflectionPolicy, this);
         }
         ITypeInfo ITypeInfo.MakeByRefType()
         {
