@@ -16,8 +16,6 @@
 using System;
 using Gallio.Common.Reflection;
 using Gallio.Model.Tree;
-using NUnitITest = NUnit.Core.ITest;
-using NUnitTestName = NUnit.Core.TestName;
 
 namespace Gallio.NUnitAdapter.Model
 {
@@ -26,7 +24,7 @@ namespace Gallio.NUnitAdapter.Model
     /// </summary>
     internal class NUnitTest : Test
     {
-        private NUnitITest test;
+        private NUnit.Core.ITest test;
 
         /// <summary>
         /// Initializes a test initially without a parent.
@@ -35,7 +33,7 @@ namespace Gallio.NUnitAdapter.Model
         /// <param name="codeElement">The point of definition, or null if none.</param>
         /// <param name="test">The NUnit test, or null if none.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> is null.</exception>
-        public NUnitTest(string name, ICodeElementInfo codeElement, NUnitITest test)
+        public NUnitTest(string name, ICodeElementInfo codeElement, NUnit.Core.ITest test)
             : base(name, codeElement)
         {
             this.test = test;
@@ -44,7 +42,7 @@ namespace Gallio.NUnitAdapter.Model
         /// <summary>
         /// Gets or sets the NUnit test.
         /// </summary>
-        public NUnitITest Test
+        public NUnit.Core.ITest Test
         {
             get { return test; }
             set { test = value; }
@@ -54,7 +52,7 @@ namespace Gallio.NUnitAdapter.Model
         /// Processes all of the test names associated with the test.
         /// </summary>
         /// <param name="action">The action to apply.</param>
-        public virtual void ProcessTestNames(Action<NUnitTestName> action)
+        public virtual void ProcessTestNames(Action<NUnit.Core.TestName> action)
         {
             action(test.TestName);
         }

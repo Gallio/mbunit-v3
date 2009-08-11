@@ -72,7 +72,7 @@ namespace Gallio.Common.Reflection.Impl
         /// <inheritdoc />
         public override string Name
         {
-            get { return nameMemoizer.Memoize(() => Policy.GetParameterName(this)); }
+            get { return nameMemoizer.Memoize(() => ReflectionPolicy.GetParameterName(this)); }
         }
 
         /// <inheritdoc />
@@ -92,7 +92,7 @@ namespace Gallio.Common.Reflection.Impl
             {
                 return parameterAttributesMemoizer.Memoize(delegate
                 {
-                    return Policy.GetParameterAttributes(this);
+                    return ReflectionPolicy.GetParameterAttributes(this);
                 });
             }
         }
@@ -124,13 +124,13 @@ namespace Gallio.Common.Reflection.Impl
         /// <inheritdoc />
         public ITypeInfo ValueType
         {
-            get { return valueTypeMemoizer.Memoize(() => member.Substitution.Apply(Policy.GetParameterType(this))); }
+            get { return valueTypeMemoizer.Memoize(() => member.Substitution.Apply(ReflectionPolicy.GetParameterType(this))); }
         }
 
         /// <inheritdoc />
         public int Position
         {
-            get { return positionMemoizer.Memoize(() => Policy.GetParameterPosition(this)); }
+            get { return positionMemoizer.Memoize(() => ReflectionPolicy.GetParameterPosition(this)); }
         }
 
         /// <inheritdoc />
@@ -161,7 +161,7 @@ namespace Gallio.Common.Reflection.Impl
         /// <excludedoc />
         protected override IEnumerable<StaticAttributeWrapper> GetCustomAttributes()
         {
-            return Policy.GetParameterCustomAttributes(this);
+            return ReflectionPolicy.GetParameterCustomAttributes(this);
         }
 
         /// <excludedoc />

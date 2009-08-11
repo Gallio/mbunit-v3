@@ -41,6 +41,27 @@ namespace Gallio.Common.Reflection.Impl
         }
     }
 
+    public partial class UnresolvedAssembly
+    {
+        /// <inheritdoc />
+        public override object[] GetCustomAttributes(bool inherit)
+        {
+            return UnresolvedCustomAttributeProvider.GetCustomAttributes(adapter, inherit);
+        }
+
+        /// <inheritdoc />
+        public override object[] GetCustomAttributes(Type attributeType, bool inherit)
+        {
+            return UnresolvedCustomAttributeProvider.GetCustomAttributes(adapter, attributeType, inherit);
+        }
+
+        /// <inheritdoc />
+        public override bool IsDefined(Type attributeType, bool inherit)
+        {
+            return UnresolvedCustomAttributeProvider.IsDefined(adapter, attributeType, inherit);
+        }
+    }
+
     public partial class UnresolvedConstructorInfo
     {
         /// <inheritdoc />

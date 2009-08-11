@@ -19,7 +19,7 @@ using Gallio.Common.Collections;
 
 namespace Gallio.Common.Reflection.Impl
 {
-    internal sealed class NativeNamespaceWrapper : INamespaceInfo
+    internal sealed class NativeNamespaceWrapper : NativeWrapper, INamespaceInfo
     {
         private readonly string name;
 

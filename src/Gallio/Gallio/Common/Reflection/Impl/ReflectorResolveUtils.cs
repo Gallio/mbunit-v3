@@ -48,7 +48,8 @@ namespace Gallio.Common.Reflection.Impl
         /// <param name="fallbackOnPartialName">If true, allows the assembly to be resolved
         /// by partial name if no match could be found by fullname.</param>
         /// <param name="throwOnError">If true, throws an exception if resolution fails,
-        /// otherwise returns null.</param>
+        /// otherwise returns an unresolved assembly object that can be detected
+        /// using <see cref="Reflector.IsUnresolved(Assembly)"/>.</param>
         /// <returns>The resolved <see cref="Assembly" />.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="assembly"/>
         /// is null.</exception>
@@ -67,7 +68,7 @@ namespace Gallio.Common.Reflection.Impl
             if (throwOnError && resolvedAssembly == null)
                 throw new ReflectionResolveException(assembly);
 
-            return resolvedAssembly;
+            return resolvedAssembly ?? new UnresolvedAssembly(assembly);
         }
 
         private static Assembly PopulateResolvedAssembly(string fullName)
@@ -165,7 +166,7 @@ namespace Gallio.Common.Reflection.Impl
                     ITypeInfo simpleType = type.GenericTypeDefinition ?? type;
 
                     Assembly resolvedAssembly = simpleType.Assembly.Resolve(throwOnError);
-                    if (resolvedAssembly != null)
+                    if (! Reflector.IsUnresolved(resolvedAssembly))
                     {
                         Type resolvedType = resolvedAssembly.GetType(simpleType.FullName);
                         if (resolvedType != null)

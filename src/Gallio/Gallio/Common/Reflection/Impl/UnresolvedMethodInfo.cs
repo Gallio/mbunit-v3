@@ -85,13 +85,17 @@ namespace Gallio.Common.Reflection.Impl
         /// <inheritdoc />
         public override MethodInfo GetGenericMethodDefinition()
         {
-            throw new NotImplementedException();
+            IMethodInfo genericMethodDefinition = adapter.GenericMethodDefinition;
+            if (genericMethodDefinition == null)
+                throw new InvalidOperationException("The method is not generic.");
+
+            return genericMethodDefinition.Resolve(false);
         }
 
         /// <inheritdoc />
         public override MethodInfo MakeGenericMethod(params Type[] typeArguments)
         {
-            throw new NotImplementedException();
+            return adapter.MakeGenericMethod(Reflector.Wrap(typeArguments)).Resolve(false);
         }
     }
 }

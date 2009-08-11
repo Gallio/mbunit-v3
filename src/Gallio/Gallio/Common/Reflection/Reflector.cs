@@ -17,7 +17,9 @@ using System;
 using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using Gallio.Common.Collections;
 using Gallio.Common.Reflection.Impl;
+using System.Collections.Generic;
 
 namespace Gallio.Common.Reflection
 {
@@ -107,7 +109,14 @@ namespace Gallio.Common.Reflection
         /// <returns>The reflection wrapper, or null if none.</returns>
         public static IAssemblyInfo Wrap(Assembly target)
         {
-            return target != null ? new NativeAssemblyWrapper(target) : null;
+            if (target == null)
+                return null;
+
+            UnresolvedAssembly unresolvedTarget = target as UnresolvedAssembly;
+            if (unresolvedTarget != null)
+                return unresolvedTarget.Adapter;
+
+            return new NativeAssemblyWrapper(target);
         }
 
         /// <summary>
@@ -135,6 +144,16 @@ namespace Gallio.Common.Reflection
                 return unresolvedTarget.Adapter;
 
             return target.IsGenericParameter ? new NativeGenericParameterWrapper(target) : new NativeTypeWrapper(target);
+        }
+
+        /// <summary>
+        /// Obtains a reflection wrapper for a list of types.
+        /// </summary>
+        /// <param name="targets">The types, or null if none.</param>
+        /// <returns>The reflection wrappers, or null original list was null.</returns>
+        public static IList<ITypeInfo> Wrap(IList<Type> targets)
+        {
+            return targets != null ? GenericCollectionUtils.ConvertAllToArray<Type, ITypeInfo>(targets, Wrap) : null;
         }
 
         /// <summary>
@@ -377,6 +396,18 @@ namespace Gallio.Common.Reflection
         }
 
         /// <summary>
+        /// Returns true if the target represents an unresolved assembly with
+        /// limited support for reflection.
+        /// </summary>
+        /// <seealso cref="IUnresolvedCodeElement"/>
+        /// <param name="target">The assembly, or null if none.</param>
+        /// <returns>True if the target is unresolved.</returns>
+        public static bool IsUnresolved(Assembly target)
+        {
+            return target is IUnresolvedCodeElement;
+        }
+
+        /// <summary>
         /// Returns true if the target represents an unresolved member with
         /// limited support for reflection.
         /// </summary>
@@ -397,7 +428,7 @@ namespace Gallio.Common.Reflection
         /// <returns>True if the target is unresolved.</returns>
         public static bool IsUnresolved(ParameterInfo target)
         {
-            return target is UnresolvedParameterInfo;
+            return target is IUnresolvedCodeElement;
         }
     }
 }

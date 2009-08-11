@@ -19,7 +19,7 @@ using System.Reflection;
 
 namespace Gallio.Common.Reflection.Impl
 {
-    internal abstract class NativeCodeElementWrapper<TTarget> : ICodeElementInfo
+    internal abstract class NativeCodeElementWrapper<TTarget> : NativeWrapper, ICodeElementInfo
         where TTarget : class, ICustomAttributeProvider
     {
         private readonly TTarget target;

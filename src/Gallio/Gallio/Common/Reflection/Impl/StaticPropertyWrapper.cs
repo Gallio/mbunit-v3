@@ -61,7 +61,7 @@ namespace Gallio.Common.Reflection.Impl
             {
                 return propertyAttributesMemoizer.Memoize(delegate
                 {
-                    return Policy.GetPropertyAttributes(this);
+                    return ReflectionPolicy.GetPropertyAttributes(this);
                 });
             }
         }
@@ -81,7 +81,7 @@ namespace Gallio.Common.Reflection.Impl
         /// <inheritdoc cref="IPropertyInfo.GetMethod" />
         public StaticMethodWrapper GetMethod
         {
-            get { return getMethodMemoizer.Memoize(() => Policy.GetPropertyGetMethod(this)); }
+            get { return getMethodMemoizer.Memoize(() => ReflectionPolicy.GetPropertyGetMethod(this)); }
         }
         IMethodInfo IPropertyInfo.GetMethod
         {
@@ -91,7 +91,7 @@ namespace Gallio.Common.Reflection.Impl
         /// <inheritdoc cref="IPropertyInfo.SetMethod" />
         public StaticMethodWrapper SetMethod
         {
-            get { return setMethodMemoizer.Memoize(() => Policy.GetPropertySetMethod(this)); }
+            get { return setMethodMemoizer.Memoize(() => ReflectionPolicy.GetPropertySetMethod(this)); }
         }
         IMethodInfo IPropertyInfo.SetMethod
         {
@@ -135,7 +135,7 @@ namespace Gallio.Common.Reflection.Impl
                     for (int i = 0; i < indexParameterCount; i++)
                     {
                         StaticParameterWrapper parameter = parameters[i];
-                        indexParameters[i] = new StaticParameterWrapper(parameter.Policy, parameter.Handle, this);
+                        indexParameters[i] = new StaticParameterWrapper(parameter.ReflectionPolicy, parameter.Handle, this);
                     }
 
                     return indexParameters;
@@ -151,7 +151,7 @@ namespace Gallio.Common.Reflection.Impl
         /// <inheritdoc />
         public ITypeInfo ValueType
         {
-            get { return valueTypeMemoizer.Memoize(() => Substitution.Apply(Policy.GetPropertyType(this))); }
+            get { return valueTypeMemoizer.Memoize(() => Substitution.Apply(ReflectionPolicy.GetPropertyType(this))); }
         }
 
         /// <inheritdoc />
@@ -174,7 +174,7 @@ namespace Gallio.Common.Reflection.Impl
             string propertyName = Name;
             foreach (StaticDeclaredTypeWrapper baseType in DeclaringType.GetAllBaseTypes())
             {
-                foreach (StaticPropertyWrapper other in Policy.GetTypeProperties(baseType, ReflectedType))
+                foreach (StaticPropertyWrapper other in ReflectionPolicy.GetTypeProperties(baseType, ReflectedType))
                 {
                     if (propertyName == other.Name)
                     {

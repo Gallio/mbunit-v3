@@ -26,8 +26,6 @@ using Gallio.Model;
 using Gallio.NUnitAdapter.Properties;
 using NUnit.Core;
 using TestResult = Gallio.Model.TestResult;
-using NUnitTestResult=NUnit.Core.TestResult;
-using NUnitTestName = NUnit.Core.TestName;
 
 namespace Gallio.NUnitAdapter.Model
 {
@@ -133,7 +131,7 @@ namespace Gallio.NUnitAdapter.Model
                 foreach (ITestCommand testCommand in testCommands)
                 {
                     NUnitTest test = (NUnitTest) testCommand.Test;
-                    test.ProcessTestNames(delegate(NUnitTestName testName)
+                    test.ProcessTestNames(delegate(NUnit.Core.TestName testName)
                     {
                         testCommandsByTestName[testName] = testCommand;
                     }); 
@@ -150,7 +148,7 @@ namespace Gallio.NUnitAdapter.Model
                 CheckCanceled();
             }
 
-            void EventListener.RunFinished(NUnitTestResult result)
+            void EventListener.RunFinished(NUnit.Core.TestResult result)
             {
             }
 
@@ -166,7 +164,7 @@ namespace Gallio.NUnitAdapter.Model
 #if NUNIT248
             void EventListener.TestFinished(TestCaseResult nunitResult)
 #else
-            void EventListener.TestFinished(NUnitTestResult nunitResult)
+            void EventListener.TestFinished(NUnit.Core.TestResult nunitResult)
 #endif
             {
                 HandleTestOrSuiteFinished(nunitResult);
@@ -205,7 +203,7 @@ namespace Gallio.NUnitAdapter.Model
 #if NUNIT248
             void EventListener.SuiteFinished(TestSuiteResult nunitResult)
 #else
-            void EventListener.SuiteFinished(NUnitTestResult nunitResult)
+            void EventListener.SuiteFinished(NUnit.Core.TestResult nunitResult)
 #endif
             {
                 HandleTestOrSuiteFinished(nunitResult);
@@ -241,7 +239,7 @@ namespace Gallio.NUnitAdapter.Model
                 testContext.LifecyclePhase = LifecyclePhases.Execute;
             }
 
-            private void HandleTestOrSuiteFinished(NUnitTestResult nunitResult)
+            private void HandleTestOrSuiteFinished(NUnit.Core.TestResult nunitResult)
             {
                 if (testContextStack.Count == 0)
                     return;
@@ -276,7 +274,7 @@ namespace Gallio.NUnitAdapter.Model
                     topResult = result;
             }
 
-            private static TestOutcome CreateOutcomeFromResult(NUnitTestResult nunitResult)
+            private static TestOutcome CreateOutcomeFromResult(NUnit.Core.TestResult nunitResult)
             {
 #if NUNIT248
                 switch (nunitResult.RunState)

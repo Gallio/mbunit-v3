@@ -15,8 +15,6 @@
 
 using System;
 using System.Collections.Generic;
-using Gallio.Common.Reflection;
-using Gallio.NUnitAdapter.Properties;
 using Gallio.Model;
 using Gallio.Runtime.Extensibility;
 using Gallio.Runtime.Logging;

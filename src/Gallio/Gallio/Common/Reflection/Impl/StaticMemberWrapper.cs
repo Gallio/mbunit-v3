@@ -63,7 +63,7 @@ namespace Gallio.Common.Reflection.Impl
         /// <inheritdoc />
         public override string Name
         {
-            get { return nameMemoizer.Memoize(() => Policy.GetMemberName(this)); }
+            get { return nameMemoizer.Memoize(() => ReflectionPolicy.GetMemberName(this)); }
         }
 
         /// <summary>
@@ -96,7 +96,7 @@ namespace Gallio.Common.Reflection.Impl
             return codeLocationMemoizer.Memoize(() =>
             {
                 CodeLocation
-                    location = Policy.GetMemberSourceLocation(this);
+                    location = ReflectionPolicy.GetMemberSourceLocation(this);
                 if (location == CodeLocation.Unknown && declaringType != null)
                 {
                     location = DeclaringType.GetCodeLocation();
@@ -130,7 +130,7 @@ namespace Gallio.Common.Reflection.Impl
         /// <inheritdoc />
         protected override IEnumerable<StaticAttributeWrapper> GetCustomAttributes()
         {
-            return Policy.GetMemberCustomAttributes(this);
+            return ReflectionPolicy.GetMemberCustomAttributes(this);
         }
 
         /// <summary>

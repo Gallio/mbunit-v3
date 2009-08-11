@@ -53,7 +53,7 @@ namespace Gallio.Framework.Pattern
         /// <inheritdoc />
         public ITestBuilder RootTestBuilder
         {
-            get { throw new NotImplementedException(); }
+            get { throw new NotSupportedException(); }
         }
 
         void ITestModelBuilder.AddAnnotation(Annotation annotation)

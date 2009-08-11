@@ -67,7 +67,7 @@ namespace Gallio.Common.Reflection.Impl
         /// <inheritdoc />
         public string Path
         {
-            get { return assemblyPathMemoizer.Memoize(() => Policy.GetAssemblyPath(this)); }
+            get { return assemblyPathMemoizer.Memoize(() => ReflectionPolicy.GetAssemblyPath(this)); }
         }
 
         /// <inheritdoc />
@@ -85,28 +85,28 @@ namespace Gallio.Common.Reflection.Impl
         /// <inheritdoc />
         public AssemblyName GetName()
         {
-            return assemblyNameMemoizer.Memoize(() => Policy.GetAssemblyName(this));
+            return assemblyNameMemoizer.Memoize(() => ReflectionPolicy.GetAssemblyName(this));
         }
 
         /// <inheritdoc />
         public IList<AssemblyName> GetReferencedAssemblies()
         {
             return referencedAssembliesMemoizer.Memoize(() =>
-                new ReadOnlyCollection<AssemblyName>(Policy.GetAssemblyReferences(this)));
+                new ReadOnlyCollection<AssemblyName>(ReflectionPolicy.GetAssemblyReferences(this)));
         }
 
         /// <inheritdoc />
         public IList<ITypeInfo> GetExportedTypes()
         {
             return exportedTypesMemoizer.Memoize(() =>
-                new CovariantList<StaticDeclaredTypeWrapper, ITypeInfo>(Policy.GetAssemblyExportedTypes(this)));
+                new CovariantList<StaticDeclaredTypeWrapper, ITypeInfo>(ReflectionPolicy.GetAssemblyExportedTypes(this)));
         }
 
         /// <inheritdoc />
         public IList<ITypeInfo> GetTypes()
         {
             return typesMemoizer.Memoize(() =>
-                new CovariantList<StaticDeclaredTypeWrapper, ITypeInfo>(Policy.GetAssemblyTypes(this)));
+                new CovariantList<StaticDeclaredTypeWrapper, ITypeInfo>(ReflectionPolicy.GetAssemblyTypes(this)));
         }
 
         /// <inheritdoc />
@@ -116,7 +116,7 @@ namespace Gallio.Common.Reflection.Impl
                 throw new ArgumentNullException("typeName");
 
             return getTypeMemoizer.Memoize(typeName, () =>
-                Policy.GetAssemblyType(this, typeName));
+                ReflectionPolicy.GetAssemblyType(this, typeName));
         }
 
         /// <inheritdoc />
@@ -152,7 +152,7 @@ namespace Gallio.Common.Reflection.Impl
         /// <excludedoc />
         protected override IEnumerable<StaticAttributeWrapper> GetCustomAttributes()
         {
-            return Policy.GetAssemblyCustomAttributes(this);
+            return ReflectionPolicy.GetAssemblyCustomAttributes(this);
         }
 
         /// <excludedoc />

@@ -117,7 +117,7 @@ namespace Gallio.Common.Reflection.Impl
                     if (IsGenericMethodDefinition)
                         return this;
 
-                    return new StaticMethodWrapper(Policy, Handle, DeclaringType, ReflectedType,
+                    return new StaticMethodWrapper(ReflectionPolicy, Handle, DeclaringType, ReflectedType,
                         DeclaringType.Substitution);
                 });
             }
@@ -140,7 +140,7 @@ namespace Gallio.Common.Reflection.Impl
             {
                 return returnParameterMemoizer.Memoize(delegate
                 {
-                    return Policy.GetMethodReturnParameter(this);
+                    return ReflectionPolicy.GetMethodReturnParameter(this);
                 });
             }
         }
@@ -165,7 +165,7 @@ namespace Gallio.Common.Reflection.Impl
 
             foreach (StaticDeclaredTypeWrapper baseType in DeclaringType.GetAllBaseTypes())
             {
-                foreach (StaticMethodWrapper other in Policy.GetTypeMethods(baseType, ReflectedType))
+                foreach (StaticMethodWrapper other in ReflectionPolicy.GetTypeMethods(baseType, ReflectedType))
                 {
                     if (HidesMethod(other))
                     {
@@ -249,7 +249,7 @@ namespace Gallio.Common.Reflection.Impl
             if (!IsGenericMethodDefinition)
                 throw new InvalidOperationException("The method is not a generic method definition.");
 
-            return new StaticMethodWrapper(Policy, Handle, DeclaringType, ReflectedType, Substitution.Extend(GenericParameters, genericArguments));
+            return new StaticMethodWrapper(ReflectionPolicy, Handle, DeclaringType, ReflectedType, Substitution.Extend(GenericParameters, genericArguments));
         }
         IMethodInfo IMethodInfo.MakeGenericMethod(IList<ITypeInfo> genericArguments)
         {
@@ -294,7 +294,7 @@ namespace Gallio.Common.Reflection.Impl
             {
                 return genericParametersMemoizer.Memoize(delegate
                 {
-                    return Policy.GetMethodGenericParameters(this);
+                    return ReflectionPolicy.GetMethodGenericParameters(this);
                 });
             }
         }

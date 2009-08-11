@@ -57,7 +57,7 @@ namespace Gallio.Common.Reflection.Impl
             {
                 return fieldAttributesMemoizer.Memoize(delegate
                 {
-                    return Policy.GetFieldAttributes(this); 
+                    return ReflectionPolicy.GetFieldAttributes(this); 
                 });
             }
         }
@@ -119,7 +119,7 @@ namespace Gallio.Common.Reflection.Impl
         /// <inheritdoc />
         public ITypeInfo ValueType
         {
-            get { return Substitution.Apply(Policy.GetFieldType(this)); }
+            get { return Substitution.Apply(ReflectionPolicy.GetFieldType(this)); }
         }
 
         /// <inheritdoc />

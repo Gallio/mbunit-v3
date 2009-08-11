@@ -62,7 +62,7 @@ namespace Gallio.Common.Reflection.Impl
             {
                 return eventAttributesMemoizer.Memoize(delegate
                 {
-                    return Policy.GetEventAttributes(this);
+                    return ReflectionPolicy.GetEventAttributes(this);
                 });
             }
         }
@@ -70,7 +70,7 @@ namespace Gallio.Common.Reflection.Impl
         /// <inheritdoc cref="IEventInfo.AddMethod" />
         public StaticMethodWrapper AddMethod
         {
-            get { return addMethodMemoizer.Memoize(() => Policy.GetEventAddMethod(this)); }
+            get { return addMethodMemoizer.Memoize(() => ReflectionPolicy.GetEventAddMethod(this)); }
         }
         IMethodInfo IEventInfo.AddMethod
         {
@@ -80,7 +80,7 @@ namespace Gallio.Common.Reflection.Impl
         /// <inheritdoc cref="IEventInfo.RaiseMethod" />
         public StaticMethodWrapper RaiseMethod
         {
-            get { return raiseMethodMemoizer.Memoize(() => Policy.GetEventRaiseMethod(this)); }
+            get { return raiseMethodMemoizer.Memoize(() => ReflectionPolicy.GetEventRaiseMethod(this)); }
         }
         IMethodInfo IEventInfo.RaiseMethod
         {
@@ -90,7 +90,7 @@ namespace Gallio.Common.Reflection.Impl
         /// <inheritdoc cref="IEventInfo.RemoveMethod" />
         public StaticMethodWrapper RemoveMethod
         {
-            get { return removeMethodMemoizer.Memoize(() => Policy.GetEventRemoveMethod(this)); }
+            get { return removeMethodMemoizer.Memoize(() => ReflectionPolicy.GetEventRemoveMethod(this)); }
         }
         IMethodInfo IEventInfo.RemoveMethod
         {
@@ -101,7 +101,7 @@ namespace Gallio.Common.Reflection.Impl
         public ITypeInfo EventHandlerType
         {
             get { return eventHandlerTypeMemoizer.Memoize(() =>
-                Substitution.Apply(Policy.GetEventHandlerType(this))); }
+                Substitution.Apply(ReflectionPolicy.GetEventHandlerType(this))); }
         }
 
         /// <summary>
@@ -118,7 +118,7 @@ namespace Gallio.Common.Reflection.Impl
             string eventName = Name;
             foreach (StaticDeclaredTypeWrapper baseType in DeclaringType.GetAllBaseTypes())
             {
-                foreach (StaticEventWrapper other in Policy.GetTypeEvents(baseType, ReflectedType))
+                foreach (StaticEventWrapper other in ReflectionPolicy.GetTypeEvents(baseType, ReflectedType))
                 {
                     if (eventName == other.Name)
                     {

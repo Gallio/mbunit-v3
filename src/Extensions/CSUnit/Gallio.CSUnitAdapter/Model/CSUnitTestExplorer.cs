@@ -77,10 +77,10 @@ namespace Gallio.CSUnitAdapter.Model
             {
                 Assembly loadedAssembly = assembly.Resolve(false);
 
-                if (loadedAssembly != null)
-                    assemblyTest = BuildAssemblyTest_Native(assembly, loadedAssembly.Location);
-                else
+                if (Reflector.IsUnresolved(loadedAssembly))
                     assemblyTest = BuildAssemblyTest_Reflective(assembly);
+                else
+                    assemblyTest = BuildAssemblyTest_Native(assembly, loadedAssembly.Location);
 
                 string frameworkName = String.Format(Resources.CSUnitTestExplorer_FrameworkNameWithVersionFormat, frameworkVersion);
                 assemblyTest.Metadata.SetValue(MetadataKeys.Framework, frameworkName);

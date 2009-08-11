@@ -90,6 +90,7 @@ namespace Gallio.Common.Reflection
         /// unresolved member which may only support a subset of the usual operations.</param>
         /// <returns>The native reflection target.</returns>
         /// <exception cref="NotSupportedException">Thrown if the target cannot be resolved.</exception>
+        /// <seealso cref="Reflector.IsUnresolved(MemberInfo)"/>
         new MethodInfo Resolve(bool throwOnError);
     }
 }

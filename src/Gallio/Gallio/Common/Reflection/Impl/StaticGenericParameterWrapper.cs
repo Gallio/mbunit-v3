@@ -161,7 +161,7 @@ namespace Gallio.Common.Reflection.Impl
             {
                 return genericParameterAttributesMemoizer.Memoize(delegate
                 {
-                    return Policy.GetGenericParameterAttributes(this);
+                    return ReflectionPolicy.GetGenericParameterAttributes(this);
                 });
             }
         }
@@ -173,7 +173,7 @@ namespace Gallio.Common.Reflection.Impl
             {
                 return constraintsMemoizer.Memoize(delegate
                 {
-                    return new CovariantList<StaticTypeWrapper, ITypeInfo>(Policy.GetGenericParameterConstraints(this));
+                    return new CovariantList<StaticTypeWrapper, ITypeInfo>(ReflectionPolicy.GetGenericParameterConstraints(this));
                 });
             }
         }
@@ -187,7 +187,7 @@ namespace Gallio.Common.Reflection.Impl
         /// <inheritdoc />
         public int Position
         {
-            get { return positionMemoizer.Memoize(() => Policy.GetGenericParameterPosition(this)); }
+            get { return positionMemoizer.Memoize(() => ReflectionPolicy.GetGenericParameterPosition(this)); }
         }
 
         /// <inheritdoc />
