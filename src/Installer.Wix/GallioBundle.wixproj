@@ -14,6 +14,7 @@
     <Cultures>en-US</Cultures>
     <WixTargetsPath Condition=" '$(WixTargetsPath)' == '' ">$(MSBuildExtensionsPath)\Microsoft\WiX\v3.0\Wix.targets</WixTargetsPath>
     <TargetDir Condition="'$(TargetDir)'==''">$(MSBuildProjectDirectory)\..\..\build\image</TargetDir>
+    <SetMsiAssemblyNameFileVersion>true</SetMsiAssemblyNameFileVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <OutputPath>bin\$(Platform)\$(Configuration)\</OutputPath>
@@ -188,6 +189,6 @@
     -->
   <Target Name="CheckWxs">
     <!-- Run WixCop on all the source files to check for issues. -->
-    <Exec Command="&quot;$(WixToolPath)\WixCop.exe&quot; @(Compile, ' ')" ContinueOnError="true" />
+    <Exec Command="&quot;$(WixToolPath)\WixCop.exe&quot; -set1WixCop.settings @(Compile, ' ')" ContinueOnError="true" />
   </Target>
 </Project>

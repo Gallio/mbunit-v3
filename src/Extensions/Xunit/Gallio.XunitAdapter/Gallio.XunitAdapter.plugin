@@ -22,6 +22,7 @@
     <file path="xunit.xml" />
     <file path="xunit.extensions.dll" />
     <file path="xunit.extensions.xml" />
+    <file path="Resources\xUnit.ico" />
   </files>
 
   <assemblies>
