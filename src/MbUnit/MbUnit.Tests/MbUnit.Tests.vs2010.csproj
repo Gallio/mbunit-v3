@@ -175,6 +175,8 @@
     <Compile Include="Framework\AssertTest_Sorting.cs" />
     <Compile Include="Framework\AssertTest_Distinct.cs" />
     <Compile Include="Framework\ColumnAttributeTest.cs" />
+    <Compile Include="Framework\DataAttributeTest.cs" />
+    <Compile Include="Framework\ExpectedExceptionAttributeTest.cs" />
     <Compile Include="Framework\MultipleCultureAttributeTest.cs" />
     <Compile Include="Framework\PrincipalAttributeTest.cs" />
     <Compile Include="Framework\RandomStringsAttributeTest.cs" />

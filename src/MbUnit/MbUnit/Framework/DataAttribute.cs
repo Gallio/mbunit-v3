@@ -54,6 +54,17 @@ namespace MbUnit.Framework
         }
 
         /// <summary>
+        /// Gets or sets the message of the exception that should be thrown when the
+        /// values provided by the data source are consumed by test.
+        /// May be a substring of the actual exception message.
+        /// </summary>
+        public string ExpectedExceptionMessage
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
         /// Gets the metadata for the data source.
         /// </summary>
         /// <returns>The metadata keys and values.</returns>
@@ -63,6 +74,8 @@ namespace MbUnit.Framework
                 yield return new KeyValuePair<string, string>(MetadataKeys.Description, Description);
             if (ExpectedException != null)
                 yield return new KeyValuePair<string, string>(MetadataKeys.ExpectedException, ExpectedException.FullName);
+            if (ExpectedExceptionMessage != null)
+                yield return new KeyValuePair<string, string>(MetadataKeys.ExpectedExceptionMessage, ExpectedExceptionMessage);
         }
     }
 }

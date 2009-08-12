@@ -80,8 +80,13 @@ namespace MbUnit.Framework
             }
             catch (Exception ex)
             {
+                string expectedExceptionMessage = state.TestStep.Metadata.GetValue(MetadataKeys.ExpectedExceptionMessage)
+                    ?? state.Test.Metadata.GetValue(MetadataKeys.ExpectedExceptionMessage);
+
                 Type exceptionType = ex.GetType();
-                if (ReflectionUtils.IsAssignableFrom(expectedExceptionType, exceptionType))
+
+                if (ReflectionUtils.IsAssignableFrom(expectedExceptionType, exceptionType)
+                    && (expectedExceptionMessage == null || ex.Message.Contains(expectedExceptionMessage)))
                     return;
 
                 if (ex is TestException)
@@ -89,7 +94,19 @@ namespace MbUnit.Framework
 
                 using (TestLog.Failures.BeginSection("Expected Exception"))
                 {
-                    TestLog.Failures.WriteLine("Expected an exception of type '{0}' but a different exception was thrown.", expectedExceptionType);
+                    if (expectedExceptionMessage != null)
+                    {
+                        TestLog.Failures.WriteLine(
+                            "Expected an exception of type '{0}' with message substring '{1}' but a different exception was thrown.",
+                            expectedExceptionType, expectedExceptionMessage);
+                    }
+                    else
+                    {
+                        TestLog.Failures.WriteLine(
+                            "Expected an exception of type '{0}' but a different exception was thrown.",
+                            expectedExceptionType);
+                    }
+
                     TestLog.Failures.WriteException(ex);
                 }
             }
