@@ -200,19 +200,6 @@ namespace Gallio.Framework.Pattern
         void AddDependency(Test testDependency);
 
         /// <summary>
-        /// Sets the name of the expected exception type.
-        /// </summary>
-        /// <remarks>
-        /// <para>
-        /// This method works by adding <see cref="MetadataKeys.ExpectedException" /> metadata containing
-        /// the type name as value.
-        /// </para>
-        /// </remarks>
-        /// <param name="typeName">The expected exception type name.</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="typeName"/> is null.</exception>
-        void SetExpectedExceptionType(string typeName);
-
-        /// <summary>
         /// Gets the underlying test.
         /// </summary>
         /// <returns>The underlying test.</returns>

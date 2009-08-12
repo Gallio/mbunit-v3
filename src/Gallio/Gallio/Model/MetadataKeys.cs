@@ -142,6 +142,18 @@ namespace Gallio.Model
         public const string ExpectedException = "ExpectedException";
 
         /// <summary>
+        /// The metadata key for the expected exception message.
+        /// May be a substring of the actual exception message.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// May be derived from <c>ExpectedExceptionAttribute</c> in MbUnit
+        /// or its equivalent.
+        /// </para>
+        /// </remarks>
+        public const string ExpectedExceptionMessage = "ExpectedExceptionMessage";
+
+        /// <summary>
         /// The metadata key that describes the reason that a test should be run explicitly.
         /// </summary>
         /// <remarks>

@@ -56,7 +56,8 @@ namespace MbUnit.Framework
         /// </para>
         /// </remarks>
         /// <param name="exceptionType">The expected exception type.</param>
-        /// <param name="message">The expected exception message, or null if not specified.</param>
+        /// <param name="message">The expected exception message, or null if not specified.
+        /// May be a substring of the actual exception message.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="exceptionType"/> is null.</exception>
         public ExpectedExceptionAttribute(Type exceptionType, string message)
         {
@@ -77,6 +78,7 @@ namespace MbUnit.Framework
 
         /// <summary>
         /// Gets or sets the expected exception message, or null if none specified.
+        /// May be a substring of the actual exception message.
         /// </summary>
         public string Message
         {
@@ -88,6 +90,9 @@ namespace MbUnit.Framework
         protected override void DecorateMethodTest(IPatternScope methodScope, IMethodInfo method)
         {
             methodScope.TestBuilder.AddMetadata(MetadataKeys.ExpectedException, exceptionType.FullName);
+
+            if (message != null)
+                methodScope.TestBuilder.AddMetadata(MetadataKeys.ExpectedExceptionMessage, message);
         }
     }
 }

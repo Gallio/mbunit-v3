@@ -149,12 +149,6 @@ namespace Gallio.Framework.Pattern
         }
 
         /// <inheritdoc />
-        public void SetExpectedExceptionType(string typeName)
-        {
-            AddMetadata(MetadataKeys.ExpectedException, typeName);
-        }
-
-        /// <inheritdoc />
         public PatternTest ToTest()
         {
             return test;
