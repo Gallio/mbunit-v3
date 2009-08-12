@@ -13,11 +13,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
 using System.IO;
 using Gallio.Common.Policies;
 using Gallio.Runner.Projects;
-using Gallio.Runner.Projects.Schema;
 
 namespace Gallio.Icarus
 {
@@ -34,7 +32,7 @@ namespace Gallio.Icarus
         /// <summary>
         /// The location of the default project used by Icarus.
         /// </summary>
-        public static string DefaultProject = Path.Combine(IcarusAppDataFolder, "Icarus" + TestProject.Extension);
+        public static string DefaultProject = Path.Combine(IcarusAppDataFolder, "Default" + TestProject.Extension);
         
         /// <summary>
         /// The location of the Icarus settings (options) file

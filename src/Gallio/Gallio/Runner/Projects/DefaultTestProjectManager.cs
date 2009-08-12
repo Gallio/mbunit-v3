@@ -55,11 +55,26 @@ namespace Gallio.Runner.Projects
                 throw new ArgumentException(String.Format("Project file {0} does not exist.", testProjectFile.FullName));
 
             var testProjectData = xmlSerializer.LoadFromXml<TestProjectData>(testProjectFile.FullName);
+            return LoadProject(testProjectFile.DirectoryName, testProjectData);
+        }
+
+        private static TestProject LoadProject(string directoryName, TestProjectData testProjectData)
+        {
             testProjectData.Validate(); // sanity check
-            testProjectData.MakeAbsolutePaths(testProjectFile.DirectoryName);
+            testProjectData.MakeAbsolutePaths(directoryName);
 
             var testProject = testProjectData.ToTestProject();
             return testProject;
+        }
+
+        /// <inheritdoc />
+        public TestProject NewProject(string projectName)
+        {
+            if (string.IsNullOrEmpty(projectName))
+                throw new ArgumentException("projectName");
+
+            var testProjectData = new TestProjectData();
+            return LoadProject(Path.GetDirectoryName(projectName), testProjectData);
         }
 
         /// <inheritdoc />

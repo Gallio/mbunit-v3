@@ -27,11 +27,9 @@ using Gallio.Icarus.Models;
 using Gallio.Icarus.Remoting;
 using Gallio.Model;
 using Gallio.Model.Filters;
-using Gallio.Model.Schema;
 using Gallio.Runner.Projects;
 using Gallio.Runner.Projects.Schema;
 using Gallio.Runtime.ProgressMonitoring;
-using Gallio.Icarus.Utilities;
 using Gallio.UI.Common.Policies;
 using Gallio.UI.Common.Synchronization;
 
@@ -45,6 +43,7 @@ namespace Gallio.Icarus.Controllers
         private readonly IXmlSerializer xmlSerializer;
         private readonly IFileWatcher fileWatcher;
         private readonly IUnhandledExceptionPolicy unhandledExceptionPolicy;
+        private readonly ITestProjectManager testProjectManager;
 
         private readonly List<FilterInfo> testFilters = new List<FilterInfo>();
         private readonly List<string> hintDirectories = new List<string>();
@@ -116,6 +115,8 @@ namespace Gallio.Icarus.Controllers
             this.xmlSerializer = xmlSerializer;
             this.fileWatcher = fileWatcher;
             this.unhandledExceptionPolicy = unhandledExceptionPolicy;
+
+            testProjectManager = new DefaultTestProjectManager(fileSystem, xmlSerializer);
 
             TestFilters = new BindingList<FilterInfo>(testFilters);
             TestFilters.ListChanged += delegate
@@ -263,8 +264,7 @@ namespace Gallio.Icarus.Controllers
         {
             using (progressMonitor.BeginTask("Loading project file", 100))
             {
-                var testProjectManager = new DefaultTestProjectManager(fileSystem, xmlSerializer);
-                TestProject testProject;
+                TestProject testProject = new TestProject();
 
                 try
                 {
@@ -273,31 +273,35 @@ namespace Gallio.Icarus.Controllers
                 catch (Exception ex)
                 {
                     unhandledExceptionPolicy.Report("Error loading project file.  The project file may not be compatible with this version of Gallio.", ex);
-                    testProject = new TestProject();
                 }
 
                 progressMonitor.Worked(50);
 
-                projectTreeModel.FileName = projectName;
-                projectTreeModel.TestProject = testProject;
-
-                fileWatcher.Clear();
-                GenericCollectionUtils.ForEach(testProject.TestPackage.Files, x => fileWatcher.Add(x.FullName));
-
-                PublishUpdates();
+                LoadProject(testProject, projectName);
             }
+        }
+
+        private void LoadProject(TestProject testProject, string projectName)
+        {
+            projectTreeModel.FileName = projectName;
+            projectTreeModel.TestProject = testProject;
+
+            fileWatcher.Clear();
+            GenericCollectionUtils.ForEach(testProject.TestPackage.Files, x => fileWatcher.Add(x.FullName));
+
+            PublishUpdates();
         }
 
         public void NewProject(IProgressMonitor progressMonitor)
         {
             using (progressMonitor.BeginTask("Creating new project", 100))
             {
-                projectTreeModel.FileName = Paths.DefaultProject;
-                projectTreeModel.TestProject = new TestProject();
-
-                fileWatcher.Clear();
-
-                PublishUpdates();
+                var projectName = Paths.DefaultProject;
+                var testProject = testProjectManager.NewProject(projectName);
+                
+                progressMonitor.Worked(50);
+                
+                LoadProject(testProject, projectName);
             }
         }
 
@@ -336,7 +340,6 @@ namespace Gallio.Icarus.Controllers
                 fileSystem.CreateDirectory(dir);
             progressMonitor.Worked(10);
 
-            var testProjectManager = new DefaultTestProjectManager(fileSystem, xmlSerializer);
             testProjectManager.SaveProject(projectTreeModel.TestProject, new FileInfo(projectName));
             progressMonitor.Worked(50);
 

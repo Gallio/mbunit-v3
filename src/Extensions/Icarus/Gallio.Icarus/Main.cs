@@ -197,6 +197,9 @@ namespace Gallio.Icarus
 
         private void Form_Load(object sender, EventArgs e)
         {
+            // provide WindowsFormsSynchronizationContext for cross-thread databinding
+            SynchronizationContext.Instance = new SynchronizationContext(System.Threading.SynchronizationContext.Current);
+
             Text = applicationController.Title;
 
             // setup window manager
@@ -219,9 +222,6 @@ namespace Gallio.Icarus
             {
                 DefaultDockState();
             }
-
-            // provide WindowsFormsSynchronizationContext for cross-thread databinding
-            SynchronizationContext.Instance = new SynchronizationContext(System.Threading.SynchronizationContext.Current);
 
             // restore window size & location
             if (!applicationController.Size.Equals(Size.Empty))
