@@ -17,16 +17,15 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Gallio.Common.Reflection
+namespace Gallio.NCoverIntegration.Tools
 {
     /// <summary>
-    /// A mirror describes a code element or attribute using a particular reflection policy.
+    /// The NCover version
     /// </summary>
-    public interface IMirror
+    public enum NCoverVersion
     {
-        /// <summary>
-        /// Gets the reflection policy of the mirror.
-        /// </summary>
-        IReflectionPolicy ReflectionPolicy { get; }
+        V1,
+        V2,
+        V3
     }
 }

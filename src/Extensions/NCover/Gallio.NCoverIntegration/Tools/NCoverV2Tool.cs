@@ -13,20 +13,33 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
 using System.Collections.Generic;
-using System.Text;
+using Gallio.Common.Concurrency;
 
-namespace Gallio.Common.Reflection
+namespace Gallio.NCoverIntegration.Tools
 {
-    /// <summary>
-    /// A mirror describes a code element or attribute using a particular reflection policy.
-    /// </summary>
-    public interface IMirror
+    public class NCoverV2Tool : NCoverTool
     {
-        /// <summary>
-        /// Gets the reflection policy of the mirror.
-        /// </summary>
-        IReflectionPolicy ReflectionPolicy { get; }
+        public static readonly NCoverV2Tool Instance = new NCoverV2Tool();
+
+        public override string Name
+        {
+            get { return "NCover v2"; }
+        }
+
+        public override string GetInstallDir()
+        {
+            return GetNCoverInstallDirFromRegistry("2.");
+        }
+
+        protected override bool RequiresDotNet20
+        {
+            get { return true; }
+        }
+
+        protected override ProcessTask CreateMergeTask(IList<string> sources, string destination)
+        {
+            return CreateNCoverExplorerConsoleMergeTask("", sources, destination);
+        }
     }
 }

@@ -16,10 +16,10 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Reflection;
 using Gallio.Common.Collections;
 using Gallio.Common.Policies;
 using Gallio.Model.Isolation;
+using Gallio.NCoverIntegration.Tools;
 using Gallio.Runtime;
 using Gallio.Runtime.Hosting;
 using Gallio.Runtime.Logging;
@@ -31,7 +31,7 @@ namespace Gallio.NCoverIntegration
     /// </summary>
     public class NCoverTestIsolationContext : HostedTestIsolationContext
     {
-        private readonly NCoverVersion version;
+        private readonly NCoverTool tool;
         private Batch batch;
 
         /// <summary>
@@ -40,19 +40,22 @@ namespace Gallio.NCoverIntegration
         /// <param name="testIsolationOptions">The test isolation options.</param>
         /// <param name="logger">The logger.</param>
         /// <param name="runtime">The runtime.</param>
-        /// <param name="version">The NCover version.</param>
+        /// <param name="tool">The NCover tool.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="testIsolationOptions" />,
-        /// <paramref name="logger"/> or <paramref name="runtime"/> is null.</exception>
+        /// <paramref name="logger"/>, <paramref name="runtime"/> or <paramref name="tool"/> is null.</exception>
         public NCoverTestIsolationContext(TestIsolationOptions testIsolationOptions, ILogger logger,
-            IRuntime runtime, NCoverVersion version)
-            : base(new NCoverHostFactory(runtime, version), testIsolationOptions, logger)
+            IRuntime runtime, NCoverTool tool)
+            : base(new NCoverHostFactory(runtime, tool), testIsolationOptions, logger)
         {
-            this.version = version;
+            this.tool = tool;
         }
 
         /// <inheritdoc />
         protected override object RunIsolatedTaskInHost<TIsolatedTask>(HostSetup hostSetup, StatusReporter statusReporter, object[] args)
         {
+            if (!tool.IsInstalled())
+                throw new TestIsolationException(string.Format("{0} does not appear to be installed.", tool.Name));
+
             string ncoverArguments, ncoverCoverageFile;
             NCoverHost.GetNCoverProperties(hostSetup, out ncoverArguments, out ncoverCoverageFile);
 
@@ -73,20 +76,22 @@ namespace Gallio.NCoverIntegration
         /// <inheritdoc />
         protected override IDisposable BeginBatchImpl(StatusReporter statusReporter)
         {
-            batch = new Batch(version, statusReporter);
+            batch = new Batch(tool, statusReporter, Logger);
             return batch;
         }
 
         private sealed class Batch : IDisposable
         {
-            private readonly NCoverVersion version;
+            private readonly NCoverTool tool;
             private readonly StatusReporter statusReporter;
             private readonly MultiMap<string, string> coverageFiles;
+            private readonly ILogger logger;
 
-            public Batch(NCoverVersion version, StatusReporter statusReporter)
+            public Batch(NCoverTool tool, StatusReporter statusReporter, ILogger logger)
             {
-                this.version = version;
+                this.tool = tool;
                 this.statusReporter = statusReporter;
+                this.logger = logger;
 
                 coverageFiles = new MultiMap<string, string>();
             }
@@ -110,7 +115,7 @@ namespace Gallio.NCoverIntegration
 
             private void Merge(IList<string> sources, string destination)
             {
-                NCoverTool.Merge(version, sources, destination);
+                tool.Merge(sources, destination, logger);
             }
         }
     }

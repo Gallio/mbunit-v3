@@ -14,13 +14,13 @@
 // limitations under the License.
 
 using System;
-using System.Diagnostics;
 using System.IO;
+using Gallio.Common.IO;
 using Gallio.Common.Policies;
 using Gallio.Framework;
-using Gallio.Model;
 using Gallio.Model.Filters;
 using Gallio.Common.Reflection;
+using Gallio.NCoverIntegration.Tools;
 using Gallio.Runner;
 using Gallio.Runtime.Logging;
 using MbUnit.Framework;
@@ -29,26 +29,25 @@ using MbUnit.TestResources;
 namespace Gallio.NCoverIntegration.Tests
 {
     [TestFixture]
-    [TestsOn(typeof(NCoverHost))]
-    [TestsOn(typeof(NCoverHostFactory))]
-    public class NCoverHostIntegrationTest
+    [TestsOn(typeof(NCoverTestIsolationProvider))]
+    public class NCoverTestIsolationProviderIntegrationTest
     {
         [Test]
-        [Row("NCover", 0, null, false)]
-        [Row("NCover2", 2, null, false)]
-        [Row("NCover3", 3, null, false)]
-        [Row("NCover", 0, "DifferentFile.xml", true)]
-        [Row("NCover2", 2, "DifferentFile.xml", true)]
-        [Row("NCover3", 3, "DifferentFile.xml", true)]
-        public void GeneratesNCoverCoverageAndProcessesHostProperties(string factoryName, int majorVersion,
-            string ncoverCoverageFile, bool includeLogArgument)
+        [Row("NCover", NCoverVersion.V1, null, false, false)]
+        [Row("NCover2", NCoverVersion.V2, null, false, false)]
+        [Row("NCover3", NCoverVersion.V3, null, false, false)]
+        [Row("NCover", NCoverVersion.V1, "DifferentFile.xml", true, true)]
+        [Row("NCover2", NCoverVersion.V2, "DifferentFile.xml", true, true)]
+        [Row("NCover3", NCoverVersion.V3, "DifferentFile.xml", true, true)]
+        public void GeneratesNCoverCoverageWithCorrectOptionsAndMergesIfNecessary(string factoryName, NCoverVersion version,
+            string ncoverCoverageFile, bool includeLogArgument, bool runMultipleAssemblies)
         {
-            string tempPath = SpecialPathPolicy.For<NCoverHostIntegrationTest>().GetTempDirectory().FullName;
+            string tempPath = SpecialPathPolicy.For<NCoverTestIsolationProviderIntegrationTest>().GetTempDirectory().FullName;
             string coverageFilePath = Path.Combine(tempPath, ncoverCoverageFile ?? "Coverage.xml");
             string coverageLogFilePath = Path.Combine(tempPath, "CoverageLog.txt");
 
             string ncoverArguments = includeLogArgument
-                ? "//l \"" + coverageLogFilePath + "\"" + (majorVersion == 0 ? "" : " //ll Normal")
+                ? "//l \"" + coverageLogFilePath + "\"" + (version == NCoverVersion.V1 ? "" : " //ll Normal")
                 : null;
 
             if (File.Exists(coverageFilePath))
@@ -57,36 +56,51 @@ namespace Gallio.NCoverIntegration.Tests
             if (File.Exists(coverageLogFilePath))
                 File.Delete(coverageLogFilePath);
 
-            Type simpleTestType = typeof(SimpleTest);
+            Type firstTestType = typeof(SimpleTest);
+            Type secondTestType = typeof(DummyTest);
 
             TestLauncher launcher = new TestLauncher();
             launcher.Logger = new MarkupStreamLogger(TestLog.Default);
-            launcher.TestProject.TestPackage.AddFile(new FileInfo(AssemblyUtils.GetAssemblyLocalPath(simpleTestType.Assembly)));
-            launcher.TestProject.TestPackage.WorkingDirectory = new DirectoryInfo(tempPath);
+
+            launcher.TestProject.TestPackage.AddFile(new FileInfo(AssemblyUtils.GetAssemblyLocalPath(firstTestType.Assembly)));
+            if (runMultipleAssemblies)
+                launcher.TestProject.TestPackage.AddFile(new FileInfo(AssemblyUtils.GetAssemblyLocalPath(secondTestType.Assembly)));
+
             launcher.TestProject.TestRunnerFactoryName = factoryName;
-            launcher.TestExecutionOptions.FilterSet = new FilterSet<ITestDescriptor>(new TypeFilter<ITestDescriptor>(new EqualityFilter<string>(simpleTestType.FullName), false));
+            launcher.TestExecutionOptions.FilterSet = new FilterSet<ITestDescriptor>(
+                new OrFilter<ITestDescriptor>(new[]
+                    {
+                        new TypeFilter<ITestDescriptor>(new EqualityFilter<string>(firstTestType.FullName), false),
+                        new TypeFilter<ITestDescriptor>(new EqualityFilter<string>(secondTestType.FullName), false),
+                    }));
 
             if (ncoverArguments != null)
                 launcher.TestRunnerOptions.AddProperty("NCoverArguments", ncoverArguments);
             if (ncoverCoverageFile != null)
                 launcher.TestRunnerOptions.AddProperty("NCoverCoverageFile", ncoverCoverageFile);
 
-            TestLauncherResult result = launcher.Run();
+            TestLauncherResult result;
+            using (new CurrentDirectorySwitcher(tempPath))
+                result = launcher.Run();
 
-            if (majorVersion != 0 && !NCoverTool.IsNCoverVersionInstalled(majorVersion))
+            NCoverTool tool = NCoverTool.GetInstance(version);
+            if (! tool.IsInstalled())
             {
                 Assert.AreEqual(ResultCode.Failure, result.ResultCode);
 
                 var logEntries = result.Report.LogEntries;
-                Assert.AreEqual(1, logEntries.Count);
+                Assert.AreEqual(1, logEntries.Count, "Expected to find a log entry.");
                 Assert.AreEqual(LogSeverity.Error, logEntries[0].Severity);
-                Assert.Contains(logEntries[0].Details, "NCover v" + majorVersion + " does not appear to be installed.");
+                Assert.Contains(logEntries[0].Details, tool.Name + " does not appear to be installed.");
             }
             else
             {
-                Assert.AreEqual(2, result.Statistics.RunCount);
-                Assert.AreEqual(1, result.Statistics.PassedCount);
-                Assert.AreEqual(1, result.Statistics.FailedCount);
+                int passed = runMultipleAssemblies ? 2 : 1;
+                int failed = 1;
+
+                Assert.AreEqual(passed + failed, result.Statistics.RunCount);
+                Assert.AreEqual(passed, result.Statistics.PassedCount);
+                Assert.AreEqual(failed, result.Statistics.FailedCount);
                 Assert.AreEqual(0, result.Statistics.InconclusiveCount);
                 Assert.AreEqual(0, result.Statistics.SkippedCount);
 
@@ -96,11 +110,20 @@ namespace Gallio.NCoverIntegration.Tests
                 string coverageXml = File.ReadAllText(coverageFilePath);
                 File.Delete(coverageFilePath);
 
-                Assert.Contains(coverageXml, simpleTestType.Name,
+                Assert.Contains(coverageXml, firstTestType.Name,
                     "Expected the coverage log to include information about the test method that we actually ran.\n"
                     + "In NCover v3, there is now a list of excluded 'system assemblies' in NCover.Console.exe.config which "
                     + "specifies MbUnit and Gallio by default.  For this test to run, the file must be edited such that "
                     + "these entries are removed.");
+
+                if (runMultipleAssemblies)
+                {
+                    Assert.Contains(coverageXml, secondTestType.Name,
+                        "Expected the coverage log to include information about the test method that we actually ran.\n"
+                        + "In NCover v3, there is now a list of excluded 'system assemblies' in NCover.Console.exe.config which "
+                        + "specifies MbUnit and Gallio by default.  For this test to run, the file must be edited such that "
+                        + "these entries are removed.");
+                }
 
                 if (ncoverArguments != null && ncoverArguments.Contains("/l"))
                 {

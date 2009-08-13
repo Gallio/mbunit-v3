@@ -28,7 +28,7 @@
             <Component Id="Gallio.Icarus.MenuShortcut" Guid="24507684-a556-421e-8081-33be552794a2" Win64="no">
                 <Condition>INSTALLSTARTMENUSHORTCUT</Condition>
                 <CreateFolder />
-                <RegistryKey Action="none" Root="HKCU" Key="Software\Gallio.org\Gallio\3.0">
+                <RegistryKey Action="none" Root="HKCU" Key="Software\Gallio.org\Gallio\$(var.MajorVersion).$(var.MinorVersion)">
                     <RegistryValue Type="string" Value="[INSTALLDIR]" KeyPath="yes" />
                 </RegistryKey>
                 <Shortcut Id="Gallio.Icarus.lnk" Name="Icarus GUI Test Runner" Icon="Gallio.icon.exe" IconIndex="0" Target="[#Gallio.Icarus.exe]" Directory="GallioMenuFolder" WorkingDirectory="binFolder" Advertise="no" Show="normal" />
@@ -40,7 +40,7 @@
         <DirectoryRef Id="DesktopFolder">
             <Component Id="Gallio.Icarus.DesktopShortcut" Guid="0738b1ff-91a5-47cc-b130-5eb6cdee925d" Win64="no">
                 <Condition>INSTALLDESKTOPSHORTCUT</Condition>
-                <RegistryKey Action="none" Root="HKCU" Key="Software\Gallio.org\Gallio\3.0">
+                <RegistryKey Action="none" Root="HKCU" Key="Software\Gallio.org\Gallio\$(var.MajorVersion).$(var.MinorVersion)">
                     <RegistryValue Type="string" Value="[INSTALLDIR]" KeyPath="yes" />
                 </RegistryKey>
                 <Shortcut Id="Gallio.Icarus.Desktop.lnk" Name="Gallio Icarus" Icon="Gallio.icon.exe" IconIndex="0" Target="[#Gallio.Icarus.exe]" Directory="DesktopFolder" WorkingDirectory="binFolder" Advertise="no" Show="normal" />

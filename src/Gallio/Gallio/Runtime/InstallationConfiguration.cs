@@ -27,13 +27,7 @@ namespace Gallio.Runtime
     [Serializable]
     public class InstallationConfiguration
     {
-        private static readonly Pair<RegistryKey, string>[] RootKeys = new[]
-        {
-            new Pair<RegistryKey, string>(Registry.CurrentUser, @"Software\Gallio.org\Gallio\3.0"),
-            new Pair<RegistryKey, string>(Registry.CurrentUser, @"Software\Wow6432Node\Gallio.org\Gallio\3.0"),
-            new Pair<RegistryKey, string>(Registry.LocalMachine, @"Software\Gallio.org\Gallio\3.0"),
-            new Pair<RegistryKey, string>(Registry.LocalMachine, @"Software\Wow6432Node\Gallio.org\Gallio\3.0")
-        };
+        private static readonly Pair<RegistryKey, string>[] RootKeys;
 
         private const string AdditionalPluginDirectoriesSubKey = @"AdditionalPluginDirectories";
 
@@ -41,6 +35,20 @@ namespace Gallio.Runtime
         private string installationFolder;
         private Guid installationId;
         private readonly List<string> additionalPluginDirectories = new List<string>();
+
+        static InstallationConfiguration()
+        {
+            Version version = typeof(InstallationConfiguration).Assembly.GetName().Version;
+            string versionKey = version.Major + "." + version.Minor;
+
+            RootKeys = new[]
+            {
+                new Pair<RegistryKey, string>(Registry.CurrentUser, @"Software\Gallio.org\Gallio\" + versionKey),
+                new Pair<RegistryKey, string>(Registry.CurrentUser, @"Software\Wow6432Node\Gallio.org\Gallio\" + versionKey),
+                new Pair<RegistryKey, string>(Registry.LocalMachine, @"Software\Gallio.org\Gallio\" + versionKey),
+                new Pair<RegistryKey, string>(Registry.LocalMachine, @"Software\Wow6432Node\Gallio.org\Gallio\" + versionKey)
+            };
+        }
 
         /// <summary>
         /// Loads the configuration from the registry.

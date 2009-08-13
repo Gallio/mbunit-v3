@@ -15,8 +15,7 @@
 
 using System;
 using System.IO;
-using System.Reflection;
-using Gallio.Common.Platform;
+using Gallio.NCoverIntegration.Tools;
 using Gallio.Runtime.Logging;
 using Gallio.Common.Concurrency;
 using Gallio.Runtime.Hosting;
@@ -29,7 +28,7 @@ namespace Gallio.NCoverIntegration
     /// </summary>
     public class NCoverHost : IsolatedProcessHost
     {
-        private readonly NCoverVersion version;
+        private readonly NCoverTool tool;
 
         /// <summary>
         /// Creates an uninitialized host.
@@ -37,13 +36,17 @@ namespace Gallio.NCoverIntegration
         /// <param name="hostSetup">The host setup.</param>
         /// <param name="logger">The logger for host message output.</param>
         /// <param name="installationPath">The runtime installation path where the hosting executable will be found.</param>
-        /// <param name="version">The NCover version.</param>
+        /// <param name="tool">The NCover tool.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="hostSetup"/> 
-        /// <paramref name="logger"/>, or <paramref name="installationPath"/> is null.</exception>
-        public NCoverHost(HostSetup hostSetup, ILogger logger, string installationPath, NCoverVersion version)
-            : base(ForceProcessorArchitectureAndRuntimeVersionIfRequired(hostSetup, version), logger, installationPath)
+        /// <paramref name="logger"/>, <paramref name="installationPath"/>
+        /// or <paramref name="tool"/> is null.</exception>
+        public NCoverHost(HostSetup hostSetup, ILogger logger, string installationPath, NCoverTool tool)
+            : base(ForceProcessorArchitectureAndRuntimeVersionIfRequired(hostSetup, tool), logger, installationPath)
         {
-            this.version = version;
+            if (tool == null)
+                throw new ArgumentNullException("tool");
+
+            this.tool = tool;
         }
 
         /// <inheritdoc />
@@ -51,7 +54,8 @@ namespace Gallio.NCoverIntegration
         {
             string ncoverArguments, ncoverCoverageFile;
             GetNCoverProperties(HostSetup, out ncoverArguments, out ncoverCoverageFile);
-            return NCoverTool.CreateProcessTask(executablePath, arguments, workingDirectory, version, Logger, ncoverArguments, ncoverCoverageFile);
+
+            return tool.CreateNCoverConsoleTask(executablePath, arguments, workingDirectory, ncoverArguments, ncoverCoverageFile, Logger);
         }
 
         internal static void GetNCoverProperties(HostSetup hostSetup,
@@ -65,7 +69,7 @@ namespace Gallio.NCoverIntegration
             if (string.IsNullOrEmpty(ncoverCoverageFile))
                 ncoverCoverageFile = "Coverage.xml";
 
-            ncoverCoverageFile = Path.Combine(hostSetup.WorkingDirectory ?? Environment.CurrentDirectory, ncoverCoverageFile);
+            ncoverCoverageFile = Path.GetFullPath(ncoverCoverageFile);
         }
 
         internal static void SetNCoverCoverageFile(HostSetup hostSetup, string ncoverCoverageFile)
@@ -74,30 +78,12 @@ namespace Gallio.NCoverIntegration
             hostSetup.AddProperty("NCoverCoverageFile", ncoverCoverageFile);
         }
 
-        private static HostSetup ForceProcessorArchitectureAndRuntimeVersionIfRequired(HostSetup hostSetup, NCoverVersion version)
+        private static HostSetup ForceProcessorArchitectureAndRuntimeVersionIfRequired(HostSetup hostSetup, NCoverTool tool)
         {
             hostSetup = hostSetup.Copy();
 
-            // NCover v1 only supports x86
-            if (version == NCoverVersion.V1)
-            {
-                ProcessorArchitecture currentArch = hostSetup.ProcessorArchitecture;
-                if (currentArch == ProcessorArchitecture.Amd64 || currentArch == ProcessorArchitecture.IA64)
-                    throw new HostException("NCover v1.5.8 must run code as a 32bit process but the requested architecture was 64bit.");
-
-                hostSetup.ProcessorArchitecture = ProcessorArchitecture.X86;
-            }
-
-            // All NCover versions currently support .Net 2.0 only.
-            if (hostSetup.RuntimeVersion == null)
-            {
-                hostSetup.RuntimeVersion = DotNetRuntimeSupport.InstalledDotNet20RuntimeVersion;
-            }
-            else
-            {
-                if (!hostSetup.RuntimeVersion.Contains("2.0."))
-                    throw new HostException(string.Format("NCover does not support .Net runtime {0} at this time.", hostSetup.RuntimeVersion));
-            }
+            hostSetup.ProcessorArchitecture = tool.NegotiateProcessorArchitecture(hostSetup.ProcessorArchitecture);
+            hostSetup.RuntimeVersion = tool.NegotiateRuntimeVersion(hostSetup.RuntimeVersion);
 
             return hostSetup;
         }

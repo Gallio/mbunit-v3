@@ -35,9 +35,8 @@ namespace Gallio.Runtime.Debugging
             if (logger == null)
                 throw new ArgumentNullException("logger");
 
-            // FIXME: Should resolve service using IoC but runtime start-up time is too crappy in v3.0
-            //        for some cases where we would like to use the debugger.  (Like in the host process.)
-            //        Replace when runtime has been rewritten.  -- Jeff.
+            // FIXME: Should resolve service using IoC but we would have to start the runtime
+            //        which is a lot of overhead for the host process.  -- Jeff.
             Type debuggerType = Type.GetType(VisualStudioDebuggerTypeName);
             if (debuggerType == null)
                 return new NullDebugger();

@@ -59,7 +59,7 @@ echo Installing Gallio.Loader assembly into GAC.
 echo.
 
 echo Adding registry keys.
-"%REG%" ADD "HKEY_LOCAL_MACHINE\Software\Gallio.org\Gallio\3.0" /V InstallationFolder /D "%SRC_DIR%Gallio\Gallio" /F >nul
+"%REG%" ADD "HKEY_LOCAL_MACHINE\Software\Gallio.org\Gallio\0.0" /V InstallationFolder /D "%SRC_DIR%Gallio\Gallio" /F >nul
 echo.
 
 echo Installing installable components.
@@ -78,7 +78,7 @@ echo Uninstalling Gallio.Loader assembly from GAC.
 echo.
 
 echo Deleting registry keys.
-"%REG%" DELETE "HKEY_LOCAL_MACHINE\Software\Gallio.org\Gallio\3.0" /V InstallationFolder /F 2>nul >nul
+"%REG%" DELETE "HKEY_LOCAL_MACHINE\Software\Gallio.org\Gallio\0.0" /V InstallationFolder /F 2>nul >nul
 echo.
 
 echo Uninstalling installable components.

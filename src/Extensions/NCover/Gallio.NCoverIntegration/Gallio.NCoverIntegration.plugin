@@ -15,20 +15,35 @@
   <files>
     <file path="Gallio.NCoverIntegration.plugin" />
     <file path="Gallio.NCoverIntegration.dll" />
-    <file path="v1.5.8\Coverage.xsl" />
-    <file path="v1.5.8\CoverLib.dll" />
-    <file path="v1.5.8\Microsoft.VC80.CRT.manifest" />
-    <file path="v1.5.8\MSVCP80.dll" />
-    <file path="v1.5.8\MSVCR80.dll" />
-    <file path="v1.5.8\NCover.Console.exe" />
-    <file path="v1.5.8\NCover.Console.exe.config" />
-    <file path="v1.5.8\NCover.Framework.dll" />
-    <file path="v1.5.8\NCoverFAQ.html" />
-  </files>
 
-  <probingPaths>
-    <probingPath>v1.5.8</probingPath>
-  </probingPaths>
+    <file path="libs\NCover Readme.txt"/>
+
+    <file path="libs\NCover\Coverage.xsl" />
+    <file path="libs\NCover\CoverLib.dll" />
+    <file path="libs\NCover\Microsoft.VC80.CRT.manifest" />
+    <file path="libs\NCover\MSVCP80.dll" />
+    <file path="libs\NCover\MSVCR80.dll" />
+    <file path="libs\NCover\NCover.Console.exe" />
+    <file path="libs\NCover\NCover.Console.exe.config" />
+    <file path="libs\NCover\NCover.Framework.dll" />
+    <file path="libs\NCover\NCoverFAQ.html" />
+
+    <file path="libs\NCoverExplorer Readme.txt"/>
+
+    <file path="libs\NCoverExplorer\CommandBars.dll"/>
+    <file path="libs\NCoverExplorer\ConsoleConfig.xsd"/>
+    <file path="libs\NCoverExplorer\ConsoleExample.config"/>
+    <file path="libs\NCoverExplorer\CoverageReport.xsl"/>
+    <file path="libs\NCoverExplorer\ICSharpCode.TextEditor.dll"/>
+    <file path="libs\NCoverExplorer\license.txt"/>
+    <file path="libs\NCoverExplorer\NCoverExplorer.Console.exe"/>
+    <file path="libs\NCoverExplorer\NCoverExplorer.Core.dll"/>
+    <file path="libs\NCoverExplorer\NCoverExplorer.exe"/>
+    <file path="libs\NCoverExplorer\NCoverExplorer.exe.config"/>
+    <file path="libs\NCoverExplorer\NCoverExplorer.NCoverRunner.dll"/>
+    <file path="libs\NCoverExplorer\NCoverExplorerFAQ.html"/>
+    <file path="libs\NCoverExplorer\NCoverExplorerReleaseNotes.html"/>
+  </files>
 
   <assemblies>
     <assembly fullName="Gallio.NCoverIntegration, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null"
@@ -38,9 +53,6 @@
         <bindingRedirect oldVersion="0.0.0.0-65535.65535.65535.65535" />
       </bindingRedirects>
     </assembly>
-
-    <assembly fullName="NCover.Framework, Version=1.5.8.0, Culture=neutral, PublicKeyToken=f4018786f4b01bc6"
-              codeBase="NCover.Framework.dll" />
   </assemblies>
 
   <components>
@@ -60,7 +72,7 @@
 
           Supported test runner properties:
           - NCoverArguments: Specifies additional command-line arguments for NCover.  eg. "//eas Gallio"
-          - NCoverCoverageFile: Specifies the path of the coverage file to write.  The default is 'Coverage.xml'.
+          - NCoverCoverageFile: Specifies the path of the coverage file to write.  The default is 'Coverage.xml' in the current working directory.
         </description>
       </traits>
     </component>

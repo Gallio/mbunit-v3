@@ -80,7 +80,7 @@
             <!-- Component to remove the Gallio menu folder on uninstall (if empty) -->
             <Component Id="GallioMenuFolder.RemoveFolder" Guid="{49243D14-436D-47a1-BE3A-AFF7C66C0DFF}">
                 <RemoveFolder Id="GallioMenuFolder.RemoveFolder" On="uninstall" />
-                <RegistryKey Action="none" Root="HKCU" Key="Software\Gallio.org\Gallio\3.0">
+                <RegistryKey Action="none" Root="HKCU" Key="Software\Gallio.org\Gallio\$(var.MajorVersion).$(var.MinorVersion)">
                     <RegistryValue Type="string" Value="[INSTALLDIR]" KeyPath="yes" />
                 </RegistryKey>
             </Component>
@@ -90,7 +90,7 @@
             <!-- Component to remove the Samples menu folder on uninstall (if empty) -->
             <Component Id="SamplesMenuFolder.RemoveFolder" Guid="{19D19824-95C4-4793-8E8C-0E1088D3C129}">
                 <RemoveFolder Id="SamplesMenuFolder.RemoveFolder" On="uninstall" />
-                <RegistryKey Action="none" Root="HKCU" Key="Software\Gallio.org\Gallio\3.0">
+                <RegistryKey Action="none" Root="HKCU" Key="Software\Gallio.org\Gallio\$(var.MajorVersion).$(var.MinorVersion)">
                     <RegistryValue Type="string" Value="[INSTALLDIR]" KeyPath="yes" />
                 </RegistryKey>
             </Component>

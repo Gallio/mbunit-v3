@@ -15,17 +15,21 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using MbUnit.Framework;
 
-namespace Gallio.NCoverIntegration
+namespace Gallio.NCoverIntegration.Tests
 {
     /// <summary>
-    /// The NCover version
+    /// This is just an extra test fixture for our integration test to run.
     /// </summary>
-    public enum NCoverVersion
+    [Explicit("Sample")]
+    public class DummyTest
     {
-        V1,
-        V2,
-        V3
+        [Test]
+        public void Test()
+        {
+        }
     }
 }

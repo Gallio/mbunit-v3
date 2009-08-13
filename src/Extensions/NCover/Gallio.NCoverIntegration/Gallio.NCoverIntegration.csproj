@@ -37,11 +37,6 @@
     <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="NCover.Framework, Version=1.5.8.0, Culture=neutral, PublicKeyToken=f4018786f4b01bc6, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\libs\v1.5.8\NCover.Framework.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
@@ -51,10 +46,13 @@
     <Compile Include="NCoverTestIsolationProvider.cs" />
     <Compile Include="NCoverHost.cs" />
     <Compile Include="NCoverHostFactory.cs" />
-    <Compile Include="NCoverTool.cs" />
-    <Compile Include="NCoverVersion.cs" />
+    <Compile Include="Tools\NCoverToolException.cs" />
+    <Compile Include="Tools\NCoverVersion.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="EmbeddedNCoverProcessTask.cs" />
+    <Compile Include="Tools\NCoverTool.cs" />
+    <Compile Include="Tools\NCoverV1Tool.cs" />
+    <Compile Include="Tools\NCoverV2Tool.cs" />
+    <Compile Include="Tools\NCoverV3Tool.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\Gallio\Gallio\Gallio.csproj">
@@ -63,45 +61,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="..\libs\v1.5.8\NCover.Console.exe">
-      <Link>v1.5.8\NCover.Console.exe</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="Gallio.NCoverIntegration.plugin" />
-    <Content Include="..\libs\v1.5.8\NCover.Framework.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <Link>v1.5.8\NCover.Framework.dll</Link>
-    </Content>
-    <Content Include="..\libs\v1.5.8\CoverLib.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <Link>v1.5.8\CoverLib.dll</Link>
-    </Content>
-    <Content Include="..\libs\v1.5.8\MSVCP80.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <Link>v1.5.8\MSVCP80.dll</Link>
-    </Content>
-    <Content Include="..\libs\v1.5.8\MSVCR80.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <Link>v1.5.8\MSVCR80.dll</Link>
-    </Content>
-    <Content Include="..\libs\v1.5.8\Microsoft.VC80.CRT.manifest">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <Link>v1.5.8\Microsoft.VC80.CRT.manifest</Link>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="..\libs\v1.5.8\Coverage.xsl">
-      <Link>v1.5.8\Coverage.xsl</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\libs\v1.5.8\NCover.Console.exe.config">
-      <Link>v1.5.8\NCover.Console.exe.config</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\libs\v1.5.8\NCoverFAQ.html">
-      <Link>v1.5.8\NCoverFAQ.html</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

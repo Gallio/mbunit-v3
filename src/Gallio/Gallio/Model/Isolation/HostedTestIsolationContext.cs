@@ -55,6 +55,30 @@ namespace Gallio.Model.Isolation
             this.logger = logger;
         }
 
+        /// <summary>
+        /// Gets the host factory.
+        /// </summary>
+        public IHostFactory HostFactory
+        {
+            get { return hostFactory; }
+        }
+
+        /// <summary>
+        /// Gets the test isolation options.
+        /// </summary>
+        public TestIsolationOptions TestIsolationOptions
+        {
+            get { return testIsolationOptions; }
+        }
+
+        /// <summary>
+        /// Gets the logger.
+        /// </summary>
+        public ILogger Logger
+        {
+            get { return logger; }
+        }
+
         /// <inheritdoc />
         sealed protected override object RunIsolatedTaskImpl<TIsolatedTask>(HostSetup hostSetup, StatusReporter statusReporter, object[] args)
         {

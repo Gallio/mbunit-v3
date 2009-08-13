@@ -12,7 +12,7 @@
             <Component Id="MbUnitSamples.MenuShortcut" Guid="{7B70DB04-0ADA-4efa-9885-D4AB87938BEB}" Win64="no">
                 <Condition>INSTALLSTARTMENUSHORTCUT</Condition>
                 <CreateFolder />
-                <RegistryKey Action="none" Root="HKCU" Key="Software\Gallio.org\Gallio\3.0">
+                <RegistryKey Action="none" Root="HKCU" Key="Software\Gallio.org\Gallio\$(var.MajorVersion).$(var.MinorVersion)">
                     <RegistryValue Type="string" Value="[INSTALLDIR]" KeyPath="yes" />
                 </RegistryKey>
                 <Shortcut Id="MbUnitSamples.lnk" Name="MbUnit Samples" Target="[#MbUnitSamples.zip]" Directory="SamplesMenuFolder" WorkingDirectory="binFolder" Advertise="no" Show="normal" />

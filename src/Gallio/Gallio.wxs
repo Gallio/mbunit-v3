@@ -31,8 +31,8 @@
             <Component Id="Gallio.Registry" Guid="{1AE1AC98-1FF2-4913-9ACA-EB8018E40508}" Win64="no">
                 <RegistryKey Id="Gallio.RegistryKey1" Action="createAndRemoveOnUninstall"
                              Root="HKLM" Key="SOFTWARE\Gallio.org\Gallio">
-                    <RegistryValue Type="string" Name="CurrentVersion" Value="3.0"/>
-                    <RegistryKey Key="3.0" Action="createAndRemoveOnUninstall">
+                    <RegistryValue Type="string" Name="CurrentVersion" Value="$(var.MajorVersion).$(var.MinorVersion)"/>
+                    <RegistryKey Key="$(var.MajorVersion).$(var.MinorVersion)" Action="createAndRemoveOnUninstall">
                         <RegistryValue Type="string" Name="Version" Value="[ProductVersion]"/>
                         <RegistryValue Type="string" Name="InstallationFolder" Value="[INSTALLDIR]"/>
                         <RegistryKey Key="AdditionalPluginDirectories" Action="createAndRemoveOnUninstall"/>

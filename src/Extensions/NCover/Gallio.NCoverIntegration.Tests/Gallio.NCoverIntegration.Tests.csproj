@@ -47,7 +47,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="NCoverHostIntegrationTest.cs" />
+    <Compile Include="DummyTest.cs" />
+    <Compile Include="NCoverTestIsolationProviderIntegrationTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
