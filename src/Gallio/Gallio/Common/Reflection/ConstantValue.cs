@@ -171,8 +171,10 @@ namespace Gallio.Common.Reflection
             if (IsEnum)
             {
                 Type enumType = type.Resolve(throwOnError);
-                if (! Reflector.IsUnresolved(enumType))
-                    return Enum.ToObject(enumType, underlyingValue);
+                if (Reflector.IsUnresolved(enumType))
+                    enumType = typeof(UnresolvedEnum);
+
+                return Enum.ToObject(enumType, underlyingValue);
             }
 
             return underlyingValue;
@@ -219,6 +221,14 @@ namespace Gallio.Common.Reflection
                 default:
                     return value;
             }
+        }
+
+        /// <summary>
+        /// A placeholder enum type used to express enum values that cannot be resolved because
+        /// their actual enum type cannot be resolved.
+        /// </summary>
+        public enum UnresolvedEnum : long
+        {
         }
     }
 }

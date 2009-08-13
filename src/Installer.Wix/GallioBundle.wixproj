@@ -2,11 +2,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
-    <Version Condition="'$(Version)'==''">3.0.0.0</Version>
-    <MajorVersion Condition="'$(MajorVersion)'==''">3</MajorVersion>
+    <Version Condition="'$(Version)'==''">0.0.0.0</Version>
+    <MajorVersion Condition="'$(MajorVersion)'==''">0</MajorVersion>
     <MinorVersion Condition="'$(MinorVersion)'==''">0</MinorVersion>
     <BuildNumber Condition="'$(BuildNumber)'==''">0</BuildNumber>
-    <ProductVersion>3.0</ProductVersion>
+    <ProductVersion>0.0</ProductVersion>
     <ProjectGuid>{a00a00a0-a0a0-4355-a2e3-b48284792334}</ProjectGuid>
     <SchemaVersion>2.0</SchemaVersion>
     <OutputName>GallioBundle-$(Version)-Setup-$(Platform)</OutputName>

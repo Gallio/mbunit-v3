@@ -62,13 +62,8 @@ namespace Gallio.Loader
     /// </remarks>
     public sealed class GallioLoader : MarshalByRefObject, IGallioLoader
     {
-        private static readonly string[] RootKeys = new[]
-        {
-            @"HKEY_CURRENT_USER\Software\Gallio.org\Gallio\3.0",
-            @"HKEY_CURRENT_USER\Software\Wow6432Node\Gallio.org\Gallio\3.0",
-            @"HKEY_LOCAL_MACHINE\Software\Gallio.org\Gallio\3.0",
-            @"HKEY_LOCAL_MACHINE\Software\Wow6432Node\Gallio.org\Gallio\3.0"
-        };
+        private static readonly object SyncRoot = new object();
+        private static readonly string[] RootKeys;
 
         private const string GallioLoaderBootstrapTypeFullName = "Gallio.Runtime.Loader.GallioLoaderBootstrap";
         private const string BootstrapInstallAssemblyLoaderMethodName = "InstallAssemblyLoader";
@@ -76,14 +71,26 @@ namespace Gallio.Loader
         private const string BootstrapAddHintDirectoryMethodName = "AddHintDirectory";
         private const string BootstrapResolveMethodName = "Resolve";
 
-        private static readonly object syncRoot = new object();
-
         private static GallioLoader instance;
         private static string defaultRuntimePath;
         
         private readonly string runtimePath;
         private readonly Assembly gallioAssembly;
         private readonly Type bootstrapType;
+
+        static GallioLoader()
+        {
+            Version version = typeof(GallioLoader).Assembly.GetName().Version;
+            string versionKey = version.Major + "." + version.Minor;
+
+            RootKeys = new[]
+            {
+                @"HKEY_CURRENT_USER\Software\Gallio.org\Gallio\" + versionKey,
+                @"HKEY_CURRENT_USER\Software\Wow6432Node\Gallio.org\Gallio\" + versionKey,
+                @"HKEY_LOCAL_MACHINE\Software\Gallio.org\Gallio\" + versionKey,
+                @"HKEY_LOCAL_MACHINE\Software\Wow6432Node\Gallio.org\Gallio\" + versionKey
+            };
+        }
 
         private GallioLoader(string runtimePath)
         {
@@ -121,7 +128,7 @@ namespace Gallio.Loader
         /// <exception cref="InvalidOperationException">Thrown if Gallio does not appear to be installed.</exception>
         public static string GetDefaultRuntimePath()
         {
-            lock (syncRoot)
+            lock (SyncRoot)
             {
                 if (defaultRuntimePath == null)
                 {
@@ -158,7 +165,7 @@ namespace Gallio.Loader
         /// <exception cref="SafeException">Thrown if the operation could not be performed.</exception>
         public static IGallioLoader Initialize(string runtimePath)
         {
-            lock (syncRoot)
+            lock (SyncRoot)
             {
                 if (instance == null)
                 {
