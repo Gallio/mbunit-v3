@@ -20,7 +20,6 @@ using System.Reflection;
 using System.Text;
 using Gallio.Common.Concurrency;
 using Gallio.Common.Platform;
-using Gallio.Runtime.Hosting;
 using Gallio.Runtime.Logging;
 using Microsoft.Win32;
 
@@ -113,18 +112,18 @@ namespace Gallio.NCoverIntegration.Tools
 
         public ProcessorArchitecture NegotiateProcessorArchitecture(ProcessorArchitecture requestedArchitecture)
         {
-            if (!RequiresX86)
+            if (!RequiresX86())
                 return requestedArchitecture;
 
             if (requestedArchitecture == ProcessorArchitecture.Amd64 || requestedArchitecture == ProcessorArchitecture.IA64)
-                throw new NCoverToolException(string.Format("NCover {0} must run code as a 32bit process but the requested architecture was 64bit.", Name));
+                throw new NCoverToolException(string.Format("NCover {0} must run code as a 32bit process but the requested architecture was 64bit.  Please use a newer version of NCover.", Name));
 
             return ProcessorArchitecture.X86;
         }
 
         public string NegotiateRuntimeVersion(string requestedRuntimeVersion)
         {
-            if (!RequiresDotNet20)
+            if (!RequiresDotNet20())
                 return requestedRuntimeVersion;
 
             if (requestedRuntimeVersion == null)
@@ -133,17 +132,17 @@ namespace Gallio.NCoverIntegration.Tools
             if (requestedRuntimeVersion.Contains("2.0."))
                 return requestedRuntimeVersion;
 
-            throw new NCoverToolException(string.Format("{0} does not support .Net runtime {1} at this time.", Name, requestedRuntimeVersion));
+            throw new NCoverToolException(string.Format("{0} does not support .Net runtime {1} at this time.  Please use a newer version of NCover.", Name, requestedRuntimeVersion));
         }
 
-        protected virtual bool RequiresX86
+        protected virtual bool RequiresX86()
         {
-            get { return false; }
+            return false;
         }
 
-        protected virtual bool RequiresDotNet20
+        protected virtual bool RequiresDotNet20()
         {
-            get { return false; }
+            return false;
         }
 
         protected virtual void BuildNCoverConsoleArguments(StringBuilder result, string executablePath, string arguments, string workingDirectory,
@@ -164,22 +163,24 @@ namespace Gallio.NCoverIntegration.Tools
         {
         }
 
-        protected static string GetNCoverInstallDirFromRegistry(string versionPrefix)
+        protected static bool GetNCoverInstallInfoFromRegistry(string versionPrefix, out string version, out string installDir)
         {
             RegistryKey key = Registry.LocalMachine.OpenSubKey(@"Software\Gnoso\NCover")
                 ?? Registry.LocalMachine.OpenSubKey(@"WOW6432Node\Software\Gnoso\NCover");
             if (key != null)
             {
-                string currentVersion = (string) key.GetValue("CurrentVersion");
-                if (currentVersion != null && currentVersion.StartsWith(versionPrefix))
+                version = (string) key.GetValue("CurrentVersion");
+                if (version != null && version.StartsWith(versionPrefix))
                 {
-                    string installDir = (string) key.GetValue("InstallDir");
+                    installDir = (string) key.GetValue("InstallDir");
                     if (installDir != null)
-                        return installDir;
+                        return true;
                 }
             }
 
-            return null;
+            version = null;
+            installDir = null;
+            return false;
         }
 
         protected static string RemoveTrailingBackslash(string path)

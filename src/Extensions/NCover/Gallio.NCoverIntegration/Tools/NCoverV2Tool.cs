@@ -29,12 +29,13 @@ namespace Gallio.NCoverIntegration.Tools
 
         public override string GetInstallDir()
         {
-            return GetNCoverInstallDirFromRegistry("2.");
+            string version, installDir;
+            return GetNCoverInstallInfoFromRegistry("2.", out version, out installDir) ? installDir : null;
         }
 
-        protected override bool RequiresDotNet20
+        protected override bool RequiresDotNet20()
         {
-            get { return true; }
+            return true;
         }
 
         protected override ProcessTask CreateMergeTask(IList<string> sources, string destination)
