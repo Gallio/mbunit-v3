@@ -106,7 +106,7 @@ namespace Gallio.VisualStudio.Shell
         }
 
         /// <inheritdoc />
-        public void ProfferVsService(Type serviceType, Func<object> factory)
+        public void ProfferVsService(Type serviceType, Gallio.Common.Func<object> factory)
         {
             IServiceContainer container = GetVsService<IServiceContainer>(typeof(IServiceContainer));
             if (container != null)

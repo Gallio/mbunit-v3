@@ -82,6 +82,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DLR", "DLR", "{4C8FCA8C-EF7
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "RSpec", "RSpec", "{2758749B-0BAC-4C3F-987F-9518FEB9C40A}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Copy", "Copy", "{7F0ED555-73DB-49E8-AC3B-2C340A85763B}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.Echo.vs2010", "Extensions\Echo\Gallio.Echo\Gallio.Echo.vs2010.csproj", "{22AE34D9-185F-41A7-A48D-205BE68B1F7D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.Icarus.vs2010", "Extensions\Icarus\Gallio.Icarus\Gallio.Icarus.vs2010.csproj", "{6C4AEA1A-CF85-4574-B24A-2C264ED0FEC3}"
@@ -182,13 +184,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.Reports.vs2010", "Ga
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MbUnit.Samples.VSTSIntegration.vs2010", "MbUnit\Samples\MbUnit.Samples.VSTSIntegration\MbUnit.Samples.VSTSIntegration.vs2010.csproj", "{51FD0718-1728-4062-9649-5561C6035ACA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.VisualStudio.Shell.vs2010", "Extensions\VisualStudio\Gallio.VisualStudio.Shell\Gallio.VisualStudio.Shell.vs2010.csproj", "{80983DC5-71B6-49CD-BA5F-305D29A65D05}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.VisualStudio.Shell90.vs2010", "Extensions\VisualStudio\Gallio.VisualStudio.Shell\Gallio.VisualStudio.Shell90.vs2010.csproj", "{80983DC5-71B6-49CD-BA5F-305D29A65D05}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.VisualStudio.Sail.vs2010", "Extensions\VisualStudio\Gallio.VisualStudio.Sail\Gallio.VisualStudio.Sail.vs2010.csproj", "{7BE8C909-6E33-42C6-AC7F-CC523CB438D0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.VisualStudio.Sail90.vs2010", "Extensions\VisualStudio\Gallio.VisualStudio.Sail\Gallio.VisualStudio.Sail90.vs2010.csproj", "{7BE8C909-6E33-42C6-AC7F-CC523CB438D0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.VisualStudio.Sail.Tests.vs2010", "Extensions\VisualStudio\Gallio.VisualStudio.Sail.Tests\Gallio.VisualStudio.Sail.Tests.vs2010.csproj", "{7609B681-E196-4AFB-AD64-6C5A9E5A160D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.VisualStudio.Sail90.Tests.vs2010", "Extensions\VisualStudio\Gallio.VisualStudio.Sail.Tests\Gallio.VisualStudio.Sail90.Tests.vs2010.csproj", "{7609B681-E196-4AFB-AD64-6C5A9E5A160D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.VisualStudio.Shell.Tests.vs2010", "Extensions\VisualStudio\Gallio.VisualStudio.Shell.Tests\Gallio.VisualStudio.Shell.Tests.vs2010.csproj", "{E7145C4E-1937-48E5-A8BC-415E97FBD293}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.VisualStudio.Shell90.Tests.vs2010", "Extensions\VisualStudio\Gallio.VisualStudio.Shell.Tests\Gallio.VisualStudio.Shell90.Tests.vs2010.csproj", "{E7145C4E-1937-48E5-A8BC-415E97FBD293}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.TeamCityIntegration.vs2010", "Extensions\TeamCity\Gallio.TeamCityIntegration\Gallio.TeamCityIntegration.vs2010.csproj", "{793C19C2-E78F-4A1E-A26C-9417F1C2DF5D}"
 EndProject
@@ -256,8 +258,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio40.Tests.vs2010", "Ga
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MbUnit40.Tests.vs2010", "MbUnit\MbUnit40.Tests\MbUnit40.Tests.vs2010.csproj", "{545B3488-FD55-463A-8E64-58627C3023AA}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Copy", "Copy", "{7F0ED555-73DB-49E8-AC3B-2C340A85763B}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.Copy.vs2010", "Extensions\Copy\Gallio.Copy\Gallio.Copy.vs2010.csproj", "{5DA3843B-9639-4E11-8673-44E30624926F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.Copy.Tests.vs2010", "Extensions\Copy\Gallio.Copy.Tests\Gallio.Copy.Tests.vs2010.csproj", "{27D9A0F2-8E7E-45D4-8664-00D23ECBBB90}"
@@ -277,6 +277,14 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.Ambience.UI.vs2010", "Extensions\Ambience\Gallio.Ambience.UI\Gallio.Ambience.UI.vs2010.csproj", "{198C5EA8-B6F2-4EBE-8581-09BD1BD66D60}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.VisualStudio.Interop.Tests.vs2010", "Extensions\VisualStudio\Gallio.VisualStudio.Interop.Tests\Gallio.VisualStudio.Interop.Tests.vs2010.csproj", "{8780AC10-ACEB-4CAB-A591-FF6C76D3E122}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.VisualStudio.Shell100.vs2010", "Extensions\VisualStudio\Gallio.VisualStudio.Shell\Gallio.VisualStudio.Shell100.vs2010.csproj", "{263B96B0-100C-4B1F-A855-AB9B6ACE6228}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.VisualStudio.Shell100.Tests.vs2010", "Extensions\VisualStudio\Gallio.VisualStudio.Shell.Tests\Gallio.VisualStudio.Shell100.Tests.vs2010.csproj", "{519F391E-5F61-433C-B983-9492CFFAC14C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.VisualStudio.Sail100.vs2010", "Extensions\VisualStudio\Gallio.VisualStudio.Sail\Gallio.VisualStudio.Sail100.vs2010.csproj", "{FF431043-DB9C-4FC0-AC07-AF22A5D3132F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.VisualStudio.Sail100.Tests.vs2010", "Extensions\VisualStudio\Gallio.VisualStudio.Sail.Tests\Gallio.VisualStudio.Sail100.Tests.vs2010.csproj", "{14D881DD-7BAE-4EA7-8591-843282CA7241}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -1238,6 +1246,46 @@ Global
 		{8780AC10-ACEB-4CAB-A591-FF6C76D3E122}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{8780AC10-ACEB-4CAB-A591-FF6C76D3E122}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{8780AC10-ACEB-4CAB-A591-FF6C76D3E122}.Release|x86.ActiveCfg = Release|Any CPU
+		{263B96B0-100C-4B1F-A855-AB9B6ACE6228}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{263B96B0-100C-4B1F-A855-AB9B6ACE6228}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{263B96B0-100C-4B1F-A855-AB9B6ACE6228}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{263B96B0-100C-4B1F-A855-AB9B6ACE6228}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{263B96B0-100C-4B1F-A855-AB9B6ACE6228}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{263B96B0-100C-4B1F-A855-AB9B6ACE6228}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{263B96B0-100C-4B1F-A855-AB9B6ACE6228}.Release|Any CPU.Build.0 = Release|Any CPU
+		{263B96B0-100C-4B1F-A855-AB9B6ACE6228}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{263B96B0-100C-4B1F-A855-AB9B6ACE6228}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{263B96B0-100C-4B1F-A855-AB9B6ACE6228}.Release|x86.ActiveCfg = Release|Any CPU
+		{519F391E-5F61-433C-B983-9492CFFAC14C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{519F391E-5F61-433C-B983-9492CFFAC14C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{519F391E-5F61-433C-B983-9492CFFAC14C}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{519F391E-5F61-433C-B983-9492CFFAC14C}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{519F391E-5F61-433C-B983-9492CFFAC14C}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{519F391E-5F61-433C-B983-9492CFFAC14C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{519F391E-5F61-433C-B983-9492CFFAC14C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{519F391E-5F61-433C-B983-9492CFFAC14C}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{519F391E-5F61-433C-B983-9492CFFAC14C}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{519F391E-5F61-433C-B983-9492CFFAC14C}.Release|x86.ActiveCfg = Release|Any CPU
+		{FF431043-DB9C-4FC0-AC07-AF22A5D3132F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FF431043-DB9C-4FC0-AC07-AF22A5D3132F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FF431043-DB9C-4FC0-AC07-AF22A5D3132F}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{FF431043-DB9C-4FC0-AC07-AF22A5D3132F}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{FF431043-DB9C-4FC0-AC07-AF22A5D3132F}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{FF431043-DB9C-4FC0-AC07-AF22A5D3132F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FF431043-DB9C-4FC0-AC07-AF22A5D3132F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FF431043-DB9C-4FC0-AC07-AF22A5D3132F}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{FF431043-DB9C-4FC0-AC07-AF22A5D3132F}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{FF431043-DB9C-4FC0-AC07-AF22A5D3132F}.Release|x86.ActiveCfg = Release|Any CPU
+		{14D881DD-7BAE-4EA7-8591-843282CA7241}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{14D881DD-7BAE-4EA7-8591-843282CA7241}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{14D881DD-7BAE-4EA7-8591-843282CA7241}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{14D881DD-7BAE-4EA7-8591-843282CA7241}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{14D881DD-7BAE-4EA7-8591-843282CA7241}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{14D881DD-7BAE-4EA7-8591-843282CA7241}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{14D881DD-7BAE-4EA7-8591-843282CA7241}.Release|Any CPU.Build.0 = Release|Any CPU
+		{14D881DD-7BAE-4EA7-8591-843282CA7241}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{14D881DD-7BAE-4EA7-8591-843282CA7241}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{14D881DD-7BAE-4EA7-8591-843282CA7241}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1342,6 +1390,10 @@ Global
 		{43613F1C-B173-469E-AC06-15E60FC5BBAD} = {0D06CCC5-943B-4778-B035-5F069E8C5E94}
 		{D17696EB-296F-4274-9C76-97133A4F8497} = {0D06CCC5-943B-4778-B035-5F069E8C5E94}
 		{8780AC10-ACEB-4CAB-A591-FF6C76D3E122} = {0D06CCC5-943B-4778-B035-5F069E8C5E94}
+		{263B96B0-100C-4B1F-A855-AB9B6ACE6228} = {0D06CCC5-943B-4778-B035-5F069E8C5E94}
+		{519F391E-5F61-433C-B983-9492CFFAC14C} = {0D06CCC5-943B-4778-B035-5F069E8C5E94}
+		{FF431043-DB9C-4FC0-AC07-AF22A5D3132F} = {0D06CCC5-943B-4778-B035-5F069E8C5E94}
+		{14D881DD-7BAE-4EA7-8591-843282CA7241} = {0D06CCC5-943B-4778-B035-5F069E8C5E94}
 		{5274A22B-7BCC-42B3-9B6C-0220DE8789AF} = {3B31F139-ECED-42F2-AE8D-B61FF4893C2E}
 		{05250B22-B9FE-4B0E-9D64-1306A9BAD973} = {3B31F139-ECED-42F2-AE8D-B61FF4893C2E}
 		{8EE3C638-38C4-4F9E-8246-C2549F74CD8F} = {3B31F139-ECED-42F2-AE8D-B61FF4893C2E}

@@ -40,6 +40,9 @@ namespace Gallio.VisualStudio.Interop
         private static readonly Guid NativeDebugEngineGuid = new Guid("{3B476D35-A401-11D2-AAD4-00C04F990171}");
         private const string NativeDebugEngineName = "Native";
 
+        private static readonly Guid CLSID_ComPlusOnlyDebugEngine = new Guid("449EC4CC-30D2-4032-9256-EE18EB41B62B");
+
+
         // TODO: Make the engines that are attached configurable
         // Some other engines are "Script", "T-SQL" and "Workflow"
         private static readonly Guid[] EngineGuids = new[] { ManagedDebugEngineGuid, NativeDebugEngineGuid };
@@ -261,7 +264,7 @@ namespace Gallio.VisualStudio.Interop
                                 //dwDebugEngineCount = (uint) EngineGuids.Length,
                                 //pDebugEngines = engineGuidsPtr,
                                 fSendToOutputWindow = 1,
-                                guidLaunchDebugEngine = VSConstants.CLSID_ComPlusOnlyDebugEngine,
+                                guidLaunchDebugEngine = CLSID_ComPlusOnlyDebugEngine,
                                 dlo = (int) DEBUG_LAUNCH_OPERATION.DLO_CreateProcess,
                                 LaunchFlags = (int)(__VSDBGLAUNCHFLAGS.DBGLAUNCH_WaitForAttachComplete | __VSDBGLAUNCHFLAGS.DBGLAUNCH_Silent)
                             };

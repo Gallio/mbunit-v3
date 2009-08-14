@@ -10,15 +10,11 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Gallio.VisualStudio.Tip</RootNamespace>
     <AssemblyName>Gallio.VisualStudio.Tip90</AssemblyName>
-    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\..\Key.snk</AssemblyOriginatorKeyFile>
     <BaseIntermediateOutputPath>obj\v9.0\</BaseIntermediateOutputPath>
-    <FileUpgradeFlags>
-    </FileUpgradeFlags>
-    <OldToolsVersion>3.5</OldToolsVersion>
-    <UpgradeBackupLocation />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -102,9 +98,9 @@
       <Project>{6CAB7735-05DA-480D-9A04-50615B00F886}</Project>
       <Name>Gallio.vs2010</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Gallio.VisualStudio.Shell\Gallio.VisualStudio.Shell.vs2010.csproj">
+    <ProjectReference Include="..\Gallio.VisualStudio.Shell\Gallio.VisualStudio.Shell90.vs2010.csproj">
       <Project>{80983DC5-71B6-49CD-BA5F-305D29A65D05}</Project>
-      <Name>Gallio.VisualStudio.Shell.vs2010</Name>
+      <Name>Gallio.VisualStudio.Shell90.vs2010</Name>
     </ProjectReference>
     <ProjectReference Include="..\Gallio.VisualStudio.Tip.Proxy\Gallio.VisualStudio.Tip90.Proxy.vs2010.csproj">
       <Project>{3A5CA3C2-628D-4EAA-884B-95BB8C90C01C}</Project>

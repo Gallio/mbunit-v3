@@ -58,7 +58,10 @@
     <Reference Include="Microsoft.VisualStudio.QualityTools.Vsip, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
     </Reference>
-    <Reference Include="Microsoft.VisualStudio.Shell.9.0, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.VisualStudio.Shell.9.0, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\..\Program Files\Microsoft Visual Studio 10.0\Common7\IDE\PrivateAssemblies\Microsoft.VisualStudio.Shell.9.0.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.VisualStudio.Shell.Interop, Version=7.1.40304.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
     <Reference Include="Microsoft.VisualStudio.Shell.Interop.8.0, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
     <Reference Include="Microsoft.VisualStudio.Shell.Interop.9.0, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
@@ -108,9 +111,9 @@
       <Project>{6CAB7735-05DA-480D-9A04-50615B00F886}</Project>
       <Name>Gallio.vs2010</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Gallio.VisualStudio.Shell\Gallio.VisualStudio.Shell.vs2010.csproj">
-      <Project>{80983DC5-71B6-49CD-BA5F-305D29A65D05}</Project>
-      <Name>Gallio.VisualStudio.Shell.vs2010</Name>
+    <ProjectReference Include="..\Gallio.VisualStudio.Shell\Gallio.VisualStudio.Shell100.vs2010.csproj">
+      <Project>{263B96B0-100C-4B1F-A855-AB9B6ACE6228}</Project>
+      <Name>Gallio.VisualStudio.Shell100.vs2010</Name>
     </ProjectReference>
     <ProjectReference Include="..\Gallio.VisualStudio.Tip.Proxy\Gallio.VisualStudio.Tip100.Proxy.vs2010.csproj">
       <Project>{43613F1C-B173-469E-AC06-15E60FC5BBAD}</Project>

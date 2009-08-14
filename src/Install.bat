@@ -110,7 +110,7 @@ REM Register Shell
 "%REG%" ADD "%VS_PACKAGE_KEY%" /VE /D "Gallio Shell Package" /F >nul
 "%REG%" ADD "%VS_PACKAGE_KEY%" /V InprocServer32 /D "%SystemRoot%\system32\mscoree.dll" /F >nul
 "%REG%" ADD "%VS_PACKAGE_KEY%" /V Class /D "Gallio.VisualStudio.Shell.ShellPackage" /F >nul
-"%REG%" ADD "%VS_PACKAGE_KEY%" /V CodeBase /D "%SHELL_BIN_DIR%\Gallio.VisualStudio.Shell.dll" /F >nul
+"%REG%" ADD "%VS_PACKAGE_KEY%" /V CodeBase /D "%SHELL_BIN_DIR%\Gallio.VisualStudio.Shell%VS_VERSION%0.dll" /F >nul
 "%REG%" ADD "%VS_PACKAGE_KEY%" /V ID /T REG_DWORD /D 1 /F >nul
 "%REG%" ADD "%VS_PACKAGE_KEY%" /V MinEdition /D "Standard" /F >nul
 "%REG%" ADD "%VS_PACKAGE_KEY%" /V ProductVersion /D "3.0" /F >nul
@@ -184,7 +184,7 @@ set VS_TEST_TYPE_KEY=%VS_ROOT_KEY%\EnterpriseTools\QualityTools\TestTypes\{F3589
 set VS_PRODUCT_KEY=%VS_ROOT_KEY%\InstalledProducts\Gallio
 set VS_PACKAGE_KEY=%VS_ROOT_KEY%\Packages\{9e600ffc-344d-4e6f-89c0-ded6afb42459}
 
-set SHELL_BIN_DIR=%SRC_DIR%\Extensions\VisualStudio\Gallio.VisualStudio.Shell\bin
+set SHELL_BIN_DIR=%SRC_DIR%\Extensions\VisualStudio\Gallio.VisualStudio.Shell\bin\v%VS_VERSION%.0
 set PROXY_DLL=%SRC_DIR%\Extensions\VisualStudio\Gallio.VisualStudio.Tip.Proxy\bin\v%VS_VERSION%.0\Gallio.VisualStudio.Tip%VS_VERSION%0.Proxy.dll
 exit /b 0
 

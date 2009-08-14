@@ -14,10 +14,8 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Runtime.InteropServices;
 using EnvDTE;
-using Microsoft.VisualStudio.Shell;
 using IOleServiceProvider = Microsoft.VisualStudio.OLE.Interop.IServiceProvider;
 
 namespace Gallio.VisualStudio.Interop
@@ -27,7 +25,9 @@ namespace Gallio.VisualStudio.Interop
     /// </summary>
     public class VisualStudioServiceProvider : IServiceProvider
     {
-        private readonly ServiceProvider serviceProvider;
+        private static readonly Guid IID_IUnknown = new Guid("{00000000-0000-0000-C000-000000000046}");
+
+        private readonly IOleServiceProvider oleServiceProvider;
 
         /// <summary>
         /// Creates a service provider from a Visual Studio <see cref="DTE" /> instance.
@@ -49,7 +49,7 @@ namespace Gallio.VisualStudio.Interop
             if (oleServiceProvider == null)
                 throw new ArgumentNullException("oleServiceProvider");
 
-            serviceProvider = new ServiceProvider(oleServiceProvider);
+            this.oleServiceProvider = oleServiceProvider;
         }
 
         /// <inheritdoc />
@@ -58,7 +58,7 @@ namespace Gallio.VisualStudio.Interop
             if (serviceType == null)
                 throw new ArgumentNullException("serviceType");
 
-            return serviceProvider.GetService(serviceType);
+            return GetServiceImpl(serviceType);
         }
 
         /// <summary>
@@ -69,7 +69,33 @@ namespace Gallio.VisualStudio.Interop
         /// <returns>The service.</returns>
         public TInterface GetService<TService, TInterface>()
         {
-            return (TInterface)serviceProvider.GetService(typeof(TService));
+            return (TInterface)GetServiceImpl(typeof(TService));
+        }
+
+        private object GetServiceImpl(Type serviceType)
+        {
+            return GetServiceImpl(serviceType.GUID);
+        }
+
+        private object GetServiceImpl(Guid serviceGuid)
+        {
+            if (serviceGuid != Guid.Empty)
+            {
+                IntPtr pUnk = IntPtr.Zero;
+                try
+                {
+                    Guid unknownGuid = IID_IUnknown;
+                    if (oleServiceProvider.QueryService(ref serviceGuid, ref unknownGuid, out pUnk) >= 0
+                        && (pUnk != IntPtr.Zero))
+                        return Marshal.GetObjectForIUnknown(pUnk);
+                }
+                finally
+                {
+                    Marshal.Release(pUnk);
+                }
+            }
+
+            return null;
         }
     }
 }

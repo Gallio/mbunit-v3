@@ -9,7 +9,7 @@
   </traits>
 
   <dependencies>
-    <dependency pluginId="Gallio.VisualStudio.Shell" />
+    <dependency pluginId="Gallio.VisualStudio.Shell90" />
   </dependencies>
 
   <files>
@@ -18,10 +18,11 @@
     <file path="Gallio.VisualStudio.Tip90.Proxy.dll" />
   </files>
 
+  <?ifdef NET35?>
   <probingPaths>
     <probingPath>v9.0</probingPath>
   </probingPaths>
-
+  
   <assemblies>
     <assembly fullName="Gallio.VisualStudio.Tip90, Version=0.0.0.0, Culture=neutral, PublicKeyToken=eb9cfa67ee6ab36e"
               codeBase="Gallio.VisualStudio.Tip90.dll">
@@ -41,11 +42,12 @@
 
   <components>
     <component componentId="Tip90.ShellExtension"
-               serviceId="Shell.ShellExtension"
+               serviceId="Shell90.ShellExtension"
                componentType="Gallio.VisualStudio.Tip.TipShellExtension, Gallio.VisualStudio.Tip90" />
 
     <component componentId="Tip90.ProxyHandler"
                serviceId="Tip90.ProxyHandler"
                componentType="Gallio.VisualStudio.Tip.DefaultProxyHandler, Gallio.VisualStudio.Tip90" />
   </components>
+  <?endif?>
 </plugin>
