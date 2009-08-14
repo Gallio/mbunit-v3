@@ -306,128 +306,6 @@
     <TestRunnerType Condition="'$(Runtime)'=='Mono'">IsolatedAppDomain</TestRunnerType>
 
     <CoverageFilters>
-    <!-- Should no longer be needed since we are telling NCover to filter upfront.
-      <Filter>
-        <Pattern>*.Tests</Pattern>
-	<Type>Assembly</Type>
-        <IsInclude>false</IsInclude>
-      </Filter>
-      <Filter>
-        <Pattern>*.TestResources</Pattern>
-	<Type>Assembly</Type>
-        <IsInclude>false</IsInclude>
-      </Filter>
-      <Filter>
-        <Pattern>JetBrains.*</Pattern>
-	<Type>Assembly</Type>
-        <IsInclude>false</IsInclude>
-      </Filter>
-      <Filter>
-        <Pattern>Aga.Controls</Pattern>
-	<Type>Assembly</Type>
-        <IsInclude>false</IsInclude>
-      </Filter>
-      <Filter>
-        <Pattern>Configuration</Pattern>
-	<Type>Assembly</Type>
-        <IsInclude>false</IsInclude>
-      </Filter>
-      <Filter>
-        <Pattern>DevExpress.*</Pattern>
-	<Type>Assembly</Type>
-        <IsInclude>false</IsInclude>
-      </Filter>
-      <Filter>
-        <Pattern>EnvDTE*</Pattern>
-	<Type>Assembly</Type>
-        <IsInclude>false</IsInclude>
-      </Filter>
-      <Filter>
-        <Pattern>NAnt.*</Pattern>
-	<Type>Assembly</Type>
-        <IsInclude>false</IsInclude>
-      </Filter>
-      <Filter>
-        <Pattern>csUnit*</Pattern>
-	<Type>Assembly</Type>
-        <IsInclude>false</IsInclude>
-      </Filter>
-      <Filter>
-        <Pattern>nunit.*</Pattern>
-	<Type>Assembly</Type>
-        <IsInclude>false</IsInclude>
-      </Filter>
-      <Filter>
-        <Pattern>xunit*</Pattern>
-	<Type>Assembly</Type>
-        <IsInclude>false</IsInclude>
-      </Filter>
-      <Filter>
-	<Pattern>QuickGraph*</Pattern>
-	<Type>Assembly</Type>
-        <IsInclude>false</IsInclude>
-      </Filter>
-      <Filter>
-	<Pattern>MbUnit.Framework</Pattern>
-	<Type>Assembly</Type>
-        <IsInclude>false</IsInclude>
-      </Filter>
-      <Filter>
-	<Pattern>Rhino.Mocks</Pattern>
-	<Type>Assembly</Type>
-        <IsInclude>false</IsInclude>
-      </Filter>
-      <Filter>
-	<Pattern>TestDriven.Framework</Pattern>
-	<Type>Assembly</Type>
-        <IsInclude>false</IsInclude>
-      </Filter>
-      <Filter>
-	<Pattern>WeifenLuo.*</Pattern>
-	<Type>Assembly</Type>
-        <IsInclude>false</IsInclude>
-      </Filter>
-      <Filter>
-	<Pattern>log4net</Pattern>
-	<Type>Assembly</Type>
-        <IsInclude>false</IsInclude>
-      </Filter>
-      <Filter>
-	<Pattern>ISymWrapper</Pattern>
-	<Type>Assembly</Type>
-        <IsInclude>false</IsInclude>
-      </Filter>
-      <Filter>
-	<Pattern>ICSharpCode.TextEditor</Pattern>
-	<Type>Assembly</Type>
-        <IsInclude>false</IsInclude>
-      </Filter>
-      <Filter>
-        <Pattern>Castle.*</Pattern>
-	<Type>Namespace</Type>
-        <IsInclude>false</IsInclude>
-      </Filter>
-      <Filter>
-        <Pattern>Mono.*</Pattern>
-	<Type>Namespace</Type>
-        <IsInclude>false</IsInclude>
-      </Filter>
-      <Filter>
-        <Pattern>Cecil.*</Pattern>
-	<Type>Namespace</Type>
-        <IsInclude>false</IsInclude>
-      </Filter>
-      <Filter>
-        <Pattern>Sharpen.*</Pattern>
-	<Type>Namespace</Type>
-        <IsInclude>false</IsInclude>
-      </Filter>
-      <Filter>
-        <Pattern>Db4objects.*</Pattern>
-	<Type>Namespace</Type>
-        <IsInclude>false</IsInclude>
-      </Filter>
-      -->
     </CoverageFilters>
     <SatisfactoryCoverage>
         <Threshold>
@@ -471,6 +349,7 @@
       <Output TaskParameter="ExitCode" PropertyName="ExitCode" />
     </Exec>
 
+    <!--
     <NCoverReporting Condition="$(Coverage) and Exists('Coverage.xml')"
                     CoverageDataPaths="Coverage.xml"
                     OutputPath="$(ReportDir)\CoverageReport.xml"
@@ -485,6 +364,7 @@
 
     <Exec Command="cscript //nologo &quot;$(BinDir)\Run.vbs&quot; &quot;'$(NCoverInstallDir)\NCover.Explorer.exe' Coverage.xml&quot;"
           Condition="$(ShowReports) and $(Coverage) and Exists('Coverage.xml')" />
+    -->
 
     <Error Text="Some tests failed!"
              Condition="'$(ExitCode)'!='0' and ! $(IgnoreFailures)" />
