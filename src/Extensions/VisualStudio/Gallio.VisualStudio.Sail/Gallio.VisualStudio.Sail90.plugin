@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<plugin pluginId="Gallio.VisualStudio.Sail90"
+        recommendedInstallationPath="VisualStudio\v9.0"
+        xmlns="http://www.gallio.org/">
+  <traits>
+    <name>Gallio Sail Test Runner for Visual Studio 2008</name>
+    <version>0.0.0.0</version>
+    <description>A native test runner for Visual Studio 2008.</description>
+  </traits>
+
+  <dependencies>
+    <dependency pluginId="Gallio.VisualStudio.Shell90" />
+  </dependencies>
+
+  <files>
+    <file path="Gallio.VisualStudio.Sail90.plugin" />
+    <file path="Gallio.VisualStudio.Sail90.dll" />
+  </files>
+
+  <?ifdef NET35?>
+  <probingPaths>
+    <probingPath>v9.0</probingPath>
+  </probingPaths>
+  
+  <assemblies>
+    <assembly fullName="Gallio.VisualStudio.Sail90, Version=0.0.0.0, Culture=neutral, PublicKeyToken=eb9cfa67ee6ab36e"
+              codeBase="Gallio.VisualStudio.Sail90.dll">
+      <qualifyPartialName>true</qualifyPartialName>
+      <bindingRedirects>
+        <bindingRedirect oldVersion="0.0.0.0-65535.65535.65535.65535" />
+      </bindingRedirects>
+    </assembly>
+  </assemblies>
+
+  <components>
+    <component componentId="Sail90.ShellExtension"
+               serviceId="Shell90.ShellExtension"
+               componentType="Gallio.VisualStudio.Sail.SailShellExtension, Gallio.VisualStudio.Sail90" />
+  </components>
+  <?endif?>
+</plugin>

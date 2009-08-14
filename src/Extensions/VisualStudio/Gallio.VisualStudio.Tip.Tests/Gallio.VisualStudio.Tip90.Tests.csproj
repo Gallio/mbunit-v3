@@ -83,9 +83,9 @@
       <Project>{A9B54755-56B7-48C1-8941-BB69FCEFFF32}</Project>
       <Name>MbUnit %28MbUnit\MbUnit%29</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Gallio.VisualStudio.Shell\Gallio.VisualStudio.Shell.csproj">
+    <ProjectReference Include="..\Gallio.VisualStudio.Shell\Gallio.VisualStudio.Shell90.csproj">
       <Project>{80983DC5-71B6-49CD-BA5F-305D29A65D05}</Project>
-      <Name>Gallio.VisualStudio.Shell</Name>
+      <Name>Gallio.VisualStudio.Shell90</Name>
     </ProjectReference>
     <ProjectReference Include="..\Gallio.VisualStudio.Tip.Proxy\Gallio.VisualStudio.Tip90.Proxy.csproj">
       <Project>{3A5CA3C2-628D-4EAA-884B-95BB8C90C01C}</Project>

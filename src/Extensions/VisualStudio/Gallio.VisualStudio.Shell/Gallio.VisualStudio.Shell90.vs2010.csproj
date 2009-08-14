@@ -5,42 +5,44 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{E7145C4E-1937-48E5-A8BC-415E97FBD293}</ProjectGuid>
+    <ProjectGuid>{80983DC5-71B6-49CD-BA5F-305D29A65D05}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Gallio.VisualStudio.Shell.Tests</RootNamespace>
-    <AssemblyName>Gallio.VisualStudio.Shell.Tests</AssemblyName>
+    <RootNamespace>Gallio.VisualStudio.Shell</RootNamespace>
+    <AssemblyName>Gallio.VisualStudio.Shell90</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkSubset>
+    </TargetFrameworkSubset>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\..\Key.snk</AssemblyOriginatorKeyFile>
-    <FileUpgradeFlags>
-    </FileUpgradeFlags>
-    <OldToolsVersion>3.5</OldToolsVersion>
-    <UpgradeBackupLocation />
+    <BaseIntermediateOutputPath>obj\v9.0\</BaseIntermediateOutputPath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\</OutputPath>
+    <OutputPath>bin\v9.0\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <NoWarn>1591</NoWarn>
+    <NoWarn>
+    </NoWarn>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <DocumentationFile>bin\Gallio.VisualStudio.Shell.Tests.XML</DocumentationFile>
+    <DocumentationFile>bin\Gallio.VisualStudio.Shell90.XML</DocumentationFile>
+    <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\</OutputPath>
+    <OutputPath>bin\v9.0\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <NoWarn>1591</NoWarn>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <DocumentationFile>bin\Gallio.VisualStudio.Shell.Tests.XML</DocumentationFile>
+    <DocumentationFile>bin\Gallio.VisualStudio.Shell90.XML</DocumentationFile>
+    <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="EnvDTE, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
@@ -65,76 +67,107 @@
     <Reference Include="Microsoft.VisualStudio.Shell.Interop, Version=7.1.40304.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
     <Reference Include="Microsoft.VisualStudio.Shell.Interop.8.0, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
     <Reference Include="Microsoft.VisualStudio.Shell.Interop.9.0, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-    <Reference Include="Rhino.Mocks, Version=3.3.0.906, Culture=neutral, PublicKeyToken=0b3305902db7183f, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\libs\Rhino.Mocks\bin\Rhino.Mocks.dll</HintPath>
-    </Reference>
     <Reference Include="stdole, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\..\..\Program Files\Common Files\Microsoft Shared\MSEnv\PublicAssemblies\stdole.dll</HintPath>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="System.Core">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
-    <Reference Include="System.Design" />
-    <Reference Include="System.Web" />
-    <Reference Include="System.Web.Extensions">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
-    <Reference Include="System.Web.Extensions.Design">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xml.Linq">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
-    <Reference Include="System.Data.DataSetExtensions">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Design" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Actions\Action.cs" />
+    <Compile Include="Actions\ActionButton.cs" />
+    <Compile Include="Actions\ActionButtonAttribute.cs" />
+    <Compile Include="Actions\ActionButtonDescriptor.cs" />
+    <Compile Include="Actions\ActionButtonStatus.cs" />
+    <Compile Include="Actions\ActionButtonStyle.cs" />
+    <Compile Include="Actions\ActionButtonType.cs" />
+    <Compile Include="Actions\ShellActionManager.cs" />
+    <Compile Include="Actions\IActionManager.cs" />
+    <Compile Include="BaseShellExtension.cs" />
+    <Compile Include="ShellLogger.cs" />
+    <Compile Include="IShellPackage.cs" />
+    <Compile Include="IShellComponent.cs" />
+    <Compile Include="IShell.cs" />
+    <Compile Include="IShellExtension.cs" />
+    <Compile Include="Reflection\CodeModelReflectionPolicy.cs" />
+    <Compile Include="ShellAccessor.cs" />
+    <Compile Include="ShellAddInHandler.cs" />
+    <Compile Include="ShellComponent.cs" />
+    <Compile Include="ShellException.cs" />
+    <Compile Include="ShellPackage.cs" />
+    <Compile Include="Guids.cs" />
+    <Compile Include="Interop\ImageConversionUtils.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Reflection\CodeModelReflectionPolicyTest.cs" />
-    <Compile Include="UI\ShellToolWindowContainerTest.cs" />
-    <Compile Include="UI\ShellToolWindowTest.cs" />
-    <Compile Include="VisualStudioTestHarness.cs" />
+    <Compile Include="Resources\VSPackage.Designer.cs">
+      <DependentUpon>VSPackage.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Resources\VSPackageResourceIds.cs" />
+    <Compile Include="Shell.cs" />
+    <Compile Include="UI\IWindowManager.cs" />
+    <Compile Include="UI\ShellToolWindow.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\ShellToolWindowPane.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\ShellToolWindowContainer.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\ShellWindowManager.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Gallio\Gallio.Tests\Gallio.Tests.vs2010.csproj">
-      <Project>{111FD89D-58A1-4445-B4A4-8A50D65DB714}</Project>
-      <Name>Gallio.Tests.vs2010</Name>
+    <ProjectReference Include="..\..\..\Gallio\Gallio.Loader\Gallio.Loader.vs2010.csproj">
+      <Project>{67FB2969-E6BF-4754-91AA-B6075F8E67EE}</Project>
+      <Name>Gallio.Loader.vs2010</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\Gallio\Gallio.UI\Gallio.UI.vs2010.csproj">
       <Project>{36B1F505-995B-41E7-AAC9-1E845B08F2D7}</Project>
       <Name>Gallio.UI.vs2010</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\Gallio\Gallio35\Gallio35.vs2010.csproj">
-      <Project>{BC28AB7E-5B71-4AEE-BF2D-54ACF7299889}</Project>
-      <Name>Gallio35.vs2010</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\..\Gallio\Gallio\Gallio.vs2010.csproj">
       <Project>{6CAB7735-05DA-480D-9A04-50615B00F886}</Project>
       <Name>Gallio.vs2010</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\MbUnit\MbUnit35\MbUnit35.vs2010.csproj">
-      <Project>{D147F5CC-0166-4B9C-B095-F905220090FA}</Project>
-      <Name>MbUnit35.vs2010</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\MbUnit\MbUnit\MbUnit.vs2010.csproj">
-      <Project>{A9B54755-56B7-48C1-8941-BB69FCEFFF32}</Project>
-      <Name>MbUnit.vs2010</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Gallio.VisualStudio.Interop\Gallio.VisualStudio.Interop.vs2010.csproj">
-      <Project>{B6912CC5-1E73-46E0-8F09-7F135924E3E2}</Project>
-      <Name>Gallio.VisualStudio.Interop.vs2010</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Gallio.VisualStudio.Shell\Gallio.VisualStudio.Shell.vs2010.csproj">
-      <Project>{80983DC5-71B6-49CD-BA5F-305D29A65D05}</Project>
-      <Name>Gallio.VisualStudio.Shell.vs2010</Name>
-    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\CommandBar.resx" />
+    <EmbeddedResource Include="Resources\VSPackage.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>VSPackage.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\ShellToolWindowContainer.resx">
+      <DependentUpon>ShellToolWindowContainer.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Gallio.VisualStudio.Shell90.plugin" />
+    <None Include="Gallio.VisualStudio.Shell90.addin">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Product.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\VisualStudio90.targets" />

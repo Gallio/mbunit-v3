@@ -79,6 +79,6 @@ namespace Gallio.VisualStudio.Shell
         /// <param name="factory">The service factory.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="serviceType"/>
         /// or <paramref name="factory"/> is null.</exception>
-        void ProfferVsService(Type serviceType, Func<object> factory);
+        void ProfferVsService(Type serviceType, Gallio.Common.Func<object> factory);
     }
 }

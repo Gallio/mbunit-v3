@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<plugin pluginId="Gallio.VisualStudio.Shell90"
+        recommendedInstallationPath="VisualStudio\v9.0"
+        xmlns="http://www.gallio.org/">
+  <traits>
+    <name>Visual Studio 2008 Integration Shell</name>
+    <version>0.0.0.0</version>
+    <description>Provides a framework for hosting Gallio plugins within Visual Studio 2008.</description>
+  </traits>
+
+  <dependencies>
+    <dependency pluginId="Gallio" />
+  </dependencies>
+
+  <files>
+    <file path="Gallio.VisualStudio.Shell90.plugin" />
+    <file path="Gallio.VisualStudio.Shell90.dll" />
+    <file path="Gallio.VisualStudio.Shell90.addin" />
+  </files>
+
+  <?ifdef NET35?>
+  <probingPaths>
+    <probingPath>v9.0</probingPath>
+  </probingPaths>
+  
+  <assemblies>
+    <assembly fullName="Gallio.VisualStudio.Shell90, Version=0.0.0.0, Culture=neutral, PublicKeyToken=eb9cfa67ee6ab36e"
+              codeBase="Gallio.VisualStudio.Shell90.dll">
+      <qualifyPartialName>true</qualifyPartialName>
+      <bindingRedirects>
+        <bindingRedirect oldVersion="0.0.0.0-65535.65535.65535.65535" />
+      </bindingRedirects>
+    </assembly>
+
+    <assembly fullName="Gallio.Loader, Version=0.0.0.0, Culture=neutral, PublicKeyToken=eb9cfa67ee6ab36e"/>
+  </assemblies>
+
+  <services>
+    <service serviceId="Shell90.ShellExtension"
+             serviceType="Gallio.VisualStudio.Shell.IShellExtension, Gallio.VisualStudio.Shell90" />
+  </services>
+  <?endif?>
+</plugin>

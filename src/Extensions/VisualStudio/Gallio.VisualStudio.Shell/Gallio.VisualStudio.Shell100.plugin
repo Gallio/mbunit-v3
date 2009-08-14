@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<plugin pluginId="Gallio.VisualStudio.Shell100"
+        recommendedInstallationPath="VisualStudio\v10.0"
+        xmlns="http://www.gallio.org/">
+  <traits>
+    <name>Visual Studio 2010 Integration Shell</name>
+    <version>0.0.0.0</version>
+    <description>Provides a framework for hosting Gallio plugins within Visual Studio 2010.</description>
+  </traits>
+
+  <dependencies>
+    <dependency pluginId="Gallio" />
+  </dependencies>
+
+  <files>
+    <file path="Gallio.VisualStudio.Shell100.plugin" />
+    <file path="Gallio.VisualStudio.Shell100.dll" />
+    <file path="Gallio.VisualStudio.Shell100.addin" />
+  </files>
+
+  <?ifdef NET40?>
+  <probingPaths>
+    <probingPath>v10.0</probingPath>
+  </probingPaths>
+  
+  <assemblies>
+    <assembly fullName="Gallio.VisualStudio.Shell100, Version=0.0.0.0, Culture=neutral, PublicKeyToken=eb9cfa67ee6ab36e"
+              codeBase="Gallio.VisualStudio.Shell100.dll">
+      <qualifyPartialName>true</qualifyPartialName>
+      <bindingRedirects>
+        <bindingRedirect oldVersion="0.0.0.0-65535.65535.65535.65535" />
+      </bindingRedirects>
+    </assembly>
+
+    <assembly fullName="Gallio.Loader, Version=0.0.0.0, Culture=neutral, PublicKeyToken=eb9cfa67ee6ab36e"/>
+  </assemblies>
+
+  <services>
+    <service serviceId="Shell100.ShellExtension"
+             serviceType="Gallio.VisualStudio.Shell.IShellExtension, Gallio.VisualStudio.Shell100" />
+  </services>
+  <?endif?>
+</plugin>
