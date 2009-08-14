@@ -73,14 +73,14 @@ namespace Gallio.NCoverIntegration.Tools
             }
         }
 
-        protected override bool RequiresX86
+        protected override bool RequiresX86()
         {
-            get { return true; }
+            return true;
         }
 
-        protected override bool RequiresDotNet20
+        protected override bool RequiresDotNet20()
         {
-            get { return true; }
+            return true;
         }
 
         protected override ProcessTask CreateMergeTask(IList<string> sources, string destination)

@@ -301,12 +301,9 @@
   <UsingTask AssemblyFile="$(ImageDir)\bin\Gallio.MSBuildTasks.dll" TaskName="Gallio.MSBuildTasks.Gallio" />
 
   <PropertyGroup>
-    <!--
     <TestRunnerType Condition="$(Coverage)">NCover3</TestRunnerType>
     <TestRunnerType Condition="! $(Coverage)">IsolatedProcess</TestRunnerType>
     <TestRunnerType Condition="'$(Runtime)'=='Mono'">IsolatedAppDomain</TestRunnerType>
-    -->
-    <TestRunnerType>IsolatedProcess</TestRunnerType>
 
     <CoverageFilters>
     <!-- Should no longer be needed since we are telling NCover to filter upfront.
@@ -439,12 +436,10 @@
         </Threshold>
         <Threshold>
             <CoverageMetric>MethodCoverage</CoverageMetric>
-            <Type>Document</Type>
             <Value>70</Value>
         </Threshold>
         <Threshold>
             <CoverageMetric>BranchCoverage</CoverageMetric>
-            <Type>Method</Type>
             <Value>75</Value>
         </Threshold>
     </SatisfactoryCoverage>
