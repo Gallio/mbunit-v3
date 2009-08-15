@@ -4,7 +4,6 @@
      xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
     <?include ..\..\Installer.Wix\Features.wxi ?>
 
-<?ifdef FEATURE_VISUALSTUDIO ?>
     <Fragment>
         <PropertyRef Id='VS90DEVENV'/>
         <PropertyRef Id='VS90_ROOT_FOLDER'/>
@@ -253,5 +252,4 @@
         </Feature>
 <?endif?>
     </Fragment>
-<?endif?>
 </Wix>
