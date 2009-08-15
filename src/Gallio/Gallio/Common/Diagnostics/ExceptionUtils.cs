@@ -166,5 +166,55 @@ namespace Gallio.Common.Diagnostics
                 throw;
             }
         }
+
+        /// <summary>
+        /// Invokes a constructor without producing a <see cref="TargetInvocationException" />
+        /// </summary>
+        /// <param name="constructor">The constructor to invoke.</param>
+        /// <param name="args">The constructor arguments, or null if none.</param>
+        /// <returns>The new instance, or null if none.</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="constructor"/> is null.</exception>
+        [DebuggerStepThrough, DebuggerHidden]
+        public static object InvokeConstructorWithoutTargetInvocationException(ConstructorInfo constructor, object[] args)
+        {
+            if (constructor == null)
+                throw new ArgumentNullException("constructor");
+
+            try
+            {
+                return constructor.Invoke(args);
+            }
+            catch (TargetInvocationException ex)
+            {
+                RethrowWithNoStackTraceLoss(ex.InnerException);
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Creates an object using <see cref="Activator.CreateInstance(Type)"/> without producing a <see cref="TargetInvocationException" />
+        /// </summary>
+        /// <param name="type">The type of object to create.</param>
+        /// <param name="args">The constructor arguments, or null if none.</param>
+        /// <returns>The new instance, or null if none.</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="type"/> is null.</exception>
+        [DebuggerStepThrough, DebuggerHidden]
+        public static object CreateInstanceWithoutTargetInvocationException(Type type, object[] args)
+        {
+            if (type == null)
+                throw new ArgumentNullException("type");
+
+            try
+            {
+                return args != null
+                    ? Activator.CreateInstance(type, args)
+                    : Activator.CreateInstance(type);
+            }
+            catch (TargetInvocationException ex)
+            {
+                RethrowWithNoStackTraceLoss(ex.InnerException);
+                throw;
+            }
+        }
     }
 }

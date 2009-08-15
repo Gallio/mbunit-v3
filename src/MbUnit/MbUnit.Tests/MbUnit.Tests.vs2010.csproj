@@ -175,6 +175,9 @@
     <Compile Include="Framework\AssertTest_Sorting.cs" />
     <Compile Include="Framework\AssertTest_Distinct.cs" />
     <Compile Include="Framework\ColumnAttributeTest.cs" />
+    <Compile Include="Integration\ConstructorFixtureInitializerAndDisposeTest.cs" />
+    <Compile Include="Integration\FixtureSetUpAndFixtureTearDownTest.cs" />
+    <Compile Include="Integration\DataDrivenTest.cs" />
     <Compile Include="Framework\DataAttributeTest.cs" />
     <Compile Include="Framework\ExpectedExceptionAttributeTest.cs" />
     <Compile Include="Framework\MultipleCultureAttributeTest.cs" />
@@ -203,6 +206,7 @@
     <Compile Include="Framework\IsolationTest.cs" />
     <Compile Include="Framework\RollbackAttributeTest.cs" />
     <Compile Include="Framework\TestCaseTest.cs" />
+    <Compile Include="Integration\SetUpAndTearDownTest.cs" />
     <EmbeddedResource Include="Framework\CsvDataTest.csv" />
     <EmbeddedResource Include="Framework\XmlDataTest.xml" />
     <EmbeddedResource Include="Compatibility\Framework\Xml\etc\Book.xsd" />

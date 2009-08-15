@@ -19,6 +19,7 @@ using System.Diagnostics;
 using System.Reflection;
 using System.Text;
 using Gallio.Common.Collections;
+using Gallio.Common.Diagnostics;
 using Gallio.Runtime.Conversions;
 using Gallio.Runtime.Formatting;
 using Gallio.Common.Reflection;
@@ -149,11 +150,18 @@ namespace Gallio.Framework.Data
         {
             object instance;
             if (resolvedConstructor != null)
-                instance = resolvedConstructor.Invoke(resolvedConstructorArguments);
+            {
+                instance = ExceptionUtils.InvokeConstructorWithoutTargetInvocationException(resolvedConstructor,
+                    resolvedConstructorArguments);
+            }
             else if (resolvedType.IsValueType)
-                instance = Activator.CreateInstance(resolvedType);
+            {
+                instance = ExceptionUtils.CreateInstanceWithoutTargetInvocationException(resolvedType, null);
+            }
             else
+            {
                 throw new InvalidOperationException(String.Format("Type '{0}' cannot be instantiated.", resolvedType));
+            }
 
             foreach (KeyValuePair<FieldInfo, object> fieldValue in resolvedFieldValues)
                 fieldValue.Key.SetValue(instance, fieldValue.Value);

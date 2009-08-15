@@ -217,6 +217,16 @@ namespace Gallio.Tests.Framework.Data
         }
 
         [Test]
+        public void CreateInstance_WhenConstructorThrows_DoesNotWrapExceptionAsTargetInvocationException()
+        {
+            ITypeInfo type = Reflector.Wrap(typeof(ThrowBoomWhenConstructed));
+            Dictionary<ISlotInfo, object> slotValues = new Dictionary<ISlotInfo, object>();
+
+            ObjectCreationSpec spec = new ObjectCreationSpec(type, slotValues, NullConverter.Instance);
+            Assert.Throws<InvalidOperationException>(() => spec.CreateInstance());
+        }
+
+        [Test]
         public void CreateInstanceWithGenericClass()
         {
             ITypeInfo type = Reflector.Wrap(typeof(GenericClass<>));
@@ -521,6 +531,14 @@ namespace Gallio.Tests.Framework.Data
                     return function;
 
             throw new InvalidOperationException("Could not find function.");
+        }
+
+        private class ThrowBoomWhenConstructed
+        {
+            public ThrowBoomWhenConstructed()
+            {
+                throw new InvalidOperationException("Boom!");
+            }
         }
     }
 }
