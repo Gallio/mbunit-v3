@@ -26,9 +26,9 @@ namespace Gallio.Icarus.Models
     public class ProjectTreeModel : TreeModelBase, IProjectTreeModel
     {
         private readonly IFileSystem fileSystem;
-        private readonly Node projectRoot;
+        private readonly Node projectRoot = new Node();
         private TestProject testProject = new TestProject();
-        private string fileName = Paths.DefaultProject;
+        private string fileName;
         private ReportMonitor reportMonitor;
 
         public string FileName
@@ -68,8 +68,6 @@ namespace Gallio.Icarus.Models
         {
             this.fileSystem = fileSystem;
 
-            projectRoot = new Node();
-            
             projectRoot.Nodes.Add(new PropertiesNode());
             projectRoot.Nodes.Add(new FilesNode());
             projectRoot.Nodes.Add(new ReportsNode());

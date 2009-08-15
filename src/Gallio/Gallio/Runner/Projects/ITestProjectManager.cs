@@ -25,6 +25,14 @@ namespace Gallio.Runner.Projects
     public interface ITestProjectManager
     {
         /// <summary>
+        /// Creates a new project.
+        /// </summary>
+        /// <param name="projectName">The location of the project to be created.</param>
+        /// <returns>The loaded test project.</returns>
+        /// <exception cref="ArgumentException">Thrown if the project name is null or empty.</exception>
+        TestProject NewProject(string projectName);
+
+        /// <summary>
         /// Loads a saved test project.
         /// </summary>
         /// <param name="testProjectFile">The test project file to load.</param>

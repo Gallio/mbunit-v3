@@ -26,7 +26,6 @@ using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Controls;
 using Gallio.Icarus.Helpers;
 using Gallio.Runner.Projects;
-using Gallio.Runner.Projects.Schema;
 using Gallio.Runtime;
 using Gallio.Runtime.Extensibility;
 using Gallio.Runtime.ProgressMonitoring;
@@ -144,13 +143,18 @@ namespace Gallio.Icarus.Controllers
                 var cmd = new AddFilesCommand(projectController, testController) 
                     { Files = files };
                 taskManager.QueueTask(cmd);
+                return;
             }
-            else if (optionsController.RestorePreviousSettings && optionsController.RecentProjects.Count > 0)
+            if (optionsController.RestorePreviousSettings && optionsController.RecentProjects.Count > 0)
             {
                 string projectName = optionsController.RecentProjects.Items[0];
                 if (File.Exists(projectName))
+                {
                     OpenProject(projectName);
+                    return;
+                }
             }
+            NewProject();
         }
 
         private void LoadPackages()
@@ -216,8 +220,8 @@ namespace Gallio.Icarus.Controllers
 
         public void NewProject()
         {
-            Title = string.Empty;
-
+            // TODO: DRY, this shouldn't be necessary here
+            Title = Paths.DefaultProject;
             var cmd = new NewProjectCommand(projectController, testController);
             taskManager.QueueTask(cmd);
         }
