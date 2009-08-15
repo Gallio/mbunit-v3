@@ -405,12 +405,10 @@
         </Threshold>
         <Threshold>
             <CoverageMetric>MethodCoverage</CoverageMetric>
-            <Type>Document</Type>
             <Value>70</Value>
         </Threshold>
         <Threshold>
             <CoverageMetric>BranchCoverage</CoverageMetric>
-            <Type>Method</Type>
             <Value>75</Value>
         </Threshold>
     </SatisfactoryCoverage>
