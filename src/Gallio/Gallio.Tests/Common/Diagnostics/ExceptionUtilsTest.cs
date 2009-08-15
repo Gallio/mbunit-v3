@@ -75,20 +75,95 @@ namespace Gallio.Tests.Common.Diagnostics
             throw new InvalidOperationException("Boom!");
         }
 
+        public static int Return42()
+        {
+            return 42;
+        }
+
         [Test]
         [ExpectedArgumentNullException]
-        public void InvokeMethodWithoutTargetInvocationExceptionShouldThrowIfMethodIsNull()
+        public void InvokeMethodWithoutTargetInvocationException_WhenMethodIsNull_Throws()
         {
             ExceptionUtils.InvokeMethodWithoutTargetInvocationException(null, "abc", EmptyArray<object>.Instance);
         }
 
         [Test]
-        public void InvokeMethodWithoutTargetInvocationExceptionShouldNotWrapTheException()
+        public void InvokeMethodWithoutTargetInvocationException_WhenMethodSucceeds_ReturnsResult()
+        {
+            MethodInfo method = GetType().GetMethod("Return42");
+            int result = (int)ExceptionUtils.InvokeMethodWithoutTargetInvocationException(method, null, null);
+            Assert.AreEqual(42, result);
+        }
+
+        [Test]
+        public void InvokeMethodWithoutTargetInvocationException_WhenMethodThrows_ShouldNotWrapTheException()
         {
             try
             {
                 MethodInfo method = GetType().GetMethod("ThrowBoom");
                 ExceptionUtils.InvokeMethodWithoutTargetInvocationException(method, null, null);
+                Assert.Fail("Should have thrown an InvalidOperationException");
+            }
+            catch (InvalidOperationException ex)
+            {
+                Assert.Contains(ex.StackTrace, "ThrowBoom");
+            }
+        }
+
+        [Test]
+        [ExpectedArgumentNullException]
+        public void InvokeConstructorWithoutTargetInvocationException_WhenConstructorIsNull_Throws()
+        {
+            ExceptionUtils.InvokeConstructorWithoutTargetInvocationException(null, EmptyArray<object>.Instance);
+        }
+
+        [Test]
+        public void InvokeConstructorWithoutTargetInvocationException_WhenConstructorSucceeds_ShouldReturnInstance()
+        {
+            ConstructorInfo constructor = typeof(Object).GetConstructor(Type.EmptyTypes);
+            object instance = ExceptionUtils.InvokeConstructorWithoutTargetInvocationException(constructor, null);
+            Assert.IsNotNull(instance);
+        }
+
+        [Test]
+        public void InvokeConstructorWithoutTargetInvocationException_WhenConstructorThrows_ShouldNotWrapTheException()
+        {
+            try
+            {
+                ConstructorInfo constructor = typeof(ThrowBoomWhenConstructed).GetConstructor(Type.EmptyTypes);
+                ExceptionUtils.InvokeConstructorWithoutTargetInvocationException(constructor, null);
+                Assert.Fail("Should have thrown an InvalidOperationException");
+            }
+            catch (InvalidOperationException ex)
+            {
+                Assert.Contains(ex.StackTrace, "ThrowBoom");
+            }
+        }
+
+        [Test]
+        [ExpectedArgumentNullException]
+        public void CreateInstanceWithoutTargetInvocationException_WhenTypeIsNull_Throws()
+        {
+            ExceptionUtils.CreateInstanceWithoutTargetInvocationException(null, EmptyArray<object>.Instance);
+        }
+
+        [Test]
+        [Row(true)]
+        [Row(false)]
+        public void CreateInstanceWithoutTargetInvocationException_WhenConstructorSucceeds_ReturnsInstance(bool includeArgs)
+        {
+            object result = ExceptionUtils.CreateInstanceWithoutTargetInvocationException(typeof(object), includeArgs ? Type.EmptyTypes : null);
+            Assert.IsNotNull(result);
+        }
+
+        [Test]
+        [Row(true)]
+        [Row(false)]
+        public void CreateInstanceWithoutTargetInvocationException_WhenConstructorThrows_ShouldNotWrapTheException(bool includeArgs)
+        {
+            try
+            {
+                ExceptionUtils.CreateInstanceWithoutTargetInvocationException(typeof(ThrowBoomWhenConstructed), includeArgs ? Type.EmptyTypes : null);
                 Assert.Fail("Should have thrown an InvalidOperationException");
             }
             catch (InvalidOperationException ex)
@@ -107,6 +182,14 @@ namespace Gallio.Tests.Common.Diagnostics
 
         private class RevengeOfTheHostileException : HostileException
         {
+        }
+
+        private class ThrowBoomWhenConstructed
+        {
+            public ThrowBoomWhenConstructed()
+            {
+                ThrowBoom();
+            }
         }
     }
 }

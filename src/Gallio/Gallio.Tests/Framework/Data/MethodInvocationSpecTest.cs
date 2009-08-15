@@ -231,7 +231,6 @@ namespace Gallio.Tests.Framework.Data
             Assert.AreEqual(1, GenericClass<int>.staticMethodParamValue);
         }
 
-
         [Test]
         public void InvokeThrowsUnwrappedException()
         {

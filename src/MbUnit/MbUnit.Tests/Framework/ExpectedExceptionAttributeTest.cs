@@ -41,7 +41,7 @@ namespace MbUnit.Tests.Framework
 
             Assert.Multiple(() =>
             {
-                Assert.IsNotNull("run");
+                Assert.IsNotNull(run);
                 Assert.AreEqual(success ? TestOutcome.Passed : TestOutcome.Failed, run.Result.Outcome);
 
                 if (expectedLogOutput != null)
