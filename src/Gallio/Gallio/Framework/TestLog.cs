@@ -686,7 +686,7 @@ namespace Gallio.Framework
         }
 
         /// <summary>
-        /// Begins a section with the specified name.  Maybe be nested.
+        /// Begins a section with the specified name.  May be nested.
         /// </summary>
         /// <remarks>
         /// <para>
@@ -716,7 +716,7 @@ namespace Gallio.Framework
         }
 
         /// <summary>
-        /// Begins a marked region.  Maybe be nested.
+        /// Begins a marked region.  May be nested.
         /// </summary>
         /// <remarks>
         /// <para>

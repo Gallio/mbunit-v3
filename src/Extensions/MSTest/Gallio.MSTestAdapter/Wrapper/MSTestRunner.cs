@@ -210,6 +210,7 @@ namespace Gallio.MSTestAdapter.Wrapper
             private readonly Dictionary<Guid, ITestCommand> testCommandsByTestId;
             private readonly Dictionary<object, TestStepState> testStepStatesByTestResultId;
             private readonly Dictionary<Test, TestStepState> testStepStatesByTest;
+            private readonly HashSet<Test> testsExecuted;
 
             private TestStepState assemblyTestStepState;
             private object tmi;
@@ -228,6 +229,7 @@ namespace Gallio.MSTestAdapter.Wrapper
                 testCommandsByTestId = new Dictionary<Guid, ITestCommand>();
                 testStepStatesByTestResultId = new Dictionary<object, TestStepState>();
                 testStepStatesByTest = new Dictionary<Test, TestStepState>();
+                testsExecuted = new HashSet<Test>();
             }
 
             public TestOutcome Execute(string testMetadataPath, string testResultsPath,
@@ -288,7 +290,6 @@ namespace Gallio.MSTestAdapter.Wrapper
 
                     bool success = (bool)executorType.GetMethod("Execute").Invoke(executor, null);
 
-                    FinishTestChildren(assemblyTestCommand);
                     TestOutcome assemblyOutcome = assemblyTestStepState.Outcome;
 
                     if (!success)
@@ -303,6 +304,7 @@ namespace Gallio.MSTestAdapter.Wrapper
                     testCommandsByTestId.Clear();
                     testStepStatesByTestResultId.Clear();
                     testStepStatesByTest.Clear();
+                    testsExecuted.Clear();
 
                     // Dispose the Executor.  (Also disposes the TMI behind the scenes.)
                     ((IDisposable)executor).Dispose();
@@ -323,8 +325,7 @@ namespace Gallio.MSTestAdapter.Wrapper
                 // Set the current directory because MSTest does not do that itself when the /noisolation
                 // switch is specified.  If this is not done, tests will be unable to locate deployment items
                 // and other resources they may reference via relative paths.
-                Guid testRunId = (Guid) e.GetType().GetProperty("RunId").GetValue(e, null);
-                object testRun = tmi.GetType().GetMethod("GetTestRun").Invoke(tmi, new object[] { testRunId });
+                object testRun = GetTestRunFromTestRunEventArgs(e);
                 object testRunConfiguration = testRun.GetType().GetProperty("RunConfiguration").GetValue(testRun, null);
                 string testRunDeploymentOutDirectory = (string) testRunConfiguration.GetType().GetProperty("RunDeploymentOutDirectory").GetValue(testRunConfiguration, null);
 
@@ -342,6 +343,33 @@ namespace Gallio.MSTestAdapter.Wrapper
 
             private void HandleTestRunFinished(object sender, EventArgs e)
             {
+                // Finish test commands for fixtures and other interior nodes we created.
+                FinishTestCommandChildren(assemblyTestCommand);
+
+                // Write RunInfo messages.
+                object testRun = GetTestRunFromTestRunEventArgs(e);
+                object runResultAndStatistics = testRun.GetType().GetProperty("Result").GetValue(testRun, null);
+                Array runInfos = (Array) runResultAndStatistics.GetType().GetProperty("RunInfoList").GetValue(runResultAndStatistics, null);
+
+                for (int i = 0; i < runInfos.Length; i++)
+                {
+                    object runInfo = runInfos.GetValue(i);
+                    string text = (string) runInfo.GetType().GetProperty("Text").GetValue(runInfo, null);
+                    //Exception exception = (Exception)runInfo.GetType().GetProperty("Exception").GetValue(runInfo, null);
+
+                    if (text != null)
+                    {
+                        text = text.Trim();
+                        if (text.Length != 0)
+                        {
+                            using (assemblyTestContext.LogWriter.Failures.BeginSection(""))
+                            {
+                                assemblyTestContext.LogWriter.Failures.WriteLine(text);
+                            }
+                        }
+                    }
+                }
+
 #if USE_APPBASE_HACK
                 if (originalAppBase != null)
                     AppDomain.CurrentDomain.SetData("APPBASE", originalAppBase);
@@ -349,6 +377,12 @@ namespace Gallio.MSTestAdapter.Wrapper
 
                 if (originalWorkingDirectory != null)
                     Environment.CurrentDirectory = originalWorkingDirectory;
+            }
+
+            private object GetTestRunFromTestRunEventArgs(EventArgs e)
+            {
+                Guid testRunId = (Guid)e.GetType().GetProperty("RunId").GetValue(e, null);
+                return tmi.GetType().GetMethod("GetTestRun").Invoke(tmi, new object[] { testRunId });
             }
 
             private void HandleTestStarted(object sender, EventArgs e)
@@ -364,82 +398,8 @@ namespace Gallio.MSTestAdapter.Wrapper
                 foreach (TestStepState testStepState in GetOrCreateTestStepStatesFromTestResultEventArgs(e))
                 {
                     object testResult = GetTestResult(testStepState.TestResultId);
-                    RecordTestResult(testStepState, testResult);
+                    FinishTestStep(testStepState, testResult);
                 }
-            }
-
-            private static void RecordTestResult(TestStepState testStepState, object testResult)
-            {
-                Array innerResults = GetInnerResults(testResult);
-                if (innerResults != null)
-                {
-                    for (int i = 0; i < innerResults.Length; i++)
-                    {
-                        object innerResult = innerResults.GetValue(i);
-
-                        TestStep testStep = testStepState.TestContext.TestStep;
-                        TestStep innerTestStep = new TestStep(testStep.Test, testStep,
-                            testStep.Name, testStep.CodeElement, false);
-                        innerTestStep.IsDynamic = true;
-
-                        Array innerInnerResults = GetInnerResults(innerResults);
-                        if (innerInnerResults != null && innerInnerResults.Length != 0)
-                            innerTestStep.IsTestCase = false;
-
-                        ITestContext innerTestContext = SafeStartChildStep(testStepState.TestContext, innerTestStep);
-
-                        TestStepState innerTestStepState = new TestStepState(testStepState, innerTestContext);
-                        RecordTestResult(innerTestStepState, innerResult);
-                    }
-                }
-
-                Type testResultType = testResult.GetType();
-                string stdOut = (string)testResultType.GetProperty("StdOut").GetValue(testResult, null);
-                if (!string.IsNullOrEmpty(stdOut))
-                    testStepState.TestContext.LogWriter.ConsoleOutput.Write(stdOut);
-
-                string stdErr = (string)testResultType.GetProperty("StdErr").GetValue(testResult, null);
-                if (!string.IsNullOrEmpty(stdErr))
-                    testStepState.TestContext.LogWriter.ConsoleError.Write(stdErr);
-
-                string debugTrace = (string)testResultType.GetProperty("DebugTrace").GetValue(testResult, null);
-                if (!string.IsNullOrEmpty(debugTrace))
-                    testStepState.TestContext.LogWriter.DebugTrace.Write(debugTrace);
-
-                string errorMessage = (string)testResultType.GetProperty("ErrorMessage").GetValue(testResult, null);
-                if (!string.IsNullOrEmpty(errorMessage))
-                    testStepState.TestContext.LogWriter.Failures.Write(errorMessage);
-
-                string errorStackTrace = (string)testResultType.GetProperty("ErrorStackTrace").GetValue(testResult, null);
-                if (!string.IsNullOrEmpty(errorStackTrace))
-                {
-                    if (!string.IsNullOrEmpty(errorMessage))
-                        testStepState.TestContext.LogWriter.Failures.WriteLine();
-                    testStepState.TestContext.LogWriter.Failures.Write(errorStackTrace);
-                }
-
-                string[] textMessages = (string[])testResultType.GetProperty("TextMessages").GetValue(testResult, null);
-                foreach (string textMessage in textMessages)
-                    testStepState.TestContext.LogWriter.Warnings.WriteLine(textMessage);
-
-                string outcomeString = testResultType.GetProperty("Outcome").GetValue(testResult, null).ToString();
-                testStepState.Outcome = GetTestOutcome(outcomeString);
-
-                Array timerResults = (Array)testResultType.GetProperty("TimerResults").GetValue(testResult, null);
-                if (timerResults != null)
-                {
-                    for (int i = 0; i < timerResults.Length; i++)
-                    {
-                        object timerResult = timerResults.GetValue(i);
-                        TimeSpan duration =
-                            (TimeSpan)timerResult.GetType().GetProperty("Duration").GetValue(timerResult, null);
-                        testStepState.Duration += duration;
-                    }
-                }
-
-                // Finish the test step unless it is the assembly test which we will finish later.
-                if (testStepState.ParentTestStepState != null)
-                    testStepState.Finish();
             }
 
             private IEnumerable<TestStepState> GetOrCreateTestStepStatesFromTestResultEventArgs(EventArgs testResultEventArgs)
@@ -492,6 +452,7 @@ namespace Gallio.MSTestAdapter.Wrapper
                     testStepState = new TestStepState(parentTestStepState, testContext);
 
                     testStepStatesByTest.Add(test, testStepState);
+                    testsExecuted.Add(test);
                 }
 
                 return testStepState;
@@ -523,9 +484,89 @@ namespace Gallio.MSTestAdapter.Wrapper
                 return testStepState;
             }
 
-            private void FinishTest(ITestCommand testCommand)
+            private void FinishTestStep(TestStepState testStepState, object testResult)
             {
-                FinishTestChildren(testCommand);
+                Array innerResults = GetInnerResults(testResult);
+                if (innerResults != null)
+                {
+                    for (int i = 0; i < innerResults.Length; i++)
+                    {
+                        object innerResult = innerResults.GetValue(i);
+
+                        TestStep testStep = testStepState.TestContext.TestStep;
+                        TestStep innerTestStep = new TestStep(testStep.Test, testStep,
+                            testStep.Name, testStep.CodeElement, false);
+                        innerTestStep.IsDynamic = true;
+
+                        Array innerInnerResults = GetInnerResults(innerResults);
+                        if (innerInnerResults != null && innerInnerResults.Length != 0)
+                            innerTestStep.IsTestCase = false;
+
+                        ITestContext innerTestContext = SafeStartChildStep(testStepState.TestContext, innerTestStep);
+
+                        TestStepState innerTestStepState = new TestStepState(testStepState, innerTestContext);
+                        FinishTestStep(innerTestStepState, innerResult);
+                    }
+                }
+
+                Type testResultType = testResult.GetType();
+                string stdOut = (string)testResultType.GetProperty("StdOut").GetValue(testResult, null);
+                if (!string.IsNullOrEmpty(stdOut))
+                    testStepState.TestContext.LogWriter.ConsoleOutput.Write(stdOut);
+
+                string stdErr = (string)testResultType.GetProperty("StdErr").GetValue(testResult, null);
+                if (!string.IsNullOrEmpty(stdErr))
+                    testStepState.TestContext.LogWriter.ConsoleError.Write(stdErr);
+
+                string debugTrace = (string)testResultType.GetProperty("DebugTrace").GetValue(testResult, null);
+                if (!string.IsNullOrEmpty(debugTrace))
+                    testStepState.TestContext.LogWriter.DebugTrace.Write(debugTrace);
+
+                string errorMessage = (string)testResultType.GetProperty("ErrorMessage").GetValue(testResult, null);
+                if (!string.IsNullOrEmpty(errorMessage))
+                    testStepState.TestContext.LogWriter.Failures.Write(errorMessage);
+
+                string errorStackTrace = (string)testResultType.GetProperty("ErrorStackTrace").GetValue(testResult, null);
+                if (!string.IsNullOrEmpty(errorStackTrace))
+                {
+                    if (!string.IsNullOrEmpty(errorMessage))
+                        testStepState.TestContext.LogWriter.Failures.WriteLine();
+                    testStepState.TestContext.LogWriter.Failures.Write(errorStackTrace);
+                }
+
+                string[] textMessages = (string[])testResultType.GetProperty("TextMessages").GetValue(testResult, null);
+                foreach (string textMessage in textMessages)
+                    testStepState.TestContext.LogWriter.Warnings.WriteLine(textMessage);
+
+                string outcomeString = testResultType.GetProperty("Outcome").GetValue(testResult, null).ToString();
+                testStepState.Outcome = GetTestOutcome(outcomeString);
+
+                Array timerResults = (Array)testResultType.GetProperty("TimerResults").GetValue(testResult, null);
+                if (timerResults != null)
+                {
+                    for (int i = 0; i < timerResults.Length; i++)
+                    {
+                        object timerResult = timerResults.GetValue(i);
+                        TimeSpan duration =
+                            (TimeSpan)timerResult.GetType().GetProperty("Duration").GetValue(timerResult, null);
+                        testStepState.Duration += duration;
+                    }
+                }
+
+                // Finish the test step unless it is the assembly test which we will finish later.
+                if (testStepState.ParentTestStepState != null)
+                    testStepState.Finish();
+
+                if (testStepState.TestResultId != null)
+                    testStepStatesByTestResultId.Remove(testStepState.TestResultId);
+
+                if (testStepState.TestContext.TestStep.IsPrimary)
+                    testStepStatesByTest.Remove(testStepState.TestContext.TestStep.Test);
+            }
+
+            private void FinishTestCommand(ITestCommand testCommand)
+            {
+                FinishTestCommandChildren(testCommand);
 
                 MSTest test = (MSTest) testCommand.Test;
                 if (test.IsTestCase)
@@ -543,10 +584,13 @@ namespace Gallio.MSTestAdapter.Wrapper
                         TestStepState testStepState = GetTestStepStateByTest(test);
                         if (testStepState == null)
                         {
-                            testStepState = GetOrCreateTestStepStateByTest(test);
-                            testStepState.TestContext.LogWriter.Warnings.Write("No test results available!");
-                            testStepState.Outcome = TestOutcome.Skipped;
-                            testStepState.Finish();
+                            if (! testsExecuted.Contains(test))
+                            {
+                                testStepState = GetOrCreateTestStepStateByTest(test);
+                                testStepState.TestContext.LogWriter.Warnings.Write("No test results available!");
+                                testStepState.Outcome = TestOutcome.Skipped;
+                                testStepState.Finish();
+                            }
                         }
                         else
                         {
@@ -564,11 +608,11 @@ namespace Gallio.MSTestAdapter.Wrapper
                 }
             }
 
-            private void FinishTestChildren(ITestCommand testCommand)
+            private void FinishTestCommandChildren(ITestCommand testCommand)
             {
                 foreach (ITestCommand childTestCommand in testCommand.Children)
                 {
-                    FinishTest(childTestCommand);
+                    FinishTestCommand(childTestCommand);
                 }
             }
 
@@ -708,8 +752,6 @@ namespace Gallio.MSTestAdapter.Wrapper
             }
 
             public object TestResultId { get; set; }
-
-            public Guid TestExecId { get; set; }
 
             public TimeSpan Duration { get; set; }
 

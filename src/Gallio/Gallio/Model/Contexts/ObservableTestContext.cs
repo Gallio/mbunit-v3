@@ -336,6 +336,11 @@ namespace Gallio.Model.Contexts
                 UnhandledExceptionPolicy.Report("An unhandled exception occurred while finishing a test step.", ex);
                 return new TestResult(TestOutcome.Error);
             }
+            finally
+            {
+                lock (syncRoot)
+                    executionStatus = StatusFinished;
+            }
         }
 
         private bool IsRunning

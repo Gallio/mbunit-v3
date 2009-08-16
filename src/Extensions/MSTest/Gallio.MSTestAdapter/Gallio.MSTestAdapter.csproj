@@ -49,7 +49,6 @@
     <Compile Include="Model\MSTestController.cs" />
     <Compile Include="Model\MSTestExplorer.cs" />
     <Compile Include="Model\MSTestFramework.cs" />
-    <Compile Include="Wrapper\MSTestResult.cs" />
     <Compile Include="Wrapper\MSTestResolver.cs" />
     <Compile Include="Wrapper\MSTestRunner.cs" />
     <Compile Include="Wrapper\MSTestRunner2005.cs" />
