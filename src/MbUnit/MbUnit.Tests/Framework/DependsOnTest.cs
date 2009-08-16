@@ -92,20 +92,5 @@ namespace MbUnit.Tests.Framework
                 TestLog.WriteLine("Run");
             }
         }
-
-        internal class Foo
-        {
-            [Test]
-            public void Test1()
-            {
-                throw new NotImplementedException();
-            }
-            [Test]
-            [DependsOn("Test1")]
-            public void Test2()
-            {
-
-            }
-        }
     }
 }
