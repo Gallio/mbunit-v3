@@ -15,12 +15,8 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Xml;
-using System.Xml.XPath;
-using Gallio.Common.Collections;
 using Gallio.MSTestAdapter.Model;
-using Gallio.Common.Caching;
 
 namespace Gallio.MSTestAdapter.Wrapper
 {
@@ -54,7 +50,7 @@ namespace Gallio.MSTestAdapter.Wrapper
                 if (test.IsTestCase)
                 {
                     writer.WriteStartElement("TestLink");
-                    writer.WriteAttributeString("id", test.Guid);
+                    writer.WriteAttributeString("id", test.Guid.ToString());
                     writer.WriteAttributeString("name", test.TestName);
                     writer.WriteAttributeString("storage", assemblyFilePath);
                     writer.WriteAttributeString("type",
@@ -116,48 +112,6 @@ namespace Gallio.MSTestAdapter.Wrapper
             writer.WriteEndElement();
 
             writer.WriteEndDocument();
-        }
-
-        protected override void ExtractExecutedTestsInformation(MultiMap<string, MSTestResult> testResults, XmlReader reader)
-        {
-            XPathDocument document = new XPathDocument(reader);
-            XPathNavigator documentNavigator = document.CreateNavigator();
-
-            XmlNamespaceManager nsmgr = new XmlNamespaceManager(documentNavigator.NameTable);
-            nsmgr.AddNamespace("m", "http://microsoft.com/schemas/VisualStudio/TeamTest/2006");
-
-            foreach (XPathNavigator resultNavigator in documentNavigator.Select("/m:TestRun/m:Results/m:UnitTestResult", nsmgr))
-            {
-                MSTestResult testResult = ParseTestResult(resultNavigator, nsmgr);
-                testResults.Add(testResult.Guid, testResult);
-            }
-        }
-
-        private static MSTestResult ParseTestResult(XPathNavigator resultNavigator, XmlNamespaceManager nsmgr)
-        {
-            MSTestResult testResult = new MSTestResult();
-
-            testResult.Guid = resultNavigator.GetAttribute("testId", "");
-            testResult.Duration = GetDuration(resultNavigator.GetAttribute("duration", ""));
-            testResult.Outcome = GetTestOutcome(resultNavigator.GetAttribute("outcome", ""));
-
-            XPathNavigator stdOutNavigator = resultNavigator.SelectSingleNode("m:Output/m:StdOut", nsmgr);
-            if (stdOutNavigator != null)
-                testResult.StdOut = stdOutNavigator.Value;
-
-            XPathNavigator errorMessageNavigator = resultNavigator.SelectSingleNode("m:Output/m:ErrorInfo/m:Message", nsmgr);
-            XPathNavigator errorStackTraceNavigator = resultNavigator.SelectSingleNode("m:Output/m:ErrorInfo/m:StackTrace", nsmgr);
-            if (errorMessageNavigator != null && errorStackTraceNavigator != null)
-                testResult.Errors = errorMessageNavigator.Value + "\n" + errorStackTraceNavigator.Value;
-            else if (errorMessageNavigator != null)
-                testResult.Errors = errorMessageNavigator.Value;
-            else if (errorStackTraceNavigator != null)
-                testResult.Errors = errorStackTraceNavigator.Value;
-
-            foreach (XPathNavigator childResultNavigator in resultNavigator.Select("m:InnerResults/m:UnitTestResult", nsmgr))
-                testResult.AddChild(ParseTestResult(childResultNavigator, nsmgr));
-
-            return testResult;
         }
     }
 }

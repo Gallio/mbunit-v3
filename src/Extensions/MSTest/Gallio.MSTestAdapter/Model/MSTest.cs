@@ -20,7 +20,6 @@ using System.Security.Cryptography;
 using System.Text;
 using Gallio.Common.Collections;
 using Gallio.Common.Reflection;
-using Gallio.Model.Commands;
 using Gallio.Model.Tree;
 
 namespace Gallio.MSTestAdapter.Model
@@ -29,7 +28,7 @@ namespace Gallio.MSTestAdapter.Model
     {
         private static readonly SHA1CryptoServiceProvider provider = new SHA1CryptoServiceProvider();
         private string testName;
-        private string guid;
+        private Guid guid;
         private List<MSTestDeploymentItem> deploymentItems;
 
         /// <summary>
@@ -56,7 +55,7 @@ namespace Gallio.MSTestAdapter.Model
         /// <summary>
         /// Gets the GUID MSTest uses to refer to the test.
         /// </summary>
-        public string Guid
+        public Guid Guid
         {
             get { return guid; }
         }
@@ -89,6 +88,14 @@ namespace Gallio.MSTestAdapter.Model
             deploymentItems.Add(deploymentItem);
         }
 
+        /// <summary>
+        /// Returns true if the test is data-driven.
+        /// </summary>
+        public bool IsDataDriven
+        {
+            get { return Metadata.ContainsKey(MSTestMetadataKeys.DataSource); }
+        }
+
         private void PopulateTestName()
         {
             CodeReference codeReference = CodeElement.CodeReference;
@@ -100,7 +107,7 @@ namespace Gallio.MSTestAdapter.Model
 
         private void PopulateGuid()
         {
-            guid = GuidFromString(testName).ToString();
+            guid = GuidFromString(testName);
         }
 
         private static Guid GuidFromString(string fullMethodName)

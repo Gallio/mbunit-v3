@@ -34,6 +34,7 @@ namespace Gallio.MSTestAdapter.TestResources
         {
             Console.WriteLine("CodeBase: " + GetType().Assembly.CodeBase);
             Console.WriteLine("AppBase: " + AppDomain.CurrentDomain.BaseDirectory);
+            Console.WriteLine("ConfigurationFile: " + AppDomain.CurrentDomain.SetupInformation.ConfigurationFile);
             Console.WriteLine("CurrentDir: " + Environment.CurrentDirectory);
             Console.WriteLine("TestDir: " + TestContext.TestDir);
             Console.WriteLine("TestLogsDir: " + TestContext.TestLogsDir);

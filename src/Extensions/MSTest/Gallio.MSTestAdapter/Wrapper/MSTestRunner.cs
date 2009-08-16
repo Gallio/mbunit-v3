@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 using System.Xml;
 using Gallio.Common.Collections;
 using Gallio.Common.Policies;
@@ -25,7 +26,9 @@ using Gallio.Model.Contexts;
 using Gallio.Model.Tree;
 using Gallio.MSTestAdapter.Model;
 using Gallio.MSTestAdapter.Properties;
+using Gallio.Runtime;
 using Gallio.Runtime.ProgressMonitoring;
+using Gallio.Common.Markup;
 
 namespace Gallio.MSTestAdapter.Wrapper
 {
@@ -49,7 +52,7 @@ namespace Gallio.MSTestAdapter.Wrapper
             throw new NotSupportedException(string.Format("MSTest v{0}.{1} is not supported at this time.", frameworkVersion.Major, frameworkVersion.Minor));
         }
 
-        public TestOutcome RunSession(ITestContext assemblyContext, MSTestAssembly assemblyTest,
+        public TestOutcome RunSession(ITestContext assemblyTestContext, MSTestAssembly assemblyTest,
             ITestCommand assemblyTestCommand, TestStep parentTestStep, IProgressMonitor progressMonitor)
         {
             DirectoryInfo tempDir = SpecialPathPolicy.For("MSTestAdapter").CreateTempDirectoryWithUniqueName();
@@ -70,10 +73,6 @@ namespace Gallio.MSTestAdapter.Wrapper
                 string testMetadataPath = Path.Combine(tempDir.FullName, "tests.vsmdi");
                 string runConfigPath = Path.Combine(tempDir.FullName, "tests.runconfig");
 
-                // Set the working directory for the test runner based on the current
-                // directory that was set in our current test isolation context.
-                string workingDirectory = Environment.CurrentDirectory;
-
                 progressMonitor.SetStatus("Generating test metadata file.");
                 CreateTestMetadataFile(testMetadataPath,
                     GetTestsFromCommands(assemblyTestCommand.PreOrderTraversal), assemblyTest.AssemblyFilePath);
@@ -82,12 +81,9 @@ namespace Gallio.MSTestAdapter.Wrapper
                 CreateRunConfigFile(runConfigPath);
 
                 progressMonitor.SetStatus("Executing tests.");
-                TestOutcome outcome = ExecuteTests(assemblyContext, workingDirectory,
-                    testMetadataPath, testResultsPath, runConfigPath, searchPathRoot);
-
-                progressMonitor.SetStatus("Processing results.");
-                outcome = outcome.CombineWith(ProcessTestResults(assemblyContext, assemblyTestCommand, testResultsPath));
-
+                Executor executor = new Executor(this, assemblyTestContext, assemblyTestCommand);
+                TestOutcome outcome = executor.Execute(testMetadataPath, testResultsPath,
+                    runConfigPath, searchPathRoot);
                 return outcome;
             }
             finally
@@ -176,20 +172,6 @@ namespace Gallio.MSTestAdapter.Wrapper
         }
          */
 
-        private static MSTestCommand GetMSTestCommand()
-        {
-            /*
-            return Debugger.IsAttached
-                ? (MSTestCommand) EmbeddedMSTestCommand.Instance
-                : StandaloneMSTestCommand.Instance;
-             */
-
-            // Always use the embedded MSTest command since this also provides support
-            // for code coverage, performs better and ensures more consistent results
-            // than if we were to run tests in two different ways.
-            return EmbeddedMSTestCommand.Instance;
-        }
-
         private static IEnumerable<MSTest> GetTestsFromCommands(IEnumerable<ITestCommand> testCommands)
         {
             foreach (ITestCommand testCommand in testCommands)
@@ -220,299 +202,557 @@ namespace Gallio.MSTestAdapter.Wrapper
             return XmlWriter.Create(filePath, settings);
         }
 
-        private TestOutcome ExecuteTests(ITestContext context, string workingDirectory,
-            string testMetadataPath, string testResultsPath, string runConfigPath, string searchPathRoot)
+        private sealed class Executor
         {
-            MSTestCommandArguments args = new MSTestCommandArguments();
-            args.NoLogo = true;
-            args.TestMetadata = testMetadataPath;
-            args.ResultsFile = testResultsPath;
-            args.RunConfig = runConfigPath;
-            args.TestList = SelectedTestListName;
-            args.SearchPathRoot = searchPathRoot;
+            private readonly MSTestRunner runner;
+            private readonly ITestContext assemblyTestContext;
+            private readonly ITestCommand assemblyTestCommand;
+            private readonly Dictionary<Guid, ITestCommand> testCommandsByTestId;
+            private readonly Dictionary<object, TestStepState> testStepStatesByTestResultId;
+            private readonly Dictionary<Test, TestStepState> testStepStatesByTest;
 
-            string executablePath = MSTestResolver.FindMSTestPathForVisualStudioVersion(GetVisualStudioVersion());
-            if (executablePath == null)
+            private TestStepState assemblyTestStepState;
+            private object tmi;
+
+            private string originalWorkingDirectory;
+#if USE_APPBASE_HACK
+            private string originalAppBase;
+#endif
+
+            public Executor(MSTestRunner runner, ITestContext assemblyTestContext, ITestCommand assemblyTestCommand)
             {
-                context.LogWriter.Failures.Write(Resources.MSTestController_MSTestExecutableNotFound);
-                return TestOutcome.Error;
+                this.runner = runner;
+                this.assemblyTestContext = assemblyTestContext;
+                this.assemblyTestCommand = assemblyTestCommand;
+
+                testCommandsByTestId = new Dictionary<Guid, ITestCommand>();
+                testStepStatesByTestResultId = new Dictionary<object, TestStepState>();
+                testStepStatesByTest = new Dictionary<Test, TestStepState>();
             }
 
-            TextWriter writer = context.LogWriter["MSTest Output"];
-            int exitCode = GetMSTestCommand().Run(executablePath, workingDirectory, args, writer);
-
-            if (exitCode != 0)
+            public TestOutcome Execute(string testMetadataPath, string testResultsPath,
+                string runConfigPath, string searchPathRoot)
             {
-                context.LogWriter.Failures.Write("MSTest returned an exit code of {0}.", exitCode);
-            }
-
-            return TestOutcome.Passed;
-        }
-
-        private TestOutcome ProcessTestResults(ITestContext assemblyContext,
-            ITestCommand assemblyCommand, string resultsFilePath)
-        {
-            MultiMap<string, MSTestResult> testResults = new MultiMap<string, MSTestResult>();
-
-            if (File.Exists(resultsFilePath))
-            {
-                using (XmlReader reader = OpenTestResultsFile(resultsFilePath))
+                TextWriter writer = assemblyTestContext.LogWriter["MSTest Output"];
+                string executablePath = MSTestResolver.FindMSTestPathForVisualStudioVersion(runner.GetVisualStudioVersion());
+                if (executablePath == null)
                 {
-                    // Errors in the class or assembly setup/teardown methods are put in a general error
-                    // section by MSTest, so we log them at the assembly level.
-                    ProcessGeneralErrorMessages(assemblyContext, reader);
+                    assemblyTestContext.LogWriter.Failures.Write(Resources.MSTestController_MSTestExecutableNotFound);
+                    return TestOutcome.Error;
                 }
 
-                using (XmlReader reader = OpenTestResultsFile(resultsFilePath))
+                string executableDir = Path.GetDirectoryName(executablePath);
+                string privateAssembliesDir = Path.Combine(executableDir, "PrivateAssemblies");
+                string publicAssembliesDir = Path.Combine(executableDir, "PublicAssemblies");
+
+                RuntimeAccessor.AssemblyLoader.AddHintDirectory(executableDir);
+                RuntimeAccessor.AssemblyLoader.AddHintDirectory(privateAssembliesDir);
+                RuntimeAccessor.AssemblyLoader.AddHintDirectory(publicAssembliesDir);
+
+                // Obtain an Executor.
+                Assembly commandLineAssembly = Assembly.Load("Microsoft.VisualStudio.QualityTools.CommandLine");
+                Type executorType = commandLineAssembly.GetType("Microsoft.VisualStudio.TestTools.CommandLine.Executor");
+                object executor = Activator.CreateInstance(executorType);
+                try
                 {
-                    ExtractExecutedTestsInformation(testResults, reader);
+                    // Configure the Executor's Output to send output to the assembly log writer.
+                    PropertyInfo outputProperty = executorType.GetProperty("Output",
+                        BindingFlags.Public | BindingFlags.Static);
+                    object output = outputProperty.GetValue(executor, null);
+                    FieldInfo standardOutputField = output.GetType().GetField("m_standardOutput",
+                        BindingFlags.NonPublic | BindingFlags.Instance);
+                    standardOutputField.SetValue(output, new StreamWriterAdapter(writer));
+
+                    // Register commands with the executor to set command-line arguments.
+                    Type commandFactoryType =
+                        commandLineAssembly.GetType("Microsoft.VisualStudio.TestTools.CommandLine.CommandFactory");
+                    CreateAndAddCommand(executor, commandFactoryType, "/nologo", null);
+                    CreateAndAddCommand(executor, commandFactoryType, "/noisolation", null);
+                    CreateAndAddCommand(executor, commandFactoryType, "/testmetadata", testMetadataPath);
+                    CreateAndAddCommand(executor, commandFactoryType, "/resultsfile", testResultsPath);
+                    CreateAndAddCommand(executor, commandFactoryType, "/runconfig", runConfigPath);
+                    CreateAndAddCommand(executor, commandFactoryType, "/searchpathroot", searchPathRoot);
+                    CreateAndAddCommand(executor, commandFactoryType, "/testlist", SelectedTestListName);
+
+                    // Get the TMI.
+                    tmi = commandFactoryType.GetProperty("Tmi", BindingFlags.Public | BindingFlags.Static).GetValue(null, null);
+
+                    // Add event handlers.
+                    AddEventHandler(tmi, "TestRunStartedEvent", HandleTestRunStarted);
+                    AddEventHandler(tmi, "TestRunFinishedEvent", HandleTestRunFinished);
+                    AddEventHandler(tmi, "TestStartedEvent", HandleTestStarted);
+                    AddEventHandler(tmi, "TestFinishedEvent", HandleTestFinished);
+
+                    // Execute!
+                    InitializeLookupTables();
+
+                    bool success = (bool)executorType.GetMethod("Execute").Invoke(executor, null);
+
+                    FinishTestChildren(assemblyTestCommand);
+                    TestOutcome assemblyOutcome = assemblyTestStepState.Outcome;
+
+                    if (!success)
+                        assemblyOutcome = TestOutcome.Error;
+                    return assemblyOutcome;
+                }
+                finally
+                {
+                    // Release state.
+                    assemblyTestStepState = null;
+                    tmi = null;
+                    testCommandsByTestId.Clear();
+                    testStepStatesByTestResultId.Clear();
+                    testStepStatesByTest.Clear();
+
+                    // Dispose the Executor.  (Also disposes the TMI behind the scenes.)
+                    ((IDisposable)executor).Dispose();
                 }
             }
 
-            // The ignored tests won't be run by MSTest. In the case where all the selected tests
-            // have been ignored, we won't even have a results file, so we need to process them
-            // here.
-            GenerateFakeTestResultsForIgnoredTests(testResults, assemblyCommand.PreOrderTraversal);
-
-            TestOutcome combinedOutcome = TestOutcome.Passed;
-            foreach (ITestCommand command in assemblyCommand.Children)
+            private void InitializeLookupTables()
             {
-                TestResult commandResult = ProcessTestCommand(command, assemblyContext.TestStep, testResults);
-                combinedOutcome = combinedOutcome.CombineWith(commandResult.Outcome);
+                foreach (ITestCommand testCommand in assemblyTestCommand.PreOrderTraversal)
+                    testCommandsByTestId.Add(((MSTest)testCommand.Test).Guid, testCommand);
+
+                assemblyTestStepState = new TestStepState(null, assemblyTestContext);
+                testStepStatesByTest.Add(assemblyTestCommand.Test, assemblyTestStepState);
             }
 
-            return combinedOutcome.Generalize();
-        }
-
-        private static XmlReader OpenTestResultsFile(string path)
-        {
-            XmlReaderSettings settings = new XmlReaderSettings();
-            settings.IgnoreComments = true;
-            settings.IgnoreProcessingInstructions = true;
-            settings.IgnoreWhitespace = true;
-            settings.CloseInput = true;
-            return XmlReader.Create(path, settings);
-        }
-
-        private static void ProcessGeneralErrorMessages(ITestContext assemblyContext,
-            XmlReader reader)
-        {
-            while (reader.ReadToFollowing("RunInfo"))
+            private void HandleTestRunStarted(object sender, EventArgs e)
             {
-                reader.ReadToFollowing("Text");
-                LogError(assemblyContext, reader.ReadString());
+                // Set the current directory because MSTest does not do that itself when the /noisolation
+                // switch is specified.  If this is not done, tests will be unable to locate deployment items
+                // and other resources they may reference via relative paths.
+                Guid testRunId = (Guid) e.GetType().GetProperty("RunId").GetValue(e, null);
+                object testRun = tmi.GetType().GetMethod("GetTestRun").Invoke(tmi, new object[] { testRunId });
+                object testRunConfiguration = testRun.GetType().GetProperty("RunConfiguration").GetValue(testRun, null);
+                string testRunDeploymentOutDirectory = (string) testRunConfiguration.GetType().GetProperty("RunDeploymentOutDirectory").GetValue(testRunConfiguration, null);
+
+                originalWorkingDirectory = Environment.CurrentDirectory;
+                Environment.CurrentDirectory = testRunDeploymentOutDirectory;
+
+#if USE_APPBASE_HACK
+                originalAppBase = AppDomain.CurrentDomain.BaseDirectory;
+                AppDomain.CurrentDomain.SetData("APPBASE", testRunDeploymentOutDirectory);
+#pragma warning disable 618,612
+                AppDomain.CurrentDomain.ClearPrivatePath();
+#pragma warning restore 618,612
+#endif
             }
-        }
 
-        private static TestResult ProcessTestCommand(ITestCommand command, TestStep parentStep, MultiMap<string, MSTestResult> testResults)
-        {
-            MSTest test = (MSTest)command.Test;
-            IList<MSTestResult> testResultList = testResults[test.Guid];
-
-            if (testResultList.Count == 0)
+            private void HandleTestRunFinished(object sender, EventArgs e)
             {
-                ITestContext testContext = command.StartStep(new TestStep(test, parentStep));
+#if USE_APPBASE_HACK
+                if (originalAppBase != null)
+                    AppDomain.CurrentDomain.SetData("APPBASE", originalAppBase);
+#endif
 
-                TestOutcome combinedOutcome = TestOutcome.Passed;
+                if (originalWorkingDirectory != null)
+                    Environment.CurrentDirectory = originalWorkingDirectory;
+            }
+
+            private void HandleTestStarted(object sender, EventArgs e)
+            {
+                foreach (TestStepState testStepState in GetOrCreateTestStepStatesFromTestResultEventArgs(e))
+                {
+                    testStepState.TestContext.LifecyclePhase = LifecyclePhases.Execute;
+                }
+            }
+
+            private void HandleTestFinished(object sender, EventArgs e)
+            {
+                foreach (TestStepState testStepState in GetOrCreateTestStepStatesFromTestResultEventArgs(e))
+                {
+                    object testResult = GetTestResult(testStepState.TestResultId);
+                    RecordTestResult(testStepState, testResult);
+                }
+            }
+
+            private static void RecordTestResult(TestStepState testStepState, object testResult)
+            {
+                Array innerResults = GetInnerResults(testResult);
+                if (innerResults != null)
+                {
+                    for (int i = 0; i < innerResults.Length; i++)
+                    {
+                        object innerResult = innerResults.GetValue(i);
+
+                        TestStep testStep = testStepState.TestContext.TestStep;
+                        TestStep innerTestStep = new TestStep(testStep.Test, testStep,
+                            testStep.Name, testStep.CodeElement, false);
+                        innerTestStep.IsDynamic = true;
+
+                        Array innerInnerResults = GetInnerResults(innerResults);
+                        if (innerInnerResults != null && innerInnerResults.Length != 0)
+                            innerTestStep.IsTestCase = false;
+
+                        ITestContext innerTestContext = SafeStartChildStep(testStepState.TestContext, innerTestStep);
+
+                        TestStepState innerTestStepState = new TestStepState(testStepState, innerTestContext);
+                        RecordTestResult(innerTestStepState, innerResult);
+                    }
+                }
+
+                Type testResultType = testResult.GetType();
+                string stdOut = (string)testResultType.GetProperty("StdOut").GetValue(testResult, null);
+                if (!string.IsNullOrEmpty(stdOut))
+                    testStepState.TestContext.LogWriter.ConsoleOutput.Write(stdOut);
+
+                string stdErr = (string)testResultType.GetProperty("StdErr").GetValue(testResult, null);
+                if (!string.IsNullOrEmpty(stdErr))
+                    testStepState.TestContext.LogWriter.ConsoleError.Write(stdErr);
+
+                string debugTrace = (string)testResultType.GetProperty("DebugTrace").GetValue(testResult, null);
+                if (!string.IsNullOrEmpty(debugTrace))
+                    testStepState.TestContext.LogWriter.DebugTrace.Write(debugTrace);
+
+                string errorMessage = (string)testResultType.GetProperty("ErrorMessage").GetValue(testResult, null);
+                if (!string.IsNullOrEmpty(errorMessage))
+                    testStepState.TestContext.LogWriter.Failures.Write(errorMessage);
+
+                string errorStackTrace = (string)testResultType.GetProperty("ErrorStackTrace").GetValue(testResult, null);
+                if (!string.IsNullOrEmpty(errorStackTrace))
+                {
+                    if (!string.IsNullOrEmpty(errorMessage))
+                        testStepState.TestContext.LogWriter.Failures.WriteLine();
+                    testStepState.TestContext.LogWriter.Failures.Write(errorStackTrace);
+                }
+
+                string[] textMessages = (string[])testResultType.GetProperty("TextMessages").GetValue(testResult, null);
+                foreach (string textMessage in textMessages)
+                    testStepState.TestContext.LogWriter.Warnings.WriteLine(textMessage);
+
+                string outcomeString = testResultType.GetProperty("Outcome").GetValue(testResult, null).ToString();
+                testStepState.Outcome = GetTestOutcome(outcomeString);
+
+                Array timerResults = (Array)testResultType.GetProperty("TimerResults").GetValue(testResult, null);
+                if (timerResults != null)
+                {
+                    for (int i = 0; i < timerResults.Length; i++)
+                    {
+                        object timerResult = timerResults.GetValue(i);
+                        TimeSpan duration =
+                            (TimeSpan)timerResult.GetType().GetProperty("Duration").GetValue(timerResult, null);
+                        testStepState.Duration += duration;
+                    }
+                }
+
+                // Finish the test step unless it is the assembly test which we will finish later.
+                if (testStepState.ParentTestStepState != null)
+                    testStepState.Finish();
+            }
+
+            private IEnumerable<TestStepState> GetOrCreateTestStepStatesFromTestResultEventArgs(EventArgs testResultEventArgs)
+            {
+                object[] testResultIds = (object[])testResultEventArgs.GetType().GetProperty("ResultIds").GetValue(testResultEventArgs, null);
+
+                foreach (object testResultId in testResultIds)
+                {
+                    TestStepState testStepState = GetOrCreateTestStepStateByTestResultId(testResultId);
+                    if (testStepState != null)
+                        yield return testStepState;
+                }
+            }
+
+            private TestStepState GetOrCreateTestStepStateByTestResultId(object testResultId)
+            {
+                TestStepState testStepState = GetTestStepStateByTestResultId(testResultId);
+                if (testStepState != null)
+                    return testStepState;
+
+                object testResult = GetTestResult(testResultId);
+                object testObj = testResult.GetType().GetProperty("Test").GetValue(testResult, null);
+                object testIdObj = testObj.GetType().GetProperty("Id").GetValue(testObj, null);
+                Guid testId = (Guid)testIdObj.GetType().GetProperty("Id").GetValue(testIdObj, null);
+
+                ITestCommand testCommand = GetTestCommandByTestId(testId);
+                if (testCommand == null)
+                    return null;
+
+                testStepState = GetOrCreateTestStepStateByTest((MSTest) testCommand.Test);
+                testStepState.TestResultId = testResultId;
+                return testStepState;
+            }
+
+            private TestStepState GetOrCreateTestStepStateByTest(MSTest test)
+            {
+                TestStepState testStepState = GetTestStepStateByTest(test);
+                if (testStepState == null)
+                {
+                    TestStepState parentTestStepState = GetOrCreateTestStepStateByTest((MSTest) test.Parent);
+                    Guid testId = test.Guid;
+                    ITestCommand testCommand = GetTestCommandByTestId(testId);
+
+                    TestStep testStep = new TestStep(test, parentTestStepState.TestContext.TestStep,
+                        test.Name, test.CodeElement, true);
+                    if (test.IsDataDriven)
+                        testStep.IsTestCase = false;
+
+                    ITestContext testContext = SafeStartCommandStep(parentTestStepState.TestContext, testCommand, testStep);
+                    testStepState = new TestStepState(parentTestStepState, testContext);
+
+                    testStepStatesByTest.Add(test, testStepState);
+                }
+
+                return testStepState;
+            }
+
+            private object GetTestResult(object testResultId)
+            {
+                return tmi.GetType().GetMethod("GetResult").Invoke(tmi, new object[] { testResultId });
+            }
+
+            private ITestCommand GetTestCommandByTestId(Guid testId)
+            {
+                ITestCommand testCommand;
+                testCommandsByTestId.TryGetValue(testId, out testCommand);
+                return testCommand;
+            }
+
+            private TestStepState GetTestStepStateByTestResultId(object testResultId)
+            {
+                TestStepState testStepState;
+                testStepStatesByTestResultId.TryGetValue(testResultId, out testStepState);
+                return testStepState;
+            }
+
+            private TestStepState GetTestStepStateByTest(Test test)
+            {
+                TestStepState testStepState;
+                testStepStatesByTest.TryGetValue(test, out testStepState);
+                return testStepState;
+            }
+
+            private void FinishTest(ITestCommand testCommand)
+            {
+                FinishTestChildren(testCommand);
+
+                MSTest test = (MSTest) testCommand.Test;
                 if (test.IsTestCase)
-                {
-                    testContext.LogWriter.Warnings.Write("No test results available!");
-                    combinedOutcome = TestOutcome.Skipped;
-                }
-
-                TestResult childrenResult = ProcessTestCommandChildren(command, testContext.TestStep, testResults);
-                combinedOutcome = combinedOutcome.CombineWith(childrenResult.Outcome.Generalize());
-
-                return testContext.FinishStep(combinedOutcome, childrenResult.Duration);
-            }
-            else if (testResultList.Count == 1)
-            {
-                return ProcessTestCommandResultTree(test, command, parentStep, testResults, testResultList[0], true, false);
-            }
-            else
-            {
-                ITestContext testContext = command.StartStep(new TestStep(test, parentStep)
-                {
-                    IsTestCase = false
-                });
-
-                TestOutcome combinedOutcome = TestOutcome.Passed;
-                TimeSpan combinedDuration = TimeSpan.Zero;
-
-                foreach (MSTestResult testResult in testResultList)
-                {
-                    TestResult individualResult = ProcessTestCommandResultTree(test, command, parentStep, testResults, testResult, false, false);
-                    combinedOutcome = combinedOutcome.CombineWith(individualResult.Outcome);
-                    combinedDuration += individualResult.Duration;
-                }
-
-                TestResult childrenResult = ProcessTestCommandChildren(command, testContext.TestStep, testResults);
-                combinedOutcome = combinedOutcome.CombineWith(childrenResult.Outcome.Generalize());
-                combinedDuration += childrenResult.Duration;
-
-                return testContext.FinishStep(combinedOutcome, combinedDuration);
-            }
-        }
-
-        private static TestResult ProcessTestCommandResultTree(MSTest test, ITestCommand command, TestStep parentStep, MultiMap<string, MSTestResult> testResults, MSTestResult testResult, bool isPrimary, bool isDynamic)
-        {
-            TestStep testStep = new TestStep(test, parentStep, test.Name, test.CodeElement, isPrimary);
-            if (testResult.Children.Count > 0)
-                testStep.IsTestCase = false;
-            testStep.IsDynamic = isDynamic;
-
-            ITestContext testContext = command.StartStep(testStep);
-
-            if (testResult.StdOut != null)
-                LogStdOut(testContext, testResult.StdOut);
-            if (testResult.Errors != null)
-                LogError(testContext, testResult.Errors);
-
-            TestOutcome combinedOutcome = testResult.Outcome;
-            TimeSpan combinedDuration = testResult.Duration;
-
-            foreach (MSTestResult childResultData in testResult.Children)
-            {
-                // Note: Don't need to sum over outcome and duration because it should already be included in parent information.
-                ProcessTestCommandResultTree(test, command, testContext.TestStep, testResults, childResultData, false, true);
-            }
-
-            if (isPrimary)
-            {
-                TestResult childrenResult = ProcessTestCommandChildren(command, testContext.TestStep, testResults);
-                combinedOutcome = combinedOutcome.CombineWith(childrenResult.Outcome.Generalize());
-                combinedDuration += childrenResult.Duration;
-            }
-
-            return testContext.FinishStep(combinedOutcome, combinedDuration);
-        }
-
-        private static TestResult ProcessTestCommandChildren(ITestCommand command, TestStep parentStep, MultiMap<string, MSTestResult> testResults)
-        {
-            TestOutcome combinedOutcome = TestOutcome.Passed;
-            TimeSpan combinedDuration = TimeSpan.Zero;
-
-            foreach (ITestCommand child in command.Children)
-            {
-                TestResult childResult = ProcessTestCommand(child, parentStep, testResults);
-                combinedOutcome = combinedOutcome.CombineWith(childResult.Outcome);
-                combinedDuration += childResult.Duration;
-            }
-
-            return new TestResult(combinedOutcome) { Duration = combinedDuration };
-        }
-
-        protected abstract void ExtractExecutedTestsInformation(
-            MultiMap<string, MSTestResult> testResults,
-            XmlReader reader);
-
-        private static void GenerateFakeTestResultsForIgnoredTests(MultiMap<string, MSTestResult> testResults, IEnumerable<ITestCommand> allCommands)
-        {
-            foreach (ITestCommand command in allCommands)
-            {
-                MSTest test = command.Test as MSTest;
-                if (test != null && test.IsTestCase)
                 {
                     string ignoreReason = test.Metadata.GetValue(MetadataKeys.IgnoreReason);
                     if (!String.IsNullOrEmpty(ignoreReason))
                     {
-                        MSTestResult testResult = new MSTestResult();
-                        testResult.Guid = test.Guid;
-                        testResult.Outcome = TestOutcome.Ignored;
-                        if (!testResults.ContainsKey(testResult.Guid))
+                        TestStepState testStepState = GetOrCreateTestStepStateByTest(test);
+                        testStepState.TestContext.LogWriter.Warnings.Write(string.Format("Test was ignored: {0}", ignoreReason));
+                        testStepState.Outcome = TestOutcome.Ignored;
+                        testStepState.Finish();
+                    }
+                    else
+                    {
+                        TestStepState testStepState = GetTestStepStateByTest(test);
+                        if (testStepState == null)
                         {
-                            testResults.Add(testResult.Guid, testResult);
+                            testStepState = GetOrCreateTestStepStateByTest(test);
+                            testStepState.TestContext.LogWriter.Warnings.Write("No test results available!");
+                            testStepState.Outcome = TestOutcome.Skipped;
+                            testStepState.Finish();
+                        }
+                        else
+                        {
+                            testStepState.Finish();
                         }
                     }
+                }
+                else
+                {
+                    TestStepState testStepState = GetTestStepStateByTest(test);
+                    if (testStepState != null)
+                    {
+                        testStepState.Finish();
+                    }
+                }
+            }
+
+            private void FinishTestChildren(ITestCommand testCommand)
+            {
+                foreach (ITestCommand childTestCommand in testCommand.Children)
+                {
+                    FinishTest(childTestCommand);
+                }
+            }
+
+            private static void CreateAndAddCommand(object executor, Type commandFactoryType, string commandName, string commandArg)
+            {
+                object command = commandFactoryType.GetMethod("CreateCommand").Invoke(null, new object[] { commandName, commandArg });
+                executor.GetType().GetMethod("Add").Invoke(executor, new object[] { command });
+            }
+
+            private static void AddEventHandler(object obj, string eventName, EventHandler eventHandler)
+            {
+                EventInfo @event = obj.GetType().GetEvent(eventName);
+                Delegate typedEventHandler = Delegate.CreateDelegate(@event.EventHandlerType, eventHandler.Target, eventHandler.Method, true);
+                @event.AddEventHandler(obj, typedEventHandler);
+            }
+
+            private static Array GetInnerResults(object testResult)
+            {
+                PropertyInfo innerResultsProperty = testResult.GetType().GetProperty("InnerResults");
+                if (innerResultsProperty == null)
+                    return null;
+
+                return (Array) innerResultsProperty.GetValue(testResult, null);
+            }
+
+            private static TestOutcome GetTestOutcome(string outcome)
+            {
+                TestOutcome testOutcome;
+                // The commented cases are the ones we are not sure how to map yet.
+                // By default they'll become TestOutcome.Passed
+                switch (outcome)
+                {
+                    case "Aborted":
+                    case "3":
+                        testOutcome = TestOutcome.Canceled;
+                        break;
+                    //case "Completed":
+                    //    testOutcome = TestOutcome.Passed;
+                    //    break;
+                    //case "Disconnected":
+                    //    testOutcome = TestOutcome.Passed;
+                    //    break;
+                    case "Error":
+                    case "0":
+                        testOutcome = TestOutcome.Error;
+                        break;
+                    case "Failed":
+                    case "1":
+                        testOutcome = TestOutcome.Failed;
+                        break;
+                    case "Inconclusive":
+                    case "4":
+                        testOutcome = TestOutcome.Inconclusive;
+                        break;
+                    //case "InProgress":
+                    //    testOutcome = TestOutcome.Passed;
+                    //    break;
+                    //case "Max":
+                    //    testOutcome = TestOutcome.Passed;
+                    //    break;
+                    //case "Min":
+                    //    testOutcome = TestOutcome.Passed;
+                    //    break;
+                    case "NotExecuted":
+                    case "7":
+                        testOutcome = TestOutcome.Skipped;
+                        break;
+                    case "NotRunnable":
+                    case "6":
+                        testOutcome = TestOutcome.Skipped;
+                        break;
+                    case "Passed":
+                    case "10":
+                        testOutcome = TestOutcome.Passed;
+                        break;
+                    //case "PassedButRunAborted":
+                    //    testOutcome = TestOutcome.Passed;
+                    //    break;
+                    case "Pending":
+                    case "13":
+                        testOutcome = TestOutcome.Pending;
+                        break;
+                    case "Timeout":
+                    case "2":
+                        testOutcome = TestOutcome.Timeout;
+                        break;
+                    //case "Warning":
+                    //    testOutcome = TestOutcome.Passed;
+                    //    break;
+                    default:
+                        testOutcome = TestOutcome.Passed;
+                        break;
+                }
+
+                return testOutcome;
+            }
+        }
+
+        private static ITestContext SafeStartCommandStep(ITestContext parentTestContext, ITestCommand testCommand, TestStep testStep)
+        {
+            using (TestContextTrackerAccessor.Instance.EnterContext(parentTestContext))
+                return testCommand.StartStep(testStep);
+        }
+
+        private static ITestContext SafeStartChildStep(ITestContext parentTestContext, TestStep testStep)
+        {
+            using (TestContextTrackerAccessor.Instance.EnterContext(parentTestContext))
+                return parentTestContext.StartChildStep(testStep);
+        }
+
+        private static TestResult SafeFinishStep(ITestContext testContext, TestOutcome outcome, TimeSpan duration)
+        {
+            testContext.BecomeMultiThreadAware();
+            using (TestContextTrackerAccessor.Instance.EnterContext(testContext))
+                return testContext.FinishStep(outcome, duration);
+        }
+
+        private sealed class TestStepState
+        {
+            private readonly TestStepState parentTestStepState;
+            private readonly ITestContext testContext;
+
+            public TestStepState(TestStepState parentTestStepState, ITestContext testContext)
+            {
+                this.parentTestStepState = parentTestStepState;
+                this.testContext = testContext;
+            }
+
+            public TestStepState ParentTestStepState
+            {
+                get { return parentTestStepState; }
+            }
+
+            public ITestContext TestContext
+            {
+                get { return testContext; }
+            }
+
+            public object TestResultId { get; set; }
+
+            public Guid TestExecId { get; set; }
+
+            public TimeSpan Duration { get; set; }
+
+            public TestOutcome Outcome
+            {
+                get { return testContext.Outcome; }
+                set { testContext.SetInterimOutcome(value); }
+            }
+
+            public void Finish()
+            {
+                TestResult testResult = SafeFinishStep(testContext, testContext.Outcome, Duration);
+
+                if (parentTestStepState != null)
+                {
+                    parentTestStepState.Outcome = parentTestStepState.Outcome.CombineWith(testResult.Outcome.Generalize());
+                    parentTestStepState.Duration += testResult.Duration;
                 }
             }
         }
 
-        private static void LogStdOut(ITestContext context, string message)
+        private sealed class StreamWriterAdapter : StreamWriter
         {
-            context.LogWriter.ConsoleOutput.Write(message);
-        }
+            private readonly TextWriter inner;
 
-        private static void LogError(ITestContext context, string message)
-        {
-            context.LogWriter.Failures.Write(message);
-        }
-
-        protected static TestOutcome GetTestOutcome(string outcome)
-        {
-            TestOutcome testOutcome;
-            // The commented cases are the ones we are not sure how to map yet.
-            // By default they'll become TestOutcome.Passed
-            switch (outcome)
+            public StreamWriterAdapter(TextWriter inner)
+                : base(Stream.Null)
             {
-                case "Aborted":
-                case "3":
-                    testOutcome = TestOutcome.Canceled;
-                    break;
-                //case "Completed":
-                //    testOutcome = TestOutcome.Passed;
-                //    break;
-                //case "Disconnected":
-                //    testOutcome = TestOutcome.Passed;
-                //    break;
-                case "Error":
-                case "0":
-                    testOutcome = TestOutcome.Error;
-                    break;
-                case "Failed":
-                case "1":
-                    testOutcome = TestOutcome.Failed;
-                    break;
-                case "Inconclusive":
-                case "4":
-                    testOutcome = TestOutcome.Inconclusive;
-                    break;
-                //case "InProgress":
-                //    testOutcome = TestOutcome.Passed;
-                //    break;
-                //case "Max":
-                //    testOutcome = TestOutcome.Passed;
-                //    break;
-                //case "Min":
-                //    testOutcome = TestOutcome.Passed;
-                //    break;
-                case "NotExecuted":
-                case "7":
-                    testOutcome = TestOutcome.Skipped;
-                    break;
-                case "NotRunnable":
-                case "6":
-                    testOutcome = TestOutcome.Skipped;
-                    break;
-                case "Passed":
-                case "10":
-                    testOutcome = TestOutcome.Passed;
-                    break;
-                //case "PassedButRunAborted":
-                //    testOutcome = TestOutcome.Passed;
-                //    break;
-                case "Pending":
-                case "13":
-                    testOutcome = TestOutcome.Pending;
-                    break;
-                case "Timeout":
-                case "2":
-                    testOutcome = TestOutcome.Timeout;
-                    break;
-                //case "Warning":
-                //    testOutcome = TestOutcome.Passed;
-                //    break;
-                default:
-                    testOutcome = TestOutcome.Passed;
-                    break;
+                this.inner = inner;
             }
 
-            return testOutcome;
-        }
+            // These are the only methods used by
+            // Microsoft.VisualStudio.TestTools.CommandLine.ConsoleOutput
 
-        protected static TimeSpan GetDuration(string duration)
-        {
-            return TimeSpan.Parse(duration);
+            public override void WriteLine(string value)
+            {
+                inner.WriteLine(value);
+            }
+
+            public override void Write(string value)
+            {
+                inner.Write(value);
+            }
         }
     }
 }

@@ -40,11 +40,13 @@
   <ItemGroup>
     <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="System" />
+    <Reference Include="System.configuration" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AnotherFixture.cs" />
+    <Compile Include="ConfigurationFileSample.cs" />
     <Compile Include="EnvironmentSetupSample.cs" />
     <Compile Include="DataDrivenTest.cs" />
     <Compile Include="Metadata\MetadataSample.cs" />
@@ -54,6 +56,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="DataDrivenTest.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Gallio.MSTestAdapter.TestResources.dll.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <Content Include="Readme.txt" />
