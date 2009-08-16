@@ -342,7 +342,8 @@ namespace Gallio.Framework.Utilities
             launcher.TestProject.ReportNameFormat = "SampleRunnerReport";
             launcher.ReportFormatterOptions.AddProperty(@"SaveAttachmentContents", @"false");
             launcher.AddReportFormat(@"Text");
-            launcher.AddReportFormat("Xml");
+            // Disabled because the Xml can get really big and causes problems if the sample runner is used frequently.
+            //launcher.AddReportFormat("Xml");
 
             launcher.DoNotRun = doNoRun;
 
