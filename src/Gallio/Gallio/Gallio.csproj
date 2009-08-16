@@ -181,6 +181,8 @@
     <Compile Include="Common\Policies\VersionPolicy.cs" />
     <Compile Include="Common\Reflection\AssemblyMetadata.cs" />
     <Compile Include="Common\Reflection\AssemblyMetadataFields.cs" />
+    <Compile Include="Common\Reflection\Impl\UnresolvedCodeElementFactoryInternal.cs" />
+    <Compile Include="Common\Reflection\Impl\UnresolvedCodeElementFactory.cs" />
     <Compile Include="Common\Reflection\Impl\UnresolvedAssembly.cs" />
     <Compile Include="Common\Reflection\Impl\NativeWrapper.cs" />
     <Compile Include="Common\Reflection\Impl\NamespaceDoc.cs" />

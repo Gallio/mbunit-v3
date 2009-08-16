@@ -15,19 +15,13 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Xml;
 using Gallio.MSTestAdapter.Model;
-using Gallio.Common.Caching;
 
 namespace Gallio.MSTestAdapter.Wrapper
 {
     internal class MSTestRunner2008 : MSTestRunner
     {
-        public MSTestRunner2008(IDiskCache diskCache) : base(diskCache)
-        {
-        }
-
         protected override string GetVisualStudioVersion()
         {
             return "9.0";
@@ -56,7 +50,7 @@ namespace Gallio.MSTestAdapter.Wrapper
                 if (test.IsTestCase)
                 {
                     writer.WriteStartElement("TestLink");
-                    writer.WriteAttributeString("id", test.Guid);
+                    writer.WriteAttributeString("id", test.Guid.ToString());
                     writer.WriteAttributeString("name", test.TestName);
                     writer.WriteAttributeString("storage", assemblyFilePath);
                     writer.WriteAttributeString("type",
@@ -78,6 +72,7 @@ namespace Gallio.MSTestAdapter.Wrapper
                 <?xml version="1.0" encoding="UTF-8"?>
                 <TestRunConfiguration name="Gallio Test Run" id="94d309d9-02ec-4f2a-978b-bb07dab7ab0f" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2006">
                   <Deployment enabled="false" />
+                  <NamingScheme baseName="TestDir" appendTimeStamp="false" useDefault="false" />
                   <Description>This is a test run configuration used by Gallio to launch MSTest tests locally.</Description>
                   <TestTypeSpecific />
                 </TestRunConfiguration>
@@ -91,8 +86,24 @@ namespace Gallio.MSTestAdapter.Wrapper
 
             writer.WriteElementString("Description", "This is a test run configuration used by Gallio to launch MSTest tests locally.");
 
+            // Note: We enable deployment to provide consistency with how MSTest works when
+            //       in Visual Studio.  Some users don't like this and would prefer that we
+            //       just ran the tests in place but in fact we have no way to tell MSTest
+            //       to do so.  Disabling deployment would not change the fact that MSTest
+            //       likes to load data sources and other resources from within the TestDir
+            //       which must be a different folder from the one where the test assembly
+            //       originally resided.  So we leave deployment enabled so that at least
+            //       the MSTest [DeploymentItem] attribute can be used.
             writer.WriteStartElement("Deployment");
-            writer.WriteAttributeString("enabled", "false");
+            writer.WriteAttributeString("enabled", "true");
+            writer.WriteEndElement();
+
+            // Force the use of a particular test directory name instead of the default
+            // auto-updating timestamp.
+            writer.WriteStartElement("NamingScheme");
+            writer.WriteAttributeString("baseName", PreferredTestDir);
+            writer.WriteAttributeString("appendTimeStamp", "false");
+            writer.WriteAttributeString("useDefault", "false");
             writer.WriteEndElement();
 
             writer.WriteStartElement("TestTypeSpecific");
@@ -102,32 +113,5 @@ namespace Gallio.MSTestAdapter.Wrapper
 
             writer.WriteEndDocument();
         }
-
-        protected override void ExtractExecutedTestsInformation(
-            Dictionary<string, MSTestResult> testResults,
-            XmlReader reader)
-        {
-            while (reader.ReadToFollowing("UnitTestResult"))
-            {
-                MSTestResult testResult = new MSTestResult();
-                testResult.Guid = reader.GetAttribute("testId");
-                testResult.Duration = GetDuration(reader.GetAttribute("duration"));
-                testResult.Outcome = GetTestOutcome(reader.GetAttribute("outcome"));
-                reader.ReadToFollowing("Output");
-                reader.Read();
-                if (reader.Name == "StdOut")
-                {
-                    testResult.StdOut = reader.ReadString();
-                    reader.Read();
-                }
-                if (reader.Name == "ErrorInfo")
-                {
-                    testResult.Errors = ReadErrors(reader);
-                }
-
-                testResults.Add(testResult.Guid, testResult);
-            }
-        }
-
     }
 }

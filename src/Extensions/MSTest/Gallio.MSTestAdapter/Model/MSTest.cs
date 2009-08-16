@@ -14,10 +14,12 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Security.Cryptography;
 using System.Text;
+using Gallio.Common.Collections;
 using Gallio.Common.Reflection;
-using Gallio.Model.Commands;
 using Gallio.Model.Tree;
 
 namespace Gallio.MSTestAdapter.Model
@@ -26,7 +28,8 @@ namespace Gallio.MSTestAdapter.Model
     {
         private static readonly SHA1CryptoServiceProvider provider = new SHA1CryptoServiceProvider();
         private string testName;
-        private string guid;
+        private Guid guid;
+        private List<MSTestDeploymentItem> deploymentItems;
 
         /// <summary>
         /// Initializes a test initially without a parent.
@@ -44,7 +47,7 @@ namespace Gallio.MSTestAdapter.Model
         /// <summary>
         /// Gets the name MSTest uses to refer to the test.
         /// </summary>
-        internal string TestName
+        public string TestName
         {
             get { return testName; }
         }
@@ -52,9 +55,45 @@ namespace Gallio.MSTestAdapter.Model
         /// <summary>
         /// Gets the GUID MSTest uses to refer to the test.
         /// </summary>
-        internal string Guid
+        public Guid Guid
         {
             get { return guid; }
+        }
+
+        /// <summary>
+        /// Gets the read-only list of test deployment items.
+        /// </summary>
+        public IList<MSTestDeploymentItem> DeploymentItems
+        {
+            get 
+            {
+                return deploymentItems != null
+                    ? new ReadOnlyCollection<MSTestDeploymentItem>(deploymentItems)
+                    : (IList<MSTestDeploymentItem>) EmptyArray<MSTestDeploymentItem>.Instance;
+            }
+        }
+
+        /// <summary>
+        /// Adds a deployment item.
+        /// </summary>
+        /// <param name="deploymentItem">The deployment item to add.</param>
+        public void AddDeploymentItem(MSTestDeploymentItem deploymentItem)
+        {
+            if (deploymentItem == null)
+                throw new ArgumentNullException("deploymentItem");
+
+            if (deploymentItems == null)
+                deploymentItems = new List<MSTestDeploymentItem>();
+
+            deploymentItems.Add(deploymentItem);
+        }
+
+        /// <summary>
+        /// Returns true if the test is data-driven.
+        /// </summary>
+        public bool IsDataDriven
+        {
+            get { return Metadata.ContainsKey(MSTestMetadataKeys.DataSource); }
         }
 
         private void PopulateTestName()
@@ -68,10 +107,10 @@ namespace Gallio.MSTestAdapter.Model
 
         private void PopulateGuid()
         {
-            guid = GuidFromString(testName).ToString();
+            guid = GuidFromString(testName);
         }
 
-        internal static Guid GuidFromString(string fullMethodName)
+        private static Guid GuidFromString(string fullMethodName)
         {
             byte[] sourceArray = provider.ComputeHash(Encoding.Unicode.GetBytes(fullMethodName));
             byte[] destinationArray = new byte[16];

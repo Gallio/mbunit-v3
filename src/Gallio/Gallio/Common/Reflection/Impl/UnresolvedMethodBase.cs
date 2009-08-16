@@ -24,7 +24,11 @@ using Gallio.Common.Collections;
  * of the unresolved reflection types because C# does not support multiple inheritance.
  */
 
-namespace Gallio.Common.Reflection.Impl
+#if DOTNET40
+namespace Gallio.Common.Reflection.Impl.DotNet40
+#else
+namespace Gallio.Common.Reflection.Impl.DotNet20
+#endif
 {
     internal static class UnresolvedMethodBase
     {
@@ -35,144 +39,160 @@ namespace Gallio.Common.Reflection.Impl
         }
     }
 
-    public partial class UnresolvedConstructorInfo
+    internal partial class UnresolvedConstructorInfo
     {
-        /// <inheritdoc />
         public override MethodAttributes Attributes
         {
             get { return adapter.MethodAttributes; }
         }
 
-        /// <inheritdoc />
         public override CallingConventions CallingConvention
         {
             get { return CallingConventions.Any; }
         }
 
-        /// <inheritdoc />
         public override bool ContainsGenericParameters
         {
             get { return false; }
         }
 
-        /// <inheritdoc />
         public override bool IsGenericMethod
         {
             get { return false; }
         }
 
-        /// <inheritdoc />
         public override bool IsGenericMethodDefinition
         {
             get { return false; }
         }
 
-        /// <inheritdoc />
         public override RuntimeMethodHandle MethodHandle
         {
             get { throw new NotSupportedException("Cannot get method handle of unresolved constructor."); }
         }
 
-        /// <inheritdoc />
         public override Type[] GetGenericArguments()
         {
             return Type.EmptyTypes;
         }
 
-        /// <inheritdoc />
         public override MethodBody GetMethodBody()
         {
             throw new NotSupportedException("Cannot get method body of unresolved constructor.");
         }
 
-        /// <inheritdoc />
         public override MethodImplAttributes GetMethodImplementationFlags()
         {
             return MethodImplAttributes.ForwardRef;
         }
 
-        /// <inheritdoc />
         public override ParameterInfo[] GetParameters()
         {
             return UnresolvedMethodBase.ResolveParameters(adapter.Parameters);
         }
 
-        /// <inheritdoc />
         public override object Invoke(object obj, BindingFlags invokeAttr, Binder binder, object[] parameters,
             CultureInfo culture)
         {
             throw new NotSupportedException("Cannot invoke unresolved constructor.");
         }
+
+        #region .Net 4.0 Only
+#if DOTNET40
+        public override bool IsSecurityCritical
+        {
+            get { return false; }
+        }
+
+        public override bool IsSecuritySafeCritical
+        {
+            get { return false; }
+        }
+
+        public override bool IsSecurityTransparent
+        {
+            get { return false; }
+        }
+#endif
+        #endregion
     }
 
-    public partial class UnresolvedMethodInfo
+    internal partial class UnresolvedMethodInfo
     {
-        /// <inheritdoc />
         public override MethodAttributes Attributes
         {
             get { return adapter.MethodAttributes; }
         }
 
-        /// <inheritdoc />
         public override CallingConventions CallingConvention
         {
             get { return CallingConventions.Any; }
         }
 
-        /// <inheritdoc />
         public override bool ContainsGenericParameters
         {
             get { return adapter.ContainsGenericParameters; }
         }
 
-        /// <inheritdoc />
         public override bool IsGenericMethod
         {
             get { return adapter.IsGenericMethod; }
         }
 
-        /// <inheritdoc />
         public override bool IsGenericMethodDefinition
         {
             get { return adapter.IsGenericMethodDefinition; }
         }
 
-        /// <inheritdoc />
         public override RuntimeMethodHandle MethodHandle
         {
             get { throw new NotSupportedException("Cannot get method handle of unresolved method."); }
         }
 
-        /// <inheritdoc />
         public override Type[] GetGenericArguments()
         {
             return GenericCollectionUtils.ConvertAllToArray<ITypeInfo, Type>(adapter.GenericArguments,
                 delegate(ITypeInfo parameter) { return parameter.Resolve(false); });
         }
 
-        /// <inheritdoc />
         public override MethodBody GetMethodBody()
         {
             throw new NotSupportedException("Cannot get method body of unresolved method.");
         }
 
-        /// <inheritdoc />
         public override MethodImplAttributes GetMethodImplementationFlags()
         {
             return MethodImplAttributes.ForwardRef;
         }
 
-        /// <inheritdoc />
         public override ParameterInfo[] GetParameters()
         {
             return UnresolvedMethodBase.ResolveParameters(adapter.Parameters);
         }
 
-        /// <inheritdoc />
         public override object Invoke(object obj, BindingFlags invokeAttr, Binder binder, object[] parameters,
             CultureInfo culture)
         {
             throw new NotSupportedException("Cannot invoke unresolved method.");
         }
+
+        #region .Net 4.0 Only
+#if DOTNET40
+        public override bool IsSecurityCritical
+        {
+            get { return false; }
+        }
+
+        public override bool IsSecuritySafeCritical
+        {
+            get { return false; }
+        }
+
+        public override bool IsSecurityTransparent
+        {
+            get { return false; }
+        }
+#endif
+        #endregion
     }
 }

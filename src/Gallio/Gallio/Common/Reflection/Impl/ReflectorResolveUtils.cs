@@ -68,7 +68,7 @@ namespace Gallio.Common.Reflection.Impl
             if (throwOnError && resolvedAssembly == null)
                 throw new ReflectionResolveException(assembly);
 
-            return resolvedAssembly ?? new UnresolvedAssembly(assembly);
+            return resolvedAssembly ?? UnresolvedCodeElementFactory.Instance.Wrap(assembly);
         }
 
         private static Assembly PopulateResolvedAssembly(string fullName)
@@ -119,7 +119,7 @@ namespace Gallio.Common.Reflection.Impl
         /// This parameter is used when resolving types that are part of the signature
         /// of a generic method so that generic method arguments can be handled correctly.</param>
         /// <param name="throwOnError">If true, throws an exception if resolution fails,
-        /// otherwise returns an <see cref="UnresolvedType" />.</param>
+        /// otherwise returns an unresolved <see cref="Type" />.</param>
         /// <returns>The resolved <see cref="Type" />.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="type"/>
         /// is null.</exception>
@@ -191,7 +191,7 @@ namespace Gallio.Common.Reflection.Impl
             if (throwOnError)
                 throw new ReflectionResolveException(type);
 
-            return new UnresolvedType(type);
+            return UnresolvedCodeElementFactory.Instance.Wrap(type);
         }
 
         private static Type ResolveGenericParameter(IGenericParameterInfo genericParameter, MethodInfo methodContext)
@@ -213,7 +213,7 @@ namespace Gallio.Common.Reflection.Impl
         /// </summary>
         /// <param name="field">The reflected type.</param>
         /// <param name="throwOnError">If true, throws an exception if resolution fails,
-        /// otherwise returns an <see cref="UnresolvedFieldInfo" />.</param>
+        /// otherwise returns an unresolved <see cref="FieldInfo" />.</param>
         /// <returns>The resolved <see cref="FieldInfo" />.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="field"/>
         /// is null.</exception>
@@ -227,7 +227,7 @@ namespace Gallio.Common.Reflection.Impl
             try
             {
                 Type resolvedType = field.DeclaringType.Resolve(throwOnError);
-                if (!(resolvedType is UnresolvedType))
+                if (! Reflector.IsUnresolved(resolvedType))
                 {
                     FieldInfo resolvedField = resolvedType.GetField(field.Name, BindingFlags.Public | BindingFlags.NonPublic
                         | BindingFlags.Instance | BindingFlags.Static);
@@ -245,7 +245,7 @@ namespace Gallio.Common.Reflection.Impl
             if (throwOnError)
                 throw new ReflectionResolveException(field);
 
-            return new UnresolvedFieldInfo(field);
+            return UnresolvedCodeElementFactory.Instance.Wrap(field);
         }
 
         /// <summary>
@@ -253,7 +253,7 @@ namespace Gallio.Common.Reflection.Impl
         /// </summary>
         /// <param name="property">The reflected property.</param>
         /// <param name="throwOnError">If true, throws an exception if resolution fails,
-        /// otherwise returns an <see cref="UnresolvedPropertyInfo" />.</param>
+        /// otherwise returns an unresolved <see cref="PropertyInfo" />.</param>
         /// <returns>The resolved <see cref="PropertyInfo" />.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="property"/>
         /// is null.</exception>
@@ -267,7 +267,7 @@ namespace Gallio.Common.Reflection.Impl
             try
             {
                 Type resolvedType = property.DeclaringType.Resolve(throwOnError);
-                if (!(resolvedType is UnresolvedType))
+                if (!Reflector.IsUnresolved(resolvedType))
                 {
                     Type returnType = property.ValueType.Resolve(true);
                     Type[] parameterTypes = ResolveParameterTypes(property.IndexParameters);
@@ -289,7 +289,7 @@ namespace Gallio.Common.Reflection.Impl
             if (throwOnError)
                 throw new ReflectionResolveException(property);
 
-            return new UnresolvedPropertyInfo(property);
+            return UnresolvedCodeElementFactory.Instance.Wrap(property);
         }
 
         /// <summary>
@@ -297,7 +297,7 @@ namespace Gallio.Common.Reflection.Impl
         /// </summary>
         /// <param name="event">The reflected event.</param>
         /// <param name="throwOnError">If true, throws an exception if resolution fails,
-        /// otherwise returns an <see cref="UnresolvedEventInfo" />.</param>
+        /// otherwise returns an unresolved <see cref="EventInfo" />.</param>
         /// <returns>The resolved <see cref="EventInfo" />.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="event"/>
         /// is null.</exception>
@@ -311,7 +311,7 @@ namespace Gallio.Common.Reflection.Impl
             try
             {
                 Type resolvedType = @event.DeclaringType.Resolve(throwOnError);
-                if (!(resolvedType is UnresolvedType))
+                if (!Reflector.IsUnresolved(resolvedType))
                 {
                     EventInfo resolvedEvent =
                         resolvedType.GetEvent(@event.Name, BindingFlags.Public | BindingFlags.NonPublic
@@ -330,7 +330,7 @@ namespace Gallio.Common.Reflection.Impl
             if (throwOnError)
                 throw new ReflectionResolveException(@event);
 
-            return new UnresolvedEventInfo(@event);
+            return UnresolvedCodeElementFactory.Instance.Wrap(@event);
         }
 
         /// <summary>
@@ -338,7 +338,7 @@ namespace Gallio.Common.Reflection.Impl
         /// </summary>
         /// <param name="constructor">The reflected constructor.</param>
         /// <param name="throwOnError">If true, throws an exception if resolution fails,
-        /// otherwise returns an <see cref="UnresolvedConstructorInfo" />.</param>
+        /// otherwise returns an unresolved <see cref="ConstructorInfo" />.</param>
         /// <returns>The resolved <see cref="ConstructorInfo" />.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="constructor"/>
         /// is null.</exception>
@@ -352,7 +352,7 @@ namespace Gallio.Common.Reflection.Impl
             try
             {
                 Type resolvedType = constructor.DeclaringType.Resolve(throwOnError);
-                if (!(resolvedType is UnresolvedType))
+                if (!Reflector.IsUnresolved(resolvedType))
                 {
                     BindingFlags bindingFlags =
                         (constructor.IsPublic ? BindingFlags.Public : BindingFlags.NonPublic)
@@ -375,7 +375,7 @@ namespace Gallio.Common.Reflection.Impl
             if (throwOnError)
                 throw new ReflectionResolveException(constructor);
 
-            return new UnresolvedConstructorInfo(constructor);
+            return UnresolvedCodeElementFactory.Instance.Wrap(constructor);
         }
 
         /// <summary>
@@ -383,7 +383,7 @@ namespace Gallio.Common.Reflection.Impl
         /// </summary>
         /// <param name="method">The reflected method.</param>
         /// <param name="throwOnError">If true, throws an exception if resolution fails,
-        /// otherwise returns an <see cref="UnresolvedMethodInfo" />.</param>
+        /// otherwise returns an unresolved <see cref="MethodInfo" />.</param>
         /// <returns>The resolved <see cref="MethodInfo" />.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="method"/>
         /// is null.</exception>
@@ -397,7 +397,7 @@ namespace Gallio.Common.Reflection.Impl
             try
             {
                 Type resolvedType = method.DeclaringType.Resolve(throwOnError);
-                if (!(resolvedType is UnresolvedType))
+                if (!Reflector.IsUnresolved(resolvedType))
                 {
                     BindingFlags bindingFlags = BindingFlags.DeclaredOnly
                         | (method.IsPublic ? BindingFlags.Public : BindingFlags.NonPublic)
@@ -422,7 +422,7 @@ namespace Gallio.Common.Reflection.Impl
             if (throwOnError)
                 throw new ReflectionResolveException(method);
 
-            return new UnresolvedMethodInfo(method);
+            return UnresolvedCodeElementFactory.Instance.Wrap(method);
         }
 
         private static MethodInfo ResolveNonGenericMethod(Type resolvedType, string methodName, BindingFlags bindingFlags,
@@ -481,7 +481,7 @@ namespace Gallio.Common.Reflection.Impl
         /// </summary>
         /// <param name="parameter">The reflected parameter.</param>
         /// <param name="throwOnError">If true, throws an exception if resolution fails,
-        /// otherwise returns an <see cref="UnresolvedParameterInfo" />.</param>
+        /// otherwise returns an unresolved <see cref="ParameterInfo" />.</param>
         /// <returns>The resolved <see cref="ParameterInfo" />.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="parameter"/>
         /// is null.</exception>
@@ -527,7 +527,7 @@ namespace Gallio.Common.Reflection.Impl
             if (throwOnError)
                 throw new ReflectionResolveException(parameter);
 
-            return new UnresolvedParameterInfo(parameter);
+            return UnresolvedCodeElementFactory.Instance.Wrap(parameter);
         }
 
         private static Type[] ResolveParameterTypes(ICollection<IParameterInfo> parameters)

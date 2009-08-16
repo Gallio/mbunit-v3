@@ -15,21 +15,13 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Xml;
 using Gallio.MSTestAdapter.Model;
-using Gallio.Common.Caching;
-using System.Xml.XPath;
-using Gallio.Model;
 
 namespace Gallio.MSTestAdapter.Wrapper
 {
     internal class MSTestRunner2005 : MSTestRunner
     {
-        public MSTestRunner2005(IDiskCache diskCache) : base(diskCache)
-        {
-        }
-
         protected override string GetVisualStudioVersion()
         {
             return "8.0";
@@ -124,7 +116,7 @@ namespace Gallio.MSTestAdapter.Wrapper
                 {
                     writer.WriteStartElement("key");
                     writer.WriteAttributeString("type", "System.Guid");
-                    writer.WriteValue(test.Guid);
+                    writer.WriteValue(test.Guid.ToString());
                     writer.WriteEndElement();
 
                     writer.WriteStartElement("value");
@@ -132,7 +124,7 @@ namespace Gallio.MSTestAdapter.Wrapper
 
                     writer.WriteStartElement("id");
                     writer.WriteAttributeString("type", "System.Guid");
-                    writer.WriteValue(test.Guid);
+                    writer.WriteValue(test.Guid.ToString());
                     writer.WriteEndElement();
 
                     writer.WriteStartElement("name");
@@ -244,28 +236,6 @@ namespace Gallio.MSTestAdapter.Wrapper
             writer.WriteEndElement(); // Tests
 
             writer.WriteEndDocument();
-        }
-
-        protected override void ExtractExecutedTestsInformation(Dictionary<string, MSTestResult> testResults, XmlReader reader)
-        {
-            XPathNavigator xpathNavigator = new XPathDocument(reader).CreateNavigator();
-            XPathNodeIterator xpathIterator = xpathNavigator.Select("/Tests/UnitTestResult");
-
-            while (xpathIterator.MoveNext())
-            {
-                MSTestResult testResult = new MSTestResult();
-
-                XPathNavigator x = xpathIterator.Current;
-
-                testResult.Guid = x.SelectSingleNode("id/testId/id").Value;
-                testResult.Outcome = GetTestOutcome(x.SelectSingleNode("outcome/value__").Value);
-                testResult.Duration = GetDuration(x.SelectSingleNode("duration").Value);
-                testResult.StdOut = x.SelectSingleNode("stdout").Value;
-                testResult.Errors = x.SelectSingleNode("errorInfo") != null ? x.SelectSingleNode("errorInfo/message").Value + 
-                    x.SelectSingleNode("errorInfo/stackTrace").Value : string.Empty;
-
-                testResults.Add(testResult.Guid, testResult);
-            }
         }
     }
 }

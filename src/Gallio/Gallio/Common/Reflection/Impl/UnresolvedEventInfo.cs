@@ -17,22 +17,17 @@ using System;
 using System.Reflection;
 using Gallio.Common.Collections;
 
-namespace Gallio.Common.Reflection.Impl
+#if DOTNET40
+namespace Gallio.Common.Reflection.Impl.DotNet40
+#else
+namespace Gallio.Common.Reflection.Impl.DotNet20
+#endif
 {
-    /// <summary>
-    /// Represents a <see cref="EventInfo" /> whose native definition could not be resolved
-    /// so we fall back on the <see cref="IEventInfo"/> wrapper.
-    /// </summary>
-    public sealed partial class UnresolvedEventInfo : EventInfo, IUnresolvedCodeElement
+    internal sealed partial class UnresolvedEventInfo : EventInfo, IUnresolvedCodeElement
     {
         private readonly IEventInfo adapter;
 
-        /// <summary>
-        /// Creates a reflection object backed by the specified adapter.
-        /// </summary>
-        /// <param name="adapter">The adapter.</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="adapter"/> is null.</exception>
-        public UnresolvedEventInfo(IEventInfo adapter)
+        internal UnresolvedEventInfo(IEventInfo adapter)
         {
             if (adapter == null)
                 throw new ArgumentNullException("adapter");
@@ -40,9 +35,6 @@ namespace Gallio.Common.Reflection.Impl
             this.adapter = adapter;
         }
 
-        /// <summary>
-        /// Gets the underlying reflection adapter.
-        /// </summary>
         public IEventInfo Adapter
         {
             get { return adapter; }
@@ -53,40 +45,39 @@ namespace Gallio.Common.Reflection.Impl
             get { return adapter; }
         }
 
-        /// <inheritdoc />
         public override EventAttributes Attributes
         {
             get { return adapter.EventAttributes; }
         }
 
-        /// <inheritdoc />
         public override MemberTypes MemberType
         {
             get { return MemberTypes.Event; }
         }
 
-        /// <inheritdoc />
         public override MethodInfo GetAddMethod(bool nonPublic)
         {
             return UnresolvedMemberInfo.ResolveMethod(adapter.AddMethod, nonPublic);
         }
 
-        /// <inheritdoc />
         public override MethodInfo[] GetOtherMethods(bool nonPublic)
         {
             return EmptyArray<MethodInfo>.Instance;
         }
 
-        /// <inheritdoc />
         public override MethodInfo GetRaiseMethod(bool nonPublic)
         {
             return UnresolvedMemberInfo.ResolveMethod(adapter.RaiseMethod, nonPublic);
         }
 
-        /// <inheritdoc />
         public override MethodInfo GetRemoveMethod(bool nonPublic)
         {
             return UnresolvedMemberInfo.ResolveMethod(adapter.RemoveMethod, nonPublic);
         }
+
+        #region .Net 4.0 Only
+#if DOTNET40
+#endif
+        #endregion
     }
 }

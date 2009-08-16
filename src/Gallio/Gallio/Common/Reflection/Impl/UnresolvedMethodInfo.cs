@@ -16,22 +16,17 @@
 using System;
 using System.Reflection;
 
-namespace Gallio.Common.Reflection.Impl
+#if DOTNET40
+namespace Gallio.Common.Reflection.Impl.DotNet40
+#else
+namespace Gallio.Common.Reflection.Impl.DotNet20
+#endif
 {
-    /// <summary>
-    /// Represents a <see cref="MethodInfo" /> whose native definition could not be resolved
-    /// so we fall back on the <see cref="IMethodInfo"/> wrapper.
-    /// </summary>
-    public sealed partial class UnresolvedMethodInfo : MethodInfo, IUnresolvedCodeElement
+    internal sealed partial class UnresolvedMethodInfo : MethodInfo, IUnresolvedCodeElement
     {
         private readonly IMethodInfo adapter;
 
-        /// <summary>
-        /// Creates a reflection object backed by the specified adapter.
-        /// </summary>
-        /// <param name="adapter">The adapter.</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="adapter"/> is null.</exception>
-        public UnresolvedMethodInfo(IMethodInfo adapter)
+        internal UnresolvedMethodInfo(IMethodInfo adapter)
         {
             if (adapter == null)
                 throw new ArgumentNullException("adapter");
@@ -39,9 +34,6 @@ namespace Gallio.Common.Reflection.Impl
             this.adapter = adapter;
         }
 
-        /// <summary>
-        /// Gets the underlying reflection adapter.
-        /// </summary>
         public IMethodInfo Adapter
         {
             get { return adapter; }
@@ -52,37 +44,31 @@ namespace Gallio.Common.Reflection.Impl
             get { return adapter; }
         }
 
-        /// <inheritdoc />
         public override MemberTypes MemberType
         {
             get { return MemberTypes.Method; }
         }
 
-        /// <inheritdoc />
         public override ParameterInfo ReturnParameter
         {
             get { return adapter.ReturnParameter.Resolve(false); }
         }
 
-        /// <inheritdoc />
         public override Type ReturnType
         {
             get { return adapter.ReturnType.Resolve(false); }
         }
 
-        /// <inheritdoc />
         public override ICustomAttributeProvider ReturnTypeCustomAttributes
         {
             get { return ReturnParameter; }
         }
 
-        /// <inheritdoc />
         public override MethodInfo GetBaseDefinition()
         {
             throw new NotImplementedException();
         }
 
-        /// <inheritdoc />
         public override MethodInfo GetGenericMethodDefinition()
         {
             IMethodInfo genericMethodDefinition = adapter.GenericMethodDefinition;
@@ -92,10 +78,14 @@ namespace Gallio.Common.Reflection.Impl
             return genericMethodDefinition.Resolve(false);
         }
 
-        /// <inheritdoc />
         public override MethodInfo MakeGenericMethod(params Type[] typeArguments)
         {
             return adapter.MakeGenericMethod(Reflector.Wrap(typeArguments)).Resolve(false);
         }
+
+        #region .Net 4.0 Only
+#if DOTNET40
+#endif
+        #endregion
     }
 }

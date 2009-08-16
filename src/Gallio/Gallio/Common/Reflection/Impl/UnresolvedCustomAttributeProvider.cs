@@ -15,13 +15,21 @@
 
 using System;
 using Gallio.Common.Collections;
+using System.Reflection;
+using System.Collections.Generic;
 
 /*
  * This compilation unit contains ICustomAttributeProvider overrides that must be duplicated for each
  * of the unresolved reflection types because C# does not support multiple inheritance.
  */
 
-namespace Gallio.Common.Reflection.Impl
+#if DOTNET40
+using System.Linq;
+
+namespace Gallio.Common.Reflection.Impl.DotNet40
+#else
+namespace Gallio.Common.Reflection.Impl.DotNet20
+#endif
 {
     internal static class UnresolvedCustomAttributeProvider
     {
@@ -39,173 +47,214 @@ namespace Gallio.Common.Reflection.Impl
         {
             return adapter.HasAttribute(Reflector.Wrap(attributeType), inherit);
         }
+
+#if DOTNET40
+        public static IList<CustomAttributeData> GetCustomAttributesData(ICodeElementInfo adapter)
+        {
+            return (from attrib in adapter.GetAttributeInfos(null, false)
+                select (CustomAttributeData) new UnresolvedCustomAttributeData(attrib))
+                .ToList().AsReadOnly();
+        }
+#endif
     }
 
-    public partial class UnresolvedAssembly
+    internal partial class UnresolvedAssembly
     {
-        /// <inheritdoc />
         public override object[] GetCustomAttributes(bool inherit)
         {
             return UnresolvedCustomAttributeProvider.GetCustomAttributes(adapter, inherit);
         }
 
-        /// <inheritdoc />
         public override object[] GetCustomAttributes(Type attributeType, bool inherit)
         {
             return UnresolvedCustomAttributeProvider.GetCustomAttributes(adapter, attributeType, inherit);
         }
 
-        /// <inheritdoc />
         public override bool IsDefined(Type attributeType, bool inherit)
         {
             return UnresolvedCustomAttributeProvider.IsDefined(adapter, attributeType, inherit);
         }
+
+#if DOTNET40
+        public override IList<CustomAttributeData> GetCustomAttributesData()
+        {
+            return UnresolvedCustomAttributeProvider.GetCustomAttributesData(adapter);
+        }
+#endif
     }
 
-    public partial class UnresolvedConstructorInfo
+    internal partial class UnresolvedConstructorInfo
     {
-        /// <inheritdoc />
         public override object[] GetCustomAttributes(bool inherit)
         {
             return UnresolvedCustomAttributeProvider.GetCustomAttributes(adapter, inherit);
         }
 
-        /// <inheritdoc />
         public override object[] GetCustomAttributes(Type attributeType, bool inherit)
         {
             return UnresolvedCustomAttributeProvider.GetCustomAttributes(adapter, attributeType, inherit);
         }
 
-        /// <inheritdoc />
         public override bool IsDefined(Type attributeType, bool inherit)
         {
             return UnresolvedCustomAttributeProvider.IsDefined(adapter, attributeType, inherit);
         }
+
+#if DOTNET40
+        public override IList<CustomAttributeData> GetCustomAttributesData()
+        {
+            return UnresolvedCustomAttributeProvider.GetCustomAttributesData(adapter);
+        }
+#endif
     }
 
-    public partial class UnresolvedEventInfo
+    internal partial class UnresolvedEventInfo
     {
-        /// <inheritdoc />
         public override object[] GetCustomAttributes(bool inherit)
         {
             return UnresolvedCustomAttributeProvider.GetCustomAttributes(adapter, inherit);
         }
 
-        /// <inheritdoc />
         public override object[] GetCustomAttributes(Type attributeType, bool inherit)
         {
             return UnresolvedCustomAttributeProvider.GetCustomAttributes(adapter, attributeType, inherit);
         }
 
-        /// <inheritdoc />
         public override bool IsDefined(Type attributeType, bool inherit)
         {
             return UnresolvedCustomAttributeProvider.IsDefined(adapter, attributeType, inherit);
         }
+
+#if DOTNET40
+        public override IList<CustomAttributeData> GetCustomAttributesData()
+        {
+            return UnresolvedCustomAttributeProvider.GetCustomAttributesData(adapter);
+        }
+#endif
     }
 
-    public partial class UnresolvedFieldInfo
+    internal partial class UnresolvedFieldInfo
     {
-        /// <inheritdoc />
         public override object[] GetCustomAttributes(bool inherit)
         {
             return UnresolvedCustomAttributeProvider.GetCustomAttributes(adapter, inherit);
         }
 
-        /// <inheritdoc />
         public override object[] GetCustomAttributes(Type attributeType, bool inherit)
         {
             return UnresolvedCustomAttributeProvider.GetCustomAttributes(adapter, attributeType, inherit);
         }
 
-        /// <inheritdoc />
         public override bool IsDefined(Type attributeType, bool inherit)
         {
             return UnresolvedCustomAttributeProvider.IsDefined(adapter, attributeType, inherit);
         }
+
+#if DOTNET40
+        public override IList<CustomAttributeData> GetCustomAttributesData()
+        {
+            return UnresolvedCustomAttributeProvider.GetCustomAttributesData(adapter);
+        }
+#endif
     }
 
-    public partial class UnresolvedMethodInfo
+    internal partial class UnresolvedMethodInfo
     {
-        /// <inheritdoc />
         public override object[] GetCustomAttributes(bool inherit)
         {
             return UnresolvedCustomAttributeProvider.GetCustomAttributes(adapter, inherit);
         }
 
-        /// <inheritdoc />
         public override object[] GetCustomAttributes(Type attributeType, bool inherit)
         {
             return UnresolvedCustomAttributeProvider.GetCustomAttributes(adapter, attributeType, inherit);
         }
 
-        /// <inheritdoc />
         public override bool IsDefined(Type attributeType, bool inherit)
         {
             return UnresolvedCustomAttributeProvider.IsDefined(adapter, attributeType, inherit);
         }
+
+#if DOTNET40
+        public override IList<CustomAttributeData> GetCustomAttributesData()
+        {
+            return UnresolvedCustomAttributeProvider.GetCustomAttributesData(adapter);
+        }
+#endif
     }
 
-    public partial class UnresolvedParameterInfo
+    internal partial class UnresolvedParameterInfo
     {
-        /// <inheritdoc />
         public override object[] GetCustomAttributes(bool inherit)
         {
             return UnresolvedCustomAttributeProvider.GetCustomAttributes(adapter, inherit);
         }
 
-        /// <inheritdoc />
         public override object[] GetCustomAttributes(Type attributeType, bool inherit)
         {
             return UnresolvedCustomAttributeProvider.GetCustomAttributes(adapter, attributeType, inherit);
         }
 
-        /// <inheritdoc />
         public override bool IsDefined(Type attributeType, bool inherit)
         {
             return UnresolvedCustomAttributeProvider.IsDefined(adapter, attributeType, inherit);
         }
+
+#if DOTNET40
+        public override IList<CustomAttributeData> GetCustomAttributesData()
+        {
+            return UnresolvedCustomAttributeProvider.GetCustomAttributesData(adapter);
+        }
+#endif
     }
 
-    public partial class UnresolvedPropertyInfo
+    internal partial class UnresolvedPropertyInfo
     {
-        /// <inheritdoc />
         public override object[] GetCustomAttributes(bool inherit)
         {
             return UnresolvedCustomAttributeProvider.GetCustomAttributes(adapter, inherit);
         }
 
-        /// <inheritdoc />
         public override object[] GetCustomAttributes(Type attributeType, bool inherit)
         {
             return UnresolvedCustomAttributeProvider.GetCustomAttributes(adapter, attributeType, inherit);
         }
 
-        /// <inheritdoc />
         public override bool IsDefined(Type attributeType, bool inherit)
         {
             return UnresolvedCustomAttributeProvider.IsDefined(adapter, attributeType, inherit);
         }
+
+#if DOTNET40
+        public override IList<CustomAttributeData> GetCustomAttributesData()
+        {
+            return UnresolvedCustomAttributeProvider.GetCustomAttributesData(adapter);
+        }
+#endif
     }
 
-    public partial class UnresolvedType
+    internal partial class UnresolvedType
     {
-        /// <inheritdoc />
         public override object[] GetCustomAttributes(bool inherit)
         {
             return UnresolvedCustomAttributeProvider.GetCustomAttributes(adapter, inherit);
         }
 
-        /// <inheritdoc />
         public override object[] GetCustomAttributes(Type attributeType, bool inherit)
         {
             return UnresolvedCustomAttributeProvider.GetCustomAttributes(adapter, attributeType, inherit);
         }
 
-        /// <inheritdoc />
         public override bool IsDefined(Type attributeType, bool inherit)
         {
             return UnresolvedCustomAttributeProvider.IsDefined(adapter, attributeType, inherit);
         }
+
+#if DOTNET40
+        public override IList<CustomAttributeData> GetCustomAttributesData()
+        {
+            return UnresolvedCustomAttributeProvider.GetCustomAttributesData(adapter);
+        }
+#endif
     }
 }

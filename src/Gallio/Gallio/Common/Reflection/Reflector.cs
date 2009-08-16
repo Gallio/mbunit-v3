@@ -112,9 +112,9 @@ namespace Gallio.Common.Reflection
             if (target == null)
                 return null;
 
-            UnresolvedAssembly unresolvedTarget = target as UnresolvedAssembly;
+            var unresolvedTarget = target as IUnresolvedCodeElement;
             if (unresolvedTarget != null)
-                return unresolvedTarget.Adapter;
+                return (IAssemblyInfo) unresolvedTarget.Adapter;
 
             return new NativeAssemblyWrapper(target);
         }
@@ -139,9 +139,9 @@ namespace Gallio.Common.Reflection
             if (target == null)
                 return null;
 
-            UnresolvedType unresolvedTarget = target as UnresolvedType;
+            IUnresolvedCodeElement unresolvedTarget = target as IUnresolvedCodeElement;
             if (unresolvedTarget != null)
-                return unresolvedTarget.Adapter;
+                return (ITypeInfo) unresolvedTarget.Adapter;
 
             return target.IsGenericParameter ? new NativeGenericParameterWrapper(target) : new NativeTypeWrapper(target);
         }
@@ -216,9 +216,9 @@ namespace Gallio.Common.Reflection
             if (target == null)
                 return null;
 
-            UnresolvedConstructorInfo unresolvedTarget = target as UnresolvedConstructorInfo;
+            IUnresolvedCodeElement unresolvedTarget = target as IUnresolvedCodeElement;
             if (unresolvedTarget != null)
-                return unresolvedTarget.Adapter;
+                return (IConstructorInfo) unresolvedTarget.Adapter;
 
             return new NativeConstructorWrapper(target);
         }
@@ -233,9 +233,9 @@ namespace Gallio.Common.Reflection
             if (target == null)
                 return null;
 
-            UnresolvedMethodInfo unresolvedTarget = target as UnresolvedMethodInfo;
+            IUnresolvedCodeElement unresolvedTarget = target as IUnresolvedCodeElement;
             if (unresolvedTarget != null)
-                return unresolvedTarget.Adapter;
+                return (IMethodInfo) unresolvedTarget.Adapter;
 
             return new NativeMethodWrapper(target);
         }
@@ -250,9 +250,9 @@ namespace Gallio.Common.Reflection
             if (target == null)
                 return null;
 
-            UnresolvedPropertyInfo unresolvedTarget = target as UnresolvedPropertyInfo;
+            IUnresolvedCodeElement unresolvedTarget = target as IUnresolvedCodeElement;
             if (unresolvedTarget != null)
-                return unresolvedTarget.Adapter;
+                return (IPropertyInfo) unresolvedTarget.Adapter;
 
             return new NativePropertyWrapper(target);
         }
@@ -267,9 +267,9 @@ namespace Gallio.Common.Reflection
             if (target == null)
                 return null;
 
-            UnresolvedFieldInfo unresolvedTarget = target as UnresolvedFieldInfo;
+            IUnresolvedCodeElement unresolvedTarget = target as IUnresolvedCodeElement;
             if (unresolvedTarget != null)
-                return unresolvedTarget.Adapter;
+                return (IFieldInfo) unresolvedTarget.Adapter;
 
             return new NativeFieldWrapper(target);
         }
@@ -284,9 +284,9 @@ namespace Gallio.Common.Reflection
             if (target == null)
                 return null;
 
-            UnresolvedEventInfo unresolvedTarget = target as UnresolvedEventInfo;
+            IUnresolvedCodeElement unresolvedTarget = target as IUnresolvedCodeElement;
             if (unresolvedTarget != null)
-                return unresolvedTarget.Adapter;
+                return (IEventInfo) unresolvedTarget.Adapter;
 
             return new NativeEventWrapper(target);
         }
@@ -301,9 +301,9 @@ namespace Gallio.Common.Reflection
             if (target == null)
                 return null;
 
-            UnresolvedParameterInfo unresolvedTarget = target as UnresolvedParameterInfo;
+            IUnresolvedCodeElement unresolvedTarget = target as IUnresolvedCodeElement;
             if (unresolvedTarget != null)
-                return unresolvedTarget.Adapter;
+                return (IParameterInfo) unresolvedTarget.Adapter;
 
             return new NativeParameterWrapper(target);
         }

@@ -135,6 +135,11 @@ namespace Gallio.Model.Contexts
         }
 
         /// <inheritdoc />
+        public void BecomeMultiThreadAware()
+        {
+        }
+
+        /// <inheritdoc />
         public void AddMetadata(string metadataKey, string metadataValue)
         {
         }

@@ -17,22 +17,17 @@ using System;
 using System.Globalization;
 using System.Reflection;
 
-namespace Gallio.Common.Reflection.Impl
+#if DOTNET40
+namespace Gallio.Common.Reflection.Impl.DotNet40
+#else
+namespace Gallio.Common.Reflection.Impl.DotNet20
+#endif
 {
-    /// <summary>
-    /// Represents a <see cref="ConstructorInfo" /> whose native definition could not be resolved
-    /// so we fall back on the <see cref="IConstructorInfo"/> wrapper.
-    /// </summary>
-    public sealed partial class UnresolvedConstructorInfo : ConstructorInfo, IUnresolvedCodeElement
+    internal sealed partial class UnresolvedConstructorInfo : ConstructorInfo, IUnresolvedCodeElement
     {
         private readonly IConstructorInfo adapter;
 
-        /// <summary>
-        /// Creates a reflection object backed by the specified adapter.
-        /// </summary>
-        /// <param name="adapter">The adapter.</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="adapter"/> is null.</exception>
-        public UnresolvedConstructorInfo(IConstructorInfo adapter)
+        internal UnresolvedConstructorInfo(IConstructorInfo adapter)
         {
             if (adapter == null)
                 throw new ArgumentNullException("adapter");
@@ -40,9 +35,6 @@ namespace Gallio.Common.Reflection.Impl
             this.adapter = adapter;
         }
 
-        /// <summary>
-        /// Gets the underlying reflection adapter.
-        /// </summary>
         public IConstructorInfo Adapter
         {
             get { return adapter; }
@@ -53,16 +45,19 @@ namespace Gallio.Common.Reflection.Impl
             get { return adapter; }
         }
 
-        /// <inheritdoc />
         public override MemberTypes MemberType
         {
             get { return MemberTypes.Constructor; }
         }
 
-        /// <inheritdoc />
         public override object Invoke(BindingFlags invokeAttr, Binder binder, object[] parameters, CultureInfo culture)
         {
             throw new NotSupportedException("Cannot invoke unresolved constructor.");
         }
+
+        #region .Net 4.0 Only
+#if DOTNET40
+#endif
+        #endregion
     }
 }

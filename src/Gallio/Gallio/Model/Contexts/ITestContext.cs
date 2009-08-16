@@ -208,7 +208,7 @@ namespace Gallio.Model.Contexts
         /// <para>
         /// If any children of the step are still executing their contexts are automatically
         /// disposed.  Then <see cref="Finishing"/> actions are executed.  Finally, the current
-        /// thread's test context is exited.
+        /// thread's test context is exited (unless <see cref="BecomeMultiThreadAware" /> was called).
         /// </para>
         /// </remarks>
         /// <param name="outcome">The final test outcome.</param>
@@ -217,5 +217,18 @@ namespace Gallio.Model.Contexts
         /// <returns>The final test result.</returns>
         /// <seealso cref="Finishing"/>
         TestResult FinishStep(TestOutcome outcome, TimeSpan? actualDuration);
+
+        /// <summary>
+        /// This method informs the test context that it may be finished on a
+        /// different thread than it started.  This changes how the test context
+        /// will exit when finished.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// After this method is called, the caller will become responsible for
+        /// exiting the context after <see cref="FinishStep" /> if necessary.
+        /// </para>
+        /// </remarks>
+        void BecomeMultiThreadAware();
     }
 }

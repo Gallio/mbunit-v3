@@ -236,6 +236,11 @@ namespace Gallio.Model.Contexts
             return FinishStep(outcome, actualDuration, false);
         }
 
+        public void BecomeMultiThreadAware()
+        {
+            contextCookie = null;
+        }
+
         public void Dispose()
         {
             FinishStep(TestOutcome.Error, null, true);

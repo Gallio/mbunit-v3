@@ -3,9 +3,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{7AC1E83D-6979-48B5-8370-32F61A54B317}</ProjectGuid>
+    <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Gallio.MSTestAdapter.TestResources</RootNamespace>
@@ -39,17 +40,27 @@
   <ItemGroup>
     <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="System" />
+    <Reference Include="System.configuration" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AnotherFixture.cs" />
+    <Compile Include="ConfigurationFileSample.cs" />
+    <Compile Include="EnvironmentSetupSample.cs" />
+    <Compile Include="DataDrivenTest.cs" />
     <Compile Include="Metadata\MetadataSample.cs" />
     <Compile Include="NonFixture.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SimpleTest.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="DataDrivenTest.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Gallio.MSTestAdapter.TestResources.dll.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <Content Include="Readme.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

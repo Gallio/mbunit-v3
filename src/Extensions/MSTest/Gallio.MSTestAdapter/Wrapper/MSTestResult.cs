@@ -14,6 +14,8 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
+using Gallio.Common.Collections;
 using Gallio.Model;
 
 namespace Gallio.MSTestAdapter.Wrapper
@@ -23,10 +25,24 @@ namespace Gallio.MSTestAdapter.Wrapper
     /// </summary>
     internal sealed class MSTestResult
     {
+        private IList<MSTestResult> children;
+
         public string Guid { get; set; }
-        public TimeSpan? Duration { get; set; }
+        public TimeSpan Duration { get; set; }
         public TestOutcome Outcome { get; set; }
         public string StdOut { get; set; }
         public string Errors { get; set; }
+
+        public IList<MSTestResult> Children
+        {
+            get { return children ?? EmptyArray<MSTestResult>.Instance; }
+        }
+
+        public void AddChild(MSTestResult child)
+        {
+            if (children == null)
+                children = new List<MSTestResult>();
+            children.Add(child);
+        }
     }
 }

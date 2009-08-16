@@ -20,10 +20,14 @@ using System.Text;
 namespace Gallio.Common.Reflection.Impl
 {
     /// <summary>
-    /// An interface implemented by special reflection types that represent code elements
-    /// whose native definition could not be resolved so we fall back on the
-    /// <see cref="ICodeElementInfo"/> wrapper instead.
+    /// Represents a code element that could not be resolved to a native reflection type.
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// The <see cref="UnresolvedCodeElementFactory"/> produces reflection objects that
+    /// implement this interface.
+    /// </para>
+    /// </remarks>
     public interface IUnresolvedCodeElement
     {
         /// <summary>

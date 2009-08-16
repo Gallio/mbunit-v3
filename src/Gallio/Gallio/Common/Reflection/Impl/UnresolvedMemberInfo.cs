@@ -22,7 +22,11 @@ using Gallio.Common.Collections;
  * of the unresolved reflection types because C# does not support multiple inheritance.
  */
 
-namespace Gallio.Common.Reflection.Impl
+#if DOTNET40
+namespace Gallio.Common.Reflection.Impl.DotNet40
+#else
+namespace Gallio.Common.Reflection.Impl.DotNet20
+#endif
 {
     internal static class UnresolvedMemberInfo
     {
@@ -42,312 +46,264 @@ namespace Gallio.Common.Reflection.Impl
         }
     }
 
-    public partial class UnresolvedType
+    internal partial class UnresolvedType
     {
-        /// <inheritdoc />
         public override Type DeclaringType
         {
             get { return UnresolvedMemberInfo.GetDeclaringType(adapter); }
         }
 
-        /// <inheritdoc />
         public override int MetadataToken
         {
             get { throw new NotSupportedException("Cannot get metadata token of unresolved type."); }
         }
 
-        /// <inheritdoc />
         public override Module Module
         {
             get { throw new NotSupportedException("Cannot get module of unresolved type."); }
         }
 
-        /// <inheritdoc />
         public override string Name
         {
             get { return adapter.Name; }
         }
 
-        /// <inheritdoc />
         public override Type ReflectedType
         {
             get { return DeclaringType; }
         }
 
-        /// <inheritdoc />
         public override bool Equals(object o)
         {
             UnresolvedType other = o as UnresolvedType;
             return other != null && adapter.Equals(other.adapter);
         }
 
-        /// <inheritdoc />
         public override int GetHashCode()
         {
             return adapter.GetHashCode();
         }
 
-        /// <inheritdoc />
         public override string ToString()
         {
             return adapter.ToString();
         }
     }
 
-    public partial class UnresolvedFieldInfo
+    internal partial class UnresolvedFieldInfo
     {
-        /// <inheritdoc />
         public override Type DeclaringType
         {
             get { return UnresolvedMemberInfo.GetDeclaringType(adapter); }
         }
 
-        /// <inheritdoc />
         public override int MetadataToken
         {
             get { throw new NotSupportedException("Cannot get metadata token of unresolved field."); }
         }
 
-        /// <inheritdoc />
         public override Module Module
         {
             get { throw new NotSupportedException("Cannot get module of unresolved field."); }
         }
 
-        /// <inheritdoc />
         public override string Name
         {
             get { return adapter.Name; }
         }
 
-        /// <inheritdoc />
         public override Type ReflectedType
         {
             get { return DeclaringType; }
         }
 
-        /// <inheritdoc />
         public override bool Equals(object o)
         {
             UnresolvedFieldInfo other = o as UnresolvedFieldInfo;
             return other != null && adapter.Equals(other.adapter);
         }
 
-        /// <inheritdoc />
         public override int GetHashCode()
         {
             return adapter.GetHashCode();
         }
 
-        /// <inheritdoc />
         public override string ToString()
         {
             return adapter.ToString();
         }
     }
 
-    public partial class UnresolvedPropertyInfo
+    internal partial class UnresolvedPropertyInfo
     {
-        /// <inheritdoc />
         public override Type DeclaringType
         {
             get { return UnresolvedMemberInfo.GetDeclaringType(adapter); }
         }
 
-        /// <inheritdoc />
         public override int MetadataToken
         {
             get { throw new NotSupportedException("Cannot get metadata token of unresolved property."); }
         }
 
-        /// <inheritdoc />
         public override Module Module
         {
             get { throw new NotSupportedException("Cannot get module of unresolved property."); }
         }
 
-        /// <inheritdoc />
         public override string Name
         {
             get { return adapter.Name; }
         }
 
-        /// <inheritdoc />
         public override Type ReflectedType
         {
             get { return DeclaringType; }
         }
 
-        /// <inheritdoc />
         public override bool Equals(object o)
         {
             UnresolvedPropertyInfo other = o as UnresolvedPropertyInfo;
             return other != null && adapter.Equals(other.adapter);
         }
 
-        /// <inheritdoc />
         public override int GetHashCode()
         {
             return adapter.GetHashCode();
         }
 
-        /// <inheritdoc />
         public override string ToString()
         {
             return adapter.ToString();
         }
     }
 
-    public partial class UnresolvedEventInfo
+    internal partial class UnresolvedEventInfo
     {
-        /// <inheritdoc />
         public override Type DeclaringType
         {
             get { return UnresolvedMemberInfo.GetDeclaringType(adapter); }
         }
 
-        /// <inheritdoc />
         public override int MetadataToken
         {
             get { throw new NotSupportedException("Cannot get metadata token of unresolved event."); }
         }
 
-        /// <inheritdoc />
         public override Module Module
         {
             get { throw new NotSupportedException("Cannot get module of unresolved event."); }
         }
 
-        /// <inheritdoc />
         public override string Name
         {
             get { return adapter.Name; }
         }
 
-        /// <inheritdoc />
         public override Type ReflectedType
         {
             get { return DeclaringType; }
         }
 
-        /// <inheritdoc />
         public override bool Equals(object o)
         {
             UnresolvedEventInfo other = o as UnresolvedEventInfo;
             return other != null && adapter.Equals(other.adapter);
         }
 
-        /// <inheritdoc />
         public override int GetHashCode()
         {
             return adapter.GetHashCode();
         }
 
-        /// <inheritdoc />
         public override string ToString()
         {
             return adapter.ToString();
         }
     }
 
-    public partial class UnresolvedMethodInfo
+    internal partial class UnresolvedMethodInfo
     {
-        /// <inheritdoc />
         public override Type DeclaringType
         {
             get { return UnresolvedMemberInfo.GetDeclaringType(adapter); }
         }
 
-        /// <inheritdoc />
         public override int MetadataToken
         {
             get { throw new NotSupportedException("Cannot get metadata token of unresolved method."); }
         }
 
-        /// <inheritdoc />
         public override Module Module
         {
             get { throw new NotSupportedException("Cannot get module of unresolved method."); }
         }
 
-        /// <inheritdoc />
         public override string Name
         {
             get { return adapter.Name; }
         }
 
-        /// <inheritdoc />
         public override Type ReflectedType
         {
             get { return DeclaringType; }
         }
 
-        /// <inheritdoc />
         public override bool Equals(object o)
         {
             UnresolvedMethodInfo other = o as UnresolvedMethodInfo;
             return other != null && adapter.Equals(other.adapter);
         }
 
-        /// <inheritdoc />
         public override int GetHashCode()
         {
             return adapter.GetHashCode();
         }
 
-        /// <inheritdoc />
         public override string ToString()
         {
             return adapter.ToString();
         }
     }
 
-    public partial class UnresolvedConstructorInfo
+    internal partial class UnresolvedConstructorInfo
     {
-        /// <inheritdoc />
         public override Type DeclaringType
         {
             get { return UnresolvedMemberInfo.GetDeclaringType(adapter); }
         }
 
-        /// <inheritdoc />
         public override int MetadataToken
         {
             get { throw new NotSupportedException("Cannot get metadata token of unresolved constructor."); }
         }
 
-        /// <inheritdoc />
         public override Module Module
         {
             get { throw new NotSupportedException("Cannot get module of unresolved constructor."); }
         }
 
-        /// <inheritdoc />
         public override string Name
         {
             get { return adapter.Name; }
         }
 
-        /// <inheritdoc />
         public override Type ReflectedType
         {
             get { return DeclaringType; }
         }
 
-        /// <inheritdoc />
         public override bool Equals(object o)
         {
             UnresolvedConstructorInfo other = o as UnresolvedConstructorInfo;
             return other != null && adapter.Equals(other.adapter);
         }
 
-        /// <inheritdoc />
         public override int GetHashCode()
         {
             return adapter.GetHashCode();
         }
 
-        /// <inheritdoc />
         public override string ToString()
         {
             return adapter.ToString();

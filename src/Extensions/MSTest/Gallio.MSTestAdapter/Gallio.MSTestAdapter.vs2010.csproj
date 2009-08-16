@@ -40,10 +40,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Model\MSTestDeploymentItem.cs" />
     <Compile Include="Model\MSTestDriver.cs" />
-    <Compile Include="Wrapper\DebugMSTestCommand.cs" />
-    <Compile Include="Wrapper\MSTestCommand.cs" />
-    <Compile Include="Wrapper\MSTestCommandArguments.cs" />
     <Compile Include="Model\MSTestMetadataKeys.cs" />
     <Compile Include="Model\MSTest.cs" />
     <Compile Include="Model\MSTestAssembly.cs" />
@@ -57,7 +55,6 @@
     <Compile Include="Wrapper\MSTestRunner2005.cs" />
     <Compile Include="Wrapper\MSTestRunner2008.cs" />
     <Compile Include="Wrapper\MSTestRunner2010.cs" />
-    <Compile Include="Wrapper\StandaloneMSTestCommand.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>

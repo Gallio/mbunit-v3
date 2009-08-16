@@ -20,6 +20,7 @@ using System.Security.Permissions;
 using Gallio.Common.Reflection;
 using Gallio.Common.Reflection.Impl;
 using MbUnit.Framework;
+using Gallio.Common.Reflection.Impl.DotNet20;
 
 namespace Gallio.Tests.Common.Reflection
 {
@@ -113,7 +114,7 @@ namespace Gallio.Tests.Common.Reflection
         public void IsUnresolved_ReturnsTrueForUnresolvedMembersTypes<S, T>()
             where S : MemberInfo
         {
-            S member = (S) typeof(S).GetConstructors()[0].Invoke(new object[] { Mocks.Stub<T>() });
+            S member = (S) typeof(S).GetConstructors(BindingFlags.NonPublic | BindingFlags.Instance)[0].Invoke(new object[] { Mocks.Stub<T>() });
             Assert.IsTrue(Reflector.IsUnresolved(member));
         }
 

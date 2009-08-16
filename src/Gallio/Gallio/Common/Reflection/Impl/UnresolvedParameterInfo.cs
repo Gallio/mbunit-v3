@@ -17,22 +17,17 @@ using System;
 using System.Reflection;
 using Gallio.Common.Collections;
 
-namespace Gallio.Common.Reflection.Impl
+#if DOTNET40
+namespace Gallio.Common.Reflection.Impl.DotNet40
+#else
+namespace Gallio.Common.Reflection.Impl.DotNet20
+#endif
 {
-    /// <summary>
-    /// Represents a <see cref="ParameterInfo" /> whose native definition could not be resolved
-    /// so we fall back on the <see cref="IParameterInfo"/> wrapper.
-    /// </summary>
-    public sealed partial class UnresolvedParameterInfo : ParameterInfo, IUnresolvedCodeElement
+    internal sealed partial class UnresolvedParameterInfo : ParameterInfo, IUnresolvedCodeElement
     {
         private readonly IParameterInfo adapter;
 
-        /// <summary>
-        /// Creates a reflection object backed by the specified adapter.
-        /// </summary>
-        /// <param name="adapter">The adapter.</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="adapter"/> is null.</exception>
-        public UnresolvedParameterInfo(IParameterInfo adapter)
+        internal UnresolvedParameterInfo(IParameterInfo adapter)
         {
             if (adapter == null)
                 throw new ArgumentNullException("adapter");
@@ -40,9 +35,6 @@ namespace Gallio.Common.Reflection.Impl
             this.adapter = adapter;
         }
 
-        /// <summary>
-        /// Gets the underlying reflection adapter.
-        /// </summary>
         public IParameterInfo Adapter
         {
             get { return adapter; }
@@ -53,77 +45,74 @@ namespace Gallio.Common.Reflection.Impl
             get { return adapter; }
         }
 
-        /// <inheritdoc />
         public override ParameterAttributes Attributes
         {
             get { return adapter.ParameterAttributes; }
         }
 
-        /// <inheritdoc />
         public override object DefaultValue
         {
             get { throw new NotSupportedException("Cannot get default value of unresolved parameter."); }
         }
 
-        /// <inheritdoc />
         public override MemberInfo Member
         {
             get { return adapter.Member.Resolve(false); }
         }
 
-        /// <inheritdoc />
         public override string Name
         {
             get { return adapter.Name; }
         }
 
-        /// <inheritdoc />
         public override Type ParameterType
         {
             get { return adapter.ValueType.Resolve(false); }
         }
 
-        /// <inheritdoc />
         public override int Position
         {
             get { return adapter.Position; }
         }
 
-        /// <inheritdoc />
         public override object RawDefaultValue
         {
             get { throw new NotSupportedException("Cannot get default value of unresolved parameter."); }
         }
 
-        /// <inheritdoc />
         public override bool Equals(object o)
         {
             UnresolvedParameterInfo other = o as UnresolvedParameterInfo;
             return other != null && adapter.Equals(other.adapter);
         }
 
-        /// <inheritdoc />
         public override int GetHashCode()
         {
             return adapter.GetHashCode();
         }
 
-        /// <inheritdoc />
         public override Type[] GetOptionalCustomModifiers()
         {
             return EmptyArray<Type>.Instance;
         }
 
-        /// <inheritdoc />
         public override Type[] GetRequiredCustomModifiers()
         {
             return EmptyArray<Type>.Instance;
         }
 
-        /// <inheritdoc />
         public override string ToString()
         {
             return adapter.ToString();
         }
+
+        #region .Net 4.0 Only
+#if DOTNET40
+        public override int MetadataToken
+        {
+            get { throw new NotSupportedException("Cannot get metadata token of unresolved parameter."); }
+        }
+#endif
+        #endregion
     }
 }

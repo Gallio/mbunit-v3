@@ -19,7 +19,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting.Web;
 namespace Gallio.MSTestAdapter.TestResources.Metadata
 {
     [TestClass]
-    [DeploymentItem("file1.xml", @"c:\SomePath\")]
+    [DeploymentItem("file1.xml", @"SomePath")]
     [Ignore]
     public class MetadataSample
     {
@@ -29,7 +29,7 @@ namespace Gallio.MSTestAdapter.TestResources.Metadata
         [CssProjectStructure("Gallio")]
         [DataSource("System.Data.SqlClient", "Server=.;Database=SomeDatabase;Trusted_Connection=Yes;",
             "Products", DataAccessMethod.Sequential)]
-        [DeploymentItem("file1.xml", @"c:\SomePath\")]
+        [DeploymentItem("file1.xml", @"SomePath")]
         [Description("A sample description.")]
         [HostType("ASP.NET", "data")]
         [Ignore]
