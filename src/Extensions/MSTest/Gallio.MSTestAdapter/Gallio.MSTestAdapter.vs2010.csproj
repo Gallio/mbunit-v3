@@ -40,8 +40,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Model\MSTestDeploymentItem.cs" />
     <Compile Include="Model\MSTestDriver.cs" />
-    <Compile Include="Wrapper\DebugMSTestCommand.cs" />
+    <Compile Include="Wrapper\EmbeddedMSTestCommand.cs" />
     <Compile Include="Wrapper\MSTestCommand.cs" />
     <Compile Include="Wrapper\MSTestCommandArguments.cs" />
     <Compile Include="Model\MSTestMetadataKeys.cs" />

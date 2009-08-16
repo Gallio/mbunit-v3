@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<TestLists xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2006">
+  <TestList name="MSTestAdapter.TestResources" id="82789f9e-c195-43fb-978a-c3f25557b8ed" parentListId="8c43106b-9dc1-4907-a29f-aa66a61bf5b6">
+    <TestLinks>
+      <TestLink id="8bf6c5fb-cccf-e804-1a42-a32dc4e7cefc" name="Fail" storage="extensions\mstest\gallio.mstestadapter.testresources\bin\gallio.mstestadapter.testresources.dll" type="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestElement, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.ObjectModel,   PublicKeyToken=b03f5f7f11d50a3a" />
+      <TestLink id="0eaec254-631c-cbf8-77af-c041acf5ebd9" name="Pass" storage="extensions\mstest\gallio.mstestadapter.testresources\bin\gallio.mstestadapter.testresources.dll" type="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestElement, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.ObjectModel,   PublicKeyToken=b03f5f7f11d50a3a" />
+      <TestLink id="fa2a7226-5c1d-2a63-3868-a8af9143cba0" name="WriteDiagnostics" storage="extensions\mstest\gallio.mstestadapter.testresources\bin\gallio.mstestadapter.testresources.dll" type="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestElement, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.ObjectModel,   PublicKeyToken=b03f5f7f11d50a3a" />
+      <TestLink id="c4fbf4bd-8df4-c710-b44a-9a76858a0e1c" name="Pythagoras" storage="extensions\mstest\gallio.mstestadapter.testresources\bin\gallio.mstestadapter.testresources.dll" type="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestElement, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.ObjectModel,   PublicKeyToken=b03f5f7f11d50a3a" />
+    </TestLinks>
+  </TestList>
+  <TestList name="Lists of Tests" id="8c43106b-9dc1-4907-a29f-aa66a61bf5b6">
+    <RunConfiguration id="1eab764a-1631-49e3-80a0-a23769c6d776" name="All" storage="all.testrunconfig" type="Microsoft.VisualStudio.TestTools.Common.TestRunConfiguration, Microsoft.VisualStudio.QualityTools.Common,   PublicKeyToken=b03f5f7f11d50a3a" />
+  </TestList>
+  <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d">
+    <TestLinks>
+      <TestLink id="86b13101-ff58-81a6-0095-db8caee0e570" name="IgnoredTest" storage="extensions\mstest\gallio.mstestadapter.testresources\bin\gallio.mstestadapter.testresources.dll" type="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestElement, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.ObjectModel,   PublicKeyToken=b03f5f7f11d50a3a" />
+      <TestLink id="62aef78d-e7d2-2886-8e2e-78976eae105a" name="Test" storage="extensions\mstest\gallio.mstestadapter.testresources\bin\gallio.mstestadapter.testresources.dll" type="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestElement, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.ObjectModel,   PublicKeyToken=b03f5f7f11d50a3a" />
+    </TestLinks>
+  </TestList>
+</TestLists>

@@ -17,6 +17,8 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Xml;
+using System.Xml.XPath;
+using Gallio.Common.Collections;
 using Gallio.MSTestAdapter.Model;
 using Gallio.Common.Caching;
 
@@ -24,10 +26,6 @@ namespace Gallio.MSTestAdapter.Wrapper
 {
     internal class MSTestRunner2008 : MSTestRunner
     {
-        public MSTestRunner2008(IDiskCache diskCache) : base(diskCache)
-        {
-        }
-
         protected override string GetVisualStudioVersion()
         {
             return "9.0";
@@ -78,6 +76,7 @@ namespace Gallio.MSTestAdapter.Wrapper
                 <?xml version="1.0" encoding="UTF-8"?>
                 <TestRunConfiguration name="Gallio Test Run" id="94d309d9-02ec-4f2a-978b-bb07dab7ab0f" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2006">
                   <Deployment enabled="false" />
+                  <NamingScheme baseName="TestDir" appendTimeStamp="false" useDefault="false" />
                   <Description>This is a test run configuration used by Gallio to launch MSTest tests locally.</Description>
                   <TestTypeSpecific />
                 </TestRunConfiguration>
@@ -91,8 +90,24 @@ namespace Gallio.MSTestAdapter.Wrapper
 
             writer.WriteElementString("Description", "This is a test run configuration used by Gallio to launch MSTest tests locally.");
 
+            // Note: We enable deployment to provide consistency with how MSTest works when
+            //       in Visual Studio.  Some users don't like this and would prefer that we
+            //       just ran the tests in place but in fact we have no way to tell MSTest
+            //       to do so.  Disabling deployment would not change the fact that MSTest
+            //       likes to load data sources and other resources from within the TestDir
+            //       which must be a different folder from the one where the test assembly
+            //       originally resided.  So we leave deployment enabled so that at least
+            //       the MSTest [DeploymentItem] attribute can be used.
             writer.WriteStartElement("Deployment");
-            writer.WriteAttributeString("enabled", "false");
+            writer.WriteAttributeString("enabled", "true");
+            writer.WriteEndElement();
+
+            // Force the use of a particular test directory name instead of the default
+            // auto-updating timestamp.
+            writer.WriteStartElement("NamingScheme");
+            writer.WriteAttributeString("baseName", PreferredTestDir);
+            writer.WriteAttributeString("appendTimeStamp", "false");
+            writer.WriteAttributeString("useDefault", "false");
             writer.WriteEndElement();
 
             writer.WriteStartElement("TestTypeSpecific");
@@ -103,31 +118,46 @@ namespace Gallio.MSTestAdapter.Wrapper
             writer.WriteEndDocument();
         }
 
-        protected override void ExtractExecutedTestsInformation(
-            Dictionary<string, MSTestResult> testResults,
-            XmlReader reader)
+        protected override void ExtractExecutedTestsInformation(MultiMap<string, MSTestResult> testResults, XmlReader reader)
         {
-            while (reader.ReadToFollowing("UnitTestResult"))
-            {
-                MSTestResult testResult = new MSTestResult();
-                testResult.Guid = reader.GetAttribute("testId");
-                testResult.Duration = GetDuration(reader.GetAttribute("duration"));
-                testResult.Outcome = GetTestOutcome(reader.GetAttribute("outcome"));
-                reader.ReadToFollowing("Output");
-                reader.Read();
-                if (reader.Name == "StdOut")
-                {
-                    testResult.StdOut = reader.ReadString();
-                    reader.Read();
-                }
-                if (reader.Name == "ErrorInfo")
-                {
-                    testResult.Errors = ReadErrors(reader);
-                }
+            XPathDocument document = new XPathDocument(reader);
+            XPathNavigator documentNavigator = document.CreateNavigator();
 
+            XmlNamespaceManager nsmgr = new XmlNamespaceManager(documentNavigator.NameTable);
+            nsmgr.AddNamespace("m", "http://microsoft.com/schemas/VisualStudio/TeamTest/2006");
+
+            foreach (XPathNavigator resultNavigator in documentNavigator.Select("/m:TestRun/m:Results/m:UnitTestResult", nsmgr))
+            {
+                MSTestResult testResult = ParseTestResult(resultNavigator, nsmgr);
                 testResults.Add(testResult.Guid, testResult);
             }
         }
 
+        private static MSTestResult ParseTestResult(XPathNavigator resultNavigator, XmlNamespaceManager nsmgr)
+        {
+            MSTestResult testResult = new MSTestResult();
+
+            testResult.Guid = resultNavigator.GetAttribute("testId", "");
+            testResult.Duration = GetDuration(resultNavigator.GetAttribute("duration", ""));
+            testResult.Outcome = GetTestOutcome(resultNavigator.GetAttribute("outcome", ""));
+
+            XPathNavigator stdOutNavigator = resultNavigator.SelectSingleNode("m:Output/m:StdOut", nsmgr);
+            if (stdOutNavigator != null)
+                testResult.StdOut = stdOutNavigator.Value;
+
+            XPathNavigator errorMessageNavigator = resultNavigator.SelectSingleNode("m:Output/m:ErrorInfo/m:Message", nsmgr);
+            XPathNavigator errorStackTraceNavigator = resultNavigator.SelectSingleNode("m:Output/m:ErrorInfo/m:StackTrace", nsmgr);
+            if (errorMessageNavigator != null && errorStackTraceNavigator != null)
+                testResult.Errors = errorMessageNavigator.Value + "\n" + errorStackTraceNavigator.Value;
+            else if (errorMessageNavigator != null)
+                testResult.Errors = errorMessageNavigator.Value;
+            else if (errorStackTraceNavigator != null)
+                testResult.Errors = errorStackTraceNavigator.Value;
+
+            foreach (XPathNavigator childResultNavigator in resultNavigator.Select("m:InnerResults/m:UnitTestResult", nsmgr))
+                testResult.AddChild(ParseTestResult(childResultNavigator, nsmgr));
+
+            return testResult;
+        }
     }
 }

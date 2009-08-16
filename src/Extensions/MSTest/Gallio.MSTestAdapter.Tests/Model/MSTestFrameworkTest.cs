@@ -68,7 +68,7 @@ namespace Gallio.MSTestAdapter.Tests.Model
             Test fixture = GetDescendantByName(testModel.RootTest, typeof(MetadataSample).Name);
             Assert.IsNotNull(fixture, "Cannot find fixture 'MetadataSample'.");
 
-            Assert.AreEqual(@"Path=file1.xml, OutputDirectory=c:\SomePath\", fixture.Metadata.GetValue(MSTestMetadataKeys.DeploymentItem));
+            Assert.AreEqual("Path=\"file1.xml\", OutputDirectory=\"SomePath\"", fixture.Metadata.GetValue(MSTestMetadataKeys.DeploymentItem));
         }
 
         [Test]
@@ -82,16 +82,16 @@ namespace Gallio.MSTestAdapter.Tests.Model
             Test test = fixture.Children[0];
             Assert.IsNotNull(fixture, "Cannot find test method 'Test' in fixture 'MetadataSample'.");
 
-            Assert.AreEqual(@"Name=WebSite1, PathToWebApp=C:\WebSites\WebSite1, WebAppRoot=/WebSite1", test.Metadata.GetValue(MSTestMetadataKeys.AspNetDevelopmentServer));
-            Assert.AreEqual(@"PathToWebApp=C:\WebSites\WebSite1, WebAppRoot=/WebSite1", test.Metadata.GetValue(MSTestMetadataKeys.AspNetDevelopmentServerHost));
-            Assert.AreEqual("UserName=Julian, Password=secret, Domain=gallio.org", test.Metadata.GetValue(MSTestMetadataKeys.Credential));
+            Assert.AreEqual("Name=\"WebSite1\", PathToWebApp=\"C:\\WebSites\\WebSite1\", WebAppRoot=\"/WebSite1\"", test.Metadata.GetValue(MSTestMetadataKeys.AspNetDevelopmentServer));
+            Assert.AreEqual("PathToWebApp=\"C:\\WebSites\\WebSite1\", WebAppRoot=\"/WebSite1\"", test.Metadata.GetValue(MSTestMetadataKeys.AspNetDevelopmentServerHost));
+            Assert.AreEqual("UserName=\"Julian\", Password=\"secret\", Domain=\"gallio.org\"", test.Metadata.GetValue(MSTestMetadataKeys.Credential));
             Assert.AreEqual("vstfs:///Classification/Node/3fe569cd-f84e-4375-a0f3-760ccb143bb7", test.Metadata.GetValue(MSTestMetadataKeys.CssIteration));
             Assert.AreEqual("Gallio", test.Metadata.GetValue(MSTestMetadataKeys.CssProjectStructure));
-            Assert.AreEqual(@"ConnectionString=Server=.;Database=SomeDatabase;Trusted_Connection=Yes;, " +
-                "DataAccessMethod=Sequential, ProviderInvariantName=System.Data.SqlClient, TableName=Products", test.Metadata.GetValue(MSTestMetadataKeys.DataSource));
-            Assert.AreEqual(@"Path=file1.xml, OutputDirectory=c:\SomePath\", test.Metadata.GetValue(MSTestMetadataKeys.DeploymentItem));
+            Assert.AreEqual("ConnectionString=\"Server=.;Database=SomeDatabase;Trusted_Connection=Yes;\", " +
+                "DataAccessMethod=\"Sequential\", ProviderInvariantName=\"System.Data.SqlClient\", TableName=\"Products\"", test.Metadata.GetValue(MSTestMetadataKeys.DataSource));
+            Assert.AreEqual("Path=\"file1.xml\", OutputDirectory=\"SomePath\"", test.Metadata.GetValue(MSTestMetadataKeys.DeploymentItem));
             Assert.AreEqual("A sample description.", test.Metadata.GetValue(MetadataKeys.Description));
-            Assert.AreEqual("HostType=ASP.NET, HostData=data", test.Metadata.GetValue(MSTestMetadataKeys.HostType));
+            Assert.AreEqual("HostType=\"ASP.NET\", HostData=\"data\"", test.Metadata.GetValue(MSTestMetadataKeys.HostType));
             Assert.AreEqual("Julian", test.Metadata.GetValue(MSTestMetadataKeys.Owner));
             Assert.AreEqual("1", test.Metadata.GetValue(MSTestMetadataKeys.Priority));
             Assert.AreEqual("100", test.Metadata.GetValue(MSTestMetadataKeys.Timeout));

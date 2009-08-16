@@ -15,45 +15,36 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
-using System.Text;
 using System.Xml;
+using Gallio.Common.Collections;
+using Gallio.Common.Policies;
 using Gallio.Model;
 using Gallio.Model.Commands;
 using Gallio.Model.Contexts;
 using Gallio.Model.Tree;
 using Gallio.MSTestAdapter.Model;
 using Gallio.MSTestAdapter.Properties;
-using Gallio.Common.Caching;
 using Gallio.Runtime.ProgressMonitoring;
 
 namespace Gallio.MSTestAdapter.Wrapper
 {
     internal abstract class MSTestRunner
     {
+        internal const string PreferredTestDir = "TestDir";
+
         protected static readonly Guid RootTestListGuid = new Guid("8c43106b-9dc1-4907-a29f-aa66a61bf5b6");
         protected static readonly Guid SelectedTestListGuid = new Guid("05EF261C-0065-4c5f-9DE3-3D068277A643");
         protected const string SelectedTestListName = "SelectedTests";
 
-        private readonly IDiskCache diskCache;
-
-        public MSTestRunner(IDiskCache diskCache)
-        {
-            if (diskCache == null)
-                throw new ArgumentNullException("diskCache");
-
-            this.diskCache = diskCache;
-        }
-
-        public static MSTestRunner GetRunnerForFrameworkVersion(Version frameworkVersion, IDiskCache diskCache)
+        public static MSTestRunner GetRunnerForFrameworkVersion(Version frameworkVersion)
         {
             if (frameworkVersion.Major == 8 && frameworkVersion.Minor == 0)
-                return new MSTestRunner2005(diskCache);
+                return new MSTestRunner2005();
             if (frameworkVersion.Major == 9 && frameworkVersion.Minor == 0)
-                return new MSTestRunner2008(diskCache);
+                return new MSTestRunner2008();
             if (frameworkVersion.Major == 10 && frameworkVersion.Minor == 0)
-                return new MSTestRunner2010(diskCache);
+                return new MSTestRunner2010();
 
             throw new NotSupportedException(string.Format("MSTest v{0}.{1} is not supported at this time.", frameworkVersion.Major, frameworkVersion.Minor));
         }
@@ -61,34 +52,55 @@ namespace Gallio.MSTestAdapter.Wrapper
         public TestOutcome RunSession(ITestContext assemblyContext, MSTestAssembly assemblyTest,
             ITestCommand assemblyTestCommand, TestStep parentTestStep, IProgressMonitor progressMonitor)
         {
-            IDiskCacheGroup cacheGroup = diskCache.Groups["MSTestAdapter:" + Guid.NewGuid()];
+            DirectoryInfo tempDir = SpecialPathPolicy.For("MSTestAdapter").CreateTempDirectoryWithUniqueName();
             try
             {
-                cacheGroup.Create();
+                // Set the test results path.  Among other things, the test results path
+                // will determine where the deployed test files go.
+                string testResultsPath = Path.Combine(tempDir.FullName, "tests.trx");
 
-                string testMetadataPath = cacheGroup.GetFileInfo("tests.vsmdi").FullName;
-                string testResultsPath = cacheGroup.GetFileInfo("tests.trx").FullName;
-                string runConfigPath = cacheGroup.GetFileInfo("tests.runconfig").FullName;
+                // Set the test results root directory.
+                // This path determines both where MSTest searches for test files which
+                // is used to resolve relative paths to test files in the "*.vsmdi" file.
+                string searchPathRoot = Path.GetDirectoryName(assemblyTest.AssemblyFilePath);
+
+                // Set the test metadata and run config paths.  These are just temporary
+                // files that can go anywhere on the filesystem.  It happens to be convenient
+                // to store them in the same temporary directory as the test results.
+                string testMetadataPath = Path.Combine(tempDir.FullName, "tests.vsmdi");
+                string runConfigPath = Path.Combine(tempDir.FullName, "tests.runconfig");
+
+                // Set the working directory for the test runner based on the current
+                // directory that was set in our current test isolation context.
                 string workingDirectory = Environment.CurrentDirectory;
 
-                progressMonitor.SetStatus("Generating tests list");
+                progressMonitor.SetStatus("Generating test metadata file.");
                 CreateTestMetadataFile(testMetadataPath,
                     GetTestsFromCommands(assemblyTestCommand.PreOrderTraversal), assemblyTest.AssemblyFilePath);
+
+                progressMonitor.SetStatus("Generating run config file.");
                 CreateRunConfigFile(runConfigPath);
 
-                progressMonitor.SetStatus("Executing tests");
+                progressMonitor.SetStatus("Executing tests.");
                 TestOutcome outcome = ExecuteTests(assemblyContext, workingDirectory,
-                    testMetadataPath, testResultsPath, runConfigPath);
+                    testMetadataPath, testResultsPath, runConfigPath, searchPathRoot);
 
-                progressMonitor.SetStatus("Processing results");
-                if (!ProcessTestResults(assemblyContext, assemblyTestCommand, testResultsPath))
-                    outcome = outcome.CombineWith(TestOutcome.Failed);
+                progressMonitor.SetStatus("Processing results.");
+                outcome = outcome.CombineWith(ProcessTestResults(assemblyContext, assemblyTestCommand, testResultsPath));
 
                 return outcome;
             }
             finally
             {
-                cacheGroup.Delete();
+                try
+                {
+                    tempDir.Delete(true);
+                }
+                catch
+                {
+                    // Ignore I/O exceptions deleting temporary files.
+                    // They will probably be deleted by the OS later on during a file cleanup.
+                }
             }
         }
 
@@ -98,11 +110,84 @@ namespace Gallio.MSTestAdapter.Wrapper
 
         protected abstract void WriteRunConfig(XmlWriter writer);
 
+        /*
+        [DebuggerNonUserCode]
+        private static string GuessSearchPathRootFromDeploymentItems(MSTestAssembly assemblyTest)
+        {
+            string assemblyDirPath = Path.GetFullPath(Path.GetDirectoryName(assemblyTest.AssemblyFilePath));
+            HashSet<string> deploymentItemSourcePaths = new HashSet<string>();
+
+            GetAllDeploymentItemSourcePaths(deploymentItemSourcePaths, assemblyTest);
+            if (deploymentItemSourcePaths.Count == 0)
+                return assemblyDirPath;
+
+            Dictionary<string, int> dirVotes = new Dictionary<string,int>();
+
+            List<string> candidateDirPaths = new List<string>();
+            for (string currentDirPath = assemblyDirPath; ! string.IsNullOrEmpty(currentDirPath); currentDirPath = Path.GetDirectoryName(currentDirPath))
+                candidateDirPaths.Add(currentDirPath);
+
+            foreach (string deploymentItemSourcePath in deploymentItemSourcePaths)
+            {
+                string expandedItemSourcePath = Environment.ExpandEnvironmentVariables(deploymentItemSourcePath);
+
+                foreach (string candidateDirPath in candidateDirPaths)
+                {
+                    try
+                    {
+                        string candidateItemSourcePath = Path.Combine(candidateDirPath, expandedItemSourcePath);
+                        if (File.Exists(candidateItemSourcePath) || Directory.Exists(candidateItemSourcePath))
+                        {
+                            int currentVote;
+                            dirVotes.TryGetValue(candidateDirPath, out currentVote);
+                            dirVotes[candidateDirPath] = currentVote + 1;
+                        }
+                    }
+                    catch
+                    {
+                        // Ignore deployment item that could not be located.
+                    }
+                }
+            }
+
+            int bestVote = 0;
+            string bestDir = assemblyDirPath;
+            foreach (var vote in dirVotes)
+            {
+                if (vote.Value > bestVote)
+                {
+                    bestVote = vote.Value;
+                    bestDir = vote.Key;
+                }
+            }
+
+            return bestDir;
+        }
+
+        private static void GetAllDeploymentItemSourcePaths(HashSet<string> deploymentItemSourcePaths, MSTest test)
+        {
+            foreach (MSTestDeploymentItem deploymentItem in test.DeploymentItems)
+            {
+                deploymentItemSourcePaths.Add(deploymentItem.SourcePath);
+            }
+
+            foreach (MSTest childTest in test.Children)
+                GetAllDeploymentItemSourcePaths(deploymentItemSourcePaths, childTest);
+        }
+         */
+
         private static MSTestCommand GetMSTestCommand()
         {
+            /*
             return Debugger.IsAttached
-                ? (MSTestCommand) DebugMSTestCommand.Instance
+                ? (MSTestCommand) EmbeddedMSTestCommand.Instance
                 : StandaloneMSTestCommand.Instance;
+             */
+
+            // Always use the embedded MSTest command since this also provides support
+            // for code coverage, performs better and ensures more consistent results
+            // than if we were to run tests in two different ways.
+            return EmbeddedMSTestCommand.Instance;
         }
 
         private static IEnumerable<MSTest> GetTestsFromCommands(IEnumerable<ITestCommand> testCommands)
@@ -127,7 +212,7 @@ namespace Gallio.MSTestAdapter.Wrapper
             }
         }
 
-        private XmlWriter OpenXmlWriter(string filePath)
+        private static XmlWriter OpenXmlWriter(string filePath)
         {
             XmlWriterSettings settings = new XmlWriterSettings();
             settings.Indent = true;
@@ -136,7 +221,7 @@ namespace Gallio.MSTestAdapter.Wrapper
         }
 
         private TestOutcome ExecuteTests(ITestContext context, string workingDirectory,
-            string testMetadataPath, string testResultsPath, string runConfigPath)
+            string testMetadataPath, string testResultsPath, string runConfigPath, string searchPathRoot)
         {
             MSTestCommandArguments args = new MSTestCommandArguments();
             args.NoLogo = true;
@@ -144,6 +229,7 @@ namespace Gallio.MSTestAdapter.Wrapper
             args.ResultsFile = testResultsPath;
             args.RunConfig = runConfigPath;
             args.TestList = SelectedTestListName;
+            args.SearchPathRoot = searchPathRoot;
 
             string executablePath = MSTestResolver.FindMSTestPathForVisualStudioVersion(GetVisualStudioVersion());
             if (executablePath == null)
@@ -163,10 +249,10 @@ namespace Gallio.MSTestAdapter.Wrapper
             return TestOutcome.Passed;
         }
 
-        private bool ProcessTestResults(ITestContext assemblyContext,
+        private TestOutcome ProcessTestResults(ITestContext assemblyContext,
             ITestCommand assemblyCommand, string resultsFilePath)
         {
-            Dictionary<string, MSTestResult> testResults = new Dictionary<string, MSTestResult>();
+            MultiMap<string, MSTestResult> testResults = new MultiMap<string, MSTestResult>();
 
             if (File.Exists(resultsFilePath))
             {
@@ -186,15 +272,16 @@ namespace Gallio.MSTestAdapter.Wrapper
             // The ignored tests won't be run by MSTest. In the case where all the selected tests
             // have been ignored, we won't even have a results file, so we need to process them
             // here.
-            ProcessIgnoredTests(testResults, assemblyCommand.PreOrderTraversal);
+            GenerateFakeTestResultsForIgnoredTests(testResults, assemblyCommand.PreOrderTraversal);
 
-            bool passed = true;
+            TestOutcome combinedOutcome = TestOutcome.Passed;
             foreach (ITestCommand command in assemblyCommand.Children)
             {
-                passed &= ProcessTestCommand(command, assemblyContext.TestStep, testResults);
+                TestResult commandResult = ProcessTestCommand(command, assemblyContext.TestStep, testResults);
+                combinedOutcome = combinedOutcome.CombineWith(commandResult.Outcome);
             }
 
-            return passed;
+            return combinedOutcome.Generalize();
         }
 
         private static XmlReader OpenTestResultsFile(string path)
@@ -217,58 +304,109 @@ namespace Gallio.MSTestAdapter.Wrapper
             }
         }
 
-        private static bool ProcessTestCommand(ITestCommand command, TestStep parentStep, Dictionary<string, MSTestResult> testResults)
+        private static TestResult ProcessTestCommand(ITestCommand command, TestStep parentStep, MultiMap<string, MSTestResult> testResults)
         {
-            ITestContext testContext = command.StartPrimaryChildStep(parentStep);
             MSTest test = (MSTest)command.Test;
-            try
+            IList<MSTestResult> testResultList = testResults[test.Guid];
+
+            if (testResultList.Count == 0)
             {
+                ITestContext testContext = command.StartStep(new TestStep(test, parentStep));
+
+                TestOutcome combinedOutcome = TestOutcome.Passed;
                 if (test.IsTestCase)
                 {
-                    if (testResults.ContainsKey(test.Guid))
-                    {
-                        MSTestResult testResult = testResults[test.Guid];
-
-                        if (testResult.StdOut != null)
-                            LogStdOut(testContext, testResult.StdOut);
-                        if (testResult.Errors != null)
-                            LogError(testContext, testResult.Errors);
-
-                        testContext.FinishStep(testResult.Outcome, testResult.Duration);
-                        return (testResult.Outcome != TestOutcome.Error && testResult.Outcome != TestOutcome.Failed);
-                    }
-
                     testContext.LogWriter.Warnings.Write("No test results available!");
-                    testContext.FinishStep(TestOutcome.Skipped, null);
-                    return true;
+                    combinedOutcome = TestOutcome.Skipped;
                 }
-                else if (command.Children.Count > 0)
-                {
-                    bool passed = true;
-                    foreach (ITestCommand child in command.Children)
-                        passed &= ProcessTestCommand(child, testContext.TestStep, testResults);
 
-                    testContext.FinishStep(passed ? TestOutcome.Passed : TestOutcome.Failed, null);
-                    return passed;
-                }
-                else
-                {
-                    testContext.FinishStep(TestOutcome.Passed, null);
-                    return true;
-                }
+                TestResult childrenResult = ProcessTestCommandChildren(command, testContext.TestStep, testResults);
+                combinedOutcome = combinedOutcome.CombineWith(childrenResult.Outcome.Generalize());
+
+                return testContext.FinishStep(combinedOutcome, childrenResult.Duration);
             }
-            catch
+            else if (testResultList.Count == 1)
             {
-                testContext.FinishStep(TestOutcome.Error, null);
-                throw;
+                return ProcessTestCommandResultTree(test, command, parentStep, testResults, testResultList[0], true, false);
+            }
+            else
+            {
+                ITestContext testContext = command.StartStep(new TestStep(test, parentStep)
+                {
+                    IsTestCase = false
+                });
+
+                TestOutcome combinedOutcome = TestOutcome.Passed;
+                TimeSpan combinedDuration = TimeSpan.Zero;
+
+                foreach (MSTestResult testResult in testResultList)
+                {
+                    TestResult individualResult = ProcessTestCommandResultTree(test, command, parentStep, testResults, testResult, false, false);
+                    combinedOutcome = combinedOutcome.CombineWith(individualResult.Outcome);
+                    combinedDuration += individualResult.Duration;
+                }
+
+                TestResult childrenResult = ProcessTestCommandChildren(command, testContext.TestStep, testResults);
+                combinedOutcome = combinedOutcome.CombineWith(childrenResult.Outcome.Generalize());
+                combinedDuration += childrenResult.Duration;
+
+                return testContext.FinishStep(combinedOutcome, combinedDuration);
             }
         }
 
+        private static TestResult ProcessTestCommandResultTree(MSTest test, ITestCommand command, TestStep parentStep, MultiMap<string, MSTestResult> testResults, MSTestResult testResult, bool isPrimary, bool isDynamic)
+        {
+            TestStep testStep = new TestStep(test, parentStep, test.Name, test.CodeElement, isPrimary);
+            if (testResult.Children.Count > 0)
+                testStep.IsTestCase = false;
+            testStep.IsDynamic = isDynamic;
+
+            ITestContext testContext = command.StartStep(testStep);
+
+            if (testResult.StdOut != null)
+                LogStdOut(testContext, testResult.StdOut);
+            if (testResult.Errors != null)
+                LogError(testContext, testResult.Errors);
+
+            TestOutcome combinedOutcome = testResult.Outcome;
+            TimeSpan combinedDuration = testResult.Duration;
+
+            foreach (MSTestResult childResultData in testResult.Children)
+            {
+                // Note: Don't need to sum over outcome and duration because it should already be included in parent information.
+                ProcessTestCommandResultTree(test, command, testContext.TestStep, testResults, childResultData, false, true);
+            }
+
+            if (isPrimary)
+            {
+                TestResult childrenResult = ProcessTestCommandChildren(command, testContext.TestStep, testResults);
+                combinedOutcome = combinedOutcome.CombineWith(childrenResult.Outcome.Generalize());
+                combinedDuration += childrenResult.Duration;
+            }
+
+            return testContext.FinishStep(combinedOutcome, combinedDuration);
+        }
+
+        private static TestResult ProcessTestCommandChildren(ITestCommand command, TestStep parentStep, MultiMap<string, MSTestResult> testResults)
+        {
+            TestOutcome combinedOutcome = TestOutcome.Passed;
+            TimeSpan combinedDuration = TimeSpan.Zero;
+
+            foreach (ITestCommand child in command.Children)
+            {
+                TestResult childResult = ProcessTestCommand(child, parentStep, testResults);
+                combinedOutcome = combinedOutcome.CombineWith(childResult.Outcome);
+                combinedDuration += childResult.Duration;
+            }
+
+            return new TestResult(combinedOutcome) { Duration = combinedDuration };
+        }
+
         protected abstract void ExtractExecutedTestsInformation(
-            Dictionary<string, MSTestResult> testResults,
+            MultiMap<string, MSTestResult> testResults,
             XmlReader reader);
 
-        private static void ProcessIgnoredTests(Dictionary<string, MSTestResult> testCommandsByTestGuid, IEnumerable<ITestCommand> allCommands)
+        private static void GenerateFakeTestResultsForIgnoredTests(MultiMap<string, MSTestResult> testResults, IEnumerable<ITestCommand> allCommands)
         {
             foreach (ITestCommand command in allCommands)
             {
@@ -281,23 +419,13 @@ namespace Gallio.MSTestAdapter.Wrapper
                         MSTestResult testResult = new MSTestResult();
                         testResult.Guid = test.Guid;
                         testResult.Outcome = TestOutcome.Ignored;
-                        if (!testCommandsByTestGuid.ContainsKey(testResult.Guid))
+                        if (!testResults.ContainsKey(testResult.Guid))
                         {
-                            testCommandsByTestGuid.Add(testResult.Guid, testResult);
+                            testResults.Add(testResult.Guid, testResult);
                         }
-                        //testCommandsByTestGuid.Add(testExecutionInfo.Guid, testExecutionInfo);
                     }
                 }
             }
-        }
-
-        protected static string ReadErrors(XmlReader reader)
-        {
-            reader.ReadToFollowing("Message");
-            string message = reader.ReadString();
-            reader.ReadToFollowing("StackTrace");
-            message += "\n" + reader.ReadString();
-            return message;
         }
 
         private static void LogStdOut(ITestContext context, string message)

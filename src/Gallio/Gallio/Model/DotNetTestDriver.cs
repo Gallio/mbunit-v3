@@ -177,7 +177,7 @@ namespace Gallio.Model
 
                 string assemblyPath = file.FullName;
                 progressMonitor.SetStatus("Getting test assembly metadata.");
-                AssemblyMetadata assemblyMetadata = AssemblyUtils.GetAssemblyMetadata(assemblyPath, AssemblyMetadataFields.Default);
+                AssemblyMetadata assemblyMetadata = AssemblyUtils.GetAssemblyMetadata(assemblyPath, AssemblyMetadataFields.RuntimeVersion);
                 progressMonitor.Worked(2);
 
                 if (progressMonitor.IsCanceled)
@@ -268,6 +268,9 @@ namespace Gallio.Model
             if (hostSetup.ProcessorArchitecture == ProcessorArchitecture.None
                 || hostSetup.ProcessorArchitecture == ProcessorArchitecture.MSIL)
                 hostSetup.ProcessorArchitecture = assemblyMetadata.ProcessorArchitecture;
+
+            if (hostSetup.RuntimeVersion == null)
+                hostSetup.RuntimeVersion = assemblyMetadata.RuntimeVersion;
 
             ConfigureHostSetupForAssembly(hostSetup, assemblyPath);
         }

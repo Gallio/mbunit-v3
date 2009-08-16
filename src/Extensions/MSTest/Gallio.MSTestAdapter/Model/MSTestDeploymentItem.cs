@@ -15,34 +15,37 @@
 
 using System;
 using System.Collections.Generic;
-using Gallio.Common.Collections;
-using Gallio.Model;
+using System.Text;
 
-namespace Gallio.MSTestAdapter.Wrapper
+namespace Gallio.MSTestAdapter.Model
 {
     /// <summary>
-    /// Describes the result of an MSTest test.
+    /// Describes an item to be deployed by MSTest.
     /// </summary>
-    internal sealed class MSTestResult
+    internal class MSTestDeploymentItem
     {
-        private IList<MSTestResult> children;
+        private readonly string sourcePath;
+        private readonly string destinationPath;
 
-        public string Guid { get; set; }
-        public TimeSpan Duration { get; set; }
-        public TestOutcome Outcome { get; set; }
-        public string StdOut { get; set; }
-        public string Errors { get; set; }
-
-        public IList<MSTestResult> Children
+        public MSTestDeploymentItem(string sourcePath, string destinationPath)
         {
-            get { return children ?? EmptyArray<MSTestResult>.Instance; }
+            if (sourcePath == null)
+                throw new ArgumentNullException("sourcePath");
+            if (destinationPath == null)
+                throw new ArgumentNullException("destinationPath");
+
+            this.sourcePath = sourcePath;
+            this.destinationPath = destinationPath;
         }
 
-        public void AddChild(MSTestResult child)
+        public string SourcePath
         {
-            if (children == null)
-                children = new List<MSTestResult>();
-            children.Add(child);
+            get { return sourcePath; }
+        }
+
+        public string DestinationPath
+        {
+            get { return destinationPath; }
         }
     }
 }

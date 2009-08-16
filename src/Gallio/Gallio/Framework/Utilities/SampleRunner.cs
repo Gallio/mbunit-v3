@@ -342,6 +342,7 @@ namespace Gallio.Framework.Utilities
             launcher.TestProject.ReportNameFormat = "SampleRunnerReport";
             launcher.ReportFormatterOptions.AddProperty(@"SaveAttachmentContents", @"false");
             launcher.AddReportFormat(@"Text");
+            launcher.AddReportFormat("Xml");
 
             launcher.DoNotRun = doNoRun;
 
@@ -352,7 +353,16 @@ namespace Gallio.Framework.Utilities
             {
                 foreach (string reportPath in result.ReportDocumentPaths)
                 {
-                    logStreamWriter.WriteLine(File.ReadAllText(reportPath));
+                    string extension = Path.GetExtension(reportPath);
+                    if (extension == ".txt")
+                    {
+                        logStreamWriter.WriteLine(File.ReadAllText(reportPath));
+                    }
+                    else if (extension == ".xml")
+                    {
+                        logStreamWriter.Container.AttachXml(null, File.ReadAllText(reportPath));
+                    }
+
                     File.Delete(reportPath);
                 }
             }

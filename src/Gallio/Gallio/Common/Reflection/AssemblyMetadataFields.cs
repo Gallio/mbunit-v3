@@ -31,12 +31,28 @@ namespace Gallio.Common.Reflection
         /// <summary>
         /// Populates the assembly name.
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// Populating this field is expensive because it requires loading the entire assembly.
+        /// </para>
+        /// </remarks>
+        /// <seealso cref="AssemblyMetadata.AssemblyName"/>
         AssemblyName = 1,
         
         /// <summary>
         /// Populates the list of assembly references.
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// Populating this field is expensive because it requires loading the entire assembly.
+        /// </para>
+        /// </remarks>
         /// <seealso cref="AssemblyMetadata.AssemblyReferences"/>
-        AssemblyReferences = 2
+        AssemblyReferences = 2,
+
+        /// <summary>
+        /// Populates the runtime version.
+        /// </summary>
+        RuntimeVersion = 4
     }
 }

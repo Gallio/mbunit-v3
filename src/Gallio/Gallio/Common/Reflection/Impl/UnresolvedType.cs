@@ -20,26 +20,17 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using Gallio.Common.Collections;
 
-namespace Gallio.Common.Reflection.Impl
+#if DOTNET40
+namespace Gallio.Common.Reflection.Impl.DotNet40
+#else
+namespace Gallio.Common.Reflection.Impl.DotNet20
+#endif
 {
-    /// <summary>
-    /// Represents a <see cref="Type" /> whose native definition could not be resolved
-    /// so we fall back on the <see cref="ITypeInfo"/> wrapper.
-    /// </summary>
-    /// <todo author="jeff">
-    /// FIXME: Several of these methods are not implemented because they have not yet
-    /// been required for operation.
-    /// </todo>
-    public sealed partial class UnresolvedType : Type, IUnresolvedCodeElement
+    internal sealed partial class UnresolvedType : Type, IUnresolvedCodeElement
     {
         private readonly ITypeInfo adapter;
 
-        /// <summary>
-        /// Creates a reflection object backed by the specified adapter.
-        /// </summary>
-        /// <param name="adapter">The adapter.</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="adapter"/> is null.</exception>
-        public UnresolvedType(ITypeInfo adapter)
+        internal UnresolvedType(ITypeInfo adapter)
         {
             if (adapter == null)
                 throw new ArgumentNullException("adapter");
@@ -47,9 +38,6 @@ namespace Gallio.Common.Reflection.Impl
             this.adapter = adapter;
         }
 
-        /// <summary>
-        /// Gets the underlying reflection adapter.
-        /// </summary>
         public ITypeInfo Adapter
         {
             get { return adapter; }
@@ -60,31 +48,26 @@ namespace Gallio.Common.Reflection.Impl
             get { return adapter; }
         }
 
-        /// <inheritdoc />
         public override Assembly Assembly
         {
             get { return adapter.Assembly.Resolve(false); }
         }
 
-        /// <inheritdoc />
         public override string AssemblyQualifiedName
         {
             get { return adapter.AssemblyQualifiedName; }
         }
 
-        /// <inheritdoc />
         public override Type BaseType
         {
             get { return UnresolvedMemberInfo.ResolveType(adapter.BaseType); }
         }
 
-        /// <inheritdoc />
         public override bool ContainsGenericParameters
         {
             get { return adapter.ContainsGenericParameters; }
         }
 
-        /// <inheritdoc />
         public override MethodBase DeclaringMethod
         {
             get
@@ -96,13 +79,11 @@ namespace Gallio.Common.Reflection.Impl
             }
         }
 
-        /// <inheritdoc />
         public override string FullName
         {
             get { return adapter.FullName; }
         }
 
-        /// <inheritdoc />
         public override GenericParameterAttributes GenericParameterAttributes
         {
             get
@@ -114,7 +95,6 @@ namespace Gallio.Common.Reflection.Impl
             }
         }
 
-        /// <inheritdoc />
         public override int GenericParameterPosition
         {
             get
@@ -126,37 +106,31 @@ namespace Gallio.Common.Reflection.Impl
             }
         }
 
-        /// <inheritdoc />
         public override Guid GUID
         {
             get { throw new NotImplementedException(); }
         }
 
-        /// <inheritdoc />
         public override bool IsGenericParameter
         {
             get { return adapter.Kind == CodeElementKind.GenericParameter; }
         }
 
-        /// <inheritdoc />
         public override bool IsGenericType
         {
             get { return adapter.IsGenericType; }
         }
 
-        /// <inheritdoc />
         public override bool IsGenericTypeDefinition
         {
             get { return adapter.IsGenericTypeDefinition; }
         }
 
-        /// <inheritdoc />
         public override MemberTypes MemberType
         {
             get { return adapter.DeclaringType != null ? MemberTypes.NestedType : MemberTypes.TypeInfo; }
         }
 
-        /// <inheritdoc />
         public override string Namespace
         {
             get
@@ -166,37 +140,31 @@ namespace Gallio.Common.Reflection.Impl
             }
         }
 
-        /// <inheritdoc />
         public override StructLayoutAttribute StructLayoutAttribute
         {
             get { throw new NotImplementedException(); }
         }
 
-        /// <inheritdoc />
         public override RuntimeTypeHandle TypeHandle
         {
             get { throw new NotSupportedException("Cannot get type handle of unresolved type."); }
         }
 
-        /// <inheritdoc />
         public override Type UnderlyingSystemType
         {
             get { return this; }
         }
 
-        /// <inheritdoc />
         public override int GetArrayRank()
         {
             return adapter.ArrayRank;
         }
 
-        /// <inheritdoc />
         protected override TypeAttributes GetAttributeFlagsImpl()
         {
             return adapter.TypeAttributes;
         }
 
-        /// <excludedoc />
         protected override ConstructorInfo GetConstructorImpl(BindingFlags bindingAttr, Binder binder,
             CallingConventions callConvention, Type[] types, ParameterModifier[] modifiers)
         {
@@ -209,7 +177,6 @@ namespace Gallio.Common.Reflection.Impl
             return null;
         }
 
-        /// <inheritdoc />
         public override ConstructorInfo[] GetConstructors(BindingFlags bindingAttr)
         {
             return
@@ -217,13 +184,11 @@ namespace Gallio.Common.Reflection.Impl
                     delegate(IConstructorInfo constructor) { return constructor.Resolve(false); });
         }
 
-        /// <inheritdoc />
         public override MemberInfo[] GetDefaultMembers()
         {
             throw new NotImplementedException();
         }
 
-        /// <inheritdoc />
         public override Type GetElementType()
         {
             ITypeInfo elementType = adapter.ElementType;
@@ -232,48 +197,41 @@ namespace Gallio.Common.Reflection.Impl
             return elementType.Resolve(false);
         }
 
-        /// <inheritdoc />
         public override EventInfo GetEvent(string name, BindingFlags bindingAttr)
         {
             IEventInfo @event = adapter.GetEvent(name, bindingAttr);
             return @event != null ? @event.Resolve(false) : null;
         }
 
-        /// <inheritdoc />
         public override EventInfo[] GetEvents(BindingFlags bindingAttr)
         {
             return GenericCollectionUtils.ConvertAllToArray<IEventInfo, EventInfo>(adapter.GetEvents(bindingAttr),
                 delegate(IEventInfo @event) { return @event.Resolve(false); });
         }
 
-        /// <inheritdoc />
         public override FieldInfo GetField(string name, BindingFlags bindingAttr)
         {
             IFieldInfo field = adapter.GetField(name, bindingAttr);
             return field != null ? field.Resolve(false) : null;
         }
 
-        /// <inheritdoc />
         public override FieldInfo[] GetFields(BindingFlags bindingAttr)
         {
             return GenericCollectionUtils.ConvertAllToArray<IFieldInfo, FieldInfo>(adapter.GetFields(bindingAttr),
                 delegate(IFieldInfo field) { return field.Resolve(false); });
         }
 
-        /// <inheritdoc />
         public override Type[] GetGenericArguments()
         {
             return GenericCollectionUtils.ConvertAllToArray<ITypeInfo, Type>(adapter.GenericArguments,
                     delegate(ITypeInfo parameter) { return parameter.Resolve(false); });
         }
 
-        /// <inheritdoc />
         public override Type[] GetGenericParameterConstraints()
         {
             throw new NotImplementedException();
         }
 
-        /// <inheritdoc />
         public override Type GetGenericTypeDefinition()
         {
             ITypeInfo genericTypeDefinition = adapter.GenericTypeDefinition;
@@ -283,7 +241,6 @@ namespace Gallio.Common.Reflection.Impl
             return genericTypeDefinition.Resolve(false);
         }
 
-        /// <inheritdoc />
         public override Type GetInterface(string name, bool ignoreCase)
         {
             foreach (ITypeInfo @interface in adapter.Interfaces)
@@ -296,20 +253,17 @@ namespace Gallio.Common.Reflection.Impl
             return null;
         }
 
-        /// <inheritdoc />
         public override InterfaceMapping GetInterfaceMap(Type interfaceType)
         {
             throw new NotImplementedException();
         }
 
-        /// <inheritdoc />
         public override Type[] GetInterfaces()
         {
             return GenericCollectionUtils.ConvertAllToArray<ITypeInfo, Type>(adapter.Interfaces,
                     delegate(ITypeInfo @interface) { return @interface.Resolve(false); });
         }
 
-        /// <inheritdoc />
         public override MemberInfo[] GetMember(string name, MemberTypes type, BindingFlags bindingAttr)
         {
             if (name == null)
@@ -318,7 +272,6 @@ namespace Gallio.Common.Reflection.Impl
             return GetMembers(name, type, bindingAttr);
         }
 
-        /// <inheritdoc />
         public override MemberInfo[] GetMembers(BindingFlags bindingAttr)
         {
             return GetMembers(null, MemberTypes.All, bindingAttr);
@@ -354,7 +307,6 @@ namespace Gallio.Common.Reflection.Impl
             }
         }
 
-        /// <excludedoc />
         protected override MethodInfo GetMethodImpl(string name, BindingFlags bindingAttr, Binder binder,
             CallingConventions callConvention, Type[] types, ParameterModifier[] modifiers)
         {
@@ -367,35 +319,30 @@ namespace Gallio.Common.Reflection.Impl
             return null;
         }
 
-        /// <inheritdoc />
         public override MethodInfo[] GetMethods(BindingFlags bindingAttr)
         {
             return GenericCollectionUtils.ConvertAllToArray<IMethodInfo, MethodInfo>(adapter.GetMethods(bindingAttr),
                 delegate(IMethodInfo method) { return method.Resolve(false); });
         }
 
-        /// <inheritdoc />
         public override Type GetNestedType(string name, BindingFlags bindingAttr)
         {
             ITypeInfo nestedType = adapter.GetNestedType(name, bindingAttr);
             return nestedType != null ? nestedType.Resolve(false) : null;
         }
 
-        /// <inheritdoc />
         public override Type[] GetNestedTypes(BindingFlags bindingAttr)
         {
             return GenericCollectionUtils.ConvertAllToArray<ITypeInfo, Type>(adapter.GetNestedTypes(bindingAttr),
                 delegate(ITypeInfo type) { return type.Resolve(false); });
         }
 
-        /// <inheritdoc />
         public override PropertyInfo[] GetProperties(BindingFlags bindingAttr)
         {
             return GenericCollectionUtils.ConvertAllToArray<IPropertyInfo, PropertyInfo>(adapter.GetProperties(bindingAttr),
                 delegate(IPropertyInfo property) { return property.Resolve(false); });
         }
 
-        /// <excludedoc />
         protected override PropertyInfo GetPropertyImpl(string name, BindingFlags bindingAttr, Binder binder,
             Type returnType, Type[] types, ParameterModifier[] modifiers)
         {
@@ -408,92 +355,77 @@ namespace Gallio.Common.Reflection.Impl
             return null;
         }
 
-        /// <excludedoc />
         protected override bool HasElementTypeImpl()
         {
             return adapter.ElementType != null;
         }
 
-        /// <inheritdoc />
         public override object InvokeMember(string name, BindingFlags invokeAttr, Binder binder, object target,
             object[] args, ParameterModifier[] modifiers, CultureInfo culture, string[] namedParameters)
         {
             throw new NotSupportedException("Cannot invoke member of an unresolved type.");
         }
 
-        /// <excludedoc />
         protected override bool IsArrayImpl()
         {
             return adapter.IsArray;
         }
 
-        /// <inheritdoc />
         public override bool IsAssignableFrom(Type c)
         {
             return adapter.IsAssignableFrom(Reflector.Wrap(c));
         }
 
-        /// <excludedoc />
         protected override bool IsByRefImpl()
         {
             return adapter.IsByRef;
         }
 
-        /// <excludedoc />
         protected override bool IsCOMObjectImpl()
         {
             return false;
         }
 
-        /// <inheritdoc />
         public override bool IsInstanceOfType(object o)
         {
             return false;
         }
 
-        /// <excludedoc />
         protected override bool IsPointerImpl()
         {
             return adapter.IsPointer;
         }
 
-        /// <excludedoc />
         protected override bool IsPrimitiveImpl()
         {
             return adapter.TypeCode != TypeCode.Object;
         }
 
-        /// <inheritdoc />
         public override bool IsSubclassOf(Type c)
         {
             return adapter.IsSubclassOf(Reflector.Wrap(c));
         }
 
-        /// <inheritdoc />
         public override Type MakeArrayType()
         {
             return adapter.MakeArrayType(1).Resolve(false);
         }
 
-        /// <inheritdoc />
         public override Type MakeArrayType(int rank)
         {
             return adapter.MakeArrayType(rank).Resolve(false);
         }
 
-        /// <inheritdoc />
         public override Type MakeByRefType()
         {
             return adapter.MakeByRefType().Resolve(false);
         }
 
-        /// <inheritdoc />
         public override Type MakeGenericType(params Type[] typeArguments)
         {
             return adapter.MakeGenericType(Reflector.Wrap(typeArguments)).Resolve(false);
         }
 
-        /// <inheritdoc />
         public override Type MakePointerType()
         {
             return adapter.MakePointerType().Resolve(false);
@@ -513,5 +445,29 @@ namespace Gallio.Common.Reflection.Impl
 
             return true;
         }
+
+        #region .Net 4.0 Only
+#if DOTNET40
+        public override bool IsSecurityCritical
+        {
+            get { return false; }
+        }
+
+        public override bool IsSecuritySafeCritical
+        {
+            get { return false; }
+        }
+
+        public override bool IsSecurityTransparent
+        {
+            get { return false; }
+        }
+
+        public override Array GetEnumValues()
+        {
+            throw new NotSupportedException("Cannot get enum values of unresolved type.");
+        }
+#endif
+        #endregion
     }
 }

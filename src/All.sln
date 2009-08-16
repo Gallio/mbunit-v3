@@ -172,16 +172,18 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.Reports", "Gallio\Ga
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MbUnit.Samples.VSTSIntegration", "MbUnit\Samples\MbUnit.Samples.VSTSIntegration\MbUnit.Samples.VSTSIntegration.csproj", "{51FD0718-1728-4062-9649-5561C6035ACA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.VisualStudio.Shell", "Extensions\VisualStudio\Gallio.VisualStudio.Shell\Gallio.VisualStudio.Shell90.csproj", "{80983DC5-71B6-49CD-BA5F-305D29A65D05}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.VisualStudio.Shell90", "Extensions\VisualStudio\Gallio.VisualStudio.Shell\Gallio.VisualStudio.Shell90.csproj", "{80983DC5-71B6-49CD-BA5F-305D29A65D05}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.VisualStudio.Sail", "Extensions\VisualStudio\Gallio.VisualStudio.Sail\Gallio.VisualStudio.Sail90.csproj", "{7BE8C909-6E33-42C6-AC7F-CC523CB438D0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.VisualStudio.Sail90", "Extensions\VisualStudio\Gallio.VisualStudio.Sail\Gallio.VisualStudio.Sail90.csproj", "{7BE8C909-6E33-42C6-AC7F-CC523CB438D0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.VisualStudio.Sail.Tests", "Extensions\VisualStudio\Gallio.VisualStudio.Sail.Tests\Gallio.VisualStudio.Sail90.Tests.csproj", "{7609B681-E196-4AFB-AD64-6C5A9E5A160D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.VisualStudio.Sail90.Tests", "Extensions\VisualStudio\Gallio.VisualStudio.Sail.Tests\Gallio.VisualStudio.Sail90.Tests.csproj", "{7609B681-E196-4AFB-AD64-6C5A9E5A160D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.VisualStudio.Shell.Tests", "Extensions\VisualStudio\Gallio.VisualStudio.Shell.Tests\Gallio.VisualStudio.Shell90.Tests.csproj", "{E7145C4E-1937-48E5-A8BC-415E97FBD293}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.VisualStudio.Shell90.Tests", "Extensions\VisualStudio\Gallio.VisualStudio.Shell.Tests\Gallio.VisualStudio.Shell90.Tests.csproj", "{E7145C4E-1937-48E5-A8BC-415E97FBD293}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{158A45EB-FBE2-4F6C-8804-5A913D56CC9B}"
 	ProjectSection(SolutionItems) = preProject
+		All.testrunconfig = All.testrunconfig
+		All.vsmdi = All.vsmdi
 		ApplyLicenseBoilerplate.bat = ApplyLicenseBoilerplate.bat
 	EndProjectSection
 EndProject
@@ -266,6 +268,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.VisualStudio.Interop.Tests", "Extensions\VisualStudio\Gallio.VisualStudio.Interop.Tests\Gallio.VisualStudio.Interop.Tests.csproj", "{8780AC10-ACEB-4CAB-A591-FF6C76D3E122}"
 EndProject
 Global
+	GlobalSection(TestCaseManagementSettings) = postSolution
+		CategoryFile = All.vsmdi
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU

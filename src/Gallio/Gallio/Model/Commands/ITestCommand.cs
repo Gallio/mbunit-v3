@@ -163,8 +163,7 @@ namespace Gallio.Model.Commands
         /// <para>
         /// This method is equivalent to calling <see cref="StartStep" />
         /// using a default implementation of <see cref="TestStep" /> that is
-        /// initialized using <paramref name="parentTestStep" /> and the metadata
-        /// from the 
+        /// initialized with the metadata of the test associated with this test command.
         /// </para>
         /// </remarks>
         /// <param name="parentTestStep">The parent test step, or null if none.</param>

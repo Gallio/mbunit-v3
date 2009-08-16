@@ -25,16 +25,16 @@ using Gallio.Runtime.Hosting;
 namespace Gallio.MSTestAdapter.Wrapper
 {
     /// <summary>
-    /// Runs MSTest in-process in separate AppDomain (without process isolation)
-    /// to enable debugging.
+    /// Runs MSTest in-process in a separate AppDomain (without process isolation)
+    /// to enable debugging and code coverage.
     /// </summary>
-    internal sealed class DebugMSTestCommand : MSTestCommand
+    internal sealed class EmbeddedMSTestCommand : MSTestCommand
     {
-        private DebugMSTestCommand()
+        private EmbeddedMSTestCommand()
         {
         }
 
-        public static readonly DebugMSTestCommand Instance = new DebugMSTestCommand();
+        public static readonly EmbeddedMSTestCommand Instance = new EmbeddedMSTestCommand();
 
         public override int Run(string executablePath, string workingDirectory,
             MSTestCommandArguments args, TextWriter writer)
@@ -51,11 +51,20 @@ namespace Gallio.MSTestAdapter.Wrapper
                     var extendedArgs = args.Copy();
                     extendedArgs.NoIsolation = true;
 
+                    writer.WriteLine("\"{0}\" {1}\n", executablePath, extendedArgs);
+
+                    // The eventual working directory to use should be the MSTest TestDir's Out
+                    // directory which is what will ordinarily happen when the '/noisolation'
+                    // switch is not used.  Unfortunately we have to hack it when we do use the switch.
+                    string workingDirectoryToUseWhenCreated = null;
+                    if (args.ResultsFile != null)
+                        workingDirectoryToUseWhenCreated = Path.Combine(Path.Combine(Path.GetDirectoryName(args.ResultsFile), MSTestRunner.PreferredTestDir), "Out");
+
                     Type launcherType = typeof(Launcher);
                     Launcher launcher = (Launcher) appDomain.CreateInstanceFromAndUnwrap(
                         AssemblyUtils.GetFriendlyAssemblyLocation(launcherType.Assembly),
                         launcherType.FullName);
-                    return launcher.Run(writer, executablePath, extendedArgs.ToStringArray());
+                    return launcher.Run(writer, executablePath, extendedArgs.ToStringArray(), workingDirectoryToUseWhenCreated);
                 }
                 finally
                 {
@@ -77,13 +86,13 @@ namespace Gallio.MSTestAdapter.Wrapper
         {
             private const int StdOut = -11;
             
-            public int Run(TextWriter outputWriter, string executable, string[] args)
+            public int Run(TextWriter outputWriter, string executable, string[] args, string workingDirectoryToUseWhenCreated)
             {
                 string outputTempFile = null;
                 FileStream outputStream = null;
                 try
                 {
-                    outputTempFile = SpecialPathPolicy.For<DebugMSTestCommand>().CreateTempFileWithUniqueName().FullName;
+                    outputTempFile = SpecialPathPolicy.For<EmbeddedMSTestCommand>().CreateTempFileWithUniqueName().FullName;
                     outputStream = new FileStream(outputTempFile, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.Delete);
 
                     bool wasRedirected = false;
@@ -95,11 +104,8 @@ namespace Gallio.MSTestAdapter.Wrapper
                         if (!wasRedirected)
                             outputWriter.WriteLine("MSTest output not available because the output stream could not be redirected.");
 
-                        // Unfortunately we cannot use AppDomain.ExecuteAssembly because it has
-                        // the nasty side-effect of causing the redirected console streams to
-                        // be reset to defaults.  So instead we simply call the entrypoint directly.
-                        Assembly assembly = Assembly.LoadFrom(executable);
-                        return (int)assembly.EntryPoint.Invoke(null, new object[] { args });
+                        SetWorkingDirectoryWhenCreated(workingDirectoryToUseWhenCreated);
+                        return InvokeEntryPoint(executable, args);
                     }
                     finally
                     {
@@ -127,6 +133,40 @@ namespace Gallio.MSTestAdapter.Wrapper
                     if (outputTempFile != null)
                         File.Delete(outputTempFile);
                 }
+            }
+
+            private static void SetWorkingDirectoryWhenCreated(string workingDirectoryToUseWhenCreated)
+            {
+                if (workingDirectoryToUseWhenCreated == null)
+                    return;
+
+                // Install a hook that will automatically set the current working
+                // directory shortly after it is created around the time MSTest loads the
+                // test assembly.  We do this because MSTest does not configure the current
+                // working directory to point to the TestDir\Out folder when the '/noisolation'
+                // switch is provided unlike when isolation is used.  Consequently tests will
+                // have difficulty accessing any deployment items because the relative paths
+                // will be resolved incorrectly.
+                AssemblyLoadEventHandler handler = null;
+                handler = (sender, e) =>
+                {
+                    if (Directory.Exists(workingDirectoryToUseWhenCreated))
+                    {
+                        Environment.CurrentDirectory = workingDirectoryToUseWhenCreated;
+                        AppDomain.CurrentDomain.AssemblyLoad -= handler;
+                    }
+                };
+
+                AppDomain.CurrentDomain.AssemblyLoad += handler;
+            }
+
+            private static int InvokeEntryPoint(string executable, string[] args)
+            {
+                // Unfortunately we cannot use AppDomain.ExecuteAssembly because it has
+                // the nasty side-effect of causing the redirected console streams to
+                // be reset to defaults.  So instead we simply call the entrypoint directly.
+                Assembly assembly = Assembly.LoadFrom(executable);
+                return (int)assembly.EntryPoint.Invoke(null, new object[] { args });
             }
 
             public override object InitializeLifetimeService()

@@ -36,22 +36,18 @@ namespace Gallio.MSTestAdapter.Model
     internal class MSTestController : TestController
     {
         private readonly Version frameworkVersion;
-        private readonly IDiskCache diskCache;
 
-        internal MSTestController(Version frameworkVersion, IDiskCache diskCache)
+        internal MSTestController(Version frameworkVersion)
         {
             if (frameworkVersion == null)
                 throw new ArgumentNullException("frameworkVersion");
-            if (diskCache == null)
-                throw new ArgumentNullException("diskCache");
 
             this.frameworkVersion = frameworkVersion;
-            this.diskCache = diskCache;
         }
 
         public static MSTestController CreateController(Version frameworkVersion)
         {
-            return new MSTestController(frameworkVersion, new TemporaryDiskCache());
+            return new MSTestController(frameworkVersion);
         }
 
         /// <inheritdoc />
@@ -84,7 +80,7 @@ namespace Gallio.MSTestAdapter.Model
                 ITestContext assemblyContext = testCommand.StartPrimaryChildStep(parentTestStep);
                 try
                 {
-                    MSTestRunner runner = MSTestRunner.GetRunnerForFrameworkVersion(frameworkVersion, diskCache);
+                    MSTestRunner runner = MSTestRunner.GetRunnerForFrameworkVersion(frameworkVersion);
 
                     outcome = runner.RunSession(assemblyContext, assemblyTest,
                         testCommand, parentTestStep, progressMonitor);

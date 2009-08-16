@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Xml;
+using Gallio.Common.Collections;
 using Gallio.MSTestAdapter.Model;
 using Gallio.Common.Caching;
 using System.Xml.XPath;
@@ -26,10 +27,6 @@ namespace Gallio.MSTestAdapter.Wrapper
 {
     internal class MSTestRunner2005 : MSTestRunner
     {
-        public MSTestRunner2005(IDiskCache diskCache) : base(diskCache)
-        {
-        }
-
         protected override string GetVisualStudioVersion()
         {
             return "8.0";
@@ -246,26 +243,43 @@ namespace Gallio.MSTestAdapter.Wrapper
             writer.WriteEndDocument();
         }
 
-        protected override void ExtractExecutedTestsInformation(Dictionary<string, MSTestResult> testResults, XmlReader reader)
+        protected override void ExtractExecutedTestsInformation(MultiMap<string, MSTestResult> testResults, XmlReader reader)
         {
-            XPathNavigator xpathNavigator = new XPathDocument(reader).CreateNavigator();
-            XPathNodeIterator xpathIterator = xpathNavigator.Select("/Tests/UnitTestResult");
+            XPathDocument document = new XPathDocument(reader);
+            XPathNavigator documentNavigator = document.CreateNavigator();
 
-            while (xpathIterator.MoveNext())
+            foreach (XPathNavigator resultNavigator in documentNavigator.Select("/Tests/UnitTestResult"))
             {
-                MSTestResult testResult = new MSTestResult();
-
-                XPathNavigator x = xpathIterator.Current;
-
-                testResult.Guid = x.SelectSingleNode("id/testId/id").Value;
-                testResult.Outcome = GetTestOutcome(x.SelectSingleNode("outcome/value__").Value);
-                testResult.Duration = GetDuration(x.SelectSingleNode("duration").Value);
-                testResult.StdOut = x.SelectSingleNode("stdout").Value;
-                testResult.Errors = x.SelectSingleNode("errorInfo") != null ? x.SelectSingleNode("errorInfo/message").Value + 
-                    x.SelectSingleNode("errorInfo/stackTrace").Value : string.Empty;
-
+                MSTestResult testResult = ParseTestResult(resultNavigator);
                 testResults.Add(testResult.Guid, testResult);
             }
+        }
+
+        private static MSTestResult ParseTestResult(XPathNavigator resultNavigator)
+        {
+            MSTestResult testResult = new MSTestResult();
+
+            testResult.Guid = resultNavigator.SelectSingleNode("id/testId/id").Value;
+            testResult.Outcome = GetTestOutcome(resultNavigator.SelectSingleNode("outcome/value__").Value);
+            testResult.Duration = GetDuration(resultNavigator.SelectSingleNode("duration").Value);
+
+            XPathNavigator stdOutNavigator = resultNavigator.SelectSingleNode("stdout");
+            if (stdOutNavigator != null)
+                testResult.StdOut = stdOutNavigator.Value;
+
+            XPathNavigator errorMessageNavigator = resultNavigator.SelectSingleNode("errorInfo/message");
+            XPathNavigator errorStackTraceNavigator = resultNavigator.SelectSingleNode("errorInfo/stackTrace");
+            if (errorMessageNavigator != null && errorStackTraceNavigator != null)
+                testResult.Errors = errorMessageNavigator.Value + "\n" + errorStackTraceNavigator.Value;
+            else if (errorMessageNavigator != null)
+                testResult.Errors = errorMessageNavigator.Value;
+            else if (errorStackTraceNavigator != null)
+                testResult.Errors = errorStackTraceNavigator.Value;
+
+            foreach (XPathNavigator childResultNavigator in resultNavigator.Select("InnerResults/UnitTestResult"))
+                testResult.AddChild(ParseTestResult(childResultNavigator));
+
+            return testResult;
         }
     }
 }

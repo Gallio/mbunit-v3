@@ -19,22 +19,17 @@ using System.Globalization;
 using System.Reflection;
 using Gallio.Common.Collections;
 
-namespace Gallio.Common.Reflection.Impl
+#if DOTNET40
+namespace Gallio.Common.Reflection.Impl.DotNet40
+#else
+namespace Gallio.Common.Reflection.Impl.DotNet20
+#endif
 {
-    /// <summary>
-    /// Represents a <see cref="PropertyInfo" /> whose native definition could not be resolved
-    /// so we fall back on the <see cref="IPropertyInfo"/> wrapper.
-    /// </summary>
-    public sealed partial class UnresolvedPropertyInfo : PropertyInfo, IUnresolvedCodeElement
+    internal sealed partial class UnresolvedPropertyInfo : PropertyInfo, IUnresolvedCodeElement
     {
         private readonly IPropertyInfo adapter;
 
-        /// <summary>
-        /// Creates a reflection object backed by the specified adapter.
-        /// </summary>
-        /// <param name="adapter">The adapter.</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="adapter"/> is null.</exception>
-        public UnresolvedPropertyInfo(IPropertyInfo adapter)
+        internal UnresolvedPropertyInfo(IPropertyInfo adapter)
         {
             if (adapter == null)
                 throw new ArgumentNullException("adapter");
@@ -42,9 +37,6 @@ namespace Gallio.Common.Reflection.Impl
             this.adapter = adapter;
         }
 
-        /// <summary>
-        /// Gets the underlying reflection adapter.
-        /// </summary>
         public IPropertyInfo Adapter
         {
             get { return adapter; }
@@ -55,31 +47,26 @@ namespace Gallio.Common.Reflection.Impl
             get { return adapter; }
         }
 
-        /// <inheritdoc />
         public override PropertyAttributes Attributes
         {
             get { return adapter.PropertyAttributes; }
         }
 
-        /// <inheritdoc />
         public override bool CanRead
         {
             get { return adapter.GetMethod != null; }
         }
 
-        /// <inheritdoc />
         public override bool CanWrite
         {
             get { return adapter.SetMethod != null; }
         }
 
-        /// <inheritdoc />
         public override MemberTypes MemberType
         {
             get { return MemberTypes.Property; }
         }
 
-        /// <inheritdoc />
         public override Type PropertyType
         {
             get { return adapter.ValueType.Resolve(false); }
@@ -91,7 +78,6 @@ namespace Gallio.Common.Reflection.Impl
                 collection.Add(method);
         }
 
-        /// <inheritdoc />
         public override MethodInfo[] GetAccessors(bool nonPublic)
         {
             List<MethodInfo> methods = new List<MethodInfo>(2);
@@ -100,72 +86,66 @@ namespace Gallio.Common.Reflection.Impl
             return methods.ToArray();
         }
 
-        /// <inheritdoc />
         public override object GetConstantValue()
         {
             throw new NotSupportedException("Cannot get constant value of unresolved property.");
         }
 
-        /// <inheritdoc />
         public override MethodInfo GetGetMethod(bool nonPublic)
         {
             return UnresolvedMemberInfo.ResolveMethod(adapter.GetMethod, nonPublic);
         }
 
-        /// <inheritdoc />
         public override ParameterInfo[] GetIndexParameters()
         {
             return UnresolvedMethodBase.ResolveParameters(adapter.IndexParameters);
         }
 
-        /// <inheritdoc />
         public override Type[] GetOptionalCustomModifiers()
         {
             return EmptyArray<Type>.Instance;
         }
 
-        /// <inheritdoc />
         public override object GetRawConstantValue()
         {
             throw new NotSupportedException("Cannot get constant value of unresolved property.");
         }
 
-        /// <inheritdoc />
         public override Type[] GetRequiredCustomModifiers()
         {
             return EmptyArray<Type>.Instance;
         }
 
-        /// <inheritdoc />
         public override MethodInfo GetSetMethod(bool nonPublic)
         {
             return UnresolvedMemberInfo.ResolveMethod(adapter.SetMethod, nonPublic);
         }
 
-        /// <inheritdoc />
         public override object GetValue(object obj, BindingFlags invokeAttr, Binder binder, object[] index,
             CultureInfo culture)
         {
             throw new NotSupportedException("Cannot get value of unresolved property.");
         }
 
-        /// <inheritdoc />
         public override object GetValue(object obj, object[] index)
         {
             throw new NotSupportedException("Cannot get value of unresolved property.");
         }
 
-        /// <inheritdoc />
         public override void SetValue(object obj, object value, BindingFlags invokeAttr, Binder binder, object[] index,
             CultureInfo culture)
         {
             throw new NotSupportedException("Cannot set value of unresolved property.");
         }
 
-        /// <inheritdoc />
         public override void SetValue(object obj, object value, object[] index)
         {
             throw new NotSupportedException("Cannot set value of unresolved property.");
         }
+
+        #region .Net 4.0 Only
+#if DOTNET40
+#endif
+        #endregion
     }
 }

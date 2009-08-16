@@ -24,6 +24,8 @@ namespace Gallio.MSTestAdapter.Wrapper
         public bool NoLogo { get; set; }
         public bool NoIsolation { get; set; }
         public string ResultsFile { get; set; }
+        public string ResultsFileRoot { get; set; }
+        public string SearchPathRoot { get; set; }
         public string TestList { get; set; }
         public string TestMetadata { get; set; }
         public string RunConfig { get; set; }
@@ -34,6 +36,8 @@ namespace Gallio.MSTestAdapter.Wrapper
             copy.NoLogo = NoLogo;
             copy.NoIsolation = NoIsolation;
             copy.ResultsFile = ResultsFile;
+            copy.ResultsFileRoot = ResultsFileRoot;
+            copy.SearchPathRoot = SearchPathRoot;
             copy.TestList = TestList;
             copy.TestMetadata = TestMetadata;
             copy.RunConfig = RunConfig;
@@ -50,11 +54,15 @@ namespace Gallio.MSTestAdapter.Wrapper
                 AddArgument(args, "/noisolation", null);
             if (ResultsFile != null)
                 AddArgument(args, "/resultsfile", ResultsFile);
+            if (ResultsFileRoot != null)
+                AddArgument(args, "/resultsfileroot", ResultsFileRoot);
+            if (SearchPathRoot != null)
+                AddArgument(args, "/searchpathroot", SearchPathRoot);
             if (TestList != null)
                 AddArgument(args, "/testlist", TestList);
             if (TestMetadata != null)
                 AddArgument(args, "/testmetadata", TestMetadata);
-            if (TestMetadata != null)
+            if (RunConfig != null)
                 AddArgument(args, "/runconfig", RunConfig);
 
             return args.ToArray();

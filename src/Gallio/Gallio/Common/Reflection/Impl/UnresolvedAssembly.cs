@@ -22,45 +22,36 @@ using System.Runtime.Serialization;
 using System.Security.Permissions;
 using System.Security.Policy;
 using Gallio.Common.Collections;
-using Gallio.Common.Platform;
 
-namespace Gallio.Common.Reflection.Impl
+#if DOTNET40
+using System.Linq;
+using System.Security;
+
+namespace Gallio.Common.Reflection.Impl.DotNet40
+#else
+namespace Gallio.Common.Reflection.Impl.DotNet20
+#endif
 {
-    /// <summary>
-    /// Creates instances of <see cref="Assembly" /> to represent <see cref="IAssemblyInfo" />
-    /// instances that could not be resolved.
-    /// </summary>
-    /// <remarks>
-    /// <para>
-    /// This implementation is a hack intended to provide minimal compatibility for legacy code
-    /// that does not understand <see cref="IAssemblyInfo"/> or provide any other similar
-    /// affordance for reflection adapters.  This code is not guaranteed to work with
-    /// all implementations of the .Net framework because the <see cref="Assembly"/> class
-    /// was not designed to be subclassed in the first place.
-    /// </para>
-    /// </remarks>
-    public sealed partial class UnresolvedAssembly : AssemblyShim, IUnresolvedCodeElement, IEquatable<UnresolvedAssembly>
+#if DOTNET40
+    internal sealed partial class UnresolvedAssembly : Assembly, IUnresolvedCodeElement, IEquatable<UnresolvedAssembly>
+#else
+    internal sealed partial class UnresolvedAssembly : AssemblyShim, IUnresolvedCodeElement, IEquatable<UnresolvedAssembly>
+#endif
     {
         private readonly IAssemblyInfo adapter;
 
-        /// <summary>
-        /// Creates a reflection object backed by the specified adapter.
-        /// </summary>
-        /// <param name="adapter">The adapter.</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="adapter"/> is null.</exception>
-        public UnresolvedAssembly(IAssemblyInfo adapter)
+        internal UnresolvedAssembly(IAssemblyInfo adapter)
         {
             if (adapter == null)
                 throw new ArgumentNullException("adapter");
 
             this.adapter = adapter;
 
-            DeepInitialize();
+#if ! DOTNET40
+            DeepInitializeForDotNet20();
+#endif
         }
 
-        /// <summary>
-        /// Gets the underlying reflection adapter.
-        /// </summary>
         public IAssemblyInfo Adapter
         {
             get { return adapter; }
@@ -71,13 +62,11 @@ namespace Gallio.Common.Reflection.Impl
             get { return adapter; }
         }
 
-        /// <inheritdoc />
         public override string CodeBase
         {
             get { return new Uri(adapter.Path).ToString(); }
         }
 
-        /// <inheritdoc />
         public override MethodInfo EntryPoint
         {
             get
@@ -86,7 +75,6 @@ namespace Gallio.Common.Reflection.Impl
             }
         }
 
-        /// <inheritdoc />
         public override Evidence Evidence
         {
             get
@@ -95,7 +83,6 @@ namespace Gallio.Common.Reflection.Impl
             }
         }
 
-        /// <inheritdoc />
         public override string FullName
         {
             get
@@ -104,68 +91,57 @@ namespace Gallio.Common.Reflection.Impl
             }
         }
 
-        /// <inheritdoc />
         public override Type[] GetExportedTypes()
         {
             return GenericCollectionUtils.ConvertAllToArray(adapter.GetExportedTypes(),
                 type => type.Resolve(false));
         }
 
-        /// <inheritdoc />
         public override FileStream GetFile(string name)
         {
             return null;
         }
 
-        /// <inheritdoc />
         public override FileStream[] GetFiles(bool getResourceModules)
         {
             return EmptyArray<FileStream>.Instance;
         }
 
-        /// <inheritdoc />
         public override ManifestResourceInfo GetManifestResourceInfo(string resourceName)
         {
             return null;
         }
 
-        /// <inheritdoc />
         public override string[] GetManifestResourceNames()
         {
             return EmptyArray<string>.Instance;
         }
 
-        /// <inheritdoc />
         public override Stream GetManifestResourceStream(string name)
         {
             return null;
         }
 
-        /// <inheritdoc />
         public override Stream GetManifestResourceStream(Type type, string name)
         {
             return null;
         }
 
-        /// <inheritdoc />
         public override AssemblyName GetName(bool copiedName)
         {
             return adapter.GetName();
         }
 
-        /// <inheritdoc />
         public override void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             throw new NotSupportedException("Cannot serialize an unresolved assembly.");
         }
 
-        /// <inheritdoc />
         public override Type GetType(string name)
         {
             return GetType(name, false);
         }
 
-        /// <inheritdoc />
         public override Type GetType(string name, bool throwOnError)
         {
             if (name == null)
@@ -182,14 +158,12 @@ namespace Gallio.Common.Reflection.Impl
             return type.Resolve(false);
         }
 
-        /// <inheritdoc />
         public override Type[] GetTypes()
         {
             return GenericCollectionUtils.ConvertAllToArray(adapter.GetTypes(),
                 type => type.Resolve(false));
         }
 
-        /// <inheritdoc />
         public override string ImageRuntimeVersion
         {
             get
@@ -198,38 +172,37 @@ namespace Gallio.Common.Reflection.Impl
             }
         }
 
-        /// <inheritdoc />
         public override string Location
         {
             get { return adapter.Path; }
         }
 
-        /// <inheritdoc />
         public override bool ReflectionOnly
         {
             get { return true; }
         }
 
-        /// <inheritdoc />
         public override bool Equals(object o)
         {
             return Equals(o as UnresolvedAssembly);
         }
 
-        /// <inheritdoc />
         public bool Equals(UnresolvedAssembly other)
         {
             return other != null && adapter.Equals(other.adapter);
         }
 
-        /// <inheritdoc />
         public override int GetHashCode()
         {
             return adapter.GetHashCode();
         }
 
+        #region .Net 2.0 Only
+#if ! DOTNET40
+        // Hacks the assembly object to ensure it is completely initialized.
+        // This is only required for .Net 2.0.
         [ReflectionPermission(SecurityAction.Assert, MemberAccess = true)]
-        private void DeepInitialize()
+        private void DeepInitializeForDotNet20()
         {
             Assembly donorAssembly = typeof(UnresolvedAssembly).Assembly;
 
@@ -243,5 +216,112 @@ namespace Gallio.Common.Reflection.Impl
                 field.SetValue(this, value);
             }
         }
+#endif
+        #endregion
+
+        #region .Net 4.0 Only
+#if DOTNET40
+        public override object CreateInstance(string typeName, bool ignoreCase, BindingFlags bindingAttr, Binder binder, object[] args, CultureInfo culture, object[] activationAttributes)
+        {
+            throw new NotSupportedException("Cannot create instance of type in unresolved assembly.");
+        }
+
+        public override Assembly GetSatelliteAssembly(CultureInfo culture)
+        {
+            throw new NotSupportedException("Cannot get satellite assemblies of an unresolved assembly.");
+        }
+
+        public override Assembly GetSatelliteAssembly(CultureInfo culture, Version version)
+        {
+            throw new NotSupportedException("Cannot get satellite assemblies of an unresolved assembly.");
+        }
+
+        public override Type GetType(string name, bool throwOnError, bool ignoreCase)
+        {
+            if (ignoreCase)
+            {
+                foreach (ITypeInfo type in adapter.GetTypes())
+                {
+                    if (string.Compare(name, type.Name, true) == 0)
+                        return type.Resolve(false);
+                }
+
+                if (throwOnError)
+                    throw new TypeLoadException(string.Format("Cannot find type '{0}' case-insensitively.", name));
+                return null;
+            }
+
+            return GetType(name, throwOnError);
+        }
+
+        public override bool GlobalAssemblyCache
+        {
+            get { return false; }
+        }
+
+        public override long HostContext
+        {
+            get
+            {
+                throw new NotSupportedException("Cannot get host context of unresolved assembly.");
+            }
+        }
+
+        public override AssemblyName[] GetReferencedAssemblies()
+        {
+            return adapter.GetReferencedAssemblies().ToArray();
+        }
+
+        public override bool IsDynamic()
+        {
+            return false;
+        }
+
+        public override Module LoadModule(string moduleName, byte[] rawModule, byte[] rawSymbolStore)
+        {
+            throw new NotSupportedException("Cannot load module of unresolved assembly.");
+        }
+
+        public override Module[] GetLoadedModules(bool getResourceModules)
+        {
+            return GetModules(getResourceModules);
+        }
+
+        public override Module GetModule(string name)
+        {
+            if (name == adapter.GetName().Name)
+                return ManifestModule;
+            return null;
+        }
+
+        public override Module[] GetModules(bool getResourceModules)
+        {
+            return new[] { ManifestModule };
+        }
+
+        public override Module ManifestModule
+        {
+            get
+            {
+                // TODO: Return an unresolved Module as an emulated wrapper around the IAssemblyInfo.
+                throw new NotImplementedException();
+            }
+        }
+
+        public override event ModuleResolveEventHandler ModuleResolve
+        {
+            add { }
+            remove { }
+        }
+
+        public override PermissionSet PermissionSet
+        {
+            get
+            {
+                throw new NotSupportedException("Cannot get permission set of unresolved assembly.");
+            }
+        }
+#endif
+        #endregion
     }
 }

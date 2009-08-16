@@ -200,5 +200,16 @@ namespace Gallio.Tests.Common.Reflection
             Assembly assembly = typeof(SimpleTest).Assembly;
             Assert.AreElementsEqual(assembly.GetReferencedAssemblies(), metadata.AssemblyReferences);
         }
+
+        [Test]
+        public void GetAssemblyMetadata_WhenRuntimeVersionFieldSpecified_ReturnsMetadataIncludingRuntimeVersion()
+        {
+            var path = "MbUnit.TestResources.dll";
+
+            AssemblyMetadata metadata = AssemblyUtils.GetAssemblyMetadata(path, AssemblyMetadataFields.RuntimeVersion);
+
+            Assembly assembly = typeof(SimpleTest).Assembly;
+            Assert.AreEqual("v2.0.50727", metadata.RuntimeVersion);
+        }
     }
 }

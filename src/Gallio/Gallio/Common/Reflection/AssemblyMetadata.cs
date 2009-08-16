@@ -35,9 +35,10 @@ namespace Gallio.Common.Reflection
         private readonly PEFormat peFormat;
         private readonly AssemblyName assemblyName;
         private readonly IList<AssemblyName> assemblyReferences;
+        private readonly string runtimeVersion;
 
         private AssemblyMetadata(ushort majorRuntimeVersion, ushort minorRuntimeVersion, CorFlags corflags, PEFormat peFormat,
-            AssemblyName assemblyName, IList<AssemblyName> assemblyReferences)
+            AssemblyName assemblyName, IList<AssemblyName> assemblyReferences, string runtimeVersion)
         {
             this.majorRuntimeVersion = majorRuntimeVersion;
             this.minorRuntimeVersion = minorRuntimeVersion;
@@ -45,6 +46,7 @@ namespace Gallio.Common.Reflection
             this.peFormat = peFormat;
             this.assemblyName = assemblyName;
             this.assemblyReferences = assemblyReferences;
+            this.runtimeVersion = runtimeVersion;
         }
 
         /// <summary>
@@ -55,8 +57,7 @@ namespace Gallio.Common.Reflection
         /// Typical runtime versions:
         /// <list type="bullet">
         /// <item>2.0: .Net 1.0 / .Net 1.1</item>
-        /// <item>2.5: .Net 2.0 / .Net 3.0 / .Net 3.5</item>
-        /// <item>4.0: .Net 4.0</item>
+        /// <item>2.5: .Net 2.0 / .Net 3.0 / .Net 3.5 / .Net 4.0</item>
         /// </list>
         /// </para>
         /// </remarks>
@@ -73,8 +74,7 @@ namespace Gallio.Common.Reflection
         /// Typical runtime versions:
         /// <list type="bullet">
         /// <item>2.0: .Net 1.0 / .Net 1.1</item>
-        /// <item>2.5: .Net 2.0 / .Net 3.0 / .Net 3.5</item>
-        /// <item>4.0: .Net 4.0</item>
+        /// <item>2.5: .Net 2.0 / .Net 3.0 / .Net 3.5 / .Net 4.0</item>
         /// </list>
         /// </para>
         /// </remarks>
@@ -133,6 +133,25 @@ namespace Gallio.Common.Reflection
                 if (assemblyReferences == null)
                     throw new InvalidOperationException("The assembly references were not populated.");
                 return assemblyReferences;
+            }
+        }
+
+        /// <summary>
+        /// Gets the runtime version in the form "vX.Y.ZZZZ".
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// This field is only populated when the <see cref="AssemblyMetadataFields.RuntimeVersion"/> flag is specified.
+        /// </para>
+        /// </remarks>
+        /// <exception cref="InvalidOperationException">Thrown if the runtime version were not populated.</exception>
+        public string RuntimeVersion
+        {
+            get
+            {
+                if (runtimeVersion == null)
+                    throw new InvalidOperationException("The runtime version was not populated.");
+                return runtimeVersion;
             }
         }
 
@@ -222,8 +241,25 @@ namespace Gallio.Common.Reflection
             // Read optional fields.
             AssemblyName assemblyName = null;
             IList<AssemblyName> assemblyReferences = null;
+            string runtimeVersion = null;
 
-            if (fields != AssemblyMetadataFields.Default)
+            if ((fields & AssemblyMetadataFields.RuntimeVersion) != 0)
+            {
+                uint metadataPtr = ResolveRva(sections, metadataRva);
+                stream.Position = metadataPtr + 12;
+
+                int paddedRuntimeVersionLength = reader.ReadInt32();
+                byte[] runtimeVersionBytes = reader.ReadBytes(paddedRuntimeVersionLength);
+
+                int runtimeVersionLength = 0;
+                while (runtimeVersionLength < paddedRuntimeVersionLength
+                    && runtimeVersionBytes[runtimeVersionLength] != 0)
+                    runtimeVersionLength += 1;
+
+                runtimeVersion = Encoding.UTF8.GetString(runtimeVersionBytes, 0, runtimeVersionLength);
+            }
+
+            if ((fields & (AssemblyMetadataFields.AssemblyName | AssemblyMetadataFields.AssemblyReferences)) != 0)
             {
                 // Using Cecil.
                 stream.Position = 0;
@@ -238,7 +274,7 @@ namespace Gallio.Common.Reflection
 
             // Done.
             return new AssemblyMetadata(majorRuntimeVersion, minorRuntimeVersion, corflags, peFormat,
-                assemblyName, assemblyReferences);
+                assemblyName, assemblyReferences, runtimeVersion);
         }
 
         private static uint ResolveRva(Section[] sections, uint rva)

@@ -15,16 +15,24 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
-using Gallio.Common.Caching;
+using MbUnit.Framework;
+using Gallio.Common.Reflection.Impl;
+using Gallio.Common.Platform;
 
-namespace Gallio.MSTestAdapter.Wrapper
+namespace Gallio40.Tests.Common.Reflection.Impl
 {
-    internal class MSTestRunner2010 : MSTestRunner2008
+    [TestsOn(typeof(UnresolvedCodeElementFactory))]
+    public class UnresolvedCodeElementFactoryTest
     {
-        protected override string GetVisualStudioVersion()
+        [Test]
+        public void Instance_WhenRuntimeIsDotNet40_ReturnsDotNet40Instance()
         {
-            return "10.0";
+            if (DotNetFrameworkSupport.FrameworkVersion != DotNetFrameworkVersion.DotNet40)
+                return;
+
+            Assert.IsInstanceOfType<Gallio.Common.Reflection.Impl.DotNet40.UnresolvedCodeElementFactoryInternal>(UnresolvedCodeElementFactory.Instance);
         }
     }
 }

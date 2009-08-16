@@ -48,6 +48,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Integration\RunDataDrivenTest.cs" />
+    <Compile Include="Integration\EnvironmentSetupTest.cs" />
     <Compile Include="Integration\RunSimpleTest.cs" />
     <Compile Include="Model\MSTestFrameworkTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

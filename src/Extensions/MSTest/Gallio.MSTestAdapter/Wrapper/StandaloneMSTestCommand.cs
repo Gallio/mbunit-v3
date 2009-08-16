@@ -34,6 +34,8 @@ namespace Gallio.MSTestAdapter.Wrapper
         public override int Run(string executablePath, string workingDirectory,
             MSTestCommandArguments args, TextWriter writer)
         {
+            writer.WriteLine("\"{0}\" {1}\n", executablePath, args);
+
             ProcessTask task = new ProcessTask(executablePath, args.ToString(), workingDirectory);
             task.ConsoleOutputDataReceived += MakeRedirector(writer);
             task.ConsoleErrorDataReceived += MakeRedirector(writer);
