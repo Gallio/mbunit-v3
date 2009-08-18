@@ -31,12 +31,12 @@ namespace Gallio.Icarus.Controllers
         {
             get
             {
-                var frameworks = new List<TestFrameworkTraits>();
+                var testFrameworks = new List<TestFrameworkTraits>();
 
-                foreach (var frameworkHandle in testFrameworkManager.FrameworkHandles)
-                    frameworks.Add(frameworkHandle.GetTraits());
+                foreach (var testFrameworkHandle in testFrameworkManager.TestFrameworkHandles)
+                    testFrameworks.Add(testFrameworkHandle.GetTraits());
 
-                return frameworks;
+                return testFrameworks;
             }
         }
 

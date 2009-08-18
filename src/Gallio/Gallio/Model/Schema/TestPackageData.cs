@@ -67,7 +67,7 @@ namespace Gallio.Model.Schema
 
             GenericCollectionUtils.ConvertAndAddAll(source.HintDirectories, hintDirectories, directory => directory.FullName);
             GenericCollectionUtils.ConvertAndAddAll(source.Files, files, file => file.FullName);
-            excludedFrameworkIds.AddRange(source.ExcludedFrameworkIds);
+            excludedFrameworkIds.AddRange(source.ExcludedTestFrameworkIds);
             shadowCopy = source.ShadowCopy;
             debug = source.DebuggerSetup != null;
             applicationBaseDirectory = source.ApplicationBaseDirectory != null ? source.ApplicationBaseDirectory.FullName : null;
@@ -102,7 +102,7 @@ namespace Gallio.Model.Schema
         /// Gets the list of test framework IDs that are to be excluded from the test
         /// exploration process.
         /// </summary>
-        /// <seealso cref="TestPackage.ExcludedFrameworkIds"/>
+        /// <seealso cref="TestPackage.ExcludedTestFrameworkIds"/>
         [XmlArray("excludedFrameworkIds", IsNullable = false)]
         [XmlArrayItem("excludedFrameworkId", typeof(string), IsNullable = false)]
         public List<string> ExcludedFrameworkIds
@@ -201,7 +201,7 @@ namespace Gallio.Model.Schema
 
             GenericCollectionUtils.ForEach(files, x => testPackage.AddFile(new FileInfo(x)));
             GenericCollectionUtils.ForEach(hintDirectories, x => testPackage.AddHintDirectory(new DirectoryInfo(x)));
-            GenericCollectionUtils.ForEach(excludedFrameworkIds, x => testPackage.AddExcludedFrameworkId(x));
+            GenericCollectionUtils.ForEach(excludedFrameworkIds, x => testPackage.AddExcludedTestFrameworkId(x));
             testPackage.ShadowCopy = shadowCopy;
             testPackage.DebuggerSetup = debug ? new DebuggerSetup() : null;
             testPackage.ApplicationBaseDirectory = applicationBaseDirectory != null ? new DirectoryInfo(applicationBaseDirectory) : null;

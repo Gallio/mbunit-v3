@@ -23,7 +23,11 @@ namespace Gallio.Model
     /// <summary>
     /// A factory for test drivers.
     /// </summary>
-    /// <param name="frameworkHandles">The component handles of frameworks which share this test driver factory, not null.</param>
+    /// <param name="testFrameworkHandles">The component handles of frameworks which share this test driver factory, not null.</param>
+    /// <param name="testFrameworkOptions">The test framework options, not null.</param>
     /// <param name="logger">The logger for the test driver, not null.</param>
-    public delegate ITestDriver TestDriverFactory(IList<ComponentHandle<ITestFramework, TestFrameworkTraits>> frameworkHandles, ILogger logger);
+    public delegate ITestDriver TestDriverFactory(
+        IList<ComponentHandle<ITestFramework, TestFrameworkTraits>> testFrameworkHandles,
+        TestFrameworkOptions testFrameworkOptions,
+        ILogger logger);
 }

@@ -70,20 +70,23 @@ namespace Gallio.Framework.Pattern
             return CreateTestDriver;
         }
 
-        private static ITestDriver CreateTestDriver(IList<ComponentHandle<ITestFramework, TestFrameworkTraits>> frameworkHandles, ILogger logger)
+        private static ITestDriver CreateTestDriver(
+            IList<ComponentHandle<ITestFramework, TestFrameworkTraits>> testFrameworkHandles,
+            TestFrameworkOptions testFrameworkOptions,
+            ILogger logger)
         {
-            string[] frameworkIds = GenericCollectionUtils.ConvertAllToArray(frameworkHandles, x => x.Id);
+            string[] testFrameworkIds = GenericCollectionUtils.ConvertAllToArray(testFrameworkHandles, x => x.Id);
 
-            StringBuilder frameworkName = new StringBuilder();
-            foreach (var frameworkHandle in frameworkHandles)
+            StringBuilder testFrameworkName = new StringBuilder();
+            foreach (var testFrameworkHandle in testFrameworkHandles)
             {
-                if (frameworkName.Length != 0)
-                    frameworkName.Append(" and ");
+                if (testFrameworkName.Length != 0)
+                    testFrameworkName.Append(" and ");
 
-                frameworkName.Append(frameworkHandle.GetTraits().Name);
+                testFrameworkName.Append(testFrameworkHandle.GetTraits().Name);
             }
 
-            return new PatternTestDriver(frameworkIds, frameworkName.ToString());
+            return new PatternTestDriver(testFrameworkIds, testFrameworkName.ToString());
         }
 
         /// <summary>

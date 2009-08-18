@@ -55,14 +55,21 @@ namespace Gallio.VisualStudio.Tip
                 return EmptyArray<TestElement>.Instance;
 
             // Explore the tests.
-            ITestFrameworkManager frameworkManager = RuntimeAccessor.ServiceLocator.Resolve<ITestFrameworkManager>();
+            ITestFrameworkManager testFrameworkManager = RuntimeAccessor.ServiceLocator.Resolve<ITestFrameworkManager>();
             WarningLogger logger = new WarningLogger(warningHandler);
 
             ReflectionOnlyAssemblyLoader loader = new ReflectionOnlyAssemblyLoader();
             loader.AddHintDirectory(Path.GetDirectoryName(location));
 
             IAssemblyInfo assembly = loader.ReflectionPolicy.LoadAssemblyFrom(location);
-            ITestDriver driver = frameworkManager.GetTestDriver(frameworkId => frameworkId != "MSTestAdapter.TestFramework", logger);
+
+            var testFrameworkSelector = new TestFrameworkSelector()
+            {
+                Filter = testFrameworkHandle => testFrameworkHandle.Id != "MSTestAdapter.TestFramework",
+                FallbackMode = TestFrameworkFallbackMode.Approximate
+            };
+
+            ITestDriver driver = testFrameworkManager.GetTestDriver(testFrameworkSelector, logger);
             TestExplorationOptions testExplorationOptions = new TestExplorationOptions();
 
             ArrayList tests = new ArrayList();

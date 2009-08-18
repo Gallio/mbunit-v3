@@ -155,6 +155,7 @@
                 <File Id="Container.ico" Name="Container.ico" />
                 <File Id="Fixture.ico" Name="Fixture.ico" />
                 <File Id="Test.ico" Name="Test.ico" />
+                <File Id="Unsupported.ico" Name="Unsupported.ico" />
 		
                 <File Id="Gallio.ControlPanel.ico" Name="Gallio.ControlPanel.ico" />
                 <File Id="Gallio.Utility.ico" Name="Gallio.Utility.ico" />

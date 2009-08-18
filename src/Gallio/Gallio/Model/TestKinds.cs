@@ -83,5 +83,10 @@ namespace Gallio.Model
         /// The test represents a test case.
         /// </summary>
         public const string Test = "Test";
+
+        /// <summary>
+        /// The test is a placeholder for an unsupported test file or element.
+        /// </summary>
+        public const string Unsupported = "Unsupported";
     }
 }

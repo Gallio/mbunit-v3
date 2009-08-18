@@ -15,17 +15,25 @@
 
 using System;
 using System.Collections.Generic;
-using Gallio.Model;
 using Gallio.Runtime.Extensibility;
 using Gallio.Runtime.Logging;
 
-namespace Gallio.MSTestAdapter.Model
+namespace Gallio.Model
 {
     /// <summary>
-    /// Builds a test object model based on reflection against MSTest framework attributes.
+    /// A test framework implementation used when no test framework supports a given test file.
     /// </summary>
-    public class MSTestFramework : BaseTestFramework
+    public class FallbackTestFramework : BaseTestFramework
     {
+        /// <summary>
+        /// The test framework option key used to explain why the fallback test framework is being used.
+        /// </summary>
+        /// <remarks>
+        /// The associated value should be a plain test message describing the problem with
+        /// the test file.
+        /// </remarks>
+        public static readonly string FallbackExplanationKey = "FallbackExplanation";
+
         /// <inheritdoc />
         sealed public override TestDriverFactory GetTestDriverFactory()
         {
@@ -37,7 +45,7 @@ namespace Gallio.MSTestAdapter.Model
             TestFrameworkOptions testFrameworkOptions,
             ILogger logger)
         {
-            return new MSTestDriver();
+            return new FallbackTestDriver(testFrameworkOptions);
         }
     }
 }

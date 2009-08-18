@@ -57,7 +57,7 @@ namespace Gallio.Tests.Model
             get { return SimpleFixtureType.Namespace; }
         }
 
-        protected abstract ComponentHandle<ITestFramework, TestFrameworkTraits> FrameworkHandle { get; }
+        protected abstract ComponentHandle<ITestFramework, TestFrameworkTraits> TestFrameworkHandle { get; }
 
         protected virtual string AssemblyKind
         {
@@ -85,7 +85,14 @@ namespace Gallio.Tests.Model
 
             var testFrameworkManager = RuntimeAccessor.ServiceLocator.Resolve<ITestFrameworkManager>();
             var logger = new MarkupStreamLogger(TestLog.Default);
-            ITestDriver testDriver = testFrameworkManager.GetTestDriver(frameworkId => frameworkId == FrameworkHandle.Id, logger);
+
+            var testFrameworkSelector = new TestFrameworkSelector()
+            {
+                Filter = testFrameworkHandle => testFrameworkHandle.Id == TestFrameworkHandle.Id,
+                FallbackMode = TestFrameworkFallbackMode.Strict
+            };
+
+            ITestDriver testDriver = testFrameworkManager.GetTestDriver(testFrameworkSelector, logger);
 
             var testIsolationProvider = (ITestIsolationProvider) RuntimeAccessor.ServiceLocator.ResolveByComponentId("Gallio.LocalTestIsolationProvider");
             var testIsolationOptions = new TestIsolationOptions();
@@ -217,7 +224,7 @@ namespace Gallio.Tests.Model
             Assert.AreEqual("MbUnit Project", assemblyTest.Metadata.GetValue(MetadataKeys.Company));
             Assert.AreEqual("Test", assemblyTest.Metadata.GetValue(MetadataKeys.Configuration));
             Assert.Contains(assemblyTest.Metadata.GetValue(MetadataKeys.Copyright), "Gallio Project");
-            Assert.AreEqual("A sample test assembly for " + FrameworkHandle.GetTraits().Name + ".", assemblyTest.Metadata.GetValue(MetadataKeys.Description));
+            Assert.AreEqual("A sample test assembly for " + TestFrameworkHandle.GetTraits().Name + ".", assemblyTest.Metadata.GetValue(MetadataKeys.Description));
             Assert.AreEqual("Gallio", assemblyTest.Metadata.GetValue(MetadataKeys.Product));
             Assert.AreEqual(SimpleFixtureAssembly.GetName().Name, assemblyTest.Metadata.GetValue(MetadataKeys.Title));
             Assert.AreEqual("Gallio", assemblyTest.Metadata.GetValue(MetadataKeys.Trademark));

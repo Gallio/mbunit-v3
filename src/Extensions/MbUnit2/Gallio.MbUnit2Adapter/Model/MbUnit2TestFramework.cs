@@ -32,7 +32,10 @@ namespace Gallio.MbUnit2Adapter.Model
             return CreateTestDriver;
         }
 
-        private static ITestDriver CreateTestDriver(IList<ComponentHandle<ITestFramework, TestFrameworkTraits>> frameworkHandles, ILogger logger)
+        private static ITestDriver CreateTestDriver(
+            IList<ComponentHandle<ITestFramework, TestFrameworkTraits>> testFrameworkHandles,
+            TestFrameworkOptions testFrameworkOptions,
+            ILogger logger)
         {
             return new MbUnit2TestDriver();
         }

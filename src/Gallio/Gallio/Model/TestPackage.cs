@@ -32,13 +32,17 @@ namespace Gallio.Model
     {
         private readonly List<FileInfo> files;
         private readonly List<DirectoryInfo> hintDirectories;
-        private readonly List<string> excludedFrameworkIds;
+        private readonly List<string> excludedTestFrameworkIds;
         private readonly PropertySet properties;
 
+        private TestFrameworkOptions testFrameworkOptions;
+        private bool isTestFrameworkOptionsSpecified;
+        private TestFrameworkFallbackMode testFrameworkFallbackMode;
+        private bool isTestFrameworkFallbackModeSpecified;
         private bool shadowCopy;
         private bool isShadowCopySpecified;
         private DebuggerSetup debuggerSetup;
-        private bool isDebuggetSetupSpecified;
+        private bool isDebuggerSetupSpecified;
         private DirectoryInfo applicationBaseDirectory;
         private bool isApplicationBaseDirectorySpecified;
         private DirectoryInfo workingDirectory;
@@ -53,7 +57,7 @@ namespace Gallio.Model
         {
             files = new List<FileInfo>();
             hintDirectories = new List<DirectoryInfo>();
-            excludedFrameworkIds = new List<string>();
+            excludedTestFrameworkIds = new List<string>();
             properties = new PropertySet();
         }
 
@@ -77,9 +81,9 @@ namespace Gallio.Model
         /// Gets the read-only list of test framework IDs that are to be excluded from the test
         /// exploration process.
         /// </summary>
-        public IList<string> ExcludedFrameworkIds
+        public IList<string> ExcludedTestFrameworkIds
         {
-            get { return new ReadOnlyCollection<string>(excludedFrameworkIds); }
+            get { return new ReadOnlyCollection<string>(excludedTestFrameworkIds); }
         }
 
         /// <summary>
@@ -88,6 +92,57 @@ namespace Gallio.Model
         public PropertySet Properties
         {
             get { return properties.AsReadOnly(); }
+        }
+
+        /// <summary>
+        /// Gets or sets the test framework options.
+        /// </summary>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
+        public TestFrameworkOptions TestFrameworkOptions
+        {
+            get
+            {
+                if (testFrameworkOptions == null)
+                    testFrameworkOptions = new TestFrameworkOptions();
+                return testFrameworkOptions;
+            }
+            set
+            {
+                if (value == null)
+                    throw new ArgumentNullException("value");
+                testFrameworkOptions = value;
+                isTestFrameworkOptionsSpecified = true;
+            }
+        }
+
+        /// <summary>
+        /// Returns true if <see cref="TestFrameworkOptions" /> has been set explicitly.
+        /// </summary>
+        public bool IsTestFrameworkOptionsSpecified
+        {
+            get { return isTestFrameworkOptionsSpecified; }
+        }
+
+        /// <summary>
+        /// Gets or sets the test framework fallback mode.
+        /// </summary>
+        /// <value>The test framework fallback mode.  Default is <c>TestFrameworkFallbackMode.Default</c>.</value>
+        public TestFrameworkFallbackMode TestFrameworkFallbackMode
+        {
+            get { return testFrameworkFallbackMode; }
+            set
+            {
+                testFrameworkFallbackMode = value;
+                isTestFrameworkFallbackModeSpecified = true;
+            }
+        }
+
+        /// <summary>
+        /// Returns true if <see cref="TestFrameworkFallbackMode" /> has been set explicitly.
+        /// </summary>
+        public bool IsTestFrameworkFallbackModeSpecified
+        {
+            get { return isTestFrameworkFallbackModeSpecified; }
         }
 
         /// <summary>
@@ -122,7 +177,7 @@ namespace Gallio.Model
             set
             {
                 debuggerSetup = value;
-                isDebuggetSetupSpecified = true;
+                isDebuggerSetupSpecified = true;
             }
         }
 
@@ -131,7 +186,7 @@ namespace Gallio.Model
         /// </summary>
         public bool IsDebuggerSetupSpecified
         {
-            get { return isDebuggetSetupSpecified; }
+            get { return isDebuggerSetupSpecified; }
         }
 
         /// <summary>
@@ -214,10 +269,14 @@ namespace Gallio.Model
         {
             TestPackage copy = new TestPackage()
             {
+                testFrameworkOptions = testFrameworkOptions != null ? testFrameworkOptions.Copy() : null,
+                isTestFrameworkOptionsSpecified = isTestFrameworkOptionsSpecified,
+                testFrameworkFallbackMode = testFrameworkFallbackMode,
+                isTestFrameworkFallbackModeSpecified = isTestFrameworkFallbackModeSpecified,
                 applicationBaseDirectory = applicationBaseDirectory,
                 isApplicationBaseDirectorySpecified = isApplicationBaseDirectorySpecified,
-                debuggerSetup = debuggerSetup,
-                isDebuggetSetupSpecified = isDebuggetSetupSpecified,
+                debuggerSetup = debuggerSetup != null ? debuggerSetup.Copy() : null,
+                isDebuggerSetupSpecified = isDebuggerSetupSpecified,
                 runtimeVersion = runtimeVersion,
                 isRuntimeVersionSpecified = isRuntimeVersionSpecified,
                 shadowCopy = shadowCopy,
@@ -226,7 +285,7 @@ namespace Gallio.Model
                 isWorkingDirectorySpecified = isWorkingDirectorySpecified
             };
 
-            copy.excludedFrameworkIds.AddRange(excludedFrameworkIds);
+            copy.excludedTestFrameworkIds.AddRange(excludedTestFrameworkIds);
             copy.files.AddRange(files);
             copy.hintDirectories.AddRange(hintDirectories);
             copy.properties.AddAll(properties);
@@ -245,10 +304,10 @@ namespace Gallio.Model
         /// <summary>
         /// Resets <see cref="DebuggerSetup"/> to its default value and sets <see cref="IsDebuggerSetupSpecified" /> to false.
         /// </summary>
-        public void ResetDebug()
+        public void ResetDebuggerSetup()
         {
             debuggerSetup = null;
-            isDebuggetSetupSpecified = false;
+            isDebuggerSetupSpecified = false;
         }
 
         /// <summary>
@@ -258,6 +317,24 @@ namespace Gallio.Model
         {
             runtimeVersion = null;
             isRuntimeVersionSpecified = false;
+        }
+
+        /// <summary>
+        /// Resets <see cref="TestFrameworkOptions"/> to its default value and sets <see cref="IsTestFrameworkOptionsSpecified" /> to false.
+        /// </summary>
+        public void ResetTestFrameworkOptions()
+        {
+            testFrameworkOptions = null;
+            isTestFrameworkOptionsSpecified = false;
+        }
+
+        /// <summary>
+        /// Resets <see cref="TestFrameworkFallbackMode"/> to its default value and sets <see cref="IsTestFrameworkFallbackModeSpecified" /> to false.
+        /// </summary>
+        public void ResetTestFrameworkFallbackMode()
+        {
+            testFrameworkFallbackMode = TestFrameworkFallbackMode.Default;
+            isTestFrameworkFallbackModeSpecified = false;
         }
 
         /// <summary>
@@ -357,38 +434,38 @@ namespace Gallio.Model
         }
 
         /// <summary>
-        /// Clears the list of excluded framework ids.
+        /// Clears the list of excluded test framework ids.
         /// </summary>
-        public void ClearExcludedFrameworkIds()
+        public void ClearTestExcludedFrameworkIds()
         {
-            excludedFrameworkIds.Clear();
+            excludedTestFrameworkIds.Clear();
         }
 
         /// <summary>
-        /// Adds an excluded framework id if it is not already in the test package.
+        /// Adds an excluded test framework id if it is not already in the test package.
         /// </summary>
-        /// <param name="frameworkId">The framework id to add.</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="frameworkId"/> is null.</exception>
-        public void AddExcludedFrameworkId(string frameworkId)
+        /// <param name="testFrameworkId">The test framework id to add.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="testFrameworkId"/> is null.</exception>
+        public void AddExcludedTestFrameworkId(string testFrameworkId)
         {
-            if (frameworkId == null)
-                throw new ArgumentNullException("frameworkId");
+            if (testFrameworkId == null)
+                throw new ArgumentNullException("testFrameworkId");
 
-            if (!excludedFrameworkIds.Contains(frameworkId))
-                excludedFrameworkIds.Add(frameworkId);
+            if (!excludedTestFrameworkIds.Contains(testFrameworkId))
+                excludedTestFrameworkIds.Add(testFrameworkId);
         }
 
         /// <summary>
-        /// Removes an excluded framework id.
+        /// Removes an excluded test framework id.
         /// </summary>
-        /// <param name="frameworkId">The framework id to remove.</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="frameworkId"/> is null.</exception>
-        public void RemoveExcludedFrameworkId(string frameworkId)
+        /// <param name="testFrameworkId">The test framework id to remove.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="testFrameworkId"/> is null.</exception>
+        public void RemoveExcludedTestFrameworkId(string testFrameworkId)
         {
-            if (frameworkId == null)
-                throw new ArgumentNullException("frameworkId");
+            if (testFrameworkId == null)
+                throw new ArgumentNullException("testFrameworkId");
 
-            excludedFrameworkIds.Remove(frameworkId);
+            excludedTestFrameworkIds.Remove(testFrameworkId);
         }
 
         /// <summary>
@@ -440,14 +517,25 @@ namespace Gallio.Model
         }
 
         /// <summary>
-        /// Returns true if the framework with the specified id should be used to explore
-        /// the contents of the test package.
+        /// Creates a test framework selector based on the package properties.
         /// </summary>
-        /// <param name="frameworkId">The framework id.</param>
-        /// <returns>True if the framework is requested.</returns>
-        public bool IsFrameworkRequested(string frameworkId)
+        /// <remarks>
+        /// Considers the <see cref="TestFrameworkOptions" />, <see cref="TestFrameworkFallbackMode" />,
+        /// and <see cref="ExcludedTestFrameworkIds" />.
+        /// </remarks>
+        /// <returns>The test framework selector.</returns>
+        public TestFrameworkSelector CreateTestFrameworkSelector()
         {
-            return !excludedFrameworkIds.Contains(frameworkId);
+            var selector = new TestFrameworkSelector()
+            {
+                Filter = testFrameworkHandle => !excludedTestFrameworkIds.Contains(testFrameworkHandle.Id),
+                FallbackMode = testFrameworkFallbackMode
+            };
+
+            if (isTestFrameworkOptionsSpecified)
+                selector.Options = testFrameworkOptions;
+
+            return selector;
         }
 
         /// <summary>
@@ -473,6 +561,10 @@ namespace Gallio.Model
                 DebuggerSetup = overlay.DebuggerSetup;
             if (overlay.IsRuntimeVersionSpecified)
                 RuntimeVersion = overlay.RuntimeVersion;
+            if (overlay.IsTestFrameworkOptionsSpecified)
+                TestFrameworkOptions = overlay.TestFrameworkOptions;
+            if (overlay.IsTestFrameworkFallbackModeSpecified)
+                TestFrameworkFallbackMode = overlay.TestFrameworkFallbackMode;
             if (overlay.IsShadowCopySpecified)
                 ShadowCopy = overlay.ShadowCopy;
             if (overlay.IsWorkingDirectorySpecified)
@@ -480,7 +572,7 @@ namespace Gallio.Model
 
             GenericCollectionUtils.ForEach(overlay.Files, x => AddFile(x));
             GenericCollectionUtils.ForEach(overlay.HintDirectories, x => AddHintDirectory(x));
-            GenericCollectionUtils.ForEach(overlay.ExcludedFrameworkIds, x => AddExcludedFrameworkId(x));
+            GenericCollectionUtils.ForEach(overlay.ExcludedTestFrameworkIds, x => AddExcludedTestFrameworkId(x));
             GenericCollectionUtils.ForEach(overlay.Properties, x => properties[x.Key] = x.Value);
         }
     }

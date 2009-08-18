@@ -127,7 +127,7 @@ namespace Gallio.Model
         public bool IsFrameworkCompatibleWithAssemblyReferences(IEnumerable<AssemblyName> assemblyReferences)
         {
             if (assemblyReferences == null)
-                throw new ArgumentNullException("assemblyReference");
+                throw new ArgumentNullException("assemblyReferences");
 
             foreach (AssemblyName referencedAssemblyName in assemblyReferences)
             {

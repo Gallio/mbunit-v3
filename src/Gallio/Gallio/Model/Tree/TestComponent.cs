@@ -116,6 +116,7 @@ namespace Gallio.Model.Tree
         /// <summary>
         /// Gets the metadata of the component.
         /// </summary>
+        /// <seealso cref="MetadataKeys"/>
         public PropertyBag Metadata
         {
             get { return metadata; }

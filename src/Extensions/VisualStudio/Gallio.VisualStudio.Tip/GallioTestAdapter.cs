@@ -125,7 +125,7 @@ namespace Gallio.VisualStudio.Tip
                     return;
 
                 TestPackage testPackage = new TestPackage();
-                testPackage.AddExcludedFrameworkId("MSTestAdapter.TestFramework");
+                testPackage.AddExcludedTestFrameworkId("MSTestAdapter.TestFramework");
 
                 foreach (ITestElement testElement in runContext.RunConfig.TestElements)
                 {

@@ -173,7 +173,7 @@ namespace Gallio.ReSharperRunner.Provider
 
             private readonly IUnitTestProvider provider;
             private readonly GallioTestPresenter presenter;
-            private readonly ITestFrameworkManager frameworkManager;
+            private readonly ITestFrameworkManager testFrameworkManager;
             private readonly ILogger logger;
 
             /// <summary>
@@ -183,7 +183,7 @@ namespace Gallio.ReSharperRunner.Provider
             {
                 this.provider = provider;
 
-                frameworkManager = RuntimeAccessor.ServiceLocator.Resolve<ITestFrameworkManager>();
+                testFrameworkManager = RuntimeAccessor.ServiceLocator.Resolve<ITestFrameworkManager>();
                 presenter = new GallioTestPresenter();
                 logger = new FacadeLoggerWrapper(new AdapterFacadeLogger());
 
@@ -326,15 +326,20 @@ namespace Gallio.ReSharperRunner.Provider
 
             private ITestDriver CreateTestDriver()
             {
-                var excludedFrameworkIds = new List<string>();
+                var excludedTestFrameworkIds = new List<string>();
                 foreach (IUnitTestProvider provider in UnitTestManager.GetInstance(SolutionManager.Instance.CurrentSolution).GetEnabledProviders())
                 {
                     string frameworkId;
                     if (IncompatibleProviders.TryGetValue(provider.ID, out frameworkId))
-                        excludedFrameworkIds.Add(frameworkId);
+                        excludedTestFrameworkIds.Add(frameworkId);
                 }
 
-                return frameworkManager.GetTestDriver(frameworkId => !excludedFrameworkIds.Contains(frameworkId), logger);
+                var testFrameworkSelector = new TestFrameworkSelector()
+                {
+                    Filter = testFrameworkHandle => !excludedTestFrameworkIds.Contains(testFrameworkHandle.Id),
+                    FallbackMode = TestFrameworkFallbackMode.Approximate
+                };
+                return testFrameworkManager.GetTestDriver(testFrameworkSelector, logger);
             }
 
             private void Describe(IReflectionPolicy reflectionPolicy, IList<ICodeElementInfo> codeElements, ConsumerAdapter consumerAdapter)
