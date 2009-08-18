@@ -36,7 +36,7 @@ namespace Gallio.TDNetRunner.UI.Preferences
             RequiresElevation = true;
         }
 
-        public ITestFrameworkManager FrameworkManager { get; set; }
+        public ITestFrameworkManager TestFrameworkManager { get; set; }
 
         public TDNetPreferenceManager PreferenceManager { get; set; }
 
@@ -63,10 +63,10 @@ namespace Gallio.TDNetRunner.UI.Preferences
 
         private void TDNetPreferencePane_Load(object sender, EventArgs e)
         {
-            foreach (var frameworkHandle in FrameworkManager.FrameworkHandles)
+            foreach (var testFrameworkHandle in TestFrameworkManager.TestFrameworkHandles)
             {
-                TestFrameworkTraits traits = frameworkHandle.GetTraits();
-                string frameworkId = frameworkHandle.Id;
+                TestFrameworkTraits traits = testFrameworkHandle.GetTraits();
+                string frameworkId = testFrameworkHandle.Id;
                 TDNetRunnerInstallationMode installationMode = PreferenceManager.GetInstallationModeForFramework(frameworkId);
                 int index = frameworkGridView.Rows.Add(traits.Name, InstallationModeToString(installationMode));
                 DataGridViewRow row = frameworkGridView.Rows[index];

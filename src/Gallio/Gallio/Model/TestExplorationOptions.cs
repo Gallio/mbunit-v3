@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using Gallio.Common.Collections;
 
 namespace Gallio.Model
 {
@@ -23,6 +24,54 @@ namespace Gallio.Model
     [Serializable]
     public sealed class TestExplorationOptions
     {
+        private readonly PropertySet properties;
+
+        /// <summary>
+        /// Creates a default set of test execution options.
+        /// </summary>
+        public TestExplorationOptions()
+        {
+            properties = new PropertySet();
+        }
+
+        /// <summary>
+        /// Gets a read-only collection of configuration properties for test exploration.
+        /// </summary>
+        public PropertySet Properties
+        {
+            get { return properties.AsReadOnly(); }
+        }
+
+        /// <summary>
+        /// Clears the collection of properties.
+        /// </summary>
+        public void ClearProperties()
+        {
+            properties.Clear();
+        }
+
+        /// <summary>
+        /// Adds a property key/value pair.
+        /// </summary>
+        /// <param name="key">The property key.</param>
+        /// <param name="value">The property value.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="key"/> or <paramref name="value"/> is null.</exception>
+        /// <exception cref="InvalidOperationException">Thrown if <paramref name="key"/> is already in the property set.</exception>
+        public void AddProperty(string key, string value)
+        {
+            properties.Add(key, value); // note: implicitly checks arguments
+        }
+
+        /// <summary>
+        /// Removes a property key/value pair.
+        /// </summary>
+        /// <param name="key">The property key.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="key"/> is null.</exception>
+        public void RemoveProperty(string key)
+        {
+            properties.Remove(key); // note: implicitly checks arguments
+        }
+
         /// <summary>
         /// Creates a copy of the options.
         /// </summary>
@@ -30,6 +79,7 @@ namespace Gallio.Model
         public TestExplorationOptions Copy()
         {
             var copy = new TestExplorationOptions();
+            copy.properties.AddAll(properties);
             return copy;
         }
     }

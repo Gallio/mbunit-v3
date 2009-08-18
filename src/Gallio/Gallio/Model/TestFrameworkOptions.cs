@@ -16,26 +16,26 @@
 using System;
 using Gallio.Common.Collections;
 
-namespace Gallio.Runtime.Debugging
+namespace Gallio.Model
 {
     /// <summary>
-    /// Provides options that configure the debugger.
+    /// Provides options that configure a test framework.
     /// </summary>
     [Serializable]
-    public sealed class DebuggerSetup
+    public sealed class TestFrameworkOptions
     {
         private readonly PropertySet properties;
 
         /// <summary>
-        /// Creates a default set of debugger options.
+        /// Creates a default set of test framework options.
         /// </summary>
-        public DebuggerSetup()
+        public TestFrameworkOptions()
         {
             properties = new PropertySet();
         }
 
         /// <summary>
-        /// Gets a read-only collection of configuration properties for the debugger.
+        /// Gets a read-only collection of configuration properties for the test framework.
         /// </summary>
         public PropertySet Properties
         {
@@ -76,9 +76,9 @@ namespace Gallio.Runtime.Debugging
         /// Creates a copy of the options.
         /// </summary>
         /// <returns>The copy.</returns>
-        public DebuggerSetup Copy()
+        public TestFrameworkOptions Copy()
         {
-            var copy = new DebuggerSetup();
+            var copy = new TestFrameworkOptions();
             copy.properties.AddAll(properties);
             return copy;
         }

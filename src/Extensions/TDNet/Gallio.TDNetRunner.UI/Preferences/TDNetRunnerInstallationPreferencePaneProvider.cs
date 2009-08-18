@@ -26,14 +26,14 @@ namespace Gallio.TDNetRunner.UI.Preferences
 {
     public class TDNetRunnerInstallationPreferencePaneProvider : IPreferencePaneProvider
     {
-        private readonly ITestFrameworkManager frameworkManager;
+        private readonly ITestFrameworkManager testFrameworkManager;
         private readonly TDNetPreferenceManager preferenceManager;
         private readonly IInstallerManager installerManager;
 
-        public TDNetRunnerInstallationPreferencePaneProvider(ITestFrameworkManager frameworkManager,
+        public TDNetRunnerInstallationPreferencePaneProvider(ITestFrameworkManager testFrameworkManager,
             TDNetPreferenceManager preferenceManager, IInstallerManager installerManager)
         {
-            this.frameworkManager = frameworkManager;
+            this.testFrameworkManager = testFrameworkManager;
             this.preferenceManager = preferenceManager;
             this.installerManager = installerManager;
         }
@@ -42,7 +42,7 @@ namespace Gallio.TDNetRunner.UI.Preferences
         {
             var preferencePane = new TDNetRunnerInstallationPreferencePane();
             preferencePane.PreferenceManager = preferenceManager;
-            preferencePane.FrameworkManager = frameworkManager;
+            preferencePane.TestFrameworkManager = testFrameworkManager;
             preferencePane.InstallerManager = installerManager;
             return preferencePane;
         }

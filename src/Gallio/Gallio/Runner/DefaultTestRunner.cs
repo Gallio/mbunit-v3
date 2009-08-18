@@ -233,8 +233,8 @@ namespace Gallio.Runner
                 {
                     try
                     {
-                        ITestDriver testDriver = testFrameworkManager.GetTestDriver(testPackage.IsFrameworkRequested,
-                            tappedLogger);
+                        ITestDriver testDriver = testFrameworkManager.GetTestDriver(
+                            testPackage.CreateTestFrameworkSelector(), tappedLogger);
 
                         using (testIsolationContext.BeginBatch(progressMonitor.SetStatus))
                         {
@@ -306,8 +306,8 @@ namespace Gallio.Runner
                 {
                     try
                     {
-                        ITestDriver testDriver = testFrameworkManager.GetTestDriver(testPackage.IsFrameworkRequested,
-                            tappedLogger);
+                        ITestDriver testDriver = testFrameworkManager.GetTestDriver(
+                            testPackage.CreateTestFrameworkSelector(), tappedLogger);
 
                         using (testIsolationContext.BeginBatch(progressMonitor.SetStatus))
                         {

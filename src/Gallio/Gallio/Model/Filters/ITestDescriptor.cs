@@ -42,7 +42,7 @@ namespace Gallio.Model.Filters
         /// <summary>
         /// Gets the test metadata.
         /// </summary>
+        /// <seealso cref="MetadataKeys"/>
         PropertyBag Metadata { get; }
-
     }
 }

@@ -34,6 +34,7 @@
     <file path="Resources\Fixture.ico" />
     <file path="Resources\Gallio.ico" />
     <file path="Resources\Test.ico" />
+    <file path="Resources\Unsupported.ico" />
   </files>
 
   <assemblies>
@@ -153,9 +154,22 @@
   </services>
   
   <components>
+    <component componentId="Gallio.FallbackTestFramework"
+               serviceId="Gallio.TestFramework"
+               componentType="Gallio.Model.FallbackTestFramework, Gallio">
+      <traits>
+        <name>Fallback</name>
+        <icon>plugin://Gallio/Resources/Gallio.ico</icon>
+      </traits>
+    </component>
+
     <component componentId="Gallio.TestFrameworkManager"
                serviceId="Gallio.TestFrameworkManager"
-               componentType="Gallio.Model.DefaultTestFrameworkManager, Gallio" />
+               componentType="Gallio.Model.DefaultTestFrameworkManager, Gallio">
+      <parameters>
+        <fallbackTestFrameworkHandle>${Gallio.FallbackTestFramework}</fallbackTestFrameworkHandle>
+      </parameters>
+    </component>
 
     <component componentId="Gallio.TestRunnerManager"
                serviceId="Gallio.TestRunnerManager"
@@ -579,6 +593,15 @@
         <name>Test</name>
         <description>A test case.</description>
         <icon>plugin://Gallio/Resources/Test.ico</icon>
+      </traits>
+    </component>
+
+    <component componentId="Gallio.TestKinds.Unsupported"
+               serviceId="Gallio.TestKind">
+      <traits>
+        <name>Unsupported</name>
+        <description>An unsupported test.</description>
+        <icon>plugin://Gallio/Resources/Unsupported.ico</icon>
       </traits>
     </component>
   </components>

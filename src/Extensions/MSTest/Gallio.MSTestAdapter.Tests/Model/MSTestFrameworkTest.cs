@@ -34,7 +34,7 @@ namespace Gallio.MSTestAdapter.Tests.Model
     [Author("Julian", "julian.hidalgo@gallio.org")]
     public class MSTestFrameworkTest : BaseTestFrameworkTest<SimpleTest>
     {
-        protected override ComponentHandle<ITestFramework, TestFrameworkTraits> FrameworkHandle
+        protected override ComponentHandle<ITestFramework, TestFrameworkTraits> TestFrameworkHandle
         {
             get
             {

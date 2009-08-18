@@ -33,7 +33,7 @@ namespace Gallio.TDNetRunner.Core
 {
     public class TDNetRunnerInstaller : BaseInstaller
     {
-        private readonly ITestFrameworkManager frameworkManager;
+        private readonly ITestFrameworkManager testFrameworkManager;
         private readonly IRegistry registry;
         private readonly ILogger logger;
         private readonly TDNetPreferenceManager preferenceManager;
@@ -44,10 +44,10 @@ namespace Gallio.TDNetRunner.Core
 
         public static readonly string InstallerId = "TDNetRunner.Installer";
 
-        public TDNetRunnerInstaller(ITestFrameworkManager frameworkManager, IRegistry registry, ILogger logger,
+        public TDNetRunnerInstaller(ITestFrameworkManager testFrameworkManager, IRegistry registry, ILogger logger,
             TDNetPreferenceManager preferenceManager)
         {
-            this.frameworkManager = frameworkManager;
+            this.testFrameworkManager = testFrameworkManager;
             this.registry = registry;
             this.logger = logger;
             this.preferenceManager = preferenceManager;
@@ -55,7 +55,7 @@ namespace Gallio.TDNetRunner.Core
 
         public override void Install(IProgressMonitor progressMonitor)
         {
-            using (progressMonitor.BeginTask("Installing TestDriven.Net Runner", frameworkManager.FrameworkHandles.Count + 2))
+            using (progressMonitor.BeginTask("Installing TestDriven.Net Runner", testFrameworkManager.TestFrameworkHandles.Count + 2))
             {
                 // Remove old registrations.
                 RemoveExistingRegistryKeys(progressMonitor);
@@ -68,17 +68,17 @@ namespace Gallio.TDNetRunner.Core
                 progressMonitor.Worked(1);
 
                 // Register frameworks
-                foreach (ComponentHandle<ITestFramework, TestFrameworkTraits> frameworkHandle in frameworkManager.FrameworkHandles)
+                foreach (ComponentHandle<ITestFramework, TestFrameworkTraits> testFrameworkHandle in testFrameworkManager.TestFrameworkHandles)
                 {
-                    TestFrameworkTraits frameworkTraits = frameworkHandle.GetTraits();
-                    TDNetRunnerInstallationMode installationMode = preferenceManager.GetInstallationModeForFramework(frameworkHandle.Id);
+                    TestFrameworkTraits testFrameworkTraits = testFrameworkHandle.GetTraits();
+                    TDNetRunnerInstallationMode installationMode = preferenceManager.GetInstallationModeForFramework(testFrameworkHandle.Id);
 
                     if (installationMode != TDNetRunnerInstallationMode.Disabled)
                     {
                         int priority = installationMode == TDNetRunnerInstallationMode.Default ? 25 : 5;
-                        foreach (AssemblySignature frameworkAssembly in frameworkTraits.FrameworkAssemblies)
+                        foreach (AssemblySignature frameworkAssembly in testFrameworkTraits.FrameworkAssemblies)
                         {
-                            InstallRegistryKeysForFramework(frameworkTraits.Name, frameworkAssembly, priority,
+                            InstallRegistryKeysForFramework(testFrameworkTraits.Name, frameworkAssembly, priority,
                                 progressMonitor);
                         }
                     }

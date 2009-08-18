@@ -31,7 +31,7 @@ namespace Gallio.Icarus.Tests.Controllers
             var testFrameworkManager = RuntimeAccessor.ServiceLocator.Resolve<ITestFrameworkManager>();
             var aboutController = new AboutController(testFrameworkManager);
 
-            Assert.AreEqual(testFrameworkManager.FrameworkHandles.Count, aboutController.TestFrameworks.Count);
+            Assert.AreEqual(testFrameworkManager.TestFrameworkHandles.Count, aboutController.TestFrameworks.Count);
         }
 
         [Test]

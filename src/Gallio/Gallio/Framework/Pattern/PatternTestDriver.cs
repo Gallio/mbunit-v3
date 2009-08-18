@@ -29,38 +29,38 @@ namespace Gallio.Framework.Pattern
     /// </summary>
     internal class PatternTestDriver : SimpleTestDriver
     {
-        private readonly string[] frameworkIds;
+        private readonly string[] testFrameworkIds;
         private readonly string frameworkName;
 
-        public PatternTestDriver(string[] frameworkIds, string frameworkName)
+        public PatternTestDriver(string[] testFrameworkIds, string testFrameworkName)
         {
-            this.frameworkIds = frameworkIds;
-            this.frameworkName = frameworkName;
+            this.testFrameworkIds = testFrameworkIds;
+            this.frameworkName = testFrameworkName;
         }
 
         protected override object[] GetRemoteTestDriverArguments()
         {
-            return new object[] { frameworkIds, frameworkName };
+            return new object[] { testFrameworkIds, frameworkName };
         }
 
         private IList<PatternTestFrameworkExtensionInfo> GetExtensions(IAssemblyInfo assembly)
         {
-            ITestFrameworkManager frameworkManager = RuntimeAccessor.ServiceLocator.Resolve<ITestFrameworkManager>();
+            var testFrameworkManager = RuntimeAccessor.ServiceLocator.Resolve<ITestFrameworkManager>();
 
             var extensions = new List<PatternTestFrameworkExtensionInfo>();
             IList<AssemblyName> assemblyReferences = assembly.GetReferencedAssemblies();
 
-            foreach (var frameworkHandle in frameworkManager.FrameworkHandles)
+            foreach (var testFrameworkHandle in testFrameworkManager.TestFrameworkHandles)
             {
-                if (Array.IndexOf(frameworkIds, frameworkHandle.Id) < 0)
+                if (Array.IndexOf(testFrameworkIds, testFrameworkHandle.Id) < 0)
                     continue;
 
-                if (frameworkHandle.GetTraits().IsFrameworkCompatibleWithAssemblyReferences(assemblyReferences))
+                if (testFrameworkHandle.GetTraits().IsFrameworkCompatibleWithAssemblyReferences(assemblyReferences))
                 {
                     try
                     {
-                        var framework = (PatternTestFramework) frameworkHandle.GetComponent();
-                        extensions.AddRange(framework.GetExtensions(assembly));
+                        var testFramework = (PatternTestFramework) testFrameworkHandle.GetComponent();
+                        extensions.AddRange(testFramework.GetExtensions(assembly));
                     }
                     catch (Exception ex)
                     {

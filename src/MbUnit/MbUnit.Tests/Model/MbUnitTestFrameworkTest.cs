@@ -35,7 +35,7 @@ namespace MbUnit.Tests.Model
     [Author("Jeff", "jeff@ingenio.com")]
     public class MbUnitTestFrameworkTest : BaseTestFrameworkTest<SimpleTest>
     {
-        protected override ComponentHandle<ITestFramework, TestFrameworkTraits> FrameworkHandle
+        protected override ComponentHandle<ITestFramework, TestFrameworkTraits> TestFrameworkHandle
         {
             get
             {

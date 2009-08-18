@@ -30,9 +30,12 @@ namespace Gallio.RSpecAdapter.Model
             return CreateTestDriver;
         }
 
-        private static ITestDriver CreateTestDriver(IList<ComponentHandle<ITestFramework, TestFrameworkTraits>> frameworkHandles, ILogger logger)
+        private static ITestDriver CreateTestDriver(
+            IList<ComponentHandle<ITestFramework, TestFrameworkTraits>> testFrameworkHandles,
+            TestFrameworkOptions testFrameworkOptions,
+            ILogger logger)
         {
-            return new RSpecTestDriver(logger, frameworkHandles[0].Descriptor.Plugin.BaseDirectory);
+            return new RSpecTestDriver(logger, testFrameworkHandles[0].Descriptor.Plugin.BaseDirectory);
         }
     }
 }

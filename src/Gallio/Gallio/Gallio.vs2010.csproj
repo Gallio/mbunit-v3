@@ -246,6 +246,11 @@
     <Compile Include="Model\Commands\ITestCommandFactory.cs" />
     <Compile Include="Model\Commands\NamespaceDoc.cs" />
     <Compile Include="Model\Contexts\NamespaceDoc.cs" />
+    <Compile Include="Model\FallbackTestDriver.cs" />
+    <Compile Include="Model\TestFrameworkSelection.cs" />
+    <Compile Include="Model\TestFrameworkOptions.cs" />
+    <Compile Include="Model\FallbackTestFramework.cs" />
+    <Compile Include="Model\TestFrameworkFallbackMode.cs" />
     <Compile Include="Model\Environments\BaseTestEnvironment.cs" />
     <Compile Include="Model\Environments\ConsoleTestEnvironment.cs" />
     <Compile Include="Model\Environments\ContextualLogTextWriter.cs" />
@@ -309,6 +314,7 @@
     <Compile Include="Model\Messages\NamespaceDoc.cs" />
     <Compile Include="Model\NamespaceDoc.cs" />
     <Compile Include="Model\Schema\NamespaceDoc.cs" />
+    <Compile Include="Model\TestFrameworkSelector.cs" />
     <Compile Include="Model\TestKindTraits.cs" />
     <Compile Include="Model\Schema\TestPackageData.cs">
       <SubType>Code</SubType>
@@ -1028,6 +1034,7 @@
     <Content Include="Gallio.plugin" />
     <Content Include="Resources\Assembly.ico" />
     <Content Include="Resources\Container.ico" />
+    <Content Include="Resources\Unsupported.ico" />
     <Content Include="Resources\Fixture.ico" />
     <Content Include="Resources\Gallio.ico" />
     <Content Include="Resources\Test.ico" />

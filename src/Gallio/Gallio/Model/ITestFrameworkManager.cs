@@ -15,6 +15,9 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
+using Gallio.Common.Collections;
+using Gallio.Common.Reflection;
 using Gallio.Runtime.Extensibility;
 using Gallio.Runtime.Logging;
 
@@ -28,16 +31,42 @@ namespace Gallio.Model
         /// <summary>
         /// Gets handles for all registered test frameworks.
         /// </summary>
-        IList<ComponentHandle<ITestFramework, TestFrameworkTraits>> FrameworkHandles { get; }
+        IList<ComponentHandle<ITestFramework, TestFrameworkTraits>> TestFrameworkHandles { get; }
+
+        /// <summary>
+        /// Gets the handle of the fallback test framework used when no other
+        /// framework supports a given test file.
+        /// </summary>
+        ComponentHandle<ITestFramework, TestFrameworkTraits> FallbackTestFrameworkHandle { get; }
 
         /// <summary>
         /// Gets an aggregate test driver for selected frameworks.
         /// </summary>
-        /// <param name="frameworkIdFilter">A predicate to select which frameworks should
-        /// be consulted based on the framework id, or null to include all frameworks.</param>
+        /// <param name="selector">The test framework selector.</param>
         /// <param name="logger">The logger for the test driver.</param>
         /// <returns>The test driver.</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="logger"/> is null.</exception>
-        ITestDriver GetTestDriver(Predicate<string> frameworkIdFilter, ILogger logger);
+        /// <exception cref="ArgumentNullException">Thrown if 
+        /// <paramref name="selector"/> or <paramref name="logger"/> is null.</exception>
+        ITestDriver GetTestDriver(TestFrameworkSelector selector, ILogger logger);
+
+        /// <summary>
+        /// Selects the test frameworks to use for a collection of files.
+        /// </summary>
+        /// <param name="selector">The test framework selector.</param>
+        /// <param name="files">The test files.</param>
+        /// <returns>The map of test framework selections to their associated test files.</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="selector"/>
+        /// or <paramref name="files"/> is null or contains null.</exception>
+        IMultiMap<TestFrameworkSelection, FileInfo> SelectTestFrameworksForFiles(TestFrameworkSelector selector, ICollection<FileInfo> files);
+
+        /// <summary>
+        /// Selects the test frameworks to use for a collection of code elements.
+        /// </summary>
+        /// <param name="selector">The test framework selector.</param>
+        /// <param name="codeElements">The code elements.</param>
+        /// <returns>The map of test framework selections to their associated code elements.</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="selector"/>
+        /// or <paramref name="codeElements"/> is null or contains null.</exception>
+        IMultiMap<TestFrameworkSelection, ICodeElementInfo> SelectTestFrameworksForCodeElements(TestFrameworkSelector selector, ICollection<ICodeElementInfo> codeElements);
     }
 }

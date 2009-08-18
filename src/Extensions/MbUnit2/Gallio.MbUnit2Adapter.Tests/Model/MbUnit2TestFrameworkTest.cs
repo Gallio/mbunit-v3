@@ -34,7 +34,7 @@ namespace Gallio.MbUnit2Adapter.Tests.Model
     [Author("Jeff", "jeff@ingenio.com")]
     public class MbUnit2TestFrameworkTest : BaseTestFrameworkTest<SimpleTest>
     {
-        protected override ComponentHandle<ITestFramework, TestFrameworkTraits> FrameworkHandle
+        protected override ComponentHandle<ITestFramework, TestFrameworkTraits> TestFrameworkHandle
         {
             get
             {

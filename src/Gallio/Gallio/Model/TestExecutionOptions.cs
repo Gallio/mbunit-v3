@@ -15,6 +15,7 @@
 
 using System;
 using System.Threading;
+using Gallio.Common.Collections;
 using Gallio.Model.Filters;
 
 namespace Gallio.Model
@@ -25,11 +26,21 @@ namespace Gallio.Model
     [Serializable]
     public sealed class TestExecutionOptions
     {
-        private FilterSet<ITestDescriptor> filterSet = FilterSet<ITestDescriptor>.Empty;
+        private readonly PropertySet properties;
+        private FilterSet<ITestDescriptor> filterSet;
         private bool skipDynamicTests;
         private bool skipTestExecution;
         private bool exactFilter;
         private bool singleThreaded;
+
+        /// <summary>
+        /// Creates a default set of test execution options.
+        /// </summary>
+        public TestExecutionOptions()
+        {
+            filterSet = FilterSet<ITestDescriptor>.Empty;
+            properties = new PropertySet();
+        }
 
         /// <summary>
         /// Gets or sets the filter set.
@@ -116,6 +127,44 @@ namespace Gallio.Model
         }
 
         /// <summary>
+        /// Gets a read-only collection of configuration properties for test execution.
+        /// </summary>
+        public PropertySet Properties
+        {
+            get { return properties.AsReadOnly(); }
+        }
+
+        /// <summary>
+        /// Clears the collection of properties.
+        /// </summary>
+        public void ClearProperties()
+        {
+            properties.Clear();
+        }
+
+        /// <summary>
+        /// Adds a property key/value pair.
+        /// </summary>
+        /// <param name="key">The property key.</param>
+        /// <param name="value">The property value.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="key"/> or <paramref name="value"/> is null.</exception>
+        /// <exception cref="InvalidOperationException">Thrown if <paramref name="key"/> is already in the property set.</exception>
+        public void AddProperty(string key, string value)
+        {
+            properties.Add(key, value); // note: implicitly checks arguments
+        }
+
+        /// <summary>
+        /// Removes a property key/value pair.
+        /// </summary>
+        /// <param name="key">The property key.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="key"/> is null.</exception>
+        public void RemoveProperty(string key)
+        {
+            properties.Remove(key); // note: implicitly checks arguments
+        }
+
+        /// <summary>
         /// Creates a copy of the options.
         /// </summary>
         /// <returns>The copy.</returns>
@@ -128,6 +177,7 @@ namespace Gallio.Model
             copy.skipDynamicTests = skipDynamicTests;
             copy.skipTestExecution = skipTestExecution;
             copy.singleThreaded = singleThreaded;
+            copy.properties.AddAll(properties);
 
             return copy;
         }
