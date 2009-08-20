@@ -349,7 +349,6 @@
       <Output TaskParameter="ExitCode" PropertyName="ExitCode" />
     </Exec>
 
-<!--
     <NCoverReporting Condition="$(Coverage) and Exists('Coverage.xml')"
                     CoverageDataPaths="Coverage.xml"
                     OutputPath="$(ReportDir)\CoverageReport.xml"
@@ -364,7 +363,6 @@
 
     <Exec Command="cscript //nologo &quot;$(BinDir)\Run.vbs&quot; &quot;'$(NCoverInstallDir)\NCover.Explorer.exe' Coverage.xml&quot;"
           Condition="$(ShowReports) and $(Coverage) and Exists('Coverage.xml')" />
-	  -->
 
     <Error Text="Some tests failed!"
              Condition="'$(ExitCode)'!='0' and ! $(IgnoreFailures)" />
