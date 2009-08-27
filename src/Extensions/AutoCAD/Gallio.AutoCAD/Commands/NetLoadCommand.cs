@@ -13,35 +13,47 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace Gallio.AutoCAD.Commands
 {
     /// <summary>
     /// Maps to the <c>NETLOAD</c> command.
     /// </summary>
-    internal class NetLoadCommand : AcadCommand
+    public class NetLoadCommand : AcadCommand
     {
+        private readonly string assemblyPath;
+
         /// <summary>
         /// Initializes a new <see cref="NetLoadCommand"/> object.
         /// </summary>
-        public NetLoadCommand()
+        public NetLoadCommand(string assemblyPath)
             : base("NETLOAD")
         {
+            if (assemblyPath == null)
+                throw new ArgumentNullException("assemblyPath");
+            if (assemblyPath.Length == 0)
+                throw new ArgumentException("String can't be empty.", "assemblyPath");
+            if (assemblyPath.IndexOfAny(Path.GetInvalidPathChars()) != -1)
+                throw new ArgumentException("Path contains invalid characters.", "assemblyPath");
+
+            this.assemblyPath = assemblyPath;
         }
 
         /// <inheritdoc/>
-        public override IEnumerable<string> Arguments
+        protected override IEnumerable<string> GetArgumentsImpl()
         {
-            get
-            {
-                yield return AssemblyPath;
-            }
+            yield return AssemblyPath;
         }
 
         /// <summary>
         /// Gets or sets the path to the assembly to load.
         /// </summary>
-        public string AssemblyPath { get; set; }
+        public string AssemblyPath
+        {
+            get { return assemblyPath; }
+        }
     }
 }

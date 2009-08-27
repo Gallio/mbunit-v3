@@ -13,19 +13,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
+using System.Diagnostics;
 
-namespace Gallio.AutoCAD.Native
+namespace Gallio.Common.Concurrency
 {
     /// <summary>
-    /// Contains constants for windows messages.
+    /// Default implementation of <see cref="IProcessCreator"/> using <see cref="Process"/>.
     /// </summary>
-    internal static class MessageTypes
+    public class ProcessCreator : IProcessCreator
     {
-        /// <summary>
-        /// An application sends the <c>WM_COPYDATA</c> message
-        /// to pass data to another application. 
-        /// </summary>
-        public const uint WM_COPYDATA = 0x4A;
+        /// <inheritdoc/>
+        public IProcess Start(ProcessStartInfo startInfo)
+        {
+            return new ProcessWrapper(Process.Start(startInfo));
+        }
     }
 }

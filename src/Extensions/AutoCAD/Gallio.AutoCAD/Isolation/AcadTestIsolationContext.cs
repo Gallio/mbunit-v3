@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using Gallio.AutoCAD.ProcessManagement;
 using Gallio.Common;
 using Gallio.Model.Isolation;
 using Gallio.Runtime.Debugging;
@@ -30,8 +31,8 @@ namespace Gallio.AutoCAD.Isolation
     {
         private static readonly TimeSpan ShutdownTimeout = TimeSpan.FromSeconds(5);
 
-        private readonly IAcadProcessFactory processFactory;
         private readonly ILogger logger;
+        private readonly IAcadProcess process;
 
         private Batch batch;
 
@@ -39,26 +40,19 @@ namespace Gallio.AutoCAD.Isolation
         /// Creates a test isolation context.
         /// </summary>
         /// <param name="logger">The logger.</param>
-        /// <param name="processFactory">The AutoCAD process factory.</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="logger"/>
-        /// or <paramref name="processFactory"/> is null.</exception>
-        public AcadTestIsolationContext(ILogger logger, IAcadProcessFactory processFactory)
+        /// <param name="process">The AutoCAD process.</param>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if <paramref name="logger"/> or <paramref name="process"/> is null.
+        /// </exception>
+        public AcadTestIsolationContext(ILogger logger, IAcadProcess process)
         {
             if (logger == null)
                 throw new ArgumentNullException("logger");
-            if (processFactory == null)
-                throw new ArgumentNullException("processFactory");
+            if (process == null)
+                throw new ArgumentNullException("process");
 
-            this.processFactory = processFactory;
             this.logger = logger;
-        }
-
-        /// <summary>
-        /// Gets the AutoCAD process factory.
-        /// </summary>
-        public IAcadProcessFactory ProcessFactory
-        {
-            get { return processFactory; }
+            this.process = process;
         }
 
         /// <inheritdoc />
@@ -70,7 +64,7 @@ namespace Gallio.AutoCAD.Isolation
         /// <inheritdoc />
         protected override IDisposable BeginBatchImpl(StatusReporter statusReporter)
         {
-            batch = new Batch(statusReporter, processFactory);
+            batch = new Batch(statusReporter, process);
             return batch;
         }
 
@@ -87,18 +81,25 @@ namespace Gallio.AutoCAD.Isolation
             return server.RunIsolatedTaskOnClient(typeof(TIsolatedTask), args);
         }
 
+        /// <summary>
+        /// Gets the AutoCAD process used by the isolation context.
+        /// </summary>
+        public IAcadProcess Process
+        {
+            get { return process; }
+        }
+
         private sealed class Batch : IDisposable
         {
             private readonly StatusReporter statusReporter;
-            private readonly IAcadProcessFactory processFactory;
+            private readonly IAcadProcess process;
 
             private TestIsolationServer server;
-            private IAcadProcess process;
 
-            public Batch(StatusReporter statusReporter, IAcadProcessFactory processFactory)
+            public Batch(StatusReporter statusReporter, IAcadProcess process)
             {
                 this.statusReporter = statusReporter;
-                this.processFactory = processFactory;
+                this.process = process;
             }
 
             public TestIsolationServer GetTestIsolationServer(DebuggerSetup debuggerSetup)
@@ -114,8 +115,7 @@ namespace Gallio.AutoCAD.Isolation
                     string ipcPortName = "AcadTestIsolationContext." + Hash64.CreateUniqueHash();
                     Guid uniqueId = Guid.NewGuid();
                     server = new TestIsolationServer(ipcPortName, uniqueId);
-                    process = processFactory.CreateProcess(debuggerSetup);
-                    process.Start(ipcPortName, uniqueId, gallioLoaderAssemblyPath);
+                    process.Start(ipcPortName, uniqueId, gallioLoaderAssemblyPath, debuggerSetup);
                     return server;
                 }
                 catch

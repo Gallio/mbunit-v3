@@ -51,10 +51,14 @@ namespace Gallio.AutoCAD.Tests.Integration
 
             Runner.TestRunnerFactoryName = "AutoCAD";
 
+            // Suppress the potential attach-to-existing option coming out
+            // of user persistent preferences (IAcadPreferenceManager).
+            Runner.TestRunnerOptions.AddProperty("AcadAttachToExisting", "false");
+
             if (AttachDebugger)
+            {
                 Runner.TestPackage.DebuggerSetup = new DebuggerSetup();
-            else
-                Runner.TestPackage.AddProperty("AcadAttachExisting", "true");
+            }
         }
     }
 }

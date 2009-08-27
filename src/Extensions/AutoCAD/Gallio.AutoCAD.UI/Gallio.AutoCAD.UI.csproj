@@ -1,14 +1,14 @@
-﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>10.0.20506</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{F7F0D285-79D0-452A-A791-84B174C1546E}</ProjectGuid>
+    <ProjectGuid>{5F9B23E4-1CCF-46FE-B0FC-C1E58B2EE83A}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Gallio.AutoCAD</RootNamespace>
-    <AssemblyName>Gallio.AutoCAD</AssemblyName>
+    <RootNamespace>Gallio.AutoCAD.UI</RootNamespace>
+    <AssemblyName>Gallio.AutoCAD.UI</AssemblyName>
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\..\Key.snk</AssemblyOriginatorKeyFile>
@@ -21,8 +21,8 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Gallio.AutoCAD.xml</DocumentationFile>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <DocumentationFile>bin\Gallio.AutoCAD.UI.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -31,46 +31,45 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Gallio.AutoCAD.xml</DocumentationFile>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <DocumentationFile>bin\Gallio.AutoCAD.UI.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Commands\AcadCommand.cs" />
-    <Compile Include="Commands\CopyDataCommandRunner.cs" />
-    <Compile Include="Commands\CreateEndpointAndWaitCommand.cs" />
-    <Compile Include="Commands\IAcadCommandRunner.cs" />
-    <Compile Include="Commands\NetLoadCommand.cs" />
-    <Compile Include="Isolation\AcadTestIsolationContext.cs" />
-    <Compile Include="Isolation\AcadTestIsolationProvider.cs" />
-    <Compile Include="Preferences\AcadPreferenceManager.cs" />
-    <Compile Include="Preferences\IAcadPreferenceManager.cs" />
-    <Compile Include="Preferences\StartupAction.cs" />
-    <Compile Include="ProcessManagement\AcadProcessBase.cs" />
-    <Compile Include="ProcessManagement\AcadProcessFactory.cs" />
-    <Compile Include="ProcessManagement\CreatedAcadProcess.cs" />
-    <Compile Include="ProcessManagement\ExistingAcadProcess.cs" />
-    <Compile Include="ProcessManagement\IAcadProcess.cs" />
-    <Compile Include="ProcessManagement\IAcadProcessFactory.cs" />
-    <Compile Include="AcadLocator.cs" />
-    <Compile Include="AcadPluginLocator.cs" />
-    <Compile Include="IAcadLocator.cs" />
+    <Compile Include="ControlPanel\StartupPreferencePane.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ControlPanel\StartupPreferencePane.Designer.cs">
+      <DependentUpon>StartupPreferencePane.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ControlPanel\StartupPreferencePaneProvider.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Gallio.AutoCAD.plugin" />
-    <Content Include="Readme - Debugging.txt" />
-    <None Include="Resources\Gallio.AutoCAD.ico" />
+    <EmbeddedResource Include="ControlPanel\StartupPreferencePane.resx">
+      <DependentUpon>StartupPreferencePane.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Gallio\Gallio\Gallio.vs2010.csproj">
-      <Project>{6CAB7735-05DA-480D-9A04-50615B00F886}</Project>
-      <Name>Gallio.vs2010</Name>
+    <ProjectReference Include="..\..\..\Gallio\Gallio.UI\Gallio.UI.csproj">
+      <Project>{36B1F505-995B-41E7-AAC9-1E845B08F2D7}</Project>
+      <Name>Gallio.UI</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\Gallio\Gallio\Gallio.csproj">
+      <Project>{6CAB7735-05DA-480D-9A04-50615B00F886}</Project>
+      <Name>Gallio %28Gallio\Gallio%29</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Gallio.AutoCAD\Gallio.AutoCAD.csproj">
+      <Project>{F7F0D285-79D0-452A-A791-84B174C1546E}</Project>
+      <Name>Gallio.AutoCAD</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Gallio.AutoCAD.UI.plugin" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

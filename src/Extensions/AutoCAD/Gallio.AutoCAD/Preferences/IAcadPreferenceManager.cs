@@ -13,33 +13,35 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
-using Gallio.Runtime.Debugging;
-
-namespace Gallio.AutoCAD
+namespace Gallio.AutoCAD.Preferences
 {
     /// <summary>
-    /// Creates <see cref="IAcadProcess"/> objects.
+    /// Defines user configurable preferences for Gallio's AutoCAD integration components.
     /// </summary>
-    public interface IAcadProcessFactory
+    public interface IAcadPreferenceManager
     {
         /// <summary>
-        /// Creates a new AutoCAD process.
+        /// Command line arguments to be passed to new AutoCAD processes.
         /// </summary>
-        /// <param name="debuggerSetup">The debugger setup options, or null if not debugging.</param>
-        /// <returns>The new process.</returns>
-        IAcadProcess CreateProcess(DebuggerSetup debuggerSetup);
+        string CommandLineArguments
+        { get; set; }
 
         /// <summary>
-        /// Gets or sets the path to <c>acad.exe</c>.
+        /// Specifies the <see cref="StartupAction"/>.
         /// </summary>
-        string AcadExePath { get; set; }
+        StartupAction StartupAction
+        { get; set; }
 
         /// <summary>
-        /// Set to <c>true</c> to have Gallio attach to an existing
-        /// AutoCAD process; otherwise, set to false to always create
-        /// new AutoCAD instances.
+        /// The path to the AutoCAD executable to use for new processes.
         /// </summary>
-        bool AttachToExistingProcess { get; set; }
+        string UserSpecifiedExecutable
+        { get; set; }
+
+        /// <summary>
+        /// The working directory to use for new AutoCAD processes.
+        /// </summary>
+        string WorkingDirectory
+        { get; set; }
     }
 }

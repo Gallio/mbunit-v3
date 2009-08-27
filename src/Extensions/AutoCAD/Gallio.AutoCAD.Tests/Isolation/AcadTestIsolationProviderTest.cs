@@ -13,11 +13,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
 using Gallio.AutoCAD.Isolation;
+using Gallio.AutoCAD.ProcessManagement;
 using Gallio.Model.Isolation;
 using Gallio.Runtime.Logging;
-using Gallio.Tests;
 using MbUnit.Framework;
 using Rhino.Mocks;
 
@@ -26,42 +25,21 @@ namespace Gallio.AutoCAD.Tests.Isolation
     [TestsOn(typeof(AcadTestIsolationProvider))]
     public class AcadTestIsolationProviderTest
     {
+        private readonly ILogger logger = MockRepository.GenerateStub<ILogger>();
+
         [Test]
         public void CreateContext_ReturnsAnAcadTestIsolationContext()
         {
-            AcadTestIsolationProvider provider = new AcadTestIsolationProvider();
-            TestIsolationOptions testIsolationOptions = new TestIsolationOptions();
-            ILogger logger = MockRepository.GenerateStub<ILogger>();
+            var options = new TestIsolationOptions();
+            var process = MockRepository.GenerateStub<IAcadProcess>();
+            var processFactory = MockRepository.GenerateStub<IAcadProcessFactory>();
+            processFactory.Stub(x => x.CreateProcess(Arg.Is(options))).Return(process);
 
-            ITestIsolationContext context = provider.CreateContext(testIsolationOptions, logger);
+            var provider = new AcadTestIsolationProvider(processFactory);
+
+            var context = provider.CreateContext(options, logger);
 
             Assert.IsInstanceOfType<AcadTestIsolationContext>(context);
-        }
-
-        [Test]
-        public void CreateContext_WhenAcadExePathPropertyProvided_SetsAcadExePathOfProcessFactory()
-        {
-            AcadTestIsolationProvider provider = new AcadTestIsolationProvider();
-            TestIsolationOptions testIsolationOptions = new TestIsolationOptions();
-            ILogger logger = MockRepository.GenerateStub<ILogger>();
-            testIsolationOptions.AddProperty("AcadExePath", @"C:\path\to\acad.exe");
-
-            var context = (AcadTestIsolationContext) provider.CreateContext(testIsolationOptions, logger);
-
-            Assert.AreEqual(@"C:\path\to\acad.exe", context.ProcessFactory.AcadExePath);
-        }
-
-        [Test]
-        public void CreateContext_WhenAcadAttachToExistingPropertyProvided_SetsAttachToExistingProcessfProcessFactory()
-        {
-            AcadTestIsolationProvider provider = new AcadTestIsolationProvider();
-            TestIsolationOptions testIsolationOptions = new TestIsolationOptions();
-            ILogger logger = MockRepository.GenerateStub<ILogger>();
-            testIsolationOptions.AddProperty("AcadAttachToExisting", @"true");
-
-            var context = (AcadTestIsolationContext)provider.CreateContext(testIsolationOptions, logger);
-
-            Assert.IsTrue(context.ProcessFactory.AttachToExistingProcess);
         }
     }
 }

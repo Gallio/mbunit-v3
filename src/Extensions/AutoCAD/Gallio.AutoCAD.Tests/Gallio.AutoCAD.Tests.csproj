@@ -40,10 +40,12 @@
     <Reference Include="AcDbMgd, Version=17.0.51.0, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\libs\AcDbMgd.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="AcMgd, Version=17.0.51.0, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\libs\AcMgd.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Rhino.Mocks, Version=3.1.0.584, Culture=neutral, PublicKeyToken=0b3305902db7183f, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -57,10 +59,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Commands\CreateEndpointAndWaitCommandTest.cs" />
+    <Compile Include="Commands\NetLoadCommandTest.cs" />
     <Compile Include="Integration\AcadSampleTest.cs" />
     <Compile Include="Integration\RunAcadSampleTest.cs" />
     <Compile Include="Isolation\AcadTestIsolationProviderTest.cs" />
     <Compile Include="Isolation\AcadTestIsolationContextTest.cs" />
+    <Compile Include="ProcessManagement\AcadProcessFactoryTest.cs" />
+    <Compile Include="ProcessManagement\CreatedAcadProcessTest.cs" />
+    <Compile Include="ProcessManagement\ExistingAcadProcessTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

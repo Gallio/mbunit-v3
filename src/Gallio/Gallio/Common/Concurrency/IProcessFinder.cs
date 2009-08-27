@@ -13,26 +13,22 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Gallio.AutoCAD.Isolation;
-using Gallio.AutoCAD.ProcessManagement;
-using Gallio.Runtime.Logging;
-using MbUnit.Framework;
-using Rhino.Mocks;
+using System.Diagnostics;
 
-namespace Gallio.AutoCAD.Tests.Isolation
+namespace Gallio.Common.Concurrency
 {
-    [TestsOn(typeof(AcadTestIsolationContext))]
-    public class AcadTestIsolationContextTest
+    /// <summary>
+    /// Wraps the static process query methods on <see cref="Process"/> to allow testing.
+    /// </summary>
+    public interface IProcessFinder
     {
-        [Test]
-        public void RequiresSingleThreadedExecution_ReturnsTrue()
-        {
-            var logger = MockRepository.GenerateStub<ILogger>();
-            var process = MockRepository.GenerateStub<IAcadProcess>();
-
-            var context = new AcadTestIsolationContext(logger, process);
-
-            Assert.IsTrue(context.RequiresSingleThreadedExecution);
-        }
+        /// <summary>
+        /// Creates an array of <see cref="IProcess"/> objects for all
+        /// processes on the local compuer that share the specified name.
+        /// </summary>
+        /// <param name="processName">The friendly name of he process.</param>
+        /// <returns>An array of <see cref="IProcess"/> objects.</returns>
+        /// <seealso cref="Process.GetProcessesByName(string)"/>
+        IProcess[] GetProcessesByName(string processName);
     }
 }

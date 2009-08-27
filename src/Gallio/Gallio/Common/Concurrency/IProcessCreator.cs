@@ -13,26 +13,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Gallio.AutoCAD.Isolation;
-using Gallio.AutoCAD.ProcessManagement;
-using Gallio.Runtime.Logging;
-using MbUnit.Framework;
-using Rhino.Mocks;
+using System.Diagnostics;
 
-namespace Gallio.AutoCAD.Tests.Isolation
+namespace Gallio.Common.Concurrency
 {
-    [TestsOn(typeof(AcadTestIsolationContext))]
-    public class AcadTestIsolationContextTest
+    /// <summary>
+    /// Wraps the static process creation methods on <see cref="Process"/> to allow testing.
+    /// </summary>
+    public interface IProcessCreator
     {
-        [Test]
-        public void RequiresSingleThreadedExecution_ReturnsTrue()
-        {
-            var logger = MockRepository.GenerateStub<ILogger>();
-            var process = MockRepository.GenerateStub<IAcadProcess>();
-
-            var context = new AcadTestIsolationContext(logger, process);
-
-            Assert.IsTrue(context.RequiresSingleThreadedExecution);
-        }
+        /// <summary>
+        /// Starts the process and associates it with a new <see cref="IProcess"/> object.
+        /// </summary>
+        /// <param name="startInfo">The process start info.</param>
+        /// <returns>The new process.</returns>
+        IProcess Start(ProcessStartInfo startInfo);
     }
 }
