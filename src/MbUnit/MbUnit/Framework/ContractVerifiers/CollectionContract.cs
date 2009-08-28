@@ -428,7 +428,7 @@ namespace MbUnit.Framework.ContractVerifiers
 
                 foreach (var item in DistinctInstances)
                 {
-                    if (!initialContent.Contains(item))
+                    if (!IsReadOnly && !initialContent.Contains(item))
                     {
                         handler.AddSingleItemOk(item);
                     }

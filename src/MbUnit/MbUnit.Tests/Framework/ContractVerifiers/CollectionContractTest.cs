@@ -23,6 +23,7 @@ using Gallio.Tests.Integration;
 using MbUnit.Framework;
 using MbUnit.Framework.ContractVerifiers;
 using System.Collections.Generic;
+using System.Collections;
 
 namespace MbUnit.Tests.Framework.ContractVerifiers
 {
@@ -69,6 +70,7 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
         [Row(typeof(ReadOnlySampleTest), "AddItems", TestStatus.Inconclusive)]
         [Row(typeof(ReadOnlySampleTest), "ClearItems", TestStatus.Inconclusive)]
         [Row(typeof(ReadOnlySampleTest), "RemoveItems", TestStatus.Inconclusive)]
+        [Row(typeof(ReadOnlySampleTest), "CopyTo", TestStatus.Passed)]
         [Row(typeof(NotReadOnlySampleTest), "VerifyReadOnlyProperty", TestStatus.Failed)]
         [Row(typeof(NotReadOnlySampleTest), "AddShouldThrowException", TestStatus.Failed)]
         [Row(typeof(NotReadOnlySampleTest), "RemoveShouldThrowException", TestStatus.Failed)]
@@ -281,7 +283,7 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
                 return items.GetEnumerator();
             }
 
-            System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+            IEnumerator IEnumerable.GetEnumerator()
             {
                 foreach (T item in items)
                 {
