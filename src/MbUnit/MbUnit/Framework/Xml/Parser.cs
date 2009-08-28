@@ -26,9 +26,6 @@ namespace MbUnit.Framework.Xml
     /// </summary>
     public class Parser
     {
-        // TODO: Support "CDATA" and "Comment" nodes.
-        // TODO: Possibly support "Entity" and "Notation" nodes.
-
         private readonly string xml;
 
         /// <summary>
@@ -97,6 +94,10 @@ namespace MbUnit.Framework.Xml
 
                         case XmlNodeType.Element:
                             children.Add(ParseElement(reader));
+                            break;
+
+                        case XmlNodeType.Comment:
+                            children.Add(new Comment(reader.Value));
                             break;
 
                         default:

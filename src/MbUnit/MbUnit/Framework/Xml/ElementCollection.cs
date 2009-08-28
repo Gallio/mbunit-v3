@@ -22,7 +22,7 @@ using System.Collections;
 namespace MbUnit.Framework.Xml
 {
     /// <summary>
-    /// A collection of elements in an XML fragment.
+    /// A collection of nodes in an XML fragment.
     /// </summary>
     public class ElementCollection : Node, IDiffableCollection<ElementCollection, Element>
     {

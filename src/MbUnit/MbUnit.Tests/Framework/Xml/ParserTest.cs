@@ -43,6 +43,8 @@ namespace MbUnit.Tests.Framework.Xml
         [Row("<?xml version=\"1.0\"?><Node/>")]
         [Row("<Node value=\"hello\"/>")]
         [Row("<Node value1=\"123\" value2=\"456\"/>")]
+        [Row("<Root><!-- Some comments here... --></Root>")]
+        [Row("<Root><Child1/><!-- Some comments here... --><Child2/></Root>")]
         public void Parse_xml_tree(string input)
         {
             var parser = new Parser(input);

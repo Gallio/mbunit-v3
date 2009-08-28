@@ -200,6 +200,7 @@
     <Compile Include="Framework\XmlEqualityOptions.cs" />
     <Compile Include="Framework\Xml\Attribute.cs" />
     <Compile Include="Framework\Xml\AttributeCollection.cs" />
+    <Compile Include="Framework\Xml\Comment.cs" />
     <Compile Include="Framework\Xml\IDiffableCollection.cs" />
     <Compile Include="Framework\Xml\DiffEngineForOrderedItems.cs" />
     <Compile Include="Framework\Xml\DiffEngineForUnorderedElements.cs" />

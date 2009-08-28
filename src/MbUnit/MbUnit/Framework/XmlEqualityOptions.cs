@@ -16,9 +16,9 @@ namespace MbUnit.Framework
         /// </summary>
         /// <remarks>
         /// The default options specify to ignore the elements/attributes order, but not the case. It is
-        /// equal to <see cref="IgnoreAllOrder"/>.
+        /// equal to the combination of <see cref="IgnoreAllOrder"/> and <see cref="IgnoreComments"/>.
         /// </remarks>
-        Default = IgnoreAllOrder,
+        Default = IgnoreAllOrder | IgnoreComments,
 
         /// <summary>
         /// Strict equality.
@@ -74,6 +74,14 @@ namespace MbUnit.Framework
         IgnoreAttributesOrder = 32,
 
         /// <summary>
+        /// Ignores the comment tags.
+        /// </summary>
+        /// <example><![CDATA[ 
+        /// "<!-- This is a comment... -->".
+        /// ]]></example>
+        IgnoreComments = 64,
+
+        /// <summary>
         /// Ignores the case of the name and the value of the XML elements.
         /// </summary>
         /// <remarks>
@@ -110,8 +118,8 @@ namespace MbUnit.Framework
         /// Ignores any order and any case.
         /// </summary>
         /// <remarks>
-        /// Combines <see cref="IgnoreAllCase"/> and <see cref="IgnoreElementsOrder"/>.
+        /// Combines <see cref="IgnoreAllCase"/>, <see cref="IgnoreComments"/>, and <see cref="IgnoreElementsOrder"/>.
         /// </remarks>
-        Loose = IgnoreAllCase | IgnoreElementsOrder
+        Loose = IgnoreAllCase | IgnoreElementsOrder | IgnoreComments
     }
 }

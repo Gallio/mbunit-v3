@@ -92,9 +92,9 @@ namespace MbUnit.Tests.Framework
 
         [Test]
         [Factory("ProvideXmlData")]
-        public void AreEqual_fails(string expectedXml, string actualXml, ExpectedFailureData[] expectedErrors)
+        public void AreEqual_fails(string expectedXml, string actualXml, XmlEqualityOptions options, ExpectedFailureData[] expectedErrors)
         {
-            AssertionFailure[] failures = AssertTest.Capture(() => Assert.Xml.AreEqual(expectedXml, actualXml));
+            AssertionFailure[] failures = AssertTest.Capture(() => Assert.Xml.AreEqual(expectedXml, actualXml, options));
             Assert.AreEqual(1, failures.Length);
             Assert.AreElementsEqualIgnoringOrder(
                 expectedErrors.Select(x => x.ToString()),
@@ -110,6 +110,7 @@ namespace MbUnit.Tests.Framework
                 { 
                     "<Node>Hello</Node>", 
                     "<Node>Salut</Node>",
+                    XmlEqualityOptions.Default,
                     new[] 
                     { 
                         new ExpectedFailureData
@@ -126,6 +127,7 @@ namespace MbUnit.Tests.Framework
                 { 
                     "<Root><Parent><Child>Hello</Child></Parent></Root>", 
                     "<Root><Parent><Child>Salut</Child></Parent></Root>",
+                    XmlEqualityOptions.Default,
                     new[] 
                     { 
                         new ExpectedFailureData
@@ -142,6 +144,7 @@ namespace MbUnit.Tests.Framework
                 { 
                     "<Root><Parent><Child>Hello</Child></Parent></Root>", 
                     "<Root><Parent><Môme>Salut</Môme></Parent></Root>",
+                    XmlEqualityOptions.Default,
                     new[] 
                     { 
                         new ExpectedFailureData
@@ -163,6 +166,7 @@ namespace MbUnit.Tests.Framework
                 { 
                     "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?><Root/>", 
                     "<?xml version=\"1.0\" encoding=\"UTF-8\"?><Root/>", 
+                    XmlEqualityOptions.Default,
                     new[] 
                     { 
                         new ExpectedFailureData
@@ -171,6 +175,23 @@ namespace MbUnit.Tests.Framework
                             Path = "<?xml encoding='...' ?>",
                             Actual = "UTF-8",
                             Expected = "ISO-8859-1"
+                        },
+                    }
+                };
+
+                yield return new object[] 
+                { 
+                    "<Root><Node1/><!-- Expected text. --><Node2/></Root>", 
+                    "<Root><Node1/><!-- Actual text. --><Node2/></Root>", 
+                    XmlEqualityOptions.IgnoreAllOrder,
+                    new[] 
+                    { 
+                        new ExpectedFailureData
+                        {
+                            Message = "Unexpected comment found.",
+                            Path = "<Root>",
+                            Actual = " Actual text. ",
+                            Expected = " Expected text. "
                         },
                     }
                 };
@@ -187,12 +208,13 @@ namespace MbUnit.Tests.Framework
                     "    <Planet name='Venus' distanceToSun='0.7 AU'>" +
                     "      <Satellites/>" +
                     "    </Planet>" +
+                    "    <!-- Hey! This one is yours! -->" + // <-- Different sentence (1 error)
                     "    <Planet name='Earth' distanceToSun='1 AU'>" +
                     "      <Satellites>" +
                     "        <Satellite name='Moon'/>" +
                     "      </Satellites>" +
                     "    </Planet>" +
-                    "    <Planet name='Mars' distanceToSun='1.666 AU'>" + // <-- Wrong distance!
+                    "    <Planet name='Mars' distanceToSun='1.666 AU'>" + // <-- Wrong distance! (1 error)
                     "      <Satellites>" +
                     "        <Satellite name='Deimos'/>" +
                     "        <Satellite name='Phobos'/>" +
@@ -221,12 +243,12 @@ namespace MbUnit.Tests.Framework
                     "      <Satellites>" +
                     "        <Satellite name='Miranda'/>" +
                     "        <Satellite name='Ariel'/>" +
-                    "        <SXtellite name='Umbriel'/>" + // <-- Typo!
+                    "        <SXtellite name='Umbriel'/>" + // <-- Typo! (2 errors = unexpected + missing)
                     "        <Satellite name='Titania'/>" +
                     "        <Satellite name='Oberon'/>" +
                     "      </Satellites>" +
                     "    </Planet>" +
-                    "    <Planet name='Pipo' distanceToSun='666 AU'>" + // <-- Imaginary planet!
+                    "    <Planet name='Pipo' distanceToSun='666 AU'>" + // <-- Imaginary planet! (1 error)
                     "      <Satellites/>" +
                     "    </Planet>" +
                     "    <Planet name='Neptune' distanceToSun='30 AU'>" +
@@ -237,6 +259,7 @@ namespace MbUnit.Tests.Framework
                     "  </Planets>" +
                     "</SolarSystem>",
 
+                    XmlEqualityOptions.IgnoreAllOrder,
                     new ExpectedFailureData[] 
                     { 
                         new ExpectedFailureData
@@ -264,6 +287,13 @@ namespace MbUnit.Tests.Framework
                             Path = "<SolarSystem><Planets>",
                             Actual = "Planet",
                         },
+                        new ExpectedFailureData
+                        {
+                            Message = "Unexpected comment found.",
+                            Path = "<SolarSystem><Planets>",
+                            Actual = " Hey! This one is yours! ",
+                            Expected = " Hey! This one is mine! "
+                        },
                     }
                 };
             }
@@ -278,6 +308,7 @@ namespace MbUnit.Tests.Framework
             "    <Planet name='Venus' distanceToSun='0.7 AU'>" +
             "      <Satellites/>" +
             "    </Planet>" +
+            "    <!-- Hey! This one is mine! -->" +
             "    <Planet name='Earth' distanceToSun='1 AU'>" +
             "      <Satellites>" +
             "        <Satellite name='Moon'/>" +

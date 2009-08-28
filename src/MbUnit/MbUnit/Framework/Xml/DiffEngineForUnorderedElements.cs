@@ -53,19 +53,23 @@ namespace MbUnit.Framework.Xml
             var noExactMatch = new List<int>();
             var source = invert ? expected : actual;
             var pool = invert ? actual : expected;
+            bool ignoreComments = ((options & XmlEqualityOptions.IgnoreComments) != 0);
 
             // Find first exact match (= empty diff)
             for (int i = 0; i < source.Count; i++)
             {
-                int j = pool.FindIndex(x => !mask.Contains(x) && source[i].Diff(pool[x], Path.Empty, options).IsEmpty);
+                if (!ignoreComments || source[i].Name.Length > 0)
+                {
+                    int j = pool.FindIndex(x => !mask.Contains(x) && source[i].Diff(pool[x], Path.Empty, options).IsEmpty);
 
-                if (j < 0)
-                {
-                    noExactMatch.Add(i);
-                }
-                else
-                {
-                    mask.Add(j);
+                    if (j < 0)
+                    {
+                        noExactMatch.Add(i);
+                    }
+                    else
+                    {
+                        mask.Add(j);
+                    }
                 }
             }
 

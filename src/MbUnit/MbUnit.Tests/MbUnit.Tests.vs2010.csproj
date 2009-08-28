@@ -177,6 +177,7 @@
     <Compile Include="Framework\ColumnAttributeTest.cs" />
     <Compile Include="Framework\Xml\AttributeTest.cs" />
     <Compile Include="Framework\Xml\AttributeCollectionTest.cs" />
+    <Compile Include="Framework\Xml\CommentTest.cs" />
     <Compile Include="Framework\Xml\DiffSetTest.cs" />
     <Compile Include="Framework\Xml\DiffTest.cs" />
     <Compile Include="Framework\Xml\PathTest.cs" />

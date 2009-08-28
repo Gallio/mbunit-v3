@@ -105,7 +105,7 @@ namespace MbUnit.Framework.Xml
         }
 
         /// <inheritdoc />
-        public DiffSet Diff(Element expected, Path path, XmlEqualityOptions options)
+        public virtual DiffSet Diff(Element expected, Path path, XmlEqualityOptions options)
         {
             if (expected == null)
                 throw new ArgumentNullException("expected");
