@@ -74,7 +74,7 @@ namespace Gallio.Runner.Projects
                 throw new ArgumentException("projectName");
 
             var testProjectData = new TestProjectData();
-            return LoadProject(Path.GetDirectoryName(projectName), testProjectData);
+            return LoadProject(System.IO.Path.GetDirectoryName(projectName), testProjectData);
         }
 
         /// <inheritdoc />

@@ -162,6 +162,7 @@
     <Compile Include="Framework\Assert.Serialization.cs" />
     <Compile Include="Framework\Assert.Sorting.cs" />
     <Compile Include="Framework\Assert.Distinct.cs" />
+    <Compile Include="Framework\XmlOptions.cs" />
     <Compile Include="Framework\PrincipalAttribute.cs" />
     <Compile Include="Framework\MultipleCultureAttribute.cs" />
     <Compile Include="Framework\ImpersonateAttribute.cs" />
@@ -197,31 +198,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Framework\TestSuite.cs" />
-    <Compile Include="Framework\XmlEqualityOptions.cs" />
-    <Compile Include="Framework\Xml\Attribute.cs" />
-    <Compile Include="Framework\Xml\AttributeCollection.cs" />
-    <Compile Include="Framework\Xml\Comment.cs" />
-    <Compile Include="Framework\Xml\IDiffableCollection.cs" />
-    <Compile Include="Framework\Xml\DiffEngineForOrderedItems.cs" />
-    <Compile Include="Framework\Xml\DiffEngineForUnorderedElements.cs" />
-    <Compile Include="Framework\Xml\DiffEngineForUnorderedAttributes.cs" />
-    <Compile Include="Framework\Xml\Declaration.cs" />
-    <Compile Include="Framework\Xml\DiffEngineFactory.cs" />
-    <Compile Include="Framework\Xml\DiffSetBuilder.cs" />
-    <Compile Include="Framework\Xml\Diff.cs" />
-    <Compile Include="Framework\Xml\DiffSet.cs" />
-    <Compile Include="Framework\Xml\Document.cs" />
-    <Compile Include="Framework\Xml\IDiffable.cs" />
-    <Compile Include="Framework\Xml\IDiffEngine.cs" />
-    <Compile Include="Framework\Xml\INamed.cs" />
-    <Compile Include="Framework\Xml\NamespaceDoc.cs" />
-    <Compile Include="Framework\Xml\Null.cs" />
-    <Compile Include="Framework\Xml\ElementCollection.cs" />
-    <Compile Include="Framework\Xml\INode.cs" />
-    <Compile Include="Framework\Xml\Node.cs" />
-    <Compile Include="Framework\Xml\Element.cs" />
-    <Compile Include="Framework\Xml\Parser.cs" />
-    <Compile Include="Framework\Xml\Path.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Database_Schema.xsd" />

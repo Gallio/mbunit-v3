@@ -20,6 +20,7 @@ using Gallio.Framework.Assertions;
 using MbUnit.Framework;
 using System.Collections.Generic;
 using System.Text;
+using Gallio.Common.Collections;
 
 namespace MbUnit.Tests.Framework
 {
@@ -33,20 +34,20 @@ namespace MbUnit.Tests.Framework
         [Row("<Empty></Empty>", "<Empty></Empty>")]
         [Row("<Empty></Empty>", "<Empty/>")]
         [Row("<Node>Hello</Node>", "<Node>Hello</Node>")]
-        [Row("<Node x=\"1\"/>", "<Node x=\"1\"/>")]
-        [Row("<Node x=\"1\"/>", "<Node  x=\"1\" />")]
-        [Row("<Node x=\"1\" y=\"2\"/>", "<Node x=\"1\" y=\"2\"/>")]
-        [Row("<Node x=\"1\" y=\"2\"/>", "<Node y=\"2\" x=\"1\"/>")]
-        [Row("<Node x=\"1\" y=\"2\"/>", "<Node y=\"2\" x=\"1\" ></Node>")]
-        [Row("<Node x=\"1\" y=\"2\">Value</Node>", "<Node x=\"1\" y=\"2\">Value</Node>")]
-        [Row("<Node x=\"1\" y=\"2\">Value</Node>", "<Node y=\"2\" x=\"1\">Value</Node>")]
+        [Row("<Node x='1'/>", "<Node x='1'/>")]
+        [Row("<Node x='1'/>", "<Node  x='1' />")]
+        [Row("<Node x='1' y='2'/>", "<Node x='1' y='2'/>")]
+        [Row("<Node x='1' y='2'/>", "<Node y='2' x='1'/>")]
+        [Row("<Node x='1' y='2'/>", "<Node y='2' x='1' ></Node>")]
+        [Row("<Node x='1' y='2'>Value</Node>", "<Node x='1' y='2'>Value</Node>")]
+        [Row("<Node x='1' y='2'>Value</Node>", "<Node y='2' x='1'>Value</Node>")]
         [Row("<Parent><Child/></Parent>", "<Parent><Child/></Parent>")]
         [Row("<Parent><Child>Value</Child></Parent>", "<Parent><Child>Value</Child></Parent>")]
         [Row("<Parent><Child/><Child/><Child/></Parent>", "<Parent><Child/><Child/><Child/></Parent>")]
-        [Row("<Root><Item x=\"1\"/><Item x=\"2\"/><Item x=\"3\"/></Root>", "<Root><Item x=\"1\"></Item><Item x=\"2\"/><Item  x=\"3\" /></Root>")]
-        [Row("<Root><Item x=\"1\"/><Item x=\"2\"/><Item x=\"3\"/></Root>", "<Root><Item x=\"2\"/><Item x=\"1\"></Item><Item  x=\"3\" /></Root>")]
+        [Row("<Root><Item x='1'/><Item x='2'/><Item x='3'/></Root>", "<Root><Item x='1'></Item><Item x='2'/><Item  x='3' /></Root>")]
+        [Row("<Root><Item x='1'/><Item x='2'/><Item x='3'/></Root>", "<Root><Item x='2'/><Item x='1'></Item><Item  x='3' /></Root>")]
         [Row(solarSystemXml, solarSystemXml)]
-        public void AreEqual_passes(string expected, string actual, [Column(true, false)] bool withDeclaration)
+        public void AreEqual_passes(string expected, string actual,  [Column(true, false)] bool withDeclaration)
         {
             if (withDeclaration)
             {
@@ -92,14 +93,22 @@ namespace MbUnit.Tests.Framework
 
         [Test]
         [Factory("ProvideXmlData")]
-        public void AreEqual_fails(string expectedXml, string actualXml, XmlEqualityOptions options, ExpectedFailureData[] expectedErrors)
+        public void AreEqual_fails(string expectedXml, string actualXml, XmlOptions options, ExpectedFailureData[] expectedErrors)
         {
             AssertionFailure[] failures = AssertTest.Capture(() => Assert.Xml.AreEqual(expectedXml, actualXml, options));
-            Assert.AreEqual(1, failures.Length);
-            Assert.AreElementsEqualIgnoringOrder(
-                expectedErrors.Select(x => x.ToString()),
-                failures[0].InnerFailures.Select(x => x.ToString()),
-                (x, y) => y.Replace(" ", String.Empty).StartsWith(x.Replace(" ", String.Empty)));
+
+            if (expectedErrors.Length > 0)
+            {
+                Assert.AreEqual(1, failures.Length);
+                Assert.AreElementsEqualIgnoringOrder(
+                    expectedErrors.Select(x => x.ToString()),
+                    failures[0].InnerFailures.Select(x => x.ToString()),
+                    (x, y) => y.Replace(" ", String.Empty).StartsWith(x.Replace(" ", String.Empty)));
+            }
+            else
+            {
+                Assert.IsEmpty(failures);
+            }
         }
 
         public IEnumerable<object[]> ProvideXmlData
@@ -110,7 +119,7 @@ namespace MbUnit.Tests.Framework
                 { 
                     "<Node>Hello</Node>", 
                     "<Node>Salut</Node>",
-                    XmlEqualityOptions.Default,
+                    XmlOptions.Default,
                     new[] 
                     { 
                         new ExpectedFailureData
@@ -127,7 +136,7 @@ namespace MbUnit.Tests.Framework
                 { 
                     "<Root><Parent><Child>Hello</Child></Parent></Root>", 
                     "<Root><Parent><Child>Salut</Child></Parent></Root>",
-                    XmlEqualityOptions.Default,
+                    XmlOptions.Default,
                     new[] 
                     { 
                         new ExpectedFailureData
@@ -144,7 +153,7 @@ namespace MbUnit.Tests.Framework
                 { 
                     "<Root><Parent><Child>Hello</Child></Parent></Root>", 
                     "<Root><Parent><Môme>Salut</Môme></Parent></Root>",
-                    XmlEqualityOptions.Default,
+                    XmlOptions.Default,
                     new[] 
                     { 
                         new ExpectedFailureData
@@ -166,7 +175,7 @@ namespace MbUnit.Tests.Framework
                 { 
                     "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?><Root/>", 
                     "<?xml version=\"1.0\" encoding=\"UTF-8\"?><Root/>", 
-                    XmlEqualityOptions.Default,
+                    XmlOptions.Default,
                     new[] 
                     { 
                         new ExpectedFailureData
@@ -183,7 +192,7 @@ namespace MbUnit.Tests.Framework
                 { 
                     "<Root><Node1/><!-- Expected text. --><Node2/></Root>", 
                     "<Root><Node1/><!-- Actual text. --><Node2/></Root>", 
-                    XmlEqualityOptions.IgnoreAllOrder,
+                    XmlOptions.Strict,
                     new[] 
                     { 
                         new ExpectedFailureData
@@ -194,6 +203,14 @@ namespace MbUnit.Tests.Framework
                             Expected = " Expected text. "
                         },
                     }
+                };
+
+                yield return new object[] 
+                { 
+                    "<Root><Child value='123X'/><Child/><Child value='456Z'/></Root>",
+                    "<ROOT><Child></Child><CHILD value='123x'/><!-- Yipee! --><child vaLUE = '456z'/></ROOT>",
+                    XmlOptions.Loose,
+                    EmptyArray<ExpectedFailureData>.Instance
                 };
 
                 yield return new object[] 
@@ -259,7 +276,7 @@ namespace MbUnit.Tests.Framework
                     "  </Planets>" +
                     "</SolarSystem>",
 
-                    XmlEqualityOptions.IgnoreAllOrder,
+                    XmlOptions.Custom.IgnoreElementsOrder,
                     new ExpectedFailureData[] 
                     { 
                         new ExpectedFailureData

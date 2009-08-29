@@ -18,7 +18,7 @@ using System.Collections.Generic;
 using System.Text;
 using Gallio;
 using Gallio.Framework.Assertions;
-using MbUnit.Framework.Xml;
+using Gallio.Common.Xml;
 using System.Xml;
 using System.IO;
 
@@ -39,7 +39,7 @@ namespace MbUnit.Framework
             /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
             public static void AreEqual(TextReader expectedXmlReader, TextReader actualXmlReader)
             {
-                AreEqual(expectedXmlReader, actualXmlReader, XmlEqualityOptions.Default, null, null);
+                AreEqual(expectedXmlReader, actualXmlReader, XmlOptions.Default, null, null);
             }
 
             /// <summary>
@@ -47,11 +47,11 @@ namespace MbUnit.Framework
             /// </summary>
             /// <param name="expectedXmlReader">A reader to get the expected XML fragment.</param>
             /// <param name="actualXmlReader">A reader to get the actual XML fragment.</param>
-            /// <param name="options">Equality options.</param>
+            /// <param name="settings">Equality options.</param>
             /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
-            public static void AreEqual(TextReader expectedXmlReader, TextReader actualXmlReader, XmlEqualityOptions options)
+            public static void AreEqual(TextReader expectedXmlReader, TextReader actualXmlReader, XmlOptions settings)
             {
-                AreEqual(expectedXmlReader, actualXmlReader, options, null, null);
+                AreEqual(expectedXmlReader, actualXmlReader, settings, null, null);
             }
 
             /// <summary>
@@ -64,7 +64,7 @@ namespace MbUnit.Framework
             /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
             public static void AreEqual(TextReader expectedXmlReader, TextReader actualXmlReader, string messageFormat, params object[] messageArgs)
             {
-                AreEqual(expectedXmlReader, actualXmlReader, XmlEqualityOptions.Default, messageFormat, messageArgs);
+                AreEqual(expectedXmlReader, actualXmlReader, XmlOptions.Default, messageFormat, messageArgs);
             }
 
             /// <summary>
@@ -72,18 +72,18 @@ namespace MbUnit.Framework
             /// </summary>
             /// <param name="expectedXmlReader">A reader to get the expected XML fragment.</param>
             /// <param name="actualXmlReader">A reader to get the actual XML fragment.</param>
-            /// <param name="options">Equality options.</param>
+            /// <param name="settings">Equality options.</param>
             /// <param name="messageFormat">The custom assertion message format, or null if none.</param>
             /// <param name="messageArgs">The custom assertion message arguments, or null if none.</param>
             /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
-            public static void AreEqual(TextReader expectedXmlReader, TextReader actualXmlReader, XmlEqualityOptions options, string messageFormat, params object[] messageArgs)
+            public static void AreEqual(TextReader expectedXmlReader, TextReader actualXmlReader, XmlOptions settings, string messageFormat, params object[] messageArgs)
             {
                 if (expectedXmlReader == null)
                     throw new ArgumentNullException("expectedXmlReader");
                 if (actualXmlReader == null)
                     throw new ArgumentNullException("actualXmlReader");
 
-                AreEqual(expectedXmlReader.ReadToEnd(), actualXmlReader.ReadToEnd(), options, messageFormat, messageArgs);
+                AreEqual(expectedXmlReader.ReadToEnd(), actualXmlReader.ReadToEnd(), settings, messageFormat, messageArgs);
             }
 
             /// <summary>
@@ -94,7 +94,7 @@ namespace MbUnit.Framework
             /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
             public static void AreEqual(string expectedXml, string actualXml)
             {
-                AreEqual(expectedXml, actualXml, XmlEqualityOptions.Default, null, null);
+                AreEqual(expectedXml, actualXml, XmlOptions.Default, null, null);
             }
 
             /// <summary>
@@ -102,11 +102,11 @@ namespace MbUnit.Framework
             /// </summary>
             /// <param name="expectedXml">The expected XML fragment.</param>
             /// <param name="actualXml">The actual XML fragment.</param>
-            /// <param name="options">Equality options.</param>
+            /// <param name="settings">Equality options.</param>
             /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
-            public static void AreEqual(string expectedXml, string actualXml, XmlEqualityOptions options)
+            public static void AreEqual(string expectedXml, string actualXml, XmlOptions settings)
             {
-                AreEqual(expectedXml, actualXml, options, null, null);
+                AreEqual(expectedXml, actualXml, settings, null, null);
             }
 
             /// <summary>
@@ -119,7 +119,7 @@ namespace MbUnit.Framework
             /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
             public static void AreEqual(string expectedXml, string actualXml, string messageFormat, params object[] messageArgs)
             {
-                AreEqual(expectedXml, actualXml, XmlEqualityOptions.Default, messageFormat, messageArgs);
+                AreEqual(expectedXml, actualXml, XmlOptions.Default, messageFormat, messageArgs);
             }
 
             /// <summary>
@@ -127,11 +127,11 @@ namespace MbUnit.Framework
             /// </summary>
             /// <param name="expectedXml">The expected XML fragment.</param>
             /// <param name="actualXml">The actual XML fragment.</param>
-            /// <param name="options">Equality options.</param>
+            /// <param name="settings">Equality options.</param>
             /// <param name="messageFormat">The custom assertion message format, or null if none.</param>
             /// <param name="messageArgs">The custom assertion message arguments, or null if none.</param>
             /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
-            public static void AreEqual(string expectedXml, string actualXml, XmlEqualityOptions options, string messageFormat, params object[] messageArgs)
+            public static void AreEqual(string expectedXml, string actualXml, XmlOptions settings, string messageFormat, params object[] messageArgs)
             {
                 if (expectedXml == null)
                     throw new ArgumentNullException("expectedXml");
@@ -145,7 +145,7 @@ namespace MbUnit.Framework
 
                     try
                     {
-                        expectedDocument = new Parser(expectedXml).Run();
+                        expectedDocument = new Parser(expectedXml).Run(settings.Value);
                     }
                     catch (XmlException exception)
                     {
@@ -156,7 +156,7 @@ namespace MbUnit.Framework
 
                     try
                     {
-                        actualDocument = new Parser(actualXml).Run();
+                        actualDocument = new Parser(actualXml).Run(settings.Value);
                     }
                     catch (XmlException exception)
                     {
@@ -165,14 +165,14 @@ namespace MbUnit.Framework
                             .ToAssertionFailure();
                     }
 
-                    DiffSet diffSet = actualDocument.Diff(expectedDocument, MbUnit.Framework.Xml.Path.Empty, options);
+                    DiffSet diffSet = actualDocument.Diff(expectedDocument, Gallio.Common.Xml.Path.Empty, settings.Value);
 
                     if (diffSet.IsEmpty)
                         return null;
 
                     return new AssertionFailureBuilder("Expected XML fragments to be equal according to the specified options.")
                         .SetMessage(messageFormat, messageArgs)
-                        .AddRawLabeledValue("Equality Options", options)
+                        .AddRawLabeledValue("Equality Options", settings.Value)
                         .AddInnerFailures(diffSet.ToAssertionFailures())
                         .ToAssertionFailure();
                 });
