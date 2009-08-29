@@ -30,6 +30,7 @@ using Gallio.Common.IO;
 using Gallio.Common.Xml;
 using Gallio.Common.Policies;
 using Gallio.UI.ErrorReporting;
+using Path = System.IO.Path;
 
 namespace Gallio.Icarus
 {

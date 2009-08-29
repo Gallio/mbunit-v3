@@ -24,6 +24,7 @@ using Gallio.Common.Markup;
 using Gallio.Runtime.ProgressMonitoring;
 using Gallio.Runtime;
 using Gallio.Runner.Reports;
+using Path = System.IO.Path;
 
 namespace Gallio.Reports
 {
