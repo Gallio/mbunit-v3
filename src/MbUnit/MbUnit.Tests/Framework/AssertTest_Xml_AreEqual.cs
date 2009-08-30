@@ -21,6 +21,8 @@ using MbUnit.Framework;
 using System.Collections.Generic;
 using System.Text;
 using Gallio.Common.Collections;
+using System.Reflection;
+using System.IO;
 
 namespace MbUnit.Tests.Framework
 {
@@ -56,6 +58,16 @@ namespace MbUnit.Tests.Framework
 
             AssertionFailure[] failures = AssertTest.Capture(() => Assert.Xml.AreEqual(expected, actual));
             Assert.IsEmpty(failures);
+        }
+
+        public static string GetResource(string resourceName)
+        {
+            var assembly = Assembly.GetExecutingAssembly();
+            using (var textReader = new StreamReader(assembly.GetManifestResourceStream(resourceName)))
+            {
+                string result = textReader.ReadToEnd();
+                return result;
+            }
         }
 
         private void AssertFailures(AssertionFailure[] failures, params string[] expectedDescriptions)
@@ -214,8 +226,8 @@ namespace MbUnit.Tests.Framework
 
                 yield return new object[] 
                 { 
-                    Properties.Resources.SolarSystem,
-                    Properties.Resources.SolarSystemWithErrors,
+                    GetResource("MbUnit.Tests.Framework.SolarSystem.xml"),
+                    GetResource("MbUnit.Tests.Framework.SolarSystemWithErrors.xml"),
                     XmlOptions.Custom.IgnoreElementsOrder,
                     new ExpectedFailureData[] 
                     { 
