@@ -25,7 +25,7 @@ using Gallio.Common.Collections;
 namespace MbUnit.Tests.Framework
 {
     [TestsOn(typeof(Assert))]
-    public class AssertTest_Xml : BaseAssertTest
+    public class AssertTest_Xml_AreEqual : BaseAssertTest
     {
         private const string declaration = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>";
 
@@ -46,7 +46,6 @@ namespace MbUnit.Tests.Framework
         [Row("<Parent><Child/><Child/><Child/></Parent>", "<Parent><Child/><Child/><Child/></Parent>")]
         [Row("<Root><Item x='1'/><Item x='2'/><Item x='3'/></Root>", "<Root><Item x='1'></Item><Item x='2'/><Item  x='3' /></Root>")]
         [Row("<Root><Item x='1'/><Item x='2'/><Item x='3'/></Root>", "<Root><Item x='2'/><Item x='1'></Item><Item  x='3' /></Root>")]
-        [Row(solarSystemXml, solarSystemXml)]
         public void AreEqual_passes(string expected, string actual,  [Column(true, false)] bool withDeclaration)
         {
             if (withDeclaration)
@@ -215,67 +214,8 @@ namespace MbUnit.Tests.Framework
 
                 yield return new object[] 
                 { 
-                    solarSystemXml,
-
-                    "<SolarSystem>" +
-                    "  <Planets>" +
-                    "    <Planet name='Mercury' distanceToSun='0.4 AU'>" +
-                    "      <Satellites/>" +
-                    "    </Planet>" +
-                    "    <Planet name='Venus' distanceToSun='0.7 AU'>" +
-                    "      <Satellites/>" +
-                    "    </Planet>" +
-                    "    <!-- Hey! This one is yours! -->" + // <-- Different sentence (1 error)
-                    "    <Planet name='Earth' distanceToSun='1 AU'>" +
-                    "      <Satellites>" +
-                    "        <Satellite name='Moon'/>" +
-                    "      </Satellites>" +
-                    "    </Planet>" +
-                    "    <Planet name='Mars' distanceToSun='1.666 AU'>" + // <-- Wrong distance! (1 error)
-                    "      <Satellites>" +
-                    "        <Satellite name='Deimos'/>" +
-                    "        <Satellite name='Phobos'/>" +
-                    "      </Satellites>" +
-                    "    </Planet>" +
-                    "    <Planet name='Jupiter' distanceToSun='5.2 AU'>" +
-                    "      <Satellites>" +
-                    "        <Satellite name='Io'/>" +
-                    "        <Satellite name='Europa'/>" +
-                    "        <Satellite name='Ganymede'/>" +
-                    "        <Satellite name='Callisto'/>" +
-                    "      </Satellites>" +
-                    "    </Planet>" +
-                    "    <Planet name='Saturn' distanceToSun='9.5 AU'>" +
-                    "      <Satellites>" +
-                    "        <Satellite name='Mimas'/>" +
-                    "        <Satellite name='Enceladus'/>" +
-                    "        <Satellite name='Tethys'/>" +
-                    "        <Satellite name='Dione'/>" +
-                    "        <Satellite name='Rhea'/>" +
-                    "        <Satellite name='Titan'/>" +
-                    "        <Satellite name='Iapetus'/>" +
-                    "      </Satellites>" +
-                    "    </Planet>" +
-                    "    <Planet name='Uranus' distanceToSun='19.6 AU'>" +
-                    "      <Satellites>" +
-                    "        <Satellite name='Miranda'/>" +
-                    "        <Satellite name='Ariel'/>" +
-                    "        <SXtellite name='Umbriel'/>" + // <-- Typo! (2 errors = unexpected + missing)
-                    "        <Satellite name='Titania'/>" +
-                    "        <Satellite name='Oberon'/>" +
-                    "      </Satellites>" +
-                    "    </Planet>" +
-                    "    <Planet name='Pipo' distanceToSun='666 AU'>" + // <-- Imaginary planet! (1 error)
-                    "      <Satellites/>" +
-                    "    </Planet>" +
-                    "    <Planet name='Neptune' distanceToSun='30 AU'>" +
-                    "      <Satellites>" +
-                    "        <Satellite name='Triton'/>" +
-                    "      </Satellites>" +
-                    "    </Planet>" +
-                    "  </Planets>" +
-                    "</SolarSystem>",
-
+                    Properties.Resources.SolarSystem,
+                    Properties.Resources.SolarSystemWithErrors,
                     XmlOptions.Custom.IgnoreElementsOrder,
                     new ExpectedFailureData[] 
                     { 
@@ -315,62 +255,5 @@ namespace MbUnit.Tests.Framework
                 };
             }
         }
-
-        private const string solarSystemXml =
-            "<SolarSystem>" +
-            "  <Planets>" +
-            "    <Planet name='Mercury' distanceToSun='0.4 AU'>" +
-            "      <Satellites/>" +
-            "    </Planet>" +
-            "    <Planet name='Venus' distanceToSun='0.7 AU'>" +
-            "      <Satellites/>" +
-            "    </Planet>" +
-            "    <!-- Hey! This one is mine! -->" +
-            "    <Planet name='Earth' distanceToSun='1 AU'>" +
-            "      <Satellites>" +
-            "        <Satellite name='Moon'/>" +
-            "      </Satellites>" +
-            "    </Planet>" +
-            "     <Planet name='Mars' distanceToSun='1.5 AU'>" +
-            "      <Satellites>" +
-            "        <Satellite name='Deimos'/>" +
-            "        <Satellite name='Phobos'/>" +
-            "      </Satellites>" +
-            "    </Planet>" +
-            "     <Planet name='Jupiter' distanceToSun='5.2 AU'>" +
-            "      <Satellites>" +
-            "        <Satellite name='Io'/>" +
-            "        <Satellite name='Europa'/>" +
-            "        <Satellite name='Ganymede'/>" +
-            "        <Satellite name='Callisto'/>" +
-            "      </Satellites>" +
-            "    </Planet>" +
-            "     <Planet name='Saturn' distanceToSun='9.5 AU'>" +
-            "      <Satellites>" +
-            "        <Satellite name='Mimas'/>" +
-            "        <Satellite name='Enceladus'/>" +
-            "        <Satellite name='Tethys'/>" +
-            "        <Satellite name='Dione'/>" +
-            "        <Satellite name='Rhea'/>" +
-            "        <Satellite name='Titan'/>" +
-            "        <Satellite name='Iapetus'/>" +
-            "      </Satellites>" +
-            "    </Planet>" +
-            "     <Planet name='Uranus' distanceToSun='19.6 AU'>" +
-            "      <Satellites>" +
-            "        <Satellite name='Miranda'/>" +
-            "        <Satellite name='Ariel'/>" +
-            "        <Satellite name='Umbriel'/>" +
-            "        <Satellite name='Titania'/>" +
-            "        <Satellite name='Oberon'/>" +
-            "      </Satellites>" +
-            "    </Planet>" +
-            "     <Planet name='Neptune' distanceToSun='30 AU'>" +
-            "      <Satellites>" +
-            "        <Satellite name='Triton'/>" +
-            "      </Satellites>" +
-            "    </Planet>" +
-            "  </Planets>" +
-            "</SolarSystem>";
     }
 }

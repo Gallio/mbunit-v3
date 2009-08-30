@@ -21,6 +21,7 @@ using Gallio.Framework.Assertions;
 using Gallio.Common.Xml;
 using System.Xml;
 using System.IO;
+using System.Data;
 
 namespace MbUnit.Framework
 {
@@ -31,6 +32,8 @@ namespace MbUnit.Framework
         /// </summary>
         public abstract class Xml
         {
+            #region Equality
+            
             /// <summary>
             /// Asserts that two XML fragments have the same content.
             /// </summary>
@@ -150,6 +153,7 @@ namespace MbUnit.Framework
                     catch (XmlException exception)
                     {
                         return new AssertionFailureBuilder("Cannot parse the actual XML fragment.")
+                            .SetMessage(messageFormat, messageArgs)
                             .AddException(exception)
                             .ToAssertionFailure();
                     }
@@ -161,6 +165,7 @@ namespace MbUnit.Framework
                     catch (XmlException exception)
                     {
                         return new AssertionFailureBuilder("Cannot parse the expected XML fragment.")
+                            .SetMessage(messageFormat, messageArgs)
                             .AddException(exception)
                             .ToAssertionFailure();
                     }
@@ -177,6 +182,8 @@ namespace MbUnit.Framework
                         .ToAssertionFailure();
                 });
             }
+
+            #endregion
         }
     }
 }

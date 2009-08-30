@@ -169,7 +169,7 @@
     <Compile Include="Framework\ContractVerifiers\ImmutabilityContractTest.cs" />
     <Compile Include="Framework\ContractVerifiers\DistinctInstanceCollectionTest.cs" />
     <Compile Include="Framework\ContractVerifiers\CollectionContractTest.cs" />
-    <Compile Include="Framework\AssertTest_Xml.cs" />
+    <Compile Include="Framework\AssertTest_Xml_AreEqual.cs" />
     <Compile Include="Framework\AssertTest_Serialization.cs" />
     <Compile Include="Framework\ContractVerifiers\ListContractTest.cs" />
     <Compile Include="Framework\AssertTest_Sorting.cs" />
@@ -208,6 +208,11 @@
     <Compile Include="Framework\RollbackAttributeTest.cs" />
     <Compile Include="Framework\TestCaseTest.cs" />
     <Compile Include="Integration\SetUpAndTearDownTest.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="Framework\CsvDataTest.csv" />
     <EmbeddedResource Include="Framework\XmlDataTest.xml" />
     <EmbeddedResource Include="Compatibility\Framework\Xml\etc\Book.xsd" />
@@ -228,6 +233,15 @@
     <EmbeddedResource Include="Compatibility\Framework\Xml\etc\testAnimal.xml" />
     <EmbeddedResource Include="Compatibility\Framework\Xml\etc\testDetail.xml" />
     <EmbeddedResource Include="Compatibility\Framework\Xml\etc\testNamespaces.xml" />
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SolarSystem.xml" />
+    <None Include="Resources\SolarSystemSchema.xsd" />
+    <None Include="Resources\SolarSystemWithErrors.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
