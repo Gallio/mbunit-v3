@@ -60,7 +60,6 @@ namespace Gallio.Framework.Pattern
         {
             if (scope == null)
                 throw new ArgumentNullException("scope");
-
             if (memberName == null)
                 throw new ArgumentNullException("memberName");
 
@@ -77,7 +76,7 @@ namespace Gallio.Framework.Pattern
         /// <returns>The resulting value.</returns>
         public TOutput Invoke()
         {
-            return InvokeImpl(null);
+            return InvokeImpl(FixtureMemberInvokerTargets.Default, null);
         }
 
         /// <summary>
@@ -87,13 +86,26 @@ namespace Gallio.Framework.Pattern
         /// <returns>The resulting value.</returns>
         public TOutput Invoke(params object[] args)
         {
-            return InvokeImpl(args);
+            return InvokeImpl(FixtureMemberInvokerTargets.Default, args);
         }
 
-        private TOutput InvokeImpl(object[] args)
+        /// <summary>
+        /// Invokes the member with the specified arguments and returns the resulting value.
+        /// </summary>
+        /// <param name="targets">The arguments to pass to the member.</param>
+        /// <param name="args">The arguments to pass to the member.</param>
+        /// <returns>The resulting value.</returns>
+        public TOutput Invoke(FixtureMemberInvokerTargets targets, params object[] args)
+        {
+            return InvokeImpl(targets, args);
+        }
+
+        private TOutput InvokeImpl(FixtureMemberInvokerTargets targets, object[] args)
         {
             var ownerInfo = GetOwnerInfo();
-            var function = TryGetMemberAsMethod(ownerInfo) ?? TryGetMemberAsProperty(ownerInfo) ?? TryGetMemberAsField(ownerInfo);
+            var function = TryGetMemberAsMethod(targets, ownerInfo)
+                ?? TryGetMemberAsProperty(targets, ownerInfo)
+                ?? TryGetMemberAsField(targets, ownerInfo);
 
             if (function == null)
                 throw new PatternUsageErrorException(String.Format("Could not find a method, property or field named '{0}'.", memberName));
@@ -118,23 +130,26 @@ namespace Gallio.Framework.Pattern
             }
         }
 
-        private Func<object[], TOutput> TryGetMemberAsMethod(ITypeInfo ownerInfo)
+        private Func<object[], TOutput> TryGetMemberAsMethod(FixtureMemberInvokerTargets targets, ITypeInfo ownerInfo)
         {
-            IMethodInfo info = ownerInfo.GetMethod(memberName, bindingFlags);
-
-            if (info != null)
+            if ((targets & FixtureMemberInvokerTargets.Method) != 0)
             {
-                return args =>
+                IMethodInfo info = ownerInfo.GetMethod(memberName, bindingFlags);
+
+                if (info != null)
                 {
-                    object fixtureInstance = GetFixtureInstance(info.IsStatic);
-                    MethodInfo method = (type == null) ? GetFixtureType().GetMethod(memberName, bindingFlags) : info.Resolve(true);
+                    return args =>
+                    {
+                        object fixtureInstance = GetFixtureInstance(info.IsStatic);
+                        MethodInfo method = (type == null) ? GetFixtureType().GetMethod(memberName, bindingFlags) : info.Resolve(true);
 
-                    if (method == null)
-                        throw new TestFailedException(String.Format("Could not find method '{0}'.", memberName));
+                        if (method == null)
+                            throw new TestFailedException(String.Format("Could not find method '{0}'.", memberName));
 
-                    object[] convertedArgs = ConvertArguments(method.GetParameters(), args);
-                    return (TOutput)method.Invoke(fixtureInstance, convertedArgs);
-                };
+                        object[] convertedArgs = ConvertArguments(method.GetParameters(), args);
+                        return (TOutput)method.Invoke(fixtureInstance, convertedArgs);
+                    };
+                }
             }
 
             return null;
@@ -177,43 +192,49 @@ namespace Gallio.Framework.Pattern
             return result;
         }
 
-        private Func<object[], TOutput> TryGetMemberAsProperty(ITypeInfo ownerInfo)
+        private Func<object[], TOutput> TryGetMemberAsProperty(FixtureMemberInvokerTargets targets, ITypeInfo ownerInfo)
         {
-            IPropertyInfo info = ownerInfo.GetProperty(memberName, bindingFlags);
-
-            if (info != null && info.GetMethod != null)
+            if ((targets & FixtureMemberInvokerTargets.Property) != 0)
             {
-                return args =>
+                IPropertyInfo info = ownerInfo.GetProperty(memberName, bindingFlags);
+
+                if (info != null && info.GetMethod != null)
                 {
-                    object fixtureInstance = GetFixtureInstance(info.GetMethod.IsStatic);
-                    PropertyInfo property = (type == null) ? GetFixtureType().GetProperty(memberName, bindingFlags) : info.Resolve(true);
+                    return args =>
+                    {
+                        object fixtureInstance = GetFixtureInstance(info.GetMethod.IsStatic);
+                        PropertyInfo property = (type == null) ? GetFixtureType().GetProperty(memberName, bindingFlags) : info.Resolve(true);
 
-                    if (property == null)
-                        throw new TestFailedException(String.Format("Could not find property '{0}'.", memberName));
+                        if (property == null)
+                            throw new TestFailedException(String.Format("Could not find property '{0}'.", memberName));
 
-                    return (TOutput)property.GetValue(fixtureInstance, null);
-                };
+                        return (TOutput)property.GetValue(fixtureInstance, null);
+                    };
+                }
             }
 
             return null;
         }
 
-        private Func<object[], TOutput> TryGetMemberAsField(ITypeInfo ownerInfo)
+        private Func<object[], TOutput> TryGetMemberAsField(FixtureMemberInvokerTargets targets, ITypeInfo ownerInfo)
         {
-            IFieldInfo info = ownerInfo.GetField(memberName, bindingFlags);
-
-            if (info != null)
+            if ((targets & FixtureMemberInvokerTargets.Field) != 0)
             {
-                return args =>
+                IFieldInfo info = ownerInfo.GetField(memberName, bindingFlags);
+
+                if (info != null)
                 {
-                    object fixtureInstance = GetFixtureInstance(info.IsStatic);
-                    FieldInfo field = (type == null) ? GetFixtureType().GetField(memberName, bindingFlags) : info.Resolve(true);
+                    return args =>
+                    {
+                        object fixtureInstance = GetFixtureInstance(info.IsStatic);
+                        FieldInfo field = (type == null) ? GetFixtureType().GetField(memberName, bindingFlags) : info.Resolve(true);
 
-                    if (field == null)
-                        throw new TestFailedException(String.Format("Could not find field '{0}''.", memberName));
+                        if (field == null)
+                            throw new TestFailedException(String.Format("Could not find field '{0}''.", memberName));
 
-                    return (TOutput)field.GetValue(fixtureInstance);
-                };
+                        return (TOutput)field.GetValue(fixtureInstance);
+                    };
+                }
             }
 
             return null;

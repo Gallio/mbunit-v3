@@ -81,7 +81,7 @@ namespace MbUnit.Framework.ContractVerifiers
             fieldScope.TestBuilder.IsTestCase = false;
 
             InitializeTest(fieldScope, field);
-            SetTestSemantics(fieldScope.TestBuilder, field);
+            SetTestSemantics(fieldScope.TestBuilder, field, containingScope);
 
             fieldScope.TestBuilder.ApplyDeferredActions();
         }
@@ -117,14 +117,22 @@ namespace MbUnit.Framework.ContractVerifiers
         /// </summary>
         /// <param name="testBuilder">The test builder.</param>
         /// <param name="field">The field.</param>
-        protected virtual void SetTestSemantics(ITestBuilder testBuilder, IFieldInfo field)
+        /// <param name="containingScope"></param>
+        protected virtual void SetTestSemantics(ITestBuilder testBuilder, IFieldInfo field, IPatternScope containingScope)
         {
             testBuilder.TestInstanceActions.ExecuteTestInstanceChain.After(state =>
             {
-                FieldInfo fieldInfo = field.Resolve(true);
-                IContract contract = fieldInfo.GetValue(fieldInfo.IsStatic ? null : state.FixtureInstance) as IContract;
-                if (contract == null)
-                    throw new TestFailedException(String.Format("The field '{0}' must contain an instance of type IContract that describes a contract to be verified.", field.Name));
+                var invoker = new FixtureMemberInvoker<IContract>(null, containingScope, field.Name);
+                IContract contract;
+                
+                try
+                {
+                    contract = invoker.Invoke(FixtureMemberInvokerTargets.Field);
+                }
+                catch (PatternUsageErrorException exception)
+                {
+                    throw new TestFailedException(String.Format("The field '{0}' must contain an instance of type IContract that describes a contract to be verified.", field.Name), exception);
+                }
 
                 var context = new ContractVerificationContext(codeElement);
                 TestOutcome outcome = Test.RunDynamicTests(contract.GetContractVerificationTests(context), field, null, null);

@@ -24,6 +24,7 @@ using MbUnit.Framework;
 using MbUnit.Framework.ContractVerifiers;
 using System.Collections.Generic;
 using System.Collections;
+using System.Collections.ObjectModel;
 
 namespace MbUnit.Tests.Framework.ContractVerifiers
 {
@@ -31,6 +32,7 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
     [RunSample(typeof(NotWriteableBasicTest))]
     [RunSample(typeof(ReadOnlySampleTest))]
     [RunSample(typeof(BasicNullableSampleTest))]
+    [RunSample(typeof(GenericFactoryTest<>))]
     public class ListContractTest : AbstractContractTest
     {
         [Test]
@@ -77,6 +79,18 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
         [Row(typeof(BasicNullableSampleTest), "RemoveItemsAt", TestStatus.Passed)]
         [Row(typeof(BasicNullableSampleTest), "GetItemsAtInvalidIndex", TestStatus.Passed)]
         [Row(typeof(BasicNullableSampleTest), "GetSetItemsWithIndexer", TestStatus.Passed)]
+        [Row(typeof(GenericFactoryTest<int>), "InsertShouldThrowException", TestStatus.Passed)]
+        [Row(typeof(GenericFactoryTest<int>), "RemoveAtShouldThrowException", TestStatus.Passed)]
+        [Row(typeof(GenericFactoryTest<int>), "IndexerSetShouldThrowException", TestStatus.Passed)]
+        [Row(typeof(GenericFactoryTest<int>), "InsertNullArgument", TestStatus.Inconclusive)]
+        [Row(typeof(GenericFactoryTest<int>), "IndexerSetNullArgument", TestStatus.Inconclusive)]
+        [Row(typeof(GenericFactoryTest<int>), "InsertItems", TestStatus.Inconclusive)]
+        [Row(typeof(GenericFactoryTest<int>), "InsertItemsAtInvalidIndex", TestStatus.Inconclusive)]
+        [Row(typeof(GenericFactoryTest<int>), "RemoveItemsAtInvalidIndex", TestStatus.Inconclusive)]
+        [Row(typeof(GenericFactoryTest<int>), "RemoveItemsAt", TestStatus.Inconclusive)]
+        [Row(typeof(GenericFactoryTest<int>), "GetItemsAtInvalidIndex", TestStatus.Passed)]
+        [Row(typeof(GenericFactoryTest<int>), "GetSetItemsWithIndexer", TestStatus.Inconclusive)]
+        [Row(typeof(GenericFactoryTest<int>), "IndexOfItem", TestStatus.Passed)]
         public void VerifySampleListContract(Type fixtureType, string testMethodName, TestStatus expectedTestStatus)
         {
             VerifySampleContract("ListTests", fixtureType, testMethodName, expectedTestStatus);
@@ -137,6 +151,26 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
             {
                 this.value = value;
             }
+        }
+
+        internal static class TypeFactory
+        {
+            internal static IEnumerable<Type> GetTypes()
+            {
+                yield return typeof(int);
+            }
+        }
+
+        [Explicit]
+        internal class GenericFactoryTest<[Factory(typeof(TypeFactory), "GetTypes")] T>
+        {
+            [VerifyContract]
+            public readonly IContract ListTests = new ListContract<ReadOnlyCollection<int>, int>
+            {
+                IsReadOnly = true,
+                DefaultInstance = () => new ReadOnlyCollection<int>(new[] { 0, 5, 7, 2 }),
+                DistinctInstances = new DistinctInstanceCollection<int>(new[] { 5, 10 }),
+            };
         }
 
         #endregion

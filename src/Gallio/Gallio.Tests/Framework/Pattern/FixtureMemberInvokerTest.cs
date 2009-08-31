@@ -39,47 +39,46 @@ namespace Gallio.Tests.Framework.Pattern
         }
 
         [Test]
-        [Row(typeof(int), "PublicInstancePropertyInt32", true, 123)]
-        [Row(typeof(int), "PrivateInstancePropertyInt32", true, 123)]
-        [Row(typeof(int), "PublicInstanceMethodInt32", true, 123)]
-        [Row(typeof(int), "PrivateInstanceMethodInt32", true, 123)]
-        [Row(typeof(int), "PublicInstanceFieldInt32", true, 123)]
-        [Row(typeof(int), "PrivateInstanceFieldInt32", true, 123)]
-        [Row(typeof(int), "PublicStaticPropertyInt32", true, 123)]
-        [Row(typeof(int), "PrivateStaticPropertyInt32", true, 123)]
-        [Row(typeof(int), "PublicStaticMethodInt32", true, 123)]
-        [Row(typeof(int), "PrivateStaticMethodInt32", true, 123)]
-        [Row(typeof(int), "PublicStaticFieldInt32", true, 123)]
-        [Row(typeof(int), "PrivateStaticFieldInt32", true, 123)]
-        [Row(typeof(int), "PublicStaticPropertyInt32", false, 123)]
-        [Row(typeof(int), "PrivateStaticPropertyInt32", false, 123)]
-        [Row(typeof(int), "PublicStaticMethodInt32", false, 123)]
-        [Row(typeof(int), "PrivateStaticMethodInt32", false, 123)]
-        [Row(typeof(int), "PublicStaticFieldInt32", false, 123)]
-        [Row(typeof(int), "PrivateStaticFieldInt32", false, 123)]
-        [Row(typeof(string), "PublicInstancePropertyString", true, "Hello")]
-        [Row(typeof(string), "PrivateInstancePropertyString", true, "Hello")]
-        [Row(typeof(string), "PublicInstanceMethodString", true, "Hello")]
-        [Row(typeof(string), "PrivateInstanceMethodString", true, "Hello")]
-        [Row(typeof(string), "PublicInstanceFieldString", true, "Hello")]
-        [Row(typeof(string), "PrivateInstanceFieldString", true, "Hello")]
-        [Row(typeof(string), "PrivateStaticFieldString", true, "Hello")]
-        [Row(typeof(string), "PublicStaticPropertyString", true, "Hello")]
-        [Row(typeof(string), "PrivateStaticPropertyString", true, "Hello")]
-        [Row(typeof(string), "PublicStaticMethodString", true, "Hello")]
-        [Row(typeof(string), "PrivateStaticMethodString", true, "Hello")]
-        [Row(typeof(string), "PublicStaticFieldString", true, "Hello")]
-        [Row(typeof(string), "PrivateStaticFieldString", false, "Hello")]
-        [Row(typeof(string), "PublicStaticPropertyString", false, "Hello")]
-        [Row(typeof(string), "PrivateStaticPropertyString", false, "Hello")]
-        [Row(typeof(string), "PublicStaticMethodString", false, "Hello")]
-        [Row(typeof(string), "PrivateStaticMethodString", false, "Hello")]
-        [Row(typeof(string), "PublicStaticFieldString", false, "Hello")]
-        public void Invoke_argument_less_member<T>(string memberName, bool fromFixture, T expectedValue)
+        [Row(typeof(int), "PublicInstancePropertyInt32", null, 123)]
+        [Row(typeof(int), "PrivateInstancePropertyInt32", null, 123)]
+        [Row(typeof(int), "PublicInstanceMethodInt32", null, 123)]
+        [Row(typeof(int), "PrivateInstanceMethodInt32", null, 123)]
+        [Row(typeof(int), "PublicInstanceFieldInt32", null, 123)]
+        [Row(typeof(int), "PrivateInstanceFieldInt32", null, 123)]
+        [Row(typeof(int), "PublicStaticPropertyInt32", null, 123)]
+        [Row(typeof(int), "PrivateStaticPropertyInt32", null, 123)]
+        [Row(typeof(int), "PublicStaticMethodInt32", null, 123)]
+        [Row(typeof(int), "PrivateStaticMethodInt32", null, 123)]
+        [Row(typeof(int), "PublicStaticFieldInt32", null, 123)]
+        [Row(typeof(int), "PrivateStaticFieldInt32", null, 123)]
+        [Row(typeof(int), "PublicStaticPropertyInt32", typeof(Sample), 123)]
+        [Row(typeof(int), "PrivateStaticPropertyInt32", typeof(Sample), 123)]
+        [Row(typeof(int), "PublicStaticMethodInt32", typeof(Sample), 123)]
+        [Row(typeof(int), "PrivateStaticMethodInt32", typeof(Sample), 123)]
+        [Row(typeof(int), "PublicStaticFieldInt32", typeof(Sample), 123)]
+        [Row(typeof(int), "PrivateStaticFieldInt32", typeof(Sample), 123)]
+        [Row(typeof(string), "PublicInstancePropertyString", null, "Hello")]
+        [Row(typeof(string), "PrivateInstancePropertyString", null, "Hello")]
+        [Row(typeof(string), "PublicInstanceMethodString", null, "Hello")]
+        [Row(typeof(string), "PrivateInstanceMethodString", null, "Hello")]
+        [Row(typeof(string), "PublicInstanceFieldString", null, "Hello")]
+        [Row(typeof(string), "PrivateInstanceFieldString", null, "Hello")]
+        [Row(typeof(string), "PrivateStaticFieldString", null, "Hello")]
+        [Row(typeof(string), "PublicStaticPropertyString", null, "Hello")]
+        [Row(typeof(string), "PrivateStaticPropertyString", null, "Hello")]
+        [Row(typeof(string), "PublicStaticMethodString", null, "Hello")]
+        [Row(typeof(string), "PrivateStaticMethodString", null, "Hello")]
+        [Row(typeof(string), "PublicStaticFieldString", null, "Hello")]
+        [Row(typeof(string), "PrivateStaticFieldString", typeof(Sample), "Hello")]
+        [Row(typeof(string), "PublicStaticPropertyString", typeof(Sample), "Hello")]
+        [Row(typeof(string), "PrivateStaticPropertyString", typeof(Sample), "Hello")]
+        [Row(typeof(string), "PublicStaticMethodString", typeof(Sample), "Hello")]
+        [Row(typeof(string), "PrivateStaticMethodString", typeof(Sample), "Hello")]
+        [Row(typeof(string), "PublicStaticFieldString", typeof(Sample), "Hello")]
+        public void Invoke_argument_less_member<T>(string memberName, Type source, T expectedValue)
         {
             var mockScope = ArrangeMockScope();
-            Type type = fromFixture ? null : typeof(Sample);
-            var invoker = new FixtureMemberInvoker<T>(type, mockScope, memberName);
+            var invoker = new FixtureMemberInvoker<T>(source, mockScope, memberName);
             T actualValue = invoker.Invoke();
             Assert.AreEqual<T>(expectedValue, actualValue);
         }
@@ -315,6 +314,17 @@ namespace Gallio.Tests.Framework.Pattern
             private static string PrivateStaticMethodString()
             {
                 return "Hello";
+            }
+        }
+
+        public class GenericSample<T>
+        {
+            public T DefaultValue
+            {
+                get
+                {
+                    return default(T);
+                }
             }
         }
 

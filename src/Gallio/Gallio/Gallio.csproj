@@ -241,6 +241,7 @@
     <Compile Include="Common\Xml\Path.cs" />
     <Compile Include="Framework\Assertions\NamespaceDoc.cs" />
     <Compile Include="Framework\Capture.cs" />
+    <Compile Include="Framework\Pattern\FixtureMemberInvokerTargets.cs" />
     <Compile Include="Framework\Pattern\PatternTestFrameworkExtensionProvider.cs" />
     <Compile Include="Framework\Pattern\PatternTestExplorer.cs" />
     <Compile Include="Framework\Pattern\PatternTestModel.cs" />
