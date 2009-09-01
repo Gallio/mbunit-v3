@@ -165,10 +165,10 @@ namespace Gallio.Tests.Common.Concurrency
         }
 
         [Test]
-        [Repeat(3)]
         public void TryToAsynchronouslyHitARunningActionAtRandomTimes()
         {
             const int Iterations = 50;
+            Random random = new Random(0);
 
             for (int i = 0; i < Iterations; i++)
             {
@@ -176,14 +176,14 @@ namespace Gallio.Tests.Common.Concurrency
 
                 Tasks.StartThreadTask("Background Abort", delegate
                 {
-                    Thread.Sleep(i);
+                    Thread.Sleep(random.Next(5));
                     scope.Abort();
                 });
 
                 Stopwatch timeout = Stopwatch.StartNew();
-                while (scope.Run(delegate { Thread.SpinWait(i % 13); }) == null)
+                while (scope.Run(delegate { Thread.SpinWait(1000); }) == null)
                 {
-                    if (timeout.ElapsedMilliseconds > Iterations + 500)
+                    if (timeout.ElapsedMilliseconds > 500)
                         Assert.Fail("The scope failed to stop the run during iteration {0}.", i);
                 }
 

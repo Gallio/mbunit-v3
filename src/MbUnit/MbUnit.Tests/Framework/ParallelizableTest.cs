@@ -116,6 +116,8 @@ namespace MbUnit.Tests.Framework
             [TearDown]
             public void DecrementAndWriteCounterOnExit()
             {
+                Thread.Sleep(500);
+
                 int newCount = Interlocked.Decrement(ref counter);
                 TestLog.WriteLine(newCount);
                 if (newCount != 0)
@@ -126,84 +128,72 @@ namespace MbUnit.Tests.Framework
             public void One()
             {
                 TestLog.WriteLine("One");
-                Thread.Sleep(500);
             }
 
             [Test, Parallelizable]
             public void Two()
             {
                 TestLog.WriteLine("Two");
-                Thread.Sleep(500);
             }
 
             [Test, Parallelizable]
             public void Three()
             {
                 TestLog.WriteLine("Three");
-                Thread.Sleep(500);
             }
 
             [Test, Parallelizable]
             public void Four()
             {
                 TestLog.WriteLine("Four");
-                Thread.Sleep(500);
             }
 
             [Test]
             public void Five()
             {
                 TestLog.WriteLine("Five");
-                Thread.Sleep(500);
             }
 
             [Test, DependsOn("Five")]
             public void Six()
             {
                 TestLog.WriteLine("Six");
-                Thread.Sleep(500);
             }
 
             [Test(Order=1), Parallelizable]
             public void Seven()
             {
                 TestLog.WriteLine("Seven");
-                Thread.Sleep(500);
             }
 
             [Test(Order=1), Parallelizable]
             public void Eight()
             {
                 TestLog.WriteLine("Eight");
-                Thread.Sleep(500);
             }
 
             [Test(Order = 1), Parallelizable]
             public void Nine()
             {
                 TestLog.WriteLine("Nine");
-                Thread.Sleep(500);
             }
 
             [Test(Order = 1), Parallelizable]
             public void Ten()
             {
                 TestLog.WriteLine("Ten");
-                Thread.Sleep(500);
             }
 
             [Test(Order = 1)]
             public void Eleven()
             {
                 TestLog.WriteLine("Eleven");
-                Thread.Sleep(500);
             }
 
             [Test(Order = 2), Parallelizable]
             public void Twelve()
             {
                 TestLog.WriteLine("Twelve");
-                Thread.Sleep(500);
             }
         }
 
