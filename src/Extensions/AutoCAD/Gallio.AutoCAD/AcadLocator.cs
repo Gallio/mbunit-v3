@@ -20,33 +20,29 @@ using Microsoft.Win32;
 namespace Gallio.AutoCAD
 {
     /// <summary>
-    /// Finds the AutoCAD install location.
+    /// Finds the AutoCAD install location based on registry keys.
     /// </summary>
-    internal static class AcadLocator
+    public class AcadLocator : IAcadLocator
     {
         private const string ExeName = "acad.exe";
 
-        /// <summary>
-        /// Gets a path to "acad.exe".
-        /// </summary>
-        /// <returns>The path to "acad.exe".</returns>
-        /// <exception cref="FileNotFoundException">If "acad.exe" is not found.</exception>
-        public static string GetAcadLocation()
+        /// <inheritdoc/>
+        public string GetMostRecentlyUsed()
         {
-            string path = GetMostRecentlyUsed();
+            var path = SearchRegistry();
             if (!File.Exists(path))
                 throw new FileNotFoundException("Unable to find AutoCAD.");
             return path;
         }
 
-        private static string GetMostRecentlyUsed()
+        private static string SearchRegistry()
         {
             using (RegistryKey regKey = Registry.CurrentUser.OpenSubKey(@"Software\Autodesk\DWGCommon\shellex\Apps"))
             {
                 if (regKey == null)
                     return null;
 
-                string subKeyName = regKey.GetValue(null) as string;
+                var subKeyName = regKey.GetValue(null) as string;
                 if (subKeyName == null)
                     return null;
 
@@ -55,7 +51,7 @@ namespace Gallio.AutoCAD
                     if (subKey == null)
                         return null;
 
-                    string launchCommand = subKey.GetValue("OpenLaunch") as string;
+                    var launchCommand = subKey.GetValue("OpenLaunch") as string;
                     if (launchCommand == null)
                         return null;
 

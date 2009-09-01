@@ -14,7 +14,7 @@
 // limitations under the License.
 
 using System;
-using System.Globalization;
+using Gallio.AutoCAD.ProcessManagement;
 using Gallio.Model.Isolation;
 using Gallio.Runtime.Logging;
 
@@ -25,30 +25,24 @@ namespace Gallio.AutoCAD.Isolation
     /// </summary>
     public class AcadTestIsolationProvider : BaseTestIsolationProvider
     {
+        private readonly IAcadProcessFactory processFactory;
+
         /// <summary>
         /// Creates a test isolation provider.
         /// </summary>
-        public AcadTestIsolationProvider()
+        public AcadTestIsolationProvider(IAcadProcessFactory processFactory)
         {
+            if (processFactory == null)
+                throw new ArgumentNullException("processFactory");
+
+            this.processFactory = processFactory;
         }
 
         /// <inheritdoc />
         protected override ITestIsolationContext CreateContextImpl(TestIsolationOptions testIsolationOptions, ILogger logger)
         {
-            string acadAttachToExisting = testIsolationOptions.Properties.GetValue("AcadAttachToExisting");
-            bool acadAttachToExistingBool = false;
-            if (acadAttachToExisting != null)
-                bool.TryParse(acadAttachToExisting, out acadAttachToExistingBool);
-
-            string acadExePath = testIsolationOptions.Properties.GetValue("AcadExePath");
-
-            AcadProcessFactory processFactory = new AcadProcessFactory(logger)
-            {
-                AttachToExistingProcess = acadAttachToExistingBool,
-                AcadExePath = acadExePath
-            };
-
-            return new AcadTestIsolationContext(logger, processFactory);
+            var process = processFactory.CreateProcess(testIsolationOptions);
+            return new AcadTestIsolationContext(logger, process);
         }
     }
 }

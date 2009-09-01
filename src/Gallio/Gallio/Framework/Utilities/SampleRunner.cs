@@ -52,6 +52,7 @@ namespace Gallio.Framework.Utilities
     {
         private readonly TestPackage testPackage;
         private readonly List<Filter<ITestDescriptor>> filters;
+        private readonly TestRunnerOptions testRunnerOptions;
         private TestLauncherResult result;
 
         /// <summary>
@@ -62,6 +63,7 @@ namespace Gallio.Framework.Utilities
             testPackage = new TestPackage();
             filters = new List<Filter<ITestDescriptor>>();
             TestRunnerFactoryName = StandardTestRunnerFactoryNames.Local;
+            testRunnerOptions = new TestRunnerOptions();
         }
 
         /// <summary>
@@ -99,6 +101,14 @@ namespace Gallio.Framework.Utilities
         /// </summary>
         /// <value>The test runner factory name, defaults to <see cref="StandardTestRunnerFactoryNames.Local" /></value>
         public string TestRunnerFactoryName { get; set; }
+
+        /// <summary>
+        /// Gets the test runner options.
+        /// </summary>
+        public TestRunnerOptions TestRunnerOptions
+        {
+            get { return testRunnerOptions; }
+        }
 
         /// <summary>
         /// Adds a test file to the package configuration, if not already added.
@@ -346,6 +356,8 @@ namespace Gallio.Framework.Utilities
             //launcher.AddReportFormat("Xml");
 
             launcher.DoNotRun = doNoRun;
+
+            GenericCollectionUtils.ForEach(testRunnerOptions.Properties, x => launcher.TestRunnerOptions.AddProperty(x.Key, x.Value));
 
             using (logStreamWriter.BeginSection("Log Output"))
                 result = launcher.Run();

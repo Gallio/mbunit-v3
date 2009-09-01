@@ -48,6 +48,12 @@
   </assemblies>
 
   <services>
+    <service serviceId="Gallio.Common.Concurrency.ProcessCreator"
+             serviceType="Gallio.Common.Concurrency.IProcessCreator, Gallio" />
+
+    <service serviceId="Gallio.Common.Concurrency.ProcessFinder"
+             serviceType="Gallio.Common.Concurrency.IProcessFinder, Gallio" />
+
     <service serviceId="Gallio.FileSystem"
              serviceType="Gallio.Common.IO.IFileSystem, Gallio" />
 
@@ -450,6 +456,14 @@
     </component>
     
     <!-- Common helpers -->
+
+    <component componentId="Gallio.Common.Concurrency.ProcessCreator"
+               serviceId="Gallio.Common.Concurrency.ProcessCreator"
+               componentType="Gallio.Common.Concurrency.ProcessCreator, Gallio" />
+
+    <component componentId="Gallio.Common.Concurrency.ProcessFinder"
+               serviceId="Gallio.Common.Concurrency.ProcessFinder"
+               componentType="Gallio.Common.Concurrency.ProcessFinder, Gallio" />
 
     <component componentId="Gallio.FileSystem" 
                serviceId="Gallio.FileSystem" 

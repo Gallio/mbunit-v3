@@ -21,10 +21,8 @@ namespace Gallio.AutoCAD.Commands
     /// <summary>
     /// The base class for commands that can be sent to the AutoCAD process.
     /// </summary>
-    internal abstract class AcadCommand
+    public abstract class AcadCommand
     {
-        private readonly string globalName;
-
         /// <summary>
         /// Initializes a new <see cref="AcadCommand"/> object.
         /// </summary>
@@ -33,26 +31,39 @@ namespace Gallio.AutoCAD.Commands
         {
             if (String.IsNullOrEmpty(globalName))
                 throw new ArgumentException("Must not be null or empty.", "globalName");
-            this.globalName = globalName;
+            GlobalName = globalName;
         }
 
-        /// <summary>Gets the command's arguments.</summary>
-        public abstract IEnumerable<string> Arguments
+        /// <summary>
+        /// Gets the command's arguments.
+        /// </summary>
+        public IEnumerable<string> GetArguments()
         {
-            get;
+            var arguments = GetArgumentsImpl();
+            if (arguments == null)
+                throw new InvalidOperationException("Unable to get arguments.");
+
+            return arguments;
         }
 
-        /// <summary>Gets the global name for this command.</summary>
+        /// <summary>
+        /// Gets the command's arguments.
+        /// </summary>
+        /// <remarks>
+        /// This method must not return null.
+        /// </remarks>
+        protected abstract IEnumerable<string> GetArgumentsImpl();
+
+        /// <summary>
+        /// Gets the global name for this command.
+        /// </summary>
         public string GlobalName
-        {
-            get { return globalName; }
-        }
+        { get; private set; }
 
-        /// <summary><c>true</c> if this command should be sent asynchonously; otherwise, <c>false</c>.</summary>
-        public bool SendAsynchronously
+        /// <inheritdoc/>
+        public override string ToString()
         {
-            get;
-            set;
+            return GlobalName;
         }
     }
 }

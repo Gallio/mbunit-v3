@@ -14,22 +14,20 @@
 // limitations under the License.
 
 using System;
+using System.Diagnostics;
 
-namespace Gallio.AutoCAD
+namespace Gallio.Common.Concurrency
 {
     /// <summary>
-    /// Represents the AutoCAD process.
+    /// Default implementation of <see cref="IProcessFinder"/> using <see cref="Process"/>.
     /// </summary>
-    public interface IAcadProcess : IDisposable
+    public class ProcessFinder : IProcessFinder
     {
-        /// <summary>
-        /// Starts the AutoCAD process and the client.
-        /// </summary>
-        /// <param name="ipcPortName">The IPC port name.</param>
-        /// <param name="linkId">The unique id of the client/server pair.</param>
-        /// <param name="gallioLoaderAssemblyPath">The path of the Gallio.Loader assembly or null if it is
-        /// to be loaded from the GAC.</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="ipcPortName"/> is null.</exception>
-        void Start(string ipcPortName, Guid linkId, string gallioLoaderAssemblyPath);
+        /// <inheritdoc/>
+        public IProcess[] GetProcessesByName(string processName)
+        {
+            var processes = Process.GetProcessesByName(processName);
+            return Array.ConvertAll(processes, p => new ProcessWrapper(p));
+        }
     }
 }

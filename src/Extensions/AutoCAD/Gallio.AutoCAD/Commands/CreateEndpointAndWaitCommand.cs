@@ -15,9 +15,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Globalization;
-using Gallio.Runtime;
 
 namespace Gallio.AutoCAD.Commands
 {
@@ -30,25 +27,32 @@ namespace Gallio.AutoCAD.Commands
     /// If it is not loaded into AutoCAD this command will not be available.
     /// </para>
     /// </remarks>
-    internal class CreateEndpointAndWaitCommand : AcadCommand
+    public class CreateEndpointAndWaitCommand : AcadCommand
     {
+        private readonly string ipcPortName;
+        private readonly Guid linkId;
+        private readonly string gallioLoaderAssemblyPath;
+
         /// <summary>
         /// Initializes a new <see cref="CreateEndpointAndWaitCommand"/> object.
         /// </summary>
-        public CreateEndpointAndWaitCommand()
+        public CreateEndpointAndWaitCommand(string ipcPortName, Guid linkId, string gallioLoaderAssemblyPath)
             : base("CREATEENDPOINTANDWAIT")
         {
+            if (string.IsNullOrEmpty(ipcPortName))
+                throw new ArgumentException("Value can't be null or empty.", "ipcPortName");
+
+            this.ipcPortName = ipcPortName;
+            this.linkId = linkId;
+            this.gallioLoaderAssemblyPath = gallioLoaderAssemblyPath;
         }
 
         /// <inheritdoc/>
-        public override IEnumerable<string> Arguments
+        protected override IEnumerable<string> GetArgumentsImpl()
         {
-            get
-            {
-                yield return IpcPortName;
-                yield return LinkId.ToString();
-                yield return GallioLoaderAssemblyPath;
-            }
+            yield return IpcPortName;
+            yield return LinkId.ToString();
+            yield return GallioLoaderAssemblyPath;
         }
 
         /// <summary>
@@ -56,8 +60,7 @@ namespace Gallio.AutoCAD.Commands
         /// </summary>
         public string IpcPortName
         {
-            get;
-            set;
+            get { return ipcPortName; }
         }
 
         /// <summary>
@@ -65,8 +68,7 @@ namespace Gallio.AutoCAD.Commands
         /// </summary>
         public Guid LinkId
         {
-            get;
-            set;
+            get { return linkId; }
         }
 
         /// <summary>
@@ -75,8 +77,7 @@ namespace Gallio.AutoCAD.Commands
         /// </summary>
         public string GallioLoaderAssemblyPath
         {
-            get;
-            set;
+            get { return gallioLoaderAssemblyPath; }
         }
     }
 }

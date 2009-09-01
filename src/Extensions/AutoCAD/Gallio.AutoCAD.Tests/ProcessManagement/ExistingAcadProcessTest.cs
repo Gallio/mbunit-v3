@@ -13,26 +13,29 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Gallio.AutoCAD.Isolation;
+using Gallio.AutoCAD.Commands;
 using Gallio.AutoCAD.ProcessManagement;
+using Gallio.Common.Concurrency;
 using Gallio.Runtime.Logging;
 using MbUnit.Framework;
 using Rhino.Mocks;
 
-namespace Gallio.AutoCAD.Tests.Isolation
+namespace Gallio.AutoCAD.Tests.ProcessManagement
 {
-    [TestsOn(typeof(AcadTestIsolationContext))]
-    public class AcadTestIsolationContextTest
+    [TestsOn(typeof(ExistingAcadProcess))]
+    public class ExistingAcadProcessTest
     {
         [Test]
-        public void RequiresSingleThreadedExecution_ReturnsTrue()
+        public void Dispose_CallsDisposeOnActualProcess()
         {
             var logger = MockRepository.GenerateStub<ILogger>();
-            var process = MockRepository.GenerateStub<IAcadProcess>();
+            var commandRunner = MockRepository.GenerateStub<IAcadCommandRunner>();
+            var actualProcess = MockRepository.GenerateMock<IProcess>();
+            var acadProcess = new ExistingAcadProcess(logger, commandRunner, actualProcess);
 
-            var context = new AcadTestIsolationContext(logger, process);
+            acadProcess.Dispose();
 
-            Assert.IsTrue(context.RequiresSingleThreadedExecution);
+            actualProcess.AssertWasCalled(x => x.Dispose());
         }
     }
 }

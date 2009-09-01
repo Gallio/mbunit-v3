@@ -13,26 +13,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Gallio.AutoCAD.Isolation;
-using Gallio.AutoCAD.ProcessManagement;
-using Gallio.Runtime.Logging;
-using MbUnit.Framework;
-using Rhino.Mocks;
+using System.IO;
 
-namespace Gallio.AutoCAD.Tests.Isolation
+namespace Gallio.AutoCAD
 {
-    [TestsOn(typeof(AcadTestIsolationContext))]
-    public class AcadTestIsolationContextTest
+    /// <summary>
+    /// Finds the AutoCAD install location.
+    /// </summary>
+    public interface IAcadLocator
     {
-        [Test]
-        public void RequiresSingleThreadedExecution_ReturnsTrue()
-        {
-            var logger = MockRepository.GenerateStub<ILogger>();
-            var process = MockRepository.GenerateStub<IAcadProcess>();
-
-            var context = new AcadTestIsolationContext(logger, process);
-
-            Assert.IsTrue(context.RequiresSingleThreadedExecution);
-        }
+        /// <summary>
+        /// Gets the location most recently used AutoCAD installation.
+        /// </summary>
+        /// <exception cref="FileNotFoundException">If the location can't be found.</exception>
+        string GetMostRecentlyUsed();
     }
 }
