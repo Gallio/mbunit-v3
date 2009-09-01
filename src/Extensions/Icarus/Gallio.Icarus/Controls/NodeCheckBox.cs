@@ -13,9 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.Drawing;
 using System.Windows.Forms;
-
 using Aga.Controls.Tree;
 using Gallio.Icarus.Models;
 
@@ -23,24 +21,32 @@ namespace Gallio.Icarus.Controls
 {
     public class NodeCheckBox : Aga.Controls.Tree.NodeControls.NodeCheckBox
     {
+        public NodeCheckBox()
+        {
+            CheckStateChanged += NodeCheckBox_CheckStateChanged;
+        }
+
+        private void NodeCheckBox_CheckStateChanged(object sender, TreePathEventArgs e)
+        {
+            Parent.BeginUpdate();
+            ((TestTreeNode) e.Path.LastNode).UpdateStateOfRelatedNodes();
+            Parent.EndUpdate();
+        }
+
         public override void MouseDown(TreeNodeAdvMouseEventArgs args)
         {
             if (args.Button != MouseButtons.Left || !IsEditEnabled(args.Node))
                 return;
             
-            DrawContext context = new DrawContext();
-            context.Bounds = args.ControlBounds;
-            Rectangle rect = GetBounds(args.Node, context);
+            var context = new DrawContext { Bounds = args.ControlBounds };
+            var rect = GetBounds(args.Node, context);
             
             if (!rect.Contains(args.ViewLocation))
                 return;
 
             CheckState state = GetCheckState(args.Node);
             state = GetNewState(state);
-            Parent.BeginUpdate();
             SetCheckState(args.Node, state);
-            ((TestTreeNode)args.Node.Tag).UpdateStateOfRelatedNodes();
-            Parent.EndUpdate();
             args.Handled = true;
         }
         
