@@ -39,10 +39,13 @@ namespace Gallio.Common.Concurrency
     public sealed class WorkScheduler
     {
         private readonly object syncRoot = new object();
-        private readonly Queue<WorkSet> pendingWorkSets;
+
+        // Invariant: This list only contains work sets that have at least one pending action.
+        private readonly LinkedList<WorkSet> pendingWorkSets;
+
         private readonly DegreeOfParallelismProvider degreeOfParallelismProvider;
 
-        private volatile int activeThreads = 1;
+        private volatile int activeThreads;
 
         /// <summary>
         /// Creates a work scheduler.
@@ -58,12 +61,23 @@ namespace Gallio.Common.Concurrency
 
             this.degreeOfParallelismProvider = degreeOfParallelismProvider;
 
-            pendingWorkSets = new Queue<WorkSet>();
+            pendingWorkSets = new LinkedList<WorkSet>();
         }
 
         /// <summary>
         /// Runs a set of actions in parallel up to the current degree of parallelism.
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// The implementation guarantees that the current thread will only be used to
+        /// run actions from the provided work set; it will not be used to run actions
+        /// from other concurrently executing work sets.  Other threads will be used
+        /// to run actions from this work set and from other work sets in the order in
+        /// which they were enqueued.  Thus this function will return as soon as all
+        /// of the specified actions have completed even if other work sets have
+        /// pending work.
+        /// </para>
+        /// </remarks>
         /// <param name="actions">The actions to run.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="actions"/> is null
         /// or contains null.</exception>
@@ -76,6 +90,7 @@ namespace Gallio.Common.Concurrency
             if (actions == null)
                 throw new ArgumentNullException("actions");
 
+            // Copy the queue of actions to process from the enumeration.
             var actionQueue = new Queue<Action>();
             foreach (Action action in actions)
             {
@@ -84,42 +99,50 @@ namespace Gallio.Common.Concurrency
                 actionQueue.Enqueue(action);
             }
 
+            // Short-circuit when no actions to run to satisfy our invariant for pending work sets.
+            if (actionQueue.Count == 0)
+                return;
+
+            // Add this work set to the list of pending work sets.
             WorkSet workSet;
             lock (syncRoot)
             {
                 workSet = new WorkSet(actionQueue);
-                pendingWorkSets.Enqueue(workSet);
+
+                pendingWorkSets.AddLast(workSet);
+                activeThreads += 1;
             }
 
+            // Loop until all actions in this work set are finished.
             for (; ; )
             {
                 Action nextAction;
 
                 lock (syncRoot)
                 {
+                    // Synchronize and exit if this work set is finished.
                     if (!workSet.SyncHasPendingActions())
                     {
-                        if (! workSet.SyncHasActionsInProgress())
-                            return;
+                        activeThreads -= 1;
 
-                        Monitor.Wait(syncRoot);
-                        continue;
-                    }
-                    else
-                    {
-                        nextAction = workSet.SyncPrepareNextAction();
+                        while (workSet.SyncHasActionsInProgress())
+                            Monitor.Wait(syncRoot);
 
-                        if (workSet.SyncHasPendingActions())
-                        {
-                            if (activeThreads < GetDegreeOfParallelism())
-                            {
-                                activeThreads += 1;
-                                ThreadPool.QueueUserWorkItem(BackgroundActionLoop);
-                            }
-                        }
+                        return;
                     }
+
+                    // Prepare next action from this work set only.
+                    nextAction = workSet.SyncPrepareNextAction();
+
+                    // Remove the work set from the list of pending work sets if it has no other pending actions.
+                    if (!workSet.SyncHasPendingActions())
+                        pendingWorkSets.Remove(workSet);
+
+                    // Spawn more threads if needed for pending work sets.
+                    SyncSpawnBackgroundActionLoopIfNeeded();
                 }
 
+                // Run the next action.
                 try
                 {
                     nextAction();
@@ -144,6 +167,16 @@ namespace Gallio.Common.Concurrency
             return Math.Max(degreeOfParallelismProvider(), 1);
         }
 
+        private void SyncSpawnBackgroundActionLoopIfNeeded()
+        {
+            if (pendingWorkSets.Count != 0
+                && activeThreads < GetDegreeOfParallelism())
+            {
+                activeThreads += 1;
+                ThreadPool.QueueUserWorkItem(BackgroundActionLoop);
+            }
+        }
+
         [DebuggerHidden]
         private void BackgroundActionLoop(object dummy)
         {
@@ -157,28 +190,27 @@ namespace Gallio.Common.Concurrency
 
                 lock (syncRoot)
                 {
-                    for (; ; )
+                    // Exit if no pending work sets remain or if there are too many threads running.
+                    if (pendingWorkSets.Count == 0
+                        || activeThreads > GetDegreeOfParallelism())
                     {
-                        if (pendingWorkSets.Count == 0
-                            || activeThreads > GetDegreeOfParallelism())
-                        {
-                            activeThreads -= 1;
-                            return;
-                        }
-
-                        nextWorkSet = pendingWorkSets.Peek();
-                        if (!nextWorkSet.SyncHasPendingActions())
-                        {
-                            pendingWorkSets.Dequeue();
-                        }
-                        else
-                        {
-                            nextAction = nextWorkSet.SyncPrepareNextAction();
-                            break;
-                        }
+                        activeThreads -= 1;
+                        return;
                     }
+
+                    // Prepare next action.
+                    nextWorkSet = pendingWorkSets.First.Value;
+                    nextAction = nextWorkSet.SyncPrepareNextAction();
+
+                    // Remove the work set from the list of pending work sets if it has no other pending actions.
+                    if (!nextWorkSet.SyncHasPendingActions())
+                        pendingWorkSets.RemoveFirst();
+
+                    // Spawn more threads if needed for pending work sets.
+                    SyncSpawnBackgroundActionLoopIfNeeded();
                 }
 
+                // Run the next action.
                 try
                 {
                     nextAction();
