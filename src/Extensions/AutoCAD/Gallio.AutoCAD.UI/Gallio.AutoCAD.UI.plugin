@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <plugin pluginId="Gallio.AutoCAD.UI"
-        recommendedInstallationPath=""
+        recommendedInstallationPath="AutoCAD"
         xmlns="http://www.gallio.org/">
   <traits>
     <name>AutoCAD Integration Plugin UI</name>
@@ -24,9 +24,6 @@
     <assembly fullName="Gallio.AutoCAD.UI, Version=0.0.0.0, Culture=neutral, PublicKeyToken=eb9cfa67ee6ab36e"
               codeBase="Gallio.AutoCAD.UI.dll">
       <qualifyPartialName>true</qualifyPartialName>
-      <bindingRedirects>
-        <bindingRedirect oldVersion="0.0.0.0-65535.65535.65535.65535" />
-      </bindingRedirects>
     </assembly>
   </assemblies>
 
