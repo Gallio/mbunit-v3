@@ -122,6 +122,9 @@ namespace Gallio.UI.Reports
 
             DoAsync(() =>
             {
+                if (webBrowser.IsBusy)
+                    webBrowser.Stop();
+
                 webBrowser.DocumentStream = stream;
                 webBrowser.Show();
             });
