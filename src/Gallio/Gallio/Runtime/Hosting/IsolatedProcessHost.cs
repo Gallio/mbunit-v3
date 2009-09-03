@@ -187,7 +187,8 @@ namespace Gallio.Runtime.Hosting
 
             StringBuilder hostArguments = new StringBuilder();
             hostArguments.Append(hostConnectionArguments);
-            hostArguments.Append(@" /timeout:").Append((int)WatchdogTimeout.TotalSeconds);
+            if (HostSetup.DebuggerSetup == null)
+                hostArguments.Append(@" /timeout:").Append((int)WatchdogTimeout.TotalSeconds);
             hostArguments.Append(@" /owner-process:").Append(Process.GetCurrentProcess().Id);
             if (HostSetup.ApplicationBaseDirectory != null)
                 hostArguments.Append(@" /application-base-directory:""").Append(

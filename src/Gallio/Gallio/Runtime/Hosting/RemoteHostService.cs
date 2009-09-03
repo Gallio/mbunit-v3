@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using System.Diagnostics;
 using System.Threading;
 using Gallio.Runtime.Logging;
 using Gallio.Runtime;
@@ -123,8 +124,11 @@ namespace Gallio.Runtime.Hosting
 
         private void HandleWatchdogTimerExpired(object state)
         {
-            watchdogTimerExpired = true;
-            Shutdown();
+            if (! Debugger.IsAttached)
+            {
+                watchdogTimerExpired = true;
+                Shutdown();
+            }
         }
     }
 }
