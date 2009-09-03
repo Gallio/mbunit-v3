@@ -162,6 +162,29 @@ namespace MbUnit.Tests.Framework
         }
 
         [Test]
+        public void Multiple_captures_and_reports_non_silent_AssertionFailureException()
+        {
+            AssertionFailure[] failures = Capture(() => Assert.Multiple(() =>
+            {
+                throw new AssertionFailureException(new AssertionFailureBuilder("Boom").ToAssertionFailure(), false);
+            }, "{0} {1}", "MbUnit", "message"));
+
+            Assert.AreEqual(1, failures.Length);
+            Assert.AreEqual("MbUnit message", failures[0].Message);
+
+            Assert.AreEqual(0, failures[0].InnerFailures.Count, "Should contain inner failures because it was not logged.");
+        }
+
+        [Test]
+        public void Multiple_rethrows_test_exceptions_other_than_AssertionFailureException()
+        {
+            Assert.Throws<TestInconclusiveException>(() =>
+            {
+                Assert.Multiple(() => { throw new TestInconclusiveException(); });
+            });
+        }
+
+        [Test]
         public void IsFailurePending_false_when_no_pending_failures()
         {
             bool wasPending = false;

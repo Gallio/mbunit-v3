@@ -215,8 +215,10 @@
     <Compile Include="Common\Validation\NamespaceDoc.cs" />
     <Compile Include="Common\Normalization\NormalizationUtils.cs" />
     <Compile Include="Common\Xml\NamespaceDoc.cs" />
+    <Compile Include="Framework\Assertions\AssertionFailureExplanation.cs" />
     <Compile Include="Framework\Assertions\NamespaceDoc.cs" />
     <Compile Include="Framework\Capture.cs" />
+    <Compile Include="Framework\Pattern\FixtureMemberInvokerTargets.cs" />
     <Compile Include="Framework\Pattern\PatternTestFrameworkExtensionProvider.cs" />
     <Compile Include="Framework\Pattern\PatternTestExplorer.cs" />
     <Compile Include="Framework\Pattern\PatternTestModel.cs" />

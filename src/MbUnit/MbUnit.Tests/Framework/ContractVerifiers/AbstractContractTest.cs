@@ -41,8 +41,10 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
         /// is specified, the test method is expected to not run.</param>
         protected void VerifySampleContract(string groupName, Type fixtureType, string testMethodName, TestStatus expectedTestStatus)
         {
-            var contractName = String.Format("/{0}/{1}/{2}", GetType().Name, fixtureType.Name, groupName);
-            var contracts = Report.TestPackageRun.AllTestStepRuns.Where(x => x.Step.IsPrimary && x.Step.FullName.EndsWith(contractName));
+            var contractName = String.Format("/{0}/{1}/", GetType().Name, fixtureType.Name);
+            var all = Report.TestPackageRun.AllTestStepRuns.Where(x => x.Step.IsPrimary).Select(x => x.Step.FullName).ToArray();
+            var contracts = Report.TestPackageRun.AllTestStepRuns
+                .Where(x => x.Step.IsPrimary && x.Step.FullName.Contains(contractName) && x.Step.FullName.EndsWith(groupName));
             Assert.IsNotEmpty(contracts, "No contract named '...{0}' found in the fixture.", contractName);
             bool found = false;
 

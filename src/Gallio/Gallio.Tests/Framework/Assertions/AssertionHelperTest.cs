@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using System.Threading;
 using Gallio.Framework;
 using Gallio.Framework.Assertions;
 using Gallio.Common.Diagnostics;
@@ -25,6 +26,130 @@ namespace Gallio.Tests.Framework.Assertions
     [TestsOn(typeof(AssertionHelper))]
     public class AssertionHelperTest
     {
+        [Test]
+        public void Verify_WhenAssertionFuncIsNull_Throws()
+        {
+            Assert.Throws<ArgumentNullException>(() => AssertionHelper.Verify(null));
+        }
+
+        [Test]
+        public void Verify_WhenCalled_IncrementsAssertionCountEachTime()
+        {
+            AssertionHelper.Verify(() => null);
+            int firstCount = TestContext.CurrentContext.AssertCount;
+
+            try
+            {
+                AssertionHelper.Verify(() => new AssertionFailureBuilder("Boom").ToAssertionFailure());
+            }
+            catch (AssertionFailureException)
+            {
+            }
+            int secondCount = TestContext.CurrentContext.AssertCount;
+
+            Assert.AreEqual(1, firstCount);
+            Assert.AreEqual(2, secondCount);
+        }
+
+        [Test]
+        public void Verify_WhenAssertionFuncReturnsNull_DoesNotSubmitAnyFailures()
+        {
+            var failures = AssertionHelper.Eval(() =>
+            {
+                AssertionHelper.Verify(() => null);
+            });
+
+            Assert.IsEmpty(failures);
+        }
+
+        [Test]
+        public void Verify_WhenAssertionFuncReturnsNonNull_SubmitsTheFailure()
+        {
+            var failure = new AssertionFailureBuilder("Boom").ToAssertionFailure();
+            var failures = AssertionHelper.Eval(() =>
+            {
+                AssertionHelper.Verify(() => failure);
+            });
+
+            Assert.AreElementsEqual(new[] { failure }, failures);
+        }
+
+        [Test]
+        public void Verify_WhenAssertionFuncThrowsAssertionFailureException_ResubmitsTheFailure()
+        {
+            var failure = new AssertionFailureBuilder("Boom").ToAssertionFailure();
+            var failures = AssertionHelper.Eval(() =>
+            {
+                AssertionHelper.Verify(() =>
+                {
+                    throw new AssertionFailureException(failure, false);
+                });
+            });
+
+            Assert.AreElementsEqual(new[] { failure }, failures);
+        }
+
+        [Test]
+        public void Verify_WhenAssertionFuncThrowsTestInconclusiveException_RethrowsTheException()
+        {
+            Assert.Throws<TestInconclusiveException>(() =>
+            {
+                throw new TestInconclusiveException();
+            });
+        }
+
+        [Test]
+        public void Verify_WhenAssertionFuncThrowsSomeOtherException_WrapsTheExceptionAsAFailure()
+        {
+            var failures = AssertionHelper.Eval(() =>
+            {
+                AssertionHelper.Verify(() =>
+                {
+                    throw new InvalidOperationException("Boom");
+                });
+            });
+
+            Assert.AreEqual(1, failures.Length);
+            Assert.AreEqual("An exception occurred while verifying an assertion.", failures[0].Description);
+            Assert.AreEqual(1, failures[0].Exceptions.Count);
+            Assert.Contains(failures[0].Exceptions[0].ToString(), "Boom");
+        }
+
+        [Test]
+        public void Fail_WhenFailureIsNull_DoesNothing()
+        {
+            var failures = AssertionHelper.Eval(() =>
+            {
+                AssertionHelper.Fail(null);
+            });
+
+            Assert.IsEmpty(failures);
+        }
+
+        [Test]
+        public void Fail_WhenFailureIsNotNull_SubmitsTheFailure()
+        {
+            var failure = new AssertionFailureBuilder("Boom").ToAssertionFailure();
+            var failures = AssertionHelper.Eval(() =>
+            {
+                AssertionHelper.Fail(failure);
+            });
+
+            Assert.AreElementsEqual(new[] { failure }, failures);
+        }
+
+        [Test]
+        public void Eval_WhenActionIsNull_Throws()
+        {
+            Assert.Throws<ArgumentNullException>(() => AssertionHelper.Eval(null));
+        }
+
+        [Test]
+        public void EvalWithBehavior_WhenActionIsNull_Throws()
+        {
+            Assert.Throws<ArgumentNullException>(() => AssertionHelper.Eval(null, AssertionFailureBehavior.Discard));
+        }
+
         [Test]
         [ExpectedArgumentNullException]
         public void Explain_should_throw_exception_when_action_argument_is_null()
