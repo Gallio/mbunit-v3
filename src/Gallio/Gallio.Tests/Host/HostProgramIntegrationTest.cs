@@ -41,7 +41,7 @@ namespace Gallio.Tests.Host
         public void HostProgramTerminatesAutomaticallyOnTimeoutIfNoConnection()
         {
             ProcessTask task = StartHost("/ipc-port:HostIntegrationTest /timeout:1");
-            task.Join(TimeSpan.FromSeconds(5));
+            task.Join(TimeSpan.FromSeconds(10));
 
             Assert.Contains(task.ConsoleOutput, "Watchdog timer expired!");
             Assert.AreEqual(0, task.ExitCode);

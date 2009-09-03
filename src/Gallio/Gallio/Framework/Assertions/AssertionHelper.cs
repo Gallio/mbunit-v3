@@ -31,9 +31,15 @@ namespace Gallio.Framework.Assertions
         /// </summary>
         /// <remarks>
         /// <para>
-        /// If the assertion function returns null then the assertion is deemed to have passed.
-        /// If it returns an <see cref="AssertionFailure" /> or throws an exception,
-        /// then is is deemed to have failed.
+        /// The assertion function should return null to indicate that the assertion has passed
+        /// or <see cref="AssertionFailure" /> to indicate that it has failed.
+        /// </para>
+        /// <para>
+        /// If the assertion function throws an exception it is reported as an assertion failure
+        /// unless the exception is a <see cref="TestException"/> (except <see cref="AssertionFailureException"/>)
+        /// in which case the exception is rethrown by this method.  This behavior enables special
+        /// test exceptions such as <see cref="TestTerminatedException" /> to be used to terminate
+        /// the test at any point instead of being reported as assertion failures.
         /// </para>
         /// <para>
         /// When an assertion failure is detected, it is submitted to <see cref="AssertionContext.SubmitFailure"/>
@@ -66,6 +72,14 @@ namespace Gallio.Framework.Assertions
             {
                 throw;
             }
+            catch (AssertionFailureException ex)
+            {
+                failure = ex.Failure;
+            }
+            catch (TestException)
+            {
+                throw;
+            }
             catch (Exception ex)
             {
                 failure = new AssertionFailureBuilder("An exception occurred while verifying an assertion.")
@@ -93,6 +107,13 @@ namespace Gallio.Framework.Assertions
         /// </summary>
         /// <remarks>
         /// <para>
+        /// If the action throws an exception it is reported as an assertion failure
+        /// unless the exception is a <see cref="TestException"/> (except <see cref="AssertionFailureException"/>)
+        /// in which case the exception is rethrown by this method.  This behavior enables special
+        /// test exceptions such as <see cref="TestTerminatedException" /> to be used to terminate
+        /// the test at any point instead of being reported as assertion failures.
+        /// </para>
+        /// <para>
         /// The assertion failure behavior while the action runs is <see cref="AssertionFailureBehavior.Throw" />
         /// so the action terminates on the first failure.  The assertion failure itself is returned
         /// but it is not logged.
@@ -114,9 +135,17 @@ namespace Gallio.Framework.Assertions
 
         /// <summary>
         /// Performs an action and returns an array containing the assertion failures
-        /// that were observed within the block.  If the block throws an exception, it
-        /// is reified as an assertion failure.
+        /// that were observed within the block.
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// If the action throws an exception it is reported as an assertion failure
+        /// unless the exception is a <see cref="TestException"/> (except <see cref="AssertionFailureException"/>)
+        /// in which case the exception is rethrown by this method.  This behavior enables special
+        /// test exceptions such as <see cref="TestTerminatedException" /> to be used to terminate
+        /// the test at any point instead of being reported as assertion failures.
+        /// </para>
+        /// </remarks>
         /// <param name="action">The action to invoke.</param>
         /// <param name="assertionFailureBehavior">The assertion failure behavior to use while the action runs.</param>
         /// <returns>The array of failures, may be empty if none.</returns>
@@ -130,14 +159,6 @@ namespace Gallio.Framework.Assertions
         }
 
         /// <summary>
-        /// A delegate for the <see cref="Explain" /> decorator method which combines the specified
-        /// inner failures into a single outer failure with a common explanation.
-        /// </summary>
-        /// <param name="innerFailures">The inner failures to combine together.</param>
-        /// <returns></returns>
-        public delegate AssertionFailure Explanation(AssertionFailure[] innerFailures);
-
-        /// <summary>
         /// Performs an action and combines the possible assertion failures
         /// that were observed within the block, into a single outer failure with
         /// a common explanation.
@@ -147,7 +168,7 @@ namespace Gallio.Framework.Assertions
         /// returns a single outer failure with a common explanation.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="action"/> is null.</exception>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="explanation"/> is null.</exception>
-        public static void Explain(Action action, Explanation explanation)
+        public static void Explain(Action action, AssertionFailureExplanation explanation)
         {
             if (action == null)
                 throw new ArgumentNullException("action");
@@ -155,13 +176,9 @@ namespace Gallio.Framework.Assertions
             if (explanation == null)
                 throw new ArgumentNullException("explanation");
 
-            AssertionHelper.Verify(() =>
+            Verify(() =>
             {
-                AssertionFailure[] failures = AssertionHelper.Eval(() =>
-                {
-                    action();
-                });
-
+                AssertionFailure[] failures = Eval(action);
                 return failures.Length == 0 ? null : explanation(failures);
             });
         }

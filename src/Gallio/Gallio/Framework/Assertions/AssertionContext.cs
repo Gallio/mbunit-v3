@@ -111,6 +111,13 @@ namespace Gallio.Framework.Assertions
         /// </summary>
         /// <remarks>
         /// <para>
+        /// If the action throws an exception it is reported as an assertion failure
+        /// unless the exception is a <see cref="TestException"/> (except <see cref="AssertionFailureException"/>)
+        /// in which case the exception is rethrown by this method.  This behavior enables special
+        /// test exceptions such as <see cref="TestTerminatedException" /> to be used to terminate
+        /// the test at any point instead of being reported as assertion failures.
+        /// </para>
+        /// <para>
         /// The set of failures captured will depend on the setting of <paramref name="assertionFailureBehavior"/>.
         /// <list type="bullet">
         /// <item>If set to <see cref="Assertions.AssertionFailureBehavior.LogAndThrow"/> or 
@@ -199,6 +206,10 @@ namespace Gallio.Framework.Assertions
                 {
                     if (!ex.IsSilent)
                         SubmitFailure(ex.Failure, true);
+                }
+                catch (TestException)
+                {
+                    throw;
                 }
                 catch (Exception ex)
                 {

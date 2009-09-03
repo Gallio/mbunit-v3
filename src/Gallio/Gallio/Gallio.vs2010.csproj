@@ -239,6 +239,7 @@
     <Compile Include="Common\Xml\Options.cs" />
     <Compile Include="Common\Xml\Parser.cs" />
     <Compile Include="Common\Xml\Path.cs" />
+    <Compile Include="Framework\Assertions\AssertionFailureExplanation.cs" />
     <Compile Include="Framework\Assertions\NamespaceDoc.cs" />
     <Compile Include="Framework\Capture.cs" />
     <Compile Include="Framework\Pattern\FixtureMemberInvokerTargets.cs" />

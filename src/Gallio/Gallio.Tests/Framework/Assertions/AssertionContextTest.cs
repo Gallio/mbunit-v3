@@ -81,7 +81,7 @@ namespace Gallio.Tests.Framework.Assertions
             }
 
             [Test]
-            public void AnExceptionMayBeReifiedAsAnAssertionFailure()
+            public void WhenCaptureExceptionIsTrueAnExceptionIsReifiedAsAnAssertionFailure()
             {
                 AssertionFailure[] failures = AssertionContext.CurrentContext.CaptureFailures(delegate
                 {
@@ -95,7 +95,7 @@ namespace Gallio.Tests.Framework.Assertions
             }
 
             [Test]
-            public void AnExceptionMayEscapeTheBlock()
+            public void WhenCaptureExceptionIsFalseAnExceptionEscapesTheBlock()
             {
                 Assert.Throws<InvalidOperationException>(delegate
                 {
@@ -103,6 +103,32 @@ namespace Gallio.Tests.Framework.Assertions
                     {
                         throw new InvalidOperationException("Boom");
                     }, AssertionFailureBehavior.LogAndThrow, false);
+                });
+            }
+
+            [Test]
+            [Row(true), Row(false)]
+            public void WhenCaptureExceptionIsTrueANonSilentAssertionFailureExceptionIsReifiedAsAnAssertionFailure(bool captureExceptionAsAssertionFailure)
+            {
+                AssertionFailure assertionFailure = new AssertionFailureBuilder("Boom").ToAssertionFailure();
+                AssertionFailure[] failures = AssertionContext.CurrentContext.CaptureFailures(delegate
+                {
+                    throw new AssertionFailureException(assertionFailure, false);
+                }, AssertionFailureBehavior.LogAndThrow, captureExceptionAsAssertionFailure);
+
+                Assert.AreElementsEqual(new[] { assertionFailure }, failures);
+            }
+
+            [Test]
+            [Row(true), Row(false)]
+            public void WhenCaptureExceptionIsTrueOrFalseATestExceptionEscapesTheBlock(bool captureExceptionAsAssertionFailure)
+            {
+                Assert.Throws<TestInconclusiveException>(delegate
+                {
+                    AssertionContext.CurrentContext.CaptureFailures(delegate
+                    {
+                        throw new TestInconclusiveException("Boom");
+                    }, AssertionFailureBehavior.LogAndThrow, captureExceptionAsAssertionFailure);
                 });
             }
         }

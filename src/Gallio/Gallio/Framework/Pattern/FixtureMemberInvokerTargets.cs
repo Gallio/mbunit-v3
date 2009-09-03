@@ -43,6 +43,6 @@ namespace Gallio.Framework.Pattern
         /// <summary>
         /// Indicates to find the searched member among the methods.
         /// </summary>
-        Method = 3,
+        Method = 4
     }
 }
