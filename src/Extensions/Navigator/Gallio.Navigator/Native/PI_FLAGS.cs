@@ -19,7 +19,8 @@ using System.Text;
 
 namespace Gallio.Navigator.Native
 {
-    internal enum PI_FLAGS
+    [Flags]
+    internal enum PI_FLAGS : uint
     {
         PI_PARSE_URL = 0x00000001,
         PI_FILTER_MODE = 0x00000002,

@@ -28,7 +28,7 @@ namespace Gallio.Navigator.Native
             [In] [MarshalAs(UnmanagedType.LPWStr)] string szUrl,
             [In] IInternetProtocolSink protocolSink,
             [In] IInternetBindInfo bindInfo,
-            [In] [MarshalAs(UnmanagedType.U4)] uint grfPI,
+            [In] [MarshalAs(UnmanagedType.U4)] PI_FLAGS grfPI,
             [In] [MarshalAs(UnmanagedType.U4)] uint dwReserved);
 
         [PreserveSig]

@@ -14,12 +14,14 @@
 // limitations under the License.
 
 using System;
+using System.Runtime.InteropServices;
 
 namespace Gallio.Navigator.Native
 {
+    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto, Pack = 4)]
     internal struct PROTOCOLDATA
     {
-        public uint grfFlags;
+        public PI_FLAGS grfFlags;
         public uint dwState;
         public IntPtr pData;
         public uint cbData;

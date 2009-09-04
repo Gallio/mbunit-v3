@@ -30,7 +30,7 @@ namespace Gallio.Navigator.Native
             [In] [MarshalAs(UnmanagedType.LPWStr)] string pwzUrl,
             [In] PARSEACTION ParseAction,
             [In] [MarshalAs(UnmanagedType.U4)] uint dwParseFlags,
-            [Out] [MarshalAs(UnmanagedType.LPWStr)] out string pwzResult,
+            [In] IntPtr pwzResult,
             [In] [MarshalAs(UnmanagedType.U4)] uint cchResult,
             [Out] [MarshalAs(UnmanagedType.U4)] out uint pcchResult,
             [In] [MarshalAs(UnmanagedType.U4)] uint dwReserved);
@@ -40,7 +40,7 @@ namespace Gallio.Navigator.Native
             [In] [MarshalAs(UnmanagedType.LPWStr)] string pwzBaseUrl,
             [In] [MarshalAs(UnmanagedType.LPWStr)] string pwzRelativeUrl,
             [In] [MarshalAs(UnmanagedType.U4)] uint dwCombineFlags,
-            [Out] [MarshalAs(UnmanagedType.LPWStr)] out string pwzResult,
+            [In] IntPtr pwzResult,
             [In] [MarshalAs(UnmanagedType.U4)] uint cchResult,
             [Out] [MarshalAs(UnmanagedType.U4)] out uint pcchResult,
             [In] [MarshalAs(UnmanagedType.U4)] uint dwReserved);
@@ -56,7 +56,7 @@ namespace Gallio.Navigator.Native
             [In] [MarshalAs(UnmanagedType.LPWStr)] string pwzUrl,
             [In] QUERYOPTION OueryOption,
             [In] [MarshalAs(UnmanagedType.U4)] uint dwQueryFlags,
-            [In, Out] IntPtr pBuffer,
+            [In] IntPtr pBuffer,
             [In] [MarshalAs(UnmanagedType.U4)] uint cbBuffer,
             [In, Out] [MarshalAs(UnmanagedType.U4)] ref uint pcbBuf,
             [In] [MarshalAs(UnmanagedType.U4)] uint dwReserved);

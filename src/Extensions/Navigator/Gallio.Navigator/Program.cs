@@ -42,7 +42,11 @@ namespace Gallio.Navigator
                 return 1;
             }
 
-            return ProcessCommandUrl(args[0]) ? 0 : 1;
+            GallioNavigatorCommand command = GallioNavigatorCommand.ParseUri(args[0]);
+            if (command == null)
+                return 1;
+
+            return command.Execute(Navigator) ? 0 : 1;
         }
 
         protected virtual void ShowHelp()

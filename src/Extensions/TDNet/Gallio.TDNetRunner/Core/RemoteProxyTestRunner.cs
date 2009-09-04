@@ -253,7 +253,7 @@ namespace Gallio.TDNetRunner.Core
                     {
                         reportDirectory.Delete(true);
                     }
-                    catch (IOException)
+                    catch
                     {
                         // If we cannot delete the directory (perhaps it is still in use), then
                         // create a new directory with a unique name.

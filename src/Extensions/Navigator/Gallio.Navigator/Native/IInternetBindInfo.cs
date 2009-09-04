@@ -27,7 +27,7 @@ namespace Gallio.Navigator.Native
     {
         [PreserveSig]
         int GetBindInfo(
-            [Out] [MarshalAs(UnmanagedType.U4)] out uint grfBINDF,
+            [Out] [MarshalAs(UnmanagedType.U4)] out BINDF grfBINDF,
             [In, Out] ref BINDINFO pbindinfo);
 
         [PreserveSig]

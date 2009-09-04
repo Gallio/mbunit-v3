@@ -14,17 +14,16 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
 using System.Runtime.InteropServices;
-using System.Text;
 
 namespace Gallio.Navigator.Native
 {
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto, Pack = 4)]
-    internal struct SECURITY_ATTRIBUTES
+    internal struct STGMEDIUM
     {
-        public uint nLength;
-        public IntPtr lpSecurityDescriptor;
-        public int bInheritHandle;
+        public uint tymed;
+        public IntPtr data; // discriminated union here
+        [MarshalAs(UnmanagedType.IUnknown)]
+        public object pUnkForRelease;
     }
 }

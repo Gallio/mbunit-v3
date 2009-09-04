@@ -15,16 +15,21 @@
 
 using System;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
 using System.Text;
 
 namespace Gallio.Navigator.Native
 {
-    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto, Pack = 4)]
-    internal struct SECURITY_ATTRIBUTES
+    internal enum URLZONE
     {
-        public uint nLength;
-        public IntPtr lpSecurityDescriptor;
-        public int bInheritHandle;
+        URLZONE_INVALID = -1,
+        URLZONE_PREDEFINED_MIN = 0,
+        URLZONE_LOCAL_MACHINE = 0,
+        URLZONE_INTRANET,
+        URLZONE_TRUSTED,
+        URLZONE_INTERNET,
+        URLZONE_UNTRUSTED,
+        URLZONE_PREDEFINED_MAX = 999,
+        URLZONE_USER_MIN = 1000,
+        URLZONE_USER_MAX = 10000
     }
 }

@@ -19,7 +19,8 @@ using System.Text;
 
 namespace Gallio.Navigator.Native
 {
-    internal enum BINDF
+    [Flags]
+    internal enum BINDF : uint
     {
         BINDF_ASYNCHRONOUS = 0x00000001,
         BINDF_ASYNCSTORAGE = 0x00000002,

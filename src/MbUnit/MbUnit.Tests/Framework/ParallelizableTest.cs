@@ -21,6 +21,7 @@ using System.Threading;
 using Gallio.Common;
 using Gallio.Framework;
 using Gallio.Common.Reflection;
+using Gallio.Framework.Pattern;
 using Gallio.Runner.Reports.Schema;
 using Gallio.Tests;
 using MbUnit.Framework;
@@ -32,6 +33,22 @@ namespace MbUnit.Tests.Framework
     [RunSample(typeof(Tests))]
     public class ParallelizableTest : BaseTestWithSampleRunner
     {
+        private int originalDegreeOfParalleism;
+
+        [FixtureSetUp]
+        public void IncreaseDegreeOfParallelism()
+        {
+            originalDegreeOfParalleism = TestAssemblyExecutionParameters.DegreeOfParallelism;
+
+            TestAssemblyExecutionParameters.DegreeOfParallelism = 16;
+        }
+
+        [FixtureTearDown]
+        public void ResetDegreeOfParallelism()
+        {
+            TestAssemblyExecutionParameters.DegreeOfParallelism = originalDegreeOfParalleism;
+        }
+
         [Test]
         public void ParallelizedTests()
         {

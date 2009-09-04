@@ -18,13 +18,14 @@ using System.Runtime.InteropServices;
 
 namespace Gallio.Navigator.Native
 {
+    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto, Pack = 4)]
     internal struct BINDINFO
     {
         public uint cbSize;
         [MarshalAs(UnmanagedType.LPWStr)] public string szExtraInfo;
-        public uint stgmedData;
+        public STGMEDIUM stgmedData;
         public uint grfBindInfoF;
-        public uint dwBindVerb;
+        public BINDVERB dwBindVerb;
         [MarshalAs(UnmanagedType.LPWStr)] public string szCustomVerb;
         public uint cbstgmedData;
         public uint dwOptions;
