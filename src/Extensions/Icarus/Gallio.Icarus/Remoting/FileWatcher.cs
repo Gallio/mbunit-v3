@@ -91,11 +91,15 @@ namespace Gallio.Icarus.Remoting
         {
             if (fileWatchers.ContainsKey(filePath))
                 return;
-            
-            SingleFileWatcher fw = new SingleFileWatcher(new FileInfo(filePath));
 
-            fw.Watcher.Path = fw.Info.DirectoryName;
-            fw.Watcher.Filter = fw.Info.Name;
+            FileInfo file = new FileInfo(filePath);
+            if (!file.Directory.Exists)
+                return;
+
+            SingleFileWatcher fw = new SingleFileWatcher(file);
+
+            fw.Watcher.Path = file.DirectoryName;
+            fw.Watcher.Filter = file.Name;
             fw.Watcher.NotifyFilter = NotifyFilters.Size | NotifyFilters.LastWrite;
             fw.Watcher.Changed += OnChanged;
             fw.Watcher.EnableRaisingEvents = false;

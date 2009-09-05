@@ -206,7 +206,7 @@ namespace Gallio.Runtime.Hosting
             severityPrefixParser = new SeverityPrefixParser();
 
             processTask = CreateProcessTask(GetInstalledHostProcessPath(), hostArguments.ToString(), HostSetup.WorkingDirectory ?? Environment.CurrentDirectory);
-            processTask.Terminated += LogExitCode;
+            processTask.Terminated += HandleProcessExit;
 
             if (useElevation)
             {
@@ -324,7 +324,7 @@ namespace Gallio.Runtime.Hosting
             }
         }
 
-        private void LogExitCode(object sender, TaskEventArgs e)
+        private void HandleProcessExit(object sender, TaskEventArgs e)
         {
             var processTask = (ProcessTask)e.Task;
 
@@ -344,6 +344,8 @@ namespace Gallio.Runtime.Hosting
 
                 Logger.Log(exitCode != 0 ? LogSeverity.Error : LogSeverity.Info, diagnostics.ToString());
             }
+
+            NotifyDisconnected();
         }
 
         [DebuggerNonUserCode]

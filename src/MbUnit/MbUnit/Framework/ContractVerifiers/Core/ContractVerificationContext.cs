@@ -29,7 +29,7 @@ namespace MbUnit.Framework.ContractVerifiers.Core
         private readonly ICodeElementInfo codeElement;
 
         /// <summary>
-        /// Gets the code element for the contrat read-only field.
+        /// Gets the code element for the contract read-only field.
         /// </summary>
         public ICodeElementInfo CodeElement
         {
@@ -42,7 +42,7 @@ namespace MbUnit.Framework.ContractVerifiers.Core
         /// <summary>
         /// Constructs an execution context for the verification tests of a contract verifier.
         /// </summary>
-        /// <param name="codeElement">The code element for the contrat read-only field.</param>
+        /// <param name="codeElement">The code element for the contract read-only field.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="codeElement"/> is null.</exception>
         public ContractVerificationContext(ICodeElementInfo codeElement)
         {
@@ -54,9 +54,9 @@ namespace MbUnit.Framework.ContractVerifiers.Core
 
         /// <summary>
         /// Gets an artificial stack trace data that points to 
-        /// the contrat read-only field.
+        /// the contract read-only field.
         /// </summary>
-        /// <returns>An artificial stack trace data that points to the contrat read-only field.</returns>
+        /// <returns>An artificial stack trace data that points to the contract read-only field.</returns>
         public StackTraceData GetStackTraceData()
         {
             return new StackTraceData(codeElement);

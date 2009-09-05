@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using System.Threading;
 using Gallio.Common.Collections;
 using Gallio.Common.Policies;
 using Gallio.Common.Remoting;
@@ -31,6 +32,8 @@ namespace Gallio.Model.Isolation
         private readonly IHostFactory hostFactory;
         private readonly TestIsolationOptions testIsolationOptions;
         private readonly ILogger logger;
+
+        private delegate object RunIsolatedTaskDelegate(object[] args);
 
         /// <summary>
         /// Creates a hosted test isolation context.
@@ -118,7 +121,27 @@ namespace Gallio.Model.Isolation
                     statusReporter("");
 
                     var isolatedTask = HostUtils.CreateInstance<TIsolatedTask>(host);
-                    return isolatedTask.Run(args);
+
+                    ManualResetEvent disconnectedEvent = new ManualResetEvent(false);
+                    EventHandler disconnectedEventHandler = (sender, e) => disconnectedEvent.Set();
+                    try
+                    {
+                        host.Disconnected += disconnectedEventHandler;
+
+                        RunIsolatedTaskDelegate isolatedTaskDelegate = isolatedTask.Run;
+                        IAsyncResult asyncResult = isolatedTaskDelegate.BeginInvoke(args, null, null);
+
+                        WaitHandle.WaitAny(new[] { disconnectedEvent, asyncResult.AsyncWaitHandle });
+
+                        if (asyncResult.IsCompleted)
+                            return isolatedTaskDelegate.EndInvoke(asyncResult);
+
+                        throw new TestIsolationException("The host disconnected or was terminated prematurely while the task was running.");
+                    }
+                    finally
+                    {
+                        host.Disconnected -= disconnectedEventHandler;
+                    }
                 }
                 finally
                 {
