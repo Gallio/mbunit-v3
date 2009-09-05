@@ -63,7 +63,7 @@ namespace Gallio.Common.Caching
             {
                 FileUtils.DeleteAll(cacheDirectoryPath);
             }
-            catch (IOException ex)
+            catch (Exception ex)
             {
                 throw new DiskCacheException(String.Format("Could purge the cache from location '{0}'.", cacheDirectoryPath), ex);
             }
@@ -150,7 +150,7 @@ namespace Gallio.Common.Caching
                     {
                         return location.Exists;
                     }
-                    catch (IOException ex)
+                    catch (Exception ex)
                     {
                         throw new DiskCacheException(String.Format("Could not determine whether the disk cache group from '{0}' exists.", location.FullName), ex);
                     }
@@ -174,7 +174,7 @@ namespace Gallio.Common.Caching
                 catch (DirectoryNotFoundException)
                 {
                 }
-                catch (IOException ex)
+                catch (Exception ex)
                 {
                     throw new DiskCacheException(String.Format("Could not delete the disk cache group from '{0}'.", location.FullName), ex);
                 }
@@ -207,7 +207,7 @@ namespace Gallio.Common.Caching
                 {
                     return fileInfo.Open(mode, access, share);
                 }
-                catch (IOException ex)
+                catch (Exception ex)
                 {
                     throw new DiskCacheException(String.Format("Could not open disk cache file '{0}'.", fileInfo.FullName), ex);
                 }
@@ -228,7 +228,7 @@ namespace Gallio.Common.Caching
                     if (!directoryInfo.Exists)
                         directoryInfo.Create();
                 }
-                catch (IOException ex)
+                catch (Exception ex)
                 {
                     throw new DiskCacheException(String.Format("Could not open disk cache directory '{0}'.", directoryInfo.FullName), ex);
                 }

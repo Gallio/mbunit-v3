@@ -134,6 +134,10 @@ namespace Gallio.Runtime.FileTypes
                 {
                     // Consume I/O errors.
                 }
+                catch (UnauthorizedAccessException)
+                {
+                    // Consume I/O errors.
+                }
             }
 
             return null;

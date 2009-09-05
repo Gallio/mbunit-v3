@@ -19,9 +19,9 @@ using System.Runtime.InteropServices;
 namespace Gallio.Navigator.Native
 {
     [ComImport]
-    [Guid("79EAC9E4-BAF9-11CE-8C82-00AA004BA90B")]
+    [Guid("C7A98E66-1010-492c-A1C8-C809E1F75905")]
     [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-    internal interface IInternetProtocol
+    internal interface IInternetProtocolEx
     {
         #region Inherited from IInternetProtocolRoot
         [PreserveSig]
@@ -52,6 +52,7 @@ namespace Gallio.Navigator.Native
         int Resume();
         #endregion
 
+        #region Inherited from IInternetProtocol
         [PreserveSig]
         int Read(
             [In] IntPtr pv,
@@ -70,5 +71,14 @@ namespace Gallio.Navigator.Native
 
         [PreserveSig]
         int UnlockRequest();
+        #endregion
+
+        [PreserveSig]
+        int StartEx(
+            [In] IUri pUri,
+            [In] IInternetProtocolSink protocolSink,
+            [In] IInternetBindInfo bindInfo,
+            [In] [MarshalAs(UnmanagedType.U4)] PI_FLAGS grfPI,
+            [In] [MarshalAs(UnmanagedType.U4)] uint dwReserved);
     }
 }

@@ -104,8 +104,10 @@ namespace Gallio.Common.Policies
                         directory.Refresh();
                         return directory;
                     }
-                    catch (IOException)
+                    catch
                     {
+                        // Could be I/O error, access error, or other transient condition.
+                        // We retry up to MaxTries times.
                     }
                 }
             }
@@ -130,8 +132,10 @@ namespace Gallio.Common.Policies
                         file.Refresh();
                         return file;
                     }
-                    catch (IOException)
+                    catch
                     {
+                        // Could be I/O error, access error, or other transient condition.
+                        // We retry up to MaxTries times.
                     }
                 }
             }

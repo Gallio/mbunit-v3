@@ -58,6 +58,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GallioNavigatorCommand.cs" />
     <Compile Include="GallioNavigator.cs" />
     <Compile Include="GallioNavigatorClient.cs" />
     <Compile Include="GallioProtocolHandler.cs" />
@@ -68,6 +69,10 @@
     <Compile Include="Native\BINDSTATUS.cs" />
     <Compile Include="Native\BINDVERB.cs" />
     <Compile Include="Native\BSCF.cs" />
+    <Compile Include="Native\IInternetProtocolEx.cs" />
+    <Compile Include="Native\IUri.cs" />
+    <Compile Include="Native\NativeMethods.cs" />
+    <Compile Include="Native\STGMEDIUM.cs" />
     <Compile Include="Native\NativeConstants.cs" />
     <Compile Include="Native\IInternetBindInfo.cs" />
     <Compile Include="Native\IInternetProtocol.cs" />
@@ -80,6 +85,8 @@
     <Compile Include="Native\PROTOCOLDATA.cs" />
     <Compile Include="Native\QUERYOPTION.cs" />
     <Compile Include="Native\SECURITY_ATTRIBUTES.cs" />
+    <Compile Include="Native\Uri_Property.cs" />
+    <Compile Include="Native\URLZONE.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

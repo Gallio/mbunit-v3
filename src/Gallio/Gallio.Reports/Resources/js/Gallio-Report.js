@@ -1,3 +1,39 @@
+function reportLoaded()
+{
+    fixAttachmentLinksOnIE();
+}
+
+function fixAttachmentLinksOnIE()
+{
+    if (isIE() && isLocalFileUri(window.location.href))
+    {
+        // On IE, pages in the local filesystem that possess the Mark of the Web
+        // are forbidden from navigating to other local files.  This breaks links
+        // to attachments on the local filesystem unless we make some changes.
+        var count = document.links.length;
+        for (var i = 0; i < count; i++)
+        {
+            var link = document.links[i];
+            var href = link.href;
+            if (link.className == "attachmentLink" && isLocalFileUri(href))
+            {
+                var path = href.substring(8).replace(/\//g, "\\");
+                link.href = "gallio:openAttachment?path=" + path;
+            }
+        }
+    }
+}
+
+function isIE()
+{
+    return navigator.appName == "Microsoft Internet Explorer";
+}
+
+function isLocalFileUri(uri)
+{
+    return uri.search(/^file:\/\/\//) == 0;
+}
+
 function toggle(id)
 {
     var icon = document.getElementById('toggle-' + id);
@@ -125,32 +161,33 @@ function setFrameLocation(frame, uri)
 
 function _asyncLoadContentFromUri(uri, callback)
 {
-/* Removed due to race problems with IE during the initial page load.
+    /* Removed due to race problems with IE during the initial page load.
+    So instead we create the frame in the HTML.
     var asyncLoadFrame = document.getElementById('_asyncLoadFrame');
     if (!asyncLoadFrame)
     {
-        asyncLoadFrame = document.createElement('iframe');
-        asyncLoadFrame.setAttribute('id', '_asyncLoadFrame');
-        asyncLoadFrame.style.border = '0px';
-        asyncLoadFrame.style.width = '0px';
-        asyncLoadFrame.style.height = '0px';
-        asyncLoadFrame.style.display = 'none';
-        document.body.appendChild(asyncLoadFrame);
+    asyncLoadFrame = document.createElement('iframe');
+    asyncLoadFrame.setAttribute('id', '_asyncLoadFrame');
+    asyncLoadFrame.style.border = '0px';
+    asyncLoadFrame.style.width = '0px';
+    asyncLoadFrame.style.height = '0px';
+    asyncLoadFrame.style.display = 'none';
+    document.body.appendChild(asyncLoadFrame);
 
         if (asyncLoadFrame.addEventListener)
-            asyncLoadFrame.addEventListener('load', function(event) { _asyncLoadFrameOnLoad(asyncLoadFrame); }, false);
-        else
-            asyncLoadFrame.attachEvent('onload', function(event) { _asyncLoadFrameOnLoad(asyncLoadFrame); });
+    asyncLoadFrame.addEventListener('load', function(event) { _asyncLoadFrameOnLoad(asyncLoadFrame); }, false);
+    else
+    asyncLoadFrame.attachEvent('onload', function(event) { _asyncLoadFrameOnLoad(asyncLoadFrame); });
 
         asyncLoadFrame.pendingRequests = [];
     }
-*/
+    */
 
     var asyncLoadFrame = document.getElementById('_asyncLoadFrame');
 
     if (!asyncLoadFrame.pendingRequests)
         asyncLoadFrame.pendingRequests = [];
-    
+
     asyncLoadFrame.pendingRequests.push({ uri: uri, callback: callback });
 
     _asyncLoadFrameNext(asyncLoadFrame);

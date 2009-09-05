@@ -17,7 +17,7 @@ using System;
 
 namespace Gallio.Navigator.Native
 {
-    internal class NativeConstants
+    internal static class NativeConstants
     {
         public static readonly Guid IID_IDispatch = new Guid("{00020400-0000-0000-C000-000000000046}");
         public static readonly Guid IID_IDispatchEx = new Guid("{a6ef9860-c720-11d0-9337-00a0c90dcaa9}");
@@ -37,8 +37,13 @@ namespace Gallio.Navigator.Native
         public const int S_OK = 0;
         public const int S_FALSE = 1;
 
+        public const int E_PENDING = unchecked((int)0x8000000A);
         public const int E_FAIL = unchecked((int)0x80004005);
         public const int E_NOTIMPL = unchecked((int)0x80004001);
         public const int E_NOINTERFACE = unchecked((int)0x80004002);
+
+        public const int MAX_PATH = 260;
+
+        public const int NORMAL_CACHE_ENTRY = 1;
     }
 }

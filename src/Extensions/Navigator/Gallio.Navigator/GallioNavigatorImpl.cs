@@ -15,9 +15,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
-using System.Windows.Forms;
 using EnvDTE;
 using System.Runtime.InteropServices;
 using Gallio.Navigator.Native;

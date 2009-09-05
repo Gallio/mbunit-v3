@@ -31,7 +31,7 @@ namespace Gallio.Navigator.Native
 
         [PreserveSig]
         int ReportProgress(
-            [MarshalAs(UnmanagedType.U4)] uint ulStatusCode,
+            [MarshalAs(UnmanagedType.U4)] BINDSTATUS ulStatusCode,
             [MarshalAs(UnmanagedType.LPWStr)] string szStatusText);
 
         [PreserveSig]

@@ -16,6 +16,8 @@
 using System;
 using System.Collections.Generic;
 using Gallio.Common.Collections;
+using Gallio.Common.Platform;
+using Microsoft.Win32;
 
 namespace Gallio.Common.Markup
 {
@@ -127,6 +129,10 @@ namespace Gallio.Common.Markup
 
             string mimeType;
             mimeTypesByExtension.TryGetValue(extension, out mimeType);
+
+            if (mimeType == null && ! DotNetRuntimeSupport.IsUsingMono)
+                mimeType = GetMimeTypeForExtensionFromWindowsRegistry(extension);
+
             return mimeType;
         }
 
@@ -144,6 +150,11 @@ namespace Gallio.Common.Markup
             string extension;
             extensionsByMimeType.TryGetValue(mimeType, out extension);
             return extension;
+        }
+
+        private static string GetMimeTypeForExtensionFromWindowsRegistry(string extension)
+        {
+            return Registry.GetValue(@"HKEY_CLASSES_ROOT\" + extension, "Content Type", null) as string;
         }
     }
 }

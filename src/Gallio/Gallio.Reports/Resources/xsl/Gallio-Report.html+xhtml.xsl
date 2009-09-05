@@ -40,6 +40,7 @@ html
       <body class="gallio-report">
         <xsl:apply-templates select="." mode="xhtml-body" />
       </body>
+      <script type="text/javascript">reportLoaded();</script>
     </html>
   </xsl:template>
   
@@ -71,6 +72,7 @@ html
 
       <xsl:apply-templates select="." mode="xhtml-body" />
     </div>
+    <script type="text/javascript">reportLoaded();</script>
   </xsl:template>
 
   <xsl:template match="g:report" mode="html-fragment">
@@ -594,12 +596,12 @@ html
       <xsl:when test="$attachmentBrokerUrl != ''">
         <xsl:variable name="attachmentBrokerQuery"><xsl:value-of select="$attachmentBrokerUrl"/>testStepId=<xsl:value-of select="../../../g:testStep/@id"/>&amp;attachmentName=<xsl:value-of select="@name"/></xsl:variable>
         
-        <a href="{$attachmentBrokerQuery}"><xsl:value-of select="@name" /></a>
+        <a href="{$attachmentBrokerQuery}" class="attachmentLink"><xsl:value-of select="@name" /></a>
       </xsl:when>
       <xsl:when test="@contentDisposition = 'link'">
         <xsl:variable name="attachmentUri"><xsl:call-template name="path-to-uri"><xsl:with-param name="path" select="@contentPath" /></xsl:call-template></xsl:variable>
         
-        <a href="{$attachmentUri}"><xsl:value-of select="@name" /></a>
+        <a href="{$attachmentUri}" class="attachmentLink"><xsl:value-of select="@name" /></a>
       </xsl:when>
       <xsl:otherwise>
         <xsl:value-of select="@name" /> (n/a)
@@ -783,7 +785,7 @@ html
     <xsl:param name="name" />
     <xsl:param name="uri" />
 
-    <xsl:text>Attachment: </xsl:text><a href="{$uri}"><xsl:value-of select="$name" /></a>
+    <xsl:text>Attachment: </xsl:text><a href="{$uri}" class="attachmentLink"><xsl:value-of select="$name" /></a>
   </xsl:template>
   
   <xsl:template name="embed-attachment-image-from-uri">
@@ -792,7 +794,7 @@ html
     <xsl:param name="uri" />
 
     <div id="{$id}" class="logStreamEmbed">
-      <a href="{$uri}">
+      <a href="{$uri}" class="attachmentLink">
         <img class="embeddedImage" src="{$uri}" alt="Attachment: {$name}" />
       </a>
     </div>

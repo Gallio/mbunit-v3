@@ -235,6 +235,10 @@ namespace Gallio.Model
                 {
                     // Ignore the file.
                 }
+                catch (UnauthorizedAccessException)
+                {
+                    // Ignore the file.
+                }
             }
 
             return partitions;
