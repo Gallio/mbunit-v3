@@ -5,7 +5,7 @@ function reportLoaded()
 
 function fixAttachmentLinksOnIE()
 {
-    if (isIE() && isLocalFileUri(window.location.href))
+    if (isIE() && (isLocalFileUri(window.location.href) || isInMemoryUri(window.location.href)))
     {
         // On IE, pages in the local filesystem that possess the Mark of the Web
         // are forbidden from navigating to other local files.  This breaks links
@@ -32,6 +32,11 @@ function isIE()
 function isLocalFileUri(uri)
 {
     return uri.search(/^file:\/\/\//) == 0;
+}
+
+function isInMemoryUri(uri)
+{
+    return uri == "about:blank";
 }
 
 function toggle(id)

@@ -29,6 +29,7 @@ namespace MbUnit.Framework.ContractVerifiers
     /// of one contract to leverage that of another.
     /// </para>
     /// </remarks>
+    /// <seealso cref="AbstractContract"/>
     public interface IContract
     {
         /// <summary>

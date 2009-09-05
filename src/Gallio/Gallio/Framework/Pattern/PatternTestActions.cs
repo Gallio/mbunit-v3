@@ -86,7 +86,8 @@ namespace Gallio.Framework.Pattern
             copy.disposeTestChain.Action = disposeTestChain.Action;
             copy.afterTestChain.Action = afterTestChain.Action;
             copy.decorateTestInstanceChain.Action = decorateTestInstanceChain.Action;
-            copy.testInstanceActions = testInstanceActions.Copy();
+            if (testInstanceActions != null)
+                copy.testInstanceActions = testInstanceActions.Copy();
             return copy;
         }
 

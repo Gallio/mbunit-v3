@@ -14,12 +14,15 @@
 // limitations under the License.
 
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using Gallio.Framework;
 using Gallio.Framework.Pattern;
 using Gallio.Common.Diagnostics;
 using Gallio.Common.Reflection;
 using Gallio.Model;
 using System.Reflection;
+using Gallio.Model.Tree;
 using MbUnit.Framework.ContractVerifiers.Core;
 
 namespace MbUnit.Framework.ContractVerifiers
@@ -29,7 +32,28 @@ namespace MbUnit.Framework.ContractVerifiers
     /// </summary>
     /// <remarks>
     /// <para>
-    /// The contract is described by a value assigned to a field of the test fixture.
+    /// This attribute is applied to a field of type <see cref="IContract" /> to that describes
+    /// a contract to be verified.  Each contract object is like a reusable test suite that
+    /// can be customized by providing constructor parameters or by setting properties.
+    /// MbUnit includes several out-of-the-box contract verifier implementations that
+    /// capture common testing patterns for verifying the implementation of equivalence relations, exceptions,
+    /// collections, accessors and other code.
+    /// </para>
+    /// <para>
+    /// Contract verifiers can be incorporated into test fixtures in two ways.
+    /// <list type="bullet">
+    /// <item>Contract stored in a readonly instance field.  The contract verifier tests 
+    /// will be generated dynamically at test execution time similarly to a 
+    /// <see cref="DynamicTestFactoryAttribute" />.  This mechanism is compatible with data-driven
+    /// test fixtures (such as generic test fixtures or fixtures with constructor parameters)
+    /// but the user will be unable to individually view and select each test in the test runner
+    /// before running them.</item>
+    /// <item>Contract stored in a readonly <strong>static</strong> instance field.  The
+    /// contract verifier tests will be generated statically at test exploration time similarly to a 
+    /// <see cref="StaticTestFactoryAttribute" />.  This mechanism can only be used in non-generic
+    /// test fixtures but the user will be able to individually view and select each
+    /// test in the test runner before running them.</item>
+    /// </list>
     /// </para>
     /// </remarks>
     /// <example>
@@ -37,8 +61,13 @@ namespace MbUnit.Framework.ContractVerifiers
     /// [TestFixture]
     /// public class MyExceptionTests
     /// {
+    ///     // "dynamic" contract verifier (similar to a DynamicTestFactory)
     ///     [VerifyContract]
-    ///     public readonly IContract Contract = new ExceptionContract<MyException>();
+    ///     public readonly IContract Contract1 = new ExceptionContract<MyException>();
+    ///     
+    ///     // "static" contract verifier (similar to a StaticTestFactory)
+    ///     [VerifyContract]
+    ///     public readonly static IContract Contract2 = new ListContract<MyList<int>, int>();
     /// }
     /// ]]></code>
     /// </example>
@@ -52,8 +81,6 @@ namespace MbUnit.Framework.ContractVerifiers
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
     public class VerifyContractAttribute : PatternAttribute
     {
-        private ICodeElementInfo codeElement;
-
         /// <inheritdoc />
         public override bool IsPrimary
         {
@@ -72,7 +99,6 @@ namespace MbUnit.Framework.ContractVerifiers
         /// <inheritdoc />
         public override void Consume(IPatternScope containingScope, ICodeElementInfo codeElement, bool skipChildren)
         {
-            this.codeElement = codeElement;
             IFieldInfo field = codeElement as IFieldInfo;
             Validate(containingScope, field);
 
@@ -81,7 +107,7 @@ namespace MbUnit.Framework.ContractVerifiers
             fieldScope.TestBuilder.IsTestCase = false;
 
             InitializeTest(fieldScope, field);
-            SetTestSemantics(fieldScope.TestBuilder, field, containingScope);
+            GenerateTestsFromContract(fieldScope, field, containingScope);
 
             fieldScope.TestBuilder.ApplyDeferredActions();
         }
@@ -96,6 +122,10 @@ namespace MbUnit.Framework.ContractVerifiers
         {
             if (!containingScope.CanAddChildTest || field == null || ! field.IsInitOnly)
                 ThrowUsageErrorException("This attribute can only be used on a read-only field within a test type.");
+
+            if (field.IsStatic && field.DeclaringType.ContainsGenericParameters)
+                ThrowUsageErrorException("A contract verifier field cannot be static when it is declared on a generic type.  "
+                    + "Make the field non-static or make its declaring type non-generic.");
         }
 
         /// <summary>
@@ -113,32 +143,69 @@ namespace MbUnit.Framework.ContractVerifiers
         }
 
         /// <summary>
-        /// Establishes the semantics of the contract verifier.
+        /// Generates static or dynamic tests from the contract.
         /// </summary>
-        /// <param name="testBuilder">The test builder.</param>
+        /// <param name="fieldScope">The field scope.</param>
         /// <param name="field">The field.</param>
-        /// <param name="containingScope"></param>
-        protected virtual void SetTestSemantics(ITestBuilder testBuilder, IFieldInfo field, IPatternScope containingScope)
+        /// <param name="containingScope">The containing scope.</param>
+        protected virtual void GenerateTestsFromContract(IPatternScope fieldScope, IFieldInfo field, IPatternScope containingScope)
         {
-            testBuilder.TestInstanceActions.ExecuteTestInstanceChain.After(state =>
+            if (field.IsStatic)
             {
-                var invoker = new FixtureMemberInvoker<IContract>(null, containingScope, field.Name);
-                IContract contract;
-                
-                try
+                FieldInfo resolvedField = field.Resolve(false);
+                if (resolvedField == null)
                 {
-                    contract = invoker.Invoke(FixtureMemberInvokerTargets.Field);
-                }
-                catch (PatternUsageErrorException exception)
-                {
-                    throw new TestFailedException(String.Format("The field '{0}' must contain an instance of type IContract that describes a contract to be verified.", field.Name), exception);
+                    fieldScope.TestModelBuilder.AddAnnotation(new Annotation(AnnotationType.Info, field,
+                        "This test runner does not fully support static contract verifier methods "
+                        + "because the code that defines the contract cannot be executed "
+                        + "at test exploration time.  Consider making the contract field non-static instead."));
+                    return;
                 }
 
-                var context = new ContractVerificationContext(codeElement);
-                TestOutcome outcome = Test.RunDynamicTests(contract.GetContractVerificationTests(context), field, null, null);
-                if (outcome != TestOutcome.Passed)
-                    throw new SilentTestException(outcome);
-            });
+                var contract = resolvedField.GetValue(null) as IContract;
+                if (contract == null)
+                {
+                    fieldScope.TestModelBuilder.AddAnnotation(new Annotation(AnnotationType.Error, field,
+                        "Expected the contract field to contain a value that is assignable "
+                        + "to type IContract."));
+                    return;
+                }
+
+                IEnumerable<Test> contractTests = GetContractVerificationTests(contract, field);
+                Test.BuildStaticTests(contractTests, fieldScope, field);
+            }
+            else
+            {
+                fieldScope.TestBuilder.TestInstanceActions.ExecuteTestInstanceChain.After(state =>
+                {
+                    var invoker = new FixtureMemberInvoker<IContract>(null, containingScope, field.Name);
+                    IContract contract;
+
+                    try
+                    {
+                        contract = invoker.Invoke(FixtureMemberInvokerTargets.Field);
+                    }
+                    catch (PatternUsageErrorException exception)
+                    {
+                        throw new TestFailedException(
+                            String.Format(
+                                "The field '{0}' must contain an instance of type IContract that describes a contract to be verified.",
+                                field.Name), exception);
+                    }
+
+                    IEnumerable<Test> contractTests = GetContractVerificationTests(contract, field);
+
+                    TestOutcome outcome = Test.RunDynamicTests(contractTests, field, null, null);
+                    if (outcome != TestOutcome.Passed)
+                        throw new SilentTestException(outcome);
+                });
+            }
+        }
+
+        private static IEnumerable<Test> GetContractVerificationTests(IContract contract, IFieldInfo field)
+        {
+            var context = new ContractVerificationContext(field);
+            return contract.GetContractVerificationTests(context);
         }
     }
 }
