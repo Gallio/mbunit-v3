@@ -40,6 +40,9 @@ namespace Gallio.UI.Reports
     /// </summary>
     internal class HtmlTestStepRunFormatter : IDisposable
     {
+        private const string ReportName = "Report";
+        private const string ReportNavigatorTokenFileName = "Report.navigator-token";
+
         private readonly HashSet<string> attachmentPaths;
         private readonly TemporaryDiskCache cache;
         private readonly IDiskCacheGroup cacheGroup;
@@ -47,7 +50,8 @@ namespace Gallio.UI.Reports
         private readonly Uri resourcesUrl;
         private readonly Uri cssUrl;
         private readonly Uri imgUrl;
-
+        private readonly string jsDir;
+ 
         public HtmlTestStepRunFormatter()
         {
             IRuntime runtime = RuntimeAccessor.Instance;
@@ -55,6 +59,7 @@ namespace Gallio.UI.Reports
             resourcesUrl = new Uri(resourcesPath);
             cssUrl = new Uri(resourcesUrl, "css");
             imgUrl = new Uri(resourcesUrl, "img");
+            jsDir = Path.Combine(resourcesPath, "js");
 
             cache = new TemporaryDiskCache("Gallio.UI");
             cacheGroup = cache.Groups[Guid.NewGuid().ToString()];
@@ -83,6 +88,19 @@ namespace Gallio.UI.Reports
             Format(writer, stepRuns, modelData);
 
             stream.Position = 0;
+
+            // Write a special file to disk in the location where we saved the attachments with
+            // the contents "Gallio Test Report".  This is recognized by the Gallio pluggable protocol
+            // handler as a means to demonstrate that the path of a request to open an attachment file on the
+            // local filesystem is genuinely within the path of a report.
+            if (!cacheGroup.GetFileInfo(ReportNavigatorTokenFileName).Exists)
+            {
+                using (
+                    StreamWriter tokenWriter = new StreamWriter(cacheGroup.OpenFile(ReportNavigatorTokenFileName, FileMode.Create, FileAccess.Write,
+                        FileShare.ReadWrite | FileShare.Delete)))
+                    tokenWriter.WriteLine("Gallio Test Report");
+            }
+
             return stream;
         }
 
@@ -100,7 +118,7 @@ namespace Gallio.UI.Reports
 
         private void SaveAttachment(string stepId, AttachmentData attachmentData)
         {
-            string attachmentPath = GetAttachmentPath(stepId, attachmentData.Name);
+            string attachmentPath = GetAttachmentPath(stepId, attachmentData);
             if (attachmentPaths.Contains(attachmentPath))
                 return;
 
@@ -110,14 +128,19 @@ namespace Gallio.UI.Reports
                 attachmentData.SaveContents(fs, Encoding.Default);
         }
 
-        private FileInfo GetAttachmentFileInfo(string stepId, string attachmentName)
+        private FileInfo GetAttachmentFileInfo(string stepId, AttachmentData attachment)
         {
-            return cacheGroup.GetFileInfo(GetAttachmentPath(stepId, attachmentName));
+            return cacheGroup.GetFileInfo(GetAttachmentPath(stepId, attachment));
         }
 
-        private static string GetAttachmentPath(string stepId, string attachmentName)
+        private static string GetAttachmentPath(string stepId, AttachmentData attachment)
         {
-            return Path.Combine(FileUtils.EncodeFileName(stepId), FileUtils.EncodeFileName(attachmentName));
+            string fileName = FileUtils.EncodeFileName(attachment.Name);
+            string extension = MimeTypes.GetExtensionByMimeType(attachment.ContentType);
+            if (extension != null)
+                fileName += extension;
+
+            return Path.Combine(ReportName, Path.Combine(FileUtils.EncodeFileName(stepId), fileName));
         }
 
         public static void WriteHtmlEncoded(TextWriter writer, string text)
@@ -229,6 +252,9 @@ namespace Gallio.UI.Reports
                 writer.Write("<link rel=\"stylesheet\" type=\"text/css\" href=\"");
                 WriteHtmlEncoded(writer, formatter.cssUrl.ToString());
                 writer.Write("/Gallio-Report.Generated.css\" />");
+                writer.Write("<script type=\"text/javascript\"><!--\n");
+                writer.Write(File.ReadAllText(Path.Combine(formatter.jsDir, "Gallio-Report.js")));
+                writer.Write("\n--></script>");
                 writer.Write("</head><body class=\"gallio-report\" style=\"overflow: auto;\">");
 
                 writer.Write("<div id=\"Header\" class=\"header\"><div class=\"header-image\"></div></div>");
@@ -246,7 +272,7 @@ namespace Gallio.UI.Reports
                 foreach (TestStepRun testStepRun in rootRuns)
                     RenderTestStepRun(testStepRun, 1);
 
-                writer.Write("</ul></div></div></div></body></html>");
+                writer.Write("</ul></div></div></div><script type=\"text/javascript\">reportLoaded();</script></body></html>");
                 writer.Flush();
             }
 
@@ -489,10 +515,10 @@ namespace Gallio.UI.Reports
                 for (int i = 0; i < testStepRun.TestLog.Attachments.Count; i++)
                 {
                     AttachmentData attachmentData = testStepRun.TestLog.Attachments[i];
-                    string src = formatter.GetAttachmentFileInfo(testStepRun.Step.Id, attachmentData.Name).FullName;
+                    string src = formatter.GetAttachmentFileInfo(testStepRun.Step.Id, attachmentData).FullName;
                     writer.Write("<a href=\"");
                     WriteHtmlEncoded(writer, src);
-                    writer.Write("\">");
+                    writer.Write("\" class=\"attachmentLink\">");
                     WriteHtmlEncoded(writer, attachmentData.Name);
                     writer.Write("</a>");
                     if (i < (testStepRun.TestLog.Attachments.Count - 1))
@@ -630,24 +656,29 @@ namespace Gallio.UI.Reports
                 if (attachment == null)
                     return;
 
-                string src = formatter.GetAttachmentFileInfo(testStepRun.Step.Id, tag.AttachmentName).FullName;
+                string src = formatter.GetAttachmentFileInfo(testStepRun.Step.Id, attachment).FullName;
 
+                writer.Write("<div class=\"logStreamEmbed\">");
                 if (attachment.ContentType.StartsWith("image/"))
                 {
-                    writer.Write("<div class=\"logAttachmentEmbedding\"><img src=\"");
+                    writer.Write("<a href=\"");
+                    writer.Write(src);
+                    writer.Write("\" class=\"attachmentLink\">");
+                    writer.Write("<img class=\"embeddedImage\" src=\"");
                     WriteHtmlEncoded(writer, src);
                     writer.Write("\" alt=\"Attachment: ");
                     WriteHtmlEncoded(writer, attachment.Name);
-                    writer.Write("\" /></div>");
+                    writer.Write("\" /></a>");
                 }
                 else
                 {
                     writer.Write("Attachment: <a href=\"");
                     WriteHtmlEncoded(writer, src);
-                    writer.Write("\">");
+                    writer.Write("\" class=\"attachmentLink\">");
                     WriteHtmlEncoded(writer, attachment.Name);
                     writer.Write("</a>");
                 }
+                writer.Write("</div>");
             }
 
             public void VisitTextTag(TextTag tag)

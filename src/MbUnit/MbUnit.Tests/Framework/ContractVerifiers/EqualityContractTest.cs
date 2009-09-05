@@ -26,6 +26,7 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
 {
     [RunSample(typeof(FullContractOnEquatableSample))]
     [RunSample(typeof(PartialContractOnEquatableSample))]
+    [RunSample(typeof(StaticPartialContractOnEquatableSample))]
     public class EqualityContractTest : AbstractContractTest
     {
         [Test]
@@ -39,6 +40,11 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
         [Row(typeof(PartialContractOnEquatableSample), "EquatableEquals", TestStatus.Passed)]
         [Row(typeof(PartialContractOnEquatableSample), "OperatorEquals", TestStatus.Inconclusive)]
         [Row(typeof(PartialContractOnEquatableSample), "OperatorNotEquals", TestStatus.Inconclusive)]
+        [Row(typeof(StaticPartialContractOnEquatableSample), "ObjectEquals", TestStatus.Passed)]
+        [Row(typeof(StaticPartialContractOnEquatableSample), "HashCode", TestStatus.Passed)]
+        [Row(typeof(StaticPartialContractOnEquatableSample), "EquatableEquals", TestStatus.Passed)]
+        [Row(typeof(StaticPartialContractOnEquatableSample), "OperatorEquals", TestStatus.Inconclusive)]
+        [Row(typeof(StaticPartialContractOnEquatableSample), "OperatorNotEquals", TestStatus.Inconclusive)]
         public void VerifySampleEqualityContract(Type fixtureType, string testMethodName, TestStatus expectedTestStatus)
         {
             VerifySampleContract("EqualityTests", fixtureType, testMethodName, expectedTestStatus);
@@ -65,6 +71,22 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
         {
             [VerifyContract]
             public readonly IContract EqualityTests = new EqualityContract<SampleEquatable>
+            {
+                ImplementsOperatorOverloads = false,
+                EquivalenceClasses =
+                {
+                    { new SampleEquatable(123) },
+                    { new SampleEquatable(456) },
+                    { new SampleEquatable(789) }
+                }
+            };
+        }
+
+        [Explicit]
+        private class StaticPartialContractOnEquatableSample
+        {
+            [VerifyContract]
+            public readonly static IContract EqualityTests = new EqualityContract<SampleEquatable>
             {
                 ImplementsOperatorOverloads = false,
                 EquivalenceClasses =

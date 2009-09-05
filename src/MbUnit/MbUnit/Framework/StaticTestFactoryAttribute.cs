@@ -103,9 +103,9 @@ namespace MbUnit.Framework
             {
                 containingScope.TestModelBuilder.AddAnnotation(new Annotation(AnnotationType.Info, method,
                     "This test runner does not fully support static test factory methods "
-                    + "because the code that defines the factory cannot be resolved "
+                    + "because the code that defines the factory cannot be executed "
                     + "at test exploration time.  Consider using dynamic test factory "
-                    +" methods instead."));
+                    + "methods instead."));
                 return;
             }
 

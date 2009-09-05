@@ -569,10 +569,11 @@ namespace Gallio.Navigator
                 string possibleReportName = Path.GetFileName(directory);
                 string possibleReportFileNamePattern = possibleReportName + ".*";
 
+                // Ensure that the path is relative to a likely Gallio report file.
                 string[] possibleReportFilePaths = Directory.GetFiles(parentDirectory, possibleReportFileNamePattern);
                 foreach (string possibleReportFilePath in possibleReportFilePaths)
                 {
-                    if (File.ReadAllText(possibleReportFilePath).Contains("Gallio Test Report"))
+                    if (File.ReadAllText(possibleReportFilePath).IndexOf("Gallio", StringComparison.OrdinalIgnoreCase) >= 0)
                         return true;
                 }
 
