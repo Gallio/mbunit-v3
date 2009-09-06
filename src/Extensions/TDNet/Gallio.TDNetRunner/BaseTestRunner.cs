@@ -14,17 +14,21 @@
 // limitations under the License.
 
 using System;
+using System.Globalization;
+using System.Reflection;
 using Gallio.TDNetRunner.Core;
+using System.IO;
 
 namespace Gallio.TDNetRunner
 {
     public abstract class BaseTestRunner : IDisposable
     {
+        private static bool loaderAssemblyResolverInstalled;
+
         private IProxyTestRunner testRunner;
 
-        public BaseTestRunner()
+        protected BaseTestRunner()
         {
-            testRunner = new LocalProxyTestRunner();
         }
 
         /// <inheritdoc />
@@ -32,6 +36,8 @@ namespace Gallio.TDNetRunner
         {
             get
             {
+                if (testRunner == null)
+                    testRunner = CreateLocalProxyTestRunner();
                 return testRunner;
             }
             set
@@ -45,7 +51,73 @@ namespace Gallio.TDNetRunner
         /// <inheritdoc />
         public void Dispose()
         {
-            testRunner.Dispose();
+            if (testRunner != null)
+                testRunner.Dispose();
+        }
+
+        private static IProxyTestRunner CreateLocalProxyTestRunner()
+        {
+            InstallLoaderAssemblyResolverIfNeeded();
+            return new LocalProxyTestRunner();
+        }
+
+        /// <summary>
+        /// In the case where Gallio is being called from TDNet during a zero-registration
+        /// test run (based on the contents of a *.tdnet file), we may 
+        /// </summary>
+        private static void InstallLoaderAssemblyResolverIfNeeded()
+        {
+            if (loaderAssemblyResolverInstalled)
+                return;
+
+            Assembly gallioTDNetRunnerAssembly = typeof(BaseTestRunner).Assembly;
+            string gallioTDNetRunnerAssemblyPath = new Uri(gallioTDNetRunnerAssembly.CodeBase).LocalPath;
+            string gallioTDNetRunnerAssemblyDir = Path.GetDirectoryName(gallioTDNetRunnerAssemblyPath);
+            string gallioLoaderAssemblyPath = GetGallioLoaderAssemblyPath(gallioTDNetRunnerAssemblyDir);
+            if (gallioLoaderAssemblyPath == null)
+                return;
+
+            AssemblyName gallioTDNetRunnerAssemblyName = gallioTDNetRunnerAssembly.GetName();
+            var gallioLoaderAssemblyName = new AssemblyName("Gallio.Loader")
+            {
+                Version = gallioTDNetRunnerAssemblyName.Version,
+                CultureInfo = CultureInfo.InvariantCulture
+            };
+            gallioLoaderAssemblyName.SetPublicKeyToken(gallioTDNetRunnerAssemblyName.GetPublicKeyToken());
+
+            AppDomain.CurrentDomain.AssemblyResolve += (sender, e) =>
+            {
+                if (e.Name == gallioLoaderAssemblyName.Name
+                    || e.Name == gallioLoaderAssemblyName.FullName)
+                {
+                    return Assembly.LoadFrom(gallioLoaderAssemblyPath);
+                }
+
+                return null;
+            };
+
+            loaderAssemblyResolverInstalled = true;
+        }
+
+        private static string GetGallioLoaderAssemblyPath(string gallioTDNetRunnerAssemblyDir)
+        {
+            // Case 1: Gallio.Loader.dll in same directory as Gallio.TDNetRunner.
+            //         This is common during local development of Gallio.
+            string gallioLoaderAssemblyPath = Path.Combine(gallioTDNetRunnerAssemblyDir, "Gallio.Loader.dll");
+            if (File.Exists(gallioLoaderAssemblyPath))
+                return gallioLoaderAssemblyPath;
+
+            // Case 2: Typical Gallio installation where Gallio.TDNetRunner.dll is in the TDNet
+            //         subdirectory and Gallio.Loader.dll is in the Loader subdirectory.
+            string gallioDir = Path.GetDirectoryName(gallioTDNetRunnerAssemblyDir);
+            if (gallioDir != null)
+            {
+                gallioLoaderAssemblyPath = Path.Combine(gallioDir, @"Loader\Gallio.Loader.dll");
+                if (File.Exists(gallioLoaderAssemblyPath))
+                    return gallioLoaderAssemblyPath;
+            }
+
+            return null;
         }
     }
 }

@@ -17,6 +17,7 @@
                 <File Name="MbUnit.plugin" />
                 <File Name="MbUnit.pdb" />
                 <File Name="MbUnit.xml" />
+                <File Name="MbUnit.dll.tdnet" />
             </Component>
             <Component Id="MbUnit35.v3" Guid="{7fa829c3-df5c-4e41-865b-54084c65c0b0}" Win64="no">
                 <File Name="MbUnit35.dll" KeyPath="yes" />

@@ -13,6 +13,7 @@
               <File Id="NUnit.v25.nunit.core.dll" Name="nunit.core.dll" />
               <File Id="NUnit.v25.nunit.core.interfaces.dll" Name="nunit.core.interfaces.dll" />
               <File Id="NUnit.v25.nunit.framework.dll" Name="nunit.framework.dll" />
+              <File Id="NUnit.v25.nunit.framework.dll.tdnet" Name="nunit.framework.dll.tdnet" />
               <File Id="NUnit.v25.nunit.framework.xml" Name="nunit.framework.xml" />
               <File Id="NUnit.v25.nunit.util.dll" Name="nunit.util.dll" />
               <File Id="NUnit.v25.nunit.mocks.dll" Name="nunit.mocks.dll" />

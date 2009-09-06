@@ -21,6 +21,7 @@
     <file path="nunit.core.dll" />
     <file path="nunit.core.interfaces.dll" />
     <file path="nunit.framework.dll" />
+    <file path="nunit.framework.dll.tdnet" />
     <file path="nunit.framework.xml" />
     <file path="nunit.mocks.dll" />
     <file path="nunit.util.dll" />

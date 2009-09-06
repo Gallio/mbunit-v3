@@ -17,6 +17,7 @@
     <file path="Gallio.MbUnit2Adapter.plugin" />
     <file path="Gallio.MbUnit2Adapter.dll" />
     <file path="MbUnit.Framework.dll" />
+    <file path="MbUnit.Framework.dll.tdnet" />
     <file path="MbUnit.Framework.xml" />
     <file path="MbUnit.Framework.2.0.dll" />
     <file path="MbUnit.Framework.2.0.xml" />

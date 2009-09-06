@@ -10,6 +10,7 @@
           <File Name="csUnit.Common.dll" />
           <File Name="csUnit.Core.dll" />
           <File Name="csUnit.Interfaces.dll" />
+	  <File Name="csUnit.dll.tdnet" />
           <File Id="csUnit.License.txt" Name="license.txt" />
           <File Id="csUnit.Readme.txt" Name="Readme.txt" />
         </Component>

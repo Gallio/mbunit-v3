@@ -22,6 +22,7 @@
     <file path="nunit.core.interfaces.dll" />
     <file path="nunit.core.extensions.dll" />
     <file path="nunit.framework.dll" />
+    <file path="nunit.framework.dll.tdnet" />
     <file path="nunit.framework.extensions.dll" />
     <file path="nunit.util.dll" />
     <file path="addins\NUnit Addins Readme.txt" />

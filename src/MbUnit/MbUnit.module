@@ -26,6 +26,7 @@
     <Binary Include="MbUnit\bin\MbUnit.dll" />
     <Binary Include="MbUnit\bin\MbUnit.pdb" />
     <PluginFile Include="MbUnit\MbUnit.plugin" />
+    <Binary Include="MbUnit\MbUnit.dll.tdnet" />
     <Binary Include="MbUnit\Resources\MbUnit.ico">
         <Folder>Resources</Folder>
     </Binary>
