@@ -15,6 +15,9 @@
     <PluginFile Include="Gallio.MbUnit2Adapter\Gallio.MbUnit2Adapter.plugin">
         <Folder>MbUnit2</Folder>
     </PluginFile>
+    <Binary Include="Gallio.MbUnit2Adapter\MbUnit.Framework.dll.tdnet">
+        <Folder>MbUnit2</Folder>
+    </Binary>
     <Binary Include="Gallio.MbUnit2Adapter\Readme.txt">
         <Folder>MbUnit2</Folder>
     </Binary>

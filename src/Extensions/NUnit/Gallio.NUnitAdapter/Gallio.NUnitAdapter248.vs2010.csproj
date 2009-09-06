@@ -91,6 +91,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Gallio.NUnitAdapter248.plugin" />
+    <None Include="nunit.framework.dll.tdnet" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

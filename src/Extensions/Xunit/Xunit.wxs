@@ -3,33 +3,20 @@
     <Fragment>
         <DirectoryRef Id="binFolder" FileSource="$(var.GallioTargetDir)\bin\">
             <Directory Id="XunitAdapter" Name="Xunit">
-                <Component Id="Gallio.XunitAdapter.dll" Guid="2fc40e70-ddcd-4d3a-b823-d81a5731b8a8" Win64="no">
+                <Component Id="Gallio.XunitAdapter" Guid="2fc40e70-ddcd-4d3a-b823-d81a5731b8a8" Win64="no">
                     <File Name="Gallio.XunitAdapter.dll" KeyPath="yes" />
-                </Component>
-                <Component Id="Gallio.XunitAdapter.plugin" Guid="70438af5-abed-405a-9073-0aaecb9459c6" Win64="no">
-                    <File Name="Gallio.XunitAdapter.plugin" KeyPath="yes" />
-                </Component>
-                <Component Id="xunit.EULA.txt" Guid="687ecebb-3738-4890-992f-6d97e45dac2d" Win64="no">
-                    <File Id="xunit.EULA.txt" Name="EULA.txt" KeyPath="yes" />
-                </Component>
-                <Component Id="xunit.Readme.txt" Guid="1b5e487f-4393-4613-9ab8-222f46464ba9" Win64="no">
-                    <File Id="xunit.Readme.txt" Name="Readme.txt" KeyPath="yes" />
-                </Component>
-                <Component Id="xunit.dll" Guid="52dbfb41-73ae-419d-8db0-54ab1c89bbb8" Win64="no">
-                    <File Name="xunit.dll" KeyPath="yes" />
-                </Component>
-                <Component Id="xunit.xml" Guid="42b6b4c8-df7e-43af-aeeb-c20cffa63592" Win64="no">
-                    <File Name="xunit.xml" KeyPath="yes" />
-                </Component>
-                <Component Id="xunit.extensions.dll" Guid="{F9526C00-AEB9-4c74-A882-93084BF7511B}" Win64="no">
-                    <File Name="xunit.extensions.dll" KeyPath="yes" />
-                </Component>
-                <Component Id="xunit.extensions.xml" Guid="{1DE39816-B747-4ccc-B112-9D0C2CAADFCD}" Win64="no">
-                    <File Name="xunit.extensions.xml" KeyPath="yes" />
+                    <File Name="Gallio.XunitAdapter.plugin" />
+                    <File Id="xunit.EULA.txt" Name="EULA.txt" />
+                    <File Id="xunit.Readme.txt" Name="Readme.txt" />
+                    <File Name="xunit.dll" />
+                    <File Name="xunit.dll.tdnet" />
+                    <File Name="xunit.xml" />
+                    <File Name="xunit.extensions.dll" />
+                    <File Name="xunit.extensions.xml" />
                 </Component>
 		
                 <Directory Id="XUnitAdapter.Resources" Name="Resources">
-                    <Component Id="xUnit.ico" Guid="{4417172C-9A53-413e-B423-7F1B40976083}" Win64="no">
+                    <Component Id="Gallio.XunitAdapter.Resources" Guid="{4417172C-9A53-413e-B423-7F1B40976083}" Win64="no">
                         <File Name="xUnit.ico" KeyPath="yes" />
                     </Component>
                 </Directory>
@@ -38,15 +25,8 @@
 
         <Feature Id='feat_XunitAdapter' Title='Xunit Adapter' Level='1' AllowAdvertise="no"
             Description='Installs the Xunit plugin.  Enables Gallio to run Xunit tests.'>
-            <ComponentRef Id="Gallio.XunitAdapter.dll"/>
-            <ComponentRef Id="Gallio.XunitAdapter.plugin"/>
-            <ComponentRef Id="xunit.Readme.txt"/>
-            <ComponentRef Id="xunit.EULA.txt"/>
-            <ComponentRef Id="xunit.dll"/>
-            <ComponentRef Id="xunit.xml"/>
-            <ComponentRef Id="xunit.extensions.dll"/>
-            <ComponentRef Id="xunit.extensions.xml"/>
-            <ComponentRef Id="xUnit.ico"/>
+            <ComponentRef Id="Gallio.XunitAdapter"/>
+            <ComponentRef Id="Gallio.XunitAdapter.Resources"/>
         </Feature>
     </Fragment>
 </Wix>

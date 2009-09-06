@@ -13,6 +13,9 @@
     <PluginFile Include="Gallio.NUnitAdapter\Gallio.NUnitAdapter25.plugin">
         <Folder>NUnit\v2.5</Folder>
     </PluginFile>
+    <PluginFile Include="Gallio.NUnitAdapter\nunit.framework.dll.tdnet">
+        <Folder>NUnit\v2.5</Folder>
+    </PluginFile>
     <Binary Include="Gallio.NUnitAdapter\Readme.txt">
         <Folder>NUnit\v2.5</Folder>
     </Binary>

@@ -17,6 +17,9 @@
     <Binary Include="Gallio.CSUnitAdapter\Readme.txt">
         <Folder>CSUnit</Folder>
     </Binary>
+    <Binary Include="Gallio.CSUnitAdapter\csUnit.dll.tdnet">
+        <Folder>CSUnit</Folder>
+    </Binary>
     <Binary Include="libs\csUnit.dll">
         <Folder>CSUnit</Folder>
     </Binary>

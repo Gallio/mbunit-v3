@@ -17,6 +17,7 @@
     <file path="Gallio.CSUnitAdapter.plugin" />
     <file path="Gallio.CSUnitAdapter.dll" />
     <file path="csUnit.dll" />
+    <file path="csUnit.dll.tdnet" />
     <file path="csUnit.Common.dll" />
     <file path="csUnit.Interfaces.dll" />
     <file path="csUnit.Core.dll" />

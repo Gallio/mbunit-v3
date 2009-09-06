@@ -15,6 +15,9 @@
     <PluginFile Include="Gallio.XunitAdapter\Gallio.XunitAdapter.plugin">
         <Folder>Xunit</Folder>
     </PluginFile>
+    <PluginFile Include="Gallio.XunitAdapter\xunit.dll.tdnet">
+        <Folder>Xunit</Folder>
+    </PluginFile>
     <Binary Include="Gallio.XunitAdapter\Readme.txt">
         <Folder>Xunit</Folder>
     </Binary>

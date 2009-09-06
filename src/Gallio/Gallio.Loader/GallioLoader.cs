@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using System.Globalization;
 using System.IO;
 using System.Reflection;
 using System.Security;
@@ -219,7 +220,11 @@ namespace Gallio.Loader
                 throw new ArgumentNullException("appDomain");
 
             Type initializerType = typeof(RemoteInitializer);
-            var initializer = (RemoteInitializer)appDomain.CreateInstanceAndUnwrap(initializerType.Assembly.FullName, initializerType.FullName);
+            Assembly gallioLoaderAssembly = initializerType.Assembly;
+
+            var initializer = (RemoteInitializer) (gallioLoaderAssembly.GlobalAssemblyCache
+                ? appDomain.CreateInstanceAndUnwrap(gallioLoaderAssembly.FullName, initializerType.FullName)
+                : appDomain.CreateInstanceFromAndUnwrap(new Uri(gallioLoaderAssembly.CodeBase).LocalPath, initializerType.FullName));
             return initializer.Initialize(runtimePath);
         }
 
@@ -346,6 +351,25 @@ namespace Gallio.Loader
 
         private static string FindRuntimePath()
         {
+            // Case 1: Gallio.Loader is not in the GAC.
+            Assembly gallioLoaderAssembly = typeof(GallioLoader).Assembly;
+            if (!gallioLoaderAssembly.GlobalAssemblyCache)
+            {
+                string gallioLoaderAssemblyPath = new Uri(gallioLoaderAssembly.CodeBase).LocalPath;
+                string gallioLoaderAssemblyDir = Path.GetDirectoryName(gallioLoaderAssemblyPath);
+
+                // Case 1a: Gallio.dll is next to Gallio.Loader.dll.
+                //          This is common during local development of Gallio.
+                if (IsRuntimePathValid(gallioLoaderAssemblyDir))
+                    return gallioLoaderAssemblyDir;
+
+                // Case 1b: Gallio.Loader.dll is in the Loader subdirectory of a typical Gallio installation.
+                string runtimePath = Path.GetDirectoryName(gallioLoaderAssemblyDir);
+                if (runtimePath != null && IsRuntimePathValid(runtimePath))
+                    return runtimePath;
+            }
+
+            // Case 2: Gallio is installed on the local system.  Query the registry.
             string installationFolder = GetInstallationFolderFromRegistry();
             if (installationFolder != null)
             {
@@ -354,9 +378,19 @@ namespace Gallio.Loader
                     return runtimePath;
             }
 
+            // Case 3: No clue where stuff is.  Try to load the Gallio assembly on the off chance
+            //         that it might be accessible.
             try
             {
-                Assembly gallioAssembly = Assembly.Load("Gallio");
+                var gallioLoaderAssemblyName = gallioLoaderAssembly.GetName();
+                var gallioAssemblyName = new AssemblyName("Gallio")
+                {
+                    Version = gallioLoaderAssemblyName.Version,
+                    CultureInfo = CultureInfo.InvariantCulture
+                };
+                gallioAssemblyName.SetPublicKeyToken(gallioLoaderAssemblyName.GetPublicKeyToken());
+
+                Assembly gallioAssembly = Assembly.Load(gallioAssemblyName);
                 Uri codeBaseUri = new Uri(gallioAssembly.CodeBase);
                 string location = codeBaseUri.IsFile ? codeBaseUri.LocalPath : gallioAssembly.Location;
                 return Path.GetDirectoryName(location);
@@ -365,6 +399,7 @@ namespace Gallio.Loader
             {
             }
 
+            // Abandon ship.
             return null;
         }
 

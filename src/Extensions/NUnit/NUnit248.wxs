@@ -14,6 +14,7 @@
             <File Id="NUnit.v248.nunit.core.interfaces.dll" Name="nunit.core.interfaces.dll" />
             <File Id="NUnit.v248.nunit.core.extensions.dll" Name="nunit.core.extensions.dll" />
             <File Id="NUnit.v248.nunit.framework.dll" Name="nunit.framework.dll" />
+            <File Id="NUnit.v248.nunit.framework.dll.tdnet" Name="nunit.framework.dll.tdnet" />
             <File Id="NUnit.v248.nunit.framework.extensions.dll" Name="nunit.framework.extensions.dll" />
             <File Id="NUnit.v248.nunit.util.dll" Name="nunit.util.dll" />
             <File Id="NUnit.v248.nunit.Readme.txt" Name="Readme.txt" />
