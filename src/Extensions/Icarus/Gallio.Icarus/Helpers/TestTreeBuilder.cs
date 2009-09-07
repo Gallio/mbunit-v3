@@ -25,8 +25,8 @@ namespace Gallio.Icarus.Helpers
 {
     internal class TestTreeBuilder
     {
-        public static TestTreeNode BuildTestTree(IProgressMonitor progressMonitor, TestModelData testModelData, 
-            TestTreeBuilderOptions options)
+        public static TestTreeNode BuildTestTree(IProgressMonitor progressMonitor, 
+            TestModelData testModelData, TestTreeBuilderOptions options)
         {
             var root = new TestDataNode(testModelData.RootTest);
 
@@ -35,11 +35,12 @@ namespace Gallio.Icarus.Helpers
             if (options.TreeViewCategory == "Namespace")
             {
                 PopulateNamespaceTree(progressMonitor, testModelData.RootTest.Children, 
-                    root, options.SplitNamespaces);
+                    root, options.SplitNamespaces, root);
             }
             else
             {
-                PopulateMetadataTree(progressMonitor, options.TreeViewCategory, root, testModelData.RootTest, root);
+                PopulateMetadataTree(progressMonitor, options.TreeViewCategory, root, 
+                    testModelData.RootTest, root);
             }
 
             root.CheckState = CheckState.Checked;
@@ -48,17 +49,18 @@ namespace Gallio.Icarus.Helpers
         }
 
         private static void PopulateNamespaceTree(IProgressMonitor progressMonitor, IList<TestData> list, 
-            TestTreeNode parent, bool splitNamespaces)
+            TestTreeNode parent, bool splitNamespaces, TestTreeNode rootNode)
         {
             for (int i = 0; i < list.Count; i++)
             {
                 TestData testData = list[i];
 
                 TestTreeNode testTreeNode = new TestDataNode(testData);
-                if (testData.CodeReference.MemberName == null)
+                if (testData.CodeReference.MemberName == null && testData.CodeReference.NamespaceName != null)
                 {
                     // fixtures need special treatment to insert the namespace layer!
-                    testTreeNode = BuildNamespaceNode(parent, testData, testTreeNode, splitNamespaces);
+                    testTreeNode = BuildNamespaceNode(parent, testData, 
+                        testTreeNode, splitNamespaces, rootNode);
                 }
                 else
                 {
@@ -66,36 +68,37 @@ namespace Gallio.Icarus.Helpers
                 }
 
                 // process child nodes
-                PopulateNamespaceTree(progressMonitor, testData.Children, testTreeNode, splitNamespaces);
+                PopulateNamespaceTree(progressMonitor, testData.Children, testTreeNode, 
+                    splitNamespaces, rootNode);
 
                 progressMonitor.Worked(1);
             }
         }
 
         private static TestTreeNode BuildNamespaceNode(TestTreeNode parent, TestComponentData testComponentData,
-            TestTreeNode fixtureNode, bool splitNamespaces)
+            TestTreeNode fixtureNode, bool splitNamespaces, TestTreeNode rootNode)
         {
-            string @namespace = testComponentData.CodeReference.NamespaceName ?? "";
+            string @namespace = testComponentData.CodeReference.NamespaceName;
 
             string[] namespaceArray = splitNamespaces ? @namespace.Split('.') 
                 : new[] { @namespace };
 
             foreach (string ns in namespaceArray)
             {
-                if (ns.Length != 0)
+                if (string.IsNullOrEmpty(ns))
+                    continue;
+
+                // find the namespace node (or add if it doesn't exist)
+                var nodes = rootNode.Find(ns, true);
+                if (nodes.Count > 0)
                 {
-                    // find the namespace node (or add if it doesn't exist)
-                    List<TestTreeNode> nodes = parent.Find(ns, true);
-                    if (nodes.Count > 0)
-                    {
-                        parent = nodes[0];
-                    }
-                    else
-                    {
-                        var nsNode = new NamespaceNode(ns, ns);
-                        parent.Nodes.Add(nsNode);
-                        parent = nsNode;
-                    }
+                    parent = nodes[0];
+                }
+                else
+                {
+                    var nsNode = new NamespaceNode(ns, ns);
+                    parent.Nodes.Add(nsNode);
+                    parent = nsNode;
                 }
             }
             
@@ -103,7 +106,8 @@ namespace Gallio.Icarus.Helpers
             return fixtureNode;
         }
 
-        private static void PopulateMetadataTree(IProgressMonitor progressMonitor, string metadataType, TestDataNode parentTestDataNode, TestData parentTestData, TestDataNode rootTestDataNode)
+        private static void PopulateMetadataTree(IProgressMonitor progressMonitor, string metadataType, Node parentTestDataNode, 
+            TestData parentTestData, TestTreeNode rootTestDataNode)
         {
             foreach (TestData childTestData in parentTestData.Children)
             {

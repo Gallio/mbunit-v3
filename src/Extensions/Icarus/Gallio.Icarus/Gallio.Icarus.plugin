@@ -156,7 +156,7 @@
 
     <component componentId="Gallio.Icarus.ControlPanel.ProgressMonitoringPaneProvider" 
                serviceId="Gallio.UI.PreferencePaneProvider" 
-               componentType="Gallio.Icarus.ControlPanel.ReportsPaneProvider, Gallio.Icarus">
+               componentType="Gallio.Icarus.ControlPanel.ProgressMonitoringPaneProvider, Gallio.Icarus">
       <traits>
         <path>Icarus/Appearance/Progress Monitoring</path>
         <order>1</order>
