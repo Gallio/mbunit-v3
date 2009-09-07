@@ -45,7 +45,7 @@ namespace Gallio.Icarus.ControlPanel
             this.alwaysReloadFilesCheckBox.AutoSize = true;
             this.alwaysReloadFilesCheckBox.Location = new System.Drawing.Point(17, 28);
             this.alwaysReloadFilesCheckBox.Name = "alwaysReloadFilesCheckBox";
-            this.alwaysReloadFilesCheckBox.Size = new System.Drawing.Size(145, 17);
+            this.alwaysReloadFilesCheckBox.Size = new System.Drawing.Size(112, 17);
             this.alwaysReloadFilesCheckBox.TabIndex = 5;
             this.alwaysReloadFilesCheckBox.Text = "Always reload files";
             this.alwaysReloadFilesCheckBox.UseVisualStyleBackColor = true;
@@ -69,9 +69,10 @@ namespace Gallio.Icarus.ControlPanel
             this.generalGroupBox.Controls.Add(this.checkBox1);
             this.generalGroupBox.Controls.Add(this.runTestsAfterReloadCheckBox);
             this.generalGroupBox.Controls.Add(this.alwaysReloadFilesCheckBox);
+            this.generalGroupBox.Dock = System.Windows.Forms.DockStyle.Top;
             this.generalGroupBox.Location = new System.Drawing.Point(0, 0);
             this.generalGroupBox.Name = "generalGroupBox";
-            this.generalGroupBox.Size = new System.Drawing.Size(450, 116);
+            this.generalGroupBox.Size = new System.Drawing.Size(397, 113);
             this.generalGroupBox.TabIndex = 8;
             this.generalGroupBox.TabStop = false;
             this.generalGroupBox.Text = "General";
@@ -101,10 +102,10 @@ namespace Gallio.Icarus.ControlPanel
             // 
             this.runtimeGroupBox.Controls.Add(this.testRunnerFactoryLabel);
             this.runtimeGroupBox.Controls.Add(this.testRunnerFactories);
-            this.runtimeGroupBox.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.runtimeGroupBox.Location = new System.Drawing.Point(0, 122);
+            this.runtimeGroupBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.runtimeGroupBox.Location = new System.Drawing.Point(0, 113);
             this.runtimeGroupBox.Name = "runtimeGroupBox";
-            this.runtimeGroupBox.Size = new System.Drawing.Size(450, 228);
+            this.runtimeGroupBox.Size = new System.Drawing.Size(397, 207);
             this.runtimeGroupBox.TabIndex = 9;
             this.runtimeGroupBox.TabStop = false;
             this.runtimeGroupBox.Text = "Runtime";
@@ -120,12 +121,14 @@ namespace Gallio.Icarus.ControlPanel
             // 
             // testRunnerFactories
             // 
+            this.testRunnerFactories.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.testRunnerFactories.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.testRunnerFactories.DropDownWidth = 200;
             this.testRunnerFactories.FormattingEnabled = true;
             this.testRunnerFactories.Location = new System.Drawing.Point(122, 25);
             this.testRunnerFactories.Name = "testRunnerFactories";
-            this.testRunnerFactories.Size = new System.Drawing.Size(233, 21);
+            this.testRunnerFactories.Size = new System.Drawing.Size(256, 21);
             this.testRunnerFactories.TabIndex = 3;
             this.testRunnerFactories.SelectedIndexChanged += new System.EventHandler(this.testRunnerFactories_SelectedIndexChanged);
             // 
@@ -135,7 +138,7 @@ namespace Gallio.Icarus.ControlPanel
             this.Controls.Add(this.runtimeGroupBox);
             this.Controls.Add(this.generalGroupBox);
             this.Name = "TestExplorerPane";
-            this.Size = new System.Drawing.Size(450, 350);
+            this.Size = new System.Drawing.Size(397, 320);
             this.generalGroupBox.ResumeLayout(false);
             this.generalGroupBox.PerformLayout();
             this.runtimeGroupBox.ResumeLayout(false);

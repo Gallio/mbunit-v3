@@ -124,8 +124,6 @@ namespace Gallio.Icarus.ControlPanel
             // 
             // testStatusColorsGroupBox
             // 
-            this.testStatusColorsGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
             this.testStatusColorsGroupBox.Controls.Add(this.passedColor);
             this.testStatusColorsGroupBox.Controls.Add(this.skippedColorLabel);
             this.testStatusColorsGroupBox.Controls.Add(this.inconclusiveColorLabel);
@@ -134,15 +132,18 @@ namespace Gallio.Icarus.ControlPanel
             this.testStatusColorsGroupBox.Controls.Add(this.failedColorLabel);
             this.testStatusColorsGroupBox.Controls.Add(this.skippedColor);
             this.testStatusColorsGroupBox.Controls.Add(this.failedColor);
+            this.testStatusColorsGroupBox.Dock = System.Windows.Forms.DockStyle.Top;
             this.testStatusColorsGroupBox.Location = new System.Drawing.Point(0, 0);
             this.testStatusColorsGroupBox.Name = "testStatusColorsGroupBox";
-            this.testStatusColorsGroupBox.Size = new System.Drawing.Size(497, 144);
+            this.testStatusColorsGroupBox.Size = new System.Drawing.Size(300, 144);
             this.testStatusColorsGroupBox.TabIndex = 9;
             this.testStatusColorsGroupBox.TabStop = false;
             this.testStatusColorsGroupBox.Text = "Test Status Colors";
             // 
             // testProgressBarStyle
             // 
+            this.testProgressBarStyle.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.testProgressBarStyle.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.testProgressBarStyle.DropDownWidth = 200;
             this.testProgressBarStyle.FormattingEnabled = true;
@@ -151,7 +152,7 @@ namespace Gallio.Icarus.ControlPanel
             "Unit"});
             this.testProgressBarStyle.Location = new System.Drawing.Point(139, 28);
             this.testProgressBarStyle.Name = "testProgressBarStyle";
-            this.testProgressBarStyle.Size = new System.Drawing.Size(242, 21);
+            this.testProgressBarStyle.Size = new System.Drawing.Size(140, 21);
             this.testProgressBarStyle.TabIndex = 10;
             this.testProgressBarStyle.SelectedIndexChanged += new System.EventHandler(this.testProgressBarStyle_SelectedIndexChanged);
             // 
@@ -168,10 +169,10 @@ namespace Gallio.Icarus.ControlPanel
             // 
             this.testProgressGroupBox.Controls.Add(this.testProgressBarStyleLabel);
             this.testProgressGroupBox.Controls.Add(this.testProgressBarStyle);
-            this.testProgressGroupBox.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.testProgressGroupBox.Location = new System.Drawing.Point(0, 150);
+            this.testProgressGroupBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.testProgressGroupBox.Location = new System.Drawing.Point(0, 144);
             this.testProgressGroupBox.Name = "testProgressGroupBox";
-            this.testProgressGroupBox.Size = new System.Drawing.Size(497, 200);
+            this.testProgressGroupBox.Size = new System.Drawing.Size(300, 176);
             this.testProgressGroupBox.TabIndex = 11;
             this.testProgressGroupBox.TabStop = false;
             this.testProgressGroupBox.Text = "Test Progress";
@@ -182,7 +183,6 @@ namespace Gallio.Icarus.ControlPanel
             this.Controls.Add(this.testProgressGroupBox);
             this.Controls.Add(this.testStatusColorsGroupBox);
             this.Name = "TestStatusPane";
-            this.Size = new System.Drawing.Size(497, 350);
             this.testStatusColorsGroupBox.ResumeLayout(false);
             this.testStatusColorsGroupBox.PerformLayout();
             this.testProgressGroupBox.ResumeLayout(false);
