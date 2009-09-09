@@ -109,7 +109,7 @@ REM Register Shell
 
 "%REG%" ADD "%VS_PACKAGE_KEY%" /VE /D "Gallio Shell Package" /F >nul
 "%REG%" ADD "%VS_PACKAGE_KEY%" /V InprocServer32 /D "%SystemRoot%\system32\mscoree.dll" /F >nul
-"%REG%" ADD "%VS_PACKAGE_KEY%" /V Class /D "Gallio.VisualStudio.Shell.ShellPackage" /F >nul
+"%REG%" ADD "%VS_PACKAGE_KEY%" /V Class /D "Gallio.VisualStudio.Shell.Core.ShellPackage" /F >nul
 "%REG%" ADD "%VS_PACKAGE_KEY%" /V CodeBase /D "%SHELL_BIN_DIR%\Gallio.VisualStudio.Shell%VS_VERSION%0.dll" /F >nul
 "%REG%" ADD "%VS_PACKAGE_KEY%" /V ID /T REG_DWORD /D 1 /F >nul
 "%REG%" ADD "%VS_PACKAGE_KEY%" /V MinEdition /D "Standard" /F >nul

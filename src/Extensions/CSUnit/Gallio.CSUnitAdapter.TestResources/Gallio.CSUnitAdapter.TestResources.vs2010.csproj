@@ -9,11 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Gallio.CSUnitAdapter.TestResources</RootNamespace>
     <AssemblyName>Gallio.CSUnitAdapter.TestResources</AssemblyName>
-    <FileUpgradeFlags>
-    </FileUpgradeFlags>
-    <OldToolsVersion>3.5</OldToolsVersion>
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
-    <UpgradeBackupLocation />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -39,6 +35,18 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="csUnit.Common, Version=2.6.3374.34355, Culture=neutral, PublicKeyToken=6871f04765cca910, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\libs\csUnit.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="csUnit.Core, Version=2.6.3374.34355, Culture=neutral, PublicKeyToken=6871f04765cca910, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\libs\csUnit.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="csUnit.Interfaces, Version=2.6.3374.34355, Culture=neutral, PublicKeyToken=6871f04765cca910, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\libs\csUnit.Interfaces.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="csUnit">
       <SpecificVersion>False</SpecificVersion>

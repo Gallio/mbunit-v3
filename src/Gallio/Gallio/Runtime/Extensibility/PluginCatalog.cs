@@ -21,6 +21,7 @@ using System.Text;
 using Gallio.Common.Collections;
 using Gallio.Common.Reflection;
 using Gallio.Runtime.Extensibility.Schema;
+using Gallio.Common;
 
 namespace Gallio.Runtime.Extensibility
 {
@@ -89,6 +90,9 @@ namespace Gallio.Runtime.Extensibility
 
                     pluginRegistration.ProbingPaths = plugin.ProbingPaths;
                     pluginRegistration.RecommendedInstallationPath = plugin.RecommendedInstallationPath;
+
+                    if (plugin.EnableCondition != null)
+                        pluginRegistration.EnableCondition = Condition.Parse(plugin.EnableCondition);
 
                     foreach (var file in plugin.Files)
                         pluginRegistration.FilePaths.Add(file.Path);

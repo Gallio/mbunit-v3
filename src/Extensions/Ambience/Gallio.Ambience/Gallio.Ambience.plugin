@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <plugin pluginId="Gallio.Ambience"
         recommendedInstallationPath=""
+        enableCondition="${minFramework:NET35}"
         xmlns="http://www.gallio.org/">
   <traits>
     <name>Gallio Ambience Library</name>
@@ -21,15 +22,9 @@
     <file path="Gallio.Ambience.Server.exe.config" />
   </files>
 
-  <?ifdef NET35?>
   <assemblies>
     <assembly fullName="Gallio.Ambience, Version=0.0.0.0, Culture=neutral, PublicKeyToken=eb9cfa67ee6ab36e"
-              codeBase="Gallio.Ambience.dll">
-      <qualifyPartialName>true</qualifyPartialName>
-      <bindingRedirects>
-        <bindingRedirect oldVersion="0.0.0.0-65535.65535.65535.65535" />
-      </bindingRedirects>
-    </assembly>
+              codeBase="Gallio.Ambience.dll"
+              qualifyPartialName="true" />
   </assemblies>
-  <?endif?>
 </plugin>

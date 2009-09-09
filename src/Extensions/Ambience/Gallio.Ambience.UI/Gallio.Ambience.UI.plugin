@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <plugin pluginId="Gallio.Ambience.UI"
         recommendedInstallationPath=""
+        enableCondition="${minFramework:NET35}"
         xmlns="http://www.gallio.org/">
   <traits>
     <name>Gallio Ambience UI</name>
@@ -19,15 +20,10 @@
     <file path="Gallio.Ambience.UI.dll" />
   </files>
 
-  <?ifdef NET35?>
   <assemblies>
     <assembly fullName="Gallio.Ambience.UI, Version=0.0.0.0, Culture=neutral, PublicKeyToken=eb9cfa67ee6ab36e"
-              codeBase="Gallio.Ambience.UI.dll">
-      <qualifyPartialName>true</qualifyPartialName>
-      <bindingRedirects>
-        <bindingRedirect oldVersion="0.0.0.0-65535.65535.65535.65535" />
-      </bindingRedirects>
-    </assembly>
+              codeBase="Gallio.Ambience.UI.dll"
+              qualifyPartialName="true" />
   </assemblies>
 
   <components>
@@ -47,5 +43,4 @@
       </traits>
     </component>
   </components>
-  <?endif?>
 </plugin>

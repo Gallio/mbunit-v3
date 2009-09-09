@@ -83,31 +83,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Actions\Action.cs" />
-    <Compile Include="Actions\ActionButton.cs" />
-    <Compile Include="Actions\ActionButtonAttribute.cs" />
-    <Compile Include="Actions\ActionButtonDescriptor.cs" />
-    <Compile Include="Actions\ActionButtonStatus.cs" />
-    <Compile Include="Actions\ActionButtonStyle.cs" />
-    <Compile Include="Actions\ActionButtonType.cs" />
-    <Compile Include="Actions\ShellActionManager.cs" />
-    <Compile Include="Actions\IActionManager.cs" />
-    <Compile Include="BaseShellExtension.cs" />
-    <Compile Include="ShellLogger.cs" />
-    <Compile Include="IShellPackage.cs" />
-    <Compile Include="IShellComponent.cs" />
-    <Compile Include="IShell.cs" />
-    <Compile Include="IShellExtension.cs" />
+    <Compile Include="Core\DefaultShell.cs" />
+    <Compile Include="Core\Guids.cs" />
+    <Compile Include="Core\ShellAccessor.cs" />
+    <Compile Include="Core\ShellAddInHandler.cs" />
+    <Compile Include="Core\ShellHooks.cs" />
+    <Compile Include="Core\ShellLock.cs" />
+    <Compile Include="Core\ShellPackage.cs" />
+    <Compile Include="Core\ShellProxy.cs" />
     <Compile Include="Reflection\CodeModelReflectionPolicy.cs" />
-    <Compile Include="ShellAccessor.cs" />
-    <Compile Include="ShellAddInHandler.cs" />
-    <Compile Include="ShellComponent.cs" />
-    <Compile Include="ShellException.cs" />
-    <Compile Include="ShellPackage.cs" />
-    <Compile Include="Guids.cs" />
-    <Compile Include="Interop\ImageConversionUtils.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Resources\VSPackage.Designer.cs">
       <DependentUpon>VSPackage.resx</DependentUpon>
@@ -115,18 +99,11 @@
       <DesignTime>True</DesignTime>
     </Compile>
     <Compile Include="Resources\VSPackageResourceIds.cs" />
-    <Compile Include="Shell.cs" />
-    <Compile Include="UI\IWindowManager.cs" />
-    <Compile Include="UI\ShellToolWindow.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="UI\ShellToolWindowPane.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="UI\ShellToolWindowContainer.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="UI\ShellWindowManager.cs" />
+    <Compile Include="UI\Commands\DefaultCommandManager.cs" />
+    <Compile Include="UI\Commands\DefaultCommandManagerShellExtension.cs" />
+    <Compile Include="UI\ImageConversionUtils.cs" />
+    <Compile Include="UI\ToolWindows\DefaultToolWindowManager.cs" />
+    <Compile Include="UI\ToolWindows\ShellToolWindowPane.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\Gallio\Gallio.Loader\Gallio.Loader.vs2010.csproj">
@@ -141,6 +118,10 @@
       <Project>{6CAB7735-05DA-480D-9A04-50615B00F886}</Project>
       <Name>Gallio.vs2010</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Gallio.VisualStudio.Shell.Common\Gallio.VisualStudio.Shell.vs2010.csproj">
+      <Project>{71536C3E-7859-4F9E-A5C7-16DDCE609E5F}</Project>
+      <Name>Gallio.VisualStudio.Shell.vs2010</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\CommandBar.resx" />
@@ -148,9 +129,6 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>VSPackage.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\ShellToolWindowContainer.resx">
-      <DependentUpon>ShellToolWindowContainer.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

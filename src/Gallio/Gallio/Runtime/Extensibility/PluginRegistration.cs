@@ -19,6 +19,7 @@ using System.IO;
 using System.Text;
 using Gallio.Common.Collections;
 using Gallio.Common.Reflection;
+using Gallio.Common;
 
 namespace Gallio.Runtime.Extensibility
 {
@@ -97,6 +98,13 @@ namespace Gallio.Runtime.Extensibility
                 baseDirectory = value;
             }
         }
+
+        /// <summary>
+        /// Gets or sets a condition governing the activation of the plugin,
+        /// or null if there is no condition.  The plugin will be disabled if a
+        /// condition is provided but is not satisfied.
+        /// </summary>
+        public Condition EnableCondition { get; set; }
 
         /// <summary>
         /// Gets or sets the recommended installation path for the plugin files relative to

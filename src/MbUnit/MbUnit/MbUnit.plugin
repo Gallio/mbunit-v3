@@ -25,9 +25,8 @@
 
   <assemblies>
     <assembly fullName="MbUnit, Version=0.0.0.0, Culture=neutral, PublicKeyToken=eb9cfa67ee6ab36e"
-              codeBase="MbUnit.dll">
-      <qualifyPartialName>true</qualifyPartialName>
-    </assembly>
+              codeBase="MbUnit.dll"
+              qualifyPartialName="true" />
   </assemblies>
 
   <components>

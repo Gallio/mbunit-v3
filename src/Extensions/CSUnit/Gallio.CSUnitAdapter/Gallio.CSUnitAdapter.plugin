@@ -28,12 +28,8 @@
   
   <assemblies>
     <assembly fullName="Gallio.CSUnitAdapter, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null"
-              codeBase="Gallio.CSUnitAdapter.dll">
-      <qualifyPartialName>true</qualifyPartialName>
-      <bindingRedirects>
-        <bindingRedirect oldVersion="0.0.0.0-65535.65535.65535.65535" />
-      </bindingRedirects>
-    </assembly>
+              codeBase="Gallio.CSUnitAdapter.dll"
+              qualifyPartialName="true"/>
 
     <assembly fullName="csUnit, Version=2.6.3374.34355, Culture=neutral, PublicKeyToken=6871f04765cca910"
               codeBase="csUnit.dll">

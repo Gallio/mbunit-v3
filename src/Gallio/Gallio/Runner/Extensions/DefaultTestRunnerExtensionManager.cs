@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Gallio.Runtime.Extensibility;
+using Gallio.Runtime;
 
 namespace Gallio.Runner.Extensions
 {
@@ -26,14 +27,17 @@ namespace Gallio.Runner.Extensions
     public class DefaultTestRunnerExtensionManager : ITestRunnerExtensionManager
     {
         private readonly ComponentHandle<ITestRunnerExtensionFactory, TestRunnerExtensionFactoryTraits>[] factoryHandles;
+        private readonly IRuntime runtime;
 
         /// <summary>
         /// Creates a test runner extension manager.
         /// </summary>
         /// <param name="factoryHandles">The factory handles, not null.</param>
-        public DefaultTestRunnerExtensionManager(ComponentHandle<ITestRunnerExtensionFactory, TestRunnerExtensionFactoryTraits>[] factoryHandles)
+        /// <param name="runtime">The runtime, not null.</param>
+        public DefaultTestRunnerExtensionManager(ComponentHandle<ITestRunnerExtensionFactory, TestRunnerExtensionFactoryTraits>[] factoryHandles, IRuntime runtime)
         {
             this.factoryHandles = factoryHandles;
+            this.runtime = runtime;
         }
 
         /// <inheritdoc />
@@ -42,7 +46,7 @@ namespace Gallio.Runner.Extensions
             if (testRunner == null)
                 throw new ArgumentNullException("testRunner");
 
-            var context = new ActivationConditionContext();
+            var context = runtime.RuntimeConditionContext;
 
             foreach (var factoryHandle in factoryHandles)
             {

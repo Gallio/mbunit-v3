@@ -23,12 +23,8 @@
 
   <assemblies>
     <assembly fullName="Gallio.RSpecAdapter, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null"
-              codeBase="Gallio.RSpecAdapter.dll">
-      <qualifyPartialName>true</qualifyPartialName>
-      <bindingRedirects>
-        <bindingRedirect oldVersion="0.0.0.0-65535.65535.65535.65535" />
-      </bindingRedirects>
-    </assembly>
+              codeBase="Gallio.RSpecAdapter.dll"
+              qualifyPartialName="true" />
   </assemblies>
 
   <components>    

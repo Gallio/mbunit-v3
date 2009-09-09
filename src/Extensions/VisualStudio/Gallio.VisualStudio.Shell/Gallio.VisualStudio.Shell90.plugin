@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <plugin pluginId="Gallio.VisualStudio.Shell90"
         recommendedInstallationPath="VisualStudio\v9.0"
+        enableCondition="${process:DEVENV.EXE_V9.0} or ${process:VSTESTHOST.EXE_V9.0}"
         xmlns="http://www.gallio.org/">
   <traits>
     <name>Visual Studio 2008 Integration Shell</name>
@@ -9,7 +10,7 @@
   </traits>
 
   <dependencies>
-    <dependency pluginId="Gallio" />
+    <dependency pluginId="Gallio.VisualStudio.Shell" />
   </dependencies>
 
   <files>
@@ -18,26 +19,33 @@
     <file path="Gallio.VisualStudio.Shell90.addin" />
   </files>
 
-  <?ifdef NET35?>
   <probingPaths>
     <probingPath>v9.0</probingPath>
   </probingPaths>
   
   <assemblies>
     <assembly fullName="Gallio.VisualStudio.Shell90, Version=0.0.0.0, Culture=neutral, PublicKeyToken=eb9cfa67ee6ab36e"
-              codeBase="Gallio.VisualStudio.Shell90.dll">
-      <qualifyPartialName>true</qualifyPartialName>
-      <bindingRedirects>
-        <bindingRedirect oldVersion="0.0.0.0-65535.65535.65535.65535" />
-      </bindingRedirects>
-    </assembly>
-
+              codeBase="Gallio.VisualStudio.Shell90.dll"
+              qualifyPartialName="true" />
+    
     <assembly fullName="Gallio.Loader, Version=0.0.0.0, Culture=neutral, PublicKeyToken=eb9cfa67ee6ab36e"/>
   </assemblies>
 
-  <services>
-    <service serviceId="Shell90.ShellExtension"
-             serviceType="Gallio.VisualStudio.Shell.IShellExtension, Gallio.VisualStudio.Shell90" />
-  </services>
-  <?endif?>
+  <components>
+    <component componentId="Shell90.Shell"
+               serviceId="Shell.Shell"
+               componentType="Gallio.VisualStudio.Shell.Core.DefaultShell, Gallio.VisualStudio.Shell90" />
+
+    <component componentId="Shell90.CommandManager"
+               serviceId="Shell.CommandManager"
+               componentType="Gallio.VisualStudio.Shell.UI.Commands.DefaultCommandManager, Gallio.VisualStudio.Shell90" />
+
+    <component componentId="Shell90.CommandManagerShellExtension"
+               serviceId="Shell.ShellExtension"
+               componentType="Gallio.VisualStudio.Shell.UI.Commands.DefaultCommandManagerShellExtension, Gallio.VisualStudio.Shell90" />
+
+    <component componentId="Shell90.ToolWindowManager"
+               serviceId="Shell.ToolWindowManager"
+               componentType="Gallio.VisualStudio.Shell.UI.ToolWindows.DefaultToolWindowManager, Gallio.VisualStudio.Shell90" />
+  </components>
 </plugin>

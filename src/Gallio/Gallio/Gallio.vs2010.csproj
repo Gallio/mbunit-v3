@@ -330,7 +330,7 @@
     <Compile Include="Model\Isolation\NamespaceDoc.cs" />
     <Compile Include="Runner\Events\RunStartedEventArgs.cs" />
     <Compile Include="Runner\Events\NamespaceDoc.cs" />
-    <Compile Include="Runner\Extensions\ActivationConditionContext.cs" />
+    <Compile Include="Runtime\RuntimeConditionContext.cs" />
     <Compile Include="Runner\Extensions\ITestRunnerExtensionFactory.cs" />
     <Compile Include="Runner\Extensions\ITestRunnerExtensionManager.cs" />
     <Compile Include="Runner\Extensions\NamespaceDoc.cs" />

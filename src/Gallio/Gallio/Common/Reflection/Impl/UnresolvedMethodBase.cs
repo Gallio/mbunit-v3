@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Reflection;
 using Gallio.Common.Collections;
+using System.Security;
 
 /*
  * This compilation unit contains MethodBase overrides that must be duplicated for each
@@ -76,6 +77,9 @@ namespace Gallio.Common.Reflection.Impl.DotNet20
             return Type.EmptyTypes;
         }
 
+#if DOTNET40
+        [SecuritySafeCritical]
+#endif
         public override MethodBody GetMethodBody()
         {
             throw new NotSupportedException("Cannot get method body of unresolved constructor.");
@@ -155,6 +159,9 @@ namespace Gallio.Common.Reflection.Impl.DotNet20
                 delegate(ITypeInfo parameter) { return parameter.Resolve(false); });
         }
 
+#if DOTNET40
+        [SecuritySafeCritical]
+#endif
         public override MethodBody GetMethodBody()
         {
             throw new NotSupportedException("Cannot get method body of unresolved method.");

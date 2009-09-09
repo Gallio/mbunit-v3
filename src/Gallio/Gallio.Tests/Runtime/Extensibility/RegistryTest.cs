@@ -26,6 +26,7 @@ using MbUnit.Framework;
 using Rhino.Mocks;
 using System.Reflection;
 using Rhino.Mocks.Constraints;
+using Gallio.Common;
 
 namespace Gallio.Tests.Runtime.Extensibility
 {
@@ -119,6 +120,7 @@ namespace Gallio.Tests.Runtime.Extensibility
                 var assemblyBindings = new[] { new AssemblyBinding(new AssemblyName("Gallio")) };
                 var pluginDependencies = new[] { dependentPlugin };
                 var probingPaths = new[] { "publicBin", "privateBin" };
+                var condition = Condition.Parse("${minFramework:NET35}");
 
                 var plugin = registry.RegisterPlugin(new PluginRegistration("plugin2Id", new TypeName("Plugin, Assembly"), new DirectoryInfo(@"C:\"))
                 {
@@ -128,6 +130,7 @@ namespace Gallio.Tests.Runtime.Extensibility
                     AssemblyBindings = assemblyBindings,
                     PluginDependencies = pluginDependencies,
                     ProbingPaths = probingPaths,
+                    EnableCondition = condition,
                     RecommendedInstallationPath = "Path",
                     FilePaths = { "file1.txt", "file2.dll" }
                 });
@@ -143,6 +146,7 @@ namespace Gallio.Tests.Runtime.Extensibility
                     Assert.AreElementsEqual(assemblyBindings, plugin.AssemblyBindings);
                     Assert.AreElementsEqual(pluginDependencies, plugin.PluginDependencies);
                     Assert.AreElementsEqual(probingPaths, plugin.ProbingPaths);
+                    Assert.AreEqual(condition, plugin.EnableCondition);
                     Assert.AreEqual("Path", plugin.RecommendedInstallationPath);
                     Assert.AreElementsEqual(new[] { "file1.txt", "file2.dll" }, plugin.FilePaths);
                 });

@@ -17,7 +17,9 @@ using System;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using EnvDTE;
+using EnvDTE80;
 using Gallio.UI.ErrorReporting;
+using Gallio.VisualStudio.Shell.UI.ToolWindows;
 using Gallio.VisualStudio.Tip.UI;
 using Microsoft.VisualStudio.TestTools.Common;
 using Microsoft.VisualStudio.TestTools.Vsip;
@@ -30,18 +32,16 @@ namespace Gallio.VisualStudio.Tip
     [ComVisible(true)]
     public class GallioTuip : ITuip, SGallioTestService
     {
-        private readonly TipShellExtension ext;
+        private readonly DTE2 dte;
+        private readonly IToolWindowManager toolWindowManager;
         
         /// <summary>
         /// Constructs a Gallio test UI provider.
         /// </summary>
-        /// <param name="ext">The Gallio shell extension.</param>
-        public GallioTuip(TipShellExtension ext)
+        public GallioTuip(DTE2 dte, IToolWindowManager toolWindowManager)
         {
-            if (ext == null)
-                throw new ArgumentNullException("ext");
-
-            this.ext = ext;
+            this.dte = dte;
+            this.toolWindowManager = toolWindowManager;
         }
         
         /// <summary>
@@ -72,14 +72,14 @@ namespace Gallio.VisualStudio.Tip
             {
                 if (gallioTest.Path == null)
                 {
-                    ErrorDialog.Show(NativeWindow.FromHandle((IntPtr) ext.Shell.DTE.MainWindow.HWnd),
+                    ErrorDialog.Show(NativeWindow.FromHandle((IntPtr) dte.MainWindow.HWnd),
                         Properties.Resources.UnknownTestCodeLocationCaption, 
                         Properties.Resources.UnknownTestCodeLocation,
                         "");
                 }
                 else
                 {
-                    Window window = ext.Shell.DTE.OpenFile(EnvDTE.Constants.vsViewKindCode, gallioTest.Path);
+                    Window window = dte.OpenFile(EnvDTE.Constants.vsViewKindCode, gallioTest.Path);
 
                     TextSelection selection = window.Selection as TextSelection;
                     if (gallioTest.Line != 0)
@@ -106,7 +106,7 @@ namespace Gallio.VisualStudio.Tip
             if (gallioResult != null)
             {
                 TestResultWindow window = new TestResultWindow(gallioResult);
-                ext.Shell.WindowManager.OpenToolWindow(GetWindowId(gallioResult), window);
+                toolWindowManager.OpenToolWindow(GetWindowId(gallioResult), window);
             }
         }
 
@@ -122,7 +122,7 @@ namespace Gallio.VisualStudio.Tip
             GallioTestResult gallioResult = result as GallioTestResult;
             if (gallioResult != null)
             {
-                ext.Shell.WindowManager.CloseToolWindow(GetWindowId(gallioResult));
+                toolWindowManager.CloseToolWindow(GetWindowId(gallioResult));
             }
         }
 

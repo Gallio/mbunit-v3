@@ -84,6 +84,15 @@ namespace Gallio.Runtime.Extensibility.Schema
         }
 
         /// <summary>
+        /// Gets or sets a condition governing the activation of the plugin,
+        /// or null if there is no condition.  The plugin will be disabled if a
+        /// condition is provided but is not satisfied.
+        /// </summary>
+        /// <seealso cref="Condition"/>
+        [XmlAttribute("enableCondition")]
+        public string EnableCondition { get; set; }
+
+        /// <summary>
         /// Gets or sets the recommended installation path for the plugin files relative to
         /// the runtime installation directory, or null if there is no preference.
         /// </summary>

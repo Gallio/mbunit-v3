@@ -19,23 +19,25 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using MbUnit.Framework;
-using Gallio.VisualStudio.Shell.UI;
+using Gallio.VisualStudio.Shell.UI.ToolWindows;
 using Rhino.Mocks;
 
 namespace Gallio.VisualStudio.Shell.Tests.UI
 {
     [TestFixture]
-    [TestsOn(typeof(ShellToolWindowContainer))]
+    [TestsOn(typeof(ToolWindowContainer))]
     public class ShellToolWindowContainerTest
     {
-        private class MyConcreteToolWindow : ShellToolWindow
+        private class MyConcreteToolWindow : ToolWindow
         {
         }
 
         [Test]
         public void SetNullControl()
         {
-            var container = new ShellToolWindowContainer();
+            var pane = new ShellToolWindowPane(MockRepository.GenerateStub<IServiceProvider>());
+            var container = new ToolWindowContainer(pane);
+
             container.ToolWindow = null;
 
             Assert.IsNull(container.ToolWindow);
@@ -45,9 +47,10 @@ namespace Gallio.VisualStudio.Shell.Tests.UI
         [Test]
         public void SetControlOk()
         {
-            var pane = new ShellToolWindowPane(MockRepository.GenerateStub<IShell>());
-            var container = new ShellToolWindowContainer() { ToolWindowPane = pane };
+            var pane = new ShellToolWindowPane(MockRepository.GenerateStub<IServiceProvider>());
+            var container = new ToolWindowContainer(pane);
             var control = new MyConcreteToolWindow();
+
             container.ToolWindow = control;
 
             Assert.AreSame(control, container.ToolWindow);

@@ -20,6 +20,7 @@ using Gallio.Common.Reflection;
 using Gallio.Runtime.Extensibility;
 using Gallio.Runtime.Loader;
 using Gallio.Runtime.Logging;
+using Gallio.Common;
 
 namespace Gallio.Runtime
 {
@@ -60,6 +61,12 @@ namespace Gallio.Runtime
         /// Gets the runtime assembly loader.
         /// </summary>
         IAssemblyLoader AssemblyLoader { get; }
+
+        /// <summary>
+        /// Gets the condition context that is used to enable or disable plugins,
+        /// components and services based on characteristics of the runtime environment.
+        /// </summary>
+        RuntimeConditionContext RuntimeConditionContext { get; }
 
         /// <summary>
         /// Initializes the runtime.

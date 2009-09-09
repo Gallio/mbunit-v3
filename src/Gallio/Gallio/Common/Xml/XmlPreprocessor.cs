@@ -106,15 +106,15 @@ namespace Gallio.Common.Xml
                     {
                         case "define":
                             if (blockStack.Peek())
-                                Define(xmlReader.Value);
+                                Define(xmlReader.Value.Trim());
                             continue;
 
                         case "ifdef":
-                            blockStack.Push(blockStack.Peek() && IsDefined(xmlReader.Value));
+                            blockStack.Push(blockStack.Peek() && IsDefined(xmlReader.Value.Trim()));
                             continue;
 
                         case "ifndef":
-                            blockStack.Push(blockStack.Peek() && !IsDefined(xmlReader.Value));
+                            blockStack.Push(blockStack.Peek() && !IsDefined(xmlReader.Value.Trim()));
                             continue;
 
                         case "else":

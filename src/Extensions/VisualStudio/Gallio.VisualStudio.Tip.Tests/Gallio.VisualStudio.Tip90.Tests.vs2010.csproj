@@ -87,6 +87,10 @@
       <Project>{A9B54755-56B7-48C1-8941-BB69FCEFFF32}</Project>
       <Name>MbUnit.vs2010</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Gallio.VisualStudio.Shell.Common\Gallio.VisualStudio.Shell.vs2010.csproj">
+      <Project>{71536C3E-7859-4F9E-A5C7-16DDCE609E5F}</Project>
+      <Name>Gallio.VisualStudio.Shell.vs2010</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Gallio.VisualStudio.Shell\Gallio.VisualStudio.Shell90.vs2010.csproj">
       <Project>{80983DC5-71B6-49CD-BA5F-305D29A65D05}</Project>
       <Name>Gallio.VisualStudio.Shell90.vs2010</Name>

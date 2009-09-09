@@ -39,6 +39,7 @@ namespace Gallio.Runtime.Extensibility
         private readonly ReadOnlyCollection<AssemblyBinding> assemblyBindings;
         private readonly ReadOnlyCollection<IPluginDescriptor> pluginDependencies;
         private readonly ReadOnlyCollection<string> probingPaths;
+        private readonly Condition enableCondition;
         private readonly string recommendedInstallationPath;
         private readonly ReadOnlyCollection<string> filePaths;
 
@@ -59,6 +60,7 @@ namespace Gallio.Runtime.Extensibility
             assemblyBindings = new ReadOnlyCollection<AssemblyBinding>(GenericCollectionUtils.ToArray(pluginRegistration.AssemblyBindings));
             pluginDependencies = new ReadOnlyCollection<IPluginDescriptor>(completePluginDependenciesCopy);
             probingPaths = new ReadOnlyCollection<string>(GenericCollectionUtils.ToArray(pluginRegistration.ProbingPaths));
+            enableCondition = pluginRegistration.EnableCondition;
             recommendedInstallationPath = pluginRegistration.RecommendedInstallationPath;
             filePaths = new ReadOnlyCollection<string>(GenericCollectionUtils.ToArray(pluginRegistration.FilePaths));
         }
@@ -127,7 +129,7 @@ namespace Gallio.Runtime.Extensibility
             {
                 var firstDisabledPluginDependency = FirstDisabledPluginDependency;
                 if (firstDisabledPluginDependency != null)
-                    return string.Format(string.Format("The plugin depends on another disabled plugin.  Reason: {0}", firstDisabledPluginDependency.DisabledReason));
+                    return string.Format("The plugin depends on another disabled plugin.  Reason: {0}", firstDisabledPluginDependency.DisabledReason);
 
                 if (disabledReason == null)
                     throw new InvalidOperationException("The plugin has not been disabled.");
@@ -149,6 +151,11 @@ namespace Gallio.Runtime.Extensibility
         public IList<string> ProbingPaths
         {
             get { return probingPaths; }
+        }
+
+        public Condition EnableCondition
+        {
+            get { return enableCondition; }
         }
 
         public string RecommendedInstallationPath
