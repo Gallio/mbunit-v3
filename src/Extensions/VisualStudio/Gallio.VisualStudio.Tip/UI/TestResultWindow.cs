@@ -15,14 +15,15 @@
 
 using System;
 using Gallio.Runner.Reports.Schema;
-using Gallio.VisualStudio.Shell.UI;
+using Gallio.VisualStudio.Shell.Core;
+using Gallio.VisualStudio.Shell.UI.ToolWindows;
 
 namespace Gallio.VisualStudio.Tip.UI
 {
     /// <summary>
     /// UI component which displays results details about a Gallio test.
     /// </summary>
-    public partial class TestResultWindow : ShellToolWindow
+    public partial class TestResultWindow : ToolWindow
     {
         private readonly GallioTestResult testResult;
         private readonly TestStepRun testStepRun;
@@ -92,7 +93,7 @@ namespace Gallio.VisualStudio.Tip.UI
 
         private void pictureBoxGallioLogo_Click(object sender, EventArgs e)
         {
-            Shell.DTE.ItemOperations.Navigate(
+            ShellAccessor.Instance.DTE.ItemOperations.Navigate(
                 Properties.Resources.GallioWebSiteUrl, 
                 EnvDTE.vsNavigateOptions.vsNavigateOptionsNewWindow);
         }

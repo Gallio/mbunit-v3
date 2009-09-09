@@ -179,6 +179,10 @@ namespace Gallio.Loader
                         loader.InstallAssemblyLoader();
                         instance = loader;
                     }
+                    catch (TargetInvocationException ex)
+                    {
+                        throw SafeException.Wrap(ex.InnerException);
+                    }
                     catch (Exception ex)
                     {
                         throw SafeException.Wrap(ex);
@@ -271,6 +275,10 @@ namespace Gallio.Loader
                 MethodInfo method = GetBootstrapMethod(BootstrapSetupRuntimeMethodName);
                 method.Invoke(null, new object[] { runtimePath });
             }
+            catch (TargetInvocationException ex)
+            {
+                throw SafeException.Wrap(ex.InnerException);
+            }
             catch (Exception ex)
             {
                 throw SafeException.Wrap(ex);
@@ -287,6 +295,10 @@ namespace Gallio.Loader
             {
                 MethodInfo method = GetBootstrapMethod(BootstrapAddHintDirectoryMethodName);
                 method.Invoke(null, new object[] { path });
+            }
+            catch (TargetInvocationException ex)
+            {
+                throw SafeException.Wrap(ex.InnerException);
             }
             catch (Exception ex)
             {
@@ -310,6 +322,11 @@ namespace Gallio.Loader
             {
                 MethodInfo method = GetBootstrapMethod(BootstrapResolveMethodName);
                 return method.Invoke(null, new object[] { serviceType });
+
+            }
+            catch (TargetInvocationException ex)
+            {
+                throw SafeException.Wrap(ex.InnerException);
             }
             catch (Exception ex)
             {

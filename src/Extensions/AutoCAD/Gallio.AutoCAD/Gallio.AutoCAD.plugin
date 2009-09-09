@@ -23,9 +23,8 @@
 
   <assemblies>
     <assembly fullName="Gallio.AutoCAD, Version=0.0.0.0, Culture=neutral, PublicKeyToken=eb9cfa67ee6ab36e"
-              codeBase="Gallio.AutoCAD.dll">
-      <qualifyPartialName>true</qualifyPartialName>
-    </assembly>
+              codeBase="Gallio.AutoCAD.dll"
+              qualifyPartialName="true" />
   </assemblies>
 
   <services>

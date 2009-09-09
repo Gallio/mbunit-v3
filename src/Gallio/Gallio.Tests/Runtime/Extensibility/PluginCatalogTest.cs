@@ -73,6 +73,7 @@ namespace Gallio.Tests.Runtime.Extensibility
                     Parameters = new KeyValueTable() { PropertySet = { { "Parameter", "Value" } } },
                     Traits = new KeyValueTable() { PropertySet = { { "Trait", "Value" } } },
                     Assemblies = { new Assembly("Gallio") { CodeBase = codeBase } },
+                    EnableCondition = "${minFramework:NET35}",
                     RecommendedInstallationPath = "Path",
                     Files = { new File("file1.txt"), new File("file2.dll") }
                 };
@@ -97,6 +98,7 @@ namespace Gallio.Tests.Runtime.Extensibility
                     Assert.AreEqual(new PropertySet() { { "Trait", "Value" } }, pluginRegistrations[0].TraitsProperties);
                     Assert.AreEqual("Gallio", pluginRegistrations[0].AssemblyBindings[0].AssemblyName.Name);
                     Assert.AreEqual(new Uri(codeBase), pluginRegistrations[0].AssemblyBindings[0].CodeBase);
+                    Assert.AreEqual("${minFramework:NET35}", pluginRegistrations[0].EnableCondition.ToString());
                     Assert.AreEqual("Path", pluginRegistrations[0].RecommendedInstallationPath);
                     Assert.AreElementsEqual(new[] { "file1.txt", "file2.dll" }, pluginRegistrations[0].FilePaths);
                 });

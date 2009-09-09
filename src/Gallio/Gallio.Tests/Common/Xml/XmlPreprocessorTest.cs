@@ -113,10 +113,32 @@ namespace Gallio.Tests.Common.Xml
         }
 
         [Test]
+        public void Preprocess_WhenNewDefinesCreatedWithExcessWhitespaceDuringPreprocessing_TrimsAndSavesThem()
+        {
+            var preprocessor = new XmlPreprocessor();
+            string input = "<root><?define CONSTANT    ?></root>";
+
+            PreprocessString(preprocessor, input);
+
+            Assert.IsTrue(preprocessor.IsDefined("CONSTANT"));
+        }
+
+        [Test]
         public void Preprocess_WhenIfDefPresentAndConstantDefined_IncludesIfBlock()
         {
             var preprocessor = new XmlPreprocessor();
             string input = "<root><?define CONSTANT?><?ifdef CONSTANT?>If<?endif?></root>";
+
+            string output = PreprocessString(preprocessor, input);
+
+            Assert.AreEqual("<root>If</root>", output);
+        }
+
+        [Test]
+        public void Preprocess_WhenIfDefPresentWithExcessWhitespaceAndConstantDefined_IncludesIfBlock()
+        {
+            var preprocessor = new XmlPreprocessor();
+            string input = "<root><?define CONSTANT?><?ifdef CONSTANT    ?>If<?endif?></root>";
 
             string output = PreprocessString(preprocessor, input);
 
@@ -150,6 +172,17 @@ namespace Gallio.Tests.Common.Xml
         {
             var preprocessor = new XmlPreprocessor();
             string input = "<root><?define CONSTANT?><?ifndef CONSTANT?>If<?endif?></root>";
+
+            string output = PreprocessString(preprocessor, input);
+
+            Assert.AreEqual("<root></root>", output);
+        }
+
+        [Test]
+        public void Preprocess_WhenIfNDefPresentWithExcessWhitespaceAndConstantDefined_ExcludesIfBlock()
+        {
+            var preprocessor = new XmlPreprocessor();
+            string input = "<root><?define CONSTANT?><?ifndef CONSTANT    ?>If<?endif?></root>";
 
             string output = PreprocessString(preprocessor, input);
 

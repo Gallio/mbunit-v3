@@ -14,7 +14,8 @@
 // limitations under the License.
 
 using System;
-using Gallio.VisualStudio.Shell;
+using Gallio.VisualStudio.Shell.Core;
+using Gallio.VisualStudio.Shell.UI.ToolWindows;
 
 namespace Gallio.VisualStudio.Tip
 {
@@ -23,20 +24,29 @@ namespace Gallio.VisualStudio.Tip
     /// </summary>
     public class TipShellExtension : BaseShellExtension
     {
+        private readonly DefaultShell shell;
+        private readonly IToolWindowManager toolWindowManager;
+
+        public TipShellExtension(IShell shell, IToolWindowManager toolWindowManager)
+        {
+            this.shell = (DefaultShell)shell;
+            this.toolWindowManager = toolWindowManager;
+        }
+
         /// <summary>
         /// Returns true if the Tip extension has been initialized.
         /// </summary>
         public static bool IsInitialized { get; private set; }
 
         /// <inheritdoc />
-        protected override void InitializeImpl()
+        public override void Initialize()
         {
             IsInitialized = true;
-            Shell.ProfferVsService(typeof(SGallioTestService), () => new GallioTuip(this));
+            shell.ProfferVsService(typeof(SGallioTestService), () => new GallioTuip(shell.DTE, toolWindowManager));
         }
 
         /// <inheritdoc />
-        protected override void ShutdownImpl()
+        public override void Shutdown()
         {
             IsInitialized = false;
         }

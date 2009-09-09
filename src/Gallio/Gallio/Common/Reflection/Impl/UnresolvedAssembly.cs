@@ -132,6 +132,9 @@ namespace Gallio.Common.Reflection.Impl.DotNet20
             return adapter.GetName();
         }
 
+#if DOTNET40
+        [SecurityCritical]
+#endif
         public override void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             throw new NotSupportedException("Cannot serialize an unresolved assembly.");
@@ -310,12 +313,15 @@ namespace Gallio.Common.Reflection.Impl.DotNet20
 
         public override event ModuleResolveEventHandler ModuleResolve
         {
+            [SecurityCritical]
             add { }
+            [SecurityCritical]
             remove { }
         }
 
         public override PermissionSet PermissionSet
         {
+            [SecurityCritical]
             get
             {
                 throw new NotSupportedException("Cannot get permission set of unresolved assembly.");

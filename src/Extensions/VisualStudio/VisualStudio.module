@@ -7,6 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup Condition="$(VSIP90Installed)">
+    <CSharpProject Include="Gallio.VisualStudio.Shell.Common\Gallio.VisualStudio.Shell$(ProjectVariant).csproj" />
+  
     <CSharpProject Include="Gallio.VisualStudio.Shell\Gallio.VisualStudio.Shell90$(ProjectVariant).csproj" />
     <CSharpProject Include="Gallio.VisualStudio.Shell.Tests\Gallio.VisualStudio.Shell90.Tests$(ProjectVariant).csproj" />
     
@@ -16,7 +18,14 @@
     <CSharpProject Include="Gallio.VisualStudio.Tip\Gallio.VisualStudio.Tip90$(ProjectVariant).csproj" />
     <CSharpProject Include="Gallio.VisualStudio.Tip.Proxy\Gallio.VisualStudio.Tip90.Proxy$(ProjectVariant).csproj" />
     <CSharpProject Include="Gallio.VisualStudio.Tip.Tests\Gallio.VisualStudio.Tip90.Tests$(ProjectVariant).csproj" />
-    
+
+    <Binary Include="Gallio.VisualStudio.Shell.Common\bin\Gallio.VisualStudio.Shell.dll">
+      <Folder>VisualStudio</Folder>
+    </Binary>
+    <PluginFile Include="Gallio.VisualStudio.Shell.Common\Gallio.VisualStudio.Shell.plugin">
+      <Folder>VisualStudio</Folder>
+    </PluginFile>
+
     <Binary Include="Gallio.VisualStudio.Shell\bin\v9.0\Gallio.VisualStudio.Shell90.dll">
       <Folder>VisualStudio\v9.0</Folder>
     </Binary>

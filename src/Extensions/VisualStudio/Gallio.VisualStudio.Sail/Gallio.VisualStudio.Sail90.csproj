@@ -63,6 +63,9 @@
       <HintPath>..\..\..\..\..\..\..\Program Files\Common Files\Microsoft Shared\MSEnv\PublicAssemblies\stdole.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
@@ -70,7 +73,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SailShellExtension.cs" />
+    <Compile Include="UI\Commands\RunTestsCommand.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\Gallio\Gallio.Loader\Gallio.Loader.csproj">
@@ -85,6 +88,10 @@
       <Project>{6CAB7735-05DA-480D-9A04-50615B00F886}</Project>
       <Name>Gallio %28Gallio\Gallio%29</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Gallio.VisualStudio.Shell.Common\Gallio.VisualStudio.Shell.csproj">
+      <Project>{71536C3E-7859-4F9E-A5C7-16DDCE609E5F}</Project>
+      <Name>Gallio.VisualStudio.Shell</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Gallio.VisualStudio.Shell\Gallio.VisualStudio.Shell90.csproj">
       <Project>{80983DC5-71B6-49CD-BA5F-305D29A65D05}</Project>
       <Name>Gallio.VisualStudio.Shell90</Name>
@@ -96,7 +103,6 @@
   <ItemGroup>
     <Folder Include="Core\" />
     <Folder Include="Resources\" />
-    <Folder Include="UI\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\VisualStudio90.targets" />

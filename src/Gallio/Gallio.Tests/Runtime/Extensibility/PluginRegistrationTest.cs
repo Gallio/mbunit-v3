@@ -24,6 +24,7 @@ using Gallio.Runtime.Extensibility;
 using MbUnit.Framework;
 using System.IO;
 using Rhino.Mocks;
+using Gallio.Common;
 
 namespace Gallio.Tests.Runtime.Extensibility
 {
@@ -192,6 +193,21 @@ namespace Gallio.Tests.Runtime.Extensibility
 
             registration.RecommendedInstallationPath = null;
             Assert.IsNull(registration.RecommendedInstallationPath);
+        }
+
+        [Test]
+        public void EnableCondition_Accessor_EnforcesConstraints()
+        {
+            var registration = new PluginRegistration("pluginId", new TypeName("Plugin, Assembly"), new DirectoryInfo(@"C:\"));
+            var condition = Condition.Parse("${minFramework:NET35}");
+
+            Assert.IsNull(registration.EnableCondition);
+
+            registration.EnableCondition = condition;
+            Assert.AreEqual(condition, registration.EnableCondition);
+
+            registration.EnableCondition = null;
+            Assert.IsNull(registration.EnableCondition);
         }
 
         [Test]

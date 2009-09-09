@@ -28,12 +28,8 @@
 
   <assemblies>
     <assembly fullName="Gallio.XunitAdapter, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null"
-              codeBase="Gallio.XunitAdapter.dll">
-      <qualifyPartialName>true</qualifyPartialName>
-      <bindingRedirects>
-        <bindingRedirect oldVersion="0.0.0.0-65535.65535.65535.65535" />
-      </bindingRedirects>
-    </assembly>
+              codeBase="Gallio.XunitAdapter.dll"
+              qualifyPartialName="true" />
 
     <assembly fullName="xunit, Version=1.1.0.1323, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c"
               codeBase="xunit.dll">

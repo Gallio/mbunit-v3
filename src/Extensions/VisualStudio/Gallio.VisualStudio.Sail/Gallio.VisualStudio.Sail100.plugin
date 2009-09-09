@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <plugin pluginId="Gallio.VisualStudio.Sail100"
         recommendedInstallationPath="VisualStudio\v10.0"
+        enableCondition="${process:DEVENV.EXE_V10.0}"
         xmlns="http://www.gallio.org/">
   <traits>
     <name>Gallio Sail Test Runner for Visual Studio 2010</name>
@@ -17,25 +18,25 @@
     <file path="Gallio.VisualStudio.Sail100.dll" />
   </files>
 
-  <?ifdef NET40?>
   <probingPaths>
     <probingPath>v10.0</probingPath>
   </probingPaths>
   
   <assemblies>
     <assembly fullName="Gallio.VisualStudio.Sail100, Version=0.0.0.0, Culture=neutral, PublicKeyToken=eb9cfa67ee6ab36e"
-              codeBase="Gallio.VisualStudio.Sail100.dll">
-      <qualifyPartialName>true</qualifyPartialName>
-      <bindingRedirects>
-        <bindingRedirect oldVersion="0.0.0.0-65535.65535.65535.65535" />
-      </bindingRedirects>
-    </assembly>
+              codeBase="Gallio.VisualStudio.Sail100.dll"
+              qualifyPartialName="true" />
   </assemblies>
 
   <components>
-    <component componentId="Sail100.ShellExtension"
-               serviceId="Shell100.ShellExtension"
-               componentType="Gallio.VisualStudio.Sail.SailShellExtension, Gallio.VisualStudio.Sail100" />
+    <component componentId="Sail100.RunTestsCommand"
+               serviceId="Shell.Command"
+               componentType="Gallio.VisualStudio.Sail.UI.Commands.RunTestsCommand, Gallio.VisualStudio.Sail100">
+      <traits>
+        <CommandName>Gallio.Sail.RunTests</CommandName>
+        <CommandBarPaths>Menu\Tools</CommandBarPaths>
+        <Caption>Run Tests with Gallio</Caption>
+      </traits>
+    </component>
   </components>
-  <?endif?>
 </plugin>

@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.IO;
 using Gallio.Common.Collections;
 using Gallio.Common.Reflection;
+using Gallio.Common;
 
 namespace Gallio.Runtime.Extensibility
 {
@@ -93,6 +94,13 @@ namespace Gallio.Runtime.Extensibility
         /// referenced assemblies.
         /// </summary>
         IList<string> ProbingPaths { get; }
+
+        /// <summary>
+        /// Gets a condition governing the activation of the plugin,
+        /// or null if there is no condition.  The plugin will be disabled if a
+        /// condition is provided but is not satisfied.
+        /// </summary>
+        Condition EnableCondition { get; }
 
         /// <summary>
         /// Gets the recommended installation path for the plugin files relative to

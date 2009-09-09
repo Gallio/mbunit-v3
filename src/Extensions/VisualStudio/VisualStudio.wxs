@@ -25,6 +25,12 @@
 
             <Directory Id="VisualStudio" Name="VisualStudio">
 
+                <Component Id="Gallio.VisualStudio.Shell.dll" Guid="{315C4933-F90B-4337-9D9B-B66153E80B31}" Win64="no">
+                    <File Name="Gallio.VisualStudio.Shell.dll" KeyPath="yes" 
+                          Assembly=".net" AssemblyApplication="Gallio.VisualStudio.Shell.dll" />
+                    <File Name="Gallio.VisualStudio.Shell.plugin" />
+                </Component>
+
 <?ifdef FEATURE_VISUALSTUDIO_90?>
                 <Directory Id="VisualStudio.VS90" Name="v9.0">
                     <Component Id="Gallio.VisualStudio.Shell90.dll" Guid="{E0BE4838-A5CA-4af4-8838-3AC519AF28F9}" Win64="no">
@@ -47,7 +53,7 @@
                                      Root="HKLM" Key="SOFTWARE\Microsoft\VisualStudio\9.0\Packages\{9e600ffc-344d-4e6f-89c0-ded6afb42459}">
                             <RegistryValue Type="string" Value="Gallio Shell Package"/>
                             <RegistryValue Type="string" Name="InprocServer32" Value="[SystemFolder]mscoree.dll"/>
-                            <RegistryValue Type="string" Name="Class" Value="Gallio.VisualStudio.Shell.ShellPackage"/>
+                            <RegistryValue Type="string" Name="Class" Value="Gallio.VisualStudio.Shell.Core.ShellPackage"/>
                             <RegistryValue Type="string" Name="CodeBase" Value="[#Gallio.VisualStudio.Shell90.dll]"/>
                             <RegistryValue Type="integer" Name="ID" Value="1"/>
                                   <!-- Warning: Don't change these without getting a new Visual Studio Package Load Key -->
@@ -134,7 +140,7 @@
                                      Root="HKLM" Key="SOFTWARE\Microsoft\VisualStudio\10.0\Packages\{9e600ffc-344d-4e6f-89c0-ded6afb42459}">
                             <RegistryValue Type="string" Value="Gallio Shell Package"/>
                             <RegistryValue Type="string" Name="InprocServer32" Value="[SystemFolder]mscoree.dll"/>
-                            <RegistryValue Type="string" Name="Class" Value="Gallio.VisualStudio.Shell.ShellPackage"/>
+                            <RegistryValue Type="string" Name="Class" Value="Gallio.VisualStudio.Shell.Core.ShellPackage"/>
                             <RegistryValue Type="string" Name="CodeBase" Value="[#Gallio.VisualStudio.Shell100.dll]"/>
                             <RegistryValue Type="integer" Name="ID" Value="1"/>
                                   <!-- Warning: Don't change these without getting a new Visual Studio Package Load Key -->
@@ -204,11 +210,12 @@
         <Feature Id="feat_Gallio.VisualStudio.VS90" Title="Visual Studio 2008 Add-In" Level="0" Description="Installs the pre-requisite packages for Visual Studio 2008 integration features." AllowAdvertise="no">
             <Condition Level="1">VS90DEVENV</Condition>
 
+            <ComponentRef Id="Gallio.VisualStudio.Shell.dll"/>
             <ComponentRef Id="Gallio.VisualStudio.Shell90.dll"/>
             <ComponentRef Id="Gallio.VisualStudio.Shell90.Registry"/>
             
 <?ifdef FEATURE_VISUALSTUDIO_TIP_90 ?>
-            <Feature Id="feat_Gallio.VisualStudio.Tip.VS90" Title="Visual Studio Team System Test Runner" Level="1" Description="Test integration provider for Visual Studio Team System" AllowAdvertise="no">
+            <Feature Id="feat_Gallio.VisualStudio.Tip.VS90" Title="Visual Studio Test Tools Runner" Level="1" Description="Test integration provider for Visual Studio Test Tools" AllowAdvertise="no">
                 <ComponentRef Id="Gallio.VisualStudio.Tip90.dll"/>
                 <ComponentRef Id="Gallio.VisualStudio.Tip90.Proxy.dll"/>
                 <ComponentRef Id="Gallio.VisualStudio.Tip90.Registry"/>
@@ -230,11 +237,12 @@
         <Feature Id="feat_Gallio.VisualStudio.VS100" Title="Visual Studio 2010 Add-In (Beta)" Level="0" Description="Installs the pre-requisite packages for Visual Studio 2010 integration features." AllowAdvertise="no">
             <Condition Level="1">VS100DEVENV</Condition>
 
+            <ComponentRef Id="Gallio.VisualStudio.Shell.dll"/>
             <ComponentRef Id="Gallio.VisualStudio.Shell100.dll"/>
             <ComponentRef Id="Gallio.VisualStudio.Shell100.Registry"/>
             
 <?ifdef FEATURE_VISUALSTUDIO_TIP_100 ?>
-            <Feature Id="feat_Gallio.VisualStudio.Tip.VS100" Title="Visual Studio Team System Test Runner" Level="1" Description="Test integration provider for Visual Studio Team System" AllowAdvertise="no">
+            <Feature Id="feat_Gallio.VisualStudio.Tip.VS100" Title="Visual Studio Test Tools Runner" Level="1" Description="Test integration provider for Visual Studio Test Tools" AllowAdvertise="no">
                 <ComponentRef Id="Gallio.VisualStudio.Tip100.dll"/>
                 <ComponentRef Id="Gallio.VisualStudio.Tip100.Proxy.dll"/>
                 <ComponentRef Id="Gallio.VisualStudio.Tip100.Registry"/>

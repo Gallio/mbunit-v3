@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <plugin pluginId="Gallio35"
         recommendedInstallationPath=""
+        enableCondition="${minFramework:NET35}"
         xmlns="http://www.gallio.org/">
   <traits>
     <name>Gallio Extensions for .Net 3.5</name>
@@ -20,15 +21,10 @@
     <file path="Gallio35.xml" />
   </files>
 
-  <?ifdef NET35?>
   <assemblies>
     <assembly fullName="Gallio35, Version=0.0.0.0, Culture=neutral, PublicKeyToken=eb9cfa67ee6ab36e"
-              codeBase="Gallio35.dll">
-      <qualifyPartialName>true</qualifyPartialName>
-      <bindingRedirects>
-        <bindingRedirect oldVersion="0.0.0.0-65535.65535.65535.65535" />
-      </bindingRedirects>
-    </assembly>
+              codeBase="Gallio35.dll"
+              qualifyPartialName="true" />
   </assemblies>
 
   <components>
@@ -36,5 +32,4 @@
                serviceId="Gallio.FormattingRule"
                componentType="Gallio.Runtime.Formatting.ExpressionFormattingRule, Gallio35" />
   </components>
-  <?endif?>
 </plugin>

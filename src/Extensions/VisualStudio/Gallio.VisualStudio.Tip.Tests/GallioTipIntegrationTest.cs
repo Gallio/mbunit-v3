@@ -37,21 +37,21 @@ namespace Gallio.VisualStudio.Tip.Tests
         [FixtureSetUp]
         public void InstallTip()
         {
-            RunInstallScript("Y");
+            //RunInstallScript("2");
         }
 
         [FixtureTearDown]
-        public void UninstallSnapIn()
+        public void UninstallTip()
         {
-            RunInstallScript("N");
+            //RunInstallScript("0");
         }
 
         [Test]
         public void PrintsCorrectOutputForPassingTestsAndReturnsAResultCodeOfZero()
         {
-            ProcessTask task = RunMSTest("\"/test:MbUnit v0.0.0.0/MbUnit.TestResources/PassingTests/Pass\"");
-            Assert.Like(task.ConsoleOutput, "Passed *MbUnit v0.0.0.0/MbUnit.TestResources/PassingTests/Pass");
-            Assert.Like(task.ConsoleOutput, "Passed *MbUnit v0.0.0.0/MbUnit.TestResources/PassingTests/PassAgain");
+            ProcessTask task = RunMSTest("\"/test:MbUnit.TestResources/PassingTests/Pass\"");
+            Assert.Like(task.ConsoleOutput, "Passed *MbUnit.TestResources/PassingTests/Pass");
+            Assert.Like(task.ConsoleOutput, "Passed *MbUnit.TestResources/PassingTests/PassAgain");
             Assert.Contains(task.ConsoleOutput, "2/2 test(s) Passed");
             Assert.AreEqual(0, task.ExitCode);
         }
@@ -59,9 +59,9 @@ namespace Gallio.VisualStudio.Tip.Tests
         [Test]
         public void PrintsCorrectOutputForFailingTestsAndReturnsAResultCodeOfZero()
         {
-            ProcessTask task = RunMSTest("\"/test:MbUnit v0.0.0.0/MbUnit.TestResources/FailingTests/Fail\"");
-            Assert.Like(task.ConsoleOutput, "Failed *MbUnit v0.0.0.0/MbUnit.TestResources/FailingTests/Fail");
-            Assert.Like(task.ConsoleOutput, "Failed *MbUnit v0.0.0.0/MbUnit.TestResources/FailingTests/FailAgain");
+            ProcessTask task = RunMSTest("\"/test:MbUnit.TestResources/FailingTests/Fail\"");
+            Assert.Like(task.ConsoleOutput, "Failed *MbUnit.TestResources/FailingTests/Fail");
+            Assert.Like(task.ConsoleOutput, "Failed *MbUnit.TestResources/FailingTests/FailAgain");
             Assert.Contains(task.ConsoleOutput, "0/2 test(s) Passed, 2 Failed");
             Assert.AreEqual(1, task.ExitCode);
         }
@@ -89,11 +89,12 @@ namespace Gallio.VisualStudio.Tip.Tests
 
         private static void RunInstallScript(string options)
         {
-            string installScriptDir = Path.Combine(AssemblyUtils.GetAssemblyLocalPath(typeof(GallioTipIntegrationTest).Assembly), @"..\..\..");
-            string installScriptPath = Path.Combine(installScriptDir, "Install-MSTestRunner.bat");
+            string installScriptDir = Path.GetFullPath(Path.Combine(AssemblyUtils.GetAssemblyLocalPath(typeof(GallioTipIntegrationTest).Assembly), @"..\..\..\..\..\.."));
+            string installScriptPath = Path.Combine(installScriptDir, "Install.bat");
 
             // We start our process manually because if we use the tasks, it will redirect output
             // which causes the "sed" program used by the script to malfunction.  Crazy Windows shell...
+            DiagnosticLog.WriteLine(installScriptPath);
             Process process = Process.Start(installScriptPath, options);
             process.WaitForExit();
             Assert.AreEqual(0, process.ExitCode, "The install script failed.");

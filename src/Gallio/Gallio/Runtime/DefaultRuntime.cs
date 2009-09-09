@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Reflection;
 using System.Xml;
@@ -41,6 +42,7 @@ namespace Gallio.Runtime
         private readonly RuntimeSetup runtimeSetup;
         private readonly List<string> pluginDirectories;
         private readonly DispatchLogger dispatchLogger;
+        private readonly RuntimeConditionContext conditionContext;
 
         private bool debugMode;
 
@@ -73,6 +75,7 @@ namespace Gallio.Runtime
 
             dispatchLogger = new DispatchLogger();
             pluginDirectories = new List<string>();
+            conditionContext = new RuntimeConditionContext();
         }
 
         /// <inheritdoc />
@@ -136,6 +139,16 @@ namespace Gallio.Runtime
         }
 
         /// <inheritdoc />
+        public RuntimeConditionContext RuntimeConditionContext
+        {
+            get
+            {
+                ThrowIfDisposed();
+                return conditionContext;
+            }
+        }
+
+        /// <inheritdoc />
         public void Initialize()
         {
             ThrowIfDisposed();
@@ -151,10 +164,19 @@ namespace Gallio.Runtime
                 ConfigurePluginDirectoriesFromSetup();
                 ConfigurePluginDirectoriesFromInstallationConfiguration();
                 ConfigurePluginLoaderForInstallationId();
-                ConfigurePluginLoaderForEnvironment();
 
                 RegisterBuiltInComponents();
                 RegisterLoadedPlugins();
+
+                foreach (IPluginDescriptor pluginDescriptor in registry.Plugins)
+                {
+                    if (! pluginDescriptor.IsDisabled
+                        && pluginDescriptor.EnableCondition != null
+                        && !pluginDescriptor.EnableCondition.Evaluate(conditionContext))
+                    {
+                        pluginDescriptor.Disable(string.Format("The plugin enable condition was not satisfied: '{0}'.", pluginDescriptor.EnableCondition));
+                    }
+                }
 
                 foreach (IPluginDescriptor pluginDescriptor in registry.Plugins)
                 {
@@ -583,21 +605,6 @@ namespace Gallio.Runtime
         private void ConfigurePluginLoaderForInstallationId()
         {
             pluginLoader.InstallationId = runtimeSetup.InstallationConfiguration.InstallationId;
-        }
-
-        private void ConfigurePluginLoaderForEnvironment()
-        {
-            if (DotNetFrameworkSupport.FrameworkVersion >= DotNetFrameworkVersion.DotNet40)
-                pluginLoader.DefinePreprocessorConstant("NET40");
-
-            if (DotNetFrameworkSupport.FrameworkVersion >= DotNetFrameworkVersion.DotNet35)
-                pluginLoader.DefinePreprocessorConstant("NET35");
-
-            if (DotNetFrameworkSupport.FrameworkVersion >= DotNetFrameworkVersion.DotNet30)
-                pluginLoader.DefinePreprocessorConstant("NET30");
-
-            if (DotNetFrameworkSupport.FrameworkVersion >= DotNetFrameworkVersion.DotNet20)
-                pluginLoader.DefinePreprocessorConstant("NET20");
         }
 
         // Configure the runtime for debugging purposes within Visual Studio.
