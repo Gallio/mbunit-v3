@@ -97,21 +97,18 @@ namespace Gallio.VisualStudio.Tip
 
         public override TestResult MergeResults(TestResult inMemory, TestResultMessage fromTheWire)
         {
-            // Use the base code for merging results.
-            TestResult testResult = base.MergeResults(inMemory, fromTheWire);
+            // The only type of message we should receive from the wire is a GallioTestResult.
+            // However, we can receive multiple results in the case where the test is data-driven
+            // so we need to merge them.
+            GallioTestResult gallioInMemory = inMemory as GallioTestResult;
+            if (gallioInMemory == null && inMemory != null)
+                gallioInMemory = new GallioTestResult(gallioInMemory);
 
-            // If the base code did not handle our result type, then do extra work.
-            GallioTestResult gallioTestResult = testResult as GallioTestResult;
-            if (gallioTestResult == null)
-            {
-                gallioTestResult = new GallioTestResult(testResult);
+            GallioTestResult gallioFromTheWire = fromTheWire as GallioTestResult;
+            if (gallioFromTheWire == null && fromTheWire is TestResult)
+                gallioFromTheWire = new GallioTestResult((TestResult)fromTheWire);
 
-                GallioTestResult source = inMemory as GallioTestResult;
-                if (source != null)
-                    gallioTestResult.MergeFrom(source);
-            }
-
-            return gallioTestResult;
+            return GallioTestResultFactory.Merge(gallioInMemory, gallioFromTheWire);
         }
 
         public override TestType TestType

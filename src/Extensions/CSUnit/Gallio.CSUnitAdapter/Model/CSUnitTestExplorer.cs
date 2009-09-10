@@ -25,6 +25,7 @@ using Gallio.Model;
 using Gallio.Common.Reflection;
 using Gallio.Model.Helpers;
 using Gallio.Model.Tree;
+using System.IO;
 
 namespace Gallio.CSUnitAdapter.Model
 {
@@ -107,6 +108,28 @@ namespace Gallio.CSUnitAdapter.Model
         {
             if (String.IsNullOrEmpty(location))
                 throw new ArgumentNullException("location");
+
+            // If csUnit.Core is not in the GAC then it must be in the assembly path due to a
+            // bug in csUnit setting up the AppDomain.  It sets the AppDomain's base directory
+            // to the assembly directory and sets its PrivateBinPath to the csUnit directory
+            // which is incorrect (PrivateBinPath only specifies directories relative to the app base)
+            // so it does actually not ensure that csUnit.Core can be loaded as desired.
+            Assembly csUnitCoreAssembly = typeof(csUnit.Core.Loader).Assembly;
+            if (!csUnitCoreAssembly.GlobalAssemblyCache)
+            {
+                string csUnitAppBase = Path.GetDirectoryName(location);
+                string csUnitCoreAssemblyPathExpected = Path.Combine(csUnitAppBase, "csUnit.Core.dll");
+                if (!File.Exists(csUnitCoreAssemblyPathExpected))
+                {
+                    return CreateAssemblyTest(assembly, location, delegate(Test assemblyTest)
+                    {
+                        TestModel.AddAnnotation(new Annotation(AnnotationType.Error, null,
+                            string.Format("Cannot load csUnit tests from '{0}'.  "
+                            + "'csUnit.Core.dll' and related DLLs must either be copied to the same directory as the test assembly or must be installed in the GAC.",
+                            location)));
+                    });
+                }
+            }
 
             // Load the assembly using the native CSUnit loader.
             using (Loader loader = new Loader(location))

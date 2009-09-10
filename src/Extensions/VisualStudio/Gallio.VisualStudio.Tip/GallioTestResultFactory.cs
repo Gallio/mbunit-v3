@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Xml;
@@ -23,15 +24,40 @@ using Gallio.Common.Markup;
 using Gallio.Runner.Reports.Schema;
 using Microsoft.VisualStudio.TestTools.Common;
 using GallioTestOutcome = Gallio.Model.TestOutcome;
-using VSTestOutcome=Microsoft.VisualStudio.TestTools.Common.TestOutcome;
+using VSTestOutcome = Microsoft.VisualStudio.TestTools.Common.TestOutcome;
 
 namespace Gallio.VisualStudio.Tip
 {
     internal static class GallioTestResultFactory
     {
+        /// <summary>
+        /// Creates an aggregate root test result.
+        /// </summary>
+        /// <param name="runId">The test run id.</param>
+        /// <param name="test">The test element.</param>
+        /// <returns>The test result.</returns>
+        public static GallioTestResult CreateAggregateRootTestResult(Guid runId, ITestElement test)
+        {
+            var result = new GallioTestResult(runId, test);
+            result.Outcome = VSTestOutcome.Pending;
+            return result;
+        }
+
+        /// <summary>
+        /// Creates a test result from a test step run.
+        /// </summary>
+        /// <param name="run">The test step run.</param>
+        /// <param name="runId">The test run id.</param>
+        /// <param name="test">The test element.</param>
+        /// <returns>The test result.</returns>
         public static GallioTestResult CreateTestResult(TestStepRun run, Guid runId, ITestElement test)
         {
-            GallioTestResult result = new GallioTestResult(Environment.MachineName, runId, test);
+            return CreateTestResult(run, runId, test, true);
+        }
+
+        private static GallioTestResult CreateTestResult(TestStepRun run, Guid runId, ITestElement test, bool includeTestStepRunXml)
+        {
+            var result = new GallioTestResult(runId, test);
             result.TestName = run.Step.FullName;
             result.Outcome = GetOutcome(run.Result.Outcome);
 
@@ -52,16 +78,115 @@ namespace Gallio.VisualStudio.Tip
             }
 
             result.SetTimings(run.StartTime, run.EndTime, run.Result.Duration);
-            result.TestStepRunXml = TestStepRunToXml(run);
+
+            if (includeTestStepRunXml)
+                result.TestStepRunXml = TestStepRunToXml(run);
+
+            foreach (TestStepRun childRun in run.Children)
+                result.AddInnerResult(CreateTestResult(childRun, runId, test, false));
+
             return result;
         }
 
         /// <summary>
-        /// Gets the test step run associated with a test result, or null if it could not be loaded.
+        /// Gets the test step runs associated with a test result.
         /// </summary>
-        public static TestStepRun GetTestStepRun(GallioTestResult result)
+        public static IList<TestStepRun> GetTestStepRuns(GallioTestResult result)
         {
-            return TestStepRunFromXml(result.TestStepRunXml);
+            List<TestStepRun> runs = new List<TestStepRun>();
+
+            if (result.IsAggregateRoot)
+            {
+                foreach (GallioTestResult innerResult in result.InnerResults)
+                {
+                    TestStepRun run = TestStepRunFromXml(innerResult.TestStepRunXml);
+                    if (run != null)
+                        runs.Add(run);
+                }
+            }
+            else
+            {
+                TestStepRun run = TestStepRunFromXml(result.TestStepRunXml);
+                if (run != null)
+                    runs.Add(run);
+            }
+
+            return runs;
+        }
+
+        /// <summary>
+        /// Merges Gallio test results.
+        /// </summary>
+        /// <param name="inMemory">The currently available test result, or null if none.</param>
+        /// <param name="fromTheWire">The test result to add, or null if none.</param>
+        /// <returns>The merged test result.</returns>
+        public static GallioTestResult Merge(GallioTestResult inMemory, GallioTestResult fromTheWire)
+        {
+            if (fromTheWire == null)
+                return inMemory;
+            if (inMemory == null)
+                return fromTheWire;
+
+            List<GallioTestResult> combinedResults = new List<GallioTestResult>();
+            VSTestOutcome combinedOutcome = VSTestOutcome.Pending;
+            CombineResults(combinedResults, ref combinedOutcome, inMemory);
+            CombineResults(combinedResults, ref combinedOutcome, fromTheWire);
+
+            GallioTestResult result;
+            if (combinedResults.Count == 1)
+            {
+                result = combinedResults[0];
+            }
+            else
+            {
+                result = CreateAggregateRootTestResult(inMemory.Id.RunId, inMemory.Test);
+
+                if (combinedResults.Count != 0)
+                {
+                    result.SetInnerResults(combinedResults);
+
+                    DateTime startTime = DateTime.MaxValue;
+                    DateTime endTime = DateTime.MinValue;
+                    TimeSpan duration = TimeSpan.Zero;
+                    foreach (GallioTestResult innerResult in combinedResults)
+                    {
+                        if (innerResult.StartTime < startTime)
+                            startTime = innerResult.StartTime;
+                        if (innerResult.EndTime > endTime)
+                            endTime = innerResult.EndTime;
+                        duration += innerResult.Duration;
+                    }
+
+                    result.SetTimings(startTime, endTime, duration);
+                }
+            }
+
+            result.Outcome = combinedOutcome;
+            return result;
+        }
+
+        private static void CombineResults(List<GallioTestResult> combinedResults, ref VSTestOutcome combinedOutcome, GallioTestResult source)
+        {
+            CombineOutcome(ref combinedOutcome, source.Outcome);
+
+            if (source.IsAggregateRoot)
+            {
+                foreach (GallioTestResult innerResult in source.InnerResults)
+                {
+                    combinedResults.Add(innerResult);
+                    CombineOutcome(ref combinedOutcome, innerResult.Outcome);
+                }
+            }
+            else
+            {
+                combinedResults.Add(source);
+            }
+        }
+
+        private static void CombineOutcome(ref VSTestOutcome combinedOutcome, VSTestOutcome sourceOutcome)
+        {
+            if (sourceOutcome < combinedOutcome)
+                combinedOutcome = sourceOutcome;
         }
 
         private static VSTestOutcome GetOutcome(GallioTestOutcome outcome)

@@ -46,7 +46,9 @@ namespace Gallio.VisualStudio.Tip
 
             Events.TestStepFinished += delegate(object sender, TestStepFinishedEventArgs e)
             {
-                if (e.TestStepRun.Step.IsTestCase) // should we only include primary tests?
+                // Submit a GallioTestResult for each primary run of a test case.
+                // In the case of data-driven tests, we may submit multiple results that will later be merged.
+                if (e.TestStepRun.Step.IsPrimary)
                 {
                     GallioTestElement gallioTestElement = GetTestElement(e.Test);
                     if (gallioTestElement != null)
