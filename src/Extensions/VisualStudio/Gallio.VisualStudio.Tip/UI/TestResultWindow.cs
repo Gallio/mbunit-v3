@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using Gallio.Runner.Reports.Schema;
 using Gallio.VisualStudio.Shell.Core;
 using Gallio.VisualStudio.Shell.UI.ToolWindows;
@@ -26,7 +27,7 @@ namespace Gallio.VisualStudio.Tip.UI
     public partial class TestResultWindow : ToolWindow
     {
         private readonly GallioTestResult testResult;
-        private readonly TestStepRun testStepRun;
+        private readonly IList<TestStepRun> testStepRuns;
 
         /// <summary>
         /// Default constructor.  (Designer only)
@@ -47,7 +48,8 @@ namespace Gallio.VisualStudio.Tip.UI
                 throw new ArgumentNullException("testResult");
 
             this.testResult = testResult;
-            testStepRun = GallioTestResultFactory.GetTestStepRun(testResult);
+
+            testStepRuns = GallioTestResultFactory.GetTestStepRuns(testResult);
 
             InitializeComponent();
         }
@@ -73,7 +75,7 @@ namespace Gallio.VisualStudio.Tip.UI
                 pictureBoxStatus.Image = Properties.Resources.Passed;
                 labelStatus.Text = Properties.Resources.TestHasPassed;
             }
-            else if (testStepRun == null)
+            else if (testStepRuns.Count == 0)
             {
                 pictureBoxStatus.Image = Properties.Resources.Pending;
                 labelStatus.Text = Properties.Resources.TestNotRunYet;
@@ -87,8 +89,8 @@ namespace Gallio.VisualStudio.Tip.UI
 
         private void InitializeRunViewer()
         {
-            if (testStepRun != null)
-                runViewer.Show(new[] { testStepRun });
+            if (testStepRuns.Count != 0)
+                runViewer.Show(testStepRuns);
         }
 
         private void pictureBoxGallioLogo_Click(object sender, EventArgs e)

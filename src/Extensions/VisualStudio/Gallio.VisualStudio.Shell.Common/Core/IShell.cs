@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using Gallio.Runtime.Logging;
 
 namespace Gallio.VisualStudio.Shell.Core
 {
@@ -50,6 +51,11 @@ namespace Gallio.VisualStudio.Shell.Core
         /// </summary>
         /// <exception cref="InvalidOperationException">Thrown if the Shell has not been initialized.</exception>
         object ShellAddInHandler { get; }
+
+        /// <summary>
+        /// Gets the logger for the Shell.
+        /// </summary>
+        ILogger Logger { get; }
 
         /// <summary>
         /// Gets the Visual Studio service provider.

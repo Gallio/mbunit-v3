@@ -18,6 +18,7 @@ using System.Runtime.Serialization;
 using System.Xml;
 using Microsoft.VisualStudio.TestTools.Common;
 using Microsoft.VisualStudio.TestTools.Common.Xml;
+using System.Collections.Generic;
 
 namespace Gallio.VisualStudio.Tip
 {
@@ -34,20 +35,14 @@ namespace Gallio.VisualStudio.Tip
     /// Include more result information.
     /// </todo>
     [Serializable]
-    public sealed class GallioTestResult : TestResult
+    public sealed class GallioTestResult : TestResultAggregation
     {
         private const string TestStepRunXmlKey = "Gallio.TestStepRunXml";
 
         private string testStepRunXml;
 
-        public GallioTestResult(GallioTestResult result)
-            : base(result)
-        {
-            testStepRunXml = result.testStepRunXml;
-        }
-
-        public GallioTestResult(TestResult result)
-            : base(result)
+        public GallioTestResult(Guid runId, ITestElement test)
+            : base(Environment.MachineName, runId, test)
         {
         }
 
@@ -56,25 +51,67 @@ namespace Gallio.VisualStudio.Tip
         {
         }
 
+        public GallioTestResult(TestResult result)
+            : base(result)
+        {
+        }
+
+        private GallioTestResult(GallioTestResult result)
+            : base(result)
+        {
+            testStepRunXml = result.testStepRunXml;
+        }
+
         private GallioTestResult(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
             testStepRunXml = info.GetString(TestStepRunXmlKey);
         }
 
+        /// <summary>
+        /// Returns true if this test result is only container for other results
+        /// and is not itself a test step run.
+        /// </summary>
+        public bool IsAggregateRoot
+        {
+            get { return testStepRunXml == null; }
+        }
+
+        /// <summary>
+        /// Gets or sets the test step run xml, or null if the result is an aggregate root.
+        /// </summary>
         public string TestStepRunXml
         {
             get { return testStepRunXml; }
             set { testStepRunXml = value; }
         }
 
+        /// <summary>
+        /// Adds a test result as an inner result.
+        /// </summary>
+        /// <param name="testResult">The test result to add.</param>
+        public void AddInnerResult(GallioTestResult testResult)
+        {
+            int oldLength = m_innerResults.Length;
+
+            Array.Resize(ref m_innerResults, oldLength + 1);
+            m_innerResults[oldLength] = testResult;
+        }
+
+        /// <summary>
+        /// Sets the list of inner results.
+        /// </summary>
+        /// <param name="testResults">The test results to set.</param>
+        public void SetInnerResults(IList<GallioTestResult> testResults)
+        {
+            m_innerResults = new GallioTestResult[testResults.Count];
+            for (int i = 0; i < testResults.Count; i++)
+                m_innerResults[i] = testResults[i];
+        }
+
         public override object Clone()
         {
             return new GallioTestResult(this);
-        }
-
-        public void MergeFrom(GallioTestResult source)
-        {
         }
 
         public void SetTestName(string name)

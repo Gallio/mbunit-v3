@@ -89,6 +89,7 @@
     <Compile Include="Core\ShellAddInHandler.cs" />
     <Compile Include="Core\ShellHooks.cs" />
     <Compile Include="Core\ShellLock.cs" />
+    <Compile Include="Core\ShellLogger.cs" />
     <Compile Include="Core\ShellPackage.cs" />
     <Compile Include="Core\ShellProxy.cs" />
     <Compile Include="Reflection\CodeModelReflectionPolicy.cs" />

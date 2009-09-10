@@ -353,6 +353,14 @@ namespace Gallio.Common.Reflection.Impl
                 case TokenType.Method:
                     return GetMethodSourceLocation((MethodDefinition) memberHandle);
 
+                case TokenType.GenericParam:
+                    IGenericParameterProvider owner = ((GenericParameter)memberHandle).Owner;
+                    if (owner is TypeDefinition)
+                        return GuessTypeSourceLocation((TypeDefinition)owner);
+                    else if (owner is MethodDefinition)
+                        return GetMethodSourceLocation((MethodDefinition) owner);
+                    return CodeLocation.Unknown;
+
                 default:
                     return GuessTypeSourceLocation((TypeDefinition)memberHandle.DeclaringType);
             }
@@ -360,11 +368,14 @@ namespace Gallio.Common.Reflection.Impl
 
         private CodeLocation GuessTypeSourceLocation(TypeDefinition typeDefinition)
         {
-            foreach (MethodDefinition methodDefinition in typeDefinition.Methods)
+            if (typeDefinition != null)
             {
-                CodeLocation location = GetMethodSourceLocation(methodDefinition);
-                if (location != CodeLocation.Unknown)
-                    return new CodeLocation(location.Path, 0, 0);
+                foreach (MethodDefinition methodDefinition in typeDefinition.Methods)
+                {
+                    CodeLocation location = GetMethodSourceLocation(methodDefinition);
+                    if (location != CodeLocation.Unknown)
+                        return new CodeLocation(location.Path, 0, 0);
+                }
             }
 
             return CodeLocation.Unknown;

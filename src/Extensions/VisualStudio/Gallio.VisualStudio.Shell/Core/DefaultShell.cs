@@ -18,6 +18,8 @@ using System.ComponentModel.Design;
 using EnvDTE;
 using EnvDTE80;
 using Gallio.Runtime.Extensibility;
+using Gallio.Runtime.Logging;
+using Gallio.Runtime;
 
 namespace Gallio.VisualStudio.Shell.Core
 {
@@ -27,18 +29,22 @@ namespace Gallio.VisualStudio.Shell.Core
     public class DefaultShell : IShell
     {
         private readonly ComponentHandle<IShellExtension, ShellExtensionTraits>[] extensionHandles;
+        private readonly IRuntime runtime;
         private readonly ShellHooks shellHooks;
 
         private ShellPackage shellPackage;
         private ShellAddInHandler shellAddInHandler;
+        private ILogger logger;
 
         /// <summary>
         /// Creates an uninitialized shell.
         /// </summary>
         /// <param name="extensionHandles">The array of shell extensions handles.</param>
-        public DefaultShell(ComponentHandle<IShellExtension, ShellExtensionTraits>[] extensionHandles)
+        /// <param name="runtime">The runtime.</param>
+        public DefaultShell(ComponentHandle<IShellExtension, ShellExtensionTraits>[] extensionHandles, IRuntime runtime)
         {
             this.extensionHandles = extensionHandles;
+            this.runtime = runtime;
 
             shellHooks = new ShellHooks();
         }
@@ -94,6 +100,16 @@ namespace Gallio.VisualStudio.Shell.Core
         object IShell.ShellAddInHandler { get { return ShellAddInHandler; } }
 
         /// <inheritdoc />
+        public ILogger Logger
+        {
+            get
+            {
+                ThrowIfNotInitialized();
+                return logger;
+            }
+        }
+
+        /// <inheritdoc />
         public IServiceProvider VsServiceProvider
         {
             get
@@ -142,8 +158,14 @@ namespace Gallio.VisualStudio.Shell.Core
 
         internal void Initialize(ShellPackage shellPackage, ShellAddInHandler shellAddInHandler)
         {
+            if (IsInitialized)
+                Shutdown();
+
             this.shellPackage = shellPackage;
             this.shellAddInHandler = shellAddInHandler;
+            logger = new ShellLogger(shellPackage);
+
+            runtime.AddLogListener(logger);
 
             foreach (var extensionHandle in extensionHandles)
                 extensionHandle.GetComponent().Initialize();
@@ -151,11 +173,23 @@ namespace Gallio.VisualStudio.Shell.Core
 
         internal void Shutdown()
         {
-            foreach (var extensionHandle in extensionHandles)
-                extensionHandle.GetComponent().Shutdown();
+            try
+            {
+                if (IsInitialized)
+                {
+                    foreach (var extensionHandle in extensionHandles)
+                        extensionHandle.GetComponent().Shutdown();
+                }
+            }
+            finally
+            {
+                if (logger != null)
+                    runtime.RemoveLogListener(logger);
 
-            shellPackage = null;
-            shellAddInHandler = null;
+                logger = null;
+                shellPackage = null;
+                shellAddInHandler = null;
+            }
         }
 
         private void ThrowIfNotInitialized()
