@@ -63,7 +63,7 @@ namespace Gallio.Model
             TestExplorationOptions testExplorationOptions, IMessageSink messageSink, IProgressMonitor progressMonitor);
 
         /// <summary>
-        /// Explores tests a the test package.
+        /// Explores tests in a test package.
         /// </summary>
         /// <param name="testIsolationContext">The test isolation context.</param>
         /// <param name="testPackage">The test package.</param>

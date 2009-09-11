@@ -35,19 +35,6 @@ namespace Gallio.VisualStudio.Interop
     {
         private const int S_OK = 0;
 
-        private static readonly Guid ManagedDebugEngineGuid = new Guid("{449EC4CC-30D2-4032-9256-EE18EB41B62B}");
-        private const string ManagedDebugEngineName = "Managed";
-        private static readonly Guid NativeDebugEngineGuid = new Guid("{3B476D35-A401-11D2-AAD4-00C04F990171}");
-        private const string NativeDebugEngineName = "Native";
-
-        private static readonly Guid CLSID_ComPlusOnlyDebugEngine = new Guid("449EC4CC-30D2-4032-9256-EE18EB41B62B");
-
-
-        // TODO: Make the engines that are attached configurable
-        // Some other engines are "Script", "T-SQL" and "Workflow"
-        private static readonly Guid[] EngineGuids = new[] { ManagedDebugEngineGuid, NativeDebugEngineGuid };
-        private static readonly string[] EngineNames = new[] { ManagedDebugEngineName, NativeDebugEngineName };
-
         private readonly DebuggerSetup debuggerSetup;
         private readonly ILogger logger;
         private readonly IVisualStudio visualStudio;
@@ -130,7 +117,9 @@ namespace Gallio.VisualStudio.Interop
                                 Debugger2 dteDebugger2 = dte.Debugger as Debugger2;
                                 if (dteProcess2 != null && dteDebugger2 != null)
                                 {
-                                    dteProcess2.Attach2(GetEngines(dteDebugger2));
+                                    IList<Guid> engineGuids = GetEngineGuids();
+                                    Engine[] engines = GetEngines(dteDebugger2, engineGuids);
+                                    dteProcess2.Attach2(engines);
                                 }
                                 else
                                 {
@@ -155,29 +144,26 @@ namespace Gallio.VisualStudio.Interop
             return result;
         }
 
-        private static Engine[] GetEngines(Debugger2 debugger)
+        private IList<Guid> GetEngineGuids()
+        {
+            // TODO: Decide based on DebuggerSetup properties.
+            return new[] { VisualStudioDebugEngines.ManagedAndNative };
+        }
+
+        private static Engine[] GetEngines(Debugger2 debugger, IList<Guid> engineGuids)
         {
             Transport transport = debugger.Transports.Item("Default");
             Engines engines = transport.Engines;            
 
             List<Engine> selectedEngines = new List<Engine>();
 
-            // Note: The MSDN docs say we should be able to access Engines by GUID but it
-            //       does not work!  I tried the example for the T-SQL engine verbatim
-            //       and it threw an exception.  Not sure what the deal is so we will use
-            //       the engine name for now.  -- Jeff.
-            foreach (string engineName in EngineNames)
+            // Iterate by index rather than query by GUID because the latter does not
+            // work, contrary to what the MSDN states.  -- Jeff.
+            for (int i = 1; i <= engines.Count; i++)
             {
-                try
-                {
-                    Engine engine = engines.Item(engineName);
-                    if (engine != null)
-                        selectedEngines.Add(engine);
-                }
-                catch
-                {
-                    // Ignore error getting engine.
-                }
+                Engine engine = engines.Item(i);
+                if (engineGuids.Contains(new Guid(engine.ID)))
+                    selectedEngines.Add(engine);
             }
 
             return selectedEngines.ToArray();
@@ -239,11 +225,12 @@ namespace Gallio.VisualStudio.Interop
 
                         var serviceProvider = new VisualStudioServiceProvider(dte);
                         var debugger = serviceProvider.GetService<SVsShellDebugger, IVsDebugger2>();
+                        var engineGuids = GetEngineGuids();
 
                         int debugTargetInfoSize = Marshal.SizeOf(typeof(VsDebugTargetInfo2));
                         int guidSize = Marshal.SizeOf(typeof(Guid));
 
-                        IntPtr debugTargetInfoPtr = Marshal.AllocCoTaskMem(debugTargetInfoSize + guidSize * EngineGuids.Length);
+                        IntPtr debugTargetInfoPtr = Marshal.AllocCoTaskMem(debugTargetInfoSize + guidSize * engineGuids.Count);
                         try
                         {
                             IntPtr engineGuidsPtr = new IntPtr(debugTargetInfoPtr.ToInt64() + debugTargetInfoSize);
@@ -254,25 +241,23 @@ namespace Gallio.VisualStudio.Interop
 
                             var debugTargetInfo = new VsDebugTargetInfo2()
                             {
-                                cbSize = (uint) Marshal.SizeOf(typeof(VsDebugTargetInfo2)),
+                                cbSize = (uint) debugTargetInfoSize,
                                 bstrExe = Path.GetFullPath(processStartInfo.FileName),
                                 bstrArg = processStartInfo.Arguments,
                                 bstrCurDir = string.IsNullOrEmpty(processStartInfo.WorkingDirectory) ? Environment.CurrentDirectory : Path.GetFullPath(processStartInfo.WorkingDirectory),
                                 bstrEnv = environment.Length != 0 ? environment.ToString() : null,
-                                // Visual Studio seems to hang when specifying engines explicitly.  Don't know
-                                // why yet.  -- Jeff.
-                                //dwDebugEngineCount = (uint) EngineGuids.Length,
-                                //pDebugEngines = engineGuidsPtr,
+                                dwDebugEngineCount = (uint) engineGuids.Count,
+                                pDebugEngines = engineGuidsPtr,
                                 fSendToOutputWindow = 1,
-                                guidLaunchDebugEngine = CLSID_ComPlusOnlyDebugEngine,
+                                guidLaunchDebugEngine = VisualStudioDebugEngines.ManagedAndNative,
                                 dlo = (int) DEBUG_LAUNCH_OPERATION.DLO_CreateProcess,
                                 LaunchFlags = (int)(__VSDBGLAUNCHFLAGS.DBGLAUNCH_WaitForAttachComplete | __VSDBGLAUNCHFLAGS.DBGLAUNCH_Silent)
                             };
 
                             Marshal.StructureToPtr(debugTargetInfo, debugTargetInfoPtr, false);
 
-                            for (int i = 0; i < EngineGuids.Length; i++)
-                                Marshal.StructureToPtr(EngineGuids[i], new IntPtr(engineGuidsPtr.ToInt64() + i * guidSize), false);
+                            for (int i = 0; i < engineGuids.Count; i++)
+                                Marshal.StructureToPtr(engineGuids[i], new IntPtr(engineGuidsPtr.ToInt64() + i * guidSize), false);
 
                             int hresult = debugger.LaunchDebugTargets2(1, debugTargetInfoPtr);
                             if (hresult != S_OK)

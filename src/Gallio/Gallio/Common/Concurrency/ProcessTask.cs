@@ -38,7 +38,7 @@ namespace Gallio.Common.Concurrency
     /// </remarks>
     public class ProcessTask : Task
     {
-        private readonly TimeSpan WaitForFinalIOTimeout = TimeSpan.FromSeconds(5);
+        private readonly TimeSpan WaitForFinalIOTimeout = TimeSpan.FromMilliseconds(500);
 
         private readonly string executablePath;
         private readonly string arguments;
@@ -494,10 +494,18 @@ namespace Gallio.Common.Concurrency
             // helps clients of the ProcessTask to handle process termination more
             // robustly as it is guaranteed to have all of the output available
             // at that time.
-            if (consoleOutputFinished != null)
+            if (consoleOutputFinished != null && consoleErrorFinished != null)
+            {
+                WaitHandle.WaitAll(new[] { consoleOutputFinished, consoleErrorFinished }, WaitForFinalIOTimeout);
+            }
+            else if (consoleOutputFinished != null)
+            {
                 consoleOutputFinished.WaitOne(WaitForFinalIOTimeout);
-            if (consoleErrorFinished != null)
+            }
+            else if (consoleErrorFinished != null)
+            {
                 consoleErrorFinished.WaitOne(WaitForFinalIOTimeout);
+            }
         }
     }
 }
