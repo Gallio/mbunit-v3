@@ -12,6 +12,7 @@
                 <Component Id="Gallio.DLRIntegration" Guid="{2E94473F-CF78-4113-91EA-4B0B87CF4C48}" Win64="no">
                   <File Name="Gallio.DLRIntegration.dll" KeyPath="yes" />
                   <File Name="Gallio.DLRIntegration.plugin" />
+                  <File Name="Gallio.DLRIntegration.dll.config" />
                 </Component>
             </Directory>
         </DirectoryRef>

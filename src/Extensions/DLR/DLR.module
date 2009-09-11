@@ -14,6 +14,9 @@
     <PluginFile Include="Gallio.DLRIntegration\Gallio.DLRIntegration.plugin">
       <Folder>DLR</Folder>
     </PluginFile>
+    <Binary Include="Gallio.DLRIntegration\Gallio.DLRIntegration.dll.config">
+      <Folder>DLR</Folder>
+    </Binary>
 
     <TestAssembly Include="Gallio.DLRIntegration.Tests\bin\Gallio.DLRIntegration.Tests.dll" />
 	
