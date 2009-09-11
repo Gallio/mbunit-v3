@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using Gallio.Common.Concurrency;
 using Gallio.Framework;
 using MbUnit.Framework;
@@ -33,11 +34,13 @@ namespace Gallio.Tests.Common.Concurrency
             private const int COR_E_STACKOVERFLOW = unchecked((int)0x800703E9L);
 
             private ProcessTask processTask;
-            private bool terminatedSuccessfully;
+            private ManualResetEvent terminatedSuccessfully;
 
             [FixtureSetUp]
             public void SetUp()
             {
+                terminatedSuccessfully = new ManualResetEvent(false);
+
                 processTask = Tasks.StartProcessTask(Path.Combine(Environment.SystemDirectory, "cmd.exe"),
                     "/C exit " + COR_E_STACKOVERFLOW, Environment.CurrentDirectory);
                 processTask.Terminated += processTask_Terminated;
@@ -52,7 +55,7 @@ namespace Gallio.Tests.Common.Concurrency
                 ExitCodeIsSet();
                 ExitCodeDescriptionIsSet();
 
-                terminatedSuccessfully = true;
+                terminatedSuccessfully.Set();
             }
 
             [Test]
@@ -85,7 +88,7 @@ namespace Gallio.Tests.Common.Concurrency
             [Test]
             public void TerminatedEventIsFired()
             {
-                Assert.IsTrue(terminatedSuccessfully, "Terminated successfully.");
+                Assert.IsTrue(terminatedSuccessfully.WaitOne(1000), "Terminated successfully.");
             }
         }
     }

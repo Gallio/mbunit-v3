@@ -31,6 +31,7 @@ namespace MbUnit.Tests.Framework
     [TestFixture]
     [TestsOn(typeof(ParallelizableAttribute))]
     [RunSample(typeof(Tests))]
+    [Explicit("Tests are timing sensitive and fail periodically on the build server.")]
     public class ParallelizableTest : BaseTestWithSampleRunner
     {
         private int originalDegreeOfParalleism;
