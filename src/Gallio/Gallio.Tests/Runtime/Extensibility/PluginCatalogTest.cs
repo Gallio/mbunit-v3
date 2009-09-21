@@ -313,28 +313,28 @@ namespace Gallio.Tests.Runtime.Extensibility
                 catalog.AddPlugin(new Plugin("plugin1Id")
                 {
                     Services =
-                {
-                    new Service("service1Id", "Service1, Assembly"),
-                    new Service("service2Id", "Service2, Assembly")
-                },
+                    {
+                        new Service("service1Id", "Service1, Assembly"),
+                        new Service("service2Id", "Service2, Assembly")
+                    },
                     Components =
-                {
-                    new Component("component1Id", "service2Id", "Component1, Assembly"),
-                    new Component("component2Id", "service3Id", "Component2, Assembly"),
-                }
+                    {
+                        new Component("component1Id", "service2Id", "Component1, Assembly"),
+                        new Component("component2Id", "service3Id", "Component2, Assembly"),
+                    }
                 }, new DirectoryInfo(@"C:\Plugin1"));
 
                 catalog.AddPlugin(new Plugin("plugin2Id")
                 {
                     Services =
-                {
-                    new Service("service3Id", "Service3, Assembly")
-                },
+                    {
+                        new Service("service3Id", "Service3, Assembly")
+                    },
                     Components =
-                {
-                    new Component("component3Id", "service1Id", "Component3, Assembly"),
-                    new Component("component4Id", "service3Id", "Component4, Assembly"),
-                }
+                    {
+                        new Component("component3Id", "service1Id", "Component3, Assembly"),
+                        new Component("component4Id", "service3Id", "Component4, Assembly"),
+                    }
                 }, new DirectoryInfo(@"C:\Plugin2"));
 
                 var registry = MockRepository.GenerateMock<IRegistry>();
@@ -355,10 +355,9 @@ namespace Gallio.Tests.Runtime.Extensibility
                     .Repeat.Times(4);
 
                 registry.Stub(x => x.Services).Return(services);
-                services.Expect(x => x["service2Id"]).Return(MockRepository.GenerateStub<IServiceDescriptor>());
-                services.Expect(x => x["service3Id"]).Return(MockRepository.GenerateStub<IServiceDescriptor>());
-                services.Expect(x => x["service1Id"]).Return(MockRepository.GenerateStub<IServiceDescriptor>());
-                services.Expect(x => x["service3Id"]).Return(MockRepository.GenerateStub<IServiceDescriptor>());
+                services.Expect(x => x["service2Id"]).Repeat.Once().Return(MockRepository.GenerateStub<IServiceDescriptor>());
+                services.Expect(x => x["service3Id"]).Repeat.Twice().Return(MockRepository.GenerateStub<IServiceDescriptor>());
+                services.Expect(x => x["service1Id"]).Repeat.Once().Return(MockRepository.GenerateStub<IServiceDescriptor>());
 
                 catalog.ApplyTo(registry);
 
