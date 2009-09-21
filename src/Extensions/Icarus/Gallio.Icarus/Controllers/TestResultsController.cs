@@ -25,7 +25,6 @@ using Gallio.Icarus.Models;
 using Gallio.Icarus.Models.TestTreeNodes;
 using Gallio.Model;
 using Gallio.Runner.Reports.Schema;
-using Gallio.UI.ProgressMonitoring;
 
 namespace Gallio.Icarus.Controllers
 {
@@ -33,7 +32,6 @@ namespace Gallio.Icarus.Controllers
     {
         private readonly ITestController testController;
         private readonly IOptionsController optionsController;
-        private readonly ITaskManager taskManager;
 
         private int resultsCount;
         private readonly Stopwatch stopwatch = new Stopwatch();
@@ -112,8 +110,7 @@ namespace Gallio.Icarus.Controllers
             get { return testController.TestCount; }
         }
 
-        public TestResultsController(ITestController testController, IOptionsController optionsController, 
-            ITaskManager taskManager)
+        public TestResultsController(ITestController testController, IOptionsController optionsController)
         {
             if (testController == null) 
                 throw new ArgumentNullException("testController");
@@ -121,9 +118,6 @@ namespace Gallio.Icarus.Controllers
             if (optionsController == null) 
                 throw new ArgumentNullException("optionsController");
             
-            if (taskManager == null) 
-                throw new ArgumentNullException("taskManager");
-
             this.testController = testController;
 
             testController.TestStepFinished += (sender, e) => CountResults();
@@ -146,38 +140,33 @@ namespace Gallio.Icarus.Controllers
 
             this.optionsController = optionsController;
             optionsController.PropertyChanged += ((sender, e) => OnPropertyChanged(e));
-
-            this.taskManager = taskManager;
         }
 
         private void CountResults()
         {
-            taskManager.BackgroundTask(() =>
+            int count = 0;
+            ResultsCount = count;
+
+            if (testController.Model.Root != null)
             {
-                int count = 0;
-                ResultsCount = count;
-
-                if (testController.Model.Root != null)
+                if (testController.SelectedTests.Count == 0)
                 {
-                    if (testController.SelectedTests.Count == 0)
-                    {
-                        CountResults(testController.Model.Root, ref count);
-                    }
-                    else
-                    {
-                        // need to do this because poxy namespace nodes don't really exist!
-                        foreach (TestTreeNode node in testController.SelectedTests)
-                            CountResults(node, ref count);
-                    }
+                    CountResults(testController.Model.Root, ref count);
                 }
+                else
+                {
+                    // need to do this because poxy namespace nodes don't really exist!
+                    foreach (TestTreeNode node in testController.SelectedTests)
+                        CountResults(node, ref count);
+                }
+            }
 
-                // update cache
-                UpdateTestResults();
+            // update cache
+            UpdateTestResults();
 
-                // notify that list has changed
-                ResultsCount = count;
-                OnPropertyChanged(new PropertyChangedEventArgs("ElapsedTime"));
-            });
+            // notify that list has changed
+            ResultsCount = count;
+            OnPropertyChanged(new PropertyChangedEventArgs("ElapsedTime"));
         }
 
         private static void CountResults(TestTreeNode node, ref int count)
