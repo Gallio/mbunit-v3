@@ -189,6 +189,9 @@ namespace Gallio.Icarus.Models
                 Filter(node);
             }
 
+            if (!testStepRun.Step.IsTestCase && !testData.IsTestCase)
+                return;
+
             switch (testStepRun.Result.Outcome.Status)
             {
                 case TestStatus.Passed:
