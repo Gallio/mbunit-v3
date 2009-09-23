@@ -53,9 +53,9 @@ namespace MbUnit.Tests.Framework
 
         [Test]
         [Factory("GetTestCases")]
-        public void Assert_Exists(string description, string xml, IXmlPath path, bool shouldPass)
+        public void Assert_Exists(string description, string xml, IXmlPath path, XmlOptions options, bool shouldPass)
         {
-            AssertionFailure[] failures = AssertTest.Capture(() => Assert.Xml.Exists(xml, path, description));
+            AssertionFailure[] failures = AssertTest.Capture(() => Assert.Xml.Exists(xml, path, options, description));
             Assert.AreEqual(shouldPass ? 0 : 1, failures.Length);
         }
 
@@ -66,15 +66,15 @@ namespace MbUnit.Tests.Framework
                 "Should find root element.",
                 "<Root/>",
                 XmlPath.Element("Root"),
-                true
+                XmlOptions.Default, true
             };
 
             yield return new object[]
             { 
-                "Should find child element at depth 1.",
-                "<Root><Child/></Root>",
-                XmlPath.Element("Root").Element("Child"),
-                true
+                "Should find root element (case insensitive).",
+                "<Root/>",
+                XmlPath.Element("ROOT"),
+                XmlOptions.Custom.IgnoreElementsNameCase, true
             };
 
             yield return new object[]
@@ -82,7 +82,23 @@ namespace MbUnit.Tests.Framework
                 "Should not find root element.",
                 "<Root/>",
                 XmlPath.Element("DoesNotExist"),
-                false
+                XmlOptions.Default, false
+            };
+
+            yield return new object[]
+            { 
+                "Should not find root element (case sensitive).",
+                "<Root/>",
+                XmlPath.Element("ROOT"),
+                XmlOptions.Default, false
+            };
+
+            yield return new object[]
+            { 
+                "Should find child element at depth 1.",
+                "<Root><Child/></Root>",
+                XmlPath.Element("Root").Element("Child"),
+                XmlOptions.Default, true
             };
 
             yield return new object[]
@@ -90,7 +106,15 @@ namespace MbUnit.Tests.Framework
                 "Should find attribute in root element.",
                 "<Root value='123' />",
                 XmlPath.Element("Root").Attribute("value"),
-                true
+                XmlOptions.Default, true
+            };
+
+            yield return new object[]
+            { 
+                "Should find attribute in root element (case insensitive).",
+                "<Root value='123' />",
+                XmlPath.Element("Root").Attribute("VALUE"),
+                XmlOptions.Custom.IgnoreAttributesNameCase, true
             };
 
             yield return new object[]
@@ -98,7 +122,15 @@ namespace MbUnit.Tests.Framework
                 "Should not find attribute in root element.",
                 "<Root value='123' />",
                 XmlPath.Element("Root").Attribute("doesNotExist"),
-                false
+                XmlOptions.Default, false
+            };
+
+            yield return new object[]
+            { 
+                "Should not find attribute in root element (case sensitive).",
+                "<Root value='123' />",
+                XmlPath.Element("Root").Attribute("VALUE"),
+                XmlOptions.Default, false
             };
 
             yield return new object[]
@@ -106,7 +138,7 @@ namespace MbUnit.Tests.Framework
                 "Should find attribute in child element at depth 1.",
                 "<Root><Child value='123'/></Root>",
                 XmlPath.Element("Root").Element("Child").Attribute("value"),
-                true
+                XmlOptions.Default, true
             };
 
             yield return new object[]
@@ -114,7 +146,7 @@ namespace MbUnit.Tests.Framework
                 "Should not find attribute in child element at depth 1.",
                 "<Root><Child value='123'/></Root>",
                 XmlPath.Element("Root").Element("Child").Attribute("doesNotExist"),
-                false
+                XmlOptions.Default, false
             };
 
             yield return new object[]
@@ -122,7 +154,7 @@ namespace MbUnit.Tests.Framework
                 "Should find child element at depth 1 in a group.",
                 "<Root><Child1/><Child2/><Child3/></Root>",
                 XmlPath.Element("Root").Element("Child2"),
-                true
+                XmlOptions.Default, true
             };
 
             yield return new object[]
@@ -130,7 +162,7 @@ namespace MbUnit.Tests.Framework
                 "Should not find child element at depth 1 in a group.",
                 "<Root><Child1/><Child2/><Child3/></Root>",
                 XmlPath.Element("Root").Element("DoesNotExist"),
-                false
+                XmlOptions.Default, false
             };
 
             yield return new object[]
@@ -138,7 +170,7 @@ namespace MbUnit.Tests.Framework
                 "Should find attribute in a child element at depth 1.",
                 "<Root><Child/><Child/><Child value='123'/></Root>",
                 XmlPath.Element("Root").Element("Child").Attribute("value"),
-                true
+                XmlOptions.Default, true
             };
 
             yield return new object[]
@@ -146,7 +178,7 @@ namespace MbUnit.Tests.Framework
                 "Should not find attribute in a child element at depth 1.",
                 "<Root><Child/><Child/><Child value='123'/></Root>",
                 XmlPath.Element("Root").Element("Child").Attribute("doesNotExist"),
-                false
+                XmlOptions.Default, false
             };
 
             yield return new object[]
@@ -154,7 +186,7 @@ namespace MbUnit.Tests.Framework
                 "Should find child element at depth 2 in a group.",
                 "<Root><Child/><Child><Node/></Child><Child/></Root>",
                 XmlPath.Element("Root").Element("Child").Element("Node"),
-                true
+                XmlOptions.Default, true
             };
 
             yield return new object[]
@@ -162,10 +194,8 @@ namespace MbUnit.Tests.Framework
                 "Should find deep attribute in a complex tree.",
                 GetTextResource("MbUnit.Tests.Framework.SolarSystem.xml"),
                 XmlPath.Element("SolarSystem").Element("Planets").Element("Planet").Element("Satellites").Element("Satellite").Attribute("name"),
-                true
+                XmlOptions.Default, true
             };
-
-
         }
     }
 }

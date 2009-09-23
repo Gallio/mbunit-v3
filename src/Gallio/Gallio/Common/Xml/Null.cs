@@ -67,7 +67,7 @@ namespace Gallio.Common.Xml
         }
 
         /// <inheritdoc />
-        public bool Contains(XmlPathClosed searchedItem, int depth)
+        public bool Contains(XmlPathClosed searchedItem, int depth, Options options)
         {
             if (searchedItem == null)
                 throw new ArgumentNullException("searchedItem");

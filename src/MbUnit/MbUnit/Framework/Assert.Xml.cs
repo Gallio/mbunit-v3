@@ -195,7 +195,24 @@ namespace MbUnit.Framework
             /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
             public static void Exists(TextReader actualXmlReader, IXmlPath searchedItem)
             {
-                Exists(actualXmlReader, searchedItem, null, null);
+                Exists(actualXmlReader, searchedItem, XmlOptions.Default, null, null);
+            }
+
+            /// <summary>
+            /// Asserts that two XML fragments have the same content.
+            /// </summary>
+            /// <param name="actualXmlReader">A reader to get the actual XML fragment.</param>
+            /// <param name="searchedItem">The path of the searched element or attribute in the XML fragment.</param>
+            /// <param name="options">Options for the search.</param>
+            /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
+            /// <remarks>
+            /// <para>
+            /// Options not related to the name case of elements and attributes are going to be ignored.
+            /// </para>
+            /// </remarks>
+            public static void Exists(TextReader actualXmlReader, IXmlPath searchedItem, XmlOptions options)
+            {
+                Exists(actualXmlReader, searchedItem, options, null, null);
             }
 
             /// <summary>
@@ -208,10 +225,29 @@ namespace MbUnit.Framework
             /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
             public static void Exists(TextReader actualXmlReader, IXmlPath searchedItem, string messageFormat, params object[] messageArgs)
             {
+                Exists(actualXmlReader, searchedItem, XmlOptions.Default, messageFormat, messageArgs);
+            }
+
+            /// <summary>
+            /// Asserts that two XML fragments have the same content.
+            /// </summary>
+            /// <param name="actualXmlReader">A reader to get the actual XML fragment.</param>
+            /// <param name="searchedItem">The path of the searched element or attribute in the XML fragment.</param>
+            /// <param name="options">Options for the search.</param>
+            /// <param name="messageFormat">The custom assertion message format, or null if none.</param>
+            /// <param name="messageArgs">The custom assertion message arguments, or null if none.</param>
+            /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
+            /// <remarks>
+            /// <para>
+            /// Options not related to the name case of elements and attributes are going to be ignored.
+            /// </para>
+            /// </remarks>
+            public static void Exists(TextReader actualXmlReader, IXmlPath searchedItem, XmlOptions options, string messageFormat, params object[] messageArgs)
+            {
                 if (actualXmlReader == null)
                     throw new ArgumentNullException("actualXmlReader");
 
-                Exists(actualXmlReader.ReadToEnd(), searchedItem, messageFormat, messageArgs);
+                Exists(actualXmlReader.ReadToEnd(), searchedItem, options, messageFormat, messageArgs);
             }
 
             /// <summary>
@@ -222,7 +258,24 @@ namespace MbUnit.Framework
             /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
             public static void Exists(string actualXml, IXmlPath searchedItem)
             {
-                Exists(actualXml, searchedItem, null, null);
+                Exists(actualXml, searchedItem, XmlOptions.Default, null, null);
+            }
+
+            /// <summary>
+            /// Asserts that two XML fragments have the same content.
+            /// </summary>
+            /// <param name="actualXml">The actual XML fragment.</param>
+            /// <param name="searchedItem">The path of the searched element or attribute in the XML fragment.</param>
+            /// <param name="options">Options for the search.</param>
+            /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
+            /// <remarks>
+            /// <para>
+            /// Options not related to the name case of elements and attributes are going to be ignored.
+            /// </para>
+            /// </remarks>
+            public static void Exists(string actualXml, IXmlPath searchedItem, XmlOptions options)
+            {
+                Exists(actualXml, searchedItem, options, null, null);
             }
 
             /// <summary>
@@ -235,6 +288,25 @@ namespace MbUnit.Framework
             /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
             public static void Exists(string actualXml, IXmlPath searchedItem, string messageFormat, params object[] messageArgs)
             {
+                Exists(actualXml, searchedItem, XmlOptions.Default, messageFormat, messageArgs);
+            }
+
+            /// <summary>
+            /// Asserts that two XML fragments have the same content.
+            /// </summary>
+            /// <param name="actualXml">The actual XML fragment.</param>
+            /// <param name="searchedItem">The path of the searched element or attribute in the XML fragment.</param>
+            /// <param name="options">Options for the search.</param>
+            /// <param name="messageFormat">The custom assertion message format, or null if none.</param>
+            /// <param name="messageArgs">The custom assertion message arguments, or null if none.</param>
+            /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
+            /// <remarks>
+            /// <para>
+            /// Options not related to the name case of elements and attributes are going to be ignored.
+            /// </para>
+            /// </remarks>
+            public static void Exists(string actualXml, IXmlPath searchedItem, XmlOptions options, string messageFormat, params object[] messageArgs)
+            {
                 if (actualXml == null)
                     throw new ArgumentNullException("actualXml");
                 if (searchedItem == null)
@@ -246,7 +318,7 @@ namespace MbUnit.Framework
 
                     try
                     {
-                        document = new Parser(actualXml).Run(Options.IgnoreComments);
+                        document = new Parser(actualXml).Run(options.Value);
                     }
                     catch (XmlException exception)
                     {
@@ -256,7 +328,7 @@ namespace MbUnit.Framework
                             .ToAssertionFailure();
                     }
 
-                    if (document.Contains((XmlPathClosed)searchedItem, 0))
+                    if (document.Contains((XmlPathClosed)searchedItem, 0, options.Value))
                         return null;
 
                     return new AssertionFailureBuilder("Expected the XML fragment to contain the searched XML element or attribute, but none was found.")

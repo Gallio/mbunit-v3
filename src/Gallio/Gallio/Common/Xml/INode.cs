@@ -52,8 +52,9 @@ namespace Gallio.Common.Xml
         /// </summary>
         /// <param name="searchedItem">The path of the searched element or attribute.</param>
         /// <param name="depth">The current tree depth of the search.</param>
+        /// <param name="options">Options for the search.</param>
         /// <returns>True if the item was found; otherwise false.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="searchedItem"/> is null.</exception>
-        bool Contains(XmlPathClosed searchedItem, int depth);
+        bool Contains(XmlPathClosed searchedItem, int depth, Options options);
     }
 }

@@ -93,14 +93,22 @@ namespace Gallio.Tests.Common.Xml
         public void Contains_with_null_name_should_throw_exception()
         {
             var attributes = MakeCollection("name1", "value1", "name2", "value2", "name3", "value3");
-            Assert.Throws<ArgumentNullException>(() => attributes.Contains(null));
+            Assert.Throws<ArgumentNullException>(() => attributes.Contains(null, Options.None));
         }
 
         [Test]
         public void Contains_yes()
         {
             var attributes = MakeCollection("name1", "value1", "name2", "value2", "name3", "value3");
-            bool found = attributes.Contains("name2");
+            bool found = attributes.Contains("name2", Options.None);
+            Assert.IsTrue(found);
+        }
+
+        [Test]
+        public void Contains_case_insensitive_yes()
+        {
+            var attributes = MakeCollection("name1", "value1", "name2", "value2", "name3", "value3");
+            bool found = attributes.Contains("NAME2", Options.IgnoreAttributesNameCase);
             Assert.IsTrue(found);
         }
 
@@ -108,7 +116,15 @@ namespace Gallio.Tests.Common.Xml
         public void Contains_no()
         {
             var attributes = MakeCollection("name1", "value1", "name2", "value2", "name3", "value3");
-            bool found = attributes.Contains("name123");
+            bool found = attributes.Contains("name123", Options.None);
+            Assert.IsFalse(found);
+        }
+
+        [Test]
+        public void Contains_case_senstive_no()
+        {
+            var attributes = MakeCollection("name1", "value1", "name2", "value2", "name3", "value3");
+            bool found = attributes.Contains("NAME123", Options.None);
             Assert.IsFalse(found);
         }
 
