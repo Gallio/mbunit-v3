@@ -143,7 +143,7 @@ namespace Gallio.Tests.Common.Xml
         public void Diff_with_null_expected_value_should_throw_exception()
         {
             var actual = new Element(Null.Instance, "Star", "Sun", AttributeCollection.Empty);
-            actual.Diff(null, Path.Empty, XmlOptions.Strict.Value);
+            actual.Diff(null, XmlPath.Empty, XmlOptions.Strict.Value);
         }
 
         [Test]
@@ -160,7 +160,7 @@ namespace Gallio.Tests.Common.Xml
         {
             var actual = new Element(Null.Instance, "Star", "Sun", AttributeCollection.Empty);
             var expected = new Element(Null.Instance, "Star", "Sun", AttributeCollection.Empty);
-            var diff = actual.Diff(expected, Path.Empty, XmlOptions.Strict.Value);
+            var diff = actual.Diff(expected, XmlPath.Empty, XmlOptions.Strict.Value);
             Assert.IsTrue(diff.IsEmpty);
         }
 
@@ -169,7 +169,7 @@ namespace Gallio.Tests.Common.Xml
         {
             var actual = new Element(Null.Instance, "Orb", "Sun", AttributeCollection.Empty);
             var expected = new Element(Null.Instance, "Star", "Sun", AttributeCollection.Empty);
-            var diff = actual.Diff(expected, Path.Empty, XmlOptions.Strict.Value);
+            var diff = actual.Diff(expected, XmlPath.Empty, XmlOptions.Strict.Value);
             AssertDiff(diff, new Diff(string.Empty, "Unexpected element found.", "Star", "Orb"));
         }
 
@@ -178,7 +178,7 @@ namespace Gallio.Tests.Common.Xml
         {
             var actual = new Element(Null.Instance, "Star", "Alpha Centauri", AttributeCollection.Empty);
             var expected = new Element(Null.Instance, "Star", "Sun", AttributeCollection.Empty);
-            var diff = actual.Diff(expected, Path.Empty, XmlOptions.Strict.Value);
+            var diff = actual.Diff(expected, XmlPath.Empty, XmlOptions.Strict.Value);
             AssertDiff(diff, new Diff("<Star>", "Unexpected element value found.", "Sun", "Alpha Centauri"));
         }
 
@@ -189,7 +189,7 @@ namespace Gallio.Tests.Common.Xml
             var attributeExpected = new Gallio.Common.Xml.Attribute("magnitude", "4.85");
             var actual = new Element(Null.Instance, "Star", "Sun", new AttributeCollection(new[] { attributeActual }));
             var expected = new Element(Null.Instance, "Star", "Sun", new AttributeCollection(new[] { attributeExpected }));
-            var diff = actual.Diff(expected, Path.Empty, XmlOptions.Strict.Value);
+            var diff = actual.Diff(expected, XmlPath.Empty, XmlOptions.Strict.Value);
             AssertDiff(diff, new Diff("<Star magnitude='...'>", "Unexpected attribute value found.", "4.85", "Look at up the sky!"));
         }
 
@@ -200,8 +200,82 @@ namespace Gallio.Tests.Common.Xml
             var childExpected = new Element(Null.Instance, "Planets", "8", AttributeCollection.Empty);
             var actual = new Element(childActual, "Star", "Sun", AttributeCollection.Empty);
             var expected = new Element(childExpected, "Star", "Sun", AttributeCollection.Empty);
-            var diff = actual.Diff(expected, Path.Empty, XmlOptions.Strict.Value);
+            var diff = actual.Diff(expected, XmlPath.Empty, XmlOptions.Strict.Value);
             AssertDiff(diff, new Diff("<Star><Planets>", "Unexpected element value found.", "8", "9"));
+        }
+
+
+        [Test]
+        public void Contains_with_null_name_should_throw_exception()
+        {
+            var element = new Element(Null.Instance, "Star", "Sun", AttributeCollection.Empty);
+            Assert.Throws<ArgumentNullException>(() => element.Contains(null, 0));
+        }
+
+        [Test]
+        public void Contains_with_negative_depth_should_throw_exception()
+        {
+            var element = new Element(Null.Instance, "Star", "Sun", AttributeCollection.Empty);
+            Assert.Throws<ArgumentOutOfRangeException>(() => element.Contains((XmlPathClosed)XmlPath.Empty, -1));
+        }
+
+        [Test]
+        public void Contains_at_depth_zero_yes()
+        {
+            var element = new Element(Null.Instance, "Star", "Sun", AttributeCollection.Empty);
+            bool found = element.Contains((XmlPathClosed)XmlPath.Element("Star"), 0);
+            Assert.IsTrue(found);
+        }
+
+        [Test]
+        public void Contains_at_depth_zero_no()
+        {
+            var element = new Element(Null.Instance, "Star", "Sun", AttributeCollection.Empty);
+            bool found = element.Contains((XmlPathClosed)XmlPath.Element("Oops"), 0);
+            Assert.IsFalse(found);
+        }
+
+        [Test]
+        public void Contains_at_depth_one_yes()
+        {
+            var element = new Element(Null.Instance, "Star", "Sun", AttributeCollection.Empty);
+            bool found = element.Contains((XmlPathClosed)XmlPath.Element("Dummy").Element("Star"), 1);
+            Assert.IsTrue(found);
+        }
+
+        [Test]
+        public void Contains_with_depth_overflow_always_yes()
+        {
+            var element = new Element(Null.Instance, "Star", "Sun", AttributeCollection.Empty);
+            bool found = element.Contains((XmlPathClosed)XmlPath.Element("Dummy"), 123);
+            Assert.IsTrue(found);
+        }
+
+        [Test]
+        public void Contains_recursive_yes()
+        {
+            var child = new Element(Null.Instance, "Star", "Sun", AttributeCollection.Empty);
+            var parent = new Element(child, "SolarSystem", String.Empty, AttributeCollection.Empty);
+            bool found = parent.Contains((XmlPathClosed)XmlPath.Element("SolarSystem").Element("Star"), 0);
+            Assert.IsTrue(found);
+        }
+
+        [Test]
+        public void Contains_attribute_yes()
+        {
+            var attribute = new Gallio.Common.Xml.Attribute("magnitude", "4.85");
+            var element = new Element(Null.Instance, "Star", "Sun", new AttributeCollection(new[] { attribute }));
+            bool found = element.Contains((XmlPathClosed)XmlPath.Element("Star").Attribute("magnitude"), 0);
+            Assert.IsTrue(found);
+        }
+
+        [Test]
+        public void Contains_attribute_no()
+        {
+            var attribute = new Gallio.Common.Xml.Attribute("magnitude", "4.85");
+            var element = new Element(Null.Instance, "Star", "Sun", new AttributeCollection(new[] { attribute }));
+            bool found = element.Contains((XmlPathClosed)XmlPath.Element("Star").Attribute("aargh"), 0);
+            Assert.IsFalse(found);
         }
     }
 }

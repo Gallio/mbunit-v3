@@ -21,6 +21,8 @@ using Gallio.Framework;
 using Gallio.Framework.Assertions;
 using Gallio.Common.Diagnostics;
 using Action=Gallio.Common.Action;
+using System.Reflection;
+using System.IO;
 
 namespace MbUnit.Tests.Framework
 {
@@ -75,6 +77,14 @@ namespace MbUnit.Tests.Framework
             public override int GetHashCode(string obj)
             {
                 return obj.GetHashCode();
+            }
+        }
+
+        protected string GetTextResource(string resourceName)
+        {
+            using (var textReader = new StreamReader(Assembly.GetExecutingAssembly().GetManifestResourceStream(resourceName)))
+            {
+                return textReader.ReadToEnd();
             }
         }
     }

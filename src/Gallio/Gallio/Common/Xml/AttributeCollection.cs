@@ -99,7 +99,7 @@ namespace Gallio.Common.Xml
         }
 
         /// <inheritdoc />
-        public DiffSet Diff(AttributeCollection expected, Path path, Options options)
+        public DiffSet Diff(AttributeCollection expected, IXmlPathOpen path, Options options)
         {
             return DiffEngineFactory.ForAttributes(expected, this, path, options).Diff();
         }
@@ -116,6 +116,20 @@ namespace Gallio.Common.Xml
             }
 
             return -1;
+        }
+
+        /// <summary>
+        /// Determines whether the collection contains an attribute with the specified name.
+        /// </summary>
+        /// <param name="searchedAttributeName">The name of the searched attribute.</param>
+        /// <returns>True is such an attribute exists; otherwise false.</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="searchedAttributeName"/> is null.</exception>
+        public bool Contains(string searchedAttributeName)
+        {
+            if (searchedAttributeName == null)
+                throw new ArgumentNullException("searchedAttributeName");
+
+            return attributes.Exists(attribute => attribute.Name == searchedAttributeName);
         }
     }
 }

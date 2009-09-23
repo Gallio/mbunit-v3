@@ -73,7 +73,7 @@ namespace Gallio.Common.Xml
         }
 
         /// <inheritdoc />
-        public DiffSet Diff(Attribute expected, Path path, Options options)
+        public DiffSet Diff(Attribute expected, IXmlPathOpen path, Options options)
         {
             if (expected == null)
                 throw new ArgumentNullException("expected");
@@ -90,7 +90,7 @@ namespace Gallio.Common.Xml
             {
                 if (!value.Equals(expected.Value, GetComparisonTypeForValue(options)))
                 {
-                    builder.Add(new Diff(path.ToString(name), "Unexpected attribute value found.", expected.Value, value));
+                    builder.Add(new Diff(path.Attribute(name).ToString(), "Unexpected attribute value found.", expected.Value, value));
                 }
             }
 

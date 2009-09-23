@@ -60,16 +60,6 @@ namespace MbUnit.Tests.Framework
             Assert.IsEmpty(failures);
         }
 
-        public static string GetResource(string resourceName)
-        {
-            var assembly = Assembly.GetExecutingAssembly();
-            using (var textReader = new StreamReader(assembly.GetManifestResourceStream(resourceName)))
-            {
-                string result = textReader.ReadToEnd();
-                return result;
-            }
-        }
-
         private void AssertFailures(AssertionFailure[] failures, params string[] expectedDescriptions)
         {
             Assert.AreEqual(1, failures.Length);
@@ -226,8 +216,8 @@ namespace MbUnit.Tests.Framework
 
                 yield return new object[] 
                 { 
-                    GetResource("MbUnit.Tests.Framework.SolarSystem.xml"),
-                    GetResource("MbUnit.Tests.Framework.SolarSystemWithErrors.xml"),
+                    GetTextResource("MbUnit.Tests.Framework.SolarSystem.xml"),
+                    GetTextResource("MbUnit.Tests.Framework.SolarSystemWithErrors.xml"),
                     XmlOptions.Custom.IgnoreElementsOrder,
                     new ExpectedFailureData[] 
                     { 

@@ -217,6 +217,8 @@
     <Compile Include="Common\Xml\Attribute.cs" />
     <Compile Include="Common\Xml\AttributeCollection.cs" />
     <Compile Include="Common\Xml\Comment.cs" />
+    <Compile Include="Common\Xml\IXmlPath.cs" />
+    <Compile Include="Common\Xml\XmlPath.cs" />
     <Compile Include="Common\Xml\Declaration.cs" />
     <Compile Include="Common\Xml\Diff.cs" />
     <Compile Include="Common\Xml\DiffEngineFactory.cs" />

@@ -33,7 +33,8 @@ namespace Gallio.Common.Xml
         /// <param name="expected">A prototype representing the expected object.</param>
         /// <param name="path">The path of the parent node.</param>
         /// <param name="options">Comparison options.</param>
-        /// <returns></returns>
-        DiffSet Diff(T expected, Path path, Options options);
+        /// <returns>The resulting diff set describing the differences found.</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="expected"/> or <paramref name="path"/> is null.</exception>
+        DiffSet Diff(T expected, IXmlPathOpen path, Options options);
     }
 }

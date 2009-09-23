@@ -32,7 +32,7 @@ namespace Gallio.Common.Xml
         /// <param name="path">The current path of the parent node.</param>
         /// <param name="options">Equality options.</param>
         /// <returns>The resulting diffing engine.</returns>
-        public static IDiffEngine<AttributeCollection> ForAttributes(AttributeCollection expected, AttributeCollection actual, Path path, Options options)
+        public static IDiffEngine<AttributeCollection> ForAttributes(AttributeCollection expected, AttributeCollection actual, IXmlPathOpen path, Options options)
         {
             if ((options & Options.IgnoreAttributesOrder) != 0)
             {
@@ -52,7 +52,7 @@ namespace Gallio.Common.Xml
         /// <param name="path">The current path of the parent node.</param>
         /// <param name="options">Equality options.</param>
         /// <returns>The resulting diffing engine.</returns>
-        public static IDiffEngine<ElementCollection> ForElements(ElementCollection expected, ElementCollection actual, Path path, Options options)
+        public static IDiffEngine<ElementCollection> ForElements(ElementCollection expected, ElementCollection actual, IXmlPathOpen path, Options options)
         {
             if ((options & Options.IgnoreElementsOrder) != 0)
             {

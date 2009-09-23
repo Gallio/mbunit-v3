@@ -71,5 +71,49 @@ namespace Gallio.Tests.Common.Xml
             Assert.IsFalse(document.IsNull);
             Assert.AreEqual("<?xml name=\"value\"?><Planet/>", document.ToXml());
         }
+
+        private static Document GetDocument()
+        {
+            var parser = new Parser(
+                "<?xml version='1.0' encoding='UTF-8'?>" +
+                "<Composers>" +
+                "  <Composer>" +
+                "     <Name>Gustav Mahler</Name>" +
+                "     <BirthDate>7 July 1860</BirthDate>" +
+                "  </Composer>" +
+                "</Composers>");
+
+            return parser.Run(Options.IgnoreComments);
+        }
+
+        [Test]
+        public void Contains_with_null_path_should_throw_exception()
+        {
+            var document = GetDocument();
+            Assert.Throws<ArgumentNullException>(() => document.Contains(null, 0));
+        }
+
+        [Test]
+        public void Contains_with_negative_depth_should_throw_exception()
+        {
+            var document = GetDocument();
+            Assert.Throws<ArgumentOutOfRangeException>(() => document.Contains((XmlPathClosed)XmlPath.Empty, -1));
+        }
+
+        [Test]
+        public void Contains_yes()
+        {
+            var document = GetDocument();
+            bool contains = document.Contains((XmlPathClosed)XmlPath.Element("Composers").Element("Composer").Element("Name"), 0);
+            Assert.IsTrue(contains);
+        }
+
+        [Test]
+        public void Contains_no()
+        {
+            var document = GetDocument();
+            bool contains = document.Contains((XmlPathClosed)XmlPath.Element("Composers").Element("Composer").Element("DoesNotExist"), 0);
+            Assert.IsFalse(contains);
+        }
     }
 }

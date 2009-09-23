@@ -64,7 +64,7 @@ namespace Gallio.Common.Xml
         }
 
         /// <inheritdoc />
-        public DiffSet Diff(Declaration expected, Path path, Options options)
+        public DiffSet Diff(Declaration expected, IXmlPathOpen path, Options options)
         {
             return attributes.Diff(expected.Attributes, path, options);
         }

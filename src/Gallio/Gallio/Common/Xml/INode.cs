@@ -45,5 +45,15 @@ namespace Gallio.Common.Xml
         /// </summary>
         /// <returns>The resulting XML fragment representing the node and its children.</returns>
         string ToXml();
+
+        /// <summary>
+        /// Returns a value indicating whether the attribute or the element exists
+        /// at the specified path.
+        /// </summary>
+        /// <param name="searchedItem">The path of the searched element or attribute.</param>
+        /// <param name="depth">The current tree depth of the search.</param>
+        /// <returns>True if the item was found; otherwise false.</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="searchedItem"/> is null.</exception>
+        bool Contains(XmlPathClosed searchedItem, int depth);
     }
 }

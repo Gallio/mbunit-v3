@@ -40,13 +40,13 @@ namespace Gallio.Common.Xml
         }
 
         /// <inheritdoc />
-        public override DiffSet Diff(INode expected, Path path, Options options)
+        public override DiffSet Diff(INode expected, IXmlPathOpen path, Options options)
         {
             return Diff((Element)expected, path, options);
         }
 
         /// <inheritdoc />
-        public override DiffSet Diff(Element expected, Path path, Options options)
+        public override DiffSet Diff(Element expected, IXmlPathOpen path, Options options)
         {
             if (expected is Comment)
             {
@@ -57,7 +57,7 @@ namespace Gallio.Common.Xml
         }
 
         /// <inheritdoc />
-        public DiffSet Diff(Comment expected, Path path, Options options)
+        public DiffSet Diff(Comment expected, IXmlPathOpen path, Options options)
         {
             if (expected == null)
                 throw new ArgumentNullException("expected");

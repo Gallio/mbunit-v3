@@ -60,6 +60,9 @@ namespace Gallio.Common.Xml
         public abstract string ToXml();
 
         /// <inheritdoc />
-        public abstract DiffSet Diff(INode expected, Path path, Options options);
+        public abstract DiffSet Diff(INode expected, IXmlPathOpen path, Options options);
+
+        /// <inheritdoc />
+        public abstract bool Contains(XmlPathClosed searchedItem, int depth);
     }
 }

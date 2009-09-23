@@ -55,7 +55,7 @@ namespace Gallio.Tests.Common.Xml
         public void Diff_with_null_expected_value_should_throw_exception()
         {
              var actual = new Attribute("planet", "Saturn");
-             actual.Diff(null, Path.Empty, XmlOptions.Strict.Value);
+             actual.Diff(null, XmlPath.Empty, XmlOptions.Strict.Value);
         }
 
         [Test]
@@ -72,7 +72,7 @@ namespace Gallio.Tests.Common.Xml
         {
             var actual = new Attribute("planet", "Saturn");
             var expected = new Attribute("planet", "Saturn");
-            var diff = actual.Diff(expected, Path.Empty, XmlOptions.Strict.Value);
+            var diff = actual.Diff(expected, XmlPath.Empty, XmlOptions.Strict.Value);
             Assert.IsTrue(diff.IsEmpty);
         }
 
@@ -81,7 +81,7 @@ namespace Gallio.Tests.Common.Xml
         {
             var actual = new Attribute("planet", "Saturn");
             var expected = new Attribute("PLANET", "Saturn");
-            var diff = actual.Diff(expected, Path.Empty, Options.IgnoreAttributesNameCase);
+            var diff = actual.Diff(expected, XmlPath.Empty, Options.IgnoreAttributesNameCase);
             Assert.IsTrue(diff.IsEmpty);
         }
 
@@ -90,7 +90,7 @@ namespace Gallio.Tests.Common.Xml
         {
             var actual = new Attribute("planet", "Saturn");
             var expected = new Attribute("PLANET", "Saturn");
-            var diff = actual.Diff(expected, Path.Empty, XmlOptions.Strict.Value);
+            var diff = actual.Diff(expected, XmlPath.Empty, XmlOptions.Strict.Value);
             AssertDiff(diff, new Diff(string.Empty, "Unexpected attribute found.", "PLANET", "planet"));
         }
 
@@ -99,7 +99,7 @@ namespace Gallio.Tests.Common.Xml
         {
             var actual = new Attribute("planet", "Saturn");
             var expected = new Attribute("orb", "Saturn");
-            var diff = actual.Diff(expected, Path.Empty, XmlOptions.Strict.Value);
+            var diff = actual.Diff(expected, XmlPath.Empty, XmlOptions.Strict.Value);
             AssertDiff(diff, new Diff(string.Empty, "Unexpected attribute found.", "orb", "planet"));
         }
 
@@ -108,7 +108,7 @@ namespace Gallio.Tests.Common.Xml
         {
             var actual = new Attribute("planet", "sAtUrN");
             var expected = new Attribute("planet", "Saturn");
-            var diff = actual.Diff(expected, Path.Empty, XmlOptions.Strict.Value);
+            var diff = actual.Diff(expected, XmlPath.Empty, XmlOptions.Strict.Value);
             AssertDiff(diff, new Diff(string.Empty, "Unexpected attribute value found.", "Saturn", "sAtUrN"));
         }
 
@@ -117,7 +117,7 @@ namespace Gallio.Tests.Common.Xml
         {
             var actual = new Attribute("planet", "sAtUrN");
             var expected = new Attribute("planet", "Saturn");
-            var diff = actual.Diff(expected, Path.Empty, Options.IgnoreAttributesValueCase);
+            var diff = actual.Diff(expected, XmlPath.Empty, Options.IgnoreAttributesValueCase);
             Assert.IsTrue(diff.IsEmpty);
         }
 
@@ -126,7 +126,7 @@ namespace Gallio.Tests.Common.Xml
         {
             var actual = new Attribute("planet", "Jupiter");
             var expected = new Attribute("planet", "Saturn");
-            var diff = actual.Diff(expected, Path.Empty, XmlOptions.Strict.Value);
+            var diff = actual.Diff(expected, XmlPath.Empty, XmlOptions.Strict.Value);
             AssertDiff(diff, new Diff(string.Empty, "Unexpected attribute value found.", "Saturn", "Jupiter"));
         }
     }

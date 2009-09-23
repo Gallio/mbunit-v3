@@ -58,12 +58,23 @@ namespace Gallio.Common.Xml
         }
 
         /// <inheritdoc />
-        public DiffSet Diff(INode expected, Path path, Options options)
+        public DiffSet Diff(INode expected, IXmlPathOpen path, Options options)
         {
             if (expected == null)
                 throw new ArgumentNullException("expected");
 
             return DiffSet.Empty;
+        }
+
+        /// <inheritdoc />
+        public bool Contains(XmlPathClosed searchedItem, int depth)
+        {
+            if (searchedItem == null)
+                throw new ArgumentNullException("searchedItem");
+            if (depth < 0)
+                throw new ArgumentOutOfRangeException("depth", "The depth must be greater than or equal to zero.");
+
+            return depth < searchedItem.ElementNames.Count;
         }
     }
 }

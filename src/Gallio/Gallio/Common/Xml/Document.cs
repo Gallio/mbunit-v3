@@ -42,6 +42,7 @@ namespace Gallio.Common.Xml
         /// </summary>
         /// <param name="declaration">The declaration element of the document.</param>
         /// <param name="root">The root element of the document.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="declaration"/> is null.</exception>
         public Document(Declaration declaration, INode root)
             : base(root)
         {
@@ -58,21 +59,29 @@ namespace Gallio.Common.Xml
         }
 
         /// <inheritdoc />
-        public override DiffSet Diff(INode expected, Path path, Options options)
+        public override DiffSet Diff(INode expected, IXmlPathOpen path, Options options)
         {
             return Diff((Document)expected, path, options);
         }
 
         /// <inheritdoc />
-        public DiffSet Diff(Document expected, Path path, Options options)
+        public DiffSet Diff(Document expected, IXmlPathOpen path, Options options)
         {
             if (expected == null)
                 throw new ArgumentNullException("expected");
+            if (path == null)
+                throw new ArgumentNullException("path");
 
             return new DiffSetBuilder()
-                .Add(declaration.Diff(expected.Declaration, path.Extend("xml", true), options))
+                .Add(declaration.Diff(expected.Declaration, path.Element("xml", true), options))
                 .Add(Child.Diff(expected.Child, path, options))
                 .ToDiffSet();
+        }
+
+        /// <inheritdoc />
+        public override bool Contains(XmlPathClosed searchedItem, int depth)
+        {
+            return Child.Contains(searchedItem, depth);
         }
     }
 }

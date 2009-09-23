@@ -26,7 +26,7 @@ namespace Gallio.Common.Xml
     {
         private readonly AttributeCollection expected;
         private readonly AttributeCollection actual;
-        private readonly Path path;
+        private readonly IXmlPathOpen path;
         private readonly Options options;
 
         /// <summary>
@@ -36,7 +36,7 @@ namespace Gallio.Common.Xml
         /// <param name="actual">The actual object.</param>
         /// <param name="path">The current path of the parent node.</param>
         /// <param name="options">Equality options.</param>
-        public DiffEngineForUnorderedAttributes(AttributeCollection expected, AttributeCollection actual, Path path, Options options)
+        public DiffEngineForUnorderedAttributes(AttributeCollection expected, AttributeCollection actual, IXmlPathOpen path, Options options)
         {
             if (expected == null)
                 throw new ArgumentNullException("expected");
@@ -98,7 +98,7 @@ namespace Gallio.Common.Xml
 
         private int Find(AttributeCollection source, Attribute attribute, IList<int> mask)
         {
-            int index = source.FindIndex(i => !mask.Contains(i) && attribute.Diff(source[i], Path.Empty, options).IsEmpty);
+            int index = source.FindIndex(i => !mask.Contains(i) && attribute.Diff(source[i], XmlPathClosed.Empty, options).IsEmpty);
 
             if (index < 0)
             {

@@ -66,7 +66,7 @@ namespace Gallio.Tests.Common.Xml
         public void Diff_with_null_expected_value_should_throw_exception()
         {
             var collection = AttributeCollection.Empty;
-            collection.Diff(null, Path.Empty, XmlOptions.Strict.Value);
+            collection.Diff(null, XmlPath.Empty, XmlOptions.Strict.Value);
         }
 
         [Test]
@@ -89,14 +89,37 @@ namespace Gallio.Tests.Common.Xml
             return new AttributeCollection(list);
         }
 
-        #region Ordered attributes
+        [Test]
+        public void Contains_with_null_name_should_throw_exception()
+        {
+            var attributes = MakeCollection("name1", "value1", "name2", "value2", "name3", "value3");
+            Assert.Throws<ArgumentNullException>(() => attributes.Contains(null));
+        }
+
+        [Test]
+        public void Contains_yes()
+        {
+            var attributes = MakeCollection("name1", "value1", "name2", "value2", "name3", "value3");
+            bool found = attributes.Contains("name2");
+            Assert.IsTrue(found);
+        }
+
+        [Test]
+        public void Contains_no()
+        {
+            var attributes = MakeCollection("name1", "value1", "name2", "value2", "name3", "value3");
+            bool found = attributes.Contains("name123");
+            Assert.IsFalse(found);
+        }
+
+        #region Diffing ordered attributes
         
         [Test]
         public void Diff_equal_collections()
         {
             var actual = MakeCollection("name1", "value1", "name2", "value2", "name3", "value3");
             var expected = MakeCollection("name1", "value1", "name2", "value2", "name3", "value3");
-            DiffSet diffSet = actual.Diff(expected, Path.Empty.Extend("Root"), XmlOptions.Strict.Value);
+            DiffSet diffSet = actual.Diff(expected, XmlPath.Element("Root"), XmlOptions.Strict.Value);
             Assert.IsEmpty(diffSet);
         }
 
@@ -105,7 +128,7 @@ namespace Gallio.Tests.Common.Xml
         {
             var actual = MakeCollection("name1", "value1", "name2", "value2");
             var expected = MakeCollection("name1", "value1", "name2", "value2", "name3", "value3");
-            DiffSet diffSet = actual.Diff(expected, Path.Empty.Extend("Root"), XmlOptions.Strict.Value);
+            DiffSet diffSet = actual.Diff(expected, XmlPath.Element("Root"), XmlOptions.Strict.Value);
             AssertDiff(diffSet, new[] { new Diff("<Root>", "Missing attribute.", "name3", String.Empty) });
         }
 
@@ -114,7 +137,7 @@ namespace Gallio.Tests.Common.Xml
         {
             var actual = MakeCollection("name1", "value1", "name3", "value3");
             var expected = MakeCollection("name1", "value1", "name2", "value2", "name3", "value3");
-            DiffSet diffSet = actual.Diff(expected, Path.Empty.Extend("Root"), XmlOptions.Strict.Value);
+            DiffSet diffSet = actual.Diff(expected, XmlPath.Element("Root"), XmlOptions.Strict.Value);
             AssertDiff(diffSet, new[] { new Diff("<Root>", "Unexpected attribute found.", "name2", "name3") });
         }
 
@@ -123,7 +146,7 @@ namespace Gallio.Tests.Common.Xml
         {
             var actual = MakeCollection("name1", "value1", "name2", "value2", "name3", "value3");
             var expected = MakeCollection("name1", "value1", "name2", "value2");
-            DiffSet diffSet = actual.Diff(expected, Path.Empty.Extend("Root"), XmlOptions.Strict.Value);
+            DiffSet diffSet = actual.Diff(expected, XmlPath.Element("Root"), XmlOptions.Strict.Value);
             AssertDiff(diffSet, new[] { new Diff("<Root>", "Unexpected attribute found.", String.Empty, "name3") });
         }
 
@@ -132,7 +155,7 @@ namespace Gallio.Tests.Common.Xml
         {
             var actual = MakeCollection("name1", "value1", "name2", "value2", "name3", "value3");
             var expected = MakeCollection("name1", "value1", "name3", "value3");
-            DiffSet diffSet = actual.Diff(expected, Path.Empty.Extend("Root"), XmlOptions.Strict.Value);
+            DiffSet diffSet = actual.Diff(expected, XmlPath.Element("Root"), XmlOptions.Strict.Value);
             AssertDiff(diffSet, new[] { new Diff("<Root>", "Unexpected attribute found.", "name3", "name2") });
         }
 
@@ -141,7 +164,7 @@ namespace Gallio.Tests.Common.Xml
         {
             var actual = MakeCollection("name1", "value1", "name2", "ERROR!", "name3", "value3");
             var expected = MakeCollection("name1", "value1", "name2", "value2", "name3", "value3");
-            DiffSet diffSet = actual.Diff(expected, Path.Empty.Extend("Root"), XmlOptions.Strict.Value);
+            DiffSet diffSet = actual.Diff(expected, XmlPath.Element("Root"), XmlOptions.Strict.Value);
             AssertDiff(diffSet, new[] { new Diff("<Root name2='...'>", "Unexpected attribute value found.", "value2", "ERROR!") });
         }
 
@@ -150,7 +173,7 @@ namespace Gallio.Tests.Common.Xml
         {
             var actual = MakeCollection("name1", "ERROR1!", "name2", "value2", "name3", "ERROR3!");
             var expected = MakeCollection("name1", "value1", "name2", "value2", "name3", "value3");
-            DiffSet diffSet = actual.Diff(expected, Path.Empty.Extend("Root"), XmlOptions.Strict.Value);
+            DiffSet diffSet = actual.Diff(expected, XmlPath.Element("Root"), XmlOptions.Strict.Value);
             AssertDiff(diffSet, new[] { 
                 new Diff("<Root name1='...'>", "Unexpected attribute value found.", "value1", "ERROR1!"),
                 new Diff("<Root name3='...'>", "Unexpected attribute value found.", "value3", "ERROR3!") });
@@ -158,14 +181,14 @@ namespace Gallio.Tests.Common.Xml
 
         #endregion
 
-        #region Unordered attributes
+        #region Diffing unordered attributes
 
         [Test]
         public void Diff_equal_unordered_collections()
         {
             var actual = MakeCollection("name1", "value1", "name2", "value2", "name3", "value3");
             var expected = MakeCollection("name2", "value2", "name3", "value3", "name1", "value1");
-            DiffSet diffSet = actual.Diff(expected, Path.Empty.Extend("Root"), Options.IgnoreAttributesOrder);
+            DiffSet diffSet = actual.Diff(expected, XmlPath.Element("Root"), Options.IgnoreAttributesOrder);
             Assert.IsEmpty(diffSet);
         }
 
@@ -174,7 +197,7 @@ namespace Gallio.Tests.Common.Xml
         {
             var actual = MakeCollection("name1", "value1", "name3", "value3");
             var expected = MakeCollection("name2", "value2", "name3", "value3", "name1", "value1");
-            DiffSet diffSet = actual.Diff(expected, Path.Empty.Extend("Root"), Options.IgnoreAttributesOrder);
+            DiffSet diffSet = actual.Diff(expected, XmlPath.Element("Root"), Options.IgnoreAttributesOrder);
             AssertDiff(diffSet, new[] { new Diff("<Root>", "Missing attribute.", "name2", String.Empty) });
         }
 
@@ -183,7 +206,7 @@ namespace Gallio.Tests.Common.Xml
         {
             var actual = MakeCollection("name1", "value1", "name3", "value3", "name2", "value2");
             var expected = MakeCollection("name2", "value2", "name1", "value1");
-            DiffSet diffSet = actual.Diff(expected, Path.Empty.Extend("Root"), Options.IgnoreAttributesOrder);
+            DiffSet diffSet = actual.Diff(expected, XmlPath.Element("Root"), Options.IgnoreAttributesOrder);
             AssertDiff(diffSet, new[] { new Diff("<Root>", "Unexpected attribute found.", String.Empty, "name3") });
         }
 
@@ -192,7 +215,7 @@ namespace Gallio.Tests.Common.Xml
         {
             var actual = MakeCollection("name1", "value1", "name3", "ERROR!", "name2", "value2");
             var expected = MakeCollection("name2", "value2", "name1", "value1", "name3", "value3");
-            DiffSet diffSet = actual.Diff(expected, Path.Empty.Extend("Root"), Options.IgnoreAttributesOrder);
+            DiffSet diffSet = actual.Diff(expected, XmlPath.Element("Root"), Options.IgnoreAttributesOrder);
             AssertDiff(diffSet, new[] { new Diff("<Root name3='...'>", "Unexpected attribute value found.", "value3", "ERROR!") });
         }
 

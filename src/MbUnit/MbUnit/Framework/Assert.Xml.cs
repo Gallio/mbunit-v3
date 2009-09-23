@@ -170,7 +170,7 @@ namespace MbUnit.Framework
                             .ToAssertionFailure();
                     }
 
-                    DiffSet diffSet = actualDocument.Diff(expectedDocument, Gallio.Common.Xml.Path.Empty, settings.Value);
+                    DiffSet diffSet = actualDocument.Diff(expectedDocument, Gallio.Common.Xml.XmlPathClosed.Empty, settings.Value);
 
                     if (diffSet.IsEmpty)
                         return null;
@@ -179,6 +179,89 @@ namespace MbUnit.Framework
                         .SetMessage(messageFormat, messageArgs)
                         .AddRawLabeledValue("Equality Options", settings.Value)
                         .AddInnerFailures(diffSet.ToAssertionFailures())
+                        .ToAssertionFailure();
+                });
+            }
+
+            #endregion
+
+            #region Exists
+
+            /// <summary>
+            /// Asserts that two XML fragments have the same content.
+            /// </summary>
+            /// <param name="actualXmlReader">A reader to get the actual XML fragment.</param>
+            /// <param name="searchedItem">The path of the searched element or attribute in the XML fragment.</param>
+            /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
+            public static void Exists(TextReader actualXmlReader, IXmlPath searchedItem)
+            {
+                Exists(actualXmlReader, searchedItem, null, null);
+            }
+
+            /// <summary>
+            /// Asserts that two XML fragments have the same content.
+            /// </summary>
+            /// <param name="actualXmlReader">A reader to get the actual XML fragment.</param>
+            /// <param name="searchedItem">The path of the searched element or attribute in the XML fragment.</param>
+            /// <param name="messageFormat">The custom assertion message format, or null if none.</param>
+            /// <param name="messageArgs">The custom assertion message arguments, or null if none.</param>
+            /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
+            public static void Exists(TextReader actualXmlReader, IXmlPath searchedItem, string messageFormat, params object[] messageArgs)
+            {
+                if (actualXmlReader == null)
+                    throw new ArgumentNullException("actualXmlReader");
+
+                Exists(actualXmlReader.ReadToEnd(), searchedItem, messageFormat, messageArgs);
+            }
+
+            /// <summary>
+            /// Asserts that two XML fragments have the same content.
+            /// </summary>
+            /// <param name="actualXml">The actual XML fragment.</param>
+            /// <param name="searchedItem">The path of the searched element or attribute in the XML fragment.</param>
+            /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
+            public static void Exists(string actualXml, IXmlPath searchedItem)
+            {
+                Exists(actualXml, searchedItem, null, null);
+            }
+
+            /// <summary>
+            /// Asserts that two XML fragments have the same content.
+            /// </summary>
+            /// <param name="actualXml">The actual XML fragment.</param>
+            /// <param name="searchedItem">The path of the searched element or attribute in the XML fragment.</param>
+            /// <param name="messageFormat">The custom assertion message format, or null if none.</param>
+            /// <param name="messageArgs">The custom assertion message arguments, or null if none.</param>
+            /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
+            public static void Exists(string actualXml, IXmlPath searchedItem, string messageFormat, params object[] messageArgs)
+            {
+                if (actualXml == null)
+                    throw new ArgumentNullException("actualXml");
+                if (searchedItem == null)
+                    throw new ArgumentNullException("searchedItem");
+
+                AssertionHelper.Verify(() =>
+                {
+                    Document document;
+
+                    try
+                    {
+                        document = new Parser(actualXml).Run(Options.IgnoreComments);
+                    }
+                    catch (XmlException exception)
+                    {
+                        return new AssertionFailureBuilder("Cannot parse the actual XML fragment.")
+                            .SetMessage(messageFormat, messageArgs)
+                            .AddException(exception)
+                            .ToAssertionFailure();
+                    }
+
+                    if (document.Contains((XmlPathClosed)searchedItem, 0))
+                        return null;
+
+                    return new AssertionFailureBuilder("Expected the XML fragment to contain the searched XML element or attribute, but none was found.")
+                        .SetMessage(messageFormat, messageArgs)
+                        .AddLabeledValue("Item searched", searchedItem.ToString())
                         .ToAssertionFailure();
                 });
             }

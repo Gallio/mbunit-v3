@@ -198,6 +198,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Framework\TestSuite.cs" />
+    <Compile Include="Framework\XmlPath.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Database_Schema.xsd" />

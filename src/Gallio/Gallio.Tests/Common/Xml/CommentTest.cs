@@ -51,7 +51,7 @@ namespace Gallio.Tests.Common.Xml
         public void Diff_with_null_expected_parameter_should_throw_exception()
         {
             var comment = new Comment(" Jack Burton ");
-            comment.Diff(null, Path.Empty, XmlOptions.Default.Value);
+            comment.Diff(null, XmlPath.Empty, XmlOptions.Default.Value);
         }
 
         [Test]
@@ -68,7 +68,7 @@ namespace Gallio.Tests.Common.Xml
         {
             var comment1 = new Comment("Chapi");
             var comment2 = new Comment("Chapo");
-            DiffSet diffSet = comment1.Diff(comment2, Path.Empty, XmlOptions.Strict.Value);
+            DiffSet diffSet = comment1.Diff(comment2, XmlPath.Empty, XmlOptions.Strict.Value);
             AssertDiff(diffSet, new Diff(String.Empty, "Unexpected comment found.", "Chapo", "Chapi"));
         }
 
@@ -77,7 +77,7 @@ namespace Gallio.Tests.Common.Xml
         {
             var comment1 = new Comment("Chapi");
             var comment2 = new Comment("Chapo");
-            DiffSet diffSet = comment1.Diff(comment2, Path.Empty, Options.IgnoreComments);
+            DiffSet diffSet = comment1.Diff(comment2, XmlPath.Empty, Options.IgnoreComments);
             Assert.IsTrue(diffSet.IsEmpty);
         }
 
@@ -86,7 +86,7 @@ namespace Gallio.Tests.Common.Xml
         {
             var comment1 = new Comment("The same comment...");
             var comment2 = new Comment("The same comment...");
-            DiffSet diffSet = comment1.Diff(comment2, Path.Empty, XmlOptions.Strict.Value);
+            DiffSet diffSet = comment1.Diff(comment2, XmlPath.Empty, XmlOptions.Strict.Value);
             Assert.IsTrue(diffSet.IsEmpty);
         }
     }

@@ -99,13 +99,13 @@ namespace Gallio.Common.Xml
         }
 
         /// <inheritdoc />
-        public override DiffSet Diff(INode expected, Path path, Options options)
+        public override DiffSet Diff(INode expected, IXmlPathOpen path, Options options)
         {
             return Diff((Element)expected, path, options);
         }
 
         /// <inheritdoc />
-        public virtual DiffSet Diff(Element expected, Path path, Options options)
+        public virtual DiffSet Diff(Element expected, IXmlPathOpen path, Options options)
         {
             if (expected == null)
                 throw new ArgumentNullException("expected");
@@ -122,11 +122,11 @@ namespace Gallio.Common.Xml
             {
                 if (!value.Equals(expected.Value, GetComparisonTypeForValue(options)))
                 {
-                    builder.Add(new Diff(path.Extend(name).ToString(), "Unexpected element value found.", expected.Value, value));
+                    builder.Add(new Diff(path.Element(name).ToString(), "Unexpected element value found.", expected.Value, value));
                 }
 
-                builder.Add(attributes.Diff(expected.Attributes, path.Extend(name), options));
-                builder.Add(Child.Diff(expected.Child, path.Extend(name), options));
+                builder.Add(attributes.Diff(expected.Attributes, path.Element(name), options));
+                builder.Add(Child.Diff(expected.Child, path.Element(name), options));
             }
 
             return builder.ToDiffSet();
@@ -150,6 +150,31 @@ namespace Gallio.Common.Xml
         public bool AreNamesEqual(string otherName, Options options)
         {
             return name.Equals(otherName, GetComparisonTypeForName(options));
+        }
+    
+        /// <inheritdoc />
+        public override bool Contains(XmlPathClosed searchedItem, int depth)
+        {
+            if (searchedItem == null)
+                throw new ArgumentNullException("searchedItem");
+            if (depth < 0)
+                throw new ArgumentOutOfRangeException("depth", "The depth must be greater than or equal to zero.");
+        
+            if (depth >= searchedItem.ElementNames.Count)
+                return false;
+
+            if (!searchedItem.ElementNames[depth].Equals(name))
+                return false;
+
+            if ((depth == searchedItem.ElementNames.Count - 1) &&
+                (searchedItem.AttributeName != null) &&
+                !attributes.Contains(searchedItem.AttributeName))
+                return false;
+
+            if (depth == searchedItem.ElementNames.Count - 1)
+                return true;
+
+            return Child.Contains(searchedItem, depth + 1);
         }
     }
 }

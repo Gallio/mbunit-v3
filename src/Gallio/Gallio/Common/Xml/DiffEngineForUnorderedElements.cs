@@ -26,7 +26,7 @@ namespace Gallio.Common.Xml
     {
         private readonly ElementCollection expected;
         private readonly ElementCollection actual;
-        private readonly Path path;
+        private readonly IXmlPathOpen path;
         private readonly Options options;
 
         /// <summary>
@@ -36,7 +36,7 @@ namespace Gallio.Common.Xml
         /// <param name="actual">The actual object.</param>
         /// <param name="path">The current path of the parent node.</param>
         /// <param name="options">Equality options.</param>
-        public DiffEngineForUnorderedElements(ElementCollection expected, ElementCollection actual, Path path, Options options)
+        public DiffEngineForUnorderedElements(ElementCollection expected, ElementCollection actual, IXmlPathOpen path, Options options)
         {
             if (expected == null)
                 throw new ArgumentNullException("expected");
@@ -72,7 +72,7 @@ namespace Gallio.Common.Xml
             // Find first exact match (= empty diff)
             for (int i = 0; i < source.Count; i++)
             {
-                int j = pool.FindIndex(x => !mask.Contains(x) && source[i].Diff(pool[x], Path.Empty, options).IsEmpty);
+                int j = pool.FindIndex(x => !mask.Contains(x) && source[i].Diff(pool[x], XmlPathClosed.Empty, options).IsEmpty);
 
                 if (j < 0)
                 {

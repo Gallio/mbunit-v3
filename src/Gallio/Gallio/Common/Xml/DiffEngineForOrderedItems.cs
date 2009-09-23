@@ -30,7 +30,7 @@ namespace Gallio.Common.Xml
     {
         private readonly TCollection expected;
         private readonly TCollection actual;
-        private readonly Path path;
+        private readonly IXmlPathOpen path;
         private readonly Options options;
         private readonly string itemName;
 
@@ -42,7 +42,7 @@ namespace Gallio.Common.Xml
         /// <param name="path">The current path of the parent node.</param>
         /// <param name="options">Equality options.</param>
         /// <param name="itemName">A friendly name for the items.</param>
-        public DiffEngineForOrderedItems(TCollection expected, TCollection actual, Path path, Options options, string itemName)
+        public DiffEngineForOrderedItems(TCollection expected, TCollection actual, IXmlPathOpen path, Options options, string itemName)
         {
             if (expected == null)
                 throw new ArgumentNullException("expected");

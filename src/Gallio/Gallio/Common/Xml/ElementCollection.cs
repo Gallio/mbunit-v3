@@ -98,13 +98,13 @@ namespace Gallio.Common.Xml
         }
 
         /// <inheritdoc />
-        public override DiffSet Diff(INode expected, Path path, Options options)
+        public override DiffSet Diff(INode expected, IXmlPathOpen path, Options options)
         {
             return Diff(expected.IsNull ? ElementCollection.Empty : (ElementCollection)expected, path, options);
         }
 
         /// <inheritdoc />
-        public DiffSet Diff(ElementCollection expected, Path path, Options options)
+        public DiffSet Diff(ElementCollection expected, IXmlPathOpen path, Options options)
         {
             return DiffEngineFactory.ForElements(expected, this, path, options).Diff();
         }
@@ -121,6 +121,12 @@ namespace Gallio.Common.Xml
             }
 
             return -1;
+        }
+
+        /// <inheritdoc />
+        public override bool Contains(XmlPathClosed searchedItem, int depth)
+        {
+            return elements.Exists(element => element.Contains(searchedItem, depth));
         }
     }
 }

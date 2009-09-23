@@ -22,6 +22,7 @@ namespace Gallio.Common.Xml
     /// <summary>
     /// Path to a node (element or attribute) in an XML fragment. 
     /// </summary>
+    [Obsolete]
     public sealed class Path
     {
         private readonly Path innerPath;
@@ -45,6 +46,26 @@ namespace Gallio.Common.Xml
         public Path Extend(string elementName)
         {
             return Extend(elementName, false);
+        }
+
+        /// <summary>
+        /// Extends the current path by appending the specified child elements.
+        /// </summary>
+        /// <param name="elementNames">An enumeration of the child element names.</param>
+        /// <returns>A new path instance that extends the current one.</returns>
+        public Path Extend(IEnumerable<string> elementNames)
+        {
+            if (elementNames == null)
+                throw new ArgumentNullException("elementNames");
+
+            Path path = this;
+        
+            foreach (var elementName in elementNames)
+            {
+                path = path.Extend(elementName, false);
+            }
+
+            return path;
         }
 
         /// <summary>
