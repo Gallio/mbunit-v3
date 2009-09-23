@@ -40,6 +40,7 @@ namespace MbUnit.Framework
             /// <param name="expectedXmlReader">A reader to get the expected XML fragment.</param>
             /// <param name="actualXmlReader">A reader to get the actual XML fragment.</param>
             /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
+            /// <exception cref="ArgumentNullException">Thrown if <paramref name="expectedXmlReader"/> or <paramref name="actualXmlReader"/> is null.</exception>
             public static void AreEqual(TextReader expectedXmlReader, TextReader actualXmlReader)
             {
                 AreEqual(expectedXmlReader, actualXmlReader, XmlOptions.Default, null, null);
@@ -50,11 +51,12 @@ namespace MbUnit.Framework
             /// </summary>
             /// <param name="expectedXmlReader">A reader to get the expected XML fragment.</param>
             /// <param name="actualXmlReader">A reader to get the actual XML fragment.</param>
-            /// <param name="settings">Equality options.</param>
+            /// <param name="options">Equality options.</param>
             /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
-            public static void AreEqual(TextReader expectedXmlReader, TextReader actualXmlReader, XmlOptions settings)
+            /// <exception cref="ArgumentNullException">Thrown if <paramref name="expectedXmlReader"/>, <paramref name="actualXmlReader"/>, or <paramref name="options"/> is null.</exception>
+            public static void AreEqual(TextReader expectedXmlReader, TextReader actualXmlReader, XmlOptions options)
             {
-                AreEqual(expectedXmlReader, actualXmlReader, settings, null, null);
+                AreEqual(expectedXmlReader, actualXmlReader, options, null, null);
             }
 
             /// <summary>
@@ -65,6 +67,7 @@ namespace MbUnit.Framework
             /// <param name="messageFormat">The custom assertion message format, or null if none.</param>
             /// <param name="messageArgs">The custom assertion message arguments, or null if none.</param>
             /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
+            /// <exception cref="ArgumentNullException">Thrown if <paramref name="expectedXmlReader"/> or <paramref name="actualXmlReader"/> is null.</exception>
             public static void AreEqual(TextReader expectedXmlReader, TextReader actualXmlReader, string messageFormat, params object[] messageArgs)
             {
                 AreEqual(expectedXmlReader, actualXmlReader, XmlOptions.Default, messageFormat, messageArgs);
@@ -75,18 +78,19 @@ namespace MbUnit.Framework
             /// </summary>
             /// <param name="expectedXmlReader">A reader to get the expected XML fragment.</param>
             /// <param name="actualXmlReader">A reader to get the actual XML fragment.</param>
-            /// <param name="settings">Equality options.</param>
+            /// <param name="options">Equality options.</param>
             /// <param name="messageFormat">The custom assertion message format, or null if none.</param>
             /// <param name="messageArgs">The custom assertion message arguments, or null if none.</param>
             /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
-            public static void AreEqual(TextReader expectedXmlReader, TextReader actualXmlReader, XmlOptions settings, string messageFormat, params object[] messageArgs)
+            /// <exception cref="ArgumentNullException">Thrown if <paramref name="expectedXmlReader"/>, <paramref name="actualXmlReader"/>, or <paramref name="options"/> is null.</exception>
+            public static void AreEqual(TextReader expectedXmlReader, TextReader actualXmlReader, XmlOptions options, string messageFormat, params object[] messageArgs)
             {
                 if (expectedXmlReader == null)
                     throw new ArgumentNullException("expectedXmlReader");
                 if (actualXmlReader == null)
                     throw new ArgumentNullException("actualXmlReader");
 
-                AreEqual(expectedXmlReader.ReadToEnd(), actualXmlReader.ReadToEnd(), settings, messageFormat, messageArgs);
+                AreEqual(expectedXmlReader.ReadToEnd(), actualXmlReader.ReadToEnd(), options, messageFormat, messageArgs);
             }
 
             /// <summary>
@@ -95,6 +99,7 @@ namespace MbUnit.Framework
             /// <param name="expectedXml">The expected XML fragment.</param>
             /// <param name="actualXml">The actual XML fragment.</param>
             /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
+            /// <exception cref="ArgumentNullException">Thrown if <paramref name="expectedXml"/> or <paramref name="actualXml"/> is null.</exception>
             public static void AreEqual(string expectedXml, string actualXml)
             {
                 AreEqual(expectedXml, actualXml, XmlOptions.Default, null, null);
@@ -105,11 +110,12 @@ namespace MbUnit.Framework
             /// </summary>
             /// <param name="expectedXml">The expected XML fragment.</param>
             /// <param name="actualXml">The actual XML fragment.</param>
-            /// <param name="settings">Equality options.</param>
+            /// <param name="options">Equality options.</param>
             /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
-            public static void AreEqual(string expectedXml, string actualXml, XmlOptions settings)
+            /// <exception cref="ArgumentNullException">Thrown if <paramref name="expectedXml"/>, <paramref name="actualXml"/>, or <paramref name="options"/> is null.</exception>
+            public static void AreEqual(string expectedXml, string actualXml, XmlOptions options)
             {
-                AreEqual(expectedXml, actualXml, settings, null, null);
+                AreEqual(expectedXml, actualXml, options, null, null);
             }
 
             /// <summary>
@@ -120,6 +126,7 @@ namespace MbUnit.Framework
             /// <param name="messageFormat">The custom assertion message format, or null if none.</param>
             /// <param name="messageArgs">The custom assertion message arguments, or null if none.</param>
             /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
+            /// <exception cref="ArgumentNullException">Thrown if <paramref name="expectedXml"/> or <paramref name="actualXml"/> is null.</exception>
             public static void AreEqual(string expectedXml, string actualXml, string messageFormat, params object[] messageArgs)
             {
                 AreEqual(expectedXml, actualXml, XmlOptions.Default, messageFormat, messageArgs);
@@ -130,11 +137,12 @@ namespace MbUnit.Framework
             /// </summary>
             /// <param name="expectedXml">The expected XML fragment.</param>
             /// <param name="actualXml">The actual XML fragment.</param>
-            /// <param name="settings">Equality options.</param>
+            /// <param name="options">Equality options.</param>
             /// <param name="messageFormat">The custom assertion message format, or null if none.</param>
             /// <param name="messageArgs">The custom assertion message arguments, or null if none.</param>
             /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
-            public static void AreEqual(string expectedXml, string actualXml, XmlOptions settings, string messageFormat, params object[] messageArgs)
+            /// <exception cref="ArgumentNullException">Thrown if <paramref name="expectedXml"/>, <paramref name="actualXml"/>, or <paramref name="options"/> is null.</exception>
+            public static void AreEqual(string expectedXml, string actualXml, XmlOptions options, string messageFormat, params object[] messageArgs)
             {
                 if (expectedXml == null)
                     throw new ArgumentNullException("expectedXml");
@@ -148,7 +156,7 @@ namespace MbUnit.Framework
 
                     try
                     {
-                        expectedDocument = new Parser(expectedXml).Run(settings.Value);
+                        expectedDocument = new Parser(expectedXml).Run(options.Value);
                     }
                     catch (XmlException exception)
                     {
@@ -160,7 +168,7 @@ namespace MbUnit.Framework
 
                     try
                     {
-                        actualDocument = new Parser(actualXml).Run(settings.Value);
+                        actualDocument = new Parser(actualXml).Run(options.Value);
                     }
                     catch (XmlException exception)
                     {
@@ -170,14 +178,14 @@ namespace MbUnit.Framework
                             .ToAssertionFailure();
                     }
 
-                    DiffSet diffSet = actualDocument.Diff(expectedDocument, Gallio.Common.Xml.XmlPathClosed.Empty, settings.Value);
+                    DiffSet diffSet = actualDocument.Diff(expectedDocument, Gallio.Common.Xml.XmlPathClosed.Empty, options.Value);
 
                     if (diffSet.IsEmpty)
                         return null;
 
                     return new AssertionFailureBuilder("Expected XML fragments to be equal according to the specified options.")
                         .SetMessage(messageFormat, messageArgs)
-                        .AddRawLabeledValue("Equality Options", settings.Value)
+                        .AddRawLabeledValue("Equality Options", options.Value)
                         .AddInnerFailures(diffSet.ToAssertionFailures())
                         .ToAssertionFailure();
                 });
@@ -193,6 +201,7 @@ namespace MbUnit.Framework
             /// <param name="actualXmlReader">A reader to get the actual XML fragment.</param>
             /// <param name="searchedItem">The path of the searched element or attribute in the XML fragment.</param>
             /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
+            /// <exception cref="ArgumentNullException">Thrown if <paramref name="actualXmlReader"/> or <paramref name="searchedItem"/> is null.</exception>
             public static void Exists(TextReader actualXmlReader, IXmlPath searchedItem)
             {
                 Exists(actualXmlReader, searchedItem, XmlOptions.Default, null, null);
@@ -205,6 +214,7 @@ namespace MbUnit.Framework
             /// <param name="searchedItem">The path of the searched element or attribute in the XML fragment.</param>
             /// <param name="options">Options for the search.</param>
             /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
+            /// <exception cref="ArgumentNullException">Thrown if <paramref name="actualXmlReader"/>, <paramref name="searchedItem"/>, or <paramref name="options"/> is null.</exception>
             /// <remarks>
             /// <para>
             /// Options not related to the name case of elements and attributes are going to be ignored.
@@ -223,6 +233,7 @@ namespace MbUnit.Framework
             /// <param name="messageFormat">The custom assertion message format, or null if none.</param>
             /// <param name="messageArgs">The custom assertion message arguments, or null if none.</param>
             /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
+            /// <exception cref="ArgumentNullException">Thrown if <paramref name="actualXmlReader"/> or <paramref name="searchedItem"/> is null.</exception>
             public static void Exists(TextReader actualXmlReader, IXmlPath searchedItem, string messageFormat, params object[] messageArgs)
             {
                 Exists(actualXmlReader, searchedItem, XmlOptions.Default, messageFormat, messageArgs);
@@ -237,6 +248,7 @@ namespace MbUnit.Framework
             /// <param name="messageFormat">The custom assertion message format, or null if none.</param>
             /// <param name="messageArgs">The custom assertion message arguments, or null if none.</param>
             /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
+            /// <exception cref="ArgumentNullException">Thrown if <paramref name="actualXmlReader"/>, <paramref name="searchedItem"/>, or <paramref name="options"/> is null.</exception>
             /// <remarks>
             /// <para>
             /// Options not related to the name case of elements and attributes are going to be ignored.
@@ -256,6 +268,7 @@ namespace MbUnit.Framework
             /// <param name="actualXml">The actual XML fragment.</param>
             /// <param name="searchedItem">The path of the searched element or attribute in the XML fragment.</param>
             /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
+            /// <exception cref="ArgumentNullException">Thrown if <paramref name="actualXml"/> or <paramref name="searchedItem"/> is null.</exception>
             public static void Exists(string actualXml, IXmlPath searchedItem)
             {
                 Exists(actualXml, searchedItem, XmlOptions.Default, null, null);
@@ -268,6 +281,7 @@ namespace MbUnit.Framework
             /// <param name="searchedItem">The path of the searched element or attribute in the XML fragment.</param>
             /// <param name="options">Options for the search.</param>
             /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
+            /// <exception cref="ArgumentNullException">Thrown if <paramref name="actualXml"/>, <paramref name="searchedItem"/>, or <paramref name="options"/> is null.</exception>
             /// <remarks>
             /// <para>
             /// Options not related to the name case of elements and attributes are going to be ignored.
@@ -286,6 +300,7 @@ namespace MbUnit.Framework
             /// <param name="messageFormat">The custom assertion message format, or null if none.</param>
             /// <param name="messageArgs">The custom assertion message arguments, or null if none.</param>
             /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
+            /// <exception cref="ArgumentNullException">Thrown if <paramref name="actualXml"/> or <paramref name="searchedItem"/> is null.</exception>
             public static void Exists(string actualXml, IXmlPath searchedItem, string messageFormat, params object[] messageArgs)
             {
                 Exists(actualXml, searchedItem, XmlOptions.Default, messageFormat, messageArgs);
@@ -300,6 +315,7 @@ namespace MbUnit.Framework
             /// <param name="messageFormat">The custom assertion message format, or null if none.</param>
             /// <param name="messageArgs">The custom assertion message arguments, or null if none.</param>
             /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
+            /// <exception cref="ArgumentNullException">Thrown if <paramref name="actualXml"/>, <paramref name="searchedItem"/>, or <paramref name="options"/> is null.</exception>
             /// <remarks>
             /// <para>
             /// Options not related to the name case of elements and attributes are going to be ignored.
@@ -311,6 +327,8 @@ namespace MbUnit.Framework
                     throw new ArgumentNullException("actualXml");
                 if (searchedItem == null)
                     throw new ArgumentNullException("searchedItem");
+                if (options == null)
+                    throw new ArgumentNullException("options");
 
                 AssertionHelper.Verify(() =>
                 {

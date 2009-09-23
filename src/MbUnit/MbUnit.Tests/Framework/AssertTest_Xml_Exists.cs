@@ -196,6 +196,15 @@ namespace MbUnit.Tests.Framework
                 XmlPath.Element("SolarSystem").Element("Planets").Element("Planet").Element("Satellites").Element("Satellite").Attribute("name"),
                 XmlOptions.Default, true
             };
+
+            yield return new object[]
+            { 
+                "Should child at lower depth than maximum depth in the tree.",
+                "<Root><Parent><Child/></Parent></Root>",
+                XmlPath.Element("Root").Element("Parent"),
+                XmlOptions.Default, true
+            };
+
         }
     }
 }
