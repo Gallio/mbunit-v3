@@ -178,7 +178,7 @@ namespace MbUnit.Framework
                             .ToAssertionFailure();
                     }
 
-                    DiffSet diffSet = actualDocument.Diff(expectedDocument, Gallio.Common.Xml.XmlPathClosed.Empty, options.Value);
+                    DiffSet diffSet = actualDocument.Diff(expectedDocument, XmlPathRoot.Empty, options.Value);
 
                     if (diffSet.IsEmpty)
                         return null;

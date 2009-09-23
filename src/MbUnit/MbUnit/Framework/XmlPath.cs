@@ -46,7 +46,7 @@ namespace MbUnit.Framework
         {
             get
             {
-                return XmlPathClosed.Empty;
+                return XmlPathRoot.Empty;
             }
         }
 
@@ -57,7 +57,7 @@ namespace MbUnit.Framework
         /// <returns></returns>
         public static IXmlPathOpen Element(string elementName)
         {
-            return XmlPathClosed.Element(elementName);
+            return XmlPathRoot.Element(elementName);
         }
     }
 }

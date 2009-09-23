@@ -32,34 +32,34 @@ namespace Gallio.Tests.Common.Xml
         [ExpectedArgumentNullException]
         public void Element_with_null_name_should_throw_exception()
         {
-            XmlPathClosed.Element(null);
+            XmlPathRoot.Element(null);
         }
 
         [Test]
         [ExpectedArgumentException]
         public void Element_with_empty_name_should_throw_exception()
         {
-            XmlPathClosed.Element(String.Empty);
+            XmlPathRoot.Element(String.Empty);
         }
 
         [Test]
         [ExpectedArgumentNullException]
         public void Attribute_with_null_name_should_throw_exception()
         {
-            XmlPathClosed.Element("Element").Attribute(null);
+            XmlPathRoot.Element("Element").Attribute(null);
         }
 
         [Test]
         [ExpectedArgumentException]
         public void Attribute_with_empty_name_should_throw_exception()
         {
-            XmlPathClosed.Element("Element").Attribute(String.Empty);
+            XmlPathRoot.Element("Element").Attribute(String.Empty);
         }
 
         [Test]
         public void Element_without_attribute()
         {
-            var path = (XmlPathClosed)XmlPathClosed.Element("Ancestor").Element("Parent").Element("Child");
+            var path = (XmlPathClosed)XmlPathRoot.Element("Ancestor").Element("Parent").Element("Child");
             Assert.AreElementsEqual(new[] { "Ancestor", "Parent", "Child" }, path.ElementNames);
             Assert.IsNull(path.AttributeName);
             Assert.AreEqual("<Ancestor><Parent><Child>", path.ToString());
@@ -68,7 +68,7 @@ namespace Gallio.Tests.Common.Xml
         [Test]
         public void Element_with_attribute()
         {
-            var path = (XmlPathClosed)XmlPathClosed.Element("Ancestor").Element("Parent").Element("Child").Attribute("value");
+            var path = (XmlPathClosed)XmlPathRoot.Element("Ancestor").Element("Parent").Element("Child").Attribute("value");
             Assert.AreElementsEqual(new[] { "Ancestor", "Parent", "Child" }, path.ElementNames);
             Assert.AreEqual("value", path.AttributeName);
             Assert.AreEqual("<Ancestor><Parent><Child value='...'>", path.ToString());

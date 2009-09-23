@@ -72,7 +72,7 @@ namespace Gallio.Common.Xml
             // Find first exact match (= empty diff)
             for (int i = 0; i < source.Count; i++)
             {
-                int j = pool.FindIndex(x => !mask.Contains(x) && source[i].Diff(pool[x], XmlPathClosed.Empty, options).IsEmpty);
+                int j = pool.FindIndex(x => !mask.Contains(x) && source[i].Diff(pool[x], XmlPathOpen.Empty, options).IsEmpty);
 
                 if (j < 0)
                 {

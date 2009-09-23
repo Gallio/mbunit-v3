@@ -98,7 +98,7 @@ namespace Gallio.Common.Xml
 
         private int Find(AttributeCollection source, Attribute attribute, IList<int> mask)
         {
-            int index = source.FindIndex(i => !mask.Contains(i) && attribute.Diff(source[i], XmlPathClosed.Empty, options).IsEmpty);
+            int index = source.FindIndex(i => !mask.Contains(i) && attribute.Diff(source[i], XmlPathOpen.Empty, options).IsEmpty);
 
             if (index < 0)
             {
