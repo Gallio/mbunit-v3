@@ -144,42 +144,44 @@ namespace Gallio.Icarus.Controllers
 
         private void CountResults()
         {
+            // invalidate cache
+            listViewItems.Clear();
+            
             int count = 0;
-            ResultsCount = count;
-
             if (testController.Model.Root != null)
             {
                 if (testController.SelectedTests.Count == 0)
                 {
-                    CountResults(testController.Model.Root, ref count);
+                    count = CountResults(testController.Model.Root);
                 }
                 else
                 {
                     // need to do this because poxy namespace nodes don't really exist!
                     foreach (TestTreeNode node in testController.SelectedTests)
-                        CountResults(node, ref count);
+                        count += CountResults(node);
                 }
             }
-
-            // update cache
-            UpdateTestResults();
 
             // notify that list has changed
             ResultsCount = count;
             OnPropertyChanged(new PropertyChangedEventArgs("ElapsedTime"));
         }
 
-        private static void CountResults(TestTreeNode node, ref int count)
+        private static int CountResults(TestTreeNode node)
         {
+            int count = 0;
             count += node.TestStepRuns.Count;
 
             foreach (Node n in node.Nodes)
-                CountResults((TestTreeNode) n, ref count);
+                count += CountResults((TestTreeNode) n);
+
+            return count;
         }
 
         private void Reset()
         {
             ResultsCount = 0;
+            listViewItems.Clear();
           
             stopwatch.Reset();
             OnPropertyChanged(new PropertyChangedEventArgs("ElapsedTime"));
@@ -208,13 +210,13 @@ namespace Gallio.Icarus.Controllers
                 firstItem = itemIndex;
                 UpdateTestResults();
             }
-            else if (itemIndex > (firstItem + (listViewItems.Count - 1)))
+            else if (itemIndex >= firstItem + listViewItems.Count)
             {
                 lastItem = itemIndex;
                 UpdateTestResults();
             }
 
-            if ((itemIndex - firstItem) > (listViewItems.Count - 1))
+            if ((itemIndex - firstItem) >= listViewItems.Count)
             {
                 UpdateTestResults();
             }
@@ -275,10 +277,10 @@ namespace Gallio.Icarus.Controllers
             });
 
             // trim list to viewport
-            ListViewItem[] relevantItems = new ListViewItem[lastItem - firstItem];
-            listViewItems.CopyTo(firstItem, relevantItems, 0, lastItem - firstItem);
-            listViewItems.Clear();
-            listViewItems.AddRange(relevantItems);
+            //var relevantItems = new ListViewItem[lastItem - firstItem];
+            //listViewItems.CopyTo(firstItem, relevantItems, 0, lastItem - firstItem);
+            //listViewItems.Clear();
+            //listViewItems.AddRange(relevantItems);
         }
 
         private void UpdateTestResults(TestTreeNode node, int indentCount)
