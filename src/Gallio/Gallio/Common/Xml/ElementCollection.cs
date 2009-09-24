@@ -124,9 +124,9 @@ namespace Gallio.Common.Xml
         }
 
         /// <inheritdoc />
-        public override bool Contains(XmlPathClosed searchedItem, int depth, Options options)
+        public override bool Contains(XmlPathClosed searchedItem, Options options)
         {
-            return elements.Exists(element => element.Contains(searchedItem, depth, options));
+            return elements.Exists(element => element.Contains(searchedItem, options));
         }
     }
 }

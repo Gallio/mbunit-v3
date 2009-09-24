@@ -346,7 +346,7 @@ namespace MbUnit.Framework
                             .ToAssertionFailure();
                     }
 
-                    if (document.Contains((XmlPathClosed)searchedItem, 0, options.Value))
+                    if (document.Contains((XmlPathClosed)searchedItem, options.Value))
                         return null;
 
                     return new AssertionFailureBuilder("Expected the XML fragment to contain the searched XML element or attribute, but none was found.")

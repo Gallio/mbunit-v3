@@ -90,21 +90,14 @@ namespace Gallio.Tests.Common.Xml
         public void Contains_with_null_path_should_throw_exception()
         {
             var document = GetDocument();
-            Assert.Throws<ArgumentNullException>(() => document.Contains(null, 0, Options.None));
-        }
-
-        [Test]
-        public void Contains_with_negative_depth_should_throw_exception()
-        {
-            var document = GetDocument();
-            Assert.Throws<ArgumentOutOfRangeException>(() => document.Contains((XmlPathClosed)XmlPath.Empty, -1, Options.None));
+            Assert.Throws<ArgumentNullException>(() => document.Contains(null, Options.None));
         }
 
         [Test]
         public void Contains_yes()
         {
             var document = GetDocument();
-            bool contains = document.Contains((XmlPathClosed)XmlPath.Element("Composers").Element("Composer").Element("Name"), 0, Options.None);
+            bool contains = document.Contains((XmlPathClosed)XmlPath.Element("Composers").Element("Composer").Element("Name"), Options.None);
             Assert.IsTrue(contains);
         }
 
@@ -112,7 +105,7 @@ namespace Gallio.Tests.Common.Xml
         public void Contains_case_insensitive_yes()
         {
             var document = GetDocument();
-            bool contains = document.Contains((XmlPathClosed)XmlPath.Element("CoMPOSErs").Element("coMpoSER").Element("namE"), 0, Options.IgnoreElementsNameCase);
+            bool contains = document.Contains((XmlPathClosed)XmlPath.Element("CoMPOSErs").Element("coMpoSER").Element("namE"), Options.IgnoreElementsNameCase);
             Assert.IsTrue(contains);
         }
 
@@ -120,7 +113,7 @@ namespace Gallio.Tests.Common.Xml
         public void Contains_no()
         {
             var document = GetDocument();
-            bool contains = document.Contains((XmlPathClosed)XmlPath.Element("Composers").Element("Composer").Element("DoesNotExist"), 0, Options.None);
+            bool contains = document.Contains((XmlPathClosed)XmlPath.Element("Composers").Element("Composer").Element("DoesNotExist"), Options.None);
             Assert.IsFalse(contains);
         }
 
@@ -128,7 +121,7 @@ namespace Gallio.Tests.Common.Xml
         public void Contains_case_sensitive_no()
         {
             var document = GetDocument();
-            bool contains = document.Contains((XmlPathClosed)XmlPath.Element("CoMPOSErs").Element("coMpoSER").Element("namE"), 0, Options.None);
+            bool contains = document.Contains((XmlPathClosed)XmlPath.Element("CoMPOSErs").Element("coMpoSER").Element("namE"), Options.None);
             Assert.IsFalse(contains);
         }
     }

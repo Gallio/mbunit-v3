@@ -153,28 +153,26 @@ namespace Gallio.Common.Xml
         }
     
         /// <inheritdoc />
-        public override bool Contains(XmlPathClosed searchedItem, int depth, Options options)
+        public override bool Contains(XmlPathClosed searchedItem, Options options)
         {
             if (searchedItem == null)
                 throw new ArgumentNullException("searchedItem");
-            if (depth < 0)
-                throw new ArgumentOutOfRangeException("depth", "The depth must be greater than or equal to zero.");
         
-            if (depth >= searchedItem.ElementNames.Count)
+            if (searchedItem.IsEmpty)
                 return false;
 
-            if (!AreNamesEqual(searchedItem.ElementNames[depth], options))
+            if (!AreNamesEqual(searchedItem.ElementNames[0], options))
                 return false;
 
-            if ((depth == searchedItem.ElementNames.Count - 1) &&
+            if ((searchedItem.ElementNames.Count == 1) &&
                 (searchedItem.AttributeName != null) &&
                 !attributes.Contains(searchedItem.AttributeName, options))
                 return false;
 
-            if (depth == searchedItem.ElementNames.Count - 1)
+            if (searchedItem.ElementNames.Count == 1)
                 return true;
 
-            return Child.Contains(searchedItem, depth + 1, options);
+            return Child.Contains(searchedItem.Trail(), options);
         }
     }
 }

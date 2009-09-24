@@ -73,5 +73,39 @@ namespace Gallio.Tests.Common.Xml
             Assert.AreEqual("value", path.AttributeName);
             Assert.AreEqual("<Ancestor><Parent><Child value='...'>", path.ToString());
         }
+
+        [Test]
+        public void Trail_empty_path()
+        {
+            var trail = ((XmlPathClosed)XmlPathRoot.Empty).Trail();
+            Assert.IsEmpty(trail.ToString());
+        }
+
+        [Test]
+        public void Trail_path_with_one_element()
+        {
+            var path = (XmlPathClosed)XmlPathRoot.Element("Root");
+            var trail = path.Trail();
+            Assert.AreEqual("<Root>", path.ToString());
+            Assert.IsEmpty(trail.ToString());
+        }
+
+        [Test]
+        public void Trail_deep_path()
+        {
+            var path = (XmlPathClosed)XmlPathRoot.Element("Ancestor").Element("Parent").Element("Child");
+            var trail = path.Trail();
+            Assert.AreEqual("<Ancestor><Parent><Child>", path.ToString());
+            Assert.AreEqual("<Parent><Child>", trail.ToString());
+        }
+
+        [Test]
+        public void Trail_deep_path_with_attribute()
+        {
+            var path = (XmlPathClosed)XmlPathRoot.Element("Ancestor").Element("Parent").Element("Child").Attribute("value");
+            var trail = path.Trail();
+            Assert.AreEqual("<Ancestor><Parent><Child value='...'>", path.ToString());
+            Assert.AreEqual("<Parent><Child value='...'>", trail.ToString());
+        }
     }
 }

@@ -95,19 +95,13 @@ namespace Gallio.Common.Xml
             {
                 if (elementNames == null)
                 {
-                    XmlPathOpen current = parent;
                     var list = new List<string>();
 
-                    if (elementName != null)
-                        list.Add(elementName);
-
-                    while (!current.IsEmpty)
+                    foreach (XmlPathClosed item in ToArray())
                     {
-                        list.Add(current.elementName);
-                        current = current.parent;
+                        list.Add(item.ElementName);
                     }
 
-                    list.Reverse();
                     elementNames = new ReadOnlyCollection<string>(list);
                 }
 
@@ -158,6 +152,39 @@ namespace Gallio.Common.Xml
             }
 
             return output.ToString();
+        }
+
+        private XmlPathClosed[] ToArray()
+        {
+            var list = new List<XmlPathClosed>();
+            XmlPathClosed current = this;
+
+            while (current != null && !current.IsEmpty)
+            {
+                list.Add(current);
+                current = current.Parent;
+            }
+
+            list.Reverse();
+            return list.ToArray();
+        }
+
+        internal XmlPathClosed Trail()
+        {
+            XmlPathClosed[] array = ToArray();
+            var path = XmlPathOpen.Empty;
+
+            for (int i = 1; i < array.Length; i++)
+            {
+                path = path.Element(array[i].ElementName, array[i].Declarative);
+
+                if (array[i].AttributeName != null)
+                {
+                    return (XmlPathClosed)path.Attribute(array[i].AttributeName);
+                }
+            }
+
+            return (XmlPathClosed)path;
         }
     }
 
