@@ -17,7 +17,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Drawing;
 using System.Windows.Forms;
 using Aga.Controls.Tree;
 using Gallio.Icarus.Controllers.Interfaces;
@@ -31,9 +30,7 @@ namespace Gallio.Icarus.Controllers
     internal class TestResultsController : NotifyController, ITestResultsController
     {
         private readonly ITestController testController;
-        private readonly IOptionsController optionsController;
 
-        private int resultsCount;
         private readonly Stopwatch stopwatch = new Stopwatch();
         private readonly List<ListViewItem> listViewItems = new List<ListViewItem>();
         private int firstItem;
@@ -42,42 +39,9 @@ namespace Gallio.Icarus.Controllers
         private int sortColumn = -1;
         private SortOrder sortOrder;
 
-        public int ResultsCount
+        public Observable<int> ResultsCount
         {
-            get 
-            { 
-                return resultsCount; 
-            }
-            private set
-            {
-                resultsCount = value;
-                OnPropertyChanged(new PropertyChangedEventArgs("ResultsCount"));
-            }
-        }
-
-        public string TestStatusBarStyle
-        {
-            get { return optionsController.TestStatusBarStyle; }
-        }
-
-        public Color PassedColor
-        {
-            get { return optionsController.PassedColor; }
-        }
-
-        public Color FailedColor
-        {
-            get { return optionsController.FailedColor; }
-        }
-
-        public Color InconclusiveColor
-        {
-            get { return optionsController.InconclusiveColor; }
-        }
-
-        public Color SkippedColor
-        {
-            get { return optionsController.SkippedColor; }
+            get; private set;
         }
 
         public int PassedTestCount
@@ -110,16 +74,12 @@ namespace Gallio.Icarus.Controllers
             get { return testController.TestCount; }
         }
 
-        public TestResultsController(ITestController testController, IOptionsController optionsController)
+        public TestResultsController(ITestController testController)
         {
             if (testController == null) 
                 throw new ArgumentNullException("testController");
             
-            if (optionsController == null) 
-                throw new ArgumentNullException("optionsController");
-            
             this.testController = testController;
-
             testController.TestStepFinished += (sender, e) => CountResults();
             testController.PropertyChanged += (sender, e) =>
             {
@@ -127,6 +87,8 @@ namespace Gallio.Icarus.Controllers
                     return;
 
                 CountResults();
+
+                OnPropertyChanged(e);
             };
             testController.ExploreStarted += (sender, e) => Reset();
             testController.ExploreFinished += (sender, e) => OnPropertyChanged(new PropertyChangedEventArgs("ElapsedTime"));
@@ -136,35 +98,45 @@ namespace Gallio.Icarus.Controllers
                 stopwatch.Start();
             };
             testController.RunFinished += (sender, e) => stopwatch.Stop();
-            testController.PropertyChanged += ((sender, e) => OnPropertyChanged(e));
 
-            this.optionsController = optionsController;
-            optionsController.PropertyChanged += ((sender, e) => OnPropertyChanged(e));
+            ResultsCount = new Observable<int>();
         }
 
         private void CountResults()
         {
             // invalidate cache
             listViewItems.Clear();
-            
+            ResultsCount.Value = 0;
+
             int count = 0;
-            if (testController.Model.Root != null)
+            WalkTree(ttn => count += CountResults(ttn));
+            
+            // notify that list has changed
+            ResultsCount.Value = count;
+            OnPropertyChanged(new PropertyChangedEventArgs("ElapsedTime"));
+        }
+
+        private void WalkTree(Action<TestTreeNode> action)
+        {
+            var selectedTests = new TestTreeNode[0];
+            testController.SelectedTests.Read(sts =>
             {
-                if (testController.SelectedTests.Count == 0)
+                selectedTests = new TestTreeNode[sts.Count];
+                sts.CopyTo(selectedTests, 0);
+            });
+
+            if (selectedTests.Length == 0)
+            {
+                action(testController.Model.Root);
+            }
+            else
+            {
+                // need to do this because poxy namespace nodes don't really exist!
+                foreach (var node in selectedTests)
                 {
-                    count = CountResults(testController.Model.Root);
-                }
-                else
-                {
-                    // need to do this because poxy namespace nodes don't really exist!
-                    foreach (TestTreeNode node in testController.SelectedTests)
-                        count += CountResults(node);
+                    action(node);
                 }
             }
-
-            // notify that list has changed
-            ResultsCount = count;
-            OnPropertyChanged(new PropertyChangedEventArgs("ElapsedTime"));
         }
 
         private static int CountResults(TestTreeNode node)
@@ -180,7 +152,7 @@ namespace Gallio.Icarus.Controllers
 
         private void Reset()
         {
-            ResultsCount = 0;
+            ResultsCount.Value = 0;
             listViewItems.Clear();
           
             stopwatch.Reset();
@@ -229,16 +201,7 @@ namespace Gallio.Icarus.Controllers
             listViewItems.Clear();
             index = 0;
 
-            if (testController.SelectedTests.Count == 0)
-            {
-                UpdateTestResults(testController.Model.Root, 0);
-            }
-            else
-            {
-                // need to do this because poxy namespace nodes don't really exist!
-                foreach (TestTreeNode node in testController.SelectedTests)
-                    UpdateTestResults(node, 0);
-            }
+            WalkTree(ttn => UpdateTestResults(ttn, 0));
 
             if (sortColumn != -1)
                 SortAndTrimListViewItems();

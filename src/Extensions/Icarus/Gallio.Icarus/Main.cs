@@ -113,7 +113,7 @@ namespace Gallio.Icarus
             testExplorer = new TestExplorer(optionsController, projectController, testController, 
                 sourceCodeController, taskManager);
             projectExplorer = new ProjectExplorer(projectController, testController, reportController, taskManager);
-            testResults = new TestResults(testResultsController);
+            testResults = new TestResults(testResultsController, optionsController);
             runtimeLogWindow = new RuntimeLogWindow(runtimeLogController);
             filtersWindow = new FiltersWindow(new FilterController(taskManager, testController, 
                 projectController));

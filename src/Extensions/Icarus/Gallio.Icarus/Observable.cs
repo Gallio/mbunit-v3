@@ -27,7 +27,7 @@ namespace Gallio.Icarus
                 if (SynchronizationContext.Instance == null || PropertyChanged == null)
                     return;
 
-                SynchronizationContext.Instance.Post(delegate
+                SynchronizationContext.Instance.Send(delegate
                 {
                     PropertyChanged(this, new PropertyChangedEventArgs("Value"));
                 }, this);

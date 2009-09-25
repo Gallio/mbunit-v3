@@ -13,19 +13,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.Drawing;
 using System.Windows.Forms;
 
 namespace Gallio.Icarus.Controllers.Interfaces
 {
     public interface ITestResultsController
     {
-        int ResultsCount { get; }
-        string TestStatusBarStyle { get; }
-        Color PassedColor { get; }
-        Color FailedColor { get; }
-        Color InconclusiveColor { get; }
-        Color SkippedColor { get; }
+        Observable<int> ResultsCount { get; }
         int PassedTestCount { get; }
         int FailedTestCount { get; }
         int SkippedTestCount { get; }

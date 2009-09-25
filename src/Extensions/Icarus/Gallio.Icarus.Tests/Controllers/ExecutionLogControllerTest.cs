@@ -43,7 +43,7 @@ namespace Gallio.Icarus.Tests.Controllers
                 new TestData("root", "name", "fullName"), testStepRun);
             
             var testController = MockRepository.GenerateStub<ITestController>();
-            testController.Stub(x => x.SelectedTests).Return(new BindingList<TestTreeNode>(new List<TestTreeNode>()));
+            //testController.Stub(x => x.SelectedTests).Return(new BindingList<TestTreeNode>(new List<TestTreeNode>()));
             var report = new Report
                              {
                                  TestPackageRun = new TestPackageRun(),
@@ -74,7 +74,7 @@ namespace Gallio.Icarus.Tests.Controllers
         public void RunStarted_Test()
         {
             var testController = MockRepository.GenerateStub<ITestController>();
-            testController.Stub(x => x.SelectedTests).Return(new BindingList<TestTreeNode>(new List<TestTreeNode>()));
+            //testController.Stub(x => x.SelectedTests).Return(new BindingList<TestTreeNode>(new List<TestTreeNode>()));
             var taskManager = new TestTaskManager();
 
             var executionLogController = new ExecutionLogController(testController, taskManager);
@@ -96,11 +96,11 @@ namespace Gallio.Icarus.Tests.Controllers
             var testStepRun = new TestStepRun(new TestStepData("rootStep", "name", 
                 "fullName", "root"));
             var testController = MockRepository.GenerateStub<ITestController>();
-            var selectedTests = new List<TestTreeNode>(new[]
+            var selectedTests = new LockBox<IList<TestTreeNode>>(new List<TestTreeNode>(new[]
             {
                 new TestTreeNode("text", "rootStep")
-            });
-            testController.Stub(x => x.SelectedTests).Return(selectedTests);
+            }));
+            testController.Stub(tc => tc.SelectedTests).Return(selectedTests);
             var report = new Report
             {
                 TestPackageRun = new TestPackageRun(),
