@@ -10,6 +10,7 @@
   </testPackage>
   <testFilters>
     <testFilter filterName="AutoSave" filterExpr="" />
+    <testFilter filterName="LastRun" filterExpr="" />
   </testFilters>
   <extensionSpecifications />
   <reportDirectory>Gallio.Tests\bin\Reports</reportDirectory>
