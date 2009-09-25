@@ -88,6 +88,7 @@
     <Compile Include="Commands\AddFilesCommand.cs" />
     <Compile Include="Commands\ApplyFilterCommand.cs" />
     <Compile Include="Commands\ConvertSavedReportCommand.cs" />
+    <Compile Include="Commands\DelegateCommand.cs" />
     <Compile Include="Commands\DeleteFilterCommand.cs" />
     <Compile Include="Commands\DeleteReportCommand.cs" />
     <Compile Include="Commands\GenerateReportCommand.cs" />
@@ -193,6 +194,7 @@
     <Compile Include="Models\TestTreeNodes\MetadataNode.cs" />
     <Compile Include="Models\TestTreeNodes\NamespaceNode.cs" />
     <Compile Include="Models\TestTreeNodes\TestDataNode.cs" />
+    <Compile Include="Observable.cs" />
     <Compile Include="Options\IOptionsManager.cs" />
     <Compile Include="Options\OptionsPanel.cs">
       <SubType>UserControl</SubType>
