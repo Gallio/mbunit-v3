@@ -110,10 +110,13 @@ namespace Gallio.Icarus.Models
         private static int CountTests(Node node)
         {
             int count = 0;
+            
             if (node is TestTreeNode && ((TestTreeNode)node).IsTest && node.IsChecked)
                 count += 1;
+
             foreach (Node n in node.Nodes)
                 count += CountTests(n);
+
             return count;
         }
 
@@ -189,7 +192,7 @@ namespace Gallio.Icarus.Models
                 Filter(node);
             }
 
-            if (!testStepRun.Step.IsTestCase && !testData.IsTestCase)
+            if (!testStepRun.Step.IsTestCase)
                 return;
 
             switch (testStepRun.Result.Outcome.Status)

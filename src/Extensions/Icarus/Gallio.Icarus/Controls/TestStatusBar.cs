@@ -223,7 +223,7 @@ namespace Gallio.Icarus.Controls
             e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
 
             // HACK: due to dynamic tests we don't know how many tests there will be before we start
-            var testCount = passedTests + failedTests + skippedTests + inconclusiveTests;
+            var testCount = passedTests + failedTests + inconclusiveTests;
             if (testCount > totalTests)
                 totalTests = testCount;
 
