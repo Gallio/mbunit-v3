@@ -11,6 +11,7 @@
   <testFilters>
     <testFilter filterName="AutoSave" filterExpr="" />
     <testFilter filterName="LastRun" filterExpr="" />
+    <testFilter filterName="Commands" filterExpr="Namespace: Gallio.Icarus.Tests.Commands" />
   </testFilters>
   <extensionSpecifications />
   <reportDirectory>Reports</reportDirectory>

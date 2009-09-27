@@ -27,7 +27,6 @@ using Gallio.Icarus.Remoting;
 using Gallio.Icarus.Tests.Utilities;
 using Gallio.Icarus.Utilities;
 using Gallio.Model.Filters;
-using Gallio.Model.Schema;
 using Gallio.Runner.Projects;
 using Gallio.Runner.Projects.Schema;
 using Gallio.Runtime.ProgressMonitoring;
@@ -81,55 +80,12 @@ namespace Gallio.Icarus.Tests.Controllers
             var projectController = new ProjectController(projectTreeModel, optionsController,
                 fileSystem, xmlSerializer, fileWatcher, unhandledExceptionPolicy);
             
-            Assert.AreEqual(0, projectController.TestFilters.Count);
+            Assert.AreEqual(0, projectController.TestFilters.Value.Count);
             FilterInfo filterInfo = new FilterInfo("filterName", new NoneFilter<ITestDescriptor>().ToFilterExpr());
-            projectController.TestFilters.Add(filterInfo);
-            Assert.AreEqual(1, projectController.TestFilters.Count);
+            projectController.TestFilters.Value.Add(filterInfo);
+            Assert.AreEqual(1, projectController.TestFilters.Value.Count);
             projectController.DeleteFilter(filterInfo, progressMonitor);
-            Assert.AreEqual(0, projectController.TestFilters.Count);
-        }
-
-        [Test]
-        public void GetFilter_Test()
-        {
-            var projectTreeModel = MockRepository.GenerateStub<IProjectTreeModel>();
-            TestProject testProject = new TestProject();
-            projectTreeModel.TestProject = testProject;
-            var fileSystem = MockRepository.GenerateStub<IFileSystem>();
-            var xmlSerializer = MockRepository.GenerateStub<IXmlSerializer>();
-            var progressMonitor = MockProgressMonitor.GetMockProgressMonitor();
-            var optionsController = MockRepository.GenerateStub<IOptionsController>();
-            var fileWatcher = MockRepository.GenerateStub<IFileWatcher>();
-            var unhandledExceptionPolicy = MockRepository.GenerateStub<IUnhandledExceptionPolicy>();
-            var projectController = new ProjectController(projectTreeModel, optionsController,
-                fileSystem, xmlSerializer, fileWatcher, unhandledExceptionPolicy);
-
-            Assert.AreEqual(0, projectController.TestFilters.Count);
-            FilterInfo filterInfo = new FilterInfo("filterName", new NoneFilter<ITestDescriptor>().ToFilterExpr());
-            projectController.TestFilters.Add(filterInfo);
-            Assert.AreEqual(1, projectController.TestFilters.Count);
-            Assert.AreEqual(filterInfo.FilterExpr, projectController.GetFilterSet(filterInfo.FilterName, progressMonitor).ToFilterSetExpr());
-        }
-
-        [Test]
-        public void GetInvalidFilter_Test()
-        {
-            var projectTreeModel = MockRepository.GenerateStub<IProjectTreeModel>();
-            var project = new TestProject();
-            var filterInfo = new FilterInfo("None", new NoneFilter<ITestDescriptor>().ToFilterExpr());
-            project.AddTestFilter(filterInfo);
-            projectTreeModel.TestProject = project;
-            var fileSystem = MockRepository.GenerateStub<IFileSystem>();
-            var xmlSerializer = MockRepository.GenerateStub<IXmlSerializer>();
-            var progressMonitor = MockProgressMonitor.GetMockProgressMonitor();
-            var optionsController = MockRepository.GenerateStub<IOptionsController>();
-            var fileWatcher = MockRepository.GenerateStub<IFileWatcher>();
-            var unhandledExceptionPolicy = MockRepository.GenerateStub<IUnhandledExceptionPolicy>();
-            var projectController = new ProjectController(projectTreeModel, optionsController,
-                fileSystem, xmlSerializer, fileWatcher, unhandledExceptionPolicy);
-
-            Assert.AreEqual(0, projectController.TestFilters.Count);
-            Assert.IsNull(projectController.GetFilterSet("filterName", progressMonitor));
+            Assert.AreEqual(0, projectController.TestFilters.Value.Count);
         }
 
         [Test]
@@ -176,7 +132,7 @@ namespace Gallio.Icarus.Tests.Controllers
             var projectController = new ProjectController(projectTreeModel, optionsController,
                 fileSystem, xmlSerializer, fileWatcher, unhandledExceptionPolicy);
 
-            Assert.AreEqual(0, projectController.TestFilters.Count);
+            Assert.AreEqual(0, projectController.TestFilters.Value.Count);
         }
 
         [Test]
@@ -229,7 +185,7 @@ namespace Gallio.Icarus.Tests.Controllers
             projectController.NewProject(progressMonitor);
             Assert.AreEqual(Paths.DefaultProject, projectTreeModel.FileName);
             Assert.AreEqual(0, projectController.HintDirectories.Count);
-            Assert.AreEqual(0, projectController.TestFilters.Count);
+            Assert.AreEqual(0, projectController.TestFilters.Value.Count);
         }
 
         [Test]
@@ -286,13 +242,13 @@ namespace Gallio.Icarus.Tests.Controllers
             var projectController = new ProjectController(projectTreeModel, optionsController,
                 fileSystem, xmlSerializer, fileWatcher, unhandledExceptionPolicy);
 
-            Assert.AreEqual(0, projectController.TestFilters.Count);
+            Assert.AreEqual(0, projectController.TestFilters.Value.Count);
             projectController.SaveFilterSet("filterName", new FilterSet<ITestDescriptor>(new NoneFilter<ITestDescriptor>()), progressMonitor);
-            Assert.AreEqual(1, projectController.TestFilters.Count);
+            Assert.AreEqual(1, projectController.TestFilters.Value.Count);
             projectController.SaveFilterSet("filterName", new FilterSet<ITestDescriptor>(new NoneFilter<ITestDescriptor>()), progressMonitor);
-            Assert.AreEqual(1, projectController.TestFilters.Count);
+            Assert.AreEqual(1, projectController.TestFilters.Value.Count);
             projectController.SaveFilterSet("aDifferentFilterName", new FilterSet<ITestDescriptor>(new NoneFilter<ITestDescriptor>()), progressMonitor);
-            Assert.AreEqual(2, projectController.TestFilters.Count);
+            Assert.AreEqual(2, projectController.TestFilters.Value.Count);
         }
 
         [Test]
@@ -420,7 +376,7 @@ namespace Gallio.Icarus.Tests.Controllers
             var fileSystem = MockRepository.GenerateStub<IFileSystem>();
             fileSystem.Stub(fs => fs.FileExists(projectName)).Return(true);
             var xmlSerializer = MockRepository.GenerateStub<IXmlSerializer>();
-            var project = new TestProjectData() { ReportNameFormat = "foo" };
+            var project = new TestProjectData { ReportNameFormat = "foo" };
             project.TestFilters.Add(new FilterInfo("None", new NoneFilter<ITestDescriptor>().ToFilterExpr()));
             project.TestPackage.HintDirectories.Add("hintDirectory");
             project.TestRunnerExtensions.Add("testRunnerExtensions");
@@ -445,7 +401,7 @@ namespace Gallio.Icarus.Tests.Controllers
             Assert.AreEqual(projectName, projectTreeModel.FileName);
             Assert.AreEqual(project.ReportNameFormat, projectTreeModel.TestProject.ReportNameFormat);
 
-            Assert.AreEqual(1, projectController.TestFilters.Count);
+            Assert.AreEqual(1, projectController.TestFilters.Value.Count);
             Assert.AreEqual(1, projectController.HintDirectories.Count);
             Assert.AreEqual(1, projectController.TestRunnerExtensions.Count);
             Assert.AreEqual(true, propertyChangedFlag);
@@ -517,7 +473,7 @@ namespace Gallio.Icarus.Tests.Controllers
             fileSystem.Stub(fs => fs.FileExists(projectUserOptionsFile)).Return(true);
             const string treeViewCategory = "treeViewCategory";
             var collapsedNodes = new List<string>(new[] { "one", "two", "three" });
-            var userOptions = new UserOptions()
+            var userOptions = new UserOptions
             {
                 TreeViewCategory = treeViewCategory,
                 CollapsedNodes = collapsedNodes

@@ -15,7 +15,6 @@
 
 using Aga.Controls.Tree;
 using Gallio.Runner.Projects;
-using Gallio.Runner.Projects.Schema;
 
 namespace Gallio.Icarus.Models
 {

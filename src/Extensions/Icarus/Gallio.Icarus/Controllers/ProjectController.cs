@@ -45,7 +45,6 @@ namespace Gallio.Icarus.Controllers
         private readonly IUnhandledExceptionPolicy unhandledExceptionPolicy;
         private readonly ITestProjectManager testProjectManager;
 
-        private readonly List<FilterInfo> testFilters = new List<FilterInfo>();
         private readonly List<string> hintDirectories = new List<string>();
         private readonly List<string> testRunnerExtensions = new List<string>();
 
@@ -65,7 +64,7 @@ namespace Gallio.Icarus.Controllers
             get { return projectTreeModel.TestProject.TestPackage; }
         }
 
-        public BindingList<FilterInfo> TestFilters { get; private set; }
+        public Observable<IList<FilterInfo>> TestFilters { get; private set; }
 
         public BindingList<string> HintDirectories { get; private set; }
 
@@ -118,14 +117,15 @@ namespace Gallio.Icarus.Controllers
 
             testProjectManager = new DefaultTestProjectManager(fileSystem, xmlSerializer);
 
-            TestFilters = new BindingList<FilterInfo>(testFilters);
-            TestFilters.ListChanged += delegate
+            TestFilters = new Observable<IList<FilterInfo>>(new List<FilterInfo>());
+            TestFilters.PropertyChanged += (s, e) =>
             {
                 if (updating)
                     return;
 
                 projectTreeModel.TestProject.ClearTestFilters();
-                GenericCollectionUtils.ForEach(TestFilters, x => projectTreeModel.TestProject.AddTestFilter(x));
+                GenericCollectionUtils.ForEach(TestFilters.Value, x => 
+                    projectTreeModel.TestProject.AddTestFilter(x));
             };
 
             HintDirectories = new BindingList<string>(hintDirectories);
@@ -184,19 +184,9 @@ namespace Gallio.Icarus.Controllers
         public void DeleteFilter(FilterInfo filterInfo, IProgressMonitor progressMonitor)
         {
             using (progressMonitor.BeginTask("Deleting filter", 1))
-                TestFilters.Remove(filterInfo);
-        }
-
-        public FilterSet<ITestDescriptor> GetFilterSet(string filterName, IProgressMonitor progressMonitor)
-        {
-            using (progressMonitor.BeginTask("Getting filter", 1))
             {
-                foreach (FilterInfo filterInfo in projectTreeModel.TestProject.TestFilters)
-                {
-                    if (filterInfo.FilterName == filterName)
-                        return FilterUtils.ParseTestFilterSet(filterInfo.FilterExpr);
-                }
-                return null;
+                TestFilters.Value.Remove(filterInfo);
+                TestFilters.Value = TestFilters.Value; // notify UI
             }
         }
 
@@ -215,14 +205,17 @@ namespace Gallio.Icarus.Controllers
 
         public void SaveFilterSet(string filterName, FilterSet<ITestDescriptor> filterSet, IProgressMonitor progressMonitor)
         {
-            foreach (FilterInfo filterInfo in TestFilters)
+            foreach (var filterInfo in TestFilters.Value)
             {
                 if (filterInfo.FilterName != filterName)
                     continue;
+
                 filterInfo.FilterExpr = filterSet.ToFilterSetExpr();
                 return;
             }
-            TestFilters.Add(new FilterInfo(filterName, filterSet.ToFilterSetExpr()));
+
+            TestFilters.Value.Add(new FilterInfo(filterName, filterSet.ToFilterSetExpr()));
+            TestFilters.Value = TestFilters.Value; // notify the UI
         }
 
         public void OpenProject(string projectName, IProgressMonitor progressMonitor)
@@ -356,9 +349,7 @@ namespace Gallio.Icarus.Controllers
             {
                 updating = true;
 
-                TestFilters.Clear();
-                foreach (var filterInfo in projectTreeModel.TestProject.TestFilters)
-                    TestFilters.Add(filterInfo);
+                TestFilters.Value = projectTreeModel.TestProject.TestFilters;
 
                 HintDirectories.Clear();
                 foreach (var hintDirectory in TestPackage.HintDirectories)

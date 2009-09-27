@@ -116,7 +116,7 @@ namespace Gallio.Icarus
             testResults = new TestResults(testResultsController, optionsController);
             runtimeLogWindow = new RuntimeLogWindow(runtimeLogController);
             filtersWindow = new FiltersWindow(new FilterController(taskManager, testController, 
-                projectController));
+                projectController), projectController);
             executionLogWindow = new ExecutionLogWindow(executionLogController);
             annotationsWindow = new AnnotationsWindow(annotationsController, sourceCodeController);
 

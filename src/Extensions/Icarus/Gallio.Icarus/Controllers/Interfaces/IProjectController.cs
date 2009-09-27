@@ -20,7 +20,6 @@ using Gallio.Icarus.Controllers.EventArgs;
 using Gallio.Icarus.Models;
 using Gallio.Model;
 using Gallio.Model.Filters;
-using Gallio.Model.Schema;
 using Gallio.Runner.Projects.Schema;
 using Gallio.Runtime.ProgressMonitoring;
 
@@ -30,7 +29,7 @@ namespace Gallio.Icarus.Controllers.Interfaces
     {
         IProjectTreeModel Model { get; }
         TestPackage TestPackage { get; }
-        BindingList<FilterInfo> TestFilters { get; }
+        Observable<IList<FilterInfo>> TestFilters { get; }
         BindingList<string> HintDirectories { get; }
         BindingList<string> TestRunnerExtensions { get; }
         string ProjectFileName { get; }
@@ -43,7 +42,6 @@ namespace Gallio.Icarus.Controllers.Interfaces
 
         void AddFiles(IList<string> files, IProgressMonitor progressMonitor);
         void DeleteFilter(FilterInfo filterInfo, IProgressMonitor progressMonitor);
-        FilterSet<ITestDescriptor> GetFilterSet(string filterName, IProgressMonitor progressMonitor);
         void NewProject(IProgressMonitor progressMonitor);
         void OpenProject(string projectName, IProgressMonitor progressMonitor);
         void RemoveAllFiles(IProgressMonitor progressMonitor);

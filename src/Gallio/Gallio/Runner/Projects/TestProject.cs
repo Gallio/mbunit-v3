@@ -100,7 +100,7 @@ namespace Gallio.Runner.Projects
         /// </summary>
         public IList<FilterInfo> TestFilters
         {
-            get { return new ReadOnlyCollection<FilterInfo>(testFilters); }
+            get { return new List<FilterInfo>(testFilters); }
         }
 
         /// <summary>

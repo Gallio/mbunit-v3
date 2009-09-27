@@ -29,8 +29,8 @@
 // limitations under the License.
 
 using System;
-using System.Windows.Forms;
 using Gallio.Icarus.Controllers;
+using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Runner.Projects.Schema;
 using Gallio.UI.ErrorReporting;
 
@@ -40,14 +40,19 @@ namespace Gallio.Icarus
     {
         private readonly IFilterController filterController;
 
-        public FiltersWindow(IFilterController filterController)
+        public FiltersWindow(IFilterController filterController, IProjectController projectController)
         {
             this.filterController = filterController;
 
             InitializeComponent();
 
-            filtersListBox.DataSource = filterController.TestFilters;
             filtersListBox.DisplayMember = "FilterName";
+            projectController.TestFilters.PropertyChanged += (s, e) =>
+            {
+                filtersListBox.Items.Clear();
+                foreach (var testFilter in projectController.TestFilters.Value)
+                    filtersListBox.Items.Add(testFilter);
+            };
         }
 
         private void filtersListBox_SelectedIndexChanged(object sender, EventArgs e)
