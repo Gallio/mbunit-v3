@@ -16,8 +16,8 @@
                     <File Id="MbUnit.Samples.WebTestingWithWatiN.zip" Name="Web Testing with WatiN.zip" KeyPath="yes" />
                 </Component>
 
-                <Component Id="MbUnit.Samples.GUITesting" Guid="{7F850761-AD5A-405b-BEBD-3D547727E682}" Win64="no">
-                    <File Id="MbUnit.Samples.GUITesting.zip" Name="GUI Testing with White.zip" KeyPath="yes" />
+                <Component Id="MbUnit.Samples.GUITestingWithWhite" Guid="{7F850761-AD5A-405b-BEBD-3D547727E682}" Win64="no">
+                    <File Id="MbUnit.Samples.GUITestingWithWhite.zip" Name="GUI Testing with White.zip" KeyPath="yes" />
                 </Component>
             </Directory>
         </DirectoryRef>
@@ -38,9 +38,9 @@
         <Feature Id="feat_MbUnit3.Samples" Title="MbUnit Samples" Level="1" AllowAdvertise="no"
                  Description="Installs MbUnit code samples.">
             <ComponentRef Id="MbUnit.Samples.Readme.txt" />
-            <ComponentRef Id="MbUnit.Samples.Unit Testing.zip" />
-            <ComponentRef Id="MbUnit.Samples.Web Testing with WatiN.zip" />
-            <ComponentRef Id="MbUnit.Samples.GUI Testing with White.zip" />
+            <ComponentRef Id="MbUnit.Samples.UnitTesting" />
+            <ComponentRef Id="MbUnit.Samples.WebTestingWithWatiN" />
+            <ComponentRef Id="MbUnit.Samples.GUITestingwithWhite" />
             <ComponentRef Id="MbUnit.Samples.MenuShortcut"/>
         </Feature>
     </Fragment>
