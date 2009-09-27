@@ -2,6 +2,8 @@
   <Import Project="$(MetaBuildBinDir)\MetaBuild.Module.targets" />
 
   <ItemGroup>
+    <Module Include="Samples\GallioSamples.module" />
+
     <CSharpProject Include="Gallio\Gallio$(ProjectVariant).csproj" />
     <CSharpProject Include="Gallio35\Gallio35$(ProjectVariant).csproj" />
     <CSharpProject Include="Gallio.ControlPanel\Gallio.ControlPanel$(ProjectVariant).csproj" />

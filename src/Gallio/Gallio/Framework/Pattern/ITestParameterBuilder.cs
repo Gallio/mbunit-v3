@@ -26,6 +26,11 @@ namespace Gallio.Framework.Pattern
     public interface ITestParameterBuilder : ITestComponentBuilder
     {
         /// <summary>
+        /// Gets the test data context builder for the test parameter.
+        /// </summary>
+        ITestDataContextBuilder TestDataContextBuilder { get; }
+
+        /// <summary>
         /// Gets the set of actions that describe the behavior of the test parameter.
         /// </summary>
         PatternTestParameterActions TestParameterActions { get; }

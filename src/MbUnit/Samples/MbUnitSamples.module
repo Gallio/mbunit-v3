@@ -2,39 +2,26 @@
   <Import Project="$(MetaBuildBinDir)\MetaBuild.Module.targets" />
 
   <ItemGroup>
-    <ModuleReference Include="..\MbUnit.module" />
+    <CSharpProject Include="Unit Testing\MbUnit.Samples\MbUnit.Samples$(ProjectVariant).csproj" />
 
-    <CSharpProject Include="MbUnit.Samples\MbUnit.Samples$(ProjectVariant).csproj" />
-    <CSharpProject Include="MbUnit.Samples.VSTSIntegration\MbUnit.Samples.VSTSIntegration$(ProjectVariant).csproj" />
+    <CSharpProject Include="Web Testing with WatiN\MbUnit.Samples.WebTestingWithWatiN\MbUnit.Samples.WebTestingWithWatiN$(ProjectVariant).csproj" />
 
-    <ExcludedFile Include="*.module" />
-    <ExcludedFile Include="*.wxs" />
-  </ItemGroup>
+    <CSharpProject Include="GUI Testing with White\MbUnit.Samples.GUITestingWithWhite\MbUnit.Samples.GUITestingWithWhite$(ProjectVariant).csproj" />
 
-  <Target Name="AfterImage">
-    <Message Text="Generating MbUnit samples archive..."
-             Importance="High" />
+    <File Include="Readme.txt">
+      <ImagePath>samples\MbUnit</ImagePath>
+    </File>
 
-    <Delete Files="$(ImageDir)\samples\MbUnitSamples.zip"
-            Condition="Exists('$(ImageDir)\samples\MbUnitSamples.zip')" />
-
-    <RemoveDir Directories="$(TempDir)\samples\MbUnitSamples" />
-    <MakeDir Directories="$(TempDir)\samples;$(ImageDir)\samples" />
+    <ExportArchive Include="Unit Testing">
+      <ImagePath>samples\MbUnit\Unit Testing.zip</ImagePath>
+    </ExportArchive>
     
-    <SvnExport RepositoryPath="$(ModuleDir)"
-               LocalPath="$(TempDir)\samples\MbUnitSamples" />
-
-    <Delete Files="@(ExcludedFile->'$(TempDir)\samples\MbUnitSamples\%(Identity)')"
-            Condition="'@(ExcludedFile)'!=''" />
-
-    <ItemGroup>
-      <MbUnitSampleFile Include="$(TempDir)\samples\MbUnitSamples\**\*" />
-    </ItemGroup>
-
-    <Zip Files="@(MbUnitSampleFile)"
-         WorkingDirectory="$(TempDir)\samples\MbUnitSamples"
-         ZipFileName="$(ImageDir)\samples\MbUnitSamples.zip"
-	 ZipLevel="9"
-         Comment="This archive contains MbUnit Samples.  Extract them to a directory of your choice to run them." />         
-  </Target>
+    <ExportArchive Include="Web Testing with WatiN">
+      <ImagePath>samples\MbUnit\Web Testing with WatiN.zip</ImagePath>
+    </ExportArchive>
+    
+    <ExportArchive Include="GUI Testing with White">
+      <ImagePath>samples\MbUnit\GUI Testing with White.zip</ImagePath>
+    </ExportArchive>
+  </ItemGroup>
 </Project>

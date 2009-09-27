@@ -62,6 +62,9 @@
                 <File Name="ICSharpCode.SharpZipLib.dll" />
                 <File Name="Gallio.ReflectionShim.dll" />
                 <?endif ?>
+		<?ifdef INCLUDE_SOURCES ?>
+		<File Name="Sources.txt" />
+		<?endif ?>
             </Component>
             <Component Id="Gallio35" Guid="{015c2236-433f-45f4-86d8-88b87f7fad26}" Win64="no">
                 <File Name="Gallio35.dll" KeyPath="yes" />
@@ -240,7 +243,7 @@
 <?endif?>
         </DirectoryRef>
 
-        <DirectoryRef Id="extraFolder">
+        <DirectoryRef Id="extrasFolder">
 <?ifdef FEATURE_VS_HELP ?>
             <Directory Id='H2RegDir' Name='H2Reg'>
                 <Component Id="H2Reg.exe" Guid="779c47b3-56ba-4efc-ab52-3b809c2f2c3b" Win64="no">

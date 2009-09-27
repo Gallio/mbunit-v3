@@ -29,7 +29,7 @@ namespace Gallio.Framework.Pattern
         /// Defines a new data source within this data context if one does not exist.
         /// Otherwise returns the existing one.
         /// </summary>
-        /// <param name="name">The data source name.</param>
+        /// <param name="name">The data source name, or an empty string if it is anonymous.</param>
         /// <returns>The defined data source.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> is null.</exception>
         DataSource DefineDataSource(string name);

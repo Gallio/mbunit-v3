@@ -24,10 +24,9 @@
     <TestAssembly />
     <Feature />
 
-    <TemplateFile>
-      <Base />
-      <Zip />
-    </TemplateFile>
+    <ExportArchive>
+      <ImagePath />
+    </ExportArchive>
   </ItemDefinitionGroup>
 
   <PropertyGroup>
@@ -39,7 +38,7 @@
 
   <PropertyGroup>
     <CoreLoadDependsOn>$(CoreLoadDependsOn);LoadGallioBuildSemanticsAddIn</CoreLoadDependsOn>
-    <CoreImageDependsOn>GenerateTemplateArchives;$(CoreImageDependsOn);PatchPluginFiles</CoreImageDependsOn>
+    <CoreImageDependsOn>GenerateExportArchives;$(CoreImageDependsOn);PatchPluginFiles</CoreImageDependsOn>
   </PropertyGroup>
 
   <Target Name="LoadGallioBuildSemanticsAddIn">
@@ -78,20 +77,40 @@
     </ItemGroup>
   </Target>
 
-  <Target Name="GenerateTemplateArchives"
-          Condition="'@(TemplateFile)'!=''">
-    <CreateItem Include="$(ImageDir)\extras\Templates\%(TemplateFile.Zip)">
-      <Output TaskParameter="Include" ItemName="TemplateZipFile" />
+  <Target Name="GenerateExportArchives"
+          Condition="'@(ExportArchive)'!=''">
+    <Error Text="ImagePath must be specified for ExportArchive '%(ExportArchive.Identity)'."
+           Condition="'%(ExportArchive.ImagePath)'==''" />
+
+    <CreateItem Include="$(TempDir)\%(ExportArchive.ImagePath)">
+      <Output TaskParameter="Include" ItemName="_ExportArchiveTempDir" />
     </CreateItem>
 
-    <MakeDir Directories="@(TemplateZipFile->'%(RootDir)%(Directory)')" />
+    <RemoveDir Directories="@(_ExportArchiveTempDir)" />
 
-    <Zip Files="@(TemplateFile->'%(Base)\%(Identity)')"
-         WorkingDirectory="%(Base)"
-         ZipFileName="$(ImageDir)\extras\Templates\%(Zip)"
+    <MakeDir Directories="@(_ExportArchiveTempDir->'%(RootDir)%(Directory)')" />
+
+    <SvnExport RepositoryPath="%(ExportArchive.FullPath)"
+               LocalPath="$(TempDir)\%(ExportArchive.ImagePath)" />
+
+    <CreateItem Include="$(ImageDir)\%(ExportArchive.ImagePath)">
+      <Output TaskParameter="Include" ItemName="_ExportArchiveZipFile" />
+    </CreateItem>
+
+    <MakeDir Directories="@(_ExportArchiveZipFile->'%(RootDir)%(Directory)')" />
+
+    <CreateItem Include="$(TempDir)\%(ExportArchive.ImagePath)\**\*"
+                AdditionalMetadata="ImagePath=%(ExportArchive.ImagePath)">
+      <Output TaskParameter="Include" ItemName="_ExportArchiveItemFile" />
+    </CreateItem>
+
+    <Zip Files="@(_ExportArchiveItemFile)"
+         Condition="'@(_ExportArchiveItemFile)'!=''"
+         WorkingDirectory="$(TempDir)\%(_ExportArchiveItemFile.ImagePath)"
+         ZipFileName="$(ImageDir)\%(_ExportArchiveItemFile.ImagePath)"
          ZipLevel="9" />
   </Target>
-  
+
   <Target Name="PatchPluginFiles"
           Condition="'@(PluginFile)'!=''">
     <FileUpdate Files="@(PluginFile->'$(ImageDir)\bin\%(Folder)\%(Filename)%(Extension)')"

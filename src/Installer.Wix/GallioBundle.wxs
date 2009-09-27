@@ -55,7 +55,7 @@
                 <Directory Id='INSTALLDIR' Name='Gallio'>
                     <Directory Id='binFolder' Name='bin'/>
                     <Directory Id='docsFolder' Name='docs'/>
-                    <Directory Id='extraFolder' Name='extra'/>
+                    <Directory Id='extrasFolder' Name='extras'/>
                     <Directory Id='samplesFolder' Name='samples'/>
                 </Directory>                
             </Directory>

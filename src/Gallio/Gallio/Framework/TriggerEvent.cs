@@ -25,6 +25,11 @@ namespace Gallio.Framework
     public enum TriggerEvent
     {
         /// <summary>
+        /// Never performs the action.
+        /// </summary>
+        Never = 0,
+    
+        /// <summary>
         /// Perform the action when the test finishes.
         /// </summary>
         TestFinished,

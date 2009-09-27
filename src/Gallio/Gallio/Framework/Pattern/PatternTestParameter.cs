@@ -37,13 +37,11 @@ namespace Gallio.Framework.Pattern
         /// <param name="name">The name of the test parameter.</param>
         /// <param name="codeElement">The code element (usually a slot) represented by the parameter, or null if none.</param>
         /// <param name="dataContext">The data context of the test parameter.</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/>,
-        /// <paramref name="codeElement"/> or <paramref name="dataContext"/> is null.</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/>
+        /// or <paramref name="dataContext"/> is null.</exception>
         public PatternTestParameter(string name, ICodeElementInfo codeElement, PatternTestDataContext dataContext)
             : base(name, codeElement)
         {
-            if (codeElement == null)
-                throw new ArgumentNullException("codeElement");
             if (dataContext == null)
                 throw new ArgumentNullException("dataContext");
 

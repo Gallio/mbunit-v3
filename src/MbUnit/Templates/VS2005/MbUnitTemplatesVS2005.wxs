@@ -10,24 +10,24 @@
             <Directory Id="VS2005_ITEMTEMPLATES_DIR" Name="ItemTemplates.VS2005">
                 <Directory Id="VS2005.ItemTemplates.CS" Name="CSharp">
                     <Component Id="VS2005.MbUnit3.TestFixtureTemplate.CSharp.zip" Guid="7BB50DCA-BFC5-4303-ACE3-5042927FAD55" Win64="no">
-                            <File Id="VS2005.MbUnit3.TestFixtureTemplate.CSharp.zip" Source="$(var.GallioTargetDir)\extras\Templates\VS2005\ItemTemplates\CSharp\MbUnit3.TestFixtureTemplate.CSharp.zip" KeyPath="yes" />
+                            <File Id="VS2005.MbUnit3.TestFixtureTemplate.CSharp.zip" Source="$(var.GallioTargetDir)\templates\VS2005\ItemTemplates\CSharp\MbUnit3.TestFixtureTemplate.CSharp.zip" KeyPath="yes" />
                     </Component>
                 </Directory>
                 <Directory Id="VS2005.ItemTemplates.VB" Name="VisualBasic">
                     <Component Id="VS2005.MbUnit3.TestFixtureTemplate.VisualBasic.zip" Guid="378B0392-A815-4672-94F6-E8CBA5E640FB" Win64="no">
-                            <File Id="VS2005.MbUnit3.TestFixtureTemplate.VisualBasic.zip" Source="$(var.GallioTargetDir)\extras\Templates\VS2005\ItemTemplates\VisualBasic\MbUnit3.TestFixtureTemplate.VisualBasic.zip" KeyPath="yes" />
+                            <File Id="VS2005.MbUnit3.TestFixtureTemplate.VisualBasic.zip" Source="$(var.GallioTargetDir)\templates\VS2005\ItemTemplates\VisualBasic\MbUnit3.TestFixtureTemplate.VisualBasic.zip" KeyPath="yes" />
                     </Component>
                 </Directory>
             </Directory>
             <Directory Id="VS2005_PROJECTTEMPLATES_DIR" Name="ProjectTemplates.VS2005">
                 <Directory Id="VS2005.ProjectTemplates.CS" Name="CSharp">
                     <Component Id="VS2005.MbUnit3.TestProjectTemplate.CSharp.zip" Guid="1F9437C7-BCD1-4327-BBFE-5C67088393A0" Win64="no">
-                        <File Id="VS2005.MbUnit3.TestProjectTemplate.CSharp.zip" Source="$(var.GallioTargetDir)\extras\Templates\VS2005\ProjectTemplates\CSharp\MbUnit3.TestProjectTemplate.CSharp.zip" KeyPath="yes" />
+                        <File Id="VS2005.MbUnit3.TestProjectTemplate.CSharp.zip" Source="$(var.GallioTargetDir)\templates\VS2005\ProjectTemplates\CSharp\MbUnit3.TestProjectTemplate.CSharp.zip" KeyPath="yes" />
                     </Component>
                 </Directory>
                 <Directory Id="VS2005.ProjectTemplates.VB" Name="VisualBasic">
                     <Component Id="VS2005.MbUnit3.TestProjectTemplate.VisualBasic.zip" Guid="{07CC045C-C889-4f4f-9AAD-47C49CD04C8E}" Win64="no">
-                        <File Id="VS2005.MbUnit3.TestProjectTemplate.VisualBasic.zip" Source="$(var.GallioTargetDir)\extras\Templates\VS2005\ProjectTemplates\VisualBasic\MbUnit3.TestProjectTemplate.VisualBasic.zip" KeyPath="yes" />
+                        <File Id="VS2005.MbUnit3.TestProjectTemplate.VisualBasic.zip" Source="$(var.GallioTargetDir)\templates\VS2005\ProjectTemplates\VisualBasic\MbUnit3.TestProjectTemplate.VisualBasic.zip" KeyPath="yes" />
                     </Component>
                 </Directory>
             </Directory>

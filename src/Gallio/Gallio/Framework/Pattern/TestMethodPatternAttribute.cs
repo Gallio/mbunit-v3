@@ -154,7 +154,7 @@ namespace Gallio.Framework.Pattern
                     testInstanceState.TestArguments = spec.ResolvedArguments;
 
                     if (!testInstanceState.IsReusingPrimaryTestStep)
-                        testInstanceState.TestStep.Name = spec.Format(testInstanceState.TestStep.Name, testInstanceState.Formatter);
+                        testInstanceState.NameBase = spec.Format(testInstanceState.NameBase, testInstanceState.Formatter);
                 });
 
             testBuilder.TestInstanceActions.ExecuteTestInstanceChain.After(Execute);

@@ -10,6 +10,8 @@
     <ShowReports Condition="'$(ShowReports)'==''">true</ShowReports>
     <ReportTypes Condition="'$(ReportTypes)'==''">Html-Condensed</ReportTypes>
     <IgnoreFailures Condition="'$(IgnoreFailures)'==''">false</IgnoreFailures>
+
+    <IncludeSources Condition="'$(IncludeSources)'==''">false</IncludeSources>
     
     <SandcastlePath>$(ProgramFiles)\Sandcastle</SandcastlePath>
     <SandcastleHelpFileBuilderPath>$(SHFBROOT)</SandcastleHelpFileBuilderPath>
@@ -46,6 +48,11 @@
     <Feature Include="DOTNET40" Condition="'$(DotNet40)'=='true'" />
   </ItemGroup>
 
+  <ItemGroup Condition="$(IncludeSources)">
+    <Content Include="Sources.txt" />
+    <Feature Include="INCLUDE_SOURCES" />
+  </ItemGroup>
+
   <!-- CLEAN TARGETS -->
 
   <Target Name="BeforeClean"
@@ -64,7 +71,7 @@
   <!-- IMAGE TARGETS -->
 
   <Target Name="AfterImage"
-          DependsOnTargets="BuildSourceServerIndex;BuildDocs" />
+          DependsOnTargets="BuildSourceServerIndex;BuildDocs;BuildSourcesFile" />
 
 
   <!-- TEST TARGETS -->
@@ -171,6 +178,32 @@
           Condition="'$(NoSandcastle)'=='true'">
     <Copy SourceFiles="@(DocumentedAssembly->'%(RootDir)%(Directory)%(Filename).xml')"
           DestinationFolder="$(ImageDir)\bin" />
+  </Target>
+
+  <!-- SUPPORT CODE: SOURCES FILE -->
+  <Target Name="BuildSourcesFile"
+          Condition="$(IncludeSources)">
+    <Exec Command="svn.exe info --xml &quot;$(RootDir)&quot; > &quot;$(TempDir)\svninfo.xml&quot;" />
+
+    <XmlQuery XmlFileName="$(TempDir)\svninfo.xml"
+              XPath="/info/entry/url">
+      <Output TaskParameter="Values" ItemName="SvnRepositoryItem" />
+    </XmlQuery>
+    <PropertyGroup>
+      <SvnRepository>%(SvnRepositoryItem._value)</SvnRepository>
+    </PropertyGroup>
+
+    <XmlQuery XmlFileName="$(TempDir)\svninfo.xml"
+              XPath="/info/entry/@revision">
+      <Output TaskParameter="Values" PropertyName="SvnRevision" />
+    </XmlQuery>
+
+    <Error Text="Could not parse SVN info."
+           Condition="'$(SvnRepository)'=='' or '$(SvnRevision)'==''" />
+
+    <WriteLinesToFile File="$(ImageDir)\Sources.txt"
+                      Overwrite="true"
+                      Lines="Gallio v$(AssemblyFileVersion) was generated from the following sources.%0A%0ASubversion Repository: $(SvnRepository)%0A           Revision: $(SvnRevision)%0A%0APlease visit the following Url for checkout instructions.%0Ahttp://code.google.com/p/mb-unit/source/checkout" />
   </Target>
 
   <!-- SUPPORT CODE: INSTALLERS -->
