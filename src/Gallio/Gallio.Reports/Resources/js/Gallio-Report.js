@@ -5,7 +5,7 @@ function reportLoaded()
 
 function fixAttachmentLinksOnIE()
 {
-    if (isIE() && (isLocalFileUri(window.location.href) || isInMemoryUri(window.location.href)))
+    if (needFixupForIE())
     {
         // On IE, pages in the local filesystem that possess the Mark of the Web
         // are forbidden from navigating to other local files.  This breaks links
@@ -17,11 +17,25 @@ function fixAttachmentLinksOnIE()
             var href = link.href;
             if (link.className == "attachmentLink" && isLocalFileUri(href))
             {
-                var path = href.substring(8).replace(/\//g, "\\");
-                link.href = "gallio:openAttachment?path=" + path;
+                link.href = toGallioAttachmentUri(href);
             }
         }
     }
+}
+
+function toGallioAttachmentUri(uri)
+{
+    var path = uri.substring(8).replace(/\//g, "\\");
+    return "gallio:openAttachment?path=" + path;
+}
+
+var needFixupForIECache = undefined;
+function needFixupForIE()
+{
+    if (needFixupForIECache == undefined)
+        needFixupForIECache = isIE() && (isLocalFileUri(window.location.href) || isInMemoryUri(window.location.href));
+        
+    return needFixupForIECache;
 }
 
 function isIE()
@@ -92,7 +106,7 @@ function setInnerHTMLFromUri(id, uri)
     _asyncLoadContentFromUri(uri, function(loadedDocument)
     {
         // workaround for IE failure to auto-detect HTML content
-        var children = loadedDocument.body.children;
+        var children = isIE() ? loadedDocument.body.children : null;
         if (children && children.length == 1 && children[0].tagName == "PRE")
         {
             var text = getTextContent(loadedDocument.body);
@@ -106,9 +120,9 @@ function setInnerHTMLFromUri(id, uri)
     });
 }
 
-function setInnerTextFromUri(id, uri)
+function setPreformattedTextFromUri(id, uri)
 {
-    _asyncLoadContentFromUri(uri, function(loadedDocument) { setInnerTextFromContent(id, getTextContent(loadedDocument.body)); });
+    _asyncLoadContentFromUri(uri, function(loadedDocument) { setPreformattedTextFromContent(id, getTextContent(loadedDocument.body)); });
 }
 
 function setInnerHTMLFromHiddenData(id)
@@ -118,11 +132,11 @@ function setInnerHTMLFromHiddenData(id)
         setInnerHTMLFromContent(id, getTextContent(element));
 }
 
-function setInnerTextFromHiddenData(id)
+function setPreformattedTextFromHiddenData(id)
 {
     var element = document.getElementById(id + '-hidden');
     if (element)
-        setInnerTextFromContent(id, getTextContent(element));
+        setPreformattedTextFromContent(id, getTextContent(element));
 }
 
 function setInnerHTMLFromContent(id, content)
@@ -135,13 +149,16 @@ function setInnerHTMLFromContent(id, content)
     }
 }
 
-function setInnerTextFromContent(id, content)
+function setPreformattedTextFromContent(id, content)
 {
     if (content != undefined)
     {
         var element = document.getElementById(id);
         if (element)
-            setTextContent(element, content);
+        {
+            element.innerHTML = "<pre></pre>";
+            setTextContent(element.children[0], content);
+        }
     }
 }
 
@@ -166,28 +183,6 @@ function setFrameLocation(frame, uri)
 
 function _asyncLoadContentFromUri(uri, callback)
 {
-    /* Removed due to race problems with IE during the initial page load.
-    So instead we create the frame in the HTML.
-    var asyncLoadFrame = document.getElementById('_asyncLoadFrame');
-    if (!asyncLoadFrame)
-    {
-    asyncLoadFrame = document.createElement('iframe');
-    asyncLoadFrame.setAttribute('id', '_asyncLoadFrame');
-    asyncLoadFrame.style.border = '0px';
-    asyncLoadFrame.style.width = '0px';
-    asyncLoadFrame.style.height = '0px';
-    asyncLoadFrame.style.display = 'none';
-    document.body.appendChild(asyncLoadFrame);
-
-        if (asyncLoadFrame.addEventListener)
-    asyncLoadFrame.addEventListener('load', function(event) { _asyncLoadFrameOnLoad(asyncLoadFrame); }, false);
-    else
-    asyncLoadFrame.attachEvent('onload', function(event) { _asyncLoadFrameOnLoad(asyncLoadFrame); });
-
-        asyncLoadFrame.pendingRequests = [];
-    }
-    */
-
     var asyncLoadFrame = document.getElementById('_asyncLoadFrame');
 
     if (!asyncLoadFrame.pendingRequests)
@@ -206,7 +201,7 @@ function _asyncLoadFrameOnLoad()
         var request = asyncLoadFrame.currentRequest;
         if (request)
         {
-            asyncLoadFrame.currentRequest = undefined; // delete statement not supported by IE here
+            asyncLoadFrame.currentRequest = undefined;
 
             try
             {
