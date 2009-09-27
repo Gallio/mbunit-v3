@@ -94,7 +94,7 @@ namespace Gallio.Tests.Reports
             TestLog.EmbedImage("Image", Resources.MbUnitLogo);
 
             TestLog.Write("Embedded plain text:");
-            TestLog.EmbedPlainText("Plain Text", "This is some plain text.\nLalalala...");
+            TestLog.EmbedPlainText("Plain Text", "This is some plain text.\nLalalala...\n\tIndented with TAB.\nThis should all appear to be preformatted.");
 
             TestLog.Write("Embedded XML:");
             TestLog.EmbedXml("XML", "<life><universe><everything>42</everything></universe></life>");

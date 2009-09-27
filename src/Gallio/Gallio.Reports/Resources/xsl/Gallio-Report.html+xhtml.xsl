@@ -90,6 +90,7 @@ html
     </div>
     <div id="Content" class="content">
       <iframe id="_asyncLoadFrame" src="about:blank" style="border: 0px; margin: 0px 0px 0px 0px; padding: 0px 0px 0px 0px; width: 0px; height: 0px; display: none;" onload="_asyncLoadFrameOnLoad()" />
+      
       <xsl:apply-templates select="g:testPackageRun" mode="statistics" />
       <xsl:apply-templates select="g:testPackage" mode="files" />
       <xsl:apply-templates select="g:testModel/g:annotations" mode="annotations"/>
@@ -825,7 +826,7 @@ html
         <xsl:with-param name="uri" select="$uri" />
       </xsl:call-template>
     </div>
-    <script type="text/javascript">setInnerTextFromUri('<xsl:value-of select="$id"/>', '<xsl:value-of select="$uri"/>');</script>
+    <script type="text/javascript">setPreformattedTextFromUri('<xsl:value-of select="$id"/>', '<xsl:value-of select="$uri"/>');</script>
   </xsl:template>
 
   <xsl:template name="embed-attachment-flashvideo-from-uri">
@@ -906,7 +907,7 @@ html
       </xsl:call-template>
       <div id="{$id}-hidden" class="logHiddenData"><xsl:value-of select="$content"/></div>
     </div>
-    <script type="text/javascript">setInnerTextFromHiddenData('<xsl:value-of select="$id"/>');</script>
+    <script type="text/javascript">setPreformattedTextFromHiddenData('<xsl:value-of select="$id"/>');</script>
   </xsl:template>
 
   <xsl:template name="icon">
