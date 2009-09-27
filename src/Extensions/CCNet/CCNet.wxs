@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
     <Fragment>
-        <DirectoryRef Id="extraFolder" FileSource="$(var.GallioTargetDir)\extras\">
+        <DirectoryRef Id="extrasFolder" FileSource="$(var.GallioTargetDir)\extras\">
             <Directory Id="CCNet" Name="CCNet">
                 <Component Id="CCNet.Docs" Guid="{735B640A-D57A-4193-906F-7B102BE5E321}" Win64="no">
                     <File Name="How to use Gallio with CruiseControl.Net.txt" KeyPath="yes" />

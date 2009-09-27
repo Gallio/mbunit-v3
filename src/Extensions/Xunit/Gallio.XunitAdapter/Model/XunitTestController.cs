@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using Gallio.Common.Collections;
 using Gallio.Common.Diagnostics;
 using Gallio.Common.Reflection;
 using Gallio.Model.Commands;
@@ -25,6 +26,7 @@ using Gallio.Model.Tree;
 using Gallio.Runtime.ProgressMonitoring;
 using Gallio.Model;
 using Gallio.XunitAdapter.Properties;
+using XunitReflector = Xunit.Sdk.Reflector;
 using XunitMethodInfo = Xunit.Sdk.IMethodInfo;
 using XunitMethodResult = Xunit.Sdk.MethodResult;
 using XunitPassedResult = Xunit.Sdk.PassedResult;
@@ -137,7 +139,10 @@ namespace Gallio.XunitAdapter.Model
 
                     while (testMethods.Count != 0)
                     {
-                        int nextTestIndex = testClassCommand.ChooseNextTest(testMethods.AsReadOnly());
+                        XunitMethodInfo[] xunitTestMethods = GenericCollectionUtils.ConvertAllToArray(
+                            testMethods, x => XunitReflector.Wrap(x));
+
+                        int nextTestIndex = testClassCommand.ChooseNextTest(xunitTestMethods);
                         ITestCommand nextTestCommand = testCommands[nextTestIndex];
                         MethodInfo nextTestMethodInfo = testMethods[nextTestIndex];
 
@@ -176,7 +181,8 @@ namespace Gallio.XunitAdapter.Model
             List<XunitTestCommand> xunitTestCommands;
             try
             {
-                xunitTestCommands = new List<XunitTestCommand>(XunitTestCommandFactory.Make(testClassCommand, methodInfo));
+                xunitTestCommands = new List<XunitTestCommand>(XunitTestCommandFactory.Make(testClassCommand,
+                    XunitReflector.Wrap(methodInfo)));
             }
             catch (Exception ex)
             {

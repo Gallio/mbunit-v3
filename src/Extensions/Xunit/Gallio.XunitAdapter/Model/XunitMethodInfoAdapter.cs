@@ -17,14 +17,17 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Gallio.Common.Reflection;
-
+using Xunit.Sdk;
+using IAttributeInfo=Gallio.Common.Reflection.IAttributeInfo;
+using IMethodInfo=Gallio.Common.Reflection.IMethodInfo;
+using Reflector=Gallio.Common.Reflection.Reflector;
 using XunitMethodInfo = Xunit.Sdk.IMethodInfo;
 using XunitAttributeInfo = Xunit.Sdk.IAttributeInfo;
 
 namespace Gallio.XunitAdapter.Model
 {
     /// <summary>
-    /// An adapter for converting <see cref="IMethodInfo" /> into <see cref="XunitMethodInfo" />.
+    /// An adapter for converting <see cref="Common.Reflection.IMethodInfo" /> into <see cref="XunitMethodInfo" />.
     /// </summary>
     internal class XunitMethodInfoAdapter : XunitMethodInfo
     {
@@ -43,6 +46,11 @@ namespace Gallio.XunitAdapter.Model
             get { return target; }
         }
 
+        public object CreateInstance()
+        {
+            return Activator.CreateInstance(target.Resolve(true).ReflectedType);
+        }
+
         public IEnumerable<XunitAttributeInfo> GetCustomAttributes(Type attributeType)
         {
             foreach (IAttributeInfo attribute in target.GetAttributeInfos(Reflector.Wrap(attributeType), true))
@@ -52,6 +60,22 @@ namespace Gallio.XunitAdapter.Model
         public bool HasAttribute(Type attributeType)
         {
             return AttributeUtils.HasAttribute(target, attributeType, true);
+        }
+
+        public void Invoke(object testClass, params object[] parameters)
+        {
+            try
+            {
+                target.Resolve(true).Invoke(testClass, parameters);
+            }
+            catch (TargetParameterCountException)
+            {
+                throw new ParamterCountMismatchException();
+            }
+            catch (TargetInvocationException exception)
+            {
+                ExceptionUtility.RethrowWithNoStackTraceLoss(exception.InnerException);
+            }
         }
 
         public string DeclaringTypeName
@@ -82,6 +106,11 @@ namespace Gallio.XunitAdapter.Model
         public string ReturnType
         {
             get { return target.ReturnType.FullName; }
+        }
+
+        public string TypeName
+        {
+            get { return target.ReflectedType.FullName; }
         }
 
         public override string ToString()

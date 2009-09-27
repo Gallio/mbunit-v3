@@ -45,6 +45,12 @@ namespace Gallio.Framework.Pattern
         }
 
         /// <inheritdoc />
+        public ITestDataContextBuilder TestDataContextBuilder
+        {
+            get { return new DefaultTestDataContextBuilder(GetTestModelBuilder(), testParameter.DataContext); }
+        }
+
+        /// <inheritdoc />
         public PatternTestParameterActions TestParameterActions
         {
             get { return testParameter.TestParameterActions; }

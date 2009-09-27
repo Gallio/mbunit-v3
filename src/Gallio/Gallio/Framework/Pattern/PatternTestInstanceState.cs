@@ -65,6 +65,9 @@ namespace Gallio.Framework.Pattern
         private MethodInfo testMethod;
         private object[] testArguments;
 
+        private string nameBase;
+        private string nameSuffixes;
+
         /// <summary>
         /// Creates an initial test instance state object.
         /// </summary>
@@ -103,6 +106,8 @@ namespace Gallio.Framework.Pattern
             testParameterValues = new Dictionary<PatternTestParameter, object>();
             slotValues = new Dictionary<ISlotInfo, object>();
             data = new UserDataCollection();
+            nameBase = testStep.Name;
+            nameSuffixes = string.Empty;
         }
 
         /// <summary>
@@ -310,6 +315,55 @@ namespace Gallio.Framework.Pattern
         public bool IsReusingPrimaryTestStep
         {
             get { return testStep.IsPrimary; }
+        }
+
+        /// <summary>
+        /// Gets or sets the basic name of the test instance which usually consists of the method or
+        /// class name and a description of its bound argument values.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// The name may only be changed during <see cref="PatternTestInstanceActions.BeforeTestInstanceChain" />
+        /// when <see cref="IsReusingPrimaryTestStep" /> is false.
+        /// </para>
+        /// </remarks>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
+        public string NameBase
+        {
+            get { return nameBase; }
+            set
+            {
+                if (value == null)
+                    throw new ArgumentNullException("value");
+
+                nameBase = value;
+                UpdateTestStepName();
+            }
+        }
+
+        /// <summary>
+        /// Adds a suffix to the name base.
+        /// </summary>
+        /// <param name="suffix">The suffix to add.</param>
+        /// <remarks>
+        /// <para>
+        /// The suffixes may only be added during <see cref="PatternTestInstanceActions.BeforeTestInstanceChain" />
+        /// when <see cref="IsReusingPrimaryTestStep" /> is false.
+        /// </para>
+        /// </remarks>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="suffix"/> is null.</exception>
+        public void AddNameSuffix(string suffix)
+        {
+            if (suffix == null)
+                throw new ArgumentNullException("suffix");
+
+            nameSuffixes += ", " + suffix;
+            UpdateTestStepName();
+        }
+
+        private void UpdateTestStepName()
+        {
+            testStep.Name = nameSuffixes.Length == 0 ? nameBase : nameBase + nameSuffixes;
         }
 
         /// <summary>

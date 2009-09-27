@@ -193,6 +193,14 @@ namespace Gallio.Framework.Pattern
         ITestParameterBuilder CreateParameter(string name, ICodeElementInfo codeElement, ITestDataContextBuilder dataContextBuilder);
 
         /// <summary>
+        /// Gets a test parameter builder by name.
+        /// </summary>
+        /// <param name="name">The test parameter name.</param>
+        /// <returns>The builder for the test parameter, or null if none.</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> is null.</exception>
+        ITestParameterBuilder GetParameter(string name);
+
+        /// <summary>
         /// Adds a test dependency.
         /// </summary>
         /// <param name="testDependency">The test to add as a dependency.</param>

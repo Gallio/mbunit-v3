@@ -335,7 +335,7 @@ namespace Gallio.Framework
 
             Finishing += (sender, e) =>
             {
-                if (IsTriggerSatisfied(triggerEvent))
+                if (IsTriggerEventSatisfied(triggerEvent))
                 {
                     try
                     {
@@ -361,7 +361,18 @@ namespace Gallio.Framework
             };
         }
 
-        private bool IsTriggerSatisfied(TriggerEvent triggerEvent)
+        /// <summary>
+        /// Returns true if a trigger event has been satisfied.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// This method assumes that the body of the test has already finished and is
+        /// currently running tear down, dispose, or finishing actions.
+        /// </para>
+        /// </remarks>
+        /// <param name="triggerEvent">The trigger event.</param>
+        /// <returns>True if the trigger event is satisfied.</returns>
+        public bool IsTriggerEventSatisfied(TriggerEvent triggerEvent)
         {
             switch (triggerEvent)
             {

@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading;
+using Gallio.Common.Collections;
 using Gallio.Model;
 using Gallio.Common.Reflection;
 using Gallio.Model.Tree;
@@ -136,6 +137,18 @@ namespace Gallio.Framework.Pattern
 
             PatternTestParameter testParameter = new PatternTestParameter(name, codeElement, dataContextBuilder.ToPatternTestDataContext());
             test.AddParameter(testParameter);
+            return new DefaultTestParameterBuilder(GetTestModelBuilder(), testParameter);
+        }
+
+        /// <inheritdoc />
+        public ITestParameterBuilder GetParameter(string name)
+        {
+            if (name == null)
+                throw new ArgumentNullException("name");
+
+            var testParameter = (PatternTestParameter) GenericCollectionUtils.Find(test.Parameters, x => x.Name == name);
+            if (testParameter == null)
+                return null;
             return new DefaultTestParameterBuilder(GetTestModelBuilder(), testParameter);
         }
 

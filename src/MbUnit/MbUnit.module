@@ -5,6 +5,7 @@
     <ModuleReference Include="..\Gallio\Gallio.module" />
     
     <Module Include="Templates\MbUnitTemplates.module" />
+    <Module Include="Samples\MbUnitSamples.module" />
   </ItemGroup>
 
   <ItemGroup>

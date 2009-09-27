@@ -163,10 +163,8 @@ namespace Gallio.XunitAdapter.Model
             // Add traits.
             if (XunitMethodUtility.HasTraits(methodInfo))
             {
-                foreach (KeyValuePair<string, string> entry in XunitMethodUtility.GetTraits(methodInfo))
-                {
-                    methodTest.Metadata.Add(entry.Key ?? @"", entry.Value ?? @"");
-                }
+                XunitMethodUtility.GetTraits(methodInfo).ForEach((key, value) =>
+                    methodTest.Metadata.Add(key ?? @"", value ?? @""));
             }
 
             // Add XML documentation.

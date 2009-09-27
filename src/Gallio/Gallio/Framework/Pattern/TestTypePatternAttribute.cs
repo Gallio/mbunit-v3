@@ -262,7 +262,7 @@ namespace Gallio.Framework.Pattern
                     testInstanceState.FixtureType = spec.ResolvedType;
 
                     if (!testInstanceState.IsReusingPrimaryTestStep)
-                        testInstanceState.TestStep.Name = spec.Format(testInstanceState.TestStep.Name, testInstanceState.Formatter);
+                        testInstanceState.NameBase = spec.Format(testInstanceState.NameBase, testInstanceState.Formatter);
                 });
 
             testBuilder.TestInstanceActions.InitializeTestInstanceChain.After(

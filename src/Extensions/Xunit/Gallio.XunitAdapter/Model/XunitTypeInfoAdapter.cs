@@ -44,6 +44,13 @@ namespace Gallio.XunitAdapter.Model
             get { return target; }
         }
 
+        public XunitMethodInfo GetMethod(string methodName)
+        {
+            IMethodInfo method = target.GetMethod(methodName, BindingFlags.Public | BindingFlags.NonPublic
+                | BindingFlags.Instance | BindingFlags.Static);
+            return method != null ? new XunitMethodInfoAdapter(method) : null;
+        }
+
         public IEnumerable<XunitMethodInfo> GetMethods()
         {
             foreach (IMethodInfo method in target.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance))

@@ -35,7 +35,7 @@
             // 
             this.webBrowser.AllowWebBrowserDrop = false;
             this.webBrowser.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.webBrowser.IsWebBrowserContextMenuEnabled = false;
+            this.webBrowser.IsWebBrowserContextMenuEnabled = true;
             this.webBrowser.Location = new System.Drawing.Point(0, 0);
             this.webBrowser.Name = "webBrowser";
             this.webBrowser.ScriptErrorsSuppressed = true;
