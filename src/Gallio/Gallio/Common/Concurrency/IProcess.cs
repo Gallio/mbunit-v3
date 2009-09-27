@@ -83,9 +83,9 @@ namespace Gallio.Common.Concurrency
         { get; set; }
 
         /// <summary>
-        /// Gets the window handle of the main window of the associated process.
+        /// Gets the unique identifier for the associated process.
         /// </summary>
-        IntPtr MainWindowHandle
+        int Id
         { get; }
     }
 }

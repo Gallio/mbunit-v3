@@ -14,8 +14,8 @@
 // limitations under the License.
 
 using System;
+using System.ComponentModel;
 using System.Diagnostics;
-using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
@@ -43,46 +43,35 @@ namespace Gallio.AutoCAD.Commands
 
             var lisp = CreateLispExpression(command);
 
-            var hwnd = WaitForMessagePump(process, ReadyTimeout, ReadyPollInterval);
-            SendCopyDataMessage(hwnd, lisp);
+            Thread.Sleep(TimeSpan.FromSeconds(10));
+
+            IntPtr hWnd = FindWindowHandle(process, ReadyTimeout, ReadyPollInterval);
+            SendCopyDataMessage(hWnd, lisp);
         }
 
-        private HandleRef WaitForMessagePump(IProcess process, TimeSpan timeout, TimeSpan pollInterval)
+        private static IntPtr FindWindowHandle(IProcess process, TimeSpan timeout, TimeSpan pollInterval)
         {
-            // Poll the process until it creates a "main" window. Using MainWindowHandle
-            // may become problematic if acad.exe created multiple top-level unowned windows.
-            // See http://blogs.msdn.com/oldnewthing/archive/2008/02/20/7806911.aspx for discussion.
-
-            process.Refresh();
             var stopwatch = Stopwatch.StartNew();
-            while (process.MainWindowHandle == IntPtr.Zero)
+
+            process.WaitForInputIdle(timeout.Milliseconds);
+
+            do
             {
-                if (stopwatch.Elapsed > timeout)
-                    throw new TimeoutException("Timeout waiting for AutoCAD to create message pump.");
+                IntPtr hWnd = AcadWindowFinder.FindMainWindow(process.Id);
+                if (hWnd != IntPtr.Zero)
+                    return hWnd;
 
                 Thread.Sleep(pollInterval);
-                process.Refresh();
             }
+            while (stopwatch.Elapsed < timeout);
 
-            var remaining = timeout - stopwatch.Elapsed;
-            if (remaining <= TimeSpan.Zero || !process.WaitForInputIdle((int)remaining.TotalMilliseconds))
-                throw new TimeoutException("Timeout waiting for AutoCAD to enter an idle state.");
-
-            return new HandleRef(this, process.MainWindowHandle);
+            throw new TimeoutException("Timeout waiting for AutoCAD.");
         }
 
-        private static void SendCopyDataMessage(HandleRef hwnd, string message)
+        private static void SendCopyDataMessage(IntPtr hWnd, string message)
         {
-            try
-            {
-                var cds = new COPYDATASTRUCT(message);
-                SendMessage(hwnd, ref cds);
-                GC.KeepAlive(cds);
-            }
-            catch (FileNotFoundException)
-            {
-                // Can fail if the handle is not valid.
-            }
+            var cds = new COPYDATASTRUCT(message);
+            NativeMethods.SendMessage(new HandleRef(cds, hWnd), ref cds);
         }
 
         private static string CreateLispExpression(AcadCommand command)
@@ -107,11 +96,8 @@ namespace Gallio.AutoCAD.Commands
         #region P/Invoke related
         // ReSharper disable InconsistentNaming
 
-        private const uint WM_COPYDATA = 0x4A;
-        private static readonly IntPtr FALSE = IntPtr.Zero;
-        private const int ERROR_SUCCESS = 0;
-
-        struct COPYDATASTRUCT
+        [StructLayout(LayoutKind.Sequential)]
+        private struct COPYDATASTRUCT
         {
             public COPYDATASTRUCT(string message)
             {
@@ -120,27 +106,187 @@ namespace Gallio.AutoCAD.Commands
                 lpData = message;
             }
 
-            // ReSharper disable UnaccessedField.Local
             IntPtr dwData;
             int cbData;
             [MarshalAs(UnmanagedType.LPTStr)]
             string lpData;
-            // ReSharper restore UnaccessedField.Local
         }
 
-        private static void SendMessage(HandleRef handle, ref COPYDATASTRUCT data)
-        {
-            if (SendMessage(handle, WM_COPYDATA, IntPtr.Zero, ref data) == FALSE)
-            {
-                if (Marshal.GetLastWin32Error() == ERROR_SUCCESS)
-                    return;
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private delegate bool EnumWindowsProc(IntPtr hWnd, IntPtr lParam);
 
-                Marshal.ThrowExceptionForHR(Marshal.GetHRForLastWin32Error());
+        private static class NativeMethods
+        {
+            private const uint WM_COPYDATA = 0x4A;
+            private static readonly IntPtr FALSE = IntPtr.Zero;
+            public const int ERROR_SUCCESS = 0;
+
+            /// <summary>
+            /// Sends a <c>WM_COPYDATA</c> message to the specified window handle.
+            /// </summary>
+            public static void SendMessage(HandleRef hWnd, ref COPYDATASTRUCT data)
+            {
+                IntPtr sourceHandle = IntPtr.Zero; // There isn't a handle for the sender.
+
+                if (SendMessage(hWnd, WM_COPYDATA, sourceHandle, ref data) == FALSE)
+                {
+                    int error = Marshal.GetLastWin32Error();
+                    if (error != ERROR_SUCCESS)
+                        throw new Win32Exception(error);
+                }
+            }
+
+            [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+            private static extern IntPtr SendMessage(HandleRef hWnd, uint Msg, IntPtr wParam, ref COPYDATASTRUCT lParam);
+
+            [DllImport("kernel32.dll")]
+            public static extern void SetLastError(uint dwErrCode);
+
+            /// <summary>
+            /// Passes the handle to all top level windows on the screen to the specified callback.
+            /// </summary>
+            public static void EnumWindows(EnumWindowsProc lpEnumFunc, IntPtr lParam)
+            {
+                if (EnumWindowsInternal(lpEnumFunc, lParam) == false)
+                {
+                    int error = Marshal.GetLastWin32Error();
+                    if (error != ERROR_SUCCESS)
+                        throw new Win32Exception(error);
+                }
+            }
+
+            [DllImport("user32.dll", EntryPoint = "EnumWindows", SetLastError = true)]
+            [return: MarshalAs(UnmanagedType.Bool)]
+            private static extern bool EnumWindowsInternal(EnumWindowsProc lpEnumFunc, IntPtr lParam);
+
+            /// <summary>
+            /// Gets the handle to the owner of the specified window handle.
+            /// </summary>
+            public static IntPtr GetWindowOwner(HandleRef hWnd)
+            {
+                return GetWindow(hWnd, 4 /* GW_OWNER */);
+            }
+
+            [DllImport("user32.dll", SetLastError = false)]
+            private static extern IntPtr GetWindow(HandleRef hWnd, uint uCmd);
+
+            /// <summary>
+            /// Gets the text of the specified window's title bar or the
+            /// empty string if the window has no title bar or text, or
+            /// if the window handle is invalid.
+            /// </summary>
+            public static string GetWindowText(HandleRef hWnd)
+            {
+                int len = GetWindowTextLength(hWnd);
+                if (len == 0)
+                    return string.Empty;
+
+                var lpString = new StringBuilder(len + 1);
+                if (GetWindowText(hWnd, lpString, lpString.Capacity) == 0)
+                    return string.Empty;
+
+                return lpString.ToString();
+            }
+
+            [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = false)]
+            private static extern int GetWindowText(HandleRef hWnd, StringBuilder lpString, int nMaxCount);
+
+            [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = false)]
+            private static extern int GetWindowTextLength(HandleRef hWnd);
+
+            /// <summary>
+            /// Gets the ID of the process that created the specified window handle
+            /// or zero if the handle is invalid.
+            /// </summary>
+            public static int GetWindowProcessId(HandleRef hWnd)
+            {
+                uint dwProcessId;
+                GetWindowThreadProcessId(hWnd, out dwProcessId);
+                return (int)dwProcessId;
+            }
+
+            [DllImport("user32.dll", SetLastError = false)]
+            private static extern uint GetWindowThreadProcessId(HandleRef hWnd, out uint lpdwProcessId);
+
+            /// <summary>
+            /// Gets visibility of the specified window.
+            /// </summary>
+            [DllImport("user32.dll", SetLastError = false)]
+            [return: MarshalAs(UnmanagedType.Bool)]
+            public static extern bool IsWindowVisible(HandleRef hWnd);
+        }
+
+        private class AcadWindowFinder
+        {
+            // Cache of the previously discovered handle. Good for perf.
+            private static IntPtr? previousBestHandle;
+
+            private readonly int processId;
+            private IntPtr bestHandle;
+
+            private AcadWindowFinder(int processId)
+            {
+                this.processId = processId;
+                bestHandle = IntPtr.Zero;
+            }
+
+            public static IntPtr FindMainWindow(int processId)
+            {
+                if (previousBestHandle.HasValue)
+                {
+                    if (IsMainWindow(new HandleRef(null, previousBestHandle.Value), processId))
+                        return previousBestHandle.Value;
+
+                    previousBestHandle = null;
+                }
+
+                var finder = new AcadWindowFinder(processId);
+
+                EnumWindowsProc callback = finder.EnumWindowsCallback;
+                NativeMethods.EnumWindows(callback, IntPtr.Zero);
+                GC.KeepAlive(callback);
+
+                previousBestHandle = finder.bestHandle;
+                return finder.bestHandle;
+            }
+
+            /// <summary>
+            /// Returns whether the specified handle is for the "main window" of AutoCAD.
+            /// </summary>
+            /// <remarks>
+            /// This method will return false if either <paramref name="hWnd"/>
+            /// or <paramref name="processId"/> are invalid.
+            /// </remarks>
+            private static bool IsMainWindow(HandleRef hWnd, int processId)
+            {
+                int windowProcessId = NativeMethods.GetWindowProcessId(hWnd);
+                if (windowProcessId != processId)
+                    return false;
+
+                IntPtr ownerHandle = NativeMethods.GetWindowOwner(hWnd);
+                if (ownerHandle != IntPtr.Zero)
+                    return false;
+
+                if (NativeMethods.IsWindowVisible(hWnd) == false)
+                    return false;
+
+                string title = NativeMethods.GetWindowText(hWnd);
+                if (title.IndexOf("AUTOCAD", StringComparison.InvariantCultureIgnoreCase) == -1)
+                    return false;
+
+                return true;
+            }
+
+            private bool EnumWindowsCallback(IntPtr handle, IntPtr extraParameter)
+            {
+                if (IsMainWindow(new HandleRef(this, handle), processId) == false)
+                    return true;
+
+                NativeMethods.SetLastError(NativeMethods.ERROR_SUCCESS);
+                bestHandle = handle;
+                return false;
             }
         }
-
-        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-        private static extern IntPtr SendMessage(HandleRef hWnd, uint Msg, IntPtr wParam, ref COPYDATASTRUCT lParam);
 
         // ReSharper restore InconsistentNaming
         #endregion

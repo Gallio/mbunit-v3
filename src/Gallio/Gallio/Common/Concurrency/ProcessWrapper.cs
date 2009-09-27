@@ -104,9 +104,9 @@ namespace Gallio.Common.Concurrency
         }
 
         /// <inheritdoc/>
-        public IntPtr MainWindowHandle
+        public int Id
         {
-            get { return process.MainWindowHandle; }
+            get { return process.Id; }
         }
     }
 }
