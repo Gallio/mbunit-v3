@@ -160,23 +160,11 @@ namespace Gallio.BuildTools.SGen
             compilerParameters.GenerateInMemory = false;
             compilerParameters.OutputAssembly = serializersAssemblyPath;
 
-            foreach (var reference in References)
-            {
-                // FIXME: Imprecise
-                if (! IsSystemAssembly(reference))
-                    compilerParameters.ReferencedAssemblies.Add(reference);
-            }
-
             if (KeyFile != null)
                 compilerParameters.CompilerOptions += " /keyfile:\"" + KeyFile + "\"";
 
             XmlSerializer.GenerateSerializer(serializableTypes.ToArray(),
                 mappings.ToArray(), compilerParameters);
-        }
-
-        private static bool IsSystemAssembly(string assemblyName)
-        {
-            return assemblyName.Contains("System") || assemblyName.Contains("mscorlib");
         }
     }
 }
