@@ -497,7 +497,7 @@ namespace Gallio.Common.Concurrency
             Stopwatch timer = Stopwatch.StartNew();
             if (consoleOutputFinished != null)
             {
-                consoleOutputFinished.WaitOne(WaitForFinalIOTimeout);
+                consoleOutputFinished.WaitOne(WaitForFinalIOTimeout, false);
             }
 
             if (consoleErrorFinished != null)
@@ -506,7 +506,7 @@ namespace Gallio.Common.Concurrency
                 if (remaining.Ticks < 0)
                     remaining = TimeSpan.Zero;
 
-                consoleErrorFinished.WaitOne(remaining);
+                consoleErrorFinished.WaitOne(remaining, false);
             }
         }
     }
