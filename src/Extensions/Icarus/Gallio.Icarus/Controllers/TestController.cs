@@ -53,7 +53,7 @@ namespace Gallio.Icarus.Controllers
         public event EventHandler ExploreStarted;
         public event EventHandler ExploreFinished;
 
-        private readonly List<TestTreeNode> selectedTests = new List<TestTreeNode>();
+        private readonly LockBox<IList<TestTreeNode>> selectedTests = new LockBox<IList<TestTreeNode>>(new List<TestTreeNode>());
 
         public string TreeViewCategory
         {
@@ -61,7 +61,7 @@ namespace Gallio.Icarus.Controllers
             set;
         }
 
-        public IList<TestTreeNode> SelectedTests
+        public LockBox<IList<TestTreeNode>> SelectedTests
         {
             get { return selectedTests; }
         }
@@ -283,8 +283,12 @@ namespace Gallio.Icarus.Controllers
 
         public void SetSelection(IList<TestTreeNode> nodes)
         {
-            selectedTests.Clear();
-            selectedTests.AddRange(nodes);
+            SelectedTests.Write(sts =>
+            {
+                sts.Clear();
+                foreach (var node in nodes)
+                    sts.Add(node);
+            });
             OnPropertyChanged(new PropertyChangedEventArgs("SelectedTests"));
         }
 

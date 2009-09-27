@@ -1,21 +1,18 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.gallio.org/">
-  <testPackageConfig>
-    <assemblyFiles>
-      <assemblyFile>.\Gallio.Tests\bin\Gallio.Tests.dll</assemblyFile>
-    </assemblyFiles>
+<testProject xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.gallio.org/">
+  <testPackage shadowCopy="false" debug="false">
+    <files>
+      <file>Gallio.Tests\bin\Gallio.Tests.dll</file>
+    </files>
     <hintDirectories />
     <excludedFrameworkIds />
-    <hostSetup enableShadowCopy="false" debug="false" configurationFileLocation="appBase" processorArchitecture="None">
-      <configuration legacyUnhandledExceptionPolicyEnabled="true" assertUiEnabled="false" remotingCustomErrorsEnabled="false">
-        <assemblyQualifications />
-        <assemblyDependencies />
-        <supportedRuntimeVersions />
-      </configuration>
-    </hostSetup>
-  </testPackageConfig>
+    <properties />
+  </testPackage>
   <testFilters>
-    <testFilter filterName="AutoSave" filter="Namespace: Gallio.Tests.Model.Filters" />
-    <testFilter filterName="LastRun" filter="Namespace: Gallio.Tests.Model.Filters" />
+    <testFilter filterName="AutoSave" filterExpr="" />
+    <testFilter filterName="LastRun" filterExpr="" />
   </testFilters>
-</project>
+  <extensionSpecifications />
+  <reportDirectory>Gallio.Tests\bin\Reports</reportDirectory>
+  <reportNameFormat>test-report-{0}-{1}</reportNameFormat>
+</testProject>

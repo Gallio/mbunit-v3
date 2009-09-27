@@ -17,7 +17,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Drawing;
 using System.Windows.Forms;
 using Aga.Controls.Tree;
 using Gallio.Icarus.Controllers.Interfaces;
@@ -25,17 +24,13 @@ using Gallio.Icarus.Models;
 using Gallio.Icarus.Models.TestTreeNodes;
 using Gallio.Model;
 using Gallio.Runner.Reports.Schema;
-using Gallio.UI.ProgressMonitoring;
 
 namespace Gallio.Icarus.Controllers
 {
     internal class TestResultsController : NotifyController, ITestResultsController
     {
         private readonly ITestController testController;
-        private readonly IOptionsController optionsController;
-        private readonly ITaskManager taskManager;
 
-        private int resultsCount;
         private readonly Stopwatch stopwatch = new Stopwatch();
         private readonly List<ListViewItem> listViewItems = new List<ListViewItem>();
         private int firstItem;
@@ -44,42 +39,9 @@ namespace Gallio.Icarus.Controllers
         private int sortColumn = -1;
         private SortOrder sortOrder;
 
-        public int ResultsCount
+        public Observable<int> ResultsCount
         {
-            get 
-            { 
-                return resultsCount; 
-            }
-            private set
-            {
-                resultsCount = value;
-                OnPropertyChanged(new PropertyChangedEventArgs("ResultsCount"));
-            }
-        }
-
-        public string TestStatusBarStyle
-        {
-            get { return optionsController.TestStatusBarStyle; }
-        }
-
-        public Color PassedColor
-        {
-            get { return optionsController.PassedColor; }
-        }
-
-        public Color FailedColor
-        {
-            get { return optionsController.FailedColor; }
-        }
-
-        public Color InconclusiveColor
-        {
-            get { return optionsController.InconclusiveColor; }
-        }
-
-        public Color SkippedColor
-        {
-            get { return optionsController.SkippedColor; }
+            get; private set;
         }
 
         public int PassedTestCount
@@ -112,20 +74,12 @@ namespace Gallio.Icarus.Controllers
             get { return testController.TestCount; }
         }
 
-        public TestResultsController(ITestController testController, IOptionsController optionsController, 
-            ITaskManager taskManager)
+        public TestResultsController(ITestController testController)
         {
             if (testController == null) 
                 throw new ArgumentNullException("testController");
             
-            if (optionsController == null) 
-                throw new ArgumentNullException("optionsController");
-            
-            if (taskManager == null) 
-                throw new ArgumentNullException("taskManager");
-
             this.testController = testController;
-
             testController.TestStepFinished += (sender, e) => CountResults();
             testController.PropertyChanged += (sender, e) =>
             {
@@ -133,6 +87,8 @@ namespace Gallio.Icarus.Controllers
                     return;
 
                 CountResults();
+
+                OnPropertyChanged(e);
             };
             testController.ExploreStarted += (sender, e) => Reset();
             testController.ExploreFinished += (sender, e) => OnPropertyChanged(new PropertyChangedEventArgs("ElapsedTime"));
@@ -142,55 +98,62 @@ namespace Gallio.Icarus.Controllers
                 stopwatch.Start();
             };
             testController.RunFinished += (sender, e) => stopwatch.Stop();
-            testController.PropertyChanged += ((sender, e) => OnPropertyChanged(e));
 
-            this.optionsController = optionsController;
-            optionsController.PropertyChanged += ((sender, e) => OnPropertyChanged(e));
-
-            this.taskManager = taskManager;
+            ResultsCount = new Observable<int>();
         }
 
         private void CountResults()
         {
-            taskManager.BackgroundTask(() =>
-            {
-                int count = 0;
-                ResultsCount = count;
+            // invalidate cache
+            listViewItems.Clear();
+            ResultsCount.Value = 0;
 
-                if (testController.Model.Root != null)
-                {
-                    if (testController.SelectedTests.Count == 0)
-                    {
-                        CountResults(testController.Model.Root, ref count);
-                    }
-                    else
-                    {
-                        // need to do this because poxy namespace nodes don't really exist!
-                        foreach (TestTreeNode node in testController.SelectedTests)
-                            CountResults(node, ref count);
-                    }
-                }
-
-                // update cache
-                UpdateTestResults();
-
-                // notify that list has changed
-                ResultsCount = count;
-                OnPropertyChanged(new PropertyChangedEventArgs("ElapsedTime"));
-            });
+            int count = 0;
+            WalkTree(ttn => count += CountResults(ttn));
+            
+            // notify that list has changed
+            ResultsCount.Value = count;
+            OnPropertyChanged(new PropertyChangedEventArgs("ElapsedTime"));
         }
 
-        private static void CountResults(TestTreeNode node, ref int count)
+        private void WalkTree(Action<TestTreeNode> action)
         {
+            var selectedTests = new TestTreeNode[0];
+            testController.SelectedTests.Read(sts =>
+            {
+                selectedTests = new TestTreeNode[sts.Count];
+                sts.CopyTo(selectedTests, 0);
+            });
+
+            if (selectedTests.Length == 0)
+            {
+                action(testController.Model.Root);
+            }
+            else
+            {
+                // need to do this because poxy namespace nodes don't really exist!
+                foreach (var node in selectedTests)
+                {
+                    action(node);
+                }
+            }
+        }
+
+        private static int CountResults(TestTreeNode node)
+        {
+            int count = 0;
             count += node.TestStepRuns.Count;
 
             foreach (Node n in node.Nodes)
-                CountResults((TestTreeNode) n, ref count);
+                count += CountResults((TestTreeNode) n);
+
+            return count;
         }
 
         private void Reset()
         {
-            ResultsCount = 0;
+            ResultsCount.Value = 0;
+            listViewItems.Clear();
           
             stopwatch.Reset();
             OnPropertyChanged(new PropertyChangedEventArgs("ElapsedTime"));
@@ -219,13 +182,13 @@ namespace Gallio.Icarus.Controllers
                 firstItem = itemIndex;
                 UpdateTestResults();
             }
-            else if (itemIndex > (firstItem + (listViewItems.Count - 1)))
+            else if (itemIndex >= firstItem + listViewItems.Count)
             {
                 lastItem = itemIndex;
                 UpdateTestResults();
             }
 
-            if ((itemIndex - firstItem) > (listViewItems.Count - 1))
+            if ((itemIndex - firstItem) >= listViewItems.Count)
             {
                 UpdateTestResults();
             }
@@ -238,16 +201,7 @@ namespace Gallio.Icarus.Controllers
             listViewItems.Clear();
             index = 0;
 
-            if (testController.SelectedTests.Count == 0)
-            {
-                UpdateTestResults(testController.Model.Root, 0);
-            }
-            else
-            {
-                // need to do this because poxy namespace nodes don't really exist!
-                foreach (TestTreeNode node in testController.SelectedTests)
-                    UpdateTestResults(node, 0);
-            }
+            WalkTree(ttn => UpdateTestResults(ttn, 0));
 
             if (sortColumn != -1)
                 SortAndTrimListViewItems();
@@ -286,10 +240,10 @@ namespace Gallio.Icarus.Controllers
             });
 
             // trim list to viewport
-            ListViewItem[] relevantItems = new ListViewItem[lastItem - firstItem];
-            listViewItems.CopyTo(firstItem, relevantItems, 0, lastItem - firstItem);
-            listViewItems.Clear();
-            listViewItems.AddRange(relevantItems);
+            //var relevantItems = new ListViewItem[lastItem - firstItem];
+            //listViewItems.CopyTo(firstItem, relevantItems, 0, lastItem - firstItem);
+            //listViewItems.Clear();
+            //listViewItems.AddRange(relevantItems);
         }
 
         private void UpdateTestResults(TestTreeNode node, int indentCount)

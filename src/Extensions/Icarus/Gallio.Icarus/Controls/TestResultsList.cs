@@ -76,8 +76,10 @@ namespace Gallio.Icarus.Controls
                 // If the new size is smaller than the Index of TopItem, we need to make
                 // sure the new TopItem is set to something smaller.
                 // http://blogs.msdn.com/cumgranosalis/archive/2006/03/18/ListViewVirtualModeBugs.aspx
-                if (VirtualMode && View == View.Details && TopItem != null && value > 0 && TopItem.Index > value - 1)
+                if (VirtualMode && View == View.Details && value > 0 && TopItem != null && TopItem.Index > value - 1)
+                {
                     TopItem = Items[value - 1];
+                }
                 base.VirtualListSize = value;
             }
         }

@@ -15,7 +15,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using Gallio.Common.Collections;
 using Gallio.Common.Policies;
 using Gallio.Icarus.Controllers.EventArgs;
@@ -72,9 +71,12 @@ namespace Gallio.Icarus.Controllers
         {
             selectedTestIds.Clear();
 
-            foreach (var node in testController.SelectedTests)
-                selectedTestIds.Add(node.Name);
-
+            testController.SelectedTests.Read(sts =>
+            {
+                foreach (var node in sts)
+                    selectedTestIds.Add(node.Name);
+            });
+            
             Update();
         }
 

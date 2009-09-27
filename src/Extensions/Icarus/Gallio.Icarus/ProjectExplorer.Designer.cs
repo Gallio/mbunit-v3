@@ -107,19 +107,19 @@ namespace Gallio.Icarus
             this.addFilesToolStripMenuItem,
             this.removeAllFilesToolStripMenuItem});
             this.filesNodeMenuStrip.Name = "classTreeMenuStrip";
-            this.filesNodeMenuStrip.Size = new System.Drawing.Size(144, 48);
+            this.filesNodeMenuStrip.Size = new System.Drawing.Size(149, 48);
             // 
             // addFilesToolStripMenuItem
             // 
             this.addFilesToolStripMenuItem.Name = "addFilesToolStripMenuItem";
-            this.addFilesToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
+            this.addFilesToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
             this.addFilesToolStripMenuItem.Text = "Add Files...";
             this.addFilesToolStripMenuItem.Click += new System.EventHandler(this.addFilesToolStripMenuItem_Click);
             // 
             // removeAllFilesToolStripMenuItem
             // 
             this.removeAllFilesToolStripMenuItem.Name = "removeAllFilesToolStripMenuItem";
-            this.removeAllFilesToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
+            this.removeAllFilesToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
             this.removeAllFilesToolStripMenuItem.Text = "Remove Files";
             this.removeAllFilesToolStripMenuItem.Click += new System.EventHandler(this.removeAllFilesToolStripMenuItem_Click);
             // 
@@ -130,7 +130,7 @@ namespace Gallio.Icarus
             this.propertiesToolStripButton});
             this.toolStrip1.Location = new System.Drawing.Point(3, 0);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(35, 25);
+            this.toolStrip1.Size = new System.Drawing.Size(33, 25);
             this.toolStrip1.TabIndex = 5;
             // 
             // propertiesToolStripButton
@@ -148,18 +148,18 @@ namespace Gallio.Icarus
             this.viewReportAsMenuItem,
             this.deleteReportMenuItem});
             this.reportNodeMenuStrip.Name = "classTreeMenuStrip";
-            this.reportNodeMenuStrip.Size = new System.Drawing.Size(154, 48);
+            this.reportNodeMenuStrip.Size = new System.Drawing.Size(159, 48);
             // 
             // viewReportAsMenuItem
             // 
             this.viewReportAsMenuItem.Name = "viewReportAsMenuItem";
-            this.viewReportAsMenuItem.Size = new System.Drawing.Size(153, 22);
+            this.viewReportAsMenuItem.Size = new System.Drawing.Size(158, 22);
             this.viewReportAsMenuItem.Text = "View Report As";
             // 
             // deleteReportMenuItem
             // 
             this.deleteReportMenuItem.Name = "deleteReportMenuItem";
-            this.deleteReportMenuItem.Size = new System.Drawing.Size(153, 22);
+            this.deleteReportMenuItem.Size = new System.Drawing.Size(158, 22);
             this.deleteReportMenuItem.Text = "Delete Report";
             this.deleteReportMenuItem.Click += new System.EventHandler(this.deleteReportToolStripMenuItem_Click);
             // 
@@ -168,12 +168,12 @@ namespace Gallio.Icarus
             this.fileNodeMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.removeFileMenuItem});
             this.fileNodeMenuStrip.Name = "classTreeMenuStrip";
-            this.fileNodeMenuStrip.Size = new System.Drawing.Size(153, 48);
+            this.fileNodeMenuStrip.Size = new System.Drawing.Size(144, 26);
             // 
             // removeFileMenuItem
             // 
             this.removeFileMenuItem.Name = "removeFileMenuItem";
-            this.removeFileMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.removeFileMenuItem.Size = new System.Drawing.Size(143, 22);
             this.removeFileMenuItem.Text = "Remove File";
             this.removeFileMenuItem.Click += new System.EventHandler(this.removeFileToolStripMenuItem_Click);
             // 

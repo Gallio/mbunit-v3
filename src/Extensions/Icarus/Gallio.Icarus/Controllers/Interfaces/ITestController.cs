@@ -20,7 +20,6 @@ using Gallio.Common.Concurrency;
 using Gallio.Icarus.Models;
 using Gallio.Model;
 using Gallio.Model.Filters;
-using Gallio.Model.Schema;
 using Gallio.Runner;
 using Gallio.Runner.Events;
 using Gallio.Runner.Reports.Schema;
@@ -33,7 +32,7 @@ namespace Gallio.Icarus.Controllers.Interfaces
         /// <summary>
         /// Gets the list of currently selected tests.
         /// </summary>
-        IList<TestTreeNode> SelectedTests { get; }
+        LockBox<IList<TestTreeNode>> SelectedTests { get; }
 
         /// <summary>
         /// Indicator if any tests failed during the last run.

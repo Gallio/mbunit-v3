@@ -150,9 +150,13 @@ namespace Gallio.Icarus
             if (projectTree.SelectedNode == null || !(projectTree.SelectedNode.Tag is ReportNode))
                 return;
 
+            DeleteReport();
+        }
+
+        private void DeleteReport()
+        {
             var reportNode = (ReportNode)projectTree.SelectedNode.Tag;
-            var cmd = new DeleteReportCommand(reportController);
-            cmd.FileName = reportNode.FileName;
+            var cmd = new DeleteReportCommand(reportController) { FileName = reportNode.FileName };
             taskManager.QueueTask(cmd);
         }
 
@@ -165,6 +169,15 @@ namespace Gallio.Icarus
         {
             var windowManager = RuntimeAccessor.ServiceLocator.Resolve<IWindowManager>();
             windowManager.Show(ProjectsPackage.ProjectPropertiesWindowId);
+        }
+
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            if (keyData == Keys.Delete && (Node)projectTree.SelectedNode.Tag is ReportNode)
+            {
+                DeleteReport();
+            }
+            return base.ProcessCmdKey(ref msg, keyData);
         }
     }
 }

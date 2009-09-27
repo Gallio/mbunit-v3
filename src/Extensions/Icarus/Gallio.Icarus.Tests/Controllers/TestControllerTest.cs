@@ -496,7 +496,7 @@ namespace Gallio.Icarus.Tests.Controllers
             var optionsController = MockRepository.GenerateStub<IOptionsController>();
             var testController = new TestController(testTreeModel, optionsController, new TestTaskManager());
 
-            Assert.AreEqual(0, testController.SelectedTests.Count);
+            Assert.AreEqual(0, testController.SelectedTests.Read(sts => sts.Count));
         }
 
         [Test]

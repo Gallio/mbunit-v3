@@ -22,17 +22,17 @@ namespace Gallio.Icarus
     {
         private readonly ITestResultsController testResultsController;
 
-        public TestResults(ITestResultsController testResultsController)
+        public TestResults(ITestResultsController testResultsController, IOptionsController optionsController)
         {
             this.testResultsController = testResultsController;
 
             InitializeComponent();
 
-            testProgressStatusBar.DataBindings.Add("Mode", testResultsController, "TestStatusBarStyle");
-            testProgressStatusBar.DataBindings.Add("PassedColor", testResultsController, "PassedColor");
-            testProgressStatusBar.DataBindings.Add("FailedColor", testResultsController, "FailedColor");
-            testProgressStatusBar.DataBindings.Add("InconclusiveColor", testResultsController, "InconclusiveColor");
-            testProgressStatusBar.DataBindings.Add("SkippedColor", testResultsController, "SkippedColor");
+            testProgressStatusBar.DataBindings.Add("Mode", optionsController, "TestStatusBarStyle");
+            testProgressStatusBar.DataBindings.Add("PassedColor", optionsController, "PassedColor");
+            testProgressStatusBar.DataBindings.Add("FailedColor", optionsController, "FailedColor");
+            testProgressStatusBar.DataBindings.Add("InconclusiveColor", optionsController, "InconclusiveColor");
+            testProgressStatusBar.DataBindings.Add("SkippedColor", optionsController, "SkippedColor");
 
             testProgressStatusBar.DataBindings.Add("Passed", testResultsController, "PassedTestCount");
             testProgressStatusBar.DataBindings.Add("Failed", testResultsController, "FailedTestCount");
@@ -41,7 +41,8 @@ namespace Gallio.Icarus
             testProgressStatusBar.DataBindings.Add("ElapsedTime", testResultsController, "ElapsedTime");
             testProgressStatusBar.DataBindings.Add("Total", testResultsController, "TestCount");
 
-            testResultsList.DataBindings.Add("VirtualListSize", testResultsController, "ResultsCount");
+            testResultsController.ResultsCount.PropertyChanged += (s, e) => 
+                testResultsList.VirtualListSize = testResultsController.ResultsCount;
 
             testResultsList.RetrieveVirtualItem += testResultsList_RetrieveVirtualItem;
             testResultsList.CacheVirtualItems += testResultsList_CacheVirtualItems;
