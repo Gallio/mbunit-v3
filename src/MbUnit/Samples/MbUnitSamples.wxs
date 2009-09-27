@@ -37,10 +37,10 @@
 
         <Feature Id="feat_MbUnit3.Samples" Title="MbUnit Samples" Level="1" AllowAdvertise="no"
                  Description="Installs MbUnit code samples.">
-            <ComponentRef Id="MbUnit.Samples.Readme.txt" />
+            <ComponentRef Id="MbUnit.Samples.Readme" />
             <ComponentRef Id="MbUnit.Samples.UnitTesting" />
             <ComponentRef Id="MbUnit.Samples.WebTestingWithWatiN" />
-            <ComponentRef Id="MbUnit.Samples.GUITestingwithWhite" />
+            <ComponentRef Id="MbUnit.Samples.GUITestingWithWhite" />
             <ComponentRef Id="MbUnit.Samples.MenuShortcut"/>
         </Feature>
     </Fragment>
