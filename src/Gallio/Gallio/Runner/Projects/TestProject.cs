@@ -16,7 +16,6 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.IO;
 using Gallio.Common.Collections;
 using Gallio.Model;
 using Gallio.Runner.Extensions;
@@ -100,7 +99,7 @@ namespace Gallio.Runner.Projects
         /// </summary>
         public IList<FilterInfo> TestFilters
         {
-            get { return new List<FilterInfo>(testFilters); }
+            get { return new ReadOnlyCollection<FilterInfo>(testFilters); }
         }
 
         /// <summary>

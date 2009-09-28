@@ -64,6 +64,9 @@
 
     <service serviceId="Gallio.Icarus.AnnotationsController" 
              serviceType="Gallio.Icarus.Controllers.Interfaces.IAnnotationsController, Gallio.Icarus" />
+
+    <service serviceId="Gallio.Icarus.FilterController" 
+             serviceType="Gallio.Icarus.Controllers.IFilterController, Gallio.Icarus" />
     
     <!-- Models -->
 
@@ -83,9 +86,8 @@
     <service serviceId="Gallio.Icarus.ReportService"
          serviceType="Gallio.Icarus.Services.Interfaces.IReportService, Gallio.Icarus" />
   </services>
-  <components>
-    
-    <component componentId="Gallio.Icarus.FileyWatcher"
+  <components>    
+    <component componentId="Gallio.Icarus.FileWatcher"
                serviceId="Gallio.Icarus.FileWatcher"
                componentType="Gallio.Icarus.Remoting.FileWatcher, Gallio.Icarus" />
 
@@ -206,6 +208,10 @@
                serviceId="Gallio.Icarus.RuntimeLogController"
                componentType="Gallio.Icarus.Controllers.RuntimeLogController, Gallio.Icarus" />
 
+    <component componentId="Gallio.Icarus.FilterController" 
+               serviceId="Gallio.Icarus.FilterController" 
+               componentType="Gallio.Icarus.Controllers.FilterController, Gallio.Icarus" />
+    
     <!-- Models -->
 
     <component componentId="Gallio.Icarus.TestTreeModel"
@@ -235,9 +241,6 @@
     <component componentId="Gallio.Icarus.ReportService" 
                serviceId="Gallio.Icarus.ReportService" 
                componentType="Gallio.Icarus.Services.ReportService, Gallio.Icarus" />
-    
-    <!-- Utilities -->
-    
     
   </components>
   

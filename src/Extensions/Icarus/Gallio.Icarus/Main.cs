@@ -105,6 +105,7 @@ namespace Gallio.Icarus
             var runtimeLogController = RuntimeAccessor.ServiceLocator.Resolve<IRuntimeLogController>();
             var executionLogController = RuntimeAccessor.ServiceLocator.Resolve<IExecutionLogController>();
             var annotationsController = RuntimeAccessor.ServiceLocator.Resolve<IAnnotationsController>();
+            var filterController = RuntimeAccessor.ServiceLocator.Resolve<IFilterController>();
 
             InitializeComponent();
 
@@ -115,8 +116,7 @@ namespace Gallio.Icarus
             projectExplorer = new ProjectExplorer(projectController, testController, reportController, taskManager);
             testResults = new TestResults(testResultsController, optionsController);
             runtimeLogWindow = new RuntimeLogWindow(runtimeLogController);
-            filtersWindow = new FiltersWindow(new FilterController(taskManager, testController, 
-                projectController), projectController);
+            filtersWindow = new FiltersWindow(filterController, projectController);
             executionLogWindow = new ExecutionLogWindow(executionLogController);
             annotationsWindow = new AnnotationsWindow(annotationsController, sourceCodeController);
 

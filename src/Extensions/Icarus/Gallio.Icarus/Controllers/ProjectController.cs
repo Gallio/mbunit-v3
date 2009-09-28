@@ -185,8 +185,8 @@ namespace Gallio.Icarus.Controllers
         {
             using (progressMonitor.BeginTask("Deleting filter", 1))
             {
-                TestFilters.Value.Remove(filterInfo);
-                TestFilters.Value = TestFilters.Value; // notify UI
+                projectTreeModel.TestProject.RemoveTestFilter(filterInfo);
+                TestFilters.Value = new List<FilterInfo>(projectTreeModel.TestProject.TestFilters); // notify UI
             }
         }
 
@@ -203,7 +203,8 @@ namespace Gallio.Icarus.Controllers
             projectTreeModel.NotifyTestProjectChanged();
         }
 
-        public void SaveFilterSet(string filterName, FilterSet<ITestDescriptor> filterSet, IProgressMonitor progressMonitor)
+        public void SaveFilterSet(string filterName, FilterSet<ITestDescriptor> filterSet, 
+            IProgressMonitor progressMonitor)
         {
             foreach (var filterInfo in TestFilters.Value)
             {
@@ -214,8 +215,9 @@ namespace Gallio.Icarus.Controllers
                 return;
             }
 
-            TestFilters.Value.Add(new FilterInfo(filterName, filterSet.ToFilterSetExpr()));
-            TestFilters.Value = TestFilters.Value; // notify the UI
+            projectTreeModel.TestProject.AddTestFilter(new FilterInfo(filterName, 
+                filterSet.ToFilterSetExpr()));
+            TestFilters.Value = new List<FilterInfo>(projectTreeModel.TestProject.TestFilters); // notify UI
         }
 
         public void OpenProject(string projectName, IProgressMonitor progressMonitor)
@@ -315,11 +317,11 @@ namespace Gallio.Icarus.Controllers
         {
             progressMonitor.SetStatus("Saving user options");
             string projectUserOptionsFile = projectName + UserOptions.Extension;
-            UserOptions userOptions = new UserOptions
-                                          {
-                                              TreeViewCategory = TreeViewCategory,
-                                              CollapsedNodes = CollapsedNodes
-                                          };
+            var userOptions = new UserOptions
+            {
+                TreeViewCategory = TreeViewCategory,
+                CollapsedNodes = CollapsedNodes
+            };
             progressMonitor.Worked(10);
 
             xmlSerializer.SaveToXml(userOptions, projectUserOptionsFile);
@@ -349,7 +351,7 @@ namespace Gallio.Icarus.Controllers
             {
                 updating = true;
 
-                TestFilters.Value = projectTreeModel.TestProject.TestFilters;
+                TestFilters.Value = new List<FilterInfo>(projectTreeModel.TestProject.TestFilters);
 
                 HintDirectories.Clear();
                 foreach (var hintDirectory in TestPackage.HintDirectories)
