@@ -34,18 +34,18 @@ namespace Gallio.Icarus.Commands
 
         public void Execute(IProgressMonitor progressMonitor)
         {
-            foreach (var filterInfo in projectController.TestFilters)
+            foreach (var filterInfo in projectController.TestFilters.Value)
             {
                 if (progressMonitor.IsCanceled)
                     throw new OperationCanceledException();
 
-                if (filterInfo.FilterName == "AutoSave")
-                {
-                    var filterSet = FilterUtils.ParseTestFilterSet(filterInfo.FilterExpr);
-                    var applyFilterCommand = new ApplyFilterCommand(testController, filterSet);
-                    applyFilterCommand.Execute(progressMonitor);
-                    return;
-                }
+                if (filterInfo.FilterName != "AutoSave")
+                    continue;
+
+                var filterSet = FilterUtils.ParseTestFilterSet(filterInfo.FilterExpr);
+                var applyFilterCommand = new ApplyFilterCommand(testController, filterSet);
+                applyFilterCommand.Execute(progressMonitor);
+                return;
             }
         }
     }

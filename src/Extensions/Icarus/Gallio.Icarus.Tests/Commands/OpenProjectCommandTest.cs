@@ -20,7 +20,6 @@ using Gallio.Icarus.Commands;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Tests.Utilities;
 using Gallio.Model;
-using Gallio.Model.Schema;
 using Gallio.Runner.Projects.Schema;
 using MbUnit.Framework;
 using Rhino.Mocks;
@@ -35,7 +34,7 @@ namespace Gallio.Icarus.Tests.Commands
         {
             var testController = MockRepository.GenerateStub<ITestController>();
             var projectController = MockRepository.GenerateStub<IProjectController>();
-            projectController.Stub(pc => pc.TestFilters).Return(new BindingList<FilterInfo>(new List<FilterInfo>()));
+            projectController.Stub(pc => pc.TestFilters).Return(new Observable<IList<FilterInfo>>(new List<FilterInfo>()));
             const string fileName = "fileName";
             var openProjectCommand = new OpenProjectCommand(testController, projectController, fileName);
             var progressMonitor = MockProgressMonitor.GetMockProgressMonitor();
@@ -50,7 +49,7 @@ namespace Gallio.Icarus.Tests.Commands
         {
             var testController = MockRepository.GenerateStub<ITestController>();
             var projectController = MockRepository.GenerateStub<IProjectController>();
-            projectController.Stub(pc => pc.TestFilters).Return(new BindingList<FilterInfo>(new List<FilterInfo>()));
+            projectController.Stub(pc => pc.TestFilters).Return(new Observable<IList<FilterInfo>>(new List<FilterInfo>()));
             const string fileName = "fileName";
             var openProjectCommand = new OpenProjectCommand(testController, projectController, fileName);
             var progressMonitor = MockProgressMonitor.GetMockProgressMonitor();
@@ -65,7 +64,7 @@ namespace Gallio.Icarus.Tests.Commands
         {
             var testController = MockRepository.GenerateStub<ITestController>();
             var projectController = MockRepository.GenerateStub<IProjectController>();
-            projectController.Stub(pc => pc.TestFilters).Return(new BindingList<FilterInfo>(new List<FilterInfo>()));
+            projectController.Stub(pc => pc.TestFilters).Return(new Observable<IList<FilterInfo>>(new List<FilterInfo>()));
             var testPackage = new TestPackage();
             projectController.Stub(pc => pc.TestPackage).Return(testPackage);
             var testRunnerExtensions = new BindingList<string>(new List<string>());

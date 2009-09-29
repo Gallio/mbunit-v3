@@ -16,7 +16,6 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.IO;
 using Gallio.Common.Collections;
 using Gallio.Model;
 using Gallio.Runner.Extensions;

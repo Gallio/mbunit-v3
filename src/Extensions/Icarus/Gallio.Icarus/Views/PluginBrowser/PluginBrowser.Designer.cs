@@ -101,6 +101,7 @@
             this.treeColumn1.SortOrder = System.Windows.Forms.SortOrder.None;
             this.treeColumn1.TooltipText = null;
             this.treeColumn1.Width = 200;
+            this.pluginDetailsTreeView.Columns.Add(this.treeColumn1);
             // 
             // treeColumn2
             // 
@@ -108,6 +109,7 @@
             this.treeColumn2.SortOrder = System.Windows.Forms.SortOrder.None;
             this.treeColumn2.TooltipText = null;
             this.treeColumn2.Width = 300;
+            this.pluginDetailsTreeView.Columns.Add(this.treeColumn2);
             // 
             // nodeIcon1
             // 

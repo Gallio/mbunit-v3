@@ -20,7 +20,7 @@ using Gallio.Icarus.Models.PluginNodes;
 
 namespace Gallio.Icarus.Models
 {
-    public class PluginTreeModel : TreeModelBase, ITreeModel
+    public class PluginTreeModel : TreeModelBase
     {
         private readonly IRegistry registry;
 
@@ -54,9 +54,7 @@ namespace Gallio.Icarus.Models
 
         public override bool IsLeaf(TreePath treePath)
         {
-            if (treePath.LastNode is ComponentNode)
-                return true;
-            return false;
+            return treePath.LastNode is ComponentNode;
         }
 
         public IPluginDescriptor GetPluginDetails(string pluginId)

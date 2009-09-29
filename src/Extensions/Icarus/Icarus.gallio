@@ -10,6 +10,7 @@
   </testPackage>
   <testFilters>
     <testFilter filterName="AutoSave" filterExpr="" />
+    <testFilter filterName="Commands" filterExpr="Namespace: Gallio.Icarus.Tests.Commands" />
     <testFilter filterName="LastRun" filterExpr="" />
   </testFilters>
   <extensionSpecifications />

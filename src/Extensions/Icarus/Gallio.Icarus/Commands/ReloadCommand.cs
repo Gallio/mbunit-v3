@@ -49,17 +49,17 @@ namespace Gallio.Icarus.Commands
 
         private void RestoreFilter(IProgressMonitor progressMonitor)
         {
-            foreach (var filterInfo in projectController.TestFilters)
+            foreach (var filterInfo in projectController.TestFilters.Value)
             {
                 if (progressMonitor.IsCanceled)
                     throw new OperationCanceledException();
 
-                if (filterInfo.FilterName == "AutoSave")
-                {
-                    var filterSet = FilterUtils.ParseTestFilterSet(filterInfo.FilterExpr);
-                    testController.ApplyFilterSet(filterSet);
-                    return;
-                }
+                if (filterInfo.FilterName != "AutoSave")
+                    continue;
+
+                var filterSet = FilterUtils.ParseTestFilterSet(filterInfo.FilterExpr);
+                testController.ApplyFilterSet(filterSet);
+                return;
             }
         }
     }

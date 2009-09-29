@@ -13,7 +13,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.ComponentModel;
 using Gallio.Icarus.Commands;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Model.Filters;
@@ -27,11 +26,6 @@ namespace Gallio.Icarus.Controllers
         private readonly ITaskManager taskManager;
         private readonly ITestController testController;
         private readonly IProjectController projectController;
-
-        public BindingList<FilterInfo> TestFilters 
-        {
-            get { return projectController.TestFilters; }
-        }
 
         public FilterController(ITaskManager taskManager, ITestController testController, 
             IProjectController projectController)
@@ -56,6 +50,8 @@ namespace Gallio.Icarus.Controllers
 
         public void SaveFilter(string filterName)
         {
+            var command = new SaveFilterCommand(testController, projectController, filterName);
+            taskManager.QueueTask(command);
         }
     }
 }

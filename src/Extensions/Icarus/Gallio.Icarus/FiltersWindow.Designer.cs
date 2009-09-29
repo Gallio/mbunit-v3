@@ -100,6 +100,7 @@ namespace Gallio.Icarus
             this.filtersListBox.Name = "filtersListBox";
             this.filtersListBox.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
             this.filtersListBox.Size = new System.Drawing.Size(649, 160);
+            this.filtersListBox.Sorted = true;
             this.filtersListBox.TabIndex = 3;
             this.filtersListBox.SelectedIndexChanged += new System.EventHandler(this.filtersListBox_SelectedIndexChanged);
             // 
