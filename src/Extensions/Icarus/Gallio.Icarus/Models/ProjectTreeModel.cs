@@ -15,6 +15,7 @@
 
 using System.Collections;
 using System.IO;
+using System.Text.RegularExpressions;
 using Aga.Controls.Tree;
 using Gallio.Common.IO;
 using Gallio.Icarus.Models.ProjectTreeNodes;
@@ -49,7 +50,7 @@ namespace Gallio.Icarus.Models
                 testProject = value;
                 NotifyTestProjectChanged();
 
-                reportMonitor = new ReportMonitor(testProject.ReportDirectory);
+                reportMonitor = new ReportMonitor(testProject.ReportDirectory, testProject.ReportNameFormat);
                 reportMonitor.ReportDirectoryChanged += (sender, e) => NotifyReportsChanged();
             }
         }
@@ -81,20 +82,28 @@ namespace Gallio.Icarus.Models
             }
             else if (treePath.LastNode == projectRoot)
             {
-                foreach (Node n in projectRoot.Nodes)
+                foreach (var n in projectRoot.Nodes)
                     yield return n;
             }
             else if (treePath.LastNode is FilesNode)
             {
-                foreach (FileInfo file in testProject.TestPackage.Files)
+                foreach (var file in testProject.TestPackage.Files)
                     yield return new FileNode(file.FullName);
             }
             else if (treePath.LastNode is ReportsNode && !string.IsNullOrEmpty(fileName))
             {
-                string reportDirectory = Path.Combine(Path.GetDirectoryName(fileName), "Reports");
-                if (fileSystem.DirectoryExists(reportDirectory))
-                    foreach (string file in fileSystem.GetFilesInDirectory(reportDirectory, "*.xml", SearchOption.AllDirectories))
-                        yield return new ReportNode(file);
+                var reportDirectory = Path.Combine(Path.GetDirectoryName(fileName), "Reports");
+
+                if (!fileSystem.DirectoryExists(reportDirectory))
+                    yield break;
+             
+                var regex = new Regex("{.}");
+                var searchPattern = regex.Replace(testProject.ReportNameFormat, "*") + "*.xml";
+                foreach (var file in fileSystem.GetFilesInDirectory(reportDirectory, searchPattern, 
+                    SearchOption.TopDirectoryOnly))
+                {
+                    yield return new ReportNode(file);
+                }
             }
         }
 
