@@ -227,11 +227,14 @@ namespace Gallio.Icarus
             if (!applicationController.Size.Equals(Size.Empty))
                 Size = applicationController.Size;
 
-            if (!applicationController.Location.Equals(Point.Empty) && 
-                Screen.PrimaryScreen.WorkingArea.Contains(applicationController.Location))
-            {
+            if (applicationController.Location.Equals(Point.Empty))
+                return;
+
+            // HACK: is there a better way to tell that the window was maximised?
+            if (applicationController.Location.Equals(new Point(-4, -4)))
+                WindowState = FormWindowState.Maximized;
+            else if (Screen.PrimaryScreen.WorkingArea.Contains(applicationController.Location))
                 Location = applicationController.Location;
-            }
         }
 
         private void DefaultDockState()
