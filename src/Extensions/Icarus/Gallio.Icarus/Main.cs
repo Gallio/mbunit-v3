@@ -227,8 +227,11 @@ namespace Gallio.Icarus
             if (!applicationController.Size.Equals(Size.Empty))
                 Size = applicationController.Size;
 
-            if (!applicationController.Location.Equals(Point.Empty))
+            if (!applicationController.Location.Equals(Point.Empty) && 
+                Screen.PrimaryScreen.WorkingArea.Contains(applicationController.Location))
+            {
                 Location = applicationController.Location;
+            }
         }
 
         private void DefaultDockState()
