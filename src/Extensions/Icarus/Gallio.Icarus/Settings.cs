@@ -16,9 +16,9 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Windows.Forms;
 using System.Xml.Serialization;
 using Gallio.Common;
-using Gallio.Common.Xml;
 using Gallio.Icarus.Controls;
 using Gallio.Runtime.Logging;
 using Gallio.Runner;
@@ -127,6 +127,9 @@ namespace Gallio.Icarus
 
         [XmlElement("location")]
         public Point Location { get; set; }
+
+        [XmlElement("windowState")]
+        public FormWindowState WindowState { get; set; }
 
         [XmlElement("lastProject")]
         public string LastProject { get; set; }

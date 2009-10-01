@@ -16,6 +16,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
+using System.Windows.Forms;
 using Gallio.Icarus.Options;
 using Gallio.Icarus.Utilities;
 using Gallio.Runtime.Logging;
@@ -39,6 +40,7 @@ namespace Gallio.Icarus.Controllers.Interfaces
         double UpdateDelay { get; }
         Size Size { get; set; }
         Point Location { get; set; }
+        FormWindowState WindowState { get; set; }
         bool GenerateReportAfterTestRun { get; set; }
         MRUList RecentProjects { get; }
         LogSeverity MinLogSeverity { get; set; }
