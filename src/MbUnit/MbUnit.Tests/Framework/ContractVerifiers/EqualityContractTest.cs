@@ -27,6 +27,7 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
     [RunSample(typeof(FullContractOnEquatableSample))]
     [RunSample(typeof(PartialContractOnEquatableSample))]
     [RunSample(typeof(StaticPartialContractOnEquatableSample))]
+    [RunSample(typeof(FullContractOnInterfaceSample))]
     public class EqualityContractTest : AbstractContractTest
     {
         [Test]
@@ -45,6 +46,11 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
         [Row(typeof(StaticPartialContractOnEquatableSample), "EquatableEquals", TestStatus.Passed)]
         [Row(typeof(StaticPartialContractOnEquatableSample), "OperatorEquals", TestStatus.Inconclusive)]
         [Row(typeof(StaticPartialContractOnEquatableSample), "OperatorNotEquals", TestStatus.Inconclusive)]
+        [Row(typeof(FullContractOnInterfaceSample), "ObjectEquals", TestStatus.Passed)]
+        [Row(typeof(FullContractOnInterfaceSample), "HashCode", TestStatus.Passed)]
+        [Row(typeof(FullContractOnInterfaceSample), "EquatableEquals", TestStatus.Passed)]
+        [Row(typeof(FullContractOnInterfaceSample), "OperatorEquals", TestStatus.Passed)]
+        [Row(typeof(FullContractOnInterfaceSample), "OperatorNotEquals", TestStatus.Passed)]
         public void VerifySampleEqualityContract(Type fixtureType, string testMethodName, TestStatus expectedTestStatus)
         {
             VerifySampleContract("EqualityTests", fixtureType, testMethodName, expectedTestStatus);
@@ -98,10 +104,30 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
             };
         }
 
+        [Explicit]
+        private class FullContractOnInterfaceSample
+        {
+            [VerifyContract]
+            public readonly static IContract EqualityTests = new EqualityContract<ISampleEquatable>
+            {
+                ImplementsOperatorOverloads = true,
+                EquivalenceClasses =
+                {
+                    { new SampleEquatable(123) },
+                    { new SampleEquatable(456) },
+                    { new SampleEquatable(789) }
+                }
+            };
+        }
+
+        private interface ISampleEquatable : IEquatable<ISampleEquatable>
+        {
+        }
+
         /// <summary>
         /// Sample equatable type.
         /// </summary>
-        private class SampleEquatable : IEquatable<SampleEquatable>
+        private class SampleEquatable : ISampleEquatable, IEquatable<SampleEquatable>
         {
             private int value;
 
@@ -123,6 +149,11 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
             public bool Equals(SampleEquatable other)
             {
                 return (other != null) && (value == other.value);
+            }
+
+            bool IEquatable<ISampleEquatable>.Equals(ISampleEquatable other)
+            {
+                return Equals(other as SampleEquatable);
             }
 
             public static bool operator ==(SampleEquatable left, SampleEquatable right)

@@ -172,7 +172,7 @@ namespace MbUnit.Framework.ContractVerifiers
         {
             // Is Object equality method OK?
             yield return CreateEqualityTest("ObjectEquals",
-                typeof(TTarget).GetMethod("Equals", BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.Instance, null, new Type[] { typeof(object) }, null),
+                o => o.GetType().GetMethod("Equals", BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.Instance, null, new[] { typeof(object) }, null),
                 "bool Equals(Object)",
                 (leftIndex, rightIndex) => leftIndex == rightIndex);
 
@@ -181,7 +181,7 @@ namespace MbUnit.Framework.ContractVerifiers
 
             // Is IEquatable equality method OK?
             yield return CreateEqualityTest("EquatableEquals",
-                GetIEquatableInterface().GetMethod("Equals", BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, null, new Type[] { typeof(TTarget) }, null),
+                o => GetIEquatableInterface(o).GetMethod("Equals", BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, null, new[] { o.GetType() }, null),
                 String.Format("bool Equals({0})", typeof(TTarget).Name),
                 (leftIndex, rightIndex) => leftIndex == rightIndex);
 
@@ -189,40 +189,40 @@ namespace MbUnit.Framework.ContractVerifiers
             {
                 // Is equality operator overload OK?
                 yield return CreateEqualityTest("OperatorEquals",
-                    typeof(TTarget).GetMethod("op_Equality", BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static, null, new Type[] { typeof(TTarget), typeof(TTarget) }, null),
-                    String.Format("static bool operator ==({0}, {0})", 
+                    o => o.GetType().GetMethod("op_Equality", BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static, null, new[] { o.GetType(), o.GetType() }, null),
+                    String.Format("static bool operator ==({0}, {0})",
                     typeof(TTarget).Name),
                     (leftIndex, rightIndex) => leftIndex == rightIndex);
 
                 // Is inequality operator overload OK?
                 yield return CreateEqualityTest("OperatorNotEquals",
-                    typeof(TTarget).GetMethod("op_Inequality", BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static, null, new Type[] { typeof(TTarget), typeof(TTarget) }, null),
-                    String.Format("static bool operator !=({0}, {0})", 
+                    o => o.GetType().GetMethod("op_Inequality", BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static, null, new[] { o.GetType(), o.GetType() }, null),
+                    String.Format("static bool operator !=({0}, {0})",
                     typeof(TTarget).Name),
                     (leftIndex, rightIndex) => leftIndex != rightIndex);
             }
         }
 
-        private Test CreateEqualityTest(string name, MethodInfo method, string methodSignature, Func<int, int, bool> referenceComparer)
+        private Test CreateEqualityTest(string name, Func<TTarget, MethodInfo> methodInfoFactory, string methodSignature, Func<int, int, bool> referenceComparer)
         {
             return new TestCase(name, () =>
             {
-                AssertMethodExists(method, methodSignature);
-
-                Func<object, object, bool> comparer = BinaryComparerFactory(method);
-
                 Assert.Multiple(() =>
                 {
-                    if (!typeof(TTarget).IsValueType && method.IsStatic)
-                    {
-                        VerifyEquality(null, null, int.MinValue, int.MinValue, comparer, referenceComparer, Context);
-                    }
-
                     int leftIndex = 0;
                     foreach (EquivalenceClass<TTarget> leftClass in EquivalenceClasses)
                     {
                         foreach (TTarget leftValue in leftClass)
                         {
+                            MethodInfo method = methodInfoFactory(leftValue);
+                            AssertMethodExists(method, methodSignature);
+                            Func<object, object, bool> comparer = BinaryComparerFactory(method);
+
+                            if (!typeof(TTarget).IsValueType && method.IsStatic)
+                            {
+                                VerifyEquality(null, null, int.MinValue, int.MinValue, comparer, referenceComparer, Context);
+                            }
+
                             if (!typeof(TTarget).IsValueType)
                             {
                                 VerifyEquality(leftValue, null, 0, int.MinValue, comparer, referenceComparer, Context);
@@ -315,10 +315,9 @@ namespace MbUnit.Framework.ContractVerifiers
                 : (bool)method.Invoke(leftValue, new[] { rightValue });
         }
 
-        private static Type GetIEquatableInterface()
+        private static Type GetIEquatableInterface(TTarget target)
         {
-            return GetInterface(typeof(TTarget), typeof(IEquatable<>)
-                .MakeGenericType(typeof(TTarget)));
+            return GetInterface(target.GetType(), typeof(IEquatable<>).MakeGenericType(target.GetType()));
         }
     }
 }
