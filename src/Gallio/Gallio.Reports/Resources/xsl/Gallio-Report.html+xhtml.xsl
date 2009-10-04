@@ -22,9 +22,12 @@
                 xmlns:g="http://www.gallio.org/"
                 xmlns="http://www.w3.org/1999/xhtml">
   <xsl:template match="g:report" mode="xhtml-document">
+    <xsl:param name="contentType" select="text/xhtml+xml" />
+    
     <html xml:lang="en" lang="en" dir="ltr">
       <xsl:comment> saved from url=(0014)about:internet </xsl:comment><xsl:text>&#13;&#10;</xsl:text>
       <head>
+        <meta http-equiv="Content-Type" content="{$contentType}; charset=utf-8" />
         <title>Gallio Test Report</title>
         <link rel="stylesheet" type="text/css" href="{$cssDir}Gallio-Report.css" />
         <link rel="stylesheet" type="text/css" href="{$cssDir}Gallio-Report.generated.css" />
@@ -46,7 +49,11 @@ html
   
   <xsl:template match="g:report" mode="html-document">
     <xsl:call-template name="strip-namespace">
-      <xsl:with-param name="nodes"><xsl:apply-templates select="." mode="xhtml-document" /></xsl:with-param>
+      <xsl:with-param name="nodes">
+        <xsl:apply-templates select="." mode="xhtml-document">
+          <xsl:with-param name="contentType" select="text/html" />
+        </xsl:apply-templates>
+      </xsl:with-param>
     </xsl:call-template>
   </xsl:template>
 
