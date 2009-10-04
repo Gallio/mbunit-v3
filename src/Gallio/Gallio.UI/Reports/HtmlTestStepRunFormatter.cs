@@ -245,6 +245,7 @@ namespace Gallio.UI.Reports
                 writer.Write("<!-- saved from url=(0014)about:internet -->\r\n");
 
                 writer.Write("<html xml:lang=\"en\" lang=\"en\" dir=\"ltr\"><head>");
+                writer.Write("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />");
                 writer.Write("<title>Gallio Test Report</title>");
                 writer.Write("<link rel=\"stylesheet\" type=\"text/css\" href=\"");
                 WriteHtmlEncoded(writer, formatter.cssUrl.ToString());
