@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
+using System.Windows.Forms;
 using Gallio.Common.IO;
 using Gallio.Common.Xml;
 using Gallio.Icarus.Controllers.Interfaces;
@@ -146,6 +147,12 @@ namespace Gallio.Icarus.Controllers
         {
             get { return Settings.Location; }
             set { Settings.Location = value; }
+        }
+
+        public FormWindowState WindowState
+        {
+            get { return settings.WindowState; }
+            set { settings.WindowState = value; }
         }
 
         public MRUList RecentProjects

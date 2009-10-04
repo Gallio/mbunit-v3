@@ -22,19 +22,15 @@ using System.Text;
 using System.Windows.Forms;
 using Gallio.Common.Concurrency;
 using Gallio.Common.IO;
-using Gallio.Common.Policies;
 using Gallio.Icarus.Commands;
 using Gallio.Icarus.Controllers;
 using Gallio.Icarus.Controllers.EventArgs;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Model;
-using Gallio.Runner.Projects.Schema;
 using Gallio.Runtime;
 using Gallio.UI.Common.Synchronization;
-using Gallio.UI.ErrorReporting;
 using Gallio.UI.ProgressMonitoring;
 using WeifenLuo.WinFormsUI.Docking;
-using UnhandledExceptionPolicy = Gallio.Common.Policies.UnhandledExceptionPolicy;
 using Gallio.Icarus.Utilities;
 using Gallio.UI.ControlPanel;
 using Gallio.Runner.Projects;
@@ -223,12 +219,29 @@ namespace Gallio.Icarus
                 DefaultDockState();
             }
 
-            // restore window size & location
-            if (!applicationController.Size.Equals(Size.Empty))
-                Size = applicationController.Size;
+            RestoreWindowSizeAndLocation();
+        }
 
-            if (!applicationController.Location.Equals(Point.Empty))
-                Location = applicationController.Location;
+        private void RestoreWindowSizeAndLocation()
+        {
+            if (!optionsController.Size.Equals(Size.Empty))
+                Size = optionsController.Size;
+
+            if (optionsController.WindowState == FormWindowState.Minimized)
+                return;
+
+            WindowState = optionsController.WindowState;
+
+            if (optionsController.WindowState == FormWindowState.Maximized)
+                return;
+
+            var desktop = new Rectangle();
+
+            foreach (var screen in Screen.AllScreens)
+                desktop = Rectangle.Union(desktop, screen.WorkingArea);
+
+            if (desktop.Contains(optionsController.Location))
+                Location = optionsController.Location;
         }
 
         private void DefaultDockState()
@@ -438,12 +451,9 @@ namespace Gallio.Icarus
 
                 applicationController.SaveProject(false);
 
-                // save window size & location for when we restore
-                if (WindowState != FormWindowState.Minimized)
-                {
-                    applicationController.Size = Size;
-                    applicationController.Location = Location;
-                }
+                optionsController.Size = Size;
+                optionsController.Location = Location;
+                optionsController.WindowState = WindowState;
                 optionsController.Save();
 
                 // save dock panel config

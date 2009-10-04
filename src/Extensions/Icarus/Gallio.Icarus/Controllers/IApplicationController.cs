@@ -15,7 +15,6 @@
 
 using System;
 using System.ComponentModel;
-using System.Drawing;
 using Gallio.Icarus.Controllers.EventArgs;
 using Gallio.Icarus.Controls;
 
@@ -25,8 +24,6 @@ namespace Gallio.Icarus.Controllers
     {
         string Title { get; set; }
         ToolStripMenuItem[] RecentProjects { get; }
-        Size Size { get; set; }
-        Point Location { get; set; }
         bool FailedTests { get; }
 
         event EventHandler<FileChangedEventArgs> FileChanged;

@@ -15,6 +15,7 @@
 
 using System.IO;
 using System;
+using System.Text.RegularExpressions;
 using Gallio.Common.Policies;
 
 namespace Gallio.Icarus.Reports
@@ -25,11 +26,11 @@ namespace Gallio.Icarus.Reports
 
         public event EventHandler ReportDirectoryChanged;
 
-        public ReportMonitor(string reportDirectory)
+        public ReportMonitor(string reportDirectory, string reportNameFormat)
         {
             if (Directory.Exists(reportDirectory))
             {
-                SetupDirectoryWatcher(reportDirectory);
+                SetupDirectoryWatcher(reportDirectory, reportNameFormat);
             }
             else
             {
@@ -48,18 +49,20 @@ namespace Gallio.Icarus.Reports
                             return;
 
                         reportDirectoryWatcher.EnableRaisingEvents = false;
-                        SetupDirectoryWatcher(reportDirectory);
+                        SetupDirectoryWatcher(reportDirectory, reportNameFormat);
                         OnReportDirectoryChanged();
                     };
                 }
             }
         }
 
-        private void SetupDirectoryWatcher(string reportDirectory)
+        private void SetupDirectoryWatcher(string reportDirectory, string reportNameFormat)
         {
+            var regex = new Regex("{.}");
+            reportNameFormat = regex.Replace(reportNameFormat, "*") + "*.xml";
             reportDirectoryWatcher = new FileSystemWatcher
             {
-                Filter = "*.xml",
+                Filter = reportNameFormat,
                 NotifyFilter = NotifyFilters.FileName,
                 Path = reportDirectory,
                 EnableRaisingEvents = true

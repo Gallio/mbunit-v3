@@ -72,18 +72,6 @@ namespace Gallio.Icarus.Controllers
             }
         }
 
-        public Size Size
-        {
-            get { return optionsController.Size; }
-            set { optionsController.Size = value; }
-        }
-
-        public Point Location
-        {
-            get { return optionsController.Location; }
-            set { optionsController.Location = value; }
-        }
-
         public bool FailedTests
         {
             get { return testController.FailedTests; }
