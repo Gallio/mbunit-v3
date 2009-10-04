@@ -1,0 +1,31 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+  <PropertyGroup>
+    <ReSharper50VS90InstallDir>$(registry:HKEY_LOCAL_MACHINE\SOFTWARE\JetBrains\ReSharper\v5.0\vs9.0\@InstallDir)</ReSharper50VS90InstallDir>
+    <ReSharper50VS100InstallDir>$(registry:HKEY_LOCAL_MACHINE\SOFTWARE\JetBrains\ReSharper\v5.0\vs10.0\@InstallDir)</ReSharper50VS100InstallDir>
+
+    <ReSharper50Path Condition="'$(ReSharper50Path)'=='' and '$(ReSharper50VS100InstallDir)'!='' and Exists('$(ReSharper50VS100InstallDir)\JetBrains.Platform.ReSharper.Shell.dll')">$(ReSharper50VS100InstallDir)</ReSharper50Path>
+    <ReSharper50Path Condition="'$(ReSharper50Path)'=='' and '$(ReSharper50VS90InstallDir)'!='' and Exists('$(ReSharper50VS90InstallDir)\JetBrains.Platform.ReSharper.Shell.dll')">$(ReSharper50VS90InstallDir)</ReSharper50Path>
+
+    <ReSharper50Installed>false</ReSharper50Installed>
+    <ReSharper50Installed Condition="'$(ReSharper50Path)'!=''">true</ReSharper50Installed>
+  </PropertyGroup>
+
+  <Choose>
+    <When Condition="$(ReSharper50Installed)">
+      <PropertyGroup>
+        <AssemblySearchPaths>$(ReSharper50Path);$(AssemblySearchPaths)</AssemblySearchPaths>
+      </PropertyGroup>
+    </When>
+    <Otherwise>
+      <PropertyGroup>
+        <BuildDependsOn>MissingReSharper</BuildDependsOn>
+        <RebuildDependsOn>MissingReSharper</RebuildDependsOn>
+      </PropertyGroup>
+    </Otherwise>
+  </Choose>
+
+  <Target Name="MissingReSharper">
+    <Warning Text="Skipped build for configuration.  ReSharper v5.0 is not installed or could not be located." />
+  </Target>
+</Project>
+

@@ -174,24 +174,14 @@
             <FeatureRef Id='feat_Gallio.MsBuildTasks'/>
             <FeatureRef Id='feat_Gallio.NAntTasks'/>
             <FeatureRef Id='feat_Gallio.PowerShellCommands'/>
-<?ifdef FEATURE_RESHARPER_RUNNER_31 ?>
-            <FeatureRef Id='feat_Gallio.ReSharper.V31'/>
-<?endif?>
-<?ifdef FEATURE_RESHARPER_RUNNER_40 ?>
-            <FeatureRef Id='feat_Gallio.ReSharper.V40'/>
-<?endif?>
-<?ifdef FEATURE_RESHARPER_RUNNER_41 ?>
-            <FeatureRef Id='feat_Gallio.ReSharper.V41'/>
-<?endif?>
-<?ifdef FEATURE_RESHARPER_RUNNER_45 ?>
-            <FeatureRef Id='feat_Gallio.ReSharper.V45'/>
-<?endif?>
             <FeatureRef Id='feat_Gallio.TDNet'/>
-<?ifdef FEATURE_VISUALSTUDIO_90 ?>
-            <FeatureRef Id='feat_Gallio.VisualStudio.VS90'/>
+
+<?ifdef FEATURE_RESHARPER_RUNNER ?>
+            <FeatureRef Id="feat_Gallio.ReSharper" />
 <?endif?>
-<?ifdef FEATURE_VISUALSTUDIO_100 ?>
-            <FeatureRef Id='feat_Gallio.VisualStudio.VS100'/>
+
+<?ifdef FEATURE_VISUALSTUDIO ?>
+            <FeatureRef Id='feat_Gallio.VisualStudio'/>
 <?endif?>
         </Feature>
 

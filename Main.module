@@ -177,7 +177,7 @@
   <Target Name="BuildDocs_NoSandcastle"
           Condition="'$(NoSandcastle)'=='true'">
     <Copy SourceFiles="@(DocumentedAssembly->'%(RootDir)%(Directory)%(Filename).xml')"
-          DestinationFolder="$(ImageDir)\bin" />
+          DestinationFolder="$(ImageDir)\bin\%(DocumentedAssembly.Folder)" />
   </Target>
 
   <!-- SUPPORT CODE: SOURCES FILE -->

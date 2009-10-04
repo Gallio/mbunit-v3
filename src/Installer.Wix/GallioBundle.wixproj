@@ -94,6 +94,9 @@
     <Compile Include="..\Extensions\PowerShell\PowerShell.wxs">
       <Link>PowerShell.wxs</Link>
     </Compile>
+    <Compile Include="..\Extensions\ReSharper\ReSharper.wxs">
+      <Link>ReSharper.wxs</Link>
+    </Compile>
     <Compile Include="..\Extensions\ReSharper\ReSharper31.wxs">
       <Link>ReSharper31.wxs</Link>
     </Compile>
@@ -105,6 +108,9 @@
     </Compile>
     <Compile Include="..\Extensions\ReSharper\ReSharper45.wxs">
       <Link>ReSharper45.wxs</Link>
+    </Compile>
+    <Compile Include="..\Extensions\ReSharper\ReSharper50.wxs">
+      <Link>ReSharper50.wxs</Link>
     </Compile>
     <Compile Include="..\Extensions\RSpec\RSpec.wxs">
       <Link>RSpec.wxs</Link>
@@ -153,6 +159,12 @@
     </Compile>
     <Compile Include="..\Extensions\VisualStudio\VisualStudio.wxs">
       <Link>VisualStudio.wxs</Link>
+    </Compile>
+    <Compile Include="..\Extensions\VisualStudio\VisualStudio90.wxs">
+      <Link>VisualStudio90.wxs</Link>
+    </Compile>
+    <Compile Include="..\Extensions\VisualStudio\VisualStudio100.wxs">
+      <Link>VisualStudio100.wxs</Link>
     </Compile>
     <Compile Include="..\Extensions\VisualStudio\VisualStudio.Interop.wxs">
       <Link>VisualStudio.Interop.wxs</Link>
