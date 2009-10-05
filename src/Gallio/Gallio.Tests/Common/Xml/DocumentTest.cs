@@ -90,14 +90,14 @@ namespace Gallio.Tests.Common.Xml
         public void Contains_with_null_path_should_throw_exception()
         {
             var document = GetDocument();
-            Assert.Throws<ArgumentNullException>(() => document.Contains(null, Options.None));
+            Assert.Throws<ArgumentNullException>(() => document.Contains(null, null, Options.None));
         }
 
         [Test]
         public void Contains_yes()
         {
             var document = GetDocument();
-            bool contains = document.Contains((XmlPathClosed)XmlPath.Element("Composers").Element("Composer").Element("Name"), Options.None);
+            bool contains = document.Contains((XmlPathClosed)XmlPath.Element("Composers").Element("Composer").Element("Name"), null, Options.None);
             Assert.IsTrue(contains);
         }
 
@@ -105,7 +105,7 @@ namespace Gallio.Tests.Common.Xml
         public void Contains_case_insensitive_yes()
         {
             var document = GetDocument();
-            bool contains = document.Contains((XmlPathClosed)XmlPath.Element("CoMPOSErs").Element("coMpoSER").Element("namE"), Options.IgnoreElementsNameCase);
+            bool contains = document.Contains((XmlPathClosed)XmlPath.Element("CoMPOSErs").Element("coMpoSER").Element("namE"), null, Options.IgnoreElementsNameCase);
             Assert.IsTrue(contains);
         }
 
@@ -113,7 +113,7 @@ namespace Gallio.Tests.Common.Xml
         public void Contains_no()
         {
             var document = GetDocument();
-            bool contains = document.Contains((XmlPathClosed)XmlPath.Element("Composers").Element("Composer").Element("DoesNotExist"), Options.None);
+            bool contains = document.Contains((XmlPathClosed)XmlPath.Element("Composers").Element("Composer").Element("DoesNotExist"), null, Options.None);
             Assert.IsFalse(contains);
         }
 
@@ -121,7 +121,7 @@ namespace Gallio.Tests.Common.Xml
         public void Contains_case_sensitive_no()
         {
             var document = GetDocument();
-            bool contains = document.Contains((XmlPathClosed)XmlPath.Element("CoMPOSErs").Element("coMpoSER").Element("namE"), Options.None);
+            bool contains = document.Contains((XmlPathClosed)XmlPath.Element("CoMPOSErs").Element("coMpoSER").Element("namE"), null, Options.None);
             Assert.IsFalse(contains);
         }
     }

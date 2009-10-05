@@ -51,9 +51,10 @@ namespace Gallio.Common.Xml
         /// at the specified path.
         /// </summary>
         /// <param name="searchedItem">The path of the searched element or attribute.</param>
+        /// <param name="expectedValue">The expected value found in the searched element or attribute, or null if the value must be ignored.</param>
         /// <param name="options">Options for the search.</param>
         /// <returns>True if the item was found; otherwise false.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="searchedItem"/> is null.</exception>
-        bool Contains(XmlPathClosed searchedItem, Options options);
+        bool Contains(XmlPathClosed searchedItem, string expectedValue, Options options);
     }
 }

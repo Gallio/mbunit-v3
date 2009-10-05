@@ -39,7 +39,6 @@ namespace Gallio.Common.Xml
         /// <param name="otherName">The name to compare.</param>
         /// <param name="options">Equality options.</param>
         /// <returns>True if the names are equal; false otherwise.</returns>
-        /// <inheritdoc />
         bool AreNamesEqual(string otherName, Options options);
     }
 }

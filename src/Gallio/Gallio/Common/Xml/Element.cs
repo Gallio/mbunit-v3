@@ -153,26 +153,30 @@ namespace Gallio.Common.Xml
         }
     
         /// <inheritdoc />
-        public override bool Contains(XmlPathClosed searchedItem, Options options)
+        public override bool Contains(XmlPathClosed searchedItem, string expectedValue, Options options)
         {
             if (searchedItem == null)
                 throw new ArgumentNullException("searchedItem");
-        
-            if (searchedItem.IsEmpty)
+
+            if (searchedItem.IsEmpty || 
+                !AreNamesEqual(searchedItem.ElementNames[0], options))
                 return false;
 
-            if (!AreNamesEqual(searchedItem.ElementNames[0], options))
-                return false;
+            if (searchedItem.ElementNames.Count == 1) // = Last item of the path.
+            {
+                if (searchedItem.AttributeName != null && 
+                    !attributes.Contains(searchedItem.AttributeName, expectedValue, options))
+                    return false;
+                
+                if (searchedItem.AttributeName == null && 
+                    expectedValue != null && 
+                    !value.Equals(expectedValue, GetComparisonTypeForValue(options)))
+                    return false;
 
-            if ((searchedItem.ElementNames.Count == 1) &&
-                (searchedItem.AttributeName != null) &&
-                !attributes.Contains(searchedItem.AttributeName, options))
-                return false;
-
-            if (searchedItem.ElementNames.Count == 1)
                 return true;
+            }
 
-            return Child.Contains(searchedItem.Trail(), options);
+            return Child.Contains(searchedItem.Trail(), expectedValue, options);
         }
     }
 }

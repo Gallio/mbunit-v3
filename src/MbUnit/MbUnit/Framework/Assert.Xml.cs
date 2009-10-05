@@ -32,7 +32,7 @@ namespace MbUnit.Framework
         /// </summary>
         public abstract class Xml
         {
-            #region Equality
+            #region Fragment Equality
             
             /// <summary>
             /// Asserts that two XML fragments have the same content.
@@ -193,10 +193,10 @@ namespace MbUnit.Framework
 
             #endregion
 
-            #region Exists
+            #region Exists (without value)
 
             /// <summary>
-            /// Asserts that two XML fragments have the same content.
+            /// Asserts that the XML fragment contains the searched element or attribute.
             /// </summary>
             /// <param name="actualXmlReader">A reader to get the actual XML fragment.</param>
             /// <param name="searchedItem">The path of the searched element or attribute in the XML fragment.</param>
@@ -208,7 +208,7 @@ namespace MbUnit.Framework
             }
 
             /// <summary>
-            /// Asserts that two XML fragments have the same content.
+            /// Asserts that the XML fragment contains the searched element or attribute.
             /// </summary>
             /// <param name="actualXmlReader">A reader to get the actual XML fragment.</param>
             /// <param name="searchedItem">The path of the searched element or attribute in the XML fragment.</param>
@@ -226,7 +226,7 @@ namespace MbUnit.Framework
             }
 
             /// <summary>
-            /// Asserts that two XML fragments have the same content.
+            /// Asserts that the XML fragment contains the searched element or attribute.
             /// </summary>
             /// <param name="actualXmlReader">A reader to get the actual XML fragment.</param>
             /// <param name="searchedItem">The path of the searched element or attribute in the XML fragment.</param>
@@ -240,7 +240,7 @@ namespace MbUnit.Framework
             }
 
             /// <summary>
-            /// Asserts that two XML fragments have the same content.
+            /// Asserts that the XML fragment contains the searched element or attribute.
             /// </summary>
             /// <param name="actualXmlReader">A reader to get the actual XML fragment.</param>
             /// <param name="searchedItem">The path of the searched element or attribute in the XML fragment.</param>
@@ -263,7 +263,7 @@ namespace MbUnit.Framework
             }
 
             /// <summary>
-            /// Asserts that two XML fragments have the same content.
+            /// Asserts that the XML fragment contains the searched element or attribute.
             /// </summary>
             /// <param name="actualXml">The actual XML fragment.</param>
             /// <param name="searchedItem">The path of the searched element or attribute in the XML fragment.</param>
@@ -275,7 +275,7 @@ namespace MbUnit.Framework
             }
 
             /// <summary>
-            /// Asserts that two XML fragments have the same content.
+            /// Asserts that the XML fragment contains the searched element or attribute.
             /// </summary>
             /// <param name="actualXml">The actual XML fragment.</param>
             /// <param name="searchedItem">The path of the searched element or attribute in the XML fragment.</param>
@@ -293,7 +293,7 @@ namespace MbUnit.Framework
             }
 
             /// <summary>
-            /// Asserts that two XML fragments have the same content.
+            /// Asserts that the XML fragment contains the searched element or attribute.
             /// </summary>
             /// <param name="actualXml">The actual XML fragment.</param>
             /// <param name="searchedItem">The path of the searched element or attribute in the XML fragment.</param>
@@ -307,7 +307,7 @@ namespace MbUnit.Framework
             }
 
             /// <summary>
-            /// Asserts that two XML fragments have the same content.
+            /// Asserts that the XML fragment contains the searched element or attribute.
             /// </summary>
             /// <param name="actualXml">The actual XML fragment.</param>
             /// <param name="searchedItem">The path of the searched element or attribute in the XML fragment.</param>
@@ -322,6 +322,169 @@ namespace MbUnit.Framework
             /// </para>
             /// </remarks>
             public static void Exists(string actualXml, IXmlPath searchedItem, XmlOptions options, string messageFormat, params object[] messageArgs)
+            {
+                Exists(actualXml, searchedItem, null, options, messageFormat, messageFormat);
+            }
+
+            #endregion
+
+            #region Exists (with value)
+
+            /// <summary>
+            /// Asserts that the XML fragment contains the searched element or attribute, and that it has the expected value.
+            /// </summary>
+            /// <param name="actualXmlReader">A reader to get the actual XML fragment.</param>
+            /// <param name="searchedItem">The path of the searched element or attribute in the XML fragment.</param>
+            /// <param name="expectedValue">The expected value of the searched item (element or attribute).</param>
+            /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
+            /// <exception cref="ArgumentNullException">Thrown if <paramref name="actualXmlReader"/> or <paramref name="searchedItem"/> is null.</exception>
+            /// <remarks>
+            /// <para>
+            /// If <paramref name="expectedValue"/> is set to <c>null</c>, the assertion behaves like <see cref="Assert.Xml.Exists(TextReader, IXmlPath)"/>.
+            /// </para>
+            /// </remarks>
+            public static void Exists(TextReader actualXmlReader, IXmlPath searchedItem, string expectedValue)
+            {
+                Exists(actualXmlReader, searchedItem, expectedValue, XmlOptions.Default, null, null);
+            }
+
+            /// <summary>
+            /// Asserts that the XML fragment contains the searched element or attribute, and that it has the expected value.
+            /// </summary>
+            /// <param name="actualXmlReader">A reader to get the actual XML fragment.</param>
+            /// <param name="searchedItem">The path of the searched element or attribute in the XML fragment.</param>
+            /// <param name="expectedValue">The expected value of the searched item (element or attribute).</param>
+            /// <param name="options">Options for the search.</param>
+            /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
+            /// <exception cref="ArgumentNullException">Thrown if <paramref name="actualXmlReader"/>, <paramref name="searchedItem"/>, or <paramref name="options"/> is null.</exception>
+            /// <remarks>
+            /// <para>
+            /// If <paramref name="expectedValue"/> is set to <c>null</c>, the assertion behaves like <see cref="Assert.Xml.Exists(TextReader, IXmlPath, XmlOptions)"/>.
+            /// </para>
+            /// </remarks>
+            public static void Exists(TextReader actualXmlReader, IXmlPath searchedItem, string expectedValue, XmlOptions options)
+            {
+                Exists(actualXmlReader, searchedItem, expectedValue, options, null, null);
+            }
+
+            /// <summary>
+            /// Asserts that the XML fragment contains the searched element or attribute, and that it has the expected value.
+            /// </summary>
+            /// <param name="actualXmlReader">A reader to get the actual XML fragment.</param>
+            /// <param name="searchedItem">The path of the searched element or attribute in the XML fragment.</param>
+            /// <param name="expectedValue">The expected value of the searched item (element or attribute).</param>
+            /// <param name="messageFormat">The custom assertion message format, or null if none.</param>
+            /// <param name="messageArgs">The custom assertion message arguments, or null if none.</param>
+            /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
+            /// <exception cref="ArgumentNullException">Thrown if <paramref name="actualXmlReader"/> or <paramref name="searchedItem"/> is null.</exception>
+            /// <remarks>
+            /// <para>
+            /// If <paramref name="expectedValue"/> is set to <c>null</c>, the assertion behaves like <see cref="Assert.Xml.Exists(TextReader, IXmlPath, string, object[])"/>.
+            /// </para>
+            /// </remarks>
+            public static void Exists(TextReader actualXmlReader, IXmlPath searchedItem, string expectedValue, string messageFormat, params object[] messageArgs)
+            {
+                Exists(actualXmlReader, searchedItem, expectedValue, XmlOptions.Default, messageFormat, messageArgs);
+            }
+
+            /// <summary>
+            /// Asserts that the XML fragment contains the searched element or attribute, and that it has the expected value.
+            /// </summary>
+            /// <param name="actualXmlReader">A reader to get the actual XML fragment.</param>
+            /// <param name="searchedItem">The path of the searched element or attribute in the XML fragment.</param>
+            /// <param name="expectedValue">The expected value of the searched item (element or attribute).</param>
+            /// <param name="options">Options for the search.</param>
+            /// <param name="messageFormat">The custom assertion message format, or null if none.</param>
+            /// <param name="messageArgs">The custom assertion message arguments, or null if none.</param>
+            /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
+            /// <exception cref="ArgumentNullException">Thrown if <paramref name="actualXmlReader"/>, <paramref name="searchedItem"/>, or <paramref name="options"/> is null.</exception>
+            /// <remarks>
+            /// <para>
+            /// If <paramref name="expectedValue"/> is set to <c>null</c>, the assertion behaves like <see cref="Assert.Xml.Exists(TextReader, IXmlPath, XmlOptions, string, object[])"/>.
+            /// </para>
+            /// </remarks>
+            public static void Exists(TextReader actualXmlReader, IXmlPath searchedItem, string expectedValue, XmlOptions options, string messageFormat, params object[] messageArgs)
+            {
+                if (actualXmlReader == null)
+                    throw new ArgumentNullException("actualXmlReader");
+
+                Exists(actualXmlReader.ReadToEnd(), searchedItem, expectedValue, options, messageFormat, messageArgs);
+            }
+
+            /// <summary>
+            /// Asserts that the XML fragment contains the searched element or attribute, and that it has the expected value.
+            /// </summary>
+            /// <param name="actualXml">The actual XML fragment.</param>
+            /// <param name="searchedItem">The path of the searched element or attribute in the XML fragment.</param>
+            /// <param name="expectedValue">The expected value of the searched item (element or attribute).</param>
+            /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
+            /// <exception cref="ArgumentNullException">Thrown if <paramref name="actualXml"/> or <paramref name="searchedItem"/> is null.</exception>
+            /// <remarks>
+            /// <para>
+            /// If <paramref name="expectedValue"/> is set to <c>null</c>, the assertion behaves like <see cref="Assert.Xml.Exists(string, IXmlPath)"/>.
+            /// </para>
+            /// </remarks>
+            public static void Exists(string actualXml, IXmlPath searchedItem, string expectedValue)
+            {
+                Exists(actualXml, searchedItem, expectedValue, XmlOptions.Default, null, null);
+            }
+
+            /// <summary>
+            /// Asserts that the XML fragment contains the searched element or attribute, and that it has the expected value.
+            /// </summary>
+            /// <param name="actualXml">The actual XML fragment.</param>
+            /// <param name="searchedItem">The path of the searched element or attribute in the XML fragment.</param>
+            /// <param name="expectedValue">The expected value of the searched item (element or attribute).</param>
+            /// <param name="options">Options for the search.</param>
+            /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
+            /// <exception cref="ArgumentNullException">Thrown if <paramref name="actualXml"/>, <paramref name="searchedItem"/>, or <paramref name="options"/> is null.</exception>
+            /// <remarks>
+            /// <para>
+            /// If <paramref name="expectedValue"/> is set to <c>null</c>, the assertion behaves like <see cref="Assert.Xml.Exists(string, IXmlPath, XmlOptions)"/>.
+            /// </para>
+            /// </remarks>
+            public static void Exists(string actualXml, IXmlPath searchedItem, string expectedValue, XmlOptions options)
+            {
+                Exists(actualXml, searchedItem, expectedValue, options, null, null);
+            }
+
+            /// <summary>
+            /// Asserts that the XML fragment contains the searched element or attribute, and that it has the expected value.
+            /// </summary>
+            /// <param name="actualXml">The actual XML fragment.</param>
+            /// <param name="searchedItem">The path of the searched element or attribute in the XML fragment.</param>
+            /// <param name="expectedValue">The expected value of the searched item (element or attribute).</param>
+            /// <param name="messageFormat">The custom assertion message format, or null if none.</param>
+            /// <param name="messageArgs">The custom assertion message arguments, or null if none.</param>
+            /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
+            /// <exception cref="ArgumentNullException">Thrown if <paramref name="actualXml"/> or <paramref name="searchedItem"/> is null.</exception>
+            /// <remarks>
+            /// <para>
+            /// If <paramref name="expectedValue"/> is set to <c>null</c>, the assertion behaves like <see cref="Assert.Xml.Exists(string, IXmlPath, string, object[])"/>.
+            /// </para>
+            /// </remarks>
+            public static void Exists(string actualXml, IXmlPath searchedItem, string expectedValue, string messageFormat, params object[] messageArgs)
+            {
+                Exists(actualXml, searchedItem, expectedValue, XmlOptions.Default, messageFormat, messageArgs);
+            }
+
+            /// <summary>
+            /// Asserts that the XML fragment contains the searched element or attribute, and that it has the expected value.
+            /// </summary>
+            /// <param name="actualXml">The actual XML fragment.</param>
+            /// <param name="searchedItem">The path of the searched element or attribute in the XML fragment.</param>
+            /// <param name="expectedValue">The expected value of the searched item (element or attribute).</param>
+            /// <param name="options">Options for the search.</param>
+            /// <param name="messageFormat">The custom assertion message format, or null if none.</param>
+            /// <param name="messageArgs">The custom assertion message arguments, or null if none.</param>
+            /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
+            /// <exception cref="ArgumentNullException">Thrown if <paramref name="actualXml"/>, <paramref name="searchedItem"/>, or <paramref name="options"/> is null.</exception>
+            /// <remarks>
+            /// <para>
+            /// If <paramref name="expectedValue"/> is set to <c>null</c>, the assertion behaves like <see cref="Assert.Xml.Exists(string, IXmlPath, XmlOptions, string, object[])"/>.
+            /// </para>
+            /// </remarks>
+            public static void Exists(string actualXml, IXmlPath searchedItem, string expectedValue, XmlOptions options, string messageFormat, params object[] messageArgs)
             {
                 if (actualXml == null)
                     throw new ArgumentNullException("actualXml");
@@ -346,13 +509,19 @@ namespace MbUnit.Framework
                             .ToAssertionFailure();
                     }
 
-                    if (document.Contains((XmlPathClosed)searchedItem, options.Value))
+                    if (document.Contains((XmlPathClosed)searchedItem, expectedValue, options.Value))
                         return null;
 
-                    return new AssertionFailureBuilder("Expected the XML fragment to contain the searched XML element or attribute, but none was found.")
+                    var builder = new AssertionFailureBuilder("Expected the XML fragment to contain the searched XML element or attribute, but none was found.")
                         .SetMessage(messageFormat, messageArgs)
-                        .AddLabeledValue("Item searched", searchedItem.ToString())
-                        .ToAssertionFailure();
+                        .AddLabeledValue("Item searched", searchedItem.ToString());
+
+                    if (expectedValue != null)
+                    {
+                        builder.AddLabeledValue("Expected value", expectedValue);
+                    }
+                       
+                    return builder.ToAssertionFailure();
                 });
             }
 

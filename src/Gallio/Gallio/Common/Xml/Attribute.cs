@@ -116,5 +116,17 @@ namespace Gallio.Common.Xml
         {
             return name.Equals(otherName, GetComparisonTypeForName(options));
         }
+
+        /// <summary>
+        /// Determines whether the value of the current attribute is equal to the specified value, 
+        /// by respecting the specified equality options.
+        /// </summary>
+        /// <param name="otherValue">The value to compare.</param>
+        /// <param name="options">Equality options.</param>
+        /// <returns>True if the values are equal; false otherwise.</returns>
+        public bool AreValuesEqual(string otherValue, Options options)
+        {
+            return Value.Equals(otherValue, GetComparisonTypeForValue(options));
+        }
     }
 }

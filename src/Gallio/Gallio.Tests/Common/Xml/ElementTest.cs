@@ -209,14 +209,14 @@ namespace Gallio.Tests.Common.Xml
         public void Contains_with_null_name_should_throw_exception()
         {
             var element = new Element(Null.Instance, "Star", "Sun", AttributeCollection.Empty);
-            Assert.Throws<ArgumentNullException>(() => element.Contains(null, Options.None));
+            Assert.Throws<ArgumentNullException>(() => element.Contains(null, null, Options.None));
         }
 
         [Test]
         public void Contains_at_depth_zero_yes()
         {
             var element = new Element(Null.Instance, "Star", "Sun", AttributeCollection.Empty);
-            bool found = element.Contains((XmlPathClosed)XmlPath.Element("Star"), Options.None);
+            bool found = element.Contains((XmlPathClosed)XmlPath.Element("Star"), null, Options.None);
             Assert.IsTrue(found);
         }
 
@@ -224,7 +224,7 @@ namespace Gallio.Tests.Common.Xml
         public void Contains_at_depth_zero_case_insensitive_yes()
         {
             var element = new Element(Null.Instance, "Star", "Sun", AttributeCollection.Empty);
-            bool found = element.Contains((XmlPathClosed)XmlPath.Element("STAR"), Options.IgnoreElementsNameCase);
+            bool found = element.Contains((XmlPathClosed)XmlPath.Element("STAR"), null, Options.IgnoreElementsNameCase);
             Assert.IsTrue(found);
         }
 
@@ -232,7 +232,7 @@ namespace Gallio.Tests.Common.Xml
         public void Contains_at_depth_zero_no()
         {
             var element = new Element(Null.Instance, "Star", "Sun", AttributeCollection.Empty);
-            bool found = element.Contains((XmlPathClosed)XmlPath.Element("Oops"), Options.None);
+            bool found = element.Contains((XmlPathClosed)XmlPath.Element("Oops"), null, Options.None);
             Assert.IsFalse(found);
         }
 
@@ -240,7 +240,7 @@ namespace Gallio.Tests.Common.Xml
         public void Contains_at_depth_zero_case_sensitive_no()
         {
             var element = new Element(Null.Instance, "Star", "Sun", AttributeCollection.Empty);
-            bool found = element.Contains((XmlPathClosed)XmlPath.Element("SUN"), Options.None);
+            bool found = element.Contains((XmlPathClosed)XmlPath.Element("SUN"), null, Options.None);
             Assert.IsFalse(found);
         }
 
@@ -249,7 +249,7 @@ namespace Gallio.Tests.Common.Xml
         {
             var child = new Element(Null.Instance, "Star", "Sun", AttributeCollection.Empty);
             var parent = new Element(child, "SolarSystem", String.Empty, AttributeCollection.Empty);
-            bool found = parent.Contains((XmlPathClosed)XmlPath.Element("SolarSystem").Element("Star"), Options.None);
+            bool found = parent.Contains((XmlPathClosed)XmlPath.Element("SolarSystem").Element("Star"), null, Options.None);
             Assert.IsTrue(found);
         }
 
@@ -258,7 +258,7 @@ namespace Gallio.Tests.Common.Xml
         {
             var attribute = new Gallio.Common.Xml.Attribute("magnitude", "4.85");
             var element = new Element(Null.Instance, "Star", "Sun", new AttributeCollection(new[] { attribute }));
-            bool found = element.Contains((XmlPathClosed)XmlPath.Element("Star").Attribute("magnitude"), Options.None);
+            bool found = element.Contains((XmlPathClosed)XmlPath.Element("Star").Attribute("magnitude"), null, Options.None);
             Assert.IsTrue(found);
         }
 
@@ -267,7 +267,57 @@ namespace Gallio.Tests.Common.Xml
         {
             var attribute = new Gallio.Common.Xml.Attribute("magnitude", "4.85");
             var element = new Element(Null.Instance, "Star", "Sun", new AttributeCollection(new[] { attribute }));
-            bool found = element.Contains((XmlPathClosed)XmlPath.Element("Star").Attribute("aargh"), Options.None);
+            bool found = element.Contains((XmlPathClosed)XmlPath.Element("Star").Attribute("aargh"), null, Options.None);
+            Assert.IsFalse(found);
+        }
+
+        [Test]
+        public void AreEqual_at_depth_zero_case_sensitive_yes()
+        {
+            var element = new Element(Null.Instance, "Star", "Sun", AttributeCollection.Empty);
+            bool found = element.Contains((XmlPathClosed)XmlPath.Element("Star"), "Sun", Options.None);
+            Assert.IsTrue(found);
+        }
+
+        [Test]
+        public void AreEqual_at_depth_zero_case_sensitive_no()
+        {
+            var element = new Element(Null.Instance, "Star", "Sun", AttributeCollection.Empty);
+            bool found = element.Contains((XmlPathClosed)XmlPath.Element("Star"), "SUN", Options.None);
+            Assert.IsFalse(found);
+        }
+
+        [Test]
+        public void AreEqual_at_depth_zero_case_insensitive_yes()
+        {
+            var element = new Element(Null.Instance, "Star", "Sun", AttributeCollection.Empty);
+            bool found = element.Contains((XmlPathClosed)XmlPath.Element("Star"), "SUN", Options.IgnoreElementsValueCase);
+            Assert.IsTrue(found);
+        }
+
+        [Test]
+        public void AreEqual_at_depth_zero_case_insensitive_no()
+        {
+            var element = new Element(Null.Instance, "Star", "Sun", AttributeCollection.Empty);
+            bool found = element.Contains((XmlPathClosed)XmlPath.Element("Star"), "Alpha Centauri", Options.IgnoreElementsValueCase);
+            Assert.IsFalse(found);
+        }
+
+        [Test]
+        public void AreEqual_attribute_yes()
+        {
+            var attribute = new Gallio.Common.Xml.Attribute("magnitude", "4.85");
+            var element = new Element(Null.Instance, "Star", "Sun", new AttributeCollection(new[] { attribute }));
+            bool found = element.Contains((XmlPathClosed)XmlPath.Element("Star").Attribute("magnitude"), "4.85", Options.None);
+            Assert.IsTrue(found);
+        }
+
+        [Test]
+        public void AreEqual_attribute_no()
+        {
+            var attribute = new Gallio.Common.Xml.Attribute("magnitude", "4.85");
+            var element = new Element(Null.Instance, "Star", "Sun", new AttributeCollection(new[] { attribute }));
+            bool found = element.Contains((XmlPathClosed)XmlPath.Element("Star").Attribute("magnitude"), "666", Options.None);
             Assert.IsFalse(found);
         }
     }

@@ -122,15 +122,18 @@ namespace Gallio.Common.Xml
         /// Determines whether the collection contains an attribute with the specified name.
         /// </summary>
         /// <param name="searchedAttributeName">The name of the searched attribute.</param>
+        /// <param name="expectedAttributeValue">The expected value found in the searched attribute, or null if the value must be ignored.</param>
         /// <param name="options">Options for the search.</param>
         /// <returns>True is such an attribute exists; otherwise false.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="searchedAttributeName"/> is null.</exception>
-        public bool Contains(string searchedAttributeName, Options options)
+        public bool Contains(string searchedAttributeName, string expectedAttributeValue, Options options)
         {
             if (searchedAttributeName == null)
                 throw new ArgumentNullException("searchedAttributeName");
 
-            return attributes.Exists(attribute => attribute.AreNamesEqual(searchedAttributeName, options));
+            return attributes.Exists(attribute => attribute.AreNamesEqual(searchedAttributeName, options)
+                && ((expectedAttributeValue == null) 
+                || attribute.AreValuesEqual(expectedAttributeValue, options)));
         }
     }
 }
