@@ -13,7 +13,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.ComponentModel;
 using System.Drawing;
 using Gallio.Common.IO;
 using Gallio.Common.Xml;
@@ -23,25 +22,24 @@ using Gallio.Icarus.Tests.Utilities;
 using Gallio.Model;
 using Gallio.Runner;
 using Gallio.Runtime.Logging;
+using Gallio.UI.Common.Policies;
 using MbUnit.Framework;
-using System;
-using Gallio.Icarus.Utilities;
 using Rhino.Mocks;
-using Gallio.Icarus.Options;
 
 namespace Gallio.Icarus.Tests.Controllers
 {
-    [MbUnit.Framework.Category("Controllers"), TestsOn(typeof(OptionsController))]
+    [Category("Controllers"), TestsOn(typeof(OptionsController))]
     internal class OptionsControllerTest
     {
         private static OptionsController SetUpOptionsController(Settings settings)
         {
-            var optionsManager = MockRepository.GenerateStub<IOptionsManager>();
-            optionsManager.Stub(om => om.Settings).Return(settings);
-
-            var optionsController = new OptionsController();
-            optionsController.OptionsManager = optionsManager;
-
+            var fileSystem = MockRepository.GenerateStub<IFileSystem>();
+            fileSystem.Stub(fs => fs.FileExists(Arg<string>.Is.Anything)).Return(true);
+            var xmlSerializer = MockRepository.GenerateStub<IXmlSerializer>();
+            xmlSerializer.Stub(xs => xs.LoadFromXml<Settings>(Arg<string>.Is.Anything)).Return(settings);
+            var unhandledExceptionPolicy = MockRepository.GenerateStub<IUnhandledExceptionPolicy>();
+            var optionsController = new OptionsController(fileSystem, xmlSerializer, unhandledExceptionPolicy);
+            optionsController.Load();
             return optionsController;
         }
 
@@ -59,18 +57,16 @@ namespace Gallio.Icarus.Tests.Controllers
         public void TestRunnerFactory_Test()
         {
             var optionsController = SetUpOptionsController(new Settings());
-
             bool propChangedFlag = false;
-            optionsController.PropertyChanged += delegate(object sender, PropertyChangedEventArgs e)
-                                                     {
-                                                         propChangedFlag = true;
-                                                         Assert.AreEqual("TestRunnerFactory", e.PropertyName);
-                                                     };
+            optionsController.TestRunnerFactory.PropertyChanged += (s, e) => 
+            {
+                propChangedFlag = true;
+            };
 
-            Assert.AreEqual(StandardTestRunnerFactoryNames.IsolatedProcess, optionsController.TestRunnerFactory);
-            optionsController.TestRunnerFactory = StandardTestRunnerFactoryNames.Local;
+            Assert.AreEqual(StandardTestRunnerFactoryNames.IsolatedProcess, optionsController.TestRunnerFactory.Value);
+            optionsController.TestRunnerFactory.Value = StandardTestRunnerFactoryNames.Local;
             Assert.IsTrue(propChangedFlag);
-            Assert.AreEqual(StandardTestRunnerFactoryNames.Local, optionsController.TestRunnerFactory);
+            Assert.AreEqual(StandardTestRunnerFactoryNames.Local, optionsController.TestRunnerFactory.Value);
         }
 
         [Test]
@@ -148,7 +144,7 @@ namespace Gallio.Icarus.Tests.Controllers
         {
             var optionsController = SetUpOptionsController(new Settings());
 
-            Assert.AreEqual(5, optionsController.SelectedTreeViewCategories.Count);
+            Assert.AreEqual(5, optionsController.SelectedTreeViewCategories.Value.Count);
         }
 
         [Test]
@@ -156,33 +152,51 @@ namespace Gallio.Icarus.Tests.Controllers
         {
             var optionsController = SetUpOptionsController(new Settings());
 
-            Assert.AreEqual(typeof(MetadataKeys).GetFields().Length - 4, optionsController.UnselectedTreeViewCategories.Count);
+            Assert.AreEqual(typeof(MetadataKeys).GetFields().Length - 4, 
+                optionsController.UnselectedTreeViewCategories.Value.Count);
         }
 
         [Test]
         public void Cancel_should_reload_options()
         {
-            var optionsManager = MockRepository.GenerateStub<IOptionsManager>();
-            optionsManager.Stub(om => om.Settings).Return(new Settings());
-            var optionsController = new OptionsController();
-            optionsController.OptionsManager = optionsManager;
+            var fileSystem = MockRepository.GenerateStub<IFileSystem>();
+            fileSystem.Stub(fs => fs.FileExists(Arg<string>.Is.Anything)).Return(true);
+            var xmlSerializer = MockRepository.GenerateStub<IXmlSerializer>();
+            xmlSerializer.Stub(xs => xs.LoadFromXml<Settings>(Arg<string>.Is.Anything)).Return(new Settings());
+            var unhandledExceptionPolicy = MockRepository.GenerateStub<IUnhandledExceptionPolicy>();
+            var optionsController = new OptionsController(fileSystem, xmlSerializer, unhandledExceptionPolicy);
 
             optionsController.Cancel();
 
-            optionsManager.AssertWasCalled(om => om.Load());
+            xmlSerializer.AssertWasCalled(xs => xs.LoadFromXml<Settings>(Arg<string>.Is.Anything));
         }
 
         [Test]
-        public void Save_should_call_save_on_OptionsManager()
+        public void Save_should_save_settings_as_xml()
         {
-            var optionsManager = MockRepository.GenerateStub<IOptionsManager>();
-            optionsManager.Stub(om => om.Settings).Return(new Settings());
-            var optionsController = new OptionsController();
-            optionsController.OptionsManager = optionsManager;
+            var fileSystem = MockRepository.GenerateStub<IFileSystem>();
+            fileSystem.Stub(fs => fs.DirectoryExists(Arg<string>.Is.Anything)).Return(true);
+            var xmlSerializer = MockRepository.GenerateStub<IXmlSerializer>();
+            var unhandledExceptionPolicy = MockRepository.GenerateStub<IUnhandledExceptionPolicy>();
+            var optionsController = new OptionsController(fileSystem, xmlSerializer, unhandledExceptionPolicy);
 
             optionsController.Save();
 
-            optionsManager.AssertWasCalled(om => om.Save());
+            xmlSerializer.AssertWasCalled(xs => xs.SaveToXml(Arg<Settings>.Is.Anything, Arg<string>.Is.Anything));
+        }
+
+        [Test]
+        public void Save_should_create_directory_if_it_does_not_exist()
+        {
+            var fileSystem = MockRepository.GenerateStub<IFileSystem>();
+            fileSystem.Stub(fs => fs.DirectoryExists(Arg<string>.Is.Anything)).Return(false);
+            var xmlSerializer = MockRepository.GenerateStub<IXmlSerializer>();
+            var unhandledExceptionPolicy = MockRepository.GenerateStub<IUnhandledExceptionPolicy>();
+            var optionsController = new OptionsController(fileSystem, xmlSerializer, unhandledExceptionPolicy);
+
+            optionsController.Save();
+
+            fileSystem.AssertWasCalled(fs => fs.CreateDirectory(Arg<string>.Is.Anything));
         }
 
         [Test]

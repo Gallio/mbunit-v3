@@ -15,7 +15,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Windows.Forms;
 using Aga.Controls.Tree;
 using Gallio.Icarus.Commands;
@@ -35,7 +34,7 @@ namespace Gallio.Icarus
         private readonly ITestController testController;
         private readonly ISourceCodeController sourceCodeController;
         private readonly ITaskManager taskManager;
-        private readonly bool updateFlag;
+        private bool updateFlag;
 
         public TestExplorer(IOptionsController optionsController, IProjectController projectController, 
             ITestController testController, ISourceCodeController sourceCodeController, 
@@ -52,15 +51,18 @@ namespace Gallio.Icarus
             testTree.FailedColor = optionsController.FailedColor;
             testTree.InconclusiveColor = optionsController.InconclusiveColor;
             testTree.SkippedColor = optionsController.SkippedColor;
-
-            if (treeViewComboBox.ComboBox != null)
+            
+            updateFlag = true;
+            treeViewComboBox.ComboBox.DataSource = optionsController.SelectedTreeViewCategories.Value;
+            updateFlag = false;
+            treeViewComboBox.ComboBox.DataBindings.Add("SelectedItem", projectController, "TreeViewCategory");
+            
+            optionsController.SelectedTreeViewCategories.PropertyChanged += (s, e) =>
             {
                 updateFlag = true;
-                treeViewComboBox.ComboBox.BindingContext = BindingContext;
-                treeViewComboBox.ComboBox.DataSource = optionsController.SelectedTreeViewCategories;
-                treeViewComboBox.ComboBox.DataBindings.Add("SelectedItem", projectController, "TreeViewCategory");
+                treeViewComboBox.ComboBox.DataSource = optionsController.SelectedTreeViewCategories.Value;
                 updateFlag = false;
-            }
+            };
 
             testTree.Model = testController.Model;
 

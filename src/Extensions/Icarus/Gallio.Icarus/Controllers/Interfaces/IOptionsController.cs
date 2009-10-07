@@ -17,7 +17,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
-using Gallio.Icarus.Options;
 using Gallio.Icarus.Utilities;
 using Gallio.Runtime.Logging;
 
@@ -30,9 +29,9 @@ namespace Gallio.Icarus.Controllers.Interfaces
         string TestStatusBarStyle { get; set; }
         bool ShowProgressDialogs { get; set; }
         bool RestorePreviousSettings { get; set; }
-        string TestRunnerFactory { get; set; }
-        IList<string> SelectedTreeViewCategories { get; set; }
-        IList<string> UnselectedTreeViewCategories { get; }
+        Observable<string> TestRunnerFactory { get; set; }
+        Observable<IList<string>> SelectedTreeViewCategories { get; }
+        Observable<IList<string>> UnselectedTreeViewCategories { get; }
         Color PassedColor { get; set; }
         Color FailedColor { get; set; }
         Color InconclusiveColor { get; set; }
@@ -49,9 +48,9 @@ namespace Gallio.Icarus.Controllers.Interfaces
         bool AnnotationsShowInfos { get; set; }
         IList<string> TestRunnerExtensions { get; }
         bool TestTreeSplitNamespaces { get; set; }
-        IOptionsManager OptionsManager { get; set; }
 
         void Cancel();
+        void Load();
         void Save();
     }
 }

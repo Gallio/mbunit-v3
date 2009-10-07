@@ -16,7 +16,6 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Windows.Forms;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Runtime.ProgressMonitoring;
 using Gallio.Runtime.Security;
@@ -27,8 +26,8 @@ namespace Gallio.Icarus.ControlPanel
     internal partial class TreeViewCategoryPane : PreferencePane
     {
         private readonly IOptionsController optionsController;
-        private IList<string> selectedCategories;
-        private IList<string> unselectedCategories;
+        private readonly IList<string> selectedCategories;
+        private readonly IList<string> unselectedCategories;
 
         public TreeViewCategoryPane(IOptionsController optionsController)
         {
@@ -36,8 +35,8 @@ namespace Gallio.Icarus.ControlPanel
 
             this.optionsController = optionsController;
 
-            selectedCategories = new BindingList<string>(new List<string>(optionsController.SelectedTreeViewCategories));
-            unselectedCategories = new BindingList<string>(new List<string>(optionsController.UnselectedTreeViewCategories));
+            selectedCategories = new BindingList<string>(optionsController.SelectedTreeViewCategories.Value);
+            unselectedCategories = new BindingList<string>(optionsController.UnselectedTreeViewCategories.Value);
 
             selectedTreeViewCategories.DataSource = selectedCategories;
             unselectedTreeViewCategories.DataSource = unselectedCategories;
@@ -61,11 +60,12 @@ namespace Gallio.Icarus.ControlPanel
             PendingSettingsChanges = true;
         }
 
-        public override void ApplyPendingSettingsChanges(IElevationContext elevationContext, IProgressMonitor progressMonitor)
+        public override void ApplyPendingSettingsChanges(IElevationContext elevationContext, 
+            IProgressMonitor progressMonitor)
         {
-            base.ApplyPendingSettingsChanges(elevationContext, progressMonitor);
+            optionsController.SelectedTreeViewCategories.Value = selectedCategories;
 
-            optionsController.SelectedTreeViewCategories = selectedCategories;
+            base.ApplyPendingSettingsChanges(elevationContext, progressMonitor);
         }
     }
 }
