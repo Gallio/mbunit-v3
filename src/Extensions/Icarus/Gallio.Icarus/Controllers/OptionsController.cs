@@ -34,7 +34,7 @@ namespace Gallio.Icarus.Controllers
         private readonly IXmlSerializer xmlSerializer;
         private readonly IUnhandledExceptionPolicy unhandledExceptionPolicy;
 
-        private Settings settings;
+        private Settings settings = new Settings();
         private MRUList recentProjects;
 
         public bool AlwaysReloadFiles
