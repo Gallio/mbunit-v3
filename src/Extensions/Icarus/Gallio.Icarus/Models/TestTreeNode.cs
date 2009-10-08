@@ -127,10 +127,10 @@ namespace Gallio.Icarus.Models
             get { return testStepRuns; }
         }
 
-        public TestTreeNode(string id, string name)
-            : base(name)
+        public TestTreeNode(string name, string text)
+            : base(text)
         {
-            this.Name = id;
+            Name = name;
         }
 
         private static Image GetNodeTypeImage(string nodeType)
