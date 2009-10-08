@@ -196,14 +196,14 @@ namespace MbUnit.Framework.ContractVerifiers
             {
                 // Is equality operator overload OK?
                 yield return CreateEqualityTest("OperatorEquals",
-                    o => o.GetType().GetMethod("op_Equality", BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static, null, new[] { typeof(TTarget), typeof(TTarget) }, null),
+                    o => o.GetType().GetMethod("op_Equality", BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.FlattenHierarchy, null, new[] { typeof(TTarget), typeof(TTarget) }, null),
                     String.Format("static bool operator ==({0}, {0})", typeof(TTarget).Name),
                     (leftIndex, rightIndex) => leftIndex == rightIndex, 
                     o => true);
 
                 // Is inequality operator overload OK?
                 yield return CreateEqualityTest("OperatorNotEquals",
-                    o => o.GetType().GetMethod("op_Inequality", BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static, null, new[] { typeof(TTarget), typeof(TTarget) }, null),
+                    o => o.GetType().GetMethod("op_Inequality", BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.FlattenHierarchy, null, new[] { typeof(TTarget), typeof(TTarget) }, null),
                     String.Format("static bool operator !=({0}, {0})", typeof(TTarget).Name),
                     (leftIndex, rightIndex) => leftIndex != rightIndex, 
                     o => true);

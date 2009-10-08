@@ -60,8 +60,8 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
         [Row(typeof(FullContractOnSampleWithEqualityInheritance), "EquatableEquals_ISampleEquatable", TestStatus.Passed)]
         [Row(typeof(FullContractOnSampleWithEqualityInheritance), "EquatableEquals_SampleParentEquatable", TestStatus.Passed)]
         [Row(typeof(FullContractOnSampleWithEqualityInheritance), "EquatableEquals_SampleChildEquatable", TestStatus.Passed)]
-        [Row(typeof(FullContractOnSampleWithEqualityInheritance), "OperatorEquals", TestStatus.Inconclusive)]
-        [Row(typeof(FullContractOnSampleWithEqualityInheritance), "OperatorNotEquals", TestStatus.Inconclusive)]
+        [Row(typeof(FullContractOnSampleWithEqualityInheritance), "OperatorEquals", TestStatus.Passed)]
+        [Row(typeof(FullContractOnSampleWithEqualityInheritance), "OperatorNotEquals", TestStatus.Passed)]
         public void VerifySampleEqualityContract(Type fixtureType, string testMethodName, TestStatus expectedTestStatus)
         {
             VerifySampleContract("EqualityTests", fixtureType, testMethodName, expectedTestStatus);
@@ -137,7 +137,7 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
             [VerifyContract]
             public readonly static IContract EqualityTests = new EqualityContract<SampleParentEquatable>
             {
-                ImplementsOperatorOverloads = false,
+                ImplementsOperatorOverloads = true,
                 EquivalenceClasses =
                 {
                     { new SampleParentEquatable(123), new SampleChildEquatable(123) },
