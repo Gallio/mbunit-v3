@@ -183,13 +183,13 @@ namespace MbUnit.Framework.ContractVerifiers
             // Is strongly typed IEquatable equality method OK?
             Type[] equatableTypes = GetAllEquatableTypes();
 
-            foreach (Type equatableType in equatableTypes)
+            foreach (Type type in equatableTypes)
             {
-                yield return CreateEqualityTest(String.Format("EquatableEquals{0}", (equatableTypes.Length == 1) ? String.Empty : "_" + equatableType.Name),
-                    o => GetIEquatableInterface(o).GetMethod("Equals", BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, null, new[] { equatableType }, null),
-                    String.Format("bool Equals({0})", equatableType.Name),
+                yield return CreateEqualityTest(String.Format("EquatableEquals{0}", (equatableTypes.Length == 1) ? String.Empty : "_" + type.Name),
+                    o => GetIEquatableInterface(o, type).GetMethod("Equals", BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, null, new[] { type }, null),
+                    String.Format("bool Equals({0})", type.Name),
                     (leftIndex, rightIndex) => leftIndex == rightIndex,
-                    o => typeof(IEquatable<>).MakeGenericType(equatableType).IsAssignableFrom(o.GetType()));
+                    o => typeof(IEquatable<>).MakeGenericType(type).IsAssignableFrom(o.GetType()));
             }
 
             if (ImplementsOperatorOverloads)
@@ -351,9 +351,9 @@ namespace MbUnit.Framework.ContractVerifiers
                 : (bool)method.Invoke(leftValue, new[] { rightValue });
         }
 
-        private static Type GetIEquatableInterface(TTarget target)
+        private static Type GetIEquatableInterface(TTarget target, Type equatableType)
         {
-            return GetInterface(target.GetType(), typeof(IEquatable<>).MakeGenericType(target.GetType()));
+            return GetInterface(target.GetType(), typeof(IEquatable<>).MakeGenericType(equatableType));
         }
     }
 }
