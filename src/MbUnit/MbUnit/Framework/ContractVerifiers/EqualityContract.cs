@@ -174,36 +174,66 @@ namespace MbUnit.Framework.ContractVerifiers
             yield return CreateEqualityTest("ObjectEquals",
                 o => o.GetType().GetMethod("Equals", BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.Instance, null, new[] { typeof(object) }, null),
                 "bool Equals(Object)",
-                (leftIndex, rightIndex) => leftIndex == rightIndex);
+                (leftIndex, rightIndex) => leftIndex == rightIndex,
+                o => true);
 
             // Is Object hash code calculcation well implemented?
             yield return CreateHashCodeTest("HashCode");
 
-            // Is IEquatable equality method OK?
-            yield return CreateEqualityTest("EquatableEquals",
-                o => GetIEquatableInterface(o).GetMethod("Equals", BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, null, new[] { o.GetType() }, null),
-                String.Format("bool Equals({0})", typeof(TTarget).Name),
-                (leftIndex, rightIndex) => leftIndex == rightIndex);
+            // Is strongly typed IEquatable equality method OK?
+            Type[] equatableTypes = GetAllEquatableTypes();
+
+            foreach (Type equatableType in equatableTypes)
+            {
+                yield return CreateEqualityTest(String.Format("EquatableEquals{0}", (equatableTypes.Length == 1) ? String.Empty : "_" + equatableType.Name),
+                    o => GetIEquatableInterface(o).GetMethod("Equals", BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, null, new[] { equatableType }, null),
+                    String.Format("bool Equals({0})", equatableType.Name),
+                    (leftIndex, rightIndex) => leftIndex == rightIndex,
+                    o => typeof(IEquatable<>).MakeGenericType(equatableType).IsAssignableFrom(o.GetType()));
+            }
 
             if (ImplementsOperatorOverloads)
             {
                 // Is equality operator overload OK?
                 yield return CreateEqualityTest("OperatorEquals",
-                    o => o.GetType().GetMethod("op_Equality", BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static, null, new[] { o.GetType(), o.GetType() }, null),
-                    String.Format("static bool operator ==({0}, {0})",
-                    typeof(TTarget).Name),
-                    (leftIndex, rightIndex) => leftIndex == rightIndex);
+                    o => o.GetType().GetMethod("op_Equality", BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static, null, new[] { typeof(TTarget), typeof(TTarget) }, null),
+                    String.Format("static bool operator ==({0}, {0})", typeof(TTarget).Name),
+                    (leftIndex, rightIndex) => leftIndex == rightIndex, 
+                    o => true);
 
                 // Is inequality operator overload OK?
                 yield return CreateEqualityTest("OperatorNotEquals",
-                    o => o.GetType().GetMethod("op_Inequality", BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static, null, new[] { o.GetType(), o.GetType() }, null),
-                    String.Format("static bool operator !=({0}, {0})",
-                    typeof(TTarget).Name),
-                    (leftIndex, rightIndex) => leftIndex != rightIndex);
+                    o => o.GetType().GetMethod("op_Inequality", BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static, null, new[] { typeof(TTarget), typeof(TTarget) }, null),
+                    String.Format("static bool operator !=({0}, {0})", typeof(TTarget).Name),
+                    (leftIndex, rightIndex) => leftIndex != rightIndex, 
+                    o => true);
             }
         }
 
-        private Test CreateEqualityTest(string name, Func<TTarget, MethodInfo> methodInfoFactory, string methodSignature, Func<int, int, bool> referenceComparer)
+        private Type[] GetAllEquatableTypes()
+        {
+            var types = new List<Type>();
+
+            foreach (EquivalenceClass<TTarget> equivalenceClasse in EquivalenceClasses)
+            {
+                foreach (TTarget instance in equivalenceClasse)
+                {
+                    foreach (Type interfaceType in instance.GetType().FindInterfaces(Module.FilterTypeName, typeof(IEquatable<>).Name))
+                    {
+                        Type type = interfaceType.GetGenericArguments()[0];
+
+                        if (!types.Contains(type))
+                        {
+                            types.Add(type);
+                        }
+                    }
+                }
+            }
+
+            return types.ToArray();
+        }
+
+        private Test CreateEqualityTest(string name, Func<TTarget, MethodInfo> methodInfoFactory, string methodSignature, Func<int, int, bool> referenceComparer, Func<TTarget, bool> filter)
         {
             return new TestCase(name, () =>
             {
@@ -214,34 +244,40 @@ namespace MbUnit.Framework.ContractVerifiers
                     {
                         foreach (TTarget leftValue in leftClass)
                         {
-                            MethodInfo method = methodInfoFactory(leftValue);
-                            AssertMethodExists(method, methodSignature);
-                            Func<object, object, bool> comparer = BinaryComparerFactory(method);
-
-                            if (!typeof(TTarget).IsValueType && method.IsStatic)
+                            if (filter(leftValue))
                             {
-                                VerifyEquality(null, null, int.MinValue, int.MinValue, comparer, referenceComparer, Context);
-                            }
+                                MethodInfo method = methodInfoFactory(leftValue);
+                                AssertMethodExists(method, methodSignature);
+                                Func<object, object, bool> comparer = BinaryComparerFactory(method);
 
-                            if (!typeof(TTarget).IsValueType)
-                            {
-                                VerifyEquality(leftValue, null, 0, int.MinValue, comparer, referenceComparer, Context);
-
-                                if (method.IsStatic)
+                                if (!typeof(TTarget).IsValueType && method.IsStatic)
                                 {
-                                    VerifyEquality(null, leftValue, int.MinValue, 0, comparer, referenceComparer, Context);
-                                }
-                            }
-
-                            int rightIndex = 0;
-                            foreach (EquivalenceClass<TTarget> rightClass in EquivalenceClasses)
-                            {
-                                foreach (TTarget rightValue in rightClass)
-                                {
-                                    VerifyEquality(leftValue, rightValue, leftIndex, rightIndex, comparer, referenceComparer, Context);
+                                    VerifyEquality(null, null, int.MinValue, int.MinValue, comparer, referenceComparer, Context);
                                 }
 
-                                rightIndex += 1;
+                                if (!typeof(TTarget).IsValueType)
+                                {
+                                    VerifyEquality(leftValue, null, 0, int.MinValue, comparer, referenceComparer, Context);
+
+                                    if (method.IsStatic)
+                                    {
+                                        VerifyEquality(null, leftValue, int.MinValue, 0, comparer, referenceComparer, Context);
+                                    }
+                                }
+
+                                int rightIndex = 0;
+                                foreach (EquivalenceClass<TTarget> rightClass in EquivalenceClasses)
+                                {
+                                    foreach (TTarget rightValue in rightClass)
+                                    {
+                                        if (filter(rightValue))
+                                        {
+                                            VerifyEquality(leftValue, rightValue, leftIndex, rightIndex, comparer, referenceComparer, Context);
+                                        }
+                                    }
+
+                                    rightIndex += 1;
+                                }
                             }
                         }
 
