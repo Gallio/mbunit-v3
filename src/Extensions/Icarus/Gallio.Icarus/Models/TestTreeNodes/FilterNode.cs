@@ -17,7 +17,7 @@ using Gallio.Model;
 
 namespace Gallio.Icarus.Models.TestTreeNodes
 {
-    internal class FilterNode : TestTreeNode
+    internal sealed class FilterNode : TestTreeNode
     {
         public FilterNode(TestStatus testStatus)
             : base(testStatus.ToString(), testStatus.ToString())
@@ -35,6 +35,8 @@ namespace Gallio.Icarus.Models.TestTreeNodes
                     break;
             }
             TestStatus = testStatus;
+
+            CheckState = System.Windows.Forms.CheckState.Checked;
         }
     }
 }

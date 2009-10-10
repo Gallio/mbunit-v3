@@ -40,7 +40,6 @@ namespace Gallio.Icarus
         private int failedColor = Color.Red.ToArgb();
         private int inconclusiveColor = Color.Gold.ToArgb();
         private int skippedColor = Color.SlateGray.ToArgb();
-        private readonly List<string> treeViewCategories = new List<string>();
         private bool generateReportAfterTestRun = true;
         private readonly List<string> extensionSpecifications = new List<string>();
 
@@ -119,7 +118,7 @@ namespace Gallio.Icarus
         [XmlArrayItem("treeViewCategory", typeof(string), IsNullable = false)]
         public List<string> TreeViewCategories
         {
-            get { return treeViewCategories; }
+            get; set;
         }
 
         [XmlElement("size")]
@@ -169,5 +168,10 @@ namespace Gallio.Icarus
 
         [XmlElement("testTreeSplitNamespaces")]
         public bool TestTreeSplitNamespaces { get; set; }
+
+        public Settings()
+        {
+            TreeViewCategories = new List<string>();
+        }
     }
 }

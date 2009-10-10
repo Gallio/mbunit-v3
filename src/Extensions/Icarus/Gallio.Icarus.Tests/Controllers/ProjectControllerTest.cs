@@ -34,7 +34,6 @@ using Gallio.UI.Common.Policies;
 using MbUnit.Framework;
 using Rhino.Mocks;
 using System;
-using Path = System.IO.Path;
 
 namespace Gallio.Icarus.Tests.Controllers
 {

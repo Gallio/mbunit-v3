@@ -358,9 +358,6 @@ namespace Gallio.Icarus
 
         private void optionsMenuItem_Click(object sender, EventArgs e)
         {
-            //using (var options = new Options.Options(optionsController))
-            //    options.ShowDialog(this);
-
             var presenter = RuntimeAccessor.ServiceLocator.Resolve<IControlPanelPresenter>();
             if (presenter.Show(this) == DialogResult.OK)
                 optionsController.Save();

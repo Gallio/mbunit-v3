@@ -13,14 +13,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Gallio.Common.Collections;
 using Gallio.Common.Reflection;
 using Gallio.Model;
 using Gallio.Model.Schema;
 
 namespace Gallio.Icarus.Models.TestTreeNodes
 {
-    internal class TestDataNode : TestTreeNode
+    internal sealed class TestDataNode : TestTreeNode
     {
         public TestDataNode(TestData testData)
             : base(testData.Id, testData.Name)
@@ -29,6 +28,10 @@ namespace Gallio.Icarus.Models.TestTreeNodes
             FileName = testData.Metadata.GetValue(MetadataKeys.File);
             SourceCodeAvailable = (testData.CodeLocation != CodeLocation.Unknown);
             IsTest = testData.IsTestCase;
+
+            CheckState = testData.Metadata.ContainsKey(MetadataKeys.IgnoreReason) || 
+                testData.Metadata.ContainsKey(MetadataKeys.PendingReason) ? 
+                System.Windows.Forms.CheckState.Unchecked : System.Windows.Forms.CheckState.Checked;
         }
     }
 }

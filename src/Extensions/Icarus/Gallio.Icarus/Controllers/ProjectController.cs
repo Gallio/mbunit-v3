@@ -32,7 +32,6 @@ using Gallio.Runner.Projects.Schema;
 using Gallio.Runtime.ProgressMonitoring;
 using Gallio.UI.Common.Policies;
 using Gallio.UI.Common.Synchronization;
-using Path = System.IO.Path;
 
 namespace Gallio.Icarus.Controllers
 {

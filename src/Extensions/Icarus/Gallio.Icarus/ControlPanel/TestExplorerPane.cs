@@ -14,7 +14,6 @@
 // limitations under the License.
 
 using System;
-using System.Windows.Forms;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Runtime.ProgressMonitoring;
 using Gallio.Runtime.Security;
@@ -55,7 +54,9 @@ namespace Gallio.Icarus.ControlPanel
             optionsController.RunTestsAfterReload = runTestsAfterReloadCheckBox.Checked;
             optionsController.TestTreeSplitNamespaces = splitNamespacesCheckBox.Checked;
             
-            optionsController.TestRunnerFactory = testRunnerFactories.Text;
+            optionsController.TestRunnerFactory.Value = testRunnerFactories.Text;
+
+            base.ApplyPendingSettingsChanges(elevationContext, progressMonitor);
         }
 
         private void alwaysReloadFilesCheckBox_CheckedChanged(object sender, EventArgs e)

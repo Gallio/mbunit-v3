@@ -14,7 +14,6 @@
 // limitations under the License.
 
 using System.Collections.Generic;
-using System.Windows.Forms;
 using Aga.Controls.Tree;
 using Gallio.Icarus.Models;
 using Gallio.Icarus.Models.TestTreeNodes;
@@ -43,8 +42,6 @@ namespace Gallio.Icarus.Helpers
                     testModelData.RootTest, root);
             }
 
-            root.CheckState = CheckState.Checked;
-            root.UpdateStateOfRelatedNodes();
             return root;
         }
 
@@ -85,7 +82,7 @@ namespace Gallio.Icarus.Helpers
 
             foreach (string ns in namespaceArray)
             {
-                if (string.IsNullOrEmpty(ns))
+                if (ns.Length == 0) 
                     continue;
 
                 // find the namespace node (or add if it doesn't exist)

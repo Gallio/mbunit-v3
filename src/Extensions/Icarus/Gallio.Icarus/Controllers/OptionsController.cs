@@ -21,7 +21,6 @@ using System.Windows.Forms;
 using Gallio.Common.IO;
 using Gallio.Common.Xml;
 using Gallio.Icarus.Controllers.Interfaces;
-using Gallio.Icarus.Options;
 using Gallio.Model;
 using Gallio.Icarus.Utilities;
 using Gallio.Runtime.Logging;
@@ -31,105 +30,80 @@ namespace Gallio.Icarus.Controllers
 {
     public class OptionsController : NotifyController, IOptionsController
     {
-        private Settings settings;
-        private MRUList recentProjects;
-        private IOptionsManager optionsManager;
+        private readonly IFileSystem fileSystem;
+        private readonly IXmlSerializer xmlSerializer;
+        private readonly IUnhandledExceptionPolicy unhandledExceptionPolicy;
 
-        private List<string> unselectedTreeViewCategoriesList;
+        private Settings settings = new Settings();
+        private MRUList recentProjects;
 
         public bool AlwaysReloadFiles
         {
-            get { return Settings.AlwaysReloadFiles; }
-            set { Settings.AlwaysReloadFiles = value; }
+            get { return settings.AlwaysReloadFiles; }
+            set { settings.AlwaysReloadFiles = value; }
         }
 
         public bool RunTestsAfterReload
         {
-            get { return Settings.RunTestsAfterReload; }
-            set { Settings.RunTestsAfterReload = value; }
+            get { return settings.RunTestsAfterReload; }
+            set { settings.RunTestsAfterReload = value; }
         }
 
         public string TestStatusBarStyle
         {
-            get { return Settings.TestStatusBarStyle; }
-            set { Settings.TestStatusBarStyle = value; }
+            get { return settings.TestStatusBarStyle; }
+            set { settings.TestStatusBarStyle = value; }
         }
 
         public bool ShowProgressDialogs
         {
-            get { return Settings.ShowProgressDialogs; }
-            set { Settings.ShowProgressDialogs = value; }
+            get { return settings.ShowProgressDialogs; }
+            set { settings.ShowProgressDialogs = value; }
         }
 
         public bool RestorePreviousSettings
         {
-            get { return Settings.RestorePreviousSettings; }
-            set { Settings.RestorePreviousSettings = value; }
+            get { return settings.RestorePreviousSettings; }
+            set { settings.RestorePreviousSettings = value; }
         }
 
-        public string TestRunnerFactory
+        public Observable<string> TestRunnerFactory
         {
-            get { return Settings.TestRunnerFactory; }
-            set
-            {
-                Settings.TestRunnerFactory = value;
-                OnPropertyChanged(new PropertyChangedEventArgs("TestRunnerFactory"));
-            }
+            get; set;
         }
 
-        public IList<string> SelectedTreeViewCategories
+        public Observable<IList<string>> SelectedTreeViewCategories
         {
-            get 
-            { 
-                return Settings.TreeViewCategories; 
-            }
-            set 
-            {
-                Settings.TreeViewCategories.Clear();
-                Settings.TreeViewCategories.AddRange(value);
-                unselectedTreeViewCategoriesList = null;
-            }
+            get; private set;
         }
 
-        public IList<string> UnselectedTreeViewCategories 
+        public Observable<IList<string>> UnselectedTreeViewCategories
         {
-            get 
-            {
-                if (unselectedTreeViewCategoriesList == null)
-                {
-                    unselectedTreeViewCategoriesList = new List<string>();
-                    foreach (var fieldInfo in typeof(MetadataKeys).GetFields())
-                    {
-                        if (!Settings.TreeViewCategories.Contains(fieldInfo.Name))
-                            unselectedTreeViewCategoriesList.Add(fieldInfo.Name);
-                    }
-                }
-                return unselectedTreeViewCategoriesList;
-            }
+            get; private set;
         }
 
         public Color PassedColor
         {
-            get { return Color.FromArgb(Settings.PassedColor); }
-            set { Settings.PassedColor = value.ToArgb(); }
+            get { return Color.FromArgb(settings.PassedColor); }
+            set { settings.PassedColor = value.ToArgb(); }
         }
 
         public Color FailedColor
         {
-            get { return Color.FromArgb(Settings.FailedColor); }
-            set { Settings.FailedColor = value.ToArgb(); }
+            get { return Color.FromArgb(settings.FailedColor); }
+            set { settings.FailedColor = value.ToArgb(); }
         }
 
         public Color InconclusiveColor
         {
-            get { return Color.FromArgb(Settings.InconclusiveColor); }
-            set { Settings.InconclusiveColor = value.ToArgb(); }
+            get { return Color.FromArgb(settings.InconclusiveColor); }
+            set { settings.InconclusiveColor = value.ToArgb(); }
         }
 
         public Color SkippedColor
         {
-            get { return Color.FromArgb(Settings.SkippedColor); }
-            set { Settings.SkippedColor = value.ToArgb(); }
+            get { return Color.FromArgb(settings.SkippedColor); }
+            set { settings.SkippedColor = value.ToArgb(); }
         }
 
         public double UpdateDelay
@@ -139,14 +113,14 @@ namespace Gallio.Icarus.Controllers
 
         public Size Size
         {
-            get { return Settings.Size; }
-            set { Settings.Size = value; }
+            get { return settings.Size; }
+            set { settings.Size = value; }
         }
 
         public Point Location
         {
-            get { return Settings.Location; }
-            set { Settings.Location = value; }
+            get { return settings.Location; }
+            set { settings.Location = value; }
         }
 
         public FormWindowState WindowState
@@ -161,7 +135,7 @@ namespace Gallio.Icarus.Controllers
             {
                 if (recentProjects == null)
                 {
-                    recentProjects = new MRUList(Settings.RecentProjects, 10);
+                    recentProjects = new MRUList(settings.RecentProjects, 10);
                     recentProjects.PropertyChanged += (sender, e) =>
                         {
                             if (e.PropertyName == "Items")
@@ -174,26 +148,26 @@ namespace Gallio.Icarus.Controllers
 
         public LogSeverity MinLogSeverity
         {
-            get { return Settings.MinLogSeverity; }
-            set { Settings.MinLogSeverity = value; }
+            get { return settings.MinLogSeverity; }
+            set { settings.MinLogSeverity = value; }
         }
 
         public bool AnnotationsShowErrors
         {
-            get { return Settings.AnnotationsShowErrors; }
-            set { Settings.AnnotationsShowErrors = value; }
+            get { return settings.AnnotationsShowErrors; }
+            set { settings.AnnotationsShowErrors = value; }
         }
 
         public bool AnnotationsShowWarnings
         {
-            get { return Settings.AnnotationsShowWarnings; }
-            set { Settings.AnnotationsShowWarnings = value; }
+            get { return settings.AnnotationsShowWarnings; }
+            set { settings.AnnotationsShowWarnings = value; }
         }
 
         public bool AnnotationsShowInfos
         {
-            get { return Settings.AnnotationsShowInfos; }
-            set { Settings.AnnotationsShowInfos = value; }
+            get { return settings.AnnotationsShowInfos; }
+            set { settings.AnnotationsShowInfos = value; }
         }
 
         public IList<string> TestRunnerExtensions 
@@ -211,76 +185,83 @@ namespace Gallio.Icarus.Controllers
 
         public bool TestTreeSplitNamespaces
         {
-            get { return Settings.TestTreeSplitNamespaces; }
-            set { Settings.TestTreeSplitNamespaces = value; }
+            get { return settings.TestTreeSplitNamespaces; }
+            set { settings.TestTreeSplitNamespaces = value; }
         }
 
-        private void Load()
+        public OptionsController(IFileSystem fileSystem, IXmlSerializer xmlSerializer, 
+            IUnhandledExceptionPolicy unhandledExceptionPolicy)
         {
-            settings = OptionsManager.Settings;
+            this.fileSystem = fileSystem;
+            this.xmlSerializer = xmlSerializer;
+            this.unhandledExceptionPolicy = unhandledExceptionPolicy;
 
-            if (Settings.TreeViewCategories.Count == 0)
+            TestRunnerFactory = new Observable<string>();
+            TestRunnerFactory.PropertyChanged += (s, e) => 
+                settings.TestRunnerFactory = TestRunnerFactory.Value;
+
+            SelectedTreeViewCategories = new Observable<IList<string>>();
+            SelectedTreeViewCategories.PropertyChanged += (s, e) => 
+                settings.TreeViewCategories = new List<string>(SelectedTreeViewCategories.Value);
+            
+            UnselectedTreeViewCategories = new Observable<IList<string>>();
+        }
+
+        public void Load()
+        {
+            try
             {
-                // add default categories
-                Settings.TreeViewCategories.AddRange(new[] { "Namespace", MetadataKeys.AuthorName, 
+                settings = fileSystem.FileExists(Paths.SettingsFile) ? xmlSerializer.LoadFromXml<Settings>(Paths.SettingsFile) 
+                    : new Settings();
+
+                if (settings.TreeViewCategories.Count == 0)
+                {
+                    // add default categories
+                    settings.TreeViewCategories.AddRange(new[] { "Namespace", MetadataKeys.AuthorName, 
                     MetadataKeys.Category, MetadataKeys.Importance, MetadataKeys.TestsOn });
+                }
+                SelectedTreeViewCategories.Value = new List<string>(settings.TreeViewCategories);
+
+                var unselectedCategories = new List<string>();
+                foreach (var fieldInfo in typeof(MetadataKeys).GetFields())
+                {
+                    if (!settings.TreeViewCategories.Contains(fieldInfo.Name))
+                        unselectedCategories.Add(fieldInfo.Name);
+                }
+                UnselectedTreeViewCategories.Value = unselectedCategories;
+
+                TestRunnerFactory.Value = settings.TestRunnerFactory;
+            }
+            catch (Exception ex)
+            {
+                unhandledExceptionPolicy.Report("An exception occurred while loading Icarus settings file.", ex);
             }
         }
 
         public void Save()
         {
-            OptionsManager.Save();
+            try
+            {
+                // create folder, if necessary
+                if (!fileSystem.DirectoryExists(Paths.IcarusAppDataFolder))
+                    fileSystem.CreateDirectory(Paths.IcarusAppDataFolder);
+
+                xmlSerializer.SaveToXml(settings, Paths.SettingsFile);
+            }
+            catch (Exception ex)
+            {
+                unhandledExceptionPolicy.Report("An exception occurred while saving Icarus settings file.", ex);
+            }
         }
 
         public bool GenerateReportAfterTestRun
         {
-            get { return Settings.GenerateReportAfterTestRun; }
-            set { Settings.GenerateReportAfterTestRun = value; }
-        }
-
-        public IOptionsManager OptionsManager
-        {
-            get
-            {
-                if (this.optionsManager == null)
-                {
-                    var optionsManager = new OptionsManager(new FileSystem(), new DefaultXmlSerializer(),
-                        new UnhandledExceptionPolicy());
-                    optionsManager.Load();
-                    SetOptionsManager(optionsManager);
-                }
-
-                return this.optionsManager;
-            }
-            set
-            {
-                SetOptionsManager(value);
-            }
-        }
-
-        private Settings Settings
-        {
-            get
-            {
-                if (settings == null)
-                    Load();
-                return settings;
-            }
-        }
-
-        private void SetOptionsManager(IOptionsManager optionsManager)
-        {
-            if (optionsManager == null)
-                throw new ArgumentNullException("optionsManager");
-
-            this.optionsManager = optionsManager;
-            Load();
+            get { return settings.GenerateReportAfterTestRun; }
+            set { settings.GenerateReportAfterTestRun = value; }
         }
 
         public void Cancel()
         {
-            OptionsManager.Load();
-
             Load();
         }
     }

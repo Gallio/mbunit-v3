@@ -21,16 +21,12 @@ using Gallio.Common.Reflection;
 using Gallio.Icarus.Controllers;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Logging;
-using Gallio.Icarus.Options;
 using Gallio.Icarus.Properties;
 using Gallio.Runner;
 using Gallio.Runtime;
 using Gallio.Runtime.ConsoleSupport;
-using Gallio.Common.IO;
-using Gallio.Common.Xml;
 using Gallio.Common.Policies;
 using Gallio.UI.ErrorReporting;
-using Path = System.IO.Path;
 
 namespace Gallio.Icarus
 {
@@ -75,21 +71,17 @@ namespace Gallio.Icarus
 
             var runtimeLogger = new RuntimeLogger();
 
-            GenericCollectionUtils.ForEach(Arguments.PluginDirectories, x => runtimeSetup.AddPluginDirectory(x));
+            GenericCollectionUtils.ForEach(Arguments.PluginDirectories, runtimeSetup.AddPluginDirectory);
 
             using (RuntimeBootstrap.Initialize(runtimeSetup, runtimeLogger))
             {
                 var optionsController = RuntimeAccessor.ServiceLocator.Resolve<IOptionsController>();
-                
                 // create & initialize a test runner whenever the test runner factory is changed
-                optionsController.PropertyChanged += (sender, e) =>
-                {
-                    if (e.PropertyName == "TestRunnerFactory")
-                        ConfigureTestRunnerFactory(optionsController.TestRunnerFactory);
-                };
-
+                optionsController.TestRunnerFactory.PropertyChanged += (s, e) => 
+                    ConfigureTestRunnerFactory(optionsController.TestRunnerFactory);
+                optionsController.Load();
                 ConfigureTestRunnerFactory(optionsController.TestRunnerFactory);
-
+                
                 var runtimeLogController = RuntimeAccessor.ServiceLocator.Resolve<IRuntimeLogController>();
                 runtimeLogController.SetLogger(runtimeLogger);
 
@@ -104,10 +96,7 @@ namespace Gallio.Icarus
         private static void UnhandledErrorPolicy()
         {
             BlackBoxLogger.Initialize();
-            UnhandledExceptionPolicy.ReportUnhandledException += (sender, e) =>
-            {
-                BlackBoxLogger.Log(e);
-            };
+            UnhandledExceptionPolicy.ReportUnhandledException += (sender, e) => BlackBoxLogger.Log(e);
 
             Application.ThreadException += (sender, e) => UnhandledExceptionPolicy.Report("Error from Application.ThreadException", e.Exception);
             AppDomain.CurrentDomain.UnhandledException += (sender, e) => UnhandledExceptionPolicy.Report("Error from Application.ThreadException",

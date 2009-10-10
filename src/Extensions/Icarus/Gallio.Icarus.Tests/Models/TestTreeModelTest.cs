@@ -254,5 +254,14 @@ namespace Gallio.Icarus.Tests.Models
 
             Assert.IsTrue(testTreeModel.FilterInconclusive);
         }
+
+        public class NestedClass
+        {
+            [Test]
+            public void NestedTest()
+            {
+                Assert.IsTrue(true);
+            }
+        }
     }
 }
