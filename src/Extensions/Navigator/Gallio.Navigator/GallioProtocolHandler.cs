@@ -58,6 +58,8 @@ namespace Gallio.Navigator
         private string dataMimeType;
 
         #region Registration
+        /* Note: This code is only called by regasm.exe.  The installer MSI contains a
+         *       separate list of registry entries that must be updated when these are changed. */
 
         [ComRegisterFunction]
         internal static void Register(Type type)

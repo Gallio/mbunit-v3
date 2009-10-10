@@ -4,40 +4,207 @@
 
     <Fragment>
         <DirectoryRef Id="binFolder" FileSource="$(var.GallioTargetDir)\bin\">
-            <Component Id="Gallio.Navigator.exe" Guid="{AF22A32E-D8AA-40a2-8E14-07A70C52F46F}" Win64="no">
-                <File Name="Gallio.Navigator.exe" KeyPath="yes" Assembly=".net" AssemblyApplication="Gallio.Navigator.exe" />
-                <File Name="Gallio.Navigator.exe.config" />
-                <File Name="Gallio.Navigator.plugin" />
-                <File Name="Gallio.Navigator.Readme.txt" />
-            </Component>
+          <Component Id="Gallio.Navigator" Guid="{AF22A32E-D8AA-40a2-8E14-07A70C52F46F}" Win64="no">
+            <File Name="Gallio.Navigator.exe" KeyPath="yes" Assembly=".net" AssemblyApplication="Gallio.Navigator.exe" />
+            <File Name="Gallio.Navigator.exe.config" />
+            <File Name="Gallio.Navigator.plugin" />
+            <File Name="Gallio.Navigator.Readme.txt" />
+          </Component>
+
+            <!-- Note: When editing these registry entries, be sure to update the COM registration
+                       hooks used by regasm.exe in GallioProtocolHandler. -->
+          <Component Id="Gallio.Navigator.Registry.x86" Guid="{C1D0FB1F-0124-457b-9D80-D7253C704AA4}" Win64="no">
+            <!-- Register GallioNavigator component. -->
+            <RegistryKey Id="Gallio.Navigator.Registry.x86.GallioNavigator" Action="createAndRemoveOnUninstall"
+                         Root="HKCR" Key="Gallio.Navigator.GallioNavigator">
+              <RegistryValue Type="string" Value="Gallio.Navigator.GallioNavigator" />
+            </RegistryKey>
+            <RegistryKey Id="Gallio.Navigator.Registry.x86.GallioNavigator.GNCLSID" Action="createAndRemoveOnUninstall"
+                         Root="HKCR" Key="Gallio.Navigator.GallioNavigator\CLSID">
+              <RegistryValue Type="string" Value="{0DAA4E63-51CB-4DDF-988D-F1CBCE74B3E3}" />
+            </RegistryKey>
+            <RegistryKey Id="Gallio.Navigator.Registry.x86.GNCLSID.GUID" Action="createAndRemoveOnUninstall"
+                         Root="HKCR" Key="CLSID\{0DAA4E63-51CB-4DDF-988D-F1CBCE74B3E3}">
+              <RegistryValue Type="string" Value="Gallio.Navigator.GallioNavigator" />
+            </RegistryKey>
+            <RegistryKey Id="Gallio.Navigator.Registry.x86.GNCLSID.GUID.InprocServer32" Action="createAndRemoveOnUninstall"
+                         Root="HKCR" Key="CLSID\{0DAA4E63-51CB-4DDF-988D-F1CBCE74B3E3}\InprocServer32">
+              <RegistryValue Type="string" Value="mscoree.dll" />
+              <RegistryValue Type="string" Name="ThreadingModel" Value="Both" />
+              <RegistryValue Type="string" Name="Class" Value="Gallio.Navigator.GallioNavigator" />
+              <RegistryValue Type="string" Name="Assembly" Value="!(bind.assemblyFullName.Gallio.Navigator.exe)" />
+              <RegistryValue Type="string" Name="CodeBase" Value="[#Gallio.Navigator.exe]" />
+              <RegistryValue Type="string" Name="RuntimeVersion" Value="v2.0.50727" />
+            </RegistryKey>
+            <RegistryKey Id="Gallio.Navigator.Registry.x86.GNCLSID.GUID.InprocServer32.Version" Action="createAndRemoveOnUninstall"
+                         Root="HKCR" Key="CLSID\{0DAA4E63-51CB-4DDF-988D-F1CBCE74B3E3}\InprocServer32\!(bind.assemblyVersion.Gallio.Navigator.exe)">
+              <RegistryValue Type="string" Name="Class" Value="Gallio.Navigator.GallioNavigator" />
+              <RegistryValue Type="string" Name="Assembly" Value="!(bind.assemblyFullName.Gallio.Navigator.exe)" />
+              <RegistryValue Type="string" Name="CodeBase" Value="[#Gallio.Navigator.exe]" />
+              <RegistryValue Type="string" Name="RuntimeVersion" Value="v2.0.50727" />
+            </RegistryKey>
+            <RegistryKey Id="Gallio.Navigator.Registry.x86.GNCLSID.GUID.ProgId" Action="createAndRemoveOnUninstall"
+                         Root="HKCR" Key="CLSID\{0DAA4E63-51CB-4DDF-988D-F1CBCE74B3E3}\ProgId">
+              <RegistryValue Type="string" Value="Gallio.Navigator.GallioNavigator" />
+            </RegistryKey>
+
+            <!-- Register GallioProtocolHandler component. -->
+            <RegistryKey Id="Gallio.Navigator.Registry.x86.GallioProtocolHandler" Action="createAndRemoveOnUninstall"
+                         Root="HKCR" Key="Gallio.Navigator.GallioProtocolHandler">
+              <RegistryValue Type="string" Value="Gallio.Navigator.GallioProtocolHandler" />
+            </RegistryKey>
+            <RegistryKey Id="Gallio.Navigator.Registry.x86.GallioProtocolHandler.GPHCLSID" Action="createAndRemoveOnUninstall"
+                         Root="HKCR" Key="Gallio.Navigator.GallioProtocolHandler\CLSID">
+              <RegistryValue Type="string" Value="{829B8F35-9874-49DB-880F-142C98EB36A1}" />
+            </RegistryKey>
+            <RegistryKey Id="Gallio.Navigator.Registry.x86.GPHCLSID.GUID" Action="createAndRemoveOnUninstall"
+                         Root="HKCR" Key="CLSID\{829B8F35-9874-49DB-880F-142C98EB36A1}">
+              <RegistryValue Type="string" Value="Gallio.Navigator.GallioProtocolHandler" />
+            </RegistryKey>
+            <RegistryKey Id="Gallio.Navigator.Registry.x86.GPHCLSID.GUID.InprocServer32" Action="createAndRemoveOnUninstall"
+                         Root="HKCR" Key="CLSID\{829B8F35-9874-49DB-880F-142C98EB36A1}\InprocServer32">
+              <RegistryValue Type="string" Value="mscoree.dll" />
+              <RegistryValue Type="string" Name="ThreadingModel" Value="Both" />
+              <RegistryValue Type="string" Name="Class" Value="Gallio.Navigator.GallioProtocolHandler" />
+              <RegistryValue Type="string" Name="Assembly" Value="!(bind.assemblyFullName.Gallio.Navigator.exe)" />
+              <RegistryValue Type="string" Name="CodeBase" Value="[#Gallio.Navigator.exe]" />
+              <RegistryValue Type="string" Name="RuntimeVersion" Value="v2.0.50727" />
+            </RegistryKey>
+            <RegistryKey Id="Gallio.Navigator.Registry.x86.GPHCLSID.GUID.InprocServer32.Version" Action="createAndRemoveOnUninstall"
+                         Root="HKCR" Key="CLSID\{829B8F35-9874-49DB-880F-142C98EB36A1}\InprocServer32\!(bind.assemblyVersion.Gallio.Navigator.exe)">
+              <RegistryValue Type="string" Name="Class" Value="Gallio.Navigator.GallioProtocolHandler" />
+              <RegistryValue Type="string" Name="Assembly" Value="!(bind.assemblyFullName.Gallio.Navigator.exe)" />
+              <RegistryValue Type="string" Name="CodeBase" Value="[#Gallio.Navigator.exe]" />
+              <RegistryValue Type="string" Name="RuntimeVersion" Value="v2.0.50727" />
+            </RegistryKey>
+            <RegistryKey Id="Gallio.Navigator.Registry.x86.GPHCLSID.GUID.ProgId" Action="createAndRemoveOnUninstall"
+                         Root="HKCR" Key="CLSID\{829B8F35-9874-49DB-880F-142C98EB36A1}\ProgId">
+              <RegistryValue Type="string" Value="Gallio.Navigator.GallioProtocolHandler" />
+            </RegistryKey>
+
+            <!-- Register GallioProtocolHandler pluggable protocol handler. -->
+            <RegistryKey Id="Gallio.Navigator.Registry.x86.Protocols.Handler.gallio" Action="createAndRemoveOnUninstall"
+                         Root="HKCR" Key="PROTOCOLS\Handler\gallio">
+              <RegistryValue Type="string" Value="gallio: Asynchronous Pluggable Protocol Handler" />
+              <RegistryValue Type="string" Name="CLSID" Value="{829B8F35-9874-49db-880F-142C98EB36A1}" />
+            </RegistryKey>
+            <RegistryKey Id="Gallio.Navigator.Registry.x86.gallio" Action="createAndRemoveOnUninstall"
+                         Root="HKCR" Key="gallio">
+              <RegistryValue Type="string" Value="gallio: Asynchronous Pluggable Protocol Handler" />
+              <RegistryValue Type="string" Name="URL Protocol" Value="" />
+            </RegistryKey>
+            <RegistryKey Id="Gallio.Navigator.Registry.x86.gallio.DefaultIcon" Action="createAndRemoveOnUninstall"
+                         Root="HKCR" Key="gallio\DefaultIcon">
+              <RegistryValue Type="string" Value="[#Gallio.Navigator.exe]" />
+            </RegistryKey>
+            <RegistryKey Id="Gallio.Navigator.Registry.x86.gallio.shell.open.command" Action="createAndRemoveOnUninstall"
+                         Root="HKCR" Key="gallio\shell\open\command">
+              <RegistryValue Type="string" Value="&quot;[#Gallio.Navigator.exe]&quot; &quot;%1&quot;" />
+            </RegistryKey>
+          </Component>
         </DirectoryRef>
+
+<?if $(var.Platform)=x64?>
+        <DirectoryRef Id="ProgramFiles64Folder">
+          <Component Id="Gallio.Navigator.Registry.x64" Guid="{ABAD53BD-7D84-450d-97D7-CE15DC45BC96}" Win64="yes">
+            <!-- Register GallioNavigator component. -->
+            <RegistryKey Id="Gallio.Navigator.Registry.x64.GallioNavigator" Action="createAndRemoveOnUninstall"
+                         Root="HKCR" Key="Gallio.Navigator.GallioNavigator">
+              <RegistryValue Type="string" Value="Gallio.Navigator.GallioNavigator" />
+            </RegistryKey>
+            <RegistryKey Id="Gallio.Navigator.Registry.x64.GallioNavigator.GNCLSID" Action="createAndRemoveOnUninstall"
+                         Root="HKCR" Key="Gallio.Navigator.GallioNavigator\CLSID">
+              <RegistryValue Type="string" Value="{0DAA4E63-51CB-4DDF-988D-F1CBCE74B3E3}" />
+            </RegistryKey>
+            <RegistryKey Id="Gallio.Navigator.Registry.x64.GNCLSID.GUID" Action="createAndRemoveOnUninstall"
+                         Root="HKCR" Key="CLSID\{0DAA4E63-51CB-4DDF-988D-F1CBCE74B3E3}">
+              <RegistryValue Type="string" Value="Gallio.Navigator.GallioNavigator" />
+            </RegistryKey>
+            <RegistryKey Id="Gallio.Navigator.Registry.x64.GNCLSID.GUID.InprocServer32" Action="createAndRemoveOnUninstall"
+                         Root="HKCR" Key="CLSID\{0DAA4E63-51CB-4DDF-988D-F1CBCE74B3E3}\InprocServer32">
+              <RegistryValue Type="string" Value="mscoree.dll" />
+              <RegistryValue Type="string" Name="ThreadingModel" Value="Both" />
+              <RegistryValue Type="string" Name="Class" Value="Gallio.Navigator.GallioNavigator" />
+              <RegistryValue Type="string" Name="Assembly" Value="!(bind.assemblyFullName.Gallio.Navigator.exe)" />
+              <RegistryValue Type="string" Name="CodeBase" Value="[#Gallio.Navigator.exe]" />
+              <RegistryValue Type="string" Name="RuntimeVersion" Value="v2.0.50727" />
+            </RegistryKey>
+            <RegistryKey Id="Gallio.Navigator.Registry.x64.GNCLSID.GUID.InprocServer32.Version" Action="createAndRemoveOnUninstall"
+                         Root="HKCR" Key="CLSID\{0DAA4E63-51CB-4DDF-988D-F1CBCE74B3E3}\InprocServer32\!(bind.assemblyVersion.Gallio.Navigator.exe)">
+              <RegistryValue Type="string" Name="Class" Value="Gallio.Navigator.GallioNavigator" />
+              <RegistryValue Type="string" Name="Assembly" Value="!(bind.assemblyFullName.Gallio.Navigator.exe)" />
+              <RegistryValue Type="string" Name="CodeBase" Value="[#Gallio.Navigator.exe]" />
+              <RegistryValue Type="string" Name="RuntimeVersion" Value="v2.0.50727" />
+            </RegistryKey>
+            <RegistryKey Id="Gallio.Navigator.Registry.x64.GNCLSID.GUID.ProgId" Action="createAndRemoveOnUninstall"
+                         Root="HKCR" Key="CLSID\{0DAA4E63-51CB-4DDF-988D-F1CBCE74B3E3}\ProgId">
+              <RegistryValue Type="string" Value="Gallio.Navigator.GallioNavigator" />
+            </RegistryKey>
+
+            <!-- Register GallioProtocolHandler component. -->
+            <RegistryKey Id="Gallio.Navigator.Registry.x64.GallioProtocolHandler" Action="createAndRemoveOnUninstall"
+                         Root="HKCR" Key="Gallio.Navigator.GallioProtocolHandler">
+              <RegistryValue Type="string" Value="Gallio.Navigator.GallioProtocolHandler" />
+            </RegistryKey>
+            <RegistryKey Id="Gallio.Navigator.Registry.x64.GallioProtocolHandler.GPHCLSID" Action="createAndRemoveOnUninstall"
+                         Root="HKCR" Key="Gallio.Navigator.GallioProtocolHandler\CLSID">
+              <RegistryValue Type="string" Value="{829B8F35-9874-49DB-880F-142C98EB36A1}" />
+            </RegistryKey>
+            <RegistryKey Id="Gallio.Navigator.Registry.x64.GPHCLSID.GUID" Action="createAndRemoveOnUninstall"
+                         Root="HKCR" Key="CLSID\{829B8F35-9874-49DB-880F-142C98EB36A1}">
+              <RegistryValue Type="string" Value="Gallio.Navigator.GallioProtocolHandler" />
+            </RegistryKey>
+            <RegistryKey Id="Gallio.Navigator.Registry.x64.GPHCLSID.GUID.InprocServer32" Action="createAndRemoveOnUninstall"
+                         Root="HKCR" Key="CLSID\{829B8F35-9874-49DB-880F-142C98EB36A1}\InprocServer32">
+              <RegistryValue Type="string" Value="mscoree.dll" />
+              <RegistryValue Type="string" Name="ThreadingModel" Value="Both" />
+              <RegistryValue Type="string" Name="Class" Value="Gallio.Navigator.GallioProtocolHandler" />
+              <RegistryValue Type="string" Name="Assembly" Value="!(bind.assemblyFullName.Gallio.Navigator.exe)" />
+              <RegistryValue Type="string" Name="CodeBase" Value="[#Gallio.Navigator.exe]" />
+              <RegistryValue Type="string" Name="RuntimeVersion" Value="v2.0.50727" />
+            </RegistryKey>
+            <RegistryKey Id="Gallio.Navigator.Registry.x64.GPHCLSID.GUID.InprocServer32.Version" Action="createAndRemoveOnUninstall"
+                         Root="HKCR" Key="CLSID\{829B8F35-9874-49DB-880F-142C98EB36A1}\InprocServer32\!(bind.assemblyVersion.Gallio.Navigator.exe)">
+              <RegistryValue Type="string" Name="Class" Value="Gallio.Navigator.GallioProtocolHandler" />
+              <RegistryValue Type="string" Name="Assembly" Value="!(bind.assemblyFullName.Gallio.Navigator.exe)" />
+              <RegistryValue Type="string" Name="CodeBase" Value="[#Gallio.Navigator.exe]" />
+              <RegistryValue Type="string" Name="RuntimeVersion" Value="v2.0.50727" />
+            </RegistryKey>
+            <RegistryKey Id="Gallio.Navigator.Registry.x64.GPHCLSID.GUID.ProgId" Action="createAndRemoveOnUninstall"
+                         Root="HKCR" Key="CLSID\{829B8F35-9874-49DB-880F-142C98EB36A1}\ProgId">
+              <RegistryValue Type="string" Value="Gallio.Navigator.GallioProtocolHandler" />
+            </RegistryKey>
+
+            <!-- Register GallioProtocolHandler pluggable protocol handler. -->
+            <RegistryKey Id="Gallio.Navigator.Registry.x64.Protocols.Handler.gallio" Action="createAndRemoveOnUninstall"
+                         Root="HKCR" Key="PROTOCOLS\Handler\gallio">
+              <RegistryValue Type="string" Value="gallio: Asynchronous Pluggable Protocol Handler" />
+              <RegistryValue Type="string" Name="CLSID" Value="{829B8F35-9874-49db-880F-142C98EB36A1}" />
+            </RegistryKey>
+            <RegistryKey Id="Gallio.Navigator.Registry.x64.gallio" Action="createAndRemoveOnUninstall"
+                         Root="HKCR" Key="gallio">
+              <RegistryValue Type="string" Value="gallio: Asynchronous Pluggable Protocol Handler" />
+              <RegistryValue Type="string" Name="URL Protocol" Value="" />
+            </RegistryKey>
+            <RegistryKey Id="Gallio.Navigator.Registry.x64.gallio.DefaultIcon" Action="createAndRemoveOnUninstall"
+                         Root="HKCR" Key="gallio\DefaultIcon">
+              <RegistryValue Type="string" Value="[#Gallio.Navigator.exe]" />
+            </RegistryKey>
+            <RegistryKey Id="Gallio.Navigator.Registry.x64.gallio.shell.open.command" Action="createAndRemoveOnUninstall"
+                         Root="HKCR" Key="gallio\shell\open\command">
+              <RegistryValue Type="string" Value="&quot;[#Gallio.Navigator.exe]&quot; &quot;%1&quot;" />
+            </RegistryKey>
+          </Component>
+        </DirectoryRef>
+<?endif?>
 
         <Feature Id='feat_Navigator' Title='Browser Integration' Level='1' AllowAdvertise="no"
             Description='Provides integration with Internet Explorer and Firefox to enable navigation to source code from Gallio reports.'>
-            <ComponentRef Id="Gallio.Navigator.exe"/>
+          <ComponentRef Id="Gallio.Navigator"/>
+          <ComponentRef Id="Gallio.Navigator.Registry.x86"/>
+<?if $(var.Platform)=x64?>
+          <ComponentRef Id="Gallio.Navigator.Registry.x64"/>
+<?endif?>
         </Feature>
-
-	<!-- AssemblyRegisterComInterop is not in WiX anymore.
-	     The recommended workaround is Tallow but it does not support
-	     ComRegister and ComUnregister operations.  Sure we can duplicate
-	     those registry keys here, but that's error-prone. -->
-        <CustomAction Id="Navigator.Install.SetCommandLine" Value='"[WindowsFolder]Microsoft.NET\Framework\v2.0.50727\regasm.exe" "[#Gallio.Navigator.exe]" /codebase /nologo' Property="Navigator.Install" />
-        <CustomAction Id="Navigator.Install" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="check" Impersonate="no"/>
-	
-        <CustomAction Id="Navigator.Uninstall.SetCommandLine" Value='"[WindowsFolder]Microsoft.NET\Framework\v2.0.50727\regasm.exe" "[#Gallio.Navigator.exe]" /unregister /nologo' Property="Navigator.Uninstall" />
-        <CustomAction Id="Navigator.Uninstall" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
-      
-        <InstallExecuteSequence>
-            <Custom Action="Navigator.Install.SetCommandLine" After="InstallValidate" />
-            <Custom Action="Navigator.Install" After="InstallExecute"><![CDATA[(&feat_Navigator = 3) AND NOT(!feat_Navigator = 3)]]></Custom>
-
-            <Custom Action="Navigator.Uninstall.SetCommandLine" After="InstallValidate" />
-            <Custom Action="Navigator.Uninstall" After="ProcessComponents"><![CDATA[(&feat_Navigator = 2) AND (!feat_Navigator = 3)]]></Custom>
-        </InstallExecuteSequence>
-
-        <UI>
-            <ProgressText Action="Navigator.Install" Template="[1]">Registering Gallio Navigator components ...</ProgressText>
-            <ProgressText Action="Navigator.Uninstall" Template="[1]">Unregistering Gallio Navigator components ...</ProgressText>
-        </UI>
     </Fragment>
 </Wix>

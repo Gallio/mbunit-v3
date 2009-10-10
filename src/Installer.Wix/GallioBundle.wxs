@@ -12,10 +12,14 @@
         Language="1033">
         <Package
             Comments="Gallio Bundle"
+	    Description="Gallio Test Automation Platform"
             Manufacturer="www.gallio.org"
             InstallerVersion="301"
             Languages="1033"
             Compressed="yes"
+	    Platform="$(var.Platform)"
+	    InstallPrivileges="elevated"
+	    InstallScope="perMachine"
             />
 
         <!-- Major upgrade -->
@@ -59,6 +63,11 @@
                     <Directory Id='samplesFolder' Name='samples'/>
                 </Directory>                
             </Directory>
+	    
+<?if $(var.Platform)=x64?>
+            <Directory Id='ProgramFiles64Folder' Name='PFiles64'>
+            </Directory>
+<?endif?>
 
             <!-- Desktop Folder Directory for our Desktop Shortcut -->
             <Directory Id="DesktopFolder" Name="Desktop" />
