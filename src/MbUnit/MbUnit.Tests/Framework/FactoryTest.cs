@@ -20,6 +20,9 @@ using Gallio.Common.Reflection;
 using Gallio.Runner.Reports.Schema;
 using Gallio.Tests;
 using MbUnit.Framework;
+using System.Collections;
+
+#pragma warning disable 0649
 
 namespace MbUnit.Tests.Framework
 {
@@ -28,6 +31,7 @@ namespace MbUnit.Tests.Framework
     [RunSample(typeof(FactoryOnGenericTestClass<>))]
     [RunSample(typeof(SimpleUseCases))]
     [RunSample(typeof(GenericUseCases<>))]
+    [RunSample(typeof(IndirectInstanceUseCases))]
     public class FactoryTest : BaseTestWithSampleRunner
     {
         [Test]
@@ -96,6 +100,12 @@ namespace MbUnit.Tests.Framework
             "ExternalMethod: System.Int32, 123",
             "ExternalMethod: System.String, abc",
         })]
+        //[Row(typeof(IndirectInstanceUseCases), "IndirectFactoryTest", new string[]
+        //{
+        //    "IndirectFactoryField: 123",
+        //    "IndirectFactoryField: 456",
+        //    "IndirectFactoryField: 789",
+        //})]
         public void VerifySampleOutput(Type fixtureType, string sampleName, string[] output)
         {
             IList<TestStepRun> runs = Runner.GetTestCaseRunsWithin(
@@ -306,6 +316,26 @@ namespace MbUnit.Tests.Framework
             {
                 yield return new object[] { typeof(int), 123, "ExternalMethod" };
                 yield return new object[] { typeof(string), "abc", "ExternalMethod" };
+            }
+        }
+
+        [Explicit("Sample")]
+        internal class IndirectInstanceUseCases
+        {
+            public static IEnumerable<int> IndirectStaticMethod()
+            {
+                yield return 123;
+                yield return 456;
+                yield return 789;
+            }
+
+            [Factory(/*typeof(IndirectInstanceUseCases), */"IndirectStaticMethod")]
+            public int IndirectFactoryField;
+
+            [Test]
+            public void IndirectFactoryTest()
+            {
+                TestLog.WriteLine("IndirectFactoryField: " + IndirectFactoryField);
             }
         }
     }
