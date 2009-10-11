@@ -99,7 +99,7 @@ namespace MbUnit.Framework
         protected override void DecorateContainingScope(IPatternScope containingScope, IMethodInfo method)
         {
             MethodInfo factoryMethod = method.Resolve(false);
-            if (factoryMethod == null)
+            if (factoryMethod == null || Reflector.IsUnresolved(factoryMethod))
             {
                 containingScope.TestModelBuilder.AddAnnotation(new Annotation(AnnotationType.Info, method,
                     "This test runner does not fully support static test factory methods "
