@@ -133,7 +133,7 @@ namespace Gallio.Model.Commands
 
         /// <summary>
         /// Returns true if all of the dependencies of this test command have
-        /// been satisfied.
+        /// been satisfied including transitive dependencies.
         /// </summary>
         /// <returns>True if the dependencies of this test command have been satisfied.</returns>
         bool AreDependenciesSatisfied();

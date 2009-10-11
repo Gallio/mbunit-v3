@@ -55,13 +55,23 @@ namespace MbUnit.Tests.Framework
         }
 
         [Test]
-        public void DependentTestsFailedWithoutRunningTheirDependenciesFail()
+        public void DependentTestsSkippedIfTheirDependenciesFail()
         {
             TestStepRun test3Run = Runner.GetPrimaryTestStepRun(CodeReference.CreateFromMember(typeof(DependsOnSample).GetMethod("Test3_DependsOnTest1_Fail")));
 
             Assert.Contains(test3Run.TestLog.ToString(), "Skipped due to an unsatisfied test dependency.");
             Assert.DoesNotContain(test3Run.TestLog.ToString(), "Run");
             Assert.AreEqual(TestOutcome.Skipped, test3Run.Result.Outcome);
+        }
+
+        [Test]
+        public void DependentTestsSkippedIfTheirTransitiveDependenciesFail()
+        {
+            TestStepRun test5Run = Runner.GetPrimaryTestStepRun(CodeReference.CreateFromMember(typeof(DependsOnSample).GetMethod("Test5_DependsOnTest3_Skipped")));
+
+            Assert.Contains(test5Run.TestLog.ToString(), "Skipped due to an unsatisfied test dependency.");
+            Assert.DoesNotContain(test5Run.TestLog.ToString(), "Run");
+            Assert.AreEqual(TestOutcome.Skipped, test5Run.Result.Outcome);
         }
 
         [TestFixture, Explicit("Sample")]
@@ -88,6 +98,12 @@ namespace MbUnit.Tests.Framework
 
             [Test, DependsOn("Test2_Pass")]
             public void Test4_DependsOnTest2_Pass()
+            {
+                TestLog.WriteLine("Run");
+            }
+
+            [Test, DependsOn("Test3_DependsOnTest1_Fail")]
+            public void Test5_DependsOnTest3_Skipped()
             {
                 TestLog.WriteLine("Run");
             }

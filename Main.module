@@ -177,7 +177,7 @@
   <Target Name="BuildDocs_NoSandcastle"
           Condition="'$(NoSandcastle)'=='true'">
     <Copy SourceFiles="@(DocumentedAssembly->'%(RootDir)%(Directory)%(Filename).xml')"
-          DestinationFolder="$(ImageDir)\bin" />
+          DestinationFolder="$(ImageDir)\bin\%(DocumentedAssembly.Folder)" />
   </Target>
 
   <!-- SUPPORT CODE: SOURCES FILE -->
@@ -367,7 +367,7 @@
             ReportDirectory="$(ReportDir)"
             ReportTypes="$(ReportTypes)"
             RunnerType="$(TestRunnerType)"
-	    RunnerProperties="NCoverArguments='//eas .*.Tests%3B.*.TestResources%3BJetBrains.*%3BAga.Controls%3BConfiguration%3BDevExpress.*%3BEnvDTE.*%3BNAnt.*%3BcsUnit.*%3Bnunit.*%3Bxunit.*%3BQuickGraph.*%3BMbUnit.Framework%3BRhino.Mocks%3BTestDriven.Framework%3BWeifenLuo.*%3Blog4net%3BISymWrapper%3BICSharpCode.TextEditor //et Castle.*%3BMono.*%3BCecil.*%3BSharpen.*%3BDb4objects.*'"
+	    RunnerProperties="NCoverArguments='//eas .*.Tests%3B.*.TestResources%3BJetBrains.*%3BAga.Controls%3BConfiguration%3BDevExpress.*%3BEnvDTE.*%3BNAnt.*%3BcsUnit.*%3Bnunit.*%3Bxunit.*%3BQuickGraph.*%3BMbUnit.Framework%3BRhino.Mocks%3BTestDriven.Framework%3BWeifenLuo.*%3Blog4net%3BISymWrapper%3BICSharpCode.TextEditor%3BIronRuby.*%3BIronPython.* //et Castle.*%3BMono.*%3BCecil.*%3BSharpen.*%3BDb4objects.*%3BICSharpCode.*'"
             ShowReports="$(ShowReports)"
 	    Verbosity="Verbose"
 	    IgnoreFailures="true"
@@ -382,7 +382,6 @@
       <Output TaskParameter="ExitCode" PropertyName="ExitCode" />
     </Exec>
 
-    <!--
     <NCoverReporting Condition="$(Coverage) and Exists('Coverage.xml')"
                     CoverageDataPaths="Coverage.xml"
                     OutputPath="$(ReportDir)\CoverageReport.xml"
@@ -397,7 +396,6 @@
 
     <Exec Command="cscript //nologo &quot;$(BinDir)\Run.vbs&quot; &quot;'$(NCoverInstallDir)\NCover.Explorer.exe' Coverage.xml&quot;"
           Condition="$(ShowReports) and $(Coverage) and Exists('Coverage.xml')" />
-    -->
 
     <Error Text="Some tests failed!"
              Condition="'$(ExitCode)'!='0' and ! $(IgnoreFailures)" />
