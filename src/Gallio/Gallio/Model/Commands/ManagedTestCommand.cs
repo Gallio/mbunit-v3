@@ -123,7 +123,8 @@ namespace Gallio.Model.Commands
             {
                 foreach (ITestCommand dependency in dependencies)
                 {
-                    if (dependency.RootStepFailureCount != 0)
+                    if (dependency.RootStepFailureCount != 0
+                        || ! dependency.AreDependenciesSatisfied())
                         return false;
                 }
             }
