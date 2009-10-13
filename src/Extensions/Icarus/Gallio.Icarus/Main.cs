@@ -194,7 +194,7 @@ namespace Gallio.Icarus
         private void Form_Load(object sender, EventArgs e)
         {
             // provide WindowsFormsSynchronizationContext for cross-thread databinding
-            SynchronizationContext.Instance = new SynchronizationContext(System.Threading.SynchronizationContext.Current);
+            SynchronizationContext.Current = System.Threading.SynchronizationContext.Current;
 
             Text = applicationController.Title;
 
@@ -250,7 +250,7 @@ namespace Gallio.Icarus
             // by default in order to draw the user's attention to these elements.
             // I've seen users get lost trying to add/remove files when only presented
             // with the test explorer.  Likewise I've seen them confused when tests
-            // won't run due to an error that could be diagnosted in the annotation window
+            // won't run due to an error that could be diagnosed in the annotation window
             // or in the runtime log.  Auto-hidden panels are less likely to be
             // looked at than regular tabs.
             // -- Jeff.

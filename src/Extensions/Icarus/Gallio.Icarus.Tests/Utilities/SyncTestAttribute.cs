@@ -27,13 +27,12 @@ namespace Gallio.Icarus.Tests.Utilities
         {
             try
             {
-                SynchronizationContext.Instance = new TestSynchronizationContext();
-
+                SynchronizationContext.Current = new TestSynchronizationContext();
                 state.InvokeTestMethod();
             }
             finally
             {
-                SynchronizationContext.Instance = null;
+                SynchronizationContext.Current = null;
             }
         }
     }

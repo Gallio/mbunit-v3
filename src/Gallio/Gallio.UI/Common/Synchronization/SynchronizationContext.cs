@@ -20,40 +20,28 @@ namespace Gallio.UI.Common.Synchronization
     ///<summary>
     /// Default implementation of ISynchronizationContext.
     ///</summary>
-    public class SynchronizationContext : ISynchronizationContext
+    public class SynchronizationContext
     {
-        private readonly System.Threading.SynchronizationContext synchronizationContext;
-
-        ///<summary>
-        /// Constructor.
-        ///</summary>
-        ///<param name="synchronizationContext">The synchonization context to wrap.</param>
-        public SynchronizationContext(System.Threading.SynchronizationContext synchronizationContext)
+        /// <summary>
+        /// Wrapper for Send on the shared sync context.
+        /// </summary>
+        /// <param name="sendOrPostCallback"></param>
+        /// <param name="state"></param>
+        public static void Send(SendOrPostCallback sendOrPostCallback, object state)
         {
-            this.synchronizationContext = synchronizationContext;
-        }
-
-        /// <inheritdoc />
-        public void Post(SendOrPostCallback sendOrPostCallback, object state)
-        {
-            synchronizationContext.Post(sendOrPostCallback, state);
-        }
-
-        /// <inheritdoc />
-        public void Send(SendOrPostCallback sendOrPostCallback, object state)
-        {
-            synchronizationContext.Send(sendOrPostCallback, state);
+            if (Current != null)
+                Current.Send(sendOrPostCallback, state);
         }
 
         ///<summary>
-        /// Returns a shared ISynchronizationContext instance.
+        /// Returns a shared SynchronizationContext instance.
         ///</summary>
         /// <remarks>
         /// Usually used to stash a reference to the win forms synchronization 
         /// context (WindowsFormsSynchronizationContext.Current), used for 
         /// cross-thread data binding.
         /// </remarks>
-        public static ISynchronizationContext Instance
+        public static System.Threading.SynchronizationContext Current
         {
             get; set;
         }

@@ -125,7 +125,7 @@ namespace Gallio.Icarus.Controllers
                 sts.CopyTo(selectedTests, 0);
             });
 
-            if (selectedTests.Length == 0)
+            if (selectedTests.Length == 0 && testController.Model.Root != null)
             {
                 action(testController.Model.Root);
             }
