@@ -24,10 +24,10 @@ namespace Gallio.Icarus.Controllers
 
         protected void OnPropertyChanged(PropertyChangedEventArgs e)
         {
-            if (SynchronizationContext.Instance == null || PropertyChanged == null)
+            if (PropertyChanged == null)
                 return;
 
-            SynchronizationContext.Instance.Send(delegate
+            SynchronizationContext.Send(delegate
             {
                 PropertyChanged(this, e);
             }, this);

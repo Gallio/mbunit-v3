@@ -344,11 +344,8 @@ namespace Gallio.Icarus.Controllers
 
         private void PublishUpdates()
         {
-            if (SynchronizationContext.Instance == null)
-                return;
-
             // need to deal with x-thread databinding
-            SynchronizationContext.Instance.Send(delegate
+            SynchronizationContext.Send(delegate
             {
                 updating = true;
 

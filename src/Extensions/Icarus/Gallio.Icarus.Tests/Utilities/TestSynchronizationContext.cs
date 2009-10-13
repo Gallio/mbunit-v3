@@ -14,18 +14,13 @@
 // limitations under the License.
 
 using System.Threading;
-using Gallio.UI.Common.Synchronization;
+using SynchronizationContext=System.Threading.SynchronizationContext;
 
 namespace Gallio.Icarus.Tests.Utilities
 {
-    internal class TestSynchronizationContext : ISynchronizationContext
+    internal class TestSynchronizationContext : SynchronizationContext
     {
-        public void Post(SendOrPostCallback sendOrPostCallback, object state)
-        {
-            sendOrPostCallback(state);
-        }
-
-        public void Send(SendOrPostCallback sendOrPostCallback, object state)
+        public new void Send(SendOrPostCallback sendOrPostCallback, object state)
         {
             sendOrPostCallback(state);
         }

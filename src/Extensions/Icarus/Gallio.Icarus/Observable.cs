@@ -24,10 +24,10 @@ namespace Gallio.Icarus
             {
                 this.value = value;
              
-                if (SynchronizationContext.Instance == null || PropertyChanged == null)
+                if (PropertyChanged == null)
                     return;
 
-                SynchronizationContext.Instance.Send(delegate
+                SynchronizationContext.Send(delegate
                 {
                     PropertyChanged(this, new PropertyChangedEventArgs("Value"));
                 }, this);
