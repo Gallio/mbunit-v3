@@ -111,6 +111,11 @@ namespace MbUnit.Framework
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
         public static void AreElementsEqual<T>(IEnumerable<T> expectedSequence, IEnumerable<T> actualSequence, EqualityComparison<T> comparer, string messageFormat, params object[] messageArgs)
         {
+            AreElementsEqualImpl(expectedSequence, actualSequence, comparer, "equal", messageFormat, messageArgs);
+        }
+
+        private static void AreElementsEqualImpl<T>(IEnumerable<T> expectedSequence, IEnumerable<T> actualSequence, EqualityComparison<T> comparer, string equalityMode, string messageFormat, params object[] messageArgs)
+        {
             AssertionHelper.Verify(delegate
             {
                 if (expectedSequence == null && actualSequence == null)
@@ -119,7 +124,7 @@ namespace MbUnit.Framework
                 if (expectedSequence == null || actualSequence == null)
                 {
                     return new AssertionFailureBuilder(
-                        "Expected elements to be equal but one sequence was null and not the other.")
+                        String.Format("Expected elements to be {0} but one sequence was null and not the other.", equalityMode))
                         .SetMessage(messageFormat, messageArgs)
                         .AddRawLabeledValue("Expected Sequence", expectedSequence)
                         .AddRawLabeledValue("Actual Sequence", actualSequence)
@@ -137,7 +142,7 @@ namespace MbUnit.Framework
                     if (!actualEnumerator.MoveNext())
                     {
                         return new AssertionFailureBuilder(
-                            "Expected elements to be equal but the expected sequence has more elements than the actual sequence.")
+                            String.Format("Expected elements to be {0} but the expected sequence has more elements than the actual sequence.", equalityMode))
                             .SetMessage(messageFormat, messageArgs)
                             .AddRawLabeledValue("Expected Sequence Count", 1 + index + CountRemainingElements(expectedEnumerator))
                             .AddRawLabeledValue("Actual Sequence Count", index)
@@ -150,7 +155,7 @@ namespace MbUnit.Framework
                     if (!comparer(expectedValue, actualValue))
                     {
                         return new AssertionFailureBuilder(
-                            "Expected elements to be equal but they differ in at least one position.")
+                            String.Format("Expected elements to be {0} but they differ in at least one position.", equalityMode))
                             .SetMessage(messageFormat, messageArgs)
                             .AddRawLabeledValuesWithDiffs("Expected Sequence", expectedSequence, "Actual Sequence", actualSequence)
                             .AddLabeledValue("Element Index", index.ToString())
@@ -164,7 +169,7 @@ namespace MbUnit.Framework
                 if (actualEnumerator.MoveNext())
                 {
                     return new AssertionFailureBuilder(
-                        "Expected elements to be equal but the expected sequence has fewer elements than the actual sequence.")
+                        String.Format("Expected elements to be {0} but the expected sequence has fewer elements than the actual sequence.", equalityMode))
                         .SetMessage(messageFormat, messageArgs)
                         .AddRawLabeledValue("Expected Sequence Count", index)
                         .AddRawLabeledValue("Actual Sequence Count", index + CountRemainingElements(actualEnumerator) + 1)
@@ -175,6 +180,7 @@ namespace MbUnit.Framework
                 return null;
             });
         }
+
         #endregion
 
         #region AreElementsNotEqual
@@ -258,6 +264,11 @@ namespace MbUnit.Framework
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
         public static void AreElementsNotEqual<T>(IEnumerable<T> unexpectedSequence, IEnumerable<T> actualSequence, EqualityComparison<T> comparer, string messageFormat, params object[] messageArgs)
         {
+            AreElementsNotEqualImpl(unexpectedSequence, actualSequence, comparer, "equal", messageFormat, messageArgs);
+        }
+
+        private static void AreElementsNotEqualImpl<T>(IEnumerable<T> unexpectedSequence, IEnumerable<T> actualSequence, EqualityComparison<T> comparer, string equalityMode, string messageFormat, params object[] messageArgs)
+        {
             AssertionHelper.Verify(delegate
             {
                 if (unexpectedSequence == null)
@@ -293,11 +304,11 @@ namespace MbUnit.Framework
                     return null; // different lengths
 
                 return new AssertionFailureBuilder(
-                    "Expected the unexpected and actual sequence to have different elements but all elements were equal.")
-                        .SetMessage(messageFormat, messageArgs)
-                        .AddRawLabeledValue("Unexpected Sequence", unexpectedSequence)
-                        .AddRawLabeledValue("Actual Sequence", actualSequence)
-                        .ToAssertionFailure();
+                    String.Format("Expected the unexpected and actual sequence to have different elements but all elements were {0}.", equalityMode)) 
+                    .SetMessage(messageFormat, messageArgs)
+                    .AddRawLabeledValue("Unexpected Sequence", unexpectedSequence)
+                    .AddRawLabeledValue("Actual Sequence", actualSequence)
+                    .ToAssertionFailure();
             });
         }
         #endregion
@@ -388,6 +399,11 @@ namespace MbUnit.Framework
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
         public static void AreElementsEqualIgnoringOrder<T>(IEnumerable<T> expectedSequence, IEnumerable<T> actualSequence, EqualityComparison<T> comparer, string messageFormat, params object[] messageArgs)
         {
+            AreElementsEqualIgnoringOrderImpl(expectedSequence, actualSequence, comparer, "equal", messageFormat, messageArgs);
+        }
+
+        private static void AreElementsEqualIgnoringOrderImpl<T>(IEnumerable<T> expectedSequence, IEnumerable<T> actualSequence, EqualityComparison<T> comparer, string equalityMode, string messageFormat, params object[] messageArgs)
+        {
             AssertionHelper.Verify(delegate
             {
                 if (expectedSequence == null && actualSequence == null)
@@ -396,7 +412,7 @@ namespace MbUnit.Framework
                 if (expectedSequence == null || actualSequence == null)
                 {
                     return new AssertionFailureBuilder(
-                        "Expected elements to be equal but one sequence was null and not the other.")
+                        String.Format("Expected elements to be {0} but one sequence was null and not the other.", equalityMode))
                         .SetMessage(messageFormat, messageArgs)
                         .AddRawLabeledValue("Expected Sequence", expectedSequence)
                         .AddRawLabeledValue("Actual Sequence", actualSequence)
@@ -433,7 +449,7 @@ namespace MbUnit.Framework
                 }
 
                 return new AssertionFailureBuilder(
-                    "Expected elements to be equal but possibly in a different order.")
+                    String.Format("Expected elements to be {0} but possibly in a different order.", equalityMode))
                     .SetMessage(messageFormat, messageArgs)
                     .AddRawLabeledValue("Equal Elements", equalElements)
                     .AddRawLabeledValue("Excess Elements", excessElements)
@@ -446,6 +462,97 @@ namespace MbUnit.Framework
         {
             while (count-- > 0)
                 list.Add(value);
+        }
+
+        #endregion
+
+        #region AreElementsSame
+        /// <summary>
+        /// Verifies that expected and actual sequences have the same number of elements and
+        /// that the elements are referentially equal and in the same order.
+        /// </summary>
+        /// <typeparam name="T">The type of value.</typeparam>
+        /// <param name="expectedSequence">The expected sequence.</param>
+        /// <param name="actualSequence">The actual sequence.</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
+        public static void AreElementsSame<T>(IEnumerable<T> expectedSequence, IEnumerable<T> actualSequence) where T : class
+        {
+            AreElementsSame(expectedSequence, actualSequence, null, null);
+        }
+
+        /// <summary>
+        /// Verifies that expected and actual sequences have the same number of elements and
+        /// that the elements are referentially equal and in the same order.
+        /// </summary>
+        /// <typeparam name="T">The type of value.</typeparam>
+        /// <param name="expectedSequence">The expected sequence.</param>
+        /// <param name="actualSequence">The actual sequence.</param>
+        /// <param name="messageFormat">The custom assertion message format, or null if none.</param>
+        /// <param name="messageArgs">The custom assertion message arguments, or null if none.</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
+        public static void AreElementsSame<T>(IEnumerable<T> expectedSequence, IEnumerable<T> actualSequence, string messageFormat, params object[] messageArgs) where T : class
+        {
+            AreElementsEqualImpl(expectedSequence, actualSequence, (x, y) => Object.ReferenceEquals(x, y), "referentially equal", messageFormat, messageArgs);
+        }
+
+        #endregion
+
+        #region AreElementsNotSame
+        /// <summary>
+        /// Verifies that unexpected and actual sequences differ in at least one element.
+        /// </summary>
+        /// <typeparam name="T">The type of value.</typeparam>
+        /// <param name="unexpectedSequence">The unexpected sequence.</param>
+        /// <param name="actualSequence">The actual sequence.</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
+        public static void AreElementsNotSame<T>(IEnumerable<T> unexpectedSequence, IEnumerable<T> actualSequence) where T : class
+        {
+            AreElementsNotSame(unexpectedSequence, actualSequence, null, null);
+        }
+
+        /// <summary>
+        /// Verifies that unexpected and actual sequences differ in at least one element.
+        /// </summary>
+        /// <typeparam name="T">The type of value.</typeparam>
+        /// <param name="unexpectedSequence">The unexpected sequence.</param>
+        /// <param name="actualSequence">The actual sequence.</param>
+        /// <param name="messageFormat">The custom assertion message format, or null if none.</param>
+        /// <param name="messageArgs">The custom assertion message arguments, or null if none.</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
+        public static void AreElementsNotSame<T>(IEnumerable<T> unexpectedSequence, IEnumerable<T> actualSequence, string messageFormat, params object[] messageArgs) where T : class
+        {
+            AreElementsNotEqualImpl(unexpectedSequence, actualSequence, (x, y) => Object.ReferenceEquals(x, y), "referentially equal", messageFormat, messageArgs);
+        }
+
+        #endregion
+
+        #region AreElementsSameIgnoringOrder
+        /// <summary>
+        /// Verifies that expected and actual sequences have the same number of elements and
+        /// that the elements are referentially equal but perhaps in a different order.
+        /// </summary>
+        /// <typeparam name="T">The type of value.</typeparam>
+        /// <param name="expectedSequence">The expected sequence.</param>
+        /// <param name="actualSequence">The actual sequence.</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
+        public static void AreElementsSameIgnoringOrder<T>(IEnumerable<T> expectedSequence, IEnumerable<T> actualSequence) where T : class
+        {
+            AreElementsSameIgnoringOrder(expectedSequence, actualSequence, null, null);
+        }
+
+        /// <summary>
+        /// Verifies that expected and actual sequences have the same number of elements and
+        /// that the elements are referentially equal but perhaps in a different order.
+        /// </summary>
+        /// <typeparam name="T">The type of value.</typeparam>
+        /// <param name="expectedSequence">The expected sequence.</param>
+        /// <param name="actualSequence">The actual sequence.</param>
+        /// <param name="messageFormat">The custom assertion message format, or null if none.</param>
+        /// <param name="messageArgs">The custom assertion message arguments, or null if none.</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
+        public static void AreElementsSameIgnoringOrder<T>(IEnumerable<T> expectedSequence, IEnumerable<T> actualSequence, string messageFormat, params object[] messageArgs) where T : class
+        {
+            AreElementsEqualIgnoringOrderImpl(expectedSequence, actualSequence, (x, y) => Object.ReferenceEquals(x, y), "referentially equal", messageFormat, messageArgs);
         }
 
         #endregion

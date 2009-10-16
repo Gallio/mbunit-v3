@@ -160,6 +160,111 @@ namespace MbUnit.Tests.Framework
 
         #endregion
 
+        #region AreElementsSame
+
+        [Test]
+        public void AreElementsSame_with_objects()
+        {
+            var o = new object();
+            Assert.AreElementsSame(new[] { o }, new[] { o });
+        }
+
+        [Test]
+        public void AreElementsSame_with_different_types()
+        {
+            var o1 = new object();
+            var o2 = new object();
+            Assert.AreElementsSame(new[] { o1, o2 }, new List<object> { o1, o2 });
+        }
+
+        [Test]
+        public void AreElementsSame_fails_when_elements_are_in_different_order()
+        {
+            var o1 = new object();
+            var o2 = new object();
+            AssertionFailure[] failures = Capture(()
+                => Assert.AreElementsSame(new[] { o1, o2 }, new List<object> { o2, o1 }));
+            Assert.AreEqual(1, failures.Length);
+            Assert.AreEqual("Expected elements to be referentially equal but they differ in at least one position.", failures[0].Description);
+        }
+
+        [Test]
+        public void AreElementsSame_fails_with_custom_message()
+        {
+            var o1 = new object();
+            var o2 = new object();
+            AssertionFailure[] failures = Capture(() => Assert.AreElementsSame(new[] { o1 }, new[] { o2 }, "{0} message", "custom"));
+            Assert.AreEqual(1, failures.Length);
+            Assert.AreEqual("custom message", failures[0].Message);
+        }
+
+        #endregion
+
+        #region AreElementsNotSame
+        [Test]
+        public void AreElementsNotSame_with_objects()
+        {
+            var o1 = new object();
+            var o2 = new object();
+            Assert.AreElementsNotSame(new[] { o1 }, new[] { o2 });
+        }
+
+        [Test]
+        public void AreElementsNotSame_with_different_types()
+        {
+            var o1 = new object();
+            var o2 = new object();
+            var o3 = new object();
+            Assert.AreElementsNotSame(new[] { o1, o2 }, new List<object> { o1, o3 });
+        }
+
+        [Test]
+        public void AreElementsNotSame_fails_with_custom_message()
+        {
+            var o = new object();
+            AssertionFailure[] failures = Capture(() => Assert.AreElementsNotSame(new[] { o }, new[] { o }, "{0} message", "custom"));
+            Assert.AreEqual(1, failures.Length);
+            Assert.AreEqual("custom message", failures[0].Message);
+        }
+
+        #endregion
+
+        #region AreElementsSameIgnoringOrder
+
+        [Test]
+        public void AreElementsSameIgnoringOrder_with_different_types()
+        {
+            var o1 = new object();
+            var o2 = new object();
+            var o3 = new object();
+            Assert.AreElementsSameIgnoringOrder(new[] { o2, o2, o3, o1 }, new List<object> { o1, o3, o2, o2 });
+        }
+
+        [Test]
+        public void AreElementsSameIgnoringOrder_fails_when_excess_or_missing_elements()
+        {
+            var o1 = new object();
+            var o2 = new object();
+            var o3 = new object();
+            var o4 = new object();
+            AssertionFailure[] failures = Capture(()
+                => Assert.AreElementsSameIgnoringOrder(new[] { o1, o2, o3, o2, o3, o1 }, new List<object> { o4, o2, o1, o1, o4, o1, o4 }));
+            Assert.AreEqual(1, failures.Length);
+            Assert.AreEqual("Expected elements to be referentially equal but possibly in a different order.", failures[0].Description);
+        }
+
+        [Test]
+        public void AreElementsSameIgnoringOrder_fails_with_custom_message()
+        {
+            var o1 = new object();
+            var o2 = new object();
+            AssertionFailure[] failures = Capture(() => Assert.AreElementsSameIgnoringOrder(new[] { o1 }, new[] { o2 }, "{0} message", "custom"));
+            Assert.AreEqual(1, failures.Length);
+            Assert.AreEqual("custom message", failures[0].Message);
+        }
+
+        #endregion
+
         #region Contains (for collections)
 
         [Test]
