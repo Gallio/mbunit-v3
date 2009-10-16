@@ -100,12 +100,12 @@ namespace MbUnit.Tests.Framework
             "ExternalMethod: System.Int32, 123",
             "ExternalMethod: System.String, abc",
         })]
-        //[Row(typeof(IndirectInstanceUseCases), "IndirectFactoryTest", new string[]
-        //{
-        //    "IndirectFactoryField: 123",
-        //    "IndirectFactoryField: 456",
-        //    "IndirectFactoryField: 789",
-        //})]
+        [Row(typeof(IndirectInstanceUseCases), "IndirectFactoryTest", new string[]
+        {
+            "IndirectFactoryField: 123",
+            "IndirectFactoryField: 456",
+            "IndirectFactoryField: 789",
+        })]
         public void VerifySampleOutput(Type fixtureType, string sampleName, string[] output)
         {
             IList<TestStepRun> runs = Runner.GetTestCaseRunsWithin(
