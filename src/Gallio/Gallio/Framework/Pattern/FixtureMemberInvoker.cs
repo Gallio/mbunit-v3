@@ -242,7 +242,8 @@ namespace Gallio.Framework.Pattern
 
         private Type GetFixtureType()
         {
-            return GetCurrentTestInstanceState().FixtureType;
+            return GetCurrentTestInstanceState().FixtureType
+                ?? ReflectionUtils.GetType(scope.CodeElement).Resolve(true); // Nasty hack to solve issue 559 (http://code.google.com/p/mb-unit/issues/detail?id=559)
         }
 
         private object GetFixtureInstance(bool isStatic)
