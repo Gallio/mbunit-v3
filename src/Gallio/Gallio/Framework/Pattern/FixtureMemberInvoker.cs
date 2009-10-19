@@ -141,7 +141,7 @@ namespace Gallio.Framework.Pattern
                     return args =>
                     {
                         object fixtureInstance = GetFixtureInstance(info.IsStatic);
-                        MethodInfo method = (type == null) ? GetFixtureType().GetMethod(memberName, bindingFlags) : info.Resolve(true);
+                        MethodInfo method = (type == null) ? GetMemberInfo<MethodInfo>(t => t.GetMethod(memberName, bindingFlags)) : info.Resolve(true);
 
                         if (method == null)
                             throw new TestFailedException(String.Format("Could not find method '{0}'.", memberName));
@@ -203,7 +203,7 @@ namespace Gallio.Framework.Pattern
                     return args =>
                     {
                         object fixtureInstance = GetFixtureInstance(info.GetMethod.IsStatic);
-                        PropertyInfo property = (type == null) ? GetFixtureType().GetProperty(memberName, bindingFlags) : info.Resolve(true);
+                        PropertyInfo property = (type == null) ? GetMemberInfo<PropertyInfo>(t => t.GetProperty(memberName, bindingFlags)) : info.Resolve(true);
 
                         if (property == null)
                             throw new TestFailedException(String.Format("Could not find property '{0}'.", memberName));
@@ -227,7 +227,7 @@ namespace Gallio.Framework.Pattern
                     return args =>
                     {
                         object fixtureInstance = GetFixtureInstance(info.IsStatic);
-                        FieldInfo field = (type == null) ? GetFixtureType().GetField(memberName, bindingFlags) : info.Resolve(true);
+                        FieldInfo field = (type == null) ? GetMemberInfo<FieldInfo>(t => t.GetField(memberName, bindingFlags)) : info.Resolve(true);
 
                         if (field == null)
                             throw new TestFailedException(String.Format("Could not find field '{0}''.", memberName));
@@ -240,10 +240,30 @@ namespace Gallio.Framework.Pattern
             return null;
         }
 
-        private Type GetFixtureType()
+        private TMemberInfo GetMemberInfo<TMemberInfo>(Func<Type, TMemberInfo> finder) where TMemberInfo : MemberInfo
         {
-            return GetCurrentTestInstanceState().FixtureType
-                ?? ReflectionUtils.GetType(scope.CodeElement).Resolve(true); // Nasty hack to solve issue 559 (http://code.google.com/p/mb-unit/issues/detail?id=559)
+            var fixtureTypeProviders = new Func<Type>[] 
+            {
+                () => GetCurrentTestInstanceState().FixtureType,
+                () => ReflectionUtils.GetType(scope.CodeElement).Resolve(true) // Another way to find the test fixture type (http://code.google.com/p/mb-unit/issues/detail?id=559)
+            };
+
+            foreach (var provider in fixtureTypeProviders)
+            {
+                var fixtureType = provider();
+
+                if (fixtureType != null)
+                {
+                    TMemberInfo info = finder(fixtureType);
+
+                    if (info != null)
+                    {
+                        return info;
+                    }
+                }
+            }
+
+            return null;
         }
 
         private object GetFixtureInstance(bool isStatic)
