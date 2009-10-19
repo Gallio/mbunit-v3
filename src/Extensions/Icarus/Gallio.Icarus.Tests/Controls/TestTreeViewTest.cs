@@ -56,9 +56,9 @@ namespace Gallio.Icarus.Tests.Controls
         public void EditEnabled_Test()
         {
             TestTreeView testTreeView = new TestTreeView();
-            Assert.IsTrue(testTreeView.EditEnabled);
-            testTreeView.EditEnabled = false;
             Assert.IsFalse(testTreeView.EditEnabled);
+            testTreeView.EditEnabled = true;
+            Assert.IsTrue(testTreeView.EditEnabled);
         }
     }
 }

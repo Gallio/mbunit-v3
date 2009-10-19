@@ -65,7 +65,7 @@ namespace Gallio.Icarus
             // 
             this.testProgressStatusBar.BackColor = System.Drawing.Color.White;
             this.testProgressStatusBar.Dock = System.Windows.Forms.DockStyle.Top;
-            this.testProgressStatusBar.ElapsedTime = new System.TimeSpan(0);
+            this.testProgressStatusBar.ElapsedTime = System.TimeSpan.Parse("00:00:00");
             this.testProgressStatusBar.Failed = 0;
             this.testProgressStatusBar.FailedColor = System.Drawing.Color.Red;
             this.testProgressStatusBar.Font = new System.Drawing.Font("Verdana", 8F);
@@ -80,18 +80,21 @@ namespace Gallio.Icarus
             this.testProgressStatusBar.Skipped = 0;
             this.testProgressStatusBar.SkippedColor = System.Drawing.Color.SlateGray;
             this.testProgressStatusBar.TabIndex = 5;
-            this.testProgressStatusBar.Text = "{0} tests - {1} passed - {2} failed - {3} inconclusive - {4} skipped - {5:0.0}s";
+            this.testProgressStatusBar.Text = "{0} tests - {1} passed - {2} failed - {3} inconclusive - {4} skipped - {5}";
             this.testProgressStatusBar.Total = 0;
             // 
             // testResultsList
             // 
             this.testResultsList.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.testResultsList.FullRowSelect = true;
             this.testResultsList.Location = new System.Drawing.Point(0, 58);
             this.testResultsList.Name = "testResultsList";
             this.testResultsList.Size = new System.Drawing.Size(555, 215);
             this.testResultsList.SmallImageList = this.imageList1;
             this.testResultsList.TabIndex = 3;
             this.testResultsList.UseCompatibleStateImageBehavior = false;
+            this.testResultsList.View = System.Windows.Forms.View.Details;
+            this.testResultsList.VirtualMode = true;
             // 
             // imageList1
             // 
@@ -109,8 +112,8 @@ namespace Gallio.Icarus
             this.Controls.Add(this.testResultsList);
             this.Controls.Add(this.resultsFilterPanel);
             this.Name = "TestResults";
-            this.TabText = "Test results";
-            this.Text = "Test results";
+            this.TabText = "Test Results";
+            this.Text = "Test Results";
             this.resultsFilterPanel.ResumeLayout(false);
             this.ResumeLayout(false);
 

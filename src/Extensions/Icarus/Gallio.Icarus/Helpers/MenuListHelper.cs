@@ -38,23 +38,24 @@ namespace Gallio.Icarus.Helpers
         {
             var menuItems = new List<ToolStripMenuItem>();
             
-            foreach (var item in optionsController.RecentProjects.Items)
+            foreach (var recentProject in optionsController.RecentProjects.Items)
             {
                 // copy string for click delegate
-                string name = item;
+                string name = recentProject;
 
                 // don't add any items that don't exist on disk
-                if (!fileSystem.FileExists(item))
+                if (!fileSystem.FileExists(recentProject))
                     continue;
 
-                var menuItem = new ToolStripMenuItem();
-
-                // shorten path for text by inserting ellipsis (...)
-                string text = item;
-                if (text.Length > 60)
-                    text = TruncatePath(item, 60);
-                menuItem.Text = text;
-
+                var menuItem = new ToolStripMenuItem
+                {
+                    AutoToolTip = false,
+                    ToolTipText = recentProject,
+                    // shorten path for text by inserting ellipsis (...) if necessary
+                    Text = recentProject.Length > 60 ? TruncatePath(recentProject, 60) 
+                        : recentProject
+                };
+               
                 menuItem.Click += delegate { action(name); };
                 menuItems.Add(menuItem);
             }
@@ -62,9 +63,9 @@ namespace Gallio.Icarus.Helpers
             return menuItems.ToArray();
         }
 
-        private string TruncatePath(string path, int length)
+        private static string TruncatePath(string path, int length)
         {
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
             NativeMethods.PathCompactPathEx(sb, path, length, 0);
             return sb.ToString();
         }

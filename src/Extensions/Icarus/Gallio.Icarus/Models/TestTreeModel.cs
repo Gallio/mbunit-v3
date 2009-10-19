@@ -34,6 +34,7 @@ namespace Gallio.Icarus.Models
         private readonly TreeModel inner;
         private readonly List<TestStatus> filterStatuses = new List<TestStatus>();
         private readonly TestTreeSorter testTreeSorter;
+        private int? testCount;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -81,10 +82,13 @@ namespace Gallio.Icarus.Models
         {
             get
             {
-                int count = 0;
-                foreach (Node node in inner.Nodes)
-                    count += CountTests(node);
-                return count;
+                if (!testCount.HasValue)
+                {
+                    testCount = 0;
+                    foreach (Node node in inner.Nodes)
+                        testCount += CountTests(node);
+                }
+                return testCount.Value;
             }
         }
 
@@ -99,22 +103,32 @@ namespace Gallio.Icarus.Models
         public TestTreeModel()
         {
             inner = new TreeModel();
-            testTreeSorter = new TestTreeSorter { SortOrder = SortOrder.Ascending };
 
-            inner.NodesChanged += (sender, e) => OnNodesChanged(e);
+            inner.NodesChanged += (sender, e) => 
+            {
+                // invalidate test count cache
+                // (this event is fired when a node checkstate changes)
+                testCount = null;
+                OnNodesChanged(e);
+            };
             inner.NodesInserted += (sender, e) => OnNodesInserted(e);
             inner.NodesRemoved += (sender, e) => OnNodesRemoved(e);
             inner.StructureChanged += (sender, e) => OnStructureChanged(e);
+
+            testTreeSorter = new TestTreeSorter
+            {
+                SortOrder = SortOrder.Ascending
+            };
         }
 
         private static int CountTests(Node node)
         {
             int count = 0;
             
-            if (node is TestTreeNode && ((TestTreeNode)node).IsTest && node.IsChecked)
+            if (((TestTreeNode)node).IsTest && node.IsChecked)
                 count += 1;
 
-            foreach (Node n in node.Nodes)
+            foreach (var n in node.Nodes)
                 count += CountTests(n);
 
             return count;
@@ -150,7 +164,7 @@ namespace Gallio.Icarus.Models
                 foreach (Node node in inner.Root.Nodes)
                     ((TestTreeNode)node).Reset();
 
-                OnNodesChanged(new TreeModelEventArgs(TreePath.Empty, new object[] {}));
+                OnNodesChanged(new TreeModelEventArgs(new TreePath(Root), new object[] {}));
 
                 FilterTree();
             }
@@ -177,7 +191,7 @@ namespace Gallio.Icarus.Models
         public void SetSortOrder(SortOrder sortOrder)
         {
             testTreeSorter.SortOrder = sortOrder;
-            OnStructureChanged(new TreePathEventArgs(TreePath.Empty));
+            OnStructureChanged(new TreePathEventArgs(new TreePath(Root)));
         }
 
         public void UpdateTestStatus(TestData testData, TestStepRun testStepRun)
@@ -221,7 +235,7 @@ namespace Gallio.Icarus.Models
             foreach (Node node in inner.Root.Nodes)
                 Filter(node);
 
-            OnStructureChanged(new TreePathEventArgs(TreePath.Empty));
+            OnStructureChanged(new TreePathEventArgs(new TreePath(Root)));
         }
 
         private bool Filter(Node n)
@@ -282,7 +296,7 @@ namespace Gallio.Icarus.Models
                 filterNode.Parent.Nodes.Remove(filterNode);
             }
 
-            OnStructureChanged(new TreePathEventArgs(TreePath.Empty));
+            OnStructureChanged(new TreePathEventArgs(new TreePath(Root)));
         }
 
         private void OnPropertyChanged(PropertyChangedEventArgs e)
@@ -332,7 +346,7 @@ namespace Gallio.Icarus.Models
                 var root = TestTreeBuilder.BuildTestTree(progressMonitor, testModelData, options);
                 inner.Root.Nodes.Add(root);
 
-                OnStructureChanged(new TreePathEventArgs(TreePath.Empty));
+                OnStructureChanged(new TreePathEventArgs(new TreePath(Root)));
             }
         }
 

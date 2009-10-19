@@ -28,6 +28,7 @@ namespace Gallio.Icarus.Models
     {
         private readonly IFileSystem fileSystem;
         private readonly Node projectRoot = new Node();
+        private readonly ReportsNode reportsNode = new ReportsNode();
         private TestProject testProject = new TestProject();
         private string fileName;
         private ReportMonitor reportMonitor;
@@ -50,7 +51,8 @@ namespace Gallio.Icarus.Models
                 testProject = value;
                 NotifyTestProjectChanged();
 
-                reportMonitor = new ReportMonitor(testProject.ReportDirectory, testProject.ReportNameFormat);
+                reportMonitor = new ReportMonitor(testProject.ReportDirectory, 
+                    testProject.ReportNameFormat);
                 reportMonitor.ReportDirectoryChanged += (sender, e) => NotifyReportsChanged();
             }
         }
@@ -62,7 +64,7 @@ namespace Gallio.Icarus.Models
 
         public void NotifyReportsChanged()
         {
-            OnStructureChanged(new TreePathEventArgs());
+            OnStructureChanged(new TreePathEventArgs(new TreePath(reportsNode)));
         }
 
         public ProjectTreeModel(IFileSystem fileSystem)
@@ -71,7 +73,7 @@ namespace Gallio.Icarus.Models
 
             projectRoot.Nodes.Add(new PropertiesNode());
             projectRoot.Nodes.Add(new FilesNode());
-            projectRoot.Nodes.Add(new ReportsNode());
+            projectRoot.Nodes.Add(reportsNode);
         }
 
         public override IEnumerable GetChildren(TreePath treePath)
