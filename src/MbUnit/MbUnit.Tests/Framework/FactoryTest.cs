@@ -329,7 +329,7 @@ namespace MbUnit.Tests.Framework
                 yield return 789;
             }
 
-            [Factory(/*typeof(IndirectInstanceUseCases), */"IndirectStaticMethod")]
+            [Factory("IndirectStaticMethod")]
             public int IndirectFactoryField;
 
             [Test]
