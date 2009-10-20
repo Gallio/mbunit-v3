@@ -26,14 +26,16 @@ using Gallio.Icarus.Commands;
 using Gallio.Icarus.Controllers;
 using Gallio.Icarus.Controllers.EventArgs;
 using Gallio.Icarus.Controllers.Interfaces;
+using Gallio.Icarus.Models;
+using Gallio.Icarus.ProgressMonitoring;
+using Gallio.Icarus.Utilities;
 using Gallio.Model;
+using Gallio.Runner.Projects;
 using Gallio.Runtime;
 using Gallio.UI.Common.Synchronization;
+using Gallio.UI.ControlPanel;
 using Gallio.UI.ProgressMonitoring;
 using WeifenLuo.WinFormsUI.Docking;
-using Gallio.Icarus.Utilities;
-using Gallio.UI.ControlPanel;
-using Gallio.Runner.Projects;
 
 namespace Gallio.Icarus
 {
@@ -145,6 +147,12 @@ namespace Gallio.Icarus
             });
         }
 
+        private bool RunningOnWin7()
+        {
+            return (Environment.OSVersion.Version.Major > 6) ||
+                (Environment.OSVersion.Version.Major == 6 && Environment.OSVersion.Version.Minor >= 1);
+        }
+
         private void SetupReportMenus()
         {
             // add a menu item for each report type (Report -> View As)
@@ -220,6 +228,9 @@ namespace Gallio.Icarus
             }
 
             RestoreWindowSizeAndLocation();
+
+            if (RunningOnWin7())
+                new Win7TaskBar(Handle, (ITaskbarList4)new CTaskbarList(), testController);
         }
 
         private void RestoreWindowSizeAndLocation()

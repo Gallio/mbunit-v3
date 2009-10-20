@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{6C4AEA1A-CF85-4574-B24A-2C264ED0FEC3}</ProjectGuid>
     <OutputType>WinExe</OutputType>
@@ -203,9 +203,11 @@
       <DependentUpon>OptionsPanel.cs</DependentUpon>
     </Compile>
     <Compile Include="Packages\ProjectsPackage.cs" />
+    <Compile Include="ProgressMonitoring\Win7TaskBar.cs" />
     <Compile Include="Remoting\FileChangedHandler.cs" />
     <Compile Include="Reports\ReportMonitor.cs" />
     <Compile Include="Reports\ReportOptions.cs" />
+    <Compile Include="Utilities\CTaskbarList.cs" />
     <Compile Include="Utilities\Dialogs.cs" />
     <Compile Include="Controls\PluginTreeView.cs">
       <SubType>Component</SubType>
@@ -274,8 +276,10 @@
     <Compile Include="Packages\CodeViewerPackage.cs" />
     <Compile Include="Packages\PluginBrowserPackage.cs" />
     <Compile Include="Remoting\IFileWatcher.cs" />
+    <Compile Include="Utilities\ITaskbarList4.cs" />
     <Compile Include="Utilities\MRUList.cs" />
     <Compile Include="Utilities\NativeMethods.cs" />
+    <Compile Include="Utilities\TBPFLAG.cs" />
     <Compile Include="Views\CodeViewer\CodeViewer.cs">
       <SubType>UserControl</SubType>
     </Compile>
