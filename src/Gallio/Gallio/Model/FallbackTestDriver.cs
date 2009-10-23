@@ -191,14 +191,14 @@ namespace Gallio.Model
 
                 messageSink.Publish(new TestStepLogStreamWriteMessage()
                 {
-                    StepId = rootTestStep.Id,
+                    StepId = testStep.Id,
                     StreamName = MarkupStreamNames.Warnings,
                     Text = FallbackExplanation
                 });
 
                 messageSink.Publish(new TestStepFinishedMessage()
                 {
-                    StepId = rootTestStep.Id,
+                    StepId = testStep.Id,
                     Result = new TestResult(TestOutcome.Ignored)
                 });
 
