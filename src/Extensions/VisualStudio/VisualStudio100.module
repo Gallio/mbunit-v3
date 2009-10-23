@@ -26,13 +26,15 @@
     <Binary Include="Gallio.VisualStudio.Shell\Gallio.VisualStudio.Shell100.addin">
       <Folder>VisualStudio\v10.0</Folder>
     </Binary>
-        
+    
+    <!--
     <Binary Include="Gallio.VisualStudio.Sail\bin\v10.0\Gallio.VisualStudio.Sail100.dll">
       <Folder>VisualStudio\v10.0</Folder>
     </Binary>
     <PluginFile Include="Gallio.VisualStudio.Sail\Gallio.VisualStudio.Sail100.plugin">
       <Folder>VisualStudio\v10.0</Folder>
     </PluginFile>
+    -->
    
     <PluginFile Include="Gallio.VisualStudio.Tip\Gallio.VisualStudio.Tip100.plugin">
       <Folder>VisualStudio\v10.0</Folder>

@@ -71,6 +71,13 @@ namespace Gallio.Framework.Assertions
             this.formatter = formatter;
         }
 
+        internal static AssertionFailure WrapExceptionAsAssertionFailure(Exception exception)
+        {
+            return new AssertionFailureBuilder("An exception occurred.")
+                .AddException(exception)
+                .ToAssertionFailure();
+        }
+
         /// <summary>
         /// Gets the formatted used by the builder.
         /// </summary>

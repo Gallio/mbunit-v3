@@ -161,9 +161,6 @@ namespace Gallio.Runner.Extensions
 
             if (warnings.Length != 0)
             {
-                if (severity < LogSeverity.Warning)
-                    severity = LogSeverity.Warning;
-
                 messageBuilder.AppendLine();
                 messageBuilder.Append(warnings);
                 messageBuilder.AppendLine();
@@ -171,9 +168,6 @@ namespace Gallio.Runner.Extensions
 
             if (failures.Length != 0)
             {
-                if (severity < LogSeverity.Error)
-                    severity = LogSeverity.Error;
-
                 messageBuilder.AppendLine();
                 messageBuilder.Append(failures);
                 messageBuilder.AppendLine();

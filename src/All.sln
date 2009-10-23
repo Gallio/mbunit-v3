@@ -1,12 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{70543B8E-DF83-4DA7-AA29-4B71CF333096}"
-	ProjectSection(SolutionItems) = preProject
-		..\docs\Gallio Ideas.txt = ..\docs\Gallio Ideas.txt
-		..\docs\Mono Issues.txt = ..\docs\Mono Issues.txt
-	EndProjectSection
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Gallio", "Gallio", "{00CE3107-C47F-4D2B-986B-763181832B51}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MbUnit", "MbUnit", "{4D506DA5-13C1-4B1F-9018-4FDCA066993A}"

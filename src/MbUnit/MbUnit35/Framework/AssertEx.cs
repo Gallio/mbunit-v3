@@ -68,8 +68,7 @@ namespace MbUnit.Framework
                 throw new ArgumentNullException("condition");
 
             AssertionFailure failure = AssertionConditionEvaluator.Eval(condition, true, messageFormat, messageArgs);
-            if (failure != null)
-                AssertionContext.CurrentContext.SubmitFailure(failure);
+            AssertionHelper.Fail(failure);
         }
     }
 }

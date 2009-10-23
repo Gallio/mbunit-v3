@@ -363,7 +363,11 @@ namespace MbUnit.Framework
         /// </remarks>
         public static bool IsFailurePending
         {
-            get { return AssertionContext.CurrentContext.GetPendingFailures().Length != 0; }
+            get
+            {
+                AssertionContext context = AssertionContext.CurrentContext;
+                return context != null && context.GetPendingFailures().Length != 0;
+            }
         }
 
         #endregion
