@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using Gallio.Common;
+using Gallio.Common.Collections;
 using Gallio.Common.Messaging;
 using Gallio.Framework.Pattern;
 using Gallio.Loader;
@@ -165,10 +166,10 @@ namespace Gallio.ReSharperRunner.Provider
 
         internal sealed class Shim
         {
-            private static readonly Dictionary<string, string> IncompatibleProviders = new Dictionary<string, string>()
+            private static readonly MultiMap<string, string> IncompatibleProviders = new MultiMap<string, string>()
             {
-                { "nUnit", "NUnitAdapter.TestFramework" },
-                { "MSTest", "MSTestAdapter.TestFramework" }
+                { "nUnit", new[] { "NUnitAdapter248.TestFramework", "NUnitAdapter25.TestFramework" } },
+                { "MSTest", new[] { "MSTestAdapter.TestFramework" } }
             };
 
             private readonly IUnitTestProvider provider;
@@ -329,9 +330,9 @@ namespace Gallio.ReSharperRunner.Provider
                 var excludedTestFrameworkIds = new List<string>();
                 foreach (IUnitTestProvider provider in UnitTestManager.GetInstance(SolutionManager.Instance.CurrentSolution).GetEnabledProviders())
                 {
-                    string frameworkId;
-                    if (IncompatibleProviders.TryGetValue(provider.ID, out frameworkId))
-                        excludedTestFrameworkIds.Add(frameworkId);
+                    IList<string> frameworkIds;
+                    if (IncompatibleProviders.TryGetValue(provider.ID, out frameworkIds))
+                        excludedTestFrameworkIds.AddRange(frameworkIds);
                 }
 
                 var testFrameworkSelector = new TestFrameworkSelector()

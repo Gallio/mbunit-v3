@@ -16,6 +16,7 @@
 using System;
 using System.Threading;
 using Gallio.Common;
+using Gallio.Common.Collections;
 using Gallio.Common.Diagnostics;
 
 namespace Gallio.Framework.Assertions
@@ -61,7 +62,9 @@ namespace Gallio.Framework.Assertions
             if (assertionFunc == null)
                 throw new ArgumentNullException("assertionFunc");
 
-            TestContext.CurrentContext.IncrementAssertCount();
+            TestContext context = TestContext.CurrentContext;
+            if (context != null)
+                context.IncrementAssertCount();
 
             AssertionFailure failure;
             try
@@ -97,7 +100,17 @@ namespace Gallio.Framework.Assertions
         public static void Fail(AssertionFailure failure)
         {
             if (failure != null)
-                AssertionContext.CurrentContext.SubmitFailure(failure);
+            {
+                AssertionContext context = AssertionContext.CurrentContext;
+                if (context != null)
+                {
+                    context.SubmitFailure(failure);
+                }
+                else
+                {
+                    throw new AssertionFailureException(failure, false);
+                }
+            }
         }
 
         /// <summary>
@@ -150,12 +163,42 @@ namespace Gallio.Framework.Assertions
         /// <param name="assertionFailureBehavior">The assertion failure behavior to use while the action runs.</param>
         /// <returns>The array of failures, may be empty if none.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="action"/> is null.</exception>
+        /// <exception cref="InvalidOperationException">Thrown if there is no current assertion context.</exception>
         public static AssertionFailure[] Eval(Action action, AssertionFailureBehavior assertionFailureBehavior)
         {
             if (action == null)
                 throw new ArgumentNullException("action");
 
-            return AssertionContext.CurrentContext.CaptureFailures(action, assertionFailureBehavior, true);
+            AssertionContext context = AssertionContext.CurrentContext;
+            if (context != null)
+            {
+                return context.CaptureFailures(action, assertionFailureBehavior, true);
+            }
+            else
+            {
+                try
+                {
+                    action();
+                }
+                catch (ThreadAbortException)
+                {
+                    throw;
+                }
+                catch (AssertionFailureException ex)
+                {
+                    return new[] { ex.Failure };
+                }
+                catch (TestException)
+                {
+                    throw;
+                }
+                catch (Exception ex)
+                {
+                    return new[] { AssertionFailureBuilder.WrapExceptionAsAssertionFailure(ex) };
+                }
+
+                return EmptyArray<AssertionFailure>.Instance;
+            }
         }
 
         /// <summary>

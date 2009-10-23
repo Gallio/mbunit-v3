@@ -665,5 +665,13 @@ namespace Gallio.Framework
                 LogWriter.Failures.WriteException(ex, "An exception during Finishing event processing.");
             }
         }
+
+        internal static TestContext GetCurrentContextOrThrow()
+        {
+            TestContext context = CurrentContext;
+            if (context == null)
+                throw new InvalidOperationException("There is no current test context.");
+            return context;
+        }
     }
 }

@@ -321,7 +321,27 @@ namespace Gallio.Common.Reflection.Impl
             if (type == null)
                 return false;
 
-            throw new NotImplementedException("IsAssignableFrom not implemented for static types yet.");
+            if (EqualTypesFromPossiblyForeignPolicies(this, type))
+                return true;
+
+            if (type.IsSubclassOf(this))
+                return true;
+
+            if (IsInterface)
+            {
+                foreach (ITypeInfo interfaceType in type.Interfaces)
+                {
+                    if (EqualTypesFromPossiblyForeignPolicies(this, interfaceType))
+                        return true;
+                }
+            }
+
+            if (IsGenericParameter)
+            {
+                throw new NotImplementedException("IsAssignableFrom not implemented for generic parameters yet.");
+            }
+
+            return false;
         }
 
         /// <inheritdoc />
@@ -332,11 +352,16 @@ namespace Gallio.Common.Reflection.Impl
 
             for (ITypeInfo baseType = BaseType; baseType != null; baseType = baseType.BaseType)
             {
-                if (baseType.Equals(type) || baseType.AssemblyQualifiedName == type.AssemblyQualifiedName)
+                if (EqualTypesFromPossiblyForeignPolicies(baseType, type))
                     return true;
             }
 
             return false;
+        }
+
+        private static bool EqualTypesFromPossiblyForeignPolicies(ITypeInfo a, ITypeInfo b)
+        {
+            return a.Equals(b) || a.AssemblyQualifiedName == b.AssemblyQualifiedName;
         }
 
         /// <inheritdoc cref="ITypeInfo.MakeArrayType" />

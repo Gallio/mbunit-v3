@@ -49,9 +49,10 @@ namespace Gallio.Framework
         {
             if (message != null)
             {
-                if (TestContext.CurrentContext != null)
+                TestContext context = TestContext.CurrentContext;
+                if (context != null)
                 {
-                    TestContext.CurrentContext.PublishMessage(new LogEntrySubmittedMessage()
+                    context.PublishMessage(new LogEntrySubmittedMessage()
                     {
                         Severity = LogSeverity.Important,
                         Message = message

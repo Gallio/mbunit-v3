@@ -508,6 +508,101 @@ namespace Gallio.Tests.Common.Reflection
         }
 
         [Test]
+        public void IsSubclassOf_WhenTypeIsNull_ReturnsFalse()
+        {
+            ITypeInfo type = GetType(typeof(ReflectionPolicySample.Class2));
+
+            Assert.IsFalse(type.IsSubclassOf(null));
+        }
+
+        [Test]
+        public void IsSubclassOf_WhenTypeIsSelf_ReturnsFalse()
+        {
+            ITypeInfo type = GetType(typeof(ReflectionPolicySample.Class2));
+
+            Assert.IsFalse(type.IsSubclassOf(type));
+        }
+
+        [Test]
+        public void IsSubclassOf_WhenTypeIsSubclass_ReturnsFalse()
+        {
+            ITypeInfo type = GetType(typeof(ReflectionPolicySample.Class2));
+            ITypeInfo subclass = GetType(typeof(ReflectionPolicySample.Class3));
+
+            Assert.IsFalse(type.IsSubclassOf(subclass));
+        }
+
+        [Test]
+        public void IsSubclassOf_WhenTypeIsSuperclass_ReturnsTrue()
+        {
+            ITypeInfo type = GetType(typeof(ReflectionPolicySample.Class2));
+            ITypeInfo superclass = GetType(typeof(ReflectionPolicySample.Class1));
+
+            Assert.IsTrue(type.IsSubclassOf(superclass));
+        }
+
+        [Test]
+        public void IsSubclassOf_WhenTypeIsObject_ReturnsTrue()
+        {
+            ITypeInfo type = GetType(typeof(ReflectionPolicySample.Class2));
+            ITypeInfo objectType = GetType(typeof(Object));
+
+            Assert.IsTrue(type.IsSubclassOf(objectType));
+        }
+
+        [Test]
+        public void IsAssignableFrom_WhenTypeIsNull_ReturnsFalse()
+        {
+            ITypeInfo type = GetType(typeof(ReflectionPolicySample.Class2));
+
+            Assert.IsFalse(type.IsAssignableFrom(null));
+        }
+
+        [Test]
+        public void IsAssignableFrom_WhenTypeIsSelf_ReturnsTrue()
+        {
+            ITypeInfo type = GetType(typeof(ReflectionPolicySample.Class2));
+
+            Assert.IsTrue(type.IsAssignableFrom(type));
+        }
+
+        [Test]
+        public void IsAssignableFrom_WhenTypeIsSubclass_ReturnsTrue()
+        {
+            ITypeInfo type = GetType(typeof(ReflectionPolicySample.Class2));
+            ITypeInfo subclass = GetType(typeof(ReflectionPolicySample.Class3));
+
+            Assert.IsTrue(type.IsAssignableFrom(subclass));
+        }
+
+        [Test]
+        public void IsAssignableFrom_WhenTypeIsSuperclass_ReturnsFalse()
+        {
+            ITypeInfo type = GetType(typeof(ReflectionPolicySample.Class2));
+            ITypeInfo superclass = GetType(typeof(ReflectionPolicySample.Class1));
+
+            Assert.IsFalse(type.IsAssignableFrom(superclass));
+        }
+
+        [Test]
+        public void IsAssignableFrom_WhenTypeImplementsInterface_ReturnsTrue()
+        {
+            ITypeInfo type = GetType(typeof(ReflectionPolicySample.Interface1));
+            ITypeInfo implementor = GetType(typeof(ReflectionPolicySample.Struct1<int, int>));
+
+            Assert.IsTrue(type.IsAssignableFrom(implementor));
+        }
+
+        [Test]
+        public void IsAssignableFrom_WhenTypeDoesNotImplementInterface_ReturnsFalse()
+        {
+            ITypeInfo type = GetType(typeof(ReflectionPolicySample.Interface1));
+            ITypeInfo nonImplementor = GetType(typeof(ReflectionPolicySample.Class1));
+
+            Assert.IsFalse(type.IsAssignableFrom(nonImplementor));
+        }
+
+        [Test]
         [Row(typeof(ReflectionPolicySample.TortureTest<string>))]
         [Row(typeof(ReflectionPolicySample.TortureTest2<string>))]
         [Row(typeof(ReflectionPolicySampleInGlobalNamespace))]

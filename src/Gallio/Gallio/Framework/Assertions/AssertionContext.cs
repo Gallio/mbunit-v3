@@ -41,13 +41,16 @@ namespace Gallio.Framework.Assertions
         }
 
         /// <summary>
-        /// Gets the current assertion context.
+        /// Gets the current assertion context, or null if there is no current context.
         /// </summary>
         public static AssertionContext CurrentContext
         {
             get
             {
                 TestContext context = TestContext.CurrentContext;
+                if (context == null)
+                    return null;
+
                 lock (context.Data)
                 {
                     AssertionContext assertionContext;
@@ -216,9 +219,7 @@ namespace Gallio.Framework.Assertions
                     if (!captureExceptionAsAssertionFailure)
                         throw;
 
-                    SubmitFailure(new AssertionFailureBuilder("An exception occurred.")
-                        .AddException(ex)
-                        .ToAssertionFailure(), true);
+                    SubmitFailure(AssertionFailureBuilder.WrapExceptionAsAssertionFailure(ex), true);
                 }
 
                 return GetSavedFailuresAsArray();
