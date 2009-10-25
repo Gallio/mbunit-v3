@@ -41,12 +41,13 @@ namespace Gallio.Navigator
     [ComVisible(true)]
     [Guid(ProtocolGuid)]
     [ClassInterface(ClassInterfaceType.None)]
-    public class GallioProtocolHandler : GallioNavigatorClient, IInternetProtocol, IInternetProtocolRoot, IInternetProtocolInfo, IInternetProtocolEx
+    public class GallioProtocolHandler : IInternetProtocol, IInternetProtocolRoot, IInternetProtocolInfo, IInternetProtocolEx
     {
         private const string ProtocolGuid = "829B8F35-9874-49db-880F-142C98EB36A1";
         private const string ProtocolCLSID = "{" + ProtocolGuid + "}";
         private const string ProtocolDescription = "gallio: Asynchronous Pluggable Protocol Handler";
         private const string CLSIDKeyName = "CLSID";
+        private const string ElevationPolicyGuid = "{7C81E219-5FD1-442f-A1E1-786A792EBB0D}";
 
         private IInternetProtocolSink currentProtocolSink;
         private string currentUrl;
@@ -98,6 +99,20 @@ namespace Gallio.Navigator
                 applicationKey.SetValue(null, ProtocolDescription);
                 applicationKey.SetValue("URL Protocol", "");
             }
+
+            // Elevation Policy
+            using (RegistryKey elevationPolicyKey = OpenElevationPolicyKey())
+            {
+                if (elevationPolicyKey != null)
+                {
+                    using (RegistryKey applicationKey = elevationPolicyKey.CreateSubKey(ElevationPolicyGuid))
+                    {
+                        applicationKey.SetValue("AppName", Path.GetFileName(appPath));
+                        applicationKey.SetValue("AppPath", Path.GetDirectoryName(appPath));
+                        applicationKey.SetValue("Policy", 3, RegistryValueKind.DWord);
+                    }
+                }
+            }
         }
 
         [ComUnregisterFunction]
@@ -114,6 +129,11 @@ namespace Gallio.Navigator
         private static RegistryKey OpenProtocolHandlerKey()
         {
             return Registry.ClassesRoot.OpenSubKey(@"PROTOCOLS\Handler", true);
+        }
+
+        private static RegistryKey OpenElevationPolicyKey()
+        {
+            return Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Internet Explorer\Low Rights\ElevationPolicy", true);
         }
 
         private static void DeleteSubKeyTree(RegistryKey key, string subKey)
@@ -309,7 +329,9 @@ namespace Gallio.Navigator
                     else
                     {
                         currentProtocolSink.ReportProgress(BINDSTATUS.BINDSTATUS_SENDINGREQUEST, command.Name);
-                        success = command.Execute(Navigator);
+
+                        var engine = new GallioNavigatorEngine(true);
+                        success = command.Execute(engine);
                     }
                 }
             }

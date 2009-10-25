@@ -27,6 +27,8 @@
                          Root="HKCR" Key="CLSID\{0DAA4E63-51CB-4DDF-988D-F1CBCE74B3E3}">
               <RegistryValue Type="string" Value="Gallio.Navigator.GallioNavigator" />
             </RegistryKey>
+            <RegistryKey Id="Gallio.Navigator.Registry.x86.GNCLSID.GUID.ImplCats.DotNetCatId" Action="createAndRemoveOnUninstall"
+                         Root="HKCR" Key="CLSID\{0DAA4E63-51CB-4DDF-988D-F1CBCE74B3E3}\Implemented Categories\{62C8FE65-4EBB-45e7-B440-6E39B2CDBF29}" />
             <RegistryKey Id="Gallio.Navigator.Registry.x86.GNCLSID.GUID.InprocServer32" Action="createAndRemoveOnUninstall"
                          Root="HKCR" Key="CLSID\{0DAA4E63-51CB-4DDF-988D-F1CBCE74B3E3}\InprocServer32">
               <RegistryValue Type="string" Value="mscoree.dll" />
@@ -61,6 +63,8 @@
                          Root="HKCR" Key="CLSID\{829B8F35-9874-49DB-880F-142C98EB36A1}">
               <RegistryValue Type="string" Value="Gallio.Navigator.GallioProtocolHandler" />
             </RegistryKey>
+            <RegistryKey Id="Gallio.Navigator.Registry.x86.GPHCLSID.GUID.ImplCats.DotNetCatId" Action="createAndRemoveOnUninstall"
+                         Root="HKCR" Key="CLSID\{829B8F35-9874-49DB-880F-142C98EB36A1}\Implemented Categories\{62C8FE65-4EBB-45e7-B440-6E39B2CDBF29}" />
             <RegistryKey Id="Gallio.Navigator.Registry.x86.GPHCLSID.GUID.InprocServer32" Action="createAndRemoveOnUninstall"
                          Root="HKCR" Key="CLSID\{829B8F35-9874-49DB-880F-142C98EB36A1}\InprocServer32">
               <RegistryValue Type="string" Value="mscoree.dll" />
@@ -101,6 +105,14 @@
                          Root="HKCR" Key="gallio\shell\open\command">
               <RegistryValue Type="string" Value="&quot;[#Gallio.Navigator.exe]&quot; &quot;%1&quot;" />
             </RegistryKey>
+            
+            <!-- Register IE Elevation Policy to enable us to launch the Gallio.Navigator.exe from Protected Mode. -->
+            <RegistryKey Id="Gallio.Navigator.Registry.x86.ElevationPolicy.GUID" Action="createAndRemoveOnUninstall"
+                         Root="HKLM" Key="SOFTWARE\Microsoft\Internet Explorer\Low Rights\ElevationPolicy\{7C81E219-5FD1-442f-A1E1-786A792EBB0D}">
+              <RegistryValue Type="string" Name="AppName" Value="Gallio.Navigator.exe" />
+              <RegistryValue Type="string" Name="AppPath" Value="[binFolder]" />
+              <RegistryValue Type="integer" Name="Policy" Value="3" />
+            </RegistryKey>
           </Component>
         </DirectoryRef>
 
@@ -120,6 +132,8 @@
                          Root="HKCR" Key="CLSID\{0DAA4E63-51CB-4DDF-988D-F1CBCE74B3E3}">
               <RegistryValue Type="string" Value="Gallio.Navigator.GallioNavigator" />
             </RegistryKey>
+            <RegistryKey Id="Gallio.Navigator.Registry.x64.GNCLSID.GUID.ImplCats.DotNetCatId" Action="createAndRemoveOnUninstall"
+                         Root="HKCR" Key="CLSID\{0DAA4E63-51CB-4DDF-988D-F1CBCE74B3E3}\Implemented Categories\{62C8FE65-4EBB-45e7-B440-6E39B2CDBF29}" />
             <RegistryKey Id="Gallio.Navigator.Registry.x64.GNCLSID.GUID.InprocServer32" Action="createAndRemoveOnUninstall"
                          Root="HKCR" Key="CLSID\{0DAA4E63-51CB-4DDF-988D-F1CBCE74B3E3}\InprocServer32">
               <RegistryValue Type="string" Value="mscoree.dll" />
@@ -154,6 +168,8 @@
                          Root="HKCR" Key="CLSID\{829B8F35-9874-49DB-880F-142C98EB36A1}">
               <RegistryValue Type="string" Value="Gallio.Navigator.GallioProtocolHandler" />
             </RegistryKey>
+            <RegistryKey Id="Gallio.Navigator.Registry.x64.GPHCLSID.GUID.ImplCats.DotNetCatId" Action="createAndRemoveOnUninstall"
+                         Root="HKCR" Key="CLSID\{829B8F35-9874-49DB-880F-142C98EB36A1}\Implemented Categories\{62C8FE65-4EBB-45e7-B440-6E39B2CDBF29}" />
             <RegistryKey Id="Gallio.Navigator.Registry.x64.GPHCLSID.GUID.InprocServer32" Action="createAndRemoveOnUninstall"
                          Root="HKCR" Key="CLSID\{829B8F35-9874-49DB-880F-142C98EB36A1}\InprocServer32">
               <RegistryValue Type="string" Value="mscoree.dll" />
@@ -193,6 +209,14 @@
             <RegistryKey Id="Gallio.Navigator.Registry.x64.gallio.shell.open.command" Action="createAndRemoveOnUninstall"
                          Root="HKCR" Key="gallio\shell\open\command">
               <RegistryValue Type="string" Value="&quot;[#Gallio.Navigator.exe]&quot; &quot;%1&quot;" />
+            </RegistryKey>
+            
+            <!-- Register IE Elevation Policy to enable us to launch the Gallio.Navigator.exe from Protected Mode. -->
+            <RegistryKey Id="Gallio.Navigator.Registry.x64.ElevationPolicy.GUID" Action="createAndRemoveOnUninstall"
+                         Root="HKLM" Key="SOFTWARE\Microsoft\Internet Explorer\Low Rights\ElevationPolicy\{7C81E219-5FD1-442f-A1E1-786A792EBB0D}">
+              <RegistryValue Type="string" Name="AppName" Value="Gallio.Navigator.exe" />
+              <RegistryValue Type="string" Name="AppPath" Value="[binFolder]" />
+              <RegistryValue Type="integer" Name="Policy" Value="3" />
             </RegistryKey>
           </Component>
         </DirectoryRef>

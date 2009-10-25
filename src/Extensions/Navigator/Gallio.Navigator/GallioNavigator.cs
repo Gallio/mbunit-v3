@@ -30,7 +30,7 @@ namespace Gallio.Navigator
     [ComVisible(true)]
     [Guid("0DAA4E63-51CB-4ddf-988D-F1CBCE74B3E3")]
     [ClassInterface(ClassInterfaceType.None)]
-    public class GallioNavigator : GallioNavigatorClient, IGallioNavigator, IObjectSafety
+    public class GallioNavigator : IGallioNavigator, IObjectSafety
     {
         private bool safeForScripting = true;
         private bool safeForInitialization = true;
@@ -40,7 +40,8 @@ namespace Gallio.Navigator
         {
             ThrowIfNotSafeForScripting();
 
-            return Navigator.NavigateTo(path, lineNumber, columnNumber);
+            var engine = new GallioNavigatorEngine(true);
+            return engine.NavigateTo(path, lineNumber, columnNumber);
         }
 
         private void ThrowIfNotSafeForScripting()

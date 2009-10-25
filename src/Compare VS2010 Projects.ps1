@@ -36,6 +36,8 @@ function Recurse([string] $path)
 					$dir = $file.Directory.FullName
 					$vs2008proj = $file.FullName
 					$vs2010proj = [System.IO.Path]::Combine($dir, [System.IO.Path]::GetFileNameWithoutExtension($vs2008proj) + ".vs2010.csproj")
+					$vs2010proj = $vs2010proj.Replace(".vs2005.vs2010", ".vs2010")
+					$vs2010proj = $vs2010proj.Replace(".vs2008.vs2010", ".vs2010")
 					
 					Check $vs2008proj $vs2010proj
 				}

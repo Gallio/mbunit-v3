@@ -34,6 +34,9 @@
     <ToolsDir>$(RootDir)\tools</ToolsDir>
     <LibsDir>$(RootDir)\libs</LibsDir>
     <SourceDir>$(RootDir)\src</SourceDir>
+
+    <ProjectVariant></ProjectVariant>
+    <ProjectVariantExplicit>.vs2008</ProjectVariantExplicit>
   </PropertyGroup>
 
   <PropertyGroup>

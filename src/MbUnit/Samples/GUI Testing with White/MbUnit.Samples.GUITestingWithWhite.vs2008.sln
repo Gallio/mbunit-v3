@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MbUnit.Samples.GUITestingWithWhite", "MbUnit.Samples.GUITestingWithWhite\MbUnit.Samples.GUITestingWithWhite.csproj", "{F452B0B8-34B4-4C81-89A2-5EAA494DAFA2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MbUnit.Samples.GUITestingWithWhite", "MbUnit.Samples.GUITestingWithWhite\MbUnit.Samples.GUITestingWithWhite.vs2008.csproj", "{F452B0B8-34B4-4C81-89A2-5EAA494DAFA2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

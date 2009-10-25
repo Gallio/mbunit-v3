@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 9.00
 # Visual Studio 2005
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MbUnit.Samples", "MbUnit.Samples\MbUnit.Samples.csproj", "{12850856-0A27-4E50-9116-5A3B19C7D779}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MbUnit.Samples", "MbUnit.Samples\MbUnit.Samples.vs2005.csproj", "{12850856-0A27-4E50-9116-5A3B19C7D779}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

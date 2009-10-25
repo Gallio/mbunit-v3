@@ -30,6 +30,7 @@ namespace Gallio.Common.Platform
     public static class ProcessSupport
     {
         private static Memoizer<ProcessType> processType = new Memoizer<ProcessType>();
+        private static Memoizer<ProcessIntegrityLevel> processIntegrityLevel = new Memoizer<ProcessIntegrityLevel>();
 
         /// <summary>
         /// Returns true if the current process is running in 32bit mode.
@@ -53,6 +54,14 @@ namespace Gallio.Common.Platform
         public static ProcessType ProcessType
         {
             get { return processType.Memoize(DetectProcessType); }
+        }
+
+        /// <summary>
+        /// Gets the integrity level of the current process.
+        /// </summary>
+        public static ProcessIntegrityLevel ProcessIntegrityLevel
+        {
+            get { return processIntegrityLevel.Memoize(DetectProcessIntegrityLevel); }
         }
 
         /// <summary>
@@ -94,11 +103,7 @@ namespace Gallio.Common.Platform
         {
             // We guess that a process is a server based on whether the user of the process
             // has been granted RunAsService.  This might not be completely accurate.
-            IntPtr currentProcess = Native.GetCurrentProcess();
-            IntPtr tokenHandle;
-            if (!Native.OpenProcessToken(new HandleRef(null, currentProcess), Native.TOKEN_QUERY, out tokenHandle))
-                throw new Win32Exception();
-
+            IntPtr tokenHandle = GetProcessToken();
             WindowsIdentity processIdentity = new WindowsIdentity(tokenHandle);
             foreach (IdentityReference group in processIdentity.Groups)
             {
@@ -111,11 +116,84 @@ namespace Gallio.Common.Platform
             return false;
         }
 
+        [SecurityPermission(SecurityAction.Demand, UnmanagedCode = true)]
+        private static ProcessIntegrityLevel DetectProcessIntegrityLevel()
+        {
+            IntPtr tokenHandle = GetProcessToken();
+
+            int labelSize;
+            if (Native.GetTokenInformation(tokenHandle, Native.TokenIntegrityLevel, IntPtr.Zero, 0, out labelSize)
+                || Marshal.GetLastWin32Error() != Native.ERROR_INSUFFICIENT_BUFFER)
+                return ProcessIntegrityLevel.Unknown;
+
+            IntPtr labelPtr = IntPtr.Zero;
+            try
+            {
+                labelPtr = Marshal.AllocHGlobal(labelSize);
+
+                if (!Native.GetTokenInformation(tokenHandle, Native.TokenIntegrityLevel, labelPtr, labelSize, out labelSize))
+                    return ProcessIntegrityLevel.Unknown;
+
+                var label = (TOKEN_MANDATORY_LABEL) Marshal.PtrToStructure(labelPtr, typeof(TOKEN_MANDATORY_LABEL));
+
+                IntPtr sidSubAuthorityCountPtr = Native.GetSidSubAuthorityCount(label.Label.Sid);
+                int sidSubAuthorityCount = Marshal.ReadInt32(sidSubAuthorityCountPtr);
+
+                IntPtr sidSubAuthorityPtr = Native.GetSidSubAuthority(label.Label.Sid, sidSubAuthorityCount - 1);
+                int sidSubAuthority = Marshal.ReadInt32(sidSubAuthorityPtr);
+
+                if (sidSubAuthority < Native.SECURITY_MANDATORY_UNTRUSTED_RID)
+                    return ProcessIntegrityLevel.Unknown;
+
+                if (sidSubAuthority < Native.SECURITY_MANDATORY_LOW_RID)
+                    return ProcessIntegrityLevel.Untrusted;
+
+                if (sidSubAuthority < Native.SECURITY_MANDATORY_MEDIUM_RID)
+                    return ProcessIntegrityLevel.Low;
+
+                if (sidSubAuthority < Native.SECURITY_MANDATORY_HIGH_RID)
+                    return ProcessIntegrityLevel.Medium;
+
+                if (sidSubAuthority < Native.SECURITY_MANDATORY_SYSTEM_RID)
+                    return ProcessIntegrityLevel.High;
+
+                if (sidSubAuthority < Native.SECURITY_MANDATORY_PROTECTED_PROCESS_RID)
+                    return ProcessIntegrityLevel.System;
+
+                return ProcessIntegrityLevel.ProtectedProcess;
+            }
+            finally
+            {
+                Marshal.FreeHGlobal(labelPtr);
+            }
+        }
+
+        private static IntPtr GetProcessToken()
+        {
+            IntPtr currentProcess = Native.GetCurrentProcess();
+            IntPtr tokenHandle;
+            if (!Native.OpenProcessToken(new HandleRef(null, currentProcess), Native.TOKEN_QUERY, out tokenHandle))
+                throw new Win32Exception();
+            return tokenHandle;
+        }
+
         private static class Native
         {
+            public const uint ERROR_INSUFFICIENT_BUFFER = 122;
+
             public const int TOKEN_QUERY = 0x00000008;
+
             public const string SECURITY_SERVICE_RID = "S-1-5-6";
             public const string SECURITY_LOCAL_SYSTEM_RID = "S-1-5-18";
+
+            public const int SECURITY_MANDATORY_UNTRUSTED_RID = 0x00000000;
+            public const int SECURITY_MANDATORY_LOW_RID = 0x00001000;
+            public const int SECURITY_MANDATORY_MEDIUM_RID = 0x00002000;
+            public const int SECURITY_MANDATORY_HIGH_RID = 0x00003000;
+            public const int SECURITY_MANDATORY_SYSTEM_RID = 0x00004000;
+            public const int SECURITY_MANDATORY_PROTECTED_PROCESS_RID = 0x00005000;
+
+            public const int TokenIntegrityLevel = 25;
 
             [DllImport("kernel32.dll", CharSet = CharSet.Ansi, SetLastError = true)]
             public static extern IntPtr GetCurrentProcess();
@@ -123,8 +201,30 @@ namespace Gallio.Common.Platform
             [DllImport("advapi32.dll", CharSet = CharSet.Auto, SetLastError = true)]
             public static extern bool OpenProcessToken(HandleRef ProcessHandle, int DesiredAccess, out IntPtr TokenHandle);
 
+            [DllImport("advapi32.dll", SetLastError = true)]
+            public static extern bool GetTokenInformation(IntPtr TokenHandle, int TokenInformationClass, IntPtr TokenInformation, int TokenInformationLength, out int ReturnLength);
+
             [DllImport("kernel32.dll")]
             public static extern IntPtr GetConsoleWindow();
+
+            [DllImport("advapi32.dll", SetLastError = true)]
+            public static extern IntPtr GetSidSubAuthority(IntPtr pSid, int nSubAuthority);
+
+            [DllImport("advapi32.dll", SetLastError = true)]
+            public static extern IntPtr GetSidSubAuthorityCount(IntPtr pSid);
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        private struct TOKEN_MANDATORY_LABEL
+        {
+            public SID_AND_ATTRIBUTES Label;
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        private struct SID_AND_ATTRIBUTES
+        {
+            public IntPtr Sid;
+            public int Attributes;
         }
     }
 }
