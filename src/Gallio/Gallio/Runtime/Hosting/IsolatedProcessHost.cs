@@ -187,17 +187,28 @@ namespace Gallio.Runtime.Hosting
 
             StringBuilder hostArguments = new StringBuilder();
             hostArguments.Append(hostConnectionArguments);
+
             if (HostSetup.DebuggerSetup == null)
                 hostArguments.Append(@" /timeout:").Append((int)WatchdogTimeout.TotalSeconds);
+
             hostArguments.Append(@" /owner-process:").Append(Process.GetCurrentProcess().Id);
+
             if (HostSetup.ApplicationBaseDirectory != null)
                 hostArguments.Append(@" /application-base-directory:""").Append(
                     FileUtils.StripTrailingBackslash(HostSetup.ApplicationBaseDirectory)).Append('"');
+            
+            foreach (string hintDirectory in HostSetup.HintDirectories)
+                hostArguments.Append(@" /hint-directory:""").Append(
+                    FileUtils.StripTrailingBackslash(hintDirectory)).Append('"');
+
             hostArguments.Append(@" /configuration-file:""").Append(temporaryConfigurationFilePath).Append('"');
+
             if (HostSetup.ShadowCopy)
                 hostArguments.Append(@" /shadow-copy");
+
             if (HostSetup.DebuggerSetup != null)
                 hostArguments.Append(@" /debug");
+
             hostArguments.Append(" /severity-prefix");
 
             if (useElevation)

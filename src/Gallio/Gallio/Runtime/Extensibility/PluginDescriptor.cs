@@ -129,7 +129,7 @@ namespace Gallio.Runtime.Extensibility
             {
                 var firstDisabledPluginDependency = FirstDisabledPluginDependency;
                 if (firstDisabledPluginDependency != null)
-                    return string.Format("The plugin depends on another disabled plugin.  Reason: {0}", firstDisabledPluginDependency.DisabledReason);
+                    return string.Format("The plugin depends on another disabled plugin: '{0}'.", firstDisabledPluginDependency.PluginId);
 
                 if (disabledReason == null)
                     throw new InvalidOperationException("The plugin has not been disabled.");

@@ -15,8 +15,10 @@
 
 using System;
 using System.Diagnostics;
+using Gallio.Common.Collections;
 using Gallio.Common.IO;
 using Gallio.Runtime.Debugging;
+using Gallio.Runtime.Loader;
 using Gallio.Runtime.Logging;
 
 namespace Gallio.Runtime.Hosting
@@ -27,8 +29,9 @@ namespace Gallio.Runtime.Hosting
     /// </summary>
     public class LocalHost : BaseHost
     {
-        private readonly CurrentDirectorySwitcher currentDirectorySwitcher;
         private readonly IDebuggerManager debuggerManager;
+        private CurrentDirectorySwitcher currentDirectorySwitcher;
+        private DefaultAssemblyLoader assemblyLoader;
 
         /// <summary>
         /// Creates a local host.
@@ -48,6 +51,12 @@ namespace Gallio.Runtime.Hosting
 
             if (! string.IsNullOrEmpty(hostSetup.WorkingDirectory))
                 currentDirectorySwitcher = new CurrentDirectorySwitcher(hostSetup.WorkingDirectory);
+
+            if (hostSetup.HintDirectories.Count != 0)
+            {
+                assemblyLoader = new DefaultAssemblyLoader();
+                GenericCollectionUtils.ForEach(hostSetup.HintDirectories, assemblyLoader.AddHintDirectory);
+            }
         }
 
         /// <inheritdoc />
@@ -76,8 +85,17 @@ namespace Gallio.Runtime.Hosting
         /// <inheritdoc />
         protected override void Dispose(bool disposing)
         {
+            if (assemblyLoader != null)
+            {
+                assemblyLoader.Dispose();
+                assemblyLoader = null;
+            }
+
             if (currentDirectorySwitcher != null)
+            {
                 currentDirectorySwitcher.Dispose();
+                currentDirectorySwitcher = null;
+            }
 
             base.Dispose(disposing);
         }

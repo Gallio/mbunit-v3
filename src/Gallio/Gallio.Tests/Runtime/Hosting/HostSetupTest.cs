@@ -104,8 +104,9 @@ namespace Gallio.Tests.Runtime.Hosting
                 DebuggerSetup = new DebuggerSetup(),
                 RuntimeVersion = "2.0.50727",
                 Elevated = true,
-                WorkingDirectory = @"C:\WorkingDir"
+                WorkingDirectory = @"C:\WorkingDir",
             };
+            setup.AddHintDirectory("Abc");
             setup.AddProperty("abc", "def");
 
             HostSetup copy = setup.Copy();
@@ -119,6 +120,7 @@ namespace Gallio.Tests.Runtime.Hosting
             Assert.IsNotNull(copy.DebuggerSetup);
             Assert.AreEqual(setup.RuntimeVersion, copy.RuntimeVersion);
             Assert.AreEqual(setup.WorkingDirectory, copy.WorkingDirectory);
+            Assert.AreEqual(setup.HintDirectories, copy.HintDirectories);
             Assert.AreEqual(setup.Properties, copy.Properties);
         }
     }

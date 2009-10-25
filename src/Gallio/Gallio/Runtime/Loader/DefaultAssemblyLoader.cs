@@ -125,8 +125,8 @@ namespace Gallio.Runtime.Loader
             catch
             {
                 // Sometimes the name provided is not a valid assembly name (though it should be).
-                // For example, it can happen that client code will call Assembly.Load an provide
-                // a path.  This usage is incorrect but we tolerate it by returning null.
+                // For example, it can happen that client code will call Assembly.Load and provide
+                // a file path.  This usage is incorrect but we tolerate it by returning null.
                 return null;
             }
 

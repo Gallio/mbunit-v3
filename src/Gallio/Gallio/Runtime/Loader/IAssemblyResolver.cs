@@ -30,7 +30,7 @@ namespace Gallio.Runtime.Loader
         /// Resolves the assembly with the specified name.
         /// </summary>
         /// <param name="assemblyName">The full name of the assembly as was provided
-        /// to <see cref="Assembly.Load(string)" /></param>
+        /// to <see cref="Assembly.Load(string)" />.</param>
         /// <param name="reflectionOnly">True if the assembly is to be resolved in the
         /// reflection-only context.</param>
         /// <returns>The assembly, or null if it could not be resolved.</returns>

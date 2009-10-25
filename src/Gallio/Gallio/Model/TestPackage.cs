@@ -513,6 +513,8 @@ namespace Gallio.Model
                 RuntimeVersion = RuntimeVersion
             };
 
+            GenericCollectionUtils.ForEach(Properties, x => hostSetup.AddProperty(x.Key, x.Value));
+            GenericCollectionUtils.ForEach(HintDirectories, x => hostSetup.AddHintDirectory(x.FullName));
             return hostSetup;
         }
 

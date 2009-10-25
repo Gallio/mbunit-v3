@@ -125,13 +125,22 @@ namespace Gallio.Host
 
             if (Arguments.ApplicationBaseDirectory != null && !Directory.Exists(Arguments.ApplicationBaseDirectory))
             {
-                ShowErrorMessage("The specified application base directory does not exist.");
+                ShowErrorMessage(string.Format("The specified application base directory '{0}' does not exist.", Arguments.ApplicationBaseDirectory));
                 return false;
+            }
+
+            foreach (string hintDirectory in Arguments.HintDirectories)
+            {
+                if (!Directory.Exists(hintDirectory))
+                {
+                    ShowErrorMessage(string.Format("The specified hint directory '{0}' does not exist.", hintDirectory));
+                    return false;
+                }
             }
 
             if (Arguments.ConfigurationFile != null && !File.Exists(Arguments.ConfigurationFile))
             {
-                ShowErrorMessage("The specified configuration file does not exist.");
+                ShowErrorMessage(string.Format("The specified configuration file '{0}' does not exist.", Arguments.ConfigurationFile));
                 return false;
             }
 
@@ -182,6 +191,9 @@ namespace Gallio.Host
                 using (HostEndpoint endpoint = (HostEndpoint)appDomain.CreateInstanceFromAndUnwrap(
                     AssemblyUtils.GetAssemblyLocalPath(endpointType.Assembly), endpointType.FullName))
                 {
+                    foreach (string hintDirectory in Arguments.HintDirectories)
+                        endpoint.AddHintDirectory(hintDirectory);
+
                     if (Arguments.OwnerProcessId >= 0)
                     {
                         if (!endpoint.SetOwnerProcess(Arguments.OwnerProcessId))
