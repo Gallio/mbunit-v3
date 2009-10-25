@@ -32,19 +32,19 @@ HRESULT DAPI ResGetStringLangId(
 HRESULT DAPI ResReadString(
     __in HINSTANCE hinst,
     __in UINT uID,
-    __out LPWSTR* ppwzString
+    __deref_out_z LPWSTR* ppwzString
     );
 
 HRESULT DAPI ResReadStringAnsi(
     __in HINSTANCE hinst,
     __in UINT uID,
-    __inout LPSTR* ppszString
+    __deref_out_z LPSTR* ppszString
     );
 
 HRESULT DAPI ResReadData(
     __in_opt HINSTANCE hinst,
     __in LPCSTR szDataName,
-    __out PVOID *ppv,
+    __deref_out_bcount(*pcb) PVOID *ppv,
     __out DWORD *pcb
     );
 

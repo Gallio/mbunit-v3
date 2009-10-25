@@ -483,6 +483,7 @@
         <xs:annotation>
             <xs:appinfo>
                 <xse:parent namespace="http://schemas.microsoft.com/wix/2006/wi" ref="File" />
+                <xse:deprecated ref="PerformanceCounter" />
             </xs:appinfo>
             <xs:documentation>Used to install Perfmon counters.</xs:documentation>
         </xs:annotation>
@@ -680,6 +681,8 @@
         <xs:annotation>
             <xs:documentation>Service configuration information for failure actions.</xs:documentation>
             <xs:appinfo>
+                <xse:parent namespace="http://schemas.microsoft.com/wix/2006/wi" ref="Component" />
+                <xse:parent namespace="http://schemas.microsoft.com/wix/2006/wi" ref="ServiceInstall" />
                 <xse:remarks>
                     <html:dl>
                         <html:dd>Nesting a ServiceConfig element under a ServiceInstall element will result in the service being installed to be configured.</html:dd>

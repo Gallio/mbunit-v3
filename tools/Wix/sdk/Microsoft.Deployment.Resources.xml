@@ -13,7 +13,7 @@
             <summary>
             Creates a new Resource object without any data. The data can be later loaded from a file.
             </summary>
-            <param name="type">Type of the resource</param>
+            <param name="type">Type of the resource; may be one of the ResourceType constants or a user-defined type.</param>
             <param name="name">Name of the resource. For a numeric resource identifier, prefix the decimal number with a "#".</param>
             <param name="locale">Locale of the resource</param>
         </member>
@@ -21,7 +21,7 @@
             <summary>
             Creates a new Resource object with data. The data can be later saved to a file.
             </summary>
-            <param name="type">Type of the resource</param>
+            <param name="type">Type of the resource; may be one of the ResourceType constants or a user-defined type.</param>
             <param name="name">Name of the resource. For a numeric resource identifier, prefix the decimal number with a "#".</param>
             <param name="locale">Locale of the resource</param>
             <param name="data">Raw resource data</param>
@@ -53,8 +53,8 @@
         </member>
         <member name="P:Microsoft.Deployment.Resources.Resource.ResourceType">
             <summary>
-            Gets or sets the type of the resource.  This may be a user-defined type if it doesn't match any
-            of the ResourceType enumerated values.
+            Gets or sets the type of the resource.  This may be one of the ResourceType constants
+            or a user-defined type name.
             </summary>
         </member>
         <member name="P:Microsoft.Deployment.Resources.Resource.Name">
@@ -107,7 +107,7 @@
             a <see cref="T:Microsoft.Deployment.Resources.Resource"/> instance (or subclass) is added to the collection.
             </summary>
             <param name="resFile">The file to be searched for resources.</param>
-            <param name="type">The type of resource to search for.</param>
+            <param name="type">The type of resource to search for; may be one of the ResourceType constants or a user-defined type.</param>
             <exception cref="T:System.IO.IOException">resources could not be read from the file</exception>
         </member>
         <member name="M:Microsoft.Deployment.Resources.ResourceCollection.Find(System.String,Microsoft.Deployment.Resources.ResourceType,System.String)">
@@ -116,7 +116,7 @@
             a <see cref="T:Microsoft.Deployment.Resources.Resource"/> instance (or subclass) is added to the collection.
             </summary>
             <param name="resFile">The file to be searched for resources.</param>
-            <param name="type">The type of resource to search for.</param>
+            <param name="type">The type of resource to search for; may be one of the ResourceType constants or a user-defined type.</param>
             <param name="name">The name of the resource to search for.</param>
             <exception cref="T:System.IO.IOException">resources could not be read from the file</exception>
         </member>
@@ -195,7 +195,76 @@
         </member>
         <member name="T:Microsoft.Deployment.Resources.ResourceType">
             <summary>
-            Identifies a predefined Win32 resource type.
+            Represents either a standard integer resource type or a custom resource type name.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Deployment.Resources.ResourceType.#ctor(System.String)">
+            <summary>
+            Creates a new resource type from a string resource name.
+            </summary>
+            <param name="resourceType">String resource name,
+            or an integer resource type prefixed by a #.</param>
+        </member>
+        <member name="M:Microsoft.Deployment.Resources.ResourceType.#ctor(System.Int32)">
+            <summary>
+            Creates a new integer resource type.
+            </summary>
+            <param name="resourceType">Integer value of a well-known resource type.</param>
+        </member>
+        <member name="M:Microsoft.Deployment.Resources.ResourceType.ToString">
+            <summary>
+            Gets a string representation of the resource type.
+            </summary>
+            <returns>The custom resource name, or the name of a well-known resource type.</returns>
+        </member>
+        <member name="M:Microsoft.Deployment.Resources.ResourceType.Equals(System.Object)">
+            <summary>
+            Tests whether one resource type equals another object.
+            </summary>
+            <param name="obj">Other object.</param>
+            <returns>True if equal, else false.</returns>
+        </member>
+        <member name="M:Microsoft.Deployment.Resources.ResourceType.Equals(Microsoft.Deployment.Resources.ResourceType)">
+            <summary>
+            Tests whether one resource type equals another.
+            </summary>
+            <param name="otherType">Other resource type.</param>
+            <returns>True if equal, else false.</returns>
+        </member>
+        <member name="M:Microsoft.Deployment.Resources.ResourceType.GetHashCode">
+            <summary>
+            Gets a hash code suitable for using the resource type as a dictionary key.
+            </summary>
+            <returns>Hash code based on the resource type string.</returns>
+        </member>
+        <member name="M:Microsoft.Deployment.Resources.ResourceType.op_Implicit(System.String)~Microsoft.Deployment.Resources.ResourceType">
+            <summary>
+            Implicitly converts a string to a ResourceType.
+            </summary>
+            <param name="resourceType">String resource type to convert.</param>
+            <returns>ResourceType object.</returns>
+        </member>
+        <member name="M:Microsoft.Deployment.Resources.ResourceType.op_Explicit(Microsoft.Deployment.Resources.ResourceType)~System.String">
+            <summary>
+            Explicitly converts a ResourceType to a string.
+            </summary>
+            <param name="resourceType">ResourceType object to convert.</param>
+            <returns>The resource type string.</returns>
+            <remarks>
+            Unlike <see cref="M:Microsoft.Deployment.Resources.ResourceType.ToString"/>, this conversion does not return
+            the common name of well-known integer resource types. Therefore,
+            the returned string is suitable for passing directly to Win32
+            resource APIs that accept resource type strings.
+            </remarks>
+        </member>
+        <member name="P:Microsoft.Deployment.Resources.ResourceType.IsInteger">
+            <summary>
+            Gets a flag indicating whether the resource type is an integer type.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Deployment.Resources.ResourceType.IntegerValue">
+            <summary>
+            Gets the integer value of the resource type, or -1 if the resource type is not an integer.
             </summary>
         </member>
         <member name="T:Microsoft.Deployment.Resources.VersionBuildTypes">
@@ -218,7 +287,7 @@
             A subclass of Resource which provides specific methods for manipulating the resource data.
             </summary>
             <remarks>
-            The resource is of type <see cref="F:Microsoft.Deployment.Resources.ResourceType.Version"/> (RT_VERSION).
+            The resource is of type <see cref="P:Microsoft.Deployment.Resources.ResourceType.Version"/> (RT_VERSION).
             </remarks>
         </member>
         <member name="M:Microsoft.Deployment.Resources.VersionResource.#ctor(System.String,System.Int32)">

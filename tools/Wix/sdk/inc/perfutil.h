@@ -28,10 +28,10 @@ extern "C" {
 void DAPI PerfInitialize(
 	);
 void DAPI PerfClickTime(
-	__in LARGE_INTEGER* pliElapsed
+	__out_opt LARGE_INTEGER* pliElapsed
 	);
 double DAPI PerfConvertToSeconds(
-	__in LARGE_INTEGER* pli
+	__in const LARGE_INTEGER* pli
 	);
 
 #ifdef __cplusplus

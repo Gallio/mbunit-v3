@@ -1580,6 +1580,9 @@
             It is best that the handle be closed manually as soon as it is no longer
             needed, as leaving lots of unused handles open can degrade performance.
             </p><p>
+            The database is opened in <see cref="F:Microsoft.Deployment.WindowsInstaller.DatabaseOpenMode.CreateDirect"/> mode, and will be
+            automatically commited when it is closed.
+            </p><p>
             Win32 MSI API:
             <a href="http://msdn.microsoft.com/library/en-us/msi/setup/msiopendatabase.asp">MsiOpenDatabase</a>
             </p></remarks>
@@ -1593,20 +1596,19 @@
             <param name="mode">Open mode for the database</param>
             <exception cref="T:Microsoft.Deployment.WindowsInstaller.InstallerException">the database could not be created/opened</exception>
             <remarks><p>
-            To make and save changes to a database first open the database in transaction,
-            create or, or direct mode. After making the changes, always call the Commit method
-            before closing the database handle. The Commit method flushes all buffers.
-            </p><p>
-            Always call the Commit method on a database that has been opened in direct
-            mode before closing the database. Failure to do this may corrupt the database.
-            </p><p>
             Because this constructor initiates database access, it cannot be used with a
             running installation.
             </p><p>
-            The Database object should be <see cref="M:Microsoft.Deployment.WindowsInstaller.InstallerHandle.Close"/>d after use.
+            The database object should be <see cref="M:Microsoft.Deployment.WindowsInstaller.InstallerHandle.Close"/>d after use.
             The finalizer will close the handle if it is still open, however due to the nondeterministic
             nature of finalization it is best that the handle be closed manually as soon as it is no
             longer needed, as leaving lots of unused handles open can degrade performance.
+            </p><p>
+            A database opened in <see cref="F:Microsoft.Deployment.WindowsInstaller.DatabaseOpenMode.CreateDirect"/> or
+            <see cref="F:Microsoft.Deployment.WindowsInstaller.DatabaseOpenMode.Direct"/> mode will be automatically commited when it is
+            closed. However a database opened in <see cref="F:Microsoft.Deployment.WindowsInstaller.DatabaseOpenMode.Create"/> or
+            <see cref="F:Microsoft.Deployment.WindowsInstaller.DatabaseOpenMode.Transact"/> mode must have the <see cref="M:Microsoft.Deployment.WindowsInstaller.Database.Commit"/> method
+            called before it is closed, otherwise no changes will be persisted.
             </p><p>
             Win32 MSI API:
             <a href="http://msdn.microsoft.com/library/en-us/msi/setup/msiopendatabase.asp">MsiOpenDatabase</a>
@@ -1781,10 +1783,16 @@
             </summary>
             <exception cref="T:Microsoft.Deployment.WindowsInstaller.InvalidHandleException">the Database handle is invalid</exception>
             <remarks><p>
-            This method has no effect on a database opened as read-only. This method can be called multiple
-            times to save the current state of tables loaded into memory. When the database is finally closed,
-            any changes made subsequent to the last Commit are rolled back. This method is normally called
-            prior to shutdown when all database changes have been finalized.
+            For a database open in <see cref="F:Microsoft.Deployment.WindowsInstaller.DatabaseOpenMode.ReadOnly"/> mode, this method has no effect.
+            </p><p>
+            For a database open in <see cref="F:Microsoft.Deployment.WindowsInstaller.DatabaseOpenMode.CreateDirect"/> or <see cref="F:Microsoft.Deployment.WindowsInstaller.DatabaseOpenMode.Direct"/>
+            mode, it is not necessary to call this method because the database will be automatically committed
+            when it is closed. However this method may be called at any time to persist the current state of tables
+            loaded into memory.
+            </p><p>
+            For a database open in <see cref="F:Microsoft.Deployment.WindowsInstaller.DatabaseOpenMode.Create"/> or <see cref="F:Microsoft.Deployment.WindowsInstaller.DatabaseOpenMode.Transact"/>
+            mode, no changes will be persisted until this method is called. If the database object is closed without
+            calling this method, the database file remains unmodified.
             </p><p>
             Win32 MSI API:
             <a href="http://msdn.microsoft.com/library/en-us/msi/setup/msidatabasecommit.asp">MsiDatabaseCommit</a>
@@ -1840,6 +1848,27 @@
             <remarks><p>
             Win32 MSI API:
             <a href="http://msdn.microsoft.com/library/en-us/msi/setup/msidatabaseimport.asp">MsiDatabaseImport</a>
+            </p></remarks>
+        </member>
+        <member name="M:Microsoft.Deployment.WindowsInstaller.Database.CreateRecord(System.Int32)">
+            <summary>
+            Creates a new record object with the requested number of fields.
+            </summary>
+            <param name="fieldCount">Required number of fields, which may be 0.
+            The maximum number of fields in a record is limited to 65535.</param>
+            <returns>A new record object that can be used with the database.</returns>
+            <remarks><p>
+            This method is equivalent to directly calling the <see cref="T:Microsoft.Deployment.WindowsInstaller.Record"/>
+            constructor in all cases outside of a custom action context. When in a
+            custom action session, this method allows creation of a record that can
+            work with a database other than the session database.
+            </p><p>
+            The Record object should be <see cref="M:Microsoft.Deployment.WindowsInstaller.InstallerHandle.Close"/>d after use.
+            It is best that the handle be closed manually as soon as it is no longer
+            needed, as leaving lots of unused handles open can degrade performance.
+            </p><p>
+            Win32 MSI API:
+            <a href="http://msdn.microsoft.com/library/en-us/msi/setup/msicreaterecord.asp">MsiCreateRecord</a>
             </p></remarks>
         </member>
         <member name="M:Microsoft.Deployment.WindowsInstaller.Database.ToString">
@@ -2267,17 +2296,6 @@
             be of the form: &quot;AssemblyName!Namespace.Class&quot;</param>
             <returns>Interface on the UI class for handling UI messages.</returns>
         </member>
-        <member name="T:Microsoft.Deployment.WindowsInstaller.Enumerable`1">
-            <summary>
-            Converts a GetEnumerator() delegate to an IEnumerable.
-            </summary>
-            <typeparam name="T">Type of the item being enumerated</typeparam>
-            <remarks><p>
-            Returning an IEnumerable from functions and properties is often
-            more convenient than returning an IEnumerator. Most importantly,
-            IEnumerable works with LINQ.
-            </p></remarks>
-        </member>
         <member name="T:Microsoft.Deployment.WindowsInstaller.ActionResult">
             <summary>
             Specifies a return status value for custom actions.
@@ -2609,7 +2627,7 @@
             <see cref="M:Microsoft.Deployment.WindowsInstaller.Installer.SetInternalUI(Microsoft.Deployment.WindowsInstaller.InstallUIOptions)"/>.
             </summary>
         </member>
-        <member name="F:Microsoft.Deployment.WindowsInstaller.InstallUIOptions.None">
+        <member name="F:Microsoft.Deployment.WindowsInstaller.InstallUIOptions.NoChange">
             <summary>Does not change UI level.</summary>
         </member>
         <member name="F:Microsoft.Deployment.WindowsInstaller.InstallUIOptions.Default">
@@ -3045,8 +3063,8 @@
             <remarks><p>
             If the record is passed to <see cref="M:Microsoft.Deployment.WindowsInstaller.Session.Message(Microsoft.Deployment.WindowsInstaller.InstallMessage,Microsoft.Deployment.WindowsInstaller.Record)"/>, it is formatted
             by looking up the string in the current database. If there is no installation
-            session, the format string may be obtained by a query on the Error table using
-            the error code, followed by a call to <see cref="M:Microsoft.Deployment.WindowsInstaller.Record.ToString(System.String,System.IFormatProvider)"/>.
+            session, the formatted error message may be obtained by a query on the Error table using
+            the error code, followed by a call to <see cref="M:Microsoft.Deployment.WindowsInstaller.Record.ToString"/>.
             Alternatively, the standard MSI message can by retrieved by calling the
             <see cref="M:Microsoft.Deployment.WindowsInstaller.Installer.GetErrorMessage(Microsoft.Deployment.WindowsInstaller.Record,System.Globalization.CultureInfo)"/> method.
             </p><p>
@@ -3303,7 +3321,7 @@
             </p><p>
             The external user interface handler does not have full control over the external user
             interface unless <see cref="M:Microsoft.Deployment.WindowsInstaller.Installer.SetInternalUI(Microsoft.Deployment.WindowsInstaller.InstallUIOptions)"/> is called with the uiLevel parameter set to
-            <see cref="F:Microsoft.Deployment.WindowsInstaller.InstallUIOptions.None"/>. If SetInternalUI is not called, the internal user
+            <see cref="F:Microsoft.Deployment.WindowsInstaller.InstallUIOptions.Silent"/>. If SetInternalUI is not called, the internal user
             interface level defaults to <see cref="F:Microsoft.Deployment.WindowsInstaller.InstallUIOptions.Basic"/>. As a result, any message not
             handled by the external user interface handler is handled by Windows Installer. The initial
             "Preparing to install..." dialog always appears even if the external user interface
@@ -3334,7 +3352,7 @@
             </p><p>
             The external user interface handler does not have full control over the external user
             interface unless <see cref="M:Microsoft.Deployment.WindowsInstaller.Installer.SetInternalUI(Microsoft.Deployment.WindowsInstaller.InstallUIOptions)"/> is called with the uiLevel parameter set to
-            <see cref="F:Microsoft.Deployment.WindowsInstaller.InstallUIOptions.None"/>. If SetInternalUI is not called, the internal user
+            <see cref="F:Microsoft.Deployment.WindowsInstaller.InstallUIOptions.Silent"/>. If SetInternalUI is not called, the internal user
             interface level defaults to <see cref="F:Microsoft.Deployment.WindowsInstaller.InstallUIOptions.Basic"/>. As a result, any message not
             handled by the external user interface handler is handled by Windows Installer. The initial
             "Preparing to install..." dialog always appears even if the external user interface
@@ -4259,11 +4277,22 @@
             <a href="http://msdn.microsoft.com/library/en-us/msi/setup/msiqueryfeaturestate.asp">MsiQueryFeatureState</a>
             </p></remarks>
         </member>
+        <member name="P:Microsoft.Deployment.WindowsInstaller.FeatureInstallation.Parent">
+            <summary>
+            Gets the parent of the feature, or null if the feature has no parent (it is a root feature).
+            </summary>
+            <remarks>
+            Invocation of this property may be slightly costly for products with many features,
+            because it involves an enumeration of all the features in the product.
+            </remarks>
+        </member>
         <member name="P:Microsoft.Deployment.WindowsInstaller.FeatureInstallation.Usage">
             <summary>
             Gets the usage metrics for the feature.
             </summary>
             <remarks><p>
+            If no usage metrics are recorded, the <see cref="P:Microsoft.Deployment.WindowsInstaller.FeatureInstallation.UsageData.UseCount"/> value is 0.
+            </p><p>
             Win32 MSI API:
             <a href="http://msdn.microsoft.com/library/en-us/msi/setup/msigetfeatureusage.asp">MsiGetFeatureUsage</a>
             </p></remarks>
@@ -5709,10 +5738,13 @@
         </member>
         <member name="M:Microsoft.Deployment.WindowsInstaller.Session.GetProductProperty(System.String)">
             <summary>
-            Retrieves product properties from the product database.
+            Retrieves product properties (not session properties) from the product database.
             </summary>
             <returns>Value of the property, or an empty string if the property is not set.</returns>
             <remarks><p>
+            Note this is not the correct method for getting ordinary session properties. For that,
+            see the indexer on the Session class.
+            </p><p>
             Win32 MSI API:
             <a href="http://msdn.microsoft.com/library/en-us/msi/setup/msigetproductproperty.asp">MsiGetProductProperty</a>
             </p></remarks>
@@ -5935,6 +5967,11 @@
             or indirectly by a user's code, so managed and unmanaged resources will
             be disposed. If false, only unmanaged resources will be disposed.</param>
         </member>
+        <member name="M:Microsoft.Deployment.WindowsInstaller.Session.ValidateSessionAccess">
+            <summary>
+            Throws an exception if the custom action is not able to access immedate session details.
+            </summary>
+        </member>
         <member name="P:Microsoft.Deployment.WindowsInstaller.Session.Database">
             <summary>
             Gets the Database for the install session.
@@ -5987,6 +6024,11 @@
             Gets custom action data for the session that was supplied by the caller.
             </summary>
             <seealso cref="M:Microsoft.Deployment.WindowsInstaller.Session.DoAction(System.String,Microsoft.Deployment.WindowsInstaller.CustomActionData)"/>
+        </member>
+        <member name="P:Microsoft.Deployment.WindowsInstaller.Session.NonImmediatePropertyNames">
+            <summary>
+            Gets the (short) list of properties that are available from non-immediate custom actions.
+            </summary>
         </member>
         <member name="T:Microsoft.Deployment.WindowsInstaller.ShortcutTarget">
             <summary>

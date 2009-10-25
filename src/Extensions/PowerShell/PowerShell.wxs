@@ -2,7 +2,9 @@
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi" 
      xmlns:ps="http://schemas.microsoft.com/wix/PSExtension">
     <Fragment>
-        <PropertyRef Id="POWERSHELL1.0" />
+        <Property Id='POWERSHELL1.0'>
+            <RegistrySearch Id='PowerShell10Registry' Type='raw' Root='HKLM' Key='Software\Microsoft\PowerShell\1' Name='Install' />
+        </Property>
                   
         <DirectoryRef Id="binFolder" FileSource="$(var.GallioTargetDir)\bin\">
             <Component Id="Gallio.PowerShellCommands" Guid="82469f8a-b09b-4fb1-80c6-e3882fd54ffd" Win64="no">

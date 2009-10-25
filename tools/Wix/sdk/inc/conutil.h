@@ -60,51 +60,51 @@ enum CONSOLE_COLOR { CONSOLE_COLOR_NORMAL, CONSOLE_COLOR_RED, CONSOLE_COLOR_YELL
 // structs
 
 // functions
-HRESULT ConsoleInitialize();
-void ConsoleUninitialize();
+HRESULT DAPI ConsoleInitialize();
+void DAPI ConsoleUninitialize();
 
-void ConsoleGreen();
-void ConsoleRed();
-void ConsoleYellow();
-void ConsoleNormal();
+void DAPI ConsoleGreen();
+void DAPI ConsoleRed();
+void DAPI ConsoleYellow();
+void DAPI ConsoleNormal();
 
-HRESULT ConsoleWrite(
-	CONSOLE_COLOR cc,
-	__in_z __format_string LPCSTR szFormat,
-	...
-	);
-HRESULT ConsoleWriteLine(
-	CONSOLE_COLOR cc,
-	__in_z __format_string LPCSTR szFormat,
-	...
-	);
-HRESULT ConsoleWriteError(
-	HRESULT hrError,
-	CONSOLE_COLOR cc,
-	__in_z __format_string LPCSTR szFormat,
-	...
-	);
+HRESULT DAPI ConsoleWrite(
+    CONSOLE_COLOR cc,
+    __in_z __format_string LPCSTR szFormat,
+    ...
+    );
+HRESULT DAPI ConsoleWriteLine(
+    CONSOLE_COLOR cc,
+    __in_z __format_string LPCSTR szFormat,
+    ...
+    );
+HRESULT DAPI ConsoleWriteError(
+    HRESULT hrError,
+    CONSOLE_COLOR cc,
+    __in_z __format_string LPCSTR szFormat,
+    ...
+    );
 
-HRESULT ConsoleReadW(
-	__deref_out_z LPWSTR* ppwzBuffer
-	);
+HRESULT DAPI ConsoleReadW(
+    __deref_out_z LPWSTR* ppwzBuffer
+    );
 
-HRESULT ConsoleReadStringA(
-	__deref_out_ecount_part(cchCharBuffer,*pcchNumCharReturn) LPSTR* szCharBuffer,
-	CONST DWORD cchCharBuffer,
-	__out DWORD* pcchNumCharReturn
-	);
-HRESULT ConsoleReadStringW(
-	__deref_out_ecount_part(cchCharBuffer,*pcchNumCharReturn) LPWSTR* szCharBuffer,
-	CONST DWORD cchCharBuffer,
-	__out DWORD* pcchNumCharReturn
-	);
+HRESULT DAPI ConsoleReadStringA(
+    __deref_out_ecount_part(cchCharBuffer,*pcchNumCharReturn) LPSTR* szCharBuffer,
+    CONST DWORD cchCharBuffer,
+    __out DWORD* pcchNumCharReturn
+    );
+HRESULT DAPI ConsoleReadStringW(
+    __deref_out_ecount_part(cchCharBuffer,*pcchNumCharReturn) LPWSTR* szCharBuffer,
+    CONST DWORD cchCharBuffer,
+    __out DWORD* pcchNumCharReturn
+    );
 
-HRESULT ConsoleReadNonBlockingW(
-	__deref_out_ecount_opt(*pcchSize) LPWSTR* ppwzBuffer,
-	__out DWORD* pcchSize,
-	BOOL fReadLine
-	);
+HRESULT DAPI ConsoleReadNonBlockingW(
+    __deref_out_ecount_opt(*pcchSize) LPWSTR* ppwzBuffer,
+    __out DWORD* pcchSize,
+    BOOL fReadLine
+    );
 
 HRESULT ConsoleSetReadHidden(void);
 HRESULT ConsoleSetReadNormal(void);

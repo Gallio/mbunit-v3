@@ -162,6 +162,9 @@ extern "C" void DAPI Dutil_RootFailure(__in LPCSTR szFile, __in int iLine, __in 
 #define ExitOnInvalidHandleWithLastError(p, x, s) if (INVALID_HANDLE_VALUE == p) { x = ::GetLastError(); x = HRESULT_FROM_WIN32(x); if (!FAILED(x)) { x = E_FAIL; } Dutil_RootFailure(__FILE__, __LINE__, x); ExitTrace(x, s); goto LExit; }
 #define ExitOnInvalidHandleWithLastError1(p, x, f, s) if (INVALID_HANDLE_VALUE == p) { x = ::GetLastError(); x = HRESULT_FROM_WIN32(x); if (!FAILED(x)) { x = E_FAIL; } Dutil_RootFailure(__FILE__, __LINE__, x); ExitTrace1(x, f, s); goto LExit; }
 
+#define ExitOnWin32Error(e, x, s) if (ERROR_SUCCESS != e) { x = HRESULT_FROM_WIN32(x); if (!FAILED(x)) { x = E_FAIL; } Dutil_RootFailure(__FILE__, __LINE__, x); ExitTrace(x, s); goto LExit; }
+#define ExitOnWin32Error1(e, x, f, s) if (ERROR_SUCCESS != e) { x = HRESULT_FROM_WIN32(x); if (!FAILED(x)) { x = E_FAIL; } Dutil_RootFailure(__FILE__, __LINE__, x); ExitTrace1(x, f, s); goto LExit; }
+
 // release macros
 #define ReleaseObject(x) if (x) { x->Release(); }
 #define ReleaseObjectArray(prg, cel) if (prg) { for (DWORD Dutil_ReleaseObjectArrayIndex = 0; Dutil_ReleaseObjectArrayIndex < cel; ++Dutil_ReleaseObjectArrayIndex) { ReleaseObject(prg[Dutil_ReleaseObjectArrayIndex]); } ReleaseMem(prg); }
@@ -190,9 +193,15 @@ template<typename T> static void countofVerify(T *const, T *const *) throw() {};
 #define roundup(x, n) roundup_typed(x, n, DWORD)
 #define roundup_typed(x, n, t) (((t)(x) + ((t)(n) - 1)) & ~((t)(n) - 1))
 
+#define HRESULT_FROM_RPC(x) ((HRESULT) ((x) | FACILITY_RPC))
+
 #ifndef MAXSIZE_T
 #define MAXSIZE_T ((SIZE_T)~((SIZE_T)0))
 #endif
 
+typedef const BYTE* LPCBYTE;
+
 #define E_NOMOREITEMS HRESULT_FROM_WIN32(ERROR_NO_MORE_ITEMS)
 #define AddRefAndRelease(x) { x->AddRef(); x->Release(); }
+
+#define MAKEQWORDVERSION(mj, mi, b, r) (((DWORD64)MAKELONG(r, b)) | (((DWORD64)MAKELONG(mi, mj)) << 32))

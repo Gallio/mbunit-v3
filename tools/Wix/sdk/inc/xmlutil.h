@@ -106,6 +106,12 @@ HRESULT DAPI XmlGetAttributeNumber(
     __in LPCWSTR pwzAttribute,
     __out DWORD* pdwValue
     );
+HRESULT DAPI XmlGetAttributeNumberBase(
+    __in IXMLDOMNode* pixnNode,
+    __in LPCWSTR pwzAttribute,
+    __in int nBase,
+    __out DWORD* pdwValue
+    );
 HRESULT DAPI XmlGetNamedItem(
     __in IXMLDOMNamedNodeMap *pixnmAttributes, 
     __in_opt LPCWSTR wzName, 
@@ -136,7 +142,7 @@ HRESULT DAPI XmlSelectNodes(
 HRESULT DAPI XmlNextElement(
     __in IXMLDOMNodeList* pixnl,
     __out IXMLDOMNode** pixnElement,
-    __out BSTR* pbstrElement
+    __out_opt BSTR* pbstrElement
     );
 HRESULT DAPI XmlRemoveChildren(
     __in IXMLDOMNode* pixnSource,
