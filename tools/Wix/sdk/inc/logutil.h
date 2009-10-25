@@ -31,6 +31,8 @@ extern "C" {
 // structs
 
 // functions
+BOOL DAPI IsLogInitialized();
+
 HRESULT DAPI LogInitialize(
     IN HMODULE hModule,
     IN LPCWSTR wzLog,
@@ -61,25 +63,25 @@ HANDLE DAPI LogGetHandle();
 
 HRESULT DAPIV LogString(
     IN REPORT_LEVEL rl,
-    IN LPCSTR szFormat,
+    IN LPCWSTR wzFormat,
     ...
     );
 
 HRESULT DAPI LogStringArgs(
     IN REPORT_LEVEL rl,
-    IN LPCSTR szFormat,
+    IN LPCWSTR wzFormat,
     IN va_list args
     );
 
 HRESULT DAPIV LogStringLine(
     IN REPORT_LEVEL rl,
-    IN LPCSTR szFormat,
+    IN LPCWSTR wzFormat,
     ...
     );
 
 HRESULT DAPI LogStringLineArgs(
     IN REPORT_LEVEL rl,
-    IN LPCSTR szFormat,
+    IN LPCWSTR wzFormat,
     IN va_list args
     );
 
@@ -126,13 +128,13 @@ inline HRESULT LogIdArgs(
 
 HRESULT DAPIV LogErrorString(
     IN HRESULT hrError,
-    IN LPCSTR szFormat,
+    IN LPCWSTR wzFormat,
     ...
     );
 
 HRESULT DAPI LogErrorStringArgs(
     IN HRESULT hrError,
-    IN LPCSTR szFormat,
+    IN LPCWSTR wzFormat,
     IN va_list args
     );
 

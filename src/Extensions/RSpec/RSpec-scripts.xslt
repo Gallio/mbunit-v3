@@ -10,11 +10,9 @@
 	</Include>
   </xsl:template>  
 				
-  <xsl:template match="wix:Fragment/wix:Directory">
+  <xsl:template match="wix:Fragment/wix:DirectoryRef">
     <DirectoryRef Id="RSpec">
-      <xsl:copy>
-        <xsl:apply-templates select="@*|node()"/>
-      </xsl:copy>
+      <xsl:apply-templates select="*"/>
     </DirectoryRef>
   </xsl:template>
   

@@ -56,7 +56,7 @@
   </Target>
 
   <Target Name="BeforeDist">
-    <Exec Command="&quot;$(ToolsDir)\Wix\heat.exe&quot; dir &quot;$(ImageDir)\bin\DLR\libs&quot; -gg -ke -nologo -sfrag -sreg -t:DLR-libs.xslt -out DLR-libs.wxi" />
-    <Exec Command="&quot;$(ToolsDir)\Wix\heat.exe&quot; dir &quot;$(ImageDir)\bin\DLR\Scripts&quot; -gg -ke -nologo -sfrag -sreg -t:DLR-scripts.xslt -out DLR-scripts.wxi" />
+    <Exec Command="&quot;$(ToolsDir)\Wix\heat.exe&quot; dir &quot;$(ImageDir)\bin\DLR\libs&quot; -cg ComponentGroup -var var.DLR.libs.source -gg -ke -nologo -sfrag -sreg -t:DLR-libs.xslt -out DLR-libs.wxi" />
+    <Exec Command="&quot;$(ToolsDir)\Wix\heat.exe&quot; dir &quot;$(ImageDir)\bin\DLR\Scripts&quot; -cg ComponentGroup -var var.DLR.scripts.source -gg -ke -nologo -sfrag -sreg -t:DLR-scripts.xslt -out DLR-scripts.wxi" />
   </Target>
 </Project>

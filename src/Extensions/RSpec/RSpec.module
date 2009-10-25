@@ -53,7 +53,7 @@
   </Target>
   
   <Target Name="BeforeDist">
-    <Exec Command="&quot;$(ToolsDir)\Wix\heat.exe&quot; dir &quot;$(ImageDir)\bin\RSpec\libs&quot; -gg -ke -nologo -sfrag -sreg -t:RSpec-libs.xslt -out RSpec-libs.wxi" />
-    <Exec Command="&quot;$(ToolsDir)\Wix\heat.exe&quot; dir &quot;$(ImageDir)\bin\RSpec\Scripts&quot; -gg -ke -nologo -sfrag -sreg -t:RSpec-scripts.xslt -out RSpec-scripts.wxi" />
+    <Exec Command="&quot;$(ToolsDir)\Wix\heat.exe&quot; dir &quot;$(ImageDir)\bin\RSpec\libs&quot; -cg ComponentGroup -var var.RSpec.libs.source -gg -ke -nologo -sfrag -sreg -t:RSpec-libs.xslt -out RSpec-libs.wxi" />
+    <Exec Command="&quot;$(ToolsDir)\Wix\heat.exe&quot; dir &quot;$(ImageDir)\bin\RSpec\Scripts&quot; -cg ComponentGroup -var var.RSpec.scripts.source -gg -ke -nologo -sfrag -sreg -t:RSpec-scripts.xslt -out RSpec-scripts.wxi" />
   </Target>
 </Project>

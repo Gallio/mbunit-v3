@@ -107,8 +107,8 @@ HRESULT DAPI SqlCreateDatabase(
 HRESULT DAPI SqlSessionCreateDatabase(
 	__in IDBCreateSession* pidbSession,
 	__in LPCWSTR wzDatabase,
-	__in_opt SQL_FILESPEC* psfDatabase,
-	__in_opt SQL_FILESPEC* psfLog,
+	__in_opt const SQL_FILESPEC* psfDatabase,
+	__in_opt const SQL_FILESPEC* psfLog,
 	__out_opt BSTR* pbstrErrorDescription
 	);
 HRESULT DAPI SqlDropDatabase(

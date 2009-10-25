@@ -32,25 +32,30 @@ LPWSTR DAPI PathFile(
     );
 HRESULT DAPI PathGetDirectory(
     __in LPCWSTR wzPath,
-    __out LPWSTR *ppwzDirectory
+    __out LPWSTR *psczDirectory
     );
 HRESULT DAPI PathExpand(
-    __out LPWSTR *ppwzFullPath,
+    __out LPWSTR *psczFullPath,
     __in LPCWSTR wzRelativePath,
     __in DWORD dwResolveFlags
     );
 HRESULT DAPI PathPrefix(
-    __inout LPWSTR *ppwzFullPath
+    __inout LPWSTR *psczFullPath
     );
 HRESULT DAPI PathBackslashTerminate(
-    __inout LPWSTR* ppwzPath
+    __inout LPWSTR* psczPath
     );
 HRESULT DAPI PathFixedBackslashTerminate(
-    __in LPWSTR wzPath,
+    __inout_ecount_z(cchPath) LPWSTR wzPath,
     __in DWORD_PTR cchPath
     );
 HRESULT DAPI PathForCurrentProcess(
-    __inout LPWSTR *ppwzFullPath,
+    __inout LPWSTR *psczFullPath,
+    __in_opt HMODULE hModule
+    );
+HRESULT DAPI PathRelativeToModule(
+    __inout LPWSTR *psczFullPath,
+    __in_opt LPCWSTR wzFileName,
     __in_opt HMODULE hModule
     );
 HRESULT DAPI PathCreateTempFile(
@@ -58,25 +63,25 @@ HRESULT DAPI PathCreateTempFile(
     __in_opt __format_string LPCWSTR wzFileNameTemplate,
     __in DWORD dwUniqueCount,
     __in DWORD dwFileAttributes,
-    __out_opt LPWSTR* ppwzTempFile,
+    __out_opt LPWSTR* psczTempFile,
     __out_opt HANDLE* phTempFile
     );
 HRESULT DAPI PathCreateTempDirectory(
     __in_opt LPCWSTR wzDirectory,
     __in __format_string LPCWSTR wzDirectoryNameTemplate,
     __in DWORD dwUniqueCount,
-    __out LPWSTR* ppwzTempDirectory
+    __out LPWSTR* psczTempDirectory
     );
 HRESULT DAPI PathGetKnownFolder(
     __in int csidl,
     __out LPWSTR* psczKnownFolder
     );
 BOOL DAPI PathIsAbsolute(
-    __in_opt LPCWSTR sczPath
+    __in LPCWSTR wzPath
     );
 HRESULT DAPI PathConcat(
-    __in_opt LPCWSTR sczPath1,
-    __in_opt LPCWSTR sczPath2,
+    __in_opt LPCWSTR wzPath1,
+    __in_opt LPCWSTR wzPath2,
     __out LPWSTR* psczCombined
     );
 

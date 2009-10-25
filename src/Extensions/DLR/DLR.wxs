@@ -3,7 +3,9 @@
     <?include ..\..\Installer.Wix\Features.wxi ?>
     
     <?ifdef FEATURE_DLR_INTEGRATION ?>
+    <?define DLR.libs.source = "$(var.GallioTargetDir)\bin\DLR\libs" ?>
     <?include DLR-libs.wxi ?>
+    <?define DLR.scripts.source = "$(var.GallioTargetDir)\bin\DLR\Scripts" ?>
     <?include DLR-scripts.wxi ?>
 
     <Fragment>
@@ -19,8 +21,8 @@
         <Feature Id="feat_Gallio.DLRIntegration" Title="DLR Integration" Level="1" AllowAdvertise="no"
             Description="Installs the Gallio Dynamic Language Runtime integration." Absent="disallow">
             <ComponentRef Id="Gallio.DLRIntegration" />
-            <ComponentGroupRef Id="DLR.libs.ComponentGroup1" />
-            <ComponentGroupRef Id="DLR.scripts.ComponentGroup1" />
+            <ComponentGroupRef Id="DLR.libs.ComponentGroup" />
+            <ComponentGroupRef Id="DLR.scripts.ComponentGroup" />
         </Feature>
     </Fragment>
     <?endif ?>

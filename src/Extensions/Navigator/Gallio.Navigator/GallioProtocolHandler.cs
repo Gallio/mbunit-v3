@@ -124,6 +124,11 @@ namespace Gallio.Navigator
             }
 
             DeleteSubKeyTree(Registry.ClassesRoot, GallioNavigatorCommand.ProtocolScheme);
+
+            using (RegistryKey elevationPolicyKey = OpenElevationPolicyKey())
+            {
+                DeleteSubKeyTree(elevationPolicyKey, ElevationPolicyGuid);
+            }
         }
 
         private static RegistryKey OpenProtocolHandlerKey()

@@ -34,7 +34,38 @@ enum URI_PROTOCOL
 };
 
 
-LPWSTR DAPI UriFile(
+HRESULT DAPI UriCanonicalize(
+    __inout_z LPWSTR* psczUri
+    );
+
+HRESULT DAPI UriCrack(
+    __in_z LPCWSTR wzUri,
+    __out_opt INTERNET_SCHEME* pScheme,
+    __inout_z_opt LPWSTR* psczHostName,
+    __out_opt INTERNET_PORT* pPort,
+    __inout_z_opt LPWSTR* psczUser,
+    __inout_z_opt LPWSTR* psczPassword,
+    __inout_z_opt LPWSTR* psczPath,
+    __inout_z_opt LPWSTR* psczQueryString
+    );
+
+HRESULT DAPI UriCreate(
+    __inout_z LPWSTR* psczUri,
+    __in INTERNET_SCHEME scheme,
+    __in_z_opt LPWSTR wzHostName,
+    __in INTERNET_PORT port,
+    __in_z_opt LPWSTR wzUser,
+    __in_z_opt LPWSTR wzPassword,
+    __in_z_opt LPWSTR wzPath,
+    __in_z_opt LPWSTR wzQueryString
+    );
+
+HRESULT DAPI UriCanonicalize(
+    __inout_z LPWSTR* psczUri
+    );
+
+HRESULT DAPI UriFile(
+    __deref_out_z LPWSTR* psczFile,
     __in LPCWSTR wzUri
     );
 

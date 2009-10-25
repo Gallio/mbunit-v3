@@ -57,8 +57,10 @@ Copyright (c) Microsoft Corporation. All rights reserved.
 
   <!-- These properties can be overridden to support non-default installations. -->
   <PropertyGroup>
-    <WixTargetsPath Condition=" '$(WixTargetsPath)' == '' ">$(MSBuildExtensionsPath)\Microsoft\WiX\v3.0\Wix.targets</WixTargetsPath>
-    <WixTasksPath Condition=" '$(WixTasksPath)' == '' ">$(MSBuildExtensionsPath)\Microsoft\WiX\v3.0\WixTasks.dll</WixTasksPath>
+    <WixTargetsPath Condition=" '$(WixTargetsPath)' == '' AND '$(MSBuildExtensionsPath32)' != '' ">$(MSBuildExtensionsPath32)\Microsoft\WiX\v3.5\Wix.targets</WixTargetsPath>
+    <WixTasksPath Condition=" '$(WixTasksPath)' == '' AND '$(MSBuildExtensionsPath32)' != '' ">$(MSBuildExtensionsPath32)\Microsoft\WiX\v3.5\WixTasks.dll</WixTasksPath>
+    <WixTargetsPath Condition=" '$(WixTargetsPath)' == '' ">$(MSBuildExtensionsPath)\Microsoft\WiX\v3.5\Wix.targets</WixTargetsPath>
+    <WixTasksPath Condition=" '$(WixTasksPath)' == '' ">$(MSBuildExtensionsPath)\Microsoft\WiX\v3.5\WixTasks.dll</WixTasksPath>
   </PropertyGroup>
 
   <!-- This makes the project files a dependency of all targets so that things rebuild if they change -->
@@ -86,17 +88,25 @@ Copyright (c) Microsoft Corporation. All rights reserved.
   <UsingTask TaskName="ReadRegistry" AssemblyFile="$(WixTasksPath)" />
 
   <!-- These tasks are extensions for harvesting WiX source code from other sources. -->
-  <UsingTask TaskName="HeatFile" AssemblyFile="$(WixToolPath)WixUtilExtension.dll" />
-  <UsingTask TaskName="HeatDirectory" AssemblyFile="$(WixToolPath)WixUtilExtension.dll" />
-  <UsingTask TaskName="HeatProject" AssemblyFile="$(WixToolPath)WixVSExtension.dll" />
+  <UsingTask TaskName="HeatFile" AssemblyFile="$(WixTasksPath)" />
+  <UsingTask TaskName="HeatDirectory" AssemblyFile="$(WixTasksPath)" />
+  <UsingTask TaskName="HeatProject" AssemblyFile="$(WixTasksPath)" />
 
   <!-- These tasks are specific to the build process defined in this file, and are not considered general-purpose build tasks. -->
-  <UsingTask TaskName="AssignProjectConfiguration" AssemblyName="Microsoft.Build.Tasks, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <UsingTask TaskName="AssignTargetPath" AssemblyName="Microsoft.Build.Tasks, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"/>
+  <UsingTask TaskName="AssignProjectConfiguration" AssemblyName="Microsoft.Build.Tasks, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" Condition=" '$(MSBuildToolsVersion)' == '' or '$(MSBuildToolsVersion)' == '2.0' " />
+  <UsingTask TaskName="AssignTargetPath" AssemblyName="Microsoft.Build.Tasks, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" Condition=" '$(MSBuildToolsVersion)' == '' or '$(MSBuildToolsVersion)' == '2.0' " />
+  <UsingTask TaskName="ResolveNonMSBuildProjectOutput" AssemblyName="Microsoft.Build.Tasks, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" Condition=" '$(MSBuildToolsVersion)' == '' or '$(MSBuildToolsVersion)' == '2.0' " />
+  <UsingTask TaskName="ResolveVCProjectOutput" AssemblyName="Microsoft.Build.Tasks, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" Condition=" '$(MSBuildToolsVersion)' == '' or '$(MSBuildToolsVersion)' == '2.0' " />
+
+  <UsingTask TaskName="AssignProjectConfiguration" AssemblyName="Microsoft.Build.Tasks.v3.5, Version=3.5.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" Condition=" '$(MSBuildToolsVersion)' == '3.5' " />
+  <UsingTask TaskName="AssignTargetPath" AssemblyName="Microsoft.Build.Tasks.v3.5, Version=3.5.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" Condition=" '$(MSBuildToolsVersion)' == '3.5' " />
+  <UsingTask TaskName="ResolveNonMSBuildProjectOutput" AssemblyName="Microsoft.Build.Tasks.v3.5, Version=3.5.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" Condition=" '$(MSBuildToolsVersion)' == '3.5' " />
+  <UsingTask TaskName="ResolveVCProjectOutput" AssemblyName="Microsoft.Build.Tasks.v3.5, Version=3.5.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" Condition=" '$(MSBuildToolsVersion)' == '3.5' " />
+
   <UsingTask TaskName="CreateProjectReferenceDefineConstants" AssemblyFile="$(WixTasksPath)" />
-  <UsingTask TaskName="ResolveNonMSBuildProjectOutput" AssemblyName="Microsoft.Build.Tasks, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <UsingTask TaskName="ResolveVCProjectOutput" AssemblyName="Microsoft.Build.Tasks, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <UsingTask TaskName="WixAssignCulture" AssemblyFile="$(WixTasksPath)" />
+  <UsingTask TaskName="ResolveWixReferences" AssemblyFile="$(WixTasksPath)"/>
+  <UsingTask TaskName="ReplaceString" AssemblyFile="$(WixTasksPath)"/>
 
   <!--
   Several properties must be set in the main project file, before using this .targets file.
@@ -138,6 +148,7 @@ Copyright (c) Microsoft Corporation. All rights reserved.
   <PropertyGroup>
     <TargetExt Condition=" '$(OutputType)' == 'Package' ">.msi</TargetExt>
     <TargetExt Condition=" '$(OutputType)' == 'Module' ">.msm</TargetExt>
+    <TargetExt Condition=" '$(OutputType)' == 'PatchCreation' ">.pcp</TargetExt>
     <TargetExt Condition=" '$(OutputType)' == 'Library' ">.wixlib</TargetExt>
   </PropertyGroup>
 
@@ -225,11 +236,6 @@ Copyright (c) Microsoft Corporation. All rights reserved.
     <SolutionExt Condition=" '$(SolutionExt)' == '' ">*Undefined if not building a solution or within Visual Studio*</SolutionExt>
   </PropertyGroup>
 
-  <!-- Convert $(TargetPath) to an item so we can use %(ModifiedTime) on it. -->
-  <ItemGroup>
-    <TargetOutput Include="$(TargetPath)" />
-  </ItemGroup>
-
   <!--
   //////////////////////////////////////////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -301,12 +307,12 @@ Copyright (c) Microsoft Corporation. All rights reserved.
 
     [IN]
     $(OutputName) - The name of the MSI/MSM/wixlib to build (without the extension)
-    $(OutputType) - Possible values are 'package', 'module', 'library'
+    $(OutputType) - Possible values are 'package', 'PatchCreation', 'module', 'library'
   ==================================================================================================
   -->
   <PropertyGroup>
     <_PleaseSetThisInProjectFile>Please set this in the project file before the &lt;Import&gt; of the wix.targets file.</_PleaseSetThisInProjectFile>
-    <_OutputTypeDescription>The OutputType defines whether a Windows Installer package (.msi), merge module (.msm), or wix library (.wixlib) is being built. $(_PleaseSetThisInProjectFile) Possible values are 'Package', 'Module', and 'Library'.</_OutputTypeDescription>
+    <_OutputTypeDescription>The OutputType defines whether a Windows Installer package (.msi), PatchCreation (.pcp), merge module (.msm), or wix library (.wixlib) is being built. $(_PleaseSetThisInProjectFile) Possible values are 'Package', 'Module', and 'Library'.</_OutputTypeDescription>
   </PropertyGroup>
   <Target Name="_CheckRequiredProperties">
 
@@ -322,7 +328,7 @@ Copyright (c) Microsoft Corporation. All rights reserved.
 
     <Error
       Code="WIXTARGETS102"
-      Condition=" '$(OutputType)' != 'Package' and '$(OutputType)' != 'Module' and '$(OutputType)' != 'Library' "
+      Condition=" '$(OutputType)' != 'Package' and '$(OutputType)' != 'PatchCreation' and '$(OutputType)' != 'Module' and '$(OutputType)' != 'Library' "
       Text="The OutputType property '$(OutputType)' is not valid in project &quot;$(MSBuildProjectFile)&quot;. $(_OutputTypeDescription)" />
 
     <!-- Although we try to ensure a trailing slash, it's possible to circumvent this if the property is set on the command line -->
@@ -345,8 +351,8 @@ Copyright (c) Microsoft Corporation. All rights reserved.
   ==================================================================================================
   -->
   <PropertyGroup>
-    <WixInstallRegKey>SOFTWARE\Microsoft\Windows Installer XML\3.0</WixInstallRegKey>
-    <WixInstallRegKeyWow64>SOFTWARE\Wow6432Node\Microsoft\Windows Installer XML\3.0</WixInstallRegKeyWow64>
+    <WixInstallRegKey>SOFTWARE\Microsoft\Windows Installer XML\3.5</WixInstallRegKey>
+    <WixInstallRegKeyWow64>SOFTWARE\Wow6432Node\Microsoft\Windows Installer XML\3.5</WixInstallRegKeyWow64>
   </PropertyGroup>
   <Target
     Name="_SetDefaultPathValues">
@@ -552,8 +558,11 @@ Copyright (c) Microsoft Corporation. All rights reserved.
     Prepare the prerequisites for building.
   ==================================================================================================
   -->
+  <PropertyGroup>
+    <PrepareForBuildDependsOn></PrepareForBuildDependsOn>
+  </PropertyGroup>
   <Target
-    Name="PrepareForBuild">
+    Name="PrepareForBuild" DependsOnTargets="$(PrepareForBuildDependsOn)">
 
     <!--
     These CreateProperty calls are required because TargetDir and TargetPath are defined
@@ -578,7 +587,7 @@ Copyright (c) Microsoft Corporation. All rights reserved.
 
   <!--
   ==================================================================================================
-  ResolveWixExtensionPaths
+  ResolveWixExtensionReferences
 
     Resolves WiX extension references to full paths. Any properties you use
     to resolve paths to extensions must be defined before importing this
@@ -591,30 +600,39 @@ Copyright (c) Microsoft Corporation. All rights reserved.
     @(_ResolvedWixExtensionPaths) - Item group with full paths to extensions
   ==================================================================================================
   -->
+  <PropertyGroup>
+    <ResolveWixExtensionReferencesDependsOn>
+      PrepareForBuild
+    </ResolveWixExtensionReferencesDependsOn>
+  </PropertyGroup>
   <Target
-    Name="ResolveWixExtensionPaths">
-    
-    <!-- Generate flat item group without metadata -->
-    <CreateItem Include="@(WixExtension)" Condition=" '%(WixExtension.HintPath)' == '' ">
-      <Output TaskParameter="Include" ItemName="_AllWixExtensions" />
-    </CreateItem>
+    Name="ResolveWixExtensionReferences"
+    DependsOnTargets="$(ResolveWixExtensionReferencesDependsOn)"
+    Condition=" '@(WixExtension)' != ''">
 
-    <CreateItem Include="@(WixExtension->'%(HintPath)')" Condition=" '%(WixExtension.HintPath)' != '' ">
-      <Output TaskParameter="Include" ItemName="_AllWixExtensions" />
-    </CreateItem>
+    <!--
+    The WixExtensionSearchPaths property is set to find assemblies in the following order:
 
-    <!-- Resolve flat item group to full paths, defaulting to WixExtDir -->
-    <CreateItem Include="@(_AllWixExtensions)" Condition="Exists('%(_AllWixExtensions.FullPath)')">
-      <Output TaskParameter="Include" ItemName="_AllResolvedWixExtensionPaths" />
-    </CreateItem>
+        (1) $(ReferencePaths) - the reference paths property, which comes from the .USER file.
+        (2) The hintpath from the referenced item itself, indicated by {HintPathFromItem}.
+        (3) Treat the reference's Include as if it were a real file name.
+        (4) Path specified by the WixExtDir property.
+    -->
+    <CreateProperty Condition=" '$(WixExtensionSearchPaths)' == '' " Value="
+      $(ReferencePaths);
+      {HintPathFromItem};
+      {RawFileName};
+      $(WixExtDir)
+      ">
+      <Output TaskParameter="Value" PropertyName="WixExtensionSearchPaths" />
+    </CreateProperty>
 
-    <CreateItem Include="@(_AllWixExtensions->'$(WixExtDir)%(Filename).dll')" Condition="!Exists('%(_AllWixExtensions.FullPath)') and '%(_AllWixExtensions.Extension)' == '' ">
-      <Output TaskParameter="Include" ItemName="_AllResolvedWixExtensionPaths" />
-    </CreateItem>
-
-    <CreateItem Include="@(_AllWixExtensions->'$(WixExtDir)%(Filename)%(Extension)')" Condition="!Exists('%(_AllWixExtensions.FullPath)') and '%(_AllWixExtensions.Extension)' != '' ">
-      <Output TaskParameter="Include" ItemName="_AllResolvedWixExtensionPaths" />
-    </CreateItem>
+    <ResolveWixReferences
+      WixReferences="@(WixExtension)"
+      SearchPaths="$(WixExtensionSearchPaths)"
+      SearchFilenameExtensions=".dll">
+      <Output TaskParameter="ResolvedWixReferences" ItemName="_AllResolvedWixExtensionPaths" />
+    </ResolveWixReferences>
 
     <!-- Remove duplicate extension items that would cause build errors -->
     <RemoveDuplicates Inputs="@(_AllResolvedWixExtensionPaths)">
@@ -630,14 +648,30 @@ Copyright (c) Microsoft Corporation. All rights reserved.
   ==================================================================================================
   -->
   <PropertyGroup>
-    <PreBuildEventDependsOn></PreBuildEventDependsOn>
+    <PreBuildEventDependsOn>GetTargetPath</PreBuildEventDependsOn>
   </PropertyGroup>
   <Target
     Name="PreBuildEvent"
     DependsOnTargets="$(PreBuildEventDependsOn)"
     Condition=" '$(PreBuildEvent)' != '' ">
 
-    <Exec WorkingDirectory="$(OutDir)" Command="$(PreBuildEvent)" />
+    <ReplaceString
+      Text="$(PreBuildEvent)"
+      OldValue="!(TargetPath)"
+      NewValue="$(TargetPath)">
+      
+      <Output TaskParameter="Text" PropertyName="ExpandedPreBuildEvent" />
+    </ReplaceString>
+    
+    <ReplaceString
+      Text="$(ExpandedPreBuildEvent)"
+      OldValue="!(TargetPdbPath)"
+      NewValue="$(TargetPdbPath)">
+      
+      <Output TaskParameter="Text" PropertyName="ExpandedPreBuildEvent" />
+    </ReplaceString>
+
+    <Exec WorkingDirectory="$(OutDir)" Command="$(ExpandedPreBuildEvent)" />
   </Target>
 
   <!--
@@ -660,6 +694,7 @@ Copyright (c) Microsoft Corporation. All rights reserved.
       ResolveProjectReferences;
       ResolveVCProjectReferences;
       ResolveWixLibraryReferences;
+      ResolveWixExtensionReferences;
       AfterResolveReferences
     </ResolveReferencesDependsOn>
   </PropertyGroup>
@@ -870,9 +905,15 @@ Copyright (c) Microsoft Corporation. All rights reserved.
     produced if we built this project.
   ================================================================================================
   -->
+  <PropertyGroup>
+    <GetTargetPathDependsOn>
+      PrepareForBuild;
+      AssignCultures
+    </GetTargetPathDependsOn>
+  </PropertyGroup>
   <Target
     Name="GetTargetPath"
-    DependsOnTargets="PrepareForBuild"
+    DependsOnTargets="$(GetTargetPathDependsOn)"
     Outputs="$(TargetPath)" />
 
   <!--
@@ -921,6 +962,7 @@ Copyright (c) Microsoft Corporation. All rights reserved.
     </ResolveVCProjectOutput>
 
     <Error
+      Code="WIXTARGETS104"
       Text="MSBuild cannot resolve the reference to the Visual C++ project '%(VCProjectReference.Identity)' when building a stand-alone MSBuild project. To correctly resolve this reference, please build the solution file containing these projects."
       Condition=" '$(BuildingSolutionFile)' != 'true' and '$(BuildingInsideVisualStudio)' != 'true' " />
 
@@ -934,33 +976,54 @@ Copyright (c) Microsoft Corporation. All rights reserved.
   ================================================================================================
   ResolveWixLibraryReferences
 
-    Resolve the library references by copying them to the local build directory. Used in Votive
-    when CopyLocal = true on a wixlib or wix extension reference node.
+    Resolve the library references to full paths.
 
     [IN]
     @(WixLibrary) - The list of .wixlib files.
-    @(WixExtension) - The list of wix dll extension files.
+    
+    [OUT]
+    @(_ResolvedWixLibraryPaths) - Item group with full paths to libraries
   ================================================================================================
   -->
-  <!-- Resolve the library references by copying them to the local build directory. Used in Votive when CopyLocal = true on a wixlib reference node. -->
   <PropertyGroup>
     <ResolveWixLibraryReferencesDependsOn>
       PrepareForBuild;
-      ResolveWixExtensionPaths
     </ResolveWixLibraryReferencesDependsOn>
   </PropertyGroup>
   <Target
     Name="ResolveWixLibraryReferences"
-    Inputs="@(WixLibrary);
-            @(_ResolvedWixExtensionPaths);
-            $(MSBuildAllProjects)"
-    Outputs="@(WixLibrary->'$(OutDir)%(Filename)%(Extension)');
-             @(_ResolvedWixExtensionPaths->'$(OutDir)%(Filename)%(Extension)')"
     DependsOnTargets="$(ResolveWixLibraryReferencesDependsOn)"
-    Condition=" '@(WixLibrary)@(_ResolvedWixExtensionPaths)' != ''">
+    Condition=" '@(WixLibrary)' != ''">
 
-    <!-- TODO: Recurse any project references that build wixlibs or wixext and add their outputs to WixLibrary or WixExtension -->
-    <!-- TODO: Copy the references marked with CopyLocal=true to the output directory -->
+    <!--
+    The WixLibrarySearchPaths property is set to find assemblies in the following order:
+
+        (1) $(ReferencePaths) - the reference paths property, which comes from the .USER file.
+        (2) The hintpath from the referenced item itself, indicated by {HintPathFromItem}.
+        (3) Treat the reference's Include as if it were a real file name.
+        (4) Path specified by the WixExtDir property.
+    -->
+    <CreateProperty Condition=" '$(WixLibrarySearchPaths)' == '' " Value="
+      $(ReferencePaths);
+      {HintPathFromItem};
+      {RawFileName};
+      $(WixExtDir)
+      ">
+      <Output TaskParameter="Value" PropertyName="WixLibrarySearchPaths" />
+    </CreateProperty>
+
+    <ResolveWixReferences
+      WixReferences="@(WixLibrary)"
+      SearchPaths="$(WixLibrarySearchPaths)"
+      SearchFilenameExtensions=".wixlib">
+      <Output TaskParameter="ResolvedWixReferences" ItemName="_AllResolvedWixLibraryPaths" />
+    </ResolveWixReferences>
+    
+    <!-- Remove duplicate library items that would cause build errors -->
+    <RemoveDuplicates Inputs="@(_AllResolvedWixLibraryPaths)">
+      <Output TaskParameter="Filtered" ItemName="_ResolvedWixLibraryPaths" />
+    </RemoveDuplicates>
+
   </Target>
 
   <!--
@@ -1099,8 +1162,7 @@ Copyright (c) Microsoft Corporation. All rights reserved.
       HarvestProjects;
       Compile;
       Lib;
-      LinkUnlocalizedProject;
-      LinkLocalizedProject;
+      Link;
       _TimeStampAfterCompileAndLink;
       AfterCompileAndLink
     </CompileAndLinkDependsOn>
@@ -1131,14 +1193,17 @@ Copyright (c) Microsoft Corporation. All rights reserved.
   ==================================================================================================
   _TimeStampBeforeCompileAndLink
 
-    If post-build events are set to fire "OnOutputUpdated", then take before and after timestamps
-    so that we can compare them.
+    Record a timestamp so that we can compare it to a new timestamp during PostBuildEvent if
+    necessary.
   ==================================================================================================
   -->
   <Target
-    Name="_TimeStampBeforeCompileAndLink"
-    Condition=" '$(RunPostBuildEvent)' == 'OnOutputUpdated' ">
+    Name="_TimeStampBeforeCompileAndLink" >
 
+    <CreateItem Include="$(TargetPath)">
+      <Output TaskParameter="Include" ItemName="TargetOutput" />
+    </CreateItem>
+    
     <CreateItem Include="%(TargetOutput.ModifiedTime)">
       <Output TaskParameter="Include" PropertyName="_TargetOutputTimestampBeforeCompileAndLink" />
     </CreateItem>
@@ -1217,7 +1282,7 @@ Copyright (c) Microsoft Corporation. All rights reserved.
   <PropertyGroup>
     <CompileDependsOn>
       PrepareForBuild;
-      ResolveWixExtensionPaths
+      ResolveWixExtensionReferences
     </CompileDependsOn>
   </PropertyGroup>
   <Target
@@ -1227,7 +1292,7 @@ Copyright (c) Microsoft Corporation. All rights reserved.
             @(_ResolvedWixExtensionPaths);
             @(_ResolvedProjectReferencePaths);
             $(MSBuildAllProjects)"
-    Outputs="$(IntermediateOutputPath)%(Compile.Filename)$(IntermediateExt)"
+    Outputs="@(Compile -> '$(IntermediateOutputPath)%(Filename)$(IntermediateExt)')"
     DependsOnTargets="$(CompileDependsOn)"
     Condition=" '@(Compile)' != '' ">
 
@@ -1237,6 +1302,7 @@ Copyright (c) Microsoft Corporation. All rights reserved.
       DefineConstants="$(DefineConstants);$(SolutionDefineConstants);$(ProjectDefineConstants);$(ProjectReferenceDefineConstants)"
       ExtensionDirectory="$(WixExtDir)"
       Extensions="@(_ResolvedWixExtensionPaths)"
+      FipsCompliant="$(FipsCompliant)"
       SuppressFilesVitalByDefault="$(SuppressFilesVitalByDefault)"
       PreprocessToStdOut="$(PreprocessToStdOut)"
       PreprocessToFile="$(PreprocessToFile)"
@@ -1244,9 +1310,9 @@ Copyright (c) Microsoft Corporation. All rights reserved.
       InstallerPlatform="$(InstallerPlatform)"
       NoLogo="$(CompilerNoLogo)"
       OnlyValidateDocuments="$(OnlyValidateDocuments)" 
-      OutputFile="$(IntermediateOutputPath)%(Compile.Filename)$(IntermediateExt)"
+      OutputFile="$(IntermediateOutputPath)"
       Pedantic="$(Pedantic)"
-      ReferencePaths="$(ReferencePath)"
+      ReferencePaths="$(ReferencePaths)"
       RunAsSeparateProcess="$(RunWixToolsOutOfProc)"
       ShowSourceTrace="$(ShowSourceTrace)"
       SuppressAllWarnings="$(CompilerSuppressAllWarnings)"
@@ -1256,9 +1322,11 @@ Copyright (c) Microsoft Corporation. All rights reserved.
       TreatWarningsAsErrors="$(CompilerTreatWarningsAsErrors)"
       TreatSpecificWarningsAsErrors="$(CompilerTreatSpecificWarningsAsErrors)" 
       VerboseOutput="$(CompilerVerboseOutput)">
-
-      <Output TaskParameter="OutputFile" ItemName="CompileObjOutput" />
     </Candle>
+
+    <CreateItem Include="@(Compile -> '$(IntermediateOutputPath)%(Filename)$(IntermediateExt)')">
+      <Output TaskParameter="Include" ItemName="CompileObjOutput" />
+    </CreateItem>
   </Target>
 
   <!--
@@ -1281,7 +1349,7 @@ Copyright (c) Microsoft Corporation. All rights reserved.
   <PropertyGroup>
     <LibDependsOn>
       PrepareForBuild;
-      ResolveWixExtensionPaths
+      ResolveWixExtensionReferences
     </LibDependsOn>
   </PropertyGroup>
   <Target
@@ -1307,7 +1375,7 @@ Copyright (c) Microsoft Corporation. All rights reserved.
       NoLogo="$(LibNoLogo)"
       OutputFile="$(TargetPath)"
       Pedantic="$(LibPedantic)"
-      ReferencePaths="$(ReferencePath)"
+      ReferencePaths="$(ReferencePaths)"
       RunAsSeparateProcess="$(RunWixToolsOutOfProc)"
       SuppressAllWarnings="$(LibSuppressAllWarnings)"
       SuppressIntermediateFileVersionMatching="$(LibSuppressIntermediateFileVersionMatching)"
@@ -1320,64 +1388,149 @@ Copyright (c) Microsoft Corporation. All rights reserved.
 
   <!--
   ================================================================================================
-  LinkUnlocalizedProject
+  AssignCultures
+
+    Determines the final list of culture groups to build based on either the Cultures property or
+    those specified in .wxl files. 
+    
+      Culture groups specified in the Cultures property must be specified as a semi-colon 
+      delimited  list of groups, with comma-delimited cultures within a group.  
+      For example:
+        <Cultures>en-US,en;en-GB,en</Cultures>
+      This will build 2 targets, outputing to en-US and en-GB sub-folders.  Light will first look
+      for strings in the first culture (en-US or en-GB) then the second (en).
+    
+      Cultures of .wxl files will be used when the Culture property is not set.  The culture of a 
+      .wxl file is determined by the Culture attribute in the WixLocalization element in the file
+
+    Sets the OutputFolder metadata on each culture group.  In most cases this is the same as the 
+    first culture in the culture group.  When the Culture's property is unspecified and no .wxl 
+    files are provided this is the same as the output directory.  When the Culture's property 
+    specifies a single culture group and no .wxl files are provided this is the same as the output
+    directory.
+
+    Updates the TargetPath and TargetPdbPath properties to be used in subsequent targets.
+    
+    [IN]
+    @(EmbeddedResource) - The list of wxl files to use for localization.
+    $(Cultures) - The list of culture groups to build.
+
+    [OUT]
+    @(CultureGroup) - The list of culture group strings with OutputFolder metadata
+    $(TargetPath) - Property list of target link output MSIs/MSMs
+    $(TargetPdbPath) - Property list of target output pdbs
+    
+  ================================================================================================
+  -->
+  <Target 
+    Name="AssignCultures"
+    Condition=" ('$(OutputType)' == 'Package' or '$(OutputType)' == 'PatchCreation' or '$(OutputType)' == 'Module')">
+    
+    <WixAssignCulture
+      Cultures="$(Cultures)"
+      Files="@(EmbeddedResource)"
+      >
+
+      <Output TaskParameter="CultureGroups" ItemName="CultureGroup" />
+    </WixAssignCulture>
+
+    <!-- Build an itemgroup of outputs -->
+    <CreateItem
+      Include="$(TargetDir)%(CultureGroup.OutputFolder)$(TargetName)$(TargetExt)">
+      <Output TaskParameter="Include"
+              ItemName="_TargetPathItems"/>
+    </CreateItem>
+    
+    <!-- Convert the itemgroup to a semicolon-delimited property -->
+    <CreateProperty
+      Value="@(_TargetPathItems)">
+      <Output TaskParameter="Value"
+              PropertyName="TargetPath"/>
+    </CreateProperty>
+
+    <!-- Build an itemgroup of PDB outputs -->
+    <CreateItem
+      Include="$(TargetDir)%(CultureGroup.OutputFolder)$(TargetName)$(TargetPdbExt)">
+      <Output TaskParameter="Include"
+              ItemName="_TargetPdbPathItems"/>
+    </CreateItem>
+
+    <!-- Convert the itemgroup to a semicolon-delimited property -->
+    <CreateProperty
+      Value="@(_TargetPdbPathItems)">
+      <Output TaskParameter="Value"
+              PropertyName="TargetPdbPath"/>
+    </CreateProperty>
+  </Target>
+
+  <!--
+  ================================================================================================
+  Link
 
     Links the .wixobj, .wxl, .wixlib, wix extensions into an .msi or .msm file using light.exe,
-    when there are no localized resources specified in the project file.
+    once per culture group. All WXL files are passed into light and the culture switch determines
+    which are used
 
     [IN]
     @(CompileObjOutput) - The compiled .wixobj file.
+    @(CultureGroup) - The cultures to build
     @(EmbeddedResource) - The list of wxl files to use for localization.
     @(WixObject) - The list of .wixobj files.
     @(WixLibrary) - The list of .wixlib files.
     @(WixExtension) - The list of wix dll extension files.
 
     [OUT]
-    $(TargetPath) - The compiled .msi or .msm file.
+    $(TargetDir)\%(Culture)\$(TargetName)$(TargetExt) - The compiled .msi or .msm files.
   ================================================================================================
   -->
   <PropertyGroup>
-    <LinkUnlocalizedProjectDependsOn>
+    <LinkDependsOn>
       PrepareForBuild;
-      ResolveWixExtensionPaths
-    </LinkUnlocalizedProjectDependsOn>
+      ResolveReferences;
+      AssignCultures;
+    </LinkDependsOn>
   </PropertyGroup>
-
+  
   <Target
-    Name="LinkUnlocalizedProject"
+    Name="Link"
     Inputs="@(CompileObjOutput);
+            @(EmbeddedResource);
             @(WixObject);
-            @(WixLibrary);
+            @(_ResolvedProjectReferencePaths);
+            @(_ResolvedWixLibraryPaths);
             @(_ResolvedWixExtensionPaths);
             $(MSBuildAllProjects)"
     Outputs="$(TargetPath)"
-    DependsOnTargets="$(LinkUnlocalizedProjectDependsOn)"
-    Condition=" ('$(OutputType)' == 'Package' or '$(OutputType)' == 'Module') and '@(EmbeddedResource)' == '' ">
+    DependsOnTargets="$(LinkDependsOn)"
+    Condition=" ('$(OutputType)' == 'Package' or '$(OutputType)' == 'PatchCreation' or '$(OutputType)' == 'Module')">
 
+    <!-- Call light using the culture subdirectory for output -->
     <Light
-      ObjectFiles="@(CompileObjOutput);@(WixObject);@(WixLibProjects);@(WixLibrary)"
-      AdditionalOptions="$(LinkerAdditionalOptions)"
+      ObjectFiles="@(CompileObjOutput);@(WixObject);@(WixLibProjects);@(_ResolvedWixLibraryPaths)"
+      AdditionalOptions="$(LinkerAdditionalOptions)" 
       AllowIdenticalRows="$(AllowIdenticalRows)"
       AllowUnresolvedReferences="$(AllowUnresolvedReferences)"
-      AdditionalCub="$(AdditionalCub)"
-      BackwardsCompatibleGuidGeneration="$(BackwardsCompatibleGuidGeneration)"
+      AdditionalCub="$(AdditionalCub)" 
+      BackwardsCompatibleGuidGeneration="$(BackwardsCompatibleGuidGeneration)" 
       BaseInputPaths="$(LinkerBaseInputPaths)"
       BindFiles="$(LinkerBindFiles)"
       CabinetCachePath="$(CabinetCachePath)"
       CabinetCreationThreadCount="$(CabinetCreationThreadCount)"
-      Cultures="$(Cultures)"
+      Cultures="%(CultureGroup.Identity)"
       DefaultCompressionLevel="$(DefaultCompressionLevel)"
       DropUnrealTables="$(DropUnrealTables)"
+      ExactAssemblyVersions="$(ExactAssemblyVersions)"
       ExtensionDirectory="$(WixExtDir)"
       Extensions="@(_ResolvedWixExtensionPaths)"
       Ices="$(Ices)"
       LeaveTemporaryFiles="$(LeaveTemporaryFiles)"
+      LocalizationFiles="@(EmbeddedResource)"
       NoLogo="$(LinkerNoLogo)"
       OutputAsXml="$(OutputAsXml)"
-      OutputFile="$(TargetPath)"
-      PdbOutputFile="$(TargetPdbPath)"
+      OutputFile="$(TargetDir)%(CultureGroup.OutputFolder)$(TargetName)$(TargetExt)"
+      PdbOutputFile="$(TargetDir)%(CultureGroup.OutputFolder)$(TargetName)$(TargetPdbExt)"
       Pedantic="$(LinkerPedantic)"
-      ReferencePaths="$(ReferencePath)"
+      ReferencePaths="$(ReferencePaths)"
       ReuseCabinetCache="$(ReuseCabinetCache)"
       RunAsSeparateProcess="$(RunWixToolsOutOfProc)"
       SetMsiAssemblyNameFileVersion="$(SetMsiAssemblyNameFileVersion)"
@@ -1404,234 +1557,7 @@ Copyright (c) Microsoft Corporation. All rights reserved.
       UnreferencedSymbolsFile="$(UnreferencedSymbolsFile)"
       VerboseOutput="$(LinkerVerboseOutput)"
       WixVariables="$(WixVariables)" />
-  </Target>
-  
-  <!--
-  ================================================================================================
-  AssignCultures
-
-    Takes any .wxl files in the project and assigns culture metadata to them based on the file name.
-    If the file is of the form name.culture.wxl, the culture metadata will be set to the culture
-    portion of the file name. If the culture is already specified via metadata in the project file it
-    will be left untouched.
     
-    [IN]
-    @(EmbeddedResource) - The list of wxl files to use for localization.
-
-    [OUT]
-    @(EmbeddedResourceWithCulture) - The list of wxl files with the culture metadata set.
-  ================================================================================================
-  -->
-  <Target Name="AssignCultures">
-    <WixAssignCulture
-      Files="@(EmbeddedResource)"
-      Condition=" '%(Extension)' == '.wxl' ">
-
-      <Output TaskParameter="AllFilesWithCulture" ItemName="_TempEmbeddedResourceWithCulture" />
-    </WixAssignCulture>
-
-    <!-- Now that we have the cultures assigned to the files we only want to build the ones specified -->
-    <!-- in the Cultures list from the project properties. -->
-
-    <!-- If the Cultures list is empty include all the cultures. -->
-    <CreateItem
-      Include="@(_TempEmbeddedResourceWithCulture)"
-      Condition=" '$(Cultures)' == '' ">
-
-      <Output TaskParameter="Include" ItemName="EmbeddedResourceWithCulture" />
-    </CreateItem>
-
-    <!-- If the Cultures list isn't empty then only include items where the culture matches a -->
-    <!-- culture in the Cultures list. First we have to create an item list out of the semicolon -->
-    <!-- separated property list. Then we have to set the Culture metadata property on it. -->
-    <!-- After all that, it is possible to do a merge of the two lists to only get the embedded -->
-    <!-- resources that have the specified cultures to build. For an explanation of why -->
-    <!-- the condition on the last CreateItem works, see http://blogs.msdn.com/msbuild/archive/2006/05/18/601146.aspx. -->
-    <CreateItem Include="$(Cultures)">
-      <Output TaskParameter="Include" ItemName="_CulturesToBuild" />
-    </CreateItem>
-
-    <CreateItem
-      Include="@(_CulturesToBuild)"
-      AdditionalMetadata="Culture=%(Identity)">
-
-      <Output TaskParameter="Include" ItemName="_CulturesToBuildWithMetadata" />
-    </CreateItem>
-
-    <CreateItem
-      Include="@(_TempEmbeddedResourceWithCulture)"
-      Condition=" '%(Culture)' != '' and '@(_TempEmbeddedResourceWithCulture)'!= '' and '@(_CulturesToBuildWithMetadata)' != '' ">
-
-      <Output TaskParameter="Include" ItemName="EmbeddedResourceWithCulture" />
-    </CreateItem>
-  </Target>
-
-  <!--
-  ================================================================================================
-  VerifyEmbeddedResources
-
-    Verifies that there are actually embedded resources to build after comparing them to the
-    cultures specified to build. This has to be done in its own separate target, rather than in
-    AssignCultures, because AssignCultures is used by the output group targets inside VS. If
-    this were to throw a build error while VS is trying to compute the output groups, VS would
-    show the user a really cryptic and ugly dialog.
-  ================================================================================================
-  -->
-
-  <Target Name="VerifyEmbeddedResources">
-    <Error
-      Condition=" '@(EmbeddedResourceWithCulture)' == '' and '$(Cultures)' != '' "
-      Text="None of the embedded resource cultures matched the list of cultures to build ($(Cultures)). Either include a language file for the specified cultures, or change the list of cultures to build, then try building again." />
-  </Target>
-  
-  <!--
-  ================================================================================================
-  LinkLocalizedProject
-
-    Links the .wixobj, .wxl, .wixlib, wix extensions into an .msi or .msm file using light.exe,
-    once per language. If multiple .wxl files are present with the same culture they will all
-    be passed to a single light.exe call with multiple -loc parameters.
-
-    [IN]
-    @(CompileObjOutput) - The compiled .wixobj file.
-    @(EmbeddedResource) - The list of wxl files to use for localization.
-    @(WixObject) - The list of .wixobj files.
-    @(WixLibrary) - The list of .wixlib files.
-    @(WixExtension) - The list of wix dll extension files.
-
-    [OUT]
-    $(TargetDir)\%(Culture)\$(TargetName)$(TargetExt) - The compiled .msi or .msm files.
-  ================================================================================================
-  -->
-  <PropertyGroup>
-    <LinkLocalizedProjectDependsOn>
-      PrepareForBuild;
-      ResolveWixExtensionPaths;
-      AssignCultures;
-      VerifyEmbeddedResources
-    </LinkLocalizedProjectDependsOn>
-  </PropertyGroup>
-  
-  <Target
-    Name="LinkLocalizedProject"
-    Inputs="@(CompileObjOutput);
-            @(EmbeddedResourceWithCulture);
-            @(WixObject);
-            @(WixLibrary);
-            @(_ResolvedWixExtensionPaths);
-            $(MSBuildAllProjects)"
-    Outputs="$(TargetDir)%(EmbeddedResourceWithCulture.Culture)\$(TargetName)$(TargetExt)"
-    DependsOnTargets="$(LinkLocalizedProjectDependsOn)"
-    Condition=" ('$(OutputType)' == 'Package' or '$(OutputType)' == 'Module') and '@(EmbeddedResource)' != '' ">
-
-    <!-- Call light using the culture subdirectory for output -->
-    <Light
-      ObjectFiles="@(CompileObjOutput);@(WixObject);@(WixLibProjects);@(WixLibrary)"
-      AdditionalOptions="$(LinkerAdditionalOptions)" 
-      AllowIdenticalRows="$(AllowIdenticalRows)"
-      AllowUnresolvedReferences="$(AllowUnresolvedReferences)"
-      AdditionalCub="$(AdditionalCub)" 
-      BackwardsCompatibleGuidGeneration="$(BackwardsCompatibleGuidGeneration)" 
-      BaseInputPaths="$(LinkerBaseInputPaths)"
-      BindFiles="$(LinkerBindFiles)"
-      CabinetCachePath="$(CabinetCachePath)"
-      CabinetCreationThreadCount="$(CabinetCreationThreadCount)"
-      Cultures="%(EmbeddedResourceWithCulture.Culture)"
-      DefaultCompressionLevel="$(DefaultCompressionLevel)"
-      DropUnrealTables="$(DropUnrealTables)"
-      ExtensionDirectory="$(WixExtDir)"
-      Extensions="@(_ResolvedWixExtensionPaths)"
-      Ices="$(Ices)"
-      LeaveTemporaryFiles="$(LeaveTemporaryFiles)"
-      LocalizationFiles="@(EmbeddedResourceWithCulture)"
-      NoLogo="$(LinkerNoLogo)"
-      OutputAsXml="$(OutputAsXml)"
-      OutputFile="$(TargetDir)%(EmbeddedResourceWithCulture.Culture)\$(TargetName)$(TargetExt)"
-      PdbOutputFile="$(TargetDir)%(EmbeddedResourceWithCulture.Culture)\$(TargetName)$(TargetPdbExt)"
-      Pedantic="$(LinkerPedantic)"
-      ReferencePaths="$(ReferencePath)"
-      ReuseCabinetCache="$(ReuseCabinetCache)"
-      RunAsSeparateProcess="$(RunWixToolsOutOfProc)"
-      SetMsiAssemblyNameFileVersion="$(SetMsiAssemblyNameFileVersion)"
-      SuppressAclReset="$(SuppressAclReset)"
-      SuppressAllWarnings="$(LinkerSuppressAllWarnings)"
-      SuppressAssemblies="$(SuppressAssemblies)"
-      SuppressDefaultAdminSequenceActions="$(SuppressDefaultAdminSequenceActions)"
-      SuppressDefaultAdvSequenceActions="$(SuppressDefaultAdvSequenceActions)"
-      SuppressDefaultUISequenceActions="$(SuppressDefaultUISequenceActions)"
-      SuppressFileHashAndInfo="$(SuppressFileHashAndInfo)"
-      SuppressFiles="$(SuppressFiles)"
-      SuppressIntermediateFileVersionMatching="$(LinkerSuppressIntermediateFileVersionMatching)"
-      SuppressIces="$(SuppressIces)"
-      SuppressLayout="$(SuppressLayout)"
-      SuppressLocalization="$(SuppressLocalization)"
-      SuppressMsiAssemblyTableProcessing="$(SuppressMsiAssemblyTableProcessing)"
-      SuppressPdbOutput="$(SuppressPdbOutput)"
-      SuppressSchemaValidation="$(LinkerSuppressSchemaValidation)"
-      SuppressValidation="$(SuppressValidation)"
-      SuppressSpecificWarnings="$(LinkerSuppressSpecificWarnings)"
-      SuppressTagSectionIdAttributeOnTuples="$(SuppressTagSectionIdAttributeOnTuples)"
-      ToolPath="$(WixToolPath)"
-      TreatWarningsAsErrors="$(LinkerTreatWarningsAsErrors)"
-      UnreferencedSymbolsFile="$(UnreferencedSymbolsFile)"
-      VerboseOutput="$(LinkerVerboseOutput)"
-      WixVariables="$(WixVariables)" 
-      Condition="%(EmbeddedResourceWithCulture.Culture) != ''" />
-    
-    <!-- Culture invaiant output goes in the output directory with no culture subdirectory, we need a second task 
-         because batching (%) occurs at the task level -->
-    <Light
-      ObjectFiles="@(CompileObjOutput);@(WixObject);@(WixLibProjects);@(WixLibrary)"
-      AdditionalOptions="$(LinkerAdditionalOptions)"
-      AllowIdenticalRows="$(AllowIdenticalRows)"
-      AllowUnresolvedReferences="$(AllowUnresolvedReferences)"
-      AdditionalCub="$(AdditionalCub)"
-      BackwardsCompatibleGuidGeneration="$(BackwardsCompatibleGuidGeneration)"
-      BaseInputPaths="$(LinkerBaseInputPaths)"
-      BindFiles="$(LinkerBindFiles)"
-      CabinetCachePath="$(CabinetCachePath)"
-      CabinetCreationThreadCount="$(CabinetCreationThreadCount)"
-      Cultures="%(EmbeddedResourceWithCulture.Culture)"
-      DefaultCompressionLevel="$(DefaultCompressionLevel)"
-      DropUnrealTables="$(DropUnrealTables)"
-      ExtensionDirectory="$(WixExtDir)"
-      Extensions="@(_ResolvedWixExtensionPaths)"
-      Ices="$(Ices)"
-      LeaveTemporaryFiles="$(LeaveTemporaryFiles)"
-      LocalizationFiles="@(EmbeddedResourceWithCulture)"
-      NoLogo="$(LinkerNoLogo)"
-      OutputAsXml="$(OutputAsXml)"
-      OutputFile="$(TargetPath)"
-      PdbOutputFile="$(TargetPdbPath)"
-      Pedantic="$(LinkerPedantic)"
-      ReferencePaths="$(ReferencePath)"
-      ReuseCabinetCache="$(ReuseCabinetCache)"
-      RunAsSeparateProcess="$(RunWixToolsOutOfProc)"
-      SetMsiAssemblyNameFileVersion="$(SetMsiAssemblyNameFileVersion)"
-      SuppressAclReset="$(SuppressAclReset)"
-      SuppressAllWarnings="$(LinkerSuppressAllWarnings)"
-      SuppressAssemblies="$(SuppressAssemblies)"
-      SuppressDefaultAdminSequenceActions="$(SuppressDefaultAdminSequenceActions)"
-      SuppressDefaultAdvSequenceActions="$(SuppressDefaultAdvSequenceActions)"
-      SuppressDefaultUISequenceActions="$(SuppressDefaultUISequenceActions)"
-      SuppressFileHashAndInfo="$(SuppressFileHashAndInfo)"
-      SuppressFiles="$(SuppressFiles)"
-      SuppressIntermediateFileVersionMatching="$(LinkerSuppressIntermediateFileVersionMatching)"
-      SuppressIces="$(SuppressIces)"
-      SuppressLayout="$(SuppressLayout)"
-      SuppressMsiAssemblyTableProcessing="$(SuppressMsiAssemblyTableProcessing)"
-      SuppressPdbOutput="$(SuppressPdbOutput)"
-      SuppressSchemaValidation="$(LinkerSuppressSchemaValidation)"
-      SuppressValidation="$(SuppressValidation)"
-      SuppressSpecificWarnings="$(LinkerSuppressSpecificWarnings)"
-      SuppressTagSectionIdAttributeOnTuples="$(SuppressTagSectionIdAttributeOnTuples)"
-      ToolPath="$(WixToolPath)"
-      TreatWarningsAsErrors="$(LinkerTreatWarningsAsErrors)"
-      UnreferencedSymbolsFile="$(UnreferencedSymbolsFile)"
-      VerboseOutput="$(LinkerVerboseOutput)"
-      WixVariables="$(WixVariables)" 
-      Condition="%(EmbeddedResourceWithCulture.Culture) == ''" />
-
   </Target>
 
   <!--
@@ -1691,11 +1617,11 @@ Copyright (c) Microsoft Corporation. All rights reserved.
     </RemoveDuplicates>
 
     <!-- Make sure the directory exists. -->
-    <MakeDir Directories="$(BaseIntermediateOutputPath)" />
+    <MakeDir Directories="$(IntermediateOutputPath)" />
 
     <!-- Write new list of current files back to disk, replacing the existing list.-->
     <WriteLinesToFile
-      File="$(BaseIntermediateOutputPath)$(CleanFile)"
+      File="$(IntermediateOutputPath)$(CleanFile)"
       Lines="@(_CleanUniqueRemainingFileWritesAfterIncrementalClean)"
       Overwrite="true" />
 
@@ -1713,7 +1639,7 @@ Copyright (c) Microsoft Corporation. All rights reserved.
     DependsOnTargets="_CheckForCompileAndLinkOutputs">
 
     <!-- Read the list of files produced by a prior builds from disk. -->
-    <ReadLinesFromFile File="$(BaseIntermediateOutputPath)$(CleanFile)">
+    <ReadLinesFromFile File="$(IntermediateOutputPath)$(CleanFile)">
       <Output TaskParameter="Lines" ItemName="_CleanPriorFileWrites" />
     </ReadLinesFromFile>
 
@@ -1749,29 +1675,18 @@ Copyright (c) Microsoft Corporation. All rights reserved.
       <Output TaskParameter="Include" ItemName="FileWrites" />
     </CreateItem>
 
-    <!-- Record the link ouput -->
-    <CreateItem Include="$(TargetPath)" Condition="Exists('$(TargetPath)')">
+    <!-- Record the link ouput(s) -->
+    <CreateItem Include="@(TargetOutput)" Condition="Exists('%(FullPath)')">
       <Output TaskParameter="Include" ItemName="FileWrites" />
     </CreateItem>
 
-    <!-- Record the wixpdb file generated -->
-    <CreateItem Include="$(TargetPdbPath)" Condition="Exists('$(TargetPdbPath)')">
-      <Output TaskParameter="Include" ItemName="FileWrites" />
+    <!--Stuff into an itemgroup-->
+    <CreateItem Include="$(TargetPdbPath)">
+      <Output TaskParameter="Include" ItemName="_TempTargetPdbPath" />
     </CreateItem>
-
-    <!-- Record the localized link output -->
-    <CreateItem
-      Include="$(TargetDir)%(EmbeddedResourceWithCulture.Culture)\$(TargetName)$(TargetExt)"
-      Condition="Exists('$(TargetDir)%(EmbeddedResourceWithCulture.Culture)\$(TargetName)$(TargetExt)') And '%(EmbeddedResourceWithCulture.Culture)' != ''">
-
-      <Output TaskParameter="Include" ItemName="FileWrites" />
-    </CreateItem>
-
-    <!-- Record the localized wixpdb output -->
-    <CreateItem
-      Include="$(TargetDir)%(EmbeddedResourceWithCulture.Culture)\$(TargetName)$(TargetPdbExt)"
-      Condition="Exists('$(TargetDir)%(EmbeddedResourceWithCulture.Culture)\$(TargetName)$(TargetPdbExt)') And '%(EmbeddedResourceWithCulture.Culture)' != ''">
-
+    
+    <!-- Record the wixpdb file(s) generated -->
+    <CreateItem Include="@(_TempTargetPdbPath)" Condition="Exists('%(FullPath)')">
       <Output TaskParameter="Include" ItemName="FileWrites" />
     </CreateItem>
   </Target>
@@ -1860,7 +1775,7 @@ Copyright (c) Microsoft Corporation. All rights reserved.
     DependsOnTargets="$(CoreCleanDependsOn)">
 
     <!-- Read in list of files that were written to disk in past builds. -->
-    <ReadLinesFromFile File="$(BaseIntermediateOutputPath)$(CleanFile)">
+    <ReadLinesFromFile File="$(IntermediateOutputPath)$(CleanFile)">
       <Output TaskParameter="Lines" ItemName="_CleanPriorFileWrites" />
     </ReadLinesFromFile>
 
@@ -1890,10 +1805,10 @@ Copyright (c) Microsoft Corporation. All rights reserved.
     </RemoveDuplicates>
 
     <!-- Make sure the directory exists. -->
-    <MakeDir Directories="$(BaseIntermediateOutputPath)" />
+    <MakeDir Directories="$(IntermediateOutputPath)" />
 
     <!-- Write new list of current files back to disk. -->
-    <WriteLinesToFile File="$(BaseIntermediateOutputPath)$(CleanFile)" Lines="@(_CleanUniqueRemainingFileWrites)" Overwrite="true" />
+    <WriteLinesToFile File="$(IntermediateOutputPath)$(CleanFile)" Lines="@(_CleanUniqueRemainingFileWrites)" Overwrite="true" />
 
   </Target>
 
@@ -1915,11 +1830,11 @@ Copyright (c) Microsoft Corporation. All rights reserved.
     </RemoveDuplicates>
 
     <!-- Make sure the directory exists. -->
-    <MakeDir Directories="$(BaseIntermediateOutputPath)" />
+    <MakeDir Directories="$(IntermediateOutputPath)" />
 
     <!-- Write merged file list back to disk, replacing existing contents. -->
     <WriteLinesToFile
-        File="$(BaseIntermediateOutputPath)$(CleanFile)"
+        File="$(IntermediateOutputPath)$(CleanFile)"
         Lines="@(_CleanUniqueFileWrites)"
         Overwrite="true" />
 
@@ -1953,7 +1868,7 @@ Copyright (c) Microsoft Corporation. All rights reserved.
   ==================================================================================================
   -->
   <PropertyGroup>
-    <PostBuildEventDependsOn></PostBuildEventDependsOn>
+    <PostBuildEventDependsOn>GetTargetPath</PostBuildEventDependsOn>
   </PropertyGroup>
   <Target
     Name="PostBuildEvent"
@@ -1961,7 +1876,23 @@ Copyright (c) Microsoft Corporation. All rights reserved.
       ( '$(RunPostBuildEvent)' != 'OnOutputUpdated' or '$(_TargetOutputTimestampBeforeCompileAndLink)' != '$(_TargetOutputTimestampAfterCompileAndLink)' )"
     DependsOnTargets="$(PostBuildEventDependsOn)">
 
-    <Exec WorkingDirectory="$(OutDir)" Command="$(PostBuildEvent)" />
+    <ReplaceString
+      Text="$(PostBuildEvent)"
+      OldValue="!(TargetPath)"
+      NewValue="$(TargetPath)">
+      
+      <Output TaskParameter="Text" PropertyName="ExpandedPostBuildEvent" />
+    </ReplaceString>
+
+    <ReplaceString
+      Text="$(ExpandedPostBuildEvent)"
+      OldValue="!(TargetPdbPath)"
+      NewValue="$(TargetPdbPath)">
+      
+      <Output TaskParameter="Text" PropertyName="ExpandedPostBuildEvent" />
+    </ReplaceString>
+
+    <Exec WorkingDirectory="$(OutDir)" Command="$(ExpandedPostBuildEvent)" />
   </Target>
 
   <!--
@@ -2035,11 +1966,9 @@ Copyright (c) Microsoft Corporation. All rights reserved.
       <Output TaskParameter="Include" ItemName="BuiltProjectOutputGroupOutput" />
     </CreateItem>
 
-    <!-- Figure out the localized versions of the output and include if appropriate -->
+    <!-- Include build output(s).  Different than predefined itemgroup since AssignCultures target may change it -->
     <CreateItem
-      Include="$(TargetDir)%(EmbeddedResourceWithCulture.Culture)\$(TargetName)$(TargetExt)"
-      Condition="  '%(EmbeddedResourceWithCulture.Culture)' != '' ">
-
+      Include="$(TargetPath)">
       <Output TaskParameter="Include" ItemName="BuiltProjectOutputGroupOutput" />
     </CreateItem>
   </Target>
@@ -2065,11 +1994,9 @@ Copyright (c) Microsoft Corporation. All rights reserved.
     Outputs="@(DebugSymbolsProjectOutputGroupOutput)"
     DependsOnTargets="$(DebugSymbolsProjectOutputGroupDependsOn)">
 
-    <!-- Include the localized pdb files, if this project is localizable. -->
+    <!-- Include build output pdb(s).  Different than predefined itemgroup since AssignCultures target may change -->
     <CreateItem
-      Include="$(TargetDir)%(EmbeddedResourceWithCulture.Culture)\$(TargetName)$(TargetPdbExt)"
-      Condition=" '%(EmbeddedResourceWithCulture.Culture)' != '' ">
-
+      Include="$(TargetPdbPath)">
       <Output TaskParameter="Include" ItemName="DebugSymbolsProjectOutputGroupOutput" />
     </CreateItem>
   </Target>

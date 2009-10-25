@@ -3,7 +3,9 @@
     <?include ..\..\Installer.Wix\Features.wxi ?>
     
     <?ifdef FEATURE_RSPEC_ADAPTER ?>
+    <?define RSpec.libs.source = "$(var.GallioTargetDir)\bin\RSpec\libs" ?>
     <?include RSpec-libs.wxi ?>
+    <?define RSpec.scripts.source = "$(var.GallioTargetDir)\bin\RSpec\Scripts" ?>
     <?include RSpec-scripts.wxi ?>
 
     <Fragment>
@@ -19,8 +21,8 @@
         <Feature Id="feat_RSpecAdapter" Title="RSpec" Level="1" AllowAdvertise="no"
             Description="Installs the RSpec adapter.  Enables Gallio to run RSpec tests.">
             <ComponentRef Id="Gallio.RSpecAdapter" />
-            <ComponentGroupRef Id="RSpec.libs.ComponentGroup1" />
-            <ComponentGroupRef Id="RSpec.scripts.ComponentGroup1" />
+            <ComponentGroupRef Id="RSpec.libs.ComponentGroup" />
+            <ComponentGroupRef Id="RSpec.scripts.ComponentGroup" />
         </Feature>
     </Fragment>
     <?endif ?>

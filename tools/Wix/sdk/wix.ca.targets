@@ -19,8 +19,10 @@ Copyright (c) Microsoft Corporation. All rights reserved.
   <Import Project="$(CustomBeforeWixCATargets)" Condition=" '$(CustomBeforeWixCATargets)' != '' and Exists('$(CustomBeforeWixCATargets)')" />
 
   <PropertyGroup>
-    <WixCATargetsPath Condition=" '$(WixCATargetsPath)' == '' ">$(MSBuildExtensionsPath)\Microsoft\WiX\v3.0\wix.ca.targets</WixCATargetsPath>
-    <WixTasksPath Condition=" '$(WixTasksPath)' == '' ">$(MSBuildExtensionsPath)\Microsoft\WiX\v3.0\WixTasks.dll</WixTasksPath>
+    <WixCATargetsPath Condition=" '$(WixCATargetsPath)' == '' AND '$(MSBuildExtensionsPath32)' != '' ">$(MSBuildExtensionsPath32)\Microsoft\WiX\v3.5\wix.ca.targets</WixCATargetsPath>
+    <WixTasksPath Condition=" '$(WixTasksPath)' == '' AND '$(MSBuildExtensionsPath32)' != '' ">$(MSBuildExtensionsPath32)\Microsoft\WiX\v3.5\WixTasks.dll</WixTasksPath>
+    <WixCATargetsPath Condition=" '$(WixCATargetsPath)' == '' ">$(MSBuildExtensionsPath)\Microsoft\WiX\v3.5\wix.ca.targets</WixCATargetsPath>
+    <WixTasksPath Condition=" '$(WixTasksPath)' == '' ">$(MSBuildExtensionsPath)\Microsoft\WiX\v3.5\WixTasks.dll</WixTasksPath>
 
     <TargetCAFileName Condition=" '$(TargetCAFileName)' == '' ">$(TargetName).CA$(TargetExt)</TargetCAFileName>
   </PropertyGroup>
@@ -39,8 +41,8 @@ Copyright (c) Microsoft Corporation. All rights reserved.
   ==================================================================================================
   -->
   <PropertyGroup>
-    <WixInstallRegKey>SOFTWARE\Microsoft\Windows Installer XML\3.0</WixInstallRegKey>
-    <WixInstallRegKeyWow64>SOFTWARE\Wow6432Node\Microsoft\Windows Installer XML\3.0</WixInstallRegKeyWow64>
+    <WixInstallRegKey>SOFTWARE\Microsoft\Windows Installer XML\3.5</WixInstallRegKey>
+    <WixInstallRegKeyWow64>SOFTWARE\Wow6432Node\Microsoft\Windows Installer XML\3.5</WixInstallRegKeyWow64>
   </PropertyGroup>
   <Target
     Name="_SetDefaultPathValues">

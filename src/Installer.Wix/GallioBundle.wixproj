@@ -15,6 +15,7 @@
     <WixTargetsPath Condition=" '$(WixTargetsPath)' == '' ">$(MSBuildExtensionsPath)\Microsoft\WiX\v3.0\Wix.targets</WixTargetsPath>
     <TargetDir Condition="'$(TargetDir)'==''">$(MSBuildProjectDirectory)\..\..\build\image</TargetDir>
     <SetMsiAssemblyNameFileVersion>true</SetMsiAssemblyNameFileVersion>
+    <ExactAssemblyVersions>true</ExactAssemblyVersions>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <OutputPath>bin\$(Platform)\$(Configuration)\</OutputPath>

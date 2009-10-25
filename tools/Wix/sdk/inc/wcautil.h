@@ -41,9 +41,6 @@ extern "C" {
 #define MessageExitOnNullWithLastError1(p, x, e, f, s) if (NULL == p) { x = ::GetLastError(); x = HRESULT_FROM_WIN32(x); if (!FAILED(x)) { x = E_FAIL; } ExitTrace(x, f, s); WcaErrorMessage(e, x, MB_OK, 1, s);  goto LExit; }
 #define MessageExitOnNullWithLastError2(p, x, e, f, s, t) if (NULL == p) { x = ::GetLastError(); x = HRESULT_FROM_WIN32(x); if (!FAILED(x)) { x = E_FAIL; } ExitTrace(x, f, s, t); WcaErrorMessage(e, x, MB_OK, 2, s, t);  goto LExit; }
 
-#define MAX_DARWIN_KEY 73
-#define MAX_DARWIN_COLUMN 255
-
 // Generic action enum.
 enum WCA_ACTION
 {
@@ -153,16 +150,16 @@ BOOL WIXAPI WcaIsUninstalling(
     );
 
 HRESULT WIXAPI WcaSetComponentState(
-    __in LPCWSTR wzComponent,
+    __in_z LPCWSTR wzComponent,
     __in INSTALLSTATE isState
     );
 
 HRESULT WIXAPI WcaTableExists(
-    __in LPCWSTR wzTable
+    __in_z LPCWSTR wzTable
     );
 
 HRESULT WIXAPI WcaOpenView(
-    __in LPCWSTR wzSql,
+    __in_z LPCWSTR wzSql,
     __out MSIHANDLE* phView
     );
 HRESULT WIXAPI WcaExecuteView(
@@ -170,7 +167,7 @@ HRESULT WIXAPI WcaExecuteView(
     __in MSIHANDLE hRec
     );
 HRESULT WIXAPI WcaOpenExecuteView(
-    __in LPCWSTR wzSql,
+    __in_z LPCWSTR wzSql,
     __out MSIHANDLE* phView
     );
 HRESULT WIXAPI WcaFetchRecord(
@@ -183,31 +180,31 @@ HRESULT WIXAPI WcaFetchSingleRecord(
     );
 
 HRESULT WIXAPI WcaGetProperty(
-    __in LPCWSTR wzProperty,
+    __in_z LPCWSTR wzProperty,
     __inout LPWSTR* ppwzData
     );
 HRESULT WIXAPI WcaGetFormattedProperty(
-    __in LPCWSTR wzProperty,
+    __in_z LPCWSTR wzProperty,
     __out LPWSTR* ppwzData
     );
 HRESULT WIXAPI WcaGetFormattedString(
-    __in LPCWSTR wzString,
+    __in_z LPCWSTR wzString,
     __out LPWSTR* ppwzData
     );
 HRESULT WIXAPI WcaGetIntProperty(
-    __in LPCWSTR wzProperty,
+    __in_z LPCWSTR wzProperty,
     __inout int* piData
     );
 HRESULT WIXAPI WcaGetTargetPath(
-    __in LPCWSTR wzFolder,
+    __in_z LPCWSTR wzFolder,
     __out LPWSTR* ppwzData
     );
 HRESULT WIXAPI WcaSetProperty(
-    __in LPCWSTR wzPropertyName,
-    __in LPCWSTR wzPropertyValue
+    __in_z LPCWSTR wzPropertyName,
+    __in_z LPCWSTR wzPropertyValue
     );
 HRESULT WIXAPI WcaSetIntProperty(
-    __in LPCWSTR wzPropertyName,
+    __in_z LPCWSTR wzPropertyName,
     __in int nPropertyValue
     );
 BOOL WIXAPI WcaIsPropertySet(
@@ -252,7 +249,7 @@ HRESULT WIXAPI WcaGetRecordStream(
 HRESULT WIXAPI WcaSetRecordString(
     __in MSIHANDLE hRec,
     __in UINT uiField,
-    __in LPCWSTR wzData
+    __in_z LPCWSTR wzData
     );
 HRESULT WIXAPI WcaSetRecordInteger(
     __in MSIHANDLE hRec,
@@ -261,12 +258,12 @@ HRESULT WIXAPI WcaSetRecordInteger(
     );
 
 HRESULT WIXAPI WcaDoDeferredAction(
-    __in LPCWSTR wzAction,
-    __in LPCWSTR wzCustomActionData,
+    __in_z LPCWSTR wzAction,
+    __in_z LPCWSTR wzCustomActionData,
     __in UINT uiCost
     );
 DWORD WIXAPI WcaCountOfCustomActionDataRecords(
-    __in LPCWSTR wzData
+    __in_z LPCWSTR wzData
     );
 HRESULT WIXAPI WcaReadStringFromCaData(
     __inout LPWSTR* ppwzCustomActionData,
@@ -282,7 +279,7 @@ HRESULT WIXAPI WcaReadStreamFromCaData(
     __out DWORD_PTR* pcbData
     );
 HRESULT WIXAPI WcaWriteStringToCaData(
-    __in LPCWSTR wzString,
+    __in_z LPCWSTR wzString,
     __inout LPWSTR* ppwzCustomActionData
     );
 HRESULT WIXAPI WcaWriteIntegerToCaData(
@@ -298,7 +295,7 @@ HRESULT WIXAPI WcaWriteStreamToCaData(
 HRESULT __cdecl WcaAddTempRecord(
     __inout MSIHANDLE* phTableView,
     __inout MSIHANDLE* phColumns,
-    __in LPCWSTR wzTable,
+    __in_z LPCWSTR wzTable,
     __out_opt MSIDBERROR* pdbError,
     __in UINT uiUniquifyColumn,
     __in UINT cColumns,
@@ -306,7 +303,7 @@ HRESULT __cdecl WcaAddTempRecord(
     );
 
 HRESULT WIXAPI WcaDumpTable(
-    __in LPCWSTR wzTable
+    __in_z LPCWSTR wzTable
     );
 
 HRESULT WIXAPI WcaDeferredActionRequiresReboot();
@@ -320,7 +317,7 @@ HRESULT WIXAPI WcaCaScriptCreate(
     __in WCA_ACTION action,
     __in WCA_CASCRIPT script,
     __in BOOL fImpersonated,
-    __in LPCWSTR wzScriptKey,
+    __in_z LPCWSTR wzScriptKey,
     __in BOOL fAppend,
     __out WCA_CASCRIPT_HANDLE* phScript
     );
@@ -329,7 +326,7 @@ HRESULT WIXAPI WcaCaScriptOpen(
     __in WCA_ACTION action,
     __in WCA_CASCRIPT script,
     __in BOOL fImpersonated,
-    __in LPCWSTR wzScriptKey,
+    __in_z LPCWSTR wzScriptKey,
     __out WCA_CASCRIPT_HANDLE* phScript
     );
 
@@ -345,7 +342,7 @@ HRESULT WIXAPI WcaCaScriptReadAsCustomActionData(
 
 HRESULT WIXAPI WcaCaScriptWriteString(
     __in WCA_CASCRIPT_HANDLE hScript,
-    __in LPCWSTR wzValue
+    __in_z LPCWSTR wzValue
     );
 
 HRESULT WIXAPI WcaCaScriptWriteNumber(
@@ -358,17 +355,17 @@ void WIXAPI WcaCaScriptFlush(
     );
 
 void WIXAPI WcaCaScriptCleanup(
-    __in LPCWSTR wzProductCode,
+    __in_z LPCWSTR wzProductCode,
     __in BOOL fImpersonated
     );
 
-HRESULT QuietExec(
-    __in LPWSTR wzCommand,
+HRESULT WIXAPI QuietExec(
+    __in_z LPWSTR wzCommand,
     __in DWORD dwTimeout
     );
 
-WCA_TODO WcaGetComponentToDo(
-    __in LPCWSTR wzComponentId
+WCA_TODO WIXAPI WcaGetComponentToDo(
+    __in_z LPCWSTR wzComponentId
     );
 
 #ifdef __cplusplus

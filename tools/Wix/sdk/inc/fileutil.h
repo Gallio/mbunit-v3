@@ -17,13 +17,22 @@
 // </summary>
 //-------------------------------------------------------------------------------------------------
 
-#include <wchar.h>
-
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 #define ReleaseFile(h) if (INVALID_HANDLE_VALUE != h) { ::CloseHandle(h); h = INVALID_HANDLE_VALUE; }
+#define ReleaseFileHandle(h) if (INVALID_HANDLE_VALUE != h) { ::CloseHandle(h); h = INVALID_HANDLE_VALUE; }
+#define ReleaseFileFindHandle(h) if (INVALID_HANDLE_VALUE != h) { ::FindClose(h); h = INVALID_HANDLE_VALUE; }
+
+enum FILE_ARCHITECTURE
+{
+    FILE_ARCHITECTURE_UNKNOWN,
+    FILE_ARCHITECTURE_X86,
+    FILE_ARCHITECTURE_X64,
+    FILE_ARCHITECTURE_IA64,
+};
+
 
 LPWSTR DAPI FileFromPath(
     __in LPCWSTR wzPath
@@ -36,10 +45,35 @@ HRESULT DAPI FileStripExtension(
     __in LPCWSTR wzFileName,
     __out LPWSTR *ppwzFileNameNoExtension
     );
+HRESULT DAPI FileChangeExtension(
+    __in LPCWSTR wzFileName,
+    __in LPCWSTR wzNewExtension,
+    __out LPWSTR *ppwzFileNameNewExtension
+    );
+HRESULT DAPI FileAddSuffixToBaseName(
+    __in_z LPCWSTR wzFileName,
+    __in_z LPCWSTR wzSuffix,
+    __out_z LPWSTR* psczNewFileName
+    );
 HRESULT DAPI FileVersionFromString(
     __in LPCWSTR wzVersion, 
     __out DWORD *pdwVerMajor, 
     __out DWORD* pdwVerMinor
+    );
+HRESULT DAPI FileVersionFromStringEx(
+    __in LPCWSTR wzVersion,
+    __in DWORD cchVersion,
+    __out DWORD64* pqwVersion
+    );
+HRESULT DAPI FileSetPointer(
+    __in HANDLE hFile,
+    __in DWORD64 dw64Move,
+    __out_opt DWORD64* pdw64NewPosition,
+    __in DWORD dwMoveMethod
+    );
+HRESULT DAPI FileSize(
+    __in LPCWSTR pwzFileName,
+    __out LONGLONG* pllSize
     );
 HRESULT DAPI FileSizeByHandle(
     __in HANDLE hFile, 
@@ -50,7 +84,7 @@ BOOL DAPI FileExistsEx(
     __out_opt DWORD *pdwAttributes
     );
 HRESULT DAPI FileRead(
-    __out LPBYTE* ppbDest,
+    __deref_out_bcount_full(*pcbDest) LPBYTE* ppbDest,
     __out DWORD* pcbDest,
     __in LPCWSTR wzSrcPath
     );
@@ -87,19 +121,19 @@ HRESULT DAPI FileEnsureMove(
     __in BOOL fOverwrite,
     __in BOOL fAllowCopy
     );
-HRESULT FileCreateTemp(
+HRESULT DAPI FileCreateTemp(
     __in LPCWSTR wzPrefix,
     __in LPCWSTR wzExtension,
-    __deref_out_z LPWSTR* ppwzLog,
-    __out HANDLE* phLog
+    __deref_opt_out_z LPWSTR* ppwzTempFile,
+    __out_opt HANDLE* phTempFile
     );
-HRESULT FileCreateTempW(
+HRESULT DAPI FileCreateTempW(
     __in LPCWSTR wzPrefix,
     __in LPCWSTR wzExtension,
-    __deref_out_z LPWSTR* ppwzTempFile,
-    __out HANDLE* phTempFile
+    __deref_opt_out_z LPWSTR* ppwzTempFile,
+    __out_opt HANDLE* phTempFile
     );
-HRESULT FileVersion(
+HRESULT DAPI FileVersion(
     __in LPCWSTR wzFilename, 
     __out DWORD *pdwVerMajor, 
     __out DWORD* pdwVerMinor
@@ -119,13 +153,17 @@ HRESULT DAPI FileGetTime(
     __out_opt  LPFILETIME lpLastWriteTime
     );
 HRESULT DAPI FileSetTime(
-    __in LPCWSTR wzFile,  
+    __in LPCWSTR wzFile,
     __in_opt  const FILETIME *lpCreationTime,
     __in_opt  const FILETIME *lpLastAccessTime,
     __in_opt  const FILETIME *lpLastWriteTime
     );
 HRESULT DAPI FileResetTime(
     __in LPCWSTR wzFile
+    );
+HRESULT FileExecutableArchitecture(
+    __in LPCWSTR wzFile,
+    __out FILE_ARCHITECTURE *pArchitecture
     );
 
 #ifdef __cplusplus

@@ -55,13 +55,15 @@ HRESULT DAPI CabExtract(
     __in LPCWSTR wzExtractFile,
     __in LPCWSTR wzExtractDir,
     __in_opt CAB_CALLBACK_PROGRESS pfnProgress,
-    __in_opt LPVOID pvContext
+    __in_opt LPVOID pvContext,
+    __in DWORD64 dw64EmbeddedOffset
     );
 
 HRESULT DAPI CabEnumerate(
     __in LPCWSTR wzCabinet,
     __in LPCWSTR wzEnumerateFile,
-    __in STDCALL_PFNFDINOTIFY pfnNotify
+    __in STDCALL_PFNFDINOTIFY pfnNotify,
+    __in DWORD64 dw64EmbeddedOffset
     );
 
 #ifdef __cplusplus
