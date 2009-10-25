@@ -13,6 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Gallio.Common.Collections;
 using Gallio.Runtime.ConsoleSupport;
 
 namespace Gallio.Host
@@ -66,6 +67,15 @@ namespace Gallio.Host
             ValueLabel = "dir"
             )]
         public string ApplicationBaseDirectory;
+
+        [CommandLineArgument(
+            CommandLineArgumentFlags.MultipleUnique,
+            ShortName = "hd",
+            LongName = "hint-directory",
+            Description = "Additional directories used for loading referenced assemblies and other dependent resources.",
+            ValueLabel = "dir"
+            )]
+        public string[] HintDirectories = EmptyArray<string>.Instance;
 
         [CommandLineArgument(
             CommandLineArgumentFlags.AtMostOnce,

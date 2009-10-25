@@ -53,9 +53,9 @@ namespace Gallio.Runtime
                 throw new InvalidOperationException("The runtime has already been initialized.");
 
             var registry = new Registry();
-            var assemblyResolverManager = new DefaultAssemblyLoader();
+            var assemblyLoader = new DefaultAssemblyLoader();
             var pluginLoader = new CachingPluginLoader();
-            IRuntime runtime = new DefaultRuntime(registry, pluginLoader, assemblyResolverManager, setup); // TODO: make me configurable via setup
+            IRuntime runtime = new DefaultRuntime(registry, pluginLoader, assemblyLoader, setup); // TODO: make me configurable via setup
             if (logger != null)
                 runtime.AddLogListener(logger);
 

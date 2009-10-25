@@ -17,11 +17,13 @@ using System;
 using System.Diagnostics;
 using Gallio.Runtime.Hosting;
 using Gallio.Common.Remoting;
+using Gallio.Runtime.Loader;
 
 namespace Gallio.Host
 {
     internal class HostEndpoint : LongLivedMarshalByRefObject, IDisposable
     {
+        private DefaultAssemblyLoader assemblyLoader;
         private IServerChannel serverChannel;
         private IClientChannel callbackChannel;
 
@@ -40,6 +42,20 @@ namespace Gallio.Host
                 callbackChannel.Dispose();
                 callbackChannel = null;
             }
+
+            if (assemblyLoader != null)
+            {
+                assemblyLoader.Dispose();
+                assemblyLoader = null;
+            }
+        }
+
+        public void AddHintDirectory(string hintDirectory)
+        {
+            if (assemblyLoader == null)
+                assemblyLoader = new DefaultAssemblyLoader();
+
+            assemblyLoader.AddHintDirectory(hintDirectory);
         }
 
         public void InitializeIpcChannel(string portName)

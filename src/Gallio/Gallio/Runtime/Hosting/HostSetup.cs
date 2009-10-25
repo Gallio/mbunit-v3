@@ -14,6 +14,8 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Reflection;
 using System.Threading;
@@ -33,6 +35,7 @@ namespace Gallio.Runtime.Hosting
     {
         private string applicationBaseDirectory;
         private string workingDirectory;
+        private readonly List<string> hintDirectories;
         private bool shadowCopy;
         private DebuggerSetup debuggerSetup;
         private string runtimeVersion;
@@ -47,6 +50,7 @@ namespace Gallio.Runtime.Hosting
         /// </summary>
         public HostSetup()
         {
+            hintDirectories = new List<string>();
             properties = new PropertySet();
         }
 
@@ -102,6 +106,25 @@ namespace Gallio.Runtime.Hosting
         {
             get { return workingDirectory; }
             set { workingDirectory = value; }
+        }
+
+        /// <summary>
+        /// Gets the read-only list of relative or absolute paths of
+        /// hint directories used to resolve assemblies.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// If relative, the path is based on the current working directory,
+        /// so a value of "" causes the current working directory to be used.
+        /// </para>
+        /// <para>
+        /// Relative paths should be canonicalized as soon as possible.
+        /// See <see cref="Canonicalize" />.
+        /// </para>
+        /// </remarks>
+        public IList<string> HintDirectories
+        {
+            get { return new ReadOnlyCollection<string>(hintDirectories); }
         }
 
         /// <summary>
@@ -185,6 +208,51 @@ namespace Gallio.Runtime.Hosting
         }
 
         /// <summary>
+        /// Clears the list of hint directories.
+        /// </summary>
+        public void ClearHintDirectories()
+        {
+            hintDirectories.Clear();
+        }
+
+        /// <summary>
+        /// Adds the relative or absolute path of a hint directory if it is not already in the host setup.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// If relative, the path is based on the current working directory,
+        /// so a value of "" causes the current working directory to be used.
+        /// </para>
+        /// <para>
+        /// Relative paths should be canonicalized as soon as possible.
+        /// See <see cref="Canonicalize" />.
+        /// </para>
+        /// </remarks>
+        /// <param name="directory">The directory to add.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="directory"/> is null.</exception>
+        public void AddHintDirectory(string directory)
+        {
+            if (directory == null)
+                throw new ArgumentNullException("directory");
+
+            if (! hintDirectories.Contains(directory))
+                hintDirectories.Add(directory);
+        }
+
+        /// <summary>
+        /// Removes a hint directory.
+        /// </summary>
+        /// <param name="directory">The directory to remove.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="directory"/> is null.</exception>
+        public void RemoveHintDirectory(string directory)
+        {
+            if (directory == null)
+                throw new ArgumentNullException("directory");
+
+            hintDirectories.Remove(directory);
+        }
+
+        /// <summary>
         /// Clears the collection of properties.
         /// </summary>
         public void ClearProperties()
@@ -223,6 +291,7 @@ namespace Gallio.Runtime.Hosting
             HostSetup copy = new HostSetup();
             copy.applicationBaseDirectory = applicationBaseDirectory;
             copy.workingDirectory = workingDirectory;
+            copy.hintDirectories.AddRange(hintDirectories);
             copy.shadowCopy = shadowCopy;
             if (debuggerSetup != null)
                 copy.debuggerSetup = debuggerSetup.Copy();
@@ -247,6 +316,8 @@ namespace Gallio.Runtime.Hosting
         {
             applicationBaseDirectory = GetCanonicalApplicationBaseDirectory(baseDirectory);
             workingDirectory = FileUtils.CanonicalizePath(baseDirectory, workingDirectory);
+            for (int i = 0; i < hintDirectories.Count; i++)
+                hintDirectories[i] = FileUtils.CanonicalizePath(baseDirectory, hintDirectories[i]);
         }
 
         /// <summary>

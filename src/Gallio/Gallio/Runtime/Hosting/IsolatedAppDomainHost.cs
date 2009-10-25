@@ -16,12 +16,11 @@
 using System;
 using System.Diagnostics;
 using System.IO;
-using System.Reflection;
-using System.Text;
 using Gallio.Common.IO;
+using Gallio.Common.Remoting;
 using Gallio.Runtime.Debugging;
+using Gallio.Runtime.Loader;
 using Gallio.Runtime.Logging;
-using Gallio.Runtime;
 using Gallio.Common.Reflection;
 
 namespace Gallio.Runtime.Hosting
@@ -84,7 +83,12 @@ namespace Gallio.Runtime.Hosting
                 CreateAppDomain();
                 AttachDebuggerIfNeeded(debuggerManager, Process.GetCurrentProcess());
 
-                return (IRemoteHostService) AppDomainUtils.CreateRemoteInstance(appDomain, typeof(RemoteHostService), (TimeSpan?)null);
+                var endpoint = (IsolatedAppDomainEndpoint)AppDomainUtils.CreateRemoteInstance(appDomain, typeof(IsolatedAppDomainEndpoint));
+
+                foreach (string hintDirectory in HostSetup.HintDirectories)
+                    endpoint.AddHintDirectory(hintDirectory);
+
+                return endpoint.CreateRemoteHostService(null);
             }
             catch (Exception)
             {
@@ -183,6 +187,24 @@ namespace Gallio.Runtime.Hosting
             finally
             {
                 temporaryConfigurationFilePath = null;
+            }
+        }
+
+        internal class IsolatedAppDomainEndpoint : LongLivedMarshalByRefObject
+        {
+            private DefaultAssemblyLoader assemblyLoader;
+
+            public void AddHintDirectory(string hintDirectory)
+            {
+                if (assemblyLoader == null)
+                    assemblyLoader = new DefaultAssemblyLoader();
+
+                assemblyLoader.AddHintDirectory(hintDirectory);
+            }
+
+            public IRemoteHostService CreateRemoteHostService(TimeSpan? watchdogTimeout)
+            {
+                return new RemoteHostService(watchdogTimeout);
             }
         }
     }
