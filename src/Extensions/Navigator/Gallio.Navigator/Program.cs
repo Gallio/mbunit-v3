@@ -27,7 +27,7 @@ namespace Gallio.Navigator
     /// It accepts a single argument which is the Url to which navigation should take place.
     /// </para>
     /// </remarks>
-    internal class Program : GallioNavigatorClient
+    internal class Program
     {
         public static int Main(string[] args)
         {
@@ -46,7 +46,13 @@ namespace Gallio.Navigator
             if (command == null)
                 return 1;
 
-            return command.Execute(Navigator) ? 0 : 1;
+            IGallioNavigator engine = CreateNavigatorEngine(); 
+            return command.Execute(engine) ? 0 : 1;
+        }
+
+        protected virtual IGallioNavigator CreateNavigatorEngine()
+        {
+            return new GallioNavigatorEngine(false);
         }
 
         protected virtual void ShowHelp()

@@ -156,6 +156,7 @@
     <Compile Include="Common\NamespaceDoc.cs" />
     <Compile Include="Common\Normalization\NamespaceDoc.cs" />
     <Compile Include="Common\Platform\NamespaceDoc.cs" />
+    <Compile Include="Common\Platform\ProcessIntegrityLevel.cs" />
     <Compile Include="Common\Policies\NamespaceDoc.cs" />
     <Compile Include="Common\Policies\SpecialPathPolicy.cs" />
     <Compile Include="Common\Markup\Attachment.cs" />

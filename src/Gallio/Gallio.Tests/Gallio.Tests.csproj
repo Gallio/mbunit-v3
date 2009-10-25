@@ -103,6 +103,7 @@
     <Compile Include="Common\Messaging\TopicTest.cs" />
     <Compile Include="Common\MockableConditionContext.cs" />
     <Compile Include="Common\Normalization\NormalizationUtilsTest.cs" />
+    <Compile Include="Common\Platform\ProcessSupportTest.cs" />
     <Compile Include="Common\Policies\VersionPolicyTest.cs" />
     <Compile Include="Common\Policies\SpecialPathPolicyTest.cs" />
     <Compile Include="Common\Reflection\AssemblySignatureTest.cs" />
@@ -414,7 +415,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Common\Platform\" />
     <Folder Include="Framework\Utilities\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Specialized;
 using MbUnit.Framework;
 using Rhino.Mocks;
 
@@ -29,7 +30,7 @@ namespace Gallio.Navigator.Tests
         }
 
         [Test]
-        public void ParseUri_ProtocolIsInvalid_ReturnsNull()
+        public void ParseUri_WhenProtocolIsInvalid_ReturnsNull()
         {
             var command = GallioNavigatorCommand.ParseUri("proto:foo");
 
@@ -37,11 +38,42 @@ namespace Gallio.Navigator.Tests
         }
 
         [Test]
-        public void ParseUri_UrilIsMalformed_ReturnsNull()
+        public void ParseUri_WhenUriIsMalformed_ReturnsNull()
         {
             var command = GallioNavigatorCommand.ParseUri("\0");
 
             Assert.IsNull(command);
+        }
+
+        [Test]
+        public void ToUri_WhenNoArguments_ReturnsCommandUriWithNoQueryParameters()
+        {
+            var command = new GallioNavigatorCommand("command", new NameValueCollection());
+
+            Assert.AreEqual("gallio:command", command.ToUri());
+        }
+
+        [Test]
+        public void ToUri_WhenOneArgument_ReturnsCommandUriWithOneQueryParameter()
+        {
+            var command = new GallioNavigatorCommand("command", new NameValueCollection()
+                {
+                    { "arg/1", "value?1" }
+                });
+
+            Assert.AreEqual("gallio:command?arg%2F1=value%3F1", command.ToUri());
+        }
+
+        [Test]
+        public void ToUri_WhenTwoArguments_ReturnsCommandUriWithTwoQueryParameters()
+        {
+            var command = new GallioNavigatorCommand("command", new NameValueCollection()
+                {
+                    { "arg/1", "value?1" },
+                    { "arg/2", "value?2" }
+                });
+
+            Assert.AreEqual("gallio:command?arg%2F1=value%3F1&arg%2F2=value%3F2", command.ToUri());
         }
 
         [Test]

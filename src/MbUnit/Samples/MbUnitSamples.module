@@ -2,11 +2,11 @@
   <Import Project="$(MetaBuildBinDir)\MetaBuild.Module.targets" />
 
   <ItemGroup>
-    <CSharpProject Include="Unit Testing\MbUnit.Samples\MbUnit.Samples$(ProjectVariant).csproj" />
+    <CSharpProject Include="Unit Testing\MbUnit.Samples\MbUnit.Samples$(ProjectVariantExplicit).csproj" />
 
-    <CSharpProject Include="Web Testing with WatiN\MbUnit.Samples.WebTestingWithWatiN\MbUnit.Samples.WebTestingWithWatiN$(ProjectVariant).csproj" />
+    <CSharpProject Include="Web Testing with WatiN\MbUnit.Samples.WebTestingWithWatiN\MbUnit.Samples.WebTestingWithWatiN$(ProjectVariantExplicit).csproj" />
 
-    <CSharpProject Include="GUI Testing with White\MbUnit.Samples.GUITestingWithWhite\MbUnit.Samples.GUITestingWithWhite$(ProjectVariant).csproj" />
+    <CSharpProject Include="GUI Testing with White\MbUnit.Samples.GUITestingWithWhite\MbUnit.Samples.GUITestingWithWhite$(ProjectVariantExplicit).csproj" />
 
     <File Include="Readme.txt">
       <ImagePath>samples\MbUnit</ImagePath>

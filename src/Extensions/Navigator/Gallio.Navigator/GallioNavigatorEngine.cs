@@ -15,9 +15,12 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.IO;
 using EnvDTE;
 using System.Runtime.InteropServices;
+using Gallio.Common.Platform;
+using Gallio.Common.Reflection;
 using Gallio.Navigator.Native;
 using Gallio.Runtime.Logging;
 using Gallio.UI.ErrorReporting;
@@ -26,30 +29,34 @@ using Gallio.VisualStudio.Interop;
 namespace Gallio.Navigator
 {
     /// <summary>
-    /// Gallio navigator implementation.
+    /// Gallio navigator engine.
     /// </summary>
-    public class GallioNavigatorImpl : IGallioNavigator
+    public class GallioNavigatorEngine : IGallioNavigator
     {
+        private readonly bool possiblyRunningInIE;
         private readonly IVisualStudioManager visualStudioManager;
 
         /// <summary>
         /// Creates a navigator.
         /// </summary>
         /// <param name="visualStudioManager">The visual studio manager.</param>
+        /// <param name="possiblyRunningInIE">True if the navigator code may be running in IE.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="visualStudioManager"/> is null.</exception>
-        public GallioNavigatorImpl(IVisualStudioManager visualStudioManager)
+        public GallioNavigatorEngine(bool possiblyRunningInIE, IVisualStudioManager visualStudioManager)
         {
             if (visualStudioManager == null)
                 throw new ArgumentNullException("visualStudioManager");
 
+            this.possiblyRunningInIE = possiblyRunningInIE;
             this.visualStudioManager = visualStudioManager;
         }
 
         /// <summary>
         /// Creates a navigator.
         /// </summary>
-        public GallioNavigatorImpl()
-            : this(VisualStudioManager.Instance)
+        /// <param name="possiblyRunningInIE">True if the navigator code may be running in IE.</param>
+        public GallioNavigatorEngine(bool possiblyRunningInIE)
+            : this(possiblyRunningInIE, VisualStudioManager.Instance)
         {
         }
 
@@ -69,7 +76,10 @@ namespace Gallio.Navigator
 
             try
             {
-                return NavigateToImpl(path, lineNumber, columnNumber);
+                if (IsElevationNeededToAccessVisualStudio())
+                    return NavigateToFileUsingHelperProcess(path, lineNumber, columnNumber);
+
+                return NavigateToFileInVisualStudio(path, lineNumber, columnNumber);
             }
             catch (Exception ex)
             {
@@ -80,7 +90,28 @@ namespace Gallio.Navigator
             }
         }
 
-        private bool NavigateToImpl(string path, int lineNumber, int columnNumber)
+        private bool IsElevationNeededToAccessVisualStudio()
+        {
+            if (!possiblyRunningInIE)
+                return false;
+
+            ProcessIntegrityLevel integrityLevel = ProcessSupport.ProcessIntegrityLevel;
+            return integrityLevel != ProcessIntegrityLevel.Unknown
+                && integrityLevel < ProcessIntegrityLevel.Medium;
+        }
+
+        private bool NavigateToFileUsingHelperProcess(string path, int lineNumber, int columnNumber)
+        {
+            var command = GallioNavigatorCommand.CreateNavigateToCommand(path, lineNumber, columnNumber);
+
+            string navigatorExePath = AssemblyUtils.GetFriendlyAssemblyLocation(GetType().Assembly);
+            string navigatorArgs = command.ToUri();
+
+            System.Diagnostics.Process.Start(navigatorExePath, navigatorArgs);
+            return true;
+        }
+
+        private bool NavigateToFileInVisualStudio(string path, int lineNumber, int columnNumber)
         {
             path = Path.GetFullPath(path);
 

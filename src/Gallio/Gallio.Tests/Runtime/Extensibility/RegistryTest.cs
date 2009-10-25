@@ -1479,7 +1479,7 @@ namespace Gallio.Tests.Runtime.Extensibility
             }
 
             [Test]
-            public void DisabledReason_WhenPluginDisabledIndirectlyViaDependency_ReturnsTheReason()
+            public void DisabledReason_WhenPluginDisabledIndirectlyViaDependency_DescribesTheDependency()
             {
                 var registry = new Registry();
                 var plugin1 = registry.RegisterPlugin(new PluginRegistration("plugin1Id", new TypeName("Plugin, Assembly"), new DirectoryInfo(@"C:\")));
@@ -1490,7 +1490,7 @@ namespace Gallio.Tests.Runtime.Extensibility
 
                 plugin1.Disable("The reason");
 
-                Assert.AreEqual("The plugin depends on another disabled plugin.  Reason: The reason", plugin2.DisabledReason);
+                Assert.AreEqual("The plugin depends on another disabled plugin: 'plugin1Id'.", plugin2.DisabledReason);
             }
         }
 
@@ -1627,7 +1627,7 @@ namespace Gallio.Tests.Runtime.Extensibility
             }
 
             [Test]
-            public void DisabledReason_WhenServiceDisabled_ReturnsTheReason()
+            public void DisabledReason_WhenServiceDisabled_DescribesTheDependency()
             {
                 var registry = new Registry();
                 var plugin1 = registry.RegisterPlugin(new PluginRegistration("plugin1Id", new TypeName("Plugin1, Assembly"), new DirectoryInfo(@"C:\")));
@@ -1645,7 +1645,7 @@ namespace Gallio.Tests.Runtime.Extensibility
                 // then we should see the following message:
                 // Assert.AreEqual("The service implemented by this component was disabled.  Reason: The plugin that provides this service was disabled.  Reason: The reason", component.DisabledReason);
 
-                Assert.AreEqual("The plugin that provides this component was disabled.  Reason: The plugin depends on another disabled plugin.  Reason: The reason", component.DisabledReason);
+                Assert.AreEqual("The plugin that provides this component was disabled.  Reason: The plugin depends on another disabled plugin: 'plugin1Id'.", component.DisabledReason);
             }
         }
 

@@ -61,7 +61,7 @@ namespace Gallio.Navigator.Tests
             using (mocks.Playback())
             {
                 InstrumentedProgram program = new InstrumentedProgram();
-                program.Navigator = navigator;
+                program.Engine = navigator;
                 int returnCode = program.Run(new string[]
                 {
                     @"gallio:navigateTo?path=C:\Source\MbUnit\v3\src\Gallio\Gallio.Tests\Reflection\Impl\CecilReflectionPolicyTest.cs&line=5&column=11"
@@ -76,7 +76,14 @@ namespace Gallio.Navigator.Tests
 
         private class InstrumentedProgram : Program
         {
+            public IGallioNavigator Engine { get; set; }
+
             public bool HelpCalled { get; set; }
+
+            protected override IGallioNavigator CreateNavigatorEngine()
+            {
+                return Engine;
+            }
 
             protected override void ShowHelp()
             {

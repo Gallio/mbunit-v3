@@ -60,9 +60,8 @@
   <ItemGroup>
     <Compile Include="GallioNavigatorCommand.cs" />
     <Compile Include="GallioNavigator.cs" />
-    <Compile Include="GallioNavigatorClient.cs" />
     <Compile Include="GallioProtocolHandler.cs" />
-    <Compile Include="GallioNavigatorImpl.cs" />
+    <Compile Include="GallioNavigatorEngine.cs" />
     <Compile Include="IGallioNavigator.cs" />
     <Compile Include="Native\BINDF.cs" />
     <Compile Include="Native\BINDINFO.cs" />

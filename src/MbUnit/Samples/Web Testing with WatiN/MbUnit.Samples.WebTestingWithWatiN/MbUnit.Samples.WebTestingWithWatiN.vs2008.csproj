@@ -5,11 +5,12 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{F452B0B8-34B4-4C81-89A2-5EAA494DAFA2}</ProjectGuid>
+    <ProjectGuid>{3A8E3953-7848-4CCF-9AA4-A752030C5198}</ProjectGuid>
+    <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>MbUnit.Samples.GUITestingWithWhite</RootNamespace>
-    <AssemblyName>MbUnit.Samples.GUITestingWithWhite</AssemblyName>
+    <RootNamespace>MbUnit.Samples.WebTestingWithWatiN</RootNamespace>
+    <AssemblyName>MbUnit.Samples.WebTestingWithWatiN</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -21,9 +22,9 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <NoWarn>1591</NoWarn>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <DocumentationFile>bin\MbUnit.Samples.GUITestingWithWhite.XML</DocumentationFile>
+    <DocumentationFile>bin\MbUnit.Samples.WebTestingWithWatiN.XML</DocumentationFile>
+    <NoWarn>1591</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -32,26 +33,14 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <NoWarn>1591</NoWarn>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <DocumentationFile>bin\MbUnit.Samples.GUITestingWithWhite.XML</DocumentationFile>
+    <DocumentationFile>bin\MbUnit.Samples.WebTestingWithWatiN.XML</DocumentationFile>
+    <NoWarn>1591</NoWarn>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Bricks, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\libs\White\Bricks.dll</HintPath>
-    </Reference>
-    <Reference Include="Bricks.RuntimeFramework, Version=1.0.3001.14551, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\libs\White\Bricks.RuntimeFramework.dll</HintPath>
-    </Reference>
     <Reference Include="Gallio, Version=0.0.0.0, Culture=neutral, PublicKeyToken=eb9cfa67ee6ab36e, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\MbUnit\bin\Gallio.dll</HintPath>
-    </Reference>
-    <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\libs\White\log4net.dll</HintPath>
     </Reference>
     <Reference Include="MbUnit, Version=0.0.0.0, Culture=neutral, PublicKeyToken=eb9cfa67ee6ab36e, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -62,31 +51,22 @@
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml" />
-    <Reference Include="UIAutomationClient">
-      <RequiredTargetFramework>3.0</RequiredTargetFramework>
-    </Reference>
-    <Reference Include="White.Core, Version=0.1.7.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="WatiN.Core, Version=1.2.0.4000, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\libs\White\White.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="White.Repository, Version=0.1.7.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\libs\White\White.Repository.dll</HintPath>
+      <HintPath>..\libs\WatiN\WatiN.Core.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CalculatorScreen.cs" />
-    <Compile Include="CalculatorDemo.cs" />
-    <Compile Include="Framework\GUITestFixture.cs" />
-    <Compile Include="Framework\TestLogAppender.cs" />
+    <Compile Include="Framework\BrowserContext.cs" />
+    <Compile Include="Framework\BrowserAttribute.cs" />
+    <Compile Include="Framework\BrowserTestFixture.cs" />
+    <Compile Include="Framework\IBrowserConfiguration.cs" />
+    <Compile Include="Framework\BrowserType.cs" />
+    <Compile Include="GoogleSearchDemo.cs" />
+    <Compile Include="GoogleSearchPage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="App.config" />
-    <None Include="log4net.config">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

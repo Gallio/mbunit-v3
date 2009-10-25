@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Specialized;
 using System.Globalization;
+using System.Text;
 using System.Web;
 using System.Diagnostics;
 
@@ -74,10 +75,32 @@ namespace Gallio.Navigator
         }
 
         /// <summary>
+        /// Converts the command to a Uri.
+        /// </summary>
+        public string ToUri()
+        {
+            StringBuilder result = new StringBuilder();
+            result.Append(ProtocolScheme);
+            result.Append(':');
+            result.Append(name);
+
+            for (int i = 0; i < arguments.Count; i++)
+            {
+                result.Append(i == 0 ? '?' : '&');
+                result.Append(Uri.EscapeDataString(arguments.GetKey(i)));
+                result.Append('=');
+                result.Append(Uri.EscapeDataString(arguments[i]));
+            }
+
+            return result.ToString();
+        }
+
+        /// <summary>
         /// Parses a command request from a Uri.
         /// </summary>
         /// <param name="uriString">The uri.</param>
         /// <returns>The command request or null if it could not be parsed.</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="uriString"/> is null.</exception>
         public static GallioNavigatorCommand ParseUri(string uriString)
         {
             if (uriString == null)
@@ -146,6 +169,23 @@ namespace Gallio.Navigator
                 return defaultValue;
 
             return int.Parse(value, NumberStyles.None, CultureInfo.InvariantCulture);
+        }
+
+        /// <summary>
+        /// Creates a navigateTo command.
+        /// </summary>
+        /// <param name="path">The path.</param>
+        /// <param name="lineNumber">The line number, or 0 if unspecified.</param>
+        /// <param name="columnNumber">The column number, or 0 if unspecified.</param>
+        /// <returns>The command.</returns>
+        public static GallioNavigatorCommand CreateNavigateToCommand(string path, int lineNumber, int columnNumber)
+        {
+            return new GallioNavigatorCommand(NavigateToCommandName, new NameValueCollection()
+            {
+                { "path", path },
+                { "line", lineNumber.ToString() },
+                { "column", columnNumber.ToString() }
+            });
         }
     }
 }
