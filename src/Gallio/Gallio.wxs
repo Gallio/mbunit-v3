@@ -168,8 +168,8 @@
                 <Component Id="Gallio.Resources.css" Guid="65dc0971-e579-4226-b78a-1588d9f6977d" Win64="no">
                     <File Id="Gallio.Report.css" Name="Gallio-Report.css" KeyPath="yes" />
 
-                    <!-- Remove file generated at runtime. -->
-                    <RemoveFile Id="Gallio.Report.Generated.css" Name="Gallio.Report.Generated.css" On="uninstall" />
+                    <!-- Remove files generated at runtime. -->
+                    <RemoveFile Id="Gallio.Report.Generated.css" Name="Gallio-Report.Generated.css" On="uninstall" />
                 </Component>
             </Directory>
 
@@ -213,8 +213,9 @@
 
                 <Directory Id="Reports.img.testkinds" Name="testkinds">
                     <Component Id="Gallio.Resources.img.testkinds" Guid="{12DC88DC-9A22-49c7-B82C-5F2DD879C4D9}" Win64="no">
-                        <RemoveFolder Id="Reports.img.testkinds.RemoveFolder" On="uninstall" />
+                        <!-- Remove files generated at runtime. -->
                         <RemoveFile Id="Reports.img.testkinds.RemoveFiles" Name="*.*" On="uninstall" />
+                        <RemoveFolder Id="Reports.img.testkinds.RemoveFolder" On="uninstall" />
                     </Component>
                 </Directory>
             </Directory>
