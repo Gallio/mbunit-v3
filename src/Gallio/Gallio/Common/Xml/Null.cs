@@ -67,12 +67,12 @@ namespace Gallio.Common.Xml
         }
 
         /// <inheritdoc />
-        public bool Contains(XmlPathClosed searchedItem, string expectedValue, Options options)
+        public int CountAt(XmlPathClosed searchedItem, string expectedValue, Options options)
         {
             if (searchedItem == null)
                 throw new ArgumentNullException("searchedItem");
 
-            return searchedItem.IsEmpty;
+            return 0;
         }
     }
 }

@@ -206,101 +206,101 @@ namespace Gallio.Tests.Common.Xml
 
 
         [Test]
-        public void Contains_with_null_name_should_throw_exception()
+        public void CountAt_with_null_name_should_throw_exception()
         {
             var element = new Element(Null.Instance, "Star", "Sun", AttributeCollection.Empty);
-            Assert.Throws<ArgumentNullException>(() => element.Contains(null, null, Options.None));
+            Assert.Throws<ArgumentNullException>(() => element.CountAt(null, null, Options.None));
         }
 
         [Test]
-        public void Contains_at_depth_zero_yes()
+        public void CountAt_at_depth_zero_yes()
         {
             var element = new Element(Null.Instance, "Star", "Sun", AttributeCollection.Empty);
-            bool found = element.Contains((XmlPathClosed)XmlPath.Element("Star"), null, Options.None);
-            Assert.IsTrue(found);
+            int count = element.CountAt((XmlPathClosed)XmlPath.Element("Star"), null, Options.None);
+            Assert.AreEqual(1, count);
         }
 
         [Test]
-        public void Contains_at_depth_zero_case_insensitive_yes()
+        public void CountAt_at_depth_zero_case_insensitive_yes()
         {
             var element = new Element(Null.Instance, "Star", "Sun", AttributeCollection.Empty);
-            bool found = element.Contains((XmlPathClosed)XmlPath.Element("STAR"), null, Options.IgnoreElementsNameCase);
-            Assert.IsTrue(found);
+            int count = element.CountAt((XmlPathClosed)XmlPath.Element("STAR"), null, Options.IgnoreElementsNameCase);
+            Assert.AreEqual(1, count);
         }
 
         [Test]
-        public void Contains_at_depth_zero_no()
+        public void CountAt_at_depth_zero_no()
         {
             var element = new Element(Null.Instance, "Star", "Sun", AttributeCollection.Empty);
-            bool found = element.Contains((XmlPathClosed)XmlPath.Element("Oops"), null, Options.None);
-            Assert.IsFalse(found);
+            int count = element.CountAt((XmlPathClosed)XmlPath.Element("Oops"), null, Options.None);
+            Assert.AreEqual(0, count);
         }
 
         [Test]
-        public void Contains_at_depth_zero_case_sensitive_no()
+        public void CountAt_at_depth_zero_case_sensitive_no()
         {
             var element = new Element(Null.Instance, "Star", "Sun", AttributeCollection.Empty);
-            bool found = element.Contains((XmlPathClosed)XmlPath.Element("SUN"), null, Options.None);
-            Assert.IsFalse(found);
+            int count = element.CountAt((XmlPathClosed)XmlPath.Element("SUN"), null, Options.None);
+            Assert.AreEqual(0, count);
         }
 
         [Test]
-        public void Contains_recursive_yes()
+        public void CountAt_recursive_yes()
         {
             var child = new Element(Null.Instance, "Star", "Sun", AttributeCollection.Empty);
             var parent = new Element(child, "SolarSystem", String.Empty, AttributeCollection.Empty);
-            bool found = parent.Contains((XmlPathClosed)XmlPath.Element("SolarSystem").Element("Star"), null, Options.None);
-            Assert.IsTrue(found);
+            int count = parent.CountAt((XmlPathClosed)XmlPath.Element("SolarSystem").Element("Star"), null, Options.None);
+            Assert.AreEqual(1, count);
         }
 
         [Test]
-        public void Contains_attribute_yes()
+        public void CountAt_attribute_yes()
         {
             var attribute = new Gallio.Common.Xml.Attribute("magnitude", "4.85");
             var element = new Element(Null.Instance, "Star", "Sun", new AttributeCollection(new[] { attribute }));
-            bool found = element.Contains((XmlPathClosed)XmlPath.Element("Star").Attribute("magnitude"), null, Options.None);
-            Assert.IsTrue(found);
+            int count = element.CountAt((XmlPathClosed)XmlPath.Element("Star").Attribute("magnitude"), null, Options.None);
+            Assert.AreEqual(1, count);
         }
 
         [Test]
-        public void Contains_attribute_no()
+        public void CountAt_attribute_no()
         {
             var attribute = new Gallio.Common.Xml.Attribute("magnitude", "4.85");
             var element = new Element(Null.Instance, "Star", "Sun", new AttributeCollection(new[] { attribute }));
-            bool found = element.Contains((XmlPathClosed)XmlPath.Element("Star").Attribute("aargh"), null, Options.None);
-            Assert.IsFalse(found);
+            int count = element.CountAt((XmlPathClosed)XmlPath.Element("Star").Attribute("aargh"), null, Options.None);
+            Assert.AreEqual(0, count);
         }
 
         [Test]
         public void AreEqual_at_depth_zero_case_sensitive_yes()
         {
             var element = new Element(Null.Instance, "Star", "Sun", AttributeCollection.Empty);
-            bool found = element.Contains((XmlPathClosed)XmlPath.Element("Star"), "Sun", Options.None);
-            Assert.IsTrue(found);
+            int count = element.CountAt((XmlPathClosed)XmlPath.Element("Star"), "Sun", Options.None);
+            Assert.AreEqual(1, count);
         }
 
         [Test]
         public void AreEqual_at_depth_zero_case_sensitive_no()
         {
             var element = new Element(Null.Instance, "Star", "Sun", AttributeCollection.Empty);
-            bool found = element.Contains((XmlPathClosed)XmlPath.Element("Star"), "SUN", Options.None);
-            Assert.IsFalse(found);
+            int count = element.CountAt((XmlPathClosed)XmlPath.Element("Star"), "SUN", Options.None);
+            Assert.AreEqual(0, count);
         }
 
         [Test]
         public void AreEqual_at_depth_zero_case_insensitive_yes()
         {
             var element = new Element(Null.Instance, "Star", "Sun", AttributeCollection.Empty);
-            bool found = element.Contains((XmlPathClosed)XmlPath.Element("Star"), "SUN", Options.IgnoreElementsValueCase);
-            Assert.IsTrue(found);
+            int count = element.CountAt((XmlPathClosed)XmlPath.Element("Star"), "SUN", Options.IgnoreElementsValueCase);
+            Assert.AreEqual(1, count);
         }
 
         [Test]
         public void AreEqual_at_depth_zero_case_insensitive_no()
         {
             var element = new Element(Null.Instance, "Star", "Sun", AttributeCollection.Empty);
-            bool found = element.Contains((XmlPathClosed)XmlPath.Element("Star"), "Alpha Centauri", Options.IgnoreElementsValueCase);
-            Assert.IsFalse(found);
+            int count = element.CountAt((XmlPathClosed)XmlPath.Element("Star"), "Alpha Centauri", Options.IgnoreElementsValueCase);
+            Assert.AreEqual(0, count);
         }
 
         [Test]
@@ -308,8 +308,8 @@ namespace Gallio.Tests.Common.Xml
         {
             var attribute = new Gallio.Common.Xml.Attribute("magnitude", "4.85");
             var element = new Element(Null.Instance, "Star", "Sun", new AttributeCollection(new[] { attribute }));
-            bool found = element.Contains((XmlPathClosed)XmlPath.Element("Star").Attribute("magnitude"), "4.85", Options.None);
-            Assert.IsTrue(found);
+            int count = element.CountAt((XmlPathClosed)XmlPath.Element("Star").Attribute("magnitude"), "4.85", Options.None);
+            Assert.AreEqual(1, count);
         }
 
         [Test]
@@ -317,8 +317,8 @@ namespace Gallio.Tests.Common.Xml
         {
             var attribute = new Gallio.Common.Xml.Attribute("magnitude", "4.85");
             var element = new Element(Null.Instance, "Star", "Sun", new AttributeCollection(new[] { attribute }));
-            bool found = element.Contains((XmlPathClosed)XmlPath.Element("Star").Attribute("magnitude"), "666", Options.None);
-            Assert.IsFalse(found);
+            int count = element.CountAt((XmlPathClosed)XmlPath.Element("Star").Attribute("magnitude"), "666", Options.None);
+            Assert.AreEqual(0, count);
         }
     }
 }

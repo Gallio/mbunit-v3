@@ -79,7 +79,10 @@ namespace Gallio.Tests.Common.Xml
                 "<Composers>" +
                 "  <Composer>" +
                 "     <Name>Gustav Mahler</Name>" +
-                "     <BirthDate>7 July 1860</BirthDate>" +
+                "     <BirthDate>07/07/1860</BirthDate>" +
+                "     <Song>abc</Song>" +
+                "     <Song>def</Song>" +
+                "     <Song>ghi</Song>" +
                 "  </Composer>" +
                 "</Composers>");
 
@@ -87,42 +90,50 @@ namespace Gallio.Tests.Common.Xml
         }
 
         [Test]
-        public void Contains_with_null_path_should_throw_exception()
+        public void CountAt_with_null_path_should_throw_exception()
         {
             var document = GetDocument();
-            Assert.Throws<ArgumentNullException>(() => document.Contains(null, null, Options.None));
+            Assert.Throws<ArgumentNullException>(() => document.CountAt(null, null, Options.None));
         }
 
         [Test]
-        public void Contains_yes()
+        public void CountAt_should_find_unique_element()
         {
             var document = GetDocument();
-            bool contains = document.Contains((XmlPathClosed)XmlPath.Element("Composers").Element("Composer").Element("Name"), null, Options.None);
-            Assert.IsTrue(contains);
+            int count = document.CountAt((XmlPathClosed)XmlPath.Element("Composers").Element("Composer").Element("Name"), null, Options.None);
+            Assert.AreEqual(1, count);
         }
 
         [Test]
-        public void Contains_case_insensitive_yes()
+        public void CountAt_should_find_multiple_elements()
         {
             var document = GetDocument();
-            bool contains = document.Contains((XmlPathClosed)XmlPath.Element("CoMPOSErs").Element("coMpoSER").Element("namE"), null, Options.IgnoreElementsNameCase);
-            Assert.IsTrue(contains);
+            int count = document.CountAt((XmlPathClosed)XmlPath.Element("Composers").Element("Composer").Element("Song"), null, Options.None);
+            Assert.AreEqual(3, count);
         }
 
         [Test]
-        public void Contains_no()
+        public void CountAt_case_insensitive_should_find_unique_element()
         {
             var document = GetDocument();
-            bool contains = document.Contains((XmlPathClosed)XmlPath.Element("Composers").Element("Composer").Element("DoesNotExist"), null, Options.None);
-            Assert.IsFalse(contains);
+            int count = document.CountAt((XmlPathClosed)XmlPath.Element("CoMPOSErs").Element("coMpoSER").Element("namE"), null, Options.IgnoreElementsNameCase);
+            Assert.AreEqual(1, count);
         }
 
         [Test]
-        public void Contains_case_sensitive_no()
+        public void CountAt_should_find_zero_element_when_it_does_not_exist()
         {
             var document = GetDocument();
-            bool contains = document.Contains((XmlPathClosed)XmlPath.Element("CoMPOSErs").Element("coMpoSER").Element("namE"), null, Options.None);
-            Assert.IsFalse(contains);
+            int count = document.CountAt((XmlPathClosed)XmlPath.Element("Composers").Element("Composer").Element("DoesNotExist"), null, Options.None);
+            Assert.AreEqual(0, count);
+        }
+
+        [Test]
+        public void CountAt_case_sensitive_should_find_zero_element_when_it_exists_with_another_case()
+        {
+            var document = GetDocument();
+            int count = document.CountAt((XmlPathClosed)XmlPath.Element("CoMPOSErs").Element("coMpoSER").Element("namE"), null, Options.None);
+            Assert.AreEqual(0, count);
         }
     }
 }

@@ -79,9 +79,9 @@ namespace Gallio.Common.Xml
         }
 
         /// <inheritdoc />
-        public override bool Contains(XmlPathClosed searchedItem, string expectedValue, Options options)
+        public override int CountAt(XmlPathClosed searchedItem, string expectedValue, Options options)
         {
-            return Child.Contains(searchedItem, expectedValue, options);
+            return Child.CountAt(searchedItem, expectedValue, options);
         }
     }
 }

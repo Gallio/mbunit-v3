@@ -22,6 +22,7 @@ using Gallio.Common.Xml;
 using System.Xml;
 using System.IO;
 using System.Data;
+using Gallio.Common;
 
 namespace MbUnit.Framework
 {
@@ -326,10 +327,6 @@ namespace MbUnit.Framework
                 Exists(actualXml, searchedItem, null, options, messageFormat, messageFormat);
             }
 
-            #endregion
-
-            #region Exists (with value)
-
             /// <summary>
             /// Asserts that the XML fragment contains the searched element or attribute, and that it has the expected value.
             /// </summary>
@@ -509,7 +506,7 @@ namespace MbUnit.Framework
                             .ToAssertionFailure();
                     }
 
-                    if (document.Contains((XmlPathClosed)searchedItem, expectedValue, options.Value))
+                    if (document.CountAt((XmlPathClosed)searchedItem, expectedValue, options.Value) > 0)
                         return null;
 
                     var builder = new AssertionFailureBuilder("Expected the XML fragment to contain the searched XML element or attribute, but none was found.")

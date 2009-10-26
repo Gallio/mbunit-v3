@@ -47,14 +47,13 @@ namespace Gallio.Common.Xml
         string ToXml();
 
         /// <summary>
-        /// Returns a value indicating whether the attribute or the element exists
-        /// at the specified path.
+        /// Returns the number of times the searched attribute or element was found at the specified path.
         /// </summary>
         /// <param name="searchedItem">The path of the searched element or attribute.</param>
         /// <param name="expectedValue">The expected value found in the searched element or attribute, or null if the value must be ignored.</param>
         /// <param name="options">Options for the search.</param>
-        /// <returns>True if the item was found; otherwise false.</returns>
+        /// <returns>The number of matching items found; zero if not found.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="searchedItem"/> is null.</exception>
-        bool Contains(XmlPathClosed searchedItem, string expectedValue, Options options);
+        int CountAt(XmlPathClosed searchedItem, string expectedValue, Options options);
     }
 }
