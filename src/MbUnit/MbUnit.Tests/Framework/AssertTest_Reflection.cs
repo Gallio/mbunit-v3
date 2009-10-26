@@ -25,100 +25,79 @@ namespace MbUnit.Tests.Framework
     [TestsOn(typeof(Assert))]
     public class AssertTest_Reflection : BaseAssertTest
     {
+        private class Parent
+        {
+        }
+
+        private class Child : Parent
+        {
+        }
+
+        private class Unrelated
+        {
+        }
+
         #region IsAssignableFrom
 
         [Test]
         public void IsAssignableFrom_without_custom_message()
         {
-            Assert.IsAssignableFrom(typeof(FormatException), new SystemException());
+            Assert.IsAssignableFrom(typeof(Child), typeof(Parent));
         }
 
         [Test]
         public void Generic_IsAssignableFrom_without_custom_message()
         {
-            Assert.IsAssignableFrom<FormatException>(new SystemException());
+            Assert.IsAssignableFrom<Child>(typeof(Parent));
         }
 
         [Test]
         [ExpectedArgumentNullException]
         public void IsAssignableFrom_with_null_expectedType()
         {
-            Assert.IsAssignableFrom(null, new SystemException());
+            Assert.IsAssignableFrom(null, typeof(Parent));
         }
 
         [Test]
-        public void IsAssignableFrom_with_null_actualValue()
+        public void IsAssignableFrom_with_null_actualType()
         {
             AssertionFailure[] failures = Capture(() => Assert.IsAssignableFrom(typeof(int), null));
             Assert.AreEqual(1, failures.Length);
             Assert.AreEqual("Expected the actual type to be assignable to the expected type.", failures[0].Description);
             Assert.AreEqual("Expected Type", failures[0].LabeledValues[0].Label);
             Assert.AreEqual("int", failures[0].LabeledValues[0].FormattedValue.ToString());
-            Assert.AreEqual("Actual Value", failures[0].LabeledValues[1].Label);
+            Assert.AreEqual("Actual Type", failures[0].LabeledValues[1].Label);
             Assert.AreEqual("null", failures[0].LabeledValues[1].FormattedValue.ToString());
         }
 
         [Test]
-        public void Generic_IsAssignableFrom_with_null_actualValue()
+        public void Generic_IsAssignableFrom_with_null_actualType()
         {
             AssertionFailure[] failures = Capture(() => Assert.IsAssignableFrom<int>(null));
             Assert.AreEqual(1, failures.Length);
             Assert.AreEqual("Expected the actual type to be assignable to the expected type.", failures[0].Description);
             Assert.AreEqual("Expected Type", failures[0].LabeledValues[0].Label);
             Assert.AreEqual("int", failures[0].LabeledValues[0].FormattedValue.ToString());
-            Assert.AreEqual("Actual Value", failures[0].LabeledValues[1].Label);
+            Assert.AreEqual("Actual Type", failures[0].LabeledValues[1].Label);
             Assert.AreEqual("null", failures[0].LabeledValues[1].FormattedValue.ToString());
         }
 
         [Test]
-        public void IsAssignableFrom_fails_when_object_is_not_assignable_for_classes()
+        public void IsAssignableFrom_fails_when_type_is_not_assignable_for_classes()
         {
-            AssertionFailure[] failures = Capture(() => Assert.IsAssignableFrom(typeof(string), new Int32()));
+            AssertionFailure[] failures = Capture(() => Assert.IsAssignableFrom(typeof(Unrelated), typeof(Parent)));
             Assert.AreEqual(1, failures.Length);
             Assert.AreEqual("Expected the actual type to be assignable to the expected type.", failures[0].Description);
             Assert.AreEqual("Expected Type", failures[0].LabeledValues[0].Label);
-            Assert.AreEqual("string", failures[0].LabeledValues[0].FormattedValue.ToString());
+            Assert.AreEqual("MbUnit.Tests.Framework.AssertTest_Reflection.Unrelated", failures[0].LabeledValues[0].FormattedValue.ToString());
             Assert.AreEqual("Actual Type", failures[0].LabeledValues[1].Label);
-            Assert.AreEqual("int", failures[0].LabeledValues[1].FormattedValue.ToString());
+            Assert.AreEqual("MbUnit.Tests.Framework.AssertTest_Reflection.Parent", failures[0].LabeledValues[1].FormattedValue.ToString());
         }
 
         [Test]
-        public void IsAssignableFrom_fails_when_object_is_not_assignable_for_arrays()
+        public void IsAssignableFrom_fails_when_type_is_not_assignable_for_arrays()
         {
-            AssertionFailure[] failures = Capture(() => Assert.IsAssignableFrom(typeof(int[,]), new int[2]));
-            Assert.AreEqual(1, failures.Length);
-            Assert.AreEqual("Expected the actual type to be assignable to the expected type.", failures[0].Description);
-            Assert.AreEqual("Expected Type", failures[0].LabeledValues[0].Label);
-            Assert.AreEqual("int[,]", failures[0].LabeledValues[0].FormattedValue.ToString());
-            Assert.AreEqual("Actual Type", failures[0].LabeledValues[1].Label);
-            Assert.AreEqual("int[]", failures[0].LabeledValues[1].FormattedValue.ToString());
-        }
-
-        [Test]
-        public void IsAssignableFrom_fails_when_object_is_not_assignable_for_generics()
-        {
-            AssertionFailure[] failures = Capture(() => Assert.IsAssignableFrom(typeof(List<int>), new List<Type>()));
-            Assert.AreEqual(1, failures.Length);
-            Assert.AreEqual("System.Collections.Generic.List<int>", failures[0].LabeledValues[0].FormattedValue.ToString());
-            Assert.AreEqual("System.Collections.Generic.List<System.Type>", failures[0].LabeledValues[1].FormattedValue.ToString());
-        }
-        
-        [Test]
-        public void Generic_IsAssignableFrom_fails_when_object_is_not_assignable_for_classes()
-        {
-            AssertionFailure[] failures = Capture(() => Assert.IsAssignableFrom<string>(new Int32()));
-            Assert.AreEqual(1, failures.Length);
-            Assert.AreEqual("Expected the actual type to be assignable to the expected type.", failures[0].Description);
-            Assert.AreEqual("Expected Type", failures[0].LabeledValues[0].Label);
-            Assert.AreEqual("string", failures[0].LabeledValues[0].FormattedValue.ToString());
-            Assert.AreEqual("Actual Type", failures[0].LabeledValues[1].Label);
-            Assert.AreEqual("int", failures[0].LabeledValues[1].FormattedValue.ToString());
-        }
-
-        [Test]
-        public void Generic_IsAssignableFrom_fails_when_object_is_not_assignable_for_arrays()
-        {
-            AssertionFailure[] failures = Capture(() => Assert.IsAssignableFrom<int[,]>(new int[2]));
+            AssertionFailure[] failures = Capture(() => Assert.IsAssignableFrom(typeof(int[,]), typeof(int[])));
             Assert.AreEqual(1, failures.Length);
             Assert.AreEqual("Expected the actual type to be assignable to the expected type.", failures[0].Description);
             Assert.AreEqual("Expected Type", failures[0].LabeledValues[0].Label);
@@ -128,12 +107,45 @@ namespace MbUnit.Tests.Framework
         }
 
         [Test]
-        public void Generic_IsAssignableFrom_fails_when_object_is_not_assignable_for_generics()
+        public void IsAssignableFrom_fails_when_type_is_not_assignable_for_generics()
         {
-            AssertionFailure[] failures = Capture(() => Assert.IsAssignableFrom<List<int>>(new List<Type>()));
+            AssertionFailure[] failures = Capture(() => Assert.IsAssignableFrom(typeof(List<int>), typeof(List<string>)));
             Assert.AreEqual(1, failures.Length);
             Assert.AreEqual("System.Collections.Generic.List<int>", failures[0].LabeledValues[0].FormattedValue.ToString());
-            Assert.AreEqual("System.Collections.Generic.List<System.Type>", failures[0].LabeledValues[1].FormattedValue.ToString());
+            Assert.AreEqual("System.Collections.Generic.List<string>", failures[0].LabeledValues[1].FormattedValue.ToString());
+        }
+
+        [Test]
+        public void Generic_IsAssignableFrom_fails_when_type_is_not_assignable_for_classes()
+        {
+            AssertionFailure[] failures = Capture(() => Assert.IsAssignableFrom<Unrelated>(typeof(Parent)));
+            Assert.AreEqual(1, failures.Length);
+            Assert.AreEqual("Expected the actual type to be assignable to the expected type.", failures[0].Description);
+            Assert.AreEqual("Expected Type", failures[0].LabeledValues[0].Label);
+            Assert.AreEqual("MbUnit.Tests.Framework.AssertTest_Reflection.Unrelated", failures[0].LabeledValues[0].FormattedValue.ToString());
+            Assert.AreEqual("Actual Type", failures[0].LabeledValues[1].Label);
+            Assert.AreEqual("MbUnit.Tests.Framework.AssertTest_Reflection.Parent", failures[0].LabeledValues[1].FormattedValue.ToString());
+        }
+
+        [Test]
+        public void Generic_IsAssignableFrom_fails_when_type_is_not_assignable_for_arrays()
+        {
+            AssertionFailure[] failures = Capture(() => Assert.IsAssignableFrom<int[,]>(typeof(int[])));
+            Assert.AreEqual(1, failures.Length);
+            Assert.AreEqual("Expected the actual type to be assignable to the expected type.", failures[0].Description);
+            Assert.AreEqual("Expected Type", failures[0].LabeledValues[0].Label);
+            Assert.AreEqual("int[,]", failures[0].LabeledValues[0].FormattedValue.ToString());
+            Assert.AreEqual("Actual Type", failures[0].LabeledValues[1].Label);
+            Assert.AreEqual("int[]", failures[0].LabeledValues[1].FormattedValue.ToString());
+        }
+
+        [Test]
+        public void Generic_IsAssignableFrom_fails_when_type_is_not_assignable_for_generics()
+        {
+            AssertionFailure[] failures = Capture(() => Assert.IsAssignableFrom<List<int>>(typeof(List<string>)));
+            Assert.AreEqual(1, failures.Length);
+            Assert.AreEqual("System.Collections.Generic.List<int>", failures[0].LabeledValues[0].FormattedValue.ToString());
+            Assert.AreEqual("System.Collections.Generic.List<string>", failures[0].LabeledValues[1].FormattedValue.ToString());
         }
         
         #endregion
@@ -143,62 +155,74 @@ namespace MbUnit.Tests.Framework
         [Test]
         public void IsNotAssignableFrom_without_custom_message()
         {
-            Assert.IsNotAssignableFrom(typeof(string), new Int32());
+            Assert.IsNotAssignableFrom(typeof(Unrelated), typeof(Parent));
         }
 
         [Test]
         public void Generic_IsNotAssignableFrom_without_custom_message()
         {
-            Assert.IsNotAssignableFrom<string>(new Int32());
+            Assert.IsNotAssignableFrom<Unrelated>(typeof(Parent));
         }
 
         [Test]
         [ExpectedArgumentNullException]
         public void IsNotAssignableFrom_with_null_expectedType()
         {
-            Assert.IsNotAssignableFrom(null, new SystemException());
+            Assert.IsNotAssignableFrom(null, typeof(Parent));
         }
 
         [Test]
-        public void IsNotAssignableFrom_with_null_actualValue()
+        public void IsNotAssignableFrom_with_null_actualType()
         {
             AssertionFailure[] failures = Capture(() => Assert.IsNotAssignableFrom(typeof(int), null));
             Assert.AreEqual(1, failures.Length);
             Assert.AreEqual("Expected the actual type not to be assignable to the expected type.", failures[0].Description);
             Assert.AreEqual("Unexpected Type", failures[0].LabeledValues[0].Label);
             Assert.AreEqual("int", failures[0].LabeledValues[0].FormattedValue.ToString());
-            Assert.AreEqual("Actual Value", failures[0].LabeledValues[1].Label);
+            Assert.AreEqual("Actual Type", failures[0].LabeledValues[1].Label);
             Assert.AreEqual("null", failures[0].LabeledValues[1].FormattedValue.ToString());
         }
 
         [Test]
-        public void Generic_IsNotAssignableFrom_with_null_actualValue()
+        public void Generic_IsNotAssignableFrom_with_null_actualType()
         {
             AssertionFailure[] failures = Capture(() => Assert.IsNotAssignableFrom<int>(null));
             Assert.AreEqual(1, failures.Length);
             Assert.AreEqual("Expected the actual type not to be assignable to the expected type.", failures[0].Description);
             Assert.AreEqual("Unexpected Type", failures[0].LabeledValues[0].Label);
             Assert.AreEqual("int", failures[0].LabeledValues[0].FormattedValue.ToString());
-            Assert.AreEqual("Actual Value", failures[0].LabeledValues[1].Label);
+            Assert.AreEqual("Actual Type", failures[0].LabeledValues[1].Label);
             Assert.AreEqual("null", failures[0].LabeledValues[1].FormattedValue.ToString());
         }
 
         [Test]
-        public void IsNotAssignableFrom_fails_when_object_is_not_assignable_for_classes()
+        public void IsNotAssignableFrom_fails_when_types_are_same()
         {
-            AssertionFailure[] failures = Capture(() => Assert.IsNotAssignableFrom(typeof(int), new Int32()));
+            AssertionFailure[] failures = Capture(() => Assert.IsNotAssignableFrom(typeof(Parent), typeof(Parent)));
             Assert.AreEqual(1, failures.Length);
             Assert.AreEqual("Expected the actual type not to be assignable to the expected type.", failures[0].Description);
             Assert.AreEqual("Unexpected Type", failures[0].LabeledValues[0].Label);
-            Assert.AreEqual("int", failures[0].LabeledValues[0].FormattedValue.ToString());
+            Assert.AreEqual("MbUnit.Tests.Framework.AssertTest_Reflection.Parent", failures[0].LabeledValues[0].FormattedValue.ToString());
             Assert.AreEqual("Actual Type", failures[0].LabeledValues[1].Label);
-            Assert.AreEqual("int", failures[0].LabeledValues[1].FormattedValue.ToString());
+            Assert.AreEqual("MbUnit.Tests.Framework.AssertTest_Reflection.Parent", failures[0].LabeledValues[1].FormattedValue.ToString());
         }
 
         [Test]
-        public void IsNotAssignableFrom_fails_when_object_is_not_assignable_for_arrays()
+        public void IsNotAssignableFrom_fails_when_type_is_assignable_for_classes()
         {
-            AssertionFailure[] failures = Capture(() => Assert.IsNotAssignableFrom(typeof(int[,]), new int[2, 2]));
+            AssertionFailure[] failures = Capture(() => Assert.IsNotAssignableFrom(typeof(Child), typeof(Parent)));
+            Assert.AreEqual(1, failures.Length);
+            Assert.AreEqual("Expected the actual type not to be assignable to the expected type.", failures[0].Description);
+            Assert.AreEqual("Unexpected Type", failures[0].LabeledValues[0].Label);
+            Assert.AreEqual("MbUnit.Tests.Framework.AssertTest_Reflection.Child", failures[0].LabeledValues[0].FormattedValue.ToString());
+            Assert.AreEqual("Actual Type", failures[0].LabeledValues[1].Label);
+            Assert.AreEqual("MbUnit.Tests.Framework.AssertTest_Reflection.Parent", failures[0].LabeledValues[1].FormattedValue.ToString());
+        }
+
+        [Test]
+        public void IsNotAssignableFrom_fails_when_type_is_assignable_for_arrays()
+        {
+            AssertionFailure[] failures = Capture(() => Assert.IsNotAssignableFrom(typeof(int[,]), typeof(int[,])));
             Assert.AreEqual(1, failures.Length);
             Assert.AreEqual("Expected the actual type not to be assignable to the expected type.", failures[0].Description);
             Assert.AreEqual("Unexpected Type", failures[0].LabeledValues[0].Label);
@@ -208,21 +232,21 @@ namespace MbUnit.Tests.Framework
         }
 
         [Test]
-        public void Generic_IsNotAssignableFrom_fails_when_object_is_not_assignable_for_classes()
+        public void Generic_IsNotAssignableFrom_fails_when_type_is_assignable_for_classes()
         {
-            AssertionFailure[] failures = Capture(() => Assert.IsNotAssignableFrom<int>(new Int32()));
+            AssertionFailure[] failures = Capture(() => Assert.IsNotAssignableFrom<Child>(typeof(Parent)));
             Assert.AreEqual(1, failures.Length);
             Assert.AreEqual("Expected the actual type not to be assignable to the expected type.", failures[0].Description);
             Assert.AreEqual("Unexpected Type", failures[0].LabeledValues[0].Label);
-            Assert.AreEqual("int", failures[0].LabeledValues[0].FormattedValue.ToString());
+            Assert.AreEqual("MbUnit.Tests.Framework.AssertTest_Reflection.Child", failures[0].LabeledValues[0].FormattedValue.ToString());
             Assert.AreEqual("Actual Type", failures[0].LabeledValues[1].Label);
-            Assert.AreEqual("int", failures[0].LabeledValues[1].FormattedValue.ToString());
+            Assert.AreEqual("MbUnit.Tests.Framework.AssertTest_Reflection.Parent", failures[0].LabeledValues[1].FormattedValue.ToString());
         }
 
         [Test]
-        public void Generic_IsNotAssignableFrom_fails_when_object_is_not_assignable_for_arrays()
+        public void Generic_IsNotAssignableFrom_fails_when_object_is_assignable_for_arrays()
         {
-            AssertionFailure[] failures = Capture(() => Assert.IsNotAssignableFrom<int[,]>(new int[2, 2]));
+            AssertionFailure[] failures = Capture(() => Assert.IsNotAssignableFrom<int[,]>(typeof(int[,])));
             Assert.AreEqual(1, failures.Length);
             Assert.AreEqual("Expected the actual type not to be assignable to the expected type.", failures[0].Description);
             Assert.AreEqual("Unexpected Type", failures[0].LabeledValues[0].Label);
@@ -296,7 +320,7 @@ namespace MbUnit.Tests.Framework
         }
 
         #endregion
-        
+
         #region IsNotInstanceOfType
 
         [Test]

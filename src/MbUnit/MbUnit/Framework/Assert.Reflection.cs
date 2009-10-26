@@ -25,178 +25,175 @@ namespace MbUnit.Framework
         #region IsAssignableFrom
         
         /// <summary>
-        /// Verifies that an object may be assigned to a variable of the specified type.
+        /// Verifies that a type may be assigned to a variable of the specified type.
         /// </summary>
         /// <remarks>
         /// <para>
-        /// This assertion will fail if the object is null.
+        /// This assertion will fail if <paramref name="actualType"/> is null.
         /// </para>
         /// </remarks>
         /// <seealso cref="Type.IsAssignableFrom"/>
-        /// <param name="expectedType">The Type to compare with the object's Type.</param>
-        /// <param name="actualValue">The object under examination.</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="expectedType"/> is null.</exception>
-        public static void IsAssignableFrom(Type expectedType, object actualValue)
+        /// <param name="expectedType">The Type to compare with the actual Type.</param>
+        /// <param name="actualType">The Type under examination.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="expectedType"/> or <paramref name="actualType"/> is null.</exception>
+        public static void IsAssignableFrom(Type expectedType, Type actualType)
         {
-            IsAssignableFrom(expectedType, actualValue, null, null);
+            IsAssignableFrom(expectedType, actualType, null, null);
         }
 
         /// <summary>
-        /// Verifies that an object may be assigned to a variable of the specified type.
+        /// Verifies that a type may be assigned to a variable of the specified type.
         /// </summary>
         /// <remarks>
         /// <para>
-        /// This assertion will fail if the object is null.
+        /// This assertion will fail if <paramref name="actualType"/> is null.
         /// </para>
         /// </remarks>
         /// <seealso cref="Type.IsAssignableFrom"/>
         /// <param name="expectedType">The Type to compare with the object's Type.</param>
-        /// <param name="actualValue">The object under examination.</param>
+        /// <param name="actualType">The Type under examination.</param>
         /// <param name="messageFormat">The custom assertion message format, or null if none.</param>
         /// <param name="messageArgs">The custom assertion message arguments, or null if none.</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="expectedType"/> is null.</exception>
-        public static void IsAssignableFrom(Type expectedType, object actualValue, string messageFormat, params object[] messageArgs)
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="expectedType"/> or <paramref name="actualType"/> is null.</exception>
+        public static void IsAssignableFrom(Type expectedType, Type actualType, string messageFormat, params object[] messageArgs)
         {
             if (expectedType == null)
                 throw new ArgumentNullException("expectedType");
 
-            AssertionHelper.Verify(delegate
+            AssertionHelper.Verify(() =>
             {
-                if (actualValue != null && actualValue.GetType().IsAssignableFrom(expectedType))
+                if (actualType != null && actualType.IsAssignableFrom(expectedType))
                     return null;
 
-                var builder = new AssertionFailureBuilder("Expected the actual type to be assignable to the expected type.")
+                return new AssertionFailureBuilder("Expected the actual type to be assignable to the expected type.")
                     .SetMessage(messageFormat, messageArgs)
-                    .AddRawLabeledValue("Expected Type", expectedType);
-                if (actualValue != null)
-                    builder.AddRawLabeledValue("Actual Type", actualValue.GetType());
-                return builder
-                    .AddRawActualValue(actualValue)
+                    .AddRawLabeledValue("Expected Type", expectedType)
+                    .AddRawLabeledValue("Actual Type", actualType)
                     .ToAssertionFailure();
             });
         }
 
         /// <summary>
-        /// Verifies that an object may be assigned to a variable of the specified type.
+        /// Verifies that a type may be assigned to a variable of the specified type.
         /// </summary>
         /// <remarks>
         /// <para>
-        /// This assertion will fail if the object is null.
+        /// This assertion will fail if <paramref name="actualType"/> is null.
         /// </para>
         /// </remarks>
         /// <seealso cref="Type.IsAssignableFrom"/>
         /// <typeparam name="TExpected">The Type to compare with the object's Type.</typeparam>
-        /// <param name="actualValue">The object under examination.</param>
-        public static void IsAssignableFrom<TExpected>(object actualValue)
+        /// <param name="actualType">The object under examination.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="actualType"/> is null.</exception>
+        public static void IsAssignableFrom<TExpected>(Type actualType)
         {
-            IsAssignableFrom(typeof(TExpected), actualValue, null, null);
+            IsAssignableFrom(typeof(TExpected), actualType, null, null);
         }
 
         /// <summary>
-        /// Verifies that an object may be assigned to a variable of the specified type.
+        /// Verifies that a type may be assigned to a variable of the specified type.
         /// </summary>
         /// <remarks>
         /// <para>
-        /// This assertion will fail if the object is null.
+        /// This assertion will fail if <paramref name="actualType"/> is null.
         /// </para>
         /// </remarks>
         /// <seealso cref="Type.IsAssignableFrom"/>
         /// <typeparam name="TExpected">The Type to compare with the object's Type.</typeparam>
-        /// <param name="actualValue">The object under examination.</param>
+        /// <param name="actualType">The Type under examination.</param>
         /// <param name="messageFormat">The custom assertion message format, or null if none.</param>
         /// <param name="messageArgs">The custom assertion message arguments, or null if none.</param>
-        public static void IsAssignableFrom<TExpected>(object actualValue, string messageFormat, params object[] messageArgs)
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="actualType"/> is null.</exception>
+        public static void IsAssignableFrom<TExpected>(Type actualType, string messageFormat, params object[] messageArgs)
         {
-            IsAssignableFrom(typeof(TExpected), actualValue, messageFormat, messageArgs);
-        }        
+            IsAssignableFrom(typeof(TExpected), actualType, messageFormat, messageArgs);
+        }
+
         #endregion
 
         #region IsNotAssignableFrom
 
         /// <summary>
-        /// Verifies that an object may not be assigned to a variable of the specified type.
+        /// Verifies that a Type may not be assigned to a variable of the specified type.
         /// </summary>
         /// <remarks>
         /// <para>
-        /// This assertion will fail if the object is null.
+        /// This assertion will fail if <paramref name="actualType"/> is null.
         /// </para>
         /// </remarks>
         /// <seealso cref="Type.IsAssignableFrom"/>
         /// <param name="unexpectedType">The Type to compare with the object's Type.</param>
-        /// <param name="actualValue">The object under examination.</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="unexpectedType"/> is null.</exception>
-        public static void IsNotAssignableFrom(Type unexpectedType, object actualValue)
+        /// <param name="actualType">The Type under examination.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="unexpectedType"/> or <paramref name="actualType"/> is null.</exception>
+        public static void IsNotAssignableFrom(Type unexpectedType, Type actualType)
         {
-            IsNotAssignableFrom(unexpectedType, actualValue, null, null);
+            IsNotAssignableFrom(unexpectedType, actualType, null, null);
         }
 
         /// <summary>
-        /// Verifies that an object may not be assigned to a variable of the specified type.
+        /// Verifies that a Type may not be assigned to a variable of the specified type.
         /// </summary>
         /// <remarks>
         /// <para>
-        /// This assertion will fail if the object is null.
+        /// This assertion will fail if <paramref name="actualType"/> is null.
         /// </para>
         /// </remarks>
         /// <seealso cref="Type.IsAssignableFrom"/>
         /// <param name="unexpectedType">The Type to compare with the object's Type.</param>
-        /// <param name="actualValue">The object under examination.</param>
+        /// <param name="actualType">The Type under examination.</param>
         /// <param name="messageFormat">The custom assertion message format, or null if none.</param>
         /// <param name="messageArgs">The custom assertion message arguments, or null if none.</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="unexpectedType"/> is null.</exception>
-        public static void IsNotAssignableFrom(Type unexpectedType, object actualValue, string messageFormat, params object[] messageArgs)
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="unexpectedType"/> or <paramref name="actualType"/> is null.</exception>
+        public static void IsNotAssignableFrom(Type unexpectedType, Type actualType, string messageFormat, params object[] messageArgs)
         {
             if (unexpectedType == null)
                 throw new ArgumentNullException("unexpectedType");
 
             AssertionHelper.Verify(delegate
             {
-                if (actualValue != null && !actualValue.GetType().IsAssignableFrom(unexpectedType))
+                if (actualType != null && !actualType.IsAssignableFrom(unexpectedType))
                     return null;
 
-                var builder = new AssertionFailureBuilder("Expected the actual type not to be assignable to the expected type.")
+                return new AssertionFailureBuilder("Expected the actual type not to be assignable to the expected type.")
                     .SetMessage(messageFormat, messageArgs)
-                    .AddRawLabeledValue("Unexpected Type", unexpectedType);
-                if (actualValue != null)
-                    builder.AddRawLabeledValue("Actual Type", actualValue.GetType());
-                return builder
-                    .AddRawActualValue(actualValue)
+                    .AddRawLabeledValue("Unexpected Type", unexpectedType)
+                    .AddRawLabeledValue("Actual Type", actualType)
                     .ToAssertionFailure();
             });
         }
 
         /// <summary>
-        /// Verifies that an object may not be assigned to a variable of the specified type.
+        /// Verifies that a Type may not be assigned to a variable of the specified type.
         /// </summary>
         /// <remarks>
         /// <para>
-        /// This assertion will fail if the object is null.
+        /// This assertion will fail if <paramref name="actualType"/> is null.
         /// </para>
         /// </remarks>
         /// <seealso cref="Type.IsAssignableFrom"/>
         /// <typeparam name="TUnexpected">The Type to compare with the object's Type.</typeparam>
-        /// <param name="actualValue">The object under examination.</param>
-        public static void IsNotAssignableFrom<TUnexpected>(object actualValue)
+        /// <param name="actualType">The Type under examination.</param>
+        public static void IsNotAssignableFrom<TUnexpected>(Type actualType)
         {
-            IsNotAssignableFrom(typeof(TUnexpected), actualValue, null, null);
+            IsNotAssignableFrom(typeof(TUnexpected), actualType, null, null);
         }
 
         /// <summary>
-        /// Verifies that an object may not be assigned to a variable of the specified type.
+        /// Verifies that a Type may not be assigned to a variable of the specified type.
         /// </summary>
         /// <remarks>
         /// <para>
-        /// This assertion will fail if the object is null.
+        /// This assertion will fail if <paramref name="actualType"/> is null.
         /// </para>
         /// </remarks>
         /// <seealso cref="Type.IsAssignableFrom"/>
         /// <typeparam name="TUnexpected">The Type to compare with the object's Type.</typeparam>
-        /// <param name="actualValue">The object under examination.</param>
+        /// <param name="actualType">The Type under examination.</param>
         /// <param name="messageFormat">The custom assertion message format, or null if none.</param>
         /// <param name="messageArgs">The custom assertion message arguments, or null if none.</param>
-        public static void IsNotAssignableFrom<TUnexpected>(object actualValue, string messageFormat, params object[] messageArgs)
+        public static void IsNotAssignableFrom<TUnexpected>(Type actualType, string messageFormat, params object[] messageArgs)
         {
-            IsNotAssignableFrom(typeof(TUnexpected), actualValue, messageFormat, messageArgs);
+            IsNotAssignableFrom(typeof(TUnexpected), actualType, messageFormat, messageArgs);
         }
 
         #endregion
