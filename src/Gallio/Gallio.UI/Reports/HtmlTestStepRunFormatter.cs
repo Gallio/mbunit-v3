@@ -255,6 +255,7 @@ namespace Gallio.UI.Reports
                 writer.Write("/Gallio-Report.Generated.css\" />");
                 writer.Write("<script type=\"text/javascript\"><!--\n");
                 writer.Write(File.ReadAllText(Path.Combine(formatter.jsDir, "Gallio-Report.js")));
+                writer.Write(File.ReadAllText(Path.Combine(formatter.jsDir, "swfobject.js")));
                 writer.Write("\n--></script>");
                 writer.Write("</head><body class=\"gallio-report\" style=\"overflow: auto;\">");
 
@@ -670,6 +671,41 @@ namespace Gallio.UI.Reports
                     writer.Write("\" alt=\"Attachment: ");
                     WriteHtmlEncoded(writer, attachment.Name);
                     writer.Write("\" /></a>");
+                }
+                else if ((attachment.ContentType.StartsWith("text/html") || attachment.ContentType.StartsWith("text/xhtml"))
+                    && attachment.IsText)
+                {
+                    writer.Write(attachment.GetText());
+                }
+                else if (attachment.ContentType.StartsWith("text/")
+                    && attachment.IsText)
+                {
+                    writer.Write("<pre>");
+                    WriteHtmlEncodedWithBreaks(writer, attachment.GetText());
+                    writer.Write("</pre>");
+                }
+                else if (attachment.ContentType.StartsWith("video/x-flv"))
+                {
+                    string placeholderId = "video-" + Hash64.CreateUniqueHash();
+                    writer.Write("<div id=\"");
+                    writer.Write(placeholderId);
+                    writer.Write("\">");
+
+                    writer.Write("<script type=\"text/javascript\">");
+                    writer.Write("swfobject.embedSWF('");
+                    WriteHtmlEncoded(writer, new Uri(Path.Combine(formatter.jsDir, "player.swf")).ToString());
+                    writer.Write("', '");
+                    writer.Write(placeholderId);
+                    writer.Write("', '400', '300', '9.0.98', '");
+                    WriteHtmlEncoded(writer, new Uri(Path.Combine(formatter.jsDir, "expressInstall.swf")).ToString());
+                    writer.Write("', {file: '");
+                    WriteHtmlEncoded(writer, new Uri(src).ToString());
+                    writer.Write("'}, {allowfullscreen: 'true', allowscriptaccess: 'always'}, {id: '");
+                    writer.Write(placeholderId);
+                    writer.Write("'})");
+                    writer.Write("</script>");
+
+                    writer.Write("</div>");
                 }
                 else
                 {
