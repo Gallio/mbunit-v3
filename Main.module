@@ -213,6 +213,7 @@
       Configuration=Release;
       Version=$(Version);
       TargetDir=$(DistDir)\;
+      GallioTargetDir=$(ImageDir);
       WixTargetsPath=$(ToolsDir)\Wix\Wix.targets;
       WixTasksPath=$(ToolsDir)\Wix\WixTasks.dll;
       WixToolPath=$(ToolsDir)\Wix;
