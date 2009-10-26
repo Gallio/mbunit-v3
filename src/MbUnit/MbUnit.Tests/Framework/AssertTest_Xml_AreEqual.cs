@@ -56,8 +56,7 @@ namespace MbUnit.Tests.Framework
                 actual = declaration + actual;
             }
 
-            AssertionFailure[] failures = AssertTest.Capture(() => Assert.Xml.AreEqual(expected, actual));
-            Assert.IsEmpty(failures);
+            Assert.Xml.AreEqual(expected, actual);
         }
 
         private void AssertFailures(AssertionFailure[] failures, params string[] expectedDescriptions)

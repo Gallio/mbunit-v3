@@ -176,6 +176,7 @@
     <Compile Include="Framework\AssertTest_Distinct.cs" />
     <Compile Include="Framework\ColumnAttributeTest.cs" />
     <Compile Include="Framework\AssertTest_Xml_Exists.cs" />
+    <Compile Include="Framework\AssertTest_Xml_IsUnique.cs" />
     <Compile Include="Framework\XmlOptionsTest.cs" />
     <Compile Include="Integration\ConstructorFixtureInitializerAndDisposeTest.cs" />
     <Compile Include="Integration\FixtureSetUpAndFixtureTearDownTest.cs" />

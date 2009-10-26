@@ -194,7 +194,7 @@ namespace MbUnit.Framework
 
             #endregion
 
-            #region Exists (without value)
+            #region Exists
 
             /// <summary>
             /// Asserts that the XML fragment contains the searched element or attribute.
@@ -518,6 +518,340 @@ namespace MbUnit.Framework
                         builder.AddLabeledValue("Expected value", expectedValue);
                     }
                        
+                    return builder.ToAssertionFailure();
+                });
+            }
+
+            #endregion
+
+            #region IsUnique
+
+            /// <summary>
+            /// Asserts that the XML fragment contains the searched element or attribute, and that this element or attribute is unique in the entire fragment.
+            /// </summary>
+            /// <param name="actualXmlReader">A reader to get the actual XML fragment.</param>
+            /// <param name="searchedItem">The path of the searched element or attribute in the XML fragment.</param>
+            /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
+            /// <exception cref="ArgumentNullException">Thrown if <paramref name="actualXmlReader"/> or <paramref name="searchedItem"/> is null.</exception>
+            public static void IsUnique(TextReader actualXmlReader, IXmlPath searchedItem)
+            {
+                IsUnique(actualXmlReader, searchedItem, XmlOptions.Default, null, null);
+            }
+
+            /// <summary>
+            /// Asserts that the XML fragment contains the searched element or attribute, and that this element or attribute is unique in the entire fragment.
+            /// </summary>
+            /// <param name="actualXmlReader">A reader to get the actual XML fragment.</param>
+            /// <param name="searchedItem">The path of the searched element or attribute in the XML fragment.</param>
+            /// <param name="options">Options for the search.</param>
+            /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
+            /// <exception cref="ArgumentNullException">Thrown if <paramref name="actualXmlReader"/>, <paramref name="searchedItem"/>, or <paramref name="options"/> is null.</exception>
+            /// <remarks>
+            /// <para>
+            /// Options not related to the name case of elements and attributes are going to be ignored.
+            /// </para>
+            /// </remarks>
+            public static void IsUnique(TextReader actualXmlReader, IXmlPath searchedItem, XmlOptions options)
+            {
+                IsUnique(actualXmlReader, searchedItem, options, null, null);
+            }
+
+            /// <summary>
+            /// Asserts that the XML fragment contains the searched element or attribute, and that this element or attribute is unique in the entire fragment.
+            /// </summary>
+            /// <param name="actualXmlReader">A reader to get the actual XML fragment.</param>
+            /// <param name="searchedItem">The path of the searched element or attribute in the XML fragment.</param>
+            /// <param name="messageFormat">The custom assertion message format, or null if none.</param>
+            /// <param name="messageArgs">The custom assertion message arguments, or null if none.</param>
+            /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
+            /// <exception cref="ArgumentNullException">Thrown if <paramref name="actualXmlReader"/> or <paramref name="searchedItem"/> is null.</exception>
+            public static void IsUnique(TextReader actualXmlReader, IXmlPath searchedItem, string messageFormat, params object[] messageArgs)
+            {
+                IsUnique(actualXmlReader, searchedItem, XmlOptions.Default, messageFormat, messageArgs);
+            }
+
+            /// <summary>
+            /// Asserts that the XML fragment contains the searched element or attribute, and that this element or attribute is unique in the entire fragment.
+            /// </summary>
+            /// <param name="actualXmlReader">A reader to get the actual XML fragment.</param>
+            /// <param name="searchedItem">The path of the searched element or attribute in the XML fragment.</param>
+            /// <param name="options">Options for the search.</param>
+            /// <param name="messageFormat">The custom assertion message format, or null if none.</param>
+            /// <param name="messageArgs">The custom assertion message arguments, or null if none.</param>
+            /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
+            /// <exception cref="ArgumentNullException">Thrown if <paramref name="actualXmlReader"/>, <paramref name="searchedItem"/>, or <paramref name="options"/> is null.</exception>
+            /// <remarks>
+            /// <para>
+            /// Options not related to the name case of elements and attributes are going to be ignored.
+            /// </para>
+            /// </remarks>
+            public static void IsUnique(TextReader actualXmlReader, IXmlPath searchedItem, XmlOptions options, string messageFormat, params object[] messageArgs)
+            {
+                if (actualXmlReader == null)
+                    throw new ArgumentNullException("actualXmlReader");
+
+                IsUnique(actualXmlReader.ReadToEnd(), searchedItem, options, messageFormat, messageArgs);
+            }
+
+            /// <summary>
+            /// Asserts that the XML fragment contains the searched element or attribute, and that this element or attribute is unique in the entire fragment.
+            /// </summary>
+            /// <param name="actualXml">The actual XML fragment.</param>
+            /// <param name="searchedItem">The path of the searched element or attribute in the XML fragment.</param>
+            /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
+            /// <exception cref="ArgumentNullException">Thrown if <paramref name="actualXml"/> or <paramref name="searchedItem"/> is null.</exception>
+            public static void IsUnique(string actualXml, IXmlPath searchedItem)
+            {
+                IsUnique(actualXml, searchedItem, XmlOptions.Default, null, null);
+            }
+
+            /// <summary>
+            /// Asserts that the XML fragment contains the searched element or attribute, and that this element or attribute is unique in the entire fragment.
+            /// </summary>
+            /// <param name="actualXml">The actual XML fragment.</param>
+            /// <param name="searchedItem">The path of the searched element or attribute in the XML fragment.</param>
+            /// <param name="options">Options for the search.</param>
+            /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
+            /// <exception cref="ArgumentNullException">Thrown if <paramref name="actualXml"/>, <paramref name="searchedItem"/>, or <paramref name="options"/> is null.</exception>
+            /// <remarks>
+            /// <para>
+            /// Options not related to the name case of elements and attributes are going to be ignored.
+            /// </para>
+            /// </remarks>
+            public static void IsUnique(string actualXml, IXmlPath searchedItem, XmlOptions options)
+            {
+                IsUnique(actualXml, searchedItem, options, null, null);
+            }
+
+            /// <summary>
+            /// Asserts that the XML fragment contains the searched element or attribute, and that this element or attribute is unique in the entire fragment.
+            /// </summary>
+            /// <param name="actualXml">The actual XML fragment.</param>
+            /// <param name="searchedItem">The path of the searched element or attribute in the XML fragment.</param>
+            /// <param name="messageFormat">The custom assertion message format, or null if none.</param>
+            /// <param name="messageArgs">The custom assertion message arguments, or null if none.</param>
+            /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
+            /// <exception cref="ArgumentNullException">Thrown if <paramref name="actualXml"/> or <paramref name="searchedItem"/> is null.</exception>
+            public static void IsUnique(string actualXml, IXmlPath searchedItem, string messageFormat, params object[] messageArgs)
+            {
+                IsUnique(actualXml, searchedItem, XmlOptions.Default, messageFormat, messageArgs);
+            }
+
+            /// <summary>
+            /// Asserts that the XML fragment contains the searched element or attribute, and that this element or attribute is unique in the entire fragment.
+            /// </summary>
+            /// <param name="actualXml">The actual XML fragment.</param>
+            /// <param name="searchedItem">The path of the searched element or attribute in the XML fragment.</param>
+            /// <param name="options">Options for the search.</param>
+            /// <param name="messageFormat">The custom assertion message format, or null if none.</param>
+            /// <param name="messageArgs">The custom assertion message arguments, or null if none.</param>
+            /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
+            /// <exception cref="ArgumentNullException">Thrown if <paramref name="actualXml"/>, <paramref name="searchedItem"/>, or <paramref name="options"/> is null.</exception>
+            /// <remarks>
+            /// <para>
+            /// Options not related to the name case of elements and attributes are going to be ignored.
+            /// </para>
+            /// </remarks>
+            public static void IsUnique(string actualXml, IXmlPath searchedItem, XmlOptions options, string messageFormat, params object[] messageArgs)
+            {
+                IsUnique(actualXml, searchedItem, null, options, messageFormat, messageFormat);
+            }
+
+            /// <summary>
+            /// Asserts that the XML fragment contains the searched element or attribute, that it has the expected value, and that this element or attribute is unique in the entire fragment.
+            /// </summary>
+            /// <param name="actualXmlReader">A reader to get the actual XML fragment.</param>
+            /// <param name="searchedItem">The path of the searched element or attribute in the XML fragment.</param>
+            /// <param name="expectedValue">The expected value of the searched item (element or attribute).</param>
+            /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
+            /// <exception cref="ArgumentNullException">Thrown if <paramref name="actualXmlReader"/> or <paramref name="searchedItem"/> is null.</exception>
+            /// <remarks>
+            /// <para>
+            /// If <paramref name="expectedValue"/> is set to <c>null</c>, the assertion behaves like <see cref="Assert.Xml.Exists(TextReader, IXmlPath)"/>.
+            /// </para>
+            /// </remarks>
+            public static void IsUnique(TextReader actualXmlReader, IXmlPath searchedItem, string expectedValue)
+            {
+                IsUnique(actualXmlReader, searchedItem, expectedValue, XmlOptions.Default, null, null);
+            }
+
+            /// <summary>
+            /// Asserts that the XML fragment contains the searched element or attribute, that it has the expected value, and that this element or attribute is unique in the entire fragment.
+            /// </summary>
+            /// <param name="actualXmlReader">A reader to get the actual XML fragment.</param>
+            /// <param name="searchedItem">The path of the searched element or attribute in the XML fragment.</param>
+            /// <param name="expectedValue">The expected value of the searched item (element or attribute).</param>
+            /// <param name="options">Options for the search.</param>
+            /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
+            /// <exception cref="ArgumentNullException">Thrown if <paramref name="actualXmlReader"/>, <paramref name="searchedItem"/>, or <paramref name="options"/> is null.</exception>
+            /// <remarks>
+            /// <para>
+            /// If <paramref name="expectedValue"/> is set to <c>null</c>, the assertion behaves like <see cref="Assert.Xml.Exists(TextReader, IXmlPath, XmlOptions)"/>.
+            /// </para>
+            /// </remarks>
+            public static void IsUnique(TextReader actualXmlReader, IXmlPath searchedItem, string expectedValue, XmlOptions options)
+            {
+                IsUnique(actualXmlReader, searchedItem, expectedValue, options, null, null);
+            }
+
+            /// <summary>
+            /// Asserts that the XML fragment contains the searched element or attribute, that it has the expected value, and that this element or attribute is unique in the entire fragment.
+            /// </summary>
+            /// <param name="actualXmlReader">A reader to get the actual XML fragment.</param>
+            /// <param name="searchedItem">The path of the searched element or attribute in the XML fragment.</param>
+            /// <param name="expectedValue">The expected value of the searched item (element or attribute).</param>
+            /// <param name="messageFormat">The custom assertion message format, or null if none.</param>
+            /// <param name="messageArgs">The custom assertion message arguments, or null if none.</param>
+            /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
+            /// <exception cref="ArgumentNullException">Thrown if <paramref name="actualXmlReader"/> or <paramref name="searchedItem"/> is null.</exception>
+            /// <remarks>
+            /// <para>
+            /// If <paramref name="expectedValue"/> is set to <c>null</c>, the assertion behaves like <see cref="Assert.Xml.Exists(TextReader, IXmlPath, string, object[])"/>.
+            /// </para>
+            /// </remarks>
+            public static void IsUnique(TextReader actualXmlReader, IXmlPath searchedItem, string expectedValue, string messageFormat, params object[] messageArgs)
+            {
+                IsUnique(actualXmlReader, searchedItem, expectedValue, XmlOptions.Default, messageFormat, messageArgs);
+            }
+
+            /// <summary>
+            /// Asserts that the XML fragment contains the searched element or attribute, that it has the expected value, and that this element or attribute is unique in the entire fragment.
+            /// </summary>
+            /// <param name="actualXmlReader">A reader to get the actual XML fragment.</param>
+            /// <param name="searchedItem">The path of the searched element or attribute in the XML fragment.</param>
+            /// <param name="expectedValue">The expected value of the searched item (element or attribute).</param>
+            /// <param name="options">Options for the search.</param>
+            /// <param name="messageFormat">The custom assertion message format, or null if none.</param>
+            /// <param name="messageArgs">The custom assertion message arguments, or null if none.</param>
+            /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
+            /// <exception cref="ArgumentNullException">Thrown if <paramref name="actualXmlReader"/>, <paramref name="searchedItem"/>, or <paramref name="options"/> is null.</exception>
+            /// <remarks>
+            /// <para>
+            /// If <paramref name="expectedValue"/> is set to <c>null</c>, the assertion behaves like <see cref="Assert.Xml.Exists(TextReader, IXmlPath, XmlOptions, string, object[])"/>.
+            /// </para>
+            /// </remarks>
+            public static void IsUnique(TextReader actualXmlReader, IXmlPath searchedItem, string expectedValue, XmlOptions options, string messageFormat, params object[] messageArgs)
+            {
+                if (actualXmlReader == null)
+                    throw new ArgumentNullException("actualXmlReader");
+
+                IsUnique(actualXmlReader.ReadToEnd(), searchedItem, expectedValue, options, messageFormat, messageArgs);
+            }
+
+            /// <summary>
+            /// Asserts that the XML fragment contains the searched element or attribute, that it has the expected value, and that this element or attribute is unique in the entire fragment.
+            /// </summary>
+            /// <param name="actualXml">The actual XML fragment.</param>
+            /// <param name="searchedItem">The path of the searched element or attribute in the XML fragment.</param>
+            /// <param name="expectedValue">The expected value of the searched item (element or attribute).</param>
+            /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
+            /// <exception cref="ArgumentNullException">Thrown if <paramref name="actualXml"/> or <paramref name="searchedItem"/> is null.</exception>
+            /// <remarks>
+            /// <para>
+            /// If <paramref name="expectedValue"/> is set to <c>null</c>, the assertion behaves like <see cref="Assert.Xml.Exists(string, IXmlPath)"/>.
+            /// </para>
+            /// </remarks>
+            public static void IsUnique(string actualXml, IXmlPath searchedItem, string expectedValue)
+            {
+                IsUnique(actualXml, searchedItem, expectedValue, XmlOptions.Default, null, null);
+            }
+
+            /// <summary>
+            /// Asserts that the XML fragment contains the searched element or attribute, that it has the expected value, and that this element or attribute is unique in the entire fragment.
+            /// </summary>
+            /// <param name="actualXml">The actual XML fragment.</param>
+            /// <param name="searchedItem">The path of the searched element or attribute in the XML fragment.</param>
+            /// <param name="expectedValue">The expected value of the searched item (element or attribute).</param>
+            /// <param name="options">Options for the search.</param>
+            /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
+            /// <exception cref="ArgumentNullException">Thrown if <paramref name="actualXml"/>, <paramref name="searchedItem"/>, or <paramref name="options"/> is null.</exception>
+            /// <remarks>
+            /// <para>
+            /// If <paramref name="expectedValue"/> is set to <c>null</c>, the assertion behaves like <see cref="Assert.Xml.Exists(string, IXmlPath, XmlOptions)"/>.
+            /// </para>
+            /// </remarks>
+            public static void IsUnique(string actualXml, IXmlPath searchedItem, string expectedValue, XmlOptions options)
+            {
+                IsUnique(actualXml, searchedItem, expectedValue, options, null, null);
+            }
+
+            /// <summary>
+            /// Asserts that the XML fragment contains the searched element or attribute, that it has the expected value, and that this element or attribute is unique in the entire fragment.
+            /// </summary>
+            /// <param name="actualXml">The actual XML fragment.</param>
+            /// <param name="searchedItem">The path of the searched element or attribute in the XML fragment.</param>
+            /// <param name="expectedValue">The expected value of the searched item (element or attribute).</param>
+            /// <param name="messageFormat">The custom assertion message format, or null if none.</param>
+            /// <param name="messageArgs">The custom assertion message arguments, or null if none.</param>
+            /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
+            /// <exception cref="ArgumentNullException">Thrown if <paramref name="actualXml"/> or <paramref name="searchedItem"/> is null.</exception>
+            /// <remarks>
+            /// <para>
+            /// If <paramref name="expectedValue"/> is set to <c>null</c>, the assertion behaves like <see cref="Assert.Xml.Exists(string, IXmlPath, string, object[])"/>.
+            /// </para>
+            /// </remarks>
+            public static void IsUnique(string actualXml, IXmlPath searchedItem, string expectedValue, string messageFormat, params object[] messageArgs)
+            {
+                IsUnique(actualXml, searchedItem, expectedValue, XmlOptions.Default, messageFormat, messageArgs);
+            }
+
+            /// <summary>
+            /// Asserts that the XML fragment contains the searched element or attribute, that it has the expected value, and that this element or attribute is unique in the entire fragment.
+            /// </summary>
+            /// <param name="actualXml">The actual XML fragment.</param>
+            /// <param name="searchedItem">The path of the searched element or attribute in the XML fragment.</param>
+            /// <param name="expectedValue">The expected value of the searched item (element or attribute).</param>
+            /// <param name="options">Options for the search.</param>
+            /// <param name="messageFormat">The custom assertion message format, or null if none.</param>
+            /// <param name="messageArgs">The custom assertion message arguments, or null if none.</param>
+            /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise.</exception>
+            /// <exception cref="ArgumentNullException">Thrown if <paramref name="actualXml"/>, <paramref name="searchedItem"/>, or <paramref name="options"/> is null.</exception>
+            /// <remarks>
+            /// <para>
+            /// If <paramref name="expectedValue"/> is set to <c>null</c>, the assertion behaves like <see cref="Assert.Xml.Exists(string, IXmlPath, XmlOptions, string, object[])"/>.
+            /// </para>
+            /// </remarks>
+            public static void IsUnique(string actualXml, IXmlPath searchedItem, string expectedValue, XmlOptions options, string messageFormat, params object[] messageArgs)
+            {
+                if (actualXml == null)
+                    throw new ArgumentNullException("actualXml");
+                if (searchedItem == null)
+                    throw new ArgumentNullException("searchedItem");
+                if (options == null)
+                    throw new ArgumentNullException("options");
+
+                AssertionHelper.Verify(() =>
+                {
+                    Document document;
+
+                    try
+                    {
+                        document = new Parser(actualXml).Run(options.Value);
+                    }
+                    catch (XmlException exception)
+                    {
+                        return new AssertionFailureBuilder("Cannot parse the actual XML fragment.")
+                            .SetMessage(messageFormat, messageArgs)
+                            .AddException(exception)
+                            .ToAssertionFailure();
+                    }
+
+                    int count = document.CountAt((XmlPathClosed)searchedItem, expectedValue, options.Value);
+
+                    if (count == 1)
+                        return null;
+
+                    var builder = new AssertionFailureBuilder("Expected the XML fragment to contain only once the searched XML element or attribute, " +
+                        (count == 0 ? "but none was found." : "But several were found."))
+                        .SetMessage(messageFormat, messageArgs)
+                        .AddLabeledValue("Item searched", searchedItem.ToString())
+                        .AddRawLabeledValue("Number of items found", count);
+
+                    if (expectedValue != null)
+                    {
+                        builder.AddLabeledValue("Expected value", expectedValue);
+                    }
+
                     return builder.ToAssertionFailure();
                 });
             }
