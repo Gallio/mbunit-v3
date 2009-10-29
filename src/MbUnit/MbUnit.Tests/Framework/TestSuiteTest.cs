@@ -31,6 +31,7 @@ namespace MbUnit.Tests.Framework
     [TestsOn(typeof(TestSuite))]
     [RunSample(typeof(DynamicSample))]
     [RunSample(typeof(StaticSample))]
+    [RunSample(typeof(ConcreteStaticSample))]
     public class TestSuiteTest : BaseTestWithSampleRunner
     {
         [Test]
@@ -242,6 +243,15 @@ namespace MbUnit.Tests.Framework
             Assert.AreEqual(test2Data.Id, test2Run.Step.TestId);
         }
 
+        [Test]
+        [Pending("Issue 525 to be fixed (http://code.google.com/p/mb-unit/issues/detail?id=525).")]
+        public void StaticTestFactoryOnAbstractType() // Issue 525 (http://code.google.com/p/mb-unit/issues/detail?id=525)
+        {
+            var run = Runner.GetPrimaryTestStepRun(x => x.Step.FullName.EndsWith("DynamicSampleMethod"));
+            Assert.IsNotNull(run);
+            AssertLogContains(run, "Hello from SampleMethod!");
+        }
+
         private static readonly Test[] tests = new Test[]
         {
             new TestSuite("Suite")
@@ -290,6 +300,34 @@ namespace MbUnit.Tests.Framework
             public void Test()
             {
                 TestLog.WriteLine("Test Ran");
+            }
+        }
+
+        [TestFixture, Explicit("Sample")]
+        public abstract class AbstractStaticSample<T>
+        {
+            [StaticTestFactory]
+            public static IEnumerable<Test> TestSuite()
+            {
+                var methodInfo = typeof(T).GetMethod("SampleMethod");
+                var method = (Action)Delegate.CreateDelegate(typeof(Action), methodInfo);
+
+                yield return new TestSuite("SampleSuite")
+                {
+                    Children =
+                    {
+                        new TestCase("DynamicSampleMethod", () => method())
+                    }
+                };
+            }
+        }
+
+        [TestFixture, Explicit("Sample")]
+        public class ConcreteStaticSample : AbstractStaticSample<ConcreteStaticSample>
+        {
+            public void SampleMethod()
+            {
+                TestLog.Write("Hello from SampleMethod!");
             }
         }
     }
