@@ -249,6 +249,23 @@ namespace Gallio.Framework.Utilities
         }
 
         /// <summary>
+        /// Gets all test step runs with the code reference infered from the method of the specified type.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// Can only be called after the tests have run.
+        /// </para>
+        /// </remarks>
+        /// <param name="type">The searched type.</param>
+        /// <param name="methodName">The name of the searched method.</param>
+        /// <returns>The enumeration of test step runs, or null if not found.</returns>
+        public IEnumerable<TestStepRun> GetTestStepRuns(Type type, string methodName)
+        {
+            var codeReference = CodeReference.CreateFromMember(type.GetMethod(methodName));
+            return GetTestStepRuns(codeReference);
+        }
+
+        /// <summary>
         /// Gets the primary test step run of a test with the given code reference.
         /// </summary>
         /// <remarks>
@@ -290,6 +307,26 @@ namespace Gallio.Framework.Utilities
                     return run;
 
             return null;
+        }
+
+        /// <summary>
+        /// Gets the primary test step run of a test with the code reference infered from the method of the specified type.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// If there are multiple primary steps, returns the first one found.
+        /// </para>
+        /// <para>
+        /// Can only be called after the tests have run.
+        /// </para>
+        /// </remarks>
+        /// <param name="type">The searched type.</param>
+        /// <param name="methodName">The name of the searched method.</param>
+        /// <returns>The first test step run, or null if not found.</returns>
+        public TestStepRun GetPrimaryTestStepRun(Type type, string methodName)
+        {
+            var codeReference = CodeReference.CreateFromMember(type.GetMethod(methodName));
+            return GetPrimaryTestStepRun(codeReference);
         }
 
         /// <summary>

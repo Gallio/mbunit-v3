@@ -72,7 +72,7 @@ namespace MbUnit.Framework
         /// <inheritdoc />
         protected override void DecorateTest(IPatternScope scope, ICodeElementInfo codeElement)
         {
-            scope.TestBuilder.TestInstanceActions.RunTestInstanceBodyChain.Around(delegate(PatternTestInstanceState state, Func<PatternTestInstanceState, TestOutcome> inner)
+            scope.TestBuilder.TestInstanceActions.RunTestInstanceBodyChain.Around((state, inner) =>
             {
                 TaskContainer container = new TaskContainer();
                 try

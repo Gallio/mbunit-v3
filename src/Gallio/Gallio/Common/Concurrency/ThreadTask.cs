@@ -18,6 +18,7 @@ using System.Diagnostics;
 using System.Threading;
 using Gallio;
 using Gallio.Common.Policies;
+using System.Globalization;
 
 namespace Gallio.Common.Concurrency
 {
@@ -126,6 +127,7 @@ namespace Gallio.Common.Concurrency
             lock (this)
             {
                 thread = new Thread(Run);
+                thread.CurrentCulture = Thread.CurrentThread.CurrentCulture; // Propagate the culture of the primary thread (issue 572; http://code.google.com/p/mb-unit/issues/detail?id=572)
                 thread.IsBackground = true;
                 thread.Name = String.Format("Task: {0}", Name);
 

@@ -75,7 +75,6 @@ namespace MbUnit.Tests.Framework
                 // Simple implementation of the "Sieve of Eratosthenes" algorithm, 
                 // that checks for the primality of a number 
                 // (http://en.wikipedia.org/wiki/Sieve_of_Eratosthenes)
-                //int n = (int)Convert.ChangeType(number, typeof(int));
                 var array = new BitArray(n + 1, true);
 
                 for (int i = 2; i < n + 1; i++)
