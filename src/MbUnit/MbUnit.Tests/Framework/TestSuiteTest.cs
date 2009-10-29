@@ -244,7 +244,7 @@ namespace MbUnit.Tests.Framework
         }
 
         [Test]
-        [Pending("Issue 525 to be fixed (http://code.google.com/p/mb-unit/issues/detail?id=525).")]
+        [Pending("Issue 525 to be fixed.")]
         public void StaticTestFactoryOnAbstractType() // Issue 525 (http://code.google.com/p/mb-unit/issues/detail?id=525)
         {
             var run = Runner.GetPrimaryTestStepRun(x => x.Step.FullName.EndsWith("DynamicSampleMethod"));
@@ -310,13 +310,12 @@ namespace MbUnit.Tests.Framework
             public static IEnumerable<Test> TestSuite()
             {
                 var methodInfo = typeof(T).GetMethod("SampleMethod");
-                var method = (Action)Delegate.CreateDelegate(typeof(Action), methodInfo);
 
                 yield return new TestSuite("SampleSuite")
                 {
                     Children =
                     {
-                        new TestCase("DynamicSampleMethod", () => method())
+                        new TestCase("DynamicSampleMethod", () => methodInfo.Invoke(null, null))
                     }
                 };
             }
@@ -325,7 +324,7 @@ namespace MbUnit.Tests.Framework
         [TestFixture, Explicit("Sample")]
         public class ConcreteStaticSample : AbstractStaticSample<ConcreteStaticSample>
         {
-            public void SampleMethod()
+            public static void SampleMethod()
             {
                 TestLog.Write("Hello from SampleMethod!");
             }
