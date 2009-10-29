@@ -31,7 +31,7 @@ namespace MbUnit.Tests.Framework
     [TestsOn(typeof(TestSuite))]
     [RunSample(typeof(DynamicSample))]
     [RunSample(typeof(StaticSample))]
-    [RunSample(typeof(ConcreteStaticSample))]
+    //[RunSample(typeof(ConcreteStaticSample))]
     public class TestSuiteTest : BaseTestWithSampleRunner
     {
         [Test]
@@ -243,14 +243,14 @@ namespace MbUnit.Tests.Framework
             Assert.AreEqual(test2Data.Id, test2Run.Step.TestId);
         }
 
-        [Test]
+        /*[Test]
         [Pending("Issue 525 to be fixed.")]
         public void StaticTestFactoryOnAbstractType() // Issue 525 (http://code.google.com/p/mb-unit/issues/detail?id=525)
         {
             var run = Runner.GetPrimaryTestStepRun(x => x.Step.FullName.EndsWith("DynamicSampleMethod"));
             Assert.IsNotNull(run);
             AssertLogContains(run, "Hello from SampleMethod!");
-        }
+        }*/
 
         private static readonly Test[] tests = new Test[]
         {
@@ -303,7 +303,7 @@ namespace MbUnit.Tests.Framework
             }
         }
 
-        [TestFixture, Explicit("Sample")]
+        /*[TestFixture, Explicit("Sample")]
         public abstract class AbstractStaticSample<T>
         {
             [StaticTestFactory]
@@ -328,6 +328,6 @@ namespace MbUnit.Tests.Framework
             {
                 TestLog.Write("Hello from SampleMethod!");
             }
-        }
+        }*/
     }
 }
