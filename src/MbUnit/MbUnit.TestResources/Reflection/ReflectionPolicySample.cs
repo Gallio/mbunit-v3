@@ -15,6 +15,8 @@
 
 using System;
 
+#pragma warning disable 67
+
 namespace MbUnit.TestResources.Reflection
 {
     /// <summary>
