@@ -16,6 +16,7 @@
 using System;
 using System.Globalization;
 using System.IO;
+using Gallio.Common.Platform;
 using Microsoft.Win32;
 
 namespace Gallio.MSTestAdapter.Wrapper
@@ -32,8 +33,9 @@ namespace Gallio.MSTestAdapter.Wrapper
         /// <returns>The full path of the MSTest.exe program, or null if not found.</returns>
         public static string FindMSTestPathForVisualStudioVersion(string visualStudioVersion)
         {
-            using (RegistryKey key = Registry.LocalMachine.OpenSubKey(
-                @"SOFTWARE\Microsoft\VisualStudio\" + visualStudioVersion))
+            using (RegistryKey key = RegistryUtils.OpenSubKeyWithBitness(Registry.LocalMachine,
+                @"SOFTWARE\Microsoft\VisualStudio\" + visualStudioVersion,
+                @"SOFTWARE\Wow6432Node\Microsoft\VisualStudio\" + visualStudioVersion))
             {
                 if (key != null)
                 {

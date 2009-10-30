@@ -129,7 +129,10 @@ namespace Gallio.Common.Platform
                     return "v2.0.50727";
 
                 // fixme: more than a little naive...
-                return Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\NDP\v2.0.50727", "Version", null) != null
+                return RegistryUtils.GetValueWithBitness(
+                    @"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\NDP\v2.0.50727",
+                    @"HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Microsoft\NET Framework Setup\NDP\v2.0.50727",
+                    "Version", null) != null
                     ? "v2.0.50727"
                     : null;
             }
@@ -147,7 +150,10 @@ namespace Gallio.Common.Platform
                 if (IsUsingMono)
                     return "v4.0.20506";
 
-                string runtimeVersion = (string)Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\NDP\v4.0", "Version", null);
+                string runtimeVersion = (string) RegistryUtils.GetValueWithBitness(
+                        @"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\NDP\v4.0",
+                        @"HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Microsoft\NET Framework Setup\NDP\v4.0",
+                        "Version", null);
                 return runtimeVersion != null ? "v" + runtimeVersion : null;
             }
         }

@@ -50,7 +50,10 @@ namespace Gallio.Common.Platform
                     }
                     catch (FileNotFoundException)
                     {
-                        object value = Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\NDP\v3.0\Setup", "InstallSuccess", null);
+                        object value = RegistryUtils.GetValueWithBitness(
+                            @"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\NDP\v3.0\Setup",
+                            @"HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Microsoft\NET Framework Setup\NDP\v3.0\Setup",
+                            "InstallSuccess", null);
                         if (value is int && (int)value == 1)
                             return DotNetFrameworkVersion.DotNet30;
 

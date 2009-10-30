@@ -165,8 +165,9 @@ namespace Gallio.NCoverIntegration.Tools
 
         protected static bool GetNCoverInstallInfoFromRegistry(string versionPrefix, out string version, out string installDir)
         {
-            RegistryKey key = Registry.LocalMachine.OpenSubKey(@"Software\Gnoso\NCover")
-                ?? Registry.LocalMachine.OpenSubKey(@"WOW6432Node\Software\Gnoso\NCover");
+            RegistryKey key = RegistryUtils.OpenSubKeyWithBitness(Registry.LocalMachine,
+                @"Software\Gnoso\NCover",
+                @"Software\Wow6432Node\Gnoso\NCover");
             if (key != null)
             {
                 version = (string) key.GetValue("CurrentVersion");
