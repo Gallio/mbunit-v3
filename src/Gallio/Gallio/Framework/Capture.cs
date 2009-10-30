@@ -183,7 +183,7 @@ namespace Gallio.Framework
         /// </para>
         /// </remarks>
         /// <param name="triggerEvent">The trigger event.</param>
-        /// <param name="attachmentName">The name to give the image attachment, or null to assign one automatically.</param>
+        /// <param name="attachmentName">The name to give to the image attachment, or null to assign one automatically.</param>
         /// <param name="parameters">The capture parameters.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="parameters"/> is null.</exception>
         /// <seealso cref="TestContext.AutoExecute(TriggerEvent, Gallio.Common.Action)"/>

@@ -151,6 +151,7 @@
     <Compile Include="Framework\AssertTest_Strings.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Framework\AutoEmbedScreenshotAttributeTest.cs" />
     <Compile Include="Framework\AutomaticTestFixtureTest.cs">
       <SubType>Code</SubType>
     </Compile>
