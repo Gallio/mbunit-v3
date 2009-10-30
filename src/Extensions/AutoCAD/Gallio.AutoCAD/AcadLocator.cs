@@ -15,6 +15,7 @@
 
 using System;
 using System.IO;
+using Gallio.Common.Platform;
 using Microsoft.Win32;
 
 namespace Gallio.AutoCAD
@@ -37,7 +38,9 @@ namespace Gallio.AutoCAD
 
         private static string SearchRegistry()
         {
-            using (RegistryKey regKey = Registry.CurrentUser.OpenSubKey(@"Software\Autodesk\DWGCommon\shellex\Apps"))
+            using (RegistryKey regKey = RegistryUtils.OpenSubKeyWithBitness(Registry.CurrentUser, 
+                @"Software\Autodesk\DWGCommon\shellex\Apps",
+                @"Software\Wow6432Node\Autodesk\DWGCommon\shellex\Apps"))
             {
                 if (regKey == null)
                     return null;

@@ -22,6 +22,7 @@ using System.Runtime.InteropServices.ComTypes;
 using EnvDTE;
 using Gallio.Common;
 using Gallio.Common.Concurrency;
+using Gallio.Common.Platform;
 using Gallio.Runtime.Logging;
 using Microsoft.Win32;
 using Thread = System.Threading.Thread;
@@ -181,8 +182,9 @@ namespace Gallio.VisualStudio.Interop
 
         private static RegistryKey GetVisualStudioRegistryKey(string version)
         {
-            return Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\VisualStudio\" + version)
-                ?? Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Wow6432Node\Microsoft\VisualStudio\" + version);
+            return RegistryUtils.OpenSubKeyWithBitness(Registry.LocalMachine,
+                @"SOFTWARE\Microsoft\VisualStudio\" + version,
+                @"SOFTWARE\Wow6432Node\Microsoft\VisualStudio\" + version);
         }
 
         private static object GetActiveObject(string progId)
