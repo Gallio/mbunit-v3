@@ -344,7 +344,6 @@ namespace Gallio.Framework
         /// Sets the font size of the caption to display over screenshots images and videos. 
         /// </summary>
         /// <param name="fontSize">The caption font size.</param>
-        /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="value"/> is less than 1.</exception>
         public static void SetCaptionFontSize(int fontSize)
         {
             GetCaptionOverlay().FontSize = fontSize;
