@@ -36,7 +36,7 @@ namespace Gallio.Icarus.Tests.Controllers
         {
             var report = new Report();
             var reportService = MockRepository.GenerateMock<IReportService>();
-            var progressMonitor = MockProgressMonitor.GetMockProgressMonitor();
+            var progressMonitor = MockProgressMonitor.Instance;
             var fileSystem = MockRepository.GenerateStub<IFileSystem>();
             var reportController = new ReportController(reportService, fileSystem);
             var reportOptions = new ReportOptions("reportDirectory", "reportNameFormat");
@@ -64,7 +64,7 @@ namespace Gallio.Icarus.Tests.Controllers
             var report = new Report();
             const string reportType = "test";
             const string reportName = "reportName";
-            var progressMonitor = MockProgressMonitor.GetMockProgressMonitor();
+            var progressMonitor = MockProgressMonitor.Instance;
             var reportService = MockRepository.GenerateMock<IReportService>();
             reportService.Stub(rs => rs.SaveReportAs(Arg.Is(report), Arg<string>.Is.Anything, Arg.Is(reportType),
                 Arg.Is(progressMonitor))).Return(reportName);
@@ -80,7 +80,7 @@ namespace Gallio.Icarus.Tests.Controllers
             const string fileName = "fileName";
             const string format = "format";
             var reportService = MockRepository.GenerateMock<IReportService>();
-            var progressMonitor = MockProgressMonitor.GetMockProgressMonitor();
+            var progressMonitor = MockProgressMonitor.Instance;
             var fileSystem = MockRepository.GenerateStub<IFileSystem>();
             var reportController = new ReportController(reportService, fileSystem);
 
@@ -94,7 +94,7 @@ namespace Gallio.Icarus.Tests.Controllers
         {
             const string fileName = "fileName";
             var reportService = MockRepository.GenerateMock<IReportService>();
-            var progressMonitor = MockProgressMonitor.GetMockProgressMonitor();
+            var progressMonitor = MockProgressMonitor.Instance;
             var fileSystem = MockRepository.GenerateStub<IFileSystem>();
             var reportController = new ReportController(reportService, fileSystem);
 

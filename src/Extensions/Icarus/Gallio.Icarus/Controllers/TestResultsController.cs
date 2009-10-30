@@ -30,6 +30,7 @@ namespace Gallio.Icarus.Controllers
     internal class TestResultsController : NotifyController, ITestResultsController
     {
         private readonly ITestController testController;
+        private readonly ITestTreeModel testTreeModel;
 
         private readonly Stopwatch stopwatch = new Stopwatch();
         private readonly List<ListViewItem> listViewItems = new List<ListViewItem>();
@@ -44,42 +45,16 @@ namespace Gallio.Icarus.Controllers
             get; private set;
         }
 
-        public int PassedTestCount
-        {
-            get { return testController.Passed; }
-        }
-
-        public int FailedTestCount
-        {
-            get { return testController.Failed; }
-        }
-
-        public int SkippedTestCount
-        {
-            get { return testController.Skipped; }
-        }
-
-        public int InconclusiveTestCount
-        {
-            get { return testController.Inconclusive; }
-        }
-
         public TimeSpan ElapsedTime
         {
             get { return stopwatch.Elapsed; }
         }
 
-        public int TestCount
+        public TestResultsController(ITestController testController, ITestTreeModel testTreeModel)
         {
-            get { return testController.TestCount; }
-        }
-
-        public TestResultsController(ITestController testController)
-        {
-            if (testController == null) 
-                throw new ArgumentNullException("testController");
-            
             this.testController = testController;
+            this.testTreeModel = testTreeModel;
+
             testController.TestStepFinished += (sender, e) => CountResults();
             testController.PropertyChanged += (sender, e) =>
             {
@@ -125,9 +100,9 @@ namespace Gallio.Icarus.Controllers
                 sts.CopyTo(selectedTests, 0);
             });
 
-            if (selectedTests.Length == 0 && testController.Model.Root != null)
+            if (selectedTests.Length == 0 && testTreeModel.Root != null)
             {
-                action(testController.Model.Root);
+                action(testTreeModel.Root);
             }
             else
             {

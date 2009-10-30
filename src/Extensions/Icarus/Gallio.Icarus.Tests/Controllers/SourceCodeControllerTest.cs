@@ -32,7 +32,7 @@ namespace Gallio.Icarus.Tests.Controllers
         [Test]
         public void ShowSourceCode_is_fired_if_code_location_is_available()
         {
-            var progressMonitor = MockProgressMonitor.GetMockProgressMonitor();
+            var progressMonitor = MockProgressMonitor.Instance;
             var testController = MockRepository.GenerateStub<ITestController>();
             var root = new TestData("root", "root", "root");
             var testData = new TestData("testId", "testId", "testId");
@@ -57,7 +57,7 @@ namespace Gallio.Icarus.Tests.Controllers
         [Test]
         public void ShowSourceCode_does_not_fire_if_code_location_is_unknown()
         {
-            var progressMonitor = MockProgressMonitor.GetMockProgressMonitor();
+            var progressMonitor = MockProgressMonitor.Instance;
             var testController = MockRepository.GenerateStub<ITestController>();
             var root = new TestData("root", "root", "root");
             var testData = new TestData("testId", "testId", "testId");
@@ -75,7 +75,7 @@ namespace Gallio.Icarus.Tests.Controllers
         [Test]
         public void ShowSourceCode_does_not_fire_if_code_location_is_dll()
         {
-            var progressMonitor = MockProgressMonitor.GetMockProgressMonitor();
+            var progressMonitor = MockProgressMonitor.Instance;
             var testController = MockRepository.GenerateStub<ITestController>();
             var root = new TestData("root", "root", "root");
             var testData = new TestData("testId", "testId", "testId");
@@ -93,7 +93,7 @@ namespace Gallio.Icarus.Tests.Controllers
         [Test]
         public void ShowSourceCode_does_not_fire_if_code_location_is_exe()
         {
-            var progressMonitor = MockProgressMonitor.GetMockProgressMonitor();
+            var progressMonitor = MockProgressMonitor.Instance;
             var testController = MockRepository.GenerateStub<ITestController>();
             var root = new TestData("root", "root", "root");
             var testData = new TestData("testId", "testId", "testId");
@@ -111,7 +111,7 @@ namespace Gallio.Icarus.Tests.Controllers
         [Test]
         public void ShowSourceCode_does_not_fire_if_code_location_cannot_be_found()
         {
-            var progressMonitor = MockProgressMonitor.GetMockProgressMonitor();
+            var progressMonitor = MockProgressMonitor.Instance;
             var testController = MockRepository.GenerateStub<ITestController>();
             var testModelData = new TestModelData();
             Report report = new Report { TestModel = testModelData };
@@ -125,7 +125,7 @@ namespace Gallio.Icarus.Tests.Controllers
         [Test]
         public void ShowSourceCode_does_not_fire_if_TestModel_is_null()
         {
-            var progressMonitor = MockProgressMonitor.GetMockProgressMonitor();
+            var progressMonitor = MockProgressMonitor.Instance;
             var testController = MockRepository.GenerateStub<ITestController>();
             Report report = new Report();
             testController.Stub(x => x.ReadReport(null)).IgnoreArguments().Do((Action<ReadAction<Report>>)(action => action(report)));

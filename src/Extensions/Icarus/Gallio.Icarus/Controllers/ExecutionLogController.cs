@@ -19,6 +19,7 @@ using Gallio.Common.Collections;
 using Gallio.Common.Policies;
 using Gallio.Icarus.Controllers.EventArgs;
 using Gallio.Icarus.Controllers.Interfaces;
+using Gallio.Icarus.Models;
 using Gallio.Model.Schema;
 using Gallio.Runner.Events;
 using Gallio.Runner.Reports.Schema;
@@ -26,21 +27,18 @@ using Gallio.UI.ProgressMonitoring;
 
 namespace Gallio.Icarus.Controllers
 {
-    class ExecutionLogController : IExecutionLogController
+    internal class ExecutionLogController : IExecutionLogController
     {
         private readonly ITestController testController;
+        private readonly ITestTreeModel testTreeModel;
         private readonly ITaskManager taskManager;
         private readonly HashSet<string> selectedTestIds;
 
-        public ExecutionLogController(ITestController testController, ITaskManager taskManager)
+        public ExecutionLogController(ITestController testController, ITestTreeModel testTreeModel, 
+            ITaskManager taskManager)
         {
-            if (testController == null) 
-                throw new ArgumentNullException("testController");
-            
-            if (taskManager == null) 
-                throw new ArgumentNullException("taskManager");
-
             this.testController = testController;
+            this.testTreeModel = testTreeModel;
             this.taskManager = taskManager;
 
             testController.PropertyChanged += (sender, e) =>
@@ -102,7 +100,7 @@ namespace Gallio.Icarus.Controllers
                     // if no tests are selected, if it is the root.
                     foreach (var run in report.TestPackageRun.AllTestStepRuns)
                         if (selectedTestIds.Contains(run.Step.TestId) || 
-                            (selectedTestIds.Count == 0 && run.Step.TestId == testController.Model.Root.Name))
+                            (selectedTestIds.Count == 0 && run.Step.TestId == testTreeModel.Root.Name))
                             testStepRuns.Add(run);
                 }
 

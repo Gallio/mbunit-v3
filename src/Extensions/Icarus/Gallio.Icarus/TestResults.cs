@@ -15,6 +15,7 @@
 
 using System.Windows.Forms;
 using Gallio.Icarus.Controllers.Interfaces;
+using Gallio.Icarus.Models;
 
 namespace Gallio.Icarus
 {
@@ -22,7 +23,8 @@ namespace Gallio.Icarus
     {
         private readonly ITestResultsController testResultsController;
 
-        public TestResults(ITestResultsController testResultsController, IOptionsController optionsController)
+        public TestResults(ITestResultsController testResultsController, IOptionsController optionsController, 
+            ITestTreeModel testTreeModel, ITestStatistics testStatistics)
         {
             this.testResultsController = testResultsController;
 
@@ -34,13 +36,19 @@ namespace Gallio.Icarus
             testProgressStatusBar.DataBindings.Add("InconclusiveColor", optionsController, "InconclusiveColor");
             testProgressStatusBar.DataBindings.Add("SkippedColor", optionsController, "SkippedColor");
 
-            testProgressStatusBar.DataBindings.Add("Passed", testResultsController, "PassedTestCount");
-            testProgressStatusBar.DataBindings.Add("Failed", testResultsController, "FailedTestCount");
-            testProgressStatusBar.DataBindings.Add("Skipped", testResultsController, "SkippedTestCount");
-            testProgressStatusBar.DataBindings.Add("Inconclusive", testResultsController, "InconclusiveTestCount");
-            testProgressStatusBar.DataBindings.Add("ElapsedTime", testResultsController, "ElapsedTime");
-            testProgressStatusBar.DataBindings.Add("Total", testResultsController, "TestCount");
+            testStatistics.Passed.PropertyChanged += (s, e) => 
+                testProgressStatusBar.Passed = testStatistics.Passed.Value;
+            testStatistics.Failed.PropertyChanged += (s, e) =>
+                testProgressStatusBar.Failed = testStatistics.Failed.Value;
+            testStatistics.Skipped.PropertyChanged += (s, e) =>
+                testProgressStatusBar.Skipped = testStatistics.Skipped.Value;
+            testStatistics.Inconclusive.PropertyChanged += (s, e) =>
+                testProgressStatusBar.Inconclusive = testStatistics.Inconclusive.Value;
 
+            testTreeModel.TestCount.PropertyChanged += (s, e) => testProgressStatusBar.Total = testTreeModel.TestCount;
+            
+            testProgressStatusBar.DataBindings.Add("ElapsedTime", testResultsController, "ElapsedTime");
+            
             testResultsController.ResultsCount.PropertyChanged += (s, e) => 
                 testResultsList.VirtualListSize = testResultsController.ResultsCount;
 

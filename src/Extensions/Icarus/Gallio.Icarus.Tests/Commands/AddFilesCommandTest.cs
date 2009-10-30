@@ -40,7 +40,7 @@ namespace Gallio.Icarus.Tests.Commands
             var command = new AddFilesCommand(projectController, testController);
             var files = new List<string>();
             command.Files = files;
-            var progressMonitor = MockProgressMonitor.GetMockProgressMonitor();
+            var progressMonitor = MockProgressMonitor.Instance;
             
             command.Execute(progressMonitor);
 
@@ -55,7 +55,7 @@ namespace Gallio.Icarus.Tests.Commands
             var projectController = MockRepository.GenerateStub<IProjectController>();
             var testController = MockRepository.GenerateStub<ITestController>();
             var command = new AddFilesCommand(projectController, testController);
-            var progressMonitor = MockProgressMonitor.GetMockProgressMonitor();
+            var progressMonitor = MockProgressMonitor.Instance;
             progressMonitor.Stub(pm => pm.IsCanceled).Return(true);
 
             Assert.Throws<OperationCanceledException>(() => command.Execute(progressMonitor));

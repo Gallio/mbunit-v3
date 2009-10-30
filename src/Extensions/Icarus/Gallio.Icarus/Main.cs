@@ -63,6 +63,9 @@ namespace Gallio.Icarus
         private readonly string projectFileFilter = string.Format("Gallio Projects (*{0})|*{0}", 
             TestProject.Extension);
 
+        private readonly ITestTreeModel testTreeModel;
+        private readonly ITestStatistics testStatistics;
+
         internal Main(IApplicationController applicationController)
         {
             this.applicationController = applicationController;
@@ -108,11 +111,13 @@ namespace Gallio.Icarus
             InitializeComponent();
 
             var sourceCodeController = RuntimeAccessor.ServiceLocator.Resolve<ISourceCodeController>();
+            testTreeModel = RuntimeAccessor.ServiceLocator.Resolve<ITestTreeModel>();
+            testStatistics = RuntimeAccessor.ServiceLocator.Resolve<ITestStatistics>();
 
-            testExplorer = new TestExplorer(optionsController, projectController, testController, 
+            testExplorer = new TestExplorer(optionsController, projectController, testController, testTreeModel,
                 sourceCodeController, taskManager);
             projectExplorer = new ProjectExplorer(projectController, testController, reportController, taskManager);
-            testResults = new TestResults(testResultsController, optionsController);
+            testResults = new TestResults(testResultsController, optionsController, testTreeModel, testStatistics);
             runtimeLogWindow = new RuntimeLogWindow(runtimeLogController);
             filtersWindow = new FiltersWindow(filterController, projectController);
             executionLogWindow = new ExecutionLogWindow(executionLogController);
@@ -147,7 +152,7 @@ namespace Gallio.Icarus
             });
         }
 
-        private bool RunningOnWin7()
+        private static bool RunningOnWin7()
         {
             return (Environment.OSVersion.Version.Major > 6) ||
                 (Environment.OSVersion.Version.Major == 6 && Environment.OSVersion.Version.Minor >= 1);
@@ -230,7 +235,7 @@ namespace Gallio.Icarus
             RestoreWindowSizeAndLocation();
 
             if (RunningOnWin7())
-                new Win7TaskBar(Handle, (ITaskbarList4)new CTaskbarList(), testController);
+                new Win7TaskBar(Handle, (ITaskbarList4)new CTaskbarList(), testTreeModel, testStatistics);
         }
 
         private void RestoreWindowSizeAndLocation()

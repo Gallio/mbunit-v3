@@ -92,6 +92,7 @@
     </Compile>
     <Compile Include="Models\ProjectTreeNodes\FilesNodeTest.cs" />
     <Compile Include="Models\ProjectTreeModelTest.cs" />
+    <Compile Include="Models\TestStatisticsTests.cs" />
     <Compile Include="Models\TestTreeModelTest.cs" />
     <Compile Include="Models\TestTreeNodes\FilterNodeTest.cs" />
     <Compile Include="Models\TestTreeNodes\TestDataNodeTest.cs" />

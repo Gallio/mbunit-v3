@@ -16,7 +16,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Windows.Forms;
 using Aga.Controls.Tree;
 using Gallio.Icarus.Models.TestTreeNodes;
@@ -34,9 +33,6 @@ namespace Gallio.Icarus.Models
         private readonly TreeModel inner;
         private readonly List<TestStatus> filterStatuses = new List<TestStatus>();
         private readonly TestTreeSorter testTreeSorter;
-        private int? testCount;
-
-        public event PropertyChangedEventHandler PropertyChanged;
 
         public bool FilterPassed
         {
@@ -78,39 +74,18 @@ namespace Gallio.Icarus.Models
             }
         }
 
-        public int TestCount
+        public Observable<int> TestCount
         {
-            get
-            {
-                if (!testCount.HasValue)
-                {
-                    testCount = 0;
-                    foreach (Node node in inner.Nodes)
-                        testCount += CountTests(node);
-                }
-                return testCount.Value;
-            }
+            get;
+            private set;
         }
-
-        public int Passed { get; private set; }
-
-        public int Failed { get; private set; }
-
-        public int Skipped { get; private set; }
-
-        public int Inconclusive { get; private set; }
 
         public TestTreeModel()
         {
             inner = new TreeModel();
+            TestCount = new Observable<int>();
 
-            inner.NodesChanged += (sender, e) => 
-            {
-                // invalidate test count cache
-                // (this event is fired when a node checkstate changes)
-                testCount = null;
-                OnNodesChanged(e);
-            };
+            inner.NodesChanged += (sender, e) => OnNodesChanged(e);
             inner.NodesInserted += (sender, e) => OnNodesInserted(e);
             inner.NodesRemoved += (sender, e) => OnNodesRemoved(e);
             inner.StructureChanged += (sender, e) => OnStructureChanged(e);
@@ -119,6 +94,15 @@ namespace Gallio.Icarus.Models
             {
                 SortOrder = SortOrder.Ascending
             };
+        }
+
+        public void UpdateTestCount()
+        {
+            // (this event is fired when a node checkstate changes)
+            var testCount = 0;
+            foreach (Node node in inner.Nodes)
+                testCount += CountTests(node);
+            TestCount.Value = testCount;
         }
 
         private static int CountTests(Node node)
@@ -159,8 +143,6 @@ namespace Gallio.Icarus.Models
         {
             using (progressMonitor.BeginTask("Resetting test statuses", 100))
             {
-                ResetCounters();
-
                 foreach (Node node in inner.Root.Nodes)
                     ((TestTreeNode)node).Reset();
 
@@ -168,18 +150,6 @@ namespace Gallio.Icarus.Models
 
                 FilterTree();
             }
-        }
-
-        private void ResetCounters()
-        {
-            Passed = 0;
-            OnPropertyChanged(new PropertyChangedEventArgs("Passed"));
-            Failed = 0;
-            OnPropertyChanged(new PropertyChangedEventArgs("Failed"));
-            Skipped = 0;
-            OnPropertyChanged(new PropertyChangedEventArgs("Skipped"));
-            Inconclusive = 0;
-            OnPropertyChanged(new PropertyChangedEventArgs("Inconclusive"));            
         }
 
         public void SetFilter(TestStatus testStatus)
@@ -194,7 +164,7 @@ namespace Gallio.Icarus.Models
             OnStructureChanged(new TreePathEventArgs(new TreePath(Root)));
         }
 
-        public void UpdateTestStatus(TestData testData, TestStepRun testStepRun)
+        public void TestStepFinished(TestData testData, TestStepRun testStepRun)
         {
             if (Root == null)
                 return;
@@ -204,29 +174,6 @@ namespace Gallio.Icarus.Models
             {
                 node.AddTestStepRun(testStepRun);
                 Filter(node);
-            }
-
-            if (!testStepRun.Step.IsTestCase)
-                return;
-
-            switch (testStepRun.Result.Outcome.Status)
-            {
-                case TestStatus.Passed:
-                    Passed++;
-                    OnPropertyChanged(new PropertyChangedEventArgs("Passed"));
-                    break;
-                case TestStatus.Failed:
-                    Failed++;
-                    OnPropertyChanged(new PropertyChangedEventArgs("Failed"));
-                    break;
-                case TestStatus.Skipped:
-                    Skipped++;
-                    OnPropertyChanged(new PropertyChangedEventArgs("Skipped"));
-                    break;
-                case TestStatus.Inconclusive:
-                    Inconclusive++;
-                    OnPropertyChanged(new PropertyChangedEventArgs("Inconclusive"));
-                    break;
             }
         }
 
@@ -299,12 +246,6 @@ namespace Gallio.Icarus.Models
             OnStructureChanged(new TreePathEventArgs(new TreePath(Root)));
         }
 
-        private void OnPropertyChanged(PropertyChangedEventArgs e)
-        {
-            if (PropertyChanged != null)
-                PropertyChanged(this, e);
-        }
-
         public override IEnumerable GetChildren(TreePath treePath)
         {
             if (testTreeSorter.SortOrder != SortOrder.None)
@@ -340,8 +281,6 @@ namespace Gallio.Icarus.Models
 
             using (progressMonitor.BeginTask("Building test tree", count))
             {
-                ResetCounters();
-
                 inner.Root.Nodes.Clear();
                 var root = TestTreeBuilder.BuildTestTree(progressMonitor, testModelData, options);
                 inner.Root.Nodes.Add(root);

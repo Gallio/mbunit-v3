@@ -33,7 +33,7 @@ namespace Gallio.Icarus.Tests.Commands
             var filterSet = new FilterSet<ITestDescriptor>(new NoneFilter<ITestDescriptor>());
             var cmd = new ApplyFilterCommand(testController, filterSet);
 
-            cmd.Execute(MockProgressMonitor.GetMockProgressMonitor());
+            cmd.Execute(MockProgressMonitor.Instance);
 
             testController.AssertWasCalled(tc => tc.ApplyFilterSet(filterSet));
         }

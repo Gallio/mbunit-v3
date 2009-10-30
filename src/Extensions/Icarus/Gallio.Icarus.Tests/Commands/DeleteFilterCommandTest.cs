@@ -33,7 +33,7 @@ namespace Gallio.Icarus.Tests.Commands
             var projectController = MockRepository.GenerateStub<IProjectController>();
             var filterInfo = new FilterInfo("None", new NoneFilter<ITestDescriptor>().ToFilterExpr());
             var command = new DeleteFilterCommand(projectController, filterInfo);
-            var progressMonitor = MockProgressMonitor.GetMockProgressMonitor();
+            var progressMonitor = MockProgressMonitor.Instance;
 
             command.Execute(progressMonitor);
 

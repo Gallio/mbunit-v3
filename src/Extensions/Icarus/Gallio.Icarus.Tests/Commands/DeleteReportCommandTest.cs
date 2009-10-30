@@ -30,7 +30,7 @@ namespace Gallio.Icarus.Tests.Commands
             var reportController = MockRepository.GenerateStub<IReportController>();
             const string fileName = "fileName";
             var deleteReportCommand = new DeleteReportCommand(reportController) { FileName = fileName };
-            var progressMonitor = MockProgressMonitor.GetMockProgressMonitor();
+            var progressMonitor = MockProgressMonitor.Instance;
             
             deleteReportCommand.Execute(progressMonitor);
 

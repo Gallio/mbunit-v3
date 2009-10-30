@@ -15,8 +15,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
 using Gallio.Common.Concurrency;
 using Gallio.Icarus.Controllers;
 using Gallio.Icarus.Controllers.Interfaces;
@@ -25,73 +23,32 @@ using Gallio.Icarus.Models.TestTreeNodes;
 using Gallio.Icarus.Tests.Utilities;
 using Gallio.Model;
 using Gallio.Model.Schema;
-using Gallio.Runner.Events;
 using Gallio.Runner.Reports.Schema;
 using MbUnit.Framework;
 using Rhino.Mocks;
 
 namespace Gallio.Icarus.Tests.Controllers
 {
-    [MbUnit.Framework.Category("Controllers"), Author("Graham Hay"), TestsOn(typeof(TestResultsController))]
+    [Category("Controllers"), Author("Graham Hay"), TestsOn(typeof(TestResultsController))]
     internal class TestResultsControllerTest
     {
         private TestResultsController testResultsController;
+        private ITestController testController;
+        private ITestTreeModel testTreeModel;
 
-        [Test]
-        public void Ctor_should_throw_if_TestController_is_null()
+        private void EstablishContext()
         {
-            Assert.Throws<ArgumentNullException>(() => new TestResultsController(null));
-        }
-
-        [Test]
-        public void PassedTestCount_should_come_from_TestController()
-        {
-            var testController = MockRepository.GenerateStub<ITestController>();
-            const int passedTestCount = 5;
-            testController.Stub(tc => tc.Passed).Return(passedTestCount);
-            var testResultsController = new TestResultsController(testController);
-
-            Assert.AreEqual(passedTestCount, testResultsController.PassedTestCount);
-        }
-
-        [Test]
-        public void FailedTestCount_should_come_from_TestController()
-        {
-            var testController = MockRepository.GenerateStub<ITestController>();
-            const int failedTestCount = 5;
-            testController.Stub(tc => tc.Failed).Return(failedTestCount);
-            var testResultsController = new TestResultsController(testController);
-
-            Assert.AreEqual(failedTestCount, testResultsController.FailedTestCount);
-        }
-
-        [Test]
-        public void SkippedTestCount_should_come_from_TestController()
-        {
-            var testController = MockRepository.GenerateStub<ITestController>();
-            const int skippedTestCount = 5;
-            testController.Stub(tc => tc.Skipped).Return(skippedTestCount);
-            var testResultsController = new TestResultsController(testController);
-
-            Assert.AreEqual(skippedTestCount, testResultsController.SkippedTestCount);
-        }
-
-        [Test]
-        public void InconclusiveTestCount_should_come_from_TestController()
-        {
-            var testController = MockRepository.GenerateStub<ITestController>();
-            const int inconclusiveTestCount = 5;
-            testController.Stub(tc => tc.Inconclusive).Return(inconclusiveTestCount);
-            var testResultsController = new TestResultsController(testController);
-
-            Assert.AreEqual(inconclusiveTestCount, testResultsController.InconclusiveTestCount);
+            testController = MockRepository.GenerateStub<ITestController>();
+            testController.Stub(tc => tc.SelectedTests).Return(new LockBox<IList<TestTreeNode>>(new List<TestTreeNode>()));
+            testTreeModel = MockRepository.GenerateStub<ITestTreeModel>();
+            testTreeModel.Stub(ttm => ttm.Root).Return(Root);
+            testResultsController = new TestResultsController(testController, testTreeModel);
         }
 
         [Test]
         public void ElapsedTime_should_be_zero_before_test_run_starts()
         {
-            var testController = MockRepository.GenerateStub<ITestController>();
-            var testResultsController = new TestResultsController(testController);
+            EstablishContext();
 
             Assert.AreEqual(new TimeSpan(), testResultsController.ElapsedTime);
         }
@@ -99,8 +56,7 @@ namespace Gallio.Icarus.Tests.Controllers
         [Test]
         public void ElapsedTime_should_be_greater_than_zero_once_test_run_has_started()
         {
-            var testController = MockRepository.GenerateStub<ITestController>();
-            var testResultsController = new TestResultsController(testController);
+            EstablishContext();
             testController.Raise(tc => tc.RunStarted += null, testController, EventArgs.Empty);
 
             Assert.GreaterThan(testResultsController.ElapsedTime, new TimeSpan());
@@ -109,9 +65,7 @@ namespace Gallio.Icarus.Tests.Controllers
         [Test]
         public void ElapsedTime_should_stop_increasing_once_test_run_has_finished()
         {
-            var testController = MockRepository.GenerateStub<ITestController>();
-            var testResultsController = new TestResultsController(testController);
-            
+            EstablishContext();            
             testController.Raise(tc => tc.RunStarted += null, testController, EventArgs.Empty);
             Assert.GreaterThan(testResultsController.ElapsedTime, new TimeSpan());
 
@@ -139,17 +93,6 @@ namespace Gallio.Icarus.Tests.Controllers
 
         //    Assert.AreEqual(true, propertyChangedFlag);
         //}
-
-        [Test]
-        public void TestCount_should_come_from_TestController()
-        {
-            var testController = MockRepository.GenerateStub<ITestController>();
-            const int testCount = 5;
-            testController.Stub(tc => tc.TestCount).Return(testCount);
-            var testResultsController = new TestResultsController(testController);
-
-            Assert.AreEqual(testCount, testResultsController.TestCount);
-        }
 
         //[SyncTest]
         //public void ExploreStarted_from_TestController_should_reset_results()
@@ -183,8 +126,7 @@ namespace Gallio.Icarus.Tests.Controllers
         [SyncTest]
         public void ElapsedTime_should_be_greater_than_zero_when_explore_has_finished()
         {
-            var testController = MockRepository.GenerateStub<ITestController>();
-            var testResultsController = new TestResultsController(testController);
+            EstablishContext();
             testController.Raise(tc => tc.RunStarted += null, testController, EventArgs.Empty);
             var elapsedTimeFlag = false;
             testResultsController.PropertyChanged += (sender, e) =>
@@ -496,16 +438,6 @@ namespace Gallio.Icarus.Tests.Controllers
             var listViewItem = testResultsController.RetrieveVirtualItem(2);
 
             Assert.AreEqual("test3", listViewItem.Text);
-        }
-
-        private void EstablishContext()
-        {
-            var testController = MockRepository.GenerateStub<ITestController>();
-            testController.Stub(tc => tc.SelectedTests).Return(new LockBox<IList<TestTreeNode>>(new List<TestTreeNode>()));
-            var testTreeModel = MockRepository.GenerateStub<ITestTreeModel>();
-            testController.Stub(tc => tc.Model).Return(testTreeModel);
-            testTreeModel.Stub(ttm => ttm.Root).Return(Root);
-            testResultsController = new TestResultsController(testController);
-        }
+        }    
     }
 }

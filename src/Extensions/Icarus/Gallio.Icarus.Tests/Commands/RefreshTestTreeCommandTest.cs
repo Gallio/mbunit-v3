@@ -29,7 +29,7 @@ namespace Gallio.Icarus.Tests.Commands
         {
             var testController = MockRepository.GenerateStub<ITestController>();
             var cmd = new RefreshTestTreeCommand(testController);
-            var progressMonitor = MockProgressMonitor.GetMockProgressMonitor();
+            var progressMonitor = MockProgressMonitor.Instance;
 
             cmd.Execute(progressMonitor);
 

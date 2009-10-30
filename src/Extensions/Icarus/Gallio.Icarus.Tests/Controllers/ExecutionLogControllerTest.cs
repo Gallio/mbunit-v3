@@ -54,10 +54,9 @@ namespace Gallio.Icarus.Tests.Controllers
             testController.Stub(x => x.ReadReport(null)).IgnoreArguments().Do((Action<ReadAction<Report>>)(action => action(report)));
             var testTreeModel = MockRepository.GenerateStub<ITestTreeModel>();
             testTreeModel.Stub(x => x.Root).Return(new TestTreeNode("root", "root"));
-            testController.Stub(x => x.Model).Return(testTreeModel);
             var taskManager = new TestTaskManager();
 
-            var executionLogController = new ExecutionLogController(testController, taskManager);
+            var executionLogController = new ExecutionLogController(testController, testTreeModel, taskManager);
             var flag = false;
             executionLogController.ExecutionLogUpdated += (sender, e) =>
             {
@@ -76,8 +75,9 @@ namespace Gallio.Icarus.Tests.Controllers
             var testController = MockRepository.GenerateStub<ITestController>();
             //testController.Stub(x => x.SelectedTests).Return(new BindingList<TestTreeNode>(new List<TestTreeNode>()));
             var taskManager = new TestTaskManager();
+            var testTreeModel = MockRepository.GenerateStub<ITestTreeModel>();
 
-            var executionLogController = new ExecutionLogController(testController, taskManager);
+            var executionLogController = new ExecutionLogController(testController, testTreeModel, taskManager);
 
             bool executionLogResetFlag = false;
             executionLogController.ExecutionLogReset += (sender, e) =>
@@ -112,10 +112,9 @@ namespace Gallio.Icarus.Tests.Controllers
                 .Do((Action<ReadAction<Report>>)(action => action(report)));
             var testTreeModel = MockRepository.GenerateStub<ITestTreeModel>();
             testTreeModel.Stub(x => x.Root).Return(new TestTreeNode("root", "name"));
-            testController.Stub(x => x.Model).Return(testTreeModel);
             var taskManager = new TestTaskManager();
 
-            var executionLogController = new ExecutionLogController(testController, taskManager);
+            var executionLogController = new ExecutionLogController(testController, testTreeModel, taskManager);
 
             var flag = false;
             executionLogController.ExecutionLogUpdated += delegate { flag = true; };
@@ -123,19 +122,6 @@ namespace Gallio.Icarus.Tests.Controllers
                 new PropertyChangedEventArgs("SelectedTests"));
 
             Assert.IsTrue(flag);
-        }
-
-        [Test]
-        public void Ctor_should_throw_if_TestController_is_null()
-        {
-            Assert.Throws<ArgumentNullException>(() => new ExecutionLogController(null, null));
-        }
-
-        [Test]
-        public void Ctor_should_throw_if_TaskManager_is_null()
-        {
-            var testController = MockRepository.GenerateStub<ITestController>();
-            Assert.Throws<ArgumentNullException>(() => new ExecutionLogController(testController, null));
         }
     }
 }

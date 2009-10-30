@@ -20,7 +20,12 @@ namespace Gallio.Icarus.Tests.Utilities
 {
     internal class TestSynchronizationContext : SynchronizationContext
     {
-        public new void Send(SendOrPostCallback sendOrPostCallback, object state)
+        public override void Send(SendOrPostCallback sendOrPostCallback, object state)
+        {
+            sendOrPostCallback(state);
+        }
+
+        public override void Post(SendOrPostCallback sendOrPostCallback, object state)
         {
             sendOrPostCallback(state);
         }

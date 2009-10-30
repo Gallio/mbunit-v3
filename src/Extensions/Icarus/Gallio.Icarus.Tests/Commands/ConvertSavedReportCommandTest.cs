@@ -31,7 +31,7 @@ namespace Gallio.Icarus.Tests.Commands
             var reportController = MockRepository.GenerateStub<IReportController>();
             const string fileName = "fileName";
             const string format = "format";
-            var progressMonitor = MockProgressMonitor.GetMockProgressMonitor();
+            var progressMonitor = MockProgressMonitor.Instance;
             const string generatedFile = "generatedFile";
             reportController.Stub(rc => rc.ConvertSavedReport(fileName, format, progressMonitor)).Return(generatedFile);
             var fileSystem = MockRepository.GenerateStub<IFileSystem>();

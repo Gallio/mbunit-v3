@@ -18,19 +18,30 @@ using System.Threading;
 namespace Gallio.UI.Common.Synchronization
 {
     ///<summary>
-    /// Default implementation of ISynchronizationContext.
+    /// Holder for the current sync context (e.g. the winforms current).
     ///</summary>
     public class SynchronizationContext
     {
         /// <summary>
         /// Wrapper for Send on the shared sync context.
         /// </summary>
-        /// <param name="sendOrPostCallback"></param>
-        /// <param name="state"></param>
+        /// <param name="sendOrPostCallback">The SendOrPostCallback delegate to call.</param>
+        /// <param name="state">The object passed to the delegate.</param>
         public static void Send(SendOrPostCallback sendOrPostCallback, object state)
         {
             if (Current != null)
                 Current.Send(sendOrPostCallback, state);
+        }
+
+        /// <summary>
+        /// Wrapper for Post on the shared sync context.
+        /// </summary>
+        /// <param name="sendOrPostCallback">The SendOrPostCallback delegate to call.</param>
+        /// <param name="state">The object passed to the delegate.</param>
+        public static void Post(SendOrPostCallback sendOrPostCallback, object state)
+        {
+            if (Current != null)
+                Current.Post(sendOrPostCallback, state);
         }
 
         ///<summary>

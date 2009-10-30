@@ -190,6 +190,8 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Logging\BlackBoxLogger.cs" />
+    <Compile Include="Models\ITestStatistics.cs" />
+    <Compile Include="Models\TestStatistics.cs" />
     <Compile Include="Models\TestTreeNodes\FilterNode.cs" />
     <Compile Include="Models\TestTreeNodes\MetadataNode.cs" />
     <Compile Include="Models\TestTreeNodes\NamespaceNode.cs" />

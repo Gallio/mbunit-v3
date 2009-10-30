@@ -13,7 +13,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.ComponentModel;
 using System.Windows.Forms;
 using Aga.Controls.Tree;
 using Gallio.Icarus.Helpers;
@@ -25,19 +24,15 @@ using Gallio.Runtime.ProgressMonitoring;
 
 namespace Gallio.Icarus.Models
 {
-    public interface ITestTreeModel : ITreeModel, INotifyPropertyChanged
+    public interface ITestTreeModel : ITreeModel
     {
         bool FilterPassed { get; }
         bool FilterFailed { get; }
         bool FilterInconclusive { get; }
-        int TestCount { get; }
+        Observable<int> TestCount { get; }
         TestTreeNode Root { get; }
         bool SortAsc { get; }
         bool SortDesc { get; }
-        int Passed { get; }
-        int Failed { get; }
-        int Skipped { get; }
-        int Inconclusive { get; }
 
         void ApplyFilterSet(FilterSet<ITestDescriptor> filterSet);
         void BuildTestTree(IProgressMonitor progressMonitor, TestModelData testModelData, 
@@ -49,6 +44,7 @@ namespace Gallio.Icarus.Models
         void ResetTestStatus(IProgressMonitor progressMonitor);
         void SetFilter(TestStatus testStatus);
         void SetSortOrder(SortOrder sortOrder);
-        void UpdateTestStatus(TestData testData, TestStepRun testStepRun);
+        void UpdateTestCount();
+        void TestStepFinished(TestData testData, TestStepRun testStepRun);
     }
 }

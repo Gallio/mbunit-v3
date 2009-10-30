@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using Aga.Controls.Tree;
+using Gallio.Common.Concurrency;
 using Gallio.Icarus.Commands;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Models;
@@ -37,7 +38,7 @@ namespace Gallio.Icarus
         private bool updateFlag;
 
         public TestExplorer(IOptionsController optionsController, IProjectController projectController, 
-            ITestController testController, ISourceCodeController sourceCodeController, 
+            ITestController testController, ITreeModel testTreeModel, ISourceCodeController sourceCodeController, 
             ITaskManager taskManager)
         {
             this.projectController = projectController;
@@ -64,7 +65,7 @@ namespace Gallio.Icarus
                 updateFlag = false;
             };
 
-            testTree.Model = testController.Model;
+            testTree.Model = testTreeModel;
 
             testController.ExploreStarted += delegate { testTree.EditEnabled = false; };
             testController.ExploreFinished += delegate
@@ -199,36 +200,39 @@ namespace Gallio.Icarus
 
         private void testTree_SelectionChanged(object sender, EventArgs e)
         {
-            var nodes = new List<TestTreeNode>();
-
-            if (testTree.SelectedNode != null)
+            Sync.Invoke(this, () =>
             {
-                TestTreeNode testTreeNode = (TestTreeNode)testTree.SelectedNode.Tag;
-                removeFileToolStripMenuItem.Enabled = testTreeNode.FileName != null;
-                viewSourceCodeToolStripMenuItem.Enabled = testTreeNode.SourceCodeAvailable;
+                var nodes = new List<TestTreeNode>();
 
-                if (testTreeNode is NamespaceNode)
+                if (testTree.SelectedNode != null)
                 {
-                    foreach (Node n in testTreeNode.Nodes)
+                    TestTreeNode testTreeNode = (TestTreeNode)testTree.SelectedNode.Tag;
+                    removeFileToolStripMenuItem.Enabled = testTreeNode.FileName != null;
+                    viewSourceCodeToolStripMenuItem.Enabled = testTreeNode.SourceCodeAvailable;
+
+                    if (testTreeNode is NamespaceNode)
                     {
-                        if (n != null)
+                        foreach (Node n in testTreeNode.Nodes)
                         {
-                            nodes.Add((TestTreeNode) n);
+                            if (n != null)
+                            {
+                                nodes.Add((TestTreeNode)n);
+                            }
                         }
+                    }
+                    else
+                    {
+                        nodes.Add(testTreeNode);
                     }
                 }
                 else
                 {
-                    nodes.Add(testTreeNode);
+                    removeFileToolStripMenuItem.Enabled = false;
+                    viewSourceCodeToolStripMenuItem.Enabled = false;
                 }
-            }
-            else
-            {
-                removeFileToolStripMenuItem.Enabled = false;
-                viewSourceCodeToolStripMenuItem.Enabled = false;
-            }
 
-            testController.SetSelection(nodes);
+                testController.SetSelection(nodes);
+            });
         }
 
         internal void SaveState()

@@ -73,6 +73,9 @@
     <service serviceId="Gallio.Icarus.TestTreeModel"
          serviceType="Gallio.Icarus.Models.ITestTreeModel, Gallio.Icarus" />
 
+    <service serviceId="Gallio.Icarus.TestStatistics" 
+             serviceType="Gallio.Icarus.Models.ITestStatistics, Gallio.Icarus" />
+    
     <service serviceId="Gallio.Icarus.ProjectTreeModel"
          serviceType="Gallio.Icarus.Models.IProjectTreeModel, Gallio.Icarus" />
 
@@ -214,13 +217,17 @@
     
     <!-- Models -->
 
-    <component componentId="Gallio.Icarus.TestTreeModel"
-           serviceId="Gallio.Icarus.TestTreeModel"
-           componentType="Gallio.Icarus.Models.TestTreeModel, Gallio.Icarus" />
+    <component componentId="Gallio.Icarus.TestTreeModel" 
+               serviceId="Gallio.Icarus.TestTreeModel" 
+               componentType="Gallio.Icarus.Models.TestTreeModel, Gallio.Icarus" />
 
-    <component componentId="Gallio.Icarus.ProjectTreeModel"
-           serviceId="Gallio.Icarus.ProjectTreeModel"
-           componentType="Gallio.Icarus.Models.ProjectTreeModel, Gallio.Icarus" />
+    <component componentId="Gallio.Icarus.TestStatistics" 
+               serviceId="Gallio.Icarus.TestStatistics" 
+               componentType="Gallio.Icarus.Models.TestStatistics, Gallio.Icarus" />
+    
+    <component componentId="Gallio.Icarus.ProjectTreeModel" 
+               serviceId="Gallio.Icarus.ProjectTreeModel" 
+               componentType="Gallio.Icarus.Models.ProjectTreeModel, Gallio.Icarus" />
     
     <!-- Packages -->
 

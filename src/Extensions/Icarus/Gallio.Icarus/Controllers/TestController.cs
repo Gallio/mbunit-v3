@@ -36,11 +36,12 @@ using Gallio.UI.ProgressMonitoring;
 
 namespace Gallio.Icarus.Controllers
 {
-    public class TestController : NotifyController, ITestController
+    internal class TestController : NotifyController, ITestController
     {
         private readonly ITestTreeModel testTreeModel;
         private readonly IOptionsController optionsController;
         private readonly ITaskManager taskManager;
+        private readonly ITestStatistics testStatistics;
         private LockBox<Report> reportLockBox;
 
         private ITestRunnerFactory testRunnerFactory;
@@ -64,16 +65,6 @@ namespace Gallio.Icarus.Controllers
         public LockBox<IList<TestTreeNode>> SelectedTests
         {
             get { return selectedTests; }
-        }
-
-        public ITestTreeModel Model
-        {
-            get { return testTreeModel; }
-        }
-
-        public int TestCount
-        {
-            get { return testTreeModel.TestCount; }
         }
 
         public bool FilterPassed
@@ -153,39 +144,18 @@ namespace Gallio.Icarus.Controllers
             }
         }
 
-        public int Passed
-        {
-            get { return Model.Passed; }
-        }
-
-        public int Failed
-        {
-            get { return Model.Failed; }
-        }
-
-        public int Skipped
-        {
-            get { return Model.Skipped; }
-        }
-
-        public int Inconclusive
-        {
-            get { return Model.Inconclusive; }
-        }
-
         public bool FailedTests { get; private set; }
 
         public TestController(ITestTreeModel testTreeModel, IOptionsController optionsController, 
-            ITaskManager taskManager)
+            ITaskManager taskManager, ITestStatistics testStatistics)
         {
             this.testTreeModel = testTreeModel;
             this.optionsController = optionsController;
             this.taskManager = taskManager;
+            this.testStatistics = testStatistics;
 
             testPackage = new TestPackage();
             reportLockBox = new LockBox<Report>(new Report());
-
-            testTreeModel.PropertyChanged += (sender, e) => OnPropertyChanged(e);
         }
 
         public void Explore(IProgressMonitor progressMonitor, 
@@ -267,18 +237,33 @@ namespace Gallio.Icarus.Controllers
 
         public void RefreshTestTree(IProgressMonitor progressMonitor)
         {
-            var options = new TestTreeBuilderOptions 
-            { 
-                TreeViewCategory = TreeViewCategory,
-                SplitNamespaces = optionsController.TestTreeSplitNamespaces
-            };
-            ReadReport(report => testTreeModel.BuildTestTree(progressMonitor, 
-                report.TestModel, options));
+            using (progressMonitor.BeginTask("Refreshing test tree.", 100))
+            {
+                using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(1))
+                    testStatistics.Reset(subProgressMonitor);
+
+                var options = new TestTreeBuilderOptions
+                {
+                    TreeViewCategory = TreeViewCategory,
+                    SplitNamespaces = optionsController.TestTreeSplitNamespaces
+                };
+
+                using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(99))
+                    ReadReport(report => testTreeModel.BuildTestTree(subProgressMonitor, 
+                        report.TestModel, options));
+            }
         }
 
         public void ResetTestStatus(IProgressMonitor progressMonitor)
         {
-            testTreeModel.ResetTestStatus(progressMonitor);
+            using (progressMonitor.BeginTask("Resetting test status.", 3))
+            {
+                using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(1))
+                    testStatistics.Reset(subProgressMonitor);
+
+                using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(2))
+                    testTreeModel.ResetTestStatus(subProgressMonitor);
+            }
         }
 
         public void SetSelection(IList<TestTreeNode> nodes)
@@ -328,7 +313,10 @@ namespace Gallio.Icarus.Controllers
 
                 testRunner.Events.TestStepFinished += (sender, e) => taskManager.BackgroundTask(() =>
                 {
-                    testTreeModel.UpdateTestStatus(e.Test, e.TestStepRun);
+                    testTreeModel.TestStepFinished(e.Test, e.TestStepRun);
+
+                    if (e.TestStepRun.Step.IsTestCase)
+                        testStatistics.TestStepFinished(e.TestStepRun.Result.Outcome.Status);
 
                     EventHandlerPolicy.SafeInvoke(TestStepFinished, this, e);
 
@@ -336,15 +324,14 @@ namespace Gallio.Icarus.Controllers
                         FailedTests = true;
                 });
 
-                testRunner.Events.RunStarted += (sender, e) =>
+                testRunner.Events.RunStarted += (s, e) =>
                 {
                     reportLockBox = e.ReportLockBox;
+                    testTreeModel.UpdateTestCount();
                 };
 
-                testRunner.Events.ExploreStarted += (sender, e) =>
-                {
-                    reportLockBox = e.ReportLockBox;
-                };
+                testRunner.Events.ExploreStarted += (s, e) => reportLockBox = e.ReportLockBox;
+                testRunner.Events.ExploreFinished += (s, e) => testTreeModel.UpdateTestCount();
 
                 action(testRunner);
             }

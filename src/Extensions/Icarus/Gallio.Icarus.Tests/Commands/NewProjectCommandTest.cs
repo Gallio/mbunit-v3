@@ -35,7 +35,7 @@ namespace Gallio.Icarus.Tests.Commands
             var projectController = MockRepository.GenerateStub<IProjectController>();
             var testController = MockRepository.GenerateStub<ITestController>();
             var newProjectCommand = new NewProjectCommand(projectController, testController);
-            var progressMonitor = MockProgressMonitor.GetMockProgressMonitor();
+            var progressMonitor = MockProgressMonitor.Instance;
 
             newProjectCommand.Execute(progressMonitor);
 
@@ -52,7 +52,7 @@ namespace Gallio.Icarus.Tests.Commands
             projectController.Stub(pc => pc.TestRunnerExtensions).Return(testRunnerExtensions);
             var testController = MockRepository.GenerateStub<ITestController>();
             var newProjectCommand = new NewProjectCommand(projectController, testController);
-            var progressMonitor = MockProgressMonitor.GetMockProgressMonitor();
+            var progressMonitor = MockProgressMonitor.Instance;
 
             newProjectCommand.Execute(progressMonitor);
 
@@ -66,7 +66,7 @@ namespace Gallio.Icarus.Tests.Commands
             var projectController = MockRepository.GenerateStub<IProjectController>();
             var testController = MockRepository.GenerateStub<ITestController>();
             var newProjectCommand = new NewProjectCommand(projectController, testController);
-            var progressMonitor = MockProgressMonitor.GetMockProgressMonitor();
+            var progressMonitor = MockProgressMonitor.Instance;
             progressMonitor.Stub(pm => pm.IsCanceled).Return(true);
 
             Assert.Throws<OperationCanceledException>(() => newProjectCommand.Execute(progressMonitor));

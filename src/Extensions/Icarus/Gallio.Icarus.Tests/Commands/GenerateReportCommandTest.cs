@@ -40,7 +40,7 @@ namespace Gallio.Icarus.Tests.Commands
             var reportOptions = new ReportOptions("", "");
             var generateReportCommand = new GenerateReportCommand(testController, reportController)
                                             { ReportOptions = reportOptions };
-            var progressMonitor = MockProgressMonitor.GetMockProgressMonitor();
+            var progressMonitor = MockProgressMonitor.Instance;
             
             generateReportCommand.Execute(progressMonitor);
 

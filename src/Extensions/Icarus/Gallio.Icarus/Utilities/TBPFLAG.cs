@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Gallio.Icarus.Utilities
+﻿namespace Gallio.Icarus.Utilities
 {
     public enum TBPFLAG
     {

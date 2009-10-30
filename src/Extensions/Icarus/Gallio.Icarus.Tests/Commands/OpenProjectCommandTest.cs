@@ -37,7 +37,7 @@ namespace Gallio.Icarus.Tests.Commands
             projectController.Stub(pc => pc.TestFilters).Return(new Observable<IList<FilterInfo>>(new List<FilterInfo>()));
             const string fileName = "fileName";
             var openProjectCommand = new OpenProjectCommand(testController, projectController, fileName);
-            var progressMonitor = MockProgressMonitor.GetMockProgressMonitor();
+            var progressMonitor = MockProgressMonitor.Instance;
 
             openProjectCommand.Execute(progressMonitor);
 
@@ -52,7 +52,7 @@ namespace Gallio.Icarus.Tests.Commands
             projectController.Stub(pc => pc.TestFilters).Return(new Observable<IList<FilterInfo>>(new List<FilterInfo>()));
             const string fileName = "fileName";
             var openProjectCommand = new OpenProjectCommand(testController, projectController, fileName);
-            var progressMonitor = MockProgressMonitor.GetMockProgressMonitor();
+            var progressMonitor = MockProgressMonitor.Instance;
 
             openProjectCommand.Execute(progressMonitor);
 
@@ -71,7 +71,7 @@ namespace Gallio.Icarus.Tests.Commands
             projectController.Stub(pc => pc.TestRunnerExtensions).Return(testRunnerExtensions);
             const string fileName = "fileName";
             var openProjectCommand = new OpenProjectCommand(testController, projectController, fileName);
-            var progressMonitor = MockProgressMonitor.GetMockProgressMonitor();
+            var progressMonitor = MockProgressMonitor.Instance;
 
             openProjectCommand.Execute(progressMonitor);
 
@@ -86,7 +86,7 @@ namespace Gallio.Icarus.Tests.Commands
             var projectController = MockRepository.GenerateStub<IProjectController>();
             const string fileName = "fileName";
             var openProjectCommand = new OpenProjectCommand(testController, projectController, fileName);
-            var progressMonitor = MockProgressMonitor.GetMockProgressMonitor();
+            var progressMonitor = MockProgressMonitor.Instance;
             progressMonitor.Stub(pm => pm.IsCanceled).Return(true);
 
             Assert.Throws<OperationCanceledException>(() => openProjectCommand.Execute(progressMonitor));

@@ -31,7 +31,7 @@ namespace Gallio.Icarus.Tests.Commands
             var command = new OpenReportCommand(fileSystem);
             const string fileName = "fileName";
             command.FileName = fileName;
-            var progressMonitor = MockProgressMonitor.GetMockProgressMonitor();
+            var progressMonitor = MockProgressMonitor.Instance;
 
             command.Execute(progressMonitor);
 
@@ -43,7 +43,7 @@ namespace Gallio.Icarus.Tests.Commands
         {
             var fileSystem = MockRepository.GenerateStub<IFileSystem>();
             var command = new OpenReportCommand(fileSystem);
-            var progressMonitor = MockProgressMonitor.GetMockProgressMonitor();
+            var progressMonitor = MockProgressMonitor.Instance;
 
             command.Execute(progressMonitor);
 

@@ -20,14 +20,18 @@ namespace Gallio.Icarus.Tests.Utilities
 {
     internal class MockProgressMonitor
     {
-        public static IProgressMonitor GetMockProgressMonitor()
+        public static IProgressMonitor Instance
         {
-            var progressMonitor = MockRepository.GenerateStub<IProgressMonitor>();
-            progressMonitor.Stub(x => x.BeginTask(Arg<string>.Is.Anything,
-                                                  Arg<double>.Is.Anything)).Return(new ProgressMonitorTaskCookie(progressMonitor));
-            progressMonitor.Stub(x => x.CreateSubProgressMonitor(
-                                          Arg<double>.Is.Anything)).Return(progressMonitor).Repeat.Any();
-            return progressMonitor;
+            get
+            {
+                var progressMonitor = MockRepository.GenerateStub<IProgressMonitor>();
+                var progressMonitorTaskCookie = new ProgressMonitorTaskCookie(progressMonitor);
+                progressMonitor.Stub(x => x.BeginTask(Arg<string>.Is.Anything, 
+                    Arg<double>.Is.Anything)).Return(progressMonitorTaskCookie);
+                progressMonitor.Stub(x => x.CreateSubProgressMonitor(Arg<double>.Is.Anything))
+                    .Return(progressMonitor).Repeat.Any();
+                return progressMonitor;
+            }
         }
     }
 }

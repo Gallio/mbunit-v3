@@ -13,6 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using System.Windows.Forms;
 
 namespace Gallio.Icarus.Controllers.Interfaces
@@ -20,10 +21,7 @@ namespace Gallio.Icarus.Controllers.Interfaces
     public interface ITestResultsController
     {
         Observable<int> ResultsCount { get; }
-        int PassedTestCount { get; }
-        int FailedTestCount { get; }
-        int SkippedTestCount { get; }
-        int InconclusiveTestCount { get; }
+        TimeSpan ElapsedTime { get; }
 
         void CacheVirtualItems(int startIndex, int endIndex);
         ListViewItem RetrieveVirtualItem(int itemIndex);

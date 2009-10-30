@@ -1,7 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
-using Gallio.Common.Concurrency;
-using Gallio.Icarus.Controllers.Interfaces;
+using Gallio.Icarus.Models;
 using Gallio.Icarus.Utilities;
 
 namespace Gallio.Icarus.ProgressMonitoring
@@ -9,17 +8,23 @@ namespace Gallio.Icarus.ProgressMonitoring
     internal class Win7TaskBar
     {
         private readonly IntPtr windowHandle;
-        private readonly ITestController testController;
+        private readonly ITestTreeModel testTreeModel;
+        private readonly ITestStatistics testStatistics;
         private readonly ITaskbarList4 taskBarList;
         private TBPFLAG currentProgressState;
 
-        public Win7TaskBar(IntPtr windowHandle, ITaskbarList4 taskBarList, 
-            ITestController testController)
+        public Win7TaskBar(IntPtr windowHandle, ITaskbarList4 taskBarList, ITestTreeModel testTreeModel, 
+            ITestStatistics testStatistics)
         {
             this.windowHandle = windowHandle;
             
-            this.testController = testController;
-            testController.PropertyChanged += UpdateTaskbar;
+            this.testTreeModel = testTreeModel;
+
+            this.testStatistics = testStatistics;
+            testStatistics.Passed.PropertyChanged += UpdateTaskbar;
+            testStatistics.Failed.PropertyChanged += UpdateTaskbar;
+            testStatistics.Skipped.PropertyChanged += UpdateTaskbar;
+            testStatistics.Inconclusive.PropertyChanged += UpdateTaskbar;
 
             this.taskBarList = taskBarList;
             taskBarList.HrInit();
@@ -27,16 +32,12 @@ namespace Gallio.Icarus.ProgressMonitoring
 
         private void UpdateTaskbar(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName != "Passed" && e.PropertyName != "Failed" &&
-                e.PropertyName != "Skipped" && e.PropertyName != "Inconclusive")
-                return;
-
             TBPFLAG newProgressState;
-            if (testController.Failed > 0)
+            if (testStatistics.Failed > 0)
                 newProgressState = TBPFLAG.TBPF_ERROR; // red
-            else if (testController.Skipped > 0)
+            else if (testStatistics.Skipped > 0)
                 newProgressState = TBPFLAG.TBPF_PAUSED; // yellow
-            else if (testController.Passed > 0)
+            else if (testStatistics.Passed > 0)
                 newProgressState = TBPFLAG.TBPF_NORMAL; // green
             else
                 newProgressState = TBPFLAG.TBPF_NOPROGRESS;
@@ -47,11 +48,11 @@ namespace Gallio.Icarus.ProgressMonitoring
                 taskBarList.SetProgressState(windowHandle, newProgressState);
             }
 
-            var completed = testController.Passed + testController.Failed +
-                testController.Skipped + testController.Inconclusive;
+            var completed = testStatistics.Passed + testStatistics.Failed +
+                testStatistics.Skipped + testStatistics.Inconclusive;
 
-            var total = completed > testController.TestCount ? completed 
-                : testController.TestCount;
+            var total = completed > testTreeModel.TestCount ? completed 
+                : testTreeModel.TestCount;
 
             taskBarList.SetProgressValue(windowHandle, Convert.ToUInt32(completed), 
                 Convert.ToUInt32(total));

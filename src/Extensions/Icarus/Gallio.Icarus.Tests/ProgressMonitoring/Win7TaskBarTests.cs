@@ -1,9 +1,8 @@
 ﻿using System;
-using System.ComponentModel;
-using Gallio.Icarus.Controllers.Interfaces;
+using Gallio.Icarus.Models;
 using Gallio.Icarus.ProgressMonitoring;
+using Gallio.Icarus.Tests.Utilities;
 using Gallio.Icarus.Utilities;
-using MbUnit.Framework;
 using Rhino.Mocks;
 
 namespace Gallio.Icarus.Tests.ProgressMonitoring
@@ -12,122 +11,132 @@ namespace Gallio.Icarus.Tests.ProgressMonitoring
     {
         private IntPtr windowHandle;
         private ITaskbarList4 taskBarList;
-        private ITestController testController;
+        private ITestTreeModel testTreeModel;
+        private Observable<int> passed;
+        private Observable<int> failed;
+        private Observable<int> skipped;
+        private Observable<int> inconclusive;
+        private Observable<int> testCount;
 
         private void EstablishContext()
         {
             windowHandle = new IntPtr();
             taskBarList = MockRepository.GenerateStub<ITaskbarList4>();
-            testController = MockRepository.GenerateStub<ITestController>();
-            new Win7TaskBar(windowHandle, taskBarList, testController);
+            testTreeModel = MockRepository.GenerateStub<ITestTreeModel>();
+            testCount = new Observable<int>();
+            testTreeModel.Stub(ttm => ttm.TestCount).Return(testCount);
+            var testStatistics = MockRepository.GenerateStub<ITestStatistics>();
+            passed = new Observable<int>();
+            failed = new Observable<int>();
+            skipped = new Observable<int>();
+            inconclusive = new Observable<int>();
+            testStatistics.Stub(ts => ts.Passed).Return(passed);
+            testStatistics.Stub(ts => ts.Failed).Return(failed);
+            testStatistics.Stub(ts => ts.Skipped).Return(skipped);
+            testStatistics.Stub(ts => ts.Inconclusive).Return(inconclusive);
+            new Win7TaskBar(windowHandle, taskBarList, testTreeModel, testStatistics);
         }
 
-        [Test]
+        [SyncTest]
         public void Progress_bar_should_be_red_if_tests_have_failed()
         {
             EstablishContext();
-            testController.Stub(ttm => ttm.Failed).Return(1);
-            testController.Stub(ttm => ttm.Skipped).Return(1);
-            testController.Stub(ttm => ttm.Passed).Return(1);
-            
-            testController.Raise(ttm => ttm.PropertyChanged += null, testController, 
-                new PropertyChangedEventArgs("Passed"));
+
+            failed.Value = 1;
 
             taskBarList.AssertWasCalled(tbl => tbl.SetProgressState(Arg<IntPtr>.Is.Anything, 
                 Arg<TBPFLAG>.Is.Equal(TBPFLAG.TBPF_ERROR)));
         }
 
-        [Test]
+        [SyncTest]
         public void Progress_bar_should_be_yellow_if_tests_have_been_skipped()
         {
             EstablishContext();
-            testController.Stub(ttm => ttm.Skipped).Return(1);
-            testController.Stub(ttm => ttm.Passed).Return(1);
 
-            testController.Raise(ttm => ttm.PropertyChanged += null, testController,
-                new PropertyChangedEventArgs("Passed"));
+            skipped.Value = 1;
 
             taskBarList.AssertWasCalled(tbl => tbl.SetProgressState(Arg<IntPtr>.Is.Anything,
                 Arg<TBPFLAG>.Is.Equal(TBPFLAG.TBPF_PAUSED)));
         }
 
-        [Test]
-        public void Progress_bar_should_be_green_otherwise()
+        [SyncTest]
+        public void Progress_bar_should_be_green_if_tests_have_passed()
         {
             EstablishContext();
-            testController.Stub(ttm => ttm.Passed).Return(1);
 
-            testController.Raise(ttm => ttm.PropertyChanged += null, testController,
-                new PropertyChangedEventArgs("Passed"));
+            passed.Value = 1;
 
             taskBarList.AssertWasCalled(tbl => tbl.SetProgressState(Arg<IntPtr>.Is.Anything,
                 Arg<TBPFLAG>.Is.Equal(TBPFLAG.TBPF_NORMAL)));
         }
 
-        [Test]
+        [SyncTest]
+        public void Progress_bar_state_should_be_no_progress_if_no_tests_have_run()
+        {
+            EstablishContext();
+
+            passed.Value = 1;
+            passed.Value = 0;
+
+            taskBarList.AssertWasCalled(tbl => tbl.SetProgressState(Arg<IntPtr>.Is.Anything,
+                Arg<TBPFLAG>.Is.Equal(TBPFLAG.TBPF_NOPROGRESS)));
+        }
+
+        [SyncTest]
         public void Progress_state_should_not_be_set_if_it_has_not_changed()
         {
             EstablishContext();
-            testController.Stub(ttm => ttm.Passed).Return(1);
 
-            testController.Raise(ttm => ttm.PropertyChanged += null, testController,
-                new PropertyChangedEventArgs("Passed"));
-            testController.Raise(ttm => ttm.PropertyChanged += null, testController,
-                new PropertyChangedEventArgs("Passed"));
+            passed.Value = 1;
+            passed.Value = 2;
 
             taskBarList.AssertWasCalled(tbl => tbl.SetProgressState(Arg<IntPtr>.Is.Anything,
                 Arg.Is(TBPFLAG.TBPF_NORMAL)));
         }
 
-        [Test]
+        [SyncTest]
         public void Progress_state_should_be_set_using_window_handle()
         {
             EstablishContext();
-            testController.Stub(ttm => ttm.Passed).Return(1);
 
-            testController.Raise(ttm => ttm.PropertyChanged += null, testController,
-                new PropertyChangedEventArgs("Passed"));
+            passed.Value = 1;
 
             taskBarList.AssertWasCalled(tbl => tbl.SetProgressState(Arg.Is(windowHandle),
                 Arg<TBPFLAG>.Is.Anything));
         }
 
-        [Test]
+        [SyncTest]
         public void Progress_value_completed_should_be_sum_of_test_statuses()
         {
             EstablishContext();
-            testController.Stub(ttm => ttm.Passed).Return(3);
-            testController.Stub(ttm => ttm.Failed).Return(1);
-            testController.Stub(ttm => ttm.Skipped).Return(2);
 
-            testController.Raise(ttm => ttm.PropertyChanged += null, testController,
-                new PropertyChangedEventArgs("Passed"));
+            passed.Value = 1;
+            failed.Value = 2;
+            skipped.Value = 3;
 
             taskBarList.AssertWasCalled(tbl => tbl.SetProgressValue(Arg<IntPtr>.Is.Anything,
                 Arg.Is(6UL), Arg<ulong>.Is.Anything));
         }
 
-        [Test]
+        [SyncTest]
         public void Progress_value_total_should_be_test_count_from_model()
         {
             EstablishContext();
-            testController.Stub(ttm => ttm.TestCount).Return(12);
 
-            testController.Raise(ttm => ttm.PropertyChanged += null, testController,
-                new PropertyChangedEventArgs("Passed"));
+            testCount.Value = 12;
+            passed.Value = 1;
 
             taskBarList.AssertWasCalled(tbl => tbl.SetProgressValue(Arg<IntPtr>.Is.Anything,
                 Arg<ulong>.Is.Anything, Arg.Is(12UL)));
         }
 
-        [Test]
+        [SyncTest]
         public void Progress_value_should_be_set_using_window_handle()
         {
             EstablishContext();
-            testController.Stub(ttm => ttm.TestCount).Return(12);
+            testTreeModel.Stub(ttm => ttm.TestCount).Return(new Observable<int>(12));
 
-            testController.Raise(ttm => ttm.PropertyChanged += null, testController,
-                new PropertyChangedEventArgs("Passed"));
+            passed.Value = 1;
 
             taskBarList.AssertWasCalled(tbl => tbl.SetProgressValue(Arg.Is(windowHandle),
                 Arg<ulong>.Is.Anything, Arg<ulong>.Is.Anything));

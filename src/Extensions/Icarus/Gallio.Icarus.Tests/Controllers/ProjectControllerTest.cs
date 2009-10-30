@@ -52,7 +52,7 @@ namespace Gallio.Icarus.Tests.Controllers
             List<string> list = new List<string>(new[] { fileName });
             fileSystem.Stub(fs => fs.FileExists(fileName)).Return(true);
             var xmlSerializer = MockRepository.GenerateStub<IXmlSerializer>();
-            var progressMonitor = MockProgressMonitor.GetMockProgressMonitor();
+            var progressMonitor = MockProgressMonitor.Instance;
             var optionsController = MockRepository.GenerateStub<IOptionsController>();
             var fileWatcher = MockRepository.GenerateStub<IFileWatcher>();
             var unhandledExceptionPolicy = MockRepository.GenerateStub<IUnhandledExceptionPolicy>();
@@ -74,7 +74,7 @@ namespace Gallio.Icarus.Tests.Controllers
             var xmlSerializer = MockRepository.GenerateStub<IXmlSerializer>();
             TestProject testProject = new TestProject();
             projectTreeModel.TestProject = testProject;
-            var progressMonitor = MockProgressMonitor.GetMockProgressMonitor();
+            var progressMonitor = MockProgressMonitor.Instance;
             var optionsController = MockRepository.GenerateStub<IOptionsController>();
             var fileWatcher = MockRepository.GenerateStub<IFileWatcher>();
             var unhandledExceptionPolicy = MockRepository.GenerateStub<IUnhandledExceptionPolicy>();
@@ -196,7 +196,7 @@ namespace Gallio.Icarus.Tests.Controllers
             var fileSystem = MockRepository.GenerateStub<IFileSystem>();
             var xmlSerializer = MockRepository.GenerateStub<IXmlSerializer>();
             projectTreeModel.TestProject = new TestProject();
-            var progressMonitor = MockProgressMonitor.GetMockProgressMonitor();
+            var progressMonitor = MockProgressMonitor.Instance;
             var optionsController = MockRepository.GenerateStub<IOptionsController>();
             var fileWatcher = MockRepository.GenerateStub<IFileWatcher>();
             var unhandledExceptionPolicy = MockRepository.GenerateStub<IUnhandledExceptionPolicy>();
@@ -216,7 +216,7 @@ namespace Gallio.Icarus.Tests.Controllers
             projectTreeModel.TestProject = project;
             var fileSystem = MockRepository.GenerateStub<IFileSystem>();
             var xmlSerializer = MockRepository.GenerateStub<IXmlSerializer>();
-            var progressMonitor = MockProgressMonitor.GetMockProgressMonitor();
+            var progressMonitor = MockProgressMonitor.Instance;
             var optionsController = MockRepository.GenerateStub<IOptionsController>();
             var fileWatcher = MockRepository.GenerateStub<IFileWatcher>();
             var unhandledExceptionPolicy = MockRepository.GenerateStub<IUnhandledExceptionPolicy>();
@@ -236,7 +236,7 @@ namespace Gallio.Icarus.Tests.Controllers
             projectTreeModel.TestProject = new TestProject();
             var fileSystem = MockRepository.GenerateStub<IFileSystem>();
             var xmlSerializer = MockRepository.GenerateStub<IXmlSerializer>();
-            var progressMonitor = MockProgressMonitor.GetMockProgressMonitor();
+            var progressMonitor = MockProgressMonitor.Instance;
             var optionsController = MockRepository.GenerateStub<IOptionsController>();
             var fileWatcher = MockRepository.GenerateStub<IFileWatcher>();
             var unhandledExceptionPolicy = MockRepository.GenerateStub<IUnhandledExceptionPolicy>();
@@ -260,7 +260,7 @@ namespace Gallio.Icarus.Tests.Controllers
             projectTreeModel.TestProject = testProject;
             var fileSystem = MockRepository.GenerateStub<IFileSystem>();
             var xmlSerializer = MockRepository.GenerateStub<IXmlSerializer>();
-            var progressMonitor = MockProgressMonitor.GetMockProgressMonitor();
+            var progressMonitor = MockProgressMonitor.Instance;
             var optionsController = MockRepository.GenerateStub<IOptionsController>();
             var mruList = new MRUList(new List<string>(), 10);
             optionsController.Stub(oc => oc.RecentProjects).Return(mruList);
@@ -286,7 +286,7 @@ namespace Gallio.Icarus.Tests.Controllers
             projectTreeModel.FileName = Paths.DefaultProject;
             var fileSystem = MockRepository.GenerateStub<IFileSystem>();
             var xmlSerializer = MockRepository.GenerateStub<IXmlSerializer>();
-            var progressMonitor = MockProgressMonitor.GetMockProgressMonitor();
+            var progressMonitor = MockProgressMonitor.Instance;
             var optionsController = MockRepository.GenerateStub<IOptionsController>();
             optionsController.Stub(oc => oc.RecentProjects).Return(new MRUList(new List<string>(), 10));
             var fileWatcher = MockRepository.GenerateStub<IFileWatcher>();
@@ -384,7 +384,7 @@ namespace Gallio.Icarus.Tests.Controllers
             xmlSerializer.Stub(xs => xs.LoadFromXml<TestProjectData>(projectName)).Return(project);
             var optionsController = MockRepository.GenerateStub<IOptionsController>();
             var fileWatcher = MockRepository.GenerateStub<IFileWatcher>();
-            var progressMonitor = MockProgressMonitor.GetMockProgressMonitor();
+            var progressMonitor = MockProgressMonitor.Instance;
             var unhandledExceptionPolicy = MockRepository.GenerateStub<IUnhandledExceptionPolicy>();
             var projectController = new ProjectController(projectTreeModel, optionsController,
                 fileSystem, xmlSerializer, fileWatcher, unhandledExceptionPolicy);
@@ -420,7 +420,7 @@ namespace Gallio.Icarus.Tests.Controllers
             xmlSerializer.Stub(xs => xs.LoadFromXml<TestProjectData>(projectName)).Throw(exception);
             var optionsController = MockRepository.GenerateStub<IOptionsController>();
             var fileWatcher = MockRepository.GenerateStub<IFileWatcher>();
-            var progressMonitor = MockProgressMonitor.GetMockProgressMonitor();
+            var progressMonitor = MockProgressMonitor.Instance;
             var unhandledExceptionPolicy = MockRepository.GenerateStub<IUnhandledExceptionPolicy>();
             var projectController = new ProjectController(projectTreeModel, optionsController,
                 fileSystem, xmlSerializer, fileWatcher, unhandledExceptionPolicy);
@@ -445,7 +445,7 @@ namespace Gallio.Icarus.Tests.Controllers
             xmlSerializer.Stub(xs => xs.LoadFromXml<UserOptions>(projectUserOptionsFile)).Throw(new Exception());
             var optionsController = MockRepository.GenerateStub<IOptionsController>();
             var fileWatcher = MockRepository.GenerateStub<IFileWatcher>();
-            var progressMonitor = MockProgressMonitor.GetMockProgressMonitor();
+            var progressMonitor = MockProgressMonitor.Instance;
             var unhandledExceptionPolicy = MockRepository.GenerateStub<IUnhandledExceptionPolicy>();
             var projectController = new ProjectController(projectTreeModel, optionsController,
                 fileSystem, xmlSerializer, fileWatcher, unhandledExceptionPolicy);
@@ -482,7 +482,7 @@ namespace Gallio.Icarus.Tests.Controllers
             xmlSerializer.Stub(xs => xs.LoadFromXml<UserOptions>(projectUserOptionsFile)).Return(userOptions);
             var optionsController = MockRepository.GenerateStub<IOptionsController>();
             var fileWatcher = MockRepository.GenerateStub<IFileWatcher>();
-            var progressMonitor = MockProgressMonitor.GetMockProgressMonitor();
+            var progressMonitor = MockProgressMonitor.Instance;
             var unhandledExceptionPolicy = MockRepository.GenerateStub<IUnhandledExceptionPolicy>();
             var projectController = new ProjectController(projectTreeModel, optionsController,
                 fileSystem, xmlSerializer, fileWatcher, unhandledExceptionPolicy);

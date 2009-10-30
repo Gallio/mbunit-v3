@@ -40,28 +40,20 @@ namespace Gallio.Icarus.Controllers.Interfaces
         bool FailedTests { get; }
 
         /// <summary>
-        /// Gets the current test tree model.
-        /// </summary>
-        ITestTreeModel Model { get; }
-
-        /// <summary>
         /// Gets or sets the current tree category.
         /// </summary>
         string TreeViewCategory { get; set; }
 
         /// <summary>
-        /// Gets the total number of tests.
-        /// </summary>
-        int TestCount { get; }
-
-        /// <summary>
         /// Whether or not to filter Passed tests in the tree.
         /// </summary>
         bool FilterPassed { get; set; }
+        
         /// <summary>
         /// Whether or not to filter Failed tests in the tree.
         /// </summary>
         bool FilterFailed { get; set; }
+
         /// <summary>
         /// Whether or not to filter Inconclusive tests in the tree.
         /// </summary>
@@ -72,28 +64,12 @@ namespace Gallio.Icarus.Controllers.Interfaces
         /// mutually exclusive from SortDesc.
         /// </summary>
         bool SortAsc { get; set; }
+
         /// <summary>
         /// Whether or not to sort the tree alphabetically descending (z-a),
         /// mutually exclusive from SortAsc.
         /// </summary>
         bool SortDesc { get; set; }
-
-        /// <summary>
-        /// The number of Passed tests.
-        /// </summary>
-        int Passed { get; }
-        /// <summary>
-        /// The number of Failed tests.
-        /// </summary>
-        int Failed { get; }
-        /// <summary>
-        /// The number of Skipped tests.
-        /// </summary>
-        int Skipped { get; }
-        /// <summary>
-        /// The number of Inconclusive tests.
-        /// </summary>
-        int Inconclusive { get; }
 
         /// <summary>
         /// Event raised after each test step completes.

@@ -14,9 +14,9 @@
 // limitations under the License.
 
 using System.Diagnostics;
+using Gallio.Framework.Pattern;
 using Gallio.UI.Common.Synchronization;
 using MbUnit.Framework;
-using Gallio.Framework.Pattern;
 
 namespace Gallio.Icarus.Tests.Utilities
 {

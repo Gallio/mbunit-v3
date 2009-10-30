@@ -87,7 +87,7 @@ namespace Gallio.Icarus.Tests.Models
         [Test]
         public void BuildTestTree_Namespace_Test()
         {
-            var progressMonitor = MockProgressMonitor.GetMockProgressMonitor();
+            var progressMonitor = MockProgressMonitor.Instance;
             
             var testTreeModel = new TestTreeModel();
             bool structureChangedFlag = false;
@@ -135,7 +135,7 @@ namespace Gallio.Icarus.Tests.Models
         [Test]
         public void BuildTestTree_Metadata_Test()
         {
-            IProgressMonitor progressMonitor = MockProgressMonitor.GetMockProgressMonitor();
+            IProgressMonitor progressMonitor = MockProgressMonitor.Instance;
 
             TestTreeModel testTreeModel = new TestTreeModel();
             bool structureChangedFlag = false;
