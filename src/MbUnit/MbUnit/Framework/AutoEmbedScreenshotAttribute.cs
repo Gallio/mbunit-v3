@@ -31,6 +31,7 @@ namespace MbUnit.Framework
     /// If screenshots cannot be captured, the attribute will embed a warning message to that effect.
     /// </para>
     /// </remarks>
+    /// <seealso cref="AutoEmbedRecordingAttribute"/>
     /// <seealso cref="Capture.AutoEmbedScreenshot(TriggerEvent, string)"/>
     /// <seealso cref="Capture.AutoEmbedScreenshot(TriggerEvent, string, CaptureParameters)"/>
     [AttributeUsage(PatternAttributeTargets.Test, AllowMultiple = true, Inherited = true)]
@@ -38,6 +39,28 @@ namespace MbUnit.Framework
     {
         private readonly TriggerEvent triggerEvent;
         private readonly CaptureParameters parameters = new CaptureParameters();
+
+        /// <summary>
+        /// Gets the trigger event.
+        /// </summary>
+        protected TriggerEvent TriggerEvent
+        {
+            get
+            {
+                return triggerEvent;
+            }
+        }
+
+        /// <summary>
+        /// Gets the capture parameters.
+        /// </summary>
+        protected CaptureParameters Parameters
+        {
+            get
+            {
+                return parameters;
+            }
+        }
 
         /// <summary>
         /// Gets or sets the name to give to the image attachment.
@@ -81,6 +104,11 @@ namespace MbUnit.Framework
         /// <summary>
         /// Automatically embeds a screenshot when a trigger event occurs.
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// If screenshots cannot be captured, the method will embed a warning message to that effect.
+        /// </para>
+        /// </remarks>
         /// <example>
         /// <code><![CDATA[
         /// [Test]
