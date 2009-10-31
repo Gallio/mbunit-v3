@@ -19,7 +19,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\v3.1\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;RESHARPER_31</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;RESHARPER_31;RESHARPER_31_OR_NEWER</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <NoWarn>1591</NoWarn>
@@ -29,7 +29,7 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <OutputPath>bin\v3.1\</OutputPath>
-    <DefineConstants>TRACE;RESHARPER_31</DefineConstants>
+    <DefineConstants>TRACE;RESHARPER_31;RESHARPER_31_OR_NEWER</DefineConstants>
     <DocumentationFile>bin\v3.1\Gallio.ReSharperRunner31.Tests.xml</DocumentationFile>
     <Optimize>true</Optimize>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>

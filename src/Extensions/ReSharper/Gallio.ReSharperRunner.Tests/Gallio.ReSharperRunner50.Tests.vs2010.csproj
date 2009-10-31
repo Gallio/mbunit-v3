@@ -21,7 +21,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\v5.0\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;RESHARPER_50</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;RESHARPER_50;RESHARPER_31_OR_NEWER;RESHARPER_40_OR_NEWER;RESHARPER_41_OR_NEWER;RESHARPER_45_OR_NEWER;RESHARPER_50_OR_NEWER</DefineConstants>
     <DocumentationFile>bin\v5.0\Gallio.ReSharperRunner50.Tests.xml</DocumentationFile>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <NoWarn>1591,1685</NoWarn>
@@ -34,7 +34,7 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <OutputPath>bin\v5.0\</OutputPath>
-    <DefineConstants>TRACE;RESHARPER_50</DefineConstants>
+    <DefineConstants>TRACE;RESHARPER_50;RESHARPER_31_OR_NEWER;RESHARPER_40_OR_NEWER;RESHARPER_41_OR_NEWER;RESHARPER_45_OR_NEWER;RESHARPER_50_OR_NEWER</DefineConstants>
     <DocumentationFile>bin\v5.0\Gallio.ReSharperRunner50.Tests.xml</DocumentationFile>
     <Optimize>true</Optimize>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>

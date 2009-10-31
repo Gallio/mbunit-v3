@@ -17,7 +17,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\v4.1\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;RESHARPER_41</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;RESHARPER_41;RESHARPER_31_OR_NEWER;RESHARPER_40_OR_NEWER;RESHARPER_41_OR_NEWER</DefineConstants>
     <DocumentationFile>bin\v4.1\Gallio.ReSharperRunner41.xml</DocumentationFile>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <NoWarn>1591,1685</NoWarn>
@@ -30,7 +30,7 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <OutputPath>bin\v4.1\</OutputPath>
-    <DefineConstants>TRACE;RESHARPER_41</DefineConstants>
+    <DefineConstants>TRACE;RESHARPER_41;RESHARPER_31_OR_NEWER;RESHARPER_40_OR_NEWER;RESHARPER_41_OR_NEWER</DefineConstants>
     <DocumentationFile>bin\v4.1\Gallio.ReSharperRunner41.xml</DocumentationFile>
     <Optimize>true</Optimize>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
