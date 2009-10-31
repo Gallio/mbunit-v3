@@ -275,9 +275,12 @@ namespace Gallio.Common.Reflection.Impl.DotNet20
             return adapter.GetReferencedAssemblies().ToArray();
         }
 
-        public override bool IsDynamic()
+        public override bool IsDynamic
         {
-            return false;
+            get
+            {
+                return false;
+            }
         }
 
         public override Module LoadModule(string moduleName, byte[] rawModule, byte[] rawSymbolStore)

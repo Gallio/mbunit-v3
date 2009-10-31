@@ -323,7 +323,7 @@ namespace MbUnit.Framework
             if (comparer == null)
                 comparer = StructuralEqualityComparer<T>.Default;
 
-            Add(comparer.Equals);
+            Add((EqualityComparison<T>)comparer.Equals);
         }
 
         /// <summary>
