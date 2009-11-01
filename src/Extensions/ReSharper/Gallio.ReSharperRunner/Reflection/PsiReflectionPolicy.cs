@@ -20,7 +20,6 @@ using Gallio.Common;
 using Gallio.Common.Reflection;
 using Gallio.Common.Reflection.Impl;
 using JetBrains.ProjectModel;
-using JetBrains.ProjectModel.Build;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.Caches;
 using Gallio.Common.Collections;
@@ -397,8 +396,13 @@ namespace Gallio.ReSharperRunner.Reflection
 
         private IList<StaticDeclaredTypeWrapper> GetAssemblyTypes(IModule moduleHandle, bool includeNonPublicTypes)
         {
-            INamespace namespaceHandle = psiManager.GetNamespace("");
             IDeclarationsCache cache = GetAssemblyDeclarationsCache(moduleHandle);
+
+#if ! RESHARPER_50_OR_NEWER
+            INamespace namespaceHandle = psiManager.GetNamespace("");
+#else
+            INamespace namespaceHandle = cache.GetNamespace("");
+#endif
 
             List<StaticDeclaredTypeWrapper> types = new List<StaticDeclaredTypeWrapper>();
             PopulateAssemblyTypes(types, namespaceHandle, cache, includeNonPublicTypes);
@@ -458,7 +462,7 @@ namespace Gallio.ReSharperRunner.Reflection
 #endif
         }
 
-#if RESHARPER_45
+#if RESHARPER_45_OR_NEWER
         private IPsiModule GetPsiModule(IModule moduleHandle)
         {
             return PsiModuleManager.GetInstance(psiManager.Solution).GetPrimaryPsiModule(moduleHandle);
@@ -1371,7 +1375,11 @@ namespace Gallio.ReSharperRunner.Reflection
                 type = new StaticDeclaredTypeWrapper(this, typeElementHandle, null, StaticTypeSubstitution.Empty);
             }
 
+#if ! RESHARPER_50_OR_NEWER
             var typeParameterHandles = new List<ITypeParameter>(typeElementHandle.AllTypeParameters);
+#else
+            var typeParameterHandles = new List<ITypeParameter>(typeElementHandle.GetAllTypeParameters());
+#endif
 #if RESHARPER_31 || RESHARPER_40 || RESHARPER_41
             if (substitutionHandle.IsIdempotent(typeParameterHandles))
 #else

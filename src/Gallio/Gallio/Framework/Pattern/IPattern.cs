@@ -14,6 +14,8 @@
 // limitations under the License.
 
 using Gallio.Common.Reflection;
+using System.Collections.Generic;
+using Gallio.Model;
 
 namespace Gallio.Framework.Pattern
 {
@@ -85,7 +87,7 @@ namespace Gallio.Framework.Pattern
         bool IsPrimary { get; }
 
         /// <summary>
-        /// Returns true if the code element represents a test.
+        /// Gets the test parts represented by a code element.
         /// </summary>
         /// <remarks>
         /// <para>
@@ -94,28 +96,11 @@ namespace Gallio.Framework.Pattern
         /// </remarks>
         /// <param name="evaluator">The evaluator.</param>
         /// <param name="codeElement">The code element.</param>
-        /// <returns>True if the code element represents a test.</returns>
+        /// <returns>The test parts, or an empty array if none.</returns>
         /// <exception cref="PatternUsageErrorException">May be thrown to halt processing of the pattern
         /// and report an error message to the user as an annotation that describes how the
         /// pattern was misapplied.</exception>
-        bool IsTest(IPatternEvaluator evaluator, ICodeElementInfo codeElement);
-
-        /// <summary>
-        /// Returns true if the code element represents a part of a test such as a test method
-        /// or a test contribution like a setup or teardown method.
-        /// </summary>
-        /// <remarks>
-        /// <para>
-        /// This method is only called for primary patterns.
-        /// </para>
-        /// </remarks>
-        /// <param name="evaluator">The evaluator.</param>
-        /// <param name="codeElement">The code element.</param>
-        /// <returns>True if the code element represents a test.</returns>
-        /// <exception cref="PatternUsageErrorException">May be thrown to halt processing of the pattern
-        /// and report an error message to the user as an annotation that describes how the
-        /// pattern was misapplied.</exception>
-        bool IsTestPart(IPatternEvaluator evaluator, ICodeElementInfo codeElement);
+        IList<TestPart> GetTestParts(IPatternEvaluator evaluator, ICodeElementInfo codeElement);
 
         /// <summary>
         /// Consumes a code element and applies its contributions to the scope

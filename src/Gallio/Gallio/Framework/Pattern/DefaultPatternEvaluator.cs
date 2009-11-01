@@ -99,7 +99,7 @@ namespace Gallio.Framework.Pattern
         }
 
         /// <inheritdoc />
-        public bool IsTest(ICodeElementInfo codeElement, IPattern defaultPrimaryPattern)
+        public IList<TestPart> GetTestParts(ICodeElementInfo codeElement, IPattern defaultPrimaryPattern)
         {
             if (codeElement == null)
                 throw new ArgumentNullException("codeElement");
@@ -108,34 +108,14 @@ namespace Gallio.Framework.Pattern
             {
                 IPattern primaryPattern = GetPrimaryPattern(codeElement) ?? defaultPrimaryPattern;
                 if (primaryPattern != null)
-                    return primaryPattern.IsTest(this, codeElement);
+                    return primaryPattern.GetTestParts(this, codeElement);
             }
             catch (Exception)
             {
-                // Return false if an exception occurs.
+                // Return empty array if an exception occurs.
             }
 
-            return false;
-        }
-
-        /// <inheritdoc />
-        public bool IsTestPart(ICodeElementInfo codeElement, IPattern defaultPrimaryPattern)
-        {
-            if (codeElement == null)
-                throw new ArgumentNullException("codeElement");
-
-            try
-            {
-                IPattern primaryPattern = GetPrimaryPattern(codeElement) ?? defaultPrimaryPattern;
-                if (primaryPattern != null)
-                    return primaryPattern.IsTestPart(this, codeElement);
-            }
-            catch (Exception)
-            {
-                // Return false if an exception occurs.
-            }
-
-            return false;
+            return EmptyArray<TestPart>.Instance;
         }
 
         /// <inheritdoc />

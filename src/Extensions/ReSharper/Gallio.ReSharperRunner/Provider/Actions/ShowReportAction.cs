@@ -23,8 +23,10 @@ using JetBrains.ReSharper.UnitTestExplorer;
 using JetBrains.Shell.VSIntegration;
 #elif RESHARPER_40 || RESHARPER_41
 using JetBrains.VSIntegration.Shell;
-#else
+#elif RESHARPER_45
 using JetBrains.VSIntegration.Application;
+#else
+using JetBrains.VsIntegration.Application;
 #endif
 
 namespace Gallio.ReSharperRunner.Provider.Actions
@@ -57,7 +59,11 @@ namespace Gallio.ReSharperRunner.Provider.Actions
 
         private static void ShowHtmlDocument(Uri url)
         {
+#if ! RESHARPER_50_OR_NEWER
             VSShell.Instance.ApplicationObject.ItemOperations.Navigate(url.ToString(), vsNavigateOptions.vsNavigateOptionsDefault);
+#else
+            VSShell.Instance.ServiceProvider.Dte().ItemOperations.Navigate(url.ToString(), vsNavigateOptions.vsNavigateOptionsDefault);
+#endif
         }
     }
 }

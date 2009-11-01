@@ -1072,7 +1072,11 @@ namespace Gallio.ReSharperRunner.Reflection
                     IsOptional = parameter.IsOptional,
                     IsIn = parameter.IsIn,
                     IsOut = parameter.IsOut,
+#if ! RESHARPER_50_OR_NEWER
                     TypeName = parameter.Type.PresentableName
+#else
+                    TypeName = parameter.Type.FullName
+#endif
                 };
             }
 
@@ -1084,7 +1088,11 @@ namespace Gallio.ReSharperRunner.Reflection
                     IsOptional = parameter.IsOptional,
                     IsIn = parameter.Kind != ParameterKind.OUTPUT,
                     IsOut = parameter.Kind != ParameterKind.VALUE,
+#if ! RESHARPER_50_OR_NEWER
                     TypeName = parameter.Type.GetPresentableName(PsiLanguageType.UNKNOWN)
+#else
+                    TypeName = parameter.Type.GetLongPresentableName(PsiLanguageType.UNKNOWN)
+#endif
                 };
             }
 

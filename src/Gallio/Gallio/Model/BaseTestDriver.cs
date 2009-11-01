@@ -19,6 +19,7 @@ using Gallio.Common.Reflection;
 using Gallio.Common.Messaging;
 using Gallio.Model.Isolation;
 using Gallio.Runtime.ProgressMonitoring;
+using Gallio.Common.Collections;
 
 namespace Gallio.Model
 {
@@ -28,25 +29,14 @@ namespace Gallio.Model
     public abstract class BaseTestDriver : ITestDriver
     {
         /// <inheritdoc />
-        public bool IsTest(IReflectionPolicy reflectionPolicy, ICodeElementInfo codeElement)
+        public IList<TestPart> GetTestParts(IReflectionPolicy reflectionPolicy, ICodeElementInfo codeElement)
         {
             if (reflectionPolicy == null)
                 throw new ArgumentNullException("reflectionPolicy");
             if (codeElement == null)
                 throw new ArgumentNullException("codeElement");
 
-            return false;
-        }
-
-        /// <inheritdoc />
-        public bool IsTestPart(IReflectionPolicy reflectionPolicy, ICodeElementInfo codeElement)
-        {
-            if (reflectionPolicy == null)
-                throw new ArgumentNullException("reflectionPolicy");
-            if (codeElement == null)
-                throw new ArgumentNullException("codeElement");
-
-            return IsTest(reflectionPolicy, codeElement);
+            return GetTestPartsImpl(reflectionPolicy, codeElement);
         }
 
         /// <inheritdoc />
@@ -105,37 +95,20 @@ namespace Gallio.Model
         }
 
         /// <summary>
-        /// Returns true if the code element represents a test.
+        /// Gets the test parts represented by a code element.
         /// </summary>
         /// <remarks>
         /// <para>
-        /// The default implementation always returns false.  Subclasses may override
+        /// The default implementation always returns an empty array.  Subclasses may override
         /// this method to provide information about code elements that represent tests.
         /// </para>
         /// </remarks>
         /// <param name="reflectionPolicy">The reflection policy, not null.</param>
         /// <param name="codeElement">The code element, not null.</param>
-        /// <returns>True if the code element represents a test.</returns>
-        protected virtual bool IsTestImpl(IReflectionPolicy reflectionPolicy, ICodeElementInfo codeElement)
+        /// <returns>The test parts, or an empty array if none.</returns>
+        protected virtual IList<TestPart> GetTestPartsImpl(IReflectionPolicy reflectionPolicy, ICodeElementInfo codeElement)
         {
-            return false;
-        }
-
-        /// <summary>
-        /// Returns true if the code element represents a part of a test such as a setup or teardown method.
-        /// </summary>
-        /// <remarks>
-        /// <para>
-        /// The default implementation always returns false.  Subclasses may override
-        /// this method to provide information about code elements that represent parts of tests.
-        /// </para>
-        /// </remarks>
-        /// <param name="reflectionPolicy">The reflection policy, not null.</param>
-        /// <param name="codeElement">The code element, not null.</param>
-        /// <returns>True if the code element represents a part of a test.</returns>
-        protected virtual bool IsTestPartImpl(IReflectionPolicy reflectionPolicy, ICodeElementInfo codeElement)
-        {
-            return false;
+            return EmptyArray<TestPart>.Instance;
         }
 
         /// <summary>

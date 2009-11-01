@@ -15,6 +15,8 @@
 
 using System;
 using Gallio.Common.Reflection;
+using Gallio.Model;
+using System.Collections.Generic;
 
 namespace Gallio.Framework.Pattern
 {
@@ -32,9 +34,9 @@ namespace Gallio.Framework.Pattern
         }
 
         /// <inheritdoc />
-        public override bool IsTestPart(IPatternEvaluator evaluator, ICodeElementInfo codeElement)
+        public override IList<TestPart> GetTestParts(IPatternEvaluator evaluator, ICodeElementInfo codeElement)
         {
-            return true;
+            return new[] { new TestPart() { IsTestContribution = true } };
         }
 
         /// <inheritdoc />

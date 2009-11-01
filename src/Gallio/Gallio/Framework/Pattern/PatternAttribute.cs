@@ -17,6 +17,9 @@ using System;
 using Gallio.Common.Diagnostics;
 using Gallio.Common.Reflection;
 using Gallio.Framework.Pattern;
+using Gallio.Model;
+using System.Collections.Generic;
+using Gallio.Common.Collections;
 
 namespace Gallio.Framework.Pattern
 {
@@ -44,15 +47,9 @@ namespace Gallio.Framework.Pattern
         }
 
         /// <inheritdoc />
-        public virtual bool IsTest(IPatternEvaluator evaluator, ICodeElementInfo codeElement)
+        public virtual IList<TestPart> GetTestParts(IPatternEvaluator evaluator, ICodeElementInfo codeElement)
         {
-            return false;
-        }
-
-        /// <inheritdoc />
-        public virtual bool IsTestPart(IPatternEvaluator evaluator, ICodeElementInfo codeElement)
-        {
-            return IsTest(evaluator, codeElement);
+            return EmptyArray<TestPart>.Instance;
         }
 
         /// <inheritdoc />

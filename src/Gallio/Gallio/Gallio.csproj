@@ -283,6 +283,9 @@
     <Compile Include="Model\Commands\NamespaceDoc.cs" />
     <Compile Include="Model\Contexts\NamespaceDoc.cs" />
     <Compile Include="Model\FallbackTestDriver.cs" />
+    <Compile Include="Model\TestPart.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Model\TestFrameworkSelection.cs" />
     <Compile Include="Model\TestFrameworkOptions.cs" />
     <Compile Include="Model\FallbackTestFramework.cs" />

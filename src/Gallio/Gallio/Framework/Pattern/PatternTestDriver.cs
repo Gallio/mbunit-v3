@@ -81,16 +81,10 @@ namespace Gallio.Framework.Pattern
             get { return frameworkName; }
         }
 
-        protected override bool IsTestImpl(IReflectionPolicy reflectionPolicy, ICodeElementInfo codeElement)
+        protected override IList<TestPart> GetTestPartsImpl(IReflectionPolicy reflectionPolicy, ICodeElementInfo codeElement)
         {
             var evaluator = CreateReflectionOnlyPatternEvaluator(reflectionPolicy);
-            return evaluator.IsTest(codeElement, GetAutomaticPattern(codeElement));
-        }
-
-        protected override bool IsTestPartImpl(IReflectionPolicy reflectionPolicy, ICodeElementInfo codeElement)
-        {
-            var evaluator = CreateReflectionOnlyPatternEvaluator(reflectionPolicy);
-            return evaluator.IsTestPart(codeElement, GetAutomaticPattern(codeElement));
+            return evaluator.GetTestParts(codeElement, GetAutomaticPattern(codeElement));
         }
 
         private static IPatternEvaluator CreateReflectionOnlyPatternEvaluator(IReflectionPolicy reflectionPolicy)

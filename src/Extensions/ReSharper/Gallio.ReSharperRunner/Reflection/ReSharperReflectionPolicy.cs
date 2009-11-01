@@ -140,7 +140,12 @@ namespace Gallio.ReSharperRunner.Reflection
             string filename = projectFile.Location.FullPath;
             DocumentCoords start = range.Document.GetCoordsByOffset(range.TextRange.StartOffset);
 
+#if ! RESHARPER_50_OR_NEWER
             return new CodeLocation(filename, start.Line, start.Column);
+#else
+            return new CodeLocation(filename, (int) start.Line.Plus1(), (int) start.Column.Plus1());
+#endif
+
         }
 
         private static Type MapConstantArrayElementType<TType>(Type arrayType)

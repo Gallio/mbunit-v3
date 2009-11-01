@@ -77,9 +77,9 @@ namespace Gallio.Framework.Pattern
         }
 
         /// <inheritdoc />
-        public override bool IsTest(IPatternEvaluator evaluator, ICodeElementInfo codeElement)
+        public override IList<TestPart> GetTestParts(IPatternEvaluator evaluator, ICodeElementInfo codeElement)
         {
-            return true;
+            return new[] { new TestPart() { IsTestContainer = true } };
         }
 
         /// <inheritdoc />
@@ -469,18 +469,23 @@ namespace Gallio.Framework.Pattern
 
         private sealed class AutomaticImpl : TestTypePatternAttribute
         {
-            public override bool IsTest(IPatternEvaluator evaluator, ICodeElementInfo codeElement)
+            public override IList<TestPart> GetTestParts(IPatternEvaluator evaluator, ICodeElementInfo codeElement)
             {
-                ITypeInfo type = codeElement as ITypeInfo;
-                return type != null && InferTestType(evaluator, type);
+                if (IsTest(evaluator, codeElement))
+                    return base.GetTestParts(evaluator, codeElement);
+                return EmptyArray<TestPart>.Instance;
             }
 
             public override void Consume(IPatternScope containingScope, ICodeElementInfo codeElement, bool skipChildren)
             {
                 if (IsTest(containingScope.Evaluator, codeElement))
-                {
                     base.Consume(containingScope, codeElement, skipChildren);
-                }
+            }
+
+            private bool IsTest(IPatternEvaluator evaluator, ICodeElementInfo codeElement)
+            {
+                ITypeInfo type = codeElement as ITypeInfo;
+                return type != null && InferTestType(evaluator, type);
             }
         }
     }

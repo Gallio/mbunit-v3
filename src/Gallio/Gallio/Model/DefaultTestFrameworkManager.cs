@@ -380,24 +380,38 @@ namespace Gallio.Model
                 this.logger = logger;
             }
 
-            protected override bool IsTestImpl(IReflectionPolicy reflectionPolicy, ICodeElementInfo codeElement)
+            protected override IList<TestPart> GetTestPartsImpl(IReflectionPolicy reflectionPolicy, ICodeElementInfo codeElement)
             {
-                return ForEachDriver(testFrameworkManager.SelectTestFrameworksForCodeElementsImpl(
-                    testFrameworkHandles, testFrameworkFallbackMode, testFrameworkOptions, new[] { codeElement }),
-                    (driver, items, driverCount) =>
-                {
-                    return driver.IsTest(reflectionPolicy, codeElement);
-                });
-            }
+                bool copied = false;
+                IList<TestPart> combinedTestParts = null;
 
-            protected override bool IsTestPartImpl(IReflectionPolicy reflectionPolicy, ICodeElementInfo codeElement)
-            {
-                return ForEachDriver(testFrameworkManager.SelectTestFrameworksForCodeElementsImpl(
+                ForEachDriver(testFrameworkManager.SelectTestFrameworksForCodeElementsImpl(
                     testFrameworkHandles, testFrameworkFallbackMode, testFrameworkOptions, new[] { codeElement }),
                     (driver, items, driverCount) =>
                 {
-                    return driver.IsTestPart(reflectionPolicy, codeElement);
+                    IList<TestPart> testParts = driver.GetTestParts(reflectionPolicy, codeElement);
+                    if (testParts.Count != 0)
+                    {
+                        if (combinedTestParts == null)
+                        {
+                            combinedTestParts = testParts;
+                        }
+                        else
+                        {
+                            if (! copied)
+                            {
+                                combinedTestParts = new List<TestPart>(combinedTestParts);
+                                copied = true;
+                            }
+
+                            GenericCollectionUtils.AddAll(testParts, combinedTestParts);
+                        }
+                    }
+
+                    return false;
                 });
+
+                return combinedTestParts;
             }
 
             protected override void DescribeImpl(IReflectionPolicy reflectionPolicy, IList<ICodeElementInfo> codeElements, TestExplorationOptions testExplorationOptions, Common.Messaging.IMessageSink messageSink, Gallio.Runtime.ProgressMonitoring.IProgressMonitor progressMonitor)

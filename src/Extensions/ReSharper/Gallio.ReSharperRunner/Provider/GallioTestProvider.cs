@@ -40,9 +40,14 @@ using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.ReSharper.TaskRunnerFramework;
-using JetBrains.ReSharper.UnitTestExplorer;
 using JetBrains.UI.TreeView;
 using Gallio.Runtime.Loader;
+
+using JetBrains.ReSharper.UnitTestExplorer;
+#if RESHARPER_50_OR_NEWER
+using JetBrains.ReSharper.UnitTestFramework;
+using JetBrains.ReSharper.UnitTestFramework.UI;
+#endif
 
 #if RESHARPER_31
 using JetBrains.Shell;
@@ -100,10 +105,22 @@ namespace Gallio.ReSharperRunner.Provider
             return shim.IsUnitTestElement(element);
         }
 
-#if ! RESHARPER_31 && ! RESHARPER_40 && ! RESHARPER_41
+#if RESHARPER_45
         public bool IsUnitTestStuff(IDeclaredElement element)
         {
             return shim.IsUnitTestStuff(element);
+        }
+#endif
+
+#if RESHARPER_50_OR_NEWER
+        public bool IsUnitTest(IDeclaredElement element)
+        {
+            return shim.IsUnitTest(element);
+        }
+
+        public bool IsUnitTestContainer(IDeclaredElement element)
+        {
+            return shim.IsUnitTestContainer(element);
         }
 #endif
 
@@ -147,7 +164,7 @@ namespace Gallio.ReSharperRunner.Provider
             get { return shim.ID; }
         }
 
-#if RESHARPER_45
+#if RESHARPER_45_OR_NEWER
         public Image Icon
         {
             get { return shim.Icon; }
@@ -358,48 +375,47 @@ namespace Gallio.ReSharperRunner.Provider
             {
                 if (element == null)
                     throw new ArgumentNullException("element");
-
-#if ! RESHARPER_31 && ! RESHARPER_40 && ! RESHARPER_41
-                using (ReadLockCookie.Create())
-#endif
-                {
-                    if (!element.IsValid())
-                        return false;
-
-                    try
-                    {
-                        PsiReflectionPolicy reflectionPolicy = new PsiReflectionPolicy(element.GetManager());
-                        ICodeElementInfo elementInfo = reflectionPolicy.Wrap(element);
-                        if (elementInfo == null)
-                            return false;
-
-                        ITestDriver driver = CreateTestDriver();
-                        return driver.IsTest(reflectionPolicy, elementInfo);
-                    }
-                    catch (Exception ex)
-                    {
-                        HandleEmbeddedProcessCancelledException(ex);
-                        throw;
-                    }
-                }
+                return EvalTestPartPredicate(element, x => x.IsTest);
             }
 
-#if ! RESHARPER_31 && ! RESHARPER_40 && ! RESHARPER_41
+#if RESHARPER_45
             /// <summary>
             /// Checks if given declared element is part of a unit test.  
             /// </summary>
             /// <remarks>
             /// <para>
-            /// Could be a set up or tear down
-            /// method, or something else that belongs to a test.
+            /// Could be a set up or tear down method, or something else that belongs to a test.
             /// </para>
             /// </remarks>
             public bool IsUnitTestStuff(IDeclaredElement element)
             {
                 if (element == null)
                     throw new ArgumentNullException("element");
+                return EvalTestPartPredicate(element, x => x.IsTest || x.IsTestContribution);
+            }
+#endif
 
+#if RESHARPER_50_OR_NEWER
+            public bool IsUnitTest(IDeclaredElement element)
+            {
+                if (element == null)
+                    throw new ArgumentNullException("element");
+                return EvalTestPartPredicate(element, x => x.IsTestCase);
+            }
+
+            public bool IsUnitTestContainer(IDeclaredElement element)
+            {
+                if (element == null)
+                    throw new ArgumentNullException("element");
+                return EvalTestPartPredicate(element, x => x.IsTestContainer);
+            }
+#endif
+
+            private bool EvalTestPartPredicate(IDeclaredElement element, Predicate<TestPart> predicate)
+            {
+#if RESHARPER_45_OR_NEWER
                 using (ReadLockCookie.Create())
+#endif
                 {
                     if (!element.IsValid())
                         return false;
@@ -412,7 +428,8 @@ namespace Gallio.ReSharperRunner.Provider
                             return false;
 
                         ITestDriver driver = CreateTestDriver();
-                        return driver.IsTestPart(reflectionPolicy, elementInfo);
+                        IList<TestPart> testParts = driver.GetTestParts(reflectionPolicy, elementInfo);
+                        return GenericCollectionUtils.Exists(testParts, predicate);
                     }
                     catch (Exception ex)
                     {
@@ -421,7 +438,6 @@ namespace Gallio.ReSharperRunner.Provider
                     }
                 }
             }
-#endif
 
             /// <summary>
             /// Presents unit test.
@@ -554,7 +570,7 @@ namespace Gallio.ReSharperRunner.Provider
                 get { return ProviderId; }
             }
 
-#if RESHARPER_45
+#if RESHARPER_45_OR_NEWER
             /// <summary>
             /// Gets the icon to display in the Options panel or null to use the default.
             /// </summary>

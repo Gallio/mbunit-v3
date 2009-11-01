@@ -80,7 +80,7 @@ namespace Gallio.ReSharperRunner.Provider.Daemons
         }
 #endif
 
-#if RESHARPER_45
+#if RESHARPER_45_OR_NEWER
         public bool IsValid()
         {
             return true;

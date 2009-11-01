@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using Gallio.Common.Reflection;
 using Gallio.Model.Tree;
+using Gallio.Model;
 
 namespace Gallio.Framework.Pattern
 {
@@ -68,34 +69,20 @@ namespace Gallio.Framework.Pattern
         IEnumerable<PatternTest> GetDeclaredTests(ICodeElementInfo codeElement);
 
         /// <summary>
-        /// Returns true if the code element represents a test.
+        /// Gets the test parts represented by a code element.
         /// </summary>
         /// <remarks>
         /// <para>
-        /// If an exception occurs, this method returns false.
+        /// If an exception occurs while enumerating the pattern attributes,
+        /// this method returns an empty array.
         /// </para>
         /// </remarks>
         /// <param name="codeElement">The code element.</param>
         /// <param name="defaultPrimaryPattern">The default primary pattern to use, if none can be resolved
         /// for the code element.  May be null if none.</param>
-        /// <returns>True if the code element represents a test.</returns>
-        /// <seealso cref="IPattern.IsTest"/>
-        bool IsTest(ICodeElementInfo codeElement, IPattern defaultPrimaryPattern);
-
-        /// <summary>
-        /// Returns true if the code element represents a part of a test.
-        /// </summary>
-        /// <remarks>
-        /// <para>
-        /// If an exception occurs, this method returns false.
-        /// </para>
-        /// </remarks>
-        /// <param name="codeElement">The code element.</param>
-        /// <param name="defaultPrimaryPattern">The default primary pattern to use, if none can be resolved
-        /// for the code element.  May be null if none.</param>
-        /// <returns>True if the code element represents a test.</returns>
-        /// <seealso cref="IPattern.IsTest"/>
-        bool IsTestPart(ICodeElementInfo codeElement, IPattern defaultPrimaryPattern);
+        /// <returns>The test parts, or an empty array if none.</returns>
+        /// <seealso cref="IPattern.GetTestParts"/>
+        IList<TestPart> GetTestParts(ICodeElementInfo codeElement, IPattern defaultPrimaryPattern);
 
         /// <summary>
         /// Consumes the specified code element.

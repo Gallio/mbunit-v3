@@ -91,9 +91,9 @@ namespace MbUnit.Framework.ContractVerifiers
         }
 
         /// <inheritdoc />
-        public override bool IsTest(IPatternEvaluator evaluator, ICodeElementInfo codeElement)
+        public override IList<TestPart> GetTestParts(IPatternEvaluator evaluator, ICodeElementInfo codeElement)
         {
-            return true;
+            return new[] { new TestPart() { IsTestContainer = true } };
         }
 
         /// <inheritdoc />

@@ -29,6 +29,10 @@ using JetBrains.ReSharper.CodeView.TreePsiBrowser;
 using JetBrains.TreeModels;
 using JetBrains.ReSharper.Features.Common.TreePsiBrowser;
 #endif
+#if RESHARPER_50_OR_NEWER
+using JetBrains.ReSharper.UnitTestFramework;
+using JetBrains.ReSharper.UnitTestFramework.UI;
+#endif
 
 namespace Gallio.ReSharperRunner.Provider
 {

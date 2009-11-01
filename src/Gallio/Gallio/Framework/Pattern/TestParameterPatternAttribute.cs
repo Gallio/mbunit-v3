@@ -17,6 +17,8 @@ using System;
 using Gallio.Model;
 using Gallio.Common.Reflection;
 using Gallio.Framework.Pattern;
+using System.Collections.Generic;
+using Gallio.Common.Collections;
 
 namespace Gallio.Framework.Pattern
 {
@@ -62,9 +64,9 @@ namespace Gallio.Framework.Pattern
         }
 
         /// <inheritdoc />
-        public override bool IsTestPart(IPatternEvaluator evaluator, ICodeElementInfo codeElement)
+        public override IList<TestPart> GetTestParts(IPatternEvaluator evaluator, ICodeElementInfo codeElement)
         {
-            return true;
+            return new[] { new TestPart() { IsTestContribution = true } };
         }
 
         /// <inheritdoc />
@@ -131,17 +133,22 @@ namespace Gallio.Framework.Pattern
 
         private sealed class AutomaticImpl : TestParameterPatternAttribute
         {
-            public override bool IsTestPart(IPatternEvaluator evaluator, ICodeElementInfo codeElement)
+            public override IList<TestPart> GetTestParts(IPatternEvaluator evaluator, ICodeElementInfo codeElement)
             {
-                return evaluator.HasPatterns(codeElement);
+                if (IsTestPart(evaluator, codeElement))
+                    return base.GetTestParts(evaluator, codeElement);
+                return EmptyArray<TestPart>.Instance;
             }
 
             public override void Consume(IPatternScope containingScope, ICodeElementInfo codeElement, bool skipChildren)
             {
                 if (IsTestPart(containingScope.Evaluator, codeElement))
-                {
                     base.Consume(containingScope, codeElement, skipChildren);
-                }
+            }
+
+            private bool IsTestPart(IPatternEvaluator evaluator, ICodeElementInfo codeElement)
+            {
+                return evaluator.HasPatterns(codeElement);
             }
         }
     }

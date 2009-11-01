@@ -28,24 +28,14 @@ namespace Gallio.Model
     public interface ITestDriver
     {
         /// <summary>
-        /// Returns true if the code element represents a test.
+        /// Gets the test parts represented by a code element.
         /// </summary>
         /// <param name="reflectionPolicy">The reflection policy.</param>
         /// <param name="codeElement">The code element.</param>
-        /// <returns>True if the code element represents a test.</returns>
+        /// <returns>The test parts, or an empty array if none.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="reflectionPolicy"/>
         /// or <paramref name="codeElement"/> is null.</exception>
-        bool IsTest(IReflectionPolicy reflectionPolicy, ICodeElementInfo codeElement);
-
-        /// <summary>
-        /// Returns true if the code element represents a part of a test such as a setup or teardown method.
-        /// </summary>
-        /// <param name="reflectionPolicy">The reflection policy.</param>
-        /// <param name="codeElement">The code element.</param>
-        /// <returns>True if the code element represents a part of a test.</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="reflectionPolicy"/>
-        /// or <paramref name="codeElement"/> is null.</exception>
-        bool IsTestPart(IReflectionPolicy reflectionPolicy, ICodeElementInfo codeElement);
+        IList<TestPart> GetTestParts(IReflectionPolicy reflectionPolicy, ICodeElementInfo codeElement);
 
         /// <summary>
         /// Describes tests via reflection over code elements.

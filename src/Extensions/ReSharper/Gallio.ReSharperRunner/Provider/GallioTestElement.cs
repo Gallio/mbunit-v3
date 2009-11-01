@@ -16,14 +16,20 @@
 using System;
 using System.Collections.Generic;
 using Gallio.Model;
-using Gallio.Common.Collections;
 using Gallio.Common.Reflection;
 using Gallio.Model.Schema;
 using Gallio.ReSharperRunner.Reflection;
 using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.Tree;
+
+#if ! RESHARPER_50_OR_NEWER
 using JetBrains.ReSharper.UnitTestExplorer;
+#else
+using JetBrains.ReSharper.UnitTestFramework;
+using JetBrains.Util;
+
+#endif
 
 namespace Gallio.ReSharperRunner.Provider
 {
@@ -119,6 +125,13 @@ namespace Gallio.ReSharperRunner.Provider
             get { return testName; }
         }
 
+#if RESHARPER_50_OR_NEWER
+        public override string ShortName
+        {
+            get { return testName; }
+        }
+#endif
+
         public string TestId
         {
             get { return testId; }
@@ -172,7 +185,7 @@ namespace Gallio.ReSharperRunner.Provider
             if (declaredElement != null && declaredElement.IsValid())
                 return declaredElement.GetProjectFiles();
 
-            return EmptyArray<IProjectFile>.Instance;
+            return Common.Collections.EmptyArray<IProjectFile>.Instance;
         }
 #endif
 
@@ -212,7 +225,12 @@ namespace Gallio.ReSharperRunner.Provider
 #else
                                 file.ProjectFile,
 #endif
-                                nameRange, containingRange));
+#if ! RESHARPER_50_OR_NEWER
+                                nameRange,
+#else
+                                new TextRange(nameRange.StartOffset.Offset, nameRange.EndOffset.Offset), 
+#endif
+                                containingRange));
                         }
                     }
                 }
