@@ -51,13 +51,7 @@ namespace Gallio.ReSharperRunner.Tests
         [FixtureSetUp]
         public static void SetUp()
         {
-            if (! IsShellInitialized)
-            {
-                RunWithWriteLock(() =>
-                {
-                    new GallioTestShell();
-                });
-            }
+            GallioTestShellHandler.Initialize();
         }
 
         [FixtureTearDown]
@@ -65,25 +59,14 @@ namespace Gallio.ReSharperRunner.Tests
         {
             if (isTestSolutionLoaded)
             {
-                RunWithWriteLock(delegate
+                GallioTestShellHandler.RunWithWriteLock(delegate
                 {
                     SolutionManager.Instance.CloseSolution(SolutionManager.Instance.CurrentSolution);
                 });
                 isTestSolutionLoaded = false;
             }
 
-            if (IsShellInitialized)
-            {
-                RunWithWriteLock(() =>
-                {
-                    GallioTestShell shell = Shell.Instance as GallioTestShell;
-                    if (shell != null)
-                    {
-                        shell.TearDown();
-                        shell.Dispose();
-                    }
-                });
-            }
+            GallioTestShellHandler.ShutDown();
         }
 
         public static void LoadTestSolutionIfNeeded()
@@ -92,10 +75,10 @@ namespace Gallio.ReSharperRunner.Tests
                 return;
 
             FileSystemPath testSolutionPath = new FileSystemPath(
-                Path.Combine(Path.GetDirectoryName(AssemblyUtils.GetAssemblyLocalPath(GallioTestShell.TestAssembly)),
-                    @"..\..\TestSolution" + GallioTestShell.VersionSuffix + ".sln"));
+                Path.Combine(Path.GetDirectoryName(AssemblyUtils.GetAssemblyLocalPath(GallioTestShellHandler.TestAssembly)),
+                    @"..\..\TestSolution" + GallioTestShellHandler.VersionSuffix + ".sln"));
 
-            RunWithWriteLock(delegate
+            GallioTestShellHandler.RunWithWriteLock(delegate
             {
 #if RESHARPER_31 || RESHARPER_40 || RESHARPER_41
                 SolutionManager.Instance.OpenSolution(testSolutionPath, new SimpleTaskExecutor());
@@ -105,33 +88,6 @@ namespace Gallio.ReSharperRunner.Tests
             });
 
             isTestSolutionLoaded = true;
-        }
-
-        private static void RunWithWriteLock(Action action)
-        {
-#if !RESHARPER_31
-            TestShell.RunGuarded(delegate
-            {
-                using (WriteLockCookie.Create())
-                {
-#endif
-                    action();
-#if !RESHARPER_31
-                }
-            });
-#endif
-        }
-
-        private static bool IsShellInitialized
-        {
-            get
-            {
-#if RESHARPER_31 || RESHARPER_40 || RESHARPER_41
-                return Shell.Instance != null;
-#else
-                return Shell.HasInstance;
-#endif
-            }
         }
     }
 }

@@ -19,6 +19,10 @@ using Gallio.Common.Reflection;
 using JetBrains.Metadata.Access;
 using IAssemblyResolver=JetBrains.Metadata.Reader.API.IAssemblyResolver;
 
+#if RESHARPER_50_OR_NEWER
+using JetBrains.Util;
+#endif
+
 namespace Gallio.ReSharperRunner.Tests.Reflection
 {
     public class BuiltInMetadataAssemblyResolver : IAssemblyResolver
@@ -29,6 +33,7 @@ namespace Gallio.ReSharperRunner.Tests.Reflection
         {
         }
 
+#if ! RESHARPER_50_OR_NEWER
         public IMetadataAccess ResolveAssembly(AssemblyName name, out string assemblyLocation)
         {
             try
@@ -47,5 +52,21 @@ namespace Gallio.ReSharperRunner.Tests.Reflection
                 return null;
             }
         }
+#else
+        public IMetadataAccess ResolveAssembly(AssemblyName name, out FileSystemPath assemblyLocation)
+        {
+            try
+            {
+                Assembly assembly = Assembly.Load(name);
+                assemblyLocation = new FileSystemPath((AssemblyUtils.GetAssemblyLocalPath(assembly)));
+                return MetadataProviderFactory.DefaultProvider.GetFromFile(assemblyLocation);
+            }
+            catch
+            {
+                assemblyLocation = null;
+                return null;
+            }
+        }
+#endif
     }
 }

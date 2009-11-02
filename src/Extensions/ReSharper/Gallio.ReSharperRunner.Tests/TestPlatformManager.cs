@@ -20,8 +20,14 @@ using System.Reflection;
 using System.Text;
 using JetBrains.Application;
 using JetBrains.ComponentModel;
-using JetBrains.ProjectModel.Platforms;
 using JetBrains.ProjectModel.Platforms.Impl;
+#if ! RESHARPER_50_OR_NEWER
+using JetBrains.ProjectModel.Platforms;
+#else
+using JetBrains.ProjectModel;
+using JetBrains.ProjectModel.impl;
+using Gallio.Common.Collections;
+#endif
 
 namespace Gallio.ReSharperRunner.Tests
 {
@@ -33,6 +39,10 @@ namespace Gallio.ReSharperRunner.Tests
         protected override void SearchForPlatforms(IList<PlatformInfo> platforms)
         {
             PlatformManagerImpl impl = new PlatformManagerImpl();
+#if RESHARPER_50_OR_NEWER
+            typeof(PlatformManagerImpl).GetField("myAllPlatforms",
+                BindingFlags.Instance | BindingFlags.NonPublic).SetValue(impl, new List<PlatformInfo>());
+#endif
             typeof(PlatformManagerImpl).GetMethod("SearchForPlatforms",
                 BindingFlags.Instance | BindingFlags.NonPublic).Invoke(impl, new object[] { platforms });
         }

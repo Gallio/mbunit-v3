@@ -13,6 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#if ! RESHARPER_50_OR_NEWER
 using System;
 using System.IO;
 using System.Reflection;
@@ -37,21 +38,11 @@ namespace Gallio.ReSharperRunner.Tests
 {
     internal class GallioTestShell : TestShell
     {
-        public static readonly Assembly TestAssembly = typeof(ReSharperTestHarness).Assembly;
-        public static readonly string VersionSuffix = typeof(ReSharperTestHarness).Assembly.GetName().Name.Substring(22, 2);
-
-        // We need to use our own configuration because the standard JetBrains.resources.config.AllAssemblies.xml
-        // resource in JetBrains.ReSharper.Resources refers to actual testing assemblies that JetBrains does not
-        // publish.  This is problematic because it causes the TestShell to fail to initialize.
-        //
-        // Our configuration is basically a stripped down version of the standard one. -- Jeff.
-        private static readonly string ConfigName = typeof(ReSharperTestHarness).Namespace + ".TestAssemblies" + VersionSuffix + ".xml";
-
         public GallioTestShell()
 #if RESHARPER_31
-            : base(TestAssembly, ConfigName)
+            : base(GallioTestShellHandler.TestAssembly, GallioTestShellHandler.ConfigName)
 #else
-            : base(TestAssembly, TestAssembly, ConfigName)
+            : base(GallioTestShellHandler.TestAssembly, GallioTestShellHandler.TestAssembly, GallioTestShellHandler.ConfigName)
 #endif
         {
         }
@@ -85,3 +76,4 @@ namespace Gallio.ReSharperRunner.Tests
 #endif
     }
 }
+#endif

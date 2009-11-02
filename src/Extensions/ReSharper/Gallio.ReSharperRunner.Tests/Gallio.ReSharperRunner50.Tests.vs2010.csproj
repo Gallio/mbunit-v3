@@ -5,7 +5,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{CFC4B4EC-4E57-461a-B6CB-33F8C0DF9238}</ProjectGuid>
+    <ProjectGuid>{CFC4B4EC-4E57-461A-B6CB-33F8C0DF9238}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Gallio.ReSharperRunner.Tests</RootNamespace>
@@ -13,10 +13,6 @@
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <BaseIntermediateOutputPath>obj\v5.0\</BaseIntermediateOutputPath>
-    <FileUpgradeFlags>
-    </FileUpgradeFlags>
-    <OldToolsVersion>3.5</OldToolsVersion>
-    <UpgradeBackupLocation />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -62,18 +58,6 @@
       <SpecificVersion>False</SpecificVersion>
       <ExecutableExtension>.exe</ExecutableExtension>
       <HintPath>..\..\..\..\..\..\..\Program Files\JetBrains\ReSharper\v5.0\Bin\JetBrains.Platform.ReSharper.Satellite.exe</HintPath>
-    </Reference>
-    <Reference Include="JetBrains.ReSharper.Asp, Version=4.5.1153.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\JetBrains\ReSharper\v5.0\Bin\JetBrains.ReSharper.Asp.dll</HintPath>
-    </Reference>
-    <Reference Include="JetBrains.ReSharper.BuildScriptSupport, Version=4.5.1153.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\JetBrains\ReSharper\v5.0\Bin\JetBrains.ReSharper.BuildScriptSupport.dll</HintPath>
-    </Reference>
-    <Reference Include="JetBrains.ReSharper.CodeInsight.Services, Version=4.5.1153.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\JetBrains\ReSharper\v5.0\Bin\JetBrains.ReSharper.CodeInsight.Services.dll</HintPath>
     </Reference>
     <Reference Include="JetBrains.Platform.ReSharper.ActionManagement, Version=4.0.783.45, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -154,10 +138,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\..\..\Program Files\JetBrains\ReSharper\v5.0\Bin\JetBrains.ReSharper.Features.Altering.dll</HintPath>
     </Reference>
-    <Reference Include="JetBrains.ReSharper.Features.Analyses, Version=4.5.1153.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\JetBrains\ReSharper\v5.0\Bin\JetBrains.ReSharper.Features.Analyses.dll</HintPath>
-    </Reference>
     <Reference Include="JetBrains.ReSharper.Features.Browsing, Version=4.5.1153.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\..\..\Program Files\JetBrains\ReSharper\v5.0\Bin\JetBrains.ReSharper.Features.Browsing.dll</HintPath>
@@ -230,10 +210,6 @@
     <Reference Include="JetBrains.ReSharper.SolutionBuilder, Version=3.1.584.3, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
     </Reference>
-    <Reference Include="JetBrains.ReSharper.SolutionBuilder.VS, Version=4.5.1153.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\JetBrains\ReSharper\v5.0\Bin\JetBrains.ReSharper.SolutionBuilder.VS.dll</HintPath>
-    </Reference>
     <Reference Include="JetBrains.ReSharper.TaskRunner, Version=4.5.1153.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
       <ExecutableExtension>.exe</ExecutableExtension>
@@ -269,6 +245,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GallioTestShell.cs" />
+    <Compile Include="GallioTestShellHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Reflection\BuiltInMetadataAssemblyResolver.cs" />
     <Compile Include="Reflection\MetadataReflectionPolicyTest.cs" />
