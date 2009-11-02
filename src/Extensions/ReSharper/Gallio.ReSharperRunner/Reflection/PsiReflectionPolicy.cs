@@ -35,6 +35,9 @@ using ReSharperDocumentRange = JetBrains.ReSharper.Editor.DocumentRange;
 using JetBrains.DocumentModel;
 using ReSharperDocumentRange = JetBrains.DocumentModel.DocumentRange;
 #endif
+#if ! RESHARPER_50_OR_NEWER
+using JetBrains.ProjectModel.Build;
+#endif
 
 namespace Gallio.ReSharperRunner.Reflection
 {
