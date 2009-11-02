@@ -17,11 +17,11 @@ using JetBrains.Shell.Test;
 using JetBrains.Application;
 using JetBrains.Application.Progress;
 using JetBrains.Application.Test;
-using Gallio.Common.Diagnostics;
 #if RESHARPER_40 || RESHARPER_41
 using Resources;
 #endif
 #endif
+using Gallio.Common.Diagnostics;
 
 namespace Gallio.ReSharperRunner.Tests
 {
