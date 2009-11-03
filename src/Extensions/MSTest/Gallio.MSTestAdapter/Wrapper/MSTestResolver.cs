@@ -33,23 +33,28 @@ namespace Gallio.MSTestAdapter.Wrapper
         /// <returns>The full path of the MSTest.exe program, or null if not found.</returns>
         public static string FindMSTestPathForVisualStudioVersion(string visualStudioVersion)
         {
-            using (RegistryKey key = RegistryUtils.OpenSubKeyWithBitness(Registry.LocalMachine,
+            string result = null;
+
+            RegistryUtils.TryActionOnOpenSubKeyWithBitness(Registry.LocalMachine,
                 @"SOFTWARE\Microsoft\VisualStudio\" + visualStudioVersion,
-                @"SOFTWARE\Wow6432Node\Microsoft\VisualStudio\" + visualStudioVersion))
-            {
-                if (key != null)
+                @"SOFTWARE\Wow6432Node\Microsoft\VisualStudio\" + visualStudioVersion,
+                key =>
                 {
                     string visualStudioInstallDir = (string)key.GetValue("InstallDir");
                     if (visualStudioInstallDir != null)
                     {
                         string msTestExecutablePath = Path.Combine(visualStudioInstallDir, "MSTest.exe");
                         if (File.Exists(msTestExecutablePath))
-                            return msTestExecutablePath;
+                        {
+                            result = msTestExecutablePath;
+                            return true;
+                        }
                     }
-                }
-            }
 
-            return null;
+                    return false;
+                });
+
+            return result;
         }
     }
 }

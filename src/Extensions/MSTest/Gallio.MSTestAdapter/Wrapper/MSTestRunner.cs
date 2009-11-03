@@ -296,6 +296,11 @@ namespace Gallio.MSTestAdapter.Wrapper
                         assemblyOutcome = TestOutcome.Error;
                     return assemblyOutcome;
                 }
+                catch (Exception ex)
+                {
+                    assemblyTestContext.LogWriter.Failures.WriteException(ex, "A fatal exception occurred while running MSTest tests.");
+                    return TestOutcome.Error;
+                }
                 finally
                 {
                     // Release state.

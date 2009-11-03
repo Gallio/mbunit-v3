@@ -165,23 +165,31 @@ namespace Gallio.NCoverIntegration.Tools
 
         protected static bool GetNCoverInstallInfoFromRegistry(string versionPrefix, out string version, out string installDir)
         {
-            RegistryKey key = RegistryUtils.OpenSubKeyWithBitness(Registry.LocalMachine,
-                @"Software\Gnoso\NCover",
-                @"Software\Wow6432Node\Gnoso\NCover");
-            if (key != null)
-            {
-                version = (string) key.GetValue("CurrentVersion");
-                if (version != null && version.StartsWith(versionPrefix))
-                {
-                    installDir = (string) key.GetValue("InstallDir");
-                    if (installDir != null)
-                        return true;
-                }
-            }
+            string resultVersion = null;
+            string resultInstallDir = null;
 
-            version = null;
-            installDir = null;
-            return false;
+            bool resultSuccess = RegistryUtils.TryActionOnOpenSubKeyWithBitness(Registry.LocalMachine,
+                @"Software\Gnoso\NCover",
+                @"Software\Wow6432Node\Gnoso\NCover",
+                key =>
+                {
+                    string candidateVersion = key.GetValue("CurrentVersion") as string;
+                    if (candidateVersion != null && candidateVersion.StartsWith(versionPrefix))
+                    {
+                        resultInstallDir = key.GetValue("InstallDir") as string;
+                        if (resultInstallDir != null)
+                        {
+                            resultVersion = candidateVersion;
+                            return true;
+                        }
+                    }
+
+                    return false;
+                });
+
+            version = resultVersion;
+            installDir = resultInstallDir;
+            return resultSuccess;
         }
 
         protected static string RemoveTrailingBackslash(string path)
