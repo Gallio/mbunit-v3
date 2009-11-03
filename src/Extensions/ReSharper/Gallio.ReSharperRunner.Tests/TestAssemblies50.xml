@@ -92,7 +92,9 @@
     <Assembly Name="JetBrains.Platform.ReSharper.ProjectModel" Configurations="Common" MsiComponentGuid="{D1E8FF1C-3A03-4808-BF17-32DC525DA9C9}" />
     <Assembly Name="JetBrains.Platform.ReSharper.DocumentModel" Configurations="Common" MsiComponentGuid="{7CFCC25C-ADAB-470A-9E47-E568B09FE041}" />
     <Assembly Name="JetBrains.Platform.ReSharper.DocumentManager" Configurations="Common" MsiComponentGuid="{068ECD1B-A30E-42CA-923E-E850398A464D}" />
+    <!--
     <Assembly Name="JetBrains.Platform.ReSharper.IDE" Configurations="Common" MsiComponentGuid="{5519E2CB-2BC9-472C-B5B3-A65EB53869AC}" />
+    -->
     <Assembly Name="JetBrains.Platform.ReSharper.TextControl" Configurations="Common" MsiComponentGuid="{BED96E4F-8403-4C98-AA30-7077905F0DA8}" />
     <!--
     <Assembly Name="JetBrains.Platform.ReSharper.VSIntegration" Configurations="VisualStudio" MsiComponentGuid="{6C14B66F-DE6E-4156-A365-C34BD86E70F8}" />
@@ -319,15 +321,23 @@
     -->
     
     <!-- Executables. -->
+    <!--
     <Assembly Name="JetBrains.ReSharper.TaskRunner" Configurations="Common" MsiComponentGuid="{32D64BE5-D953-4E41-B6C9-CF34FFC0AB0A}" HasAppConfig="false" />
+    -->
     <!-- Note: JetBrains.ReSharper.TaskRunner is marked as having no AppConfig because it will be patched with BindingRedirections and installed as an installation-data-file, see InstallBindingRedirectionsConfigFileAttribute assembly attribute. -->
+    <!--
     <Assembly Name="JetBrains.ReSharper.ExternalProcessStorage.Process" Configurations="Common" MsiComponentGuid="{DF321D9E-1E02-4472-952A-6650088B65BD}" />
+    -->
 
     <!-- Tests to be run with NUnit but not to included in TestShell. -->
     <!-- IntegrationTestsFramework is a R# plugin that drives IntegrationTests. Has sample intests inside. Do not ever load normally.-->
+    <!--
     <Assembly Name="JetBrains.IntegrationTestsFramework" Configurations="_InTests" MsiComponentGuid="{FA8D87C4-8A8D-4BB2-AF39-C2F08AC7470A}" />
+    -->
     <!-- Bulk of the integration tests. -->
+    <!--
     <Assembly Name="JetBrains.ReSharper.VSIntegrationTests" Configurations="_InTests" MsiComponentGuid="{FC0E18F7-5D0B-4C58-B18C-D43B4557A9B3}" />
+    -->
 
     <!-- Supports writing tests for the plugins. -->
     <!--

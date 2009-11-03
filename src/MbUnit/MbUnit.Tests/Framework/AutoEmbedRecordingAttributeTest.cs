@@ -29,6 +29,7 @@ using MbUnit.TestResources;
 
 namespace MbUnit.Tests.Framework
 {
+    [Ignore("Can't run this on the build server.")]
     [TestFixture]
     [TestsOn(typeof(AutoEmbedRecordingAttribute))]
     [RunSample(typeof(RecordingSample))]
