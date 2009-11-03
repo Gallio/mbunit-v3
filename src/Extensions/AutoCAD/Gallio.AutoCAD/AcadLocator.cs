@@ -38,36 +38,39 @@ namespace Gallio.AutoCAD
 
         private static string SearchRegistry()
         {
-            using (RegistryKey regKey = RegistryUtils.OpenSubKeyWithBitness(Registry.CurrentUser, 
+            string result = null;
+
+            RegistryUtils.TryActionOnOpenSubKeyWithBitness(Registry.CurrentUser, 
                 @"Software\Autodesk\DWGCommon\shellex\Apps",
-                @"Software\Wow6432Node\Autodesk\DWGCommon\shellex\Apps"))
-            {
-                if (regKey == null)
-                    return null;
-
-                var subKeyName = regKey.GetValue(null) as string;
-                if (subKeyName == null)
-                    return null;
-
-                using (RegistryKey subKey = regKey.OpenSubKey(subKeyName))
+                @"Software\Wow6432Node\Autodesk\DWGCommon\shellex\Apps",
+                regKey =>
                 {
-                    if (subKey == null)
-                        return null;
+                    var subKeyName = regKey.GetValue(null) as string;
+                    if (subKeyName == null)
+                        return false;
 
-                    var launchCommand = subKey.GetValue("OpenLaunch") as string;
-                    if (launchCommand == null)
-                        return null;
+                    using (RegistryKey subKey = regKey.OpenSubKey(subKeyName))
+                    {
+                        if (subKey == null)
+                            return false;
 
-                    int acadIndex = launchCommand.IndexOf(ExeName, StringComparison.OrdinalIgnoreCase);
-                    if (acadIndex < 0)
-                        return null;
+                        var launchCommand = subKey.GetValue("OpenLaunch") as string;
+                        if (launchCommand == null)
+                            return false;
 
-                    int startIndex = (launchCommand[0] == '"') ? 1 : 0;
-                    int length = acadIndex + ExeName.Length - startIndex;
+                        int acadIndex = launchCommand.IndexOf(ExeName, StringComparison.OrdinalIgnoreCase);
+                        if (acadIndex < 0)
+                            return false;
 
-                    return launchCommand.Substring(startIndex, length);
-                }
-            }
+                        int startIndex = (launchCommand[0] == '"') ? 1 : 0;
+                        int length = acadIndex + ExeName.Length - startIndex;
+
+                        result = launchCommand.Substring(startIndex, length);
+                        return true;
+                    }
+                });
+
+            return result;
         }
     }
 }

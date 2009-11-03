@@ -29,14 +29,24 @@ namespace Gallio.Common.Platform
         private static readonly object Sentinel = new object();
 
         /// <summary>
-        /// Opens a registry subkey taking into account the bitness of the platform.
+        /// Opens a registry subkey taking into account the bitness of the platform
+        /// and attempts to perform an action.  If the action fails and running on x64,
+        /// then tries again with the alternate key.
         /// </summary>
+        /// <remarks>
+        /// The basic idea is that we try to use the contents of the 64bit
+        /// registry first then fallback on the alternate key to access the contents of
+        /// the 32bit registry when the process is 64bit.  This way 64bit processes
+        /// can preferentially use 64bit registry contents.
+        /// </remarks>
         /// <param name="key">The registry key.</param>
         /// <param name="subKeyName">The subkey name.</param>
         /// <param name="alternateSubKeyNameFor64Bit">The alternate subkey name to try on 64bit platforms if the other subkey cannot be found.  (The name should probably include "Wow6432Node".)</param>
-        /// <returns>The opened subkey, or null if it does not exist.</returns>
+        /// <param name="action">The action to perform on the sub key.  Should return true on success.</param>
+        /// <returns>True if the action succeeded.</returns>
         /// <seealso cref="RegistryKey.OpenSubKey(string)"/>
-        public static RegistryKey OpenSubKeyWithBitness(RegistryKey key, string subKeyName, string alternateSubKeyNameFor64Bit)
+        public static bool TryActionOnOpenSubKeyWithBitness(RegistryKey key, string subKeyName, string alternateSubKeyNameFor64Bit,
+            Func<RegistryKey, bool> action)
         {
             if (key == null)
                 throw new ArgumentNullException("key");
@@ -45,17 +55,33 @@ namespace Gallio.Common.Platform
             if (alternateSubKeyNameFor64Bit == null)
                 throw new ArgumentNullException("alternateSubKeyNameFor64Bit");
 
-            RegistryKey subKey = key.OpenSubKey(subKeyName);
+            using (RegistryKey subKey = key.OpenSubKey(subKeyName))
+            {
+                if (subKey != null && action(subKey))
+                    return true;
+            }
 
-            if (subKey == null && ProcessSupport.Is64BitProcess)
-                subKey = key.OpenSubKey(alternateSubKeyNameFor64Bit);
+            if (ProcessSupport.Is64BitProcess)
+            {
+                using (RegistryKey subKey = key.OpenSubKey(alternateSubKeyNameFor64Bit))
+                {
+                    if (subKey != null && action(subKey))
+                        return true;
+                }
+            }
 
-            return subKey;
+            return false;
         }
 
         /// <summary>
         /// Gets a registry value taking into account the bitness of the platform.
         /// </summary>
+        /// <remarks>
+        /// The basic idea is that we try to use the contents of the 64bit
+        /// registry first then fallback on the alternate key to access the contents of
+        /// the 32bit registry when the process is 64bit.  This way 64bit processes
+        /// can preferentially use 64bit registry contents.
+        /// </remarks>
         /// <param name="keyName">The key name.</param>
         /// <param name="alternateKeyNameFor64Bit">The alternate key name to try on 64bit platforms if the other key cannot be found.  (The name should probably include "Wow6432Node".)</param>
         /// <param name="valueName">The value name, or null to read the key's value.</param>

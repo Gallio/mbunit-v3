@@ -172,19 +172,18 @@ namespace Gallio.VisualStudio.Interop
 
         private static string GetVisualStudioInstallDir(string version)
         {
-            using (RegistryKey key = GetVisualStudioRegistryKey(version))
-            {
-                if (key != null)
-                    return (string) key.GetValue("InstallDir");
-                return null;
-            }
-        }
+            string result = null;
 
-        private static RegistryKey GetVisualStudioRegistryKey(string version)
-        {
-            return RegistryUtils.OpenSubKeyWithBitness(Registry.LocalMachine,
+            RegistryUtils.TryActionOnOpenSubKeyWithBitness(Registry.LocalMachine,
                 @"SOFTWARE\Microsoft\VisualStudio\" + version,
-                @"SOFTWARE\Wow6432Node\Microsoft\VisualStudio\" + version);
+                @"SOFTWARE\Wow6432Node\Microsoft\VisualStudio\" + version,
+                key =>
+                    {
+                        result = key.GetValue("InstallDir") as string;
+                        return result != null;
+                    });
+
+            return result;
         }
 
         private static object GetActiveObject(string progId)

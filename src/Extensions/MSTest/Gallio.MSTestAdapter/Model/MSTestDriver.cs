@@ -17,6 +17,9 @@ using System;
 using System.Reflection;
 using System.Collections.Generic;
 using Gallio.Model.Helpers;
+using Gallio.Runtime.Hosting;
+using Gallio.Model;
+using Gallio.Common.Reflection;
 
 namespace Gallio.MSTestAdapter.Model
 {
@@ -42,6 +45,18 @@ namespace Gallio.MSTestAdapter.Model
                 var topTest = test as MSTestAssembly;
                 return topTest != null ? MSTestController.CreateController(topTest.FrameworkVersion) : null;
             });
+        }
+
+        protected override void ConfigureHostSetup(HostSetup hostSetup, TestPackage testPackage,
+            string assemblyPath, AssemblyMetadata assemblyMetadata)
+        {
+            base.ConfigureHostSetup(hostSetup, testPackage, assemblyPath, assemblyMetadata);
+
+            if (hostSetup.ProcessorArchitecture == ProcessorArchitecture.Amd64
+                || hostSetup.ProcessorArchitecture == ProcessorArchitecture.IA64)
+                throw new ModelException("Cannot run MSTest tests compiled for 64bit because MSTest.exe throws exceptions when run without isolation as a 64bit process.");
+
+            hostSetup.ProcessorArchitecture = ProcessorArchitecture.X86;
         }
     }
 }
