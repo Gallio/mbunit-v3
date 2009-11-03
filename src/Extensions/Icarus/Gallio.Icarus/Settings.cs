@@ -32,7 +32,6 @@ namespace Gallio.Icarus
     {
         private string testRunnerFactory = StandardTestRunnerFactoryNames.IsolatedProcess;
         private bool restorePreviousSettings = true;
-        private readonly List<string> pluginDirectories = new List<string>();
         private readonly List<string> recentProjects = new List<string>();
         private bool showProgressDialogs = true;
         private string testStatusBarStyle = TestStatusBarStyles.Integration;
@@ -77,13 +76,6 @@ namespace Gallio.Icarus
         {
             get { return testStatusBarStyle; }
             set { testStatusBarStyle = value; }
-        }
-
-        [XmlArray("pluginDirectories", IsNullable = false)]
-        [XmlArrayItem("pluginDirectory", typeof(string), IsNullable = false)]
-        public List<string> PluginDirectories
-        {
-            get { return pluginDirectories; }
         }
 
         [XmlElement("passedColor")]
