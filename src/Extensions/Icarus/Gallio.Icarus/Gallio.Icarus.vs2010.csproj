@@ -141,6 +141,7 @@
     <Compile Include="Controllers\SourceCodeController.cs" />
     <Compile Include="Controllers\TestController.cs" />
     <Compile Include="Controllers\TestResultsController.cs" />
+    <Compile Include="ControlPanel\TestRunnerExtensionsPaneProvider.cs" />
     <Compile Include="ControlPanel\ProgressMonitoringPaneProvider.cs" />
     <Compile Include="ControlPanel\ProgressMonitoringPane.cs">
       <SubType>UserControl</SubType>
