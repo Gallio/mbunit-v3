@@ -77,6 +77,7 @@
     <Compile Include="Common\Concurrency\ProcessWrapper.cs" />
     <Compile Include="Common\Concurrency\WorkScheduler.cs" />
     <Compile Include="Common\Concurrency\TaskResult.cs" />
+    <Compile Include="Common\Comparison.cs" />
     <Compile Include="Common\IO\ConsoleRedirection.cs" />
     <Compile Include="Common\Markup\MarkupNormalizationUtils.cs" />
     <Compile Include="Common\Messaging\IMessageExchangeLink.cs" />
@@ -246,6 +247,9 @@
     <Compile Include="Framework\Assertions\AssertionFailureExplanation.cs" />
     <Compile Include="Framework\Assertions\NamespaceDoc.cs" />
     <Compile Include="Framework\Capture.cs" />
+    <Compile Include="Framework\CustomEqualityComparers.cs" />
+    <Compile Include="Framework\CustomComparers.cs" />
+    <Compile Include="Framework\Pattern\ExtensionPointPatternAttribute.cs" />
     <Compile Include="Framework\Pattern\FixtureMemberInvokerTargets.cs" />
     <Compile Include="Framework\Pattern\PatternTestFrameworkExtensionProvider.cs" />
     <Compile Include="Framework\Pattern\PatternTestExplorer.cs" />

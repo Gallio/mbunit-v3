@@ -164,6 +164,11 @@
     <Compile Include="Framework\Assert.Distinct.cs" />
     <Compile Include="Framework\AutoEmbedScreenshotAttribute.cs" />
     <Compile Include="Framework\AutoEmbedRecordingAttribute.cs" />
+    <Compile Include="Framework\AbstractCustomComparerAttribute.cs" />
+    <Compile Include="Framework\CustomEqualityComparerAttribute.cs" />
+    <Compile Include="Framework\CustomComparerAttribute.cs" />
+    <Compile Include="Framework\ICustomComparer.cs" />
+    <Compile Include="Framework\ICustomEqualityComparer.cs" />
     <Compile Include="Framework\XmlOptions.cs" />
     <Compile Include="Framework\PrincipalAttribute.cs" />
     <Compile Include="Framework\MultipleCultureAttribute.cs" />

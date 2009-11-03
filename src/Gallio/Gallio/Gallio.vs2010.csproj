@@ -69,6 +69,7 @@
   <ItemGroup>
     <Compile Include="Common\Accessor.cs" />
     <Compile Include="Common\Action.cs" />
+    <Compile Include="Common\Comparison.cs" />
     <Compile Include="Common\Concurrency\DegreeOfParallelismProvider.cs" />
     <Compile Include="Common\Concurrency\IProcess.cs" />
     <Compile Include="Common\Concurrency\IProcessCreator.cs" />
@@ -247,6 +248,9 @@
     <Compile Include="Framework\Assertions\AssertionFailureExplanation.cs" />
     <Compile Include="Framework\Assertions\NamespaceDoc.cs" />
     <Compile Include="Framework\Capture.cs" />
+    <Compile Include="Framework\CustomEqualityComparers.cs" />
+    <Compile Include="Framework\CustomComparers.cs" />
+    <Compile Include="Framework\Pattern\ExtensionPointPatternAttribute.cs" />
     <Compile Include="Framework\Pattern\FixtureMemberInvokerTargets.cs" />
     <Compile Include="Framework\Pattern\PatternTestFrameworkExtensionProvider.cs" />
     <Compile Include="Framework\Pattern\PatternTestExplorer.cs" />

@@ -34,9 +34,14 @@ namespace Gallio.Framework
     /// equality and relations.
     /// </para>
     /// <para>
-    /// At this time, there is no extensiblity mechanism provided for comparison semantics but
-    /// it would be nice to have one.  Feel free to add your comments to that.
-    /// <a href="http://code.google.com/p/mb-unit/issues/detail?id=304">issue.</a>
+    /// The comparison engine has extension points available:
+    /// <list type="bullet">Extend the object comparison by registring custom comparers through <see cref="CustomComparers"/>.</list>
+    /// <list type="bullet">Extend the object eqaulity by registring custom equality comparers through <see cref="CustomEqualityComparers"/>.</list>
+    /// </para>
+    /// <para>
+    /// Custom comparers defined through <see cref="CustomComparers"/> or <see cref="CustomEqualityComparers"/> 
+    /// have always a higher priority than any built-in comparer, including inner type comparers such as 
+    /// <see cref="IEquatable{T}"/> or <see cref="IComparable{T}"/>.
     /// </para>
     /// </remarks>
     [SystemInternal]
@@ -45,7 +50,7 @@ namespace Gallio.Framework
         private static readonly Type[] EqualsParams = new[] { typeof(object) };
         private static readonly Dictionary<Type, bool> SimpleEnumerableTypeCache = new Dictionary<Type, bool>();
         private static readonly Dictionary<Type, Pair<Type, Delegate>> PrimitiveSubtractionFuncs = new Dictionary<Type, Pair<Type, Delegate>>();
-        private static readonly Dictionary<Type, Func<object, object, bool>> SpecialEqualityFuncs = new Dictionary<Type,Func<object,object,bool>>();
+        private static readonly Dictionary<Type, EqualityComparison> SpecialEqualityFuncs = new Dictionary<Type, EqualityComparison>();
 
         static ComparisonSemantics()
         {
@@ -150,22 +155,25 @@ namespace Gallio.Framework
         {
             if (Object.ReferenceEquals(left, right))
                 return true;
-            if (left == null || right == null)
+            if (Object.ReferenceEquals(null, left) || 
+                Object.ReferenceEquals(null, right))
                 return false;
 
             Type leftType = left.GetType();
+
             if (leftType == right.GetType())
             {
-                Func<object, object, bool> equalityFunc = GetSpecialEqualityFunc(leftType);
-                if (equalityFunc != null)
+                EqualityComparison comparer = CustomEqualityComparers.Find(leftType) ?? GetSpecialEqualityFunc(leftType);
+
+                if (comparer != null)
                 {
-                    return equalityFunc(left, right);
+                    return comparer(left, right);
                 }
 
                 if (IsSimpleEnumerableType(leftType))
                 {
-                    IEnumerable leftEnumerable = (IEnumerable) left;
-                    IEnumerable rightEnumerable = (IEnumerable) right;
+                    var leftEnumerable = (IEnumerable)left;
+                    var rightEnumerable = (IEnumerable)right;
                     return CompareEnumerables(leftEnumerable, rightEnumerable, CompareEqualsShim) == 0;
                 }
             }
@@ -178,11 +186,11 @@ namespace Gallio.Framework
             return Equals(left, right) ? 0 : 1;
         }
 
-        private static Func<object, object, bool> GetSpecialEqualityFunc(Type type)
+        private static EqualityComparison GetSpecialEqualityFunc(Type type)
         {
-            Func<object, object, bool> func;
-            SpecialEqualityFuncs.TryGetValue(type, out func);
-            return func;
+            EqualityComparison comparer;
+            SpecialEqualityFuncs.TryGetValue(type, out comparer);
+            return comparer;
         }
 
         /// <summary>
@@ -220,17 +228,26 @@ namespace Gallio.Framework
         {
             if (Object.ReferenceEquals(left, right))
                 return 0;
-            if (left == null)
+            if (Object.ReferenceEquals(null, left))
                 return -Compare(right, left);
 
             Type leftType = left.GetType();
-            Type rightType = right != null ? right.GetType() : null;
+            Type rightType = Object.ReferenceEquals(null, right) ? null : right.GetType();
+
+            if (leftType == rightType)
+            {
+                Comparison comparer = CustomComparers.Find(leftType);
+
+                if (comparer != null)
+                    return comparer(left, right);
+            }
+
             if (IsSimpleEnumerableType(leftType))
             {
                 if (leftType == rightType)
                 {
-                    IEnumerable leftEnumerable = (IEnumerable)left;
-                    IEnumerable rightEnumerable = (IEnumerable)right;
+                    var leftEnumerable = (IEnumerable)left;
+                    var rightEnumerable = (IEnumerable)right;
                     return CompareEnumerables(leftEnumerable, rightEnumerable, Compare);
                 }
 
@@ -239,7 +256,7 @@ namespace Gallio.Framework
             }
 
             // Try generic comparisons.
-            IComparable<T> genericComparable = left as IComparable<T>;
+            var genericComparable = left as IComparable<T>;
             if (genericComparable != null)
                 return genericComparable.CompareTo(right);
 
@@ -248,7 +265,7 @@ namespace Gallio.Framework
                 return -genericComparable.CompareTo(left);
 
             // Try non-generic comparisons.
-            IComparable comparable = left as IComparable;
+            var comparable = left as IComparable;
             if (comparable != null)
                 return comparable.CompareTo(right);
 
@@ -331,8 +348,7 @@ namespace Gallio.Framework
             return equalsMethod.DeclaringType == typeof(object);
         }
 
-        private static int CompareEnumerables(IEnumerable leftEnumerable, IEnumerable rightEnumerable,
-            Comparison<object> comparison)
+        private static int CompareEnumerables(IEnumerable leftEnumerable, IEnumerable rightEnumerable, Comparison<object> comparison)
         {
             IEnumerator leftEnumerator = leftEnumerable.GetEnumerator();
             IEnumerator rightEnumerator = rightEnumerable.GetEnumerator();

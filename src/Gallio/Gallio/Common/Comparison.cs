@@ -20,25 +20,15 @@ using System.Text;
 namespace Gallio.Common
 {
     /// <summary>
-    /// Represents a method that determines whether two objects of the same type are equal.
+    /// Represents the method that compares two objects of the same type.
     /// </summary>
+	/// <remarks>
+	/// <para>
+	///	This is a non-generic version of <see cref="Comparison{T}"/>.
+	/// </para>
+	/// </remarks>
     /// <param name="x">The first object to compare.</param>
     /// <param name="y">The second object to compare.</param>
-    /// <returns>True if the object are equal; otherwise false.</returns>
-    public delegate bool EqualityComparison(object x, object y);
-
-    /// <summary>
-    /// Represents a strongly-typed method that determines whether two objects of the same type are equal.
-    /// </summary>
-    /// <remarks>
-    /// <para>
-    /// This delegate is for <see cref="IEquatable{T}"/>, what <see cref="Comparison{T}"/> is
-    /// for <see cref="IComparable{T}"/>.
-    /// </para>
-    /// </remarks>
-    /// <typeparam name="T">The type of the objects to compare.</typeparam>
-    /// <param name="x">The first object to compare.</param>
-    /// <param name="y">The second object to compare.</param>
-    /// <returns>True if the object are equal; otherwise false.</returns>
-    public delegate bool EqualityComparison<T>(T x, T y);
+    /// <returns>a negative value if x is less than y, zero if x equals y, or a positive value if x is greater than y.</returns>
+    public delegate int Comparison(object x, object y);
 }

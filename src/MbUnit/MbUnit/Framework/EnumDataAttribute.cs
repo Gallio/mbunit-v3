@@ -53,10 +53,16 @@ namespace MbUnit.Framework
     /// public class MyTestFixture
     /// {
     ///     [Test]
-    ///     public void MyTestMethod([EnumData(typeof(Planet))] Planet planet)
+    ///     public void Test([EnumData(typeof(Planet))] Planet planet)
     ///     {
-    ///         // This test will run 8 times with all possible values of
+    ///         // This test will run 8 times with all the possible values of
     ///         // the specified enumeration type.
+    ///     }
+    /// 
+    ///     [Test]
+    ///     public void TestWithRestrictions([EnumData(typeof(Planet), Exclude = Planet.Earth)] Planet planet)
+    ///     {
+    ///         // This test will run only 7 times.
     ///     }
     /// }]]></code>
     /// </example>

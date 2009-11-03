@@ -197,6 +197,8 @@
     <Compile Include="Framework\AssertTest_Xml_Exists.cs" />
     <Compile Include="Framework\AssertTest_Xml_IsUnique.cs" />
     <Compile Include="Framework\AutoEmbedRecordingAttributeTest.cs" />
+    <Compile Include="Framework\CustomComparerAttributeTest.cs" />
+    <Compile Include="Framework\CustomEqualityComparerAttributeTest.cs" />
     <Compile Include="Framework\XmlOptionsTest.cs" />
     <Compile Include="Integration\ConstructorFixtureInitializerAndDisposeTest.cs" />
     <Compile Include="Integration\FixtureSetUpAndFixtureTearDownTest.cs" />

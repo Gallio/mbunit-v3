@@ -322,6 +322,34 @@ namespace Gallio.Tests.Framework
             Assert.Throws<InvalidOperationException>(() => ComparisonSemantics.GetSubtractionFunc<DateTime, Double>());
         }
 
+        [Test]
+        [Row(123, 456, false)]
+        [Row(123, 123, true)]
+        [Row(456, 123, false)]
+        public void Equals_with_a_custom_comparer(int value1, int value2, bool expectedEqual)
+        {
+            var a = new NonComparableStub(value1);
+            var b = new NonComparableStub(value2);
+            CustomEqualityComparers.Register<NonComparableStub>((x, y) => x.Value == y.Value);
+            bool actualEqual = ComparisonSemantics.Equals(a, b);
+            Assert.AreEqual(expectedEqual, actualEqual);
+            CustomEqualityComparers.Unregister<NonComparableStub>();
+        }
+
+        [Test]
+        [Row(123, 456, -1)]
+        [Row(123, 123, 0)]
+        [Row(456, 123, 1)]
+        public void Compares_with_a_custom_comparer(int value1, int value2, int expectedSign)
+        {
+            var a = new NonComparableStub(value1);
+            var b = new NonComparableStub(value2);
+            CustomComparers.Register<NonComparableStub>((x, y) => x.Value.CompareTo(y.Value));
+            int actualSign = ComparisonSemantics.Compare(a, b);
+            Assert.AreEqual(expectedSign, actualSign, (x, y) => Math.Sign(x) == Math.Sign(y));
+            CustomComparers.Unregister<NonComparableStub>();
+        }
+
         private sealed class ComparableStub : IComparable
         {
             private readonly int value;
@@ -336,7 +364,7 @@ namespace Gallio.Tests.Framework
                 if (obj == null)
                     return 1;
 
-                ComparableStub other = obj as ComparableStub;
+                var other = obj as ComparableStub;
                 if (other != null)
                     return value.CompareTo(other.value);
 
@@ -380,12 +408,31 @@ namespace Gallio.Tests.Framework
                 if (obj == null)
                     return 1;
 
-                NonReflexiveGenericComparableStub other = obj as NonReflexiveGenericComparableStub;
+                var other = obj as NonReflexiveGenericComparableStub;
                 if (other != null)
                     return value.CompareTo(other.value);
 
                 return -1;
             }
         }
+
+        internal class NonComparableStub
+        {
+            private readonly int value;
+
+            public int Value
+            {
+                get
+                {
+                    return value;
+                }
+            }
+
+            public NonComparableStub(int value)
+            {
+                this.value = value;
+            }
+        }
+
     }
 }
