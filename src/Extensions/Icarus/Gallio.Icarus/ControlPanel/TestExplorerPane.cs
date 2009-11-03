@@ -56,6 +56,8 @@ namespace Gallio.Icarus.ControlPanel
             
             optionsController.TestRunnerFactory.Value = testRunnerFactories.Text;
 
+            optionsController.Save();
+
             base.ApplyPendingSettingsChanges(elevationContext, progressMonitor);
         }
 

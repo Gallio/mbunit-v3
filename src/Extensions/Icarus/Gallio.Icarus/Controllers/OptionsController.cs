@@ -205,6 +205,8 @@ namespace Gallio.Icarus.Controllers
                 settings.TreeViewCategories = new List<string>(SelectedTreeViewCategories.Value);
             
             UnselectedTreeViewCategories = new Observable<IList<string>>();
+
+            Load();
         }
 
         public void Load()

@@ -1,4 +1,4 @@
-﻿namespace Gallio.Icarus.Options
+﻿namespace Gallio.Icarus.ControlPanel
 {
     internal partial class TestRunnerExtensionsPane
     {
@@ -39,14 +39,13 @@
             this.groupBoxPluginDirectories = new System.Windows.Forms.GroupBox();
             this.groupBoxPluginDirectories.SuspendLayout();
             this.SuspendLayout();
-            this.Controls.Add(this.groupBoxPluginDirectories);
             // 
             // removeExtensionButton
             // 
             this.removeExtensionButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.removeExtensionButton.Enabled = false;
             this.removeExtensionButton.Image = global::Gallio.Icarus.Properties.Resources.cross;
-            this.removeExtensionButton.Location = new System.Drawing.Point(408, 74);
+            this.removeExtensionButton.Location = new System.Drawing.Point(414, 74);
             this.removeExtensionButton.Name = "removeExtensionButton";
             this.removeExtensionButton.Size = new System.Drawing.Size(30, 28);
             this.removeExtensionButton.TabIndex = 11;
@@ -70,7 +69,7 @@
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.newExtensionTextBox.Location = new System.Drawing.Point(6, 19);
             this.newExtensionTextBox.Name = "newExtensionTextBox";
-            this.newExtensionTextBox.Size = new System.Drawing.Size(398, 20);
+            this.newExtensionTextBox.Size = new System.Drawing.Size(404, 20);
             this.newExtensionTextBox.TabIndex = 7;
             // 
             // testRunnerExtensionsListBox
@@ -81,29 +80,29 @@
             this.testRunnerExtensionsListBox.FormattingEnabled = true;
             this.testRunnerExtensionsListBox.Location = new System.Drawing.Point(6, 74);
             this.testRunnerExtensionsListBox.Name = "testRunnerExtensionsListBox";
-            this.testRunnerExtensionsListBox.Size = new System.Drawing.Size(396, 160);
+            this.testRunnerExtensionsListBox.Size = new System.Drawing.Size(402, 264);
             this.testRunnerExtensionsListBox.TabIndex = 9;
             this.testRunnerExtensionsListBox.SelectedIndexChanged += new System.EventHandler(this.testRunnerExtensionsListBox_SelectedIndexChanged);
             // 
             // groupBoxPluginDirectories
             // 
-            this.groupBoxPluginDirectories.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBoxPluginDirectories.Controls.Add(this.newExtensionTextBox);
             this.groupBoxPluginDirectories.Controls.Add(this.removeExtensionButton);
             this.groupBoxPluginDirectories.Controls.Add(this.testRunnerExtensionsListBox);
             this.groupBoxPluginDirectories.Controls.Add(this.addExtensionButton);
-            this.groupBoxPluginDirectories.Location = new System.Drawing.Point(3, 3);
+            this.groupBoxPluginDirectories.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.groupBoxPluginDirectories.Location = new System.Drawing.Point(0, 0);
             this.groupBoxPluginDirectories.Name = "groupBoxPluginDirectories";
-            this.groupBoxPluginDirectories.Size = new System.Drawing.Size(444, 255);
+            this.groupBoxPluginDirectories.Size = new System.Drawing.Size(450, 341);
             this.groupBoxPluginDirectories.TabIndex = 12;
             this.groupBoxPluginDirectories.TabStop = false;
             this.groupBoxPluginDirectories.Text = "Test Runner Extensions";
             // 
-            // TestRunnerExtensionOptions
+            // TestRunnerExtensionsPane
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.Name = "TestRunnerExtensionOptions";
+            this.Controls.Add(this.groupBoxPluginDirectories);
+            this.Name = "TestRunnerExtensionsPane";
             this.Size = new System.Drawing.Size(450, 341);
             this.groupBoxPluginDirectories.ResumeLayout(false);
             this.groupBoxPluginDirectories.PerformLayout();

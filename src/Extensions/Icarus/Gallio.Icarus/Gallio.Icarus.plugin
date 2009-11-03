@@ -168,7 +168,17 @@
         <icon>plugin://Gallio.Icarus/Resources/Gallio.Icarus.ico</icon>
       </traits>
     </component>
-    
+
+    <component componentId="Gallio.Icarus.ControlPanel.TestRunnerExtensionsPaneProvider" 
+               serviceId="Gallio.UI.PreferencePaneProvider" 
+               componentType="Gallio.Icarus.ControlPanel.TestRunnerExtensionsPaneProvider, Gallio.Icarus">
+      <traits>
+        <path>Icarus/Runner/Test Runner Extensions</path>
+        <order>1</order>
+        <icon>plugin://Gallio.Icarus/Resources/Gallio.Icarus.ico</icon>
+      </traits>
+    </component>
+
     <!-- Controllers -->
 
     <component componentId="Gallio.Icarus.ProgressController" 

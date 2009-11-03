@@ -13,7 +13,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.Windows.Forms;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.UI.ControlPanel.Preferences;
 using Gallio.Runtime.Security;
@@ -37,6 +36,10 @@ namespace Gallio.Icarus.ControlPanel
         public override void ApplyPendingSettingsChanges(IElevationContext elevationContext, IProgressMonitor progressMonitor)
         {
             optionsController.ShowProgressDialogs = showProgressDialogs.Checked;
+
+            optionsController.Save();
+
+            base.ApplyPendingSettingsChanges(elevationContext, progressMonitor);
         }
 
         private void showProgressDialogs_CheckedChanged(object sender, System.EventArgs e)

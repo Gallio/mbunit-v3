@@ -34,7 +34,7 @@ namespace Gallio.Icarus.ControlPanel
             InitializeComponent();
 
             this.optionsController = optionsController;
-
+            
             selectedCategories = new BindingList<string>(optionsController.SelectedTreeViewCategories.Value);
             unselectedCategories = new BindingList<string>(optionsController.UnselectedTreeViewCategories.Value);
 
@@ -64,6 +64,7 @@ namespace Gallio.Icarus.ControlPanel
             IProgressMonitor progressMonitor)
         {
             optionsController.SelectedTreeViewCategories.Value = selectedCategories;
+            optionsController.Save();
 
             base.ApplyPendingSettingsChanges(elevationContext, progressMonitor);
         }

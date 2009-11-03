@@ -21,9 +21,7 @@ using Gallio.Common.IO;
 using Gallio.Common.Policies;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Reports;
-using Gallio.Icarus.Services;
 using Gallio.Icarus.Services.Interfaces;
-using Gallio.Icarus.Utilities;
 using Gallio.Runner.Reports.Schema;
 using Gallio.Runtime.ProgressMonitoring;
 
@@ -33,8 +31,6 @@ namespace Gallio.Icarus.Controllers
     {
         private readonly IReportService reportService;
         private readonly IFileSystem fileSystem;
-
-        private const string reportNameFormat = "test-report-{0}-{1}";
 
         public ReportController(IReportService reportService, IFileSystem fileSystem)
         {

@@ -63,6 +63,10 @@ namespace Gallio.Icarus.ControlPanel
             optionsController.SkippedColor = skippedColor.BackColor;
 
             optionsController.TestStatusBarStyle = testProgressBarStyle.Text;
+
+            optionsController.Save();
+
+            base.ApplyPendingSettingsChanges(elevationContext, progressMonitor);
         }
 
         private void testProgressBarStyle_SelectedIndexChanged(object sender, EventArgs e)

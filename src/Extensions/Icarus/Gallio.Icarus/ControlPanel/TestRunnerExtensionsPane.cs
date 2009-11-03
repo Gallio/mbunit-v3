@@ -14,18 +14,19 @@
 // limitations under the License.
 
 using System;
-using System.Windows.Forms;
+using System.Collections.Generic;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Runner;
 using Gallio.Runner.Extensions;
 using Gallio.UI.ControlPanel.Preferences;
 using Gallio.UI.ErrorReporting;
 
-namespace Gallio.Icarus.Options
+namespace Gallio.Icarus.ControlPanel
 {
     internal partial class TestRunnerExtensionsPane : PreferencePane
     {
         private readonly IOptionsController optionsController;
+        private readonly IList<string> testRunnerExtensions;
 
         public TestRunnerExtensionsPane(IOptionsController optionsController)
         {
@@ -36,13 +37,16 @@ namespace Gallio.Icarus.Options
 
             InitializeComponent();
 
-            foreach (var testRunnerExtension in optionsController.TestRunnerExtensions)
+            testRunnerExtensions = new List<string>(optionsController.TestRunnerExtensions);
+            foreach (var testRunnerExtension in testRunnerExtensions)
                 testRunnerExtensionsListBox.Items.Add(testRunnerExtension);
         }
 
         private void removeExtensionButton_Click(object sender, EventArgs e)
         {
-            optionsController.TestRunnerExtensions.Remove((string) testRunnerExtensionsListBox.SelectedItem);
+            testRunnerExtensions.Remove((string)testRunnerExtensionsListBox.SelectedItem);
+            PendingSettingsChanges = true;
+            testRunnerExtensionsListBox.Items.Remove(testRunnerExtensionsListBox.SelectedItem);
         }
 
         private void addExtensionButton_Click(object sender, EventArgs e)
@@ -53,17 +57,33 @@ namespace Gallio.Icarus.Options
             }
             catch (RunnerException ex)
             {
-                ErrorDialog.Show(this, "Add Extension", "Could not instantiate an extension from the given specification.  The extension has not been added.", ex.ToString());
+                ErrorDialog.Show(this, "Add Extension", 
+                    "Could not instantiate an extension from the given specification. The extension has not been added.", 
+                    ex.ToString());
                 return;
             }
 
-            optionsController.TestRunnerExtensions.Add(newExtensionTextBox.Text);
+            testRunnerExtensions.Add(newExtensionTextBox.Text);
+            PendingSettingsChanges = true;
+            testRunnerExtensionsListBox.Items.Add(newExtensionTextBox.Text);
             newExtensionTextBox.Text = string.Empty;
         }
 
         private void testRunnerExtensionsListBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             removeExtensionButton.Enabled = (testRunnerExtensionsListBox.SelectedItems.Count > 0);
+        }
+
+        public override void ApplyPendingSettingsChanges(Runtime.Security.IElevationContext elevationContext, 
+            Runtime.ProgressMonitoring.IProgressMonitor progressMonitor)
+        {
+            base.ApplyPendingSettingsChanges(elevationContext, progressMonitor);
+
+            optionsController.TestRunnerExtensions.Clear();
+            foreach (var testRunnerExtension in testRunnerExtensions)
+                optionsController.TestRunnerExtensions.Add(testRunnerExtension);
+
+            optionsController.Save();
         }
     }
 }

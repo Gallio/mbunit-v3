@@ -168,7 +168,8 @@ namespace Gallio.Icarus.Tests.Controllers
 
             optionsController.Cancel();
 
-            xmlSerializer.AssertWasCalled(xs => xs.LoadFromXml<Settings>(Arg<string>.Is.Anything));
+            xmlSerializer.AssertWasCalled(xs => xs.LoadFromXml<Settings>(Arg<string>.Is.Anything), 
+                o => o.Repeat.Twice());
         }
 
         [Test]

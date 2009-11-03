@@ -14,31 +14,22 @@
 // limitations under the License.
 
 using Gallio.Icarus.Controllers.Interfaces;
-using Gallio.Runtime.ProgressMonitoring;
-using Gallio.Runtime.Security;
 using Gallio.UI.ControlPanel.Preferences;
 
 namespace Gallio.Icarus.ControlPanel
 {
-    internal partial class StartupPane : PreferencePane
+    public class TestRunnerExtensionsPaneProvider : IPreferencePaneProvider
     {
         private readonly IOptionsController optionsController;
 
-        public StartupPane(IOptionsController optionsController)
+        public TestRunnerExtensionsPaneProvider(IOptionsController optionsController)
         {
-            InitializeComponent();
-
             this.optionsController = optionsController;
-
-            restorePreviousSession.Checked = optionsController.RestorePreviousSettings;
         }
 
-        public override void ApplyPendingSettingsChanges(IElevationContext elevationContext, IProgressMonitor progressMonitor)
+        public PreferencePane CreatePreferencePane()
         {
-            base.ApplyPendingSettingsChanges(elevationContext, progressMonitor);
-
-            optionsController.RestorePreviousSettings = restorePreviousSession.Checked;
-            optionsController.Save();
+            return new TestRunnerExtensionsPane(optionsController);
         }
     }
 }

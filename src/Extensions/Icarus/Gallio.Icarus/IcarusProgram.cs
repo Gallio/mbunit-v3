@@ -76,10 +76,11 @@ namespace Gallio.Icarus
             using (RuntimeBootstrap.Initialize(runtimeSetup, runtimeLogger))
             {
                 var optionsController = RuntimeAccessor.ServiceLocator.Resolve<IOptionsController>();
+                
                 // create & initialize a test runner whenever the test runner factory is changed
                 optionsController.TestRunnerFactory.PropertyChanged += (s, e) => 
                     ConfigureTestRunnerFactory(optionsController.TestRunnerFactory);
-                optionsController.Load();
+                
                 ConfigureTestRunnerFactory(optionsController.TestRunnerFactory);
                 
                 var runtimeLogController = RuntimeAccessor.ServiceLocator.Resolve<IRuntimeLogController>();
