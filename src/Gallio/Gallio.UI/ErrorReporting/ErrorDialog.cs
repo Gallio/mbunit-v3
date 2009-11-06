@@ -33,7 +33,6 @@ namespace Gallio.UI.ErrorReporting
             ErrorTitle = "Error";
             ErrorMessage = "";
             ErrorDetails = "";
-            ErrorDetailsVisible = false;
         }
 
         /// <summary>
@@ -121,9 +120,13 @@ namespace Gallio.UI.ErrorReporting
             {
                 errorDetailsTextBox.Visible = value;
                 if (value)
+                {
                     showOrHideDetailsButton.Text = "<< Details";
+                }
                 else
+                {
                     showOrHideDetailsButton.Text = "Details >>";
+                }
             }
         }
 
@@ -135,6 +138,11 @@ namespace Gallio.UI.ErrorReporting
         private void showOrHideDetailsButton_Click(object sender, EventArgs e)
         {
             ErrorDetailsVisible = !ErrorDetailsVisible;
+        }
+
+        private void ErrorDialog_Load(object sender, EventArgs e)
+        {
+            ErrorDetailsVisible = false;
         }
     }
 }

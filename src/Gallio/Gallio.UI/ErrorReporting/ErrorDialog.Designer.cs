@@ -128,7 +128,7 @@
             this.outerTableLayoutPanel.SetColumnSpan(this.errorDetailsTextBox, 2);
             this.errorDetailsTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
             this.errorDetailsTextBox.Location = new System.Drawing.Point(3, 103);
-            this.errorDetailsTextBox.MinimumSize = new System.Drawing.Size(0, 150);
+            this.errorDetailsTextBox.MinimumSize = new System.Drawing.Size(4, 150);
             this.errorDetailsTextBox.Multiline = true;
             this.errorDetailsTextBox.Name = "errorDetailsTextBox";
             this.errorDetailsTextBox.ReadOnly = true;
@@ -150,13 +150,14 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.MinimumSize = new System.Drawing.Size(400, 0);
+            this.MinimumSize = new System.Drawing.Size(400, 25);
             this.Name = "ErrorDialog";
             this.Padding = new System.Windows.Forms.Padding(8);
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Error Title";
+            this.Load += new System.EventHandler(this.ErrorDialog_Load);
             this.outerTableLayoutPanel.ResumeLayout(false);
             this.outerTableLayoutPanel.PerformLayout();
             this.buttonFlowLayoutPanel.ResumeLayout(false);
