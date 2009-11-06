@@ -13,7 +13,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
 using System.Collections.Generic;
 using Gallio.Runner.Reports.Schema;
 using Gallio.Runtime.ProgressMonitoring;
@@ -26,7 +25,6 @@ namespace Gallio.Icarus.Controllers.Interfaces
         IList<string> ReportTypes { get; }
 
         string ConvertSavedReport(string fileName, string format, IProgressMonitor progressMonitor);
-        void DeleteReport(string fileName, IProgressMonitor progressMonitor);
         void GenerateReport(Report report, ReportOptions reportOptions, IProgressMonitor progressMonitor);
         string ShowReport(Report report, string reportType, IProgressMonitor progressMonitor);
     }

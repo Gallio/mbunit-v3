@@ -13,53 +13,40 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
 using Gallio.Common.IO;
 using Gallio.Icarus.Commands;
+using Gallio.Icarus.Models;
 using Gallio.Icarus.Tests.Utilities;
+using Gallio.Runner.Projects;
 using MbUnit.Framework;
 using Rhino.Mocks;
 
 namespace Gallio.Icarus.Tests.Commands
 {
-    [Category("Commands"), TestsOn(typeof(DeleteReportCommand))]
-    internal class DeleteReportCommandTest
+    [Category("Commands"), TestsOn(typeof(DeleteAllReportsCommand))]
+    internal class DeleteAllReportsCommandTest
     {
         private IFileSystem fileSystem;
-        private DeleteReportCommand deleteReportCommand;
+        private DeleteAllReportsCommand deleteAllReportsCommand;
+        private IProjectTreeModel projectTreeModel;
 
         [SetUp]
         public void EstablishContext()
         {
+            projectTreeModel = MockRepository.GenerateStub<IProjectTreeModel>();
             fileSystem = MockRepository.GenerateStub<IFileSystem>();
-            deleteReportCommand = new DeleteReportCommand(fileSystem);
+            deleteAllReportsCommand = new DeleteAllReportsCommand(projectTreeModel, fileSystem);
         }
 
         [Test]
-        public void FileName_should_return_correct_value()
+        public void Execute_should_delete_report_directory()
         {
-            const string fileName = "fileName";
+            const string reportDirectory = "dklfjdsfh";
+            projectTreeModel.TestProject = new TestProject { ReportDirectory = reportDirectory };
 
-            deleteReportCommand.FileName = fileName;
+            deleteAllReportsCommand.Execute(MockProgressMonitor.Instance);
 
-            Assert.AreEqual(fileName, deleteReportCommand.FileName);
-        }
-
-        [Test]
-        public void Exception_should_be_thrown_if_filename_is_not_set()
-        {
-            Assert.Throws<Exception>(() => deleteReportCommand.Execute(MockProgressMonitor.Instance));
-        }
-
-        [Test]
-        public void Execute_should_delete_file()
-        {
-            const string fileName = "fileName";
-            deleteReportCommand.FileName = fileName;
-            
-            deleteReportCommand.Execute(MockProgressMonitor.Instance);
-
-            fileSystem.AssertWasCalled(fs => fs.DeleteFile(fileName));
+            fileSystem.AssertWasCalled(fs => fs.DeleteDirectory(reportDirectory, true));
         }
     }
 }

@@ -153,7 +153,7 @@ namespace Gallio.Icarus
 
         private void DeleteReport(ReportNode reportNode)
         {
-            var deleteReportCommand = new DeleteReportCommand(reportController)
+            var deleteReportCommand = new DeleteReportCommand(new FileSystem())
             {
                 FileName = reportNode.FileName
             };

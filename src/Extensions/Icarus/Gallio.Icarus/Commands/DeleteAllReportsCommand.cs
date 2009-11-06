@@ -13,34 +13,30 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
 using Gallio.Common.IO;
+using Gallio.Icarus.Models;
 using Gallio.Runtime.ProgressMonitoring;
 using Gallio.UI.ProgressMonitoring;
 
 namespace Gallio.Icarus.Commands
 {
-    internal class DeleteReportCommand : ICommand
+    internal class DeleteAllReportsCommand : ICommand
     {
+        private readonly IProjectTreeModel projectTreeModel;
         private readonly IFileSystem fileSystem;
 
-        public string FileName
+        public DeleteAllReportsCommand(IProjectTreeModel projectTreeModel, 
+            IFileSystem fileSystem)
         {
-            get; set;
-        }
-
-        public DeleteReportCommand(IFileSystem fileSystem)
-        {
+            this.projectTreeModel = projectTreeModel;
             this.fileSystem = fileSystem;
         }
 
         public void Execute(IProgressMonitor progressMonitor)
         {
-            if (string.IsNullOrEmpty(FileName))
-                throw new Exception("No filename provided to delete.");
-
             using (progressMonitor.BeginTask("Deleting report", 100))
-                fileSystem.DeleteFile(FileName);
+                fileSystem.DeleteDirectory(projectTreeModel.TestProject.ReportDirectory, 
+                    true);
         }
     }
 }

@@ -17,7 +17,6 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using Gallio.Common.IO;
 using Gallio.Common.Policies;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Reports;
@@ -30,23 +29,15 @@ namespace Gallio.Icarus.Controllers
     internal class ReportController : IReportController
     {
         private readonly IReportService reportService;
-        private readonly IFileSystem fileSystem;
 
-        public ReportController(IReportService reportService, IFileSystem fileSystem)
+        public ReportController(IReportService reportService)
         {
             this.reportService = reportService;
-            this.fileSystem = fileSystem;
         }
 
         public IList<string> ReportTypes
         {
             get { return reportService.ReportTypes; }
-        }
-
-        public void DeleteReport(string fileName, IProgressMonitor progressMonitor)
-        {
-            using (progressMonitor.BeginTask("Deleting report", 100))
-                fileSystem.DeleteFile(fileName);
         }
 
         public void GenerateReport(Report report, ReportOptions reportOptions, IProgressMonitor progressMonitor)
