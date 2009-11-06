@@ -173,7 +173,8 @@ namespace Gallio.Icarus
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
-            if (keyData == Keys.Delete && (Node)projectTree.SelectedNode.Tag is ReportNode)
+            if (keyData == Keys.Delete && projectTree.SelectedNode != null 
+                && (Node)projectTree.SelectedNode.Tag is ReportNode)
             {
                 DeleteReport();
             }
