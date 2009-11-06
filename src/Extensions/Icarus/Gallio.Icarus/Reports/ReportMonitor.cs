@@ -13,8 +13,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.IO;
 using System;
+using System.IO;
 using System.Text.RegularExpressions;
 using Gallio.Common.Policies;
 
@@ -22,45 +22,65 @@ namespace Gallio.Icarus.Reports
 {
     internal class ReportMonitor
     {
-        private FileSystemWatcher reportDirectoryWatcher;
-
-        public event EventHandler ReportDirectoryChanged;
+        public event EventHandler ReportDirectoryCreated;
+        public event EventHandler ReportDirectoryDeleted;
+        
+        public event EventHandler<ReportCreatedEventArgs> ReportCreated;
+        public event EventHandler<ReportDeletedEventArgs> ReportDeleted;
+        public event EventHandler<ReportRenamedEventArgs> ReportRenamed;
 
         public ReportMonitor(string reportDirectory, string reportNameFormat)
         {
-            if (Directory.Exists(reportDirectory))
-            {
-                SetupDirectoryWatcher(reportDirectory, reportNameFormat);
-            }
-            else
-            {
-                string parentDirectory = Path.GetDirectoryName(reportDirectory);
-                if (Directory.Exists(parentDirectory))
-                {
-                    reportDirectoryWatcher = new FileSystemWatcher
-                    {
-                        NotifyFilter = NotifyFilters.DirectoryName,
-                        Path = parentDirectory,
-                        EnableRaisingEvents = true
-                    };
-                    reportDirectoryWatcher.Created += (sender, e) =>
-                    {
-                        if (e.FullPath != reportDirectory) 
-                            return;
+            string parentDirectory = Path.GetDirectoryName(reportDirectory);
 
-                        reportDirectoryWatcher.EnableRaisingEvents = false;
-                        SetupDirectoryWatcher(reportDirectory, reportNameFormat);
-                        OnReportDirectoryChanged();
-                    };
-                }
-            }
+            if (!Directory.Exists(parentDirectory)) 
+                return;
+
+            SetupParentDirectoryWatcher(reportDirectory, parentDirectory, reportNameFormat);
+
+            if (Directory.Exists(reportDirectory))
+                SetupDirectoryWatcher(reportDirectory, reportNameFormat);
+        }
+
+        private void SetupParentDirectoryWatcher(string reportDirectory, string parentDirectory, string reportNameFormat)
+        {
+            var reportDirectoryWatcher = new FileSystemWatcher
+            {
+                NotifyFilter = NotifyFilters.DirectoryName,
+                Path = parentDirectory,
+                EnableRaisingEvents = true
+            };
+
+            reportDirectoryWatcher.Created += (s, e) =>
+            {
+                if (e.FullPath != reportDirectory)
+                    return;
+
+                EventHandlerPolicy.SafeInvoke(ReportDirectoryCreated, this, EventArgs.Empty);
+                SetupDirectoryWatcher(reportDirectory, reportNameFormat);
+            };
+
+            reportDirectoryWatcher.Deleted += (s, e) =>
+            {
+                if (e.FullPath == reportDirectory)
+                    EventHandlerPolicy.SafeInvoke(ReportDirectoryDeleted, this, EventArgs.Empty);
+            };
+
+            reportDirectoryWatcher.Renamed += (s, e) =>
+            {
+                if (e.OldFullPath == reportDirectory)
+                    EventHandlerPolicy.SafeInvoke(ReportDirectoryDeleted, this, EventArgs.Empty);
+                else if (e.FullPath == reportDirectory)
+                    EventHandlerPolicy.SafeInvoke(ReportDirectoryCreated, this, EventArgs.Empty);
+            };
         }
 
         private void SetupDirectoryWatcher(string reportDirectory, string reportNameFormat)
         {
             var regex = new Regex("{.}");
             reportNameFormat = regex.Replace(reportNameFormat, "*") + "*.xml";
-            reportDirectoryWatcher = new FileSystemWatcher
+            
+            var reportDirectoryWatcher = new FileSystemWatcher
             {
                 Filter = reportNameFormat,
                 NotifyFilter = NotifyFilters.FileName,
@@ -68,15 +88,55 @@ namespace Gallio.Icarus.Reports
                 EnableRaisingEvents = true
             };
 
-            reportDirectoryWatcher.Changed += (sender, e) => OnReportDirectoryChanged();
-            reportDirectoryWatcher.Created += (sender, e) => OnReportDirectoryChanged();
-            reportDirectoryWatcher.Deleted += (sender, e) => OnReportDirectoryChanged();
-            reportDirectoryWatcher.Renamed += (sender, e) => OnReportDirectoryChanged();
+            reportDirectoryWatcher.Created += (s, e) => EventHandlerPolicy.SafeInvoke(ReportCreated, 
+                this, new ReportCreatedEventArgs(e.FullPath));
+
+            reportDirectoryWatcher.Deleted += (s, e) => EventHandlerPolicy.SafeInvoke(ReportDeleted,
+                this, new ReportDeletedEventArgs(e.FullPath));
+
+            reportDirectoryWatcher.Renamed += (s, e) =>
+            {
+                // if the new filename is a valid report format, then rename the node
+                if (new Regex(reportNameFormat.Replace("*", ".*")).Match(e.FullPath).Success)
+                    EventHandlerPolicy.SafeInvoke(ReportRenamed, this, 
+                        new ReportRenamedEventArgs(e.OldFullPath, e.FullPath));
+                else
+                    // otherwise delete it
+                    EventHandlerPolicy.SafeInvoke(ReportDeleted, this, 
+                        new ReportDeletedEventArgs(e.OldFullPath));
+            };
         }
 
-        private void OnReportDirectoryChanged()
+        internal class ReportCreatedEventArgs : EventArgs
         {
-            EventHandlerPolicy.SafeInvoke(ReportDirectoryChanged, this, EventArgs.Empty);
+            public string FileName { get; private set; }
+
+            public ReportCreatedEventArgs(string fileName)
+            {
+                FileName = fileName;
+            }
+        }
+
+        internal class ReportDeletedEventArgs : EventArgs
+        {
+            public string FileName { get; private set; }
+
+            public ReportDeletedEventArgs(string fileName)
+            {
+                FileName = fileName;
+            }
+        }
+
+        internal class ReportRenamedEventArgs : EventArgs
+        {
+            public string OldFileName { get; private set; }
+            public string NewFileName { get; private set; }
+
+            public ReportRenamedEventArgs(string oldFileName, string newFileName)
+            {
+                OldFileName = oldFileName;
+                NewFileName = newFileName;
+            }
         }
     }
 }

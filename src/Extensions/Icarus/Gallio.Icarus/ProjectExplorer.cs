@@ -147,17 +147,17 @@ namespace Gallio.Icarus
 
         private void deleteReportToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (projectTree.SelectedNode == null || !(projectTree.SelectedNode.Tag is ReportNode))
-                return;
-
-            DeleteReport();
+            if (projectTree.SelectedNode != null && projectTree.SelectedNode.Tag is ReportNode)
+                DeleteReport((ReportNode)projectTree.SelectedNode.Tag);
         }
 
-        private void DeleteReport()
+        private void DeleteReport(ReportNode reportNode)
         {
-            var reportNode = (ReportNode)projectTree.SelectedNode.Tag;
-            var cmd = new DeleteReportCommand(reportController) { FileName = reportNode.FileName };
-            taskManager.QueueTask(cmd);
+            var deleteReportCommand = new DeleteReportCommand(reportController)
+            {
+                FileName = reportNode.FileName
+            };
+            taskManager.QueueTask(deleteReportCommand);
         }
 
         private void propertiesToolStripButton_Click(object sender, EventArgs e)
@@ -173,9 +173,12 @@ namespace Gallio.Icarus
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
-            if (keyData == Keys.Delete && (Node)projectTree.SelectedNode.Tag is ReportNode)
+            if (keyData == Keys.Delete && projectTree.SelectedNode != null 
+                && projectTree.SelectedNode.Tag is ReportNode)
             {
-                DeleteReport();
+                var selectedNode = projectTree.SelectedNode;
+                projectTree.SelectedNode = selectedNode.NextNode;
+                DeleteReport((ReportNode)selectedNode.Tag);
             }
             return base.ProcessCmdKey(ref msg, keyData);
         }

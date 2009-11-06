@@ -13,12 +13,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using System.IO;
 using Aga.Controls.Tree;
 
 namespace Gallio.Icarus.Models.ProjectTreeNodes
 {
-    internal sealed class ReportNode : Node
+    internal sealed class ReportNode : Node, IEquatable<ReportNode>
     {
         public string FileName
         {
@@ -32,5 +33,30 @@ namespace Gallio.Icarus.Models.ProjectTreeNodes
             Image = Properties.Resources.XmlFile.ToBitmap();
             FileName = file;
         }
-    }
+
+        public override bool Equals(object obj)
+        {
+            if (obj == null)
+                return false;
+
+            var reportNode = obj as ReportNode;
+            if (reportNode == null)
+                return false;
+
+            return Equals(reportNode);
+        }
+
+        public override int GetHashCode()
+        {
+            return FileName.GetHashCode();
+        }
+
+        public bool Equals(ReportNode other)
+        {
+            if (other == null)
+                return false;
+
+            return FileName.Equals(other.FileName);
+        }
+   }
 }

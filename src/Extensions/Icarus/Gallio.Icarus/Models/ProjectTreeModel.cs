@@ -49,12 +49,46 @@ namespace Gallio.Icarus.Models
             set
             {
                 testProject = value;
+
                 NotifyTestProjectChanged();
 
                 reportMonitor = new ReportMonitor(testProject.ReportDirectory, 
                     testProject.ReportNameFormat);
-                reportMonitor.ReportDirectoryChanged += (sender, e) => NotifyReportsChanged();
+
+                reportMonitor.ReportDirectoryCreated += (s, e) => RefreshReportFolder();
+                reportMonitor.ReportDirectoryDeleted += (s, e) => RefreshReportFolder();
+
+                reportMonitor.ReportCreated += (s, e) => ReportCreated(e.FileName);
+                reportMonitor.ReportDeleted += (s, e) => ReportDeleted(e.FileName);
+                reportMonitor.ReportRenamed += (s, e) => ReportRenamed(e.OldFileName, 
+                    e.NewFileName);
             }
+        }
+
+        private void RefreshReportFolder()
+        {
+            OnStructureChanged(new TreePathEventArgs(new TreePath(new[] { projectRoot, reportsNode })));
+        }
+
+        private void ReportRenamed(string oldReportName, string newReportName)
+        {
+            var treePath = new TreePath(new[] { projectRoot, reportsNode });
+            OnNodesRemoved(new TreeModelEventArgs(treePath, new[] { new ReportNode(oldReportName) }));
+            OnNodesInserted(new TreeModelEventArgs(treePath, new[] { 0 }, 
+                new[] { new ReportNode(newReportName) }));
+        }
+
+        private void ReportCreated(string reportName)
+        {
+            var treePath = new TreePath(new[] { projectRoot, reportsNode });
+            OnNodesInserted(new TreeModelEventArgs(treePath, new[] { 0 }, 
+                new[] { new ReportNode(reportName) }));
+        }
+
+        private void ReportDeleted(string reportName)
+        {
+            var treePath = new TreePath(new[] { projectRoot, reportsNode });
+            OnNodesRemoved(new TreeModelEventArgs(treePath, new[] { new ReportNode(reportName) }));
         }
 
         public void NotifyTestProjectChanged()
@@ -64,7 +98,7 @@ namespace Gallio.Icarus.Models
 
         public void NotifyReportsChanged()
         {
-            var treePath = new TreePath(new[] {projectRoot, reportsNode});
+            var treePath = new TreePath(new[] { projectRoot });
             OnStructureChanged(new TreePathEventArgs(treePath));
         }
 
