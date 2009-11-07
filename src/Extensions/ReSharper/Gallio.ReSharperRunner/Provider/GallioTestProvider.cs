@@ -100,10 +100,12 @@ namespace Gallio.ReSharperRunner.Provider
             shim.ExploreFile(psiFile, consumer, interrupted);
         }
 
+#if ! RESHARPER_50_OR_NEWER
         public bool IsUnitTestElement(IDeclaredElement element)
         {
             return shim.IsUnitTestElement(element);
         }
+#endif
 
 #if RESHARPER_45
         public bool IsUnitTestStuff(IDeclaredElement element)
@@ -113,14 +115,9 @@ namespace Gallio.ReSharperRunner.Provider
 #endif
 
 #if RESHARPER_50_OR_NEWER
-        public bool IsUnitTest(IDeclaredElement element)
+        public bool IsElementOfKind(IDeclaredElement element, UnitTestElementKind kind)
         {
-            return shim.IsUnitTest(element);
-        }
-
-        public bool IsUnitTestContainer(IDeclaredElement element)
-        {
-            return shim.IsUnitTestContainer(element);
+            return shim.IsElementOfKind(element, kind);
         }
 #endif
 
@@ -368,6 +365,7 @@ namespace Gallio.ReSharperRunner.Provider
                     NullProgressMonitor.CreateInstance());
             }
 
+#if ! RESHARPER_50_OR_NEWER
             /// <summary>
             /// Checks if given declared element is UnitTestElement.
             /// </summary>
@@ -377,6 +375,7 @@ namespace Gallio.ReSharperRunner.Provider
                     throw new ArgumentNullException("element");
                 return EvalTestPartPredicate(element, x => x.IsTest);
             }
+#endif
 
 #if RESHARPER_45
             /// <summary>
@@ -396,18 +395,26 @@ namespace Gallio.ReSharperRunner.Provider
 #endif
 
 #if RESHARPER_50_OR_NEWER
-            public bool IsUnitTest(IDeclaredElement element)
+            public bool IsElementOfKind(IDeclaredElement element, UnitTestElementKind kind)
             {
                 if (element == null)
                     throw new ArgumentNullException("element");
-                return EvalTestPartPredicate(element, x => x.IsTestCase);
-            }
-
-            public bool IsUnitTestContainer(IDeclaredElement element)
-            {
-                if (element == null)
-                    throw new ArgumentNullException("element");
-                return EvalTestPartPredicate(element, x => x.IsTestContainer);
+                return EvalTestPartPredicate(element, testPart =>
+                {
+                    switch (kind)
+                    {
+                        case UnitTestElementKind.Unknown:
+                            return false;
+                        case UnitTestElementKind.Test:
+                            return testPart.IsTest;
+                        case UnitTestElementKind.TestContainer:
+                            return testPart.IsTestContainer;
+                        case UnitTestElementKind.TestStuff:
+                            return testPart.IsTestContribution;
+                        default:
+                            throw new ArgumentOutOfRangeException("kind");
+                    }
+                });
             }
 #endif
 
