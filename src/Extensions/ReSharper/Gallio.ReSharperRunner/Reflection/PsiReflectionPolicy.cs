@@ -500,6 +500,11 @@ namespace Gallio.ReSharperRunner.Reflection
             List<ConstantValue> values = new List<ConstantValue>();
             for (int i = 0; ; i++)
             {
+#if RESHARPER_50_OR_NEWER
+                if (i == attributeHandle.PositionParameterCount)
+                    break;
+#endif
+
                 ConstantValue? value = GetAttributePositionParameter(attributeHandle, i);
                 if (value.HasValue)
                     values.Add(value.Value);
