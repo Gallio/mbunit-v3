@@ -18,8 +18,10 @@ using System.Reflection;
 using Gallio.ReSharperRunner.Reflection;
 using Gallio.Tests.Common.Reflection;
 using JetBrains.Metadata.Reader.API;
-using JetBrains.Metadata.Utils;
 using MbUnit.Framework;
+#if RESHARPER_50_OR_NEWER
+using JetBrains.Metadata.Utils;
+#endif
 
 namespace Gallio.ReSharperRunner.Tests.Reflection
 {

@@ -15,6 +15,7 @@
 
 using System;
 using System.Collections.Generic;
+using Gallio.Common;
 using Gallio.Model;
 using Gallio.Common.Reflection;
 using Gallio.Model.Schema;
@@ -28,7 +29,6 @@ using JetBrains.ReSharper.UnitTestExplorer;
 #else
 using JetBrains.ReSharper.UnitTestFramework;
 using JetBrains.Util;
-
 #endif
 
 namespace Gallio.ReSharperRunner.Provider
@@ -49,6 +49,9 @@ namespace Gallio.ReSharperRunner.Provider
         private readonly string assemblyPath;
         private readonly string typeName;
         private readonly string namespaceName;
+#if RESHARPER_50_OR_NEWER
+        private Memoizer<string> shortNameMemoizer;
+#endif
 
         private GallioTestElement(IUnitTestProvider provider, GallioTestElement parent, string testId, string testName, string kind, bool isTestCase,
             IProject project, IDeclaredElementResolver declaredElementResolver, string assemblyPath, string typeName, string namespaceName)
@@ -126,9 +129,12 @@ namespace Gallio.ReSharperRunner.Provider
         }
 
 #if RESHARPER_50_OR_NEWER
+        // R# uses this name as a filter for declared elements so that it can quickly determine
+        // whether a given declared element is likely to be a test before asking the provider about
+        // it.  The result must be equal to IDeclaredElement.ShortName.
         public override string ShortName
         {
-            get { return testName; }
+            get { return shortNameMemoizer.Memoize(() => GetDeclaredElement().ShortName); }
         }
 #endif
 
@@ -211,7 +217,11 @@ namespace Gallio.ReSharperRunner.Provider
 
                     if (file != null && file.IsValid())
                     {
+#if ! RESHARPER_50_OR_NEWER
                         var nameRange = declaration.GetNameRange();
+#else
+                        var nameRange = declaration.GetNameDocumentRange().TextRange;
+#endif
                         var containingRange = declaration.GetDocumentRange().TextRange;
 #if RESHARPER_31 || RESHARPER_40 || RESHARPER_41
                         if (nameRange.IsValid && containingRange.IsValid)
@@ -225,12 +235,7 @@ namespace Gallio.ReSharperRunner.Provider
 #else
                                 file.ProjectFile,
 #endif
-#if ! RESHARPER_50_OR_NEWER
-                                nameRange,
-#else
-                                new TextRange(nameRange.StartOffset.Offset, nameRange.EndOffset.Offset), 
-#endif
-                                containingRange));
+                                nameRange, containingRange));
                         }
                     }
                 }

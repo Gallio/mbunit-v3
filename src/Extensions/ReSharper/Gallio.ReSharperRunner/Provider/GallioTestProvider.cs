@@ -646,7 +646,7 @@ namespace Gallio.ReSharperRunner.Provider
                             UnitTestElementDisposition disposition = element.GetDisposition();
                             if (disposition.Locations.Count != 0 && disposition.Locations[0].ProjectFile == projectFile)
                             {
-                                consumer(element.GetDisposition());
+                                consumer(disposition);
                             }
                         }
                     })
