@@ -18,6 +18,7 @@ using System.Reflection;
 using Gallio.ReSharperRunner.Reflection;
 using Gallio.Tests.Common.Reflection;
 using JetBrains.Metadata.Reader.API;
+using JetBrains.Metadata.Utils;
 using MbUnit.Framework;
 
 namespace Gallio.ReSharperRunner.Tests.Reflection
@@ -44,7 +45,11 @@ namespace Gallio.ReSharperRunner.Tests.Reflection
             loader = new MetadataLoader(BuiltInMetadataAssemblyResolver.Instance);
 
             Assembly assembly = GetType().Assembly;
+#if RESHARPER_50_OR_NEWER
+            IMetadataAssembly metadataAssembly = loader.Load(new AssemblyNameInfo(assembly.GetName().FullName), delegate { return true; });
+#else
             IMetadataAssembly metadataAssembly = loader.Load(assembly.GetName(), delegate { return true; });
+#endif
 
             reflectionPolicy = new MetadataReflectionPolicy(metadataAssembly, null);
         }

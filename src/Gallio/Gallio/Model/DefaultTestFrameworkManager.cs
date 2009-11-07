@@ -411,7 +411,7 @@ namespace Gallio.Model
                     return false;
                 });
 
-                return combinedTestParts;
+                return combinedTestParts ?? EmptyArray<TestPart>.Instance;
             }
 
             protected override void DescribeImpl(IReflectionPolicy reflectionPolicy, IList<ICodeElementInfo> codeElements, TestExplorationOptions testExplorationOptions, Common.Messaging.IMessageSink messageSink, Gallio.Runtime.ProgressMonitoring.IProgressMonitor progressMonitor)

@@ -1113,7 +1113,9 @@ namespace Gallio.Tests.Common.Reflection
                 || attrib is RuntimeCompatibilityAttribute
                 || attrib is AssemblyCultureAttribute
                 || attrib is AssemblyVersionAttribute
-                || attrib is SecurityAttribute;
+                || attrib is SecurityAttribute
+                || attrib is StructLayoutAttribute
+                || attrib is MethodImplAttribute;
         }
 
         private bool IsSpecialMember(FieldInfo field)

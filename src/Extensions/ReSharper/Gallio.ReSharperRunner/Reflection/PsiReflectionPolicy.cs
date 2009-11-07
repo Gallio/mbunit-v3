@@ -254,8 +254,14 @@ namespace Gallio.ReSharperRunner.Reflection
                 {
                     IAssemblyFile assemblyFile = BuildSettingsManager.GetInstance(project).GetOutputAssemblyFile();
 
+#if RESHARPER_50_OR_NEWER
+                    if (assemblyFile != null && IsMatchingAssemblyName(assemblyName, new AssemblyName(assemblyFile.AssemblyName.FullName)))
+#else
                     if (assemblyFile != null && IsMatchingAssemblyName(assemblyName, assemblyFile.AssemblyName))
+#endif
+                    {
                         return WrapModule(project);
+                    }
                 }
                 catch (InvalidOperationException)
                 {
@@ -265,8 +271,14 @@ namespace Gallio.ReSharperRunner.Reflection
 
             foreach (IAssembly assembly in psiManager.Solution.GetAllAssemblies())
             {
+#if RESHARPER_50_OR_NEWER
+                if (IsMatchingAssemblyName(assemblyName, new AssemblyName(assembly.AssemblyName.FullName)))
+#else
                 if (IsMatchingAssemblyName(assemblyName, assembly.AssemblyName))
+#endif
+                {
                     return WrapModule(assembly);
+                }
             }
 
             throw new ArgumentException(String.Format("Could not find assembly '{0}' in the ReSharper code cache.",
@@ -384,7 +396,11 @@ namespace Gallio.ReSharperRunner.Reflection
             IProject projectHandle = moduleHandle as IProject;
             if (projectHandle != null)
             {
+#if RESHARPER_50_OR_NEWER
+                AssemblyName name = new AssemblyName(GetAssemblyFile(projectHandle).AssemblyName.FullName);
+#else
                 AssemblyName name = GetAssemblyFile(projectHandle).AssemblyName;
+#endif
                 if (name.Version == null)
                 {
                     name = (AssemblyName) name.Clone();
@@ -394,7 +410,11 @@ namespace Gallio.ReSharperRunner.Reflection
             }
 
             IAssembly assemblyHandle = (IAssembly) moduleHandle;
+#if RESHARPER_50_OR_NEWER
+            return new AssemblyName(assemblyHandle.AssemblyName.FullName);
+#else
             return assemblyHandle.AssemblyName;
+#endif
         }
 
         private IList<StaticDeclaredTypeWrapper> GetAssemblyTypes(IModule moduleHandle, bool includeNonPublicTypes)

@@ -21,6 +21,7 @@ using IAssemblyResolver=JetBrains.Metadata.Reader.API.IAssemblyResolver;
 
 #if RESHARPER_50_OR_NEWER
 using JetBrains.Util;
+using JetBrains.Metadata.Utils;
 #endif
 
 namespace Gallio.ReSharperRunner.Tests.Reflection
@@ -53,11 +54,11 @@ namespace Gallio.ReSharperRunner.Tests.Reflection
             }
         }
 #else
-        public IMetadataAccess ResolveAssembly(AssemblyName name, out FileSystemPath assemblyLocation)
+        public IMetadataAccess ResolveAssembly(AssemblyNameInfo name, out FileSystemPath assemblyLocation)
         {
             try
             {
-                Assembly assembly = Assembly.Load(name);
+                Assembly assembly = Assembly.Load(name.FullName);
                 assemblyLocation = new FileSystemPath((AssemblyUtils.GetAssemblyLocalPath(assembly)));
                 return MetadataProviderFactory.DefaultProvider.GetFromFile(assemblyLocation);
             }

@@ -33,7 +33,9 @@ using JetBrains.Util;
 #else
 using JetBrains.Application;
 using AssemblyReference=JetBrains.Metadata.Access.AssemblyReference;
-
+#endif
+#if RESHARPER_50_OR_NEWER
+using JetBrains.Metadata.Utils;
 #endif
 
 namespace Gallio.ReSharperRunner.Reflection
@@ -139,7 +141,11 @@ namespace Gallio.ReSharperRunner.Reflection
         protected override AssemblyName GetAssemblyName(StaticAssemblyWrapper assembly)
         {
             IMetadataAssembly assemblyHandle = (IMetadataAssembly) assembly.Handle;
+#if RESHARPER_50_OR_NEWER
+            return new AssemblyName(assemblyHandle.AssemblyName.FullName);
+#else
             return assemblyHandle.AssemblyName;
+#endif
         }
 
         protected override string GetAssemblyPath(StaticAssemblyWrapper assembly)
@@ -154,7 +160,11 @@ namespace Gallio.ReSharperRunner.Reflection
             AssemblyReference[] references = assemblyHandle.ReferencedAssembliesNames;
             return Array.ConvertAll<AssemblyReference, AssemblyName>(references, delegate(AssemblyReference reference)
             {
-                return reference.AssemblyName;
+#if RESHARPER_50_OR_NEWER
+                return new AssemblyName(assemblyHandle.AssemblyName.FullName);
+#else
+                return assemblyHandle.AssemblyName;
+#endif
             });
         }
 
@@ -197,15 +207,24 @@ namespace Gallio.ReSharperRunner.Reflection
         {
             if (metadataLoader != null)
             {
+#if RESHARPER_50_OR_NEWER
+                IMetadataAssembly assembly = metadataLoader.Load(new AssemblyNameInfo(assemblyName.FullName), DummyLoadReferencePredicate);
+#else
                 IMetadataAssembly assembly = metadataLoader.Load(assemblyName, DummyLoadReferencePredicate);
+#endif
 
                 if (assembly == null && contextProject != null)
                 {
                     IAssemblyReference reference = GenericCollectionUtils.Find(contextProject.GetAssemblyReferences(),
                         delegate(IAssemblyReference candidate)
                         {
+#if RESHARPER_50_OR_NEWER
+                            return candidate.AssemblyName != null
+                                && candidate.AssemblyName.FullName == assemblyName.FullName;
+#else
                             return candidate.AssemblyIdentity != null
                                 && candidate.AssemblyIdentity.AssemblyName.FullName == assemblyName.FullName;
+#endif
                         });
 
                     if (reference != null && reference.HintLocation != null)
@@ -226,7 +245,11 @@ namespace Gallio.ReSharperRunner.Reflection
             return null;
         }
 
+#if RESHARPER_50_OR_NEWER
+        private static bool DummyLoadReferencePredicate(AssemblyNameInfo ignored)
+#else
         private static bool DummyLoadReferencePredicate(AssemblyName ignored)
+#endif
         {
             return true;
         }
@@ -1119,7 +1142,12 @@ namespace Gallio.ReSharperRunner.Reflection
             if (assembly != null)
                 return assembly;
 
+#if RESHARPER_50_OR_NEWER
+            AssemblyNameInfo assemblyNameInfo = typeInfo.DeclaringAssemblyName;
+            AssemblyName assemblyName = assemblyNameInfo != null ? new AssemblyName(assemblyNameInfo.FullName) : null;
+#else
             AssemblyName assemblyName = typeInfo.DeclaringAssemblyName;
+#endif
 
             // Note: ReSharper can sometimes return unresolved types (which have a null declaring assembly name).
             //       We can't really do much with these except to guess the assembly if possible.

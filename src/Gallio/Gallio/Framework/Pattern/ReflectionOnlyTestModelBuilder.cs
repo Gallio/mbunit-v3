@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
 using Gallio.Common;
 using Gallio.Common.Reflection;
 using Gallio.Model.Tree;
@@ -53,7 +54,7 @@ namespace Gallio.Framework.Pattern
         /// <inheritdoc />
         public ITestBuilder RootTestBuilder
         {
-            get { throw new NotSupportedException(); }
+            get { return new DummyRootTestBuilder(); }
         }
 
         void ITestModelBuilder.AddAnnotation(Annotation annotation)
@@ -84,6 +85,127 @@ namespace Gallio.Framework.Pattern
         void ISupportDeferredActions.ApplyDeferredActions()
         {
             throw new NotSupportedException();
+        }
+
+        private sealed class DummyRootTestBuilder : ITestBuilder
+        {
+            public void AddDeferredAction(ICodeElementInfo codeElement, int order, Action deferredAction)
+            {
+                throw new NotImplementedException();
+            }
+
+            public void ApplyDeferredActions()
+            {
+                throw new NotImplementedException();
+            }
+
+            public string Id
+            {
+                get { throw new NotImplementedException(); }
+            }
+
+            public string Name
+            {
+                get { throw new NotImplementedException(); }
+                set { throw new NotImplementedException(); }
+            }
+
+            public ICodeElementInfo CodeElement
+            {
+                get { throw new NotImplementedException(); }
+            }
+
+            public void AddMetadata(string key, string value)
+            {
+                throw new NotImplementedException();
+            }
+
+            public IPatternTestComponent ToTestComponent()
+            {
+                throw new NotImplementedException();
+            }
+
+            public string Kind
+            {
+                get { throw new NotImplementedException(); }
+                set { throw new NotImplementedException(); }
+            }
+
+            public ApartmentState ApartmentState
+            {
+                get { throw new NotImplementedException(); }
+                set { throw new NotImplementedException(); }
+            }
+
+            public TimeSpan? Timeout
+            {
+                get { throw new NotImplementedException(); }
+                set { throw new NotImplementedException(); }
+            }
+
+            public bool IsTestCase
+            {
+                get { throw new NotImplementedException(); }
+                set { throw new NotImplementedException(); }
+            }
+
+            public bool IsParallelizable
+            {
+                get { throw new NotImplementedException(); }
+                set { throw new NotImplementedException(); }
+            }
+
+            public int Order
+            {
+                get { throw new NotImplementedException(); }
+                set { throw new NotImplementedException(); }
+            }
+
+            public string LocalId
+            {
+                get { throw new NotImplementedException(); }
+            }
+
+            public string LocalIdHint
+            {
+                get { throw new NotImplementedException(); }
+                set { throw new NotImplementedException(); }
+            }
+
+            public PatternTestActions TestActions
+            {
+                get { throw new NotImplementedException(); }
+            }
+
+            public PatternTestInstanceActions TestInstanceActions
+            {
+                get { throw new NotImplementedException(); }
+            }
+
+            public ITestBuilder CreateChild(string name, ICodeElementInfo codeElement, ITestDataContextBuilder dataContextBuilder)
+            {
+                throw new NotImplementedException();
+            }
+
+            public ITestParameterBuilder CreateParameter(string name, ICodeElementInfo codeElement, ITestDataContextBuilder dataContextBuilder)
+            {
+                throw new NotImplementedException();
+            }
+
+            public ITestParameterBuilder GetParameter(string name)
+            {
+                throw new NotImplementedException();
+            }
+
+            public void AddDependency(Test testDependency)
+            {
+                throw new NotImplementedException();
+            }
+
+            public PatternTest ToTest()
+            {
+                throw new NotImplementedException();
+            }
         }
     }
 }
