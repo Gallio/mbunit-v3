@@ -109,7 +109,9 @@
     <Content Include="Resources\xsl\Gallio-Report.ccnet-details-condensed.xsl" />
     <Content Include="Resources\xsl\Gallio-Report.ccnet-details.xsl" />
     <Content Include="Resources\xsl\Gallio-Report.common.xsl" />
-    <Content Include="Resources\xsl\Gallio-Report.html+xhtml.xsl" />
+    <Content Include="Resources\xsl\Gallio-Report.html+xhtml.xsl">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Resources\xsl\Gallio-Report.html-condensed.xsl" />
     <Content Include="Resources\xsl\Gallio-Report.html.xsl" />
     <Content Include="Resources\xsl\Gallio-Report.txt.xsl" />
