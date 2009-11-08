@@ -161,9 +161,9 @@ namespace Gallio.ReSharperRunner.Reflection
             return Array.ConvertAll<AssemblyReference, AssemblyName>(references, delegate(AssemblyReference reference)
             {
 #if RESHARPER_50_OR_NEWER
-                return new AssemblyName(assemblyHandle.AssemblyName.FullName);
+                return new AssemblyName(reference.AssemblyName.FullName);
 #else
-                return assemblyHandle.AssemblyName;
+                return reference.AssemblyName;
 #endif
             });
         }
