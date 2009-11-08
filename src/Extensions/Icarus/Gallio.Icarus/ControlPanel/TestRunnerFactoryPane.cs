@@ -13,17 +13,25 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Gallio.Common.Collections;
+using System;
 using Gallio.Icarus.Controllers.Interfaces;
-using Gallio.Runner;
+using Gallio.Runtime.ProgressMonitoring;
+using Gallio.Runtime.Security;
+using Gallio.UI.ControlPanel.Preferences;
 using Gallio.Runtime;
+using Gallio.Common.Collections;
+using Gallio.Runner;
 
-namespace Gallio.Icarus.Options
+namespace Gallio.Icarus.ControlPanel
 {
-    internal partial class TestRunnerFactoryOptions : OptionsPanel
+    internal partial class TestRunnerFactoryPane : PreferencePane
     {
-        public TestRunnerFactoryOptions(IOptionsController optionsController)
+        private readonly IOptionsController optionsController;
+
+        public TestRunnerFactoryPane(IOptionsController optionsController)
         {
+            this.optionsController = optionsController;
+
             InitializeComponent();
 
             // retrieve list of possible factories
@@ -32,7 +40,19 @@ namespace Gallio.Icarus.Options
                 h => h.GetTraits().Name);
 
             testRunnerFactories.Items.AddRange(factories);
-            testRunnerFactories.DataBindings.Add("Text", optionsController, "TestRunnerFactory");
+            testRunnerFactories.Text = optionsController.TestRunnerFactory;
+        }
+
+        public override void ApplyPendingSettingsChanges(IElevationContext elevationContext, IProgressMonitor progressMonitor)
+        {
+            base.ApplyPendingSettingsChanges(elevationContext, progressMonitor);
+            optionsController.TestRunnerFactory.Value = testRunnerFactories.Text;
+            optionsController.Save();
+        }
+
+        private void testRunnerFactories_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            PendingSettingsChanges = true;
         }
     }
 }

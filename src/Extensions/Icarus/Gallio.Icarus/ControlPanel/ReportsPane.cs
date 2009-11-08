@@ -44,7 +44,8 @@ namespace Gallio.Icarus.ControlPanel
 
         private void generateReportAfterTestRun_CheckedChanged(object sender, System.EventArgs e)
         {
-            PendingSettingsChanges = true;
+            if (generateReportAfterTestRun.Checked != optionsController.GenerateReportAfterTestRun)
+                PendingSettingsChanges = true;
         }
     }
 }

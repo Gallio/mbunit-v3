@@ -20,6 +20,7 @@ using System.Windows.Forms;
 using System.Xml.Serialization;
 using Gallio.Common;
 using Gallio.Icarus.Controls;
+using Gallio.Icarus.Helpers;
 using Gallio.Runtime.Logging;
 using Gallio.Runner;
 
@@ -158,8 +159,8 @@ namespace Gallio.Icarus
             get { return extensionSpecifications; }
         }
 
-        [XmlElement("testTreeSplitNamespaces")]
-        public bool TestTreeSplitNamespaces { get; set; }
+        [XmlElement("namespaceHierarchy")]
+        public NamespaceHierarchy NamespaceHierarchy { get; set; }
 
         public Settings()
         {

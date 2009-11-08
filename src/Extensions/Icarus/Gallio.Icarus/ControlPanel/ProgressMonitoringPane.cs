@@ -44,7 +44,8 @@ namespace Gallio.Icarus.ControlPanel
 
         private void showProgressDialogs_CheckedChanged(object sender, System.EventArgs e)
         {
-            PendingSettingsChanges = true;
+            if (showProgressDialogs.Checked != optionsController.ShowProgressDialogs)
+                PendingSettingsChanges = true;
         }
     }
 }

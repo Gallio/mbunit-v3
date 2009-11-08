@@ -13,7 +13,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.Windows.Forms;
 using Gallio.Icarus.Models;
 using Gallio.Icarus.Tests.Utilities;
 using Gallio.Model;
@@ -111,7 +110,7 @@ namespace Gallio.Icarus.Tests.Models
             
             TestModelData testModelData = new TestModelData(root);
 
-            var options = new TestTreeBuilderOptions { TreeViewCategory = "Namespace", SplitNamespaces = false };
+            var options = new TestTreeBuilderOptions { TreeViewCategory = "Namespace", NamespaceHierarchy = NamespaceHierarchy.Flat };
             testTreeModel.BuildTestTree(progressMonitor, testModelData, options);
             
             Assert.IsNotNull(testTreeModel.Root);
@@ -167,7 +166,7 @@ namespace Gallio.Icarus.Tests.Models
             var options = new TestTreeBuilderOptions 
             {
                 TreeViewCategory = MetadataKeys.Category,
-                SplitNamespaces = false
+                NamespaceHierarchy = NamespaceHierarchy.Flat
             };
             testTreeModel.BuildTestTree(progressMonitor, testModelData, options);
 

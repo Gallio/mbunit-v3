@@ -13,17 +13,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Gallio.Icarus.Interfaces;
+using Gallio.Icarus.Controllers.Interfaces;
+using Gallio.UI.ControlPanel.Preferences;
 
-namespace Gallio.Icarus.Options
+namespace Gallio.Icarus.ControlPanel
 {
-    internal partial class FilesOptions : OptionsPanel
+    public class TestRunnerFactoryPaneProvider : IPreferencePaneProvider
     {
-        public FilesOptions(IOptionsController optionsController)
-        {
-            InitializeComponent();
+        private readonly IOptionsController optionsController;
 
-            alwaysReloadFiles.DataBindings.Add("Checked", optionsController, "AlwaysReloadFiles");
+        public TestRunnerFactoryPaneProvider(IOptionsController optionsController)
+        {
+            this.optionsController = optionsController;
+        }
+
+        public PreferencePane CreatePreferencePane()
+        {
+            return new TestRunnerFactoryPane(optionsController);
         }
     }
 }

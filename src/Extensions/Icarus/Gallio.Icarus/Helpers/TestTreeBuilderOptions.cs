@@ -17,16 +17,14 @@ namespace Gallio.Icarus.Helpers
 {
     public class TestTreeBuilderOptions
     {
-        public bool SplitNamespaces
+        public NamespaceHierarchy NamespaceHierarchy
         {
-            get;
-            set;
+            get; set;
         }
 
         public string TreeViewCategory
         {
-            get;
-            set;
+            get; set;
         }
     }
 }

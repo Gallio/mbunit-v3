@@ -245,7 +245,7 @@ namespace Gallio.Icarus.Controllers
                 var options = new TestTreeBuilderOptions
                 {
                     TreeViewCategory = TreeViewCategory,
-                    SplitNamespaces = optionsController.TestTreeSplitNamespaces
+                    NamespaceHierarchy = optionsController.NamespaceHierarchy
                 };
 
                 using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(99))

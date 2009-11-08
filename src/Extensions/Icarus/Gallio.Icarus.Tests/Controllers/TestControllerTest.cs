@@ -90,7 +90,7 @@ namespace Gallio.Icarus.Tests.Controllers
             testRunner.AssertWasCalled(tr => tr.Explore(Arg<TestPackage>.Is.Anything, 
                 Arg<TestExplorationOptions>.Is.Anything, Arg.Is(progressMonitor)));
             testTreeModel.AssertWasCalled(ttm => ttm.BuildTestTree(Arg.Is(progressMonitor), Arg<TestModelData>.Is.Anything,
-                Arg<TestTreeBuilderOptions>.Matches(ttbo => (!ttbo.SplitNamespaces && ttbo.TreeViewCategory == treeViewCategory))));
+                Arg<TestTreeBuilderOptions>.Matches(ttbo => (ttbo.TreeViewCategory == treeViewCategory))));
             Assert.IsTrue(exploreFinishedFlag);
         }
 

@@ -21,6 +21,7 @@ using System.Windows.Forms;
 using Gallio.Common.IO;
 using Gallio.Common.Xml;
 using Gallio.Icarus.Controllers.Interfaces;
+using Gallio.Icarus.Helpers;
 using Gallio.Model;
 using Gallio.Icarus.Utilities;
 using Gallio.Runtime.Logging;
@@ -184,10 +185,10 @@ namespace Gallio.Icarus.Controllers
             }
         }
 
-        public bool TestTreeSplitNamespaces
+        public NamespaceHierarchy NamespaceHierarchy
         {
-            get { return settings.TestTreeSplitNamespaces; }
-            set { settings.TestTreeSplitNamespaces = value; }
+            get { return settings.NamespaceHierarchy; }
+            set { settings.NamespaceHierarchy = value; }
         }
 
         public OptionsController(IFileSystem fileSystem, IXmlSerializer xmlSerializer, 

@@ -15,12 +15,10 @@
 
 using System;
 using Gallio.Icarus.Controllers.Interfaces;
+using Gallio.Icarus.Helpers;
 using Gallio.Runtime.ProgressMonitoring;
 using Gallio.Runtime.Security;
 using Gallio.UI.ControlPanel.Preferences;
-using Gallio.Runtime;
-using Gallio.Common.Collections;
-using Gallio.Runner;
 
 namespace Gallio.Icarus.ControlPanel
 {
@@ -37,25 +35,17 @@ namespace Gallio.Icarus.ControlPanel
             alwaysReloadFilesCheckBox.Checked = optionsController.AlwaysReloadFiles;
             runTestsAfterReloadCheckBox.Enabled = optionsController.AlwaysReloadFiles;
             runTestsAfterReloadCheckBox.Checked = optionsController.RunTestsAfterReload;
-            splitNamespacesCheckBox.Checked = optionsController.TestTreeSplitNamespaces;
 
-            // retrieve list of possible factories
-            var testRunnerManager = RuntimeAccessor.ServiceLocator.Resolve<ITestRunnerManager>();
-            string[] factories = GenericCollectionUtils.ConvertAllToArray(testRunnerManager.TestRunnerFactoryHandles,
-                h => h.GetTraits().Name);
-
-            testRunnerFactories.Items.AddRange(factories);
-            testRunnerFactories.Text = optionsController.TestRunnerFactory;
+            namespaceHierarchyComboBox.DataSource = Enum.GetValues(typeof(NamespaceHierarchy));
+            namespaceHierarchyComboBox.SelectedItem = optionsController.NamespaceHierarchy;
         }
 
         public override void ApplyPendingSettingsChanges(IElevationContext elevationContext, IProgressMonitor progressMonitor)
         {
             optionsController.AlwaysReloadFiles = alwaysReloadFilesCheckBox.Checked;
             optionsController.RunTestsAfterReload = runTestsAfterReloadCheckBox.Checked;
-            optionsController.TestTreeSplitNamespaces = splitNamespacesCheckBox.Checked;
+            optionsController.NamespaceHierarchy = (NamespaceHierarchy)namespaceHierarchyComboBox.SelectedItem;
             
-            optionsController.TestRunnerFactory.Value = testRunnerFactories.Text;
-
             optionsController.Save();
 
             base.ApplyPendingSettingsChanges(elevationContext, progressMonitor);
@@ -64,7 +54,6 @@ namespace Gallio.Icarus.ControlPanel
         private void alwaysReloadFilesCheckBox_CheckedChanged(object sender, EventArgs e)
         {
             runTestsAfterReloadCheckBox.Enabled = alwaysReloadFilesCheckBox.Checked;
-
             PendingSettingsChanges = true;
         }
 
@@ -73,14 +62,10 @@ namespace Gallio.Icarus.ControlPanel
             PendingSettingsChanges = true;
         }
 
-        private void splitNamespacesCheckBox_CheckedChanged(object sender, EventArgs e)
+        private void namespaceHierarchyComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            PendingSettingsChanges = true;
-        }
-
-        private void testRunnerFactories_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            PendingSettingsChanges = true;
+            if (optionsController.NamespaceHierarchy != (NamespaceHierarchy)namespaceHierarchyComboBox.SelectedItem)
+                PendingSettingsChanges = true;
         }
     }
 }

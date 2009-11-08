@@ -17,6 +17,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
+using Gallio.Icarus.Helpers;
 using Gallio.Icarus.Utilities;
 using Gallio.Runtime.Logging;
 using Gallio.UI.DataBinding;
@@ -48,7 +49,7 @@ namespace Gallio.Icarus.Controllers.Interfaces
         bool AnnotationsShowWarnings { get; set; }
         bool AnnotationsShowInfos { get; set; }
         IList<string> TestRunnerExtensions { get; }
-        bool TestTreeSplitNamespaces { get; set; }
+        NamespaceHierarchy NamespaceHierarchy { get; set; }
 
         void Cancel();
         void Load();

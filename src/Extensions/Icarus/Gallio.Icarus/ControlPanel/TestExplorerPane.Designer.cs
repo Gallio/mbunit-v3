@@ -31,13 +31,10 @@ namespace Gallio.Icarus.ControlPanel
             this.alwaysReloadFilesCheckBox = new System.Windows.Forms.CheckBox();
             this.runTestsAfterReloadCheckBox = new System.Windows.Forms.CheckBox();
             this.generalGroupBox = new System.Windows.Forms.GroupBox();
-            this.splitNamespacesCheckBox = new System.Windows.Forms.CheckBox();
+            this.namespaceHierarchyLabel = new System.Windows.Forms.Label();
+            this.namespaceHierarchyComboBox = new System.Windows.Forms.ComboBox();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
-            this.runtimeGroupBox = new System.Windows.Forms.GroupBox();
-            this.testRunnerFactoryLabel = new System.Windows.Forms.Label();
-            this.testRunnerFactories = new System.Windows.Forms.ComboBox();
             this.generalGroupBox.SuspendLayout();
-            this.runtimeGroupBox.SuspendLayout();
             this.SuspendLayout();
             // 
             // alwaysReloadFilesCheckBox
@@ -65,28 +62,39 @@ namespace Gallio.Icarus.ControlPanel
             // 
             // generalGroupBox
             // 
-            this.generalGroupBox.Controls.Add(this.splitNamespacesCheckBox);
+            this.generalGroupBox.Controls.Add(this.namespaceHierarchyLabel);
+            this.generalGroupBox.Controls.Add(this.namespaceHierarchyComboBox);
             this.generalGroupBox.Controls.Add(this.checkBox1);
             this.generalGroupBox.Controls.Add(this.runTestsAfterReloadCheckBox);
             this.generalGroupBox.Controls.Add(this.alwaysReloadFilesCheckBox);
-            this.generalGroupBox.Dock = System.Windows.Forms.DockStyle.Top;
+            this.generalGroupBox.Dock = System.Windows.Forms.DockStyle.Fill;
             this.generalGroupBox.Location = new System.Drawing.Point(0, 0);
             this.generalGroupBox.Name = "generalGroupBox";
-            this.generalGroupBox.Size = new System.Drawing.Size(397, 113);
+            this.generalGroupBox.Size = new System.Drawing.Size(397, 320);
             this.generalGroupBox.TabIndex = 8;
             this.generalGroupBox.TabStop = false;
             this.generalGroupBox.Text = "General";
             // 
-            // splitNamespacesCheckBox
+            // namespaceHierarchyLabel
             // 
-            this.splitNamespacesCheckBox.AutoSize = true;
-            this.splitNamespacesCheckBox.Location = new System.Drawing.Point(17, 83);
-            this.splitNamespacesCheckBox.Name = "splitNamespacesCheckBox";
-            this.splitNamespacesCheckBox.Size = new System.Drawing.Size(109, 17);
-            this.splitNamespacesCheckBox.TabIndex = 9;
-            this.splitNamespacesCheckBox.Text = "Split namespaces";
-            this.splitNamespacesCheckBox.UseVisualStyleBackColor = true;
-            this.splitNamespacesCheckBox.CheckedChanged += new System.EventHandler(this.splitNamespacesCheckBox_CheckedChanged);
+            this.namespaceHierarchyLabel.AutoSize = true;
+            this.namespaceHierarchyLabel.Location = new System.Drawing.Point(14, 89);
+            this.namespaceHierarchyLabel.Name = "namespaceHierarchyLabel";
+            this.namespaceHierarchyLabel.Size = new System.Drawing.Size(113, 13);
+            this.namespaceHierarchyLabel.TabIndex = 10;
+            this.namespaceHierarchyLabel.Text = "Namespace hierarchy:";
+            // 
+            // namespaceHierarchyComboBox
+            // 
+            this.namespaceHierarchyComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.namespaceHierarchyComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.namespaceHierarchyComboBox.FormattingEnabled = true;
+            this.namespaceHierarchyComboBox.Location = new System.Drawing.Point(134, 86);
+            this.namespaceHierarchyComboBox.Name = "namespaceHierarchyComboBox";
+            this.namespaceHierarchyComboBox.Size = new System.Drawing.Size(245, 21);
+            this.namespaceHierarchyComboBox.TabIndex = 9;
+            this.namespaceHierarchyComboBox.SelectedIndexChanged += new System.EventHandler(this.namespaceHierarchyComboBox_SelectedIndexChanged);
             // 
             // checkBox1
             // 
@@ -98,51 +106,14 @@ namespace Gallio.Icarus.ControlPanel
             this.checkBox1.Text = "checkBox1";
             this.checkBox1.UseVisualStyleBackColor = true;
             // 
-            // runtimeGroupBox
-            // 
-            this.runtimeGroupBox.Controls.Add(this.testRunnerFactoryLabel);
-            this.runtimeGroupBox.Controls.Add(this.testRunnerFactories);
-            this.runtimeGroupBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.runtimeGroupBox.Location = new System.Drawing.Point(0, 113);
-            this.runtimeGroupBox.Name = "runtimeGroupBox";
-            this.runtimeGroupBox.Size = new System.Drawing.Size(397, 207);
-            this.runtimeGroupBox.TabIndex = 9;
-            this.runtimeGroupBox.TabStop = false;
-            this.runtimeGroupBox.Text = "Runtime";
-            // 
-            // testRunnerFactoryLabel
-            // 
-            this.testRunnerFactoryLabel.AutoSize = true;
-            this.testRunnerFactoryLabel.Location = new System.Drawing.Point(14, 28);
-            this.testRunnerFactoryLabel.Name = "testRunnerFactoryLabel";
-            this.testRunnerFactoryLabel.Size = new System.Drawing.Size(102, 13);
-            this.testRunnerFactoryLabel.TabIndex = 4;
-            this.testRunnerFactoryLabel.Text = "Test runner factory: ";
-            // 
-            // testRunnerFactories
-            // 
-            this.testRunnerFactories.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.testRunnerFactories.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.testRunnerFactories.DropDownWidth = 200;
-            this.testRunnerFactories.FormattingEnabled = true;
-            this.testRunnerFactories.Location = new System.Drawing.Point(122, 25);
-            this.testRunnerFactories.Name = "testRunnerFactories";
-            this.testRunnerFactories.Size = new System.Drawing.Size(256, 21);
-            this.testRunnerFactories.TabIndex = 3;
-            this.testRunnerFactories.SelectedIndexChanged += new System.EventHandler(this.testRunnerFactories_SelectedIndexChanged);
-            // 
             // TestExplorerPane
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.Controls.Add(this.runtimeGroupBox);
             this.Controls.Add(this.generalGroupBox);
             this.Name = "TestExplorerPane";
             this.Size = new System.Drawing.Size(397, 320);
             this.generalGroupBox.ResumeLayout(false);
             this.generalGroupBox.PerformLayout();
-            this.runtimeGroupBox.ResumeLayout(false);
-            this.runtimeGroupBox.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -152,10 +123,8 @@ namespace Gallio.Icarus.ControlPanel
         private System.Windows.Forms.CheckBox alwaysReloadFilesCheckBox;
         private System.Windows.Forms.CheckBox runTestsAfterReloadCheckBox;
         private System.Windows.Forms.GroupBox generalGroupBox;
-        private System.Windows.Forms.CheckBox splitNamespacesCheckBox;
         private System.Windows.Forms.CheckBox checkBox1;
-        private System.Windows.Forms.GroupBox runtimeGroupBox;
-        private System.Windows.Forms.Label testRunnerFactoryLabel;
-        private System.Windows.Forms.ComboBox testRunnerFactories;
+        private System.Windows.Forms.Label namespaceHierarchyLabel;
+        private System.Windows.Forms.ComboBox namespaceHierarchyComboBox;
     }
 }

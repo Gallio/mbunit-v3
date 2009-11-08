@@ -140,6 +140,13 @@
     <Compile Include="Controllers\SourceCodeController.cs" />
     <Compile Include="Controllers\TestController.cs" />
     <Compile Include="Controllers\TestResultsController.cs" />
+    <Compile Include="ControlPanel\TestRunnerFactoryPaneProvider.cs" />
+    <Compile Include="ControlPanel\TestRunnerFactoryPane.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ControlPanel\TestRunnerFactoryPane.Designer.cs">
+      <DependentUpon>TestRunnerFactoryPane.cs</DependentUpon>
+    </Compile>
     <Compile Include="ControlPanel\TestRunnerExtensionsPaneProvider.cs" />
     <Compile Include="ControlPanel\ProgressMonitoringPaneProvider.cs" />
     <Compile Include="ControlPanel\ProgressMonitoringPane.cs">
@@ -192,6 +199,7 @@
     <Compile Include="Controls\PropertiesTabControl.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Helpers\NamespaceHierarchy.cs" />
     <Compile Include="Logging\BlackBoxLogger.cs" />
     <Compile Include="Models\ITestStatistics.cs" />
     <Compile Include="Models\TestStatistics.cs" />
@@ -199,13 +207,6 @@
     <Compile Include="Models\TestTreeNodes\MetadataNode.cs" />
     <Compile Include="Models\TestTreeNodes\NamespaceNode.cs" />
     <Compile Include="Models\TestTreeNodes\TestDataNode.cs" />
-    <Compile Include="Options\IOptionsManager.cs" />
-    <Compile Include="Options\OptionsPanel.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Options\OptionsPanel.Designer.cs">
-      <DependentUpon>OptionsPanel.cs</DependentUpon>
-    </Compile>
     <Compile Include="Packages\ProjectsPackage.cs" />
     <Compile Include="ProgressMonitoring\Win7TaskBar.cs" />
     <Compile Include="Remoting\FileChangedHandler.cs" />
@@ -264,13 +265,6 @@
     <Compile Include="Models\ProjectTreeNodes\PropertiesNode.cs" />
     <Compile Include="Models\ProjectTreeNodes\ReportNode.cs" />
     <Compile Include="Models\ProjectTreeNodes\ReportsNode.cs" />
-    <Compile Include="Options\OptionsManager.cs" />
-    <Compile Include="Options\TestRunnerExtensionOptions.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Options\TestRunnerExtensionOptions.Designer.cs">
-      <DependentUpon>TestRunnerExtensionOptions.cs</DependentUpon>
-    </Compile>
     <Compile Include="Packages\CodeViewerPackage.cs" />
     <Compile Include="Packages\PluginBrowserPackage.cs" />
     <Compile Include="Remoting\IFileWatcher.cs" />
@@ -455,6 +449,10 @@
       <DependentUpon>AnnotationsWindow.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="ControlPanel\TestRunnerFactoryPane.resx">
+      <DependentUpon>TestRunnerFactoryPane.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="ControlPanel\ProgressMonitoringPane.resx">
       <DependentUpon>ProgressMonitoringPane.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -481,14 +479,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ControlPanel\TreeViewCategoryPane.resx">
       <DependentUpon>TreeViewCategoryPane.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Options\OptionsPanel.resx">
-      <DependentUpon>OptionsPanel.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Options\TestRunnerExtensionOptions.resx">
-      <DependentUpon>TestRunnerExtensionOptions.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\CodeViewer\CodeViewer.resx">

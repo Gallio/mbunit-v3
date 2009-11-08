@@ -34,7 +34,7 @@ namespace Gallio.Icarus.Helpers
             if (options.TreeViewCategory == "Namespace")
             {
                 PopulateNamespaceTree(progressMonitor, testModelData.RootTest.Children, 
-                    root, options.SplitNamespaces, root);
+                    root, options.NamespaceHierarchy, root);
             }
             else
             {
@@ -46,7 +46,7 @@ namespace Gallio.Icarus.Helpers
         }
 
         private static void PopulateNamespaceTree(IProgressMonitor progressMonitor, IList<TestData> list, 
-            TestTreeNode parent, bool splitNamespaces, TestTreeNode rootNode)
+            TestTreeNode parent, NamespaceHierarchy namespaceHierarchy, TestTreeNode rootNode)
         {
             for (int i = 0; i < list.Count; i++)
             {
@@ -57,7 +57,7 @@ namespace Gallio.Icarus.Helpers
                 {
                     // fixtures need special treatment to insert the namespace layer!
                     testTreeNode = BuildNamespaceNode(parent, testData, 
-                        testTreeNode, splitNamespaces, rootNode);
+                        testTreeNode, namespaceHierarchy, rootNode);
                 }
                 else
                 {
@@ -66,18 +66,18 @@ namespace Gallio.Icarus.Helpers
 
                 // process child nodes
                 PopulateNamespaceTree(progressMonitor, testData.Children, testTreeNode, 
-                    splitNamespaces, rootNode);
+                    namespaceHierarchy, rootNode);
 
                 progressMonitor.Worked(1);
             }
         }
 
         private static TestTreeNode BuildNamespaceNode(TestTreeNode parent, TestComponentData testComponentData,
-            TestTreeNode fixtureNode, bool splitNamespaces, TestTreeNode rootNode)
+            TestTreeNode fixtureNode, NamespaceHierarchy namespaceHierarchy, TestTreeNode rootNode)
         {
             string @namespace = testComponentData.CodeReference.NamespaceName;
 
-            string[] namespaceArray = splitNamespaces ? @namespace.Split('.') 
+            string[] namespaceArray = namespaceHierarchy == NamespaceHierarchy.Tree ? @namespace.Split('.') 
                 : new[] { @namespace };
 
             foreach (string ns in namespaceArray)
