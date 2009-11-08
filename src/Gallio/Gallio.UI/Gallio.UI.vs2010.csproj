@@ -132,6 +132,16 @@
     </Compile>
     <Compile Include="ControlPanel\Preferences\PreferencePaneProviderTraits.cs" />
     <Compile Include="ControlPanel\NamespaceDoc.cs" />
+    <Compile Include="Controls\CommandToolStripMenuItem.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\ToolStripButton.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\ToolStripMenuItem.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="DataBinding\Observable.cs" />
     <Compile Include="ErrorReporting\ErrorDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -144,6 +154,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="ErrorReporting\ErrorDialogUnhandledExceptionHandler.cs" />
+    <Compile Include="Menus\MenuCommand.cs" />
     <Compile Include="ProgressMonitoring\ICommand.cs" />
     <Compile Include="ProgressMonitoring\ITaskManager.cs" />
     <Compile Include="ProgressMonitoring\ProgressMonitorDialog.cs">
