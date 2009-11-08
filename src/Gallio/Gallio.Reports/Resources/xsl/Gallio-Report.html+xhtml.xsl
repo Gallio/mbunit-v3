@@ -32,7 +32,9 @@
         <link rel="stylesheet" type="text/css" href="{$cssDir}Gallio-Report.css" />
         <link rel="stylesheet" type="text/css" href="{$cssDir}Gallio-Report.generated.css" />
         <script type="text/javascript" src="{$jsDir}Gallio-Report.js" />
-        <script type="text/javascript" src="{$jsDir}swfobject.js" />
+        <xsl:if test="g:testPackageRun//g:testStepRun/g:testLog/g:attachments/g:attachment[@contentType='video/x-flv']">
+          <script type="text/javascript" src="{$jsDir}swfobject.js" />
+        </xsl:if>
         <style type="text/css">
 html
 {
@@ -75,7 +77,9 @@ html
 }
       </style>
       <script type="text/javascript" src="{$jsDir}Gallio-Report.js" />
-      <script type="text/javascript" src="{$jsDir}swfobject.js" />
+      <xsl:if test="g:testPackageRun//g:testStepRun/g:testLog/g:attachments/g:attachment[@contentType='video/x-flv']">
+        <script type="text/javascript" src="{$jsDir}swfobject.js" />
+      </xsl:if>
 
       <xsl:apply-templates select="." mode="xhtml-body" />
     </div>

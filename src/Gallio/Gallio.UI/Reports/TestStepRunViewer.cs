@@ -19,6 +19,7 @@ using System.IO;
 using System.Threading;
 using System.Windows.Forms;
 using Gallio.Common;
+using Gallio.Common.Policies;
 using Gallio.Model.Schema;
 using Gallio.Runner.Reports.Schema;
 
@@ -36,7 +37,7 @@ namespace Gallio.UI.Reports
     public partial class TestStepRunViewer : UserControl
     {
         private HtmlTestStepRunFormatter formatter;
-        private volatile MemoryStream stream;
+        private volatile FileInfo htmlFile;
         private bool initialized;
 
         /// <summary>
@@ -64,7 +65,7 @@ namespace Gallio.UI.Reports
             if (formatter != null)
                 formatter.Clear();
 
-            stream = null;
+            htmlFile = null;
         }
 
         /// <summary>
@@ -94,7 +95,7 @@ namespace Gallio.UI.Reports
             else
             {
                 EnsureFormatter();
-                stream = formatter.Format(testStepRuns, testModelData);
+                htmlFile = formatter.Format(testStepRuns, testModelData);
             }
 
             UpdateAsync();
@@ -125,8 +126,16 @@ namespace Gallio.UI.Reports
                 if (webBrowser.IsBusy)
                     webBrowser.Stop();
 
-                webBrowser.DocumentStream = stream;
-                webBrowser.Show();
+                FileInfo cachedHtmlFile = htmlFile; // in case it changes concurrently
+                if (cachedHtmlFile != null)
+                {
+                    webBrowser.Url = new Uri(cachedHtmlFile.FullName);
+                    webBrowser.Show();
+                }
+                else
+                {
+                    webBrowser.Url = null;
+                }
             });
         }
 

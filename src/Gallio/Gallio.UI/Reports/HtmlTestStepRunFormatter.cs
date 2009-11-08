@@ -15,6 +15,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Text;
@@ -22,6 +23,7 @@ using System.Xml;
 using Gallio.Common;
 using Gallio.Common.Collections;
 using Gallio.Common.IO;
+using Gallio.Common.Platform;
 using Gallio.Model;
 using Gallio.Common.Markup;
 using Gallio.Common.Markup.Tags;
@@ -41,7 +43,6 @@ namespace Gallio.UI.Reports
     internal class HtmlTestStepRunFormatter : IDisposable
     {
         private const string ReportName = "Report";
-        private const string ReportNavigatorTokenFileName = "Report.navigator-token";
 
         private readonly HashSet<string> attachmentPaths;
         private readonly TemporaryDiskCache cache;
@@ -80,28 +81,19 @@ namespace Gallio.UI.Reports
             }
         }
 
-        public MemoryStream Format(ICollection<TestStepRun> stepRuns, TestModelData modelData)
+        public FileInfo Format(ICollection<TestStepRun> stepRuns, TestModelData modelData)
         {
-            MemoryStream stream = new MemoryStream();
-            StreamWriter writer = new StreamWriter(stream, new UTF8Encoding(false));
+            cacheGroup.Create();
 
-            Format(writer, stepRuns, modelData);
+            FileInfo htmlFile = cacheGroup.GetFileInfo(ReportName + "." + Hash64.CreateUniqueHash() + ".html");
 
-            stream.Position = 0;
-
-            // Write a special file to disk in the location where we saved the attachments with
-            // the contents "Gallio Test Report".  This is recognized by the Gallio pluggable protocol
-            // handler as a means to demonstrate that the path of a request to open an attachment file on the
-            // local filesystem is genuinely within the path of a report.
-            if (!cacheGroup.GetFileInfo(ReportNavigatorTokenFileName).Exists)
+            using (StreamWriter htmlFileWriter = new StreamWriter(htmlFile.Open(FileMode.Create,
+                FileAccess.Write, FileShare.ReadWrite | FileShare.Delete), new UTF8Encoding(false)))
             {
-                using (
-                    StreamWriter tokenWriter = new StreamWriter(cacheGroup.OpenFile(ReportNavigatorTokenFileName, FileMode.Create, FileAccess.Write,
-                        FileShare.ReadWrite | FileShare.Delete)))
-                    tokenWriter.WriteLine("Gallio Test Report");
+                Format(htmlFileWriter, stepRuns, modelData);
             }
 
-            return stream;
+            return htmlFile;
         }
 
         private void Format(TextWriter writer, IEnumerable<TestStepRun> stepRuns, TestModelData modelData)
@@ -124,7 +116,7 @@ namespace Gallio.UI.Reports
 
             attachmentPaths.Add(attachmentPath);
 
-            using (Stream fs = cacheGroup.OpenFile(attachmentPath, FileMode.Create, FileAccess.Write, FileShare.ReadWrite))
+            using (Stream fs = cacheGroup.OpenFile(attachmentPath, FileMode.Create, FileAccess.Write, FileShare.ReadWrite | FileShare.Delete))
                 attachmentData.SaveContents(fs, Encoding.Default);
         }
 
@@ -241,6 +233,8 @@ namespace Gallio.UI.Reports
 
             public void RenderReport(IEnumerable<TestStepRun> rootRuns)
             {
+                bool flashEnabled = ShouldUseFlash(rootRuns);
+
                 writer.Write("<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01//EN\">\r\n");
                 writer.Write("<!-- saved from url=(0014)about:internet -->\r\n");
 
@@ -255,7 +249,8 @@ namespace Gallio.UI.Reports
                 writer.Write("/Gallio-Report.Generated.css\" />");
                 writer.Write("<script type=\"text/javascript\"><!--\n");
                 writer.Write(File.ReadAllText(Path.Combine(formatter.jsDir, "Gallio-Report.js")));
-                writer.Write(File.ReadAllText(Path.Combine(formatter.jsDir, "swfobject.js")));
+                if (flashEnabled)
+                    writer.Write(File.ReadAllText(Path.Combine(formatter.jsDir, "swfobject.js")));
                 writer.Write("\n--></script>");
                 writer.Write("</head><body class=\"gallio-report\" style=\"overflow: auto;\">");
 
@@ -272,10 +267,36 @@ namespace Gallio.UI.Reports
                 writer.Write("<div id=\"Details\" class=\"section\"><div class=\"section-content\"><ul class=\"testStepRunContainer\">");
 
                 foreach (TestStepRun testStepRun in rootRuns)
-                    RenderTestStepRun(testStepRun, 1);
+                    RenderTestStepRun(testStepRun, 1, flashEnabled);
 
                 writer.Write("</ul></div></div></div><script type=\"text/javascript\">reportLoaded();</script></body></html>");
                 writer.Flush();
+            }
+
+            /// <summary>
+            /// Attempting to load flash content in a 64bit process on Windows is doomed to failure
+            /// because Adobe does not ship a 64bit version of the Flash plug-in at this time.
+            /// Unfortunately instead of failing gracefully, what happens is that Windows pops up a
+            /// warning dialog (when the browser is disposed) complaining about a missing flash.ocx.
+            /// </summary>
+            private static bool ShouldUseFlash(IEnumerable<TestStepRun> rootRuns)
+            {
+                if (ProcessSupport.Is64BitProcess)
+                    return false;
+
+                foreach (var rootRun in rootRuns)
+                {
+                    foreach (var run in rootRun.AllTestStepRuns)
+                    {
+                        foreach (var attachment in run.TestLog.Attachments)
+                        {
+                            if (attachment.ContentType.StartsWith(MimeTypes.FlashVideo))
+                                return true;
+                        }
+                    }
+                }
+
+                return false;
             }
 
             private static IEnumerable<TestStepRun> GetAllRuns(IEnumerable<TestStepRun> rootRuns)
@@ -337,7 +358,7 @@ namespace Gallio.UI.Reports
                 return statistics.PassedCount > 0 ? "status-passed" : "status-skipped";
             }
 
-            private void RenderTestStepRun(TestStepRun testStepRun, int nestingLevel)
+            private void RenderTestStepRun(TestStepRun testStepRun, int nestingLevel, bool flashEnabled)
             {
                 formatter.SaveAttachments(testStepRun);
 
@@ -394,7 +415,7 @@ namespace Gallio.UI.Reports
                 // execution logs
                 writer.Write("<div class=\"testStepRun\">");
                 if (testStepRun.TestLog.Streams.Count > 0)
-                    RenderExecutionLogStreams(testStepRun);
+                    RenderExecutionLogStreams(testStepRun, flashEnabled);
                 writer.Write("</div>");
 
                 // child steps
@@ -402,7 +423,7 @@ namespace Gallio.UI.Reports
                 {
                     writer.Write("<ul class=\"testStepRunContainer\">");
                     foreach (TestStepRun tsr in testStepRun.Children)
-                        RenderTestStepRun(tsr, (nestingLevel + 1));
+                        RenderTestStepRun(tsr, nestingLevel + 1, flashEnabled);
                     writer.Write("</ul>");
                 }
                 writer.Write("</div></li>");
@@ -484,7 +505,7 @@ namespace Gallio.UI.Reports
                 writer.Write("</li>");
             }
 
-            private void RenderExecutionLogStreams(TestStepRun testStepRun)
+            private void RenderExecutionLogStreams(TestStepRun testStepRun, bool flashEnabled)
             {
                 writer.Write("<div id=\"log-");
                 WriteHtmlEncoded(writer, testStepRun.Step.Id);
@@ -500,7 +521,7 @@ namespace Gallio.UI.Reports
                     writer.Write("\" /></span>");
                     writer.Write("<div class=\"logStreamBody\">");
 
-                    executionLogStream.Body.Accept(new RenderTagVisitor(formatter, writer, testStepRun));
+                    executionLogStream.Body.Accept(new RenderTagVisitor(formatter, writer, testStepRun, flashEnabled));
 
                     writer.Write("</div></div>");
                 }
@@ -569,12 +590,14 @@ namespace Gallio.UI.Reports
             private readonly HtmlTestStepRunFormatter formatter;
             private readonly TextWriter writer;
             private readonly TestStepRun testStepRun;
+            private readonly bool flashEnabled;
 
-            public RenderTagVisitor(HtmlTestStepRunFormatter formatter, TextWriter writer, TestStepRun testStepRun)
+            public RenderTagVisitor(HtmlTestStepRunFormatter formatter, TextWriter writer, TestStepRun testStepRun, bool flashEnabled)
             {
                 this.formatter = formatter;
                 this.writer = writer;
                 this.testStepRun = testStepRun;
+                this.flashEnabled = flashEnabled;
             }
 
             public void VisitBodyTag(BodyTag tag)
@@ -684,7 +707,7 @@ namespace Gallio.UI.Reports
                     WriteHtmlEncodedWithBreaks(writer, attachment.GetText());
                     writer.Write("</pre>");
                 }
-                else if (attachment.ContentType.StartsWith("video/x-flv"))
+                else if (flashEnabled && attachment.ContentType.StartsWith(MimeTypes.FlashVideo))
                 {
                     string placeholderId = "video-" + Hash64.CreateUniqueHash();
                     writer.Write("<div id=\"");
