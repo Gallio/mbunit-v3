@@ -15,11 +15,10 @@
 
 using System;
 using System.IO;
-using Aga.Controls.Tree;
 
 namespace Gallio.Icarus.Models.ProjectTreeNodes
 {
-    internal sealed class ReportNode : Node, IEquatable<ReportNode>
+    internal sealed class ReportNode : ProjectTreeNode, IEquatable<ReportNode>
     {
         public string FileName
         {

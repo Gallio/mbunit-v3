@@ -16,13 +16,20 @@
 using System.ComponentModel;
 using System.Windows.Forms;
 
-namespace Gallio.Icarus.Controls
+namespace Gallio.UI.Controls
 {
-    class ToolStripButton : System.Windows.Forms.ToolStripButton, IBindableComponent
+    /// <summary>
+    /// Sub-class of <see cref="System.Windows.Forms.ToolStripMenuItem">ToolStripMenuItem</see>, 
+    /// making databinding easier.
+    /// </summary>
+    public class ToolStripMenuItem : System.Windows.Forms.ToolStripMenuItem, IBindableComponent
     {
         private BindingContext bindingContext;
         private ControlBindingsCollection dataBindings;
 
+        /// <summary>
+        /// Gets or sets the collection of currency managers for the IBindableComponent.
+        /// </summary>
         [Browsable(false)]
         public BindingContext BindingContext
         {
@@ -35,6 +42,9 @@ namespace Gallio.Icarus.Controls
             set { bindingContext = value; }
         }
 
+        /// <summary>
+        /// Gets the collection of data-binding objects for this IBindableComponent.
+        /// </summary>
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
         public ControlBindingsCollection DataBindings
         {

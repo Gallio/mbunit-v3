@@ -28,7 +28,7 @@ namespace Gallio.Icarus.Models
     {
         private readonly IFileSystem fileSystem;
         private readonly Node projectRoot = new Node();
-        private readonly ReportsNode reportsNode = new ReportsNode();
+        private readonly ReportsNode reportsNode;
         private TestProject testProject = new TestProject();
         private string fileName;
         private ReportMonitor reportMonitor;
@@ -107,7 +107,10 @@ namespace Gallio.Icarus.Models
             this.fileSystem = fileSystem;
 
             projectRoot.Nodes.Add(new PropertiesNode());
+            
             projectRoot.Nodes.Add(new FilesNode());
+            
+            reportsNode = new ReportsNode(this, fileSystem);
             projectRoot.Nodes.Add(reportsNode);
         }
 

@@ -16,14 +16,13 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Drawing;
 using System.IO;
 using Gallio.Common.IO;
 using Gallio.Common.Policies;
 using Gallio.Icarus.Commands;
 using Gallio.Icarus.Controllers.EventArgs;
 using Gallio.Icarus.Controllers.Interfaces;
-using Gallio.Icarus.Controls;
+using Gallio.UI.Controls;
 using Gallio.Icarus.Helpers;
 using Gallio.Runner.Projects;
 using Gallio.Runtime;

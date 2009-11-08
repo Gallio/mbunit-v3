@@ -35,7 +35,7 @@ namespace Gallio.Icarus
             
             InitializeComponent();
 
-            annotationsController.Annotations.ListChanged += (sender, e) => { Sync.Invoke(this, PopulateListView); };
+            annotationsController.Annotations.ListChanged += (sender, e) => Sync.Invoke(this, PopulateListView);
 
             showErrorsToolStripButton.DataBindings.Add("Checked", annotationsController, "ShowErrors", false, 
                 DataSourceUpdateMode.OnPropertyChanged);

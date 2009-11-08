@@ -74,10 +74,26 @@ namespace Gallio.Icarus
 
         private void projectTree_SelectionChanged(object sender, EventArgs e)
         {
-            if (projectTree.SelectedNode == null) 
+            projectTree.ContextMenuStrip = new ContextMenuStrip();
+
+            if (projectTree.SelectedNode == null || !(projectTree.SelectedNode.Tag is ProjectTreeNode))
                 return;
 
-            Node node = (Node)projectTree.SelectedNode.Tag;
+            var node = (ProjectTreeNode)projectTree.SelectedNode.Tag;
+
+            if (node.Commands != null)
+            {
+                // add commands to context menu
+                var menuItems = new List<ToolStripMenuItem>();
+                foreach (var command in node.Commands)
+                {
+                    menuItems.Add(new UI.Controls.CommandToolStripMenuItem(command, taskManager));
+                }
+                projectTree.ContextMenuStrip.Items.AddRange(menuItems.ToArray());
+                return;
+            }
+
+            // TODO: change these to command menu items
             if (node is FilesNode)
                 projectTree.ContextMenuStrip = filesNodeMenuStrip;
             else if (node is FileNode)

@@ -198,7 +198,6 @@
     <Compile Include="Models\TestTreeNodes\MetadataNode.cs" />
     <Compile Include="Models\TestTreeNodes\NamespaceNode.cs" />
     <Compile Include="Models\TestTreeNodes\TestDataNode.cs" />
-    <Compile Include="Observable.cs" />
     <Compile Include="Options\IOptionsManager.cs" />
     <Compile Include="Options\OptionsPanel.cs">
       <SubType>UserControl</SubType>
@@ -217,9 +216,6 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Controls\TestStatusBarStyles.cs" />
-    <Compile Include="Controls\ToolStripButton.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="Controls\ProjectTreeView.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -245,9 +241,6 @@
     <Compile Include="Controllers\Interfaces\IExecutionLogController.cs" />
     <Compile Include="Controllers\Interfaces\IOptionsController.cs" />
     <Compile Include="Controllers\Interfaces\IProjectController.cs" />
-    <Compile Include="Controls\ToolStripMenuItem.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="Helpers\IMenuListHelper.cs" />
     <Compile Include="Helpers\MenuListHelper.cs" />
     <Compile Include="Helpers\TestTreeBuilder.cs" />

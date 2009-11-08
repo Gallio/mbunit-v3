@@ -16,25 +16,40 @@
 using System.ComponentModel;
 using Gallio.UI.Common.Synchronization;
 
-namespace Gallio.Icarus
+namespace Gallio.UI.DataBinding
 {
-    // Thanks Oren!
-    // http://ayende.com/Blog/archive/2009/08/08/an-easier-way-to-manage-inotifypropertychanged.aspx
+    /// <summary>
+    /// Wrapper for a field, that implements INotifyPropertyChanged.
+    /// </summary>
+    /// <typeparam name="T">The type to wrap.</typeparam>
     public class Observable<T> : INotifyPropertyChanged
     {
         private T value;
 
+        /// <summary>
+        /// Default constructor.
+        /// </summary>
         public Observable()
         { }
 
+        /// <summary>
+        /// Constructor initializing field.
+        /// </summary>
+        /// <param name="value">The initial value to wrap.</param>
         public Observable(T value)
         {
             this.value = value;
         }
 
+        /// <summary>
+        /// The value being wrapped.
+        /// </summary>
         public T Value
         {
-            get { return value; }
+            get
+            {
+                return value;
+            }
             set
             {
                 this.value = value;
@@ -49,11 +64,19 @@ namespace Gallio.Icarus
             }
         }
 
+        /// <summary>
+        /// Implicit operator allowing use of value.
+        /// </summary>
+        /// <param name="val"></param>
+        /// <returns></returns>
         public static implicit operator T(Observable<T> val)
         {
             return val.value;
         }
 
+        /// <summary>
+        /// Event fired when the value changes.
+        /// </summary>
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
     }
 }

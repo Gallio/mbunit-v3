@@ -15,6 +15,7 @@
 
 using Gallio.Model;
 using Gallio.Runtime.ProgressMonitoring;
+using Gallio.UI.DataBinding;
 
 namespace Gallio.Icarus.Models
 {

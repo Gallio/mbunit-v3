@@ -22,6 +22,7 @@ using Gallio.Model;
 using Gallio.Model.Filters;
 using Gallio.Runner.Projects.Schema;
 using Gallio.Runtime.ProgressMonitoring;
+using Gallio.UI.DataBinding;
 
 namespace Gallio.Icarus.Controllers.Interfaces
 {

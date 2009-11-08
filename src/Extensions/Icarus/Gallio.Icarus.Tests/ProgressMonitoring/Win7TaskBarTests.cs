@@ -18,6 +18,7 @@ using Gallio.Icarus.Models;
 using Gallio.Icarus.ProgressMonitoring;
 using Gallio.Icarus.Tests.Utilities;
 using Gallio.Icarus.Utilities;
+using Gallio.UI.DataBinding;
 using Rhino.Mocks;
 
 namespace Gallio.Icarus.Tests.ProgressMonitoring

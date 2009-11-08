@@ -24,6 +24,7 @@ using Gallio.Icarus.Models;
 using Gallio.Icarus.Models.TestTreeNodes;
 using Gallio.Model;
 using Gallio.Runner.Reports.Schema;
+using Gallio.UI.DataBinding;
 
 namespace Gallio.Icarus.Controllers
 {

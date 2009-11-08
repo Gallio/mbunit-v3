@@ -13,15 +13,28 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Collections.Generic;
+using Gallio.Common.IO;
+using Gallio.Icarus.Commands;
+using Gallio.UI.Menus;
+
 namespace Gallio.Icarus.Models.ProjectTreeNodes
 {
     internal sealed class ReportsNode : ProjectTreeNode
     {
-        public ReportsNode()
+        public ReportsNode(IProjectTreeModel projectTreeModel, 
+            IFileSystem fileSystem)
         {
             // TODO: i18n
             Text = "Reports";
             Image = Properties.Resources.Report.ToBitmap();
+
+            var deleteAllReportsCommand = new MenuCommand
+            {
+                Command = new DeleteAllReportsCommand(projectTreeModel, fileSystem),
+                Text = "Delete all reports"
+            };
+            Commands = new List<MenuCommand> { deleteAllReportsCommand };
         }
     }
 }

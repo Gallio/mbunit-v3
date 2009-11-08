@@ -36,6 +36,7 @@ using Gallio.UI.Common.Synchronization;
 using Gallio.UI.ControlPanel;
 using Gallio.UI.ProgressMonitoring;
 using WeifenLuo.WinFormsUI.Docking;
+using ToolStripMenuItem=Gallio.UI.Controls.ToolStripMenuItem;
 
 namespace Gallio.Icarus
 {
@@ -166,7 +167,7 @@ namespace Gallio.Icarus
             reportTypes.Sort();
             foreach (string reportType in reportTypes)
             {
-                var menuItem = new Controls.ToolStripMenuItem { Text = reportType };
+                var menuItem = new ToolStripMenuItem { Text = reportType };
                 menuItem.Click += delegate 
                 {
                     var command = new ShowReportCommand(testController, reportController, new FileSystem())

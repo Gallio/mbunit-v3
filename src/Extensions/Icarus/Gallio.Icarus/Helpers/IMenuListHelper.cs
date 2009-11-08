@@ -14,7 +14,7 @@
 // limitations under the License.
 
 using System;
-using Gallio.Icarus.Controls;
+using Gallio.UI.Controls;
 
 namespace Gallio.Icarus.Helpers
 {

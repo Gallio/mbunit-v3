@@ -13,7 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Gallio.Icarus.Controls;
+using Gallio.UI.Controls;
 
 namespace Gallio.Icarus
 {
@@ -55,9 +55,9 @@ namespace Gallio.Icarus
             this.annotationReference = new System.Windows.Forms.ColumnHeader();
             this.imageList1 = new System.Windows.Forms.ImageList(this.components);
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
-            this.showErrorsToolStripButton = new Gallio.Icarus.Controls.ToolStripButton();
-            this.showWarningsToolStripButton = new Gallio.Icarus.Controls.ToolStripButton();
-            this.showInfoToolStripButton = new Gallio.Icarus.Controls.ToolStripButton();
+            this.showErrorsToolStripButton = new Gallio.UI.Controls.ToolStripButton();
+            this.showWarningsToolStripButton = new Gallio.UI.Controls.ToolStripButton();
+            this.showInfoToolStripButton = new Gallio.UI.Controls.ToolStripButton();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripContainer1.ContentPanel.SuspendLayout();

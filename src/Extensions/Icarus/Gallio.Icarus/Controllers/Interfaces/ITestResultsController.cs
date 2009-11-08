@@ -15,6 +15,7 @@
 
 using System;
 using System.Windows.Forms;
+using Gallio.UI.DataBinding;
 
 namespace Gallio.Icarus.Controllers.Interfaces
 {

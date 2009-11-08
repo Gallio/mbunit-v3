@@ -13,11 +13,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Collections.Generic;
 using Aga.Controls.Tree;
+using Gallio.UI.Menus;
 
 namespace Gallio.Icarus.Models.ProjectTreeNodes
 {
     internal abstract class ProjectTreeNode : Node
     {
+        public IList<MenuCommand> Commands { get; protected set; }
     }
 }

@@ -16,7 +16,7 @@
 using System;
 using System.ComponentModel;
 using Gallio.Icarus.Controllers.EventArgs;
-using Gallio.Icarus.Controls;
+using Gallio.UI.Controls;
 
 namespace Gallio.Icarus.Controllers
 {

@@ -18,8 +18,8 @@ using System.Collections.Generic;
 using System.Text;
 using Gallio.Common.IO;
 using Gallio.Icarus.Controllers.Interfaces;
-using Gallio.Icarus.Controls;
 using Gallio.Icarus.Utilities;
+using Gallio.UI.Controls;
 
 namespace Gallio.Icarus.Helpers
 {

@@ -96,12 +96,6 @@ namespace Gallio.Icarus
                 false, DataSourceUpdateMode.OnPropertyChanged);
         }
 
-        public override sealed BindingContext BindingContext
-        {
-            get { return base.BindingContext; }
-            set { base.BindingContext = value; }
-        }
-
         private void removeFileToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (testTree.SelectedNode == null || !(testTree.SelectedNode.Tag is TestTreeNode))

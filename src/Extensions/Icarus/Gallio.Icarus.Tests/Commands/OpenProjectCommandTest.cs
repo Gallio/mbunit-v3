@@ -21,6 +21,7 @@ using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Tests.Utilities;
 using Gallio.Model;
 using Gallio.Runner.Projects.Schema;
+using Gallio.UI.DataBinding;
 using MbUnit.Framework;
 using Rhino.Mocks;
 
