@@ -1,0 +1,68 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+  <Import Project="$(MetaBuildBinDir)\MetaBuild.Module.targets" />
+  <Import Project="VisualStudio90.targets" />
+  
+  <PropertyGroup>
+    <MonoCompatible>false</MonoCompatible>
+  </PropertyGroup>
+
+  <ItemGroup Condition="$(VSIP90Installed)">
+    <CSharpProject Include="Gallio.VisualStudio.Shell.Common\Gallio.VisualStudio.Shell$(ProjectVariant).csproj" />
+  
+    <CSharpProject Include="Gallio.VisualStudio.Shell\Gallio.VisualStudio.Shell90$(ProjectVariant).csproj" />
+    <CSharpProject Include="Gallio.VisualStudio.Shell.Tests\Gallio.VisualStudio.Shell90.Tests$(ProjectVariant).csproj" />
+    
+    <CSharpProject Include="Gallio.VisualStudio.Sail\Gallio.VisualStudio.Sail90$(ProjectVariant).csproj" />
+    <CSharpProject Include="Gallio.VisualStudio.Sail.Tests\Gallio.VisualStudio.Sail90.Tests$(ProjectVariant).csproj" />
+  
+    <CSharpProject Include="Gallio.VisualStudio.Tip\Gallio.VisualStudio.Tip90$(ProjectVariant).csproj" />
+    <CSharpProject Include="Gallio.VisualStudio.Tip.Proxy\Gallio.VisualStudio.Tip90.Proxy$(ProjectVariant).csproj" />
+    <CSharpProject Include="Gallio.VisualStudio.Tip.Tests\Gallio.VisualStudio.Tip90.Tests$(ProjectVariant).csproj" />
+
+    <Binary Include="Gallio.VisualStudio.Shell.Common\bin\Gallio.VisualStudio.Shell.dll">
+      <Folder>VisualStudio</Folder>
+    </Binary>
+    <PluginFile Include="Gallio.VisualStudio.Shell.Common\Gallio.VisualStudio.Shell.plugin">
+      <Folder>VisualStudio</Folder>
+    </PluginFile>
+
+    <Binary Include="Gallio.VisualStudio.Shell\bin\v9.0\Gallio.VisualStudio.Shell90.dll">
+      <Folder>VisualStudio\v9.0</Folder>
+    </Binary>
+    <PluginFile Include="Gallio.VisualStudio.Shell\Gallio.VisualStudio.Shell90.plugin">
+      <Folder>VisualStudio\v9.0</Folder>
+    </PluginFile>
+    <Binary Include="Gallio.VisualStudio.Shell\Gallio.VisualStudio.Shell90.addin">
+      <Folder>VisualStudio\v9.0</Folder>
+    </Binary>
+ 
+    <!--
+    <Binary Include="Gallio.VisualStudio.Sail\bin\v9.0\Gallio.VisualStudio.Sail90.dll">
+      <Folder>VisualStudio\v9.0</Folder>
+    </Binary>
+    <PluginFile Include="Gallio.VisualStudio.Sail\Gallio.VisualStudio.Sail90.plugin">
+      <Folder>VisualStudio\v9.0</Folder>
+    </PluginFile>
+    -->
+
+    <PluginFile Include="Gallio.VisualStudio.Tip\Gallio.VisualStudio.Tip90.plugin">
+      <Folder>VisualStudio\v9.0</Folder>
+    </PluginFile>
+    <Binary Include="Gallio.VisualStudio.Tip\bin\v9.0\Gallio.VisualStudio.Tip90.dll">
+      <Folder>VisualStudio\v9.0</Folder>
+    </Binary>
+    <Binary Include="Gallio.VisualStudio.Tip.Proxy\bin\v9.0\Gallio.VisualStudio.Tip90.Proxy.dll">
+      <Folder>VisualStudio\v9.0</Folder>
+    </Binary>
+
+    <TestAssembly Include="Gallio.VisualStudio.Shell.Tests\bin\v9.0\Gallio.VisualStudio.Shell90.Tests.dll" />
+    <TestAssembly Include="Gallio.VisualStudio.Sail.Tests\bin\v9.0\Gallio.VisualStudio.Sail90.Tests.dll" />    
+    <TestAssembly Include="Gallio.VisualStudio.Tip.Tests\bin\v9.0\Gallio.VisualStudio.Tip90.Tests.dll" />
+
+    <Feature Include="FEATURE_VISUALSTUDIO_90" />
+    <Feature Include="FEATURE_VISUALSTUDIO_TIP_90" />
+    <!-- Not ready for release.
+    <Feature Include="FEATURE_VISUALSTUDIO_SAIL_90" />
+    -->    
+  </ItemGroup>
+</Project>

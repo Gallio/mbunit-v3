@@ -196,11 +196,10 @@
             <FeatureRef Id='feat_Gallio.ReSharper.V45'/>
 <?endif?>
             <FeatureRef Id='feat_Gallio.TDNet'/>
-<?ifdef FEATURE_VISUALSTUDIO_90 ?>
-            <FeatureRef Id='feat_Gallio.VisualStudio.VS90'/>
 <?endif?>
-<?ifdef FEATURE_VISUALSTUDIO_100 ?>
-            <FeatureRef Id='feat_Gallio.VisualStudio.VS100'/>
+
+<?ifdef FEATURE_VISUALSTUDIO ?>
+            <FeatureRef Id='feat_Gallio.VisualStudio'/>
 <?endif?>
         </Feature>
 

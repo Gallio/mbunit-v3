@@ -155,6 +155,12 @@
     <Compile Include="..\Extensions\VisualStudio\VisualStudio.wxs">
       <Link>VisualStudio.wxs</Link>
     </Compile>
+    <Compile Include="..\Extensions\VisualStudio\VisualStudio90.wxs">
+      <Link>VisualStudio90.wxs</Link>
+    </Compile>
+    <Compile Include="..\Extensions\VisualStudio\VisualStudio100.wxs">
+      <Link>VisualStudio100.wxs</Link>
+    </Compile>
     <Compile Include="..\Extensions\VisualStudio\VisualStudio.Interop.wxs">
       <Link>VisualStudio.Interop.wxs</Link>
     </Compile>
