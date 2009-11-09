@@ -18,6 +18,8 @@
         </DirectoryRef>
 
         <Feature Id="feat_Gallio.VisualStudio" Title="Visual Studio Add-Ins" Level="0" Description="Installs the pre-requisite packages for Visual Studio integration features." AllowAdvertise="no">
+            <Condition Level="1">VS90DEVENV OR VS100DEVENV</Condition>
+
 <?ifdef FEATURE_VISUALSTUDIO_90 ?>
             <FeatureRef Id='feat_Gallio.VisualStudio.VS90'/>
 <?endif?>
