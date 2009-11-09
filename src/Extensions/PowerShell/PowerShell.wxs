@@ -3,7 +3,7 @@
      xmlns:ps="http://schemas.microsoft.com/wix/PSExtension">
     <Fragment>
         <Property Id='POWERSHELL1.0'>
-            <RegistrySearch Id='PowerShell10Registry' Type='raw' Root='HKLM' Key='Software\Microsoft\PowerShell\1' Name='Install' />
+            <RegistrySearch Id='PowerShell10Registry' Type='raw' Root='HKLM' Key='Software\Microsoft\PowerShell\1' Name='Install' Win64="no" />
         </Property>
                   
         <DirectoryRef Id="binFolder" FileSource="$(var.GallioTargetDir)\bin\">
