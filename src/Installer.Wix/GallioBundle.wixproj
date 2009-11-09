@@ -52,7 +52,9 @@
   <ItemGroup>
     <Compile Include="WixUI_Gallio.wxs" />
     <Compile Include="GallioBundle.wxs" />
-    <Compile Include="VSExtension2010.wxs" />
+    <Compile Include="VSExtension2010.wxs">
+      <Link>VSExtension2010.wxs</Link>
+    </Compile>
     <Compile Include="..\Gallio\Gallio.wxs">
       <Link>Gallio.wxs</Link>
     </Compile>
