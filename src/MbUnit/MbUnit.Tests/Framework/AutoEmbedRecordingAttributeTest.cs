@@ -29,7 +29,6 @@ using MbUnit.TestResources;
 
 namespace MbUnit.Tests.Framework
 {
-    [Ignore("Can't run this on the build server.")]
     [TestFixture]
     [TestsOn(typeof(AutoEmbedRecordingAttribute))]
     [RunSample(typeof(RecordingSample))]
@@ -58,11 +57,11 @@ namespace MbUnit.Tests.Framework
             {
                 if (triggered)
                 {
-                    Assert.Contains(run.TestLog.ToString(), "Screenshot not available.");
+                    Assert.Contains(run.TestLog.ToString(), "Recording not available.");
                 }
                 else
                 {
-                    Assert.DoesNotContain(run.TestLog.ToString(), "Screenshot not available.");
+                    Assert.DoesNotContain(run.TestLog.ToString(), "Recording not available.");
                 }
             }
         }

@@ -28,7 +28,6 @@ using MbUnit.TestResources;
 
 namespace MbUnit.Tests.Framework
 {
-    [Ignore("Can't run this on the build server.")]
     [TestFixture]
     [TestsOn(typeof(AutoEmbedScreenshotAttribute))]
     [RunSample(typeof(ScreenshotSample))]
