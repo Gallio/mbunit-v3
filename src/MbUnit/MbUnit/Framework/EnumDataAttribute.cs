@@ -74,6 +74,17 @@ namespace MbUnit.Framework
         private readonly Type enumerationType;
 
         /// <summary>
+        /// Gets the type of the enumeration.
+        /// </summary>
+        public Type EnumerationType
+        {
+            get
+            {
+                return enumerationType;
+            }
+        }
+
+        /// <summary>
         /// Sets or gets the single enumeration value that must be excluded from the column.
         /// </summary>
         /// <remarks>
