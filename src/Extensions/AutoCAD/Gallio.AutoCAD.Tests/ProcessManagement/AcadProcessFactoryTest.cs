@@ -30,6 +30,7 @@ namespace Gallio.AutoCAD.Tests.ProcessManagement
     [TestsOn(typeof(AcadProcessFactory))]
     public class AcadProcessFactoryTest
     {
+        private FakeProcessFinder processFinder;
         private IAcadPreferenceManager preferenceManager;
         private AcadProcessFactory factory;
 
@@ -43,10 +44,7 @@ namespace Gallio.AutoCAD.Tests.ProcessManagement
             fileSystem.Stub(x => x.FileExists(Arg.Is(@"c:\most\recently\used\acad.exe"))).Return(true);
             fileSystem.Stub(x => x.DirectoryExists(Arg.Is(@"c:\working\dir\"))).Return(true);
 
-            var process = MockRepository.GenerateStub<IProcess>();
-            var processFinder = MockRepository.GenerateStub<IProcessFinder>();
-            processFinder.Stub(x => x.GetProcessesByName(Arg.Is("acad"))).Return(new[] { process });
-
+            processFinder = new FakeProcessFinder();
             var debuggerManager = MockRepository.GenerateStub<IDebuggerManager>();
             var processCreator = MockRepository.GenerateStub<IProcessCreator>();
 
@@ -62,6 +60,7 @@ namespace Gallio.AutoCAD.Tests.ProcessManagement
         [Test]
         public void CreateProcess_WhenAttachPropertyProvided_ReturnsExistingProcess()
         {
+            processFinder.Processes = new[] { MockRepository.GenerateStub<IProcess>() };
             var options = new TestIsolationOptions();
             options.AddProperty("AcadAttachToExisting", "true");
 
@@ -73,6 +72,7 @@ namespace Gallio.AutoCAD.Tests.ProcessManagement
         [Test]
         public void CreateProcess_WhenAttachAndExePropertiesProvided_ReturnsExistingProcess()
         {
+            processFinder.Processes = new[] { MockRepository.GenerateStub<IProcess>() };
             var options = new TestIsolationOptions();
             options.AddProperty("AcadAttachToExisting", "true");
             options.AddProperty("AcadExePath", @"c:\path\to\acad.exe");
@@ -85,6 +85,7 @@ namespace Gallio.AutoCAD.Tests.ProcessManagement
         [Test]
         public void CreateProcess_WhenAttachPropertyProvided_OverridesPreferenceManager()
         {
+            processFinder.Processes = new[] { MockRepository.GenerateStub<IProcess>() };
             preferenceManager.StartupAction = StartupAction.StartMostRecentlyUsed;
             var options = new TestIsolationOptions();
             options.AddProperty("AcadAttachToExisting", @"true");
@@ -138,6 +139,28 @@ namespace Gallio.AutoCAD.Tests.ProcessManagement
         }
 
         [Test]
+        public void CreateProcess_WhenMoreThanOneExistingProcess_AttachExisting_ThrowsNotSupportedException()
+        {
+            processFinder.Processes = new[]
+                                          {
+                                              MockRepository.GenerateStub<IProcess>(),
+                                              MockRepository.GenerateStub<IProcess>()
+                                          };
+            var options = new TestIsolationOptions();
+            options.AddProperty("AcadAttachToExisting", @"true");
+
+            Assert.Throws<NotSupportedException>(() => factory.CreateProcess(options));
+        }
+
+        [Test]
+        public void CreateProcess_WhenExistingProcess_CreateNew_ThrowsNotSupportedException()
+        {
+            processFinder.Processes = new[] { MockRepository.GenerateStub<IProcess>() };
+
+            Assert.Throws<NotSupportedException>(() => factory.CreateProcess(new TestIsolationOptions()));
+        }
+
+        [Test]
         public void CreateProcess_WhenOptionsArgumentIsNull_ThrowsArgumentNullException()
         {
             Assert.Throws<ArgumentNullException>(() => factory.CreateProcess(null));
@@ -158,6 +181,7 @@ namespace Gallio.AutoCAD.Tests.ProcessManagement
         [Test]
         public void CreateProcess_WhenStartupActionPreferenceIsAttachToExisting_ReturnsExistingProcess()
         {
+            processFinder.Processes = new[] { MockRepository.GenerateStub<IProcess>() };
             preferenceManager.StartupAction = StartupAction.AttachToExisting;
             var options = new TestIsolationOptions();
 
@@ -249,6 +273,16 @@ namespace Gallio.AutoCAD.Tests.ProcessManagement
             var options = new TestIsolationOptions();
 
             Assert.Throws<DirectoryNotFoundException>(() => factory.CreateProcess(options));
+        }
+
+        private class FakeProcessFinder : IProcessFinder
+        {
+            public IProcess[] GetProcessesByName(string processName)
+            {
+                return Processes ?? new IProcess[0];
+            }
+
+            public IProcess[] Processes { get; set; }
         }
     }
 }
