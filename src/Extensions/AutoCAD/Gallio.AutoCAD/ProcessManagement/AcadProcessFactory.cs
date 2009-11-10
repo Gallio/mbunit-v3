@@ -15,6 +15,7 @@
 
 using System;
 using System.IO;
+using System.Runtime.InteropServices;
 using Gallio.AutoCAD.Commands;
 using Gallio.AutoCAD.Preferences;
 using Gallio.Common.Concurrency;
@@ -78,6 +79,24 @@ namespace Gallio.AutoCAD.ProcessManagement
         }
 
         /// <inheritdoc/>
+        /// <remarks>
+        /// <para>
+        /// <c>CreateProcess</c> creates <see cref="IAcadProcess"/> objects that use AutoCAD's
+        /// OLE Automation support for the initial communication with the AutoCAD process.
+        /// Unfortunately, AutoCAD does not register each process with a unique moniker so
+        /// retrieving the "AutoCAD.Application" object for a specific process using
+        /// <see cref="Marshal.GetActiveObject(string)"/> is not possible. To handle this the
+        /// <see cref="CreateProcess"/> method throws <see cref="NotSupportedException"/>
+        /// whenever it is unsure what AutoCAD process it will acquire from the ROT.
+        /// </para>
+        /// </remarks>
+        /// <exception cref="InvalidOperationException">
+        /// If attaching to an existing process and none can be found.
+        /// </exception>
+        /// <exception cref="NotSupportedException">
+        /// If creating a new AutoCAD process and an existing one is found.
+        /// If attaching to an existing process and more than one is found.
+        /// </exception>
         public IAcadProcess CreateProcess(TestIsolationOptions options)
         {
             if (options == null)
@@ -107,14 +126,19 @@ namespace Gallio.AutoCAD.ProcessManagement
             }
 
             if (processes.Length > 1)
-                logger.Log(LogSeverity.Warning, "Multiple acad.exe instances found. Choosing one arbitrarily.");
+            {
+                logger.Log(LogSeverity.Error,
+                   "Error attaching to AutoCAD. Multiple AutoCAD processes are running. " +
+                   "Ensure a single AutoCAD process is running and try again.");
+                throw new NotSupportedException("Multiple AutoCAD processes found.");
+            }
 
             return processes[0];
         }
 
         private IAcadProcess AttachToProcess(IProcess process)
         {
-            return new ExistingAcadProcess(logger, new CopyDataCommandRunner(), process);
+            return new ExistingAcadProcess(logger, new AcadCommandRunner(), process);
         }
 
         private IAcadProcess CreateNewProcess(string executable, string workingDirectory, string arguments)
@@ -122,7 +146,16 @@ namespace Gallio.AutoCAD.ProcessManagement
             ValidateExecutablePath(executable);
             ValidateWorkingDirectory(workingDirectory);
 
-            var process = new CreatedAcadProcess(logger, new CopyDataCommandRunner(), executable, processCreator, debuggerManager)
+            if (processFinder.GetProcessesByName("acad").Length > 0)
+            {
+                logger.Log(LogSeverity.Error,
+                    "Error starting AutoCAD. An AutoCAD process is already running. " +
+                    "Close any existing AutoCAD instances and try again.");
+
+                throw new NotSupportedException("An AutoCAD process is already running.");
+            }
+
+            var process = new CreatedAcadProcess(logger, new AcadCommandRunner(), executable, processCreator, debuggerManager)
                               {
                                   Arguments = arguments,
                                   WorkingDirectory = workingDirectory

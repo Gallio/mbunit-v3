@@ -15,6 +15,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.Text;
+using Gallio.Common.Text;
 
 namespace Gallio.AutoCAD.Commands
 {
@@ -64,6 +66,28 @@ namespace Gallio.AutoCAD.Commands
         public override string ToString()
         {
             return GlobalName;
+        }
+
+        /// <summary>
+        /// Creates a string representing the command as a AutoLISP expression.
+        /// </summary>
+        public string ToLispExpression()
+        {
+            var builder = new StringBuilder();
+
+            builder.Append("(command ");
+            builder.Append(StringUtils.ToStringLiteral("_" + GlobalName));
+
+            var args = GetArguments();
+            if (args != null)
+            {
+                foreach (var arg in args)
+                    builder.Append(" " + StringUtils.ToStringLiteral(arg ?? string.Empty));
+            }
+
+            builder.Append(")\n");
+
+            return builder.ToString();
         }
     }
 }

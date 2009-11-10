@@ -38,6 +38,7 @@ namespace Gallio.AutoCAD.ProcessManagement
         private TimeSpan? readyTimeout;
         private readonly IAcadCommandRunner commandRunner;
         private readonly ILogger logger;
+        private Thread activeCommand;
 
         /// <summary>
         /// Creates a new <see cref="AcadProcessBase"/> instance.
@@ -128,11 +129,21 @@ namespace Gallio.AutoCAD.ProcessManagement
             // until the command has finished executing. The "create endpoint and wait"
             // command runs for the duration of the test run in order to hold on to the
             // AutoCAD document thread (fiber).
-            var thread = new Thread(() => commandRunner.Run(command, process))
-                             {
-                                 IsBackground = true,
-                                 Name = command.GlobalName
-                             };
+            var thread = new Thread(delegate()
+            {
+                try
+                {
+                    activeCommand = Thread.CurrentThread;
+                    commandRunner.Run(command, process);
+                }
+                finally
+                {
+                    activeCommand = null;
+                }
+            });
+            thread.IsBackground = true;
+            thread.Name = command.GlobalName;
+
             thread.Start();
         }
 
@@ -143,6 +154,18 @@ namespace Gallio.AutoCAD.ProcessManagement
         /// <param name="debuggerSetup">The debugger setup or null if the debugger shouldn't be used.</param>
         /// <returns>A <see cref="IProcess"/> instance.</returns>
         protected abstract IProcess StartProcess(DebuggerSetup debuggerSetup);
+
+        /// <summary>
+        /// Blocks until the currently active command completes.
+        /// </summary>
+        public bool WaitForActiveCommand(TimeSpan timeout)
+        {
+            var thread = activeCommand;
+            if (thread != null)
+                return thread.Join(timeout);
+
+            return true;
+        }
 
         /// <summary>
         /// The logger.

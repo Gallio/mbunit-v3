@@ -91,7 +91,10 @@ namespace Gallio.AutoCAD.ProcessManagement
                     return;
 
                 if (!ownedProcess.HasExited)
+                {
+                    WaitForActiveCommand(TimeSpan.FromSeconds(2));
                     ownedProcess.Kill();
+                }
 
                 ownedProcess.Dispose();
             }
