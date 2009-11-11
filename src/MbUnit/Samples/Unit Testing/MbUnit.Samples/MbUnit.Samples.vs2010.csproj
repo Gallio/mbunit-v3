@@ -70,6 +70,7 @@
     <Compile Include="ContractVerifiers\List\SampleList.Test.cs" />
     <Compile Include="CustomComparers\CustomEqualityComparer.cs" />
     <Compile Include="CustomComparers\CustomComparer.cs" />
+    <Compile Include="CustomConverters\CustomConverter.cs" />
     <Compile Include="FeatureDemos\OutcomeDemo.cs" />
     <Compile Include="FeatureDemos\TestLogDemo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
