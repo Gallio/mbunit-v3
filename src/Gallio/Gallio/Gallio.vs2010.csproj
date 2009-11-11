@@ -366,6 +366,10 @@
     <Compile Include="Model\Isolation\NamespaceDoc.cs" />
     <Compile Include="Runner\Events\RunStartedEventArgs.cs" />
     <Compile Include="Runner\Events\NamespaceDoc.cs" />
+    <Compile Include="Runtime\Conversions\Conversion.cs" />
+    <Compile Include="Runtime\Conversions\ConversionKey.cs" />
+    <Compile Include="Runtime\Conversions\CustomConversionRule.cs" />
+    <Compile Include="Runtime\Conversions\CustomConverters.cs" />
     <Compile Include="Runtime\RuntimeConditionContext.cs" />
     <Compile Include="Runner\Extensions\ITestRunnerExtensionFactory.cs" />
     <Compile Include="Runner\Extensions\ITestRunnerExtensionManager.cs" />

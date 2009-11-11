@@ -20,7 +20,7 @@ using MbUnit.Framework;
 
 namespace MbUnit.Samples.CustomEqualityComparers
 {
-    public class Foo // Non equatable type.
+    public class NonEquatable
     {
         private readonly string text;
 
@@ -32,7 +32,7 @@ namespace MbUnit.Samples.CustomEqualityComparers
             }
         }
 
-        public Foo(string text)
+        public NonEquatable(string text)
         {
             this.text = text;
         }
@@ -42,9 +42,9 @@ namespace MbUnit.Samples.CustomEqualityComparers
     public class CustomEqualityComparerTest
     {
         [CustomEqualityComparer]
-        public class FooEqualityComparer : ICustomEqualityComparer<Foo>
+        public class FooEqualityComparer : ICustomEqualityComparer<NonEquatable>
         {
-            public bool Equals(Foo x, Foo y)
+            public bool Equals(NonEquatable x, NonEquatable y)
             {
                 // The inner comparison engine of Gallio handles with the cases
                 // where x or y is null. Therefore we can safely assume than x
@@ -57,9 +57,9 @@ namespace MbUnit.Samples.CustomEqualityComparers
         [Test]
         public void Test()
         {
-            var foo1 = new Foo("Hello World!");
-            var foo2 = new Foo("HELLO WORLD!");
-            var foo3 = new Foo("Goodbye World!");
+            var foo1 = new NonEquatable("Hello World!");
+            var foo2 = new NonEquatable("HELLO WORLD!");
+            var foo3 = new NonEquatable("Goodbye World!");
             Assert.AreEqual(foo1, foo2); // The assertions will use the custom comparer defined above.
             Assert.AreNotEqual(foo1, foo3);
         }

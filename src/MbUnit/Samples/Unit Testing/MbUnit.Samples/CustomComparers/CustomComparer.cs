@@ -20,7 +20,7 @@ using MbUnit.Framework;
 
 namespace MbUnit.Samples.CustomComparers
 {
-    public class Foo // Non comparable type.
+    public class NonComparable
     {
         private readonly int value;
 
@@ -32,7 +32,7 @@ namespace MbUnit.Samples.CustomComparers
             }
         }
 
-        public Foo(int value)
+        public NonComparable(int value)
         {
             this.value = value;
         }
@@ -42,9 +42,9 @@ namespace MbUnit.Samples.CustomComparers
     public class CustomComparerTest
     {
         [CustomComparer]
-        public class FooComparer : ICustomComparer<Foo>
+        public class NonComparableComparer : ICustomComparer<NonComparable>
         {
-            public int Compare(Foo x, Foo y)
+            public int Compare(NonComparable x, NonComparable y)
             {
                 // The inner comparison engine of Gallio handles with the cases
                 // where x or y is null. Therefore, we can safely assume than x
@@ -57,11 +57,11 @@ namespace MbUnit.Samples.CustomComparers
         [Test]
         public void Test()
         {
-            var foo1 = new Foo(123);
-            var foo2 = new Foo(456);
-            var foo3 = new Foo(789);
-            Assert.GreaterThan(foo2, foo1); // The assertions will use the custom comparer defined above.
-            Assert.LessThan(foo2, foo3);
+            var item1 = new NonComparable(123);
+            var item2 = new NonComparable(456);
+            var item3 = new NonComparable(789);
+            Assert.GreaterThan(item2, item1); // The assertions will use the custom comparer defined above.
+            Assert.LessThan(item2, item3);
         }
     }
 }

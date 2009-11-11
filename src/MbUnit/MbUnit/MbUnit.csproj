@@ -165,6 +165,8 @@
     <Compile Include="Framework\AutoEmbedScreenshotAttribute.cs" />
     <Compile Include="Framework\AutoEmbedRecordingAttribute.cs" />
     <Compile Include="Framework\AbstractCustomComparerAttribute.cs" />
+    <Compile Include="Framework\CustomConverterAttribute.cs" />
+    <Compile Include="Framework\ICustomConverter.cs" />
     <Compile Include="Framework\CustomEqualityComparerAttribute.cs" />
     <Compile Include="Framework\CustomComparerAttribute.cs" />
     <Compile Include="Framework\ICustomComparer.cs" />

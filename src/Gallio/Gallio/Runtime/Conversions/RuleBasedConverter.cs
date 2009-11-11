@@ -92,16 +92,27 @@ namespace Gallio.Runtime.Conversions
         {
             lock (conversions)
             {
-                ConversionKey key = new ConversionKey(sourceType, targetType);
-
+                var key = new ConversionKey(sourceType, targetType);
                 ConversionInfo conversion;
+
                 if (!conversions.TryGetValue(key, out conversion))
                 {
-                    // Note: We add a null info record while populating the cache so as to handle
-                    // potentially recursive lookups by preventing them from being satisfied.
-                    conversions.Add(key, ConversionInfo.Null);
+                    // Try to get a custom user converter.
+                    Conversion operation = CustomConverters.Find(key);
 
-                    conversion = GetConversionWithoutCache(sourceType, targetType);
+                    if (operation != null)
+                    {
+                        var rule = new CustomConversionRule(operation);
+                        conversion = new ConversionInfo(ConversionCost.Best, rule);
+                    }
+                    else
+                    {
+                        // Note: We add a null info record while populating the cache so as to handle
+                        // potentially recursive lookups by preventing them from being satisfied.
+                        conversions.Add(key, ConversionInfo.Null);
+                        conversion = GetConversionWithoutCache(sourceType, targetType);
+                    }
+                
                     conversions[key] = conversion;
                 }
 
@@ -126,18 +137,6 @@ namespace Gallio.Runtime.Conversions
         private static Type GetUnderlyingTypeOfNullableIfPresent(Type type)
         {
             return Nullable.GetUnderlyingType(type) ?? type;
-        }
-
-        private struct ConversionKey
-        {
-            private readonly Type SourceType;
-            private readonly Type TargetType;
-
-            public ConversionKey(Type sourceType, Type targetType)
-            {
-                SourceType = sourceType;
-                TargetType = targetType;
-            }
         }
 
         private struct ConversionInfo

@@ -38,7 +38,7 @@ namespace Gallio.Tests.Runtime.Conversions
         [Test]
         public void GetConversionCostChoosesLeastCostlyRule()
         {
-            List<IConversionRule> rules = new List<IConversionRule>();
+            var rules = new List<IConversionRule>();
             RuleBasedConverter converter;
 
             using (Mocks.Record())
@@ -63,7 +63,7 @@ namespace Gallio.Tests.Runtime.Conversions
         [Test]
         public void CanConvertReturnsTrueIfAndOnlyIfAConversionRuleSupportsTheConversion()
         {
-            List<IConversionRule> rules = new List<IConversionRule>();
+            var rules = new List<IConversionRule>();
             RuleBasedConverter converter;
 
             using (Mocks.Record())
@@ -89,7 +89,7 @@ namespace Gallio.Tests.Runtime.Conversions
         [Test]
         public void ConvertCachesTheConversionSoGetConversionCostIsOnlyCalledOnceForAPairOfTypes()
         {
-            List<IConversionRule> rules = new List<IConversionRule>();
+            var rules = new List<IConversionRule>();
             RuleBasedConverter converter;
 
             using (Mocks.Record())
@@ -115,7 +115,7 @@ namespace Gallio.Tests.Runtime.Conversions
         [Test]
         public void RecursiveConversionsAttemptsAreDenied()
         {
-            List<IConversionRule> rules = new List<IConversionRule>();
+            var rules = new List<IConversionRule>();
             RuleBasedConverter converter;
 
             using (Mocks.Record())
@@ -141,7 +141,7 @@ namespace Gallio.Tests.Runtime.Conversions
         [Test]
         public void CanConvertAlwaysReturnsTrueIfTypesAreSame()
         {
-            RuleBasedConverter converter = new RuleBasedConverter(EmptyArray<IConversionRule>.Instance);
+            var converter = new RuleBasedConverter(EmptyArray<IConversionRule>.Instance);
             Assert.IsTrue(converter.CanConvert(typeof(int), typeof(int)));
             Assert.IsFalse(converter.CanConvert(typeof(int), typeof(string)));
         }
@@ -149,7 +149,7 @@ namespace Gallio.Tests.Runtime.Conversions
         [Test]
         public void GetConversionCostAlwaysReturnsZeroIfTypesAreSame()
         {
-            RuleBasedConverter converter = new RuleBasedConverter(EmptyArray<IConversionRule>.Instance);
+            var converter = new RuleBasedConverter(EmptyArray<IConversionRule>.Instance);
             Assert.AreEqual(ConversionCost.Zero, converter.GetConversionCost(typeof(int), typeof(int)));
             Assert.AreEqual(ConversionCost.Invalid, converter.GetConversionCost(typeof(int), typeof(string)));
         }
@@ -157,42 +157,42 @@ namespace Gallio.Tests.Runtime.Conversions
         [Test]
         public void ConvertReturnsSameValueIfTypesAreSame()
         {
-            RuleBasedConverter converter = new RuleBasedConverter(EmptyArray<IConversionRule>.Instance);
+            var converter = new RuleBasedConverter(EmptyArray<IConversionRule>.Instance);
             Assert.AreEqual(42, converter.Convert(42, typeof(int)));
         }
 
         [Test, ExpectedException(typeof(InvalidOperationException))]
         public void ConvertThrowsIfConversionNotSupported()
         {
-            RuleBasedConverter converter = new RuleBasedConverter(EmptyArray<IConversionRule>.Instance);
+            var converter = new RuleBasedConverter(EmptyArray<IConversionRule>.Instance);
             converter.Convert("42", typeof(int));
         }
 
         [Test]
         public void NullsRemainNullDuringConversionsToReferenceTypes()
         {
-            RuleBasedConverter converter = new RuleBasedConverter(EmptyArray<IConversionRule>.Instance);
+            var converter = new RuleBasedConverter(EmptyArray<IConversionRule>.Instance);
             Assert.IsNull(converter.Convert(null, typeof(string)));
         }
 
         [Test]
         public void NullsRemainNullDuringConversionsToNullableValueTypes()
         {
-            RuleBasedConverter converter = new RuleBasedConverter(EmptyArray<IConversionRule>.Instance);
+            var converter = new RuleBasedConverter(EmptyArray<IConversionRule>.Instance);
             Assert.IsNull(converter.Convert(null, typeof(int?)));
         }
 
         [Test, ExpectedException(typeof(InvalidOperationException))]
         public void NullsCannotBeConvertedToNonNullableValueTypes()
         {
-            RuleBasedConverter converter = new RuleBasedConverter(EmptyArray<IConversionRule>.Instance);
+            var converter = new RuleBasedConverter(EmptyArray<IConversionRule>.Instance);
             converter.Convert(null, typeof(int));
         }
 
         [Test]
         public void NullableTypesAreEquivalentToNonNullableTypesOfSameUnderlyingType()
         {
-            RuleBasedConverter converter = new RuleBasedConverter(EmptyArray<IConversionRule>.Instance);
+            var converter = new RuleBasedConverter(EmptyArray<IConversionRule>.Instance);
             Assert.AreEqual(ConversionCost.Zero, converter.GetConversionCost(typeof(int?), typeof(int)));
             Assert.AreEqual(ConversionCost.Zero, converter.GetConversionCost(typeof(int), typeof(int?)));
             Assert.AreEqual(ConversionCost.Zero, converter.GetConversionCost(typeof(int?), typeof(int?)));
@@ -201,7 +201,7 @@ namespace Gallio.Tests.Runtime.Conversions
         [Test]
         public void NullableTargetTypeIsTranslatedBeforeBeingPassedToTheConversionRule()
         {
-            List<IConversionRule> rules = new List<IConversionRule>();
+            var rules = new List<IConversionRule>();
             RuleBasedConverter converter;
 
             using (Mocks.Record())
@@ -217,6 +217,41 @@ namespace Gallio.Tests.Runtime.Conversions
                 Assert.AreEqual(ConversionCost.Best, converter.GetConversionCost(typeof(int?), typeof(double)));
                 Assert.AreEqual(ConversionCost.Best, converter.GetConversionCost(typeof(int), typeof(double?)));
                 Assert.AreEqual(ConversionCost.Best, converter.GetConversionCost(typeof(int?), typeof(double?)));
+            }
+        }
+
+        internal class Foo
+        {
+            private readonly int value;
+
+            public int Value
+            {
+                get
+                {
+                    return value;
+                }
+            }
+
+            public Foo(int value)
+            {
+                this.value = value;
+            }
+        }
+
+        [Test]
+        public void Custom_conversion()
+        {
+            var converter = new RuleBasedConverter(EmptyArray<IConversionRule>.Instance);
+            CustomConverters.Register<string, Foo>(x => new Foo(Int32.Parse(x)));
+
+            try
+            {
+                var actual = (Foo)converter.Convert("123", typeof(Foo));
+                Assert.AreEqual(123, actual.Value);
+            }
+            finally
+            {
+                CustomConverters.Unregister<string, Foo>();
             }
         }
     }
