@@ -65,8 +65,8 @@ namespace Gallio.Icarus.Helpers
 
         private static string TruncatePath(string path, int length)
         {
-            var sb = new StringBuilder();
-            NativeMethods.PathCompactPathEx(sb, path, length, 0);
+            var sb = new StringBuilder(length);
+            NativeMethods.PathCompactPathEx(sb, path, length + 1, 0); // + 1 for null terminator included in StringBuilder capacity
             return sb.ToString();
         }
     }
