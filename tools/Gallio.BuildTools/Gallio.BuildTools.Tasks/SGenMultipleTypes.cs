@@ -42,8 +42,9 @@ namespace Gallio.BuildTools.Tasks
             if (BuildAssemblyPath != null)
                 result.Append("-ap \"").Append(Path.GetFullPath(NormalizePath(BuildAssemblyPath))).Append("\" ");
 
-            foreach (string reference in References)
-                result.Append("-r \"").Append(reference).Append("\" ");
+            if (References != null)
+                foreach (string reference in References)
+                    result.Append("-r \"").Append(reference).Append("\" ");
 
             if (KeyFile != null)
                 result.Append("-k \"").Append(KeyFile).Append("\" ");

@@ -1,6 +1,9 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <Import Project="$(MetaBuildBinDir)\MetaBuild.Module.targets" />
 
+  <UsingTask TaskName="SGenMultipleTypes"
+             AssemblyFile="..\..\bin\Gallio.BuildTools.Tasks.dll" />
+
   <ItemGroup>
     <Module Include="Samples\GallioSamples.module" />
 
@@ -25,7 +28,6 @@
     
     <Content Include="Gallio Website.url" />
   
-    <Binary Include="Gallio\bin\Gallio.XmlSerializers.dll" />
     <PluginFile Include="Gallio\Gallio.plugin" />
     <Binary Include="Gallio\Resources\*.ico">
       <Folder>Resources</Folder>
@@ -131,11 +133,15 @@
              Importance="High" />
 
     <Exec Command="&quot;$(ToolsDir)\ILMerge\ILMerge.exe&quot; &quot;Gallio\bin\Gallio.dll&quot; @(GallioMergeDependency->'&quot;%(Identity)&quot;', ' ') /internalize &quot;/out:$(ImageDir)\bin\Gallio.dll&quot; &quot;/keyfile:$(SourceDir)\Key.snk&quot;" />
+	
+	<!-- Important: Running ILMerge changes the ModuleVersionId of Gallio.dll so we need
+	                to regenerate Gallio.XmlSerializers.dll -->
+    <SGenMultipleTypes BuildAssemblyName="Gallio.dll" BuildAssemblyPath="$(ImageDir)\bin" References="" KeyFile="..\Key.snk" />
   </Target>
 
   <Target Name="GallioImage_NoILMerge"
           Condition="'$(NoILMerge)'=='true'">
-    <Copy SourceFiles="Gallio\bin\Gallio.dll;Gallio\bin\Gallio.pdb;@(GallioMergeDependency)"
+    <Copy SourceFiles="Gallio\bin\Gallio.dll;Gallio\bin\Gallio.pdb;Gallio\bin\Gallio.XmlSerializers.dll;@(GallioMergeDependency)"
           DestinationFolder="$(ImageDir)\bin" />
   </Target>
 
