@@ -15,6 +15,8 @@
 
 using System;
 using System.Collections.Generic;
+using Gallio.Common;
+using Gallio.Runtime.Conversions;
 
 namespace Gallio.Runtime.Formatting
 {
@@ -74,7 +76,18 @@ namespace Gallio.Runtime.Formatting
                 IFormattingRule preferredRule;
                 if (! preferredRules.TryGetValue(type, out preferredRule))
                 {
-                    preferredRule = GetPreferredRuleWithoutCache(type);
+                    // Try to get a custom user converter.
+                    FormattingFunc operation = CustomFormatters.Find(type);
+
+                    if (operation != null)
+                    {
+                        preferredRule = new CustomFormattingRule(operation);
+                    }
+                    else
+                    {
+                        preferredRule = GetPreferredRuleWithoutCache(type);
+                    }
+
                     preferredRules.Add(type, preferredRule);
                 }
 

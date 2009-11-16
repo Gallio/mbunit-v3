@@ -14,38 +14,40 @@
 // limitations under the License.
 
 using System;
+using Gallio.Common;
+using Gallio.Runtime.Conversions;
 
-namespace Gallio.Runtime.Conversions
+namespace Gallio.Runtime.Formatting
 {
     /// <summary>
-    /// Conversion rule for custom user conversions.
+    /// Formatting rule for custom user formatters.
     /// </summary>
-    public sealed class CustomConversionRule : IConversionRule
+    public sealed class CustomFormattingRule : IFormattingRule
     {
-        private readonly Conversion conversion;
+        private readonly FormattingFunc formatterFunc;
 
         /// <summary>
         /// Constructs a custom conversion rule.
         /// </summary>
-        /// <param name="conversion">The conversion operation.</param>
-        public CustomConversionRule(Conversion conversion)
+        /// <param name="formatterFunc">The formatting operation.</param>
+        public CustomFormattingRule(FormattingFunc formatterFunc)
         {
-            if (conversion == null)
-                throw new ArgumentNullException("conversion");
+            if (formatterFunc == null)
+                throw new ArgumentNullException("formatterFunc");
 
-            this.conversion = conversion;
+            this.formatterFunc = formatterFunc;
         }
 
         /// <inheritdoc />
-        public ConversionCost GetConversionCost(Type sourceType, Type targetType, IConverter elementConverter)
+        public int? GetPriority(Type type)
         {
-            return elementConverter.GetConversionCost(sourceType, targetType).Add(ConversionCost.Best);
+            return FormattingRulePriority.Best;
         }
 
         /// <inheritdoc />
-        public object Convert(object sourceValue, Type targetType, IConverter elementConverter)
+        public string Format(object obj, IFormatter formatter)
         {
-            return conversion(sourceValue);
+            return formatterFunc(obj);
         }
     }
 }

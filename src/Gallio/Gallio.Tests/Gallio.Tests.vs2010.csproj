@@ -305,6 +305,7 @@
     <Compile Include="Runtime\Formatting\ByteFormattingRuleTest.cs" />
     <Compile Include="Runtime\Formatting\CharFormattingRuleTest.cs" />
     <Compile Include="Runtime\Formatting\ConvertToStringFormattingRuleTest.cs" />
+    <Compile Include="Runtime\Formatting\CustomFormattersTest.cs" />
     <Compile Include="Runtime\Formatting\DateTimeFormattingRuleTest.cs" />
     <Compile Include="Runtime\Formatting\DBNullFormattingRuleTest.cs" />
     <Compile Include="Runtime\Formatting\DecimalFormattingRuleTest.cs" />

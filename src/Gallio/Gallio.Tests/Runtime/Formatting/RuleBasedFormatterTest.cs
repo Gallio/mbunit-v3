@@ -34,7 +34,7 @@ namespace Gallio.Tests.Runtime.Formatting
         [Test]
         public void NullValueProducesStringContainingNull()
         {
-            RuleBasedFormatter formatter = new RuleBasedFormatter(EmptyArray<IFormattingRule>.Instance);
+            var formatter = new RuleBasedFormatter(EmptyArray<IFormattingRule>.Instance);
             Assert.AreEqual("null", formatter.Format(null));
         }
 
@@ -50,7 +50,7 @@ namespace Gallio.Tests.Runtime.Formatting
                 Expect.Call(rule.Format(null, null)).IgnoreArguments().Return(useNull ? null : "");
             }
 
-            RuleBasedFormatter formatter = new RuleBasedFormatter(new IFormattingRule[] { rule });
+            var formatter = new RuleBasedFormatter(new IFormattingRule[] { rule });
             Assert.AreEqual("{System.Int32}", formatter.Format(42));
         }
 
@@ -65,7 +65,7 @@ namespace Gallio.Tests.Runtime.Formatting
                 Expect.Call(rule.Format(null, null)).IgnoreArguments().Throw(new ApplicationException("Boom!"));
             }
 
-            RuleBasedFormatter formatter = new RuleBasedFormatter(new IFormattingRule[] { rule });
+            var formatter = new RuleBasedFormatter(new IFormattingRule[] { rule });
             Assert.AreEqual("{System.Int32}", formatter.Format(42));
         }
 
@@ -86,9 +86,44 @@ namespace Gallio.Tests.Runtime.Formatting
                 Expect.Call(rule2.Format(null, null)).IgnoreArguments().Return("53");
             }
 
-            RuleBasedFormatter formatter = new RuleBasedFormatter(new IFormattingRule[] { rule1, rule2 });
+            var formatter = new RuleBasedFormatter(new IFormattingRule[] { rule1, rule2 });
             Assert.AreEqual("42", formatter.Format(42));
             Assert.AreEqual("53", formatter.Format(53));
+        }
+
+        internal class Foo
+        {
+            private readonly int value;
+
+            public int Value
+            {
+                get
+                {
+                    return value;
+                }
+            }
+
+            public Foo(int value)
+            {
+                this.value = value;
+            }
+        }
+
+        [Test]
+        public void Custom_formatting()
+        {
+            var formatter = new RuleBasedFormatter(EmptyArray<IFormattingRule>.Instance);
+            CustomFormatters.Register<Foo>(x => String.Format("Foo's value is {0}.", x.Value));
+
+            try
+            {
+                string output = formatter.Format(new Foo(123));
+                Assert.AreEqual("Foo's value is 123.", output);
+            }
+            finally
+            {
+                CustomFormatters.Unregister<Foo>();
+            }
         }
     }
 }

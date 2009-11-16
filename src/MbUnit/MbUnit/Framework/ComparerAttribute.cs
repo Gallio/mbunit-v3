@@ -47,6 +47,14 @@ namespace MbUnit.Framework
         /// <inheritdoc />
         protected override void Verify(IMethodInfo methodInfo)
         {
+            if (methodInfo.ReturnType.Resolve(true) != typeof(int))
+                ThrowUsageErrorException(String.Format("Expected the custom conversion method '{0}' to return '{1}', but found '{2}'.", methodInfo.Name, typeof(int), methodInfo.ReturnType));
+
+            if (methodInfo.Parameters.Count != 2)
+                ThrowUsageErrorException(String.Format("Expected the custom conversion method '{0}' to take 2 parameters, but found {1}.", methodInfo.Name, methodInfo.Parameters.Count));
+
+            if (!methodInfo.Parameters[0].ValueType.Equals(methodInfo.Parameters[1].ValueType))
+                ThrowUsageErrorException(String.Format("Expected the custom conversion method '{0}' to take 2 parameters of the same type, but found '{1}' and '{2}'.", methodInfo.Name, methodInfo.Parameters[0], methodInfo.Parameters[1]));
         }
 
         /// <inheritdoc />

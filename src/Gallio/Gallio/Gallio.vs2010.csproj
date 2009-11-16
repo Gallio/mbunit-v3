@@ -370,6 +370,9 @@
     <Compile Include="Runtime\Conversions\ConversionKey.cs" />
     <Compile Include="Runtime\Conversions\CustomConversionRule.cs" />
     <Compile Include="Runtime\Conversions\CustomConverters.cs" />
+    <Compile Include="Runtime\Formatting\FormattingFunc.cs" />
+    <Compile Include="Runtime\Formatting\CustomFormattingRule.cs" />
+    <Compile Include="Runtime\Formatting\CustomFormatters.cs" />
     <Compile Include="Runtime\RuntimeConditionContext.cs" />
     <Compile Include="Runner\Extensions\ITestRunnerExtensionFactory.cs" />
     <Compile Include="Runner\Extensions\ITestRunnerExtensionManager.cs" />

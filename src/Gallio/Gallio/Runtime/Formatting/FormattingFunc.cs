@@ -14,21 +14,23 @@
 // limitations under the License.
 
 using System;
-using Gallio.Runtime;
+using System.Collections.Generic;
+using System.Text;
 
 namespace Gallio.Runtime.Conversions
 {
     /// <summary>
-    /// Service locator for <see cref="IConverter" />.
+    /// Represents a method that displays an object in a readable textual form.
     /// </summary>
-    public static class Converter
-    {
-        /// <summary>
-        /// Gets the global converter singleton.
-        /// </summary>
-        public static IConverter Instance
-        {
-            get { return RuntimeAccessor.ServiceLocator.Resolve<IConverter>(); }
-        }
-    }
+    /// <param name="source">The object to format.</param>
+    /// <returns>The readable textual representation.</returns>
+    public delegate string FormattingFunc(object source);
+
+    /// <summary>
+    /// Represents a strongly-typed method that displays an object in a readable textual form.
+    /// </summary>
+    /// <typeparam name="T">The type of the object to format.</typeparam>
+    /// <param name="source">The object to format.</param>
+    /// <returns>The readable textual representation.</returns>
+    public delegate string FormattingFunc<T>(T source);
 }

@@ -48,7 +48,7 @@ namespace Gallio.Runtime.Conversions
         private static readonly IDictionary<ConversionKey, Conversion> Converters = new Dictionary<ConversionKey, Conversion>();
 
         /// <summary>
-        /// Registers a custom converter that transforms a object of the source typei into an object of the target type.
+        /// Registers a custom converter that transforms an object of the source type into an object of the target type.
         /// </summary>
         /// <param name="sourceType">The type of the object to convert.</param>
         /// <param name="targetType">The type of the result of the conversion.</param>
@@ -68,7 +68,7 @@ namespace Gallio.Runtime.Conversions
 
             if (Converters.ContainsKey(key))
                 throw new InvalidOperationException(
-                    String.Format("A custom converter that converts objects of the type '{0}' into objects of the type '{1}'was already registered.", sourceType, targetType));
+                    String.Format("A custom converter that converts objects of the type '{0}' into objects of the type '{1}' was already registered.", sourceType, targetType));
 
             Converters.Add(key, converter);
         }

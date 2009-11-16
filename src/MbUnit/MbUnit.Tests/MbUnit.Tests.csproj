@@ -181,6 +181,7 @@
     <Compile Include="Framework\AutoEmbedRecordingAttributeTest.cs" />
     <Compile Include="Framework\ConverterAttributeTest.cs" />
     <Compile Include="Framework\ComparerAttributeTest.cs" />
+    <Compile Include="Framework\FormatterAttributeTest.cs" />
     <Compile Include="Framework\EqualityComparerAttributeTest.cs" />
     <Compile Include="Framework\XmlOptionsTest.cs" />
     <Compile Include="Integration\ConstructorFixtureInitializerAndDisposeTest.cs" />
