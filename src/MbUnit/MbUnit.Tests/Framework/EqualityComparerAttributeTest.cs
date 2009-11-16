@@ -26,9 +26,9 @@ using MbUnit.Framework;
 namespace MbUnit.Tests.Framework
 {
     [TestFixture]
-    [TestsOn(typeof(CustomEqualityComparerAttribute))]
+    [TestsOn(typeof(EqualityComparerAttribute))]
     [RunSample(typeof(NonEquatableStubSample))]
-    public class CustomEqualityComparerAttributeTest : BaseTestWithSampleRunner
+    public class EqualityComparerAttributeTest : BaseTestWithSampleRunner
     {
         [Test]
         public void Run()
@@ -66,14 +66,11 @@ namespace MbUnit.Tests.Framework
         [Explicit("Sample")]
         internal class NonEquatableStubSample
         {
-            [CustomEqualityComparer]
-            internal class NonEquatableStubEqualityComparer : ICustomEqualityComparer<NonEquatableStub>
+            [EqualityComparer]
+            public static bool Equals(NonEquatableStub x, NonEquatableStub y)
             {
-                public bool Equals(NonEquatableStub x, NonEquatableStub y)
-                {
-                    TestLog.WriteLine("CustomEqualityComparer: x = {0}, y = {1}", x.Value, y.Value);
-                    return x.Value == y.Value;
-                }
+                TestLog.WriteLine("CustomEqualityComparer: x = {0}, y = {1}", x.Value, y.Value);
+                return x.Value == y.Value;
             }
 
             [Test]

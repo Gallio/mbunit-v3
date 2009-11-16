@@ -26,9 +26,9 @@ using MbUnit.Framework;
 namespace MbUnit.Tests.Framework
 {
     [TestFixture]
-    [TestsOn(typeof(CustomConverterAttribute))]
+    [TestsOn(typeof(ConverterAttribute))]
     [RunSample(typeof(NonConvertibleStubSample))]
-    public class CustomConverterAttributeTest : BaseTestWithSampleRunner
+    public class ConverterAttributeTest : BaseTestWithSampleRunner
     {
         [Test]
         public void Run()
@@ -60,14 +60,11 @@ namespace MbUnit.Tests.Framework
         [Explicit("Sample")]
         internal class NonConvertibleStubSample
         {
-            [CustomConverter]
-            internal class NonComparableStubComparer : ICustomConverter<string, NonConvertibleStub>
+            [Converter]
+            public static NonConvertibleStub Convert(string source)
             {
-                public NonConvertibleStub Convert(string source)
-                {
-                    TestLog.WriteLine("CustomConverter: source = {0}", source);
-                    return new NonConvertibleStub(Int32.Parse(source));
-                }
+                TestLog.WriteLine("CustomConverter: source = {0}", source);
+                return new NonConvertibleStub(Int32.Parse(source));
             }
 
             [Test]

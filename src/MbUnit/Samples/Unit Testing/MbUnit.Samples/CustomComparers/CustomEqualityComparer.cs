@@ -41,17 +41,14 @@ namespace MbUnit.Samples.CustomEqualityComparers
     [TestFixture]
     public class CustomEqualityComparerTest
     {
-        [CustomEqualityComparer]
-        public class FooEqualityComparer : ICustomEqualityComparer<NonEquatable>
+        [EqualityComparer]
+        public static bool Equals(NonEquatable x, NonEquatable y)
         {
-            public bool Equals(NonEquatable x, NonEquatable y)
-            {
-                // The inner comparison engine of Gallio handles with the cases
-                // where x or y is null. Therefore we can safely assume than x
-                // and y are never null here.
+            // The inner comparison engine of Gallio handles with the cases
+            // where x or y is null. Therefore we can safely assume than x
+            // and y are never null here.
 
-                return x.Text.Equals(y.Text, StringComparison.OrdinalIgnoreCase); // Custom equality logic.
-            }
+            return x.Text.Equals(y.Text, StringComparison.OrdinalIgnoreCase); // Custom equality logic.
         }
 
         [Test]

@@ -26,9 +26,9 @@ using MbUnit.Framework;
 namespace MbUnit.Tests.Framework
 {
     [TestFixture]
-    [TestsOn(typeof(CustomComparerAttribute))]
+    [TestsOn(typeof(ComparerAttribute))]
     [RunSample(typeof(NonComparableStubSample))]
-    public class CustomComparerAttributeTest : BaseTestWithSampleRunner
+    public class ComparerAttributeTest : BaseTestWithSampleRunner
     {
         [Test]
         public void Run()
@@ -60,14 +60,11 @@ namespace MbUnit.Tests.Framework
         [Explicit("Sample")]
         internal class NonComparableStubSample
         {
-            [CustomComparer]
-            internal class NonComparableStubComparer : ICustomComparer<NonComparableStub>
+            [Comparer]
+            public static int Compare(NonComparableStub x, NonComparableStub y)
             {
-                public int Compare(NonComparableStub x, NonComparableStub y)
-                {
-                    TestLog.WriteLine("CustomComparer: x = {0}, y = {1}", x.Value, y.Value);
-                    return x.Value.CompareTo(y.Value);
-                }
+                TestLog.WriteLine("CustomComparer: x = {0}, y = {1}", x.Value, y.Value);
+                return x.Value.CompareTo(y.Value);
             }
 
             [Test]

@@ -29,53 +29,19 @@ namespace MbUnit.Framework
     /// </summary>
     /// <remarks>
     /// <para>
-    /// Extension point attributes act through a container class that 
-    /// must have a default parameterless constructor.
+    /// Extension point attributes act through a static method.
     /// </para>
     /// </remarks>
     [SystemInternal]
     public abstract class ExtensionPointPatternAttribute : PatternAttribute
     {
-        private object containerInstance;
- 
         /// <inheritdoc />
         public override bool IsPrimary
         {
-            get { return true; }
-        }
-       
-        /// <summary>
-        /// Gets an instance of the container type.
-        /// </summary>
-        protected object ContainerInstance
-        {
             get
             {
-                if (Object.ReferenceEquals(null, containerInstance))
-                {
-                    try
-                    {
-                        containerInstance = Activator.CreateInstance(ContainerType);
-                    }
-                    catch (MissingMethodException exception)
-                    {
-                        throw new PatternUsageErrorException(String.Format(
-                            "[{0}] - The extension container class '{1}' should have a default parameterless constructor.",
-                            GetType().Name, ContainerType), exception);
-                    }
-                }
-
-                return containerInstance;
+                return true;
             }
-        }
-
-        /// <summary>
-        /// Gets the type of the container class.
-        /// </summary>
-        protected Type ContainerType
-        {
-            get; 
-            private set;
         }
 
         /// <summary>
@@ -88,14 +54,26 @@ namespace MbUnit.Framework
         /// <inheritdoc />
         public override void Consume(IPatternScope containingScope, ICodeElementInfo codeElement, bool skipChildren)
         {
-            ContainerType = ((ITypeInfo)codeElement).Resolve(true);
-            Extend(containingScope);
+            var methodInfo = (IMethodInfo)codeElement;
+
+            if (!methodInfo.IsStatic)
+                ThrowUsageErrorException(String.Format("Expected the custom extensibility method '{0}' to be static.", methodInfo.Name));
+
+            Verify(methodInfo);
+            Extend(containingScope, methodInfo);
         }
+
+        /// <summary>
+        /// Verifies that the method has a compatible signature.
+        /// </summary>
+        /// <param name="methodInfo">The method to verify</param>
+        protected abstract void Verify(IMethodInfo methodInfo);
 
         /// <summary>
         /// Extends the framework.
         /// </summary>
         /// <param name="containingScope">The containing scope.</param>
-        protected abstract void Extend(IPatternScope containingScope);
+        /// <param name="methodInfo">The method to verify</param>
+        protected abstract void Extend(IPatternScope containingScope, IMethodInfo methodInfo);
     }
 }

@@ -15,45 +15,37 @@
 
 using System;
 using Gallio.Common;
+using Gallio.Common.Reflection;
 using Gallio.Framework;
 
 namespace MbUnit.Framework
 {
     /// <summary>
-    /// Declares a container class for one or several custom type comparers.
+    /// Declares a custom type comparer.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// That attribute must be used on a type implementing the interface <see cref="ICustomComparer{T}"/>.
-    /// </para>
-    /// <para>
-    /// It is possible for a container class to define more than one custom comparer. 
-    /// Implement <see cref="ICustomComparer{T}"/> as many times as it is necessary for every type
-    /// you need to compare.
+    /// That attribute must be used on a static method which takes 2 parameters of the same type, and return a <see cref="Int32"/> value.
     /// </para>
     /// </remarks>
     /// <example>
     /// <code><![CDATA[
-    /// [CustomComparer]
-    /// public class FooComparer : ICustomComparer<Foo>
+    /// public class MyComparers
     /// {
-    ///     public int Compare(Foo x, Foo y)
+    ///     [Comparer]
+    ///     public static int Compare(Foo x, Foo y)
     ///     {
     ///         return /* Insert comparison logic here... */
     ///     }
     /// }
     /// ]]></code>
     /// </example>
-    /// <seealso cref="ICustomComparer{T}"/>
-    /// <seealso cref="CustomEqualityComparerAttribute"/>
-    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
-    public class CustomComparerAttribute : AbstractCustomComparerAttribute
+    /// <seealso cref="EqualityComparerAttribute"/>
+    [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = false)]
+    public class ComparerAttribute : AbstractComparerAttribute
     {
-        /// <summary>
-        /// Default constructor.
-        /// </summary>
-        public CustomComparerAttribute()
-            : base(typeof(ICustomComparer<>), "Compare", typeof(int))
+        /// <inheritdoc />
+        protected override void Verify(IMethodInfo methodInfo)
         {
         }
 

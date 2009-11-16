@@ -24,13 +24,10 @@ namespace MbUnit.Samples.CustomConverters
     [TestFixture]
     public class RainbowFixture
     {
-        [CustomConverter]
-        public class KnownColorToPenConverter : ICustomConverter<KnownColor, Pen>
+        [Converter]
+        public static Pen KnownColorToPen(KnownColor knownColor)
         {
-            public Pen Convert(KnownColor knownColor)
-            {
-                return new Pen(Color.FromKnownColor(knownColor));
-            }
+            return new Pen(Color.FromKnownColor(knownColor));
         }
 
         [Test]

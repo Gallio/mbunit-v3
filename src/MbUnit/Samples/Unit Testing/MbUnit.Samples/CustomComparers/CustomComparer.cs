@@ -41,17 +41,14 @@ namespace MbUnit.Samples.CustomComparers
     [TestFixture]
     public class CustomComparerTest
     {
-        [CustomComparer]
-        public class NonComparableComparer : ICustomComparer<NonComparable>
+        [Comparer]
+        public static int Compare(NonComparable x, NonComparable y)
         {
-            public int Compare(NonComparable x, NonComparable y)
-            {
-                // The inner comparison engine of Gallio handles with the cases
-                // where x or y is null. Therefore, we can safely assume than x
-                // and y are never null here.
-    
-                return x.Value.CompareTo(y.Value); // Custom comparison logic.
-            }
+            // The inner comparison engine of Gallio handles with the cases
+            // where x or y is null. Therefore, we can safely assume than x
+            // and y are never null here.
+
+            return x.Value.CompareTo(y.Value); // Custom comparison logic.
         }
         
         [Test]

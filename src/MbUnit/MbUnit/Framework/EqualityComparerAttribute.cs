@@ -25,41 +25,40 @@ using System.Collections.Generic;
 namespace MbUnit.Framework
 {
     /// <summary>
-    /// Declares a container class for custom type equality comparers.
+    /// Declares a custom type equality comparer.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// That attribute must be used on a type implementing the interface <see cref="ICustomEqualityComparer{T}"/>.
-    /// </para>
-    /// <para>
-    /// It is possible for a container class to define more than one custom equality comparer. 
-    /// Implement <see cref="ICustomEqualityComparer{T}"/> as many times as it is necessary for every type
-    /// you need to compare.
+    /// That attribute must be used on a static method which takes 2 parameters of the same type, and return a <see cref="bool"/> value.
     /// </para>
     /// </remarks>
     /// <example>
     /// <code><![CDATA[
-    /// [CustomComparer]
-    /// public class MyCustomEqualityComparers : ICustomEqualityComparer<Foo>
+    /// public class MyEqualityComparers
     /// {
-    ///     public bool Equals(Foo x, Foo y)
+    ///     [EqualityComparer]
+    ///     public static bool Equals(Foo x, Foo y)
     ///     {
     ///         return /* Insert comparison logic here... */
     ///     }
     /// }
     /// ]]></code>
     /// </example>
-    /// <seealso cref="ICustomEqualityComparer{T}"/>
-    /// <seealso cref="CustomComparerAttribute"/>
-    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
-    public class CustomEqualityComparerAttribute : AbstractCustomComparerAttribute
+    /// <seealso cref="ComparerAttribute"/>
+    [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = false)]
+    public class EqualityComparerAttribute : AbstractComparerAttribute
     {
-        /// <summary>
-        /// Default constructor.
-        /// </summary>
-        public CustomEqualityComparerAttribute()
-            : base(typeof(ICustomEqualityComparer<>), "Equals", typeof(bool))
+        /// <inheritdoc />
+        protected override void Verify(IMethodInfo methodInfo)
         {
+            if (methodInfo.ReturnType.Resolve(true) != typeof(bool))
+                ThrowUsageErrorException(String.Format("Expected the custom equality conversion method '{0}' to return '{1}', but found '{2}'.", methodInfo.Name, typeof(bool), methodInfo.ReturnType));
+
+            if (methodInfo.Parameters.Count != 2)
+                ThrowUsageErrorException(String.Format("Expected the custom equality conversion method '{0}' to take 2 parameters, but found {1}.", methodInfo.Name, methodInfo.Parameters.Count));
+
+            if (!methodInfo.Parameters[0].ValueType.Equals(methodInfo.Parameters[1].ValueType))
+                ThrowUsageErrorException(String.Format("Expected the custom equality conversion method '{0}' to take 2 parameters of the same type, but found '{1}' and '{2}'.", methodInfo.Name, methodInfo.Parameters[0], methodInfo.Parameters[1]));
         }
 
         /// <inheritdoc />
