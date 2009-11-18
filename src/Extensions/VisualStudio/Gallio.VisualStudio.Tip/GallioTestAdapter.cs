@@ -47,22 +47,19 @@ namespace Gallio.VisualStudio.Tip
     public class GallioTestAdapter : ITestAdapter
     {
         private IProgressMonitor currentProgressMonitor;
-        private ThreadTask backgroundTestRunTask;
 
+        private IRunContext runContext;
+        private bool running;
         private volatile bool isCanceled;
 
         public void Initialize(IRunContext runContext)
         {
-            backgroundTestRunTask = new ThreadTask("Test Run", () => BackgroundTestRun(runContext));
+            this.runContext = runContext;
         }
 
         public void Cleanup()
         {
-            if (backgroundTestRunTask != null)
-            {
-                backgroundTestRunTask.Abort();
-                backgroundTestRunTask = null;
-            }
+            CancelRun();
         }
 
         public void ReceiveMessage(object obj)
@@ -71,18 +68,15 @@ namespace Gallio.VisualStudio.Tip
 
         public void Run(ITestElement testElement, ITestContext testContext)
         {
-            if (backgroundTestRunTask != null)
+            if (! running && runContext != null)
             {
-                backgroundTestRunTask.Start();
+                running = true;
+                RunAllTests(runContext);
             }
         }
 
         public void PreTestRunFinished(IRunContext runContext)
         {
-            if (backgroundTestRunTask != null)
-            {
-                backgroundTestRunTask.Join(null);
-            }
         }
 
         public void StopTestRun()
@@ -105,7 +99,7 @@ namespace Gallio.VisualStudio.Tip
             throw new NotSupportedException();
         }
 
-        private void BackgroundTestRun(IRunContext runContext)
+        private void RunAllTests(IRunContext runContext)
         {
             ITestRunnerManager runnerManager = RuntimeAccessor.ServiceLocator.Resolve<ITestRunnerManager>();
             var runner = runnerManager.CreateTestRunner(StandardTestRunnerFactoryNames.IsolatedAppDomain);

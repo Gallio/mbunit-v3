@@ -44,6 +44,22 @@ namespace Gallio.VisualStudio.Tip
                     testElementsById.Add(gallioTestElement.GallioTestId, gallioTestElement);
             }
 
+            Events.RunStarted += delegate(object sender, RunStartedEventArgs e)
+            {
+                // Change the status of all tests to Started so that all Gallio tests look "In Progress".
+                // If we didn't do this, then there would be one "In Progress" test (the first one started)
+                // and a whole bunch of "Pending" tests.  Visual Studio assumes that it controls the order
+                // of execution of all tests but it cannot.  Behind the scenes we hijack the order of execution
+                // when Visual Studio starts the first test.  Of course that test might not actually run
+                // first but it will seem to be "In Progress" just the same.  Instead of misleading the user
+                // as to which test is currently running, we just make them all look "In Progress" at once.  Ugh.
+                foreach (GallioTestElement gallioTestElement in testElementsById.Values)
+                {
+                    TestStateEvent ev = new TestStateEvent(runContext.RunConfig.TestRun.Id, gallioTestElement.ExecutionId.Id, TestState.Started);
+                    runContext.ResultSink.AddResult(ev);
+                }
+            };
+
             Events.TestStepFinished += delegate(object sender, TestStepFinishedEventArgs e)
             {
                 // Submit a GallioTestResult for each primary run of a test case.
