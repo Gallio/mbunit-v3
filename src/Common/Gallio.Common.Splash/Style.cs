@@ -15,6 +15,9 @@ namespace Gallio.Common.Splash
         /// <summary>
         /// Gets the font.
         /// </summary>
+        /// <remarks>
+        /// This is an inline style property.
+        /// </remarks>
         public Font Font
         {
             get { return dummyFont; }
@@ -23,6 +26,9 @@ namespace Gallio.Common.Splash
         /// <summary>
         /// Gets the tab stop ruler.
         /// </summary>
+        /// <remarks>
+        /// This is a paragraph style property.
+        /// </remarks>
         public TabStopRuler TabStopRuler
         {
             get { return TabStopRuler.CreatePixelRuler(60); }
@@ -31,6 +37,9 @@ namespace Gallio.Common.Splash
         /// <summary>
         /// Gets whether to perform word-wrapping.
         /// </summary>
+        /// <remarks>
+        /// This is a paragraph style property.
+        /// </remarks>
         public bool WordWrap
         {
             get { return true; }
@@ -39,6 +48,9 @@ namespace Gallio.Common.Splash
         /// <summary>
         /// Gets the left margin width in pixels.
         /// </summary>
+        /// <remarks>
+        /// This is a paragraph style property.
+        /// </remarks>
         public int LeftMargin
         {
             get { return 0; }
@@ -47,6 +59,9 @@ namespace Gallio.Common.Splash
         /// <summary>
         /// Gets the right margin width in pixels.
         /// </summary>
+        /// <remarks>
+        /// This is a paragraph style property.
+        /// </remarks>
         public int RightMargin
         {
             get { return 0; }
@@ -55,6 +70,9 @@ namespace Gallio.Common.Splash
         /// <summary>
         /// Gets the first line indent in pixels.
         /// </summary>
+        /// <remarks>
+        /// This is a paragraph style property.
+        /// </remarks>
         public int FirstLineIndent
         {
             get { return 0; }

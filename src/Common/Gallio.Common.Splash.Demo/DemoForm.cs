@@ -25,8 +25,8 @@ namespace Gallio.Common.Splash.Demo
             splashView1.AppendText("\nMore \tText...\n");
             splashView1.AppendText("Why Hello مرحبا العالمي World?  How are you?");
             splashView1.AppendLine();
-            splashView1.AppendText("Tab1\tTab2\tTab3\tTab4\tTab5\tTab6\tTab7\tTab8\t");
-            splashView1.AppendText("Tab-1\tTab-2\tTab-3\tTab-4\tTab-5\tTab-6\tTab-7\tTab-8\t");
+            splashView1.AppendText("Tab1\tTab2\tTab3\tTab4\tTab5\tTab6\tTab7\tTab8\n");
+            splashView1.AppendText("Tab.1\tTab.2\tTab.3\tTab.4\tTab.5\tTab.6\tTab.7\tTab.8\n");
         }
     }
 }

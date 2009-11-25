@@ -34,6 +34,8 @@ namespace Gallio.Common.Splash
 
         private readonly UnmanagedBuffer<SCRIPT_ITEM> tempScriptItemBuffer;
         private readonly UnmanagedBuffer<byte> tempEmbeddingLevelBuffer;
+        private UnmanagedBuffer<ScriptRun> tempTruncatedScriptRunBuffer;
+        private UnmanagedBuffer<ushort> tempTruncatedCharLogicalClusters;
 
         private readonly Style defaultStyle;
         private Style style;
@@ -46,6 +48,7 @@ namespace Gallio.Common.Splash
         private bool layoutPending;
         private int cachedTextLayoutWidth;
         private int cachedTextLayoutHeight;
+        private int minimumTextLayoutWidth = 100;
 
         /// <summary>
         /// The character used as a placeholder for text itemizing when a paragraph contains an object run.
@@ -68,11 +71,6 @@ namespace Gallio.Common.Splash
         /// <value>256</value>
         public const int MaxStyles = 256;
 
-        /// <summary>
-        /// The minimum width of the text area in pixels.
-        /// </summary>
-        public static readonly int MinimumTextLayoutWidth = 100;
-
         private const int InitialCapacityForCharsPerDocument = 4096;
         private const int InitialCapacityForParagraphsPerDocument = 64;
         private const int InitialCapacityForRunsPerDocument = 128;
@@ -83,6 +81,8 @@ namespace Gallio.Common.Splash
         private const int InitialCapacityForGlyphsPerParagraph = 128;
 
         private const int ScriptParagraphCacheSize = 64;
+
+        private const int MinimumScriptLineHeight = 1;
 
         /// <summary>
         /// Creates an empty SplashView.
@@ -103,6 +103,8 @@ namespace Gallio.Common.Splash
 
             tempScriptItemBuffer = new UnmanagedBuffer<SCRIPT_ITEM>(InitialCapacityForScriptRunsPerParagraph);
             tempEmbeddingLevelBuffer = new UnmanagedBuffer<byte>(InitialCapacityForScriptRunsPerParagraph);
+            tempTruncatedScriptRunBuffer = new UnmanagedBuffer<ScriptRun>(1);
+            tempTruncatedCharLogicalClusters = new UnmanagedBuffer<ushort>(InitialCapacityForCharsPerParagraph);
 
             scriptParagraphCache = new ScriptParagraphCache(ScriptParagraphCacheSize);
 
@@ -112,6 +114,24 @@ namespace Gallio.Common.Splash
 
             BackColor = SystemColors.Window;
             Padding = new Padding(3);
+        }
+
+        /// <summary>
+        /// Gets or sets the minimum width of the text area.
+        /// </summary>
+        /// <remarks>
+        /// If the control is resized to less than this width, then the control will automatically
+        /// display a horizontal scrollbar.
+        /// </remarks>
+        public int MinimumTextLayoutWidth
+        {
+            get { return minimumTextLayoutWidth; }
+            set
+            {
+                if (value < 1)
+                    throw new ArgumentOutOfRangeException("value", "Value must be at least 1.");
+                minimumTextLayoutWidth = value;
+            }
         }
 
         /// <summary>
@@ -160,6 +180,8 @@ namespace Gallio.Common.Splash
 
             tempScriptItemBuffer.Clear();
             tempEmbeddingLevelBuffer.Clear();
+            tempTruncatedScriptRunBuffer.Clear();
+            tempTruncatedCharLogicalClusters.Clear();
 
             InitializeForNewDocument();
         }
@@ -445,24 +467,18 @@ namespace Gallio.Common.Splash
             }
             else
             {
-                UpdateScrollBars(textPaintArea);
+                UpdateScrollBars();
             }
         }
 
         private Rectangle CalculateTextPaintArea()
         {
-            Rectangle clientArea = ClientRectangle;
-            Padding padding = Padding;
-            return new Rectangle(
-                clientArea.Left + padding.Left,
-                clientArea.Top + padding.Top,
-                clientArea.Width - padding.Horizontal,
-                clientArea.Height - padding.Vertical);
+            return DisplayRectangle;
         }
 
-        private static int CalculateTextLayoutWidth(Rectangle textPaintArea)
+        private int CalculateTextLayoutWidth(Rectangle textPaintArea)
         {
-            return Math.Max(textPaintArea.Width, MinimumTextLayoutWidth);
+            return Math.Max(textPaintArea.Width, minimumTextLayoutWidth);
         }
 
         private void UpdateLayoutAndPaintRegion(Graphics g, Rectangle clipRectangle)
@@ -536,42 +552,17 @@ namespace Gallio.Common.Splash
             layoutPending = false;
 
             // Finish up.
-            UpdateScrollBars(textPaintArea);
+            UpdateScrollBars();
         }
 
-        private void UpdateScrollBars(Rectangle textPaintArea)
+        private void UpdateScrollBars()
         {
-            // Update scrollbars.
-            if (cachedTextLayoutWidth > textPaintArea.Width)
-            {
-                HorizontalScroll.Minimum = 0;
-                HorizontalScroll.Maximum = cachedTextLayoutWidth - textPaintArea.Width;
-                HorizontalScroll.Visible = true;
-                HorizontalScroll.SmallChange = textPaintArea.Width / 8;
-                HorizontalScroll.LargeChange = textPaintArea.Width / 2;
-            }
-            else
-            {
-                HorizontalScroll.Visible = false;
-            }
-
-            if (cachedTextLayoutHeight > textPaintArea.Height)
-            {
-                VerticalScroll.Minimum = 0;
-                VerticalScroll.Maximum = cachedTextLayoutHeight - textPaintArea.Height;
-                VerticalScroll.Visible = true;
-                VerticalScroll.SmallChange = textPaintArea.Height / 8;
-                VerticalScroll.LargeChange = textPaintArea.Height / 2;
-            }
-            else
-            {
-                VerticalScroll.Visible = false;
-            }
+            AutoScrollMinSize = new Size(minimumTextLayoutWidth, cachedTextLayoutHeight);
         }
 
         private void PaintRegion(HDCState hdcState, Rectangle textPaintArea, Rectangle textClipArea)
         {
-            int yPosition = VerticalScroll.Value + textClipArea.Top - textPaintArea.Top;
+            int yPosition = textClipArea.Top - textPaintArea.Top;
             int firstScriptLineIndex;
             ScriptLine* scriptLine = GetScriptLineAtYPositionOrNullIfNone(yPosition, out firstScriptLineIndex);
             if (scriptLine == null)
@@ -579,7 +570,7 @@ namespace Gallio.Common.Splash
 
             ScriptLine* endScriptLine = GetScriptLineZero() + scriptLineBuffer.Count;
             int yStartOffset = scriptLine->Y - yPosition;
-            int xPosition = HorizontalScroll.Value + textClipArea.Left - textPaintArea.Left;
+            int xPosition = textClipArea.Left - textPaintArea.Left;
             int xStartOffset = - xPosition;
 
             NativeMethods.SetBkMode(hdcState.HDC, NativeConstants.TRANSPARENT);
@@ -597,27 +588,52 @@ namespace Gallio.Common.Splash
                 {
                     ScriptRun* scriptRun = scriptParagraph->ScriptRuns + scriptParagraph->ScriptRunVisualToLogicalMap[scriptRunIndex + i];
 
-                    int scriptRunWidth = scriptRun->ABC.TotalWidth;
-
-                    if (xOffset >= textClipArea.Right)
-                        break;
-
-                    if (xOffset + scriptRunWidth > textClipArea.Left)
+                    int measuredWidth;
+                    bool truncateLeading = i == 0 && scriptLine->TruncatedLeadingCharsCount != 0;
+                    bool truncateTrailing = i == scriptRunCount - 1 && scriptLine->TruncatedTrailingCharsCount != 0;
+                    if (truncateLeading || truncateTrailing)
                     {
-                        Style scriptRunStyle = styleTable[scriptRun->StyleIndex];
-                        ScriptCache scriptCache = hdcState.SelectFont(scriptRunStyle.Font);
+                        Style paragraphStyle = styleTable[scriptParagraph->ScriptRuns[0].StyleIndex];
+                        Style style = styleTable[scriptRun->StyleIndex];
+                        ScriptCache scriptCache = hdcState.SelectFont(style.Font);
+                        ScriptRun* truncatedScriptRun = AcquireTruncatedScriptRunAndExpandTabs(
+                            hdcState.HDC, ref scriptCache.ScriptCachePtr,
+                            scriptParagraph, scriptRun, scriptParagraph->Chars(GetCharZero()),
+                            truncateLeading ? scriptLine->TruncatedLeadingCharsCount : 0,
+                            truncateTrailing ? scriptLine->TruncatedTrailingCharsCount : 0,
+                            xOffset - textPaintArea.Left, paragraphStyle.TabStopRuler);
 
-                        int truncatedLeadingCharsCount = i == 0 ? scriptLine->TruncatedLeadingCharsCount : 0;
-                        int truncatedTrailingCharsCount = i == scriptRunCount - 1 ? scriptLine->TruncatedTrailingCharsCount : 0;
+                        measuredWidth = truncatedScriptRun->ABC.TotalWidth;
 
-                        int x = textClipArea.Left + xOffset + scriptRun->ABC.abcA;
-                        int y = textClipArea.Top + yOffset + scriptLineHeight - scriptRun->Height;
-                        ScriptTextOut(hdcState.HDC, ref scriptCache.ScriptCachePtr,
-                            x, y, ExtTextOutOptions.NONE, null, scriptParagraph, scriptRun,
-                            truncatedLeadingCharsCount, truncatedTrailingCharsCount);
+                        if (xOffset + measuredWidth > textClipArea.Left)
+                        {
+                            int x = textClipArea.Left + xOffset + truncatedScriptRun->ABC.abcA;
+                            int y = textClipArea.Top + yOffset + scriptLineHeight - scriptRun->Height; //truncatedScriptRun->Height is not populated
+                            ScriptTextOut(hdcState.HDC, ref scriptCache.ScriptCachePtr,
+                                x, y, ExtTextOutOptions.NONE, null, scriptParagraph, truncatedScriptRun);
+                        }
+
+                        ReleaseTruncatedScriptRun(scriptParagraph, truncatedScriptRun);
+                    }
+                    else
+                    {
+                        measuredWidth = scriptRun->ABC.TotalWidth;
+
+                        if (xOffset + measuredWidth > textClipArea.Left)
+                        {
+                            Style style = styleTable[scriptRun->StyleIndex];
+                            ScriptCache scriptCache = hdcState.SelectFont(style.Font);
+                            int x = textClipArea.Left + xOffset + scriptRun->ABC.abcA;
+                            int y = textClipArea.Top + yOffset + scriptLineHeight - scriptRun->Height;
+                            ScriptTextOut(hdcState.HDC, ref scriptCache.ScriptCachePtr,
+                                x, y, ExtTextOutOptions.NONE, null, scriptParagraph, scriptRun);
+                        }
                     }
 
-                    xOffset += scriptRunWidth;
+                    xOffset += measuredWidth;
+
+                    if (xOffset >= textClipArea.Right)
+                        break; // can't fit any more runs within the clip rectangle
                 }
 
                 yOffset += scriptLineHeight;

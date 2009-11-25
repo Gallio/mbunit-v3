@@ -368,12 +368,21 @@ namespace Gallio.Common.Splash
             public void Initialize(Run* run, SCRIPT_ITEM* scriptItem, int charIndexInParagraph, int charCount)
             {
                 this.run = *run;
-                if (run->RunKind == RunKind.Text)
+                if (this.run.RunKind == RunKind.Text)
                     this.run.CharCount = charCount;
 
-                ScriptAnalysis = scriptItem->a;
-
                 CharIndexInParagraph = charIndexInParagraph;
+                ScriptAnalysis = scriptItem->a;
+            }
+
+            public void InitializeTruncatedCopy(ScriptRun* scriptRun, int truncatedLeadingCharsCount, int truncatedTrailingCharsCount)
+            {
+                this.run = scriptRun->run;
+                if (this.run.RunKind == RunKind.Text)
+                    this.run.CharCount = scriptRun->CharCount - truncatedLeadingCharsCount - truncatedTrailingCharsCount;
+
+                ScriptAnalysis = scriptRun->ScriptAnalysis;
+                CharIndexInParagraph = scriptRun->CharIndexInParagraph + truncatedLeadingCharsCount;
             }
 
             public char* Chars(ScriptParagraph* scriptParagraph, char* charZero)
@@ -483,6 +492,18 @@ namespace Gallio.Common.Splash
             /// The number of trailing chars in the last script run to truncate due to word wrap.
             /// </summary>
             public int TruncatedTrailingCharsCount;
+
+            public void Initialize(int paragraphIndex, int scriptRunIndex, int y)
+            {
+                ParagraphIndex = paragraphIndex;
+                ScriptRunIndex = scriptRunIndex;
+                Y = y;
+                X = 0;
+                Height = 0;
+                ScriptRunCount = 0;
+                TruncatedLeadingCharsCount = 0;
+                TruncatedTrailingCharsCount = 0;
+            }
         }
 
         private sealed class ScriptCacheTable
@@ -531,7 +552,7 @@ namespace Gallio.Common.Splash
         private sealed class ScriptParagraphCache
         {
             private readonly UnmanagedBuffer<LruEntry> buffer;
-            private int NextToken;
+            private int nextToken;
 
             private struct LruEntry
             {
@@ -547,12 +568,12 @@ namespace Gallio.Common.Splash
 
             ~ScriptParagraphCache()
             {
-                Free();
+                FreeBuffer();
             }
 
             public void Clear()
             {
-                NextToken = 0;
+                nextToken = 0;
                 buffer.Count = 0;
             }
 
@@ -561,11 +582,11 @@ namespace Gallio.Common.Splash
                 // Handle wrap-around at 32bits by thrashing all tokens.
                 LruEntry* firstEntry = (LruEntry*)buffer.GetPointer();
                 LruEntry* endEntry = firstEntry + buffer.Count;
-                if (NextToken < 0)
+                if (nextToken < 0)
                 {
-                    NextToken = 0;
+                    nextToken = 0;
                     for (LruEntry* currentEntry = firstEntry; currentEntry != endEntry; currentEntry++)
-                        currentEntry->Token = NextToken++;
+                        currentEntry->Token = nextToken++;
                 }
 
                 // Search for a matching paragraph and return it if found.
@@ -576,7 +597,7 @@ namespace Gallio.Common.Splash
                 {
                     if (currentEntry->ParagraphIndex == paragraphIndex)
                     {
-                        currentEntry->Token = NextToken++;
+                        currentEntry->Token = nextToken++;
                         scriptParagraph = &currentEntry->Paragraph;
                         return true;
                     }
@@ -603,13 +624,13 @@ namespace Gallio.Common.Splash
                 }
 
                 // Return the entry.
-                entryToReplace->Token = NextToken++;
+                entryToReplace->Token = nextToken++;
                 entryToReplace->ParagraphIndex = paragraphIndex;
                 scriptParagraph = &entryToReplace->Paragraph;
                 return false;
             }
 
-            private void Free()
+            private void FreeBuffer()
             {
                 LruEntry* first = (LruEntry*) buffer.GetPointer();
                 LruEntry* end = first + buffer.Count;

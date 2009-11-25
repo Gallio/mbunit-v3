@@ -24,271 +24,286 @@ namespace Gallio.Common.Splash
             ScriptParagraph* scriptParagraph = GetScriptParagraph(hdcState, paragraphIndex);
             int scriptRunCount = scriptParagraph->ScriptRunCount;
 
-            // Loop over all runs in visual order packing runs into lines as they fit and
-            // performing tab expansion or word wrap if needed.  Always runs at least once
-            // even if a paragraph has no runs to ensure that all paragraphs always have at
-            // least one line.
-            ScriptRun* scriptRuns = scriptParagraph->ScriptRuns;
-            int scriptRunIndex = 0;
-            int scriptLineTruncatedLeadingCharsCount = 0;
-            bool firstLineAndScriptRun = true;
-            do
+            // Always allocate at least one script line for a paragraph.
+            ScriptLine* scriptLine = AddScriptLine(paragraphIndex, 0, textLayoutHeight);
+
+            // Handle empty paragraph.
+            if (scriptRunCount == 0)
             {
-                int scriptLineIndex = scriptLineBuffer.Count;
-                scriptLineBuffer.GrowBy(1);
-                ScriptLine* scriptLine = GetScriptLineZero() + scriptLineIndex;
+                scriptLine->Height = MinimumScriptLineHeight;
+                textLayoutHeight += MinimumScriptLineHeight;
+                return;
+            }
 
-                scriptLine->ParagraphIndex = paragraphIndex;
-                scriptLine->Y = textLayoutHeight;
-                scriptLine->ScriptRunIndex = scriptRunIndex;
-                scriptLine->TruncatedLeadingCharsCount = scriptLineTruncatedLeadingCharsCount;
+            // Apply block-level style information for the paragraph from the first logical run.
+            ScriptRun* scriptRuns = scriptParagraph->ScriptRuns;
+            Style paragraphStyle = styleTable[scriptRuns[0].StyleIndex];
+            scriptLine->X = paragraphStyle.LeftMargin + paragraphStyle.FirstLineIndent;
+            int maxX = textLayoutWidth - paragraphStyle.RightMargin - paragraphStyle.LeftMargin;
 
-                int nextScriptLineTruncatedLeadingCharsCount = 0;
-                int scriptLineTruncatedTrailingCharsCount = 0;
-                int scriptLineIndent = 0;
-                int scriptLineWidthRemaining = textLayoutWidth;
-                int scriptLineHeight = 0;
-                int scriptLineScriptRunCount = 0;
-                int currentX = 0;
-
-                bool hasPrecedingWhitespace = false;
-                int lastSoftBreakScriptRunIndex = -1;
-                int lastSoftBreakCharIndex = -1;
-
-                // Pack as many runs into the line as possible.  Skipped if the paragraph has no runs.
-                for (; scriptRunIndex != scriptRunCount; scriptRunIndex++)
+            // Loop over all runs in logical order to determine whether word wrap or
+            // tab expansion is needed.  If not, then we are done.
+            {
+                int currentX = scriptLine->X;
+                int currentHeight = MinimumScriptLineHeight;
+                for (int scriptRunIndex = 0; scriptRunIndex < scriptRunCount; scriptRunIndex++)
                 {
-                    ScriptRun* scriptRun = scriptRuns + scriptParagraph->ScriptRunVisualToLogicalMap[scriptRunIndex];
-                    Style style = styleTable[scriptRun->StyleIndex];
+                    ScriptRun* scriptRun = scriptRuns + scriptRunIndex;
+                    if (scriptRun->RequiresTabExpansion)
+                        goto ComplexLoop;
 
-                    bool firstScriptRun = scriptLineScriptRunCount == 0;
-                    if (firstScriptRun)
+                    currentX += scriptRun->ABC.TotalWidth;
+                    if (currentX > maxX)
+                        goto ComplexLoop;
+
+                    int scriptRunHeight = scriptRun->Height;
+                    if (scriptRunHeight > currentHeight)
+                        currentHeight = scriptRunHeight;
+                }
+
+                // Apply pending changes to the script line now that we're done.
+                scriptLine->ScriptRunCount = scriptRunCount;
+                scriptLine->Height = currentHeight;
+                textLayoutHeight += currentHeight;
+                return;
+            }
+
+            // Complex loop.
+            //
+            // To properly do word wrap we have to loop over individual characters to
+            // find word break boundaries.  Likewise for tab expansion we need to find
+            // tabs and adjust their glyph advance widths.
+            //
+            // In this implementation, tabs are not bidirectional.  If the document
+            // order is LTR (which is all that we support at the moment) and the tab
+            // appears within a sequence of RTL runs, then the tab will be processed
+            // LTR and will break the RTL runs in two ranges.
+            //
+            // Since line breaking proceeds along character boundaries, we need to process
+            // the runs in logical order (same as character order).  We choose just as many
+            // of those runs to keep as will fit in the line and may possibly split runs
+            // at character boundaries based on logical attributes.
+            //
+            // It may at first appear that tab expansion would need to be performed by
+            // summing glyph advances in visual order rather than in logical order.
+            // However, logical and visual order only differs for bidi and complex scripts
+            // which do not intermingle with tabs so any reordering performed is local
+            // to a particular range of runs to one side of the tab or the other.
+            // (This is good because otherwise our algorithm be much more complex!)
+            // 
+            ComplexLoop:
+            {
+                Debug.Assert(scriptParagraph->CharCount != 0,
+                    "Script paragraph should not have zero chars because that would have been handled by the simple case.");
+
+                char* paragraphChars = scriptParagraph->Chars(GetCharZero());
+                int currentX = scriptLine->X;
+                int scriptRunIndex = 0;
+                while (scriptRunIndex < scriptRunCount)
+                {
+                    ScriptRun* scriptRun = scriptRuns + scriptRunIndex;
+
+                    // Perform tab expansion.
+                    // If characters were truncated then measure the truncated head.
+                    int measuredWidth;
+                    bool isFirstRunOnLine = scriptRunIndex == scriptLine->ScriptRunIndex;
+                    if (isFirstRunOnLine && scriptLine->TruncatedLeadingCharsCount != 0)
                     {
-                        // Handle block-level styles and layout.
-                        if (firstLineAndScriptRun)
-                        {
-                            scriptLineIndent += style.FirstLineIndent;
-                            firstLineAndScriptRun = false;
-                        }
+                        Style style = styleTable[scriptRun->StyleIndex];
+                        ScriptCache scriptCache = hdcState.SelectFont(style.Font);
+                        ScriptRun* truncatedScriptRun = AcquireTruncatedScriptRunAndExpandTabs(
+                            hdcState.HDC, ref scriptCache.ScriptCachePtr,
+                            scriptParagraph, scriptRun, paragraphChars,
+                            scriptLine->TruncatedLeadingCharsCount, 0, currentX, paragraphStyle.TabStopRuler);
 
-                        // Handle line-level styles and layout.
-                        scriptLineIndent += style.LeftMargin;
-                        scriptLineWidthRemaining -= style.RightMargin;
-                        scriptLineWidthRemaining -= scriptLineIndent;
-                        currentX = scriptLineIndent;
+                        measuredWidth = truncatedScriptRun->ABC.TotalWidth;
 
-                        // If the line is already too wide due to indentation or margins, then
-                        // allow some extra space so that layout actually terminates.
-                        if (scriptLineWidthRemaining < MinimumTextLayoutWidth)
-                            scriptLineWidthRemaining = MinimumTextLayoutWidth;
+                        ReleaseTruncatedScriptRun(scriptParagraph, truncatedScriptRun);
+                    }
+                    else
+                    {
+                        ExpandTabs(scriptParagraph, scriptRun, paragraphChars, currentX, paragraphStyle.TabStopRuler, null);
+
+                        measuredWidth = scriptRun->ABC.TotalWidth;
                     }
 
-                    // Adjust height.
-                    int scriptRunHeight = scriptRun->Height;
-                    if (scriptRunHeight > scriptLineHeight)
-                        scriptLineHeight = scriptRunHeight;
-
-                    // Assume we will include this run.  We will adjust the count later if needed.
-                    scriptLineScriptRunCount += 1;
-
-                    // Process the run.
-                    bool requiresTabExpansion = scriptRun->RequiresTabExpansion;
-                    bool rtl = scriptRun->ScriptAnalysis.fRTL;
-                    int charCount = scriptRun->CharCount;
-                    char* chars = requiresTabExpansion ? scriptRun->Chars(scriptParagraph, GetCharZero()) : null;
-                    SCRIPT_LOGATTR* logicalAttributes = scriptRun->CharLogicalAttributes(scriptParagraph);
-                    ushort* logicalClusters = scriptRun->CharLogicalClusters(scriptParagraph);
-                    int glyphCount = scriptRun->GlyphCount;
-                    int* glyphAdvanceWidths = scriptRun->GlyphAdvanceWidths(scriptParagraph);
-                    RunKind runKind = scriptRun->RunKind;
-                    for (int charIndex = firstScriptRun ? scriptLineTruncatedLeadingCharsCount : 0; charIndex < charCount; )
+                    // Check for overflow if perfoming word wrap.
+                    int nextX = currentX + measuredWidth;
+                    if (nextX <= maxX || ! paragraphStyle.WordWrap)
                     {
-                        int glyphClusterIndex = logicalClusters[charIndex];
+                        // No overflow.
+                        currentX = nextX;
+                        scriptRunIndex++;
+                    }
+                    else
+                    {
+                        // Overflow.
+                        ScriptRun* firstRunOnLine = scriptRuns + scriptLine->ScriptRunIndex;
+                        int firstCharIndexOnLine = firstRunOnLine->CharIndexInParagraph + scriptLine->TruncatedLeadingCharsCount;
 
-                        // Perform tab expansion if necessary.
-                        if (requiresTabExpansion && chars[charIndex] == '\t')
+                        // Scan the line backwards in logical order and unwind the calculated width until
+                        // we find a soft break.
+                        ScriptRun* breakScriptRun = scriptRun;
+                        int breakCharOffset = 0;
+                        int breakCharIndex = scriptRun->CharIndexInParagraph + scriptRun->CharCount;
+                        for (; --breakCharIndex > firstCharIndexOnLine; )
                         {
-                            int nextX = style.TabStopRuler.AdvanceToNextTabStop(currentX);
-                            int oldAdvanceWidth = glyphAdvanceWidths[glyphClusterIndex];
-                            int newAdvanceWidth = nextX - currentX;
-                            glyphAdvanceWidths[glyphClusterIndex] = newAdvanceWidth;
-                            scriptRun->ABC.abcB += newAdvanceWidth - oldAdvanceWidth;
-                        }
-
-                        // Explore the glyph cluster at the current character position.
-                        int clusterAdvanceWidth;
-                        int clusterCharCount;
-                        int clusterGlyphCount;
-                        GetGlyphClusterInfo(charIndex, charCount, logicalClusters, glyphCount, glyphAdvanceWidths, rtl,
-                            out clusterAdvanceWidth, out clusterCharCount, out clusterGlyphCount);
-
-                        // Get information about this character range.
-                        bool whiteSpace;
-                        bool softBreak;
-                        if (runKind == RunKind.Object)
-                        {
-                            whiteSpace = false;
-                            softBreak = true;
-                        }
-                        else
-                        {
-                            CombineWordWrapAttributesOverCharacterRange(charIndex, clusterCharCount, logicalAttributes,
-                                out whiteSpace, out softBreak);
-
-                            if (hasPrecedingWhitespace)
-                                softBreak = true;
-                        }
-
-                        if (whiteSpace)
-                        {
-                            // Whitespace.  Defer overflow processing until later.
-                            hasPrecedingWhitespace = true;
-                        }
-                        else
-                        {
-                            // Not whitespace.
-                            if (softBreak)
+                            // Seek backwards to find the script run index.
+                            for (; ; )
                             {
-                                lastSoftBreakScriptRunIndex = scriptRunIndex;
-                                lastSoftBreakCharIndex = charIndex;
+                                breakCharOffset = breakCharIndex - breakScriptRun->CharIndexInParagraph;
+                                if (breakCharOffset >= 0)
+                                    break;
+
+                                breakScriptRun--;
+                                currentX -= breakScriptRun->ABC.TotalWidth;
                             }
 
-                            // Check for overflow.
-                            if (scriptLineWidthRemaining < clusterAdvanceWidth)
+                            // Look for a soft break, whitespace, or the first char after whitespace and
+                            // calculate the truncated width of the break script run to determine whether
+                            // we have found a good breakpoint.
+                            SCRIPT_LOGATTR attr = scriptParagraph->CharLogicalAttributes[breakCharIndex];
+                            if (attr.fSoftBreakOrfWhiteSpace
+                                || breakCharIndex != 0 && scriptParagraph->CharLogicalAttributes[breakCharIndex - 1].fWhiteSpace)
                             {
-                                // Overflow happened.
-                                // Choose a breakpoint.
-                                if (hasPrecedingWhitespace)
+                                int truncatedWidth;
+                                if (breakCharOffset == 0)
                                 {
-                                    // Break on current character if there is preceding whitespace.
-                                    if (charIndex == 0)
-                                    {
-                                        scriptLineScriptRunCount -= 1;
-                                    }
-                                    else
-                                    {
-                                        scriptLineTruncatedTrailingCharsCount = charCount - charIndex;
-                                        nextScriptLineTruncatedLeadingCharsCount = charIndex;
-                                    }
-                                }
-                                else if (firstScriptRun && charIndex == 0)
-                                {
-                                    // If this is the first run and we cannot fit any chars, then hardbreak
-                                    // after first char and just let it overflow.
-                                    scriptLineTruncatedTrailingCharsCount = charCount - 1;
-                                    nextScriptLineTruncatedLeadingCharsCount = 1;
-                                }
-                                else if (lastSoftBreakCharIndex == 0)
-                                {
-                                    // Soft break on first character of a run.
-                                    scriptLineScriptRunCount -= scriptRunIndex - lastSoftBreakScriptRunIndex + 1;
-                                    scriptRunIndex = lastSoftBreakScriptRunIndex;
-                                }
-                                else if (lastSoftBreakCharIndex > 0)
-                                {
-                                    // Soft break in the middle of a run.
-                                    ScriptRun* lastSoftBreakScriptRun = scriptRuns + scriptParagraph->ScriptRunVisualToLogicalMap[lastSoftBreakScriptRunIndex];
-                                    scriptLineScriptRunCount -= scriptRunIndex - lastSoftBreakScriptRunIndex;
-                                    scriptRunIndex = lastSoftBreakScriptRunIndex;
-                                    scriptLineTruncatedTrailingCharsCount = lastSoftBreakScriptRun->CharCount - lastSoftBreakCharIndex;
-                                    nextScriptLineTruncatedLeadingCharsCount = lastSoftBreakCharIndex;
-                                }
-                                else if (charIndex == 0)
-                                {
-                                    // Hard break on first character of a run.
-                                    scriptLineScriptRunCount -= 1;
+                                    truncatedWidth = 0;
                                 }
                                 else
                                 {
-                                    // Hard break in the middle of a run.
-                                    scriptLineTruncatedTrailingCharsCount = charCount - charIndex;
-                                    nextScriptLineTruncatedLeadingCharsCount = charIndex;
+                                    Style style = styleTable[breakScriptRun->StyleIndex];
+                                    ScriptCache scriptCache = hdcState.SelectFont(style.Font);
+                                    ScriptRun* truncatedScriptRun = AcquireTruncatedScriptRunAndExpandTabs(
+                                        hdcState.HDC, ref scriptCache.ScriptCachePtr,
+                                        scriptParagraph, breakScriptRun, paragraphChars,
+                                        0, breakScriptRun->CharCount - breakCharOffset,
+                                        currentX, paragraphStyle.TabStopRuler);
+
+                                    truncatedWidth = truncatedScriptRun->ABC.TotalWidth;
+
+                                    ReleaseTruncatedScriptRun(scriptParagraph, truncatedScriptRun);
                                 }
 
-                                Debug.Assert(scriptLineScriptRunCount != 0, "Overflow logic should not produce an empty line with no runs.");
-                                goto FinishLine;
+                                if (currentX + truncatedWidth <= maxX)
+                                    break; // Found a suitable breakpoint.
                             }
-
-                            // Not whitespace and no overflow.
-                            hasPrecedingWhitespace = false;
                         }
 
-                        // Advance to next char.
-                        scriptLineWidthRemaining -= clusterAdvanceWidth;
-                        currentX += clusterAdvanceWidth;
-                        charIndex += clusterCharCount;
-                    } // end of loop over chars...
+                        // Introduce a hard break at the current script run when we do not find a useful breakpoint.
+                        if (breakCharIndex <= firstCharIndexOnLine)
+                        {
+                            breakScriptRun = scriptRun;
+                            breakCharIndex = scriptRun->CharIndexInParagraph;
+                            if (breakCharIndex <= firstCharIndexOnLine)
+                                breakCharIndex = firstCharIndexOnLine + 1; // ensure at least one char gets shown
+                            breakCharOffset = breakCharIndex - scriptRun->CharIndexInParagraph;
+                        }
+
+                        // Finalize the script line properties.
+                        int breakScriptRunIndex = (int) (breakScriptRun - scriptRuns);
+                        if (breakCharOffset == 0)
+                        {
+                            scriptLine->ScriptRunCount = breakScriptRunIndex - scriptLine->ScriptRunIndex;
+                        }
+                        else
+                        {
+                            scriptLine->ScriptRunCount = breakScriptRunIndex - scriptLine->ScriptRunIndex + 1;
+                            scriptLine->TruncatedTrailingCharsCount = breakScriptRun->CharCount - breakCharOffset;
+                        }
+                        SetScriptLineHeightFromScriptRuns(scriptLine, scriptParagraph, ref textLayoutHeight);
+
+                        // Start a new script line.
+                        scriptRunIndex = breakScriptRunIndex;
+                        currentX = paragraphStyle.LeftMargin;
+
+                        scriptLine = AddScriptLine(paragraphIndex, scriptRunIndex, textLayoutHeight);
+                        scriptLine->X = currentX;
+                        scriptLine->TruncatedLeadingCharsCount = breakCharOffset;
+                    }
                 }
 
-            FinishLine:
-                scriptLine->X = scriptLineIndent;
-                scriptLine->Height = scriptLineHeight;
-                scriptLine->ScriptRunCount = scriptLineScriptRunCount;
-                scriptLine->TruncatedTrailingCharsCount = scriptLineTruncatedTrailingCharsCount;
-
-                scriptLineTruncatedLeadingCharsCount = nextScriptLineTruncatedLeadingCharsCount;
-                textLayoutHeight += scriptLineHeight;
+                // Finish the last script line.
+                scriptLine->ScriptRunCount = scriptRunCount - scriptLine->ScriptRunIndex;
+                SetScriptLineHeightFromScriptRuns(scriptLine, scriptParagraph, ref textLayoutHeight);
             }
-            while (scriptRunIndex != scriptRunCount);
         }
-        
-        /// <summary>
-        /// Gets information about the advance width, number of characters and number of glyphs
-        /// in a glyph cluster starting at a specified character position.
-        /// </summary>
-        private static void GetGlyphClusterInfo(int charIndex, int charCount,
-            ushort* logicalClusters, int glyphCount, int* glyphAdvanceWidths, bool rtl,
-            out int clusterAdvanceWidth, out int clusterCharCount, out int clusterGlyphCount)
-        {
-            int glyphClusterIndex = logicalClusters[charIndex];
-            clusterAdvanceWidth = glyphAdvanceWidths[glyphClusterIndex];
-            clusterCharCount = 1;
 
-            int nextGlyphClusterIndex;
-            for (; ; )
+        private static void ExpandTabs(ScriptParagraph* scriptParagraph, ScriptRun* scriptRun, char* paragraphChars, int x,
+            TabStopRuler tabStopRuler, ushort* charLogicalClustersOverride)
+        {
+            char* firstChar = paragraphChars + scriptRun->CharIndexInParagraph;
+            char* endChar = firstChar + scriptRun->CharCount;
+            int lastSummedGlyphIndex = 0;
+            for (char* currentChar = firstChar; currentChar != endChar; currentChar++)
             {
-                int nextCharIndex = charIndex + clusterCharCount;
-                if (nextCharIndex >= charCount)
+                if (*currentChar == '\t')
                 {
-                    nextGlyphClusterIndex = rtl ? -1 : glyphCount;
-                    break;
+                    if (charLogicalClustersOverride == null)
+                        charLogicalClustersOverride = scriptParagraph->CharLogicalClusters;
+
+                    int glyphClusterIndex = charLogicalClustersOverride[currentChar - firstChar];
+                    int* glyphAdvanceWidths = scriptRun->GlyphAdvanceWidths(scriptParagraph);
+
+                    // Note: Assumes that tabs appear in the same order logically and visually.
+                    while (lastSummedGlyphIndex < glyphClusterIndex)
+                        x += glyphAdvanceWidths[lastSummedGlyphIndex++];
+
+                    int tabbedX = tabStopRuler.AdvanceToNextTabStop(x);
+                    int oldAdvanceWidth = glyphAdvanceWidths[glyphClusterIndex];
+                    int newAdvanceWidth = tabbedX - x;
+                    glyphAdvanceWidths[glyphClusterIndex] = newAdvanceWidth;
+                    scriptRun->ABC.abcB += newAdvanceWidth - oldAdvanceWidth;
                 }
-
-                nextGlyphClusterIndex = logicalClusters[nextCharIndex];
-                if (nextGlyphClusterIndex != glyphClusterIndex)
-                    break;
-
-                clusterCharCount += 1;
-            }
-
-            if (rtl)
-            {
-                clusterGlyphCount = glyphClusterIndex - nextGlyphClusterIndex;
-                while (--glyphClusterIndex > nextGlyphClusterIndex)
-                    clusterAdvanceWidth += glyphAdvanceWidths[glyphClusterIndex];
-            }
-            else
-            {
-                clusterGlyphCount = nextGlyphClusterIndex - glyphClusterIndex;
-                while (++glyphClusterIndex < nextGlyphClusterIndex)
-                    clusterAdvanceWidth += glyphAdvanceWidths[glyphClusterIndex];
             }
         }
 
-        /// <summary>
-        /// Combines word-wrap related attributes over a character range.
-        /// </summary>
-        private void CombineWordWrapAttributesOverCharacterRange(int charIndex, int charCount, SCRIPT_LOGATTR* logicalAttributes,
-            out bool whiteSpace, out bool softBreak)
+        private ScriptRun* AcquireTruncatedScriptRunAndExpandTabs(IntPtr hdc, ref IntPtr scriptCache,
+            ScriptParagraph* scriptParagraph, ScriptRun* scriptRun, char* paragraphChars,
+            int truncatedLeadingCharsCount, int truncatedTrailingCharsCount,
+            int x, TabStopRuler tabStopRuler)
         {
-            whiteSpace = logicalAttributes[charIndex].fWhiteSpace;
-            softBreak = logicalAttributes[charIndex].fSoftBreak;
+            ScriptRun* tempTruncatedScriptRun = (ScriptRun*) tempTruncatedScriptRunBuffer.GetPointer();
+            tempTruncatedScriptRun->InitializeTruncatedCopy(scriptRun, truncatedLeadingCharsCount, truncatedTrailingCharsCount);
 
-            while (++charIndex < charCount)
+            tempTruncatedCharLogicalClusters.EnsureCapacity(scriptRun->CharCount);
+            ushort* charLogicalClusters = (ushort*) tempTruncatedCharLogicalClusters.GetPointer();
+
+            ScriptShapeAndPlace(hdc, ref scriptCache, scriptParagraph, tempTruncatedScriptRun, paragraphChars, charLogicalClusters);
+            ExpandTabs(scriptParagraph, scriptRun, paragraphChars, x, tabStopRuler, charLogicalClusters);
+
+            return tempTruncatedScriptRun;
+        }
+
+        private void ReleaseTruncatedScriptRun(ScriptParagraph* scriptParagraph, ScriptRun* truncatedScriptRun)
+        {
+            scriptParagraph->GlyphCount -= truncatedScriptRun->GlyphCount;
+        }
+
+        private ScriptLine* AddScriptLine(int paragraphIndex, int scriptRunIndex, int y)
+        {
+            int scriptLineIndex = scriptLineBuffer.Count;
+            scriptLineBuffer.GrowBy(1);
+            ScriptLine* scriptLine = GetScriptLineZero() + scriptLineIndex;
+            scriptLine->Initialize(paragraphIndex, scriptRunIndex, y);
+            return scriptLine;
+        }
+
+        private static void SetScriptLineHeightFromScriptRuns(ScriptLine* scriptLine, ScriptParagraph* scriptParagraph, ref int textLayoutHeight)
+        {
+            int height = MinimumScriptLineHeight;
+            ScriptRun* scriptRun = scriptParagraph->ScriptRuns + scriptLine->ScriptRunIndex;
+            ScriptRun* endScriptRun = scriptRun + scriptLine->ScriptRunCount;
+            for (; scriptRun != endScriptRun; scriptRun++)
             {
-                whiteSpace |= logicalAttributes[charIndex].fWhiteSpace;
-                softBreak |= logicalAttributes[charIndex].fSoftBreak;
+                int scriptRunHeight = scriptRun->Height;
+                if (scriptRunHeight > height)
+                    height = scriptRunHeight;
             }
+
+            scriptLine->Height = height;
+            textLayoutHeight += height;
         }
 
         /// <summary>
@@ -365,7 +380,7 @@ namespace Gallio.Common.Splash
                 {
                     ScriptCache scriptCache = hdcState.SelectFont(scriptRunStyle.Font);
 
-                    ScriptShapeAndPlace(hdcState.HDC, ref scriptCache.ScriptCachePtr, scriptParagraph, scriptRun, chars);
+                    ScriptShapeAndPlace(hdcState.HDC, ref scriptCache.ScriptCachePtr, scriptParagraph, scriptRun, chars, null);
 
                     int height = GetFontHeight(hdcState.HDC, ref scriptCache.ScriptCachePtr);
                     scriptRun->Height = height;
@@ -395,6 +410,10 @@ namespace Gallio.Common.Splash
                     scriptRun->ABC.abcA = measurements.Margin.Left;
                     scriptRun->ABC.abcB = measurements.Size.Width;
                     scriptRun->ABC.abcC = measurements.Margin.Right;
+
+                    // Change the logical attributes of the character so that an object behaves like
+                    // a word rather than whitespace when performing word wrap.
+                    scriptParagraph->CharLogicalAttributes[scriptRun->CharIndexInParagraph].SetfSoftBreakfCharStopAndfWordStop();
                 }
             }
         }
@@ -509,28 +528,31 @@ namespace Gallio.Common.Splash
                 Marshal.ThrowExceptionForHR(result);
         }
 
-        private static void ScriptShapeAndPlace(IntPtr hdc, ref IntPtr scriptCache, ScriptParagraph* scriptParagraph, ScriptRun* scriptRun, char* paragraphChars)
+        private static void ScriptShapeAndPlace(IntPtr hdc, ref IntPtr scriptCache, ScriptParagraph* scriptParagraph, ScriptRun* scriptRun, char* paragraphChars,
+            ushort* charLogicalClustersOverride)
         {
             int charIndexInParagraph = scriptRun->CharIndexInParagraph;
             char* chars = paragraphChars + charIndexInParagraph;
             int charCount = scriptRun->CharCount;
             int glyphIndexInParagraph = scriptParagraph->GlyphCount;
+            ushort* charLogicalClusters = charLogicalClustersOverride == null
+                ? scriptParagraph->CharLogicalClusters + charIndexInParagraph
+                : charLogicalClustersOverride;
 
             SCRIPT_ANALYSIS* scriptAnalysis = &scriptRun->ScriptAnalysis;
-            int glyphCapacity = charCount * 2;
+            int glyphCapacity = charCount * 3 / 2 + 16; // * 1.5 + 16 per Uniscribe recommendations for ScriptShape.
             int glyphCount;
             ushort* glyphs;
-            SCRIPT_VISATTR* visualAttributes;
+            SCRIPT_VISATTR* glyphVisualAttributes;
             int result;
             for (; ; )
             {
                 scriptParagraph->EnsureGlyphCapacityAndPreserveContents(glyphIndexInParagraph + glyphCapacity);
 
                 glyphs = scriptParagraph->Glyphs + glyphIndexInParagraph;
-                ushort* logicalClusters = scriptParagraph->CharLogicalClusters + charIndexInParagraph;
-                visualAttributes = scriptParagraph->GlyphVisualAttributes + glyphIndexInParagraph;
+                glyphVisualAttributes = scriptParagraph->GlyphVisualAttributes + glyphIndexInParagraph;
                 result = NativeMethods.ScriptShape(hdc, ref scriptCache, chars, charCount, glyphCapacity,
-                    scriptAnalysis, glyphs, logicalClusters, visualAttributes,
+                    scriptAnalysis, glyphs, charLogicalClusters, glyphVisualAttributes,
                     out glyphCount);
 
                 if (result == NativeConstants.S_OK)
@@ -542,10 +564,10 @@ namespace Gallio.Common.Splash
                 glyphCapacity *= 2;
             }
 
-            int* advanceWidths = scriptParagraph->GlyphAdvanceWidths + glyphIndexInParagraph;
+            int* glyphAdvanceWidths = scriptParagraph->GlyphAdvanceWidths + glyphIndexInParagraph;
             GOFFSET* glyphOffsets = scriptParagraph->GlyphOffsets + glyphIndexInParagraph;
             result = NativeMethods.ScriptPlace(hdc, ref scriptCache, glyphs, glyphCount,
-                visualAttributes, scriptAnalysis, advanceWidths, glyphOffsets, out scriptRun->ABC);
+                glyphVisualAttributes, scriptAnalysis, glyphAdvanceWidths, glyphOffsets, out scriptRun->ABC);
             if (result != NativeConstants.S_OK)
                 Marshal.ThrowExceptionForHR(result);
 
@@ -556,17 +578,16 @@ namespace Gallio.Common.Splash
 
         private static void ScriptTextOut(IntPtr hdc, ref IntPtr scriptCache, int x, int y,
             ExtTextOutOptions fuOptions, RECT* clipRect,
-            ScriptParagraph* scriptParagraph, ScriptRun* scriptRun,
-            int truncatedLeadingGlyphsCount, int truncatedTrailingGlyphsCount)
+            ScriptParagraph* scriptParagraph, ScriptRun* scriptRun)
         {
             int result = NativeMethods.ScriptTextOut(hdc, ref scriptCache, x, y, fuOptions, clipRect,
                 &scriptRun->ScriptAnalysis,
                 null, 0,
-                scriptRun->Glyphs(scriptParagraph) + truncatedLeadingGlyphsCount,
-                scriptRun->GlyphCount - truncatedLeadingGlyphsCount - truncatedTrailingGlyphsCount,
-                scriptRun->GlyphAdvanceWidths(scriptParagraph) + truncatedLeadingGlyphsCount,
+                scriptRun->Glyphs(scriptParagraph),
+                scriptRun->GlyphCount,
+                scriptRun->GlyphAdvanceWidths(scriptParagraph),
                 null,
-                scriptRun->GlyphOffsets(scriptParagraph) + truncatedLeadingGlyphsCount);
+                scriptRun->GlyphOffsets(scriptParagraph));
             if (result != NativeConstants.S_OK)
                 Marshal.ThrowExceptionForHR(result);
         }
