@@ -32,11 +32,6 @@ namespace Gallio.Common.Splash.Native
             get { return (BitFields & fCharStopMask) != 0; }
         }
 
-        public bool fSoftBreakOrfWhiteSpace
-        {
-            get { return (BitFields & (fSoftBreakMask | fWhiteSpaceMask)) != 0; }
-        }
-
         public void SetfWhiteSpace()
         {
             BitFields |= fWhiteSpaceMask;

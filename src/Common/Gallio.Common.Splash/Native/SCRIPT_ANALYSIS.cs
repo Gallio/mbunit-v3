@@ -19,6 +19,12 @@ namespace Gallio.Common.Splash.Native
         public ushort BitFields;
         public SCRIPT_STATE s;
 
+        public int eScript
+        {
+            get { return BitFields & eScriptMask; }
+            set { BitFields = (ushort)(BitFields & ~eScriptMask | value); }
+        }
+
         public bool fRTL
         {
             get { return (BitFields & fRTLMask) != 0; }

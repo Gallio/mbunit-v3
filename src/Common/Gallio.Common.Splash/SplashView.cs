@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
@@ -34,12 +35,12 @@ namespace Gallio.Common.Splash
 
         private readonly UnmanagedBuffer<SCRIPT_ITEM> tempScriptItemBuffer;
         private readonly UnmanagedBuffer<byte> tempEmbeddingLevelBuffer;
-        private UnmanagedBuffer<ScriptRun> tempTruncatedScriptRunBuffer;
-        private UnmanagedBuffer<ushort> tempTruncatedCharLogicalClusters;
+        private readonly UnmanagedBuffer<int> tempVisualToLogicalMapBuffer;
+        private readonly UnmanagedBuffer<ScriptRun> tempTruncatedScriptRunBuffer;
+        private readonly UnmanagedBuffer<ushort> tempTruncatedCharLogicalClusters;
 
-        private readonly Style defaultStyle;
-        private Style style;
-        private int currentStyleIndex;
+        private Style previousStyle;
+        private int previousStyleIndex;
 
         private Paragraph* currentParagraph;
         private Run* currentRun;
@@ -90,7 +91,8 @@ namespace Gallio.Common.Splash
         public SplashView()
         {
             SetStyle(ControlStyles.UserPaint | ControlStyles.ResizeRedraw
-                | ControlStyles.Selectable | ControlStyles.UserMouse, true);
+                | ControlStyles.Selectable | ControlStyles.UserMouse
+                | ControlStyles.AllPaintingInWmPaint | ControlStyles.OptimizedDoubleBuffer, true);
 
             styleTable = new LookupTable<Style>(MaxStyles, "This implementation only supports at most {0} distinct styles.");
             objectTable = new LookupTable<EmbeddedObject>(MaxObjects, "This implementation only supports at most {0} distinct objects.");
@@ -103,12 +105,11 @@ namespace Gallio.Common.Splash
 
             tempScriptItemBuffer = new UnmanagedBuffer<SCRIPT_ITEM>(InitialCapacityForScriptRunsPerParagraph);
             tempEmbeddingLevelBuffer = new UnmanagedBuffer<byte>(InitialCapacityForScriptRunsPerParagraph);
+            tempVisualToLogicalMapBuffer = new UnmanagedBuffer<int>(InitialCapacityForScriptRunsPerParagraph);
             tempTruncatedScriptRunBuffer = new UnmanagedBuffer<ScriptRun>(1);
             tempTruncatedCharLogicalClusters = new UnmanagedBuffer<ushort>(InitialCapacityForCharsPerParagraph);
 
             scriptParagraphCache = new ScriptParagraphCache(ScriptParagraphCacheSize);
-
-            defaultStyle = CreateDefaultStyle();
 
             InitializeForNewDocument();
 
@@ -135,38 +136,13 @@ namespace Gallio.Common.Splash
         }
 
         /// <summary>
-        /// Gets or sets the current style.
-        /// </summary>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
-        /// <exception cref="InvalidOperationException">Thrown if more than <see cref="MaxStyles" /> distinct styles are used.</exception>
-        public Style Style
-        {
-            get { return style; }
-            set
-            {
-                if (value == null)
-                    throw new ArgumentNullException("value");
-
-                currentStyleIndex = styleTable.AssignIndex(value); // may fail
-                style = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets the default style.
-        /// </summary>
-        public Style DefaultStyle
-        {
-            get { return defaultStyle; }
-        }
-
-        /// <summary>
         /// Clears the text in the view.
         /// </summary>
         public void Clear()
         {
             currentParagraph = null;
             currentRun = null;
+            previousStyle = null;
 
             styleTable.Clear();
             objectTable.Clear();
@@ -180,6 +156,7 @@ namespace Gallio.Common.Splash
 
             tempScriptItemBuffer.Clear();
             tempEmbeddingLevelBuffer.Clear();
+            tempVisualToLogicalMapBuffer.Clear();
             tempTruncatedScriptRunBuffer.Clear();
             tempTruncatedCharLogicalClusters.Clear();
 
@@ -189,52 +166,55 @@ namespace Gallio.Common.Splash
         /// <summary>
         /// Appends text to the view.
         /// </summary>
+        /// <param name="style">The style.</param>
         /// <param name="text">The text to append.</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="text"/> is null.</exception>
-        public void AppendText(string text)
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="style"/> or <paramref name="text"/> is null.</exception>
+        /// <exception cref="InvalidOperationException">Thrown if more than <see cref="MaxStyles" /> distinct styles are used.</exception>
+        public void AppendText(Style style, string text)
         {
+            if (style == null)
+                throw new ArgumentNullException("style");
             if (text == null)
                 throw new ArgumentNullException("text");
 
+            int styleIndex = AssignStyleIndex(style);
             InvalidateLayoutFromCurrentParagraph();
-            InternalAppendText(currentStyleIndex, text);
+            InternalAppendText(styleIndex, text);
         }
 
         /// <summary>
         /// Appends a new line to the view.
         /// </summary>
-        public void AppendLine()
+        /// <param name="style">The style.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="style"/> is null.</exception>
+        /// <exception cref="InvalidOperationException">Thrown if more than <see cref="MaxStyles" /> distinct styles are used.</exception>
+        public void AppendLine(Style style)
         {
-            if (currentParagraph == null)
-            {
-                // Cannot use the optimization in the special case when the document is empty
-                // because two paragraphs will actually be created.  The first one will be an
-                // empty paragraph at the start of the document.  The second one will be the
-                // start of the next paragraph created by the new line.
-                InvalidateLayoutFromCurrentParagraph();
-                InternalAppendNewLine(currentStyleIndex);
-            }
-            else
-            {
-                // Optimization: Appending a line does not alter the current paragraph so
-                // we only need to invalidate the layout from the start of the next paragraph created.
-                InternalAppendNewLine(currentStyleIndex);
-                InvalidateLayoutFromCurrentParagraph();
-            }
+            if (style == null)
+                throw new ArgumentNullException("style");
+
+            int styleIndex = AssignStyleIndex(style);
+            InvalidateLayoutFromCurrentParagraph();
+            InternalAppendText(styleIndex, "\n");
         }
 
         /// <summary>
         /// Appends an object to the view.
         /// </summary>
+        /// <param name="style">The style.</param>
         /// <param name="obj">The object to append.</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="obj"/> is null.</exception>
-        public void AppendObject(EmbeddedObject obj)
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="style"/> or <paramref name="obj"/> is null.</exception>
+        /// <exception cref="InvalidOperationException">Thrown if more than <see cref="MaxStyles" /> distinct styles are used.</exception>
+        public void AppendObject(Style style, EmbeddedObject obj)
         {
+            if (style == null)
+                throw new ArgumentNullException("style");
             if (obj == null)
                 throw new ArgumentNullException("obj");
 
+            int styleIndex = AssignStyleIndex(style);
             InvalidateLayoutFromCurrentParagraph();
-            InternalAppendObject(currentStyleIndex, obj);
+            InternalAppendObject(styleIndex, obj);
         }
 
         /// <inheritdoc />
@@ -271,8 +251,18 @@ namespace Gallio.Common.Splash
 
         private void InitializeForNewDocument()
         {
-            Style = defaultStyle;
+            StartParagraph();
             InvalidateLayout();
+        }
+
+        private int AssignStyleIndex(Style style)
+        {
+            if (previousStyle == style)
+                return previousStyleIndex;
+
+            previousStyleIndex = styleTable.AssignIndex(style); // may fail due to too many styles
+            previousStyle = style;
+            return previousStyleIndex;
         }
 
         private void InternalAppendText(int styleIndex, string text)
@@ -285,8 +275,8 @@ namespace Gallio.Common.Splash
             {
                 char* source = textPtr;
                 char* sourceEnd = source + length;
-                char* mark = null;
 
+                char* mark = source;
                 bool requiresTabExpansion = false;
                 for (; source != sourceEnd; source++)
                 {
@@ -296,9 +286,11 @@ namespace Gallio.Common.Splash
                     {
                         if (ch == '\n')
                         {
-                            InternalAppendCharsFromMarkIfNeeded(styleIndex, ref mark, source, requiresTabExpansion);
-                            InternalAppendNewLine(styleIndex);
+                            char* next = source + 1;
+                            InternalAppendChars(styleIndex, mark, (int)(next - mark), requiresTabExpansion);
+                            mark = next;
                             requiresTabExpansion = false;
+                            StartParagraph();
                             continue;
                         }
 
@@ -308,47 +300,25 @@ namespace Gallio.Common.Splash
                         }
                         else
                         {
-                            // Skip other control characters.
-                            InternalAppendCharsFromMarkIfNeeded(styleIndex, ref mark, source, requiresTabExpansion);
+                            // Discard all other control characters.
+                            if (mark != source)
+                                InternalAppendChars(styleIndex, mark, (int)(source - mark), requiresTabExpansion);
+                            mark = source + 1;
                             continue;
                         }
                     }
-
-                    InternalSetMarkIfNeeded(ref mark, source);
                 }
 
-                InternalAppendCharsFromMarkIfNeeded(styleIndex, ref mark, source, requiresTabExpansion);
+                if (mark != source)
+                    InternalAppendChars(styleIndex, mark, (int)(source - mark), requiresTabExpansion);
             }
         }
 
-        private static void InternalSetMarkIfNeeded(ref char* mark, char* current)
+        private void InternalAppendChars(int styleIndex, char* source, int count, bool requiresTabExpansion)
         {
-            if (mark == null)
-                mark = current;
-        }
-
-        private void InternalAppendCharsFromMarkIfNeeded(int styleIndex, ref char* mark, char* current, bool requiresTabExpansion)
-        {
-            if (mark != null)
-            {
-                InternalAppendChars(styleIndex, mark, (int) (current - mark));
-                mark = null;
-
-                if (requiresTabExpansion)
-                    currentRun->SetRequiresTabExpansion();
-            }
-        }
-
-        private void InternalAppendNewLine(int styleIndex)
-        {
-            EnsureParagraph(styleIndex);
-            StartParagraph(styleIndex);
-        }
-
-        private void InternalAppendChars(int styleIndex, char* source, int count)
-        {
-            EnsureParagraph(styleIndex);
             EnsureTextRun(styleIndex);
+            if (requiresTabExpansion)
+                currentRun->SetRequiresTabExpansion();
 
             int charIndex = charBuffer.Count;
             charBuffer.GrowBy(count);
@@ -362,6 +332,8 @@ namespace Gallio.Common.Splash
                 currentRun->CharCount = MaxCharsPerRun;
                 newCount -= MaxCharsPerRun;
                 StartTextRun(styleIndex);
+                if (requiresTabExpansion)
+                    currentRun->SetRequiresTabExpansion();
             }
 
             currentRun->CharCount = newCount;
@@ -370,40 +342,10 @@ namespace Gallio.Common.Splash
                 *(chars++) = *(source++);
         }
 
-        private void InternalAppendObject(int styleIndex, EmbeddedObject obj)
+        private void StartParagraph()
         {
-            int objectIndex = objectTable.AssignIndex(obj);
-
-            EnsureParagraph(styleIndex);
-
-            int runIndex = runBuffer.Count;
-            runBuffer.GrowBy(1);
-
-            int charIndex = charBuffer.Count;
-            charBuffer.GrowBy(1);
-
-            currentRun = GetRunZero() + runIndex;
-            currentRun->InitializeObjectRun(styleIndex, objectIndex);
-
-            char* chars = GetCharZero() + charIndex;
-            *chars = ObjectRunPlaceholderChar;
-
-            currentParagraph->RunCount += 1;
-            currentParagraph->CharCount += 1;
-        }
-
-        private void EnsureParagraph(int styleIndex)
-        {
-            if (currentParagraph != null)
-                return;
-
-            StartParagraph(styleIndex);
-        }
-
-        private void StartParagraph(int styleIndex)
-        {
-            if (currentRun == null && currentParagraph != null)
-                StartTextRun(styleIndex);
+            Debug.Assert(currentRun != null || currentParagraph == null,
+                "At least one run should be added to the current paragraph before a new one is started.");
 
             int paragraphIndex = paragraphBuffer.Count;
             paragraphBuffer.GrowBy(1);
@@ -433,6 +375,26 @@ namespace Gallio.Common.Splash
             currentRun->InitializeTextRun(styleIndex);
 
             currentParagraph->RunCount += 1;
+        }
+
+        private void InternalAppendObject(int styleIndex, EmbeddedObject obj)
+        {
+            int objectIndex = objectTable.AssignIndex(obj);
+
+            int runIndex = runBuffer.Count;
+            runBuffer.GrowBy(1);
+
+            int charIndex = charBuffer.Count;
+            charBuffer.GrowBy(1);
+
+            currentRun = GetRunZero() + runIndex;
+            currentRun->InitializeObjectRun(styleIndex, objectIndex);
+
+            char* chars = GetCharZero() + charIndex;
+            *chars = ObjectRunPlaceholderChar;
+
+            currentParagraph->RunCount += 1;
+            currentParagraph->CharCount += 1;
         }
 
         private void InvalidateLayout()
@@ -573,70 +535,102 @@ namespace Gallio.Common.Splash
             int xPosition = textClipArea.Left - textPaintArea.Left;
             int xStartOffset = - xPosition;
 
-            NativeMethods.SetBkMode(hdcState.HDC, NativeConstants.TRANSPARENT);
+            hdcState.SetBkMode(NativeConstants.TRANSPARENT);
 
             int yOffset = yStartOffset;
             while (yOffset < textClipArea.Height && scriptLine != endScriptLine)
             {
-                int xOffset = xStartOffset;
+                int xOffset = xStartOffset + scriptLine->X;
+                int yBaseline = yOffset + scriptLine->Ascent;
 
-                int scriptLineHeight = scriptLine->Height;
-                ScriptParagraph* scriptParagraph = GetScriptParagraph(hdcState, scriptLine->ParagraphIndex);
-                int scriptRunIndex = scriptLine->ScriptRunIndex;
                 int scriptRunCount = scriptLine->ScriptRunCount;
-                for (int i = 0; i < scriptRunCount; i++)
+                if (scriptRunCount != 0)
                 {
-                    ScriptRun* scriptRun = scriptParagraph->ScriptRuns + scriptParagraph->ScriptRunVisualToLogicalMap[scriptRunIndex + i];
+                    ScriptParagraph* scriptParagraph = GetScriptParagraph(hdcState, scriptLine->ParagraphIndex);
+                    int scriptRunIndex = scriptLine->ScriptRunIndex;
+                    int* visualToLogicalMap = GetTempVisualToLogicalMap(scriptParagraph->ScriptRuns + scriptRunIndex, scriptRunCount);
 
-                    int measuredWidth;
-                    bool truncateLeading = i == 0 && scriptLine->TruncatedLeadingCharsCount != 0;
-                    bool truncateTrailing = i == scriptRunCount - 1 && scriptLine->TruncatedTrailingCharsCount != 0;
-                    if (truncateLeading || truncateTrailing)
+                    for (int i = 0; i < scriptRunCount; i++)
                     {
-                        Style paragraphStyle = styleTable[scriptParagraph->ScriptRuns[0].StyleIndex];
-                        Style style = styleTable[scriptRun->StyleIndex];
-                        ScriptCache scriptCache = hdcState.SelectFont(style.Font);
-                        ScriptRun* truncatedScriptRun = AcquireTruncatedScriptRunAndExpandTabs(
-                            hdcState.HDC, ref scriptCache.ScriptCachePtr,
-                            scriptParagraph, scriptRun, scriptParagraph->Chars(GetCharZero()),
-                            truncateLeading ? scriptLine->TruncatedLeadingCharsCount : 0,
-                            truncateTrailing ? scriptLine->TruncatedTrailingCharsCount : 0,
-                            xOffset - textPaintArea.Left, paragraphStyle.TabStopRuler);
+                        int logicalScriptRunIndex = visualToLogicalMap[i];
+                        ScriptRun* scriptRun = scriptParagraph->ScriptRuns + logicalScriptRunIndex + scriptRunIndex;
 
-                        measuredWidth = truncatedScriptRun->ABC.TotalWidth;
-
-                        if (xOffset + measuredWidth > textClipArea.Left)
-                        {
-                            int x = textClipArea.Left + xOffset + truncatedScriptRun->ABC.abcA;
-                            int y = textClipArea.Top + yOffset + scriptLineHeight - scriptRun->Height; //truncatedScriptRun->Height is not populated
-                            ScriptTextOut(hdcState.HDC, ref scriptCache.ScriptCachePtr,
-                                x, y, ExtTextOutOptions.NONE, null, scriptParagraph, truncatedScriptRun);
-                        }
-
-                        ReleaseTruncatedScriptRun(scriptParagraph, truncatedScriptRun);
-                    }
-                    else
-                    {
-                        measuredWidth = scriptRun->ABC.TotalWidth;
-
-                        if (xOffset + measuredWidth > textClipArea.Left)
+                        int measuredWidth;
+                        if (scriptRun->RunKind == RunKind.Text)
                         {
                             Style style = styleTable[scriptRun->StyleIndex];
                             ScriptCache scriptCache = hdcState.SelectFont(style.Font);
-                            int x = textClipArea.Left + xOffset + scriptRun->ABC.abcA;
-                            int y = textClipArea.Top + yOffset + scriptLineHeight - scriptRun->Height;
-                            ScriptTextOut(hdcState.HDC, ref scriptCache.ScriptCachePtr,
-                                x, y, ExtTextOutOptions.NONE, null, scriptParagraph, scriptRun);
+                            hdcState.SetTextColor(style.Color);
+
+                            bool truncateLeading = logicalScriptRunIndex == 0 &&
+                                scriptLine->TruncatedLeadingCharsCount != 0;
+                            bool truncateTrailing = logicalScriptRunIndex == scriptRunCount - 1 &&
+                                scriptLine->TruncatedTrailingCharsCount != 0;
+                            if (truncateLeading || truncateTrailing)
+                            {
+                                Style paragraphStyle = styleTable[scriptParagraph->ScriptRuns[0].StyleIndex];
+                                ScriptRun* truncatedScriptRun = AcquireTruncatedScriptRunAndExpandTabs(
+                                    hdcState.HDC, ref scriptCache.ScriptCachePtr,
+                                    scriptParagraph, scriptRun, scriptParagraph->Chars(GetCharZero()),
+                                    truncateLeading ? scriptLine->TruncatedLeadingCharsCount : 0,
+                                    truncateTrailing ? scriptLine->TruncatedTrailingCharsCount : 0,
+                                    xOffset - textPaintArea.Left, paragraphStyle.TabStopRuler);
+
+                                measuredWidth = truncatedScriptRun->ABC.TotalWidth;
+
+                                if (xOffset + measuredWidth > textClipArea.Left)
+                                {
+                                    int x = textClipArea.Left + xOffset;
+                                    int y = textClipArea.Top + yBaseline - scriptRun->Ascent;
+                                    ScriptTextOut(hdcState.HDC, ref scriptCache.ScriptCachePtr,
+                                        x, y, ExtTextOutOptions.NONE, null, scriptParagraph, truncatedScriptRun);
+                                }
+
+                                ReleaseTruncatedScriptRun(scriptParagraph, truncatedScriptRun);
+                            }
+                            else
+                            {
+                                measuredWidth = scriptRun->ABC.TotalWidth;
+
+                                if (xOffset + measuredWidth > textClipArea.Left)
+                                {
+                                    int x = textClipArea.Left + xOffset;
+                                    int y = textClipArea.Top + yBaseline - scriptRun->Ascent;
+                                    ScriptTextOut(hdcState.HDC, ref scriptCache.ScriptCachePtr,
+                                        x, y, ExtTextOutOptions.NONE, null, scriptParagraph, scriptRun);
+                                }
+                            }
                         }
+                        else
+                        {
+                            measuredWidth = scriptRun->ABC.TotalWidth;
+
+                            Rectangle embeddedObjectArea = new Rectangle(
+                                textClipArea.Left + xOffset + scriptRun->ABC.abcA,
+                                textClipArea.Top + yBaseline - scriptRun->Ascent,
+                                scriptRun->ABC.abcB,
+                                scriptRun->Height);
+
+                            EmbeddedObject embeddedObject = objectTable[scriptRun->ObjectIndex];
+                            Style style = styleTable[scriptRun->StyleIndex];
+                            using (Graphics g = Graphics.FromHdc(hdcState.HDC))
+                            {
+                                Rectangle embeddedObjectClipArea = textClipArea;
+                                embeddedObjectClipArea.Intersect(embeddedObjectArea);
+                                g.SetClip(embeddedObjectClipArea);
+
+                                embeddedObject.Paint(style, g, embeddedObjectArea);
+                            }
+                        }
+
+                        xOffset += measuredWidth;
+
+                        if (xOffset >= textClipArea.Right)
+                            break; // can't fit any more runs within the clip rectangle
                     }
-
-                    xOffset += measuredWidth;
-
-                    if (xOffset >= textClipArea.Right)
-                        break; // can't fit any more runs within the clip rectangle
                 }
 
-                yOffset += scriptLineHeight;
+                yOffset += scriptLine->Height;
                 scriptLine++;
             }
         }
@@ -743,11 +737,6 @@ namespace Gallio.Common.Splash
         private ScriptLine* GetScriptLineZero()
         {
             return (ScriptLine*)scriptLineBuffer.GetPointer();
-        }
-
-        private Style CreateDefaultStyle()
-        {
-            return new StyleBuilder().ToStyle();
         }
     }
 }

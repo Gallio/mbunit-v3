@@ -167,7 +167,6 @@ namespace Gallio.Common.Splash
             public int ScriptRunCount;
             public int ScriptRunCapacity;
             public ScriptRun* ScriptRuns;                 // 1 element per script run
-            public int* ScriptRunVisualToLogicalMap;      // 1 element per script run
 
             public int GlyphCount;
             public int GlyphCapacity;
@@ -259,13 +258,11 @@ namespace Gallio.Common.Splash
             {
                 ScriptRunCapacity = 0;
                 ScriptRuns = null;
-                ScriptRunVisualToLogicalMap = null;
             }
 
             private void AllocScriptRunBuffers()
             {
                 ScriptRuns = (ScriptRun*)AllocMemory(ScriptRunCapacity * sizeof(ScriptRun));
-                ScriptRunVisualToLogicalMap = (int*)AllocMemory(ScriptRunCapacity * sizeof(int));
             }
 
             private void FreeScriptRunBuffers()
@@ -276,12 +273,6 @@ namespace Gallio.Common.Splash
                 {
                     FreeMemory(ScriptRuns);
                     ScriptRuns = null;
-                }
-
-                if (ScriptRunVisualToLogicalMap != null)
-                {
-                    FreeMemory(ScriptRunVisualToLogicalMap);
-                    ScriptRunVisualToLogicalMap = null;
                 }
             }
 
@@ -356,23 +347,60 @@ namespace Gallio.Common.Splash
         private struct ScriptRun
         {
             private Run run;
+
+            /// <summary>
+            /// The script analysis for the run produced during itemization.
+            /// </summary>
             public SCRIPT_ANALYSIS ScriptAnalysis;
+
+            /// <summary>
+            /// The index of the first character of the run relative to the first character of its containing paragraph.
+            /// </summary>
             public int CharIndexInParagraph;
 
+            /// <summary>
+            /// The index of the first glyph of the run relative to the first glyph of its containing paragraph.
+            /// </summary>
             public int GlyphIndexInParagraph;
+
+            /// <summary>
+            /// The number of glyphs in the run.
+            /// </summary>
             public int GlyphCount;
 
+            /// <summary>
+            /// The height of the run excluding its margins.
+            /// </summary>
             public int Height;
+
+            /// <summary>
+            /// The descent height of the run (below text baseline).
+            /// </summary>
+            public int Descent;
+
+            /// <summary>
+            /// The top margin of the run.
+            /// </summary>
+            public int TopMargin;
+
+            /// <summary>
+            /// The bottom margin of the run.
+            /// </summary>
+            public int BottomMargin;
+            
+            /// <summary>
+            /// The advance width spacing of the run.
+            /// </summary>
             public ABC ABC;
 
-            public void Initialize(Run* run, SCRIPT_ITEM* scriptItem, int charIndexInParagraph, int charCount)
+            public void Initialize(Run* run, SCRIPT_ANALYSIS* scriptAnalysis, int charIndexInParagraph, int charCount)
             {
                 this.run = *run;
                 if (this.run.RunKind == RunKind.Text)
                     this.run.CharCount = charCount;
 
                 CharIndexInParagraph = charIndexInParagraph;
-                ScriptAnalysis = scriptItem->a;
+                ScriptAnalysis = *scriptAnalysis;
             }
 
             public void InitializeTruncatedCopy(ScriptRun* scriptRun, int truncatedLeadingCharsCount, int truncatedTrailingCharsCount)
@@ -413,6 +441,14 @@ namespace Gallio.Common.Splash
             public bool RequiresTabExpansion
             {
                 get { return run.RequiresTabExpansion; }
+            }
+
+            /// <summary>
+            /// The ascent height of the run (above text baseline).
+            /// </summary>
+            public int Ascent
+            {
+                get { return Height - Descent; }
             }
 
             public ushort* CharLogicalClusters(ScriptParagraph* scriptParagraph)
@@ -469,6 +505,19 @@ namespace Gallio.Common.Splash
             public int Height;
 
             /// <summary>
+            /// The descent height of the line (below text baseline).
+            /// </summary>
+            public int Descent;
+
+            /// <summary>
+            /// The ascent height of the line (above text baseline).
+            /// </summary>
+            public int Ascent
+            {
+                get { return Height - Descent; }
+            }
+
+            /// <summary>
             /// The index of the paragraph that appears on the line.
             /// </summary>
             public int ParagraphIndex;
@@ -500,6 +549,7 @@ namespace Gallio.Common.Splash
                 Y = y;
                 X = 0;
                 Height = 0;
+                Descent = 0;
                 ScriptRunCount = 0;
                 TruncatedLeadingCharsCount = 0;
                 TruncatedTrailingCharsCount = 0;
@@ -547,6 +597,10 @@ namespace Gallio.Common.Splash
         private sealed class ScriptCache
         {
             public IntPtr ScriptCachePtr;
+
+            public bool HaveMetrics;
+            public int Height;
+            public int Descent;
         }
 
         private sealed class ScriptParagraphCache

@@ -108,9 +108,24 @@ namespace Gallio.Common.Splash.Native
             [In, Out] ref IntPtr psc);
 
         [DllImport("gdi32.dll", CharSet = CharSet.Auto, SetLastError = true, ExactSpelling = true)]
-        public static extern IntPtr SelectObject(IntPtr hDC, IntPtr hObject);
+        public static extern IntPtr SelectObject([In] IntPtr hDC, [In] IntPtr hObject);
 
         [DllImport("gdi32.dll", CharSet = CharSet.Auto, SetLastError = true, ExactSpelling = true)]
-        public static extern void SetBkMode(IntPtr hDC, int iBkMode);
+        public static extern void SetBkMode([In] IntPtr hDC, [In] int iBkMode);
+
+        [DllImport("gdi32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        public static extern bool GetTextMetrics([In] IntPtr hdc, [Out] out TEXTMETRIC textMetric);
+
+        [DllImport("gdi32.dll", CharSet = CharSet.Auto, SetLastError = true, ExactSpelling = true)]
+        public static extern int SetDCPenColor([In] IntPtr hdc, [In] int crColor);
+
+        [DllImport("gdi32.dll", CharSet = CharSet.Auto, SetLastError = true, ExactSpelling = true)]
+        public static extern int SetDCBrushColor([In] IntPtr hdc, [In] int crColor);
+
+        [DllImport("gdi32.dll", CharSet = CharSet.Auto, SetLastError = true, ExactSpelling = true)]
+        public static extern IntPtr GetStockObject([In] int fnObject);
+
+        [DllImport("gdi32.dll", CharSet = CharSet.Auto, SetLastError = true, ExactSpelling = true)]
+        public static extern int SetTextColor([In] IntPtr hdc, [In] int crColor);
     }
 }

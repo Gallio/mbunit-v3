@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            Gallio.Common.Splash.Style style1 = new Gallio.Common.Splash.Style();
             this.horizontalSplitter = new System.Windows.Forms.SplitContainer();
             this.splashView1 = new Gallio.Common.Splash.SplashView();
             this.textBox1 = new System.Windows.Forms.TextBox();
@@ -70,7 +69,6 @@
             this.splashView1.Name = "splashView1";
             this.splashView1.Padding = new System.Windows.Forms.Padding(3);
             this.splashView1.Size = new System.Drawing.Size(755, 450);
-            this.splashView1.Style = style1;
             this.splashView1.TabIndex = 0;
             this.splashView1.Text = "splashView1";
             // 

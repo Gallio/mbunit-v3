@@ -47,6 +47,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="EmbeddedObjectMeasurements.cs" />
+    <Compile Include="Native\TEXTMETRIC.cs" />
     <Compile Include="SplashView.Rendering.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -70,6 +71,7 @@
     </Compile>
     <Compile Include="Style.cs" />
     <Compile Include="StyleBuilder.cs" />
+    <Compile Include="StyleProperty.cs" />
     <Compile Include="Stylesheet.cs" />
     <Compile Include="TabStopRuler.cs" />
     <Compile Include="SplashView.cs">
