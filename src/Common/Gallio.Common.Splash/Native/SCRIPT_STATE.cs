@@ -25,6 +25,7 @@ namespace Gallio.Common.Splash.Native
         public int uBidiLevel
         {
             get { return BitFields & uBidiLevelMask; }
+            set { BitFields = (ushort) (BitFields & ~uBidiLevelMask | value); }
         }
     }
 }

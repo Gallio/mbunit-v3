@@ -36,8 +36,6 @@ namespace Gallio.Common.Splash
         private readonly UnmanagedBuffer<SCRIPT_ITEM> tempScriptItemBuffer;
         private readonly UnmanagedBuffer<byte> tempEmbeddingLevelBuffer;
         private readonly UnmanagedBuffer<int> tempVisualToLogicalMapBuffer;
-        private readonly UnmanagedBuffer<ScriptRun> tempTruncatedScriptRunBuffer;
-        private readonly UnmanagedBuffer<ushort> tempTruncatedCharLogicalClusters;
 
         private Style previousStyle;
         private int previousStyleIndex;
@@ -49,6 +47,7 @@ namespace Gallio.Common.Splash
         private bool layoutPending;
         private int cachedTextLayoutWidth;
         private int cachedTextLayoutHeight;
+        private bool cachedRightToLeftLayout;
         private int minimumTextLayoutWidth = 100;
 
         /// <summary>
@@ -106,15 +105,13 @@ namespace Gallio.Common.Splash
             tempScriptItemBuffer = new UnmanagedBuffer<SCRIPT_ITEM>(InitialCapacityForScriptRunsPerParagraph);
             tempEmbeddingLevelBuffer = new UnmanagedBuffer<byte>(InitialCapacityForScriptRunsPerParagraph);
             tempVisualToLogicalMapBuffer = new UnmanagedBuffer<int>(InitialCapacityForScriptRunsPerParagraph);
-            tempTruncatedScriptRunBuffer = new UnmanagedBuffer<ScriptRun>(1);
-            tempTruncatedCharLogicalClusters = new UnmanagedBuffer<ushort>(InitialCapacityForCharsPerParagraph);
 
             scriptParagraphCache = new ScriptParagraphCache(ScriptParagraphCacheSize);
 
             InitializeForNewDocument();
 
             BackColor = SystemColors.Window;
-            Padding = new Padding(3);
+            Padding = new Padding(5);
         }
 
         /// <summary>
@@ -157,8 +154,6 @@ namespace Gallio.Common.Splash
             tempScriptItemBuffer.Clear();
             tempEmbeddingLevelBuffer.Clear();
             tempVisualToLogicalMapBuffer.Clear();
-            tempTruncatedScriptRunBuffer.Clear();
-            tempTruncatedCharLogicalClusters.Clear();
 
             InitializeForNewDocument();
         }
@@ -177,9 +172,12 @@ namespace Gallio.Common.Splash
             if (text == null)
                 throw new ArgumentNullException("text");
 
-            int styleIndex = AssignStyleIndex(style);
-            InvalidateLayoutFromCurrentParagraph();
-            InternalAppendText(styleIndex, text);
+            if (text.Length != 0)
+            {
+                int styleIndex = AssignStyleIndex(style);
+                InvalidateItemizationFromCurrentParagraph();
+                InternalAppendText(styleIndex, text);
+            }
         }
 
         /// <summary>
@@ -194,7 +192,7 @@ namespace Gallio.Common.Splash
                 throw new ArgumentNullException("style");
 
             int styleIndex = AssignStyleIndex(style);
-            InvalidateLayoutFromCurrentParagraph();
+            InvalidateItemizationFromCurrentParagraph();
             InternalAppendText(styleIndex, "\n");
         }
 
@@ -213,7 +211,7 @@ namespace Gallio.Common.Splash
                 throw new ArgumentNullException("obj");
 
             int styleIndex = AssignStyleIndex(style);
-            InvalidateLayoutFromCurrentParagraph();
+            InvalidateItemizationFromCurrentParagraph();
             InternalAppendObject(styleIndex, obj);
         }
 
@@ -242,11 +240,11 @@ namespace Gallio.Common.Splash
         }
 
         /// <inheritdoc />
-        protected override void OnScroll(ScrollEventArgs se)
+        protected override void OnRightToLeftChanged(EventArgs e)
         {
-            Invalidate();
+            InvalidateItemization();
 
-            base.OnScroll(se);
+            base.OnRightToLeftChanged(e);
         }
 
         private void InitializeForNewDocument()
@@ -268,9 +266,6 @@ namespace Gallio.Common.Splash
         private void InternalAppendText(int styleIndex, string text)
         {
             int length = text.Length;
-            if (length == 0)
-                return;
-
             fixed (char* textPtr = text)
             {
                 char* source = textPtr;
@@ -397,6 +392,23 @@ namespace Gallio.Common.Splash
             currentParagraph->CharCount += 1;
         }
 
+        private void InvalidateItemization()
+        {
+            scriptParagraphCache.Clear();
+            InvalidateLayout();
+        }
+
+        private void InvalidateItemizationFromCurrentParagraph()
+        {
+            InvalidateItemization(currentParagraph == null ? 0 : paragraphBuffer.Count - 1);
+        }
+
+        private void InvalidateItemization(int firstInvalidParagraphIndex)
+        {
+            scriptParagraphCache.RemoveScriptParagraphsStartingFrom(firstInvalidParagraphIndex);
+            InvalidateLayout(firstInvalidParagraphIndex);
+        }
+
         private void InvalidateLayout()
         {
             InvalidateLayout(0);
@@ -481,6 +493,8 @@ namespace Gallio.Common.Splash
 
         private void UpdateLayout(HDCState hdcState, Rectangle textPaintArea)
         {
+            bool rightToLeftLayout = RightToLeft == RightToLeft.Yes;
+
             int textLayoutWidth = CalculateTextLayoutWidth(textPaintArea);
             int textLayoutHeight;
 
@@ -504,11 +518,12 @@ namespace Gallio.Common.Splash
             int paragraphCount = paragraphBuffer.Count;
             for (int paragraphIndex = firstInvalidParagraphIndex; paragraphIndex < paragraphCount; paragraphIndex++)
             {
-                AppendScriptLinesForScriptParagraph(hdcState, paragraphIndex, textLayoutWidth, ref textLayoutHeight);
+                AppendScriptLinesForScriptParagraph(hdcState, paragraphIndex, rightToLeftLayout, textLayoutWidth, ref textLayoutHeight);
             }
 
             // Update layout parameters.
             firstInvalidParagraphIndex = paragraphBuffer.Count;
+            cachedRightToLeftLayout = rightToLeftLayout;
             cachedTextLayoutWidth = textLayoutWidth;
             cachedTextLayoutHeight = textLayoutHeight;
             layoutPending = false;
@@ -524,35 +539,45 @@ namespace Gallio.Common.Splash
 
         private void PaintRegion(HDCState hdcState, Rectangle textPaintArea, Rectangle textClipArea)
         {
-            int yPosition = textClipArea.Top - textPaintArea.Top;
+            int yStartPosition = textClipArea.Top - textPaintArea.Top;
+            int yEndPosition = textClipArea.Bottom - textPaintArea.Top;
             int firstScriptLineIndex;
-            ScriptLine* scriptLine = GetScriptLineAtYPositionOrNullIfNone(yPosition, out firstScriptLineIndex);
+            ScriptLine* scriptLine = GetScriptLineAtYPositionOrNullIfNone(yStartPosition, out firstScriptLineIndex);
             if (scriptLine == null)
                 return;
 
             ScriptLine* endScriptLine = GetScriptLineZero() + scriptLineBuffer.Count;
-            int yStartOffset = scriptLine->Y - yPosition;
-            int xPosition = textClipArea.Left - textPaintArea.Left;
-            int xStartOffset = - xPosition;
+
+            int xStartPosition, xEndPosition;
+            if (cachedRightToLeftLayout)
+            {
+                xStartPosition = textPaintArea.Right - textClipArea.Right;
+                xEndPosition = textPaintArea.Right - textClipArea.Left;
+            }
+            else
+            {
+                xStartPosition = textClipArea.Left - textPaintArea.Left;
+                xEndPosition = textClipArea.Right - textPaintArea.Left;
+            }
 
             hdcState.SetBkMode(NativeConstants.TRANSPARENT);
 
-            int yOffset = yStartOffset;
-            while (yOffset < textClipArea.Height && scriptLine != endScriptLine)
+            int yCurrentPosition = scriptLine->Y;
+            while (yCurrentPosition < yEndPosition && scriptLine != endScriptLine)
             {
-                int xOffset = xStartOffset + scriptLine->X;
-                int yBaseline = yOffset + scriptLine->Ascent;
+                int xCurrentPosition = scriptLine->X;
+                int yCurrentBaseline = yCurrentPosition + scriptLine->Ascent;
 
                 int scriptRunCount = scriptLine->ScriptRunCount;
                 if (scriptRunCount != 0)
                 {
-                    ScriptParagraph* scriptParagraph = GetScriptParagraph(hdcState, scriptLine->ParagraphIndex);
+                    ScriptParagraph* scriptParagraph = GetScriptParagraph(hdcState, scriptLine->ParagraphIndex, cachedRightToLeftLayout);
                     int scriptRunIndex = scriptLine->ScriptRunIndex;
                     int* visualToLogicalMap = GetTempVisualToLogicalMap(scriptParagraph->ScriptRuns + scriptRunIndex, scriptRunCount);
 
                     for (int i = 0; i < scriptRunCount; i++)
                     {
-                        int logicalScriptRunIndex = visualToLogicalMap[i];
+                        int logicalScriptRunIndex = visualToLogicalMap[cachedRightToLeftLayout ? scriptRunCount - i - 1 : i];
                         ScriptRun* scriptRun = scriptParagraph->ScriptRuns + logicalScriptRunIndex + scriptRunIndex;
 
                         int measuredWidth;
@@ -568,36 +593,69 @@ namespace Gallio.Common.Splash
                                 scriptLine->TruncatedTrailingCharsCount != 0;
                             if (truncateLeading || truncateTrailing)
                             {
-                                Style paragraphStyle = styleTable[scriptParagraph->ScriptRuns[0].StyleIndex];
-                                ScriptRun* truncatedScriptRun = AcquireTruncatedScriptRunAndExpandTabs(
-                                    hdcState.HDC, ref scriptCache.ScriptCachePtr,
-                                    scriptParagraph, scriptRun, scriptParagraph->Chars(GetCharZero()),
-                                    truncateLeading ? scriptLine->TruncatedLeadingCharsCount : 0,
-                                    truncateTrailing ? scriptLine->TruncatedTrailingCharsCount : 0,
-                                    xOffset - textPaintArea.Left, paragraphStyle.TabStopRuler);
-
-                                measuredWidth = truncatedScriptRun->ABC.TotalWidth;
-
-                                if (xOffset + measuredWidth > textClipArea.Left)
+                                ushort* logicalClusters = scriptRun->CharLogicalClusters(scriptParagraph);
+                                int startGlyphIndexInRun, endGlyphIndexInRun;
+                                if (scriptRun->ScriptAnalysis.fRTL)
                                 {
-                                    int x = textClipArea.Left + xOffset;
-                                    int y = textClipArea.Top + yBaseline - scriptRun->Ascent;
-                                    ScriptTextOut(hdcState.HDC, ref scriptCache.ScriptCachePtr,
-                                        x, y, ExtTextOutOptions.NONE, null, scriptParagraph, truncatedScriptRun);
+                                    startGlyphIndexInRun = truncateTrailing
+                                        ? logicalClusters[scriptRun->CharCount - scriptLine->TruncatedTrailingCharsCount - 1]
+                                        : 0;
+                                    endGlyphIndexInRun = truncateLeading
+                                        ? logicalClusters[scriptLine->TruncatedLeadingCharsCount]
+                                        : scriptRun->GlyphCount;
+                                }
+                                else
+                                {
+                                    startGlyphIndexInRun = truncateLeading
+                                        ? logicalClusters[scriptLine->TruncatedLeadingCharsCount]
+                                        : 0;
+                                    endGlyphIndexInRun = truncateTrailing
+                                        ? logicalClusters[scriptRun->CharCount - scriptLine->TruncatedTrailingCharsCount]
+                                        : scriptRun->GlyphCount;
                                 }
 
-                                ReleaseTruncatedScriptRun(scriptParagraph, truncatedScriptRun);
+                                int startGlyphIndexInParagraph = scriptRun->GlyphIndexInParagraph + startGlyphIndexInRun;
+                                int* glyphAdvanceWidths = scriptParagraph->GlyphAdvanceWidths + startGlyphIndexInParagraph;
+                                int glyphCount = endGlyphIndexInRun - startGlyphIndexInRun;
+
+                                measuredWidth = 0;
+                                for (int j = 0; j < glyphCount; j++)
+                                    measuredWidth += glyphAdvanceWidths[j];
+
+                                if (xCurrentPosition + measuredWidth > xStartPosition)
+                                {
+                                    int x = cachedRightToLeftLayout
+                                        ? textPaintArea.Right - xCurrentPosition - measuredWidth
+                                        : textPaintArea.Left + xCurrentPosition;
+                                    int y = textPaintArea.Top + yCurrentBaseline - scriptRun->Ascent;
+
+                                    ScriptTextOut(hdcState.HDC, ref scriptCache.ScriptCachePtr, x, y,
+                                        ExtTextOutOptions.NONE, null, &scriptRun->ScriptAnalysis,
+                                        scriptParagraph->Glyphs + startGlyphIndexInParagraph,
+                                        glyphCount,
+                                        glyphAdvanceWidths,
+                                        null,
+                                        scriptParagraph->GlyphOffsets + startGlyphIndexInParagraph);
+                                }
                             }
                             else
                             {
                                 measuredWidth = scriptRun->ABC.TotalWidth;
 
-                                if (xOffset + measuredWidth > textClipArea.Left)
+                                if (xCurrentPosition + measuredWidth > xStartPosition)
                                 {
-                                    int x = textClipArea.Left + xOffset;
-                                    int y = textClipArea.Top + yBaseline - scriptRun->Ascent;
-                                    ScriptTextOut(hdcState.HDC, ref scriptCache.ScriptCachePtr,
-                                        x, y, ExtTextOutOptions.NONE, null, scriptParagraph, scriptRun);
+                                    int x = cachedRightToLeftLayout
+                                        ? textPaintArea.Right - xCurrentPosition - measuredWidth
+                                        : textPaintArea.Left + xCurrentPosition;
+                                    int y = textPaintArea.Top + yCurrentBaseline - scriptRun->Ascent;
+
+                                    ScriptTextOut(hdcState.HDC, ref scriptCache.ScriptCachePtr, x, y,
+                                        ExtTextOutOptions.NONE, null, &scriptRun->ScriptAnalysis,
+                                        scriptRun->Glyphs(scriptParagraph),
+                                        scriptRun->GlyphCount,
+                                        scriptRun->GlyphAdvanceWidths(scriptParagraph),
+                                        null,
+                                        scriptRun->GlyphOffsets(scriptParagraph));
                                 }
                             }
                         }
@@ -605,32 +663,37 @@ namespace Gallio.Common.Splash
                         {
                             measuredWidth = scriptRun->ABC.TotalWidth;
 
-                            Rectangle embeddedObjectArea = new Rectangle(
-                                textClipArea.Left + xOffset + scriptRun->ABC.abcA,
-                                textClipArea.Top + yBaseline - scriptRun->Ascent,
-                                scriptRun->ABC.abcB,
-                                scriptRun->Height);
-
-                            EmbeddedObject embeddedObject = objectTable[scriptRun->ObjectIndex];
-                            Style style = styleTable[scriptRun->StyleIndex];
-                            using (Graphics g = Graphics.FromHdc(hdcState.HDC))
+                            if (xCurrentPosition + measuredWidth > xStartPosition)
                             {
-                                Rectangle embeddedObjectClipArea = textClipArea;
-                                embeddedObjectClipArea.Intersect(embeddedObjectArea);
-                                g.SetClip(embeddedObjectClipArea);
+                                int x = cachedRightToLeftLayout
+                                    ? textPaintArea.Right - xCurrentPosition - measuredWidth
+                                    : textPaintArea.Left + xCurrentPosition;
+                                int y = textPaintArea.Top + yCurrentBaseline - scriptRun->Ascent;
 
-                                embeddedObject.Paint(style, g, embeddedObjectArea);
+                                Rectangle embeddedObjectArea = new Rectangle(x, y,
+                                    scriptRun->ABC.abcB, scriptRun->Height);
+
+                                EmbeddedObject embeddedObject = objectTable[scriptRun->ObjectIndex];
+                                Style style = styleTable[scriptRun->StyleIndex];
+                                using (Graphics g = Graphics.FromHdc(hdcState.HDC))
+                                {
+                                    Rectangle embeddedObjectClipArea = textClipArea;
+                                    embeddedObjectClipArea.Intersect(embeddedObjectArea);
+                                    g.SetClip(embeddedObjectClipArea);
+
+                                    embeddedObject.Paint(style, g, embeddedObjectArea);
+                                }
                             }
                         }
 
-                        xOffset += measuredWidth;
+                        xCurrentPosition += measuredWidth;
 
-                        if (xOffset >= textClipArea.Right)
+                        if (xCurrentPosition >= xEndPosition)
                             break; // can't fit any more runs within the clip rectangle
                     }
                 }
 
-                yOffset += scriptLine->Height;
+                yCurrentPosition += scriptLine->Height;
                 scriptLine++;
             }
         }

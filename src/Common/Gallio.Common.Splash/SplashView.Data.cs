@@ -631,6 +631,27 @@ namespace Gallio.Common.Splash
                 buffer.Count = 0;
             }
 
+            public void RemoveScriptParagraphsStartingFrom(int paragraphIndex)
+            {
+                if (paragraphIndex <= 0)
+                {
+                    Clear();
+                }
+                else
+                {
+                    LruEntry* firstEntry = (LruEntry*)buffer.GetPointer();
+                    LruEntry* endEntry = firstEntry + buffer.Count;
+                    for (LruEntry* currentEntry = firstEntry; currentEntry != endEntry; currentEntry++)
+                    {
+                        if (currentEntry->ParagraphIndex >= paragraphIndex)
+                        {
+                            currentEntry->ParagraphIndex = -1;
+                            currentEntry->Token = 0;
+                        }
+                    }
+                }
+            }
+
             public bool TryGetScriptParagraph(int paragraphIndex, out ScriptParagraph* scriptParagraph)
             {
                 // Handle wrap-around at 32bits by thrashing all tokens.

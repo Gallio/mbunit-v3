@@ -29,9 +29,10 @@
         private void InitializeComponent()
         {
             this.horizontalSplitter = new System.Windows.Forms.SplitContainer();
-            this.splashView1 = new Gallio.Common.Splash.SplashView();
-            this.textBox1 = new System.Windows.Forms.TextBox();
             this.verticalSplitter = new System.Windows.Forms.SplitContainer();
+            this.splashView = new Gallio.Common.Splash.SplashView();
+            this.leftToRightButton = new System.Windows.Forms.Button();
+            this.rightToLeftButton = new System.Windows.Forms.Button();
             this.horizontalSplitter.Panel1.SuspendLayout();
             this.horizontalSplitter.Panel2.SuspendLayout();
             this.horizontalSplitter.SuspendLayout();
@@ -53,33 +54,11 @@
             // 
             // horizontalSplitter.Panel2
             // 
-            this.horizontalSplitter.Panel2.Controls.Add(this.textBox1);
+            this.horizontalSplitter.Panel2.Controls.Add(this.rightToLeftButton);
+            this.horizontalSplitter.Panel2.Controls.Add(this.leftToRightButton);
             this.horizontalSplitter.Size = new System.Drawing.Size(784, 562);
             this.horizontalSplitter.SplitterDistance = 450;
             this.horizontalSplitter.TabIndex = 0;
-            // 
-            // splashView1
-            // 
-            this.splashView1.AutoScroll = true;
-            this.splashView1.AutoScrollMinSize = new System.Drawing.Size(100, 0);
-            this.splashView1.BackColor = System.Drawing.SystemColors.Window;
-            this.splashView1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splashView1.Location = new System.Drawing.Point(0, 0);
-            this.splashView1.MinimumTextLayoutWidth = 1;
-            this.splashView1.Name = "splashView1";
-            this.splashView1.Padding = new System.Windows.Forms.Padding(3);
-            this.splashView1.Size = new System.Drawing.Size(755, 450);
-            this.splashView1.TabIndex = 0;
-            this.splashView1.Text = "splashView1";
-            // 
-            // textBox1
-            // 
-            this.textBox1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.textBox1.Location = new System.Drawing.Point(0, 0);
-            this.textBox1.Multiline = true;
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(784, 108);
-            this.textBox1.TabIndex = 0;
             // 
             // verticalSplitter
             // 
@@ -89,11 +68,45 @@
             // 
             // verticalSplitter.Panel1
             // 
-            this.verticalSplitter.Panel1.Controls.Add(this.splashView1);
+            this.verticalSplitter.Panel1.Controls.Add(this.splashView);
             this.verticalSplitter.Panel1MinSize = 1;
             this.verticalSplitter.Size = new System.Drawing.Size(784, 450);
             this.verticalSplitter.SplitterDistance = 755;
             this.verticalSplitter.TabIndex = 1;
+            // 
+            // splashView
+            // 
+            this.splashView.AutoScroll = true;
+            this.splashView.AutoScrollMinSize = new System.Drawing.Size(1, 1);
+            this.splashView.BackColor = System.Drawing.SystemColors.Window;
+            this.splashView.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splashView.Location = new System.Drawing.Point(0, 0);
+            this.splashView.MinimumTextLayoutWidth = 1;
+            this.splashView.Name = "splashView";
+            this.splashView.Padding = new System.Windows.Forms.Padding(3);
+            this.splashView.Size = new System.Drawing.Size(755, 450);
+            this.splashView.TabIndex = 0;
+            this.splashView.Text = "splashView1";
+            // 
+            // leftToRightButton
+            // 
+            this.leftToRightButton.Location = new System.Drawing.Point(13, 4);
+            this.leftToRightButton.Name = "leftToRightButton";
+            this.leftToRightButton.Size = new System.Drawing.Size(75, 23);
+            this.leftToRightButton.TabIndex = 0;
+            this.leftToRightButton.Text = "Left to Right";
+            this.leftToRightButton.UseVisualStyleBackColor = true;
+            this.leftToRightButton.Click += new System.EventHandler(this.button1_Click);
+            // 
+            // rightToLeftButton
+            // 
+            this.rightToLeftButton.Location = new System.Drawing.Point(95, 3);
+            this.rightToLeftButton.Name = "rightToLeftButton";
+            this.rightToLeftButton.Size = new System.Drawing.Size(75, 23);
+            this.rightToLeftButton.TabIndex = 1;
+            this.rightToLeftButton.Text = "Right to Left";
+            this.rightToLeftButton.UseVisualStyleBackColor = true;
+            this.rightToLeftButton.Click += new System.EventHandler(this.button2_Click);
             // 
             // DemoForm
             // 
@@ -105,7 +118,6 @@
             this.Text = "Form1";
             this.horizontalSplitter.Panel1.ResumeLayout(false);
             this.horizontalSplitter.Panel2.ResumeLayout(false);
-            this.horizontalSplitter.Panel2.PerformLayout();
             this.horizontalSplitter.ResumeLayout(false);
             this.verticalSplitter.Panel1.ResumeLayout(false);
             this.verticalSplitter.ResumeLayout(false);
@@ -116,8 +128,9 @@
         #endregion
 
         private System.Windows.Forms.SplitContainer horizontalSplitter;
-        private System.Windows.Forms.TextBox textBox1;
-        private SplashView splashView1;
+        private SplashView splashView;
         private System.Windows.Forms.SplitContainer verticalSplitter;
+        private System.Windows.Forms.Button leftToRightButton;
+        private System.Windows.Forms.Button rightToLeftButton;
     }
 }
