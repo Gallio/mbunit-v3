@@ -73,14 +73,20 @@ namespace Gallio.Common.Splash.Demo
             splashView.AppendLine(styleBuilder.ToStyle(defaultStyle));
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void leftToRightButton_Click(object sender, EventArgs e)
         {
             splashView.RightToLeft = RightToLeft.No;
         }
 
-        private void button2_Click(object sender, EventArgs e)
+        private void rightToLeftButton_Click(object sender, EventArgs e)
         {
             splashView.RightToLeft = RightToLeft.Yes;
+        }
+
+        private void splashView_MouseMove(object sender, MouseEventArgs e)
+        {
+            CharSnap snap = splashView.GetCharSnapFromPosition(e.Location);
+            mouseStatusTextBox.Text = string.Format("Snap: {0} at {1}.", snap.Kind, snap.CharIndex);
         }
     }
 }

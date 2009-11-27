@@ -122,13 +122,22 @@ namespace Gallio.Common.Splash
             document.AppendObject(style, obj);
         }
 
+        /// <summary>
+        /// Gets a character snap from a position.
+        /// </summary>
+        /// <param name="point">The point relative to the layout origin.</param>
+        /// <returns>The character snap.</returns>
+        public CharSnap GetCharSnapFromPosition(Point point)
+        {
+            Rectangle displayRect = DisplayRectangle;
+            Point layoutPoint = new Point(point.X - displayRect.Left, point.Y - displayRect.Top);
+            return layout.GetCharSnapFromPosition(layoutPoint, Padding);
+        }
+
         /// <inheritdoc />
         protected override void OnPaint(PaintEventArgs e)
         {
-            UpdateLayoutSize();
-            UpdateLayoutRightToLeft();
-            layout.Update(e.Graphics);
-            UpdateScrollBars();
+            UpdateLayout();
 
             Rectangle displayRect = DisplayRectangle;
             layout.Paint(e.Graphics, displayRect.Location, e.ClipRectangle);
@@ -158,6 +167,14 @@ namespace Gallio.Common.Splash
             UpdateLayoutRightToLeft();
 
             base.OnRightToLeftChanged(e);
+        }
+
+        private void UpdateLayout()
+        {
+            UpdateLayoutSize();
+            UpdateLayoutRightToLeft();
+            layout.Update();
+            UpdateScrollBars();
         }
 
         private void UpdateLayoutSize()

@@ -33,6 +33,7 @@
             this.rightToLeftButton = new System.Windows.Forms.Button();
             this.leftToRightButton = new System.Windows.Forms.Button();
             this.splashView = new Gallio.Common.Splash.SplashView();
+            this.mouseStatusTextBox = new System.Windows.Forms.TextBox();
             this.horizontalSplitter.Panel1.SuspendLayout();
             this.horizontalSplitter.Panel2.SuspendLayout();
             this.horizontalSplitter.SuspendLayout();
@@ -54,6 +55,7 @@
             // 
             // horizontalSplitter.Panel2
             // 
+            this.horizontalSplitter.Panel2.Controls.Add(this.mouseStatusTextBox);
             this.horizontalSplitter.Panel2.Controls.Add(this.rightToLeftButton);
             this.horizontalSplitter.Panel2.Controls.Add(this.leftToRightButton);
             this.horizontalSplitter.Size = new System.Drawing.Size(784, 562);
@@ -82,7 +84,7 @@
             this.rightToLeftButton.TabIndex = 1;
             this.rightToLeftButton.Text = "Right to Left";
             this.rightToLeftButton.UseVisualStyleBackColor = true;
-            this.rightToLeftButton.Click += new System.EventHandler(this.button2_Click);
+            this.rightToLeftButton.Click += new System.EventHandler(this.rightToLeftButton_Click);
             // 
             // leftToRightButton
             // 
@@ -92,7 +94,7 @@
             this.leftToRightButton.TabIndex = 0;
             this.leftToRightButton.Text = "Left to Right";
             this.leftToRightButton.UseVisualStyleBackColor = true;
-            this.leftToRightButton.Click += new System.EventHandler(this.button1_Click);
+            this.leftToRightButton.Click += new System.EventHandler(this.leftToRightButton_Click);
             // 
             // splashView
             // 
@@ -107,6 +109,14 @@
             this.splashView.Size = new System.Drawing.Size(755, 450);
             this.splashView.TabIndex = 0;
             this.splashView.Text = "splashView1";
+            this.splashView.MouseMove += new System.Windows.Forms.MouseEventHandler(this.splashView_MouseMove);
+            // 
+            // mouseStatusTextBox
+            // 
+            this.mouseStatusTextBox.Location = new System.Drawing.Point(13, 34);
+            this.mouseStatusTextBox.Name = "mouseStatusTextBox";
+            this.mouseStatusTextBox.Size = new System.Drawing.Size(157, 20);
+            this.mouseStatusTextBox.TabIndex = 2;
             // 
             // DemoForm
             // 
@@ -118,6 +128,7 @@
             this.Text = "Form1";
             this.horizontalSplitter.Panel1.ResumeLayout(false);
             this.horizontalSplitter.Panel2.ResumeLayout(false);
+            this.horizontalSplitter.Panel2.PerformLayout();
             this.horizontalSplitter.ResumeLayout(false);
             this.verticalSplitter.Panel1.ResumeLayout(false);
             this.verticalSplitter.ResumeLayout(false);
@@ -132,5 +143,6 @@
         private System.Windows.Forms.SplitContainer verticalSplitter;
         private System.Windows.Forms.Button leftToRightButton;
         private System.Windows.Forms.Button rightToLeftButton;
+        private System.Windows.Forms.TextBox mouseStatusTextBox;
     }
 }

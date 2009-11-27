@@ -82,6 +82,14 @@ namespace Gallio.Common.Splash
         }
 
         /// <summary>
+        /// Gets the number of characters in the document.
+        /// </summary>
+        public int CharCount
+        {
+            get { return charBuffer.Count; }
+        }
+
+        /// <summary>
         /// Gets the index of the current paragraph.
         /// </summary>
         public int CurrentParagraphIndex

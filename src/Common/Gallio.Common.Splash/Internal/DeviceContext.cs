@@ -18,16 +18,30 @@ namespace Gallio.Common.Splash.Internal
         private Font currentFont;
         private ScriptMetrics currentScriptMetrics;
 
-        public DeviceContext(Graphics graphics, ScriptMetricsCache scriptMetricsCache)
+        private DeviceContext(Graphics graphics, ScriptMetricsCache scriptMetricsCache)
         {
             this.graphics = graphics;
-            HDC = graphics.GetHdc();
             this.scriptMetricsCache = scriptMetricsCache;
+
+            HDC = graphics != null ? graphics.GetHdc() : NativeMethods.GetDC(IntPtr.Zero);
+        }
+
+        public static DeviceContext CreateFromGraphics(Graphics graphics, ScriptMetricsCache scriptMetricsCache)
+        {
+            return new DeviceContext(graphics, scriptMetricsCache);
+        }
+
+        public static DeviceContext CreateFromScreen(ScriptMetricsCache scriptMetricsCache)
+        {
+            return new DeviceContext(null, scriptMetricsCache);
         }
 
         public void Dispose()
         {
-            graphics.ReleaseHdc(HDC);
+            if (graphics != null)
+                graphics.ReleaseHdc(HDC);
+            else
+                NativeMethods.ReleaseDC(IntPtr.Zero, HDC);
         }
 
         public ScriptMetrics SelectFont(Font font)

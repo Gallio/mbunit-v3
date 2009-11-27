@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Windows.Forms;
 using Gallio.Common.Splash.Internal;
 using Gallio.Common.Splash.Native;
 
@@ -23,6 +24,7 @@ namespace Gallio.Common.Splash
         private readonly UnmanagedBuffer<SCRIPT_ITEM> tempScriptItemBuffer;
         private readonly UnmanagedBuffer<byte> tempEmbeddingLevelBuffer;
         private readonly UnmanagedBuffer<int> tempVisualToLogicalMapBuffer;
+        private readonly UnmanagedBuffer<short> tempLogicalClustersBuffer;
 
         private int firstParagraphToItemize;
         private int firstParagraphToLayout;
@@ -39,6 +41,7 @@ namespace Gallio.Common.Splash
         private const int MinimumScriptLineHeight = 1;
         private const int InitialCapacityForLinesPerDocument = 64;
         private const int InitialCapacityForScriptRunsPerParagraph = 8;
+        private const int InitialCapacityForCharsPerScriptRun = 128;
 
         /// <summary>
         /// Creates a layout for a document.
@@ -57,6 +60,7 @@ namespace Gallio.Common.Splash
             tempScriptItemBuffer = new UnmanagedBuffer<SCRIPT_ITEM>(InitialCapacityForScriptRunsPerParagraph);
             tempEmbeddingLevelBuffer = new UnmanagedBuffer<byte>(InitialCapacityForScriptRunsPerParagraph);
             tempVisualToLogicalMapBuffer = new UnmanagedBuffer<int>(InitialCapacityForScriptRunsPerParagraph);
+            tempLogicalClustersBuffer = new UnmanagedBuffer<short>(InitialCapacityForCharsPerScriptRun);
 
             scriptParagraphCache = new ScriptParagraphCache(ScriptParagraphCacheSize);
 
@@ -153,6 +157,7 @@ namespace Gallio.Common.Splash
             tempScriptItemBuffer.Clear();
             tempEmbeddingLevelBuffer.Clear();
             tempVisualToLogicalMapBuffer.Clear();
+            tempLogicalClustersBuffer.Clear();
 
             InvalidateParagraphItemization(0);
             InvalidateParagraphLayout(0);
@@ -161,11 +166,10 @@ namespace Gallio.Common.Splash
         /// <summary>
         /// Updates the layout.
         /// </summary>
-        /// <param name="graphics">The graphics context.</param>
-        public void Update(Graphics graphics)
+        public void Update()
         {
             UpdateParagraphItemization();
-            UpdateParagraphLayout(graphics);
+            UpdateParagraphLayout();
         }
 
         /// <summary>
@@ -188,7 +192,7 @@ namespace Gallio.Common.Splash
             {
                 graphics.SetClip(layoutRect);
 
-                using (DeviceContext deviceContext = new DeviceContext(graphics, scriptMetricsCache))
+                using (DeviceContext deviceContext = DeviceContext.CreateFromGraphics(graphics, scriptMetricsCache))
                 {
                     PaintRegion(deviceContext, layoutRect, clippedLayoutRect);
                 }
@@ -196,6 +200,119 @@ namespace Gallio.Common.Splash
             finally
             {
                 graphics.Restore(state);
+            }
+        }
+
+        /// <summary>
+        /// Gets a character snap from a position.
+        /// </summary>
+        /// <param name="point">The point relative to the layout origin.</param>
+        /// <param name="padding">The padding around the actual layout area to consider part of the document.</param>
+        /// <returns>The character snap.</returns>
+        public CharSnap GetCharSnapFromPosition(Point point, Padding padding)
+        {
+            int xPosition = currentLayoutRightToLeft
+                ? currentLayoutWidth - point.X
+                : point.X;
+            int yPosition = point.Y;
+
+            if (xPosition < - padding.Left || yPosition < - padding.Top
+                || xPosition >= currentLayoutWidth + padding.Right || yPosition >= currentLayoutHeight + padding.Bottom)
+                return new CharSnap(CharSnapKind.None, -1);
+
+            int scriptLineIndex;
+            ScriptLine* scriptLine = GetScriptLineAtYPositionOrNullIfNone(yPosition, out scriptLineIndex);
+            if (scriptLine == null || scriptLine->ScriptRunCount == 0)
+            {
+                int charCount = document.CharCount;
+                if (charCount == 0)
+                    return new CharSnap(CharSnapKind.Leading, 0);
+
+                return new CharSnap(CharSnapKind.Trailing, charCount - 1);
+            }
+
+            int scriptRunCount = scriptLine->ScriptRunCount;
+            using (DeviceContext deviceContext = DeviceContext.CreateFromScreen(scriptMetricsCache))
+            {
+                int xCurrentPosition = scriptLine->X;
+                ScriptParagraph* scriptParagraph = GetScriptParagraph(deviceContext, scriptLine->ParagraphIndex);
+                int scriptRunIndex = scriptLine->ScriptRunIndex;
+                int* visualToLogicalMap = GetTempVisualToLogicalMap(scriptParagraph->ScriptRuns + scriptRunIndex,
+                    scriptRunCount);
+
+                if (xCurrentPosition > xPosition)
+                {
+                    ScriptRun* scriptRun = scriptParagraph->ScriptRuns + scriptLine->ScriptRunIndex + visualToLogicalMap[0];
+                    return new CharSnap(CharSnapKind.Leading, scriptParagraph->CharIndex
+                        + scriptRun->CharIndexInParagraph + scriptLine->TruncatedLeadingCharsCount);
+                }
+
+                for (int i = 0; i < scriptRunCount; i++)
+                {
+                    int logicalScriptRunIndex = visualToLogicalMap[currentLayoutRightToLeft ? scriptRunCount - i - 1 : i];
+                    ScriptRun* scriptRun = scriptParagraph->ScriptRuns + logicalScriptRunIndex + scriptRunIndex;
+
+                    int measuredWidth;
+                    if (scriptRun->RunKind == RunKind.Text)
+                    {
+                        int glyphIndexInParagraph, glyphCount;
+                        int truncatedLeadingCharsCount = logicalScriptRunIndex == 0 ? scriptLine->TruncatedLeadingCharsCount : 0;
+                        int truncatedTrailingCharsCount = logicalScriptRunIndex == scriptRunCount - 1 ? scriptLine->TruncatedTrailingCharsCount : 0;
+                        measuredWidth = MeasureTextScriptRun(scriptParagraph, scriptRun,
+                            truncatedLeadingCharsCount, truncatedTrailingCharsCount,
+                            out glyphIndexInParagraph, out glyphCount);
+
+                        if (xCurrentPosition + measuredWidth > xPosition)
+                        {
+                            int charCount = scriptRun->CharCount - truncatedLeadingCharsCount - truncatedTrailingCharsCount;
+                            ushort* charLogicalClusters = scriptParagraph->CharLogicalClusters + scriptRun->CharIndexInParagraph + truncatedLeadingCharsCount;
+
+                            int glyphShift = glyphIndexInParagraph - scriptRun->GlyphIndexInParagraph;
+                            if (glyphShift != 0)
+                            {
+                                tempLogicalClustersBuffer.EnsureCapacity(charCount);
+                                ushort* shiftedCharLogicalClusters = (ushort*)tempLogicalClustersBuffer.GetPointer();
+
+                                for (int j = 0; j < charCount; j++)
+                                    shiftedCharLogicalClusters[j] = (ushort)(charLogicalClusters[j] - glyphShift);
+
+                                charLogicalClusters = shiftedCharLogicalClusters;
+                            }
+
+                            int charIndexInTruncatedRun, trailingCodePoints;
+                            int result = NativeMethods.ScriptXtoCP(xPosition - xCurrentPosition,
+                                charCount, glyphCount, charLogicalClusters,
+                                scriptParagraph->GlyphVisualAttributes + glyphIndexInParagraph,
+                                scriptParagraph->GlyphAdvanceWidths + glyphIndexInParagraph,
+                                &scriptRun->ScriptAnalysis,
+                                out charIndexInTruncatedRun,
+                                out trailingCodePoints);
+
+                            if (result == 0)
+                                return new CharSnap(CharSnapKind.Exact, scriptParagraph->CharIndex
+                                    + scriptRun->CharIndexInParagraph + charIndexInTruncatedRun + truncatedLeadingCharsCount);
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        measuredWidth = MeasureObjectScriptRun(scriptRun);
+
+                        if (xCurrentPosition + measuredWidth > xPosition)
+                        {
+                            return new CharSnap(CharSnapKind.Exact, scriptParagraph->CharIndex + scriptRun->CharIndexInParagraph);
+                        }
+                    }
+
+                    xCurrentPosition += measuredWidth;
+                }
+
+                {
+                    ScriptRun* scriptRun = scriptParagraph->ScriptRuns + scriptLine->ScriptRunIndex + visualToLogicalMap[scriptRunCount - 1];
+                    return new CharSnap(CharSnapKind.Trailing, scriptParagraph->CharIndex
+                        + scriptRun->CharIndexInParagraph + scriptRun->CharCount
+                        - 1 - scriptLine->TruncatedTrailingCharsCount);
+                }
             }
         }
 
@@ -247,50 +364,12 @@ namespace Gallio.Common.Splash
                         {
                             Style style = document.LookupStyle(scriptRun->StyleIndex);
                             ScriptMetrics scriptMetrics = deviceContext.SelectFont(style.Font);
-                            deviceContext.SetTextColor(style.Color);
 
-                            bool truncateLeading = logicalScriptRunIndex == 0 &&
-                                scriptLine->TruncatedLeadingCharsCount != 0;
-                            bool truncateTrailing = logicalScriptRunIndex == scriptRunCount - 1 &&
-                                scriptLine->TruncatedTrailingCharsCount != 0;
                             int glyphIndexInParagraph, glyphCount;
-                            if (truncateLeading || truncateTrailing)
-                            {
-                                ushort* logicalClusters = scriptRun->CharLogicalClusters(scriptParagraph);
-                                int startGlyphIndexInRun, endGlyphIndexInRun;
-                                if (scriptRun->ScriptAnalysis.fRTL)
-                                {
-                                    startGlyphIndexInRun = truncateTrailing
-                                        ? logicalClusters[scriptRun->CharCount - scriptLine->TruncatedTrailingCharsCount] + 1
-                                        : 0;
-                                    endGlyphIndexInRun = truncateLeading
-                                        ? logicalClusters[scriptLine->TruncatedLeadingCharsCount] + 1
-                                        : scriptRun->GlyphCount;
-                                }
-                                else
-                                {
-                                    startGlyphIndexInRun = truncateLeading
-                                        ? logicalClusters[scriptLine->TruncatedLeadingCharsCount]
-                                        : 0;
-                                    endGlyphIndexInRun = truncateTrailing
-                                        ? logicalClusters[scriptRun->CharCount - scriptLine->TruncatedTrailingCharsCount]
-                                        : scriptRun->GlyphCount;
-                                }
-
-                                glyphIndexInParagraph = scriptRun->GlyphIndexInParagraph + startGlyphIndexInRun;
-                                glyphCount = endGlyphIndexInRun - startGlyphIndexInRun;
-
-                                int* glyphAdvanceWidths = scriptParagraph->GlyphAdvanceWidths + glyphIndexInParagraph;
-                                measuredWidth = 0;
-                                for (int j = 0; j < glyphCount; j++)
-                                    measuredWidth += glyphAdvanceWidths[j];
-                            }
-                            else
-                            {
-                                measuredWidth = scriptRun->ABC.TotalWidth;
-                                glyphIndexInParagraph = scriptRun->GlyphIndexInParagraph;
-                                glyphCount = scriptRun->GlyphCount;
-                            }
+                            measuredWidth = MeasureTextScriptRun(scriptParagraph, scriptRun,
+                                logicalScriptRunIndex == 0 ? scriptLine->TruncatedLeadingCharsCount : 0,
+                                logicalScriptRunIndex == scriptRunCount - 1 ? scriptLine->TruncatedTrailingCharsCount : 0,
+                                out glyphIndexInParagraph, out glyphCount);
 
                             if (xCurrentPosition + measuredWidth > xStartPosition)
                             {
@@ -299,6 +378,7 @@ namespace Gallio.Common.Splash
                                     : layoutRect.Left + xCurrentPosition;
                                 int y = layoutRect.Top + yCurrentBaseline - scriptRun->Ascent;
 
+                                deviceContext.SetTextColor(style.Color);
                                 ScriptTextOut(deviceContext.HDC, ref scriptMetrics.ScriptCache, x, y,
                                     ExtTextOutOptions.NONE, null, &scriptRun->ScriptAnalysis,
                                     scriptParagraph->Glyphs + glyphIndexInParagraph,
@@ -310,7 +390,7 @@ namespace Gallio.Common.Splash
                         }
                         else
                         {
-                            measuredWidth = scriptRun->ABC.TotalWidth;
+                            measuredWidth = MeasureObjectScriptRun(scriptRun);
 
                             if (xCurrentPosition + measuredWidth > xStartPosition)
                             {
@@ -355,6 +435,53 @@ namespace Gallio.Common.Splash
             }
         }
 
+        private static int MeasureTextScriptRun(ScriptParagraph* scriptParagraph, ScriptRun* scriptRun,
+            int truncatedLeadingCharsCount, int truncatedTrailingCharsCount,
+            out int glyphIndexInParagraph, out int glyphCount)
+        {
+            if (truncatedLeadingCharsCount != 0 || truncatedTrailingCharsCount != 0)
+            {
+                ushort* logicalClusters = scriptRun->CharLogicalClusters(scriptParagraph);
+                int startGlyphIndexInRun, endGlyphIndexInRun;
+                if (scriptRun->ScriptAnalysis.fRTL)
+                {
+                    startGlyphIndexInRun = truncatedTrailingCharsCount != 0
+                        ? logicalClusters[scriptRun->CharCount - truncatedTrailingCharsCount] + 1
+                        : 0;
+                    endGlyphIndexInRun = truncatedLeadingCharsCount != 0
+                        ? logicalClusters[truncatedLeadingCharsCount] + 1
+                        : scriptRun->GlyphCount;
+                }
+                else
+                {
+                    startGlyphIndexInRun = truncatedLeadingCharsCount != 0
+                        ? logicalClusters[truncatedLeadingCharsCount]
+                        : 0;
+                    endGlyphIndexInRun = truncatedTrailingCharsCount != 0
+                        ? logicalClusters[scriptRun->CharCount - truncatedTrailingCharsCount]
+                        : scriptRun->GlyphCount;
+                }
+
+                glyphIndexInParagraph = scriptRun->GlyphIndexInParagraph + startGlyphIndexInRun;
+                glyphCount = endGlyphIndexInRun - startGlyphIndexInRun;
+
+                int* glyphAdvanceWidths = scriptParagraph->GlyphAdvanceWidths + glyphIndexInParagraph;
+                int measuredWidth = 0;
+                for (int j = 0; j < glyphCount; j++)
+                    measuredWidth += glyphAdvanceWidths[j];
+                return measuredWidth;
+            }
+
+            glyphIndexInParagraph = scriptRun->GlyphIndexInParagraph;
+            glyphCount = scriptRun->GlyphCount;
+            return scriptRun->ABC.TotalWidth;
+        }
+
+        private static int MeasureObjectScriptRun(ScriptRun* scriptRun)
+        {
+            return scriptRun->ABC.TotalWidth;
+        }
+
         private ScriptLine* GetScriptLineZero()
         {
             return (ScriptLine*)scriptLineBuffer.GetPointer();
@@ -392,7 +519,7 @@ namespace Gallio.Common.Splash
             }
         }
 
-        private void UpdateParagraphLayout(Graphics graphics)
+        private void UpdateParagraphLayout()
         {
             if (firstParagraphToLayout >= 0)
             {
@@ -423,7 +550,7 @@ namespace Gallio.Common.Splash
                     }
                 }
 
-                using (DeviceContext deviceContext = new DeviceContext(graphics, scriptMetricsCache))
+                using (DeviceContext deviceContext = DeviceContext.CreateFromScreen(scriptMetricsCache))
                 {
                     int paragraphCount = document.ParagraphCount;
                     for (int paragraphIndex = firstParagraphToLayout; paragraphIndex < paragraphCount; paragraphIndex++)

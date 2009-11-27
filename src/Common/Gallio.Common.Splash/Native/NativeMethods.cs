@@ -107,6 +107,13 @@ namespace Gallio.Common.Splash.Native
         public static extern int ScriptFreeCache(
             [In, Out] ref IntPtr psc);
 
+
+        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true, ExactSpelling = true)]
+        public static extern IntPtr GetDC([In] IntPtr hWnd);
+
+        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true, ExactSpelling = true)]
+        public static extern int ReleaseDC([In] IntPtr hWnd, [In] IntPtr hDC);
+
         [DllImport("gdi32.dll", CharSet = CharSet.Auto, SetLastError = true, ExactSpelling = true)]
         public static extern IntPtr SelectObject([In] IntPtr hDC, [In] IntPtr hObject);
 

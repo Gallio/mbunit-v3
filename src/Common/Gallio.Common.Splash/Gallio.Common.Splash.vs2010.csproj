@@ -62,6 +62,8 @@
     <Compile Include="Internal\ScriptRun.cs" />
     <Compile Include="Native\TEXTMETRIC.cs" />
     <Compile Include="ParagraphChangedEventArgs.cs" />
+    <Compile Include="CharSnap.cs" />
+    <Compile Include="CharSnapKind.cs" />
     <Compile Include="SplashDocument.cs" />
     <Compile Include="Internal\LookupTable.cs" />
     <Compile Include="Native\ABC.cs" />
