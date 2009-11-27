@@ -7,7 +7,7 @@ namespace Gallio.Common.Splash
     /// <summary>
     /// Describes the kind of snap.
     /// </summary>
-    public enum SnapKind
+    public enum CharSnapKind
     {
         /// <summary>
         /// The character snap did not succeed.  The position was outside the bounds of the document.
