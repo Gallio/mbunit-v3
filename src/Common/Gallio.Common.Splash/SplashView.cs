@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
-using Gallio.Common.Splash.Native;
+using Gallio.Common.Splash.Internal;
 
 namespace Gallio.Common.Splash
 {
@@ -21,97 +20,39 @@ namespace Gallio.Common.Splash
     /// Display updates are performed asynchronously in batches.
     /// </para>
     /// </remarks>
-    public unsafe partial class SplashView : ScrollableControl
+    public unsafe class SplashView : ScrollableControl
     {
-        private readonly LookupTable<Style> styleTable;
-        private readonly LookupTable<EmbeddedObject> objectTable;
-        private readonly ScriptCacheTable scriptCacheTable;
-        private readonly ScriptParagraphCache scriptParagraphCache;
+        private readonly SplashDocument document;
+        private readonly SplashLayout layout;
 
-        private readonly UnmanagedBuffer<char> charBuffer;
-        private readonly UnmanagedBuffer<Paragraph> paragraphBuffer;
-        private readonly UnmanagedBuffer<Run> runBuffer;
-        private readonly UnmanagedBuffer<ScriptLine> scriptLineBuffer;
-
-        private readonly UnmanagedBuffer<SCRIPT_ITEM> tempScriptItemBuffer;
-        private readonly UnmanagedBuffer<byte> tempEmbeddingLevelBuffer;
-        private readonly UnmanagedBuffer<int> tempVisualToLogicalMapBuffer;
-
-        private Style previousStyle;
-        private int previousStyleIndex;
-
-        private Paragraph* currentParagraph;
-        private Run* currentRun;
-
-        private int firstInvalidParagraphIndex;
-        private bool layoutPending;
-        private int cachedTextLayoutWidth;
-        private int cachedTextLayoutHeight;
-        private bool cachedRightToLeftLayout;
         private int minimumTextLayoutWidth = 100;
-
-        /// <summary>
-        /// The character used as a placeholder for text itemizing when a paragraph contains an object run.
-        /// </summary>
-        private const char ObjectRunPlaceholderChar = ' ';
-
-        /// <summary>
-        /// The maximum number of characters that a text run can contain.
-        /// </summary>
-        private const int MaxCharsPerRun = 65535;
-
-        /// <summary>
-        /// The maximum number of distinct objects supported by the implementation.
-        /// </summary>
-        public const int MaxObjects = 65535;
-
-        /// <summary>
-        /// The maximum number of distinct styles supported by the implementation.
-        /// </summary>
-        /// <value>256</value>
-        public const int MaxStyles = 256;
-
-        private const int InitialCapacityForCharsPerDocument = 4096;
-        private const int InitialCapacityForParagraphsPerDocument = 64;
-        private const int InitialCapacityForRunsPerDocument = 128;
-        private const int InitialCapacityForLinesPerDocument = 64;
-
-        private const int InitialCapacityForCharsPerParagraph = 128;
-        private const int InitialCapacityForScriptRunsPerParagraph = 8;
-        private const int InitialCapacityForGlyphsPerParagraph = 128;
-
-        private const int ScriptParagraphCacheSize = 64;
-
-        private const int MinimumScriptLineHeight = 1;
 
         /// <summary>
         /// Creates an empty SplashView.
         /// </summary>
         public SplashView()
         {
+            document = new SplashDocument();
+            layout = new SplashLayout(document);
+
             SetStyle(ControlStyles.UserPaint | ControlStyles.ResizeRedraw
                 | ControlStyles.Selectable | ControlStyles.UserMouse
                 | ControlStyles.AllPaintingInWmPaint | ControlStyles.OptimizedDoubleBuffer, true);
 
-            styleTable = new LookupTable<Style>(MaxStyles, "This implementation only supports at most {0} distinct styles.");
-            objectTable = new LookupTable<EmbeddedObject>(MaxObjects, "This implementation only supports at most {0} distinct objects.");
-            scriptCacheTable = new ScriptCacheTable();
-
-            charBuffer = new UnmanagedBuffer<char>(InitialCapacityForCharsPerDocument);
-            paragraphBuffer = new UnmanagedBuffer<Paragraph>(InitialCapacityForParagraphsPerDocument);
-            runBuffer = new UnmanagedBuffer<Run>(InitialCapacityForRunsPerDocument);
-            scriptLineBuffer = new UnmanagedBuffer<ScriptLine>(InitialCapacityForLinesPerDocument);
-
-            tempScriptItemBuffer = new UnmanagedBuffer<SCRIPT_ITEM>(InitialCapacityForScriptRunsPerParagraph);
-            tempEmbeddingLevelBuffer = new UnmanagedBuffer<byte>(InitialCapacityForScriptRunsPerParagraph);
-            tempVisualToLogicalMapBuffer = new UnmanagedBuffer<int>(InitialCapacityForScriptRunsPerParagraph);
-
-            scriptParagraphCache = new ScriptParagraphCache(ScriptParagraphCacheSize);
-
-            InitializeForNewDocument();
-
             BackColor = SystemColors.Window;
             Padding = new Padding(5);
+
+            AttachLayoutEvents();
+        }
+
+        private void AttachLayoutEvents()
+        {
+            layout.UpdateRequired += HandleLayoutChanged;
+        }
+
+        private void HandleLayoutChanged(object sender, EventArgs e)
+        {
+            Invalidate();
         }
 
         /// <summary>
@@ -128,97 +69,69 @@ namespace Gallio.Common.Splash
             {
                 if (value < 1)
                     throw new ArgumentOutOfRangeException("value", "Value must be at least 1.");
-                minimumTextLayoutWidth = value;
+
+                if (minimumTextLayoutWidth != value)
+                {
+                    minimumTextLayoutWidth = value;
+                    UpdateLayoutSize();
+                    UpdateScrollBars();
+                }
             }
         }
 
         /// <summary>
-        /// Clears the text in the view.
+        /// Clears the text in the document.
         /// </summary>
         public void Clear()
         {
-            currentParagraph = null;
-            currentRun = null;
-            previousStyle = null;
-
-            styleTable.Clear();
-            objectTable.Clear();
-            scriptCacheTable.Clear();
-            scriptParagraphCache.Clear();
-
-            charBuffer.Clear();
-            paragraphBuffer.Clear();
-            runBuffer.Clear();
-            scriptLineBuffer.Clear();
-
-            tempScriptItemBuffer.Clear();
-            tempEmbeddingLevelBuffer.Clear();
-            tempVisualToLogicalMapBuffer.Clear();
-
-            InitializeForNewDocument();
+            document.Clear();
         }
 
         /// <summary>
-        /// Appends text to the view.
+        /// Appends text to the document.
         /// </summary>
         /// <param name="style">The style.</param>
         /// <param name="text">The text to append.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="style"/> or <paramref name="text"/> is null.</exception>
-        /// <exception cref="InvalidOperationException">Thrown if more than <see cref="MaxStyles" /> distinct styles are used.</exception>
+        /// <exception cref="InvalidOperationException">Thrown if more than <see cref="SplashDocument.MaxStyles" /> distinct styles are used.</exception>
         public void AppendText(Style style, string text)
         {
-            if (style == null)
-                throw new ArgumentNullException("style");
-            if (text == null)
-                throw new ArgumentNullException("text");
-
-            if (text.Length != 0)
-            {
-                int styleIndex = AssignStyleIndex(style);
-                InvalidateItemizationFromCurrentParagraph();
-                InternalAppendText(styleIndex, text);
-            }
+            document.AppendText(style, text);
         }
 
         /// <summary>
-        /// Appends a new line to the view.
+        /// Appends a new line to the document.
         /// </summary>
         /// <param name="style">The style.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="style"/> is null.</exception>
-        /// <exception cref="InvalidOperationException">Thrown if more than <see cref="MaxStyles" /> distinct styles are used.</exception>
+        /// <exception cref="InvalidOperationException">Thrown if more than <see cref="SplashDocument.MaxStyles" /> distinct styles are used.</exception>
         public void AppendLine(Style style)
         {
-            if (style == null)
-                throw new ArgumentNullException("style");
-
-            int styleIndex = AssignStyleIndex(style);
-            InvalidateItemizationFromCurrentParagraph();
-            InternalAppendText(styleIndex, "\n");
+            document.AppendLine(style);
         }
 
         /// <summary>
-        /// Appends an object to the view.
+        /// Appends an object to the document.
         /// </summary>
         /// <param name="style">The style.</param>
         /// <param name="obj">The object to append.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="style"/> or <paramref name="obj"/> is null.</exception>
-        /// <exception cref="InvalidOperationException">Thrown if more than <see cref="MaxStyles" /> distinct styles are used.</exception>
+        /// <exception cref="InvalidOperationException">Thrown if more than <see cref="SplashDocument.MaxStyles" /> distinct styles are used.</exception>
         public void AppendObject(Style style, EmbeddedObject obj)
         {
-            if (style == null)
-                throw new ArgumentNullException("style");
-            if (obj == null)
-                throw new ArgumentNullException("obj");
-
-            int styleIndex = AssignStyleIndex(style);
-            InvalidateItemizationFromCurrentParagraph();
-            InternalAppendObject(styleIndex, obj);
+            document.AppendObject(style, obj);
         }
 
         /// <inheritdoc />
         protected override void OnPaint(PaintEventArgs e)
         {
-            UpdateLayoutAndPaintRegion(e.Graphics, e.ClipRectangle);
+            UpdateLayoutSize();
+            UpdateLayoutRightToLeft();
+            layout.Update(e.Graphics);
+            UpdateScrollBars();
+
+            Rectangle displayRect = DisplayRectangle;
+            layout.Paint(e.Graphics, displayRect.Location, e.ClipRectangle);
 
             base.OnPaint(e);
         }
@@ -226,7 +139,7 @@ namespace Gallio.Common.Splash
         /// <inheritdoc />
         protected override void OnPaddingChanged(EventArgs e)
         {
-            InvalidateTextAreaDimensions();
+            UpdateLayoutSize();
 
             base.OnPaddingChanged(e);
         }
@@ -234,7 +147,7 @@ namespace Gallio.Common.Splash
         /// <inheritdoc />
         protected override void OnResize(EventArgs e)
         {
-            InvalidateTextAreaDimensions();
+            UpdateLayoutSize();
 
             base.OnResize(e);
         }
@@ -242,564 +155,25 @@ namespace Gallio.Common.Splash
         /// <inheritdoc />
         protected override void OnRightToLeftChanged(EventArgs e)
         {
-            InvalidateItemization();
+            UpdateLayoutRightToLeft();
 
             base.OnRightToLeftChanged(e);
         }
 
-        private void InitializeForNewDocument()
+        private void UpdateLayoutSize()
         {
-            StartParagraph();
-            InvalidateLayout();
+            Rectangle displayRect = DisplayRectangle;
+            layout.DesiredLayoutWidth = Math.Max(displayRect.Width, minimumTextLayoutWidth);
         }
 
-        private int AssignStyleIndex(Style style)
+        private void UpdateLayoutRightToLeft()
         {
-            if (previousStyle == style)
-                return previousStyleIndex;
-
-            previousStyleIndex = styleTable.AssignIndex(style); // may fail due to too many styles
-            previousStyle = style;
-            return previousStyleIndex;
-        }
-
-        private void InternalAppendText(int styleIndex, string text)
-        {
-            int length = text.Length;
-            fixed (char* textPtr = text)
-            {
-                char* source = textPtr;
-                char* sourceEnd = source + length;
-
-                char* mark = source;
-                bool requiresTabExpansion = false;
-                for (; source != sourceEnd; source++)
-                {
-                    char ch = *source;
-
-                    if (char.IsControl(ch))
-                    {
-                        if (ch == '\n')
-                        {
-                            char* next = source + 1;
-                            InternalAppendChars(styleIndex, mark, (int)(next - mark), requiresTabExpansion);
-                            mark = next;
-                            requiresTabExpansion = false;
-                            StartParagraph();
-                            continue;
-                        }
-
-                        if (ch == '\t')
-                        {
-                            requiresTabExpansion = true;
-                        }
-                        else
-                        {
-                            // Discard all other control characters.
-                            if (mark != source)
-                                InternalAppendChars(styleIndex, mark, (int)(source - mark), requiresTabExpansion);
-                            mark = source + 1;
-                            continue;
-                        }
-                    }
-                }
-
-                if (mark != source)
-                    InternalAppendChars(styleIndex, mark, (int)(source - mark), requiresTabExpansion);
-            }
-        }
-
-        private void InternalAppendChars(int styleIndex, char* source, int count, bool requiresTabExpansion)
-        {
-            EnsureTextRun(styleIndex);
-            if (requiresTabExpansion)
-                currentRun->SetRequiresTabExpansion();
-
-            int charIndex = charBuffer.Count;
-            charBuffer.GrowBy(count);
-            char* chars = GetCharZero() + charIndex;
-
-            currentParagraph->CharCount += count;
-
-            int newCount = currentRun->CharCount + count;
-            while (newCount > MaxCharsPerRun)
-            {
-                currentRun->CharCount = MaxCharsPerRun;
-                newCount -= MaxCharsPerRun;
-                StartTextRun(styleIndex);
-                if (requiresTabExpansion)
-                    currentRun->SetRequiresTabExpansion();
-            }
-
-            currentRun->CharCount = newCount;
-
-            while (count-- > 0)
-                *(chars++) = *(source++);
-        }
-
-        private void StartParagraph()
-        {
-            Debug.Assert(currentRun != null || currentParagraph == null,
-                "At least one run should be added to the current paragraph before a new one is started.");
-
-            int paragraphIndex = paragraphBuffer.Count;
-            paragraphBuffer.GrowBy(1);
-
-            currentParagraph = GetParagraphZero() + paragraphIndex;
-            currentParagraph->Initialize(charBuffer.Count, 0, runBuffer.Count, 0);
-
-            currentRun = null;
-        }
-
-        private void EnsureTextRun(int styleIndex)
-        {
-            if (currentRun != null
-                && currentRun->RunKind == RunKind.Text
-                && currentRun->StyleIndex == styleIndex)
-                return;
-
-            StartTextRun(styleIndex);
-        }
-
-        private void StartTextRun(int styleIndex)
-        {
-            int runIndex = runBuffer.Count;
-            runBuffer.GrowBy(1);
-
-            currentRun = GetRunZero() + runIndex;
-            currentRun->InitializeTextRun(styleIndex);
-
-            currentParagraph->RunCount += 1;
-        }
-
-        private void InternalAppendObject(int styleIndex, EmbeddedObject obj)
-        {
-            int objectIndex = objectTable.AssignIndex(obj);
-
-            int runIndex = runBuffer.Count;
-            runBuffer.GrowBy(1);
-
-            int charIndex = charBuffer.Count;
-            charBuffer.GrowBy(1);
-
-            currentRun = GetRunZero() + runIndex;
-            currentRun->InitializeObjectRun(styleIndex, objectIndex);
-
-            char* chars = GetCharZero() + charIndex;
-            *chars = ObjectRunPlaceholderChar;
-
-            currentParagraph->RunCount += 1;
-            currentParagraph->CharCount += 1;
-        }
-
-        private void InvalidateItemization()
-        {
-            scriptParagraphCache.Clear();
-            InvalidateLayout();
-        }
-
-        private void InvalidateItemizationFromCurrentParagraph()
-        {
-            InvalidateItemization(currentParagraph == null ? 0 : paragraphBuffer.Count - 1);
-        }
-
-        private void InvalidateItemization(int firstInvalidParagraphIndex)
-        {
-            scriptParagraphCache.RemoveScriptParagraphsStartingFrom(firstInvalidParagraphIndex);
-            InvalidateLayout(firstInvalidParagraphIndex);
-        }
-
-        private void InvalidateLayout()
-        {
-            InvalidateLayout(0);
-        }
-
-        private void InvalidateLayoutFromCurrentParagraph()
-        {
-            InvalidateLayout(currentParagraph == null ? 0 : paragraphBuffer.Count - 1);
-        }
-
-        private void InvalidateLayout(int firstInvalidParagraphIndex)
-        {
-            if (firstInvalidParagraphIndex < this.firstInvalidParagraphIndex)
-                this.firstInvalidParagraphIndex = firstInvalidParagraphIndex;
-
-            if (!layoutPending)
-            {
-                layoutPending = true;
-                Invalidate();
-            }
-        }
-
-        private void InvalidateTextAreaDimensions()
-        {
-            Rectangle textPaintArea = CalculateTextPaintArea();
-            int textLayoutWidth = CalculateTextLayoutWidth(textPaintArea);
-            if (textLayoutWidth != cachedTextLayoutWidth)
-            {
-                InvalidateLayout();
-            }
-            else
-            {
-                UpdateScrollBars();
-            }
-        }
-
-        private Rectangle CalculateTextPaintArea()
-        {
-            return DisplayRectangle;
-        }
-
-        private int CalculateTextLayoutWidth(Rectangle textPaintArea)
-        {
-            return Math.Max(textPaintArea.Width, minimumTextLayoutWidth);
-        }
-
-        private void UpdateLayoutAndPaintRegion(Graphics g, Rectangle clipRectangle)
-        {
-            Rectangle textPaintArea = CalculateTextPaintArea();
-
-            if (textPaintArea.Width <= 0 || textPaintArea.Height <= 0)
-                return;
-
-            Rectangle textClipArea = textPaintArea;
-            textClipArea.Intersect(clipRectangle);
-
-            GraphicsState state = g.Save();
-            try
-            {
-                g.SetClip(textClipArea);
-
-                IntPtr hdc = g.GetHdc();
-                try
-                {
-                    HDCState hdcState = new HDCState(hdc, scriptCacheTable);
-
-                    if (layoutPending)
-                        UpdateLayout(hdcState, textPaintArea);
-
-                    PaintRegion(hdcState, textPaintArea, textClipArea);
-                }
-                finally
-                {
-                    g.ReleaseHdc(hdc);
-                }
-            }
-            finally
-            {
-                g.Restore(state);
-            }
-        }
-
-        private void UpdateLayout(HDCState hdcState, Rectangle textPaintArea)
-        {
-            bool rightToLeftLayout = RightToLeft == RightToLeft.Yes;
-
-            int textLayoutWidth = CalculateTextLayoutWidth(textPaintArea);
-            int textLayoutHeight;
-
-            // Invalidate all lines beginning with first invalid paragraph.
-            // Also compute text layout height of remaining valid portion.
-            if (firstInvalidParagraphIndex == 0)
-            {
-                textLayoutHeight = 0;
-                scriptLineBuffer.Count = 0;
-            }
-            else
-            {
-                int scriptLineIndex;
-                ScriptLine* firstInvalidScriptLine = GetFirstScriptLineOfParagraph(firstInvalidParagraphIndex, out scriptLineIndex);
-
-                textLayoutHeight = firstInvalidScriptLine->Y;
-                scriptLineBuffer.Count = scriptLineIndex;
-            }
-
-            // Layout all paragraphs until end.
-            int paragraphCount = paragraphBuffer.Count;
-            for (int paragraphIndex = firstInvalidParagraphIndex; paragraphIndex < paragraphCount; paragraphIndex++)
-            {
-                AppendScriptLinesForScriptParagraph(hdcState, paragraphIndex, rightToLeftLayout, textLayoutWidth, ref textLayoutHeight);
-            }
-
-            // Update layout parameters.
-            firstInvalidParagraphIndex = paragraphBuffer.Count;
-            cachedRightToLeftLayout = rightToLeftLayout;
-            cachedTextLayoutWidth = textLayoutWidth;
-            cachedTextLayoutHeight = textLayoutHeight;
-            layoutPending = false;
-
-            // Finish up.
-            UpdateScrollBars();
+            layout.DesiredLayoutRightToLeft = RightToLeft == RightToLeft.Yes;
         }
 
         private void UpdateScrollBars()
         {
-            AutoScrollMinSize = new Size(minimumTextLayoutWidth, cachedTextLayoutHeight);
-        }
-
-        private void PaintRegion(HDCState hdcState, Rectangle textPaintArea, Rectangle textClipArea)
-        {
-            int yStartPosition = textClipArea.Top - textPaintArea.Top;
-            int yEndPosition = textClipArea.Bottom - textPaintArea.Top;
-            int firstScriptLineIndex;
-            ScriptLine* scriptLine = GetScriptLineAtYPositionOrNullIfNone(yStartPosition, out firstScriptLineIndex);
-            if (scriptLine == null)
-                return;
-
-            ScriptLine* endScriptLine = GetScriptLineZero() + scriptLineBuffer.Count;
-
-            int xStartPosition, xEndPosition;
-            if (cachedRightToLeftLayout)
-            {
-                xStartPosition = textPaintArea.Right - textClipArea.Right;
-                xEndPosition = textPaintArea.Right - textClipArea.Left;
-            }
-            else
-            {
-                xStartPosition = textClipArea.Left - textPaintArea.Left;
-                xEndPosition = textClipArea.Right - textPaintArea.Left;
-            }
-
-            hdcState.SetBkMode(NativeConstants.TRANSPARENT);
-
-            int yCurrentPosition = scriptLine->Y;
-            while (yCurrentPosition < yEndPosition && scriptLine != endScriptLine)
-            {
-                int xCurrentPosition = scriptLine->X;
-                int yCurrentBaseline = yCurrentPosition + scriptLine->Ascent;
-
-                int scriptRunCount = scriptLine->ScriptRunCount;
-                if (scriptRunCount != 0)
-                {
-                    ScriptParagraph* scriptParagraph = GetScriptParagraph(hdcState, scriptLine->ParagraphIndex, cachedRightToLeftLayout);
-                    int scriptRunIndex = scriptLine->ScriptRunIndex;
-                    int* visualToLogicalMap = GetTempVisualToLogicalMap(scriptParagraph->ScriptRuns + scriptRunIndex, scriptRunCount);
-
-                    for (int i = 0; i < scriptRunCount; i++)
-                    {
-                        int logicalScriptRunIndex = visualToLogicalMap[cachedRightToLeftLayout ? scriptRunCount - i - 1 : i];
-                        ScriptRun* scriptRun = scriptParagraph->ScriptRuns + logicalScriptRunIndex + scriptRunIndex;
-
-                        int measuredWidth;
-                        if (scriptRun->RunKind == RunKind.Text)
-                        {
-                            Style style = styleTable[scriptRun->StyleIndex];
-                            ScriptCache scriptCache = hdcState.SelectFont(style.Font);
-                            hdcState.SetTextColor(style.Color);
-
-                            bool truncateLeading = logicalScriptRunIndex == 0 &&
-                                scriptLine->TruncatedLeadingCharsCount != 0;
-                            bool truncateTrailing = logicalScriptRunIndex == scriptRunCount - 1 &&
-                                scriptLine->TruncatedTrailingCharsCount != 0;
-                            if (truncateLeading || truncateTrailing)
-                            {
-                                ushort* logicalClusters = scriptRun->CharLogicalClusters(scriptParagraph);
-                                int startGlyphIndexInRun, endGlyphIndexInRun;
-                                if (scriptRun->ScriptAnalysis.fRTL)
-                                {
-                                    startGlyphIndexInRun = truncateTrailing
-                                        ? logicalClusters[scriptRun->CharCount - scriptLine->TruncatedTrailingCharsCount - 1]
-                                        : 0;
-                                    endGlyphIndexInRun = truncateLeading
-                                        ? logicalClusters[scriptLine->TruncatedLeadingCharsCount]
-                                        : scriptRun->GlyphCount;
-                                }
-                                else
-                                {
-                                    startGlyphIndexInRun = truncateLeading
-                                        ? logicalClusters[scriptLine->TruncatedLeadingCharsCount]
-                                        : 0;
-                                    endGlyphIndexInRun = truncateTrailing
-                                        ? logicalClusters[scriptRun->CharCount - scriptLine->TruncatedTrailingCharsCount]
-                                        : scriptRun->GlyphCount;
-                                }
-
-                                int startGlyphIndexInParagraph = scriptRun->GlyphIndexInParagraph + startGlyphIndexInRun;
-                                int* glyphAdvanceWidths = scriptParagraph->GlyphAdvanceWidths + startGlyphIndexInParagraph;
-                                int glyphCount = endGlyphIndexInRun - startGlyphIndexInRun;
-
-                                measuredWidth = 0;
-                                for (int j = 0; j < glyphCount; j++)
-                                    measuredWidth += glyphAdvanceWidths[j];
-
-                                if (xCurrentPosition + measuredWidth > xStartPosition)
-                                {
-                                    int x = cachedRightToLeftLayout
-                                        ? textPaintArea.Right - xCurrentPosition - measuredWidth
-                                        : textPaintArea.Left + xCurrentPosition;
-                                    int y = textPaintArea.Top + yCurrentBaseline - scriptRun->Ascent;
-
-                                    ScriptTextOut(hdcState.HDC, ref scriptCache.ScriptCachePtr, x, y,
-                                        ExtTextOutOptions.NONE, null, &scriptRun->ScriptAnalysis,
-                                        scriptParagraph->Glyphs + startGlyphIndexInParagraph,
-                                        glyphCount,
-                                        glyphAdvanceWidths,
-                                        null,
-                                        scriptParagraph->GlyphOffsets + startGlyphIndexInParagraph);
-                                }
-                            }
-                            else
-                            {
-                                measuredWidth = scriptRun->ABC.TotalWidth;
-
-                                if (xCurrentPosition + measuredWidth > xStartPosition)
-                                {
-                                    int x = cachedRightToLeftLayout
-                                        ? textPaintArea.Right - xCurrentPosition - measuredWidth
-                                        : textPaintArea.Left + xCurrentPosition;
-                                    int y = textPaintArea.Top + yCurrentBaseline - scriptRun->Ascent;
-
-                                    ScriptTextOut(hdcState.HDC, ref scriptCache.ScriptCachePtr, x, y,
-                                        ExtTextOutOptions.NONE, null, &scriptRun->ScriptAnalysis,
-                                        scriptRun->Glyphs(scriptParagraph),
-                                        scriptRun->GlyphCount,
-                                        scriptRun->GlyphAdvanceWidths(scriptParagraph),
-                                        null,
-                                        scriptRun->GlyphOffsets(scriptParagraph));
-                                }
-                            }
-                        }
-                        else
-                        {
-                            measuredWidth = scriptRun->ABC.TotalWidth;
-
-                            if (xCurrentPosition + measuredWidth > xStartPosition)
-                            {
-                                int x = cachedRightToLeftLayout
-                                    ? textPaintArea.Right - xCurrentPosition - measuredWidth
-                                    : textPaintArea.Left + xCurrentPosition;
-                                int y = textPaintArea.Top + yCurrentBaseline - scriptRun->Ascent;
-
-                                Rectangle embeddedObjectArea = new Rectangle(x, y,
-                                    scriptRun->ABC.abcB, scriptRun->Height);
-
-                                EmbeddedObject embeddedObject = objectTable[scriptRun->ObjectIndex];
-                                Style style = styleTable[scriptRun->StyleIndex];
-                                using (Graphics g = Graphics.FromHdc(hdcState.HDC))
-                                {
-                                    Rectangle embeddedObjectClipArea = textClipArea;
-                                    embeddedObjectClipArea.Intersect(embeddedObjectArea);
-                                    g.SetClip(embeddedObjectClipArea);
-
-                                    embeddedObject.Paint(style, g, embeddedObjectArea);
-                                }
-                            }
-                        }
-
-                        xCurrentPosition += measuredWidth;
-
-                        if (xCurrentPosition >= xEndPosition)
-                            break; // can't fit any more runs within the clip rectangle
-                    }
-                }
-
-                yCurrentPosition += scriptLine->Height;
-                scriptLine++;
-            }
-        }
-
-        private ScriptLine* GetFirstScriptLineOfParagraph(int paragraphIndex, out int scriptLineIndex)
-        {
-            return BinarySearchForScriptLineOfParagraph(paragraphIndex, true, out scriptLineIndex);
-        }
-
-        private ScriptLine* GetLastScriptLineOfParagraph(int paragraphIndex, out int scriptLineIndex)
-        {
-            return BinarySearchForScriptLineOfParagraph(paragraphIndex, false, out scriptLineIndex);
-        }
-
-        private ScriptLine* BinarySearchForScriptLineOfParagraph(int paragraphIndex, bool first, out int scriptLineIndex)
-        {
-            ScriptLine* scriptLineZero = GetScriptLineZero();
-            int scriptLineCount = scriptLineBuffer.Count;
-
-            int low = 0;
-            int high = scriptLineCount;
-
-            while (low < high)
-            {
-                int mid = (low + high) / 2;
-
-                int candidateParagraphIndex = scriptLineZero[mid].ParagraphIndex;
-                if (candidateParagraphIndex < paragraphIndex)
-                {
-                    high = mid;
-                }
-                else if (candidateParagraphIndex > paragraphIndex)
-                {
-                    low = mid + 1;
-                }
-                else
-                {
-                    if (first)
-                    {
-                        while (mid > 0 && scriptLineZero[mid - 1].ParagraphIndex == paragraphIndex)
-                            mid -= 1;
-                    }
-                    else
-                    {
-                        while (mid < scriptLineCount - 1 && scriptLineZero[mid + 1].ParagraphIndex == paragraphIndex)
-                            mid += 1;
-                    }
-
-                    scriptLineIndex = mid;
-                    return scriptLineZero + mid;
-                }
-            }
-
-            throw new ArgumentException("There are no script lines for the requested paragraph.", "paragraphIndex");
-        }
-
-        private ScriptLine* GetScriptLineAtYPositionOrNullIfNone(int yPosition, out int scriptLineIndex)
-        {
-            ScriptLine* scriptLineZero = GetScriptLineZero();
-            int scriptLineCount = scriptLineBuffer.Count;
-
-            int low = 0;
-            int high = scriptLineCount;
-
-            while (low < high)
-            {
-                int mid = (low + high) / 2;
-
-                ScriptLine* scriptLine = scriptLineZero + mid;
-                if (yPosition < scriptLine->Y)
-                {
-                    high = mid;
-                }
-                else if (yPosition >= scriptLine->Y + scriptLine->Height)
-                {
-                    low = mid + 1;
-                }
-                else
-                {
-                    scriptLineIndex = mid;
-                    return scriptLine;
-                }
-            }
-
-            scriptLineIndex = -1;
-            return null;
-        }
-
-        private char* GetCharZero()
-        {
-            return (char*) charBuffer.GetPointer();
-        }
-
-        private Run* GetRunZero()
-        {
-            return (Run*)runBuffer.GetPointer();
-        }
-
-        private Paragraph* GetParagraphZero()
-        {
-            return (Paragraph*)paragraphBuffer.GetPointer();
-        }
-
-        private ScriptLine* GetScriptLineZero()
-        {
-            return (ScriptLine*)scriptLineBuffer.GetPointer();
+            AutoScrollMinSize = new Size(minimumTextLayoutWidth, layout.CurrentLayoutHeight);
         }
     }
 }

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Gallio.Common.Splash
+namespace Gallio.Common.Splash.Internal
 {
     internal sealed class LookupTable<T>
     {

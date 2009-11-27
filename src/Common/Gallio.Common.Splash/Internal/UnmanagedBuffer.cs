@@ -4,7 +4,7 @@ using System.Runtime.ConstrainedExecution;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace Gallio.Common.Splash
+namespace Gallio.Common.Splash.Internal
 {
     internal sealed unsafe class UnmanagedBuffer<T> : CriticalFinalizerObject
         where T : struct
@@ -136,19 +136,19 @@ namespace Gallio.Common.Splash
         {
             if (ptr != null)
             {
-                Marshal.FreeCoTaskMem(new IntPtr(ptr));
+                Memory.Free(ptr);
                 ptr = null;
             }
         }
 
         private void* AllocateMemory(int newCapacity)
         {
-            return Marshal.AllocCoTaskMem(newCapacity * elementSize).ToPointer();
+            return Memory.Alloc(newCapacity * elementSize);
         }
 
         private void* ReAllocateMemory(void* oldPtr, int newCapacity)
         {
-            return Marshal.ReAllocCoTaskMem(new IntPtr(oldPtr), newCapacity * elementSize).ToPointer();
+            return Memory.ReAlloc(oldPtr, newCapacity * elementSize);
         }
     }
 }
