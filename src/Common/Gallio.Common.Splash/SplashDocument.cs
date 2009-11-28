@@ -124,6 +124,26 @@ namespace Gallio.Common.Splash
         }
 
         /// <summary>
+        /// Gets a range of the document text.
+        /// </summary>
+        /// <param name="start">The start character index.</param>
+        /// <param name="length">The length of the range.</param>
+        /// <returns>The text in the specified range.</returns>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="start"/>
+        /// or <paramref name="length"/> are negative or refer to a range that exceeds the document length.</exception>
+        public string GetText(int start, int length)
+        {
+            if (start < 0)
+                throw new ArgumentOutOfRangeException("start",  start, "The starting position must be at least 0.");
+            if (length < 0)
+                throw new ArgumentOutOfRangeException("length", length, "The length must be at least 0.");
+            if (start + length > CharCount)
+                throw new ArgumentOutOfRangeException("start", "The range must be within the document.");
+
+            return new string(GetCharZero(), start, length);
+        }
+
+        /// <summary>
         /// Appends text to the document.
         /// </summary>
         /// <param name="style">The style.</param>

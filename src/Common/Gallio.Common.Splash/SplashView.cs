@@ -24,6 +24,10 @@ namespace Gallio.Common.Splash
         private readonly SplashLayout layout;
         private readonly PaintOptions paintOptions;
 
+        private MenuItem copyMenuItem;
+        private MenuItem selectAllMenuItem;
+        private MenuItem readingOrderMenuItem;
+
         private int selectionStart;
         private int selectionLength;
         private SnapPosition selectionSnapPosition;
@@ -48,6 +52,7 @@ namespace Gallio.Common.Splash
             Padding = new Padding(5);
 
             AttachLayoutEvents();
+            InitializeContextMenu();
         }
 
         private void AttachLayoutEvents()
@@ -223,6 +228,33 @@ namespace Gallio.Common.Splash
             }
         }
 
+        /// <summary>
+        /// Gets the currently selected text in the document, or an empty string
+        /// if there is no selection.
+        /// </summary>
+        /// <returns>The selected text.</returns>
+        public string GetSelectedText()
+        {
+            if (selectionLength == 0)
+                return string.Empty;
+
+            return document.GetText(selectionStart, selectionLength);
+        }
+
+        /// <summary>
+        /// Copies the selected text to the clipboard.
+        /// Does nothing if there is no current selection.
+        /// </summary>
+        /// <returns>True if some text was copied, false if there was no current selection.</returns>
+        public bool CopySelectedTextToClipboard()
+        {
+            if (selectionLength == 0)
+                return false;
+
+            Clipboard.SetText(GetSelectedText().Replace("\n", "\r\n"));
+            return true;
+        }
+
         /// <inheritdoc />
         protected override Cursor DefaultCursor
         {
@@ -371,6 +403,72 @@ namespace Gallio.Common.Splash
             // left of the bar rather than on the bar.  -- Jeff.
             mousePosition.X += 3;
             return mousePosition;
+        }
+
+        /// <inheritdoc />
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            UpdateContextMenu();
+
+            return base.ProcessCmdKey(ref msg, keyData);
+        }
+
+        /// <summary>
+        /// Initializes the context menu.
+        /// </summary>
+        protected virtual void InitializeContextMenu()
+        {
+            ContextMenu = new ContextMenu();
+            ContextMenu.Popup += (sender, e) => UpdateContextMenu();
+
+            copyMenuItem = new MenuItem("Copy", HandleCopyMenuItemClicked)
+            {
+                MergeOrder = 0,
+                Shortcut = Shortcut.CtrlC,
+                ShowShortcut = true
+            };
+            ContextMenu.MenuItems.Add(copyMenuItem);
+
+            selectAllMenuItem = new MenuItem("Select All", HandleSelectAllMenuItemClicked)
+            {
+                MergeOrder = 0,
+                Shortcut = Shortcut.CtrlA,
+                ShowShortcut = true
+            };
+            ContextMenu.MenuItems.Add(selectAllMenuItem);
+
+            ContextMenu.MenuItems.Add("-");
+
+            readingOrderMenuItem = new MenuItem("Right to Left Reading Order", HandleRightToLeftReadingOrderMenuItemClicked)
+            {
+                MergeOrder = 1
+            };
+            ContextMenu.MenuItems.Add(readingOrderMenuItem);
+        }
+
+        /// <summary>
+        /// Updates the context menu in time for pop-up.
+        /// </summary>
+        protected virtual void UpdateContextMenu()
+        {
+            copyMenuItem.Enabled = selectionLength != 0;
+            selectAllMenuItem.Enabled = document.CharCount != 0;
+            readingOrderMenuItem.Checked = RightToLeft == RightToLeft.Yes;
+        }
+
+        private void HandleCopyMenuItemClicked(object sender, EventArgs e)
+        {
+            CopySelectedTextToClipboard();
+        }
+
+        private void HandleSelectAllMenuItemClicked(object sender, EventArgs e)
+        {
+            SelectAll();
+        }
+
+        private void HandleRightToLeftReadingOrderMenuItemClicked(object sender, EventArgs e)
+        {
+            RightToLeft = RightToLeft == RightToLeft.Yes ? RightToLeft.No : RightToLeft.Yes;
         }
 
         private void UpdateLayout()
