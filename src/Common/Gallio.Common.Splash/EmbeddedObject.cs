@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Windows.Forms;
 
 namespace Gallio.Common.Splash
 {
@@ -9,19 +10,10 @@ namespace Gallio.Common.Splash
     public abstract class EmbeddedObject
     {
         /// <summary>
-        /// Measures the embedded object.
+        /// Creates an instance of an embedded object client attached to the specified site.
         /// </summary>
-        /// <param name="site">The site of the embedded object.  Not null.</param>
-        /// <returns>The embedded object measurements.</returns>
-        public abstract EmbeddedObjectMeasurements Measure(IEmbeddedObjectSite site);
-
-        /// <summary>
-        /// Paints the embedded object in the specified area.
-        /// </summary>
-        /// <param name="site">The site of the embedded object.  Not null.</param>
-        /// <param name="g">The graphics context.  Not null.</param>
-        /// <param name="area">The area into which the embedded object should be painted.</param>
-        /// <param name="paintOptions">The paint options.</param>
-        public abstract void Paint(IEmbeddedObjectSite site, Graphics g, Rectangle area, PaintOptions paintOptions);
+        /// <param name="site">The site.</param>
+        /// <returns>The client.</returns>
+        public abstract IEmbeddedObjectClient CreateClient(IEmbeddedObjectSite site);
     }
 }

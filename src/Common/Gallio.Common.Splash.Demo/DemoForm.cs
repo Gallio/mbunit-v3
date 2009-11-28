@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Gallio.Common.Splash.Demo.Properties;
 
 namespace Gallio.Common.Splash.Demo
 {
@@ -72,6 +73,34 @@ namespace Gallio.Common.Splash.Demo
             document.AppendLine(styleBuilder.ToStyle(defaultStyle));
             document.AppendText(styleBuilder.ToStyle(defaultStyle), "القرآن تمتلك المظهر الخارجي وعمق خفي ، وهو المعنى الظاهر والمعنى الباطني. هذا المعنى الباطني بدوره يخفي معنى باطني (هذا العمق تمتلك العمق ، بعد صورة من الكرات السماوية التي هي المغلقة داخل بعضها البعض). غني عن ذلك لمدة سبعة المعاني الباطنية (سبعة من عمق أعماق المخفية).");
             document.AppendLine(styleBuilder.ToStyle(defaultStyle));
+
+            styleBuilder = new StyleBuilder()
+            {
+                LeftMargin = 40,
+                RightMargin = 40
+            };
+            document.AppendLine(defaultStyle);
+            document.AppendText(defaultStyle, "Sample image. ");
+            document.AppendObject(defaultStyle, new EmbeddedImage(Resources.SampleImage) { Baseline = 10 });
+            document.AppendText(defaultStyle, " (with baseline adjusted by 10 px).");
+            document.AppendLine(defaultStyle);
+
+            document.AppendLine(defaultStyle);
+            document.AppendText(defaultStyle, "How many lambs did Mary have?");
+            document.AppendObject(defaultStyle, new EmbeddedControl(new TextBox()) { Margin = new Padding(3, 3, 3, 3), Baseline = 6 });
+
+            document.AppendLine(defaultStyle);
+            document.AppendObject(defaultStyle, new EmbeddedImage(Resources.Passed) { Margin = new Padding(3, 3, 3, 3) });
+            document.AppendText(defaultStyle, "Passed 5 ");
+            document.AppendObject(defaultStyle, new EmbeddedImage(Resources.Failed) { Margin = new Padding(3, 3, 3, 3) });
+            document.AppendText(defaultStyle, "Failed 1");
+            document.AppendObject(defaultStyle, new EmbeddedImage(Resources.Ignored) { Margin = new Padding(3, 3, 3, 3) });
+            document.AppendText(defaultStyle, "Inconclusive 0");
+            document.AppendLine(defaultStyle);
+
+            document.AppendLine(defaultStyle);
+            document.AppendText(defaultStyle, "What's the magic word?");
+            document.AppendObject(defaultStyle, new EmbeddedControl(new TextBox()) { Margin = new Padding(3, 3, 3, 3), Baseline = 6 });
         }
 
         private void leftToRightButton_Click(object sender, EventArgs e)

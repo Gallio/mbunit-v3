@@ -20,9 +20,12 @@ namespace Gallio.Common.Splash
     /// http://www.catch22.net/tuts/neatpad
     /// </para>
     /// </remarks>
-    public unsafe class SplashLayout
+    public unsafe class SplashLayout : IDisposable
     {
         private readonly SplashDocument document;
+        private readonly Control parentControl;
+
+        private readonly RecursionGuard recursionGuard;
 
         private readonly ScriptMetricsCache scriptMetricsCache;
         private readonly ScriptParagraphCache scriptParagraphCache;
@@ -32,8 +35,10 @@ namespace Gallio.Common.Splash
         private readonly UnmanagedBuffer<int> tempVisualToLogicalMapBuffer;
         private readonly UnmanagedBuffer<short> tempLogicalClustersBuffer;
 
-        private int firstParagraphToItemize;
-        private int firstParagraphToLayout;
+        private readonly Dictionary<int, IEmbeddedObjectClient> embeddedObjectClients;
+
+        private int pendingFirstParagraphToItemize;
+        private int pendingFirstParagraphToLayout;
 
         private int desiredLayoutWidth;
         private bool desiredLayoutRightToLeft;
@@ -53,12 +58,21 @@ namespace Gallio.Common.Splash
         /// Creates a layout for a document.
         /// </summary>
         /// <param name="document">The document.</param>
-        public SplashLayout(SplashDocument document)
+        /// <param name="parentControl">The parent control to which embedded objects can
+        /// attach themselves.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="document"/>
+        /// or <paramref name="parentControl"/> is null.</exception>
+        public SplashLayout(SplashDocument document, Control parentControl)
         {
             if (document == null)
                 throw new ArgumentNullException("document");
+            if (parentControl == null)
+                throw new ArgumentNullException("parentControl");
 
             this.document = document;
+            this.parentControl = parentControl;
+
+            recursionGuard = new RecursionGuard();
 
             scriptMetricsCache = new ScriptMetricsCache();
             scriptLineBuffer = new UnmanagedBuffer<ScriptLine>(InitialCapacityForLinesPerDocument);
@@ -70,10 +84,30 @@ namespace Gallio.Common.Splash
 
             scriptParagraphCache = new ScriptParagraphCache(ScriptParagraphCacheSize);
 
+            embeddedObjectClients = new Dictionary<int, IEmbeddedObjectClient>();
+
             desiredLayoutWidth = 400; // arbitrary
             desiredLayoutRightToLeft = false; // arbitrary
 
             AttachDocumentEvents();
+            Reset();
+        }
+
+        /// <summary>
+        /// Disposes the layout.
+        /// </summary>
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        /// Disposes the layout.
+        /// </summary>
+        /// <param name="disposing">True if <see cref="Dispose()"/> was called explicitly.</param>
+        protected virtual void Dispose(bool disposing)
+        {
             Reset();
         }
 
@@ -89,6 +123,22 @@ namespace Gallio.Common.Splash
         public event EventHandler UpdateRequired;
 
         /// <summary>
+        /// Gets the document this layout is for.
+        /// </summary>
+        public SplashDocument Document
+        {
+            get { return document; }
+        }
+
+        /// <summary>
+        /// Gets the parent control to which embedded objects can attach themselves.
+        /// </summary>
+        public Control ParentControl
+        {
+            get { return parentControl; }
+        }
+
+        /// <summary>
         /// Gets or sets the desired layout width.
         /// </summary>
         public int DesiredLayoutWidth
@@ -99,11 +149,14 @@ namespace Gallio.Common.Splash
                 if (value < 1)
                     throw new ArgumentOutOfRangeException("value", "Value must be at least 1.");
 
-                if (desiredLayoutWidth != value)
+                recursionGuard.Do(() =>
                 {
-                    desiredLayoutWidth = value;
-                    InvalidateParagraphLayout(0);
-                }
+                    if (desiredLayoutWidth != value)
+                    {
+                        desiredLayoutWidth = value;
+                        InvalidateParagraphLayout(0);
+                    }
+                });
             }
         }
 
@@ -115,11 +168,14 @@ namespace Gallio.Common.Splash
             get { return desiredLayoutRightToLeft; }
             set
             {
-                if (desiredLayoutRightToLeft != value)
+                recursionGuard.Do(() =>
                 {
-                    desiredLayoutRightToLeft = value;
-                    InvalidateParagraphItemization(0);
-                }
+                    if (desiredLayoutRightToLeft != value)
+                    {
+                        desiredLayoutRightToLeft = value;
+                        InvalidateParagraphItemization(0);
+                    }
+                });
             }
         }
 
@@ -155,18 +211,39 @@ namespace Gallio.Common.Splash
         /// </summary>
         public void Reset()
         {
-            scriptMetricsCache.Clear();
-            scriptParagraphCache.Clear();
+            recursionGuard.Do(() =>
+            {
+                DisposeEmbeddedObjectClients();
 
-            scriptLineBuffer.Clear();
+                scriptMetricsCache.Clear();
+                scriptParagraphCache.Clear();
 
-            tempScriptItemBuffer.Clear();
-            tempEmbeddingLevelBuffer.Clear();
-            tempVisualToLogicalMapBuffer.Clear();
-            tempLogicalClustersBuffer.Clear();
+                scriptLineBuffer.Clear();
 
-            InvalidateParagraphItemization(0);
-            InvalidateParagraphLayout(0);
+                tempScriptItemBuffer.Clear();
+                tempEmbeddingLevelBuffer.Clear();
+                tempVisualToLogicalMapBuffer.Clear();
+                tempLogicalClustersBuffer.Clear();
+
+                pendingFirstParagraphToItemize = -1;
+                pendingFirstParagraphToLayout = -1;
+
+                InvalidateParagraphItemization(0);
+            });
+        }
+
+        private void DisposeEmbeddedObjectClients()
+        {
+            foreach (IEmbeddedObjectClient client in embeddedObjectClients.Values)
+                SafeEmbeddedObjectClientDispose(client);
+
+            embeddedObjectClients.Clear();
+        }
+
+        private void HideEmbeddedObjectClients()
+        {
+            foreach (IEmbeddedObjectClient client in embeddedObjectClients.Values)
+                SafeEmbeddedObjectClientHide(client);
         }
 
         /// <summary>
@@ -174,8 +251,11 @@ namespace Gallio.Common.Splash
         /// </summary>
         public void Update()
         {
-            UpdateParagraphItemization();
-            UpdateParagraphLayout();
+            recursionGuard.Do(() =>
+            {
+                UpdateParagraphItemization();
+                UpdateParagraphLayout();
+            });
         }
 
         /// <summary>
@@ -186,111 +266,127 @@ namespace Gallio.Common.Splash
         /// <returns>The character snap.</returns>
         public SnapPosition GetSnapPositionAtPoint(Point point, Point layoutOrigin)
         {
-            int xPosition = currentLayoutRightToLeft
-                ? currentLayoutWidth - point.X + layoutOrigin.X
-                : point.X - layoutOrigin.X;
-            int yPosition = point.Y - layoutOrigin.Y;
-
-            if (yPosition < 0)
-                return new SnapPosition(SnapKind.Leading, 0);
-
-            int scriptLineIndex;
-            ScriptLine* scriptLine = GetScriptLineAtYPositionOrNullIfNone(yPosition, out scriptLineIndex);
-            if (scriptLine == null || scriptLine->ScriptRunCount == 0)
+            return recursionGuard.Do(() =>
             {
-                int charCount = document.CharCount;
-                if (charCount == 0)
+                int xPosition = currentLayoutRightToLeft
+                    ? currentLayoutWidth - point.X + layoutOrigin.X
+                    : point.X - layoutOrigin.X;
+                int yPosition = point.Y - layoutOrigin.Y;
+
+                if (yPosition < 0)
                     return new SnapPosition(SnapKind.Leading, 0);
 
-                return new SnapPosition(SnapKind.Trailing, charCount - 1);
-            }
-
-            int scriptRunCount = scriptLine->ScriptRunCount;
-            using (DeviceContext deviceContext = DeviceContext.CreateFromScreen(scriptMetricsCache))
-            {
-                int xCurrentPosition = scriptLine->X;
-                ScriptParagraph* scriptParagraph = GetScriptParagraph(deviceContext, scriptLine->ParagraphIndex);
-                int scriptRunIndex = scriptLine->ScriptRunIndex;
-                int* visualToLogicalMap = GetTempVisualToLogicalMap(scriptParagraph->ScriptRuns + scriptRunIndex,
-                    scriptRunCount);
-
-                if (xCurrentPosition > xPosition)
+                int scriptLineIndex;
+                ScriptLine* scriptLine = GetScriptLineAtYPositionOrNullIfNone(yPosition, out scriptLineIndex);
+                if (scriptLine == null || scriptLine->ScriptRunCount == 0)
                 {
-                    ScriptRun* scriptRun = scriptParagraph->ScriptRuns + scriptLine->ScriptRunIndex;
-                    return new SnapPosition(SnapKind.Leading, scriptParagraph->CharIndex
-                        + scriptRun->CharIndexInParagraph + scriptLine->TruncatedLeadingCharsCount);
+                    int charCount = document.CharCount;
+                    if (charCount == 0)
+                        return new SnapPosition(SnapKind.Leading, 0);
+
+                    return new SnapPosition(SnapKind.Trailing, charCount - 1);
                 }
 
-                for (int i = 0; i < scriptRunCount; i++)
+                int scriptRunCount = scriptLine->ScriptRunCount;
+                using (DeviceContext deviceContext = DeviceContext.CreateFromScreen(scriptMetricsCache))
                 {
-                    int logicalScriptRunIndex = visualToLogicalMap[currentLayoutRightToLeft ? scriptRunCount - i - 1 : i];
-                    ScriptRun* scriptRun = scriptParagraph->ScriptRuns + logicalScriptRunIndex + scriptRunIndex;
+                    int xCurrentPosition = scriptLine->X;
+                    ScriptParagraph* scriptParagraph = GetScriptParagraph(deviceContext, scriptLine->ParagraphIndex);
+                    int scriptRunIndex = scriptLine->ScriptRunIndex;
+                    int* visualToLogicalMap = GetTempVisualToLogicalMap(
+                        scriptParagraph->ScriptRuns + scriptRunIndex,
+                        scriptRunCount);
 
-                    int measuredWidth;
-                    if (scriptRun->RunKind == RunKind.Text)
+                    if (xCurrentPosition > xPosition)
                     {
-                        int glyphIndexInParagraph, glyphCount;
-                        int truncatedLeadingCharsCount = logicalScriptRunIndex == 0 ? scriptLine->TruncatedLeadingCharsCount : 0;
-                        int truncatedTrailingCharsCount = logicalScriptRunIndex == scriptRunCount - 1 ? scriptLine->TruncatedTrailingCharsCount : 0;
-                        measuredWidth = MeasureTextScriptRun(scriptParagraph, scriptRun,
-                            truncatedLeadingCharsCount, truncatedTrailingCharsCount,
-                            out glyphIndexInParagraph, out glyphCount);
+                        ScriptRun* scriptRun = scriptParagraph->ScriptRuns + scriptLine->ScriptRunIndex;
+                        return new SnapPosition(SnapKind.Leading, scriptParagraph->CharIndex
+                            + scriptRun->CharIndexInParagraph + scriptLine->TruncatedLeadingCharsCount);
+                    }
 
-                        if (xCurrentPosition + measuredWidth > xPosition)
+                    for (int i = 0; i < scriptRunCount; i++)
+                    {
+                        int logicalScriptRunIndex =
+                            visualToLogicalMap[currentLayoutRightToLeft ? scriptRunCount - i - 1 : i];
+                        ScriptRun* scriptRun = scriptParagraph->ScriptRuns + logicalScriptRunIndex + scriptRunIndex;
+
+                        int measuredWidth;
+                        if (scriptRun->RunKind == RunKind.Text)
                         {
-                            int charCount = scriptRun->CharCount - truncatedLeadingCharsCount - truncatedTrailingCharsCount;
-                            ushort* charLogicalClusters = scriptParagraph->CharLogicalClusters + scriptRun->CharIndexInParagraph + truncatedLeadingCharsCount;
+                            int glyphIndexInParagraph, glyphCount;
+                            int truncatedLeadingCharsCount = logicalScriptRunIndex == 0
+                                ? scriptLine->TruncatedLeadingCharsCount
+                                : 0;
+                            int truncatedTrailingCharsCount = logicalScriptRunIndex == scriptRunCount - 1
+                                ? scriptLine->TruncatedTrailingCharsCount
+                                : 0;
+                            measuredWidth = MeasureTextScriptRun(scriptParagraph, scriptRun,
+                                truncatedLeadingCharsCount, truncatedTrailingCharsCount,
+                                out glyphIndexInParagraph, out glyphCount);
 
-                            int glyphShift = glyphIndexInParagraph - scriptRun->GlyphIndexInParagraph;
-                            if (glyphShift != 0)
+                            if (xCurrentPosition + measuredWidth > xPosition)
                             {
-                                tempLogicalClustersBuffer.EnsureCapacity(charCount);
-                                ushort* shiftedCharLogicalClusters = (ushort*)tempLogicalClustersBuffer.GetPointer();
+                                int charCount = scriptRun->CharCount - truncatedLeadingCharsCount -
+                                    truncatedTrailingCharsCount;
+                                ushort* charLogicalClusters = scriptParagraph->CharLogicalClusters +
+                                    scriptRun->CharIndexInParagraph + truncatedLeadingCharsCount;
 
-                                for (int j = 0; j < charCount; j++)
-                                    shiftedCharLogicalClusters[j] = (ushort)(charLogicalClusters[j] - glyphShift);
+                                int glyphShift = glyphIndexInParagraph - scriptRun->GlyphIndexInParagraph;
+                                if (glyphShift != 0)
+                                {
+                                    tempLogicalClustersBuffer.EnsureCapacity(charCount);
+                                    ushort* shiftedCharLogicalClusters =
+                                        (ushort*)tempLogicalClustersBuffer.GetPointer();
 
-                                charLogicalClusters = shiftedCharLogicalClusters;
+                                    for (int j = 0; j < charCount; j++)
+                                        shiftedCharLogicalClusters[j] =
+                                            (ushort)(charLogicalClusters[j] - glyphShift);
+
+                                    charLogicalClusters = shiftedCharLogicalClusters;
+                                }
+
+                                int charIndexInTruncatedRun, trailingCodePoints;
+                                int x = currentLayoutRightToLeft
+                                    ? measuredWidth - xPosition + xCurrentPosition
+                                    : xPosition - xCurrentPosition;
+                                int result = NativeMethods.ScriptXtoCP(x,
+                                    charCount, glyphCount, charLogicalClusters,
+                                    scriptParagraph->GlyphVisualAttributes + glyphIndexInParagraph,
+                                    scriptParagraph->GlyphAdvanceWidths + glyphIndexInParagraph,
+                                    &scriptRun->ScriptAnalysis,
+                                    out charIndexInTruncatedRun,
+                                    out trailingCodePoints);
+
+                                if (result == 0)
+                                    return new SnapPosition(SnapKind.Exact, scriptParagraph->CharIndex
+                                        + scriptRun->CharIndexInParagraph + charIndexInTruncatedRun +
+                                            truncatedLeadingCharsCount);
+                                break;
                             }
-
-                            int charIndexInTruncatedRun, trailingCodePoints;
-                            int x = currentLayoutRightToLeft
-                                ? measuredWidth - xPosition + xCurrentPosition
-                                : xPosition - xCurrentPosition;
-                            int result = NativeMethods.ScriptXtoCP(x,
-                                charCount, glyphCount, charLogicalClusters,
-                                scriptParagraph->GlyphVisualAttributes + glyphIndexInParagraph,
-                                scriptParagraph->GlyphAdvanceWidths + glyphIndexInParagraph,
-                                &scriptRun->ScriptAnalysis,
-                                out charIndexInTruncatedRun,
-                                out trailingCodePoints);
-
-                            if (result == 0)
-                                return new SnapPosition(SnapKind.Exact, scriptParagraph->CharIndex
-                                    + scriptRun->CharIndexInParagraph + charIndexInTruncatedRun + truncatedLeadingCharsCount);
-                            break;
                         }
-                    }
-                    else
-                    {
-                        measuredWidth = MeasureObjectScriptRun(scriptRun);
-
-                        if (xCurrentPosition + measuredWidth > xPosition)
+                        else
                         {
-                            return new SnapPosition(SnapKind.Exact, scriptParagraph->CharIndex + scriptRun->CharIndexInParagraph);
+                            measuredWidth = MeasureObjectScriptRun(scriptRun);
+
+                            if (xCurrentPosition + measuredWidth > xPosition)
+                            {
+                                return new SnapPosition(SnapKind.Exact,
+                                    scriptParagraph->CharIndex + scriptRun->CharIndexInParagraph);
+                            }
                         }
+
+                        xCurrentPosition += measuredWidth;
                     }
 
-                    xCurrentPosition += measuredWidth;
+                    {
+                        ScriptRun* scriptRun = scriptParagraph->ScriptRuns + scriptLine->ScriptRunIndex +
+                            scriptRunCount - 1;
+                        return new SnapPosition(SnapKind.Trailing, scriptParagraph->CharIndex
+                            + scriptRun->CharIndexInParagraph + scriptRun->CharCount
+                                - 1 - scriptLine->TruncatedTrailingCharsCount);
+                    }
                 }
-
-                {
-                    ScriptRun* scriptRun = scriptParagraph->ScriptRuns + scriptLine->ScriptRunIndex + scriptRunCount - 1;
-                    return new SnapPosition(SnapKind.Trailing, scriptParagraph->CharIndex
-                        + scriptRun->CharIndexInParagraph + scriptRun->CharCount
-                        - 1 - scriptLine->TruncatedTrailingCharsCount);
-                }
-            }
+            });
         }
 
         /// <summary>
@@ -317,31 +413,37 @@ namespace Gallio.Common.Splash
             if (paintOptions == null)
                 throw new ArgumentNullException("paintOptions");
 
-            Rectangle layoutRect = new Rectangle(layoutOrigin.X, layoutOrigin.Y, currentLayoutWidth, currentLayoutHeight);
-            Rectangle clippedLayoutRect = layoutRect;
-            clippedLayoutRect.Intersect(clipRect);
-
-            GraphicsState state = graphics.Save();
-            try
+            recursionGuard.Do(() =>
             {
-                using (DeviceContext deviceContext = DeviceContext.CreateFromGraphics(graphics, scriptMetricsCache))
+                Rectangle layoutRect = new Rectangle(layoutOrigin.X, layoutOrigin.Y, currentLayoutWidth,
+                    currentLayoutHeight);
+                Rectangle clippedLayoutRect = layoutRect;
+                clippedLayoutRect.Intersect(clipRect);
+
+                GraphicsState state = graphics.Save();
+                try
                 {
-                    IntPtr clipRegion = DeviceContext.CreateRectRegion(clippedLayoutRect);
-                    try
+                    using (
+                        DeviceContext deviceContext = DeviceContext.CreateFromGraphics(graphics, scriptMetricsCache)
+                        )
                     {
-                        PaintRegion(deviceContext, layoutRect, clippedLayoutRect, clipRegion,
-                            paintOptions, selectedCharIndex, selectedCharCount);
-                    }
-                    finally
-                    {
-                        DeviceContext.DeleteObject(clipRegion);
+                        IntPtr clipRegion = DeviceContext.CreateRectRegion(clippedLayoutRect);
+                        try
+                        {
+                            PaintRegion(deviceContext, layoutRect, clippedLayoutRect, clipRegion,
+                                paintOptions, selectedCharIndex, selectedCharCount);
+                        }
+                        finally
+                        {
+                            DeviceContext.DeleteObject(clipRegion);
+                        }
                     }
                 }
-            }
-            finally
-            {
-                graphics.Restore(state);
-            }
+                finally
+                {
+                    graphics.Restore(state);
+                }
+            });
         }
 
         private void PaintRegion(DeviceContext deviceContext, Rectangle layoutRect, Rectangle clipRect,
@@ -533,7 +635,9 @@ namespace Gallio.Common.Splash
 
                             Rectangle selectedRect = new Rectangle(x, y, measuredWidth, scriptRun->Height);
                             deviceContext.FillRect(selectedRect, brush);
-                            deviceContext.ExcludeClipRect(selectedRect);
+                            // Don't exclude clip rect for selected embedded objects because we always
+                            // draw them in the second pass instead of in the third; unlike text.
+                            //deviceContext.ExcludeClipRect(selectedRect);
                         }
                     }
                 }
@@ -569,7 +673,7 @@ namespace Gallio.Common.Splash
                         logicalScriptRunIndex == scriptRunCount - 1 ? scriptLine->TruncatedTrailingCharsCount : 0,
                         out glyphIndexInParagraph, out glyphCount);
 
-                    if (xCurrentPosition + measuredWidth > xStartPosition)
+                    if (glyphCount > 0 && xCurrentPosition + measuredWidth > xStartPosition)
                     {
                         int x = currentLayoutRightToLeft
                             ? layoutRect.Right - xCurrentPosition - measuredWidth
@@ -592,27 +696,26 @@ namespace Gallio.Common.Splash
 
                     if (! skipObjects && xCurrentPosition + measuredWidth > xStartPosition)
                     {
-                        int x = currentLayoutRightToLeft
-                            ? layoutRect.Right - xCurrentPosition - measuredWidth
-                            : layoutRect.Left + xCurrentPosition;
-                        int y = layoutRect.Top + yCurrentBaseline - scriptRun->Ascent;
-
-                        Rectangle embeddedObjectArea = new Rectangle(x, y,
-                            scriptRun->ABC.abcB, scriptRun->Height);
-
-                        EmbeddedObject embeddedObject = document.LookupObject(scriptRun->ObjectIndex);
-                        Style style = document.LookupStyle(scriptRun->StyleIndex);
-                        using (Graphics g = Graphics.FromHdc(deviceContext.HDC))
+                        int embeddedObjectCharIndex = scriptRun->CharIndexInParagraph + scriptParagraph->CharIndex;
+                        IEmbeddedObjectClient embeddedObjectClient;
+                        if (embeddedObjectClients.TryGetValue(embeddedObjectCharIndex, out embeddedObjectClient))
                         {
-                            EmbeddedObjectSite site = new EmbeddedObjectSite()
-                            {
-                                ParagraphStyle = document.LookupStyle(scriptParagraph->ScriptRuns[0].StyleIndex),
-                                InlineStyle = style,
-                                CharIndex = scriptRun->CharIndexInParagraph + scriptParagraph->CharIndex,
-                                RightToLeft = currentLayoutRightToLeft
-                            };
+                            int x = currentLayoutRightToLeft
+                                ? layoutRect.Right - xCurrentPosition - measuredWidth
+                                : layoutRect.Left + xCurrentPosition;
+                            int y = layoutRect.Top + yCurrentBaseline - scriptRun->Ascent;
 
-                            PaintEmbeddedObject(embeddedObject, site, g, embeddedObjectArea, paintOptions);
+                            Rectangle bounds = new Rectangle(x + scriptRun->ABC.abcA, y, scriptRun->ABC.abcB, scriptRun->Height);
+
+                            SafeEmbeddedObjectClientShow(embeddedObjectClient, bounds);
+
+                            if (SafeEmbeddedObjectClientGetRequiresPaint(embeddedObjectClient))
+                            {
+                                using (Graphics g = Graphics.FromHdc(deviceContext.HDC))
+                                {
+                                    SafeEmbeddedObjectClientPaint(embeddedObjectClient, g, paintOptions);
+                                }
+                            }
                         }
                     }
                 }
@@ -676,22 +779,23 @@ namespace Gallio.Common.Splash
             return (ScriptLine*)scriptLineBuffer.GetPointer();
         }
 
-        private void InvalidateParagraphItemization(int firstParagraphToInvalidate)
+        private void InvalidateParagraphItemization(int firstParagraphToItemize)
         {
-            if (firstParagraphToItemize == -1
-                || firstParagraphToInvalidate < firstParagraphToItemize)
+            if (pendingFirstParagraphToItemize == -1
+                || firstParagraphToItemize < pendingFirstParagraphToItemize)
             {
-                firstParagraphToItemize = firstParagraphToInvalidate;
-                InvalidateParagraphLayout(firstParagraphToInvalidate);
+                pendingFirstParagraphToItemize = firstParagraphToItemize;
+
+                InvalidateParagraphLayout(firstParagraphToItemize);
             }
         }
 
-        private void InvalidateParagraphLayout(int firstParagraphToInvalidate)
+        private void InvalidateParagraphLayout(int firstParagraphToLayout)
         {
-            if (firstParagraphToLayout == -1
-                || firstParagraphToInvalidate < firstParagraphToLayout)
+            if (pendingFirstParagraphToLayout == -1
+                || firstParagraphToLayout < pendingFirstParagraphToLayout)
             {
-                firstParagraphToLayout = firstParagraphToInvalidate;
+                pendingFirstParagraphToLayout = firstParagraphToLayout;
 
                 RaiseUpdateRequired();
             }
@@ -699,56 +803,71 @@ namespace Gallio.Common.Splash
 
         private void UpdateParagraphItemization()
         {
-            if (firstParagraphToItemize >= 0)
+            if (pendingFirstParagraphToItemize >= 0)
             {
-                scriptParagraphCache.RemoveScriptParagraphsStartingFrom(firstParagraphToItemize);
-                firstParagraphToItemize = -1;
+                int firstParagraphToItemize = pendingFirstParagraphToItemize;
+                pendingFirstParagraphToItemize = -1;
 
-                currentLayoutRightToLeft = desiredLayoutRightToLeft;
+                UpdateParagraphItemization(firstParagraphToItemize);
             }
+        }
+
+        private void UpdateParagraphItemization(int firstParagraphToItemize)
+        {
+            scriptParagraphCache.RemoveScriptParagraphsStartingFrom(firstParagraphToItemize);
+
+            currentLayoutRightToLeft = desiredLayoutRightToLeft;
         }
 
         private void UpdateParagraphLayout()
         {
-            if (firstParagraphToLayout >= 0)
+            if (pendingFirstParagraphToLayout >= 0)
             {
-                currentLayoutWidth = desiredLayoutWidth;
+                int firstParagraphToLayout = pendingFirstParagraphToLayout;
+                pendingFirstParagraphToLayout = -1;
 
-                if (firstParagraphToLayout == 0)
+                UpdateParagraphLayout(firstParagraphToLayout);
+            }
+        }
+
+        private void UpdateParagraphLayout(int firstParagraphToLayout)
+        {
+            currentLayoutWidth = desiredLayoutWidth;
+
+            HideEmbeddedObjectClients();
+
+            if (firstParagraphToLayout == 0)
+            {
+                currentLayoutHeight = 0;
+                scriptLineBuffer.Count = 0;
+            }
+            else
+            {
+                int scriptLineIndex;
+                ScriptLine* scriptLine = GetFirstScriptLineOfParagraph(firstParagraphToLayout, out scriptLineIndex);
+
+                if (scriptLine != null)
                 {
-                    currentLayoutHeight = 0;
-                    scriptLineBuffer.Count = 0;
+                    currentLayoutHeight = scriptLine->Y;
+                    scriptLineBuffer.Count = scriptLineIndex;
+                }
+                else if (scriptLineBuffer.Count != 0)
+                {
+                    firstParagraphToLayout = GetScriptLineZero()[scriptLineBuffer.Count - 1].ParagraphIndex + 1;
                 }
                 else
                 {
-                    int scriptLineIndex;
-                    ScriptLine* scriptLine = GetFirstScriptLineOfParagraph(firstParagraphToLayout, out scriptLineIndex);
-
-                    if (scriptLine != null)
-                    {
-                        currentLayoutHeight = scriptLine->Y;
-                        scriptLineBuffer.Count = scriptLineIndex;
-                    }
-                    else if (scriptLineBuffer.Count != 0)
-                    {
-                        firstParagraphToLayout = GetScriptLineZero()[scriptLineBuffer.Count - 1].ParagraphIndex + 1;
-                    }
-                    else
-                    {
-                        firstParagraphToLayout = 0;
-                    }
+                    firstParagraphToLayout = 0;
                 }
+            }
 
-                using (DeviceContext deviceContext = DeviceContext.CreateFromScreen(scriptMetricsCache))
+            using (DeviceContext deviceContext = DeviceContext.CreateFromScreen(scriptMetricsCache))
+            {
+                int paragraphCount = document.ParagraphCount;
+                for (int paragraphIndex = firstParagraphToLayout; paragraphIndex < paragraphCount; paragraphIndex++)
                 {
-                    int paragraphCount = document.ParagraphCount;
-                    for (int paragraphIndex = firstParagraphToLayout; paragraphIndex < paragraphCount; paragraphIndex++)
-                    {
-                        AppendScriptLinesForScriptParagraph(deviceContext, paragraphIndex);
-                    }
+                    AppendScriptLinesForScriptParagraph(deviceContext, paragraphIndex);
                 }
-
-                firstParagraphToLayout = -1;
             }
         }
 
@@ -1006,11 +1125,11 @@ namespace Gallio.Common.Splash
         /// </summary>
         private void AnalyzeParagraph(DeviceContext deviceContext, Paragraph* paragraph, ScriptParagraph* scriptParagraph)
         {
-            int charIndex = paragraph->CharIndex;
-            int charCount = paragraph->CharCount;
+            int paragraphCharIndex = paragraph->CharIndex;
+            int paragraphCharCount = paragraph->CharCount;
 
-            scriptParagraph->CharIndex = charIndex;
-            scriptParagraph->CharCount = charCount;
+            scriptParagraph->CharIndex = paragraphCharIndex;
+            scriptParagraph->CharCount = paragraphCharCount;
             scriptParagraph->ScriptRunCount = 0;
             scriptParagraph->GlyphCount = 0;
 
@@ -1025,19 +1144,19 @@ namespace Gallio.Common.Splash
             }
 
             // Handle paragraphs with exactly one empty run (simple newline)
-            Debug.Assert(charCount != 0, "A paragraph with at least one run should always have at least one character.");
+            Debug.Assert(paragraphCharCount != 0, "A paragraph with at least one run should always have at least one character.");
 
             char* charZero = document.GetCharZero();
-            char* chars = charZero + charIndex;
+            char* chars = charZero + paragraphCharIndex;
 
             // Step 1. Itemize the script items within the paragraph.
             //         Each script item represents a chunk of text (such as a word)
             //         for Unicode rendering purposes.
-            scriptParagraph->EnsureCharCapacity(charCount);
+            scriptParagraph->EnsureCharCapacity(paragraphCharCount);
 
             SCRIPT_ITEM* tempScriptItems;
             int tempScriptItemCount;
-            ScriptItemize(chars, charCount, currentLayoutRightToLeft, tempScriptItemBuffer, out tempScriptItems, out tempScriptItemCount);
+            ScriptItemize(chars, paragraphCharCount, currentLayoutRightToLeft, tempScriptItemBuffer, out tempScriptItems, out tempScriptItemCount);
 
             // Step 2. Compute logical attributes for characters in the paragraph for word-break purposes.
             ScriptBreak(scriptParagraph, chars, tempScriptItems, tempScriptItemCount);
@@ -1081,16 +1200,28 @@ namespace Gallio.Common.Splash
                 }
                 else
                 {
-                    EmbeddedObject obj = document.LookupObject(scriptRun->ObjectIndex);
-                    EmbeddedObjectSite site = new EmbeddedObjectSite()
+                    int embeddedObjectCharIndex = paragraphCharIndex + scriptRun->CharIndexInParagraph;
+                    IEmbeddedObjectClient embeddedObjectClient;
+                    if (! embeddedObjectClients.TryGetValue(embeddedObjectCharIndex, out embeddedObjectClient))
                     {
-                        ParagraphStyle = document.LookupStyle(scriptParagraph->ScriptRuns[0].StyleIndex),
-                        InlineStyle = scriptRunStyle,
-                        RightToLeft = currentLayoutRightToLeft,
-                        CharIndex =  scriptRun->CharIndexInParagraph + scriptParagraph->CharIndex
-                    };
+                        EmbeddedObjectSite embeddedObjectSite = new EmbeddedObjectSite()
+                        {
+                            ParentControl = parentControl,
+                            ParagraphStyle = document.LookupStyle(scriptParagraph->ScriptRuns[0].StyleIndex),
+                            InlineStyle = scriptRunStyle,
+                            RightToLeft = currentLayoutRightToLeft,
+                            CharIndex =  embeddedObjectCharIndex
+                        };
 
-                    EmbeddedObjectMeasurements measurements = MeasureEmbeddedObject(obj, site);
+                        EmbeddedObject embeddedObject = document.LookupObject(scriptRun->ObjectIndex);
+                        embeddedObjectClient = SafeEmbeddedObjectClientCreate(embeddedObject, embeddedObjectSite);
+                        if (embeddedObjectClient != null)
+                            embeddedObjectClients.Add(embeddedObjectCharIndex, embeddedObjectClient);
+                    }
+
+                    EmbeddedObjectMeasurements measurements = embeddedObjectClient != null
+                        ? SafeEmbeddedObjectClientMeasure(embeddedObjectClient)
+                        : new EmbeddedObjectMeasurements(new Size(0, 0));
                     scriptRun->GlyphCount = 0;
                     scriptRun->GlyphIndexInParagraph = 0;
                     scriptRun->Height = measurements.Size.Height;
@@ -1387,29 +1518,91 @@ namespace Gallio.Common.Splash
                 Marshal.ThrowExceptionForHR(result);
         }
 
-        private static EmbeddedObjectMeasurements MeasureEmbeddedObject(EmbeddedObject obj, IEmbeddedObjectSite site)
+        private static IEmbeddedObjectClient SafeEmbeddedObjectClientCreate(EmbeddedObject embeddedObject,
+            IEmbeddedObjectSite site)
         {
             try
             {
-                return obj.Measure(site);
+                return embeddedObject.CreateClient(site);
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(string.Format("Exception while measuring an embedded object.\n{0}", ex));
+                Debug.WriteLine(string.Format("Exception while creating an embedded object client.\n{0}", ex));
+                return null;
+            }
+        }
+
+        private static EmbeddedObjectMeasurements SafeEmbeddedObjectClientMeasure(IEmbeddedObjectClient client)
+        {
+            try
+            {
+                return client.Measure();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(string.Format("Exception while measuring an embedded object client.\n{0}", ex));
                 return new EmbeddedObjectMeasurements(new Size(0, 0));
             }
         }
 
-        private static void PaintEmbeddedObject(EmbeddedObject obj, IEmbeddedObjectSite site,
-            Graphics g, Rectangle area, PaintOptions paintOptions)
+        private static bool SafeEmbeddedObjectClientGetRequiresPaint(IEmbeddedObjectClient client)
         {
             try
             {
-                obj.Paint(site, g, area, paintOptions);
+                return client.RequiresPaint;
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(string.Format("Exception while painting an embedded object.\n{0}", ex));
+                Debug.WriteLine(string.Format("Exception while determining whether an embedded object client requires Paint.\n{0}", ex));
+                return false;
+            }
+        }
+
+        private static void SafeEmbeddedObjectClientShow(IEmbeddedObjectClient client, Rectangle bounds)
+        {
+            try
+            {
+                client.Show(bounds);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(string.Format("Exception while showing and setting the bounds of an embedded object client.\n{0}", ex));
+            }
+        }
+
+        private static void SafeEmbeddedObjectClientHide(IEmbeddedObjectClient client)
+        {
+            try
+            {
+                client.Hide();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(string.Format("Exception while hiding an embedded object client.\n{0}", ex));
+            }
+        }
+
+        private static void SafeEmbeddedObjectClientPaint(IEmbeddedObjectClient client, Graphics g, PaintOptions paintOptions)
+        {
+            try
+            {
+                client.Paint(g, paintOptions);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(string.Format("Exception while painting an embedded object client.\n{0}", ex));
+            }
+        }
+
+        private static void SafeEmbeddedObjectClientDispose(IEmbeddedObjectClient client)
+        {
+            try
+            {
+                client.Dispose();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(string.Format("Exception while disposing an embedded object client.\n{0}", ex));
             }
         }
     }

@@ -33,6 +33,8 @@ namespace Gallio.Common.Splash
         private SnapPosition selectionSnapPosition;
         private bool selectionInProgress;
 
+        private bool layoutPending;
+
         private int minimumTextLayoutWidth = 100;
 
         /// <summary>
@@ -41,7 +43,7 @@ namespace Gallio.Common.Splash
         public SplashView()
         {
             document = new SplashDocument();
-            layout = new SplashLayout(document);
+            layout = new SplashLayout(document, this);
             paintOptions = new PaintOptions();
 
             SetStyle(ControlStyles.UserPaint | ControlStyles.ResizeRedraw
@@ -55,6 +57,14 @@ namespace Gallio.Common.Splash
             InitializeContextMenu();
         }
 
+        /// <inheritdoc />
+        protected override void Dispose(bool disposing)
+        {
+            layout.Dispose();
+
+            base.Dispose(disposing);
+        }
+
         private void AttachLayoutEvents()
         {
             layout.UpdateRequired += HandleLayoutChanged;
@@ -62,7 +72,7 @@ namespace Gallio.Common.Splash
 
         private void HandleLayoutChanged(object sender, EventArgs e)
         {
-            Invalidate();
+            InvalidateLayout();
         }
 
         /// <summary>
@@ -269,10 +279,16 @@ namespace Gallio.Common.Splash
         }
 
         /// <inheritdoc />
+        protected override void OnHandleCreated(EventArgs e)
+        {
+            base.OnHandleCreated(e);
+
+            InvalidateLayout();
+        }
+
+        /// <inheritdoc />
         protected override void OnPaint(PaintEventArgs e)
         {
-            UpdateLayout();
-
             Rectangle displayRect = DisplayRectangle;
             layout.Paint(e.Graphics, displayRect.Location, e.ClipRectangle, paintOptions, selectionStart, selectionLength);
 
@@ -471,12 +487,29 @@ namespace Gallio.Common.Splash
             RightToLeft = RightToLeft == RightToLeft.Yes ? RightToLeft.No : RightToLeft.Yes;
         }
 
+        private void InvalidateLayout()
+        {
+            if (!layoutPending)
+            {
+                layoutPending = true;
+
+                if (IsHandleCreated)
+                {
+                    BeginInvoke(new MethodInvoker(UpdateLayout));
+                }
+            }
+        }
+
         private void UpdateLayout()
         {
+            layoutPending = false;
+
             UpdateLayoutSize();
             UpdateLayoutRightToLeft();
             layout.Update();
             UpdateScrollBars();
+
+            Invalidate();
         }
 
         private void UpdateLayoutSize()
@@ -492,7 +525,8 @@ namespace Gallio.Common.Splash
 
         private void UpdateScrollBars()
         {
-            AutoScrollMinSize = new Size(minimumTextLayoutWidth, layout.CurrentLayoutHeight);
+            Padding padding = Padding;
+            AutoScrollMinSize = new Size(minimumTextLayoutWidth + padding.Horizontal, layout.CurrentLayoutHeight + padding.Vertical);
         }
 
         private void UpdateSelectionColors()

@@ -1,14 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Windows.Forms;
 
 namespace Gallio.Common.Splash
 {
     /// <summary>
-    /// Provides information about the context in which an embedded object appears.
+    /// Describes the environment of an embedded object.
     /// </summary>
     public interface IEmbeddedObjectSite
     {
+        /// <summary>
+        /// Gets the control of the containing view.
+        /// </summary>
+        Control ParentControl { get; }
+
         /// <summary>
         /// Gets the style of the paragraph that contains the embedded object.
         /// </summary>

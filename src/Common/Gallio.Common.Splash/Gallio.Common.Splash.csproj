@@ -46,12 +46,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EmbeddedImage.cs" />
+    <Compile Include="EmbeddedControl.cs" />
     <Compile Include="EmbeddedObjectMeasurements.cs" />
+    <Compile Include="IEmbeddedObjectClient.cs" />
     <Compile Include="IEmbeddedObjectSite.cs" />
     <Compile Include="Internal\EmbeddedObjectSite.cs" />
     <Compile Include="Internal\DeviceContext.cs" />
     <Compile Include="Internal\Memory.cs" />
     <Compile Include="Internal\Paragraph.cs" />
+    <Compile Include="Internal\RecursionGuard.cs" />
     <Compile Include="Internal\Run.cs" />
     <Compile Include="Internal\RunKind.cs" />
     <Compile Include="Internal\ScriptMetrics.cs" />
