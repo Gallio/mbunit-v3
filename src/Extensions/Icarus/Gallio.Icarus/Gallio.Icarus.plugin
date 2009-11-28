@@ -88,6 +88,9 @@
     
     <service serviceId="Gallio.Icarus.ReportService"
          serviceType="Gallio.Icarus.Services.Interfaces.IReportService, Gallio.Icarus" />
+
+    <service serviceId="Gallio.Icarus.TreeBuilder" 
+             serviceType="Gallio.Icarus.TreeBuilders.ITreeBuilder, Gallio.Icarus" />
   </services>
   <components>    
     <component componentId="Gallio.Icarus.FileWatcher"
@@ -268,7 +271,13 @@
     <component componentId="Gallio.Icarus.ReportService" 
                serviceId="Gallio.Icarus.ReportService" 
                componentType="Gallio.Icarus.Services.ReportService, Gallio.Icarus" />
-    
+
+    <component componentId="Gallio.Icarus.MetadataTreeBuilder"
+               serviceId="Gallio.Icarus.TreeBuilder"
+               componentType="Gallio.Icarus.TreeBuilders.MetadataTreeBuilder, Gallio.Icarus" />
+
+    <component componentId="Gallio.Icarus.NamespaceTreeBuilder"
+               serviceId="Gallio.Icarus.TreeBuilder"
+               componentType="Gallio.Icarus.TreeBuilders.NamespaceTreeBuilder, Gallio.Icarus" />
   </components>
-  
 </plugin>

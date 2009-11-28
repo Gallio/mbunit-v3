@@ -15,7 +15,7 @@
 
 using System;
 using Gallio.Icarus.Controllers.Interfaces;
-using Gallio.Icarus.Helpers;
+using Gallio.Icarus.TreeBuilders;
 using Gallio.Runtime.ProgressMonitoring;
 using Gallio.Runtime.Security;
 using Gallio.UI.ControlPanel.Preferences;

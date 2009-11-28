@@ -13,7 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Gallio.Icarus.Helpers
+namespace Gallio.Icarus.TreeBuilders
 {
     public enum NamespaceHierarchy
     {

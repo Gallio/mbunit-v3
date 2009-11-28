@@ -14,23 +14,26 @@
 // limitations under the License.
 
 using Gallio.Icarus.Models;
-using Gallio.Icarus.Tests.Utilities;
+using Gallio.Icarus.TreeBuilders;
 using Gallio.Model;
 using Gallio.Model.Filters;
-using Gallio.Model.Schema;
-using Gallio.Common.Reflection;
-using Gallio.Runtime.ProgressMonitoring;
 using MbUnit.Framework;
-using Gallio.Icarus.Helpers;
 
 namespace Gallio.Icarus.Tests.Models
 {
-    class TestTreeModelTest
+    public class TestTreeModelTest
     {
+        private TestTreeModel testTreeModel;
+
+        [SetUp]
+        public void Establish_context()
+        {
+            testTreeModel = new TestTreeModel(new ITreeBuilder[0]);
+        }
+
         [Test]
         public void ApplyFilter_NullRoot_Test()
         {
-            TestTreeModel testTreeModel = new TestTreeModel();
             var filter = new FilterSet<ITestDescriptor>(new NoneFilter<ITestDescriptor>());
             testTreeModel.ApplyFilterSet(filter);
         }
@@ -83,111 +86,6 @@ namespace Gallio.Icarus.Tests.Models
         //    Assert.AreEqual(CheckState.Unchecked, c.CheckState);
         //}
 
-        [Test]
-        public void BuildTestTree_Namespace_Test()
-        {
-            var progressMonitor = MockProgressMonitor.Instance;
-            
-            var testTreeModel = new TestTreeModel();
-            bool structureChangedFlag = false;
-            testTreeModel.StructureChanged += delegate { structureChangedFlag = true; };
-            
-            TestData root = new TestData("root", "root", "root");
-            
-            TestData fixture = new TestData("fixture", "fixture", "fixture");
-            fixture.Metadata.Add(MetadataKeys.TestKind, TestKinds.Fixture);
-            fixture.CodeReference = new CodeReference(null, "namespaceName", null, null, null);
-            root.Children.Add(fixture);
-            
-            TestData fixture2 = new TestData("fixture2", "fixture2", "fixture2");
-            fixture2.Metadata.Add(MetadataKeys.TestKind, TestKinds.Fixture);
-            fixture2.CodeReference = new CodeReference(null, "namespaceName", null, null, null);
-            root.Children.Add(fixture2);
-                       
-            TestData test = new TestData("test", "test", "test");
-            test.Metadata.Add(MetadataKeys.TestKind, TestKinds.Test);
-            fixture.Children.Add(test);
-            
-            TestModelData testModelData = new TestModelData(root);
-
-            var options = new TestTreeBuilderOptions { TreeViewCategory = "Namespace", NamespaceHierarchy = NamespaceHierarchy.Flat };
-            testTreeModel.BuildTestTree(progressMonitor, testModelData, options);
-            
-            Assert.IsNotNull(testTreeModel.Root);
-            Assert.AreEqual(1, testTreeModel.Root.Nodes.Count);
-            
-            TestTreeNode namespaceNode = (TestTreeNode)testTreeModel.Root.Nodes[0];
-            Assert.AreEqual("namespaceName", namespaceNode.Name);
-            Assert.AreEqual(2, namespaceNode.Nodes.Count);
-            
-            TestTreeNode fixtureNode = (TestTreeNode)namespaceNode.Nodes[0];
-            Assert.AreEqual("fixture", fixtureNode.Name);
-            Assert.AreEqual(1, fixtureNode.Nodes.Count);
-
-            TestTreeNode testNode = (TestTreeNode)fixtureNode.Nodes[0];
-            Assert.AreEqual("test", testNode.Name);
-            Assert.AreEqual(0, testNode.Nodes.Count);
-
-            Assert.IsTrue(structureChangedFlag);
-        }
-
-        [Test]
-        public void BuildTestTree_Metadata_Test()
-        {
-            IProgressMonitor progressMonitor = MockProgressMonitor.Instance;
-
-            TestTreeModel testTreeModel = new TestTreeModel();
-            bool structureChangedFlag = false;
-            testTreeModel.StructureChanged += delegate { structureChangedFlag = true; };
-
-            TestData root = new TestData("root", "root", "root");
-
-            TestData fixture = new TestData("fixture", "fixture", "fixture");
-            fixture.Metadata.Add(MetadataKeys.TestKind, TestKinds.Fixture);
-            fixture.Metadata.Add(MetadataKeys.Category, "Test");
-            fixture.CodeReference = new CodeReference(null, "namespaceName", null, null, null);
-            root.Children.Add(fixture);
-
-            TestData test = new TestData("test", "test", "test");
-            test.Metadata.Add(MetadataKeys.TestKind, TestKinds.Test);
-            fixture.Children.Add(test);
-
-            TestData fixture2 = new TestData("fixture2", "fixture2", "fixture2");
-            fixture2.Metadata.Add(MetadataKeys.TestKind, TestKinds.Fixture);
-            fixture2.CodeReference = new CodeReference(null, "namespaceName", null, null, null);
-            root.Children.Add(fixture2);
-
-            TestData test2 = new TestData("test", "test", "test");
-            test2.Metadata.Add(MetadataKeys.TestKind, TestKinds.Test);
-            fixture2.Children.Add(test2);
-
-            TestModelData testModelData = new TestModelData(root);
-            
-            var options = new TestTreeBuilderOptions 
-            {
-                TreeViewCategory = MetadataKeys.Category,
-                NamespaceHierarchy = NamespaceHierarchy.Flat
-            };
-            testTreeModel.BuildTestTree(progressMonitor, testModelData, options);
-
-            Assert.IsNotNull(testTreeModel.Root);
-            Assert.AreEqual(2, testTreeModel.Root.Nodes.Count);
-
-            var metadataNode = (TestTreeNode)testTreeModel.Root.Nodes[0];
-            Assert.AreEqual("Test", metadataNode.Name);
-            Assert.AreEqual("Test", metadataNode.Text);
-            Assert.AreEqual(MetadataKeys.Category, metadataNode.TestKind);
-            Assert.AreEqual(1, metadataNode.Nodes.Count);
-
-            TestTreeNode none = (TestTreeNode)testTreeModel.Root.Nodes[1];
-            Assert.AreEqual("None", none.Name);
-            Assert.AreEqual("None", none.Text);
-            Assert.AreEqual(MetadataKeys.Category, none.TestKind);
-            Assert.AreEqual(1, none.Nodes.Count);
-
-            Assert.IsTrue(structureChangedFlag);
-        }
-
         //[Test]
         //[Row(TestStatus.Failed)]
         //[Row(TestStatus.Passed)]
@@ -230,7 +128,6 @@ namespace Gallio.Icarus.Tests.Models
         [Test]
         public void FilterPassed_should_return_true_if_passed_filter_is_set()
         {
-            var testTreeModel = new TestTreeModel();
             testTreeModel.SetFilter(TestStatus.Passed);
 
             Assert.IsTrue(testTreeModel.FilterPassed);
@@ -239,7 +136,6 @@ namespace Gallio.Icarus.Tests.Models
         [Test]
         public void FilterFailed_should_return_true_if_passed_filter_is_set()
         {
-            var testTreeModel = new TestTreeModel();
             testTreeModel.SetFilter(TestStatus.Failed);
 
             Assert.IsTrue(testTreeModel.FilterFailed);
@@ -248,7 +144,6 @@ namespace Gallio.Icarus.Tests.Models
         [Test]
         public void FilterInconclusive_should_return_true_if_passed_filter_is_set()
         {
-            var testTreeModel = new TestTreeModel();
             testTreeModel.SetFilter(TestStatus.Inconclusive);
 
             Assert.IsTrue(testTreeModel.FilterInconclusive);

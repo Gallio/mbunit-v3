@@ -19,18 +19,19 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using Aga.Controls.Tree;
 using Gallio.Icarus.Models.TestTreeNodes;
+using Gallio.Icarus.TreeBuilders;
 using Gallio.Model;
 using Gallio.Model.Filters;
 using Gallio.Model.Schema;
 using Gallio.Runner.Reports.Schema;
 using Gallio.Runtime.ProgressMonitoring;
-using Gallio.Icarus.Helpers;
 using Gallio.UI.DataBinding;
 
 namespace Gallio.Icarus.Models
 {
     internal class TestTreeModel : TreeModelBase, ITestTreeModel
     {
+        private readonly IList<ITreeBuilder> treeBuilders;
         private readonly TreeModel inner;
         private readonly List<TestStatus> filterStatuses = new List<TestStatus>();
         private readonly TestTreeSorter testTreeSorter;
@@ -81,8 +82,10 @@ namespace Gallio.Icarus.Models
             private set;
         }
 
-        public TestTreeModel()
+        public TestTreeModel(ITreeBuilder[] treeBuilders)
         {
+            this.treeBuilders = treeBuilders;
+
             inner = new TreeModel();
             TestCount = new Observable<int>();
 
@@ -276,17 +279,30 @@ namespace Gallio.Icarus.Models
         }
 
         public void BuildTestTree(IProgressMonitor progressMonitor, TestModelData testModelData, 
-            TestTreeBuilderOptions options)
+            TreeBuilderOptions options)
         {
             int count = CountTestData(testModelData.RootTest);
 
             using (progressMonitor.BeginTask("Building test tree", count))
             {
                 inner.Root.Nodes.Clear();
-                var root = TestTreeBuilder.BuildTestTree(progressMonitor, testModelData, options);
-                inner.Root.Nodes.Add(root);
 
-                OnStructureChanged(new TreePathEventArgs(new TreePath(Root)));
+                TestTreeNode root = null;
+                foreach (var treeBuilder in treeBuilders)
+                {
+                    if (!treeBuilder.CanHandle(options.TreeViewCategory)) 
+                        continue;
+
+                    root = treeBuilder.BuildTree(progressMonitor, testModelData, options);
+                    break;
+                }
+
+                if (root == null)
+                    throw new Exception(string.Format("Could not find a tree builder for {0}", 
+                        options.TreeViewCategory));
+
+                inner.Root.Nodes.Add(root);
+                OnStructureChanged(new TreePathEventArgs(new TreePath(root)));
             }
         }
 

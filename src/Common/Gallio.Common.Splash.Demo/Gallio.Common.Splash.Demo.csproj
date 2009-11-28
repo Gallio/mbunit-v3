@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.30703</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{DEB04EA9-72FC-4A8E-82EE-CB02AF8E553A}</ProjectGuid>
     <OutputType>WinExe</OutputType>
@@ -66,12 +66,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Gallio.Common.Splash\Gallio.Common.Splash.vs2010.csproj">
-      <Project>{91DD0785-7D85-4366-AB05-9D00D4CC9415}</Project>
-      <Name>Gallio.Common.Splash.vs2010</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="DemoForm.resx">
       <DependentUpon>DemoForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -92,6 +86,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\SampleImage.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Gallio.Common.Splash\Gallio.Common.Splash.csproj">
+      <Project>{91DD0785-7D85-4366-AB05-9D00D4CC9415}</Project>
+      <Name>Gallio.Common.Splash</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

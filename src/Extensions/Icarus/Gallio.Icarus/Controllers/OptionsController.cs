@@ -21,7 +21,7 @@ using System.Windows.Forms;
 using Gallio.Common.IO;
 using Gallio.Common.Xml;
 using Gallio.Icarus.Controllers.Interfaces;
-using Gallio.Icarus.Helpers;
+using Gallio.Icarus.TreeBuilders;
 using Gallio.Model;
 using Gallio.Icarus.Utilities;
 using Gallio.Runtime.Logging;

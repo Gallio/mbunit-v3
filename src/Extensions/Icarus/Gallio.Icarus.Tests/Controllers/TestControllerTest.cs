@@ -20,9 +20,9 @@ using System.IO;
 using Gallio.Common.Concurrency;
 using Gallio.Icarus.Controllers;
 using Gallio.Icarus.Controllers.Interfaces;
-using Gallio.Icarus.Helpers;
 using Gallio.Icarus.Models;
 using Gallio.Icarus.Tests.Utilities;
+using Gallio.Icarus.TreeBuilders;
 using Gallio.Model;
 using Gallio.Model.Filters;
 using Gallio.Model.Schema;
@@ -90,7 +90,7 @@ namespace Gallio.Icarus.Tests.Controllers
             testRunner.AssertWasCalled(tr => tr.Explore(Arg<TestPackage>.Is.Anything, 
                 Arg<TestExplorationOptions>.Is.Anything, Arg.Is(progressMonitor)));
             testTreeModel.AssertWasCalled(ttm => ttm.BuildTestTree(Arg.Is(progressMonitor), Arg<TestModelData>.Is.Anything,
-                Arg<TestTreeBuilderOptions>.Matches(ttbo => (ttbo.TreeViewCategory == treeViewCategory))));
+                Arg<TreeBuilderOptions>.Matches(ttbo => (ttbo.TreeViewCategory == treeViewCategory))));
             Assert.IsTrue(exploreFinishedFlag);
         }
 

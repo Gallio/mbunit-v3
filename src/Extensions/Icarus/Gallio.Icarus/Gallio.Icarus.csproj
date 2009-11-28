@@ -198,7 +198,6 @@
     <Compile Include="Controls\PropertiesTabControl.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Helpers\NamespaceHierarchy.cs" />
     <Compile Include="Logging\BlackBoxLogger.cs" />
     <Compile Include="Models\ITestStatistics.cs" />
     <Compile Include="Models\TestStatistics.cs" />
@@ -211,6 +210,11 @@
     <Compile Include="Remoting\FileChangedHandler.cs" />
     <Compile Include="Reports\ReportMonitor.cs" />
     <Compile Include="Reports\ReportOptions.cs" />
+    <Compile Include="TreeBuilders\ITreeBuilder.cs" />
+    <Compile Include="TreeBuilders\MetadataTreeBuilder.cs" />
+    <Compile Include="TreeBuilders\NamespaceHierarchy.cs" />
+    <Compile Include="TreeBuilders\NamespaceTreeBuilder.cs" />
+    <Compile Include="TreeBuilders\TreeBuilderOptions.cs" />
     <Compile Include="Utilities\CTaskbarList.cs" />
     <Compile Include="Utilities\Dialogs.cs" />
     <Compile Include="Controls\PluginTreeView.cs">
@@ -245,7 +249,6 @@
     <Compile Include="Helpers\IMenuListHelper.cs" />
     <Compile Include="Helpers\MenuListHelper.cs" />
     <Compile Include="Helpers\TestTreeBuilder.cs" />
-    <Compile Include="Helpers\TestTreeBuilderOptions.cs" />
     <Compile Include="Logging\IRuntimeLogger.cs" />
     <Compile Include="Logging\RuntimeLogger.cs" />
     <Compile Include="Models\ComponentDetailsTreeModel.cs" />

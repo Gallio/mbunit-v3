@@ -21,8 +21,8 @@ using Gallio.Common.Collections;
 using Gallio.Common.Concurrency;
 using Gallio.Common.Policies;
 using Gallio.Icarus.Controllers.Interfaces;
-using Gallio.Icarus.Helpers;
 using Gallio.Icarus.Models;
+using Gallio.Icarus.TreeBuilders;
 using Gallio.Model;
 using Gallio.Model.Filters;
 using Gallio.Runner;
@@ -242,7 +242,7 @@ namespace Gallio.Icarus.Controllers
                 using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(1))
                     testStatistics.Reset(subProgressMonitor);
 
-                var options = new TestTreeBuilderOptions
+                var options = new TreeBuilderOptions
                 {
                     TreeViewCategory = TreeViewCategory,
                     NamespaceHierarchy = optionsController.NamespaceHierarchy

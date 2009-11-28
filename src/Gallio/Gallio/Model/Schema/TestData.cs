@@ -230,5 +230,11 @@ namespace Gallio.Model.Schema
                 isTestCase = isTestCase
             };
         }
+
+        /// <inheritdoc />
+        public override string ToString()
+        {
+            return fullName;
+        }
     }
 }

@@ -17,7 +17,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
-using Gallio.Icarus.Helpers;
+using Gallio.Icarus.TreeBuilders;
 using Gallio.Icarus.Utilities;
 using Gallio.Runtime.Logging;
 using Gallio.UI.DataBinding;

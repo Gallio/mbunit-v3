@@ -20,7 +20,7 @@ using System.Windows.Forms;
 using System.Xml.Serialization;
 using Gallio.Common;
 using Gallio.Icarus.Controls;
-using Gallio.Icarus.Helpers;
+using Gallio.Icarus.TreeBuilders;
 using Gallio.Runtime.Logging;
 using Gallio.Runner;
 

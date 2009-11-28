@@ -17,6 +17,7 @@ using System.Collections.Generic;
 using Aga.Controls.Tree;
 using Gallio.Icarus.Models;
 using Gallio.Icarus.Models.TestTreeNodes;
+using Gallio.Icarus.TreeBuilders;
 using Gallio.Model.Schema;
 using Gallio.Runtime.ProgressMonitoring;
 
@@ -25,7 +26,7 @@ namespace Gallio.Icarus.Helpers
     internal class TestTreeBuilder
     {
         public static TestTreeNode BuildTestTree(IProgressMonitor progressMonitor, 
-            TestModelData testModelData, TestTreeBuilderOptions options)
+            TestModelData testModelData, TreeBuilderOptions options)
         {
             var root = new TestDataNode(testModelData.RootTest);
 
@@ -38,8 +39,8 @@ namespace Gallio.Icarus.Helpers
             }
             else
             {
-                PopulateMetadataTree(progressMonitor, options.TreeViewCategory, root, 
-                    testModelData.RootTest, root);
+                var metadataTreeBuilder = new MetadataTreeBuilder();
+                return metadataTreeBuilder.BuildTree(progressMonitor, testModelData, options);
             }
 
             return root;

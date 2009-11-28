@@ -19,10 +19,12 @@ using Gallio.Icarus.ProgressMonitoring;
 using Gallio.Icarus.Tests.Utilities;
 using Gallio.Icarus.Utilities;
 using Gallio.UI.DataBinding;
+using MbUnit.Framework;
 using Rhino.Mocks;
 
 namespace Gallio.Icarus.Tests.ProgressMonitoring
 {
+    [Category("ProgressMonitoring"), TestsOn(typeof(Win7TaskBar)), Author("Graham Hay")]
     internal class Win7TaskBarTests
     {
         private IntPtr windowHandle;

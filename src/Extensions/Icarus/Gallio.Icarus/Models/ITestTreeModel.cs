@@ -15,7 +15,7 @@
 
 using System.Windows.Forms;
 using Aga.Controls.Tree;
-using Gallio.Icarus.Helpers;
+using Gallio.Icarus.TreeBuilders;
 using Gallio.Model;
 using Gallio.Model.Filters;
 using Gallio.Model.Schema;
@@ -37,7 +37,7 @@ namespace Gallio.Icarus.Models
 
         void ApplyFilterSet(FilterSet<ITestDescriptor> filterSet);
         void BuildTestTree(IProgressMonitor progressMonitor, TestModelData testModelData, 
-            TestTreeBuilderOptions options);
+            TreeBuilderOptions options);
         Node FindNode(TreePath path);
         FilterSet<ITestDescriptor> GenerateFilterSetFromSelectedTests();
         TreePath GetPath(Node node);
