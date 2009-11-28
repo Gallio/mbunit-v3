@@ -21,6 +21,7 @@ namespace Gallio.Common.Splash
         /// <param name="site">The site of the embedded object.  Not null.</param>
         /// <param name="g">The graphics context.  Not null.</param>
         /// <param name="area">The area into which the embedded object should be painted.</param>
-        public abstract void Paint(IEmbeddedObjectSite site, Graphics g, Rectangle area);
+        /// <param name="paintOptions">The paint options.</param>
+        public abstract void Paint(IEmbeddedObjectSite site, Graphics g, Rectangle area, PaintOptions paintOptions);
     }
 }

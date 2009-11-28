@@ -96,6 +96,11 @@ namespace Gallio.Common.Splash.Internal
             get { return run.CharCount; }
         }
 
+        public int EndCharIndexInParagraph
+        {
+            get { return CharIndexInParagraph + CharCount; }
+        }
+
         public int StyleIndex
         {
             get { return run.StyleIndex; }

@@ -22,29 +22,30 @@ namespace Gallio.Common.Splash.Demo
 
             Style defaultStyle = Style.CreateDefaultStyle();
             StyleBuilder styleBuilder;
+            SplashDocument document = splashView.Document;
             
             styleBuilder = new StyleBuilder();
-            splashView.AppendText(styleBuilder.ToStyle(defaultStyle), "Text...\nText 2... ");
+            document.AppendText(styleBuilder.ToStyle(defaultStyle), "Text...\nText 2... ");
 
             styleBuilder = new StyleBuilder()
             {
                 Color = Color.Green,
                 Font = new Font(FontFamily.GenericSerif, 16)
             };
-            splashView.AppendText(styleBuilder.ToStyle(defaultStyle), "Text 3... ");
+            document.AppendText(styleBuilder.ToStyle(defaultStyle), "Text 3... ");
 
             styleBuilder = new StyleBuilder()
             {
                 Color = Color.Gold
             };
-            splashView.AppendText(styleBuilder.ToStyle(defaultStyle), "Text 4...\n");
-            splashView.AppendText(styleBuilder.ToStyle(defaultStyle), "\nMore \tText...\n");
+            document.AppendText(styleBuilder.ToStyle(defaultStyle), "Text 4...\n");
+            document.AppendText(styleBuilder.ToStyle(defaultStyle), "\nMore \tText...\n");
 
             styleBuilder = new StyleBuilder();
-            splashView.AppendText(styleBuilder.ToStyle(defaultStyle), "Why Hello مرحبا العالمي World?  How are you?");
-            splashView.AppendLine(styleBuilder.ToStyle(defaultStyle));
-            splashView.AppendText(styleBuilder.ToStyle(defaultStyle), "Tab1\tTab2\tTab3\tTab4\tTab5\tTab6\tTab7\tTab8\n");
-            splashView.AppendText(styleBuilder.ToStyle(defaultStyle), "Tab.1\tTab.2\tTab.3\tTab.4\tTab.5\tTab.6\tTab.7\tTab.8\n");
+            document.AppendText(styleBuilder.ToStyle(defaultStyle), "Why Hello مرحبا العالمي World?  How are you?");
+            document.AppendLine(styleBuilder.ToStyle(defaultStyle));
+            document.AppendText(styleBuilder.ToStyle(defaultStyle), "Tab1\tTab2\tTab3\tTab4\tTab5\tTab6\tTab7\tTab8\n");
+            document.AppendText(styleBuilder.ToStyle(defaultStyle), "Tab.1\tTab.2\tTab.3\tTab.4\tTab.5\tTab.6\tTab.7\tTab.8\n");
 
             styleBuilder = new StyleBuilder()
             {
@@ -53,7 +54,7 @@ namespace Gallio.Common.Splash.Demo
                 RightMargin = 30,
                 FirstLineIndent = 40
             };
-            splashView.AppendText(styleBuilder.ToStyle(defaultStyle), "This paragraph has a first line indent, left margin and right margin.  Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n");
+            document.AppendText(styleBuilder.ToStyle(defaultStyle), "This paragraph has a first line indent, left margin and right margin.  Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n");
 
             styleBuilder = new StyleBuilder()
             {
@@ -61,16 +62,16 @@ namespace Gallio.Common.Splash.Demo
                 Color = Color.Blue,
                 Font = new Font(defaultStyle.Font, FontStyle.Bold)
             };
-            splashView.AppendText(styleBuilder.ToStyle(defaultStyle), "Word wrap disabled.  Word wrap disabled.  Word wrap disabled.  Word wrap disabled.  Word wrap disabled.  Word wrap disabled.  Word wrap disabled.  Word wrap disabled.  Word wrap disabled.  Word wrap disabled.  Word wrap disabled.  Word wrap disabled.  Word wrap disabled.\n");
+            document.AppendText(styleBuilder.ToStyle(defaultStyle), "Word wrap disabled.  Word wrap disabled.  Word wrap disabled.  Word wrap disabled.  Word wrap disabled.  Word wrap disabled.  Word wrap disabled.  Word wrap disabled.  Word wrap disabled.  Word wrap disabled.  Word wrap disabled.  Word wrap disabled.  Word wrap disabled.\n");
 
             styleBuilder = new StyleBuilder()
             {
                 Color = Color.Red,
                 Font = new Font(FontFamily.GenericSerif, 16)
             };
-            splashView.AppendLine(styleBuilder.ToStyle(defaultStyle));
-            splashView.AppendText(styleBuilder.ToStyle(defaultStyle), "القرآن تمتلك المظهر الخارجي وعمق خفي ، وهو المعنى الظاهر والمعنى الباطني. هذا المعنى الباطني بدوره يخفي معنى باطني (هذا العمق تمتلك العمق ، بعد صورة من الكرات السماوية التي هي المغلقة داخل بعضها البعض). غني عن ذلك لمدة سبعة المعاني الباطنية (سبعة من عمق أعماق المخفية).");
-            splashView.AppendLine(styleBuilder.ToStyle(defaultStyle));
+            document.AppendLine(styleBuilder.ToStyle(defaultStyle));
+            document.AppendText(styleBuilder.ToStyle(defaultStyle), "القرآن تمتلك المظهر الخارجي وعمق خفي ، وهو المعنى الظاهر والمعنى الباطني. هذا المعنى الباطني بدوره يخفي معنى باطني (هذا العمق تمتلك العمق ، بعد صورة من الكرات السماوية التي هي المغلقة داخل بعضها البعض). غني عن ذلك لمدة سبعة المعاني الباطنية (سبعة من عمق أعماق المخفية).");
+            document.AppendLine(styleBuilder.ToStyle(defaultStyle));
         }
 
         private void leftToRightButton_Click(object sender, EventArgs e)
@@ -85,8 +86,14 @@ namespace Gallio.Common.Splash.Demo
 
         private void splashView_MouseMove(object sender, MouseEventArgs e)
         {
-            CharSnap snap = splashView.GetCharSnapFromPosition(e.Location);
-            mouseStatusTextBox.Text = string.Format("Snap: {0} at {1}.", snap.Kind, snap.CharIndex);
+            SnapPosition snapPosition = splashView.GetSnapPositionAtPoint(splashView.MousePositionToLayout(e.Location));
+            snapPositionStatusLabel.Text = string.Format("Snap Position: {0} at {1}.", snapPosition.Kind, snapPosition.CharIndex);
+        }
+
+        private void splashView_SelectionChanged(object sender, EventArgs e)
+        {
+            selectionStatusLabel.Text = string.Format("Selection: {0} - {1}.", splashView.SelectionStart,
+                splashView.SelectionStart + splashView.SelectionLength);
         }
     }
 }

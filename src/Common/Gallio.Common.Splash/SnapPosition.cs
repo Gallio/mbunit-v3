@@ -7,9 +7,9 @@ namespace Gallio.Common.Splash
     /// <summary>
     /// Provides the result of mapping a screen position to a character index.
     /// </summary>
-    public struct CharSnap
+    public struct Snap
     {
-        private readonly CharSnapKind kind;
+        private readonly SnapKind kind;
         private readonly int charIndex;
 
         /// <summary>
@@ -17,7 +17,7 @@ namespace Gallio.Common.Splash
         /// </summary>
         /// <param name="kind">The snap kind.</param>
         /// <param name="charIndex">The character index of the snap, or -1 if no snap.</param>
-        public CharSnap(CharSnapKind kind, int charIndex)
+        public Snap(SnapKind kind, int charIndex)
         {
             this.kind = kind;
             this.charIndex = charIndex;
@@ -26,7 +26,7 @@ namespace Gallio.Common.Splash
         /// <summary>
         /// Gets the snap kind.
         /// </summary>
-        public CharSnapKind Kind
+        public SnapKind Kind
         {
             get { return kind; }
         }

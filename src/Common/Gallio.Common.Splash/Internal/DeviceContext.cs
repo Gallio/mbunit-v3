@@ -71,21 +71,66 @@ namespace Gallio.Common.Splash.Internal
             NativeMethods.SetBkMode(HDC, bkMode);
         }
 
-        public void SetPenColor(Color color)
+        public static IntPtr GetStockObject(int fnObject)
         {
-            NativeMethods.SelectObject(HDC, NativeMethods.GetStockObject(NativeConstants.DC_PEN));
+            return NativeMethods.GetStockObject(fnObject);
+        }
+
+        public void SetDCPenColor(Color color)
+        {
             NativeMethods.SetDCPenColor(HDC, ToCOLORREF(color));
         }
 
-        public void SetBrushColor(Color color)
+        public void SetDCBrushColor(Color color)
         {
-            NativeMethods.SelectObject(HDC, NativeMethods.GetStockObject(NativeConstants.DC_BRUSH));
             NativeMethods.SetDCBrushColor(HDC, ToCOLORREF(color));
         }
 
         public void SetTextColor(Color color)
         {
             NativeMethods.SetTextColor(HDC, ToCOLORREF(color));
+        }
+
+        public static void DeleteObject(IntPtr hObject)
+        {
+            NativeMethods.DeleteObject(hObject);
+        }
+
+        public static IntPtr CreateRectRegion(Rectangle rect)
+        {
+            return NativeMethods.CreateRectRgn(rect.Left, rect.Top, rect.Right, rect.Bottom);
+        }
+
+        public bool GetClipRegion(IntPtr hRgn)
+        {
+            return NativeMethods.GetClipRgn(HDC, hRgn) > 0;
+        }
+
+        public void SelectClipRegion(IntPtr hRgn)
+        {
+            NativeMethods.SelectClipRgn(HDC, hRgn);
+        }
+
+        public void ExcludeClipRect(Rectangle rect)
+        {
+            NativeMethods.ExcludeClipRect(HDC, rect.Left, rect.Top, rect.Right, rect.Bottom);
+        }
+
+        public void XorClipRegion(IntPtr hRgn)
+        {
+            NativeMethods.ExtSelectClipRgn(HDC, hRgn, NativeConstants.RGN_XOR);
+        }
+
+        public void FillRect(Rectangle rectangle, IntPtr hBrush)
+        {
+            RECT rect = new RECT()
+            {
+                left = rectangle.Left,
+                top = rectangle.Top,
+                right = rectangle.Right,
+                bottom = rectangle.Bottom
+            };
+            NativeMethods.FillRect(HDC, ref rect, hBrush);
         }
 
         private static int ToCOLORREF(Color color)

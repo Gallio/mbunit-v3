@@ -118,6 +118,9 @@ namespace Gallio.Common.Splash.Native
         public static extern IntPtr SelectObject([In] IntPtr hDC, [In] IntPtr hObject);
 
         [DllImport("gdi32.dll", CharSet = CharSet.Auto, SetLastError = true, ExactSpelling = true)]
+        public static extern bool DeleteObject([In] IntPtr hObject);
+
+        [DllImport("gdi32.dll", CharSet = CharSet.Auto, SetLastError = true, ExactSpelling = true)]
         public static extern void SetBkMode([In] IntPtr hDC, [In] int iBkMode);
 
         [DllImport("gdi32.dll", CharSet = CharSet.Auto, SetLastError = true)]
@@ -134,5 +137,23 @@ namespace Gallio.Common.Splash.Native
 
         [DllImport("gdi32.dll", CharSet = CharSet.Auto, SetLastError = true, ExactSpelling = true)]
         public static extern int SetTextColor([In] IntPtr hdc, [In] int crColor);
+
+        [DllImport("gdi32.dll", CharSet = CharSet.Auto, SetLastError = true, ExactSpelling = true)]
+        public static extern IntPtr CreateRectRgn([In] int nLeftRect, [In] int nTopRect, [In] int nRightRect, [In] int nBottomRect);
+
+        [DllImport("gdi32.dll", CharSet = CharSet.Auto, SetLastError = true, ExactSpelling = true)]
+        public static extern int GetClipRgn([In] IntPtr hdc, [In] IntPtr hrgn);
+
+        [DllImport("gdi32.dll", CharSet = CharSet.Auto, SetLastError = true, ExactSpelling = true)]
+        public static extern int SelectClipRgn([In] IntPtr hdc, [In] IntPtr hrgn);
+
+        [DllImport("gdi32.dll", CharSet = CharSet.Auto, SetLastError = true, ExactSpelling = true)]
+        public static extern int ExcludeClipRect([In] IntPtr hdc, [In] int nLeftRect, [In] int nTopRect, [In] int nRightRect, [In] int nBottomRect);
+
+        [DllImport("gdi32.dll", CharSet = CharSet.Auto, SetLastError = true, ExactSpelling = true)]
+        public static extern int ExtSelectClipRgn([In] IntPtr hdc, [In] IntPtr hrgn, [In] int fnMode);
+
+        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true, ExactSpelling = true)]
+        public static extern int FillRect([In] IntPtr hdc, [In] ref RECT rect, [In] IntPtr hBrush);
     }
 }

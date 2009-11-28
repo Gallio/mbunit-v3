@@ -20,10 +20,16 @@ namespace Gallio.Common.Splash
     /// Display updates are performed asynchronously in batches.
     /// </para>
     /// </remarks>
-    public unsafe class SplashView : ScrollableControl
+    public class SplashView : ScrollableControl
     {
         private readonly SplashDocument document;
         private readonly SplashLayout layout;
+        private readonly PaintOptions paintOptions;
+
+        private int selectionStart;
+        private int selectionLength;
+        private SnapPosition selectionSnapPosition;
+        private bool selectionInProgress;
 
         private int minimumTextLayoutWidth = 100;
 
@@ -34,12 +40,13 @@ namespace Gallio.Common.Splash
         {
             document = new SplashDocument();
             layout = new SplashLayout(document);
+            paintOptions = new PaintOptions();
 
             SetStyle(ControlStyles.UserPaint | ControlStyles.ResizeRedraw
                 | ControlStyles.Selectable | ControlStyles.UserMouse
                 | ControlStyles.AllPaintingInWmPaint | ControlStyles.OptimizedDoubleBuffer, true);
 
-            BackColor = SystemColors.Window;
+            base.BackColor = paintOptions.BackgroundColor;
             Padding = new Padding(5);
 
             AttachLayoutEvents();
@@ -53,6 +60,70 @@ namespace Gallio.Common.Splash
         private void HandleLayoutChanged(object sender, EventArgs e)
         {
             Invalidate();
+        }
+
+        /// <summary>
+        /// Event raised when the selection has changed.
+        /// </summary>
+        public event EventHandler SelectionChanged;
+
+        /// <inheritdoc />
+        public override Color BackColor
+        {
+            get { return base.BackColor; }
+            set
+            {
+                base.BackColor = value;
+                paintOptions.BackgroundColor = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the selected text color.
+        /// </summary>
+        public Color SelectedTextColor
+        {
+            get { return paintOptions.SelectedTextColor; }
+            set
+            {
+                if (paintOptions.SelectedTextColor != value)
+                {
+                    paintOptions.SelectedTextColor = value;
+                    UpdateSelectionColors();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the selected text color.
+        /// </summary>
+        public Color SelectedBackgroundColor
+        {
+            get { return paintOptions.SelectedBackgroundColor; }
+            set
+            {
+                if (paintOptions.SelectedBackgroundColor != value)
+                {
+                    paintOptions.SelectedBackgroundColor = value;
+                    UpdateSelectionColors();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets the selection start character index.
+        /// </summary>
+        public int SelectionStart
+        {
+            get { return selectionStart; }
+        }
+
+        /// <summary>
+        /// Gets the selection length, or 0 if none.
+        /// </summary>
+        public int SelectionLength
+        {
+            get { return selectionLength; }
         }
 
         /// <summary>
@@ -80,58 +151,91 @@ namespace Gallio.Common.Splash
         }
 
         /// <summary>
-        /// Clears the text in the document.
+        /// Gets the document displayed in the view.
         /// </summary>
-        public void Clear()
+        public SplashDocument Document
         {
-            document.Clear();
+            get { return document; }
         }
 
         /// <summary>
-        /// Appends text to the document.
-        /// </summary>
-        /// <param name="style">The style.</param>
-        /// <param name="text">The text to append.</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="style"/> or <paramref name="text"/> is null.</exception>
-        /// <exception cref="InvalidOperationException">Thrown if more than <see cref="SplashDocument.MaxStyles" /> distinct styles are used.</exception>
-        public void AppendText(Style style, string text)
-        {
-            document.AppendText(style, text);
-        }
-
-        /// <summary>
-        /// Appends a new line to the document.
-        /// </summary>
-        /// <param name="style">The style.</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="style"/> is null.</exception>
-        /// <exception cref="InvalidOperationException">Thrown if more than <see cref="SplashDocument.MaxStyles" /> distinct styles are used.</exception>
-        public void AppendLine(Style style)
-        {
-            document.AppendLine(style);
-        }
-
-        /// <summary>
-        /// Appends an object to the document.
-        /// </summary>
-        /// <param name="style">The style.</param>
-        /// <param name="obj">The object to append.</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="style"/> or <paramref name="obj"/> is null.</exception>
-        /// <exception cref="InvalidOperationException">Thrown if more than <see cref="SplashDocument.MaxStyles" /> distinct styles are used.</exception>
-        public void AppendObject(Style style, EmbeddedObject obj)
-        {
-            document.AppendObject(style, obj);
-        }
-
-        /// <summary>
-        /// Gets a character snap from a position.
+        /// Gets the snap position that corresponds to a point in the control.
         /// </summary>
         /// <param name="point">The point relative to the layout origin.</param>
         /// <returns>The character snap.</returns>
-        public CharSnap GetCharSnapFromPosition(Point point)
+        public SnapPosition GetSnapPositionAtPoint(Point point)
         {
             Rectangle displayRect = DisplayRectangle;
-            Point layoutPoint = new Point(point.X - displayRect.Left, point.Y - displayRect.Top);
-            return layout.GetCharSnapFromPosition(layoutPoint, Padding);
+            return layout.GetSnapPositionAtPoint(point, displayRect.Location);
+        }
+
+        /// <summary>
+        /// Sets the selection.
+        /// </summary>
+        /// <param name="selectionStart">The selection start character index.</param>
+        /// <param name="selectionLength">The selection length or 0 if none.</param>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="selectionStart"/>
+        /// or <paramref name="selectionLength"/> is less than 0.</exception>
+        public void Select(int selectionStart, int selectionLength)
+        {
+            if (selectionStart < 0)
+                throw new ArgumentOutOfRangeException("selectionStart");
+            if (selectionLength < 0)
+                throw new ArgumentOutOfRangeException("selectionLength");
+
+            InternalSetSelection(selectionStart, selectionLength);
+        }
+
+        /// <summary>
+        /// Sets the selection to include all text in the document.
+        /// </summary>
+        public void SelectAll()
+        {
+            InternalSetSelection(0, document.CharCount);
+        }
+
+        /// <summary>
+        /// Clears the selection.
+        /// </summary>
+        public void SelectNone()
+        {
+            if (selectionLength != 0)
+                InternalSetSelection(0, 0);
+        }
+
+        private void InternalSetSelection(int selectionStart, int selectionLength)
+        {
+            int charCount = document.CharCount;
+            if (selectionStart > charCount)
+            {
+                selectionStart = charCount;
+                selectionLength = 0;
+            }
+            else if (selectionStart + selectionLength > charCount)
+            {
+                selectionLength = charCount - selectionStart;
+            }
+
+            if (this.selectionStart != selectionStart || this.selectionLength != selectionLength)
+            {
+                this.selectionStart = selectionStart;
+                this.selectionLength = selectionLength;
+
+                OnSelectionChanged(EventArgs.Empty);
+            }
+        }
+
+        /// <inheritdoc />
+        protected override Cursor DefaultCursor
+        {
+            get { return Cursors.IBeam; }
+        }
+
+        /// <inheritdoc />
+        protected override Size DefaultSize
+        {
+            get { return new Size(minimumTextLayoutWidth + Padding.Horizontal,
+                Style.CreateDefaultStyle().Font.Height + Padding.Vertical); }
         }
 
         /// <inheritdoc />
@@ -140,7 +244,7 @@ namespace Gallio.Common.Splash
             UpdateLayout();
 
             Rectangle displayRect = DisplayRectangle;
-            layout.Paint(e.Graphics, displayRect.Location, e.ClipRectangle);
+            layout.Paint(e.Graphics, displayRect.Location, e.ClipRectangle, paintOptions, selectionStart, selectionLength);
 
             base.OnPaint(e);
         }
@@ -169,6 +273,108 @@ namespace Gallio.Common.Splash
             base.OnRightToLeftChanged(e);
         }
 
+        /// <inheritdoc />
+        protected override void OnMouseDown(MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+            {
+                if (!selectionInProgress)
+                {
+                    selectionSnapPosition = GetSnapPositionAtPoint(MousePositionToLayout(e.Location));
+                    SelectNone();
+                }
+            }
+
+            base.OnMouseDown(e);
+        }
+
+        /// <inheritdoc />
+        protected override void OnMouseUp(MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+            {
+                if (selectionInProgress)
+                {
+                    UpdateSelectionInProgress(e);
+                    selectionInProgress = false;
+                }
+            }
+            else
+            {
+                selectionInProgress = false;
+            }
+
+            base.OnMouseUp(e);
+        }
+
+        /// <inheritdoc />
+        protected override void OnMouseMove(MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+            {
+                if (selectionSnapPosition.Kind != SnapKind.None)
+                    selectionInProgress = true;
+
+                if (selectionInProgress)
+                    UpdateSelectionInProgress(e);
+            }
+            else
+            {
+                selectionInProgress = false;
+            }
+
+            base.OnMouseMove(e);
+        }
+
+        private void UpdateSelectionInProgress(MouseEventArgs e)
+        {
+            int selectionCharIndex = selectionSnapPosition.CharIndex;
+            if (selectionSnapPosition.Kind == SnapKind.Trailing)
+                selectionCharIndex += 1;
+
+            SnapPosition currentSnapPosition = GetSnapPositionAtPoint(MousePositionToLayout(e.Location));
+            if (currentSnapPosition.Kind == SnapKind.None)
+            {
+                InternalSetSelection(selectionCharIndex, 0);
+            }
+            else
+            {
+                int currentCharIndex = currentSnapPosition.CharIndex;
+                if (currentSnapPosition.Kind == SnapKind.Trailing)
+                    currentCharIndex += 1;
+
+                if (selectionCharIndex <= currentCharIndex)
+                    InternalSetSelection(selectionCharIndex, currentCharIndex - selectionCharIndex);
+                else
+                    InternalSetSelection(currentCharIndex, selectionCharIndex - currentCharIndex);
+            }
+        }
+
+        /// <summary>
+        /// Called when the selection changes.
+        /// </summary>
+        /// <param name="e">The event arguments.</param>
+        protected virtual void OnSelectionChanged(EventArgs e)
+        {
+            if (SelectionChanged != null)
+                SelectionChanged(this, e);
+
+            Invalidate();
+        }
+
+        /// <summary>
+        /// Maps a mouse position to a layout point.
+        /// </summary>
+        /// <param name="mousePosition">The mouse position.</param>
+        /// <returns>The layout point.</returns>
+        public Point MousePositionToLayout(Point mousePosition)
+        {
+            // HACK: Correct for the fact that the I-Beam cursor seems to have its hotspot to the
+            // left of the bar rather than on the bar.  -- Jeff.
+            mousePosition.X += 3;
+            return mousePosition;
+        }
+
         private void UpdateLayout()
         {
             UpdateLayoutSize();
@@ -191,6 +397,12 @@ namespace Gallio.Common.Splash
         private void UpdateScrollBars()
         {
             AutoScrollMinSize = new Size(minimumTextLayoutWidth, layout.CurrentLayoutHeight);
+        }
+
+        private void UpdateSelectionColors()
+        {
+            if (selectionLength != 0)
+                Invalidate();
         }
     }
 }

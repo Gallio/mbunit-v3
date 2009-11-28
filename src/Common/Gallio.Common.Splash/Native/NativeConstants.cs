@@ -19,5 +19,7 @@ namespace Gallio.Common.Splash.Native
 
         public const int DC_BRUSH = 18;
         public const int DC_PEN = 19;
+
+        public const int RGN_XOR = 3;
     }
 }

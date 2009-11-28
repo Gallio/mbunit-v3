@@ -32,8 +32,9 @@
             this.verticalSplitter = new System.Windows.Forms.SplitContainer();
             this.rightToLeftButton = new System.Windows.Forms.Button();
             this.leftToRightButton = new System.Windows.Forms.Button();
+            this.snapPositionStatusLabel = new System.Windows.Forms.Label();
+            this.selectionStatusLabel = new System.Windows.Forms.Label();
             this.splashView = new Gallio.Common.Splash.SplashView();
-            this.mouseStatusTextBox = new System.Windows.Forms.TextBox();
             this.horizontalSplitter.Panel1.SuspendLayout();
             this.horizontalSplitter.Panel2.SuspendLayout();
             this.horizontalSplitter.SuspendLayout();
@@ -55,7 +56,8 @@
             // 
             // horizontalSplitter.Panel2
             // 
-            this.horizontalSplitter.Panel2.Controls.Add(this.mouseStatusTextBox);
+            this.horizontalSplitter.Panel2.Controls.Add(this.selectionStatusLabel);
+            this.horizontalSplitter.Panel2.Controls.Add(this.snapPositionStatusLabel);
             this.horizontalSplitter.Panel2.Controls.Add(this.rightToLeftButton);
             this.horizontalSplitter.Panel2.Controls.Add(this.leftToRightButton);
             this.horizontalSplitter.Size = new System.Drawing.Size(784, 562);
@@ -96,27 +98,42 @@
             this.leftToRightButton.UseVisualStyleBackColor = true;
             this.leftToRightButton.Click += new System.EventHandler(this.leftToRightButton_Click);
             // 
+            // snapPositionStatusLabel
+            // 
+            this.snapPositionStatusLabel.AutoSize = true;
+            this.snapPositionStatusLabel.Location = new System.Drawing.Point(13, 34);
+            this.snapPositionStatusLabel.Name = "snapPositionStatusLabel";
+            this.snapPositionStatusLabel.Size = new System.Drawing.Size(72, 13);
+            this.snapPositionStatusLabel.TabIndex = 2;
+            this.snapPositionStatusLabel.Text = "Snap Position";
+            // 
+            // selectionStatusLabel
+            // 
+            this.selectionStatusLabel.AutoSize = true;
+            this.selectionStatusLabel.Location = new System.Drawing.Point(13, 56);
+            this.selectionStatusLabel.Name = "selectionStatusLabel";
+            this.selectionStatusLabel.Size = new System.Drawing.Size(84, 13);
+            this.selectionStatusLabel.TabIndex = 3;
+            this.selectionStatusLabel.Text = "Selection Status";
+            // 
             // splashView
             // 
             this.splashView.AutoScroll = true;
             this.splashView.AutoScrollMinSize = new System.Drawing.Size(100, 1);
             this.splashView.BackColor = System.Drawing.SystemColors.Window;
+            this.splashView.Cursor = System.Windows.Forms.Cursors.IBeam;
             this.splashView.Dock = System.Windows.Forms.DockStyle.Fill;
             this.splashView.Location = new System.Drawing.Point(0, 0);
             this.splashView.MinimumTextLayoutWidth = 100;
             this.splashView.Name = "splashView";
-            this.splashView.Padding = new System.Windows.Forms.Padding(3);
+            this.splashView.Padding = new System.Windows.Forms.Padding(20);
+            this.splashView.SelectedBackgroundColor = System.Drawing.SystemColors.Highlight;
+            this.splashView.SelectedTextColor = System.Drawing.SystemColors.HighlightText;
             this.splashView.Size = new System.Drawing.Size(755, 450);
             this.splashView.TabIndex = 0;
             this.splashView.Text = "splashView1";
+            this.splashView.SelectionChanged += new System.EventHandler(this.splashView_SelectionChanged);
             this.splashView.MouseMove += new System.Windows.Forms.MouseEventHandler(this.splashView_MouseMove);
-            // 
-            // mouseStatusTextBox
-            // 
-            this.mouseStatusTextBox.Location = new System.Drawing.Point(13, 34);
-            this.mouseStatusTextBox.Name = "mouseStatusTextBox";
-            this.mouseStatusTextBox.Size = new System.Drawing.Size(157, 20);
-            this.mouseStatusTextBox.TabIndex = 2;
             // 
             // DemoForm
             // 
@@ -143,6 +160,7 @@
         private System.Windows.Forms.SplitContainer verticalSplitter;
         private System.Windows.Forms.Button leftToRightButton;
         private System.Windows.Forms.Button rightToLeftButton;
-        private System.Windows.Forms.TextBox mouseStatusTextBox;
+        private System.Windows.Forms.Label selectionStatusLabel;
+        private System.Windows.Forms.Label snapPositionStatusLabel;
     }
 }
