@@ -13,9 +13,9 @@ namespace Gallio.Common.Splash
         private readonly LookupTable<Style> styleTable;
         private readonly LookupTable<EmbeddedObject> objectTable;
 
-        private readonly UnmanagedBuffer<char> charBuffer;
-        private readonly UnmanagedBuffer<Paragraph> paragraphBuffer;
-        private readonly UnmanagedBuffer<Run> runBuffer;
+        private readonly UnmanagedBuffer charBuffer;
+        private readonly UnmanagedBuffer paragraphBuffer;
+        private readonly UnmanagedBuffer runBuffer;
 
         private Style previousStyle;
         private int previousStyleIndex;
@@ -56,9 +56,9 @@ namespace Gallio.Common.Splash
             styleTable = new LookupTable<Style>(MaxStyles, "This implementation only supports at most {0} distinct styles.");
             objectTable = new LookupTable<EmbeddedObject>(MaxObjects, "This implementation only supports at most {0} distinct objects.");
 
-            charBuffer = new UnmanagedBuffer<char>(InitialCapacityForCharsPerDocument);
-            paragraphBuffer = new UnmanagedBuffer<Paragraph>(InitialCapacityForParagraphsPerDocument);
-            runBuffer = new UnmanagedBuffer<Run>(InitialCapacityForRunsPerDocument);
+            charBuffer = new UnmanagedBuffer(InitialCapacityForCharsPerDocument, sizeof(char));
+            paragraphBuffer = new UnmanagedBuffer(InitialCapacityForParagraphsPerDocument, sizeof(Paragraph));
+            runBuffer = new UnmanagedBuffer(InitialCapacityForRunsPerDocument, sizeof(Run));
 
             InternalClear();
         }
@@ -183,7 +183,7 @@ namespace Gallio.Common.Splash
             int paragraphIndex = CurrentParagraphIndex;
 
             fixed (char* chars = "\n")
-                InternalAppendChars(styleIndex, chars, 1, false);
+                InternalAppendChars(styleIndex, chars, 1);
             InternalStartParagraph();
 
             RaiseParagraphChanged(paragraphIndex);
@@ -230,7 +230,6 @@ namespace Gallio.Common.Splash
                 char* sourceEnd = source + length;
 
                 char* mark = source;
-                bool requiresTabExpansion = false;
                 for (; source != sourceEnd; source++)
                 {
                     char ch = *source;
@@ -240,38 +239,35 @@ namespace Gallio.Common.Splash
                         if (ch == '\n')
                         {
                             char* next = source + 1;
-                            InternalAppendChars(styleIndex, mark, (int)(next - mark), requiresTabExpansion);
+                            InternalAppendChars(styleIndex, mark, (int)(next - mark));
                             mark = next;
-                            requiresTabExpansion = false;
                             InternalStartParagraph();
-                            continue;
                         }
-
-                        if (ch == '\t')
+                        else if (ch == '\t')
                         {
-                            requiresTabExpansion = true;
+                            if (mark != source)
+                                InternalAppendChars(styleIndex, mark, (int)(source - mark));
+                            InternalAppendTabRun(styleIndex);
+                            mark = source + 1;
                         }
                         else
                         {
                             // Discard all other control characters.
                             if (mark != source)
-                                InternalAppendChars(styleIndex, mark, (int)(source - mark), requiresTabExpansion);
+                                InternalAppendChars(styleIndex, mark, (int) (source - mark));
                             mark = source + 1;
-                            continue;
                         }
                     }
                 }
 
                 if (mark != source)
-                    InternalAppendChars(styleIndex, mark, (int)(source - mark), requiresTabExpansion);
+                    InternalAppendChars(styleIndex, mark, (int)(source - mark));
             }
         }
 
-        private void InternalAppendChars(int styleIndex, char* source, int count, bool requiresTabExpansion)
+        private void InternalAppendChars(int styleIndex, char* source, int count)
         {
             InternalEnsureTextRun(styleIndex);
-            if (requiresTabExpansion)
-                currentRun->SetRequiresTabExpansion();
 
             int charIndex = charBuffer.Count;
             charBuffer.GrowBy(count);
@@ -285,8 +281,6 @@ namespace Gallio.Common.Splash
                 currentRun->CharCount = MaxCharsPerRun;
                 newCount -= MaxCharsPerRun;
                 InternalStartTextRun(styleIndex);
-                if (requiresTabExpansion)
-                    currentRun->SetRequiresTabExpansion();
             }
 
             currentRun->CharCount = newCount;
@@ -345,6 +339,24 @@ namespace Gallio.Common.Splash
 
             char* chars = GetCharZero() + charIndex;
             *chars = ObjectRunPlaceholderChar;
+
+            currentParagraph->RunCount += 1;
+            currentParagraph->CharCount += 1;
+        }
+
+        private void InternalAppendTabRun(int styleIndex)
+        {
+            int runIndex = runBuffer.Count;
+            runBuffer.GrowBy(1);
+
+            int charIndex = charBuffer.Count;
+            charBuffer.GrowBy(1);
+
+            currentRun = GetRunZero() + runIndex;
+            currentRun->InitializeTabRun(styleIndex);
+
+            char* chars = GetCharZero() + charIndex;
+            *chars = '\t';
 
             currentParagraph->RunCount += 1;
             currentParagraph->CharCount += 1;

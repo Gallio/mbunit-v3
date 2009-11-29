@@ -101,6 +101,12 @@ namespace Gallio.Common.Splash.Demo
             document.AppendLine(defaultStyle);
             document.AppendText(defaultStyle, "What's the magic word?");
             document.AppendObject(defaultStyle, new EmbeddedControl(new TextBox()) { Margin = new Padding(3, 3, 3, 3), Baseline = 6 });
+            document.AppendLine(defaultStyle);
+
+            for (int i = 0; i < 1000; i++)
+            {
+                document.AppendText(defaultStyle, string.Format("Line #{0}\n", i));
+            }
         }
 
         private void leftToRightButton_Click(object sender, EventArgs e)

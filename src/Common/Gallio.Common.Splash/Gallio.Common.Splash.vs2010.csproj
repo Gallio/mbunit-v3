@@ -51,8 +51,8 @@
     <Compile Include="EmbeddedObjectMeasurements.cs" />
     <Compile Include="IEmbeddedObjectClient.cs" />
     <Compile Include="IEmbeddedObjectSite.cs" />
-    <Compile Include="Internal\EmbeddedObjectSite.cs" />
     <Compile Include="Internal\DeviceContext.cs" />
+    <Compile Include="Internal\EmbeddedObjectHost.cs" />
     <Compile Include="Internal\Memory.cs" />
     <Compile Include="Internal\Paragraph.cs" />
     <Compile Include="Internal\RecursionGuard.cs" />

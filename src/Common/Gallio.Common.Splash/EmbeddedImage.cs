@@ -57,7 +57,6 @@ namespace Gallio.Common.Splash
         private sealed class Client : IEmbeddedObjectClient
         {
             private readonly EmbeddedImage embeddedImage;
-            private Rectangle bounds;
 
             public Client(EmbeddedImage embeddedImage)
             {
@@ -82,16 +81,15 @@ namespace Gallio.Common.Splash
                 };
             }
 
-            public void Show(Rectangle bounds)
+            public void Show(Rectangle bounds, bool rightToLeft)
             {
-                this.bounds = bounds;
             }
 
             public void Hide()
             {
             }
 
-            public void Paint(Graphics g, PaintOptions paintOptions)
+            public void Paint(Graphics g, PaintOptions paintOptions, Rectangle bounds, bool rightToLeft)
             {
                 g.DrawImage(embeddedImage.Image, bounds);
             }

@@ -14,8 +14,7 @@ namespace Gallio.Common.Splash.Internal
     [StructLayout(LayoutKind.Sequential)]
     internal struct Run
     {
-        private const int RunKindMask = 0x01;
-        private const int RequiresTabExpansionMask = 0x02;
+        private const int RunKindMask = 0x03;
 
         private byte styleIndex;
         private byte bitFields;
@@ -24,16 +23,6 @@ namespace Gallio.Common.Splash.Internal
         public RunKind RunKind
         {
             get { return (RunKind)(bitFields & RunKindMask); }
-        }
-
-        public bool RequiresTabExpansion
-        {
-            get { return (bitFields & RequiresTabExpansionMask) != 0; }
-        }
-
-        public void SetRequiresTabExpansion()
-        {
-            bitFields |= RequiresTabExpansionMask;
         }
 
         public int StyleIndex
@@ -50,6 +39,7 @@ namespace Gallio.Common.Splash.Internal
                     case RunKind.Text:
                         return miscShort;
                     case RunKind.Object:
+                    case RunKind.Tab:
                         return 1;
                     default:
                         throw new NotSupportedException();
@@ -94,6 +84,13 @@ namespace Gallio.Common.Splash.Internal
             this.styleIndex = (byte)styleIndex;
             bitFields = (byte)RunKind.Object;
             miscShort = (ushort)objectIndex;
+        }
+
+        public void InitializeTabRun(int styleIndex)
+        {
+            this.styleIndex = (byte)styleIndex;
+            bitFields = (byte)RunKind.Tab;
+            miscShort = 0;
         }
     }
 }

@@ -6,8 +6,7 @@ using System.Text;
 
 namespace Gallio.Common.Splash.Internal
 {
-    internal sealed unsafe class UnmanagedBuffer<T> : CriticalFinalizerObject
-        where T : struct
+    internal sealed unsafe class UnmanagedBuffer : CriticalFinalizerObject
     {
         private readonly int initialCapacity;
         private readonly int elementSize;
@@ -17,10 +16,10 @@ namespace Gallio.Common.Splash.Internal
         private void* ptr;
 
         [ReliabilityContract(Consistency.WillNotCorruptState, Cer.Success)]
-        public UnmanagedBuffer(int initialCapacity)
+        public UnmanagedBuffer(int initialCapacity, int elementSize)
         {
             this.initialCapacity = initialCapacity;
-            elementSize = Marshal.SizeOf(typeof(T));
+            this.elementSize = elementSize;
 
             capacity = initialCapacity;
         }
@@ -132,13 +131,9 @@ namespace Gallio.Common.Splash.Internal
             capacity = newCapacity;
         }
 
-        private void FreeMemory(void* ptr)
+        private static void FreeMemory(void* ptr)
         {
-            if (ptr != null)
-            {
-                Memory.Free(ptr);
-                ptr = null;
-            }
+            Memory.Free(ptr);
         }
 
         private void* AllocateMemory(int newCapacity)

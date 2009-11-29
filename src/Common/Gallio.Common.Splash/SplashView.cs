@@ -43,6 +43,7 @@ namespace Gallio.Common.Splash
         public SplashView()
         {
             document = new SplashDocument();
+
             layout = new SplashLayout(document, this);
             paintOptions = new PaintOptions();
 
@@ -429,10 +430,7 @@ namespace Gallio.Common.Splash
             return base.ProcessCmdKey(ref msg, keyData);
         }
 
-        /// <summary>
-        /// Initializes the context menu.
-        /// </summary>
-        protected virtual void InitializeContextMenu()
+        private void InitializeContextMenu()
         {
             ContextMenu = new ContextMenu();
             ContextMenu.Popup += (sender, e) => UpdateContextMenu();
@@ -506,7 +504,10 @@ namespace Gallio.Common.Splash
 
             UpdateLayoutSize();
             UpdateLayoutRightToLeft();
-            layout.Update();
+
+            Rectangle displayRect = DisplayRectangle;
+            layout.Update(displayRect.Location);
+
             UpdateScrollBars();
 
             Invalidate();

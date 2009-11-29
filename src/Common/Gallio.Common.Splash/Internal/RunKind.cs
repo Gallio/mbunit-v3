@@ -7,6 +7,7 @@ namespace Gallio.Common.Splash.Internal
     internal enum RunKind
     {
         Text = 0,
-        Object = 1
+        Object = 1,
+        Tab = 2
     }
 }

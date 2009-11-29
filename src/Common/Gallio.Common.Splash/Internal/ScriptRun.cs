@@ -116,11 +116,6 @@ namespace Gallio.Common.Splash.Internal
             get { return run.RunKind; }
         }
 
-        public bool RequiresTabExpansion
-        {
-            get { return run.RequiresTabExpansion; }
-        }
-
         /// <summary>
         /// The ascent height of the run (above text baseline).
         /// </summary>

@@ -11,6 +11,12 @@ namespace Gallio.Common.Splash
     public interface IEmbeddedObjectSite
     {
         /// <summary>
+        /// Gets the index of the character that represents the embedded object
+        /// for selection and hit testing in the document.
+        /// </summary>
+        int CharIndex { get; }
+
+        /// <summary>
         /// Gets the control of the containing view.
         /// </summary>
         Control ParentControl { get; }
@@ -24,16 +30,5 @@ namespace Gallio.Common.Splash
         /// Gets the style of the inline run that contains the embedded object.
         /// </summary>
         Style InlineStyle { get; }
-
-        /// <summary>
-        /// Gets whether the document reading order is right-to-left.
-        /// </summary>
-        bool RightToLeft { get; }
-
-        /// <summary>
-        /// Gets the index of the character that represents the embedded object
-        /// for selection and hit testing in the document.
-        /// </summary>
-        int CharIndex { get; }
     }
 }

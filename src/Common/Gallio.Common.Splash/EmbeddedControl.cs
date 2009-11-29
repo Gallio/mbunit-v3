@@ -68,15 +68,12 @@ namespace Gallio.Common.Splash
                 if (embeddedControl.Control.Parent != null)
                     throw new InvalidOperationException("The embedded control already belongs to a different control container.");
 
-                parentControl.Controls.Add(embeddedControl.Control);
-
                 bounds = embeddedControl.Control.Bounds;
-                Hide();
             }
 
             public void Dispose()
             {
-                parentControl.Controls.Remove(embeddedControl.Control);
+                Hide();
             }
 
             public bool RequiresPaint
@@ -93,7 +90,7 @@ namespace Gallio.Common.Splash
                 };
             }
 
-            public void Show(Rectangle bounds)
+            public void Show(Rectangle bounds, bool rightToLeft)
             {
                 if (this.bounds != bounds)
                 {
@@ -101,15 +98,15 @@ namespace Gallio.Common.Splash
                     embeddedControl.control.SetBounds(bounds.X, bounds.Y, bounds.Width, bounds.Height);
                 }
 
-                embeddedControl.control.Show();
+                parentControl.Controls.Add(embeddedControl.Control);
             }
 
             public void Hide()
             {
-                embeddedControl.control.Hide();
+                parentControl.Controls.Remove(embeddedControl.Control);
             }
 
-            public void Paint(Graphics g, PaintOptions paintOptions)
+            public void Paint(Graphics g, PaintOptions paintOptions, Rectangle bounds, bool rightToLeft)
             {
             }
         }

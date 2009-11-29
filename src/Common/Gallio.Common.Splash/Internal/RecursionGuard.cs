@@ -19,6 +19,7 @@ namespace Gallio.Common.Splash.Internal
                 if (entered)
                     ThrowRecursionDetected();
 
+                entered = true;
                 action();
             }
             finally

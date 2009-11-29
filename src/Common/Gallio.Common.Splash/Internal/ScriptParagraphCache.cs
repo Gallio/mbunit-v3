@@ -6,7 +6,7 @@ namespace Gallio.Common.Splash.Internal
 {
     internal unsafe sealed class ScriptParagraphCache
     {
-        private readonly UnmanagedBuffer<LruEntry> buffer;
+        private readonly UnmanagedBuffer buffer;
         private int nextToken;
 
         private struct LruEntry
@@ -18,7 +18,7 @@ namespace Gallio.Common.Splash.Internal
 
         public ScriptParagraphCache(int size)
         {
-            buffer = new UnmanagedBuffer<LruEntry>(size);
+            buffer = new UnmanagedBuffer(size, sizeof(LruEntry));
         }
 
         ~ScriptParagraphCache()
@@ -58,7 +58,7 @@ namespace Gallio.Common.Splash.Internal
             // Handle wrap-around at 32bits by thrashing all tokens.
             LruEntry* firstEntry = (LruEntry*)buffer.GetPointer();
             LruEntry* endEntry = firstEntry + buffer.Count;
-            if (nextToken < 0)
+            if (nextToken == int.MaxValue)
             {
                 nextToken = 0;
                 for (LruEntry* currentEntry = firstEntry; currentEntry != endEntry; currentEntry++)
@@ -68,7 +68,7 @@ namespace Gallio.Common.Splash.Internal
             // Search for a matching paragraph and return it if found.
             // Make note of least recently used entry just in case.
             LruEntry* lruEntry = null;
-            int lruToken = -1;
+            int lruToken = int.MaxValue;
             for (LruEntry* currentEntry = firstEntry; currentEntry != endEntry; currentEntry++)
             {
                 if (currentEntry->ParagraphIndex == paragraphIndex)
