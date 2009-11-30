@@ -98,8 +98,17 @@ namespace Gallio.ReSharperRunner.Provider.Facade
 #if RESHARPER_31
                     PropertyInfo property = taskRunnerProxy.GetType().GetProperty("SessionId");
                     return (string)property.GetValue(taskRunnerProxy, null);
-#else
+#elif RESHARPER_40 || RESHARPER_41 || RESHARPER_45
                     return ((TaskRunnerProxy) taskRunnerProxy).SessionId;
+#else
+                    // taskRunnerProxy is a ClientControllerServerWrapper that wraps a
+                    // ThreadProxyTaskServer that wraps a TaskRunnerProxy that has what we need.
+                    // We actually get a RunId but that's ok.  We handle those elsewhere.
+                    FieldInfo myServerField = taskRunnerProxy.GetType().GetField("myServer", BindingFlags.NonPublic | BindingFlags.Instance);
+                    IRemoteTaskServer threadProxyTaskServer = (IRemoteTaskServer)myServerField.GetValue(taskRunnerProxy);
+                    IRemoteTaskServer realTaskRunnerProxy = threadProxyTaskServer.WithoutProxy;
+                    FieldInfo myRunIdField = realTaskRunnerProxy.GetType().GetField("myRunId", BindingFlags.NonPublic | BindingFlags.Instance);
+                    return (string)myRunIdField.GetValue(realTaskRunnerProxy);
 #endif
                 }
                 catch (Exception ex)

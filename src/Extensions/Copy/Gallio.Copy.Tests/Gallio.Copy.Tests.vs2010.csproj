@@ -67,15 +67,15 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\MbUnit\MbUnit\MbUnit.vs2010.csproj">
       <Project>{A9B54755-56B7-48C1-8941-BB69FCEFFF32}</Project>
-      <Name>MbUnit</Name>
+      <Name>MbUnit.vs2010</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\Gallio\Gallio\Gallio.vs2010.csproj">
       <Project>{6CAB7735-05DA-480D-9A04-50615B00F886}</Project>
-      <Name>Gallio</Name>
+      <Name>Gallio.vs2010</Name>
     </ProjectReference>
     <ProjectReference Include="..\Gallio.Copy\Gallio.Copy.vs2010.csproj">
       <Project>{5DA3843B-9639-4E11-8673-44E30624926F}</Project>
-      <Name>Gallio.Copy</Name>
+      <Name>Gallio.Copy.vs2010</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

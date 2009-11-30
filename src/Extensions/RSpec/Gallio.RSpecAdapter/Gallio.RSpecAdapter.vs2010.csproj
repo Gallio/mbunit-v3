@@ -84,11 +84,11 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\Gallio\Gallio\Gallio.vs2010.csproj">
       <Project>{6CAB7735-05DA-480D-9A04-50615B00F886}</Project>
-      <Name>Gallio %28Gallio\Gallio%29</Name>
+      <Name>Gallio.vs2010</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\DLR\Gallio.DLRIntegration\Gallio.DLRIntegration.vs2010.csproj">
       <Project>{FCF9143C-3DF2-4DFF-972B-A2FEB30D7AA9}</Project>
-      <Name>Gallio.DLRIntegration</Name>
+      <Name>Gallio.DLRIntegration.vs2010</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

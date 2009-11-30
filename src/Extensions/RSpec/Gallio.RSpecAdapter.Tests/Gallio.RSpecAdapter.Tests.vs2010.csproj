@@ -95,11 +95,11 @@
     </ProjectReference>
     <ProjectReference Include="..\..\DLR\Gallio.DLRIntegration\Gallio.DLRIntegration.vs2010.csproj">
       <Project>{FCF9143C-3DF2-4DFF-972B-A2FEB30D7AA9}</Project>
-      <Name>Gallio.DLRIntegration</Name>
+      <Name>Gallio.DLRIntegration.vs2010</Name>
     </ProjectReference>
     <ProjectReference Include="..\Gallio.RSpecAdapter\Gallio.RSpecAdapter.vs2010.csproj">
       <Project>{F0E0CB93-617D-42E1-88EE-A7A451A0BDC5}</Project>
-      <Name>Gallio.RSpecAdapter</Name>
+      <Name>Gallio.RSpecAdapter.vs2010</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

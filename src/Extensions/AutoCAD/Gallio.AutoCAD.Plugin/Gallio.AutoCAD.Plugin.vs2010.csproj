@@ -72,15 +72,15 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\Gallio\Gallio.Loader\Gallio.Loader.vs2010.csproj">
       <Project>{67FB2969-E6BF-4754-91AA-B6075F8E67EE}</Project>
-      <Name>Gallio.Loader</Name>
+      <Name>Gallio.Loader.vs2010</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\Gallio\Gallio\Gallio.vs2010.csproj">
       <Project>{6CAB7735-05DA-480D-9A04-50615B00F886}</Project>
-      <Name>Gallio %28Gallio\Gallio%29</Name>
+      <Name>Gallio.vs2010</Name>
     </ProjectReference>
     <ProjectReference Include="..\Gallio.AutoCAD\Gallio.AutoCAD.vs2010.csproj">
       <Project>{F7F0D285-79D0-452A-A791-84B174C1546E}</Project>
-      <Name>Gallio.AutoCAD</Name>
+      <Name>Gallio.AutoCAD.vs2010</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

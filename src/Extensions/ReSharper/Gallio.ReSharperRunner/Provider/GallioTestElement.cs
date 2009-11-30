@@ -134,7 +134,16 @@ namespace Gallio.ReSharperRunner.Provider
         // it.  The result must be equal to IDeclaredElement.ShortName.
         public override string ShortName
         {
-            get { return shortNameMemoizer.Memoize(() => GetDeclaredElement().ShortName); }
+            get
+            {
+                return shortNameMemoizer.Memoize(() =>
+                {
+                    IDeclaredElement declaredElement = GetDeclaredElement();
+                    return declaredElement != null && declaredElement.IsValid()
+                        ? declaredElement.ShortName
+                        : testName;
+                });
+            }
         }
 #endif
 

@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using EnvDTE;
 using JetBrains.ActionManagement;
@@ -26,6 +27,7 @@ using JetBrains.VSIntegration.Shell;
 #elif RESHARPER_45
 using JetBrains.VSIntegration.Application;
 #else
+using JetBrains.ReSharper.UnitTestFramework;
 using JetBrains.VsIntegration.Application;
 #endif
 
@@ -35,11 +37,11 @@ namespace Gallio.ReSharperRunner.Provider.Actions
     {
         public override void Execute(IDataContext context, DelegateExecute nextExecute)
         {
-            UnitTestSession session = GetUnitTestSession(context);
-            if (session == null)
+            string sessionId = GetSessionId(context);
+            if (sessionId == null)
                 return;
 
-            FileInfo formattedReport = SessionCache.GetHtmlFormattedReport(session.ID, IsCondensed);
+            FileInfo formattedReport = SessionCache.GetHtmlFormattedReport(sessionId, IsCondensed);
             if (formattedReport == null)
                 return;
 
@@ -48,11 +50,11 @@ namespace Gallio.ReSharperRunner.Provider.Actions
 
         public override bool Update(IDataContext context, ActionPresentation presentation, DelegateUpdate nextUpdate)
         {
-            UnitTestSession session = GetUnitTestSession(context);
-            if (session == null)
+            string sessionId = GetSessionId(context);
+            if (sessionId == null)
                 return false;
 
-            return SessionCache.HasSerializedReport(session.ID);
+            return SessionCache.HasSerializedReport(sessionId);
         }
 
         protected abstract bool IsCondensed { get; }
@@ -63,6 +65,39 @@ namespace Gallio.ReSharperRunner.Provider.Actions
             VSShell.Instance.ApplicationObject.ItemOperations.Navigate(url.ToString(), vsNavigateOptions.vsNavigateOptionsDefault);
 #else
             VSShell.Instance.ServiceProvider.Dte().ItemOperations.Navigate(url.ToString(), vsNavigateOptions.vsNavigateOptionsDefault);
+#endif
+        }
+
+#if RESHARPER_50_OR_NEWER
+        private static readonly Dictionary<string, string> LastRunIdCache = new Dictionary<string, string>();
+#endif
+        private static string GetSessionId(IDataContext context)
+        {
+            UnitTestSession session = GetUnitTestSession(context);
+            if (session == null)
+                return null;
+
+#if ! RESHARPER_50_OR_NEWER
+            return session.ID;
+#else
+            // HACK: Get the last RunId for correlation instead of the SessionId because the SessionId is
+            // not available to the task runner in R# 5.0 but the RunId is, so we use that for correlation.
+            // Unfortunately runs are transient so they are deleted after tests finish.  However before that
+            // happens, the Update method will be called many times to update UI state so we should be able
+            // to catch the run in flight and save it for later.
+            //
+            // I have asked JetBrains to provide SessionId info to TaskRunners in a future release
+            // as it was done in R# 3.1. -- Jeff.
+            foreach (IUnitTestRun run in session.Runs)
+            {
+                string runId = run.ID;
+                LastRunIdCache[session.ID] = runId;
+                return runId;
+            }
+
+            string lastRunId;
+            LastRunIdCache.TryGetValue(session.ID, out lastRunId);
+            return lastRunId;
 #endif
         }
     }

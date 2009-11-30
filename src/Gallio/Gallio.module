@@ -15,6 +15,7 @@
     <CSharpProject Include="Gallio.Loader\Gallio.Loader$(ProjectVariant).csproj" />
     <CSharpProject Include="Gallio.Reports\Gallio.Reports$(ProjectVariant).csproj" />
     <CSharpProject Include="Gallio.UI\Gallio.UI$(ProjectVariant).csproj" />
+    <CSharpProject Include="Gallio.UI.Tests\Gallio.UI.Tests$(ProjectVariant).csproj" />
     
     <CSharpProject Include="Gallio.Utility\Gallio.Utility$(ProjectVariant).csproj" />
     
@@ -98,6 +99,7 @@
     <Document Include="Docs\*.txt" />
     
     <TestAssembly Include="Gallio.Tests\bin\Gallio.Tests.dll" />
+    <TestAssembly Include="Gallio.UI.Tests\bin\Gallio.UI.Tests.dll" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(DotNet40)'=='true'">
