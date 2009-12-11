@@ -111,6 +111,11 @@
                 <File Name="Gallio.UI.xml" />
                 <File Name="Gallio.UI.plugin" />
             </Component>
+            <Component Id="Gallio.Common.Splash" Guid="{08C90196-9158-4FD9-BBEA-39122FB47841}" Win64="no">
+                <File Name="Gallio.Common.Splash.dll" KeyPath="yes" />
+                <File Name="Gallio.Common.Splash.pdb" />
+                <File Name="Gallio.Common.Splash.xml" />
+            </Component>
             <Component Id="Gallio.Utility" Guid="{91B04D9F-3775-4a56-82B1-864CF418D265}" Win64="no">
                 <File Name="Gallio.Utility.exe" KeyPath="yes" />
                 <File Name="Gallio.Utility.exe.config" />
@@ -284,6 +289,7 @@
             <ComponentRef Id="Apache.License" />
             <ComponentRef Id="Gallio.Credits" />
             <ComponentRef Id="Gallio.UI"/>
+            <ComponentRef Id="Gallio.Common.Splash"/>
             <ComponentRef Id="Gallio.Utility"/>
             <ComponentRef Id="Gallio.ControlPanel"/>
             <ComponentRef Id="Gallio.Reports"/>

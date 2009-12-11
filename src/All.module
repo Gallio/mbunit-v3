@@ -2,9 +2,10 @@
   <Import Project="$(MetaBuildBinDir)\MetaBuild.Module.targets" />
 
   <ItemGroup>
-    <Module Include="Common\Common.module" />
+    <Module Include="Common\Common.Before.module" />
     <Module Include="Gallio\Gallio.module" />
     <Module Include="MbUnit\MbUnit.module" />
     <Module Include="Extensions\Extensions.module" />
+    <Module Include="Common\Common.After.module" />
   </ItemGroup>
 </Project>
