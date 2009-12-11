@@ -67,6 +67,7 @@
     <Compile Include="Native\TEXTMETRIC.cs" />
     <Compile Include="PaintOptions.cs" />
     <Compile Include="ParagraphChangedEventArgs.cs" />
+    <Compile Include="PixelTabStopRuler.cs" />
     <Compile Include="SnapPosition.cs" />
     <Compile Include="SnapKind.cs" />
     <Compile Include="SplashDocument.cs" />

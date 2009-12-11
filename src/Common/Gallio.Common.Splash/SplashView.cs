@@ -276,7 +276,7 @@ namespace Gallio.Common.Splash
         protected override Size DefaultSize
         {
             get { return new Size(minimumTextLayoutWidth + Padding.Horizontal,
-                Style.CreateDefaultStyle().Font.Height + Padding.Vertical); }
+                Style.DefaultStyle.Font.Height + Padding.Vertical); }
         }
 
         /// <inheritdoc />

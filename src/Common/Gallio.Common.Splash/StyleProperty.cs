@@ -9,7 +9,7 @@ namespace Gallio.Common.Splash
     /// another style.
     /// </summary>
     /// <typeparam name="T">The type of value held by the property.</typeparam>
-    public struct StyleProperty<T>
+    public struct StyleProperty<T> : IEquatable<StyleProperty<T>>
     {
         private readonly bool inherited;
         private readonly T value;
@@ -75,6 +75,42 @@ namespace Gallio.Common.Splash
         public static implicit operator StyleProperty<T>(T value)
         {
             return new StyleProperty<T>(value);
+        }
+
+        /// <summary>
+        /// Returns true if the properties are equal.
+        /// </summary>
+        public static bool operator ==(StyleProperty<T> x, StyleProperty<T> y)
+        {
+            return x.inherited == y.inherited
+                && Equals(x.value, y.value);
+        }
+
+        /// <summary>
+        /// Returns true if the properties are not equal.
+        /// </summary>
+        public static bool operator !=(StyleProperty<T> x, StyleProperty<T> y)
+        {
+            return ! (x == y);
+        }
+
+        /// <inheritdoc />
+        public override bool Equals(object obj)
+        {
+            return obj is StyleProperty<T>
+                && Equals((StyleProperty<T>)obj);
+        }
+
+        /// <inheritdoc />
+        public override int GetHashCode()
+        {
+            return inherited ? 1 : (value != null ? value.GetHashCode() : 0);
+        }
+
+        /// <inheritdoc />
+        public bool Equals(StyleProperty<T> other)
+        {
+            return this == other;
         }
     }
 }

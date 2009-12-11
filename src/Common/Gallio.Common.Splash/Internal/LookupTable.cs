@@ -20,6 +20,11 @@ namespace Gallio.Common.Splash.Internal
             list = new List<T>();
         }
 
+        public int Count
+        {
+            get { return list.Count; }
+        }
+
         public T this[int index]
         {
             get { return list[index]; }

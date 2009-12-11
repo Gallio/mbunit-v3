@@ -8,6 +8,8 @@ namespace Gallio.Common.Splash
     /// </summary>
     public class Style : IEquatable<Style>
     {
+        private static Style defaultStyle;
+
         private readonly Font font;
         private readonly Color color;
         private readonly TabStopRuler tabStopRuler;
@@ -30,13 +32,22 @@ namespace Gallio.Common.Splash
         }
 
         /// <summary>
-        /// Creates a default style based on current system font and color settings.
+        /// Gets a default style based on current system font and color settings.
         /// </summary>
-        /// <returns>The style.</returns>
-        public static Style CreateDefaultStyle()
+        /// <value>The style.</value>
+        public static Style DefaultStyle
         {
-            return new Style(SystemFonts.DefaultFont, SystemColors.WindowText,
-                TabStopRuler.CreatePixelRuler(60), true, 0, 0, 0);
+            get
+            {
+                Style result = defaultStyle;
+                if (result != null)
+                    return result;
+
+                result = new Style(SystemFonts.DefaultFont, SystemColors.WindowText,
+                    new PixelTabStopRuler(60, 10), true, 0, 0, 0);
+                defaultStyle = result;
+                return result;
+            }
         }
 
         /// <summary>
@@ -121,9 +132,9 @@ namespace Gallio.Common.Splash
         {
             return this == other
                 || other != null
-                && font == other.font
-                && color == other.color
-                && tabStopRuler == other.tabStopRuler
+                && Equals(font, other.font)
+                && Equals(color, other.color)
+                && Equals(tabStopRuler, other.tabStopRuler)
                 && wordWrap == other.wordWrap
                 && leftMargin == other.leftMargin
                 && rightMargin == other.rightMargin

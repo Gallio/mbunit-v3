@@ -76,6 +76,9 @@ namespace Gallio.Common.Splash
         /// <summary>
         /// Gets the number of paragraphs in the document.
         /// </summary>
+        /// <remarks>
+        /// This number is guaranteed to always be at least 1 even in an empty document.
+        /// </remarks>
         public int ParagraphCount
         {
             get { return paragraphBuffer.Count; }
@@ -87,14 +90,6 @@ namespace Gallio.Common.Splash
         public int CharCount
         {
             get { return charBuffer.Count; }
-        }
-
-        /// <summary>
-        /// Gets the index of the current paragraph.
-        /// </summary>
-        public int CurrentParagraphIndex
-        {
-            get { return currentParagraph == null ? 0 : paragraphBuffer.Count - 1; }
         }
 
         /// <summary>
@@ -209,6 +204,15 @@ namespace Gallio.Common.Splash
             InternalAppendObject(styleIndex, obj);
 
             RaiseParagraphChanged(paragraphIndex);
+        }
+
+        /// <summary>
+        /// Returns the plain text content of the document as a string.
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            return GetText(0, CharCount);
         }
 
         private int InternalAssignStyleIndex(Style style)
@@ -397,6 +401,26 @@ namespace Gallio.Common.Splash
         internal Paragraph* GetParagraphZero()
         {
             return (Paragraph*)paragraphBuffer.GetPointer();
+        }
+
+        internal int StyleCount
+        {
+            get { return styleTable.Count; }
+        }
+
+        internal int ObjectCount
+        {
+            get { return objectTable.Count; }
+        }
+
+        internal int RunCount
+        {
+            get { return runBuffer.Count; }
+        }
+
+        internal int CurrentParagraphIndex
+        {
+            get { return ParagraphCount - 1; }
         }
     }
 }

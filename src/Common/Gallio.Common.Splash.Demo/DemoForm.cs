@@ -21,7 +21,7 @@ namespace Gallio.Common.Splash.Demo
         {
             base.OnLoad(e);
 
-            Style defaultStyle = Style.CreateDefaultStyle();
+            Style defaultStyle = Style.DefaultStyle;
             StyleBuilder styleBuilder;
             SplashDocument document = splashView.Document;
             

@@ -172,6 +172,9 @@ namespace Gallio.Common.Splash
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="inheritedStyle"/> is null.</exception>
         public Style ToStyle(Style inheritedStyle)
         {
+            if (inheritedStyle == null)
+                throw new ArgumentNullException("inheritedStyle");
+
             return new Style(
                 font.GetValueOrInherit(inheritedStyle.Font),
                 color.GetValueOrInherit(inheritedStyle.Color),
@@ -180,6 +183,16 @@ namespace Gallio.Common.Splash
                 leftMargin.GetValueOrInherit(inheritedStyle.LeftMargin),
                 rightMargin.GetValueOrInherit(inheritedStyle.RightMargin),
                 firstLineIndent.GetValueOrInherit(inheritedStyle.FirstLineIndent));
+        }
+
+        /// <summary>
+        /// Creates an immutable style object from the builder's properties and supplies
+        /// any inherited properties from <see cref="Style.DefaultStyle"/>.
+        /// </summary>
+        /// <returns>The new style object.</returns>
+        public Style ToStyle()
+        {
+            return ToStyle(Style.DefaultStyle);
         }
     }
 }
