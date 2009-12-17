@@ -46,6 +46,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DisposableCookie.cs" />
     <Compile Include="EmbeddedImage.cs" />
     <Compile Include="EmbeddedControl.cs" />
     <Compile Include="EmbeddedObjectMeasurements.cs" />
@@ -64,6 +65,7 @@
     <Compile Include="Internal\ScriptParagraph.cs" />
     <Compile Include="Internal\ScriptParagraphCache.cs" />
     <Compile Include="Internal\ScriptRun.cs" />
+    <Compile Include="Key.cs" />
     <Compile Include="Native\TEXTMETRIC.cs" />
     <Compile Include="PaintOptions.cs" />
     <Compile Include="ParagraphChangedEventArgs.cs" />
