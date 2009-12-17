@@ -13,7 +13,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Runtime.ProgressMonitoring;
 using Gallio.Model.Filters;
@@ -36,9 +35,6 @@ namespace Gallio.Icarus.Commands
         {
             foreach (var filterInfo in projectController.TestFilters.Value)
             {
-                if (progressMonitor.IsCanceled)
-                    throw new OperationCanceledException();
-
                 if (filterInfo.FilterName != "AutoSave")
                     continue;
 

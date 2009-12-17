@@ -13,8 +13,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
+using System.Collections.Generic;
 using Gallio.Icarus.Controllers.Interfaces;
+using Gallio.Runner.Projects.Schema;
 using Gallio.Runtime.ProgressMonitoring;
 using Gallio.Model.Filters;
 using Gallio.UI.ProgressMonitoring;
@@ -39,27 +40,29 @@ namespace Gallio.Icarus.Commands
                 using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(95))
                     testController.Explore(subProgressMonitor, projectController.TestRunnerExtensions);
 
-                if (progressMonitor.IsCanceled)
-                    throw new OperationCanceledException();
+                var testFilters = projectController.TestFilters.Value;
 
                 using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(5))
-                    RestoreFilter(subProgressMonitor);
+                    RestoreFilter(subProgressMonitor, testFilters);
             }
         }
 
-        private void RestoreFilter(IProgressMonitor progressMonitor)
+        private void RestoreFilter(IProgressMonitor progressMonitor, ICollection<FilterInfo> testFilters)
         {
-            foreach (var filterInfo in projectController.TestFilters.Value)
+            using (progressMonitor.BeginTask("Restoring test filter", testFilters.Count))
             {
-                if (progressMonitor.IsCanceled)
-                    throw new OperationCanceledException();
+                foreach (var filterInfo in testFilters)
+                {
+                    if (filterInfo.FilterName != "AutoSave")
+                    {
+                        progressMonitor.Worked(1);
+                        continue;
+                    }
 
-                if (filterInfo.FilterName != "AutoSave")
-                    continue;
-
-                var filterSet = FilterUtils.ParseTestFilterSet(filterInfo.FilterExpr);
-                testController.ApplyFilterSet(filterSet);
-                return;
+                    var filterSet = FilterUtils.ParseTestFilterSet(filterInfo.FilterExpr);
+                    testController.ApplyFilterSet(filterSet);
+                    return;
+                }
             }
         }
     }

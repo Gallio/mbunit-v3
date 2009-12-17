@@ -15,10 +15,8 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Xml.Serialization;
 using Gallio.Common;
-using Gallio.Common.Xml;
 
 namespace Gallio.Icarus
 {

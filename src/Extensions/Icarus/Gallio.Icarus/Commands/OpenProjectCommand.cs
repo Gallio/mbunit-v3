@@ -46,23 +46,14 @@ namespace Gallio.Icarus.Commands
                 using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(5))
                     testController.ResetTestStatus(subProgressMonitor);
 
-                if (progressMonitor.IsCanceled)
-                    throw new OperationCanceledException();
-
                 using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(5))
                     projectController.OpenProject(fileName, subProgressMonitor);
-
-                if (progressMonitor.IsCanceled)
-                    throw new OperationCanceledException();
 
                 using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(85))
                 {
                     testController.SetTestPackage(projectController.TestPackage);
                     testController.Explore(subProgressMonitor, projectController.TestRunnerExtensions);
                 }
-
-                if (progressMonitor.IsCanceled)
-                    throw new OperationCanceledException();
 
                 using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(5))
                 {

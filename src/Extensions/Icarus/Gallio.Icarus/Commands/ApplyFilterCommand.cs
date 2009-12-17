@@ -14,7 +14,6 @@
 // limitations under the License.
 
 using Gallio.Icarus.Controllers.Interfaces;
-using Gallio.Model;
 using Gallio.Model.Filters;
 using Gallio.Runtime.ProgressMonitoring;
 using Gallio.UI.ProgressMonitoring;

@@ -62,6 +62,7 @@
     <Compile Include="Commands\AddFilesCommandTest.cs" />
     <Compile Include="Commands\ApplyFilterCommandTest.cs" />
     <Compile Include="Commands\ConvertSavedReportCommandTest.cs" />
+    <Compile Include="Commands\DelegateCommandTest.cs" />
     <Compile Include="Commands\DeleteAllReportsCommandTest.cs" />
     <Compile Include="Commands\DeleteFilterCommandTest.cs" />
     <Compile Include="Commands\DeleteReportCommandTest.cs" />
@@ -70,6 +71,7 @@
     <Compile Include="Commands\OpenProjectCommandTest.cs" />
     <Compile Include="Commands\OpenReportCommandTest.cs" />
     <Compile Include="Commands\RefreshTestTreeCommandTest.cs" />
+    <Compile Include="Commands\ReloadCommandTest.cs" />
     <Compile Include="Controllers\AboutControllerTest.cs" />
     <Compile Include="Controllers\AnnotationsControllerTest.cs" />
     <Compile Include="Controllers\ExecutionLogControllerTest.cs" />
@@ -104,6 +106,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="SettingsTest.cs" />
     <Compile Include="TreeBuilders\MetadataTreeBuilderTests.cs" />
     <Compile Include="Utilities\MockProgressMonitor.cs" />
     <Compile Include="Utilities\SyncTestAttribute.cs" />

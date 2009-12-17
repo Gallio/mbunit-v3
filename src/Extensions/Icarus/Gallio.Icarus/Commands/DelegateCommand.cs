@@ -21,16 +21,21 @@ namespace Gallio.Icarus.Commands
 {
     public class DelegateCommand : ICommand
     {
+        public DelegateCommand(Action<IProgressMonitor> action)
+        {
+            if (action == null) 
+                throw new ArgumentNullException("action");
+
+            Action = action;
+        }
+
         public Action<IProgressMonitor> Action
         {
-            get; set;
+            get; private set;
         }
 
         public void Execute(IProgressMonitor progressMonitor)
         {
-            if (Action == null)
-                return;
-
             Action(progressMonitor);
         }
     }

@@ -1,33 +1,45 @@
 <?xml version="1.0"?>
 <NCover3ProjectSetting xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Version="307">
-  <CoverageDataURL>C:\Documents and Settings\Graham\My Documents\mb-unit\v3\src\Extensions\Icarus\Gallio.Icarus.Tests\bin\coverage.xml</CoverageDataURL>
+  <CoverageDataURL>C:\Documents and Settings\Graham\My Documents\gallio\v3.2\src\Extensions\Icarus\Gallio.Icarus.Tests\bin\coverage.xml</CoverageDataURL>
   <ShowExcludedNodes>false</ShowExcludedNodes>
-  <DefaultViewSetting SatisfactoryCoverageThreshold="95" SatisfactoryFunctionThreshold="80" SatisfactoryUnvisitedSequencePoints="0" WidgetType="TreeView" FilterStyle="None" ReportStyle="SequencePointCoveragePercentage" SortStyle="Name">
+  <DefaultViewSetting SatisfactoryBranchThreshold="95" SatisfactoryCoverageThreshold="95" SatisfactoryCyclomaticComplexityThreshold="20" SatisfactoryFunctionThreshold="80" SatisfactoryUnvisitedSequencePoints="0" WidgetType="TreeView" FilterStyle="HideFullyCovered" ReportStyle="SequencePointCoveragePercentage" SortStyle="Name">
     <DelayFilters>false</DelayFilters>
-    <filters />
+    <filters>
+      <filter filterruledata="Aga.Controls" include="false" filtertype="Assembly" regexrule="false" version="Default" />
+      <filter filterruledata="Gallio" include="false" filtertype="Assembly" regexrule="false" version="Default" />
+      <filter filterruledata="Gallio.Echo" include="false" filtertype="Assembly" regexrule="false" version="Default" />
+      <filter filterruledata="Gallio.Icarus.Tests" include="false" filtertype="Assembly" regexrule="false" version="Default" />
+      <filter filterruledata="Gallio.UI" include="false" filtertype="Assembly" regexrule="false" version="Default" />
+      <filter filterruledata="Gallio.XmlSerializers" include="false" filtertype="Assembly" regexrule="false" version="Default" />
+      <filter filterruledata="Gallio35" include="false" filtertype="Assembly" regexrule="false" version="Default" />
+      <filter filterruledata="Mono.Cecil" include="false" filtertype="Assembly" regexrule="false" version="Default" />
+      <filter filterruledata="95" include="false" filtertype="Threshold" regexrule="false" version="Default" />
+    </filters>
   </DefaultViewSetting>
   <NCoverRunSettings>
-    <AutoExclude>false</AutoExclude>
-    <CommandLineArgs>/r:IsolatedAppDomain Gallio.Icarus.Tests.dll</CommandLineArgs>
-    <CommandLineExe>C:\Documents and Settings\Graham\My Documents\mb-unit\v3\src\Extensions\Echo\Gallio.Echo\bin\Gallio.Echo.exe</CommandLineExe>
+    <AutoExclude>true</AutoExclude>
+    <CommandLineArgs>"Gallio.Icarus.Tests.dll" /r:IsolatedAppDomain</CommandLineArgs>
+    <CommandLineExe>C:\Documents and Settings\Graham\My Documents\gallio\v3.2\src\Extensions\Echo\Gallio.Echo\bin\Gallio.Echo.exe</CommandLineExe>
     <CoverageType>Symbol Branch CyclomaticComplexity MethodVisits</CoverageType>
     <CoverageXml>coverage.xml</CoverageXml>
     <LogFile>coverage.log</LogFile>
     <LoggingLevel>None</LoggingLevel>
     <NCoverExe>C:\Program Files\NCover\ncover.console.exe</NCoverExe>
+    <OnlyAssembliesWithSource>false</OnlyAssembliesWithSource>
     <ProfileIIS>false</ProfileIIS>
     <ProfileWindowsApplication>true</ProfileWindowsApplication>
     <ProfileWindowsService>false</ProfileWindowsService>
-    <ProjectName>New Project</ProjectName>
+    <ProjectName>Icarus</ProjectName>
     <RegisterForUser>false</RegisterForUser>
     <ServiceTimeout>0</ServiceTimeout>
     <SymbolSearchPolicy>15</SymbolSearchPolicy>
-    <VersionNumber>300</VersionNumber>
+    <ExpertMode>false</ExpertMode>
+    <VersionNumber>324</VersionNumber>
     <WaitForAppLoad>1</WaitForAppLoad>
-    <WorkingDirectory>C:\Documents and Settings\Graham\My Documents\mb-unit\v3\src\Extensions\Icarus\Gallio.Icarus.Tests\bin</WorkingDirectory>
+    <WorkingDirectory>C:\Documents and Settings\Graham\My Documents\gallio\v3.2\src\Extensions\Icarus\Gallio.Icarus.Tests\bin</WorkingDirectory>
   </NCoverRunSettings>
-  <ProjectGuid>6015bbe1-39c8-4be8-8db6-a234497dd79b</ProjectGuid>
-  <ProjectName>New Project</ProjectName>
+  <ProjectGuid>6138690f-52ba-4afb-82d8-4228f7777b4d</ProjectGuid>
+  <ProjectName>Icarus</ProjectName>
   <RebasedPaths />
   <ReportPath />
   <SyncPathWithWorkingDirectory>false</SyncPathWithWorkingDirectory>

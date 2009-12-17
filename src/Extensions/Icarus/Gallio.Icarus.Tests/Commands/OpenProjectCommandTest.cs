@@ -79,18 +79,5 @@ namespace Gallio.Icarus.Tests.Commands
             testController.AssertWasCalled(tc => tc.SetTestPackage(testPackage));
             testController.AssertWasCalled(tc => tc.Explore(progressMonitor, testRunnerExtensions));
         }
-
-        [Test]
-        public void Execute_should_throw_if_canceled()
-        {
-            var testController = MockRepository.GenerateStub<ITestController>();
-            var projectController = MockRepository.GenerateStub<IProjectController>();
-            const string fileName = "fileName";
-            var openProjectCommand = new OpenProjectCommand(testController, projectController, fileName);
-            var progressMonitor = MockProgressMonitor.Instance;
-            progressMonitor.Stub(pm => pm.IsCanceled).Return(true);
-
-            Assert.Throws<OperationCanceledException>(() => openProjectCommand.Execute(progressMonitor));
-        }
     }
 }
