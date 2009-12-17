@@ -249,7 +249,7 @@ namespace Gallio.Common.Splash
             if (selectionLength == 0)
                 return string.Empty;
 
-            return document.GetText(selectionStart, selectionLength);
+            return document.GetTextRange(selectionStart, selectionLength);
         }
 
         /// <summary>
@@ -276,7 +276,7 @@ namespace Gallio.Common.Splash
         protected override Size DefaultSize
         {
             get { return new Size(minimumTextLayoutWidth + Padding.Horizontal,
-                Style.DefaultStyle.Font.Height + Padding.Vertical); }
+                Style.Default.Font.Height + Padding.Vertical); }
         }
 
         /// <inheritdoc />
@@ -468,6 +468,112 @@ namespace Gallio.Common.Splash
             copyMenuItem.Enabled = selectionLength != 0;
             selectAllMenuItem.Enabled = document.CharCount != 0;
             readingOrderMenuItem.Checked = RightToLeft == RightToLeft.Yes;
+        }
+
+        /// <inheritdoc />
+        protected override bool IsInputChar(char charCode)
+        {
+            return true;
+        }
+
+        /// <inheritdoc />
+        protected override bool IsInputKey(Keys keyData)
+        {
+            switch (keyData)
+            {
+                case Keys.Up:
+                case Keys.Down:
+                case Keys.Left:
+                case Keys.Right:
+                case Keys.PageUp:
+                case Keys.PageDown:
+                case Keys.Home:
+                case Keys.End:
+                    return true;
+
+                default:
+                    return base.IsInputKey(keyData);
+            }
+        }
+
+        /// <inheritdoc />
+        protected override void OnKeyDown(KeyEventArgs e)
+        {
+            switch (e.KeyData)
+            {
+                case Keys.Up:
+                    ScrollUp();
+                    break;
+                case Keys.Down:
+                    ScrollDown();
+                    break;
+                case Keys.Left:
+                    ScrollLeft();
+                    break;
+                case Keys.Right:
+                    ScrollRight();
+                    break;
+                case Keys.PageUp:
+                    ScrollPageUp();
+                    break;
+                case Keys.PageDown:
+                    ScrollPageDown();
+                    break;
+                case Keys.Home:
+                    ScrollTop();
+                    break;
+                case Keys.End:
+                    ScrollBottom();
+                    break;
+            }
+
+            base.OnKeyDown(e);
+        }
+
+        private void SendMessage(int message, IntPtr wparam, IntPtr lparam)
+        {
+            Message m = Message.Create(Handle, message, wparam, lparam);
+            WndProc(ref m);
+        }
+
+        private void ScrollUp()
+        {
+            SendMessage(0x115, new IntPtr(0), IntPtr.Zero);
+        }
+
+        private void ScrollDown()
+        {
+            SendMessage(0x115, new IntPtr(1), IntPtr.Zero);
+        }
+
+        private void ScrollLeft()
+        {
+            SendMessage(0x114, new IntPtr(0), IntPtr.Zero);
+        }
+
+        private void ScrollRight()
+        {
+            SendMessage(0x114, new IntPtr(1), IntPtr.Zero);
+        }
+
+        private void ScrollPageUp()
+        {
+            SendMessage(0x115, new IntPtr(2), IntPtr.Zero);
+        }
+
+        private void ScrollPageDown()
+        {
+            SendMessage(0x115, new IntPtr(3), IntPtr.Zero);
+        }
+
+        private void ScrollTop()
+        {
+            SendMessage(0x115, new IntPtr(6), IntPtr.Zero);
+        }
+
+        private void ScrollBottom()
+        {
+            SendMessage(0x115, new IntPtr(7), IntPtr.Zero);
         }
 
         private void HandleCopyMenuItemClicked(object sender, EventArgs e)

@@ -30,11 +30,11 @@
         {
             this.horizontalSplitter = new System.Windows.Forms.SplitContainer();
             this.verticalSplitter = new System.Windows.Forms.SplitContainer();
+            this.splashView = new Gallio.Common.Splash.SplashView();
+            this.selectionStatusLabel = new System.Windows.Forms.Label();
+            this.snapPositionStatusLabel = new System.Windows.Forms.Label();
             this.rightToLeftButton = new System.Windows.Forms.Button();
             this.leftToRightButton = new System.Windows.Forms.Button();
-            this.snapPositionStatusLabel = new System.Windows.Forms.Label();
-            this.selectionStatusLabel = new System.Windows.Forms.Label();
-            this.splashView = new Gallio.Common.Splash.SplashView();
             this.horizontalSplitter.Panel1.SuspendLayout();
             this.horizontalSplitter.Panel2.SuspendLayout();
             this.horizontalSplitter.SuspendLayout();
@@ -78,6 +78,44 @@
             this.verticalSplitter.SplitterDistance = 755;
             this.verticalSplitter.TabIndex = 1;
             // 
+            // splashView
+            // 
+            this.splashView.AutoScroll = true;
+            this.splashView.AutoScrollMinSize = new System.Drawing.Size(140, 41);
+            this.splashView.BackColor = System.Drawing.SystemColors.Window;
+            this.splashView.Cursor = System.Windows.Forms.Cursors.IBeam;
+            this.splashView.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splashView.Location = new System.Drawing.Point(0, 0);
+            this.splashView.MinimumTextLayoutWidth = 100;
+            this.splashView.Name = "splashView";
+            this.splashView.Padding = new System.Windows.Forms.Padding(20);
+            this.splashView.SelectedBackgroundColor = System.Drawing.SystemColors.Highlight;
+            this.splashView.SelectedTextColor = System.Drawing.SystemColors.HighlightText;
+            this.splashView.Size = new System.Drawing.Size(755, 450);
+            this.splashView.TabIndex = 0;
+            this.splashView.Text = "splashView1";
+            this.splashView.SelectionChanged += new System.EventHandler(this.splashView_SelectionChanged);
+            this.splashView.MouseClick += new System.Windows.Forms.MouseEventHandler(this.splashView_MouseClick);
+            this.splashView.MouseMove += new System.Windows.Forms.MouseEventHandler(this.splashView_MouseMove);
+            // 
+            // selectionStatusLabel
+            // 
+            this.selectionStatusLabel.AutoSize = true;
+            this.selectionStatusLabel.Location = new System.Drawing.Point(13, 56);
+            this.selectionStatusLabel.Name = "selectionStatusLabel";
+            this.selectionStatusLabel.Size = new System.Drawing.Size(84, 13);
+            this.selectionStatusLabel.TabIndex = 3;
+            this.selectionStatusLabel.Text = "Selection Status";
+            // 
+            // snapPositionStatusLabel
+            // 
+            this.snapPositionStatusLabel.AutoSize = true;
+            this.snapPositionStatusLabel.Location = new System.Drawing.Point(13, 34);
+            this.snapPositionStatusLabel.Name = "snapPositionStatusLabel";
+            this.snapPositionStatusLabel.Size = new System.Drawing.Size(72, 13);
+            this.snapPositionStatusLabel.TabIndex = 2;
+            this.snapPositionStatusLabel.Text = "Snap Position";
+            // 
             // rightToLeftButton
             // 
             this.rightToLeftButton.Location = new System.Drawing.Point(95, 3);
@@ -97,43 +135,6 @@
             this.leftToRightButton.Text = "Left to Right";
             this.leftToRightButton.UseVisualStyleBackColor = true;
             this.leftToRightButton.Click += new System.EventHandler(this.leftToRightButton_Click);
-            // 
-            // snapPositionStatusLabel
-            // 
-            this.snapPositionStatusLabel.AutoSize = true;
-            this.snapPositionStatusLabel.Location = new System.Drawing.Point(13, 34);
-            this.snapPositionStatusLabel.Name = "snapPositionStatusLabel";
-            this.snapPositionStatusLabel.Size = new System.Drawing.Size(72, 13);
-            this.snapPositionStatusLabel.TabIndex = 2;
-            this.snapPositionStatusLabel.Text = "Snap Position";
-            // 
-            // selectionStatusLabel
-            // 
-            this.selectionStatusLabel.AutoSize = true;
-            this.selectionStatusLabel.Location = new System.Drawing.Point(13, 56);
-            this.selectionStatusLabel.Name = "selectionStatusLabel";
-            this.selectionStatusLabel.Size = new System.Drawing.Size(84, 13);
-            this.selectionStatusLabel.TabIndex = 3;
-            this.selectionStatusLabel.Text = "Selection Status";
-            // 
-            // splashView
-            // 
-            this.splashView.AutoScroll = true;
-            this.splashView.AutoScrollMinSize = new System.Drawing.Size(100, 1);
-            this.splashView.BackColor = System.Drawing.SystemColors.Window;
-            this.splashView.Cursor = System.Windows.Forms.Cursors.IBeam;
-            this.splashView.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splashView.Location = new System.Drawing.Point(0, 0);
-            this.splashView.MinimumTextLayoutWidth = 100;
-            this.splashView.Name = "splashView";
-            this.splashView.Padding = new System.Windows.Forms.Padding(20);
-            this.splashView.SelectedBackgroundColor = System.Drawing.SystemColors.Highlight;
-            this.splashView.SelectedTextColor = System.Drawing.SystemColors.HighlightText;
-            this.splashView.Size = new System.Drawing.Size(755, 450);
-            this.splashView.TabIndex = 0;
-            this.splashView.Text = "splashView1";
-            this.splashView.SelectionChanged += new System.EventHandler(this.splashView_SelectionChanged);
-            this.splashView.MouseMove += new System.Windows.Forms.MouseEventHandler(this.splashView_MouseMove);
             // 
             // DemoForm
             // 

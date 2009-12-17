@@ -1504,17 +1504,16 @@ namespace Gallio.Common.Splash
 
             int low = 0;
             int high = scriptLineCount;
-
             while (low < high)
             {
                 int mid = (low + high) / 2;
 
                 int candidateParagraphIndex = scriptLineZero[mid].ParagraphIndex;
-                if (candidateParagraphIndex < paragraphIndex)
+                if (candidateParagraphIndex > paragraphIndex)
                 {
                     high = mid;
                 }
-                else if (candidateParagraphIndex > paragraphIndex)
+                else if (candidateParagraphIndex < paragraphIndex)
                 {
                     low = mid + 1;
                 }

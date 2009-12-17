@@ -6,7 +6,7 @@ namespace Gallio.Common.Splash
     /// <summary>
     /// Builds <see cref="Style" /> objects.
     /// </summary>
-    public class StyleBuilder
+    public sealed class StyleBuilder
     {
         private StyleProperty<Font> font;
         private StyleProperty<Color> color;
@@ -187,12 +187,12 @@ namespace Gallio.Common.Splash
 
         /// <summary>
         /// Creates an immutable style object from the builder's properties and supplies
-        /// any inherited properties from <see cref="Style.DefaultStyle"/>.
+        /// any inherited properties from <see cref="Style.Default"/>.
         /// </summary>
         /// <returns>The new style object.</returns>
         public Style ToStyle()
         {
-            return ToStyle(Style.DefaultStyle);
+            return ToStyle(Style.Default);
         }
     }
 }

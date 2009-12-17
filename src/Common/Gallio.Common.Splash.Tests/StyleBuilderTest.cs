@@ -35,7 +35,7 @@ namespace Gallio.Common.Splash.Tests
         [Test]
         public void StyleCopyConstructor_WhenStyleIsNotNull_CopiesTheStyle()
         {
-            var style = Style.DefaultStyle;
+            var style = Style.Default;
             var builder = new StyleBuilder(style);
 
             Assert.Multiple(() =>
@@ -59,7 +59,7 @@ namespace Gallio.Common.Splash.Tests
         [Test]
         public void StyleBuilderCopyConstructor_WhenStyleIsNotNull_CopiesTheStyle()
         {
-            var builder1 = new StyleBuilder(Style.DefaultStyle);
+            var builder1 = new StyleBuilder(Style.Default);
             var builder2 = new StyleBuilder(builder1);
 
             Assert.AreEqual(builder1, builder2, new StructuralEqualityComparer<StyleBuilder>()
@@ -146,14 +146,14 @@ namespace Gallio.Common.Splash.Tests
         public void ToStyle_WhenInheritedStyleIsNotNullAndAllPropertiesAreInherited_ReturnsStyleEqualToInherited()
         {
             var builder = new StyleBuilder();
-            Assert.AreEqual(Style.DefaultStyle, builder.ToStyle(Style.DefaultStyle));
+            Assert.AreEqual(Style.Default, builder.ToStyle(Style.Default));
         }
 
         [Test]
         public void ToStyleNoArguments_WhenAllPropertiesAreInherited_ReturnsStyleEqualToDefault()
         {
             var builder = new StyleBuilder();
-            Assert.AreEqual(Style.DefaultStyle, builder.ToStyle());
+            Assert.AreEqual(Style.Default, builder.ToStyle());
         }
 
         [Test]
@@ -170,7 +170,7 @@ namespace Gallio.Common.Splash.Tests
                 FirstLineIndent = 15
             };
 
-            var style = builder.ToStyle(Style.DefaultStyle);
+            var style = builder.ToStyle(Style.Default);
 
             Assert.Multiple(() =>
             {

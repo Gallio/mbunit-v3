@@ -133,7 +133,7 @@ namespace Gallio.Framework
         /// <item>If both objects are null, returns true.</item>
         /// <item>If one object is null but not the other, returns false.</item>
         /// <item>If both objects are referentially equal, returns true.</item>
-        /// <item>If both objects are of a special type, applies special type euqality semantics (see below)</item>
+        /// <item>If both objects are of a special type, applies special type equality semantics (see below)</item>
         /// <item>If the objects are both instances of the same simple enumerable type (<seealso cref="IsSimpleEnumerableType" />),
         /// returns true if the collections have equal length and contents.</item>
         /// <item>Otherwise uses <see cref="Object.Equals(Object)" /> to determine equality.</item>

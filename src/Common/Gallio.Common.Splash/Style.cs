@@ -6,7 +6,12 @@ namespace Gallio.Common.Splash
     /// <summary>
     /// Describes the style of a text run.
     /// </summary>
-    public class Style : IEquatable<Style>
+    /// <remarks>
+    /// <para>
+    /// A style is immutable once created and can be compared for equality with other styles.
+    /// </para>
+    /// </remarks>
+    public sealed class Style : IEquatable<Style>
     {
         private static Style defaultStyle;
 
@@ -35,7 +40,7 @@ namespace Gallio.Common.Splash
         /// Gets a default style based on current system font and color settings.
         /// </summary>
         /// <value>The style.</value>
-        public static Style DefaultStyle
+        public static Style Default
         {
             get
             {
@@ -128,7 +133,7 @@ namespace Gallio.Common.Splash
         }
 
         /// <inheritdoc />
-        public virtual bool Equals(Style other)
+        public bool Equals(Style other)
         {
             return this == other
                 || other != null

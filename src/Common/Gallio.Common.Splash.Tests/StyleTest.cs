@@ -13,7 +13,7 @@ namespace Gallio.Common.Splash.Tests
         [Test]
         public void CreateDefaultStyle_ReturnsStyleGeneratedFromSystemProperties()
         {
-            Style style = Style.DefaultStyle;
+            Style style = Style.Default;
 
             Assert.Multiple(() =>
             {
@@ -34,7 +34,7 @@ namespace Gallio.Common.Splash.Tests
             ImplementsOperatorOverloads = false,
             EquivalenceClasses =
             {
-                { Style.DefaultStyle, new StyleBuilder().ToStyle() },
+                { Style.Default, new StyleBuilder().ToStyle() },
                 { new StyleBuilder() { Color = Color.Red }.ToStyle(), new StyleBuilder() { Color = Color.Red }.ToStyle() },
                 { new StyleBuilder() { Font = SystemFonts.SmallCaptionFont }.ToStyle(), new StyleBuilder() { Font = SystemFonts.SmallCaptionFont }.ToStyle() },
                 { new StyleBuilder() { TabStopRuler = new PixelTabStopRuler(30, 10) }.ToStyle(), new StyleBuilder() { TabStopRuler = new PixelTabStopRuler(30, 10) }.ToStyle() },
