@@ -24,11 +24,20 @@
     <file path="WeifenLuo.WinFormsUI.Docking.dll" />
     <file path="Resources\Gallio.Icarus.ico" />
   </files>
-  
-  <services />
 
-  <components>    
+  <services>
     
+    <service serviceId="Gallio.Icarus.OptionsController" 
+             serviceType="Gallio.Icarus.Controllers.Interfaces.IOptionsController, Gallio.Icarus" />
+    
+  </services>
+
+  <components>
+
+    <component componentId="Gallio.Icarus.OptionsController" 
+               serviceId="Gallio.Icarus.OptionsController"
+               componentType="Gallio.Icarus.Controllers.OptionsController, Gallio.Icarus" />
+
     <!-- Control panel -->
 
     <component componentId="Gallio.Icarus.ControlPanel.RootPaneProvider"
