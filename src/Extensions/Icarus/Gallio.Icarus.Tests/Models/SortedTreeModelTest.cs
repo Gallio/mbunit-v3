@@ -10,21 +10,21 @@ namespace Gallio.Icarus.Tests.Models
     [TestsOn(typeof(SortedTreeModel))]
     public class SortedTreeModelTest
     {
-        private ITestTreeModel testTreeModel;
+        private IFilteredTreeModel filteredTreeModel;
         private SortedTreeModel sortedTreeModel;
 
         [SetUp]
         public void Establish_context()
         {
-            testTreeModel = MockRepository.GenerateStub<ITestTreeModel>();
-            sortedTreeModel = new SortedTreeModel(testTreeModel);            
+            filteredTreeModel = MockRepository.GenerateStub<IFilteredTreeModel>();
+            sortedTreeModel = new SortedTreeModel(filteredTreeModel);            
         }
 
         [Test]
         public void Children_should_be_sorted_ascending_by_default()
         {
             var treePath = new TreePath();
-            testTreeModel.Stub(ttm => ttm.GetChildren(treePath)).Return(new[]
+            filteredTreeModel.Stub(ttm => ttm.GetChildren(treePath)).Return(new[]
             {
                 new Node("a"), new Node("c"), new Node("d"), new Node("b"), new Node("a")
             });
@@ -46,7 +46,7 @@ namespace Gallio.Icarus.Tests.Models
         [Test]
         public void Children_should_be_sorted_descending_if_set()
         {
-            testTreeModel.Stub(ttm => ttm.GetChildren(Arg<TreePath>.Is.Anything)).Return(new[]
+            filteredTreeModel.Stub(ttm => ttm.GetChildren(Arg<TreePath>.Is.Anything)).Return(new[]
             {
                 new Node("a"), new Node("c"), new Node("d"), new Node("b"), new Node("a")
             });
@@ -71,12 +71,18 @@ namespace Gallio.Icarus.Tests.Models
         {
             var flag = false;
             sortedTreeModel.StructureChanged += (s, e) => { flag = true; };
-            testTreeModel.Stub(ttm => ttm.GetChildren(Arg<TreePath>.Is.Anything))
+            filteredTreeModel.Stub(ttm => ttm.GetChildren(Arg<TreePath>.Is.Anything))
                 .Return(new Node[0]);
 
             sortedTreeModel.Handle(new SortTreeEvent(SortOrder.Descending));
 
             Assert.IsTrue(flag);
+        }
+
+        [Test]
+        public void GetChildren_should_return_null_if_inner_model_does()
+        {
+            Assert.IsNull(sortedTreeModel.GetChildren(new TreePath()));
         }
     }
 }

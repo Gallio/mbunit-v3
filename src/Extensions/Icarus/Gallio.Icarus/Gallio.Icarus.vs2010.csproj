@@ -205,7 +205,13 @@
     <Compile Include="Events\Handles.cs" />
     <Compile Include="Events\IEventAggregator.cs" />
     <Compile Include="Logging\BlackBoxLogger.cs" />
+    <Compile Include="Models\FilteredTreeModel.cs" />
+    <Compile Include="Models\FilterTreeEvent.cs" />
+    <Compile Include="Models\IFilteredTreeModel.cs" />
     <Compile Include="Models\ISortedTreeModel.cs" />
+    <Compile Include="Specifications\AnySpecification.cs" />
+    <Compile Include="Specifications\OrSpecification.cs" />
+    <Compile Include="Specifications\ISpecification.cs" />
     <Compile Include="Models\SortedTreeModel.cs" />
     <Compile Include="Models\ITestStatistics.cs" />
     <Compile Include="Models\SortOrder.cs" />
@@ -222,6 +228,7 @@
     <Compile Include="Reports\ReportMonitor.cs" />
     <Compile Include="Reports\ReportOptions.cs" />
     <Compile Include="Runtime\DefaultConventionScanner.cs" />
+    <Compile Include="Specifications\AndSpecification.cs" />
     <Compile Include="TreeBuilders\ITreeBuilder.cs" />
     <Compile Include="TreeBuilders\MetadataTreeBuilder.cs" />
     <Compile Include="TreeBuilders\NamespaceHierarchy.cs" />

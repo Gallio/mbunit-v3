@@ -5,6 +5,7 @@
   <DefaultViewSetting SatisfactoryBranchThreshold="95" SatisfactoryCoverageThreshold="95" SatisfactoryCyclomaticComplexityThreshold="20" SatisfactoryFunctionThreshold="80" SatisfactoryUnvisitedSequencePoints="0" WidgetType="TreeView" FilterStyle="HideFullyCovered" ReportStyle="SequencePointCoveragePercentage" SortStyle="Name">
     <DelayFilters>false</DelayFilters>
     <filters>
+      <filter filterruledata="95" include="false" filtertype="Threshold" regexrule="false" version="Default" />
       <filter filterruledata="Aga.Controls" include="false" filtertype="Assembly" regexrule="false" version="Default" />
       <filter filterruledata="Gallio" include="false" filtertype="Assembly" regexrule="false" version="Default" />
       <filter filterruledata="Gallio.Echo" include="false" filtertype="Assembly" regexrule="false" version="Default" />
@@ -14,11 +15,12 @@
       <filter filterruledata="Gallio35" include="false" filtertype="Assembly" regexrule="false" version="Default" />
       <filter filterruledata="Mono.Cecil" include="false" filtertype="Assembly" regexrule="false" version="Default" />
       <filter filterruledata="95" include="false" filtertype="Threshold" regexrule="false" version="Default" />
+      <filter filterruledata="Gallio.Host" include="false" filtertype="Assembly" regexrule="false" version="Default" />
     </filters>
   </DefaultViewSetting>
   <NCoverRunSettings>
     <AutoExclude>true</AutoExclude>
-    <CommandLineArgs>"Gallio.Icarus.Tests.dll" /r:IsolatedAppDomain</CommandLineArgs>
+    <CommandLineArgs>"Gallio.Icarus.Tests.dll"</CommandLineArgs>
     <CommandLineExe>C:\Documents and Settings\Graham\My Documents\gallio\v3.2\src\Extensions\Echo\Gallio.Echo\bin\Gallio.Echo.exe</CommandLineExe>
     <CoverageType>Symbol Branch CyclomaticComplexity MethodVisits</CoverageType>
     <CoverageXml>coverage.xml</CoverageXml>
@@ -27,6 +29,7 @@
     <NCoverExe>C:\Program Files\NCover\ncover.console.exe</NCoverExe>
     <OnlyAssembliesWithSource>false</OnlyAssembliesWithSource>
     <ProfileIIS>false</ProfileIIS>
+    <ProfileProcessModule>gallio.host.exe</ProfileProcessModule>
     <ProfileWindowsApplication>true</ProfileWindowsApplication>
     <ProfileWindowsService>false</ProfileWindowsService>
     <ProjectName>Icarus</ProjectName>

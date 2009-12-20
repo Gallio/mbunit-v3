@@ -23,7 +23,7 @@ namespace Gallio.Icarus.Models
     {
         private readonly TreeSorter treeSorter = new TreeSorter();
 
-        public SortedTreeModel(ITestTreeModel treeModel) 
+        public SortedTreeModel(IFilteredTreeModel treeModel) 
             : base(treeModel)
         { }
 

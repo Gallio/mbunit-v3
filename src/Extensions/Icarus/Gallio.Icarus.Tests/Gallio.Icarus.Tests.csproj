@@ -94,6 +94,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Events\EventAggregatorTest.cs" />
+    <Compile Include="Models\FilteredTreeModelTest.cs" />
     <Compile Include="Models\ProjectTreeNodes\FilesNodeTest.cs" />
     <Compile Include="Models\ProjectTreeModelTest.cs" />
     <Compile Include="Models\SortedTreeModelTest.cs" />
@@ -110,6 +111,9 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="SettingsTest.cs" />
+    <Compile Include="Specifications\AnySpecificationTest.cs" />
+    <Compile Include="Specifications\AndSpecificationTest.cs" />
+    <Compile Include="Specifications\OrSpecificationTest.cs" />
     <Compile Include="TreeBuilders\MetadataTreeBuilderTests.cs" />
     <Compile Include="Utilities\MockProgressMonitor.cs" />
     <Compile Include="Utilities\SyncTestAttribute.cs" />

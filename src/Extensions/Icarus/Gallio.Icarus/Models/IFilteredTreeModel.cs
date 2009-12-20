@@ -6,6 +6,6 @@ namespace Gallio.Icarus.Models
     /// Marker interface to allow the IoC container to wire up
     /// the model decorators in the correct order.
     /// </summary>
-    public interface ISortedTreeModel : ITreeModel
+    public interface IFilteredTreeModel : ITreeModel
     { }
 }
