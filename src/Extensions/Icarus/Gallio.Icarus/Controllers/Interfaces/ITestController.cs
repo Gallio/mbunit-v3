@@ -60,18 +60,6 @@ namespace Gallio.Icarus.Controllers.Interfaces
         bool FilterInconclusive { get; set; }
 
         /// <summary>
-        /// Whether or not to sort the tree alphabetically ascending (a-z),
-        /// mutually exclusive from SortDesc.
-        /// </summary>
-        bool SortAsc { get; set; }
-
-        /// <summary>
-        /// Whether or not to sort the tree alphabetically descending (z-a),
-        /// mutually exclusive from SortAsc.
-        /// </summary>
-        bool SortDesc { get; set; }
-
-        /// <summary>
         /// Event raised after each test step completes.
         /// </summary>
         event EventHandler<TestStepFinishedEventArgs> TestStepFinished;

@@ -26,6 +26,7 @@ using Gallio.Icarus.Commands;
 using Gallio.Icarus.Controllers;
 using Gallio.Icarus.Controllers.EventArgs;
 using Gallio.Icarus.Controllers.Interfaces;
+using Gallio.Icarus.Events;
 using Gallio.Icarus.Models;
 using Gallio.Icarus.ProgressMonitoring;
 using Gallio.Icarus.Utilities;
@@ -36,7 +37,6 @@ using Gallio.UI.Common.Synchronization;
 using Gallio.UI.ControlPanel;
 using Gallio.UI.ProgressMonitoring;
 using WeifenLuo.WinFormsUI.Docking;
-using ToolStripMenuItem=Gallio.UI.Controls.ToolStripMenuItem;
 
 namespace Gallio.Icarus
 {
@@ -108,6 +108,7 @@ namespace Gallio.Icarus
             var executionLogController = RuntimeAccessor.ServiceLocator.Resolve<IExecutionLogController>();
             var annotationsController = RuntimeAccessor.ServiceLocator.Resolve<IAnnotationsController>();
             var filterController = RuntimeAccessor.ServiceLocator.Resolve<IFilterController>();
+            var eventAggregator = RuntimeAccessor.ServiceLocator.Resolve<IEventAggregator>();
 
             InitializeComponent();
 
@@ -115,8 +116,9 @@ namespace Gallio.Icarus
             testTreeModel = RuntimeAccessor.ServiceLocator.Resolve<ITestTreeModel>();
             testStatistics = RuntimeAccessor.ServiceLocator.Resolve<ITestStatistics>();
 
-            testExplorer = new TestExplorer(optionsController, projectController, testController, testTreeModel,
-                sourceCodeController, taskManager);
+            var sortedTreeModel = RuntimeAccessor.ServiceLocator.Resolve<ISortedTreeModel>();
+            testExplorer = new TestExplorer(optionsController, projectController, testController, 
+                sortedTreeModel, sourceCodeController, taskManager, eventAggregator);
             projectExplorer = new ProjectExplorer(projectController, testController, reportController, taskManager);
             testResults = new TestResults(testResultsController, optionsController, testTreeModel, testStatistics);
             runtimeLogWindow = new RuntimeLogWindow(runtimeLogController);
@@ -213,7 +215,7 @@ namespace Gallio.Icarus
             Text = applicationController.Title;
 
             // setup window manager
-            windowManager = (WindowManager)RuntimeAccessor.ServiceLocator.ResolveByComponentId("Gallio.Icarus.WindowManager");
+            windowManager = (WindowManager)RuntimeAccessor.ServiceLocator.Resolve<IWindowManager>();
             windowManager.DockPanel = dockPanel;
             windowManager.StatusStrip = statusStrip.Items;
             windowManager.ToolStrip = toolStripContainer;

@@ -199,18 +199,29 @@
     <Compile Include="Controls\PropertiesTabControl.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Events\Event.cs" />
+    <Compile Include="Events\EventAggregator.cs" />
+    <Compile Include="Events\EventHandlerProxy.cs" />
+    <Compile Include="Events\Handles.cs" />
+    <Compile Include="Events\IEventAggregator.cs" />
     <Compile Include="Logging\BlackBoxLogger.cs" />
+    <Compile Include="Models\ISortedTreeModel.cs" />
+    <Compile Include="Models\SortedTreeModel.cs" />
     <Compile Include="Models\ITestStatistics.cs" />
+    <Compile Include="Models\SortOrder.cs" />
+    <Compile Include="Models\SortTreeEvent.cs" />
     <Compile Include="Models\TestStatistics.cs" />
     <Compile Include="Models\TestTreeNodes\FilterNode.cs" />
     <Compile Include="Models\TestTreeNodes\MetadataNode.cs" />
     <Compile Include="Models\TestTreeNodes\NamespaceNode.cs" />
     <Compile Include="Models\TestTreeNodes\TestDataNode.cs" />
+    <Compile Include="Models\TreeModelDecorator.cs" />
     <Compile Include="Packages\ProjectsPackage.cs" />
     <Compile Include="ProgressMonitoring\Win7TaskBar.cs" />
     <Compile Include="Remoting\FileChangedHandler.cs" />
     <Compile Include="Reports\ReportMonitor.cs" />
     <Compile Include="Reports\ReportOptions.cs" />
+    <Compile Include="Runtime\DefaultConventionScanner.cs" />
     <Compile Include="TreeBuilders\ITreeBuilder.cs" />
     <Compile Include="TreeBuilders\MetadataTreeBuilder.cs" />
     <Compile Include="TreeBuilders\NamespaceHierarchy.cs" />

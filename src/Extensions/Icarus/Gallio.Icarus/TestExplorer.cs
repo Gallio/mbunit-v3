@@ -20,31 +20,35 @@ using Aga.Controls.Tree;
 using Gallio.Common.Concurrency;
 using Gallio.Icarus.Commands;
 using Gallio.Icarus.Controllers.Interfaces;
+using Gallio.Icarus.Events;
 using Gallio.Icarus.Models;
 using Gallio.Icarus.Models.TestTreeNodes;
 using Gallio.Icarus.Utilities;
 using Gallio.Model;
 using Gallio.Runtime.ProgressMonitoring;
 using Gallio.UI.ProgressMonitoring;
+using SortOrder=Gallio.Icarus.Models.SortOrder;
 
 namespace Gallio.Icarus
 {
-    public partial class TestExplorer : DockWindow
+    internal partial class TestExplorer : DockWindow
     {
         private readonly IProjectController projectController;
         private readonly ITestController testController;
         private readonly ISourceCodeController sourceCodeController;
         private readonly ITaskManager taskManager;
+        private readonly IEventAggregator eventAggregator;
         private bool updateFlag;
 
         public TestExplorer(IOptionsController optionsController, IProjectController projectController, 
-            ITestController testController, ITreeModel testTreeModel, ISourceCodeController sourceCodeController, 
-            ITaskManager taskManager)
+            ITestController testController, ISortedTreeModel treeModel, ISourceCodeController sourceCodeController, 
+            ITaskManager taskManager, IEventAggregator eventAggregator)
         {
             this.projectController = projectController;
             this.testController = testController;
             this.sourceCodeController = sourceCodeController;
             this.taskManager = taskManager;
+            this.eventAggregator = eventAggregator;
 
             InitializeComponent();
 
@@ -52,20 +56,26 @@ namespace Gallio.Icarus
             testTree.FailedColor = optionsController.FailedColor;
             testTree.InconclusiveColor = optionsController.InconclusiveColor;
             testTree.SkippedColor = optionsController.SkippedColor;
-            
-            updateFlag = true;
-            treeViewComboBox.ComboBox.DataSource = optionsController.SelectedTreeViewCategories.Value;
-            updateFlag = false;
-            treeViewComboBox.ComboBox.DataBindings.Add("SelectedItem", projectController, "TreeViewCategory");
-            
+
+            if (treeViewComboBox.ComboBox != null)
+            {
+                updateFlag = true;
+                treeViewComboBox.ComboBox.DataSource = optionsController.SelectedTreeViewCategories.Value;
+                updateFlag = false;
+                treeViewComboBox.ComboBox.DataBindings.Add("SelectedItem", projectController, "TreeViewCategory");
+            }
+
             optionsController.SelectedTreeViewCategories.PropertyChanged += (s, e) =>
             {
+                if (treeViewComboBox.ComboBox == null) 
+                    return;
+
                 updateFlag = true;
                 treeViewComboBox.ComboBox.DataSource = optionsController.SelectedTreeViewCategories.Value;
                 updateFlag = false;
             };
 
-            testTree.Model = testTreeModel;
+            testTree.Model = treeModel;
 
             testController.ExploreStarted += delegate { testTree.EditEnabled = false; };
             testController.ExploreFinished += delegate
@@ -90,10 +100,15 @@ namespace Gallio.Icarus
             filterInconclusiveTestsToolStripButton.DataBindings.Add("Checked", testController, "FilterInconclusive", 
                 false, DataSourceUpdateMode.OnPropertyChanged);
 
-            sortAscToolStripButton.DataBindings.Add("Checked", testController, "SortAsc", 
-                false, DataSourceUpdateMode.OnPropertyChanged);
-            sortDescToolStripButton.DataBindings.Add("Checked", testController, "SortDesc", 
-                false, DataSourceUpdateMode.OnPropertyChanged);
+            sortAscToolStripButton.Click += (s, e) => SortTree(SortOrder.Ascending);
+            sortDescToolStripButton.Click += (s, e) => SortTree(SortOrder.Descending);
+        }
+
+        private void SortTree(SortOrder sortOrder)
+        {
+            sortAscToolStripButton.Checked = (sortOrder == SortOrder.Ascending);
+            sortDescToolStripButton.Checked = (sortOrder == SortOrder.Descending);
+            eventAggregator.Send(new SortTreeEvent(sortOrder));
         }
 
         private void removeFileToolStripMenuItem_Click(object sender, EventArgs e)
@@ -154,7 +169,7 @@ namespace Gallio.Icarus
                 return;
 
             var node = (TestTreeNode)testTree.SelectedNode.Tag;
-            var cmd = new ViewSourceCodeCommand(sourceCodeController) {TestId = node.Name};
+            var cmd = new ViewSourceCodeCommand(sourceCodeController) { TestId = node.Name };
             taskManager.QueueTask(cmd);
         }
 

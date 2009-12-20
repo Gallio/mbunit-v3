@@ -14,7 +14,6 @@
 // limitations under the License.
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using Aga.Controls.Tree;
@@ -29,12 +28,10 @@ using Gallio.UI.DataBinding;
 
 namespace Gallio.Icarus.Models
 {
-    internal class TestTreeModel : TreeModelBase, ITestTreeModel
+    internal class TestTreeModel : TreeModelDecorator, ITestTreeModel
     {
         private readonly IList<ITreeBuilder> treeBuilders;
-        private readonly TreeModel inner;
         private readonly List<TestStatus> filterStatuses = new List<TestStatus>();
-        private readonly TestTreeSorter testTreeSorter;
 
         public bool FilterPassed
         {
@@ -60,22 +57,6 @@ namespace Gallio.Icarus.Models
             }
         }
 
-        public bool SortAsc
-        {
-            get
-            {
-                return (testTreeSorter.SortOrder == SortOrder.Ascending);
-            }
-        }
-
-        public bool SortDesc
-        {
-            get
-            {
-                return (testTreeSorter.SortOrder == SortOrder.Descending);
-            }
-        }
-
         public Observable<int> TestCount
         {
             get;
@@ -83,28 +64,18 @@ namespace Gallio.Icarus.Models
         }
 
         public TestTreeModel(ITreeBuilder[] treeBuilders)
+            : base(new TreeModel())
         {
             this.treeBuilders = treeBuilders;
 
-            inner = new TreeModel();
             TestCount = new Observable<int>();
-
-            inner.NodesChanged += (sender, e) => OnNodesChanged(e);
-            inner.NodesInserted += (sender, e) => OnNodesInserted(e);
-            inner.NodesRemoved += (sender, e) => OnNodesRemoved(e);
-            inner.StructureChanged += (sender, e) => OnStructureChanged(e);
-
-            testTreeSorter = new TestTreeSorter
-            {
-                SortOrder = SortOrder.Ascending
-            };
         }
 
         public void UpdateTestCount()
         {
             // (this event is fired when a node checkstate changes)
             var testCount = 0;
-            foreach (Node node in inner.Nodes)
+            foreach (Node node in innerTreeModel.GetChildren(new TreePath()))
                 testCount += CountTests(node);
             TestCount.Value = testCount;
         }
@@ -126,15 +97,8 @@ namespace Gallio.Icarus.Models
         {
             get
             {
-                if (inner.Root.Nodes.Count > 0)
-                    return (TestTreeNode)inner.Root.Nodes[0];
-                return null;
+                return (TestTreeNode)GetRoot();
             }
-        }
-
-        public TreePath GetPath(Node node)
-        {
-            return inner.GetPath(node);
         }
 
         public void RemoveFilter(TestStatus testStatus)
@@ -147,7 +111,7 @@ namespace Gallio.Icarus.Models
         {
             using (progressMonitor.BeginTask("Resetting test statuses", 100))
             {
-                foreach (Node node in inner.Root.Nodes)
+                foreach (Node node in innerTreeModel.GetChildren(new TreePath()))
                     ((TestTreeNode)node).Reset();
 
                 OnNodesChanged(new TreeModelEventArgs(new TreePath(Root), new object[] {}));
@@ -160,12 +124,6 @@ namespace Gallio.Icarus.Models
         {
             filterStatuses.Add(testStatus);
             FilterTree();
-        }
-
-        public void SetSortOrder(SortOrder sortOrder)
-        {
-            testTreeSorter.SortOrder = sortOrder;
-            OnStructureChanged(new TreePathEventArgs(new TreePath(Root)));
         }
 
         public void TestStepFinished(TestData testData, TestStepRun testStepRun)
@@ -183,7 +141,7 @@ namespace Gallio.Icarus.Models
 
         private void FilterTree()
         {
-            foreach (Node node in inner.Root.Nodes)
+            foreach (Node node in innerTreeModel.GetChildren(new TreePath()))
                 Filter(node);
 
             OnStructureChanged(new TreePathEventArgs(new TreePath(Root)));
@@ -250,34 +208,6 @@ namespace Gallio.Icarus.Models
             OnStructureChanged(new TreePathEventArgs(new TreePath(Root)));
         }
 
-        public override IEnumerable GetChildren(TreePath treePath)
-        {
-            if (testTreeSorter.SortOrder != SortOrder.None)
-            {
-                ArrayList list = new ArrayList();
-                IEnumerable res = inner.GetChildren(treePath);
-                if (res != null)
-                {
-                    foreach (object obj in res)
-                        list.Add(obj);
-
-                    list.Sort(testTreeSorter);
-                    return list;
-                }
-                return null;
-            }
-
-            return inner.GetChildren(treePath);
-        }
-
-        public override bool IsLeaf(TreePath treePath)
-        {
-            Node node = FindNode(treePath);
-            if (node == null)
-                throw new ArgumentException("treePath");
-            return node.IsLeaf;
-        }
-
         public void BuildTestTree(IProgressMonitor progressMonitor, TestModelData testModelData, 
             TreeBuilderOptions options)
         {
@@ -285,7 +215,7 @@ namespace Gallio.Icarus.Models
 
             using (progressMonitor.BeginTask("Building test tree", count))
             {
-                inner.Root.Nodes.Clear();
+                ((TreeModel)innerTreeModel).Root.Nodes.Clear();
 
                 TestTreeNode root = null;
                 foreach (var treeBuilder in treeBuilders)
@@ -301,7 +231,8 @@ namespace Gallio.Icarus.Models
                     throw new Exception(string.Format("Could not find a tree builder for {0}", 
                         options.TreeViewCategory));
 
-                inner.Root.Nodes.Add(root);
+                ((TreeModel)innerTreeModel).Root.Nodes.Add(root);
+
                 OnStructureChanged(new TreePathEventArgs(new TreePath(root)));
             }
         }
@@ -312,11 +243,6 @@ namespace Gallio.Icarus.Models
             foreach (var td in testData.Children)
                 count += CountTestData(td);
             return count;
-        }
-
-        public Node FindNode(TreePath path)
-        {
-            return inner.FindNode(path);
         }
 
         public void ApplyFilterSet(FilterSet<ITestDescriptor> filterSet)
@@ -365,7 +291,8 @@ namespace Gallio.Icarus.Models
             if (Root == null || Root.CheckState == CheckState.Checked)
                 return FilterSet<ITestDescriptor>.Empty;
 
-            Filter<ITestDescriptor> filter = Root.CheckState == CheckState.Unchecked ? new NoneFilter<ITestDescriptor>() : CreateFilter(inner.Root.Nodes);
+            var filter = Root.CheckState == CheckState.Unchecked ? new NoneFilter<ITestDescriptor>() 
+                : CreateFilter(Root.Nodes);
             return new FilterSet<ITestDescriptor>(filter);
         }
 
@@ -444,51 +371,6 @@ namespace Gallio.Icarus.Models
             else if (node.CheckState == CheckState.Checked)
                 selected.Add(node);
             return selected;
-        }
-
-        private class TestTreeSorter : IComparer
-        {
-            /// <summary>
-            /// Specifies the order in which to sort (i.e. 'Ascending').
-            /// </summary>
-            private SortOrder sortOrder = SortOrder.None;
-            /// <summary>
-            /// Case insensitive comparer object
-            /// </summary>
-            private readonly CaseInsensitiveComparer caseInsensitiveComparer = new CaseInsensitiveComparer();
-
-            /// <summary>
-            /// Gets or sets the order of sorting to apply (for example, 'Ascending' or 'Descending').
-            /// </summary>
-            public SortOrder SortOrder
-            {
-                get { return sortOrder; }
-                set { sortOrder = value; }
-            }
-
-            public int Compare(object x, object y)
-            {
-                // Cast the objects to be compared to ListViewItem objects
-                TestTreeNode left = (TestTreeNode)x;
-                TestTreeNode right = (TestTreeNode)y;
-
-                // standard text sort (ci)
-                int compareResult = caseInsensitiveComparer.Compare(left.Text, right.Text);
-
-                // Calculate correct return value based on object comparison
-                if (SortOrder == SortOrder.Ascending)
-                {
-                    // Ascending sort is selected, return normal result of compare operation
-                    return compareResult;
-                }
-                if (SortOrder == SortOrder.Descending)
-                {
-                    // Descending sort is selected, return negative result of compare operation
-                    return (-compareResult);
-                }
-                // Return '0' to indicate they are equal
-                return 0;
-            }
         }
     }
 }

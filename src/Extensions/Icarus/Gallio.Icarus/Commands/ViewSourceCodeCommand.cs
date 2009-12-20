@@ -23,11 +23,7 @@ namespace Gallio.Icarus.Commands
     {
         private readonly ISourceCodeController sourceCodeController;
 
-        public string TestId
-        {
-            get;
-            set;
-        }
+        public string TestId { get; set; }
 
         public ViewSourceCodeCommand(ISourceCodeController sourceCodeController)
         {

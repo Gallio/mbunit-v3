@@ -74,8 +74,8 @@ namespace Gallio.Icarus.ControlPanel
             removeExtensionButton.Enabled = (testRunnerExtensionsListBox.SelectedItems.Count > 0);
         }
 
-        public override void ApplyPendingSettingsChanges(Runtime.Security.IElevationContext elevationContext, 
-            Runtime.ProgressMonitoring.IProgressMonitor progressMonitor)
+        public override void ApplyPendingSettingsChanges(Gallio.Runtime.Security.IElevationContext elevationContext, 
+            Gallio.Runtime.ProgressMonitoring.IProgressMonitor progressMonitor)
         {
             base.ApplyPendingSettingsChanges(elevationContext, progressMonitor);
 

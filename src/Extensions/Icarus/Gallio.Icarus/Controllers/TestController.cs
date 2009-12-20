@@ -112,38 +112,6 @@ namespace Gallio.Icarus.Controllers
             }
         }
 
-        public bool SortAsc
-        {
-            get
-            {
-                return testTreeModel.SortAsc;
-            }
-            set
-            {
-                if (value)
-                    testTreeModel.SetSortOrder(SortOrder.Ascending);
-                else
-                    testTreeModel.SetSortOrder(SortOrder.None);
-                OnPropertyChanged(new PropertyChangedEventArgs("SortDesc"));
-            }
-        }
-
-        public bool SortDesc
-        {
-            get
-            {
-                return testTreeModel.SortDesc;
-            }
-            set
-            {
-                if (value)
-                    testTreeModel.SetSortOrder(SortOrder.Descending);
-                else
-                    testTreeModel.SetSortOrder(SortOrder.None);
-                OnPropertyChanged(new PropertyChangedEventArgs("SortAsc"));
-            }
-        }
-
         public bool FailedTests { get; private set; }
 
         public TestController(ITestTreeModel testTreeModel, IOptionsController optionsController, 

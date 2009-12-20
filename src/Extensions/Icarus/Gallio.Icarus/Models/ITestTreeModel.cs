@@ -13,7 +13,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.Windows.Forms;
 using Aga.Controls.Tree;
 using Gallio.Icarus.TreeBuilders;
 using Gallio.Model;
@@ -32,19 +31,14 @@ namespace Gallio.Icarus.Models
         bool FilterInconclusive { get; }
         Observable<int> TestCount { get; }
         TestTreeNode Root { get; }
-        bool SortAsc { get; }
-        bool SortDesc { get; }
 
         void ApplyFilterSet(FilterSet<ITestDescriptor> filterSet);
         void BuildTestTree(IProgressMonitor progressMonitor, TestModelData testModelData, 
             TreeBuilderOptions options);
-        Node FindNode(TreePath path);
         FilterSet<ITestDescriptor> GenerateFilterSetFromSelectedTests();
-        TreePath GetPath(Node node);
         void RemoveFilter(TestStatus testStatus);
         void ResetTestStatus(IProgressMonitor progressMonitor);
         void SetFilter(TestStatus testStatus);
-        void SetSortOrder(SortOrder sortOrder);
         void UpdateTestCount();
         void TestStepFinished(TestData testData, TestStepRun testStepRun);
     }

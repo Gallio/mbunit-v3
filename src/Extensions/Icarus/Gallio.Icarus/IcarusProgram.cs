@@ -22,6 +22,7 @@ using Gallio.Icarus.Controllers;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Logging;
 using Gallio.Icarus.Properties;
+using Gallio.Icarus.Runtime;
 using Gallio.Runner;
 using Gallio.Runtime;
 using Gallio.Runtime.ConsoleSupport;
@@ -75,6 +76,10 @@ namespace Gallio.Icarus
 
             using (RuntimeBootstrap.Initialize(runtimeSetup, runtimeLogger))
             {
+                // wire up services & components
+                var scanner = new DefaultConventionScanner(RuntimeAccessor.Registry);
+                scanner.Scan();
+
                 var optionsController = RuntimeAccessor.ServiceLocator.Resolve<IOptionsController>();
                 
                 // create & initialize a test runner whenever the test runner factory is changed
