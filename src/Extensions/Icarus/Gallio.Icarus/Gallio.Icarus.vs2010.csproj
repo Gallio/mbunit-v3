@@ -89,6 +89,7 @@
     <Compile Include="Commands\AddFilesCommand.cs" />
     <Compile Include="Commands\ApplyFilterCommand.cs" />
     <Compile Include="Commands\ConvertSavedReportCommand.cs" />
+    <Compile Include="Commands\LoadPackageCommand.cs" />
     <Compile Include="Commands\DeleteAllReportsCommand.cs" />
     <Compile Include="Commands\DelegateCommand.cs" />
     <Compile Include="Commands\DeleteFilterCommand.cs" />

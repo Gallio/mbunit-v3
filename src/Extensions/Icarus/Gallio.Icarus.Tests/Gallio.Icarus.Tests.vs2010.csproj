@@ -63,6 +63,11 @@
     <Compile Include="Commands\AddFilesCommandTest.cs" />
     <Compile Include="Commands\ApplyFilterCommandTest.cs" />
     <Compile Include="Commands\ConvertSavedReportCommandTest.cs" />
+    <Compile Include="Commands\RestoreFilterCommandTest.cs" />
+    <Compile Include="Commands\ResetTestsCommandTest.cs" />
+    <Compile Include="Commands\LoadPackageCommandTest.cs" />
+    <Compile Include="Commands\RemoveFileCommandTest.cs" />
+    <Compile Include="Commands\RemoveAllFilesCommandTest.cs" />
     <Compile Include="Commands\DelegateCommandTest.cs" />
     <Compile Include="Commands\DeleteAllReportsCommandTest.cs" />
     <Compile Include="Commands\DeleteFilterCommandTest.cs" />

@@ -13,7 +13,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Runtime.ProgressMonitoring;
 using Gallio.UI.ProgressMonitoring;
@@ -25,7 +24,8 @@ namespace Gallio.Icarus.Commands
         private readonly ITestController testController;
         private readonly IProjectController projectController;
 
-        public RemoveAllFilesCommand(ITestController testController, IProjectController projectController)
+        public RemoveAllFilesCommand(ITestController testController, 
+            IProjectController projectController)
         {
             this.testController = testController;
             this.projectController = projectController;
@@ -36,17 +36,14 @@ namespace Gallio.Icarus.Commands
             using (progressMonitor.BeginTask("Removing all files.", 100))
             {
                 // remove all files from test package
-                using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(50))
+                using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(50))
                     projectController.RemoveAllFiles(subProgressMonitor);
 
-                if (progressMonitor.IsCanceled)
-                    throw new OperationCanceledException();
-
                 // reload
-                using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(50))
+                using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(50))
                 {
-                    testController.SetTestPackage(projectController.TestPackage);
-                    testController.Explore(subProgressMonitor, projectController.TestRunnerExtensions);
+                    var loadPackageCommand = new LoadPackageCommand(testController, projectController);
+                    loadPackageCommand.Execute(subProgressMonitor);
                 }
             }
         }

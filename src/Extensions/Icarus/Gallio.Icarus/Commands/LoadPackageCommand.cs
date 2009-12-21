@@ -15,17 +15,16 @@
 
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Runtime.ProgressMonitoring;
-using Gallio.Model.Filters;
 using Gallio.UI.ProgressMonitoring;
 
 namespace Gallio.Icarus.Commands
 {
-    internal class RestoreFilterCommand : ICommand
+    internal class LoadPackageCommand : ICommand
     {
         private readonly ITestController testController;
         private readonly IProjectController projectController;
 
-        public RestoreFilterCommand(ITestController testController, 
+        public LoadPackageCommand(ITestController testController, 
             IProjectController projectController)
         {
             this.testController = testController;
@@ -34,22 +33,15 @@ namespace Gallio.Icarus.Commands
 
         public void Execute(IProgressMonitor progressMonitor)
         {
-            var testFilters = projectController.TestFilters.Value;
-
-            using (progressMonitor.BeginTask("Restoring test filter", testFilters.Count))
+            using (progressMonitor.BeginTask("Loading test package", 100))
             {
-                foreach (var filterInfo in testFilters)
-                {
-                    if (filterInfo.FilterName != "AutoSave")
-                    {
-                        progressMonitor.Worked(1);
-                        continue;
-                    }
+                testController.SetTestPackage(projectController.TestPackage);
 
-                    var filterSet = FilterUtils.ParseTestFilterSet(filterInfo.FilterExpr);
-                    var applyFilterCommand = new ApplyFilterCommand(testController, filterSet);
-                    applyFilterCommand.Execute(progressMonitor);
-                    return;
+                progressMonitor.Worked(5);
+
+                using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(95))
+                {
+                    testController.Explore(subProgressMonitor, projectController.TestRunnerExtensions);
                 }
             }
         }

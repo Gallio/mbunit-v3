@@ -13,11 +13,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.Collections.Generic;
 using Gallio.Icarus.Controllers.Interfaces;
-using Gallio.Runner.Projects.Schema;
 using Gallio.Runtime.ProgressMonitoring;
-using Gallio.Model.Filters;
 using Gallio.UI.ProgressMonitoring;
 
 namespace Gallio.Icarus.Commands
@@ -38,30 +35,14 @@ namespace Gallio.Icarus.Commands
             using (progressMonitor.BeginTask("Reloading", 100))
             {
                 using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(95))
+                {
                     testController.Explore(subProgressMonitor, projectController.TestRunnerExtensions);
-
-                var testFilters = projectController.TestFilters.Value;
+                }
 
                 using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(5))
-                    RestoreFilter(subProgressMonitor, testFilters);
-            }
-        }
-
-        private void RestoreFilter(IProgressMonitor progressMonitor, ICollection<FilterInfo> testFilters)
-        {
-            using (progressMonitor.BeginTask("Restoring test filter", testFilters.Count))
-            {
-                foreach (var filterInfo in testFilters)
                 {
-                    if (filterInfo.FilterName != "AutoSave")
-                    {
-                        progressMonitor.Worked(1);
-                        continue;
-                    }
-
-                    var filterSet = FilterUtils.ParseTestFilterSet(filterInfo.FilterExpr);
-                    testController.ApplyFilterSet(filterSet);
-                    return;
+                    var restoreFilterCommand = new RestoreFilterCommand(testController, projectController);
+                    restoreFilterCommand.Execute(subProgressMonitor);
                 }
             }
         }

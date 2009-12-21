@@ -13,13 +13,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using Gallio.Icarus.Commands;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Tests.Utilities;
-using Gallio.Model;
 using Gallio.Runner.Projects.Schema;
 using Gallio.UI.DataBinding;
 using MbUnit.Framework;
@@ -27,7 +24,7 @@ using Rhino.Mocks;
 
 namespace Gallio.Icarus.Tests.Commands
 {
-    [MbUnit.Framework.Category("Commands"), TestsOn(typeof(OpenProjectCommand))]
+    [Category("Commands"), TestsOn(typeof(OpenProjectCommand))]
     internal class OpenProjectCommandTest
     {
         [Test]
@@ -58,26 +55,6 @@ namespace Gallio.Icarus.Tests.Commands
             openProjectCommand.Execute(progressMonitor);
 
             projectController.AssertWasCalled(pc => pc.OpenProject(fileName, progressMonitor));
-        }
-
-        [Test]
-        public void Execute_should_reload_test_package()
-        {
-            var testController = MockRepository.GenerateStub<ITestController>();
-            var projectController = MockRepository.GenerateStub<IProjectController>();
-            projectController.Stub(pc => pc.TestFilters).Return(new Observable<IList<FilterInfo>>(new List<FilterInfo>()));
-            var testPackage = new TestPackage();
-            projectController.Stub(pc => pc.TestPackage).Return(testPackage);
-            var testRunnerExtensions = new BindingList<string>(new List<string>());
-            projectController.Stub(pc => pc.TestRunnerExtensions).Return(testRunnerExtensions);
-            const string fileName = "fileName";
-            var openProjectCommand = new OpenProjectCommand(testController, projectController, fileName);
-            var progressMonitor = MockProgressMonitor.Instance;
-
-            openProjectCommand.Execute(progressMonitor);
-
-            testController.AssertWasCalled(tc => tc.SetTestPackage(testPackage));
-            testController.AssertWasCalled(tc => tc.Explore(progressMonitor, testRunnerExtensions));
         }
     }
 }

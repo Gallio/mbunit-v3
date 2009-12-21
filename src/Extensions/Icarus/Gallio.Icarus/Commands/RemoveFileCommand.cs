@@ -13,7 +13,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
 using Gallio.Runtime.ProgressMonitoring;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.UI.ProgressMonitoring;
@@ -25,11 +24,7 @@ namespace Gallio.Icarus.Commands
         private readonly IProjectController projectController;
         private readonly ITestController testController;
 
-        public string FileName
-        {
-            get;
-            set;
-        }
+        public string FileName { get; set; }
 
         public RemoveFileCommand(IProjectController projectController, ITestController testController)
         {
@@ -41,22 +36,18 @@ namespace Gallio.Icarus.Commands
         {
             using (progressMonitor.BeginTask("Removing file.", 100))
             {
-                if (! string.IsNullOrEmpty(FileName))
+                if (string.IsNullOrEmpty(FileName)) 
+                    return;
+
+                using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(50))
                 {
-                    using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(50))
-                    {
-                        projectController.RemoveFile(FileName, subProgressMonitor);
-                    }
+                    projectController.RemoveFile(FileName, subProgressMonitor);
+                }
 
-                    if (progressMonitor.IsCanceled)
-                        throw new OperationCanceledException();
-
-                    // reload
-                    using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(50))
-                    {
-                        testController.SetTestPackage(projectController.TestPackage);
-                        testController.Explore(subProgressMonitor, projectController.TestRunnerExtensions);
-                    }
+                using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(50))
+                {
+                    var loadPackageCommand = new LoadPackageCommand(testController, projectController);
+                    loadPackageCommand.Execute(subProgressMonitor);
                 }
             }
         }

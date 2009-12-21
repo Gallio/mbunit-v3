@@ -13,8 +13,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
-using System.IO;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Reports;
 using Gallio.Runtime.ProgressMonitoring;
@@ -29,11 +27,7 @@ namespace Gallio.Icarus.Commands
         private readonly IOptionsController optionsController;
         private readonly IReportController reportController;
 
-        public bool AttachDebugger
-        {
-            get;
-            set;
-        }
+        public bool AttachDebugger { get; set; }
 
         public RunTestsCommand(ITestController testController, IProjectController projectController, 
             IOptionsController optionsController, IReportController reportController)
@@ -51,26 +45,15 @@ namespace Gallio.Icarus.Commands
                 using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(5))
                     testController.ResetTestStatus(subProgressMonitor);
 
-                if (progressMonitor.IsCanceled)
-                    throw new OperationCanceledException();
-
-                // save current filter as last run
                 using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(5))
                 {
                     var filterSet = testController.GenerateFilterSetFromSelectedTests();
                     projectController.SaveFilterSet("LastRun", filterSet, subProgressMonitor);
                 }
 
-                if (progressMonitor.IsCanceled)
-                    throw new OperationCanceledException();
-
-                // run the tests
                 using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(85))
                     testController.Run(AttachDebugger, subProgressMonitor, 
                         projectController.TestRunnerExtensions);
-
-                if (progressMonitor.IsCanceled)
-                    throw new OperationCanceledException();
 
                 using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(5))
                 {
@@ -79,8 +62,10 @@ namespace Gallio.Icarus.Commands
 
                     var reportOptions = new ReportOptions(projectController.ReportDirectory, 
                         projectController.ReportNameFormat);
-                    var cmd = new GenerateReportCommand(testController, reportController);
-                    cmd.ReportOptions = reportOptions;
+                    var cmd = new GenerateReportCommand(testController, reportController)
+                    {
+                        ReportOptions = reportOptions
+                    };
                     cmd.Execute(subProgressMonitor);
                 }
             }

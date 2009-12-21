@@ -13,7 +13,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Runtime.ProgressMonitoring;
 using Gallio.UI.ProgressMonitoring;
@@ -25,18 +24,19 @@ namespace Gallio.Icarus.Commands
         private readonly ITestController testController;
         private readonly IProjectController projectController;
         private readonly string fileName;
-
-        public string FileName
-        {
-            get { return fileName; }
-        }
+        private readonly LoadPackageCommand loadPackageCommand;
+        private readonly RestoreFilterCommand restoreFilterCommand;
 
         public OpenProjectCommand(ITestController testController, IProjectController projectController, 
             string fileName)
         {
             this.testController = testController;
             this.projectController = projectController;
+            
             this.fileName = fileName;
+
+            loadPackageCommand = new LoadPackageCommand(testController, projectController);
+            restoreFilterCommand = new RestoreFilterCommand(testController, projectController);
         }
 
         public void Execute(IProgressMonitor progressMonitor)
@@ -50,16 +50,10 @@ namespace Gallio.Icarus.Commands
                     projectController.OpenProject(fileName, subProgressMonitor);
 
                 using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(85))
-                {
-                    testController.SetTestPackage(projectController.TestPackage);
-                    testController.Explore(subProgressMonitor, projectController.TestRunnerExtensions);
-                }
+                    loadPackageCommand.Execute(subProgressMonitor);
 
                 using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(5))
-                {
-                    var applyFilterCommand = new RestoreFilterCommand(testController, projectController);
-                    applyFilterCommand.Execute(subProgressMonitor);
-                }
+                    restoreFilterCommand.Execute(subProgressMonitor);
             }
         }
     }

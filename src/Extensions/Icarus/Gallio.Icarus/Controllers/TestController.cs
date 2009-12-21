@@ -16,7 +16,6 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Windows.Forms;
 using Gallio.Common.Collections;
 using Gallio.Common.Concurrency;
 using Gallio.Common.Policies;
@@ -129,7 +128,7 @@ namespace Gallio.Icarus.Controllers
         public void Explore(IProgressMonitor progressMonitor, 
             IEnumerable<string> testRunnerExtensions)
         {
-            using (progressMonitor.BeginTask("Exploring the tests.", 100))
+            using (progressMonitor.BeginTask("Exploring the tests", 100))
             {
                 EventHandlerPolicy.SafeInvoke(ExploreStarted, this, System.EventArgs.Empty);
 
