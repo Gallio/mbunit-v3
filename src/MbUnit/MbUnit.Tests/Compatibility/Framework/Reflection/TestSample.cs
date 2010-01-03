@@ -17,7 +17,9 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace MbUnit.Tests.Framework.Reflection
+#pragma warning disable 0618
+
+namespace MbUnit.Tests.Compatibility.Framework.Reflection
 {
     public class TestSample : BaseSample
     {

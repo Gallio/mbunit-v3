@@ -74,8 +74,16 @@
     <Compile Include="Compatibility\Framework\OldAssertWithReflectionTest.cs" />
     <Compile Include="Compatibility\Framework\OldAssertWithTypeTest.cs" />
     <Compile Include="Compatibility\Framework\OldCollectionAssertTest.cs" />
+    <Compile Include="Compatibility\Framework\Reflection\BaseSample.cs" />
+    <Compile Include="Compatibility\Framework\Reflection\InstanceTests.cs" />
+    <Compile Include="Compatibility\Framework\Reflection\ReflectionExceptionTest.cs" />
+    <Compile Include="Compatibility\Framework\Reflection\SampleClass.cs" />
+    <Compile Include="Compatibility\Framework\Reflection\StaticTests.cs" />
+    <Compile Include="Compatibility\Framework\Reflection\TestSample.cs" />
     <Compile Include="Framework\ContractVerifiers\EquivalenceClassCollectionTest.cs" />
     <Compile Include="Framework\ContractVerifiers\EquivalenceClassTest.cs" />
+    <Compile Include="Framework\MirrorTest.cs" />
+    <Compile Include="Framework\MirrorExceptionTest.cs" />
     <Compile Include="Framework\RetryTest.cs" />
     <Compile Include="Integration\ConfigurationFileTest.cs" />
     <Compile Include="Framework\RepeatTest.cs" />
@@ -83,18 +91,12 @@
     <Compile Include="Framework\FactoryTest.cs" />
     <Compile Include="Compatibility\Framework\OldFileAssertTest.cs" />
     <Compile Include="Compatibility\Framework\OldGenericAssertTest.cs" />
-    <Compile Include="Framework\Reflection\ReflectionExceptionTest.cs" />
     <Compile Include="Framework\ThreadedRepeatTest.cs" />
     <Compile Include="Integration\ContextOutcomeTest.cs" />
     <Compile Include="Integration\FixtureInheritanceTest.cs" />
     <Compile Include="Integration\WorkingDirectoryAndApplicationBaseTest.cs" />
     <Compile Include="Model\MbUnitTestFrameworkTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Framework\Reflection\BaseSample.cs" />
-    <Compile Include="Framework\Reflection\InstanceTests.cs" />
-    <Compile Include="Framework\Reflection\SampleClass.cs" />
-    <Compile Include="Framework\Reflection\StaticTests.cs" />
-    <Compile Include="Framework\Reflection\TestSample.cs" />
     <Compile Include="Compatibility\Framework\OldStringAssertTest.cs" />
   </ItemGroup>
   <ItemGroup>

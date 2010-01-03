@@ -72,6 +72,11 @@
     <Compile Include="Framework\OldGenericAssert.cs" />
     <Compile Include="Framework\OldReflectionAssert.cs" />
     <Compile Include="Framework\OldStringAssert.cs" />
+    <Compile Include="Framework\Reflection\AccessModifier.cs" />
+    <Compile Include="Framework\Reflection\MemberType.cs" />
+    <Compile Include="Framework\Reflection\NamespaceDoc.cs" />
+    <Compile Include="Framework\Reflection\ReflectionException.cs" />
+    <Compile Include="Framework\Reflection\Reflector.cs" />
     <Compile Include="Framework\RowTestAttribute.cs" />
     <Compile Include="Framework\OldSecurityAssert.cs" />
     <Compile Include="Framework\TestFixtureSetUpAttribute.cs" />

@@ -237,7 +237,7 @@ namespace Gallio.Framework.Data
 
             Module desiredModule = member.Module;
             int desiredMetadataToken = member.MetadataToken;
-            MemberInfo[] resolvedMembers = resolvedType.FindMembers(member.MemberType,
+            MemberInfo[] resolvedMembers = ReflectionUtils.FindMembersWorkaround(resolvedType, member.MemberType,
                 BindingFlags.FlattenHierarchy | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static,
                 delegate(MemberInfo candidate, object dummy) {
                     return candidate.Module == desiredModule

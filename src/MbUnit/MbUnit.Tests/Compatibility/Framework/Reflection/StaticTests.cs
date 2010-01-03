@@ -18,7 +18,9 @@ using Gallio.Framework.Assertions;
 using MbUnit.Framework.Reflection;
 using MbUnit.Framework;
 
-namespace MbUnit.Tests.Framework.Reflection
+#pragma warning disable 0618
+
+namespace MbUnit.Tests.Compatibility.Framework.Reflection
 {
     [TestFixture]
     [TestsOn(typeof(Reflector))]

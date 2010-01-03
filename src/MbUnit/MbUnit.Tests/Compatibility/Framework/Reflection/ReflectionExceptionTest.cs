@@ -14,33 +14,19 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
-using System.Text;
+using Gallio.Framework.Assertions;
+using MbUnit.Framework;
+using MbUnit.Framework.ContractVerifiers;
+using MbUnit.Framework.Reflection;
 
-namespace MbUnit.Tests.Framework.Reflection
+#pragma warning disable 0618
+
+namespace MbUnit.Tests.Compatibility.Framework.Reflection
 {
-    public class BaseSample
+    [TestsOn(typeof(ReflectionException))]
+    public class ReflectionExceptionTest
     {
-#pragma warning disable 0414
-        private string _baseString = "Base var";
-#pragma warning restore 0414
-
-        private int _baseInt = 12;
-
-        private int BaseInteger
-        {
-            get { return _baseInt; }
-            set { _baseInt = value; }
-        }
-
-        private string Wow()
-        {
-            return "Wow!";
-        }
-
-        private string OhYhea(string text)
-        {
-            return text + " Oh, Yhea!";
-        }
+        [VerifyContract]
+        public readonly IContract ExceptionTests = new ExceptionContract<ReflectionException>();
     }
 }

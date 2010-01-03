@@ -139,6 +139,7 @@
     <Compile Include="Common\Reflection\Impl\ReflectorTypeUtilsTest.cs" />
     <Compile Include="Common\Reflection\Impl\UnresolvedCodeElementFactoryTest.cs" />
     <Compile Include="Common\Reflection\Impl\XmlDocumentationUtilsTest.cs" />
+    <Compile Include="Common\Reflection\ProxyUtilsTest.cs" />
     <Compile Include="Common\Reflection\ReflectionOnlyAssemblyLoaderTest.cs" />
     <Compile Include="Common\Reflection\ReflectionResolveExceptionTest.cs" />
     <Compile Include="Common\Reflection\ReflectorTest.cs" />

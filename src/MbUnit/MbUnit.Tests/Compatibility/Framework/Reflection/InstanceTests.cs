@@ -19,7 +19,9 @@ using System.Text;
 using MbUnit.Framework;
 using MbUnit.Framework.Reflection;
 
-namespace MbUnit.Tests.Framework.Reflection
+#pragma warning disable 0618
+
+namespace MbUnit.Tests.Compatibility.Framework.Reflection
 {
     [TestFixture]
     public class InstanceTests

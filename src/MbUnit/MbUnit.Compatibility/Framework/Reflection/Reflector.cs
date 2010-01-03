@@ -21,6 +21,7 @@ namespace MbUnit.Framework.Reflection
     ///<summary>
     /// Helper class to test non-public classes and class members.
     ///</summary>
+    [Obsolete("Use Mirror instead.")]
     public class Reflector
     {
         readonly object _obj;

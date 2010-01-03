@@ -23,4 +23,7 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="Gallio.BuildSemantics.shell.ext"
           Condition="'$(MetaBuildProjectType)'=='Shell'" />
+		  
+  <Import Project="Gallio.BuildSemantics.common.ext"
+          Condition="'$(MetaBuildProjectType)'=='Common'" />
 </Project>

@@ -80,6 +80,7 @@ $firstLicenseLine = (Get-Content $licenseFile)[0].Replace("// ", "")
 $licencesByExtension = @{}
 $licencesByExtension[".cs"] = ($licenseContent + $newLine)
 $licencesByExtension[".vb"] = ($licenseContent.Replace("// ", "' ") + $newLine)
+$licencesByExtension[".thrift"] = ($licenseContent + $newLine)
 
 ## We don't really want most, if any, xml files processed.
 ## Quite a few of them belong to third party libraries or are configuration

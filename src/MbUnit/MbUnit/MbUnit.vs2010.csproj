@@ -88,13 +88,13 @@
     <Compile Include="Framework\FixtureInitializerAttribute.cs" />
     <Compile Include="Framework\IRetryOptions.cs" />
     <Compile Include="Framework\JoinAttribute.cs" />
+    <Compile Include="Framework\Mirror.cs" />
     <Compile Include="Framework\MultipleAssertsAttribute.cs" />
     <Compile Include="Framework\NameAttribute.cs" />
     <Compile Include="Framework\Assert.cs" />
     <Compile Include="Framework\AssertOverSyntax.cs" />
     <Compile Include="Framework\PairwiseJoinAttribute.cs" />
     <Compile Include="Framework\PendingAttribute.cs" />
-    <Compile Include="Framework\Reflection\ReflectionException.cs" />
     <Compile Include="Framework\RepeatAttribute.cs" />
     <Compile Include="Framework\Retry.cs" />
     <Compile Include="Framework\RowAttribute.cs" />
@@ -111,9 +111,7 @@
     <Compile Include="Framework\ImportanceAttribute.cs" />
     <Compile Include="Framework\MetadataAttribute.cs" />
     <Compile Include="Framework\ParameterAttribute.cs" />
-    <Compile Include="Framework\Reflection\AccessModifier.cs" />
-    <Compile Include="Framework\Reflection\MemberType.cs" />
-    <Compile Include="Framework\Reflection\Reflector.cs" />
+    <Compile Include="Framework\MirrorException.cs" />
     <Compile Include="Framework\SequentialJoinAttribute.cs" />
     <Compile Include="Framework\SetUpAttribute.cs" />
     <Compile Include="Framework\Assert.Strings.cs" />
@@ -194,7 +192,6 @@
     <Compile Include="Framework\NamespaceDoc.cs" />
     <Compile Include="Framework\RandomStringStock.cs" />
     <Compile Include="Framework\RandomStringsAttribute.cs" />
-    <Compile Include="Framework\Reflection\NamespaceDoc.cs" />
     <Compile Include="Framework\SequentialNumbersAttribute.cs" />
     <Compile Include="Framework\RandomNumbersAttribute.cs" />
     <Compile Include="Framework\GenerationDataAttribute.cs" />

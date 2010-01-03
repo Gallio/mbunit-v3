@@ -12,10 +12,10 @@ if [[ ! -e Makefile ]]
 then
   ./configure \
     --disable-gen-cpp \
-    --disable-gen-java \
+    --enable-gen-java \
     --enable-gen-csharp \
-    --disable-gen-py \
-    --disable-gen-rb \
+    --enable-gen-py \
+    --enable-gen-rb \
     --disable-gen-perl \
     --disable-gen-php \
     --disable-gen-erl \
@@ -39,7 +39,7 @@ make -C compiler/cpp clean all
 cp "compiler/cpp/.libs/thrift.exe" "$bin"
 #cp "/bin/cygwin1.dll" "$bin"
 
-"$SYSTEMROOT/Microsoft.Net/Framework/v3.5/msbuild.exe" "lib\\csharp\\src\\Thrift.csproj" /p:Configuration=Release
+"$SYSTEMROOT/Microsoft.Net/Framework/v3.5/msbuild.exe" "lib\\csharp\\src\\Thrift.csproj" /p:Configuration=Release /p:TargetFrameworkVersion=v2.0 /p:DefineConstants=NET_2_0 /p:SignAssembly=true /p:AssemblyOriginatorKeyFile=..\\..\\..\\..\\Thrift.snk
 cp "lib/csharp/src/bin/Release/Thrift.dll" "$bin"
 cp "lib/csharp/src/bin/Release/Thrift.pdb" "$bin"
 

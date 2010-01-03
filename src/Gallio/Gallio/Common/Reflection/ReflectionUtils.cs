@@ -285,5 +285,54 @@ namespace Gallio.Common.Reflection
 
             return false;
         }
+
+        /// <summary>
+        /// Workaround for a bug in <see cref="Type.FindMembers"/> which causes it ignore
+        /// the binding flags when searching for events.
+        /// </summary>
+        /// <remarks>
+        /// https://connect.microsoft.com/VisualStudio/feedback/ViewFeedback.aspx?FeedbackID=522960
+        /// </remarks>
+        public static MemberInfo[] FindMembersWorkaround(Type type,
+            MemberTypes memberTypes, BindingFlags bindingFlags, MemberFilter memberFilter, object state)
+        {
+            MemberInfo[] members = type.FindMembers(memberTypes & ~MemberTypes.Event,
+                bindingFlags, memberFilter, state);
+
+            if ((memberTypes & MemberTypes.Event) != 0)
+            {
+                EventInfo[] events = type.GetEvents(bindingFlags);
+                int eventCount;
+                if (memberFilter != null)
+                {
+                    eventCount = 0;
+                    for (int i = 0; i < events.Length; i++)
+                    {
+                        if (memberFilter(events[i], state))
+                            eventCount += 1;
+                        else
+                            events[i] = null;
+                    }
+                }
+                else
+                {
+                    eventCount = events.Length;
+                }
+
+                if (eventCount != 0)
+                {
+                    int index = members.Length;
+                    Array.Resize(ref members, index + eventCount);
+
+                    for (int i = 0; i < events.Length; i++)
+                    {
+                        if (events[i] != null)
+                            members[index++] = events[i];
+                    }
+                }
+            }
+
+            return members;
+        }
     }
 }
