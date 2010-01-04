@@ -235,11 +235,11 @@ namespace MbUnit.Tests.Framework
         }
 
         [Test]
-        public void MemberSetWithSignature_WhenArgTypesContainsNull_Throws()
+        public void MemberSetWithGenericArgs_WhenArgTypesIsNull_Throws()
         {
             var mirror = Mirror.ForType<SampleObject>();
 
-            Assert.Throws<ArgumentNullException>(() => mirror["StaticMethod"].WithSignature(new Type[] { null }));
+            Assert.Throws<ArgumentNullException>(() => mirror["StaticMethod"].WithGenericArgs((Type[])null));
         }
 
         [Test]
@@ -311,7 +311,7 @@ namespace MbUnit.Tests.Framework
             var mirror = Mirror.ForObject(obj);
 
             var ex = Assert.Throws<MirrorException>(() => { var m = mirror["Item"].MemberInfo; });
-            Assert.AreEqual("Could not resolve a unique matching member 'Item' of type 'MbUnit.Tests.Framework.MirrorTest+SampleObject'.", ex.Message);
+            Assert.AreEqual("Could not find a unique matching member 'Item' of type 'MbUnit.Tests.Framework.MirrorTest+SampleObject'.  There were 2 matches out of 2 members with the same name.  Try providing additional information to narrow down the choices.", ex.Message);
 
             Assert.AreEqual("Item", mirror["Item"].WithSignature(typeof(int)).MemberInfo.Name);
             Assert.AreEqual(1, ((PropertyInfo)mirror["Item"].WithSignature(typeof(int)).MemberInfo).GetIndexParameters().Length);
@@ -412,18 +412,24 @@ namespace MbUnit.Tests.Framework
             var mirror = Mirror.ForObject(obj);
 
             var ex = Assert.Throws<MirrorException>(() => { var m = mirror["InstanceMethod"].MemberInfo; });
-            Assert.AreEqual("Could not resolve a unique matching member 'InstanceMethod' of type 'MbUnit.Tests.Framework.MirrorTest+SampleObject'.", ex.Message);
+            Assert.AreEqual("Could not find a unique matching member 'InstanceMethod' of type 'MbUnit.Tests.Framework.MirrorTest+SampleObject'.  There were 5 matches out of 5 members with the same name.  Try providing additional information to narrow down the choices.", ex.Message);
 
-            Assert.AreEqual("InstanceMethod", mirror["InstanceMethod"].WithSignature().MemberInfo.Name);
-            Assert.AreEqual(0, ((MethodInfo)mirror["InstanceMethod"].WithSignature().MemberInfo).GetParameters().Length);
-            Assert.AreEqual("InstanceMethod", mirror["InstanceMethod"].WithSignature(typeof(int)).MemberInfo.Name);
-            Assert.AreEqual(1, ((MethodInfo)mirror["InstanceMethod"].WithSignature(typeof(int)).MemberInfo).GetParameters().Length);
+            Assert.AreEqual("InstanceMethod", mirror["InstanceMethod"].WithGenericArgs().WithSignature().MemberInfo.Name);
+            Assert.AreEqual(0, ((MethodInfo)mirror["InstanceMethod"].WithGenericArgs().WithSignature().MemberInfo).GetParameters().Length);
+            Assert.AreEqual("InstanceMethod", mirror["InstanceMethod"].WithGenericArgs().WithSignature(typeof(int)).MemberInfo.Name);
+            Assert.AreEqual(1, ((MethodInfo)mirror["InstanceMethod"].WithGenericArgs().WithSignature(typeof(int)).MemberInfo).GetParameters().Length);
             Assert.AreEqual("InstanceMethod", mirror["InstanceMethod"].WithSignature(typeof(int), typeof(int)).MemberInfo.Name);
             Assert.AreEqual(2, ((MethodInfo)mirror["InstanceMethod"].WithSignature(typeof(int), typeof(int)).MemberInfo).GetParameters().Length);
+            Assert.AreEqual("InstanceMethod", mirror["InstanceMethod"].WithGenericArgs(typeof(int)).WithSignature().MemberInfo.Name);
+            Assert.AreEqual(0, ((MethodInfo)mirror["InstanceMethod"].WithGenericArgs(typeof(int)).WithSignature().MemberInfo).GetParameters().Length);
+            Assert.AreEqual("InstanceMethod", mirror["InstanceMethod"].WithGenericArgs(typeof(int)).WithSignature(typeof(int)).MemberInfo.Name);
+            Assert.AreEqual(1, ((MethodInfo)mirror["InstanceMethod"].WithGenericArgs(typeof(int)).WithSignature(typeof(int)).MemberInfo).GetParameters().Length);
 
-            Assert.AreEqual(5, mirror["InstanceMethod"].Invoke());
-            Assert.AreEqual(8, mirror["InstanceMethod"].Invoke(4));
+            Assert.AreEqual(5, mirror["InstanceMethod"].WithGenericArgs().Invoke());
+            Assert.AreEqual(8, mirror["InstanceMethod"].WithGenericArgs().Invoke(4));
             Assert.AreEqual(28, mirror["InstanceMethod"].Invoke(4, 7));
+            Assert.AreEqual(0, mirror["InstanceMethod"].WithGenericArgs(typeof(int)).Invoke());
+            Assert.AreEqual(4, mirror["InstanceMethod"].WithGenericArgs(typeof(int)).Invoke(4));
         }
 
         [Test]
@@ -432,18 +438,20 @@ namespace MbUnit.Tests.Framework
             var mirror = usingObjectMirror ? Mirror.ForObject(new SampleObject()) : Mirror.ForType<SampleObject>();
 
             var ex = Assert.Throws<MirrorException>(() => { var m = mirror["StaticMethod"].MemberInfo; });
-            Assert.AreEqual("Could not resolve a unique matching member 'StaticMethod' of type 'MbUnit.Tests.Framework.MirrorTest+SampleObject'.", ex.Message);
+            Assert.AreEqual("Could not find a unique matching member 'StaticMethod' of type 'MbUnit.Tests.Framework.MirrorTest+SampleObject'.  There were 5 matches out of 5 members with the same name.  Try providing additional information to narrow down the choices.", ex.Message);
 
-            Assert.AreEqual("StaticMethod", mirror["StaticMethod"].WithSignature().MemberInfo.Name);
-            Assert.AreEqual(0, ((MethodInfo)mirror["StaticMethod"].WithSignature().MemberInfo).GetParameters().Length);
-            Assert.AreEqual("StaticMethod", mirror["StaticMethod"].WithSignature(typeof(int)).MemberInfo.Name);
-            Assert.AreEqual(1, ((MethodInfo)mirror["StaticMethod"].WithSignature(typeof(int)).MemberInfo).GetParameters().Length);
+            Assert.AreEqual("StaticMethod", mirror["StaticMethod"].WithGenericArgs().WithSignature().MemberInfo.Name);
+            Assert.AreEqual(0, ((MethodInfo)mirror["StaticMethod"].WithGenericArgs().WithSignature().MemberInfo).GetParameters().Length);
+            Assert.AreEqual("StaticMethod", mirror["StaticMethod"].WithGenericArgs().WithSignature(typeof(int)).MemberInfo.Name);
+            Assert.AreEqual(1, ((MethodInfo)mirror["StaticMethod"].WithGenericArgs().WithSignature(typeof(int)).MemberInfo).GetParameters().Length);
             Assert.AreEqual("StaticMethod", mirror["StaticMethod"].WithSignature(typeof(int), typeof(int)).MemberInfo.Name);
             Assert.AreEqual(2, ((MethodInfo)mirror["StaticMethod"].WithSignature(typeof(int), typeof(int)).MemberInfo).GetParameters().Length);
 
-            Assert.AreEqual(5, mirror["StaticMethod"].Invoke());
-            Assert.AreEqual(8, mirror["StaticMethod"].Invoke(4));
+            Assert.AreEqual(5, mirror["StaticMethod"].WithGenericArgs().Invoke());
+            Assert.AreEqual(8, mirror["StaticMethod"].WithGenericArgs().Invoke(4));
             Assert.AreEqual(28, mirror["StaticMethod"].Invoke(4, 7));
+            Assert.AreEqual(0, mirror["StaticMethod"].WithGenericArgs(typeof(int)).Invoke());
+            Assert.AreEqual(4, mirror["StaticMethod"].WithGenericArgs(typeof(int)).Invoke(4));
         }
 
         [Test]
@@ -453,7 +461,7 @@ namespace MbUnit.Tests.Framework
             var mirror = Mirror.ForObject(obj);
 
             var ex = Assert.Throws<MirrorException>(() => { var m = mirror.Constructor.MemberInfo; });
-            Assert.AreEqual("Could not resolve a unique matching member '.ctor' of type 'MbUnit.Tests.Framework.MirrorTest+SampleObject'.", ex.Message);
+            Assert.AreEqual("Could not find a unique matching member '.ctor' of type 'MbUnit.Tests.Framework.MirrorTest+SampleObject'.  There were 2 matches out of 2 members with the same name.  Try providing additional information to narrow down the choices.", ex.Message);
 
             Assert.AreEqual(".ctor", mirror.Constructor.WithSignature().MemberInfo.Name);
             Assert.AreEqual(0, ((ConstructorInfo)mirror.Constructor.WithSignature().MemberInfo).GetParameters().Length);
@@ -474,6 +482,15 @@ namespace MbUnit.Tests.Framework
             SampleObject.callsToStaticConstructor = 0;
             mirror.StaticConstructor.Invoke();
             Assert.AreEqual(1, SampleObject.callsToStaticConstructor);
+        }
+
+        [Test]
+        public void Syntax_NestedType([Column(false, true)] bool usingObjectMirror)
+        {
+            var mirror = usingObjectMirror ? Mirror.ForObject(new SampleObject()) : Mirror.ForType<SampleObject>();
+
+            Assert.AreEqual("NestedType", mirror["NestedType"].MemberInfo.Name);
+            Assert.AreEqual("NestedType", mirror["NestedType"].NestedType.Name);
         }
 
         private class SampleObject
@@ -552,6 +569,11 @@ namespace MbUnit.Tests.Framework
                 return x * y;
             }
 
+            private T InstanceMethod<T>()
+            {
+                return default(T);
+            }
+
             private T InstanceMethod<T>(T x)
             {
                 return x;
@@ -572,9 +594,18 @@ namespace MbUnit.Tests.Framework
                 return x * y;
             }
 
+            private static T StaticMethod<T>()
+            {
+                return default(T);
+            }
+
             private static T StaticMethod<T>(T x)
             {
                 return x;
+            }
+
+            private class NestedType
+            {
             }
         }
     }

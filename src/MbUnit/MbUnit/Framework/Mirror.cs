@@ -40,6 +40,13 @@ namespace MbUnit.Framework
     /// These reflection helpers are not intended to assist with all possible reflection
     /// scenarios.  For everything else, use the standard .Net reflection library.
     /// </para>
+    /// <para>
+    /// Another useful function related to <see cref="Mirror"/> is <see cref="ProxyUtils.CoerceDelegate"/>
+    /// which you can use to convert a delegate from one type to another.  This is useful
+    /// for creating instances of non-public delegate types.  In particular, the
+    /// <see cref="MemberSet.AddHandler(Delegate)"/> method automatically coerces delegates
+    /// if needed.
+    /// </para>
     /// </remarks>
     /// <example>
     /// <para>
@@ -63,6 +70,8 @@ namespace MbUnit.Framework
     ///         public int OverloadedMethod(object y) { ... }
     ///         
     ///         public int OverloadedMethod(string y) { ... }
+    ///         
+    ///         public T GenericMethod&lt;T&gt;(T x) { ... }
     ///     }
     /// }
     /// 
@@ -103,6 +112,12 @@ namespace MbUnit.Framework
     ///         // type automatically from the arguments, such as when an argument is null.
     ///         int result2 = privateNestedClassMirror["OverloadedMethod"].WithSignature(typeof(object)).Invoke(null);
     ///         int result3 = privateNestedClassMirror["OverloadedMethod"].WithSignature(typeof(string)).Invoke(null);
+    /// 
+    ///         // Invoking a generic method.
+    ///         int result3 = privateNestedClassMirror["GenericMethod"].Invoke(42);
+    ///         
+    ///         // Invoking a generic method using specific type arguments.
+    ///         object result4 = privateNestedClassMirror["GenericMethod"].WithTypeArgs(typeof(object)).Invoke(42);
     /// 
     ///         // Creating an instance of an internal object.
     ///         Mirror internalObjTypeMirror = Mirror.ForType("My.Namespace.InternalObject", "MyAssembly");
@@ -344,7 +359,7 @@ namespace MbUnit.Framework
             if (IsNullOfUnknownType)
                 throw new MirrorException("Cannot access the members of a mirror that represents a null object of unknown type.");
 
-            return new MemberSet(type, instance, memberName, null, AnyBinding);
+            return new MemberSet(type, instance, memberName, null, null, AnyBinding);
         }
 
         private static Exception Eval<T>(Func<T> func, out T result)
@@ -381,14 +396,17 @@ namespace MbUnit.Framework
             private readonly object instance;
             private readonly string memberName;
             private readonly Type[] signature;
+            private readonly Type[] genericArgs;
             private readonly BindingFlags bindingFlags;
 
-            internal MemberSet(Type type, object instance, string memberName, Type[] signature, BindingFlags bindingFlags)
+            internal MemberSet(Type type, object instance, string memberName, Type[] signature,
+                Type[] genericArgs, BindingFlags bindingFlags)
             {
                 this.type = type;
                 this.instance = instance;
                 this.memberName = memberName;
                 this.signature = signature;
+                this.genericArgs = genericArgs;
                 this.bindingFlags = bindingFlags;
             }
 
@@ -677,17 +695,33 @@ namespace MbUnit.Framework
             /// This is particularly useful when the member is overloaded and cannot be resolved
             /// automatically.
             /// </summary>
-            /// <param name="argTypes">The expected argument types, which may contain elements
-            /// of type <see cref="System.Type.Missing"/> as placeholders for unspecified types.</param>
+            /// <param name="argTypes">The expected argument types, which may contain null elements
+            /// as placeholders for unspecified types.</param>
             /// <returns>A member set that selects members with the specified signature.</returns>
-            /// <exception cref="ArgumentNullException">Thrown if <paramref name="argTypes"/> is null
-            /// or contains null.</exception>
+            /// <exception cref="ArgumentNullException">Thrown if <paramref name="argTypes"/> is null.</exception>
             public MemberSet WithSignature(params Type[] argTypes)
             {
-                if (argTypes == null || Array.IndexOf(argTypes, null) >= 0)
+                if (argTypes == null)
                     throw new ArgumentNullException("argTypes");
 
                 return InternalWithSignature(argTypes);
+            }
+
+            /// <summary>
+            /// Returns a new member set that selects members with the specified generic arguments.
+            /// This is particularly useful when the member has multiple generic overloads
+            /// that cannot be resolved automatically.
+            /// </summary>
+            /// <param name="genericArgs">The expected generic argument types, which may contain null elements
+            /// as placeholders for unspecified types.</param>
+            /// <returns>A member set that selects members with the specified generic arguments.</returns>
+            /// <exception cref="ArgumentNullException">Thrown if <paramref name="genericArgs"/> is null.</exception>
+            public MemberSet WithGenericArgs(params Type[] genericArgs)
+            {
+                if (genericArgs == null)
+                    throw new ArgumentNullException("genericArgs");
+
+                return InternalWithGenericArgs(genericArgs);
             }
 
             /// <summary>
@@ -702,12 +736,17 @@ namespace MbUnit.Framework
 
             private MemberSet InternalWithSignature(Type[] newSignature)
             {
-                return new MemberSet(type, instance, memberName, newSignature, bindingFlags);
+                return new MemberSet(type, instance, memberName, newSignature, genericArgs, bindingFlags);
+            }
+
+            private MemberSet InternalWithGenericArgs(Type[] newGenericArgs)
+            {
+                return new MemberSet(type, instance, memberName, signature, newGenericArgs, bindingFlags);
             }
 
             private MemberSet InternalWithBindingFlags(BindingFlags newBindingFlags)
             {
-                return new MemberSet(type, instance, memberName, signature, newBindingFlags);
+                return new MemberSet(type, instance, memberName, signature, genericArgs, newBindingFlags);
             }
 
             private PropertyIndex InternalGetPropertyIndex(object[] indexArgs)
@@ -859,17 +898,100 @@ namespace MbUnit.Framework
             private MemberInfo ResolveMember(MemberTypes memberTypes, string memberTypeDescription, Type[] expectedArgTypes)
             {
                 MemberInfo[] memberInfos;
-                Exception ex = Eval(() => ReflectionUtils.FindMembersWorkaround(type, memberTypes, bindingFlags,
-                    (memberInfo, state) => memberInfo.Name == memberName
-                        && HasExactArgumentTypes(memberInfo, signature)
-                        && HasCompatibleArgumentTypes(memberInfo, expectedArgTypes), null),
-                    out memberInfos);
+                Exception ex = Eval(() => ReflectionUtils.FindMembersWorkaround(type, memberTypes, bindingFlags, IsMemberWithMatchingName, null), out memberInfos);
 
-                if (ex != null || memberInfos.Length != 1)
-                    throw new MirrorException(string.Format("Could not resolve a unique matching {0} '{1}' of type '{2}'.",
+                if (ex != null || memberInfos.Length == 0)
+                    throw new MirrorException(string.Format("Could not find any {0} '{1}' of type '{2}'.",
                         memberTypeDescription, memberName, type), ex);
 
-                return memberInfos[0];
+                MemberInfo match = null;
+                int matchCount = 0;
+                foreach (MemberInfo memberInfo in memberInfos)
+                {
+                    MemberInfo resolvedMemberInfo = ResolveMemberIfMatch(memberInfo, expectedArgTypes);
+                    if (resolvedMemberInfo != null)
+                    {
+                        match = resolvedMemberInfo;
+                        matchCount += 1;
+                    }
+                }
+
+                if (matchCount == 1)
+                    return match;
+
+                throw new MirrorException(string.Format("Could not find a unique matching {0} '{1}' of type '{2}'.  There were {3} matches out of {4} members with the same name.  Try providing additional information to narrow down the choices.",
+                    memberTypeDescription, memberName, type, matchCount, memberInfos.Length));
+            }
+
+            private bool IsMemberWithMatchingName(MemberInfo memberInfo, object state)
+            {
+                return memberInfo.Name == memberName;
+            }
+
+            private MemberInfo ResolveMemberIfMatch(MemberInfo memberInfo, Type[] expectedArgTypes)
+            {
+                ParameterInfo[] parameters;
+                Type[] genericParameters;
+                GetMemberParameters(memberInfo, out parameters, out genericParameters);
+
+                if (signature != null && signature.Length != parameters.Length)
+                    return null;
+                if (genericArgs != null && genericArgs.Length != genericParameters.Length)
+                    return null;
+                if (expectedArgTypes != null && expectedArgTypes.Length != parameters.Length)
+                    return null;
+
+                Type[] resolvedGenericArgs;
+                if (genericParameters.Length != 0)
+                {
+                    resolvedGenericArgs = new Type[genericParameters.Length];
+
+                    for (int i = 0; i < genericParameters.Length; i++)
+                    {
+                        if (genericArgs != null && genericArgs[i] != null)
+                            resolvedGenericArgs[i] = genericArgs[i];
+                        else
+                            resolvedGenericArgs[i] = genericParameters[i];
+                    }
+                }
+                else
+                {
+                    resolvedGenericArgs = null;
+                }
+
+                for (int i = 0; i < parameters.Length; i++)
+                {
+                    Type parameterType = parameters[i].ParameterType;
+                    if (parameterType.IsGenericParameter)
+                    {
+                        parameterType = resolvedGenericArgs[parameterType.GenericParameterPosition];
+
+                        if (parameterType.IsGenericParameter && expectedArgTypes != null)
+                            resolvedGenericArgs[parameterType.GenericParameterPosition] = expectedArgTypes[i];
+                    }
+
+                    if (expectedArgTypes != null && !parameterType.IsAssignableFrom(expectedArgTypes[i]))
+                        return null; // parameter is not assignable
+                }
+
+                if (resolvedGenericArgs != null)
+                {
+                    if (Array.IndexOf(resolvedGenericArgs, null) >= 0)
+                        return null; // missing necessary generic argument information
+
+                    try
+                    {
+                        MethodInfo methodInfo = (MethodInfo)memberInfo;
+                        return methodInfo.MakeGenericMethod(resolvedGenericArgs);
+                    }
+                    catch (ArgumentException)
+                    {
+                        // Does not satisfy the generic parameter constraints.
+                        return null;
+                    }
+                }
+
+                return memberInfo;
             }
 
             private static Type[] GetTypes(object[] objs)
@@ -877,55 +999,34 @@ namespace MbUnit.Framework
                 return Array.ConvertAll(objs, x => x != null ? x.GetType() : null);
             }
 
-            private static bool HasExactArgumentTypes(MemberInfo memberInfo, Type[] expectedArgTypes)
-            {
-                return CheckArgumentTypes(memberInfo, expectedArgTypes,
-                    (expectedArgType, actualArgType) => expectedArgType == actualArgType);
-            }
-
-            private static bool HasCompatibleArgumentTypes(MemberInfo memberInfo, Type[] expectedArgTypes)
-            {
-                return CheckArgumentTypes(memberInfo, expectedArgTypes,
-                    (expectedArgType, actualArgType) => actualArgType.IsAssignableFrom(expectedArgType));
-            }
-
-            private static bool CheckArgumentTypes(MemberInfo memberInfo, Type[] expectedArgTypes, Func<Type, Type, bool> predicate)
-            {
-                if (expectedArgTypes == null)
-                    return true;
-
-                Type[] actualArgTypes = GetMemberArgumentTypes(memberInfo);
-                if (actualArgTypes == null)
-                    return true;
-
-                if (expectedArgTypes.Length != actualArgTypes.Length)
-                    return false;
-
-                for (int i = 0; i < expectedArgTypes.Length; i++)
-                {
-                    if (expectedArgTypes[i] != Type.Missing
-                        && !predicate(expectedArgTypes[i], actualArgTypes[i]))
-                        return false;
-                }
-
-                return true;
-            }
-
-            private static Type[] GetMemberArgumentTypes(MemberInfo memberInfo)
+            private static void GetMemberParameters(MemberInfo memberInfo,
+                out ParameterInfo[] parameters, out Type[] genericParameters)
             {
                 switch (memberInfo.MemberType)
                 {
                     case MemberTypes.Property:
-                        return Array.ConvertAll(((PropertyInfo)memberInfo).GetIndexParameters(), x => x.ParameterType);
+                        var propertyInfo = (PropertyInfo)memberInfo;
+                        parameters = propertyInfo.GetIndexParameters();
+                        genericParameters = Type.EmptyTypes;
+                        break;
                     case MemberTypes.Constructor:
+                        var constructorInfo = (ConstructorInfo)memberInfo;
+                        parameters = constructorInfo.GetParameters();
+                        genericParameters = Type.EmptyTypes;
+                        break;
                     case MemberTypes.Method:
-                        return Array.ConvertAll(((MethodBase)memberInfo).GetParameters(), x => x.ParameterType);
+                        var methodInfo = (MethodInfo)memberInfo;
+                        parameters = methodInfo.GetParameters();
+                        genericParameters = methodInfo.ContainsGenericParameters ? methodInfo.GetGenericArguments() : Type.EmptyTypes;
+                        break;
                     case MemberTypes.Event:
                     case MemberTypes.Field:
                     case MemberTypes.TypeInfo:
                     case MemberTypes.Custom:
                     case MemberTypes.NestedType:
-                        return null;
+                        parameters = EmptyArray<ParameterInfo>.Instance;
+                        genericParameters = Type.EmptyTypes;
+                        break;
                     default:
                         throw new NotSupportedException();
                 }
