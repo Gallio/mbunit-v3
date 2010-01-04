@@ -21,6 +21,7 @@ namespace Gallio.Common.Splash.Tests
 {
     public class StylePropertyTest
     {
+        [VerifyContract]
         public readonly IContract EqualityAndHashCode = new EqualityContract<StyleProperty<int>>()
         {
             ImplementsOperatorOverloads = true,
