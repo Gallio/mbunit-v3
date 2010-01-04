@@ -173,8 +173,8 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
 
             public static bool operator ==(SampleSimpleEquatable left, SampleSimpleEquatable right)
             {
-                return (Object.ReferenceEquals(null, left) && Object.ReferenceEquals(null, right))
-                    || (!Object.ReferenceEquals(null, left) && left.Equals(right));
+                return (ReferenceEquals(null, left) && ReferenceEquals(null, right))
+                    || (!ReferenceEquals(null, left) && left.Equals(right));
             }
 
             public static bool operator !=(SampleSimpleEquatable left, SampleSimpleEquatable right)
@@ -218,8 +218,8 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
 
             public static bool operator ==(SampleParentEquatable left, SampleParentEquatable right)
             {
-                return (Object.ReferenceEquals(null, left) && Object.ReferenceEquals(null, right)) 
-                    || (!Object.ReferenceEquals(null, left) && left.Equals(right));
+                return (ReferenceEquals(null, left) && ReferenceEquals(null, right)) 
+                    || (!ReferenceEquals(null, left) && left.Equals(right));
             }
 
             public static bool operator !=(SampleParentEquatable left, SampleParentEquatable right)

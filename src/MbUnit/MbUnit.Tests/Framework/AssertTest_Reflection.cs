@@ -260,13 +260,6 @@ namespace MbUnit.Tests.Framework
         #region IsInstanceOfType
 
         [Test]
-        [ExpectedArgumentNullException]
-        public void IsInstanceOfType_with_null_expectedType()
-        {
-            Assert.IsInstanceOfType(null, new Object());
-        }
-
-        [Test]
         public void IsInstanceOfType_without_custom_message()
         {
             Assert.IsInstanceOfType(typeof(string), "Hello");
@@ -279,16 +272,29 @@ namespace MbUnit.Tests.Framework
         }
 
         [Test]
-        [ExpectedArgumentNullException]
-        public void IsInstanceOfType_with_custom_message_and_null_expectedType()
-        {
-            Assert.IsInstanceOfType(null, new Object(), "Message With Some {0}", "Argument");
-        }
-
-        [Test]
         public void Generic_IsInstanceOfType_with_custom_message()
         {
             Assert.IsInstanceOfType<string>("Hello", "Message With Some {0}", "Argument");
+        }
+
+        [Test]
+        public void IsInstanceOfType_with_null_expectedType_and_non_null_actual_value_should_fail()
+        {
+            AssertionFailure[] failures = Capture(() => Assert.IsInstanceOfType(null, 123));
+            Assert.AreEqual(1, failures.Length);
+            Assert.AreEqual("Expected value to be an instance of a particular type.", failures[0].Description);
+            Assert.AreEqual("Expected Type", failures[0].LabeledValues[0].Label);
+            Assert.AreEqual("null", failures[0].LabeledValues[0].FormattedValue.ToString());
+            Assert.AreEqual("Actual Type", failures[0].LabeledValues[1].Label);
+            Assert.AreEqual("int", failures[0].LabeledValues[1].FormattedValue.ToString());
+            Assert.AreEqual("Actual Value", failures[0].LabeledValues[2].Label);
+            Assert.AreEqual("123", failures[0].LabeledValues[2].FormattedValue.ToString());
+        }
+
+        [Test]
+        public void IsInstanceOfType_with_null_expectedType_and_actual_value_should_pass()
+        {
+            Assert.IsInstanceOfType(null, null);
         }
 
         [Test]
@@ -324,13 +330,6 @@ namespace MbUnit.Tests.Framework
         #region IsNotInstanceOfType
 
         [Test]
-        [ExpectedArgumentNullException]
-        public void IsNotInstanceOfType_with_null_expectedType()
-        {
-            Assert.IsNotInstanceOfType(null, new Object());
-        }
-
-        [Test]
         public void IsNotInstanceOfType_without_custom_message()
         {
             Assert.IsNotInstanceOfType(typeof(int), "Hello");
@@ -343,16 +342,27 @@ namespace MbUnit.Tests.Framework
         }
 
         [Test]
-        [ExpectedArgumentNullException]
-        public void IsNotInstanceOfType_with_custom_message_and_null_expectedType()
-        {
-            Assert.IsNotInstanceOfType(null, new Object(), "Message With Some {0}", "Argument");
-        }
-
-        [Test]
         public void Generic_IsNotInstanceOfType_with_custom_message()
         {
             Assert.IsNotInstanceOfType<int>("Hello", "Message With Some {0}", "Argument");
+        }
+
+        [Test]
+        public void IsNotInstanceOfType_with_null_expectedType_and_non_null_actualValue_should_pass()
+        {
+            Assert.IsNotInstanceOfType(null, 123);
+        }
+
+        [Test]
+        public void Generic_IsNotInstanceOfType_null_expectedType_and_actualValue_should_fail()
+        {
+            AssertionFailure[] failures = Capture(() => Assert.IsNotInstanceOfType(null, null));
+            Assert.AreEqual(1, failures.Length);
+            Assert.AreEqual("Expected value to not be an instance of a particular type.", failures[0].Description);
+            Assert.AreEqual("Unexpected Type", failures[0].LabeledValues[0].Label);
+            Assert.AreEqual("null", failures[0].LabeledValues[0].FormattedValue.ToString());
+            Assert.AreEqual("Actual Value", failures[0].LabeledValues[1].Label);
+            Assert.AreEqual("null", failures[0].LabeledValues[1].FormattedValue.ToString());
         }
 
         [Test]

@@ -198,6 +198,17 @@ namespace MbUnit.Framework
 
         #endregion
 
+        // Truth table
+        // ===========
+        //
+        // ExpectedType   | ActualValue   | IsInstanceOfType   | IsNotInstanceOfType
+        // ---------------+---------------+--------------------+---------------------
+        // typeof(x)	  | x	          | = True             | = False
+        // typeof(x)	  | y	          | = False            | = True
+        // typeof(x)	  | null	      | = False            | = True
+        // null	          | x	          | = False            | = True
+        // null	          | null	      | = True             | = False
+
         #region IsInstanceOfType
 
         /// <summary>
@@ -233,19 +244,21 @@ namespace MbUnit.Framework
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="expectedType"/> is null.</exception>
         public static void IsInstanceOfType(Type expectedType, object actualValue, string messageFormat, params object[] messageArgs)
         {
-            if (expectedType == null)
-                throw new ArgumentNullException("expectedType");
-
-            AssertionHelper.Verify(delegate
+            AssertionHelper.Verify(() =>
             {
-                if (actualValue != null && expectedType.IsInstanceOfType(actualValue))
+                bool isNullValue = Object.ReferenceEquals(null, actualValue);
+
+                if ((expectedType == null && isNullValue) ||
+                    (expectedType != null && !isNullValue && expectedType.IsInstanceOfType(actualValue)))
                     return null;
 
-                AssertionFailureBuilder builder = new AssertionFailureBuilder("Expected value to be an instance of a particular type.")
+                var builder = new AssertionFailureBuilder("Expected value to be an instance of a particular type.")
                     .SetMessage(messageFormat, messageArgs)
                     .AddRawLabeledValue("Expected Type", expectedType);
-                if (actualValue != null)
+
+                if (!isNullValue)
                     builder.AddRawLabeledValue("Actual Type", actualValue.GetType());
+
                 return builder
                     .AddRawActualValue(actualValue)
                     .ToAssertionFailure();
@@ -323,19 +336,20 @@ namespace MbUnit.Framework
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="unexpectedType"/> is null.</exception>
         public static void IsNotInstanceOfType(Type unexpectedType, object actualValue, string messageFormat, params object[] messageArgs)
         {
-            if (unexpectedType == null)
-                throw new ArgumentNullException("unexpectedType");
-
-            AssertionHelper.Verify(delegate
+            AssertionHelper.Verify(() =>
             {
-                if (actualValue != null && !unexpectedType.IsInstanceOfType(actualValue))
+                bool isNullValue = Object.ReferenceEquals(null, actualValue);
+
+                if (!isNullValue && (unexpectedType == null || !unexpectedType.IsInstanceOfType(actualValue)))
                     return null;
 
-                AssertionFailureBuilder builder = new AssertionFailureBuilder("Expected value to not be an instance of a particular type.")
+                var builder = new AssertionFailureBuilder("Expected value to not be an instance of a particular type.")
                     .SetMessage(messageFormat, messageArgs)
                     .AddRawLabeledValue("Unexpected Type", unexpectedType);
-                if (actualValue != null)
+
+                if (!isNullValue)
                     builder.AddRawLabeledValue("Actual Type", actualValue.GetType());
+                
                 return builder
                     .AddRawActualValue(actualValue)
                     .ToAssertionFailure();
