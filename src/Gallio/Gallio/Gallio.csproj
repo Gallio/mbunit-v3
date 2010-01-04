@@ -14,9 +14,9 @@
     <SGenUseProxyTypes>false</SGenUseProxyTypes>
     <SGenShouldGenerateSerializer>true</SGenShouldGenerateSerializer>
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
-	<SourceRoot>$(MSBuildProjectDirectory)\..\..\..</SourceRoot>
-	<MetaBuildConfigFile>$(SourceRoot)\bin\MetaBuild.config.custom</MetaBuildConfigFile>
-	<CustomAfterMicrosoftCommonTargets>$(SourceRoot)\tools\MetaBuild\bin\Custom.After.Microsoft.Common.targets</CustomAfterMicrosoftCommonTargets>
+    <SourceRoot>$(MSBuildProjectDirectory)\..\..\..</SourceRoot>
+    <MetaBuildConfigFile>$(SourceRoot)\bin\MetaBuild.config.custom</MetaBuildConfigFile>
+    <CustomAfterMicrosoftCommonTargets>$(SourceRoot)\tools\MetaBuild\bin\Custom.After.Microsoft.Common.targets</CustomAfterMicrosoftCommonTargets>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -71,6 +71,7 @@
   <ItemGroup>
     <Compile Include="Common\Accessor.cs" />
     <Compile Include="Common\Action.cs" />
+    <Compile Include="Common\Comparison.cs" />
     <Compile Include="Common\Concurrency\DegreeOfParallelismProvider.cs" />
     <Compile Include="Common\Concurrency\IProcess.cs" />
     <Compile Include="Common\Concurrency\IProcessCreator.cs" />
@@ -80,7 +81,6 @@
     <Compile Include="Common\Concurrency\ProcessWrapper.cs" />
     <Compile Include="Common\Concurrency\WorkScheduler.cs" />
     <Compile Include="Common\Concurrency\TaskResult.cs" />
-    <Compile Include="Common\Comparison.cs" />
     <Compile Include="Common\IO\ConsoleRedirection.cs" />
     <Compile Include="Common\Markup\MarkupNormalizationUtils.cs" />
     <Compile Include="Common\Messaging\IMessageExchangeLink.cs" />
@@ -200,6 +200,7 @@
     <Compile Include="Common\Reflection\Impl\NamespaceDoc.cs" />
     <Compile Include="Common\Reflection\IMirror.cs" />
     <Compile Include="Common\Reflection\NamespaceDoc.cs" />
+    <Compile Include="Common\Reflection\ProxyUtils.cs" />
     <Compile Include="Common\Remoting\BaseChannel.cs" />
     <Compile Include="Common\Remoting\BaseClientChannel.cs" />
     <Compile Include="Common\Remoting\BaseServerChannel.cs" />
