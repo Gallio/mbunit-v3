@@ -15,8 +15,8 @@
 
 using System;
 using System.Collections.Generic;
-using System.Windows.Forms;
 using Gallio.Icarus.Controllers.Interfaces;
+using Gallio.Icarus.Properties;
 using Gallio.Runtime.ProgressMonitoring;
 using Gallio.UI.ProgressMonitoring;
 
@@ -42,7 +42,7 @@ namespace Gallio.Icarus.Commands
 
         public void Execute(IProgressMonitor progressMonitor)
         {
-            using (progressMonitor.BeginTask("Adding files.", 100))
+            using (progressMonitor.BeginTask(Resources.AddingFiles, 100))
             {
                 // add files to test package
                 using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(10))

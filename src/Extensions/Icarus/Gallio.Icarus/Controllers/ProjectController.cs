@@ -23,7 +23,10 @@ using Gallio.Common.Policies;
 using Gallio.Common.Xml;
 using Gallio.Icarus.Controllers.EventArgs;
 using Gallio.Icarus.Controllers.Interfaces;
+using Gallio.Icarus.Events;
 using Gallio.Icarus.Models;
+using Gallio.Icarus.Projects;
+using Gallio.Icarus.Properties;
 using Gallio.Icarus.Remoting;
 using Gallio.Model;
 using Gallio.Model.Filters;
@@ -33,11 +36,11 @@ using Gallio.Runtime.ProgressMonitoring;
 using Gallio.UI.Common.Policies;
 using Gallio.UI.Common.Synchronization;
 using Gallio.UI.DataBinding;
-using Path = System.IO.Path;
+using Path=System.IO.Path;
 
 namespace Gallio.Icarus.Controllers
 {
-    internal class ProjectController : NotifyController, IProjectController
+    internal class ProjectController : NotifyController, IProjectController, Handles<ProjectChanged>
     {
         private readonly IProjectTreeModel projectTreeModel;
         private readonly IOptionsController optionsController;
@@ -55,6 +58,7 @@ namespace Gallio.Icarus.Controllers
         private bool updating;
 
         public event EventHandler<FileChangedEventArgs> FileChanged;
+        public event EventHandler<ProjectChangedEventArgs> ProjectChanged;
 
         public IProjectTreeModel Model
         {
@@ -163,7 +167,7 @@ namespace Gallio.Icarus.Controllers
 
         public void AddFiles(IList<string> files, IProgressMonitor progressMonitor)
         {
-            using (progressMonitor.BeginTask("Adding files.", (files.Count + 2)))
+            using (progressMonitor.BeginTask(Resources.AddingFiles, (files.Count + 2)))
             {
                 IList<string> validFiles = new List<string>();
                 foreach (string file in files)
@@ -185,7 +189,7 @@ namespace Gallio.Icarus.Controllers
 
         public void DeleteFilter(FilterInfo filterInfo, IProgressMonitor progressMonitor)
         {
-            using (progressMonitor.BeginTask("Deleting filter", 1))
+            using (progressMonitor.BeginTask(Resources.DeletingFilter, 1))
             {
                 projectTreeModel.TestProject.RemoveTestFilter(filterInfo);
                 TestFilters.Value = new List<FilterInfo>(projectTreeModel.TestProject.TestFilters); // notify UI
@@ -224,7 +228,7 @@ namespace Gallio.Icarus.Controllers
 
         public void OpenProject(string projectName, IProgressMonitor progressMonitor)
         {
-            using (progressMonitor.BeginTask("Opening project", 100))
+            using (progressMonitor.BeginTask(Resources.OpeningProject, 100))
             {
                 using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(70))
                     LoadProjectFile(subProgressMonitor, projectName);
@@ -250,9 +254,9 @@ namespace Gallio.Icarus.Controllers
                     TreeViewCategory = userOptions.TreeViewCategory;
                     CollapsedNodes = userOptions.CollapsedNodes;
                 }
-                catch
+                catch (Exception ex)
                 {
-                    // eat any errors
+                    unhandledExceptionPolicy.Report("Failed to load user options.", ex);
                 }
             }
         }
@@ -364,6 +368,12 @@ namespace Gallio.Icarus.Controllers
 
                 updating = false;
             }, null);
+        }
+
+        public void Handle(ProjectChanged message)
+        {
+            if (ProjectChanged != null)
+                ProjectChanged(this, new ProjectChangedEventArgs(message.ProjectLocation));
         }
     }
 }

@@ -14,21 +14,17 @@
 // limitations under the License.
 
 using System.Windows.Forms;
-using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Properties;
 
-namespace Gallio.Icarus
+namespace Gallio.Icarus.Projects
 {
-    public partial class ReloadDialog : Form
+    public partial class ProjectReloadDialog : Form
     {
-        public ReloadDialog(string fileName, IOptionsController optionsController)
+        public ProjectReloadDialog(string projectName)
         {
             InitializeComponent();
 
-            fileModifiedLabel.Text = string.Format(Resources.FileModified, fileName);
-
-            alwaysReload.DataBindings.Add("Checked", optionsController, "AlwaysReloadFiles", 
-                false, DataSourceUpdateMode.OnPropertyChanged);
+            projectModifiedLabel.Text = string.Format(Resources.ProjectModified, projectName);
         }
     }
 }

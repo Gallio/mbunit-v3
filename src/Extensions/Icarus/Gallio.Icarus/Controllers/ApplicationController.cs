@@ -22,6 +22,7 @@ using Gallio.Common.Policies;
 using Gallio.Icarus.Commands;
 using Gallio.Icarus.Controllers.EventArgs;
 using Gallio.Icarus.Controllers.Interfaces;
+using Gallio.Icarus.Events;
 using Gallio.UI.Controls;
 using Gallio.Icarus.Helpers;
 using Gallio.Runner.Projects;
@@ -44,9 +45,8 @@ namespace Gallio.Icarus.Controllers
         private readonly ITestController testController;
         private readonly IProjectController projectController;
         private readonly IUnhandledExceptionPolicy unhandledExceptionPolicy;
-
-        public event EventHandler<FileChangedEventArgs> FileChanged;
-        
+        private readonly IEventAggregator eventAggregator;
+       
         public string Title
         {
             get
@@ -98,9 +98,10 @@ namespace Gallio.Icarus.Controllers
             testController = serviceLocator.Resolve<ITestController>();
             
             projectController = serviceLocator.Resolve<IProjectController>();
-            projectController.FileChanged += (sender, e) => EventHandlerPolicy.SafeInvoke(FileChanged, this, e);
             
             unhandledExceptionPolicy = serviceLocator.Resolve<IUnhandledExceptionPolicy>();
+
+            eventAggregator = serviceLocator.Resolve<IEventAggregator>();
         }
 
         public void Load()
@@ -180,7 +181,10 @@ namespace Gallio.Icarus.Controllers
         {
             Title = projectName;
 
-            var openProjectCommand = new OpenProjectCommand(testController, projectController, projectName);
+            var openProjectCommand = new OpenProjectCommand(testController, projectController, eventAggregator)
+            {
+                FileName = projectName
+            };
             taskManager.QueueTask(openProjectCommand);
         }
 
@@ -211,6 +215,13 @@ namespace Gallio.Icarus.Controllers
             Title = Paths.DefaultProject;
             var cmd = new NewProjectCommand(projectController, testController);
             taskManager.QueueTask(cmd);
+        }
+
+        public void Shutdown()
+        {
+            eventAggregator.Send(new ApplicationShutdown());
+            UnloadPackages();
+            SaveProject(false);
         }
     }
 }

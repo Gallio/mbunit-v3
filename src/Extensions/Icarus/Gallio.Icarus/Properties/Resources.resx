@@ -169,4 +169,22 @@
   <data name="Properties" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Properties.ico;System.Drawing.Icon, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="ProjectModified" xml:space="preserve">
+    <value>Project '{0}' has been modified.</value>
+  </data>
+  <data name="ProjectReloadOrIgnore" xml:space="preserve">
+    <value>Press Reload to update the project or Ignore to continue.</value>
+  </data>
+  <data name="FileModified" xml:space="preserve">
+    <value>File '{0}' has been modified.</value>
+  </data>
+  <data name="AddingFiles" xml:space="preserve">
+    <value>Adding files</value>
+  </data>
+  <data name="DeletingFilter" xml:space="preserve">
+    <value>Deleting filter</value>
+  </data>
+  <data name="OpeningProject" xml:space="preserve">
+    <value>Opening project</value>
+  </data>
 </root>

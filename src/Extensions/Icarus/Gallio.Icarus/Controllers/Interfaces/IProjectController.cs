@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using Gallio.Icarus.Controllers.EventArgs;
 using Gallio.Icarus.Models;
+using Gallio.Icarus.Projects;
 using Gallio.Model;
 using Gallio.Model.Filters;
 using Gallio.Runner.Projects.Schema;
@@ -49,5 +50,6 @@ namespace Gallio.Icarus.Controllers.Interfaces
         void RemoveFile(string fileName, IProgressMonitor progressMonitor);
         void SaveFilterSet(string filterName, FilterSet<ITestDescriptor> filterSet, IProgressMonitor progressMonitor);
         void SaveProject(string projectName, IProgressMonitor progressMonitor);
+        event EventHandler<ProjectChangedEventArgs> ProjectChanged;
     }
 }

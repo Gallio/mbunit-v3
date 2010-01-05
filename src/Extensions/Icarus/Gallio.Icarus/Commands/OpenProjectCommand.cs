@@ -14,6 +14,9 @@
 // limitations under the License.
 
 using Gallio.Icarus.Controllers.Interfaces;
+using Gallio.Icarus.Events;
+using Gallio.Icarus.Projects;
+using Gallio.Icarus.Properties;
 using Gallio.Runtime.ProgressMonitoring;
 using Gallio.UI.ProgressMonitoring;
 
@@ -23,17 +26,18 @@ namespace Gallio.Icarus.Commands
     {
         private readonly ITestController testController;
         private readonly IProjectController projectController;
-        private readonly string fileName;
+        private readonly IEventAggregator eventAggregator;
         private readonly LoadPackageCommand loadPackageCommand;
         private readonly RestoreFilterCommand restoreFilterCommand;
 
+        public string FileName { get; set; }
+
         public OpenProjectCommand(ITestController testController, IProjectController projectController, 
-            string fileName)
+            IEventAggregator eventAggregator)
         {
             this.testController = testController;
             this.projectController = projectController;
-            
-            this.fileName = fileName;
+            this.eventAggregator = eventAggregator;
 
             loadPackageCommand = new LoadPackageCommand(testController, projectController);
             restoreFilterCommand = new RestoreFilterCommand(testController, projectController);
@@ -41,19 +45,21 @@ namespace Gallio.Icarus.Commands
 
         public void Execute(IProgressMonitor progressMonitor)
         {
-            using (progressMonitor.BeginTask("Opening project", 100))
+            using (progressMonitor.BeginTask(Resources.OpeningProject, 100))
             {
                 using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(5))
                     testController.ResetTestStatus(subProgressMonitor);
 
                 using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(5))
-                    projectController.OpenProject(fileName, subProgressMonitor);
+                    projectController.OpenProject(FileName, subProgressMonitor);
 
                 using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(85))
                     loadPackageCommand.Execute(subProgressMonitor);
 
                 using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(5))
                     restoreFilterCommand.Execute(subProgressMonitor);
+
+                eventAggregator.Send(new ProjectOpened(FileName));
             }
         }
     }

@@ -16,8 +16,11 @@
 using System.Collections.Generic;
 using Gallio.Icarus.Commands;
 using Gallio.Icarus.Controllers.Interfaces;
+using Gallio.Icarus.Events;
+using Gallio.Icarus.Projects;
 using Gallio.Icarus.Tests.Utilities;
 using Gallio.Runner.Projects.Schema;
+using Gallio.Runtime.ProgressMonitoring;
 using Gallio.UI.DataBinding;
 using MbUnit.Framework;
 using Rhino.Mocks;
@@ -27,16 +30,31 @@ namespace Gallio.Icarus.Tests.Commands
     [Category("Commands"), TestsOn(typeof(OpenProjectCommand))]
     internal class OpenProjectCommandTest
     {
+        private ITestController testController;
+        private IProjectController projectController;
+        private IEventAggregator eventAggregator;
+        private OpenProjectCommand openProjectCommand;
+        private IProgressMonitor progressMonitor;
+        private const string FileName = "fileName";
+
+        [SetUp]
+        public void SetUp()
+        {
+            testController = MockRepository.GenerateStub<ITestController>();
+            projectController = MockRepository.GenerateStub<IProjectController>();
+            var testFilters = new Observable<IList<FilterInfo>>(new List<FilterInfo>());
+            projectController.Stub(pc => pc.TestFilters).Return(testFilters);
+            eventAggregator = MockRepository.GenerateStub<IEventAggregator>();
+            progressMonitor = MockProgressMonitor.Instance;
+            openProjectCommand = new OpenProjectCommand(testController, projectController, eventAggregator)
+            {
+                FileName = FileName
+            };
+        }
+
         [Test]
         public void Execute_should_reset_test_status()
         {
-            var testController = MockRepository.GenerateStub<ITestController>();
-            var projectController = MockRepository.GenerateStub<IProjectController>();
-            projectController.Stub(pc => pc.TestFilters).Return(new Observable<IList<FilterInfo>>(new List<FilterInfo>()));
-            const string fileName = "fileName";
-            var openProjectCommand = new OpenProjectCommand(testController, projectController, fileName);
-            var progressMonitor = MockProgressMonitor.Instance;
-
             openProjectCommand.Execute(progressMonitor);
 
             testController.AssertWasCalled(tc => tc.ResetTestStatus(progressMonitor));
@@ -45,16 +63,18 @@ namespace Gallio.Icarus.Tests.Commands
         [Test]
         public void Execute_should_open_project()
         {
-            var testController = MockRepository.GenerateStub<ITestController>();
-            var projectController = MockRepository.GenerateStub<IProjectController>();
-            projectController.Stub(pc => pc.TestFilters).Return(new Observable<IList<FilterInfo>>(new List<FilterInfo>()));
-            const string fileName = "fileName";
-            var openProjectCommand = new OpenProjectCommand(testController, projectController, fileName);
-            var progressMonitor = MockProgressMonitor.Instance;
-
             openProjectCommand.Execute(progressMonitor);
 
-            projectController.AssertWasCalled(pc => pc.OpenProject(fileName, progressMonitor));
+            projectController.AssertWasCalled(pc => pc.OpenProject(FileName, progressMonitor));
+        }
+
+        [Test]
+        public void Execute_should_notify_that_the_project_was_opened()
+        {
+            openProjectCommand.Execute(progressMonitor);
+
+            eventAggregator.AssertWasCalled(ea => ea.Send(Arg<ProjectOpened>.Matches(po => 
+                po.ProjectLocation == FileName)));
         }
     }
 }

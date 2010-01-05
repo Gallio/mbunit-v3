@@ -26,11 +26,10 @@ namespace Gallio.Icarus.Controllers
         ToolStripMenuItem[] RecentProjects { get; }
         bool FailedTests { get; }
 
-        event EventHandler<FileChangedEventArgs> FileChanged;
-
         void Load();
         void NewProject();
         void OpenProject(string projectName);
         void SaveProject(bool queueTask);
+        void Shutdown();
     }
 }

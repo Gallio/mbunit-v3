@@ -18,6 +18,7 @@ using System.Reflection;
 using Gallio.Common.Reflection;
 using Gallio.Icarus.Events;
 using Gallio.Runtime.Extensibility;
+using Gallio.UI.ProgressMonitoring;
 
 namespace Gallio.Icarus.Runtime
 {
@@ -55,12 +56,11 @@ namespace Gallio.Icarus.Runtime
         private void RegisterComponentForServices(Assembly assembly, Type type, 
             TypeName typeName, IPluginDescriptor plugin)
         {
-            var componentId = Guid.NewGuid().ToString();
+            var componentId = type.FullName;
 
             foreach (var interfaceType in type.GetInterfaces())
             {
-                // only register services in the Icarus assembly
-                if (interfaceType.Assembly != assembly)
+                if (interfaceType.Assembly != assembly && interfaceType != typeof(ICommand))
                     continue;
 
                 if (IsOpenGenericType(interfaceType))

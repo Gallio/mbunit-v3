@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Text;
 using System.Windows.Forms;
 using Gallio.Common.Concurrency;
@@ -29,6 +30,7 @@ using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Events;
 using Gallio.Icarus.Models;
 using Gallio.Icarus.ProgressMonitoring;
+using Gallio.Icarus.Projects;
 using Gallio.Icarus.Utilities;
 using Gallio.Model;
 using Gallio.Runner.Projects;
@@ -69,9 +71,9 @@ namespace Gallio.Icarus
 
         internal Main(IApplicationController applicationController)
         {
-            this.applicationController = applicationController;
+            InitializeComponent();
 
-            applicationController.FileChanged += FileChanged;
+            this.applicationController = applicationController;
 
             testController = RuntimeAccessor.ServiceLocator.Resolve<ITestController>();
             testController.RunStarted += (sender, e) => Sync.Invoke(this, delegate
@@ -100,6 +102,9 @@ namespace Gallio.Icarus
 
             projectController = RuntimeAccessor.ServiceLocator.Resolve<IProjectController>();
 
+            projectController.FileChanged += OnFileChanged;
+            projectController.ProjectChanged += OnProjectChanged;
+
             taskManager = RuntimeAccessor.ServiceLocator.Resolve<ITaskManager>();
             optionsController = RuntimeAccessor.ServiceLocator.Resolve<IOptionsController>();
             reportController = RuntimeAccessor.ServiceLocator.Resolve<IReportController>();
@@ -110,8 +115,6 @@ namespace Gallio.Icarus
             var filterController = RuntimeAccessor.ServiceLocator.Resolve<IFilterController>();
             var eventAggregator = RuntimeAccessor.ServiceLocator.Resolve<IEventAggregator>();
 
-            InitializeComponent();
-
             var sourceCodeController = RuntimeAccessor.ServiceLocator.Resolve<ISourceCodeController>();
             testTreeModel = RuntimeAccessor.ServiceLocator.Resolve<ITestTreeModel>();
             testStatistics = RuntimeAccessor.ServiceLocator.Resolve<ITestStatistics>();
@@ -119,7 +122,10 @@ namespace Gallio.Icarus
             var sortedTreeModel = RuntimeAccessor.ServiceLocator.Resolve<ISortedTreeModel>();
             testExplorer = new TestExplorer(optionsController, projectController, testController, 
                 sortedTreeModel, sourceCodeController, taskManager, eventAggregator);
-            projectExplorer = new ProjectExplorer(projectController, testController, reportController, taskManager);
+            projectExplorer = new ProjectExplorer(projectController, testController, reportController, taskManager)
+            {
+                Owner = this
+            };
             testResults = new TestResults(testResultsController, optionsController, testTreeModel, testStatistics);
             runtimeLogWindow = new RuntimeLogWindow(runtimeLogController);
             filtersWindow = new FiltersWindow(filterController, projectController);
@@ -144,7 +150,7 @@ namespace Gallio.Icarus
                 }
             };
 
-            progressController = RuntimeAccessor.Instance.ServiceLocator.Resolve<IProgressController>();
+            progressController = RuntimeAccessor.ServiceLocator.Resolve<IProgressController>();
             taskManager.ProgressUpdate += (sender, e) => Sync.Invoke(this, ProgressUpdate);
             taskManager.TaskCanceled += (sender, e) => Sync.Invoke(this, TaskCanceled);
             taskManager.TaskCompleted += (sender, e) => Sync.Invoke(this, TaskCompleted);
@@ -453,9 +459,6 @@ namespace Gallio.Icarus
             if (e.CloseReason == CloseReason.ApplicationExitCall)
                 return;
 
-            // we'll close once we've tidied up
-            e.Cancel = true;
-
             try
             {
                 // shut down any running operations
@@ -464,7 +467,7 @@ namespace Gallio.Icarus
                 // save the current state of the test tree
                 testExplorer.SaveState();
 
-                applicationController.SaveProject(false);
+                applicationController.Shutdown();
 
                 optionsController.Size = Size;
                 optionsController.Location = Location;
@@ -476,8 +479,6 @@ namespace Gallio.Icarus
             }
             catch
             { }
-
-            Application.Exit();
         }
 
         private void showWindowToolStripMenuItem_Click(object sender, EventArgs e)
@@ -518,7 +519,7 @@ namespace Gallio.Icarus
             });
         }
 
-        private void FileChanged(object sender, FileChangedEventArgs e)
+        private void OnFileChanged(object sender, FileChangedEventArgs e)
         {
             // Do this asynchronously when called from another thread.
             BeginInvoke(new MethodInvoker(() => HandleFileChanged(e.FileName)));
@@ -529,7 +530,6 @@ namespace Gallio.Icarus
             if (!optionsController.AlwaysReloadFiles)
             {
                 var reloadDialog = new ReloadDialog(fileName, optionsController);
-
                 if (reloadDialog.ShowDialog(this) != DialogResult.OK)
                     return;
             }
@@ -598,6 +598,26 @@ namespace Gallio.Icarus
         private void removeAllFilesToolStripButton_Click(object sender, EventArgs e)
         {
             RemoveAllFiles();
+        }
+
+        private void OnProjectChanged(object sender, ProjectChangedEventArgs e)
+        {
+            BeginInvoke(new MethodInvoker(() => HandleProjectChanged(e.ProjectLocation)));
+        }
+
+        private void HandleProjectChanged(string projectLocation)
+        {
+            var projectName = Path.GetFileNameWithoutExtension(projectLocation);
+            using (var projectReloadDialog = new ProjectReloadDialog(projectName))
+            {
+                if (projectReloadDialog.ShowDialog(this) != DialogResult.OK)
+                    return;
+
+                var command = (OpenProjectCommand)RuntimeAccessor.ServiceLocator.ResolveByComponentId(
+                                                       "Gallio.Icarus.Commands.OpenProjectCommand");
+                command.FileName = projectLocation;
+                taskManager.QueueTask(command);
+            }
         }
     }
 }

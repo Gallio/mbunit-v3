@@ -16,12 +16,16 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Windows.Forms;
 using Aga.Controls.Tree;
+using Gallio.Common.Concurrency;
 using Gallio.Common.IO;
 using Gallio.Icarus.Commands;
 using Gallio.Icarus.Controllers.Interfaces;
+using Gallio.Icarus.Events;
 using Gallio.Icarus.Models.ProjectTreeNodes;
+using Gallio.Icarus.Projects;
 using Gallio.Icarus.Utilities;
 using Gallio.Runtime;
 using Gallio.Icarus.Packages;
@@ -29,7 +33,7 @@ using Gallio.UI.ProgressMonitoring;
 
 namespace Gallio.Icarus
 {
-    internal partial class ProjectExplorer : DockWindow
+    internal partial class ProjectExplorer : DockWindow, IView
     {
         private readonly IProjectController projectController;
         private readonly ITestController testController;
@@ -58,6 +62,7 @@ namespace Gallio.Icarus
             var reportTypes = new List<string>();
             reportTypes.AddRange(reportController.ReportTypes);
             reportTypes.Sort();
+
             foreach (string reportType in reportTypes)
             {
                 var menuItem = new ToolStripMenuItem { Text = reportType };
@@ -111,8 +116,10 @@ namespace Gallio.Icarus
 
             FileNode node = (FileNode)projectTree.SelectedNode.Tag;
 
-            var cmd = new RemoveFileCommand(projectController, testController);
-            cmd.FileName = node.FileName;
+            var cmd = new RemoveFileCommand(projectController, testController)
+            {
+                FileName = node.FileName
+            };
             taskManager.QueueTask(cmd);
         }
 
@@ -129,8 +136,10 @@ namespace Gallio.Icarus
                 if (openFileDialog.ShowDialog(this) != DialogResult.OK)
                     return;
 
-                var command = new AddFilesCommand(projectController, testController);
-                command.Files = openFileDialog.FileNames;
+                var command = new AddFilesCommand(projectController, testController)
+                {
+                    Files = openFileDialog.FileNames
+                };
                 taskManager.QueueTask(command);
             }
         }

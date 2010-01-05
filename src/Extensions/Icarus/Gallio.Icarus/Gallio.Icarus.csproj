@@ -114,6 +114,7 @@
     <Compile Include="Controllers\AboutController.cs" />
     <Compile Include="Controllers\AnnotationsController.cs" />
     <Compile Include="Controllers\ApplicationController.cs" />
+    <Compile Include="ApplicationShutdown.cs" />
     <Compile Include="Controllers\EventArgs\FileChangedEventArgs.cs" />
     <Compile Include="Controllers\EventArgs\DisplayProgressDialogEventArgs.cs">
       <SubType>Code</SubType>
@@ -202,6 +203,15 @@
     <Compile Include="Controls\PropertiesTabControl.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="IView.cs" />
+    <Compile Include="Projects\ProjectChangedEventArgs.cs" />
+    <Compile Include="Projects\IProjectMonitor.cs" />
+    <Compile Include="Projects\ProjectReloadDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Projects\ProjectReloadDialog.Designer.cs">
+      <DependentUpon>ProjectReloadDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="Events\Event.cs" />
     <Compile Include="Events\EventAggregator.cs" />
     <Compile Include="Events\EventHandlerProxy.cs" />
@@ -212,6 +222,9 @@
     <Compile Include="Models\FilterTreeEvent.cs" />
     <Compile Include="Models\IFilteredTreeModel.cs" />
     <Compile Include="Models\ISortedTreeModel.cs" />
+    <Compile Include="Projects\ProjectChanged.cs" />
+    <Compile Include="Projects\ProjectMonitor.cs" />
+    <Compile Include="Projects\ProjectOpened.cs" />
     <Compile Include="Specifications\AnySpecification.cs" />
     <Compile Include="Specifications\OrSpecification.cs" />
     <Compile Include="Specifications\ISpecification.cs" />
@@ -503,6 +516,10 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ControlPanel\TreeViewCategoryPane.resx">
       <DependentUpon>TreeViewCategoryPane.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Projects\ProjectReloadDialog.resx">
+      <DependentUpon>ProjectReloadDialog.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\CodeViewer\CodeViewer.resx">
