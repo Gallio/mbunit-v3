@@ -89,28 +89,28 @@ namespace Gallio.Icarus
             this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripProgressBar = new System.Windows.Forms.ToolStripProgressBar();
-            this.mainToolStrip = new System.Windows.Forms.ToolStrip();
+            this.projectToolStrip = new System.Windows.Forms.ToolStrip();
             this.newProjectToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.openProjectToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.saveProjectToolStripButton = new System.Windows.Forms.ToolStripButton();
-            this.toolStripSeparator13 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripContainer = new System.Windows.Forms.ToolStripContainer();
+            this.dockPanel = new WeifenLuo.WinFormsUI.Docking.DockPanel();
+            this.filesToolStrip = new System.Windows.Forms.ToolStrip();
             this.addFilesToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.removeAllFilesToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.reloadToolbarButton = new System.Windows.Forms.ToolStripButton();
-            this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
+            this.testsToolStrip = new System.Windows.Forms.ToolStrip();
             this.startButton = new System.Windows.Forms.ToolStripButton();
-            this.runTestsWithDebuggerButton = new System.Windows.Forms.ToolStripButton();
+            this.startTestsWithDebuggerButton = new System.Windows.Forms.ToolStripButton();
             this.stopButton = new System.Windows.Forms.ToolStripButton();
-            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-            this.helpToolbarButton = new System.Windows.Forms.ToolStripButton();
-            this.toolStripContainer = new System.Windows.Forms.ToolStripContainer();
-            this.dockPanel = new WeifenLuo.WinFormsUI.Docking.DockPanel();
             this.menuStrip.SuspendLayout();
             this.statusStrip.SuspendLayout();
-            this.mainToolStrip.SuspendLayout();
+            this.projectToolStrip.SuspendLayout();
             this.toolStripContainer.TopToolStripPanel.SuspendLayout();
             this.toolStripContainer.SuspendLayout();
+            this.filesToolStrip.SuspendLayout();
+            this.testsToolStrip.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStrip
@@ -319,7 +319,7 @@ namespace Gallio.Icarus
             this.removeAllFilesToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.R)));
             this.removeAllFilesToolStripMenuItem.Size = new System.Drawing.Size(201, 22);
             this.removeAllFilesToolStripMenuItem.Text = "&Remove All Files";
-            this.removeAllFilesToolStripMenuItem.Click += new System.EventHandler(this.removeAllFilesToolStripMenuItem_Click);
+            this.removeAllFilesToolStripMenuItem.Click += new System.EventHandler(this.removeAllFiles_Click);
             // 
             // toolStripSeparator8
             // 
@@ -478,29 +478,18 @@ namespace Gallio.Icarus
             this.toolStripProgressBar.Name = "toolStripProgressBar";
             this.toolStripProgressBar.Size = new System.Drawing.Size(100, 16);
             // 
-            // mainToolStrip
+            // projectToolStrip
             // 
-            this.mainToolStrip.Dock = System.Windows.Forms.DockStyle.None;
-            this.mainToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.projectToolStrip.Dock = System.Windows.Forms.DockStyle.None;
+            this.projectToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.newProjectToolStripButton,
             this.openProjectToolStripButton,
-            this.saveProjectToolStripButton,
-            this.toolStripSeparator13,
-            this.addFilesToolStripButton,
-            this.removeAllFilesToolStripButton,
-            this.toolStripSeparator1,
-            this.reloadToolbarButton,
-            this.toolStripSeparator6,
-            this.startButton,
-            this.runTestsWithDebuggerButton,
-            this.stopButton,
-            this.toolStripSeparator2,
-            this.helpToolbarButton});
-            this.mainToolStrip.Location = new System.Drawing.Point(3, 0);
-            this.mainToolStrip.Name = "mainToolStrip";
-            this.mainToolStrip.Size = new System.Drawing.Size(518, 25);
-            this.mainToolStrip.TabIndex = 3;
-            this.mainToolStrip.Text = "Main Menu";
+            this.saveProjectToolStripButton});
+            this.projectToolStrip.Location = new System.Drawing.Point(3, 0);
+            this.projectToolStrip.Name = "projectToolStrip";
+            this.projectToolStrip.Size = new System.Drawing.Size(79, 25);
+            this.projectToolStrip.TabIndex = 3;
+            this.projectToolStrip.Text = "Project";
             // 
             // newProjectToolStripButton
             // 
@@ -534,10 +523,50 @@ namespace Gallio.Icarus
             this.saveProjectToolStripButton.Text = "Save Project";
             this.saveProjectToolStripButton.Click += new System.EventHandler(this.saveProjectToolStripButton_Click);
             // 
-            // toolStripSeparator13
+            // toolStripContainer
             // 
-            this.toolStripSeparator13.Name = "toolStripSeparator13";
-            this.toolStripSeparator13.Size = new System.Drawing.Size(6, 25);
+            // 
+            // toolStripContainer.ContentPanel
+            // 
+            this.toolStripContainer.ContentPanel.Size = new System.Drawing.Size(1003, 0);
+            this.toolStripContainer.Dock = System.Windows.Forms.DockStyle.Top;
+            this.toolStripContainer.Location = new System.Drawing.Point(0, 24);
+            this.toolStripContainer.Name = "toolStripContainer";
+            this.toolStripContainer.Size = new System.Drawing.Size(1003, 25);
+            this.toolStripContainer.TabIndex = 5;
+            // 
+            // toolStripContainer.TopToolStripPanel
+            // 
+            this.toolStripContainer.TopToolStripPanel.Controls.Add(this.projectToolStrip);
+            this.toolStripContainer.TopToolStripPanel.Controls.Add(this.filesToolStrip);
+            this.toolStripContainer.TopToolStripPanel.Controls.Add(this.testsToolStrip);
+            // 
+            // dockPanel
+            // 
+            this.dockPanel.ActiveAutoHideContent = null;
+            this.dockPanel.AllowDrop = true;
+            this.dockPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dockPanel.DockLeftPortion = 0.33;
+            this.dockPanel.DockRightPortion = 0.33;
+            this.dockPanel.DockTopPortion = 0.15;
+            this.dockPanel.Location = new System.Drawing.Point(0, 49);
+            this.dockPanel.Name = "dockPanel";
+            this.dockPanel.Size = new System.Drawing.Size(1003, 636);
+            this.dockPanel.TabIndex = 8;
+            // 
+            // filesToolStrip
+            // 
+            this.filesToolStrip.Dock = System.Windows.Forms.DockStyle.None;
+            this.filesToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.addFilesToolStripButton,
+            this.removeAllFilesToolStripButton,
+            this.toolStripSeparator1,
+            this.reloadToolbarButton});
+            this.filesToolStrip.Location = new System.Drawing.Point(83, 0);
+            this.filesToolStrip.Name = "filesToolStrip";
+            this.filesToolStrip.Size = new System.Drawing.Size(250, 25);
+            this.filesToolStrip.TabIndex = 11;
+            this.filesToolStrip.Text = "Files";
             // 
             // addFilesToolStripButton
             // 
@@ -555,7 +584,7 @@ namespace Gallio.Icarus
             this.removeAllFilesToolStripButton.Name = "removeAllFilesToolStripButton";
             this.removeAllFilesToolStripButton.Size = new System.Drawing.Size(104, 22);
             this.removeAllFilesToolStripButton.Text = "Remove All Files";
-            this.removeAllFilesToolStripButton.Click += new System.EventHandler(this.removeAllFilesToolStripButton_Click);
+            this.removeAllFilesToolStripButton.Click += new System.EventHandler(this.removeAllFiles_Click);
             // 
             // toolStripSeparator1
             // 
@@ -571,10 +600,18 @@ namespace Gallio.Icarus
             this.reloadToolbarButton.Text = "Reload";
             this.reloadToolbarButton.Click += new System.EventHandler(this.reloadToolbarButton_Click);
             // 
-            // toolStripSeparator6
+            // testsToolStrip
             // 
-            this.toolStripSeparator6.Name = "toolStripSeparator6";
-            this.toolStripSeparator6.Size = new System.Drawing.Size(6, 25);
+            this.testsToolStrip.Dock = System.Windows.Forms.DockStyle.None;
+            this.testsToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.startButton,
+            this.startTestsWithDebuggerButton,
+            this.stopButton});
+            this.testsToolStrip.Location = new System.Drawing.Point(333, 0);
+            this.testsToolStrip.Name = "testsToolStrip";
+            this.testsToolStrip.Size = new System.Drawing.Size(168, 25);
+            this.testsToolStrip.TabIndex = 12;
+            this.testsToolStrip.Text = "Tests";
             // 
             // startButton
             // 
@@ -587,16 +624,16 @@ namespace Gallio.Icarus
             this.startButton.ToolTipText = "Start Tests";
             this.startButton.Click += new System.EventHandler(this.startButton_Click);
             // 
-            // runTestsWithDebuggerButton
+            // startTestsWithDebuggerButton
             // 
-            this.runTestsWithDebuggerButton.Enabled = false;
-            this.runTestsWithDebuggerButton.Image = ((System.Drawing.Image)(resources.GetObject("runTestsWithDebuggerButton.Image")));
-            this.runTestsWithDebuggerButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.runTestsWithDebuggerButton.Name = "runTestsWithDebuggerButton";
-            this.runTestsWithDebuggerButton.Size = new System.Drawing.Size(58, 22);
-            this.runTestsWithDebuggerButton.Text = "Debug";
-            this.runTestsWithDebuggerButton.ToolTipText = "Start Tests With Debugger";
-            this.runTestsWithDebuggerButton.Click += new System.EventHandler(this.runTestsWithDebuggerButton_Click);
+            this.startTestsWithDebuggerButton.Enabled = false;
+            this.startTestsWithDebuggerButton.Image = ((System.Drawing.Image)(resources.GetObject("startTestsWithDebuggerButton.Image")));
+            this.startTestsWithDebuggerButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.startTestsWithDebuggerButton.Name = "startTestsWithDebuggerButton";
+            this.startTestsWithDebuggerButton.Size = new System.Drawing.Size(58, 22);
+            this.startTestsWithDebuggerButton.Text = "Debug";
+            this.startTestsWithDebuggerButton.ToolTipText = "Start Tests With Debugger";
+            this.startTestsWithDebuggerButton.Click += new System.EventHandler(this.startWithDebuggerToolStripMenuItem_Click);
             // 
             // stopButton
             // 
@@ -608,50 +645,6 @@ namespace Gallio.Icarus
             this.stopButton.Text = "Stop";
             this.stopButton.ToolTipText = "Stop Tests";
             this.stopButton.Click += new System.EventHandler(this.stopButton_Click);
-            // 
-            // toolStripSeparator2
-            // 
-            this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 25);
-            // 
-            // helpToolbarButton
-            // 
-            this.helpToolbarButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.helpToolbarButton.Image = ((System.Drawing.Image)(resources.GetObject("helpToolbarButton.Image")));
-            this.helpToolbarButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.helpToolbarButton.Name = "helpToolbarButton";
-            this.helpToolbarButton.Size = new System.Drawing.Size(23, 22);
-            this.helpToolbarButton.Text = "Help";
-            this.helpToolbarButton.Click += new System.EventHandler(this.helpToolbarButton_Click);
-            // 
-            // toolStripContainer
-            // 
-            // 
-            // toolStripContainer.ContentPanel
-            // 
-            this.toolStripContainer.ContentPanel.Size = new System.Drawing.Size(1003, 0);
-            this.toolStripContainer.Dock = System.Windows.Forms.DockStyle.Top;
-            this.toolStripContainer.Location = new System.Drawing.Point(0, 24);
-            this.toolStripContainer.Name = "toolStripContainer";
-            this.toolStripContainer.Size = new System.Drawing.Size(1003, 25);
-            this.toolStripContainer.TabIndex = 5;
-            // 
-            // toolStripContainer.TopToolStripPanel
-            // 
-            this.toolStripContainer.TopToolStripPanel.Controls.Add(this.mainToolStrip);
-            // 
-            // dockPanel
-            // 
-            this.dockPanel.ActiveAutoHideContent = null;
-            this.dockPanel.AllowDrop = true;
-            this.dockPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dockPanel.DockLeftPortion = 0.33;
-            this.dockPanel.DockRightPortion = 0.33;
-            this.dockPanel.DockTopPortion = 0.15;
-            this.dockPanel.Location = new System.Drawing.Point(0, 49);
-            this.dockPanel.Name = "dockPanel";
-            this.dockPanel.Size = new System.Drawing.Size(1003, 636);
-            this.dockPanel.TabIndex = 8;
             // 
             // Main
             // 
@@ -673,12 +666,16 @@ namespace Gallio.Icarus
             this.menuStrip.PerformLayout();
             this.statusStrip.ResumeLayout(false);
             this.statusStrip.PerformLayout();
-            this.mainToolStrip.ResumeLayout(false);
-            this.mainToolStrip.PerformLayout();
+            this.projectToolStrip.ResumeLayout(false);
+            this.projectToolStrip.PerformLayout();
             this.toolStripContainer.TopToolStripPanel.ResumeLayout(false);
             this.toolStripContainer.TopToolStripPanel.PerformLayout();
             this.toolStripContainer.ResumeLayout(false);
             this.toolStripContainer.PerformLayout();
+            this.filesToolStrip.ResumeLayout(false);
+            this.filesToolStrip.PerformLayout();
+            this.testsToolStrip.ResumeLayout(false);
+            this.testsToolStrip.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -693,14 +690,9 @@ namespace Gallio.Icarus
         private System.Windows.Forms.ToolStripMenuItem aboutMenuItem;
         private System.Windows.Forms.StatusStrip statusStrip;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel;
-        private System.Windows.Forms.ToolStrip mainToolStrip;
+        private System.Windows.Forms.ToolStrip projectToolStrip;
         private System.Windows.Forms.ToolStripButton newProjectToolStripButton;
         private System.Windows.Forms.ToolStripButton openProjectToolStripButton;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
-        private System.Windows.Forms.ToolStripButton startButton;
-        private System.Windows.Forms.ToolStripButton stopButton;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
-        private System.Windows.Forms.ToolStripButton helpToolbarButton;
         private System.Windows.Forms.ToolStripMenuItem projectToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem newProjectToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem openProjectMenuItem;
@@ -713,8 +705,6 @@ namespace Gallio.Icarus
         private System.Windows.Forms.ToolStripMenuItem reloadToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem showOnlineHelpToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
-        private System.Windows.Forms.ToolStripButton reloadToolbarButton;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
         private System.Windows.Forms.ToolStripContainer toolStripContainer;
         private System.Windows.Forms.ToolStripMenuItem toolsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem optionsMenuItem;
@@ -741,13 +731,18 @@ namespace Gallio.Icarus
         private System.Windows.Forms.ToolStripMenuItem reportToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem viewAsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem startWithDebuggerToolStripMenuItem;
-        private System.Windows.Forms.ToolStripButton runTestsWithDebuggerButton;
         private System.Windows.Forms.ToolStripMenuItem recentProjectsToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator12;
         private System.Windows.Forms.ToolStripButton saveProjectToolStripButton;
+        private System.Windows.Forms.ToolStrip filesToolStrip;
         private System.Windows.Forms.ToolStripButton addFilesToolStripButton;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator13;
         private System.Windows.Forms.ToolStripButton removeAllFilesToolStripButton;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+        private System.Windows.Forms.ToolStripButton reloadToolbarButton;
+        private System.Windows.Forms.ToolStrip testsToolStrip;
+        private System.Windows.Forms.ToolStripButton startButton;
+        private System.Windows.Forms.ToolStripButton startTestsWithDebuggerButton;
+        private System.Windows.Forms.ToolStripButton stopButton;
     }
 }
 

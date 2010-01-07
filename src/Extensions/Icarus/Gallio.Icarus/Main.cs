@@ -80,7 +80,7 @@ namespace Gallio.Icarus
             {
                 // enable/disable buttons
                 startButton.Enabled = startTestsToolStripMenuItem.Enabled = false;
-                runTestsWithDebuggerButton.Enabled = startWithDebuggerToolStripMenuItem.Enabled = false;
+                startTestsWithDebuggerButton.Enabled = startWithDebuggerToolStripMenuItem.Enabled = false;
                 stopButton.Enabled = stopTestsToolStripMenuItem.Enabled = true;
             });
             testController.RunFinished += (sender, e) => Sync.Invoke(this, delegate
@@ -88,7 +88,7 @@ namespace Gallio.Icarus
                 // enable/disable buttons & menu items appropriately
                 stopButton.Enabled = stopTestsToolStripMenuItem.Enabled = false;
                 startButton.Enabled = startTestsToolStripMenuItem.Enabled = true;
-                runTestsWithDebuggerButton.Enabled = startWithDebuggerToolStripMenuItem.Enabled = true;
+                startTestsWithDebuggerButton.Enabled = startWithDebuggerToolStripMenuItem.Enabled = true;
 
                 // notify the user if tests have failed!
                 if (applicationController.FailedTests)
@@ -97,7 +97,7 @@ namespace Gallio.Icarus
             testController.ExploreFinished += (sender, e) => Sync.Invoke(this, delegate
             {
                 startButton.Enabled = startTestsToolStripMenuItem.Enabled = true;
-                runTestsWithDebuggerButton.Enabled = startWithDebuggerToolStripMenuItem.Enabled = true;
+                startTestsWithDebuggerButton.Enabled = startWithDebuggerToolStripMenuItem.Enabled = true;
             });
 
             projectController = RuntimeAccessor.ServiceLocator.Resolve<IProjectController>();
@@ -387,7 +387,7 @@ namespace Gallio.Icarus
             presenter.Show(this);
         }
 
-        private void removeAllFilesToolStripMenuItem_Click(object sender, EventArgs e)
+        private void removeAllFiles_Click(object sender, EventArgs e)
         {
             RemoveAllFiles();
         }
@@ -441,11 +441,6 @@ namespace Gallio.Icarus
         private static void ShowOnlineHelp()
         {
             Process.Start(ConfigurationManager.AppSettings["OnlineHelpURL"]);
-        }
-
-        private void helpToolbarButton_Click(object sender, EventArgs e)
-        {
-            ShowOnlineHelp();
         }
 
         private void resetToolStripMenuItem_Click(object sender, EventArgs e)
@@ -580,11 +575,6 @@ namespace Gallio.Icarus
             StartTests(true);
         }
 
-        private void runTestsWithDebuggerButton_Click(object sender, EventArgs e)
-        {
-            StartTests(true);
-        }
-
         private void saveProjectToolStripButton_Click(object sender, EventArgs e)
         {
             SaveProject();
@@ -593,11 +583,6 @@ namespace Gallio.Icarus
         private void addFilesToolStripButton_Click(object sender, EventArgs e)
         {
             AddFiles();
-        }
-
-        private void removeAllFilesToolStripButton_Click(object sender, EventArgs e)
-        {
-            RemoveAllFiles();
         }
 
         private void OnProjectChanged(object sender, ProjectChangedEventArgs e)
