@@ -14,21 +14,21 @@
 // limitations under the License.
 
 using System.Collections;
+using System.Collections.Generic;
 using Aga.Controls.Tree;
 using Gallio.Icarus.Events;
-using Gallio.Icarus.Specifications;
+using Gallio.Model;
 
 namespace Gallio.Icarus.Models
 {
-    public class FilteredTreeModel : TreeModelDecorator, IFilteredTreeModel, Handles<FilterTreeEvent>
+    public class TestStatusFilteredTreeModel : TreeModelDecorator, ITestStatusFilteredTreeModel,
+        Handles<FilterTestStatusEvent>
     {
-        private ISpecification<TestTreeNode> specification;
+        private readonly List<TestStatus> filteredStatuses = new List<TestStatus>();
 
-        public FilteredTreeModel(ITestTreeModel innerTreeModel) 
+        public TestStatusFilteredTreeModel(IFilteredTreeModel innerTreeModel) 
             : base(innerTreeModel)
-        {
-            specification = new AnySpecification<TestTreeNode>();
-        }
+        { }
 
         public override IEnumerable GetChildren(TreePath treePath)
         {
@@ -39,10 +39,15 @@ namespace Gallio.Icarus.Models
                 if (node == null)
                     continue;
 
-                if (specification.Matches(node))
+                if (NodeShouldNotBeFiltered(node))
                     yield return child;
             }
             yield break;
+        }
+
+        private bool NodeShouldNotBeFiltered(TestTreeNode node)
+        {
+            return node.TestKind != TestKinds.Test || !filteredStatuses.Contains(node.TestStatus);
         }
 
         private IEnumerable GetChildrenFromBase(TreePath treePath)
@@ -50,9 +55,18 @@ namespace Gallio.Icarus.Models
             return base.GetChildren(treePath);
         }
 
-        public void Handle(FilterTreeEvent @event)
+        public void Handle(FilterTestStatusEvent @event)
         {
-            specification = @event.Specification;
+            var testStatus = @event.TestStatus;
+
+            if (filteredStatuses.Contains(testStatus))
+                filteredStatuses.Remove(testStatus);
+            else
+                filteredStatuses.Add(testStatus);
+
+            // notify treeview
+            var treePath = new TreePath(GetRoot());
+            OnStructureChanged(new TreePathEventArgs(treePath));
         }
     }
 }

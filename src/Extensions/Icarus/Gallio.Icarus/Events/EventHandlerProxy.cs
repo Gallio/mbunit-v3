@@ -24,9 +24,9 @@ namespace Gallio.Icarus.Events
             this.target = target;
         }
 
-        public void Handle(T message)
+        public void Handle(T @event)
         {
-            target.Handle(message);
+            target.Handle(@event);
         }
     }
 }

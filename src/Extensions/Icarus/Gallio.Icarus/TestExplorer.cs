@@ -20,7 +20,6 @@ using Aga.Controls.Tree;
 using Gallio.Common.Concurrency;
 using Gallio.Icarus.Commands;
 using Gallio.Icarus.Controllers.Interfaces;
-using Gallio.Icarus.Events;
 using Gallio.Icarus.Models;
 using Gallio.Icarus.Models.TestTreeNodes;
 using Gallio.Icarus.Utilities;
@@ -29,7 +28,7 @@ using Gallio.Runtime.ProgressMonitoring;
 using Gallio.UI.ProgressMonitoring;
 using SortOrder=Gallio.Icarus.Models.SortOrder;
 
-namespace Gallio.Icarus
+namespace Gallio.Icarus.TestExplorer
 {
     internal partial class TestExplorer : DockWindow
     {
@@ -37,18 +36,18 @@ namespace Gallio.Icarus
         private readonly ITestController testController;
         private readonly ISourceCodeController sourceCodeController;
         private readonly ITaskManager taskManager;
-        private readonly IEventAggregator eventAggregator;
+        private readonly Controller controller;
         private bool updateFlag;
 
         public TestExplorer(IOptionsController optionsController, IProjectController projectController, 
-            ITestController testController, ISortedTreeModel treeModel, ISourceCodeController sourceCodeController, 
-            ITaskManager taskManager, IEventAggregator eventAggregator)
+            ITestController testController, ISourceCodeController sourceCodeController, 
+            ITaskManager taskManager, Controller controller, Model model)
         {
             this.projectController = projectController;
             this.testController = testController;
             this.sourceCodeController = sourceCodeController;
             this.taskManager = taskManager;
-            this.eventAggregator = eventAggregator;
+            this.controller = controller;
 
             InitializeComponent();
 
@@ -75,7 +74,7 @@ namespace Gallio.Icarus
                 updateFlag = false;
             };
 
-            testTree.Model = treeModel;
+            testTree.Model = model.TreeModel;
 
             testController.ExploreStarted += delegate { testTree.EditEnabled = false; };
             testController.ExploreFinished += delegate
@@ -87,28 +86,44 @@ namespace Gallio.Icarus
             testController.RunStarted += delegate { testTree.EditEnabled = false; };
             testController.RunFinished += delegate { testTree.EditEnabled = true; };
 
-            filterPassedTestsToolStripMenuItem.DataBindings.Add("Checked", testController, "FilterPassed", 
-                false, DataSourceUpdateMode.OnPropertyChanged);
-            filterPassedTestsToolStripButton.DataBindings.Add("Checked", testController, "FilterPassed", 
-                false, DataSourceUpdateMode.OnPropertyChanged);
-            filterFailedTestsToolStripMenuItem.DataBindings.Add("Checked", testController, "FilterFailed", 
-                false, DataSourceUpdateMode.OnPropertyChanged);
-            filterFailedTestsToolStripButton.DataBindings.Add("Checked", testController, "FilterFailed", 
-                false, DataSourceUpdateMode.OnPropertyChanged);
-            filterInconclusiveTestsToolStripMenuItem.DataBindings.Add("Checked", testController, "FilterInconclusive", 
-                false, DataSourceUpdateMode.OnPropertyChanged);
-            filterInconclusiveTestsToolStripButton.DataBindings.Add("Checked", testController, "FilterInconclusive", 
-                false, DataSourceUpdateMode.OnPropertyChanged);
+            filterPassedTestsToolStripMenuItem.Click += (s, e) => FilterStatus(TestStatus.Passed);
+            filterPassedTestsToolStripButton.Click += (s, e) => FilterStatus(TestStatus.Passed);
+            model.FilterPassed.PropertyChanged += (s, e) => 
+            {
+                filterPassedTestsToolStripMenuItem.Checked = filterPassedTestsToolStripButton.Checked 
+                    = model.FilterPassed.Value;
+            };
+
+            filterFailedTestsToolStripMenuItem.Click += (s, e) => FilterStatus(TestStatus.Failed);
+            filterFailedTestsToolStripButton.Click += (s, e) => FilterStatus(TestStatus.Failed);
+            model.FilterFailed.PropertyChanged += (s, e) =>
+            {
+                filterFailedTestsToolStripMenuItem.Checked = filterFailedTestsToolStripButton.Checked 
+                    = model.FilterFailed.Value;
+            };
+
+            filterInconclusiveTestsToolStripMenuItem.Click += (s, e) => FilterStatus(TestStatus.Inconclusive);
+            filterInconclusiveTestsToolStripButton.Click += (s, e) => FilterStatus(TestStatus.Inconclusive);
+            model.FilterInconclusive.PropertyChanged += (s, e) =>
+            {
+                filterInconclusiveTestsToolStripMenuItem.Checked = filterInconclusiveTestsToolStripButton.Checked 
+                    = model.FilterInconclusive.Value;
+            };
 
             sortAscToolStripButton.Click += (s, e) => SortTree(SortOrder.Ascending);
             sortDescToolStripButton.Click += (s, e) => SortTree(SortOrder.Descending);
+        }
+
+        private void FilterStatus(TestStatus testStatus)
+        {
+            controller.FilterStatus(testStatus);
         }
 
         private void SortTree(SortOrder sortOrder)
         {
             sortAscToolStripButton.Checked = (sortOrder == SortOrder.Ascending);
             sortDescToolStripButton.Checked = (sortOrder == SortOrder.Descending);
-            eventAggregator.Send(new SortTreeEvent(sortOrder));
+            controller.SortTree(sortOrder);    
         }
 
         private void removeFileToolStripMenuItem_Click(object sender, EventArgs e)
@@ -118,11 +133,12 @@ namespace Gallio.Icarus
 
             var node = (TestTreeNode)testTree.SelectedNode.Tag;
             string fileName = node.FileName;
-            if (fileName != null)
-            {
-                var cmd = new RemoveFileCommand(projectController, testController) {FileName = fileName};
-                taskManager.QueueTask(cmd);
-            }
+            
+            if (fileName == null) 
+                return;
+
+            var cmd = new RemoveFileCommand(projectController, testController) {FileName = fileName};
+            taskManager.QueueTask(cmd);
         }
 
         private void treeViewComboBox_SelectedIndexChanged(object sender, EventArgs e)

@@ -33,30 +33,6 @@ namespace Gallio.Icarus.Models
         private readonly IList<ITreeBuilder> treeBuilders;
         private readonly List<TestStatus> filterStatuses = new List<TestStatus>();
 
-        public bool FilterPassed
-        {
-            get
-            {
-                return filterStatuses.Contains(TestStatus.Passed);
-            }
-        }
-
-        public bool FilterFailed
-        {
-            get
-            {
-                return filterStatuses.Contains(TestStatus.Failed);
-            }
-        }
-
-        public bool FilterInconclusive
-        {
-            get
-            {
-                return filterStatuses.Contains(TestStatus.Inconclusive);
-            }
-        }
-
         public Observable<int> TestCount
         {
             get;

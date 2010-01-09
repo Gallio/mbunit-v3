@@ -15,7 +15,6 @@
 
 using Gallio.Icarus.Models;
 using Gallio.Icarus.TreeBuilders;
-using Gallio.Model;
 using Gallio.Model.Filters;
 using MbUnit.Framework;
 
@@ -124,38 +123,5 @@ namespace Gallio.Icarus.Tests.Models
 
         //    Assert.IsTrue(structureChangedFlag);
         //}
-
-        [Test]
-        public void FilterPassed_should_return_true_if_passed_filter_is_set()
-        {
-            testTreeModel.SetFilter(TestStatus.Passed);
-
-            Assert.IsTrue(testTreeModel.FilterPassed);
-        }
-
-        [Test]
-        public void FilterFailed_should_return_true_if_passed_filter_is_set()
-        {
-            testTreeModel.SetFilter(TestStatus.Failed);
-
-            Assert.IsTrue(testTreeModel.FilterFailed);
-        }
-
-        [Test]
-        public void FilterInconclusive_should_return_true_if_passed_filter_is_set()
-        {
-            testTreeModel.SetFilter(TestStatus.Inconclusive);
-
-            Assert.IsTrue(testTreeModel.FilterInconclusive);
-        }
-
-        public class NestedClass
-        {
-            [Test]
-            public void NestedTest()
-            {
-                Assert.IsTrue(true);
-            }
-        }
     }
 }

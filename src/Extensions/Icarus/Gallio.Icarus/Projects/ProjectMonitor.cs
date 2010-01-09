@@ -15,9 +15,9 @@ namespace Gallio.Icarus.Projects
             this.eventAggregator = eventAggregator;
         }
 
-        public void Handle(ProjectOpened message)
+        public void Handle(ProjectOpened @event)
         {
-            var directoryName = Path.GetDirectoryName(message.ProjectLocation);
+            var directoryName = Path.GetDirectoryName(@event.ProjectLocation);
 
             if (fileSystemWatcher != null)
             {
@@ -29,11 +29,11 @@ namespace Gallio.Icarus.Projects
             {
                 EnableRaisingEvents = true,
                 NotifyFilter = NotifyFilters.LastWrite,
-                Filter = Path.GetFileName(message.ProjectLocation),
+                Filter = Path.GetFileName(@event.ProjectLocation),
                 IncludeSubdirectories = false
             };
 
-            var projectChanged = new ProjectChanged(message.ProjectLocation);
+            var projectChanged = new ProjectChanged(@event.ProjectLocation);
             timer = new Timer(1000)
             {
                 Enabled = false,
@@ -43,7 +43,7 @@ namespace Gallio.Icarus.Projects
             timer.Elapsed += (se, ev) => eventAggregator.Send(projectChanged);
         }
 
-        public void Handle(ApplicationShutdown message)
+        public void Handle(ApplicationShutdown @event)
         {
             if (fileSystemWatcher == null) 
                 return;

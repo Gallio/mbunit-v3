@@ -187,4 +187,7 @@
   <data name="OpeningProject" xml:space="preserve">
     <value>Opening project</value>
   </data>
+  <data name="NoWindowWithThatIdentifierExists" xml:space="preserve">
+    <value>No window with that identifier exists</value>
+  </data>
 </root>

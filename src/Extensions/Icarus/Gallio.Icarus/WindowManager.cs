@@ -17,8 +17,9 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
-using WeifenLuo.WinFormsUI.Docking;
 using Gallio.Common;
+using Gallio.Icarus.Properties;
+using WeifenLuo.WinFormsUI.Docking;
 
 namespace Gallio.Icarus
 {
@@ -82,25 +83,22 @@ namespace Gallio.Icarus
         {
             // if we have the window stored, then return it
             if (windows.ContainsKey(identifier))
-                return windows[identifier] as Window;
+                return windows[identifier];
 
             // if we have an action registered, run it
             if (hooks.ContainsKey(identifier))
                 hooks[identifier]();
 
-            // check if we have the window now
-            if (windows.ContainsKey(identifier))
-                return windows[identifier] as Window;
-
-            // otherwise give up!
-            return null;
+            Window window;
+            windows.TryGetValue(identifier, out window);
+            return window;
         }
 
         public void Show(string identifier)
         {
             var window = Get(identifier);
             if (window == null)
-                throw new Exception("No window with that identifier exists");
+                throw new Exception(Resources.NoWindowWithThatIdentifierExists);
                
             window.Show(DockPanel);
         }
@@ -109,7 +107,7 @@ namespace Gallio.Icarus
         {
             var window = Get(identifier);
             if (window == null)
-                throw new Exception("No window with that identifier exists");
+                throw new Exception(Resources.NoWindowWithThatIdentifierExists);
 
             window.Show(DockPanel, dockState);
         }

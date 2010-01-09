@@ -55,7 +55,7 @@ namespace Gallio.Icarus
         private WindowManager windowManager;
 
         // dock panel windows
-        private readonly TestExplorer testExplorer;
+        private readonly TestExplorer.TestExplorer testExplorer;
         private readonly ProjectExplorer projectExplorer;
         private readonly TestResults testResults;
         private readonly RuntimeLogWindow runtimeLogWindow;
@@ -120,12 +120,11 @@ namespace Gallio.Icarus
             testStatistics = RuntimeAccessor.ServiceLocator.Resolve<ITestStatistics>();
 
             var sortedTreeModel = RuntimeAccessor.ServiceLocator.Resolve<ISortedTreeModel>();
-            testExplorer = new TestExplorer(optionsController, projectController, testController, 
-                sortedTreeModel, sourceCodeController, taskManager, eventAggregator);
-            projectExplorer = new ProjectExplorer(projectController, testController, reportController, taskManager)
-            {
-                Owner = this
-            };
+            var testExplorerModel = new TestExplorer.Model(sortedTreeModel);
+            testExplorer = new TestExplorer.TestExplorer(optionsController, projectController, testController,
+                sourceCodeController, taskManager, new TestExplorer.Controller(testExplorerModel, eventAggregator), 
+                testExplorerModel);
+            projectExplorer = new ProjectExplorer(projectController, testController, reportController, taskManager);
             testResults = new TestResults(testResultsController, optionsController, testTreeModel, testStatistics);
             runtimeLogWindow = new RuntimeLogWindow(runtimeLogController);
             filtersWindow = new FiltersWindow(filterController, projectController);
@@ -196,7 +195,7 @@ namespace Gallio.Icarus
 
         private IDockContent GetContentFromPersistString(string persistString)
         {
-            if (persistString == typeof(TestExplorer).ToString())
+            if (persistString == typeof(TestExplorer.TestExplorer).ToString())
                 return testExplorer;
             if (persistString == typeof(ProjectExplorer).ToString())
                 return projectExplorer;

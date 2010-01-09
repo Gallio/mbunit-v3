@@ -66,51 +66,6 @@ namespace Gallio.Icarus.Controllers
             get { return selectedTests; }
         }
 
-        public bool FilterPassed
-        {
-            get
-            {
-                return testTreeModel.FilterPassed;
-            }
-            set
-            {
-                if (value)
-                    testTreeModel.SetFilter(TestStatus.Passed);
-                else
-                    testTreeModel.RemoveFilter(TestStatus.Passed);
-            }
-        }
-
-        public bool FilterFailed
-        {
-            get
-            {
-                return testTreeModel.FilterFailed;
-            }
-            set
-            {
-                if (value)
-                    testTreeModel.SetFilter(TestStatus.Failed);
-                else
-                    testTreeModel.RemoveFilter(TestStatus.Failed);
-            }
-        }
-
-        public bool FilterInconclusive
-        {
-            get
-            {
-                return testTreeModel.FilterInconclusive;
-            }
-            set
-            {
-                if (value)
-                    testTreeModel.SetFilter(TestStatus.Inconclusive);
-                else
-                    testTreeModel.RemoveFilter(TestStatus.Inconclusive);
-            }
-        }
-
         public bool FailedTests { get; private set; }
 
         public TestController(ITestTreeModel testTreeModel, IOptionsController optionsController, 

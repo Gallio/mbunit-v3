@@ -22,6 +22,6 @@ namespace Gallio.Icarus.Events
     /// <typeparam name="T">The type of event.</typeparam>
     public interface Handles<T> where T: Event
     {
-        void Handle(T message);
+        void Handle(T @event);
     }
 }

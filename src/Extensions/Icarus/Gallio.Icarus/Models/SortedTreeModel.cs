@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System.Collections;
+using System.Collections.Generic;
 using Aga.Controls.Tree;
 using Gallio.Icarus.Events;
 
@@ -21,45 +22,43 @@ namespace Gallio.Icarus.Models
 {
     internal class SortedTreeModel : TreeModelDecorator, ISortedTreeModel, Handles<SortTreeEvent>
     {
-        private readonly TreeSorter treeSorter = new TreeSorter();
+        private readonly TestTreeNodeComparer comparer = new TestTreeNodeComparer();
 
-        public SortedTreeModel(IFilteredTreeModel treeModel) 
+        public SortedTreeModel(ITestStatusFilteredTreeModel treeModel) 
             : base(treeModel)
         { }
 
         public override IEnumerable GetChildren(TreePath treePath)
         {
-            var list = new ArrayList();
+            var list = new List<TestTreeNode>();
             var res = innerTreeModel.GetChildren(treePath);
 
             if (res == null)
                 return null;
 
             foreach (object obj in res)
-                list.Add(obj);
+                list.Add((TestTreeNode)obj);
 
-            list.Sort(treeSorter);
+            list.Sort(comparer);
             return list;
         }
 
-        public void Handle(SortTreeEvent message)
+        public void Handle(SortTreeEvent @event)
         {
-            SetSortOrder(message.SortOrder);
+            SetSortOrder(@event.SortOrder);
         }
         
         private void SetSortOrder(SortOrder sortOrder)
         {
-            treeSorter.SetSortOrder(sortOrder);
+            comparer.SetSortOrder(sortOrder);
 
             // notify treeview
             var treePath = new TreePath(GetRoot());
             OnStructureChanged(new TreePathEventArgs(treePath));
         }
 
-        private class TreeSorter : IComparer
+        private class TestTreeNodeComparer : IComparer<TestTreeNode>
         {
-            private readonly CaseInsensitiveComparer comparer = new CaseInsensitiveComparer();
-
             private SortOrder sortOrder;
 
             public void SetSortOrder(SortOrder value)
@@ -67,13 +66,9 @@ namespace Gallio.Icarus.Models
                 sortOrder = value;
             }
 
-            public int Compare(object x, object y)
+            public int Compare(TestTreeNode x, TestTreeNode y)
             {
-                var left = (Node)x;
-                var right = (Node)y;
-
-                int compareResult = comparer.Compare(left.Text, right.Text);
-
+                int compareResult = x.CompareTo(y);
                 return sortOrder == SortOrder.Ascending ? compareResult 
                     : -compareResult;
             }

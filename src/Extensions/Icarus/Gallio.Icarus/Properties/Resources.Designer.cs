@@ -167,6 +167,15 @@ namespace Gallio.Icarus.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No window with that identifier exists.
+        /// </summary>
+        internal static string NoWindowWithThatIdentifierExists {
+            get {
+                return ResourceManager.GetString("NoWindowWithThatIdentifierExists", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Opening project.
         /// </summary>
         internal static string OpeningProject {

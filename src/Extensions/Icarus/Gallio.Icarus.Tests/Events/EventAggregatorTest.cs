@@ -45,7 +45,7 @@ namespace Gallio.Icarus.Tests.Events
         {
             public bool Handled { get; private set; }
 
-            public void Handle(TestEvent message)
+            public void Handle(TestEvent @event)
             {
                 Handled = true;
             }

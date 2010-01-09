@@ -13,6 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
@@ -24,7 +25,7 @@ using Gallio.Runtime;
 
 namespace Gallio.Icarus.Models
 {
-    public class TestTreeNode : Node
+    public class TestTreeNode : Node, IComparable<TestTreeNode>
     {
         // TODO: Refactor me.
         private static readonly object imageCacheLock = new object();
@@ -267,14 +268,14 @@ namespace Gallio.Icarus.Models
             switch (status)
             {
                 case TestStatus.Failed:
-                    return Properties.Resources.cross;
+                    return Resources.cross;
                 case TestStatus.Passed:
-                    return Properties.Resources.tick;
+                    return Resources.tick;
                 case TestStatus.Inconclusive:
-                    return Properties.Resources.error;
-                default:
-                    return null;
+                    return Resources.error;
             }
+            
+            return null;
         }
 
         public void AddTestStepRun(TestStepRun testStepRun)
@@ -295,6 +296,11 @@ namespace Gallio.Icarus.Models
 
             foreach (var n in Nodes)
                 ((TestTreeNode)n).Reset();
+        }
+
+        public int CompareTo(TestTreeNode other)
+        {
+            return Text.CompareTo(other.Text);
         }
     }
 }

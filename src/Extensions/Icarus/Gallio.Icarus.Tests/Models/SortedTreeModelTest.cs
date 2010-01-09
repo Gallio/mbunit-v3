@@ -25,24 +25,31 @@ namespace Gallio.Icarus.Tests.Models
     [TestsOn(typeof(SortedTreeModel))]
     public class SortedTreeModelTest
     {
-        private IFilteredTreeModel filteredTreeModel;
+        private ITestStatusFilteredTreeModel testStatusFilteredTreeModel;
         private SortedTreeModel sortedTreeModel;
+
+        private readonly TestTreeNode[] sampleNodes = new[]
+         {
+             new TestTreeNode("a", "a"), 
+             new TestTreeNode("c", "c"), 
+             new TestTreeNode("d", "d"), 
+             new TestTreeNode("b", "b"), 
+             new TestTreeNode("a", "a")
+         };
 
         [SetUp]
         public void Establish_context()
         {
-            filteredTreeModel = MockRepository.GenerateStub<IFilteredTreeModel>();
-            sortedTreeModel = new SortedTreeModel(filteredTreeModel);            
+            testStatusFilteredTreeModel = MockRepository.GenerateStub<ITestStatusFilteredTreeModel>();
+            sortedTreeModel = new SortedTreeModel(testStatusFilteredTreeModel);
         }
 
         [Test]
         public void Children_should_be_sorted_ascending_by_default()
         {
             var treePath = new TreePath();
-            filteredTreeModel.Stub(ttm => ttm.GetChildren(treePath)).Return(new[]
-            {
-                new Node("a"), new Node("c"), new Node("d"), new Node("b"), new Node("a")
-            });
+            testStatusFilteredTreeModel.Stub(ttm => ttm.GetChildren(treePath))
+                .Return(sampleNodes);
 
             var children = sortedTreeModel.GetChildren(treePath);
 
@@ -61,10 +68,8 @@ namespace Gallio.Icarus.Tests.Models
         [Test]
         public void Children_should_be_sorted_descending_if_set()
         {
-            filteredTreeModel.Stub(ttm => ttm.GetChildren(Arg<TreePath>.Is.Anything)).Return(new[]
-            {
-                new Node("a"), new Node("c"), new Node("d"), new Node("b"), new Node("a")
-            });
+            testStatusFilteredTreeModel.Stub(ttm => ttm.GetChildren(Arg<TreePath>.Is.Anything))
+                .Return(sampleNodes);
             sortedTreeModel.Handle(new SortTreeEvent(SortOrder.Descending));
 
             var children = sortedTreeModel.GetChildren(new TreePath());
@@ -86,7 +91,7 @@ namespace Gallio.Icarus.Tests.Models
         {
             var flag = false;
             sortedTreeModel.StructureChanged += (s, e) => { flag = true; };
-            filteredTreeModel.Stub(ttm => ttm.GetChildren(Arg<TreePath>.Is.Anything))
+            testStatusFilteredTreeModel.Stub(ttm => ttm.GetChildren(Arg<TreePath>.Is.Anything))
                 .Return(new Node[0]);
 
             sortedTreeModel.Handle(new SortTreeEvent(SortOrder.Descending));

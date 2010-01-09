@@ -45,21 +45,6 @@ namespace Gallio.Icarus.Controllers.Interfaces
         string TreeViewCategory { get; set; }
 
         /// <summary>
-        /// Whether or not to filter Passed tests in the tree.
-        /// </summary>
-        bool FilterPassed { get; set; }
-        
-        /// <summary>
-        /// Whether or not to filter Failed tests in the tree.
-        /// </summary>
-        bool FilterFailed { get; set; }
-
-        /// <summary>
-        /// Whether or not to filter Inconclusive tests in the tree.
-        /// </summary>
-        bool FilterInconclusive { get; set; }
-
-        /// <summary>
         /// Event raised after each test step completes.
         /// </summary>
         event EventHandler<TestStepFinishedEventArgs> TestStepFinished;

@@ -26,9 +26,6 @@ namespace Gallio.Icarus.Models
 {
     public interface ITestTreeModel : ITreeModel
     {
-        bool FilterPassed { get; }
-        bool FilterFailed { get; }
-        bool FilterInconclusive { get; }
         Observable<int> TestCount { get; }
         TestTreeNode Root { get; }
 

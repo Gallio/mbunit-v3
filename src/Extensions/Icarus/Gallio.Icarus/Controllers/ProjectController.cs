@@ -370,10 +370,10 @@ namespace Gallio.Icarus.Controllers
             }, null);
         }
 
-        public void Handle(ProjectChanged message)
+        public void Handle(ProjectChanged @event)
         {
             if (ProjectChanged != null)
-                ProjectChanged(this, new ProjectChangedEventArgs(message.ProjectLocation));
+                ProjectChanged(this, new ProjectChangedEventArgs(@event.ProjectLocation));
         }
     }
 }

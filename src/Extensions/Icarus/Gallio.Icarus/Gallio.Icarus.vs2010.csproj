@@ -205,6 +205,9 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="IView.cs" />
+    <Compile Include="Models\FilterTestStatusEvent.cs" />
+    <Compile Include="Models\ITestStatusFilteredTreeModel.cs" />
+    <Compile Include="Models\TestStatusFilteredTreeModel.cs" />
     <Compile Include="Projects\ProjectChangedEventArgs.cs" />
     <Compile Include="Projects\IProjectMonitor.cs" />
     <Compile Include="Projects\ProjectReloadDialog.cs">
@@ -246,6 +249,8 @@
     <Compile Include="Reports\ReportOptions.cs" />
     <Compile Include="Runtime\DefaultConventionScanner.cs" />
     <Compile Include="Specifications\AndSpecification.cs" />
+    <Compile Include="TestExplorer\Controller.cs" />
+    <Compile Include="TestExplorer\Model.cs" />
     <Compile Include="TreeBuilders\ITreeBuilder.cs" />
     <Compile Include="TreeBuilders\MetadataTreeBuilder.cs" />
     <Compile Include="TreeBuilders\NamespaceHierarchy.cs" />
