@@ -30,7 +30,7 @@ namespace MbUnit.Framework
     /// </summary>
     /// <remarks>
     /// <para>
-    /// Tests cam be nested to form test suites and other aggregates.
+    /// Tests can be nested to form test suites and other aggregates.
     /// </para>
     /// </remarks>
     /// <example>

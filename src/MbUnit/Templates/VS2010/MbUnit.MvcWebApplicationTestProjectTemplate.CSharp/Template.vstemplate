@@ -29,7 +29,7 @@
     </Project>
   </TemplateContent>
   <WizardExtension>
-    <Assembly>Microsoft.VisualStudio.Web.Extensions, Version=10.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35</Assembly>
+    <Assembly>Microsoft.VisualStudio.Web.Mvc.2.0, Version=10.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35</Assembly>
     <FullClassName>Microsoft.VisualStudio.Web.Mvc.TestTemplateWizard</FullClassName>
   </WizardExtension>
 </VSTemplate>

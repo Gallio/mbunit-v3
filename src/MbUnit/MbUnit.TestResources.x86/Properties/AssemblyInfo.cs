@@ -1,4 +1,4 @@
-﻿// Copyright 2005-2009 Gallio Project - http://www.gallio.org/
+﻿// Copyright 2005-2010 Gallio Project - http://www.gallio.org/
 // Portions Copyright 2000-2004 Jonathan de Halleux
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,7 +25,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("Test")]
 [assembly: AssemblyCompany("MbUnit Project")]
 [assembly: AssemblyProduct("MbUnit")]
-[assembly: AssemblyCopyright("Copyright © 2005-2009 Gallio Project - http://www.gallio.org/")]
+[assembly: AssemblyCopyright("Copyright © 2005-2010 Gallio Project - http://www.gallio.org/")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

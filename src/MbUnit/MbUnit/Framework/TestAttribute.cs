@@ -54,10 +54,6 @@ namespace MbUnit.Framework
     [AttributeUsage(PatternAttributeTargets.TestMethod, AllowMultiple = false, Inherited = true)]
     public class TestAttribute : TestMethodPatternAttribute
     {
-        // TODO: We should support explicit ordering of tests based on
-        //       an Order property similar to decorators.  Then we can deprecate the
-        //       TestSequence attribute.
-
         /// <inheritdoc />
         [DebuggerNonUserCode]
         protected override void Execute(PatternTestInstanceState state)
