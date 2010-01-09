@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("Gallio")]
-[assembly: AssemblyCopyright("Copyright © 2005-2009 Gallio Project - http://www.gallio.org/")]
+[assembly: AssemblyCopyright("Copyright © 2005-2010 Gallio Project - http://www.gallio.org/")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
