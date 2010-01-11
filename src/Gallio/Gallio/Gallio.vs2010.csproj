@@ -83,6 +83,10 @@
     <Compile Include="Common\Concurrency\WorkScheduler.cs" />
     <Compile Include="Common\Concurrency\TaskResult.cs" />
     <Compile Include="Common\IO\ConsoleRedirection.cs" />
+    <Compile Include="Common\IO\Content.cs" />
+    <Compile Include="Common\IO\ContentEmbeddedResource.cs" />
+    <Compile Include="Common\IO\ContentFile.cs" />
+    <Compile Include="Common\IO\ContentInline.cs" />
     <Compile Include="Common\Markup\MarkupNormalizationUtils.cs" />
     <Compile Include="Common\Messaging\IMessageExchangeLink.cs" />
     <Compile Include="Common\Messaging\MessageConsumer.cs" />

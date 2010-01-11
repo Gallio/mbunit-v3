@@ -60,6 +60,12 @@ namespace Gallio.Common.IO
         }
 
         /// <inheritdoc />
+        public Stream OpenRead(string path)
+        {
+            return File.OpenRead(path);
+        }
+
+        /// <inheritdoc />
         public string[] GetFilesInDirectory(string path, string searchPattern, 
             SearchOption searchOption)
         {

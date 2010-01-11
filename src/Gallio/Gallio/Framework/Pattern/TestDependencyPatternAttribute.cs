@@ -44,8 +44,7 @@ namespace Gallio.Framework.Pattern
                 }
 
                 if (! success)
-                    scope.TestModelBuilder.AddAnnotation(new Annotation(AnnotationType.Warning, codeElement,
-                        "Was unable to resolve a test dependency."));
+                    scope.TestModelBuilder.AddAnnotation(new Annotation(AnnotationType.Warning, codeElement, "Was unable to resolve a test dependency."));
             });
         }
 

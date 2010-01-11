@@ -63,6 +63,13 @@ namespace Gallio.Common.IO
         void OpenFile(string path);
 
         /// <summary>
+        /// Opens an existing file for reading.
+        /// </summary>
+        ///<param name="path">The location of the file.</param>
+        /// <returns>The content of the file as a readable stream.</returns>
+        Stream OpenRead(string path);
+
+        /// <summary>
         /// Returns a list of matching files in the specified directory.
         /// </summary>
         /// <param name="path">The directory to inspect.</param>
@@ -70,8 +77,7 @@ namespace Gallio.Common.IO
         /// <param name="searchOption">Whether to search all directories or just 
         /// the top-level one.</param>
         /// <returns>A string array of filenames.</returns>
-        string[] GetFilesInDirectory(string path, string searchPattern, 
-            SearchOption searchOption);
+        string[] GetFilesInDirectory(string path, string searchPattern, SearchOption searchOption);
 
         /// <summary>
         /// Copies an existing file to a new file. Overwriting a file of the same name is allowed.

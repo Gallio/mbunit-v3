@@ -17,6 +17,7 @@ using System;
 using System.IO;
 using System.Reflection;
 using System.Text;
+using Gallio.Common.IO;
 using Gallio.Framework.Pattern;
 using Gallio.Common.Reflection;
 
@@ -36,11 +37,6 @@ namespace MbUnit.Framework
     {
         // TODO: Add support for Uris.  We will need to define an IUriLoader service to help
         //       with this.  Such a service would be quite useful for many other reasons also.
-        
-        private string contents;
-        private string filePath;
-        private Type resourceScope;
-        private string resourcePath;
 
         /// <summary>
         /// Gets or sets the inline data contents as a string.
@@ -52,8 +48,8 @@ namespace MbUnit.Framework
         /// </remarks>
         public string Contents
         {
-            get { return contents; }
-            set { contents = value; }
+            get;
+            set;
         }
 
         /// <summary>
@@ -67,8 +63,8 @@ namespace MbUnit.Framework
         /// </remarks>
         public string FilePath
         {
-            get { return filePath; }
-            set { filePath = value; }
+            get;
+            set;
         }
 
         /// <summary>
@@ -84,8 +80,8 @@ namespace MbUnit.Framework
         /// <seealso cref="ResourcePath"/>
         public Type ResourceScope
         {
-            get { return resourceScope; }
-            set { resourceScope = value; }
+            get;
+            set;
         }
 
         /// <summary>
@@ -122,8 +118,8 @@ namespace MbUnit.Framework
         /// <seealso cref="ResourceScope"/>
         public string ResourcePath
         {
-            get { return resourcePath; }
-            set { resourcePath = value; }
+            get;
+            set;
         }
 
         /// <summary>
@@ -138,13 +134,7 @@ namespace MbUnit.Framework
         /// </remarks>
         protected virtual string GetDataLocationName()
         {
-            if (contents != null)
-                return "<inline>";
-
-            if (filePath != null)
-                return filePath;
-
-            return resourcePath;
+            return Contents != null ? "<inline>" : (FilePath ?? ResourcePath);
         }
 
         /// <summary>
@@ -157,17 +147,13 @@ namespace MbUnit.Framework
         /// data source location is specified has also changed.
         /// </para>
         /// </remarks>
-        /// <param name="codeElement">The code element to which the attribute was applied.</param>
+        /// <param name="codeElementInfo">The code element to which the attribute was applied.</param>
         /// <returns>The stream.</returns>
-        protected virtual Stream OpenStream(ICodeElementInfo codeElement)
+        protected virtual Stream OpenStream(ICodeElementInfo codeElementInfo)
         {
-            if (contents != null)
-                return new MemoryStream(Encoding.UTF8.GetBytes(contents));
-
-            if (filePath != null)
-                return File.OpenRead(filePath);
-
-            return OpenResourceStream(codeElement);
+            var content = GetContent();
+            content.CodeElementInfo = codeElementInfo;
+            return content.OpenStream();
         }
 
         /// <summary>
@@ -180,14 +166,13 @@ namespace MbUnit.Framework
         /// data source location is specified has also changed.
         /// </para>
         /// </remarks>
-        /// <param name="codeElement">The code element to which the attribute was applied.</param>
+        /// <param name="codeElementInfo">The code element to which the attribute was applied.</param>
         /// <returns>The text reader.</returns>
-        protected virtual TextReader OpenTextReader(ICodeElementInfo codeElement)
+        protected virtual TextReader OpenTextReader(ICodeElementInfo codeElementInfo)
         {
-            if (contents != null)
-                return new StringReader(contents);
-
-            return new StreamReader(OpenStream(codeElement));
+            var content = GetContent();
+            content.CodeElementInfo = codeElementInfo;
+            return content.OpenTextReader();
         }
 
         /// <summary>
@@ -202,7 +187,7 @@ namespace MbUnit.Framework
         {
             get
             {
-                return filePath != null;
+                return GetContent().IsDynamic;
             }
         }
 
@@ -210,7 +195,6 @@ namespace MbUnit.Framework
         protected override void Validate(IPatternScope scope, ICodeElementInfo codeElement)
         {
             base.Validate(scope, codeElement);
-
             ValidateSource(scope, codeElement);
         }
 
@@ -230,71 +214,23 @@ namespace MbUnit.Framework
         /// <see cref="FilePath" /> or <see cref="ResourcePath"/> have been set.</exception>
         protected virtual void ValidateSource(IPatternScope scope, ICodeElementInfo codeElement)
         {
-            if (contents == null && filePath == null && resourcePath == null)
+            if (Contents == null && FilePath == null && ResourcePath == null)
                 ThrowUsageErrorException("At least one source property must be specified.");
         }
 
-        private Stream OpenResourceStream(ICodeElementInfo codeElement)
+        private Content GetContent()
         {
-            Assembly scopeAssembly;
-            string scopeNamespace;
-            GetResourceScope(codeElement, out scopeAssembly, out scopeNamespace);
-
-            string resourceName = resourcePath.Replace('\\', '.');
-
-            try
+            if (Contents != null)
             {
-                Stream stream = scopeAssembly.GetManifestResourceStream(resourceName);
-                if (stream != null)
-                    return stream;
-            }
-            catch (FileNotFoundException)
-            {
+                return new ContentInline(Contents);
             }
 
-            try
+            if (FilePath != null)
             {
-                if (scopeNamespace.Length != 0)
-                {
-                    Stream stream = scopeAssembly.GetManifestResourceStream(scopeNamespace + @"." + resourceName);
-                    if (stream != null)
-                        return stream;
-                }
-            }
-            catch (FileNotFoundException)
-            {
+                return new ContentFile(FilePath);
             }
 
-            ThrowUsageErrorException(String.Format("Could not find manifest resource '{0}'.", resourcePath));
-            return null; // unreachable
-        }
-
-        private void GetResourceScope(ICodeElementInfo codeElement, out Assembly scopeAssembly, out string scopeNamespace)
-        {
-            if (resourceScope == null)
-            {
-                IAssemblyInfo assembly = ReflectionUtils.GetAssembly(codeElement);
-                if (assembly != null)
-                {
-                    INamespaceInfo @namespace = ReflectionUtils.GetNamespace(codeElement);
-                    scopeAssembly = assembly.Resolve(true);
-                    scopeNamespace = @namespace != null ? @namespace.Name : "";
-                    return;
-                }
-            }
-            else
-            {
-                scopeAssembly = resourceScope.Assembly;
-                if (scopeAssembly != null)
-                {
-                    scopeNamespace = resourceScope.Namespace ?? "";
-                    return;
-                }
-            }
-
-            ThrowUsageErrorException("Could not determine the assembly from which to load the manifest resource.");
-            scopeAssembly = null; // unreachable
-            scopeNamespace = null;
+            return new ContentEmbeddedResource(ResourcePath, ResourceScope);
         }
     }
 }

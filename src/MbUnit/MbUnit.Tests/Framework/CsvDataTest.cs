@@ -30,17 +30,15 @@ namespace MbUnit.Tests.Framework
     public class CsvDataTest : BaseTestWithSampleRunner
     {
         [Test]
-        [Row("Inline", new string[] { "(abc, 123)", "(def, 456)" })]
-        [Row("InlineWithNonstandardSettings", new string[] { "(abc, 123)", "(def, 456)" })]
-        [Row("ImplicitlyScopedResourceWithHeader", new string[] { "Apples: 1.00", "Bananas: 1.50", "Cookies: 2.00" })]
-        [Row("ExplicitlyScopedResourceWithHeader", new string[] { "Apples: 1.00", "Bananas: 1.50", "Cookies: 2.00" })]
-        [Row("AbsolutelyScopedResourceWithHeader", new string[] { "Apples: 1.00", "Bananas: 1.50", "Cookies: 2.00" })]
-        [Row("FileWithHeader", new string[] { "Apples: 1.00", "Bananas: 1.50", "Cookies: 2.00" })]
+        [Row("Inline", new[] { "(abc, 123)", "(def, 456)" })]
+        [Row("InlineWithNonstandardSettings", new[] { "(abc, 123)", "(def, 456)" })]
+        [Row("ImplicitlyScopedResourceWithHeader", new[] { "Apples: 1.00", "Bananas: 1.50", "Cookies: 2.00" })]
+        [Row("ExplicitlyScopedResourceWithHeader", new[] { "Apples: 1.00", "Bananas: 1.50", "Cookies: 2.00" })]
+        [Row("AbsolutelyScopedResourceWithHeader", new[] { "Apples: 1.00", "Bananas: 1.50", "Cookies: 2.00" })]
+        [Row("FileWithHeader", new[] { "Apples: 1.00", "Bananas: 1.50", "Cookies: 2.00" })]
         public void VerifySampleOutput(string sampleName, string[] output)
         {
-            TestStepRun run = Runner.GetPrimaryTestStepRun(
-                CodeReference.CreateFromMember(typeof(CsvDataSample).GetMethod(sampleName)));
-
+            TestStepRun run = Runner.GetPrimaryTestStepRun(CodeReference.CreateFromMember(typeof(CsvDataSample).GetMethod(sampleName)));
             Assert.AreEqual(output.Length, run.Children.Count, "Different number of runs than expected.");
 
             for (int i = 0; i < output.Length; i++)
@@ -53,8 +51,7 @@ namespace MbUnit.Tests.Framework
         [Test]
         public void Metadata()
         {
-            TestStepRun run = Runner.GetPrimaryTestStepRun(
-                CodeReference.CreateFromMember(typeof(CsvDataSample).GetMethod("FileWithHeader")));
+            TestStepRun run = Runner.GetPrimaryTestStepRun(CodeReference.CreateFromMember(typeof(CsvDataSample).GetMethod("FileWithHeader")));
 
             Assert.AreEqual(@"..\Framework\CsvDataTest.csv(2)", run.Children[0].Step.Metadata.GetValue(MetadataKeys.DataLocation));
             Assert.AreEqual(@"Worm", run.Children[0].Step.Metadata.GetValue("ConsumedBy"));

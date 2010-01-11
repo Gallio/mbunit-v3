@@ -66,9 +66,14 @@ namespace MbUnit.Framework
     [AttributeUsage(PatternAttributeTargets.DataContext, AllowMultiple = true, Inherited = true)]
     public class CsvDataAttribute : ContentAttribute
     {
-        private char fieldDelimiter = ',';
-        private char commentPrefix = '#';
-        private bool hasHeader;
+        /// <summary>
+        /// Constructs a Comma Separated Values (CSV) contents attribute.
+        /// </summary>
+        public CsvDataAttribute()
+        {
+            CommentPrefix = '#';
+            FieldDelimiter = ',';
+        }
 
         /// <summary>
         /// Gets or sets the field delimiter character.
@@ -78,8 +83,8 @@ namespace MbUnit.Framework
         /// </value>
         public char FieldDelimiter
         {
-            get { return fieldDelimiter; }
-            set { fieldDelimiter = value; }
+            get;
+            set;
         }
 
         /// <summary>
@@ -98,8 +103,8 @@ namespace MbUnit.Framework
         /// </value>
         public char CommentPrefix
         {
-            get { return commentPrefix; }
-            set { commentPrefix = value; }
+            get;
+            set;
         }
 
         /// <summary>
@@ -111,18 +116,18 @@ namespace MbUnit.Framework
         /// </value>
         public bool HasHeader
         {
-            get { return hasHeader; }
-            set { hasHeader = value; }
+            get;
+            set;
         }
 
         /// <inheritdoc />
         protected override void PopulateDataSource(IPatternScope scope, DataSource dataSource, ICodeElementInfo codeElement)
         {
-            var dataSet = new CsvDataSet(delegate { return OpenTextReader(codeElement); }, IsDynamic);
+            var dataSet = new CsvDataSet(() => OpenTextReader(codeElement), IsDynamic);
             dataSet.DataLocationName = GetDataLocationName();
-            dataSet.FieldDelimiter = fieldDelimiter;
-            dataSet.CommentPrefix = commentPrefix;
-            dataSet.HasHeader = hasHeader;
+            dataSet.FieldDelimiter = FieldDelimiter;
+            dataSet.CommentPrefix = CommentPrefix;
+            dataSet.HasHeader = HasHeader;
             dataSource.AddDataSet(dataSet);
         }
     }

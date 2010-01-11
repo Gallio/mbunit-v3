@@ -68,6 +68,9 @@
     <Compile Include="Common\Diagnostics\ExceptionDataTest.cs" />
     <Compile Include="Common\Diagnostics\StackTraceDataTest.cs" />
     <Compile Include="Common\Diagnostics\StackTraceFilterTest.cs" />
+    <Compile Include="Common\IO\ContentInlineTest.cs" />
+    <Compile Include="Common\IO\ContentFileTest.cs" />
+    <Compile Include="Common\IO\ContentEmbeddedResourceTest.cs" />
     <Compile Include="Common\IO\FileUtilsTest.cs" />
     <Compile Include="Common\Linq\ExpressionInstrumentorTest.cs" />
     <Compile Include="Common\Markup\AttachmentTest.cs" />
@@ -421,6 +424,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Reports\Diagnostic.xslt" />
+    <EmbeddedResource Include="Common\IO\SampleResource.txt" />
     <None Include="Gallio.Tests.dll.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
