@@ -91,7 +91,8 @@ namespace Gallio.Icarus
                 var runtimeLogController = RuntimeAccessor.ServiceLocator.Resolve<IRuntimeLogController>();
                 runtimeLogController.SetLogger(runtimeLogger);
 
-                var applicationController = new ApplicationController(Arguments, RuntimeAccessor.ServiceLocator);
+                var applicationController = RuntimeAccessor.ServiceLocator.Resolve<IApplicationController>();
+                applicationController.Arguments = Arguments;
 
                 ErrorDialogUnhandledExceptionHandler.RunApplicationWithHandler(new Main(applicationController));
             }

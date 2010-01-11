@@ -13,11 +13,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Collections.Generic;
 using Gallio.Model;
 
 namespace Gallio.Icarus.Models.TestTreeNodes
 {
-    internal sealed class NamespaceNode : TestTreeNode
+    public sealed class NamespaceNode : TestTreeNode
     {
         public NamespaceNode(string id, string name)
             : base(id, name)
@@ -25,6 +26,18 @@ namespace Gallio.Icarus.Models.TestTreeNodes
             NodeTypeIcon = Properties.Resources.Namespace;
             TestKind = TestKinds.Namespace;
             CheckState = System.Windows.Forms.CheckState.Checked;
+        }
+
+        public IEnumerable<TestTreeNode> GetChildren()
+        {
+            var nodes = new List<TestTreeNode>();
+            foreach (var node in Nodes)
+            {
+                var testTreeNode = node as TestTreeNode;
+                if (testTreeNode != null)
+                    nodes.Add(testTreeNode);
+            }
+            return nodes;
         }
     }
 }

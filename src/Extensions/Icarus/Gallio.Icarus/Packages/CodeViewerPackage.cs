@@ -17,6 +17,7 @@ using System.Collections.Generic;
 using System.IO;
 using Gallio.Common.Reflection;
 using Gallio.Icarus.Controllers.Interfaces;
+using Gallio.Icarus.Views.CodeViewer;
 using Gallio.Runtime.Extensibility;
 using Gallio.Common.Concurrency;
 

@@ -19,7 +19,7 @@ using Gallio.UI.ProgressMonitoring;
 
 namespace Gallio.Icarus.Commands
 {
-    internal class RemoveAllFilesCommand : ICommand
+    public class RemoveAllFilesCommand : ICommand
     {
         private readonly ITestController testController;
         private readonly IProjectController projectController;

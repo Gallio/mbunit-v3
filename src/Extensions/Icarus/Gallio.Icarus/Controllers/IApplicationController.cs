@@ -15,7 +15,6 @@
 
 using System;
 using System.ComponentModel;
-using Gallio.Icarus.Controllers.EventArgs;
 using Gallio.UI.Controls;
 
 namespace Gallio.Icarus.Controllers
@@ -23,8 +22,13 @@ namespace Gallio.Icarus.Controllers
     internal interface IApplicationController : INotifyPropertyChanged
     {
         string Title { get; set; }
-        ToolStripMenuItem[] RecentProjects { get; }
+        ToolStripMenuItem[] RecentProjects { get; } // TODO: fix this!
         bool FailedTests { get; }
+        IcarusArguments Arguments { get; set; }
+
+        event EventHandler ExploreFinished;
+        event EventHandler RunStarted;
+        event EventHandler RunFinished;
 
         void Load();
         void NewProject();

@@ -14,7 +14,6 @@
 // limitations under the License.
 
 using Aga.Controls.Tree;
-using Gallio.Icarus.Helpers;
 using Gallio.Icarus.Models;
 using Gallio.Icarus.Models.TestTreeNodes;
 using Gallio.Model.Schema;

@@ -19,7 +19,7 @@ using Gallio.UI.ProgressMonitoring;
 
 namespace Gallio.Icarus.Commands
 {
-    internal class RemoveFileCommand : ICommand
+    public class RemoveFileCommand : ICommand
     {
         private readonly IProjectController projectController;
         private readonly ITestController testController;
@@ -41,7 +41,7 @@ namespace Gallio.Icarus.Commands
 
                 using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(50))
                 {
-                    projectController.RemoveFile(FileName, subProgressMonitor);
+                    projectController.RemoveFile(subProgressMonitor, FileName);
                 }
 
                 using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(50))

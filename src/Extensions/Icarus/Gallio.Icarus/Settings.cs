@@ -166,6 +166,10 @@ namespace Gallio.Icarus
         {
             TreeViewCategories = new List<string>();
             MinLogSeverity = LogSeverity.Info;
+
+            AnnotationsShowErrors = true;
+            AnnotationsShowInfos = true;
+            AnnotationsShowWarnings = true;
         }
     }
 }

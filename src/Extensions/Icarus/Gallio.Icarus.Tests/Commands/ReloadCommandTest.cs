@@ -17,8 +17,8 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using Gallio.Icarus.Commands;
 using Gallio.Icarus.Controllers.Interfaces;
+using Gallio.Icarus.Events;
 using Gallio.Icarus.Tests.Utilities;
-using Gallio.Model.Filters;
 using Gallio.Runner.Projects.Schema;
 using Gallio.Runtime.ProgressMonitoring;
 using Gallio.UI.DataBinding;
@@ -38,12 +38,29 @@ namespace Gallio.Icarus.Tests.Commands
             var testRunnerExtensions = new BindingList<string>();
             projectController.Stub(pc => pc.TestRunnerExtensions).Return(testRunnerExtensions);
             projectController.Stub(pc => pc.TestFilters).Return(new Observable<IList<FilterInfo>>(new List<FilterInfo>()));
-            var reloadCommand = new ReloadCommand(testController, projectController);
+            var eventAggregator = MockRepository.GenerateStub<IEventAggregator>();
+            var reloadCommand = new ReloadCommand(testController, projectController, eventAggregator);
 
             reloadCommand.Execute(MockProgressMonitor.Instance);
 
             testController.AssertWasCalled(tc => tc.Explore(Arg<IProgressMonitor>.Is.Anything, 
                 Arg.Is(testRunnerExtensions)));
+        }
+
+        [Test]
+        public void Execute_should_send_an_event()
+        {
+            var testController = MockRepository.GenerateStub<ITestController>();
+            var projectController = MockRepository.GenerateStub<IProjectController>();
+            var testRunnerExtensions = new BindingList<string>();
+            projectController.Stub(pc => pc.TestRunnerExtensions).Return(testRunnerExtensions);
+            projectController.Stub(pc => pc.TestFilters).Return(new Observable<IList<FilterInfo>>(new List<FilterInfo>()));
+            var eventAggregator = MockRepository.GenerateStub<IEventAggregator>();
+            var reloadCommand = new ReloadCommand(testController, projectController, eventAggregator);
+
+            reloadCommand.Execute(MockProgressMonitor.Instance);
+
+            eventAggregator.AssertWasCalled(ea => ea.Send(Arg<Reloading>.Is.Anything));
         }
     }
 }

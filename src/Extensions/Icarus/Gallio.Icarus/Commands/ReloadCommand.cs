@@ -14,26 +14,32 @@
 // limitations under the License.
 
 using Gallio.Icarus.Controllers.Interfaces;
+using Gallio.Icarus.Events;
 using Gallio.Runtime.ProgressMonitoring;
 using Gallio.UI.ProgressMonitoring;
 
 namespace Gallio.Icarus.Commands
 {
-    internal class ReloadCommand : ICommand
+    public class ReloadCommand : ICommand
     {
         private readonly ITestController testController;
         private readonly IProjectController projectController;
+        private readonly IEventAggregator eventAggregator;
 
-        public ReloadCommand(ITestController testController, IProjectController projectController)
+        public ReloadCommand(ITestController testController, IProjectController projectController, 
+            IEventAggregator eventAggregator)
         {
             this.testController = testController;
             this.projectController = projectController;
+            this.eventAggregator = eventAggregator;
         }
 
         public void Execute(IProgressMonitor progressMonitor)
         {
             using (progressMonitor.BeginTask("Reloading", 100))
             {
+                eventAggregator.Send(new Reloading());
+
                 using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(95))
                 {
                     testController.Explore(subProgressMonitor, projectController.TestRunnerExtensions);

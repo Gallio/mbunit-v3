@@ -91,9 +91,9 @@ namespace Gallio.Icarus
 
         private void annotationsListView_DoubleClick(object sender, EventArgs e)
         {
-            foreach (ListViewItem lvi in annotationsListView.SelectedItems)
+            foreach (ListViewItem listViewItem in annotationsListView.SelectedItems)
             {
-                var codeLocation = ((AnnotationData)lvi.Tag).CodeLocation;
+                var codeLocation = ((AnnotationData)listViewItem.Tag).CodeLocation;
                 sourceCodeController.ViewSourceCode(codeLocation);
             }
         }

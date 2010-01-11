@@ -21,6 +21,7 @@ using System.Windows.Forms;
 using Gallio.Common.IO;
 using Gallio.Common.Xml;
 using Gallio.Icarus.Controllers.Interfaces;
+using Gallio.Icarus.Events;
 using Gallio.Icarus.TreeBuilders;
 using Gallio.Model;
 using Gallio.Icarus.Utilities;
@@ -30,7 +31,7 @@ using Gallio.UI.DataBinding;
 
 namespace Gallio.Icarus.Controllers
 {
-    public class OptionsController : NotifyController, IOptionsController
+    public class OptionsController : NotifyController, IOptionsController, Handles<ProjectOpened>, Handles<ProjectSaved>
     {
         private readonly IFileSystem fileSystem;
         private readonly IXmlSerializer xmlSerializer;
@@ -267,6 +268,16 @@ namespace Gallio.Icarus.Controllers
         public void Cancel()
         {
             Load();
+        }
+
+        public void Handle(ProjectOpened @event)
+        {
+            RecentProjects.Add(@event.ProjectLocation);
+        }
+
+        public void Handle(ProjectSaved @event)
+        {
+            RecentProjects.Add(@event.ProjectLocation);
         }
     }
 }

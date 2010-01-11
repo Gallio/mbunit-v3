@@ -36,7 +36,7 @@ namespace Gallio.Icarus.Commands
 
         public void Execute(IProgressMonitor progressMonitor)
         {
-            projectController.SaveProject(FileName, progressMonitor);
+            projectController.SaveProject(progressMonitor, FileName);
         }
     }
 }

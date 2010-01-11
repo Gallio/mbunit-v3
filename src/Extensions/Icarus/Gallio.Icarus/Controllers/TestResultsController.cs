@@ -15,11 +15,11 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Windows.Forms;
 using Aga.Controls.Tree;
 using Gallio.Icarus.Controllers.Interfaces;
+using Gallio.Icarus.Events;
 using Gallio.Icarus.Models;
 using Gallio.Icarus.Models.TestTreeNodes;
 using Gallio.Model;
@@ -29,9 +29,10 @@ using SortOrder=Gallio.Icarus.Models.SortOrder;
 
 namespace Gallio.Icarus.Controllers
 {
-    internal class TestResultsController : NotifyController, ITestResultsController
+    public class TestResultsController : ITestResultsController, Handles<RunStarted>, 
+        Handles<TestSelectionChanged>, Handles<RunFinished>, Handles<ExploreStarted>, 
+        Handles<TestStepFinished>
     {
-        private readonly ITestController testController;
         private readonly ITestTreeModel testTreeModel;
 
         private readonly Stopwatch stopwatch = new Stopwatch();
@@ -41,42 +42,18 @@ namespace Gallio.Icarus.Controllers
         private int index;
         private int sortColumn = -1;
         private SortOrder sortOrder;
+        private IList<TestTreeNode> selectedTests = new List<TestTreeNode>();
 
-        public Observable<int> ResultsCount
-        {
-            get; private set;
-        }
+        public Observable<int> ResultsCount { get; private set; }
 
-        public TimeSpan ElapsedTime
-        {
-            get { return stopwatch.Elapsed; }
-        }
+        public Observable<TimeSpan> ElapsedTime { get; private set; }
 
-        public TestResultsController(ITestController testController, ITestTreeModel testTreeModel)
+        public TestResultsController(ITestTreeModel testTreeModel)
         {
-            this.testController = testController;
             this.testTreeModel = testTreeModel;
 
-            testController.TestStepFinished += (sender, e) => CountResults();
-            testController.PropertyChanged += (sender, e) =>
-            {
-                if (e.PropertyName != "SelectedTests")
-                    return;
-
-                CountResults();
-
-                OnPropertyChanged(e);
-            };
-            testController.ExploreStarted += (sender, e) => Reset();
-            testController.ExploreFinished += (sender, e) => OnPropertyChanged(new PropertyChangedEventArgs("ElapsedTime"));
-            testController.RunStarted += (sender, e) =>
-            {
-                Reset();
-                stopwatch.Start();
-            };
-            testController.RunFinished += (sender, e) => stopwatch.Stop();
-
             ResultsCount = new Observable<int>();
+            ElapsedTime = new Observable<TimeSpan>();
         }
 
         private void CountResults()
@@ -90,19 +67,12 @@ namespace Gallio.Icarus.Controllers
             
             // notify that list has changed
             ResultsCount.Value = count;
-            OnPropertyChanged(new PropertyChangedEventArgs("ElapsedTime"));
+            ElapsedTime.Value = stopwatch.Elapsed;
         }
 
         private void WalkTree(Action<TestTreeNode> action)
         {
-            var selectedTests = new TestTreeNode[0];
-            testController.SelectedTests.Read(sts =>
-            {
-                selectedTests = new TestTreeNode[sts.Count];
-                sts.CopyTo(selectedTests, 0);
-            });
-
-            if (selectedTests.Length == 0 && testTreeModel.Root != null)
+            if (selectedTests.Count == 0 && testTreeModel.Root != null)
             {
                 action(testTreeModel.Root);
             }
@@ -133,7 +103,7 @@ namespace Gallio.Icarus.Controllers
             listViewItems.Clear();
           
             stopwatch.Reset();
-            OnPropertyChanged(new PropertyChangedEventArgs("ElapsedTime"));
+            ElapsedTime.Value = stopwatch.Elapsed;
         }
 
         public void CacheVirtualItems(int startIndex, int endIndex)
@@ -153,24 +123,32 @@ namespace Gallio.Icarus.Controllers
 
         public ListViewItem RetrieveVirtualItem(int itemIndex)
         {
-            // update cache, if necessary
-            if (itemIndex < firstItem)
+            try
             {
-                firstItem = itemIndex;
-                UpdateTestResults();
-            }
-            else if (itemIndex >= firstItem + listViewItems.Count)
-            {
-                lastItem = itemIndex;
-                UpdateTestResults();
-            }
+                // update cache, if necessary
+                if (itemIndex < firstItem)
+                {
+                    firstItem = itemIndex;
+                    UpdateTestResults();
+                }
+                else if (itemIndex >= firstItem + listViewItems.Count)
+                {
+                    lastItem = itemIndex;
+                    UpdateTestResults();
+                }
 
-            if ((itemIndex - firstItem) >= listViewItems.Count)
-            {
-                UpdateTestResults();
-            }
+                if ((itemIndex - firstItem) >= listViewItems.Count)
+                {
+                    UpdateTestResults();
+                }
 
-            return listViewItems[itemIndex - firstItem];
+                return listViewItems[itemIndex - firstItem];
+            }
+            catch
+            {
+                // this is bad, and should never happen :(
+                return new ListViewItem();
+            }
         }
 
         private void UpdateTestResults()
@@ -255,8 +233,15 @@ namespace Gallio.Icarus.Controllers
             index++;
 
             // get the appropriate icon based on outcome
+            int imgIndex = GetImageIndex(testStepRun.Result.Outcome.Status);
+            var listViewItem = CreateListViewItem(testStepRun, imgIndex, testKind, indentCount);
+            listViewItems.Add(listViewItem);
+        }
+
+        private static int GetImageIndex(TestStatus testStatus)
+        {
             int imgIndex = -1;
-            switch (testStepRun.Result.Outcome.Status)
+            switch (testStatus)
             {
                 case TestStatus.Failed:
                     imgIndex = 1;
@@ -268,27 +253,26 @@ namespace Gallio.Icarus.Controllers
                     imgIndex = 0;
                     break;
             }
-            // convert the test step run information to a format for display as a list view item
+            return imgIndex;
+        }
+
+        private static ListViewItem CreateListViewItem(TestStepRun testStepRun, int imgIndex, 
+            string testKind, int indentCount)
+        {
+            string name = testStepRun.Step.Name;
             string duration = testStepRun.Result.DurationInSeconds.ToString("0.000");
             string assertCount = testStepRun.Result.AssertCount.ToString();
             string codeReference = testStepRun.Step.CodeReference.TypeName ?? string.Empty;
             string fileName = testStepRun.Step.Metadata.GetValue(MetadataKeys.File) ?? string.Empty;
-            ListViewItem listViewItem = CreateListViewItem(testStepRun.Step.Name, imgIndex, testKind, duration, assertCount,
-                codeReference, fileName, indentCount);
-            listViewItems.Add(listViewItem);
-        }
 
-        private static ListViewItem CreateListViewItem(string name, int imgIndex, string testKind, string duration, string assertCount,
-            string codeReference, string fileName, int indentCount)
-        {
             // http://blogs.msdn.com/cumgranosalis/archive/2006/03/18/ListViewVirtualModeBugs.aspx
             if (name.Length == 260)
                 name += " ";
 
-            ListViewItem lvi = new ListViewItem(name, imgIndex);
-            lvi.SubItems.AddRange(new[] { testKind, duration, assertCount, codeReference, fileName });
-            lvi.IndentCount = indentCount;
-            return lvi;
+            var listViewItem = new ListViewItem(name, imgIndex);
+            listViewItem.SubItems.AddRange(new[] { testKind, duration, assertCount, codeReference, fileName });
+            listViewItem.IndentCount = indentCount;
+            return listViewItem;
         }
 
         public void SetSortColumn(int column)
@@ -304,6 +288,34 @@ namespace Gallio.Icarus.Controllers
             }
 
             UpdateTestResults();
+        }
+
+        public void Handle(RunStarted @event)
+        {
+            Reset();
+            stopwatch.Start();
+        }
+
+        public void Handle(TestSelectionChanged @event)
+        {
+            selectedTests = new List<TestTreeNode>(@event.Nodes);
+            CountResults();
+        }
+
+        public void Handle(RunFinished @event)
+        {
+            stopwatch.Stop();
+            ElapsedTime.Value = stopwatch.Elapsed;
+        }
+
+        public void Handle(ExploreStarted @event)
+        {
+            Reset();
+        }
+
+        public void Handle(TestStepFinished @event)
+        {
+            CountResults();
         }
     }
 }

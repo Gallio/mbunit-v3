@@ -48,7 +48,7 @@ namespace Gallio.Icarus.Tests.Commands
             progressMonitor = MockProgressMonitor.Instance;
             openProjectCommand = new OpenProjectCommand(testController, projectController, eventAggregator)
             {
-                FileName = FileName
+                ProjectLocation = FileName
             };
         }
 
@@ -65,7 +65,7 @@ namespace Gallio.Icarus.Tests.Commands
         {
             openProjectCommand.Execute(progressMonitor);
 
-            projectController.AssertWasCalled(pc => pc.OpenProject(FileName, progressMonitor));
+            projectController.AssertWasCalled(pc => pc.OpenProject(progressMonitor, FileName));
         }
 
         [Test]

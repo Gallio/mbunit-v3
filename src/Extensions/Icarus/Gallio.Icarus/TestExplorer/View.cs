@@ -16,75 +16,63 @@
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
-using Aga.Controls.Tree;
 using Gallio.Common.Concurrency;
-using Gallio.Icarus.Commands;
-using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Models;
 using Gallio.Icarus.Models.TestTreeNodes;
 using Gallio.Icarus.Utilities;
 using Gallio.Model;
-using Gallio.Runtime.ProgressMonitoring;
-using Gallio.UI.ProgressMonitoring;
 using SortOrder=Gallio.Icarus.Models.SortOrder;
 
 namespace Gallio.Icarus.TestExplorer
 {
-    internal partial class TestExplorer : DockWindow
+    internal partial class View : DockWindow
     {
-        private readonly IProjectController projectController;
-        private readonly ITestController testController;
-        private readonly ISourceCodeController sourceCodeController;
-        private readonly ITaskManager taskManager;
-        private readonly Controller controller;
+        private readonly IController controller;
+        private readonly IModel model;
         private bool updateFlag;
 
-        public TestExplorer(IOptionsController optionsController, IProjectController projectController, 
-            ITestController testController, ISourceCodeController sourceCodeController, 
-            ITaskManager taskManager, Controller controller, Model model)
+        public View(IController controller, IModel model)
         {
-            this.projectController = projectController;
-            this.testController = testController;
-            this.sourceCodeController = sourceCodeController;
-            this.taskManager = taskManager;
             this.controller = controller;
+            this.model = model;
 
             InitializeComponent();
 
-            testTree.PassedColor = optionsController.PassedColor;
-            testTree.FailedColor = optionsController.FailedColor;
-            testTree.InconclusiveColor = optionsController.InconclusiveColor;
-            testTree.SkippedColor = optionsController.SkippedColor;
+            testTree.PassedColor = model.PassedColor;
+            model.PassedColor.PropertyChanged += (s, e) => testTree.PassedColor = model.PassedColor;
+            
+            testTree.FailedColor = model.FailedColor;
+            model.FailedColor.PropertyChanged += (s, e) => testTree.FailedColor = model.FailedColor;
+            
+            testTree.InconclusiveColor = model.InconclusiveColor;
+            model.InconclusiveColor.PropertyChanged += (s, e) => testTree.InconclusiveColor = model.InconclusiveColor;
+            
+            testTree.SkippedColor = model.SkippedColor;
+            model.SkippedColor.PropertyChanged += (s, e) => testTree.SkippedColor = model.SkippedColor;
 
             if (treeViewComboBox.ComboBox != null)
             {
                 updateFlag = true;
-                treeViewComboBox.ComboBox.DataSource = optionsController.SelectedTreeViewCategories.Value;
+                treeViewComboBox.ComboBox.DataSource = model.TreeViewCategories.Value;
                 updateFlag = false;
-                treeViewComboBox.ComboBox.DataBindings.Add("SelectedItem", projectController, "TreeViewCategory");
+                treeViewComboBox.ComboBox.SelectedItem = model.CurrentTreeViewCategory;
             }
 
-            optionsController.SelectedTreeViewCategories.PropertyChanged += (s, e) =>
+            model.TreeViewCategories.PropertyChanged += (s, e) =>
             {
                 if (treeViewComboBox.ComboBox == null) 
                     return;
 
                 updateFlag = true;
-                treeViewComboBox.ComboBox.DataSource = optionsController.SelectedTreeViewCategories.Value;
+                treeViewComboBox.ComboBox.DataSource = model.TreeViewCategories;
                 updateFlag = false;
             };
 
             testTree.Model = model.TreeModel;
 
-            testController.ExploreStarted += delegate { testTree.EditEnabled = false; };
-            testController.ExploreFinished += delegate
-            {
-                testTree.EditEnabled = true;
-                RestoreState();
-            };
+            controller.RestoreState += (s,e) => RestoreState();
 
-            testController.RunStarted += delegate { testTree.EditEnabled = false; };
-            testController.RunFinished += delegate { testTree.EditEnabled = true; };
+            model.CanEditTree.PropertyChanged += (s, e) => testTree.EditEnabled = model.CanEditTree;
 
             filterPassedTestsToolStripMenuItem.Click += (s, e) => FilterStatus(TestStatus.Passed);
             filterPassedTestsToolStripButton.Click += (s, e) => FilterStatus(TestStatus.Passed);
@@ -112,6 +100,8 @@ namespace Gallio.Icarus.TestExplorer
 
             sortAscToolStripButton.Click += (s, e) => SortTree(SortOrder.Ascending);
             sortDescToolStripButton.Click += (s, e) => SortTree(SortOrder.Descending);
+
+            controller.SaveState += (s, e) => SaveState();
         }
 
         private void FilterStatus(TestStatus testStatus)
@@ -132,18 +122,14 @@ namespace Gallio.Icarus.TestExplorer
                 return;
 
             var node = (TestTreeNode)testTree.SelectedNode.Tag;
-            string fileName = node.FileName;
-            
-            if (fileName == null) 
-                return;
 
-            var cmd = new RemoveFileCommand(projectController, testController) {FileName = fileName};
-            taskManager.QueueTask(cmd);
+            if (node.FileName != null)
+                controller.RemoveFile(node.FileName);
         }
 
         private void treeViewComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            testController.TreeViewCategory = (string)treeViewComboBox.SelectedItem;
+            model.CurrentTreeViewCategory.Value = (string)treeViewComboBox.SelectedItem;
 
             // if updateFlag is set, then the index has changed because
             // we are populating the list, so no need to refresh!
@@ -151,17 +137,13 @@ namespace Gallio.Icarus.TestExplorer
                 return;
 
             SaveState();
-
-            var cmd = new RefreshTestTreeCommand(testController);
-            taskManager.QueueTask(cmd);
-
+            controller.RefreshTree();
             RestoreState();
         }
 
         private void resetTestsMenuItem_Click(object sender, EventArgs e)
         {
-            var cmd = new ResetTestsCommand(testController);
-            taskManager.QueueTask(cmd);
+            controller.ResetTests();
         }
 
         private void expandAllMenuItem_Click(object sender, EventArgs e)
@@ -185,8 +167,8 @@ namespace Gallio.Icarus.TestExplorer
                 return;
 
             var node = (TestTreeNode)testTree.SelectedNode.Tag;
-            var cmd = new ViewSourceCodeCommand(sourceCodeController) { TestId = node.Name };
-            taskManager.QueueTask(cmd);
+
+            controller.ShowSourceCode(node.Name);
         }
 
         private void expandPassedTestsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -211,71 +193,64 @@ namespace Gallio.Icarus.TestExplorer
                 if (openFileDialog.ShowDialog(this) != DialogResult.OK)
                     return;
 
-                var command = new AddFilesCommand(projectController, testController)
-                                               {Files = openFileDialog.FileNames};
-                taskManager.QueueTask(command);
+                controller.AddFiles(openFileDialog.FileNames);
             }
         }
 
         private void removeAllFilesToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var cmd = new RemoveAllFilesCommand(testController, projectController);
-            taskManager.QueueTask(cmd);
+            controller.RemoveAllFiles();
         }
 
         private void testTree_SelectionChanged(object sender, EventArgs e)
         {
-            Sync.Invoke(this, () =>
-            {
-                var nodes = new List<TestTreeNode>();
-
-                if (testTree.SelectedNode != null)
-                {
-                    TestTreeNode testTreeNode = (TestTreeNode)testTree.SelectedNode.Tag;
-                    removeFileToolStripMenuItem.Enabled = testTreeNode.FileName != null;
-                    viewSourceCodeToolStripMenuItem.Enabled = testTreeNode.SourceCodeAvailable;
-
-                    if (testTreeNode is NamespaceNode)
-                    {
-                        foreach (Node n in testTreeNode.Nodes)
-                        {
-                            if (n != null)
-                            {
-                                nodes.Add((TestTreeNode)n);
-                            }
-                        }
-                    }
-                    else
-                    {
-                        nodes.Add(testTreeNode);
-                    }
-                }
-                else
-                {
-                    removeFileToolStripMenuItem.Enabled = false;
-                    viewSourceCodeToolStripMenuItem.Enabled = false;
-                }
-
-                testController.SetSelection(nodes);
-            });
+            Sync.Invoke(this, TreeSelectionChanged);
         }
 
-        internal void SaveState()
+        private void TreeSelectionChanged()
         {
-            // save current test selection
-            var command = new SaveFilterCommand(testController, projectController, "AutoSave");
-            command.Execute(NullProgressMonitor.CreateInstance());
-            
-            // save current category for tree
-            projectController.TreeViewCategory = (string)treeViewComboBox.SelectedItem;
+            var nodes = new List<TestTreeNode>();
 
-            // save state of tree
-            projectController.CollapsedNodes = testTree.CollapsedNodes;
+            if (testTree.SelectedNode != null)
+            {
+                var testTreeNode = (TestTreeNode)testTree.SelectedNode.Tag;
+                removeFileToolStripMenuItem.Enabled = testTreeNode.FileName != null;
+                viewSourceCodeToolStripMenuItem.Enabled = testTreeNode.SourceCodeAvailable;
+
+                nodes.AddRange(GetSelectedNodes(testTreeNode));
+            }
+            else
+            {
+                removeFileToolStripMenuItem.Enabled = false;
+                viewSourceCodeToolStripMenuItem.Enabled = false;
+            }
+
+            controller.SetTreeSelection(nodes);
+        }
+
+        private static IEnumerable<TestTreeNode> GetSelectedNodes(TestTreeNode testTreeNode)
+        {
+            var nodes = new List<TestTreeNode>();
+
+            if (testTreeNode is NamespaceNode)
+            {
+                nodes.AddRange(((NamespaceNode)testTreeNode).GetChildren());
+            }
+            else
+            {
+                nodes.Add(testTreeNode);
+            }
+            return nodes;
+        }
+
+        private void SaveState()
+        {            
+            model.CollapsedNodes.Value = testTree.CollapsedNodes;
         }
 
         private void RestoreState()
         {
-            testTree.CollapseNodes(projectController.CollapsedNodes);
+            testTree.CollapseNodes(model.CollapsedNodes.Value);
         }
 
         private void testTree_DoubleClick(object sender, EventArgs e)

@@ -19,7 +19,7 @@ using Gallio.UI.ProgressMonitoring;
 
 namespace Gallio.Icarus.Commands
 {
-    internal class ResetTestsCommand : ICommand
+    public class ResetTestsCommand : ICommand
     {
         private readonly ITestController testController;
 

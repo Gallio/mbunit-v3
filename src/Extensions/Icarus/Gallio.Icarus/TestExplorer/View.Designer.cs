@@ -15,7 +15,7 @@
 
 namespace Gallio.Icarus.TestExplorer
 {
-    internal partial class TestExplorer
+    internal partial class View
     {
         /// <summary>
         /// Required designer variable.
@@ -44,7 +44,7 @@ namespace Gallio.Icarus.TestExplorer
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TestExplorer));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(View));
             this.testTree = new Gallio.Icarus.Controls.TestTreeView();
             this.testTreeMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.expandAllMenuItem = new System.Windows.Forms.ToolStripMenuItem();

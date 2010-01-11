@@ -264,9 +264,9 @@ namespace Gallio.Icarus.Tests.Controllers
         {
             var optionsController = SetUpOptionsController(new Settings());
             
+            optionsController.AnnotationsShowErrors = false;
+
             Assert.AreEqual(false, optionsController.AnnotationsShowErrors);
-            optionsController.AnnotationsShowErrors = true;
-            Assert.AreEqual(true, optionsController.AnnotationsShowErrors);
         }
 
         [Test]
@@ -274,9 +274,9 @@ namespace Gallio.Icarus.Tests.Controllers
         {
             var optionsController = SetUpOptionsController(new Settings());
 
+            optionsController.AnnotationsShowInfos = false;
+
             Assert.AreEqual(false, optionsController.AnnotationsShowInfos);
-            optionsController.AnnotationsShowInfos = true;
-            Assert.AreEqual(true, optionsController.AnnotationsShowInfos);
         }
 
         [Test]
@@ -284,9 +284,9 @@ namespace Gallio.Icarus.Tests.Controllers
         {
             var optionsController = SetUpOptionsController(new Settings());
 
+            optionsController.AnnotationsShowWarnings = false;
+
             Assert.AreEqual(false, optionsController.AnnotationsShowWarnings);
-            optionsController.AnnotationsShowWarnings = true;
-            Assert.AreEqual(true, optionsController.AnnotationsShowWarnings);
         }
 
         [Test]

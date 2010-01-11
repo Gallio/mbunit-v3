@@ -20,14 +20,9 @@ namespace Gallio.Icarus.Utilities
 {
     internal static class NativeMethods
     {
-        [DllImport("shlwapi.dll")]
-        public static extern bool PathCompactPathEx(
-            [MarshalAs(UnmanagedType.LPTStr), Out] StringBuilder pszOut,
-            [MarshalAs(UnmanagedType.LPTStr)] string szPath,
-            int cchMax,
-            int dwFlags);
-
-        [DllImport("User32.dll")]
-        public extern static int ShowWindow(System.IntPtr hWnd, short cmdShow);
+        // http://www.pinvoke.net/default.aspx/shlwapi.pathcompactpathex
+        [DllImport("shlwapi.dll", CharSet = CharSet.Auto)]
+        public static extern bool PathCompactPathEx([Out] StringBuilder pszOut, 
+            string szPath, int cchMax, int dwFlags);
     }
 }

@@ -44,7 +44,7 @@ namespace Gallio.Icarus.Tests.Commands
             
             command.Execute(progressMonitor);
 
-            projectController.AssertWasCalled(pc => pc.AddFiles(files, progressMonitor));
+            projectController.AssertWasCalled(pc => pc.AddFiles(progressMonitor, files));
             testController.AssertWasCalled(tc => tc.SetTestPackage(testPackage));
             testController.AssertWasCalled(tc => tc.Explore(progressMonitor, testRunnerExtensions));
         }

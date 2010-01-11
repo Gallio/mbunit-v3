@@ -94,7 +94,6 @@ namespace Gallio.Icarus
             this.openProjectToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.saveProjectToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.toolStripContainer = new System.Windows.Forms.ToolStripContainer();
-            this.dockPanel = new WeifenLuo.WinFormsUI.Docking.DockPanel();
             this.filesToolStrip = new System.Windows.Forms.ToolStrip();
             this.addFilesToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.removeAllFilesToolStripButton = new System.Windows.Forms.ToolStripButton();
@@ -104,6 +103,7 @@ namespace Gallio.Icarus
             this.startButton = new System.Windows.Forms.ToolStripButton();
             this.startTestsWithDebuggerButton = new System.Windows.Forms.ToolStripButton();
             this.stopButton = new System.Windows.Forms.ToolStripButton();
+            this.dockPanel = new WeifenLuo.WinFormsUI.Docking.DockPanel();
             this.menuStrip.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.projectToolStrip.SuspendLayout();
@@ -537,22 +537,9 @@ namespace Gallio.Icarus
             // 
             // toolStripContainer.TopToolStripPanel
             // 
+            this.toolStripContainer.TopToolStripPanel.Controls.Add(this.testsToolStrip);
             this.toolStripContainer.TopToolStripPanel.Controls.Add(this.projectToolStrip);
             this.toolStripContainer.TopToolStripPanel.Controls.Add(this.filesToolStrip);
-            this.toolStripContainer.TopToolStripPanel.Controls.Add(this.testsToolStrip);
-            // 
-            // dockPanel
-            // 
-            this.dockPanel.ActiveAutoHideContent = null;
-            this.dockPanel.AllowDrop = true;
-            this.dockPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dockPanel.DockLeftPortion = 0.33;
-            this.dockPanel.DockRightPortion = 0.33;
-            this.dockPanel.DockTopPortion = 0.15;
-            this.dockPanel.Location = new System.Drawing.Point(0, 49);
-            this.dockPanel.Name = "dockPanel";
-            this.dockPanel.Size = new System.Drawing.Size(1003, 636);
-            this.dockPanel.TabIndex = 8;
             // 
             // filesToolStrip
             // 
@@ -562,7 +549,7 @@ namespace Gallio.Icarus
             this.removeAllFilesToolStripButton,
             this.toolStripSeparator1,
             this.reloadToolbarButton});
-            this.filesToolStrip.Location = new System.Drawing.Point(83, 0);
+            this.filesToolStrip.Location = new System.Drawing.Point(82, 0);
             this.filesToolStrip.Name = "filesToolStrip";
             this.filesToolStrip.Size = new System.Drawing.Size(250, 25);
             this.filesToolStrip.TabIndex = 11;
@@ -607,7 +594,7 @@ namespace Gallio.Icarus
             this.startButton,
             this.startTestsWithDebuggerButton,
             this.stopButton});
-            this.testsToolStrip.Location = new System.Drawing.Point(333, 0);
+            this.testsToolStrip.Location = new System.Drawing.Point(332, 0);
             this.testsToolStrip.Name = "testsToolStrip";
             this.testsToolStrip.Size = new System.Drawing.Size(168, 25);
             this.testsToolStrip.TabIndex = 12;
@@ -646,6 +633,19 @@ namespace Gallio.Icarus
             this.stopButton.ToolTipText = "Stop Tests";
             this.stopButton.Click += new System.EventHandler(this.stopButton_Click);
             // 
+            // dockPanel
+            // 
+            this.dockPanel.ActiveAutoHideContent = null;
+            this.dockPanel.AllowDrop = true;
+            this.dockPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dockPanel.DockLeftPortion = 0.33;
+            this.dockPanel.DockRightPortion = 0.33;
+            this.dockPanel.DockTopPortion = 0.15;
+            this.dockPanel.Location = new System.Drawing.Point(0, 49);
+            this.dockPanel.Name = "dockPanel";
+            this.dockPanel.Size = new System.Drawing.Size(1003, 636);
+            this.dockPanel.TabIndex = 8;
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -661,6 +661,7 @@ namespace Gallio.Icarus
             this.Name = "Main";
             this.Text = "Gallio Icarus {0}.{1}.{2} build {3}";
             this.Load += new System.EventHandler(this.Form_Load);
+            this.SizeChanged += new System.EventHandler(this.Main_SizeChanged);
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Main_FormClosing);
             this.menuStrip.ResumeLayout(false);
             this.menuStrip.PerformLayout();

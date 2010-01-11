@@ -65,9 +65,11 @@ namespace Gallio.Icarus.Helpers
 
         private static string TruncatePath(string path, int length)
         {
-            var sb = new StringBuilder(length);
-            NativeMethods.PathCompactPathEx(sb, path, length + 1, 0); // + 1 for null terminator included in StringBuilder capacity
-            return sb.ToString();
+            // NOTE: You need to create the builder with the required capacity before calling function.
+            // See http://msdn.microsoft.com/en-us/library/aa446536.aspx
+            var stringBuilder = new StringBuilder(length + 1);
+            NativeMethods.PathCompactPathEx(stringBuilder, path, length + 1, 0); // + 1 for null terminator included in StringBuilder capacity
+            return stringBuilder.ToString();
         }
     }
 }

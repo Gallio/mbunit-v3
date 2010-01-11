@@ -22,7 +22,7 @@ using Gallio.UI.ProgressMonitoring;
 
 namespace Gallio.Icarus.Commands
 {
-    internal class OpenProjectCommand : ICommand
+    public class OpenProjectCommand : ICommand
     {
         private readonly ITestController testController;
         private readonly IProjectController projectController;
@@ -30,7 +30,7 @@ namespace Gallio.Icarus.Commands
         private readonly LoadPackageCommand loadPackageCommand;
         private readonly RestoreFilterCommand restoreFilterCommand;
 
-        public string FileName { get; set; }
+        public string ProjectLocation { get; set; }
 
         public OpenProjectCommand(ITestController testController, IProjectController projectController, 
             IEventAggregator eventAggregator)
@@ -51,7 +51,7 @@ namespace Gallio.Icarus.Commands
                     testController.ResetTestStatus(subProgressMonitor);
 
                 using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(5))
-                    projectController.OpenProject(FileName, subProgressMonitor);
+                    projectController.OpenProject(subProgressMonitor, ProjectLocation);
 
                 using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(85))
                     loadPackageCommand.Execute(subProgressMonitor);
@@ -59,7 +59,7 @@ namespace Gallio.Icarus.Commands
                 using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(5))
                     restoreFilterCommand.Execute(subProgressMonitor);
 
-                eventAggregator.Send(new ProjectOpened(FileName));
+                eventAggregator.Send(new ProjectOpened(ProjectLocation));
             }
         }
     }

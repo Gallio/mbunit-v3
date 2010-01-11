@@ -13,25 +13,46 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Windows.Forms;
+using Gallio.Icarus.Properties;
+using Gallio.Runner.Projects;
 
 namespace Gallio.Icarus.Utilities
 {
-    internal static class Dialogs
+    public static class Dialogs
     {
+        private static readonly string projectFileFilter = string.Format("Gallio Projects (*{0})|*{0}",
+            TestProject.Extension);
+
         public static OpenFileDialog CreateAddFilesDialog()
         {
-            var openFileDialog = new OpenFileDialog
+            return new OpenFileDialog
             {
-                Title = "Add Files...",
+                Title = Resources.Dialogs_CreateAddFilesDialog_Add_Files___,
                 Filter = "Test Files (*.*)|*.*",
                 Multiselect = true
             };
+        }
 
-            return openFileDialog;
+        public static OpenFileDialog CreateOpenProjectDialog()
+        {
+            return new OpenFileDialog
+            {
+                Title = Resources.Dialogs_CreateOpenProjectDialog_Open_Project___,
+                Filter = projectFileFilter
+            };
+        }
+
+        public static SaveFileDialog CreateSaveProjectDialog()
+        {
+            return new SaveFileDialog
+            {
+                Title = Resources.Dialogs_CreateSaveProjectDialog_Save_Project_As___,
+                OverwritePrompt = true,
+                AddExtension = true,
+                DefaultExt = projectFileFilter,
+                Filter = projectFileFilter
+            };
         }
     }
 }

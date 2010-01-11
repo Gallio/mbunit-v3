@@ -17,6 +17,7 @@ using System;
 using Gallio.Common.Concurrency;
 using Gallio.Icarus.Controllers;
 using Gallio.Icarus.Controllers.Interfaces;
+using Gallio.Icarus.Events;
 using Gallio.Model;
 using Gallio.Model.Schema;
 using Gallio.Common.Reflection;
@@ -27,18 +28,26 @@ using Rhino.Mocks;
 namespace Gallio.Icarus.Tests.Controllers
 {
     [Category("Controllers")]
-    class AnnotationsControllerTest
+    public class AnnotationsControllerTest
     {
+        private AnnotationsController annotationsController;
+        private IOptionsController optionsController;
+        private ITestController testController;
+
+        [SetUp]
+        public void SetUp()
+        {
+            testController = MockRepository.GenerateStub<ITestController>();
+            optionsController = MockRepository.GenerateStub<IOptionsController>();
+            annotationsController = new AnnotationsController(testController, optionsController);
+        }
+
         [Test]
         public void ShowErrors_Test()
         {
-            // Arrange
-            var testController = SetupAnnotationData(AnnotationType.Error);
-            var optionsController = MockRepository.GenerateStub<IOptionsController>();
-
-            // Act
-            var annotationsController = new AnnotationsController(testController, optionsController);
-            testController.Raise(tc => tc.ExploreFinished += null, this, EventArgs.Empty);
+            SetupAnnotationData(AnnotationType.Error);
+            
+            annotationsController.Handle(new ExploreFinished());
             
             // Assert
             Assert.IsFalse(annotationsController.ShowErrors);
@@ -51,15 +60,10 @@ namespace Gallio.Icarus.Tests.Controllers
         [Test]
         public void ShowWarnings_Test()
         {
-            // Arrange
-            var testController = SetupAnnotationData(AnnotationType.Warning);
-            var optionsController = MockRepository.GenerateStub<IOptionsController>();
+            SetupAnnotationData(AnnotationType.Warning);
 
-            // Act
-            var annotationsController = new AnnotationsController(testController, optionsController);
-            testController.Raise(tc => tc.ExploreFinished += null, this, EventArgs.Empty);
+            annotationsController.Handle(new ExploreFinished());
 
-            // Assert
             Assert.IsFalse(annotationsController.ShowWarnings);
             Assert.AreEqual(0, annotationsController.Annotations.Count);
             annotationsController.ShowWarnings = true;
@@ -70,15 +74,10 @@ namespace Gallio.Icarus.Tests.Controllers
         [Test]
         public void ShowInfo_Test()
         {
-            // Arrange
-            var testController = SetupAnnotationData(AnnotationType.Info);
-            var optionsController = MockRepository.GenerateStub<IOptionsController>();
+            SetupAnnotationData(AnnotationType.Info);
 
-            // Act
-            var annotationsController = new AnnotationsController(testController, optionsController);
-            testController.Raise(tc => tc.ExploreFinished += null, this, EventArgs.Empty);
+            annotationsController.Handle(new ExploreFinished());
 
-            // Assert
             Assert.IsFalse(annotationsController.ShowInfos);
             Assert.AreEqual(0, annotationsController.Annotations.Count);
             annotationsController.ShowInfos = true;
@@ -86,20 +85,18 @@ namespace Gallio.Icarus.Tests.Controllers
             Assert.AreEqual("1 Info", annotationsController.InfoText);
         }
 
-        private static ITestController SetupAnnotationData(AnnotationType annotationType)
+        private void SetupAnnotationData(AnnotationType annotationType)
         {
             var testModelData = new TestModelData();
-            testModelData.Annotations.Add(new AnnotationData(annotationType, CodeLocation.Unknown,
-                                                             new CodeReference(), "message", "details"));
-            Report report = new Report
-                                {
-                                    TestModel = testModelData
-                                };
+            testModelData.Annotations.Add(new AnnotationData(annotationType, CodeLocation.Unknown, 
+                new CodeReference(), "message", "details"));
+            var report = new Report
+            {
+                TestModel = testModelData
+            };
 
-            var testController = MockRepository.GenerateStub<ITestController>();
             testController.Stub(x => x.ReadReport(null)).IgnoreArguments().Do((Action<ReadAction<Report>>) 
                 (action => action(report)));
-            return testController;
         }
     }
 }

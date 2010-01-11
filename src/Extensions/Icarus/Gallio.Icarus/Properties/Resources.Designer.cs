@@ -94,6 +94,33 @@ namespace Gallio.Icarus.Properties {
             }
         }
         
+        /// <summary>
+        ///   Looks up a localized string similar to Add Files....
+        /// </summary>
+        internal static string Dialogs_CreateAddFilesDialog_Add_Files___ {
+            get {
+                return ResourceManager.GetString("Dialogs_CreateAddFilesDialog_Add_Files___", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open Project....
+        /// </summary>
+        internal static string Dialogs_CreateOpenProjectDialog_Open_Project___ {
+            get {
+                return ResourceManager.GetString("Dialogs_CreateOpenProjectDialog_Open_Project___", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save Project As....
+        /// </summary>
+        internal static string Dialogs_CreateSaveProjectDialog_Save_Project_As___ {
+            get {
+                return ResourceManager.GetString("Dialogs_CreateSaveProjectDialog_Save_Project_As___", resourceCulture);
+            }
+        }
+        
         internal static System.Drawing.Bitmap error {
             get {
                 object obj = ResourceManager.GetObject("error", resourceCulture);
@@ -156,6 +183,15 @@ namespace Gallio.Icarus.Properties {
             get {
                 object obj = ResourceManager.GetObject("Group", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Canceled.
+        /// </summary>
+        internal static string Main_TaskCanceled_Canceled {
+            get {
+                return ResourceManager.GetString("Main_TaskCanceled_Canceled", resourceCulture);
             }
         }
         

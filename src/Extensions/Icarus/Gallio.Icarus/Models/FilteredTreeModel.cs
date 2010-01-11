@@ -39,10 +39,29 @@ namespace Gallio.Icarus.Models
                 if (node == null)
                     continue;
 
-                if (specification.Matches(node))
+                if (Matches(node))
                     yield return child;
             }
             yield break;
+        }
+
+        private bool Matches(TestTreeNode node)
+        {
+            if (specification.Matches(node))
+                return true;
+
+            foreach (var child in node.Nodes)
+            {
+                var testTreeNode = child as TestTreeNode;
+
+                if (testTreeNode == null)
+                    continue;
+
+                if (Matches(testTreeNode))
+                    return true;
+            }
+
+            return false;
         }
 
         private IEnumerable GetChildrenFromBase(TreePath treePath)

@@ -33,7 +33,7 @@ namespace Gallio.Icarus.Controls
             set { nodeCheckBox.EditEnabled = value; }
         }
 
-        public List<string> CollapsedNodes
+        public IList<string> CollapsedNodes
         {
             get
             {

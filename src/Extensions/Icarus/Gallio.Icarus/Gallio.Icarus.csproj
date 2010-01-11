@@ -90,7 +90,9 @@
     </Compile>
     <Compile Include="Commands\AddFilesCommand.cs" />
     <Compile Include="Commands\ApplyFilterCommand.cs" />
+    <Compile Include="Commands\CommandFactory.cs" />
     <Compile Include="Commands\ConvertSavedReportCommand.cs" />
+    <Compile Include="Commands\ICommandFactory.cs" />
     <Compile Include="Commands\LoadPackageCommand.cs" />
     <Compile Include="Commands\DeleteAllReportsCommand.cs" />
     <Compile Include="Commands\DelegateCommand.cs" />
@@ -102,6 +104,13 @@
     <Compile Include="Commands\OpenReportCommand.cs" />
     <Compile Include="Commands\RefreshTestTreeCommand.cs" />
     <Compile Include="Commands\ReloadCommand.cs" />
+    <Compile Include="Events\ProjectSaved.cs" />
+    <Compile Include="Events\ProjectLoaded.cs" />
+    <Compile Include="Events\TestStepFinished.cs" />
+    <Compile Include="Events\ExploreStarted.cs" />
+    <Compile Include="Events\RunFinished.cs" />
+    <Compile Include="Events\RunStarted.cs" />
+    <Compile Include="Events\Reloading.cs" />
     <Compile Include="Commands\RemoveAllFilesCommand.cs" />
     <Compile Include="Commands\RemoveFileCommand.cs" />
     <Compile Include="Commands\ResetTestsCommand.cs" />
@@ -227,7 +236,7 @@
     <Compile Include="Models\ISortedTreeModel.cs" />
     <Compile Include="Projects\ProjectChanged.cs" />
     <Compile Include="Projects\ProjectMonitor.cs" />
-    <Compile Include="Projects\ProjectOpened.cs" />
+    <Compile Include="Events\ProjectOpened.cs" />
     <Compile Include="Specifications\AnySpecification.cs" />
     <Compile Include="Specifications\OrSpecification.cs" />
     <Compile Include="Specifications\ISpecification.cs" />
@@ -249,7 +258,19 @@
     <Compile Include="Runtime\DefaultConventionScanner.cs" />
     <Compile Include="Specifications\AndSpecification.cs" />
     <Compile Include="TestExplorer\Controller.cs" />
+    <Compile Include="Events\ExploreFinished.cs" />
+    <Compile Include="TestExplorer\IController.cs" />
+    <Compile Include="TestExplorer\IModel.cs" />
     <Compile Include="TestExplorer\Model.cs" />
+    <Compile Include="TestExplorer\Package.cs" />
+    <Compile Include="Events\TestSelectionChanged.cs" />
+    <Compile Include="Events\TreeViewCategoryChanged.cs" />
+    <Compile Include="TestExplorer\View.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TestExplorer\View.Designer.cs">
+      <DependentUpon>View.cs</DependentUpon>
+    </Compile>
     <Compile Include="TreeBuilders\ITreeBuilder.cs" />
     <Compile Include="TreeBuilders\MetadataTreeBuilder.cs" />
     <Compile Include="TreeBuilders\NamespaceHierarchy.cs" />
@@ -415,10 +436,6 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="TestExplorer.resx">
-      <SubType>Designer</SubType>
-      <DependentUpon>TestExplorer.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="TestResults.resx">
       <SubType>Designer</SubType>
       <DependentUpon>TestResults.cs</DependentUpon>
@@ -430,12 +447,6 @@
     </Compile>
     <Compile Include="Services\ReportService.cs" />
     <Compile Include="Settings.cs" />
-    <Compile Include="TestExplorer.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="TestExplorer.Designer.cs">
-      <DependentUpon>TestExplorer.cs</DependentUpon>
-    </Compile>
     <Compile Include="TestResults.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -526,6 +537,9 @@
     <EmbeddedResource Include="Projects\ProjectReloadDialog.resx">
       <DependentUpon>ProjectReloadDialog.cs</DependentUpon>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TestExplorer\View.resx">
+      <DependentUpon>View.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\CodeViewer\CodeViewer.resx">
       <DependentUpon>CodeViewer.cs</DependentUpon>

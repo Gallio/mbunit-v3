@@ -20,7 +20,7 @@ using Gallio.UI.ProgressMonitoring;
 
 namespace Gallio.Icarus.Commands
 {
-    internal class ShowReportCommand : ICommand
+    public class ShowReportCommand : ICommand
     {
         private readonly ITestController testController;
         private readonly IReportController reportController;

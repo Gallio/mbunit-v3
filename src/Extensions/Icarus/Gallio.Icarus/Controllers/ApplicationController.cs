@@ -20,23 +20,21 @@ using System.IO;
 using Gallio.Common.IO;
 using Gallio.Common.Policies;
 using Gallio.Icarus.Commands;
-using Gallio.Icarus.Controllers.EventArgs;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Events;
 using Gallio.UI.Controls;
 using Gallio.Icarus.Helpers;
 using Gallio.Runner.Projects;
 using Gallio.Runtime;
-using Gallio.Runtime.Extensibility;
 using Gallio.Runtime.ProgressMonitoring;
 using Gallio.UI.Common.Policies;
 using Gallio.UI.ProgressMonitoring;
 
 namespace Gallio.Icarus.Controllers
 {
-    internal class ApplicationController : NotifyController, IApplicationController
+    public class ApplicationController : NotifyController, IApplicationController, 
+        Handles<RunStarted>, Handles<RunFinished>, Handles<ExploreFinished>
     {
-        private readonly IcarusArguments arguments;
         private string projectFileName = string.Empty;
 
         private readonly IFileSystem fileSystem;
@@ -76,32 +74,30 @@ namespace Gallio.Icarus.Controllers
             get { return testController.FailedTests; }
         }
 
-        public ApplicationController(IcarusArguments arguments, IServiceLocator serviceLocator)
+        public IcarusArguments Arguments { get; set; }
+
+        public event EventHandler ExploreFinished;
+
+        public event EventHandler RunStarted;
+        public event EventHandler RunFinished;
+
+        public ApplicationController(IOptionsController optionsController, IFileSystem fileSystem, 
+            ITaskManager taskManager, ITestController testController, IProjectController projectController, 
+            IUnhandledExceptionPolicy unhandledExceptionPolicy, IEventAggregator eventAggregator)
         {
-            if (arguments == null) 
-                throw new ArgumentNullException("arguments");
+            this.optionsController = optionsController;
+            this.fileSystem = fileSystem;
+            this.taskManager = taskManager;
+            this.testController = testController;
+            this.projectController = projectController;
+            this.unhandledExceptionPolicy = unhandledExceptionPolicy;
+            this.eventAggregator = eventAggregator;
 
-            if (serviceLocator == null)
-                throw new ArgumentNullException("serviceLocator");
-
-            this.arguments = arguments;
-
-            optionsController = serviceLocator.Resolve<IOptionsController>();
             optionsController.PropertyChanged += (sender, e) =>
             {
                 if (e.PropertyName == "RecentProjects")
                     OnPropertyChanged(new PropertyChangedEventArgs("RecentProjects"));
             };
-
-            fileSystem = serviceLocator.Resolve<IFileSystem>();
-            taskManager = serviceLocator.Resolve<ITaskManager>();
-            testController = serviceLocator.Resolve<ITestController>();
-            
-            projectController = serviceLocator.Resolve<IProjectController>();
-            
-            unhandledExceptionPolicy = serviceLocator.Resolve<IUnhandledExceptionPolicy>();
-
-            eventAggregator = serviceLocator.Resolve<IEventAggregator>();
         }
 
         public void Load()
@@ -113,36 +109,44 @@ namespace Gallio.Icarus.Controllers
 
         private void HandleArguments()
         {
-            var files = new List<string>();
-            if (arguments.Files.Length > 0)
+            if (Arguments.Files.Length > 0)
             {
-                foreach (var file in arguments.Files)
-                {
-                    if (!fileSystem.FileExists(file))
-                        continue;
-
-                    if (Path.GetExtension(file) == TestProject.Extension)
-                    {
-                        OpenProject(file);
-                        return;
-                    }
-                    files.Add(file);
-                }
-                var cmd = new AddFilesCommand(projectController, testController) 
-                    { Files = files };
-                taskManager.QueueTask(cmd);
+                AddFiles();
                 return;
             }
             if (optionsController.RestorePreviousSettings && optionsController.RecentProjects.Count > 0)
             {
                 string projectName = optionsController.RecentProjects.Items[0];
-                if (File.Exists(projectName))
+                if (fileSystem.FileExists(projectName))
                 {
                     OpenProject(projectName);
                     return;
                 }
             }
             NewProject();
+        }
+
+        private void AddFiles()
+        {
+            var files = new List<string>();
+            foreach (var file in Arguments.Files)
+            {
+                if (!fileSystem.FileExists(file))
+                    continue;
+
+                if (Path.GetExtension(file) == TestProject.Extension)
+                {
+                    OpenProject(file);
+                    return;
+                }
+                files.Add(file);
+            }
+                
+            var command = new AddFilesCommand(projectController, testController)
+              {
+                  Files = files
+              };
+            taskManager.QueueTask(command);
         }
 
         private void LoadPackages()
@@ -183,7 +187,7 @@ namespace Gallio.Icarus.Controllers
 
             var openProjectCommand = new OpenProjectCommand(testController, projectController, eventAggregator)
             {
-                FileName = projectName
+                ProjectLocation = projectName
             };
             taskManager.QueueTask(openProjectCommand);
         }
@@ -220,8 +224,27 @@ namespace Gallio.Icarus.Controllers
         public void Shutdown()
         {
             eventAggregator.Send(new ApplicationShutdown());
+            optionsController.Save();
             UnloadPackages();
             SaveProject(false);
+        }
+
+        public void Handle(RunStarted @event)
+        {
+            EventHandlerPolicy.SafeInvoke(RunStarted, this, 
+                System.EventArgs.Empty);
+        }
+
+        public void Handle(RunFinished @event)
+        {
+            EventHandlerPolicy.SafeInvoke(RunFinished, this, 
+                System.EventArgs.Empty);
+        }
+
+        public void Handle(ExploreFinished @event)
+        {
+            EventHandlerPolicy.SafeInvoke(ExploreFinished, this,
+                System.EventArgs.Empty);
         }
     }
 }

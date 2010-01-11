@@ -35,21 +35,21 @@ namespace Gallio.Icarus.Controllers.Interfaces
         BindingList<string> HintDirectories { get; }
         BindingList<string> TestRunnerExtensions { get; }
         string ProjectFileName { get; }
-        List<string> CollapsedNodes { get; set; }
-        string TreeViewCategory { get; set; }
+        Observable<IList<string>> CollapsedNodes { get; set; }
+        string TreeViewCategory { get; }
         string ReportDirectory { get; }
         string ReportNameFormat { get; }
 
         event EventHandler<FileChangedEventArgs> FileChanged;
 
-        void AddFiles(IList<string> files, IProgressMonitor progressMonitor);
-        void DeleteFilter(FilterInfo filterInfo, IProgressMonitor progressMonitor);
+        void AddFiles(IProgressMonitor progressMonitor, IList<string> files);
+        void DeleteFilter(IProgressMonitor progressMonitor, FilterInfo filterInfo);
         void NewProject(IProgressMonitor progressMonitor);
-        void OpenProject(string projectName, IProgressMonitor progressMonitor);
+        void OpenProject(IProgressMonitor progressMonitor, string projectLocation);
         void RemoveAllFiles(IProgressMonitor progressMonitor);
-        void RemoveFile(string fileName, IProgressMonitor progressMonitor);
-        void SaveFilterSet(string filterName, FilterSet<ITestDescriptor> filterSet, IProgressMonitor progressMonitor);
-        void SaveProject(string projectName, IProgressMonitor progressMonitor);
+        void RemoveFile(IProgressMonitor progressMonitor, string fileName);
+        void SaveFilterSet(IProgressMonitor progressMonitor, string filterName, FilterSet<ITestDescriptor> filterSet);
+        void SaveProject(IProgressMonitor progressMonitor, string projectLocation);
         event EventHandler<ProjectChangedEventArgs> ProjectChanged;
     }
 }

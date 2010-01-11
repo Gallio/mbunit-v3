@@ -15,17 +15,15 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using Gallio.Common.Collections;
 using Gallio.Common.Concurrency;
-using Gallio.Common.Policies;
 using Gallio.Icarus.Controllers.Interfaces;
+using Gallio.Icarus.Events;
 using Gallio.Icarus.Models;
 using Gallio.Icarus.TreeBuilders;
 using Gallio.Model;
 using Gallio.Model.Filters;
 using Gallio.Runner;
-using Gallio.Runner.Events;
 using Gallio.Runner.Extensions;
 using Gallio.Runner.Reports.Schema;
 using Gallio.Runtime;
@@ -35,46 +33,29 @@ using Gallio.UI.ProgressMonitoring;
 
 namespace Gallio.Icarus.Controllers
 {
-    internal class TestController : NotifyController, ITestController
+    public class TestController : NotifyController, ITestController, Handles<TreeViewCategoryChanged>
     {
         private readonly ITestTreeModel testTreeModel;
         private readonly IOptionsController optionsController;
         private readonly ITaskManager taskManager;
         private readonly ITestStatistics testStatistics;
-        private LockBox<Report> reportLockBox;
-
+        private readonly IEventAggregator eventAggregator;
+        private LockBox<Report> reportLockBox;       
         private ITestRunnerFactory testRunnerFactory;
         private TestPackage testPackage;
         private FilterSet<ITestDescriptor> filterSet;
-
-        public event EventHandler<TestStepFinishedEventArgs> TestStepFinished;
-        public event EventHandler RunStarted;
-        public event EventHandler RunFinished;
-        public event EventHandler ExploreStarted;
-        public event EventHandler ExploreFinished;
-
-        private readonly LockBox<IList<TestTreeNode>> selectedTests = new LockBox<IList<TestTreeNode>>(new List<TestTreeNode>());
-
-        public string TreeViewCategory
-        {
-            get;
-            set;
-        }
-
-        public LockBox<IList<TestTreeNode>> SelectedTests
-        {
-            get { return selectedTests; }
-        }
+        private string treeViewCategory;
 
         public bool FailedTests { get; private set; }
 
         public TestController(ITestTreeModel testTreeModel, IOptionsController optionsController, 
-            ITaskManager taskManager, ITestStatistics testStatistics)
+            ITaskManager taskManager, ITestStatistics testStatistics, IEventAggregator eventAggregator)
         {
             this.testTreeModel = testTreeModel;
             this.optionsController = optionsController;
             this.taskManager = taskManager;
             this.testStatistics = testStatistics;
+            this.eventAggregator = eventAggregator;
 
             testPackage = new TestPackage();
             reportLockBox = new LockBox<Report>(new Report());
@@ -85,7 +66,7 @@ namespace Gallio.Icarus.Controllers
         {
             using (progressMonitor.BeginTask("Exploring the tests", 100))
             {
-                EventHandlerPolicy.SafeInvoke(ExploreStarted, this, System.EventArgs.Empty);
+                eventAggregator.Send(new ExploreStarted());
 
                 DoWithTestRunner(testRunner =>
                 {
@@ -97,7 +78,7 @@ namespace Gallio.Icarus.Controllers
                     RefreshTestTree(progressMonitor.CreateSubProgressMonitor(10));
                 }, progressMonitor, 10, testRunnerExtensions);
 
-                EventHandlerPolicy.SafeInvoke(ExploreFinished, this, System.EventArgs.Empty);
+                eventAggregator.Send(new ExploreFinished());
             }
         }
 
@@ -107,8 +88,8 @@ namespace Gallio.Icarus.Controllers
             FailedTests = false;
 
             using (progressMonitor.BeginTask("Running the tests.", 100))
-            {    
-                EventHandlerPolicy.SafeInvoke(RunStarted, this, System.EventArgs.Empty);
+            {
+                eventAggregator.Send(new RunStarted());
 
                 progressMonitor.Worked(5);
 
@@ -129,7 +110,7 @@ namespace Gallio.Icarus.Controllers
 
                 }, progressMonitor, 5, testRunnerExtensions);
 
-                EventHandlerPolicy.SafeInvoke(RunFinished, this, System.EventArgs.Empty);
+                eventAggregator.Send(new RunFinished());
             }
         }
 
@@ -166,7 +147,7 @@ namespace Gallio.Icarus.Controllers
 
                 var options = new TreeBuilderOptions
                 {
-                    TreeViewCategory = TreeViewCategory,
+                    TreeViewCategory = treeViewCategory,
                     NamespaceHierarchy = optionsController.NamespaceHierarchy
                 };
 
@@ -186,17 +167,6 @@ namespace Gallio.Icarus.Controllers
                 using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(2))
                     testTreeModel.ResetTestStatus(subProgressMonitor);
             }
-        }
-
-        public void SetSelection(IList<TestTreeNode> nodes)
-        {
-            SelectedTests.Write(sts =>
-            {
-                sts.Clear();
-                foreach (var node in nodes)
-                    sts.Add(node);
-            });
-            OnPropertyChanged(new PropertyChangedEventArgs("SelectedTests"));
         }
 
         public void SetTestRunnerFactory(ITestRunnerFactory factory)
@@ -240,7 +210,7 @@ namespace Gallio.Icarus.Controllers
                     if (e.TestStepRun.Step.IsTestCase)
                         testStatistics.TestStepFinished(e.TestStepRun.Result.Outcome.Status);
 
-                    EventHandlerPolicy.SafeInvoke(TestStepFinished, this, e);
+                    eventAggregator.Send(new TestStepFinished(e.Test.Id));
 
                     if (e.TestStepRun.Result.Outcome.Status == TestStatus.Failed)
                         FailedTests = true;
@@ -261,6 +231,11 @@ namespace Gallio.Icarus.Controllers
             {
                 testRunner.Dispose(progressMonitor.CreateSubProgressMonitor(initializationAndDisposalWorkUnits / 2));
             }
+        }
+
+        public void Handle(TreeViewCategoryChanged @event)
+        {
+            treeViewCategory = @event.TreeViewCategory;
         }
     }
 }

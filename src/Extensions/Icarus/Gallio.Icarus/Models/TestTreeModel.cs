@@ -187,6 +187,9 @@ namespace Gallio.Icarus.Models
         public void BuildTestTree(IProgressMonitor progressMonitor, TestModelData testModelData, 
             TreeBuilderOptions options)
         {
+            if (string.IsNullOrEmpty(options.TreeViewCategory))
+                throw new ArgumentException("Tree view category cannot be null or empty.");
+
             int count = CountTestData(testModelData.RootTest);
 
             using (progressMonitor.BeginTask("Building test tree", count))

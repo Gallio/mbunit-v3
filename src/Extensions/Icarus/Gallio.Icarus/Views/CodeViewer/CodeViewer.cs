@@ -13,20 +13,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.IO;
 using System.Windows.Forms;
 using Gallio.Common.Reflection;
 
-namespace Gallio.Icarus
+namespace Gallio.Icarus.Views.CodeViewer
 {
     public partial class CodeViewer : UserControl
     {
-        private readonly CodeLocation codeLocation;
-
         public CodeViewer(CodeLocation codeLocation)
         {
-            this.codeLocation = codeLocation;
-
             InitializeComponent();
 
             if (codeLocation != CodeLocation.Unknown)
@@ -55,3 +50,5 @@ namespace Gallio.Icarus
         }
     }
 }
+
+

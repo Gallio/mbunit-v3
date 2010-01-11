@@ -13,15 +13,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using Gallio.Common.Concurrency;
-using Gallio.Icarus.Models;
 using Gallio.Model;
 using Gallio.Model.Filters;
 using Gallio.Runner;
-using Gallio.Runner.Events;
 using Gallio.Runner.Reports.Schema;
 using Gallio.Runtime.ProgressMonitoring;
 
@@ -30,44 +27,9 @@ namespace Gallio.Icarus.Controllers.Interfaces
     public interface ITestController : INotifyPropertyChanged
     {
         /// <summary>
-        /// Gets the list of currently selected tests.
-        /// </summary>
-        LockBox<IList<TestTreeNode>> SelectedTests { get; }
-
-        /// <summary>
         /// Indicator if any tests failed during the last run.
         /// </summary>
         bool FailedTests { get; }
-
-        /// <summary>
-        /// Gets or sets the current tree category.
-        /// </summary>
-        string TreeViewCategory { get; set; }
-
-        /// <summary>
-        /// Event raised after each test step completes.
-        /// </summary>
-        event EventHandler<TestStepFinishedEventArgs> TestStepFinished;
-
-        /// <summary>
-        /// Event raised when a test run is started.
-        /// </summary>
-        event EventHandler RunStarted;
-
-        /// <summary>
-        /// Event raised when a test run finishes.
-        /// </summary>
-        event EventHandler RunFinished;
-
-        /// <summary>
-        /// Event raised when test exploration begins.
-        /// </summary>
-        event EventHandler ExploreStarted;
-
-        /// <summary>
-        /// Event raised when test exploration completes.
-        /// </summary>
-        event EventHandler ExploreFinished;
 
         /// <summary>
         /// Sets the test runner factory used by the test controller.
@@ -124,12 +86,5 @@ namespace Gallio.Icarus.Controllers.Interfaces
         /// Resets the status of all tests.
         /// </summary>
         void ResetTestStatus(IProgressMonitor progressMonitor);
-
-        /// <summary>
-        /// Set the nodes currently selected in the Test Explorer.
-        /// </summary>
-        /// <param name="nodes">The list of test tree nodes (one normally, but 
-        /// could be more if a namespace node is selected (don't ask!)).</param>
-        void SetSelection(IList<TestTreeNode> nodes);
     }
 }

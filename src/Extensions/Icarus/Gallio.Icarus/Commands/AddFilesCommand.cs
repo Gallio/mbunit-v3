@@ -22,16 +22,12 @@ using Gallio.UI.ProgressMonitoring;
 
 namespace Gallio.Icarus.Commands
 {
-    internal class AddFilesCommand : ICommand
+    public class AddFilesCommand : ICommand
     {
         private readonly IProjectController projectController;
         private readonly ITestController testController;
 
-        public IList<string> Files
-        {
-            get;
-            set;
-        }
+        public IList<string> Files { get; set; }
 
         public AddFilesCommand(IProjectController projectController, ITestController testController)
         {
@@ -46,7 +42,7 @@ namespace Gallio.Icarus.Commands
             {
                 // add files to test package
                 using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(10))
-                    projectController.AddFiles(Files, subProgressMonitor);
+                    projectController.AddFiles(subProgressMonitor, Files);
 
                 if (progressMonitor.IsCanceled)
                     throw new OperationCanceledException();

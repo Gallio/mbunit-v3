@@ -37,7 +37,7 @@ namespace Gallio.Icarus.Tests.Commands
 
             command.Execute(progressMonitor);
 
-            projectController.AssertWasCalled(pc => pc.DeleteFilter(filterInfo, progressMonitor));
+            projectController.AssertWasCalled(pc => pc.DeleteFilter(progressMonitor, filterInfo));
         }
     }
 }

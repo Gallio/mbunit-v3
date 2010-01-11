@@ -20,22 +20,24 @@ using Gallio.UI.ProgressMonitoring;
 
 namespace Gallio.Icarus.Commands
 {
-    internal class SaveFilterCommand : ICommand
+    public class SaveFilterCommand : ICommand
     {
         private readonly ITestController testController;
         private readonly IProjectController projectController;
-        private readonly string filterName;
 
-        public SaveFilterCommand(ITestController testController, IProjectController projectController, 
-            string filterName)
+        public string FilterName { get; set; }
+
+        public SaveFilterCommand(ITestController testController, IProjectController projectController)
         {
             this.testController = testController;
             this.projectController = projectController;
-            this.filterName = filterName;
         }
 
         public void Execute(IProgressMonitor progressMonitor)
         {
+            if (string.IsNullOrEmpty(FilterName))
+                throw new ArgumentException("Filter name cannot be null or empty");
+
             using (progressMonitor.BeginTask("Saving filter", 2))
             {
                 var filterSet = testController.GenerateFilterSetFromSelectedTests();
@@ -44,7 +46,7 @@ namespace Gallio.Icarus.Commands
                     throw new OperationCanceledException();
 
                 using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(50))
-                    projectController.SaveFilterSet(filterName, filterSet, subProgressMonitor);
+                    projectController.SaveFilterSet(subProgressMonitor, FilterName, filterSet);
             }
         }
     }

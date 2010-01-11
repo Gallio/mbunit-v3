@@ -33,7 +33,7 @@ namespace Gallio.Icarus.Commands
 
         public void Execute(IProgressMonitor progressMonitor)
         {
-            projectController.DeleteFilter(filterInfo, progressMonitor);
+            projectController.DeleteFilter(progressMonitor, filterInfo);
         }
     }
 }

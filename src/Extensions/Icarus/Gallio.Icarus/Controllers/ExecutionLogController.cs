@@ -19,15 +19,16 @@ using Gallio.Common.Collections;
 using Gallio.Common.Policies;
 using Gallio.Icarus.Controllers.EventArgs;
 using Gallio.Icarus.Controllers.Interfaces;
+using Gallio.Icarus.Events;
 using Gallio.Icarus.Models;
 using Gallio.Model.Schema;
-using Gallio.Runner.Events;
 using Gallio.Runner.Reports.Schema;
 using Gallio.UI.ProgressMonitoring;
 
 namespace Gallio.Icarus.Controllers
 {
-    internal class ExecutionLogController : IExecutionLogController
+    internal class ExecutionLogController : IExecutionLogController, Handles<RunStarted>, 
+        Handles<TestSelectionChanged>, Handles<TestStepFinished>
     {
         private readonly ITestController testController;
         private readonly ITestTreeModel testTreeModel;
@@ -41,22 +42,6 @@ namespace Gallio.Icarus.Controllers
             this.testTreeModel = testTreeModel;
             this.taskManager = taskManager;
 
-            testController.PropertyChanged += (sender, e) =>
-            {
-                if (e.PropertyName != "SelectedTests")
-                    return;
-
-                SelectedTestsChanged();
-            };
-            testController.TestStepFinished += TestStepFinished;
-            
-            testController.RunStarted += (sender, e) =>
-            {
-                TestModelData = null;
-
-                EventHandlerPolicy.SafeInvoke(ExecutionLogReset, true, System.EventArgs.Empty);
-            };
-            
             selectedTestIds = new HashSet<string>();
         }
 
@@ -64,25 +49,6 @@ namespace Gallio.Icarus.Controllers
         public event EventHandler<ExecutionLogUpdatedEventArgs> ExecutionLogUpdated;
 
         public TestModelData TestModelData { get; private set; }
-
-        private void SelectedTestsChanged()
-        {
-            selectedTestIds.Clear();
-
-            testController.SelectedTests.Read(sts =>
-            {
-                foreach (var node in sts)
-                    selectedTestIds.Add(node.Name);
-            });
-            
-            Update();
-        }
-
-        private void TestStepFinished(object sender, TestStepFinishedEventArgs e)
-        {
-            if (selectedTestIds.Count == 0 || selectedTestIds.Contains(e.Test.Id))
-                Update();
-        }
 
         private void Update()
         {
@@ -107,6 +73,29 @@ namespace Gallio.Icarus.Controllers
                 EventHandlerPolicy.SafeInvoke(ExecutionLogUpdated, this, 
                     new ExecutionLogUpdatedEventArgs(testStepRuns));
             }));
+        }
+
+        public void Handle(RunStarted @event)
+        {
+            TestModelData = null;           
+            EventHandlerPolicy.SafeInvoke(ExecutionLogReset, 
+                true, System.EventArgs.Empty);
+        }
+
+        public void Handle(TestSelectionChanged @event)
+        {
+            selectedTestIds.Clear();
+
+            foreach (var node in @event.Nodes)
+                selectedTestIds.Add(node.Name);
+
+            Update();
+        }
+
+        public void Handle(TestStepFinished @event)
+        {
+            if (selectedTestIds.Count == 0 || selectedTestIds.Contains(@event.TestId))
+                Update();
         }
     }
 }

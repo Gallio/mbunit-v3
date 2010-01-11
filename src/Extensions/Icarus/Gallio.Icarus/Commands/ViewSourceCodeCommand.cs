@@ -19,7 +19,7 @@ using Gallio.UI.ProgressMonitoring;
 
 namespace Gallio.Icarus.Commands
 {
-    internal class ViewSourceCodeCommand : ICommand
+    public class ViewSourceCodeCommand : ICommand
     {
         private readonly ISourceCodeController sourceCodeController;
 

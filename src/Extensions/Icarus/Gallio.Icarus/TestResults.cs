@@ -46,8 +46,9 @@ namespace Gallio.Icarus
                 testProgressStatusBar.Inconclusive = testStatistics.Inconclusive.Value;
 
             testTreeModel.TestCount.PropertyChanged += (s, e) => testProgressStatusBar.Total = testTreeModel.TestCount;
-            
-            testProgressStatusBar.DataBindings.Add("ElapsedTime", testResultsController, "ElapsedTime");
+
+            testResultsController.ElapsedTime.PropertyChanged += (s, e) => 
+                testProgressStatusBar.ElapsedTime = testResultsController.ElapsedTime;
             
             testResultsController.ResultsCount.PropertyChanged += (s, e) => 
                 testResultsList.VirtualListSize = testResultsController.ResultsCount;

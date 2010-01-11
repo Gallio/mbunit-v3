@@ -50,7 +50,10 @@ namespace Gallio.Icarus.Controllers
 
         public void SaveFilter(string filterName)
         {
-            var command = new SaveFilterCommand(testController, projectController, filterName);
+            var command = new SaveFilterCommand(testController, projectController)
+            {
+                FilterName = filterName
+            };
             taskManager.QueueTask(command);
         }
     }

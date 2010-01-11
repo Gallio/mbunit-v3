@@ -22,18 +22,17 @@ using System.IO;
 using System.Text;
 using System.Windows.Forms;
 using Gallio.Common.Concurrency;
-using Gallio.Common.IO;
 using Gallio.Icarus.Commands;
 using Gallio.Icarus.Controllers;
 using Gallio.Icarus.Controllers.EventArgs;
 using Gallio.Icarus.Controllers.Interfaces;
-using Gallio.Icarus.Events;
 using Gallio.Icarus.Models;
 using Gallio.Icarus.ProgressMonitoring;
 using Gallio.Icarus.Projects;
+using Gallio.Icarus.Properties;
+using Gallio.Icarus.TestExplorer;
 using Gallio.Icarus.Utilities;
 using Gallio.Model;
-using Gallio.Runner.Projects;
 using Gallio.Runtime;
 using Gallio.UI.Common.Synchronization;
 using Gallio.UI.ControlPanel;
@@ -55,7 +54,7 @@ namespace Gallio.Icarus
         private WindowManager windowManager;
 
         // dock panel windows
-        private readonly TestExplorer.TestExplorer testExplorer;
+        private readonly TestExplorer.View testExplorer;
         private readonly ProjectExplorer projectExplorer;
         private readonly TestResults testResults;
         private readonly RuntimeLogWindow runtimeLogWindow;
@@ -63,11 +62,10 @@ namespace Gallio.Icarus
         private readonly ExecutionLogWindow executionLogWindow;
         private readonly AnnotationsWindow annotationsWindow;
 
-        private readonly string projectFileFilter = string.Format("Gallio Projects (*{0})|*{0}", 
-            TestProject.Extension);
-
         private readonly ITestTreeModel testTreeModel;
         private readonly ITestStatistics testStatistics;
+        private readonly ICommandFactory commandFactory;
+        private readonly ITestFrameworkManager testFrameworkManager;
 
         internal Main(IApplicationController applicationController)
         {
@@ -76,14 +74,14 @@ namespace Gallio.Icarus
             this.applicationController = applicationController;
 
             testController = RuntimeAccessor.ServiceLocator.Resolve<ITestController>();
-            testController.RunStarted += (sender, e) => Sync.Invoke(this, delegate
+            applicationController.RunStarted += (sender, e) => Sync.Invoke(this, delegate
             {
                 // enable/disable buttons
                 startButton.Enabled = startTestsToolStripMenuItem.Enabled = false;
                 startTestsWithDebuggerButton.Enabled = startWithDebuggerToolStripMenuItem.Enabled = false;
                 stopButton.Enabled = stopTestsToolStripMenuItem.Enabled = true;
             });
-            testController.RunFinished += (sender, e) => Sync.Invoke(this, delegate
+            applicationController.RunFinished += (sender, e) => Sync.Invoke(this, delegate
             {
                 // enable/disable buttons & menu items appropriately
                 stopButton.Enabled = stopTestsToolStripMenuItem.Enabled = false;
@@ -94,7 +92,7 @@ namespace Gallio.Icarus
                 if (applicationController.FailedTests)
                     Activate();
             });
-            testController.ExploreFinished += (sender, e) => Sync.Invoke(this, delegate
+            applicationController.ExploreFinished += (sender, e) => Sync.Invoke(this, delegate
             {
                 startButton.Enabled = startTestsToolStripMenuItem.Enabled = true;
                 startTestsWithDebuggerButton.Enabled = startWithDebuggerToolStripMenuItem.Enabled = true;
@@ -113,17 +111,15 @@ namespace Gallio.Icarus
             var executionLogController = RuntimeAccessor.ServiceLocator.Resolve<IExecutionLogController>();
             var annotationsController = RuntimeAccessor.ServiceLocator.Resolve<IAnnotationsController>();
             var filterController = RuntimeAccessor.ServiceLocator.Resolve<IFilterController>();
-            var eventAggregator = RuntimeAccessor.ServiceLocator.Resolve<IEventAggregator>();
 
             var sourceCodeController = RuntimeAccessor.ServiceLocator.Resolve<ISourceCodeController>();
             testTreeModel = RuntimeAccessor.ServiceLocator.Resolve<ITestTreeModel>();
             testStatistics = RuntimeAccessor.ServiceLocator.Resolve<ITestStatistics>();
 
-            var sortedTreeModel = RuntimeAccessor.ServiceLocator.Resolve<ISortedTreeModel>();
-            var testExplorerModel = new TestExplorer.Model(sortedTreeModel);
-            testExplorer = new TestExplorer.TestExplorer(optionsController, projectController, testController,
-                sourceCodeController, taskManager, new TestExplorer.Controller(testExplorerModel, eventAggregator), 
-                testExplorerModel);
+            var testExplorerModel = RuntimeAccessor.ServiceLocator.Resolve<IModel>();
+            var testExplorerController = RuntimeAccessor.ServiceLocator.Resolve<IController>();
+            testExplorer = new TestExplorer.View(testExplorerController, testExplorerModel);
+            
             projectExplorer = new ProjectExplorer(projectController, testController, reportController, taskManager);
             testResults = new TestResults(testResultsController, optionsController, testTreeModel, testStatistics);
             runtimeLogWindow = new RuntimeLogWindow(runtimeLogController);
@@ -158,6 +154,9 @@ namespace Gallio.Icarus
                 var dialog = new ProgressMonitorDialog(e.ProgressMonitor);
                 dialog.Show(this);
             });
+
+            commandFactory = RuntimeAccessor.ServiceLocator.Resolve<ICommandFactory>();
+            testFrameworkManager = RuntimeAccessor.ServiceLocator.Resolve<ITestFrameworkManager>();
         }
 
         private static bool RunningOnWin7()
@@ -177,10 +176,7 @@ namespace Gallio.Icarus
                 var menuItem = new ToolStripMenuItem { Text = reportType };
                 menuItem.Click += delegate 
                 {
-                    var command = new ShowReportCommand(testController, reportController, new FileSystem())
-                    {
-                        ReportFormat = menuItem.Text
-                    };
+                    var command = commandFactory.CreateShowReportCommand(menuItem.Text);
                     taskManager.QueueTask(command);
                 };
                 viewAsToolStripMenuItem.DropDownItems.Add(menuItem);
@@ -195,7 +191,7 @@ namespace Gallio.Icarus
 
         private IDockContent GetContentFromPersistString(string persistString)
         {
-            if (persistString == typeof(TestExplorer.TestExplorer).ToString())
+            if (persistString == typeof(TestExplorer.View).ToString())
                 return testExplorer;
             if (persistString == typeof(ProjectExplorer).ToString())
                 return projectExplorer;
@@ -294,7 +290,6 @@ namespace Gallio.Icarus
 
         private void aboutMenuItem_Click(object sender, EventArgs e)
         {
-            var testFrameworkManager = RuntimeAccessor.ServiceLocator.Resolve<ITestFrameworkManager>();
             using (var aboutDialog = new AboutDialog(new AboutController(testFrameworkManager)))
                 aboutDialog.ShowDialog(this);
         }
@@ -306,56 +301,45 @@ namespace Gallio.Icarus
 
         private void StartTests(bool attachDebugger)
         {
-            var command = new RunTestsCommand(testController, projectController, optionsController, reportController) 
-                { AttachDebugger = attachDebugger };
+            var command = commandFactory.CreateRunTestsCommand(attachDebugger);
             taskManager.QueueTask(command);
         }
 
         private void reloadToolbarButton_Click(object sender, EventArgs e)
         {
-            Reload(false);
+            Reload();
         }
 
-        private void Reload(bool runTests)
+        private void Reload()
         {
-            testExplorer.SaveState();
-
-            var command = new ReloadCommand(testController, projectController);
+            var command = commandFactory.CreateReloadCommand();
             taskManager.QueueTask(command);
 
-            if (runTests)
+            if (optionsController.RunTestsAfterReload)
                 StartTests(false);
         }
 
         private void openProject_Click(object sender, EventArgs e)
         {
-            using (OpenFileDialog openFile = new OpenFileDialog())
+            using (var openProjectDialog = Dialogs.CreateOpenProjectDialog())
             {
-                openFile.Title = "Open Project...";
-                openFile.Filter = projectFileFilter;
-
-                if (openFile.ShowDialog() != DialogResult.OK)
+                if (openProjectDialog.ShowDialog() != DialogResult.OK)
                     return;
 
-                applicationController.OpenProject(openFile.FileName);
+                applicationController.OpenProject(openProjectDialog.FileName);
             }
         }
 
         private void saveProjectAsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            SaveFileDialog saveFile = new SaveFileDialog
+            using (var saveProjectDialog = Dialogs.CreateSaveProjectDialog())
             {
-                Title = "Save Project As...",
-                OverwritePrompt = true,
-                AddExtension = true,
-                DefaultExt = projectFileFilter,
-                Filter = projectFileFilter
-            };
-            if (saveFile.ShowDialog() != DialogResult.OK) 
-                return;
+                if (saveProjectDialog.ShowDialog() != DialogResult.OK)
+                    return;
 
-            applicationController.Title = saveFile.FileName;
-            SaveProject();
+                applicationController.Title = saveProjectDialog.FileName;
+                SaveProject();
+            }
         }
 
         private void SaveProject()
@@ -375,7 +359,7 @@ namespace Gallio.Icarus
                 if (openFileDialog.ShowDialog(this) != DialogResult.OK)
                     return;
 
-                var command = new AddFilesCommand(projectController, testController) { Files = openFileDialog.FileNames };
+                var command = commandFactory.CreateAddFilesCommand(openFileDialog.FileNames);
                 taskManager.QueueTask(command);
             }
         }
@@ -393,8 +377,8 @@ namespace Gallio.Icarus
 
         private void RemoveAllFiles()
         {
-            var cmd = new RemoveAllFilesCommand(testController, projectController);
-            taskManager.QueueTask(cmd);
+            var command = commandFactory.CreateRemoveAllFilesCommand();
+            taskManager.QueueTask(command);
         }
 
         private void stopButton_Click(object sender, EventArgs e)
@@ -444,8 +428,8 @@ namespace Gallio.Icarus
 
         private void resetToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var cmd = new ResetTestsCommand(testController);
-            taskManager.QueueTask(cmd);
+            var command = commandFactory.CreateResetTestsCommand();
+            taskManager.QueueTask(command);
         }
 
         private void Main_FormClosing(object sender, FormClosingEventArgs e)
@@ -455,24 +439,21 @@ namespace Gallio.Icarus
 
             try
             {
+                optionsController.Location = Location;
+                optionsController.WindowState = WindowState;
+
                 // shut down any running operations
                 progressController.Cancel();
 
-                // save the current state of the test tree
-                testExplorer.SaveState();
-
                 applicationController.Shutdown();
-
-                optionsController.Size = Size;
-                optionsController.Location = Location;
-                optionsController.WindowState = WindowState;
-                optionsController.Save();
 
                 // save dock panel config
                 dockPanel.SaveAsXml(Paths.DockConfigFile);
             }
-            catch
-            { }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
         }
 
         private void showWindowToolStripMenuItem_Click(object sender, EventArgs e)
@@ -527,7 +508,7 @@ namespace Gallio.Icarus
                 if (reloadDialog.ShowDialog(this) != DialogResult.OK)
                     return;
             }
-            Reload(optionsController.RunTestsAfterReload);
+            Reload();
         }
 
         private void ProgressUpdate()
@@ -560,7 +541,7 @@ namespace Gallio.Icarus
         private void TaskCanceled()
         {
             toolStripProgressBar.Value = 0;
-            toolStripStatusLabel.Text = "Canceled";
+            toolStripStatusLabel.Text = Resources.Main_TaskCanceled_Canceled;
         }
 
         private void TaskCompleted()
@@ -597,11 +578,14 @@ namespace Gallio.Icarus
                 if (projectReloadDialog.ShowDialog(this) != DialogResult.OK)
                     return;
 
-                var command = (OpenProjectCommand)RuntimeAccessor.ServiceLocator.ResolveByComponentId(
-                                                       "Gallio.Icarus.Commands.OpenProjectCommand");
-                command.FileName = projectLocation;
+                var command = commandFactory.CreateOpenProjectCommand(projectLocation);
                 taskManager.QueueTask(command);
             }
+        }
+
+        private void Main_SizeChanged(object sender, EventArgs e)
+        {
+            optionsController.Size = Size;
         }
     }
 }

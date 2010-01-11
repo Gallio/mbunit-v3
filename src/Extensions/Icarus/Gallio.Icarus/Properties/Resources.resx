@@ -190,4 +190,16 @@
   <data name="NoWindowWithThatIdentifierExists" xml:space="preserve">
     <value>No window with that identifier exists</value>
   </data>
+	<data name="Dialogs_CreateSaveProjectDialog_Save_Project_As___">
+		<value xml:space="preserve">Save Project As...</value>
+	</data>
+	<data name="Dialogs_CreateOpenProjectDialog_Open_Project___">
+		<value xml:space="preserve">Open Project...</value>
+	</data>
+	<data name="Dialogs_CreateAddFilesDialog_Add_Files___">
+		<value xml:space="preserve">Add Files...</value>
+	</data>
+	<data name="Main_TaskCanceled_Canceled">
+		<value xml:space="preserve">Canceled</value>
+	</data>
 </root>

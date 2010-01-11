@@ -1,18 +1,47 @@
-﻿using Gallio.Icarus.Events;
+﻿using System;
+using System.Collections.Generic;
+using Gallio.Common.Policies;
+using Gallio.Icarus.Commands;
+using Gallio.Icarus.Controllers.Interfaces;
+using Gallio.Icarus.Events;
 using Gallio.Icarus.Models;
 using Gallio.Model;
+using Gallio.Runtime.ProgressMonitoring;
+using Gallio.UI.ProgressMonitoring;
 
 namespace Gallio.Icarus.TestExplorer
 {
-    public class Controller
+    public class Controller : IController, Handles<ApplicationShutdown>, Handles<Reloading>, Handles<RunStarted>,
+        Handles<RunFinished>, Handles<ExploreStarted>, Handles<ExploreFinished>
     {
-        private readonly Model model;
+        private readonly IModel model;
         private readonly IEventAggregator eventAggregator;
+        private readonly ITaskManager taskManager;
+        private readonly ICommandFactory commandFactory;
 
-        public Controller(Model model, IEventAggregator eventAggregator)
+        public event EventHandler SaveState;
+        public event EventHandler RestoreState;
+
+        public Controller(IModel model, IEventAggregator eventAggregator, IOptionsController optionsController, 
+            IProjectController projectController, ITaskManager taskManager, ICommandFactory commandFactory)
         {
             this.model = model;
+            this.commandFactory = commandFactory;
             this.eventAggregator = eventAggregator;
+            this.taskManager = taskManager;
+
+            model.PassedColor.Value = optionsController.PassedColor;
+            model.FailedColor.Value = optionsController.FailedColor;
+            model.SkippedColor.Value = optionsController.SkippedColor;
+            model.InconclusiveColor.Value = optionsController.InconclusiveColor;
+
+            model.TreeViewCategories = optionsController.SelectedTreeViewCategories;
+
+            model.CurrentTreeViewCategory.PropertyChanged += (s, e) => 
+                eventAggregator.Send(new TreeViewCategoryChanged(model.CurrentTreeViewCategory));           
+            model.CurrentTreeViewCategory.Value = projectController.TreeViewCategory;
+
+            model.CollapsedNodes = projectController.CollapsedNodes;
         }
 
         public void SortTree(SortOrder sortOrder)
@@ -37,6 +66,84 @@ namespace Gallio.Icarus.TestExplorer
                     break;
             }
             eventAggregator.Send(new FilterTestStatusEvent(testStatus));
+        }
+
+        public void AddFiles(string[] fileNames)
+        {
+            var command = commandFactory.CreateAddFilesCommand(fileNames);
+            taskManager.QueueTask(command);
+        }
+
+        public void RemoveAllFiles()
+        {
+            var command = commandFactory.CreateRemoveAllFilesCommand();
+            taskManager.QueueTask(command);
+        }
+
+        public void RemoveFile(string fileName)
+        {
+            var command = commandFactory.CreateRemoveFileCommand(fileName);
+            taskManager.QueueTask(command);
+        }
+
+        public void RefreshTree()
+        {
+            var command = commandFactory.CreateRefreshTestTreeCommand();
+            taskManager.QueueTask(command);
+        }
+
+        public void ShowSourceCode(string testId)
+        {
+            var command = commandFactory.CreateViewSourceCodeCommand(testId);
+            taskManager.QueueTask(command);
+        }
+
+        public void ResetTests()
+        {
+            var command = commandFactory.CreateResetTestsCommand();
+            taskManager.QueueTask(command);
+        }
+
+        public void SetTreeSelection(IList<TestTreeNode> nodes)
+        {
+            eventAggregator.Send(new TestSelectionChanged(nodes));
+        }
+
+        public void Handle(ApplicationShutdown @event)
+        {
+            EventHandlerPolicy.SafeInvoke(SaveState, 
+                this, EventArgs.Empty);
+
+            var command = commandFactory.CreateSaveFilterCommand("AutoSave");
+            command.Execute(NullProgressMonitor.CreateInstance());
+        }
+
+        public void Handle(Reloading @event)
+        {
+            EventHandlerPolicy.SafeInvoke(SaveState,
+                this, EventArgs.Empty);
+        }
+
+        public void Handle(RunStarted @event)
+        {
+            model.CanEditTree.Value = false;
+        }
+
+        public void Handle(RunFinished @event)
+        {
+            model.CanEditTree.Value = true;
+        }
+
+        public void Handle(ExploreStarted @event)
+        {
+            model.CanEditTree.Value = false;
+        }
+
+        public void Handle(ExploreFinished @event)
+        {
+            EventHandlerPolicy.SafeInvoke(RestoreState, this,
+                EventArgs.Empty);
+            model.CanEditTree.Value = true;
         }
     }
 }

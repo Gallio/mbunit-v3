@@ -20,7 +20,7 @@ using Gallio.UI.ProgressMonitoring;
 
 namespace Gallio.Icarus.Commands
 {
-    internal class RunTestsCommand : ICommand
+    public class RunTestsCommand : ICommand
     {
         private readonly ITestController testController;
         private readonly IProjectController projectController;
@@ -48,7 +48,7 @@ namespace Gallio.Icarus.Commands
                 using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(5))
                 {
                     var filterSet = testController.GenerateFilterSetFromSelectedTests();
-                    projectController.SaveFilterSet("LastRun", filterSet, subProgressMonitor);
+                    projectController.SaveFilterSet(subProgressMonitor, "LastRun", filterSet);
                 }
 
                 using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(85))

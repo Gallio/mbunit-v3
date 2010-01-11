@@ -22,7 +22,7 @@ namespace Gallio.Icarus.Controllers.Interfaces
     public interface ITestResultsController
     {
         Observable<int> ResultsCount { get; }
-        TimeSpan ElapsedTime { get; }
+        Observable<TimeSpan> ElapsedTime { get; }
 
         void CacheVirtualItems(int startIndex, int endIndex);
         ListViewItem RetrieveVirtualItem(int itemIndex);

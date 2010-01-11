@@ -16,18 +16,21 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using Gallio.Icarus.Controllers.Interfaces;
+using Gallio.Icarus.Events;
 using Gallio.Model;
 using Gallio.Model.Schema;
+using Gallio.Runner.Reports.Schema;
 
 namespace Gallio.Icarus.Controllers
 {
-    internal class AnnotationsController : NotifyController, IAnnotationsController
+    internal class AnnotationsController : NotifyController, IAnnotationsController, 
+        Handles<ExploreFinished>
     {
         private readonly ITestController testController;
         private readonly IOptionsController optionsController;
         private readonly List<AnnotationData> annotationsList = new List<AnnotationData>();
         private readonly BindingList<AnnotationData> annotations;
-        private bool showErrors = true, showWarnings = true, showInfos = true;
+        private bool showErrors, showWarnings, showInfos;
         private int errors, warnings, infos;
 
         public BindingList<AnnotationData> Annotations
@@ -93,40 +96,51 @@ namespace Gallio.Icarus.Controllers
             showInfos = optionsController.AnnotationsShowInfos;
 
             annotations = new BindingList<AnnotationData>(annotationsList);
-            testController.ExploreFinished += delegate { UpdateList(); };
         }
 
         private void UpdateList()
         {
             annotations.Clear();
             errors = warnings = infos = 0;
-            testController.ReadReport(report =>
+            testController.ReadReport(GetAnnotations);
+        }
+
+        private void GetAnnotations(Report report)
+        {
+            foreach (var annotationData in report.TestModel.Annotations)
             {
-                foreach (AnnotationData annotationData in report.TestModel.Annotations)
-                {
-                    switch (annotationData.Type)
-                    {
-                        case AnnotationType.Error:
-                            if (showErrors)
-                                annotations.Add(annotationData);
-                            errors++;
-                            break;
-                        case AnnotationType.Warning:
-                            if (showWarnings)
-                                annotations.Add(annotationData);
-                            warnings++;
-                            break;
-                        case AnnotationType.Info:
-                            if (showInfos)
-                                annotations.Add(annotationData);
-                            infos++;
-                            break;
-                    }
-                }
-                OnPropertyChanged(new PropertyChangedEventArgs("ErrorsText"));
-                OnPropertyChanged(new PropertyChangedEventArgs("WarningsText"));
-                OnPropertyChanged(new PropertyChangedEventArgs("InfoText"));
-            });
+                UpdateStatistics(annotationData);
+            }
+            OnPropertyChanged(new PropertyChangedEventArgs("ErrorsText"));
+            OnPropertyChanged(new PropertyChangedEventArgs("WarningsText"));
+            OnPropertyChanged(new PropertyChangedEventArgs("InfoText"));
+        }
+
+        private void UpdateStatistics(AnnotationData annotationData)
+        {
+            switch (annotationData.Type)
+            {
+                case AnnotationType.Error:
+                    if (showErrors)
+                        annotations.Add(annotationData);
+                    errors++;
+                    break;
+                case AnnotationType.Warning:
+                    if (showWarnings)
+                        annotations.Add(annotationData);
+                    warnings++;
+                    break;
+                case AnnotationType.Info:
+                    if (showInfos)
+                        annotations.Add(annotationData);
+                    infos++;
+                    break;
+            }
+        }
+
+        public void Handle(ExploreFinished @event)
+        {
+            UpdateList();
         }
     }
 }
