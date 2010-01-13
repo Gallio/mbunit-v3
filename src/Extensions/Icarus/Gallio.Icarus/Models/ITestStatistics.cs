@@ -13,8 +13,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Gallio.Model;
-using Gallio.Runtime.ProgressMonitoring;
 using Gallio.UI.DataBinding;
 
 namespace Gallio.Icarus.Models
@@ -25,7 +23,5 @@ namespace Gallio.Icarus.Models
         Observable<int> Failed { get; }
         Observable<int> Skipped { get; }
         Observable<int> Inconclusive { get; }
-        void Reset(IProgressMonitor progressMonitor);
-        void TestStepFinished(TestStatus testStatus);
     }
 }

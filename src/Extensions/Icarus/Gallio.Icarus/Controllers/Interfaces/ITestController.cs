@@ -27,11 +27,6 @@ namespace Gallio.Icarus.Controllers.Interfaces
     public interface ITestController : INotifyPropertyChanged
     {
         /// <summary>
-        /// Indicator if any tests failed during the last run.
-        /// </summary>
-        bool FailedTests { get; }
-
-        /// <summary>
         /// Sets the test runner factory used by the test controller.
         /// </summary>
         /// <param name="factory">The test runner factory to use.</param>

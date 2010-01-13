@@ -202,4 +202,22 @@
 	<data name="Main_TaskCanceled_Canceled">
 		<value xml:space="preserve">Canceled</value>
 	</data>
+	<data name="TestResultsList_TestResultsList_Step_name">
+		<value xml:space="preserve">Step name</value>
+	</data>
+	<data name="TestResultsList_TestResultsList_Test_kind">
+		<value xml:space="preserve">Test kind</value>
+	</data>
+	<data name="TestResultsList_TestResultsList_Duration__s_">
+		<value xml:space="preserve">Duration (s)</value>
+	</data>
+	<data name="TestResultsList_TestResultsList_Asserts">
+		<value xml:space="preserve">Asserts</value>
+	</data>
+	<data name="TestResultsList_TestResultsList_Code_reference">
+		<value xml:space="preserve">Code reference</value>
+	</data>
+	<data name="TestResultsList_TestResultsList_File">
+		<value xml:space="preserve">File</value>
+	</data>
 </root>

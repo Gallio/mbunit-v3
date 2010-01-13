@@ -16,19 +16,21 @@
 using System;
 using System.ComponentModel;
 using Gallio.UI.Controls;
+using Gallio.UI.DataBinding;
 
 namespace Gallio.Icarus.Controllers
 {
-    internal interface IApplicationController : INotifyPropertyChanged
+    public interface IApplicationController : INotifyPropertyChanged
     {
         string Title { get; set; }
         ToolStripMenuItem[] RecentProjects { get; } // TODO: fix this!
-        bool FailedTests { get; }
         IcarusArguments Arguments { get; set; }
+        Observable<bool> CanRunTests { get; }
 
         event EventHandler ExploreFinished;
         event EventHandler RunStarted;
         event EventHandler RunFinished;
+        event EventHandler TestsFailed;
 
         void Load();
         void NewProject();

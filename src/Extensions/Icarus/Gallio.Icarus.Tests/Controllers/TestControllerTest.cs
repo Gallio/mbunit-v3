@@ -52,10 +52,9 @@ namespace Gallio.Icarus.Tests.Controllers
         {
             testTreeModel = MockRepository.GenerateStub<ITestTreeModel>();
             optionsController = MockRepository.GenerateStub<IOptionsController>();
-            var testStatistics = MockRepository.GenerateStub<ITestStatistics>();
             eventAggregator = MockRepository.GenerateStub<IEventAggregator>();
             testController = new TestController(testTreeModel, optionsController, 
-                new TestTaskManager(), testStatistics, eventAggregator);
+                new TestTaskManager(), eventAggregator);
         }
 
         [Test]
@@ -124,14 +123,21 @@ namespace Gallio.Icarus.Tests.Controllers
         public void TestStepFinished_should_bubble_up_from_test_runner()
         {
             var progressMonitor = MockProgressMonitor.Instance;
-            optionsController.Stub(oc => oc.TestRunnerExtensions).Return(new BindingList<string>(new List<string>()));
+            var testRunnerExtensions = new BindingList<string>(new List<string>());
+            optionsController.Stub(oc => oc.TestRunnerExtensions).Return(testRunnerExtensions);
             StubTestRunnerFactory();
             testController.Explore(progressMonitor, new List<string>());
-            var testStepFinishedEventArgs = new TestStepFinishedEventArgs(new Report(),
-                new TestData("id", "name", "fullName"),
-                new TestStepRun(new TestStepData("id", "name", "fullName", "testId")));
+            var testData = new TestData("id", "name", "fullName");
+            var testStepData = new TestStepData("id", "name", "fullName", "testId")
+            {
+                IsTestCase = true
+            };
+            var testStepRun = new TestStepRun(testStepData);
+            var testStepFinishedEventArgs = new TestStepFinishedEventArgs(new Report(), 
+                testData, testStepRun);
 
-            testRunnerEvents.Raise(tre => tre.TestStepFinished += null, testRunner, testStepFinishedEventArgs);
+            testRunnerEvents.Raise(tre => tre.TestStepFinished += null, testRunner, 
+                testStepFinishedEventArgs);
 
             eventAggregator.AssertWasCalled(ea => ea.Send(Arg<TestStepFinished>
                 .Matches(tsf => tsf.TestId == "id")));
@@ -155,7 +161,7 @@ namespace Gallio.Icarus.Tests.Controllers
         }
 
         [Test]
-        public void FailedTests_Test()
+        public void If_any_tests_have_failed_an_event_should_be_raised()
         {
             var progressMonitor = MockProgressMonitor.Instance;
             optionsController.Stub(oc => oc.TestRunnerExtensions).Return(new BindingList<string>(new List<string>()));
@@ -165,14 +171,13 @@ namespace Gallio.Icarus.Tests.Controllers
             {
                 Result = new TestResult(TestOutcome.Failed)
             };
-            TestStepFinishedEventArgs testStepFinishedEventArgs = new TestStepFinishedEventArgs(new Report(),
-                new TestData("id", "name", "fullName"),
-                testStepRun);
-            Assert.IsFalse(testController.FailedTests);
+            var report = new Report();
+            var testData = new TestData("id", "name", "fullName");
+            var testStepFinishedEventArgs = new TestStepFinishedEventArgs(report, testData, testStepRun);
 
             testRunnerEvents.Raise(tre => tre.TestStepFinished += null, testRunner, testStepFinishedEventArgs);
 
-            Assert.IsTrue(testController.FailedTests);
+            eventAggregator.AssertWasCalled(ea => ea.Send(Arg<TestsFailed>.Is.Anything));
         }
 
         [Test]

@@ -104,6 +104,7 @@
     <Compile Include="Commands\OpenReportCommand.cs" />
     <Compile Include="Commands\RefreshTestTreeCommand.cs" />
     <Compile Include="Commands\ReloadCommand.cs" />
+    <Compile Include="Events\TestsFailed.cs" />
     <Compile Include="Events\ProjectSaved.cs" />
     <Compile Include="Events\ProjectLoaded.cs" />
     <Compile Include="Events\TestStepFinished.cs" />
@@ -215,6 +216,7 @@
     <Compile Include="IView.cs" />
     <Compile Include="Models\FilterTestStatusEvent.cs" />
     <Compile Include="Models\ITestStatusFilteredTreeModel.cs" />
+    <Compile Include="Events\TestsReset.cs" />
     <Compile Include="Models\TestStatusFilteredTreeModel.cs" />
     <Compile Include="Projects\ProjectChangedEventArgs.cs" />
     <Compile Include="Projects\IProjectMonitor.cs" />

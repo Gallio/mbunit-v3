@@ -266,6 +266,60 @@ namespace Gallio.Icarus.Properties {
             }
         }
         
+        /// <summary>
+        ///   Looks up a localized string similar to Asserts.
+        /// </summary>
+        internal static string TestResultsList_TestResultsList_Asserts {
+            get {
+                return ResourceManager.GetString("TestResultsList_TestResultsList_Asserts", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Code reference.
+        /// </summary>
+        internal static string TestResultsList_TestResultsList_Code_reference {
+            get {
+                return ResourceManager.GetString("TestResultsList_TestResultsList_Code_reference", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Duration (s).
+        /// </summary>
+        internal static string TestResultsList_TestResultsList_Duration__s_ {
+            get {
+                return ResourceManager.GetString("TestResultsList_TestResultsList_Duration__s_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to File.
+        /// </summary>
+        internal static string TestResultsList_TestResultsList_File {
+            get {
+                return ResourceManager.GetString("TestResultsList_TestResultsList_File", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Step name.
+        /// </summary>
+        internal static string TestResultsList_TestResultsList_Step_name {
+            get {
+                return ResourceManager.GetString("TestResultsList_TestResultsList_Step_name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Test kind.
+        /// </summary>
+        internal static string TestResultsList_TestResultsList_Test_kind {
+            get {
+                return ResourceManager.GetString("TestResultsList_TestResultsList_Test_kind", resourceCulture);
+            }
+        }
+        
         internal static System.Drawing.Bitmap tick {
             get {
                 object obj = ResourceManager.GetObject("tick", resourceCulture);

@@ -21,6 +21,7 @@ using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Events;
 using Gallio.Icarus.Models;
 using Gallio.Common.Markup;
+using Gallio.Model;
 using Gallio.Model.Schema;
 using Gallio.Runner.Reports.Schema;
 using MbUnit.Framework;
@@ -71,7 +72,7 @@ namespace Gallio.Icarus.Tests.Controllers
                 flag = true;
             };
 
-            executionLogController.Handle(new TestStepFinished("root"));
+            executionLogController.Handle(new TestStepFinished("root", TestStatus.Passed));
 
             Assert.IsTrue(flag);
         }

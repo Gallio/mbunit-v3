@@ -13,36 +13,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using System.Windows.Forms;
+using Gallio.Icarus.Properties;
 
 namespace Gallio.Icarus.Controls
 {
     public class TestResultsList : ListView
     {
         public TestResultsList()
-        {
-            ColumnHeader stepName = new ColumnHeader();
-            ColumnHeader duration = new ColumnHeader();
-            ColumnHeader codeReference = new ColumnHeader();
-            ColumnHeader fileName = new ColumnHeader();
-            ColumnHeader testKind = new ColumnHeader();
-            ColumnHeader asserts = new ColumnHeader();
+        {             
+            AddColumns();
 
-            stepName.Text = "Step name";
-            stepName.Width = 200;
-            testKind.Text = "Test kind";
-            testKind.Width = 65;
-            duration.Text = "Duration (s)";
-            duration.Width = 70;
-            asserts.Text = "Asserts";
-            asserts.Width = 50;
-            codeReference.Text = "Code reference";
-            codeReference.Width = 200;
-            fileName.Text = "File";
-            fileName.Width = 200;
-            
-            Columns.AddRange(new[] { stepName, testKind, duration, asserts, codeReference, fileName });
-            
             FullRowSelect = true;
             View = View.Details;
             VirtualMode = true;
@@ -53,6 +35,45 @@ namespace Gallio.Icarus.Controls
             // Enable the OnNotifyMessage event so we get a chance to filter out 
             // Windows messages before they get to the form's WndProc
             SetStyle(ControlStyles.EnableNotifyMessage, true);
+        }
+
+        private void AddColumns()
+        {
+            var stepName = new ColumnHeader
+            {
+                Text = Resources.TestResultsList_TestResultsList_Step_name,
+                Width = 200
+            };
+            var testKind = new ColumnHeader
+            {
+                Text = Resources.TestResultsList_TestResultsList_Test_kind,
+                Width = 65
+            };
+            var duration = new ColumnHeader
+            {
+                Text = Resources.TestResultsList_TestResultsList_Duration__s_,
+                Width = 70
+            };
+            var asserts = new ColumnHeader
+            {
+                Text = Resources.TestResultsList_TestResultsList_Asserts,
+                Width = 50
+            };
+            var codeReference = new ColumnHeader
+            {
+                Text = Resources.TestResultsList_TestResultsList_Code_reference,
+                Width = 200
+            };
+            var fileName = new ColumnHeader
+            {
+                Text = Resources.TestResultsList_TestResultsList_File,
+                Width = 200
+            };
+
+            Columns.AddRange(new[]
+                {
+                    stepName, testKind, duration, asserts, codeReference, fileName
+                });
         }
 
         protected override void OnNotifyMessage(Message m)
@@ -73,14 +94,21 @@ namespace Gallio.Icarus.Controls
             }
             set
             {
-                // If the new size is smaller than the Index of TopItem, we need to make
-                // sure the new TopItem is set to something smaller.
-                // http://blogs.msdn.com/cumgranosalis/archive/2006/03/18/ListViewVirtualModeBugs.aspx
-                if (VirtualMode && View == View.Details && value > 0 && TopItem != null && TopItem.Index > value - 1)
+                try
                 {
-                    TopItem = Items[value - 1];
+                    // If the new size is smaller than the Index of TopItem, we need to make
+                    // sure the new TopItem is set to something smaller.
+                    // http://blogs.msdn.com/cumgranosalis/archive/2006/03/18/ListViewVirtualModeBugs.aspx
+                    if (VirtualMode && View == View.Details && value > 0 && TopItem != null && TopItem.Index > value - 1)
+                    {
+                        TopItem = Items[value - 1];
+                    }
+                    base.VirtualListSize = value;
                 }
-                base.VirtualListSize = value;
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.ToString());
+                }
             }
         }
     }

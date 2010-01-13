@@ -87,16 +87,13 @@ namespace Gallio.Icarus
                 stopButton.Enabled = stopTestsToolStripMenuItem.Enabled = false;
                 startButton.Enabled = startTestsToolStripMenuItem.Enabled = true;
                 startTestsWithDebuggerButton.Enabled = startWithDebuggerToolStripMenuItem.Enabled = true;
-
-                // notify the user if tests have failed!
-                if (applicationController.FailedTests)
-                    Activate();
             });
             applicationController.ExploreFinished += (sender, e) => Sync.Invoke(this, delegate
             {
                 startButton.Enabled = startTestsToolStripMenuItem.Enabled = true;
                 startTestsWithDebuggerButton.Enabled = startWithDebuggerToolStripMenuItem.Enabled = true;
             });
+            applicationController.TestsFailed += (s, e) => Sync.Invoke(this, Activate);
 
             projectController = RuntimeAccessor.ServiceLocator.Resolve<IProjectController>();
 

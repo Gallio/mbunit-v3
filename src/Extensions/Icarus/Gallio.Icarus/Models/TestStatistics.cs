@@ -13,13 +13,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Gallio.Icarus.Events;
 using Gallio.Model;
-using Gallio.Runtime.ProgressMonitoring;
 using Gallio.UI.DataBinding;
 
 namespace Gallio.Icarus.Models
 {
-    internal class TestStatistics : ITestStatistics
+    public class TestStatistics : ITestStatistics, Handles<TestStepFinished>, Handles<TestsReset>
     {
         public Observable<int> Passed { get; private set; }
         public Observable<int> Failed { get; private set; }
@@ -34,23 +34,9 @@ namespace Gallio.Icarus.Models
             Inconclusive = new Observable<int>();
         }
 
-        public void Reset(IProgressMonitor progressMonitor)
+        public void Handle(TestStepFinished @event)
         {
-            using (progressMonitor.BeginTask("Resetting statistics.", 4))
-            {
-                Passed.Value = 0;
-                progressMonitor.Worked(1);
-                Failed.Value = 0;
-                progressMonitor.Worked(1);
-                Skipped.Value = 0;
-                progressMonitor.Worked(1);
-                Inconclusive.Value = 0;
-            }
-        }
-
-        public void TestStepFinished(TestStatus testStatus)
-        {
-            switch (testStatus)
+            switch (@event.TestStatus)
             {
                 case TestStatus.Passed:
                     Passed.Value++;
@@ -65,6 +51,14 @@ namespace Gallio.Icarus.Models
                     Inconclusive.Value++;
                     break;
             }
+        }
+
+        public void Handle(TestsReset @event)
+        {
+            Passed.Value = 0;
+            Failed.Value = 0;
+            Skipped.Value = 0;
+            Inconclusive.Value = 0;
         }
     }
 }

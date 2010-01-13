@@ -13,12 +13,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Gallio.Icarus.Events;
 using Gallio.Icarus.Models;
-using Gallio.Icarus.Tests.Utilities;
 using Gallio.Model;
-using Gallio.Runtime.ProgressMonitoring;
 using MbUnit.Framework;
-using Rhino.Mocks;
 
 namespace Gallio.Icarus.Tests.Models
 {
@@ -29,7 +27,7 @@ namespace Gallio.Icarus.Tests.Models
         {
             var testStatistics = new TestStatistics();
 
-            testStatistics.TestStepFinished(TestStatus.Passed);
+            testStatistics.Handle(new TestStepFinished("id", TestStatus.Passed));
 
             Assert.AreEqual(1, testStatistics.Passed.Value);
         }
@@ -39,7 +37,7 @@ namespace Gallio.Icarus.Tests.Models
         {
             var testStatistics = new TestStatistics();
 
-            testStatistics.TestStepFinished(TestStatus.Failed);
+            testStatistics.Handle(new TestStepFinished("id", TestStatus.Failed));
 
             Assert.AreEqual(1, testStatistics.Failed.Value);
         }
@@ -49,7 +47,7 @@ namespace Gallio.Icarus.Tests.Models
         {
             var testStatistics = new TestStatistics();
 
-            testStatistics.TestStepFinished(TestStatus.Skipped);
+            testStatistics.Handle(new TestStepFinished("id", TestStatus.Skipped));
 
             Assert.AreEqual(1, testStatistics.Skipped.Value);
         }
@@ -59,7 +57,7 @@ namespace Gallio.Icarus.Tests.Models
         {
             var testStatistics = new TestStatistics();
 
-            testStatistics.TestStepFinished(TestStatus.Inconclusive);
+            testStatistics.Handle(new TestStepFinished("id", TestStatus.Inconclusive));
 
             Assert.AreEqual(1, testStatistics.Inconclusive.Value);
         }
@@ -68,9 +66,9 @@ namespace Gallio.Icarus.Tests.Models
         public void Reset_should_set_passed_to_zero()
         {
             var testStatistics = new TestStatistics();
-            testStatistics.TestStepFinished(TestStatus.Passed);
+            testStatistics.Handle(new TestStepFinished("id", TestStatus.Passed));
 
-            testStatistics.Reset(MockProgressMonitor.Instance);
+            testStatistics.Handle(new TestsReset());
 
             Assert.AreEqual(0, testStatistics.Passed.Value);
         }
@@ -79,9 +77,9 @@ namespace Gallio.Icarus.Tests.Models
         public void Reset_should_set_failed_to_zero()
         {
             var testStatistics = new TestStatistics();
-            testStatistics.TestStepFinished(TestStatus.Failed);
+            testStatistics.Handle(new TestStepFinished("id", TestStatus.Failed));
 
-            testStatistics.Reset(MockProgressMonitor.Instance);
+            testStatistics.Handle(new TestsReset());
 
             Assert.AreEqual(0, testStatistics.Failed.Value);
         }
@@ -90,9 +88,9 @@ namespace Gallio.Icarus.Tests.Models
         public void Reset_should_set_skipped_to_zero()
         {
             var testStatistics = new TestStatistics();
-            testStatistics.TestStepFinished(TestStatus.Skipped);
+            testStatistics.Handle(new TestStepFinished("id", TestStatus.Skipped));
 
-            testStatistics.Reset(MockProgressMonitor.Instance);
+            testStatistics.Handle(new TestsReset());
 
             Assert.AreEqual(0, testStatistics.Skipped.Value);
         }
@@ -101,24 +99,11 @@ namespace Gallio.Icarus.Tests.Models
         public void Reset_should_set_inconclusive_to_zero()
         {
             var testStatistics = new TestStatistics();
-            testStatistics.TestStepFinished(TestStatus.Inconclusive);
+            testStatistics.Handle(new TestStepFinished("id", TestStatus.Skipped));
 
-            testStatistics.Reset(MockProgressMonitor.Instance);
+            testStatistics.Handle(new TestsReset());
 
             Assert.AreEqual(0, testStatistics.Inconclusive.Value);
-        }
-
-        [Test]
-        public void Reset_should_set_progress_status()
-        {
-            var testStatistics = new TestStatistics();
-            var progressMonitor = MockRepository.GenerateStub<IProgressMonitor>();
-            progressMonitor.Stub(x => x.BeginTask(Arg<string>.Is.Anything, Arg<double>.Is.Anything)).Return(
-                new ProgressMonitorTaskCookie(progressMonitor));
-
-            testStatistics.Reset(progressMonitor);
-
-            progressMonitor.AssertWasCalled(pm => pm.BeginTask("Resetting statistics.", 4));
         }
     }
 }

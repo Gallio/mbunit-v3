@@ -28,12 +28,14 @@ using Gallio.Runner.Projects;
 using Gallio.Runtime;
 using Gallio.Runtime.ProgressMonitoring;
 using Gallio.UI.Common.Policies;
+using Gallio.UI.DataBinding;
 using Gallio.UI.ProgressMonitoring;
 
 namespace Gallio.Icarus.Controllers
 {
     public class ApplicationController : NotifyController, IApplicationController, 
-        Handles<RunStarted>, Handles<RunFinished>, Handles<ExploreFinished>
+        Handles<RunStarted>, Handles<RunFinished>, Handles<ExploreFinished>, 
+        Handles<TestsFailed>
     {
         private string projectFileName = string.Empty;
 
@@ -69,17 +71,15 @@ namespace Gallio.Icarus.Controllers
             }
         }
 
-        public bool FailedTests
-        {
-            get { return testController.FailedTests; }
-        }
-
         public IcarusArguments Arguments { get; set; }
+
+        public Observable<bool> CanRunTests { get; private set; }
 
         public event EventHandler ExploreFinished;
 
-        public event EventHandler RunStarted;
-        public event EventHandler RunFinished;
+        public event EventHandler RunStarted = (s, e) => { };
+        public event EventHandler RunFinished = (s, e) => { };
+        public event EventHandler TestsFailed = (s, e) => { };
 
         public ApplicationController(IOptionsController optionsController, IFileSystem fileSystem, 
             ITaskManager taskManager, ITestController testController, IProjectController projectController, 
@@ -98,6 +98,8 @@ namespace Gallio.Icarus.Controllers
                 if (e.PropertyName == "RecentProjects")
                     OnPropertyChanged(new PropertyChangedEventArgs("RecentProjects"));
             };
+
+            CanRunTests = new Observable<bool>();
         }
 
         public void Load()
@@ -245,6 +247,11 @@ namespace Gallio.Icarus.Controllers
         {
             EventHandlerPolicy.SafeInvoke(ExploreFinished, this,
                 System.EventArgs.Empty);
+        }
+
+        public void Handle(TestsFailed @event)
+        {
+            TestsFailed(this, System.EventArgs.Empty);
         }
     }
 }
