@@ -234,8 +234,10 @@ namespace Gallio.ReSharperRunner.Provider
                         var containingRange = declaration.GetDocumentRange().TextRange;
 #if RESHARPER_31 || RESHARPER_40 || RESHARPER_41
                         if (nameRange.IsValid && containingRange.IsValid)
-#else
+#elif RESHARPER_45
                         if (nameRange.IsValid() && containingRange.IsValid())
+#else
+                        if (nameRange.IsValid && containingRange.IsValid)
 #endif
                         {
                             locations.Add(new UnitTestElementLocation(
