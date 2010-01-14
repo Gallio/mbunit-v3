@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <plugin pluginId="Gallio.VisualStudio.Tip100"
         recommendedInstallationPath="VisualStudio\v10.0"
-        enableCondition="${process:DEVENV.EXE_V10.0} or ${process:VSTESTHOST.EXE_V10.0} or ${process:QTAGENT.EXE_V10.0} or ${process:QTAGENT32.EXE_V10.0} or ${process:QTDCAGENT.EXE_V10.0} or ${process:QTDCAGENT32.EXE_V10.0}"
+        enableCondition="${process:DEVENV.EXE_V10.0} or ${process:VSTESTHOST.EXE_V10.0} or ${process:QTAGENT.EXE_V10.0} or ${process:QTAGENT32.EXE_V10.0} or ${process:QTDCAGENT.EXE_V10.0} or ${process:QTDCAGENT32.EXE_V10.0} or ${process:MSTEST.EXE_V10.0}"
         xmlns="http://www.gallio.org/">
   <traits>
     <name>Visual Studio 2010 Test Runner</name>
