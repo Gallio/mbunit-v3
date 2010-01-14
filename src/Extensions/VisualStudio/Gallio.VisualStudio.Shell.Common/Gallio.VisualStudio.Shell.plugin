@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <plugin pluginId="Gallio.VisualStudio.Shell"
         recommendedInstallationPath="VisualStudio"
-        enableCondition="${process:DEVENV.EXE} or ${process:VSTESTHOST.EXE} or ${process:QTAGENT.EXE} or ${process:QTAGENT32.EXE} or ${process:QTDCAGENT.EXE} or ${process:QTDCAGENT32.EXE}"
+        enableCondition="${process:DEVENV.EXE} or ${process:VSTESTHOST.EXE} or ${process:QTAGENT.EXE} or ${process:QTAGENT32.EXE} or ${process:QTDCAGENT.EXE} or ${process:QTDCAGENT32.EXE} or ${process:MSTEST.EXE}"
         xmlns="http://www.gallio.org/">
   <traits>
     <name>Visual Studio Integration Shell</name>

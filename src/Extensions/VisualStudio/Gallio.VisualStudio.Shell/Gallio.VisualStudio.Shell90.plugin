@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <plugin pluginId="Gallio.VisualStudio.Shell90"
         recommendedInstallationPath="VisualStudio\v9.0"
-        enableCondition="${process:DEVENV.EXE_V9.0} or ${process:VSTESTHOST.EXE_V9.0}"
+        enableCondition="${process:DEVENV.EXE_V9.0} or ${process:VSTESTHOST.EXE_V9.0} or ${process:MSTEST.EXE_V9.0}"
         xmlns="http://www.gallio.org/">
   <traits>
     <name>Visual Studio 2008 Integration Shell</name>
