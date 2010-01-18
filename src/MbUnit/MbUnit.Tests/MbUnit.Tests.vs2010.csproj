@@ -184,6 +184,8 @@
     <Compile Include="Framework\AutoEmbedRecordingAttributeTest.cs" />
     <Compile Include="Framework\ConverterAttributeTest.cs" />
     <Compile Include="Framework\ComparerAttributeTest.cs" />
+    <Compile Include="Framework\BinaryDataAttributeTest.cs" />
+    <Compile Include="Framework\TextDataAttributeTest.cs" />
     <Compile Include="Framework\FormatterAttributeTest.cs" />
     <Compile Include="Framework\EqualityComparerAttributeTest.cs" />
     <Compile Include="Framework\XmlOptionsTest.cs" />
@@ -226,6 +228,7 @@
     <EmbeddedResource Include="Framework\SolarSystemWithErrors.xml" />
     <EmbeddedResource Include="Compatibility\Framework\Xml\etc\Book.xsd" />
     <EmbeddedResource Include="Compatibility\Framework\Xml\etc\test.dtd" />
+    <EmbeddedResource Include="Framework\SampleBinaryResource.bin" />
     <None Include="MbUnit.Tests.dll.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -242,6 +245,9 @@
     <EmbeddedResource Include="Compatibility\Framework\Xml\etc\testAnimal.xml" />
     <EmbeddedResource Include="Compatibility\Framework\Xml\etc\testDetail.xml" />
     <EmbeddedResource Include="Compatibility\Framework\Xml\etc\testNamespaces.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Framework\SampleTextResource.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

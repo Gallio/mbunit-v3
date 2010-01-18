@@ -165,6 +165,8 @@
     <Compile Include="Framework\AutoEmbedRecordingAttribute.cs" />
     <Compile Include="Framework\AbstractComparerAttribute.cs" />
     <Compile Include="Framework\ConverterAttribute.cs" />
+    <Compile Include="Framework\BinaryDataAttribute.cs" />
+    <Compile Include="Framework\TextDataAttribute.cs" />
     <Compile Include="Framework\FormatterAttribute.cs" />
     <Compile Include="Framework\EqualityComparerAttribute.cs" />
     <Compile Include="Framework\ComparerAttribute.cs" />
