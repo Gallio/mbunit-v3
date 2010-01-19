@@ -112,11 +112,6 @@
       <Project>{80983DC5-71B6-49CD-BA5F-305D29A65D05}</Project>
       <Name>Gallio.VisualStudio.Shell90.vs2010</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Gallio.VisualStudio.Tip.Proxy\Gallio.VisualStudio.Tip90.Proxy.vs2010.csproj">
-      <Project>{3A5CA3C2-628D-4EAA-884B-95BB8C90C01C}</Project>
-      <Name>Gallio.VisualStudio.Tip90.Proxy.vs2010</Name>
-      <Private>False</Private>
-    </ProjectReference>
     <ProjectReference Include="..\Gallio.VisualStudio.Tip\Gallio.VisualStudio.Tip90.vs2010.csproj">
       <Project>{F3678999-969B-4CA5-B326-6732C26D97B3}</Project>
       <Name>Gallio.VisualStudio.Tip90.vs2010</Name>

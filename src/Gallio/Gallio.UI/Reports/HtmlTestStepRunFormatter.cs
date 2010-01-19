@@ -414,7 +414,7 @@ namespace Gallio.UI.Reports
 
                 // execution logs
                 writer.Write("<div class=\"testStepRun\">");
-                if (testStepRun.TestLog.Streams.Count > 0)
+                //if (testStepRun.TestLog.Streams.Count > 0)
                     RenderExecutionLogStreams(testStepRun, flashEnabled);
                 writer.Write("</div>");
 

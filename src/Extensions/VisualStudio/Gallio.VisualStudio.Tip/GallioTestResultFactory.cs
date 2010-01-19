@@ -99,20 +99,74 @@ namespace Gallio.VisualStudio.Tip
             {
                 foreach (GallioTestResult innerResult in result.InnerResults)
                 {
-                    TestStepRun run = TestStepRunFromXml(innerResult.TestStepRunXml);
+                    TestStepRun run = GetTestStepRun(innerResult);
                     if (run != null)
                         runs.Add(run);
                 }
             }
             else
             {
-                TestStepRun run = TestStepRunFromXml(result.TestStepRunXml);
+                TestStepRun run = GetTestStepRun(result);
                 if (run != null)
                     runs.Add(run);
             }
 
             return runs;
         }
+
+        /// <summary>
+        /// Gets a test step run from a given test result.
+        /// </summary>
+        /// <param name="result">A test result.</param>
+        /// <returns>A test step run instance.</returns>
+        public static TestStepRun GetTestStepRun(GallioTestResult result)
+        {
+            TestStepRun run = TestStepRunFromXml(result.TestStepRunXml);
+            if (run != null)
+            {
+                foreach (CollectorDataEntry collectorEntry in result.CollectorDataEntries)
+                {
+                    if (collectorEntry != null)
+                    {
+                        TextAttachment gallioTextAttachment = CreateTextAttachmentData(collectorEntry);
+                        if(gallioTextAttachment != null)
+                        {
+                            run.TestLog.Attachments.Add(gallioTextAttachment.ToAttachmentData());
+                        }
+                    }
+                }                
+            }
+            return run;
+        }
+
+        /// <summary>
+        /// Creates a Gallio attachement from any VSTS collector data.
+        /// </summary>
+        /// <param name="collectorEntry">A VSTS data collector.</param>
+        /// <returns>Gallio attachment instance.</returns>
+        private static TextAttachment CreateTextAttachmentData(CollectorDataEntry collectorEntry)
+        {
+            TextAttachment textAttachment = null;
+            
+            UriDataAttachment vstsAttachment = (UriDataAttachment)collectorEntry.Attachments[0];
+            if (vstsAttachment != null)
+            {
+                StringBuilder sb = new StringBuilder();
+                using (StreamReader sr = new StreamReader(vstsAttachment.Uri.LocalPath))
+                {
+                    String line;           
+                    while ((line = sr.ReadLine()) != null)
+                    {
+                        sb.AppendLine(line);
+                    }
+                }
+
+                textAttachment = Attachment.CreateXmlAttachment(vstsAttachment.Description, sb.ToString());             
+            }
+            return textAttachment;
+        }
+
+
 
         /// <summary>
         /// Merges Gallio test results.
