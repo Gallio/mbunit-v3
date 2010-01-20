@@ -122,6 +122,7 @@ namespace Gallio.VisualStudio.Tip
         public static TestStepRun GetTestStepRun(GallioTestResult result)
         {
             TestStepRun run = TestStepRunFromXml(result.TestStepRunXml);
+#if VS100_OR_NEWER
             if (run != null)
             {
                 foreach (CollectorDataEntry collectorEntry in result.CollectorDataEntries)
@@ -136,9 +137,11 @@ namespace Gallio.VisualStudio.Tip
                     }
                 }                
             }
+#endif
             return run;
         }
 
+#if VS100_OR_NEWER
         /// <summary>
         /// Creates a Gallio attachement from any VSTS collector data.
         /// </summary>
@@ -165,8 +168,7 @@ namespace Gallio.VisualStudio.Tip
             }
             return textAttachment;
         }
-
-
+#endif
 
         /// <summary>
         /// Merges Gallio test results.
