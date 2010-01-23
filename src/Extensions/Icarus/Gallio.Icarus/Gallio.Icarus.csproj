@@ -33,6 +33,7 @@
     <SourceRoot>$(MSBuildProjectDirectory)\..\..\..\..</SourceRoot>
     <MetaBuildConfigFile>$(SourceRoot)\bin\MetaBuild.config.custom</MetaBuildConfigFile>
     <CustomAfterMicrosoftCommonTargets>$(SourceRoot)\tools\MetaBuild\bin\Custom.After.Microsoft.Common.targets</CustomAfterMicrosoftCommonTargets>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -605,6 +606,7 @@
     <Content Include="Resources\Fixture.png" />
     <Content Include="Resources\folder_open.png" />
     <Content Include="Resources\Graph.png" />
+    <None Include="app.manifest" />
     <None Include="Gallio.Icarus.exe.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
