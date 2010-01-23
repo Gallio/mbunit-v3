@@ -1,10 +1,11 @@
 <?xml version="1.0"?>
 <NCover3ProjectSetting xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Version="307">
-  <CoverageDataURL>C:\Documents and Settings\Graham\My Documents\gallio\v3.2\src\Extensions\Icarus\Gallio.Icarus.Tests\bin\coverage.xml</CoverageDataURL>
+  <CoverageDataURL>C:\Documents and Settings\Graham\My Documents\gallio\src\Extensions\Icarus\Gallio.Icarus.Tests\bin\coverage.xml</CoverageDataURL>
   <ShowExcludedNodes>false</ShowExcludedNodes>
   <DefaultViewSetting SatisfactoryBranchThreshold="95" SatisfactoryCoverageThreshold="95" SatisfactoryCyclomaticComplexityThreshold="20" SatisfactoryFunctionThreshold="80" SatisfactoryUnvisitedSequencePoints="0" WidgetType="TreeView" FilterStyle="HideFullyCovered" ReportStyle="SequencePointCoveragePercentage" SortStyle="Name">
     <DelayFilters>false</DelayFilters>
     <filters>
+      <filter filterruledata="95" include="false" filtertype="Threshold" regexrule="false" version="Default" />
       <filter filterruledata="95" include="false" filtertype="Threshold" regexrule="false" version="Default" />
       <filter filterruledata="Aga.Controls" include="false" filtertype="Assembly" regexrule="false" version="Default" />
       <filter filterruledata="Gallio" include="false" filtertype="Assembly" regexrule="false" version="Default" />
@@ -21,7 +22,7 @@
   <NCoverRunSettings>
     <AutoExclude>true</AutoExclude>
     <CommandLineArgs>"Gallio.Icarus.Tests.dll"</CommandLineArgs>
-    <CommandLineExe>C:\Documents and Settings\Graham\My Documents\gallio\v3.2\src\Extensions\Echo\Gallio.Echo\bin\Gallio.Echo.exe</CommandLineExe>
+    <CommandLineExe>C:\Documents and Settings\Graham\My Documents\gallio\src\Extensions\Echo\Gallio.Echo\bin\Gallio.Echo.exe</CommandLineExe>
     <CoverageType>Symbol Branch CyclomaticComplexity MethodVisits</CoverageType>
     <CoverageXml>coverage.xml</CoverageXml>
     <LogFile>coverage.log</LogFile>
@@ -39,7 +40,7 @@
     <ExpertMode>false</ExpertMode>
     <VersionNumber>324</VersionNumber>
     <WaitForAppLoad>1</WaitForAppLoad>
-    <WorkingDirectory>C:\Documents and Settings\Graham\My Documents\gallio\v3.2\src\Extensions\Icarus\Gallio.Icarus.Tests\bin</WorkingDirectory>
+    <WorkingDirectory>C:\Documents and Settings\Graham\My Documents\gallio\src\Extensions\Icarus\Gallio.Icarus.Tests\bin</WorkingDirectory>
   </NCoverRunSettings>
   <ProjectGuid>6138690f-52ba-4afb-82d8-4228f7777b4d</ProjectGuid>
   <ProjectName>Icarus</ProjectName>

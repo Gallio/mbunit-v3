@@ -51,10 +51,7 @@ namespace Gallio.Icarus.Models
         private void SetSortOrder(SortOrder sortOrder)
         {
             comparer.SetSortOrder(sortOrder);
-
-            // notify treeview
-            var treePath = new TreePath(GetRoot());
-            OnStructureChanged(new TreePathEventArgs(treePath));
+            OnStructureChanged();
         }
 
         private class TestTreeNodeComparer : IComparer<TestTreeNode>

@@ -13,7 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.Collections.Generic;
+using System.Linq;
 using Aga.Controls.Tree;
 using Gallio.Icarus.Models;
 using Gallio.Icarus.Specifications;
@@ -38,21 +38,18 @@ namespace Gallio.Icarus.Tests.Models
         [Test]
         public void Only_children_matching_the_specification_should_be_returned()
         {
-            var treePath = new TreePath();
-            testTreeModel.Stub(ttm => ttm.GetChildren(treePath)).Return(new[]
-            {
-                new TestTreeNode("in", "in"),
-                new TestTreeNode("out", "out")
-            });
+            testTreeModel.Stub(ttm => ttm.GetChildren(Arg<TreePath>.Is.Anything))
+                .Return(new[]
+                {
+                    new TestTreeNode("in", "in"),
+                    new TestTreeNode("out", "out")
+                });
             filteredTreeModel.Handle(new FilterTreeEvent(new TestSpec()));
             
-            var children = filteredTreeModel.GetChildren(treePath);
+            var children = filteredTreeModel.GetChildren(new TreePath());
 
-            var nodes = new List<TestTreeNode>();
-            foreach (var child in children)
-            {
-                nodes.Add((TestTreeNode)child);
-            }
+            var nodes = children.Cast<TestTreeNode>().ToList();
+
             Assert.AreEqual(1, nodes.Count);
             Assert.AreEqual("in", nodes[0].Name);
         }
@@ -69,11 +66,8 @@ namespace Gallio.Icarus.Tests.Models
 
             var children = filteredTreeModel.GetChildren(treePath);
 
-            var nodes = new List<TestTreeNode>();
-            foreach (var child in children)
-            {
-                nodes.Add((TestTreeNode)child);
-            }
+            var nodes = children.Cast<TestTreeNode>().ToList();
+
             Assert.AreEqual(2, nodes.Count);
             Assert.AreEqual("in", nodes[0].Name);
             Assert.AreEqual("out", nodes[1].Name);

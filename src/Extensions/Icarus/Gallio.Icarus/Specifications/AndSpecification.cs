@@ -15,7 +15,7 @@
 
 namespace Gallio.Icarus.Specifications
 {
-    public class AndSpecification<T> : ISpecification<T>
+    public class AndSpecification<T> : Specification<T>
     {
         private readonly ISpecification<T> left;
         private readonly ISpecification<T> right;
@@ -26,7 +26,7 @@ namespace Gallio.Icarus.Specifications
             this.right = right;
         }
 
-        public bool Matches(T item)
+        public override bool Matches(T item)
         {
             return left.Matches(item) && right.Matches(item);
         }

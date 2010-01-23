@@ -1,13 +1,9 @@
-﻿using Gallio.Runtime.Extensibility;
-
-namespace Gallio.Icarus.TestExplorer
+﻿namespace Gallio.Icarus.TestExplorer
 {
     public class Package : IPackage
     {
-        public void Load(IServiceLocator serviceLocator)
-        { }
+        public void Load() { }
 
-        public void Unload()
-        { }
+        public void Dispose() { }
     }
 }

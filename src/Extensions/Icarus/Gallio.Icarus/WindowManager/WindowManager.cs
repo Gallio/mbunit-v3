@@ -21,36 +21,15 @@ using Gallio.Common;
 using Gallio.Icarus.Properties;
 using WeifenLuo.WinFormsUI.Docking;
 
-namespace Gallio.Icarus
+namespace Gallio.Icarus.WindowManager
 {
     public class WindowManager : IWindowManager
     {
         private readonly Dictionary<string, Window> windows = new Dictionary<string, Window>();
         private readonly Dictionary<string, Action> hooks = new Dictionary<string, Action>();
+        private DockPanel dockPanel;
 
-        public DockPanel DockPanel 
-        {
-            get;
-            internal set;
-        }
-
-        public ToolStripItemCollection StatusStrip
-        {
-            get;
-            internal set;
-        }
-
-        public ToolStripContainer ToolStrip
-        {
-            get;
-            internal set;
-        }
-
-        public ToolStripItemCollection Menu
-        {
-            get;
-            internal set;
-        }
+        public IMenuManager MenuManager { get; private set; }
 
         public Window Add(string identifier, Control content, string caption)
         {
@@ -79,7 +58,7 @@ namespace Gallio.Icarus
                 windows.Remove(identifier);
         }
 
-        internal Window Get(string identifier)
+        public Window Get(string identifier)
         {
             // if we have the window stored, then return it
             if (windows.ContainsKey(identifier))
@@ -100,16 +79,39 @@ namespace Gallio.Icarus
             if (window == null)
                 throw new Exception(Resources.NoWindowWithThatIdentifierExists);
                
-            window.Show(DockPanel);
+            window.Show(dockPanel);
         }
 
-        public void Show(string identifier, DockState dockState)
+        public void Show(string identifier, Location location)
         {
             var window = Get(identifier);
-            if (window == null)
-                throw new Exception(Resources.NoWindowWithThatIdentifierExists);
 
-            window.Show(DockPanel, dockState);
+            if (window == null)
+            {
+                throw new Exception(Resources.NoWindowWithThatIdentifierExists);
+            }
+            var dockState = GetDockStateFromLocation(location);
+
+            window.Show(dockPanel, dockState);
+        }
+
+        private static DockState GetDockStateFromLocation(Location location)
+        {
+            switch (location)
+            {
+                case Location.Bottom:
+                    return DockState.DockBottom;
+
+                case Location.Left:
+                    return DockState.DockLeft;
+
+                case Location.Right:
+                    return DockState.DockRight;
+
+                case Location.Top:
+                    return DockState.DockTop;
+            }
+            return DockState.Unknown;
         }
 
         public void Register(string identifier, Action action)
@@ -118,6 +120,36 @@ namespace Gallio.Icarus
                 throw new Exception("Identifier is not unique");
 
             hooks.Add(identifier, action);
+        }
+
+        public void SetDockPanel(DockPanel panel)
+        {
+            dockPanel = panel;
+        }
+
+        public void SetMenuManager(IMenuManager menuManager)
+        {
+            MenuManager = menuManager;
+        }
+
+        public IAsyncResult BeginInvoke(Delegate method, object[] args)
+        {
+            return dockPanel.BeginInvoke(method, args);
+        }
+
+        public object EndInvoke(IAsyncResult result)
+        {
+            return dockPanel.EndInvoke(result);
+        }
+
+        public object Invoke(Delegate method, object[] args)
+        {
+            return dockPanel.Invoke(method, args);
+        }
+
+        public bool InvokeRequired
+        {
+            get { return dockPanel.InvokeRequired; }
         }
     }
 }

@@ -16,7 +16,7 @@
 using Gallio.Icarus.Controls;
 using MbUnit.Framework;
 using Aga.Controls.Tree.NodeControls;
-using NodeCheckBox=Gallio.Icarus.Controls.NodeCheckBox;
+using NodeCheckBox = Gallio.Icarus.Controls.NodeCheckBox;
 
 namespace Gallio.Icarus.Tests.Controls
 {
@@ -28,7 +28,7 @@ namespace Gallio.Icarus.Tests.Controls
             TestTreeView testTreeView = new TestTreeView();
             Assert.AreEqual(4, testTreeView.NodeControls.Count);
 
-            NodeCheckBox nodeCheckBox = (NodeCheckBox)testTreeView.NodeControls[0];
+            var nodeCheckBox = (NodeCheckBox)testTreeView.NodeControls[0];
             Assert.AreEqual("CheckState", nodeCheckBox.DataPropertyName);
             Assert.AreEqual(0, nodeCheckBox.LeftMargin);
             Assert.IsNull(nodeCheckBox.ParentColumn);

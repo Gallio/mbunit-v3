@@ -220,4 +220,13 @@
 	<data name="TestResultsList_TestResultsList_File">
 		<value xml:space="preserve">File</value>
 	</data>
+	<data name="PluginBrowserPackage_AddMenuItem_Plugin_Browser">
+		<value xml:space="preserve">Plugin Browser</value>
+	</data>
+	<data name="ProjectsPackage_AddMenuItem_Properties">
+		<value xml:space="preserve">Properties</value>
+	</data>
+	<data name="Search_Package_AddMenuItem_Search">
+		<value xml:space="preserve">Search</value>
+	</data>
 </root>

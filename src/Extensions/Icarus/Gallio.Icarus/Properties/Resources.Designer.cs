@@ -228,6 +228,15 @@ namespace Gallio.Icarus.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Plugin Browser.
+        /// </summary>
+        internal static string PluginBrowserPackage_AddMenuItem_Plugin_Browser {
+            get {
+                return ResourceManager.GetString("PluginBrowserPackage_AddMenuItem_Plugin_Browser", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Project &apos;{0}&apos; has been modified..
         /// </summary>
         internal static string ProjectModified {
@@ -245,6 +254,15 @@ namespace Gallio.Icarus.Properties {
             }
         }
         
+        /// <summary>
+        ///   Looks up a localized string similar to Properties.
+        /// </summary>
+        internal static string ProjectsPackage_AddMenuItem_Properties {
+            get {
+                return ResourceManager.GetString("ProjectsPackage_AddMenuItem_Properties", resourceCulture);
+            }
+        }
+        
         internal static System.Drawing.Icon Properties {
             get {
                 object obj = ResourceManager.GetObject("Properties", resourceCulture);
@@ -256,6 +274,15 @@ namespace Gallio.Icarus.Properties {
             get {
                 object obj = ResourceManager.GetObject("Report", resourceCulture);
                 return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Search.
+        /// </summary>
+        internal static string Search_Package_AddMenuItem_Search {
+            get {
+                return ResourceManager.GetString("Search_Package_AddMenuItem_Search", resourceCulture);
             }
         }
         

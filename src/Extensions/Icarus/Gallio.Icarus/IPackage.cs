@@ -13,16 +13,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Gallio.Runtime.Extensibility;
+using System;
 
 namespace Gallio.Icarus
 {
     /// <summary>
-    /// Shameless rip-off of Reflector add-in API.
+    /// Marker interface for Icarus packages.
     /// </summary>
-    public interface IPackage
+    public interface IPackage : IDisposable
     {
-        void Load(IServiceLocator serviceLocator);
-        void Unload();
+        void Load();
     }
 }

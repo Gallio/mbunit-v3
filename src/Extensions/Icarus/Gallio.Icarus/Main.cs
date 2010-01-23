@@ -32,6 +32,7 @@ using Gallio.Icarus.Projects;
 using Gallio.Icarus.Properties;
 using Gallio.Icarus.TestExplorer;
 using Gallio.Icarus.Utilities;
+using Gallio.Icarus.WindowManager;
 using Gallio.Model;
 using Gallio.Runtime;
 using Gallio.UI.Common.Synchronization;
@@ -51,7 +52,7 @@ namespace Gallio.Icarus
         private readonly IProjectController projectController;
         private readonly IOptionsController optionsController;
 
-        private WindowManager windowManager;
+        private IWindowManager windowManager;
 
         // dock panel windows
         private readonly TestExplorer.View testExplorer;
@@ -188,6 +189,7 @@ namespace Gallio.Icarus
 
         private IDockContent GetContentFromPersistString(string persistString)
         {
+            // TODO: once these have moved to packages this will no longer be req
             if (persistString == typeof(TestExplorer.View).ToString())
                 return testExplorer;
             if (persistString == typeof(ProjectExplorer).ToString())
@@ -202,6 +204,7 @@ namespace Gallio.Icarus
                 return runtimeLogWindow;
             if (persistString == typeof(AnnotationsWindow).ToString())
                 return annotationsWindow;
+
             return windowManager.Get(persistString);
         }
 
@@ -213,11 +216,10 @@ namespace Gallio.Icarus
             Text = applicationController.Title;
 
             // setup window manager
-            windowManager = (WindowManager)RuntimeAccessor.ServiceLocator.Resolve<IWindowManager>();
-            windowManager.DockPanel = dockPanel;
-            windowManager.StatusStrip = statusStrip.Items;
-            windowManager.ToolStrip = toolStripContainer;
-            windowManager.Menu = menuStrip.Items;
+            windowManager = RuntimeAccessor.ServiceLocator.Resolve<IWindowManager>();
+            var manager = (WindowManager.WindowManager) windowManager;
+            manager.SetDockPanel(dockPanel);
+            manager.SetMenuManager(new MenuManager(menuStrip.Items));
 
             // deal with arguments
             applicationController.Load();

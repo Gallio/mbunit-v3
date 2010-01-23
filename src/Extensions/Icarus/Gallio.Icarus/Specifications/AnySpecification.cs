@@ -15,9 +15,9 @@
 
 namespace Gallio.Icarus.Specifications
 {
-    public class AnySpecification<T> : ISpecification<T>
+    public class AnySpecification<T> : Specification<T>
     {
-        public bool Matches(T item)
+        public override bool Matches(T item)
         {
             return true;
         }

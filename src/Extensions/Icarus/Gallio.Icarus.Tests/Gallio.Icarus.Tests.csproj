@@ -116,6 +116,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Search\SearchControllerTest.cs" />
     <Compile Include="SettingsTest.cs" />
     <Compile Include="Specifications\AnySpecificationTest.cs" />
     <Compile Include="Specifications\AndSpecificationTest.cs" />

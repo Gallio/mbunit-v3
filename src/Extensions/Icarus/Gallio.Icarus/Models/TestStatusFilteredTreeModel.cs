@@ -60,13 +60,15 @@ namespace Gallio.Icarus.Models
             var testStatus = @event.TestStatus;
 
             if (filteredStatuses.Contains(testStatus))
+            {
                 filteredStatuses.Remove(testStatus);
+            }
             else
+            {
                 filteredStatuses.Add(testStatus);
+            }
 
-            // notify treeview
-            var treePath = new TreePath(GetRoot());
-            OnStructureChanged(new TreePathEventArgs(treePath));
+            OnStructureChanged();
         }
     }
 }

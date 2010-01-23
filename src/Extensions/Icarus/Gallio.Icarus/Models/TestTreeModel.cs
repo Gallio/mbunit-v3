@@ -19,7 +19,6 @@ using System.Windows.Forms;
 using Aga.Controls.Tree;
 using Gallio.Icarus.Models.TestTreeNodes;
 using Gallio.Icarus.TreeBuilders;
-using Gallio.Model;
 using Gallio.Model.Filters;
 using Gallio.Model.Schema;
 using Gallio.Runner.Reports.Schema;
@@ -28,10 +27,9 @@ using Gallio.UI.DataBinding;
 
 namespace Gallio.Icarus.Models
 {
-    internal class TestTreeModel : TreeModelDecorator, ITestTreeModel
+    public class TestTreeModel : TreeModelDecorator, ITestTreeModel
     {
         private readonly IList<ITreeBuilder> treeBuilders;
-        private readonly List<TestStatus> filterStatuses = new List<TestStatus>();
 
         public Observable<int> TestCount
         {
@@ -77,12 +75,6 @@ namespace Gallio.Icarus.Models
             }
         }
 
-        public void RemoveFilter(TestStatus testStatus)
-        {
-            filterStatuses.Remove(testStatus);
-            ClearFilter(testStatus);
-        }
-
         public void ResetTestStatus(IProgressMonitor progressMonitor)
         {
             using (progressMonitor.BeginTask("Resetting test statuses", 100))
@@ -91,15 +83,7 @@ namespace Gallio.Icarus.Models
                     ((TestTreeNode)node).Reset();
 
                 OnNodesChanged(new TreeModelEventArgs(new TreePath(Root), new object[] {}));
-
-                FilterTree();
             }
-        }
-
-        public void SetFilter(TestStatus testStatus)
-        {
-            filterStatuses.Add(testStatus);
-            FilterTree();
         }
 
         public void TestStepFinished(TestData testData, TestStepRun testStepRun)
@@ -111,77 +95,7 @@ namespace Gallio.Icarus.Models
             foreach (var node in nodes) // there should only be one
             {
                 node.AddTestStepRun(testStepRun);
-                Filter(node);
             }
-        }
-
-        private void FilterTree()
-        {
-            foreach (Node node in innerTreeModel.GetChildren(new TreePath()))
-                Filter(node);
-
-            OnStructureChanged(new TreePathEventArgs(new TreePath(Root)));
-        }
-
-        private bool Filter(Node n)
-        {
-            if (n is TestTreeNode && filterStatuses.Count > 0)
-            {
-                TestTreeNode node = (TestTreeNode)n;
-                
-                // only filter leaf nodes
-                if (n.Nodes.Count == 0 && filterStatuses.Contains(node.TestStatus))
-                {
-                    FilterNode(node, node.TestStatus);
-                    return false;
-                }
-                if (!Enum.IsDefined(typeof(TestStatus), node.Name))
-                {
-                    int i = 0;
-                    while (i < node.Nodes.Count)
-                    {
-                        if (Filter(node.Nodes[i]))
-                            i++;
-                    }
-                }
-            }
-            return true;
-        }
-
-        private static void FilterNode(Node node, TestStatus testStatus)
-        {
-            if (node == null)
-                throw new ArgumentNullException("node");
-
-            string key = testStatus.ToString();
-            TestTreeNode filterNode;
-            List<TestTreeNode> nodes = ((TestTreeNode)node.Parent).Find(key, true);
-            if (nodes.Count > 0)
-                filterNode = nodes[0];
-            else
-            {
-                filterNode = new FilterNode(testStatus);
-                node.Parent.Nodes.Add(filterNode);
-            }
-            node.Parent.Nodes.Remove(node);
-            filterNode.Nodes.Add(node);
-        }
-
-        private void ClearFilter(TestStatus testStatus)
-        {
-            if (Root == null)
-                return;
-
-            foreach (TestTreeNode filterNode in Root.Find(testStatus.ToString(), true))
-            {
-                Node[] nodes = new Node[filterNode.Nodes.Count];
-                filterNode.Nodes.CopyTo(nodes, 0);
-                foreach (Node n in nodes)
-                    filterNode.Parent.Nodes.Add(n);
-                filterNode.Parent.Nodes.Remove(filterNode);
-            }
-
-            OnStructureChanged(new TreePathEventArgs(new TreePath(Root)));
         }
 
         public void BuildTestTree(IProgressMonitor progressMonitor, TestModelData testModelData, 
@@ -272,53 +186,71 @@ namespace Gallio.Icarus.Models
 
             var filter = Root.CheckState == CheckState.Unchecked ? new NoneFilter<ITestDescriptor>() 
                 : CreateFilter(Root.Nodes);
+
             return new FilterSet<ITestDescriptor>(filter);
         }
 
         private static Filter<ITestDescriptor> CreateFilter(IEnumerable<Node> nodes)
         {
-            List<Filter<ITestDescriptor>> filters = new List<Filter<ITestDescriptor>>();
+            var filters = new List<Filter<ITestDescriptor>>();
             foreach (Node n in nodes)
             {
-                if (!(n is TestTreeNode))
+                var node = n as TestTreeNode;
+
+                if (node == null)
                     continue;
 
-                TestTreeNode node = (TestTreeNode)n;
-                switch (node.CheckState)
+                var filter = CreateFilterForNode(node);
+
+                if (filter != null)
                 {
-                    case CheckState.Checked:
-                        {
-                            EqualityFilter<string> equalityFilter = new EqualityFilter<string>(node.Name);
-                            if (node is NamespaceNode)
-                            {
-                                filters.Add(new NamespaceFilter<ITestDescriptor>(equalityFilter));
-                            }
-                            else if (node is TestDataNode)
-                            {
-                                filters.Add(new IdFilter<ITestDescriptor>(equalityFilter));
-                            }
-                            else if (node is MetadataNode && node.Name != "None")
-                            {
-                                filters.Add(new MetadataFilter<ITestDescriptor>(node.Name, equalityFilter));
-                            }
-                            else
-                            {
-                                Filter<ITestDescriptor> childFilters = CreateFilter(node.Nodes);
-                                if (childFilters != null)
-                                    filters.Add(childFilters);
-                            }
-                        }
-                        break;
-                    case CheckState.Indeterminate:
-                        {
-                            Filter<ITestDescriptor> childFilters = CreateFilter(node.Nodes);
-                            if (childFilters != null)
-                                filters.Add(childFilters);
-                            break;
-                        }
+                    filters.Add(filter);
                 }
             }
-            return filters.Count > 1 ? new OrFilter<ITestDescriptor>(filters) : filters[0];
+
+            return filters.Count > 1 ? new OrFilter<ITestDescriptor>(filters) 
+                : filters[0];
+        }
+
+        private static Filter<ITestDescriptor> CreateFilterForNode(TestTreeNode node)
+        {
+            Filter<ITestDescriptor> filter = null;
+            switch (node.CheckState)
+            {
+                case CheckState.Checked:
+                    {
+                        filter = GenerateFilter(node);
+                        break;
+                    }
+                case CheckState.Indeterminate:
+                    {
+                        filter = CreateFilter(node.Nodes);
+                        break;
+                    }
+            }
+            return filter;
+        }
+
+        private static Filter<ITestDescriptor> GenerateFilter(TestTreeNode node)
+        {
+            var equalityFilter = new EqualityFilter<string>(node.Name);
+            
+            if (node is NamespaceNode)
+            {
+                return new NamespaceFilter<ITestDescriptor>(equalityFilter);
+            }
+            
+            if (node is TestDataNode)
+            {
+                return new IdFilter<ITestDescriptor>(equalityFilter);
+            }
+            
+            if (node is MetadataNode && node.Name != "None")
+            {
+                return new MetadataFilter<ITestDescriptor>(node.Name, equalityFilter);
+            }
+            
+            return CreateFilter(node.Nodes);
         }
 
         public IList<TestTreeNode> GetSelectedTests()
@@ -336,7 +268,7 @@ namespace Gallio.Icarus.Models
 
         public IList<TestTreeNode> GetSelectedTests(TestTreeNode node)
         {
-            List<TestTreeNode> selected = new List<TestTreeNode>();
+            var selected = new List<TestTreeNode>();
 
             // special case for namespaces, as they don't really exist!
             // i.e. they don't have an id we can use, so we must add all 

@@ -42,6 +42,12 @@ namespace Gallio.Icarus.Models
             return innerTreeModel.IsLeaf(treePath);
         }
 
+        protected void OnStructureChanged()
+        {
+            var treePath = new TreePath(GetRoot());
+            OnStructureChanged(new TreePathEventArgs(treePath));
+        }
+
         protected Node GetRoot()
         {
             var children = innerTreeModel.GetChildren(new TreePath());

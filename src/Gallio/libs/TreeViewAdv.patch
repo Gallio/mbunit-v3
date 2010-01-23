@@ -1,0 +1,22 @@
+Index: TreeViewAdv.cs
+===================================================================
+--- TreeViewAdv.cs	(revision 76)
++++ TreeViewAdv.cs	(working copy)
+@@ -1228,7 +1228,7 @@
+ 					for (int i = parent.Nodes.Count - 1; i >= 0; i--)
+ 					{
+ 						for (int n = 0; n < e.Children.Length; n++)
+-							if (parent.Nodes[i].Tag == e.Children[n])
++							if (parent.Nodes[i].Tag.Equals(e.Children[n]))
+ 							{
+ 								parent.Nodes.RemoveAt(i);
+ 								break;
+@@ -1279,8 +1279,6 @@
+ 						TreeNodeAdv node = parent.Nodes[index];
+ 						node.Height = node.RightBounds = null;
+ 					}
+-					else
+-						throw new ArgumentOutOfRangeException("Index out of range");
+ 				}
+ 			}
+ 			else

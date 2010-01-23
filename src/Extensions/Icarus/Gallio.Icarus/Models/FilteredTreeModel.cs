@@ -14,13 +14,15 @@
 // limitations under the License.
 
 using System.Collections;
+using System.Windows.Forms;
 using Aga.Controls.Tree;
 using Gallio.Icarus.Events;
 using Gallio.Icarus.Specifications;
 
 namespace Gallio.Icarus.Models
 {
-    public class FilteredTreeModel : TreeModelDecorator, IFilteredTreeModel, Handles<FilterTreeEvent>
+    public class FilteredTreeModel : TreeModelDecorator, IFilteredTreeModel, 
+        Handles<FilterTreeEvent>
     {
         private ISpecification<TestTreeNode> specification;
 
@@ -32,6 +34,29 @@ namespace Gallio.Icarus.Models
 
         public override IEnumerable GetChildren(TreePath treePath)
         {
+            if (specification is AnySpecification<TestTreeNode>)
+            {
+                foreach (var child in GetChildrenFromBase(treePath))
+                {
+                    yield return child;
+                }
+            }
+            else
+            {
+                foreach (var child in GetFilteredChildren(treePath))
+                {
+                    yield return child;
+                }
+            }
+        }
+
+        private IEnumerable GetChildrenFromBase(TreePath treePath)
+        {
+            return base.GetChildren(treePath);
+        }
+
+        private IEnumerable GetFilteredChildren(TreePath treePath)
+        {
             foreach (var child in GetChildrenFromBase(treePath))
             {
                 var node = child as TestTreeNode;
@@ -40,16 +65,24 @@ namespace Gallio.Icarus.Models
                     continue;
 
                 if (Matches(node))
-                    yield return child;
+                {
+                    yield return node;
+                }
+                else
+                {
+                    node.CheckState = CheckState.Unchecked;
+                }
             }
-            yield break;
         }
 
         private bool Matches(TestTreeNode node)
         {
-            if (specification.Matches(node))
-                return true;
+            return specification.Matches(node) || MatchesChild(node);
+                //|| MatchesParent(node);
+        }
 
+        private bool MatchesChild(Node node)
+        {
             foreach (var child in node.Nodes)
             {
                 var testTreeNode = child as TestTreeNode;
@@ -57,21 +90,20 @@ namespace Gallio.Icarus.Models
                 if (testTreeNode == null)
                     continue;
 
-                if (Matches(testTreeNode))
+                if (specification.Matches(testTreeNode))
+                    return true;
+
+                if (MatchesChild(testTreeNode))
                     return true;
             }
 
             return false;
         }
 
-        private IEnumerable GetChildrenFromBase(TreePath treePath)
-        {
-            return base.GetChildren(treePath);
-        }
-
         public void Handle(FilterTreeEvent @event)
         {
             specification = @event.Specification;
+            OnStructureChanged();
         }
     }
 }

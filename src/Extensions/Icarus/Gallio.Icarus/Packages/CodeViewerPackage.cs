@@ -18,57 +18,95 @@ using System.IO;
 using Gallio.Common.Reflection;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Views.CodeViewer;
-using Gallio.Runtime.Extensibility;
 using Gallio.Common.Concurrency;
+using Gallio.Icarus.WindowManager;
 
 namespace Gallio.Icarus.Packages
 {
-    internal class CodeViewerPackage : IPackage
+    public class CodeViewerPackage : IPackage
     {
-        private ISourceCodeController sourceCodeController;
-        private WindowManager windowManager;
-        private List<string> openWindows = new List<string>();
+        private readonly ISourceCodeController sourceCodeController;
+        private readonly IWindowManager windowManager;
+        private readonly List<string> openWindows = new List<string>();
 
-        public void Load(IServiceLocator serviceLocator)
+        public CodeViewerPackage(ISourceCodeController sourceCodeController, 
+            IWindowManager windowManager)
         {
-            sourceCodeController = serviceLocator.Resolve<ISourceCodeController>();
-            windowManager = (WindowManager)serviceLocator.Resolve<IWindowManager>();
-
-            sourceCodeController.ShowSourceCode += (sender, e) =>
-            {
-                string identifier = e.CodeLocation.Path ?? "(unknown)";
-
-                if (!openWindows.Contains(e.CodeLocation.Path))
-                {
-                    string caption;
-                    if (e.CodeLocation == CodeLocation.Unknown)
-                        caption = "(unknown)";
-                    else
-                        caption = Path.GetFileName(e.CodeLocation.Path) ?? "(unknown)";
-
-                    Sync.Invoke(windowManager.DockPanel, () =>
-                    {
-                        var window = windowManager.Add(identifier, new CodeViewer(e.CodeLocation), caption);
-                        window.FormClosed += (sender2, e2) => { openWindows.Remove(identifier); };
-                        windowManager.Show(identifier);
-                        openWindows.Add(identifier);
-                    });
-                }
-                else
-                {
-                    Sync.Invoke(windowManager.DockPanel, () =>
-                    {
-                        var window = windowManager.Get(identifier);
-                        var codeViewer = (CodeViewer)window.Content;
-                        if (e.CodeLocation != CodeLocation.Unknown)
-                            codeViewer.JumpTo(e.CodeLocation.Line, e.CodeLocation.Column);
-                        windowManager.Show(identifier);
-                    });
-                }
-            };
+            this.sourceCodeController = sourceCodeController;
+            this.windowManager = windowManager;
         }
 
-        public void Unload()
-        { }
+        public void Load()
+        {
+            sourceCodeController.ShowSourceCode += (s, e) => 
+                ShowSourceCode(e.CodeLocation);
+        }
+
+        private void ShowSourceCode(CodeLocation codeLocation)
+        {
+            string identifier = codeLocation.Path ?? "(unknown)";
+
+            if (WindowIsOpen(codeLocation))
+            {
+                AddWindow(codeLocation, identifier);
+            }
+            else
+            {
+                ActivateWindow(codeLocation, identifier);
+            }
+        }
+
+        private bool WindowIsOpen(CodeLocation codeLocation)
+        {
+            return !openWindows.Contains(codeLocation.Path);
+        }
+
+        private void ActivateWindow(CodeLocation codeLocation, string identifier)
+        {
+            Sync.Invoke(windowManager, () =>
+            {
+                var window = windowManager.Get(identifier);
+                var codeViewer = (CodeViewer)window.Content;
+
+                if (codeLocation != CodeLocation.Unknown)
+                {
+                    codeViewer.JumpTo(codeLocation.Line, codeLocation.Column);
+                }
+
+                windowManager.Show(identifier);
+            });
+        }
+
+        private void AddWindow(CodeLocation codeLocation, string identifier)
+        {
+            string caption;
+            if (codeLocation == CodeLocation.Unknown)
+            {
+                caption = "(unknown)";
+            }
+            else
+            {
+                caption = Path.GetFileName(codeLocation.Path) 
+                    ?? "(unknown)";
+            }
+
+            Sync.Invoke(windowManager, () => CreateWindow(codeLocation, 
+                identifier, caption));
+        }
+
+        private void CreateWindow(CodeLocation codeLocation, string identifier, 
+            string caption)
+        {
+            var codeViewer = new CodeViewer(codeLocation);
+            
+            var window = windowManager.Add(identifier, codeViewer, caption);
+            window.FormClosed += (s1, e1) => openWindows.Remove(identifier);
+            
+            windowManager.Show(identifier);
+            
+            openWindows.Add(identifier);
+        }
+
+        public void Dispose() { }
     }
 }

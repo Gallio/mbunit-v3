@@ -158,7 +158,7 @@ namespace Gallio.Icarus.Controllers
             {
                 try
                 {
-                    package.Load(serviceLocator);
+                    package.Load();
                 }
                 catch (Exception ex)
                 {
@@ -174,7 +174,7 @@ namespace Gallio.Icarus.Controllers
             {
                 try
                 {
-                    package.Unload();
+                    package.Dispose();
                 }
                 catch (Exception ex)
                 {

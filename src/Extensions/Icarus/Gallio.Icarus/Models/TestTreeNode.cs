@@ -177,7 +177,7 @@ namespace Gallio.Icarus.Models
             return nodes;
         }
 
-        private static List<TestTreeNode> Find(string key, bool searchChildren, Node node)
+        private static IEnumerable<TestTreeNode> Find(string key, bool searchChildren, Node node)
         {
             var nodes = new List<TestTreeNode>();
             if (node is TestTreeNode)
@@ -214,11 +214,13 @@ namespace Gallio.Icarus.Models
         {
             foreach (var node in Nodes)
             {
-                // It is possible node is not a ThreeStateTreeNode, so check first.
                 var child = node as TestTreeNode;
+
                 if (child == null)
                     continue;
+
                 child.CheckState = CheckState;
+
                 child.UpdateChildNodeState();
             }
         }

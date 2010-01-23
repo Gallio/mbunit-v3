@@ -49,8 +49,8 @@ namespace Gallio.Icarus.Controls
             SetCheckState(args.Node, state);
             args.Handled = true;
         }
-        
-        private static CheckState GetNewState(CheckState state)
+
+        protected override CheckState GetNewState(CheckState state)
         {
             switch (state)
             {

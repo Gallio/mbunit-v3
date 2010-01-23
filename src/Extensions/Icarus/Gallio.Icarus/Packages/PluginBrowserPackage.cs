@@ -13,46 +13,55 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
-using System.Windows.Forms;
+using Gallio.Icarus.Commands;
+using Gallio.Icarus.Properties;
 using Gallio.Icarus.Views.PluginBrowser;
-using Gallio.Runtime.Extensibility;
+using Gallio.Icarus.WindowManager;
+using Gallio.UI.Menus;
 
 namespace Gallio.Icarus.Packages
 {
-    internal class PluginBrowserPackage : IPackage
+    public class PluginBrowserPackage : IPackage
     {
-        private IWindowManager windowManager;
-        private readonly string windowId = "Gallio.Icarus.PluginBrowser";
+        private readonly IWindowManager windowManager;
+        private const string WindowId = "Gallio.Icarus.PluginBrowser";
 
-        public void Load(IServiceLocator serviceLocator)
+        public PluginBrowserPackage(IWindowManager windowManager)
         {
-            // get the window manager
-            windowManager = serviceLocator.Resolve<IWindowManager>();
-
-            // register an action to create the window on demand
-            windowManager.Register(windowId, () =>
-            {
-                var pluginBrowserControl = new PluginBrowser();
-                windowManager.Add(windowId, pluginBrowserControl, "Plugin Browser");
-            });
-
-            // find the "Tools" menu item
-            var menuItems = windowManager.Menu.Find("toolsToolStripMenuItem", false);
-            if (menuItems.Length != 1)
-                throw new Exception("Could not find menu item");
-            var menuItem = (ToolStripMenuItem)menuItems[0];
-            
-            // add a new "Plugin Browser" menu item
-            var pluginBrowserMenuItem = new ToolStripMenuItem("Plugin Browser");
-            pluginBrowserMenuItem.Click += (sender, e) => 
-            {
-                windowManager.Show(windowId);
-            };
-            menuItem.DropDownItems.Add(pluginBrowserMenuItem);
+            this.windowManager = windowManager;
         }
 
-        public void Unload()
-        { }
+        public void Load()
+        {
+            RegisterWindow();
+
+            AddMenuItem();
+        }
+
+        private void AddMenuItem()
+        {
+            var menu = windowManager.MenuManager.GetMenu("Tools");
+
+            var menuCommand = new MenuCommand
+            {
+                Command = new DelegateCommand(pm => windowManager.Show(WindowId)),
+                Text = Resources.PluginBrowserPackage_AddMenuItem_Plugin_Browser
+            };
+
+            menu.Add(menuCommand);
+        }
+
+        private void RegisterWindow()
+        {
+            // register an action to create the window on demand
+            windowManager.Register(WindowId, () =>
+            {
+                var pluginBrowserControl = new PluginBrowser();
+                var caption = Resources.PluginBrowserPackage_AddMenuItem_Plugin_Browser;
+                windowManager.Add(WindowId, pluginBrowserControl, caption);
+            });
+        }
+
+        public void Dispose() { }
     }
 }

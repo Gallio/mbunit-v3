@@ -105,6 +105,9 @@
     <Compile Include="Commands\OpenReportCommand.cs" />
     <Compile Include="Commands\RefreshTestTreeCommand.cs" />
     <Compile Include="Commands\ReloadCommand.cs" />
+    <Compile Include="Controls\NodeCheckBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Events\TestsFailed.cs" />
     <Compile Include="Events\ProjectSaved.cs" />
     <Compile Include="Events\ProjectLoaded.cs" />
@@ -214,7 +217,13 @@
     <Compile Include="Controls\PropertiesTabControl.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="WindowManager\MenuList.cs" />
+    <Compile Include="WindowManager\MenuManager.cs" />
+    <Compile Include="WindowManager\IMenuList.cs" />
+    <Compile Include="WindowManager\IMenuManager.cs" />
     <Compile Include="IView.cs" />
+    <Compile Include="WindowManager\IWindowManager.cs" />
+    <Compile Include="WindowManager\Location.cs" />
     <Compile Include="Models\FilterTestStatusEvent.cs" />
     <Compile Include="Models\ITestStatusFilteredTreeModel.cs" />
     <Compile Include="Events\TestsReset.cs" />
@@ -240,7 +249,18 @@
     <Compile Include="Projects\ProjectChanged.cs" />
     <Compile Include="Projects\ProjectMonitor.cs" />
     <Compile Include="Events\ProjectOpened.cs" />
+    <Compile Include="Search\Controller.cs" />
+    <Compile Include="Search\IController.cs" />
+    <Compile Include="Search\View.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Search\View.Designer.cs">
+      <DependentUpon>View.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Search\Package.cs" />
+    <Compile Include="Search\TreeNodeSpecification.cs" />
     <Compile Include="Specifications\AnySpecification.cs" />
+    <Compile Include="Specifications\Specification.cs" />
     <Compile Include="Specifications\OrSpecification.cs" />
     <Compile Include="Specifications\ISpecification.cs" />
     <Compile Include="Models\SortedTreeModel.cs" />
@@ -286,9 +306,6 @@
     </Compile>
     <Compile Include="Controls\TestStatusBarStyles.cs" />
     <Compile Include="Controls\ProjectTreeView.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Controls\NodeCheckBox.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Controls\TestResultsList.cs">
@@ -363,7 +380,6 @@
       <DependentUpon>Window.cs</DependentUpon>
     </Compile>
     <Compile Include="IPackage.cs" />
-    <Compile Include="IWindowManager.cs" />
     <Compile Include="Controllers\Interfaces\IRuntimeLogController.cs" />
     <Compile Include="Controllers\Interfaces\ITestController.cs" />
     <Compile Include="Remoting\FileWatcher.cs" />
@@ -457,7 +473,7 @@
       <DependentUpon>TestResults.cs</DependentUpon>
     </Compile>
     <Compile Include="UserOptions.cs" />
-    <Compile Include="WindowManager.cs" />
+    <Compile Include="WindowManager\WindowManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\Gallio\Gallio.UI\Gallio.UI.vs2010.csproj">
@@ -540,6 +556,9 @@
     <EmbeddedResource Include="Projects\ProjectReloadDialog.resx">
       <DependentUpon>ProjectReloadDialog.cs</DependentUpon>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Search\View.resx">
+      <DependentUpon>View.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="TestExplorer\View.resx">
       <DependentUpon>View.cs</DependentUpon>

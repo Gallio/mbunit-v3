@@ -13,43 +13,58 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
-using System.Windows.Forms;
+using Gallio.Icarus.Commands;
 using Gallio.Icarus.Controllers.Interfaces;
+using Gallio.Icarus.Properties;
 using Gallio.Icarus.Views.Projects;
-using Gallio.Runtime.Extensibility;
+using Gallio.Icarus.WindowManager;
+using Gallio.UI.Menus;
 
 namespace Gallio.Icarus.Packages
 {
-    internal class ProjectsPackage : IPackage
+    public class ProjectsPackage : IPackage
     {
-        public static readonly string ProjectPropertiesWindowId = "Gallio.Icarus.ProjectProperties";
+        private readonly IWindowManager windowManager;
+        private readonly IProjectController projectController;
+        public static readonly string projectPropertiesWindowId = "Gallio.Icarus.ProjectProperties";
 
-        public void Load(IServiceLocator serviceLocator)
+        public ProjectsPackage(IWindowManager windowManager, 
+            IProjectController projectController)
         {
-            // get the window manager
-            var windowManager = serviceLocator.Resolve<IWindowManager>();
+            this.windowManager = windowManager;
+            this.projectController = projectController;
+        }
 
-            var projectController = serviceLocator.Resolve<IProjectController>();
+        public void Load()
+        {
+            RegisterWindow();
 
-            // register an action to create the window on demand
-            // (in case it is already open when dock state is restored)
-            windowManager.Register(ProjectPropertiesWindowId, () =>
+            AddMenuItem();
+        }
+
+        private void AddMenuItem()
+        {
+            var menu = windowManager.MenuManager.GetMenu("Project");
+
+            var menuCommand = new MenuCommand
+            {
+                Command = new DelegateCommand(pm => windowManager.Show(projectPropertiesWindowId)),
+                Text = Resources.ProjectsPackage_AddMenuItem_Properties
+            };
+
+            menu.Add(menuCommand);
+        }
+
+        private void RegisterWindow()
+        {
+            windowManager.Register(projectPropertiesWindowId, () =>
             {
                 var projectPropertiesControl = new ProjectProperties(projectController);
-                windowManager.Add(ProjectPropertiesWindowId, projectPropertiesControl, "Properties");
+                windowManager.Add(projectPropertiesWindowId, projectPropertiesControl, 
+                    Resources.ProjectsPackage_AddMenuItem_Properties);
             });
-
-            // find the "Project" menu item
-            var menuItems = windowManager.Menu.Find("propertiesToolStripMenuItem", true);
-            if (menuItems.Length != 1)
-                throw new Exception("Could not find menu item");
-            var menuItem = (ToolStripMenuItem)menuItems[0];
-            menuItem.Click += (sender, e) => { windowManager.Show(ProjectPropertiesWindowId); };
         }
 
-        public void Unload()
-        {
-        }
+        public void Dispose() { }
     }
 }

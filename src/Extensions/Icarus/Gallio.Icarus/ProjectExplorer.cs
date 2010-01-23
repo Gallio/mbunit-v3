@@ -16,17 +16,14 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Windows.Forms;
 using Aga.Controls.Tree;
-using Gallio.Common.Concurrency;
 using Gallio.Common.IO;
 using Gallio.Icarus.Commands;
 using Gallio.Icarus.Controllers.Interfaces;
-using Gallio.Icarus.Events;
 using Gallio.Icarus.Models.ProjectTreeNodes;
-using Gallio.Icarus.Projects;
 using Gallio.Icarus.Utilities;
+using Gallio.Icarus.WindowManager;
 using Gallio.Runtime;
 using Gallio.Icarus.Packages;
 using Gallio.UI.ProgressMonitoring;
@@ -193,7 +190,7 @@ namespace Gallio.Icarus
         private static void ShowPropertiesWindow()
         {
             var windowManager = RuntimeAccessor.ServiceLocator.Resolve<IWindowManager>();
-            windowManager.Show(ProjectsPackage.ProjectPropertiesWindowId);
+            windowManager.Show(ProjectsPackage.projectPropertiesWindowId);
         }
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)

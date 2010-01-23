@@ -13,6 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Gallio.Runtime.ProgressMonitoring;
 using Gallio.UI.Menus;
 using Gallio.UI.ProgressMonitoring;
 
@@ -23,6 +24,20 @@ namespace Gallio.UI.Controls
     /// </summary>
     public sealed class CommandToolStripMenuItem : System.Windows.Forms.ToolStripMenuItem
     {
+        ///<summary>
+        /// Constructor providing a menu command.
+        ///</summary>
+        ///<param name="command">The command to use.</param>
+        public CommandToolStripMenuItem(MenuCommand command)
+        {
+            Text = command.Text;
+
+            Enabled = command.CanExecute;
+            command.CanExecute.PropertyChanged += (s, e) => Enabled = command.CanExecute;
+
+            Click += (s, e) => command.Command.Execute(NullProgressMonitor.CreateInstance());
+        }
+
         /// <summary>
         /// Constructor providing a command and task manager.
         /// </summary>

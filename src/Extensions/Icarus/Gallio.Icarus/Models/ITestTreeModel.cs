@@ -15,7 +15,6 @@
 
 using Aga.Controls.Tree;
 using Gallio.Icarus.TreeBuilders;
-using Gallio.Model;
 using Gallio.Model.Filters;
 using Gallio.Model.Schema;
 using Gallio.Runner.Reports.Schema;
@@ -33,9 +32,7 @@ namespace Gallio.Icarus.Models
         void BuildTestTree(IProgressMonitor progressMonitor, TestModelData testModelData, 
             TreeBuilderOptions options);
         FilterSet<ITestDescriptor> GenerateFilterSetFromSelectedTests();
-        void RemoveFilter(TestStatus testStatus);
         void ResetTestStatus(IProgressMonitor progressMonitor);
-        void SetFilter(TestStatus testStatus);
         void UpdateTestCount();
         void TestStepFinished(TestData testData, TestStepRun testStepRun);
     }

@@ -13,16 +13,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Gallio.Icarus.Models;
-using Gallio.Model.Schema;
-using Gallio.Runtime.ProgressMonitoring;
-
-namespace Gallio.Icarus.TreeBuilders
+namespace Gallio.Icarus.Specifications
 {
-    public interface ITreeBuilder
+    public abstract class Specification<T> : ISpecification<T>
     {
-        bool CanHandle(string treeViewCategory);
-        TestTreeNode BuildTree(IProgressMonitor progressMonitor, TestModelData testModelData, 
-            TreeBuilderOptions options);
+        public abstract bool Matches(T item);
+
+        public ISpecification<T> And(ISpecification<T> right)
+        {
+            return new AndSpecification<T>(this, right);
+        }
+
+        public ISpecification<T> Or(ISpecification<T> right)
+        {
+            return new OrSpecification<T>(this, right);
+        }
     }
 }
