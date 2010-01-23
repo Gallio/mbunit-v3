@@ -77,8 +77,18 @@ namespace Gallio.Icarus.Models
 
         private bool Matches(TestTreeNode node)
         {
-            return specification.Matches(node) || MatchesChild(node);
-                //|| MatchesParent(node);
+            return specification.Matches(node) || MatchesChild(node)
+                || MatchesParent(node);
+        }
+
+        private bool MatchesParent(Node node)
+        {
+            var parent = node.Parent as TestTreeNode;
+
+            if (parent == null)
+                return false;
+
+            return specification.Matches(parent) || MatchesParent(parent);
         }
 
         private bool MatchesChild(Node node)
