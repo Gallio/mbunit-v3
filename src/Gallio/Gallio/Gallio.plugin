@@ -487,6 +487,20 @@
       </traits>
     </component>
 
+    <component componentId="Gallio.FormatReportUtilityCommand"
+               serviceId="Gallio.UtilityCommand"
+               componentType="Gallio.Runtime.UtilityCommands.FormatReportUtilityCommand, Gallio">
+      <traits>
+        <name>FormatReport</name>
+        <description>Formats an existing XML test report. The command must be used with the following syntax: 
+		"FormatReport {file} /ReportNameFormat:{format} /ReportType:{type} [/ReportOutput:{dir}]"
+		- {file} is the relative or absolute path of the existing XML test report.
+		- ReportNameFormat (short form: rnf) specifies the format of the output report.
+		- ReportType (short form: rt) specifies the type of the output report.
+		- ReportOutput (short form: ro) specifies the output directory (optional).</description>
+      </traits>
+    </component>
+	
     <component componentId="Gallio.VerifyInstallationUtilityCommand"
                serviceId="Gallio.UtilityCommand"
                componentType="Gallio.Runtime.UtilityCommands.VerifyInstallationUtilityCommand, Gallio">

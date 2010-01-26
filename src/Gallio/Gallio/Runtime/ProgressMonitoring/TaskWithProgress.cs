@@ -20,4 +20,11 @@ namespace Gallio.Runtime.ProgressMonitoring
     /// </summary>
     /// <param name="progressMonitor">The progress monitor, never null.</param>
     public delegate void TaskWithProgress(IProgressMonitor progressMonitor);
+
+    /// <summary>
+    /// Represents a task to be executed with a progress monitor.
+    /// </summary>
+    /// <param name="progressMonitor">The progress monitor, never null.</param>
+    /// <typeparam name="T">The type of the result returned by the task.</typeparam>
+    public delegate T TaskWithProgress<T>(IProgressMonitor progressMonitor);
 }

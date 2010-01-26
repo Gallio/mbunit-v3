@@ -43,5 +43,26 @@ namespace Gallio.Runtime.ProgressMonitoring
         /// <param name="task">The task to run, never null.</param>
         /// <exception cref="OperationCanceledException">Thrown if the task is canceled.</exception>
         void Run(TaskWithProgress task);
+
+        /// <summary>
+        /// Runs a task which returns a result with a progress monitor.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// The provider should automatically dispose of the progress monitor
+        /// in case the task forgets to do so.  It is also responsible for calling
+        /// <see cref="IProgressMonitor.ThrowIfCanceled" /> before and after running
+        /// the task to ensure that the <see cref="OperationCanceledException" /> is
+        /// thrown as required.
+        /// </para>
+        /// <para>
+        /// The provider can choose to execute the task in a different thread
+        /// but the method should still complete synchronously.
+        /// </para>
+        /// </remarks>
+        /// <param name="task">The task to run, never null.</param>
+        /// <exception cref="OperationCanceledException">Thrown if the task is canceled.</exception>
+        /// <typeparam name="T">The type of the result returned by the task.</typeparam>
+        T Run<T>(TaskWithProgress<T> task);
     }
 }

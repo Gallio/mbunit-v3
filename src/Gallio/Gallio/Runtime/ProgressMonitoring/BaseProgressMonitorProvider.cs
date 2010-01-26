@@ -25,17 +25,27 @@ namespace Gallio.Runtime.ProgressMonitoring
         /// <inheritdoc />
         public virtual void Run(TaskWithProgress task)
         {
-            IProgressMonitorPresenter presenter = GetPresenter();
-            using (ObservableProgressMonitor progressMonitor = new ObservableProgressMonitor())
+            Run(ProgressMonitor =>
             {
-                presenter.Present(progressMonitor);
-
-                progressMonitor.ThrowIfCanceled();
-                task(progressMonitor);
-                progressMonitor.ThrowIfCanceled();
-            }
+                task(ProgressMonitor);
+                return 0;
+            });
         }
 
+        /// <inheritdoc />
+        public virtual T Run<T>(TaskWithProgress<T> task)
+        {
+            IProgressMonitorPresenter presenter = GetPresenter();
+            
+            using (var progressMonitor = new ObservableProgressMonitor())
+            {
+                presenter.Present(progressMonitor);
+                progressMonitor.ThrowIfCanceled();
+                T result = task(progressMonitor);
+                progressMonitor.ThrowIfCanceled();
+                return result;
+            }
+        }
         /// <summary>
         /// Gets a presenter for the progress monitor.
         /// </summary>

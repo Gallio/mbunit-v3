@@ -607,8 +607,8 @@ namespace Gallio.Runner
             if (reportFormats.Count == 0)
                 return;
 
-            RunWithProgress(progressMonitor => result.GenerateReports(consolidatedTestProject.ReportDirectory, 
-                GenerateReportName(result.Report, consolidatedTestProject), reportFormats, reportFormatterOptions,
+            RunWithProgress(progressMonitor => result.GenerateReports(consolidatedTestProject.ReportDirectory,
+                result.Report.FormatReportName(consolidatedTestProject.ReportNameFormat), reportFormats, reportFormatterOptions,
                 reportManager, progressMonitor), ref canceled);
         }
 
@@ -832,21 +832,11 @@ namespace Gallio.Runner
             RunWithProgress(runner.Dispose, ref canceled);
         }
 
-        private string GenerateReportName(Report report, TestProject consolidatedTestProject)
-        {
-            DateTime reportTime = report.TestPackageRun != null ? report.TestPackageRun.StartTime : DateTime.Now;
-
-            return String.Format(CultureInfo.InvariantCulture, consolidatedTestProject.ReportNameFormat,
-                reportTime.ToString(@"yyyyMMdd"),
-                reportTime.ToString(@"HHmmss"));
-        }
-
         private TestLauncherResult CreateResult(int resultCode, TestProject consolidatedTestProject)
         {
             Report report = new Report();
             report.TestPackage = new TestPackageData(consolidatedTestProject.TestPackage);
-
-            TestLauncherResult result = new TestLauncherResult(report);
+            var result = new TestLauncherResult(report);
             result.SetResultCode(resultCode);
             return result;
         }

@@ -940,6 +940,7 @@
     <Compile Include="Common\Security\ImpersonationException.cs" />
     <Compile Include="Runtime\UtilityCommands\BaseUtilityCommand.cs" />
     <Compile Include="Runtime\UtilityCommands\ClearCurrentUserPluginCacheUtilityCommand.cs" />
+    <Compile Include="Runtime\UtilityCommands\FormatReportUtilityCommand.cs" />
     <Compile Include="Runtime\UtilityCommands\ResetInstallationIdElevatedCommand.cs" />
     <Compile Include="Runtime\UtilityCommands\ResetInstallationIdUtilityCommand.cs" />
     <Compile Include="Runtime\UtilityCommands\DefaultUtilityCommandManager.cs" />

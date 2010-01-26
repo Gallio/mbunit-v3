@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.Utility.vs2010", "Gallio.Utility.vs2010.csproj", "{EAA1CA6D-4078-4E7B-B605-1326E80EAA38}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.vs2010", "..\Gallio\Gallio.vs2010.csproj", "{6CAB7735-05DA-480D-9A04-50615B00F886}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{EAA1CA6D-4078-4E7B-B605-1326E80EAA38}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EAA1CA6D-4078-4E7B-B605-1326E80EAA38}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EAA1CA6D-4078-4E7B-B605-1326E80EAA38}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EAA1CA6D-4078-4E7B-B605-1326E80EAA38}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6CAB7735-05DA-480D-9A04-50615B00F886}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6CAB7735-05DA-480D-9A04-50615B00F886}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6CAB7735-05DA-480D-9A04-50615B00F886}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6CAB7735-05DA-480D-9A04-50615B00F886}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

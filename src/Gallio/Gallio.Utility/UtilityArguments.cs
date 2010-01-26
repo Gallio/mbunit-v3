@@ -39,8 +39,7 @@ namespace Gallio.Utility
              ShortName = "h",
              LongName = "help",
              Description = "Display this help text.",
-             Synonyms = new[] { "?" }
-             )]
+             Synonyms = new[] { "?" })]
         public bool Help;
 
         [CommandLineArgument(
@@ -48,27 +47,27 @@ namespace Gallio.Utility
              ShortName = "v",
              LongName = "verbosity",
              Description = "Controls the level of detail of the information to display.",
-             ValueLabel = "level"
-             )]
+             ValueLabel = "level")]
         public Verbosity Verbosity = Verbosity.Normal;
 
         [CommandLineArgument(
              CommandLineArgumentFlags.AtMostOnce,
              ShortName = "np",
              LongName = "no-progress",
-             Description = "Do not display progress messages during execution."
-             )]
+             Description = "Do not display progress messages during execution.")]
         public bool NoProgress;
+
         #endregion
 
         #region Commands
+
         [DefaultCommandLineArgument(
             CommandLineArgumentFlags.Multiple,
             Description = "Specifies the utility command to perform and its arguments.  The list of available utility commands follows.  Specify a command name and /? for help about its options.",
             ValueLabel = "command and args...",
-            ConsumeUnrecognizedSwitches = true
-            )]
+            ConsumeUnrecognizedSwitches = true)]
         public string[] CommandAndArguments;
+
         #endregion
     }
 }

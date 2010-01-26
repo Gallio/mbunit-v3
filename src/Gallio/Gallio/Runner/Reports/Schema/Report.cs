@@ -15,6 +15,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Xml.Serialization;
 using Gallio.Common;
 using Gallio.Common.Xml;
@@ -95,6 +96,28 @@ namespace Gallio.Runner.Reports.Schema
                 throw new ArgumentNullException("logEntry");
 
             logEntries.Add(logEntry);
+        }
+
+        /// <summary>
+        /// Formats the specified name.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// The following tags are processed:
+        /// <list type="bullet">
+        /// <item><c>{0}</c> is replaced by the start date of the test run, or by the current date if not applicable ("yyyyMMdd").</item>
+        /// <item><c>{1}</c> is replaced by the start time of the test run, or by the current time if not applicable ("HHmmss").</item>
+        /// </list>
+        /// </para>
+        /// </remarks>
+        /// <param name="reportNameFormat">The report name format.</param>
+        /// <returns>The resulting formatted report name.</returns>
+        public string FormatReportName(string reportNameFormat)
+        {
+            DateTime reportTime = TestPackageRun != null ? TestPackageRun.StartTime : DateTime.Now;
+            return String.Format(CultureInfo.InvariantCulture, reportNameFormat,
+                reportTime.ToString(@"yyyyMMdd"),
+                reportTime.ToString(@"HHmmss"));
         }
     }
 }

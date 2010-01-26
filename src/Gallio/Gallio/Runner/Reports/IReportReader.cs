@@ -23,7 +23,7 @@ using Gallio.Runtime.ProgressMonitoring;
 namespace Gallio.Runner.Reports
 {
     /// <summary>
-    /// A report writer provides services for loading a previously saved report
+    /// A report reader provides services for loading a previously saved report
     /// from a <see cref="IReportContainer" />.
     /// </summary>
     public interface IReportReader

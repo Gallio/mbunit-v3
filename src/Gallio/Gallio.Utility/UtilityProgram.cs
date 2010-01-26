@@ -34,9 +34,6 @@ namespace Gallio.Utility
     /// </summary>
     public sealed class UtilityProgram : ConsoleProgram<UtilityArguments>
     {
-        /// <summary>
-        /// Creates an instance of the program.
-        /// </summary>
         private UtilityProgram()
         {
             ApplicationName = Resources.ApplicationName;
@@ -48,7 +45,7 @@ namespace Gallio.Utility
             ShowBanner();
             InstallCancelHandler();
 
-            if (! ParseArguments(args) || Arguments.CommandAndArguments.Length == 0)
+            if (!ParseArguments(args) || Arguments.CommandAndArguments.Length == 0)
             {
                 ShowHelp();
                 return Arguments.Help ? 0 : 1;
@@ -62,10 +59,8 @@ namespace Gallio.Utility
             string commandName = Arguments.CommandAndArguments[0];
             string[] commandRawArguments = new string[Arguments.CommandAndArguments.Length - 1];
             Array.Copy(Arguments.CommandAndArguments, 1, commandRawArguments, 0, commandRawArguments.Length);
-
             IUtilityCommand command = GetSpecialCommand(commandName);
             bool isSpecialCommand = command != null;
-
             var runtimeSetup = new RuntimeSetup();
             GenericCollectionUtils.ForEach(Arguments.PluginDirectories, x => runtimeSetup.AddPluginDirectory(x));
 
@@ -75,6 +70,7 @@ namespace Gallio.Utility
                 {
                     var commandManager = RuntimeAccessor.ServiceLocator.Resolve<IUtilityCommandManager>();
                     command = commandManager.GetCommand(commandName);
+
                     if (command == null)
                     {
                         ShowErrorMessage(string.Format("Unrecognized utility command name: '{0}'.", commandName));
@@ -94,14 +90,13 @@ namespace Gallio.Utility
 
                 object commandArguments = Activator.CreateInstance(commandArgumentsClass);
 
-                if (! commandArgumentParser.Parse(commandRawArguments, commandArguments, ShowErrorMessage)
-                    ||  ! command.ValidateArguments(commandArguments, ShowErrorMessage))
+                if (!commandArgumentParser.Parse(commandRawArguments, commandArguments, ShowErrorMessage) || !command.ValidateArguments(commandArguments, ShowErrorMessage))
                 {
                     ShowHelpForParticularCommand(commandName, commandArgumentParser);
                     return 1;
                 }
 
-                UtilityCommandContext commandContext = new UtilityCommandContext(commandArguments, Console, logger, progressMonitorProvider, Arguments.Verbosity);
+                var commandContext = new UtilityCommandContext(commandArguments, Console, logger, progressMonitorProvider, Arguments.Verbosity);
                 return command.Execute(commandContext);
             }
         }
@@ -113,34 +108,30 @@ namespace Gallio.Utility
             base.ShowHelp();
 
             // Print out options related to the currently available set of plugins.
-            RuntimeSetup setup = new RuntimeSetup();
+            var setup = new RuntimeSetup();
 
             using (RuntimeAccessor.IsInitialized ? null : RuntimeBootstrap.Initialize(setup, CreateLogger()))
             {
                 IUtilityCommandManager utilityCommandManager = RuntimeAccessor.ServiceLocator.Resolve<IUtilityCommandManager>();
-                ShowRegisteredComponents("Supported utility commands:", utilityCommandManager.CommandHandles,
-                    h => h.GetTraits().Name, h => h.GetTraits().Description);
+                ShowRegisteredComponents("Supported utility commands:", utilityCommandManager.CommandHandles, h => h.GetTraits().Name, h => h.GetTraits().Description);
             }
         }
 
         private void ShowHelpForParticularCommand(string commandName, CommandLineArgumentParser parser)
         {
             base.ShowHelp();
-
             Console.WriteLine(string.Format("Additional options for command '{0}'.", commandName));
             Console.WriteLine();
-
             parser.ShowUsage(CommandLineOutput);
         }
 
-        private void ShowRegisteredComponents<T>(string heading, ICollection<T> handles,
-            Func<T, string> getName, Func<T, string> getDescription)
+        private void ShowRegisteredComponents<T>(string heading, ICollection<T> handles, Func<T, string> getName, Func<T, string> getDescription)
         {
             Console.WriteLine(heading);
             Console.WriteLine();
-
             T[] sortedHandles = GenericCollectionUtils.ToArray(handles);
             Array.Sort(sortedHandles, (x, y) => getName(x).CompareTo(getName(y)));
+
             if (sortedHandles.Length == 0)
             {
                 CommandLineOutput.PrintArgumentHelp("", "<none>", null, null, null, null);
@@ -171,7 +162,7 @@ namespace Gallio.Utility
 
         private ILogger CreateLogger()
         {
-            RichConsoleLogger logger = new RichConsoleLogger(Console);
+            var logger = new RichConsoleLogger(Console);
             return new FilteredLogger(logger, Arguments.Verbosity);
         }
 
