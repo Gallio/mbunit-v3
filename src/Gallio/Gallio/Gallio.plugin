@@ -493,11 +493,11 @@
       <traits>
         <name>FormatReport</name>
         <description>Formats an existing XML test report. The command must be used with the following syntax: 
-		"FormatReport {file} /ReportNameFormat:{format} /ReportType:{type} [/ReportOutput:{dir}]"
+		"FormatReport {file} /ReportType:{type} [/ReportNameFormat:{format} /ReportOutput:{dir}]"
 		- {file} is the relative or absolute path of the existing XML test report.
-		- ReportNameFormat (short form: rnf) specifies the format of the output report.
-		- ReportType (short form: rt) specifies the type of the output report.
-		- ReportOutput (short form: ro) specifies the output directory (optional).</description>
+		- ReportType (short form: /rt) specifies the type of the output report ('txt', 'txt-common', 'txt-condensed', 'html', 'html+xhtml', 'html-condensed', 'xhtml', 'xhtml-condensed', 'ccnet-details', or 'ccnet-details-condensed')
+		- ReportNameFormat (short form: /rnf) specifies the format of the output report (optional; if not specified, the same name is kept). The tags '{0}' and '{1}' are replaced respectively by the date and the time of the test run, or by the curent date/time if not applicable.
+		- ReportOutput (short form: /ro) specifies the output directory (optional; if not specified the current directory is used).</description>
       </traits>
     </component>
 	

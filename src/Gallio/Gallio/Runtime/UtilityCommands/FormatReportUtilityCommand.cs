@@ -81,7 +81,7 @@ namespace Gallio.Runtime.UtilityCommands
         {
             return CaptureFileException("The specified output directory is not a valid file path.", () =>
             {
-                var outputName = report.FormatReportName(arguments.ReportNameFormat);
+                var outputName = (arguments.ReportNameFormat != null) ? report.FormatReportName(arguments.ReportNameFormat) : inputName;
                 var outputContainer = new FileSystemReportContainer(outputPath, outputName);
                 IReportWriter reportWriter = reportManager.CreateReportWriter(report, outputContainer);
                 var options = new ReportFormatterOptions();
@@ -124,7 +124,7 @@ namespace Gallio.Runtime.UtilityCommands
             /// <summary>
             /// The format of the output report name.
             /// </summary>
-            [CommandLineArgument(CommandLineArgumentFlags.Required,
+            [CommandLineArgument(CommandLineArgumentFlags.AtMostOnce,
                 Description = "The format of the output report name.",
                 LongName = "ReportNameFormat",
                 ShortName = "rnf")]
