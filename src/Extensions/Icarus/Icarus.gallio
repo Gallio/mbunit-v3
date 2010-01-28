@@ -9,9 +9,9 @@
     <properties />
   </testPackage>
   <testFilters>
-    <testFilter filterName="AutoSave" filterExpr="" />
+    <testFilter filterName="AutoSave" filterExpr="Namespace: Gallio.Icarus.Tests.Services" />
     <testFilter filterName="Commands" filterExpr="Namespace: Gallio.Icarus.Tests.Commands" />
-    <testFilter filterName="LastRun" filterExpr="" />
+    <testFilter filterName="LastRun" filterExpr="Namespace: Gallio.Icarus.Tests.Services" />
   </testFilters>
   <extensionSpecifications />
   <reportDirectory>Reports</reportDirectory>

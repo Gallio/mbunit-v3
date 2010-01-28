@@ -51,7 +51,7 @@ namespace Gallio.Icarus.Tests.Models
             var nodes = children.Cast<TestTreeNode>().ToList();
 
             Assert.AreEqual(1, nodes.Count);
-            Assert.AreEqual("in", nodes[0].Name);
+            Assert.AreEqual("in", nodes[0].Id);
         }
 
         [Test]
@@ -69,15 +69,15 @@ namespace Gallio.Icarus.Tests.Models
             var nodes = children.Cast<TestTreeNode>().ToList();
 
             Assert.AreEqual(2, nodes.Count);
-            Assert.AreEqual("in", nodes[0].Name);
-            Assert.AreEqual("out", nodes[1].Name);
+            Assert.AreEqual("in", nodes[0].Id);
+            Assert.AreEqual("out", nodes[1].Id);
         }
 
         private class TestSpec : ISpecification<TestTreeNode>
         {
             public bool Matches(TestTreeNode item)
             {
-                return item.Name == "in";
+                return item.Id == "in";
             }
         }
     }

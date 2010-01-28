@@ -14,19 +14,52 @@
 // limitations under the License.
 
 using System.Windows.Forms;
-using Aga.Controls.Tree;
 using Gallio.Icarus.Controls;
 using MbUnit.Framework;
 
 namespace Gallio.Icarus.Tests.Controls
 {
-    class NodeCheckBoxTest
+    [TestsOn(typeof(NodeCheckBox)), Category("Controls")]
+    public class NodeCheckBoxTest
     {
-        [Test]
-        public void MouseDown_RightClick_Test()
+        private TestNodeCheckBox nodeCheckBox;
+
+        [SetUp]
+        public void SetUp()
         {
-            NodeCheckBox nodeCheckBox = new NodeCheckBox();
-            nodeCheckBox.MouseDown(new TreeNodeAdvMouseEventArgs(new MouseEventArgs(MouseButtons.Right, 1, 0, 0, 0)));
+            nodeCheckBox = new TestNodeCheckBox();
+        }
+
+        [Test]
+        public void If_check_state_is_unchecked_next_state_should_be_checked()
+        {
+            var newState = nodeCheckBox.TestGetNewState(CheckState.Unchecked);
+
+            Assert.AreEqual(CheckState.Checked, newState);
+        }
+
+        [Test]
+        public void If_check_state_is_checked_next_state_should_be_unchecked()
+        {
+            var newState = nodeCheckBox.TestGetNewState(CheckState.Checked);
+
+            Assert.AreEqual(CheckState.Unchecked, newState);
+        }
+
+        [Test]
+        public void If_check_state_is_indeterminate_next_state_should_be_unchecked()
+        {
+            var newState = nodeCheckBox.TestGetNewState(CheckState.Indeterminate);
+
+            Assert.AreEqual(CheckState.Unchecked, newState);
+        }
+
+        private class TestNodeCheckBox : NodeCheckBox
+        {
+            public CheckState TestGetNewState(CheckState checkState)
+            {
+                return base.GetNewState(checkState);
+            }
         }
     }
 }

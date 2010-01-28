@@ -15,11 +15,8 @@
 
 using System;
 using System.Collections.Generic;
-using System.Windows.Forms;
 using Aga.Controls.Tree;
-using Gallio.Icarus.Models.TestTreeNodes;
 using Gallio.Icarus.TreeBuilders;
-using Gallio.Model.Filters;
 using Gallio.Model.Schema;
 using Gallio.Runner.Reports.Schema;
 using Gallio.Runtime.ProgressMonitoring;
@@ -31,11 +28,7 @@ namespace Gallio.Icarus.Models
     {
         private readonly IList<ITreeBuilder> treeBuilders;
 
-        public Observable<int> TestCount
-        {
-            get;
-            private set;
-        }
+        public Observable<int> TestCount { get; private set; }
 
         public TestTreeModel(ITreeBuilder[] treeBuilders)
             : base(new TreeModel())
@@ -136,152 +129,6 @@ namespace Gallio.Icarus.Models
             foreach (var td in testData.Children)
                 count += CountTestData(td);
             return count;
-        }
-
-        public void ApplyFilterSet(FilterSet<ITestDescriptor> filterSet)
-        {
-            if (Root == null)
-                return;
-
-            if (filterSet.IsEmpty || filterSet.Rules[0].Filter is AnyFilter<ITestDescriptor>)
-            {
-                Root.CheckState = CheckState.Checked;
-                Root.UpdateStateOfRelatedNodes();
-                return;
-            }
-
-            Root.CheckState = CheckState.Unchecked;
-            Root.UpdateStateOfRelatedNodes();
-
-            // FIXME: should be considering inclusion / exclusion rules in more detail
-            RecursivelyApplyFilter(filterSet.Rules[0].Filter);
-        }
-
-        private void RecursivelyApplyFilter(Filter<ITestDescriptor> filter)
-        {
-            if (filter is NoneFilter<ITestDescriptor>)
-                return;
-            if (filter is OrFilter<ITestDescriptor>)
-            {
-                OrFilter<ITestDescriptor> orFilter = (OrFilter<ITestDescriptor>)filter;
-                foreach (Filter<ITestDescriptor> childFilter in orFilter.Filters)
-                    RecursivelyApplyFilter(childFilter);
-            }
-            else if (filter is PropertyFilter<ITestDescriptor>)
-            {
-                PropertyFilter<ITestDescriptor> propertyFilter = (PropertyFilter<ITestDescriptor>)filter;
-                EqualityFilter<string> equalityFilter = (EqualityFilter<string>)propertyFilter.ValueFilter;
-                foreach (TestTreeNode n in Root.Find(equalityFilter.Comparand, true))
-                {
-                    n.CheckState = CheckState.Checked;
-                    n.UpdateStateOfRelatedNodes();
-                }
-            }
-        }
-
-        public FilterSet<ITestDescriptor> GenerateFilterSetFromSelectedTests()
-        {
-            if (Root == null || Root.CheckState == CheckState.Checked)
-                return FilterSet<ITestDescriptor>.Empty;
-
-            var filter = Root.CheckState == CheckState.Unchecked ? new NoneFilter<ITestDescriptor>() 
-                : CreateFilter(Root.Nodes);
-
-            return new FilterSet<ITestDescriptor>(filter);
-        }
-
-        private static Filter<ITestDescriptor> CreateFilter(IEnumerable<Node> nodes)
-        {
-            var filters = new List<Filter<ITestDescriptor>>();
-            foreach (Node n in nodes)
-            {
-                var node = n as TestTreeNode;
-
-                if (node == null)
-                    continue;
-
-                var filter = CreateFilterForNode(node);
-
-                if (filter != null)
-                {
-                    filters.Add(filter);
-                }
-            }
-
-            return filters.Count > 1 ? new OrFilter<ITestDescriptor>(filters) 
-                : filters[0];
-        }
-
-        private static Filter<ITestDescriptor> CreateFilterForNode(TestTreeNode node)
-        {
-            Filter<ITestDescriptor> filter = null;
-            switch (node.CheckState)
-            {
-                case CheckState.Checked:
-                    {
-                        filter = GenerateFilter(node);
-                        break;
-                    }
-                case CheckState.Indeterminate:
-                    {
-                        filter = CreateFilter(node.Nodes);
-                        break;
-                    }
-            }
-            return filter;
-        }
-
-        private static Filter<ITestDescriptor> GenerateFilter(TestTreeNode node)
-        {
-            var equalityFilter = new EqualityFilter<string>(node.Name);
-            
-            if (node is NamespaceNode)
-            {
-                return new NamespaceFilter<ITestDescriptor>(equalityFilter);
-            }
-            
-            if (node is TestDataNode)
-            {
-                return new IdFilter<ITestDescriptor>(equalityFilter);
-            }
-            
-            if (node is MetadataNode && node.Name != "None")
-            {
-                return new MetadataFilter<ITestDescriptor>(node.Name, equalityFilter);
-            }
-            
-            return CreateFilter(node.Nodes);
-        }
-
-        public IList<TestTreeNode> GetSelectedTests()
-        {
-            if (Root == null || Root.CheckState == CheckState.Unchecked)
-                return new List<TestTreeNode>();
-
-            if (Root.CheckState == CheckState.Checked)
-                return new List<TestTreeNode>(new[] { Root });
-
-            List <TestTreeNode> selected = new List<TestTreeNode>();
-            selected.AddRange(GetSelectedTests(Root));
-            return selected;
-        }
-
-        public IList<TestTreeNode> GetSelectedTests(TestTreeNode node)
-        {
-            var selected = new List<TestTreeNode>();
-
-            // special case for namespaces, as they don't really exist!
-            // i.e. they don't have an id we can use, so we must add all 
-            // their children instead.
-            if (node.CheckState == CheckState.Indeterminate || 
-                (node.CheckState == CheckState.Checked && node is NamespaceNode))
-            {
-                foreach (var n in node.Nodes)
-                    selected.AddRange(GetSelectedTests((TestTreeNode)n));
-            }
-            else if (node.CheckState == CheckState.Checked)
-                selected.Add(node);
-            return selected;
         }
     }
 }

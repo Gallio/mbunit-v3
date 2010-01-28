@@ -15,30 +15,31 @@
 
 using Gallio.Icarus.Commands;
 using Gallio.Icarus.Controllers.Interfaces;
+using Gallio.Icarus.Services;
 using Gallio.Model.Filters;
 using Gallio.Runner.Projects.Schema;
 using Gallio.UI.ProgressMonitoring;
 
 namespace Gallio.Icarus.Controllers
 {
-    internal class FilterController : IFilterController
+    public class FilterController : IFilterController
     {
         private readonly ITaskManager taskManager;
-        private readonly ITestController testController;
+        private readonly IFilterService filterService;
         private readonly IProjectController projectController;
 
-        public FilterController(ITaskManager taskManager, ITestController testController, 
+        public FilterController(ITaskManager taskManager, IFilterService filterService, 
             IProjectController projectController)
         {
             this.taskManager = taskManager;
-            this.testController = testController;
+            this.filterService = filterService;
             this.projectController = projectController;
         }
 
         public void ApplyFilter(string filter)
         {
             var filterSet = FilterUtils.ParseTestFilterSet(filter);
-            var command = new ApplyFilterCommand(testController, filterSet);
+            var command = new ApplyFilterCommand(filterService, filterSet);
             taskManager.QueueTask(command);
         }
 
@@ -50,7 +51,7 @@ namespace Gallio.Icarus.Controllers
 
         public void SaveFilter(string filterName)
         {
-            var command = new SaveFilterCommand(testController, projectController)
+            var command = new SaveFilterCommand(filterService, projectController)
             {
                 FilterName = filterName
             };

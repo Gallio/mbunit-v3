@@ -15,6 +15,7 @@
 
 using System;
 using Gallio.Icarus.Controllers.Interfaces;
+using Gallio.Icarus.Services;
 using Gallio.Runtime.ProgressMonitoring;
 using Gallio.UI.ProgressMonitoring;
 
@@ -22,14 +23,14 @@ namespace Gallio.Icarus.Commands
 {
     public class SaveFilterCommand : ICommand
     {
-        private readonly ITestController testController;
+        private readonly IFilterService filterService;
         private readonly IProjectController projectController;
 
         public string FilterName { get; set; }
 
-        public SaveFilterCommand(ITestController testController, IProjectController projectController)
+        public SaveFilterCommand(IFilterService filterService, IProjectController projectController)
         {
-            this.testController = testController;
+            this.filterService = filterService;
             this.projectController = projectController;
         }
 
@@ -40,7 +41,7 @@ namespace Gallio.Icarus.Commands
 
             using (progressMonitor.BeginTask("Saving filter", 2))
             {
-                var filterSet = testController.GenerateFilterSetFromSelectedTests();
+                var filterSet = filterService.GenerateFilterSetFromSelectedTests();
 
                 if (progressMonitor.IsCanceled)
                     throw new OperationCanceledException();

@@ -15,8 +15,8 @@
 
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Events;
-using Gallio.Icarus.Projects;
 using Gallio.Icarus.Properties;
+using Gallio.Icarus.Services;
 using Gallio.Runtime.ProgressMonitoring;
 using Gallio.UI.ProgressMonitoring;
 
@@ -33,14 +33,14 @@ namespace Gallio.Icarus.Commands
         public string ProjectLocation { get; set; }
 
         public OpenProjectCommand(ITestController testController, IProjectController projectController, 
-            IEventAggregator eventAggregator)
+            IEventAggregator eventAggregator, IFilterService filterService)
         {
             this.testController = testController;
             this.projectController = projectController;
             this.eventAggregator = eventAggregator;
 
             loadPackageCommand = new LoadPackageCommand(testController, projectController);
-            restoreFilterCommand = new RestoreFilterCommand(testController, projectController);
+            restoreFilterCommand = new RestoreFilterCommand(filterService, projectController);
         }
 
         public void Execute(IProgressMonitor progressMonitor)

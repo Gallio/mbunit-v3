@@ -17,7 +17,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using Gallio.Common.Concurrency;
 using Gallio.Model;
-using Gallio.Model.Filters;
 using Gallio.Runner;
 using Gallio.Runner.Reports.Schema;
 using Gallio.Runtime.ProgressMonitoring;
@@ -43,18 +42,6 @@ namespace Gallio.Icarus.Controllers.Interfaces
         /// </summary>
         /// <param name="action">The action to execute within the context of the read lock.</param>
         void ReadReport(ReadAction<Report> action);
-
-        /// <summary>
-        /// Applies a filter to the tests, potentially altering selections.
-        /// </summary>
-        /// <param name="filterSet">The filter to apply.</param>
-        void ApplyFilterSet(FilterSet<ITestDescriptor> filterSet);
-
-        /// <summary>
-        /// Generates a filter from selected tests.
-        /// </summary>
-        /// <returns>The generated filter.</returns>
-        FilterSet<ITestDescriptor> GenerateFilterSetFromSelectedTests();
 
         /// <summary>
         /// Explores the tests and updates the model, does not run them.

@@ -46,19 +46,10 @@ namespace Gallio.Icarus.TreeBuilders
         {
             for (int i = 0; i < list.Count; i++)
             {
-                TestData testData = list[i];
+                var testData = list[i];
 
-                TestTreeNode testTreeNode = new TestDataNode(testData);
-                if (testData.CodeReference.MemberName == null && testData.CodeReference.NamespaceName != null)
-                {
-                    // fixtures need special treatment to insert the namespace layer!
-                    testTreeNode = BuildNamespaceNode(parent, testData,
-                        testTreeNode, namespaceHierarchy, rootNode);
-                }
-                else
-                {
-                    parent.Nodes.Add(testTreeNode);
-                }
+                var testTreeNode = AddNode(testData, parent, 
+                    namespaceHierarchy, rootNode);
 
                 // process child nodes
                 PopulateNamespaceTree(progressMonitor, testData.Children, testTreeNode,
@@ -68,35 +59,73 @@ namespace Gallio.Icarus.TreeBuilders
             }
         }
 
-        private static TestTreeNode BuildNamespaceNode(TestTreeNode parent, TestComponentData testComponentData,
-            TestTreeNode fixtureNode, NamespaceHierarchy namespaceHierarchy, TestTreeNode rootNode)
+        private static TestTreeNode AddNode(TestData testData, TestTreeNode parent, 
+            NamespaceHierarchy namespaceHierarchy, TestTreeNode rootNode)
         {
-            string @namespace = testComponentData.CodeReference.NamespaceName;
-
-            string[] namespaceArray = namespaceHierarchy == NamespaceHierarchy.Tree ? @namespace.Split('.')
-                : new[] { @namespace };
-
-            foreach (string ns in namespaceArray)
+            TestTreeNode testTreeNode = new TestDataNode(testData);
+            if (FixtureNode(testData))
             {
-                if (ns.Length == 0)
+                // fixtures need special treatment to insert the namespace layer!
+                var namespaces = GetNamespaceArray(testData, namespaceHierarchy);
+
+                testTreeNode = BuildNamespaceNode(parent, testTreeNode, 
+                    rootNode, namespaces);
+            }
+            else
+            {
+                parent.Nodes.Add(testTreeNode);
+            }
+            return testTreeNode;
+        }
+
+        private static bool FixtureNode(TestComponentData testData)
+        {
+            return testData.CodeReference.MemberName == null && testData.CodeReference.NamespaceName != null;
+        }
+
+        private static TestTreeNode BuildNamespaceNode(TestTreeNode namespaceNode, TestTreeNode fixtureNode, 
+            TestTreeNode rootNode, IEnumerable<string> namespaces)
+        {
+            foreach (var @namespace in namespaces)
+            {
+                if (@namespace.Length == 0)
                     continue;
 
-                // find the namespace node (or add if it doesn't exist)
-                var nodes = rootNode.Find(ns, true);
-                if (nodes.Count > 0)
-                {
-                    parent = nodes[0];
-                }
-                else
-                {
-                    var nsNode = new NamespaceNode(ns, ns);
-                    parent.Nodes.Add(nsNode);
-                    parent = nsNode;
-                }
+                namespaceNode = FindNamespaceNode(@namespace, rootNode, 
+                    namespaceNode);
             }
 
-            parent.Nodes.Add(fixtureNode);
+            namespaceNode.Nodes.Add(fixtureNode);
             return fixtureNode;
+        }
+
+        private static TestTreeNode FindNamespaceNode(string @namespace, 
+            TestTreeNode rootNode, TestTreeNode parent)
+        {
+            // find the namespace node (or add if it doesn't exist)
+            var nodes = rootNode.Find(@namespace, true);
+
+            if (nodes.Count > 0)
+            {
+                parent = nodes[0];
+            }
+            else
+            {
+                var namespaceNode = new NamespaceNode(@namespace);
+                parent.Nodes.Add(namespaceNode);
+                parent = namespaceNode;
+            }
+            
+            return parent;
+        }
+
+        private static IEnumerable<string> GetNamespaceArray(TestComponentData testComponentData, 
+            NamespaceHierarchy namespaceHierarchy)
+        {
+            var @namespace = testComponentData.CodeReference.NamespaceName;
+
+            return namespaceHierarchy == NamespaceHierarchy.Tree ? @namespace.Split('.')
+                       : new[] { @namespace };
         }
     }
 }

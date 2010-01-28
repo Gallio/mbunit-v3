@@ -17,7 +17,7 @@ using System.Collections.Generic;
 using Gallio.Icarus.Commands;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Events;
-using Gallio.Icarus.Projects;
+using Gallio.Icarus.Services;
 using Gallio.Icarus.Tests.Utilities;
 using Gallio.Runner.Projects.Schema;
 using Gallio.Runtime.ProgressMonitoring;
@@ -45,8 +45,10 @@ namespace Gallio.Icarus.Tests.Commands
             var testFilters = new Observable<IList<FilterInfo>>(new List<FilterInfo>());
             projectController.Stub(pc => pc.TestFilters).Return(testFilters);
             eventAggregator = MockRepository.GenerateStub<IEventAggregator>();
+            var filterService = MockRepository.GenerateStub<IFilterService>();
             progressMonitor = MockProgressMonitor.Instance;
-            openProjectCommand = new OpenProjectCommand(testController, projectController, eventAggregator)
+            openProjectCommand = new OpenProjectCommand(testController, projectController, 
+                eventAggregator, filterService)
             {
                 ProjectLocation = FileName
             };

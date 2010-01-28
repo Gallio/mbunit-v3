@@ -168,7 +168,7 @@ namespace Gallio.Icarus.TestExplorer
 
             var node = (TestTreeNode)testTree.SelectedNode.Tag;
 
-            controller.ShowSourceCode(node.Name);
+            controller.ShowSourceCode(node.Id);
         }
 
         private void expandPassedTestsToolStripMenuItem_Click(object sender, EventArgs e)

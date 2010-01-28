@@ -14,9 +14,8 @@
 // limitations under the License.
 
 using Gallio.Icarus.Commands;
-using Gallio.Icarus.Controllers.Interfaces;
+using Gallio.Icarus.Services;
 using Gallio.Icarus.Tests.Utilities;
-using Gallio.Model;
 using Gallio.Model.Filters;
 using MbUnit.Framework;
 using Rhino.Mocks;
@@ -29,13 +28,13 @@ namespace Gallio.Icarus.Tests.Commands
         [Test]
         public void Execute_should_call_ApplyFilterSet_on_TestController()
         {
-            var testController = MockRepository.GenerateStub<ITestController>();
+            var filterService = MockRepository.GenerateStub<IFilterService>();
             var filterSet = new FilterSet<ITestDescriptor>(new NoneFilter<ITestDescriptor>());
-            var cmd = new ApplyFilterCommand(testController, filterSet);
+            var cmd = new ApplyFilterCommand(filterService, filterSet);
 
             cmd.Execute(MockProgressMonitor.Instance);
 
-            testController.AssertWasCalled(tc => tc.ApplyFilterSet(filterSet));
+            filterService.AssertWasCalled(tc => tc.ApplyFilterSet(filterSet));
         }
     }
 }

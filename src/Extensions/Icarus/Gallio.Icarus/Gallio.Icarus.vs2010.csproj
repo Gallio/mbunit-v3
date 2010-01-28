@@ -218,6 +218,8 @@
     <Compile Include="Controls\PropertiesTabControl.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Services\FilterService.cs" />
+    <Compile Include="Services\IFilterService.cs" />
     <Compile Include="WindowManager\MenuList.cs" />
     <Compile Include="WindowManager\MenuManager.cs" />
     <Compile Include="WindowManager\IMenuList.cs" />
@@ -269,7 +271,6 @@
     <Compile Include="Models\SortOrder.cs" />
     <Compile Include="Models\SortTreeEvent.cs" />
     <Compile Include="Models\TestStatistics.cs" />
-    <Compile Include="Models\TestTreeNodes\FilterNode.cs" />
     <Compile Include="Models\TestTreeNodes\MetadataNode.cs" />
     <Compile Include="Models\TestTreeNodes\NamespaceNode.cs" />
     <Compile Include="Models\TestTreeNodes\TestDataNode.cs" />
@@ -330,7 +331,6 @@
     <Compile Include="Controllers\Interfaces\IProjectController.cs" />
     <Compile Include="Helpers\IMenuListHelper.cs" />
     <Compile Include="Helpers\MenuListHelper.cs" />
-    <Compile Include="Helpers\TestTreeBuilder.cs" />
     <Compile Include="Logging\IRuntimeLogger.cs" />
     <Compile Include="Logging\RuntimeLogger.cs" />
     <Compile Include="Models\ComponentDetailsTreeModel.cs" />

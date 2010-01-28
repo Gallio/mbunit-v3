@@ -15,6 +15,7 @@
 
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Reports;
+using Gallio.Icarus.Services;
 using Gallio.Runtime.ProgressMonitoring;
 using Gallio.UI.ProgressMonitoring;
 
@@ -26,48 +27,73 @@ namespace Gallio.Icarus.Commands
         private readonly IProjectController projectController;
         private readonly IOptionsController optionsController;
         private readonly IReportController reportController;
+        private readonly IFilterService filterService;
 
         public bool AttachDebugger { get; set; }
 
         public RunTestsCommand(ITestController testController, IProjectController projectController, 
-            IOptionsController optionsController, IReportController reportController)
+            IOptionsController optionsController, IReportController reportController, 
+            IFilterService filterService)
         {
             this.testController = testController;
             this.projectController = projectController;
             this.optionsController = optionsController;
             this.reportController = reportController;
+            this.filterService = filterService;
         }
 
         public void Execute(IProgressMonitor progressMonitor)
         {
             using (progressMonitor.BeginTask("Running tests", 100))
             {
-                using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(5))
-                    testController.ResetTestStatus(subProgressMonitor);
+                ResetTestStatus(progressMonitor);
 
-                using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(5))
+                SaveLastRunFilter(progressMonitor);
+
+                RunTests(progressMonitor);
+
+                GenerateReport(progressMonitor);
+            }
+        }
+
+        private void ResetTestStatus(IProgressMonitor progressMonitor)
+        {
+            using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(5))
+                testController.ResetTestStatus(subProgressMonitor);
+        }
+
+        private void SaveLastRunFilter(IProgressMonitor progressMonitor)
+        {
+            using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(5))
+            {
+                var filterSet = filterService.GenerateFilterSetFromSelectedTests();
+                projectController.SaveFilterSet(subProgressMonitor, "LastRun", filterSet);
+            }
+        }
+
+        private void RunTests(IProgressMonitor progressMonitor)
+        {
+            using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(85))
+                testController.Run(AttachDebugger, subProgressMonitor, 
+                                   projectController.TestRunnerExtensions);
+        }
+
+        private void GenerateReport(IProgressMonitor progressMonitor)
+        {
+            using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(5))
+            {
+                if (!optionsController.GenerateReportAfterTestRun)
+                    return;
+
+                var reportOptions = new ReportOptions(projectController.ReportDirectory, 
+                    projectController.ReportNameFormat);
+
+                var cmd = new GenerateReportCommand(testController, reportController)
                 {
-                    var filterSet = testController.GenerateFilterSetFromSelectedTests();
-                    projectController.SaveFilterSet(subProgressMonitor, "LastRun", filterSet);
-                }
-
-                using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(85))
-                    testController.Run(AttachDebugger, subProgressMonitor, 
-                        projectController.TestRunnerExtensions);
-
-                using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(5))
-                {
-                    if (!optionsController.GenerateReportAfterTestRun)
-                        return;
-
-                    var reportOptions = new ReportOptions(projectController.ReportDirectory, 
-                        projectController.ReportNameFormat);
-                    var cmd = new GenerateReportCommand(testController, reportController)
-                    {
-                        ReportOptions = reportOptions
-                    };
-                    cmd.Execute(subProgressMonitor);
-                }
+                    ReportOptions = reportOptions
+                };
+                
+                cmd.Execute(subProgressMonitor);
             }
         }
     }

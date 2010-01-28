@@ -16,6 +16,7 @@
 using System.Collections.Generic;
 using Gallio.Icarus.Commands;
 using Gallio.Icarus.Controllers.Interfaces;
+using Gallio.Icarus.Services;
 using Gallio.Icarus.Tests.Utilities;
 using Gallio.Model.Filters;
 using Gallio.Runner.Projects.Schema;
@@ -31,18 +32,19 @@ namespace Gallio.Icarus.Tests.Commands
         [Test]
         public void Execute_should_restore_test_filter()
         {
-            var testController = MockRepository.GenerateStub<ITestController>();
+            var filterService = MockRepository.GenerateStub<IFilterService>();
             var projectController = MockRepository.GenerateStub<IProjectController>();
-            var testFilters = new List<FilterInfo>
+            var testFilters = new Observable<IList<FilterInfo>>(new List<FilterInfo>
             {
-                new FilterInfo("SomeFilter", "*"), new FilterInfo("AutoSave", "*")
-            };
-            projectController.Stub(pc => pc.TestFilters).Return(new Observable<IList<FilterInfo>>(testFilters));
-            var restoreFilterCommand = new RestoreFilterCommand(testController, projectController);
+                new FilterInfo("SomeFilter", "*"), 
+                new FilterInfo("AutoSave", "*")
+            });
+            projectController.Stub(pc => pc.TestFilters).Return(testFilters);
+            var restoreFilterCommand = new RestoreFilterCommand(filterService, projectController);
 
             restoreFilterCommand.Execute(MockProgressMonitor.Instance);
 
-            testController.AssertWasCalled(tc => tc.ApplyFilterSet(Arg<FilterSet<ITestDescriptor>>.Is.Anything));
+            filterService.AssertWasCalled(fs => fs.ApplyFilterSet(Arg<FilterSet<ITestDescriptor>>.Is.Anything));
         }
     }
 }

@@ -32,7 +32,7 @@ namespace Gallio.Icarus.Tests.Models.TestTreeNodes
             
             var testDataNode = new TestDataNode(testData);
 
-            Assert.AreEqual(testData.Id, testDataNode.Name);
+            Assert.AreEqual(testData.Name, testDataNode.Name);
         }
 
         [Test]

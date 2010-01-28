@@ -14,114 +14,13 @@
 // limitations under the License.
 
 using Gallio.Icarus.Models;
-using Gallio.Icarus.TreeBuilders;
-using Gallio.Model.Filters;
 using MbUnit.Framework;
 
 namespace Gallio.Icarus.Tests.Models
 {
+    [TestsOn(typeof(TestTreeModel))]
     public class TestTreeModelTest
     {
-        private TestTreeModel testTreeModel;
-
-        [SetUp]
-        public void Establish_context()
-        {
-            testTreeModel = new TestTreeModel(new ITreeBuilder[0]);
-        }
-
-        [Test]
-        public void ApplyFilter_NullRoot_Test()
-        {
-            var filter = new FilterSet<ITestDescriptor>(new NoneFilter<ITestDescriptor>());
-            testTreeModel.ApplyFilterSet(filter);
-        }
-
-        //[Test]
-        //public void ApplyFilter_AnyFilter_Test()
-        //{
-        //    TestTreeModel testTreeModel = new TestTreeModel();
-        //    TestTreeNode n = new TestTreeNode("root", "root", "root");
-        //    testTreeModel.Root.Nodes.Add(n);
-        //    Filter<ITestDescriptor> filter = new AnyFilter<ITestDescriptor>();
-        //    //testTreeModel.ApplyFilter(filter);
-        //    Assert.AreEqual(CheckState.Checked, n.CheckState);
-        //}
-
-        //[Test]
-        //public void ApplyFilter_NoneFilter_Test()
-        //{
-        //    IProgressMonitor progressMonitor = MockProgressMonitor.GetMockProgressMonitor();
-        //    TestTreeModel testTreeModel = new TestTreeModel();
-        //    TestTreeNode n = new TestTreeNode("root", "root", "root");
-        //    testTreeModel.Root.Nodes.Add(n);
-        //    Filter<ITestDescriptor> filter = new NoneFilter<ITestDescriptor>();
-        //    FilterSet<ITestDescriptor> filterSet = new FilterSet<ITestDescriptor>(filter);
-        //    testTreeModel.ApplyFilterSet(filterSet);
-        //    Assert.AreEqual(CheckState.Unchecked, n.CheckState);
-        //}
-
-        //[Test]
-        //public void ApplyFilter_OrFilter_Test()
-        //{
-        //    IProgressMonitor progressMonitor = MockProgressMonitor.GetMockProgressMonitor();
-        //    TestTreeModel testTreeModel = new TestTreeModel();
-        //    TestTreeNode n = new TestTreeNode("root", "root", "root");
-        //    testTreeModel.Root.Nodes.Add(n);
-        //    TestTreeNode a = new TestTreeNode("a", "a", "a");
-        //    TestTreeNode b = new TestTreeNode("b", "b", "b");
-        //    TestTreeNode c = new TestTreeNode("c", "c", "c");
-        //    n.Nodes.Add(a);
-        //    n.Nodes.Add(b);
-        //    n.Nodes.Add(c);
-        //    Filter<ITestDescriptor> left = new IdFilter<ITestDescriptor>(new EqualityFilter<string>("a"));
-        //    Filter<ITestDescriptor> right = new IdFilter<ITestDescriptor>(new EqualityFilter<string>("b"));
-        //    Filter<ITestDescriptor> orFilter = new OrFilter<ITestDescriptor>(new[] { left, right});
-        //    FilterSet<ITestDescriptor> filterSet = new FilterSet<ITestDescriptor>(orFilter);
-        //    testTreeModel.ApplyFilterSet(filterSet);
-        //    Assert.AreEqual(CheckState.Indeterminate, n.CheckState);
-        //    Assert.AreEqual(CheckState.Checked, a.CheckState);
-        //    Assert.AreEqual(CheckState.Checked, b.CheckState);
-        //    Assert.AreEqual(CheckState.Unchecked, c.CheckState);
-        //}
-
-        //[Test]
-        //[Row(TestStatus.Failed)]
-        //[Row(TestStatus.Passed)]
-        //[Row(TestStatus.Inconclusive)]
-        //public void StatusFilter_Test(TestStatus testStatus)
-        //{
-        //    TestTreeModel testTreeModel = new TestTreeModel();
-
-        //    TestTreeNode root = new TestTreeNode("root", "root", "root");
-        //    testTreeModel.Root.Nodes.Add(root);
-
-        //    TestTreeNode fixture = new TestTreeNode("fixture", "fixture", "fixture");
-        //    root.Nodes.Add(fixture);
-
-        //    TestTreeNode test1 = new TestTreeNode("test", "test", "test");
-        //    fixture.Nodes.Add(test1);
-
-        //    TestTreeNode statusTest = new TestTreeNode("status", "status", "status") { TestStatus = testStatus };
-        //    fixture.Nodes.Add(statusTest);
-
-        //    bool structureChangedFlag = false;
-        //    testTreeModel.StructureChanged += delegate { structureChangedFlag = true; };
-
-        //    testTreeModel.SetFilter(testStatus);
-
-        //    TestTreeNode statusNode = null;
-        //    foreach (var node in fixture.Nodes)
-        //    {
-        //        if (node.Text == testStatus.ToString())
-        //            statusNode = (TestTreeNode)node;
-        //    }
-
-        //    Assert.IsNotNull(statusNode);
-        //    Assert.AreEqual(1, statusNode.Nodes.Count);
-        //    Assert.AreEqual(statusTest, statusNode.Nodes[0]);
-
-        //    Assert.IsTrue(structureChangedFlag);
-        //}
+        // TODO: write some tests!
     }
 }

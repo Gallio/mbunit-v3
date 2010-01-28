@@ -14,21 +14,22 @@
 // limitations under the License.
 
 using Gallio.Icarus.Controllers.Interfaces;
+using Gallio.Icarus.Services;
+using Gallio.Runner.Projects.Schema;
 using Gallio.Runtime.ProgressMonitoring;
 using Gallio.Model.Filters;
 using Gallio.UI.ProgressMonitoring;
 
 namespace Gallio.Icarus.Commands
 {
-    internal class RestoreFilterCommand : ICommand
+    public class RestoreFilterCommand : ICommand
     {
-        private readonly ITestController testController;
+        private readonly IFilterService filterService;
         private readonly IProjectController projectController;
 
-        public RestoreFilterCommand(ITestController testController, 
-            IProjectController projectController)
+        public RestoreFilterCommand(IFilterService filterService, IProjectController projectController)
         {
-            this.testController = testController;
+            this.filterService = filterService;
             this.projectController = projectController;
         }
 
@@ -46,12 +47,17 @@ namespace Gallio.Icarus.Commands
                         continue;
                     }
 
-                    var filterSet = FilterUtils.ParseTestFilterSet(filterInfo.FilterExpr);
-                    var applyFilterCommand = new ApplyFilterCommand(testController, filterSet);
-                    applyFilterCommand.Execute(progressMonitor);
+                    ApplyFilter(progressMonitor, filterInfo);
                     return;
                 }
             }
+        }
+
+        private void ApplyFilter(IProgressMonitor progressMonitor, FilterInfo filterInfo)
+        {
+            var filterSet = FilterUtils.ParseTestFilterSet(filterInfo.FilterExpr);
+            var applyFilterCommand = new ApplyFilterCommand(filterService, filterSet);
+            applyFilterCommand.Execute(progressMonitor);
         }
     }
 }

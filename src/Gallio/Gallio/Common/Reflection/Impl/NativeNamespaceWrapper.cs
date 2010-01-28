@@ -19,10 +19,17 @@ using Gallio.Common.Collections;
 
 namespace Gallio.Common.Reflection.Impl
 {
-    internal sealed class NativeNamespaceWrapper : NativeWrapper, INamespaceInfo
+    ///<summary>
+    /// Wrapper to represent a namespace.
+    ///</summary>
+    public sealed class NativeNamespaceWrapper : NativeWrapper, INamespaceInfo
     {
         private readonly string name;
 
+        /// <summary>
+        /// Constructor.
+        /// </summary>
+        /// <param name="name">The name of the namespace.</param>
         public NativeNamespaceWrapper(string name)
         {
             if (name == null)
@@ -31,67 +38,80 @@ namespace Gallio.Common.Reflection.Impl
             this.name = name;
         }
 
+        /// <inheritdoc />
         public string Name
         {
             get { return name; }
         }
 
+        /// <inheritdoc />
         public CodeElementKind Kind
         {
             get { return CodeElementKind.Namespace; }
         }
 
+        /// <inheritdoc />
         public CodeReference CodeReference
         {
             get { return CodeReference.CreateFromNamespace(name); }
         }
 
+        /// <inheritdoc />
         public IEnumerable<IAttributeInfo> GetAttributeInfos(ITypeInfo attributeType, bool inherit)
         {
             return EmptyArray<IAttributeInfo>.Instance;
         }
 
+        /// <inheritdoc />
         public bool HasAttribute(ITypeInfo attributeType, bool inherit)
         {
             return false;
         }
 
+        /// <inheritdoc />
         public IEnumerable<object> GetAttributes(ITypeInfo attributeType, bool inherit)
         {
             return EmptyArray<object>.Instance;
         }
 
+        /// <inheritdoc />
         public string GetXmlDocumentation()
         {
             return null;
         }
 
+        /// <inheritdoc />
         public CodeLocation GetCodeLocation()
         {
             return CodeLocation.Unknown;
         }
 
+        /// <inheritdoc />
         public override string ToString()
         {
             return name;
         }
 
+        /// <inheritdoc />
         public override int GetHashCode()
         {
             return name.GetHashCode();
         }
 
+        /// <inheritdoc />
         public override bool Equals(object obj)
         {
             NativeNamespaceWrapper other = obj as NativeNamespaceWrapper;
             return other != null && name == other.name;
         }
 
+        /// <inheritdoc />
         public bool Equals(ICodeElementInfo other)
         {
             return Equals((object)other);
         }
 
+        /// <inheritdoc />
         public bool Equals(INamespaceInfo other)
         {
             return Equals((object)other);

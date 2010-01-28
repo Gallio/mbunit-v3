@@ -18,6 +18,7 @@ using System.ComponentModel;
 using Gallio.Icarus.Commands;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Events;
+using Gallio.Icarus.Services;
 using Gallio.Icarus.Tests.Utilities;
 using Gallio.Runner.Projects.Schema;
 using Gallio.Runtime.ProgressMonitoring;
@@ -30,16 +31,27 @@ namespace Gallio.Icarus.Tests.Commands
     [MbUnit.Framework.Category("Commands"), TestsOn(typeof(ReloadCommand))]
     public class ReloadCommandTest
     {
+        private ReloadCommand reloadCommand;
+        private ITestController testController;
+        private IProjectController projectController;
+        private IEventAggregator eventAggregator;
+
+        [SetUp]
+        public void SetUp()
+        {
+            testController = MockRepository.GenerateStub<ITestController>();
+            projectController = MockRepository.GenerateStub<IProjectController>();
+            eventAggregator = MockRepository.GenerateStub<IEventAggregator>();
+            var filterService = MockRepository.GenerateStub<IFilterService>();
+            reloadCommand = new ReloadCommand(testController, projectController, eventAggregator, filterService);
+        }
+
         [Test]
         public void Execute_should_explore_with_test_runner_extensions()
         {
-            var testController = MockRepository.GenerateStub<ITestController>();
-            var projectController = MockRepository.GenerateStub<IProjectController>();
             var testRunnerExtensions = new BindingList<string>();
             projectController.Stub(pc => pc.TestRunnerExtensions).Return(testRunnerExtensions);
             projectController.Stub(pc => pc.TestFilters).Return(new Observable<IList<FilterInfo>>(new List<FilterInfo>()));
-            var eventAggregator = MockRepository.GenerateStub<IEventAggregator>();
-            var reloadCommand = new ReloadCommand(testController, projectController, eventAggregator);
 
             reloadCommand.Execute(MockProgressMonitor.Instance);
 
@@ -50,13 +62,9 @@ namespace Gallio.Icarus.Tests.Commands
         [Test]
         public void Execute_should_send_an_event()
         {
-            var testController = MockRepository.GenerateStub<ITestController>();
-            var projectController = MockRepository.GenerateStub<IProjectController>();
             var testRunnerExtensions = new BindingList<string>();
             projectController.Stub(pc => pc.TestRunnerExtensions).Return(testRunnerExtensions);
             projectController.Stub(pc => pc.TestFilters).Return(new Observable<IList<FilterInfo>>(new List<FilterInfo>()));
-            var eventAggregator = MockRepository.GenerateStub<IEventAggregator>();
-            var reloadCommand = new ReloadCommand(testController, projectController, eventAggregator);
 
             reloadCommand.Execute(MockProgressMonitor.Instance);
 

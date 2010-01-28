@@ -41,7 +41,7 @@ namespace Gallio.Icarus.Controls
                 foreach (TreeNodeAdv treeNode in AllNodes)
                 {
                     if (!treeNode.IsExpanded)
-                        collapsedNodes.Add(((TestTreeNode)treeNode.Tag).Name);
+                        collapsedNodes.Add(((TestTreeNode)treeNode.Tag).Id);
                 }
                 return collapsedNodes;
             }
@@ -150,7 +150,7 @@ namespace Gallio.Icarus.Controls
             ExpandAll();
             foreach (TreeNodeAdv treeNode in AllNodes)
             {
-                if (treeNode.IsExpanded && nodes.Contains(((TestTreeNode)treeNode.Tag).Name))
+                if (treeNode.IsExpanded && nodes.Contains(((TestTreeNode)treeNode.Tag).Id))
                     treeNode.Collapse();
             }
         }

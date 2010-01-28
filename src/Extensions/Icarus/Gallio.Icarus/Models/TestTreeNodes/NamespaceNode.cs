@@ -14,18 +14,23 @@
 // limitations under the License.
 
 using System.Collections.Generic;
+using Gallio.Common.Collections;
+using Gallio.Common.Reflection;
+using Gallio.Common.Reflection.Impl;
 using Gallio.Model;
+using Gallio.Model.Filters;
 
 namespace Gallio.Icarus.Models.TestTreeNodes
 {
-    public sealed class NamespaceNode : TestTreeNode
+    public sealed class NamespaceNode : TestTreeNode, ITestDescriptor
     {
-        public NamespaceNode(string id, string name)
-            : base(id, name)
+        public NamespaceNode(string @namespace)
+            : base(@namespace, @namespace)
         {
             NodeTypeIcon = Properties.Resources.Namespace;
-            TestKind = TestKinds.Namespace;
             CheckState = System.Windows.Forms.CheckState.Checked;
+            CodeElement = new NativeNamespaceWrapper(@namespace);
+            Metadata = new PropertyBag();
         }
 
         public IEnumerable<TestTreeNode> GetChildren()
@@ -39,5 +44,22 @@ namespace Gallio.Icarus.Models.TestTreeNodes
             }
             return nodes;
         }
+
+        public override string TestKind
+        {
+            get
+            {
+                return TestKinds.Namespace;
+            }
+        }
+
+        public string Name
+        {
+            get { return CodeElement.Name; }
+        }
+
+        public ICodeElementInfo CodeElement { get; private set; }
+
+        public PropertyBag Metadata { get; private set; }
     }
 }

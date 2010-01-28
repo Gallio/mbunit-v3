@@ -20,9 +20,9 @@ using Gallio.Common.Concurrency;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Events;
 using Gallio.Icarus.Models;
+using Gallio.Icarus.Services;
 using Gallio.Icarus.TreeBuilders;
 using Gallio.Model;
-using Gallio.Model.Filters;
 using Gallio.Runner;
 using Gallio.Runner.Extensions;
 using Gallio.Runner.Reports.Schema;
@@ -39,19 +39,21 @@ namespace Gallio.Icarus.Controllers
         private readonly IOptionsController optionsController;
         private readonly ITaskManager taskManager;
         private readonly IEventAggregator eventAggregator;
+        private readonly IFilterService filterService;
         private LockBox<Report> reportLockBox;       
         private ITestRunnerFactory testRunnerFactory;
         private TestPackage testPackage;
-        private FilterSet<ITestDescriptor> filterSet;
         private string treeViewCategory;
 
         public TestController(ITestTreeModel testTreeModel, IOptionsController optionsController, 
-            ITaskManager taskManager, IEventAggregator eventAggregator)
+            ITaskManager taskManager, IEventAggregator eventAggregator, 
+            IFilterService filterService)
         {
             this.testTreeModel = testTreeModel;
             this.optionsController = optionsController;
             this.taskManager = taskManager;
             this.eventAggregator = eventAggregator;
+            this.filterService = filterService;
 
             testPackage = new TestPackage();
             reportLockBox = new LockBox<Report>(new Report());
@@ -87,25 +89,28 @@ namespace Gallio.Icarus.Controllers
 
                 progressMonitor.Worked(5);
 
-                DoWithTestRunner(testRunner =>
-                {
-                    var testPackageCopy = testPackage.Copy();
-                    testPackageCopy.DebuggerSetup = debug ? new DebuggerSetup() : null;
-
-                    var testExplorationOptions = new TestExplorationOptions();
-                    var testExecutionOptions = new TestExecutionOptions
-                    {
-                        // re-use filter set generated when saving "last run" filter
-                        FilterSet = filterSet
-                    };
-
-                    testRunner.Run(testPackageCopy, testExplorationOptions, testExecutionOptions,
-                        progressMonitor.CreateSubProgressMonitor(85));
-
-                }, progressMonitor, 5, testRunnerExtensions);
+                DoWithTestRunner(testRunner => RunTests(debug, testRunner, progressMonitor), 
+                    progressMonitor, 5, testRunnerExtensions);
 
                 eventAggregator.Send(new RunFinished());
             }
+        }
+
+        private void RunTests(bool debug, ITestRunner testRunner, IProgressMonitor progressMonitor)
+        {
+            var testPackageCopy = testPackage.Copy();
+            testPackageCopy.DebuggerSetup = debug ? new DebuggerSetup() : null;
+
+            var testExplorationOptions = new TestExplorationOptions();
+
+            var filterSet = filterService.GenerateFilterSetFromSelectedTests();
+            var testExecutionOptions = new TestExecutionOptions
+            {
+                FilterSet = filterSet
+            };
+
+            testRunner.Run(testPackageCopy, testExplorationOptions, testExecutionOptions, 
+                progressMonitor.CreateSubProgressMonitor(85));
         }
 
         public void SetTestPackage(TestPackage package)
@@ -119,17 +124,6 @@ namespace Gallio.Icarus.Controllers
         public void ReadReport(ReadAction<Report> action)
         {
             reportLockBox.Read(action);
-        }
-
-        public void ApplyFilterSet(FilterSet<ITestDescriptor> filter)
-        {
-            testTreeModel.ApplyFilterSet(filter);
-        }
-
-        public FilterSet<ITestDescriptor> GenerateFilterSetFromSelectedTests()
-        {
-            filterSet = testTreeModel.GenerateFilterSetFromSelectedTests();
-            return filterSet;
         }
 
         public void RefreshTestTree(IProgressMonitor progressMonitor)
@@ -200,7 +194,8 @@ namespace Gallio.Icarus.Controllers
             }
         }
 
-        private void RegisterTestRunnerExtensions(IEnumerable<string> testRunnerExtensions, ITestRunner testRunner)
+        private void RegisterTestRunnerExtensions(IEnumerable<string> testRunnerExtensions, 
+            ITestRunner testRunner)
         {
             var extensionSpecifications = new List<string>();
             

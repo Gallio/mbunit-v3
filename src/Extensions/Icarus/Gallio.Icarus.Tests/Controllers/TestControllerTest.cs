@@ -22,6 +22,7 @@ using Gallio.Icarus.Controllers;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Events;
 using Gallio.Icarus.Models;
+using Gallio.Icarus.Services;
 using Gallio.Icarus.Tests.Utilities;
 using Gallio.Icarus.TreeBuilders;
 using Gallio.Model;
@@ -46,6 +47,7 @@ namespace Gallio.Icarus.Tests.Controllers
         private IEventAggregator eventAggregator;
         private ITestRunnerEvents testRunnerEvents;
         private ITestRunner testRunner;
+        private IFilterService filterService;
 
         [SetUp]
         public void EstablishContext()
@@ -53,19 +55,9 @@ namespace Gallio.Icarus.Tests.Controllers
             testTreeModel = MockRepository.GenerateStub<ITestTreeModel>();
             optionsController = MockRepository.GenerateStub<IOptionsController>();
             eventAggregator = MockRepository.GenerateStub<IEventAggregator>();
+            filterService = MockRepository.GenerateStub<IFilterService>();
             testController = new TestController(testTreeModel, optionsController, 
-                new TestTaskManager(), eventAggregator);
-        }
-
-        [Test]
-        public void ApplyFilter_Test()
-        {
-            var filter = new NoneFilter<ITestDescriptor>();
-            var filterSet = new FilterSet<ITestDescriptor>(filter);
-            
-            testController.ApplyFilterSet(filterSet);
-            
-            testTreeModel.AssertWasCalled(ttm => ttm.ApplyFilterSet(filterSet));
+                new TestTaskManager(), eventAggregator, filterService);
         }
 
         [Test]
@@ -221,15 +213,6 @@ namespace Gallio.Icarus.Tests.Controllers
         }
 
         [Test]
-        public void GenerateFilterFromSelectedTests_Test()
-        {
-            var filter = new FilterSet<ITestDescriptor>(new NoneFilter<ITestDescriptor>());
-            testTreeModel.Stub(ttm => ttm.GenerateFilterSetFromSelectedTests()).Return(filter);
-
-            Assert.AreEqual(filter, testController.GenerateFilterSetFromSelectedTests());
-        }
-
-        [Test]
         public void ResetTestStatus_Test()
         {
             var progressMonitor = MockProgressMonitor.Instance;
@@ -244,11 +227,11 @@ namespace Gallio.Icarus.Tests.Controllers
         {
             var progressMonitor = MockProgressMonitor.Instance;
             var filter = new FilterSet<ITestDescriptor>(new NoneFilter<ITestDescriptor>());
-            testTreeModel.Stub(ttm => ttm.GenerateFilterSetFromSelectedTests()).Return(filter);
-            optionsController.Stub(oc => oc.TestRunnerExtensions).Return(new BindingList<string>(new List<string>()));
+            filterService.Stub(fs => fs.GenerateFilterSetFromSelectedTests()).Return(filter);
+            var testRunnerExtensions = new BindingList<string>(new List<string>());
+            optionsController.Stub(oc => oc.TestRunnerExtensions).Return(testRunnerExtensions);
             StubTestRunnerFactory();
 
-            testController.GenerateFilterSetFromSelectedTests();
             testController.Run(false, progressMonitor, new List<string>());
 
             eventAggregator.AssertWasCalled(ea => ea.Send(Arg<RunStarted>.Is.Anything));
@@ -259,17 +242,15 @@ namespace Gallio.Icarus.Tests.Controllers
         {
             var progressMonitor = MockProgressMonitor.Instance;
             var filter = new FilterSet<ITestDescriptor>(new NoneFilter<ITestDescriptor>());
-            testTreeModel.Stub(ttm => ttm.GenerateFilterSetFromSelectedTests()).Return(filter);
+            filterService.Stub(fs => fs.GenerateFilterSetFromSelectedTests()).Return(filter);
             optionsController.Stub(oc => oc.TestRunnerExtensions).Return(new BindingList<string>(new List<string>()));
             StubTestRunnerFactory();
             var testPackage = new TestPackage();
             testPackage.AddFile(new FileInfo("test"));
 
             testController.SetTestPackage(testPackage);
-            testController.GenerateFilterSetFromSelectedTests();
             testController.Run(false, progressMonitor, new List<string>());
 
-            testTreeModel.AssertWasCalled(ttm => ttm.GenerateFilterSetFromSelectedTests());
             testRunner.AssertWasCalled(tr => tr.Run(Arg<TestPackage>.Matches(tpc => tpc.Files.Count == 1), 
                 Arg<TestExplorationOptions>.Is.Anything, 
                 Arg<TestExecutionOptions>.Matches(teo => ((teo.FilterSet == filter) && !teo.ExactFilter)), 
@@ -281,11 +262,10 @@ namespace Gallio.Icarus.Tests.Controllers
         {
             var progressMonitor = MockProgressMonitor.Instance;
             var filter = new FilterSet<ITestDescriptor>(new NoneFilter<ITestDescriptor>());
-            testTreeModel.Stub(ttm => ttm.GenerateFilterSetFromSelectedTests()).Return(filter);
+            filterService.Stub(fs => fs.GenerateFilterSetFromSelectedTests()).Return(filter);
             optionsController.Stub(oc => oc.TestRunnerExtensions).Return(new BindingList<string>(new List<string>()));
             StubTestRunnerFactory();
 
-            testController.GenerateFilterSetFromSelectedTests();
             testController.Run(false, progressMonitor, new List<string>());
 
             eventAggregator.AssertWasCalled(ea => ea.Send(Arg<RunFinished>.Is.Anything));
@@ -296,12 +276,11 @@ namespace Gallio.Icarus.Tests.Controllers
         {
             var progressMonitor = MockProgressMonitor.Instance;
             var filter = new FilterSet<ITestDescriptor>(new NoneFilter<ITestDescriptor>());
-            testTreeModel.Stub(ttm => ttm.GenerateFilterSetFromSelectedTests()).Return(filter);
+            filterService.Stub(ttm => ttm.GenerateFilterSetFromSelectedTests()).Return(filter);
             var testRunnerExtensions = new BindingList<string>(new List<string>(new[] {"DebugExtension, Gallio"}));
             optionsController.Stub(oc => oc.TestRunnerExtensions).Return(testRunnerExtensions);
             StubTestRunnerFactory();
 
-            testController.GenerateFilterSetFromSelectedTests();
             testController.Run(false, progressMonitor, new List<string>());
 
             testRunner.AssertWasCalled(tr => tr.RegisterExtension(Arg<DebugExtension>.Is.Anything));
@@ -312,12 +291,11 @@ namespace Gallio.Icarus.Tests.Controllers
         {
             var progressMonitor = MockProgressMonitor.Instance;
             var filter = new FilterSet<ITestDescriptor>(new NoneFilter<ITestDescriptor>());
-            testTreeModel.Stub(ttm => ttm.GenerateFilterSetFromSelectedTests()).Return(filter);
+            filterService.Stub(ttm => ttm.GenerateFilterSetFromSelectedTests()).Return(filter);
             var testRunnerExtensions = new BindingList<string>(new List<string>());
             optionsController.Stub(oc => oc.TestRunnerExtensions).Return(testRunnerExtensions);
             StubTestRunnerFactory();
 
-            testController.GenerateFilterSetFromSelectedTests();
             testController.Run(false, progressMonitor, new List<string>(new[] { "DebugExtension, Gallio" }));
 
             testRunner.AssertWasCalled(tr => tr.RegisterExtension(Arg<DebugExtension>.Is.Anything));
@@ -328,12 +306,11 @@ namespace Gallio.Icarus.Tests.Controllers
         {
             var progressMonitor = MockProgressMonitor.Instance;
             var filter = new FilterSet<ITestDescriptor>(new NoneFilter<ITestDescriptor>());
-            testTreeModel.Stub(ttm => ttm.GenerateFilterSetFromSelectedTests()).Return(filter);
+            filterService.Stub(ttm => ttm.GenerateFilterSetFromSelectedTests()).Return(filter);
             var testRunnerExtensions = new BindingList<string>(new List<string>());
             optionsController.Stub(oc => oc.TestRunnerExtensions).Return(testRunnerExtensions);
             StubTestRunnerFactory();
 
-            testController.GenerateFilterSetFromSelectedTests();
             testController.Run(false, progressMonitor, new List<string>(new[] { "DebugExtension, Gallio", 
                 "DebugExtension, Gallio" }));
 

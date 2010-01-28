@@ -13,25 +13,73 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Gallio.Common.Collections;
 using Gallio.Common.Reflection;
 using Gallio.Model;
+using Gallio.Model.Filters;
 using Gallio.Model.Schema;
 
 namespace Gallio.Icarus.Models.TestTreeNodes
 {
-    internal sealed class TestDataNode : TestTreeNode
+    public sealed class TestDataNode : TestTreeNode, ITestDescriptor
     {
+        private readonly TestData testData;
+
         public TestDataNode(TestData testData)
             : base(testData.Id, testData.Name)
         {
-            TestKind = testData.Metadata.GetValue(MetadataKeys.TestKind) ?? TestKinds.Group;
-            FileName = testData.Metadata.GetValue(MetadataKeys.File);
-            SourceCodeAvailable = (testData.CodeLocation != CodeLocation.Unknown);
-            IsTest = testData.IsTestCase;
+            this.testData = testData;
 
             CheckState = testData.Metadata.ContainsKey(MetadataKeys.IgnoreReason) || 
                 testData.Metadata.ContainsKey(MetadataKeys.PendingReason) ? 
                 System.Windows.Forms.CheckState.Unchecked : System.Windows.Forms.CheckState.Checked;
+        }
+
+        public string Name
+        {
+            get { return testData.Name; }
+        }
+
+        public ICodeElementInfo CodeElement
+        {
+            get { return testData.CodeElement; }
+        }
+
+        public PropertyBag Metadata
+        {
+            get { return testData.Metadata; }
+        }
+
+        public override string TestKind
+        {
+            get
+            {
+                return testData.Metadata.GetValue(MetadataKeys.TestKind) ?? TestKinds.Group;
+            }
+        }
+
+        public override string FileName
+        {
+            get
+            {
+                return testData.Metadata.GetValue(MetadataKeys.File);
+            }
+        }
+
+        public override bool SourceCodeAvailable
+        {
+            get
+            {
+                return testData.CodeLocation != CodeLocation.Unknown;
+            }
+        }
+
+        public override bool IsTest
+        {
+            get
+            {
+                return testData.IsTestCase;
+            }
         }
     }
 }

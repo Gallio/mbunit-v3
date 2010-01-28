@@ -27,6 +27,8 @@ namespace Gallio.Icarus.Models
 {
     public class TestTreeNode : Node, IComparable<TestTreeNode>
     {
+        public virtual string Id { get; private set; }
+
         // TODO: Refactor me.
         private static readonly object imageCacheLock = new object();
         private static Dictionary<string, Image> imageCache;
@@ -35,9 +37,7 @@ namespace Gallio.Icarus.Models
         private readonly List<TestStepRun> testStepRuns = new List<TestStepRun>();
         private string testKind;
 
-        public string Name { get; private set; }
-
-        public string FileName { get; protected set; }
+        public virtual string FileName { get; protected set; }
 
         public TestStatus TestStatus
         {
@@ -51,11 +51,11 @@ namespace Gallio.Icarus.Models
             }
         }
 
-        public bool SourceCodeAvailable { get; set; }
+        public virtual bool SourceCodeAvailable { get; protected set; }
 
-        public bool IsTest { get; set; }
+        public virtual bool IsTest { get; protected set; }
 
-        public string TestKind 
+        public virtual string TestKind 
         {
             get
             {
@@ -128,10 +128,26 @@ namespace Gallio.Icarus.Models
             get { return testStepRuns; }
         }
 
-        public TestTreeNode(string name, string text)
+        public override CheckState CheckState
+        {
+            get
+            {
+                return base.CheckState;
+            }
+            set
+            {
+                if (base.CheckState == value)
+                    return;
+
+                base.CheckState = value;
+                UpdateStateOfRelatedNodes();
+            }
+        }
+
+        public TestTreeNode(string id, string text)
             : base(text)
         {
-            Name = name;
+            Id = id;
         }
 
         private static Image GetNodeTypeImage(string nodeType)
@@ -167,7 +183,7 @@ namespace Gallio.Icarus.Models
         {
             var nodes = new List<TestTreeNode>();
 
-            if (Name == key)
+            if (Id == key)
                 nodes.Add(this);
 
             // always search one level deep...
@@ -183,7 +199,8 @@ namespace Gallio.Icarus.Models
             if (node is TestTreeNode)
             {
                 var ttnode = (TestTreeNode)node;
-                if (ttnode.Name == key)
+
+                if (ttnode.Id == key)
                     nodes.Add(ttnode);
 
                 // continue down the tree if necessary
@@ -197,14 +214,13 @@ namespace Gallio.Icarus.Models
         /// <summary>
         /// Manages updating related child and parent nodes of this instance.
         /// </summary>
-        public void UpdateStateOfRelatedNodes()
+        private void UpdateStateOfRelatedNodes()
         {
-            // If you want to cascade checkbox state changes to children of this node and
-            // the current state is not indeterminate, then update the state of child nodes.
             if (CheckState != CheckState.Indeterminate)
+            {
                 UpdateChildNodeState();
-
-            UpdateParentNodeState(true);
+            }
+            UpdateParentNodeState();
         }
 
         /// <summary>
@@ -212,50 +228,34 @@ namespace Gallio.Icarus.Models
         /// </summary>
         private void UpdateChildNodeState()
         {
+            var checkState = CheckState;
+
             foreach (var node in Nodes)
             {
                 var child = node as TestTreeNode;
 
-                if (child == null)
-                    continue;
-
-                child.CheckState = CheckState;
-
-                child.UpdateChildNodeState();
+                if (child != null)
+                {
+                    child.CheckState = checkState;
+                }
             }
         }
 
         /// <summary>
         /// Recursively update parent node state based on the current state of this node.
         /// </summary>
-        private void UpdateParentNodeState(bool isStartingPoint)
+        private void UpdateParentNodeState()
         {
-            // If isStartingPoint is false, then know this is not the initial call
-            // to the recursive method as we want to force on the first time
-            // this is called to set the instance's parent node state based on
-            // the state of all the siblings of this node, including the state
-            // of this node.  So, if not the startpoint (!isStartingPoint) and
-            // the state of this instance is indeterminate (Enumerations.CheckBoxState.Indeterminate)
-            // then know to set all subsequent parents to the indeterminate
-            // state.  However, if not in an indeterminate state, then still need
-            // to evaluate the state of all the siblings of this node, including the state
-            // of this node before setting the state of the parent of this instance.
             var parent = Parent as TestTreeNode;
+
             if (parent == null)
                 return;
-            CheckState state;
 
-            // Determine the new state
-            if (!isStartingPoint && (CheckState == CheckState.Indeterminate))
-                state = CheckState.Indeterminate;
-            else
-                state = SiblingsState;
+            var newState = CheckState == CheckState.Indeterminate ? CheckState.Indeterminate 
+                : SiblingsState;
 
-            // Update parent state if not the same.
-            if (parent.CheckState == state)
-                return;
-            parent.CheckState = state;
-            parent.UpdateParentNodeState(false);
+            if (parent.CheckState != newState)
+                Parent.CheckState = newState;
         }
 
         private void UpdateParentTestStatus()

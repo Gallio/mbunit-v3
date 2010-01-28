@@ -15,8 +15,12 @@
 
 namespace Gallio.Common.Reflection.Impl
 {
-    internal abstract class NativeWrapper : IMirror
+    ///<summary>
+    /// Abstract base class for native wrappers.
+    ///</summary>
+    public abstract class NativeWrapper : IMirror
     {
+        /// <inheritdoc />
         public IReflectionPolicy ReflectionPolicy
         {
             get { return Reflector.NativeReflectionPolicy; }

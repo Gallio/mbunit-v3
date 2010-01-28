@@ -66,7 +66,7 @@ namespace Gallio.Icarus.Controllers
                     // if no tests are selected, if it is the root.
                     foreach (var run in report.TestPackageRun.AllTestStepRuns)
                         if (selectedTestIds.Contains(run.Step.TestId) || 
-                            (selectedTestIds.Count == 0 && run.Step.TestId == testTreeModel.Root.Name))
+                            (selectedTestIds.Count == 0 && run.Step.TestId == testTreeModel.Root.Id))
                             testStepRuns.Add(run);
                 }
 
@@ -87,7 +87,7 @@ namespace Gallio.Icarus.Controllers
             selectedTestIds.Clear();
 
             foreach (var node in @event.Nodes)
-                selectedTestIds.Add(node.Name);
+                selectedTestIds.Add(node.Id);
 
             Update();
         }

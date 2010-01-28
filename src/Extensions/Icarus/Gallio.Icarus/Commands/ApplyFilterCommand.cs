@@ -13,27 +13,28 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Gallio.Icarus.Controllers.Interfaces;
+using Gallio.Icarus.Services;
 using Gallio.Model.Filters;
 using Gallio.Runtime.ProgressMonitoring;
 using Gallio.UI.ProgressMonitoring;
 
 namespace Gallio.Icarus.Commands
 {
-    internal class ApplyFilterCommand : ICommand
+    public class ApplyFilterCommand : ICommand
     {
-        private readonly ITestController testController;
+        private readonly IFilterService filterService;
         private readonly FilterSet<ITestDescriptor> filterSet;
 
-        public ApplyFilterCommand(ITestController testController, FilterSet<ITestDescriptor> filterSet)
+        public ApplyFilterCommand(IFilterService filterService, 
+            FilterSet<ITestDescriptor> filterSet)
         {
-            this.testController = testController;
+            this.filterService = filterService;
             this.filterSet = filterSet;
         }
 
         public void Execute(IProgressMonitor progressMonitor)
         {
-            testController.ApplyFilterSet(filterSet);
+            filterService.ApplyFilterSet(filterSet);
         }
     }
 }

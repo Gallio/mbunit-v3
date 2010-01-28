@@ -15,6 +15,7 @@
 
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Events;
+using Gallio.Icarus.Services;
 using Gallio.Runtime.ProgressMonitoring;
 using Gallio.UI.ProgressMonitoring;
 
@@ -25,13 +26,15 @@ namespace Gallio.Icarus.Commands
         private readonly ITestController testController;
         private readonly IProjectController projectController;
         private readonly IEventAggregator eventAggregator;
+        private readonly IFilterService filterService;
 
         public ReloadCommand(ITestController testController, IProjectController projectController, 
-            IEventAggregator eventAggregator)
+            IEventAggregator eventAggregator, IFilterService filterService)
         {
             this.testController = testController;
             this.projectController = projectController;
             this.eventAggregator = eventAggregator;
+            this.filterService = filterService;
         }
 
         public void Execute(IProgressMonitor progressMonitor)
@@ -47,7 +50,7 @@ namespace Gallio.Icarus.Commands
 
                 using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(5))
                 {
-                    var restoreFilterCommand = new RestoreFilterCommand(testController, projectController);
+                    var restoreFilterCommand = new RestoreFilterCommand(filterService, projectController);
                     restoreFilterCommand.Execute(subProgressMonitor);
                 }
             }

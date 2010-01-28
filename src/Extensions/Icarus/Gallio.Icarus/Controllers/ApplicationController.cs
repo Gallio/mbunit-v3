@@ -46,7 +46,8 @@ namespace Gallio.Icarus.Controllers
         private readonly IProjectController projectController;
         private readonly IUnhandledExceptionPolicy unhandledExceptionPolicy;
         private readonly IEventAggregator eventAggregator;
-       
+        private readonly ICommandFactory commandFactory;
+
         public string Title
         {
             get
@@ -81,9 +82,11 @@ namespace Gallio.Icarus.Controllers
         public event EventHandler RunFinished = (s, e) => { };
         public event EventHandler TestsFailed = (s, e) => { };
 
+        // FIXME: too many dependencies!
         public ApplicationController(IOptionsController optionsController, IFileSystem fileSystem, 
             ITaskManager taskManager, ITestController testController, IProjectController projectController, 
-            IUnhandledExceptionPolicy unhandledExceptionPolicy, IEventAggregator eventAggregator)
+            IUnhandledExceptionPolicy unhandledExceptionPolicy, IEventAggregator eventAggregator,
+            ICommandFactory commandFactory)
         {
             this.optionsController = optionsController;
             this.fileSystem = fileSystem;
@@ -92,6 +95,7 @@ namespace Gallio.Icarus.Controllers
             this.projectController = projectController;
             this.unhandledExceptionPolicy = unhandledExceptionPolicy;
             this.eventAggregator = eventAggregator;
+            this.commandFactory = commandFactory;
 
             optionsController.PropertyChanged += (sender, e) =>
             {
@@ -187,11 +191,8 @@ namespace Gallio.Icarus.Controllers
         {
             Title = projectName;
 
-            var openProjectCommand = new OpenProjectCommand(testController, projectController, eventAggregator)
-            {
-                ProjectLocation = projectName
-            };
-            taskManager.QueueTask(openProjectCommand);
+            var command = commandFactory.CreateOpenProjectCommand(projectName);
+            taskManager.QueueTask(command);
         }
 
         public void SaveProject(bool queueTask)

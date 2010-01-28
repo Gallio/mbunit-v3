@@ -13,7 +13,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Gallio.Icarus.Helpers;
 using Gallio.Icarus.Models;
 using Gallio.Icarus.Tests.Utilities;
 using Gallio.Icarus.TreeBuilders;
@@ -60,7 +59,7 @@ namespace Gallio.Icarus.Tests.TreeBuilders
 
             var test1 = node.Find("test1", true)[0];
             var parent = (TestTreeNode)test1.Parent;
-            Assert.AreEqual("fixture1", parent.Name);
+            Assert.AreEqual("fixture1", parent.Id);
         }
 
         [Test]
@@ -71,7 +70,7 @@ namespace Gallio.Icarus.Tests.TreeBuilders
 
             var test2 = node.Find("test2", true)[0];
             var parent = (TestTreeNode)test2.Parent;
-            Assert.AreEqual("fixture1", parent.Name);
+            Assert.AreEqual("fixture1", parent.Id);
         }
 
         [Test]

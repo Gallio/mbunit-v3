@@ -15,13 +15,23 @@
 
 namespace Gallio.Icarus.Models.TestTreeNodes
 {
-    internal sealed class MetadataNode : TestTreeNode
+    public sealed class MetadataNode : TestTreeNode
     {
+        private readonly string metadataType;
+
         public MetadataNode(string metadata, string metadataType)
             : base(metadata, metadata)
         {
-            TestKind = metadataType;
+            this.metadataType = metadataType;
             CheckState = System.Windows.Forms.CheckState.Checked;
+        }
+
+        public override string TestKind
+        {
+            get
+            {
+                return metadataType;
+            }
         }
     }
 }
