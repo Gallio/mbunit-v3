@@ -153,8 +153,8 @@ namespace Gallio.Runner
                 throw new ArgumentNullException("progressMonitor");
 
             using (progressMonitor.BeginTask("Generating reports.", reportFormats.Count))
+            using (IReportContainer reportContainer = new FileSystemReportContainer(reportDirectory, reportName))
             {
-                IReportContainer reportContainer = new FileSystemReportContainer(reportDirectory, reportName);
                 IReportWriter reportWriter = reportManager.CreateReportWriter(report, reportContainer);
 
                 // Delete the report if it exists already.

@@ -71,9 +71,11 @@ namespace Gallio.Runtime.UtilityCommands
         {
             return CaptureFileException("The specified report is not a valid file path.", () =>
             {
-                IReportContainer inputContainer = new FileSystemReportContainer(inputPath, inputName);
-                IReportReader reportReader = reportManager.CreateReportReader(inputContainer);
-                report = context.ProgressMonitorProvider.Run(pm => reportReader.LoadReport(true, pm));
+                using (IReportContainer inputContainer = new FileSystemReportContainer(inputPath, inputName))
+                {
+                    IReportReader reportReader = reportManager.CreateReportReader(inputContainer);
+                    report = context.ProgressMonitorProvider.Run(pm => reportReader.LoadReport(true, pm));
+                }
             });
         }
 
@@ -82,10 +84,13 @@ namespace Gallio.Runtime.UtilityCommands
             return CaptureFileException("The specified output directory is not a valid file path.", () =>
             {
                 var outputName = (arguments.ReportNameFormat != null) ? report.FormatReportName(arguments.ReportNameFormat) : inputName;
-                var outputContainer = new FileSystemReportContainer(outputPath, outputName);
-                IReportWriter reportWriter = reportManager.CreateReportWriter(report, outputContainer);
-                var options = new ReportFormatterOptions();
-                context.ProgressMonitorProvider.Run(pm => reportManager.Format(reportWriter, arguments.ReportType, options, pm));
+
+                using (IReportContainer outputContainer = new FileSystemReportContainer(outputPath, outputName))
+                {
+                    IReportWriter reportWriter = reportManager.CreateReportWriter(report, outputContainer);
+                    var options = new ReportFormatterOptions();
+                    context.ProgressMonitorProvider.Run(pm => reportManager.Format(reportWriter, arguments.ReportType, options, pm));
+                }
             });
         }
 

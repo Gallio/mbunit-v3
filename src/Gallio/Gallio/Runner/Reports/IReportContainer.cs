@@ -61,7 +61,7 @@ namespace Gallio.Runner.Reports
     /// </list>
     /// </para>
     /// </example>
-    public interface IReportContainer
+    public interface IReportContainer : IDisposable
     {
         /// <summary>
         /// Gets the base name of the report.
@@ -72,7 +72,10 @@ namespace Gallio.Runner.Reports
         /// name and are disambiguated by extension.
         /// </para>
         /// </remarks>
-        string ReportName { get; }
+        string ReportName
+        {
+            get;
+        }
 
         /// <summary>
         /// Deletes the entire contents of the report in all of its formats.

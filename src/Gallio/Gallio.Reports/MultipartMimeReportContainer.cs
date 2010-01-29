@@ -29,7 +29,7 @@ namespace Gallio.Reports
     /// This is currently specialized for saving HTML reports.
     /// It does not support loading reports.
     /// </remarks>
-    internal class MultipartMimeReportContainer : IReportContainer, IDisposable
+    internal class MultipartMimeReportContainer : IReportContainer
     {
         private const string MessagePartBoundary = "----=_Boundary";
         private const string EscapedMessagePartBoundary = "--" + MessagePartBoundary;
