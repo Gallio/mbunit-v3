@@ -22,7 +22,7 @@ namespace Gallio.Common.Reflection.Impl
     ///<summary>
     /// Wrapper to represent a namespace.
     ///</summary>
-    public sealed class NativeNamespaceWrapper : NativeWrapper, INamespaceInfo
+    internal sealed class NativeNamespaceWrapper : NativeWrapper, INamespaceInfo
     {
         private readonly string name;
 

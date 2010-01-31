@@ -16,7 +16,6 @@
 using System.Collections.Generic;
 using Gallio.Common.Collections;
 using Gallio.Common.Reflection;
-using Gallio.Common.Reflection.Impl;
 using Gallio.Model;
 using Gallio.Model.Filters;
 
@@ -29,7 +28,7 @@ namespace Gallio.Icarus.Models.TestTreeNodes
         {
             NodeTypeIcon = Properties.Resources.Namespace;
             CheckState = System.Windows.Forms.CheckState.Checked;
-            CodeElement = new NativeNamespaceWrapper(@namespace);
+            CodeElement = Reflector.WrapNamespace(@namespace);
             Metadata = new PropertyBag();
         }
 
