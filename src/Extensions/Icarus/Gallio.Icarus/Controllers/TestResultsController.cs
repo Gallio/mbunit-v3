@@ -147,8 +147,15 @@ namespace Gallio.Icarus.Controllers
             catch
             {
                 // this is bad, and should never happen :(
-                return new ListViewItem();
+                return EmptyListViewItem();
             }
+        }
+
+        private static ListViewItem EmptyListViewItem()
+        {
+            var listViewItem = new ListViewItem("", -1);
+            listViewItem.SubItems.AddRange(new[] { "", "", "", "", "" });
+            return listViewItem;
         }
 
         private void UpdateTestResults()
