@@ -76,7 +76,6 @@ namespace Gallio.Runner.Reports
         {
             get;
         }
-
         /// <summary>
         /// Deletes the entire contents of the report in all of its formats.
         /// </summary>

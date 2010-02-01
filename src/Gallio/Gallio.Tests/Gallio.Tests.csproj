@@ -242,6 +242,7 @@
     <Compile Include="Reports\XmlReportFormatterTest.cs" />
     <Compile Include="Reports\XsltReportFormatterTest.cs" />
     <Compile Include="Runner\Extensions\TestRunnerExtensionUtilsTest.cs" />
+    <Compile Include="Runner\Reports\ReportContainerFactoryTest.cs" />
     <Compile Include="Runner\RunnerExceptionTest.cs" />
     <Compile Include="RunSampleAttribute.cs" />
     <Compile Include="RunSampleFileAttribute.cs" />

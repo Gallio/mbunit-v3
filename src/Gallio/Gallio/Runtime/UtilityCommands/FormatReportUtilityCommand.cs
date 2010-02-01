@@ -84,8 +84,9 @@ namespace Gallio.Runtime.UtilityCommands
             return CaptureFileException("The specified output directory is not a valid file path.", () =>
             {
                 var outputName = (arguments.ReportNameFormat != null) ? report.FormatReportName(arguments.ReportNameFormat) : inputName;
+                var factory = new ReportContainerFactory(outputPath, outputName);
 
-                using (IReportContainer outputContainer = new FileSystemReportContainer(outputPath, outputName))
+                using (IReportContainer outputContainer = factory.MakeForSaving(arguments.ReportArchive))
                 {
                     IReportWriter reportWriter = reportManager.CreateReportWriter(report, outputContainer);
                     var options = new ReportFormatterOptions();
@@ -130,7 +131,7 @@ namespace Gallio.Runtime.UtilityCommands
             /// The format of the output report name.
             /// </summary>
             [CommandLineArgument(CommandLineArgumentFlags.AtMostOnce,
-                Description = "The format of the output report name.",
+                Description = "The format of the output report name (optional).",
                 LongName = "ReportNameFormat",
                 ShortName = "rnf")]
             public string ReportNameFormat;
@@ -143,6 +144,15 @@ namespace Gallio.Runtime.UtilityCommands
                 LongName = "ReportOutput",
                 ShortName = "ro")]
             public string ReportOutput;
+
+            /// <summary>
+            /// Pack the resulting report in a compressed archive (optional).
+            /// </summary>
+            [CommandLineArgument(CommandLineArgumentFlags.AtMostOnce,
+                Description = "Pack the resulting report in a compressed archive (optional).",
+                LongName = "ReportArchive",
+                ShortName = "ra")]
+            public bool ReportArchive;
 
             /// <summary>
             /// The type of the output report.
