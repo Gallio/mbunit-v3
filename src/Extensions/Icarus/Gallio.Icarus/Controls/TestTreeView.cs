@@ -28,55 +28,23 @@ namespace Gallio.Icarus.Controls
         private readonly NodeCheckBox nodeCheckBox;
         private readonly TestNodeTextBox nodeTextBox;
 
-        public bool EditEnabled
-        {
-            get { return nodeCheckBox.EditEnabled; }
-            set { nodeCheckBox.EditEnabled = value; }
-        }
-
-        public IList<string> CollapsedNodes
-        {
-            get
-            {
-                var collapsedNodes = new List<string>();
-                foreach (var treeNode in AllNodes)
-                {
-                    if (treeNode.IsExpanded)
-                        continue;
-
-                    var id = ((TestTreeNode) treeNode.Tag).Id;
-                    collapsedNodes.Add(id);
-                }
-                return collapsedNodes;
-            }
-        }
-
         public TestTreeView()
         {
             nodeCheckBox = new NodeCheckBox
                                {
                                    DataPropertyName = "CheckState",
-                                   LeftMargin = 0,
-                                   ParentColumn = null,
-                                   ThreeState = true
+                                   ThreeState = true,
+                                   EditEnabled = true
                                };
             NodeControls.Add(nodeCheckBox);
 
             NodeIcon nodeTypeIcon = new NodeIcon
                                         {
                                             DataPropertyName = "NodeTypeIcon",
-                                            LeftMargin = 1,
-                                            ParentColumn = null
                                         };
             NodeControls.Add(nodeTypeIcon);
 
-            NodeIcon testStateIcon = new NodeIcon
-                                         {
-                                             DataPropertyName = "TestStatusIcon",
-                                             LeftMargin = 1,
-                                             ParentColumn = null
-                                         };
-            NodeControls.Add(testStateIcon);
+            NodeControls.Add(new TestStatusNodeIcon());
 
             nodeTextBox = new TestNodeTextBox();
             NodeControls.Add(nodeTextBox);
@@ -100,6 +68,25 @@ namespace Gallio.Icarus.Controls
         public void SetInconclusiveColor(Color value)
         {
             nodeTextBox.InconclusiveColor = value;
+        }
+
+        public void SetEditEnabled(bool enabled)
+        {
+             nodeCheckBox.EditEnabled = enabled;
+        }
+
+        public IList<string> GetCollapsedNodes()
+        {
+            var collapsedNodes = new List<string>();
+            foreach (var treeNode in AllNodes)
+            {
+                if (treeNode.IsExpanded)
+                    continue;
+
+                var id = ((TestTreeNode)treeNode.Tag).Id;
+                collapsedNodes.Add(id);
+            }
+            return collapsedNodes;
         }
 
         public void Expand(TestStatus state)

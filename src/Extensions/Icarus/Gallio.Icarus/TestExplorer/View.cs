@@ -72,7 +72,7 @@ namespace Gallio.Icarus.TestExplorer
 
             controller.RestoreState += (s,e) => RestoreState();
 
-            model.CanEditTree.PropertyChanged += (s, e) => testTree.EditEnabled = model.CanEditTree;
+            model.CanEditTree.PropertyChanged += (s, e) => testTree.SetEditEnabled(model.CanEditTree);
 
             filterPassedTestsToolStripMenuItem.Click += (s, e) => FilterStatus(TestStatus.Passed);
             filterPassedTestsToolStripButton.Click += (s, e) => FilterStatus(TestStatus.Passed);
@@ -245,7 +245,7 @@ namespace Gallio.Icarus.TestExplorer
 
         private void SaveState()
         {            
-            model.CollapsedNodes.Value = testTree.CollapsedNodes;
+            model.CollapsedNodes.Value = testTree.GetCollapsedNodes();
         }
 
         private void RestoreState()
