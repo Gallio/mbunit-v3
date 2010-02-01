@@ -94,16 +94,12 @@ namespace Gallio.Icarus.TestExplorer
             this.testTree.Dock = System.Windows.Forms.DockStyle.Fill;
             this.testTree.DragDropMarkColor = System.Drawing.Color.Black;
             this.testTree.EditEnabled = true;
-            this.testTree.FailedColor = System.Drawing.Color.Empty;
-            this.testTree.InconclusiveColor = System.Drawing.Color.Empty;
             this.testTree.LineColor = System.Drawing.SystemColors.ControlDark;
             this.testTree.Location = new System.Drawing.Point(0, 0);
             this.testTree.Model = null;
             this.testTree.Name = "testTree";
-            this.testTree.PassedColor = System.Drawing.Color.Empty;
             this.testTree.SelectedNode = null;
             this.testTree.Size = new System.Drawing.Size(281, 248);
-            this.testTree.SkippedColor = System.Drawing.Color.Empty;
             this.testTree.TabIndex = 5;
             this.testTree.SelectionChanged += new System.EventHandler(this.testTree_SelectionChanged);
             this.testTree.DoubleClick += new System.EventHandler(this.testTree_DoubleClick);

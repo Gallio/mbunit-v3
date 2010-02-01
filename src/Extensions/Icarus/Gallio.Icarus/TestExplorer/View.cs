@@ -38,17 +38,17 @@ namespace Gallio.Icarus.TestExplorer
 
             InitializeComponent();
 
-            testTree.PassedColor = model.PassedColor;
-            model.PassedColor.PropertyChanged += (s, e) => testTree.PassedColor = model.PassedColor;
+            testTree.SetPassedColor(model.PassedColor);
+            model.PassedColor.PropertyChanged += (s, e) => testTree.SetPassedColor(model.PassedColor);
             
-            testTree.FailedColor = model.FailedColor;
-            model.FailedColor.PropertyChanged += (s, e) => testTree.FailedColor = model.FailedColor;
+            testTree.SetFailedColor(model.FailedColor);
+            model.FailedColor.PropertyChanged += (s, e) => testTree.SetFailedColor(model.FailedColor);
             
-            testTree.InconclusiveColor = model.InconclusiveColor;
-            model.InconclusiveColor.PropertyChanged += (s, e) => testTree.InconclusiveColor = model.InconclusiveColor;
+            testTree.SetInconclusiveColor(model.InconclusiveColor);
+            model.InconclusiveColor.PropertyChanged += (s, e) => testTree.SetInconclusiveColor(model.InconclusiveColor);
             
-            testTree.SkippedColor = model.SkippedColor;
-            model.SkippedColor.PropertyChanged += (s, e) => testTree.SkippedColor = model.SkippedColor;
+            testTree.SetSkippedColor(model.SkippedColor);
+            model.SkippedColor.PropertyChanged += (s, e) => testTree.SetSkippedColor(model.SkippedColor);
 
             if (treeViewComboBox.ComboBox != null)
             {

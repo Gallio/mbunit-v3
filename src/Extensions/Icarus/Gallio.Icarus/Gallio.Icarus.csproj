@@ -108,6 +108,9 @@
     <Compile Include="Controls\NodeCheckBox.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Controls\TestNodeTextBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Events\TestsFailed.cs" />
     <Compile Include="Events\ProjectSaved.cs" />
     <Compile Include="Events\ProjectLoaded.cs" />

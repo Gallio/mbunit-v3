@@ -26,6 +26,7 @@ namespace Gallio.Icarus.Controls
     public class TestTreeView : TreeViewAdv
     {
         private readonly NodeCheckBox nodeCheckBox;
+        private readonly TestNodeTextBox nodeTextBox;
 
         public bool EditEnabled
         {
@@ -37,23 +38,18 @@ namespace Gallio.Icarus.Controls
         {
             get
             {
-                List<string> collapsedNodes = new List<string>();
-                foreach (TreeNodeAdv treeNode in AllNodes)
+                var collapsedNodes = new List<string>();
+                foreach (var treeNode in AllNodes)
                 {
-                    if (!treeNode.IsExpanded)
-                        collapsedNodes.Add(((TestTreeNode)treeNode.Tag).Id);
+                    if (treeNode.IsExpanded)
+                        continue;
+
+                    var id = ((TestTreeNode) treeNode.Tag).Id;
+                    collapsedNodes.Add(id);
                 }
                 return collapsedNodes;
             }
         }
-
-        public Color PassedColor { get; set; }
-        
-        public Color FailedColor { get; set; }
-        
-        public Color SkippedColor { get; set; }
-
-        public Color InconclusiveColor { get; set; }
 
         public TestTreeView()
         {
@@ -82,36 +78,28 @@ namespace Gallio.Icarus.Controls
                                          };
             NodeControls.Add(testStateIcon);
 
-            NodeTextBox nodeTextBox = new NodeTextBox
-                                          {
-                                              DataPropertyName = "Text",
-                                              IncrementalSearchEnabled = true,
-                                              EditEnabled = false,
-                                              LeftMargin = 3,
-                                              ParentColumn = null
-                                          };
-            nodeTextBox.DrawText += nodeTextBox_DrawText;
+            nodeTextBox = new TestNodeTextBox();
             NodeControls.Add(nodeTextBox);
         }
 
-        private void nodeTextBox_DrawText(object sender, DrawEventArgs e)
+        public void SetPassedColor(Color value)
         {
-            var node = (TestTreeNode)e.Node.Tag;
-            switch (node.TestStatus)
-            {
-                case TestStatus.Passed:
-                    e.TextColor = PassedColor;
-                    break;
-                case TestStatus.Failed:
-                    e.TextColor = FailedColor;
-                    break;
-                case TestStatus.Skipped:
-                    e.TextColor = SkippedColor;
-                    break;
-                case TestStatus.Inconclusive:
-                    e.TextColor = InconclusiveColor;
-                    break;
-            }
+            nodeTextBox.PassedColor = value;
+        }
+
+        public void SetFailedColor(Color value)
+        {
+            nodeTextBox.FailedColor = value;
+        }
+
+        public void SetSkippedColor(Color value)
+        {
+            nodeTextBox.SkippedColor = value;
+        }
+
+        public void SetInconclusiveColor(Color value)
+        {
+            nodeTextBox.InconclusiveColor = value;
         }
 
         public void Expand(TestStatus state)
