@@ -47,13 +47,13 @@ namespace MbUnit.Framework
         }
 
         /// <inheritdoc />
-        protected override void Extend(IPatternScope containingScope, IMethodInfo methodInfo)
+        protected override void DecorateContainingScope(IPatternScope containingScope, IMethodInfo methodInfo)
         {
             MethodInfo method = methodInfo.Resolve(true);
             Type comparableType = method.GetParameters()[0].ParameterType;
-            containingScope.TestBuilder.TestActions.BeforeTestChain.After(state =>
+            containingScope.TestBuilder.TestInstanceActions.SetUpTestInstanceChain.Before(state =>
                 Register(comparableType, (x, y) => method.Invoke(null, new[] { x, y })));
-            containingScope.TestBuilder.TestActions.AfterTestChain.Before(state => 
+            containingScope.TestBuilder.TestInstanceActions.TearDownTestInstanceChain.After(state => 
                 Unregister(comparableType));
         }
 

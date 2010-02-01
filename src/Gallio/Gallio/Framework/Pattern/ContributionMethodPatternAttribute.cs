@@ -64,9 +64,7 @@ namespace Gallio.Framework.Pattern
         }
 
         /// <summary>
-        /// <para>
         /// Applies decorations to the containing test.
-        /// </para>
         /// </summary>
         /// <param name="containingScope">The containing scope.</param>
         /// <param name="method">The method to process.</param>

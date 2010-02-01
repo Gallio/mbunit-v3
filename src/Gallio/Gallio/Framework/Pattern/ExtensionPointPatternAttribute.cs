@@ -33,7 +33,7 @@ namespace MbUnit.Framework
     /// </para>
     /// </remarks>
     [SystemInternal]
-    public abstract class ExtensionPointPatternAttribute : PatternAttribute
+    public abstract class ExtensionPointPatternAttribute : DecoratorPatternAttribute
     {
         /// <inheritdoc />
         public override bool IsPrimary
@@ -60,7 +60,7 @@ namespace MbUnit.Framework
                 ThrowUsageErrorException(String.Format("Expected the custom extensibility method '{0}' to be static.", methodInfo.Name));
 
             Verify(methodInfo);
-            Extend(containingScope, methodInfo);
+            containingScope.TestComponentBuilder.AddDeferredAction(codeElement, Order, () => DecorateContainingScope(containingScope, methodInfo));
         }
 
         /// <summary>
@@ -70,10 +70,10 @@ namespace MbUnit.Framework
         protected abstract void Verify(IMethodInfo methodInfo);
 
         /// <summary>
-        /// Extends the framework.
+        /// Extends the framework by decorating to the containing test.
         /// </summary>
         /// <param name="containingScope">The containing scope.</param>
         /// <param name="methodInfo">The method to verify</param>
-        protected abstract void Extend(IPatternScope containingScope, IMethodInfo methodInfo);
+        protected abstract void DecorateContainingScope(IPatternScope containingScope, IMethodInfo methodInfo);
     }
 }

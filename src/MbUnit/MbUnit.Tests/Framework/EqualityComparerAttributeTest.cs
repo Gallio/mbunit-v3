@@ -45,7 +45,7 @@ namespace MbUnit.Tests.Framework
             (x, y) => y.Contains(x));
         }
 
-        internal class NonEquatableStub
+        public class NonEquatableStub
         {
             private readonly int value;
 

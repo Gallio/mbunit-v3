@@ -62,13 +62,13 @@ namespace MbUnit.Framework
         }
 
         /// <inheritdoc />
-        protected override void Extend(IPatternScope containingScope, IMethodInfo methodInfo)
+        protected override void DecorateContainingScope(IPatternScope containingScope, IMethodInfo methodInfo)
         {
             MethodInfo method = methodInfo.Resolve(true);
             Type type = method.GetParameters()[0].ParameterType;
-            containingScope.TestBuilder.TestActions.BeforeTestChain.After(state =>
+            containingScope.TestBuilder.TestInstanceActions.SetUpTestInstanceChain.Before(state =>
                 CustomFormatters.Register(type, source => (string)method.Invoke(null, new[] { source })));
-            containingScope.TestBuilder.TestActions.AfterTestChain.Before(state =>
+            containingScope.TestBuilder.TestInstanceActions.TearDownTestInstanceChain.After(state =>
                 CustomFormatters.Unregister(type));
         }
     }

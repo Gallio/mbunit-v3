@@ -61,7 +61,7 @@ namespace MbUnit.Framework
         }
 
         /// <inheritdoc />
-        protected override void Extend(IPatternScope containingScope, IMethodInfo methodInfo)
+        protected override void DecorateContainingScope(IPatternScope containingScope, IMethodInfo methodInfo)
         {
             MethodInfo method = methodInfo.Resolve(true);
             Type sourceType = method.GetParameters()[0].ParameterType;
