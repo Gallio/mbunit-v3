@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using Aga.Controls.Tree;
+using Gallio.Icarus.Models.TestTreeNodes;
 using Gallio.Icarus.TreeBuilders;
 using Gallio.Model.Schema;
 using Gallio.Runner.Reports.Schema;
@@ -42,22 +43,31 @@ namespace Gallio.Icarus.Models
         {
             // (this event is fired when a node checkstate changes)
             var testCount = 0;
+            
             foreach (Node node in innerTreeModel.GetChildren(new TreePath()))
                 testCount += CountTests(node);
+
             TestCount.Value = testCount;
         }
 
         private static int CountTests(Node node)
         {
             int count = 0;
+
+            var testDataNode = node as TestDataNode;
             
-            if (((TestTreeNode)node).IsTest && node.IsChecked)
+            if (NodeIsASelectedTest(testDataNode))
                 count += 1;
 
             foreach (var n in node.Nodes)
                 count += CountTests(n);
 
             return count;
+        }
+
+        private static bool NodeIsASelectedTest(TestDataNode testDataNode)
+        {
+            return testDataNode != null && testDataNode.IsTest && testDataNode.IsChecked;
         }
 
         public TestTreeNode Root

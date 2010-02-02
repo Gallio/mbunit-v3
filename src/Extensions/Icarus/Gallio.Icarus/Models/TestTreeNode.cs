@@ -15,67 +15,34 @@
 
 using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Windows.Forms;
 using Aga.Controls.Tree;
-using Gallio.Icarus.Properties;
 using Gallio.Model;
 using Gallio.Runner.Reports.Schema;
 
 namespace Gallio.Icarus.Models
 {
-    public class TestTreeNode : Node, IComparable<TestTreeNode>
+    public class TestTreeNode : ThreeStateNode, IComparable<TestTreeNode>
     {
-        public virtual string Id { get; private set; }
-
         private TestStatus testStatus = TestStatus.Skipped;
         private readonly List<TestStepRun> testStepRuns = new List<TestStepRun>();
 
-        public virtual string FileName { get; protected set; }
+        public virtual string Id { get; private set; }
 
         public TestStatus TestStatus
         {
-            get { return testStatus; }
+            get
+            {
+                return testStatus;
+            }
             set
             {
                 testStatus = value;
-                TestStatusIcon = GetTestStatusIcon(value);
                 NotifyModel();
                 UpdateParentTestStatus();
             }
         }
 
-        public virtual bool SourceCodeAvailable { get; protected set; }
-
-        public virtual bool IsTest { get; protected set; }
-
         public virtual string TestKind { get; set; }
-
-        /// <summary>
-        /// Returns the 'combined' state for all siblings of a node.
-        /// </summary>
-        private CheckState SiblingsState
-        {
-            get
-            {
-                // If parent is null, cannot have any siblings or if the parent
-                // has only one child (i.e. this node) then return the state of this 
-                // instance as the state.
-                if (Parent == null || Parent.Nodes.Count == 1)
-                    return CheckState;
-
-                // The parent has more than one child.  Walk through parent's child
-                // nodes to determine the state of all this node's siblings,
-                // including this node.
-                foreach (var node in Parent.Nodes)
-                {
-                    var child = node as TestTreeNode;
-                    if (child != null && CheckState != child.CheckState)
-                        return CheckState.Indeterminate;
-                }
-                return CheckState;
-            }
-        }
 
         private TestStatus SiblingTestStatus
         {
@@ -102,27 +69,9 @@ namespace Gallio.Icarus.Models
             }
         }
 
-        public Image TestStatusIcon { get; private set; }
-
         public List<TestStepRun> TestStepRuns
         {
             get { return testStepRuns; }
-        }
-
-        public override CheckState CheckState
-        {
-            get
-            {
-                return base.CheckState;
-            }
-            set
-            {
-                if (base.CheckState == value)
-                    return;
-
-                base.CheckState = value;
-                UpdateStateOfRelatedNodes();
-            }
         }
 
         public TestTreeNode(string id, string text)
@@ -163,73 +112,11 @@ namespace Gallio.Icarus.Models
             return nodes;
         }
 
-        /// <summary>
-        /// Manages updating related child and parent nodes of this instance.
-        /// </summary>
-        private void UpdateStateOfRelatedNodes()
-        {
-            if (CheckState != CheckState.Indeterminate)
-            {
-                UpdateChildNodeState();
-            }
-            UpdateParentNodeState();
-        }
-
-        /// <summary>
-        /// Recursively update child node's state based on the state of this node.
-        /// </summary>
-        private void UpdateChildNodeState()
-        {
-            var checkState = CheckState;
-
-            foreach (var node in Nodes)
-            {
-                var child = node as TestTreeNode;
-
-                if (child != null)
-                {
-                    child.CheckState = checkState;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Recursively update parent node state based on the current state of this node.
-        /// </summary>
-        private void UpdateParentNodeState()
-        {
-            var parent = Parent as TestTreeNode;
-
-            if (parent == null)
-                return;
-
-            var newState = CheckState == CheckState.Indeterminate ? CheckState.Indeterminate 
-                : SiblingsState;
-
-            if (parent.CheckState != newState)
-                Parent.CheckState = newState;
-        }
-
         private void UpdateParentTestStatus()
         {
             var parent = Parent as TestTreeNode;
             if (parent != null)
                 parent.TestStatus = SiblingTestStatus;
-        }
-
-        private static Image GetTestStatusIcon(TestStatus status)
-        {
-            switch (status)
-            {
-                case TestStatus.Failed:
-                    return Resources.cross;
-                case TestStatus.Passed:
-                    return Resources.tick;
-                case TestStatus.Inconclusive:
-                    return Resources.error;
-            }
-            
-            return null;
         }
 
         public void AddTestStepRun(TestStepRun testStepRun)
@@ -243,8 +130,7 @@ namespace Gallio.Icarus.Models
 
         public void Reset()
         {
-            testStatus = TestStatus.Skipped;
-            TestStatusIcon = GetTestStatusIcon(TestStatus.Skipped);
+            TestStatus = TestStatus.Skipped;
 
             testStepRuns.Clear();
 

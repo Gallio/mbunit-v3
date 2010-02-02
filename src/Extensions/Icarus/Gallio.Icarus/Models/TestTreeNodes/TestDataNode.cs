@@ -58,7 +58,7 @@ namespace Gallio.Icarus.Models.TestTreeNodes
             }
         }
 
-        public override string FileName
+        public string FileName
         {
             get
             {
@@ -66,7 +66,7 @@ namespace Gallio.Icarus.Models.TestTreeNodes
             }
         }
 
-        public override bool SourceCodeAvailable
+        public bool SourceCodeAvailable
         {
             get
             {
@@ -74,12 +74,9 @@ namespace Gallio.Icarus.Models.TestTreeNodes
             }
         }
 
-        public override bool IsTest
+        public bool IsTest
         {
-            get
-            {
-                return testData.IsTestCase;
-            }
+            get { return testData.IsTestCase; }
         }
     }
 }

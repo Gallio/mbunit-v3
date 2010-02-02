@@ -118,13 +118,15 @@ namespace Gallio.Icarus.TestExplorer
 
         private void removeFileToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (testTree.SelectedNode == null || !(testTree.SelectedNode.Tag is TestTreeNode))
+            if (testTree.SelectedNode == null || !(testTree.SelectedNode.Tag is TestDataNode))
                 return;
 
-            var node = (TestTreeNode)testTree.SelectedNode.Tag;
+            var node = (TestDataNode)testTree.SelectedNode.Tag;
 
             if (node.FileName != null)
+            {
                 controller.RemoveFile(node.FileName);
+            }
         }
 
         private void treeViewComboBox_SelectedIndexChanged(object sender, EventArgs e)
@@ -211,9 +213,10 @@ namespace Gallio.Icarus.TestExplorer
         {
             var nodes = new List<TestTreeNode>();
 
-            if (testTree.SelectedNode != null)
+            if (testTree.SelectedNode != null && testTree.SelectedNode.Tag is TestDataNode)
             {
-                var testTreeNode = (TestTreeNode)testTree.SelectedNode.Tag;
+                var testTreeNode = (TestDataNode)testTree.SelectedNode.Tag;
+
                 removeFileToolStripMenuItem.Enabled = testTreeNode.FileName != null;
                 viewSourceCodeToolStripMenuItem.Enabled = testTreeNode.SourceCodeAvailable;
 

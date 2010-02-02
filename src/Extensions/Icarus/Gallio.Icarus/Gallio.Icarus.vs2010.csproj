@@ -228,6 +228,7 @@
     <Compile Include="Controls\PropertiesTabControl.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Models\ThreeStateNode.cs" />
     <Compile Include="Services\FilterService.cs" />
     <Compile Include="Services\IFilterService.cs" />
     <Compile Include="WindowManager\MenuList.cs" />

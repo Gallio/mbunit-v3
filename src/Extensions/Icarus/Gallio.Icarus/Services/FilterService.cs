@@ -3,7 +3,6 @@ using System.Windows.Forms;
 using Aga.Controls.Tree;
 using Gallio.Icarus.Models;
 using Gallio.Icarus.Models.TestTreeNodes;
-using Gallio.Model;
 using Gallio.Model.Filters;
 
 namespace Gallio.Icarus.Services

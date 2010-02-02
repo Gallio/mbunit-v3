@@ -16,6 +16,7 @@
 using System.Collections.Generic;
 using Aga.Controls.Tree;
 using Gallio.Icarus.Models;
+using Gallio.Icarus.Models.TestTreeNodes;
 using Gallio.Model;
 using System.Windows.Forms;
 using System.Drawing;
@@ -139,23 +140,32 @@ namespace Gallio.Icarus.Controls
 
         private void SelectNode(TreeNodeAdv node, TestStatus testStatus)
         {
-            if (((TestTreeNode)node.Tag).IsTest)
+            var testDataNode = node.Tag as TestDataNode;
+
+            if (testDataNode == null)
+                return;
+
+            if (testDataNode.IsTest)
             {
-                if (((TestTreeNode)node.Tag).TestStatus == testStatus)
+                if (testDataNode.TestStatus == testStatus)
                 {
-                    ((TestTreeNode)node.Tag).CheckState = CheckState.Checked;
+                    testDataNode.CheckState = CheckState.Checked;
                     Expand(node);
                 }
                 else
                 {
-                    ((TestTreeNode)node.Tag).CheckState = CheckState.Unchecked;
+                    testDataNode.CheckState = CheckState.Unchecked;
                 }
             }
             else
-                ((TestTreeNode)node.Tag).CheckState = CheckState.Unchecked;
+            {
+                testDataNode.CheckState = CheckState.Unchecked;
+            }
 
             foreach (TreeNodeAdv tNode in node.Children)
+            {
                 SelectNode(tNode, testStatus);
+            }
         }
     }
 }

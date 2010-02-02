@@ -142,7 +142,12 @@ namespace Gallio.Icarus.Controllers
                     UpdateTestResults();
                 }
 
-                return listViewItems[itemIndex - firstItem];
+                var listViewItem = listViewItems[itemIndex - firstItem];
+
+                if (listViewItem == null)
+                    throw new Exception();
+
+                return listViewItem;
             }
             catch
             {
