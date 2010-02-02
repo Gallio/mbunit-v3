@@ -15,7 +15,6 @@
 
 using System.Collections.Generic;
 using Aga.Controls.Tree;
-using Aga.Controls.Tree.NodeControls;
 using Gallio.Icarus.Models;
 using Gallio.Model;
 using System.Windows.Forms;
@@ -38,11 +37,7 @@ namespace Gallio.Icarus.Controls
                                };
             NodeControls.Add(nodeCheckBox);
 
-            NodeIcon nodeTypeIcon = new NodeIcon
-                                        {
-                                            DataPropertyName = "NodeTypeIcon",
-                                        };
-            NodeControls.Add(nodeTypeIcon);
+            NodeControls.Add(new TestKindIcon());
 
             NodeControls.Add(new TestStatusNodeIcon());
 

@@ -91,6 +91,8 @@
     <Compile Include="Controls\NodeCheckBoxTest.cs" />
     <Compile Include="Controls\ProjectTreeViewTest.cs" />
     <Compile Include="Controls\TestNodeTextBoxTest.cs" />
+    <Compile Include="Controls\TestKindIconTest.cs">
+    </Compile>
     <Compile Include="Controls\TestResultsListTest.cs">
     </Compile>
     <Compile Include="Controls\TestStatusBarTest.cs">

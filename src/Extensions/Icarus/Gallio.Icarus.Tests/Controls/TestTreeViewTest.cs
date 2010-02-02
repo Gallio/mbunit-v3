@@ -15,29 +15,43 @@
 
 using Gallio.Icarus.Controls;
 using MbUnit.Framework;
-using Aga.Controls.Tree.NodeControls;
 using NodeCheckBox = Gallio.Icarus.Controls.NodeCheckBox;
 
 namespace Gallio.Icarus.Tests.Controls
 {
     public class TestTreeViewTest
     {
-        [Test]
-        public void Constructor_Test()
-        {
-            TestTreeView testTreeView = new TestTreeView();
-            Assert.AreEqual(4, testTreeView.NodeControls.Count);
+        private TestTreeView testTreeView;
 
+        [SetUp]
+        public void SetUp()
+        {
+            testTreeView = new TestTreeView();
+        }
+
+        [Test]
+        public void TestTreeView_should_have_four_node_controls()
+        {
+            Assert.AreEqual(4, testTreeView.NodeControls.Count);
+        }
+
+        [Test]
+        public void Node_check_box_test()
+        {
             var nodeCheckBox = (NodeCheckBox)testTreeView.NodeControls[0];
             Assert.AreEqual("CheckState", nodeCheckBox.DataPropertyName);
-            Assert.AreEqual(0, nodeCheckBox.LeftMargin);
-            Assert.IsNull(nodeCheckBox.ParentColumn);
             Assert.IsTrue(nodeCheckBox.ThreeState);
+        }
 
-            NodeIcon nodeTypeIcon = (NodeIcon) testTreeView.NodeControls[1];
-            Assert.AreEqual("NodeTypeIcon", nodeTypeIcon.DataPropertyName);
-            Assert.AreEqual(1, nodeTypeIcon.LeftMargin);
-            Assert.IsNull(nodeTypeIcon.ParentColumn);
+        [Test]
+        public void Setting_EditEnabled_to_false_should_disable_checkbox()
+        {
+            var nodeCheckBox = (NodeCheckBox)testTreeView.NodeControls[0];
+            Assert.IsTrue(nodeCheckBox.EditEnabled);
+            
+            testTreeView.SetEditEnabled(false);
+            
+            Assert.IsFalse(nodeCheckBox.EditEnabled);
         }
     }
 }

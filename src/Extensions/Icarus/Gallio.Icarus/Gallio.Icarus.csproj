@@ -105,6 +105,10 @@
     <Compile Include="Commands\OpenReportCommand.cs" />
     <Compile Include="Commands\RefreshTestTreeCommand.cs" />
     <Compile Include="Commands\ReloadCommand.cs" />
+    <Compile Include="Controls\NodeTypeImageCache.cs" />
+    <Compile Include="Controls\TestKindIcon.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controls\NodeCheckBox.cs">
       <SubType>Component</SubType>
     </Compile>

@@ -21,7 +21,6 @@ using Aga.Controls.Tree;
 using Gallio.Icarus.Properties;
 using Gallio.Model;
 using Gallio.Runner.Reports.Schema;
-using Gallio.Runtime;
 
 namespace Gallio.Icarus.Models
 {
@@ -29,13 +28,8 @@ namespace Gallio.Icarus.Models
     {
         public virtual string Id { get; private set; }
 
-        // TODO: Refactor me.
-        private static readonly object imageCacheLock = new object();
-        private static Dictionary<string, Image> imageCache;
-
         private TestStatus testStatus = TestStatus.Skipped;
         private readonly List<TestStepRun> testStepRuns = new List<TestStepRun>();
-        private string testKind;
 
         public virtual string FileName { get; protected set; }
 
@@ -55,18 +49,7 @@ namespace Gallio.Icarus.Models
 
         public virtual bool IsTest { get; protected set; }
 
-        public virtual string TestKind 
-        {
-            get
-            {
-                return testKind;
-            }
-            set
-            {
-                testKind = value;
-                NodeTypeIcon = GetNodeTypeImage(testKind);
-            }
-        }
+        public virtual string TestKind { get; set; }
 
         /// <summary>
         /// Returns the 'combined' state for all siblings of a node.
@@ -119,8 +102,6 @@ namespace Gallio.Icarus.Models
             }
         }
 
-        public Image NodeTypeIcon { get; protected set; }
-
         public Image TestStatusIcon { get; private set; }
 
         public List<TestStepRun> TestStepRuns
@@ -148,35 +129,6 @@ namespace Gallio.Icarus.Models
             : base(text)
         {
             Id = id;
-        }
-
-        private static Image GetNodeTypeImage(string nodeType)
-        {
-            if (nodeType == null)
-                return null;
-
-            lock (imageCacheLock)
-            {
-                if (imageCache == null)
-                {
-                    imageCache = new Dictionary<string, Image>();
-
-                    var testKindManager = RuntimeAccessor.ServiceLocator.Resolve<ITestKindManager>();
-                    foreach (var handle in testKindManager.TestKindHandles)
-                    {
-                        TestKindTraits traits = handle.GetTraits();
-                        Image image = traits.Icon != null
-                            ? new Icon(traits.Icon, 16, 16).ToBitmap()
-                            : Resources.Group;
-
-                        imageCache.Add(traits.Name, image);
-                    }
-                }
-
-                Image nodeTypeImage;
-                imageCache.TryGetValue(nodeType, out nodeTypeImage);
-                return nodeTypeImage;
-            }
         }
 
         public List<TestTreeNode> Find(string key, bool searchChildren)

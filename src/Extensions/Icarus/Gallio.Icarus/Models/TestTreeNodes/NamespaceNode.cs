@@ -26,7 +26,6 @@ namespace Gallio.Icarus.Models.TestTreeNodes
         public NamespaceNode(string @namespace)
             : base(@namespace, @namespace)
         {
-            NodeTypeIcon = Properties.Resources.Namespace;
             CheckState = System.Windows.Forms.CheckState.Checked;
             CodeElement = Reflector.WrapNamespace(@namespace);
             Metadata = new PropertyBag();
