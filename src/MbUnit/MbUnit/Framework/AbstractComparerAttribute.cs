@@ -36,24 +36,20 @@ namespace MbUnit.Framework
     /// </remarks>
     /// <seealso cref="ComparerAttribute"/>
     /// <seealso cref="EqualityComparerAttribute"/>
-    [SystemInternal]
+    [AttributeUsage(PatternAttributeTargets.ContributionMethod, AllowMultiple = false, Inherited = true)]
     public abstract class AbstractComparerAttribute : ExtensionPointPatternAttribute
     {
-        /// <summary>
-        /// Protected constructor.
-        /// </summary>
-        protected AbstractComparerAttribute()
-        {
-        }
-
         /// <inheritdoc />
-        protected override void DecorateContainingScope(IPatternScope containingScope, IMethodInfo methodInfo)
+        protected override void DecorateContainingScope(IPatternScope containingScope, IMethodInfo method)
         {
-            MethodInfo method = methodInfo.Resolve(true);
-            Type comparableType = method.GetParameters()[0].ParameterType;
+            Type comparableType = method.Parameters[0].Resolve(true).ParameterType;
             containingScope.TestBuilder.TestInstanceActions.SetUpTestInstanceChain.Before(state =>
-                Register(comparableType, (x, y) => method.Invoke(null, new[] { x, y })));
-            containingScope.TestBuilder.TestInstanceActions.TearDownTestInstanceChain.After(state => 
+                Register(comparableType, (x, y) => state.InvokeFixtureMethod(method, new[]
+                {
+                    new KeyValuePair<ISlotInfo, object>(method.Parameters[0], x), 
+                    new KeyValuePair<ISlotInfo, object>(method.Parameters[1], y), 
+                })));
+            containingScope.TestBuilder.TestInstanceActions.TearDownTestInstanceChain.After(state =>
                 Unregister(comparableType));
         }
 

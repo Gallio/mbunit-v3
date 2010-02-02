@@ -21,6 +21,7 @@ using Gallio.Common.Reflection;
 using Gallio.Framework;
 using Gallio.Framework.Pattern;
 using System.Collections.Generic;
+using Gallio.Model;
 
 namespace MbUnit.Framework
 {
@@ -32,7 +33,7 @@ namespace MbUnit.Framework
     /// Extension point attributes act through a static method.
     /// </para>
     /// </remarks>
-    [SystemInternal]
+    [AttributeUsage(PatternAttributeTargets.ContributionMethod, AllowMultiple = false, Inherited = true)]
     public abstract class ExtensionPointPatternAttribute : DecoratorPatternAttribute
     {
         /// <inheritdoc />
@@ -44,36 +45,42 @@ namespace MbUnit.Framework
             }
         }
 
-        /// <summary>
-        /// Protected constructor.
-        /// </summary>
-        protected ExtensionPointPatternAttribute()
+        /// <inheritdoc />
+        public override IList<TestPart> GetTestParts(IPatternEvaluator evaluator, ICodeElementInfo codeElement)
         {
+            return new[] { new TestPart() { IsTestContribution = true } };
         }
 
         /// <inheritdoc />
         public override void Consume(IPatternScope containingScope, ICodeElementInfo codeElement, bool skipChildren)
         {
-            var methodInfo = (IMethodInfo)codeElement;
-
-            if (!methodInfo.IsStatic)
-                ThrowUsageErrorException(String.Format("Expected the custom extensibility method '{0}' to be static.", methodInfo.Name));
-
-            Verify(methodInfo);
-            containingScope.TestComponentBuilder.AddDeferredAction(codeElement, Order, () => DecorateContainingScope(containingScope, methodInfo));
+            var method = codeElement as IMethodInfo;
+            Validate(containingScope, method);
+            containingScope.TestComponentBuilder.AddDeferredAction(codeElement, Order, () => DecorateContainingScope(containingScope, method));
         }
 
         /// <summary>
-        /// Verifies that the method has a compatible signature.
-        /// </summary>
-        /// <param name="methodInfo">The method to verify</param>
-        protected abstract void Verify(IMethodInfo methodInfo);
-
-        /// <summary>
-        /// Extends the framework by decorating to the containing test.
+        /// Verifies that the attribute is being used correctly.
         /// </summary>
         /// <param name="containingScope">The containing scope.</param>
-        /// <param name="methodInfo">The method to verify</param>
-        protected abstract void DecorateContainingScope(IPatternScope containingScope, IMethodInfo methodInfo);
+        /// <param name="method">The method.</param>
+        /// <exception cref="PatternUsageErrorException">Thrown if the attribute is being used incorrectly.</exception>
+        protected virtual void Validate(IPatternScope containingScope, IMethodInfo method)
+        {
+            if (!containingScope.IsTestDeclaration || method == null)
+                ThrowUsageErrorException(String.Format("This attribute can only be used on a method within a test type."));
+
+            if (!method.IsStatic)
+                ThrowUsageErrorException(String.Format("Expected the custom extensibility method '{0}' to be static.", method.Name));
+        }
+
+        /// <summary>
+        /// Applies decorations to the containing test.
+        /// </summary>
+        /// <param name="containingScope">The containing scope.</param>
+        /// <param name="method">The method to process.</param>
+        protected virtual void DecorateContainingScope(IPatternScope containingScope, IMethodInfo method)
+        {
+        }
     }
 }

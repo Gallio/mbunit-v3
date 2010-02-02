@@ -17,6 +17,7 @@ using System;
 using Gallio.Common;
 using Gallio.Common.Reflection;
 using Gallio.Framework;
+using Gallio.Framework.Pattern;
 
 namespace MbUnit.Framework
 {
@@ -41,20 +42,22 @@ namespace MbUnit.Framework
     /// ]]></code>
     /// </example>
     /// <seealso cref="EqualityComparerAttribute"/>
-    [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = false)]
+    [AttributeUsage(PatternAttributeTargets.ContributionMethod, AllowMultiple = false, Inherited = true)]
     public class ComparerAttribute : AbstractComparerAttribute
     {
         /// <inheritdoc />
-        protected override void Verify(IMethodInfo methodInfo)
+        protected override void Validate(IPatternScope containingScope, IMethodInfo method)
         {
-            if (methodInfo.ReturnType.Resolve(true) != typeof(int))
-                ThrowUsageErrorException(String.Format("Expected the custom conversion method '{0}' to return '{1}', but found '{2}'.", methodInfo.Name, typeof(int), methodInfo.ReturnType));
+            base.Validate(containingScope, method);
 
-            if (methodInfo.Parameters.Count != 2)
-                ThrowUsageErrorException(String.Format("Expected the custom conversion method '{0}' to take 2 parameters, but found {1}.", methodInfo.Name, methodInfo.Parameters.Count));
+            if (method.ReturnType.Resolve(true) != typeof(int))
+                ThrowUsageErrorException(String.Format("Expected the custom conversion method '{0}' to return '{1}', but found '{2}'.", method.Name, typeof(int), method.ReturnType));
 
-            if (!methodInfo.Parameters[0].ValueType.Equals(methodInfo.Parameters[1].ValueType))
-                ThrowUsageErrorException(String.Format("Expected the custom conversion method '{0}' to take 2 parameters of the same type, but found '{1}' and '{2}'.", methodInfo.Name, methodInfo.Parameters[0], methodInfo.Parameters[1]));
+            if (method.Parameters.Count != 2)
+                ThrowUsageErrorException(String.Format("Expected the custom conversion method '{0}' to take 2 parameters, but found {1}.", method.Name, method.Parameters.Count));
+
+            if (!method.Parameters[0].ValueType.Equals(method.Parameters[1].ValueType))
+                ThrowUsageErrorException(String.Format("Expected the custom conversion method '{0}' to take 2 parameters of the same type, but found '{1}' and '{2}'.", method.Name, method.Parameters[0], method.Parameters[1]));
         }
 
         /// <inheritdoc />

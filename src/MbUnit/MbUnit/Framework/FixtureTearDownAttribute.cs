@@ -50,11 +50,8 @@ namespace MbUnit.Framework
         /// <inheritdoc />
         protected override void DecorateContainingScope(IPatternScope containingScope, IMethodInfo method)
         {
-            containingScope.TestBuilder.TestInstanceActions.TearDownTestInstanceChain.After(
-                delegate(PatternTestInstanceState testInstanceState)
-                {
-                    testInstanceState.InvokeFixtureMethod(method, EmptyArray<KeyValuePair<ISlotInfo, object>>.Instance);
-                });
+            containingScope.TestBuilder.TestInstanceActions.TearDownTestInstanceChain.After(state =>
+                state.InvokeFixtureMethod(method, EmptyArray<KeyValuePair<ISlotInfo, object>>.Instance));
         }
     }
 }

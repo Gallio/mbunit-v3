@@ -45,29 +45,30 @@ namespace MbUnit.Framework
     /// }
     /// ]]></code>
     /// </example>
-    [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = false)]
+    [AttributeUsage(PatternAttributeTargets.ContributionMethod, AllowMultiple = false, Inherited = true)]
     public class FormatterAttribute : ExtensionPointPatternAttribute
     {
-        /// <summary>
-        /// Verifies that the method has a compatible signature.
-        /// </summary>
-        /// <param name="methodInfo">The method to verify</param>
-        protected override void Verify(IMethodInfo methodInfo)
+        /// <inheritdoc />
+        protected override void Validate(IPatternScope containingScope, IMethodInfo method)
         {
-            if (methodInfo.ReturnType.Resolve(true) != typeof(string))
-                ThrowUsageErrorException(String.Format("Expected the custom formatting method '{0}' to return a value of type '{1}', but found '{2}'.", methodInfo.Name, typeof(string), methodInfo.ReturnType));
+            base.Validate(containingScope, method);
 
-             if (methodInfo.Parameters.Count != 1)
-                 ThrowUsageErrorException(String.Format("Expected the custom formatting method '{0}' to take only one parameter, but found {1}.", methodInfo.Name, methodInfo.Parameters.Count));
+            if (method.ReturnType.Resolve(true) != typeof(string))
+                ThrowUsageErrorException(String.Format("Expected the custom formatting method '{0}' to return a value of type '{1}', but found '{2}'.", method.Name, typeof(string), method.ReturnType));
+
+            if (method.Parameters.Count != 1)
+                ThrowUsageErrorException(String.Format("Expected the custom formatting method '{0}' to take only one parameter, but found {1}.", method.Name, method.Parameters.Count));
         }
 
         /// <inheritdoc />
-        protected override void DecorateContainingScope(IPatternScope containingScope, IMethodInfo methodInfo)
+        protected override void DecorateContainingScope(IPatternScope containingScope, IMethodInfo method)
         {
-            MethodInfo method = methodInfo.Resolve(true);
-            Type type = method.GetParameters()[0].ParameterType;
+            Type type = method.Parameters[0].Resolve(true).ParameterType;
             containingScope.TestBuilder.TestInstanceActions.SetUpTestInstanceChain.Before(state =>
-                CustomFormatters.Register(type, source => (string)method.Invoke(null, new[] { source })));
+                CustomFormatters.Register(type, source => (string)state.InvokeFixtureMethod(method, new[]
+                {
+                    new KeyValuePair<ISlotInfo, object>(method.Parameters[0], source), 
+                })));
             containingScope.TestBuilder.TestInstanceActions.TearDownTestInstanceChain.After(state =>
                 CustomFormatters.Unregister(type));
         }

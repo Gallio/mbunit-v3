@@ -44,31 +44,32 @@ namespace MbUnit.Framework
     /// }
     /// ]]></code>
     /// </example>
-    [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = false)]
+    [AttributeUsage(PatternAttributeTargets.ContributionMethod, AllowMultiple = false, Inherited = true)]
     public class ConverterAttribute : ExtensionPointPatternAttribute
     {
-        /// <summary>
-        /// Verifies that the method has a compatible signature.
-        /// </summary>
-        /// <param name="methodInfo">The method to verify</param>
-        protected override void Verify(IMethodInfo methodInfo)
+        /// <inheritdoc />
+        protected override void Validate(IPatternScope containingScope, IMethodInfo method)
         {
-            if (methodInfo.ReturnType.Resolve(true) == typeof(void))
-                ThrowUsageErrorException(String.Format("Expected the custom conversion method '{0}' to not return void.", methodInfo.Name));
+            base.Validate(containingScope, method);
 
-             if (methodInfo.Parameters.Count != 1)
-                 ThrowUsageErrorException(String.Format("Expected the custom conversion method '{0}' to take only one parameter, but found {1}.", methodInfo.Name, methodInfo.Parameters.Count));
+            if (method.ReturnType.Resolve(true) == typeof(void))
+                ThrowUsageErrorException(String.Format("Expected the custom conversion method '{0}' to not return void.", method.Name));
+
+            if (method.Parameters.Count != 1)
+                ThrowUsageErrorException(String.Format("Expected the custom conversion method '{0}' to take only one parameter, but found {1}.", method.Name, method.Parameters.Count));
         }
 
         /// <inheritdoc />
-        protected override void DecorateContainingScope(IPatternScope containingScope, IMethodInfo methodInfo)
+        protected override void DecorateContainingScope(IPatternScope containingScope, IMethodInfo method)
         {
-            MethodInfo method = methodInfo.Resolve(true);
-            Type sourceType = method.GetParameters()[0].ParameterType;
-            Type targetType = method.ReturnType;
-            containingScope.TestBuilder.TestActions.BeforeTestChain.After(state =>
-                CustomConverters.Register(sourceType, targetType, source => method.Invoke(null, new[] { source })));
-            containingScope.TestBuilder.TestActions.AfterTestChain.Before(state =>
+            Type sourceType = method.Parameters[0].Resolve(true).ParameterType;
+            Type targetType = method.ReturnType.Resolve(true);
+            containingScope.TestBuilder.TestInstanceActions.SetUpTestInstanceChain.Before(state =>
+                CustomConverters.Register(sourceType, targetType, source => state.InvokeFixtureMethod(method, new[]
+                {
+                    new KeyValuePair<ISlotInfo, object>(method.Parameters[0], source), 
+                })));
+            containingScope.TestBuilder.TestInstanceActions.TearDownTestInstanceChain.After(state =>
                 CustomConverters.Unregister(sourceType, targetType));
         }
     }

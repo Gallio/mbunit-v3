@@ -431,7 +431,7 @@ namespace Gallio.Framework.Pattern
             if (fixtureType == null)
                 throw new InvalidOperationException("This method cannot be used when FixtureType is null.");
 
-            MethodInvocationSpec spec = new MethodInvocationSpec(fixtureType, method, slotValues, Converter);
+            var spec = new MethodInvocationSpec(fixtureType, method, slotValues, Converter);
             return spec.Invoke(fixtureInstance);
         }
 
