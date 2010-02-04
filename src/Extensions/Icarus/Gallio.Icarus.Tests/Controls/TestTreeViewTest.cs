@@ -36,11 +36,17 @@ namespace Gallio.Icarus.Tests.Controls
         }
 
         [Test]
-        public void Node_check_box_test()
+        public void Node_check_box_should_be_three_state()
         {
             var nodeCheckBox = (NodeCheckBox)testTreeView.NodeControls[0];
-            Assert.AreEqual("CheckState", nodeCheckBox.DataPropertyName);
             Assert.IsTrue(nodeCheckBox.ThreeState);
+        }
+
+        [Test]
+        public void Node_check_box_should_be_enabled()
+        {
+            var nodeCheckBox = (NodeCheckBox)testTreeView.NodeControls[0];
+            Assert.IsTrue(nodeCheckBox.EditEnabled);
         }
 
         [Test]

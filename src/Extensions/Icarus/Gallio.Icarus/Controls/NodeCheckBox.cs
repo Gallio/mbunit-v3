@@ -14,19 +14,47 @@
 // limitations under the License.
 
 using System.Windows.Forms;
+using Aga.Controls.Tree;
+using Gallio.Icarus.Models;
 
 namespace Gallio.Icarus.Controls
 {
     public class NodeCheckBox : Aga.Controls.Tree.NodeControls.NodeCheckBox
     {
+        public NodeCheckBox()
+        {
+            ThreeState = true;
+            EditEnabled = true;
+        }
+
+        public override object GetValue(TreeNodeAdv node)
+        {
+            var threeStateNode = node.Tag as ThreeStateNode;
+
+            if (threeStateNode == null)
+                return null;
+
+            return threeStateNode.CheckState;
+        }
+
+        protected override void SetCheckState(TreeNodeAdv node, CheckState value)
+        {
+            var threeStateNode = node.Tag as ThreeStateNode;
+
+            if (threeStateNode == null)
+                return;
+
+            threeStateNode.CheckState = value;
+        }
+
         protected override CheckState GetNewState(CheckState state)
         {
             switch (state)
             {
                 case CheckState.Unchecked:
-                        return CheckState.Checked;
+                    return CheckState.Checked;
                 default:
-                        return CheckState.Unchecked;
+                    return CheckState.Unchecked;
             }
         }
     }

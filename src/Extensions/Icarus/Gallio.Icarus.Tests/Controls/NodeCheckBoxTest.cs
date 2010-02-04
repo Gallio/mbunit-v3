@@ -13,9 +13,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
+using System.Diagnostics;
 using System.Windows.Forms;
+using Aga.Controls.Tree;
 using Gallio.Icarus.Controls;
+using Gallio.Icarus.Models;
 using MbUnit.Framework;
+using Action = Gallio.Common.Action;
 
 namespace Gallio.Icarus.Tests.Controls
 {
@@ -60,6 +65,46 @@ namespace Gallio.Icarus.Tests.Controls
             {
                 return base.GetNewState(checkState);
             }
+        }
+
+        [Test, Explicit]
+        public void Perf_test()
+        {
+            var treeNodeAdv = new TreeNodeAdv(new ThreeStateNode());
+            var newCheckBox = new NodeCheckBox();
+            var oldCheckBox = new Aga.Controls.Tree.NodeControls.NodeCheckBox
+            {
+                DataPropertyName = "CheckState"
+            };
+                       
+            const int reps = 1000000;
+
+            var oldTime = Time(() =>
+            {
+                for (int i = 0; i < reps; i++)
+                    oldCheckBox.GetValue(treeNodeAdv);
+            });
+
+            Console.WriteLine("Base node check box: {0}", oldTime);
+
+            var newTime = Time(() =>
+            {
+                for (int i = 0; i < reps; i++)
+                    newCheckBox.GetValue(treeNodeAdv);
+            });
+
+            Console.WriteLine("New node check box: {0}", newTime);
+
+            Assert.GreaterThan(oldTime, newTime);
+        }
+
+        private static TimeSpan Time(Action action)
+        {
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
+            action();
+            stopwatch.Stop();
+            return stopwatch.Elapsed;
         }
     }
 }

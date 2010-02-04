@@ -30,12 +30,7 @@ namespace Gallio.Icarus.Controls
 
         public TestTreeView()
         {
-            nodeCheckBox = new NodeCheckBox
-                               {
-                                   DataPropertyName = "CheckState",
-                                   ThreeState = true,
-                                   EditEnabled = true
-                               };
+            nodeCheckBox = new NodeCheckBox();
             NodeControls.Add(nodeCheckBox);
 
             NodeControls.Add(new TestKindIcon());

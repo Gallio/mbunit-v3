@@ -1,27 +1,27 @@
 ﻿using System.Drawing;
 using Aga.Controls.Tree;
-using Aga.Controls.Tree.NodeControls;
 using Gallio.Icarus.Models;
 using Gallio.Icarus.Properties;
 using Gallio.Model;
 
 namespace Gallio.Icarus.Controls
 {
-    public class TestStatusNodeIcon : NodeIcon
+    public class TestStatusNodeIcon : NodeIcon<TestTreeNode>
     {
         public TestStatusNodeIcon()
+            : base(ttn => ttn.TestStatus)
         {
             DataPropertyName = "TestStatus";
         }
 
         protected override Image GetIcon(TreeNodeAdv node)
         {
-            var treeNode = node.Tag as TestTreeNode;
+            var value = GetValue(node);
 
-            if (treeNode == null)
+            if (value == null)
                 return null;
              
-            return GetTestStatusIcon(treeNode.TestStatus);
+            return GetTestStatusIcon((TestStatus)value);
         }
 
         private static Image GetTestStatusIcon(TestStatus status)
