@@ -12,14 +12,6 @@ namespace Gallio.Icarus.Tests.Controls
     public class TestNodeTextBoxTest
     {
         [Test]
-        public void DataPropertyName_should_be_Text()
-        {
-            var nodeTextBox = new TestNodeTextBox();
-
-            Assert.AreEqual("Text", nodeTextBox.DataPropertyName);
-        }
-
-        [Test]
         public void If_test_status_is_Passed_text_should_be_passed_color()
         {
             var passedColor = Color.Firebrick;

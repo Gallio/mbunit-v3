@@ -6,17 +6,16 @@ using Gallio.Model;
 
 namespace Gallio.Icarus.Controls
 {
-    public class TestNodeTextBox : NodeTextBox
+    public class TestNodeTextBox : NodeTextBox<TestTreeNode>
     {
         public Color PassedColor { get; set; }
         public Color FailedColor { get; set; }
         public Color SkippedColor { get; set; }
         public Color InconclusiveColor { get; set; }
 
-        public TestNodeTextBox()
-        {
-            DataPropertyName = "Text";
-        }
+        public TestNodeTextBox() 
+            : base(ttn => ttn.Text)
+        { }
 
         protected override void OnDrawText(DrawEventArgs args)
         {

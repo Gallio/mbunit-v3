@@ -9,13 +9,6 @@ namespace Gallio.Icarus.Tests.Controls
     public class TestKindIconTest
     {
         [Test]
-        public void Data_property_name_should_be_TestKind()
-        {
-            var testKindIcon = new TestKindIcon();
-
-            Assert.AreEqual("TestKind", testKindIcon.DataPropertyName);
-        }
-
         public void If_value_is_null_image_should_be_null()
         {
             var testKindIcon = new TestTestKindIcon(tna => null, s => null);
@@ -25,6 +18,7 @@ namespace Gallio.Icarus.Tests.Controls
             Assert.IsNull(image);
         }
 
+        [Test]
         public void If_value_is_string_it_should_be_used_to_select_the_image()
         {
             const string nodetype = "nodeType";
@@ -39,6 +33,7 @@ namespace Gallio.Icarus.Tests.Controls
             Assert.IsNull(image);
         }
 
+        [Test]
         public void Image_from_getNodeTypeImage_should_be_returned()
         {
             var bitmap = new Bitmap(1, 1);

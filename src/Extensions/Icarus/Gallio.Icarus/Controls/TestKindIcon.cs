@@ -15,15 +15,15 @@
 
 using System.Drawing;
 using Aga.Controls.Tree;
+using Gallio.Icarus.Models;
 
 namespace Gallio.Icarus.Controls
 {
-    public class TestKindIcon : Aga.Controls.Tree.NodeControls.NodeIcon
+    public class TestKindIcon : NodeIcon<TestTreeNode>
     {
         public TestKindIcon()
-        {
-            DataPropertyName = "TestKind";
-        }
+            : base(ttn => ttn.TestKind)
+        { }
 
         protected override Image GetIcon(TreeNodeAdv node)
         {
