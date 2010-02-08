@@ -60,17 +60,13 @@ namespace MbUnit.Framework
         }
 
         /// <inheritdoc />
-        protected override void DecorateContainingScope(IPatternScope containingScope, IMethodInfo method)
+        protected override void DecorateContainingScope(IPatternScope containingScope, IMethodInfo methodInfo)
         {
-            Type sourceType = method.Parameters[0].Resolve(true).ParameterType;
-            Type targetType = method.ReturnType.Resolve(true);
-            containingScope.TestBuilder.TestInstanceActions.SetUpTestInstanceChain.Before(state =>
-                CustomConverters.Register(sourceType, targetType, source => state.InvokeFixtureMethod(method, new[]
-                {
-                    new KeyValuePair<ISlotInfo, object>(method.Parameters[0], source), 
-                })));
-            containingScope.TestBuilder.TestInstanceActions.TearDownTestInstanceChain.After(state =>
-                CustomConverters.Unregister(sourceType, targetType));
+            Type sourceType = methodInfo.Parameters[0].Resolve(true).ParameterType;
+            Type targetType = methodInfo.ReturnType.Resolve(true);
+            MethodInfo method = methodInfo.Resolve(true);
+            CustomTestEnvironment.SetUpThreadChain.Before(() => CustomConverters.Register(sourceType, targetType, x => method.Invoke(this, new[] { x })));
+            CustomTestEnvironment.TeardownThreadChain.After(() => CustomConverters.Unregister(sourceType, targetType));
         }
     }
 }

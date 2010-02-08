@@ -46,7 +46,8 @@ namespace Gallio.Runtime.Formatting
     /// </example>
     public static class CustomFormatters
     {
-        private static readonly IDictionary<Type, FormattingFunc> Formatters = new Dictionary<Type, FormattingFunc>();
+        private static readonly IDictionary<Type, Data> Formatters = new Dictionary<Type, Data>();
+        private static readonly object SyncRoot = new object();
 
         /// <summary>
         /// Registers a custom formatter that represents an object in a readable text format.
@@ -62,11 +63,19 @@ namespace Gallio.Runtime.Formatting
             if (formatter == null)
                 throw new ArgumentNullException("formatter");
 
-            if (Formatters.ContainsKey(type))
-                throw new InvalidOperationException(
-                    String.Format("A custom formatter that formats objects of the type '{0}' was already registered.", type));
+            lock (SyncRoot)
+            {
+                Data data;
 
-            Formatters.Add(type, formatter);
+                if (Formatters.TryGetValue(type, out data))
+                {
+                    data.Count++;
+                }
+                else
+                {
+                    Formatters[type] = new Data(formatter);
+                }
+            }
         }
 
         /// <summary>
@@ -100,7 +109,22 @@ namespace Gallio.Runtime.Formatting
             if (type == null)
                 throw new ArgumentNullException("type");
 
-            Formatters.Remove(type);
+            lock (SyncRoot)
+            {
+                Data data;
+
+                if (Formatters.TryGetValue(type, out data))
+                {
+                    if (data.Count > 0)
+                    {
+                        data.Count--;
+                    }
+                    else
+                    {
+                        Formatters.Remove(type);
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -124,14 +148,44 @@ namespace Gallio.Runtime.Formatting
             if (type == null)
                 throw new ArgumentNullException("type");
 
-            FormattingFunc func;
-            return Formatters.TryGetValue(type, out func) ? func : null;
+            lock (SyncRoot)
+            {
+                Data data;
+                return Formatters.TryGetValue(type, out data) ? data.Formatter : null;
+            }
         }
 
         // Removes all the registered custom formatters.
         internal static void UnregisterAll()
         {
-            Formatters.Clear();
+            lock (SyncRoot)
+            {
+                Formatters.Clear();
+            }
+        }
+
+        private sealed class Data
+        {
+            private readonly FormattingFunc formatter;
+
+            public FormattingFunc Formatter
+            {
+                get
+                {
+                    return formatter;
+                }
+            }
+
+            public int Count
+            {
+                get;
+                set;
+            }
+
+            public Data(FormattingFunc formatter)
+            {
+                this.formatter = formatter;
+            }
         }
     }
 }

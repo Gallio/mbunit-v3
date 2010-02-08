@@ -61,16 +61,11 @@ namespace MbUnit.Framework
         }
 
         /// <inheritdoc />
-        protected override void DecorateContainingScope(IPatternScope containingScope, IMethodInfo method)
+        protected override void DecorateContainingScope(IPatternScope containingScope, IMethodInfo methodInfo)
         {
-            Type type = method.Parameters[0].Resolve(true).ParameterType;
-            containingScope.TestBuilder.TestInstanceActions.SetUpTestInstanceChain.Before(state =>
-                CustomFormatters.Register(type, source => (string)state.InvokeFixtureMethod(method, new[]
-                {
-                    new KeyValuePair<ISlotInfo, object>(method.Parameters[0], source), 
-                })));
-            containingScope.TestBuilder.TestInstanceActions.TearDownTestInstanceChain.After(state =>
-                CustomFormatters.Unregister(type));
+            Type formattableType = methodInfo.Parameters[0].Resolve(true).ParameterType;
+            CustomTestEnvironment.SetUpThreadChain.Before(() => CustomFormatters.Register(formattableType, x => (string)methodInfo.Resolve(true).Invoke(this, new[] { x })));
+            CustomTestEnvironment.TeardownThreadChain.After(() => CustomFormatters.Unregister(formattableType));
         }
     }
 }

@@ -45,7 +45,8 @@ namespace Gallio.Runtime.Conversions
     /// </example>
     public static class CustomConverters
     {
-        private static readonly IDictionary<ConversionKey, Conversion> Converters = new Dictionary<ConversionKey, Conversion>();
+        private static readonly IDictionary<ConversionKey, Data> Converters = new Dictionary<ConversionKey, Data>();
+        private static readonly object SyncRoot = new object();
 
         /// <summary>
         /// Registers a custom converter that transforms an object of the source type into an object of the target type.
@@ -64,13 +65,20 @@ namespace Gallio.Runtime.Conversions
             if (converter == null)
                 throw new ArgumentNullException("converter");
 
-            var key = new ConversionKey(sourceType, targetType);
+            lock (SyncRoot)
+            {
+                var key = new ConversionKey(sourceType, targetType);
+                Data data;
 
-            if (Converters.ContainsKey(key))
-                throw new InvalidOperationException(
-                    String.Format("A custom converter that converts objects of the type '{0}' into objects of the type '{1}' was already registered.", sourceType, targetType));
-
-            Converters.Add(key, converter);
+                if (Converters.TryGetValue(key, out data))
+                {
+                    data.Count++;
+                }
+                else
+                {
+                    Converters[key] = new Data(converter);
+                }
+            }
         }
 
         /// <summary>
@@ -108,8 +116,23 @@ namespace Gallio.Runtime.Conversions
             if (targetType == null)
                 throw new ArgumentNullException("targetType");
 
-            var key = new ConversionKey(sourceType, targetType);
-            Converters.Remove(key);
+            lock (SyncRoot)
+            {
+                var key = new ConversionKey(sourceType, targetType);
+                Data data;
+
+                if (Converters.TryGetValue(key, out data))
+                {
+                    if (data.Count > 0)
+                    {
+                        data.Count--;
+                    }
+                    else
+                    {
+                        Converters.Remove(key);
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -131,14 +154,44 @@ namespace Gallio.Runtime.Conversions
         // Returns the converter for the searched types, or null if none was registered.
         internal static Conversion Find(ConversionKey key)
         {
-            Conversion func;
-            return Converters.TryGetValue(key, out func) ? func : null;
+            lock (SyncRoot)
+            {
+                Data data;
+                return Converters.TryGetValue(key, out data) ? data.Converter : null;
+            }
         }
 
         // Removes all the registered custom converters.
         internal static void UnregisterAll()
         {
-            Converters.Clear();
+            lock (SyncRoot)
+            {
+                Converters.Clear();
+            }
+        }
+
+        private sealed class Data
+        {
+            private readonly Conversion converter;
+
+            public Conversion Converter
+            {
+                get
+                {
+                    return converter;
+                }
+            }
+
+            public int Count
+            {
+                get;
+                set;
+            }
+
+            public Data(Conversion converter)
+            {
+                this.converter = converter;
+            }
         }
     }
 }

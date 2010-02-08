@@ -39,7 +39,7 @@ namespace MbUnit.Tests.Framework
             AssertLogContains(testRun, "CustomConverter: source = 456");
         }
 
-        internal class NonConvertibleStub
+        public class NonConvertibleStub
         {
             private readonly int value;
 
@@ -60,13 +60,6 @@ namespace MbUnit.Tests.Framework
         [Explicit("Sample")]
         internal class NonConvertibleStubSample
         {
-            [Converter]
-            public static NonConvertibleStub Convert(string source)
-            {
-                TestLog.WriteLine("CustomConverter: source = {0}", source);
-                return new NonConvertibleStub(Int32.Parse(source));
-            }
-
             [Test]
             [Row("123", 123)]
             [Row("456", 456)]

@@ -22,6 +22,8 @@ using Gallio.Framework;
 using Gallio.Framework.Pattern;
 using System.Collections.Generic;
 using Gallio.Model;
+using Gallio.Model.Environments;
+using Gallio.Runtime;
 
 namespace MbUnit.Framework
 {
@@ -36,12 +38,28 @@ namespace MbUnit.Framework
     [AttributeUsage(PatternAttributeTargets.ContributionMethod, AllowMultiple = false, Inherited = true)]
     public abstract class ExtensionPointPatternAttribute : DecoratorPatternAttribute
     {
+        private CustomTestEnvironment customTestEnvironment;
+
         /// <inheritdoc />
         public override bool IsPrimary
         {
             get
             {
                 return true;
+            }
+        }
+
+        /// <summary>
+        /// Gets the current test environment instance which can be used to register custom actions.
+        /// </summary>
+        protected CustomTestEnvironment CustomTestEnvironment
+        {
+            get
+            {
+                if (customTestEnvironment == null)
+                    customTestEnvironment = (CustomTestEnvironment)RuntimeAccessor.ServiceLocator.ResolveByComponentId("Gallio.CustomTestEnvironment");
+
+                return customTestEnvironment;
             }
         }
 

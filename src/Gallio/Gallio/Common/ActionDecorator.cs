@@ -20,6 +20,13 @@ namespace Gallio.Common
     /// <summary>
     /// Represents a delegate that decorates an action.
     /// </summary>
+    /// <param name="action">The action to decorate which should be called in
+    /// the middle of applying the decoration.</param>
+    public delegate void ActionDecorator(Action action);
+
+    /// <summary>
+    /// Represents a delegate that decorates an action.
+    /// </summary>
     /// <typeparam name="T">The type of object the action is performed upon.</typeparam>
     /// <param name="obj">The object to act upon.</param>
     /// <param name="action">The action to decorate which should be called in

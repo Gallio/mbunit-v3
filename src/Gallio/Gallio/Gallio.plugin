@@ -193,6 +193,10 @@
                serviceId="Gallio.TestEnvironment"
                componentType="Gallio.Model.Environments.UnhandledExceptionTestEnvironment, Gallio" />
 
+    <component componentId="Gallio.CustomTestEnvironment"
+               serviceId="Gallio.TestEnvironment"
+               componentType="Gallio.Model.Environments.CustomTestEnvironment, Gallio" />
+
     <component componentId="Gallio.WindowsFormsTestEnvironment"
                serviceId="Gallio.TestEnvironment"
                componentType="Gallio.Model.Environments.WindowsFormsTestEnvironment, Gallio" />

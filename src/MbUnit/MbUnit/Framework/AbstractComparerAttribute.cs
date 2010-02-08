@@ -21,6 +21,8 @@ using Gallio.Common.Reflection;
 using Gallio.Framework;
 using Gallio.Framework.Pattern;
 using System.Collections.Generic;
+using Gallio.Model.Environments;
+using Gallio.Runtime;
 
 namespace MbUnit.Framework
 {
@@ -40,17 +42,11 @@ namespace MbUnit.Framework
     public abstract class AbstractComparerAttribute : ExtensionPointPatternAttribute
     {
         /// <inheritdoc />
-        protected override void DecorateContainingScope(IPatternScope containingScope, IMethodInfo method)
+        protected override void DecorateContainingScope(IPatternScope containingScope, IMethodInfo methodInfo)
         {
-            Type comparableType = method.Parameters[0].Resolve(true).ParameterType;
-            containingScope.TestBuilder.TestInstanceActions.SetUpTestInstanceChain.Before(state =>
-                Register(comparableType, (x, y) => state.InvokeFixtureMethod(method, new[]
-                {
-                    new KeyValuePair<ISlotInfo, object>(method.Parameters[0], x), 
-                    new KeyValuePair<ISlotInfo, object>(method.Parameters[1], y), 
-                })));
-            containingScope.TestBuilder.TestInstanceActions.TearDownTestInstanceChain.After(state =>
-                Unregister(comparableType));
+            Type comparableType = methodInfo.Parameters[0].Resolve(true).ParameterType;
+            CustomTestEnvironment.SetUpThreadChain.Before(() => Register(comparableType, (x, y) => methodInfo.Resolve(true).Invoke(this, new[] { x, y })));
+            CustomTestEnvironment.TeardownThreadChain.After(() => Unregister(comparableType));
         }
 
         /// <summary>

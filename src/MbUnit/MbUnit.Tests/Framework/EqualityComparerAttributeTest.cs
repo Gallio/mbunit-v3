@@ -66,13 +66,6 @@ namespace MbUnit.Tests.Framework
         [Explicit("Sample")]
         internal class NonEquatableStubSample
         {
-            [EqualityComparer]
-            public static bool Equals(NonEquatableStub x, NonEquatableStub y)
-            {
-                TestLog.WriteLine("CustomEqualityComparer: x = {0}, y = {1}", x.Value, y.Value);
-                return x.Value == y.Value;
-            }
-
             [Test]
             [Row(123, 456, false)]
             [Row(123, 123, true)]

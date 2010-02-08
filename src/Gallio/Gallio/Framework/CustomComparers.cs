@@ -49,7 +49,8 @@ namespace Gallio.Framework
     /// </example>
     public static class CustomComparers
     {
-        private static readonly IDictionary<Type, Comparison> Comparers = new Dictionary<Type, Comparison>();
+        private static readonly IDictionary<Type, Data> Comparers = new Dictionary<Type, Data>();
+        private static readonly object SyncRoot = new object();
 
         /// <summary>
         /// Registers a custom comparer for the specified type.
@@ -73,11 +74,19 @@ namespace Gallio.Framework
             if (comparer == null)
                 throw new ArgumentNullException("comparer");
 
-            if (Comparers.ContainsKey(type))
-                throw new InvalidOperationException(
-                    String.Format("A custom comparer for the type '{0}' was already registered.", type));
+            lock (SyncRoot)
+            {
+                Data data;
 
-            Comparers.Add(type, comparer);
+                if (Comparers.TryGetValue(type, out data))
+                {
+                    data.Count++;
+                }
+                else
+                {
+                    Comparers[type] = new Data(comparer);
+                }
+            }
         }
 
         /// <summary>
@@ -119,7 +128,22 @@ namespace Gallio.Framework
             if (type == null)
                 throw new ArgumentNullException("type");
 
-            Comparers.Remove(type);
+            lock (SyncRoot)
+            {
+                Data data;
+
+                if (Comparers.TryGetValue(type, out data))
+                {
+                    if (data.Count > 0)
+                    {
+                        data.Count--;
+                    }
+                    else
+                    {
+                        Comparers.Remove(type);
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -143,14 +167,44 @@ namespace Gallio.Framework
             if (type == null)
                 throw new ArgumentNullException("type");
 
-            Comparison func;
-            return Comparers.TryGetValue(type, out func) ? func : null;
+            lock (SyncRoot)
+            {
+                Data data;
+                return Comparers.TryGetValue(type, out data) ? data.Comparer : null;
+            }
         }
 
         // Removes all the registered custom comparers.
         internal static void UnregisterAll()
         {
-            Comparers.Clear();
+            lock (SyncRoot)
+            {
+                Comparers.Clear();
+            }
+        }
+
+        private sealed class Data
+        {
+            private readonly Comparison comparer;
+
+            public Comparison Comparer
+            {
+                get
+                {
+                    return comparer;
+                }
+            }
+
+            public int Count
+            {
+                get;
+                set;
+            }
+
+            public Data(Comparison comparer)
+            {
+                this.comparer = comparer;
+            }
         }
     }
 }

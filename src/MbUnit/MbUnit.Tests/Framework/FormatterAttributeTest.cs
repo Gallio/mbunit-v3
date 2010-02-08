@@ -30,12 +30,6 @@ namespace MbUnit.Tests.Framework
     [TestsOn(typeof(FormatterAttribute))]
     public class FormatterAttributeTest : BaseAssertTest
     {
-        [Formatter]
-        public static string Format(FormattableStub obj)
-        {
-            return String.Format("CustomFormatter: FormattableStub's value is {0}.", obj.Value);
-        }
-
         [Test]
         public void Run()
         {

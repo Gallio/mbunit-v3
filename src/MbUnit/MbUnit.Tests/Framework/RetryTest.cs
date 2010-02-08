@@ -87,12 +87,10 @@ namespace MbUnit.Tests.Framework
         [Test]
         public void Retry_until_thread_terminates()
         {
-            var mockClock = MockRepository.GenerateStub<IClock>();
             var thread = new Thread(() => { });
             thread.Start();
             DoRetry(true, () =>
-                Retry.WithClock(mockClock)
-                     .Repeat(5)
+                Retry.Repeat(5)
                      .Until(thread));
         }
 

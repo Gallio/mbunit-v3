@@ -49,7 +49,8 @@ namespace Gallio.Framework
     /// </example>
     public static class CustomEqualityComparers
     {
-        private static readonly IDictionary<Type, EqualityComparison> EqualityComparers = new Dictionary<Type, EqualityComparison>();
+        private static readonly IDictionary<Type, Data> EqualityComparers = new Dictionary<Type, Data>();
+        private static readonly object SyncRoot = new object();
 
         /// <summary>
         /// Registers a custom equality comparer for the specified type.
@@ -72,11 +73,19 @@ namespace Gallio.Framework
             if (equalityComparer == null)
                 throw new ArgumentNullException("equalityComparer");
 
-            if (EqualityComparers.ContainsKey(type))
-                throw new InvalidOperationException(
-                    String.Format("A custom equality comparer for the type '{0}' was already registered.", type));
+            lock (SyncRoot)
+            {
+                Data data;
 
-            EqualityComparers.Add(type, equalityComparer);
+                if (EqualityComparers.TryGetValue(type, out data))
+                {
+                    data.Count++;
+                }
+                else
+                {
+                    EqualityComparers[type] = new Data(equalityComparer);
+                }
+            }
         }
 
         /// <summary>
@@ -117,7 +126,22 @@ namespace Gallio.Framework
             if (type == null)
                 throw new ArgumentNullException("type");
 
-            EqualityComparers.Remove(type);
+            lock (SyncRoot)
+            {
+                Data data;
+
+                if (EqualityComparers.TryGetValue(type, out data))
+                {
+                    if (data.Count > 0)
+                    {
+                        data.Count--;
+                    }
+                    else
+                    {
+                        EqualityComparers.Remove(type);
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -141,14 +165,44 @@ namespace Gallio.Framework
             if (type == null)
                 throw new ArgumentNullException("type");
 
-            EqualityComparison func;
-            return EqualityComparers.TryGetValue(type, out func) ? func : null;
+            lock (SyncRoot)
+            {
+                Data data;
+                return EqualityComparers.TryGetValue(type, out data) ? data.EqualityComparer : null;
+            }
         }
 
         // Removes all the registered custom comparers.
         internal static void UnregisterAll()
         {
-            EqualityComparers.Clear();
+            lock (SyncRoot)
+            {
+                EqualityComparers.Clear();
+            }
+        }
+
+        private sealed class Data
+        {
+            private readonly EqualityComparison equalityComparer;
+
+            public EqualityComparison EqualityComparer
+            {
+                get
+                {
+                    return equalityComparer;
+                }
+            }
+
+            public int Count
+            {
+                get;
+                set;
+            }
+
+            public Data(EqualityComparison equalityComparer)
+            {
+                this.equalityComparer = equalityComparer;
+            }
         }
     }
 }

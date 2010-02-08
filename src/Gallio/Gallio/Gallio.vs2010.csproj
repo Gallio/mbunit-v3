@@ -295,6 +295,7 @@
     <Compile Include="Model\Commands\ITestCommandFactory.cs" />
     <Compile Include="Model\Commands\NamespaceDoc.cs" />
     <Compile Include="Model\Contexts\NamespaceDoc.cs" />
+    <Compile Include="Model\Environments\CustomTestEnvironment.cs" />
     <Compile Include="Model\FallbackTestDriver.cs" />
     <Compile Include="Model\TestPart.cs">
       <SubType>Code</SubType>

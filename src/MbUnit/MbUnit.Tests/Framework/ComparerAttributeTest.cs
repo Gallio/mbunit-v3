@@ -39,7 +39,7 @@ namespace MbUnit.Tests.Framework
             AssertLogContains(testRun, "CustomComparer: x = 456, y = 123");
         }
 
-        internal class NonComparableStub
+        public class NonComparableStub
         {
             private readonly int value;
 
@@ -60,13 +60,6 @@ namespace MbUnit.Tests.Framework
         [Explicit("Sample")]
         internal class NonComparableStubSample
         {
-            [Comparer]
-            public static int Compare(NonComparableStub x, NonComparableStub y)
-            {
-                TestLog.WriteLine("CustomComparer: x = {0}, y = {1}", x.Value, y.Value);
-                return x.Value.CompareTo(y.Value);
-            }
-
             [Test]
             public void Test()
             {

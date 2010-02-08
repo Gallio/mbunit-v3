@@ -117,6 +117,7 @@
     <Compile Include="Compatibility\Framework\Xml\XmlInputTests.cs" />
     <Compile Include="Compatibility\Framework\Xml\XPathTests.cs" />
     <Compile Include="Compatibility\Framework\Xml\XsltTests.cs" />
+    <Compile Include="Framework\ExtensionPoints.cs" />
     <Compile Include="Framework\ApartmentStateTest.cs">
       <SubType>Code</SubType>
     </Compile>
