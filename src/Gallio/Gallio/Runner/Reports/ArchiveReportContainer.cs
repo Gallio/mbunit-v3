@@ -28,7 +28,7 @@ namespace Gallio.Runner.Reports
     public class ArchiveReportContainer : AbstractReportContainer
     {
         private readonly string archiveFileName;
-        private ZipOutputStream archiveStream;
+        private ZipOutputStream archiveOutputStream;
 
          /// <summary>
         /// Creates a filed archive based representation of a report container.
@@ -56,55 +56,69 @@ namespace Gallio.Runner.Reports
         /// <inheritdoc />
         public override Stream OpenRead(string path)
         {
-            throw new NotSupportedException();
+            ValidateFilePath(path);
+            var stream = new ZipInputStream(File.Open(archiveFileName, FileMode.Open));
+            var entry = stream.GetNextEntry();
+
+            while (entry != null)
+            {
+                if (entry.Name == path)
+                {
+                    return stream;
+                }
+
+                entry = stream.GetNextEntry();
+            }
+
+            throw new InvalidOperationException(String.Format("'{0}' not found in the archive file."));
         }
 
         /// <inheritdoc />
         public override Stream OpenWrite(string path, string contentType, Encoding encoding)
         {
             ValidateFilePath(path);
-            OpenArchiveStream();
+            OpenArchiveOutputStream();
             var zipEntry = new ZipEntry(path);
             zipEntry.DateTime = DateTime.Now;
-            archiveStream.PutNextEntry(zipEntry);
+            archiveOutputStream.PutNextEntry(zipEntry);
             var stream = new TemporaryMemoryStream();
             
             stream.Closing += delegate
             {
                 stream.Position = 0;
-                archiveStream.Write(stream.GetBuffer(), 0, (int)stream.Length);
+                archiveOutputStream.Write(stream.GetBuffer(), 0, (int)stream.Length);
             };
 
             return stream;
         }
 
-        private void OpenArchiveStream()
+        private void OpenArchiveOutputStream()
         {
-            if (archiveStream == null)
+            if (archiveOutputStream == null)
             {
                 if (!Directory.Exists(ReportDirectory))
                 {
                     Directory.CreateDirectory(ReportDirectory);
                 }
 
-                archiveStream = new ZipOutputStream(File.Create(archiveFileName));
+                archiveOutputStream = new ZipOutputStream(File.Create(archiveFileName));
             }
         }
 
         /// <inheritdoc />
         public override void Dispose()
         {
-            CloseArchiveStream();
+            CloseArchiveStreams();
             base.Dispose();
         }
 
-        private void CloseArchiveStream()
+        private void CloseArchiveStreams()
         {
-            if (archiveStream != null)
+            if (archiveOutputStream != null)
             {          
-                archiveStream.Finish();
-                archiveStream.Dispose();
-                archiveStream = null;
+                archiveOutputStream.Finish();
+                archiveOutputStream.Dispose();
+                archiveOutputStream = null;
             }
         }
 

@@ -15,7 +15,9 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
+using Gallio.Common.IO;
 
 namespace Gallio.Runner.Reports
 {
@@ -25,16 +27,27 @@ namespace Gallio.Runner.Reports
     /// </summary>
     public class ReportContainerFactory
     {
+        private readonly IFileSystem fileSystem;
         private readonly string reportDirectory;
         private readonly string reportName;
 
         /// <summary>
         /// Constructs a factory.
         /// </summary>
+        /// <param name="fileSystem">A file system wrapper.</param>
         /// <param name="reportDirectory">The report directory path.</param>
         /// <param name="reportName">The report name.</param>
-        public ReportContainerFactory(string reportDirectory, string reportName)
+        /// <exception cref="ArgumentNullException">Thrown if any argument is null.</exception>
+        public ReportContainerFactory(IFileSystem fileSystem, string reportDirectory, string reportName)
         {
+            if (fileSystem == null)
+                throw new ArgumentNullException("fileSystem");
+            if (reportDirectory == null)
+                throw new ArgumentNullException("reportDirectory");
+            if (reportName == null)
+                throw new ArgumentNullException("reportName");
+
+            this.fileSystem = fileSystem;
             this.reportDirectory = reportDirectory;
             this.reportName = reportName;
         }
@@ -51,8 +64,8 @@ namespace Gallio.Runner.Reports
                 case ReportArchive.Zip:
                     return new ArchiveReportContainer(reportDirectory, reportName);
 
-                case ReportArchive.Flat:
                 default:
+                case ReportArchive.Flat:
                     return new FileSystemReportContainer(reportDirectory, reportName);
             }
         }
@@ -63,7 +76,14 @@ namespace Gallio.Runner.Reports
         /// <returns>A new instance of report container.</returns>
         public IReportContainer MakeForReading()
         {
-            throw new NotImplementedException();
+            var archiveFileName = Path.Combine(reportDirectory, reportName + ".zip");
+
+            if (fileSystem.FileExists(archiveFileName))
+            {
+                return new ArchiveReportContainer(reportDirectory, reportName);
+            }
+
+            return new FileSystemReportContainer(reportDirectory, reportName);
         }
     }
 }

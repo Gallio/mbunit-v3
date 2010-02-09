@@ -15,8 +15,10 @@
 
 using System;
 using System.IO;
+using Gallio.Common.IO;
 using Gallio.Runner.Reports;
 using MbUnit.Framework;
+using Rhino.Mocks;
 
 namespace Gallio.Tests.Runner.Reports
 {
@@ -25,9 +27,32 @@ namespace Gallio.Tests.Runner.Reports
     public class ReportContainerFactoryTest
     {
         [Test]
-        public void MakeForSaving_with_file_system()
+        [ExpectedArgumentNullException]
+        public void Constructs_with_null_fileSystem_should_throw_exception()
         {
-            var factory = new ReportContainerFactory(@"C:\Directory", "name");
+            new ReportContainerFactory(null, @"C:\Directory", "name");
+        }
+
+        [Test]
+        [ExpectedArgumentNullException]
+        public void Constructs_with_null_reportDirectory_should_throw_exception()
+        {
+            var mockFileSystem = MockRepository.GenerateStub<IFileSystem>();
+            new ReportContainerFactory(mockFileSystem, null, "name");
+        }
+        [Test]
+        [ExpectedArgumentNullException]
+        public void Constructs_with_null_reportName_should_throw_exception()
+        {
+            var mockFileSystem = MockRepository.GenerateStub<IFileSystem>();
+            new ReportContainerFactory(mockFileSystem, @"C:\Directory", null);
+        }
+
+        [Test]
+        public void MakeForSaving_with_flat_file()
+        {
+            var mockFileSystem = MockRepository.GenerateStub<IFileSystem>();
+            var factory = new ReportContainerFactory(mockFileSystem, @"C:\Directory", "name");
             var container = (AbstractReportContainer)factory.MakeForSaving(ReportArchive.Flat);
             Assert.IsInstanceOfType<FileSystemReportContainer>(container);
             Assert.AreEqual("name", container.ReportName);
@@ -37,7 +62,8 @@ namespace Gallio.Tests.Runner.Reports
         [Test]
         public void MakeForSaving_with_archive()
         {
-            var factory = new ReportContainerFactory(@"C:\Directory", "name");
+            var mockFileSystem = MockRepository.GenerateStub<IFileSystem>();
+            var factory = new ReportContainerFactory(mockFileSystem, @"C:\Directory", "name");
             var container = (AbstractReportContainer)factory.MakeForSaving(ReportArchive.Zip);
             Assert.IsInstanceOfType<ArchiveReportContainer>(container);
             Assert.AreEqual("name", container.ReportName);
@@ -45,11 +71,25 @@ namespace Gallio.Tests.Runner.Reports
         }
 
         [Test]
-        [ExpectedException(typeof(NotImplementedException))]
-        public void MakeForReading()
+        public void MakeForReading_from_flat_file()
         {
-            var factory = new ReportContainerFactory("directory", "name");
-            factory.MakeForReading();
+            var mockFileSystem = MockRepository.GenerateMock<IFileSystem>();
+            mockFileSystem.Expect(x => x.FileExists(@"C:\directory\name.zip")).Return(false);
+            var factory = new ReportContainerFactory(mockFileSystem, @"C:\directory", "name");
+            var container = factory.MakeForReading();
+            Assert.IsInstanceOfType<FileSystemReportContainer>(container);
+            mockFileSystem.VerifyAllExpectations();
+        }
+
+        [Test]
+        public void MakeForReading_from_archive_file()
+        {
+            var mockFileSystem = MockRepository.GenerateMock<IFileSystem>();
+            mockFileSystem.Expect(x => x.FileExists(@"C:\directory\name.zip")).Return(true);
+            var factory = new ReportContainerFactory(mockFileSystem, @"C:\directory", "name");
+            var container = factory.MakeForReading();
+            Assert.IsInstanceOfType<ArchiveReportContainer>(container);
+            mockFileSystem.VerifyAllExpectations();
         }
     }
 }

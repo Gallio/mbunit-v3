@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
+using Gallio.Common.IO;
 using Gallio.Runner.Reports;
 using Gallio.Runner.Reports.Schema;
 using Gallio.Runtime.Logging;
@@ -153,7 +154,7 @@ namespace Gallio.Runner
             if (progressMonitor == null)
                 throw new ArgumentNullException("progressMonitor");
 
-            var reportContainerFactory = new ReportContainerFactory(reportDirectory, reportName);
+            var reportContainerFactory = new ReportContainerFactory(new FileSystem(), reportDirectory, reportName);
 
             using (progressMonitor.BeginTask("Generating reports.", reportFormats.Count))
             using (IReportContainer reportContainer = reportContainerFactory.MakeForSaving(reportArchive))

@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using Gallio.Common;
+using Gallio.Common.IO;
 using Gallio.Runner.Reports;
 using Gallio.Runner.Reports.Schema;
 using Gallio.Runtime.ConsoleSupport;
@@ -71,7 +72,9 @@ namespace Gallio.Runtime.UtilityCommands
         {
             return CaptureFileException("The specified report is not a valid file path.", () =>
             {
-                using (IReportContainer inputContainer = new FileSystemReportContainer(inputPath, inputName))
+                var factory = new ReportContainerFactory(new FileSystem(), inputPath, inputName);
+
+                using (IReportContainer inputContainer = factory.MakeForReading())
                 {
                     IReportReader reportReader = reportManager.CreateReportReader(inputContainer);
                     report = context.ProgressMonitorProvider.Run(pm => reportReader.LoadReport(true, pm));
@@ -84,7 +87,7 @@ namespace Gallio.Runtime.UtilityCommands
             return CaptureFileException("The specified output directory is not a valid file path.", () =>
             {
                 var outputName = (arguments.ReportNameFormat != null) ? report.FormatReportName(arguments.ReportNameFormat) : inputName;
-                var factory = new ReportContainerFactory(outputPath, outputName);
+                var factory = new ReportContainerFactory(new FileSystem(), outputPath, outputName);
                 var reportArchive = arguments.ReportArchive ? ReportArchive.Zip : ReportArchive.Flat;
 
                 using (IReportContainer outputContainer = factory.MakeForSaving(reportArchive))
