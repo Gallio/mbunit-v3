@@ -21,6 +21,7 @@ using Gallio.Model;
 using Gallio.Model.Filters;
 using Gallio.Common.Reflection;
 using Gallio.Runner;
+using Gallio.Runner.Reports;
 using Gallio.Runner.Reports.Schema;
 using MbUnit.Framework;
 using Gallio.PowerShellCommands;
@@ -35,7 +36,7 @@ namespace Gallio.PowerShellCommands.Tests
         [Test]
         public void TaskPassesDefaultArgumentsToLauncher()
         {
-            StubbedRunGallioCommand task = new StubbedRunGallioCommand();
+            var task = new StubbedRunGallioCommand();
 
             task.SetRunLauncherAction(delegate(TestLauncher launcher)
             {
@@ -50,6 +51,7 @@ namespace Gallio.PowerShellCommands.Tests
                 Assert.AreEqual("test-report-{0}-{1}", launcher.TestProject.ReportNameFormat);
                 Assert.IsFalse(launcher.TestProject.IsReportNameFormatSpecified);
                 Assert.IsFalse(launcher.ShowReports);
+                Assert.AreEqual(ReportArchive.Flat, launcher.TestProject.ReportArchive);
                 Assert.IsNull(launcher.RunTimeLimit);
 
                 Assert.AreEqual(StandardTestRunnerFactoryNames.IsolatedProcess, launcher.TestProject.TestRunnerFactoryName);
@@ -87,7 +89,7 @@ namespace Gallio.PowerShellCommands.Tests
         [Test]
         public void TaskPassesSpecifiedArgumentsToLauncher()
         {
-            StubbedRunGallioCommand task = new StubbedRunGallioCommand();
+            var task = new StubbedRunGallioCommand();
             task.DoNotRun = true;
             task.NoEchoResults = true;
             task.Filter = "Type: SimpleTest";
@@ -95,6 +97,7 @@ namespace Gallio.PowerShellCommands.Tests
             task.ReportTypes = new string[] { "XML", "Html" };
             task.ReportNameFormat = "report";
             task.ShowReports = true;
+            task.ReportArchive = true;
             task.RunTimeLimit = 7200; // seconds = 120 minutes
 
             task.RunnerType = StandardTestRunnerFactoryNames.Local;
@@ -126,6 +129,7 @@ namespace Gallio.PowerShellCommands.Tests
                 Assert.AreEqual("report", launcher.TestProject.ReportNameFormat);
                 Assert.IsTrue(launcher.TestProject.IsReportNameFormatSpecified);
                 Assert.IsTrue(launcher.ShowReports);
+                Assert.AreEqual(ReportArchive.Zip, launcher.TestProject.ReportArchive);
                 Assert.AreEqual(TimeSpan.FromMinutes(120), launcher.RunTimeLimit);
 
                 Assert.AreEqual(StandardTestRunnerFactoryNames.Local, launcher.TestProject.TestRunnerFactoryName);
@@ -176,14 +180,9 @@ namespace Gallio.PowerShellCommands.Tests
         [Test]
         public void TaskExposesResultsReturnedByLauncher()
         {
-            StubbedRunGallioCommand task = new StubbedRunGallioCommand();
-            TestLauncherResult expectedResult = new TestLauncherResult(new Report());
-
-            task.SetRunLauncherAction(delegate
-            {
-                return expectedResult;
-            });
-
+            var task = new StubbedRunGallioCommand();
+            var expectedResult = new TestLauncherResult(new Report());
+            task.SetRunLauncherAction(o => expectedResult);
             Assert.AreSame(expectedResult, task.ExecuteWithMessagePump());
         }
     }

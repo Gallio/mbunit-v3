@@ -26,6 +26,7 @@ using Gallio.Model.Filters;
 using Gallio.PowerShellCommands.Properties;
 using Gallio.Common.Reflection;
 using Gallio.Runner;
+using Gallio.Runner.Reports;
 using Gallio.Runtime.Debugging;
 
 namespace Gallio.PowerShellCommands
@@ -38,46 +39,30 @@ namespace Gallio.PowerShellCommands
     /// </remarks>
     /// <example>
     /// <para>There are severals ways to run this cmdlet:</para>
-    /// <code>
+    /// <code><![CDATA[
     /// # Makes the Gallio commands available
     /// Add-PSSnapIn Gallio
+    /// 
     /// # Runs a few assemblies and scripts.
-    /// Run-Gallio "[Path-to-assembly1]\TestAssembly1.dll","[Path-to-assembly2]\TestAssembly2.dll","[Path-to-test-script1]/TestScript1_spec.rb","[Path-to-test-script2]/TestScript2.xml" -f Category:UnitTests -rd C:\build\reports -rf html
-    /// </code>
+    /// Run-Gallio "[Path-to-assembly1]\TestAssembly1.dll","[Path-to-assembly2]\TestAssembly2.dll","[Path-to-test-script1]/TestScript1_spec.rb","[Path-to-test-script2]/TestScript2.xml" -f Category:UnitTests -rd C:\build\reports -rf html -ra
+    /// ]]></code>
     /// </example>
     [Cmdlet("Run", "Gallio")]
     public class RunGallioCommand : BaseCommand
     {
-        #region Private Members
-
-        private string[] files;
-        private string[] pluginDirectories;
-        private string[] hintDirectories;
-
-        private string applicationBaseDirectory;
-        private string workingDirectory;
-        private SwitchParameter? shadowCopy;
-        private SwitchParameter? debug;
-        private string runtimeVersion;
-
-        private string[] reportTypes = EmptyArray<string>.Instance;
-        private string reportNameFormat;
-        private string reportDirectory;
-        private string runnerType;
-        private string[] runnerExtensions = EmptyArray<string>.Instance;
-        private string filter = string.Empty;
-        private SwitchParameter showReports;
-        private SwitchParameter doNotRun;
-        private SwitchParameter ignoreAnnotations;
-        private SwitchParameter noEchoResults;
         private TimeSpan? runTimeLimit;
 
-        private string[] runnerProperties = EmptyArray<string>.Instance;
-        private string[] reportFormatterProperties = EmptyArray<string>.Instance;
-
-        #endregion
-
-        #region Public Properties
+        /// <summary>
+        /// Default constructor.
+        /// </summary>
+        public RunGallioCommand()
+        {
+            ReportFormatterProperties = EmptyArray<string>.Instance;
+            RunnerProperties = EmptyArray<string>.Instance;
+            RunnerExtensions = EmptyArray<string>.Instance;
+            Filter = string.Empty;
+            ReportTypes = EmptyArray<string>.Instance;
+        }
 
         /// <summary>
         /// The list of relative or absolute paths of test files, projects and assemblies to execute.
@@ -85,7 +70,7 @@ namespace Gallio.PowerShellCommands
         /// </summary>
         /// <example>
         /// <para>There are severals ways to pass the test files to the cmdlet:</para>
-        /// <code>
+        /// <code><![CDATA[
         /// # Runs TestAssembly1.dll
         /// Run-Gallio "[Path-to-assembly1]\TestAssembly1.dll"
         /// 
@@ -110,18 +95,13 @@ namespace Gallio.PowerShellCommands
         /// cmdlet Run-Gallio at command pipeline position
         /// Supply values for the following parameters:
         /// Files[0]:
-        /// </code>
+        /// ]]></code>
         /// </example>
-        [Parameter(
-            Mandatory = true,
-            Position = 0,
-            ValueFromPipelineByPropertyName = true
-            )]
-        [ValidateNotNullOrEmpty]
-        [ValidateCount(1, 99999)]
+        [Parameter(Mandatory = true, Position = 0, ValueFromPipelineByPropertyName = true), ValidateNotNullOrEmpty, ValidateCount(1, 99999)]
         public string[] Files
         {
-            set { files = value; }
+            private get;
+            set;
         }
 
         /// <summary>
@@ -129,16 +109,16 @@ namespace Gallio.PowerShellCommands
         /// </summary>
         /// <example>
         /// <para>The following example shows how to specify the hint directories:</para>
-        /// <code>
+        /// <code><![CDATA[
         /// Run-Gallio SomeAssembly.dll -hd C:\SomeFolder
-        /// </code>
+        /// ]]></code>
         /// <para>See the <see cref="Files"/> property for more ways of passing list of parameters to the cmdlet.</para>
         /// </example>
-        [Parameter(ValueFromPipelineByPropertyName = true)]
-        [Alias("hd")]
+        [Parameter(ValueFromPipelineByPropertyName = true), Alias("hd")]
         public string[] HintDirectories
         {
-            set { hintDirectories = value; }
+            private get;
+            set;
         }
 
         /// <summary>
@@ -146,24 +126,24 @@ namespace Gallio.PowerShellCommands
         /// </summary>
         /// <example>
         /// <para>The following example shows how to specify the plugin directories:</para>
-        /// <code>
+        /// <code><![CDATA[
         /// Run-Gallio SomeAssembly.dll -pd C:\SomeFolder
-        /// </code>
+        /// ]]></code>
         /// <para>See the <see cref="Files"/> property for more ways of passing list of parameters to
         /// the cmdlet.</para>
         /// </example>
-        [Parameter(ValueFromPipelineByPropertyName = true)]
-        [Alias("pd")]
+        [Parameter(ValueFromPipelineByPropertyName = true), Alias("pd")]
         public string[] PluginDirectories
         {
-            set { pluginDirectories = value; }
+            private get;
+            set;
         }
 
         /// <summary>
-        /// <para>
         /// Gets or sets the relative or absolute path of the application base directory,
         /// or null to use a default value selected by the consumer.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// If relative, the path is based on the current working directory,
         /// so a value of "" causes the current working directory to be used.
@@ -171,19 +151,19 @@ namespace Gallio.PowerShellCommands
         /// <para>
         /// The default is null.
         /// </para>
-        /// </summary>
-        [Parameter(ValueFromPipelineByPropertyName = true)]
-        [Alias("abd")]
+        /// </remarks>
+        [Parameter(ValueFromPipelineByPropertyName = true), Alias("abd")]
         public string ApplicationBaseDirectory
         {
-            set { applicationBaseDirectory = value; }
+            private get;
+            set;
         }
 
         /// <summary>
-        /// <para>
         /// Gets or sets the relative or absolute path of the working directory
         /// or null to use a default value selected by the consumer.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// If relative, the path is based on the current working directory,
         /// so a value of "" causes the current working directory to be used.
@@ -191,18 +171,18 @@ namespace Gallio.PowerShellCommands
         /// <para>
         /// The default is null.
         /// </para>
-        /// </summary>
-        [Parameter(ValueFromPipelineByPropertyName = true)]
-        [Alias("wd")]
+        /// </remarks>
+        [Parameter(ValueFromPipelineByPropertyName = true), Alias("wd")]
         public string WorkingDirectory
         {
-            set { workingDirectory = value; }
+            private get;
+            set;
         }
 
         /// <summary>
-        /// <para>
         /// Enables shadow copying when set to true.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// Shadow copying allows the original assemblies to be modified while the tests are running.
         /// However, shadow copying may occasionally cause some tests to fail if they depend on their original location.
@@ -210,45 +190,45 @@ namespace Gallio.PowerShellCommands
         /// <para>
         /// The default is false.
         /// </para>
-        /// </summary>
-        [Parameter(ValueFromPipelineByPropertyName = true)]
-        [Alias("sc")]
-        public SwitchParameter ShadowCopy
+        /// </remarks>
+        [Parameter(ValueFromPipelineByPropertyName = true), Alias("sc")]
+        public SwitchParameter? ShadowCopy
         {
-            set { shadowCopy = value; }
+            private get;
+            set;
         }
 
         /// <summary>
-        /// <para>
         /// Attaches the debugger to the test process when set to true.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// The default is false.
         /// </para>
-        /// </summary>
-        [Parameter(ValueFromPipelineByPropertyName = true)]
-        [Alias("d")]
-        public bool DebugTests
+        /// </remarks>
+        [Parameter(ValueFromPipelineByPropertyName = true), Alias("d")]
+        public SwitchParameter? DebugTests
         {
-            set { debug = value; }
+            private get;
+            set;
         }
 
         /// <summary>
-        /// <para>
         /// Gets or sets the version of the .Net runtime to use for running tests.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
-        /// For the CLR, this must be the name of one of the framework directories in %SystemRoot%\Microsoft.Net\Framework.  eg. 'v2.0.50727'.
+        /// For the CLR, this must be the name of one of the framework directories in <c>%SystemRoot%\Microsoft.Net\Framework.</c>  eg. 'v2.0.50727'.
         /// </para>
         /// <para>
         /// The default is null which uses the most recent installed and supported framework.
         /// </para>
-        /// </summary>
-        [Parameter(ValueFromPipelineByPropertyName = true)]
-        [Alias("rv")]
+        /// </remarks>
+        [Parameter(ValueFromPipelineByPropertyName = true), Alias("rv")]
         public string RuntimeVersion
         {
-            set { runtimeVersion = value; }
+            private get;
+            set;
         }
 
         /// <summary>
@@ -263,45 +243,61 @@ namespace Gallio.PowerShellCommands
         /// </remarks>
         /// <example>
         /// <para>In the following example reports will be generated in both HTML and XML format:</para>
-        /// <code>
+        /// <code><![CDATA[
         /// Run-Gallio SomeAssembly.dll -rt "html","text"
-        /// </code>
+        /// ]]></code>
         /// <para>See the <see cref="Files"/> property for more ways of passing list of parameters to
         /// the cmdlet.</para>
         /// </example>
-        [Parameter(ValueFromPipelineByPropertyName = true)]
-        [Alias("rt", "report-types")]
+        [Parameter(ValueFromPipelineByPropertyName = true), Alias("rt", "report-types")]
         public string[] ReportTypes
         {
-            set { reportTypes = value; }
+            private get;
+            set;
         }
 
         /// <summary>
         /// Sets the format string to use to generate the reports filenames.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// Any occurence of {0} will be replaced by the date, and any occurrence of {1} by the time.
-        /// The default format string is test-report-{0}-{1}.
+        /// </para>
+        /// <para>
+        /// The default format string is <c>test-report-{0}-{1}</c>.
+        /// </para>
         /// </remarks>
-        [Parameter(ValueFromPipelineByPropertyName = true)]
-        [Alias("rnf", "report-name-format")]
+        [Parameter(ValueFromPipelineByPropertyName = true), Alias("rnf", "report-name-format")]
         public string ReportNameFormat
         {
-            set { reportNameFormat = value; }
+            private get;
+            set;
         }
 
         /// <summary>
         /// Sets the name of the directory where the reports will be put.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// The directory will be created if it doesn't exist. Existing files will be overwritten.
         /// The default report directory is "Reports".
+        /// </para>
         /// </remarks>
-        [Parameter(ValueFromPipelineByPropertyName = true)]
-        [Alias("rd", "report-directory")]
+        [Parameter(ValueFromPipelineByPropertyName = true), Alias("rd", "report-directory")]
         public string ReportDirectory
         {
-            set { reportDirectory = value; }
+            private get;
+            set;
+        }
+
+        /// <summary>
+        /// Specifies to enclose the resulting reports into a compressed archive file (zip).
+        /// </summary>
+        [Parameter(ValueFromPipelineByPropertyName = true), Alias("ra", "report-archive")]
+        public SwitchParameter ReportArchive
+        {
+            private get;
+            set;
         }
 
         /// <summary>
@@ -313,11 +309,11 @@ namespace Gallio.PowerShellCommands
         /// <example>
         /// <include file='../../../Gallio/docs/FilterSyntax.xml' path='doc/example/*' />
         /// </example>
-        [Parameter(ValueFromPipelineByPropertyName = true)]
-        [Alias("f")]
+        [Parameter(ValueFromPipelineByPropertyName = true), Alias("f")]
         public string Filter
         {
-            set { filter = value; }
+            private get;
+            set;
         }
 
         /// <summary>
@@ -334,18 +330,19 @@ namespace Gallio.PowerShellCommands
         /// </list>
         /// </remarks>
         /// <example>
-        /// <code>
+        /// <code><![CDATA[
         /// # Doesn't show the reports once execution has finished
         /// Run-Gallio SomeAssembly.dll
+        /// 
         /// # Shows the reports once execution has finished
         /// Run-Gallio SomeAssembly.dll -sr
-        /// </code>
+        /// ]]></code>
         /// </example>
-        [Parameter(ValueFromPipelineByPropertyName = true)]
-        [Alias("sr", "show-reports")]
+        [Parameter(ValueFromPipelineByPropertyName = true), Alias("sr", "show-reports")]
         public SwitchParameter ShowReports
         {
-            set { showReports = value; }
+            private get;
+            set;
         }
 
         /// <summary>
@@ -353,39 +350,38 @@ namespace Gallio.PowerShellCommands
         /// </summary>
         /// <remarks>
         /// <list type="bullet">
-        /// <item>The types supported "out of the box" are: Local, IsolatedAppDomain
-        /// and IsolatedProcess (default), but more types could be available as plugins.</item>
+        /// <item>The types supported "out of the box" are: <c>Local</c>, <c>IsolatedAppDomain</c>
+        /// and <c>IsolatedProcess</c> (default), but more types could be available as plugins.</item>
         /// <item>The runner types are not case sensitive.</item>
         /// </list>
         /// </remarks>
-        [Parameter(ValueFromPipelineByPropertyName = true)]
-        [Alias("runner-type")]
+        [Parameter(ValueFromPipelineByPropertyName = true), Alias("runner-type")]
         public string RunnerType
         {
-            set { runnerType = value; }
+            private get;
+            set;
         }
 
         /// <summary>
-        /// <para>
         /// Specifies the type, assembly, and parameters of custom test runner
-        /// extensions to use during the test run in the form:
-        /// '[Namespace.]Type,Assembly[;Parameters]'.
-        /// </para>
-        /// <para>
-        /// eg. 'FancyLogger,MyCustomExtensions.dll;SomeParameters'
-        /// </para>
+        /// extensions to use during the test run.
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// The value must be in the form <c>'[Namespace.]Type,Assembly[;Parameters]'</c> .
+        /// </para>
+        /// </remarks>
         /// <example>
         /// The following example runs tests using a custom logger extension:
-        /// <code>
+        /// <code><![CDATA[
         /// Run-Gallio SomeAssembly.dll -runner-extension 'FancyLogger,MyExtensions.dll;ColorOutput,FancyIndenting'
-        /// </code>
+        /// ]]></code>
         /// </example>
-        [Parameter(ValueFromPipelineByPropertyName = true)]
-        [Alias("runner-extension")]
+        [Parameter(ValueFromPipelineByPropertyName = true), Alias("runner-extension")]
         public string[] RunnerExtensions
         {
-            set { runnerExtensions = value; }
+            private get;
+            set;
         }
 
         /// <summary>
@@ -393,15 +389,15 @@ namespace Gallio.PowerShellCommands
         /// </summary>
         /// <example>
         /// The following example specifies some extra NCover arguments.
-        /// <code>
+        /// <code><![CDATA[
         /// Run-Gallio SomeAssembly.dll -runner-property "NCoverArguments='//eas Gallio'"
-        /// </code>
+        /// ]]></code>
         /// </example>
-        [Parameter(ValueFromPipelineByPropertyName = true)]
-        [Alias("runner-property")]
+        [Parameter(ValueFromPipelineByPropertyName = true), Alias("runner-property")]
         public string[] RunnerProperties
         {
-            set { runnerProperties = value; }
+            private get;
+            set;
         }
 
         /// <summary>
@@ -409,68 +405,76 @@ namespace Gallio.PowerShellCommands
         /// </summary>
         /// <example>
         /// The following example changes the default attachment content disposition for the reports.
-        /// <code>
+        /// <code><![CDATA[
         /// Run-Gallio SomeAssembly.dll -report-formatter-property "AttachmentContentDisposition=Absent"
-        /// </code>
+        /// ]]></code>
         /// </example>
-        [Parameter(ValueFromPipelineByPropertyName = true)]
-        [Alias("report-formatter-property")]
+        [Parameter(ValueFromPipelineByPropertyName = true), Alias("report-formatter-property")]
         public string[] ReportFormatterProperties
         {
-            set { reportFormatterProperties = value; }
+            private get;
+            set;
         }
 
         /// <summary>
-        /// Sets whether to load the tests but not run them.  This option may be used to produce a
-        /// report that contains test metadata for consumption by other tools.
+        /// Sets whether to load the tests but not run them.  
         /// </summary>
-        [Parameter(ValueFromPipelineByPropertyName = true)]
-        [Alias("dnr", "do-not-run")]
+        /// <remarks>
+        /// <para>
+        /// This option may be used to produce a report that contains test metadata for consumption by other tools.
+        /// </para>
+        /// </remarks>
+        [Parameter(ValueFromPipelineByPropertyName = true), Alias("dnr", "do-not-run")]
         public SwitchParameter DoNotRun
         {
-            set { doNotRun = value; }
+            private get;
+            set;
         }
 
         /// <summary>
-        /// <para>
         /// Sets whether to ignore annotations when determining the result code.
+        /// </summary>
+        /// <remarks>
+        /// <para>
         /// If false (default), then error annotations, usually indicative of broken tests, will cause
         /// a failure result to be generated.
         /// </para>
-        /// </summary>
-        [Parameter(ValueFromPipelineByPropertyName = true)]
-        [Alias("ia", "ignore-annotations")]
+        /// </remarks>
+        [Parameter(ValueFromPipelineByPropertyName = true), Alias("ia", "ignore-annotations")]
         public SwitchParameter IgnoreAnnotations
         {
-            set { ignoreAnnotations = value; }
+            private get;
+            set;
         }
 
         /// <summary>
-        /// Sets whether to echo results to the screen as tests finish.  If this option is specified
-        /// only the final summary statistics are displayed.  Otherwise test results are echoed to the
-        /// console in varying detail depending on the current verbosity level.
+        /// Sets whether to echo results to the screen as tests finish.  
         /// </summary>
-        [Parameter(ValueFromPipelineByPropertyName = true)]
-        [Alias("ne", "no-echo-results")]
+        /// <remarks>
+        /// <para>
+        /// If this option is specified only the final summary statistics are displayed.  Otherwise test results are echoed to the
+        /// console in varying detail depending on the current verbosity level.
+        /// </para>
+        /// </remarks>
+        [Parameter(ValueFromPipelineByPropertyName = true), Alias("ne", "no-echo-results")]
         public SwitchParameter NoEchoResults
         {
-            set { noEchoResults = value; }
+            private get;
+            set;
         }
 
         /// <summary>
         /// Sets the maximum amount of time (in seconds) the tests can run 
         /// before they are canceled. The default is an infinite time to run. 
         /// </summary>
-        [Parameter(ValueFromPipelineByPropertyName = true)]
-        [Alias("rtl", "run-time-limit")]
+        [Parameter(ValueFromPipelineByPropertyName = true), Alias("rtl", "run-time-limit")]
         public double RunTimeLimit
         {
-            set { runTimeLimit = TimeSpan.FromSeconds(value); }
+            set
+            {
+                runTimeLimit = TimeSpan.FromSeconds(value);
+            }
         }
-
-        #endregion
-
-        #region Protected Methods
 
         /// <exclude />
         protected override void EndProcessing()
@@ -484,10 +488,6 @@ namespace Gallio.PowerShellCommands
                 ThrowTerminatingError(new ErrorRecord(ex, Resources.UnexpectedErrorDuringExecution, ErrorCategory.NotSpecified, null));
             }
         }
-
-        #endregion
-
-        #region Private Methods
 
         internal TestLauncherResult ExecuteWithMessagePump()
         {
@@ -508,8 +508,7 @@ namespace Gallio.PowerShellCommands
         {
             if (SessionState != null)
             {
-                // FIXME: Will this throw an exception if the current path is
-                //        within a virtual file system?
+                // FIXME: Will this throw an exception if the current path is within a virtual file system?
                 string resolvedDirectory = SessionState.Path.CurrentFileSystemLocation.Path;
                 using (new CurrentDirectorySwitcher(resolvedDirectory))
                     return Execute();
@@ -520,20 +519,22 @@ namespace Gallio.PowerShellCommands
         
         internal TestLauncherResult Execute()
         {
-            TestLauncher launcher = new TestLauncher();
-            launcher.Logger = Logger;
-            launcher.ProgressMonitorProvider = ProgressMonitorProvider;
-            launcher.TestExecutionOptions.FilterSet = GetFilterSet();
-            launcher.ShowReports = showReports.IsPresent;
-            launcher.DoNotRun = doNotRun.IsPresent;
-            launcher.IgnoreAnnotations = ignoreAnnotations.IsPresent;
-            launcher.EchoResults = !noEchoResults.IsPresent;
-            launcher.RunTimeLimit = runTimeLimit;
+            var launcher = new TestLauncher
+            {
+                Logger = Logger,
+                ProgressMonitorProvider = ProgressMonitorProvider,
+                TestExecutionOptions = { FilterSet = GetFilterSet() },
+                ShowReports = ShowReports.IsPresent,
+                DoNotRun = DoNotRun.IsPresent,
+                IgnoreAnnotations = IgnoreAnnotations.IsPresent,
+                EchoResults = !NoEchoResults.IsPresent,
+                RunTimeLimit = runTimeLimit
+            };
 
-            if (runnerType != null)
-                launcher.TestProject.TestRunnerFactoryName = runnerType;
-            if (runnerExtensions != null)
-                GenericCollectionUtils.ForEach(runnerExtensions, x => launcher.TestProject.AddTestRunnerExtensionSpecification(x));
+            if (RunnerType != null)
+                launcher.TestProject.TestRunnerFactoryName = RunnerType;
+            if (RunnerExtensions != null)
+                GenericCollectionUtils.ForEach(RunnerExtensions, x => launcher.TestProject.AddTestRunnerExtensionSpecification(x));
 
             launcher.RuntimeSetup = new RuntimeSetup();
 
@@ -541,39 +542,42 @@ namespace Gallio.PowerShellCommands
             // since otherwise we will look at the path of PowerShell.exe.
             launcher.RuntimeSetup.RuntimePath = Path.GetDirectoryName(AssemblyUtils.GetFriendlyAssemblyLocation(typeof(RunGallioCommand).Assembly));
 
-            if (applicationBaseDirectory != null)
-                launcher.TestProject.TestPackage.ApplicationBaseDirectory = new DirectoryInfo(applicationBaseDirectory);
-            if (workingDirectory != null)
-                launcher.TestProject.TestPackage.WorkingDirectory = new DirectoryInfo(workingDirectory);
-            if (shadowCopy.HasValue)
-                launcher.TestProject.TestPackage.ShadowCopy = shadowCopy.Value.IsPresent;
-            if (debug.HasValue && debug.Value.IsPresent)
+            if (ApplicationBaseDirectory != null)
+                launcher.TestProject.TestPackage.ApplicationBaseDirectory = new DirectoryInfo(ApplicationBaseDirectory);
+            if (WorkingDirectory != null)
+                launcher.TestProject.TestPackage.WorkingDirectory = new DirectoryInfo(WorkingDirectory);
+            if (ShadowCopy.HasValue)
+                launcher.TestProject.TestPackage.ShadowCopy = ShadowCopy.Value.IsPresent;
+            if (DebugTests.HasValue && DebugTests.Value.IsPresent)
                 launcher.TestProject.TestPackage.DebuggerSetup = new DebuggerSetup();
-            if (runtimeVersion != null)
-                launcher.TestProject.TestPackage.RuntimeVersion = runtimeVersion;
+            if (RuntimeVersion != null)
+                launcher.TestProject.TestPackage.RuntimeVersion = RuntimeVersion;
 
-            foreach (string option in reportFormatterProperties)
+            foreach (string option in ReportFormatterProperties)
             {
                 KeyValuePair<string, string> pair = StringUtils.ParseKeyValuePair(option);
                 launcher.ReportFormatterOptions.AddProperty(pair.Key, pair.Value);
             }
 
-            foreach (string option in runnerProperties)
+            foreach (string option in RunnerProperties)
             {
                 KeyValuePair<string, string> pair = StringUtils.ParseKeyValuePair(option);
                 launcher.TestRunnerOptions.AddProperty(pair.Key, pair.Value);
             }
 
-            ForEachItem(files, x => launcher.AddFilePattern(x));
-            ForEachItem(hintDirectories, x => launcher.TestProject.TestPackage.AddHintDirectory(new DirectoryInfo(x)));
-            ForEachItem(pluginDirectories, x => launcher.RuntimeSetup.AddPluginDirectory(x));
+            ForEachItem(Files, launcher.AddFilePattern);
+            ForEachItem(HintDirectories, x => launcher.TestProject.TestPackage.AddHintDirectory(new DirectoryInfo(x)));
+            ForEachItem(PluginDirectories, x => launcher.RuntimeSetup.AddPluginDirectory(x));
 
-            if (reportDirectory != null)
-                launcher.TestProject.ReportDirectory = reportDirectory;
-            if (reportNameFormat != null)
-                launcher.TestProject.ReportNameFormat = reportNameFormat;
-            if (reportTypes != null)
-                GenericCollectionUtils.ForEach(reportTypes, x => launcher.AddReportFormat(x));
+            if (ReportDirectory != null)
+                launcher.TestProject.ReportDirectory = ReportDirectory;
+            if (ReportNameFormat != null)
+                launcher.TestProject.ReportNameFormat = ReportNameFormat;
+            if (ReportTypes != null)
+                GenericCollectionUtils.ForEach(ReportTypes, launcher.AddReportFormat);
+            launcher.TestProject.ReportArchive = ReportArchive.IsPresent 
+                ? Runner.Reports.ReportArchive.Zip 
+                : Runner.Reports.ReportArchive.Flat;
 
             TestLauncherResult result = RunLauncher(launcher);
             return result;
@@ -590,12 +594,12 @@ namespace Gallio.PowerShellCommands
 
         private FilterSet<ITestDescriptor> GetFilterSet()
         {
-            if (String.IsNullOrEmpty(filter))
+            if (String.IsNullOrEmpty(Filter))
             {
                 return FilterSet<ITestDescriptor>.Empty;
             }
 
-            return FilterUtils.ParseTestFilterSet(filter);
+            return FilterUtils.ParseTestFilterSet(Filter);
         }
 
         private static void ForEachItem(IEnumerable<string> items, Action<string> action)
@@ -606,7 +610,5 @@ namespace Gallio.PowerShellCommands
                     action(item);
             }
         }
-
-        #endregion
     }
 }

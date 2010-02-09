@@ -85,8 +85,9 @@ namespace Gallio.Runtime.UtilityCommands
             {
                 var outputName = (arguments.ReportNameFormat != null) ? report.FormatReportName(arguments.ReportNameFormat) : inputName;
                 var factory = new ReportContainerFactory(outputPath, outputName);
+                var reportArchive = arguments.ReportArchive ? ReportArchive.Zip : ReportArchive.Flat;
 
-                using (IReportContainer outputContainer = factory.MakeForSaving(arguments.ReportArchive))
+                using (IReportContainer outputContainer = factory.MakeForSaving(reportArchive))
                 {
                     IReportWriter reportWriter = reportManager.CreateReportWriter(report, outputContainer);
                     var options = new ReportFormatterOptions();

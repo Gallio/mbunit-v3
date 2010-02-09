@@ -66,15 +66,11 @@ namespace Gallio.PowerShellCommands
                 status = @" ";
             }
 
-            ProgressRecord progressRecord = new ProgressRecord(0, ProgressMonitor.TaskName, status);
+            var progressRecord = new ProgressRecord(0, ProgressMonitor.TaskName, status);
             progressRecord.RecordType = ProgressMonitor.IsRunning ? ProgressRecordType.Processing : ProgressRecordType.Completed;
             progressRecord.CurrentOperation = ProgressMonitor.Leaf.Status;
             progressRecord.PercentComplete = percentComplete;
-
-            cmdlet.PostMessage(delegate
-            {
-                cmdlet.WriteProgress(progressRecord);
-            });
+            cmdlet.PostMessage(() => cmdlet.WriteProgress(progressRecord));
         }
 
         private void HandleStopRequested(object sender, EventArgs e)

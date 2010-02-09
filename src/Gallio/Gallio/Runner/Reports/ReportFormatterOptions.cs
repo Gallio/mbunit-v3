@@ -81,9 +81,8 @@ namespace Gallio.Runner.Reports
         /// <returns>The copy.</returns>
         public ReportFormatterOptions Copy()
         {
-            ReportFormatterOptions copy = new ReportFormatterOptions();
+            var copy = new ReportFormatterOptions();
             copy.properties.AddAll(properties);
-
             return copy;
         }
     }

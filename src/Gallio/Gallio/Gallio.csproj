@@ -376,6 +376,7 @@
     <Compile Include="Runner\Events\NamespaceDoc.cs" />
     <Compile Include="Runner\Reports\AbstractReportContainer.cs" />
     <Compile Include="Runner\Reports\ArchiveReportContainer.cs" />
+    <Compile Include="Runner\Reports\ReportArchive.cs" />
     <Compile Include="Runner\Reports\ReportContainerFactory.cs" />
     <Compile Include="Runtime\Conversions\Conversion.cs" />
     <Compile Include="Runtime\Conversions\ConversionKey.cs" />

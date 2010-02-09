@@ -44,14 +44,17 @@ namespace Gallio.Runner.Reports
         /// </summary>
         /// <param name="reportArchive">Indicates if the report must be packed in a compressed archive.</param>
         /// <returns>A new instance of report container.</returns>
-        public IReportContainer MakeForSaving(bool reportArchive)
+        public IReportContainer MakeForSaving(ReportArchive reportArchive)
         {
-            if (reportArchive)
+            switch (reportArchive)
             {
-                return new ArchiveReportContainer(reportDirectory, reportName);
-            }
+                case ReportArchive.Zip:
+                    return new ArchiveReportContainer(reportDirectory, reportName);
 
-            return new FileSystemReportContainer(reportDirectory, reportName);
+                case ReportArchive.Flat:
+                default:
+                    return new FileSystemReportContainer(reportDirectory, reportName);
+            }
         }
 
         /// <summary>

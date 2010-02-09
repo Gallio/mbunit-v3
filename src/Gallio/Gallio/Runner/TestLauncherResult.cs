@@ -129,6 +129,7 @@ namespace Gallio.Runner
         /// </remarks>
         /// <param name="reportDirectory">The report directory.</param>
         /// <param name="reportName">The report name.</param>
+        /// <param name="reportArchive">Determines whether to enclose the resulting test report in a compressed archive file.</param>
         /// <param name="reportFormats">The report formats to generate.</param>
         /// <param name="reportFormatOptions">The report formatter options.</param>
         /// <param name="reportManager">The report manager.</param>
@@ -136,7 +137,7 @@ namespace Gallio.Runner
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="reportDirectory"/>,
         /// <paramref name="reportName"/>, <paramref name="reportFormats"/>, <paramref name="reportFormatOptions"/>,
         /// <paramref name="reportManager"/>, or <paramref name="progressMonitor"/> is null.</exception>
-        public void GenerateReports(string reportDirectory, string reportName, IList<string> reportFormats,
+        public void GenerateReports(string reportDirectory, string reportName, ReportArchive reportArchive, IList<string> reportFormats,
             ReportFormatterOptions reportFormatOptions, IReportManager reportManager, IProgressMonitor progressMonitor)
         {
             if (reportDirectory == null)
@@ -152,8 +153,10 @@ namespace Gallio.Runner
             if (progressMonitor == null)
                 throw new ArgumentNullException("progressMonitor");
 
+            var reportContainerFactory = new ReportContainerFactory(reportDirectory, reportName);
+
             using (progressMonitor.BeginTask("Generating reports.", reportFormats.Count))
-            using (IReportContainer reportContainer = new FileSystemReportContainer(reportDirectory, reportName))
+            using (IReportContainer reportContainer = reportContainerFactory.MakeForSaving(reportArchive))
             {
                 IReportWriter reportWriter = reportManager.CreateReportWriter(report, reportContainer);
 

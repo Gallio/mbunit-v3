@@ -20,6 +20,7 @@ using Gallio.Common.Collections;
 using Gallio.Model;
 using Gallio.Runner.Extensions;
 using Gallio.Runner.Projects.Schema;
+using Gallio.Runner.Reports;
 
 namespace Gallio.Runner.Projects
 {
@@ -30,11 +31,9 @@ namespace Gallio.Runner.Projects
     public class TestProject
     {
         private TestPackage testPackage;
-
         private string reportNameFormat;
         private bool isReportNameFormatSpecified;
         private string reportDirectory;
-        private bool isReportDirectorySpecified;
         private readonly List<FilterInfo> testFilters;
         private readonly List<ITestRunnerExtension> testRunnerExtensions;
         private readonly List<string> testRunnerExtensionSpecifications;
@@ -85,11 +84,15 @@ namespace Gallio.Runner.Projects
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
         public TestPackage TestPackage
         {
-            get { return testPackage; }
+            get
+            {
+                return testPackage;
+            }
             set
             {
                 if (value == null)
                     throw new ArgumentNullException("value");
+
                 testPackage = value;
             }
         }
@@ -99,7 +102,10 @@ namespace Gallio.Runner.Projects
         /// </summary>
         public IList<FilterInfo> TestFilters
         {
-            get { return new ReadOnlyCollection<FilterInfo>(testFilters); }
+            get
+            {
+                return new ReadOnlyCollection<FilterInfo>(testFilters);
+            }
         }
 
         /// <summary>
@@ -107,7 +113,10 @@ namespace Gallio.Runner.Projects
         /// </summary>
         public IList<ITestRunnerExtension> TestRunnerExtensions
         {
-            get { return new ReadOnlyCollection<ITestRunnerExtension>(testRunnerExtensions); }
+            get
+            {
+                return new ReadOnlyCollection<ITestRunnerExtension>(testRunnerExtensions);
+            }
         }
 
         /// <summary>
@@ -117,7 +126,10 @@ namespace Gallio.Runner.Projects
         /// for an explanation of the specification syntax.
         public IList<string> TestRunnerExtensionSpecifications
         {
-            get { return new ReadOnlyCollection<string>(testRunnerExtensionSpecifications); }
+            get
+            {
+                return new ReadOnlyCollection<string>(testRunnerExtensionSpecifications);
+            }
         }
 
         /// <summary>
@@ -132,7 +144,10 @@ namespace Gallio.Runner.Projects
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
         public string TestRunnerFactoryName
         {
-            get { return testRunnerFactoryName; }
+            get
+            {
+                return testRunnerFactoryName;
+            }
             set
             {
                 if (value == null)
@@ -148,7 +163,10 @@ namespace Gallio.Runner.Projects
         /// </summary>
         public bool IsTestRunnerFactoryNameSpecified
         {
-            get { return isTestRunnerFactoryNameSpecified; }
+            get
+            {
+                return isTestRunnerFactoryNameSpecified;
+            }
         }
 
         /// <summary>
@@ -162,13 +180,16 @@ namespace Gallio.Runner.Projects
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
         public string ReportDirectory
         {
-            get { return reportDirectory; }
+            get
+            {
+                return reportDirectory;
+            }
             set
             {
                 if (value == null)
                     throw new ArgumentNullException("value");
                 reportDirectory = value;
-                isReportDirectorySpecified = true;
+                IsReportDirectorySpecified = true;
             }
         }
 
@@ -177,7 +198,8 @@ namespace Gallio.Runner.Projects
         /// </summary>
         public bool IsReportDirectorySpecified
         {
-            get { return isReportDirectorySpecified; }
+            get;
+            private set;
         }
 
         /// <summary>
@@ -194,14 +216,28 @@ namespace Gallio.Runner.Projects
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
         public string ReportNameFormat
         {
-            get { return reportNameFormat; }
+            get
+            {
+                return reportNameFormat;
+            }
             set
             {
                 if (value == null)
                     throw new ArgumentNullException("value");
+
                 reportNameFormat = value;
                 isReportNameFormatSpecified = true;
             }
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the resulting reports must be enclosed
+        /// in a compressed archive file (zip).
+        /// </summary>
+        public ReportArchive ReportArchive
+        {
+            get;
+            set;
         }
 
         /// <summary>
@@ -209,7 +245,10 @@ namespace Gallio.Runner.Projects
         /// </summary>
         public bool IsReportNameFormatSpecified
         {
-            get { return isReportNameFormatSpecified; }
+            get
+            {
+                return isReportNameFormatSpecified;
+            }
         }
 
         /// <summary>
@@ -227,7 +266,7 @@ namespace Gallio.Runner.Projects
         public void ResetReportDirectory()
         {
             reportDirectory = DefaultReportDirectoryRelativePath;
-            isReportDirectorySpecified = false;
+            IsReportDirectorySpecified = false;
         }
 
         /// <summary>
@@ -258,7 +297,8 @@ namespace Gallio.Runner.Projects
                 throw new ArgumentNullException("filter");
 
             filter.Validate();
-            if (! testFilters.Contains(filter))
+            
+            if (!testFilters.Contains(filter))
                 testFilters.Add(filter);
         }
 
@@ -328,7 +368,7 @@ namespace Gallio.Runner.Projects
         public void AddTestRunnerExtensionSpecification(string extensionSpecification)
         {
             if (extensionSpecification == null)
-                throw new ArgumentNullException("specification");
+                throw new ArgumentNullException("extensionSpecification");
 
             if (!testRunnerExtensionSpecifications.Contains(extensionSpecification))
                 testRunnerExtensionSpecifications.Add(extensionSpecification);
@@ -344,7 +384,7 @@ namespace Gallio.Runner.Projects
         public void RemoveTestRunnerExtensionSpecification(string extensionSpecification)
         {
             if (extensionSpecification == null)
-                throw new ArgumentNullException("specification");
+                throw new ArgumentNullException("extensionSpecification");
 
             testRunnerExtensionSpecifications.Remove(extensionSpecification);
         }
@@ -355,15 +395,16 @@ namespace Gallio.Runner.Projects
         /// <returns>The new copy.</returns>
         public TestProject Copy()
         {
-            TestProject copy = new TestProject()
+            var copy = new TestProject()
             {
                 testRunnerFactoryName = testRunnerFactoryName,
                 isTestRunnerFactoryNameSpecified = isTestRunnerFactoryNameSpecified,
                 reportDirectory = reportDirectory,
-                isReportDirectorySpecified = isReportDirectorySpecified,
+                IsReportDirectorySpecified = IsReportDirectorySpecified,
                 reportNameFormat = reportNameFormat,
                 isReportNameFormatSpecified = isReportNameFormatSpecified,
-                testPackage = testPackage.Copy()
+                testPackage = testPackage.Copy(),
+                ReportArchive = ReportArchive
             };
 
             GenericCollectionUtils.ConvertAndAddAll(testFilters, copy.testFilters, x => x.Copy());
@@ -396,9 +437,8 @@ namespace Gallio.Runner.Projects
             if (overlay.IsTestRunnerFactoryNameSpecified)
                 TestRunnerFactoryName = overlay.TestRunnerFactoryName;
             GenericCollectionUtils.ForEach(overlay.TestFilters, x => AddTestFilter(x.Copy()));
-            GenericCollectionUtils.ForEach(overlay.TestRunnerExtensions, x => AddTestRunnerExtension(x));
-            GenericCollectionUtils.ForEach(overlay.TestRunnerExtensionSpecifications, x => AddTestRunnerExtensionSpecification(x));
-
+            GenericCollectionUtils.ForEach(overlay.TestRunnerExtensions, AddTestRunnerExtension);
+            GenericCollectionUtils.ForEach(overlay.TestRunnerExtensionSpecifications, AddTestRunnerExtensionSpecification);
             TestPackage.ApplyOverlay(overlay.TestPackage);
         }
     }

@@ -57,35 +57,18 @@ namespace Gallio.Runner
     /// </remarks>
     public class TestLauncher
     {
-        #region Private Members
-
-        private RuntimeSetup runtimeSetup;
-
         private readonly List<string> filePatterns;
         private TestProject testProject;
-
         private TestRunnerOptions testRunnerOptions;
         private TestExplorationOptions testExplorationOptions;
         private TestExecutionOptions testExecutionOptions;
-
         private readonly List<string> reportFormats;
         private ReportFormatterOptions reportFormatterOptions;
-
         private IProgressMonitorProvider progressMonitorProvider;
         private ILogger logger;
-
-        private bool echoResults;
-        private bool doNotRun;
-        private bool ignoreAnnotations;
-        private TimeSpan? runTimeLimit;
-
-        private bool showReports;
-
         private readonly object cancelationSyncRoot = new object();
         private bool isCanceled;
         private IProgressMonitor cancelableProgressMonitor;
-
-        #endregion
 
         /// <summary>
         /// Creates a launcher with default options and no test assemblies specified.
@@ -94,14 +77,11 @@ namespace Gallio.Runner
         {
             filePatterns = new List<string>();
             testProject = new TestProject();
-
             testRunnerOptions = new TestRunnerOptions();
             testExplorationOptions = new TestExplorationOptions();
             testExecutionOptions = new TestExecutionOptions();
-
             reportFormats = new List<string>();
             reportFormatterOptions = new ReportFormatterOptions();
-
             progressMonitorProvider = NullProgressMonitorProvider.Instance;
             logger = NullLogger.Instance;
         }
@@ -117,7 +97,10 @@ namespace Gallio.Runner
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
         public IProgressMonitorProvider ProgressMonitorProvider
         {
-            get { return progressMonitorProvider; }
+            get
+            {
+                return progressMonitorProvider;
+            }
             set
             {
                 if (value == null)
@@ -138,7 +121,10 @@ namespace Gallio.Runner
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
         public ILogger Logger
         {
-            get { return logger; }
+            get
+            {
+                return logger;
+            }
             set
             {
                 if (value == null)
@@ -164,8 +150,8 @@ namespace Gallio.Runner
         /// </remarks>
         public RuntimeSetup RuntimeSetup
         {
-            get { return runtimeSetup; }
-            set { runtimeSetup = value; }
+            get;
+            set;
         }
 
         /// <summary>
@@ -174,7 +160,10 @@ namespace Gallio.Runner
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
         public TestRunnerOptions TestRunnerOptions
         {
-            get { return testRunnerOptions; }
+            get
+            {
+                return testRunnerOptions;
+            }
             set
             {
                 if (value == null)
@@ -190,7 +179,10 @@ namespace Gallio.Runner
         /// </summary>
         public IList<string> FilePatterns
         {
-            get { return new ReadOnlyCollection<string>(filePatterns); }
+            get
+            {
+                return new ReadOnlyCollection<string>(filePatterns);
+            }
         }
 
         /// <summary>
@@ -199,7 +191,10 @@ namespace Gallio.Runner
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
         public TestProject TestProject
         {
-            get { return testProject; }
+            get
+            {
+                return testProject;
+            }
             set
             {
                 if (value == null)
@@ -215,7 +210,10 @@ namespace Gallio.Runner
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
         public TestExplorationOptions TestExplorationOptions
         {
-            get { return testExplorationOptions; }
+            get
+            {
+                return testExplorationOptions;
+            }
             set
             {
                 if (value == null)
@@ -231,7 +229,10 @@ namespace Gallio.Runner
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
         public TestExecutionOptions TestExecutionOptions
         {
-            get { return testExecutionOptions; }
+            get
+            {
+                return testExecutionOptions;
+            }
             set
             {
                 if (value == null)
@@ -252,8 +253,8 @@ namespace Gallio.Runner
         /// </remarks>
         public bool EchoResults
         {
-            get { return echoResults; }
-            set { echoResults = value; }
+            get;
+            set;
         }
 
         /// <summary>
@@ -270,8 +271,8 @@ namespace Gallio.Runner
         /// </remarks>
         public bool DoNotRun
         {
-            get { return doNotRun; }
-            set { doNotRun = value; }
+            get;
+            set;
         }
 
         /// <summary>
@@ -279,7 +280,10 @@ namespace Gallio.Runner
         /// </summary>
         public IList<string> ReportFormats
         {
-            get { return new ReadOnlyCollection<string>(reportFormats); }
+            get
+            {
+                return new ReadOnlyCollection<string>(reportFormats);
+            }
         }
 
         /// <summary>
@@ -288,7 +292,11 @@ namespace Gallio.Runner
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
         public ReportFormatterOptions ReportFormatterOptions
         {
-            get { return reportFormatterOptions; }
+            get
+            {
+                return reportFormatterOptions;
+            }
+
             set
             {
                 if (value == null)
@@ -308,8 +316,8 @@ namespace Gallio.Runner
         /// </remarks>
         public bool ShowReports
         {
-            get { return showReports; }
-            set { showReports = value; }
+            get;
+            set;
         }
 
         /// <summary>
@@ -326,8 +334,8 @@ namespace Gallio.Runner
         /// </remarks>
         public bool IgnoreAnnotations
         {
-            get { return ignoreAnnotations; }
-            set { ignoreAnnotations = value; }
+            get;
+            set;
         }
 
         /// <summary>
@@ -340,8 +348,8 @@ namespace Gallio.Runner
         /// </remarks>
         public TimeSpan? RunTimeLimit
         {
-            get { return runTimeLimit; }
-            set { runTimeLimit = value; }
+            get;
+            set;
         }
 
         /// <summary>
@@ -414,8 +422,6 @@ namespace Gallio.Runner
             reportFormats.Remove(reportFormat);
         }
 
-        #region Public Methods
-
         /// <summary>
         /// Cancels the test run and prevents a new one from starting.
         /// </summary>
@@ -452,13 +458,13 @@ namespace Gallio.Runner
             DisplayConfiguration();
 
             Timer runTimeTimer = null;
-            if (runTimeLimit != null)
+            if (RunTimeLimit != null)
             {                
                 runTimeTimer = new Timer(delegate
                 {
                     Cancel();
                     logger.Log(LogSeverity.Warning, "Run time limit reached!  Canceled test run.");
-                }, null, (int)runTimeLimit.Value.TotalMilliseconds, Timeout.Infinite);
+                }, null, (int)RunTimeLimit.Value.TotalMilliseconds, Timeout.Infinite);
             }
 
             Stopwatch stopWatch = Stopwatch.StartNew();
@@ -490,12 +496,12 @@ namespace Gallio.Runner
         {
             IDisposable result = null;
 
-            if (runtimeSetup != null && !RuntimeAccessor.IsInitialized)
+            if (RuntimeSetup != null && !RuntimeAccessor.IsInitialized)
             {
                 RunWithProgress(progressMonitor =>
                 {
                     progressMonitor.BeginTask("Initializing the runtime and loading plugins.", 1);
-                    result = RuntimeBootstrap.Initialize(runtimeSetup, logger);
+                    result = RuntimeBootstrap.Initialize(RuntimeSetup, logger);
                 }, ref canceled);
             }
 
@@ -533,7 +539,7 @@ namespace Gallio.Runner
             }
 
             ITestRunner runner = testRunnerFactory.CreateTestRunner();
-            TestLauncherResult result = new TestLauncherResult(new Report { TestPackage = new TestPackageData(TestProject.TestPackage) });
+            var result = new TestLauncherResult(new Report { TestPackage = new TestPackageData(TestProject.TestPackage) });
             try
             {
                 DoRegisterExtensions(runner, consolidatedTestProject);
@@ -572,7 +578,7 @@ namespace Gallio.Runner
                 GenerateReports(result, reportManager, consolidatedTestProject, ref wasCanceled);
 
             // Done.
-            if (showReports)
+            if (ShowReports)
                 ShowReportDocuments(result);
 
             // Produce the final result code.
@@ -582,7 +588,7 @@ namespace Gallio.Runner
             }
             else
             {
-                if (! ignoreAnnotations
+                if (! IgnoreAnnotations
                     && result.Report.TestModel != null
                     && result.Report.TestModel.GetErrorAnnotationCount() != 0)
                     result.SetResultCode(ResultCode.Failure);
@@ -597,10 +603,6 @@ namespace Gallio.Runner
             return result;
         }
 
-        #endregion
-
-        #region Private Methods
-
         private void GenerateReports(TestLauncherResult result, IReportManager reportManager,
             TestProject consolidatedTestProject, ref bool canceled)
         {
@@ -608,8 +610,8 @@ namespace Gallio.Runner
                 return;
 
             RunWithProgress(progressMonitor => result.GenerateReports(consolidatedTestProject.ReportDirectory,
-                result.Report.FormatReportName(consolidatedTestProject.ReportNameFormat), reportFormats, reportFormatterOptions,
-                reportManager, progressMonitor), ref canceled);
+                result.Report.FormatReportName(consolidatedTestProject.ReportNameFormat), consolidatedTestProject.ReportArchive, 
+                reportFormats, reportFormatterOptions, reportManager, progressMonitor), ref canceled);
         }
 
         private void ShowReportDocuments(TestLauncherResult result)
@@ -647,7 +649,7 @@ namespace Gallio.Runner
 
         private void DoRegisterExtensions(ITestRunner runner, TestProject consolidatedTestProject)
         {
-            if (echoResults)
+            if (EchoResults)
                 runner.RegisterExtension(new LogExtension());
 
             foreach (ITestRunnerExtension extension in consolidatedTestProject.TestRunnerExtensions)
@@ -671,8 +673,8 @@ namespace Gallio.Runner
             DisplayPaths(testProject.TestPackage.Files, "Test Files:");
             DisplayPaths(testProject.TestPackage.HintDirectories, "Hint Directories:");
 
-            if (runtimeSetup != null)
-                DisplayPaths(runtimeSetup.PluginDirectories, "Plugin Directories:");
+            if (RuntimeSetup != null)
+                DisplayPaths(RuntimeSetup.PluginDirectories, "Plugin Directories:");
         }
 
         private void DisplayPaths<T>(ICollection<T> paths, string name)
@@ -686,7 +688,7 @@ namespace Gallio.Runner
             if (paths == null || paths.Count <= 0) 
                 return;
 
-            StringBuilder message = new StringBuilder();
+            var message = new StringBuilder();
             message.Append(name);
 
             foreach (string path in paths)
@@ -698,8 +700,8 @@ namespace Gallio.Runner
 
         private void Canonicalize(string baseDirectory)
         {
-            if (runtimeSetup != null)
-                runtimeSetup.Canonicalize(baseDirectory);
+            if (RuntimeSetup != null)
+                RuntimeSetup.Canonicalize(baseDirectory);
         }
 
         /// <summary>
@@ -820,7 +822,7 @@ namespace Gallio.Runner
             Report report = null;
             RunWithProgress(delegate(IProgressMonitor progressMonitor)
             {
-                report = doNotRun ? runner.Explore(testPackage, testExplorationOptions, progressMonitor) : 
+                report = DoNotRun ? runner.Explore(testPackage, testExplorationOptions, progressMonitor) : 
                     runner.Run(testPackage, testExplorationOptions, testExecutionOptions, progressMonitor);
             }, ref canceled);
 
@@ -877,7 +879,5 @@ namespace Gallio.Runner
                 canceled = true;
             }
         }
-
-        #endregion
     }
 }

@@ -27,6 +27,7 @@ namespace Gallio.Runner.Reports
     /// </summary>
     public class ArchiveReportContainer : AbstractReportContainer
     {
+        private readonly string archiveFileName;
         private ZipOutputStream archiveStream;
 
          /// <summary>
@@ -40,12 +41,16 @@ namespace Gallio.Runner.Reports
         public ArchiveReportContainer(string reportDirectory, string reportName)
             : base(reportDirectory, reportName)
         {
+            archiveFileName = Path.Combine(ReportDirectory, ReportName + ".zip");
         }
 
         /// <inheritdoc />
         public override void DeleteReport()
         {
-            throw new NotSupportedException();
+            if (File.Exists(archiveFileName))
+            {
+                File.Delete(archiveFileName);
+            }
         }
 
         /// <inheritdoc />
@@ -82,8 +87,7 @@ namespace Gallio.Runner.Reports
                     Directory.CreateDirectory(ReportDirectory);
                 }
 
-                var fileStream = File.Create(Path.Combine(ReportDirectory, ReportName + ".zip"));
-                archiveStream = new ZipOutputStream(fileStream);
+                archiveStream = new ZipOutputStream(File.Create(archiveFileName));
             }
         }
 

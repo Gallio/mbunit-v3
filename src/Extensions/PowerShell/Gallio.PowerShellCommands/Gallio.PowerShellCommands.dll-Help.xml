@@ -147,7 +147,15 @@
           <maml:description>
             <maml:para>Sets the format string to use to generate the reports filenames.</maml:para>
           </maml:description>
-          <dev:defaultValue>test-report-{0}-{1}</dev:defaultValue>          
+          <dev:defaultValue>test-report-{0}-{1}</dev:defaultValue>
+        </command:parameter>
+
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="false" position="named">
+          <maml:name>ReportArchive</maml:name>
+          <maml:description>
+            <maml:para>Indicates whether to enclose the resulting test report in a compressed archive file.</maml:para>
+          </maml:description>
+          <dev:defaultValue>false</dev:defaultValue>
         </command:parameter>
 
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="false" position="named">
@@ -306,6 +314,14 @@
       </command:parameter>
 
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="false" position="named">
+        <maml:name>ReportArchive</maml:name>
+        <maml:description>
+          <maml:para>Indicates whether to enclose the resulting test report in a compressed archive file.</maml:para>
+        </maml:description>
+        <dev:defaultValue>false</dev:defaultValue>
+      </command:parameter>
+
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="false" position="named">
         <maml:name>ReportTypes</maml:name>
         <maml:description>
           <maml:para>A list of the types of reports to generate, separated by semicolons.</maml:para>
@@ -379,7 +395,7 @@
         # Makes the Gallio commands available
         Add-PSSnapIn Gallio
         # Runs TestAssembly1.dll
-        Run-Gallio "[Path-to-assembly1]\TestAssembly1.dll","[Path-to-assembly2]\TestAssembly2.dll","[Path-to-test-script1]/TestScript1_spec.rb","[Path-to-test-script2]/TestScript2.xml" -f Category:UnitTests -rd C:\build\reports -rf html
+        Run-Gallio "[Path-to-assembly1]\TestAssembly1.dll","[Path-to-assembly2]\TestAssembly2.dll","[Path-to-test-script1]/TestScript1_spec.rb","[Path-to-test-script2]/TestScript2.xml" -f Category:UnitTests -rd C:\build\reports -rf html -ra
       </command:example>
     </command:examples>
 

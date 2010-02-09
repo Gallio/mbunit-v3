@@ -28,7 +28,7 @@ namespace Gallio.Tests.Runner.Reports
         public void MakeForSaving_with_file_system()
         {
             var factory = new ReportContainerFactory(@"C:\Directory", "name");
-            var container = (AbstractReportContainer)factory.MakeForSaving(false);
+            var container = (AbstractReportContainer)factory.MakeForSaving(ReportArchive.Flat);
             Assert.IsInstanceOfType<FileSystemReportContainer>(container);
             Assert.AreEqual("name", container.ReportName);
             Assert.AreEqual(@"C:\Directory\", container.ReportDirectory);
@@ -38,7 +38,7 @@ namespace Gallio.Tests.Runner.Reports
         public void MakeForSaving_with_archive()
         {
             var factory = new ReportContainerFactory(@"C:\Directory", "name");
-            var container = (AbstractReportContainer)factory.MakeForSaving(true);
+            var container = (AbstractReportContainer)factory.MakeForSaving(ReportArchive.Zip);
             Assert.IsInstanceOfType<ArchiveReportContainer>(container);
             Assert.AreEqual("name", container.ReportName);
             Assert.AreEqual(@"C:\Directory\", container.ReportDirectory);
