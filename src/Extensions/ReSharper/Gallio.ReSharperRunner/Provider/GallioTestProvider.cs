@@ -119,6 +119,11 @@ namespace Gallio.ReSharperRunner.Provider
         {
             return shim.IsElementOfKind(element, kind);
         }
+
+        public bool IsElementOfKind(UnitTestElement element, UnitTestElementKind kind)
+        {
+            return shim.IsElementOfKind(element, kind);
+        }
 #endif
 
         public void Present(UnitTestElement element, IPresentableItem item, TreeModelNode node, PresentationState state)
@@ -415,6 +420,29 @@ namespace Gallio.ReSharperRunner.Provider
                             throw new ArgumentOutOfRangeException("kind");
                     }
                 });
+            }
+
+            public bool IsElementOfKind(UnitTestElement element, UnitTestElementKind kind)
+            {
+                if (element == null)
+                    throw new ArgumentNullException("element");
+
+                GallioTestElement gallioTestElement = element as GallioTestElement;
+                if (gallioTestElement == null)
+                    return false;
+
+                switch (kind)
+                {
+                    case UnitTestElementKind.Unknown:
+                    case UnitTestElementKind.TestStuff:
+                        return false;
+                    case UnitTestElementKind.Test:
+                        return gallioTestElement.IsTestCase;
+                    case UnitTestElementKind.TestContainer:
+                        return ! gallioTestElement.IsTestCase;
+                    default:
+                        throw new ArgumentOutOfRangeException("kind");
+                }
             }
 #endif
 

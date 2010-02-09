@@ -120,7 +120,9 @@ namespace Gallio.Common.Reflection.Impl
                                 string name = reader.GetAttribute(@"name");
                                 string content = NormalizeWhitespace(reader.ReadInnerXml());
 
-                                document.members.Add(name, content);
+                                // Note: The member name might not be unique if the XML file
+                                //       is malformed.  So we keep the last occurrence only.
+                                document.members[name] = content;
                                 continue;
                             }
                             else if (reader.Name != @"doc" && reader.Name != @"members")

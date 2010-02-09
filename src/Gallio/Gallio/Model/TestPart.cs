@@ -33,12 +33,12 @@ namespace Gallio.Model
         }
 
         /// <summary>
-        /// Gets or sets whether the part represents a test case.
+        /// Gets or sets whether the part represents a test case such as a test method.
         /// </summary>
         public bool IsTestCase { get; set; }
 
         /// <summary>
-        /// Gets or sets whether the part represents a test container.
+        /// Gets or sets whether the part represents a test container such as a test class.
         /// </summary>
         public bool IsTestContainer { get; set; }
 
