@@ -521,7 +521,21 @@ namespace Gallio.MbUnit2Adapter.Model
 
             private static ExceptionData GetExceptionDataFromReportException(ReportException ex)
             {
+                PropertySet properties = null;
+
+                foreach (object obj in ex.Properties)
+                {
+                    ReportProperty property = obj as ReportProperty;
+                    if (property != null && property.Value != null)
+                    {
+                        if (properties == null)
+                            properties = new PropertySet();
+                        properties[property.Name] = property.Value;
+                    }
+                }
+
                 return new ExceptionData(ex.Type ?? "", ex.Message ?? "", ex.StackTrace ?? "",
+                    properties ?? ExceptionData.NoProperties,
                     ex.Exception != null ? GetExceptionDataFromReportException(ex.Exception) : null);
             }
         }

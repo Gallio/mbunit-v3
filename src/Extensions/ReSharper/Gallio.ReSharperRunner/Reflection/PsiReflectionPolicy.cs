@@ -436,7 +436,7 @@ namespace Gallio.ReSharperRunner.Reflection
         private void PopulateAssemblyTypes(List<StaticDeclaredTypeWrapper> types, INamespace namespaceHandle,
             IDeclarationsCache cache, bool includeNonPublicTypes)
         {
-            if (! namespaceHandle.IsValid())
+            if (namespaceHandle == null || ! namespaceHandle.IsValid())
                 return;
 
             foreach (IDeclaredElement elementHandle in namespaceHandle.GetNestedElements(cache))
