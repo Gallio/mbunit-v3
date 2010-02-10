@@ -281,7 +281,12 @@ namespace Gallio.XunitAdapter.Model
             {
                 // Report the failure exception.
                 testContext.LogWriter.Failures.WriteException(
-                    new ExceptionData(failedResult.ExceptionType ?? "", failedResult.Message ?? "", failedResult.StackTrace ?? "", null), "Exception");
+                    new ExceptionData(
+                        failedResult.ExceptionType ?? "",
+                        failedResult.Message ?? "",
+                        failedResult.StackTrace ?? "",
+                        ExceptionData.NoProperties,
+                        null), "Exception");
 
                 testContext.FinishStep(TestOutcome.Failed, testTime);
                 return false;

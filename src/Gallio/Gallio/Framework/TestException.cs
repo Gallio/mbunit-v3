@@ -15,6 +15,7 @@
 
 using System;
 using System.Runtime.Serialization;
+using Gallio.Common.Diagnostics;
 using Gallio.Model;
 
 namespace Gallio.Framework
@@ -81,6 +82,7 @@ namespace Gallio.Framework
         /// The message parameter was not null in the constructor arguments.
         /// </para>
         /// </remarks>
+        [SystemInternal]
         public bool HasNonDefaultMessage
         {
             get { return hasNonDefaultMessageKey; }
@@ -90,12 +92,14 @@ namespace Gallio.Framework
         /// <summary>
         /// Gets the outcome of the test.
         /// </summary>
+        [SystemInternal]
         public abstract TestOutcome Outcome { get; }
 
         /// <summary>
         /// Returns <c>true</c> if the outcome and message (if any) should be used but the exception
         /// stack trace should not be logged.
         /// </summary>
+        [SystemInternal]
         public virtual bool ExcludeStackTrace
         {
             get { return false; }

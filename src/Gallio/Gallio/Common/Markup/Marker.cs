@@ -70,6 +70,16 @@ namespace Gallio.Common.Markup
         public const string ExceptionMessageClass = "ExceptionMessage";
 
         /// <summary>
+        /// Standard marker class for exception property names reported as part of exception details.
+        /// </summary>
+        public const string ExceptionPropertyNameClass = "ExceptionPropertyName";
+
+        /// <summary>
+        /// Standard marker class for exception property values reported as part of exception details.
+        /// </summary>
+        public const string ExceptionPropertyValueClass = "ExceptionPropertyValue";
+
+        /// <summary>
         /// Standard marker class for stack traces.
         /// </summary>
         public const string StackTraceClass = "StackTrace";
@@ -173,6 +183,22 @@ namespace Gallio.Common.Markup
         public static Marker ExceptionMessage
         {
             get { return new Marker(ExceptionMessageClass); }
+        }
+
+        /// <summary>
+        /// Standard marker for exception property names reported as part of exception details.
+        /// </summary>
+        public static Marker ExceptionPropertyName
+        {
+            get { return new Marker(ExceptionPropertyNameClass); }
+        }
+
+        /// <summary>
+        /// Standard marker for exception property values reported as part of exception details.
+        /// </summary>
+        public static Marker ExceptionPropertyValue
+        {
+            get { return new Marker(ExceptionPropertyValueClass); }
         }
 
         /// <summary>

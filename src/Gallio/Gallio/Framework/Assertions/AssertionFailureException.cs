@@ -15,6 +15,7 @@
 
 using System;
 using System.Runtime.Serialization;
+using Gallio.Common.Diagnostics;
 using Gallio.Framework.Assertions;
 
 namespace Gallio.Framework.Assertions
@@ -70,6 +71,7 @@ namespace Gallio.Framework.Assertions
         /// <summary>
         /// Gets the associated assertion failure, never null.
         /// </summary>
+        [SystemInternal]
         public AssertionFailure Failure
         {
             get { return failure; }
@@ -79,6 +81,7 @@ namespace Gallio.Framework.Assertions
         /// Returns <c>true</c> if the assertion failure exception should not be logged because
         /// the information it contains has already been conveyed to the user.
         /// </summary>
+        [SystemInternal]
         public bool IsSilent
         {
             get { return !HasNonDefaultMessage; }
@@ -91,6 +94,7 @@ namespace Gallio.Framework.Assertions
         }
 
         /// <inheritdoc />
+        [SystemInternal]
         public override bool ExcludeStackTrace
         {
             get { return IsSilent; }

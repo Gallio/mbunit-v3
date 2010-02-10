@@ -108,6 +108,7 @@ namespace Gallio.Common.Diagnostics
 
             return new ExceptionData(exception.Type, exception.Message,
                 FilterStackFrames(EnumerateStackFrameInfo(exception.StackTrace.ToString())),
+                exception.Properties,
                 exception.InnerException != null ? FilterException(exception.InnerException) : null);
         }
 

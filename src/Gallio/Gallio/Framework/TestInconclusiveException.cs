@@ -15,6 +15,7 @@
 
 using System;
 using System.Runtime.Serialization;
+using Gallio.Common.Diagnostics;
 using Gallio.Model;
 
 namespace Gallio.Framework
@@ -71,6 +72,7 @@ namespace Gallio.Framework
         /// <summary>
         /// Returns <see cref="TestOutcome.Inconclusive" />.
         /// </summary>
+        [SystemInternal]
         public sealed override TestOutcome Outcome
         {
             get { return TestOutcome.Inconclusive; }

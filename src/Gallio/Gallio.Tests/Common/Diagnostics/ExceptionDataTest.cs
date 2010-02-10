@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using Gallio.Common.Collections;
 using Gallio.Common.Diagnostics;
 using Gallio.Common.Markup;
 using MbUnit.Framework;
@@ -32,25 +33,31 @@ namespace Gallio.Tests.Common.Diagnostics
         [Test, ExpectedArgumentNullException]
         public void ConstructorThrowsIfTypeIsNull()
         {
-            new ExceptionData(null, "message", "stacktrace", null);
+            new ExceptionData(null, "message", "stacktrace", ExceptionData.NoProperties, null);
         }
 
         [Test, ExpectedArgumentNullException]
         public void ConstructorThrowsIfMessageIsNull()
         {
-            new ExceptionData("type", null, "stacktrace", null);
+            new ExceptionData("type", null, "stacktrace", ExceptionData.NoProperties, null);
         }
 
         [Test, ExpectedArgumentNullException]
         public void ConstructorThrowsIfStackTraceIsNull()
         {
-            new ExceptionData("type", "message", (string) null, null);
+            new ExceptionData("type", "message", (string)null, ExceptionData.NoProperties, null);
         }
 
         [Test, ExpectedArgumentNullException]
         public void ConstructorThrowsIfStackTraceDataIsNull()
         {
-            new ExceptionData("type", "message", (StackTraceData)null, null);
+            new ExceptionData("type", "message", (StackTraceData)null, ExceptionData.NoProperties, null);
+        }
+
+        [Test, ExpectedArgumentNullException]
+        public void ConstructorThrowsIfPropertiesIsNull()
+        {
+            new ExceptionData("type", "message", "stacktrace", null, null);
         }
 
         [Test]
@@ -59,12 +66,20 @@ namespace Gallio.Tests.Common.Diagnostics
             Exception inner = new Exception("Foo");
             PopulateStackTrace(inner);
 
-            Exception outer = new Exception("Bar", inner);
+            SampleException outer = new SampleException("Bar", inner)
+            {
+                Prop1 = "Value1",
+                Prop2 = "Value2"
+            };
             PopulateStackTrace(outer);
 
             ExceptionData outerData = new ExceptionData(outer);
             Assert.AreEqual(outer.GetType().FullName, outerData.Type);
             Assert.AreEqual(outer.Message, outerData.Message);
+            Assert.AreEqual(new PropertySet() {
+                    { "Prop1", "Value1" },
+                    { "Prop2", "Value2" }
+                }, outerData.Properties);
             Assert.AreEqual(outer.StackTrace, outerData.StackTrace.ToString());
             Assert.IsNotNull(outerData.InnerException);
 
@@ -78,8 +93,12 @@ namespace Gallio.Tests.Common.Diagnostics
         [Test]
         public void PopulatesPropertiesFromRawValues()
         {
-            ExceptionData innerData = new ExceptionData("type", "message", "stacktrace", null);
-            ExceptionData outerData = new ExceptionData("type", "message", "stacktrace", innerData);
+            ExceptionData innerData = new ExceptionData("type", "message", "stacktrace", ExceptionData.NoProperties, null);
+            ExceptionData outerData = new ExceptionData("type", "message", "stacktrace", 
+                new PropertySet() {
+                    { "Prop1", "Value1" },
+                    { "Prop2", "Value2" }
+                }, innerData);
 
             Assert.AreEqual("type", innerData.Type);
             Assert.AreEqual("message", innerData.Message);
@@ -89,51 +108,75 @@ namespace Gallio.Tests.Common.Diagnostics
             Assert.AreEqual("type", outerData.Type);
             Assert.AreEqual("message", outerData.Message);
             Assert.AreEqual("stacktrace", outerData.StackTrace.ToString());
+            Assert.AreEqual(new PropertySet() {
+                    { "Prop1", "Value1" },
+                    { "Prop2", "Value2" }
+                }, outerData.Properties);
             Assert.AreSame(innerData, outerData.InnerException);
         }
 
         [Test]
         public void WriteToThrowsIfArgumentIsNull()
         {
-            ExceptionData data = new ExceptionData("type", "message", "stacktrace", null);
+            ExceptionData data = new ExceptionData("type", "message", "stacktrace", ExceptionData.NoProperties, null);
             Assert.Throws<ArgumentNullException>(() => data.WriteTo(null));
         }
 
         [Test]
         public void ToStringBareBones()
         {
-            ExceptionData data = new ExceptionData("type", "message", "stacktrace", null);
-            Assert.AreEqual("type: message\nstacktrace", data.ToString());
+            ExceptionData data = new ExceptionData("type", "message", "stacktrace", ExceptionData.NoProperties, null);
+            Assert.AreEqual("type: message\nstacktrace",
+                data.ToString());
         }
 
         [Test]
-        public void ToStringEverything()
+        [Row(false), Row(true)]
+        public void ToStringEverything(bool useStandardFormatting)
         {
-            ExceptionData innerData = new ExceptionData("type", "message", "stacktrace", null);
-            ExceptionData outerData = new ExceptionData("type", "message", "stacktrace", innerData);
-            Assert.AreEqual("type: message ---> type: message\nstacktrace\n   --- End of inner exception stack trace ---\nstacktrace", outerData.ToString());
+            ExceptionData innerData = new ExceptionData("type", "message", "stacktrace", ExceptionData.NoProperties, null);
+            ExceptionData outerData = new ExceptionData("type", "message", "stacktrace", 
+                new PropertySet() {
+                    { "Prop1", "Value1" },
+                    { "Prop2", "Value2" }
+                }, innerData);
+            Assert.AreEqual("type: message ---> type: message\n"
+                + "stacktrace\n   --- End of inner exception stack trace ---\n"
+                + (useStandardFormatting ? "" : "Prop1: Value1\nProp2: Value2\n")
+                + "stacktrace",
+                outerData.ToString(useStandardFormatting));
         }
 
         [Test]
         public void WriteToBareBones()
         {
-            ExceptionData data = new ExceptionData("type", "message", "stacktrace", null);
+            ExceptionData data = new ExceptionData("type", "message", "stacktrace", ExceptionData.NoProperties, null);
             StringMarkupDocumentWriter writer = new StringMarkupDocumentWriter(true);
             data.WriteTo(writer.Failures);
 
-            Assert.AreEqual("[Marker \'Exception\'][Marker \'ExceptionType\']type[End]: [Marker \'ExceptionMessage\']message[End]\n[Marker \'StackTrace\']stacktrace[End][End]", writer.ToString());
+            Assert.AreEqual("[Marker \'Exception\'][Marker \'ExceptionType\']type[End]: [Marker \'ExceptionMessage\']message[End]\n[Marker \'StackTrace\']stacktrace[End][End]",
+                writer.ToString());
         }
 
         [Test]
-        public void WriteToEverything()
+        [Row(false), Row(true)]
+        public void WriteToEverything(bool useStandardFormatting)
         {
-            ExceptionData innerData = new ExceptionData("type", "message", "stacktrace", null);
-            ExceptionData outerData = new ExceptionData("type", "message", "stacktrace", innerData);
+            ExceptionData innerData = new ExceptionData("type", "message", "stacktrace", ExceptionData.NoProperties, null);
+            ExceptionData outerData = new ExceptionData("type", "message", "stacktrace",
+                new PropertySet() {
+                    { "Prop1", "Value1" },
+                    { "Prop2", "Value2" }
+                }, innerData);
 
             StringMarkupDocumentWriter writer = new StringMarkupDocumentWriter(true);
-            outerData.WriteTo(writer.Failures);
+            outerData.WriteTo(writer.Failures, useStandardFormatting);
 
-            Assert.AreEqual("[Marker \'Exception\'][Marker \'ExceptionType\']type[End]: [Marker \'ExceptionMessage\']message[End] ---> [Marker \'Exception\'][Marker \'ExceptionType\']type[End]: [Marker \'ExceptionMessage\']message[End]\n[Marker \'StackTrace\']stacktrace[End][End]\n   --- End of inner exception stack trace ---\n[Marker \'StackTrace\']stacktrace[End][End]", writer.ToString());
+            Assert.AreEqual("[Marker \'Exception\'][Marker \'ExceptionType\']type[End]: [Marker \'ExceptionMessage\']message[End] ---> [Marker \'Exception\'][Marker \'ExceptionType\']type[End]: [Marker \'ExceptionMessage\']message[End]\n"
+                + "[Marker \'StackTrace\']stacktrace[End][End]\n   --- End of inner exception stack trace ---\n"
+                + (useStandardFormatting ? "" : "[Marker \'ExceptionPropertyName\']Prop1[End]: [Marker \'ExceptionPropertyValue\']Value1[End]\n[Marker \'ExceptionPropertyName\']Prop2[End]: [Marker \'ExceptionPropertyValue\']Value2[End]\n")
+                + "[Marker \'StackTrace\']stacktrace[End][End]",
+                writer.ToString());
         }
 
         private static void PopulateStackTrace(Exception ex)
@@ -145,6 +188,25 @@ namespace Gallio.Tests.Common.Diagnostics
             catch
             {
             }
+        }
+
+        private class SampleException : Exception
+        {
+            public SampleException(string message, Exception innerException)
+                : base(message, innerException)
+            {
+            }
+
+            public object Prop1 { get; set; }
+
+            public string Prop2 { get; set; }
+
+            // will be ignored because the value is null
+            public string PropNull { get { return null; } }
+
+            // will be ignored because of the attribute
+            [SystemInternal]
+            public object PropInternal { get; set; }
         }
     }
 }

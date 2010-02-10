@@ -24,7 +24,7 @@ namespace Gallio.Common.Diagnostics
     /// </summary>
     /// <remarks>
     /// <para>
-    /// The <see cref="StackTraceFilter" /> uses this attribute to identify stack
+    /// The <see cref="StackTraceFilter" /> class uses this attribute to identify stack
     /// frames that may safely be filtered out when describing failures to users.  If the
     /// stack frame refers to a method with this attribute or declared by a type
     /// with this attribute then it is omitted.  The attribute also applies to nested types
@@ -34,8 +34,14 @@ namespace Gallio.Common.Diagnostics
     /// Other attributes may also contribute to stack trace filtering.  Refer to
     /// <see cref="StackTraceFilter"/> for details.
     /// </para>
+    /// <para>
+    /// The <see cref="ExceptionData"/> class uses this attribute to identify exception
+    /// properties that should not be captured automatically.
+    /// </para>
     /// </remarks>
-    [AttributeUsage(AttributeTargets.Method | AttributeTargets.Constructor | AttributeTargets.Class, AllowMultiple=false, Inherited=true)]
+    [AttributeUsage(AttributeTargets.Method | AttributeTargets.Constructor | AttributeTargets.Class
+        | AttributeTargets.Property | AttributeTargets.Field | AttributeTargets.Struct,
+        AllowMultiple=false, Inherited=true)]
     public sealed class SystemInternalAttribute : Attribute
     {
     }

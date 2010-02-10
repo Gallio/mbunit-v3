@@ -460,6 +460,7 @@ namespace Gallio.ReSharperRunner.Provider.Tasks
             private ExceptionDataBuilder currentBuilder;
             private string currentMarkerClass;
             private string currentSectionName;
+            private string currentExceptionPropertyName;
 
             public ExceptionVisitor(Action<ExceptionData> publishException)
             {
@@ -487,6 +488,8 @@ namespace Gallio.ReSharperRunner.Provider.Tasks
                     if (currentBuilder.Message.Length == 0 && currentSectionName != null)
                         currentBuilder.Message.Append(currentSectionName);
 
+                    FlushExceptionProperty(string.Empty);
+
                     ExceptionData currentException = currentBuilder.ToExceptionData();
                     if (oldBuilder != null)
                         oldBuilder.Inner = currentException;
@@ -511,6 +514,8 @@ namespace Gallio.ReSharperRunner.Provider.Tasks
                     case Marker.StackTraceClass:
                     case Marker.ExceptionMessageClass:
                     case Marker.ExceptionTypeClass:
+                    case Marker.ExceptionPropertyNameClass:
+                    case Marker.ExceptionPropertyValueClass:
                         return true;
 
                     default:
@@ -543,9 +548,27 @@ namespace Gallio.ReSharperRunner.Provider.Tasks
                         currentBuilder.Message.Append(tag.Text);
                         break;
 
+                    case Marker.ExceptionPropertyNameClass:
+                        FlushExceptionProperty(string.Empty);
+                        currentExceptionPropertyName = tag.Text;
+                        break;
+
+                    case Marker.ExceptionPropertyValueClass:
+                        FlushExceptionProperty(tag.Text);
+                        break;
+
                     case Marker.StackTraceClass:
                         currentBuilder.StackTrace.Append(tag.Text);
                         break;
+                }
+            }
+
+            private void FlushExceptionProperty(string value)
+            {
+                if (currentExceptionPropertyName != null)
+                {
+                    currentBuilder.Properties.Add(currentExceptionPropertyName, value);
+                    currentExceptionPropertyName = null;
                 }
             }
         }
@@ -557,16 +580,19 @@ namespace Gallio.ReSharperRunner.Provider.Tasks
                 Type = new StringBuilder();
                 Message = new StringBuilder();
                 StackTrace = new StringBuilder();
+                Properties = new PropertySet();
             }
 
             public StringBuilder Type { get; private set; }
             public StringBuilder Message { get; private set; }
             public StringBuilder StackTrace { get; private set; }
+            public PropertySet Properties { get; private set; }
             public ExceptionData Inner { get; set; }
 
             public ExceptionData ToExceptionData()
             {
-                return new ExceptionData(Type.ToString(), Message.ToString(), StackTrace.ToString(), Inner);
+                return new ExceptionData(Type.ToString(), Message.ToString(),
+                    StackTrace.ToString(), Properties, Inner);
             }
         }
     }

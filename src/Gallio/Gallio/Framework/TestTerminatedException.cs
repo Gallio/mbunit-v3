@@ -15,6 +15,7 @@
 
 using System;
 using System.Runtime.Serialization;
+using Gallio.Common.Diagnostics;
 using Gallio.Model;
 
 namespace Gallio.Framework
@@ -77,6 +78,7 @@ namespace Gallio.Framework
         }
 
         /// <inheritdoc />
+        [SystemInternal]
         public override TestOutcome Outcome
         {
             get { return outcome; }
