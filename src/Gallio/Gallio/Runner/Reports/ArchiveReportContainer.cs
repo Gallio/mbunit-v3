@@ -70,7 +70,7 @@ namespace Gallio.Runner.Reports
                 entry = stream.GetNextEntry();
             }
 
-            throw new InvalidOperationException(String.Format("'{0}' not found in the archive file."));
+            throw new InvalidOperationException(String.Format("'{0}' not found in the archive file.", path));
         }
 
         /// <inheritdoc />
