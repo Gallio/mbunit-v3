@@ -62,7 +62,7 @@ namespace Gallio.Echo
             ShowBanner();
             InstallCancelHandler();
 
-            if (! ParseArguments(args))
+            if (!ParseArguments(args))
             {
                 ShowHelp();
                 return ResultCode.InvalidArguments;
@@ -75,8 +75,8 @@ namespace Gallio.Echo
             }
 
             ILogger logger = CreateLogger();
-
             int resultCode = RunTests(logger);
+
             if (resultCode == ResultCode.Canceled)
                 logger.Log(LogSeverity.Warning, Resources.MainClass_Canceled);
 
@@ -87,17 +87,15 @@ namespace Gallio.Echo
         {
             logger.Log(LogSeverity.Debug, Arguments.ToString());
 
-            TestLauncher launcher = new TestLauncher
+            var launcher = new TestLauncher
             {
                 Logger = logger,
                 ProgressMonitorProvider = CreateProgressMonitorProvider()
             };
 
             ConfigureLauncherFromArguments(launcher, Arguments);
-
             TestLauncherResult result = launcher.Run();
             DisplayResultSummary(result);
-
             return result.ResultCode;
         }
 
@@ -128,9 +126,11 @@ namespace Gallio.Echo
 
             if (arguments.ReportDirectory != null)
                 launcher.TestProject.ReportDirectory = arguments.ReportDirectory;
+
             if (arguments.ReportNameFormat != null)
                 launcher.TestProject.ReportNameFormat = arguments.ReportNameFormat;
 
+            launcher.TestProject.ReportArchive = arguments.ReportArchive ? ReportArchive.Zip : ReportArchive.Flat;
             GenericCollectionUtils.ForEach(arguments.ReportTypes, x => launcher.AddReportFormat(x));
 
             if (arguments.RunnerType != null)
@@ -181,7 +181,7 @@ namespace Gallio.Echo
 
         private ILogger CreateLogger()
         {
-            RichConsoleLogger logger = new RichConsoleLogger(Console);
+            var logger = new RichConsoleLogger(Console);
             return new FilteredLogger(logger, Arguments.Verbosity);
         }
 
@@ -221,7 +221,8 @@ namespace Gallio.Echo
             base.ShowHelp();
 
             // Print out options related to the currently available set of plugins.
-            RuntimeSetup setup = new RuntimeSetup();
+            var setup = new RuntimeSetup();
+
             if (Arguments != null && Arguments.PluginDirectories != null)
             {
                 GenericCollectionUtils.ForEach(Arguments.PluginDirectories, x => setup.AddPluginDirectory(x));
@@ -239,14 +240,13 @@ namespace Gallio.Echo
             }
         }
 
-        private void ShowRegisteredComponents<T>(string heading, ICollection<T> handles,
-            Func<T, string> getName, Func<T, string> getDescription)
+        private void ShowRegisteredComponents<T>(string heading, ICollection<T> handles, Func<T, string> getName, Func<T, string> getDescription)
         {
             Console.WriteLine(heading);
             Console.WriteLine();
-
             T[] sortedHandles = GenericCollectionUtils.ToArray(handles);
             Array.Sort(sortedHandles, (x, y) => getName(x).CompareTo(getName(y)));
+
             if (sortedHandles.Length == 0)
             {
                 CommandLineOutput.PrintArgumentHelp("", "<none>", null, null, null, null);

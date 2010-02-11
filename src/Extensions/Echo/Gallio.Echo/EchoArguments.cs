@@ -115,6 +115,14 @@ namespace Gallio.Echo
         public string ReportNameFormat;
 
         [CommandLineArgument(
+             CommandLineArgumentFlags.AtMostOnce,
+             ShortName = "ra",
+             LongName = "report-archive",
+             Description = "Encloses the test reports in compressed archive files."
+        )]
+        public bool ReportArchive;
+
+        [CommandLineArgument(
              CommandLineArgumentFlags.MultipleUnique,
              ShortName = "rt",
              LongName = "report-type",
