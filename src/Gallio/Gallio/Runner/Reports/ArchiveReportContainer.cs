@@ -62,7 +62,7 @@ namespace Gallio.Runner.Reports
 
             while (entry != null)
             {
-                if (entry.Name == path)
+                if (ArePathEqual(entry.Name, path))
                 {
                     return stream;
                 }
@@ -71,6 +71,12 @@ namespace Gallio.Runner.Reports
             }
 
             throw new InvalidOperationException(String.Format("'{0}' not found in the archive file.", path));
+        }
+
+        private static bool ArePathEqual(string path1, string path2)
+        {
+            return path1.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar)
+                == path2.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
         }
 
         /// <inheritdoc />

@@ -135,7 +135,7 @@ namespace Gallio.Common.Markup
         /// <summary>
         /// Gets or sets the attachment content serialized as text (including Base64 attachments), possibly null if none.
         /// </summary>
-        [XmlText]
+        [XmlAttribute("data")]
         public string SerializedContents
         {
             get
@@ -180,9 +180,6 @@ namespace Gallio.Common.Markup
         /// <exception cref="InvalidOperationException">Thrown if the attachment is not binary.</exception>
         public byte[] GetBytes()
         {
-            if (IsText)
-                throw new InvalidOperationException("The attachment is not binary.");
-
             if (bytes == null && serializedContents != null)
                 bytes = Convert.FromBase64String(serializedContents);
             return bytes;
@@ -199,7 +196,7 @@ namespace Gallio.Common.Markup
             if (stream == null)
                 throw new ArgumentNullException("stream");
 
-            if (IsText)
+            if (IsText && ContentDisposition == AttachmentContentDisposition.Inline)
             {
                 serializedContents = new StreamReader(stream).ReadToEnd();
                 bytes = null;
@@ -228,7 +225,7 @@ namespace Gallio.Common.Markup
             if (serializedContents == null && bytes == null)
                 throw new InvalidOperationException("The attachment contents cannot be saved because they are not available.");
 
-            if (IsText)
+            if (IsText && ContentDisposition == AttachmentContentDisposition.Inline)
             {
                 using (StreamWriter writer = new StreamWriter(stream, encoding ?? new UTF8Encoding(false)))
                     writer.Write(serializedContents);

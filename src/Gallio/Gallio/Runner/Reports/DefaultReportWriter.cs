@@ -107,8 +107,7 @@ namespace Gallio.Runner.Reports
                 // Only include content data when inline.
                 if (attachmentContentDisposition != AttachmentContentDisposition.Inline)
                 {
-                    overrides.Add(typeof(AttachmentData), @"InnerText", ignoreAttributes);
-                    overrides.Add(typeof(AttachmentData), @"InnerXml", ignoreAttributes);
+                    overrides.Add(typeof(AttachmentData), @"SerializedContents", ignoreAttributes);
                     overrides.Add(typeof(AttachmentData), @"Encoding", ignoreAttributes);
                 }
 
