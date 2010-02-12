@@ -53,7 +53,7 @@ namespace Gallio.Tests.Runner.Reports
         {
             var mockFileSystem = MockRepository.GenerateStub<IFileSystem>();
             var factory = new ReportContainerFactory(mockFileSystem, @"C:\Directory", "name");
-            var container = (AbstractReportContainer)factory.MakeForSaving(ReportArchive.Flat);
+            var container = (AbstractReportContainer)factory.MakeForSaving(ReportArchive.Normal);
             Assert.IsInstanceOfType<FileSystemReportContainer>(container);
             Assert.AreEqual("name", container.ReportName);
             Assert.AreEqual(@"C:\Directory\", container.ReportDirectory);

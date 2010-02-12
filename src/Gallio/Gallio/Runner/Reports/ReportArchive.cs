@@ -10,9 +10,9 @@ namespace Gallio.Runner.Reports
     public enum ReportArchive
     {
         /// <summary>
-        /// Flat system files.
+        /// Non-compressed file structure.
         /// </summary>
-        Flat,
+        Normal,
 
         /// <summary>
         /// Compressed zip archive.

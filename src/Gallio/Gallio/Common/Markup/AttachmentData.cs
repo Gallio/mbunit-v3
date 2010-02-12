@@ -180,6 +180,9 @@ namespace Gallio.Common.Markup
         /// <exception cref="InvalidOperationException">Thrown if the attachment is not binary.</exception>
         public byte[] GetBytes()
         {
+            //if (IsText)
+            //    throw new InvalidOperationException("The attachment is not binary.");
+            
             if (bytes == null && serializedContents != null)
                 bytes = Convert.FromBase64String(serializedContents);
             return bytes;

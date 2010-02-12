@@ -65,7 +65,7 @@ namespace Gallio.Runner.Reports
                     return new ArchiveReportContainer(reportDirectory, reportName);
 
                 default:
-                case ReportArchive.Flat:
+                case ReportArchive.Normal:
                     return new FileSystemReportContainer(reportDirectory, reportName);
             }
         }

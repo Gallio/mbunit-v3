@@ -576,8 +576,8 @@ namespace Gallio.PowerShellCommands
             if (ReportTypes != null)
                 GenericCollectionUtils.ForEach(ReportTypes, launcher.AddReportFormat);
             launcher.TestProject.ReportArchive = ReportArchive.IsPresent 
-                ? Runner.Reports.ReportArchive.Zip 
-                : Runner.Reports.ReportArchive.Flat;
+                ? Runner.Reports.ReportArchive.Zip
+                : Runner.Reports.ReportArchive.Normal;
 
             TestLauncherResult result = RunLauncher(launcher);
             return result;

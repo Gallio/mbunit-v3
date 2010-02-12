@@ -130,7 +130,7 @@ namespace Gallio.Echo
             if (arguments.ReportNameFormat != null)
                 launcher.TestProject.ReportNameFormat = arguments.ReportNameFormat;
 
-            launcher.TestProject.ReportArchive = arguments.ReportArchive ? ReportArchive.Zip : ReportArchive.Flat;
+            launcher.TestProject.ReportArchive = ParseReportArchive(arguments.ReportArchive);
             GenericCollectionUtils.ForEach(arguments.ReportTypes, x => launcher.AddReportFormat(x));
 
             if (arguments.RunnerType != null)
@@ -160,6 +160,22 @@ namespace Gallio.Echo
 
             if (arguments.RunTimeLimitInSeconds >= 0)
                 launcher.RunTimeLimit = TimeSpan.FromSeconds(arguments.RunTimeLimitInSeconds);
+        }
+
+        private static ReportArchive ParseReportArchive(string reportArchiveValue)
+        {
+            if (String.IsNullOrEmpty(reportArchiveValue))
+                return ReportArchive.Normal;
+
+            try
+            {
+                return (ReportArchive)Enum.Parse(typeof(ReportArchive), reportArchiveValue, true);
+            }
+            catch (ArgumentException exception)
+            {
+                throw new InvalidOperationException(String.Format("The specified report archive mode is not valid. " +
+                    "It must be one of the following values: {0}.", String.Join(", ", Enum.GetNames(typeof(ReportArchive)))), exception);
+            }
         }
 
         private void DisplayResultSummary(TestLauncherResult result)

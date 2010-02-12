@@ -118,9 +118,9 @@ namespace Gallio.Echo
              CommandLineArgumentFlags.AtMostOnce,
              ShortName = "ra",
              LongName = "report-archive",
-             Description = "Encloses the test reports in compressed archive files."
+             Description = "Encloses the test reports in compressed archive files. Possible values are 'normal' (default) or 'zip'."
         )]
-        public bool ReportArchive;
+        public string ReportArchive;
 
         [CommandLineArgument(
              CommandLineArgumentFlags.MultipleUnique,

@@ -39,6 +39,7 @@ namespace Gallio.Runtime.UtilityCommands
         private string inputName;
         private IReportManager reportManager;
         private Report report;
+        private ReportArchive reportArchive;
 
         /// <inheritdoc />
         public override int Execute(UtilityCommandContext context, Arguments arguments)
@@ -65,7 +66,28 @@ namespace Gallio.Runtime.UtilityCommands
                 return false;
             }
 
-            return true;
+            return ParseReportArchive();
+        }
+
+        private bool ParseReportArchive()
+        {
+            if (String.IsNullOrEmpty(arguments.ReportArchive))
+            {
+                reportArchive = ReportArchive.Normal;
+                return true;
+            }
+
+            try
+            {
+                reportArchive = (ReportArchive)Enum.Parse(typeof(ReportArchive), arguments.ReportArchive, true);
+                return true;
+            }
+            catch (ArgumentException exception)
+            {
+                context.Logger.Log(LogSeverity.Error, String.Format("The specified report archive mode is not valid. " +
+                    "It must be one of the following values: {0}.", String.Join(", ", Enum.GetNames(typeof(ReportArchive)))), exception);
+                return false;
+            }
         }
 
         private bool LoadReport()
@@ -88,7 +110,6 @@ namespace Gallio.Runtime.UtilityCommands
             {
                 var outputName = (arguments.ReportNameFormat != null) ? report.FormatReportName(arguments.ReportNameFormat) : inputName;
                 var factory = new ReportContainerFactory(new FileSystem(), outputPath, outputName);
-                var reportArchive = arguments.ReportArchive ? ReportArchive.Zip : ReportArchive.Flat;
 
                 using (IReportContainer outputContainer = factory.MakeForSaving(reportArchive))
                 {
@@ -156,7 +177,7 @@ namespace Gallio.Runtime.UtilityCommands
                 Description = "Pack the resulting report in a compressed archive (optional).",
                 LongName = "ReportArchive",
                 ShortName = "ra")]
-            public bool ReportArchive;
+            public string ReportArchive;
 
             /// <summary>
             /// The type of the output report.

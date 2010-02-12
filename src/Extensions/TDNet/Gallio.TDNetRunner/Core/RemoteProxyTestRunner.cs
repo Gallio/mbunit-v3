@@ -199,7 +199,7 @@ namespace Gallio.TDNetRunner.Core
                 if (reportDirectory != null)
                 {
                     var reportFormatterOptions = new ReportFormatterOptions();
-                    result.GenerateReports(reportDirectory, Path.GetFileName(assemblyPath), ReportArchive.Flat,
+                    result.GenerateReports(reportDirectory, Path.GetFileName(assemblyPath), ReportArchive.Normal,
                         new[] { DetermineReportFormat(result.Report) }, reportFormatterOptions,
                         RuntimeAccessor.ServiceLocator.Resolve<IReportManager>(), NullProgressMonitor.CreateInstance());
 

@@ -51,7 +51,7 @@ namespace Gallio.PowerShellCommands.Tests
                 Assert.AreEqual("test-report-{0}-{1}", launcher.TestProject.ReportNameFormat);
                 Assert.IsFalse(launcher.TestProject.IsReportNameFormatSpecified);
                 Assert.IsFalse(launcher.ShowReports);
-                Assert.AreEqual(ReportArchive.Flat, launcher.TestProject.ReportArchive);
+                Assert.AreEqual(ReportArchive.Normal, launcher.TestProject.ReportArchive);
                 Assert.IsNull(launcher.RunTimeLimit);
 
                 Assert.AreEqual(StandardTestRunnerFactoryNames.IsolatedProcess, launcher.TestProject.TestRunnerFactoryName);
