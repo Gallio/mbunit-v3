@@ -109,8 +109,6 @@ namespace Gallio.Runner.Reports
                 {
                     overrides.Add(typeof(AttachmentData), @"SerializedContents", ignoreAttributes);
                     overrides.Add(typeof(AttachmentData), @"Encoding", ignoreAttributes);
-                    //overrides.Add(typeof(AttachmentData), @"InnerText", ignoreAttributes);	
-                    //overrides.Add(typeof(AttachmentData), @"InnerXml", ignoreAttributes);
                 }
 
                 // Munge the content paths and content disposition.

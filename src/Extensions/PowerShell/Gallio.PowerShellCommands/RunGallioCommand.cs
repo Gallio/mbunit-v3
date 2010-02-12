@@ -44,7 +44,7 @@ namespace Gallio.PowerShellCommands
     /// Add-PSSnapIn Gallio
     /// 
     /// # Runs a few assemblies and scripts.
-    /// Run-Gallio "[Path-to-assembly1]\TestAssembly1.dll","[Path-to-assembly2]\TestAssembly2.dll","[Path-to-test-script1]/TestScript1_spec.rb","[Path-to-test-script2]/TestScript2.xml" -f Category:UnitTests -rd C:\build\reports -rf html -ra
+    /// Run-Gallio "[Path-to-assembly1]\TestAssembly1.dll","[Path-to-assembly2]\TestAssembly2.dll","[Path-to-test-script1]/TestScript1_spec.rb","[Path-to-test-script2]/TestScript2.xml" -f Category:UnitTests -rd C:\build\reports -rf html -ra zip
     /// ]]></code>
     /// </example>
     [Cmdlet("Run", "Gallio")]
@@ -294,7 +294,7 @@ namespace Gallio.PowerShellCommands
         /// Specifies to enclose the resulting reports into a compressed archive file (zip).
         /// </summary>
         [Parameter(ValueFromPipelineByPropertyName = true), Alias("ra", "report-archive")]
-        public SwitchParameter ReportArchive
+        public string ReportArchive
         {
             private get;
             set;
@@ -575,10 +575,7 @@ namespace Gallio.PowerShellCommands
                 launcher.TestProject.ReportNameFormat = ReportNameFormat;
             if (ReportTypes != null)
                 GenericCollectionUtils.ForEach(ReportTypes, launcher.AddReportFormat);
-            launcher.TestProject.ReportArchive = ReportArchive.IsPresent 
-                ? Runner.Reports.ReportArchive.Zip
-                : Runner.Reports.ReportArchive.Normal;
-
+            launcher.TestProject.ReportArchive = ReportArchiveParser.Parse(ReportArchive); 
             TestLauncherResult result = RunLauncher(launcher);
             return result;
         }

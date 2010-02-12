@@ -66,28 +66,7 @@ namespace Gallio.Runtime.UtilityCommands
                 return false;
             }
 
-            return ParseReportArchive();
-        }
-
-        private bool ParseReportArchive()
-        {
-            if (String.IsNullOrEmpty(arguments.ReportArchive))
-            {
-                reportArchive = ReportArchive.Normal;
-                return true;
-            }
-
-            try
-            {
-                reportArchive = (ReportArchive)Enum.Parse(typeof(ReportArchive), arguments.ReportArchive, true);
-                return true;
-            }
-            catch (ArgumentException exception)
-            {
-                context.Logger.Log(LogSeverity.Error, String.Format("The specified report archive mode is not valid. " +
-                    "It must be one of the following values: {0}.", String.Join(", ", Enum.GetNames(typeof(ReportArchive)))), exception);
-                return false;
-            }
+            return ReportArchiveParser.TryParse(arguments.ReportArchive, out reportArchive);
         }
 
         private bool LoadReport()

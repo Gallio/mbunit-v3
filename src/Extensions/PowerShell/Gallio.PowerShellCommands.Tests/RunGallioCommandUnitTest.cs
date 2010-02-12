@@ -97,7 +97,7 @@ namespace Gallio.PowerShellCommands.Tests
             task.ReportTypes = new string[] { "XML", "Html" };
             task.ReportNameFormat = "report";
             task.ShowReports = true;
-            task.ReportArchive = true;
+            task.ReportArchive = ReportArchive.Normal.ToString();
             task.RunTimeLimit = 7200; // seconds = 120 minutes
 
             task.RunnerType = StandardTestRunnerFactoryNames.Local;
