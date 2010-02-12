@@ -135,7 +135,7 @@ namespace Gallio.Common.Markup
         /// <summary>
         /// Gets or sets the attachment content serialized as text (including Base64 attachments), possibly null if none.
         /// </summary>
-        [XmlAttribute("data")]
+        [XmlText]
         public string SerializedContents
         {
             get
