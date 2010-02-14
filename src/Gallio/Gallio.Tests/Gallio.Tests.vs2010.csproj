@@ -56,7 +56,7 @@
   <ItemGroup>
     <Compile Include="Common\ActionChainTestForTwoParameters.cs" />
     <Compile Include="BaseTestWithMocks.cs" />
-    <Compile Include="Common\Collections\GenericUtilsTest.cs" />
+    <Compile Include="Common\Collections\GenericCollectionUtilsTest.cs" />
     <Compile Include="Common\Collections\PropertyBagTest.cs" />
     <Compile Include="Common\Collections\PropertySetTest.cs" />
     <Compile Include="Common\Collections\TreeUtilsTest.cs" />
@@ -243,7 +243,7 @@
     <Compile Include="Reports\XmlReportFormatterTest.cs" />
     <Compile Include="Reports\XsltReportFormatterTest.cs" />
     <Compile Include="Runner\Extensions\TestRunnerExtensionUtilsTest.cs" />
-    <Compile Include="Runner\Reports\ReportArchiveParserTest.cs" />
+    <Compile Include="Runner\Reports\ReportArchiveTest.cs" />
     <Compile Include="Runner\Reports\ReportContainerFactoryTest.cs" />
     <Compile Include="Runner\RunnerExceptionTest.cs" />
     <Compile Include="RunSampleAttribute.cs" />

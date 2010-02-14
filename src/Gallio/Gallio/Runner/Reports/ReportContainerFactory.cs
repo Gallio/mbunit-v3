@@ -59,15 +59,7 @@ namespace Gallio.Runner.Reports
         /// <returns>A new instance of report container.</returns>
         public IReportContainer MakeForSaving(ReportArchive reportArchive)
         {
-            switch (reportArchive)
-            {
-                case ReportArchive.Zip:
-                    return new ArchiveReportContainer(reportDirectory, reportName);
-
-                default:
-                case ReportArchive.Normal:
-                    return new FileSystemReportContainer(reportDirectory, reportName);
-            }
+            return (IReportContainer)Activator.CreateInstance(reportArchive.ReportContainerForSavingType, reportDirectory, reportName);
         }
 
         /// <summary>

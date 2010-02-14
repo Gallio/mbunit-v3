@@ -271,5 +271,26 @@ namespace Gallio.Common.Collections
             counter += 1;
             table[elem] = counter;
         }
+
+
+        /// <summary>
+        /// Projects each element of a sequence into a new form.
+        /// </summary>
+        /// <typeparam name="TInput"></typeparam>
+        /// <typeparam name="TOutput"></typeparam>
+        /// <param name="enumeration">The input sequence.</param>
+        /// <param name="filter"></param>
+        /// <returns>The output sequence</returns>
+        /// <exception cref="ArgumentNullException">Thrown if any argument is null.</exception>
+        public static IEnumerable<TOutput> Select<TInput, TOutput>(IEnumerable<TInput> enumeration, Func<TInput, TOutput> filter)
+        {
+            if (enumeration == null)
+                throw new ArgumentNullException("enumeration");
+            if (filter == null)
+                throw new ArgumentNullException("filter");
+
+            foreach (TInput value in enumeration)
+                yield return filter(value);
+        }
     }
 }

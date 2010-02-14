@@ -13,6 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using System.Collections.Generic;
 using Gallio.Common.Collections;
 using MbUnit.Framework;
@@ -21,8 +22,7 @@ namespace Gallio.Tests.Common.Collections
 {
     [TestFixture]
     [TestsOn(typeof(GenericCollectionUtils))]
-    [Author("Jeff", "jeff@ingenio.com")]
-    public class GenericUtilsTest
+    public class GenericCollectionUtilsTest
     {
         [Test]
         [Row(new[] { 1, 2, 3 }, 3, new[] { "1", "2", "3" })]
@@ -52,6 +52,30 @@ namespace Gallio.Tests.Common.Collections
             GenericCollectionUtils.AddAllIfNotAlreadyPresent(input, output);
             Assert.AreEqual(2, output.Count);
             Assert.AreElementsEqual(new[] { "one" ,"two" }, output);
+        }
+
+        [Test]
+        [ExpectedArgumentNullException]
+        public void Selects_from_null_enumeration_should_throw_exception()
+        {
+            var enumerator = GenericCollectionUtils.Select<string, int>(null, x => 0).GetEnumerator();
+            enumerator.MoveNext();
+        }
+
+        [Test]
+        [ExpectedArgumentNullException]
+        public void Selects_from_null_filter_should_throw_exception()
+        {
+            var enumerator = GenericCollectionUtils.Select<string, int>(EmptyArray<string>.Instance, null).GetEnumerator();
+            enumerator.MoveNext();
+        }
+
+        [Test]
+        public void Selects_ok()
+        {
+            var input = new[] { "1", "2", "3" };
+            var output = GenericCollectionUtils.Select(input, x => Int32.Parse(x));
+            Assert.AreElementsEqual(new[] { 1, 2, 3 }, output);
         }
     }
 }

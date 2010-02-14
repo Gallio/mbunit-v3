@@ -66,7 +66,7 @@ namespace Gallio.Runtime.UtilityCommands
                 return false;
             }
 
-            return ReportArchiveParser.TryParse(arguments.ReportArchive, out reportArchive);
+            return ReportArchive.TryParse(arguments.ReportArchive, out reportArchive);
         }
 
         private bool LoadReport()
@@ -88,7 +88,7 @@ namespace Gallio.Runtime.UtilityCommands
             return CaptureFileException("The specified output directory is not a valid file path.", () =>
             {
                 var outputName = (arguments.ReportNameFormat != null) ? report.FormatReportName(arguments.ReportNameFormat) : inputName;
-                var factory = new ReportContainerFactory(new FileSystem(), outputPath, outputName);
+                var factory = new ReportContainerFactory(new FileSystem(), inputPath, inputName);
 
                 using (IReportContainer outputContainer = factory.MakeForSaving(reportArchive))
                 {

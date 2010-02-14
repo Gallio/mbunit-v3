@@ -154,10 +154,10 @@ namespace Gallio.Runner
             if (progressMonitor == null)
                 throw new ArgumentNullException("progressMonitor");
 
-            var reportContainerFactory = new ReportContainerFactory(new FileSystem(), reportDirectory, reportName);
+            var factory = new ReportContainerFactory(new FileSystem(), reportDirectory, reportName);
 
             using (progressMonitor.BeginTask("Generating reports.", reportFormats.Count))
-            using (IReportContainer reportContainer = reportContainerFactory.MakeForSaving(reportArchive))
+            using (IReportContainer reportContainer = factory.MakeForSaving(reportArchive))
             {
                 IReportWriter reportWriter = reportManager.CreateReportWriter(report, reportContainer);
 

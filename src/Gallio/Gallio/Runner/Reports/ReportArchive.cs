@@ -1,46 +1,71 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
+using Gallio.Common.Collections;
+using Gallio.Common.IO;
 
 namespace Gallio.Runner.Reports
 {
     /// <summary>
     /// The type of file archive used to enclose a test report.
     /// </summary>
-    public enum ReportArchive
+    public sealed class ReportArchive
     {
-        /// <summary>
-        /// Non-compressed file structure.
-        /// </summary>
-        Normal,
+        internal enum ReportArchiveValue
+        {
+            Normal,
+            Zip,
+        }
+
+        private readonly ReportArchiveValue value;
+        private readonly Type reportContainerForSavingType;
+
+        internal ReportArchiveValue Value
+        {
+            get
+            {
+                return value;
+            }
+        }
 
         /// <summary>
-        /// Compressed zip archive.
+        /// Gets the report container type.
         /// </summary>
-        Zip,
-    }
+        public Type ReportContainerForSavingType
+        {
+            get
+            {
+                return reportContainerForSavingType;
+            }
+        }
 
-    /// <summary>
-    /// Parser for the report archive mode.
-    /// </summary>
-    public static class ReportArchiveParser
-    {
+        private ReportArchive(ReportArchiveValue value, Type reportContainerForSavingType)
+        {
+            this.value = value;
+            this.reportContainerForSavingType = reportContainerForSavingType;
+        }
+
         /// <summary>
-        /// 
+        /// Parses the specified value and returns the corresponding <see cref="ReportArchive"/> value,
+        /// or the default value if null or an empty string was specified.
         /// </summary>
-        /// <param name="value"></param>
-        /// <param name="reportArchive"></param>
-        /// <returns></returns>
+        /// <param name="value">The value of the searched archive.</param>
+        /// <param name="reportArchive">The resulting report archive item.</param>
+        /// <returns>True if the parsing was successful; otherwise false.</returns>
         public static bool TryParse(string value, out ReportArchive reportArchive)
         {
             return ParseImpl(value, out reportArchive, false);
         }
 
         /// <summary>
-        /// 
+        /// Parses the specified value and returns the corresponding <see cref="ReportArchive"/> value,
+        /// or the default value if null or an empty string was specified.
         /// </summary>
-        /// <param name="value"></param>
-        /// <returns></returns>
+        /// <param name="value">The value of the searched archive.</param>
+        /// <returns>The resulting report archive item.</returns>
+        /// <exception cref="ArgumentException">Thrown if the specified value does not correspond
+        /// to an known report archive value,</exception>
         public static ReportArchive Parse(string value)
         {
             ReportArchive reportArchive;
@@ -52,26 +77,48 @@ namespace Gallio.Runner.Reports
         {
             if (String.IsNullOrEmpty(value))
             {
-                reportArchive = ReportArchive.Normal;
+                reportArchive = Normal;
                 return true;
             }
 
-            try
+            foreach (ReportArchive item in All)
             {
-                reportArchive = (ReportArchive)Enum.Parse(typeof(ReportArchive), value, true);
-                return true;
-            }
-            catch (ArgumentException exception)
-            {
-                if (throwOnFailure)
+                if (item.Value.ToString().Equals(value, StringComparison.OrdinalIgnoreCase))
                 {
-                    throw new ArgumentException(String.Format("Invalid report archive mode '{0}'. It must be one of the following values: {1}.",
-                        value, String.Join(", ", Enum.GetNames(typeof(ReportArchive)))), exception);
+                    reportArchive = item;
+                    return true;
                 }
+            }
 
-                reportArchive = ReportArchive.Normal;
-                return false;
+            if (throwOnFailure)
+            {
+                string[] names = GenericCollectionUtils.ToArray(GenericCollectionUtils.Select(All, x => x.Value.ToString()));
+                throw new ArgumentException(String.Format("Invalid report archive mode '{0}'. It must be one of the following values: {1}.", 
+                    value, String.Join(", ", names)));
+            }
+
+            reportArchive = Normal;
+            return false;
+        }
+
+        private static IEnumerable<ReportArchive> All
+        {
+            get
+            {
+                yield return Normal;
+                yield return Zip;
             }
         }
+
+        /// <summary>
+        /// Non-compressed file structure.
+        /// </summary>
+        public static readonly ReportArchive Normal = new ReportArchive(ReportArchiveValue.Normal, typeof(FileSystemReportContainer));
+
+        /// <summary>
+        /// Compressed zip archive.
+        /// </summary>
+        public static readonly ReportArchive Zip = new ReportArchive(ReportArchiveValue.Zip, typeof(ArchiveReportContainer));
     }
 }
+
