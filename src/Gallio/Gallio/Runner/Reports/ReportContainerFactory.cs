@@ -57,8 +57,12 @@ namespace Gallio.Runner.Reports
         /// </summary>
         /// <param name="reportArchive">Indicates if the report must be packed in a compressed archive.</param>
         /// <returns>A new instance of report container.</returns>
+        /// <exception cref="ArgumentNullException">Thrown if any argument is null.</exception>
         public IReportContainer MakeForSaving(ReportArchive reportArchive)
         {
+            if (reportArchive == null)
+                throw new ArgumentNullException("reportArchive");
+
             return (IReportContainer)Activator.CreateInstance(reportArchive.ReportContainerForSavingType, reportDirectory, reportName);
         }
 
