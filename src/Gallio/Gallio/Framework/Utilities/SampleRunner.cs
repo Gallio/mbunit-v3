@@ -388,7 +388,6 @@ namespace Gallio.Framework.Utilities
             string reportDirectory = SpecialPathPolicy.For<SampleRunner>().GetTempDirectory().FullName;
             launcher.TestProject.ReportDirectory = reportDirectory;
             launcher.TestProject.ReportNameFormat = "SampleRunnerReport";
-            launcher.TestProject.ReportArchive = ReportArchive.Normal;
             launcher.ReportFormatterOptions.AddProperty(@"SaveAttachmentContents", @"false");
             launcher.AddReportFormat(@"Text");
             // Disabled because the Xml can get really big and causes problems if the sample runner is used frequently.

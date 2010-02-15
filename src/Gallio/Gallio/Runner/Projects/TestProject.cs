@@ -76,6 +76,7 @@ namespace Gallio.Runner.Projects
             reportNameFormat = DefaultReportNameFormat;
             reportDirectory = DefaultReportDirectoryRelativePath;
             testRunnerFactoryName = DefaultTestRunnerFactoryName;
+            ReportArchive = ReportArchive.Normal;
         }
 
         /// <summary>
