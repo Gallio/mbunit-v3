@@ -119,7 +119,7 @@ namespace Gallio.Echo
             if (arguments.RuntimeVersion != null)
                 launcher.TestProject.TestPackage.RuntimeVersion = arguments.RuntimeVersion;
 
-            GenericCollectionUtils.ForEach(arguments.Files, x => launcher.AddFilePattern(x));
+            GenericCollectionUtils.ForEach(arguments.Files, launcher.AddFilePattern);
 
             foreach (string hintDirectory in arguments.HintDirectories)
                 launcher.TestProject.TestPackage.AddHintDirectory(new DirectoryInfo(hintDirectory));
@@ -130,8 +130,8 @@ namespace Gallio.Echo
             if (arguments.ReportNameFormat != null)
                 launcher.TestProject.ReportNameFormat = arguments.ReportNameFormat;
 
-            launcher.TestProject.ReportArchive = ReportArchiveParser.Parse(arguments.ReportArchive);
-            GenericCollectionUtils.ForEach(arguments.ReportTypes, x => launcher.AddReportFormat(x));
+            launcher.TestProject.ReportArchive = ReportArchive.Parse(arguments.ReportArchive);
+            GenericCollectionUtils.ForEach(arguments.ReportTypes, launcher.AddReportFormat);
 
             if (arguments.RunnerType != null)
                 launcher.TestProject.TestRunnerFactoryName = arguments.RunnerType;
