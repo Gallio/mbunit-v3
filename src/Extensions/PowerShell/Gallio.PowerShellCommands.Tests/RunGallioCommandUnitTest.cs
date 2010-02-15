@@ -97,7 +97,7 @@ namespace Gallio.PowerShellCommands.Tests
             task.ReportTypes = new string[] { "XML", "Html" };
             task.ReportNameFormat = "report";
             task.ShowReports = true;
-            task.ReportArchive = ReportArchive.Normal.ToString();
+            task.ReportArchive = "Normal";
             task.RunTimeLimit = 7200; // seconds = 120 minutes
 
             task.RunnerType = StandardTestRunnerFactoryNames.Local;
@@ -129,7 +129,7 @@ namespace Gallio.PowerShellCommands.Tests
                 Assert.AreEqual("report", launcher.TestProject.ReportNameFormat);
                 Assert.IsTrue(launcher.TestProject.IsReportNameFormatSpecified);
                 Assert.IsTrue(launcher.ShowReports);
-                Assert.AreEqual(ReportArchive.Zip, launcher.TestProject.ReportArchive);
+                Assert.AreEqual(ReportArchive.Normal, launcher.TestProject.ReportArchive);
                 Assert.AreEqual(TimeSpan.FromMinutes(120), launcher.RunTimeLimit);
 
                 Assert.AreEqual(StandardTestRunnerFactoryNames.Local, launcher.TestProject.TestRunnerFactoryName);
