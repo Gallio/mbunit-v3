@@ -57,7 +57,7 @@ namespace Gallio.Icarus
         // dock panel windows
         private readonly TestExplorer.View testExplorer;
         private readonly ProjectExplorer projectExplorer;
-        private readonly TestResults testResults;
+        private readonly TestResults.TestResults testResults;
         private readonly RuntimeLogWindow runtimeLogWindow;
         private readonly FiltersWindow filtersWindow;
         private readonly ExecutionLogWindow executionLogWindow;
@@ -119,7 +119,7 @@ namespace Gallio.Icarus
             testExplorer = new TestExplorer.View(testExplorerController, testExplorerModel);
             
             projectExplorer = new ProjectExplorer(projectController, testController, reportController, taskManager);
-            testResults = new TestResults(testResultsController, optionsController, testTreeModel, testStatistics);
+            testResults = new TestResults.TestResults(testResultsController, optionsController, testTreeModel, testStatistics);
             runtimeLogWindow = new RuntimeLogWindow(runtimeLogController);
             filtersWindow = new FiltersWindow(filterController, projectController);
             executionLogWindow = new ExecutionLogWindow(executionLogController);
@@ -194,7 +194,7 @@ namespace Gallio.Icarus
                 return testExplorer;
             if (persistString == typeof(ProjectExplorer).ToString())
                 return projectExplorer;
-            if (persistString == typeof(TestResults).ToString())
+            if (persistString == typeof(TestResults.TestResults).ToString())
                 return testResults;
             if (persistString == typeof(FiltersWindow).ToString())
                 return filtersWindow;

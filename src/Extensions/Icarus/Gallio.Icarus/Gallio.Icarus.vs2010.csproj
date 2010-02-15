@@ -106,6 +106,13 @@
     <Compile Include="Commands\OpenReportCommand.cs" />
     <Compile Include="Commands\RefreshTestTreeCommand.cs" />
     <Compile Include="Commands\ReloadCommand.cs" />
+    <Compile Include="TestResults\TestResults.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TestResults\TestResults.Designer.cs">
+      <DependentUpon>TestResults.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TestResults\TestStepComparer.cs" />
     <Compile Include="Controls\NodeTextBox.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -473,10 +480,6 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="TestResults.resx">
-      <SubType>Designer</SubType>
-      <DependentUpon>TestResults.cs</DependentUpon>
-    </EmbeddedResource>
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
@@ -484,12 +487,6 @@
     </Compile>
     <Compile Include="Services\ReportService.cs" />
     <Compile Include="Settings.cs" />
-    <Compile Include="TestResults.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="TestResults.Designer.cs">
-      <DependentUpon>TestResults.cs</DependentUpon>
-    </Compile>
     <Compile Include="UserOptions.cs" />
     <Compile Include="WindowManager\WindowManager.cs" />
   </ItemGroup>
@@ -580,6 +577,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="TestExplorer\View.resx">
       <DependentUpon>View.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TestResults\TestResults.resx">
+      <DependentUpon>TestResults.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\CodeViewer\CodeViewer.resx">
       <DependentUpon>CodeViewer.cs</DependentUpon>

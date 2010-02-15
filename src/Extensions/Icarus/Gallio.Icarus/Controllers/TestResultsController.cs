@@ -22,6 +22,7 @@ using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Events;
 using Gallio.Icarus.Models;
 using Gallio.Icarus.Models.TestTreeNodes;
+using Gallio.Icarus.TestResults;
 using Gallio.Model;
 using Gallio.Runner.Reports.Schema;
 using Gallio.UI.DataBinding;
@@ -40,9 +41,9 @@ namespace Gallio.Icarus.Controllers
         private int firstItem;
         private int lastItem;
         private int index;
-        private int sortColumn = -1;
-        private SortOrder sortOrder;
+        private const int NO_IMAGE = -1;
         private IList<TestTreeNode> selectedTests = new List<TestTreeNode>();
+        private readonly TestStepComparer testStepComparer = new TestStepComparer();
 
         public Observable<int> ResultsCount { get; private set; }
 
@@ -62,7 +63,7 @@ namespace Gallio.Icarus.Controllers
             listViewItems.Clear();
             ResultsCount.Value = 0;
 
-            int count = 0;
+            var count = 0;
             WalkTree(ttn => count += CountResults(ttn));
             
             // notify that list has changed
@@ -158,7 +159,7 @@ namespace Gallio.Icarus.Controllers
 
         private static ListViewItem EmptyListViewItem()
         {
-            var listViewItem = new ListViewItem("", -1);
+            var listViewItem = new ListViewItem("", NO_IMAGE);
             listViewItem.SubItems.AddRange(new[] { "", "", "", "", "" });
             return listViewItem;
         }
@@ -170,47 +171,10 @@ namespace Gallio.Icarus.Controllers
 
             WalkTree(ttn => UpdateTestResults(ttn, 0));
 
-            if (sortColumn != -1)
-                SortAndTrimListViewItems();
-        }
-
-        private void SortAndTrimListViewItems()
-        {
-            // sort by relevant column
-            listViewItems.Sort(delegate(ListViewItem left, ListViewItem right)
+            if (testStepComparer.SortColumn != TestStepComparer.NO_SORT)
             {
-                int result;
-                switch (sortColumn)
-                {
-                    case 2:
-                        // duration (double)
-                        double dl = Convert.ToDouble(left.SubItems[sortColumn].Text);
-                        double dr = Convert.ToDouble(right.SubItems[sortColumn].Text);
-                        result = dl.CompareTo(dr);
-                        break;
-
-                    case 3:
-                        // assert count (int)
-                        double il = Convert.ToInt32(left.SubItems[sortColumn].Text);
-                        double ir = Convert.ToInt32(right.SubItems[sortColumn].Text);
-                        result = il.CompareTo(ir);
-                        break;
-
-                    default:
-                        // string comparison
-                        string sl = left.SubItems[sortColumn].Text;
-                        string sr = right.SubItems[sortColumn].Text;
-                        result = sl.CompareTo(sr);
-                        break;
-                }
-                return sortOrder == SortOrder.Ascending ? result : -result;
-            });
-
-            // trim list to viewport
-            //var relevantItems = new ListViewItem[lastItem - firstItem];
-            //listViewItems.CopyTo(firstItem, relevantItems, 0, lastItem - firstItem);
-            //listViewItems.Clear();
-            //listViewItems.AddRange(relevantItems);
+                listViewItems.Sort(testStepComparer);
+            }
         }
 
         private void UpdateTestResults(TestTreeNode node, int indentCount)
@@ -220,16 +184,16 @@ namespace Gallio.Icarus.Controllers
 
             // performance optimization, no need to worry about items outside the viewport
             // (only works when unsorted)
-            if (index > lastItem && sortColumn == -1)
+            if (index > lastItem && testStepComparer.SortColumn == TestStepComparer.NO_SORT)
                 return;
 
-            foreach (TestStepRun tsr in node.TestStepRuns)
+            foreach (var tsr in node.TestStepRuns)
                 AddTestStepRun(node.TestKind, tsr, indentCount);
 
-            if (!(node is NamespaceNode) && sortColumn == -1)
+            if (!(node is NamespaceNode) && testStepComparer.SortColumn == TestStepComparer.NO_SORT)
                 indentCount++;
 
-            foreach (Node n in node.Nodes)
+            foreach (var n in node.Nodes)
                 UpdateTestResults((TestTreeNode) n, indentCount);
         }
 
@@ -237,7 +201,7 @@ namespace Gallio.Icarus.Controllers
         {
             // performance optimization, no need to worry about items outside the viewport
             // (only works when unsorted)
-            if (index < firstItem && sortColumn == -1)
+            if (index < firstItem && testStepComparer.SortColumn == TestStepComparer.NO_SORT)
             {
                 index++;
                 return;
@@ -245,14 +209,14 @@ namespace Gallio.Icarus.Controllers
             index++;
 
             // get the appropriate icon based on outcome
-            int imgIndex = GetImageIndex(testStepRun.Result.Outcome.Status);
+            var imgIndex = GetImageIndex(testStepRun.Result.Outcome.Status);
             var listViewItem = CreateListViewItem(testStepRun, imgIndex, testKind, indentCount);
             listViewItems.Add(listViewItem);
         }
 
         private static int GetImageIndex(TestStatus testStatus)
         {
-            int imgIndex = -1;
+            var imgIndex = NO_IMAGE;
             switch (testStatus)
             {
                 case TestStatus.Failed:
@@ -271,17 +235,17 @@ namespace Gallio.Icarus.Controllers
         private static ListViewItem CreateListViewItem(TestStepRun testStepRun, int imgIndex, 
             string testKind, int indentCount)
         {
-            string name = testStepRun.Step.Name;
-            string duration = testStepRun.Result.DurationInSeconds.ToString("0.000");
-            string assertCount = testStepRun.Result.AssertCount.ToString();
-            string codeReference = testStepRun.Step.CodeReference.TypeName ?? string.Empty;
-            string fileName = testStepRun.Step.Metadata.GetValue(MetadataKeys.File) ?? string.Empty;
+            var testStepName = testStepRun.Step.Name;
+            var duration = testStepRun.Result.DurationInSeconds.ToString("0.000");
+            var assertCount = testStepRun.Result.AssertCount.ToString();
+            var codeReference = testStepRun.Step.CodeReference.TypeName ?? string.Empty;
+            var fileName = testStepRun.Step.Metadata.GetValue(MetadataKeys.File) ?? string.Empty;
 
             // http://blogs.msdn.com/cumgranosalis/archive/2006/03/18/ListViewVirtualModeBugs.aspx
-            if (name.Length == 260)
-                name += " ";
+            if (testStepName.Length == 260)
+                testStepName += " ";
 
-            var listViewItem = new ListViewItem(name, imgIndex);
+            var listViewItem = new ListViewItem(testStepName, imgIndex);
             listViewItem.SubItems.AddRange(new[] { testKind, duration, assertCount, codeReference, fileName });
             listViewItem.IndentCount = indentCount;
             return listViewItem;
@@ -289,14 +253,22 @@ namespace Gallio.Icarus.Controllers
 
         public void SetSortColumn(int column)
         {
-            // if sorting by the same column, reverse sort order
-            if (sortColumn == column)
-                sortOrder = (sortOrder == SortOrder.Ascending) ? SortOrder.Descending : SortOrder.Ascending;
+            if (testStepComparer.SortColumn == column)
+            {
+                switch (testStepComparer.SortOrder)
+                {
+                    case SortOrder.Ascending:
+                        testStepComparer.SortOrder = SortOrder.Descending;
+                        break;
+                    case SortOrder.Descending:
+                        testStepComparer.SortColumn = TestStepComparer.NO_SORT;
+                        break;
+                }
+            }
             else
             {
-                // default to sorting ascending
-                sortColumn = column;
-                sortOrder = SortOrder.Ascending;
+                testStepComparer.SortColumn = column;
+                testStepComparer.SortOrder = SortOrder.Ascending;
             }
 
             UpdateTestResults();
