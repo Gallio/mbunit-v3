@@ -51,7 +51,6 @@
       <traits>
         <path>TestDriven.Net/Reports</path>
         <icon>plugin://Gallio.TDNetRunner/Resources/TestDriven.ico</icon>
-        <scope>Machine</scope>
       </traits>
     </component>
   </components>
