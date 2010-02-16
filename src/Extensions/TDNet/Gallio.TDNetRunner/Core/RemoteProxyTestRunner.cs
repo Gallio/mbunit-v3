@@ -37,7 +37,6 @@ namespace Gallio.TDNetRunner.Core
         private const string ShortReportType = @"html-condensed";
         private const string LongReportType = @"html";
         private const int ShortReportThreshold = 100;
-
         private TestLauncher launcher;
 
         public RemoteProxyTestRunner()
@@ -103,7 +102,7 @@ namespace Gallio.TDNetRunner.Core
         private FacadeTestRunState RunNamespace(IFacadeTestListener testListener, string assemblyPath, string @namespace, FacadeOptions facadeOptions)
         {
             return Run(testListener, assemblyPath, new AndFilter<ITestDescriptor>(new Filter<ITestDescriptor>[]
-            { 
+            {
                 new NamespaceFilter<ITestDescriptor>(new EqualityFilter<string>(@namespace))
             }), facadeOptions);
         }
@@ -111,17 +110,17 @@ namespace Gallio.TDNetRunner.Core
         private FacadeTestRunState RunType(IFacadeTestListener testListener, string assemblyPath, string typeName, FacadeOptions facadeOptions)
         {
             return Run(testListener, assemblyPath, new AndFilter<ITestDescriptor>(new Filter<ITestDescriptor>[]
-            { 
+            {
                 new TypeFilter<ITestDescriptor>(new EqualityFilter<string>(typeName), true)
             }), facadeOptions);
         }
 
         private FacadeTestRunState RunMember(IFacadeTestListener testListener, string assemblyPath, string typeName, string memberName, FacadeOptions facadeOptions)
         {
-            return Run(testListener, assemblyPath, new AndFilter<ITestDescriptor>(new Filter<ITestDescriptor>[]
+            return Run(testListener, assemblyPath, new AndFilter<ITestDescriptor>(new Filter<ITestDescriptor>[] 
             { 
-                new TypeFilter<ITestDescriptor>(new EqualityFilter<string>(typeName), true),
-                new MemberFilter<ITestDescriptor>(new EqualityFilter<string>(memberName))
+                new TypeFilter<ITestDescriptor>(new EqualityFilter<string>(typeName), true), 
+                new MemberFilter<ITestDescriptor>(new EqualityFilter<string>(memberName)) 
             }), facadeOptions);
         }
 
@@ -154,11 +153,12 @@ namespace Gallio.TDNetRunner.Core
                 throw new ArgumentNullException("facadeOptions");
 
             ILogger logger = new FilteredLogger(new TDNetLogger(testListener), LogSeverity.Info);
+
             try
             {
                 RuntimeAccessor.Instance.AddLogListener(logger);
-
                 var filterRules = new List<FilterRule<ITestDescriptor>>();
+
                 switch (facadeOptions.FilterCategoryMode)
                 {
                     case FacadeFilterCategoryMode.Disabled:
@@ -177,50 +177,48 @@ namespace Gallio.TDNetRunner.Core
                 }
 
                 var filterSet = new FilterSet<ITestDescriptor>(filterRules);
-
                 launcher.Logger = logger;
                 launcher.ProgressMonitorProvider = new LogProgressMonitorProvider(logger);
                 launcher.TestExecutionOptions.FilterSet = filterSet;
                 launcher.TestProject.TestRunnerFactoryName = StandardTestRunnerFactoryNames.IsolatedAppDomain;
-
-                // This monitor will inform the user in real-time what's going on
-                launcher.TestProject.AddTestRunnerExtension(new TDNetExtension(testListener));
-
+                launcher.TestProject.AddTestRunnerExtension(new TDNetExtension(testListener)); // This monitor will inform the user in real-time what's going on
                 launcher.TestProject.TestPackage.AddFile(new FileInfo(assemblyPath));
-
                 string assemblyDirectory = Path.GetDirectoryName(assemblyPath);
-                //launcher.TestPackageConfig.ShadowCopy = true;
                 launcher.TestProject.TestPackage.ApplicationBaseDirectory = new DirectoryInfo(assemblyDirectory);
                 launcher.TestProject.TestPackage.WorkingDirectory = new DirectoryInfo(assemblyDirectory);
-
                 TestLauncherResult result = RunLauncher(launcher);
-
                 string reportDirectory = GetReportDirectory(logger);
+
                 if (reportDirectory != null)
                 {
                     var reportFormatterOptions = new ReportFormatterOptions();
+                    var preferenceManager = (TDNetPreferenceManager)RuntimeAccessor.ServiceLocator.ResolveByComponentId("TDNetRunner.PreferenceManager");
+                    var reportFormat = preferenceManager.ReportSettings.DetermineReportFormat(result.Report);
                     result.GenerateReports(reportDirectory, Path.GetFileName(assemblyPath), ReportArchive.Normal,
-                        new[] { DetermineReportFormat(result.Report) }, reportFormatterOptions,
+                        new[] { reportFormat }, reportFormatterOptions,
                         RuntimeAccessor.ServiceLocator.Resolve<IReportManager>(), NullProgressMonitor.CreateInstance());
 
                     // This will generate a link to the generated report
                     if (result.ReportDocumentPaths.Count != 0)
                     {
                         Uri rawUrl = new Uri(result.ReportDocumentPaths[0]);
-                        string displayUrl = "file:///" + rawUrl.LocalPath.Replace(" ", "%20").Replace(@"\", @"/");
+                        string displayUrl = "file:///" + rawUrl.LocalPath.Replace(" ", "%20").Replace(@"\", "/");
 
                         // TDNet just prints the link on its own but it's not always clear to users what it represents.
                         // testListener.TestResultsUrl(displayUrl);
-
                         testListener.WriteLine("\nTest Report: " + displayUrl, FacadeCategory.Info);
                     }
                 }
 
                 // Inform no tests run, if necessary.
                 if (result.ResultCode == ResultCode.NoTests)
+                {
                     InformNoTestsWereRun(testListener, Resources.MbUnitTestRunner_NoTestsFound);
+                }
                 else if (result.Statistics.TestCount == 0)
+                {
                     InformNoTestsWereRun(testListener, null);
+                }
 
                 return GetTestRunState(result);
             }
@@ -228,12 +226,6 @@ namespace Gallio.TDNetRunner.Core
             {
                 RuntimeAccessor.Instance.RemoveLogListener(logger);
             }
-        }
-
-        private static string DetermineReportFormat(Report report)
-        {
-            return report.TestPackageRun == null || report.TestPackageRun.Statistics.RunCount < ShortReportThreshold
-                ? LongReportType : ShortReportType;
         }
 
         /// <summary>
@@ -245,10 +237,11 @@ namespace Gallio.TDNetRunner.Core
         {
             try
             {
-                DirectoryInfo reportDirectory = new DirectoryInfo(Path.Combine(SpecialPathPolicy.For("TDNetRunner").GetTempDirectory().FullName, "Report"));
-                if (reportDirectory.Exists)
+                var path = Path.Combine(SpecialPathPolicy.For("TDNetRunner").GetTempDirectory().FullName, "Report");
+                var reportDirectory = new DirectoryInfo(path);
+
+                if (reportDirectory.Exists) // Make sure the folder is empty
                 {
-                    // Make sure the folder is empty
                     try
                     {
                         reportDirectory.Delete(true);
@@ -262,7 +255,6 @@ namespace Gallio.TDNetRunner.Core
                 }
 
                 reportDirectory.Create();
-
                 return reportDirectory.FullName;
             }
             catch (Exception e)
@@ -283,13 +275,8 @@ namespace Gallio.TDNetRunner.Core
         /// <param name="reason">The reason no tests were run for.</param>
         private static void InformNoTestsWereRun(IFacadeTestListener testListener, string reason)
         {
-            if (String.IsNullOrEmpty(reason))
-                reason = @"";
-            else
-                reason = @" (" + reason + @")";
-
+            reason = String.IsNullOrEmpty(reason) ? String.Empty : " (" + reason + ")";
             string message = String.Format("** {0}{1} **", Resources.MbUnitTestRunner_NoTestsWereRun, reason);
-
             testListener.WriteLine(message, FacadeCategory.Warning);
         }
 

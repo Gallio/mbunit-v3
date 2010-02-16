@@ -43,7 +43,6 @@ namespace Gallio.TDNetRunner.Core
         protected override FacadeTestRunState RunImpl(IFacadeTestListener testListener, string assemblyPath, string cref, FacadeOptions facadeOptions)
         {
             string versionLabel = VersionPolicy.GetVersionLabel(Assembly.GetExecutingAssembly());
-
             testListener.WriteLine(String.Format(Resources.RunnerNameAndVersion + "\n", versionLabel), FacadeCategory.Info);
 
             switch (facadeOptions.FilterCategoryMode)
@@ -66,7 +65,8 @@ namespace Gallio.TDNetRunner.Core
             if (categoryNames.Count == 0)
                 return "<none>";
 
-            StringBuilder result = new StringBuilder();
+            var result = new StringBuilder();
+
             foreach (string categoryName in categoryNames)
             {
                 if (result.Length != 0)
@@ -90,12 +90,9 @@ namespace Gallio.TDNetRunner.Core
             try
             {
                 IGallioRemoteEnvironment environment = EnvironmentManager.GetSharedEnvironment();
-
                 AppDomain.CurrentDomain.AssemblyResolve += ResolveRunnerAssembly;
-
                 Type runnerType = typeof(RemoteProxyTestRunner);
                 object runner = environment.AppDomain.CreateInstanceAndUnwrap(runnerType.Assembly.FullName, runnerType.FullName);
-
                 return (IProxyTestRunner)runner;
             }
             finally

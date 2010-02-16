@@ -44,5 +44,15 @@
         <scope>Machine</scope>
       </traits>
     </component>
+
+    <component componentId="TDNetRunner.UI.RunnerReportPreferencePaneProvider"
+              serviceId="Gallio.UI.PreferencePaneProvider"
+              componentType="Gallio.TDNetRunner.UI.Preferences.TDNetRunnerReportPreferencePaneProvider, Gallio.TDNetRunner.UI">
+      <traits>
+        <path>TestDriven.Net/Reports</path>
+        <icon>plugin://Gallio.TDNetRunner/Resources/TestDriven.ico</icon>
+        <scope>Machine</scope>
+      </traits>
+    </component>
   </components>
 </plugin>

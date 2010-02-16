@@ -41,6 +41,10 @@ namespace Gallio.TDNetRunner.Tests
         {
             public RunLauncherDelegate Action { get; set; }
 
+            public StubbedRemoteProxyTestRunner()
+            {
+            }
+
             internal override TestLauncherResult RunLauncher(TestLauncher launcher)
             {
                 Assert.IsNotNull(Action, "The run launcher method should not have been called because no action was set.");

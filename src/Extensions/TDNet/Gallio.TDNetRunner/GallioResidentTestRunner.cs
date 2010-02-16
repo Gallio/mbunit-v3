@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using Gallio.TDNetRunner.Core;
 using Gallio.TDNetRunner.Facade;
 using TestDriven.Framework;
 using TestDriven.Framework.Resident;

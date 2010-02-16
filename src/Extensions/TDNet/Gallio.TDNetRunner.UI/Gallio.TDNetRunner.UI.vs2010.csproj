@@ -65,6 +65,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Preferences\TDNetRunnerReportPreferencePane.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Preferences\TDNetRunnerReportPreferencePane.Designer.cs">
+      <DependentUpon>TDNetRunnerReportPreferencePane.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Preferences\TDNetRunnerReportPreferencePaneProvider.cs" />
     <Compile Include="Preferences\TDNetRunnerInstallationPreferencePane.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -80,6 +87,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Preferences\TDNetRunnerReportPreferencePane.resx">
+      <DependentUpon>TDNetRunnerReportPreferencePane.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Preferences\TDNetRunnerInstallationPreferencePane.resx">
       <DependentUpon>TDNetRunnerInstallationPreferencePane.cs</DependentUpon>
     </EmbeddedResource>

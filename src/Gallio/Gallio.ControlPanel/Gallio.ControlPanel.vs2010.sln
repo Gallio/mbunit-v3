@@ -1,0 +1,43 @@
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.ControlPanel.vs2010", "Gallio.ControlPanel.vs2010.csproj", "{1B1FCC31-612B-4591-9BAF-95892968CAA7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.vs2010", "..\Gallio\Gallio.vs2010.csproj", "{6CAB7735-05DA-480D-9A04-50615B00F886}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.UI.vs2010", "..\Gallio.UI\Gallio.UI.vs2010.csproj", "{36B1F505-995B-41E7-AAC9-1E845B08F2D7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.TDNetRunner.UI.vs2010", "..\..\Extensions\TDNet\Gallio.TDNetRunner.UI\Gallio.TDNetRunner.UI.vs2010.csproj", "{7FE31A41-EF76-4A9C-8C65-196C8869CA31}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.TDNetRunner.vs2010", "..\..\Extensions\TDNet\Gallio.TDNetRunner\Gallio.TDNetRunner.vs2010.csproj", "{00C93D01-6A43-4AAA-9E6E-5936B985B497}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1B1FCC31-612B-4591-9BAF-95892968CAA7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1B1FCC31-612B-4591-9BAF-95892968CAA7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1B1FCC31-612B-4591-9BAF-95892968CAA7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1B1FCC31-612B-4591-9BAF-95892968CAA7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6CAB7735-05DA-480D-9A04-50615B00F886}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6CAB7735-05DA-480D-9A04-50615B00F886}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6CAB7735-05DA-480D-9A04-50615B00F886}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6CAB7735-05DA-480D-9A04-50615B00F886}.Release|Any CPU.Build.0 = Release|Any CPU
+		{36B1F505-995B-41E7-AAC9-1E845B08F2D7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{36B1F505-995B-41E7-AAC9-1E845B08F2D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{36B1F505-995B-41E7-AAC9-1E845B08F2D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{36B1F505-995B-41E7-AAC9-1E845B08F2D7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7FE31A41-EF76-4A9C-8C65-196C8869CA31}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7FE31A41-EF76-4A9C-8C65-196C8869CA31}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7FE31A41-EF76-4A9C-8C65-196C8869CA31}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7FE31A41-EF76-4A9C-8C65-196C8869CA31}.Release|Any CPU.Build.0 = Release|Any CPU
+		{00C93D01-6A43-4AAA-9E6E-5936B985B497}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{00C93D01-6A43-4AAA-9E6E-5936B985B497}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{00C93D01-6A43-4AAA-9E6E-5936B985B497}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{00C93D01-6A43-4AAA-9E6E-5936B985B497}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

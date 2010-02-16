@@ -32,7 +32,10 @@ namespace Gallio.TDNetRunner.Core
 
         private IPreferenceSet PreferenceSet
         {
-            get { return preferenceManager.CommonPreferences["Gallio.TDNetRunner"]; }
+            get
+            {
+                return preferenceManager.LocalUserPreferences["Gallio.TDNetRunner"];
+            }
         }
 
         private static Key<TDNetRunnerInstallationMode> FrameworkInstallationModeKey(string frameworkId)
@@ -50,6 +53,19 @@ namespace Gallio.TDNetRunner.Core
         {
             PreferenceSet.Write(writer => writer.SetSetting(
                 FrameworkInstallationModeKey(frameworkId), mode));
+        }
+
+        public ReportSettings ReportSettings
+        {
+            get
+            {
+                return ReportSettings.ReadFrom(PreferenceSet);
+            }
+
+            set
+            {
+                value.WriteTo(PreferenceSet);
+            }
         }
     }
 }

@@ -15,6 +15,7 @@
 
 using System;
 using System.Reflection;
+using Gallio.TDNetRunner.Core;
 using Gallio.TDNetRunner.Facade;
 using TestDriven.Framework;
 

@@ -74,6 +74,7 @@
     <Compile Include="BaseTestRunner.cs" />
     <Compile Include="Core\BaseProxyTestRunner.cs" />
     <Compile Include="Core\LocalProxyTestRunner.cs" />
+    <Compile Include="Core\ReportSettings.cs" />
     <Compile Include="Core\TDNetPreferenceManager.cs" />
     <Compile Include="Core\TDNetRunnerInstaller.cs" />
     <Compile Include="Core\TDNetRunnerInstallationMode.cs" />

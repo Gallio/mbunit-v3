@@ -16,6 +16,7 @@
 using System;
 using System.Globalization;
 using System.Reflection;
+using Gallio.Runtime.Preferences;
 using Gallio.TDNetRunner.Core;
 using System.IO;
 
@@ -24,12 +25,7 @@ namespace Gallio.TDNetRunner
     public abstract class BaseTestRunner : IDisposable
     {
         private static bool loaderAssemblyResolverInstalled;
-
         private IProxyTestRunner testRunner;
-
-        protected BaseTestRunner()
-        {
-        }
 
         /// <inheritdoc />
         internal protected IProxyTestRunner TestRunner
@@ -74,8 +70,11 @@ namespace Gallio.TDNetRunner
             string gallioTDNetRunnerAssemblyPath = new Uri(gallioTDNetRunnerAssembly.CodeBase).LocalPath;
             string gallioTDNetRunnerAssemblyDir = Path.GetDirectoryName(gallioTDNetRunnerAssemblyPath);
             string gallioLoaderAssemblyPath = GetGallioLoaderAssemblyPath(gallioTDNetRunnerAssemblyDir);
+
             if (gallioLoaderAssemblyPath == null)
+            {
                 return;
+            }
 
             AssemblyName gallioTDNetRunnerAssemblyName = gallioTDNetRunnerAssembly.GetName();
             var gallioLoaderAssemblyName = new AssemblyName("Gallio.Loader")

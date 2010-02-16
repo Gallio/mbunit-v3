@@ -36,11 +36,23 @@ namespace Gallio.TDNetRunner.UI.Preferences
             RequiresElevation = true;
         }
 
-        public ITestFrameworkManager TestFrameworkManager { get; set; }
+        public ITestFrameworkManager TestFrameworkManager
+        {
+            get;
+            set;
+        }
 
-        public TDNetPreferenceManager PreferenceManager { get; set; }
+        public TDNetPreferenceManager PreferenceManager
+        {
+            get;
+            set;
+        }
 
-        public IInstallerManager InstallerManager { get; set; }
+        public IInstallerManager InstallerManager
+        {
+            get;
+            set;
+        }
 
         public override void ApplyPendingSettingsChanges(IElevationContext elevationContext, IProgressMonitor progressMonitor)
         {

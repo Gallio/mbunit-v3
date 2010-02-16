@@ -67,7 +67,7 @@
             this.frameworkGridView.ShowCellErrors = false;
             this.frameworkGridView.ShowEditingIcon = false;
             this.frameworkGridView.ShowRowErrors = false;
-            this.frameworkGridView.Size = new System.Drawing.Size(274, 318);
+            this.frameworkGridView.Size = new System.Drawing.Size(274, 288);
             this.frameworkGridView.TabIndex = 1;
             this.frameworkGridView.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.frameworkGridView_CellValueChanged);
             // 
@@ -102,15 +102,15 @@
             this.outerTableLayoutPanel.RowCount = 2;
             this.outerTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.outerTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.outerTableLayoutPanel.Size = new System.Drawing.Size(300, 350);
+            this.outerTableLayoutPanel.Size = new System.Drawing.Size(300, 320);
             this.outerTableLayoutPanel.TabIndex = 2;
             // 
-            // TDNetPreferencePane
+            // TDNetRunnerInstallationPreferencePane
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.outerTableLayoutPanel);
-            this.Name = "TDNetPreferencePane";
+            this.Name = "TDNetRunnerInstallationPreferencePane";
             this.Load += new System.EventHandler(this.TDNetPreferencePane_Load);
             ((System.ComponentModel.ISupportInitialize)(this.frameworkGridView)).EndInit();
             this.outerTableLayoutPanel.ResumeLayout(false);
