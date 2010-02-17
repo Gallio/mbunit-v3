@@ -19,7 +19,6 @@ using Gallio.Icarus.Controllers.EventArgs;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Runtime.ProgressMonitoring;
 using Gallio.Common.Reflection;
-using Gallio.Model.Schema;
 
 namespace Gallio.Icarus.Controllers
 {
@@ -38,23 +37,31 @@ namespace Gallio.Icarus.Controllers
         {
             using (progressMonitor.BeginTask("View source code", 100))
             {
-                CodeLocation codeLocation = CodeLocation.Unknown;
+                var codeLocation = CodeLocation.Unknown;
                 testController.ReadReport(report =>
                 {
                     if (report.TestModel == null) 
                         return;
 
-                    TestData testData = report.TestModel.GetTestById(testId);
+                    var testData = report.TestModel.GetTestById(testId);
                     if (testData != null)
                         codeLocation = testData.CodeLocation;
                 });
 
-                if (codeLocation == CodeLocation.Unknown || codeLocation.Path.EndsWith(".dll")
-                    || codeLocation.Path.EndsWith(".exe"))
-                    return;
-
-                ViewSourceCode(codeLocation);
+                if (CanDisplay(codeLocation))
+                    ViewSourceCode(codeLocation);
             }
+        }
+
+        private static bool CanDisplay(CodeLocation codeLocation) {
+            if (codeLocation == CodeLocation.Unknown)
+                return false;
+            
+            var path = codeLocation.Path.ToLower();
+            if (path.EndsWith(".dll") || path.EndsWith(".exe"))
+                return false;
+
+            return true;
         }
 
         public void ViewSourceCode(CodeLocation codeLocation)

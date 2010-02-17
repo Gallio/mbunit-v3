@@ -17,7 +17,6 @@ using System;
 using Gallio.Common.Concurrency;
 using Gallio.Common.Reflection;
 using Gallio.Icarus.Controllers;
-using Gallio.Icarus.Controllers.EventArgs;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Tests.Utilities;
 using Gallio.Model.Schema;
@@ -27,112 +26,113 @@ using Rhino.Mocks;
 
 namespace Gallio.Icarus.Tests.Controllers
 {
-    internal class SourceCodeControllerTest
+    public class SourceCodeControllerTest
     {
+        private SourceCodeController sourceCodeController;
+        private ITestController testController;
+        private const string testId = "testId";
+
+        [SetUp]
+        public void SetUp()
+        {
+            testController = MockRepository.GenerateStub<ITestController>();
+            sourceCodeController = new SourceCodeController(testController);
+        }
+
         [Test]
         public void ShowSourceCode_is_fired_if_code_location_is_available()
         {
-            var progressMonitor = MockProgressMonitor.Instance;
-            var testController = MockRepository.GenerateStub<ITestController>();
-            var root = new TestData("root", "root", "root");
-            var testData = new TestData("testId", "testId", "testId");
-            var codeLocation = new CodeLocation("path", 15, 6);
-            testData.CodeLocation = codeLocation;
-            root.Children.Add(testData);
-            var testModelData = new TestModelData(root);
-            Report report = new Report { TestModel = testModelData };
-            testController.Stub(x => x.ReadReport(null)).IgnoreArguments().Do((Action<ReadAction<Report>>)(action => action(report)));
-            var sourceCodeController = new SourceCodeController(testController);
+            StubReport(CreateReport(new CodeLocation("path", 15, 6)));
             var showSourceCodeFlag = false;
-            sourceCodeController.ShowSourceCode += delegate(object sender, ShowSourceCodeEventArgs e)
+            sourceCodeController.ShowSourceCode += (s, e) =>
             {
-                Assert.AreEqual(codeLocation, e.CodeLocation);
+                Assert.AreEqual(new CodeLocation("path", 15, 6), e.CodeLocation);
                 showSourceCodeFlag = true;
             };
 
-            sourceCodeController.ViewSourceCode("testId", progressMonitor);
+            sourceCodeController.ViewSourceCode(testId, MockProgressMonitor.Instance);
             Assert.AreEqual(true, showSourceCodeFlag);
+        }
+
+        private void StubReport(Report report) {
+            testController.Stub(x => x.ReadReport(null)).IgnoreArguments()
+                .Do((Action<ReadAction<Report>>)(action => action(report)));
         }
 
         [Test]
         public void ShowSourceCode_does_not_fire_if_code_location_is_unknown()
         {
-            var progressMonitor = MockProgressMonitor.Instance;
-            var testController = MockRepository.GenerateStub<ITestController>();
-            var root = new TestData("root", "root", "root");
-            var testData = new TestData("testId", "testId", "testId");
-            testData.CodeLocation = CodeLocation.Unknown;
-            root.Children.Add(testData);
-            var testModelData = new TestModelData(root);
-            Report report = new Report { TestModel = testModelData };
-            testController.Stub(x => x.ReadReport(null)).IgnoreArguments().Do((Action<ReadAction<Report>>)(action => action(report)));
-            var sourceCodeController = new SourceCodeController(testController);
+            var report = CreateReport(CodeLocation.Unknown);
+            StubReport(report);
             sourceCodeController.ShowSourceCode += (sender, e) => Assert.Fail();
 
-            sourceCodeController.ViewSourceCode("testId", progressMonitor);
+            sourceCodeController.ViewSourceCode(testId, MockProgressMonitor.Instance);
+        }
+
+        private static Report CreateReport(CodeLocation codeLocation)
+        {
+            var root = new TestData("root", "root", "root");
+            var testData = new TestData(testId, "name", "fullName")
+            {
+                CodeLocation = codeLocation
+            };
+            root.Children.Add(testData);
+            var testModelData = new TestModelData(root);
+            return new Report { TestModel = testModelData };
         }
 
         [Test]
         public void ShowSourceCode_does_not_fire_if_code_location_is_dll()
         {
-            var progressMonitor = MockProgressMonitor.Instance;
-            var testController = MockRepository.GenerateStub<ITestController>();
-            var root = new TestData("root", "root", "root");
-            var testData = new TestData("testId", "testId", "testId");
-            testData.CodeLocation = new CodeLocation("test.dll", 1, 1);
-            root.Children.Add(testData);
-            var testModelData = new TestModelData(root);
-            Report report = new Report { TestModel = testModelData };
-            testController.Stub(x => x.ReadReport(null)).IgnoreArguments().Do((Action<ReadAction<Report>>)(action => action(report)));
-            var sourceCodeController = new SourceCodeController(testController);
+            StubReport(CreateReport(new CodeLocation("test.dll", 1, 1)));
             sourceCodeController.ShowSourceCode += (sender, e) => Assert.Fail();
 
-            sourceCodeController.ViewSourceCode("testId", progressMonitor);
+            sourceCodeController.ViewSourceCode(testId, MockProgressMonitor.Instance);
+        }
+
+        [Test]
+        public void ShowSourceCode_does_not_fire_if_code_location_is_DLL()
+        {
+            StubReport(CreateReport(new CodeLocation("test.DLL", 1, 1)));
+            sourceCodeController.ShowSourceCode += (sender, e) => Assert.Fail();
+
+            sourceCodeController.ViewSourceCode(testId, MockProgressMonitor.Instance);
         }
 
         [Test]
         public void ShowSourceCode_does_not_fire_if_code_location_is_exe()
         {
-            var progressMonitor = MockProgressMonitor.Instance;
-            var testController = MockRepository.GenerateStub<ITestController>();
-            var root = new TestData("root", "root", "root");
-            var testData = new TestData("testId", "testId", "testId");
-            testData.CodeLocation = new CodeLocation("test.exe", 1, 1);
-            root.Children.Add(testData);
-            var testModelData = new TestModelData(root);
-            Report report = new Report { TestModel = testModelData };
-            testController.Stub(x => x.ReadReport(null)).IgnoreArguments().Do((Action<ReadAction<Report>>)(action => action(report)));
-            var sourceCodeController = new SourceCodeController(testController);
+            StubReport(CreateReport(new CodeLocation("test.exe", 1, 1)));
             sourceCodeController.ShowSourceCode += (sender, e) => Assert.Fail();
 
-            sourceCodeController.ViewSourceCode("testId", progressMonitor);
+            sourceCodeController.ViewSourceCode(testId, MockProgressMonitor.Instance);
+        }
+
+        [Test]
+        public void ShowSourceCode_does_not_fire_if_code_location_is_EXE()
+        {
+            StubReport(CreateReport(new CodeLocation("test.EXE", 1, 1)));
+            sourceCodeController.ShowSourceCode += (sender, e) => Assert.Fail();
+
+            sourceCodeController.ViewSourceCode(testId, MockProgressMonitor.Instance);
         }
 
         [Test]
         public void ShowSourceCode_does_not_fire_if_code_location_cannot_be_found()
         {
-            var progressMonitor = MockProgressMonitor.Instance;
-            var testController = MockRepository.GenerateStub<ITestController>();
-            var testModelData = new TestModelData();
-            Report report = new Report { TestModel = testModelData };
-            testController.Stub(x => x.ReadReport(null)).IgnoreArguments().Do((Action<ReadAction<Report>>)(action => action(report)));
-            var sourceCodeController = new SourceCodeController(testController);
+            StubReport(new Report { TestModel = new TestModelData() });
             sourceCodeController.ShowSourceCode += (sender, e) => Assert.Fail();
 
-            sourceCodeController.ViewSourceCode("testId", progressMonitor);
+            sourceCodeController.ViewSourceCode("testId", MockProgressMonitor.Instance);
         }
 
         [Test]
         public void ShowSourceCode_does_not_fire_if_TestModel_is_null()
         {
-            var progressMonitor = MockProgressMonitor.Instance;
-            var testController = MockRepository.GenerateStub<ITestController>();
-            Report report = new Report();
-            testController.Stub(x => x.ReadReport(null)).IgnoreArguments().Do((Action<ReadAction<Report>>)(action => action(report)));
-            var sourceCodeController = new SourceCodeController(testController);
+            StubReport(new Report());
             sourceCodeController.ShowSourceCode += (sender, e) => Assert.Fail();
 
-            sourceCodeController.ViewSourceCode("testId", progressMonitor);
+            sourceCodeController.ViewSourceCode("testId", MockProgressMonitor.Instance);
         }
     }
 }
