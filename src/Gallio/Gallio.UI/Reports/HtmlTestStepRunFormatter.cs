@@ -47,16 +47,17 @@ namespace Gallio.UI.Reports
         private readonly HashSet<string> attachmentPaths;
         private readonly TemporaryDiskCache cache;
         private readonly IDiskCacheGroup cacheGroup;
+        private readonly ReportFilePool reportFilePool;
 
         private readonly Uri resourcesUrl;
         private readonly Uri cssUrl;
         private readonly Uri imgUrl;
         private readonly string jsDir;
- 
+
         public HtmlTestStepRunFormatter()
         {
-            IRuntime runtime = RuntimeAccessor.Instance;
-            string resourcesPath = runtime.ResourceLocator.ResolveResourcePath(new Uri("plugin://Gallio.Reports/Resources/"));
+            var runtime = RuntimeAccessor.Instance;
+            var resourcesPath = runtime.ResourceLocator.ResolveResourcePath(new Uri("plugin://Gallio.Reports/Resources/"));
             resourcesUrl = new Uri(resourcesPath);
             cssUrl = new Uri(resourcesUrl, "css");
             imgUrl = new Uri(resourcesUrl, "img");
@@ -64,6 +65,7 @@ namespace Gallio.UI.Reports
 
             cache = new TemporaryDiskCache("Gallio.UI");
             cacheGroup = cache.Groups[Guid.NewGuid().ToString()];
+            reportFilePool = new ReportFilePool(cacheGroup, 5);
             attachmentPaths = new HashSet<string>();
         }
 
@@ -85,10 +87,12 @@ namespace Gallio.UI.Reports
         {
             cacheGroup.Create();
 
-            FileInfo htmlFile = cacheGroup.GetFileInfo(ReportName + "." + Hash64.CreateUniqueHash() + ".html");
+            var htmlFile = reportFilePool.GetNext();
 
-            using (StreamWriter htmlFileWriter = new StreamWriter(htmlFile.Open(FileMode.Create,
-                FileAccess.Write, FileShare.ReadWrite | FileShare.Delete), new UTF8Encoding(false)))
+            var fileStream = htmlFile.Open(FileMode.Create, FileAccess.Write, 
+                FileShare.ReadWrite | FileShare.Delete);
+
+            using (var htmlFileWriter = new StreamWriter(fileStream, new UTF8Encoding(false)))
             {
                 Format(htmlFileWriter, stepRuns, modelData);
             }
@@ -98,7 +102,7 @@ namespace Gallio.UI.Reports
 
         private void Format(TextWriter writer, IEnumerable<TestStepRun> stepRuns, TestModelData modelData)
         {
-            TestStepReportWriter reportWriter = new TestStepReportWriter(this, writer, modelData);
+            var reportWriter = new TestStepReportWriter(this, writer, modelData);
             reportWriter.RenderReport(stepRuns);
         }
 
@@ -744,6 +748,32 @@ namespace Gallio.UI.Reports
             public void VisitTextTag(TextTag tag)
             {
                 WriteHtmlEncodedWithBreaks(writer, tag.Text);
+            }
+        }
+
+        private class ReportFilePool
+        {
+            private readonly IList<FileInfo> files = new List<FileInfo>();
+            private int index;
+
+            public ReportFilePool(IDiskCacheGroup cacheGroup, int numberOfFiles)
+            {
+                for (var i = 0; i < numberOfFiles; i++)
+                {
+                    var uniqueFilename = string.Format("{0}.{1}.html", ReportName, Hash64.CreateUniqueHash());
+                    files.Add(cacheGroup.GetFileInfo(uniqueFilename));
+                }
+            }
+
+            public FileInfo GetNext()
+            {
+                var fileInfo = files[index];
+                
+                index++;
+                if (index == files.Count)
+                    index = 0;
+                
+                return fileInfo;
             }
         }
     }
