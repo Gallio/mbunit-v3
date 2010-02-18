@@ -14,7 +14,6 @@
 // limitations under the License.
 
 using System.Collections;
-using System.Windows.Forms;
 using Aga.Controls.Tree;
 using Gallio.Icarus.Events;
 using Gallio.Icarus.Specifications;
@@ -34,25 +33,10 @@ namespace Gallio.Icarus.Models
 
         public override IEnumerable GetChildren(TreePath treePath)
         {
-            if (specification is AnySpecification<TestTreeNode>)
+            foreach (var child in GetFilteredChildren(treePath))
             {
-                foreach (var child in GetChildrenFromBase(treePath))
-                {
-                    yield return child;
-                }
+                yield return child;
             }
-            else
-            {
-                foreach (var child in GetFilteredChildren(treePath))
-                {
-                    yield return child;
-                }
-            }
-        }
-
-        private IEnumerable GetChildrenFromBase(TreePath treePath)
-        {
-            return base.GetChildren(treePath);
         }
 
         private IEnumerable GetFilteredChildren(TreePath treePath)
@@ -66,13 +50,19 @@ namespace Gallio.Icarus.Models
 
                 if (Matches(node))
                 {
+                    node.IsFiltered = false;
                     yield return node;
                 }
                 else
                 {
-                    node.CheckState = CheckState.Unchecked;
+                    node.IsFiltered = true;
                 }
             }
+        }
+
+        private IEnumerable GetChildrenFromBase(TreePath treePath)
+        {
+            return base.GetChildren(treePath);
         }
 
         private bool Matches(TestTreeNode node)

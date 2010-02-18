@@ -20,6 +20,8 @@ namespace Gallio.Icarus.Models
 {
     public class ThreeStateNode : Node
     {
+        private bool isFiltered;
+
         public override CheckState CheckState
         {
             get
@@ -28,12 +30,29 @@ namespace Gallio.Icarus.Models
             }
             set
             {
-                if (base.CheckState == value)
+                if (base.CheckState == value || isFiltered)
                     return;
 
-                base.CheckState = value;
-                UpdateStateOfRelatedNodes();
+                SetCheckState(value);
             }
+        }
+
+        public bool IsFiltered
+        {
+            get
+            {
+                return isFiltered;
+            }
+            set
+            {
+                isFiltered = value;
+                SetCheckState(CheckState.Unchecked);
+            }
+        }
+
+        private void SetCheckState(CheckState checkState) {
+            base.CheckState = checkState;
+            UpdateStateOfRelatedNodes();
         }
 
         public ThreeStateNode() { }
