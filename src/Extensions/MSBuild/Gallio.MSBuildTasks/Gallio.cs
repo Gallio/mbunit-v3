@@ -293,7 +293,7 @@ namespace Gallio.MSBuildTasks
         /// </para>
         /// </remarks>
         /// <example>
-        /// In the following example reports will be generated in both HTML and XML format:
+        /// In the following example, reports will be enclosed in a zip file:
         /// <code>
         /// <![CDATA[
         /// <Target Name="MyTarget">

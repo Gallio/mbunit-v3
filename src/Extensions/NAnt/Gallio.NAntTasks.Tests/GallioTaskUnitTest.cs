@@ -17,6 +17,7 @@ using System;
 using System.IO;
 using System.Linq;
 using Gallio.Common.Collections;
+using Gallio.Runner.Reports;
 using Gallio.Runner.Reports.Schema;
 using Gallio.Runtime.Logging;
 using Gallio.Runtime.ProgressMonitoring;
@@ -49,9 +50,9 @@ namespace Gallio.NAntTasks.Tests
         [Test]
         public void TaskPassesDefaultArgumentsToLauncher()
         {
-            StubbedGallioTask task = new StubbedGallioTask();
+            var task = new StubbedGallioTask();
 
-            task.SetRunLauncherAction(delegate(TestLauncher launcher)
+            task.SetRunLauncherAction(launcher =>
             {
                 Assert.IsFalse(launcher.DoNotRun);
                 Assert.IsTrue(launcher.EchoResults);
@@ -65,19 +66,16 @@ namespace Gallio.NAntTasks.Tests
                 Assert.IsFalse(launcher.TestProject.IsReportNameFormatSpecified);
                 Assert.IsFalse(launcher.ShowReports);
                 Assert.IsNull(launcher.RunTimeLimit);
-
+                Assert.AreEqual(ReportArchive.Normal, launcher.TestProject.ReportArchive);
                 Assert.AreEqual(StandardTestRunnerFactoryNames.IsolatedProcess, launcher.TestProject.TestRunnerFactoryName);
                 Assert.IsFalse(launcher.TestProject.IsTestRunnerFactoryNameSpecified);
                 Assert.AreEqual(0, launcher.TestProject.TestRunnerExtensions.Count);
                 Assert.AreElementsEqual(new string[] { }, launcher.TestProject.TestRunnerExtensionSpecifications);
-
                 Assert.IsNull(launcher.RuntimeSetup.ConfigurationFilePath);
                 Assert.AreEqual(Path.GetDirectoryName(AssemblyUtils.GetAssemblyLocalPath(typeof(GallioTask).Assembly)), launcher.RuntimeSetup.RuntimePath);
                 Assert.AreElementsEqual(new string[] { }, launcher.RuntimeSetup.PluginDirectories);
-
                 Assert.AreElementsEqual(new string[] { }, from x in launcher.FilePatterns select x.ToString());
                 Assert.AreElementsEqual(new string[] { }, from x in launcher.TestProject.TestPackage.HintDirectories select x.ToString());
-
                 Assert.IsNull(launcher.TestProject.TestPackage.ApplicationBaseDirectory);
                 Assert.IsFalse(launcher.TestProject.TestPackage.IsApplicationBaseDirectorySpecified);
                 Assert.IsNull(launcher.TestProject.TestPackage.WorkingDirectory);
@@ -88,22 +86,20 @@ namespace Gallio.NAntTasks.Tests
                 Assert.IsFalse(launcher.TestProject.TestPackage.IsDebuggerSetupSpecified);
                 Assert.IsNull(launcher.TestProject.TestPackage.RuntimeVersion);
                 Assert.IsFalse(launcher.TestProject.TestPackage.IsRuntimeVersionSpecified);
-
                 Assert.AreEqual(new PropertySet(), launcher.TestRunnerOptions.Properties);
                 Assert.AreEqual(new PropertySet(), launcher.ReportFormatterOptions.Properties);
-
-                TestLauncherResult result = new TestLauncherResult(new Report());
+                var result = new TestLauncherResult(new Report());
                 result.SetResultCode(ResultCode.Success);
                 return result;
             });
 
-            Assert.DoesNotThrow(delegate { task.InternalExecute(); });
+            Assert.DoesNotThrow(() => task.InternalExecute());
         }
 
         [Test]
         public void TaskPassesSpecifiedArgumentsToLauncher()
         {
-            StubbedGallioTask task = new StubbedGallioTask();
+            var task = new StubbedGallioTask();
             task.DoNotRun = true;
             task.EchoResults = false;
             task.Filter = "Type: SimpleTest";
@@ -111,26 +107,23 @@ namespace Gallio.NAntTasks.Tests
             task.ReportTypes = "XML;Html";
             task.ReportNameFormat = "report";
             task.ShowReports = true;
+            task.ReportArchive = "zip";
             task.RunTimeLimit = 7200; // seconds
             task.Verbosity = Verbosity.Debug;
-
             task.RunnerType = StandardTestRunnerFactoryNames.Local;
             task.RunnerExtensions.Add(new Argument("DebugExtension,Gallio"));
-
             task.PluginDirectories = new DirSet[] { CreateDirSet("plugin") };
             task.Files = new FileSet[] { CreateFileSet("assembly1"), CreateFileSet("assembly2") };
             task.HintDirectories = new DirSet[] { CreateDirSet("hint1"), CreateDirSet("hint2") };
-
             task.ApplicationBaseDirectory = "baseDir";
             task.ShadowCopy = true;
             task.Debug = true;
             task.WorkingDirectory = "workingDir";
             task.RuntimeVersion = "v4.0.21006";
-
             task.RunnerProperties.AddRange(new[] { new Argument("RunnerOption1=RunnerValue1"), new Argument("  RunnerOption2  "), new Argument("RunnerOption3 = 'RunnerValue3'"), new Argument("RunnerOption4=\"'RunnerValue4'\"") });
             task.ReportFormatterProperties.AddRange(new[] { new Argument("FormatterOption1=FormatterValue1"), new Argument("  FormatterOption2  "), new Argument("FormatterOption3 = 'FormatterValue3'"), new Argument("FormatterOption4=\"'FormatterValue4'\"") });
 
-            task.SetRunLauncherAction(delegate(TestLauncher launcher)
+            task.SetRunLauncherAction(launcher =>
             {
                 Assert.IsTrue(launcher.DoNotRun);
                 Assert.IsFalse(launcher.EchoResults);
@@ -144,19 +137,16 @@ namespace Gallio.NAntTasks.Tests
                 Assert.IsTrue(launcher.TestProject.IsReportNameFormatSpecified);
                 Assert.IsTrue(launcher.ShowReports);
                 Assert.AreEqual(TimeSpan.FromMinutes(120), launcher.RunTimeLimit);
-
+                Assert.AreEqual(ReportArchive.Zip, launcher.TestProject.ReportArchive);
                 Assert.AreEqual(StandardTestRunnerFactoryNames.Local, launcher.TestProject.TestRunnerFactoryName);
                 Assert.IsTrue(launcher.TestProject.IsTestRunnerFactoryNameSpecified);
                 Assert.AreEqual(0, launcher.TestProject.TestRunnerExtensions.Count);
-                Assert.AreElementsEqual(new string[] { "DebugExtension,Gallio" }, launcher.TestProject.TestRunnerExtensionSpecifications);
-
+                Assert.AreElementsEqual(new[] { "DebugExtension,Gallio" }, launcher.TestProject.TestRunnerExtensionSpecifications);
                 Assert.IsNull(launcher.RuntimeSetup.ConfigurationFilePath);
                 Assert.AreEqual(Path.GetDirectoryName(AssemblyUtils.GetAssemblyLocalPath(typeof(GallioTask).Assembly)), launcher.RuntimeSetup.RuntimePath);
-                Assert.AreElementsEqual(new string[] { "plugin" }, launcher.RuntimeSetup.PluginDirectories);
-
-                Assert.AreElementsEqual(new string[] { "assembly1", "assembly2" }, from x in launcher.FilePatterns select x.ToString());
-                Assert.AreElementsEqual(new string[] { "hint1", "hint2" }, from x in launcher.TestProject.TestPackage.HintDirectories select x.ToString());
-
+                Assert.AreElementsEqual(new[] { "plugin" }, launcher.RuntimeSetup.PluginDirectories);
+                Assert.AreElementsEqual(new[] { "assembly1", "assembly2" }, from x in launcher.FilePatterns select x.ToString());
+                Assert.AreElementsEqual(new[] { "hint1", "hint2" }, from x in launcher.TestProject.TestPackage.HintDirectories select x.ToString());
                 Assert.AreEqual("baseDir", launcher.TestProject.TestPackage.ApplicationBaseDirectory.ToString());
                 Assert.IsTrue(launcher.TestProject.TestPackage.IsApplicationBaseDirectorySpecified);
                 Assert.AreEqual("workingDir", launcher.TestProject.TestPackage.WorkingDirectory.ToString());
@@ -184,24 +174,24 @@ namespace Gallio.NAntTasks.Tests
                     { "FormatterOption4", "'FormatterValue4'" }
                 }, launcher.ReportFormatterOptions.Properties);
 
-                TestLauncherResult result = new TestLauncherResult(new Report());
+                var result = new TestLauncherResult(new Report());
                 result.SetResultCode(ResultCode.NoTests);
                 return result;
             });
 
-            Assert.DoesNotThrow(delegate { task.InternalExecute(); });
+            Assert.DoesNotThrow(task.InternalExecute);
         }
 
         [Test]
         public void TaskExposesResultsReturnedByLauncher()
         {
-            StubbedGallioTask task = new StubbedGallioTask();
+            var task = new StubbedGallioTask();
             task.ResultProperty = "ExitCode";
             task.StatisticsPropertiesPrefix = "Stats.";
 
-            task.SetRunLauncherAction(delegate
+            task.SetRunLauncherAction(launcher =>
             {
-                Report report = new Report();
+                var report = new Report();
                 report.TestPackageRun = new TestPackageRun();
                 report.TestPackageRun.Statistics.AssertCount = 42;
                 report.TestPackageRun.Statistics.Duration = 1.5;
@@ -211,14 +201,12 @@ namespace Gallio.NAntTasks.Tests
                 report.TestPackageRun.Statistics.SkippedCount = 1;
                 report.TestPackageRun.Statistics.StepCount = 30;
                 report.TestPackageRun.Statistics.TestCount = 28;
-
-                TestLauncherResult result = new TestLauncherResult(report);
+                var result = new TestLauncherResult(report);
                 result.SetResultCode(ResultCode.Failure);
                 return result;
             });
 
-            Assert.Throws<BuildException>(delegate { task.InternalExecute(); });
-
+            Assert.Throws<BuildException>(task.InternalExecute);
             Assert.AreEqual(ResultCode.Failure.ToString(), task.Properties["ExitCode"]);
             Assert.AreEqual("42", task.Properties["Stats.AssertCount"]);
             Assert.AreEqual("1.5", task.Properties["Stats.Duration"]);
@@ -233,23 +221,23 @@ namespace Gallio.NAntTasks.Tests
         [Test]
         public void FailOnErrorWhenSetToFalseCausesABuildExceptionToNotBeThrownOnFailures()
         {
-            StubbedGallioTask task = new StubbedGallioTask();
+            var task = new StubbedGallioTask();
             task.FailOnError = false;
 
             task.SetRunLauncherAction(delegate
             {
-                TestLauncherResult result = new TestLauncherResult(new Report());
+                var result = new TestLauncherResult(new Report());
                 result.SetResultCode(ResultCode.Failure);
                 return result;
             });
 
-            Assert.DoesNotThrow(delegate { task.InternalExecute(); });
+            Assert.DoesNotThrow(task.InternalExecute);
         }
 
         [Test]
         public void ExceptionsCauseTheTaskToFailRegardlessOfFailOnError()
         {
-            StubbedGallioTask task = new StubbedGallioTask();
+            var task = new StubbedGallioTask();
             task.FailOnError = false;
 
             task.SetRunLauncherAction(delegate
@@ -257,19 +245,19 @@ namespace Gallio.NAntTasks.Tests
                 throw new Exception("Simulated error.");
             });
 
-            Assert.Throws<Exception>(delegate { task.InternalExecute(); });
+            Assert.Throws<Exception>(task.InternalExecute);
         }
 
         private static DirSet CreateDirSet(string dirName)
         {
-            DirSet dirSet = new DirSet();
+            var dirSet = new DirSet();
             dirSet.DirectoryNames.Add(dirName);
             return dirSet;
         }
 
         private static FileSet CreateFileSet(string fileName)
         {
-            FileSet fileSet = new FileSet();
+            var fileSet = new FileSet();
             fileSet.FileNames.Add(fileName);
             return fileSet;
         }

@@ -76,33 +76,21 @@ namespace Gallio.NAntTasks
     [TaskName(@"gallio")]
     public class GallioTask : Task
     {
-        private FileSet[] files;
-        private DirSet[] pluginDirectories;
-        private DirSet[] hintDirectories;
-
-        private string applicationBaseDirectory;
-        private string workingDirectory;
-        private bool? shadowCopy;
-        private bool? debug;
-        private string runtimeVersion;
-
-        private string filter = string.Empty;
-        private string reportTypes = string.Empty;
-        private string reportNameFormat;
-        private string reportDirectory;
-        private string resultProperty;
-        private string statisticsPropertiesPrefix;
-        private bool showReports;
-        private string runnerType;
-        private readonly ArgumentCollection runnerExtensions = new ArgumentCollection();
-        private bool doNotRun;
-        private bool ignoreAnnotations;
-        private bool echoResults = true;
         private TimeSpan? runTimeLimit;
-        private Verbosity verbosity = Verbosity.Normal;
 
-        private readonly ArgumentCollection runnerProperties = new ArgumentCollection();
-        private readonly ArgumentCollection reportFormatterProperties = new ArgumentCollection();
+        /// <summary>
+        /// Default constructor.
+        /// </summary>
+        public GallioTask()
+        {
+            Verbosity = Verbosity.Normal;
+            Filter = string.Empty;
+            EchoResults = true;
+            ReportFormatterProperties = new ArgumentCollection();
+            RunnerProperties = new ArgumentCollection();
+            RunnerExtensions = new ArgumentCollection();
+            ReportTypes = string.Empty;
+        }
 
         /// <summary>
         /// The list of test files, projects and assemblies to execute. 
@@ -133,7 +121,8 @@ namespace Gallio.NAntTasks
         [BuildElementArray("files", Required = true, ElementType = typeof(FileSet))]
         public FileSet[] Files
         {
-            set { files = value; }
+            private get;
+            set;
         }
 
         /// <summary>
@@ -153,7 +142,8 @@ namespace Gallio.NAntTasks
         [BuildElementArray("hint-directories", ElementType = typeof(DirSet))]
         public DirSet[] HintDirectories
         {
-            set { hintDirectories = value; }
+            private get;
+            set;
         }
 
         /// <summary>
@@ -173,7 +163,8 @@ namespace Gallio.NAntTasks
         [BuildElementArray("plugin-directories", ElementType = typeof(DirSet))]
         public DirSet[] PluginDirectories
         {
-            set { pluginDirectories = value; }
+            private get;
+            set;
         }
 
         /// <summary>
@@ -192,7 +183,8 @@ namespace Gallio.NAntTasks
         [TaskAttribute("application-base-directory")]
         public string ApplicationBaseDirectory
         {
-            set { applicationBaseDirectory = value; }
+            private get;
+            set;
         }
 
         /// <summary>
@@ -211,7 +203,8 @@ namespace Gallio.NAntTasks
         [TaskAttribute("working-directory")]
         public string WorkingDirectory
         {
-            set { workingDirectory = value; }
+            private get;
+            set;
         }
 
         /// <summary>
@@ -227,9 +220,10 @@ namespace Gallio.NAntTasks
         /// </para>
         /// </remarks>
         [TaskAttribute("shadow-copy")]
-        public bool ShadowCopy
+        public bool? ShadowCopy
         {
-            set { shadowCopy = value; }
+            private get;
+            set;
         }
 
         /// <summary>
@@ -241,9 +235,10 @@ namespace Gallio.NAntTasks
         /// </para>
         /// </remarks>
         [TaskAttribute("debug")]
-        public bool Debug
+        public bool? Debug
         {
-            set { debug = value; }
+            private get;
+            set;
         }
 
         /// <summary>
@@ -260,7 +255,8 @@ namespace Gallio.NAntTasks
         [TaskAttribute("runtime-version")]
         public string RuntimeVersion
         {
-            set { runtimeVersion = value; }
+            private get;
+            set;
         }
 
         /// <summary>
@@ -284,7 +280,37 @@ namespace Gallio.NAntTasks
         [TaskAttribute("report-types")]
         public string ReportTypes
         {
-            set { reportTypes = value; }
+            private get;
+            set;
+        }
+
+        /// <summary>
+        /// Sets the report archive mode.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// The supported modes are:
+        /// <list type="bullet">
+        /// <item>Normal (default)</item>
+        /// <item>Zip</item>
+        /// </list>
+        /// </para>
+        /// </remarks>
+        /// <example>
+        /// In the following example, reports will be enclosed in a zip file:
+        /// <code>
+        /// <![CDATA[
+        /// <gallio report-archive="zip">
+        ///     <!-- More options -->
+        /// </gallio>
+        /// ]]>
+        /// </code>
+        /// </example>
+        [TaskAttribute("report-archive", Required = false)]
+        public string ReportArchive
+        {
+            private get;
+            set;
         }
 
         /// <summary>
@@ -299,7 +325,8 @@ namespace Gallio.NAntTasks
         [TaskAttribute("report-name-format", Required = false)]
         public string ReportNameFormat
         {
-            set { reportNameFormat = value; }
+            private get;
+            set;
         }
 
         /// <summary>
@@ -314,7 +341,8 @@ namespace Gallio.NAntTasks
         [TaskAttribute("report-directory", Required = false)]
         public string ReportDirectory
         {
-            set { reportDirectory = value; }
+            private get;
+            set;
         }
 
         /// <summary>
@@ -324,7 +352,8 @@ namespace Gallio.NAntTasks
         [TaskAttribute("show-reports", Required = false)]
         public bool ShowReports
         {
-            set { showReports = value; }
+            private get;
+            set;
         }
 
         /// <summary>
@@ -340,7 +369,8 @@ namespace Gallio.NAntTasks
         [TaskAttribute("runner-type", Required = false)]
         public string RunnerType
         {
-            set { runnerType = value; }
+            private get;
+            set;
         }
 
         /// <summary>
@@ -367,7 +397,8 @@ namespace Gallio.NAntTasks
         [BuildElementArray("runner-extension")]
         public ArgumentCollection RunnerExtensions
         {
-            get { return runnerExtensions; }
+            get;
+            private set;
         }
 
         /// <summary>
@@ -385,7 +416,8 @@ namespace Gallio.NAntTasks
         [BuildElementArray("runner-property")]
         public ArgumentCollection RunnerProperties
         {
-            get { return runnerProperties; }
+            get;
+            private set;
         }
 
         /// <summary>
@@ -403,7 +435,8 @@ namespace Gallio.NAntTasks
         [BuildElementArray("report-formatter-property")]
         public ArgumentCollection ReportFormatterProperties
         {
-            get { return reportFormatterProperties; }
+            get;
+            private set;
         }
 
         /// <summary>
@@ -418,7 +451,8 @@ namespace Gallio.NAntTasks
         [TaskAttribute("do-not-run", Required = false)]
         public bool DoNotRun
         {
-            set { doNotRun = value; }
+            private get;
+            set;
         }
 
         /// <summary>
@@ -433,7 +467,8 @@ namespace Gallio.NAntTasks
         [TaskAttribute("ignore-annotations", Required = false)]
         public bool IgnoreAnnotations
         {
-            set { ignoreAnnotations = value; }
+            private get;
+            set;
         }
 
         /// <summary>
@@ -449,7 +484,8 @@ namespace Gallio.NAntTasks
         [TaskAttribute("echo-results", Required = false)]
         public bool EchoResults
         {
-            set { echoResults = value; }
+            private get;
+            set;
         }
 
         /// <summary>
@@ -464,7 +500,10 @@ namespace Gallio.NAntTasks
         [TaskAttribute("run-time-limit", Required = false)]
         public double RunTimeLimit
         {
-            set { runTimeLimit = TimeSpan.FromSeconds(value); }
+            set
+            {
+                runTimeLimit = TimeSpan.FromSeconds(value);
+            }
         }
 
         /// <summary>
@@ -486,11 +525,11 @@ namespace Gallio.NAntTasks
         /// </target>
         /// ]]></code>
         /// </example>
-        [TaskAttribute("result-property")]
-        [StringValidator(AllowEmpty = false)]
+        [TaskAttribute("result-property"), StringValidator(AllowEmpty = false)]
         public string ResultProperty
         {
-            set { resultProperty = value; }
+            private get;
+            set;
         }
 
         /// <summary>
@@ -531,11 +570,11 @@ namespace Gallio.NAntTasks
         /// </target>
         /// ]]></code>
         /// </example>
-        [TaskAttribute("statistics-properties-prefix")]
-        [StringValidator(AllowEmpty = false)]
+        [TaskAttribute("statistics-properties-prefix"), StringValidator(AllowEmpty = false)]
         public string StatisticsPropertiesPrefix
         {
-            set { statisticsPropertiesPrefix = value; }
+            private get;
+            set;
         }
 
         /// <summary>
@@ -550,7 +589,8 @@ namespace Gallio.NAntTasks
         [TaskAttribute("filter")]
         public string Filter
         {
-            set { filter = value; }
+            private get;
+            set;
         }
 
         /// <summary>
@@ -574,7 +614,8 @@ namespace Gallio.NAntTasks
         [TaskAttribute("verbosity")]
         public Verbosity Verbosity
         {
-            set { verbosity = value; }
+            private get;
+            set;
         }
 
         /// <summary>
@@ -591,52 +632,54 @@ namespace Gallio.NAntTasks
             // and decides whether to let them through based on the value of the
             // FailOnError
             var logger = CreateLogger();
-
             DisplayVersion();
-
-            TestLauncher launcher = new TestLauncher();
+            var launcher = new TestLauncher();
             launcher.Logger = logger;
             launcher.ProgressMonitorProvider = new LogProgressMonitorProvider(logger);
             launcher.TestExecutionOptions.FilterSet = GetFilterSet();
-            launcher.ShowReports = showReports;
-            launcher.DoNotRun = doNotRun;
-            launcher.IgnoreAnnotations = ignoreAnnotations;
-            launcher.EchoResults = echoResults;
+            launcher.ShowReports = ShowReports;
+            launcher.DoNotRun = DoNotRun;
+            launcher.IgnoreAnnotations = IgnoreAnnotations;
+            launcher.EchoResults = EchoResults;
             launcher.RunTimeLimit = runTimeLimit;
 
-            if (runnerType != null)
-                launcher.TestProject.TestRunnerFactoryName = runnerType;
-            if (runnerExtensions != null)
+            if (RunnerType != null)
             {
-                foreach (Argument arg in runnerExtensions)
+                launcher.TestProject.TestRunnerFactoryName = RunnerType;
+            }
+
+            if (RunnerExtensions != null)
+            {
+                foreach (Argument arg in RunnerExtensions)
+                {
                     launcher.TestProject.AddTestRunnerExtensionSpecification(arg.Value);
+                }
             }
 
             launcher.RuntimeSetup = new RuntimeSetup();
 
             // Set the installation path explicitly to the path of the NAnt task assembly
             // since otherwise we will look at the path of NAnt.exe.
-            launcher.RuntimeSetup.RuntimePath =
-                Path.GetDirectoryName(AssemblyUtils.GetFriendlyAssemblyLocation(typeof(GallioTask).Assembly));
+            launcher.RuntimeSetup.RuntimePath = Path.GetDirectoryName(AssemblyUtils.GetFriendlyAssemblyLocation(typeof(GallioTask).Assembly));
 
-            if (applicationBaseDirectory != null)
-                launcher.TestProject.TestPackage.ApplicationBaseDirectory = new DirectoryInfo(applicationBaseDirectory);
-            if (workingDirectory != null)
-                launcher.TestProject.TestPackage.WorkingDirectory = new DirectoryInfo(workingDirectory);
-            if (shadowCopy.HasValue)
-                launcher.TestProject.TestPackage.ShadowCopy = shadowCopy.Value;
-            if (debug.HasValue && debug.Value)
+            if (ApplicationBaseDirectory != null)
+                launcher.TestProject.TestPackage.ApplicationBaseDirectory = new DirectoryInfo(ApplicationBaseDirectory);
+            if (WorkingDirectory != null)
+                launcher.TestProject.TestPackage.WorkingDirectory = new DirectoryInfo(WorkingDirectory);
+            if (ShadowCopy.HasValue)
+                launcher.TestProject.TestPackage.ShadowCopy = ShadowCopy.Value;
+            if (Debug.HasValue && Debug.Value)
                 launcher.TestProject.TestPackage.DebuggerSetup = new DebuggerSetup();
-            if (runtimeVersion != null)
-                launcher.TestProject.TestPackage.RuntimeVersion = runtimeVersion;
+            if (RuntimeVersion != null)
+                launcher.TestProject.TestPackage.RuntimeVersion = RuntimeVersion;
 
-            foreach (Argument option in reportFormatterProperties)
+            foreach (Argument option in ReportFormatterProperties)
             {
                 KeyValuePair<string, string> pair = StringUtils.ParseKeyValuePair(option.Value);
                 launcher.ReportFormatterOptions.AddProperty(pair.Key, pair.Value);
             }
 
-            foreach (Argument option in runnerProperties)
+            foreach (Argument option in RunnerProperties)
             {
                 KeyValuePair<string, string> pair = StringUtils.ParseKeyValuePair(option.Value);
                 launcher.TestRunnerOptions.AddProperty(pair.Key, pair.Value);
@@ -646,16 +689,20 @@ namespace Gallio.NAntTasks
             AddHintDirectories(launcher);
             AddPluginDirectories(launcher);
 
-            if (reportDirectory != null)
-                launcher.TestProject.ReportDirectory = reportDirectory;
-            if (reportNameFormat != null)
-                launcher.TestProject.ReportNameFormat = reportNameFormat;
-            if (reportTypes != null)
-                GenericCollectionUtils.ForEach(reportTypes.Split(new[] {';'}, StringSplitOptions.RemoveEmptyEntries),
-                                    x => launcher.AddReportFormat(x));
+            if (ReportDirectory != null)
+                launcher.TestProject.ReportDirectory = ReportDirectory;
+            if (ReportNameFormat != null)
+                launcher.TestProject.ReportNameFormat = ReportNameFormat;
+            if (ReportArchive != null)
+                launcher.TestProject.ReportArchive = Runner.Reports.ReportArchive.Parse(ReportArchive);
+
+            if (ReportTypes != null)
+            {
+                string[] typeNames = ReportTypes.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+                GenericCollectionUtils.ForEach(typeNames, launcher.AddReportFormat);
+            }
 
             TestLauncherResult result = RunLauncher(launcher);
-
             SetResultProperty(result.ResultCode);
             PopulateStatistics(result);
 
@@ -671,8 +718,8 @@ namespace Gallio.NAntTasks
 
         private ILogger CreateLogger()
         {
-            TaskLogger logger = new TaskLogger(this);
-            return new FilteredLogger(logger, verbosity);
+            var logger = new TaskLogger(this);
+            return new FilteredLogger(logger, Verbosity);
         }
 
         /// <exclude />
@@ -687,26 +734,25 @@ namespace Gallio.NAntTasks
         private void PopulateStatistics(TestLauncherResult result)
         {
             Statistics stats = result.Statistics;
-
-            Properties[statisticsPropertiesPrefix + @"TestCount"] = stats.TestCount.ToString();
-            Properties[statisticsPropertiesPrefix + @"StepCount"] = stats.StepCount.ToString();
-            Properties[statisticsPropertiesPrefix + @"PassedCount"] = stats.PassedCount.ToString();
-            Properties[statisticsPropertiesPrefix + @"FailedCount"] = stats.FailedCount.ToString();
-            Properties[statisticsPropertiesPrefix + @"InconclusiveCount"] = stats.InconclusiveCount.ToString();
-            Properties[statisticsPropertiesPrefix + @"RunCount"] = stats.RunCount.ToString();
-            Properties[statisticsPropertiesPrefix + @"SkippedCount"] = stats.SkippedCount.ToString();
-            Properties[statisticsPropertiesPrefix + @"Duration"] = stats.Duration.ToString();
-            Properties[statisticsPropertiesPrefix + @"AssertCount"] = stats.AssertCount.ToString();
+            Properties[StatisticsPropertiesPrefix + @"TestCount"] = stats.TestCount.ToString();
+            Properties[StatisticsPropertiesPrefix + @"StepCount"] = stats.StepCount.ToString();
+            Properties[StatisticsPropertiesPrefix + @"PassedCount"] = stats.PassedCount.ToString();
+            Properties[StatisticsPropertiesPrefix + @"FailedCount"] = stats.FailedCount.ToString();
+            Properties[StatisticsPropertiesPrefix + @"InconclusiveCount"] = stats.InconclusiveCount.ToString();
+            Properties[StatisticsPropertiesPrefix + @"RunCount"] = stats.RunCount.ToString();
+            Properties[StatisticsPropertiesPrefix + @"SkippedCount"] = stats.SkippedCount.ToString();
+            Properties[StatisticsPropertiesPrefix + @"Duration"] = stats.Duration.ToString();
+            Properties[StatisticsPropertiesPrefix + @"AssertCount"] = stats.AssertCount.ToString();
         }
 
         private FilterSet<ITestDescriptor> GetFilterSet()
         {
-            if (String.IsNullOrEmpty(filter))
+            if (String.IsNullOrEmpty(Filter))
             {
                 return FilterSet<ITestDescriptor>.Empty;
             }
 
-            return FilterUtils.ParseTestFilterSet(filter);
+            return FilterUtils.ParseTestFilterSet(Filter);
         }
 
         /// <summary>
@@ -717,9 +763,9 @@ namespace Gallio.NAntTasks
         /// TestRunnerHelper class.</param>
         private void SetResultProperty(IConvertible resultCode)
         {
-            if (!String.IsNullOrEmpty(resultProperty))
+            if (!String.IsNullOrEmpty(ResultProperty))
             {
-                Properties[resultProperty] = resultCode.ToString(CultureInfo.InvariantCulture);
+                Properties[ResultProperty] = resultCode.ToString(CultureInfo.InvariantCulture);
             }
         }
 
@@ -731,36 +777,42 @@ namespace Gallio.NAntTasks
 
         private void AddAssemblies(TestLauncher launcher)
         {
-            if (files != null)
+            if (Files != null)
             {
-                foreach (FileSet fs in files)
+                foreach (FileSet fs in Files)
                 {
                     foreach (string f in fs.FileNames)
+                    {
                         launcher.AddFilePattern(f);
+                    }
                 }
             }
         }
 
         private void AddHintDirectories(TestLauncher launcher)
         {
-            if (hintDirectories != null)
+            if (HintDirectories != null)
             {
-                foreach (DirSet ds in hintDirectories)
+                foreach (DirSet ds in HintDirectories)
                 {
                     foreach (string d in ds.DirectoryNames)
+                    {
                         launcher.TestProject.TestPackage.AddHintDirectory(new DirectoryInfo(d));
+                    }
                 }
             }
         }
 
         private void AddPluginDirectories(TestLauncher launcher)
         {
-            if (pluginDirectories != null)
+            if (PluginDirectories != null)
             {
-                foreach (DirSet ds in pluginDirectories)
+                foreach (DirSet ds in PluginDirectories)
                 {
                     foreach (string d in ds.DirectoryNames)
+                    {
                         launcher.RuntimeSetup.AddPluginDirectory(d);
+                    }
                 }
             }
         }
