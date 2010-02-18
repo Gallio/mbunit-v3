@@ -18,6 +18,7 @@ using Gallio.Common.IO;
 using Gallio.Common.Xml;
 using Gallio.Icarus.Controllers;
 using Gallio.Icarus.Controls;
+using Gallio.Icarus.Events;
 using Gallio.Icarus.Tests.Utilities;
 using Gallio.Model;
 using Gallio.Runner;
@@ -31,22 +32,33 @@ namespace Gallio.Icarus.Tests.Controllers
     [Category("Controllers"), TestsOn(typeof(OptionsController))]
     internal class OptionsControllerTest
     {
-        private static OptionsController SetUpOptionsController(Settings settings)
+        private IEventAggregator eventAggregator;
+        private OptionsController optionsController;
+        private IFileSystem fileSystem;
+        private IXmlSerializer xmlSerializer;
+        private IUnhandledExceptionPolicy unhandledExceptionPolicy;
+
+        [SetUp]
+        public void SetUp()
         {
-            var fileSystem = MockRepository.GenerateStub<IFileSystem>();
+            fileSystem = MockRepository.GenerateStub<IFileSystem>();
+            xmlSerializer = MockRepository.GenerateStub<IXmlSerializer>();
+            unhandledExceptionPolicy = MockRepository.GenerateStub<IUnhandledExceptionPolicy>();
+            eventAggregator = MockRepository.GenerateStub<IEventAggregator>();
+            optionsController = new OptionsController(fileSystem, xmlSerializer, unhandledExceptionPolicy, eventAggregator);
+        }
+
+        private void SetUpOptionsController(Settings settings)
+        {
             fileSystem.Stub(fs => fs.FileExists(Arg<string>.Is.Anything)).Return(true);
-            var xmlSerializer = MockRepository.GenerateStub<IXmlSerializer>();
             xmlSerializer.Stub(xs => xs.LoadFromXml<Settings>(Arg<string>.Is.Anything)).Return(settings);
-            var unhandledExceptionPolicy = MockRepository.GenerateStub<IUnhandledExceptionPolicy>();
-            var optionsController = new OptionsController(fileSystem, xmlSerializer, unhandledExceptionPolicy);
             optionsController.Load();
-            return optionsController;
         }
 
         [Test]
         public void RestorePreviousSettings_Test()
         {
-            var optionsController = SetUpOptionsController(new Settings());
+            SetUpOptionsController(new Settings());
 
             Assert.IsTrue(optionsController.RestorePreviousSettings);
             optionsController.RestorePreviousSettings = false;
@@ -56,7 +68,7 @@ namespace Gallio.Icarus.Tests.Controllers
         [SyncTest]
         public void TestRunnerFactory_Test()
         {
-            var optionsController = SetUpOptionsController(new Settings());
+            SetUpOptionsController(new Settings());
             bool propChangedFlag = false;
             optionsController.TestRunnerFactory.PropertyChanged += (s, e) => 
             {
@@ -72,7 +84,7 @@ namespace Gallio.Icarus.Tests.Controllers
         [Test]
         public void AlwaysReloadFiles_Test()
         {
-            var optionsController = SetUpOptionsController(new Settings());
+            SetUpOptionsController(new Settings());
 
             Assert.IsFalse(optionsController.AlwaysReloadFiles);
             optionsController.AlwaysReloadFiles = true;
@@ -82,7 +94,7 @@ namespace Gallio.Icarus.Tests.Controllers
         [Test]
         public void ShowProgressDialogs_Test()
         {
-            var optionsController = SetUpOptionsController(new Settings());
+            SetUpOptionsController(new Settings());
 
             Assert.IsTrue(optionsController.ShowProgressDialogs);
             optionsController.ShowProgressDialogs = false;
@@ -92,7 +104,7 @@ namespace Gallio.Icarus.Tests.Controllers
         [Test]
         public void TestStatusBarStyle_Test()
         {
-            var optionsController = SetUpOptionsController(new Settings());
+            SetUpOptionsController(new Settings());
 
             Assert.AreEqual(TestStatusBarStyles.Integration, optionsController.TestStatusBarStyle);
             optionsController.TestStatusBarStyle = TestStatusBarStyles.UnitTest;
@@ -102,7 +114,7 @@ namespace Gallio.Icarus.Tests.Controllers
         [Test]
         public void FailedColor_Test()
         {
-            var optionsController = SetUpOptionsController(new Settings());
+            SetUpOptionsController(new Settings());
 
             Assert.AreEqual(Color.Red.ToArgb(), optionsController.FailedColor.ToArgb());
             optionsController.FailedColor = Color.Black;
@@ -112,7 +124,7 @@ namespace Gallio.Icarus.Tests.Controllers
         [Test]
         public void PassedColor_Test()
         {
-            var optionsController = SetUpOptionsController(new Settings());
+            SetUpOptionsController(new Settings());
 
             Assert.AreEqual(Color.Green.ToArgb(), optionsController.PassedColor.ToArgb());
             optionsController.PassedColor = Color.Black;
@@ -122,7 +134,7 @@ namespace Gallio.Icarus.Tests.Controllers
         [Test]
         public void InconclusiveColor_Test()
         {
-            var optionsController = SetUpOptionsController(new Settings());
+            SetUpOptionsController(new Settings());
 
             Assert.AreEqual(Color.Gold.ToArgb(), optionsController.InconclusiveColor.ToArgb());
             optionsController.InconclusiveColor = Color.Black;
@@ -132,7 +144,7 @@ namespace Gallio.Icarus.Tests.Controllers
         [Test]
         public void SkippedColor_Test()
         {
-            var optionsController = SetUpOptionsController(new Settings());
+            SetUpOptionsController(new Settings());
 
             Assert.AreEqual(Color.SlateGray.ToArgb(), optionsController.SkippedColor.ToArgb());
             optionsController.SkippedColor = Color.Black;
@@ -142,7 +154,7 @@ namespace Gallio.Icarus.Tests.Controllers
         [Test]
         public void SelectedTreeViewCategories_Test()
         {
-            var optionsController = SetUpOptionsController(new Settings());
+            SetUpOptionsController(new Settings());
 
             Assert.AreEqual(5, optionsController.SelectedTreeViewCategories.Value.Count);
         }
@@ -150,7 +162,7 @@ namespace Gallio.Icarus.Tests.Controllers
         [Test]
         public void UnselectedTreeViewCategories_Test()
         {
-            var optionsController = SetUpOptionsController(new Settings());
+            SetUpOptionsController(new Settings());
 
             Assert.AreEqual(typeof(MetadataKeys).GetFields().Length - 4, 
                 optionsController.UnselectedTreeViewCategories.Value.Count);
@@ -159,12 +171,7 @@ namespace Gallio.Icarus.Tests.Controllers
         [Test]
         public void Cancel_should_reload_options()
         {
-            var fileSystem = MockRepository.GenerateStub<IFileSystem>();
-            fileSystem.Stub(fs => fs.FileExists(Arg<string>.Is.Anything)).Return(true);
-            var xmlSerializer = MockRepository.GenerateStub<IXmlSerializer>();
-            xmlSerializer.Stub(xs => xs.LoadFromXml<Settings>(Arg<string>.Is.Anything)).Return(new Settings());
-            var unhandledExceptionPolicy = MockRepository.GenerateStub<IUnhandledExceptionPolicy>();
-            var optionsController = new OptionsController(fileSystem, xmlSerializer, unhandledExceptionPolicy);
+            SetUpOptionsController(new Settings());
 
             optionsController.Cancel();
 
@@ -175,25 +182,18 @@ namespace Gallio.Icarus.Tests.Controllers
         [Test]
         public void Save_should_save_settings_as_xml()
         {
-            var fileSystem = MockRepository.GenerateStub<IFileSystem>();
             fileSystem.Stub(fs => fs.DirectoryExists(Arg<string>.Is.Anything)).Return(true);
-            var xmlSerializer = MockRepository.GenerateStub<IXmlSerializer>();
-            var unhandledExceptionPolicy = MockRepository.GenerateStub<IUnhandledExceptionPolicy>();
-            var optionsController = new OptionsController(fileSystem, xmlSerializer, unhandledExceptionPolicy);
 
             optionsController.Save();
 
-            xmlSerializer.AssertWasCalled(xs => xs.SaveToXml(Arg<Settings>.Is.Anything, Arg<string>.Is.Anything));
+            xmlSerializer.AssertWasCalled(xs => xs.SaveToXml(Arg<Settings>.Is.Anything, 
+                Arg<string>.Is.Anything));
         }
 
         [Test]
         public void Save_should_create_directory_if_it_does_not_exist()
         {
-            var fileSystem = MockRepository.GenerateStub<IFileSystem>();
             fileSystem.Stub(fs => fs.DirectoryExists(Arg<string>.Is.Anything)).Return(false);
-            var xmlSerializer = MockRepository.GenerateStub<IXmlSerializer>();
-            var unhandledExceptionPolicy = MockRepository.GenerateStub<IUnhandledExceptionPolicy>();
-            var optionsController = new OptionsController(fileSystem, xmlSerializer, unhandledExceptionPolicy);
 
             optionsController.Save();
 
@@ -203,7 +203,7 @@ namespace Gallio.Icarus.Tests.Controllers
         [Test]
         public void GenerateReportAfterTestRun_Test()
         {
-            var optionsController = SetUpOptionsController(new Settings());
+            SetUpOptionsController(new Settings());
 
             Assert.IsTrue(optionsController.GenerateReportAfterTestRun);
             optionsController.GenerateReportAfterTestRun = false;
@@ -213,9 +213,9 @@ namespace Gallio.Icarus.Tests.Controllers
         [Test]
         public void Location_Test()
         {
-            var optionsController = SetUpOptionsController(new Settings());
+            SetUpOptionsController(new Settings());
 
-            Point p = new Point(0, 0);
+            var p = new Point(0, 0);
             optionsController.Location = p;
             Assert.AreEqual(p, optionsController.Location);
         }
@@ -226,7 +226,7 @@ namespace Gallio.Icarus.Tests.Controllers
             var settings = new Settings();
             settings.RecentProjects.AddRange(new[] { "one", "two" });
 
-            var optionsController = SetUpOptionsController(settings);
+            SetUpOptionsController(settings);
  
             Assert.AreEqual(settings.RecentProjects.Count, optionsController.RecentProjects.Count);
             Assert.AreElementsEqual(settings.RecentProjects, optionsController.RecentProjects.Items);
@@ -235,7 +235,7 @@ namespace Gallio.Icarus.Tests.Controllers
         [Test]
         public void RunTestsAfterReload_Test()
         {
-            var optionsController = SetUpOptionsController(new Settings());
+            SetUpOptionsController(new Settings());
 
             Assert.IsFalse(optionsController.RunTestsAfterReload);
             optionsController.RunTestsAfterReload = true;
@@ -245,8 +245,8 @@ namespace Gallio.Icarus.Tests.Controllers
         [Test]
         public void Size_Test()
         {
-            var optionsController = SetUpOptionsController(new Settings());
-            Size size = new Size(0, 0);
+            SetUpOptionsController(new Settings());
+            var size = new Size(0, 0);
 
             optionsController.Size = size;
             Assert.AreEqual(size, optionsController.Size);
@@ -255,14 +255,14 @@ namespace Gallio.Icarus.Tests.Controllers
         [Test]
         public void UpdateDelay_Test()
         {
-            var optionsController = SetUpOptionsController(new Settings());
+            SetUpOptionsController(new Settings());
             Assert.AreEqual(1000, optionsController.UpdateDelay);
         }
 
         [Test]
         public void AnnotationShowErrors_Test()
         {
-            var optionsController = SetUpOptionsController(new Settings());
+            SetUpOptionsController(new Settings());
             
             optionsController.AnnotationsShowErrors = false;
 
@@ -272,7 +272,7 @@ namespace Gallio.Icarus.Tests.Controllers
         [Test]
         public void AnnotationShowInfos_Test()
         {
-            var optionsController = SetUpOptionsController(new Settings());
+            SetUpOptionsController(new Settings());
 
             optionsController.AnnotationsShowInfos = false;
 
@@ -282,7 +282,7 @@ namespace Gallio.Icarus.Tests.Controllers
         [Test]
         public void AnnotationShowWarnings_Test()
         {
-            var optionsController = SetUpOptionsController(new Settings());
+            SetUpOptionsController(new Settings());
 
             optionsController.AnnotationsShowWarnings = false;
 
@@ -293,7 +293,7 @@ namespace Gallio.Icarus.Tests.Controllers
         public void MinLogSeverity_should_return_value_from_settings()
         {
             var settings = new Settings { MinLogSeverity = LogSeverity.Error };
-            var optionsController = SetUpOptionsController(settings);
+            SetUpOptionsController(settings);
 
             Assert.AreEqual(LogSeverity.Error, optionsController.MinLogSeverity);
             optionsController.MinLogSeverity = LogSeverity.Debug;

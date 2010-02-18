@@ -42,11 +42,11 @@ namespace Gallio.Icarus.Controllers
 
         public event EventHandler<RuntimeLogEventArgs> LogMessage;
         
-        public void SetLogger(IRuntimeLogger runtimeLogger)
+        public void SetLogger(IRuntimeLogger logger)
         {
-            this.runtimeLogger = runtimeLogger;
-            runtimeLogger.LogMessage += (sender, e) => LogMessage(this, e);
-            runtimeLogger.MinLogSeverity = optionsController.MinLogSeverity;
+            runtimeLogger = logger;
+            logger.LogMessage += (sender, e) => LogMessage(this, e);
+            logger.MinLogSeverity = optionsController.MinLogSeverity;
         }
 
         public RuntimeLogController(IOptionsController optionsController)

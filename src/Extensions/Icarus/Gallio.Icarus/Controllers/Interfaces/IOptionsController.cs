@@ -54,5 +54,6 @@ namespace Gallio.Icarus.Controllers.Interfaces
         void Cancel();
         void Load();
         void Save();
+        Settings GetCurrentSettings();
     }
 }

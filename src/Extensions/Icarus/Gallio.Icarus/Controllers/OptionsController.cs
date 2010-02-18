@@ -36,6 +36,7 @@ namespace Gallio.Icarus.Controllers
         private readonly IFileSystem fileSystem;
         private readonly IXmlSerializer xmlSerializer;
         private readonly IUnhandledExceptionPolicy unhandledExceptionPolicy;
+        private readonly IEventAggregator eventAggregator;
 
         private Settings settings = new Settings();
         private MRUList recentProjects;
@@ -193,11 +194,12 @@ namespace Gallio.Icarus.Controllers
         }
 
         public OptionsController(IFileSystem fileSystem, IXmlSerializer xmlSerializer, 
-            IUnhandledExceptionPolicy unhandledExceptionPolicy)
+            IUnhandledExceptionPolicy unhandledExceptionPolicy, IEventAggregator eventAggregator)
         {
             this.fileSystem = fileSystem;
             this.xmlSerializer = xmlSerializer;
             this.unhandledExceptionPolicy = unhandledExceptionPolicy;
+            this.eventAggregator = eventAggregator;
 
             TestRunnerFactory = new Observable<string>();
             TestRunnerFactory.PropertyChanged += (s, e) => 
@@ -252,6 +254,8 @@ namespace Gallio.Icarus.Controllers
                     fileSystem.CreateDirectory(Paths.IcarusAppDataFolder);
 
                 xmlSerializer.SaveToXml(settings, Paths.SettingsFile);
+
+                eventAggregator.Send(new OptionsChanged());
             }
             catch (Exception ex)
             {
@@ -278,6 +282,11 @@ namespace Gallio.Icarus.Controllers
         public void Handle(ProjectSaved @event)
         {
             RecentProjects.Add(@event.ProjectLocation);
+        }
+
+        public Settings GetCurrentSettings()
+        {
+            return settings;
         }
     }
 }

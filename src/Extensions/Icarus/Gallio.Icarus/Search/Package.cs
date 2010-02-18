@@ -9,12 +9,15 @@ namespace Gallio.Icarus.Search
     {
         private readonly IWindowManager windowManager;
         private readonly IController controller;
+        private readonly IModel model;
         private const string WindowId = "Gallio.Icarus.Search";
 
-        public Package(IWindowManager windowManager, IController controller)
+        public Package(IWindowManager windowManager, IController controller, 
+            IModel model)
         {
             this.windowManager = windowManager;
             this.controller = controller;
+            this.model = model;
         }
 
         public void Load()
@@ -39,14 +42,14 @@ namespace Gallio.Icarus.Search
 
         private void RegisterWindow()
         {
-            // register an action to create the window on demand
             windowManager.Register(WindowId, () =>
             {
-                var view = new View(controller);
+                var view = new View(controller, model);
                 var caption = Resources.Search_Package_AddMenuItem_Search;
                 windowManager.Add(WindowId, view, caption);
             });
         }
+
         public void Dispose() { }
     }
 }

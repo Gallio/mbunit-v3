@@ -2,6 +2,6 @@
 {
     public interface IController
     {
-        void Search(string searchText);
+        void Search(string searchText, string metadataType);
     }
 }

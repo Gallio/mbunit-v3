@@ -38,6 +38,94 @@ namespace Gallio.Icarus.TestExplorer
 
             InitializeComponent();
 
+            SetupColors();
+
+            SetupTreeViewCategories();
+
+            testTree.Model = model.TreeModel;
+
+            controller.RestoreState += (s,e) => RestoreState();
+
+            model.CanEditTree.PropertyChanged += (s, e) => testTree.SetEditEnabled(model.CanEditTree);
+
+            SetupFilters();
+
+            SetupSorting();
+
+            controller.SaveState += (s, e) => SaveState();
+        }
+
+        private void SetupSorting()
+        {
+            sortAscToolStripButton.Click += (s, e) => SortTree(SortOrder.Ascending);
+            sortDescToolStripButton.Click += (s, e) => SortTree(SortOrder.Descending);
+        }
+
+        private void SetupFilters()
+        {
+            SetupPassedFilters();
+
+            SetupFailedFilters();
+
+            SetupInconclusiveFilters();
+        }
+
+        private void SetupInconclusiveFilters()
+        {
+            filterInconclusiveTestsToolStripMenuItem.Click += (s, e) => FilterStatus(TestStatus.Inconclusive);
+            filterInconclusiveTestsToolStripButton.Click += (s, e) => FilterStatus(TestStatus.Inconclusive);
+            model.FilterInconclusive.PropertyChanged += (s, e) =>
+            {
+                filterInconclusiveTestsToolStripMenuItem.Checked = filterInconclusiveTestsToolStripButton.Checked
+                                                                   = model.FilterInconclusive.Value;
+            };
+        }
+
+        private void SetupFailedFilters()
+        {
+            filterFailedTestsToolStripMenuItem.Click += (s, e) => FilterStatus(TestStatus.Failed);
+            filterFailedTestsToolStripButton.Click += (s, e) => FilterStatus(TestStatus.Failed);
+            model.FilterFailed.PropertyChanged += (s, e) =>
+            {
+                filterFailedTestsToolStripMenuItem.Checked = filterFailedTestsToolStripButton.Checked
+                                                             = model.FilterFailed.Value;
+            };
+        }
+
+        private void SetupPassedFilters()
+        {
+            filterPassedTestsToolStripMenuItem.Click += (s, e) => FilterStatus(TestStatus.Passed);
+            filterPassedTestsToolStripButton.Click += (s, e) => FilterStatus(TestStatus.Passed);
+            model.FilterPassed.PropertyChanged += (s, e) =>
+            {
+                filterPassedTestsToolStripMenuItem.Checked = filterPassedTestsToolStripButton.Checked
+                                                             = model.FilterPassed.Value;
+            };
+        }
+
+        private void SetupTreeViewCategories()
+        {
+            if (treeViewComboBox.ComboBox != null)
+            {
+                updateFlag = true;
+                treeViewComboBox.ComboBox.DataSource = model.TreeViewCategories.Value;
+                updateFlag = false;
+                treeViewComboBox.ComboBox.SelectedItem = model.CurrentTreeViewCategory;
+            }
+
+            model.TreeViewCategories.PropertyChanged += (s, e) =>
+            {
+                if (treeViewComboBox.ComboBox == null)
+                    return;
+
+                updateFlag = true;
+                treeViewComboBox.ComboBox.DataSource = model.TreeViewCategories;
+                updateFlag = false;
+            };
+        }
+
+        private void SetupColors()
+        {
             testTree.SetPassedColor(model.PassedColor);
             model.PassedColor.PropertyChanged += (s, e) => testTree.SetPassedColor(model.PassedColor);
             
@@ -49,59 +137,6 @@ namespace Gallio.Icarus.TestExplorer
             
             testTree.SetSkippedColor(model.SkippedColor);
             model.SkippedColor.PropertyChanged += (s, e) => testTree.SetSkippedColor(model.SkippedColor);
-
-            if (treeViewComboBox.ComboBox != null)
-            {
-                updateFlag = true;
-                treeViewComboBox.ComboBox.DataSource = model.TreeViewCategories.Value;
-                updateFlag = false;
-                treeViewComboBox.ComboBox.SelectedItem = model.CurrentTreeViewCategory;
-            }
-
-            model.TreeViewCategories.PropertyChanged += (s, e) =>
-            {
-                if (treeViewComboBox.ComboBox == null) 
-                    return;
-
-                updateFlag = true;
-                treeViewComboBox.ComboBox.DataSource = model.TreeViewCategories;
-                updateFlag = false;
-            };
-
-            testTree.Model = model.TreeModel;
-
-            controller.RestoreState += (s,e) => RestoreState();
-
-            model.CanEditTree.PropertyChanged += (s, e) => testTree.SetEditEnabled(model.CanEditTree);
-
-            filterPassedTestsToolStripMenuItem.Click += (s, e) => FilterStatus(TestStatus.Passed);
-            filterPassedTestsToolStripButton.Click += (s, e) => FilterStatus(TestStatus.Passed);
-            model.FilterPassed.PropertyChanged += (s, e) => 
-            {
-                filterPassedTestsToolStripMenuItem.Checked = filterPassedTestsToolStripButton.Checked 
-                    = model.FilterPassed.Value;
-            };
-
-            filterFailedTestsToolStripMenuItem.Click += (s, e) => FilterStatus(TestStatus.Failed);
-            filterFailedTestsToolStripButton.Click += (s, e) => FilterStatus(TestStatus.Failed);
-            model.FilterFailed.PropertyChanged += (s, e) =>
-            {
-                filterFailedTestsToolStripMenuItem.Checked = filterFailedTestsToolStripButton.Checked 
-                    = model.FilterFailed.Value;
-            };
-
-            filterInconclusiveTestsToolStripMenuItem.Click += (s, e) => FilterStatus(TestStatus.Inconclusive);
-            filterInconclusiveTestsToolStripButton.Click += (s, e) => FilterStatus(TestStatus.Inconclusive);
-            model.FilterInconclusive.PropertyChanged += (s, e) =>
-            {
-                filterInconclusiveTestsToolStripMenuItem.Checked = filterInconclusiveTestsToolStripButton.Checked 
-                    = model.FilterInconclusive.Value;
-            };
-
-            sortAscToolStripButton.Click += (s, e) => SortTree(SortOrder.Ascending);
-            sortDescToolStripButton.Click += (s, e) => SortTree(SortOrder.Descending);
-
-            controller.SaveState += (s, e) => SaveState();
         }
 
         private void FilterStatus(TestStatus testStatus)

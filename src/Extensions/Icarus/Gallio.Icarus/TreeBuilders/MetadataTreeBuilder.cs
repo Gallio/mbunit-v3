@@ -47,9 +47,24 @@ namespace Gallio.Icarus.TreeBuilders
         private static void PopulateMetadataTree(IProgressMonitor progressMonitor, string metadataType,
             TestData testData, Node parentNode, TestTreeNode rootNode)
         {
-            var metadataList = testData.Metadata[metadataType];
+            TestDataNode testDataNode = AddMetadataNode(testData, metadataType, 
+                rootNode, parentNode);
 
+            foreach (var childTestData in testData.Children)
+            {
+                PopulateMetadataTree(progressMonitor, metadataType, childTestData,
+                    testDataNode, rootNode);
+            }
+
+            progressMonitor.Worked(1);
+        }
+
+        private static TestDataNode AddMetadataNode(TestData testData, string metadataType, 
+            TestTreeNode rootNode, Node parentNode)
+        {
             var testDataNode = new TestDataNode(testData);
+            
+            var metadataList = testData.Metadata[metadataType];
             if (metadataList.Count > 0)
             {
                 foreach (string metadata in metadataList)
@@ -67,14 +82,7 @@ namespace Gallio.Icarus.TreeBuilders
                 var metadataNode = FindOrAddMetadataNode(metadataType, rootNode, "None");
                 metadataNode.Nodes.Add(testDataNode);
             }
-
-            foreach (var childTestData in testData.Children)
-            {
-                PopulateMetadataTree(progressMonitor, metadataType, childTestData,
-                    testDataNode, rootNode);
-            }
-
-            progressMonitor.Worked(1);
+            return testDataNode;
         }
 
         private static TestTreeNode FindOrAddMetadataNode(string metadataType, 
