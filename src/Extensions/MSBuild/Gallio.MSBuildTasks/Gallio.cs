@@ -79,53 +79,21 @@ namespace Gallio.MSBuildTasks
     /// </example>
     public class Gallio : Task
     {
-        /// Internal comment. In the MSBuild the class name is also the custom task
-        /// name, so we named this class "Gallio" to make things easier to the user.
-
-        #region Private Members
-
-        private ITaskItem[] files;
-        private ITaskItem[] pluginDirectories;
-        private ITaskItem[] hintDirectories;
-
-        private ITaskItem applicationBaseDirectory;
-        private ITaskItem workingDirectory;
-        private bool? shadowCopy;
-        private bool? debug;
-        private string runtimeVersion;
-
-        private string filter = string.Empty;
-        private string[] reportTypes = EmptyArray<string>.Instance;
-        private string reportNameFormat;
-        private ITaskItem reportDirectory;
-        private string runnerType;
-        private string[] runnerExtensions = EmptyArray<string>.Instance;
-        private bool ignoreFailures;
-        private bool showReports;
-        private bool doNotRun;
-        private bool ignoreAnnotations;
-        private bool echoResults = true;
         private TimeSpan? runTimeLimit;
         private Verbosity verbosity = Runtime.Logging.Verbosity.Normal;
 
-        private string[] runnerProperties = EmptyArray<string>.Instance;
-        private string[] reportFormatterProperties = EmptyArray<string>.Instance;
-
-        private int exitCode;
-
-        private int assertCount;
-        private double duration;
-        private int failedCount;
-        private int inconclusiveCount;
-        private int passedCount;
-        private int runCount;
-        private int skippedCount;
-        private int stepCount;
-        private int testCount;
-
-        #endregion
-
-        #region Public Properties
+        /// <summary>
+        /// Default constructor.
+        /// </summary>
+        public Gallio()
+        {
+            EchoResults = true;
+            Filter = string.Empty;
+            ReportFormatterProperties = EmptyArray<string>.Instance;
+            RunnerProperties = EmptyArray<string>.Instance;
+            RunnerExtensions = EmptyArray<string>.Instance;
+            ReportTypes = EmptyArray<string>.Instance;
+        }
 
         /// <summary>
         /// The list of relative or absolute paths of test files, projects and assemblies to execute.
@@ -151,7 +119,8 @@ namespace Gallio.MSBuildTasks
         [Required]
         public ITaskItem[] Files
         {
-            set { files = value; }
+            private get;
+            set;
         }
 
         /// <summary>
@@ -172,7 +141,8 @@ namespace Gallio.MSBuildTasks
         /// </example>
         public ITaskItem[] HintDirectories
         {
-            set { hintDirectories = value; }
+            private get;
+            set;
         }
 
         /// <summary>
@@ -193,7 +163,8 @@ namespace Gallio.MSBuildTasks
         /// </example>
         public ITaskItem[] PluginDirectories
         {
-            set { pluginDirectories = value; }
+            private get;
+            set;
         }
 
         /// <summary>
@@ -211,7 +182,8 @@ namespace Gallio.MSBuildTasks
         /// </summary>
         public ITaskItem ApplicationBaseDirectory
         {
-            set { applicationBaseDirectory = value; }
+            private get;
+            set;
         }
 
         /// <summary>
@@ -229,7 +201,8 @@ namespace Gallio.MSBuildTasks
         /// </summary>
         public ITaskItem WorkingDirectory
         {
-            set { workingDirectory = value; }
+            private get;
+            set;
         }
 
         /// <summary>
@@ -244,9 +217,10 @@ namespace Gallio.MSBuildTasks
         /// The default is false.
         /// </para>
         /// </summary>
-        public bool ShadowCopy
+        public bool? ShadowCopy
         {
-            set { shadowCopy = value; }
+            private get;
+            set;
         }
 
         /// <summary>
@@ -257,9 +231,10 @@ namespace Gallio.MSBuildTasks
         /// The default is false.
         /// </para>
         /// </summary>
-        public bool Debug
+        public bool? Debug
         {
-            set { debug = value; }
+            private get;
+            set;
         }
 
         /// <summary>
@@ -275,7 +250,8 @@ namespace Gallio.MSBuildTasks
         /// </summary>
         public string RuntimeVersion
         {
-            set { runtimeVersion = value; }
+            private get;
+            set;
         }
 
         /// <summary>
@@ -283,8 +259,8 @@ namespace Gallio.MSBuildTasks
         /// </summary>
         /// <remarks>
         /// <list type="bullet">
-        /// <item>The types supported "out of the box" are: Html, Html-Inline, Text, XHtml,
-        /// XHtml-Inline, Xml, and Xml-Inline, but more types could be available as plugins.</item>
+        /// <item>The types supported "out of the box" are: Html, Html-Condensed, Text, Text-Condendes, XHtml,
+        /// XHtml-Condensed, MHtml, MHtml-CondensedXml, and Xml-Inline, but more types could be available as plugins.</item>
         /// <item>The report types are not case sensitive.</item>
         /// </list>
         /// </remarks>
@@ -300,7 +276,36 @@ namespace Gallio.MSBuildTasks
         /// </example>
         public string[] ReportTypes
         {
-            set { reportTypes = value; }
+            private get;
+            set;
+        }
+
+        /// <summary>
+        /// Sets the report archive mode.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// The supported modes are:
+        /// <list type="bullet">
+        /// <item>Normal (default)</item>
+        /// <item>Zip</item>
+        /// </list>
+        /// </para>
+        /// </remarks>
+        /// <example>
+        /// In the following example reports will be generated in both HTML and XML format:
+        /// <code>
+        /// <![CDATA[
+        /// <Target Name="MyTarget">
+        ///     <Gallio ReportArchive="zip" />
+        /// </Target>
+        /// ]]>
+        /// </code>
+        /// </example>
+        public string ReportArchive
+        {
+            private get;
+            set;
         }
 
         /// <summary>
@@ -312,7 +317,8 @@ namespace Gallio.MSBuildTasks
         /// </remarks>
         public string ReportNameFormat
         {
-            set { reportNameFormat = value; }
+            private get;
+            set;
         }
 
         /// <summary>
@@ -324,7 +330,8 @@ namespace Gallio.MSBuildTasks
         /// </remarks>
         public ITaskItem ReportDirectory
         {
-            set { reportDirectory = value; }
+            private get;
+            set;
         }
 
         /// <summary>
@@ -339,7 +346,8 @@ namespace Gallio.MSBuildTasks
         /// </remarks>
         public string RunnerType
         {
-            set { runnerType = value; }
+            private get;
+            set;
         }
 
         /// <summary>
@@ -370,7 +378,8 @@ namespace Gallio.MSBuildTasks
         /// </example>
         public string[] RunnerExtensions
         {
-            set { runnerExtensions = value; }
+            private get;
+            set;
         }
 
         /// <summary>
@@ -389,7 +398,8 @@ namespace Gallio.MSBuildTasks
         /// </example>
         public string[] RunnerProperties
         {
-            set { runnerProperties = value; }
+            private get;
+            set;
         }
 
         /// <summary>
@@ -407,7 +417,8 @@ namespace Gallio.MSBuildTasks
         /// </example>
         public string[] ReportFormatterProperties
         {
-            set { reportFormatterProperties = value; }
+            private get;
+            set;
         }
 
         /// <summary>
@@ -421,7 +432,8 @@ namespace Gallio.MSBuildTasks
         /// </example>
         public string Filter
         {
-            set { filter = value; }
+            private get;
+            set;
         }
 
         /// <summary>
@@ -430,7 +442,8 @@ namespace Gallio.MSBuildTasks
         /// </summary>
         public bool IgnoreFailures
         {
-            set { ignoreFailures = value; }
+            private get;
+            set;
         }
 
         /// <summary>
@@ -439,7 +452,8 @@ namespace Gallio.MSBuildTasks
         /// </summary>
         public bool ShowReports
         {
-            set { showReports = value; }
+            private get;
+            set;
         }
 
         /// <summary>
@@ -448,7 +462,8 @@ namespace Gallio.MSBuildTasks
         /// </summary>
         public bool DoNotRun
         {
-            set { doNotRun = value; }
+            private get;
+            set;
         }
 
         /// <summary>
@@ -460,7 +475,8 @@ namespace Gallio.MSBuildTasks
         /// </summary>
         public bool IgnoreAnnotations
         {
-            set { ignoreAnnotations = value; }
+            private get;
+            set;
         }
 
         /// <summary>
@@ -471,7 +487,8 @@ namespace Gallio.MSBuildTasks
         /// </summary>
         public bool EchoResults
         {
-            set { echoResults = value; }
+            private get;
+            set;
         }
 
         /// <summary>
@@ -480,7 +497,10 @@ namespace Gallio.MSBuildTasks
         /// </summary>
         public double RunTimeLimit
         {
-            set { runTimeLimit = TimeSpan.FromSeconds(value); }
+            set
+            {
+                runTimeLimit = TimeSpan.FromSeconds(value);
+            }
         }
 
         /// <summary>
@@ -488,7 +508,10 @@ namespace Gallio.MSBuildTasks
         /// </summary>
         public string Verbosity
         {
-            set { verbosity = (Verbosity) Enum.Parse(typeof(Verbosity), value); }
+            set
+            {
+                verbosity = (Verbosity)Enum.Parse(typeof(Verbosity), value);
+            }
         }
 
         /// <summary>
@@ -516,7 +539,8 @@ namespace Gallio.MSBuildTasks
         [Output]
         public int ExitCode
         {
-            get { return exitCode; }
+            get;
+            private set;
         }
 
         /// <summary>
@@ -541,7 +565,8 @@ namespace Gallio.MSBuildTasks
         [Output]
         public int TestCount
         {
-            get { return testCount; }
+            get;
+            private set;
         }
 
         /// <summary>
@@ -566,7 +591,8 @@ namespace Gallio.MSBuildTasks
         [Output]
         public int StepCount
         {
-            get { return stepCount; }
+            get;
+            private set;
         }
 
         /// <summary>
@@ -591,7 +617,8 @@ namespace Gallio.MSBuildTasks
         [Output]
         public int PassedCount
         {
-            get { return passedCount; }
+            get;
+            private set;
         }
 
         /// <summary>
@@ -616,7 +643,8 @@ namespace Gallio.MSBuildTasks
         [Output]
         public int FailedCount
         {
-            get { return failedCount; }
+            get;
+            private set;
         }
 
         /// <summary>
@@ -641,7 +669,8 @@ namespace Gallio.MSBuildTasks
         [Output]
         public int InconclusiveCount
         {
-            get { return inconclusiveCount; }
+            get;
+            private set;
         }
 
         /// <summary>
@@ -666,7 +695,8 @@ namespace Gallio.MSBuildTasks
         [Output]
         public int RunCount
         {
-            get { return runCount; }
+            get;
+            private set;
         }
 
         /// <summary>
@@ -691,7 +721,8 @@ namespace Gallio.MSBuildTasks
         [Output]
         public int SkippedCount
         {
-            get { return skippedCount; }
+            get;
+            private set;
         }
 
         /// <summary>
@@ -716,7 +747,8 @@ namespace Gallio.MSBuildTasks
         [Output]
         public double Duration
         {
-            get { return duration; }
+            get;
+            private set;
         }
 
         /// <summary>
@@ -741,12 +773,9 @@ namespace Gallio.MSBuildTasks
         [Output]
         public int AssertCount
         {
-            get { return assertCount; }
+            get;
+            private set;
         }
-
-        #endregion
-
-        #region Public Methods
 
         /// <inheritdoc />
         public override bool Execute()
@@ -763,82 +792,73 @@ namespace Gallio.MSBuildTasks
             }
         }
 
-        #endregion
-
-        #region Private Methods
-
         internal bool InternalExecute()
         {
             DisplayVersion();
-
             var logger = new FilteredLogger(new TaskLogger(Log), verbosity);
-
-            TestLauncher launcher = new TestLauncher();
+            var launcher = new TestLauncher();
             launcher.Logger = logger;
             launcher.ProgressMonitorProvider = new LogProgressMonitorProvider(logger);
             launcher.TestExecutionOptions.FilterSet = GetFilterSet();
-            launcher.ShowReports = showReports;
-            launcher.DoNotRun = doNotRun;
-            launcher.IgnoreAnnotations = ignoreAnnotations;
+            launcher.ShowReports = ShowReports;
+            launcher.DoNotRun = DoNotRun;
+            launcher.IgnoreAnnotations = IgnoreAnnotations;
             launcher.RunTimeLimit = runTimeLimit;
-
             launcher.RuntimeSetup = new RuntimeSetup();
 
             // Set the installation path explicitly to the path of the MSBuild task assembly
             // since otherwise we will look at the path of MSBuild.exe.
             launcher.RuntimeSetup.RuntimePath = Path.GetDirectoryName(AssemblyUtils.GetFriendlyAssemblyLocation(typeof(Gallio).Assembly));
 
-            if (echoResults)
+            if (EchoResults)
                 launcher.TestProject.AddTestRunnerExtension(new TaskLogExtension(Log));
-
-            if (applicationBaseDirectory != null)
-                launcher.TestProject.TestPackage.ApplicationBaseDirectory = new DirectoryInfo(applicationBaseDirectory.ItemSpec);
-            if (workingDirectory != null)
-                launcher.TestProject.TestPackage.WorkingDirectory = new DirectoryInfo(workingDirectory.ItemSpec);
-            if (shadowCopy.HasValue)
-                launcher.TestProject.TestPackage.ShadowCopy = shadowCopy.Value;
-            if (debug.HasValue && debug.Value)
+            if (ApplicationBaseDirectory != null)
+                launcher.TestProject.TestPackage.ApplicationBaseDirectory = new DirectoryInfo(ApplicationBaseDirectory.ItemSpec);
+            if (WorkingDirectory != null)
+                launcher.TestProject.TestPackage.WorkingDirectory = new DirectoryInfo(WorkingDirectory.ItemSpec);
+            if (ShadowCopy.HasValue)
+                launcher.TestProject.TestPackage.ShadowCopy = ShadowCopy.Value;
+            if (Debug.HasValue && Debug.Value)
                 launcher.TestProject.TestPackage.DebuggerSetup = new DebuggerSetup();
-            if (runtimeVersion != null)
-                launcher.TestProject.TestPackage.RuntimeVersion = runtimeVersion;
+            if (RuntimeVersion != null)
+                launcher.TestProject.TestPackage.RuntimeVersion = RuntimeVersion;
 
-            foreach (string option in reportFormatterProperties)
+            foreach (string option in ReportFormatterProperties)
             {
                 KeyValuePair<string, string> pair = StringUtils.ParseKeyValuePair(option);
                 launcher.ReportFormatterOptions.AddProperty(pair.Key, pair.Value);
             }
 
-            foreach (string option in runnerProperties)
+            foreach (string option in RunnerProperties)
             {
                 KeyValuePair<string, string> pair = StringUtils.ParseKeyValuePair(option);
                 launcher.TestRunnerOptions.AddProperty(pair.Key, pair.Value);
             }
 
-            ForEachItemSpec(files, x => launcher.AddFilePattern(x));
-            ForEachItemSpec(hintDirectories, x => launcher.TestProject.TestPackage.AddHintDirectory(new DirectoryInfo(x)));
-            ForEachItemSpec(pluginDirectories, x => launcher.RuntimeSetup.AddPluginDirectory(x));
+            ForEachItemSpec(Files, launcher.AddFilePattern);
+            ForEachItemSpec(HintDirectories, x => launcher.TestProject.TestPackage.AddHintDirectory(new DirectoryInfo(x)));
+            ForEachItemSpec(PluginDirectories, x => launcher.RuntimeSetup.AddPluginDirectory(x));
 
-            if (reportDirectory != null)
-                launcher.TestProject.ReportDirectory = reportDirectory.ItemSpec;
-            if (reportNameFormat != null)
-                launcher.TestProject.ReportNameFormat = reportNameFormat;
-            if (reportTypes != null)
-                GenericCollectionUtils.ForEach(reportTypes, x => launcher.AddReportFormat(x));
-
-            if (runnerType != null)
-                launcher.TestProject.TestRunnerFactoryName = runnerType;
-            if (runnerExtensions != null)
-                GenericCollectionUtils.ForEach(runnerExtensions, x => launcher.TestProject.AddTestRunnerExtensionSpecification(x));
+            if (ReportDirectory != null)
+                launcher.TestProject.ReportDirectory = ReportDirectory.ItemSpec;
+            if (ReportNameFormat != null)
+                launcher.TestProject.ReportNameFormat = ReportNameFormat;
+            if (ReportTypes != null)
+                GenericCollectionUtils.ForEach(ReportTypes, launcher.AddReportFormat);
+            if (ReportArchive != null)
+                launcher.TestProject.ReportArchive = Runner.Reports.ReportArchive.Parse(ReportArchive);
+            if (RunnerType != null)
+                launcher.TestProject.TestRunnerFactoryName = RunnerType;
+            if (RunnerExtensions != null)
+                GenericCollectionUtils.ForEach(RunnerExtensions, x => launcher.TestProject.AddTestRunnerExtensionSpecification(x));
 
             TestLauncherResult result = RunLauncher(launcher);
-            exitCode = result.ResultCode;
-
+            ExitCode = result.ResultCode;
             LogResultSummary(logger, result);
             PopulateStatistics(result);
-
-            return exitCode == ResultCode.Success ||
-                   exitCode == ResultCode.NoTests ||
-                   ignoreFailures;
+            return ExitCode == ResultCode.Success 
+                || ExitCode == ResultCode.NoTests 
+                || IgnoreFailures;
         }
 
         /// <exclude />
@@ -853,15 +873,15 @@ namespace Gallio.MSBuildTasks
         private void PopulateStatistics(TestLauncherResult result)
         {
             Statistics stats = result.Statistics;
-            assertCount = stats.AssertCount;
-            duration = stats.Duration;
-            failedCount = stats.FailedCount;
-            inconclusiveCount = stats.InconclusiveCount;
-            passedCount = stats.PassedCount;
-            skippedCount = stats.SkippedCount;
-            runCount = stats.RunCount;
-            stepCount = stats.StepCount;
-            testCount = stats.TestCount;
+            AssertCount = stats.AssertCount;
+            Duration = stats.Duration;
+            FailedCount = stats.FailedCount;
+            InconclusiveCount = stats.InconclusiveCount;
+            PassedCount = stats.PassedCount;
+            SkippedCount = stats.SkippedCount;
+            RunCount = stats.RunCount;
+            StepCount = stats.StepCount;
+            TestCount = stats.TestCount;
         }
 
         private static void LogResultSummary(ILogger logger, TestLauncherResult result)
@@ -880,12 +900,12 @@ namespace Gallio.MSBuildTasks
 
         private FilterSet<ITestDescriptor> GetFilterSet()
         {
-            if (String.IsNullOrEmpty(filter))
+            if (String.IsNullOrEmpty(Filter))
             {
                 return FilterSet<ITestDescriptor>.Empty;
             }
 
-            return FilterUtils.ParseTestFilterSet(filter);
+            return FilterUtils.ParseTestFilterSet(Filter);
         }
 
         private void DisplayVersion()
@@ -902,7 +922,5 @@ namespace Gallio.MSBuildTasks
                     action(item.ItemSpec);
             }
         }
-
-        #endregion
     }
 }
