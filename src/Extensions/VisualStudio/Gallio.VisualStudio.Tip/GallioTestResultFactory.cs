@@ -15,7 +15,9 @@
 
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
@@ -129,10 +131,10 @@ namespace Gallio.VisualStudio.Tip
                 {
                     if (collectorEntry != null)
                     {
-                        TextAttachment gallioTextAttachment = CreateTextAttachmentData(collectorEntry);
-                        if(gallioTextAttachment != null)
+                        var attachmentData = CreateAttachmentData(collectorEntry);
+                        if(attachmentData != null)
                         {
-                            run.TestLog.Attachments.Add(gallioTextAttachment.ToAttachmentData());
+                            run.TestLog.Attachments.Add(attachmentData.ToAttachmentData());
                         }
                     }
                 }                
@@ -147,27 +149,104 @@ namespace Gallio.VisualStudio.Tip
         /// </summary>
         /// <param name="collectorEntry">A VSTS data collector.</param>
         /// <returns>Gallio attachment instance.</returns>
-        private static TextAttachment CreateTextAttachmentData(CollectorDataEntry collectorEntry)
+        private static Attachment CreateAttachmentData(CollectorDataEntry collectorEntry)
         {
-            TextAttachment textAttachment = null;
+            Attachment attachment = null;
             
-            UriDataAttachment vstsAttachment = (UriDataAttachment)collectorEntry.Attachments[0];
+            var vstsAttachment = (UriDataAttachment)collectorEntry.Attachments[0];
+
             if (vstsAttachment != null)
             {
-                StringBuilder sb = new StringBuilder();
-                using (StreamReader sr = new StreamReader(vstsAttachment.Uri.LocalPath))
-                {
-                    String line;           
-                    while ((line = sr.ReadLine()) != null)
-                    {
-                        sb.AppendLine(line);
-                    }
-                }
+                var file = vstsAttachment.Uri.Segments.Last();
+                var fileEx = file.Substring(file.Length - 4, 4);
 
-                textAttachment = Attachment.CreateXmlAttachment(vstsAttachment.Description, sb.ToString());             
+                switch(fileEx)
+                {
+                    case ".png":
+                        attachment = GetImageAttachment(vstsAttachment);
+                        break;
+                    case ".jpg":
+                        attachment = GetImageAttachment(vstsAttachment);
+                        break;
+                    case ".gif":
+                        attachment = GetImageAttachment(vstsAttachment);
+                        break;
+                    case ".txt":
+                        attachment = GetTextAttachment(vstsAttachment);
+                        break;
+                    case ".xml":
+                        attachment = GetXmlAttachment(vstsAttachment);
+                        break;
+                    case ".htm":
+                        attachment = GetHtmlAttachment(vstsAttachment);
+                        break;
+                    default :
+                        attachment = GetBinaryAttachment(vstsAttachment, fileEx);
+                        break;
+
+                }
+               
             }
-            return textAttachment;
+            return attachment;
         }
+
+        private static Attachment GetBinaryAttachment(UriDataAttachment vstsAttachment, string fileEx)
+        {
+            var mem = new MemoryStream();
+            var f = new FileStream(vstsAttachment.Uri.LocalPath, FileMode.Open, FileAccess.Read);
+            f.Read(mem.GetBuffer(), 0, (int)f.Length);
+
+            var binaryAttachment = new BinaryAttachment(vstsAttachment.Description, MimeTypes.GetMimeTypeByExtension(fileEx), mem.ToArray());
+                
+            f.Close();
+            mem.Close();
+
+            return binaryAttachment;
+        }
+
+        private static BinaryAttachment GetImageAttachment(UriDataAttachment vstsAttachment)
+        {
+            var image = Image.FromFile(vstsAttachment.Uri.LocalPath);
+                
+            return Attachment.CreateImageAttachment(vstsAttachment.Description, image);
+        }
+
+        private static TextAttachment GetXmlAttachment(UriDataAttachment vstsAttachment)
+        {
+            var sb = GetFileAsString(vstsAttachment);
+
+            return Attachment.CreateXmlAttachment(vstsAttachment.Description, sb.ToString());
+          
+        }
+
+        private static TextAttachment GetTextAttachment(UriDataAttachment vstsAttachment)
+        {
+            var sb = GetFileAsString(vstsAttachment);
+
+            return Attachment.CreatePlainTextAttachment(vstsAttachment.Description, sb.ToString());
+        }
+
+        private static TextAttachment GetHtmlAttachment(UriDataAttachment vstsAttachment)
+        {
+            var sb = GetFileAsString(vstsAttachment);
+
+            return Attachment.CreateHtmlAttachment(vstsAttachment.Description, sb.ToString());
+        }
+
+        private static StringBuilder GetFileAsString(UriDataAttachment vstsAttachment)
+        {
+            var sb = new StringBuilder();
+            using (var sr = new StreamReader(vstsAttachment.Uri.LocalPath))
+            {
+                String line;
+                while ((line = sr.ReadLine()) != null)
+                {
+                    sb.AppendLine(line);
+                }
+            }
+            return sb;
+        }
+
 #endif
 
         /// <summary>
