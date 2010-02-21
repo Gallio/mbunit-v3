@@ -2,6 +2,7 @@
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Events;
 using Gallio.Icarus.Models;
+using Gallio.Icarus.Specifications;
 
 namespace Gallio.Icarus.Search
 {
@@ -10,21 +11,23 @@ namespace Gallio.Icarus.Search
         private readonly IModel model;
         private readonly IEventAggregator eventAggregator;
         private readonly IOptionsController optionsController;
+        private readonly ISpecificationFactory specificationFactory;
 
-        public Controller(IModel model, IEventAggregator eventAggregator, 
-            IOptionsController optionsController)
+        public Controller(IModel model, IEventAggregator eventAggregator, IOptionsController optionsController, 
+            ISpecificationFactory specificationFactory)
         {
             this.model = model;
             this.eventAggregator = eventAggregator;
             this.optionsController = optionsController;
+            this.specificationFactory = specificationFactory;
 
             UpdateMetadataOptions();
         }
 
-        public void Search(string searchText, string metadataType)
+        public void Search(string metadataType, string searchText)
         {
-            var treeSpec = new TreeNodeSpecification(searchText, metadataType);
-            var filterTreeEvent = new FilterTreeEvent(treeSpec);
+            var specification = specificationFactory.Create(metadataType, searchText);
+            var filterTreeEvent = new FilterTreeEvent(specification);
             eventAggregator.Send(filterTreeEvent);
         }
 
@@ -36,7 +39,9 @@ namespace Gallio.Icarus.Search
         private void UpdateMetadataOptions()
         {
             var settings = optionsController.GetCurrentSettings();
-            model.Metadata.Value = new List<string>(settings.TreeViewCategories);
+            var metadata = new List<string>{ "Name" };
+            metadata.AddRange(settings.TreeViewCategories);
+            model.Metadata.Value = metadata;
         }
     }
 }

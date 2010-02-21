@@ -78,5 +78,10 @@ namespace Gallio.Icarus.Models.TestTreeNodes
         {
             get { return testData.IsTestCase; }
         }
+
+        public CodeReference CodeReference
+        {
+            get { return testData.CodeReference; }
+        }
     }
 }

@@ -9,7 +9,7 @@ namespace Gallio.Icarus.Search
 
         public Model()
         {
-            Metadata = new Observable<IList<string>>(new List<string>());
+            Metadata = new Observable<IList<string>>(new List<string> { "Name" });
         }
     }
 }

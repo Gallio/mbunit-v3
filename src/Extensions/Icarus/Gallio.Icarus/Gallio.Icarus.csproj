@@ -107,7 +107,12 @@
     <Compile Include="Commands\ReloadCommand.cs" />
     <Compile Include="Events\OptionsChanged.cs" />
     <Compile Include="Search\IModel.cs" />
+    <Compile Include="Specifications\MetadataSpecification.cs" />
+    <Compile Include="Specifications\NameSpecification.cs" />
+    <Compile Include="Specifications\ISpecificationFactory.cs" />
     <Compile Include="Search\Model.cs" />
+    <Compile Include="Specifications\NamespaceSpecification.cs" />
+    <Compile Include="Specifications\SpecificationFactory.cs" />
     <Compile Include="TestResults\TestResults.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -287,7 +292,6 @@
       <DependentUpon>View.cs</DependentUpon>
     </Compile>
     <Compile Include="Search\Package.cs" />
-    <Compile Include="Search\TreeNodeSpecification.cs" />
     <Compile Include="Specifications\AnySpecification.cs" />
     <Compile Include="Specifications\Specification.cs" />
     <Compile Include="Specifications\OrSpecification.cs" />

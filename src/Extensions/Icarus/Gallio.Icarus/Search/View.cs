@@ -37,7 +37,7 @@ namespace Gallio.Icarus.Search
 
         private void Search()
         {
-            controller.Search(searchTextBox.Text, (string)metadataComboBox.SelectedItem);
+            controller.Search((string)metadataComboBox.SelectedItem, searchTextBox.Text);
         }
 
         private void metadataComboBox_SelectedIndexChanged(object sender, System.EventArgs e)

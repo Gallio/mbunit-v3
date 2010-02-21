@@ -125,7 +125,11 @@
     <Compile Include="SettingsTest.cs" />
     <Compile Include="Specifications\AnySpecificationTest.cs" />
     <Compile Include="Specifications\AndSpecificationTest.cs" />
+    <Compile Include="Specifications\MetadataSpecificationTest.cs" />
+    <Compile Include="Specifications\NameSpecificationTest.cs" />
+    <Compile Include="Specifications\NamespaceSpecificationTest.cs" />
     <Compile Include="Specifications\OrSpecificationTest.cs" />
+    <Compile Include="Specifications\SpecificationFactoryTest.cs" />
     <Compile Include="TestExplorer\ControllerTest.cs" />
     <Compile Include="TestResults\TestStepComparerTest.cs" />
     <Compile Include="TreeBuilders\MetadataTreeBuilderTests.cs" />

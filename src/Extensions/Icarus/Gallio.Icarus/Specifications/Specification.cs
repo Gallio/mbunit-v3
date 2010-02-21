@@ -13,6 +13,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
+
 namespace Gallio.Icarus.Specifications
 {
     public abstract class Specification<T> : ISpecification<T>
@@ -27,6 +29,11 @@ namespace Gallio.Icarus.Specifications
         public ISpecification<T> Or(ISpecification<T> right)
         {
             return new OrSpecification<T>(this, right);
+        }
+
+        protected static bool CaseInsensitiveContains(string toSearch, string toFind)
+        {
+            return toSearch.IndexOf(toFind, StringComparison.OrdinalIgnoreCase) >= 0;
         }
     }
 }
