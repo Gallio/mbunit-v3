@@ -46,7 +46,12 @@ namespace Gallio.UI.Menus
         /// </summary>
         public string Text { get; set; }
 
-        // TODO: icons & shortcuts
+        ///<summary>
+        /// The shortcut to use for the command.
+        ///</summary>
+        public string Shortcut { get; set; }
+
+        // TODO: icons
 
         /// <summary>
         /// Default constructor.

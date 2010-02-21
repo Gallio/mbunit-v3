@@ -24,6 +24,8 @@ namespace Gallio.UI.Controls
     /// </summary>
     public sealed class CommandToolStripMenuItem : System.Windows.Forms.ToolStripMenuItem
     {
+        private readonly ShortcutKeysParser shortcutKeysParser = new ShortcutKeysParser();
+
         ///<summary>
         /// Constructor providing a menu command.
         ///</summary>
@@ -36,6 +38,9 @@ namespace Gallio.UI.Controls
             command.CanExecute.PropertyChanged += (s, e) => Enabled = command.CanExecute;
 
             Click += (s, e) => command.Command.Execute(NullProgressMonitor.CreateInstance());
+
+            if (!string.IsNullOrEmpty(command.Shortcut))
+                ShortcutKeys = shortcutKeysParser.Parse(command.Shortcut.Replace(" ", ""));
         }
 
         /// <summary>
