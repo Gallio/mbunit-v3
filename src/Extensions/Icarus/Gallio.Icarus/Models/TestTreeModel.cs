@@ -423,7 +423,7 @@ namespace Gallio.Icarus.Models
                             }
                             else if (node is MetadataNode && node.Name != "None")
                             {
-                                filters.Add(new MetadataFilter<ITestDescriptor>(node.Name, equalityFilter));
+                                filters.Add(new MetadataFilter<ITestDescriptor>(node.TestKind, equalityFilter));
                             }
                             else
                             {
