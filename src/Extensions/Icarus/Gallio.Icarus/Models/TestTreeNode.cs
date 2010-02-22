@@ -23,12 +23,12 @@ namespace Gallio.Icarus.Models
 {
     public class TestTreeNode : ThreeStateNode, IComparable<TestTreeNode>
     {
-        private TestStatus testStatus = TestStatus.Skipped;
+        private TestStatus? testStatus;
         private readonly List<TestStepRun> testStepRuns = new List<TestStepRun>();
 
         public virtual string Id { get; private set; }
 
-        public TestStatus TestStatus
+        public TestStatus? TestStatus
         {
             get
             {
@@ -44,29 +44,36 @@ namespace Gallio.Icarus.Models
 
         public virtual string TestKind { get; set; }
 
-        private TestStatus SiblingTestStatus
+        private TestStatus? GetSiblingTestStatus()
         {
-            get
+            if (NodeHasNoSiblings())
+                return TestStatus;
+
+            TestStatus? siblingTestStatus = null;
+            
+            foreach (var node in Parent.Nodes)
             {
-                if (Parent == null || Parent.Nodes.Count == 1)
-                    return TestStatus;
-
-                var ts = TestStatus.Skipped;
-                foreach (var node in Parent.Nodes)
-                {
-                    var child = node as TestTreeNode;
-                    if (child == null)
-                        continue;
-
-                    if (child.TestStatus == TestStatus.Failed)
-                        return TestStatus.Failed;
-                    if (child.TestStatus == TestStatus.Inconclusive)
-                        ts = TestStatus.Inconclusive;
-                    if (child.TestStatus == TestStatus.Passed && ts != TestStatus.Inconclusive)
-                        ts = TestStatus.Passed;
-                }
-                return ts;
+                siblingTestStatus = EvaluateTestStatus(node, siblingTestStatus);
             }
+            return siblingTestStatus;
+        }
+
+        private static TestStatus? EvaluateTestStatus(Node node, TestStatus? siblingTestStatus)
+        {
+            var child = node as TestTreeNode;
+            
+            if (child == null || child.TestStatus == null)
+                return siblingTestStatus;
+
+            if (child.TestStatus > siblingTestStatus || siblingTestStatus == null)
+                siblingTestStatus = child.TestStatus.Value;
+
+            return siblingTestStatus;
+        }
+
+        private bool NodeHasNoSiblings()
+        {
+            return Parent == null || Parent.Nodes.Count == 1;
         }
 
         public List<TestStepRun> TestStepRuns
@@ -116,7 +123,7 @@ namespace Gallio.Icarus.Models
         {
             var parent = Parent as TestTreeNode;
             if (parent != null)
-                parent.TestStatus = SiblingTestStatus;
+                parent.TestStatus = GetSiblingTestStatus();
         }
 
         public void AddTestStepRun(TestStepRun testStepRun)
@@ -130,7 +137,7 @@ namespace Gallio.Icarus.Models
 
         public void Reset()
         {
-            TestStatus = TestStatus.Skipped;
+            TestStatus = null;
 
             testStepRuns.Clear();
 

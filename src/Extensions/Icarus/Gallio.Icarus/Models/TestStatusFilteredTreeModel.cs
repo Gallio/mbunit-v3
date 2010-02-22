@@ -47,7 +47,13 @@ namespace Gallio.Icarus.Models
 
         private bool NodeShouldNotBeFiltered(TestTreeNode node)
         {
-            return node.TestKind != TestKinds.Test || !filteredStatuses.Contains(node.TestStatus);
+            if (node.TestKind != TestKinds.Test)
+                return true;
+
+            if (node.TestStatus.HasValue == false)
+                return true;
+
+            return !filteredStatuses.Contains(node.TestStatus.Value);
         }
 
         private IEnumerable GetChildrenFromBase(TreePath treePath)

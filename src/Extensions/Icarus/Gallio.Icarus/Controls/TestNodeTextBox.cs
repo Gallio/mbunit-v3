@@ -33,11 +33,11 @@ namespace Gallio.Icarus.Controls
                 case TestStatus.Failed:
                     args.TextColor = FailedColor;
                     break;
-                case TestStatus.Skipped:
-                    args.TextColor = SkippedColor;
-                    break;
                 case TestStatus.Inconclusive:
                     args.TextColor = InconclusiveColor;
+                    break;
+                default:
+                    args.TextColor = SkippedColor;
                     break;
             }
         }

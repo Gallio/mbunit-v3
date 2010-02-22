@@ -6,19 +6,21 @@ namespace Gallio.Icarus.Controls
 {
     public class NodeIcon<T> : NodeIcon where T : Node
     {
-        private readonly Func<T, object> dataPropertyName;
+        private readonly Func<T, object> getValue;
 
-        public NodeIcon(Func<T, object> dataPropertyName)
+        public NodeIcon(Func<T, object> getValue)
         {
-            this.dataPropertyName = dataPropertyName;
+            this.getValue = getValue;
         }
 
         public override object GetValue(TreeNodeAdv node)
         {
-            if (!(node.Tag is T))
+            var tag = node.Tag as T;
+
+            if (tag == null)
                 return null;
 
-            return dataPropertyName((T)node.Tag);
+            return getValue(tag);
         }
     }
 }

@@ -6,19 +6,21 @@ namespace Gallio.Icarus.Controls
 {
     public class NodeTextBox<T> : NodeTextBox where T : Node
     {
-        private readonly Func<T, object> dataPropertyName;
+        private readonly Func<T, object> getValue;
 
-        public NodeTextBox(Func<T, object> dataPropertyName)
+        public NodeTextBox(Func<T, object> getValue)
         {
-            this.dataPropertyName = dataPropertyName;
+            this.getValue = getValue;
         }
 
         public override object GetValue(TreeNodeAdv node)
         {
-            if (!(node.Tag is T))
+            var tag = node.Tag as T;
+
+            if (tag == null)
                 return null;
 
-            return dataPropertyName((T)node.Tag);
+            return getValue(tag);
         }
     }
 }

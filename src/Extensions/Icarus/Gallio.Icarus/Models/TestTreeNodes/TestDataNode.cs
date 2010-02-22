@@ -30,9 +30,20 @@ namespace Gallio.Icarus.Models.TestTreeNodes
         {
             this.testData = testData;
 
-            CheckState = testData.Metadata.ContainsKey(MetadataKeys.IgnoreReason) || 
-                testData.Metadata.ContainsKey(MetadataKeys.PendingReason) ? 
-                System.Windows.Forms.CheckState.Unchecked : System.Windows.Forms.CheckState.Checked;
+            if (TestIsIgnored(testData))
+            {
+                CheckState = System.Windows.Forms.CheckState.Unchecked;
+            }
+            else
+            {
+                CheckState = System.Windows.Forms.CheckState.Checked;
+            }
+        }
+
+        private static bool TestIsIgnored(TestComponentData testData)
+        {
+            return testData.Metadata.ContainsKey(MetadataKeys.IgnoreReason) || 
+                testData.Metadata.ContainsKey(MetadataKeys.PendingReason);
         }
 
         public string Name

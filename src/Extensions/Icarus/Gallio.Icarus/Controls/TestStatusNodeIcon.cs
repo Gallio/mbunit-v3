@@ -10,9 +10,7 @@ namespace Gallio.Icarus.Controls
     {
         public TestStatusNodeIcon()
             : base(ttn => ttn.TestStatus)
-        {
-            DataPropertyName = "TestStatus";
-        }
+        { }
 
         protected override Image GetIcon(TreeNodeAdv node)
         {
