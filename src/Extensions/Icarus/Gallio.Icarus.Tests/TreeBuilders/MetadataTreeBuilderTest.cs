@@ -21,7 +21,7 @@ using MbUnit.Framework;
 
 namespace Gallio.Icarus.Tests.TreeBuilders
 {
-    public class MetadataTreeBuilderTests
+    public class MetadataTreeBuilderTest
     {
         private TestModelData testModelData;
         private MetadataTreeBuilder metadataTreeBuilder;

@@ -25,7 +25,7 @@ using Rhino.Mocks;
 namespace Gallio.Icarus.Tests.ProgressMonitoring
 {
     [Category("ProgressMonitoring"), TestsOn(typeof(Win7TaskBar)), Author("Graham Hay")]
-    internal class Win7TaskBarTests
+    internal class Win7TaskBarTest
     {
         private IntPtr windowHandle;
         private ITaskbarList4 taskBarList;
