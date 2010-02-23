@@ -126,7 +126,8 @@
     <Compile Include="Controls\CommandToolStripMenuItem.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Controls\ShortcutKeysParser.cs" />
+    <Compile Include="Controls\IKeysParser.cs" />
+    <Compile Include="Controls\KeysParser.cs" />
     <Compile Include="Controls\ToolStripButton.cs">
       <SubType>Component</SubType>
     </Compile>

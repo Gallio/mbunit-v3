@@ -22,26 +22,15 @@ namespace Gallio.UI.Controls
     /// <summary>
     /// Extends the win forms ToolStripMenuItem to wrap a MenuCommand.
     /// </summary>
-    public sealed class CommandToolStripMenuItem : System.Windows.Forms.ToolStripMenuItem
+    public class CommandToolStripMenuItem : System.Windows.Forms.ToolStripMenuItem
     {
-        private readonly ShortcutKeysParser shortcutKeysParser = new ShortcutKeysParser();
-
         ///<summary>
         /// Constructor providing a menu command.
         ///</summary>
         ///<param name="command">The command to use.</param>
         public CommandToolStripMenuItem(MenuCommand command)
-        {
-            Text = command.Text;
-
-            Enabled = command.CanExecute;
-            command.CanExecute.PropertyChanged += (s, e) => Enabled = command.CanExecute;
-
-            Click += (s, e) => command.Command.Execute(NullProgressMonitor.CreateInstance());
-
-            if (!string.IsNullOrEmpty(command.Shortcut))
-                ShortcutKeys = shortcutKeysParser.Parse(command.Shortcut.Replace(" ", ""));
-        }
+            : this(command, null)
+        { }
 
         /// <summary>
         /// Constructor providing a command and task manager.
@@ -49,13 +38,28 @@ namespace Gallio.UI.Controls
         /// <param name="command">The command to use.</param>
         /// <param name="taskManager">The task manager to use.</param>
         public CommandToolStripMenuItem(MenuCommand command, ITaskManager taskManager)
-        {
+            : this(command, taskManager, new KeysParser())
+        { }
+
+        ///<summary>
+        /// Constructor providing a command, task manager and keys parser.
+        ///</summary>
+        ///<param name="command">The command to use.</param>
+        ///<param name="taskManager">The task manager to use.</param>
+        ///<param name="keysParser">The keys parser to use.</param>
+        public CommandToolStripMenuItem(MenuCommand command, ITaskManager taskManager, IKeysParser keysParser) {
             Text = command.Text;
 
             Enabled = command.CanExecute;
             command.CanExecute.PropertyChanged += (s, e) => Enabled = command.CanExecute;
 
-            Click += (s, e) => taskManager.QueueTask(command.Command);
+            if (taskManager != null)
+                Click += (s, e) => taskManager.QueueTask(command.Command);
+            else
+                Click += (s, e) => command.Command.Execute(NullProgressMonitor.CreateInstance());
+
+            if (!string.IsNullOrEmpty(command.Shortcut))
+                ShortcutKeys = keysParser.Parse(command.Shortcut.Replace(" ", ""));
         }
     }
 }

@@ -3,8 +3,10 @@ using System.Windows.Forms;
 
 namespace Gallio.UI.Controls
 {
-    internal class ShortcutKeysParser
+    /// <inheritdoc />
+    public class KeysParser : IKeysParser
     {
+        /// <inheritdoc />
         public Keys Parse(string shortcut)
         {
             if (String.IsNullOrEmpty(shortcut))
