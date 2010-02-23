@@ -23,7 +23,7 @@ using Rhino.Mocks;
 
 namespace Gallio.UI.Tests.Controls
 {
-    public class CommandToolStripMenuItemTests
+    public class CommandToolStripMenuItemTest
     {
         [Test]
         public void Menu_item_text_should_match_command()

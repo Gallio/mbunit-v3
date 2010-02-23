@@ -42,7 +42,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Controls\CommandToolStripMenuItemTests.cs" />
+    <Compile Include="Controls\CommandToolStripMenuItemTest.cs" />
+    <Compile Include="Controls\KeysParserTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
