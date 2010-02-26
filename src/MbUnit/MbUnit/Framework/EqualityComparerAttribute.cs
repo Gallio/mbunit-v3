@@ -66,13 +66,13 @@ namespace MbUnit.Framework
         /// <inheritdoc />
         protected override void Register(Type type, Func<object, object, object> operation)
         {
-            CustomEqualityComparers.Register(type, (x, y) => (bool)operation(x, y));
+            ExtensionPoints.CustomEqualityComparers.Register(type, (x, y) => (bool)operation(x, y));
         }
 
         /// <inheritdoc />
         protected override void Unregister(Type type)
         {
-            CustomEqualityComparers.Unregister(type);
+            ExtensionPoints.CustomEqualityComparers.Unregister(type);
         }
     }
 }

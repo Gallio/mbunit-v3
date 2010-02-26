@@ -101,7 +101,7 @@ namespace MbUnit.Framework
             AssertionHelper.Verify(() =>
             {
                 if (comparer == null)
-                    comparer = ComparisonSemantics.Equals;
+                    comparer = ComparisonSemantics.Default.Equals;
 
                 var duplicates = new List<T>();
                 int i = 0;

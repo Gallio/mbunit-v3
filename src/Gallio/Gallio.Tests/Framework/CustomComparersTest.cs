@@ -45,49 +45,56 @@ namespace Gallio.Tests.Framework
         [SetUp]
         public void Setup()
         {
-            CustomComparers.UnregisterAll();
+            var customComparers = new CustomComparers();
+            customComparers.UnregisterAll();
         }
 
         [Test]
         [ExpectedArgumentNullException]
         public void Registers_with_null_type_should_throw_exception()
         {
-            CustomComparers.Register(null, (x, y) => 0);
+            var customComparers = new CustomComparers();
+            customComparers.Register(null, (x, y) => 0);
         }
 
         [Test]
         [ExpectedArgumentNullException]
         public void Registers_with_null_comparer_should_throw_exception()
         {
-            CustomComparers.Register(typeof(Foo), null);
+            var customComparers = new CustomComparers();
+            customComparers.Register(typeof(Foo), null);
         }
 
         [Test]
         [ExpectedArgumentNullException]
         public void Generic_Registers_with_null_comparer_should_throw_exception()
         {
-            CustomComparers.Register<Foo>(null);
+            var customComparers = new CustomComparers();
+            customComparers.Register<Foo>(null);
         }
 
         [Test]
         [ExpectedArgumentNullException]
         public void Find_with_null_type_should_throw_exception()
         {
-            CustomComparers.Find(null);
+            var customComparers = new CustomComparers();
+            customComparers.Find(null);
         }
 
         [Test]
         public void Find_should_return_null_for_non_registered_type()
         {
-            var comparer = CustomComparers.Find(typeof(Foo));
+            var customComparers = new CustomComparers();
+            var comparer = customComparers.Find(typeof(Foo));
             Assert.IsNull(comparer);
         }
 
         [Test]
         public void IsRegisteredFor_should_return_true_for_registered_type()
         {
-            CustomComparers.Register<Foo>((x, y) => x.Value.CompareTo(y.Value));
-            Comparison comparer = CustomComparers.Find(typeof(Foo));
+            var customComparers = new CustomComparers();
+            customComparers.Register<Foo>((x, y) => x.Value.CompareTo(y.Value));
+            Comparison comparer = customComparers.Find(typeof(Foo));
             Assert.IsNotNull(comparer);
         }
 
@@ -97,8 +104,9 @@ namespace Gallio.Tests.Framework
         [Row(456, 123, 1)]
         public void Equals_ok(int foo1, int foo2, int expectedSign)
         {
-            CustomComparers.Register<Foo>((x, y) => x.Value.CompareTo(y.Value));
-            Comparison comparer = CustomComparers.Find(typeof(Foo));
+            var customComparers = new CustomComparers();
+            customComparers.Register<Foo>((x, y) => x.Value.CompareTo(y.Value));
+            Comparison comparer = customComparers.Find(typeof(Foo));
             int actualSign = comparer(new Foo(foo1), new Foo(foo2));
             Assert.AreEqual(expectedSign, actualSign, (x, y) => Math.Sign(x) == Math.Sign(y));
         }
@@ -107,15 +115,17 @@ namespace Gallio.Tests.Framework
         [ExpectedArgumentNullException]
         public void Unregister_with_null_type_should_throw_exception()
         {
-            CustomComparers.Unregister(null);
+            var customComparers = new CustomComparers();
+            customComparers.Unregister(null);
         }
 
         [Test]
         public void Register_and_unregister_ok()
         {
-            CustomComparers.Register<Foo>((x, y) => x.Value.CompareTo(y.Value));
-            CustomComparers.Unregister<Foo>();
-            var comparer = CustomComparers.Find(typeof(Foo));
+            var customComparers = new CustomComparers();
+            customComparers.Register<Foo>((x, y) => x.Value.CompareTo(y.Value));
+            customComparers.Unregister<Foo>();
+            var comparer = customComparers.Find(typeof(Foo));
             Assert.IsNull(comparer);
         }
     }

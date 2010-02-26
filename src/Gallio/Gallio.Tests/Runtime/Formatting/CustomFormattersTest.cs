@@ -44,53 +44,53 @@ namespace Gallio.Tests.Runtime.Formatting
             }
         }
 
-        [SetUp]
-        public void Setup()
-        {
-            CustomFormatters.UnregisterAll();
-        }
-
         [Test]
         [ExpectedArgumentNullException]
         public void Registers_with_null_type_should_throw_exception()
         {
-            CustomFormatters.Register(null, x => String.Empty);
+            var customFormatters = new CustomFormatters();
+            customFormatters.Register(null, x => String.Empty);
         }
 
         [Test]
         [ExpectedArgumentNullException]
         public void Registers_with_null_function_should_throw_exception()
         {
-            CustomFormatters.Register(typeof(string), null);
+            var customFormatters = new CustomFormatters();
+            customFormatters.Register(typeof(string), null);
         }
 
         [Test]
         [ExpectedArgumentNullException]
         public void Generic_Registers_with_null_formatter_should_throw_exception()
         {
-            CustomFormatters.Register<Foo>(null);
+            var customFormatters = new CustomFormatters();
+            customFormatters.Register<Foo>(null);
         }
 
         [Test]
         public void Find_should_return_null_for_non_registered_type()
         {
-            var func = CustomFormatters.Find(typeof(Foo));
+            var customFormatters = new CustomFormatters();
+            var func = customFormatters.Find(typeof(Foo));
             Assert.IsNull(func);
         }
 
         [Test]
         public void IsRegisteredFor_should_return_true_for_registered_type()
         {
-            CustomFormatters.Register<Foo>(x => String.Empty);
-            FormattingFunc func = CustomFormatters.Find(typeof(Foo));
+            var customFormatters = new CustomFormatters();
+            customFormatters.Register<Foo>(x => String.Empty);
+            FormattingFunc func = customFormatters.Find(typeof(Foo));
             Assert.IsNotNull(func);
         }
 
         [Test]
         public void Formats()
         {
-            CustomFormatters.Register<Foo>(x => String.Format("Foo's value is {0}.", x.Value));
-            FormattingFunc func = CustomFormatters.Find(typeof(Foo));
+            var customFormatters = new CustomFormatters();
+            customFormatters.Register<Foo>(x => String.Format("Foo's value is {0}.", x.Value));
+            FormattingFunc func = customFormatters.Find(typeof(Foo));
             string output = func(new Foo(123));
             Assert.AreEqual("Foo's value is 123.", output);
         }
@@ -99,15 +99,17 @@ namespace Gallio.Tests.Runtime.Formatting
         [ExpectedArgumentNullException]
         public void Unregister_with_null_type_should_throw_exception()
         {
-            CustomFormatters.Unregister(null);
+            var customFormatters = new CustomFormatters();
+            customFormatters.Unregister(null);
         }
 
         [Test]
         public void Register_and_unregister_ok()
         {
-            CustomFormatters.Register<Foo>(x => String.Empty);
-            CustomFormatters.Unregister<Foo>();
-            FormattingFunc func = CustomFormatters.Find(typeof(Foo));
+            var customFormatters = new CustomFormatters();
+            customFormatters.Register<Foo>(x => String.Empty);
+            customFormatters.Unregister<Foo>();
+            FormattingFunc func = customFormatters.Find(typeof(Foo));
             Assert.IsNull(func);
         }
     }

@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using Gallio.Common.Collections;
+using Gallio.Runtime.Extensibility;
 
 namespace Gallio.Runtime.Formatting
 {
@@ -28,7 +29,7 @@ namespace Gallio.Runtime.Formatting
         /// Creates a stub formatter using only a few built-in formatting rules.
         /// </summary>
         public StubFormatter()
-            : base(GetBuiltInRules())
+            : base(new DefaultExtensionPoints(), GetBuiltInRules())
         {
         }
 

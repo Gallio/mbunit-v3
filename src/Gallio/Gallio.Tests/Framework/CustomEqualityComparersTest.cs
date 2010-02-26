@@ -45,49 +45,56 @@ namespace Gallio.Tests.Framework
         [SetUp]
         public void Setup()
         {
-            CustomEqualityComparers.Unregister<Foo>();
+            var customEqualityComparers = new CustomEqualityComparers();
+            customEqualityComparers.Unregister<Foo>();
         }
 
         [Test]
         [ExpectedArgumentNullException]
         public void Registers_with_null_type_should_throw_exception()
         {
-            CustomEqualityComparers.Register(null, (x, y) => true);
+            var customEqualityComparers = new CustomEqualityComparers();
+            customEqualityComparers.Register(null, (x, y) => true);
         }
 
         [Test]
         [ExpectedArgumentNullException]
         public void Registers_with_null_comparer_should_throw_exception()
         {
-            CustomEqualityComparers.Register(typeof(Foo), null);
+            var customEqualityComparers = new CustomEqualityComparers();
+            customEqualityComparers.Register(typeof(Foo), null);
         }
 
         [Test]
         [ExpectedArgumentNullException]
         public void Generic_Registers_with_null_comparer_should_throw_exception()
         {
-            CustomEqualityComparers.Register<Foo>(null);
+            var customEqualityComparers = new CustomEqualityComparers();
+            customEqualityComparers.Register<Foo>(null);
         }
 
         [Test]
         [ExpectedArgumentNullException]
         public void Find_with_null_type_should_throw_exception()
         {
-            CustomEqualityComparers.Find(null);
+            var customEqualityComparers = new CustomEqualityComparers();
+            customEqualityComparers.Find(null);
         }
 
         [Test]
         public void Find_should_return_null_for_non_registered_type()
         {
-            var comparer = CustomEqualityComparers.Find(typeof(Foo));
+            var customEqualityComparers = new CustomEqualityComparers();
+            var comparer = customEqualityComparers.Find(typeof(Foo));
             Assert.IsNull(comparer);
         }
 
         [Test]
         public void IsRegisteredFor_should_return_true_for_registered_type()
         {
-            CustomEqualityComparers.Register<Foo>((x, y) => x.Value == y.Value);
-            EqualityComparison comparer = CustomEqualityComparers.Find(typeof(Foo));
+            var customEqualityComparers = new CustomEqualityComparers();
+            customEqualityComparers.Register<Foo>((x, y) => x.Value == y.Value);
+            EqualityComparison comparer = customEqualityComparers.Find(typeof(Foo));
             Assert.IsNotNull(comparer);
         }
 
@@ -97,8 +104,9 @@ namespace Gallio.Tests.Framework
         [Row(456, 123, false)]
         public void Equals_ok(int foo1, int foo2, bool expectedEqual)
         {
-            CustomEqualityComparers.Register<Foo>((x, y) => x.Value == y.Value);
-            EqualityComparison comparer = CustomEqualityComparers.Find(typeof(Foo));
+            var customEqualityComparers = new CustomEqualityComparers();
+            customEqualityComparers.Register<Foo>((x, y) => x.Value == y.Value);
+            EqualityComparison comparer = customEqualityComparers.Find(typeof(Foo));
             bool actualEqual = comparer(new Foo(foo1), new Foo(foo2));
             Assert.AreEqual(expectedEqual, actualEqual);
         }
@@ -107,15 +115,17 @@ namespace Gallio.Tests.Framework
         [ExpectedArgumentNullException]
         public void Unregister_with_null_type_should_throw_exception()
         {
-            CustomEqualityComparers.Unregister(null);
+            var customEqualityComparers = new CustomEqualityComparers();
+            customEqualityComparers.Unregister(null);
         }
 
         [Test]
         public void Register_and_unregister_ok()
         {
-            CustomEqualityComparers.Register<Foo>((x, y) => x.Value == y.Value);
-            CustomEqualityComparers.Unregister<Foo>();
-            var comparer = CustomEqualityComparers.Find(typeof(Foo));
+            var customEqualityComparers = new CustomEqualityComparers();
+            customEqualityComparers.Register<Foo>((x, y) => x.Value == y.Value);
+            customEqualityComparers.Unregister<Foo>();
+            var comparer = customEqualityComparers.Find(typeof(Foo));
             Assert.IsNull(comparer);
         }
     }

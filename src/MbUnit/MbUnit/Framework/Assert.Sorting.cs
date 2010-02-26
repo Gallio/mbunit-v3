@@ -113,7 +113,7 @@ namespace MbUnit.Framework
                 int index = 0;
 
                 if (comparer == null)
-                    comparer = ComparisonSemantics.Compare;
+                    comparer = ComparisonSemantics.Default.Compare;
 
                 foreach (T value in values)
                 {

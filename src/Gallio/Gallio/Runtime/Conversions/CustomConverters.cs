@@ -25,7 +25,7 @@ namespace Gallio.Runtime.Conversions
     /// </summary>
     /// <remarks>
     /// <para>
-    /// Use the static methods <see cref="Register"/> and <see cref="Unregister"/> to add and remove 
+    /// Use the methods <see cref="Register"/> and <see cref="Unregister"/> to add and remove 
     /// custom type converters.
     /// </para>
     /// </remarks>
@@ -40,13 +40,14 @@ namespace Gallio.Runtime.Conversions
     ///     }
     /// }
     /// 
-    /// CustomConverters.Register<int, Foo>(x => new Foo(x));
+    /// var customConverters = new CustomConverters();
+    /// customConverters.Register<int, Foo>(x => new Foo(x));
     /// ]]></code>
     /// </example>
-    public static class CustomConverters
+    public sealed class CustomConverters
     {
-        private static readonly IDictionary<ConversionKey, Data> Converters = new Dictionary<ConversionKey, Data>();
-        private static readonly object SyncRoot = new object();
+        private readonly IDictionary<ConversionKey, Data> converters = new Dictionary<ConversionKey, Data>();
+        private readonly object syncRoot = new object();
 
         /// <summary>
         /// Registers a custom converter that transforms an object of the source type into an object of the target type.
@@ -56,7 +57,7 @@ namespace Gallio.Runtime.Conversions
         /// <param name="converter">A delegate that performs the conversion.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="sourceType"/>, <paramref name="targetType"/> or <paramref name="converter"/> is null.</exception>
         /// <exception cref="InvalidOperationException">Thrown if a custom converter for the specified types was already registered.</exception>
-        public static void Register(Type sourceType, Type targetType, Conversion converter)
+        public void Register(Type sourceType, Type targetType, Conversion converter)
         {
             if (sourceType == null)
                 throw new ArgumentNullException("sourceType");
@@ -65,18 +66,18 @@ namespace Gallio.Runtime.Conversions
             if (converter == null)
                 throw new ArgumentNullException("converter");
 
-            lock (SyncRoot)
+            lock (syncRoot)
             {
                 var key = new ConversionKey(sourceType, targetType);
                 Data data;
 
-                if (Converters.TryGetValue(key, out data))
+                if (converters.TryGetValue(key, out data))
                 {
                     data.Count++;
                 }
                 else
                 {
-                    Converters[key] = new Data(converter);
+                    converters[key] = new Data(converter);
                 }
             }
         }
@@ -89,7 +90,7 @@ namespace Gallio.Runtime.Conversions
         /// <param name="converter">A delegate that performs the conversion.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="converter"/> is null.</exception>
         /// <exception cref="InvalidOperationException">Thrown if a custom converter for the specified types was already registered.</exception>
-        public static void Register<TSource, TTarget>(Conversion<TSource, TTarget> converter)
+        public void Register<TSource, TTarget>(Conversion<TSource, TTarget> converter)
         {
             if (converter == null)
                 throw new ArgumentNullException("converter");
@@ -109,19 +110,19 @@ namespace Gallio.Runtime.Conversions
         /// <param name="sourceType">The searched source type.</param>
         /// <param name="targetType">The searched target type.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="sourceType"/> or <paramref name="targetType"/> is null.</exception>
-        public static void Unregister(Type sourceType, Type targetType)
+        public void Unregister(Type sourceType, Type targetType)
         {
             if (sourceType == null)
                 throw new ArgumentNullException("sourceType");
             if (targetType == null)
                 throw new ArgumentNullException("targetType");
 
-            lock (SyncRoot)
+            lock (syncRoot)
             {
                 var key = new ConversionKey(sourceType, targetType);
                 Data data;
 
-                if (Converters.TryGetValue(key, out data))
+                if (converters.TryGetValue(key, out data))
                 {
                     if (data.Count > 0)
                     {
@@ -129,7 +130,7 @@ namespace Gallio.Runtime.Conversions
                     }
                     else
                     {
-                        Converters.Remove(key);
+                        converters.Remove(key);
                     }
                 }
             }
@@ -146,27 +147,27 @@ namespace Gallio.Runtime.Conversions
         /// </remarks>
         /// <typeparam name="TSource">The searched source type.</typeparam>
         /// <typeparam name="TTarget">The searched target type.</typeparam>
-        public static void Unregister<TSource, TTarget>()
+        public void Unregister<TSource, TTarget>()
         {
             Unregister(typeof(TSource), typeof(TTarget));
         }
 
         // Returns the converter for the searched types, or null if none was registered.
-        internal static Conversion Find(ConversionKey key)
+        internal Conversion Find(ConversionKey key)
         {
-            lock (SyncRoot)
+            lock (syncRoot)
             {
                 Data data;
-                return Converters.TryGetValue(key, out data) ? data.Converter : null;
+                return converters.TryGetValue(key, out data) ? data.Converter : null;
             }
         }
 
         // Removes all the registered custom converters.
-        internal static void UnregisterAll()
+        internal void UnregisterAll()
         {
-            lock (SyncRoot)
+            lock (syncRoot)
             {
-                Converters.Clear();
+                converters.Clear();
             }
         }
 

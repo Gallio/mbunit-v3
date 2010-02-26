@@ -15,6 +15,7 @@
 
 using System;
 using Gallio.Common.Collections;
+using Gallio.Runtime.Extensibility;
 using Gallio.Runtime.Formatting;
 using MbUnit.Framework;
 using Rhino.Mocks;
@@ -23,18 +24,26 @@ namespace Gallio.Tests.Runtime.Formatting
 {
     [TestFixture]
     [TestsOn(typeof(RuleBasedFormatter))]
-    public class RuleBasedFormatterTest : BaseTestWithMocks
+    public class RuleBasedFormatterTest
     {
         [Test, ExpectedArgumentNullException]
-        public void ConstructorThrowsIfRuntimeIsNull()
+        public void Constructs_with_null_extensionPoints_should_throw_Exception()
         {
-            new RuleBasedFormatter(null);
+            new RuleBasedFormatter(null, EmptyArray<IFormattingRule>.Instance);
+        }
+
+        [Test, ExpectedArgumentNullException]
+        public void Constructs_with_null_formatting_rules_should_throw_Exception()
+        {
+            var mockExtensionPoints = MockRepository.GenerateStub<IExtensionPoints>();
+            new RuleBasedFormatter(mockExtensionPoints, null);
         }
 
         [Test]
         public void NullValueProducesStringContainingNull()
         {
-            var formatter = new RuleBasedFormatter(EmptyArray<IFormattingRule>.Instance);
+            var mockExtensionPoints = MockRepository.GenerateStub<IExtensionPoints>();
+            var formatter = new RuleBasedFormatter(mockExtensionPoints, EmptyArray<IFormattingRule>.Instance);
             Assert.AreEqual("null", formatter.Format(null));
         }
 
@@ -42,53 +51,39 @@ namespace Gallio.Tests.Runtime.Formatting
         [Column(true, false)]
         public void FormatterSubstitutesNameOfTypeIfRuleReturnsNullOrEmpty(bool useNull)
         {
-            IFormattingRule rule;
-            using (Mocks.Record())
-            {
-                rule = Mocks.StrictMock<IFormattingRule>();
-                Expect.Call(rule.GetPriority(typeof(int))).Return(0);
-                Expect.Call(rule.Format(null, null)).IgnoreArguments().Return(useNull ? null : "");
-            }
-
-            var formatter = new RuleBasedFormatter(new IFormattingRule[] { rule });
+            var mockRule = MockRepository.GenerateMock<IFormattingRule>();
+            mockRule.Expect(x => x.GetPriority(typeof(int))).Return(0);
+            mockRule.Expect(x => x.Format(null, null)).IgnoreArguments().Return(useNull ? null : String.Empty);
+            var formatter = new RuleBasedFormatter(new DefaultExtensionPoints(), new[] { mockRule });
             Assert.AreEqual("{System.Int32}", formatter.Format(42));
+            mockRule.VerifyAllExpectations();
         }
-
+        
         [Test]
         public void FormatterSubstitutesNameOfTypeIfRuleThrows()
         {
-            IFormattingRule rule;
-            using (Mocks.Record())
-            {
-                rule = Mocks.StrictMock<IFormattingRule>();
-                Expect.Call(rule.GetPriority(typeof(int))).Return(0);
-                Expect.Call(rule.Format(null, null)).IgnoreArguments().Throw(new ApplicationException("Boom!"));
-            }
-
-            var formatter = new RuleBasedFormatter(new IFormattingRule[] { rule });
+            var mockRule = MockRepository.GenerateMock<IFormattingRule>();
+            mockRule.Expect(x => x.GetPriority(typeof(int))).Return(0);
+            mockRule.Expect(x => x.Format(null, null)).IgnoreArguments().Throw(new ApplicationException("Boom!"));
+            var formatter = new RuleBasedFormatter(new DefaultExtensionPoints(), new[] { mockRule });
             Assert.AreEqual("{System.Int32}", formatter.Format(42));
+            mockRule.VerifyAllExpectations();
         }
 
         [Test]
         public void FormatterChoosesTheBestRuleAndCachesLookups()
         {
-            IFormattingRule rule1;
-            IFormattingRule rule2;
-            using (Mocks.Record())
-            {
-                rule1 = Mocks.StrictMock<IFormattingRule>();
-                Expect.Call(rule1.GetPriority(typeof(int))).Return(0);
-
-                rule2 = Mocks.StrictMock<IFormattingRule>();
-                Expect.Call(rule2.GetPriority(typeof(int))).Return(1);
-
-                Expect.Call(rule2.Format(null, null)).IgnoreArguments().Return("42");
-                Expect.Call(rule2.Format(null, null)).IgnoreArguments().Return("53");
-            }
-
-            var formatter = new RuleBasedFormatter(new IFormattingRule[] { rule1, rule2 });
+            var mockRule1 = MockRepository.GenerateMock<IFormattingRule>();
+            var mockRule2 = MockRepository.GenerateMock<IFormattingRule>();
+            mockRule1.Expect(x => x.GetPriority(typeof(int))).Return(0);
+            mockRule2.Expect(x => x.GetPriority(typeof(int))).Return(1);
+            mockRule2.Expect(x => x.Format(null, null)).IgnoreArguments().Repeat.Once().Return("42");
+            mockRule2.Expect(x => x.Format(null, null)).IgnoreArguments().Repeat.Once().Return("53");
+            var formatter = new RuleBasedFormatter(new DefaultExtensionPoints(), new[] { mockRule1, mockRule2 });
             Assert.AreEqual("42", formatter.Format(42));
             Assert.AreEqual("53", formatter.Format(53));
+            mockRule1.VerifyAllExpectations();
+            mockRule2.VerifyAllExpectations();
         }
 
         internal class Foo
@@ -112,18 +107,11 @@ namespace Gallio.Tests.Runtime.Formatting
         [Test]
         public void Custom_formatting()
         {
-            var formatter = new RuleBasedFormatter(EmptyArray<IFormattingRule>.Instance);
-            CustomFormatters.Register<Foo>(x => String.Format("Foo's value is {0}.", x.Value));
-
-            try
-            {
-                string output = formatter.Format(new Foo(123));
-                Assert.AreEqual("Foo's value is 123.", output);
-            }
-            finally
-            {
-                CustomFormatters.Unregister<Foo>();
-            }
+            var extentionPoints = new DefaultExtensionPoints();
+            var formatter = new RuleBasedFormatter(extentionPoints, EmptyArray<IFormattingRule>.Instance);
+            extentionPoints.CustomFormatters.Register<Foo>(x => String.Format("Foo's value is {0}.", x.Value));
+            string output = formatter.Format(new Foo(123));
+            Assert.AreEqual("Foo's value is 123.", output);
         }
     }
 }

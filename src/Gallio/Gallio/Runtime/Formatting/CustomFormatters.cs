@@ -26,7 +26,7 @@ namespace Gallio.Runtime.Formatting
     /// </summary>
     /// <remarks>
     /// <para>
-    /// Use the static methods <see cref="Register"/> and <see cref="Unregister"/> to add and remove 
+    /// Use the methods <see cref="Register"/> and <see cref="Unregister"/> to add and remove 
     /// custom type formatters.
     /// </para>
     /// </remarks>
@@ -41,13 +41,14 @@ namespace Gallio.Runtime.Formatting
     ///     }
     /// }
     /// 
-    /// CustomFormatters.Register<Foo>(x => String.Format("Foo = {0}", x.Value));
+    /// var customFormatters = new CustomFormatters();
+    /// customFormatters.Register<Foo>(x => String.Format("Foo = {0}", x.Value));
     /// ]]></code>
     /// </example>
-    public static class CustomFormatters
+    public class CustomFormatters
     {
-        private static readonly IDictionary<Type, Data> Formatters = new Dictionary<Type, Data>();
-        private static readonly object SyncRoot = new object();
+        private readonly IDictionary<Type, Data> formatters = new Dictionary<Type, Data>();
+        private readonly object syncRoot = new object();
 
         /// <summary>
         /// Registers a custom formatter that represents an object in a readable text format.
@@ -56,24 +57,24 @@ namespace Gallio.Runtime.Formatting
         /// <param name="formatter">A delegate that performs the formatting operation.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="type"/> or <paramref name="formatter"/> is null.</exception>
         /// <exception cref="InvalidOperationException">Thrown if a custom formatter for the specified type was already registered.</exception>
-        public static void Register(Type type, FormattingFunc formatter)
+        public void Register(Type type, FormattingFunc formatter)
         {
             if (type == null)
                 throw new ArgumentNullException("type");
             if (formatter == null)
                 throw new ArgumentNullException("formatter");
 
-            lock (SyncRoot)
+            lock (syncRoot)
             {
                 Data data;
 
-                if (Formatters.TryGetValue(type, out data))
+                if (formatters.TryGetValue(type, out data))
                 {
                     data.Count++;
                 }
                 else
                 {
-                    Formatters[type] = new Data(formatter);
+                    formatters[type] = new Data(formatter);
                 }
             }
         }
@@ -85,7 +86,7 @@ namespace Gallio.Runtime.Formatting
         /// <param name="formatter">A delegate that performs the formatting operation.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="formatter"/> is null.</exception>
         /// <exception cref="InvalidOperationException">Thrown if a custom formatter for the specified type was already registered.</exception>
-        public static void Register<T>(FormattingFunc<T> formatter)
+        public void Register<T>(FormattingFunc<T> formatter)
         {
             if (formatter == null)
                 throw new ArgumentNullException("formatter");
@@ -104,16 +105,16 @@ namespace Gallio.Runtime.Formatting
         /// </remarks>
         /// <param name="type">The searched type.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="type"/> is null.</exception>
-        public static void Unregister(Type type)
+        public void Unregister(Type type)
         {
             if (type == null)
                 throw new ArgumentNullException("type");
 
-            lock (SyncRoot)
+            lock (syncRoot)
             {
                 Data data;
 
-                if (Formatters.TryGetValue(type, out data))
+                if (formatters.TryGetValue(type, out data))
                 {
                     if (data.Count > 0)
                     {
@@ -121,7 +122,7 @@ namespace Gallio.Runtime.Formatting
                     }
                     else
                     {
-                        Formatters.Remove(type);
+                        formatters.Remove(type);
                     }
                 }
             }
@@ -137,30 +138,30 @@ namespace Gallio.Runtime.Formatting
         /// </para>
         /// </remarks>
         /// <typeparam name="T">The searched type.</typeparam>
-        public static void Unregister<T>()
+        public void Unregister<T>()
         {
             Unregister(typeof(T));
         }
 
         // Returns the formatter for the searched type, or null if none was registered.
-        internal static FormattingFunc Find(Type type)
+        internal FormattingFunc Find(Type type)
         {
             if (type == null)
                 throw new ArgumentNullException("type");
 
-            lock (SyncRoot)
+            lock (syncRoot)
             {
                 Data data;
-                return Formatters.TryGetValue(type, out data) ? data.Formatter : null;
+                return formatters.TryGetValue(type, out data) ? data.Formatter : null;
             }
         }
 
         // Removes all the registered custom formatters.
-        internal static void UnregisterAll()
+        internal void UnregisterAll()
         {
-            lock (SyncRoot)
+            lock (syncRoot)
             {
-                Formatters.Clear();
+                formatters.Clear();
             }
         }
 

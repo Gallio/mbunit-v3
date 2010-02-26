@@ -81,12 +81,12 @@ namespace MbUnit.Framework
         /// user types implementing <see cref="IEquatable{T}"/>.
         /// </para>
         /// </remarks>
-        /// <seealso cref="ComparisonSemantics.Equals"/>
+        /// <seealso cref="IComparisonSemantics.Equals"/>
         public static StructuralEqualityComparer<T> Default
         {
             get
             {
-                return new StructuralEqualityComparer<T> { { x => x, ComparisonSemantics.Equals<T> } };
+                return new StructuralEqualityComparer<T> { { x => x, ComparisonSemantics.Default.Equals<T> } };
             }
         }
 
@@ -229,7 +229,7 @@ namespace MbUnit.Framework
                 throw new ArgumentNullException("accessor");
 
             if (comparer == null)
-                comparer = ComparisonSemantics.Equals<TValue>;
+                comparer = ComparisonSemantics.Default.Equals<TValue>;
 
             conditions.Add((x, y) => comparer(accessor(x), accessor(y)));
         }
@@ -269,7 +269,7 @@ namespace MbUnit.Framework
         /// <param name="comparer">An equality comparison delegate to directly compare two instances, or null to use the default one.</param>
         public void Add(EqualityComparison<T> comparer)
         {
-            conditions.Add(comparer ?? ComparisonSemantics.Equals<T>);
+            conditions.Add(comparer ?? ComparisonSemantics.Default.Equals<T>);
         }
 
         /// <summary>
@@ -458,7 +458,7 @@ namespace MbUnit.Framework
         public void Add<TValue>(Accessor<T, IEnumerable<TValue>> accessor, EqualityComparison<TValue> comparer, StructuralEqualityComparerOptions options)
         {
             if (comparer == null)
-                comparer = ComparisonSemantics.Equals<TValue>;
+                comparer = ComparisonSemantics.Default.Equals<TValue>;
 
             if ((options & StructuralEqualityComparerOptions.IgnoreEnumerableOrder) != 0)
             {

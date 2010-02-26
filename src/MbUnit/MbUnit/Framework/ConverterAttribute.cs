@@ -20,7 +20,9 @@ using Gallio.Common;
 using Gallio.Common.Reflection;
 using Gallio.Framework;
 using Gallio.Framework.Pattern;
+using Gallio.Runtime;
 using Gallio.Runtime.Conversions;
+using Gallio.Runtime.Extensibility;
 
 namespace MbUnit.Framework
 {
@@ -65,8 +67,9 @@ namespace MbUnit.Framework
             Type sourceType = methodInfo.Parameters[0].Resolve(true).ParameterType;
             Type targetType = methodInfo.ReturnType.Resolve(true);
             MethodInfo method = methodInfo.Resolve(true);
-            CustomTestEnvironment.SetUpThreadChain.Before(() => CustomConverters.Register(sourceType, targetType, x => method.Invoke(this, new[] { x })));
-            CustomTestEnvironment.TeardownThreadChain.After(() => CustomConverters.Unregister(sourceType, targetType));
+            var extensionPoints = (IExtensionPoints)RuntimeAccessor.ServiceLocator.ResolveByComponentId("Gallio.ExtensionPoints");
+            CustomTestEnvironment.SetUpThreadChain.Before(() => extensionPoints.CustomConverters.Register(sourceType, targetType, x => method.Invoke(this, new[] { x })));
+            CustomTestEnvironment.TeardownThreadChain.After(() => extensionPoints.CustomConverters.Unregister(sourceType, targetType));
         }
     }
 }

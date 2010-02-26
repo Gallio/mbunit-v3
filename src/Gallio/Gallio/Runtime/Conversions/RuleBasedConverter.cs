@@ -15,6 +15,7 @@
 
 using System;
 using System.Collections.Generic;
+using Gallio.Runtime.Extensibility;
 
 namespace Gallio.Runtime.Conversions
 {
@@ -32,20 +33,24 @@ namespace Gallio.Runtime.Conversions
     {
         private readonly List<IConversionRule> rules;
         private readonly Dictionary<ConversionKey, ConversionInfo> conversions;
+        private readonly IExtensionPoints extensionPoints;
 
         /// <summary>
         /// Creates a rule-based converter.
         /// </summary>
+        /// <param name="extensionPoints">The entry point for framework extensions.</param>
         /// <param name="rules">The rules to use.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="rules"/> is null.</exception>
-        public RuleBasedConverter(IConversionRule[] rules)
+        public RuleBasedConverter(IExtensionPoints extensionPoints, IConversionRule[] rules)
         {
+            if (extensionPoints == null)
+                throw new ArgumentNullException("extensionPoints");
             if (rules == null)
                 throw new ArgumentNullException("rules");
 
             this.rules = new List<IConversionRule>(rules);
-
-            conversions = new Dictionary<ConversionKey, ConversionInfo>();
+            this.conversions = new Dictionary<ConversionKey, ConversionInfo>();
+            this.extensionPoints = extensionPoints;
         }
 
         /// <inheritdoc />
@@ -98,7 +103,7 @@ namespace Gallio.Runtime.Conversions
                 if (!conversions.TryGetValue(key, out conversion))
                 {
                     // Try to get a custom user converter.
-                    Conversion operation = CustomConverters.Find(key);
+                    Conversion operation = extensionPoints.CustomConverters.Find(key);
 
                     if (operation != null)
                     {

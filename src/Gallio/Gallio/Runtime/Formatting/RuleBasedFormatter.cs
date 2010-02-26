@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using Gallio.Common;
 using Gallio.Runtime.Conversions;
+using Gallio.Runtime.Extensibility;
 
 namespace Gallio.Runtime.Formatting
 {
@@ -28,19 +29,24 @@ namespace Gallio.Runtime.Formatting
     {
         private readonly List<IFormattingRule> rules;
         private readonly Dictionary<Type, IFormattingRule> preferredRules;
+        private readonly IExtensionPoints extensionPoints;
 
         /// <summary>
         /// Creates a rule-based formatter.
         /// </summary>
         /// <param name="rules">The rules to use.</param>
+        /// <param name="extensionPoints">The entry point for framework extensions.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="rules"/> is null.</exception>
-        public RuleBasedFormatter(IFormattingRule[] rules)
+        public RuleBasedFormatter(IExtensionPoints extensionPoints, IFormattingRule[] rules)
         {
+            if (extensionPoints == null)
+                throw new ArgumentNullException("extensionPoints");
             if (rules == null)
                 throw new ArgumentNullException("rules");
 
             this.rules = new List<IFormattingRule>(rules);
-            preferredRules = new Dictionary<Type, IFormattingRule>();
+            this.preferredRules = new Dictionary<Type, IFormattingRule>();
+            this.extensionPoints = extensionPoints;
         }
 
         /// <inheritdoc />
@@ -50,6 +56,7 @@ namespace Gallio.Runtime.Formatting
                 return @"null";
 
             Type type = obj.GetType();
+
             try
             {
                 IFormattingRule rule = GetPreferredRule(type);
@@ -57,8 +64,11 @@ namespace Gallio.Runtime.Formatting
                 if (rule != null)
                 {
                     string result = rule.Format(obj, this);
+
                     if (!string.IsNullOrEmpty(result))
+                    {
                         return result;
+                    }
                 }
             }
             catch
@@ -66,7 +76,7 @@ namespace Gallio.Runtime.Formatting
                 // Ignore exceptions.
             }
 
-            return string.Concat("{", type.ToString(), "}");
+            return String.Concat("{", type.ToString(), "}");
         }
 
         private IFormattingRule GetPreferredRule(Type type)
@@ -74,20 +84,12 @@ namespace Gallio.Runtime.Formatting
             lock (preferredRules)
             {
                 IFormattingRule preferredRule;
-                if (! preferredRules.TryGetValue(type, out preferredRule))
+
+                if (!preferredRules.TryGetValue(type, out preferredRule))
                 {
                     // Try to get a custom user converter.
-                    FormattingFunc operation = CustomFormatters.Find(type);
-
-                    if (operation != null)
-                    {
-                        preferredRule = new CustomFormattingRule(operation);
-                    }
-                    else
-                    {
-                        preferredRule = GetPreferredRuleWithoutCache(type);
-                    }
-
+                    FormattingFunc operation = extensionPoints.CustomFormatters.Find(type);
+                    preferredRule = (operation != null) ? new CustomFormattingRule(operation) : GetPreferredRuleWithoutCache(type);
                     preferredRules.Add(type, preferredRule);
                 }
 
@@ -103,6 +105,7 @@ namespace Gallio.Runtime.Formatting
             foreach (IFormattingRule rule in rules)
             {
                 int? priority = rule.GetPriority(type);
+
                 if (priority.HasValue && priority.Value >= bestPriority)
                 {
                     bestPriority = priority.Value;

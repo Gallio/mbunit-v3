@@ -43,60 +43,61 @@ namespace Gallio.Tests.Runtime.Conversions
             }
         }
 
-        [SetUp]
-        public void Setup()
-        {
-            CustomConverters.UnregisterAll();
-        }
-
         [Test]
         [ExpectedArgumentNullException]
         public void Registers_with_null_source_type_should_throw_exception()
         {
-            CustomConverters.Register(null, typeof(Foo), x => null);
+            var customConverters = new CustomConverters();
+            customConverters.Register(null, typeof(Foo), x => null);
         }
 
         [Test]
         [ExpectedArgumentNullException]
         public void Registers_with_null_target_type_should_throw_exception()
         {
-            CustomConverters.Register(typeof(string), null, x => null);
+            var customConverters = new CustomConverters();
+            customConverters.Register(typeof(string), null, x => null);
         }
 
         [Test]
         [ExpectedArgumentNullException]
         public void Registers_with_null_conversion_should_throw_exception()
         {
-            CustomConverters.Register(typeof(string), typeof(Foo), null);
+            var customConverters = new CustomConverters();
+            customConverters.Register(typeof(string), typeof(Foo), null);
         }
 
         [Test]
         [ExpectedArgumentNullException]
         public void Generic_Registers_with_null_converter_should_throw_exception()
         {
-            CustomConverters.Register<string, Foo>(null);
+            var customConverters = new CustomConverters();
+            customConverters.Register<string, Foo>(null);
         }
 
         [Test]
         public void Find_should_return_null_for_non_registered_type()
         {
-            var conversion = CustomConverters.Find(new ConversionKey(typeof(string), typeof(Foo)));
+            var customConverters = new CustomConverters();
+            var conversion = customConverters.Find(new ConversionKey(typeof(string), typeof(Foo)));
             Assert.IsNull(conversion);
         }
 
         [Test]
         public void IsRegisteredFor_should_return_true_for_registered_type()
         {
-            CustomConverters.Register<string, Foo>(x => new Foo(Int32.Parse(x)));
-            Conversion conversion = CustomConverters.Find(new ConversionKey(typeof(string), typeof(Foo)));
+            var customConverters = new CustomConverters();
+            customConverters.Register<string, Foo>(x => new Foo(Int32.Parse(x)));
+            Conversion conversion = customConverters.Find(new ConversionKey(typeof(string), typeof(Foo)));
             Assert.IsNotNull(conversion);
         }
 
         [Test]
         public void Converts()
         {
-            CustomConverters.Register<string, Foo>(x => new Foo(Int32.Parse(x)));
-            Conversion conversion = CustomConverters.Find(new ConversionKey(typeof(string), typeof(Foo)));
+            var customConverters = new CustomConverters();
+            customConverters.Register<string, Foo>(x => new Foo(Int32.Parse(x)));
+            Conversion conversion = customConverters.Find(new ConversionKey(typeof(string), typeof(Foo)));
             var actualFoo = (Foo)conversion("123");
             Assert.AreEqual(123, actualFoo.Value);
         }
@@ -105,22 +106,25 @@ namespace Gallio.Tests.Runtime.Conversions
         [ExpectedArgumentNullException]
         public void Unregister_with_null_source_type_should_throw_exception()
         {
-            CustomConverters.Unregister(null, typeof(Foo));
+            var customConverters = new CustomConverters();
+            customConverters.Unregister(null, typeof(Foo));
         }
 
         [Test]
         [ExpectedArgumentNullException]
         public void Unregister_with_null_target_type_should_throw_exception()
         {
-            CustomConverters.Unregister(typeof(string), null);
+            var customConverters = new CustomConverters();
+            customConverters.Unregister(typeof(string), null);
         }
 
         [Test]
         public void Register_and_unregister_ok()
         {
-            CustomConverters.Register<string, Foo>(x => new Foo(Int32.Parse(x)));
-            CustomConverters.Unregister<string, Foo>();
-            var comversion = CustomConverters.Find(new ConversionKey(typeof(string), typeof(Foo)));
+            var customConverters = new CustomConverters();
+            customConverters.Register<string, Foo>(x => new Foo(Int32.Parse(x)));
+            customConverters.Unregister<string, Foo>();
+            var comversion = customConverters.Find(new ConversionKey(typeof(string), typeof(Foo)));
             Assert.IsNull(comversion);
         }
     }

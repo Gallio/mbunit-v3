@@ -14,8 +14,10 @@
 // limitations under the License.
 
 using Gallio.Runtime.Conversions;
+using Gallio.Runtime.Extensibility;
 using Gallio.Runtime.Formatting;
 using MbUnit.Framework;
+using Rhino.Mocks;
 
 namespace Gallio.Tests.Runtime.Formatting
 {
@@ -30,27 +32,45 @@ namespace Gallio.Tests.Runtime.Formatting
     {
         private IFormatter formatter;
         private IFormattingRule formattingRule;
+        private IExtensionPoints extensionPoints;
 
-        public IFormatter Formatter
+        protected IFormatter Formatter
         {
-            get { return formatter; }
+            get
+            {
+                return formatter;
+            }
         }
 
-        public IFormattingRule FormattingRule
+        protected IFormattingRule FormattingRule
         {
-            get { return formattingRule; }
+            get
+            {
+                return formattingRule;
+            }
+        }
+
+        protected IExtensionPoints ExtensionPoints
+        {
+            get
+            {
+                return extensionPoints;
+            }
         }
 
         [SetUp]
         public void SetUpFormatter()
         {
-            IConverter converter = new RuleBasedConverter(new IConversionRule[]
+            extensionPoints = new DefaultExtensionPoints();
+
+            IConverter converter = new RuleBasedConverter(extensionPoints, new IConversionRule[]
             {
                 new ObjectToStringConversionRule()
             });
 
             formattingRule = new T();
-            formatter = new RuleBasedFormatter(new IFormattingRule[]
+
+            formatter = new RuleBasedFormatter(extensionPoints, new IFormattingRule[]
             {
                 formattingRule,
                 new ConvertToStringFormattingRule(converter)

@@ -108,7 +108,7 @@ namespace MbUnit.Framework
             AssertionHelper.Verify(delegate
             {
                 if (comparer == null)
-                    comparer = ComparisonSemantics.Equals;
+                    comparer = ComparisonSemantics.Default.Equals;
 
                 if (comparer(expectedValue, actualValue))
                     return null;
@@ -204,7 +204,7 @@ namespace MbUnit.Framework
             AssertionHelper.Verify(delegate
             {
                 if (comparer == null)
-                    comparer = ComparisonSemantics.Equals;
+                    comparer = ComparisonSemantics.Default.Equals;
 
                 if (!comparer(unexpectedValue, actualValue))
                     return null;
@@ -245,7 +245,7 @@ namespace MbUnit.Framework
         {
             AssertionHelper.Verify(delegate
             {
-                if (ComparisonSemantics.Same(expectedValue, actualValue))
+                if (ComparisonSemantics.Default.Same(expectedValue, actualValue))
                     return null;
 
                 return new AssertionFailureBuilder("Expected values to be referentially identical.")
@@ -284,7 +284,7 @@ namespace MbUnit.Framework
         {
             AssertionHelper.Verify(delegate
             {
-                if (! ComparisonSemantics.Same(unexpectedValue, actualValue))
+                if (!ComparisonSemantics.Default.Same(unexpectedValue, actualValue))
                     return null;
 
                 return new AssertionFailureBuilder("Expected values to be referentially different.")
@@ -489,7 +489,7 @@ namespace MbUnit.Framework
         {
             AssertionHelper.Verify(delegate
             {
-                if (ComparisonSemantics.ApproximatelyEqual(expectedValue, actualValue, delta))
+                if (ComparisonSemantics.Default.ApproximatelyEqual(expectedValue, actualValue, delta))
                     return null;
 
                 return new AssertionFailureBuilder("Expected values to be approximately equal to within a delta.")
@@ -563,7 +563,7 @@ namespace MbUnit.Framework
         {
             AssertionHelper.Verify(delegate
             {
-                if (! ComparisonSemantics.ApproximatelyEqual(unexpectedValue, actualValue, delta))
+                if (!ComparisonSemantics.Default.ApproximatelyEqual(unexpectedValue, actualValue, delta))
                     return null;
 
                 return new AssertionFailureBuilder("Expected values not to be approximately equal to within a delta.")

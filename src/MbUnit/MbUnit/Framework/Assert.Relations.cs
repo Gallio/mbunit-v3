@@ -460,7 +460,7 @@ namespace MbUnit.Framework
             AssertionHelper.Verify(delegate
             {
                 if (comparer == null)
-                    comparer = ComparisonSemantics.Compare;
+                    comparer = ComparisonSemantics.Default.Compare;
 
                 if (comparer(actualValue, minimum) >= 0
                     && comparer(actualValue, maximum) <= 0)
@@ -565,7 +565,7 @@ namespace MbUnit.Framework
             AssertionHelper.Verify(delegate
             {
                 if (comparer == null)
-                    comparer = ComparisonSemantics.Compare;
+                    comparer = ComparisonSemantics.Default.Compare;
 
                 if (comparer(actualValue, minimum) < 0
                     || comparer(actualValue, maximum) > 0)
@@ -587,7 +587,7 @@ namespace MbUnit.Framework
             AssertionHelper.Verify(() =>
             {
                 if (comparer == null)
-                    comparer = ComparisonSemantics.Compare;
+                    comparer = ComparisonSemantics.Default.Compare;
 
                 if (orderingPredicate(comparer(left, right)))
                     return null;

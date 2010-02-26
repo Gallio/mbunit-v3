@@ -21,11 +21,11 @@ using Gallio.Common;
 namespace Gallio.Framework
 {
     /// <summary>
-    /// Extensibility point for object comparison managed by <see cref="ComparisonSemantics"/>.
+    /// Extensibility point for object comparison managed by <see cref="IComparisonSemantics"/>.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// Use the static methods <see cref="Register"/> and <see cref="Unregister"/> to add and remove 
+    /// Use the methods <see cref="Register"/> and <see cref="Unregister"/> to add and remove 
     /// custom type comparers.
     /// </para>
     /// <para>
@@ -44,13 +44,14 @@ namespace Gallio.Framework
     ///     }
     /// }
     /// 
-    /// CustomComparers.Register<IFoo>((x, y) => x.Value.CompareTo(y.Value));
+    /// var customComparers = new CustomComparers();
+    /// customComparers.Register<IFoo>((x, y) => x.Value.CompareTo(y.Value));
     /// ]]></code>
     /// </example>
-    public static class CustomComparers
+    public class CustomComparers
     {
-        private static readonly IDictionary<Type, Data> Comparers = new Dictionary<Type, Data>();
-        private static readonly object SyncRoot = new object();
+        private readonly IDictionary<Type, Data> comparers = new Dictionary<Type, Data>();
+        private readonly object syncRoot = new object();
 
         /// <summary>
         /// Registers a custom comparer for the specified type.
@@ -67,24 +68,24 @@ namespace Gallio.Framework
         /// zero if they represents the same value; or a positive value if the first object represents more than the second object.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="type"/> or <paramref name="comparer"/> is null.</exception>
         /// <exception cref="InvalidOperationException">Thrown if a custom comparer for the specified type was already registered.</exception>
-        public static void Register(Type type, Comparison comparer)
+        public void Register(Type type, Comparison comparer)
         {
             if (type == null)
                 throw new ArgumentNullException("type");
             if (comparer == null)
                 throw new ArgumentNullException("comparer");
 
-            lock (SyncRoot)
+            lock (syncRoot)
             {
                 Data data;
 
-                if (Comparers.TryGetValue(type, out data))
+                if (comparers.TryGetValue(type, out data))
                 {
                     data.Count++;
                 }
                 else
                 {
-                    Comparers[type] = new Data(comparer);
+                    comparers[type] = new Data(comparer);
                 }
             }
         }
@@ -104,7 +105,7 @@ namespace Gallio.Framework
         /// zero if they represents the same value; or a positive value if the first object represents more than the second object.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="comparer"/> is null.</exception>
         /// <exception cref="InvalidOperationException">Thrown if a custom comparer for the specified type was already registered.</exception>
-        public static void Register<T>(Comparison<T> comparer)
+        public void Register<T>(Comparison<T> comparer)
         {
             if (comparer == null)
                 throw new ArgumentNullException("comparer");
@@ -123,16 +124,16 @@ namespace Gallio.Framework
         /// </remarks>
         /// <param name="type">The searched type.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="type"/> is null.</exception>
-        public static void Unregister(Type type)
+        public void Unregister(Type type)
         {
             if (type == null)
                 throw new ArgumentNullException("type");
 
-            lock (SyncRoot)
+            lock (syncRoot)
             {
                 Data data;
 
-                if (Comparers.TryGetValue(type, out data))
+                if (comparers.TryGetValue(type, out data))
                 {
                     if (data.Count > 0)
                     {
@@ -140,7 +141,7 @@ namespace Gallio.Framework
                     }
                     else
                     {
-                        Comparers.Remove(type);
+                        comparers.Remove(type);
                     }
                 }
             }
@@ -156,30 +157,30 @@ namespace Gallio.Framework
         /// </para>
         /// </remarks>
         /// <typeparam name="T">The searched type.</typeparam>
-        public static void Unregister<T>()
+        public void Unregister<T>()
         {
             Unregister(typeof(T));
         }
 
         // Returns the comparer for the searched type, or null if none was registered.
-        internal static Comparison Find(Type type)
+        internal Comparison Find(Type type)
         {
             if (type == null)
                 throw new ArgumentNullException("type");
 
-            lock (SyncRoot)
+            lock (syncRoot)
             {
                 Data data;
-                return Comparers.TryGetValue(type, out data) ? data.Comparer : null;
+                return comparers.TryGetValue(type, out data) ? data.Comparer : null;
             }
         }
 
         // Removes all the registered custom comparers.
-        internal static void UnregisterAll()
+        internal void UnregisterAll()
         {
-            lock (SyncRoot)
+            lock (syncRoot)
             {
-                Comparers.Clear();
+                comparers.Clear();
             }
         }
 

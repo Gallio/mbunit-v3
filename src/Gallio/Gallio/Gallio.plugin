@@ -153,6 +153,12 @@
 
     <service serviceId="Gallio.PatternTestController"
              serviceType="Gallio.Framework.Pattern.PatternTestController, Gallio" />
+
+    <service serviceId="Gallio.ExtensionPoints"
+             serviceType="Gallio.Runtime.Extensibility.IExtensionPoints, Gallio" />
+
+    <service serviceId="Gallio.ComparisonSemantics"
+             serviceType="Gallio.Framework.IComparisonSemantics, Gallio" />
   </services>
   
   <components>
@@ -229,6 +235,14 @@
                serviceId="Gallio.PreferenceManager"
                componentType="Gallio.Runtime.Preferences.FilePreferenceManager, Gallio" />
     
+    <component componentId="Gallio.ExtensionPoints"
+               serviceId="Gallio.ExtensionPoints"
+               componentType="Gallio.Runtime.Extensibility.DefaultExtensionPoints, Gallio" />
+	
+    <component componentId="Gallio.ComparisonSemantics"
+               serviceId="Gallio.ComparisonSemantics"
+               componentType="Gallio.Framework.DefaultComparisonSemantics, Gallio" />
+
     <!-- Host Factories -->
     
     <component componentId="Gallio.LocalHostFactory"

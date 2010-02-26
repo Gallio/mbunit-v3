@@ -20,6 +20,8 @@ using Gallio.Common;
 using Gallio.Common.Reflection;
 using Gallio.Framework;
 using Gallio.Framework.Pattern;
+using Gallio.Runtime;
+using Gallio.Runtime.Extensibility;
 using Gallio.Runtime.Formatting;
 
 namespace MbUnit.Framework
@@ -64,8 +66,9 @@ namespace MbUnit.Framework
         protected override void DecorateContainingScope(IPatternScope containingScope, IMethodInfo methodInfo)
         {
             Type formattableType = methodInfo.Parameters[0].Resolve(true).ParameterType;
-            CustomTestEnvironment.SetUpThreadChain.Before(() => CustomFormatters.Register(formattableType, x => (string)methodInfo.Resolve(true).Invoke(this, new[] { x })));
-            CustomTestEnvironment.TeardownThreadChain.After(() => CustomFormatters.Unregister(formattableType));
+            var extensionPoints = (IExtensionPoints)RuntimeAccessor.ServiceLocator.ResolveByComponentId("Gallio.ExtensionPoints");
+            CustomTestEnvironment.SetUpThreadChain.Before(() => extensionPoints.CustomFormatters.Register(formattableType, x => (string)methodInfo.Resolve(true).Invoke(this, new[] { x })));
+            CustomTestEnvironment.TeardownThreadChain.After(() => extensionPoints.CustomFormatters.Unregister(formattableType));
         }
     }
 }

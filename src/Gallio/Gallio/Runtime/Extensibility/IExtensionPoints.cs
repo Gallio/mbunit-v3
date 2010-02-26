@@ -1,0 +1,62 @@
+﻿// Copyright 2005-2010 Gallio Project - http://www.gallio.org/
+// Portions Copyright 2000-2004 Jonathan de Halleux
+// 
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+// 
+//     http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+using System;
+using System.Collections.Generic;
+using System.Text;
+using Gallio.Framework;
+using Gallio.Runtime.Conversions;
+using Gallio.Runtime.Formatting;
+
+namespace Gallio.Runtime.Extensibility
+{
+    /// <summary>
+    /// Entry point for the registration of custom actions that extends the framework.
+    /// </summary>
+    public interface IExtensionPoints
+    {
+        /// <summary>
+        /// Extensibility point for object conversion managed by <see cref="RuleBasedConverter"/>.
+        /// </summary>
+        CustomConverters CustomConverters
+        {
+            get;
+        }
+
+        /// <summary>
+        /// Extensibility point for object formatting managed by <see cref="RuleBasedFormatter"/>.
+        /// </summary>
+        CustomFormatters CustomFormatters
+        {
+            get;
+        }
+
+        /// <summary>
+        /// Extensibility point for object equality managed by <see cref="IComparisonSemantics"/>.
+        /// </summary>
+        CustomEqualityComparers CustomEqualityComparers
+        {
+            get;
+        }
+
+        /// <summary>
+        /// Extensibility point for object comparison managed by <see cref="IComparisonSemantics"/>.
+        /// </summary>
+        CustomComparers CustomComparers
+        {
+            get;
+        }
+    }
+}

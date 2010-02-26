@@ -132,7 +132,7 @@ namespace MbUnit.Framework
                 }
 
                 if (comparer == null)
-                    comparer = ComparisonSemantics.Equals;
+                    comparer = ComparisonSemantics.Default.Equals;
 
                 int index = 0;
                 IEnumerator<T> expectedEnumerator = expectedSequence.GetEnumerator();
@@ -286,7 +286,7 @@ namespace MbUnit.Framework
                 }
 
                 if (comparer == null)
-                    comparer = ComparisonSemantics.Equals;
+                    comparer = ComparisonSemantics.Default.Equals;
 
                 IEnumerator<T> unexpectedEnumerator = unexpectedSequence.GetEnumerator();
                 IEnumerator<T> actualEnumerator = actualSequence.GetEnumerator();
@@ -420,7 +420,7 @@ namespace MbUnit.Framework
                 }
 
                 if (comparer == null)
-                    comparer = ComparisonSemantics.Equals;
+                    comparer = ComparisonSemantics.Default.Equals;
 
                 // Count the number of matching expected and actual elements.
                 var table = new MatchTable<T>(comparer);

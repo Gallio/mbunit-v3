@@ -273,6 +273,8 @@
     <Compile Include="Framework\Assertions\AssertionFailureExplanation.cs" />
     <Compile Include="Framework\Assertions\NamespaceDoc.cs" />
     <Compile Include="Framework\Capture.cs" />
+    <Compile Include="Framework\ComparisonSemantics.cs" />
+    <Compile Include="Framework\IComparisonSemantics.cs" />
     <Compile Include="Framework\CustomEqualityComparers.cs" />
     <Compile Include="Framework\CustomComparers.cs" />
     <Compile Include="Framework\Pattern\ExtensionPointPatternAttribute.cs" />
@@ -400,6 +402,8 @@
     <Compile Include="Runtime\Conversions\ConversionKey.cs" />
     <Compile Include="Runtime\Conversions\CustomConversionRule.cs" />
     <Compile Include="Runtime\Conversions\CustomConverters.cs" />
+    <Compile Include="Runtime\Extensibility\IExtensionPoints.cs" />
+    <Compile Include="Runtime\Extensibility\DefaultExtensionPoints.cs" />
     <Compile Include="Runtime\Formatting\FormattingFunc.cs" />
     <Compile Include="Runtime\Formatting\CustomFormattingRule.cs" />
     <Compile Include="Runtime\Formatting\CustomFormatters.cs" />
@@ -592,7 +596,7 @@
     <Compile Include="Framework\Data\BoundDataAccessor.cs" />
     <Compile Include="Framework\Data\ScalarDataBinder.cs" />
     <Compile Include="Framework\Data\SimpleDataItem.cs" />
-    <Compile Include="Framework\ComparisonSemantics.cs" />
+    <Compile Include="Framework\DefaultComparisonSemantics.cs" />
     <Compile Include="Framework\Pattern\ProcessIsolation.cs" />
     <Compile Include="Framework\Pattern\TestAction.cs" />
     <Compile Include="Framework\SubtractionFunc.cs">

@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Gallio.Runtime.Conversions;
+using Gallio.Runtime.Extensibility;
 using MbUnit.Framework;
 
 namespace Gallio.Tests.Runtime.Conversions
@@ -30,16 +31,29 @@ namespace Gallio.Tests.Runtime.Conversions
         where T : IConversionRule, new()
     {
         private IConverter converter;
+        private IExtensionPoints extensionPoints;
 
-        public IConverter Converter
+        protected IConverter Converter
         {
-            get { return converter; }
+            get
+            {
+                return converter;
+            }
+        }
+
+        protected IExtensionPoints ExtensionPoints
+        {
+            get
+            {
+                return extensionPoints;
+            }
         }
 
         [SetUp]
         public void SetUpConverter()
         {
-            converter = new RuleBasedConverter(new IConversionRule[]
+            extensionPoints = new DefaultExtensionPoints();
+            converter = new RuleBasedConverter(extensionPoints, new IConversionRule[]
             {
                 new T(),
                 new ConvertibleToConvertibleConversionRule()

@@ -63,13 +63,13 @@ namespace MbUnit.Framework
         /// <inheritdoc />
         protected override void Register(Type type, Func<object, object, object> operation)
         {
-            CustomComparers.Register(type, (x, y) => (int)operation(x, y));
+            ExtensionPoints.CustomComparers.Register(type, (x, y) => (int)operation(x, y));
         }
 
         /// <inheritdoc />
         protected override void Unregister(Type type)
         {
-            CustomComparers.Unregister(type);
+            ExtensionPoints.CustomComparers.Unregister(type);
         }
     }
 }

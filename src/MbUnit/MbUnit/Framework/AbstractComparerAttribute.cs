@@ -23,6 +23,7 @@ using Gallio.Framework.Pattern;
 using System.Collections.Generic;
 using Gallio.Model.Environments;
 using Gallio.Runtime;
+using Gallio.Runtime.Extensibility;
 
 namespace MbUnit.Framework
 {
@@ -31,7 +32,7 @@ namespace MbUnit.Framework
     /// </summary>
     /// <remarks>
     /// <para>
-    /// The custom comparer attributes expose an extension point of <see cref="ComparisonSemantics"/>
+    /// The custom comparer attributes expose an extension point of <see cref="IComparisonSemantics"/>
     /// for defining custom object comparison and equality for types that do not implement built-in
     /// comparison mechanisms such as <see cref="IEquatable{T}"/> or <see cref="IComparable{T}"/>.
     /// </para>
@@ -41,6 +42,28 @@ namespace MbUnit.Framework
     [AttributeUsage(PatternAttributeTargets.ContributionMethod, AllowMultiple = false, Inherited = true)]
     public abstract class AbstractComparerAttribute : ExtensionPointPatternAttribute
     {
+        private IExtensionPoints extensionPoints;
+
+        /// <summary>
+        /// Gets the entry point for the registration of 
+        /// custom actions that extend the framework.
+        /// </summary>
+        protected IExtensionPoints ExtensionPoints
+        {
+            get
+            {
+                return extensionPoints;
+            }
+        }
+
+        /// <summary>
+        /// Constructor.
+        /// </summary>
+        protected AbstractComparerAttribute()
+        {
+            extensionPoints = (IExtensionPoints)RuntimeAccessor.ServiceLocator.ResolveByComponentId("Gallio.ExtensionPoints");
+        }
+
         /// <inheritdoc />
         protected override void DecorateContainingScope(IPatternScope containingScope, IMethodInfo methodInfo)
         {

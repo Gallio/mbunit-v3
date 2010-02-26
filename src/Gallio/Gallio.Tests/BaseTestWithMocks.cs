@@ -36,10 +36,7 @@ namespace Gallio.Tests
         {
             get
             {
-                if (mocks == null)
-                    mocks = new MockRepository();
-
-                return mocks;
+                return mocks ?? (mocks = new MockRepository());
             }
         }
 

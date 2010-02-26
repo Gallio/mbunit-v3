@@ -21,11 +21,11 @@ using Gallio.Common;
 namespace Gallio.Framework
 {
     /// <summary>
-    /// Extensibility point for object equality managed by <see cref="ComparisonSemantics"/>.
+    /// Extensibility point for object equality managed by <see cref="IComparisonSemantics"/>.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// Use the static methods <see cref="Register"/> and <see cref="Unregister"/> to add and remove 
+    /// Use the methods <see cref="Register"/> and <see cref="Unregister"/> to add and remove 
     /// custom type equality comparers.
     /// </para>
     /// <para>
@@ -44,13 +44,14 @@ namespace Gallio.Framework
     ///     }
     /// }
     /// 
-    /// CustomEqualityComparers.Register<IFoo>((x, y) => x.Value == y.Value);
+    /// var customEqualityComparers = new CustomEqualityComparers();
+    /// customEqualityComparers.Register<IFoo>((x, y) => x.Value == y.Value);
     /// ]]></code>
     /// </example>
-    public static class CustomEqualityComparers
+    public class CustomEqualityComparers
     {
-        private static readonly IDictionary<Type, Data> EqualityComparers = new Dictionary<Type, Data>();
-        private static readonly object SyncRoot = new object();
+        private readonly IDictionary<Type, Data> equalityComparers = new Dictionary<Type, Data>();
+        private readonly object syncRoot = new object();
 
         /// <summary>
         /// Registers a custom equality comparer for the specified type.
@@ -66,24 +67,24 @@ namespace Gallio.Framework
         /// <param name="equalityComparer">An equality comparer that returns true is the objects are equivalent; false otherwise.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="type"/> or <paramref name="equalityComparer"/> is null.</exception>
         /// <exception cref="InvalidOperationException">Thrown if a custom comparer for the specified type was already registered.</exception>
-        public static void Register(Type type, EqualityComparison equalityComparer)
+        public void Register(Type type, EqualityComparison equalityComparer)
         {
             if (type == null)
                 throw new ArgumentNullException("type");
             if (equalityComparer == null)
                 throw new ArgumentNullException("equalityComparer");
 
-            lock (SyncRoot)
+            lock (syncRoot)
             {
                 Data data;
 
-                if (EqualityComparers.TryGetValue(type, out data))
+                if (equalityComparers.TryGetValue(type, out data))
                 {
                     data.Count++;
                 }
                 else
                 {
-                    EqualityComparers[type] = new Data(equalityComparer);
+                    equalityComparers[type] = new Data(equalityComparer);
                 }
             }
         }
@@ -102,7 +103,7 @@ namespace Gallio.Framework
         /// <param name="equalityComparer">An equality comparer that returns true is the objects are equivalent.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="equalityComparer"/> is null.</exception>
         /// <exception cref="InvalidOperationException">Thrown if a custom comparer for the specified type was already registered.</exception>
-        public static void Register<T>(EqualityComparison<T> equalityComparer)
+        public void Register<T>(EqualityComparison<T> equalityComparer)
         {
             if (equalityComparer == null)
                 throw new ArgumentNullException("equalityComparer");
@@ -121,16 +122,16 @@ namespace Gallio.Framework
         /// </remarks>
         /// <param name="type">The searched type.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="type"/> is null.</exception>
-        public static void Unregister(Type type)
+        public void Unregister(Type type)
         {
             if (type == null)
                 throw new ArgumentNullException("type");
 
-            lock (SyncRoot)
+            lock (syncRoot)
             {
                 Data data;
 
-                if (EqualityComparers.TryGetValue(type, out data))
+                if (equalityComparers.TryGetValue(type, out data))
                 {
                     if (data.Count > 0)
                     {
@@ -138,7 +139,7 @@ namespace Gallio.Framework
                     }
                     else
                     {
-                        EqualityComparers.Remove(type);
+                        equalityComparers.Remove(type);
                     }
                 }
             }
@@ -154,30 +155,30 @@ namespace Gallio.Framework
         /// </para>
         /// </remarks>
         /// <typeparam name="T">The searched type.</typeparam>
-        public static void Unregister<T>()
+        public void Unregister<T>()
         {
             Unregister(typeof(T));
         }
 
         // Returns the equality comparer for the searched type, or null if none was registered.
-        internal static EqualityComparison Find(Type type)
+        internal EqualityComparison Find(Type type)
         {
             if (type == null)
                 throw new ArgumentNullException("type");
 
-            lock (SyncRoot)
+            lock (syncRoot)
             {
                 Data data;
-                return EqualityComparers.TryGetValue(type, out data) ? data.EqualityComparer : null;
+                return equalityComparers.TryGetValue(type, out data) ? data.EqualityComparer : null;
             }
         }
 
         // Removes all the registered custom comparers.
-        internal static void UnregisterAll()
+        internal void UnregisterAll()
         {
-            lock (SyncRoot)
+            lock (syncRoot)
             {
-                EqualityComparers.Clear();
+                equalityComparers.Clear();
             }
         }
 

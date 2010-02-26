@@ -180,7 +180,7 @@
     <Compile Include="Framework\Assertions\AssertionContextTest.cs" />
     <Compile Include="Framework\Assertions\AssertionFailureBuilderTest.cs" />
     <Compile Include="Framework\Assertions\AssertionFailureTest.cs" />
-    <Compile Include="Framework\ComparisonSemanticsTest.cs" />
+    <Compile Include="Framework\DefaultComparisonSemanticsTest.cs" />
     <Compile Include="Framework\SandboxTest.cs" />
     <Compile Include="Framework\TasksTest.cs" />
     <Compile Include="Integration\StubFormatterIntegrationTest.cs" />
