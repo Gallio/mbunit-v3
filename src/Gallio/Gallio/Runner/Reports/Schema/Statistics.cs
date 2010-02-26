@@ -188,7 +188,7 @@ namespace Gallio.Runner.Reports.Schema
         }
 
         /// <summary>
-        /// Ssets the number of tests with the specified outcomee.
+        /// Sets the number of tests with the specified outcome.
         /// </summary>
         /// <param name="outcome">The outcome.</param>
         /// <param name="count">The count.</param>
