@@ -30,7 +30,7 @@ namespace Gallio.Icarus.Models.TestTreeNodes
         {
             this.testData = testData;
 
-            if (TestIsIgnored(testData))
+            if (IsIgnored || IsPending || IsExplicit)
             {
                 CheckState = System.Windows.Forms.CheckState.Unchecked;
             }
@@ -40,10 +40,19 @@ namespace Gallio.Icarus.Models.TestTreeNodes
             }
         }
 
-        private static bool TestIsIgnored(TestComponentData testData)
+        public bool IsIgnored
         {
-            return testData.Metadata.ContainsKey(MetadataKeys.IgnoreReason) || 
-                testData.Metadata.ContainsKey(MetadataKeys.PendingReason);
+            get { return testData.Metadata.ContainsKey(MetadataKeys.IgnoreReason); }
+        }
+
+        public bool IsPending
+        {
+            get { return testData.Metadata.ContainsKey(MetadataKeys.PendingReason); }
+        }
+
+        public bool IsExplicit
+        {
+            get { return testData.Metadata.ContainsKey(MetadataKeys.ExplicitReason); }
         }
 
         public string Name

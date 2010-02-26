@@ -21,6 +21,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.Reports", "..\..\Gal
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.VisualStudio.Interop", "..\VisualStudio\Gallio.VisualStudio.Interop\Gallio.VisualStudio.Interop.csproj", "{B6912CC5-1E73-46E0-8F09-7F135924E3E2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.UI.Tests", "..\..\Gallio\Gallio.UI.Tests\Gallio.UI.Tests.csproj", "{DC4DBE38-0ED0-4CD8-A722-9F2C109FE173}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -67,6 +69,10 @@ Global
 		{B6912CC5-1E73-46E0-8F09-7F135924E3E2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B6912CC5-1E73-46E0-8F09-7F135924E3E2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B6912CC5-1E73-46E0-8F09-7F135924E3E2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DC4DBE38-0ED0-4CD8-A722-9F2C109FE173}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DC4DBE38-0ED0-4CD8-A722-9F2C109FE173}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DC4DBE38-0ED0-4CD8-A722-9F2C109FE173}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DC4DBE38-0ED0-4CD8-A722-9F2C109FE173}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

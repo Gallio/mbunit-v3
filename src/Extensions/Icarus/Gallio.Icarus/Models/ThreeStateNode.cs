@@ -15,6 +15,7 @@
 
 using System.Windows.Forms;
 using Aga.Controls.Tree;
+using Gallio.Icarus.Models.TestTreeNodes;
 
 namespace Gallio.Icarus.Models
 {
@@ -111,11 +112,28 @@ namespace Gallio.Icarus.Models
             {
                 var child = node as ThreeStateNode;
 
-                if (child != null)
+                if (child != null && ShouldBeChecked(child, checkState))
                 {
                     child.CheckState = checkState;
                 }
             }
+        }
+
+        private static bool ShouldBeChecked(ThreeStateNode node, CheckState checkState)
+        {
+            if (checkState != CheckState.Checked)
+                return true;
+
+            var testDataNode = node as TestDataNode;
+            
+            if (testDataNode == null)
+                return true;
+
+            if (testDataNode.IsIgnored || testDataNode.IsPending
+                || testDataNode.IsExplicit)
+                return false;
+
+            return true;
         }
 
         /// <summary>

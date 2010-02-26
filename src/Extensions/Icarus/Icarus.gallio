@@ -3,15 +3,16 @@
   <testPackage shadowCopy="false" debug="false">
     <files>
       <file>Gallio.Icarus.Tests\bin\Gallio.Icarus.Tests.dll</file>
+      <file>..\..\Gallio\Gallio.UI.Tests\bin\Gallio.UI.Tests.dll</file>
     </files>
     <hintDirectories />
     <excludedFrameworkIds />
     <properties />
   </testPackage>
   <testFilters>
-    <testFilter filterName="AutoSave" filterExpr="" />
+    <testFilter filterName="AutoSave" filterExpr="Namespace: Gallio.Icarus.Tests" />
     <testFilter filterName="Commands" filterExpr="Namespace: Gallio.Icarus.Tests.Commands" />
-    <testFilter filterName="LastRun" filterExpr="" />
+    <testFilter filterName="LastRun" filterExpr="Namespace: Gallio.Icarus.Tests" />
   </testFilters>
   <extensionSpecifications />
   <reportDirectory>Reports</reportDirectory>
