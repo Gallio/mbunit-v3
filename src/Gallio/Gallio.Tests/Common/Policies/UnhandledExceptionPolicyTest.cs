@@ -44,54 +44,55 @@ namespace Gallio.Tests.Common.Policies
         [Test]
         public void PolicyPerformsCorrelationThenReporting()
         {
-            using (IHost host = new IsolatedProcessHostFactory(RuntimeAccessor.Instance).CreateHost(new HostSetup(),
-                new MarkupStreamLogger(TestLog.Default)))
+            CorrelatedExceptionEventArgs finalArgs;
+
+            using (IHost host = new IsolatedProcessHostFactory(RuntimeAccessor.Instance).CreateHost(new HostSetup(), new MarkupStreamLogger(TestLog.Default)))
             {
                 HostAssemblyResolverHook.InstallCallback(host);
-                host.GetHostService().Do<object, object>(PolicyPerformsCorrelationThenReportingCallback, null);
+                finalArgs = (CorrelatedExceptionEventArgs)host.GetHostService().Do<object, object>(PolicyPerformsCorrelationThenReportingCallback, null);
             }
+
+            Assert.IsNotNull(finalArgs);
+            Assert.AreEqual("foo\nbar", finalArgs.Message);
+            Assert.IsInstanceOfType<Exception>(finalArgs.Exception);
+            Assert.IsFalse(finalArgs.IsRecursive);
         }
 
         [Test]
         public void PolicyHandlesUnhandledExceptionsAndRecursion()
         {
-            using (IHost host = new IsolatedProcessHostFactory(RuntimeAccessor.Instance).CreateHost(new HostSetup(),
-                new MarkupStreamLogger(TestLog.Default)))
+            List<CorrelatedExceptionEventArgs> args;
+
+            using (IHost host = new IsolatedProcessHostFactory(RuntimeAccessor.Instance).CreateHost(new HostSetup(), new MarkupStreamLogger(TestLog.Default)))
             {
                 HostAssemblyResolverHook.InstallCallback(host);
-                host.GetHostService().Do<object, object>(PolicyHandlesUnhandledExceptionsAndRecursionCallback, null);
+                args = (List<CorrelatedExceptionEventArgs>)host.GetHostService().Do<object, object>(PolicyHandlesUnhandledExceptionsAndRecursionCallback, null);
             }
+
+            Assert.AreEqual(3, args.Count);
+            Assert.AreEqual("Error.", args[0].Exception.Message);
+            Assert.IsFalse(args[0].IsRecursive);
+            Assert.AreEqual("Correlation error.", args[1].Exception.Message);
+            Assert.IsTrue(args[1].IsRecursive);
+            Assert.AreEqual("Reporting error.", args[2].Exception.Message);
+            Assert.IsTrue(args[2].IsRecursive);
         }
 
         private static object PolicyPerformsCorrelationThenReportingCallback(object dummy)
         {
-            Exception ex = new Exception();
+            var ex = new Exception("Some exception");
             CorrelatedExceptionEventArgs finalArgs = null;
-
-            UnhandledExceptionPolicy.CorrelateUnhandledException += delegate(object sender, CorrelatedExceptionEventArgs e)
-            {
-                e.AddCorrelationMessage("bar");
-            };
-
-            UnhandledExceptionPolicy.ReportUnhandledException += delegate(object sender, CorrelatedExceptionEventArgs e)
-            {
-                finalArgs = e;
-            };
-
+            UnhandledExceptionPolicy.CorrelateUnhandledException += (sender, e) => e.AddCorrelationMessage("bar");
+            UnhandledExceptionPolicy.ReportUnhandledException += (sender, e) => finalArgs = e;
             UnhandledExceptionPolicy.Report("foo", ex);
-
-            Assert.IsNotNull(finalArgs);
-            Assert.AreEqual("foo\nbar", finalArgs.Message);
-            Assert.AreSame(ex, finalArgs.Exception);
-            Assert.IsFalse(finalArgs.IsRecursive);
-            return null;
+            return finalArgs;
         }
 
         private static object PolicyHandlesUnhandledExceptionsAndRecursionCallback(object dummy)
         {
-            List<CorrelatedExceptionEventArgs> args = new List<CorrelatedExceptionEventArgs>();
+            var args = new List<CorrelatedExceptionEventArgs>();
 
-            UnhandledExceptionPolicy.CorrelateUnhandledException += delegate(object sender, CorrelatedExceptionEventArgs e)
+            UnhandledExceptionPolicy.CorrelateUnhandledException += (sender, e) =>
             {
                 args.Add(e);
 
@@ -99,31 +100,16 @@ namespace Gallio.Tests.Common.Policies
                     throw new Exception("Correlation error.");
             };
 
-            UnhandledExceptionPolicy.ReportUnhandledException += delegate(object sender, CorrelatedExceptionEventArgs e)
+            UnhandledExceptionPolicy.ReportUnhandledException += (sender, e) =>
             {
                 if (!e.IsRecursive)
                     throw new Exception("Reporting error.");
             };
 
-            Thread t = new Thread((ThreadStart)delegate
-            {
-                throw new Exception("Error.");
-            });
-
+            var t = new Thread(() => { throw new Exception("Error."); });
             t.Start();
             t.Join();
-
-            Assert.AreEqual(3, args.Count);
-
-            Assert.AreEqual("Error.", args[0].Exception.Message);
-            Assert.IsFalse(args[0].IsRecursive);
-
-            Assert.AreEqual("Correlation error.", args[1].Exception.Message);
-            Assert.IsTrue(args[1].IsRecursive);
-
-            Assert.AreEqual("Reporting error.", args[2].Exception.Message);
-            Assert.IsTrue(args[2].IsRecursive);
-            return null;
+            return args;
         }
     }
 }

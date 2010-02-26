@@ -22,6 +22,7 @@ namespace Gallio.Common.Policies
     /// <summary>
     /// Describes an exception that is to be reported.
     /// </summary>
+    [Serializable]
     public sealed class CorrelatedExceptionEventArgs : EventArgs
     {
         private string message;
