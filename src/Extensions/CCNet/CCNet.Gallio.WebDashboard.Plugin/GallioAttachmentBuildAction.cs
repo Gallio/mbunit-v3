@@ -50,7 +50,7 @@ namespace CCNet.Gallio.WebDashboard.Plugin
             if (attachmentName.Length == 0)
                 throw new InvalidOperationException("Missing attachment name.");
 
-            Build build = buildRetriever.GetBuild(cruiseRequest.BuildSpecifier);
+            Build build = buildRetriever.GetBuild(cruiseRequest.BuildSpecifier, cruiseRequest.RetrieveSessionToken());
 
             XPathDocument document = new XPathDocument(new StringReader(build.Log));
             XPathNavigator rootNavigator = document.CreateNavigator();
