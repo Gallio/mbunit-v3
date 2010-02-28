@@ -1,0 +1,8 @@
+<configuration>
+	<profiles>
+		<profile id="Windows 2003 x86, Everything">
+			<master>192.168.128.2</master>
+			<vm>Gallio Build Agent - Windows 2003 x86, Everything</vm>		
+		</profile>
+	</profiles>
+</configuration>
