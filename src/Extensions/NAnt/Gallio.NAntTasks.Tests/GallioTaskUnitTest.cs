@@ -119,7 +119,7 @@ namespace Gallio.NAntTasks.Tests
             task.ShadowCopy = true;
             task.Debug = true;
             task.WorkingDirectory = "workingDir";
-            task.RuntimeVersion = "v4.0.21006";
+            task.RuntimeVersion = "v4.0.30128";
             task.RunnerProperties.AddRange(new[] { new Argument("RunnerOption1=RunnerValue1"), new Argument("  RunnerOption2  "), new Argument("RunnerOption3 = 'RunnerValue3'"), new Argument("RunnerOption4=\"'RunnerValue4'\"") });
             task.ReportFormatterProperties.AddRange(new[] { new Argument("FormatterOption1=FormatterValue1"), new Argument("  FormatterOption2  "), new Argument("FormatterOption3 = 'FormatterValue3'"), new Argument("FormatterOption4=\"'FormatterValue4'\"") });
 
@@ -155,7 +155,7 @@ namespace Gallio.NAntTasks.Tests
                 Assert.IsTrue(launcher.TestProject.TestPackage.IsShadowCopySpecified);
                 Assert.IsNotNull(launcher.TestProject.TestPackage.DebuggerSetup);
                 Assert.IsTrue(launcher.TestProject.TestPackage.IsDebuggerSetupSpecified);
-                Assert.AreEqual("v4.0.21006", launcher.TestProject.TestPackage.RuntimeVersion);
+                Assert.AreEqual("v4.0.30128", launcher.TestProject.TestPackage.RuntimeVersion);
                 Assert.IsTrue(launcher.TestProject.TestPackage.IsRuntimeVersionSpecified);
 
                 Assert.AreEqual(new PropertySet()

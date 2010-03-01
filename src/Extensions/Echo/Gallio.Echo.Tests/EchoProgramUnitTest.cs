@@ -104,7 +104,7 @@ namespace Gallio.Echo.Tests
             arguments.WorkingDirectory = "workingDir";
             arguments.ShadowCopy = true;
             arguments.Debug = true;
-            arguments.RuntimeVersion = "v4.0.21006";
+            arguments.RuntimeVersion = "v4.0.30128";
 
             arguments.RunnerProperties = new[] { "RunnerOption1=RunnerValue1", "  RunnerOption2  ", "RunnerOption3 = 'RunnerValue3'", "RunnerOption4=\"'RunnerValue4'\"" };
             arguments.ReportFormatterProperties = new[] { "FormatterOption1=FormatterValue1", "  FormatterOption2  ", "FormatterOption3 = 'FormatterValue3'", "FormatterOption4=\"'FormatterValue4'\"" };
@@ -142,7 +142,7 @@ namespace Gallio.Echo.Tests
             Assert.IsTrue(launcher.TestProject.TestPackage.IsShadowCopySpecified);
             Assert.IsNotNull(launcher.TestProject.TestPackage.DebuggerSetup);
             Assert.IsTrue(launcher.TestProject.TestPackage.IsDebuggerSetupSpecified);
-            Assert.AreEqual("v4.0.21006", launcher.TestProject.TestPackage.RuntimeVersion);
+            Assert.AreEqual("v4.0.30128", launcher.TestProject.TestPackage.RuntimeVersion);
             Assert.IsTrue(launcher.TestProject.TestPackage.IsRuntimeVersionSpecified);
 
             Assert.AreEqual(new PropertySet()
