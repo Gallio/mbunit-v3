@@ -123,7 +123,7 @@ namespace Gallio.MSBuildTasks.Tests
             task.ShadowCopy = true;
             task.Debug = true;
             task.WorkingDirectory = new TaskItem("workingDir");
-            task.RuntimeVersion = "v4.0.21006";
+            task.RuntimeVersion = "v4.0.30128";
 
             task.RunnerProperties = new[] { "RunnerOption1=RunnerValue1", "  RunnerOption2  ", "RunnerOption3 = 'RunnerValue3'", "RunnerOption4=\"'RunnerValue4'\"" };
             task.ReportFormatterProperties = new[] { "FormatterOption1=FormatterValue1", "  FormatterOption2  ", "FormatterOption3 = 'FormatterValue3'", "FormatterOption4=\"'FormatterValue4'\"" };
@@ -163,7 +163,7 @@ namespace Gallio.MSBuildTasks.Tests
                 Assert.IsTrue(launcher.TestProject.TestPackage.IsShadowCopySpecified);
                 Assert.IsNotNull(launcher.TestProject.TestPackage.DebuggerSetup);
                 Assert.IsTrue(launcher.TestProject.TestPackage.IsDebuggerSetupSpecified);
-                Assert.AreEqual("v4.0.21006", launcher.TestProject.TestPackage.RuntimeVersion);
+                Assert.AreEqual("v4.0.30128", launcher.TestProject.TestPackage.RuntimeVersion);
                 Assert.IsTrue(launcher.TestProject.TestPackage.IsRuntimeVersionSpecified);
 
                 Assert.AreEqual(new PropertySet()
