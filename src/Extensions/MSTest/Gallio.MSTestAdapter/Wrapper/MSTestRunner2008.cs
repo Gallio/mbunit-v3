@@ -27,6 +27,11 @@ namespace Gallio.MSTestAdapter.Wrapper
             return "9.0";
         }
 
+        protected override string GetCommandLineAssemblyName()
+        {
+            return "Microsoft.VisualStudio.QualityTools.CommandLine, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a";
+        }
+
         protected override void WriteTestMetadata(XmlWriter writer, IEnumerable<MSTest> tests, string assemblyFilePath)
         {
             writer.WriteStartDocument();

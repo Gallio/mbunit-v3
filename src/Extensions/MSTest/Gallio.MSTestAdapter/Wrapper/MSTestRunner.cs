@@ -102,6 +102,8 @@ namespace Gallio.MSTestAdapter.Wrapper
 
         protected abstract string GetVisualStudioVersion();
 
+        protected abstract string GetCommandLineAssemblyName();
+
         protected abstract void WriteTestMetadata(XmlWriter writer, IEnumerable<MSTest> tests, string assemblyFilePath);
 
         protected abstract void WriteRunConfig(XmlWriter writer);
@@ -252,7 +254,7 @@ namespace Gallio.MSTestAdapter.Wrapper
                 RuntimeAccessor.AssemblyLoader.AddHintDirectory(publicAssembliesDir);
 
                 // Obtain an Executor.
-                Assembly commandLineAssembly = Assembly.Load("Microsoft.VisualStudio.QualityTools.CommandLine");
+                Assembly commandLineAssembly = Assembly.Load(runner.GetCommandLineAssemblyName());
                 Type executorType = commandLineAssembly.GetType("Microsoft.VisualStudio.TestTools.CommandLine.Executor");
                 object executor = Activator.CreateInstance(executorType);
                 try
