@@ -48,7 +48,7 @@ namespace CCNet.Gallio.WebDashboard.Plugin
 
         public string LinkDescription
         {
-            get { throw new NotSupportedException(); }
+            get { return "View Gallio Attachment"; }
         }
     }
 }
