@@ -140,7 +140,7 @@ namespace Gallio.Tests.Runner.Reports.Schema
 
             Assert.AreEqual(expected.Name, actual.Name);
             Assert.AreEqual(expected.ContentType, actual.ContentType);
-            Assert.AreEqual(expected.Encoding, actual.Encoding);
+            Assert.AreEqual(expected.Type, actual.Type);
             Assert.AreEqual(expected.ContentPath, actual.ContentPath);
             Assert.AreEqual(expected.SerializedContents, actual.SerializedContents);
         }

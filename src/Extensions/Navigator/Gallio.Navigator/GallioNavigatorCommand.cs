@@ -52,7 +52,7 @@ namespace Gallio.Navigator
             if (name == null)
                 throw new ArgumentNullException("name");
             if (arguments == null)
-                throw new ArgumentNullException("args");
+                throw new ArgumentNullException("arguments");
 
             this.name = name;
             this.arguments = arguments;
@@ -79,7 +79,7 @@ namespace Gallio.Navigator
         /// </summary>
         public string ToUri()
         {
-            StringBuilder result = new StringBuilder();
+            var result = new StringBuilder();
             result.Append(ProtocolScheme);
             result.Append(':');
             result.Append(name);
@@ -108,7 +108,8 @@ namespace Gallio.Navigator
 
             try
             {
-                Uri uri = new Uri(uriString);
+                var uri = new Uri(uriString);
+
                 if (uri.Scheme == ProtocolScheme)
                 {
                     string commandName = uri.AbsolutePath;
@@ -142,7 +143,6 @@ namespace Gallio.Navigator
                         string path = arguments["path"];
                         int lineNumber = GetIntArgument("line", 0);
                         int columnNumber = GetIntArgument("column", 0);
-
                         return navigator.NavigateTo(path, lineNumber, columnNumber);
                 }
 

@@ -108,7 +108,6 @@ namespace Gallio.Runner.Reports
                 if (attachmentContentDisposition != AttachmentContentDisposition.Inline)
                 {
                     overrides.Add(typeof(AttachmentData), @"SerializedContents", ignoreAttributes);
-                    overrides.Add(typeof(AttachmentData), @"Encoding", ignoreAttributes);
                 }
 
                 // Munge the content paths and content disposition.

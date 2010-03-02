@@ -37,30 +37,28 @@ namespace Gallio.Common.Markup
     {
         private string name;
         private string contentType;
-        private AttachmentEncoding encoding;
-        private AttachmentContentDisposition contentDisposition = AttachmentContentDisposition.Inline;
         private string serializedContents;
         private byte[] bytes;
-        private string contentPath;
 
         /// <summary>
         /// Creates an uninitialized instance for Xml deserialization.
         /// </summary>
         private AttachmentData()
         {
+            ContentDisposition = AttachmentContentDisposition.Inline;
         }
 
-        internal AttachmentData(string name, string contentType,
-            AttachmentEncoding encoding, string serializedContents, byte[] bytes)
+        internal AttachmentData(string name, string contentType, AttachmentType type, string serializedContents, byte[] bytes)
         {
             if (name == null)
-                throw new ArgumentNullException(@"name");
+                throw new ArgumentNullException("name");
             if (contentType == null)
-                throw new ArgumentNullException(@"contentType");
+                throw new ArgumentNullException("contentType");
 
+            ContentDisposition = AttachmentContentDisposition.Inline;
             this.name = name;
             this.contentType = contentType;
-            this.encoding = encoding;
+            this.Type = type;
             this.serializedContents = serializedContents;
             this.bytes = bytes;
         }
@@ -72,11 +70,16 @@ namespace Gallio.Common.Markup
         [XmlAttribute("name")]
         public string Name
         {
-            get { return name; }
+            get
+            {
+                return name;
+            }
+
             set
             {
                 if (value == null)
                     throw new ArgumentNullException(@"value");
+
                 name = value;
             }
         }
@@ -88,24 +91,29 @@ namespace Gallio.Common.Markup
         [XmlAttribute("contentType")]
         public string ContentType
         {
-            get { return contentType; }
+            get
+            {
+                return contentType;
+            }
+
             set
             {
                 if (value == null)
                     throw new ArgumentNullException(@"value");
+
                 contentType = value;
             }
         }
 
         /// <summary>
-        /// Gets or sets the encoding of the attachment.
+        /// Gets or sets the type of the attachment.
         /// This value specifies how the attachment is represented in Xml.
         /// </summary>
-        [XmlAttribute("encoding")]
-        public AttachmentEncoding Encoding
+        [XmlAttribute("type")]
+        public AttachmentType Type
         {
-            get { return encoding; }
-            set { encoding = value; }
+            get;
+            set;
         }
 
         /// <summary>
@@ -116,8 +124,8 @@ namespace Gallio.Common.Markup
         [XmlAttribute("contentPath")]
         public string ContentPath
         {
-            get { return contentPath; }
-            set { contentPath = value; }
+            get;
+            set;
         }
 
         /// <summary>
@@ -128,8 +136,8 @@ namespace Gallio.Common.Markup
         [XmlAttribute("contentDisposition")]
         public AttachmentContentDisposition ContentDisposition
         {
-            get { return contentDisposition; }
-            set { contentDisposition = value; }
+            get;
+            set;
         }
 
         /// <summary>
@@ -141,9 +149,13 @@ namespace Gallio.Common.Markup
             get
             {
                 if (serializedContents == null && bytes != null)
+                {
                     serializedContents = Convert.ToBase64String(bytes, Base64FormattingOptions.None);
+                }
+
                 return serializedContents;
             }
+
             set
             {
                 serializedContents = value;
@@ -157,7 +169,10 @@ namespace Gallio.Common.Markup
         [XmlIgnore]
         public bool IsText
         {
-            get { return encoding == AttachmentEncoding.Text; }
+            get
+            {
+                return Type == AttachmentType.Text;
+            }
         }
 
         /// <summary>
@@ -167,7 +182,7 @@ namespace Gallio.Common.Markup
         /// <exception cref="InvalidOperationException">Thrown if the attachment is not textual.</exception>
         public string GetText()
         {
-            if (! IsText)
+            if (!IsText)
                 throw new InvalidOperationException("The attachment is not text.");
 
             return serializedContents;
@@ -180,11 +195,14 @@ namespace Gallio.Common.Markup
         /// <exception cref="InvalidOperationException">Thrown if the attachment is not binary.</exception>
         public byte[] GetBytes()
         {
-            //if (IsText)
-            //    throw new InvalidOperationException("The attachment is not binary.");
-            
+            if (IsText)
+              throw new InvalidOperationException("The attachment is not binary.");
+
             if (bytes == null && serializedContents != null)
+            {
                 bytes = Convert.FromBase64String(serializedContents);
+            }
+
             return bytes;
         }
 
@@ -199,7 +217,7 @@ namespace Gallio.Common.Markup
             if (stream == null)
                 throw new ArgumentNullException("stream");
 
-            if (IsText && ContentDisposition == AttachmentContentDisposition.Inline)
+            if (IsText)
             {
                 serializedContents = new StreamReader(stream).ReadToEnd();
                 bytes = null;
@@ -207,8 +225,10 @@ namespace Gallio.Common.Markup
             else
             {
                 bytes = new byte[stream.Length];
+
                 if (stream.Read(bytes, 0, (int)stream.Length) != stream.Length)
                     throw new IOException("Did not read entire stream.");
+
                 serializedContents = null;
             }
         }
@@ -228,10 +248,12 @@ namespace Gallio.Common.Markup
             if (serializedContents == null && bytes == null)
                 throw new InvalidOperationException("The attachment contents cannot be saved because they are not available.");
 
-            if (IsText && ContentDisposition == AttachmentContentDisposition.Inline)
+            if (IsText)
             {
-                using (StreamWriter writer = new StreamWriter(stream, encoding ?? new UTF8Encoding(false)))
+                using (var writer = new StreamWriter(stream, encoding ?? new UTF8Encoding(false)))
+                {
                     writer.Write(serializedContents);
+                }
             }
             else
             {

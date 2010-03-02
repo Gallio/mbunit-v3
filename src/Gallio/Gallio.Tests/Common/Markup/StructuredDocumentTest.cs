@@ -28,7 +28,7 @@ namespace Gallio.Tests.Common.Markup
         [Test]
         public void TestLogIsInitiallyEmpty()
         {
-            StructuredDocument log = new StructuredDocument();
+            var log = new StructuredDocument();
             Assert.IsEmpty(log.Streams);
             Assert.IsEmpty(log.Attachments);
         }
@@ -36,35 +36,33 @@ namespace Gallio.Tests.Common.Markup
         [Test]
         public void GetAttachmentReturnsNamedAttachment()
         {
-            StructuredDocument log = new StructuredDocument();
-            AttachmentData data = new AttachmentData("foo", MimeTypes.Binary, AttachmentEncoding.Base64, null, new byte[0]);
+            var log = new StructuredDocument();
+            var data = new AttachmentData("foo", MimeTypes.Binary, AttachmentType.Binary, null, new byte[0]);
             log.Attachments.Add(data);
-            log.Attachments.Add(new AttachmentData("bar", MimeTypes.Binary, AttachmentEncoding.Base64, null, new byte[0]));
-
+            log.Attachments.Add(new AttachmentData("bar", MimeTypes.Binary, AttachmentType.Binary, null, new byte[0]));
             Assert.AreSame(data, log.GetAttachment("foo"));
         }
 
         [Test]
         public void GetAttachmentReturnsNullIfAttachmentNotFound()
         {
-            StructuredDocument log = new StructuredDocument();
-            log.Attachments.Add(new AttachmentData("bar", MimeTypes.Binary, AttachmentEncoding.Base64, null, new byte[0]));
-
+            var log = new StructuredDocument();
+            log.Attachments.Add(new AttachmentData("bar", MimeTypes.Binary, AttachmentType.Binary, null, new byte[0]));
             Assert.IsNull(log.GetAttachment("foo"));
         }
 
         [Test]
         public void GetAttachmentThrowsIfNameIsNull()
         {
-            StructuredDocument log = new StructuredDocument();
+            var log = new StructuredDocument();
             Assert.Throws<ArgumentNullException>(() => log.GetAttachment(null));
         }
 
         [Test]
         public void GetStreamReturnsNamedStream()
         {
-            StructuredDocument log = new StructuredDocument();
-            StructuredStream stream = new StructuredStream("foo");
+            var log = new StructuredDocument();
+            var stream = new StructuredStream("foo");
             log.Streams.Add(stream);
             log.Streams.Add(new StructuredStream("bar"));
 
@@ -74,51 +72,46 @@ namespace Gallio.Tests.Common.Markup
         [Test]
         public void GetStreamReturnsNullIfStreamNotFound()
         {
-            StructuredDocument log = new StructuredDocument();
+            var log = new StructuredDocument();
             log.Streams.Add(new StructuredStream("bar"));
-
             Assert.IsNull(log.GetAttachment("foo"));
         }
 
         [Test]
         public void GetStreamThrowsIfNameIsNull()
         {
-            StructuredDocument log = new StructuredDocument();
+            var log = new StructuredDocument();
             Assert.Throws<ArgumentNullException>(() => log.GetStream(null));
         }
 
         [Test]
         public void ToStringPrintsTheContentsOfAllStreams()
         {
-            StructuredDocumentWriter writer = new StructuredDocumentWriter();
+            var writer = new StructuredDocumentWriter();
             writer.Default.WriteLine("Foo");
             writer.ConsoleOutput.WriteLine("Bar");
             writer.Close();
-
             Assert.AreEqual("*** Log ***\n\nFoo\n\n*** ConsoleOutput ***\n\nBar\n", writer.Document.ToString());
         }
 
         [Test]
         public void WriteToThrowsIfWriterIsNull()
         {
-            StructuredDocument log = new StructuredDocument();
+            var log = new StructuredDocument();
             Assert.Throws<ArgumentNullException>((() => log.WriteTo(null)));
         }
 
         [Test]
         public void WriteToReproducesTheStructureOfTheLog()
         {
-            StructuredDocumentWriter sourceWriter = new StructuredDocumentWriter();
+            var sourceWriter = new StructuredDocumentWriter();
             sourceWriter.Default.WriteLine("Foo");
             sourceWriter.ConsoleOutput.WriteLine("Bar");
             sourceWriter.ConsoleOutput.EmbedPlainText("foo", "bar");
             sourceWriter.Close();
-
-            StructuredDocumentWriter targetWriter = new StructuredDocumentWriter();
-
+            var targetWriter = new StructuredDocumentWriter();
             sourceWriter.Document.WriteTo(targetWriter);
             targetWriter.Close();
-
             Assert.AreEqual(targetWriter.Document.ToString(), sourceWriter.Document.ToString());
         }
     }

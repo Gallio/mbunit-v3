@@ -189,7 +189,6 @@
     <Compile Include="Common\Markup\Attachment.cs" />
     <Compile Include="Common\Markup\AttachmentContentDisposition.cs" />
     <Compile Include="Common\Markup\AttachmentData.cs" />
-    <Compile Include="Common\Markup\AttachmentEncoding.cs" />
     <Compile Include="Common\Markup\BinaryAttachment.cs" />
     <Compile Include="Common\Markup\FallbackMarkupDocumentWriter.cs" />
     <Compile Include="Common\Markup\IMarkupStreamWritable.cs" />

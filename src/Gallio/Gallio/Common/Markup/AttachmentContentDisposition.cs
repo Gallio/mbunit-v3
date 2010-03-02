@@ -37,7 +37,7 @@ namespace Gallio.Common.Markup
 
         /// <summary>
         /// The attachment content is included inline as <see cref="AttachmentData.SerializedContents" />
-        /// with a given <see cref="AttachmentData.Encoding" />.
+        /// with a given <see cref="AttachmentData.Type" />.
         /// </summary>
         [XmlEnum("inline")]
         Inline

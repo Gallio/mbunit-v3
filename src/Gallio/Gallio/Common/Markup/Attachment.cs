@@ -192,9 +192,9 @@ namespace Gallio.Common.Markup
             if (data == null)
                 throw new ArgumentNullException("data");
 
-            if (data.Encoding == AttachmentEncoding.Text)
-                return new TextAttachment(data.Name, data.ContentType, data.GetText());
-            return new BinaryAttachment(data.Name, data.ContentType, data.GetBytes());
+            return (data.Type == AttachmentType.Text)
+                ? (Attachment)new TextAttachment(data.Name, data.ContentType, data.GetText())
+                : (Attachment)new BinaryAttachment(data.Name, data.ContentType, data.GetBytes());
         }
 
         /// <inheritdoc />

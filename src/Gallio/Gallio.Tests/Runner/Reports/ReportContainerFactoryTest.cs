@@ -16,7 +16,11 @@
 using System;
 using System.IO;
 using Gallio.Common.IO;
+using Gallio.Common.Markup;
+using Gallio.Reports;
 using Gallio.Runner.Reports;
+using Gallio.Runner.Reports.Schema;
+using Gallio.Runtime.ProgressMonitoring;
 using MbUnit.Framework;
 using Rhino.Mocks;
 

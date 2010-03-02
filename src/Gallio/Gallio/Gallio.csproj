@@ -86,6 +86,7 @@
     <Compile Include="Common\IO\ContentEmbeddedResource.cs" />
     <Compile Include="Common\IO\ContentFile.cs" />
     <Compile Include="Common\IO\ContentInline.cs" />
+    <Compile Include="Common\Markup\AttachmentType.cs" />
     <Compile Include="Common\Markup\MarkupNormalizationUtils.cs" />
     <Compile Include="Common\Messaging\IMessageExchangeLink.cs" />
     <Compile Include="Common\Messaging\MessageConsumer.cs" />
@@ -171,7 +172,6 @@
     <Compile Include="Common\Markup\Attachment.cs" />
     <Compile Include="Common\Markup\AttachmentContentDisposition.cs" />
     <Compile Include="Common\Markup\AttachmentData.cs" />
-    <Compile Include="Common\Markup\AttachmentEncoding.cs" />
     <Compile Include="Common\Markup\BinaryAttachment.cs" />
     <Compile Include="Common\Markup\FallbackMarkupDocumentWriter.cs" />
     <Compile Include="Common\Markup\IMarkupStreamWritable.cs" />

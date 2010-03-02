@@ -19,9 +19,9 @@ using System.Xml.Serialization;
 namespace Gallio.Common.Markup
 {
     /// <summary>
-    /// Specifies the Xml-encoding of the contents of an embedded attachment.
+    /// Specifies the type of the contents of an embedded attachment.
     /// </summary>
-    public enum AttachmentEncoding
+    public enum AttachmentType
     {
         /// <summary>
         /// The attachment is encoded as a text string.
@@ -30,9 +30,9 @@ namespace Gallio.Common.Markup
         Text,
 
         /// <summary>
-        /// The attachment is encoded as base 64 text string.
+        /// The attachment is a binary file either directly available as a file, or encoded as base 64 text string.
         /// </summary>
-        [XmlEnum("base64")]
-        Base64
+        [XmlEnum("binary")]
+        Binary
     }
 }

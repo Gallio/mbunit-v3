@@ -30,7 +30,6 @@ namespace CCNet.Gallio.WebDashboard.Plugin
     public class GallioAttachmentBuildAction : ICruiseAction, IConditionalGetFingerprintProvider
     {
         private const string NamespaceUri = "http://www.gallio.org/";
-
         private readonly IBuildRetriever buildRetriever;
         private readonly IFingerprintFactory fingerprintFactory;
 
@@ -43,21 +42,20 @@ namespace CCNet.Gallio.WebDashboard.Plugin
         public IResponse Execute(ICruiseRequest cruiseRequest)
         {
             string stepId = cruiseRequest.Request.GetText(@"testStepId");
+            
             if (stepId.Length == 0)
                 throw new InvalidOperationException("Missing test step id.");
 
             string attachmentName = cruiseRequest.Request.GetText(@"attachmentName");
+            
             if (attachmentName.Length == 0)
                 throw new InvalidOperationException("Missing attachment name.");
 
             Build build = buildRetriever.GetBuild(cruiseRequest.BuildSpecifier, cruiseRequest.RetrieveSessionToken());
-
-            XPathDocument document = new XPathDocument(new StringReader(build.Log));
+            var document = new XPathDocument(new StringReader(build.Log));
             XPathNavigator rootNavigator = document.CreateNavigator();
-
-            XmlNamespaceManager nsmgr = new XmlNamespaceManager(rootNavigator.NameTable);
+            var nsmgr = new XmlNamespaceManager(rootNavigator.NameTable);
             nsmgr.AddNamespace(@"g", NamespaceUri);
-
             XPathNavigator testStepNavigator = FindTestStepNode(rootNavigator, nsmgr, stepId);
             XPathNavigator attachmentNavigator = FindAttachmentNode(testStepNavigator, nsmgr, attachmentName);
             return CreateResponseFromAttachment(attachmentNavigator);
@@ -93,15 +91,16 @@ namespace CCNet.Gallio.WebDashboard.Plugin
         private static IResponse CreateResponseFromAttachment(XPathNavigator attachmentNavigator)
         {
             string contentDisposition = attachmentNavigator.GetAttribute(@"contentDisposition", "");
+            
             if (contentDisposition != @"inline")
                 throw new InvalidOperationException("The attachment was not inlined into the XML report.");
 
             string contentType = attachmentNavigator.GetAttribute(@"contentType", "");
-            string encoding = attachmentNavigator.GetAttribute(@"encoding", "");
+            string type = attachmentNavigator.GetAttribute(@"type", "");
             string encodedContent = attachmentNavigator.Value;
-
             byte[] content;
-            if (encoding == @"base64")
+
+            if (type == @"binary")
             {
                 content = Convert.FromBase64String(encodedContent);
             }

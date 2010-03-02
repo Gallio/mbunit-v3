@@ -54,7 +54,7 @@ namespace Gallio.Common.Markup
         /// <inheritdoc />
         public override AttachmentData ToAttachmentData()
         {
-            return new AttachmentData(Name, ContentType, AttachmentEncoding.Base64, null, bytes);
+            return new AttachmentData(Name, ContentType, AttachmentType.Binary, null, bytes);
         }
 
         /// <inheritdoc />
