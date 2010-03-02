@@ -32,10 +32,12 @@ namespace MbUnit.Tests.Framework
     public class SequentialNumbersAttributeTest : BaseTestWithSampleRunner
     {
         [Test]
-        [Row("SingleStartStepCountSequence", new[] { 1, 1.25, 1.5, 1.75, 2 })]
         [Row("SingleStartEndCountSequence", new[] { 1, 1.25, 1.5, 1.75, 2 })]
         [Row("SingleStartEndStepSequence", new[] { 1, 1.25, 1.5, 1.75, 2 })]
+        [Row("SingleStartStepCountSequence", new[] { 1, 3, 5, 7, 9 })]
         [Row("PrimeSequence", new[] { 2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97 })]
+        [Row("SingleStartCountSequence", new[] { 1, 2, 3, 4, 5 })]
+        [Row("SingleStartEndSequence", new[] { 3, 4, 5, 6, 7, 8 })]
         public void GenerateSequence(string testMethod, decimal[] expectedOutput)
         {
             var run = Runner.GetPrimaryTestStepRun(CodeReference.CreateFromMember(typeof(SequentiaNumbersSample).GetMethod(testMethod)));
@@ -46,12 +48,6 @@ namespace MbUnit.Tests.Framework
         [TestFixture, Explicit("Sample")]
         public class SequentiaNumbersSample
         {
-            [Test]
-            public void SingleStartStepCountSequence([SequentialNumbers(Start = 1, Step = 0.25, Count = 5)] decimal value)
-            {
-                TestLog.WriteLine("[{0}]", value);
-            }
-
             [Test]
             public void SingleStartEndCountSequence([SequentialNumbers(Start = 1, End = 2, Count = 5)] decimal value)
             {
@@ -65,7 +61,13 @@ namespace MbUnit.Tests.Framework
             }
 
             [Test]
-            public void PrimeSequence([SequentialNumbers(Start = 1, End = 100, Step = 1, Filter = "IsPrime")] int value)
+            public void SingleStartStepCountSequence([SequentialNumbers(Start = 1, Step = 2, Count = 5)] decimal value)
+            {
+                TestLog.WriteLine("[{0}]", value);
+            }
+
+            [Test]
+            public void PrimeSequence([SequentialNumbers(Start = 1, End = 100, Filter = "IsPrime")] int value)
             {
                 TestLog.WriteLine("[{0}]", value);
             }
@@ -94,6 +96,18 @@ namespace MbUnit.Tests.Framework
                 }
 
                 return false;
+            }
+
+            [Test]
+            public void SingleStartCountSequence([SequentialNumbers(Start = 1, Count = 5)] int value)
+            {
+                TestLog.WriteLine("[{0}]", value);
+            }
+
+            [Test]
+            public void SingleStartEndSequence([SequentialNumbers(Start = 3, End = 8)] decimal value)
+            {
+                TestLog.WriteLine("[{0}]", value);
             }
         }
     }

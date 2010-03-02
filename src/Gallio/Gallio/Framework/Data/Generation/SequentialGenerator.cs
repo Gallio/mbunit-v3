@@ -78,19 +78,39 @@ namespace Gallio.Framework.Data.Generation
             {
                 return GetStartStepCountSequence();
             }
-            else if (Start.HasValue && End.HasValue && !Step.HasValue && Count.HasValue)
+            
+            if (Start.HasValue && End.HasValue && !Step.HasValue && Count.HasValue)
             {
                 return GetStartEndCountSequence();
             }
-            else if (Start.HasValue && End.HasValue && Step.HasValue && !Count.HasValue)
+            
+            if (Start.HasValue && End.HasValue && Step.HasValue && !Count.HasValue)
             {
                 return GetStartEndStepSequence();
             }
-            else
+
+            if (Start.HasValue && End.HasValue && !Step.HasValue && !Count.HasValue)
             {
-                throw new GenerationException("Invalid data generator property settings. Only the following combinations " +
-                    "are possible: {Start, Step, Count}, {Start, End, Count}, or {Start, End, Step}.");
+                Step = DefaultStep;
+                return GetStartEndStepSequence();
             }
+
+            if (Start.HasValue && !End.HasValue && !Step.HasValue && Count.HasValue)
+            {
+                Step = DefaultStep;
+                return GetStartStepCountSequence();
+            }
+
+            throw new GenerationException("Invalid data generator property settings. Only the following combinations " +
+                "are possible: {Start, Step, Count}, {Start, End, Count}, {Start, End, Step}, {Start, End}, or {Start, Count}.");
+        }
+
+        /// <summary>
+        /// Gets the default step.
+        /// </summary>
+        protected abstract T DefaultStep
+        {
+            get;
         }
 
         /// <summary>

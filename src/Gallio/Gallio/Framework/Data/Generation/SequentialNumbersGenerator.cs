@@ -105,5 +105,16 @@ namespace Gallio.Framework.Data.Generation
                 }
             }
         }
+
+        /// <summary>
+        /// Gets the default step.
+        /// </summary>
+        protected override decimal DefaultStep
+        {
+            get
+            {
+                return 1;
+            }
+        }
     }
 }

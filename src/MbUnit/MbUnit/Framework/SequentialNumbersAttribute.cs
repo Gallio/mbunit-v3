@@ -35,6 +35,8 @@ namespace MbUnit.Framework
     /// <item><see cref="Start"/>, <see cref="End"/>, and <see cref="Count"/></item>
     /// <item><see cref="Start"/>, <see cref="Step"/>, and <see cref="Count"/></item>
     /// <item><see cref="Start"/>, <see cref="End"/>, and <see cref="Step"/></item>
+    /// <item><see cref="Start"/> and <see cref="End"/> (with a default step of 1)</item>
+    /// <item><see cref="Start"/> and <see cref="Count"/> (with a default step of 1)</item>
     /// </list>
     /// </para>
     /// </remarks>
@@ -50,7 +52,7 @@ namespace MbUnit.Framework
     ///     }
     ///     
     ///     [Test]
-    ///     public void MyTestMethod1([SequentialNumbers(Start = 1, Step = 1, Count = 4)] decimal value)
+    ///     public void MyTestMethod1([SequentialNumbers(Start = 1, Step = 1, Count = 4)] int value)
     ///     {
     ///         // This test will run 4 times with the values 1, 2, 3 and 4.
     ///     }
@@ -59,6 +61,12 @@ namespace MbUnit.Framework
     ///     public void MyTestMethod3([SequentialNumbers(Start = 0, End = 15, Step = 3)] decimal value)
     ///     {
     ///         // This test will run 6 times with the values 0, 3, 6, 9, 12, 15.
+    ///     }
+    ///     
+    ///     [Test]
+    ///     public void MyTestMethod4([SequentialNumbers(Start = 3, End = 8)] int value)
+    ///     {
+    ///         // This test will run 6 times with the values 3, 4, 5, 6, 7, and 8.
     ///     }
     /// }]]></code>
     /// </example>
