@@ -104,6 +104,7 @@
     <Compile Include="Common\IO\ContentEmbeddedResource.cs" />
     <Compile Include="Common\IO\ContentFile.cs" />
     <Compile Include="Common\IO\ContentInline.cs" />
+    <Compile Include="Common\Markup\AttachmentType.cs" />
     <Compile Include="Common\Markup\MarkupNormalizationUtils.cs" />
     <Compile Include="Common\Messaging\IMessageExchangeLink.cs" />
     <Compile Include="Common\Messaging\MessageConsumer.cs" />

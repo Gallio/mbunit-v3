@@ -27,8 +27,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MbUnit.TestResources.x86", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MbUnit.Samples.vs2008", "Samples\Unit Testing\MbUnit.Samples\MbUnit.Samples.vs2008.csproj", "{12850856-0A27-4E50-9116-5A3B19C7D779}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyTest", "..\..\..\..\..\..\Temp\MyTest\MyTest.csproj", "{5EDC79DC-C6EC-4A6F-8AE2-9DF9B93FE84D}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -87,10 +85,6 @@ Global
 		{12850856-0A27-4E50-9116-5A3B19C7D779}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{12850856-0A27-4E50-9116-5A3B19C7D779}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{12850856-0A27-4E50-9116-5A3B19C7D779}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5EDC79DC-C6EC-4A6F-8AE2-9DF9B93FE84D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5EDC79DC-C6EC-4A6F-8AE2-9DF9B93FE84D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5EDC79DC-C6EC-4A6F-8AE2-9DF9B93FE84D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5EDC79DC-C6EC-4A6F-8AE2-9DF9B93FE84D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
