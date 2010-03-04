@@ -14,7 +14,6 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Text;
 
@@ -26,5 +25,10 @@ namespace Gallio.UI.Controls
 
         [DllImport("user32.dll")]
         public static extern IntPtr SendMessage(HandleRef hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
+
+        // http://www.pinvoke.net/default.aspx/shlwapi.pathcompactpathex
+        [DllImport("shlwapi.dll", CharSet = CharSet.Auto)]
+        public static extern bool PathCompactPathEx([Out] StringBuilder pszOut, 
+            string szPath, int cchMax, int dwFlags);
     }
 }

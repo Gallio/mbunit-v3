@@ -15,10 +15,8 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
 using Gallio.Common.IO;
 using Gallio.Icarus.Controllers.Interfaces;
-using Gallio.Icarus.Utilities;
 using Gallio.UI.Controls;
 
 namespace Gallio.Icarus.Helpers
@@ -47,29 +45,12 @@ namespace Gallio.Icarus.Helpers
                 if (!fileSystem.FileExists(recentProject))
                     continue;
 
-                var menuItem = new ToolStripMenuItem
-                {
-                    AutoToolTip = false,
-                    ToolTipText = recentProject,
-                    // shorten path for text by inserting ellipsis (...) if necessary
-                    Text = recentProject.Length > 60 ? TruncatePath(recentProject, 60) 
-                        : recentProject
-                };
-               
+                var menuItem = new TruncatedToolStripMenuItem(recentProject, 60);
                 menuItem.Click += delegate { action(name); };
                 menuItems.Add(menuItem);
             }
 
             return menuItems.ToArray();
-        }
-
-        private static string TruncatePath(string path, int length)
-        {
-            // NOTE: You need to create the builder with the required capacity before calling function.
-            // See http://msdn.microsoft.com/en-us/library/aa446536.aspx
-            var stringBuilder = new StringBuilder(length + 1);
-            NativeMethods.PathCompactPathEx(stringBuilder, path, length + 1, 0); // + 1 for null terminator included in StringBuilder capacity
-            return stringBuilder.ToString();
         }
     }
 }

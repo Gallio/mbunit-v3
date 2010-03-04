@@ -384,7 +384,6 @@
     <Compile Include="Remoting\IFileWatcher.cs" />
     <Compile Include="Utilities\ITaskbarList4.cs" />
     <Compile Include="Utilities\MRUList.cs" />
-    <Compile Include="Utilities\NativeMethods.cs" />
     <Compile Include="Utilities\TBPFLAG.cs" />
     <Compile Include="Views\CodeViewer\CodeViewer.cs">
       <SubType>UserControl</SubType>
