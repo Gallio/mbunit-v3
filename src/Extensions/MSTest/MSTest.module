@@ -12,7 +12,7 @@
     <CSharpProject Include="Gallio.MSTestAdapter.Tests\Gallio.MSTestAdapter.Tests$(ProjectVariant).csproj" />
   </ItemGroup>
 
-  <ItemGroup Condition="$(MSTestFrameworkInstalled)">
+  <ItemGroup>
     <Binary Include="Gallio.MSTestAdapter\bin\Gallio.MSTestAdapter.dll">
       <Folder>MSTest</Folder>
     </Binary>
