@@ -47,9 +47,9 @@ namespace Gallio.UI.Controls
         ///<param name="command">The command to use.</param>
         ///<param name="taskManager">The task manager to use.</param>
         ///<param name="keysParser">The keys parser to use.</param>
-        public CommandToolStripMenuItem(MenuCommand command, ITaskManager taskManager, IKeysParser keysParser) {
-            Text = command.Text;
-
+        public CommandToolStripMenuItem(MenuCommand command, ITaskManager taskManager, IKeysParser keysParser)
+            : base(command.Text, command.Image)
+        {
             Enabled = command.CanExecute;
             command.CanExecute.PropertyChanged += (s, e) => Enabled = command.CanExecute;
 

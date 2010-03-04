@@ -270,6 +270,13 @@ namespace Gallio.Icarus.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap PropertiesImage {
+            get {
+                object obj = ResourceManager.GetObject("PropertiesImage", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Icon Report {
             get {
                 object obj = ResourceManager.GetObject("Report", resourceCulture);

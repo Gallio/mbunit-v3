@@ -13,6 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Drawing;
 using Gallio.UI.DataBinding;
 using Gallio.UI.ProgressMonitoring;
 
@@ -51,7 +52,10 @@ namespace Gallio.UI.Menus
         ///</summary>
         public string Shortcut { get; set; }
 
-        // TODO: icons
+        ///<summary>
+        /// The image to use for the command.
+        ///</summary>
+        public Image Image { get; set; }
 
         /// <summary>
         /// Default constructor.

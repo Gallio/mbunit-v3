@@ -59,7 +59,7 @@ namespace Gallio.Icarus.Tests.Commands
         {
             openProjectCommand.Execute(progressMonitor);
 
-            testController.AssertWasCalled(tc => tc.ResetTestStatus(progressMonitor));
+            eventAggregator.AssertWasCalled(ea => ea.Send(Arg<TestsReset>.Is.Anything));
         }
 
         [Test]

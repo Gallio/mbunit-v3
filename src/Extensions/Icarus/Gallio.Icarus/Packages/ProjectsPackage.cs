@@ -38,7 +38,6 @@ namespace Gallio.Icarus.Packages
         public void Load()
         {
             RegisterWindow();
-
             AddMenuItem();
         }
 
@@ -49,7 +48,8 @@ namespace Gallio.Icarus.Packages
             var menuCommand = new MenuCommand
             {
                 Command = new DelegateCommand(pm => windowManager.Show(projectPropertiesWindowId)),
-                Text = Resources.ProjectsPackage_AddMenuItem_Properties
+                Text = Resources.ProjectsPackage_AddMenuItem_Properties,
+                Image = Resources.PropertiesImage
             };
 
             menu.Add(menuCommand);

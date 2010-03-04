@@ -24,7 +24,6 @@ namespace Gallio.Icarus.Commands
 {
     public class OpenProjectCommand : ICommand
     {
-        private readonly ITestController testController;
         private readonly IProjectController projectController;
         private readonly IEventAggregator eventAggregator;
         private readonly LoadPackageCommand loadPackageCommand;
@@ -35,7 +34,6 @@ namespace Gallio.Icarus.Commands
         public OpenProjectCommand(ITestController testController, IProjectController projectController, 
             IEventAggregator eventAggregator, IFilterService filterService)
         {
-            this.testController = testController;
             this.projectController = projectController;
             this.eventAggregator = eventAggregator;
 
@@ -47,8 +45,8 @@ namespace Gallio.Icarus.Commands
         {
             using (progressMonitor.BeginTask(Resources.OpeningProject, 100))
             {
-                using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(5))
-                    testController.ResetTestStatus(subProgressMonitor);
+                using (progressMonitor.CreateSubProgressMonitor(5))
+                    eventAggregator.Send(new TestsReset());
 
                 using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(5))
                     projectController.OpenProject(subProgressMonitor, ProjectLocation);

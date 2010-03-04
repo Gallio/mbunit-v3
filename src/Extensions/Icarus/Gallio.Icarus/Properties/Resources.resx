@@ -190,43 +190,54 @@
   <data name="NoWindowWithThatIdentifierExists" xml:space="preserve">
     <value>No window with that identifier exists</value>
   </data>
-	<data name="Dialogs_CreateSaveProjectDialog_Save_Project_As___">
-		<value xml:space="preserve">Save Project As...</value>
-	</data>
-	<data name="Dialogs_CreateOpenProjectDialog_Open_Project___">
-		<value xml:space="preserve">Open Project...</value>
-	</data>
-	<data name="Dialogs_CreateAddFilesDialog_Add_Files___">
-		<value xml:space="preserve">Add Files...</value>
-	</data>
-	<data name="Main_TaskCanceled_Canceled">
-		<value xml:space="preserve">Canceled</value>
-	</data>
-	<data name="TestResultsList_TestResultsList_Step_name">
-		<value xml:space="preserve">Step name</value>
-	</data>
-	<data name="TestResultsList_TestResultsList_Test_kind">
-		<value xml:space="preserve">Test kind</value>
-	</data>
-	<data name="TestResultsList_TestResultsList_Duration__s_">
-		<value xml:space="preserve">Duration (s)</value>
-	</data>
-	<data name="TestResultsList_TestResultsList_Asserts">
-		<value xml:space="preserve">Asserts</value>
-	</data>
-	<data name="TestResultsList_TestResultsList_Code_reference">
-		<value xml:space="preserve">Code reference</value>
-	</data>
-	<data name="TestResultsList_TestResultsList_File">
-		<value xml:space="preserve">File</value>
-	</data>
-	<data name="PluginBrowserPackage_AddMenuItem_Plugin_Browser">
-		<value xml:space="preserve">Plugin Browser</value>
-	</data>
-	<data name="ProjectsPackage_AddMenuItem_Properties">
-		<value xml:space="preserve">Properties</value>
-	</data>
-	<data name="Search_Package_AddMenuItem_Search">
-		<value xml:space="preserve">Search</value>
-	</data>
+  <data name="Dialogs_CreateSaveProjectDialog_Save_Project_As___" xml:space="preserve">
+    <value>Save Project As...</value>
+  </data>
+  <data name="Dialogs_CreateOpenProjectDialog_Open_Project___" xml:space="preserve">
+    <value>Open Project...</value>
+  </data>
+  <data name="Dialogs_CreateAddFilesDialog_Add_Files___" xml:space="preserve">
+    <value>Add Files...</value>
+  </data>
+  <data name="Main_TaskCanceled_Canceled" xml:space="preserve">
+    <value>Canceled</value>
+  </data>
+  <data name="TestResultsList_TestResultsList_Step_name" xml:space="preserve">
+    <value>Step name</value>
+  </data>
+  <data name="TestResultsList_TestResultsList_Test_kind" xml:space="preserve">
+    <value>Test kind</value>
+  </data>
+  <data name="TestResultsList_TestResultsList_Duration__s_" xml:space="preserve">
+    <value>Duration (s)</value>
+  </data>
+  <data name="TestResultsList_TestResultsList_Asserts" xml:space="preserve">
+    <value>Asserts</value>
+  </data>
+  <data name="TestResultsList_TestResultsList_Code_reference" xml:space="preserve">
+    <value>Code reference</value>
+  </data>
+  <data name="TestResultsList_TestResultsList_File" xml:space="preserve">
+    <value>File</value>
+  </data>
+  <data name="PluginBrowserPackage_AddMenuItem_Plugin_Browser" xml:space="preserve">
+    <value>Plugin Browser</value>
+  </data>
+  <data name="ProjectsPackage_AddMenuItem_Properties" xml:space="preserve">
+    <value>Properties</value>
+  </data>
+  <data name="Search_Package_AddMenuItem_Search" xml:space="preserve">
+    <value>Search</value>
+  </data>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="PropertiesImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAgY0hSTQAAeiYAAICEAAD6AAAAgOgAAHUwAADqYAAAOpgAABdwnLpRPAAAAMtJREFUWEftltsS
+        gCAIRPn0/rzbaJm5wqqTTuWML0pxWBAV+cfjCkyzSDhfALBGJMRsrwDhfANtB+Adk0l8AUAcOalEvQLN
+        AcgiOlLOgjj7uwJjAMxgBGfch65FjgJy3wMFhgNAkXvQgv2oX3glXBuNFShwsEufASwGuPwYgRoCgB0z
+        6SC+YLQaaQ6AHFrXEynkFLA60pSx3FSoeLLr6A1gL8ITbSyAWumrFegOgI6f9d1XrUB3gO4p6AZgzXGB
+        ndqL2BcRa68CfNtgAcNGicnBKwDAAAAAAElFTkSuQmCC
+</value>
+  </data>
 </root>

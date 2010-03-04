@@ -13,6 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Drawing;
 using Gallio.Runtime.ProgressMonitoring;
 using Gallio.UI.Controls;
 using Gallio.UI.DataBinding;
@@ -56,6 +57,20 @@ namespace Gallio.UI.Tests.Controls
             canExecute.Value = true;
 
             Assert.IsTrue(menuItem.Enabled);
+        }
+
+        [Test]
+        public void Menu_item_image_should_come_from_command()
+        {
+            var menuCommand = new MenuCommand();
+            var menuItem = new CommandToolStripMenuItem(menuCommand);
+            Assert.IsNull(menuItem.Image);
+
+            var image = new Bitmap(1, 1);
+            menuCommand.Image = image;
+            menuItem = new CommandToolStripMenuItem(menuCommand);
+
+            Assert.AreEqual(image, menuItem.Image);
         }
 
         [Test]
