@@ -104,5 +104,12 @@ namespace Gallio.Common.IO
         /// <param name="sourceDirectory">The path of the directory to copy.</param>
         /// <param name="targetDirectory">The destination.</param>
         void CopyDirectory(string sourceDirectory, string targetDirectory);
+
+        /// <summary>
+        /// Opens a binary file, reads the contents of the file into a byte array, and then closes the file.
+        /// </summary>
+        ///<param name="path">The location of the file.</param>
+        /// <returns>The binary contents of the file.</returns>
+        byte[] ReadAllBytes(string path);
     }
 }

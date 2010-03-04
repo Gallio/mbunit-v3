@@ -52,7 +52,7 @@ namespace Gallio.Common.Reflection.Impl
             if (DotNetRuntimeSupport.IsUsingMono)
                 return new MonoDebugSymbolResolver(avoidLocks);
 
-            return new ComDebugSymbolResolver(avoidLocks);
+            return new CciDebugSymbolResolver(avoidLocks);
         }
 
         /// <summary>

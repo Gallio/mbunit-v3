@@ -117,6 +117,7 @@
     <Compile Include="Common\Reflection\CodeReferenceTest.cs" />
     <Compile Include="Common\Reflection\DeclaringTypeComparerTest.cs" />
     <Compile Include="Common\Reflection\AssemblyUtilsTest.cs" />
+    <Compile Include="Common\Reflection\Impl\CciDebugSymbolResolverTest.cs" />
     <Compile Include="Common\Reflection\Impl\CecilReflectionPolicyTest.cs" />
     <Compile Include="Common\Reflection\Impl\ComDebugSymbolResolverTest.cs" />
     <Compile Include="Common\Reflection\Impl\DebugSymbolUtilsTest.cs" />

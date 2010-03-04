@@ -115,5 +115,11 @@ namespace Gallio.Common.IO
                 CopyAll(diSourceSubDir, nextTargetSubDir);
             }
         }
+
+        /// <inheritdoc />
+        public byte[] ReadAllBytes(string path)
+        {
+            return File.ReadAllBytes(path);
+        }
     }
 }

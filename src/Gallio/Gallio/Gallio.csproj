@@ -54,6 +54,26 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\libs\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Cci.MetadataHelper, Version=2.0.8.17659, Culture=neutral, PublicKeyToken=736440c9b414ea16, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\libs\CciMetadata\WithInternalsVisibleToGallio\Microsoft.Cci.MetadataHelper.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Cci.MetadataModel, Version=2.0.8.17659, Culture=neutral, PublicKeyToken=736440c9b414ea16, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\libs\CciMetadata\WithInternalsVisibleToGallio\Microsoft.Cci.MetadataModel.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Cci.PdbReader, Version=2.0.8.17659, Culture=neutral, PublicKeyToken=736440c9b414ea16, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\libs\CciMetadata\WithInternalsVisibleToGallio\Microsoft.Cci.PdbReader.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Cci.PeReader, Version=2.0.8.17659, Culture=neutral, PublicKeyToken=736440c9b414ea16, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\libs\CciMetadata\WithInternalsVisibleToGallio\Microsoft.Cci.PeReader.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Cci.SourceModel, Version=2.0.8.17659, Culture=neutral, PublicKeyToken=736440c9b414ea16, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\libs\CciMetadata\WithInternalsVisibleToGallio\Microsoft.Cci.SourceModel.dll</HintPath>
+    </Reference>
     <Reference Include="Mono.Cecil, Version=0.6.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\libs\Mono.Cecil.dll</HintPath>
@@ -197,6 +217,8 @@
     <Compile Include="Common\Policies\VersionPolicy.cs" />
     <Compile Include="Common\Reflection\AssemblyMetadata.cs" />
     <Compile Include="Common\Reflection\AssemblyMetadataFields.cs" />
+    <Compile Include="Common\Reflection\Impl\CciDebugSymbolResolver.cs" />
+    <Compile Include="Common\Reflection\Impl\CciModuleCache.cs" />
     <Compile Include="Common\Reflection\Impl\UnresolvedCodeElementFactoryInternal.cs" />
     <Compile Include="Common\Reflection\Impl\UnresolvedCodeElementFactory.cs" />
     <Compile Include="Common\Reflection\Impl\UnresolvedAssembly.cs" />
