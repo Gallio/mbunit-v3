@@ -37,6 +37,7 @@ namespace Gallio.Runtime.Hosting
 
         private string configurationXml;
         private bool legacyUnhandledExceptionPolicyEnabled = true;
+        private bool loadFromRemoteSources = true;
         private bool assertUiEnabled;
         private bool remotingCustomErrorsEnabled;
 
@@ -73,6 +74,18 @@ namespace Gallio.Runtime.Hosting
         {
             get { return legacyUnhandledExceptionPolicyEnabled; }
             set { legacyUnhandledExceptionPolicyEnabled = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets whether to allow assemblies to be loaded from remote sources on .Net 4.0.
+        /// </summary>
+        /// <value>
+        /// The default value is <c>true</c> which enables loading from remote sources.
+        /// </value>
+        public bool LoadFromRemoteSources
+        {
+            get { return loadFromRemoteSources; }
+            set { loadFromRemoteSources = value; }
         }
 
         /// <summary>
@@ -437,6 +450,7 @@ namespace Gallio.Runtime.Hosting
             copy.assertUiEnabled = assertUiEnabled;
             copy.configurationXml = configurationXml;
             copy.legacyUnhandledExceptionPolicyEnabled = legacyUnhandledExceptionPolicyEnabled;
+            copy.loadFromRemoteSources = loadFromRemoteSources;
             copy.remotingCustomErrorsEnabled = remotingCustomErrorsEnabled;
             copy.supportedRuntimeVersions.AddRange(supportedRuntimeVersions);
 
@@ -455,6 +469,7 @@ namespace Gallio.Runtime.Hosting
 
             XmlElement rootElement = document.DocumentElement;
             ConfigureLegacyUnhandledExceptionPolicy(rootElement);
+            ConfigureLoadFromRemoteSources(rootElement);
             ConfigureAssertUi(rootElement);
             ConfigureRemotingCustomErrors(rootElement);
             ConfigureAssemblyBindings(rootElement);
@@ -468,6 +483,14 @@ namespace Gallio.Runtime.Hosting
             XmlElement configElement = GetOrCreateChildElement(sectionElement, "legacyUnhandledExceptionPolicy", null);
 
             configElement.SetAttribute("enabled", legacyUnhandledExceptionPolicyEnabled ? "1" : "0");
+        }
+
+        private void ConfigureLoadFromRemoteSources(XmlElement rootElement)
+        {
+            XmlElement sectionElement = GetOrCreateChildElement(rootElement, "runtime", null);
+            XmlElement configElement = GetOrCreateChildElement(sectionElement, "loadFromRemoteSources", null);
+
+            configElement.SetAttribute("enabled", loadFromRemoteSources ? "true" : "false");
         }
 
         private void ConfigureAssertUi(XmlElement rootElement)

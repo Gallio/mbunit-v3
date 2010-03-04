@@ -51,7 +51,7 @@ namespace Gallio.Common.Splash.Tests
             {
                 { Style.Default, new StyleBuilder().ToStyle() },
                 { new StyleBuilder() { Color = Color.Red }.ToStyle(), new StyleBuilder() { Color = Color.Red }.ToStyle() },
-                { new StyleBuilder() { Font = SystemFonts.SmallCaptionFont }.ToStyle(), new StyleBuilder() { Font = SystemFonts.SmallCaptionFont }.ToStyle() },
+                { new StyleBuilder() { Font = new Font(Style.Default.Font, FontStyle.Strikeout) }.ToStyle(), new StyleBuilder() { Font = new Font(Style.Default.Font, FontStyle.Strikeout) }.ToStyle() },
                 { new StyleBuilder() { TabStopRuler = new PixelTabStopRuler(30, 10) }.ToStyle(), new StyleBuilder() { TabStopRuler = new PixelTabStopRuler(30, 10) }.ToStyle() },
                 { new StyleBuilder() { WordWrap = false }.ToStyle(), new StyleBuilder() { WordWrap = false }.ToStyle() },
                 { new StyleBuilder() { LeftMargin = 5 }.ToStyle(), new StyleBuilder() { LeftMargin = 5 }.ToStyle() },

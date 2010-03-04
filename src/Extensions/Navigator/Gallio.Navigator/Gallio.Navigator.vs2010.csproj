@@ -110,6 +110,7 @@
     <Content Include="Gallio.Navigator.plugin" />
     <None Include="Gallio.Navigator.exe.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </None>
     <None Include="Resources\UrlHandlerIcon.ico" />
     <Content Include="Gallio.Navigator.Readme.txt" />

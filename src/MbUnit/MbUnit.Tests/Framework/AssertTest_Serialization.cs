@@ -67,7 +67,9 @@ namespace MbUnit.Tests.Framework
         public void XmlSerialize_passes_and_returns_xml_if_serializable()
         {
             string xml = Assert.XmlSerialize(new XmlSerializableClass() { Token = "Abc" });
-            Assert.AreEqual("<XmlSerializableClass xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\"><Token>Abc</Token></XmlSerializableClass>", xml);
+            Assert.Xml.AreEqual(
+                "<XmlSerializableClass xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\"><Token>Abc</Token></XmlSerializableClass>",
+                xml);
         }
 
         [Test]

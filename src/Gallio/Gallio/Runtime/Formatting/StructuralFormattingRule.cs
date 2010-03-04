@@ -87,12 +87,12 @@ namespace Gallio.Runtime.Formatting
             result.Append(": ");
 
             var accessors = new List<KeyValuePair<string, Func<object, object>>>();
-            foreach (FieldInfo field in objType.GetFields())
+            foreach (FieldInfo field in objType.GetFields(BindingFlags.Instance | BindingFlags.Public))
             {
                 accessors.Add(new KeyValuePair<string, Func<object, object>>(field.Name, field.GetValue));
             }
 
-            foreach (PropertyInfo property in objType.GetProperties())
+            foreach (PropertyInfo property in objType.GetProperties(BindingFlags.Instance | BindingFlags.Public))
             {
                 PropertyInfo capturedProperty = property; // avoid unintended variable capture in the lambda.
                 if (property.CanRead && property.GetIndexParameters().Length == 0)

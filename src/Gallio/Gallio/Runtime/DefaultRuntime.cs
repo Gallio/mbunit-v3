@@ -174,7 +174,9 @@ namespace Gallio.Runtime
                         && pluginDescriptor.EnableCondition != null
                         && !pluginDescriptor.EnableCondition.Evaluate(conditionContext))
                     {
-                        pluginDescriptor.Disable(string.Format("The plugin enable condition was not satisfied: '{0}'.", pluginDescriptor.EnableCondition));
+                        pluginDescriptor.Disable(string.Format("The plugin enable condition was not satisfied.  "
+                            + "Please note that this is the intended behavior for plugins that must be hosted inside third party applications in order to work.  "
+                            + "Enable condition: '{0}'.", pluginDescriptor.EnableCondition));
                     }
                 }
 
