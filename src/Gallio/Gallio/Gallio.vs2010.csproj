@@ -1173,6 +1173,6 @@
   </Target>
   -->
   <PropertyGroup>
-    <PostBuildEvent>$(ProjectDir)ILMerge.bat $(TargetDir)</PostBuildEvent>
+    <PostBuildEvent>"$(ProjectDir)ILMerge.bat" "$(TargetDir)"</PostBuildEvent>
   </PropertyGroup>
 </Project>
