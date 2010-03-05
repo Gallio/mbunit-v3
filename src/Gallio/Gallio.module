@@ -95,6 +95,7 @@
     </Binary>
     
     <Content Include="libs\Mono.Cecil.license.html" />
+    <Content Include="libs\CciMetadata\CciMetadata.License.txt" />
     
     <Document Include="Docs\*.txt" />
     
@@ -124,6 +125,11 @@
     <GallioMergeDependency Include="Gallio\bin\Mono.Cecil.dll" />
     <GallioMergeDependency Include="Gallio\bin\ICSharpCode.SharpZipLib.dll" />
     <GallioMergeDependency Include="Gallio\bin\Gallio.ReflectionShim.dll" />
+	<GallioMergeDependency Include="Gallio\bin\Microsoft.Cci.MetadataHelper.dll" />
+	<GallioMergeDependency Include="Gallio\bin\Microsoft.Cci.MetadataModel.dll" />
+	<GallioMergeDependency Include="Gallio\bin\Microsoft.Cci.PdbReader.dll" />
+	<GallioMergeDependency Include="Gallio\bin\Microsoft.Cci.PeReader.dll" />
+	<GallioMergeDependency Include="Gallio\bin\Microsoft.Cci.SourceModel.dll" />
   </ItemGroup>
 
   <Target Name="AfterImage"
