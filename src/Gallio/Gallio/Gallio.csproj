@@ -1137,4 +1137,7 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <PropertyGroup>
+    <PostBuildEvent>$(ProjectDir)ILMerge.bat $(TargetDir)</PostBuildEvent>
+  </PropertyGroup>
 </Project>
