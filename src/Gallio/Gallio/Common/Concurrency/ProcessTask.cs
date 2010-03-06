@@ -15,7 +15,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
@@ -38,8 +37,6 @@ namespace Gallio.Common.Concurrency
     /// </remarks>
     public class ProcessTask : Task
     {
-        private readonly TimeSpan WaitForFinalIOTimeout = TimeSpan.FromMilliseconds(500);
-
         private readonly string executablePath;
         private readonly string arguments;
         private readonly string workingDirectory;
@@ -55,9 +52,6 @@ namespace Gallio.Common.Concurrency
 
         private Process process;
         private int exited;
-
-        private ManualResetEvent consoleOutputFinished;
-        private ManualResetEvent consoleErrorFinished;
         private bool loggingStarted;
 
         /// <summary>
@@ -313,12 +307,7 @@ namespace Gallio.Common.Concurrency
             startInfo.CreateNoWindow = ! createWindow;
 
             startInfo.RedirectStandardOutput = captureConsoleOutput || ConsoleOutputDataReceived != null;
-            if (startInfo.RedirectStandardOutput)
-                consoleOutputFinished = new ManualResetEvent(false);
-
             startInfo.RedirectStandardError = captureConsoleError || ConsoleErrorDataReceived != null;
-            if (startInfo.RedirectStandardError)
-                consoleErrorFinished = new ManualResetEvent(false);
 
             if (environmentVariables != null)
             {
@@ -395,10 +384,6 @@ namespace Gallio.Common.Concurrency
 
         private void HandleProcessExit()
         {
-            // Note: We wait here outside of the critical section to ensure that
-            //       the caller is fully synchronized.  Otherwise we might fall
-            //       through to continue processing while the console output is
-            //       still being read out.
             WaitForConsoleToBeCompletelyReadOnceProcessHasExited();
 
             if (Interlocked.Exchange(ref exited, 1) == 0)
@@ -451,34 +436,18 @@ namespace Gallio.Common.Concurrency
 
         private void LogOutputData(object sender, DataReceivedEventArgs e)
         {
-            try
-            {
-                if (captureConsoleOutput && e.Data != null)
-                    consoleOutputCaptureWriter.WriteLine(e.Data);
+            if (captureConsoleOutput && e.Data != null)
+                consoleOutputCaptureWriter.WriteLine(e.Data);
 
-                EventHandlerPolicy.SafeInvoke(ConsoleOutputDataReceived, this, e);
-            }
-            finally
-            {
-                if (e.Data == null)
-                    consoleOutputFinished.Set();
-            }
+            EventHandlerPolicy.SafeInvoke(ConsoleOutputDataReceived, this, e);
         }
 
         private void LogErrorData(object sender, DataReceivedEventArgs e)
         {
-            try
-            {
-                if (captureConsoleError && e.Data != null)
-                    consoleErrorCaptureWriter.WriteLine(e.Data);
+            if (captureConsoleError && e.Data != null)
+                consoleErrorCaptureWriter.WriteLine(e.Data);
 
-                EventHandlerPolicy.SafeInvoke(ConsoleOutputDataReceived, this, e);
-            }
-            finally
-            {
-                if (e.Data == null)
-                    consoleErrorFinished.Set();
-            }
+            EventHandlerPolicy.SafeInvoke(ConsoleErrorDataReceived, this, e);
         }
 
         private void WaitForConsoleToBeCompletelyReadOnceProcessHasExited()
@@ -486,28 +455,13 @@ namespace Gallio.Common.Concurrency
             if (!loggingStarted)
                 return;
 
-            if (DotNetRuntimeSupport.IsUsingMono)
-                return; // hangs on Mono 1.9.1.  Seems we never get the final events.
-
-            // Since the process has exited, it should not take too long to read
-            // its remaining output buffer.  The extra synchronization code here
-            // helps clients of the ProcessTask to handle process termination more
-            // robustly as it is guaranteed to have all of the output available
-            // at that time.
-            Stopwatch timer = Stopwatch.StartNew();
-            if (consoleOutputFinished != null)
-            {
-                consoleOutputFinished.WaitOne(WaitForFinalIOTimeout, false);
-            }
-
-            if (consoleErrorFinished != null)
-            {
-                TimeSpan remaining = WaitForFinalIOTimeout - timer.Elapsed;
-                if (remaining.Ticks < 0)
-                    remaining = TimeSpan.Zero;
-
-                consoleErrorFinished.WaitOne(remaining, false);
-            }
+            // Wait for all pending I/O to be consumed.  It turns out that calling
+            // WaitForExit with no timeout waits for the output and error streams
+            // to be full read (when using BeginOutput/ErrorReadLine) but the same
+            // courtesy is not extended to WaitForExit with a timeout.  Since the process
+            // has already exited, we should only be waiting to read the streams
+            // which ought to be pretty quick.
+            process.WaitForExit();
         }
     }
 }
