@@ -447,7 +447,7 @@ namespace Gallio.Common.Concurrency
             if (captureConsoleError && e.Data != null)
                 consoleErrorCaptureWriter.WriteLine(e.Data);
 
-            EventHandlerPolicy.SafeInvoke(ConsoleOutputDataReceived, this, e);
+            EventHandlerPolicy.SafeInvoke(ConsoleErrorDataReceived, this, e);
         }
 
         private void WaitForConsoleToBeCompletelyReadOnceProcessHasExited()
